@@ -28,13 +28,16 @@ class Network < ActiveRecord::Base
                           :order => "accepted_at DESC"
                           
   def relations
-    (self.relations_of_mine + self.relations_with_me).uniq
+    (relations_of_mine + relations_with_me).uniq
   end
                           
   has_many :memberships
   
   has_and_belongs_to_many :members,
+                          :class_name => "User",
                           :join_table => :memberships,
+                          :foreign_key => :user_id,
+                          :association_foreign_key => :network_id,
                           :conditions => ["accepted_at < ?", Time.now],
                           :order => "accepted_at DESC"
 end

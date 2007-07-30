@@ -33,6 +33,8 @@ class User < ActiveRecord::Base
                           
   has_and_belongs_to_many :networks,
                           :join_table => :memberships,
+                          :foreign_key => :network_id,
+                          :association_foreign_key => :user_id,
                           :conditions => ["accepted_at < ?", Time.now],
                           :order => "accepted_at DESC"
                           
