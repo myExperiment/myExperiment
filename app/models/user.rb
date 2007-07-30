@@ -40,24 +40,28 @@ class User < ActiveRecord::Base
                           
   has_many :networks_owned,
            :class_name => "Network"
-
-  def foaf?(user_id)
+           
+def foaf?(user_id)
     foaf user_id
   end
-
+  
 protected
-           
-  def foaf(user_id, depth=0, maxdepth=7)
-    unless depth > maxdepth
+
+  def foaf(user_id, depth=0)
+    unless depth > @@maxdepth
       (fri = self.friends).each do |f|
         return true if f.friend_id.to_i == user_id.to_i
       end
       
       fri.each do |f|
-        return true if User.find(f.friend_id).foaf user_id, depth+1, maxdepth
+        return true if User.find(f.friend_id).foaf user_id, depth+1
       end
     end
     
     false
   end
+  
+private
+  
+  @@maxdepth = 7 # maximum level of recursion for depth first search
 end

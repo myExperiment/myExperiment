@@ -41,69 +41,113 @@ class Network < ActiveRecord::Base
                           :conditions => ["accepted_at < ?", Time.now],
                           :order => "accepted_at DESC"
                           
-  def member?(user_id, recursive = false)
-    if (rel = self.relations).empty? or !recursive
-      self.members.each do |m|
-        return true if m.user_id.to_i == user_id.to_i
-      end
-    else
-      rel.each do |r|
-        return true if Network.find(r.relation_id).member? user_id, true
-      end
+  def member?(user_id)
+    self.members.each do |m|
+      return true if m.user_id.to_i == user_id.to_i
     end
     
-    false
+    return false
   end
   
   def member_recursive?(user_id)
-    member? user_id, true
+    member_r? user_id
   end
   
-  def relation?(network_id, recursive = false)
-    if (rel = self.relations).empty? or !recursive
-      rel.each do |r|
-        return true if r.relation_id.to_i == network_id.to_i
-      end
-    else
-      return true if self.relation? network_id, false
-      
-      rel.each do |r|
-        return true if Network.find(r.relation_id).relation? network_id, true
+  # alias for member_recursive?
+  def member!(user_id)
+    member_r? user_id
+  end
+  
+  def relation?(network_id)
+    self.relations.each do |r|
+      return true if r.relation_id.to_i == network_id.to_i
+    end
+    
+    false
+  end
+  
+  def relation_recursive?(network_id)
+    relation_r? network_id
+  end
+  
+  # alias for relation_recursive?
+  def relation!(user_id)
+    relation_r? user_id
+  end
+  
+  def members_recursive
+    members_r
+  end
+  
+  # alias for members_recursive
+  def members!
+    members_r
+  end
+  
+  def relations_recursive
+    relations_r
+  end
+  
+  # alias for relations_recursive
+  def relations!
+    relations_r
+  end
+  
+protected
+
+  def member_r?(user_id, depth=0)
+    unless depth > @@maxdepth
+      return true if member? user_id
+    
+      self.relations.each do |r|
+        return true if Network.find(r.relation_id).member_r? user_id, depth+1
       end
     end
     
     false
   end
   
-  def relation_recursive?(user_id)
-    relation? user_id, true
-  end
-  
-  def rmembers
-    rtn = self.members
+  def relation_r?(network_id, depth=0)
+    unless depth > @@maxdepth
+      return true if relation? user_id
     
-    self.relations.each do |r|
-      rtn = (rtn + Network.find(r.relation_id).rmembers)
+      self.relations.each do |r|
+        return true if Network.find(r.relation_id).relation_r? network_id, depth+1
+      end
     end
     
-    rtn.uniq
+    false
   end
   
-  def members_recursive 
-    rmembers
-  end
-  
-  def rrelations
-    rtn = self.relations
+  def members_r(depth=0)
+    unless depth > @@maxdepth
+      rtn = self.members
     
-    self.relations.each do |r|
-      rtn = (rtn + Network.find(r.relation_id).rrelations)
+      self.relations.each do |r|
+        rtn = (rtn + Network.find(r.relation_id).members_r(depth+1))
+      end
+    
+      return rtn.uniq
     end
     
-    rtn # no need for uniq (there shouldn't be any loops)
+    []
   end
   
-  def relations_recursive 
-    rrelations
+  def relations_r(depth=0)
+    unless depth > @@maxdepth
+      rtn = self.relations
+    
+      self.relations.each do |r|
+        rtn = (rtn + Network.find(r.relation_id).relations_r(depth+1))
+      end
+    
+      return rtn # no need for uniq (there shouldn't be any loops)
+    end
+    
+    []
   end
+  
+private
+  
+  @@maxdepth = 7 # maximum level of recursion for depth first search
 end
