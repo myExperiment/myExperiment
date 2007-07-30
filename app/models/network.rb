@@ -28,7 +28,7 @@ class Network < ActiveRecord::Base
                           :order => "accepted_at DESC"
                           
   def relations
-    (relations_of_mine + relations_with_me).uniq
+    (self.relations_of_mine + self.relations_with_me).uniq
   end
                           
   has_many :memberships
