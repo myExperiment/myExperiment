@@ -1,0 +1,26 @@
+<h1>New network</h1>
+
+<%= error_messages_for :network %>
+
+<% form_for(:network, :url => networks_path) do |f| %>
+  <p>
+    <b>User</b><br />
+    <%= f.text_field :user_id %>
+  </p>
+
+  <p>
+    <b>Title</b><br />
+    <%= f.text_field :title %>
+  </p>
+
+  <p>
+    <b>Unique</b><br />
+    <%= f.text_field :unique %>
+  </p>
+
+  <p>
+    <%= submit_tag "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', networks_path %>

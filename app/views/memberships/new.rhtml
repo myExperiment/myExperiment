@@ -1,0 +1,21 @@
+<h1>New membership</h1>
+
+<%= error_messages_for :membership %>
+
+<% form_for(:membership, :url => memberships_path) do |f| %>
+  <p>
+    <b>User</b><br />
+    <%= f.text_field :user_id %>
+  </p>
+
+  <p>
+    <b>Network</b><br />
+    <%= f.text_field :network_id %>
+  </p>
+
+  <p>
+    <%= submit_tag "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', memberships_path %>

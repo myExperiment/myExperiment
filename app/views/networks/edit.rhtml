@@ -1,0 +1,27 @@
+<h1>Editing network</h1>
+
+<%= error_messages_for :network %>
+
+<% form_for(:network, :url => network_path(@network), :html => { :method => :put }) do |f| %>
+  <p>
+    <b>User</b><br />
+    <%= f.text_field :user_id %>
+  </p>
+
+  <p>
+    <b>Title</b><br />
+    <%= f.text_field :title %>
+  </p>
+
+  <p>
+    <b>Unique</b><br />
+    <%= f.text_field :unique %>
+  </p>
+
+  <p>
+    <%= submit_tag "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', network_path(@network) %> |
+<%= link_to 'Back', networks_path %>

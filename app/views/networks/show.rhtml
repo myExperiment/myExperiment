@@ -1,0 +1,28 @@
+<p>
+  <b>User:</b>
+  <%=h @network.user_id %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%=h @network.title %>
+</p>
+
+<p>
+  <b>Unique:</b>
+  <%=h @network.unique %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=h @network.created_at %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%=h @network.updated_at %>
+</p>
+
+
+<%= link_to 'Edit', edit_network_path(@network) %> |
+<%= link_to 'Back', networks_path %>

@@ -1,0 +1,22 @@
+<h1>Editing friendship</h1>
+
+<%= error_messages_for :friendship %>
+
+<% form_for(:friendship, :url => friendship_path(@friendship), :html => { :method => :put }) do |f| %>
+  <p>
+    <b>User</b><br />
+    <%= f.text_field :user_id %>
+  </p>
+
+  <p>
+    <b>Friend</b><br />
+    <%= f.text_field :friend_id %>
+  </p>
+
+  <p>
+    <%= submit_tag "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', friendship_path(@friendship) %> |
+<%= link_to 'Back', friendships_path %>

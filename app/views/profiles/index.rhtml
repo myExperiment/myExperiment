@@ -1,0 +1,32 @@
+<h1>Listing profiles</h1>
+
+<table>
+  <tr>
+    <th>User</th>
+    <th>Picture</th>
+    <th>Email</th>
+    <th>Website</th>
+    <th>Description</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+  </tr>
+  
+<% for profile in @profiles %>
+  <tr>
+    <td><%=h profile.user_id %></td>
+    <td><%=h profile.picture_id %></td>
+    <td><%=h profile.email %></td>
+    <td><%=h profile.website %></td>
+    <td><%=h profile.description %></td>
+    <td><%=h profile.created_at %></td>
+    <td><%=h profile.updated_at %></td>
+    <td><%= link_to 'Show', profile_path(profile) %></td>
+    <td><%= link_to 'Edit', edit_profile_path(profile) %></td>
+    <td><%= link_to 'Destroy', profile_path(profile), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New profile', new_profile_path %>

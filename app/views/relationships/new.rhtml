@@ -1,0 +1,21 @@
+<h1>New relationship</h1>
+
+<%= error_messages_for :relationship %>
+
+<% form_for(:relationship, :url => relationships_path) do |f| %>
+  <p>
+    <b>Network</b><br />
+    <%= f.text_field :network_id %>
+  </p>
+
+  <p>
+    <b>Relation</b><br />
+    <%= f.text_field :relation_id %>
+  </p>
+
+  <p>
+    <%= submit_tag "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', relationships_path %>

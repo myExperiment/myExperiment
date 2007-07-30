@@ -1,0 +1,26 @@
+<h1>Listing users</h1>
+
+<table>
+  <tr>
+    <th>Openid url</th>
+    <th>Name</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+  </tr>
+  
+<% for user in @users %>
+  <tr>
+    <td><%=h user.openid_url %></td>
+    <td><%=h user.name %></td>
+    <td><%=h user.created_at %></td>
+    <td><%=h user.updated_at %></td>
+    <td><%= link_to 'Show', user_path(user) %></td>
+    <td><%= link_to 'Edit', edit_user_path(user) %></td>
+    <td><%= link_to 'Destroy', user_path(user), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New user', new_user_path %>

@@ -1,0 +1,23 @@
+<p>
+  <b>Network:</b>
+  <%=h @relationship.network_id %>
+</p>
+
+<p>
+  <b>Relation:</b>
+  <%=h @relationship.relation_id %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=h @relationship.created_at %>
+</p>
+
+<p>
+  <b>Accepted at:</b>
+  <%=h @relationship.accepted_at %>
+</p>
+
+
+<%= link_to 'Edit', edit_relationship_path(@relationship) %> |
+<%= link_to 'Back', relationships_path %>
