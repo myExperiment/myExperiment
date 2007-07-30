@@ -11,13 +11,25 @@ class Network < ActiveRecord::Base
   
   has_many :relationships
   
-  has_and_belongs_to_many :relations,
+  has_and_belongs_to_many :relations_of_mine,
                           :class_name => "Network",
                           :join_table => :relationships,
                           :foreign_key => :network_id,
                           :association_foreign_key => :relation_id,
                           :conditions => ["accepted_at < ?", Time.now],
                           :order => "accepted_at DESC"
+                          
+  has_and_belongs_to_many :relations_with_me,
+                          :class_name => "Network",
+                          :join_table => :relationships,
+                          :foreign_key => :relation_id,
+                          :association_foreign_key => :network_id,
+                          :conditions => ["accepted_at < ?", Time.now],
+                          :order => "accepted_at DESC"
+                          
+  def relations
+    (self.relations_of_mine + self.relations_with_me).uniq
+  end
                           
   has_many :memberships
   
