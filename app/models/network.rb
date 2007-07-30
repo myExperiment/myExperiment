@@ -43,34 +43,40 @@ class Network < ActiveRecord::Base
                           
   def member?(user_id, recursive = false)
     if (rel = self.relations).empty? or !recursive
-      self.members.include? User.find(user_id)
+      self.members.each do |m|
+        return true if m.user_id.to_i == user_id.to_i
+      end
     else
       rel.each do |r|
         return true if Network.find(r.relation_id).member? user_id, true
       end
-      
-      false
     end
+    
+    false
+  end
+  
+  def member_recursive?(user_id)
+    member? user_id, true
   end
   
   def relation?(network_id, recursive = false)
     if (rel = self.relations).empty? or !recursive
-      n = Network.find(network_id).id
-      
       rel.each do |r|
-        return true if r.relation_id.to_i == n.to_i
+        return true if r.relation_id.to_i == network_id.to_i
       end
-      
-      false
     else
       return true if self.relation? network_id, false
       
       rel.each do |r|
         return true if Network.find(r.relation_id).relation? network_id, true
       end
-        
-      false
     end
+    
+    false
+  end
+  
+  def relation_recursive?(user_id)
+    relation? user_id, true
   end
   
   def rmembers

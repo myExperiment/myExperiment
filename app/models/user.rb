@@ -40,6 +40,12 @@ class User < ActiveRecord::Base
                           
   has_many :networks_owned,
            :class_name => "Network"
+
+  def foaf?(user_id)
+    foaf user_id
+  end
+
+protected
            
   def foaf(user_id, depth=0, maxdepth=7)
     unless depth > maxdepth
