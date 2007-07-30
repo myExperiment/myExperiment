@@ -3,7 +3,9 @@ class Picture < ActiveRecord::Base
   
   validates_presence_of :data
   
-  belongs_to :user
+  belongs_to :owner,
+             :class_name => "User",
+             :foreign_key => :user_id
              
   has_many :profiles,
            :foreign_key => :picture_id

@@ -23,4 +23,7 @@ class User < ActiveRecord::Base
                           :join_table => :memberships,
                           :conditions => ["accepted_at < ?", Time.now],
                           :order => "accepted_at DESC"
+                          
+  has_many :networks_owned,
+           :class_name => "Network"
 end

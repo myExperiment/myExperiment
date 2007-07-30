@@ -5,6 +5,10 @@ class Network < ActiveRecord::Base
   
   validates_uniqueness_of :unique
   
+  belongs_to :owner,
+             :class_name => "User",
+             :foreign_key => :user_id
+  
   has_many :relationships
   
   has_and_belongs_to_many :relations,
@@ -17,7 +21,7 @@ class Network < ActiveRecord::Base
                           
   has_many :memberships
   
-  has_and_belongs_to_many :users,
+  has_and_belongs_to_many :members,
                           :join_table => :memberships,
                           :conditions => ["accepted_at < ?", Time.now],
                           :order => "accepted_at DESC"
