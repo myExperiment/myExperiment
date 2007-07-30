@@ -13,7 +13,7 @@
 #   http://dev.mysql.com/doc/refman/5.0/en/old-client.html
 development:
   adapter: mysql
-  database: M2_development
+  database: m2_development
   username: root
   password:
   host: localhost
@@ -23,14 +23,14 @@ development:
 # Do not set this db to the same as development or production.
 test:
   adapter: mysql
-  database: M2_test
+  database: m2_test
   username: root
   password:
   host: localhost
 
 production:
   adapter: mysql
-  database: M2_production
+  database: m2_production
   username: root
   password: 
   host: localhost
