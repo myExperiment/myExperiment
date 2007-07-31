@@ -3,25 +3,17 @@
 <table>
   <tr>
     <th>From</th>
-    <th>To</th>
     <th>Subject</th>
-    <th>Body</th>
-    <th>Reply</th>
-    <th>Created at</th>
-    <th>Read at</th>
+    <th>Received at</th>
+    <th colspan="3"> </th>
   </tr>
   
 <% for message in @messages %>
   <tr>
-    <td><%=h message.from %></td>
-    <td><%=h message.to %></td>
-    <td><%=h message.subject %></td>
-    <td><%=h message.body %></td>
-    <td><%=h message.reply_id %></td>
-    <td><%=h message.created_at %></td>
-    <td><%=h message.read_at %></td>
-    <td><%= link_to 'Show', message_path(message) %></td>
-    <td><%= link_to 'Edit', edit_message_path(message) %></td>
+    <td><%= "<b>" unless message.read? %><%=h message.from.openid_url %><%= "</b>" unless message.read? %></td>
+    <td><%= "<b>" unless message.read? %><%=link_to h(message.subject), message_path(message) %><%= "</b>" unless message.read? %></td>
+    <td><%= "<b>" unless message.read? %><%=h message.created_at %><%= "</b>" unless message.read? %></td>
+    <td><%= link_to 'Reply', reply_message_path(message) %></td>
     <td><%= link_to 'Destroy', message_path(message), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>

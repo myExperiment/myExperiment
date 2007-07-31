@@ -1,11 +1,16 @@
 <p>
   <b>From:</b>
-  <%=h @message.from %>
+  <%=h @message.from.openid_url %>
 </p>
 
 <p>
   <b>To:</b>
-  <%=h @message.to %>
+  <%=h @message.to.openid_url %>
+</p>
+
+<p>
+  <b>Received at:</b>
+  <%=h @message.created_at %>
 </p>
 
 <p>
@@ -18,21 +23,12 @@
   <%=h @message.body %>
 </p>
 
-<p>
-  <b>Reply:</b>
-  <%=h @message.reply_id %>
-</p>
+<% if @message.reply? %>
+  <p>
+    <b>Reply to:</b>
+    <%=link_to h(@message.reply_to.subject), message_path(@message.reply_to) %>
+  </p>
+<% end %>
 
-<p>
-  <b>Created at:</b>
-  <%=h @message.created_at %>
-</p>
-
-<p>
-  <b>Read at:</b>
-  <%=h @message.read_at %>
-</p>
-
-
-<%= link_to 'Edit', edit_message_path(@message) %> |
+<%= link_to 'Reply', reply_message_path(@message) %> |
 <%= link_to 'Back', messages_path %>

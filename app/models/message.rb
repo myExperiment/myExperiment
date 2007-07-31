@@ -1,5 +1,5 @@
 class Message < ActiveRecord::Base
-  validates_presence_of :from, :to
+  validates_presence_of :to, :from
   
   validates_length_of :subject, :maximum => 80
   
@@ -11,16 +11,24 @@ class Message < ActiveRecord::Base
              :class_name => "User",
              :foreign_key => :to
              
-  belongs_to :reply,
+  belongs_to :reply_to,
              :class_name => "Message",
              :foreign_key => :reply_id
              
-  def mark_as_read
-    begin
-      self.read_at ||= Time.now
-      self.save!
-    rescue RecordNotSaved
-      nil
-    end
+  has_many :replies,
+           :class_name => "Message",
+           :foreign_key => :reply_id,
+           :order => "created_at DESC"
+             
+  def read!
+    update_attribute(:read_at, Time.now)
+  end
+  
+  def read?
+    self.read_at != nil
+  end
+  
+  def reply?
+    self.reply_id != nil
   end
 end
