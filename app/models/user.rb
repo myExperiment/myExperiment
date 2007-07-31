@@ -74,6 +74,22 @@ class User < ActiveRecord::Base
   has_many :networks_owned,
            :class_name => "Network"
            
+  has_many :messages_sent,
+           :class_name => "Message",
+           :foreign_key => :from,
+           :order => "created_at DESC"
+           
+  has_many :messages_inbox,
+           :class_name => "Message",
+           :foreign_key => :to,
+           :order => "created_at DESC"
+           
+  has_many :messages_unread,
+           :class_name => "Message",
+           :foreign_key => :to,
+           :conditions => "read_at IS NULL",
+           :order => "created_at DESC"
+           
   def foaf?(user_id)
     foaf user_id
   end

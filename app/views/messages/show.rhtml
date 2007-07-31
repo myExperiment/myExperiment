@@ -1,0 +1,38 @@
+<p>
+  <b>From:</b>
+  <%=h @message.from %>
+</p>
+
+<p>
+  <b>To:</b>
+  <%=h @message.to %>
+</p>
+
+<p>
+  <b>Subject:</b>
+  <%=h @message.subject %>
+</p>
+
+<p>
+  <b>Body:</b>
+  <%=h @message.body %>
+</p>
+
+<p>
+  <b>Reply:</b>
+  <%=h @message.reply_id %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=h @message.created_at %>
+</p>
+
+<p>
+  <b>Read at:</b>
+  <%=h @message.read_at %>
+</p>
+
+
+<%= link_to 'Edit', edit_message_path(@message) %> |
+<%= link_to 'Back', messages_path %>

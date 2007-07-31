@@ -1,0 +1,47 @@
+<h1>Editing message</h1>
+
+<%= error_messages_for :message %>
+
+<% form_for(:message, :url => message_path(@message), :html => { :method => :put }) do |f| %>
+  <p>
+    <b>From</b><br />
+    <%= f.text_field :from %>
+  </p>
+
+  <p>
+    <b>To</b><br />
+    <%= f.text_field :to %>
+  </p>
+
+  <p>
+    <b>Subject</b><br />
+    <%= f.text_field :subject %>
+  </p>
+
+  <p>
+    <b>Body</b><br />
+    <%= f.text_area :body %>
+  </p>
+
+  <p>
+    <b>Reply</b><br />
+    <%= f.text_field :reply_id %>
+  </p>
+
+  <p>
+    <b>Created at</b><br />
+    <%= f.datetime_select :created_at %>
+  </p>
+
+  <p>
+    <b>Read at</b><br />
+    <%= f.datetime_select :read_at %>
+  </p>
+
+  <p>
+    <%= submit_tag "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', message_path(@message) %> |
+<%= link_to 'Back', messages_path %>
