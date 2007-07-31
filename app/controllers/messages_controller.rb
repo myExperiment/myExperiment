@@ -4,8 +4,8 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.xml
   def index
-    @messages = Message.find(:all, 
-                             :conditions => ["`to` = ?", current_user.id])
+    #@messages = Message.find(:all, :conditions => ["`to` = ?", current_user.id])
+    @messages = current_user.messages_inbox
 
     respond_to do |format|
       format.html # index.rhtml
@@ -16,8 +16,7 @@ class MessagesController < ApplicationController
   # GET /messages/1
   # GET /messages/1.xml
   def show
-    @message = Message.find(params[:id],
-                            :conditions => ["`to` = ? or `from` = ?", current_user.id, current_user.id])
+    @message = Message.find(params[:id], :conditions => ["`to` = ? or `from` = ?", current_user.id, current_user.id])
     
     # update read_at datetime
     @message.read!
@@ -32,10 +31,7 @@ class MessagesController < ApplicationController
   def new
     # if params[:reply_id] is set, attempt to find the @reply or return nil if not-authorized
     (params[:reply_id] = nil unless 
-      (@reply = Message.find(params[:reply_id], 
-                             :conditions => ["`to` = ? or `from` = ?", 
-                                             current_user.id, 
-                                             current_user.id]))) if params[:reply_id]
+      (@reply = Message.find(params[:reply_id], :conditions => ["`to` = ? or `from` = ?", current_user.id, current_user.id]))) if params[:reply_id]
     
     @message = Message.new
   end
@@ -72,8 +68,7 @@ class MessagesController < ApplicationController
   # DELETE /messages/1
   # DELETE /messages/1.xml
   def destroy
-    @message = Message.find(params[:id],
-                            :conditions => ["`to` = ?", current_user.id])
+    @message = Message.find(params[:id], :conditions => ["`to` = ?", current_user.id])
     @message.destroy
 
     respond_to do |format|
