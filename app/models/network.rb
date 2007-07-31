@@ -11,8 +11,6 @@ class Network < ActiveRecord::Base
   
   has_many :relationships
   
-  # SELF -- child_relation --> relation_id
-  # * child = relation_id
   has_and_belongs_to_many :relations,
                           :class_name => "Network",
                           :join_table => :relationships,
@@ -20,16 +18,36 @@ class Network < ActiveRecord::Base
                           :association_foreign_key => :relation_id,
                           :conditions => ["accepted_at < ?", Time.now],
                           :order => "accepted_at DESC"
+                          
+  alias_method :original_relations, :relations
+  def relations
+    rtn = []
+    
+    original_relations.each do |r|
+      rtn << Network.find(r.relation_id)
+    end
+    
+    return rtn
+  end
   
-  # network_id -- parent_relation --> SELF
-  # * parent = network_id
-  # has_and_belongs_to_many :parent_relations,
-  #                         :class_name => "Network",
-  #                         :join_table => :relationships,
-  #                         :foreign_key => :relation_id,
-  #                         :association_foreign_key => :network_id,
-  #                         :conditions => ["accepted_at < ?", Time.now],
-  #                         :order => "accepted_at DESC"
+  has_and_belongs_to_many :parents,
+                          :class_name => "Network",
+                          :join_table => :relationships,
+                          :foreign_key => :relation_id,
+                          :association_foreign_key => :network_id,
+                          :conditions => ["accepted_at < ?", Time.now],
+                          :order => "accepted_at DESC"
+                          
+  alias_method :original_parents, :parents
+  def parents
+    rtn = []
+    
+    original_parents.each do |r|
+      rtn << Network.find(r.network_id)
+    end
+    
+    return rtn
+  end
                           
   has_many :memberships
   
@@ -41,8 +59,19 @@ class Network < ActiveRecord::Base
                           :conditions => ["accepted_at < ?", Time.now],
                           :order => "accepted_at DESC"
                           
+  alias_method :original_members, :members
+  def members
+    rtn = []
+    
+    original_members.each do |m|
+      rtn << User.find(m.user_id)
+    end
+    
+    return rtn
+  end
+                          
   def member?(user_id)
-    self.members.each do |m|
+    members.each do |m|
       return true if m.user_id.to_i == user_id.to_i
     end
     
@@ -59,8 +88,8 @@ class Network < ActiveRecord::Base
   end
   
   def relation?(network_id)
-    self.relations.each do |r|
-      return true if r.relation_id.to_i == network_id.to_i
+    relations.each do |r|
+      return true if r.id.to_i == network_id.to_i
     end
     
     false
@@ -100,7 +129,7 @@ protected
       return true if member? user_id
     
       self.relations.each do |r|
-        return true if Network.find(r.relation_id).member_r? user_id, depth+1
+        return true if r.member_r? user_id, depth+1
       end
     end
     
@@ -112,7 +141,7 @@ protected
       return true if relation? user_id
     
       self.relations.each do |r|
-        return true if Network.find(r.relation_id).relation_r? network_id, depth+1
+        return true if r.relation_r? network_id, depth+1
       end
     end
     
@@ -121,10 +150,10 @@ protected
   
   def members_r(depth=0)
     unless depth > @@maxdepth
-      rtn = self.members
+      rtn = members
     
-      self.relations.each do |r|
-        rtn = (rtn + Network.find(r.relation_id).members_r(depth+1))
+      relations.each do |r|
+         rtn = (rtn + r.members_r(depth+1))
       end
     
       return rtn.uniq
@@ -135,10 +164,10 @@ protected
   
   def relations_r(depth=0)
     unless depth > @@maxdepth
-      rtn = self.relations
+      rtn = relations
     
-      self.relations.each do |r|
-        rtn = (rtn + Network.find(r.relation_id).relations_r(depth+1))
+      relations.each do |r|
+        rtn = (rtn + r.relations_r(depth+1))
       end
     
       return rtn # no need for uniq (there shouldn't be any loops)
