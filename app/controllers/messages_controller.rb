@@ -47,7 +47,26 @@ class MessagesController < ApplicationController
 
   # GET /messages/new
   def new
-    @message = Message.new
+    if params[:reply_id]
+      begin
+        reply = Message.find(params[:reply_id], :conditions => ["`to` = ?", current_user.id])
+        
+        @message = Message.new(:to => reply.from,
+                               :reply_id => reply.id,
+                               :subject => "RE: " + reply.subject,
+                               :body => reply.body.split(/\n/).collect {|line| ">> #{line}"}.join) # there has to be a 'ruby-er' way of doing this?
+      rescue ActiveRecord::RecordNotFound
+        flash[:notice] = "Message not found (id not authorized)"
+        (@message = Message.new).errors.add(:reply_id, "not found")
+                
+        respond_to do |format|
+          format.html { redirect_to messages_url }
+          format.xml { render :xml => @message.errors.to_xml }
+        end
+      end
+    else
+      @message = Message.new
+    end
     
     # if the message is a reply
     @reply = (params[:reply_id] && Message.find(params[:reply_id], :conditions => ["`to` = ?", current_user.id])) || nil 
@@ -82,7 +101,7 @@ class MessagesController < ApplicationController
     
     respond_to do |format|
       if @message.save or !errors
-        flash[:notice] = 'Message was successfully created.'
+        flash[:notice] = 'Message was successfully sent.'
         format.html { redirect_to messages_url }
         format.xml  { head :ok } 
       else

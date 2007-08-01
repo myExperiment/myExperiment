@@ -3,16 +3,14 @@
 <%= error_messages_for :message %>
 
 <% form_for(:message, :url => messages_path) do |f| %>
-  <%= f.hidden_field :reply_id, :value => (params[:reply_id] || nil) %>
-
   <p>
     <b>To</b><br />
-    <%= f.text_field :to, :value => (params[:reply_id] ? @reply.from.id : params[:to]) %>
+    <%= f.text_field :to %>
   </p>
 
   <p>
     <b>Subject</b><br />
-    <%= f.text_field :subject, :value => (params[:reply_id] ? "RE: " + @reply.subject : nil) %>
+    <%= f.text_field :subject %>
   </p>
 
   <p>
@@ -21,8 +19,11 @@
   </p>
 
   <p>
-    <%= submit_tag "Create" %>
+    <%= submit_tag "Send" %>
   </p>
+  
+  <%= f.hidden_field :from %>
+  <%= f.hidden_field :reply_id %>
 <% end %>
 
 <%= link_to 'Back', messages_path %>
