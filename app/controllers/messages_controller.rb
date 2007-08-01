@@ -28,7 +28,7 @@ class MessagesController < ApplicationController
     begin
       @message = Message.find(params[:id], :conditions => ["`to` = ? or `from` = ?", current_user.id, current_user.id])
     
-      @message.read! if @message.to.id.to_i == current_user.id.to_i
+      @message.read! if @message.to.to_i == current_user.id.to_i
       
       respond_to do |format|
         format.html # show.rhtml
@@ -61,7 +61,7 @@ class MessagesController < ApplicationController
     @message.created_at = Time.now
     
     # test for spoofing of "from" field
-    unless @message.from == current_user.id 
+    unless @message.from.to_i == current_user.id.to_i
       errors = true
       @message.errors.add :from, "must be logged on"
     end
@@ -71,7 +71,7 @@ class MessagesController < ApplicationController
       reply = Message.find(@message.reply_id) 
       
       # test that user is replying to a message that was actually received by them
-      unless reply.to == current_user.id 
+      unless reply.to.to_i == current_user.id.to_i
         errors = true
         @message.errors.add :reply_id, "was not addressed to sender"
       end
