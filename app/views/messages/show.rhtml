@@ -1,11 +1,11 @@
 <p>
   <b>From:</b>
-  <%=h @message.from.openid_url %>
+  <%=h openid(@message.from) %>
 </p>
 
 <p>
   <b>To:</b>
-  <%=h @message.to.openid_url %>
+  <%=h openid(@message.to) %>
 </p>
 
 <p>
