@@ -1,6 +1,16 @@
 class MessagesController < ApplicationController
   before_filter :authorize
   
+  verify :method => :post, :only => [:create],
+         :redirect_to => { :action => :index }
+         
+  verify :method => :get, :only => [:index, :show, :new],
+         :redirect_to => { :action => :index }
+         
+  verify :method => :delete, :only => [:destroy],
+         :redirect_to => { :action => :index }
+  
+  
   # GET /messages
   # GET /messages.xml
   def index

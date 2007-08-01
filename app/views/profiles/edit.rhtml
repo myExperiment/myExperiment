@@ -1,13 +1,8 @@
-<h1>Editing profile</h1>
+<h1>Editing profile for <%= openid(@profile.user_id) %></h1>
 
 <%= error_messages_for :profile %>
 
 <% form_for(:profile, :url => profile_path(@profile), :html => { :method => :put }) do |f| %>
-  <p>
-    <b>User</b><br />
-    <%= f.text_field :user_id %>
-  </p>
-
   <p>
     <b>Picture</b><br />
     <%= f.text_field :picture_id %>
