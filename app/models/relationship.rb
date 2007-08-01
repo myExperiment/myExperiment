@@ -8,4 +8,12 @@ class Relationship < ActiveRecord::Base
   belongs_to :relation,
              :class_name => "Network",
              :foreign_key => :relation_id
+             
+  def accept!
+    update_attribute :accepted_at, Time.now
+  end
+
+  def accepted?
+    self.accepted_at != nil
+  end
 end

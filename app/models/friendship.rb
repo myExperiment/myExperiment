@@ -8,4 +8,12 @@ class Friendship < ActiveRecord::Base
   belongs_to :friend,
              :class_name => "User",
              :foreign_key => :friend_id
+
+  def accept!
+    update_attribute :accepted_at, Time.now
+  end
+
+  def accepted?
+    self.accepted_at != nil
+  end
 end

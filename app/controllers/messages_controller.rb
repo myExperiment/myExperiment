@@ -1,6 +1,4 @@
 class MessagesController < ApplicationController
-  before_filter :login_required
-  
   # GET /messages
   # GET /messages.xml
   def index
@@ -19,7 +17,7 @@ class MessagesController < ApplicationController
     @message = Message.find(params[:id], :conditions => ["`to` = ? or `from` = ?", current_user.id, current_user.id])
     
     # update read_at datetime
-    @message.read!
+    @message.read! if @message.to.id.to_i == current_user.id.to_i
 
     respond_to do |format|
       format.html # show.rhtml

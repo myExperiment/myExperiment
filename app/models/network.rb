@@ -9,7 +9,25 @@ class Network < ActiveRecord::Base
              :class_name => "User",
              :foreign_key => :user_id
   
-  has_many :relationships
+  has_many :relationships,
+           :order => "created_at DESC"
+           
+  has_many :relations_accepted, #accepted (by me)
+           :class_name => "Relationship",
+           :conditions => ["accepted_at < ?", Time.now],
+           :order => "accepted_at DESC"
+  
+  has_many :relations_requested, #unaccepted (by others)
+           :class_name => "Relationship",
+           :foreign_key => :network_id,
+           :conditions => "accepted_at IS NULL",
+           :order => "created_at DESC"
+           
+  has_many :relations_pending, #unaccepted (by me)
+           :class_name => "Relationship",
+           :foreign_key => :relation_id,
+           :conditions => "accepted_at IS NULL",
+           :order => "created_at DESC"
   
   has_and_belongs_to_many :relations,
                           :class_name => "Network",
@@ -30,26 +48,38 @@ class Network < ActiveRecord::Base
     return rtn
   end
   
-  has_and_belongs_to_many :parents,
-                          :class_name => "Network",
-                          :join_table => :relationships,
-                          :foreign_key => :relation_id,
-                          :association_foreign_key => :network_id,
-                          :conditions => ["accepted_at < ?", Time.now],
-                          :order => "accepted_at DESC"
+#  has_and_belongs_to_many :parents,
+#                          :class_name => "Network",
+#                          :join_table => :relationships,
+#                          :foreign_key => :relation_id,
+#                          :association_foreign_key => :network_id,
+#                          :conditions => ["accepted_at < ?", Time.now],
+#                          :order => "accepted_at DESC"
+#                          
+#  alias_method :original_parents, :parents
+#  def parents
+#    rtn = []
+#    
+#    original_parents.each do |r|
+#      rtn << Network.find(r.network_id)
+#    end
+#    
+#    return rtn
+#  end
                           
-  alias_method :original_parents, :parents
-  def parents
-    rtn = []
-    
-    original_parents.each do |r|
-      rtn << Network.find(r.network_id)
-    end
-    
-    return rtn
-  end
-                          
-  has_many :memberships
+  has_many :memberships, #all
+           :order => "created_at DESC"
+           
+  has_many :memberships_accepted, #accepted (by owner of this network)
+           :class_name => "Membership",
+           :conditions => ["accepted_at < ?", Time.now],
+           :order => "accepted_at DESC"
+           
+  has_many :memberships_pending, #unaccepted (by owner of this network)
+           :class_name => "Membership",
+           :foreign_key => :network_id,
+           :conditions => "accepted_at IS NULL",
+           :order => "created_at DESC"
   
   has_and_belongs_to_many :members,
                           :class_name => "User",

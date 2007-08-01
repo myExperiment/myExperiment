@@ -7,7 +7,25 @@ class User < ActiveRecord::Base
   
   has_many :pictures
   
-  has_many :friendships
+  has_many :friendships, #all
+           :order => "created_at DESC"
+  
+  has_many :friendships_accepted, #accepted (by me)
+           :class_name => "Friendship",
+           :conditions => ["accepted_at < ?", Time.now],
+           :order => "accepted_at DESC"
+  
+  has_many :friendships_requested, #unaccepted (by others)
+           :class_name => "Friendship",
+           :foreign_key => :user_id,
+           :conditions => "accepted_at IS NULL",
+           :order => "created_at DESC"
+           
+  has_many :friendships_pending, #unaccepted (by me)
+           :class_name => "Friendship",
+           :foreign_key => :friend_id,
+           :conditions => "accepted_at IS NULL",
+           :order => "created_at DESC"
 
   has_and_belongs_to_many :friends_of_mine,
                           :class_name => "User", 
@@ -51,12 +69,23 @@ class User < ActiveRecord::Base
     (friends_of_mine + friends_with_me).uniq
   end
                           
-  has_many :memberships
+  has_many :memberships, #all
+           :order => "created_at DESC"
+           
+  has_many :memberships_accepted, #accepted (by others)
+           :class_name => "Membership",
+           :foreign_key => :user_id,
+           :conditions => ["accepted_at < ?", Time.now],
+           :order => "accepted_at DESC"
+  
+  has_many :memberships_requested, #unaccepted (by others)
+           :class_name => "Membership",
+           :foreign_key => :user_id,
+           :conditions => "accepted_at IS NULL",
+           :order => "created_at DESC"
                           
   has_and_belongs_to_many :networks,
                           :join_table => :memberships,
-                          :foreign_key => :network_id,
-                          :association_foreign_key => :user_id,
                           :conditions => ["accepted_at < ?", Time.now],
                           :order => "accepted_at DESC"
                           

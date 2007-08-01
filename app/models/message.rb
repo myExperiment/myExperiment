@@ -21,7 +21,7 @@ class Message < ActiveRecord::Base
            :order => "created_at DESC"
              
   def read!
-    update_attribute(:read_at, Time.now)
+    update_attribute :read_at, Time.now
   end
   
   def read?

@@ -6,4 +6,12 @@ class Membership < ActiveRecord::Base
   belongs_to :user
   
   belongs_to :network
+  
+  def accept!
+    update_attribute :accepted_at, Time.now
+  end
+
+  def accepted?
+    self.accepted_at != nil
+  end
 end
