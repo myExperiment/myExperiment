@@ -3,6 +3,8 @@ class PicturesController < ApplicationController
   
   before_filter :find_picture, :only => [:edit, :update, :destroy]
   
+  # GET /users/1/pictures
+  # GET /users/1/pictures.xml
   # GET /pictures
   # GET /pictures.xml
   def index
@@ -18,28 +20,24 @@ class PicturesController < ApplicationController
     end
   end
 
+  # GET /users/1/pictures/1
   # GET /pictures/1
-  # GET /pictures/1.xml
   flex_image :action => 'show', :class => Picture
-  # def show
-  #   @picture = Picture.find(params[:id])
-  #
-  #   respond_to do |format|
-  #     format.html # show.rhtml
-  #     format.xml  { render :xml => @picture.to_xml }
-  #   end
-  # end
 
+  # GET /users/1/pictures/new
   # GET /pictures/new
   def new
     @picture = Picture.new
   end
 
+  # GET /users/1/pictures/1;edit
   # GET /pictures/1;edit
   def edit
     
   end
 
+  # POST /users/1/pictures
+  # POST /users/1/pictures.xml
   # POST /pictures
   # POST /pictures.xml
   def create
@@ -58,6 +56,8 @@ class PicturesController < ApplicationController
     end
   end
 
+  # PUT /users/1/pictures/1
+  # PUT /users/1/pictures/1.xml
   # PUT /pictures/1
   # PUT /pictures/1.xml
   def update
@@ -73,6 +73,8 @@ class PicturesController < ApplicationController
     end
   end
 
+  # DELETE /users/1/pictures/1
+  # DELETE /users/1/pictures/1.xml
   # DELETE /pictures/1
   # DELETE /pictures/1.xml
   def destroy

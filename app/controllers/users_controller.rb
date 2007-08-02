@@ -1,4 +1,8 @@
 class UsersController < ApplicationController
+  before_filter :authorize, :except => [:index, :show]
+  
+  before_filter :find_user, :only => [:edit, :update, :destroy]
+  
   # GET /users
   # GET /users.xml
   def index
@@ -28,7 +32,7 @@ class UsersController < ApplicationController
 
   # GET /users/1;edit
   def edit
-    @user = User.find(params[:id])
+    
   end
 
   # POST /users
@@ -54,8 +58,6 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.xml
   def update
-    @user = User.find(params[:id])
-    
     # update datetime
     @user.updated_at = Time.now
 
@@ -74,12 +76,33 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.xml
   def destroy
-    @user = User.find(params[:id])
     @user.destroy
 
     respond_to do |format|
       format.html { redirect_to users_url }
       format.xml  { head :ok }
+    end
+  end
+  
+protected
+
+  def find_user
+    begin
+      @user = User.find(params[:id], :conditions => ["id = ?", current_user.id])
+    rescue ActiveRecord::RecordNotFound
+      error("User not found (id not authorized)", "is invalid (not owner)")
+    end
+  end
+  
+private
+
+  def error(notice, message)
+    flash[:notice] = notice
+    (err = User.new.errors).add(:id, message)
+    
+    respond_to do |format|
+      format.html { redirect_to users_url }
+      format.xml { render :xml => err.to_xml }
     end
   end
 end

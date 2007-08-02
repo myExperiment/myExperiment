@@ -8,7 +8,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :relationships, :memberships, :friendships
 
   map.resources :users do |user|
-    user.resources :friendships
+    user.resources :friendships, :member => { :accept => :get }
     user.resources :memberships
     user.resource :profile, :controller => :profiles
     user.resources :pictures
@@ -28,7 +28,6 @@ ActionController::Routing::Routes.draw do |map|
   # Sample of named route:
   # map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
   # This route can be invoked with purchase_url(:id => product.id)
-  map.accept_friendship 'users/:user_id/friendships/:id/accept', :controller => 'friendships', :action => 'accept'
 
   # You can have the root of your site routed by hooking up '' 
   # -- just remember to delete public/index.html.
