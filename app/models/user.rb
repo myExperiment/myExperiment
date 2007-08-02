@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   validates_uniqueness_of :openid_url
   
-  validates_presence_of :name
+  validates_presence_of :openid_url, :name
   
   has_one :profile
   
@@ -82,22 +82,7 @@ class User < ActiveRecord::Base
   def friends
     (friends_of_mine + friends_with_me).uniq
   end
-                          
-  has_many :memberships, #all
-           :order => "created_at DESC"
-           
-  has_many :memberships_accepted, #accepted (by others)
-           :class_name => "Membership",
-           :foreign_key => :user_id,
-           :conditions => ["accepted_at < ?", Time.now],
-           :order => "accepted_at DESC"
   
-  has_many :memberships_requested, #unaccepted (by others)
-           :class_name => "Membership",
-           :foreign_key => :user_id,
-           :conditions => "accepted_at IS NULL",
-           :order => "created_at DESC"
-                          
   has_and_belongs_to_many :networks,
                           :join_table => :memberships,
                           :conditions => ["accepted_at < ?", Time.now],
@@ -116,6 +101,41 @@ class User < ActiveRecord::Base
                           
   has_many :networks_owned,
            :class_name => "Network"
+                          
+  has_many :memberships, #all
+           :order => "created_at DESC"
+           
+  has_many :memberships_accepted, #accepted (by others)
+           :class_name => "Membership",
+           :foreign_key => :user_id,
+           :conditions => ["accepted_at < ?", Time.now],
+           :order => "accepted_at DESC"
+  
+  has_many :memberships_requested, #unaccepted (by others)
+           :class_name => "Membership",
+           :foreign_key => :user_id,
+           :conditions => "accepted_at IS NULL",
+           :order => "created_at DESC"
+           
+  def memberships_pending
+    rtn = []
+    
+    networks_owned.each do |n|
+      rtn.concat n.memberships_pending
+    end
+    
+    return rtn
+  end
+  
+  def relationships_pending
+    rtn = []
+    
+    networks_owned.each do |n|
+      rtn.concat n.relations_pending
+    end
+    
+    return rtn
+  end
            
   has_many :messages_sent,
            :class_name => "Message",

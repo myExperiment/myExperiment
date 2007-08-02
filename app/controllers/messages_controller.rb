@@ -69,7 +69,7 @@ class MessagesController < ApplicationController
     end
     
     respond_to do |format|
-      if @message.save or !errors
+      if !errors and @message.save
         flash[:notice] = 'Message was successfully sent.'
         format.html { redirect_to messages_url }
         format.xml  { head :ok } 

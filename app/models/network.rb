@@ -1,7 +1,7 @@
 class Network < ActiveRecord::Base
-  validates_presence_of :user_id
+  validates_associated :owner
   
-  validates_presence_of :title
+  validates_presence_of :user_id, :title, :unique
   
   validates_uniqueness_of :unique
   
@@ -12,18 +12,18 @@ class Network < ActiveRecord::Base
   has_many :relationships,
            :order => "created_at DESC"
            
-  has_many :relations_accepted, #accepted (by me)
+  has_many :relationships_accepted, #accepted (by me)
            :class_name => "Relationship",
            :conditions => ["accepted_at < ?", Time.now],
            :order => "accepted_at DESC"
   
-  has_many :relations_requested, #unaccepted (by others)
+  has_many :relationships_requested, #unaccepted (by others)
            :class_name => "Relationship",
            :foreign_key => :network_id,
            :conditions => "accepted_at IS NULL",
            :order => "created_at DESC"
            
-  has_many :relations_pending, #unaccepted (by me)
+  has_many :relationships_pending, #unaccepted (by me)
            :class_name => "Relationship",
            :foreign_key => :relation_id,
            :conditions => "accepted_at IS NULL",

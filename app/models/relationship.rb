@@ -1,7 +1,7 @@
 class Relationship < ActiveRecord::Base
-  validates_presence_of :network_id
+  validates_associated :network, :relation
   
-  validates_presence_of :relation_id
+  validates_presence_of :network_id, :relation_id
   
   belongs_to :network
   

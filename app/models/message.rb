@@ -1,4 +1,6 @@
 class Message < ActiveRecord::Base
+  validates_associated :u_from, :u_to
+  
   validates_presence_of :to, :from
   
   validates_length_of :subject, :maximum => 80

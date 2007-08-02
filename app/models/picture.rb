@@ -1,7 +1,7 @@
 class Picture < FlexImage::Model
-  validates_presence_of :user_id
+  validates_associated :owner
   
-  validates_presence_of :data
+  validates_presence_of :user_id, :data
   
   belongs_to :owner,
              :class_name => "User",
