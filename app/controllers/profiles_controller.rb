@@ -82,9 +82,17 @@ class ProfilesController < ApplicationController
   def update
     # update datetime
     @profile.updated_at = Time.now
+    
+    errors = false
+    begin
+      Picture.find(params[:profile][:picture_id], :conditions => ["user_id = ?", @profile.owner.id])
+    rescue 
+      errors = true
+      @profile.errors.add(:picture_id, "is invalid (not owner)")
+    end
 
     respond_to do |format|
-      if @profile.update_attributes(params[:profile])
+      if !errors and @profile.update_attributes(params[:profile])
         flash[:notice] = 'Profile was successfully updated.'
         format.html { redirect_to profile_url(@profile) }
         format.xml  { head :ok }
