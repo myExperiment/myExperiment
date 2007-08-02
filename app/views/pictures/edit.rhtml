@@ -2,21 +2,11 @@
 
 <%= error_messages_for :picture %>
 
-<% form_for(:picture, :url => picture_path(@picture), :html => { :method => :put }) do |f| %>
-  <p>
-    <b>User</b><br />
-    <%= f.text_field :user_id %>
-  </p>
-
-  <p>
-    <b>Data</b><br />
-    <%= f.text_field :data %>
-  </p>
-
+<% form_for(:picture, :url => picture_path(@picture.user_id, @picture), :html => { :method => :put }) do |f| %>
   <p>
     <%= submit_tag "Update" %>
   </p>
 <% end %>
 
-<%= link_to 'Show', picture_path(@picture) %> |
+<%= link_to 'Show', picture_path(@picture.user_id, @picture) %> |
 <%= link_to 'Back', pictures_path %>

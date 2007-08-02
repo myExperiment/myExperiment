@@ -7,26 +7,40 @@ class User < ActiveRecord::Base
   
   has_many :pictures
   
-  has_many :friendships, #all
+  # SELF --> friendship --> Friend
+  has_many :friendships_completed, # accepted (by others)
+           :class_name => "Friendship",
+           :foreign_key => :user_id,
+           :conditions => ["accepted_at < ?", Time.now],
            :order => "created_at DESC"
   
-  has_many :friendships_accepted, #accepted (by me)
-           :class_name => "Friendship",
-           :conditions => ["accepted_at < ?", Time.now],
-           :order => "accepted_at DESC"
-  
+  # SELF --> friendship --> Friend
   has_many :friendships_requested, #unaccepted (by others)
            :class_name => "Friendship",
            :foreign_key => :user_id,
            :conditions => "accepted_at IS NULL",
            :order => "created_at DESC"
            
+  # Friend --> friendship --> SELF
+  has_many :friendships_accepted, #accepted (by me)
+           :class_name => "Friendship",
+           :foreign_key => :friend_id,
+           :conditions => ["accepted_at < ?", Time.now],
+           :order => "accepted_at DESC"
+           
+  # Friend --> friendship --> SELF
   has_many :friendships_pending, #unaccepted (by me)
            :class_name => "Friendship",
            :foreign_key => :friend_id,
            :conditions => "accepted_at IS NULL",
            :order => "created_at DESC"
-
+           
+  def friendships
+    (friendships_completed + friendships_requested + friendships_accepted + friendships_pending).sort do |a, b|
+      b.created_at <=> a.created_at
+    end
+  end
+           
   has_and_belongs_to_many :friends_of_mine,
                           :class_name => "User", 
                           :join_table => :friendships,

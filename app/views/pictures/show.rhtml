@@ -5,9 +5,11 @@
 
 <p>
   <b>Data:</b>
-  <%=h @picture.data %>
+  <%= image_tag url_for(:controller => 'pictures',
+                        :action     => 'show',
+                        :id         => @picture.id) %>
 </p>
 
 
-<%= link_to 'Edit', edit_picture_path(@picture) %> |
+<%= link_to 'Edit', edit_picture_path(@picture.user_id, @picture) %> |
 <%= link_to 'Back', pictures_path %>

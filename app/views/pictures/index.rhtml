@@ -9,14 +9,16 @@
 <% for picture in @pictures %>
   <tr>
     <td><%=h picture.user_id %></td>
-    <td><%=h picture.data %></td>
-    <td><%= link_to 'Show', picture_path(picture) %></td>
-    <td><%= link_to 'Edit', edit_picture_path(picture) %></td>
-    <td><%= link_to 'Destroy', picture_path(picture), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= image_tag url_for(:controller => 'pictures',
+                              :action     => 'show',
+                              :id         => picture.id) %></td>
+    <td><%= link_to 'Show', picture_path(picture.user_id, picture) %></td>
+    <td><%= link_to 'Edit', edit_picture_path(picture.user_id, picture) %></td>
+    <td><%= link_to 'Destroy', picture_path(picture.user_id, picture), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New picture', new_picture_path %>
+<%= link_to 'New picture', new_picture_path(session[:user_id]) %>

@@ -10,7 +10,12 @@ class Friendship < ActiveRecord::Base
              :foreign_key => :friend_id
 
   def accept!
-    update_attribute :accepted_at, Time.now
+    unless accepted?
+      update_attribute :accepted_at, Time.now
+      return true
+    else
+      return false
+    end
   end
 
   def accepted?

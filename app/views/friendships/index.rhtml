@@ -14,9 +14,9 @@
     <td><%=h friendship.friend_id %></td>
     <td><%=h friendship.created_at %></td>
     <td><%=h friendship.accepted_at %></td>
-    <td><%= link_to 'Show', friendship_path(friendship) %></td>
-    <td><%= link_to 'Edit', edit_friendship_path(friendship) %></td>
-    <td><%= link_to 'Destroy', friendship_path(friendship), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Show', friendship_path(friendship.user_id, friendship) %></td>
+    <td><%= link_to 'Edit', edit_friendship_path(friendship.user_id, friendship) %></td>
+    <td><%= link_to 'Destroy', friendship_path(friendship.user_id, friendship), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>

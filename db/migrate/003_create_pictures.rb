@@ -4,6 +4,8 @@ class CreatePictures < ActiveRecord::Migration
       t.column :user_id, :integer
       t.column :data, :binary
     end
+    
+    execute "ALTER TABLE `pictures` MODIFY `data` MEDIUMBLOB"
   end
 
   def self.down

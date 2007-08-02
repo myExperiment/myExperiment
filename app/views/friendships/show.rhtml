@@ -13,11 +13,18 @@
   <%=h @friendship.created_at %>
 </p>
 
+<% if @friendship.accepted? %>
+
 <p>
   <b>Accepted at:</b>
   <%=h @friendship.accepted_at %>
 </p>
 
+<% else %>
 
-<%= link_to 'Edit', edit_friendship_path(@friendship) %> |
+<%= link_to 'Accept Friendship', accept_friendship_path(@friendship.user_id, @friendship) %> | 
+
+<% end %>
+
+<%= link_to 'Edit', edit_friendship_path(@friendship.user_id, @friendship) %> |
 <%= link_to 'Back', friendships_path %>

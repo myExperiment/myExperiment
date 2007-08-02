@@ -7,4 +7,18 @@ module ApplicationHelper
       nil
     end
   end
+  
+  def avatar(user_id)
+    begin
+      profile = User.find(user_id).profile
+    
+      link_to image_tag(url_for(:controller => 'pictures',
+                                :action     => 'show',
+                                :id         => profile.picture_id,
+                                :size       => '200x200')),
+              profile_path(profile)
+    rescue ActiveRecord::RecordNotFound
+      nil
+    end
+  end
 end

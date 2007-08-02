@@ -8,7 +8,12 @@ class Membership < ActiveRecord::Base
   belongs_to :network
   
   def accept!
-    update_attribute :accepted_at, Time.now
+    unless accepted?
+      update_attribute :accepted_at, Time.now
+      return true
+    else
+      return false
+    end
   end
 
   def accepted?

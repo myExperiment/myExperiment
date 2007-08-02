@@ -5,7 +5,7 @@
 
 <p>
   <b>Picture:</b>
-  <%=h @profile.picture_id %>
+  <%=avatar(@profile.user_id) if @profile.avatar %>
 </p>
 
 <p>

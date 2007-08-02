@@ -10,7 +10,12 @@ class Relationship < ActiveRecord::Base
              :foreign_key => :relation_id
              
   def accept!
-    update_attribute :accepted_at, Time.now
+    unless accepted?
+      update_attribute :accepted_at, Time.now
+      return true
+    else
+      return false
+    end
   end
 
   def accepted?

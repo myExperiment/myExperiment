@@ -2,19 +2,14 @@
 
 <%= error_messages_for :picture %>
 
-<% form_for(:picture, :url => pictures_path) do |f| %>
+<% form_tag ({:action => :create}, :multipart => true) do %>
   <p>
-    <b>User</b><br />
-    <%= f.text_field :user_id %>
+    <b>Data</b><br/>
+    <%= file_field 'picture', 'data' %>
   </p>
-
+  
   <p>
-    <b>Data</b><br />
-    <%= f.text_field :data %>
-  </p>
-
-  <p>
-    <%= submit_tag "Create" %>
+    <%= submit_tag "Upload Picture" %>
   </p>
 <% end %>
 

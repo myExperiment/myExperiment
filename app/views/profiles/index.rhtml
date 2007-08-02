@@ -13,8 +13,8 @@
   
 <% for profile in @profiles %>
   <tr>
-    <td><%=h profile.user_id %></td>
-    <td><%=h profile.picture_id %></td>
+    <td><%=h openid(profile.user_id) %></td>
+    <td><%=avatar(profile.user_id) if profile.avatar %></td>
     <td><%=h profile.email %></td>
     <td><%=h profile.website %></td>
     <td><%=h profile.description %></td>
@@ -28,5 +28,3 @@
 </table>
 
 <br />
-
-<%= link_to 'New profile', new_profile_path %>
