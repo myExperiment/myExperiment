@@ -22,9 +22,9 @@
 
 <% else %>
 
-<%= link_to 'Accept Friendship', accept_friendship_path(@friendship.user_id, @friendship) %> | 
+<%= link_to 'Accept Friendship', accept_friendship_path(@friendship.friend_id, @friendship) %> | 
 
 <% end %>
 
-<%= link_to 'Edit', edit_friendship_path(@friendship.user_id, @friendship) %> |
+<%= link_to 'Edit', edit_friendship_path(@friendship.friend_id, @friendship) %> |
 <%= link_to 'Back', friendships_path %>

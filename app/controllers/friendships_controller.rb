@@ -3,8 +3,7 @@ class FriendshipsController < ApplicationController
   
   before_filter :find_friendships, :only => [:index]
   before_filter :find_friendship, :only => [:show]
-  before_filter :find_friendship_by_user_auth, :only => [:edit, :update, :destroy]
-  before_filter :find_friendship_by_friend_auth, :only => [:accept]
+  before_filter :find_friendship_auth, :only => [:accept, :edit, :update, :destroy]
   
   # GET /users/1/friendships/1/accept
   # GET /users/1/friendships/1/accept.xml
@@ -122,7 +121,7 @@ protected
       begin
         u = User.find(params[:user_id])
     
-        @friendship = u.friendships
+        @friendships = u.friendships
       rescue ActiveRecord::RecordNotFound
         error("User not found", "is invalid", :user_id)
       end
@@ -152,16 +151,8 @@ protected
       end
     end
   end
-
-  def find_friendship_by_user_auth
-    begin
-      @friendship = Friendship.find(params[:id], :conditions => ["user_id = ?", current_user.id])
-    rescue ActiveRecord::RecordNotFound
-      error("Friendship not found (id not authorized)", "is invalid (not owner)")
-    end
-  end
   
-  def find_friendship_by_friend_auth
+  def find_friendship_auth
     begin
       @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ?", current_user.id])
     rescue ActiveRecord::RecordNotFound

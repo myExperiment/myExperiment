@@ -1,17 +1,20 @@
 <h1>Listing relationships</h1>
 
+<p>The <strong>Relation</strong> initiates a Relationship request with the <strong>Network</strong> who can accept/reject.<br/>
+The relationship is analogous to the parent/child relationship (ie: <strong>Network parentOf Relation</strong>, <strong>Relation childOf Network</strong>).</p>
+
 <table>
   <tr>
-    <th>Network</th>
     <th>Relation</th>
+    <th>Network</th>
     <th>Created at</th>
     <th>Accepted at</th>
   </tr>
   
 <% for relationship in @relationships %>
   <tr>
-    <td><%=h relationship.network_id %></td>
     <td><%=h relationship.relation_id %></td>
+    <td><%=h relationship.network_id %></td>
     <td><%=h relationship.created_at %></td>
     <td><%=h relationship.accepted_at %></td>
     <td><%= link_to 'Show', relationship_path(relationship.network_id, relationship) %></td>
