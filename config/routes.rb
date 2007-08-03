@@ -1,21 +1,34 @@
 ActionController::Routing::Routes.draw do |map|
+  # message center for current_user (User.find session[:user_id])
   map.resources :messages
 
-  map.resources :pictures
-
-  map.resources :profiles
+  # all pictures, all profiles
+  map.resources :pictures, :profiles
   
+  # all ***ship's
   map.resources :relationships, :memberships, :friendships
 
+  # all users
   map.resources :users do |user|
+    # friendships 'owned by' user (user --> friendship --> friend)
     user.resources :friendships, :member => { :accept => :get }
-    user.resources :memberships
+    
+    # memberships 'owned by' user (user --> membership --> network)
+    user.resources :memberships, :member => { :accept => :get }
+    
+    # user profile
     user.resource :profile, :controller => :profiles
+    
+    # pictures 'owned by' user
     user.resources :pictures
   end
   
+  # all networks
   map.resources :networks do |network|
-    network.resources :memberships
+    # memberships 'accepted by' network (user --> membership --> network)
+    network.resources :memberships, :member => { :accept => :get }
+    
+    # relationships 'accepted by' network (relation --> relationship --> network)
     network.resources :relationships
   end
 

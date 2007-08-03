@@ -1,14 +1,15 @@
 class FriendshipsController < ApplicationController
   before_filter :authorize, :except => [:index, :show]
   
+  before_filter :find_friendships, :only => [:index]
   before_filter :find_friendship, :only => [:show]
   before_filter :find_friendship_by_user_auth, :only => [:edit, :update, :destroy]
   before_filter :find_friendship_by_friend_auth, :only => [:accept]
   
-  # POST /users/1/friendships/1/accept
-  # POST /users/1/friendships/1/accept.xml
-  # POST /friendships/1/accept
-  # POST /friendships/1/accept.xml
+  # GET /users/1/friendships/1/accept
+  # GET /users/1/friendships/1/accept.xml
+  # GET /friendships/1/accept
+  # GET /friendships/1/accept.xml
   def accept
     respond_to do |format|
       if @friendship.accept!
@@ -26,12 +27,6 @@ class FriendshipsController < ApplicationController
   # GET /friendships
   # GET /friendships.xml
   def index
-    if params[:user_id]
-      @friendships = User.find(params[:user_id]).friendships
-    else
-      @friendships = Friendship.find(:all, :order => "created_at DESC")
-    end
-
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @friendships.to_xml }
@@ -43,8 +38,6 @@ class FriendshipsController < ApplicationController
   # GET /friendships/1
   # GET /friendships/1.xml
   def show
-    find_friendship_by_user_auth(id=params[:user_id]) if params[:user_id]
-
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @friendship.to_xml }
@@ -124,25 +117,61 @@ class FriendshipsController < ApplicationController
   
 protected
 
-  def find_friendship
+  def find_friendships
+    if params[:user_id]
+      find_friendships_by_user
+    else
+      @friendships = Friendship.find(:all, :order => "created_at DESC")
+    end
+  end
+  
+  def find_friendships_by_user
     begin
-      @friendship = Friendship.find(params[:id])
-    rescue
-      error("Friendship not found", "is invalid")
+      u = User.find(params[:user_id])
+    
+      @friendship = u.friendships
+    rescue ActiveRecord::RecordNotFound
+      error("User not found", "is invalid", :user_id)
     end
   end
 
-  def find_friendship_by_user_auth(id=current_user.id)
+  def find_friendship
+    if params[:user_id]
+      find_friendship_by_user
+    else
+      begin
+        @friendship = Friendship.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        error("Friendship not found", "is invalid")
+      end
+    end
+  end
+  
+  def find_friendship_by_user
     begin
-      @friendship = Friendship.find(params[:id], :conditions => ["user_id = ?", id])
+      u = User.find(params[:user_id])
+    
+      begin
+        @friendship = Friendship.find(params[:id], :conditions => ["user_id = ?", u.id])
+      rescue ActiveRecord::RecordNotFound
+        error("Friendship not found", "is invalid")
+      end
+    rescue ActiveRecord::RecordNotFound
+      error("User not found", "is invalid", :user_id)
+    end
+  end
+
+  def find_friendship_by_user_auth
+    begin
+      @friendship = Friendship.find(params[:id], :conditions => ["user_id = ?", current_user.id])
     rescue ActiveRecord::RecordNotFound
       error("Friendship not found (id not authorized)", "is invalid (not owner)")
     end
   end
   
-  def find_friendship_by_friend_auth(id=current_user.id)
+  def find_friendship_by_friend_auth
     begin
-      @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ?", id])
+      @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ?", current_user.id])
     rescue ActiveRecord::RecordNotFound
       error("Friendship not found (id not authorized)", "is invalid (not named)")
     end

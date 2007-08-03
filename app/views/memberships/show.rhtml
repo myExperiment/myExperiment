@@ -13,11 +13,19 @@
   <%=h @membership.created_at %>
 </p>
 
+<% if @membership.accepted? %>
+
 <p>
   <b>Accepted at:</b>
   <%=h @membership.accepted_at %>
 </p>
 
+<% else %>
 
-<%= link_to 'Edit', edit_membership_path(@membership) %> |
-<%= link_to 'Back', memberships_path %>
+<%= link_to 'Accept Membership', accept_membership_path(@membership.network_id, @membership) %> | 
+
+<% end %>
+
+
+<%= link_to 'Edit', edit_membership_path(@membership.network_id, @membership) %> |
+<%= link_to 'Back', memberships_path(@membership.network_id) %>

@@ -2,7 +2,7 @@
 
 <%= error_messages_for :membership %>
 
-<% form_for(:membership, :url => memberships_path) do |f| %>
+<% form_for(:membership, :url => memberships_path(params[:network_id])) do |f| %>
   <p>
     <b>User</b><br />
     <%= f.text_field :user_id %>
@@ -18,4 +18,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Back', memberships_path %>
+<%= link_to 'Back', memberships_path(params[:network_id]) %>
