@@ -10,7 +10,7 @@
 
   <p>
     <b>Relation</b><br />
-    <%= f.text_field :relation_id %>
+    <%= select_tag "relationship[relation_id]", options_from_collection_for_select(@networks_owned, :id, :title) %>
   </p>
 
   <p>

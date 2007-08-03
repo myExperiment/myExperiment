@@ -77,21 +77,23 @@ class MembershipsController < ApplicationController
   # POST /memberships
   # POST /memberships.xml
   def create
-    @membership = Membership.new(params[:membership])
-    
-    # set initial datetime
-    @membership.created_at = Time.now
-    @membership.accepted_at = nil
+    if (@membership = Membership.new(params[:membership]) unless Membership.find_by_user_id_and_network_id(params[:membership][:user_id], params[:membership][:network_id]))
+      # set initial datetime
+      @membership.created_at = Time.now
+      @membership.accepted_at = nil
 
-    respond_to do |format|
-      if @membership.save
-        flash[:notice] = 'Membership was successfully created.'
-        format.html { redirect_to membership_url(@membership.network_id, @membership) }
-        format.xml  { head :created, :location => membership_url(@membership.network_id, @membership) }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @membership.errors.to_xml }
+      respond_to do |format|
+        if @membership.save
+          flash[:notice] = 'Membership was successfully created.'
+          format.html { redirect_to membership_url(@membership.network_id, @membership) }
+          format.xml  { head :created, :location => membership_url(@membership.network_id, @membership) }
+        else
+          format.html { render :action => "new" }
+          format.xml  { render :xml => @membership.errors.to_xml }
+        end
       end
+    else
+      error("Membership not created (already exists)", "not created, already exists")
     end
   end
 
@@ -207,20 +209,12 @@ protected
     end
   end
   
-  def find_membership_by_user_auth
-    begin
-      @membership = Membership.find(params[:id], :conditions => ["user_id = ?", current_user.id])
-    rescue ActiveRecord::RecordNotFound
-      error("Membership not found (id not authorized)", "is invalid (not owner)")
-    end
-  end
-  
   def find_membership_by_network_auth
     # current_user.id == Network.find(network_id).owner
     begin
       membership = Membership.find(params[:id])
       
-      if Network.find(membership.network_id).user_id.to_i == current_user.id.to_i
+      if Network.find(membership.network_id).owner? current_user.id
         @membership = membership
       else
         error("Membership not found (id not authorized)", "is invalid (not owner)", :network_id)
@@ -237,7 +231,7 @@ private
     (err = Membership.new.errors).add(attr, message)
     
     respond_to do |format|
-      format.html { redirect_to friendships_url(current_user.id) }
+      format.html { redirect_to memberships_url(current_user.id) }
       format.xml { render :xml => err.to_xml }
     end
   end

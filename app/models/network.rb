@@ -8,6 +8,10 @@ class Network < ActiveRecord::Base
   belongs_to :owner,
              :class_name => "User",
              :foreign_key => :user_id
+             
+  def owner?(user_id)
+    owner.id.to_i == user_id
+  end
   
   has_many :relationships,
            :order => "created_at DESC"
@@ -102,7 +106,7 @@ class Network < ActiveRecord::Base
                           
   def member?(user_id)
     members.each do |m|
-      return true if m.user_id.to_i == user_id.to_i
+      return true if m.id.to_i == user_id.to_i
     end
     
     return false

@@ -13,11 +13,19 @@
   <%=h @relationship.created_at %>
 </p>
 
+<% if @relationship.accepted? %>
+
 <p>
   <b>Accepted at:</b>
   <%=h @relationship.accepted_at %>
 </p>
 
+<% else %>
 
-<%= link_to 'Edit', edit_relationship_path(@relationship) %> |
-<%= link_to 'Back', relationships_path %>
+<%= link_to 'Accept Relationship', accept_relationship_path(@relationship.network_id, @relationship) %> | 
+
+<% end %>
+
+
+<%= link_to 'Edit', edit_relationship_path(@relationship.network_id, @relationship) %> |
+<%= link_to 'Back', relationships_path(@relationship.network_id) %>

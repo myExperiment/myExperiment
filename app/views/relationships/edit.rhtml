@@ -2,21 +2,11 @@
 
 <%= error_messages_for :relationship %>
 
-<% form_for(:relationship, :url => relationship_path(@relationship), :html => { :method => :put }) do |f| %>
-  <p>
-    <b>Network</b><br />
-    <%= f.text_field :network_id %>
-  </p>
-
-  <p>
-    <b>Relation</b><br />
-    <%= f.text_field :relation_id %>
-  </p>
-
+<% form_for(:relationship, :url => relationship_path(@relationship.network_id, @relationship), :html => { :method => :put }) do |f| %>
   <p>
     <%= submit_tag "Update" %>
   </p>
 <% end %>
 
-<%= link_to 'Show', relationship_path(@relationship) %> |
-<%= link_to 'Back', relationships_path %>
+<%= link_to 'Show', relationship_path(params[:network_id], @relationship) %> |
+<%= link_to 'Back', relationships_path(params[:network_id]) %>

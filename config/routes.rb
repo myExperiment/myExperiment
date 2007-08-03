@@ -29,7 +29,7 @@ ActionController::Routing::Routes.draw do |map|
     network.resources :memberships, :member => { :accept => :get }
     
     # relationships 'accepted by' network (relation --> relationship --> network)
-    network.resources :relationships
+    network.resources :relationships, :member => { :accept => :get }
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

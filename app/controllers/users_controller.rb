@@ -41,9 +41,12 @@ class UsersController < ApplicationController
     
     # set initial datetimes
     @user.created_at = @user.updated_at = Time.now
-
+    
     respond_to do |format|
       if @user.save
+        # create and save profile
+        Profile.new(:user_id => @user.id, :created_at => @user.created_at, :updated_at => @user.updated_at).save
+        
         flash[:notice] = 'User was successfully created.'
         format.html { redirect_to user_url(@user) }
         format.xml  { head :created, :location => user_url(@user) }
