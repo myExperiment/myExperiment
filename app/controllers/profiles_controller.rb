@@ -1,7 +1,8 @@
 class ProfilesController < ApplicationController
   before_filter :authorize, :except => [:index, :show]
   
-  before_filter :find_current_user_profile, :only => [:edit, :update, :destroy]
+  before_filter :find_profile, :only => [:show]
+  before_filter :find_profile_auth, :only => [:edit, :update, :destroy]
   
   # GET /profiles
   # GET /profiles.xml
@@ -19,19 +20,9 @@ class ProfilesController < ApplicationController
   # GET /profiles/1
   # GET /profiles/1.xml
   def show
-    begin
-      if params[:user_id]
-        @profile = User.find(params[:user_id]).profile
-      else
-        @profile = Profile.find(params[:id])
-      end
-
-      respond_to do |format|
-        format.html # show.rhtml
-        format.xml  { render :xml => @profile.to_xml }
-      end
-    rescue ActiveRecord::RecordNotFound
-      error("Profile not found (id unknown)", "not found")
+    respond_to do |format|
+      format.html # show.rhtml
+      format.xml  { render :xml => @profile.to_xml }
     end
   end
 
@@ -56,6 +47,9 @@ class ProfilesController < ApplicationController
   # POST /profiles.xml
   def create
     if (@profile = Profile.new(params[:profile]) unless current_user.profile)
+      # set legal value for "null avatar"
+      (@profile.picture_id = nil) if (@profile.picture_id.to_i == 0)
+      
       # set initial datetime
       @profile.created_at = @profile.updated_at = Time.now
   
@@ -80,6 +74,9 @@ class ProfilesController < ApplicationController
   # PUT /profiles/1
   # PUT /profiles/1.xml
   def update
+    # maintain legal value for "null avatar"
+    (params[:profile][:picture_id] = nil) if (params[:profile][:picture_id].to_i == 0)
+    
     # update datetime
     @profile.updated_at = Time.now
     
@@ -109,11 +106,31 @@ class ProfilesController < ApplicationController
   end
   
 protected
-  
-  def find_current_user_profile
+
+  def find_profile
     begin
       if params[:user_id]
-        @profile = User.find(params[:user_id], :conditions => ["id = ?", current_user.id]).profile
+        begin
+          @profile = User.find(params[:user_id]).profile
+        rescue ActiveRecord::RecordNotFound
+          error("User not found (id unknown)", "not found", attr=:user_id)
+        end
+      else
+        @profile = Profile.find(params[:id])
+      end
+    rescue ActiveRecord::RecordNotFound
+      error("Profile not found (id unknown)", "not found")
+    end
+  end
+  
+  def find_profile_auth
+    begin
+      if params[:user_id]
+        begin
+          @profile = User.find(params[:user_id], :conditions => ["id = ?", current_user.id]).profile
+        rescue ActiveRecord::RecordNotFound
+          error("User not found (id unknown)", "not found", attr=:user_id)
+        end
       else
         @profile = Profile.find(params[:id], :conditions => ["user_id = ?", current_user.id])
       end
@@ -124,9 +141,9 @@ protected
   
 private
   
-  def error(notice, message)
+  def error(notice, message, attr=:id)
     flash[:notice] = notice
-    (err = Profile.new.errors).add(:id, message)
+    (err = Profile.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to profiles_url(current_user.id) }

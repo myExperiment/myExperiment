@@ -1,4 +1,9 @@
 class NetworksController < ApplicationController
+  before_filter :authorize, :except => [:index, :show]
+  
+  before_filter :find_network, :only => [:show]
+  before_filter :find_network_auth, :only => [:edit, :update, :destroy]
+  
   # GET /networks
   # GET /networks.xml
   def index
@@ -13,8 +18,6 @@ class NetworksController < ApplicationController
   # GET /networks/1
   # GET /networks/1.xml
   def show
-    @network = Network.find(params[:id])
-
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @network.to_xml }
@@ -28,7 +31,7 @@ class NetworksController < ApplicationController
 
   # GET /networks/1;edit
   def edit
-    @network = Network.find(params[:id])
+    
   end
 
   # POST /networks
@@ -54,8 +57,6 @@ class NetworksController < ApplicationController
   # PUT /networks/1
   # PUT /networks/1.xml
   def update
-    @network = Network.find(params[:id])
-    
     # update datetime
     @network.updated_at = Time.now
 
@@ -74,12 +75,41 @@ class NetworksController < ApplicationController
   # DELETE /networks/1
   # DELETE /networks/1.xml
   def destroy
-    @network = Network.find(params[:id])
     @network.destroy
 
     respond_to do |format|
       format.html { redirect_to networks_url }
       format.xml  { head :ok }
+    end
+  end
+  
+protected
+
+  def find_network
+    begin
+      @network = Network.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      error("Network not found", "is invalid (not owner)")
+    end
+  end
+
+  def find_network_auth
+    begin
+      @network = Network.find(params[:id], :conditions => ["user_id = ?", current_user.id])
+    rescue ActiveRecord::RecordNotFound
+      error("Network not found (id not authorized)", "is invalid (not owner)")
+    end
+  end
+  
+private
+
+  def error(notice, message)
+    flash[:notice] = notice
+    (err = Network.new.errors).add(:id, message)
+    
+    respond_to do |format|
+      format.html { redirect_to networks_url }
+      format.xml { render :xml => err.to_xml }
     end
   end
 end

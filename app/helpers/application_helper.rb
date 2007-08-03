@@ -8,7 +8,7 @@ module ApplicationHelper
     end
   end
   
-  def avatar(user_id, size='200x200')
+  def avatar(user_id, size="200")
     begin
       user = User.find(user_id)
       
@@ -16,7 +16,8 @@ module ApplicationHelper
         link_to(image_tag(url_for(:controller => 'pictures',
                                   :action     => 'show',
                                   :id         => img_id,
-                                  :size       => size),
+                                  :size       => size,
+                                  :crop       => true),
                           :title => h(user.name)),
                 profile_path(user.profile))
       else

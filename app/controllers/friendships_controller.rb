@@ -1,28 +1,23 @@
 class FriendshipsController < ApplicationController
   before_filter :authorize, :except => [:index, :show]
   
-  before_filter :find_current_user_friendship, :only => [:edit, :update, :destroy]
+  before_filter :find_friendship, :only => [:show]
+  before_filter :find_friendship_by_user_auth, :only => [:edit, :update, :destroy]
+  before_filter :find_friendship_by_friend_auth, :only => [:accept]
   
   # POST /users/1/friendships/1/accept
   # POST /users/1/friendships/1/accept.xml
   # POST /friendships/1/accept
   # POST /friendships/1/accept.xml
   def accept
-    begin
-      @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ?", current_user.id])
-      
-      respond_to do |format|
-        if @friendship.accept!
-          flash[:notice] = 'Friendship was successfully accepted.'
-          format.html { redirect_to friendships_url(current_user.id) }
-          format.xml  { head :ok }
-        else
-          error("Friendship already accepted", "already accepted")
-        end
+    respond_to do |format|
+      if @friendship.accept!
+        flash[:notice] = 'Friendship was successfully accepted.'
+        format.html { redirect_to friendships_url(current_user.id) }
+        format.xml  { head :ok }
+      else
+        error("Friendship already accepted", "already accepted")
       end
-        
-    rescue ActiveRecord::RecordNotFound
-      error("Friendship not found (id not authorized)", "is invalid (not named)")
     end
   end
   
@@ -48,19 +43,11 @@ class FriendshipsController < ApplicationController
   # GET /friendships/1
   # GET /friendships/1.xml
   def show
-    begin
-      if params[:user_id]
-        @friendship = Friendship.find(params[:id], :conditions => ["user_id = ?", params[:user_id]])
-      else
-        @friendship = Friendship.find(params[:id])
-      end
+    find_friendship_by_user_auth(id=params[:user_id]) if params[:user_id]
 
-      respond_to do |format|
-        format.html # show.rhtml
-        format.xml  { render :xml => @friendship.to_xml }
-      end
-    rescue ActiveRecord::RecordNotFound
-      error("Friendship not found (id unknown)", "not found")
+    respond_to do |format|
+      format.html # show.rhtml
+      format.xml  { render :xml => @friendship.to_xml }
     end
   end
 
@@ -137,11 +124,27 @@ class FriendshipsController < ApplicationController
   
 protected
 
-  def find_current_user_friendship
+  def find_friendship
     begin
-      @friendship = Friendship.find(params[:id], :conditions => ["user_id = ?", current_user.id])
+      @friendship = Friendship.find(params[:id])
+    rescue
+      error("Friendship not found", "is invalid")
+    end
+  end
+
+  def find_friendship_by_user_auth(id=current_user.id)
+    begin
+      @friendship = Friendship.find(params[:id], :conditions => ["user_id = ?", id])
     rescue ActiveRecord::RecordNotFound
       error("Friendship not found (id not authorized)", "is invalid (not owner)")
+    end
+  end
+  
+  def find_friendship_by_friend_auth(id=current_user.id)
+    begin
+      @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ?", id])
+    rescue ActiveRecord::RecordNotFound
+      error("Friendship not found (id not authorized)", "is invalid (not named)")
     end
   end
   

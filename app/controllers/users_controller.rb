@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
   before_filter :authorize, :except => [:index, :show]
   
-  before_filter :find_user, :only => [:edit, :update, :destroy]
+  before_filter :find_user, :only => [:show]
+  before_filter :find_user_auth, :only => [:edit, :update, :destroy]
   
   # GET /users
   # GET /users.xml
@@ -17,8 +18,6 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
-    @user = User.find(params[:id])
-
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @user.to_xml }
@@ -87,6 +86,14 @@ class UsersController < ApplicationController
 protected
 
   def find_user
+    begin
+      @user = User.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      error("User not found", "is invalid (not owner)")
+    end
+  end
+
+  def find_user_auth
     begin
       @user = User.find(params[:id], :conditions => ["id = ?", current_user.id])
     rescue ActiveRecord::RecordNotFound
