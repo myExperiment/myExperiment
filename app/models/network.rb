@@ -97,6 +97,8 @@ class Network < ActiveRecord::Base
   def members
     rtn = []
     
+    rtn << owner
+    
     original_members.each do |m|
       rtn << User.find(m.user_id)
     end
@@ -104,9 +106,12 @@ class Network < ActiveRecord::Base
     return rtn
   end
                           
-  def member?(user_id)
+  def member?(userid)
+    # the owner is automatically a member of the network
+    return true if owner? userid
+    
     members.each do |m|
-      return true if m.id.to_i == user_id.to_i
+      return true if m.id.to_i == userid.to_i
     end
     
     return false
