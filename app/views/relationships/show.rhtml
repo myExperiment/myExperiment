@@ -20,12 +20,15 @@
   <%=h @relationship.accepted_at %>
 </p>
 
-<% else %>
+<% else%>
+
+<% if Network.find(@relationship.network_id).owner? session[:user_id] %>
 
 <%= link_to 'Accept Relationship', accept_relationship_path(@relationship.network_id, @relationship) %> | 
 
 <% end %>
 
+<% end %>
 
-<%= link_to 'Edit', edit_relationship_path(@relationship.network_id, @relationship) %> |
+
 <%= link_to 'Back', relationships_path(@relationship.network_id) %>

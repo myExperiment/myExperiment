@@ -20,12 +20,15 @@
   <%=h @membership.accepted_at %>
 </p>
 
-<% else %>
+<% else%>
+
+<% if Network.find(@membership.network_id).owner? session[:user_id] %>
 
 <%= link_to 'Accept Membership', accept_membership_path(@membership.network_id, @membership) %> | 
 
 <% end %>
 
+<% end %>
 
-<%= link_to 'Edit', edit_membership_path(@membership.network_id, @membership) %> |
+
 <%= link_to 'Back', memberships_path(@membership.network_id) %>

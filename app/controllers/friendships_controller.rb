@@ -138,7 +138,7 @@ protected
         u = User.find(params[:user_id])
     
         begin
-          @friendship = Friendship.find(params[:id], :conditions => ["user_id = ?", u.id])
+          @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ?", u.id])
         rescue ActiveRecord::RecordNotFound
           error("Friendship not found", "is invalid")
         end

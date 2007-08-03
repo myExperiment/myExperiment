@@ -20,11 +20,15 @@
   <%=h @friendship.accepted_at %>
 </p>
 
-<% else %>
+<% else%>
+
+<% if session[:user_id].to_i == @friendship.friend_id.to_i %>
 
 <%= link_to 'Accept Friendship', accept_friendship_path(@friendship.friend_id, @friendship) %> | 
 
 <% end %>
 
-<%= link_to 'Edit', edit_friendship_path(@friendship.friend_id, @friendship) %> |
+<% end %>
+
+
 <%= link_to 'Back', friendships_path %>
