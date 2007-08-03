@@ -131,39 +131,51 @@ protected
 
   def find_memberships
     if params[:user_id]
-      find_memberships_by_user
+      begin
+        u = User.find(params[:user_id])
+    
+        @memberships = u.memberships
+      rescue ActiveRecord::RecordNotFound
+        error("User not found", "is invalid", :user_id)
+      end
     elsif params[:network_id]
-      find_memberships_by_network
+      begin
+        n = Network.find(params[:network_id])
+    
+        @memberships = n.memberships
+      rescue ActiveRecord::RecordNotFound
+        error("Network not found", "is invalid", :network_id)
+      end
     else
       @memberships = Membership.find(:all, :order => "created_at DESC")
-    end
-  end
-  
-  def find_memberships_by_user
-    begin
-      u = User.find(params[:user_id])
-    
-      @memberships = u.memberships
-    rescue ActiveRecord::RecordNotFound
-      error("User not found", "is invalid", :user_id)
-    end
-  end
-  
-  def find_memberships_by_network
-    begin
-      n = Network.find(params[:network_id])
-    
-      @memberships = n.memberships
-    rescue ActiveRecord::RecordNotFound
-      error("Network not found", "is invalid", :network_id)
     end
   end
 
   def find_membership
     if params[:user_id]
-      find_membership_by_user
+      begin
+        u = User.find(params[:user_id])
+    
+        begin
+          @membership = Membership.find(params[:id], :conditions => ["user_id = ?", u.id])
+        rescue ActiveRecord::RecordNotFound
+          error("Membership not found", "is invalid")
+        end
+      rescue ActiveRecord::RecordNotFound
+        error("User not found", "is invalid", :user_id)
+      end
     elsif params[:network_id]
-      find_membership_by_network
+      begin
+        n = Network.find(params[:network_id])
+    
+        begin
+          @membership = Membership.find(params[:id], :conditions => ["network_id = ?", n.id])
+        rescue ActiveRecord::RecordNotFound
+          error("Membership not found", "is invalid")
+        end
+      rescue ActiveRecord::RecordNotFound
+        error("Network not found", "is invalid", :network_id)
+      end
     else
       begin
         @membership = Membership.find(params[:id])
@@ -173,54 +185,21 @@ protected
     end
   end
   
-  def find_membership_by_user
-    begin
-      u = User.find(params[:user_id])
-    
-      begin
-        @membership = Membership.find(params[:id], :conditions => ["user_id = ?", u.id])
-      rescue ActiveRecord::RecordNotFound
-        error("Membership not found", "is invalid")
-      end
-    rescue ActiveRecord::RecordNotFound
-      error("User not found", "is invalid", :user_id)
-    end
-  end
-  
-  def find_membership_by_network
-    begin
-      n = Network.find(params[:network_id])
-    
-      begin
-        @membership = Membership.find(params[:id], :conditions => ["network_id = ?", n.id])
-      rescue ActiveRecord::RecordNotFound
-        error("Membership not found", "is invalid")
-      end
-    rescue ActiveRecord::RecordNotFound
-      error("Network not found", "is invalid", :network_id)
-    end
-  end
-  
   def find_membership_auth
     if params[:network_id]
-      find_membership_by_network_auth
+      begin
+        membership = Membership.find(params[:id])
+      
+        if Network.find(membership.network_id).owner? current_user.id
+          @membership = membership
+        else
+          error("Membership not found (id not authorized)", "is invalid (not owner)", :network_id)
+        end
+      rescue ActiveRecord::RecordNotFound
+        error("Membership not found", "is invalid")
+      end
     else
       error("Friendship not found (id not authorized)", "is invalid (not owner)")
-    end
-  end
-  
-  def find_membership_by_network_auth
-    # current_user.id == Network.find(network_id).owner
-    begin
-      membership = Membership.find(params[:id])
-      
-      if Network.find(membership.network_id).owner? current_user.id
-        @membership = membership
-      else
-        error("Membership not found (id not authorized)", "is invalid (not owner)", :network_id)
-      end
-    rescue ActiveRecord::RecordNotFound
-      error("Membership not found", "is invalid")
     end
   end
   

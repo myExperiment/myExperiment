@@ -1,14 +1,13 @@
 class ProfilesController < ApplicationController
   before_filter :authorize, :except => [:index, :show]
   
+  before_filter :find_profiles, :only => [:index]
   before_filter :find_profile, :only => [:show]
   before_filter :find_profile_auth, :only => [:edit, :update, :destroy]
   
   # GET /profiles
   # GET /profiles.xml
   def index
-    @profiles = Profile.find(:all)
-
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @profiles.to_xml }
@@ -106,6 +105,10 @@ class ProfilesController < ApplicationController
   end
   
 protected
+
+  def find_profiles
+    @profiles = Profile.find(:all, :order => "created_at DESC")
+  end
 
   def find_profile
     begin

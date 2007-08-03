@@ -1,14 +1,13 @@
 class NetworksController < ApplicationController
   before_filter :authorize, :except => [:index, :show]
   
+  before_filter :find_networks, :only => [:index]
   before_filter :find_network, :only => [:show]
   before_filter :find_network_auth, :only => [:edit, :update, :destroy]
   
   # GET /networks
   # GET /networks.xml
   def index
-    @networks = Network.find(:all)
-
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @networks.to_xml }
@@ -84,6 +83,10 @@ class NetworksController < ApplicationController
   end
   
 protected
+
+  def find_networks
+    @networks = Network.find(:all, :order => "created_at DESC")
+  end
 
   def find_network
     begin

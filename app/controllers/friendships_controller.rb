@@ -119,45 +119,37 @@ protected
 
   def find_friendships
     if params[:user_id]
-      find_friendships_by_user
+      begin
+        u = User.find(params[:user_id])
+    
+        @friendship = u.friendships
+      rescue ActiveRecord::RecordNotFound
+        error("User not found", "is invalid", :user_id)
+      end
     else
       @friendships = Friendship.find(:all, :order => "created_at DESC")
-    end
-  end
-  
-  def find_friendships_by_user
-    begin
-      u = User.find(params[:user_id])
-    
-      @friendship = u.friendships
-    rescue ActiveRecord::RecordNotFound
-      error("User not found", "is invalid", :user_id)
     end
   end
 
   def find_friendship
     if params[:user_id]
-      find_friendship_by_user
+      begin
+        u = User.find(params[:user_id])
+    
+        begin
+          @friendship = Friendship.find(params[:id], :conditions => ["user_id = ?", u.id])
+        rescue ActiveRecord::RecordNotFound
+          error("Friendship not found", "is invalid")
+        end
+      rescue ActiveRecord::RecordNotFound
+        error("User not found", "is invalid", :user_id)
+      end
     else
       begin
         @friendship = Friendship.find(params[:id])
       rescue ActiveRecord::RecordNotFound
         error("Friendship not found", "is invalid")
       end
-    end
-  end
-  
-  def find_friendship_by_user
-    begin
-      u = User.find(params[:user_id])
-    
-      begin
-        @friendship = Friendship.find(params[:id], :conditions => ["user_id = ?", u.id])
-      rescue ActiveRecord::RecordNotFound
-        error("Friendship not found", "is invalid")
-      end
-    rescue ActiveRecord::RecordNotFound
-      error("User not found", "is invalid", :user_id)
     end
   end
 

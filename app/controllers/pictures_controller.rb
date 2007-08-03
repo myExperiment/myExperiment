@@ -1,6 +1,7 @@
 class PicturesController < ApplicationController
   before_filter :authorize, :except => [:index, :show]
   
+  before_filter :find_pictures, :only => [:index]
   before_filter :find_picture, :only => [:edit, :update, :destroy]
   
   # GET /users/1/pictures
@@ -8,12 +9,6 @@ class PicturesController < ApplicationController
   # GET /pictures
   # GET /pictures.xml
   def index
-    if params[:user_id]
-      @pictures = Picture.find(:all, :conditions => ["user_id = ?", params[:user_id]])
-    else
-      @pictures = Picture.find(:all)
-    end
-
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @pictures.to_xml }
@@ -87,6 +82,14 @@ class PicturesController < ApplicationController
   end
   
 protected
+
+  def find_pictures
+    if params[:user_id]
+      @pictures = Picture.find(:all, :conditions => ["user_id = ?", params[:user_id]])
+    else
+      @pictures = Picture.find(:all)
+    end
+  end
 
   def find_picture
     begin

@@ -124,25 +124,31 @@ protected
 
   def find_relationships
     if params[:network_id]
-      find_relationships_by_network
+      begin
+        n = Network.find(params[:network_id])
+      
+        @relationships = n.relationships
+      rescue ActiveRecord::RecordNotFound
+        error("Network not found", "is invalid", :network_id)
+      end
     else
       @relationships = Relationship.find(:all, :order => "created_at DESC")
-    end
-  end
-  
-  def find_relationships_by_network
-    begin
-      n = Network.find(params[:network_id])
-      
-      @relationships = n.relationships
-    rescue ActiveRecord::RecordNotFound
-      error("Network not found", "is invalid", :network_id)
     end
   end
 
   def find_relationship
     if params[:network_id]
-      find_relationship_by_network
+      begin
+        n = Network.find(params[:network_id])
+    
+        begin
+          @relationship = Relationship.find(params[:id], :conditions => ["network_id = ?", n.id])
+        rescue ActiveRecord::RecordNotFound
+          error("Relationship not found", "is invalid")
+        end
+      rescue ActiveRecord::RecordNotFound
+        error("Network not found", "is invalid", :network_id)
+      end
     else
       begin
         @relationship = Relationship.find(params[:id])
@@ -152,40 +158,21 @@ protected
     end
   end
   
-  def find_relationship_by_network
-    begin
-      n = Network.find(params[:network_id])
-    
+  def find_relationship_auth
+    if params[:network_id]
       begin
-        @relationship = Relationship.find(params[:id], :conditions => ["network_id = ?", n.id])
+        relationship = Relationship.find(params[:id])
+      
+        if Network.find(relationship.network_id).owner? current_user.id
+          @relationship = relationship
+        else
+          error("Relationship not found (id not authorized)", "is invalid (not owner)", :network_id)
+        end
       rescue ActiveRecord::RecordNotFound
         error("Relationship not found", "is invalid")
       end
-    rescue ActiveRecord::RecordNotFound
-      error("Network not found", "is invalid", :network_id)
-    end
-  end
-  
-  def find_relationship_auth
-    if params[:network_id]
-      find_relationship_by_network_auth
     else
       error("Relationship not found (id not authorized)", "is invalid (not owner)")
-    end
-  end
-  
-  def find_relationship_by_network_auth
-    # current_user.id == Network.find(network_id).owner
-    begin
-      relationship = Relationship.find(params[:id])
-      
-      if Network.find(relationship.network_id).owner? current_user.id
-        @relationship = relationship
-      else
-        error("Relationship not found (id not authorized)", "is invalid (not owner)", :network_id)
-      end
-    rescue ActiveRecord::RecordNotFound
-      error("Relationship not found", "is invalid")
     end
   end
 
