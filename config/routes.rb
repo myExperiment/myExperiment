@@ -14,7 +14,7 @@ ActionController::Routing::Routes.draw do |map|
     user.resources :friendships, :member => { :accept => :get }
     
     # memberships 'owned by' user (user --> membership --> network)
-    user.resources :memberships, :member => { :accept => :get }
+    user.resources :memberships
     
     # user profile
     user.resource :profile, :controller => :profiles

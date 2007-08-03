@@ -5,8 +5,6 @@ class MembershipsController < ApplicationController
   before_filter :find_membership, :only => [:show]
   before_filter :find_membership_auth, :only => [:accept, :edit, :update, :destroy]
   
-  # GET /users/1/memberships/1;accept
-  # GET /users/1/memberships/1.xml;accept
   # GET /networks/1/memberships/1;accept
   # GET /networks/1/memberships/1.xml;accept
   # GET /memberships/1;accept
@@ -66,7 +64,6 @@ class MembershipsController < ApplicationController
     end
   end
 
-  # GET /users/1/memberships/1;edit
   # GET /networks/1/memberships/1;edit
   # GET /memberships/1;edit
   def edit
@@ -98,8 +95,6 @@ class MembershipsController < ApplicationController
     end
   end
 
-  # PUT /users/1/memberships/1
-  # PUT /users/1/memberships/1.xml
   # PUT /networks/1/memberships/1
   # PUT /networks/1/memberships/1.xml
   # PUT /memberships/1
@@ -117,8 +112,6 @@ class MembershipsController < ApplicationController
     end
   end
 
-  # DELETE /users/1/memberships/1
-  # DELETE /users/1/memberships/1.xml
   # DELETE /networks/1/memberships/1
   # DELETE /networks/1/memberships/1.xml
   # DELETE /memberships/1
@@ -207,9 +200,7 @@ protected
   end
   
   def find_membership_auth
-    if params[:user_id]
-      find_membership_by_user_auth
-    elsif params[:network_id]
+    if params[:network_id]
       find_membership_by_network_auth
     else
       error("Friendship not found (id not authorized)", "is invalid (not owner)")
