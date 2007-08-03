@@ -38,6 +38,7 @@ class MembershipsController < ApplicationController
     
     # set initial datetime
     @membership.created_at = Time.now
+    @membership.accepted_at = nil
 
     respond_to do |format|
       if @membership.save

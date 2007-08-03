@@ -88,6 +88,7 @@ class FriendshipsController < ApplicationController
     if (@friendship = Friendship.new(params[:friendship]) unless Friendship.find_by_user_id_and_friend_id(params[:friendship][:user_id], params[:friendship][:friend_id]))
       # set initial datetime
       @friendship.created_at = Time.now
+      @friendship.accepted_at = nil
 
       respond_to do |format|
         if @friendship.save

@@ -38,6 +38,7 @@ class RelationshipsController < ApplicationController
     
     # set initial datetime
     @relationship.created_at = Time.now
+    @relationship.accepted_at = nil
 
     respond_to do |format|
       if @relationship.save

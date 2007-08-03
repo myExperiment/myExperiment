@@ -46,7 +46,10 @@ class MessagesController < ApplicationController
   def create
     @message = Message.new(params[:message])
     @message.from ||= current_user.id
+    
+    # set initial datetimes
     @message.created_at = Time.now
+    @message.read_at = nil
     
     # test for spoofing of "from" field
     unless @message.from.to_i == current_user.id.to_i
