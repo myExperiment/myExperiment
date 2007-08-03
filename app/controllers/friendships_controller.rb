@@ -106,10 +106,12 @@ class FriendshipsController < ApplicationController
   # DELETE /friendships/1
   # DELETE /friendships/1.xml
   def destroy
+    friend_id = @friendship.friend_id
+    
     @friendship.destroy
 
     respond_to do |format|
-      format.html { redirect_to friendships_url }
+      format.html { redirect_to friendships_url(friend_id) }
       format.xml  { head :ok }
     end
   end

@@ -112,10 +112,12 @@ class RelationshipsController < ApplicationController
   # DELETE /relationships/1
   # DELETE /relationships/1.xml
   def destroy
+    network_id = @relationship.network_id
+    
     @relationship.destroy
 
     respond_to do |format|
-      format.html { redirect_to relationships_url }
+      format.html { redirect_to relationships_url(network_id) }
       format.xml  { head :ok }
     end
   end

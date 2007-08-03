@@ -119,10 +119,12 @@ class MembershipsController < ApplicationController
   # DELETE /memberships/1
   # DELETE /memberships/1.xml
   def destroy
+    network_id = @membership.network_id
+    
     @membership.destroy
 
     respond_to do |format|
-      format.html { redirect_to memberships_url }
+      format.html { redirect_to memberships_url(network_id) }
       format.xml  { head :ok }
     end
   end
