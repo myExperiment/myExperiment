@@ -6,9 +6,12 @@
   <p>
     <% if user.friends_with_me.include?(User.find(friend.id)) %>
       <% friendship = Friendship.find_by_user_id_and_friend_id(friend.id, user.id) %>
-      <%= render :partial => "users/avatar", :locals => { :user => friend } %> (with)<br/>
+      <%= render :partial => "users/avatar", :locals => { :user => friend } %> (with)
+      <% if my_page? user.id %>
+      <br/>
       [ <%= link_to 'Show', friendship_path(friendship.friend_id, friendship) %>
         <%= link_to 'Delete', friendship_path(friendship.friend_id, friendship), :confirm => 'Are you sure?', :method => :delete %> ]
+      <% end %>
     <% else %>
       <%= render :partial => "users/avatar", :locals => { :user => friend } %> (of)
     <% end %>
