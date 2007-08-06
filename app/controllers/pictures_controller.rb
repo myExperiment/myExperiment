@@ -42,7 +42,7 @@ class PicturesController < ApplicationController
     respond_to do |format|
       if @picture.save
         flash[:notice] = 'Picture was successfully created.'
-        format.html { redirect_to pictures_url(@pictures.user_id) }
+        format.html { redirect_to pictures_url(@picture.user_id) }
         format.xml  { head :created, :location => picture_url(@picture.user_id, @picture) }
       else
         format.html { render :action => "new" }
