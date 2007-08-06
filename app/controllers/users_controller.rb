@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :authorize, :except => [:index, :show]
+  before_filter :authorize, :except => [:index, :show, :new, :create]
   
   before_filter :find_users, :only => [:index]
   before_filter :find_user, :only => [:show]
