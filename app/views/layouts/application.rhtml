@@ -14,7 +14,7 @@
 <% if logged_in? %>
 <p>Logged in as <%= profile_link(current_user.id) %> [<%= link_to "Logout", url_for(:controller => 'auth', :action => 'logout') %>] - <%= messages_link(current_user.id) %> - <%= memberships_pending_link(current_user.id) %> - <%= friendships_pending_link(current_user.id) %></p>
 <% else %>
-<%= link_to "Login", url_for(:controller => 'auth', :action => 'login') %>
+[<%= link_to "Login", url_for(:controller => 'auth', :action => 'login') %>]
 <% end %>
 
 <p><%= link_to "Networks", networks_path %> <% if logged_in? %>(<%= link_to "Mine", owned_networks_path(current_user.id) %>)<% end %> | <%= link_to "Users", users_path %> <% if logged_in? %>(<%= link_to "Me", user_path(current_user.id) %>)<% end %> | <%= link_to "Profiles", profiles_path %> <% if logged_in? %>(<%= link_to "Me", profile_path(current_user.profile.id) %>)<% end %> | <%= link_to "Pictures", url_for(:controller => 'pictures') %> <% if logged_in? %>(<%= link_to "Mine", pictures_path(current_user.id) %>)<% end %></p>

@@ -16,9 +16,12 @@ class ApplicationController < ActionController::Base
 private
   
   def authorize
-    unless logged_in?
+    if logged_in?
       #session[:user_id] = 1
       #flash[:notice] = "User #{session[:user_id]} logged in"
+    else
+      flash[:notice] = "You are not logged in! (fix this in ApplicationController.rb)"
+      redirect_to :controller => 'users'
     end
   end
 end

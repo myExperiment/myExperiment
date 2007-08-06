@@ -56,18 +56,20 @@ class MessagesController < ApplicationController
       @message.errors.add :from, "must be logged on"
     end
     
-    begin
-      # test for existance of reply_id
-      reply = Message.find(@message.reply_id) 
+    # test for existance of reply_id
+    if @message.reply_id
+      begin
+        reply = Message.find(@message.reply_id) 
       
-      # test that user is replying to a message that was actually received by them
-      unless reply.to.to_i == current_user.id.to_i
+        # test that user is replying to a message that was actually received by them
+        unless reply.to.to_i == current_user.id.to_i
+          errors = true
+          @message.errors.add :reply_id, "not addressed to sender"
+        end
+      rescue ActiveRecord::RecordNotFound
         errors = true
-        @message.errors.add :reply_id, "not addressed to sender"
+        @message.errors.add :reply_id, "not found"
       end
-    rescue ActiveRecord::RecordNotFound
-      errors = true
-      @message.errors.add :reply_id, "not found"
     end
     
     respond_to do |format|
