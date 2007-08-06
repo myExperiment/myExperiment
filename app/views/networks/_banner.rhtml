@@ -1,0 +1,5 @@
+<strong>
+  <%= link_to h(network.title), network_path(network.id) %>
+</strong> (NID #<%= network.id %>)
+
+<%= render :partial => "networks/members", :locals => { :collection => network.members, :network => network } %>

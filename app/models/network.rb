@@ -9,8 +9,8 @@ class Network < ActiveRecord::Base
              :class_name => "User",
              :foreign_key => :user_id
              
-  def owner?(user_id)
-    owner.id.to_i == user_id
+  def owner?(userid)
+    user_id.to_i == userid.to_i
   end
   
   has_many :relationships,
@@ -88,16 +88,12 @@ class Network < ActiveRecord::Base
   has_and_belongs_to_many :members,
                           :class_name => "User",
                           :join_table => :memberships,
-                          :foreign_key => :user_id,
-                          :association_foreign_key => :network_id,
                           :conditions => ["accepted_at < ?", Time.now],
                           :order => "accepted_at DESC"
                           
   alias_method :original_members, :members
   def members
-    rtn = []
-    
-    rtn << owner
+    rtn = [User.find(owner.id)]
     
     original_members.each do |m|
       rtn << User.find(m.user_id)
@@ -117,13 +113,13 @@ class Network < ActiveRecord::Base
     return false
   end
   
-  def member_recursive?(user_id)
-    member_r? user_id
+  def member_recursive?(userid)
+    member_r? userid
   end
   
   # alias for member_recursive?
-  def member!(user_id)
-    member_r? user_id
+  def member!(userid)
+    member_r? userid
   end
   
   def relation?(network_id)
@@ -139,8 +135,8 @@ class Network < ActiveRecord::Base
   end
   
   # alias for relation_recursive?
-  def relation!(user_id)
-    relation_r? user_id
+  def relation!(userid)
+    relation_r? userid
   end
   
   def members_recursive
@@ -163,12 +159,12 @@ class Network < ActiveRecord::Base
   
 protected
 
-  def member_r?(user_id, depth=0)
+  def member_r?(userid, depth=0)
     unless depth > @@maxdepth
-      return true if member? user_id
+      return true if member? userid
     
-      self.relations.each do |r|
-        return true if r.member_r? user_id, depth+1
+      relations.each do |r|
+        return true if r.member_r? userid, depth+1
       end
     end
     
@@ -177,9 +173,9 @@ protected
   
   def relation_r?(network_id, depth=0)
     unless depth > @@maxdepth
-      return true if relation? user_id
+      return true if relation? network_id
     
-      self.relations.each do |r|
+      relations.each do |r|
         return true if r.relation_r? network_id, depth+1
       end
     end

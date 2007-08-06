@@ -42,7 +42,7 @@ class PicturesController < ApplicationController
     respond_to do |format|
       if @picture.save
         flash[:notice] = 'Picture was successfully created.'
-        format.html { redirect_to pictures_url(current_user.id) }
+        format.html { redirect_to pictures_url(@pictures.user_id) }
         format.xml  { head :created, :location => picture_url(@picture.user_id, @picture) }
       else
         format.html { render :action => "new" }
@@ -59,7 +59,7 @@ class PicturesController < ApplicationController
     respond_to do |format|
       if @picture.update_attributes(params[:picture])
         flash[:notice] = 'Picture was successfully updated.'
-        format.html { redirect_to pictures_url(current_user.id) }
+        format.html { redirect_to pictures_url(@picture.user_id) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -73,10 +73,12 @@ class PicturesController < ApplicationController
   # DELETE /pictures/1
   # DELETE /pictures/1.xml
   def destroy
+    user_id = @picture.user_id
+    
     @picture.destroy
 
     respond_to do |format|
-      format.html { redirect_to pictures_url(current_user.id) }
+      format.html { redirect_to pictures_url(user_id) }
       format.xml  { head :ok }
     end
   end

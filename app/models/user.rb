@@ -153,24 +153,70 @@ class User < ActiveRecord::Base
            :conditions => "read_at IS NULL",
            :order => "created_at DESC"
            
+  def friend?(user_id)
+    return true if id.to_i == user_id.to_i
+    
+    friends.each do |f|
+      return true if f.id.to_i == user_id.to_i
+    end
+    
+    return false
+  end 
+  
+  def friend_recursive?(user_id)
+    friend_r? user_id
+  end
+  
+  # alias for friend_recursive?
+  def friend!(user_id)
+    friend_r? user_id
+  end
+  
+  # alias for friend_recursive?
   def foaf?(user_id)
-    foaf user_id
+    friend_r? user_id
+  end
+  
+  def friends_recursive
+    friends_r_wrapper
+  end
+  
+# alias for friends_recursive
+  def friends!
+    friends_r_wrapper
   end
   
 protected
 
-  def foaf(user_id, depth=0)
+  def friend_r?(user_id, depth=0)
     unless depth > @@maxdepth
-      (fri = friends_of_mine).each do |f|
-        return true if f.id.to_i == user_id.to_i
-      end
+      return true if friend? user_id
       
-      fri.each do |f|
-        return true if f.foaf user_id, depth+1
+      friends.each do |f|
+        return true if f.friend_r? user_id, depth+1
       end
     end
     
     false
+  end
+  
+  def friends_r_wrapper
+    # removes circular references (friend(self, A) & friend(A, B) & friend(B, self) ==> friend(self, self))
+    friends_r.collect { |u| u = (u.id.to_i == id.to_i) ? nil : u }.compact
+  end
+  
+  def friends_r(depth=0)
+    unless depth > @@maxdepth
+      rtn = friends
+    
+      friends.each do |r|
+         rtn = (rtn + r.friends_r(depth+1))
+      end
+    
+      return rtn.uniq
+    end
+    
+    []
   end
   
 private

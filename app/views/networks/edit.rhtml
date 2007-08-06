@@ -4,11 +4,6 @@
 
 <% form_for(:network, :url => network_path(@network), :html => { :method => :put }) do |f| %>
   <p>
-    <b>User</b><br />
-    <%= f.text_field :user_id %>
-  </p>
-
-  <p>
     <b>Title</b><br />
     <%= f.text_field :title %>
   </p>

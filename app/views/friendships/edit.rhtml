@@ -4,9 +4,9 @@
 
 <% form_for(:friendship, :url => friendship_path(@friendship.friend_id, @friendship), :html => { :method => :put }) do |f| %>
   <p>
-    <%= submit_tag "Update" %>
+    <%= submit_tag "Save Changes" %>
   </p>
 <% end %>
 
 <%= link_to 'Show', friendship_path(@friendship.friend_id, @friendship) %> |
-<%= link_to 'Back', friendships_path %>
+<%= link_to 'Back', friendships_path(@friendship.friend_id) %>

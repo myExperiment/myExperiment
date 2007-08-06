@@ -17,8 +17,8 @@ private
   
   def authorize
     unless logged_in?
-      session[:user_id] = 1
-      flash[:notice] = "User #{session[:user_id]} logged in"
+      #session[:user_id] = 1
+      #flash[:notice] = "User #{session[:user_id]} logged in"
     end
   end
 end

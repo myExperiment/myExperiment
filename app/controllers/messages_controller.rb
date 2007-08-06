@@ -1,7 +1,6 @@
 class MessagesController < ApplicationController
   before_filter :authorize
   
-  before_filter :find_messages, :only => [:index]
   before_filter :find_message_by_to_or_from, :only => [:show]
   before_filter :find_message_by_to, :only => [:destroy]
   before_filter :find_reply_by_to, :only => [:new]
@@ -9,6 +8,8 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.xml
   def index
+    @messages = current_user.messages_inbox
+    
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @messages.to_xml }
@@ -93,10 +94,6 @@ class MessagesController < ApplicationController
   end
   
 protected
-
-  def find_messages
-    @messages = current_user.messages_inbox
-  end
 
   def find_message_by_to
     begin

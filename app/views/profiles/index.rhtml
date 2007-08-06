@@ -14,15 +14,17 @@
 <% for profile in @profiles %>
   <tr>
     <td><%=h openid(profile.user_id) %></td>
-    <td><%=avatar(profile.user_id) %></td>
+    <td><%=avatar(profile.user_id, "100x100") %></td>
     <td><%=h profile.email %></td>
     <td><%=h profile.website %></td>
     <td><%=h profile.description %></td>
     <td><%=h profile.created_at %></td>
     <td><%=h profile.updated_at %></td>
     <td><%= link_to 'Show', profile_path(profile) %></td>
+    <% if my_page? profile.user_id %>
     <td><%= link_to 'Edit', edit_profile_path(profile) %></td>
     <td><%= link_to 'Destroy', profile_path(profile), :confirm => 'Are you sure?', :method => :delete %></td>
+    <% end %>
   </tr>
 <% end %>
 </table>

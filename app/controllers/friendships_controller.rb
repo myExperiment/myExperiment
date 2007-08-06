@@ -71,7 +71,7 @@ class FriendshipsController < ApplicationController
 
       respond_to do |format|
         if @friendship.save
-          flash[:notice] = 'Friendship was successfully created.'
+          flash[:notice] = 'Friendship was successfully requested.'
           format.html { redirect_to friendship_url(@friendship.user_id, @friendship) }
           format.xml  { head :created, :location => friendship_url(@friendship.user_id, @friendship) }
         else
@@ -121,9 +121,9 @@ protected
   def find_friendships
     if params[:user_id]
       begin
-        u = User.find(params[:user_id])
+        @user = User.find(params[:user_id])
     
-        @friendships = u.friendships
+        @friendships = @user.friendships
       rescue ActiveRecord::RecordNotFound
         error("User not found", "is invalid", :user_id)
       end
@@ -135,10 +135,10 @@ protected
   def find_friendship
     if params[:user_id]
       begin
-        u = User.find(params[:user_id])
+        @user = User.find(params[:user_id])
     
         begin
-          @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ?", u.id])
+          @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ?", @user.id])
         rescue ActiveRecord::RecordNotFound
           error("Friendship not found", "is invalid")
         end

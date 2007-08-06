@@ -9,4 +9,4 @@
 <% end %>
 
 <%= link_to 'Show', picture_path(@picture.user_id, @picture) %> |
-<%= link_to 'Back', pictures_path %>
+<%= link_to 'Back', pictures_path(@picture.user_id) %>

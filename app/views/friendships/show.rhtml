@@ -20,15 +20,18 @@
   <%=h @friendship.accepted_at %>
 </p>
 
-<% else%>
+<% elsif my_page? @friendship.friend_id %>
 
-<% if session[:user_id].to_i == @friendship.friend_id.to_i %>
+<%= link_to 'Accept friendship request', accept_friendship_path(@friendship.friend_id, @friendship) %> |
+<%= link_to 'Reject friendship request', friendship_path(@friendship.friend_id, @friendship), :method => :delete %> |
 
-<%= link_to 'Accept Friendship', accept_friendship_path(@friendship.friend_id, @friendship) %> | 
+<% else %>
+
+<p>
+  <b>Accepted at:</b>
+  Pending
+</p>
 
 <% end %>
 
-<% end %>
-
-
-<%= link_to 'Back', friendships_path %>
+<%= link_to 'Back', friendships_path(@friendship.friend_id) %>

@@ -1,24 +1,29 @@
 <h1>Listing pictures</h1>
 
+<% if logged_in? %><p><%= link_to 'Upload new picture', new_picture_path(current_user.id) %><p><% end %>
+
 <table>
   <tr>
-    <th>User</th>
+    <th>ID</th>
+    <% unless params[:user_id] %><th>User</th><% end %>
     <th>Data</th>
   </tr>
   
 <% for picture in @pictures %>
   <tr>
-    <td><%=h picture.user_id %></td>
+    <td width="150"><font size="18"><%=h picture.id %></font></td>
+    <% unless params[:user_id] %><td width="150"><font size="18"><%=h picture.user_id %></font></td><% end %>
     <td><%= image_tag url_for(:controller => 'pictures',
                               :action     => 'show',
-                              :id         => picture.id) %></td>
+                              :id         => picture.id,
+                              :size       => '200') %></td>
     <td><%= link_to 'Show', picture_path(picture.user_id, picture) %></td>
+    <% if my_page? picture.user_id %>
     <td><%= link_to 'Edit', edit_picture_path(picture.user_id, picture) %></td>
     <td><%= link_to 'Destroy', picture_path(picture.user_id, picture), :confirm => 'Are you sure?', :method => :delete %></td>
+    <% end %>
   </tr>
 <% end %>
 </table>
 
 <br />
-
-<%= link_to 'New picture', new_picture_path(session[:user_id]) %>

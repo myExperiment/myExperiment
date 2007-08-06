@@ -1,9 +1,4 @@
 <p>
-  <b>User:</b>
-  <%=h @network.user_id %>
-</p>
-
-<p>
   <b>Title:</b>
   <%=h @network.title %>
 </p>
@@ -23,6 +18,18 @@
   <%=h @network.updated_at %>
 </p>
 
+<% if my_page? @network.owner.id %>
+<h1>Listing memberships for <%=h @network.title %></h1>
+<p>This table is only visisble to the owner of the network when logged in.</p>
 
+<%= render :partial => "memberships/table", :locals => { :collection => @network.memberships } %>
+
+<% end %>
+
+<h3>Members</h3>
+
+<%= render :partial => "members", :locals => { :collection => @network.members, :network => @network } %>
+
+<% if logged_in? and !@network.member? current_user.id %><%= request_membership_link(current_user.id, @network.id) %> |<% end %>
 <%= link_to 'Edit', edit_network_path(@network) %> |
 <%= link_to 'Back', networks_path %>

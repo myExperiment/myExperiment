@@ -1,0 +1,25 @@
+<% unless collection.empty? %>
+
+<table>
+  <tr>
+    <th>User</th>
+    <th>Friend</th>
+    <th>Created at</th>
+    <th>Accepted at</th>
+  </tr>
+  
+<% for friendship in collection %>
+  <tr>
+    <td><%= "<b>" unless friendship.accepted? %><%=name(friendship.user_id) %><%= "</b>" unless friendship.accepted? %></td>
+    <td><%= "<b>" unless friendship.accepted? %><%=name(friendship.friend_id) %><%= "</b>" unless friendship.accepted? %></td>
+    <td><%= "<b>" unless friendship.accepted? %><%=h friendship.created_at %><%= "</b>" unless friendship.accepted? %></td>
+    <td><%= "<b>" unless friendship.accepted? %><%=h friendship.accepted_at || "Pending" %><%= "</b>" unless friendship.accepted? %></td>
+    <% if my_page? friendship.friend_id %>
+    <td><%= link_to 'Review / Accept', friendship_path(friendship.friend_id, friendship) %></td>
+    <td><%= link_to 'Delete', friendship_path(friendship.friend_id, friendship), :confirm => 'Are you sure?', :method => :delete %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

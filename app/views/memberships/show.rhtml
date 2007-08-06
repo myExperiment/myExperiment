@@ -20,15 +20,19 @@
   <%=h @membership.accepted_at %>
 </p>
 
-<% else%>
+<% elsif my_page? @membership.network.owner.id %>
 
-<% if Network.find(@membership.network_id).owner? session[:user_id] %>
+<%= link_to 'Accept membership request', accept_membership_path(@membership.user_id, @membership) %> |
+<%= link_to 'Reject membership request', membership_path(@membership.user_id, @membership), :method => :delete %> |
 
-<%= link_to 'Accept Membership', accept_membership_path(@membership.network_id, @membership) %> | 
+<% else %>
+
+<p>
+  <b>Accepted at:</b>
+  Pending
+</p>
 
 <% end %>
 
-<% end %>
 
-
-<%= link_to 'Back', memberships_path(@membership.network_id) %>
+<%= link_to 'Back', memberships_path(@membership.user_id) %>

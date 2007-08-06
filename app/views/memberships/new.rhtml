@@ -1,21 +1,29 @@
-<h1>New membership</h1>
+<h1>New membership request</h1>
 
 <%= error_messages_for :membership %>
 
-<% form_for(:membership, :url => memberships_path(params[:network_id])) do |f| %>
+<% form_for(:membership, :url => memberships_path(params[:user_id])) do |f| %>
   <p>
     <b>User</b><br />
-    <%= f.text_field :user_id %>
+    <% unless params[:user_id] %>
+      <%= f.text_field :user_id, :value => current_user.id %>
+    <% else %>
+      <%= f.hidden_field :user_id, :value => current_user.id %>
+      <%=h current_user.name %> (<%=h current_user.openid_url %>)
+    <% end %>
   </p>
 
   <p>
     <b>Network</b><br />
-    <%= f.text_field :network_id %>
+    <% if params[:network_id] %>
+      <%= f.hidden_field :network_id, :value => @network.id %>
+      <%=h @network.title %> (<%=h @network.unique %>)
+    <% else %>
+      <%= select_tag "membership[network_id]", options_from_collection_for_select(Network.find(:all, :order => "title ASC"), :id.to_i, :title) %>
+    <% end %>
   </p>
 
   <p>
-    <%= submit_tag "Create" %>
+    <%= submit_tag "Confirm Membership Request" %> <%= (params[:network_id] ? button_to("Cancel Membership Request", :controller => 'networks', :action => 'show', :id => @network.id) : button_to("Cancel Membership Request", :controller => 'networks', :action => 'index')) %>
   </p>
 <% end %>
-
-<%= link_to 'Back', memberships_path(params[:network_id]) %>

@@ -2,8 +2,16 @@ class NetworksController < ApplicationController
   before_filter :authorize, :except => [:index, :show]
   
   before_filter :find_networks, :only => [:index]
-  before_filter :find_network, :only => [:show]
+  before_filter :find_network, :only => [:membership_request, :show]
   before_filter :find_network_auth, :only => [:edit, :update, :destroy]
+  
+  # GET /networks/1;membership_request
+  def membership_request
+    redirect_to :controller => 'memberships', 
+                :action => 'new', 
+                :user_id => current_user.id,
+                :network_id => @network.id
+  end
   
   # GET /networks
   # GET /networks.xml
@@ -85,7 +93,11 @@ class NetworksController < ApplicationController
 protected
 
   def find_networks
-    @networks = Network.find(:all, :order => "created_at DESC")
+    if params[:user_id]
+      @networks = Network.find(:all, :conditions => ["user_id = ?", params[:user_id]], :order => "created_at DESC")
+    else  
+      @networks = Network.find(:all, :order => "created_at DESC")
+    end
   end
 
   def find_network

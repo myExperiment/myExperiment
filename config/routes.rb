@@ -14,7 +14,7 @@ ActionController::Routing::Routes.draw do |map|
     user.resources :friendships, :member => { :accept => :get }
     
     # memberships 'owned by' user (user --> membership --> network)
-    user.resources :memberships
+    user.resources :memberships, :member => { :accept => :get }
     
     # user profile
     user.resource :profile, :controller => :profiles
@@ -24,10 +24,7 @@ ActionController::Routing::Routes.draw do |map|
   end
   
   # all networks
-  map.resources :networks do |network|
-    # memberships 'accepted by' network (user --> membership --> network)
-    network.resources :memberships, :member => { :accept => :get }
-    
+  map.resources :networks, :member => { :membership_request => :get } do |network|
     # relationships 'accepted by' network (relation --> relationship --> network)
     network.resources :relationships, :member => { :accept => :get }
   end
@@ -41,10 +38,11 @@ ActionController::Routing::Routes.draw do |map|
   # Sample of named route:
   # map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
   # This route can be invoked with purchase_url(:id => product.id)
+  map.owned_networks 'users/:user_id/networks', :controller => 'networks', :action => 'index'
 
   # You can have the root of your site routed by hooking up '' 
   # -- just remember to delete public/index.html.
-  # map.connect '', :controller => "welcome"
+  map.connect '', :controller => 'users'
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'

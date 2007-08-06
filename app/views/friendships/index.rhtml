@@ -1,26 +1,33 @@
-<h1>Listing friendships for <%= params[:user_id] ? User.find(params[:user_id]).name : "All" %></h1>
+<% if @user and my_page? @user.id %>
+
+<h1>Listing friendships pending for <%=h @user.name %></h1>
 
 <p>The <strong>User</strong> initiates the Friendship request with the <strong>Friend</strong> who can accept/reject.</p>
 
-<table width="100%">
-  <tr>
-    <th>User</th>
-    <th>Friend</th>
-    <th>Created at</th>
-    <th>Accepted at</th>
-    <th colspan="2"> </th>
-  </tr>
-  
-<% for friendship in @friendships %>
-  <tr>
-    <td><%=h friendship.user_id %></td>
-    <td><%=h friendship.friend_id %></td>
-    <td><%=h friendship.created_at %></td>
-    <td><%=h friendship.accepted_at || "Pending" %></td>
-    <td><%= link_to 'Review and Accept', friendship_path(friendship.friend_id, friendship) %></td>
-    <td><%= link_to 'Destroy', friendship_path(friendship.friend_id, friendship), :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
+<%= render :partial => "table", :locals => { :collection => @user.friendships_pending } %>
+
+<h1>Listing friendships accepted by <%=h @user.name%></h1>
+
+<%= render :partial => 'table', :locals => { :collection => @user.friendships_accepted } %>
+
+<% else %>
+
+<h1>Listing friendships for All</h1>
+
+<%= render :partial => "table", :locals => { :collection => @friendships } %>
+
 <% end %>
-</table>
+
+<br/>
+
+<% if @user %>
+
+<h1>Listing <%=h @user.name %>'s friends</h1>
+
+<p><strong>Friends</strong> who have accepted friendship requests are listed below.</p>
+
+<%= render :partial => "users/friends", :locals => { :collection => @user.friends, :user => @user } %>
 
 <br />
+
+<% end %>

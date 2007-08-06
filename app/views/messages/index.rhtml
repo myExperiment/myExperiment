@@ -1,11 +1,16 @@
-<h1>Listing messages for <%= openid(session[:user_id]) %></h1>
+<br/>
+
+<%= link_to image_tag("mail.png", :title => "Compose Message", :size => "50x50"), new_message_path %> 
+<%= link_to 'Compose message', new_message_path %>
+
+<h1>Inbox</h1>
 
 <table>
   <tr>
     <th>From</th>
     <th>Subject</th>
     <th>Received at</th>
-    <th colspan="3"> </th>
+    <th> </th>
   </tr>
   
 <% for message in @messages %>
@@ -14,11 +19,28 @@
     <td><%= "<b>" unless message.read? %><%=link_to h(message.subject), message_path(message) %><%= "</b>" unless message.read? %></td>
     <td><%= "<b>" unless message.read? %><%=h message.created_at %><%= "</b>" unless message.read? %></td>
     <td><%= link_to 'Reply', reply_message_path(message) %></td>
-    <td><%= link_to 'Destroy', message_path(message), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New message', new_message_path %>
+<h1>Sent</h1>
+
+<table>
+  <tr>
+    <th>To</th>
+    <th>Subject</th>
+    <th>Sent at</th>
+  </tr>
+  
+<% for message in current_user.messages_sent %>
+  <tr>
+    <td><%=h openid(message.from) %></td>
+    <td><%=link_to h(message.subject), message_path(message) %></td>
+    <td><%=h message.created_at %></td>
+  </tr>
+<% end %>
+</table>
+
+<br/>

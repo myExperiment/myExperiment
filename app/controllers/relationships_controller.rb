@@ -13,7 +13,7 @@ class RelationshipsController < ApplicationController
     respond_to do |format|
       if @relationship.accept!
         flash[:notice] = 'Relationship was successfully accepted.'
-        format.html { redirect_to relationships_url(params[:network_id]) }
+        format.html { redirect_to relationships_url(@relationship.network_id) }
         format.xml  { head :ok }
       else
         error("Relationship already accepted", "already accepted")

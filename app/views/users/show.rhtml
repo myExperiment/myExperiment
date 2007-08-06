@@ -18,6 +18,10 @@
   <%=h @user.updated_at %>
 </p>
 
+<h3>Friends</h3>
 
+<%= render :partial => "friends", :locals => { :collection => @user.friends, :user => @user } %>
+
+<% if logged_in? and !@user.friend? current_user.id %><%= request_friendship_link(params[:id]) %> |<% end %>
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>

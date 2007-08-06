@@ -1,26 +1,37 @@
-<h1>Listing memberships for <%= params[:network_id] ? Network.find(params[:network_id]).title : (params[:user_id] ? User.find(params[:user_id]).name + "'s Projects" : "All") %></h1>
+<% if @user and my_page? @user.id %>
+
+<h1>Listing memberships for <%=h @user.name %></h1>
 
 <p>The <strong>User</strong> initiates a Membership request with the <strong>Network</strong> who can accept/reject.</p>
 
-<table width="100%">
-  <tr>
-    <th>User</th>
-    <th>Network</th>
-    <th>Created at</th>
-    <th>Accepted at</th>
-    <th colspan="2"> </th>
-  </tr>
-  
-<% for membership in @memberships %>
-  <tr>
-    <td><%=h membership.user_id %></td>
-    <td><%=h membership.network_id %></td>
-    <td><%=h membership.created_at %></td>
-    <td><%=h membership.accepted_at || "Pending" %></td>
-    <td><%= link_to 'Review and Accept', membership_path(membership.network_id, membership) %></td>
-    <td><%= link_to 'Destroy', membership_path(membership.network_id, membership), :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
+<%= render :partial => "table", :locals => { :collection => @user.memberships } %>
 
 <br />
+
+<h1>Listing membership requests for networks owned by <%= @user.name %></h1>
+
+<p>The <strong>User</strong> manages membership requests for all <strong>Owned Networks</strong>.</p>
+
+<%= render :partial => "table", :locals => { :collection => @user.memberships_pending } %>
+
+<% else %>
+
+<h1>Listing memberships for All</h1>
+
+<%= render :partial => "table", :locals => { :collection => @memberships } %>
+
+<% end %>
+
+<br />
+
+<% if @user %>
+
+<h1>Listing network's owned by <%=h @user.name %></h1>
+
+<p>The <strong>User</strong> is automatically a member of all <strong>Owned Networks</strong>.</p>
+
+<%= render :partial => "networks/list", :locals => { :collection => @user.networks_owned } %>
+
+<br/>
+
+<% end %>

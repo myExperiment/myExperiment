@@ -1,0 +1,14 @@
+<% unless collection.empty? %>
+
+<ul><% for network in collection %>
+<li style="list-style-type:none;">
+  <p>
+    <%= render :partial => "networks/banner", :locals => { :network => network } %>
+  </p>
+  <hr align="left" width="97%"/>
+</li>
+<% end %></ul>
+
+</div>
+
+<% end %>

@@ -1,0 +1,25 @@
+<% unless collection.empty? %>
+
+<table>
+  <tr>
+    <th>User</th>
+    <th>Network</th>
+    <th>Created at</th>
+    <th>Accepted at</th>
+  </tr>
+  
+<% for membership in collection %>
+  <tr>
+    <td><%= "<b>" unless membership.accepted? %><%=h name(membership.user_id) %><%= "</b>" unless membership.accepted? %></td>
+    <td><%= "<b>" unless membership.accepted? %><%=h title(membership.network_id) %><%= "</b>" unless membership.accepted? %></td>
+    <td><%= "<b>" unless membership.accepted? %><%=h membership.created_at %><%= "</b>" unless membership.accepted? %></td>
+    <td><%= "<b>" unless membership.accepted? %><%=h membership.accepted_at || "Pending" %><%= "</b>" unless membership.accepted? %></td>
+    <% if my_page? membership.network.owner.id %>
+    <td><%= link_to 'Review / Accept', membership_path(membership.user_id, membership) %></td>
+    <td><%= link_to 'Delete', membership_path(membership.user_id, membership), :confirm => 'Are you sure?', :method => :delete %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

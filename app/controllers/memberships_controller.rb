@@ -5,8 +5,8 @@ class MembershipsController < ApplicationController
   before_filter :find_membership, :only => [:show]
   before_filter :find_membership_auth, :only => [:accept, :edit, :update, :destroy]
   
-  # GET /networks/1/memberships/1;accept
-  # GET /networks/1/memberships/1.xml;accept
+  # GET /users/1/memberships/1;accept
+  # GET /users/1/memberships/1.xml;accept
   # GET /memberships/1;accept
   # GET /memberships/1.xml;accept
   def accept
@@ -23,8 +23,6 @@ class MembershipsController < ApplicationController
   
   # GET /users/1/memberships
   # GET /users/1/memberships.xml
-  # GET /networks/1/memberships
-  # GET /networks/1/memberships.xml
   # GET /memberships
   # GET /memberships.xml
   def index
@@ -36,8 +34,6 @@ class MembershipsController < ApplicationController
 
   # GET /users/1/memberships/1
   # GET /users/1/memberships/1.xml
-  # GET /networks/1/memberships/1
-  # GET /networks/1/memberships/1.xml
   # GET /memberships/1
   # GET /memberships/1.xml
   def show
@@ -48,14 +44,13 @@ class MembershipsController < ApplicationController
   end
 
   # GET /users/1/memberships/new
-  # GET /networks/1/memberships/new
   # GET /memberships/new
   def new
     if params[:network_id]
       begin
-        n = Network.find(params[:network_id])
+        @network = Network.find(params[:network_id])
         
-        @membership = Membership.new(:user_id => current_user.id, :network_id => n.id)
+        @membership = Membership.new(:user_id => current_user.id, :network_id => @network.id)
       rescue ActiveRecord::RecordNotFound
         error("Network not found", "is invalid", :network_id)
       end
@@ -64,7 +59,7 @@ class MembershipsController < ApplicationController
     end
   end
 
-  # GET /networks/1/memberships/1;edit
+  # GET /users/1/memberships/1;edit
   # GET /memberships/1;edit
   def edit
     
@@ -72,21 +67,19 @@ class MembershipsController < ApplicationController
 
   # POST /users/1/memberships
   # POST /users/1/memberships.xml
-  # POST /networks/1/memberships
-  # POST /networks/1/memberships.xml
   # POST /memberships
   # POST /memberships.xml
   def create
-    if (@membership = Membership.new(params[:membership]) unless Membership.find_by_user_id_and_network_id(params[:membership][:user_id], params[:membership][:network_id]))
+    if (@membership = Membership.new(params[:membership]) unless Membership.find_by_user_id_and_network_id(params[:membership][:user_id], params[:membership][:network_id]) or Network.find(params[:membership][:network_id]).owner? params[:membership][:user_id])
       # set initial datetime
       @membership.created_at = Time.now
       @membership.accepted_at = nil
 
       respond_to do |format|
         if @membership.save
-          flash[:notice] = 'Membership was successfully created.'
-          format.html { redirect_to membership_url(@membership.network_id, @membership) }
-          format.xml  { head :created, :location => membership_url(@membership.network_id, @membership) }
+          flash[:notice] = 'Membership was successfully requested.'
+          format.html { redirect_to membership_url(@membership.user_id, @membership) }
+          format.xml  { head :created, :location => membership_url(@membership.user_id, @membership) }
         else
           format.html { render :action => "new" }
           format.xml  { render :xml => @membership.errors.to_xml }
@@ -97,15 +90,15 @@ class MembershipsController < ApplicationController
     end
   end
 
-  # PUT /networks/1/memberships/1
-  # PUT /networks/1/memberships/1.xml
+  # PUT /users/1/memberships/1
+  # PUT /users/1/memberships/1.xml
   # PUT /memberships/1
   # PUT /memberships/1.xml
   def update
     respond_to do |format|
       if @membership.update_attributes(params[:membership])
         flash[:notice] = 'Membership was successfully updated.'
-        format.html { redirect_to membership_url(@membership.network_id, @membership) }
+        format.html { redirect_to membership_url(@membership.user_id, @membership) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -114,17 +107,17 @@ class MembershipsController < ApplicationController
     end
   end
 
-  # DELETE /networks/1/memberships/1
-  # DELETE /networks/1/memberships/1.xml
+  # DELETE /users/1/memberships/1
+  # DELETE /users/1/memberships/1.xml
   # DELETE /memberships/1
   # DELETE /memberships/1.xml
   def destroy
-    network_id = @membership.network_id
+    user_id = @membership.user_id
     
     @membership.destroy
 
     respond_to do |format|
-      format.html { redirect_to memberships_url(network_id) }
+      format.html { redirect_to memberships_url(user_id) }
       format.xml  { head :ok }
     end
   end
@@ -134,19 +127,11 @@ protected
   def find_memberships
     if params[:user_id]
       begin
-        u = User.find(params[:user_id])
+        @user = User.find(params[:user_id])
     
-        @memberships = u.memberships
+        @memberships = @user.memberships
       rescue ActiveRecord::RecordNotFound
         error("User not found", "is invalid", :user_id)
-      end
-    elsif params[:network_id]
-      begin
-        n = Network.find(params[:network_id])
-    
-        @memberships = n.memberships
-      rescue ActiveRecord::RecordNotFound
-        error("Network not found", "is invalid", :network_id)
       end
     else
       @memberships = Membership.find(:all, :order => "created_at DESC")
@@ -156,27 +141,15 @@ protected
   def find_membership
     if params[:user_id]
       begin
-        u = User.find(params[:user_id])
+        @user = User.find(params[:user_id])
     
         begin
-          @membership = Membership.find(params[:id], :conditions => ["user_id = ?", u.id])
+          @membership = Membership.find(params[:id], :conditions => ["user_id = ?", @user.id])
         rescue ActiveRecord::RecordNotFound
           error("Membership not found", "is invalid")
         end
       rescue ActiveRecord::RecordNotFound
         error("User not found", "is invalid", :user_id)
-      end
-    elsif params[:network_id]
-      begin
-        n = Network.find(params[:network_id])
-    
-        begin
-          @membership = Membership.find(params[:id], :conditions => ["network_id = ?", n.id])
-        rescue ActiveRecord::RecordNotFound
-          error("Membership not found", "is invalid")
-        end
-      rescue ActiveRecord::RecordNotFound
-        error("Network not found", "is invalid", :network_id)
       end
     else
       begin
@@ -188,10 +161,10 @@ protected
   end
   
   def find_membership_auth
-    if params[:network_id]
+    if params[:user_id]
       begin
         membership = Membership.find(params[:id])
-      
+        
         if Network.find(membership.network_id).owner? current_user.id
           @membership = membership
         else
@@ -201,7 +174,7 @@ protected
         error("Membership not found", "is invalid")
       end
     else
-      error("Friendship not found (id not authorized)", "is invalid (not owner)")
+      error("Membership not found (id not authorized)", "is invalid (not owner)")
     end
   end
   

@@ -6,15 +6,19 @@ body, p, ol, ul, td {
   line-height: 18px;
 }
 
+td {
+  text-align: center;
+}
+
 pre {
   background-color: #eee;
   padding: 10px;
   font-size: 11px;
 }
 
-a { color: #000; }
-a:visited { color: #666; }
-a:hover { color: #fff; background-color:#000; }
+a { color: black; }
+a:visited { color: black; }
+a:hover { color: red; }
 
 .fieldWithErrors {
   padding: 2px;
@@ -72,3 +76,26 @@ div.progressBar div.background {
   width: 0%;
 }
 
+a img, a img:hover {
+  border: 0;
+}
+
+#hlist
+{
+width: 100%;
+}
+
+#hlist ul
+{
+width: 100%;
+display: inline;
+list-style: none;
+}
+#hlist ul li
+{
+width: 250px;
+float: left;
+display: inline;
+list-style: none;
+text-align: center;
+}
