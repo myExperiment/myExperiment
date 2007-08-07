@@ -1,4 +1,6 @@
 class Network < ActiveRecord::Base
+  acts_as_contributor
+  
   validates_associated :owner
   
   validates_presence_of :user_id, :title, :unique

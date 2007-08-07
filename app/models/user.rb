@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  acts_as_contributor
+  
   validates_uniqueness_of :openid_url
   
   validates_presence_of :openid_url, :name

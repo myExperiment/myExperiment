@@ -2,7 +2,22 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 8) do
+ActiveRecord::Schema.define(:version => 10) do
+
+  create_table "blobs", :force => true do |t|
+    t.column "name",       :string
+    t.column "data",       :binary
+    t.column "created_at", :datetime
+  end
+
+  create_table "contributions", :force => true do |t|
+    t.column "contributor_id",     :integer
+    t.column "contributor_type",   :string
+    t.column "contributable_id",   :integer
+    t.column "contributable_type", :string
+    t.column "policy_id",          :integer
+    t.column "created_at",         :datetime
+  end
 
   create_table "friendships", :force => true do |t|
     t.column "user_id",     :integer
@@ -36,9 +51,29 @@ ActiveRecord::Schema.define(:version => 8) do
     t.column "updated_at", :datetime
   end
 
+  create_table "permissions", :force => true do |t|
+    t.column "contributor_id",   :integer
+    t.column "contributor_type", :string
+    t.column "policy_id",        :integer
+    t.column "download",         :boolean, :default => false
+    t.column "edit",             :boolean, :default => false
+    t.column "view",             :boolean, :default => false
+  end
+
   create_table "pictures", :force => true do |t|
     t.column "user_id", :integer
     t.column "data",    :binary
+  end
+
+  create_table "policies", :force => true do |t|
+    t.column "contributor_id",     :integer
+    t.column "contributor_type",   :string
+    t.column "download_public",    :boolean, :default => true
+    t.column "edit_public",        :boolean, :default => true
+    t.column "view_public",        :boolean, :default => true
+    t.column "download_protected", :boolean, :default => true
+    t.column "edit_protected",     :boolean, :default => true
+    t.column "view_protected",     :boolean, :default => true
   end
 
   create_table "profiles", :force => true do |t|
