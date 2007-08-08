@@ -1,0 +1,18 @@
+<p>
+  <b>Contributor:</b>
+  <%=h @hyperlink.contributor_id %>
+</p>
+
+<p>
+  <b>Contributor type:</b>
+  <%=h @hyperlink.contributor_type %>
+</p>
+
+<p>
+  <b>Path:</b>
+  <%=h @hyperlink.path %>
+</p>
+
+
+<%= link_to 'Edit', edit_hyperlink_path(@hyperlink) %> |
+<%= link_to 'Back', hyperlinks_path %>
