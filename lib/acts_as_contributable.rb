@@ -70,8 +70,8 @@ module Mib
       end
       
       module InstanceMethods
-        def authorized?(contributor, action_name)
-          contribution.authorized?(contributor, action_name)
+        def authorized?(action_name, contributor=nil)
+          contribution.authorized?(action_name, contributor)
         end
       end
     end

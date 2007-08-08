@@ -3,7 +3,14 @@ class BlobsController < ApplicationController
   def download
     @blob = Blob.find(params[:id])
     
-    send_data(@blob.data, :filename => @blob.local_name, :type => @blob.content_type) if @blob
+    if @blob.authorized?("download", current_user)
+      send_data(@blob.data, :filename => @blob.local_name, :type => @blob.content_type)
+    else
+      flash[:notice] = "Not authorized to download #{@blob.local_name}"
+      redirect_to 'index'
+    end
+    
+    #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type)
   end
   
   # GET /blobs
@@ -41,9 +48,16 @@ class BlobsController < ApplicationController
   # POST /blobs
   # POST /blobs.xml
   def create
-    params[:blob][:local_name] = params[:blob][:data].original_filename
+    params[:blob][:local_name] = sanitize_filename(params[:blob][:data].original_filename)
     params[:blob][:content_type] = params[:blob][:data].content_type
     params[:blob][:data] = params[:blob][:data].read
+    
+    # params[:blob][:data].rewind
+    # File.open("#{RAILS_ROOT}/uploaded_#{controller_name}/#{params[:blob][:contributor_type].downcase.pluralize}/#{params[:blob][:contributor_id]}/#{params[:blob][:local_name]}", "wb") do |f|  
+    #   f.write(params[:blob][:data].read)
+    # end
+    
+    # params[:blob].delete('data')
     
     @blob = Blob.new(params[:blob])
 
@@ -86,5 +100,15 @@ class BlobsController < ApplicationController
       format.html { redirect_to blobs_url }
       format.xml  { head :ok }
     end
+  end
+  
+private
+
+  # http://manuals.rubyonrails.com/read/chapter/78
+  def sanitize_filename(file_name)
+    # get only the filename, not the whole path (from IE)
+    just_filename = File.basename(file_name) 
+    # replace all non-alphanumeric, underscore or periods with underscores
+    just_filename.gsub(/[^\w\.\-]/,'_') 
   end
 end

@@ -6,7 +6,7 @@ class Policy < ActiveRecord::Base
   validates_presence_of :contributor
   
   # def authorized?(TOAUTH, AUTHFOR, METHOD)
-  def authorized?(contributor, contribution, action_name="view")
+  def authorized?(action_name, contribution, contributor=nil)
     begin
       # false unless correct policy for contribution
       return false unless contribution.policy.id.to_i == id.to_i
@@ -14,17 +14,19 @@ class Policy < ActiveRecord::Base
       # false unless action can be categorized
       return false unless category = categorize(action_name)
       
-      # true if owner of contribution
-      return true if contribution.contributor_id.to_i == contributor.id.to_i and contribution.contributor_type.to_s == contributor.class.to_s
-      
       # true if policy[category_public]
       return true if public?(category)
       
-      # true if contribution.contributor and contributor are related and policy[category_protected]
-      return true if contribution.contributor.related? contributor and protected?(category)
+      unless contributor.nil?
+        # true if owner of contribution
+        return true if owner?(contribution, contributor)
       
-      # true if permission and permission[category]
-      return true if private?(category, contributor)
+        # true if contribution.contributor and contributor are related and policy[category_protected]
+        return true if contribution.contributor.related? contributor and protected?(category)
+      
+        # true if permission and permission[category]
+        return true if private?(category, contributor)
+      end
     rescue ActiveRecord::RecordNotFound
       # all errors return false
       return false
@@ -51,6 +53,10 @@ private
     end
       
     return nil
+  end
+  
+  def owner?(c_bution, c_utor)
+    c_bution.contributor_id.to_i == c_utor.id.to_i and c_bution.contributor_type.to_s == c_utor.class.to_s
   end
   
   def public?(category)

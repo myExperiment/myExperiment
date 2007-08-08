@@ -1,11 +1,11 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   def current_user
-    session[:user_id] ? User.find(session[:user_id]) : 0
+    session[:user_id] ? User.find(session[:user_id]) : nil
   end
   
   def logged_in?
-    current_user != 0
+    !current_user.nil?
   end
   
   def my_page?(user_id)

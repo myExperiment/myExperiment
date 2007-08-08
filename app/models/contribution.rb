@@ -3,7 +3,7 @@ class Contribution < ActiveRecord::Base
   belongs_to :contributable, :polymorphic => true
   belongs_to :policy
   
-  def authorized?(contributor, action_name)
-    policy.nil? ? true : policy.authorized?(contributor, self, action_name)
+  def authorized?(action_name, contributor=nil)
+    policy.nil? ? true : policy.authorized?(action_name, self, contributor)
   end
 end

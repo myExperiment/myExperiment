@@ -6,11 +6,11 @@ class ApplicationController < ActionController::Base
   session :session_key => '_m2_session_id'
   
   def current_user
-    session[:user_id] ? User.find(session[:user_id]) : 0
+    session[:user_id] ? User.find(session[:user_id]) : nil
   end
   
   def logged_in?
-    current_user != 0
+    !current_user.nil?
   end
   
 private
