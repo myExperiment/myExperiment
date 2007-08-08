@@ -53,6 +53,7 @@ module Mib
           rtn = []
           
           Contribution.find_all_by_contributor_id_and_contributor_type(self.id, self.class.to_s, { :order => "contributable_type ASC, contributable_id ASC" }).each do |c|
+            # rtn << c.contributable_type.classify.constantize.find(c.contributable_id)
             rtn << c.contributable
           end
           
