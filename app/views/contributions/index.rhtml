@@ -1,0 +1,30 @@
+<h1>Listing contributions</h1>
+
+<table>
+  <tr>
+    <th>Contributor</th>
+    <th>Contributor type</th>
+    <th>Contributable</th>
+    <th>Contributable type</th>
+    <th>Policy</th>
+    <th>Created at</th>
+  </tr>
+  
+<% for contribution in @contributions %>
+  <tr>
+    <td><%=h contribution.contributor_id %></td>
+    <td><%=h contribution.contributor_type %></td>
+    <td><%=h contribution.contributable_id %></td>
+    <td><%=h contribution.contributable_type %></td>
+    <td><%=h contribution.policy_id %></td>
+    <td><%=h contribution.created_at %></td>
+    <td><%= link_to 'Show', contribution_path(contribution) %></td>
+    <td><%= link_to 'Edit', edit_contribution_path(contribution) %></td>
+    <td><%= link_to 'Destroy', contribution_path(contribution), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New contribution', new_contribution_path %>

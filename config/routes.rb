@@ -1,4 +1,12 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :permissions
+
+  map.resources :policies
+
+  map.resources :contributions
+
+  map.resources :contributions
+
   # message center for current_user (User.find session[:user_id])
   map.resources :messages
 

@@ -1,0 +1,34 @@
+<h1>Listing policies</h1>
+
+<table>
+  <tr>
+    <th>Contributor</th>
+    <th>Contributor type</th>
+    <th>Download public</th>
+    <th>Edit public</th>
+    <th>View public</th>
+    <th>Download protected</th>
+    <th>Edit protected</th>
+    <th>View protected</th>
+  </tr>
+  
+<% for policy in @policies %>
+  <tr>
+    <td><%=h policy.contributor_id %></td>
+    <td><%=h policy.contributor_type %></td>
+    <td><%=h policy.download_public %></td>
+    <td><%=h policy.edit_public %></td>
+    <td><%=h policy.view_public %></td>
+    <td><%=h policy.download_protected %></td>
+    <td><%=h policy.edit_protected %></td>
+    <td><%=h policy.view_protected %></td>
+    <td><%= link_to 'Show', policy_path(policy) %></td>
+    <td><%= link_to 'Edit', edit_policy_path(policy) %></td>
+    <td><%= link_to 'Destroy', policy_path(policy), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New policy', new_policy_path %>

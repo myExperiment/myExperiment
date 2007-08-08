@@ -1,0 +1,33 @@
+<p>
+  <b>Contributor:</b>
+  <%=h @contribution.contributor_id %>
+</p>
+
+<p>
+  <b>Contributor type:</b>
+  <%=h @contribution.contributor_type %>
+</p>
+
+<p>
+  <b>Contributable:</b>
+  <%=h @contribution.contributable_id %>
+</p>
+
+<p>
+  <b>Contributable type:</b>
+  <%=h @contribution.contributable_type %>
+</p>
+
+<p>
+  <b>Policy:</b>
+  <%=h @contribution.policy_id %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=h @contribution.created_at %>
+</p>
+
+
+<%= link_to 'Edit', edit_contribution_path(@contribution) %> |
+<%= link_to 'Back', contributions_path %>

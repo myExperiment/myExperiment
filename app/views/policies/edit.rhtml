@@ -1,0 +1,52 @@
+<h1>Editing policy</h1>
+
+<%= error_messages_for :policy %>
+
+<% form_for(:policy, :url => policy_path(@policy), :html => { :method => :put }) do |f| %>
+  <p>
+    <b>Contributor</b><br />
+    <%= f.text_field :contributor_id %>
+  </p>
+
+  <p>
+    <b>Contributor type</b><br />
+    <%= f.text_field :contributor_type %>
+  </p>
+
+  <p>
+    <b>Download public</b><br />
+    <%= f.check_box :download_public %>
+  </p>
+
+  <p>
+    <b>Edit public</b><br />
+    <%= f.check_box :edit_public %>
+  </p>
+
+  <p>
+    <b>View public</b><br />
+    <%= f.check_box :view_public %>
+  </p>
+
+  <p>
+    <b>Download protected</b><br />
+    <%= f.check_box :download_protected %>
+  </p>
+
+  <p>
+    <b>Edit protected</b><br />
+    <%= f.check_box :edit_protected %>
+  </p>
+
+  <p>
+    <b>View protected</b><br />
+    <%= f.check_box :view_protected %>
+  </p>
+
+  <p>
+    <%= submit_tag "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', policy_path(@policy) %> |
+<%= link_to 'Back', policies_path %>

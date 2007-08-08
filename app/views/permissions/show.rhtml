@@ -1,0 +1,33 @@
+<p>
+  <b>Contributor:</b>
+  <%=h @permission.contributor_id %>
+</p>
+
+<p>
+  <b>Contributor type:</b>
+  <%=h @permission.contributor_type %>
+</p>
+
+<p>
+  <b>Policy:</b>
+  <%=h @permission.policy_id %>
+</p>
+
+<p>
+  <b>Download:</b>
+  <%=h @permission.download %>
+</p>
+
+<p>
+  <b>Edit:</b>
+  <%=h @permission.edit %>
+</p>
+
+<p>
+  <b>View:</b>
+  <%=h @permission.view %>
+</p>
+
+
+<%= link_to 'Edit', edit_permission_path(@permission) %> |
+<%= link_to 'Back', permissions_path %>

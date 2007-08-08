@@ -1,0 +1,21 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+one:
+  id: 1
+  contributor_id: 1
+  contributor_type: MyString
+  download_public: false
+  edit_public: false
+  view_public: false
+  download_protected: false
+  edit_protected: false
+  view_protected: false
+two:
+  id: 2
+  contributor_id: 1
+  contributor_type: MyString
+  download_public: false
+  edit_public: false
+  view_public: false
+  download_protected: false
+  edit_protected: false
+  view_protected: false

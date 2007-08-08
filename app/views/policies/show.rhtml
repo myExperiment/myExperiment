@@ -1,0 +1,43 @@
+<p>
+  <b>Contributor:</b>
+  <%=h @policy.contributor_id %>
+</p>
+
+<p>
+  <b>Contributor type:</b>
+  <%=h @policy.contributor_type %>
+</p>
+
+<p>
+  <b>Download public:</b>
+  <%=h @policy.download_public %>
+</p>
+
+<p>
+  <b>Edit public:</b>
+  <%=h @policy.edit_public %>
+</p>
+
+<p>
+  <b>View public:</b>
+  <%=h @policy.view_public %>
+</p>
+
+<p>
+  <b>Download protected:</b>
+  <%=h @policy.download_protected %>
+</p>
+
+<p>
+  <b>Edit protected:</b>
+  <%=h @policy.edit_protected %>
+</p>
+
+<p>
+  <b>View protected:</b>
+  <%=h @policy.view_protected %>
+</p>
+
+
+<%= link_to 'Edit', edit_policy_path(@policy) %> |
+<%= link_to 'Back', policies_path %>

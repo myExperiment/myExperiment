@@ -1,11 +1,22 @@
+require 'acts_as_contributor'
+
 class User < ActiveRecord::Base
   acts_as_contributor
+  
+  # FIX ME!!
+  def related?(other) # other.kind_of? Mib::Act::Contributor
+    false
+  end
   
   validates_uniqueness_of :openid_url
   
   validates_presence_of :openid_url, :name
   
   has_one :profile
+  
+  before_create do |u|
+    u.profile = Profile.new(:user_id => id, :created_at => Time.now, :updated_at => Time.now)
+  end
   
   has_many :pictures
   
