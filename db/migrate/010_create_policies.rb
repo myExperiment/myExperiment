@@ -4,6 +4,8 @@ class CreatePolicies < ActiveRecord::Migration
       t.column :contributor_id, :integer
       t.column :contributor_type, :string
       
+      t.column :name, :string
+      
       t.column :download_public, :boolean, :default => true
       t.column :edit_public, :boolean, :default => true
       t.column :view_public, :boolean, :default => true
