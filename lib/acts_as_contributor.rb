@@ -46,27 +46,19 @@ module Mib
       end
       
       module SingletonMethods
-        # def find_by_contributable(contributable, options = {})
-        #   find_by_contributable_id_and_contributable_type(contributable.id, contributable.class.to_s, options)
-        # end
-          
-        # def find_by_contributable_id_and_contributable_type(contributable_id, contributable_type, options = {})
-        #   # protect the original sql statement
-        #   options.delete(:select) if options[:select]
-        #   options.delete(:joins) if options[:joins]
-        #   
-        #   select_columns = ""
-        #   columns.each do |c|
-        #     select_columns << ", " unless select_columns.empty?
-        #     select_columns << "#{table_name}.#{c.name}"
-        #   end
-        #   
-        #   find(:first, { :select => select_columns, 
-        #                  :joins => "LEFT OUTER JOIN contributions ON contributions.contributable_id = #{contributable_id} AND contributions.contributable_type = '#{contributable_type}'"}.merge(options))
-        # end
       end
       
       module InstanceMethods
+        def contributables
+          rtn = []
+          
+          Contribution.find_all_by_contributor_id_and_contributor_type(self.id, self.class.to_s, { :order => "contributable_type ASC, contributable_id ASC" }).each do |c|
+            rtn << c.contributable
+          end
+          
+          return rtn
+        end
+      
         # extend in instance class
         def related?(other)
           false
