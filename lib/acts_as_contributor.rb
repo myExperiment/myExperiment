@@ -60,8 +60,9 @@ module Mib
           return rtn
         end
       
-        # extend in instance class
+        # this method is called by the Policy instance when authorizing protected attributes.
         def related?(other)
+          # extend in instance class
           false
         end
       end

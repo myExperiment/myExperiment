@@ -5,7 +5,6 @@ class Policy < ActiveRecord::Base
   
   validates_presence_of :contributor
   
-  # def authorized?(TOAUTH, AUTHFOR, METHOD)
   def authorized?(action_name, contribution, contributor=nil)
     begin
       # false unless correct policy for contribution

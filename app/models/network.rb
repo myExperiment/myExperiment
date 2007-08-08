@@ -3,9 +3,14 @@ require 'acts_as_contributor'
 class Network < ActiveRecord::Base
   acts_as_contributor
   
-  # FIX ME!!
   def related?(other) # other.kind_of? Mib::Act::Contributor
-    false
+    if other.kind_of? Network
+      return relation? other
+    elsif other.kind_of? User
+      return member? other
+    else
+      return false
+    end
   end
   
   validates_associated :owner

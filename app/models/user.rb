@@ -3,9 +3,18 @@ require 'acts_as_contributor'
 class User < ActiveRecord::Base
   acts_as_contributor
   
-  # FIX ME!!
+  # "is self related to other?"
+  # "if other is a User, is other a friend of self?"
+  # "if other is a Network, false"
+  # "else false"
   def related?(other) # other.kind_of? Mib::Act::Contributor
-    false
+    if other.kind_of? User
+      return friend? other
+    elsif other.kind_of? Network
+      return false
+    else
+      return false
+    end
   end
   
   validates_uniqueness_of :openid_url
