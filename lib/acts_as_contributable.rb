@@ -34,16 +34,39 @@ module Mib
       
       module ClassMethods
         def acts_as_contributable
+          belongs_to :contributor, :polymorphic => true
           has_one :contribution, :as => :contributable
           
           class_eval do
             extend Mib::Acts::Contributable::SingletonMethods
           end
           include Mib::Acts::Contributable::InstanceMethods
+          
+          before_create do |c|
+            c.contribution = Contribution.new(:contributor => c.contributor, :contributable => c)
+          end
         end
       end
       
       module SingletonMethods
+        def find_all_by_contributor(contributor, options = {})
+          find_all_by_contributor_id_and_contributor_type(contributor.id, contributor.class.to_s, options)
+        end
+        
+        def find_all_by_contributor_id_and_contributor_type(contributor_id, contributor_type, options = {})
+          # protect the original sql statement
+          options.delete(:select) if options[:select]
+          options.delete(:joins) if options[:joins]
+          
+          select_columns = ""
+          columns.each do |c|
+            select_columns << ", " unless select_columns.empty?
+            select_columns << "#{table_name}.#{c.name}"
+          end
+          
+          find(:all, { :select => select_columns, 
+                       :joins => "LEFT OUTER JOIN contributions ON contributions.contributor_id = #{contributor_id} AND contributions.contributor_type = '#{contributor_type}'"}.merge(options))
+        end
       end
       
       module InstanceMethods
