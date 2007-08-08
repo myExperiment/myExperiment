@@ -15,7 +15,7 @@ class Policy < ActiveRecord::Base
       return false unless category = categorize(action_name)
       
       # true if owner of contribution
-      return true if contribution.contributor_id.to_i == contributor.id.to_i and contribution.contributor_type.to_s == contributor.type.to_s
+      return true if contribution.contributor_id.to_i == contributor.id.to_i and contribution.contributor_type.to_s == contributor.class.to_s
       
       # true if policy[category_public]
       return true if public?(category)

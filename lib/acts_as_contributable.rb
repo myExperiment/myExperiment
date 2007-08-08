@@ -43,7 +43,7 @@ module Mib
           include Mib::Acts::Contributable::InstanceMethods
           
           before_create do |c|
-            c.contribution = Contribution.new(:contributor => c.contributor, :contributable => c)
+            c.contribution = Contribution.new(:contributor_id => c.contributor_id, :contributor_type => c.contributor_type, :contributable => c)
           end
         end
       end
@@ -70,6 +70,9 @@ module Mib
       end
       
       module InstanceMethods
+        def authorized?(contributor, action_name)
+          contribution.authorized?(contributor, action_name)
+        end
       end
     end
   end

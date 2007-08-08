@@ -2,12 +2,14 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 12) do
+ActiveRecord::Schema.define(:version => 13) do
 
   create_table "blobs", :force => true do |t|
-    t.column "filename", :string
-    t.column "mime",     :string
-    t.column "data",     :binary
+    t.column "contributor_id",   :integer
+    t.column "contributor_type", :string
+    t.column "local_name",       :string
+    t.column "content_type",     :string
+    t.column "data",             :binary
   end
 
   create_table "contributions", :force => true do |t|
@@ -24,6 +26,12 @@ ActiveRecord::Schema.define(:version => 12) do
     t.column "friend_id",   :integer
     t.column "created_at",  :datetime
     t.column "accepted_at", :datetime
+  end
+
+  create_table "hyperlinks", :force => true do |t|
+    t.column "contributor_id",   :integer
+    t.column "contributor_type", :string
+    t.column "path",             :string
   end
 
   create_table "memberships", :force => true do |t|
@@ -68,6 +76,7 @@ ActiveRecord::Schema.define(:version => 12) do
   create_table "policies", :force => true do |t|
     t.column "contributor_id",     :integer
     t.column "contributor_type",   :string
+    t.column "name",               :string
     t.column "download_public",    :boolean, :default => true
     t.column "edit_public",        :boolean, :default => true
     t.column "view_public",        :boolean, :default => true

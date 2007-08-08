@@ -1,0 +1,23 @@
+<p>
+  <b>Contributor:</b>
+  <%=h @blob.contributor_id %>
+</p>
+
+<p>
+  <b>Contributor type:</b>
+  <%=h @blob.contributor_type %>
+</p>
+
+<p>
+  <b>Local name:</b>
+  <%=h @blob.local_name %>
+</p>
+
+<p>
+  <b>Content type:</b>
+  <%=h @blob.content_type %>
+</p>
+
+
+<%= link_to 'Edit', edit_blob_path(@blob) %> |
+<%= link_to 'Back', blobs_path %>

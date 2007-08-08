@@ -1,11 +1,9 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :permissions
+  map.resources :blobs, :member => { :download => :get }
 
-  map.resources :policies
+  map.resources :hyperlinks
 
-  map.resources :contributions
-
-  map.resources :contributions
+  map.resources :contributions, :policies, :permissions
 
   # message center for current_user (User.find session[:user_id])
   map.resources :messages

@@ -1,0 +1,26 @@
+<h1>Listing blobs</h1>
+
+<table>
+  <tr>
+    <th>Contributor</th>
+    <th>Contributor type</th>
+    <th>Local name</th>
+    <th>Content type</th>
+  </tr>
+  
+<% for blob in @blobs %>
+  <tr>
+    <td><%=h blob.contributor_id %></td>
+    <td><%=h blob.contributor_type %></td>
+    <td><%=h blob.local_name %></td>
+    <td><%=h blob.content_type %></td>
+    <td><%= link_to 'Show', blob_path(blob) %></td>
+    <td><%= link_to 'Edit', edit_blob_path(blob) %></td>
+    <td><%= link_to 'Destroy', blob_path(blob), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New blob', new_blob_path %>

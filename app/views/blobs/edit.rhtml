@@ -1,0 +1,12 @@
+<h1>Editing blob</h1>
+
+<%= error_messages_for :blob %>
+
+<% form_for(:blob, :url => blob_path(@blob), :html => { :method => :put }) do |f| %>
+  <p>
+    <%= submit_tag "Save Changes" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', blob_path(@blob) %> |
+<%= link_to 'Back', blobs_path %>
