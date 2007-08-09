@@ -3,7 +3,13 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :hyperlinks
 
-  map.resources :contributions, :policies, :permissions
+  map.resources :contributions
+  
+  # all policies for all contributables
+  map.resources :policies do |policy|
+    # policies have nested permissions that name contributors
+    policy.resources :permissions
+  end
 
   # message center for current_user (User.find session[:user_id])
   map.resources :messages

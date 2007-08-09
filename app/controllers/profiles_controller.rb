@@ -49,9 +49,6 @@ class ProfilesController < ApplicationController
       # set legal value for "null avatar"
       (@profile.picture_id = nil) if (@profile.picture_id.to_i == 0)
       
-      # set initial datetime
-      @profile.created_at = @profile.updated_at = Time.now
-  
       respond_to do |format|
         if @profile.save
           flash[:notice] = 'Profile was successfully created.'
@@ -75,9 +72,6 @@ class ProfilesController < ApplicationController
   def update
     # maintain legal value for "null avatar"
     (params[:profile][:picture_id] = nil) if (params[:profile][:picture_id].to_i == 0)
-    
-    # update datetime
-    @profile.updated_at = Time.now
     
     respond_to do |format|
       if @profile.update_attributes(params[:profile])

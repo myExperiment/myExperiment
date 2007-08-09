@@ -66,7 +66,6 @@ class FriendshipsController < ApplicationController
   def create
     if (@friendship = Friendship.new(params[:friendship]) unless Friendship.find_by_user_id_and_friend_id(params[:friendship][:user_id], params[:friendship][:friend_id]))
       # set initial datetime
-      @friendship.created_at = Time.now
       @friendship.accepted_at = nil
 
       respond_to do |format|
@@ -89,6 +88,9 @@ class FriendshipsController < ApplicationController
   # PUT /friendships/1
   # PUT /friendships/1.xml
   def update
+    # no spoofing of acceptance
+    params[:friendship].delete('accepted_at') if params[:friendship][:accepted_at]
+    
     respond_to do |format|
       if @friendship.update_attributes(params[:friendship])
         flash[:notice] = 'Friendship was successfully updated.'

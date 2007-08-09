@@ -45,6 +45,10 @@ module Mib
           before_create do |c|
             c.contribution = Contribution.new(:contributor_id => c.contributor_id, :contributor_type => c.contributor_type, :contributable => c)
           end
+          
+          before_destroy do |c|
+            c.contribution.destroy
+          end
         end
       end
       

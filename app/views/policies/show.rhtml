@@ -43,6 +43,16 @@
   <%=h @policy.view_protected %>
 </p>
 
+<p>
+  <b>Created at:</b>
+  <%=h @policy.created_at %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%=h @policy.updated_at %>
+</p>
+
 
 <%= link_to 'Edit', edit_policy_path(@policy) %> |
 <%= link_to 'Back', policies_path %>

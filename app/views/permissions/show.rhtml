@@ -28,6 +28,16 @@
   <%=h @permission.view %>
 </p>
 
+<p>
+  <b>Created at:</b>
+  <%=h @permission.created_at %>
+</p>
 
-<%= link_to 'Edit', edit_permission_path(@permission) %> |
-<%= link_to 'Back', permissions_path %>
+<p>
+  <b>Updated at:</b>
+  <%=h @permission.updated_at %>
+</p>
+
+
+<%= link_to 'Edit', edit_permission_path(@permission.policy, @permission) %> |
+<%= link_to 'Back', permissions_path(@permission.policy) %>

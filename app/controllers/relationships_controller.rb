@@ -69,7 +69,6 @@ class RelationshipsController < ApplicationController
   def create
     if (@relationship = Relationship.new(params[:relationship]) unless Relationship.find_by_network_id_and_relation_id(params[:relationship][:network_id], params[:relationship][:relation_id]))
       # set initial datetime
-      @relationship.created_at = Time.now
       @relationship.accepted_at = nil
       
       # current_user must be the owner of Network.find(relation_id)
@@ -95,6 +94,9 @@ class RelationshipsController < ApplicationController
   # PUT /relationships/1
   # PUT /relationships/1.xml
   def update
+    # no spoofing of acceptance
+    params[:relationship].delete('accepted_at') if params[:relationship][:accepted_at]
+    
     respond_to do |format|
       if @relationship.update_attributes(params[:relationship])
         flash[:notice] = 'Relationship was successfully updated.'

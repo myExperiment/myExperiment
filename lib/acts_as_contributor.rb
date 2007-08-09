@@ -34,8 +34,8 @@ module Mib
       
       module ClassMethods
         def acts_as_contributor
-          has_many :contributions, :as => :contributor
-          has_many :policies, :as => :contributor
+          has_many :contributions, :as => :contributor, :order => "created_at DESC"
+          has_many :policies, :as => :contributor, :order => "created_at DESC"
           has_many :permissions, :as => :contributor
           
           class_eval do

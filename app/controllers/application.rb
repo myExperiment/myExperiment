@@ -6,22 +6,23 @@ class ApplicationController < ActionController::Base
   session :session_key => '_m2_session_id'
   
   def current_user
-    session[:user_id] ? User.find(session[:user_id]) : nil
+    @current_user ||= ((session[:user_id] && User.find(session[:user_id])) || 0)
   end
   
   def logged_in?
-    !current_user.nil?
+    current_user != 0
   end
   
 private
   
   def authorize
-    if logged_in?
-      #session[:user_id] = 1
-      #flash[:notice] = "User #{session[:user_id]} logged in"
-    else
+    unless logged_in?
       flash[:notice] = "You are not logged in! (fix this in ApplicationController.rb)"
-      redirect_to :controller => 'users'
+      
+      respond_to do |format|
+        format.html { redirect_to :controller => 'users' }
+        format.xml { head :ok }
+      end
     end
   end
 end

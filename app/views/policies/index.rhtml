@@ -11,6 +11,8 @@
     <th>Download protected</th>
     <th>Edit protected</th>
     <th>View protected</th>
+    <th>Created at</th>
+    <th>Updated at</th>
   </tr>
   
 <% for policy in @policies %>
@@ -24,6 +26,8 @@
     <td><%=h policy.download_protected %></td>
     <td><%=h policy.edit_protected %></td>
     <td><%=h policy.view_protected %></td>
+    <td><%=h policy.created_at %></td>
+    <td><%=h policy.updated_at %></td>
     <td><%= link_to 'Show', policy_path(policy) %></td>
     <td><%= link_to 'Edit', edit_policy_path(policy) %></td>
     <td><%= link_to 'Destroy', policy_path(policy), :confirm => 'Are you sure?', :method => :delete %></td>

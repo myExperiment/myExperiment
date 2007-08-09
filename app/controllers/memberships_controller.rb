@@ -72,7 +72,6 @@ class MembershipsController < ApplicationController
   def create
     if (@membership = Membership.new(params[:membership]) unless Membership.find_by_user_id_and_network_id(params[:membership][:user_id], params[:membership][:network_id]) or Network.find(params[:membership][:network_id]).owner? params[:membership][:user_id])
       # set initial datetime
-      @membership.created_at = Time.now
       @membership.accepted_at = nil
 
       respond_to do |format|
@@ -95,6 +94,9 @@ class MembershipsController < ApplicationController
   # PUT /memberships/1
   # PUT /memberships/1.xml
   def update
+    # no spoofing of acceptance
+    params[:membership].delete('accepted_at') if params[:membership][:accepted_at]
+    
     respond_to do |format|
       if @membership.update_attributes(params[:membership])
         flash[:notice] = 'Membership was successfully updated.'

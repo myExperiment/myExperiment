@@ -13,6 +13,9 @@ class CreatePolicies < ActiveRecord::Migration
       t.column :download_protected, :boolean, :default => true
       t.column :edit_protected, :boolean, :default => true
       t.column :view_protected, :boolean, :default => true
+      
+      t.column :created_at, :datetime
+      t.column :updated_at, :datetime
     end
   end
 

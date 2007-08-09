@@ -9,6 +9,9 @@ class CreatePermissions < ActiveRecord::Migration
       t.column :download, :boolean, :default => false
       t.column :edit, :boolean, :default => false
       t.column :view, :boolean, :default => false
+      
+      t.column :created_at, :datetime
+      t.column :updated_at, :datetime
     end
   end
 

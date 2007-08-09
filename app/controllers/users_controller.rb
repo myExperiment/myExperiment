@@ -38,9 +38,6 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     
-    # set initial datetimes
-    @user.created_at = @user.updated_at = Time.now
-    
     respond_to do |format|
       if @user.save
         flash[:notice] = 'User was successfully created.'
@@ -56,9 +53,6 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.xml
   def update
-    # update datetime
-    @user.updated_at = Time.now
-
     respond_to do |format|
       if @user.update_attributes(params[:user])
         flash[:notice] = 'User was successfully updated.'

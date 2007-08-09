@@ -2,7 +2,7 @@
 
 <%= error_messages_for :permission %>
 
-<% form_for(:permission, :url => permissions_path) do |f| %>
+<% form_for(:permission, :url => permissions_path(params[:policy_id])) do |f| %>
   <p>
     <b>Contributor</b><br />
     <%= f.text_field :contributor_id %>
@@ -38,4 +38,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Back', permissions_path %>
+<%= link_to 'Back', permissions_path(params[:policy_id]) %>

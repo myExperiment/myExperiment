@@ -3,7 +3,7 @@ class BlobsController < ApplicationController
   def download
     @blob = Blob.find(params[:id])
     
-    if @blob.authorized?("download", current_user)
+    if @blob.authorized?("download", (logged_in? ? current_user : nil))
       send_data(@blob.data, :filename => @blob.local_name, :type => @blob.content_type)
     else
       flash[:notice] = "Not authorized to download #{@blob.local_name}"

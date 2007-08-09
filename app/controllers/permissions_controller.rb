@@ -1,36 +1,45 @@
 class PermissionsController < ApplicationController
+  before_filter :authorize
+  
+  before_filter :find_permissions_auth, :only => [:index]
+  before_filter :find_permission_auth, :only => [:show, :edit, :update, :destroy]
+  
+  # GET /policies/1/permissions
+  # GET /policies/1/permissions.xml
   # GET /permissions
   # GET /permissions.xml
   def index
-    @permissions = Permission.find(:all)
-
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @permissions.to_xml }
     end
   end
 
+  # GET /policies/1/permissions
+  # GET /policies/1/permissions.xml
   # GET /permissions/1
   # GET /permissions/1.xml
   def show
-    @permission = Permission.find(params[:id])
-
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @permission.to_xml }
     end
   end
 
+  # GET /policies/1/permissions/new
   # GET /permissions/new
   def new
     @permission = Permission.new
   end
 
+  # GET /policies/1/permissions/1;edit
   # GET /permissions/1;edit
   def edit
-    @permission = Permission.find(params[:id])
+    
   end
 
+  # POST /policies/1/permissions
+  # POST /policies/1/permissions.xml
   # POST /permissions
   # POST /permissions.xml
   def create
@@ -39,8 +48,8 @@ class PermissionsController < ApplicationController
     respond_to do |format|
       if @permission.save
         flash[:notice] = 'Permission was successfully created.'
-        format.html { redirect_to permission_url(@permission) }
-        format.xml  { head :created, :location => permission_url(@permission) }
+        format.html { redirect_to permission_url(@permission.policy, @permission) }
+        format.xml  { head :created, :location => permission_url(@permission.policy, @permission) }
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @permission.errors.to_xml }
@@ -48,15 +57,15 @@ class PermissionsController < ApplicationController
     end
   end
 
+  # PUT /policies/1/permissions/1
+  # PUT /policies/1/permissions/1.xml
   # PUT /permissions/1
   # PUT /permissions/1.xml
   def update
-    @permission = Permission.find(params[:id])
-
     respond_to do |format|
       if @permission.update_attributes(params[:permission])
         flash[:notice] = 'Permission was successfully updated.'
-        format.html { redirect_to permission_url(@permission) }
+        format.html { redirect_to permission_url(@permission.policy, @permission) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -65,15 +74,71 @@ class PermissionsController < ApplicationController
     end
   end
 
+  # DELETE /policies/1/permissions/1
+  # DELETE /policies/1/permissions/1.xml
   # DELETE /permissions/1
   # DELETE /permissions/1.xml
   def destroy
-    @permission = Permission.find(params[:id])
     @permission.destroy
 
     respond_to do |format|
-      format.html { redirect_to permissions_url }
+      format.html { redirect_to permissions_url(@permission.policy)}
       format.xml  { head :ok }
+    end
+  end
+  
+protected
+
+  def find_permissions_auth
+    if params[:policy_id]
+      begin
+        policy = Policy.find(params[:policy_id], :conditions => ["contributor_id = ? AND contributor_type = ?", current_user.id, current_user.class.to_s])
+        
+        @permissions = policy.permissions
+      rescue ActiveRecord::RecordNotFound
+        error("Policy not found (id not authorized)", "is invalid (not owner)", :policy_id)
+      end
+    else
+      @permissions = []
+      current_user.policies.each do |policy|
+        policy.permissions.each do |permission|
+          @permissions << permission
+        end
+      end
+    end
+  end
+
+  def find_permission_auth
+    begin
+      permission = Permission.find(params[:id])
+      
+      params[:policy_id] ||= permission.policy.id
+      
+      begin
+        policy = Policy.find(params[:policy_id], :conditions => ["contributor_id = ? AND contributor_type = ?", current_user.id, current_user.class.to_s])
+        
+        if permission.policy.id.to_i == policy.id.to_i
+          @permission = permission
+        else
+          error("Permission not found (invalid Policy id)", "is invalid (does not match permission.policy_id)", :policy_id)
+        end
+      rescue ActiveRecord::RecordNotFound
+        error("Policy not found (id not authorized)", "is invalid (not owner)", :policy_id)
+      end
+    rescue ActiveRecord::RecordNotFound
+      error("Permission not found (does not exist)", "is invalid (not found)")
+    end
+  end
+  
+private
+
+  def error(notice, message, attr=:id)
+    flash[:notice] = notice
+    (err = Permission.new.errors).add(attr, message)
+    
+    respond_to do |format|
+      format.html { redirect_to policies_url }
+      format.xml { render :xml => err.to_xml }
     end
   end
 end

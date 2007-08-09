@@ -45,9 +45,6 @@ class NetworksController < ApplicationController
   # POST /networks.xml
   def create
     @network = Network.new(params[:network])
-    
-    # set initial datetime
-    @network.created_at = @network.updated_at = Time.now
 
     respond_to do |format|
       if @network.save
@@ -64,9 +61,6 @@ class NetworksController < ApplicationController
   # PUT /networks/1
   # PUT /networks/1.xml
   def update
-    # update datetime
-    @network.updated_at = Time.now
-
     respond_to do |format|
       if @network.update_attributes(params[:network])
         flash[:notice] = 'Network was successfully updated.'

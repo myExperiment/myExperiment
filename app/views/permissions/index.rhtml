@@ -8,6 +8,8 @@
     <th>Download</th>
     <th>Edit</th>
     <th>View</th>
+    <th>Created at</th>
+    <th>Updated at</th>
   </tr>
   
 <% for permission in @permissions %>
@@ -18,13 +20,19 @@
     <td><%=h permission.download %></td>
     <td><%=h permission.edit %></td>
     <td><%=h permission.view %></td>
-    <td><%= link_to 'Show', permission_path(permission) %></td>
-    <td><%= link_to 'Edit', edit_permission_path(permission) %></td>
-    <td><%= link_to 'Destroy', permission_path(permission), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%=h permission.created_at %></td>
+    <td><%=h permission.updated_at %></td>
+    <td><%= link_to 'Show', permission_path(permission.policy, permission) %></td>
+    <td><%= link_to 'Edit', edit_permission_path(permission.policy, permission) %></td>
+    <td><%= link_to 'Destroy', permission_path(permission.policy, permission), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New permission', new_permission_path %>
+<% for policy in current_user.policies %>
+
+<%= link_to "New permission for #{ h policy.name }", new_permission_path(policy) %>
+
+<% end %>

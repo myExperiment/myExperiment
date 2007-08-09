@@ -1,9 +1,13 @@
 class ContributionsController < ApplicationController
+  before_filter :authorize, :except => [:index, :show]
+  
+  before_filter :find_contributions, :only => [:index]
+  before_filter :find_contribution, :only => [:show]
+  before_filter :find_contribution_auth, :only => [:edit, :update, :destroy]
+  
   # GET /contributions
   # GET /contributions.xml
   def index
-    @contributions = Contribution.find(:all)
-
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @contributions.to_xml }
@@ -13,8 +17,6 @@ class ContributionsController < ApplicationController
   # GET /contributions/1
   # GET /contributions/1.xml
   def show
-    @contribution = Contribution.find(params[:id])
-
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @contribution.to_xml }
@@ -28,7 +30,7 @@ class ContributionsController < ApplicationController
 
   # GET /contributions/1;edit
   def edit
-    @contribution = Contribution.find(params[:id])
+
   end
 
   # POST /contributions
@@ -51,8 +53,6 @@ class ContributionsController < ApplicationController
   # PUT /contributions/1
   # PUT /contributions/1.xml
   def update
-    @contribution = Contribution.find(params[:id])
-
     respond_to do |format|
       if @contribution.update_attributes(params[:contribution])
         flash[:notice] = 'Contribution was successfully updated.'
@@ -68,12 +68,45 @@ class ContributionsController < ApplicationController
   # DELETE /contributions/1
   # DELETE /contributions/1.xml
   def destroy
-    @contribution = Contribution.find(params[:id])
     @contribution.destroy
 
     respond_to do |format|
       format.html { redirect_to contributions_url }
       format.xml  { head :ok }
+    end
+  end
+  
+protected
+
+  def find_contributions
+    @contributions = Contribution.find(:all)
+  end
+  
+  def find_contribution
+    begin
+      @contribution = Contribution.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      error("Contribution not found (does not exist)", "is invalid (not found)")
+    end
+  end
+  
+  def find_contribution_auth
+    begin
+      @contribution = Contribution.find(params[:id], :conditions => ["contributor_id = ? AND contributor_type = ?", current_user.id, current_user.class.to_s])
+    rescue ActiveRecord::RecordNotFound
+      error("Contribution not found (id not authorized)", "is invalid (not owner)")
+    end
+  end
+
+private
+
+  def error(notice, message, attr=:id)
+    flash[:notice] = notice
+    (err = Contribution.new.errors).add(attr, message)
+    
+    respond_to do |format|
+      format.html { redirect_to contributions_url }
+      format.xml { render :xml => err.to_xml }
     end
   end
 end

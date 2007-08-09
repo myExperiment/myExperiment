@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   # "else false"
   def related?(other) # other.kind_of? Mib::Act::Contributor
     if other.kind_of? User
-      return friend? other
+      return friend?(other)
     elsif other.kind_of? Network
       return false
     else

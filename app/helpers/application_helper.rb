@@ -8,8 +8,8 @@ module ApplicationHelper
     !current_user.nil?
   end
   
-  def my_page?(user_id)
-    logged_in? and current_user.id.to_i == user_id.to_i
+  def my_page?(user_id, user_type="User")
+    logged_in? and current_user.id.to_i == user_id.to_i and current_user.class.to_s == user_type.to_s
   end
 
   def openid(user_id)

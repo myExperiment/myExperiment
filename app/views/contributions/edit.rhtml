@@ -4,33 +4,8 @@
 
 <% form_for(:contribution, :url => contribution_path(@contribution), :html => { :method => :put }) do |f| %>
   <p>
-    <b>Contributor</b><br />
-    <%= f.text_field :contributor_id %>
-  </p>
-
-  <p>
-    <b>Contributor type</b><br />
-    <%= f.text_field :contributor_type %>
-  </p>
-
-  <p>
-    <b>Contributable</b><br />
-    <%= f.text_field :contributable_id %>
-  </p>
-
-  <p>
-    <b>Contributable type</b><br />
-    <%= f.text_field :contributable_type %>
-  </p>
-
-  <p>
     <b>Policy</b><br />
     <%= f.text_field :policy_id %>
-  </p>
-
-  <p>
-    <b>Created at</b><br />
-    <%= f.datetime_select :created_at %>
   </p>
 
   <p>
