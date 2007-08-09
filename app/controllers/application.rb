@@ -16,13 +16,15 @@ class ApplicationController < ActionController::Base
 private
   
   def authorize
-    unless logged_in?
-      flash[:notice] = "You are not logged in! (fix this in ApplicationController.rb)"
-      
-      respond_to do |format|
-        format.html { redirect_to :controller => 'users' }
-        format.xml { head :ok }
-      end
+    return true if logged_in?
+    
+    flash[:notice] = "You are not logged in! (fix this in ApplicationController.rb)"
+    
+    respond_to do |format|
+      format.html { redirect_to :controller => 'users' }
+      format.xml { head :ok }
     end
+      
+    return false
   end
 end
