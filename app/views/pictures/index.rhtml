@@ -1,7 +1,5 @@
 <h1>Listing pictures</h1>
 
-<% if logged_in? %><p><%= link_to 'Upload new picture', new_picture_path(current_user.id) %><p><% end %>
-
 <table>
   <tr>
     <th>ID</th>
@@ -11,12 +9,15 @@
   
 <% for picture in @pictures %>
   <tr>
-    <td width="150"><font size="18"><%=h picture.id %></font></td>
+    <td width="150">
+      <font size="18"><%=h picture.id %></font>
+      <% if my_page? picture.user_id and !picture.selected? %><br/><%= link_to 'Select as avatar', select_picture_path(picture.user_id, picture) %><% end %>
+    </td>
     <% unless params[:user_id] %><td width="150"><font size="18"><%=h picture.user_id %></font></td><% end %>
-    <td><%= image_tag url_for(:controller => 'pictures',
+    <td><%= image_tag url_for :controller => 'pictures',
                               :action     => 'show',
                               :id         => picture.id,
-                              :size       => '200') %></td>
+                              :size       => '200' %></td>
     <td><%= link_to 'Show', picture_path(picture.user_id, picture) %></td>
     <% if my_page? picture.user_id %>
     <td><%= link_to 'Edit', edit_picture_path(picture.user_id, picture) %></td>
@@ -27,3 +28,5 @@
 </table>
 
 <br />
+
+<% if logged_in? %><p><%= link_to 'Upload new picture', new_picture_path(current_user.id) %><p><% end %>

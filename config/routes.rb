@@ -30,7 +30,7 @@ ActionController::Routing::Routes.draw do |map|
     user.resource :profile, :controller => :profiles
     
     # pictures 'owned by' user
-    user.resources :pictures
+    user.resources :pictures, :member => { :select => :get }
   end
   
   # all networks

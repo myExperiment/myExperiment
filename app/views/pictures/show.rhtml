@@ -4,10 +4,11 @@
 </p>
 
 <p>
-  <b>Data:</b>
-  <%= image_tag url_for(:controller => 'pictures',
-                        :action     => 'show',
-                        :id         => @picture.id) %>
+  <b>Data:</b>  
+  <%= link_to image_tag(url_for(:controller => 'pictures',
+                                :action     => 'show',
+                                :id         => @picture.id)),
+              select_picture_path(@picture.user_id, @picture) %>
 </p>
 
 

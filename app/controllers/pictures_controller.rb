@@ -2,7 +2,23 @@ class PicturesController < ApplicationController
   before_filter :authorize, :except => [:index, :show]
   
   before_filter :find_pictures, :only => [:index]
-  before_filter :find_picture, :only => [:edit, :update, :destroy]
+  before_filter :find_picture_auth, :only => [:select, :edit, :update, :destroy]
+  
+  # GET /users/1/pictures/1/select
+  # GET /users/1/pictures/1/select.xml
+  # GET /pictures/1/select
+  # GET /pictures/1/select.xml
+  def select
+    if @picture.select!
+      respond_to do |format|
+        flash[:notice] = 'Picture was successfully selected as profile avatar.'
+        format.html { redirect_to profile_url(@picture.owner.profile) }
+        format.xml  { head :ok }
+      end
+    else
+      error("Picture already selected", "already selected")
+    end
+  end
   
   # GET /users/1/pictures
   # GET /users/1/pictures.xml
@@ -93,7 +109,7 @@ protected
     end
   end
 
-  def find_picture
+  def find_picture_auth
     begin
       @picture = Picture.find(params[:id], :conditions => ["user_id = ?", current_user.id])
     rescue ActiveRecord::RecordNotFound
