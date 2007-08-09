@@ -13,13 +13,11 @@
 
 <% if logged_in? %>
 <p>
-  Logged in as <%= profile_link(current_user.id) %> [<%= link_to "Logout", url_for(:controller => 'auth', :action => 'logout') %>] - 
+  Logged in as <%= profile_link(current_user.id) %> [<%= link_to "Logout", url_for(:controller => 'auth', :action => 'logout', :id => current_user.id) %>] - 
   <%= messages_link(current_user.id) %> - 
   <%= memberships_pending_link(current_user.id) %> - 
   <%= friendships_pending_link(current_user.id) %>
 </p>
-<% else %>
-[<%= link_to "Login", url_for(:controller => 'auth', :action => 'login') %>]
 <% end %>
 
 <p>
