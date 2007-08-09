@@ -14,6 +14,7 @@
     <td><%=h blob.contributor_type %></td>
     <td><%=h blob.local_name %></td>
     <td><%=h blob.content_type %></td>
+    <td><%= link_to 'Download', download_blob_path(blob) %></td>
     <td><%= link_to 'Show', blob_path(blob) %></td>
     <td><%= link_to 'Edit', edit_blob_path(blob) %></td>
     <td><%= link_to 'Destroy', blob_path(blob), :confirm => 'Are you sure?', :method => :delete %></td>

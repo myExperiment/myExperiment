@@ -18,6 +18,11 @@
   <%=h @blob.content_type %>
 </p>
 
+<p>
+  <b>Download:</b>
+  <%= link_to 'Click here', download_blob_path(@blob) %>
+</p>
+
 
 <%= link_to 'Edit', edit_blob_path(@blob) %> |
 <%= link_to 'Back', blobs_path %>
