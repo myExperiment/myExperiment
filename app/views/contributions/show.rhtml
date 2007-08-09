@@ -34,5 +34,5 @@
 </p>
 
 
-<% if my_page? @contribution.contributor_id, @contribution.contributor_type %><%= link_to 'Edit', edit_contribution_path(@contribution) %> |<% end %>
+<%= link_to 'Edit', edit_contribution_path(@contribution) %> |
 <%= link_to 'Back', contributions_path %>

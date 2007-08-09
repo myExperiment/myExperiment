@@ -2,8 +2,7 @@ class BlobsController < ApplicationController
   before_filter :authorize, :except => [:index, :show, :download]
   
   before_filter :find_blobs, :only => [:index]
-  before_filter :find_blob, :only => [:show]
-  before_filter :find_blob_auth, :only => [:download, :edit, :update, :destroy]
+  before_filter :find_blob_auth, :only => [:download, :show, :edit, :update, :destroy]
   
   # GET /blobs/1;download
   def download
@@ -96,14 +95,6 @@ protected
 
   def find_blobs
     @blobs = Blob.find(:all, :order => "local_name ASC")
-  end
-  
-  def find_blob
-    begin
-      @blob = Blob.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      error("Blob not found", "is invalid")
-    end
   end
   
   def find_blob_auth

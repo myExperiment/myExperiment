@@ -67,9 +67,9 @@ private
   
   def private?(category, contrib)
     begin
-      p = Permission.find_by_policy_id_and_contributor(id, contrib)
-      
-      p.attributes["#{category}"] == true
+      if (p = Permission.find_by_policy_id_and_contributor_id_and_contributor_type(id, contrib.id, contrib.class.to_s))
+        return p.attributes["#{category}"] == true
+      end
     rescue ActiveRecord::RecordNotFound
       return false
     else

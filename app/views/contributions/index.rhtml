@@ -21,10 +21,8 @@
     <td><%=h contribution.created_at %></td>
     <td><%=h contribution.updated_at %></td>
     <td><%= link_to 'Show', contribution_path(contribution) %></td>
-    <% if my_page? contribution.contributor_id, contribution.contributor_type %>
     <td><%= link_to 'Edit', edit_contribution_path(contribution) %></td>
     <td><%= link_to 'Destroy', contribution_path(contribution), :confirm => 'Are you sure?', :method => :delete %></td>
-    <% end %>
   </tr>
 <% end %>
 </table>

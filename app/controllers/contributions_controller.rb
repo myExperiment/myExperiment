@@ -2,8 +2,7 @@ class ContributionsController < ApplicationController
   before_filter :authorize, :except => [:index, :show]
   
   before_filter :find_contributions, :only => [:index]
-  before_filter :find_contribution, :only => [:show]
-  before_filter :find_contribution_auth, :only => [:edit, :update, :destroy]
+  before_filter :find_contribution_auth, :only => [:show, :edit, :update, :destroy]
   
   # GET /contributions
   # GET /contributions.xml
@@ -82,19 +81,17 @@ protected
     @contributions = Contribution.find(:all)
   end
   
-  def find_contribution
-    begin
-      @contribution = Contribution.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      error("Contribution not found (does not exist)", "is invalid (not found)")
-    end
-  end
-  
   def find_contribution_auth
     begin
-      @contribution = Contribution.find(params[:id], :conditions => ["contributor_id = ? AND contributor_type = ?", current_user.id, current_user.class.to_s])
+      contribution = Contribution.find(params[:id])
+      
+      if contribution.authorized?(action_name, (logged_in? ? current_user : nil))
+        @contribution = contribution
+      else
+        error("Contribution not found (id not authorized)", "is invalid (not owner)")
+      end
     rescue ActiveRecord::RecordNotFound
-      error("Contribution not found (id not authorized)", "is invalid (not owner)")
+      error("Contribution not found", "is invalid")
     end
   end
 
