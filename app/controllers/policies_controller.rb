@@ -25,6 +25,9 @@ class PoliciesController < ApplicationController
   # GET /policies/new
   def new
     @policy = Policy.new
+    
+    @policy.contributor_id = current_user.id
+    @policy.contributor_type = current_user.class.to_s
   end
 
   # GET /policies/1;edit

@@ -30,6 +30,8 @@ class PermissionsController < ApplicationController
   # GET /permissions/new
   def new
     @permission = Permission.new
+    
+    @permission.policy_id = params[:policy_id] if params[:policy_id]
   end
 
   # GET /policies/1/permissions/1;edit
@@ -92,9 +94,9 @@ protected
   def find_permissions_auth
     if params[:policy_id]
       begin
-        policy = Policy.find(params[:policy_id], :conditions => ["contributor_id = ? AND contributor_type = ?", current_user.id, current_user.class.to_s])
+        @policy = Policy.find(params[:policy_id], :conditions => ["contributor_id = ? AND contributor_type = ?", current_user.id, current_user.class.to_s])
         
-        @permissions = policy.permissions
+        @permissions = @policy.permissions
       rescue ActiveRecord::RecordNotFound
         error("Policy not found (id not authorized)", "is invalid (not owner)", :policy_id)
       end

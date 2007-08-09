@@ -1,3 +1,4 @@
+<% if false %>
 <p>
   <b>Contributor:</b>
   <%=h @policy.contributor_id %>
@@ -7,6 +8,7 @@
   <b>Contributor type:</b>
   <%=h @policy.contributor_type %>
 </p>
+<% end %>
 
 <p>
   <b>Name:</b>
@@ -51,6 +53,11 @@
 <p>
   <b>Updated at:</b>
   <%=h @policy.updated_at %>
+</p>
+
+
+<p>
+  <%= link_to 'Edit permissions', permissions_path(@policy) %>
 </p>
 
 
