@@ -69,10 +69,16 @@ class UsersController < ApplicationController
   # DELETE /users/1.xml
   def destroy
     @user.destroy
-
+    
+    # the user MUST be logged in to destroy their account
+    # it is important to log them out afterwards or they'll 
+    # receive a nasty error message..
+    session[:user_id] = nil
+    
     respond_to do |format|
+      flash[:notice] = 'User was successfully destroyed'
       format.html { redirect_to users_url }
-      format.xml  { head :ok }
+      format.xml { head :ok }
     end
   end
   

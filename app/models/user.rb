@@ -3,17 +3,13 @@ require 'acts_as_contributor'
 class User < ActiveRecord::Base
   acts_as_contributor
   
-  # "is self related to other?"
-  # "if other is a User, is other a friend of self?"
-  # "if other is a Network, false"
-  # "else false"
-  def related?(other) # other.kind_of? Mib::Act::Contributor
-    if other.kind_of? User
-      return friend?(other.id)
-    elsif other.kind_of? Network
-      return false
-    else
-      return false
+  def related?(other)
+    if other.kind_of? User        # if other is a User...
+      return friend?(other.id)    #       ...is other a friend of mine?
+    elsif other.kind_of? Network  # if other is a Network...
+      return false                #       ...false
+    else                          # otherwise...
+      return false                #       ...false
     end
   end
   
@@ -21,41 +17,47 @@ class User < ActiveRecord::Base
   
   validates_presence_of :openid_url, :name
   
-  has_one :profile
+  has_one :profile,
+          :dependent => :destroy
   
   before_create do |u|
     u.profile = Profile.new(:user_id => id, :created_at => Time.now, :updated_at => Time.now)
   end
   
-  has_many :pictures
+  has_many :pictures,
+           :dependent => :destroy
   
   # SELF --> friendship --> Friend
   has_many :friendships_completed, # accepted (by others)
            :class_name => "Friendship",
            :foreign_key => :user_id,
            :conditions => ["accepted_at < ?", Time.now],
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
   
   # SELF --> friendship --> Friend
   has_many :friendships_requested, #unaccepted (by others)
            :class_name => "Friendship",
            :foreign_key => :user_id,
            :conditions => "accepted_at IS NULL",
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
            
   # Friend --> friendship --> SELF
   has_many :friendships_accepted, #accepted (by me)
            :class_name => "Friendship",
            :foreign_key => :friend_id,
            :conditions => ["accepted_at < ?", Time.now],
-           :order => "accepted_at DESC"
+           :order => "accepted_at DESC",
+           :dependent => :destroy
            
   # Friend --> friendship --> SELF
   has_many :friendships_pending, #unaccepted (by me)
            :class_name => "Friendship",
            :foreign_key => :friend_id,
            :conditions => "accepted_at IS NULL",
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
            
   def friendships
     (friendships_completed + friendships_requested + friendships_accepted + friendships_pending).sort do |a, b|
@@ -122,10 +124,12 @@ class User < ActiveRecord::Base
   end
                           
   has_many :networks_owned,
-           :class_name => "Network"
+           :class_name => "Network",
+           :dependent => :nullify
                           
   has_many :memberships, #all
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
            
   has_many :memberships_accepted, #accepted (by others)
            :class_name => "Membership",

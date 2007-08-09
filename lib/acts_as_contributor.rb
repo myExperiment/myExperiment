@@ -34,9 +34,27 @@ module Mib
       
       module ClassMethods
         def acts_as_contributor
-          has_many :contributions, :as => :contributor, :order => "created_at DESC"
-          has_many :policies, :as => :contributor, :order => "created_at DESC"
-          has_many :permissions, :as => :contributor
+          has_many :contributions, 
+                   :as => :contributor, 
+                   :order => "created_at DESC",
+                   :dependent => :destroy
+          
+          has_many :policies, 
+                   :as => :contributor, 
+                   :order => "created_at DESC",
+                   :dependent => :destroy
+                   
+          has_many :permissions, 
+                   :as => :contributor,
+                   :dependent => :destroy
+                   
+          # before_destroy do |c|
+          #   c.contributables.each do |contributable|
+          #     # ABSOLUTLY NOTHING!!
+          #     # it is important that contributables are left in the database.
+          #     # that way, the dba can always retrieve them at a later date!
+          #   end
+          # end
           
           class_eval do
             extend Mib::Acts::Contributor::SingletonMethods

@@ -27,25 +27,33 @@ class Network < ActiveRecord::Base
     user_id.to_i == userid.to_i
   end
   
-  has_many :relationships,
-           :order => "created_at DESC"
-           
-  has_many :relationships_accepted, #accepted (by me)
+  has_many :relationships_completed, #accepted (by others)
            :class_name => "Relationship",
+           :foreign_key => :network_id,
            :conditions => ["accepted_at < ?", Time.now],
-           :order => "accepted_at DESC"
-  
+           :order => "created_at DESC",
+           :dependent => :destroy
+           
   has_many :relationships_requested, #unaccepted (by others)
            :class_name => "Relationship",
            :foreign_key => :network_id,
            :conditions => "accepted_at IS NULL",
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
+           
+  has_many :relationships_accepted, #accepted (by me)
+           :class_name => "Relationship",
+           :foreign_key => :relation_id,
+           :conditions => ["accepted_at < ?", Time.now],
+           :order => "accepted_at DESC",
+           :dependent => :destroy
            
   has_many :relationships_pending, #unaccepted (by me)
            :class_name => "Relationship",
            :foreign_key => :relation_id,
            :conditions => "accepted_at IS NULL",
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
   
   has_and_belongs_to_many :relations,
                           :class_name => "Network",
@@ -54,6 +62,12 @@ class Network < ActiveRecord::Base
                           :association_foreign_key => :relation_id,
                           :conditions => ["accepted_at < ?", Time.now],
                           :order => "accepted_at DESC"
+                          
+  def relationships
+    (relationships_completed + relationships_requested + relationships_accepted + relationships_pending).sort do |a, b|
+      b.created_at <=> a.created_at
+    end
+  end
                           
   alias_method :original_relations, :relations
   def relations
@@ -86,18 +100,21 @@ class Network < ActiveRecord::Base
 #  end
                           
   has_many :memberships, #all
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
            
   has_many :memberships_accepted, #accepted (by owner of this network)
            :class_name => "Membership",
            :conditions => ["accepted_at < ?", Time.now],
-           :order => "accepted_at DESC"
+           :order => "accepted_at DESC",
+           :dependent => :destroy
            
   has_many :memberships_pending, #unaccepted (by owner of this network)
            :class_name => "Membership",
            :foreign_key => :network_id,
            :conditions => "accepted_at IS NULL",
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
   
   has_and_belongs_to_many :members,
                           :class_name => "User",

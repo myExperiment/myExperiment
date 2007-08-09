@@ -35,7 +35,10 @@ module Mib
       module ClassMethods
         def acts_as_contributable
           belongs_to :contributor, :polymorphic => true
-          has_one :contribution, :as => :contributable
+          
+          has_one :contribution, 
+                  :as => :contributable,
+                  :dependent => :destroy
           
           class_eval do
             extend Mib::Acts::Contributable::SingletonMethods
@@ -44,10 +47,6 @@ module Mib
           
           before_create do |c|
             c.contribution = Contribution.new(:contributor_id => c.contributor_id, :contributor_type => c.contributor_type, :contributable => c)
-          end
-          
-          before_destroy do |c|
-            c.contribution.destroy
           end
         end
       end

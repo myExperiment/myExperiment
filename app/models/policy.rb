@@ -1,7 +1,11 @@
 class Policy < ActiveRecord::Base
   belongs_to :contributor, :polymorphic => true
-  has_many :contributions
-  has_many :permissions
+  
+  has_many :contributions,
+           :dependent => :nullify
+  
+  has_many :permissions,
+           :dependent => :destroy
   
   validates_presence_of :contributor
   
