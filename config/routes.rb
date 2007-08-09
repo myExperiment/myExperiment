@@ -1,8 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
   map.resources :blobs, :member => { :download => :get }
 
-  map.resources :hyperlinks
-
   map.resources :contributions
   
   # all policies for all contributables
