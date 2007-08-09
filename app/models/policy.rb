@@ -18,7 +18,7 @@ class Policy < ActiveRecord::Base
       
       unless contributor.nil?
         # true if owner of contribution
-        return true if owner?(contribution, contributor)
+        return true if owner?(contribution, contributor) or admin?(contribution, contributor)
       
         # true if contribution.contributor and contributor are related and policy[category_protected]
         return true if contribution.contributor.related? contributor and protected?(category)
@@ -56,6 +56,10 @@ private
   
   def owner?(c_bution, c_utor)
     c_bution.contributor_id.to_i == c_utor.id.to_i and c_bution.contributor_type.to_s == c_utor.class.to_s
+  end
+  
+  def admin?(c_bution, c_utor)
+    c_bution.policy.contributor_id.to_i == c_utor.id.to_i and c_bution.policy.contributor_type.to_s == c_utor.class.to_s
   end
   
   def public?(category)
