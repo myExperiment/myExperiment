@@ -5,9 +5,9 @@ class Network < ActiveRecord::Base
   
   def related?(other) # other.kind_of? Mib::Act::Contributor
     if other.kind_of? Network
-      return relation?(other)
+      return relation?(other.id)
     elsif other.kind_of? User
-      return member?(other)
+      return member?(other.id)
     else
       return false
     end
