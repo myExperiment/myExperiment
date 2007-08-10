@@ -1,0 +1,33 @@
+<h1>Listing workflows</h1>
+
+<table>
+  <tr>
+    <th>Contributor</th>
+    <th>Contributor type</th>
+    <th>Title</th>
+    <th>Unique</th>
+    <th>Description</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+  </tr>
+  
+<% for workflow in @workflows %>
+  <tr>
+    <td><%=h workflow.contributor_id %></td>
+    <td><%=h workflow.contributor_type %></td>
+    <td><%=h workflow.title %></td>
+    <td><%=h workflow.unique %></td>
+    <td><%=h workflow.description %></td>
+    <td><%=h workflow.created_at %></td>
+    <td><%=h workflow.updated_at %></td>
+    <td><%= link_to 'Download', download_workflow_path(workflow) %></td>
+    <td><%= link_to 'Show', workflow_path(workflow) %></td>
+    <td><%= link_to 'Edit', edit_workflow_path(workflow) %></td>
+    <td><%= link_to 'Destroy', workflow_path(workflow), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New workflow', new_workflow_path %>

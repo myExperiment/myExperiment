@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 12) do
+ActiveRecord::Schema.define(:version => 13) do
 
   create_table "blobs", :force => true do |t|
     t.column "contributor_id",   :integer
@@ -106,6 +106,33 @@ ActiveRecord::Schema.define(:version => 12) do
     t.column "name",       :string
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+  end
+
+  create_table "workflow_versions", :force => true do |t|
+    t.column "workflow_id",      :integer
+    t.column "version",          :integer
+    t.column "contributor_id",   :integer
+    t.column "contributor_type", :string
+    t.column "scufl",            :binary
+    t.column "image",            :string
+    t.column "title",            :string
+    t.column "unique",           :string
+    t.column "description",      :text
+    t.column "created_at",       :datetime
+    t.column "updated_at",       :datetime
+  end
+
+  create_table "workflows", :force => true do |t|
+    t.column "contributor_id",   :integer
+    t.column "contributor_type", :string
+    t.column "scufl",            :binary
+    t.column "image",            :string
+    t.column "title",            :string
+    t.column "unique",           :string
+    t.column "description",      :text
+    t.column "created_at",       :datetime
+    t.column "updated_at",       :datetime
+    t.column "version",          :integer
   end
 
 end

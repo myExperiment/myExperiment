@@ -6,12 +6,7 @@ class BlobsController < ApplicationController
   
   # GET /blobs/1;download
   def download
-    if @blob.authorized?("download", (logged_in? ? current_user : nil))
-      send_data(@blob.data, :filename => @blob.local_name, :type => @blob.content_type)
-    else
-      flash[:notice] = "Not authorized to download #{@blob.local_name}"
-      redirect_to 'index'
-    end
+    send_data(@blob.data, :filename => @blob.local_name, :type => @blob.content_type)
     
     #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type)
   end

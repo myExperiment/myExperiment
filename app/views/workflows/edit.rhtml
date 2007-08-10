@@ -1,0 +1,27 @@
+<h1>Editing workflow</h1>
+
+<%= error_messages_for :workflow %>
+
+<% form_tag({:action => :update}, :multipart => true) do %>
+  <p>
+    <b>Title</b><br />
+    <%= text_field :workflow, :title %>
+  </p>
+
+  <p>
+    <b>Unique</b><br />
+    <%= text_field :workflow, :unique %>
+  </p>
+
+  <p>
+    <b>Description</b><br />
+    <%= text_area :workflow, :description %>
+  </p>
+
+  <p>
+    <%= submit_tag "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', workflow_path(@workflow) %> |
+<%= link_to 'Back', workflows_path %>

@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :workflows, :member => { :download => :get }
+
   map.resources :blobs, :member => { :download => :get }
 
   map.resources :contributions

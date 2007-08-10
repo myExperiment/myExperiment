@@ -1,0 +1,151 @@
+class WorkflowsController < ApplicationController
+  before_filter :authorize, :except => [:index, :show, :download]
+  
+  before_filter :find_workflows, :only => [:index]
+  before_filter :find_workflow_auth, :only => [:download, :show, :edit, :update, :destroy]
+  
+  require 'scufl/model'
+  require 'scufl/parser'
+  require 'scufl/dot'
+  
+  # GET /workflows/1;download
+  # GET /workflows/1.xml;download
+  def download
+    send_data(@workflow.scufl, :filename => @workflow.unique + ".xml", :type => "text/xml")
+  end
+  
+  # GET /workflows
+  # GET /workflows.xml
+  def index
+    respond_to do |format|
+      format.html # index.rhtml
+      format.xml  { render :xml => @workflows.to_xml }
+    end
+  end
+
+  # GET /workflows/1
+  # GET /workflows/1.xml
+  def show
+    respond_to do |format|
+      format.html # show.rhtml
+      format.xml  { render :xml => @workflow.to_xml }
+    end
+  end
+
+  # GET /workflows/new
+  def new
+    @workflow = Workflow.new
+  end
+
+  # GET /workflows/1;edit
+  def edit
+    
+  end
+
+  # POST /workflows
+  # POST /workflows.xml
+  def create
+    # create workflow using helper methods
+    @workflow = create_workflow(params[:workflow])
+
+    respond_to do |format|
+      if @workflow.save
+        flash[:notice] = 'Workflow was successfully created.'
+        format.html { redirect_to workflow_url(@workflow) }
+        format.xml  { head :created, :location => workflow_url(@workflow) }
+      else
+        format.html { render :action => "new" }
+        format.xml  { render :xml => @workflow.errors.to_xml }
+      end
+    end
+  end
+
+  # PUT /workflows/1
+  # PUT /workflows/1.xml
+  def update
+    # update contributor with 'latest' uploader (or "editor")
+    params[:workflow][:contributor_id] = current_user.id
+    params[:workflow][:contributor_type] = current_user.class.to_s
+
+    respond_to do |format|
+      if @workflow.update_attributes(params[:workflow])
+        flash[:notice] = 'Workflow was successfully updated.'
+        format.html { redirect_to workflow_url(@workflow) }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @workflow.errors.to_xml }
+      end
+    end
+  end
+
+  # DELETE /workflows/1
+  # DELETE /workflows/1.xml
+  def destroy
+    @workflow.destroy
+
+    respond_to do |format|
+      format.html { redirect_to workflows_url }
+      format.xml  { head :ok }
+    end
+  end
+  
+protected
+
+  def find_workflows
+    @workflows = Workflow.find(:all, :order => "updated_at DESC")
+  end
+  
+  def find_workflow_auth
+    begin
+      workflow = Workflow.find(params[:id])
+      
+      if workflow.authorized?(action_name, (logged_in? ? current_user : nil))
+        @workflow = workflow
+      else
+        error("Workflow not found (id not authorized)", "is invalid (not authorized)")
+      end
+    rescue ActiveRecord::RecordNotFound
+      error("Workflow not found", "is invalid")
+    end
+  end
+  
+  def create_workflow(wf)
+    scufl_model = Scufl::Parser.new.parse(wf[:scufl].read)
+    wf[:scufl].rewind
+    title, unique = scufl_model.description.title.blank? ? ["untitled", "untitled_#{wf.object_id}"] : [scufl_model.description.title, scufl_model.description.title.gsub(/[^\w\.\-]/,'_').downcase]
+    
+    i = Tempfile.new("image")
+    Scufl::Dot.new.write_dot(i, scufl_model)
+    i.close(false)
+    d = StringIO.new(`dot -Tpng #{i.path}`)
+    i.unlink
+    d.extend FileUpload
+    d.original_filename = "#{unique}.png"
+    d.content_type = "image/png"
+    
+    return Workflow.new(:scufl => wf[:scufl].read, 
+                        :image => d,
+                        :contributor_id => wf[:contributor_id], 
+                        :contributor_type => wf[:contributor_type],
+                        :title => title,
+                        :unique => unique,
+                        :description => scufl_model.description.description)
+  end
+
+private
+
+  def error(notice, message, attr=:id)
+    flash[:notice] = notice
+    (err = Workflow.new.errors).add(attr, message)
+    
+    respond_to do |format|
+      format.html { redirect_to workflows_url }
+      format.xml { render :xml => err.to_xml }
+    end
+  end
+end
+
+module FileUpload
+  attr_accessor :original_filename, :content_type
+end

@@ -47,7 +47,7 @@ private
   # column in ++permissions+)
   @@categories = { "download" => ["download"], 
                    "edit" => ["edit"], 
-                   "view" => ["index", "show"] }
+                   "view" => ["index", "show", "diagram", "thumbnail"] }
   
   # the policy class contains a hash table of action (method) names and their categories
   # all methods are one of the three categories: download, edit and view

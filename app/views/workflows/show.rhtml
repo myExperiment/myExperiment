@@ -1,0 +1,43 @@
+<p>
+  <b>Contributor:</b>
+  <%=h @workflow.contributor_id %>
+</p>
+
+<p>
+  <b>Contributor type:</b>
+  <%=h @workflow.contributor_type %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%=h @workflow.title %>
+</p>
+
+<p>
+  <b>Unique:</b>
+  <%=h @workflow.unique %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%=h @workflow.description %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=h @workflow.created_at %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%=h @workflow.updated_at %>
+</p>
+
+<p>
+  <b>Download:</b>
+  <%= link_to 'Click here', download_workflow_path(@workflow) %>
+</p>
+
+
+<%= link_to 'Edit', edit_workflow_path(@workflow) %> |
+<%= link_to 'Back', workflows_path %>
