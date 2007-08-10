@@ -33,6 +33,13 @@
   <%=h @workflow.updated_at %>
 </p>
 
+<% unless @workflow.image.nil? %>
+<p>
+  <b>Image:</b>
+  <%= image_tag url_for_file_column(@workflow, "image", "medium") %>
+</p>
+<% end %>
+
 <p>
   <b>Download:</b>
   <%= link_to 'Click here', download_workflow_path(@workflow) %>
