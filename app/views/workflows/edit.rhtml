@@ -2,20 +2,20 @@
 
 <%= error_messages_for :workflow %>
 
-<% form_tag({:action => :update}, :multipart => true) do %>
+<% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
   <p>
     <b>Title</b><br />
-    <%= text_field :workflow, :title %>
+    <%= f.text_field :title %>
   </p>
 
   <p>
     <b>Unique</b><br />
-    <%= text_field :workflow, :unique %>
+    <%= f.text_field :unique %>
   </p>
 
   <p>
     <b>Description</b><br />
-    <%= text_area :workflow, :description %>
+    <%= f.text_area :description %>
   </p>
 
   <p>

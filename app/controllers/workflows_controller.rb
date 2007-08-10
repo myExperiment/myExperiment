@@ -64,8 +64,8 @@ class WorkflowsController < ApplicationController
   # PUT /workflows/1.xml
   def update
     # update contributor with 'latest' uploader (or "editor")
-    params[:workflow][:contributor_id] = current_user.id
-    params[:workflow][:contributor_type] = current_user.class.to_s
+    @workflow.contributor_id = current_user.id
+    @workflow.contributor_type = current_user.class.to_s
 
     respond_to do |format|
       if @workflow.update_attributes(params[:workflow])
