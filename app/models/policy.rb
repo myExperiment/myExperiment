@@ -17,23 +17,21 @@ class Policy < ActiveRecord::Base
       # false unless action can be categorized
       return false unless category = categorize(action_name)
       
-      # true if policy[category_public]
-      return true if public?(category)
-      
       unless contributor.nil?
-        # true if owner of contribution
-        return true if contribution.owner?(contributor)
+        # true if owner of contribution or administrator of contribution.policy
+        return true if contribution.owner?(contributor) or contribution.admin?(contributor)
         
-        # true if admin of contribution.policy
-        return true if contribution.admin?(contributor)
-      
-        # true if contribution.contributor and contributor are related and policy[category_protected]
-        return true if contribution.contributor.related? contributor and protected?(category)
-      
         # true if permission and permission[category]
-        return true if private?(category, contributor)
+        private = private?(category, contributor)
+        return private unless private.nil?
+        
+        # true if contribution.contributor and contributor are related and policy[category_protected]
+        return protected?(category) if contribution.contributor.related? contributor
       end
-    rescue ActiveRecord::RecordNotFound
+      
+      # true if policy[category_public]
+      return public?(category)
+    rescue
       # all errors return false
       return false
     else
@@ -75,9 +73,9 @@ private
         return p.attributes["#{category}"] == true
       end
     rescue ActiveRecord::RecordNotFound
-      return false
+      return nil
     else
-      return false
+      return nil
     end
   end
 end
