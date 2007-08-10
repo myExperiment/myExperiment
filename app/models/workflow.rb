@@ -5,7 +5,7 @@ class Workflow < ActiveRecord::Base
   
   acts_as_versioned
   
-  validates_presence_of :title, :scufl, :image
+  validates_presence_of :title, :scufl
   
   validates_uniqueness_of :unique
 

@@ -6,8 +6,7 @@
     <th>Contributor type</th>
     <th>Title</th>
     <th>Unique</th>
-    <th>Image:</th>
-    <% if false %><th>Description</th><% end %>
+    <th>Image</th>
     <th>Created at</th>
     <th>Updated at</th>
   </tr>
@@ -23,7 +22,6 @@
       <%= image_tag url_for_file_column(workflow, "image", "thumb") %>
       <% end %>
     </td>
-    <% if false %><td><%=h workflow.description %></td><% end %>
     <td><%=h workflow.created_at %></td>
     <td><%=h workflow.updated_at %></td>
     <td><%= link_to 'Download', download_workflow_path(workflow) %></td>
