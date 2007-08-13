@@ -3,7 +3,7 @@
 <%= error_messages_for :blob %>
 
 <% form_for(:blob, :url => blob_path(@blob), :html => { :method => :put }) do |f| %>
-  <% @blob.authorized?("destroy", current_user) %>
+  <% if @blob.authorized?("destroy", current_user) %>
     <% fields_for :contribution, @blob.contribution do |c_f| %>
       <p>
         <b>Policy</b><br/>

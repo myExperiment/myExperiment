@@ -18,10 +18,21 @@
   <% fields_for :contributor_pair do |c_f| %>
     <p>
       <b>Contributor</b><br />
-        <%= c_f.radio_button(:class_id, "#{current_user.class.to_s}-#{current_user.id}", {:checked => true}) %> - <%= link_to 'Me', user_path(current_user) %><br/>
-        <% for c in current_user.networks_owned %>
-          <%= c_f.radio_button(:class_id, "#{c.class.to_s}-#{c.id}") %> - <%= contributor(c.id, c.class.to_s) %><br/>
-        <% end %>
+        <p>
+          <%= c_f.radio_button(:class_id, "User-#{current_user.id}", {:checked => true}) %> - <%= link_to 'Me', user_path(current_user) %>
+        </p>
+        <p>
+          <b>Owner of..</b><br/>
+          <% for n in current_user.networks_owned %>
+            <%= c_f.radio_button(:class_id, "Network-#{n.id}") %> - <%= link_to h(n.title), network_path(n) %><br/>
+          <% end %>
+        </p>
+        <p>
+          <b>Member of..</b><br/>
+          <% for n in current_user.networks %>
+            <%= c_f.radio_button(:class_id, "Network-#{n.id}") %> - <%= link_to h(n.title), network_path(n) %><br/>
+          <% end %>
+        </p>
     </p>
   <% end %>
 
