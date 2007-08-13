@@ -29,6 +29,18 @@ class User < ActiveRecord::Base
   
   has_many :pictures,
            :dependent => :destroy
+           
+  # BEGIN SavageBeast #
+  include SavageBeast::UserInit
+  
+  def display_name
+    "#{name}"
+  end
+  
+  def email
+    "#{profile.email}"
+  end
+  # END SavageBeast #
   
   # SELF --> friendship --> Friend
   has_many :friendships_completed, # accepted (by others)
