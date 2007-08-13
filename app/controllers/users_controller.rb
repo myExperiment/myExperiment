@@ -56,6 +56,9 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.xml
   def update
+    # openid url's must be validated and updated separately
+    params.delete("openid_url") if params[:openid_url]
+    
     respond_to do |format|
       if @user.update_attributes(params[:user])
         flash[:notice] = 'User was successfully updated.'

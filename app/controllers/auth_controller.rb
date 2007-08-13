@@ -10,10 +10,6 @@ rescue LoadError
 end
 
 class AuthController < ApplicationController
-  #before_filter :authorize, :only => [:logout, :welcome]
-  
-  layout  'scaffold'
-  
   # process the login request, disover the openid server, and
   # then redirect.
   def login
