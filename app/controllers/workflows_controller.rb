@@ -49,6 +49,12 @@ class WorkflowsController < ApplicationController
   # POST /workflows
   # POST /workflows.xml
   def create
+    # hack for select contributor form
+    if params[:contributor_pair]
+      params[:workflow][:contributor_id], params[:workflow][:contributor_type] = params[:contributor_pair].split("-")
+      params.delete("contributor_pair")
+    end
+    
     # create workflow using helper methods
     @workflow = create_workflow(params[:workflow])
     

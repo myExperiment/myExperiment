@@ -3,6 +3,7 @@
 <%= error_messages_for :workflow %>
 
 <% form_tag({:action => :create}, :multipart => true) do %>
+  <% if false %>
   <p>
     <b>Contributor</b><br />
     <%= text_field :workflow, :contributor_id %>
@@ -12,6 +13,17 @@
     <b>Contributor type</b><br />
     <%= text_field :workflow, :contributor_type %>
   </p>
+  <% end %>
+  
+  <% fields_for :contributor_pair do |c_f| %>
+    <p>
+      <b>Contributor</b><br />
+        <%= c_f.radio_button(:class_id, "#{current_user.class.to_s}-#{current_user.id}", {:checked => true}) %> - <%= link_to 'Me', user_path(current_user) %><br/>
+        <% for c in current_user.networks_owned %>
+          <%= c_f.radio_button(:class_id, "#{c.class.to_s}-#{c.id}") %> - <%= contributor(c.id, c.class.to_s) %><br/>
+        <% end %>
+    </p>
+  <% end %>
 
   <p>
     <b>Scufl</b><br />
