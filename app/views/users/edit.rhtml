@@ -4,11 +4,6 @@
 
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
   <p>
-    <b>Openid url</b><br />
-    <%= f.text_field :openid_url %>
-  </p>
-
-  <p>
     <b>Name</b><br />
     <%= f.text_field :name %>
   </p>
