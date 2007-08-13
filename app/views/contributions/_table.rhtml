@@ -1,0 +1,30 @@
+<% unless collection.empty? %>
+
+<table>
+  <tr>
+    <th>Contributor</th>
+    <th>Contributor type</th>
+    <th>Contributable</th>
+    <th>Contributable type</th>
+    <th>Policy</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+  </tr>
+  
+<% for contribution in collection %>
+  <tr>
+    <td><%=h contribution.contributor_id %></td>
+    <td><%=h contribution.contributor_type %></td>
+    <td><%=h contribution.contributable_id %></td>
+    <td><%=h contribution.contributable_type %></td>
+    <td><%=h contribution.policy_id %></td>
+    <td><%=h contribution.created_at %></td>
+    <td><%=h contribution.updated_at %></td>
+    <td><%= link_to 'Show', contribution_path(contribution) %></td>
+    <td><%= link_to 'Edit', edit_contribution_path(contribution) %></td>
+    <td><%= link_to 'Destroy', contribution_path(contribution), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

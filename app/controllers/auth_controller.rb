@@ -3,23 +3,17 @@ class AuthController < ApplicationController
     begin
       u = User.find(params[:id])
       
-      if logged_in?
-        if current_user.id.to_i == u.id.to_i
-          error("Login failed, already logged in", "already logged in")
-        else
-          error("Login failed, please log out first", "log out first")
-        end
-      else
+      error("Login failed, already logged in", "already logged in") if logged_in?
+      
+      respond_to do |format|
         session[:user_id] = u.id
-        flash[:notice] = "#{u.name} has logged in."
           
-        respond_to do |format|
-          format.html { redirect_to users_url }
-          format.xml { head :ok }
-        end
+        flash[:notice] = "#{u.name} has logged in."
+        format.html { redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '') }
+        format.xml { head :ok }
       end
     rescue ActiveRecord::RecordNotFound
-      error("Login failed, user not found (id invalid)", "not found (id invalid)")
+      error("Login failed, user not found (id invalid)", "not found (id invalid)", :id)
     end
   end
   
@@ -32,7 +26,7 @@ class AuthController < ApplicationController
         session[:user_id] = nil
       
         respond_to do |format|
-          format.html { redirect_to users_url }
+          format.html { redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '') }
           format.xml { head :ok }
         end
       else
@@ -47,10 +41,10 @@ private
 
   def error(notice, message, attr=:id)
     flash[:notice] = notice
-    (err = User.new.errors).add(attr, message)
+    (err = Auth.new.errors).add(attr, message)
     
     respond_to do |format|
-      format.html { redirect_to users_url }
+      format.html { redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '') }
       format.xml { render :xml => err.to_xml }
     end
   end

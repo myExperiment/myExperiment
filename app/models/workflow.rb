@@ -11,8 +11,14 @@ class Workflow < ActiveRecord::Base
 
   file_column :image, :magick => {
     :versions => {
-      :thumb =>  {:size => "100x100!"}, 
-      :medium => {:size =>"650x300>" }
+      :thumb    => { :size => "100x100!" }, 
+      :medium   => { :size => "650x300>" },
+      :padlock  => { :size => "100x100!",
+                     :overlay   => { :file => "#{RAILS_ROOT}/public/images/padlock.gif", 
+                                     :alignment => :bottom_left,
+                                     :offset => 3 } }
     }
   }
+  
+  non_versioned_fields.push "image" # acts_as_versioned and file_column don't get on
 end

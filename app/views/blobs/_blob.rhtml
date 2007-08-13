@@ -1,0 +1,20 @@
+<table width="640">
+  <tr>
+    <td rowspan="2">
+      <strong>Local name:</strong> <%=h blob.local_name %><br/>
+      <strong>Content type:</strong> <%=h blob.content_type %>
+    </td>
+    <td>
+      <strong>Contributor:</strong> <%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type) %><br/>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to '[download]', download_blob_path(blob) %> <% end %>
+      <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to '[show]', blob_path(blob) %> <% end %>
+      <% if logged_in? and blob.authorized?("edit", current_user) %><%= link_to '[edit]', edit_blob_path(blob) %> <% end %>
+      <% if logged_in? and blob.authorized?("destroy", current_user) %><%= link_to '[destroy]', blob_path(blob), :confirm => 'Are you sure?', :method => :delete %><% end %>
+    </td>
+  </tr>
+  <tr><td> </td></tr>
+</table>

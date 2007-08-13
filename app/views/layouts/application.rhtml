@@ -9,6 +9,8 @@
 </head>
 <body>
 
+<%= image_tag("logo.png") %>
+
 <p style="color: green"><%= flash[:notice] %></p>
 
 <% if logged_in? %>
@@ -18,6 +20,10 @@
   <%= memberships_pending_link(current_user.id) %> - 
   <%= friendships_pending_link(current_user.id) %>
 </p>
+<% else %>
+  <% form_tag :controller => 'auth', :action => 'login' do %>
+    <%= select_tag :id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id, :name) %> <%= submit_tag "Login" %>
+  <% end %>
 <% end %>
 
 <p>
@@ -25,7 +31,9 @@
   | <%= link_to "Users", users_path %> <% if logged_in? %>(<%= link_to "Me", user_path(current_user.id) %>)<% end %> 
   | <%= link_to "Profiles", profiles_path %> <% if logged_in? %>(<%= link_to "Me", profile_path(current_user.profile.id) %>)<% end %> 
   | <%= link_to "Pictures", url_for(:controller => 'pictures') %> <% if logged_in? %>(<%= link_to "Mine", pictures_path(current_user.id) %>)<% end %> 
+  | <%= link_to "Contributions", contributions_path %> <% if logged_in? %>(<%= link_to "Mine", url_for(:controller => 'contributions', :contributor_id => current_user.id, :contributor_type => current_user.class.to_s) %>)<% end %> 
   <% if logged_in? %>| <%= link_to "Policies", policies_path %><% end %>
+  
 </p>
 
 <hr/>

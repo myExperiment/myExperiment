@@ -71,8 +71,8 @@ class FriendshipsController < ApplicationController
       respond_to do |format|
         if @friendship.save
           flash[:notice] = 'Friendship was successfully requested.'
-          format.html { redirect_to friendship_url(@friendship.user_id, @friendship) }
-          format.xml  { head :created, :location => friendship_url(@friendship.user_id, @friendship) }
+          format.html { redirect_to friendship_url(@friendship.friend_id, @friendship) }
+          format.xml  { head :created, :location => friendship_url(@friendship.friend_id, @friendship) }
         else
           format.html { render :action => "new" }
           format.xml  { render :xml => @friendship.errors.to_xml }
@@ -158,7 +158,11 @@ protected
   
   def find_friendship_auth
     begin
-      @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ?", current_user.id])
+      if action_name.to_s == "show"
+        @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ? or user_id = ?", current_user.id, current_user.id])
+      else
+        @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ?", current_user.id])
+      end
     rescue ActiveRecord::RecordNotFound
       error("Friendship not found (id not authorized)", "is invalid (not named)")
     end

@@ -1,11 +1,5 @@
 <p>
-  <b>Contributor:</b>
-  <%=h @workflow.contributor_id %>
-</p>
-
-<p>
-  <b>Contributor type:</b>
-  <%=h @workflow.contributor_type %>
+  <%= link_to '[download]', download_workflow_path(@workflow) %>
 </p>
 
 <p>
@@ -14,13 +8,37 @@
 </p>
 
 <p>
-  <b>Unique:</b>
-  <%=h @workflow.unique %>
+  <b>Contributor:</b>
+  <%= contributor(@workflow.contribution.contributor_id, @workflow.contribution.contributor_type) %>
 </p>
 
 <p>
-  <b>Description:</b>
-  <%=h @workflow.description %>
+  <b>Description:</b><br/>
+  <!-- this needs whitelisting -->
+  <%= @workflow.description %>
+</p>
+
+<% unless @workflow.image.nil? %>
+<p>
+  <b>Image:</b><br/>
+  <%= image_tag url_for_file_column(@workflow, "image", "medium") %>
+</p>
+<% end %>
+
+<% if logged_in? and @workflow.authorized?("destroy", current_user) %>
+  <p>
+    <b>Policy:</b>
+    <% if @workflow.contribution.policy %>
+      <%= link_to h(@workflow.contribution.policy.name), policy_path(@workflow.contribution.policy) %> (managed by: <%= link_to name(id=((con=@workflow.contribution.policy.contributor).id || con.owner.id)), user_path(id) %>)
+    <% else %>
+      Public (none)
+    <% end %>
+  </p>
+<% end %>
+
+<p>
+  <b>Unique:</b>
+  <%=h @workflow.unique %>
 </p>
 
 <p>
@@ -33,18 +51,25 @@
   <%=h @workflow.updated_at %>
 </p>
 
-<% unless @workflow.image.nil? %>
 <p>
-  <b>Image:</b>
-  <%= image_tag url_for_file_column(@workflow, "image", "medium") %>
+  <b>Original Version:</b><br/>
+  <%= versioned_workflow_link(@workflow, 1) %>
+</p>
+
+<% if @workflow.versions.size > 1 %>
+<p>
+  <b>Previous Versions:</b><br/>
+  <% (2...@workflow.versions.size).each do |v| %>
+    <%= versioned_workflow_link(@workflow, v) %><br/>
+  <% end %>
 </p>
 <% end %>
 
 <p>
-  <b>Download:</b>
-  <%= link_to 'Click here', download_workflow_path(@workflow) %>
+  <b>Latest Version:</b><br/>
+  <%= versioned_workflow_link(@workflow, @workflow.versions.size) %>
 </p>
 
 
-<%= link_to 'Edit', edit_workflow_path(@workflow) %> |
-<%= link_to 'Back', workflows_path %>
+<% if logged_in? and @workflow.authorized?("edit", current_user) %><%= link_to 'Edit', edit_workflow_path(@workflow) %> | <% end %>
+<%= link_to 'Back', contributions_path %>

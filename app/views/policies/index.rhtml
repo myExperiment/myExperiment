@@ -41,4 +41,4 @@
 
 <br />
 
-<%= link_to 'New policy', new_policy_path %>
+<% if logged_in? %><%= link_to 'New policy', new_policy_path %><% end %>

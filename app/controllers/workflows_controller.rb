@@ -8,6 +8,10 @@ class WorkflowsController < ApplicationController
   require 'scufl/parser'
   require 'scufl/dot'
   
+  # if RUBY_PLATFORM =~ /mswin32/
+  #   require 'win32/open3'
+  # end
+  
   # GET /workflows/1;download
   # GET /workflows/1.xml;download
   def download
@@ -47,9 +51,11 @@ class WorkflowsController < ApplicationController
   def create
     # create workflow using helper methods
     @workflow = create_workflow(params[:workflow])
-
+    
     respond_to do |format|
       if @workflow.save
+        @workflow.contribution.update_attributes(params[:contribution])
+        
         flash[:notice] = 'Workflow was successfully created.'
         format.html { redirect_to workflow_url(@workflow) }
         format.xml  { head :created, :location => workflow_url(@workflow) }
@@ -66,9 +72,12 @@ class WorkflowsController < ApplicationController
     # update contributor with 'latest' uploader (or "editor")
     @workflow.contributor_id = current_user.id
     @workflow.contributor_type = current_user.class.to_s
-
+    
     respond_to do |format|
       if @workflow.update_attributes(params[:workflow])
+        # security fix (only allow the owner to change the policy)
+        @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
+        
         flash[:notice] = 'Workflow was successfully updated.'
         format.html { redirect_to workflow_url(@workflow) }
         format.xml  { head :ok }
@@ -101,7 +110,15 @@ protected
       workflow = Workflow.find(params[:id])
       
       if workflow.authorized?(action_name, (logged_in? ? current_user : nil))
-        @workflow = workflow
+        if params[:version]
+          if workflow.revert_to(params[:version])
+            @workflow = workflow
+          else
+            error("Version not found (is invalid)", "not found (is invalid)", :version)
+          end
+        else
+          @workflow = workflow
+        end
       else
         error("Workflow not found (id not authorized)", "is invalid (not authorized)")
       end
@@ -113,12 +130,26 @@ protected
   def create_workflow(wf)
     scufl_model = Scufl::Parser.new.parse(wf[:scufl].read)
     wf[:scufl].rewind
-    title, unique = scufl_model.description.title.blank? ? ["untitled", "untitled_#{wf.object_id}"] : [scufl_model.description.title, scufl_model.description.title.gsub(/[^\w\.\-]/,'_').downcase]
+    
+    salt = rand 32768
+    title, unique = scufl_model.description.title.blank? ? ["untitled", "untitled_#{salt}"] : [scufl_model.description.title,  "#{scufl_model.description.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"]
     
     i = Tempfile.new("image")
     Scufl::Dot.new.write_dot(i, scufl_model)
     i.close(false)
-    d = StringIO.new(`dot -Tpng #{i.path}`)
+    d = StringIO.new
+    
+    #FileUtils.copy_file(i.path, "#{RAILS_ROOT}/scufl_model.dot")
+    
+    exec_dot = "dot -Tpng #{i.path}"
+    # if RUBY_PLATFORM =~ /mswin32/
+    #   Open3.popen3(exec_dot) do |stdin, stdout, stderr|
+    #     d << stdout.gets(sep_string=nil)
+    #   end
+    # else
+      d << `#{exec_dot}`
+    # end
+    
     i.unlink
     d.extend FileUpload
     d.original_filename = "#{unique}.png"

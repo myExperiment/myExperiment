@@ -1,0 +1,42 @@
+<table width="640">
+  <tr>
+    <th width="100" rowspan="4">
+      <% unless workflow.image.nil? %>
+        <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
+          <%= image_tag url_for_file_column(workflow, "image", "thumb") %>
+        <% else %>
+          <%= image_tag url_for_file_column(workflow, "image", "padlock") %>
+        <% end %>
+      <% end %>
+    </td>
+    <th width="540" colspan="2">
+      <%=h workflow.title %>
+    </th>
+   </tr>
+   <tr>
+    <td colspan="2">
+      <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
+      <%= ((d = workflow.description).length > (i = 200) ? "#{h(d[0..i])}... #{link_to('[read more]', workflow_path(workflow))}" : h(d)) %>
+      <% else %>
+      <!-- not authorized -->
+      <% end %>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <strong>Contributor:</strong> <%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type) %><br/>
+    </td>
+    <td>
+      <strong>Created at:</strong> <%=h workflow.created_at %><br/>
+      <strong>Updated at:</strong> <%=h workflow.updated_at %>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to '[download]', download_workflow_path(workflow) %> <% end %>
+      <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to '[show]', workflow_path(workflow) %> <% end %>
+      <% if logged_in? and workflow.authorized?("edit", current_user) %><%= link_to '[edit]', edit_workflow_path(workflow) %> <% end %>
+      <% if logged_in? and workflow.authorized?("destroy", current_user) %><%= link_to '[destroy]', workflow_path(workflow), :confirm => 'Are you sure?', :method => :delete %><% end %>
+    </td>
+  </tr>
+</table>

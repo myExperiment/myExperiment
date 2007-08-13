@@ -27,4 +27,4 @@
 
 <br />
 
-<%= link_to 'New network', new_network_path %>
+<% if logged_in? %><%= link_to 'New network', new_network_path %><% end %>

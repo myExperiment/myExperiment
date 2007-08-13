@@ -30,6 +30,12 @@
 
 <%= render :partial => "members", :locals => { :collection => @network.members, :network => @network } %>
 
+<h3>Contributions</h3>
+
+<%= render :partial => "contributions/list", :locals => { :collection => @network.contributions } %>
+
+<br/>
+
 <% if logged_in? and !@network.member? current_user.id %><%= request_membership_link(current_user.id, @network.id) %> |<% end %>
-<%= link_to 'Edit', edit_network_path(@network) %> |
+<% if my_page? @network.owner.id %><%= link_to 'Edit', edit_network_path(@network) %> | <% end %>
 <%= link_to 'Back', networks_path %>

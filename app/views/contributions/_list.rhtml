@@ -1,0 +1,13 @@
+<% filter_contributables(collection).each do |klass, contributables| %>
+
+<h2><%= klass.pluralize %></h2>
+
+<% if logged_in? %>
+<p><%= link_to "New #{klass}", url_for(:controller => "#{klass.pluralize.downcase}", :action => "new") %></p>
+<% end %>
+
+<%= render :partial => "#{klass.pluralize.downcase}/#{klass.downcase}", :collection => contributables %>
+
+<% end %>
+
+<br/>

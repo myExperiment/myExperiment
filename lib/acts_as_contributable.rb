@@ -39,7 +39,7 @@ module Mib
           has_one :contribution, 
                   :as => :contributable,
                   :dependent => :destroy
-          
+                  
           class_eval do
             extend Mib::Acts::Contributable::SingletonMethods
           end

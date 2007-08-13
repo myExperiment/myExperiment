@@ -19,7 +19,7 @@ class Policy < ActiveRecord::Base
       
       unless contributor.nil?
         # true if owner of contribution or administrator of contribution.policy
-        return true if contribution.owner?(contributor) or contribution.admin?(contributor)
+        return true if (contribution.owner?(contributor) or contribution.admin?(contributor))
         
         # true if permission and permission[category]
         private = private?(category, contributor)
@@ -46,8 +46,9 @@ private
   # xxx_public and xxx_protected column in ++policies++ and an xxx 
   # column in ++permissions+)
   @@categories = { "download" => ["download"], 
-                   "edit" => ["edit"], 
-                   "view" => ["index", "show", "diagram", "thumbnail"] }
+                   "edit" => ["edit", "update"], 
+                   "view" => ["index", "show"],
+                   "owner" => ["destroy"] } # you don't need a boolean column for this but you do need to categorize 'owner only' actions!
   
   # the policy class contains a hash table of action (method) names and their categories
   # all methods are one of the three categories: download, edit and view

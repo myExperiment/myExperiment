@@ -77,8 +77,24 @@ class ContributionsController < ApplicationController
   
 protected
 
-  def find_contributions
-    @contributions = Contribution.find(:all)
+  def find_contributions()
+    valid_keys = ["contributor_id", "contributor_type", "contributable_type"]
+    
+    cond_sql = ""
+    cond_params = []
+    
+    params.each do |key, value|
+      if valid_keys.include? key
+        cond_sql << " AND " unless cond_sql.empty?
+        cond_sql << "#{key} = ?" 
+        cond_params << value
+      end
+    end
+    
+    options = {:order => "contributable_type ASC, created_at DESC"}
+    options = options.merge({:conditions => [cond_sql] + cond_params}) unless cond_sql.empty?
+    
+    @contributions = Contribution.find(:all, options)
   end
   
   def find_contribution_auth

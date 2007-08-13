@@ -17,11 +17,20 @@
     <b>Description</b><br />
     <%= f.text_area :description %>
   </p>
-
+  
+  <% if @workflow.authorized?("destroy", current_user) %>
+    <% fields_for :contribution, @workflow.contribution do |c_f| %>
+      <p>
+        <b>Policy</b><br/>
+        <%= c_f.text_field :policy_id %>
+      </p>
+    <% end %>
+  <% end %>
+  
   <p>
     <%= submit_tag "Update" %>
   </p>
 <% end %>
 
 <%= link_to 'Show', workflow_path(@workflow) %> |
-<%= link_to 'Back', workflows_path %>
+<%= link_to 'Back', contributions_path %>

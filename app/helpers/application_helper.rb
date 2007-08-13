@@ -22,7 +22,7 @@ module ApplicationHelper
   
   def name(user_id)
     begin
-      User.find(user_id).name
+      h(User.find(user_id).name)
     rescue ActiveRecord::RecordNotFound
       nil
     end
@@ -30,7 +30,7 @@ module ApplicationHelper
   
   def title(network_id)
     begin
-      Network.find(network_id).title
+      h(Network.find(network_id).title)
     rescue ActiveRecord::RecordNotFound
       nil
     end
@@ -129,5 +129,49 @@ module ApplicationHelper
 
   def request_friendship_link(user_id)
     link_to "Request friendship", new_friendship_url(:user_id => user_id)
+  end
+  
+  def versioned_workflow_link(workflow_id, version_id)
+    begin
+      workflow = Workflow.find(workflow_id)
+      
+      if workflow.revert_to(version_id)
+        link_to "[#{workflow.version}] - #{h(workflow.title)} (#{workflow.updated_at})", 
+                :controller => 'workflows',
+                :action => 'show',
+                :id => workflow.id,
+                :version => workflow.version
+      else
+        nil
+      end
+    rescue ActiveRecord::RecordNotFound
+      nil
+    end
+  end
+  
+  def filter_contributables(contributions)
+    rtn = {}
+    
+    contributions.each do |c|
+      contributable = c.contributable
+      
+      if (arr = rtn[(klass = contributable.class.to_s)])
+        arr << contributable
+      else
+        rtn[klass] = [contributable]
+      end
+    end
+    
+    return rtn
+  end
+  
+  def contributor(contributorid, contributortype)
+    if contributortype.to_s == "User"
+      return profile_link(contributorid)
+    elsif contributortype.to_s == "Network"
+      return link_to(title(contributorid), network_path(contributorid))
+    else
+      return nil
+    end
   end
 end

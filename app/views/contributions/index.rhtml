@@ -1,30 +1,25 @@
 <h1>Listing contributions</h1>
 
-<table>
-  <tr>
-    <th>Contributor</th>
-    <th>Contributor type</th>
-    <th>Contributable</th>
-    <th>Contributable type</th>
-    <th>Policy</th>
-    <th>Created at</th>
-    <th>Updated at</th>
-  </tr>
-  
-<% for contribution in @contributions %>
-  <tr>
-    <td><%=h contribution.contributor_id %></td>
-    <td><%=h contribution.contributor_type %></td>
-    <td><%=h contribution.contributable_id %></td>
-    <td><%=h contribution.contributable_type %></td>
-    <td><%=h contribution.policy_id %></td>
-    <td><%=h contribution.created_at %></td>
-    <td><%=h contribution.updated_at %></td>
-    <td><%= link_to 'Show', contribution_path(contribution) %></td>
-    <td><%= link_to 'Edit', edit_contribution_path(contribution) %></td>
-    <td><%= link_to 'Destroy', contribution_path(contribution), :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
+<p>This page is generated in three steps:</p>
+
+<ol>
+  <li><code>render :partial => "contributions/list", :locals => { :collection => @contributions }</code></li>
+  <li><code>filter_contributables</code> produces <b>klass</b>-<b>contributables</b> key-value pairs in a Hash</li>
+  <li><code>render :partial => "#{klass.pluralize.downcase}/#{klass.downcase}", :collection => contributables</code> for each <b>klass</b></li>
+</ol>
+
+<p>
+
+<%= render :partial => "list", :locals => { :collection => @contributions } %>
 
 <br />
+
+<% if false %>
+
+<p>This table is produced using a ruby call to <code>render :partial => "contributions/table", :locals => { :collection => @contributables }</code>.</p>
+
+<%= render :partial => "table", :locals => { :collection => @contributions } %>
+
+<br/>
+
+<% end %>

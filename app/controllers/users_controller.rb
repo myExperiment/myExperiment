@@ -40,6 +40,9 @@ class UsersController < ApplicationController
     
     respond_to do |format|
       if @user.save
+        # log user in after succesful create
+        session[:user_id] = @user.id
+        
         flash[:notice] = 'User was successfully created.'
         format.html { redirect_to user_url(@user) }
         format.xml  { head :created, :location => user_url(@user) }

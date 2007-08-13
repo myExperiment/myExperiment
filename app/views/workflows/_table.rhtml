@@ -1,0 +1,39 @@
+<% unless collection.empty? %>
+
+<table>
+  <tr>
+    <th>Contributor</th>
+    <th>Contributor type</th>
+    <th>Title</th>
+    <th>Image</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+    <th>Version</th>
+  </tr>
+  
+<% for workflow in collection %>
+  <tr>
+    <td><%=h workflow.contribution.contributor_id %></td>
+    <td><%=h workflow.contribution.contributor_type %></td>
+    <td><%=h workflow.title %></td>
+    <td>
+      <% unless workflow.image.nil? %>
+        <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
+          <%= image_tag url_for_file_column(workflow, "image", "thumb") %>
+        <% else %>
+          <%= image_tag url_for_file_column(workflow, "image", "padlock") %>
+        <% end %>
+      <% end %>
+    </td>
+    <td><%=h workflow.created_at %></td>
+    <td><%=h workflow.updated_at %></td>
+    <td><%=h workflow.version %></td>
+    <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><td><%= link_to 'Download', download_workflow_path(workflow) %></td><% end %>
+    <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><td><%= link_to 'Show', workflow_path(workflow) %></td><% end %>
+    <% if logged_in? and workflow.authorized?("destroy", current_user) %><td><%= link_to 'Edit', edit_workflow_path(workflow) %></td><% end %>
+    <% if logged_in? and workflow.authorized?("destroy", current_user) %><td><%= link_to 'Destroy', workflow_path(workflow), :confirm => 'Are you sure?', :method => :delete %></td><% end %>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

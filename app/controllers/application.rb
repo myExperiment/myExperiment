@@ -16,13 +16,29 @@ class ApplicationController < ActionController::Base
 private
   
   def authorize
-    return true if logged_in?
+    logout = false
     
-    flash[:notice] = "You are not logged in! (fix this in ApplicationController.rb)"
+    if logged_in?
+      if session[:login_time] < (Time.now - 2.hours)
+        if Auth.find(:first, :conditions => ["user_id = ?", current_user.id])
+          logout = true
+        else
+          session[:user_id] = nil
+          session.delete(:login_time)
+        end
+      else
+        return true
+      end
+    end
     
     respond_to do |format|
-      format.html { redirect_to :controller => 'users' }
-      format.xml { head :ok }
+      if logout == true
+        redirect_to :controller => 'auth', :action => 'logout', :id => current_user.id
+      else
+        flash[:notice] = "You must be logged in to perform this action."
+        format.html { redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '') }
+        format.xml { head :ok }
+      end
     end
       
     return false

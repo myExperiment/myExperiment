@@ -47,9 +47,11 @@ class BlobsController < ApplicationController
     params[:blob][:data] = params[:blob][:data].read
     
     @blob = Blob.new(params[:blob])
-
+    
     respond_to do |format|
       if @blob.save
+        @blob.contribution.update_attributes(params[:contribution])
+        
         flash[:notice] = 'Blob was successfully created.'
         format.html { redirect_to blob_url(@blob) }
         format.xml  { head :created, :location => blob_url(@blob) }
@@ -65,6 +67,9 @@ class BlobsController < ApplicationController
   def update
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
+        # security fix (only allow the owner to change the policy)
+        @blob.contribution.update_attributes(params[:contribution]) if @blob.contribution.owner?(current_user)
+        
         flash[:notice] = 'Blob was successfully updated.'
         format.html { redirect_to blob_url(@blob) }
         format.xml  { head :ok }

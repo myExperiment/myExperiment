@@ -1,11 +1,10 @@
 <p>
-  <b>Contributor:</b>
-  <%=h @blob.contributor_id %>
+  <%= link_to '[download]', download_blob_path(@blob) %>
 </p>
 
 <p>
-  <b>Contributor type:</b>
-  <%=h @blob.contributor_type %>
+  <b>Contributor:</b>
+  <%= contributor(@blob.contribution.contributor_id, @blob.contribution.contributor_type) %>
 </p>
 
 <p>
@@ -18,11 +17,17 @@
   <%=h @blob.content_type %>
 </p>
 
-<p>
-  <b>Download:</b>
-  <%= link_to 'Click here', download_blob_path(@blob) %>
-</p>
+<% if logged_in? and @blob.authorized?("destroy", current_user) %>
+  <p>
+    <b>Policy:</b>
+    <% if @blob.contribution.policy %>
+      <%= link_to h(@blob.contribution.policy.name), policy_path(@blob.contribution.policy) %> (managed by: <%= link_to name(id=((con=@blob.contribution.policy.contributor).id || con.owner.id)), user_path(id) %>)
+    <% else %>
+      Public (none)
+    <% end %>
+  </p>
+<% end %>
 
 
-<%= link_to 'Edit', edit_blob_path(@blob) %> |
-<%= link_to 'Back', blobs_path %>
+<% if logged_in? and @blob.authorized?("edit", current_user) %><%= link_to 'Edit', edit_blob_path(@blob) %> |<% end %>
+<%= link_to 'Back', contributions_path %>
