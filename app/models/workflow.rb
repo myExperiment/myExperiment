@@ -19,8 +19,8 @@ class Workflow < ActiveRecord::Base
       :thumb    => { :size => "100x100!" }, 
       :medium   => { :size => "650x300>" },
       :padlock  => { :size => "100x100!",
-                     :overlay   => { :file => "images/padlock.gif", 
-                                     :alignment => :bottom_left } }
+                     :overlay   => { :file => "images/padlock.png", 
+                                     :alignment => :bottom_right } }
     }
   }
   
