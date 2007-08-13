@@ -40,6 +40,11 @@ module Mib
                   :as => :contributable,
                   :dependent => :destroy
                   
+          acts_as_bookmarkable
+          acts_as_commentable
+          acts_as_rateable
+          acts_as_taggable
+                  
           class_eval do
             extend Mib::Acts::Contributable::SingletonMethods
           end
