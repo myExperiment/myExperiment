@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 14) do
+ActiveRecord::Schema.define(:version => 17) do
 
   create_table "blobs", :force => true do |t|
     t.column "contributor_id",   :integer
@@ -11,6 +11,27 @@ ActiveRecord::Schema.define(:version => 14) do
     t.column "content_type",     :string
     t.column "data",             :binary
   end
+
+  create_table "bookmarks", :force => true do |t|
+    t.column "title",             :string,   :limit => 50, :default => ""
+    t.column "created_at",        :datetime,                               :null => false
+    t.column "bookmarkable_type", :string,   :limit => 15, :default => "", :null => false
+    t.column "bookmarkable_id",   :integer,                :default => 0,  :null => false
+    t.column "user_id",           :integer,                :default => 0,  :null => false
+  end
+
+  add_index "bookmarks", ["user_id"], :name => "fk_bookmarks_user"
+
+  create_table "comments", :force => true do |t|
+    t.column "title",            :string,   :limit => 50, :default => ""
+    t.column "comment",          :text
+    t.column "created_at",       :datetime,                               :null => false
+    t.column "commentable_id",   :integer,                :default => 0,  :null => false
+    t.column "commentable_type", :string,   :limit => 15, :default => "", :null => false
+    t.column "user_id",          :integer,                :default => 0,  :null => false
+  end
+
+  add_index "comments", ["user_id"], :name => "fk_comments_user"
 
   create_table "contributions", :force => true do |t|
     t.column "contributor_id",     :integer
@@ -94,11 +115,36 @@ ActiveRecord::Schema.define(:version => 14) do
     t.column "updated_at",  :datetime
   end
 
+  create_table "ratings", :force => true do |t|
+    t.column "rating",        :integer,                :default => 0
+    t.column "created_at",    :datetime,                               :null => false
+    t.column "rateable_type", :string,   :limit => 15, :default => "", :null => false
+    t.column "rateable_id",   :integer,                :default => 0,  :null => false
+    t.column "user_id",       :integer,                :default => 0,  :null => false
+  end
+
+  add_index "ratings", ["user_id"], :name => "fk_ratings_user"
+
   create_table "relationships", :force => true do |t|
     t.column "network_id",  :integer
     t.column "relation_id", :integer
     t.column "created_at",  :datetime
     t.column "accepted_at", :datetime
+  end
+
+  create_table "taggings", :force => true do |t|
+    t.column "tag_id",        :integer
+    t.column "taggable_id",   :integer
+    t.column "taggable_type", :string
+    t.column "created_at",    :datetime
+    t.column "user_id",       :integer
+  end
+
+  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
+  add_index "taggings", ["taggable_id", "taggable_type"], :name => "index_taggings_on_taggable_id_and_taggable_type"
+
+  create_table "tags", :force => true do |t|
+    t.column "name", :string
   end
 
   create_table "users", :force => true do |t|
