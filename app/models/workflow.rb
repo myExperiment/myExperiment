@@ -18,9 +18,13 @@ class Workflow < ActiveRecord::Base
     :versions => {
       :thumb    => { :size => "100x100!" }, 
       :medium   => { :size => "650x300>" },
-      :padlock  => { :size => "100x100!",
-                     :overlay   => { :file => "images/padlock.png", 
-                                     :alignment => :bottom_right } }
+      #:padlock  => { :size => "100x100!",
+      #               :overlay   => { :file => "images/padlock.png", 
+      #                               :alignment => :bottom_right } }
+      :padlock => { :size => "100x100!",
+                    :transformation => Proc.new { |image| image.composite(Magick::ImageList.new('public/images/padlock.gif'), 
+                                                                          Magick::SouthEastGravity, 
+                                                                          Magick::OverCompositeOp) } }
     }
   }
   
