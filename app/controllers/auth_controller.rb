@@ -54,7 +54,7 @@ class AuthController < ApplicationController
       
       # create user object if one does not exist
       if @user.nil?
-        @user = User.new(:openid_url => response.identity_url)
+        @user = User.new(:openid_url => response.identity_url, :name => "Joe Bloggs BSc (change me)")
         @user.save
       end
 
@@ -64,7 +64,7 @@ class AuthController < ApplicationController
 
       flash[:notice] = "Logged in as #{@user.name}"
        
-      redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '')
+      redirect_to request.env["HTTP_REFERER"] || user_url(@user)
       return
 
     when OpenID::FAILURE
@@ -82,13 +82,13 @@ class AuthController < ApplicationController
       flash[:notice] = 'Unknown response from OpenID server.'
     end
   
-    redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '')
+    redirect_to request.env["HTTP_REFERER"] || user_url(@user)
   end
   
   def logout
     session[:user_id] = nil
     
-    redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '')
+    redirect_to request.env["HTTP_REFERER"] || user_url(@user)
   end
 
   private
