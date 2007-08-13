@@ -3,6 +3,8 @@ require 'acts_as_contributor'
 class Network < ActiveRecord::Base
   acts_as_contributor
   
+  acts_as_ferret :fields => [:title, :unique]
+  
   def related?(other) # other.kind_of? Mib::Act::Contributor
     if other.kind_of? Network
       return relation?(other.id)

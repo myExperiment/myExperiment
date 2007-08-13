@@ -3,6 +3,8 @@ require 'acts_as_contributor'
 class User < ActiveRecord::Base
   acts_as_contributor
   
+  acts_as_ferret :fields => [:openid_url, :unique]
+  
   def related?(other)
     if other.kind_of? User        # if other is a User...
       return friend?(other.id)    #       ...is other a friend of mine?

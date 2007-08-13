@@ -5,6 +5,11 @@ class Workflow < ActiveRecord::Base
   
   acts_as_versioned
   
+  acts_as_ferret :fields => { :title => { :store => :yes }, 
+                              :description => { :store => :yes }, 
+                              :tag_list => { :store => :yes },
+                              :rating => { :index => :untokenized } }
+  
   validates_presence_of :title, :scufl
   
   validates_uniqueness_of :unique
