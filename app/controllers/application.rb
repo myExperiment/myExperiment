@@ -1,7 +1,11 @@
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 
+require_dependency "openid_login_system"
+
 class ApplicationController < ActionController::Base
+  include OpenidLoginSystem
+  
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_m2_session_id'
   
@@ -16,29 +20,12 @@ class ApplicationController < ActionController::Base
 private
   
   def authorize
-    logout = false
-    
-    if logged_in?
-      if session[:login_time] < (Time.now - 2.hours)
-        if Auth.find(:first, :conditions => ["user_id = ?", current_user.id])
-          logout = true
-        else
-          session[:user_id] = nil
-          session.delete(:login_time)
-        end
-      else
-        return true
-      end
-    end
+    return true if logged_in?
     
     respond_to do |format|
-      if logout == true
-        redirect_to :controller => 'auth', :action => 'logout', :id => current_user.id
-      else
-        flash[:notice] = "You must be logged in to perform this action."
-        format.html { redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '') }
-        format.xml { head :ok }
-      end
+      flash[:notice] = "You must be logged in to perform this action."
+      format.html { redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '') }
+      format.xml { head :ok }
     end
       
     return false

@@ -1,51 +1,112 @@
+require "pathname"
+require "cgi"
+
+# load the openid library
+begin
+  require "rubygems"
+  require_gem "ruby-openid", ">= 1.0.2"
+rescue LoadError
+  require "openid"
+end
+
 class AuthController < ApplicationController
+  #before_filter :authorize, :only => [:logout, :welcome]
+  
+  layout  'scaffold'
+  
+  # process the login request, disover the openid server, and
+  # then redirect.
   def login
-    begin
-      u = User.find(params[:id])
+    openid_url = params[:openid_url]
+
+    if request.post?
+      request = consumer.begin(openid_url)
+
+      case request.status
+      when OpenID::SUCCESS
+        return_to = url_for(:action=> 'complete')
+        trust_root = url_for(:controller=>'')
+
+        url = request.redirect_url(trust_root, return_to)
+        redirect_to(url)
+        return
+
+      when OpenID::FAILURE
+        escaped_url = CGI::escape(openid_url)
+        flash[:notice] = "Could not find OpenID server for #{escaped_url}"
+        
+      else
+        flash[:notice] = "An unknown error occured."
+
+      end      
+    end    
+
+  end
+
+  # handle the openid server response
+  def complete
+    response = consumer.complete(params)
+    
+    case response.status
+    when OpenID::SUCCESS
+
+      @user = User.find_first(["openid_url = ?", response.identity_url])
       
-      error("Login failed, already logged in", "already logged in") if logged_in?
-      
-      respond_to do |format|
-        session[:user_id] = u.id
-          
-        flash[:notice] = "#{u.name} has logged in."
-        format.html { redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '') }
-        format.xml { head :ok }
+      # create user object if one does not exist
+      if @user.nil?
+        @user = User.new(:openid_url => response.identity_url)
+        @user.save
       end
-    rescue ActiveRecord::RecordNotFound
-      error("Login failed, user not found (id invalid)", "not found (id invalid)", :id)
+
+      # storing both the openid_url and user id in the session for for quick
+      # access to both bits of information.  Change as needed.
+      session[:user_id] = @user.id
+
+      flash[:notice] = "Logged in as #{@user.name}"
+       
+      redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '')
+      return
+
+    when OpenID::FAILURE
+      if response.identity_url
+        flash[:notice] = "Verification of #{CGI::escape(response.identity_url)} failed."
+
+      else
+        flash[:notice] = 'Verification failed.'
+      end
+
+    when OpenID::CANCEL
+      flash[:notice] = 'Verification cancelled.'
+
+    else
+      flash[:notice] = 'Unknown response from OpenID server.'
     end
+  
+    redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '')
   end
   
   def logout
-    begin
-      u = User.find(params[:id])
-      
-      if logged_in? and current_user.id.to_i == u.id.to_i
-        flash[:notice] = "#{u.name} has logged out."
-        session[:user_id] = nil
-      
-        respond_to do |format|
-          format.html { redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '') }
-          format.xml { head :ok }
-        end
-      else
-        error("Logout failed, not logged in", "not logged in")
-      end
-    rescue ActiveRecord::RecordNotFound
-      error("Logout failed, user not found (id invalid)", "not found (id invalid)")
-    end
+    session[:user_id] = nil
+    
+    redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '')
+  end
+
+  private
+
+  # Get the OpenID::Consumer object.
+  def consumer
+    # create the OpenID store for storing associations and nonces,
+    # putting it in your app's db directory
+    store_dir = Pathname.new(RAILS_ROOT).join('db').join('openid-store')
+    store = OpenID::FilesystemStore.new(store_dir)
+
+    return OpenID::Consumer.new(session, store)
+  end
+
+  # get the logged in user object
+  def find_user
+    return nil if session[:user_id].nil?
+    User.find(session[:user_id])
   end
   
-private
-
-  def error(notice, message, attr=:id)
-    flash[:notice] = notice
-    (err = Auth.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to request.env["HTTP_REFERER"] || url_for(:controller => '') }
-      format.xml { render :xml => err.to_xml }
-    end
-  end
 end

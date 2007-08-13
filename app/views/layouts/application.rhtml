@@ -22,7 +22,7 @@
 </p>
 <% else %>
   <% form_tag :controller => 'auth', :action => 'login' do %>
-    <%= select_tag :id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id, :name) %> <%= submit_tag "Login" %>
+    <%= text_field_tag :openid_url, "http://joe.bloggs.myopenid.com/", :size => 32 %> <%= submit_tag "Login" %>
   <% end %>
 <% end %>
 

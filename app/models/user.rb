@@ -13,9 +13,10 @@ class User < ActiveRecord::Base
     end
   end
   
-  validates_uniqueness_of :openid_url
+  validates_uniqueness_of :openid_url, :on => :create
+  validates_presence_of :openid_url
   
-  validates_presence_of :openid_url, :name
+  validates_presence_of :name
   
   has_one :profile,
           :dependent => :destroy
