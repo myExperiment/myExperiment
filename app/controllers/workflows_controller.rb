@@ -137,19 +137,7 @@ protected
     i = Tempfile.new("image")
     Scufl::Dot.new.write_dot(i, scufl_model)
     i.close(false)
-    d = StringIO.new
-    
-    #FileUtils.copy_file(i.path, "#{RAILS_ROOT}/scufl_model.dot")
-    
-    exec_dot = "dot -Tpng #{i.path}"
-    # if RUBY_PLATFORM =~ /mswin32/
-    #   Open3.popen3(exec_dot) do |stdin, stdout, stderr|
-    #     d << stdout.gets(sep_string=nil)
-    #   end
-    # else
-      d << `#{exec_dot}`
-    # end
-    
+    d = StringIO.new(`dot -Tpng #{i.path}`)
     i.unlink
     d.extend FileUpload
     d.original_filename = "#{unique}.png"
