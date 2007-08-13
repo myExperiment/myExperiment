@@ -1,5 +1,5 @@
 class PermissionsController < ApplicationController
-  before_filter :authorize
+  before_filter :login_required
   
   before_filter :find_permissions_auth, :only => [:index]
   before_filter :find_permission_auth, :only => [:show, :edit, :update, :destroy]

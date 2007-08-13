@@ -1,5 +1,5 @@
 class MembershipsController < ApplicationController
-  before_filter :authorize, :except => [:index, :show]
+  before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_memberships, :only => [:index]
   before_filter :find_membership, :only => [:show]

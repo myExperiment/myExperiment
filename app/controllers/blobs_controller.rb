@@ -1,5 +1,5 @@
 class BlobsController < ApplicationController
-  before_filter :authorize, :except => [:index, :show, :download]
+  before_filter :login_required, :except => [:index, :show, :download]
   
   before_filter :find_blobs, :only => [:index]
   before_filter :find_blob_auth, :only => [:download, :show, :edit, :update, :destroy]

@@ -17,9 +17,13 @@ class ApplicationController < ActionController::Base
     current_user != 0
   end
   
+  def admin?
+    false
+  end
+  
 private
   
-  def authorize
+  def login_required
     return true if logged_in?
     
     respond_to do |format|

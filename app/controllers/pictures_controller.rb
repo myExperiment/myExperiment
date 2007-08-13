@@ -1,5 +1,5 @@
 class PicturesController < ApplicationController
-  before_filter :authorize, :except => [:index, :show]
+  before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_pictures, :only => [:index]
   before_filter :find_picture_auth, :only => [:select, :edit, :update, :destroy]

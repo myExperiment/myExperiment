@@ -1,6 +1,6 @@
 class TopicsController < ApplicationController
   before_filter :find_forum_and_topic, :except => :index
-#  before_filter :update_last_seen_at, :only => :show
+  before_filter :update_last_seen_at, :only => :show
 
   def index
     respond_to do |format|

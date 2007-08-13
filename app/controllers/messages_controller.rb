@@ -1,5 +1,5 @@
 class MessagesController < ApplicationController
-  before_filter :authorize
+  before_filter :login_required
   
   before_filter :find_message_by_to_or_from, :only => [:show]
   before_filter :find_message_by_to, :only => [:destroy]

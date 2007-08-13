@@ -1,5 +1,5 @@
 class RelationshipsController < ApplicationController
-  before_filter :authorize, :except => [:index, :show]
+  before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_relationships, :only => [:index]
   before_filter :find_relationship, :only => [:show]

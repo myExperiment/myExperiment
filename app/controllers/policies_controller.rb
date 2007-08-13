@@ -1,5 +1,5 @@
 class PoliciesController < ApplicationController
-  before_filter :authorize
+  before_filter :login_required
   
   before_filter :find_policies_auth, :only => [:index]
   before_filter :find_policy_auth, :only => [:show, :edit, :update, :destroy]

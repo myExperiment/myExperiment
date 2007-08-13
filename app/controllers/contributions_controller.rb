@@ -1,5 +1,5 @@
 class ContributionsController < ApplicationController
-  before_filter :authorize, :except => [:index, :show]
+  before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_contributions, :only => [:index]
   before_filter :find_contribution_auth, :only => [:show, :edit, :update, :destroy]
