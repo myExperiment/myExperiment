@@ -51,7 +51,7 @@ class WorkflowsController < ApplicationController
   def create
     # hack for select contributor form
     if params[:contributor_pair]
-      params[:workflow][:contributor_id], params[:workflow][:contributor_type] = params[:contributor_pair].split("-")
+      params[:workflow][:contributor_type], params[:workflow][:contributor_id] = params[:contributor_pair].split("-")
       params.delete("contributor_pair")
     end
     
