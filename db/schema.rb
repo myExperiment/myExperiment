@@ -45,13 +45,13 @@ ActiveRecord::Schema.define(:version => 19) do
 
   create_table "forums", :force => true do |t|
     t.column "name",             :string
+    t.column "contributor_id",   :integer
+    t.column "contributor_type", :string
     t.column "description",      :string
     t.column "topics_count",     :integer, :default => 0
     t.column "posts_count",      :integer, :default => 0
     t.column "position",         :integer
     t.column "description_html", :text
-    t.column "owner_type",       :string
-    t.column "owner_id",         :integer
   end
 
   create_table "friendships", :force => true do |t|
@@ -223,7 +223,6 @@ ActiveRecord::Schema.define(:version => 19) do
     t.column "contributor_id",   :integer
     t.column "contributor_type", :string
     t.column "scufl",            :binary
-    t.column "image",            :string
     t.column "title",            :string
     t.column "unique",           :string
     t.column "description",      :text
