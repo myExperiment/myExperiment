@@ -69,7 +69,7 @@ class SessionController < ApplicationController
         end
         successful_login(self.current_user)
       else
-        failed_login('Invalid login or password')
+        failed_login('Invalid username or password')
       end
     end
 

@@ -14,6 +14,7 @@
 
 <%= image_tag("logo.png") %>
 
+<p style="color: red"><%= flash[:error] %></p>
 <p style="color: green"><%= flash[:notice] %></p>
 
 <% if logged_in? %>
