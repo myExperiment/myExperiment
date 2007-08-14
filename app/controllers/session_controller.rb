@@ -12,7 +12,7 @@ class SessionController < ApplicationController
     cookies.delete :auth_token
     reset_session
     flash[:notice] = "You have been logged out. Thank you for using myExperiment!"
-    redirect_back_or_default(url_for(:controller => "contributions"))
+    redirect_back_or_default(users_path)
   end
   
   # handle the openid server response

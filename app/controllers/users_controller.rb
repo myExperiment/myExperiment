@@ -36,12 +36,17 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.xml
   def create
+    if params[:user][:username] && params[:user][:password] && params[:user][:password_confirmation]
+      params[:user].delete("openid_url") if params[:user][:openid_url] # strip params[:user] of it's openid_url if username and password is provided
+    end
+    
     @user = User.new(params[:user])
     
     respond_to do |format|
       if @user.save
         # log user in after succesful create
-        session[:user_id] = @user.id
+        #session[:user_id] = @user.id
+        self.current_user = @user
         
         flash[:notice] = 'User was successfully created.'
         format.html { redirect_to user_url(@user) }
