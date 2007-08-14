@@ -8,20 +8,30 @@
     <%= f.text_field :name %>
   </p>
   
-  <p>
-    <b>Username</b><br />
-    <%= f.text_field :username %>
-  </p>
+  <fieldset>
+    <legend>RESTful Authentication details:</legend>
+    
+    <p>myExperiment offers a <%= link_to 'Representational State Transfer', "http://en.wikipedia.org/wiki/Representational_State_Transfer" %> (REST) interface for use with 
+    any compatable client (such as <%= link_to 'cURL', "http://curl.haxx.se/" %>). In order to maintain a session, you must log-in to myExperiment using a separate username 
+    and password.</p>
+    
+    <p>If you signed up to myExperiment using an OpenID and want to use the REST interface, you must fill in the fields below:</p>
+    
+    <p>
+      <b>Username</b><br />
+      <%= f.text_field :username %>
+    </p>
   
-  <p>
-    <b>Password</b><br />
-    <%= f.password_field :password %>
-  </p>
+    <p>
+      <b>Password</b><br />
+      <%= f.password_field :password %>
+    </p>
   
-  <p>
-    <b>Confirm Password</b><br />
-    <%= f.password_field :password_confirmation %>
-  </p>
+    <p>
+      <b>Confirm Password</b><br />
+      <%= f.password_field :password_confirmation %>
+    </p>
+  </fieldset>
 
   <p>
     <%= submit_tag "Create" %>

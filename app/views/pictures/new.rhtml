@@ -13,4 +13,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Back', pictures_path(session[:user_id]) %>
+<%= link_to 'Back', pictures_path(logged_in? ? current_user : nil) %>
