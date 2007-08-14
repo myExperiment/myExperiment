@@ -1,33 +1,55 @@
-<% if @user and my_page? @user.id %>
+<% if my_page? @user.id %>
 
-<h1>Listing friendships pending for <%=h @user.name %></h1>
+<h1>Listing friendships requested (by me)</h1>
 
-<p>The <strong>User</strong> initiates the Friendship request with the <strong>Friend</strong> who can accept/reject.</p>
+<p>The <strong>User</strong> initiates the Friendship request with the <strong>Friend</strong>.</p>
 
-<%= render :partial => "table", :locals => { :collection => @user.friendships_pending } %>
-
-<h1>Listing friendships accepted by <%=h @user.name%></h1>
-
-<%= render :partial => 'table', :locals => { :collection => @user.friendships_accepted } %>
-
-<% else %>
-
-<h1>Listing friendships for All</h1>
-
-<%= render :partial => "table", :locals => { :collection => @friendships } %>
-
-<% end %>
+<%= render :partial => 'table', :locals => { :collection => @user.friendships_requested } %>
 
 <br/>
 
-<% if @user %>
+<h1>Listing friendships accepted (by others)</h1>
 
-<h1>Listing <%=h @user.name %>'s friends</h1>
+<p><strong>Friends</strong> who have accepted Friendship requests are listed below.</p>
 
-<p><strong>Friends</strong> who have accepted friendship requests are listed below.</p>
+<%= render :partial => "table", :locals => { :collection => @user.friendships_completed } %>
 
-<%= render :partial => "users/friends", :locals => { :collection => @user.friends, :user => @user } %>
+<br/>
 
-<br />
+<h1>Listing friendships requested (by others)</h1>
+
+<p>The <strong>Friend</strong> can have many Friendships pending acceptance.</p>
+
+<%= render :partial => "table", :locals => { :collection => @user.friendships_pending } %>
+
+<br/>
+
+<h1>Listing friendships accepted (by me)</h1>
+
+<p>The <strong>Friend</strong> can accept/reject.</p>
+
+<%= render :partial => 'table', :locals => { :collection => @user.friendships_accepted } %>
+
+<br/>
+
+<% else %>
+
+  <% if @user %>
+  
+  <h1>Listing friendships for <%=h @user.name %></h1>
+  
+  <%= render :partial => "users/friends", :locals => { :collection => @user.friends } %>
+  
+  <br/>
+  
+  <% else %>
+
+  <h1>Listing friendships for All</h1>
+
+  <%= render :partial => "table", :locals => { :collection => @friendships } %>
+
+  <br/>
+  
+  <% end %>
 
 <% end %>
