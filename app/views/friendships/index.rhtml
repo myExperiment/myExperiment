@@ -2,7 +2,7 @@
 
 <h1>Listing friendships requested (by me)</h1>
 
-<p>The <strong>User</strong> initiates the Friendship request with the <strong>Friend</strong>.</p>
+<p>The <strong>User</strong> (me) initiates the Friendship request with the <strong>Friend</strong>.</p>
 
 <%= render :partial => 'table', :locals => { :collection => @user.friendships_requested } %>
 
@@ -10,7 +10,7 @@
 
 <h1>Listing friendships accepted (by others)</h1>
 
-<p><strong>Friends</strong> who have accepted Friendship requests are listed below.</p>
+<p>The <strong>Friend</strong> decides whether or not to accept the Friendship request from the <strong>User</strong> (me).</p>
 
 <%= render :partial => "table", :locals => { :collection => @user.friendships_completed } %>
 
@@ -18,7 +18,7 @@
 
 <h1>Listing friendships requested (by others)</h1>
 
-<p>The <strong>Friend</strong> can have many Friendships pending acceptance.</p>
+<p>The <strong>Friend</strong> (me) can have many Friendship requests pending acceptance.</p>
 
 <%= render :partial => "table", :locals => { :collection => @user.friendships_pending } %>
 
@@ -26,7 +26,7 @@
 
 <h1>Listing friendships accepted (by me)</h1>
 
-<p>The <strong>Friend</strong> can accept/reject.</p>
+<p>Friendships are only valid once they have been accepted by the <strong>Friend</strong> (me).</p>
 
 <%= render :partial => 'table', :locals => { :collection => @user.friendships_accepted } %>
 
