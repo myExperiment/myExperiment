@@ -3,6 +3,7 @@
 <table>
   <tr>
     <th>Openid url</th>
+    <th>Username</th>
     <th>Name</th>
     <th>Created at</th>
     <th>Updated at</th>
@@ -11,6 +12,7 @@
 <% for user in collection %>
   <tr>
     <td><%=h user.openid_url %></td>
+    <td><%=h user.username %></td>
     <td><%=h user.name %></td>
     <td><%=h user.created_at %></td>
     <td><%=h user.updated_at %></td>
