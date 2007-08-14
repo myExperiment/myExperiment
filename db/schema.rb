@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 18) do
+ActiveRecord::Schema.define(:version => 19) do
 
   create_table "blobs", :force => true do |t|
     t.column "contributor_id",   :integer
@@ -204,12 +204,17 @@ ActiveRecord::Schema.define(:version => 18) do
   add_index "topics", ["forum_id", "replied_at"], :name => "index_topics_on_forum_id_and_replied_at"
 
   create_table "users", :force => true do |t|
-    t.column "openid_url",   :string
-    t.column "name",         :string
-    t.column "created_at",   :datetime
-    t.column "updated_at",   :datetime
-    t.column "posts_count",  :integer,  :default => 0
-    t.column "last_seen_at", :datetime
+    t.column "openid_url",                :string
+    t.column "name",                      :string
+    t.column "created_at",                :datetime
+    t.column "updated_at",                :datetime
+    t.column "posts_count",               :integer,                :default => 0
+    t.column "last_seen_at",              :datetime
+    t.column "username",                  :string
+    t.column "crypted_password",          :string,   :limit => 40
+    t.column "salt",                      :string,   :limit => 40
+    t.column "remember_token",            :string
+    t.column "remember_token_expires_at", :datetime
   end
 
   create_table "workflow_versions", :force => true do |t|

@@ -1,6 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
   map.from_plugin :savage_beast
   
+  map.resource :session
+  
   map.resources :workflows, :member => { :download => :get }
 
   map.resources :blobs, :member => { :download => :get }

@@ -1,13 +1,5 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
-  def current_user
-    @current_user ||= ((session[:user_id] && User.find(session[:user_id])) || 0)
-  end
-  
-  def logged_in?
-    current_user != 0
-  end
-  
   def my_page?(user_id, user_type="User")
     logged_in? and current_user.id.to_i == user_id.to_i and current_user.class.to_s == user_type.to_s
   end

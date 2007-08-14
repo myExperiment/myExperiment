@@ -12,6 +12,21 @@
     <b>Name</b><br />
     <%= f.text_field :name %>
   </p>
+  
+  <p>
+    <b>Username</b><br />
+    <%= f.text_field :username %>
+  </p>
+  
+  <p>
+    <b>Password</b><br />
+    <%= f.password_field :password %>
+  </p>
+  
+  <p>
+    <b>Confirm Password</b><br />
+    <%= f.password_field :password_confirmation %>
+  </p>
 
   <p>
     <%= submit_tag "Create" %>
