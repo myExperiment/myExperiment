@@ -1,0 +1,7 @@
+<h1>Listing moderatorships</h1>
+
+<%= render :partial => "table", :locals => { :collection => @moderatorships } %>
+
+<br />
+
+<%= link_to 'New moderatorship', new_moderatorship_path(@forum) %>

@@ -42,7 +42,7 @@ class BlobsController < ApplicationController
   # POST /blobs
   # POST /blobs.xml
   def create
-     # hack for select contributor form
+    # hack for select contributor form
     if params[:contributor_pair]
       params[:blob][:contributor_type], params[:blob][:contributor_id] = params[:contributor_pair][:class_id].split("-")
       params.delete("contributor_pair")

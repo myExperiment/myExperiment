@@ -1,7 +1,6 @@
 require 'md5'
 
 module ApplicationHelper
-  
   def last_active
     session[:last_active] ||= Time.now.utc
   end

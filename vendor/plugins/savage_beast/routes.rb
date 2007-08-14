@@ -1,5 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :forums, :topics, :posts, :monitorship
+  map.resources :forums, :topics, :posts, :monitorship, :moderatorships
   map.resources :posts, :name_prefix => 'all_', :collection => { :search => :get }
 
   %w(forum).each do |attr|
@@ -7,6 +7,7 @@ ActionController::Routing::Routes.draw do |map|
   end
   
   map.resources :forums do |forum|
+    forum.resources :moderatorships, :controller => :moderators
     forum.resources :topics do |topic|
       topic.resources :posts
       topic.resource :monitorship, :controller => :monitorships

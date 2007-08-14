@@ -1,0 +1,34 @@
+<% auth_show = forum.authorized?("show", (logged_in? ? current_user : nil)) %> 
+
+<table width="640">
+  <tr>
+    <td width="80" rowspan="2">
+      <%= image_tag("padlock.png") unless auth_show %>
+    </td>
+    <th width="560" colspan="2">
+      <%=h forum.name %>
+    </th>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <%=h forum.description %>
+    </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td width="280">
+      <strong>Contributor:</strong> <%= contributor(forum.contribution.contributor_id, forum.contribution.contributor_type) %>
+    </td>
+    <td width="280">
+      <strong>Topics:</strong> <%=h forum.topics_count %><br/>
+      <strong>Posts:</strong> <%=h forum.posts_count %>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="3">
+      <% if auth_show %><%= link_to '[show]', forum_path(forum) %> <% end %>
+      <% if logged_in? and forum.authorized?("edit", current_user) %><%= link_to '[edit]', edit_forum_path(forum) %> <% end %>
+      <% if logged_in? and forum.authorized?("destroy", current_user) %><%= link_to '[destroy]', forum_path(forum), :confirm => 'Are you sure?', :method => :delete %><% end %>
+    </td>
+  </tr>
+</table>

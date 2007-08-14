@@ -1,6 +1,10 @@
 class TopicsController < ApplicationController
-  before_filter :find_forum_and_topic, :except => :index
-  before_filter :update_last_seen_at, :only => :show
+  before_filter :login_required, :except => [:index, :show]
+  
+  before_filter :find_forum_auth, :only => [:index, :new, :create]
+  before_filter :find_forum_and_topic, :except => [:index, :new, :create]
+  
+  before_filter :update_last_seen_at, :only => [:show]
 
   def index
     respond_to do |format|
@@ -63,7 +67,7 @@ class TopicsController < ApplicationController
     @topic.save!
     respond_to do |format|
       format.html { redirect_to topic_path(@forum, @topic) }
-      format.xml  { head 200 }
+      format.xml  { head :ok }
     end
   end
   
@@ -72,28 +76,67 @@ class TopicsController < ApplicationController
     flash[:notice] = "Topic '#{CGI::escapeHTML @topic.title}' was deleted."
     respond_to do |format|
       format.html { redirect_to forum_path(@forum) }
-      format.xml  { head 200 }
+      format.xml  { head :ok }
     end
   end
   
-  protected
-    def assign_protected
-      @topic.user     = current_user if @topic.new_record?
-      # admins and moderators can sticky and lock topics
-      return unless admin? or current_user.moderator_of?(@topic.forum)
-      @topic.sticky, @topic.locked = params[:topic][:sticky], params[:topic][:locked] 
-      # only admins can move
-      return unless admin?
-      @topic.forum_id = params[:topic][:forum_id] if params[:topic][:forum_id]
-    end
+protected
+  
+  def assign_protected
+    @topic.user     = current_user if @topic.new_record?
+    # admins and moderators can sticky and lock topics
+    return unless admin? or current_user.moderator_of?(@topic.forum)
+    @topic.sticky, @topic.locked = params[:topic][:sticky], params[:topic][:locked] 
+    # only admins can move
+    return unless admin?
+    @topic.forum_id = params[:topic][:forum_id] if params[:topic][:forum_id]
+  end
     
-    def find_forum_and_topic
-      @forum = Forum.find(params[:forum_id])
-      @topic = @forum.topics.find(params[:id]) if params[:id]
+  def find_forum_auth
+    if params[:forum_id]
+      begin
+        forum = Forum.find(params[:forum_id])
+        
+        if forum.authorized?(action_name, (logged_in? ? current_user : nil))
+          @forum = forum
+        else
+          error("Forum not found (id not authorized)", "is invalid (not authorized)", :forum_id)
+        end
+      rescue ActiveRecord::RecordNotFound
+        error("Forum not found", "is invalid", :forum_id)
+      end
+    else
+      error("Please supply a Forum ID", "is invalid", :forum_id)
     end
+  end
+  
+  def find_topic
+    if params[:id]
+      begin
+        @topic = @forum.topics.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        error("Topic not found (id invalid)", "is invalid")
+      end
+    else
+      error("Please supply a Topic ID", "is invalid")
+    end
+  end
+    
+  def find_forum_and_topic
+    find_forum_auth
+    
+    find_topic if @forum
+  end
+    
+private
 
-    #overide in your app
-    def authorized?
-      %w(new create).include?(action_name) || @topic.editable_by?(current_user)
+  def error(notice, message, attr=:id)
+    flash[:notice] = notice
+    (err = Topic.new.errors).add(attr, message)
+    
+    respond_to do |format|
+      format.html { redirect_to forums_path }
+      format.xml { render :xml => err.to_xml }
     end
+  end
 end

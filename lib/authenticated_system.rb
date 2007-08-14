@@ -1,5 +1,15 @@
 module AuthenticatedSystem
   protected
+    def update_last_seen_at
+      return unless logged_in?
+      User.update_all ['last_seen_at = ?', Time.now.utc], ['id = ?', current_user.id] 
+      current_user.last_seen_at = Time.now.utc
+    end
+    
+    def admin?
+      logged_in? && current_user.admin?
+    end
+  
     # Returns true or false if the user is logged in.
     # Preloads @current_user with the user model if they're logged in.
     def logged_in?
@@ -93,7 +103,7 @@ module AuthenticatedSystem
     # Inclusion hook to make #current_user and #logged_in?
     # available as ActionView helper methods.
     def self.included(base)
-      base.send :helper_method, :current_user, :logged_in?
+      base.send :helper_method, :current_user, :logged_in?, :admin?
     end
 
     # When called with before_filter :login_from_cookie will check for an :auth_token

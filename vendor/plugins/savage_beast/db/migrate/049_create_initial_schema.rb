@@ -7,8 +7,6 @@ class CreateInitialSchema < ActiveRecord::Migration
       t.column "posts_count",      :integer, :default => 0
       t.column "position",         :integer
       t.column "description_html", :text
-      t.column "owner_type",       :string
-      t.column "owner_id",         :integer
     end
 
     create_table "moderatorships", :force => true do |t|
