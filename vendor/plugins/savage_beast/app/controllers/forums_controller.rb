@@ -2,7 +2,7 @@ class ForumsController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_forums, :only => [:index]
-  before_filter :find_forum_auth, :only => [:show, :update, :destroy]
+  before_filter :find_forum_auth, :only => [:edit, :show, :update, :destroy]
 
   helper :application
   
@@ -27,9 +27,13 @@ class ForumsController < ApplicationController
     end
   end
 
-  # new renders new.rhtml
+  def new
+    @forum = Forum.new
+  end
   
-  # edit renders edit.rhtml
+  def edit
+    
+  end
   
   def create
     # hack for select contributor form

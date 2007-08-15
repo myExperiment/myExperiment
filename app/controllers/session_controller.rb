@@ -21,23 +21,26 @@ class SessionController < ApplicationController
     
     case response.status
     when OpenID::SUCCESS
-
-      @user = User.find_first(["openid_url = ?", response.identity_url])
+      redirect_to_edit_user = false
       
       # create user object if one does not exist
-      if @user.nil?
-        @user = User.new(:openid_url => response.identity_url, :name => "Joe Bloggs BSc (change me)")
-        @user.save
+      unless @user = User.find_first(["openid_url = ?", response.identity_url])
+        @user = User.new(:openid_url => response.identity_url, :name => "Joe Bloggs BSc (CHANGE ME!!)")
+        redirect_to_edit_user = @user.save
       end
 
       # storing both the openid_url and user id in the session for for quick
       # access to both bits of information.  Change as needed.
-      #session[:user_id] = @user.id
       self.current_user = @user
 
       flash[:notice] = "Logged in as #{@user.name}"
        
-      successful_login(@user)
+      if redirect_to_edit_user == true
+        redirect_to url_for(:controller => 'users', :action => 'edit', :id => self.current_user)
+      else
+        successful_login(self.current_user)
+      end
+      
       return
 
     when OpenID::FAILURE

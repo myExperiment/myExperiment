@@ -40,6 +40,8 @@ class UsersController < ApplicationController
       params[:user].delete("openid_url") if params[:user][:openid_url] # strip params[:user] of it's openid_url if username and password is provided
     end
     
+    params[:user][:name] ||= "Joe Bloggs BSc (CHANGE ME!!)" # initializes username (if one isn't entered)
+    
     @user = User.new(params[:user])
     
     respond_to do |format|

@@ -97,7 +97,7 @@ protected
       begin
         forum = Forum.find(params[:forum_id])
         
-        if forum.authorized?(action_name, (logged_in? ? current_user : nil))
+        if forum.authorized?("show", (logged_in? ? current_user : nil)) # the forum authorization is always "show" ('in forum' editing is handled separately)
           @forum = forum
         else
           error("Forum not found (id not authorized)", "is invalid (not authorized)", :forum_id)
@@ -113,7 +113,13 @@ protected
   def find_topic
     if params[:id]
       begin
-        @topic = @forum.topics.find(params[:id])
+        topic = @forum.topics.find(params[:id])
+        
+        if %w(show).include?(action_name) || topic.editable_by?(current_user)
+          @topic = topic
+        else
+          error("Topic not found (id not authorized)", "is invalid (not authorized)")
+        end
       rescue ActiveRecord::RecordNotFound
         error("Topic not found (id invalid)", "is invalid")
       end

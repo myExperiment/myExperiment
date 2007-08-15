@@ -3,18 +3,16 @@ require 'digest/sha1'
 require 'acts_as_contributor'
 
 class User < ActiveRecord::Base
-  validates_uniqueness_of :openid_url, :if => Proc.new { |user| user.openid_url }
-  
   # BEGIN RESTful Authentication #
   attr_accessor :password
   
-  validates_presence_of     :username, :if => :not_openid?
+  validates_presence_of     :username,                   :if => :not_openid?
   validates_presence_of     :password,                   :if => :password_required?
   validates_presence_of     :password_confirmation,      :if => :password_required?
   validates_length_of       :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
   validates_length_of       :username, :within => 3..40, :if => :not_openid?
-  validates_uniqueness_of   :username, :case_sensitive => false
+  validates_uniqueness_of   :username, :case_sensitive => false, :if => Proc.new { |user| !user.username.nil? }
   before_save :encrypt_password
   
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.

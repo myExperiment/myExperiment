@@ -15,9 +15,9 @@ module ApplicationHelper
     "<img src='/images/#{spinner}' style='display:none; vertical-align:middle;' id='#{id.to_s}_spinner'> "
   end
 
-  def avatar_for(user, size=64)
+  def avatar_for(user, size='50')
     #image_tag "http://www.gravatar.com/avatar.php?gravatar_id=#{MD5.md5(user.email)}&rating=PG&size=#{size}", :size => "#{size}x#{size}", :class => 'photo'
-    avatar(user, size)
+    avatar(user, "#{size}x#{size}")
   end
 
   def feed_icon_tag(title, url)

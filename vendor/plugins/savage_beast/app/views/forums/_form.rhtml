@@ -1,6 +1,8 @@
 <p style="float:right; margin-top:0">
 </p>
 
+<% if controller.action_name.to_s.equal?("new") || (@forum.contribution && my_page?(@forum.contribution.contributor_id, @forum.contribution.contributor_type)) %>
+
 <p id="forum_contributor">
   
 <% fields_for :contributor_pair do |c_f| %>
@@ -22,6 +24,8 @@
         <% end %>
       </p>
   </p>
+<% end %>
+
 <% end %>
 
 <p id="forum_policy">
