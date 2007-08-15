@@ -1,7 +1,10 @@
 <p style="float:right; margin-top:0">
 </p>
 
-<% if controller.action_name.to_s.equal?("new") || (@forum.contribution && my_page?(@forum.contribution.contributor_id, @forum.contribution.contributor_type)) %>
+<% if controller.action_name == "new" || (@forum.contribution && my_page?(@forum.contribution.contributor_id, @forum.contribution.contributor_type)) %>
+
+<fieldset>
+<legend>Owner only</legend>
 
 <p id="forum_contributor">
   
@@ -26,15 +29,20 @@
   </p>
 <% end %>
 
-<% end %>
-
 <p id="forum_policy">
   
-<% fields_for :contribution do |c_f| %>
+<% fields_for :contribution, @forum.contribution do |c_f| %>
   <p>
     <b>Policy</b><br/>
-    <%= c_f.text_field :policy_id %>
+    <%= c_f.radio_button(:policy_id, "") %> - Public (all)<br/>
+    <% for p in current_user.policies %>
+      <%= c_f.radio_button(:policy_id, p.id) %> - <%=h p.name %><br/>
+    <% end %>
   </p>
+<% end %>
+
+</fieldset>
+
 <% end %>
 
 <p id="forum_name">
