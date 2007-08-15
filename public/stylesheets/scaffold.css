@@ -99,3 +99,8 @@ display: inline;
 list-style: none;
 text-align: center;
 }
+
+#openid_url {
+background: url(/images/openid.gif) no-repeat;
+padding-left: 18px;
+}
