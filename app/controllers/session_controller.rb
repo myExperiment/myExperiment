@@ -1,4 +1,9 @@
 class SessionController < ApplicationController
+  # GET /session/new
+  # new renders new.rhtml
+  
+  # POST /session
+  # POST /session.xml
   def create
     if using_open_id?
       open_id_authentication
@@ -7,6 +12,8 @@ class SessionController < ApplicationController
     end
   end
   
+  # DELETE /session
+  # DELETE /session.xml
   def destroy
     self.current_user.forget_me if logged_in?
     cookies.delete :auth_token
@@ -114,13 +121,19 @@ class SessionController < ApplicationController
   private
   
     def successful_login(user)
-      redirect_back_or_default(user_path(user))
-      flash[:notice] = "Logged in successfully. Welcome to myExperiment!"
+      respond_to do |format|
+        flash[:notice] = "Logged in successfully. Welcome to myExperiment!"
+        format.html { redirect_to request.env["HTTP_REFERER"] || user_url(user) }
+        format.xml { head :ok }
+      end
     end
 
     def failed_login(message)
-      flash.now[:error] = message
-      render :action => 'new'
+      respond_to do |format|
+        flash.now[:error] = message
+        format.html { render :action => 'new' }
+        format.xml { head :forbidden }
+      end
     end
     
   # Get the OpenID::Consumer object.
