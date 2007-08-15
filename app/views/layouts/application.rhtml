@@ -26,10 +26,10 @@
 </p>
 <% else %>
   <% form_tag session_path do %>
-    <label for="username">Username:</label> <%= text_field_tag 'username' %> 
-    <label for="password">Password:</label> <%= password_field_tag 'password' %> 
-    <label for="remember_me">Remember me:</label> <%= check_box_tag 'remember_me' %> ...or use: 
-    <label for="openid_url">OpenID:</label> <%= text_field_tag "openid_url" %> 
+    <label for="username">Username:</label> <%= text_field_tag 'session[username]' %> 
+    <label for="password">Password:</label> <%= password_field_tag 'session[password]' %> 
+    <label for="remember_me">Remember me:</label> <%= check_box_tag 'session[remember_me]' %> ...or use: 
+    <label for="openid_url">OpenID:</label> <%= text_field_tag 'openid_url' %> 
     <%= submit_tag 'Sign in', :disable_with => "Signing in&hellip;" %>
   <% end %>
 <% end %>

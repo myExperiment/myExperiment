@@ -8,7 +8,7 @@ class SessionController < ApplicationController
     if using_open_id?
       open_id_authentication
     else
-      password_authentication(params[:username], params[:password])
+      password_authentication
     end
   end
   
@@ -70,7 +70,9 @@ class SessionController < ApplicationController
 
   protected
   
-    def password_authentication(login, password)
+    def password_authentication
+      login, password = params[:session][:username], params[:session][:password]
+      
       self.current_user = User.authenticate(login, password)
       if logged_in?
         if params[:remember_me] == "1"
