@@ -2,10 +2,12 @@
   <%= link_to '[download]', download_workflow_path(@workflow) %>
 </p>
 
+<% if false %>
 <p>
   <b>QR Code (<%= link_to 'what is this?', "http://en.wikipedia.org/wiki/QR_Code" %>):</b>
   <%= qrcode(h("http://www.myexperiment.com/workflows/#{@workflow.unique}"), 2) %>
 </p>
+<% end %>
 
 <p>
   <b>Title:</b>
