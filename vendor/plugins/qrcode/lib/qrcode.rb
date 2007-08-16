@@ -3,7 +3,7 @@ module QRCode
     def qrcode(url, size=2, id=nil)
       id ||= "qrcode_#{rand()}"
       output = %Q{<div class="qrcode" id="#{id}"></div><script type="text/javascript">
-var qr = new QRCode(4, QRErrorCorrectLevel.H);
+var qr = new QRCode(4, QRErrorCorrectLevel.L);
 qr.addData('#{url}');
 qr.make();
 var text = "";
