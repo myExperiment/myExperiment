@@ -1,0 +1,22 @@
+<h1>Editing blog post</h1>
+
+<%= error_messages_for :blog_post %>
+
+<% form_for(:blog_post, :url => blog_post_path, :html => { :method => :put }) do |f| %>
+  <p>
+    <b>Title</b><br />
+    <%= f.text_field :title %>
+  </p>
+
+  <p>
+    <b>Body</b><br />
+    <%= f.text_area :body %>
+  </p>
+
+  <p>
+    <%= submit_tag "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', blog_post_path(@blog_post.blog, @blog_post) %> |
+<%= link_to 'Back', blog_path(@blog_post.blog) %>

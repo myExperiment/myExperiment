@@ -1,0 +1,23 @@
+<h1>New blog post</h1>
+
+<%= error_messages_for :blog_post %>
+
+<% form_for(:blog_post, :url => blog_posts_path(@blog_post.blog)) do |f| %>
+  <%= f.hidden_field :blog_id %>
+
+  <p>
+    <b>Title</b><br />
+    <%= f.text_field :title %>
+  </p>
+
+  <p>
+    <b>Body</b><br />
+    <%= f.text_area :body %>
+  </p>
+
+  <p>
+    <%= submit_tag "Post" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', blog_path(@blog_post.blog) %>

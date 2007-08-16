@@ -1,0 +1,24 @@
+<table width="640">
+  <tr>
+    <th colspan="2">
+      <%=h blog.title %> (<%= blog.posts.length %> posts)
+    </th>
+  <tr>
+  <tr>
+    <td rowspan="2">
+      <strong>Created at:</strong> <%=h blog.created_at %><br/>
+      <strong>Updated at:</strong> <%=h blog.updated_at %>
+    </td>
+    <td>
+      <strong>Contributor:</strong> <%= contributor(blog.contribution.contributor_id, blog.contribution.contributor_type) %><br/>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <% if blog.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to '[show]', blog_path(blog) %> <% end %>
+      <% if logged_in? and blog.authorized?("edit", current_user) %><%= link_to '[edit]', edit_blog_path(blog) %> <% end %>
+      <% if logged_in? and blog.authorized?("destroy", current_user) %><%= link_to '[destroy]', blog_path(blog), :confirm => 'Are you sure?', :method => :delete %><% end %>
+    </td>
+  </tr>
+  <tr><td> </td></tr>
+</table>

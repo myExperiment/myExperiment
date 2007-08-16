@@ -1,11 +1,23 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :blog_posts
+
+  # forums 
   map.from_plugin :savage_beast
   
+  # sessions and authentication
   map.resource :session
   
+  # workflows (downloadable)
   map.resources :workflows, :member => { :download => :get }
 
+  # blobs (downloadable)
   map.resources :blobs, :member => { :download => :get }
+  
+  # bloGs
+  map.resources :blogs do |blog|
+    # blogs have nested posts
+    blog.resources :blog_posts
+  end
 
   map.resources :contributions
   

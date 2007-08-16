@@ -1,0 +1,27 @@
+<% if my_page?(@blog.contribution.contributor_id, @blog.contribution.contributor_type) %>
+
+<p>
+  <%= link_to 'New blog post', new_blog_post_path(@blog) %>
+</p>
+
+<% end %>
+
+<p>
+  <b>Contributor:</b>
+  <%= contributor(@blog.contribution.contributor_id, @blog.contribution.contributor_type) %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%=h @blog.title %>
+</p>
+
+<h3>Recent Posts</h3>
+
+<%= render :partial => "blog_posts/post", :collection => @blog.posts %>
+
+<br/>
+
+
+<%= link_to 'Edit', edit_blog_path(@blog) %> |
+<%= link_to 'Back', blogs_path %>

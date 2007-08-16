@@ -1,0 +1,15 @@
+<p>
+  <b><%=h post.title %></b> (<%=h post.created_at %>)
+  
+  <% if my_page?(post.blog.contribution.contributor_id, post.blog.contribution.contributor_type) %>
+    <br/>
+    <%= link_to '[edit]', edit_blog_post_path(post.blog, post) %> | 
+    <%= link_to '[delete]', blog_post_path(post.blog, post), :method => "delete" %>
+  <% end %>
+</p>
+
+<p>
+  <%= post.body %>
+</p>
+
+<br/>

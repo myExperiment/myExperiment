@@ -1,0 +1,28 @@
+<p>
+  <b>Blog:</b>
+  <%=h @blog_post.blog_id %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%=h @blog_post.title %>
+</p>
+
+<p>
+  <b>Body:</b>
+  <%=h @blog_post.body %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=h @blog_post.created_at %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%=h @blog_post.updated_at %>
+</p>
+
+
+<%= link_to 'Edit', edit_blog_post_path(@blog_post.blog, @blog_post) %> |
+<%= link_to 'Back', blog_path(@blog_post.blog) %>

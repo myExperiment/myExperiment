@@ -157,11 +157,11 @@ module ApplicationHelper
     return rtn
   end
   
-  def contributor(contributorid, contributortype)
+  def contributor(contributorid, contributortype, link=true)
     if contributortype.to_s == "User"
-      return profile_link(contributorid)
+      return link ? profile_link(contributorid) : name(contributorid)
     elsif contributortype.to_s == "Network"
-      return link_to(title(contributorid), network_path(contributorid))
+      return link ? link_to(title(contributorid), network_path(contributorid)) : title(contributorid)
     else
       return nil
     end
