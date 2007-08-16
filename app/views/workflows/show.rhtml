@@ -3,6 +3,11 @@
 </p>
 
 <p>
+  <b>QR Code (<%= link_to 'what is this?', "http://en.wikipedia.org/wiki/QR_Code" %>):</b>
+  <%= qrcode(@workflow.unique, 2) %>
+</p>
+
+<p>
   <b>Title:</b>
   <%=h @workflow.title %>
 </p>
