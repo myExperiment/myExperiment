@@ -47,7 +47,7 @@ private
   # column in ++permissions+)
   @@categories = { "download" => ["download"], 
                    "edit" => ["new", "create", "edit", "update"], 
-                   "view" => ["index", "show"],
+                   "view" => ["index", "show", "tag"],
                    "owner" => ["destroy"] } # you don't need a boolean column for this but you do need to categorize 'owner only' actions!
   
   # the policy class contains a hash table of action (method) names and their categories

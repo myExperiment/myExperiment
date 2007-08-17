@@ -2,15 +2,22 @@ class WorkflowsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download]
   
   before_filter :find_workflows, :only => [:index]
-  before_filter :find_workflow_auth, :only => [:download, :show, :edit, :update, :destroy]
+  before_filter :find_workflow_auth, :only => [:tag, :download, :show, :edit, :update, :destroy]
   
   require 'scufl/model'
   require 'scufl/parser'
   require 'scufl/dot'
   
-  # if RUBY_PLATFORM =~ /mswin32/
-  #   require 'win32/open3'
-  # end
+  # POST /workflows/1;tag
+  # POST /workflows/1.xml;tag
+  def tag
+    @workflow.update_attributes(:tag_list => "#{@workflow.tag_list}, #{params[:tag_list]}") if params[:tag_list]
+    
+    respond_to do |format|
+      format.html { render :inline => "<%=h @workflow.tag_list %>" }
+      format.xml { render :xml => @workflows.tags.to_xml }
+    end
+  end
   
   # GET /workflows/1;download
   # GET /workflows/1.xml;download
@@ -155,13 +162,18 @@ protected
     d.original_filename = "#{unique}.png"
     d.content_type = "image/png"
     
-    return Workflow.new(:scufl => wf[:scufl].read, 
-                        :image => d,
-                        :contributor_id => wf[:contributor_id], 
-                        :contributor_type => wf[:contributor_type],
-                        :title => title,
-                        :unique => unique,
-                        :description => scufl_model.description.description)
+    rtn = Workflow.new(:scufl => wf[:scufl].read, 
+                       :image => d,
+                       :contributor_id => wf[:contributor_id], 
+                       :contributor_type => wf[:contributor_type],
+                       :title => title,
+                       :unique => unique,
+                       :description => scufl_model.description.description)
+    
+    # by adding tags, the workflow is automatically at version #2 (this is because the workflow record is now different from the SCUFL)
+    rtn.update_attribute(:tag_list => wf[:tag_list]) if wf[:tag_list]
+    
+    return rtn
   end
 
 private

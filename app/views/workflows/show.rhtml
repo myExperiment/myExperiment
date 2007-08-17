@@ -9,6 +9,22 @@
 </p>
 <% end %>
 
+<% if logged_in? %>
+  <% form_remote_tag (:url => { :action => 'tag', :id => @workflow}, :update => 'tags', :success=>"var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
+    <p>
+      <b>New Tags (comma separated)</b><br/>
+      <%= text_field_tag :tag_list %>
+    </p>
+    
+    <%= submit_tag "Add tags" %>
+  <% end %>
+<% end %>
+
+<p>
+  <b>Tags:</b><br/>
+  <div id="tags"><%=h @workflow.tag_list %></div>
+</p>
+
 <p>
   <b>Title:</b>
   <%=h @workflow.title %>

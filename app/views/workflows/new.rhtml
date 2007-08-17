@@ -41,6 +41,11 @@
     <%= file_field :workflow, :scufl %>
   </p>
   
+  <p>
+    <b>Tags (comma separated)</b><br />
+    <%= text_field :workflow, :tag_list %>
+  </p>
+  
   <% fields_for :contribution, @workflow.contribution do |c_f| %>
     <p>
       <b>Policy</b><br/>
