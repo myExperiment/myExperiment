@@ -109,23 +109,12 @@ class SessionController < ApplicationController
       end
     end
 
-    # registration is a hash containing the valid sreg keys given above
-    # use this to map them to fields of your user model
-    def assign_registration_attributes!(registration)
-      { :username => 'name' }.each do |model_attribute, registration_attribute|
-        unless registration[registration_attribute].blank?
-          @user.send("#{model_attribute}=", registration[registration_attribute])
-        end
-      end
-      @user.save!
-    end
-
   private
   
     def successful_login(user)
       respond_to do |format|
         flash[:notice] = "Logged in successfully. Welcome to myExperiment!"
-        format.html { redirect_to request.env["HTTP_REFERER"] || user_url(user) }
+        format.html { redirect_back_or_default(user_path(user)) }
         format.xml { head :ok }
       end
     end
