@@ -22,7 +22,8 @@
   Logged in as <%= profile_link(current_user.id) %> [<%= link_to "Logout", session_path, :method => :delete %>] - 
   <%= messages_link(current_user.id) %> - 
   <%= memberships_pending_link(current_user.id) %> - 
-  <%= friendships_pending_link(current_user.id) %>
+  <%= friendships_pending_link(current_user.id) %> - 
+  <%= bookmarks_link(current_user.id) %>
 </p>
 <% else %>
   <% form_tag session_path do %>

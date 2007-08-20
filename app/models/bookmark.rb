@@ -3,7 +3,7 @@ class Bookmark < ActiveRecord::Base
   
   # NOTE: install the acts_as_taggable plugin if you 
   # want bookmarks to be tagged.
-  acts_as_taggable
+  # acts_as_taggable
   
   # NOTE: Comments belong to a user
   belongs_to :user

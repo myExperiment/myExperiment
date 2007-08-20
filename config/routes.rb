@@ -2,13 +2,14 @@ ActionController::Routing::Routes.draw do |map|
   # forums 
   map.from_plugin :savage_beast
   
-  map.resources :tags
+  # tags and bookmarks
+  map.resources :tags, :bookmarks
   
   # sessions and authentication
   map.resource :session
   
   # workflows (downloadable)
-  map.resources :workflows, :member => { :download => :get, :tag => :post }
+  map.resources :workflows, :member => { :download => :get, :tag => :post, :bookmark => :post }
 
   # blobs (downloadable)
   map.resources :blobs, :member => { :download => :get }

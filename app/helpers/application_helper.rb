@@ -166,4 +166,14 @@ module ApplicationHelper
       return nil
     end
   end
+  
+  def bookmarks_link(user_id)
+    begin
+      user = User.find(user_id)
+      
+      link_to "Bookmarks (#{user.bookmarks.length})", bookmarks_path
+    rescue ActiveRecord::RecordNotFound
+      nil
+    end
+  end
 end

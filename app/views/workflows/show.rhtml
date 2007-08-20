@@ -2,6 +2,12 @@
   <%= link_to '[download]', download_workflow_path(@workflow) %>
 </p>
 
+<% if logged_in? %>
+  <% form_remote_tag (:url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });") do %>
+    <%= submit_tag "Bookmark" %>
+  <% end %>
+<% end %>
+
 <% if false %>
 <p>
   <b>QR Code (<%= link_to 'what is this?', "http://en.wikipedia.org/wiki/QR_Code" %>):</b>
@@ -10,7 +16,7 @@
 <% end %>
 
 <% if logged_in? %>
-  <% form_remote_tag (:url => { :action => 'tag', :id => @workflow}, :update => 'tags', :success=>"var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
+  <% form_remote_tag (:url => tag_workflow_path(@workflow), :update => 'tags', :success => "var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
     <p>
       <b>New Tags (comma separated)</b><br/>
       <%= text_field_tag :tag_list %>
@@ -23,6 +29,11 @@
 <p>
   <b>Tags:</b><br/>
   <div id="tags"><%=h @workflow.tag_list %></div>
+</p>
+
+<p>
+  <b>Bookmarked by:</b><br/>
+  <div id="bookmarks"><%=h @workflow.bookmarks.collect {|b| b.user.name} %></div>
 </p>
 
 <p>

@@ -2,7 +2,7 @@ class WorkflowsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download]
   
   before_filter :find_workflows, :only => [:index]
-  before_filter :find_workflow_auth, :only => [:tag, :download, :show, :edit, :update, :destroy]
+  before_filter :find_workflow_auth, :only => [:tag, :bookmark, :download, :show, :edit, :update, :destroy]
   
   require 'scufl/model'
   require 'scufl/parser'
@@ -16,9 +16,20 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       format.html { render :inline => "<%=h @workflow.tag_list %>" }
-      format.xml { render :xml => @workflows.tags.to_xml }
+      format.xml { render :xml => @workflow.tags.to_xml }
     end
   end
+  
+  # GET /workflows/1;bookmark
+  # GET /workflows/1.xml;bookmark
+  def bookmark
+    @workflow.bookmarks << Bookmark.create(:user => current_user, :title => @workflow.title) unless @workflow.bookmarked_by_user?(current_user)
+    
+    respond_to do |format|
+      format.html { render :inline => "<%=h @workflow.bookmarks.collect {|b| b.user.name} %>" }
+      format.xml { render :xml => @workflow.bookmarks.to_xml }
+    end
+  end    
   
   # GET /workflows/1;download
   # GET /workflows/1.xml;download

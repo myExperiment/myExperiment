@@ -5,6 +5,8 @@ require 'acts_as_contributor'
 class User < ActiveRecord::Base
   acts_as_tagger
   
+  has_many :bookmarks
+  
   # BEGIN RESTful Authentication #
   attr_accessor :password
   

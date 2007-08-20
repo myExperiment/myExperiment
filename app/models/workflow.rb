@@ -24,5 +24,5 @@ class Workflow < ActiveRecord::Base
     }
   }
   
-  non_versioned_fields.push "image" # acts_as_versioned and file_column don't get on
+  non_versioned_fields.push("image") # acts_as_versioned and file_column don't get on
 end
