@@ -29,12 +29,9 @@ protected
       @tag = Tag.find(params[:id])
       
       @tagged_with = []
-      
-      Contribution.find(:all, :select => "contributable_type", :group => "contributable_type").each do |c|
-        @tagged_with << c.contributable_type.classify.constantize.find_tagged_with(@tag.name)
+      @tag.taggings.each do |t|
+        @tagged_with << t.taggable
       end
-      
-      @tagged_with.flatten!
     rescue ActiveRecord::RecordNotFound
       error("Tag not found", "is invalid")
     end
