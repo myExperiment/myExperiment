@@ -3,6 +3,8 @@ require 'digest/sha1'
 require 'acts_as_contributor'
 
 class User < ActiveRecord::Base
+  acts_as_tagger
+  
   # BEGIN RESTful Authentication #
   attr_accessor :password
   

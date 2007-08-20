@@ -11,6 +11,7 @@ class WorkflowsController < ApplicationController
   # POST /workflows/1;tag
   # POST /workflows/1.xml;tag
   def tag
+    @workflow.user_id = current_user # acts_as_taggable_redux
     @workflow.update_attributes(:tag_list => "#{@workflow.tag_list}, #{params[:tag_list]}") if params[:tag_list]
     
     respond_to do |format|
@@ -163,15 +164,21 @@ protected
     d.content_type = "image/png"
     
     rtn = Workflow.new(:scufl => wf[:scufl].read, 
-                       :image => d,
+                       #:image => d,
                        :contributor_id => wf[:contributor_id], 
                        :contributor_type => wf[:contributor_type],
                        :title => title,
                        :unique => unique,
                        :description => scufl_model.description.description)
-    
-    # by adding tags, the workflow is automatically at version #2 (this is because the workflow record is now different from the SCUFL)
-    rtn.update_attribute(:tag_list => wf[:tag_list]) if wf[:tag_list]
+                       
+    unless RUBY_PLATFORM =~ /mswin32/
+      rtn.image = d
+    end
+                       
+    if wf[:tag_list]
+      rtn.user_id = current_user
+      rtn.tag_list = wf[:tag_list]
+    end
     
     return rtn
   end
