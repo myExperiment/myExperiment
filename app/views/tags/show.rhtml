@@ -11,7 +11,7 @@
 <h3>Contributions tagged with this</h3>
 
 <% for contributable in @tagged_with %>
-  <%= render :partial => "#{contributable.class.to_s.pluralize.downcase}/#{contributable.class.to_s.downcase}", :locals => { contributable.class.to_s.downcase => contributable } %>
+  <%= render :partial => "#{contributable.class.to_s.pluralize.downcase}/#{contributable.class.to_s.downcase}", :collection => [contributable] %>
 <% end %>
 
 
