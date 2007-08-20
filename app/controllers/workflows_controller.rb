@@ -2,11 +2,27 @@ class WorkflowsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download]
   
   before_filter :find_workflows, :only => [:index]
-  before_filter :find_workflow_auth, :only => [:tag, :bookmark, :download, :show, :edit, :update, :destroy]
+  before_filter :find_workflow_auth, :only => [:rate, :tag, :bookmark, :download, :show, :edit, :update, :destroy]
   
   require 'scufl/model'
   require 'scufl/parser'
   require 'scufl/dot'
+  
+  # POST /workflows/1;rate
+  # POST /workflows/1.xml;rate
+  def rate
+    Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @workflow.class.to_s, @workflow.id, current_user.id])
+    
+    @workflow.ratings << Rating.create(:user => current_user, :rating => params[:rating])
+    
+    respond_to do |format|
+      format.html { 
+        render :update do |page|
+          page.replace_html "star-ratings-block", :partial => 'ratings/rating', :locals => { :rateable => @workflow, :controller => "workflows" } 
+        end }
+      format.xml { render :xml => @rateable.ratings.to_xml }
+    end
+  end
   
   # POST /workflows/1;tag
   # POST /workflows/1.xml;tag

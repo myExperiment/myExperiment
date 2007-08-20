@@ -5,6 +5,8 @@ class SessionController < ApplicationController
   # POST /session
   # POST /session.xml
   def create
+    session[:return_to] ||= request.env['HTTP_REFERER']
+    
     if using_open_id?
       open_id_authentication
     else
@@ -17,7 +19,7 @@ class SessionController < ApplicationController
   def destroy
     self.current_user.forget_me if logged_in?
     cookies.delete :auth_token
-    reset_session
+    reset_session # clears session[:return_to]
     flash[:notice] = "You have been logged out. Thank you for using myExperiment!"
     redirect_back_or_default(users_path)
   end

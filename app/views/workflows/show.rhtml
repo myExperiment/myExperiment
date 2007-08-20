@@ -1,17 +1,23 @@
 <p>
-  <%= link_to '[download]', download_workflow_path(@workflow) %>
+  <%= link_to '[download]', download_workflow_path(@workflow) %> 
+  <% if logged_in? %>| <%= link_to_remote '[bookmark]', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %><% end %>
 </p>
-
-<% if logged_in? %>
-  <% form_remote_tag (:url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });") do %>
-    <%= submit_tag "Bookmark" %>
-  <% end %>
-<% end %>
 
 <% if false %>
 <p>
   <b>QR Code (<%= link_to 'what is this?', "http://en.wikipedia.org/wiki/QR_Code" %>):</b>
   <%= qrcode(h("http://www.myexperiment.com/workflows/#{@workflow.unique}"), 2) %>
+</p>
+<% end %>
+
+<% if logged_in? %>
+<div id="star-ratings-block">
+  <%= render :partial => "ratings/rating", :locals => { :rateable => @workflow, :controller => controller.controller_name } %>
+</div>
+<% else %>
+<p>
+  <b>Rating:</b> 
+  <%= number_with_precision(@workflow.rating*20, 0) %>&#37 (<%= pluralize @workflow.ratings.count, 'rating' %>)
 </p>
 <% end %>
 
