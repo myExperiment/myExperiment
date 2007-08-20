@@ -1,0 +1,18 @@
+<p>
+  <b>Name:</b>
+  <%=h @tag.name %>
+</p>
+
+<p>
+  <b>Taggings count:</b>
+  <%= @tag.taggings_count %>
+</p>
+
+<h3>Contributions tagged with this</h3>
+
+<% for contributable in @tagged_with %>
+  <%= render :partial => "#{contributable.class.to_s.pluralize.downcase}/#{contributable.class.to_s.downcase}", :locals => { contributable.class.to_s.downcase => contributable } %>
+<% end %>
+
+
+<%= link_to 'Back', tags_path %>

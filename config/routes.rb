@@ -2,6 +2,8 @@ ActionController::Routing::Routes.draw do |map|
   # forums 
   map.from_plugin :savage_beast
   
+  map.resources :tags
+  
   # sessions and authentication
   map.resource :session
   
