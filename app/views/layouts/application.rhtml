@@ -40,7 +40,8 @@
   | <%= link_to "Profiles", profiles_path %> <% if logged_in? %>(<%= link_to "Me", profile_path(current_user.profile.id) %>)<% end %> 
   | <%= link_to "Pictures", url_for(:controller => 'pictures') %> <% if logged_in? %>(<%= link_to "Mine", pictures_path(current_user.id) %>)<% end %> 
   | <%= link_to "Contributions", contributions_path %> <% if logged_in? %>(<%= link_to "Mine", url_for(:controller => 'contributions', :contributor_id => current_user.id, :contributor_type => current_user.class.to_s) %>)<% end %> 
-  <% if logged_in? %>| <%= link_to "Policies", policies_path %><% end %>
+  <% if logged_in? %>| <%= link_to "Policies", policies_path %> <% end %>
+  | <%= link_to "Tags", tags_path %>
   
 </p>
 
