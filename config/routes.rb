@@ -9,7 +9,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :session
   
   # workflows (downloadable)
-  map.resources :workflows, :member => { :download => :get, :tag => :post, :bookmark => :post, :rate => :post }
+  map.resources :workflows, :member => { :download => :get, :bookmark => :post, :comment => :post, :rate => :post, :tag => :post }
 
   # blobs (downloadable)
   map.resources :blobs, :member => { :download => :get }

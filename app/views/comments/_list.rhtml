@@ -1,0 +1,5 @@
+<% unless commentable.comments.empty? %>
+<ul style="list-style-type: none;" id="comments">
+  <%= render :partial => "comments/comment", :collection => commentable.comments %>
+</ul>
+<% end %>

@@ -2,11 +2,34 @@ class WorkflowsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download]
   
   before_filter :find_workflows, :only => [:index]
-  before_filter :find_workflow_auth, :only => [:rate, :tag, :bookmark, :download, :show, :edit, :update, :destroy]
+  before_filter :find_workflow_auth, :only => [:bookmark, :comment, :rate, :tag, :download, :show, :edit, :update, :destroy]
   
   require 'scufl/model'
   require 'scufl/parser'
   require 'scufl/dot'
+  
+  # POST /workflows/1;bookmark
+  # POST /workflows/1.xml;bookmark
+  def bookmark
+    @workflow.bookmarks << Bookmark.create(:user => current_user, :title => @workflow.title) unless @workflow.bookmarked_by_user?(current_user)
+    
+    respond_to do |format|
+      format.html { render :inline => "<%=h @workflow.bookmarks.collect {|b| b.user.name}.join(', ') %>" }
+      format.xml { render :xml => @workflow.bookmarks.to_xml }
+    end
+  end
+  
+  # POST /workflows/1;comment
+  # POST /workflows/1.xml;comment
+  def comment
+    comment = Comment.create(:user => current_user, :comment => params[:comment])
+    @workflow.comments << comment
+    
+    respond_to do |format|
+      format.html { render :partial => "comments/comment", :locals => { :comment => comment } }
+      format.xml { render :xml => @workflow.comments.to_xml }
+    end
+  end
   
   # POST /workflows/1;rate
   # POST /workflows/1.xml;rate
@@ -31,21 +54,10 @@ class WorkflowsController < ApplicationController
     @workflow.update_attributes(:tag_list => "#{@workflow.tag_list}, #{params[:tag_list]}") if params[:tag_list]
     
     respond_to do |format|
-      format.html { render :inline => "<%=h @workflow.tag_list %>" }
+      format.html { render :inline => "<%=h @workflow.tags.join(', ') %>" }
       format.xml { render :xml => @workflow.tags.to_xml }
     end
   end
-  
-  # GET /workflows/1;bookmark
-  # GET /workflows/1.xml;bookmark
-  def bookmark
-    @workflow.bookmarks << Bookmark.create(:user => current_user, :title => @workflow.title) unless @workflow.bookmarked_by_user?(current_user)
-    
-    respond_to do |format|
-      format.html { render :inline => "<%=h @workflow.bookmarks.collect {|b| b.user.name} %>" }
-      format.xml { render :xml => @workflow.bookmarks.to_xml }
-    end
-  end    
   
   # GET /workflows/1;download
   # GET /workflows/1.xml;download

@@ -1,0 +1,20 @@
+<li>
+  <table width="600">
+    <tr>
+      <td width="100">
+        <%= avatar(comment.user, "100x100") %><br/>
+        <%= profile_link(comment.user) %>
+      </td>
+      <td width="500">
+        <p>
+          <% unless comment.title.nil? %><b><%=h comment.title %></b><br/><% end %>
+          <%=h comment.created_at %>
+        </p>
+        
+        <p>
+          <%=h comment.comment %>
+        </p>
+      </td>
+    </tr>
+  </table>
+</li>

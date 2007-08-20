@@ -3,28 +3,32 @@
   <% if logged_in? %>| <%= link_to_remote '[bookmark]', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %><% end %>
 </p>
 
-<% if false %>
-<p>
-  <b>QR Code (<%= link_to 'what is this?', "http://en.wikipedia.org/wiki/QR_Code" %>):</b>
-  <%= qrcode(h("http://www.myexperiment.com/workflows/#{@workflow.unique}"), 2) %>
-</p>
-<% end %>
+<h3>Actions</h3>
 
-<% if logged_in? %>
-<div id="star-ratings-block">
-  <%= render :partial => "ratings/rating", :locals => { :rateable => @workflow, :controller => controller.controller_name } %>
-</div>
-<% else %>
+<p>
+  <b>Bookmarked by:</b><br/>
+  <div id="bookmarks"><%=h @workflow.bookmarks.collect {|b| b.user.name}.join(", ") %></div>
+</p>
+
 <p>
   <b>Rating:</b> 
-  <%= number_with_precision(@workflow.rating*20, 0) %>&#37 (<%= pluralize @workflow.ratings.count, 'rating' %>)
+  <% if logged_in? %>
+    <div id="star-ratings-block">
+      <%= render :partial => "ratings/rating", :locals => { :rateable => @workflow, :controller => controller.controller_name } %>
+    </div>
+  <% else %>
+    <%= number_with_precision(@workflow.rating*20, 0) %>&#37 (<%= pluralize @workflow.ratings.count, 'rating' %>)
+  <% end %>
 </p>
-<% end %>
+
+<p>
+  <b>Tags:</b><br/>
+  <div id="tags"><%=h @workflow.tags.join(", ") %></div>
+</p>
 
 <% if logged_in? %>
   <% form_remote_tag (:url => tag_workflow_path(@workflow), :update => 'tags', :success => "var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
     <p>
-      <b>New Tags (comma separated)</b><br/>
       <%= text_field_tag :tag_list %>
     </p>
     
@@ -32,15 +36,7 @@
   <% end %>
 <% end %>
 
-<p>
-  <b>Tags:</b><br/>
-  <div id="tags"><%=h @workflow.tag_list %></div>
-</p>
-
-<p>
-  <b>Bookmarked by:</b><br/>
-  <div id="bookmarks"><%=h @workflow.bookmarks.collect {|b| b.user.name} %></div>
-</p>
+<h3>Details</h3>
 
 <p>
   <b>Title:</b>
@@ -57,6 +53,13 @@
   <!-- this needs whitelisting -->
   <%= @workflow.description %>
 </p>
+
+<% if false %>
+<p>
+  <b>QR Code (<%= link_to 'what is this?', "http://en.wikipedia.org/wiki/QR_Code" %>):</b>
+  <%= qrcode(h("http://www.myexperiment.com/workflows/#{@workflow.unique}"), 2) %>
+</p>
+<% end %>
 
 <% unless @workflow.image.nil? %>
 <p>
@@ -91,6 +94,8 @@
   <%=h @workflow.updated_at %>
 </p>
 
+<h3>Versions</h3>
+
 <p>
   <b>Original Version:</b><br/>
   <%= versioned_workflow_link(@workflow, 1) %>
@@ -109,6 +114,19 @@
   <b>Latest Version:</b><br/>
   <%= versioned_workflow_link(@workflow, @workflow.versions.size) %>
 </p>
+
+<h3>Comments</h3>
+
+<% if logged_in? %>
+  <% form_remote_tag(:url => comment_workflow_path(@workflow), :update => 'comments', :position => 'bottom') do %>
+    <%= text_area_tag :comment, nil, :size => "30x4" %><br/>
+    <%= submit_tag "Add Comment" %>
+  <% end %>
+<% end %>
+
+<%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
+
+<br/>
 
 
 <% if logged_in? and @workflow.authorized?("edit", current_user) %><%= link_to 'Edit', edit_workflow_path(@workflow) %> | <% end %>
