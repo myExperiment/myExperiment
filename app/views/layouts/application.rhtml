@@ -13,10 +13,6 @@
 </head>
 <body>
 
-<table width="100%">
-  <tr>
-    <td width="850" style="text-align: left">
-    
 <%= image_tag("logo.png") %>
 
 <p style="color: red"><%= flash[:error] %></p>
@@ -46,21 +42,24 @@
   | <%= link_to "Users", users_path %> <% if logged_in? %>(<%= link_to "Me", user_path(current_user.id) %>)<% end %> 
   | <%= link_to "Contributions", contributions_path %> <% if logged_in? %>(<%= link_to "Mine", url_for(:controller => 'contributions', :contributor_id => current_user.id, :contributor_type => current_user.class.to_s) %>)<% end %> 
 </p>
-
-    </td>
-    <td>
     
-    <%= tag_cloud %>
+<p>
+  <% form_tag search_workflows_path, :method => :get do %>
+    <fieldset><legend>Search</legend>
+    <%= text_field_tag :query %> <%= submit_tag "Find Workflows" %>
+    </fieldset>
+  <% end %>
+</p>
     
-    <p>
-      <b>What is a <%= link_to 'tag cloud', "http://en.wikipedia.org/wiki/Tag_cloud" %>?</b>
-    </p>
-    
-    </td>
-  </tr>
-</table>
-
 <%= yield  %>
+
+<p>
+  <%= tag_cloud %>
+</p>
+
+<p>
+  <b>What is a <%= link_to 'tag cloud', "http://en.wikipedia.org/wiki/Tag_cloud" %>?</b>
+</p>
 
 </body>
 </html>

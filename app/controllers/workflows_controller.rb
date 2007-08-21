@@ -1,5 +1,5 @@
 class WorkflowsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download]
+  before_filter :login_required, :except => [:index, :show, :download, :search]
   
   before_filter :find_workflows, :only => [:index]
   before_filter :find_workflow_auth, :only => [:bookmark, :comment, :rate, :tag, :download, :show, :edit, :update, :destroy]
@@ -7,6 +7,22 @@ class WorkflowsController < ApplicationController
   require 'scufl/model'
   require 'scufl/parser'
   require 'scufl/dot'
+  
+  # GET /workflows;search
+  # GET /workflows.xml;search
+  def search
+    if (@query = params[:query])
+      @workflows = Workflow.find_with_ferret(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true))
+    else
+      @query = ""
+      @workflows = find_workflows
+    end
+    
+    respond_to do |format|
+      format.html # search.rhtml
+      format.xml  { render :xml => @workflows.to_xml }
+    end
+  end
   
   # POST /workflows/1;bookmark
   # POST /workflows/1.xml;bookmark
