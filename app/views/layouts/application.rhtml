@@ -13,6 +13,10 @@
 </head>
 <body>
 
+<table width="100%">
+  <tr>
+    <td width="850" style="text-align: left">
+    
 <%= image_tag("logo.png") %>
 
 <p style="color: red"><%= flash[:error] %></p>
@@ -24,7 +28,8 @@
   <%= messages_link(current_user.id) %> - 
   <%= memberships_pending_link(current_user.id) %> - 
   <%= friendships_pending_link(current_user.id) %> - 
-  <%= bookmarks_link(current_user.id) %>
+  <%= link_to "My Policies", policies_path %> - 
+  <%= link_to "My Bookmarks", bookmarks_path %>
 </p>
 <% else %>
   <% form_tag session_path do %>
@@ -39,15 +44,21 @@
 <p>
   <%= link_to "Networks", networks_path %> <% if logged_in? %>(<%= link_to "Mine", owned_networks_path(current_user.id) %>)<% end %> 
   | <%= link_to "Users", users_path %> <% if logged_in? %>(<%= link_to "Me", user_path(current_user.id) %>)<% end %> 
-  | <%= link_to "Profiles", profiles_path %> <% if logged_in? %>(<%= link_to "Me", profile_path(current_user.profile.id) %>)<% end %> 
-  | <%= link_to "Pictures", url_for(:controller => 'pictures') %> <% if logged_in? %>(<%= link_to "Mine", pictures_path(current_user.id) %>)<% end %> 
   | <%= link_to "Contributions", contributions_path %> <% if logged_in? %>(<%= link_to "Mine", url_for(:controller => 'contributions', :contributor_id => current_user.id, :contributor_type => current_user.class.to_s) %>)<% end %> 
-  <% if logged_in? %>| <%= link_to "Policies", policies_path %> <% end %>
-  | <%= link_to "Tags", tags_path %>
-  
 </p>
 
-<hr/>
+    </td>
+    <td>
+    
+    <%= tag_cloud %>
+    
+    <p>
+      <b>What is a <%= link_to 'tag cloud', "http://en.wikipedia.org/wiki/Tag_cloud" %>?</b>
+    </p>
+    
+    </td>
+  </tr>
+</table>
 
 <%= yield  %>
 

@@ -105,15 +105,19 @@ protected
     if params[:user_id]
       @pictures = Picture.find(:all, :conditions => ["user_id = ?", params[:user_id]])
     else
-      @pictures = Picture.find(:all)
+      error("Please supply a User ID", "not supplied", :user_id)
     end
   end
 
   def find_picture_auth
-    begin
-      @picture = Picture.find(params[:id], :conditions => ["user_id = ?", current_user.id])
-    rescue ActiveRecord::RecordNotFound
-      error("Picture not found (id not authorized)", "is invalid (not owner)")
+    if params[:user_id]
+      begin
+        @picture = Picture.find(params[:id], :conditions => ["user_id = ?", params[:user_id]])
+      rescue ActiveRecord::RecordNotFound
+        error("Picture not found (id not authorized)", "is invalid (not owner)")
+      end
+    else
+      error("Please supply a User ID", "not supplied", :user_id)
     end
   end
 
@@ -124,7 +128,7 @@ private
     (err = Picture.new.errors).add(:id, message)
     
     respond_to do |format|
-      format.html { redirect_to pictures_url(current_user.id) }
+      format.html { redirect_to pictures_url(current_user) }
       format.xml { render :xml => err.to_xml }
     end
   end

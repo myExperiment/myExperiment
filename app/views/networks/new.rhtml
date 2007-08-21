@@ -5,7 +5,8 @@
 <% form_for(:network, :url => networks_path) do |f| %>
   <p>
     <b>User</b><br />
-    <%= f.text_field :user_id %>
+    <%=h current_user.name %> (<%=h current_user.openid_url %>)
+    <%= f.hidden_field :user_id, :value => current_user.id %>
   </p>
 
   <p>

@@ -1,3 +1,7 @@
+<% if logged_in? and !@user.friend? current_user.id %><p><%= request_friendship_link(params[:id]) %></p><% end %>
+
+<h3>Details</h3>
+
 <p>
   <b>Openid url:</b>
   <%=h @user.openid_url %>
@@ -18,26 +22,53 @@
   <%=h @user.updated_at %>
 </p>
 
-<h3>Friends</h3>
+<%= link_to '[edit]', edit_user_path(@user) if my_page? @user.id %>
 
-<%= render :partial => "friends", :locals => { :collection => @user.friends, :user => @user } %>
+<% unless @user.profile.nil? %>
+  <h3>Profile</h3>
 
-<h3>Networks</h3>
+  <%= render :partial => "profiles/profile", :locals => { :profile => @user.profile } %>
 
-<%= render :partial => "networks/list", :locals => { :collection => @user.networks_owned } %>
+  <%= link_to '[edit]', edit_profile_path(@user.profile) if my_page? @user.id %>
+<% end %>
 
-<h3>Memberships</h3>
+<% if my_page?(@user.id) %>
+  <h3>Avatar</h3>
+  
+  <%= avatar(@user, size="200x200", link_to=false) %>
+  
+  <p>
+    <%= link_to '[upload new]', new_picture_path(@user) %> | <%= link_to '[manage collection / avatar selector]', pictures_path(@user) %>
+  </p>
+<% end %>
 
-<ul><% @user.memberships_accepted.each do |m| %>
-<li><%= link_to h(m.network.title), network_path(m.network) %> (accepted at: <%= m.accepted_at %>)</li>
-<% end %></ul>
+<% unless @user.friends.empty? %>
+  <h3>Friends</h3>
 
-<h3>Contributions</h3>
+  <%= render :partial => "friends", :locals => { :collection => @user.friends, :user => @user } %>
+<% end %>
 
-<%= render :partial => "contributions/list", :locals => { :collection => @user.contributions } %>
+<% unless @user.networks_owned.empty? %>
+  <h3>Networks</h3>
+
+  <%= render :partial => "networks/list", :locals => { :collection => @user.networks_owned } %>
+<% end %>
+
+<% unless @user.memberships_accepted.empty? %>
+  <h3>Memberships</h3>
+
+  <ul><% @user.memberships_accepted.each do |m| %>
+  <li><%= link_to h(m.network.title), network_path(m.network) %> (accepted at: <%= m.accepted_at %>)</li>
+  <% end %></ul>
+<% end %>
+
+<% unless @user.contributions.empty? %>
+  <h3>Contributions</h3>
+
+  <%= render :partial => "contributions/list", :locals => { :collection => @user.contributions } %>
+<% end %>
 
 <br/>
 
-<% if logged_in? and !@user.friend? current_user.id %><%= request_friendship_link(params[:id]) %> |<% end %>
-<% if my_page? @user.id %><%= link_to 'Edit', edit_user_path(@user) %> | <% end %>
+
 <%= link_to 'Back', users_path %>

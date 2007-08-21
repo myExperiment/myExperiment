@@ -30,9 +30,6 @@ ActionController::Routing::Routes.draw do |map|
 
   # message center for current_user (User.find session[:user_id])
   map.resources :messages
-
-  # all pictures, all profiles
-  map.resources :pictures, :profiles
   
   # all ***ship's
   map.resources :relationships, :memberships, :friendships

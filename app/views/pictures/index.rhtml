@@ -1,9 +1,10 @@
+<% if logged_in? %><p><%= link_to 'Upload new picture', new_picture_path(current_user.id) %><p><% end %>
+
 <h1>Listing pictures</h1>
 
 <table>
   <tr>
     <th>ID</th>
-    <% unless params[:user_id] %><th>User</th><% end %>
     <th>Data</th>
   </tr>
   
@@ -28,5 +29,3 @@
 </table>
 
 <br />
-
-<% if logged_in? %><p><%= link_to 'Upload new picture', new_picture_path(current_user.id) %><p><% end %>
