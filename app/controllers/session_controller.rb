@@ -5,7 +5,8 @@ class SessionController < ApplicationController
   # POST /session
   # POST /session.xml
   def create
-    session[:return_to] ||= request.env['HTTP_REFERER']
+    # record return_to address if required
+    session[:return_to] = request.env['HTTP_REFERER'] unless session[:return_to] and !session[:return_to].empty?
     
     if using_open_id?
       open_id_authentication
