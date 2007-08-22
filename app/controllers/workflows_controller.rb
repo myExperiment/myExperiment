@@ -1,5 +1,5 @@
 class WorkflowsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :search]
+  before_filter :login_required, :except => [:index, :show, :download, :search]
   
   before_filter :find_workflows, :only => [:index]
   before_filter :find_workflow_auth, :only => [:bookmark, :comment, :rate, :tag, :download, :show, :edit, :update, :destroy]
@@ -195,7 +195,11 @@ protected
           @workflow = workflow
         end
       else
-        error("Workflow not found (id not authorized)", "is invalid (not authorized)")
+        if logged_in? 
+          error("Workflow not found (id not authorized)", "is invalid (not authorized)")
+        else
+          find_workflow_auth if login_required
+        end
       end
     rescue ActiveRecord::RecordNotFound
       error("Workflow not found", "is invalid")
