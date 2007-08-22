@@ -59,8 +59,10 @@ module AuthenticatedSystem
     #
     def login_required
       username, passwd = get_auth_data
-      self.current_user ||= User.authenticate(username, passwd) || :false if username && passwd
-      logged_in? && authorized? ? true : access_denied
+      #self.current_user ||= User.authenticate(username, passwd) || 0 if username && passwd
+      self.current_user = User.authenticate(username, passwd) if username && passwd
+      #logged_in? && authorized? ? true : access_denied
+      logged_in? ? true : access_denied
     end
     
     # Redirect as appropriate when an access request fails.
