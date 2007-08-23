@@ -54,15 +54,6 @@ module Squirrel # :nodoc
       permissions[workflow_tuple["id"]] = { "user" => { "edit" => edit_u, "view" => view_u, "download" => download_u},
                                             "project" => { "edit" => edit_p, "view" => view_p, "download" => download_p} }
     end
-                                          
-    tag_counts = {}
-    @tuples["taggings"].each do |tagging_tuple|
-      if tag_counts.key?(tagging_tuple["tag_id"])
-        tag_counts[tagging_tuple["tag_id"]] = tag_counts[tagging_tuple["tag_id"]].to_i + 1
-      else
-        tag_counts[tagging_tuple["tag_id"]] = 1
-      end
-    end
     puts "end phase 0"
     
     puts "phase 1 - user accounts"
@@ -228,7 +219,7 @@ module Squirrel # :nodoc
     @tuples["tags"].each do |tag_tuple|
       Tag.create(:id                => tag_tuple["id"],
                  :name              => tag_tuple["name"],
-                 :taggings_count    => tag_counts[tag_tuple["id"]] || 0)
+                 :taggings_count    => 0)
     end
                
     @tuples["taggings"].each do |tagging_tuple|
@@ -238,6 +229,19 @@ module Squirrel # :nodoc
                      :taggable_type   => tagging_tuple["taggable_type"],
                      :user_id         => nil,
                      :created_at      => Time.now)
+    end
+                   
+    taggings_count = {}
+    Tagging.find(:all, :order => "tag_id ASC").each do |tagging_record|
+      if taggings_count[tagging_record.tag_id]
+        taggings_count[tagging_record.tag_id] = taggings_count[tagging_record.tag_id].to_i + 1
+      else
+        taggings_count[tagging_record.tag_id] = 1
+      end
+    end
+    
+    taggings_count.each do |tag_id, count|
+      Tag.find(tag_id).update_attribute(:taggings_count, count)
     end
     puts "end phase 6"
     
@@ -476,7 +480,7 @@ private
         end
     
         hash[key] << schema.join(",")
-      elsif arr[i] =~ /^INSERT INTO `([a-z_]*)` VALUES (.*)$/
+      elsif arr[i] =~ /^INSERT INTO `([a-z_]*)` VALUES (.*)/
         key, tuples = $1, $2
         tuples[1..-3].split("),(").each do |tuple| 
           hash[key] << tuple
@@ -495,12 +499,15 @@ private
     
       i = 1
       while i < hash[table_name].length
-        input, record = hash[table_name][i], {}#{ "type" => table_name.classify }
+        input, record = hash[table_name][i], {}
         chomped = chomp(input)
       
         j = 0
         while j < schema.length
-          record[schema[j]] = (chomped[j] =~ /NULL/) ? nil : chomped[j]
+          result = (chomped[j] =~ /NULL/) ? nil : chomped[j].gsub(/\\(['"])/, "#{$1}")
+          result = result.to_i if result =~ /^[0-9]+$/
+          
+          record[schema[j]] = result
           j = j.to_i + 1
         end
         hash[table_name][i] = record

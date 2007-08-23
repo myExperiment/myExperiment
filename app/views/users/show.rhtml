@@ -8,6 +8,17 @@
 </p>
 
 <p>
+  <b>Username:</b>
+  <% if @user.username %>
+    <%=h @user.username %>
+  <% elsif my_page? @user.id %>
+    Click <%= link_to 'here', edit_user_path(@user) %> to create your RESTful username and password
+  <% else %>
+    Not created yet (<%= link_to 'what is REST?', "http://en.wikipedia.org/wiki/Representational_State_Transfer" %>)
+  <% end %>
+</p>
+
+<p>
   <b>Name:</b>
   <%=h @user.name %>
 </p>
