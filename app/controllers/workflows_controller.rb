@@ -2,7 +2,8 @@ class WorkflowsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download, :search]
   
   before_filter :find_workflows, :only => [:index]
-  before_filter :find_workflow_auth, :only => [:bookmark, :comment, :rate, :tag, :download, :show, :edit, :update, :destroy]
+  #before_filter :find_workflow_auth, :only => [:bookmark, :comment, :rate, :tag, :download, :show, :edit, :update, :destroy]
+  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create]
   
   require 'scufl/model'
   require 'scufl/parser'

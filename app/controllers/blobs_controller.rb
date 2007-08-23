@@ -2,7 +2,8 @@ class BlobsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download]
   
   before_filter :find_blobs, :only => [:index]
-  before_filter :find_blob_auth, :only => [:download, :show, :edit, :update, :destroy]
+  #before_filter :find_blob_auth, :only => [:download, :show, :edit, :update, :destroy]
+  before_filter :find_blob_auth, :except => [:index, :new, :create]
   
   # GET /blobs/1;download
   def download
@@ -116,7 +117,11 @@ protected
       if blob.authorized?(action_name, (logged_in? ? current_user : nil))
         @blob = blob
       else
-        error("Blob not found (id not authorized)", "is invalid (not authorized)")
+        if logged_in? 
+          error("Blob not found (id not authorized)", "is invalid (not authorized)")
+        else
+          find_blob_auth if login_required
+        end
       end
     rescue ActiveRecord::RecordNotFound
       error("Blob not found", "is invalid")

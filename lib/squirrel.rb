@@ -58,18 +58,6 @@ module Squirrel # :nodoc
   
     return rtn
   end
-  
-  def self.hash_to_objects(hash)
-    rtn = {}
-    
-    hash.each do |table_name, objects|
-      objects.each do |object|
-        # do "object --> record" conversion here
-      end
-    end
-    
-    return rtn
-  end
 
 private
 

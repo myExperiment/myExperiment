@@ -2,7 +2,8 @@ class BlogsController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_blogs, :only => [:index]
-  before_filter :find_blog_auth, :only => [:show, :edit, :update, :destroy]
+  #before_filter :find_blog_auth, :only => [:show, :edit, :update, :destroy]
+  before_filter :find_blog_auth, :except => [:index, :new, :create]
   
   # GET /blogs
   # GET /blogs.xml
@@ -105,7 +106,11 @@ protected
       if blog.authorized?(action_name, (logged_in? ? current_user : nil))
         @blog = blog
       else
-        error("Blog not found (id not authorized)", "is invalid (not authorized)")
+        if logged_in? 
+          error("Blog not found (id not authorized)", "is invalid (not authorized)")
+        else
+          find_blog_auth if login_required
+        end
       end
     rescue ActiveRecord::RecordNotFound
       error("Blog not found", "is invalid")
