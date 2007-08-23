@@ -26,10 +26,10 @@
 # 
 
 module Squirrel # :nodoc
-  
+
   def self.go
     puts "phase 0 - house keeping"
-    @tuples = self.sql_to_hash("#{RAILS_ROOT}/myexperiment_production.sql", "pictures")
+    @tuples = self.sql_to_hash("#{RAILS_ROOT}/carlin/myexperiment_production.sql", "pictures")
 
     names = {}
     @tuples["profiles"].each do |profile_tuple|
@@ -44,6 +44,24 @@ module Squirrel # :nodoc
     forums = {}
     @tuples["projects"].each do |project_tuple|
       forums[project_tuple["id"]] = project_tuple["forum_id"]
+    end
+    
+    permissions = {}
+    @tuples["workflows"].each do |workflow_tuple|
+      edit_u, view_u, download_u = acl_to_permission(workflow_tuple["acl_r"], workflow_tuple["acl_m"], workflow_tuple["acl_d"])
+      edit_p, view_p, download_p = acl_to_permission(workflow_tuple["acl_r"], workflow_tuple["acl_m"], workflow_tuple["acl_d"], false)
+      
+      permissions[workflow_tuple["id"]] = { "user" => { "edit" => edit_u, "view" => view_u, "download" => download_u},
+                                            "project" => { "edit" => edit_p, "view" => view_p, "download" => download_p} }
+    end
+                                          
+    tag_counts = {}
+    @tuples["taggings"].each do |tagging_tuple|
+      if tag_counts.key?(tagging_tuple["tag_id"])
+        tag_counts[tagging_tuple["tag_id"]] = tag_counts[tagging_tuple["tag_id"]].to_i + 1
+      else
+        tag_counts[tagging_tuple["tag_id"]] = 1
+      end
     end
     puts "end phase 0"
     
@@ -134,7 +152,7 @@ module Squirrel # :nodoc
     
     puts "phase 5 - workflows"
     @tuples["workflows"].each do |workflow_tuple|
-      workflow = create_workflow("#{RAILS_ROOT}/scufl/#{workflow_tuple["id"]}/#{workflow_tuple["scufl"]}",
+      workflow = create_workflow("#{RAILS_ROOT}/carlin/scufl/#{workflow_tuple["id"]}/#{workflow_tuple["scufl"]}",
                                  workflow_tuple["id"], 
                                  workflow_tuple["user_id"])
                                  
@@ -143,9 +161,84 @@ module Squirrel # :nodoc
       workflow.update_attributes({ :title       => workflow_tuple["title"],
                                    :description => workflow_tuple["description"] })
       
-      # policy stuff..
+      edit_pub, view_pub, download_pub, edit_pro, view_pro, download_pro = acl_to_policy(workflow_tuple["acl_r"], workflow_tuple["acl_m"], workflow_tuple["acl_d"])
+      policy = Policy.create(:contributor        => workflow.contributor,
+                             :name               => "Policy for #{workflow.title}",
+                             :download_public    => download_pub,
+                             :edit_public        => edit_pub, 
+                             :view_public        => view_pub, 
+                             :download_protected => download_pro,
+                             :edit_protected     => edit_pro,
+                             :view_protected     => view_pro)
+                             
+      workflow.contribution.update_attribute(:policy_id, policy.id)
     end
+                  
+    @tuples["sharing_projects"].each do |sharing_project_tuple|
+      policy = Workflow.find(sharing_project_tuple["workflow_id"]).contribution.policy
+      
+      Permission.create(:contributor_id     => sharing_project_tuple["project_id"],
+                        :contributor_type   => "Network",
+                        :policy_id          => policy.id,
+                        :download           => permissions[sharing_project_tuple["workflow_id"]]["project"]["download"],
+                        :edit               => permissions[sharing_project_tuple["workflow_id"]]["project"]["edit"],
+                        :view               => permissions[sharing_project_tuple["workflow_id"]]["project"]["view"])
+    end
+                      
+    @tuples["sharing_users"].each do |sharing_user_tuple|
+      policy = Workflow.find(sharing_user_tuple["workflow_id"]).contribution.policy
+      
+      Permission.create(:contributor_id     => sharing_user_tuple["user_id"],
+                        :contributor_type   => "User",
+                        :policy_id          => policy.id,
+                        :download           => permissions[sharing_user_tuple["workflow_id"]]["user"]["download"],
+                        :edit               => permissions[sharing_user_tuple["workflow_id"]]["user"]["edit"],
+                        :view               => permissions[sharing_user_tuple["workflow_id"]]["user"]["view"])
+    end                  
     puts "end phase 5"
+    
+    puts "phase 6 - workflow assets"
+    @tuples["bookmarks"].each do |bookmark_tuple|
+      Bookmark.create(:id                   => bookmark_tuple["id"],
+                      :title                => bookmark_tuple["title"],
+                      :created_at           => bookmark_tuple["created_at"],
+                      :bookmarkable_id      => bookmark_tuple["bookmarkable_id"],
+                      :bookmarkable_type    => bookmark_tuple["bookmarkable_type"],
+                      :user_id              => bookmark_tuple["user_id"])
+    end
+                    
+    @tuples["comments"].each do |comment_tuple|
+      Comment.create(:id                => comment_tuple["id"],
+                     :title             => comment_tuple["title"],
+                     :comment           => comment_tuple["comment"],
+                     :commentable_id    => comment_tuple["commentable_id"],
+                     :commentable_type  => comment_tuple["commentable_type"],
+                     :user_id           => comment_tuple["user_id"])
+    end
+    
+    @tuples["ratings"].each do |rating_tuple|
+      Rating.create(:id               => rating_tuple["id"],
+                    :rating           => rating_tuple["rating"],
+                    :rateable_id      => rating_tuple["rateable_id"],
+                    :rateable_type    => rating_tuple["rateable_type"],
+                    :user_id          => rating_tuple["user_id"])
+    end
+    
+    @tuples["tags"].each do |tag_tuple|
+      Tag.create(:id                => tag_tuple["id"],
+                 :name              => tag_tuple["name"],
+                 :taggings_count    => tag_counts[tag_tuple["id"]] || 0)
+    end
+               
+    @tuples["taggings"].each do |tagging_tuple|
+      Tagging.create(:id              => tagging_tuple["id"],
+                     :tag_id          => tagging_tuple["tag_id"],
+                     :taggable_id     => tagging_tuple["taggable_id"],
+                     :taggable_type   => tagging_tuple["taggable_type"],
+                     :user_id         => nil,
+                     :created_at      => Time.now)
+    end
+    puts "end phase 6"
     
     true
   end
@@ -220,6 +313,65 @@ private
     sf.close
     
     return rtn
+  end
+  
+  def acl_to_policy(acl_r, acl_m, acl_d)
+    edit_pub, view_pub, download_pub, edit_pro, view_pro, download_pro = false, false, false, false, false, false
+    
+    case acl_r.to_i
+    when 4..7
+      view_pro = download_pro = true
+    when 8
+      view_pub = download_pub = true
+    end
+    
+    case acl_m.to_i
+    when 4..7
+      edit_pro = true
+    when 8
+      edit_pub = true
+    end
+    
+    return edit_pub, view_pub, download_pub, edit_pro, view_pro, download_pro
+  end
+  
+  def acl_to_permission(acl_r, acl_m, acl_d, user=true)
+    edit, view, download = false, false, false
+    
+    # acl - permissions
+    # 0 - owner only (owner for 1-8 incl.)
+    # 1 - projects
+    # 2 - users
+    # 3 - users and projects
+    # 4 - friends
+    # 5 - friends and projects
+    # 6 - friends and users
+    # 7 - friends, users and projects
+    # 8 - ALL
+    
+    if user
+      case acl_r.to_i
+      when 2..3, 6..7
+        view = download = true
+      end
+      
+      case acl_m.to_i
+      when 2..3, 6..7
+        edit = true
+      end
+    else
+      case acl_r.to_i
+      when 1, 3, 5, 7
+        view = download = true
+      end
+      
+      case acl_m.to_i
+      when 1, 3, 5, 7
+        edit = true
+      end
+    end
+    
+    return edit, view, download
   end
 
   def chomper(str)

@@ -115,7 +115,11 @@ protected
         if forum.authorized?("show", (logged_in? ? current_user : nil)) # the forum authorization is always "show" ('in forum' editing is handled separately)
           @forum = forum
         else
-          error("Forum not found (id not authorized)", "is invalid (not authorized)", :forum_id)
+          if logged_in? 
+            error("Forum not found (id not authorized)", "is invalid (not authorized)", :forum_id)
+          else
+            find_forum_auth if login_required
+          end
         end
       rescue ActiveRecord::RecordNotFound
         error("Forum not found", "is invalid", :forum_id)

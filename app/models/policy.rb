@@ -22,11 +22,10 @@ class Policy < ActiveRecord::Base
         return true if (contribution.owner?(contributor) or contribution.admin?(contributor))
         
         # true if permission and permission[category]
-        private = private?(category, contributor)
-        return private unless private.nil?
+        return true if private?(category, contributor)
         
         # true if contribution.contributor and contributor are related and policy[category_protected]
-        return protected?(category) if contribution.contributor.related? contributor
+        return true if (contribution.contributor.related? contributor and protected?(category))
       end
       
       # true if policy[category_public]

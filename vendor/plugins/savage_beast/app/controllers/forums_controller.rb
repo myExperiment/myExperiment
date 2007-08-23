@@ -98,7 +98,11 @@ class ForumsController < ApplicationController
         if forum.authorized?(action_name, (logged_in? ? current_user : nil))
           @forum = forum
         else
-          error("Forum not found (id not authorized)", "is invalid (not authorized)")
+          if logged_in? 
+            error("Forum not found (id not authorized)", "is invalid (not authorized)")
+          else
+            find_forum_auth if login_required
+          end
         end
       rescue ActiveRecord::RecordNotFound
         error("Forum not found", "is invalid")
