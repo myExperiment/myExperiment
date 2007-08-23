@@ -10,9 +10,7 @@
 
 <h3>Contributions tagged with this</h3>
 
-<% for taggable in @tagged_with %>
-  <%= render :partial => "#{taggable.class.to_s.pluralize.downcase}/#{taggable.class.to_s.downcase}", :collection => [taggable] %>
-<% end %>
+<%= render :partial => "contributions/list", :locals => { :collection => @tagged_with } %>
 
 
 <%= link_to 'Back', tags_path %>

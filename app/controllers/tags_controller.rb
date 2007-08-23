@@ -30,7 +30,7 @@ protected
       
       @tagged_with = []
       @tag.taggings.each do |t|
-        @tagged_with << t.taggable
+        @tagged_with << t.taggable.contribution
       end
     rescue ActiveRecord::RecordNotFound
       error("Tag not found", "is invalid")
