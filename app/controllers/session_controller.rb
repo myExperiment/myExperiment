@@ -22,7 +22,7 @@ class SessionController < ApplicationController
     cookies.delete :auth_token
     reset_session # clears session[:return_to]
     flash[:notice] = "You have been logged out. Thank you for using myExperiment!"
-    redirect_back_or_default(users_path)
+    redirect_to :controller => "users"
   end
   
   # handle the openid server response
