@@ -26,9 +26,9 @@
 # 
 
 module Squirrel # :nodoc
-    
+  
   def self.go
-    # phase 0 - house keeping
+    puts "phase 0 - house keeping"
     @tuples = self.sql_to_hash("#{RAILS_ROOT}/myexperiment_production.sql", "pictures")
 
     names = {}
@@ -45,11 +45,12 @@ module Squirrel # :nodoc
     @tuples["projects"].each do |project_tuple|
       forums[project_tuple["id"]] = project_tuple["forum_id"]
     end
-    # end phase 0
+    puts "end phase 0"
     
-    # phase 1 - user accounts
+    puts "phase 1 - user accounts"
     @tuples["users"].each do |user_tuple|
-      User.create(:openid_url       => user_tuple["openid_url"],
+      User.create(:id               => user_tuple["id"],
+                  :openid_url       => user_tuple["openid_url"],
                   :name             => names[user_tuple["id"]],
                   :created_at       => user_tuple["created_at"],
                   :updated_at       => user_tuple["updated_at"],
@@ -59,9 +60,9 @@ module Squirrel # :nodoc
                   :crypted_password => user_tuple["crypted_password"],
                   :salt             => user_tuple["salt"])
     end
-    # end phase 1
+    puts "end phase 1"
     
-    # phase 2 - user assets
+    puts "phase 2 - user assets"
     @tuples["blogs"].each do |blog_tuple|
       unless (blog = Blog.find_by_contributor_id_and_contributor_type(blog_tuple["user_id"], "User"))
         blog = Blog.create(:contributor_id    => blog_tuple["user_id"],
@@ -71,7 +72,8 @@ module Squirrel # :nodoc
                            :updated_at        => blog_tuple["created_at"])
       end
     
-      BlogPost.create(:blog_id    => blog.id,
+      BlogPost.create(:id         => blog_tuple["id"],
+                      :blog_id    => blog.id,
                       :title      => blog_tuple["title"],
                       :body       => blog_tuple["body"],
                       :created_at => blog_tuple["created_at"],
@@ -97,7 +99,8 @@ module Squirrel # :nodoc
     end
                       
     @tuples["messages"].each do |message_tuple|
-      Message.create(:from        => message_tuple["from_id"],
+      Message.create(:id          => message_tuple["id"],
+                     :from        => message_tuple["from_id"],
                      :to          => message_tuple["to_id"],
                      :subject     => message_tuple["subject"],
                      :body        => message_tuple["body"],
@@ -105,29 +108,44 @@ module Squirrel # :nodoc
                      :created_at  => message_tuple["created_at"],
                      :read_at     => message_tuple["read_at"])
     end
-    # end phase 2
+    puts "end phase 2"
                    
-    # phase 3 - projects
+    puts "phase 3 - projects"
     @tuples["projects"].each do |project_tuple|
-      Network.create(:user_id     => project_tuple["user_id"],
+      Network.create(:id          => project_tuple["id"],
+                     :user_id     => project_tuple["user_id"],
                      :title       => project_tuple["title"],
                      :unique      => project_tuple["unique"],
                      :created_at  => project_tuple["created_at"],
                      :updated_at  => project_tuple["updated_at"])
     end
-    # end phase 3
+    puts "end phase 3"
     
-    # phase 4 - project assets
+    puts "phase 4 - project assets"
     @tuples["memberships"].each do |membership_tuple|
-      Membership.create(:user_id      => membership_tuple["user_id"],
-                        :network_id   => membership_tuple["project_id"],
-                        :created_at   => Time.now,
-                        :accepted_at  => Time.now)
+      unless Network.find_by_id_and_user_id(membership_tuple["project_id"], membership_tuple["user_id"])
+        Membership.create(:user_id      => membership_tuple["user_id"],
+                          :network_id   => membership_tuple["project_id"],
+                          :created_at   => Time.now,
+                          :accepted_at  => Time.now)
+      end
     end
-    # end phase 4
+    puts "end phase 4"
     
-    # phase 5 - workflow assets
-    # end phase 5
+    puts "phase 5 - workflows"
+    @tuples["workflows"].each do |workflow_tuple|
+      workflow = create_workflow("#{RAILS_ROOT}/scufl/#{workflow_tuple["id"]}/#{workflow_tuple["scufl"]}",
+                                 workflow_tuple["id"], 
+                                 workflow_tuple["user_id"])
+                                 
+      workflow.save
+      
+      workflow.update_attributes({ :title       => workflow_tuple["title"],
+                                   :description => workflow_tuple["description"] })
+      
+      # policy stuff..
+    end
+    puts "end phase 5"
     
     true
   end
@@ -165,6 +183,44 @@ module Squirrel # :nodoc
   end
 
 private
+
+  # heavily modified version of workflow_controller.rb::create_workflow
+  def create_workflow(scufl_file, old_id, contributor_id, contributor_type="User")
+    sf = File.open(scufl_file)
+    
+    scufl_model = Scufl::Parser.new.parse(sf.read)
+    sf.rewind
+    
+    salt = rand 32768
+    title, unique = scufl_model.description.title.blank? ? ["untitled", "untitled_#{salt}"] : [scufl_model.description.title,  "#{scufl_model.description.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"]
+    
+    unless RUBY_PLATFORM =~ /mswin32/
+      i = Tempfile.new("image")
+      Scufl::Dot.new.write_dot(i, scufl_model)
+      i.close(false)
+      d = StringIO.new(`dot -Tpng #{i.path}`)
+      i.unlink
+      d.extend FileUpload
+      d.original_filename = "#{unique}.png"
+      d.content_type = "image/png"
+    end
+    
+    rtn = Workflow.new(:id => old_id,
+                       :scufl => sf.read, 
+                       :contributor_id => contributor_id, 
+                       :contributor_type => contributor_type,
+                       :title => title,
+                       :unique => unique,
+                       :description => scufl_model.description.description)
+                       
+    unless RUBY_PLATFORM =~ /mswin32/
+      rtn.image = d
+    end
+    
+    sf.close
+    
+    return rtn
+  end
 
   def chomper(str)
     current = str[i = 0, 1]
@@ -275,4 +331,7 @@ private
     end
   end
 
+  module FileUpload
+    attr_accessor :original_filename, :content_type
+  end
 end

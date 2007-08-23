@@ -1,5 +1,6 @@
 <h1>Listing networks</h1>
 
+<% if false %>
 <table>
   <tr>
     <th>User</th>
@@ -24,6 +25,9 @@
   </tr>
 <% end %>
 </table>
+<% end %>
+
+<%= render :partial => "list", :locals => { :collection => @networks } %>
 
 <br />
 

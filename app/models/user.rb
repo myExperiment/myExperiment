@@ -85,7 +85,7 @@ class User < ActiveRecord::Base
           :dependent => :destroy
   
   before_create do |u|
-    u.profile = Profile.new(:user_id => id, :created_at => Time.now, :updated_at => Time.now)
+    u.profile = Profile.new(:user_id => u.id)
   end
   
   has_many :pictures,

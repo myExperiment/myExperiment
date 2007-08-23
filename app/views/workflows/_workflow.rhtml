@@ -15,10 +15,12 @@
    </tr>
    <tr>
     <td colspan="2">
-      <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
-      <%= ((d = workflow.description).length > (i = 200) ? "#{h(d[0..i])}... #{link_to('[read more]', workflow_path(workflow))}" : h(d)) %>
-      <% else %>
-      <!-- not authorized -->
+      <% if workflow.description %>
+        <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
+          <%= ((d = workflow.description).length > (i = 200) ? "#{h(d[0..i])}... #{link_to('[read more]', workflow_path(workflow))}" : h(d)) %>
+        <% else %>
+          <!-- not authorized -->
+        <% end %>
       <% end %>
     </td>
   </tr>

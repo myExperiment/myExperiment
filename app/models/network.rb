@@ -17,9 +17,10 @@ class Network < ActiveRecord::Base
   
   validates_associated :owner
   
-  validates_presence_of :user_id, :title, :unique
+  validates_presence_of :user_id, :title
   
-  validates_uniqueness_of :unique
+  validates_uniqueness_of :unique, 
+                          :allow_nil => true
   
   belongs_to :owner,
              :class_name => "User",
