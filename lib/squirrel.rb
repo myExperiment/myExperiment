@@ -256,7 +256,7 @@ module Squirrel # :nodoc
                              :name               => "Policy for #{forum.name}",
                              :download_public    => false,
                              :edit_public        => false, 
-                             :view_public        => true, 
+                             :view_public        => (forum_tuple["public"].to_i == 1), 
                              :download_protected => false,
                              :edit_protected     => false,
                              :view_protected     => false)
