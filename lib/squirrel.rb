@@ -29,7 +29,7 @@ module Squirrel # :nodoc
 
   def self.go
     puts "phase 0 - house keeping"
-    @tuples = self.sql_to_hash("#{RAILS_ROOT}/carlin/myexperiment_production.sql", "pictures")
+    @tuples = self.sql_to_hash("#{RAILS_ROOT}/carlin/myexperiment_production.sql", "pictures", "moderatorships", "monitorships", "posts", "topics")
 
     names = {}
     @tuples["profiles"].each do |profile_tuple|
@@ -43,7 +43,7 @@ module Squirrel # :nodoc
     
     forums = {}
     @tuples["projects"].each do |project_tuple|
-      forums[project_tuple["id"]] = project_tuple["forum_id"]
+      forums[project_tuple["forum_id"]] = project_tuple["id"]
     end
     
     permissions = {}
@@ -81,6 +81,7 @@ module Squirrel # :nodoc
     puts "end phase 1"
     
     puts "phase 2 - user assets"
+    puts "Pictures must be imported manually"
     @tuples["blogs"].each do |blog_tuple|
       unless (blog = Blog.find_by_contributor_id_and_contributor_type(blog_tuple["user_id"], "User"))
         blog = Blog.create(:contributor_id    => blog_tuple["user_id"],
@@ -239,6 +240,34 @@ module Squirrel # :nodoc
                      :created_at      => Time.now)
     end
     puts "end phase 6"
+    
+    puts "phase 7 - forums"
+    @tuples["forums"].each do |forum_tuple|
+      forum = Forum.create(:id                  => forum_tuple["id"],
+                           :contributor_id      => forums[forum_tuple["id"]],
+                           :contributor_type    => "Network",
+                           :name                => forum_tuple["name"],
+                           :posts_count         => forum_tuple["posts_count"],
+                           :topics_count        => forum_tuple["topics_count"],
+                           :position            => forum_tuple["position"],
+                           :description         => forum_tuple["description"])
+                           
+      policy = Policy.create(:contributor        => forum.contributor,
+                             :name               => "Policy for #{forum.name}",
+                             :download_public    => false,
+                             :edit_public        => false, 
+                             :view_public        => true, 
+                             :download_protected => false,
+                             :edit_protected     => false,
+                             :view_protected     => false)
+                             
+      forum.contribution.update_attribute(:policy_id, policy.id)
+    end
+    puts "end phase 7"
+    
+    puts "phase 8 - forum assets"
+    puts "Moderatorships, Monitorships, Posts and Topics must be imported manually"
+    puts "end phase 8"
     
     true
   end
