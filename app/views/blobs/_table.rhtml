@@ -3,15 +3,13 @@
 <table>
   <tr>
     <th>Contributor</th>
-    <th>Contributor type</th>
     <th>Local name</th>
     <th>Content type</th>
   </tr>
   
 <% for blob in @blobs %>
   <tr>
-    <td><%=h blob.contributor_id %></td>
-    <td><%=h blob.contributor_type %></td>
+    <td><%= contributor(blob.contributor_id, blob.contributor_type) %></td>
     <td><%=h blob.local_name %></td>
     <td><%=h blob.content_type %></td>
     <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><td><%= link_to 'Download', download_blob_path(blob) %></td><% end %>

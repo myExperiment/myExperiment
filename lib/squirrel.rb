@@ -256,14 +256,14 @@ module Squirrel # :nodoc
                            :position            => forum_tuple["position"],
                            :description         => forum_tuple["description"])
                            
-      policy = Policy.create(:contributor        => forum.contributor,
+      policy = Policy.create(:contributor        => forum.contributor.owner,
                              :name               => "Policy for #{forum.name}",
                              :download_public    => false,
                              :edit_public        => false, 
                              :view_public        => (forum_tuple["public"].to_i == 1), 
                              :download_protected => false,
                              :edit_protected     => false,
-                             :view_protected     => false)
+                             :view_protected     => (forum_tuple["public"].to_i == 0))
                              
       forum.contribution.update_attribute(:policy_id, policy.id)
     end

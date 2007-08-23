@@ -19,5 +19,5 @@
 <br/>
 
 
-<%= link_to 'Edit', edit_blog_path(@blog) %> |
+<% if logged_in? and blog.authorized?("edit", current_user) %><%= link_to 'Edit', edit_blog_path(@blog) %> | <% end %>
 <%= link_to 'Back', blogs_path %>

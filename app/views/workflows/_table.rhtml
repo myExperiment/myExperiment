@@ -3,7 +3,6 @@
 <table>
   <tr>
     <th>Contributor</th>
-    <th>Contributor type</th>
     <th>Title</th>
     <th>Image</th>
     <th>Created at</th>
@@ -14,8 +13,7 @@
   
 <% for workflow in collection %>
   <tr>
-    <td><%=h workflow.contribution.contributor_id %></td>
-    <td><%=h workflow.contribution.contributor_type %></td>
+    <td><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type) %></td>
     <td><%=h workflow.title %></td>
     <td>
       <% unless workflow.image.nil? %>
