@@ -26,6 +26,111 @@
 # 
 
 module Squirrel # :nodoc
+    
+  def self.go
+    # phase 0 - house keeping
+    @tuples = self.sql_to_hash("#{RAILS_ROOT}/myexperiment_production.sql", "pictures")
+
+    names = {}
+    @tuples["profiles"].each do |profile_tuple|
+      names[profile_tuple["user_id"]] = profile_tuple["name"]
+    end
+    
+    pictures = {}
+    @tuples["users"].each do |user_tuple|
+      pictures[user_tuple["id"]] = user_tuple["avatar"]
+    end
+    
+    forums = {}
+    @tuples["projects"].each do |project_tuple|
+      forums[project_tuple["id"]] = project_tuple["forum_id"]
+    end
+    # end phase 0
+    
+    # phase 1 - user accounts
+    @tuples["users"].each do |user_tuple|
+      User.create(:openid_url       => user_tuple["openid_url"],
+                  :name             => names[user_tuple["id"]],
+                  :created_at       => user_tuple["created_at"],
+                  :updated_at       => user_tuple["updated_at"],
+                  :posts_count      => user_tuple["posts_count"],
+                  :last_seen_at     => user_tuple["last_seen_at"],
+                  :username         => user_tuple["username"],
+                  :crypted_password => user_tuple["crypted_password"],
+                  :salt             => user_tuple["salt"])
+    end
+    # end phase 1
+    
+    # phase 2 - user assets
+    @tuples["blogs"].each do |blog_tuple|
+      unless (blog = Blog.find_by_contributor_id_and_contributor_type(blog_tuple["user_id"], "User"))
+        blog = Blog.create(:contributor_id    => blog_tuple["user_id"],
+                           :contributor_type  => "User",
+                           :title             => "#{names[blog_tuple["user_id"]]}'s Blog",
+                           :created_at        => blog_tuple["created_at"],
+                           :updated_at        => blog_tuple["created_at"])
+      end
+    
+      BlogPost.create(:blog_id    => blog.id,
+                      :title      => blog_tuple["title"],
+                      :body       => blog_tuple["body"],
+                      :created_at => blog_tuple["created_at"],
+                      :updated_at => blog_tuple["created_at"])
+    end
+    
+    @tuples["profiles"].each do |profile_tuple|
+      profile = User.find(profile_tuple["user_id"]).profile
+      
+      profile.update_attributes({ :picture_id   => pictures[profile_tuple["user_id"]],
+                                  :email        => profile_tuple["email"],
+                                  :website      => profile_tuple["website"],
+                                  :description  => profile_tuple["profile"],
+                                  :created_at   => profile_tuple["created_at"],
+                                  :updated_at   => profile_tuple["updated_at"] })
+    end
+    
+    @tuples["friendships"].each do |friendship_tuple|
+      Friendship.create(:user_id      => friendship_tuple["user_id"],
+                        :friend_id    => friendship_tuple["friend_id"],
+                        :created_at   => friendship_tuple["created_at"],
+                        :accepted_at  => friendship_tuple["accepted_at"])
+    end
+                      
+    @tuples["messages"].each do |message_tuple|
+      Message.create(:from        => message_tuple["from_id"],
+                     :to          => message_tuple["to_id"],
+                     :subject     => message_tuple["subject"],
+                     :body        => message_tuple["body"],
+                     :reply_id    => message_tuple["reply_id"],
+                     :created_at  => message_tuple["created_at"],
+                     :read_at     => message_tuple["read_at"])
+    end
+    # end phase 2
+                   
+    # phase 3 - projects
+    @tuples["projects"].each do |project_tuple|
+      Network.create(:user_id     => project_tuple["user_id"],
+                     :title       => project_tuple["title"],
+                     :unique      => project_tuple["unique"],
+                     :created_at  => project_tuple["created_at"],
+                     :updated_at  => project_tuple["updated_at"])
+    end
+    # end phase 3
+    
+    # phase 4 - project assets
+    @tuples["memberships"].each do |membership_tuple|
+      Membership.create(:user_id      => membership_tuple["user_id"],
+                        :network_id   => membership_tuple["project_id"],
+                        :created_at   => Time.now,
+                        :accepted_at  => Time.now)
+    end
+    # end phase 4
+    
+    # phase 5 - workflow assets
+    # end phase 5
+    
+    true
+  end
 
   # The Squirrel serves a single purpose, to convert the SQL dump of a database into a 
   # format that is useful for a dba (particularly when the database corresponds to a Rails model).
@@ -153,7 +258,7 @@ private
     
       i = 1
       while i < hash[table_name].length
-        input, record = hash[table_name][i], { "type" => table_name.classify }
+        input, record = hash[table_name][i], {}#{ "type" => table_name.classify }
         chomped = chomp(input)
       
         j = 0
