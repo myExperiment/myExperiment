@@ -22,4 +22,10 @@ class Profile < ActiveRecord::Base
              :foreign_key => :user_id
   
   belongs_to :picture
+  
+  def avatar?
+    return true if picture_id and !(picture_id.to_i == 0)
+    
+    return false
+  end
 end

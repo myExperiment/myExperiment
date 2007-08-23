@@ -32,10 +32,10 @@ module ApplicationHelper
     begin
       user = User.find(user_id)
       
-      if (user.profile.picture_id and !((img_id = user.profile.picture_id).to_i == 0))
+      if user.profile.avatar?
         img = image_tag(url_for(:controller => 'pictures',
                                 :action     => 'show',
-                                :id         => img_id,
+                                :id         => user.profile.picture_id,
                                 :size       => size),
                         :title => h(user.name))
           
