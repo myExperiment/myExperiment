@@ -30,7 +30,7 @@ module Squirrel # :nodoc
   @exported_sql = "#{RAILS_ROOT}/carlin/myexperiment_production.sql"
   @scufl_directory = "#{RAILS_ROOT}/carlin/scufl"
 
-  def self.go(verbose=false)
+  def self.go(force_exit=false, verbose=false)
     puts "BEGIN Phase 0 - House Keeping"
     @tuples = self.sql_to_hash(@exported_sql, "pictures", "moderatorships", "monitorships", "posts", "topics")
     puts "Tuples data structure created successfully" if verbose
@@ -78,6 +78,8 @@ module Squirrel # :nodoc
         puts "Saved User #{user.id} - #{user.openid_url}" if verbose
       else
         puts user.errors.full_messages
+        
+        exit if force_exit
       end
     end
     puts "END Phase 1", " ", " "
@@ -101,6 +103,8 @@ module Squirrel # :nodoc
           puts "Saved Blog #{blog.id} for User #{blog.contributor_id}" if verbose
         else
           puts blog.errors.full_messages
+          
+          exit if force_exit
         end
       end
       
@@ -117,6 +121,8 @@ module Squirrel # :nodoc
         puts "Saved BlogPost #{blogpost.id} - #{blogpost.title}" if verbose
       else
         puts blogpost.errors.full_messages
+        
+        exit if force_exit
       end
     end
     
@@ -136,6 +142,8 @@ module Squirrel # :nodoc
         puts "Updated Profile #{profile.id} for User #{profile.user_id}" if verbose
       else
         puts "Profile for User #{profile_tuple["user_id"]} NOT FOUND"
+        
+        exit if force_exit
       end
     end
     
@@ -151,6 +159,8 @@ module Squirrel # :nodoc
         puts "Saved Friendship between User #{friend.user_id} and Friend (User) #{friend.friend_id}" if verbose
       else
         puts friend.errors.full_messages
+        
+        exit if force_exit
       end
     end
                       
@@ -170,6 +180,8 @@ module Squirrel # :nodoc
         puts "Saved Message #{message.id}" if verbose
       else
         puts message.errors.full_messages
+        
+        exit if force_exit
       end
     end
     puts "END Phase 2", " ", " "
@@ -189,6 +201,8 @@ module Squirrel # :nodoc
         puts "Saved Network #{network.id} (#{network.title})" if verbose
       else
         puts network.errors.full_messages
+        
+        exit if force_exit
       end
     end
     puts "END Phase 3", " ", " "
@@ -214,10 +228,14 @@ module Squirrel # :nodoc
             puts "Saved Membership between User #{member.user_id} and Network #{member.network_id}" if verbose
           else
             puts member.errors.full_messages
+            
+            exit if force_exit
           end
         end
       else
         puts "Network #{membership_tuple["project_id"]} NOT FOUND"
+        
+        exit if force_exit
       end
     end
     puts "END Phase 4", " ", " "
@@ -258,9 +276,13 @@ module Squirrel # :nodoc
           puts "Updated Policy attribute of Workflow #{workflow.id} Contribution #{workflow.contribution.id} record" if verbose
         else
           puts policy.errors.full_messages
+          
+          exit if force_exit
         end
       else
         puts workflow.errors.full_messages
+        
+        exit if force_exit
       end
     end
                   
@@ -284,9 +306,13 @@ module Squirrel # :nodoc
           puts "Saved Permission #{perm.id} for Policy #{policy.id}" if verbose
         else
           perm.errors.full_messages
+          
+          exit if force_exit
         end
       else
         puts "Policy for Workflow #{sharing_project_tuple["workflow_id"]} NOT FOUND"
+        
+        exit if force_exit
       end
     end
                       
@@ -310,9 +336,13 @@ module Squirrel # :nodoc
           puts "Saved Permission #{perm.id} for Policy #{policy.id}" if verbose
         else
           perm.errors.full_messages
+          
+          exit if force_exit
         end
       else
         puts "Policy for Workflow #{sharing_project_tuple["workflow_id"]} NOT FOUND"
+        
+        exit if force_exit
       end
     end                  
     puts "END Phase 5", " ", " "
@@ -332,6 +362,8 @@ module Squirrel # :nodoc
         puts "Saved Bookmark for #{bookmark.bookmarkable_type} #{bookmark.bookmarkable_id} for User #{bookmark.user_id}" if verbose
       else
         puts bookmark.errors.full_messages
+        
+        exit if force_exit
       end
     end
                     
@@ -349,6 +381,8 @@ module Squirrel # :nodoc
         puts "Saved Comment for #{comment.commentable_type} #{comment.commentable_id} by User #{comment.user_id}" if verbose
       else
         puts comment.errors.full_messages
+        
+        exit if force_exit
       end
     end
     
@@ -365,6 +399,8 @@ module Squirrel # :nodoc
         puts "Saved Rating for #{rating.rateable_type} #{rating.rateable_id} by User #{rating.user_id}" if verbose
       else
         puts rating.errors.full_messages
+        
+        exit if force_exit
       end
     end
     
@@ -379,6 +415,8 @@ module Squirrel # :nodoc
         puts "Saved Tag #{t.name}" if verbose
       else
         puts tag.errors.full_messages
+        
+        exit if force_exit
       end
     end
                
@@ -396,6 +434,8 @@ module Squirrel # :nodoc
         puts "Saved Tagging of #{tagging.taggable_type} #{tagging.taggable_id}" if verbose
       else
         puts tagging.errors.full_messages
+        
+        exit if force_exit
       end
     end
          
@@ -452,9 +492,13 @@ module Squirrel # :nodoc
           forum.contribution.update_attribute(:policy_id, policy.id)
         else
           puts policy.errors.full_messages
+          
+          exit if force_exit
         end
       else
         puts forum.errors.full_messages
+        
+        exit if force_exit
       end
     end
     puts "END Phase 7", " ", " "
