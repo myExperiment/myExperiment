@@ -26,13 +26,19 @@
 # 
 
 module Squirrel # :nodoc
-
-  @exported_sql = "#{RAILS_ROOT}/carlin/myexperiment_production.sql"
-  @scufl_directory = "#{RAILS_ROOT}/carlin/scufl"
+  # this is the direct path to the directory where the exported sql 
+  # and scufl documents are stored (with the trailing / ommited)
+  @export_directory = "#{RAILS_ROOT}/carlin"
+  
+  # this is the local name of the exported sql file
+  @export_sql_file = "myexperiment_production.sql"
+  
+  # this is the local name of the exported scufl directory
+  @export_scufl_directory = "scufl"
 
   def self.go(force_exit=false, verbose=false)
     puts "BEGIN Phase 0 - House Keeping"
-    @tuples = self.sql_to_hash(@exported_sql, "pictures", "moderatorships", "monitorships", "posts", "topics")
+    @tuples = self.sql_to_hash("#{@export_directory}/#{@export_sql_file}", "pictures", "moderatorships", "monitorships", "posts", "topics")
     puts "Tuples data structure created successfully" if verbose
 
     names = {}
@@ -244,7 +250,7 @@ module Squirrel # :nodoc
     @tuples["workflows"].each do |workflow_tuple|
       puts "Creating new Workflow #{workflow_tuple["id"]} for User #{workflow_tuple["user_id"]} from SCUFL" if verbose
       
-      workflow = create_workflow("#{@scufl_directory}/#{workflow_tuple["id"]}/#{workflow_tuple["scufl"]}",
+      workflow = create_workflow("#{@export_directory}/#{@export_scufl_directory}/#{workflow_tuple["id"]}/#{workflow_tuple["scufl"]}",
                                  workflow_tuple["id"], 
                                  workflow_tuple["user_id"])
                                  
