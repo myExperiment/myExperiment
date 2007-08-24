@@ -343,8 +343,6 @@ private
       rtn.image = d
     end
     
-    sf.close
-    
     return rtn
   end
   
@@ -505,7 +503,7 @@ private
         j = 0
         while j < schema.length
           # bug - "Mark\\'s forum", "\\r\\n\\r", "\\\"" --> "\['"rn]"
-          result = (chomped[j] =~ /NULL/) ? nil : CGI::unescape(chomped[j])
+          result = (chomped[j] =~ /NULL/) ? nil : chomped[j]
           result = result.to_i if result =~ /^[0-9]+$/
           
           record[schema[j]] = result
