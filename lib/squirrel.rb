@@ -504,7 +504,8 @@ private
       
         j = 0
         while j < schema.length
-          result = (chomped[j] =~ /NULL/) ? nil : chomped[j].gsub(/\\(['"])/, "#{$1}")
+          # bug - "Mark\\'s forum", "\\r\\n\\r", "\\\"" --> "\['"rn]"
+          result = (chomped[j] =~ /NULL/) ? nil : CGI::unescape(chomped[j])
           result = result.to_i if result =~ /^[0-9]+$/
           
           record[schema[j]] = result

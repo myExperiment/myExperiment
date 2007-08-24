@@ -14,7 +14,7 @@
   <% elsif my_page? @user.id %>
     Click <%= link_to 'here', edit_user_path(@user) %> to create your RESTful username and password
   <% else %>
-    Not created yet (<%= link_to 'what is REST?', "http://en.wikipedia.org/wiki/Representational_State_Transfer" %>)
+    Not created yet (what is <%= link_to 'REST', "http://en.wikipedia.org/wiki/Representational_State_Transfer" %>?)
   <% end %>
 </p>
 

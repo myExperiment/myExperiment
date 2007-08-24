@@ -12,7 +12,7 @@ class PicturesController < ApplicationController
     if @picture.select!
       respond_to do |format|
         flash[:notice] = 'Picture was successfully selected as profile avatar.'
-        format.html { redirect_to profile_url(@picture.owner.profile) }
+        format.html { redirect_to pictures_url(@picture.owner) }
         format.xml  { head :ok }
       end
     else
