@@ -27,9 +27,13 @@
 
 module Squirrel # :nodoc
 
-  def self.go
-    puts "phase 0 - house keeping"
-    @tuples = self.sql_to_hash("#{RAILS_ROOT}/carlin/myexperiment_production.sql", "pictures", "moderatorships", "monitorships", "posts", "topics")
+  @exported_sql = "#{RAILS_ROOT}/carlin/myexperiment_production.sql"
+  @scufl_directory = "#{RAILS_ROOT}/carlin/scufl"
+
+  def self.go(verbose=false)
+    puts "BEGIN Phase 0 - House Keeping"
+    @tuples = self.sql_to_hash(@exported_sql, "pictures", "moderatorships", "monitorships", "posts", "topics")
+    puts "Tuples data structure created successfully" if verbose
 
     names = {}
     @tuples["profiles"].each do |profile_tuple|
@@ -54,183 +58,348 @@ module Squirrel # :nodoc
       permissions[workflow_tuple["id"]] = { "user" => { "edit" => edit_u, "view" => view_u, "download" => download_u},
                                             "project" => { "edit" => edit_p, "view" => view_p, "download" => download_p} }
     end
-    puts "end phase 0"
+    puts "END Phase 0", " ", " "
     
-    puts "phase 1 - user accounts"
+    puts "BEGIN Phase 1 - User Accounts"
     @tuples["users"].each do |user_tuple|
-      User.create(:id               => user_tuple["id"],
-                  :openid_url       => user_tuple["openid_url"],
-                  :name             => names[user_tuple["id"]],
-                  :created_at       => user_tuple["created_at"],
-                  :updated_at       => user_tuple["updated_at"],
-                  :posts_count      => user_tuple["posts_count"],
-                  :last_seen_at     => user_tuple["last_seen_at"],
-                  :username         => user_tuple["username"],
-                  :crypted_password => user_tuple["crypted_password"],
-                  :salt             => user_tuple["salt"])
+      puts "Creating User #{user_tuple["id"]} - #{user_tuple["openid_url"]}" if verbose
+      user = User.new(:id               => user_tuple["id"],
+                      :openid_url       => user_tuple["openid_url"],
+                      :name             => names[user_tuple["id"]],
+                      :created_at       => user_tuple["created_at"],
+                      :updated_at       => user_tuple["updated_at"],
+                      :posts_count      => user_tuple["posts_count"],
+                      :last_seen_at     => user_tuple["last_seen_at"],
+                      :username         => user_tuple["username"],
+                      :crypted_password => user_tuple["crypted_password"],
+                      :salt             => user_tuple["salt"])
+                   
+      if user.save
+        puts "Saved User #{user.id} - #{user.openid_url}" if verbose
+      else
+        puts user.errors.full_messages
+      end
     end
-    puts "end phase 1"
+    puts "END Phase 1", " ", " "
     
-    puts "phase 2 - user assets"
+    puts "BEGIN Phase 2 - User Assets"
     puts "Pictures must be imported manually"
     @tuples["blogs"].each do |blog_tuple|
-      unless (blog = Blog.find_by_contributor_id_and_contributor_type(blog_tuple["user_id"], "User"))
-        blog = Blog.create(:contributor_id    => blog_tuple["user_id"],
-                           :contributor_type  => "User",
-                           :title             => "#{names[blog_tuple["user_id"]]}'s Blog",
-                           :created_at        => blog_tuple["created_at"],
-                           :updated_at        => blog_tuple["created_at"])
+      blog = Blog.find_by_contributor_id_and_contributor_type(blog_tuple["user_id"], "User")
+      if blog
+        puts "Existing Blog #{blog.id} found" if verbose
+      else
+        puts "Creating Blog for User #{blog_tuple["user_id"]}" if verbose
+        
+        blog = Blog.new(:contributor_id    => blog_tuple["user_id"],
+                        :contributor_type  => "User",
+                        :title             => "#{names[blog_tuple["user_id"]]}'s Blog",
+                        :created_at        => blog_tuple["created_at"],
+                        :updated_at        => blog_tuple["created_at"])
+                        
+        if blog.save
+          puts "Saved Blog #{blog.id} for User #{blog.contributor_id}" if verbose
+        else
+          puts blog.errors.full_messages
+        end
       end
+      
+      puts "Creating BlogPost #{blog_tuple["id"]} - #{blog_tuple["title"]}" if verbose
     
-      BlogPost.create(:id         => blog_tuple["id"],
-                      :blog_id    => blog.id,
-                      :title      => blog_tuple["title"],
-                      :body       => blog_tuple["body"],
-                      :created_at => blog_tuple["created_at"],
-                      :updated_at => blog_tuple["created_at"])
+      blogpost = BlogPost.new(:id         => blog_tuple["id"],
+                              :blog_id    => blog.id,
+                              :title      => blog_tuple["title"],
+                              :body       => blog_tuple["body"],
+                              :created_at => blog_tuple["created_at"],
+                              :updated_at => blog_tuple["created_at"])
+                              
+      if blogpost.save
+        puts "Saved BlogPost #{blogpost.id} - #{blogpost.title}" if verbose
+      else
+        puts blogpost.errors.full_messages
+      end
     end
     
     @tuples["profiles"].each do |profile_tuple|
-      profile = User.find(profile_tuple["user_id"]).profile
+      profile = Profile.find_by_user_id(profile_tuple["user_id"])
       
-      profile.update_attributes({ :picture_id   => pictures[profile_tuple["user_id"]],
-                                  :email        => profile_tuple["email"],
-                                  :website      => profile_tuple["website"],
-                                  :description  => profile_tuple["profile"],
-                                  :created_at   => profile_tuple["created_at"],
-                                  :updated_at   => profile_tuple["updated_at"] })
+      if profile
+        puts "Existing Profile found for User #{profile_tuple["user_id"]}" if verbose
+      
+        profile.update_attributes({ :picture_id   => pictures[profile_tuple["user_id"]],
+                                    :email        => profile_tuple["email"],
+                                    :website      => profile_tuple["website"],
+                                    :description  => profile_tuple["profile"],
+                                    :created_at   => profile_tuple["created_at"],
+                                    :updated_at   => profile_tuple["updated_at"] })
+                                    
+        puts "Updated Profile #{profile.id} for User #{profile.user_id}" if verbose
+      else
+        puts "Profile for User #{profile_tuple["user_id"]} NOT FOUND"
+      end
     end
     
     @tuples["friendships"].each do |friendship_tuple|
-      Friendship.create(:user_id      => friendship_tuple["user_id"],
-                        :friend_id    => friendship_tuple["friend_id"],
-                        :created_at   => friendship_tuple["created_at"],
-                        :accepted_at  => friendship_tuple["accepted_at"])
+      puts "Creating Friendship between #{friendship_tuple["user_id"]} and #{friendship_tuple["friend_id"]}" if verbose
+      
+      friend = Friendship.new(:user_id      => friendship_tuple["user_id"],
+                              :friend_id    => friendship_tuple["friend_id"],
+                              :created_at   => friendship_tuple["created_at"],
+                              :accepted_at  => friendship_tuple["accepted_at"])
+                              
+      if friend.save
+        puts "Saved Friendship between User #{friend.user_id} and Friend (User) #{friend.friend_id}" if verbose
+      else
+        puts friend.errors.full_messages
+      end
     end
                       
     @tuples["messages"].each do |message_tuple|
-      Message.create(:id          => message_tuple["id"],
-                     :from        => message_tuple["from_id"],
-                     :to          => message_tuple["to_id"],
-                     :subject     => message_tuple["subject"],
-                     :body        => message_tuple["body"],
-                     :reply_id    => message_tuple["reply_id"],
-                     :created_at  => message_tuple["created_at"],
-                     :read_at     => message_tuple["read_at"])
-    end
-    puts "end phase 2"
-                   
-    puts "phase 3 - projects"
-    @tuples["projects"].each do |project_tuple|
-      Network.create(:id          => project_tuple["id"],
-                     :user_id     => project_tuple["user_id"],
-                     :title       => project_tuple["title"],
-                     :unique      => project_tuple["unique"],
-                     :created_at  => project_tuple["created_at"],
-                     :updated_at  => project_tuple["updated_at"])
-    end
-    puts "end phase 3"
-    
-    puts "phase 4 - project assets"
-    @tuples["memberships"].each do |membership_tuple|
-      unless Network.find_by_id_and_user_id(membership_tuple["project_id"], membership_tuple["user_id"])
-        Membership.create(:user_id      => membership_tuple["user_id"],
-                          :network_id   => membership_tuple["project_id"],
-                          :created_at   => Time.now,
-                          :accepted_at  => Time.now)
+      puts "Creating Message #{message_tuple["id"]}" if verbose
+      
+      message = Message.new(:id          => message_tuple["id"],
+                            :from        => message_tuple["from_id"],
+                            :to          => message_tuple["to_id"],
+                            :subject     => message_tuple["subject"],
+                            :body        => message_tuple["body"],
+                            :reply_id    => message_tuple["reply_id"],
+                            :created_at  => message_tuple["created_at"],
+                            :read_at     => message_tuple["read_at"])
+                            
+      if message.save
+        puts "Saved Message #{message.id}" if verbose
+      else
+        puts message.errors.full_messages
       end
     end
-    puts "end phase 4"
+    puts "END Phase 2", " ", " "
+                   
+    puts "BEGIN Phase 3 - Projects (a.k.a. Networks)"
+    @tuples["projects"].each do |project_tuple|
+      puts "Creating new Network using Project #{project_tuple["id"]}" if verbose
+      
+      network = Network.new(:id          => project_tuple["id"],
+                            :user_id     => project_tuple["user_id"],
+                            :title       => project_tuple["title"],
+                            :unique      => project_tuple["unique"],
+                            :created_at  => project_tuple["created_at"],
+                            :updated_at  => project_tuple["updated_at"])
+                            
+      if network.save
+        puts "Saved Network #{network.id} (#{network.title})" if verbose
+      else
+        puts network.errors.full_messages
+      end
+    end
+    puts "END Phase 3", " ", " "
     
-    puts "phase 5 - workflows"
+    puts "BEGIN Phase 4 - Project Assets"
+    @tuples["memberships"].each do |membership_tuple|
+      network = Network.find_by_id(membership_tuple["project_id"])
+      
+      if network
+        puts "Existing Network found #{membership_tuple["project_id"]}" if verbose
+        
+        if network.owner?(membership_tuple["user_id"])
+          puts "Membership NOT CREATED, #{membership_tuple["user_id"]} is Network owner" if verbose
+        else
+          puts "Creating new Membership for User #{membership_tuple["user_id"]} and Network #{network.id}" if verbose
+          
+          member = Membership.new(:user_id      => membership_tuple["user_id"],
+                                  :network_id   => membership_tuple["project_id"],
+                                  :created_at   => Time.now,
+                                  :accepted_at  => Time.now)
+                                  
+          if member.save
+            puts "Saved Membership between User #{member.user_id} and Network #{member.network_id}" if verbose
+          else
+            puts member.errors.full_messages
+          end
+        end
+      else
+        puts "Network #{membership_tuple["project_id"]} NOT FOUND"
+      end
+    end
+    puts "END Phase 4", " ", " "
+    
+    puts "BEGIN Phase 5 - Workflows"
     @tuples["workflows"].each do |workflow_tuple|
-      workflow = create_workflow("#{RAILS_ROOT}/carlin/scufl/#{workflow_tuple["id"]}/#{workflow_tuple["scufl"]}",
+      puts "Creating new Workflow #{workflow_tuple["id"]} for User #{workflow_tuple["user_id"]} from SCUFL" if verbose
+      
+      workflow = create_workflow("#{@scufl_directory}/#{workflow_tuple["id"]}/#{workflow_tuple["scufl"]}",
                                  workflow_tuple["id"], 
                                  workflow_tuple["user_id"])
                                  
-      workflow.save
+      if workflow.save
+        puts "Saved Workflow #{workflow.id} from SCUFL" if verbose
+        
+        workflow.update_attributes(:title       => workflow_tuple["title"],
+                                   :description => workflow_tuple["description"])
+                                   
+        puts "Updated Workflow record with database values" if verbose
+        
+        puts "Creating new Policy for Workflow #{workflow.id} using from ACL" if verbose
       
-      workflow.update_attributes({ :title       => workflow_tuple["title"],
-                                   :description => workflow_tuple["description"] })
-      
-      edit_pub, view_pub, download_pub, edit_pro, view_pro, download_pro = acl_to_policy(workflow_tuple["acl_r"], workflow_tuple["acl_m"], workflow_tuple["acl_d"])
-      policy = Policy.create(:contributor        => workflow.contributor,
-                             :name               => "Policy for #{workflow.title}",
-                             :download_public    => download_pub,
-                             :edit_public        => edit_pub, 
-                             :view_public        => view_pub, 
-                             :download_protected => download_pro,
-                             :edit_protected     => edit_pro,
-                             :view_protected     => view_pro)
-                             
-      workflow.contribution.update_attribute(:policy_id, policy.id)
+        edit_pub, view_pub, download_pub, edit_pro, view_pro, download_pro = acl_to_policy(workflow_tuple["acl_r"], workflow_tuple["acl_m"], workflow_tuple["acl_d"])
+        policy = Policy.new(:contributor        => workflow.contributor,
+                            :name               => "Policy for #{workflow.title}",
+                            :download_public    => download_pub,
+                            :edit_public        => edit_pub, 
+                            :view_public        => view_pub, 
+                            :download_protected => download_pro,
+                            :edit_protected     => edit_pro,
+                            :view_protected     => view_pro)
+                            
+        if policy.save
+          puts "Saved Policy #{policy.id} for Workflow #{workflow.id}" if verbose
+          
+          workflow.contribution.update_attribute(:policy_id, policy.id)
+          
+          puts "Updated Policy attribute of Workflow #{workflow.id} Contribution #{workflow.contribution.id} record" if verbose
+        else
+          puts policy.errors.full_messages
+        end
+      else
+        puts workflow.errors.full_messages
+      end
     end
                   
     @tuples["sharing_projects"].each do |sharing_project_tuple|
-      policy = Workflow.find(sharing_project_tuple["workflow_id"]).contribution.policy
+      #policy = Workflow.find(sharing_project_tuple["workflow_id"]).contribution.policy
+      policy = Contribution.find_by_contributable_id_and_contributable_type(sharing_project_tuple["workflow_id"], "Workflow").policy
       
-      Permission.create(:contributor_id     => sharing_project_tuple["project_id"],
-                        :contributor_type   => "Network",
-                        :policy_id          => policy.id,
-                        :download           => permissions[sharing_project_tuple["workflow_id"]]["project"]["download"],
-                        :edit               => permissions[sharing_project_tuple["workflow_id"]]["project"]["edit"],
-                        :view               => permissions[sharing_project_tuple["workflow_id"]]["project"]["view"])
+      if policy
+        puts "Existing Policy found for Workflow #{sharing_project_tuple["workflow_id"]}" if verbose
+        
+        puts "Creating new Permission for Policy #{policy.id} naming Network #{sharing_project_tuple["project_id"]}" if verbose
+        
+        perm = Permission.new(:contributor_id     => sharing_project_tuple["project_id"],
+                              :contributor_type   => "Network",
+                              :policy_id          => policy.id,
+                              :download           => permissions[sharing_project_tuple["workflow_id"]]["project"]["download"],
+                              :edit               => permissions[sharing_project_tuple["workflow_id"]]["project"]["edit"],
+                              :view               => permissions[sharing_project_tuple["workflow_id"]]["project"]["view"])
+                              
+        if perm.save
+          puts "Saved Permission #{perm.id} for Policy #{policy.id}" if verbose
+        else
+          perm.errors.full_messages
+        end
+      else
+        puts "Policy for Workflow #{sharing_project_tuple["workflow_id"]} NOT FOUND"
+      end
     end
                       
     @tuples["sharing_users"].each do |sharing_user_tuple|
-      policy = Workflow.find(sharing_user_tuple["workflow_id"]).contribution.policy
+      #policy = Workflow.find(sharing_user_tuple["workflow_id"]).contribution.policy
+      policy = Contribution.find_by_contributable_id_and_contributable_type(sharing_user_tuple["workflow_id"], "Workflow").policy
       
-      Permission.create(:contributor_id     => sharing_user_tuple["user_id"],
-                        :contributor_type   => "User",
-                        :policy_id          => policy.id,
-                        :download           => permissions[sharing_user_tuple["workflow_id"]]["user"]["download"],
-                        :edit               => permissions[sharing_user_tuple["workflow_id"]]["user"]["edit"],
-                        :view               => permissions[sharing_user_tuple["workflow_id"]]["user"]["view"])
+      if policy
+        puts "Existing Policy found for Workflow #{sharing_user_tuple["workflow_id"]}" if verbose
+        
+        puts "Creating new Permission for Policy #{policy.id} naming User #{sharing_user_tuple["user_id"]}" if verbose
+        
+        perm = Permission.new(:contributor_id     => sharing_project_tuple["project_id"],
+                              :contributor_type   => "Network",
+                              :policy_id          => policy.id,
+                              :download           => permissions[sharing_user_tuple["workflow_id"]]["user"]["download"],
+                              :edit               => permissions[sharing_user_tuple["workflow_id"]]["user"]["edit"],
+                              :view               => permissions[sharing_user_tuple["workflow_id"]]["user"]["view"])
+                              
+        if perm.save
+          puts "Saved Permission #{perm.id} for Policy #{policy.id}" if verbose
+        else
+          perm.errors.full_messages
+        end
+      else
+        puts "Policy for Workflow #{sharing_project_tuple["workflow_id"]} NOT FOUND"
+      end
     end                  
-    puts "end phase 5"
+    puts "END Phase 5", " ", " "
     
-    puts "phase 6 - workflow assets"
+    puts "BEGIN Phase 6 - Workflow Assets"
     @tuples["bookmarks"].each do |bookmark_tuple|
-      Bookmark.create(:id                   => bookmark_tuple["id"],
-                      :title                => bookmark_tuple["title"],
-                      :created_at           => bookmark_tuple["created_at"],
-                      :bookmarkable_id      => bookmark_tuple["bookmarkable_id"],
-                      :bookmarkable_type    => bookmark_tuple["bookmarkable_type"],
-                      :user_id              => bookmark_tuple["user_id"])
+      puts "Creating new Bookmark for #{bookmark_tuple["bookmarkable_type"]} #{bookmark_tuple["bookmarkable_id"]} for User #{bookmark_tuple["user_id"]}" if verbose
+      
+      bookmark = Bookmark.new(:id                   => bookmark_tuple["id"],
+                              :title                => bookmark_tuple["title"],
+                              :created_at           => bookmark_tuple["created_at"],
+                              :bookmarkable_id      => bookmark_tuple["bookmarkable_id"],
+                              :bookmarkable_type    => bookmark_tuple["bookmarkable_type"],
+                              :user_id              => bookmark_tuple["user_id"])
+                              
+      if bookmark.save
+        puts "Saved Bookmark for #{bookmark.bookmarkable_type} #{bookmark.bookmarkable_id} for User #{bookmark.user_id}" if verbose
+      else
+        puts bookmark.errors.full_messages
+      end
     end
                     
     @tuples["comments"].each do |comment_tuple|
-      Comment.create(:id                => comment_tuple["id"],
-                     :title             => comment_tuple["title"],
-                     :comment           => comment_tuple["comment"],
-                     :commentable_id    => comment_tuple["commentable_id"],
-                     :commentable_type  => comment_tuple["commentable_type"],
-                     :user_id           => comment_tuple["user_id"])
+      puts "Creating new Comment for #{comment_tuple["commentable_type"]} #{comment_tuple["commentable_id"]} by User #{comment_tuple["user_id"]}" if verbose
+      
+      comment = Comment.new(:id                => comment_tuple["id"],
+                            :title             => comment_tuple["title"],
+                            :comment           => comment_tuple["comment"],
+                            :commentable_id    => comment_tuple["commentable_id"],
+                            :commentable_type  => comment_tuple["commentable_type"],
+                            :user_id           => comment_tuple["user_id"])
+                            
+      if comment.save
+        puts "Saved Comment for #{comment.commentable_type} #{comment.commentable_id} by User #{comment.user_id}" if verbose
+      else
+        puts comment.errors.full_messages
+      end
     end
     
     @tuples["ratings"].each do |rating_tuple|
-      Rating.create(:id               => rating_tuple["id"],
-                    :rating           => rating_tuple["rating"],
-                    :rateable_id      => rating_tuple["rateable_id"],
-                    :rateable_type    => rating_tuple["rateable_type"],
-                    :user_id          => rating_tuple["user_id"])
+      puts "Creating new Rating for #{rating_tuple["rateable_type"]} #{rating_tuple["rateable_id"]} by User #{rating_tuple["user_id"]}" if verbose
+      
+      rating = Rating.new(:id               => rating_tuple["id"],
+                          :rating           => rating_tuple["rating"],
+                          :rateable_id      => rating_tuple["rateable_id"],
+                          :rateable_type    => rating_tuple["rateable_type"],
+                          :user_id          => rating_tuple["user_id"])
+                          
+      if rating.save
+        puts "Saved Rating for #{rating.rateable_type} #{rating.rateable_id} by User #{rating.user_id}" if verbose
+      else
+        puts rating.errors.full_messages
+      end
     end
     
     @tuples["tags"].each do |tag_tuple|
-      Tag.create(:id                => tag_tuple["id"],
-                 :name              => tag_tuple["name"],
-                 :taggings_count    => 0)
+      puts "Creating new Tag #{tag_tuple["name"]}" if verbose
+      
+      t = Tag.new(:id                => tag_tuple["id"],
+                  :name              => tag_tuple["name"],
+                  :taggings_count    => 0)
+                  
+      if t.save
+        puts "Saved Tag #{t.name}" if verbose
+      else
+        puts tag.errors.full_messages
+      end
     end
                
     @tuples["taggings"].each do |tagging_tuple|
-      Tagging.create(:id              => tagging_tuple["id"],
-                     :tag_id          => tagging_tuple["tag_id"],
-                     :taggable_id     => tagging_tuple["taggable_id"],
-                     :taggable_type   => tagging_tuple["taggable_type"],
-                     :user_id         => nil,
-                     :created_at      => Time.now)
+      puts "Creating new Tagging of #{tagging_tuple["taggable_type"]} #{tagging_tuple["taggable_id"]}" if verbose
+      
+      tagging = Tagging.new(:id              => tagging_tuple["id"],
+                            :tag_id          => tagging_tuple["tag_id"],
+                            :taggable_id     => tagging_tuple["taggable_id"],
+                            :taggable_type   => tagging_tuple["taggable_type"],
+                            :user_id         => nil,
+                            :created_at      => Time.now)
+                            
+      if tagging.save
+        puts "Saved Tagging of #{tagging.taggable_type} #{tagging.taggable_id}" if verbose
+      else
+        puts tagging.errors.full_messages
+      end
     end
-                   
+         
+    puts "Calculating Taggings Counts for Tags" if verbose
     taggings_count = {}
     Tagging.find(:all, :order => "tag_id ASC").each do |tagging_record|
       if taggings_count[tagging_record.tag_id]
@@ -240,38 +409,59 @@ module Squirrel # :nodoc
       end
     end
     
+    puts "Updating Taggings Counts for Tags" if verbose
     taggings_count.each do |tag_id, count|
-      Tag.find(tag_id).update_attribute(:taggings_count, count)
+      unless count.to_i == 0
+        Tag.find(tag_id).update_attribute(:taggings_count, count)
+        
+        puts "Updated Taggings Count for Tag #{tag_id} to value #{count}" if verbose
+      end
     end
-    puts "end phase 6"
+    puts "END Phase 6", " ", " "
     
-    puts "phase 7 - forums"
+    puts "BEGIN Phase 7 - Forums"
     @tuples["forums"].each do |forum_tuple|
-      forum = Forum.create(:id                  => forum_tuple["id"],
-                           :contributor_id      => forums[forum_tuple["id"]],
-                           :contributor_type    => "Network",
-                           :name                => forum_tuple["name"],
-                           :posts_count         => forum_tuple["posts_count"],
-                           :topics_count        => forum_tuple["topics_count"],
-                           :position            => forum_tuple["position"],
-                           :description         => forum_tuple["description"])
-                           
-      policy = Policy.create(:contributor        => forum.contributor.owner,
-                             :name               => "Policy for #{forum.name}",
-                             :download_public    => false,
-                             :edit_public        => false, 
-                             :view_public        => (forum_tuple["public"].to_i == 1), 
-                             :download_protected => false,
-                             :edit_protected     => false,
-                             :view_protected     => (forum_tuple["public"].to_i == 0))
-                             
-      forum.contribution.update_attribute(:policy_id, policy.id)
+      puts "Creating new Forum for Network #{forums[forum_tuple["id"]]}" if verbose
+      
+      forum = Forum.new(:id                  => forum_tuple["id"],
+                        :contributor_id      => forums[forum_tuple["id"]],
+                        :contributor_type    => "Network",
+                        :name                => forum_tuple["name"],
+                        :posts_count         => forum_tuple["posts_count"],
+                        :topics_count        => forum_tuple["topics_count"],
+                        :position            => forum_tuple["position"],
+                        :description         => forum_tuple["description"])
+                        
+      if forum.save
+        puts "Saved Forum for #{forum.contributor_type} #{forum.contributor_id}" if verbose
+        
+        puts "Creating new Policy for Forum #{forum.id}" if verbose
+        
+        policy = Policy.new(:contributor        => forum.contributor.owner,
+                            :name               => "Policy for #{forum.name}",
+                            :download_public    => false,
+                            :edit_public        => false, 
+                            :view_public        => (forum_tuple["public"].to_i == 1), 
+                            :download_protected => false,
+                            :edit_protected     => false,
+                            :view_protected     => (forum_tuple["public"].to_i == 0))
+                            
+        if policy.save
+          puts "Saved Policy #{policy.id} for Forum #{forum.id}" if verbose
+          
+          forum.contribution.update_attribute(:policy_id, policy.id)
+        else
+          puts policy.errors.full_messages
+        end
+      else
+        puts forum.errors.full_messages
+      end
     end
-    puts "end phase 7"
+    puts "END Phase 7", " ", " "
     
-    puts "phase 8 - forum assets"
+    puts "BEGIN Phase 8 - Forum Assets"
     puts "Moderatorships, Monitorships, Posts and Topics must be imported manually"
-    puts "end phase 8"
+    puts "END Phase 8"
     
     true
   end
