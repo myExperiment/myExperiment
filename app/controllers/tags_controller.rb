@@ -21,7 +21,7 @@ class TagsController < ApplicationController
 protected
 
   def find_tags
-    @tags = Tag.find(:all, :order => "name")
+    @tags = Tag.find(:all, :order => "name ASC")
   end
   
   def find_tag_and_tagged_with

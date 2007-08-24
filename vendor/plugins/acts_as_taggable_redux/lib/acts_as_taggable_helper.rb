@@ -7,9 +7,11 @@ module ActsAsTaggableHelper
   # Generate a tag cloud of the top 100 tags by usage, uses the proposed hTagcloud microformat.
   #
   # Inspired by http://www.juixe.com/techknow/index.php/2006/07/15/acts-as-taggable-tag-cloud/
-  def tag_cloud(options = {})
+  def tag_cloud(limit=100, options = {})
+    l_option = limit ? { :limit => limit } : { }
+    
     # TODO: add options to specify different limits and sorts
-    tags = Tag.find(:all, :limit => 100, :order => 'taggings_count DESC').sort_by(&:name)
+    tags = Tag.find(:all, l_option.merge({ :order => 'taggings_count DESC'})).sort_by(&:name)
     
     # TODO: add option to specify which classes you want and overide this if you want?
     classes = %w(popular v-popular vv-popular vvv-popular vvvv-popular)
