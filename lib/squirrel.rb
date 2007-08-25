@@ -26,20 +26,13 @@
 # 
 
 module Squirrel # :nodoc
-  # this is the direct path to the directory where the exported sql 
-  # and scufl documents are stored (with the trailing / ommited)
-  @export_directory = "#{RAILS_ROOT}/carlin"
+  @export_sql_file = "#{RAILS_ROOT}/carlin/myexperiment_production.sql"
+  @export_scufl_directory = "#{RAILS_ROOT}/carlin/scufl"
   
-  # this is the local name of the exported sql file
-  @export_sql_file = "myexperiment_production.sql"
-  
-  # this is the local name of the exported scufl directory
-  @export_scufl_directory = "scufl"
-
   def self.go(force_exit=false, verbose=false)
-    puts "BEGIN Phase 0 - House Keeping"
-    @tuples = self.sql_to_hash("#{@export_directory}/#{@export_sql_file}", "pictures", "moderatorships", "monitorships", "posts", "topics")
-    puts "Tuples data structure created successfully" if verbose
+    my_puts "BEGIN Phase 0 - House Keeping"
+    @tuples = self.sql_to_hash(@export_sql_file, "pictures", "posts", "topics")
+    my_puts "Tuples data structure created successfully" if verbose
 
     names = {}
     @tuples["profiles"].each do |profile_tuple|
@@ -64,11 +57,11 @@ module Squirrel # :nodoc
       permissions[workflow_tuple["id"]] = { "user" => { "edit" => edit_u, "view" => view_u, "download" => download_u},
                                             "project" => { "edit" => edit_p, "view" => view_p, "download" => download_p} }
     end
-    puts "END Phase 0", " ", " "
+    my_puts "END Phase 0", "", ""
     
-    puts "BEGIN Phase 1 - User Accounts"
+    my_puts "BEGIN Phase 1 - User Accounts"
     @tuples["users"].each do |user_tuple|
-      puts "Creating User #{user_tuple["id"]} - #{user_tuple["openid_url"]}" if verbose
+      my_puts "Creating User #{user_tuple["id"]} - #{user_tuple["openid_url"]}" if verbose
       user = User.new(:id               => user_tuple["id"],
                       :openid_url       => user_tuple["openid_url"],
                       :name             => names[user_tuple["id"]],
@@ -81,32 +74,32 @@ module Squirrel # :nodoc
                       :salt             => user_tuple["salt"])
                    
       if user.save
-        puts "Saved User #{user.id} - #{user.openid_url}" if verbose
+        my_puts "Saved User #{user.id} - #{user.openid_url}" if verbose
       else
         puts user.errors.full_messages
         
         exit if force_exit
       end
     end
-    puts "END Phase 1", " ", " "
+    my_puts "END Phase 1", "", ""
     
-    puts "BEGIN Phase 2 - User Assets"
-    puts "Pictures must be imported manually"
+    my_puts "BEGIN Phase 2 - User Assets"
+    my_puts "Pictures must be imported manually"
     @tuples["blogs"].each do |blog_tuple|
       blog = Blog.find_by_contributor_id_and_contributor_type(blog_tuple["user_id"], "User")
       if blog
-        puts "Existing Blog #{blog.id} found" if verbose
+        my_puts "Existing Blog #{blog.id} found" if verbose
       else
-        puts "Creating Blog for User #{blog_tuple["user_id"]}" if verbose
+        my_puts "Creating Blog for User #{blog_tuple["user_id"]}" if verbose
         
         blog = Blog.new(:contributor_id    => blog_tuple["user_id"],
                         :contributor_type  => "User",
-                        :title             => "#{names[blog_tuple["user_id"]]}'s Blog",
+                        :title             => "My Blog",
                         :created_at        => blog_tuple["created_at"],
                         :updated_at        => blog_tuple["created_at"])
                         
         if blog.save
-          puts "Saved Blog #{blog.id} for User #{blog.contributor_id}" if verbose
+          my_puts "Saved Blog #{blog.id} for User #{blog.contributor_id}" if verbose
         else
           puts blog.errors.full_messages
           
@@ -114,7 +107,7 @@ module Squirrel # :nodoc
         end
       end
       
-      puts "Creating BlogPost #{blog_tuple["id"]} - #{blog_tuple["title"]}" if verbose
+      my_puts "Creating BlogPost #{blog_tuple["id"]} - #{blog_tuple["title"]}" if verbose
     
       blogpost = BlogPost.new(:id         => blog_tuple["id"],
                               :blog_id    => blog.id,
@@ -124,7 +117,7 @@ module Squirrel # :nodoc
                               :updated_at => blog_tuple["created_at"])
                               
       if blogpost.save
-        puts "Saved BlogPost #{blogpost.id} - #{blogpost.title}" if verbose
+        my_puts "Saved BlogPost #{blogpost.id} - #{blogpost.title}" if verbose
       else
         puts blogpost.errors.full_messages
         
@@ -136,7 +129,7 @@ module Squirrel # :nodoc
       profile = Profile.find_by_user_id(profile_tuple["user_id"])
       
       if profile
-        puts "Existing Profile found for User #{profile_tuple["user_id"]}" if verbose
+        my_puts "Existing Profile found for User #{profile_tuple["user_id"]}" if verbose
       
         profile.update_attributes({ :picture_id   => pictures[profile_tuple["user_id"]],
                                     :email        => profile_tuple["email"],
@@ -145,16 +138,16 @@ module Squirrel # :nodoc
                                     :created_at   => profile_tuple["created_at"],
                                     :updated_at   => profile_tuple["updated_at"] })
                                     
-        puts "Updated Profile #{profile.id} for User #{profile.user_id}" if verbose
+        my_puts "Updated Profile #{profile.id} for User #{profile.user_id}" if verbose
       else
-        puts "Profile for User #{profile_tuple["user_id"]} NOT FOUND"
+        my_puts "Profile for User #{profile_tuple["user_id"]} NOT FOUND"
         
         exit if force_exit
       end
     end
     
     @tuples["friendships"].each do |friendship_tuple|
-      puts "Creating Friendship between #{friendship_tuple["user_id"]} and #{friendship_tuple["friend_id"]}" if verbose
+      my_puts "Creating Friendship between #{friendship_tuple["user_id"]} and #{friendship_tuple["friend_id"]}" if verbose
       
       friend = Friendship.new(:user_id      => friendship_tuple["user_id"],
                               :friend_id    => friendship_tuple["friend_id"],
@@ -162,7 +155,7 @@ module Squirrel # :nodoc
                               :accepted_at  => friendship_tuple["accepted_at"])
                               
       if friend.save
-        puts "Saved Friendship between User #{friend.user_id} and Friend (User) #{friend.friend_id}" if verbose
+        my_puts "Saved Friendship between User #{friend.user_id} and Friend (User) #{friend.friend_id}" if verbose
       else
         puts friend.errors.full_messages
         
@@ -171,7 +164,7 @@ module Squirrel # :nodoc
     end
                       
     @tuples["messages"].each do |message_tuple|
-      puts "Creating Message #{message_tuple["id"]}" if verbose
+      my_puts "Creating Message #{message_tuple["id"]}" if verbose
       
       message = Message.new(:id          => message_tuple["id"],
                             :from        => message_tuple["from_id"],
@@ -183,18 +176,18 @@ module Squirrel # :nodoc
                             :read_at     => message_tuple["read_at"])
                             
       if message.save
-        puts "Saved Message #{message.id}" if verbose
+        my_puts "Saved Message #{message.id}" if verbose
       else
         puts message.errors.full_messages
         
         exit if force_exit
       end
     end
-    puts "END Phase 2", " ", " "
+    my_puts "END Phase 2", "", ""
                    
-    puts "BEGIN Phase 3 - Projects (a.k.a. Networks)"
+    my_puts "BEGIN Phase 3 - Projects (a.k.a. Networks)"
     @tuples["projects"].each do |project_tuple|
-      puts "Creating new Network using Project #{project_tuple["id"]}" if verbose
+      my_puts "Creating new Network using Project #{project_tuple["id"]}" if verbose
       
       network = Network.new(:id          => project_tuple["id"],
                             :user_id     => project_tuple["user_id"],
@@ -204,26 +197,26 @@ module Squirrel # :nodoc
                             :updated_at  => project_tuple["updated_at"])
                             
       if network.save
-        puts "Saved Network #{network.id} (#{network.title})" if verbose
+        my_puts "Saved Network #{network.id} (#{network.title})" if verbose
       else
         puts network.errors.full_messages
         
         exit if force_exit
       end
     end
-    puts "END Phase 3", " ", " "
+    my_puts "END Phase 3", "", ""
     
-    puts "BEGIN Phase 4 - Project Assets"
+    my_puts "BEGIN Phase 4 - Project Assets"
     @tuples["memberships"].each do |membership_tuple|
       network = Network.find_by_id(membership_tuple["project_id"])
       
       if network
-        puts "Existing Network found #{membership_tuple["project_id"]}" if verbose
+        my_puts "Existing Network found #{membership_tuple["project_id"]}" if verbose
         
         if network.owner?(membership_tuple["user_id"])
-          puts "Membership NOT CREATED, #{membership_tuple["user_id"]} is Network owner" if verbose
+          my_puts "Membership NOT CREATED, #{membership_tuple["user_id"]} is Network owner" if verbose
         else
-          puts "Creating new Membership for User #{membership_tuple["user_id"]} and Network #{network.id}" if verbose
+          my_puts "Creating new Membership for User #{membership_tuple["user_id"]} and Network #{network.id}" if verbose
           
           member = Membership.new(:user_id      => membership_tuple["user_id"],
                                   :network_id   => membership_tuple["project_id"],
@@ -231,7 +224,7 @@ module Squirrel # :nodoc
                                   :accepted_at  => Time.now)
                                   
           if member.save
-            puts "Saved Membership between User #{member.user_id} and Network #{member.network_id}" if verbose
+            my_puts "Saved Membership between User #{member.user_id} and Network #{member.network_id}" if verbose
           else
             puts member.errors.full_messages
             
@@ -239,30 +232,30 @@ module Squirrel # :nodoc
           end
         end
       else
-        puts "Network #{membership_tuple["project_id"]} NOT FOUND"
+        my_puts "Network #{membership_tuple["project_id"]} NOT FOUND"
         
         exit if force_exit
       end
     end
-    puts "END Phase 4", " ", " "
+    my_puts "END Phase 4", "", ""
     
-    puts "BEGIN Phase 5 - Workflows"
+    my_puts "BEGIN Phase 5 - Workflows"
     @tuples["workflows"].each do |workflow_tuple|
-      puts "Creating new Workflow #{workflow_tuple["id"]} for User #{workflow_tuple["user_id"]} from SCUFL" if verbose
+      my_puts "Creating new Workflow #{workflow_tuple["id"]} for User #{workflow_tuple["user_id"]} from SCUFL" if verbose
       
-      workflow = create_workflow("#{@export_directory}/#{@export_scufl_directory}/#{workflow_tuple["id"]}/#{workflow_tuple["scufl"]}",
+      workflow = create_workflow("#{@export_scufl_directory}/#{workflow_tuple["id"]}/#{workflow_tuple["scufl"]}",
                                  workflow_tuple["id"], 
                                  workflow_tuple["user_id"])
                                  
       if workflow.save
-        puts "Saved Workflow #{workflow.id} from SCUFL" if verbose
+        my_puts "Saved Workflow #{workflow.id} from SCUFL" if verbose
         
         workflow.update_attributes(:title       => workflow_tuple["title"],
                                    :description => workflow_tuple["description"])
                                    
-        puts "Updated Workflow record with database values" if verbose
+        my_puts "Updated Workflow record with database values" if verbose
         
-        puts "Creating new Policy for Workflow #{workflow.id} using from ACL" if verbose
+        my_puts "Creating new Policy for Workflow #{workflow.id} using from ACL" if verbose
       
         edit_pub, view_pub, download_pub, edit_pro, view_pro, download_pro = acl_to_policy(workflow_tuple["acl_r"], workflow_tuple["acl_m"], workflow_tuple["acl_d"])
         policy = Policy.new(:contributor        => workflow.contributor,
@@ -275,11 +268,11 @@ module Squirrel # :nodoc
                             :view_protected     => view_pro)
                             
         if policy.save
-          puts "Saved Policy #{policy.id} for Workflow #{workflow.id}" if verbose
+          my_puts "Saved Policy #{policy.id} for Workflow #{workflow.id}" if verbose
           
           workflow.contribution.update_attribute(:policy_id, policy.id)
           
-          puts "Updated Policy attribute of Workflow #{workflow.id} Contribution #{workflow.contribution.id} record" if verbose
+          my_puts "Updated Policy attribute of Workflow #{workflow.id} Contribution #{workflow.contribution.id} record" if verbose
         else
           puts policy.errors.full_messages
           
@@ -297,9 +290,9 @@ module Squirrel # :nodoc
       policy = Contribution.find_by_contributable_id_and_contributable_type(sharing_project_tuple["workflow_id"], "Workflow").policy
       
       if policy
-        puts "Existing Policy found for Workflow #{sharing_project_tuple["workflow_id"]}" if verbose
+        my_puts "Existing Policy found for Workflow #{sharing_project_tuple["workflow_id"]}" if verbose
         
-        puts "Creating new Permission for Policy #{policy.id} naming Network #{sharing_project_tuple["project_id"]}" if verbose
+        my_puts "Creating new Permission for Policy #{policy.id} naming Network #{sharing_project_tuple["project_id"]}" if verbose
         
         perm = Permission.new(:contributor_id     => sharing_project_tuple["project_id"],
                               :contributor_type   => "Network",
@@ -309,14 +302,14 @@ module Squirrel # :nodoc
                               :view               => permissions[sharing_project_tuple["workflow_id"]]["project"]["view"])
                               
         if perm.save
-          puts "Saved Permission #{perm.id} for Policy #{policy.id}" if verbose
+          my_puts "Saved Permission #{perm.id} for Policy #{policy.id}" if verbose
         else
           perm.errors.full_messages
           
           exit if force_exit
         end
       else
-        puts "Policy for Workflow #{sharing_project_tuple["workflow_id"]} NOT FOUND"
+        my_puts "Policy for Workflow #{sharing_project_tuple["workflow_id"]} NOT FOUND"
         
         exit if force_exit
       end
@@ -327,9 +320,9 @@ module Squirrel # :nodoc
       policy = Contribution.find_by_contributable_id_and_contributable_type(sharing_user_tuple["workflow_id"], "Workflow").policy
       
       if policy
-        puts "Existing Policy found for Workflow #{sharing_user_tuple["workflow_id"]}" if verbose
+        my_puts "Existing Policy found for Workflow #{sharing_user_tuple["workflow_id"]}" if verbose
         
-        puts "Creating new Permission for Policy #{policy.id} naming User #{sharing_user_tuple["user_id"]}" if verbose
+        my_puts "Creating new Permission for Policy #{policy.id} naming User #{sharing_user_tuple["user_id"]}" if verbose
         
         perm = Permission.new(:contributor_id     => sharing_project_tuple["project_id"],
                               :contributor_type   => "Network",
@@ -339,23 +332,23 @@ module Squirrel # :nodoc
                               :view               => permissions[sharing_user_tuple["workflow_id"]]["user"]["view"])
                               
         if perm.save
-          puts "Saved Permission #{perm.id} for Policy #{policy.id}" if verbose
+          my_puts "Saved Permission #{perm.id} for Policy #{policy.id}" if verbose
         else
           perm.errors.full_messages
           
           exit if force_exit
         end
       else
-        puts "Policy for Workflow #{sharing_project_tuple["workflow_id"]} NOT FOUND"
+        my_puts "Policy for Workflow #{sharing_project_tuple["workflow_id"]} NOT FOUND"
         
         exit if force_exit
       end
     end                  
-    puts "END Phase 5", " ", " "
+    my_puts "END Phase 5", "", ""
     
-    puts "BEGIN Phase 6 - Workflow Assets"
+    my_puts "BEGIN Phase 6 - Workflow Assets"
     @tuples["bookmarks"].each do |bookmark_tuple|
-      puts "Creating new Bookmark for #{bookmark_tuple["bookmarkable_type"]} #{bookmark_tuple["bookmarkable_id"]} for User #{bookmark_tuple["user_id"]}" if verbose
+      my_puts "Creating new Bookmark for #{bookmark_tuple["bookmarkable_type"]} #{bookmark_tuple["bookmarkable_id"]} for User #{bookmark_tuple["user_id"]}" if verbose
       
       bookmark = Bookmark.new(:id                   => bookmark_tuple["id"],
                               :title                => bookmark_tuple["title"],
@@ -365,7 +358,7 @@ module Squirrel # :nodoc
                               :user_id              => bookmark_tuple["user_id"])
                               
       if bookmark.save
-        puts "Saved Bookmark for #{bookmark.bookmarkable_type} #{bookmark.bookmarkable_id} for User #{bookmark.user_id}" if verbose
+        my_puts "Saved Bookmark for #{bookmark.bookmarkable_type} #{bookmark.bookmarkable_id} for User #{bookmark.user_id}" if verbose
       else
         puts bookmark.errors.full_messages
         
@@ -374,7 +367,7 @@ module Squirrel # :nodoc
     end
                     
     @tuples["comments"].each do |comment_tuple|
-      puts "Creating new Comment for #{comment_tuple["commentable_type"]} #{comment_tuple["commentable_id"]} by User #{comment_tuple["user_id"]}" if verbose
+      my_puts "Creating new Comment for #{comment_tuple["commentable_type"]} #{comment_tuple["commentable_id"]} by User #{comment_tuple["user_id"]}" if verbose
       
       comment = Comment.new(:id                => comment_tuple["id"],
                             :title             => comment_tuple["title"],
@@ -384,7 +377,7 @@ module Squirrel # :nodoc
                             :user_id           => comment_tuple["user_id"])
                             
       if comment.save
-        puts "Saved Comment for #{comment.commentable_type} #{comment.commentable_id} by User #{comment.user_id}" if verbose
+        my_puts "Saved Comment for #{comment.commentable_type} #{comment.commentable_id} by User #{comment.user_id}" if verbose
       else
         puts comment.errors.full_messages
         
@@ -393,7 +386,7 @@ module Squirrel # :nodoc
     end
     
     @tuples["ratings"].each do |rating_tuple|
-      puts "Creating new Rating for #{rating_tuple["rateable_type"]} #{rating_tuple["rateable_id"]} by User #{rating_tuple["user_id"]}" if verbose
+      my_puts "Creating new Rating for #{rating_tuple["rateable_type"]} #{rating_tuple["rateable_id"]} by User #{rating_tuple["user_id"]}" if verbose
       
       rating = Rating.new(:id               => rating_tuple["id"],
                           :rating           => rating_tuple["rating"],
@@ -402,7 +395,7 @@ module Squirrel # :nodoc
                           :user_id          => rating_tuple["user_id"])
                           
       if rating.save
-        puts "Saved Rating for #{rating.rateable_type} #{rating.rateable_id} by User #{rating.user_id}" if verbose
+        my_puts "Saved Rating for #{rating.rateable_type} #{rating.rateable_id} by User #{rating.user_id}" if verbose
       else
         puts rating.errors.full_messages
         
@@ -411,14 +404,14 @@ module Squirrel # :nodoc
     end
     
     @tuples["tags"].each do |tag_tuple|
-      puts "Creating new Tag #{tag_tuple["name"]}" if verbose
+      my_puts "Creating new Tag #{tag_tuple["name"]}" if verbose
       
       t = Tag.new(:id                => tag_tuple["id"],
                   :name              => tag_tuple["name"],
                   :taggings_count    => 0)
                   
       if t.save
-        puts "Saved Tag #{t.name}" if verbose
+        my_puts "Saved Tag #{t.name}" if verbose
       else
         puts tag.errors.full_messages
         
@@ -427,7 +420,7 @@ module Squirrel # :nodoc
     end
                
     @tuples["taggings"].each do |tagging_tuple|
-      puts "Creating new Tagging of #{tagging_tuple["taggable_type"]} #{tagging_tuple["taggable_id"]}" if verbose
+      my_puts "Creating new Tagging of #{tagging_tuple["taggable_type"]} #{tagging_tuple["taggable_id"]}" if verbose
       
       tagging = Tagging.new(:id              => tagging_tuple["id"],
                             :tag_id          => tagging_tuple["tag_id"],
@@ -437,7 +430,7 @@ module Squirrel # :nodoc
                             :created_at      => Time.now)
                             
       if tagging.save
-        puts "Saved Tagging of #{tagging.taggable_type} #{tagging.taggable_id}" if verbose
+        my_puts "Saved Tagging of #{tagging.taggable_type} #{tagging.taggable_id}" if verbose
       else
         puts tagging.errors.full_messages
         
@@ -445,7 +438,7 @@ module Squirrel # :nodoc
       end
     end
          
-    puts "Calculating Taggings Counts for Tags" if verbose
+    my_puts "Calculating Taggings Counts for Tags" if verbose
     taggings_count = {}
     Tagging.find(:all, :order => "tag_id ASC").each do |tagging_record|
       if taggings_count[tagging_record.tag_id]
@@ -455,19 +448,19 @@ module Squirrel # :nodoc
       end
     end
     
-    puts "Updating Taggings Counts for Tags" if verbose
+    my_puts "Updating Taggings Counts for Tags" if verbose
     taggings_count.each do |tag_id, count|
       unless count.to_i == 0
         Tag.find(tag_id).update_attribute(:taggings_count, count)
         
-        puts "Updated Taggings Count for Tag #{tag_id} to value #{count}" if verbose
+        my_puts "Updated Taggings Count for Tag #{tag_id} to value #{count}" if verbose
       end
     end
-    puts "END Phase 6", " ", " "
+    my_puts "END Phase 6", "", ""
     
-    puts "BEGIN Phase 7 - Forums"
+    my_puts "BEGIN Phase 7 - Forums"
     @tuples["forums"].each do |forum_tuple|
-      puts "Creating new Forum for Network #{forums[forum_tuple["id"]]}" if verbose
+      my_puts "Creating new Forum for Network #{forums[forum_tuple["id"]]}" if verbose
       
       forum = Forum.new(:id                  => forum_tuple["id"],
                         :contributor_id      => forums[forum_tuple["id"]],
@@ -479,9 +472,9 @@ module Squirrel # :nodoc
                         :description         => forum_tuple["description"])
                         
       if forum.save
-        puts "Saved Forum for #{forum.contributor_type} #{forum.contributor_id}" if verbose
+        my_puts "Saved Forum for #{forum.contributor_type} #{forum.contributor_id}" if verbose
         
-        puts "Creating new Policy for Forum #{forum.id}" if verbose
+        my_puts "Creating new Policy for Forum #{forum.id}" if verbose
         
         policy = Policy.new(:contributor        => forum.contributor.owner,
                             :name               => "Policy for #{forum.name}",
@@ -493,7 +486,7 @@ module Squirrel # :nodoc
                             :view_protected     => (forum_tuple["public"].to_i == 0))
                             
         if policy.save
-          puts "Saved Policy #{policy.id} for Forum #{forum.id}" if verbose
+          my_puts "Saved Policy #{policy.id} for Forum #{forum.id}" if verbose
           
           forum.contribution.update_attribute(:policy_id, policy.id)
         else
@@ -507,11 +500,65 @@ module Squirrel # :nodoc
         exit if force_exit
       end
     end
-    puts "END Phase 7", " ", " "
+    my_puts "END Phase 7", "", ""
     
-    puts "BEGIN Phase 8 - Forum Assets"
-    puts "Moderatorships, Monitorships, Posts and Topics must be imported manually"
-    puts "END Phase 8"
+    my_puts "BEGIN Phase 8 - Forum Assets"
+    my_puts "Posts and Topics must be imported manually"
+    @tuples["moderatorships"].each do |moderatorship_tuple|
+      my_puts "Creating new Moderatorship for User #{moderatorship_tuple["user_id"]} and Forum #{moderatorship_tuple["forum_id"]}" if verbose
+      
+      forum = Forum.find_by_id(moderatorship_tuple["forum_id"])
+      
+      if forum
+        my_puts "Existing Forum found #{moderatorship_tuple["forum_id"]}" if verbose
+        
+        if forum.contribution.contributor.owner?(moderatorship_tuple["user_id"])
+          my_puts "Moderatorship NOT CREATED, User #{moderatorship_tuple["user_id"]} is Forum owner" if verbose
+        else
+          mod = Moderatorship.new(:user_id    => moderatorship_tuple["user_id"],
+                                  :forum_id   => moderatorship_tuple["forum_id"])
+                                
+          if mod.save
+            my_puts "Saved Moderatorship for User #{mod.user_id} and Forum #{mod.forum_id}" if verbose
+          else
+            puts mod.errors.full_messages
+          
+            exit if force_exit
+          end
+        end
+      else
+        my_puts "Forum for Moderatorship #{moderatorship_tuple["id"]} NOT FOUND"
+        
+        exit if force_exit
+      end
+    end
+    
+    @tuples["monitorships"].each do |monitorship_tuple|
+      my_puts "Creating new Monitorship for User #{monitorship_tuple["user_id"]} and Topic #{monitorship_tuple["topic_id"]}" if verbose
+      
+      topic = Topic.find_by_id(monitorship_tuple["topic_id"])
+      
+      if topic
+        my_puts "Existing Topic found #{monitorship_tuple["topic_id"]}" if verbose
+        
+        mon = Monitorship.new(:user_id    => monitorship_tuple["user_id"],
+                              :topic_id   => monitorship_tuple["topic_id"],
+                              :active     => monitorship_tuple["active"])
+                                
+        if mon.save
+          my_puts "Saved Monitorship for User #{mon.user_id} and Topic #{mon.topic_id}" if verbose
+        else
+          puts mon.errors.full_messages
+          
+          exit if force_exit
+        end
+      else
+        my_puts "Topic for Monitorship #{monitorship_tuple["id"]} NOT FOUND"
+        
+        exit if force_exit
+      end
+    end
+    my_puts "END Phase 8"
     
     true
   end
@@ -549,6 +596,18 @@ module Squirrel # :nodoc
   end
 
 private
+
+  @@verbose_line_counter = 0
+  
+  def my_puts(*str)
+    str.each do |s|
+      if s.empty?
+        puts " "
+      else
+        puts "#{@@verbose_line_counter = @@verbose_line_counter.to_i + 1}. #{s}"
+      end
+    end
+  end
 
   # heavily modified version of workflow_controller.rb::create_workflow
   def create_workflow(scufl_file, old_id, contributor_id, contributor_type="User")
@@ -742,9 +801,8 @@ private
       
         j = 0
         while j < schema.length
-          # bug - "Mark\\'s forum", "\\r\\n\\r", "\\\"" --> "\['"rn]"
-          result = (chomped[j] =~ /NULL/) ? nil : chomped[j]
-          result = result.to_i if result =~ /^[0-9]+$/
+          result = (chomped[j] =~ /NULL/) ? nil : clense(chomped[j])
+          #result = result.to_i if result =~ /^[0-9]+$/
           
           record[schema[j]] = result
           j = j.to_i + 1
@@ -755,6 +813,23 @@ private
     
       hash[table_name][0] = nil
       hash[table_name].compact!
+    end
+  end
+  
+  def clense(str)
+    if str =~ /^[0-9]+$/
+      rtn = str.to_i
+      
+      return rtn
+    else
+      rtn = str
+      
+      rtn.gsub!(/\\'/, "'")
+      
+      rtn.gsub!(/\\"/, '"')
+      
+      # \n and \r characters not parsed correctly
+      return rtn
     end
   end
 

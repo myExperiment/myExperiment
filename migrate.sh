@@ -18,9 +18,7 @@ cp ${DUMP_SRC} .
 cp -r ${SCUFL_SRC} .
 
 grep 'INSERT INTO `pictures`'       < ${DUMP_SRC} >  import.sql
-grep 'INSERT INTO `moderatorships`' < ${DUMP_SRC} >> import.sql
 grep 'INSERT INTO `posts`'          < ${DUMP_SRC} >> import.sql
-grep 'INSERT INTO `monitorships`'   < ${DUMP_SRC} >> import.sql
 grep 'INSERT INTO `topics`'         < ${DUMP_SRC} >> import.sql
 
 mysql --user=${DB_USER} -e "drop database ${DB}"

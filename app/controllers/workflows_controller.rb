@@ -214,17 +214,18 @@ protected
     salt = rand 32768
     title, unique = scufl_model.description.title.blank? ? ["untitled", "untitled_#{salt}"] : [scufl_model.description.title,  "#{scufl_model.description.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"]
     
-    i = Tempfile.new("image")
-    Scufl::Dot.new.write_dot(i, scufl_model)
-    i.close(false)
-    d = StringIO.new(`dot -Tpng #{i.path}`)
-    i.unlink
-    d.extend FileUpload
-    d.original_filename = "#{unique}.png"
-    d.content_type = "image/png"
+    unless RUBY_PLATFORM =~ /mswin32/
+      i = Tempfile.new("image")
+      Scufl::Dot.new.write_dot(i, scufl_model)
+      i.close(false)
+      d = StringIO.new(`dot -Tpng #{i.path}`)
+      i.unlink
+      d.extend FileUpload
+      d.original_filename = "#{unique}.png"
+      d.content_type = "image/png"
+    end
     
     rtn = Workflow.new(:scufl => wf[:scufl].read, 
-                       #:image => d,
                        :contributor_id => wf[:contributor_id], 
                        :contributor_type => wf[:contributor_type],
                        :title => title,

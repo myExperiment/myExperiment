@@ -8,7 +8,7 @@
 <% end %>
 <% end %>
 
-<%= render :partial => "#{klass.pluralize.downcase}/#{klass.downcase}", :collection => contributables %>
+<%= render :partial => "#{klass.pluralize.downcase}/#{klass.downcase}", :collection => contributables, :spacer_template => "contributions/list_spacer" %>
 
 <% end %>
 
