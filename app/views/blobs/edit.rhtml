@@ -3,17 +3,7 @@
 <%= error_messages_for :blob %>
 
 <% form_for(:blob, :url => blob_path(@blob), :html => { :method => :put }) do |f| %>
-  <% if @blob.authorized?("destroy", current_user) %>
-    <% fields_for :contribution, @blob.contribution do |c_f| %>
-      <p>
-        <b>Policy</b><br/>
-        <%= c_f.radio_button(:policy_id, "") %> - Public (all)<br/>
-        <% for p in current_user.policies %>
-          <%= c_f.radio_button(:policy_id, p.id) %> - <%=h p.name %><br/>
-        <% end %>
-      </p>
-    <% end %>
-  <% end %>
+  <%= render :partial => "policies/listform", :locals => { :contribution => @blob.contribution, :user => current_user } if @blob.authorized?("destroy", current_user) %>
 
   <p>
     <%= submit_tag "Save Changes" %>

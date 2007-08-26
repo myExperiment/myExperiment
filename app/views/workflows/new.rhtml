@@ -24,15 +24,7 @@
     </p>
   <% end %>
 
-  <% fields_for :contribution, @workflow.contribution do |c_f| %>
-    <p>
-      <b>Policy</b><br/>
-      <%= c_f.radio_button(:policy_id, "") %> - Public (all)<br/>
-      <% for p in current_user.policies %>
-        <%= c_f.radio_button(:policy_id, p.id) %> - <%=h p.name %><br/>
-      <% end %>
-    </p>
-  <% end %>
+  <%= render :partial => "policies/listform", :locals => { :contribution => @workflow.contribution, :user => current_user } %>
   
   <p>
     <b>Scufl</b><br />

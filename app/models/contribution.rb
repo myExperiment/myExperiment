@@ -8,7 +8,12 @@ class Contribution < ActiveRecord::Base
   end
   
   def owner?(c_utor)
-    contributor_id.to_i == c_utor.id.to_i and contributor_type.to_s == c_utor.class.to_s
+    #contributor_id.to_i == c_utor.id.to_i and contributor_type.to_s == c_utor.class.to_s
+    
+    return (self.contributor_id.to_i == c_utor.id.to_i and self.contributor_type.to_s == c_utor.class.to_s) if self.contributor_type.to_s == "User"
+    return self.contributor.owner?(c_utor.id) if self.contributor_type.to_s == "Network"
+    
+    false
   end
   
   def admin?(c_utor)

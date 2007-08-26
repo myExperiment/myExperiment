@@ -29,23 +29,28 @@
   </p>
 <% end %>
 
-<p id="forum_policy">
+<p id="forum_policy"></p>
   
-<% fields_for :contribution, @forum.contribution do |c_f| %>
-  <p>
-    <b>Policy</b><br/>
-    <%= c_f.radio_button(:policy_id, "") %> - Public (all)<br/>
-    <% for p in current_user.policies %>
-      <%= c_f.radio_button(:policy_id, p.id) %> - <%=h p.name %><br/>
-    <% end %>
-  </p>
-<% end %>
+<%= render :partial => "policies/listform", :locals => { :contribution => @forum.contribution, :user => current_user } %>
 
 </fieldset>
 
 <% end %>
 
-<p id="forum_name">
+<% if controller.action_name == "edit" && @forum.contribution.owner?(current_user) %>
+
+<fieldset>
+<legend>Owner only</legend>
+
+<p id="forum_policy"></p>
+  
+<%= render :partial => "policies/listform", :locals => { :contribution => @forum.contribution, :user => current_user } %>
+
+</fieldset>
+
+<% end %>
+
+<p id="forum_name"></p>
 
 <table border="0" cellspacing="0" cellpadding="0" class="noborder nopad wide">
   <td>
