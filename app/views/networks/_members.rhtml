@@ -1,21 +1,8 @@
 <% unless collection.empty? %>
 
 <div id="hlist">
-<ul><% for member in collection %>
-<li>
-  <p>
-    <% if network.owner? member.id %>
-      <%= render :partial => "users/avatar", :locals => { :user => member } %> (Owner)
-    <% else %>
-      <%= render :partial => "users/avatar", :locals => { :user => member } %><br/>
-      <% if my_page? network.owner.id %>
-        <% membership = Membership.find_by_user_id_and_network_id(member.id, network.id) %>
-      [ <%= link_to 'Show', membership_path(membership.user_id, membership) %>
-        <%= link_to 'Delete', membership_path(membership.user_id, membership), :confirm => 'Are you sure?', :method => :delete %> ]
-      <% end %>
-    <% end %>
-  </p>
-</li>
+<ul id="members"><% for member in collection %>
+  <%= render :partial => "networks/member", :locals => { :network => network, :member => member } %>
 <% end %></ul>
 </div>
 

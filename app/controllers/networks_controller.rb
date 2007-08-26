@@ -2,8 +2,30 @@ class NetworksController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_networks, :only => [:index]
-  before_filter :find_network, :only => [:membership_request, :show]
+  before_filter :find_network, :only => [:membership_create, :membership_request, :show]
   before_filter :find_network_auth, :only => [:edit, :update, :destroy]
+  
+  # GET /networks/1;membership_create
+  def membership_create
+    respond_to do |format|
+      if @network.owner? current_user.id
+        membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id)
+        
+        if membership.save
+          if membership.accept!
+            format.html { render :partial => "networks/member", :locals => { :network => @network, :member => membership.user } }
+            format.xml  { head :ok }
+          else
+            error("Membership already accepted", "already accepted")
+          end
+        else
+          error("Membership already created", "already created")
+        end
+      else
+        error("Not Network owner", "not network owner")
+      end
+    end
+  end
   
   # GET /networks/1;membership_request
   def membership_request

@@ -3,35 +3,16 @@
 <%= error_messages_for :blog %>
 
 <% form_for(:blog, :url => blog_path(@blog), :html => { :method => :put }) do |f| %>
-  <% fields_for :contributor_pair do |c_f| %>
-    <p>
-      <b>Contributor</b><br />
-        <p>
-          <%= c_f.radio_button(:class_id, "User-#{current_user.id}", {:checked => true}) %> - <%= link_to 'Me', user_path(current_user) %>
-        </p>
-        <p>
-          <b>Owner of..</b><br/>
-          <% for n in current_user.networks_owned %>
-            <%= c_f.radio_button(:class_id, "Network-#{n.id}") %> - <%= link_to h(n.title), network_path(n) %><br/>
-          <% end %>
-        </p>
-        <p>
-          <b>Member of..</b><br/>
-          <% for n in current_user.networks %>
-            <%= c_f.radio_button(:class_id, "Network-#{n.id}") %> - <%= link_to h(n.title), network_path(n) %><br/>
-          <% end %>
-        </p>
-    </p>
-  <% end %>
-  
-  <% fields_for :contribution, @blog.contribution do |c_f| %>
-    <p>
-      <b>Policy</b><br/>
-      <%= c_f.radio_button(:policy_id, "") %> - Public (all)<br/>
-      <% for p in current_user.policies %>
-        <%= c_f.radio_button(:policy_id, p.id) %> - <%=h p.name %><br/>
-      <% end %>
-    </p>
+  <% if @blog.authorized?("destroy", current_user) %>
+    <% fields_for :contribution, @blog.contribution do |c_f| %>
+      <p>
+        <b>Policy</b><br/>
+        <%= c_f.radio_button(:policy_id, "") %> - Public (all)<br/>
+        <% for p in current_user.policies %>
+          <%= c_f.radio_button(:policy_id, p.id) %> - <%=h p.name %><br/>
+        <% end %>
+      </p>
+    <% end %>
   <% end %>
 
   <p>

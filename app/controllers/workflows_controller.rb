@@ -1,7 +1,7 @@
 class WorkflowsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download, :search]
   
-  before_filter :find_workflows, :only => [:index]
+  before_filter :find_workflows, :only => [:index, :search]
   #before_filter :find_workflow_auth, :only => [:bookmark, :comment, :rate, :tag, :download, :show, :edit, :update, :destroy]
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create]
   
@@ -13,10 +13,22 @@ class WorkflowsController < ApplicationController
   # GET /workflows.xml;search
   def search
     if (@query = params[:query])
-      @workflows = Workflow.find_with_ferret(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true))
+      #@workflows = Workflow.find_with_ferret(@query, )
+      ferret = Workflow.find_by_contents(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true))
+      
+      matches = []
+      ferret.each do |f|
+        @workflows.each do |w|
+          if f.id.to_i == w.id.to_i
+            matches << f
+            break
+          end
+        end
+      end
+      @workflows = matches
     else
       @query = ""
-      @workflows = find_workflows
+      #@workflows = find_workflows
     end
     
     respond_to do |format|
@@ -178,7 +190,7 @@ class WorkflowsController < ApplicationController
 protected
 
   def find_workflows
-    @workflows = Workflow.find(:all, :order => "updated_at DESC")
+    @workflows = Workflow.find(:all, construct_sql)
   end
   
   def find_workflow_auth
@@ -254,6 +266,28 @@ private
       format.html { redirect_to workflows_url }
       format.xml { render :xml => err.to_xml }
     end
+  end
+  
+  def construct_sql
+    valid_keys = ["contributor_id", "contributor_type"]
+    
+    cond_sql = ""
+    cond_params = []
+    
+    params.each do |key, value|
+      next if value.nil?
+      
+      if valid_keys.include? key
+        cond_sql << " AND " unless cond_sql.empty?
+        cond_sql << "#{key} = ?" 
+        cond_params << value
+      end
+    end
+    
+    options = {:order => "updated_at DESC"}
+    options = options.merge({:conditions => [cond_sql] + cond_params}) unless cond_sql.empty?
+    
+    options
   end
 end
 

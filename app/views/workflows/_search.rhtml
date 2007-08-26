@@ -1,0 +1,8 @@
+<% form_tag search_workflows_path, :method => :get do %>
+  <fieldset><legend>Find Workflows</legend>
+    <label for="contributor_type" %>Contributor Type:</label> <%= select_tag :contributor_type, options_for_select({ "All" => nil, "User" => "User", "Network" => "Network"}, "All") %> 
+    <label for="contributor_id" %>Contributor ID:</label> <%= text_field_tag :contributor_id %> 
+    <label for="query" %>Query:</label> <%= text_field_tag :query %> 
+    <%= submit_tag "Search", :disable_with => "Searching..." %>
+  </fieldset>
+<% end %>

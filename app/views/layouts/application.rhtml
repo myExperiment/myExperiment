@@ -45,11 +45,7 @@
 </p>
     
 <p>
-  <% form_tag search_workflows_path, :method => :get do %>
-    <fieldset><legend>Search</legend>
-    <%= text_field_tag :query %> <%= submit_tag "Find Workflows" %>
-    </fieldset>
-  <% end %>
+  <%= render :partial => "workflows/search" %>
 </p>
 
 <hr/>

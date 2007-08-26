@@ -3,7 +3,6 @@
 <%= error_messages_for :blog %>
 
 <% form_for(:blog, :url => blogs_path) do |f| %>
-  
   <% fields_for :contributor_pair do |c_f| %>
     <p>
       <b>Contributor</b><br />

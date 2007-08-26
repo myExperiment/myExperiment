@@ -3,6 +3,18 @@
 <%= error_messages_for :workflow %>
 
 <% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
+  <% if @workflow.authorized?("destroy", current_user) %>
+    <% fields_for :contribution, @workflow.contribution do |c_f| %>
+      <p>
+        <b>Policy</b><br/>
+        <%= c_f.radio_button(:policy_id, "") %> - Public (all)<br/>
+        <% for p in current_user.policies %>
+          <%= c_f.radio_button(:policy_id, p.id) %> - <%=h p.name %><br/>
+        <% end %>
+      </p>
+    <% end %>
+  <% end %>
+  
   <p>
     <b>Title</b><br />
     <%= f.text_field :title %>
@@ -22,18 +34,6 @@
     <b>Tags (comma separated)</b><br />
     <%= f.text_field :tag_list %>
   </p>
-  
-  <% if @workflow.authorized?("destroy", current_user) %>
-    <% fields_for :contribution, @workflow.contribution do |c_f| %>
-      <p>
-        <b>Policy</b><br/>
-        <%= c_f.radio_button(:policy_id, "") %> - Public (all)<br/>
-        <% for p in current_user.policies %>
-          <%= c_f.radio_button(:policy_id, p.id) %> - <%=h p.name %><br/>
-        <% end %>
-      </p>
-    <% end %>
-  <% end %>
   
   <p>
     <%= submit_tag "Update" %>

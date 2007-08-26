@@ -3,18 +3,6 @@
 <%= error_messages_for :blob %>
 
 <% form_tag ({:action => :create}, :multipart => true) do %>
-  <% if false %>
-  <p>
-    <b>Contributor</b><br />
-    <%= text_field :blob, :contributor_id %>
-  </p>
-
-  <p>
-    <b>Contributor type</b><br />
-    <%= text_field :blob, :contributor_type %>
-  </p>
-  <% end %>
-  
   <% fields_for :contributor_pair do |c_f| %>
     <p>
       <b>Contributor</b><br />
@@ -35,11 +23,6 @@
         </p>
     </p>
   <% end %>
-
-  <p>
-    <b>Data</b><br />
-    <%= file_field :blob, :data %>
-  </p>
   
   <% fields_for :contribution, @blob.contribution do |c_f| %>
     <p>
@@ -51,6 +34,11 @@
     </p>
   <% end %>
 
+  <p>
+    <b>Data</b><br />
+    <%= file_field :blob, :data %>
+  </p>
+  
   <p>
     <%= submit_tag "Create" %>
   </p>

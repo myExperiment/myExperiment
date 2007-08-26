@@ -3,18 +3,6 @@
 <%= error_messages_for :workflow %>
 
 <% form_tag({:action => :create}, :multipart => true) do %>
-  <% if false %>
-  <p>
-    <b>Contributor</b><br />
-    <%= text_field :workflow, :contributor_id %>
-  </p>
-
-  <p>
-    <b>Contributor type</b><br />
-    <%= text_field :workflow, :contributor_type %>
-  </p>
-  <% end %>
-  
   <% fields_for :contributor_pair do |c_f| %>
     <p>
       <b>Contributor</b><br />
@@ -36,16 +24,6 @@
     </p>
   <% end %>
 
-  <p>
-    <b>Scufl</b><br />
-    <%= file_field :workflow, :scufl %>
-  </p>
-  
-  <p>
-    <b>Tags (comma separated)</b><br />
-    <%= text_field :workflow, :tag_list %>
-  </p>
-  
   <% fields_for :contribution, @workflow.contribution do |c_f| %>
     <p>
       <b>Policy</b><br/>
@@ -55,6 +33,16 @@
       <% end %>
     </p>
   <% end %>
+  
+  <p>
+    <b>Scufl</b><br />
+    <%= file_field :workflow, :scufl %>
+  </p>
+  
+  <p>
+    <b>Tags (comma separated)</b><br />
+    <%= text_field :workflow, :tag_list %>
+  </p>
 
   <p>
     <%= submit_tag "Create" %>
