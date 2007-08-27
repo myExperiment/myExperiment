@@ -286,7 +286,6 @@ module Squirrel # :nodoc
     end
                   
     @tuples["sharing_projects"].each do |sharing_project_tuple|
-      #policy = Workflow.find(sharing_project_tuple["workflow_id"]).contribution.policy
       policy = Contribution.find_by_contributable_id_and_contributable_type(sharing_project_tuple["workflow_id"], "Workflow").policy
       
       if policy
@@ -668,7 +667,6 @@ private
   def acl_to_permission(acl_r, acl_m, acl_d, user=true)
     edit, view, download = false, false, false
     
-    # acl - permissions
     # 0 - owner only (owner for 1-8 incl.)
     # 1 - projects
     # 2 - users
@@ -802,7 +800,6 @@ private
         j = 0
         while j < schema.length
           result = (chomped[j] =~ /NULL/) ? nil : clense(chomped[j])
-          #result = result.to_i if result =~ /^[0-9]+$/
           
           record[schema[j]] = result
           j = j.to_i + 1
@@ -811,8 +808,9 @@ private
         i = i.to_i + 1
       end
     
-      hash[table_name][0] = nil
-      hash[table_name].compact!
+      #hash[table_name][0] = nil
+      #hash[table_name].compact!
+      hash[table_name] = hash[table_name].shift
     end
   end
   
