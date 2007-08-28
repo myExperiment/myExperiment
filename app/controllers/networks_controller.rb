@@ -8,17 +8,15 @@ class NetworksController < ApplicationController
   # GET /networks/1;membership_create
   def membership_create
     respond_to do |format|
-      membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id)
+      @membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id)
         
-      if membership.save
-        if membership.accept!
-          format.html { render :partial => "networks/member", :locals => { :network => @network, :member => membership.user } }
-          format.xml  { head :ok }
-        else
-          error("Membership already accepted", "already accepted")
-        end
+      if @membership.save
+        @membership.accept!
+        format.html { render :partial => "networks/member", :locals => { :network => @network, :member => @membership.user } }
+        format.xml  { head :ok }
       else
-        error("Membership already created", "already created")
+        format.html { render :inline => " "} # no responce, rendered inline
+        format.xml  { render :xml => @membership.errors.to_xml }
       end
     end
   end

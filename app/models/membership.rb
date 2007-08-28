@@ -1,11 +1,13 @@
 class Membership < ActiveRecord::Base
-  validates_associated :user, :network
-  
-  validates_presence_of :user_id, :network_id
-  
   belongs_to :user
   
   belongs_to :network
+  
+  validates_presence_of :user_id, :network_id
+  
+  validates_each :user_id do |model, attr, value|
+    model.errors.add attr, "already member" if model.network.member? value
+  end
   
   def accept!
     unless accepted?
