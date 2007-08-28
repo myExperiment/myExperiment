@@ -1,0 +1,47 @@
+@import url('/stylesheets/reset.css');
+
+html,body{background-color: #ececec; padding: 0; margin: 0;}
+
+body{         font: small/18px "Lucida Grande", "Trebuchet MS", "Bitstream Vera Sans", Verdana, Helvetica, sans-serif; }
+
+label{font-weight: bold; margin-right: 1.3em;}
+
+#wrapper{width: 600px; margin: 0 auto 0 auto; position: relative; margin-top: 80px; background-color: #fff; padding: 25px; border: 3px solid #999;}
+
+#openid_url {
+   background: url(/images/openid.gif) no-repeat;
+   background-color: #fff;
+   background-position: 0 50%;
+   padding-left: 23px;
+ }
+
+img{border: 0;}
+
+form{margin-bottom: 1em;}
+
+small{ font-size: 0.9em; color: #666; }
+
+h2{font-size: 1.5em; font-weight: bold; margin-bottom: 0.7em;}
+
+h3{font-size: 1.2em; font-weight: bold; margin-bottom: 0.7em;}
+
+#noaccount{color: #888 !important; border-top: 1px solid #888; padding-top: 1em;}
+
+p{line-height: 1.5em; margin-bottom: 0.4em;}
+
+
+#flash{ background-color: red; color: white; padding: 0.3em; text-align: center; font-size: 1.4em;  }
+
+#flash p{ text-align: center; }
+
+ul{ list-style: square; }
+
+li{ line-height: 1.3em; }
+
+ol{ list-style: upper-alpha; }
+
+#betatop{ background-color: red; width: 100%; position: absolute; top: 0; left: 0; line-height: 2.4em; text-align: center; }
+
+input { font-size: 1.7em; margin-bottom: 0.5em; }
+
+h2{ text-align: center; }

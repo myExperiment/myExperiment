@@ -1,0 +1,223 @@
+<h2>You're about to download '<%=@workflow.title%>'</h2>
+
+<p>Before you do this, we just wanted to make you aware of the rights the workflow author has granted you for <strong>this</strong> workflow.</p>
+
+<p><img src="/images/sc.logo.png" alt="Science Commons" /></p>
+
+<div id="scwrapper">
+
+<div id="sciencecommons">
+
+<h3>You are free:-</h3>
+
+                      <ul>
+                              <li class="license share" rel="cc:permits"
+             href="http://creativecommons.org/ns#Distribution"><strong>to Share</strong> — to copy, distribute and transmit the work</li>
+
+                              <% if not @workflow.license == 'a' %>
+
+                              <li class="license remix" rel="cc:permits"
+             href="http://creativecommons.org/ns#DerivativeWorks"><strong>to Remix</strong> — to adapt the work</li>
+
+                              <% end %>
+                      </ul>
+
+                      <h3>Under the following conditions:</h3>
+                <ul align="" dir="">
+            <li rel="cc:requires"
+                href="http://creativecommons.org/ns#Attribution"
+                class="license by">
+                    <strong>Attribution</strong> - You must attribute the work in the manner specified by the author or licensor (but not in any way that suggests that they endorse you or your use of the work).
+            </li>
+
+                              <% if @workflow.license == 'b' %>
+
+            <li rel="cc:requires"
+                href="http://creativecommons.org/ns#ShareAlike"
+                class="license sa">
+                    <strong>Share Alike</strong> - If you alter, transform, or build upon this work, you may distribute the resulting work only under the same, similar or a compatible license.
+            </li>
+
+            <% end %>
+
+                              <% if @workflow.license == 'a' %>
+
+            <li rel="cc:requires"
+                href="http://creativecommons.org/ns#NoDerivs"
+                class="license nd">
+                    <p><strong>No Derivative Works</strong> - <span>You may not alter, transform, or build upon this work.</span>
+            </li>
+
+            <% end %>
+
+            </ul>
+
+                <ul>
+
+
+            <li rel="cc:requires"
+                href="http://creativecommons.org/ns#Notice">For any reuse or distribution, you must make clear to others the license terms of this work. The best way to do this is with a link to this web page.</li>
+            <li>Any of the above conditions can be waived if you get permission from the copyright holder.</li>
+
+            <li>Nothing in this license impairs or restricts the author's moral rights.</li>
+
+
+          </ul>
+
+<h2>Please note:-</h2>
+
+<p><strong>Your fair dealing and other rights are in no way affected by the above.</strong></p>
+
+<p>This is a human-readable summary of the Legal Code (
+<% if @workflow.license == 'a' %>
+<a href="http://creativecommons.org/licenses/by-nd/3.0/legalcode">
+<% end %>
+
+<% if @workflow.license == 'b' %>
+<a href="http://creativecommons.org/licenses/by-sa/3.0/legalcode">
+<% end %>
+
+<% if @workflow.license == 'c' %>
+<a href="http://creativecommons.org/licenses/by/3.0/legalcode">
+<% end %>
+
+the full license</a> ).</p>
+
+</div>
+
+<div id="aboutsc">
+<h2>Disclaimer</h2>
+
+<p>The Commons Deed is not a license. It is simply a handy reference for
+understanding the Legal Code (the full license) — it is a
+human-readable expression of some of its key terms. Think of it as the
+user-friendly interface to the Legal Code beneath. This Deed itself
+has no legal value, and its contents do not appear in the actual
+license.</p>
+
+<p>Creative Commons is not a law firm and does not provide legal
+services. Distributing of, displaying of, or linking to this Commons
+Deed does not create an attorney-client relationship.</p>
+
+</div>
+
+</div>
+
+
+
+<div id="bigbigdownloadbutton">
+<%= button_to "Sounds good, let's go! >>>", :action => 'gimme', :id => @workflow %>
+
+<p><span class="tiny"><%= link_to "No thanks, get me out of here.", :action => 'show', :id => @workflow %></span></p>
+
+</div>
+
+
+<% if @workflow.license == 'b' %>
+
+<!--
+
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:title><%= @workflow.title %></dc:title>
+   <dc:date><%= @workflow.created_at %></dc:date>
+   <dc:description><%= @workflow.description %></dc:description>
+   <dc:creator><Agent>
+      <dc:title><%= @workflow.user.profile.name %></dc:title>
+   </Agent></dc:creator>
+   <dc:rights><Agent>
+      <dc:title><%= @workflow.user.profile.name %></dc:title>
+   </Agent></dc:rights>
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
+   <dc:source rdf:resource="http://beta.myexperiment.org<%= request.request_uri %>"/>
+   <license rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
+</Work>
+
+<License rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+   <requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+</License>
+
+</rdf:RDF>
+
+-->
+
+<% end %>
+
+<% if @workflow.license == 'c' %>
+
+<!--
+
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:title><%= @workflow.title %></dc:title>
+   <dc:date><%= @workflow.created_at %></dc:date>
+   <dc:description><%= @workflow.description %></dc:description>
+   <dc:creator><Agent>
+      <dc:title><%= @workflow.user.profile.name %></dc:title>
+   </Agent></dc:creator>
+   <dc:rights><Agent>
+      <dc:title><%= @workflow.user.profile.name %></dc:title>
+   </Agent></dc:rights>
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
+   <dc:source rdf:resource="http://beta.myexperiment.org<%= request.request_uri %>"/>
+   <license rdf:resource="http://creativecommons.org/licenses/by/3.0/" />
+</Work>
+
+<License rdf:about="http://creativecommons.org/licenses/by/3.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+</License>
+
+</rdf:RDF>
+
+-->
+
+<% end %>
+
+<% if @workflow.license == 'a' %>
+
+<!--
+
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:title><%= @workflow.title %></dc:title>
+   <dc:date><%= @workflow.created_at %></dc:date>
+   <dc:description><%= @workflow.description %></dc:description>
+   <dc:creator><Agent>
+      <dc:title><%= @workflow.user.profile.name %></dc:title>
+   </Agent></dc:creator>
+   <dc:rights><Agent>
+      <dc:title><%= @workflow.user.profile.name %></dc:title>
+   </Agent></dc:rights>
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
+   <dc:source rdf:resource="http://beta.myexperiment.org<%= request.request_uri %>"/>
+   <license rdf:resource="http://creativecommons.org/licenses/by-nd/3.0/" />
+</Work>
+
+<License rdf:about="http://creativecommons.org/licenses/by-nd/3.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <prohibits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+</License>
+
+</rdf:RDF>
+
+-->
+
+<% end %>

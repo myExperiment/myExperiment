@@ -1,0 +1,16 @@
+<% if @user.profile.name.blank? %>
+
+  <h3>Hi there</h3>
+
+  We need to know what your name is.
+
+  <% form_tag :action => 'update' do %>
+    <%= text_field 'profile', 'name'  %></p>
+    <%= submit_tag "Set name" %>
+  <% end %>
+
+<% else %>
+  
+  <h3>Hi <%= @user.profile.name %></h3>
+
+<% end %>

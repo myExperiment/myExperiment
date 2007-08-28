@@ -1,0 +1,27 @@
+<h1>Listing replies</h1>
+
+<table>
+  <tr>
+  <% for column in Reply.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for reply in @replies %>
+  <tr>
+  <% for column in Reply.content_columns %>
+    <td><%=h reply.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => reply %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => reply %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => reply }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @reply_pages.current.previous } if @reply_pages.current.previous %>
+<%= link_to 'Next page', { :page => @reply_pages.current.next } if @reply_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New reply', :action => 'new' %>

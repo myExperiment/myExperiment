@@ -1,0 +1,35 @@
+<% @page_title =  @channel_title.to_s %>
+
+
+<div id="header">
+    <h1><%=  @channel_title.to_s  %></h1>
+    <table style="margin-top: 4px"><tr><td width="48px"><b>&nbsp;Topic:</b></td><td><%= render :partial => 'channel/topic' %></td></tr></table>
+</div>
+
+
+<div id="typebox">
+    <% form_tag :controller => 'channel', :action => 'visit', :id => params[:id], :messagesfrom => params[:messagesfrom] do %>
+	   <% if params[:style] %>
+		  <input type="hidden" name="style" value="<%= params[:style] %>">
+	   <% end %>
+	   <center><input type="submit" value="Click to join this chat" class="joinchat" style="width: 99%; height: 66px" /></center>
+    <% end %>
+</div>
+
+<div id="userlist">
+    <%= render :partial => 'channel/userlist' %>
+</div>
+
+<div id="conversation">
+    <div id="stage">
+		<% @channel.latest_channelmessages.each do |channelmessage| %>
+			<%= channelmessage_content(channelmessage) %>
+		<% end %>
+    </div>
+</div>
+
+<%= periodically_call_remote :url => { :controller => 'channel', :action => 'get_latest_channelmessages_preview', :id => params[:id]}, :frequency => 4, :complete => "eval(request.responseText)" %>
+
+<%= periodically_call_remote :url => { :controller => 'channel', :action => 'get_user_list_preview', :id => params[:id]}, :frequency => 15, :update => 'userlist' %>
+
+<%= periodically_call_remote :url => { :controller => 'channel', :action => 'get_current_topic', :id => params[:id]}, :frequency => 10, :update => 'topic' %>

@@ -1,0 +1,16 @@
+<% if @workflows.empty? %>
+
+<p><%= session[:user_id].to_i == params[:id].to_i ? "You have" : "This user has" %> no uploaded workflows.</p>
+
+<% else %>
+
+<ul class="workflowList">
+<% for workflow in @workflows %>
+  <li><%=link_to image_tag(url_for_file_column(workflow, 'image', 'thumb'), :title => workflow.title, :border => '1'),
+                 :controller => 'workflow', :action => 'show', :id => workflow.id %></li>
+<% end %>
+</ul>
+
+<div class="visualClear"></div>
+
+<% end %>

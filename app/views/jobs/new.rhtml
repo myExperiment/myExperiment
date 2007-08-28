@@ -1,0 +1,17 @@
+<h2>Create job for workflow &quot;<%= @workflow.title %>&quot;</h2>
+
+<%= render :partial => "workflow/description", :locals => { :inhibit_edit => true } %>
+
+<h3>Input data</h3>
+
+<% form_tag :action => 'create' do %>
+  <% for @name in @inputs %>
+    <p>
+      <label for="job_title"><%= @name %>:</label>
+      <%= text_field 'job', @name %>
+    </p>
+  <% end %>
+  <%= hidden_field_tag 'workflow_id', @workflow.id %>
+  <%= submit_tag "Submit job" %>
+<% end %>
+

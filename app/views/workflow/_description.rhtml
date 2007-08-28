@@ -1,0 +1,23 @@
+<div class="workflowDescription"><%=h @workflow.description %></div>
+
+<p>
+  <% if inhibit_edit == false %>
+    <% if @workflow.authorized? current_user, "modify" %>
+      <span class="tiny">(<%= link_to 'Edit description', :action => 'edit', :id => @workflow %>)</span>
+    <% end %>       
+  <% end %>
+</p>
+
+<p>Uploaded on <%= @workflow.created_at.strftime("%d %B, %Y") %>
+<% if @workflow.user.profile.name%>
+by <%= profile_link @workflow.user %></p>
+<% else %>
+</p>
+<% end %>
+
+<% if @workflow.image == nil %>
+  &nbsp;
+<% else %>
+  <%= image_tag url_for_file_column(@workflow, "image", "medium") %>
+<% end %>
+

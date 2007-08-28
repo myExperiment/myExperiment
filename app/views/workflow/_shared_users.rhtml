@@ -1,0 +1,32 @@
+<% unless @shared_users.empty? %>
+
+<ul>
+  <% @shared_users.each do |n| %>
+    <li>
+      <%= h(Profile.find(n.user_id).name) %> <%= link_to h("[remove]"), {:action => :destroy_shared_user, :shared_user_id => n.id, :id => @workflow.id}, :confirm => "Are you sure?" %>
+    </li>
+  <% end %>
+</ul>
+
+<% else %>
+
+<small>There are no users in the authorized users list for this workflow.</small>
+
+<% end %>
+
+
+<% unless @unauth_users.empty? %>
+
+<ul>
+  <% @unauth_users.each do |u| %>
+    <li>
+      <%= h(Profile.find(u.id).name) %> <%= link_to h("[add]"), :action => :create_shared_user, :user_id => u.id, :id => @workflow.id %>
+    </li>
+  <% end %>
+</ul>
+
+<% else %>
+
+<small>There are no users available to add to the authorized users list for this workflow.</small>
+
+<% end %>

@@ -1,0 +1,35 @@
+SmartForm
+=========
+The form helper with intelligence!
+
+Creates nicely laid out form fields for an ActiveRecord object, including it's content columns and association reflections.
+The form fields are encapsulated in an HTML definition list.
+
+Author: Michael Behan aka "Jabberwock" (jabberwock /AT tenebrous /DOT com; or Jabberwock on irc.freenode.net)
+Copyright: Copyright(c) 2007 Michael Behan, released under the BSD license
+For an example style-sheet via:
+  ruby script/generate SmartFormStyles
+
+Usage:
+  smart_form_for(symbol, options)
+
+Examples:
+  
+  <% form_for people_url, :method => :post do %>
+    <%= smart_form_for :person %>
+  <% end %>
+
+  <% form_for edit_person_url(@person) do %>
+    <%= smart_form_for :person, :object => @person %>
+  <% end %>
+
+
+For full documentation, including options, please visit vendor/plugins/smart_form/rdoc/index.html
+
+Please feel free to e-mail me with feedback!
+
+Enjoy :)
+
+Michael Behan
+
+

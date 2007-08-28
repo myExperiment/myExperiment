@@ -1,0 +1,13 @@
+<% if @projects.empty? %>
+
+<p><%= session[:user_id].to_i == params[:id].to_i ? "You have" : "This user has" %> no projects.</p>
+
+<% else %>
+
+<ul>
+<% for project in @projects %>
+  <li><%= link_to project.title, :controller => 'projects', :action => 'show', :id => project %></li>
+<% end %>
+</ul>
+
+<% end %>

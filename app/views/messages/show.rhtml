@@ -1,0 +1,9 @@
+<div class="message">
+<%= avatar @from, '50x50' %>
+<p id="subject"><%=h @message.subject %></p>
+<p id="from">from <%= profile_link @from %>
+at <%= @message.created_at.strftime("%l:%M%p on %A %d %B %Y")%></p>
+<div id="body"><%=textilize sanitize(@message.body) %></div>
+</div>
+
+<%= button_to 'Reply', :action => 'reply', :id => @message %>

@@ -1,0 +1,20 @@
+<% if not @profile.name %>
+<h2>Please complete your profile</h2>
+
+<p>Your profile is key to the very heart of myExperiment. With a
+profile, other users can find you, share workflows and experiments
+with you and collaborate on projects.</p>
+
+<p><%= link_to 'Complete my profile now', :action => 'edit' %></p>
+
+<% else %>
+
+<h2><%= h @profile.name%></h2>
+
+<% if @profile.email %><p><a href="mailto:<%= h @profile.email%>"><%= h @profile.email%></a></p><%end %>
+
+<%= markdown @profile.profile %>
+
+<p><%= link_to 'Edit profile', :action => 'edit', :controller => 'profile' %></p>
+
+<% end %>

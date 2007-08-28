@@ -1,0 +1,63 @@
+<h1><%= @project.title %>
+<% if @project.user == @user %>
+ <span class="tiny">(<%= link_to 'edit', :controller => 'admin/projects', :action => 'edit',
+                         :id => @unique_set ? @project.unique : @project.id %>)</span>
+<% end %></h1>
+
+<% if @project.user == @user %>
+
+<% if not @unique_set %>
+<div id="unique">
+  <p>You can choose a permanent name that will be used for the web address of your project.<p/>
+  <strong>This name can't be changed later.</strong>
+<% form_tag :action => 'unique', :id => @project do %>
+  <%= error_messages_for 'project' %>
+  <%= text_field 'project', 'unique', :size => 60  %>
+  <%= submit_tag "Go for it" %>
+<% end %>
+  
+</div>
+<% end %>
+
+<% end %>
+
+<% if @project.member? @user %>
+<%= button_to 'Chat about Project', :controller => 'channel', :action => 'preview' , :id => @project %>
+<%= button_to 'See Chat Archive', :controller => 'chat_archive', :action => 'list' , :id => @project %>
+<% end %>
+
+<% if Forum.find(@project.forum_id).public? or @project.member? @user %>
+<% if false %><%= button_to 'Discuss in Forum', :controller => :forums, :action => :show, :id => @project.forum_id %><% end %>
+<%= link_to 'Discuss in Forum', :controller => :forums, :action => :show, :id => @project.forum_id %>
+<% end %>
+
+<h2>Project Members</h2>
+<ul class="memberList">
+  <% @project.users.each do |u| %>
+  <li><%= h User.find(u.id).profile.name %>
+    <% if @project.user == @user and u != @user %>
+    (<%= link_to 'remove', {:controller => 'memberships', :action => 'destroy', :id => @project, :member_id => u.id },
+              :confirm => 'Are you sure?', :method => :post  %>)
+    <% end %>
+  </li>  
+  <% end %> 
+</ul>
+
+<% if @project.user == @user %>
+<p>Type a name to add a new project member</p>
+
+<% form_tag :controller => 'memberships', :action => 'create', :id => @project do %>
+<% if false %>  <%= text_field_with_auto_complete :profile, :name, {}, :skip_style => true  %><% end %>
+  <%= text_field_with_auto_complete :profile, :name %>
+  <%= submit_tag 'Add member' %>
+<% end %>
+<% end %>
+
+<hr/>
+
+<% project_page = @project.find_page_by_namespace_and_name(@unique_set ? @project.unique : @project.id, 'main')%>
+<%= markdown project_page.content %>
+
+<% if @project.user == @user %>
+<%= button_to 'Edit project page', :controller => 'pages', :action => 'edit', :id => project_page.namespace, :page => 'main'%>
+<% end %>

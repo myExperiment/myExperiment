@@ -1,0 +1,22 @@
+<%= error_messages_for 'profile' %>
+
+<% form_for :profile, :url => { :action => 'update' } do | form | %>
+  <dl class="smart_form">
+    <dt><label for="profile_email">Email:</label></dt>
+    <dd><%= form.text_field :email, :size => 45 %></dd>
+  </dl>
+  <dl class="smart_form">
+    <dt><label for="profile_website">Website:</label></dt>
+    <dd><%= form.text_field :website, :size => 45 %></dd>
+  </dl>
+  
+  <div class="visualClear"></div>
+
+  <h2>A bit about yourself <span class="tiny">(Hobbies, interests, plans to take over the earth, etc)</span></h2>
+
+  <p><%= form.text_area :profile, :rows => 6, :cols => 50 %></p>
+
+  <div class="visualClear"></div>
+
+  <%= submit_tag 'Get me out of here' %>
+<% end %>

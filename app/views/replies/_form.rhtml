@@ -1,0 +1,13 @@
+<%= error_messages_for 'reply' %>
+
+<!--[form:reply]-->
+<p><label for="reply_body">Body</label><br/>
+<%= text_area 'reply', 'body'  %></p>
+
+<p><label for="reply_created_at">Created at</label><br/>
+<%= datetime_select 'reply', 'created_at'  %></p>
+
+<p><label for="reply_updated_at">Updated at</label><br/>
+<%= datetime_select 'reply', 'updated_at'  %></p>
+<!--[eoform:reply]-->
+

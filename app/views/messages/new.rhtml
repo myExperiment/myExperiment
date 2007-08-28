@@ -1,0 +1,7 @@
+<h2>Send a message</h2>
+<%= form_tag :action => 'create', :id => @person %>
+<p><label for="message_subject">Subject</label>
+   <%= text_field 'message', 'subject', :size => 55 %></p>
+<p><%= text_area 'message', 'body', :cols => 60, :rows => 10 %></p>
+<%= hidden_field 'message', 'reply_id' %>
+<%= submit_tag "Send message to #{@person.profile.name}" %>

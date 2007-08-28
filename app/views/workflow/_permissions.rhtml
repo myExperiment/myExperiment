@@ -1,0 +1,49 @@
+<% all, friends, sharing_users, sharing_projects, total = get_acl %>
+
+<% form_tag :action => :update_sharing, :id => @workflow do %>
+  <h3>Who can view, tag and download this workflow?</h3>
+
+  <p><%= radio_button_tag "everybody", "8", checked=(all != 0), :onclick => "focus_sharing(this.value);" %> Everybody</p>
+  <p><%= radio_button_tag "everybody", "0", checked=(total == 0), :onclick => "focus_sharing(this.value);" %> Only Me</p>
+  <p><%= radio_button_tag "everybody", "1", checked=(total != 0 and all == 0), :onclick => "focus_sharing(this.value);" %> Myself and...</p>
+  <p>..my friends <%= check_box_tag "friends", value="4", checked=(friends != 0), :disabled => (total == 0 or total == 8) %></p>
+
+  <p>..these people <%= check_box_tag "sharing_users", value="2", checked=(sharing_users != 0), :disabled => (total == 0 or total == 8) %><br>
+  <%= render :partial => 'shared_users' %></p>
+
+  <div class="visualClear">&nbsp;</div>
+
+  <p>..these projects <%= check_box_tag "sharing_projects", value="1", checked=(sharing_projects != 0), :disabled => (total == 0 or total == 8) %><br>
+  <%= render :partial => 'shared_projects' %></p>
+
+  <div class="visualClear">&nbsp;</div>
+
+  <h3><img src="/images/sc.logo.png" alt="Science Commons" /></h3>
+
+  <p>You can also configure what rights you will give to people with
+  your workflow. Sharing your workflows and letting others build upon
+  them is a useful contribution.</p>
+
+  <p>When someone downloads this workflow, do you want to allow them
+  to be able to build upon it?</p>
+
+  <p><%= radio_button_tag "license", "b",
+  checked=(@workflow.license.to_s == "b") %> Yes, as long as
+  they <strong>give me credit (attribution)</strong> and they also
+  <strong>share</strong> their workflow <strong>under the same
+  conditions</strong>.</p>
+
+  <p><%= radio_button_tag "license", "c",
+  checked=(@workflow.license.to_s == "c") %> Yes, as long as
+  they <strong>give me credit (attribution)</strong>.</p>
+
+  <p><%= radio_button_tag "license", "a",
+  checked=(@workflow.license.to_s == "a") %> No. They may only use the
+  workflow for reference.</p>
+
+  <p><small>Nothing in these licenses impairs or restricts the author's moral rights.</small></p>
+
+  <div class="visualClear">&nbsp;</div>
+
+  <%= submit_tag 'Save' %>
+<% end %>

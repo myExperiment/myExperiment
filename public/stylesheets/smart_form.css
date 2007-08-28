@@ -1,0 +1,38 @@
+/* SmartForm Stylesheet
+ * Copyright(c) 2007 Michael Behan aka "Jabberwock"
+ * jabberwock /AT tenebrous /DOT com
+ */
+dl.smart_form { /* row */
+  width: 10em !Important;
+  margin-top: 8px !Important; /* space between rows */
+  clear: both !Important;
+}
+
+dl.smart_form dt {
+  width: 7em !Important;
+  text-align: right !Important;
+  padding-top: 3px !Important;
+  padding-right: 5px !Important;
+  float: left !Important;
+}
+
+dl.smart_form dt label { /* left (label) */
+  font: bold 13px Verdana, Arial, Serif !Important;
+}
+
+dl.smart_form dd { /* right (form field) */
+  font: 14px/1.5 Verdana, Arial, Serif !Important;
+  width: 1em !Important;
+  float: right !Important;
+  text-align: left !Important;
+}
+
+dl.smart_form dd input[type=text] {
+  height: 1.5empx !Important;
+  padding: 2px !Important;
+}
+
+dl.smart_form select[multiple=multiple] { width: 300px !Important; }
+
+div.sf_break { clear: both; line-height: 0; width: 100%; }
+

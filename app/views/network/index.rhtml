@@ -1,0 +1,22 @@
+<h2>Your network</h2>
+
+<% if @friends and @friends.size > 0 or @pending_friends and @pending_friends.size > 0 %>
+  <% if @friends and @friends.size > 0 %>
+   <h3>Your friends</h3>
+    <% for user in @friends %>
+    <%= link_to image_tag(url_for(:controller => 'pictures', :action => 'show', :id =>user.avatar, :size => '100x100 '), :border => '1', :title => user.profile.name),
+            :controller => 'profile', :action => 'show', :id =>  user.id %>
+    <% end %>
+  <% end %>
+  <% if @pending_friends and @pending_friends.size > 0 %>
+   <h3>Your pending friends</h3>
+    <% for user in @pending_friends %>
+    <%= link_to image_tag(url_for(:controller => 'pictures', :action => 'show', :id =>user.avatar, :size => '100x100 '), :border => '1', :title => user.profile.name),
+            :controller => 'profile', :action => 'show', :id =>  user.id %>
+    <% end %>
+  <% end %>
+<% else %>
+  <p>You currently have nobody in your network.</p>
+<% end %>
+
+<%= button_to 'Find people', :controller => 'people' %>

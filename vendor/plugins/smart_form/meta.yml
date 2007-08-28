@@ -1,0 +1,6 @@
+author:
+    name: Jabberwock
+    homepage: http://www.tenebrous.com/
+summary: Easy and intelligent HTML form generation which honors association reflections.
+plugin: svn://rails.bleedingtrends.com/smart_form/
+license: BSD

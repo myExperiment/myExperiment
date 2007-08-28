@@ -1,0 +1,28 @@
+<% if @page %>
+<h1>Editing <%= @page.name.tr('_', ' ') %></h1>
+
+<% if params[:preview] %>
+  <h2>Preview</h2>
+  <div id="preview">
+  <%= markdown @page.content %>
+  </div>
+<% end %>
+<div id="page-edit-box">
+<% form_tag :action => 'update', :id => @page.namespace, :name => @page.name do %>
+  <%= text_area 'page', 'content', :id => 'page-edit'  %></p>
+  <%= submit_tag 'Save page' %>
+  <%= submit_tag 'Preview page', :name => 'preview' %>
+<% end %>
+</div>
+<div id="markdown-example">
+<div id="text-example">
+<%= markdown render :partial => 'syntax_text' %>
+</div>
+<div id="rendered-example">
+<%= markdown render :partial => 'syntax' %>
+</div>
+</div>
+
+<% else %>
+  <p>Page not found</p>
+<% end %>

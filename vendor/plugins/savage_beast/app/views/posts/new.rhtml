@@ -1,0 +1,18 @@
+<% unless params[:reply_id] %>
+  <h1>Reply to topic</h1>
+  <h2><%= link_to h(@topic.title), topic_path(@topic.forum, @topic) %></h2>
+<% else %>
+  <h1>Reply to post</h1>
+  
+  <p>Posted by: <%= profile_link User.find(@original.user_id) %></p>
+  <table class="posts"><tr class="post"><td class="body">
+    <blockquote><%= @original.body_html %></blockquote>
+  </td></tr></table>
+  <p>Last Updated: <%= @original.updated_at %></p>
+<% end %>
+
+<%= error_messages_for :post %>
+<% form_for :post, :url => posts_path(:forum_id => @topic.forum, :topic_id => @topic, :page => @topic.last_page, :reply_id => params[:reply_id]) do |f| -%>
+<p id="post_body"><%= f.text_area :body, :rows => 10, :id => "post_body" %></p>
+<%= submit_tag "Save Reply" %> or <%= link_to "cancel", topic_path(:forum_id => @topic.forum, :id => @topic, :page => params[:page]) %>
+<% end -%>

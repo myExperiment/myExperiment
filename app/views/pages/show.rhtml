@@ -1,0 +1,6 @@
+<%= link_to 'Edit', :action => 'edit', :id => @page.namespace, :page => @page.name %>
+
+<h1><%= @page.name.tr('_', ' ') %></h1>
+
+<%= markdown @page.content %>
+

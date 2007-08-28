@@ -1,0 +1,23 @@
+<h1><%= Project.find(params[:id]).title %> Chat Archive - <%= params[:viewtype] %> View</h1>
+
+<table>
+  
+ <% curmonth=nil %>
+ <% curdate=nil %>
+ <% curtopic=nil %>
+<% for archive in @archives %>
+  <% if curmonth!= archive.month %>
+    <tr><td><h2><%= archive.month+" "+archive.year %></h2></td></tr>
+  <% end %>
+  <% if params[:viewtype]=="Day" and curdate!=archive.date %>
+    <tr><td><%= link_to archive.date, :action => 'show', :id => params[:id], :date => archive.date, :viewtype => params[:viewtype] %></td></tr>
+    <% curdate=archive.date %>
+  <% elsif  params[:viewtype]=="Topic" and curtopic!=archive.topic_id%>
+    <tr><td><%= link_to archive.date+" - "+archive.topic, :action => 'show', :id => params[:id], :date => archive.date, :topic => archive.topic_id, :viewtype => params[:viewtype] %></td></tr>
+    <% curtopic=archive.topic_id %>
+  <% end %>
+  <% curmonth=archive.month %>
+<% end %>
+</table>
+<br/><br/>
+<%= link_to '< Back to Project Page', :controller => 'projects', :action => 'show', :id => params[:id], :viewtype => params[:viewtype] %>

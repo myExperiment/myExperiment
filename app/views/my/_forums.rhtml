@@ -1,0 +1,14 @@
+<% if @forums.empty? %>
+
+  <p>You are not the owner of any forums!</p>
+  <p>When you start a new <%= link_to "project", :controller => 'projects' %>, 
+  you <strong>automatically</strong> become owner of the forum that is created!</p>
+
+<% else %>
+
+  <h3>Owner of</h3>
+  <ul><% @forums.each do |forum| %>
+    <li><%= link_to forum.name, { :controller => :forums, :action => :show, :id => forum.id } %> <%= link_to h("[edit description]"), { :controller => :forums, :action => :edit, :id => forum.id } %> <%= link_to h("[edit moderators]"), { :controller => :moderators, :action => :list, :id => forum.id } %></li>
+  <% end %></ul>
+
+<% end %>

@@ -1,0 +1,124 @@
+<% @page_title = @topic.title %>
+
+<% if false %><% @monitoring = logged_in? && !Monitorship.count(:all, :conditions => ['user_id = ? and topic_id = ? and active = ?', current_user.id, @topic.id, true]).zero? %>
+<% if logged_in? %>
+<% form_tag monitorship_path(@forum, @topic), :style => 'margin-top:0em; float:right;' do -%>
+<div>
+  <input id="monitor_checkbox" type="checkbox" <%= "checked='checked'" if @monitoring %> 
+    onclick="if (this.checked) {<%= remote_function :url => monitorship_path(@forum, @topic) %>} else {<%= remote_function :url => monitorship_path(@forum, @topic), :method => :delete %>}" />
+  <label id="monitor_label" for="monitor_checkbox">Watch<%= "ing" if @monitoring %> topic</label>
+  <%= hidden_field_tag '_method', 'delete' if @monitoring %>
+  <%= submit_tag :Set, :id => 'monitor_submit' %>
+</div>
+<% end -%>
+<% end -%><% end %>
+
+<div class="crumbs">
+  <%= link_to "Forums", { :controller => "forums", :action => "index" } %> <span class="arrow">&rarr;</span>
+  <%= link_to h(@topic.forum.name), forum_path(@topic.forum) %> <span class="arrow">&rarr;</span>
+</div>
+
+<h1 id="topic-title">
+  <%= h @topic.title %>
+  <% if @topic.locked? %> (locked)<% end %>  
+</h1>
+
+<% if logged_in? %>
+  <% if @topic.editable_by?(current_user) -%>
+    <p><%= link_to('Edit title', edit_topic_path(@forum, @topic), :class => "utility") %> |
+    <%= link_to('Delete topic', topic_path(@forum, @topic), :class => "utility", :method => :delete, :confirm => 'Delete this topic forever?') %></p>
+  <% end -%>
+<% end %>
+
+<p class="subtitle">
+  <%= feed_icon_tag @topic.title, formatted_topic_path(@forum, @topic, :rss) %>
+  <%= pluralize @topic.posts.count, 'post' %>, <%= pluralize @topic.voices, 'voice' %>
+</p>
+
+<% if @post_pages.page_count > 1 -%>
+<p class="pages">Pages: <strong><%= pagination_links @post_pages, :window_size => 10 %></strong></p>
+<% end -%>
+
+<a name="<%= @posts.first.dom_id %>" id="<%= @posts.first.dom_id %>">&nbsp;</a>
+
+<table border="0" cellspacing="0" cellpadding="0" class="posts wide">
+<% for post in @posts do %>
+<% unless post == @posts.first %>
+<tr class="spacer">
+  <td colspan="2">
+    <a name="<%= post.dom_id %>" id="<%= post.dom_id %>">&nbsp;</a>
+  </td>
+</tr>
+<% end %>
+<tr class="post hentry" id="<%= post.dom_id %>-row">
+  <td class="author vcard">
+    <div class="date">
+      <a href="#<%= post.dom_id %>" rel="bookmark">
+      <abbr class="updated" title="<%= post.created_at.xmlschema %>">
+      <%= time_ago_in_words(post.created_at) %>
+      </abbr>
+      </a>
+    </div>
+
+    <%= avatar_for post.user %>
+    <span class="fn"><%= link_to truncate(h(post.user.display_name), 15), user_path(post.user), :class => (post.user == @posts.first.user ? "admin" : nil) %></span>
+    <span class="posts"><%= pluralize post.user.posts_count, 'post' %></span>
+
+    <% if logged_in? && post.editable_by?(current_user) -%>
+    <p>
+      <span class="edit">
+        <%= link_to "Edit post", { :controller => 'posts', :action => 'edit', :forum_id => @forum, :topic_id => @topic, :id => post, :page => params[:page] } %><br />
+        <%= link_to("Delete post", post_path(:forum_id => @forum, :topic_id => @topic, :id => post, :page => params[:page]), :class => "utility", :method => :delete, :confirm => "Delete this post forever?") %>
+      </span>
+    </p>
+    <% end -%>
+
+
+  </td>
+  <td class="body entry-content" id="post-body-<%= post.id %>">
+    <%= link_to image_tag('clearbits/comment.gif', :alt => "Reply to this post", :class => 'icon reply'), { :controller => 'posts', :action => 'new', :forum_id => @forum, :topic_id => @topic, :page => params[:page], :reply_id => post } if logged_in? %>
+    <%= post.body_html %>
+  </td>
+</tr>
+
+<% end %>
+</table>
+
+<% if @post_pages and @post_pages.current.next %>
+<p style="float:right;"><%= link_to "Next page", { :page => @post_pages.current.next }.merge(params.reject{|k,v| k=="page"})  %></p>
+<% end %>
+
+<% if @post_pages.page_count > 1 -%>
+<p class="pages">Pages: <strong><%= pagination_links @post_pages, :window_size => 10 %></strong></p>
+<% end -%>
+
+<% if logged_in? %>
+<div id="edit"></div>
+<% if @topic.locked? %>
+<p>
+    <%= image_tag "clearbits/lock.gif", :class => "icon grey", :title => "Topic locked" %> 
+    <label>This topic is locked.</label>
+</p>
+<% else %>
+
+<%= link_to "Reply to topic", { :controller => 'posts', :action => 'new', :forum_id => @forum, :topic_id => @topic, :page => params[:page] }, :class => :utility %>
+
+<% end %>
+<% end %>
+
+
+<div class="crumbs" style="margin-top:1.1em;">
+  <%= link_to "Forums", { :controller => "forums", :action => "index" } %> <span class="arrow">&rarr;</span>
+  <%= link_to h(@topic.forum.name), forum_path(@topic.forum) %> <span class="arrow">&rarr;</span>
+</div>
+
+<% online_users = User.currently_online -%>
+<% unless online_users.empty? %>
+<div class="stats">
+<div class="users">
+<% unless online_users.empty? %>
+Users online: <%= online_users.map { |u| link_to "<strong>#{h u.display_name}</strong>", user_path(u) } * ", " %><br />
+<% end %>
+</div>
+</div>
+<% end %>

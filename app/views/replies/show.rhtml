@@ -1,0 +1,8 @@
+<% for column in Reply.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @reply.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @reply %> |
+<%= link_to 'Back', :action => 'list' %>
