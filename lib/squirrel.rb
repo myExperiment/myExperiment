@@ -21,7 +21,6 @@
 ##
 ##
 
-
 module Squirrel # :nodoc
   @export_sql_file = "#{RAILS_ROOT}/carlin/myexperiment_production.sql"
   @export_scufl_directory = "#{RAILS_ROOT}/carlin/scufl"
