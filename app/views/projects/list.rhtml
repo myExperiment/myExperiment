@@ -1,0 +1,25 @@
+<h2>Projects</h2>
+
+<% if @projects.empty? %>
+
+  <p>There are no projects currently available on this server.</p>
+  
+  <p>Use the button below to create a new project.</p>
+
+<% else %>
+
+  <ul class="projectList">
+  <% for project in @projects %>
+    <li>
+      <%= link_to project.title, "projects/#{get_id(project)}" %>
+    </li>
+  <% end %>
+  </ul>
+
+  <%= render(:partial => 'workflow/paginate', :locals => {:collection => @projects}) %>
+
+<% end %>
+
+<div class="visualClear">&nbsp;</div>
+
+<%= button_to 'Create a new project', :controller => 'admin/projects', :action => 'new' %>

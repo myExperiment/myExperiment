@@ -1,0 +1,21 @@
+<h2>Most recent workflows</h2>
+
+<div class="threeQuarters">
+
+<%= render(:partial => 'list') %>
+
+</div>
+
+<div id="sidebar">
+
+<h2>&rarr;&nbsp;<%= link_to 'Tagged workflows', :action => 'tags' %></h2>
+
+</div>
+
+<div class="visualClear">
+
+<div class="workflowListPages">
+
+<%= render(:partial => 'workflow/paginate', :locals => {:collection => @workflows, :query => nil}) %>
+
+</div>

@@ -1,0 +1,13 @@
+<% if @moderatorships.empty? %>
+
+  <p>You are not the moderator of any forums!</p>
+  <p>Moderatorships can <strong>only</strong> be created by the owner of the forum.</p>
+
+<% else %>
+
+  <h3>Moderator of</h3>
+  <ul><% @moderatorships.each do |mod| %>
+    <li><%= link_to (forum = Forum.find(mod.forum_id)).name, { :controller => :forums, :action => :show, :id => forum.id } %></li>
+  <% end %></ul>
+
+<% end %>

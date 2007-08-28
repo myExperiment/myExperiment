@@ -1,0 +1,21 @@
+<h2>All People</h2>
+
+<% if not @collection or @collection.empty? %>
+
+<p>It appears you know nobody.</p>
+
+<ul class="bullet">
+<li>Search for people you know</li>
+<li>Invite your friends to join myExperiment</li>
+<li><strong>Coming soon!</strong> Import your email contacts</li>
+</ul>
+
+<% else %>
+
+<%= render :partial => 'list' %>
+<div class="visualClear"></div>
+<%= render(:partial => 'workflow/paginate', :locals => {:collection => @collection}) %>
+
+<% end %>
+
+<div id="ugly">please de-uglify this screen.</div>

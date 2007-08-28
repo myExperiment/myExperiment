@@ -1,0 +1,17 @@
+<% unless @shared_users.empty? %>
+  <h3>My shared_users</h3>
+
+  <ul>
+    <% @shared_users.each do |n| %>
+      <li>
+        <%= link_to h(Workflow.find(n.workflow_id).title), 
+                    :controller => :workflow, 
+                    :action => :show, 
+                    :id => n.workflow_id %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>You are not authorized as a <strong>named user</strong>* of any workflows.</p>
+  <p><small>* - The access control levels of named users can be set differently from those of public users (who have <u>read only</u> permissions). </small></p>
+<% end %>

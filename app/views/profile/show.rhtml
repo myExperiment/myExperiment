@@ -1,0 +1,33 @@
+<%= render :partial => 'people/person' %>
+<hr>
+<div class="visualClear"></div>
+
+<div class="p_wrapper">
+
+<div id="p_lists">
+
+<h2><%= @workflows.empty? ? 'Workflows' : link_to('Workflows', :action => 'workflows', :id => @person) %></h2>
+
+<%= render :partial => 'workflow/latest' %>
+
+<% if false %><%= button_to 'Upload a workflow', :controller => 'workflow', :action => 'new' %><% end %>
+
+<h2>Sets</h2>
+
+<small>Coming soon</small>
+
+<h2>Projects</h2>
+
+<%= render :partial => 'projects/latest' %>
+
+<h2>Blog</h2>
+
+<%= render :partial => 'blog/latest' %>
+
+</div>
+
+<%= render :partial => 'contacts' %>
+
+</div>
+
+<div class="visualClear"></div>

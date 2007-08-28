@@ -1,0 +1,9 @@
+<h2>Just one more thing...</h2>
+<p>We need to know what your name is.</p>
+<p><strong>This is what people will see when looking at things you've done.</strong></p>
+
+<% form_tag :action => 'update' do %>
+  <p><%= text_field 'profile', 'name', :value => 'J. Random Scientist' %></p>
+  
+  <p style="text-align: right;"><%= submit_tag "Go go go >" %></p>
+<% end %>

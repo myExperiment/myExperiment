@@ -1,0 +1,9 @@
+<h1>Editing todo</h1>
+
+<% form_tag :action => 'update', :id => @todo do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Edit' %>
+<% end %>
+
+<%= link_to 'Show', :action => 'show', :id => @todo %> |
+<%= link_to 'Back', :action => 'list' %>

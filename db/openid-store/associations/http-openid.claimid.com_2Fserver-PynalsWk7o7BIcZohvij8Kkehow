@@ -1,0 +1,6 @@
+version: 2
+handle: {HMAC-SHA1}{46cd9443}{kHyjKA==}
+secret: YyPQ4Ri2nHH+mGGhbg5RD7d6gYM=
+issued: 1187877956
+lifetime: 120960
+assoc_type: HMAC-SHA1

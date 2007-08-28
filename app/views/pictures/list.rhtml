@@ -1,0 +1,33 @@
+<% if @pictures.size > 0 %>
+
+<h2>Your pictures</h2>
+<p>Select a picture to use <% if @pictures.size < 20 %>(or <%= link_to 'add a new picture', :action => 'new' %>)</p><% end %>
+<p>You can add up to 20 pictures to use in your profile<p>
+
+<% if @pictures.size == 2 %>
+
+<div style="height: 133px; width: 250px; background-image: url('/images/arrow.png'); background-position: top right; background-repeat: no-repeat;"><span style="font-weight: bold; color: red;padding-right: 4.5em;">Click the picture of your choice to add it as your avatar.</span></div>
+
+<% end %>
+
+<div class="picturesList">
+<ul id="picturesUl">
+<% for picture in @pictures %>
+  <li id="pic<%= picture.id %>">
+    <%= link_to image_tag(url_for(:action => 'show', :id => picture.id, :size => '100x100'), :border => '1'), :action => 'select', :id => picture.id %>
+    <% if picture.id != @user.avatar and picture.id != @pictures.first.id %>
+    <div><%= link_to_remote 'Delete', { :complete => "new Effect.Squish('pic#{picture.id}')",
+                                   :url => { :action => 'destroy', :id => picture }},
+                                   {:href => url_for(:action => 'destroy', :id => picture), :method => :post} %>
+    </div>
+    <% end %>
+  </li>
+<% end %>
+</ul>
+</div>
+
+<% else %>
+
+<p>You have not uploaded any pictures yet</p>
+
+<% end %>

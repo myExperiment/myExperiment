@@ -1,0 +1,6 @@
+version: 2
+handle: netmesh-u-1184940729-64742700
+secret: i8lN+HNNGLo3X/E/r2vwnaMMnjg=
+issued: 1184940729
+lifetime: 2592000
+assoc_type: HMAC-SHA1

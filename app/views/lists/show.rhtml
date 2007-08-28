@@ -1,0 +1,18 @@
+<h2><%= @list.title %></h2>
+
+<ul id="todoList">
+ <% for @todo in @list.todos %>
+  <%= render :partial => 'todos/todo' %>
+ <% end %>
+</ul>
+
+<h2>Create a new list item</h2>
+
+<%= form_remote_tag(:url => { :action => 'create_todo', :id => @list },
+    :update => 'todoList', :position => 'bottom') %>
+  <%= render :partial => 'todos/form' %>
+  <%= submit_tag 'Add new todo item' %>
+<% end_form_tag %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @list %> |
+<%= link_to 'Back', :action => 'list' %>

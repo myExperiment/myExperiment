@@ -1,0 +1,27 @@
+<h1>Listing boards</h1>
+
+<table>
+  <tr>
+  <% for column in Board.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for board in @boards %>
+  <tr>
+  <% for column in Board.content_columns %>
+    <td><%=h board.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => board %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => board %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => board }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @board_pages.current.previous } if @board_pages.current.previous %>
+<%= link_to 'Next page', { :page => @board_pages.current.next } if @board_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New board', :action => 'new' %>

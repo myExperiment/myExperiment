@@ -1,0 +1,28 @@
+<h2>Workflows Search Results</h2>
+
+<% if @collection %>
+
+<%= render :partial => 'search/info' %>
+
+  <% if not @collection.empty? %>
+
+<ul class="workflowList">
+<% for workflow in @collection %>
+    <li>
+    <%=link_to image_tag(url_for_file_column(workflow, 'image', 'thumb'), :title => workflow.title, :border => '1'),
+               :controller => 'workflow', :action => 'show', :id => workflow.id %></dt>
+    <small>from <%= link_to workflow.user.profile.name, :controller => 'profile', :action => 'show', :id => workflow.user_id %></small></li>
+<% end %>
+</ul>
+
+<div class="visualClear"></div>
+
+<%= render(:partial => 'workflow/paginate', :locals => {:query => @query, :collection => @collection}) %>
+
+  <% end %>
+
+<% else%>
+
+<p>No results</p>
+
+<% end %>

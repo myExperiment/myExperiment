@@ -1,0 +1,19 @@
+<h2>People Search Results</h2>
+
+<% if @collection %>
+
+<%= render :partial => 'search/info' %>
+
+  <% if not @collection.empty? %>
+
+<%= render :partial => 'list' %>
+<div class="visualClear"></div>
+<%= render(:partial => 'workflow/paginate', :locals => {:query => @query, :collection => @collection}) %>
+
+  <% end %>
+
+<% else%>
+
+<p>No results</p>
+
+<% end %>

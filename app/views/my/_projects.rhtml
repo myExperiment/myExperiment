@@ -1,0 +1,11 @@
+<% if @projects.empty? %>
+
+  <p>Your projects list is currently empty!</p>
+
+<% else %>
+
+  <ul><% for project in @projects %>
+    <li><%= link_to h(project.title), :controller => 'projects', :action => 'show', :id => project %></li>
+  <% end %></ul>
+
+<% end %>

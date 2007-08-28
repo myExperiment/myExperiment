@@ -1,0 +1,6 @@
+version: 2
+handle: b3055bb8a8a495ce
+secret: nVrRHBKxRoZ3d3/rUd0NQVA4USA=
+issued: 1187884136
+lifetime: 1799
+assoc_type: HMAC-SHA1

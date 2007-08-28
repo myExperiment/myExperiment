@@ -1,0 +1,9 @@
+<h1>Reply to topic</h1>
+
+<h2><%= link_to h(@topic.title), topic_path(@topic.forum, @topic) %></h2>
+
+<%= error_messages_for :post %>
+<% form_for :post, :url => posts_path(:forum_id => @topic.forum, :topic_id => @topic, :page => @topic.last_page) do |f| -%>
+<p id="post_body"><%= f.text_area :body, :rows => 10, :id => "post_body" %></p>
+<%= submit_tag "Save Reply" %> or <%= link_to "cancel", topic_path(:forum_id => @topic.forum, :id => @topic, :page => params[:page]) %>
+<% end -%>

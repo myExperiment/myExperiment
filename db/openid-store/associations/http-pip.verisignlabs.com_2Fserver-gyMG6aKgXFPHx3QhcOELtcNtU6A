@@ -1,0 +1,6 @@
+version: 2
+handle: f939d690-5190-11dc-913d-c19a4ec754f2
+secret: gYFGNJTxPIHSBVJODt11WIkfkow=
+issued: 1187884401
+lifetime: 600
+assoc_type: HMAC-SHA1

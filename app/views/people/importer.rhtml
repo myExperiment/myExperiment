@@ -1,0 +1,12 @@
+<ul>
+
+<% for contact in @contacts %>
+
+<% if not contact[0].empty? %>
+<li><%= contact[0] %>&lt;<%=contact[1] %>&gt;</li>
+<% else %>
+<li><%= contact[1] %></li>
+<% end %>
+
+<% end %>
+</ul>

@@ -1,0 +1,8 @@
+<h2>Just one more thing...</h2>
+
+<p>In myExperiment, we ask that every user picks a unique identifer as well. This will be used as a reference throughout the site. It's unrelated to your OpenId and your name, but can be anything you like...</p>
+
+<% form_tag :action => 'update' do %>
+  <%= text_field 'profile', 'unique'  %></p>
+  <%= submit_tag "I'm done" %>
+<% end %>

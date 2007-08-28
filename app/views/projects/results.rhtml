@@ -1,0 +1,25 @@
+<h2>Projects Search Results</h2>
+
+<% if @collection %>
+
+<%= render :partial => 'search/info' %>
+
+  <% if not @collection.empty? %>
+
+<ul class="projectList">
+<% for result in @collection %>
+  <li><%= link_to result.title, :action => 'show', :id => result %></li>
+<% end %>
+</ul>
+
+<div class="visualClear"></div>
+
+<%= render(:partial => 'workflow/paginate', :locals => {:query => @query, :collection => @collection}) %>
+
+  <% end %>
+
+<% else%>
+
+<p>No results</p>
+
+<% end %>
