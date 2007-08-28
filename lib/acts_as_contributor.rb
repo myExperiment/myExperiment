@@ -1,29 +1,25 @@
-#
-#
-# Copyright (c) 2007, Mark Borkum (mib104@ecs.soton.ac.uk)
-#
-# Permission is hereby granted, free of charge, to any person
-# obtaining a copy of this software and associated documentation
-# files (the "Software"), to deal in the Software without
-# restriction, including without limitation the rights to use,
-# copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the
-# Software is furnished to do so, subject to the following
-# conditions:
-
-# The above copyright notice and this permission notice shall be
-# included in all copies or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-# OTHER DEALINGS IN THE SOFTWARE.
-# 
-# 
+##
+##
+## myExperiment - a social network for scientists
+##
+## Copyright (C) 2007 University of Manchester/University of Southampton
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU Affero General Public License
+## as published by the Free Software Foundation; either version 3 of the
+## License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Affero General Public License for more details.
+##
+## You should have received a copy of the GNU Affero General Public License
+## along with this program; if not, see http://www.gnu.org/licenses
+## or write to the Free Software Foundation,Inc., 51 Franklin Street,
+## Fifth Floor, Boston, MA 02110-1301  USA
+##
+##
 
 module Mib
   module Acts #:nodoc:
@@ -31,23 +27,23 @@ module Mib
       def self.included(mod)
         mod.extend(ClassMethods)
       end
-      
+
       module ClassMethods
         def acts_as_contributor
-          has_many :contributions, 
-                   :as => :contributor, 
+          has_many :contributions,
+                   :as => :contributor,
                    :order => "created_at DESC",
                    :dependent => :destroy
-          
-          has_many :policies, 
-                   :as => :contributor, 
+
+          has_many :policies,
+                   :as => :contributor,
                    :order => "created_at DESC",
                    :dependent => :destroy
-                   
-          has_many :permissions, 
+
+          has_many :permissions,
                    :as => :contributor,
                    :dependent => :destroy
-                   
+
           # before_destroy do |c|
           #   c.contributables.each do |contributable|
           #     # ABSOLUTLY NOTHING!!
@@ -55,29 +51,29 @@ module Mib
           #     # that way, the dba can always retrieve them at a later date!
           #   end
           # end
-          
+
           class_eval do
             extend Mib::Acts::Contributor::SingletonMethods
           end
           include Mib::Acts::Contributor::InstanceMethods
         end
       end
-      
+
       module SingletonMethods
       end
-      
+
       module InstanceMethods
         def contributables
           rtn = []
-          
+
           Contribution.find_all_by_contributor_id_and_contributor_type(self.id, self.class.to_s, { :order => "contributable_type ASC, contributable_id ASC" }).each do |c|
             # rtn << c.contributable_type.classify.constantize.find(c.contributable_id)
             rtn << c.contributable
           end
-          
+
           return rtn
         end
-      
+
         # this method is called by the Policy instance when authorizing protected attributes.
         def related?(other)
           # extend in instance class
