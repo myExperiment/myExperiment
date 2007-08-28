@@ -50,9 +50,11 @@
 
 <%= render :partial => "members", :locals => { :collection => @network.members, :network => @network } %>
 
-<h3>Contributions</h3>
+<% unless @network.contributions.empty? %>
+  <h3>Contributions</h3>
 
-<%= render :partial => "contributions/list", :locals => { :collection => @network.contributions } %>
+  <%= render :partial => "contributions/list", :locals => { :collection => @network.contributions } %>
+<% end %>
 
 <br/>
 
