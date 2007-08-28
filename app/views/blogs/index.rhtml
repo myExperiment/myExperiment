@@ -1,17 +1,23 @@
+<p>
+  <%= link_to 'New blog', new_blog_path %>
+</p>
+
 <h1>Listing blogs</h1>
 
 <table>
   <tr>
     <th>Contributor</th>
-    <th>Contributor type</th>
     <th>Title</th>
+    <th>Posts</th>
+    <th>Last Post</th>
   </tr>
   
 <% for blog in @blogs %>
   <tr>
-    <td><%=h blog.contributor_id %></td>
-    <td><%=h blog.contributor_type %></td>
+    <td><%= contributor(blog.contributor_id, blog.contributor_type) %></td>
     <td><%=h blog.title %></td>
+    <td><%=h blog.posts.length %></td>
+    <td><%=h(blog.posts[-1].created_at) unless blog.posts.empty? %></td>
     <td><%= link_to 'Show', blog_path(blog) %></td>
     <td><%= link_to 'Edit', edit_blog_path(blog) %></td>
     <td><%= link_to 'Destroy', blog_path(blog), :confirm => 'Are you sure?', :method => :delete %></td>
@@ -20,5 +26,3 @@
 </table>
 
 <br />
-
-<%= link_to 'New blog', new_blog_path %>

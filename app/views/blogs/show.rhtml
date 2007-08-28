@@ -1,9 +1,8 @@
-<% if my_page?(@blog.contribution.contributor_id, @blog.contribution.contributor_type) %>
-
-<p>
-  <%= link_to 'New blog post', new_blog_post_path(@blog) %>
-</p>
-
+<% if @blog.authorized?("edit", (logged_in? ? current_user : nil)) %>
+  <p>
+    <%= link_to 'New blog post', new_blog_post_path(@blog) %> | 
+    <%= link_to 'Edit blog', edit_blog_path(@blog) %>
+  </p>
 <% end %>
 
 <h1><%=h @blog.title %></h1>
@@ -19,5 +18,4 @@
 <br/>
 
 
-<% if logged_in? and blog.authorized?("edit", current_user) %><%= link_to 'Edit', edit_blog_path(@blog) %> | <% end %>
 <%= link_to 'Back', blogs_path %>

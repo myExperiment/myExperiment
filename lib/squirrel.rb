@@ -506,7 +506,7 @@ module Squirrel # :nodoc
     @tuples["moderatorships"].each do |moderatorship_tuple|
       my_puts "Creating new Moderatorship for User #{moderatorship_tuple["user_id"]} and Forum #{moderatorship_tuple["forum_id"]}" if verbose
       
-      forum = Forum.find_by_id(moderatorship_tuple["forum_id"])
+      forum = Forum.find(:first, :conditions => ["id = ?", moderatorship_tuple["forum_id"]])
       
       if forum
         my_puts "Existing Forum found #{moderatorship_tuple["forum_id"]}" if verbose
@@ -808,9 +808,9 @@ private
         i = i.to_i + 1
       end
     
-      #hash[table_name][0] = nil
-      #hash[table_name].compact!
-      hash[table_name] = hash[table_name].shift
+      hash[table_name][0] = nil
+      hash[table_name].compact!
+      #hash[table_name] = hash[table_name].shift
     end
   end
   

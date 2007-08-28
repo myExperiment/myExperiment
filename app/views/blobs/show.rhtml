@@ -1,3 +1,7 @@
+<% if logged_in? and @blob.authorized?("edit", current_user) %>
+  <%= link_to 'Edit', edit_blob_path(@blob) %>
+<% end %>
+
 <p>
   <%= link_to '[download]', download_blob_path(@blob) %>
 </p>
@@ -29,5 +33,4 @@
 <% end %>
 
 
-<% if logged_in? and @blob.authorized?("edit", current_user) %><%= link_to 'Edit', edit_blob_path(@blob) %> |<% end %>
 <%= link_to 'Back', contributions_path %>

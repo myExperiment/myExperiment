@@ -1,0 +1,20 @@
+<% fields_for :contributor_pair do |c_f| %>
+  <p>
+    <p>
+      <b>Contributor</b><br/>
+      <%= c_f.radio_button(:class_id, "User-#{user.id}", {:checked => true}) %> - <%= link_to 'Me', user_path(user) %>
+    </p>
+    <p>
+      <b>Owner of..</b><br/>
+      <% for n in user.networks_owned %>
+        <%= c_f.radio_button(:class_id, "Network-#{n.id}") %> - <%= link_to h(n.title), network_path(n) %><br/>
+      <% end %>
+    </p>
+    <p>
+      <b>Member of..</b><br/>
+      <% for n in user.networks %>
+        <%= c_f.radio_button(:class_id, "Network-#{n.id}") %> - <%= link_to h(n.title), network_path(n) %><br/>
+      <% end %>
+    </p>
+  </p>
+<% end %>

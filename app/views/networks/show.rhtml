@@ -4,6 +4,12 @@
   </p>
 <% end %>
 
+<% if my_page? @network.owner.id %>
+  <p>
+    <%= link_to 'Edit', edit_network_path(@network) %>
+  </p>
+<% end %>
+
 <p>
   <b>Title:</b>
   <%=h @network.title %>
@@ -50,5 +56,4 @@
 
 <br/>
 
-<% if my_page? @network.owner.id %><%= link_to 'Edit', edit_network_path(@network) %> | <% end %>
 <%= link_to 'Back', networks_path %>
