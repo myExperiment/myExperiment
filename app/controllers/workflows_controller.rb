@@ -35,8 +35,9 @@ class WorkflowsController < ApplicationController
   # GET /workflows;search
   # GET /workflows.xml;search
   def search
-    if (@query = params[:query])
-      #@workflows = Workflow.find_with_ferret(@query, )
+    @query = params[:query] || ""
+    
+    unless @query.empty?
       ferret = Workflow.find_by_contents(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true))
       
       matches = []
@@ -49,9 +50,6 @@ class WorkflowsController < ApplicationController
         end
       end
       @workflows = matches
-    else
-      @query = ""
-      #@workflows = find_workflows
     end
     
     respond_to do |format|
@@ -159,6 +157,9 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       if @workflow.save
+        # BUG TO BE FIXED: multisave error (remove/reduce calls to update_attribute)
+        # Side effect of update_attribute is call to save! ==> @workflow.version is potentially 3 before it's finished uploading!
+        
         # if the user selects a different contributor_pair
         # --> @contributable.contributor = params[:contributor_pair]
         #     @contributable.contribution.contributor = current_user
@@ -213,7 +214,7 @@ class WorkflowsController < ApplicationController
 protected
 
   def find_workflows
-    @workflows = Workflow.find(:all, construct_sql)
+    @workflows = Workflow.find(:all, construct_options)
   end
   
   def find_workflow_auth
@@ -291,7 +292,7 @@ private
     end
   end
   
-  def construct_sql
+  def construct_options
     valid_keys = ["contributor_id", "contributor_type"]
     
     cond_sql = ""

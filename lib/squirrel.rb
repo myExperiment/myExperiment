@@ -32,7 +32,7 @@ module Squirrel # :nodoc
 
     names = {}
     @tuples["profiles"].each do |profile_tuple|
-      names[profile_tuple["user_id"]] = profile_tuple["name"]
+      names[profile_tuple["user_id"]] = (profile_tuple["name"] || "J. Random Scientist")
     end
     
     pictures = {}
