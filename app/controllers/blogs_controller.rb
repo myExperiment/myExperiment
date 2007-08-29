@@ -66,14 +66,17 @@ class BlogsController < ApplicationController
     end
     
     @blog = Blog.new(params[:blog])
+    
+    # bugfix (read below @blog.save)
+    @blog.contributor = current_user
 
     respond_to do |format|
       if @blog.save
         # if the user selects a different contributor_pair
         # --> @contributable.contributor = params[:contributor_pair]
         #     @contributable.contribution.contributor = current_user
-        @blog.update_attribute(:contributor_id, current_user.id) if @blog.contribution.contributor_id.to_i != current_user.id.to_i
-        @blog.update_attribute(:contributor_type, current_user.class.to_s) if @blog.contribution.contributor_type.to_s != current_user.class.to_s
+        #@blog.update_attribute(:contributor_id, current_user.id) if @blog.contribution.contributor_id.to_i != current_user.id.to_i
+        #@blog.update_attribute(:contributor_type, current_user.class.to_s) if @blog.contribution.contributor_type.to_s != current_user.class.to_s
         
         @blog.contribution.update_attributes(params[:contribution])
         

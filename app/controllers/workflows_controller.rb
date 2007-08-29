@@ -155,16 +155,16 @@ class WorkflowsController < ApplicationController
     # create workflow using helper methods
     @workflow = create_workflow(params[:workflow])
     
+    # bugfix (read below @workflow.save)
+    @workflow.contributor = current_user
+    
     respond_to do |format|
       if @workflow.save
-        # BUG TO BE FIXED: multisave error (remove/reduce calls to update_attribute)
-        # Side effect of update_attribute is call to save! ==> @workflow.version is potentially 3 before it's finished uploading!
-        
         # if the user selects a different contributor_pair
         # --> @contributable.contributor = params[:contributor_pair]
         #     @contributable.contribution.contributor = current_user
-        @workflow.update_attribute(:contributor_id, current_user.id) if @workflow.contribution.contributor_id.to_i != current_user.id.to_i
-        @workflow.update_attribute(:contributor_type, current_user.class.to_s) if @workflow.contribution.contributor_type.to_s != current_user.class.to_s
+        #@workflow.update_attribute(:contributor_id, current_user.id) if @workflow.contribution.contributor_id.to_i != current_user.id.to_i
+        #@workflow.update_attribute(:contributor_type, current_user.class.to_s) if @workflow.contribution.contributor_type.to_s != current_user.class.to_s
         
         @workflow.contribution.update_attributes(params[:contribution])
         
@@ -182,8 +182,9 @@ class WorkflowsController < ApplicationController
   # PUT /workflows/1.xml
   def update
     # update contributor with 'latest' uploader (or "editor")
-    @workflow.contributor_id = current_user.id
-    @workflow.contributor_type = current_user.class.to_s
+    #@workflow.contributor_id = current_user.id
+    #@workflow.contributor_type = current_user.class.to_s
+    @workflow.contributor = current_user
     
     respond_to do |format|
       if @workflow.update_attributes(params[:workflow])
