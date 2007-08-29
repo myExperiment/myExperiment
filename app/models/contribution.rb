@@ -26,24 +26,39 @@ class Contribution < ActiveRecord::Base
   belongs_to :contributable, :polymorphic => true
   belongs_to :policy
   
+  # is c_utor authorized to edit the policy for this contribution
+  def admin?(c_utor)
+    #policy.contributor_id.to_i == c_utor.id.to_i and policy.contributor_type.to_s == c_utor.class.to_s
+    policy.admin?(c_utor)
+  end
+  
+  # is c_utor authorized to perform action_name (using the policy)
   def authorized?(action_name, c_utor=nil)
     policy.nil? ? true : policy.authorized?(action_name, self, c_utor)
   end
   
+  # is c_utor the owner of this contribution
   def owner?(c_utor)
     #contributor_id.to_i == c_utor.id.to_i and contributor_type.to_s == c_utor.class.to_s
     
-    return (self.contributor_id.to_i == c_utor.id.to_i and self.contributor_type.to_s == c_utor.class.to_s) if self.contributor_type.to_s == "User"
-    return self.contributor.owner?(c_utor.id) if self.contributor_type.to_s == "Network"
+    case self.contributor_type.to_s
+    when "User"
+      return (self.contributor_id.to_i == c_utor.id.to_i and self.contributor_type.to_s == c_utor.class.to_s)
+    when "Network"
+      return self.contributor.owner?(c_utor.id) if self.contributor_type.to_s
+    else
+      return false
+    end
     
-    false
+    #return (self.contributor_id.to_i == c_utor.id.to_i and self.contributor_type.to_s == c_utor.class.to_s) if self.contributor_type.to_s == "User"
+    #return self.contributor.owner?(c_utor.id) if self.contributor_type.to_s == "Network"
+    
+    #false
   end
   
-  def admin?(c_utor)
-    policy.contributor_id.to_i == c_utor.id.to_i and policy.contributor_type.to_s == c_utor.class.to_s
-  end
-  
+  # is c_utor the uploader of this contribution
   def uploader?(c_utor)
-    contributable.contributor_id.to_i == c_utor.id.to_i and contributable.contributor_type.to_s == c_utor.class.to_s
+    #contributable.contributor_id.to_i == c_utor.id.to_i and contributable.contributor_type.to_s == c_utor.class.to_s
+    contributable.uploader?(c_utor)
   end
 end

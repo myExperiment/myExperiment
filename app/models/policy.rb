@@ -62,6 +62,10 @@ class Policy < ActiveRecord::Base
     end
   end
   
+  def admin?(c_utor)
+    contributor_id.to_i == c_utor.id.to_i and contributor_type.to_s == c_utor.class.to_s
+  end
+  
 private
 
   # categorize action names here (make sure you include each one as an 

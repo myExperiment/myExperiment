@@ -77,6 +77,16 @@ module Mib
         def authorized?(action_name, contributor=nil)
           contribution.authorized?(action_name, contributor)
         end
+        
+        # the owner of the contribution record for this contributable
+        def owner?(c_utor)
+          contribution.owner?(c_utor)
+        end
+        
+        # the last contributor to upload this contributable
+        def uploader?(c_utor)
+          contributor_id.to_i == c_utor.id.to_i and contributor_type.to_s == c_utor.class.to_s
+        end
       end
     end
   end
