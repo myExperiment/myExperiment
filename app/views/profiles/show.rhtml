@@ -11,5 +11,4 @@
 <%= render :partial => "profile", :locals => { :profile => @profile } %>
 
 
-<%= link_to 'Edit', edit_profile_path(@profile) %> |
 <%= link_to 'Back', user_path(@profile.owner) %>

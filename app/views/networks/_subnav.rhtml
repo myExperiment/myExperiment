@@ -1,0 +1,19 @@
+<% case controller.action_name.to_s; when "index" %>
+
+  <li><%= link_to 'New Network', new_network_path %></li>
+
+<% when "show" %>
+
+  <% if logged_in? and !@network.member? current_user.id %>
+    <li><%= request_membership_link(current_user.id, @network.id) %></li>
+  <% end %>
+
+  <% if my_page? @network.owner.id %>
+    <li><%= link_to 'Edit Network', edit_network_path(@network) %></li>
+  <% end %>
+
+<% else %>
+
+  <!-- no subnav options -->
+
+<% end %>

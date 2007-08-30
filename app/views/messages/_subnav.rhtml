@@ -1,0 +1,13 @@
+<% case controller.action_name.to_s; when "index" %>
+
+  <li><%= link_to 'Compose New Message', new_message_path %></li>
+
+<% when "show" %>
+
+  <li><%= link_to 'Reply to Message', reply_message_path(@message) %></li>
+
+<% else %>
+
+  <!-- no subnav options -->
+
+<% end %>

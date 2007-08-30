@@ -24,7 +24,7 @@
 class WorkflowsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download, :search]
   
-  before_filter :find_workflows, :only => [:index, :search]
+  before_filter :find_workflows, :only => [:index]
   #before_filter :find_workflow_auth, :only => [:bookmark, :comment, :rate, :tag, :download, :show, :edit, :update, :destroy]
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create]
   
@@ -38,18 +38,21 @@ class WorkflowsController < ApplicationController
     @query = params[:query] || ""
     
     unless @query.empty?
-      ferret = Workflow.find_by_contents(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true))
+      #ferret = Workflow.find_by_contents(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true))
       
-      matches = []
-      ferret.each do |f|
-        @workflows.each do |w|
-          if f.id.to_i == w.id.to_i
-            matches << f
-            break
-          end
-        end
-      end
-      @workflows = matches
+      #matches = []
+      #ferret.each do |f|
+      #  @workflows.each do |w|
+      #    if f.id.to_i == w.id.to_i
+      #      matches << f
+      #      break
+      #    end
+      #  end
+      #end
+      #@workflows = matches
+      @workflows = Workflow.find_by_contents(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true))
+    else
+      @workflows = find_workflows
     end
     
     respond_to do |format|

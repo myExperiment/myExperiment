@@ -1,0 +1,17 @@
+<% case controller.action_name.to_s; when "index" %>
+
+  <% unless logged_in? %>
+    <li><%= link_to 'New User', new_user_path %></li>
+  <% end %>
+
+<% when "show" %>
+
+  <% if logged_in? and !@user.friend? current_user.id %>
+    <li><%= request_friendship_link(@user.id) %></li>
+  <% end %>
+
+<% else %>
+
+  <!-- no subnav options -->
+
+<% end %>

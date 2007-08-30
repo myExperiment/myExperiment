@@ -19,8 +19,9 @@
 </p>
 
 <p>
-  <b>Body:</b>
-  <%=h @message.body %>
+  <b>Body:</b><br/>
+  <!-- needs whitelisting -->
+  <%= @message.body %>
 </p>
 
 <% if @message.reply? %>
@@ -30,5 +31,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Reply', reply_message_path(@message) %> |
 <%= link_to 'Back', messages_path %>

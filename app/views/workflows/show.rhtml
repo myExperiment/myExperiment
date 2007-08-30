@@ -1,8 +1,3 @@
-<p>
-  <%= link_to '[download]', download_workflow_path(@workflow) %> 
-  <% if logged_in? %>| <%= link_to_remote '[bookmark]', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %><% end %>
-</p>
-
 <h3>Actions</h3>
 
 <p>
@@ -129,5 +124,4 @@
 <br/>
 
 
-<% if logged_in? and @workflow.authorized?("edit", current_user) %><%= link_to 'Edit', edit_workflow_path(@workflow) %> | <% end %>
 <%= link_to 'Back', contributions_path %>

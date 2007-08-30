@@ -1,0 +1,15 @@
+<% case controller.action_name.to_s; when "index" %>
+
+  <% if @policy %>
+    <li><%= link_to 'New permission', new_permission_path(@policy) %></li>
+  <% end %>
+
+<% when "show" %>
+
+  <li><%= link_to 'Edit Permission', edit_permission_path(@permission.policy, @permission) %></li>
+
+<% else %>
+
+  <!-- no subnav options -->
+
+<% end %>

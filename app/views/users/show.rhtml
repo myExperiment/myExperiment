@@ -1,5 +1,3 @@
-<% if logged_in? and !@user.friend? current_user.id %><p><%= request_friendship_link(params[:id]) %></p><% end %>
-
 <h3>Details</h3>
 
 <p>
@@ -33,14 +31,14 @@
   <%=h @user.updated_at %>
 </p>
 
-<%= link_to '[edit]', edit_user_path(@user) if my_page? @user.id %>
+<%= link_to '[edit account settings]', edit_user_path(@user) if my_page? @user.id %>
 
 <% unless @user.profile.nil? %>
   <h3>Profile</h3>
 
   <%= render :partial => "profiles/profile", :locals => { :profile => @user.profile } %>
 
-  <%= link_to '[edit]', edit_profile_path(@user.profile) if my_page? @user.id %>
+  <%= link_to '[edit profile]', edit_profile_path(@user.profile) if my_page? @user.id %>
 <% end %>
 
 <% if @user.profile.avatar? %>

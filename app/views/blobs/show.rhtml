@@ -1,11 +1,3 @@
-<% if logged_in? and @blob.authorized?("edit", current_user) %>
-  <%= link_to 'Edit', edit_blob_path(@blob) %>
-<% end %>
-
-<p>
-  <%= link_to '[download]', download_blob_path(@blob) %>
-</p>
-
 <p>
   <b>Contributor:</b>
   <%= contributor(@blob.contribution.contributor_id, @blob.contribution.contributor_type) %>

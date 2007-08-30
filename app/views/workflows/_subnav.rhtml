@@ -1,0 +1,25 @@
+<% case controller.action_name.to_s; when "index" %>
+
+  <% if logged_in? %>
+    <%= link_to 'New Workflow', new_workflow_path %>
+  <% end %>
+
+<% when "show" %>
+
+  <% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
+    <li><%= link_to 'Download Workflow', download_workflow_path(@workflow) %></li>
+  <% end %>
+  
+  <% if logged_in? %>
+    <li><%= link_to_remote 'Bookmark Workflow', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %></li>
+  <% end %>
+
+  <% if @workflow.authorized?("edit", (logged_in? ? current_user : nil)) %>
+    <li><%= link_to 'Edit Workflow', edit_workflow_path(@workflow) %></li>
+  <% end %>
+
+<% else %>
+
+  <!-- no subnav options -->
+
+<% end %>

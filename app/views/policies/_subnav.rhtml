@@ -1,0 +1,17 @@
+<% case controller.action_name.to_s; when "index" %>
+
+  <% if logged_in? %>
+    <li><%= link_to 'New Policy', new_policy_path %></li>
+  <% end %>
+
+<% when "show" %>
+
+  <li><%= link_to 'Edit Policy', edit_policy_path(@policy) %></li>
+  
+  <li><%= link_to 'Edit Permissions', permissions_path(@policy) %></li>
+
+<% else %>
+
+  <!-- no subnav options -->
+
+<% end %>

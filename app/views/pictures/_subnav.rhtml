@@ -1,0 +1,15 @@
+<% case controller.action_name.to_s; when "index" %>
+
+  <% if logged_in? %>
+    <li><%= link_to 'Upload New Picture', new_picture_path(current_user.id) %></li>
+  <% end %>
+
+<% when "show" %>
+
+  <li><%= link_to 'Edit Picture', edit_picture_path(@picture.user_id, @picture) %></li>
+
+<% else %>
+
+  <!-- no subnav options -->
+
+<% end %>

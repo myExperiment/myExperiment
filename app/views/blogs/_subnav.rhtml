@@ -1,0 +1,16 @@
+<% case controller.action_name.to_s; when "index" %>
+
+  <li><%= link_to 'New Blog', new_blog_path %></li>
+
+<% when "show" %>
+
+  <% if @blog.authorized?("edit", (logged_in? ? current_user : nil)) %>
+    <li><%= link_to 'New Blog Post', new_blog_post_path(@blog) %></li>
+    <li><%= link_to 'Edit Blog', edit_blog_path(@blog) %></li>
+  <% end %>
+
+<% else %>
+
+  <!-- no subnav options -->
+
+<% end %>

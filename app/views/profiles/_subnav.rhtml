@@ -1,0 +1,13 @@
+<% case controller.action_name.to_s; when "index" %>
+
+  <!-- no subnav options -->
+
+<% when "show" %>
+
+  <li><%= link_to 'Edit Profile', edit_profile_path(@profile) %></li>
+
+<% else %>
+
+  <!-- no subnav options -->
+
+<% end %>

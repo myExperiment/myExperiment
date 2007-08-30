@@ -13,20 +13,25 @@
 </head>
 <body>
 
-<%= image_tag("logo.png") %>
+<div id="myexp_wrapper">
 
-<p style="color: red"><%= flash[:error] %></p>
-<p style="color: green"><%= flash[:notice] %></p>
+<div id="myexp_inner">
+
+<div id="myexp_header">
+
+<p>
+  <%= image_tag("logo.png") %>
+</p>
 
 <% if logged_in? %>
-<p>
-  Logged in as <%= profile_link(current_user.id) %> [<%= link_to "Logout", session_path, :method => :delete %>] - 
-  <%= messages_link(current_user.id) %> - 
-  <%= memberships_pending_link(current_user.id) %> - 
-  <%= friendships_pending_link(current_user.id) %> - 
-  <%= link_to "My Policies", policies_path %> - 
-  <%= link_to "My Bookmarks", bookmarks_path %>
-</p>
+  <p>
+    Logged in as <%= profile_link(current_user.id) %> [<%= link_to "Logout", session_path, :method => :delete %>] - 
+    <%= messages_link(current_user.id) %> - 
+    <%= memberships_pending_link(current_user.id) %> - 
+    <%= friendships_pending_link(current_user.id) %> - 
+    <%= link_to "My Policies", policies_path %> - 
+    <%= link_to "My Bookmarks", bookmarks_path %>
+  </p>
 <% else %>
   <% form_tag session_path do %>
     <label for="username">Username:</label> <%= text_field_tag 'session[username]' %> 
@@ -37,18 +42,25 @@
   <% end %>
 <% end %>
 
-<p>
-  <%= link_to "Users", users_path %> <% if logged_in? %>(<%= link_to "Me", user_path(current_user.id) %>)<% end %> 
-  | <%= link_to "Networks", networks_path %> <% if logged_in? %>(<%= link_to "Mine", owned_networks_path(current_user.id) %>)<% end %> 
-  | <%= link_to "Contributions", contributions_path %> <% if logged_in? %>(<%= link_to "Mine", url_for(:controller => 'contributions', :contributor_id => current_user.id, :contributor_type => current_user.class.to_s) %>)<% end %> 
-  | <%= link_to "Forums", forums_path %>
-</p>
-    
-<p>
-  <%= render :partial => "workflows/search" %>
-</p>
+</div>
 
-<hr/>
+<div id="navbar">
+  <ul id="tabnav">
+    <li id="tab_users"><%= link_to "Users", users_path %></li>
+    <li id="tab_networks"><%= link_to "Networks", networks_path %></li>
+    <li id="tab_contributions"><%= link_to "Contributions", contributions_path %></li>
+    <li id="tab_forums"><%= link_to "Forums", forums_path %></li>
+  </ul>
+  <ul id="subnav">
+    <%= render :partial => "subnav" %>
+  </ul>
+  <div id="searchbar">
+    <%= render :partial => "workflows/search" %>
+  </div>
+</div>
+
+<p style="color: red"><%= flash[:error] %></p>
+<p style="color: green"><%= flash[:notice] %></p>
     
 <%= yield  %>
 
@@ -61,6 +73,10 @@
 <p>
   <b>What is a <%= link_to 'tag cloud', "http://en.wikipedia.org/wiki/Tag_cloud" %>?</b>
 </p>
+
+</div>
+
+</div>
 
 </body>
 </html>

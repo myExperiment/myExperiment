@@ -1,15 +1,3 @@
-<% if logged_in? and !@network.member? current_user.id %>
-  <p>
-    <%= request_membership_link(current_user.id, @network.id) %>
-  </p>
-<% end %>
-
-<% if my_page? @network.owner.id %>
-  <p>
-    <%= link_to 'Edit', edit_network_path(@network) %>
-  </p>
-<% end %>
-
 <p>
   <b>Title:</b>
   <%=h @network.title %>
