@@ -66,9 +66,11 @@
 
 <hr/>
 
-<p>
-  <%= tag_cloud %>
-</p>
+<% unless (controller.controller_name.to_s == "tags" and controller.action_name.to_s == "index") %>
+  <p>
+    <%= tag_cloud %>
+  </p>
+<% end %>
 
 <p>
   <b>What is a <%= link_to 'tag cloud', "http://en.wikipedia.org/wiki/Tag_cloud" %>?</b>
