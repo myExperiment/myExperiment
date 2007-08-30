@@ -187,9 +187,14 @@ ul#tabnav a:hover {
 }
 
 #subnav li a { 
+  color: blue;
   font-weight: bold !important; 
   text-decoration: none; 
   margin-right: 1em; 
+}
+
+#subnav li a:hover {
+  color: red;
 }
 
 #searchbar {

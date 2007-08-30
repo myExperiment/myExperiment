@@ -1,10 +1,12 @@
 <% case controller.action_name.to_s; when "index" %>
 
-  <!-- no subnav options -->
+  <li><%= link_to "New Forum", new_forum_path %></li>
 
 <% when "show" %>
 
-  <!-- no subnav options -->
+  <% if logged_in? %>
+    <li><%= link_to "New Topic", new_topic_path(@forum) %></li>
+  <% end%>
 
 <% else %>
 
