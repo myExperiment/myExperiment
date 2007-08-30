@@ -809,22 +809,55 @@ private
       #hash[table_name] = hash[table_name].shift
     end
   end
+
+  def unescape_mysql(input)
+
+    output = ""
+    i = 0
+   
+    while (i < input.length)
+   
+      chomped = input[i]
+      i = i.to_i + 1
+   
+      if (chomped != 92)
+        output = output.concat(chomped.chr)
+        next
+      end
+   
+      chomped = input[i]
+      i = i.to_i + 1
+   
+      case chomped
+        when 48   # \0
+          output = output.concat(0.chr)
+        when 90   # \Z
+          output = output.concat(26.chr)
+        when 110  # \n
+          output = output.concat(10.chr)
+        when 114  # \r
+          output = output.concat(13.chr)
+        when 34   # \"
+          output = output.concat('"')
+        when 39   # \'
+          output = output.concat("'")
+        when 92   # \\
+          output = output.concat(92.chr)
+        else
+        end
+    end
+   
+    return output;
+  end
   
   def clense(str)
+
     if str =~ /^[0-9]+$/
-      rtn = str.to_i
-      
-      return rtn
-    else
-      rtn = str
-      
-      rtn.gsub!(/\\'/, "'")
-      
-      rtn.gsub!(/\\"/, '"')
-      
-      # \n and \r characters not parsed correctly
-      return rtn
+      return str.to_i
     end
+
+    return unescape_mysql(str)
+
   end
 
   module FileUpload
