@@ -121,11 +121,7 @@ ul#tabnav li { /* do not change */
   display: inline;
 }
 
-body#workflow li#tabWorkflow, body#my li#tabMy, body#projects li#tabProjects, body#people li#tabPeople, body#faq li#tabAbout { 
-  /* settings for selected tab */
-}
-
-body#faq li#tabAbout a, body#workflow li#tabWorkflows a, body#my li#tabMy a, body#projects li#tabProjects a, body#people li#tabPeople a, body#experiments li#tabExperiments a, body#messages li#tabMy a, body#pictures li#tabMy a, body#blog li#tabMy a{ 
+ul#tabnav li#selected_tabnav a {
   /* settings for selected tab */
   background-color: #cfc !important; /* set selected tab background color as desired */
   color: #000; /* set selected tab link color as desired */

@@ -46,10 +46,10 @@
 
 <div id="navbar">
   <ul id="tabnav">
-    <li id="tab_users"><%= link_to "Users", users_path %></li>
-    <li id="tab_networks"><%= link_to "Networks", networks_path %></li>
-    <li id="tab_contributions"><%= link_to "Contributions", contributions_path %></li>
-    <li id="tab_forums"><%= link_to "Forums", forums_path %></li>
+    <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Users", users_path %></li>
+    <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Networks", networks_path %></li>
+    <li <%= (["contributions", "blobs", "blogs", "workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Contributions", contributions_path %></li>
+    <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
   </ul>
   <ul id="subnav">
     <%= render :partial => "subnav" %>
