@@ -50,6 +50,12 @@ included in all copies or substantial portions of the Software.
 
 .workflowDescription { margin-bottom: 1em; }
 
+.jobResultList {list-style: none; margin: 1em 0; padding: 0;}
+.jobResultList li {margin: 1em 0; padding: 0.5em;  background-color: #dddddd; border: 1px solid green;}
+
+.jobResult {list-style: none; margin: 1em 0; padding: 0;}
+.jobResult li {margin: 0.5em; padding: 0;  border: 0px; background-color: white;}
+
 .tags { margin: 0; padding: 0; }
 .tags ul { list-style: square; margin-bottom: 1em }
 .tags li { margin-left: 1em;  line-height: 1.2em;}

@@ -1,7 +1,4 @@
-
 <h2>Job list</h1>
-
-<% @jobs = Job.find_all_by_user_id(@session[:user_id]) %>
 
 <% if @jobs.size == 0 %>
 
@@ -13,12 +10,16 @@
   <div class="job">
 
   <table>
-    <% for @job in Job.find_all_by_user_id(@session[:user_id]) %>
       <tr>
-        <td><%= link_to @job.id, :action => 'show', :controller => 'jobs', :id => @job.id %></td>
-        <td><%= @job.workflow.title %></td>
-        <td><%= @job.status_string %></td>
-        <td><%= @job.started_at %></td>
+        <th>Workflow</th>
+        <th>Status</th>
+        <th>Start time</th>
+      </tr>
+    <% for job in @jobs %>
+      <tr>
+        <td><%= link_to job.workflow.title, :action => 'show', :controller => 'jobs', :id => job.id %></td>
+        <td><%= job.status %></td>
+        <td><%= job.created_at %></td>
       </tr>
     <% end %>
   </table>
