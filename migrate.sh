@@ -14,8 +14,8 @@ mkdir carlin
 cd carlin
 
 rm -rf public/workflow
-cp ${DUMP_SRC} .
-cp -r ${SCUFL_SRC} .
+cp ${DUMP_SRC} myexperiment_production.sql
+cp -r ${SCUFL_SRC} scufl
 
 grep 'INSERT INTO `pictures`'       < ${DUMP_SRC} >  import.sql
 grep 'INSERT INTO `posts`'          < ${DUMP_SRC} >> import.sql
