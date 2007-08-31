@@ -27,7 +27,7 @@ module Squirrel # :nodoc
   
   def self.go(force_exit=false, verbose=false)
     my_puts "BEGIN Phase 0 - House Keeping"
-    @tuples = self.sql_to_hash(@export_sql_file, "pictures", "posts", "topics")
+    @tuples = self.sql_to_hash(@export_sql_file, "posts", "topics")
     my_puts "Tuples data structure created successfully" if verbose
 
     names = {}
@@ -80,7 +80,6 @@ module Squirrel # :nodoc
     my_puts "END Phase 1", "", ""
     
     my_puts "BEGIN Phase 2 - User Assets"
-    my_puts "Pictures must be imported manually"
     @tuples["blogs"].each do |blog_tuple|
       blog = Blog.find_by_contributor_id_and_contributor_type(blog_tuple["user_id"], "User")
       if blog
@@ -116,6 +115,22 @@ module Squirrel # :nodoc
         my_puts "Saved BlogPost #{blogpost.id} - #{blogpost.title}" if verbose
       else
         puts blogpost.errors.full_messages
+        
+        exit if force_exit
+      end
+    end
+    
+    @tuples["pictures"].each do |picture_tuple|
+      my_puts "Creating Picture #{picture_tuple["id"]} for User #{picture_tuple["user_id"]}" if verbose
+      
+      picture = Picture.new(:id       => picture_tuple["id"],
+                            :data     => picture_tuple["data"],
+                            :user_id  => picture_tuple["user_id"])
+                            
+      if picture.save
+        my_puts "Saved Picture #{picture.id}" if verbose
+      else
+        puts picture.errors.full_messages
         
         exit if force_exit
       end
@@ -811,7 +826,6 @@ private
   end
 
   def unescape_mysql(input)
-
     output = ""
     i = 0
    
