@@ -56,11 +56,11 @@ module ApplicationHelper
       user = User.find(user_id)
       
       if user.profile.avatar?
-        img = image_tag(url_for(:controller => 'pictures',
-                                :action     => 'show',
-                                :id         => user.profile.picture_id,
-                                :size       => size),
-                        :title => h(user.name))
+        # need code for deciding whether to use small, medium or large!
+        
+        img = image_tag(url_for_file_column(user.profile.picture, "data", "large"), 
+                        :title => h(user.name),
+                        :size => size)
           
         if link_to
           #return link_to img, profile_path(user.profile)

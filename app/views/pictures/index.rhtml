@@ -13,10 +13,7 @@
       <% if my_page? picture.user_id and !picture.selected? %><br/><%= link_to 'Select as avatar', select_picture_path(picture.user_id, picture) %><% end %>
     </td>
     <% unless params[:user_id] %><td width="150"><font size="18"><%=h picture.user_id %></font></td><% end %>
-    <td><%= image_tag url_for :controller => 'pictures',
-                              :action     => 'show',
-                              :id         => picture.id,
-                              :size       => '200' %></td>
+    <td><%= image_tag(url_for_file_column(picture, "data", "large")) %></td>
     <td><%= link_to 'Show', picture_path(picture.user_id, picture) %></td>
     <% if my_page? picture.user_id %>
     <td><%= link_to 'Edit', edit_picture_path(picture.user_id, picture) %></td>

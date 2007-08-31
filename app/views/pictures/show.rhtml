@@ -5,9 +5,7 @@
 
 <p>
   <b>Data:</b>  
-  <%= link_to image_tag(url_for(:controller => 'pictures',
-                                :action     => 'show',
-                                :id         => @picture.id)),
+  <%= link_to image_tag(url_for_file_column(@picture, "data", "large")),
               select_picture_path(@picture.user_id, @picture) %>
 </p>
 

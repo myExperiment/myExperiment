@@ -25,6 +25,7 @@ class PicturesController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_pictures, :only => [:index]
+  before_filter :find_picture, :only => [:show]
   before_filter :find_picture_auth, :only => [:select, :edit, :update, :destroy]
   
   # GET /users/1/pictures/1/select
@@ -56,7 +57,12 @@ class PicturesController < ApplicationController
 
   # GET /users/1/pictures/1
   # GET /pictures/1
-  flex_image :action => 'show', :class => Picture
+  def show
+    respond_to do |format|
+      format.html # index.rhtml
+      format.xml  { render :xml => @picture.to_xml }
+    end
+  end
 
   # GET /users/1/pictures/new
   # GET /pictures/new
@@ -75,8 +81,7 @@ class PicturesController < ApplicationController
   # POST /pictures
   # POST /pictures.xml
   def create
-    @picture = Picture.create(:data => params[:picture][:data])
-    @picture.user_id = current_user.id
+    @picture = Picture.create(:data => params[:picture][:data], :user_id => current_user.id)
 
     respond_to do |format|
       if @picture.save
@@ -131,11 +136,23 @@ protected
       error("Please supply a User ID", "not supplied", :user_id)
     end
   end
+  
+  def find_picture
+    if params[:user_id]
+      begin
+        @picture = Picture.find(params[:id], :conditions => ["user_id = ?", params[:user_id]])
+      rescue ActiveRecord::RecordNotFound
+        error("Picture not found", "is invalid")
+      end
+    else
+      error("Please supply a User ID", "not supplied", :user_id)
+    end
+  end
 
   def find_picture_auth
     if params[:user_id]
       begin
-        @picture = Picture.find(params[:id], :conditions => ["user_id = ?", params[:user_id]])
+        @picture = Picture.find(params[:id], :conditions => ["user_id = ?", current_user.id])
       rescue ActiveRecord::RecordNotFound
         error("Picture not found (id not authorized)", "is invalid (not owner)")
       end
