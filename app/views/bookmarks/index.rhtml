@@ -2,17 +2,13 @@
 
 <table>
   <tr>
-    <th>Bookmarkable</th>
-    <th>Bookmarkable type</th>
-    <th>Title</th>
-    <th>Created at</th>
+    <th>Workflow</th>
+    <th>Bookmarked at</th>
   </tr>
   
 <% for bookmark in @bookmarks %>
   <tr>
-    <td><%=h bookmark.bookmarkable_id %></td>
-    <td><%=h bookmark.bookmarkable_type %></td>
-    <td><%=h bookmark.title %></td>
+    <td><%= link_to h(bookmark.bookmarkable.title), workflow_path(bookmark.bookmarkable) %></td>
     <td><%=h bookmark.created_at %></td>
     <td><%= link_to 'Show', bookmark_path(bookmark) %></td>
     <td><%= link_to 'Destroy', bookmark_path(bookmark), :confirm => 'Are you sure?', :method => :delete %></td>

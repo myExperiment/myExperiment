@@ -30,6 +30,7 @@
 </h1>
 
 <p class="subtitle">
+  Owned by: <%= contributor(@forum.contribution.contributor_id, @forum.contribution.contributor_type) %><br/>
   <%= pluralize @forum.topics_count, _('topic') %>, <%= pluralize @forum.posts_count, _('post') %>
 </p>
 

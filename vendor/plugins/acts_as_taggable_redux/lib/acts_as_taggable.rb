@@ -75,18 +75,31 @@ module ActiveRecord
         def update_tags
           if @new_tag_list
             Tag.transaction do
-              unless @new_user_id
-                taggings.destroy_all
-              else
-                taggings.find(:all, :conditions => "user_id = #{@new_user_id}").each do |tagging|
-                  tagging.destroy
+              #unless @new_user_id
+                #taggings.destroy_all
+              #else
+                #taggings.find(:all, :conditions => "user_id = #{@new_user_id}").each do |tagging|
+                  #tagging.destroy
+                #end
+              #end
+            
+              #Tag.parse(@new_tag_list).each do |name|
+                #Tag.find_or_create_by_name(name).tag(self, @new_user_id)
+              #end
+
+              #tags.reset
+              #taggings.reset
+              #@new_tag_list = nil
+              
+              old_tag_ids = self.tags.collect { |t| t.id }
+              Tag.parse(@new_tag_list).each do |new_tag_name|
+                found = Tag.find_or_create_by_name(new_tag_name)
+                
+                unless old_tag_ids.include? found.id
+                  found.tag(self, @new_user_id)
                 end
               end
-            
-              Tag.parse(@new_tag_list).each do |name|
-                Tag.find_or_create_by_name(name).tag(self, @new_user_id)
-              end
-
+              
               tags.reset
               taggings.reset
               @new_tag_list = nil
