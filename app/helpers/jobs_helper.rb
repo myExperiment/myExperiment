@@ -8,6 +8,8 @@ module JobsHelper
         result += create_list(job, key, element, metadata, index+=1)
       end
       result += "</ul>\n"
+    elsif index == 0
+      result += "<p>#{get_value(job, key, data, metadata, index)}</p>\n"
     else
       result += "<li>#{get_value(job, key, data, metadata, index)}</li>\n"
     end
@@ -20,11 +22,11 @@ module JobsHelper
         if type.index 'image'
            image_path = "jobs/#{job.id.to_s}/#{key}"
            image = "#{index.to_s}.img"
-           FileUtils.mkpath("public/images/#{image_path}")
-           file = File.new("public/images/#{image_path}/#{image}", 'w+')
+           FileUtils.mkpath("public/#{image_path}")
+           file = File.new("public/#{image_path}/#{image}", 'w+')
            file.write(Base64.decode64(data))
            file.close
-           return image_tag("#{image_path}/#{image}")
+           return image_tag("/#{image_path}/#{image}")
           return 'IMAGE'
         end
       end
