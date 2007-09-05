@@ -2,7 +2,7 @@
 
 RAILS_ROOT=~/m2
 DB_USER=root
-DB=m2_development
+DB=m2_production
 DUMP_SRC=~/myexperiment/backup/myexperiment_production.sql 
 SCUFL_SRC=~/myexperiment/backup/workflow/scufl
 

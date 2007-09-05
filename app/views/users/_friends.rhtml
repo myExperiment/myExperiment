@@ -9,8 +9,8 @@
       <%= render :partial => "users/avatar", :locals => { :user => friend } %> (with)
       <% if my_page? user.id %>
       <br/>
-      [ <%= link_to 'Show', friendship_path(friendship.friend_id, friendship) %>
-        <%= link_to 'Delete', friendship_path(friendship.friend_id, friendship), :confirm => 'Are you sure?', :method => :delete %> ]
+        <%= link_to 'Show', friendship_path(friendship.friend_id, friendship) %>
+        <%= link_to 'Delete', friendship_path(friendship.friend_id, friendship), :confirm => 'Are you sure?', :method => :delete %>
       <% end %>
     <% else %>
       <%= render :partial => "users/avatar", :locals => { :user => friend } %> (of)
