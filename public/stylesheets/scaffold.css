@@ -1,26 +1,11 @@
-body { 
+body {
   background: #8e8e8e url('/images/body-bg.gif') repeat-y center;
 }
 
-body, p, ol, ul, td {
-  font-family: verdana, arial, helvetica, sans-serif;
-  font-size:   13px;
-  line-height: 18px;
-}
-
-td {
-  text-align: center;
-}
 
 pre {
   background-color: #eee;
-  padding: 10px;
-  font-size: 11px;
 }
-
-a { color: black; }
-a:visited { color: black; }
-a:hover { color: red; }
 
 .fieldWithErrors {
   padding: 2px;
@@ -130,7 +115,7 @@ ul#tabnav li#selected_tabnav a {
   padding-top: 5px; /* must change with respect to padding (X) above and below */
 }
 
-ul#tabnav li a { 
+ul#tabnav li a {
   /* settings for all tab links */
   padding: 5px 9px; /* set padding (tab size) as desired; FIRST number must change with respect to padding-top (X) above */
   border: 1px solid #6c6; /* set border COLOR as desired; usually matches border color specified in #tabnav */
@@ -142,7 +127,7 @@ ul#tabnav li a {
   border-bottom: none;
 }
 
-ul#tabnav a:hover { 
+ul#tabnav a:hover {
   /* settings for hover effect */
   background-color: #cfc; /* set desired hover color */
   color: #1a1a1a !important;
@@ -156,7 +141,7 @@ ul#tabnav a:hover {
   margin-right: auto;
 }
 
-#myexp_inner { 
+#myexp_inner {
   padding-left: 2em;
   padding-right: 2em;
 }
@@ -169,8 +154,8 @@ ul#tabnav a:hover {
   padding-bottom: 1em;
 }
 
-#subnav { 
-  text-align: center; 
+#subnav {
+  text-align: center;
   background-color: #cfc;
   margin-top: 0;
   margin-bottom: 0;
@@ -178,15 +163,15 @@ ul#tabnav a:hover {
   padding-bottom: 0.5em;
 }
 
-#subnav li { 
-  display: inline; 
+#subnav li {
+  display: inline;
 }
 
-#subnav li a { 
+#subnav li a {
   color: blue;
-  font-weight: bold !important; 
-  text-decoration: none; 
-  margin-right: 1em; 
+  font-weight: bold !important;
+  text-decoration: none;
+  margin-right: 1em;
 }
 
 #subnav li a:hover {
@@ -195,6 +180,6 @@ ul#tabnav a:hover {
 
 #searchbar {
   padding-top: 0em;
-  text-align: center; 
+  text-align: center;
   background: #ffffff url('/images/searchfade.png') repeat-x center;
 }
