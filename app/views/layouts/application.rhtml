@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title>myExperiment.org - M2 - <%= controller.controller_name %> - <%= controller.action_name %></title>
+  <title>myExperiment - <%= controller.controller_name %> - <%= controller.action_name %></title>
   <%= stylesheet_link_tag 'scaffold' %>
   <%= stylesheet_link_tag 'savagebeast' %>
   <%= stylesheet_link_tag 'acts_as_taggable_stylesheet' %>
@@ -19,25 +19,20 @@
 
 <div id="myexp_header">
 
-<p>
-  <%= image_tag("logo.png") %>
-</p>
+<h1 id="logo"><%= link_to "myExperiment", :controller => 'welcome' %></h1>
 
 <% if logged_in? %>
   <p>
-    Logged in as <%= profile_link(current_user.id) %> [<%= link_to "Logout", session_path, :method => :delete %>] - 
-    <%= messages_link(current_user.id) %> - 
-    <%= memberships_pending_link(current_user.id) %> - 
-    <%= friendships_pending_link(current_user.id) %> - 
-    <%= link_to "My Policies", policies_path %> - 
+    Logged in as <%= profile_link(current_user.id) %> [<%= link_to "Logout", session_path, :method => :delete %>] -
+    <%= messages_link(current_user.id) %> -
+    <%= memberships_pending_link(current_user.id) %> -
+    <%= friendships_pending_link(current_user.id) %> -
+    <%= link_to "My Policies", policies_path %> -
     <%= link_to "My Bookmarks", bookmarks_path %>
   </p>
 <% else %>
   <% form_tag session_path do %>
-    <label for="username">Username:</label> <%= text_field_tag 'session[username]' %> 
-    <label for="password">Password:</label> <%= password_field_tag 'session[password]' %> 
-    <label for="remember_me">Remember me:</label> <%= check_box_tag 'session[remember_me]' %> ...or use: 
-    <label for="openid_url">OpenID:</label> <%= text_field_tag 'openid_url' %> 
+    <label for="openid_url">OpenID:</label> <%= text_field_tag 'openid_url' %>
     <%= submit_tag 'Sign in', :disable_with => "Signing in&hellip;" %>
   <% end %>
 <% end %>
@@ -61,20 +56,8 @@
 
 <p style="color: red"><%= flash[:error] %></p>
 <p style="color: green"><%= flash[:notice] %></p>
-    
+
 <%= yield  %>
-
-<hr/>
-
-<% unless (controller.controller_name.to_s == "tags" and controller.action_name.to_s == "index") %>
-  <p>
-    <%= tag_cloud %>
-  </p>
-<% end %>
-
-<p>
-  <b>What is a <%= link_to 'tag cloud', "http://en.wikipedia.org/wiki/Tag_cloud" %>?</b>
-</p>
 
 </div>
 
