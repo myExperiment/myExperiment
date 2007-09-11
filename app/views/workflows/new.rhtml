@@ -7,6 +7,8 @@
 
   <%= render :partial => "policies/listform", :locals => { :contribution => @workflow.contribution, :user => current_user } %>
   
+  <h3>Scufl and Metadata</h3>
+  
   <p>
     <b>Scufl</b><br />
     <%= file_field :workflow, :scufl %>

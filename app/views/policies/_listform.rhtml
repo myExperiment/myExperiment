@@ -1,6 +1,9 @@
 <% fields_for :contribution, contribution do |c_f| %>
+  <h3>Policy</h3>
+  
+  <p>Select an <b>access control</b> policy from the list below or click <%= link_to 'here', new_policy_path %> to create a new policy.</p>
+    
   <p>
-    <b>Policy</b><br/>
     <%= c_f.radio_button(:policy_id, "") %> - Public (all)<br/>
     <% for p in user.policies %>
       <%= c_f.radio_button(:policy_id, p.id) %> - <%=h p.name %><br/>

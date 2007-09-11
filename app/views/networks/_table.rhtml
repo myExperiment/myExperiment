@@ -1,0 +1,26 @@
+<% unless collection.empty? %>
+<table>
+  <tr>
+    <th>User</th>
+    <th>Title</th>
+    <th>Unique</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+  </tr>
+  
+<% for network in collection %>
+  <tr>
+    <td><%=h network.user_id %></td>
+    <td><%=h network.title %></td>
+    <td><%=h network.unique %></td>
+    <td><%=h network.created_at %></td>
+    <td><%=h network.updated_at %></td>
+    <td><%= link_to 'Show', network_path(network) %></td>
+    <% if my_page? network.owner.id %>
+    <td><%= link_to 'Edit', edit_network_path(network) %></td>
+    <td><%= link_to 'Destroy', network_path(network), :confirm => 'Are you sure?', :method => :delete %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>
+<% end %>

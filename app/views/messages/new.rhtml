@@ -5,7 +5,8 @@
 <% form_for(:message, :url => messages_path) do |f| %>
   <p>
     <b>To</b><br />
-    <%= f.text_field :to %>
+    <% if false %><%= f.text_field :to %><% end %>
+    <%= select(:message, :to, User.find(:all).collect {|u| [ u.name, u.id ] }, { :include_blank => false }) %>
   </p>
 
   <p>

@@ -1,6 +1,10 @@
+<% if false %>
+
 <br/>
 
 <%= link_to image_tag("mail.png", :title => "Compose Message", :size => "50x50"), new_message_path %> 
+
+<% end %>
 
 <h1>Inbox</h1>
 
@@ -14,7 +18,7 @@
   
 <% for message in @messages %>
   <tr>
-    <td><%= "<b>" unless message.read? %><%=h openid(message.from) %><%= "</b>" unless message.read? %></td>
+    <td><%= "<b>" unless message.read? %><%=h name(message.from) %><%= "</b>" unless message.read? %></td>
     <td><%= "<b>" unless message.read? %><%=link_to h(message.subject), message_path(message) %><%= "</b>" unless message.read? %></td>
     <td><%= "<b>" unless message.read? %><%=h message.created_at %><%= "</b>" unless message.read? %></td>
     <td><%= link_to 'Reply', reply_message_path(message) %></td>
@@ -35,7 +39,7 @@
   
 <% for message in current_user.messages_sent %>
   <tr>
-    <td><%=h openid(message.from) %></td>
+    <td><%=h name(message.from) %></td>
     <td><%=link_to h(message.subject), message_path(message) %></td>
     <td><%=h message.created_at %></td>
   </tr>

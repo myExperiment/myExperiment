@@ -1,0 +1,37 @@
+  <%= form.hidden_field :contributor_id %>
+  <%= form.hidden_field :contributor_type %>
+
+  <p>
+    <b>Name</b><br />
+    <%= form.text_field :name %>
+  </p>
+
+  <p>
+    <b>Download public</b><br />
+    <%= form.check_box :download_public %>
+  </p>
+
+  <p>
+    <b>Edit public</b><br />
+    <%= form.check_box :edit_public %>
+  </p>
+
+  <p>
+    <b>View public</b><br />
+    <%= form.check_box :view_public %>
+  </p>
+
+  <p>
+    <b>Download protected</b><br />
+    <%= form.check_box :download_protected %>
+  </p>
+
+  <p>
+    <b>Edit protected</b><br />
+    <%= form.check_box :edit_protected %>
+  </p>
+
+  <p>
+    <b>View protected</b><br />
+    <%= form.check_box :view_protected %>
+  </p>

@@ -1,30 +1,26 @@
+<h1>What is a network?</h1>
+
+<p>
+  The ability to create <b>Virtual Organisations</b> (known as "networks") is a new feature for this version of myExperiment.<br/>
+  Networks provide functionality for managing and sharing contributions as a <b>group</b>, using fine-grained, <b>access control</b> policies.
+</p>
+
+<h1>What additional security does this provide?</h1>
+
+<p>
+  Networks provide four layers of access control using a very simple security model:
+  <ul>
+    <li><b>Private access</b> - <b>Only network members</b> are permitted to access contributions</li>
+    <li><b>Whitelisting</b> - Named users and networks are <b>allowed</b> to access contributions</li>
+    <li><b>Blacklisting</b> - Named users and networks are <b>denied</b> access to contributions</li>
+    <li><b>Public access</b> - <b>All users</b> (including network members) are permitted to access contributions.</li>
+  </ul>
+</p>
+
 <h1>Listing networks</h1>
 
 <% if false %>
-<table>
-  <tr>
-    <th>User</th>
-    <th>Title</th>
-    <th>Unique</th>
-    <th>Created at</th>
-    <th>Updated at</th>
-  </tr>
-  
-<% for network in @networks %>
-  <tr>
-    <td><%=h network.user_id %></td>
-    <td><%=h network.title %></td>
-    <td><%=h network.unique %></td>
-    <td><%=h network.created_at %></td>
-    <td><%=h network.updated_at %></td>
-    <td><%= link_to 'Show', network_path(network) %></td>
-    <% if my_page? network.owner.id %>
-    <td><%= link_to 'Edit', edit_network_path(network) %></td>
-    <td><%= link_to 'Destroy', network_path(network), :confirm => 'Are you sure?', :method => :delete %></td>
-    <% end %>
-  </tr>
-<% end %>
-</table>
+  <%= render :partial => "table", :locals => { :collection => @networks } %>
 <% end %>
 
 <%= render :partial => "list", :locals => { :collection => @networks } %>

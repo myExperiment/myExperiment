@@ -1,13 +1,23 @@
-<h1>Listing users</h1>
+<% unless logged_in? %>
 
-<p>This list is produced using a ruby call to <code><%=h 'render :partial => "users/hlist", :locals => { :collection => @users }' %></code>.</p>
+<h1>Create an account</h1>
+
+<p>Click <%= link_to 'here', new_user_path %> to create a new myExperiment user account.</p>
+
+<% end %>
+
+<h1>Listing users</h1>
 
 <%= render :partial => "hlist", :locals => { :collection => @users } %>
 
 <br />
+
+<% if false %>
 
 <p>This table is produced using a ruby call to <code><%=h 'render :partial => "users/table", :locals => { :collection => @users }' %></code>.</p>
 
 <%= render :partial => "table", :locals => { :collection => @users } %>
 
 <br />
+
+<% end %>

@@ -1,5 +1,6 @@
 <h1>Listing contributions</h1>
 
+<% if false %>
 <p>This page is generated in three steps:</p>
 
 <ol>
@@ -7,6 +8,7 @@
   <li><code>filter_contributables</code> produces <b>klass</b>-<b>contributables</b> key-value pairs in a Hash</li>
   <li><code>render :partial => "#{klass.pluralize.downcase}/#{klass.downcase}", :collection => contributables</code> for each <b>klass</b></li>
 </ol>
+<% end %>
 
 <p>
 
