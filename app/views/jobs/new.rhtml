@@ -7,11 +7,12 @@
 <% form_tag :action => 'create' do %>
   <% if @inputs and @inputs.length > 0 %>
 
-  <% for @name in @inputs %>
-    <h3><%= @name %></h3>
-    <ul id="<%= @name %>">
+  <% for input in @inputs %>
+    <h3><%= input.name %></h3>
+	<p class="jobInputDescription"><%=h input.description %></p>
+    <ul id="<%= input.name %>">
     </ul>
-  <%= link_to_remote('Add input', :url => { :action => 'input', :id => @name}, :update => "#{@name}", :position => 'bottom') %>
+  <%= link_to_remote('Add input', :url => { :action => 'input', :id => input.name}, :update => "#{input.name}", :position => 'bottom') %>
 
   <% end %>
 
