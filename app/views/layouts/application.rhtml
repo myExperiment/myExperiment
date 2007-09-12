@@ -10,14 +10,21 @@
   <%= stylesheet_link_tag 'acts_as_taggable_stylesheet' %>
   <%= stylesheet_link_tag 'star_rating' %>
   <%= javascript_include_tag :defaults %>
+  <%= javascript_include_tag 'moo' %>
+  <%= javascript_include_tag 'box' %>
 </head>
 <body>
 
 <div id="wrapper">
 
-<div id="myexp_header">
+<div id="header">
 
-<h1 id="logo"><%= link_to "myExperiment", :controller => 'welcome' %></h1>
+<h1 id="logo"><%= link_to "myExperiment", :controller => '/' %></h1>
+
+  <div id="searchbar">
+    <%= render :partial => "workflows/search" %>
+  </div>
+  
 
 <div id="navbar">
   <ul id="tabnav">
@@ -26,22 +33,31 @@
     <li <%= (["contributions", "blobs", "blogs", "workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Contributions", contributions_path %></li>
     <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
   </ul>
-  <ul id="subnav">
-    <%= render :partial => "subnav" %>
-  </ul>
-  <div id="searchbar">
-    <%= render :partial => "workflows/search" %>
-  </div>
 </div>
 </div>
+        <div id="columns">
+
+        <div id="content">
+
+
 
 <p style="color: red"><%= flash[:error] %></p>
 <p style="color: green"><%= flash[:notice] %></p>
 
 <%= yield  %>
 
-<div id="loginContainer">
-
+</div>
+<div id="sidebar">
+  <ul id="subnav">
+    <%= render :partial => "subnav" %>
+  </ul>
+</div>
+</div>
+<div id="fxContainer">
+<div id="fxTarget">
+                        <div id="fxPadding" class="wrapper">
+                                                <div class="moduletable">
+                                                     <div class="moduletable">
 <% if logged_in? %>
   <p>
     Logged in as <%= profile_link(current_user.id) %> [<%= link_to "Logout", session_path, :method => :delete %>] -
@@ -61,8 +77,20 @@
 </div>
 
 
+                        </div>
+                                        </div>
+                </div>
+                <div id="fxShadow"></div>
+
+                <div id="fxTab">
+
+                        <a href="#" id="fxTrigger">&nbsp;</a>
+                </div>
+        </div>
+
+
 <div id="footer">
-  <p>footer</p>
+  <p>&copy; myExperiment</p>
 </div>
 
 

@@ -1,4 +1,3 @@
 <% form_tag search_workflows_path, :method => :get do %>
-  <%= text_field_tag :query %> 
-  <%= submit_tag "Search Workflows", :disable_with => "Searching..." %>
+  <%= text_field_tag :query %> <%= submit_tag "Search", :disable_with => "Searching..." %>
 <% end %>

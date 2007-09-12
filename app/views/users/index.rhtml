@@ -1,10 +1,4 @@
-<% unless logged_in? %>
-
-<h1>Create an account</h1>
-
-<p>Click <%= link_to 'here', new_user_path %> to create a new myExperiment user account.</p>
-
-<% end %>
+<% if logged_in? %>
 
 <h1>Listing users</h1>
 
@@ -19,5 +13,9 @@
 <%= render :partial => "table", :locals => { :collection => @users } %>
 
 <br />
+
+<% end %>
+
+<% else %>
 
 <% end %>
