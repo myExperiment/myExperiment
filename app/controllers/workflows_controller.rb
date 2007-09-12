@@ -223,6 +223,9 @@ protected
   
   def find_workflow_auth
     begin
+      # attempt to authenticate the user before you return the workflow
+      login_required if login_available?
+    
       workflow = Workflow.find(params[:id])
       
       if workflow.authorized?(action_name, (logged_in? ? current_user : nil))
@@ -235,8 +238,11 @@ protected
         else
           @workflow = workflow
         end
+        
+        # remove scufl from workflow if the user is not authorized for download
+        @workflow.scufl = nil unless @workflow.authorized?("download", (logged_in? ? current_user : nil))
       else
-        if logged_in? 
+        if logged_in?
           error("Workflow not found (id not authorized)", "is invalid (not authorized)")
         else
           find_workflow_auth if login_required

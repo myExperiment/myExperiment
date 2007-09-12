@@ -65,6 +65,13 @@ module AuthenticatedSystem
       logged_in? ? true : access_denied
     end
     
+    # This is a very clever utility method written by Mark
+    # Simply put, if you can authenticate someone RESTfully, it returns true, else false.
+    def login_available?
+      username, passwd = get_auth_data
+      return ((username && passwd) ? true : false)
+    end
+    
     # Redirect as appropriate when an access request fails.
     #
     # The default action is to redirect to the login screen.

@@ -30,7 +30,7 @@ class Policy < ActiveRecord::Base
   has_many :permissions,
            :dependent => :destroy
   
-  validates_presence_of :contributor
+  validates_presence_of :contributor, :name
   
   def authorized?(action_name, contribution, contributor=nil)
     begin
