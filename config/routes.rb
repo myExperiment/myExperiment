@@ -1,19 +1,19 @@
 ActionController::Routing::Routes.draw do |map|
-  # forums 
+  # forums
   map.from_plugin :savage_beast
-  
+
   # tags and bookmarks
   map.resources :tags, :bookmarks
-  
+
   # sessions and authentication
   map.resource :session
-  
+
   # workflows (downloadable)
   map.resources :workflows, :collection => { :search => :get }, :member => { :download => :get, :bookmark => :post, :comment => :post, :rate => :post, :tag => :post }
 
   # blobs (downloadable)
   map.resources :blobs, :member => { :download => :get }
-  
+
   # bloGs
   map.resources :blogs do |blog|
     # blogs have nested posts
@@ -21,7 +21,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.resources :contributions
-  
+
   # all policies for all contributables
   map.resources :policies do |policy|
     # policies have nested permissions that name contributors
@@ -30,7 +30,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # message center for current_user (User.find session[:user_id])
   map.resources :messages
-  
+
   # all ***ship's
   map.resources :relationships, :memberships, :friendships
 
@@ -38,17 +38,17 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :users do |user|
     # friendships 'owned by' user (user --> friendship --> friend)
     user.resources :friendships, :member => { :accept => :get }
-    
+
     # memberships 'owned by' user (user --> membership --> network)
     user.resources :memberships, :member => { :accept => :get }
-    
+
     # user profile
     user.resource :profile, :controller => :profiles
-    
+
     # pictures 'owned by' user
     user.resources :pictures, :member => { :select => :get }
   end
-  
+
   # all networks
   map.resources :networks, :member => { :membership_create => :get, :membership_request => :get } do |network|
     # relationships 'accepted by' network (relation --> relationship --> network)
@@ -56,7 +56,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
-  
+
   # Sample of regular route:
   # map.connect 'products/:id', :controller => 'catalog', :action => 'view'
   # Keep in mind you can assign values other than :controller and :action
@@ -66,9 +66,9 @@ ActionController::Routing::Routes.draw do |map|
   # This route can be invoked with purchase_url(:id => product.id)
   map.owned_networks 'users/:user_id/networks', :controller => 'networks', :action => 'index'
 
-  # You can have the root of your site routed by hooking up '' 
+  # You can have the root of your site routed by hooking up ''
   # -- just remember to delete public/index.html.
-  map.connect '', :controller => 'users'
+  map.connect '', :controller => 'dashboard'
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'

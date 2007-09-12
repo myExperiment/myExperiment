@@ -1,58 +1,53 @@
-<h1>New user with OpenID</h1>
+<h1>New user</h1>
+
+<p>myExperiment supports both OpenID and a more traditional
+username/password. Whichever you choose, you can add the other option later.</p>
 
 <% form_tag session_path do %>
   <fieldset>
     <legend>OpenID Authentication details:</legend>
-    
+
     <p>Simply enter and verify your OpenID username and a myExperiment account will automatically be created.</p>
-    
-    <p><b>Don't have an OpenID? Get one FREE from <%= link_to 'myOpenID', "https://www.myopenid.com/" %>.</b></p>
-    
+
+    <p><b>Don't have an OpenID? Get one FREE from <%= link_to 'myOpenID', 'https://www.myopenid.com/affiliate_signup?affiliate_id=555' %>.</b></p>
+
     <p>
       <b>OpenID</b><br/>
       <%= text_field_tag 'openid_url' %>
     </p>
-  </fieldset>
-  
+
   <p>
-    <%= submit_tag 'Create with OpenID', :disable_with => "Verifying&hellip;" %>
+    <%= submit_tag 'Login', :disable_with => "Verifying&hellip;" %>
   </p>
+
+  </fieldset>
+
 <% end %>
-
-<br/>
-
-<h1>New user with REST</h1>
 
 <%= error_messages_for :user %>
 
 <% form_for(:user, :url => users_path) do |f| %>
   <fieldset>
-    <legend>RESTful Authentication details:</legend>
-    
-    <p>myExperiment offers a <%= link_to 'Representational State Transfer', "http://en.wikipedia.org/wiki/Representational_State_Transfer" %> (REST) interface for use with 
-    any compatable client (such as <%= link_to 'cURL', "http://curl.haxx.se/" %>).</p>
 
-    <p>In order to maintain a session, you must log-in to myExperiment using a RESTful username and password.</p>
-    
     <p>
-      <b>Username</b><br />
+      <b>Email address</b><br />
       <%= f.text_field :username %>
     </p>
-  
+
     <p>
       <b>Password</b><br />
       <%= f.password_field :password %>
     </p>
-  
+
     <p>
       <b>Confirm Password</b><br />
       <%= f.password_field :password_confirmation %>
     </p>
-  </fieldset>
 
   <p>
-    <%= submit_tag "Create with REST" %>
+    <%= submit_tag "Join now!" %>
   </p>
-<% end %>
 
-<%= link_to 'Back', users_path %>
+  </fieldset>
+
+<% end %>
