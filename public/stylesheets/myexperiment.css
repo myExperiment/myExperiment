@@ -197,3 +197,15 @@ text-decoration: underline !important;
 }
 
 #searchbar{ position: absolute; top: 18px; right: 0px; }
+
+.greenRow{ padding: 1em; }
+
+.half{ width: 50%; float: left; }
+
+h1, h2, h3, h4, h5, h6{ font-size: 130%; font-weight: bold; margin-bottom: 1em; }
+
+.center{ text-align: center; }
+
+.large{ font-size: 120%; }
+
+.half label{ width: 10em; display: block; }

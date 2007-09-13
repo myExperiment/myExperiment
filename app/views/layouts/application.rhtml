@@ -24,7 +24,7 @@
   <div id="searchbar">
     <%= render :partial => "workflows/search" %>
   </div>
-  
+
 
 <div id="navbar">
   <ul id="tabnav">
@@ -58,6 +58,7 @@
                         <div id="fxPadding" class="wrapper">
                                                 <div class="moduletable">
                                                      <div class="moduletable">
+<div class="greenRow">
 <% if logged_in? %>
   <p>
     Logged in as <%= profile_link(current_user.id) %> [<%= link_to "Logout", session_path, :method => :delete %>] -
@@ -68,11 +69,37 @@
     <%= link_to "My Bookmarks", bookmarks_path %>
   </p>
 <% else %>
+  <div class="half">
+
+  <h5>Already registered?</h5>
+
   <% form_tag session_path do %>
     <label for="openid_url">OpenID:</label> <%= text_field_tag 'openid_url' %>
     <%= submit_tag 'Sign in', :disable_with => "Signing in&hellip;" %>
   <% end %>
+
+  <div>or...</div>
+
+  <% form_tag session_path do %>
+
+    <p><label for="email_address">Email address:</label> <%= text_field_tag 'email' %></p>
+    <p><label for="password">Password:</label> <%= password_field_tag 'password' %>    <%= submit_tag 'Sign in', :disable_with => "Signing in&hellip;" %></p>
+
+  <% end %>
+
+  </div>
+
+  <div class="half">
+
+     <h5>Need an account?</h5>
+
+    <p>Login with an OpenID</p>
+
+    <p>Create a new account</p>
+
+  </div>
 <% end %>
+</div>
 
 </div>
 
@@ -87,6 +114,8 @@
                         <a href="#" id="fxTrigger">&nbsp;</a>
                 </div>
         </div>
+
+
 
 
 <div id="footer">
