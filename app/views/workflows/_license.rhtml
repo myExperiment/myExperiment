@@ -1,0 +1,116 @@
+<% case (workflow.license.to_s); when "a" %>
+
+<!--
+
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:title><%= workflow.title %></dc:title>
+   <dc:date><%= workflow.created_at %></dc:date>
+   <dc:description><%= workflow.description %></dc:description>
+   <dc:creator><Agent>
+      <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
+   </Agent></dc:creator>
+   <dc:rights><Agent>
+      <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
+   </Agent></dc:rights>
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
+   <dc:source rdf:resource="http://beta.myexperiment.org<%= request.request_uri %>"/>
+   <license rdf:resource="http://creativecommons.org/licenses/by-nd/3.0/" />
+</Work>
+
+<License rdf:about="http://creativecommons.org/licenses/by-nd/3.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <prohibits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+</License>
+
+</rdf:RDF>
+
+-->
+
+<p>
+  This work is licensed under a <a rel="Copyright" href="http://creativecommons.org/licenses/by-nd/3.0/">Creative Commons Attribution-NoDerivs 3.0 License</a>.
+</p>
+
+<% when "b" %>
+
+<!--
+
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:title><%= workflow.title %></dc:title>
+   <dc:date><%= workflow.created_at %></dc:date>
+   <dc:description><%= workflow.description %></dc:description>
+   <dc:creator><Agent>
+      <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
+   </Agent></dc:creator>
+   <dc:rights><Agent>
+      <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
+   </Agent></dc:rights>
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
+   <dc:source rdf:resource="http://beta.myexperiment.org<%= request.request_uri %>"/>
+   <license rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
+</Work>
+
+<License rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+   <requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+</License>
+
+</rdf:RDF>
+
+-->
+
+<p>
+  This work is licensed under a <a rel="Copyright" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 License</a>.
+</p>
+
+<% when "c" %>
+
+<!--
+
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:title><%= workflow.title %></dc:title>
+   <dc:date><%= workflow.created_at %></dc:date>
+   <dc:description><%= workflow.description %></dc:description>
+   <dc:creator><Agent>
+      <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
+   </Agent></dc:creator>
+   <dc:rights><Agent>
+      <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
+   </Agent></dc:rights>
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
+   <dc:source rdf:resource="http://beta.myexperiment.org<%= request.request_uri %>"/>
+   <license rdf:resource="http://creativecommons.org/licenses/by/3.0/" />
+</Work>
+
+<License rdf:about="http://creativecommons.org/licenses/by/3.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+</License>
+
+</rdf:RDF>
+
+-->
+
+<p>
+  This work is licensed under a <a rel="Copyright" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 License</a>.
+</p>
+
+<% end %>

@@ -36,6 +36,10 @@ class CreateWorkflows < ActiveRecord::Migration
       
       t.column :created_at, :datetime
       t.column :updated_at, :datetime
+      
+      t.column :license, :string, 
+               :limit => 10, :null => false, 
+               :default => "a"
     end
     
     Workflow.create_versioned_table

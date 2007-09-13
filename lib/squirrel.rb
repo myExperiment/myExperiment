@@ -258,6 +258,9 @@ module Squirrel # :nodoc
                                  workflow_tuple["id"], 
                                  workflow_tuple["user_id"])
                                  
+      # added during All Hands 2007
+      workflow.license = workflow_tuple["license"]
+                                 
       if workflow.save
         my_puts "Saved Workflow #{workflow.id} from SCUFL" if verbose
         
