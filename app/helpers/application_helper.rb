@@ -28,6 +28,8 @@ module ApplicationHelper
   end
   
   def datetime(old_dt, long=true)
+    return nil unless old_dt
+    
     rtn = Time.at(old_dt)
     
     return long ? rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)") : rtn.strftime("%d/%m/%y @ %H:%M:%S")
