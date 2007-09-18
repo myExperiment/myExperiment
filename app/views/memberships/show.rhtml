@@ -10,14 +10,14 @@
 
 <p>
   <b>Created at:</b>
-  <%=h @membership.created_at %>
+  <%=datetime @membership.created_at %>
 </p>
 
 <% if @membership.accepted? %>
 
 <p>
   <b>Accepted at:</b>
-  <%=h @membership.accepted_at %>
+  <%=datetime @membership.accepted_at %>
 </p>
 
 <% elsif my_page? @membership.network.owner.id %>

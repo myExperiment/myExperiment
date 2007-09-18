@@ -14,8 +14,8 @@
     <td><%=h blog_post.blog_id %></td>
     <td><%=h blog_post.title %></td>
     <td><%=h blog_post.body %></td>
-    <td><%=h blog_post.created_at %></td>
-    <td><%=h blog_post.updated_at %></td>
+    <td><%=datetime blog_post.created_at, false %></td>
+    <td><%=datetime blog_post.updated_at, false %></td>
     <td><%= link_to 'Show', blog_post_path(blog_post.blog, blog_post) %></td>
     <td><%= link_to 'Edit', edit_blog_post_path(blog_post.blog, blog_post) %></td>
     <td><%= link_to 'Destroy', blog_post_path(blog_post.blog, blog_post), :confirm => 'Are you sure?', :method => :delete %></td>

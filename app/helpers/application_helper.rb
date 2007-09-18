@@ -26,6 +26,12 @@ module ApplicationHelper
   def my_page?(user_id, user_type="User")
     logged_in? and current_user.id.to_i == user_id.to_i and current_user.class.to_s == user_type.to_s
   end
+  
+  def datetime(old_dt, long=true)
+    rtn = Time.at(old_dt)
+    
+    return long ? rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)") : rtn.strftime("%d/%m/%y @ %H:%M:%S")
+  end
 
   def openid(user_id)
     begin
@@ -151,7 +157,7 @@ module ApplicationHelper
       workflow = Workflow.find(workflow_id)
       
       if workflow.revert_to(version_id)
-        link_to "[#{workflow.version}] - #{h(workflow.title)} (#{workflow.updated_at})", 
+        link_to "[#{workflow.version}] - #{h(workflow.title)} (#{datetime workflow.updated_at})", 
                 :controller => 'workflows',
                 :action => 'show',
                 :id => workflow.id,

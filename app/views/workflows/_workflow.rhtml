@@ -29,8 +29,8 @@
       <strong>Contributor:</strong> <%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type) %><br/>
     </td>
     <td>
-      <strong>Created at:</strong> <%=h workflow.created_at %><br/>
-      <strong>Updated at:</strong> <%=h workflow.updated_at %>
+      <strong>Created at:</strong> <%=datetime workflow.created_at, false %><br/>
+      <strong>Updated at:</strong> <%=datetime workflow.updated_at, false %>
     </td>
   </tr>
   <tr>

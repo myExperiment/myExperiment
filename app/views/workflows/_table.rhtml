@@ -24,8 +24,8 @@
         <% end %>
       <% end %>
     </td>
-    <td><%=h workflow.created_at %></td>
-    <td><%=h workflow.updated_at %></td>
+    <td><%=datetime workflow.created_at, false %></td>
+    <td><%=datetime workflow.updated_at, false %></td>
     <td><%=h workflow.version %></td>
     <td><%= number_with_precision(workflow.rating*20, 0) %>&#37 (<%= pluralize workflow.ratings.count, 'rating' %>)</td>
     <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><td><%= link_to 'Download', download_workflow_path(workflow) %></td><% end %>

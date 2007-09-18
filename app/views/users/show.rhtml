@@ -23,12 +23,12 @@
 
 <p>
   <b>Created at:</b>
-  <%=h @user.created_at %>
+  <%=datetime @user.created_at %>
 </p>
 
 <p>
   <b>Updated at:</b>
-  <%=h @user.updated_at %>
+  <%=datetime @user.updated_at %>
 </p>
 
 <%= link_to '[edit account settings]', edit_user_path(@user) if my_page? @user.id %>

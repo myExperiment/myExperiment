@@ -10,14 +10,14 @@
 
 <p>
   <b>Created at:</b>
-  <%=h @friendship.created_at %>
+  <%=datetime @friendship.created_at %>
 </p>
 
 <% if @friendship.accepted? %>
 
 <p>
   <b>Accepted at:</b>
-  <%=h @friendship.accepted_at %>
+  <%=datetime @friendship.accepted_at %>
 </p>
 
 <% elsif my_page? @friendship.friend_id %>

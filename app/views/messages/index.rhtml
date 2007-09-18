@@ -20,7 +20,7 @@
   <tr>
     <td><%= "<b>" unless message.read? %><%=h name(message.from) %><%= "</b>" unless message.read? %></td>
     <td><%= "<b>" unless message.read? %><%=link_to h(message.subject), message_path(message) %><%= "</b>" unless message.read? %></td>
-    <td><%= "<b>" unless message.read? %><%=h message.created_at %><%= "</b>" unless message.read? %></td>
+    <td><%= "<b>" unless message.read? %><%=datetime message.created_at, false %><%= "</b>" unless message.read? %></td>
     <td><%= link_to 'Reply', reply_message_path(message) %></td>
   </tr>
 <% end %>

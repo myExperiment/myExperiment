@@ -16,9 +16,9 @@ The relationship is analogous to the parent/child relationship (ie: <strong>Netw
   <tr>
     <td><%=h relationship.relation_id %></td>
     <td><%=h relationship.network_id %></td>
-    <td><%=h relationship.created_at %></td>
-    <td><%=h relationship.accepted_at || "Pending" %></td>
-    <td><%= link_to 'Review and Accept', relationship_path(relationship.network_id, relationship) %></td>
+    <td><%=datetime relationship.created_at, false %></td>
+    <td><%=datetime(relationship.accepted_at, false) || "Pending" %></td>
+    <td><%= link_to "Show#{relationship.accepted? ? "" : " / Accept"}", relationship_path(relationship.network_id, relationship) %></td>
     <td><%= link_to 'Destroy', relationship_path(relationship.network_id, relationship), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>

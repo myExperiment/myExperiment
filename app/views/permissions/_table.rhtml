@@ -20,8 +20,8 @@
     <td><%=h permission.download %></td>
     <td><%=h permission.edit %></td>
     <td><%=h permission.view %></td>
-    <td><%=h permission.created_at %></td>
-    <td><%=h permission.updated_at %></td>
+    <td><%=datetime permission.created_at, false %></td>
+    <td><%=datetime permission.updated_at, false %></td>
     <td><%= link_to 'Show', permission_path(permission.policy, permission) %></td>
     <td><%= link_to 'Edit', edit_permission_path(permission.policy, permission) %></td>
     <td><%= link_to 'Destroy', permission_path(permission.policy, permission), :confirm => 'Are you sure?', :method => :delete %></td>

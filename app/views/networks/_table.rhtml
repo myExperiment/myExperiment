@@ -13,8 +13,8 @@
     <td><%=h network.user_id %></td>
     <td><%=h network.title %></td>
     <td><%=h network.unique %></td>
-    <td><%=h network.created_at %></td>
-    <td><%=h network.updated_at %></td>
+    <td><%=datetime network.created_at, false %></td>
+    <td><%=datetime network.updated_at, false %></td>
     <td><%= link_to 'Show', network_path(network) %></td>
     <% if my_page? network.owner.id %>
     <td><%= link_to 'Edit', edit_network_path(network) %></td>

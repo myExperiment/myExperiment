@@ -30,8 +30,8 @@
     <td><%=h policy.download_protected %></td>
     <td><%=h policy.edit_protected %></td>
     <td><%=h policy.view_protected %></td>
-    <td><%=h policy.created_at %></td>
-    <td><%=h policy.updated_at %></td>
+    <td><%=datetime policy.created_at, false %></td>
+    <td><%=datetime policy.updated_at, false %></td>
     <td><%= link_to 'Show', policy_path(policy) %></td>
     <td><%= link_to 'Edit', edit_policy_path(policy) %></td>
     <td><%= link_to 'Destroy', policy_path(policy), :confirm => 'Are you sure?', :method => :delete %></td>

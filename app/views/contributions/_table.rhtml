@@ -18,8 +18,8 @@
     <td><%=h contribution.contributable_id %></td>
     <td><%=h contribution.contributable_type %></td>
     <td><%=h contribution.policy_id %></td>
-    <td><%=h contribution.created_at %></td>
-    <td><%=h contribution.updated_at %></td>
+    <td><%=datetime contribution.created_at, false %></td>
+    <td><%=datetime contribution.updated_at, false %></td>
     <td><%= link_to 'Show', contribution_path(contribution) %></td>
     <td><%= link_to 'Edit', edit_contribution_path(contribution) %></td>
     <td><%= link_to 'Destroy', contribution_path(contribution), :confirm => 'Are you sure?', :method => :delete %></td>

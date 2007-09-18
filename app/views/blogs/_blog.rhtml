@@ -6,8 +6,8 @@
   <tr>
   <tr>
     <td rowspan="2">
-      <strong>Created at:</strong> <%=h blog.created_at %><br/>
-      <strong>Updated at:</strong> <%=h blog.updated_at %>
+      <strong>Created at:</strong> <%=datetime blog.created_at, false %><br/>
+      <strong>Updated at:</strong> <%=datetime blog.updated_at, false %>
     </td>
     <td>
       <strong>Contributor:</strong> <%= contributor(blog.contribution.contributor_id, blog.contribution.contributor_type) %><br/>

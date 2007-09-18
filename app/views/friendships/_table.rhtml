@@ -10,12 +10,12 @@
   
 <% for friendship in collection %>
   <tr>
-    <td><%= "<b>" unless friendship.accepted? %><%=name(friendship.user_id) %><%= "</b>" unless friendship.accepted? %></td>
-    <td><%= "<b>" unless friendship.accepted? %><%=name(friendship.friend_id) %><%= "</b>" unless friendship.accepted? %></td>
-    <td><%= "<b>" unless friendship.accepted? %><%=h friendship.created_at %><%= "</b>" unless friendship.accepted? %></td>
-    <td><%= "<b>" unless friendship.accepted? %><%=h friendship.accepted_at || "Pending" %><%= "</b>" unless friendship.accepted? %></td>
+    <td><%= "<b>" unless friendship.accepted? %><%=avatar(friendship.user_id, '60x60') %><br/><%=name(friendship.user_id) %><%= "</b>" unless friendship.accepted? %></td>
+    <td><%= "<b>" unless friendship.accepted? %><%=avatar(friendship.friend_id, '60x60') %><br/><%=name(friendship.friend_id) %><%= "</b>" unless friendship.accepted? %></td>
+    <td><%= "<b>" unless friendship.accepted? %><%=datetime friendship.created_at, false %><%= "</b>" unless friendship.accepted? %></td>
+    <td><%= "<b>" unless friendship.accepted? %><%=datetime(friendship.accepted_at, false) || "Pending" %><%= "</b>" unless friendship.accepted? %></td>
     <% if my_page? friendship.friend_id %>
-    <td><%= link_to 'Review / Accept', friendship_path(friendship.friend_id, friendship) %></td>
+    <td><%= link_to "Show#{friendship.accepted? ? "" : " / Accept"}", friendship_path(friendship.friend_id, friendship) %></td>
     <td><%= link_to 'Delete', friendship_path(friendship.friend_id, friendship), :confirm => 'Are you sure?', :method => :delete %></td>
     <% end %>
   </tr>

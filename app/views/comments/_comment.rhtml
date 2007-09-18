@@ -8,7 +8,7 @@
       <td width="500">
         <p>
           <% unless comment.title.nil? %><b><%=h comment.title %></b><br/><% end %>
-          <%=h comment.created_at %>
+          <%=datetime comment.created_at %>
         </p>
         
         <p>

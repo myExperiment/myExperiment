@@ -10,12 +10,12 @@
 
 <p>
   <b>Created at:</b>
-  <%=h @network.created_at %>
+  <%=datetime @network.created_at %>
 </p>
 
 <p>
   <b>Updated at:</b>
-  <%=h @network.updated_at %>
+  <%=datetime @network.updated_at %>
 </p>
 
 <% if my_page? @network.owner.id %>

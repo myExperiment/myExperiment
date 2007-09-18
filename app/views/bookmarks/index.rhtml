@@ -9,7 +9,7 @@
 <% for bookmark in @bookmarks %>
   <tr>
     <td><%= link_to h(bookmark.bookmarkable.title), workflow_path(bookmark.bookmarkable) %></td>
-    <td><%=h bookmark.created_at %></td>
+    <td><%=datetime bookmark.created_at, false %></td>
     <td><%= link_to 'Show', bookmark_path(bookmark) %></td>
     <td><%= link_to 'Destroy', bookmark_path(bookmark), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>

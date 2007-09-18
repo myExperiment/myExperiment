@@ -10,14 +10,14 @@
 
 <p>
   <b>Created at:</b>
-  <%=h @relationship.created_at %>
+  <%=datetime @relationship.created_at %>
 </p>
 
 <% if @relationship.accepted? %>
 
 <p>
   <b>Accepted at:</b>
-  <%=h @relationship.accepted_at %>
+  <%=datetime @relationship.accepted_at %>
 </p>
 
 <% else%>
