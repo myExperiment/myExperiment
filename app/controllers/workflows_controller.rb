@@ -218,7 +218,15 @@ class WorkflowsController < ApplicationController
 protected
 
   def find_workflows
-    @workflows = Workflow.find(:all, construct_options)
+    login_required if login_available?
+    
+    found = Workflow.find(:all, construct_options)
+    
+    found.each do |workflow|
+      workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
+    end
+    
+    @workflows = found
   end
   
   def find_workflow_auth

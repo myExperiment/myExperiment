@@ -36,6 +36,8 @@ class Workflow < ActiveRecord::Base
   validates_presence_of :title, :scufl
   
   validates_uniqueness_of :unique
+  
+  validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
 
   file_column :image, :magick => {
     :versions => {
@@ -47,5 +49,5 @@ class Workflow < ActiveRecord::Base
     }
   }
   
-  non_versioned_fields.push("image") # acts_as_versioned and file_column don't get on
+  non_versioned_fields.push("image", "license") # acts_as_versioned and file_column don't get on
 end

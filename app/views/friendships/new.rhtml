@@ -5,12 +5,8 @@
 <% form_for(:friendship, :url => friendships_path) do |f| %>
   <p>
     <b>User</b><br />
-    <% unless logged_in? %>
-      <%= f.text_field :user_id, :value => current_user.id %>
-    <% else %>
-      <%= f.hidden_field :user_id, :value => current_user.id %>
-      <%=h current_user.name %> (<%=h current_user.openid_url %>)
-    <% end %>
+    <%= f.hidden_field :user_id, :value => current_user.id %>
+    <%= render :partial => "users/avatar", :locals => { :user => current_user } %>
   </p>
 
   <p>
@@ -19,7 +15,7 @@
       <%= f.text_field :friend_id, :value => params[:user_id] %>
     <% else %>
       <%= f.hidden_field :friend_id, :value => params[:user_id] %>
-      <%= name(params[:user_id]) %> (<%= openid(params[:user_id]) %>)
+      <%= render :partial => "users/avatar", :locals => { :user => User.find(params[:user_id]) } %>
     <% end %>
   </p>
 

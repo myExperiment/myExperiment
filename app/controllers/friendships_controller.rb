@@ -72,7 +72,13 @@ class FriendshipsController < ApplicationController
     unless params[:user_id] and params[:user_id].to_i != current_user.id.to_i
       @friendship = Friendship.new(:user_id => current_user.id)
     else
-      @friendship = Friendship.new(:user_id => current_user.id, :friend_id => params[:user_id])
+      @friendship = Friendship.new(:user_id => current_user.id)
+      
+      if params[:user_id] and (@friend = User.find(:first, params[:user_id]))
+        @friendship.friend = @friend
+      else
+        params[:user_id] = nil
+      end
     end
   end
 

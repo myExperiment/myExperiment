@@ -8,10 +8,20 @@
     <%= f.text_field :title %>
   </p>
 
-  <p>
-    <b>Unique</b><br />
-    <%= f.text_field :unique %>
-  </p>
+  <fieldset>
+    <legend>Persistent URL (what is a <%= link_to 'pURL', "http://en.wikipedia.org/wiki/Persistent_Uniform_Resource_Locator" %>?)</legend>
+    
+    <p>
+      If you set a unique identifier, it will be used in future versions of myExperiment to provide a persistent and human-readable URL for your network.
+    </p> 
+    
+    <p><b>Reserve yours now!</b></p>
+    
+    <p>
+      <b>Unique Identifier</b><br />
+      <%= f.text_field :unique %>
+    </p>
+  </fieldset>
 
   <p>
     <%= submit_tag "Update" %>

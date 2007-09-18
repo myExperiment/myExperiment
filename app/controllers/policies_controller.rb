@@ -66,7 +66,7 @@ class PoliciesController < ApplicationController
     respond_to do |format|
       if @policy.save
         flash[:notice] = 'Policy was successfully created.'
-        format.html { redirect_to policy_url(@policy) }
+        format.html { redirect_to policy_url(@policy) + (params[:from] ? "?from=#{params[:from]}" : "") }
         format.xml  { head :created, :location => policy_url(@policy) }
       else
         format.html { render :action => "new" }

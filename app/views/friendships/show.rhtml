@@ -1,11 +1,11 @@
 <p>
-  <b>User:</b>
-  <%=h @friendship.user_id %>
+  <b>User:</b><br/>
+  <%= render :partial => "users/avatar", :locals => { :user => @friendship.user } %>
 </p>
 
 <p>
-  <b>Friend:</b>
-  <%=h @friendship.friend_id %>
+  <b>Friend:</b><br/>
+  <%= render :partial => "users/avatar", :locals => { :user => @friendship.friend } %>
 </p>
 
 <p>

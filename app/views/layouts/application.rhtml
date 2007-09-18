@@ -1,64 +1,28 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title>myExperiment - <%= controller.controller_name %> - <%= controller.action_name %></title>
-  <%= stylesheet_link_tag 'reset' %>
-  <%= stylesheet_link_tag 'myexperiment' %>
+  <%= stylesheet_link_tag 'savagebeast' %>
+  <%= stylesheet_link_tag 'scaffold' %>
   <%= stylesheet_link_tag 'acts_as_taggable_stylesheet' %>
   <%= stylesheet_link_tag 'star_rating' %>
   <%= javascript_include_tag :defaults %>
-  <%= javascript_include_tag 'moo' %>
-  <%= javascript_include_tag 'box' %>
 </head>
 <body>
 
-<div id="wrapper">
+<div id="myexp_wrapper">
 
-<div id="header">
+<div id="myexp_inner">
 
-<h1 id="logo"><%= link_to "myExperiment", :controller => '/' %></h1>
+<div id="myexp_header">
 
-  <div id="searchbar">
-    <%= render :partial => "workflows/search" %>
-  </div>
+<p>
+  <%= image_tag("logo.png") %>
+</p>
 
-
-<div id="navbar">
-  <ul id="tabnav">
-    <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Users", users_path %></li>
-    <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Networks", networks_path %></li>
-    <li <%= (["contributions", "blobs", "blogs", "workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Contributions", contributions_path %></li>
-    <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
-  </ul>
-</div>
-</div>
-        <div id="columns">
-
-        <div id="content">
-
-
-
-<p style="color: red"><%= flash[:error] %></p>
-<p style="color: green"><%= flash[:notice] %></p>
-
-<%= yield  %>
-
-</div>
-<div id="sidebar">
-  <ul id="subnav">
-    <%= render :partial => "subnav" %>
-  </ul>
-</div>
-</div>
-<div id="fxContainer">
-<div id="fxTarget">
-                        <div id="fxPadding" class="wrapper">
-                                                <div class="moduletable">
-                                                     <div class="moduletable">
-<div class="greenRow">
 <% if logged_in? %>
   <p>
     Logged in as <%= profile_link(current_user.id) %> [<%= link_to "Logout", session_path, :method => :delete %>] -
@@ -69,59 +33,51 @@
     <%= link_to "My Bookmarks", bookmarks_path %>
   </p>
 <% else %>
-  <div class="half">
-
-  <h5>Already registered?</h5>
-
   <% form_tag session_path do %>
-    <label for="openid_url">OpenID:</label> <%= text_field_tag 'openid_url' %>
+    <label for="username">Username:</label> <%= text_field_tag 'session[username]' %> 
+    <label for="password">Password:</label> <%= password_field_tag 'session[password]' %> 
+    <label for="remember_me">Remember me:</label> <%= check_box_tag 'session[remember_me]' %> ...or use: 
+    <label for="openid_url">OpenID:</label> <%= text_field_tag 'openid_url' %> 
     <%= submit_tag 'Sign in', :disable_with => "Signing in&hellip;" %>
   <% end %>
-
-  <div>or...</div>
-
-  <% form_tag session_path do %>
-
-    <p><label for="email_address">Email address:</label> <%= text_field_tag 'email' %></p>
-    <p><label for="password">Password:</label> <%= password_field_tag 'password' %>    <%= submit_tag 'Sign in', :disable_with => "Signing in&hellip;" %></p>
-
-  <% end %>
-
-  </div>
-
-  <div class="half">
-
-     <h5>Need an account?</h5>
-
-    <p>Login with an OpenID</p>
-
-    <p>Create a new account</p>
-
-  </div>
 <% end %>
-</div>
 
 </div>
 
-
-                        </div>
-                                        </div>
-                </div>
-                <div id="fxShadow"></div>
-
-                <div id="fxTab">
-
-                        <a href="#" id="fxTrigger">&nbsp;</a>
-                </div>
-        </div>
-
-
-
-
-<div id="footer">
-  <p>&copy; myExperiment</p>
+<div id="navbar">
+  <ul id="tabnav">
+    <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Users", users_path %></li>
+    <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Networks", networks_path %></li>
+    <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path %></li>
+    <li <%= (["contributions", "blobs", "blogs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Contributions", contributions_path %></li>
+    <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
+  </ul>
+  <ul id="subnav">
+    <%= render :partial => "subnav" %>
+  </ul>
+  <div id="searchbar">
+    <%= render :partial => "workflows/search" %>
+  </div>
 </div>
 
+<p style="color: red"><%= flash[:error] %></p>
+<p style="color: green"><%= flash[:notice] %></p>
+
+<%= yield  %>
+
+<hr/>
+
+<% unless (controller.controller_name.to_s == "tags" and controller.action_name.to_s == "index") %>
+  <p>
+    <%= tag_cloud %>
+  </p>
+<% end %>
+
+<p>
+  <b>What is a <%= link_to 'tag cloud', "http://en.wikipedia.org/wiki/Tag_cloud" %>?</b>
+</p>
+
+</div>
 
 </div>
 
