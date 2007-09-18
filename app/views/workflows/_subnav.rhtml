@@ -1,8 +1,6 @@
 <% case controller.action_name.to_s; when "index" %>
 
-  <% if logged_in? %>
-    <li><%= link_to 'New Workflow', new_workflow_path %></li>
-  <% end %>
+  <li><%= link_to 'New Workflow', new_workflow_path %></li>
 
 <% when "show" %>
 
