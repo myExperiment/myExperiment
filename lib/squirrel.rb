@@ -120,21 +120,21 @@ module Squirrel # :nodoc
       end
     end
     
-    @tuples["pictures"].each do |picture_tuple|
-      my_puts "Creating Picture #{picture_tuple["id"]} for User #{picture_tuple["user_id"]}" if verbose
-      
-      picture = Picture.new(:id       => picture_tuple["id"],
-                            :data     => picture_tuple["data"],
-                            :user_id  => picture_tuple["user_id"])
-                            
-      if picture.save
-        my_puts "Saved Picture #{picture.id}" if verbose
-      else
-        puts picture.errors.full_messages
-        
-        exit if force_exit
-      end
-    end
+    #@tuples["pictures"].each do |picture_tuple|
+    #  my_puts "Creating Picture #{picture_tuple["id"]} for User #{picture_tuple["user_id"]}" if verbose
+    #  
+    #  picture = Picture.new(:id       => picture_tuple["id"],
+    #                        :data     => picture_tuple["data"],
+    #                        :user_id  => picture_tuple["user_id"])
+    #                        
+    #  if picture.save
+    #    my_puts "Saved Picture #{picture.id}" if verbose
+    #  else
+    #    puts picture.errors.full_messages
+    #    
+    #    exit if force_exit
+    #  end
+    #end
     
     @tuples["profiles"].each do |profile_tuple|
       profile = Profile.find_by_user_id(profile_tuple["user_id"])
