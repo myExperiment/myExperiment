@@ -64,9 +64,15 @@ module ApplicationHelper
       if user.profile.avatar?
         # need code for deciding whether to use small, medium or large!
         
-        img = image_tag(url_for_file_column(user.profile.picture, "data", "large"), 
-                        :title => h(user.name),
-                        :size => size)
+        #img = image_tag(url_for_file_column(user.profile.picture, "data", "large"), 
+        #                :title => h(user.name),
+        #                :size => size)
+        
+        img = image_tag(url_for(:controller => 'pictures',
+                                :action     => 'show',
+                                :id         => user.profile.picture_id,
+                                :size       => size),
+                        :title => h(user.name))
           
         if link_to
           #return link_to img, profile_path(user.profile)

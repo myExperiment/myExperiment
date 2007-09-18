@@ -21,7 +21,8 @@
 ##
 ##
 
-class Picture < ActiveRecord::Base
+#class Picture < ActiveRecord::Base
+class Picture < FlexImage::Model
   validates_associated :owner
   
   validates_presence_of :user_id, :data
@@ -46,11 +47,11 @@ class Picture < ActiveRecord::Base
     owner.profile.picture and owner.profile.picture.id.to_i == id.to_i
   end
   
-  file_column :data, :magick => {
-    :versions => {
-      :small    => { :size => "50x50!" }, 
-      :medium   => { :size => "100x100!" },
-      :large => { :size => "200x200!" }
-    }
-  }
+  #file_column :data, :magick => {
+  #  :versions => {
+  #    :small    => { :size => "50x50!" }, 
+  #    :medium   => { :size => "100x100!" },
+  #    :large => { :size => "200x200!" }
+  #  }
+  #}
 end
