@@ -327,6 +327,11 @@ private
     end
     
     options = {:order => "updated_at DESC"}
+    
+    # added to faciliate faster requests for iGoogle gadgets
+    # ?limit=0 returns all workflows (i.e. no limit!)
+    options = options.merge({:limit => params[:limit]}) if params[:limit] and (params[:limit].to_i != 0)
+    
     options = options.merge({:conditions => [cond_sql] + cond_params}) unless cond_sql.empty?
     
     options
