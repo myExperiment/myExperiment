@@ -95,6 +95,30 @@ module Squirrel # :nodoc
                         
         if blog.save
           my_puts "Saved Blog #{blog.id} for User #{blog.contributor_id}" if verbose
+          
+          my_puts "Creating new Policy for Blog #{blog.id}" if verbose
+      
+          # default policy --> only allow view for public and protected
+          policy = Policy.new(:contributor        => blog.contributor,
+                              :name               => "Policy for #{blog.title}",
+                              :download_public    => false,
+                              :edit_public        => false, 
+                              :view_public        => true, 
+                              :download_protected => false,
+                              :edit_protected     => false,
+                              :view_protected     => true)
+                            
+          if policy.save
+            my_puts "Saved Policy #{policy.id} for Blog #{blog.id}" if verbose
+          
+            blog.contribution.update_attribute(:policy_id, policy.id)
+          
+            my_puts "Updated Policy attribute of Blog #{blog.id} Contribution #{blog.contribution.id} record" if verbose
+          else
+            puts policy.errors.full_messages
+          
+            exit if force_exit
+          end
         else
           puts blog.errors.full_messages
           
