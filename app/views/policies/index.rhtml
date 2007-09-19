@@ -13,6 +13,7 @@
     <th>Download protected</th>
     <th>Edit protected</th>
     <th>View protected</th>
+    <th>Permissions count</th>
     <th>Created at</th>
     <th>Updated at</th>
   </tr>
@@ -30,6 +31,7 @@
     <td><%=h policy.download_protected %></td>
     <td><%=h policy.edit_protected %></td>
     <td><%=h policy.view_protected %></td>
+    <td><%=h policy.permissions.length %></td>
     <td><%=datetime policy.created_at, false %></td>
     <td><%=datetime policy.updated_at, false %></td>
     <td><%= link_to 'Show', policy_path(policy) %></td>

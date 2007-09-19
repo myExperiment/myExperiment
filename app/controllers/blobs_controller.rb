@@ -78,17 +78,9 @@ class BlobsController < ApplicationController
     
     @blob = Blob.new(params[:blob])
     
-    # bugfix (read below @blob.save)
-    @blob.contributor = current_user
-    
     respond_to do |format|
       if @blob.save
-        # if the user selects a different contributor_pair
-        # --> @contributable.contributor = params[:contributor_pair]
-        #     @contributable.contribution.contributor = current_user
-        #@blob.update_attribute(:contributor_id, current_user.id) if @blob.contribution.contributor_id.to_i != current_user.id.to_i
-        #@blob.update_attribute(:contributor_type, current_user.class.to_s) if @blob.contribution.contributor_type.to_s != current_user.class.to_s
-        
+        # update policy
         @blob.contribution.update_attributes(params[:contribution])
         
         flash[:notice] = 'Blob was successfully created.'

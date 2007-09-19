@@ -44,16 +44,9 @@ class ForumsController < ApplicationController
     
     @forum = Forum.new(params[:forum])
     
-    @forum.contributor = current_user
-    
     respond_to do |format|
       if @forum.save
-        # if the user selects a different contributor_pair
-        # --> @contributable.contributor = params[:contributor_pair]
-        #     @contributable.contribution.contributor = current_user
-        #@forum.update_attribute(:contributor_id, current_user.id) if @forum.contribution.contributor_id.to_i != current_user.id.to_i
-        #@forum.update_attribute(:contributor_type, current_user.class.to_s) if @forum.contribution.contributor_type.to_s != current_user.class.to_s
-        
+        # update policy
         @forum.contribution.update_attributes(params[:contribution])
         
         flash[:notice] = 'Forum was successfully created.'
