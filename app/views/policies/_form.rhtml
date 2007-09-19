@@ -5,6 +5,27 @@
     <b>Name</b><br />
     <%= form.text_field :name %>
   </p>
+  
+  <table>
+    <tr>
+      <th> </th>
+      <th>View</th>
+      <th>Download</th>
+      <th>Edit</th>
+    </tr>
+    <tr>
+      <th>Public</th>
+      <td><%= form.check_box :view_public %></td>
+      <td><%= form.check_box :download_protected %></td>
+      <td><%= form.check_box :edit_protected %></td>
+    </tr>
+    <tr>
+      <th>Protected</th>
+      <td><%= form.check_box :view_protected %></td>
+      <td><%= form.check_box :download_protected %></td>
+      <td><%= form.check_box :edit_protected %></td>
+    </tr>
+  </table>
 
   <% if false %>
 
@@ -40,24 +61,3 @@
   
   <% end %>
   
-  <table>
-    <tr>
-      <th> </th>
-      <th>View</th>
-      <th>Download</th>
-      <th>Edit</th>
-    </tr>
-    <tr>
-      <th>Public</th>
-      <td><%= form.check_box :view_public %></td>
-      <td><%= form.check_box :download_protected %></td>
-      <td><%= form.check_box :edit_protected %></td>
-    </tr>
-    <tr>
-      <th>Protected</th>
-      <td><%= form.check_box :view_protected %></td>
-      <td><%= form.check_box :download_protected %></td>
-      <td><%= form.check_box :edit_protected %></td>
-    <tr>
-    <!-- procedurally generated "permissions" rows go here -->
-  </table>

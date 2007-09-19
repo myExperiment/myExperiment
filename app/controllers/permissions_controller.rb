@@ -73,7 +73,8 @@ class PermissionsController < ApplicationController
     respond_to do |format|
       if @permission.save
         flash[:notice] = 'Permission was successfully created.'
-        format.html { redirect_to permission_url(@permission.policy, @permission) }
+        #format.html { redirect_to permission_url(@permission.policy, @permission) }
+        format.html { redirect_to policy_url(@permission.policy) }
         format.xml  { head :created, :location => permission_url(@permission.policy, @permission) }
       else
         format.html { render :action => "new" }
@@ -90,7 +91,8 @@ class PermissionsController < ApplicationController
     respond_to do |format|
       if @permission.update_attributes(params[:permission])
         flash[:notice] = 'Permission was successfully updated.'
-        format.html { redirect_to permission_url(@permission.policy, @permission) }
+        #format.html { redirect_to permission_url(@permission.policy, @permission) }
+        format.html { redirect_to policy_url(@permission.policy) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -104,10 +106,13 @@ class PermissionsController < ApplicationController
   # DELETE /permissions/1
   # DELETE /permissions/1.xml
   def destroy
+    policy = @permission.policy
+    
     @permission.destroy
 
     respond_to do |format|
-      format.html { redirect_to permissions_url(@permission.policy)}
+      #format.html { redirect_to permissions_url(@permission.policy)}
+      format.html { redirect_to policy_url(policy) }
       format.xml  { head :ok }
     end
   end
