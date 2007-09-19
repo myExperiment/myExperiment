@@ -1,15 +1,3 @@
-<% if false %>
-<p>
-  <b>Contributor:</b>
-  <%=h @policy.contributor_id %>
-</p>
-
-<p>
-  <b>Contributor type:</b>
-  <%=h @policy.contributor_type %>
-</p>
-<% end %>
-
 <p>
   <b>Name:</b>
   <%=h @policy.name %>
@@ -57,13 +45,13 @@
     <th>Edit</th>
   </tr>
   <tr>
-    <th>Public</th>
+    <td><b>Public</b></td>
     <td><%= check_box_tag "view_public", 1, @policy.view_public, :disabled => true %></td>
     <td><%= check_box_tag "download_public", 1, @policy.download_public, :disabled => true %></td>
     <td><%= check_box_tag "edit_public", 1, @policy.edit_public, :disabled => true %></td>
   </tr>
   <tr>
-    <th>Protected</th>
+    <td><b>Protected</b></td>
     <td><%= check_box_tag "view_protected", 1, @policy.view_protected, :disabled => true %></td>
     <td><%= check_box_tag "download_protected", 1, @policy.download_protected, :disabled => true %></td>
     <td><%= check_box_tag "edit_protected", 1, @policy.edit_protected, :disabled => true %></td>
