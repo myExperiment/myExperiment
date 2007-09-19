@@ -17,7 +17,7 @@
     <b>Network</b><br />
     <% if params[:network_id] %>
       <%= f.hidden_field :network_id, :value => @network.id %>
-      <%=h @network.title %> (<%=h @network.unique %>)
+      <%=h @network.title %> (<%=h @network.unique_name %>)
     <% else %>
       <%= select_tag "membership[network_id]", options_from_collection_for_select(Network.find(:all, :order => "title ASC"), :id.to_i, :title) %>
     <% end %>

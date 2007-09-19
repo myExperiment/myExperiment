@@ -35,7 +35,7 @@ class Workflow < ActiveRecord::Base
   
   validates_presence_of :title, :scufl
   
-  validates_uniqueness_of :unique
+  validates_uniqueness_of :unique_name
   
   validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
 

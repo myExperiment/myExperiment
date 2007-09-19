@@ -115,7 +115,7 @@ class WorkflowsController < ApplicationController
   # GET /workflows/1;download
   # GET /workflows/1.xml;download
   def download
-    send_data(@workflow.scufl, :filename => @workflow.unique + ".xml", :type => "text/xml")
+    send_data(@workflow.scufl, :filename => @workflow.unique_name + ".xml", :type => "text/xml")
   end
   
   # GET /workflows
@@ -257,7 +257,7 @@ protected
     wf[:scufl].rewind
     
     salt = rand 32768
-    title, unique = scufl_model.description.title.blank? ? ["untitled", "untitled_#{salt}"] : [scufl_model.description.title,  "#{scufl_model.description.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"]
+    title, unique_name = scufl_model.description.title.blank? ? ["untitled", "untitled_#{salt}"] : [scufl_model.description.title,  "#{scufl_model.description.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"]
     
     unless RUBY_PLATFORM =~ /mswin32/
       i = Tempfile.new("image")
@@ -266,7 +266,7 @@ protected
       d = StringIO.new(`dot -Tpng #{i.path}`)
       i.unlink
       d.extend FileUpload
-      d.original_filename = "#{unique}.png"
+      d.original_filename = "#{unique_name}.png"
       d.content_type = "image/png"
     end
     
@@ -274,7 +274,7 @@ protected
                        :contributor_id => wf[:contributor_id], 
                        :contributor_type => wf[:contributor_type],
                        :title => title,
-                       :unique => unique,
+                       :unique_name => unique_name,
                        :description => scufl_model.description.description)
                        
     unless RUBY_PLATFORM =~ /mswin32/

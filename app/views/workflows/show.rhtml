@@ -54,7 +54,7 @@
 <% if false %>
 <p>
   <b>QR Code (<%= link_to 'what is this?', "http://en.wikipedia.org/wiki/QR_Code" %>):</b>
-  <%= qrcode(h("http://www.myexperiment.com/workflows/#{@workflow.unique}"), 2) %>
+  <%= qrcode(h("http://www.myexperiment.com/workflows/#{@workflow.unique_name}"), 2) %>
 </p>
 <% end %>
 
@@ -78,7 +78,7 @@
 
 <p>
   <b>Unique:</b>
-  <%=h @workflow.unique %>
+  <%=h @workflow.unique_name %>
 </p>
 
 <p>

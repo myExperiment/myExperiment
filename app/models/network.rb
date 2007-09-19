@@ -26,7 +26,7 @@ require 'acts_as_contributor'
 class Network < ActiveRecord::Base
   acts_as_contributor
   
-  acts_as_ferret :fields => [:title, :unique]
+  acts_as_ferret :fields => [:title, :unique_name]
   
   def related?(other) # other.kind_of? Mib::Act::Contributor
     if other.kind_of? Network
@@ -42,7 +42,7 @@ class Network < ActiveRecord::Base
   
   validates_presence_of :user_id, :title
   
-  validates_uniqueness_of :unique, 
+  validates_uniqueness_of :unique_name, 
                           :allow_nil => true
   
   belongs_to :owner,

@@ -26,7 +26,7 @@ class CreateNetworks < ActiveRecord::Migration
     create_table :networks do |t|
       t.column :user_id, :integer
       t.column :title, :string
-      t.column :unique, :string
+      t.column :unique_name, :string
       t.column :created_at, :datetime
       t.column :updated_at, :datetime
     end
