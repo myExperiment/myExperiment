@@ -35,25 +35,31 @@ module ApplicationHelper
     return long ? rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)") : rtn.strftime("%d/%m/%y @ %H:%M:%S")
   end
 
-  def openid(user_id)
+  def openid(user_id, link_to=false)
     begin
-      User.find(user_id).openid_url
+      openid = User.find(user_id).openid_url
+      
+      return link_to ? link_to(openid, user_path(user_id)) : openid
     rescue ActiveRecord::RecordNotFound
       nil
     end
   end
   
-  def name(user_id)
+  def name(user_id, link_to=false)
     begin
-      h(User.find(user_id).name)
+      name = h(User.find(user_id).name)
+      
+      return link_to ? link_to(name, user_path(user_id)) : name
     rescue ActiveRecord::RecordNotFound
       nil
     end
   end
   
-  def title(network_id)
+  def title(network_id, link_to=false)
     begin
-      h(Network.find(network_id).title)
+      title = h(Network.find(network_id).title)
+      
+      return link_to ? link_to(title, network_path(network_id)) : title
     rescue ActiveRecord::RecordNotFound
       nil
     end

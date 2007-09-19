@@ -1,11 +1,11 @@
 <p>
-  <b>User:</b>
-  <%=h @membership.user_id %>
+  <b>User:</b><br/>
+  <%= render :partial => "users/avatar", :locals => { :user => @membership.user } %>
 </p>
 
 <p>
   <b>Network:</b>
-  <%=h @membership.network_id %>
+  <%=title @membership.network_id, true %>
 </p>
 
 <p>

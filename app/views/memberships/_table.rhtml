@@ -10,8 +10,8 @@
   
 <% for membership in collection %>
   <tr>
-    <td><%= "<b>" unless membership.accepted? %><%=h name(membership.user_id) %><%= "</b>" unless membership.accepted? %></td>
-    <td><%= "<b>" unless membership.accepted? %><%=h title(membership.network_id) %><%= "</b>" unless membership.accepted? %></td>
+    <td><%= "<b>" unless membership.accepted? %><%= avatar(membership.user_id, '60x60') %><br/><%=name(membership.user_id, true) %><%= "</b>" unless membership.accepted? %></td>
+    <td><%= "<b>" unless membership.accepted? %><%= title(membership.network_id, true) %><%= "</b>" unless membership.accepted? %></td>
     <td><%= "<b>" unless membership.accepted? %><%=datetime membership.created_at, false %><%= "</b>" unless membership.accepted? %></td>
     <td><%= "<b>" unless membership.accepted? %><%=datetime(membership.accepted_at, false) || "Pending" %><%= "</b>" unless membership.accepted? %></td>
     <% if my_page? membership.network.owner.id %>

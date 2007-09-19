@@ -1,55 +1,55 @@
-<% if my_page? @user.id %>
+<% if @user %>
 
-<h1>Listing friendships requested (by me)</h1>
+  <% if my_page? @user.id %>
 
-<p>The <strong>User</strong> (me) initiates the Friendship request with the <strong>Friend</strong>.</p>
+    <h1>Listing friendships requested (by me)</h1>
 
-<%= render :partial => 'table', :locals => { :collection => @user.friendships_requested } %>
+    <p>The <strong>User</strong> (me) initiates the Friendship request with the <strong>Friend</strong>.</p>
 
-<br/>
+    <%= render :partial => 'table', :locals => { :collection => @user.friendships_requested } %>
 
-<h1>Listing friendships accepted (by others)</h1>
+    <br/>
 
-<p>The <strong>Friend</strong> decides whether or not to accept the Friendship request from the <strong>User</strong> (me).</p>
+    <h1>Listing friendships accepted (by others)</h1>
 
-<%= render :partial => "table", :locals => { :collection => @user.friendships_completed } %>
+    <p>The <strong>Friend</strong> decides whether or not to accept the Friendship request from the <strong>User</strong> (me).</p>
 
-<br/>
+    <%= render :partial => "table", :locals => { :collection => @user.friendships_completed } %>
 
-<h1>Listing friendships requested (by others)</h1>
+    <br/>
 
-<p>The <strong>Friend</strong> (me) can have many Friendship requests pending acceptance.</p>
+    <h1>Listing friendships requested (by others)</h1>
 
-<%= render :partial => "table", :locals => { :collection => @user.friendships_pending } %>
+    <p>The <strong>Friend</strong> (me) can have many Friendship requests pending acceptance.</p>
 
-<br/>
+    <%= render :partial => "table", :locals => { :collection => @user.friendships_pending } %>
 
-<h1>Listing friendships accepted (by me)</h1>
+    <br/>
 
-<p>Friendships are only valid once they have been accepted by the <strong>Friend</strong> (me).</p>
+    <h1>Listing friendships accepted (by me)</h1>
 
-<%= render :partial => 'table', :locals => { :collection => @user.friendships_accepted } %>
+    <p>Friendships are only valid once they have been accepted by the <strong>Friend</strong> (me).</p>
 
-<br/>
+    <%= render :partial => 'table', :locals => { :collection => @user.friendships_accepted } %>
 
-<% else %>
+    <br/>
 
-  <% if @user %>
-  
-  <h1>Listing friendships for <%=h @user.name %></h1>
-  
-  <%= render :partial => "users/friends", :locals => { :collection => @user.friends } %>
-  
-  <br/>
-  
   <% else %>
+  
+    <h1>Listing friendships for <%=h @user.name %></h1>
+  
+    <%= render :partial => "users/friends", :locals => { :collection => @user.friends } %>
+  
+    <br/>
+
+  <% end %>
+  
+<% else %>
 
   <h1>Listing friendships for All</h1>
 
   <%= render :partial => "table", :locals => { :collection => @friendships } %>
 
   <br/>
-  
-  <% end %>
 
 <% end %>
