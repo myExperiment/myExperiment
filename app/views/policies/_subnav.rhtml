@@ -10,6 +10,10 @@
   
   <li><%= link_to 'Edit Permissions', permissions_path(@policy) %></li>
 
+<% when "edit" %>
+
+  <li><%= link_to 'Edit Permissions', permissions_path(@policy) %></li>
+
 <% else %>
 
   <!-- no subnav options -->
