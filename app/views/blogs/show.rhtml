@@ -4,9 +4,15 @@
   By <%= contributor(@blog.contribution.contributor_id, @blog.contribution.contributor_type) %>
 </p>
 
-<h3>Recent Posts</h3>
+<% unless @blog.posts.empty? %>
+  <h3>Recent Posts</h3>
 
-<%= render :partial => "blog_posts/post", :collection => @blog.posts %>
+  <%= render :partial => "blog_posts/post", :collection => @blog.posts %>
+<% end %>
+
+<h3>History</h3>
+
+<%= render :partial => "contributions/history", :object => @blog.contribution %>
 
 <br/>
 

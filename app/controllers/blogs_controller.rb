@@ -40,6 +40,8 @@ class BlogsController < ApplicationController
   # GET /blogs/1
   # GET /blogs/1.xml
   def show
+    @viewing = Viewing.create(:contribution => @blog.contribution, :user => (logged_in? ? current_user : nil))
+    
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @blog.to_xml }

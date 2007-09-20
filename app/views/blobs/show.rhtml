@@ -1,3 +1,5 @@
+<h3>Details</h3>
+
 <p>
   <b>Contributor:</b>
   <%= contributor(@blob.contribution.contributor_id, @blob.contribution.contributor_type) %>
@@ -23,6 +25,12 @@
     <% end %>
   </p>
 <% end %>
+
+<h3>History</h3>
+
+<%= render :partial => "contributions/history", :object => @blob.contribution %>
+
+<br/>
 
 
 <%= link_to 'Back', contributions_path %>

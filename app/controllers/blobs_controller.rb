@@ -30,6 +30,8 @@ class BlobsController < ApplicationController
   
   # GET /blobs/1;download
   def download
+    @download = Download.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
+    
     send_data(@blob.data, :filename => @blob.local_name, :type => @blob.content_type)
     
     #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type)
@@ -47,6 +49,8 @@ class BlobsController < ApplicationController
   # GET /blobs/1
   # GET /blobs/1.xml
   def show
+    @viewing = Viewing.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
+    
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @blob.to_xml }

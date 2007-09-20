@@ -14,6 +14,8 @@ class ForumsController < ApplicationController
   end
 
   def show
+    @viewing = Viewing.create(:contribution => @forum.contribution, :user => (logged_in? ? current_user : nil))
+    
     respond_to do |format|
       format.html do
         # keep track of when we last viewed this forum for activity indicators
