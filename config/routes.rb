@@ -19,8 +19,18 @@ ActionController::Routing::Routes.draw do |map|
     # blogs have nested posts
     blog.resources :blog_posts
   end
+  
+  # all downloads and viewings
+  map.resources :downloads, :viewings
 
-  map.resources :contributions
+  # contributions (all types)
+  map.resources :contributions do |contribution|
+    # download history
+    contribution.resources :downloads
+
+    # viewing history
+    contribution.resources :viewings
+  end
 
   # all policies for all contributables
   map.resources :policies do |policy|

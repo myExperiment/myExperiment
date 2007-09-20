@@ -28,6 +28,10 @@ require 'acts_as_contributor'
 class User < ActiveRecord::Base
   acts_as_tagger
   
+  has_many :downloads
+  
+  has_many :viewings
+  
   has_many :bookmarks
   
   # BEGIN RESTful Authentication #

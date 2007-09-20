@@ -115,6 +115,8 @@ class WorkflowsController < ApplicationController
   # GET /workflows/1;download
   # GET /workflows/1.xml;download
   def download
+    @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
+    
     send_data(@workflow.scufl, :filename => @workflow.unique_name + ".xml", :type => "text/xml")
   end
   
@@ -130,6 +132,8 @@ class WorkflowsController < ApplicationController
   # GET /workflows/1
   # GET /workflows/1.xml
   def show
+    @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
+    
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @workflow.to_xml }

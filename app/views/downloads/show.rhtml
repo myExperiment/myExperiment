@@ -1,0 +1,16 @@
+<p>
+  <b>Contribution:</b>
+  <%= render :partial => "contributions/list", :locals => { :collection => [@download.contribution] } %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%=name @download.user_id, true %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=datetime @download.created_at %>
+</p>
+
+<%= link_to "Back", viewings_path(@download.contribution) %>

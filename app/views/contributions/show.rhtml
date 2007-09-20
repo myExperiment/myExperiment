@@ -1,27 +1,23 @@
 <p>
   <b>Contributor:</b>
-  <%=h @contribution.contributor_id %>
-</p>
-
-<p>
-  <b>Contributor type:</b>
-  <%=h @contribution.contributor_type %>
+  <%=contributor @contribution.contributor_id, @contribution.contributor_type%>
 </p>
 
 <p>
   <b>Contributable:</b>
-  <%=h @contribution.contributable_id %>
+  <%= render :partial => "contributions/list", :locals => { :collection => [@contribution] } %>
 </p>
 
-<p>
-  <b>Contributable type:</b>
-  <%=h @contribution.contributable_type %>
-</p>
-
-<p>
-  <b>Policy:</b>
-  <%=h @contribution.policy_id %>
-</p>
+<% if logged_in? and @contribution.authorized?("destroy", current_user) %>
+  <p>
+    <b>Policy:</b>
+    <% if @contribution.policy %>
+      <%= link_to h(@contribution.policy.name), policy_path(@contribution.policy) %> (managed by: <%= link_to name(id=((con=@contribution.policy.contributor).id || con.owner.id)), user_path(id) %>)
+    <% else %>
+      Public (none)
+    <% end %>
+  </p>
+<% end %>
 
 <p>
   <b>Created at:</b>

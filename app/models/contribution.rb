@@ -26,6 +26,9 @@ class Contribution < ActiveRecord::Base
   belongs_to :contributable, :polymorphic => true
   belongs_to :policy
   
+  has_many :downloads
+  has_many :viewings
+  
   # is c_utor authorized to edit the policy for this contribution
   def admin?(c_utor)
     #policy.contributor_id.to_i == c_utor.id.to_i and policy.contributor_type.to_s == c_utor.class.to_s

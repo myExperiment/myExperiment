@@ -1,0 +1,21 @@
+<%= render :partial => "contributions/history", :object => history.contribution %>
+
+<p>
+  <b>Number of bookmarks:</b> 
+  <%=h history.bookmarks.length %>
+</p>
+
+<p>
+  <b>Number of comments:</b> 
+  <%=h history.comments.length %>
+</p>
+
+<p>
+  <b>Number of ratings:</b> 
+  <%=h history.ratings.length %>
+</p>
+
+<p>
+  <b>Number of taggings:</b> 
+  <%=h history.taggings.length %>
+</p>

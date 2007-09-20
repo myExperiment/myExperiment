@@ -12,7 +12,7 @@
 <% when "show" %>
 
   <% if logged_in? and @contribution.owner? current_user %>
-    <%= link_to 'Edit Contribution', edit_contribution_path(@contribution) %>
+    <li><%= link_to 'Edit Contribution', edit_contribution_path(@contribution) %></li>
   <% end %>
 
 <% else %>

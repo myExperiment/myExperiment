@@ -1,0 +1,24 @@
+<h1>Listing viewings</h1>
+
+<table>
+  <tr>
+    <% unless @contribution %><th>Contribution</th><% end %>
+    <th>User</th>
+    <th>Created at</th>
+  </tr>
+  
+<% for viewing in @viewings %>
+  <tr>
+    <% unless @contribution %><td><%=h viewing.contribution_id %></td><% end %>
+    <td><%=avatar(viewing.user_id, '60x60') %><br/><%=name(viewing.user_id, true) %></td>
+    <td><%=datetime viewing.created_at %></td>
+    <td><%= link_to 'Show', viewing_path(viewing.contribution, viewing) %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<% if @contribution %>
+  <%= link_to "Back", contribution_path(@contribution) %>
+<% end %>
