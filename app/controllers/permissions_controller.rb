@@ -54,7 +54,12 @@ class PermissionsController < ApplicationController
   def new
     @permission = Permission.new
     
-    @permission.policy_id = params[:policy_id] if params[:policy_id]
+    begin
+      policy = Policy.find(params[:policy_id], :conditions => ["contributor_id = ? AND contributor_type = ?", current_user.id, current_user.class.to_s])
+      @permission.policy_id = policy.id
+    rescue ActiveRecord::RecordNotFound
+      error("Policy ID not supplied", "not supplied", :policy_id)
+    end
   end
 
   # GET /policies/1/permissions/1;edit
@@ -68,6 +73,16 @@ class PermissionsController < ApplicationController
   # POST /permissions
   # POST /permissions.xml
   def create
+    # hack for javascript contributor selection form
+    case params[:permission][:contributor_type].to_s
+    when "User"
+      params[:permission][:contributor_id] = params[:user_contributor_id]
+    when "Network"
+      params[:permission][:contributor_id] = params[:network_contributor_id]
+    else
+      error("Contributor ID not selected", "not selected", :contributor_id)  
+    end
+    
     @permission = Permission.new(params[:permission])
 
     respond_to do |format|

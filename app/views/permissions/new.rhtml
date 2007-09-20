@@ -16,14 +16,41 @@
     </p>
   <% end %>
   
-  <p>
-    <b>Contributor</b><br />
-    <%= f.text_field :contributor_id %>
-  </p>
-
+  <script type="text/javascript">
+    <!--
+      function showID(node) {
+        var klass = node.value;
+      
+        if (klass == "User") {
+          $("user_contributor_id_div").style.display="block";
+          $("network_contributor_id_div").style.display="none";
+        } else if (klass == "Network") {
+          $("user_contributor_id_div").style.display="none";
+          $("network_contributor_id_div").style.display="block";
+        } else {
+          // do nothing
+        }
+      }
+    -->
+  </script>
+  
   <p>
     <b>Contributor type</b><br />
-    <%= f.text_field :contributor_type %>
+    <input checked="checked" id="permission_contributor_type" name="permission[contributor_type]" type="radio" value="User" onChange="showID(this); return false;" />User<br />
+    <input id="permission_contributor_type" name="permission[contributor_type]" type="radio" value="Network" onChange="showID(this); return false;" />Network
+  </p>
+    
+  <p>
+    <b>Contributor</b><br />
+    <%= f.hidden_field :contributor_id %>
+    
+    <div id="user_contributor_id_div">
+      <%= select_tag :user_contributor_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %>
+    </div>
+    
+    <div id="network_contributor_id_div" style="display: none;">
+      <%= select_tag :network_contributor_id, options_from_collection_for_select(Network.find(:all, :order => "title ASC"), :id.to_i, :title) %>
+    </div>
   </p>
 
   <p>
@@ -46,4 +73,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Back', permissions_path(params[:policy_id]) %>
+<%= link_to 'Back', policy_path(params[:policy_id]) %>

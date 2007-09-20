@@ -28,7 +28,8 @@ class Policy < ActiveRecord::Base
            :dependent => :nullify
   
   has_many :permissions,
-           :dependent => :destroy
+           :dependent => :destroy,
+           :order => "created_at ASC"
   
   validates_presence_of :contributor, :name
   

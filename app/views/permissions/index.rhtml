@@ -1,8 +1,14 @@
 <h1>Listing permissions<% if @policy %> for <%=h @policy.name %><% end %></h1>
 
-<%= render :partial => "table", :locals => { :collection => @permissions } %>
+<% if @policy %>
+  <%= render :partial => "table", :locals => { :collection => @permissions } %>
+<% else %>
+  <p>
+    This table is not rendered for security reasons. To view this table, access a policy first!
+  </p>
+<% end %>
 
 <br />
 
 
-<%= link_to 'Back', policy_path(@policy) %>
+<%= link_to 'Back', policy_path(@policy) if @policy %>
