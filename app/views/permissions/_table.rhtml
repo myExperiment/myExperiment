@@ -3,8 +3,6 @@
 <table>
   <tr>
     <th>Contributor</th>
-    <th>Contributor type</th>
-    <th>Policy</th>
     <th>Download</th>
     <th>Edit</th>
     <th>View</th>
@@ -14,9 +12,7 @@
   
 <% for permission in collection %>
   <tr>
-    <td><%=h permission.contributor_id %></td>
-    <td><%=h permission.contributor_type %></td>
-    <td><%=h permission.policy_id %></td>
+    <td><%= contributor(permission.contributor_id, permission.contributor_type, true, true, "60x60") %></td>
     <td><%=h permission.download %></td>
     <td><%=h permission.edit %></td>
     <td><%=h permission.view %></td>

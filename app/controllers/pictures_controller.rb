@@ -132,6 +132,8 @@ protected
   def find_pictures
     if params[:user_id]
       @pictures = Picture.find(:all, :conditions => ["user_id = ?", params[:user_id]])
+    elsif logged_in?
+      redirect_to pictures_url(current_user)
     else
       error("Please supply a User ID", "not supplied", :user_id)
     end
@@ -151,12 +153,12 @@ protected
 
 private
   
-  def error(notice, message)
+  def error(notice, message, attr=:id)
     flash[:notice] = notice
-    (err = Picture.new.errors).add(:id, message)
+    (err = Picture.new.errors).add(attr, message)
     
     respond_to do |format|
-      format.html { redirect_to pictures_url(current_user) }
+      format.html { redirect_to logged_in? ? pictures_url(current_user) : '' }
       format.xml { render :xml => err.to_xml }
     end
   end

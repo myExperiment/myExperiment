@@ -18,23 +18,5 @@
     <td><%= check_box_tag "download_protected", 1, policy.download_protected, :disabled => true %></td>
     <td><%= check_box_tag "edit_protected", 1, policy.edit_protected, :disabled => true %></td>
   </tr>
-  <% policy.permissions.each do |p| %>
-    <tr>
-      <td>
-        <% case p.contributor_type.to_s; when "User" %>
-          <%=avatar(p.contributor_id, '60x60') %><br/><%=name(p.contributor_id, true) %>
-        <% when "Network" %>
-          <%=title(p.contributor_id, true) %>
-        <% end %>
-      </td>
-      <td><%= check_box_tag "view_private_#{p.id}", 1, checked = p.view, :disabled => true %></td>
-      <td><%= check_box_tag "download_private_#{p.id}", 1, checked = p.download, :disabled => true %></td>
-      <td><%= check_box_tag "edit_private_#{p.id}", 1, checked = p.edit, :disabled => true %></td>
-      <% if !read_only && policy.admin?(current_user) %>
-        <td><%= link_to 'Show', permission_path(policy, p) %></td>
-        <td><%= link_to 'Edit', edit_permission_path(policy, p) %></td>
-        <td><%= link_to 'Destroy', permission_path(policy, p), :confirm => 'Are you sure?', :method => :delete %></td>
-      <% end %>
-    </tr>
-  <% end %>
+  <%= render :partial => "policies/permission", :collection => policy.permissions, :locals => { :read_only => read_only } %>
 </table>

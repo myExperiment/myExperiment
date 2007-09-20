@@ -3,7 +3,6 @@
 <table>
   <tr>
     <th>Contributor</th>
-    <th>Contributor type</th>
     <th>Contributable</th>
     <th>Contributable type</th>
     <th>Policy</th>
@@ -13,8 +12,7 @@
   
 <% for contribution in collection %>
   <tr>
-    <td><%=h contribution.contributor_id %></td>
-    <td><%=h contribution.contributor_type %></td>
+    <td><%= contributor(contribution.contributor_id, contribution.contributor_type, true, true, "60x60") %></td>
     <td><%=h contribution.contributable_id %></td>
     <td><%=h contribution.contributable_type %></td>
     <td><%=h contribution.policy_id %></td>

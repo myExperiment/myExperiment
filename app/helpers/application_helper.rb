@@ -204,9 +204,13 @@ module ApplicationHelper
     return rtn
   end
   
-  def contributor(contributorid, contributortype, link=true)
+  def contributor(contributorid, contributortype, link=true, avatar=false, size='100x100')
     if contributortype.to_s == "User"
-      return link ? profile_link(contributorid) : name(contributorid)
+      if avatar
+        return render :partial => "users/avatar", :locals => { :user => User.find(contributorid), :size => size }
+      else
+        return link ? profile_link(contributorid) : name(contributorid)
+      end
     elsif contributortype.to_s == "Network"
       return link ? link_to(title(contributorid), network_path(contributorid)) : title(contributorid)
     else

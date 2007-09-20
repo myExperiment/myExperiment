@@ -1,11 +1,15 @@
 <p>
-  <b>Contribution:</b>
-  <%= render :partial => "contributions/list", :locals => { :collection => [@viewing.contribution] } %>
+  <b>User:</b><br/>
+  <% if @viewing.user_id %>
+    <%= contributor(@viewing.user_id, "User", true, true, "100x100") %>
+  <% else %>
+    <%=null_avatar '100x100' %><br/><%= "Anonymous" %>
+  <% end %>
 </p>
 
 <p>
-  <b>User:</b>
-  <%=name(@viewing.user_id, true) || "Anonymous" %>
+  <b>Contribution:</b>
+  <%= render :partial => "contributions/list", :locals => { :collection => [@viewing.contribution] } %>
 </p>
 
 <p>

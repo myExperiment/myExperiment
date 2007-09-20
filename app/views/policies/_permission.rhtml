@@ -1,0 +1,18 @@
+<% read_only ||= false -%>
+    <tr>
+      <td>
+        <% case permission.contributor_type.to_s; when "User" %>
+          <%=avatar(permission.contributor_id, '60x60') %><br/><%=name(permission.contributor_id, true) %>
+        <% when "Network" %>
+          <%=title(permission.contributor_id, true) %>
+        <% end %>
+      </td>
+      <td><%= check_box_tag "view_private_#{permission.id}", 1, checked = permission.view, :disabled => true %></td>
+      <td><%= check_box_tag "download_private_#{permission.id}", 1, checked = permission.download, :disabled => true %></td>
+      <td><%= check_box_tag "edit_private_#{permission.id}", 1, checked = permission.edit, :disabled => true %></td>
+      <% if !read_only && permission.policy.admin?(current_user) %>
+        <td><%= link_to 'Show', permission_path(permission.policy, permission) %></td>
+        <td><%= link_to 'Edit', edit_permission_path(permission.policy, permission) %></td>
+        <td><%= link_to 'Destroy', permission_path(permission.policy, permission), :confirm => 'Are you sure?', :method => :delete %></td>
+      <% end %>
+    </tr>

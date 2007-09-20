@@ -5,16 +5,17 @@
       <strong>Content type:</strong> <%=h blob.content_type %>
     </td>
     <td>
-      <strong>Contributor:</strong> <%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type) %><br/>
+      <strong>Contributor:</strong><br/>
+      <%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, true, true, "60x60") %>
     </td>
   </tr>
+  <tr><td> </td></tr>
   <tr>
-    <td>
+    <td colspan="2">
       <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to '[download]', download_blob_path(blob) %> <% end %>
       <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to '[show]', blob_path(blob) %> <% end %>
       <% if logged_in? and blob.authorized?("edit", current_user) %><%= link_to '[edit]', edit_blob_path(blob) %> <% end %>
       <% if logged_in? and blob.authorized?("destroy", current_user) %><%= link_to '[destroy]', blob_path(blob), :confirm => 'Are you sure?', :method => :delete %><% end %>
     </td>
   </tr>
-  <tr><td> </td></tr>
 </table>

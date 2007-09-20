@@ -9,7 +9,7 @@
   
 <% for blob in @blobs %>
   <tr>
-    <td><%= contributor(blob.contributor_id, blob.contributor_type) %></td>
+    <td><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, true, true, "60x60") %></td>
     <td><%=h blob.local_name %></td>
     <td><%=h blob.content_type %></td>
     <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><td><%= link_to 'Download', download_blob_path(blob) %></td><% end %>

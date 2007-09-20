@@ -1,16 +1,11 @@
 <p>
-  <b>Contributor:</b>
-  <%=h @permission.contributor_id %>
+  <b>Policy:</b> <%= link_to @permission.policy.name, policy_path(@permission.policy) %>
 </p>
 
+<% if false %>
 <p>
-  <b>Contributor type:</b>
-  <%=h @permission.contributor_type %>
-</p>
-
-<p>
-  <b>Policy:</b>
-  <%=h @permission.policy_id %>
+  <b>Contributor:</b><br/>
+  <%= contributor(@permission.contributor_id, @permission.contributor_type, true, true, "100x100") %>
 </p>
 
 <p>
@@ -27,6 +22,19 @@
   <b>View:</b>
   <%=h @permission.view %>
 </p>
+<% end %>
+
+<table>
+  <tr>
+    <th> </th>
+    <th>View</th>
+    <th>Download</th>
+    <th>Edit</th>
+  </tr>
+  <%= render :partial => "policies/permission", :collection => [@permission], :locals => { :read_only => true } %>
+</table>
+
+<br/>
 
 <p>
   <b>Created at:</b>

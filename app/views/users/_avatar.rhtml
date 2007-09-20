@@ -1,1 +1,2 @@
-<%= link_to avatar(user.id, '100x100', false) + "<br/>" + name(user.id), user_path(user) %>
+<% size ||= '100x100' -%>
+<%= link_to avatar(user.id, size, false) + "<br/>" + name(user.id), user_path(user) %>

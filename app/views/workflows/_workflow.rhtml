@@ -8,7 +8,7 @@
           <%= image_tag url_for_file_column(workflow, "image", "padlock") %>
         <% end %>
       <% end %>
-    </td>
+    </th>
     <th width="540" colspan="2">
       <%=h workflow.title %>
     </th>
@@ -25,8 +25,16 @@
     </td>
   </tr>
   <tr>
+    <td colspan="2">
+      <center>
+        <b>Contributor:</b> <%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type) %>
+      </center>
+    </td>
+  </tr>
+  <tr>
     <td>
-      <strong>Contributor:</strong> <%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type) %><br/>
+      <strong>Viewed:</strong> <%=pluralize workflow.contribution.viewings_count, "time" %><br/>
+      <strong>Downloaded:</strong> <%=pluralize workflow.contribution.downloads_count, "time" %><br/>
     </td>
     <td>
       <strong>Created at:</strong> <%=datetime workflow.created_at, false %><br/>
@@ -34,11 +42,13 @@
     </td>
   </tr>
   <tr>
-    <td colspan="2">
-      <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to '[download]', download_workflow_path(workflow) %> <% end %>
-      <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to '[show]', workflow_path(workflow) %> <% end %>
-      <% if logged_in? and workflow.authorized?("edit", current_user) %><%= link_to '[edit]', edit_workflow_path(workflow) %> <% end %>
-      <% if logged_in? and workflow.authorized?("destroy", current_user) %><%= link_to '[destroy]', workflow_path(workflow), :confirm => 'Are you sure?', :method => :delete %><% end %>
+    <td colspan="3">
+      <center>
+        <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to '[download]', download_workflow_path(workflow) %> <% end %>
+        <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to '[show]', workflow_path(workflow) %> <% end %>
+        <% if logged_in? and workflow.authorized?("edit", current_user) %><%= link_to '[edit]', edit_workflow_path(workflow) %> <% end %>
+        <% if logged_in? and workflow.authorized?("destroy", current_user) %><%= link_to '[destroy]', workflow_path(workflow), :confirm => 'Are you sure?', :method => :delete %><% end %>
+      </center>
     </td>
   </tr>
 </table>

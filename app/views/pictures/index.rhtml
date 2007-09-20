@@ -1,18 +1,36 @@
-<h1>Listing pictures</h1>
+<% if params[:user_id] %>
+  <% if my_page? params[:user_id] %>
+    <h1>Listing my pictures</h1>
+  <% else %>
+    <h1>Listing <%= name(params[:user_id]) %>'s pictures</h1>
+  <% end %>
+<% else %>
+  <h1>Listing pictures</h1>
+<% end %>
 
 <table>
   <tr>
-    <th>ID</th>
+    <th> </th>
     <th>Data</th>
   </tr>
   
 <% for picture in @pictures %>
   <tr>
     <td width="150">
-      <font size="18"><%=h picture.id %></font>
-      <% if my_page? picture.user_id and !picture.selected? %><br/><%= link_to 'Select as avatar', select_picture_path(picture.user_id, picture) %><% end %>
+      <% if picture.selected? %> 
+        <%= image_tag("people.png", :size => "60x60", :text => "selected") %><br/>
+        selected
+      <% else %>
+        <% if my_page? picture.user_id %>
+          <%= link_to("[select as avatar]", select_picture_path(picture.user_id, picture)) %>
+        <% end %>
+      <% end %>
     </td>
-    <% unless params[:user_id] %><td width="150"><font size="18"><%=h picture.user_id %></font></td><% end %>
+    <% unless params[:user_id] %>
+      <td width="150">
+        <font size="18"><%=h picture.user_id %></font>
+      </td>
+    <% end %>
     <td>
       <% if false %>
         <%= image_tag(url_for_file_column(picture, "data", "large")) %>

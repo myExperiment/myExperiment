@@ -1,7 +1,7 @@
 <% unless collection.empty? %>
 <table>
   <tr>
-    <th>User</th>
+    <th>Owner</th>
     <th>Title</th>
     <th>Unique</th>
     <th>Created at</th>
@@ -10,8 +10,8 @@
   
 <% for network in collection %>
   <tr>
-    <td><%=h network.user_id %></td>
-    <td><%=h network.title %></td>
+    <td><%= contributor(network.user_id, "User", true, true, "60x60") %></td>
+    <td><%= contributor(network.id, "Network", true, true, "60x60") %></td>
     <td><%=h network.unique_name %></td>
     <td><%=datetime network.created_at, false %></td>
     <td><%=datetime network.updated_at, false %></td>
