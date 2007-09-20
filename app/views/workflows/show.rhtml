@@ -123,10 +123,34 @@
 
 <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
 
+<h3>Statistics</h3>
+
+<%= render :partial => "contributions/statistics", :object => @workflow.contribution %>
+
+<p>
+  <b>Number of bookmarks:</b> 
+  <%=h @workflow.bookmarks.length %>
+</p>
+
+<p>
+  <b>Number of comments:</b> 
+  <%=h @workflow.comments.length %>
+</p>
+
+<p>
+  <b>Number of ratings:</b> 
+  <%=h @workflow.ratings.length %>
+</p>
+
+<p>
+  <b>Number of taggings:</b> 
+  <%=h @workflow.taggings.length %>
+</p>
+
 <% if logged_in? and @workflow.owner? current_user %>
   <h3>History</h3>
 
-  <%= render :partial => "history", :object => @workflow %>
+  <%= render :partial => "contributions/history", :object => @workflow.contribution %>
 <% end %>
 
 <br/>

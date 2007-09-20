@@ -26,9 +26,15 @@
   </p>
 <% end %>
 
-<h3>History</h3>
+<h3>Statistics</h3>
 
-<%= render :partial => "contributions/history", :object => @blob.contribution %>
+<%= render :partial => "contributions/statistics", :object => @blob.contribution %>
+
+<% if logged_in? and @blob.owner? current_user %>
+  <h3>History</h3>
+
+  <%= render :partial => "contributions/history", :object => @blob.contribution %>
+<% end %>
 
 <br/>
 
