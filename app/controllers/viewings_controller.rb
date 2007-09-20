@@ -30,6 +30,18 @@ class ViewingsController < ApplicationController
     error("That action (viewings/new) has been disabled", "action has been disabled")
   end
   
+  def create
+    error("That action (viewings/create) has been disabled", "action has been disabled")
+  end
+  
+  def edit
+    error("That action (viewings/edit) has been disabled", "action has been disabled")
+  end
+  
+  def update
+    error("That action (viewings/update) has been disabled", "action has been disabled")
+  end
+  
   def destroy
     error("That action (viewings/new) has been disabled", "action has been disabled")
   end

@@ -1,3 +1,5 @@
+<h3>Details</h3>
+
 <p>
   <b>Contributor:</b>
   <%=contributor @contribution.contributor_id, @contribution.contributor_type%>
@@ -28,6 +30,10 @@
   <b>Updated at:</b>
   <%=datetime @contribution.updated_at %>
 </p>
+
+<h3>History</h3>
+
+<%= render :partial => "contributions/history", :object => @contribution %>
 
 
 <%= link_to 'Back', contributions_path %>

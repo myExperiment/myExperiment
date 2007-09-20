@@ -30,6 +30,18 @@ class DownloadsController < ApplicationController
     error("That action (downloads/new) has been disabled", "action has been disabled")
   end
   
+  def create
+    error("That action (downloads/create) has been disabled", "action has been disabled")
+  end
+  
+  def edit
+    error("That action (downloads/edit) has been disabled", "action has been disabled")
+  end
+  
+  def update
+    error("That action (downloads/update) has been disabled", "action has been disabled")
+  end
+  
   def destroy
     error("That action (downloads/new) has been disabled", "action has been disabled")
   end
