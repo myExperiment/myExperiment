@@ -29,6 +29,24 @@ class Contribution < ActiveRecord::Base
   has_many :downloads
   has_many :viewings
   
+  # returns the 'most downloaded' Contributions
+  # the maximum number of results is set by #limit#
+  def self.most_downloaded(limit=10)
+    self.find(:all, 
+              :conditions => "downloads_count != 0", 
+              :order => "downloads_count DESC", 
+              :limit => limit)
+  end
+  
+  # returns the 'most viewed' Contributions
+  # the maximum number of results is set by #limit#
+  def self.most_viewed(limit=10)
+    self.find(:all, 
+              :conditions => "downloads_count != 0", 
+              :order => "viewings_count DESC", 
+              :limit => limit)
+  end
+  
   # is c_utor authorized to edit the policy for this contribution
   def admin?(c_utor)
     #policy.contributor_id.to_i == c_utor.id.to_i and policy.contributor_type.to_s == c_utor.class.to_s
