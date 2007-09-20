@@ -15,9 +15,17 @@
   <%=datetime @policy.updated_at %>
 </p>
 
+<p>
+  <%= link_to '[edit policy settings]', edit_policy_path(@policy) %>
+</p>
+
 <h3>Permissions</h3>
 
 <%= render :partial => "policy", :object => @policy %>
+
+<p>
+  <%= link_to '[edit public/protected]', edit_policy_path(@policy) %> <%= link_to '[new permission]', new_permission_path(@policy) %>
+</p>
 
 <% unless @policy.contributions.empty? %>
   <h3>Contributions moderated with this</h3>
