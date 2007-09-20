@@ -1,5 +1,6 @@
 <h1>Listing policies</h1>
 
+<% if false %>
 <table>
   <tr>
     <th rowspan=2 valign=top>Name</th>
@@ -40,5 +41,32 @@
   </tr>
 <% end %>
 </table>
+<% end %>
+
+<div id="policies_div">
+  <ul>
+    <% for policy in @policies %>
+      <li>
+        <p>
+          <b>Name:</b> <%=h policy.name %>
+        </p>
+        
+        <p>
+          <b>Created at:</b> <%=datetime policy.created_at, false %>
+        </p>
+      
+        <%= render :partial => "policies/policy", :object => policy, :locals => { :read_only => true } %>
+        
+        <p>
+          <%= link_to '[show]', policy_path(policy) %> 
+          <%= link_to '[edit]', edit_policy_path(policy) %> 
+          <%= link_to '[destroy]', policy_path(policy), :confirm => 'Are you sure?', :method => :delete %>
+        </p>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<div style="clear: both;"/>
 
 <br />

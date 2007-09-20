@@ -198,3 +198,26 @@ ul#tabnav a:hover {
   text-align: center; 
   background: #ffffff url('/images/searchfade.png') repeat-x center;
 }
+
+#policies_div
+{
+width: 100%;
+}
+
+#policies_div ul
+{
+width: 100%;
+display: inline;
+list-style: none;
+}
+
+#policies_div ul li
+{
+width: 300px;
+padding-left: 10px;
+margin-left: 5px;
+float: left;
+display: inline;
+list-style: none;
+border: thin solid black;
+}
