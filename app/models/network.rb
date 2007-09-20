@@ -28,13 +28,14 @@ class Network < ActiveRecord::Base
   
   acts_as_ferret :fields => [:title, :unique_name]
   
-  def related?(other) # other.kind_of? Mib::Act::Contributor
-    if other.kind_of? Network
-      return relation?(other.id)
-    elsif other.kind_of? User
-      return member?(other.id)
-    else
-      return false
+  # protected? asks the question "is other protected by me?"
+  def protected?(other)
+    if other.kind_of? User        # if other is a User...
+      return member?(other.id)    #       ...is other a member of me?
+    elsif other.kind_of? Network  # if other is a Network...
+      return relation?(other.id)  #       ...is other a child of mine?
+    else                          # otherwise...
+      return false                #       ...no
     end
   end
   
@@ -53,33 +54,39 @@ class Network < ActiveRecord::Base
     user_id.to_i == userid.to_i
   end
   
-  has_many :relationships_completed, #accepted (by others)
-           :class_name => "Relationship",
-           :foreign_key => :network_id,
-           :conditions => ["accepted_at < ?", Time.now],
-           :order => "created_at DESC",
-           :dependent => :destroy
-           
-  has_many :relationships_requested, #unaccepted (by others)
-           :class_name => "Relationship",
-           :foreign_key => :network_id,
-           :conditions => "accepted_at IS NULL",
-           :order => "created_at DESC",
-           :dependent => :destroy
-           
-  has_many :relationships_accepted, #accepted (by me)
-           :class_name => "Relationship",
-           :foreign_key => :relation_id,
-           :conditions => ["accepted_at < ?", Time.now],
-           :order => "accepted_at DESC",
-           :dependent => :destroy
-           
-  has_many :relationships_pending, #unaccepted (by me)
-           :class_name => "Relationship",
-           :foreign_key => :relation_id,
-           :conditions => "accepted_at IS NULL",
-           :order => "created_at DESC",
-           :dependent => :destroy
+#  has_many :relationships_completed, #accepted (by others)
+#           :class_name => "Relationship",
+#           :foreign_key => :network_id,
+#           :conditions => ["accepted_at < ?", Time.now],
+#           :order => "created_at DESC",
+#           :dependent => :destroy
+#           
+#  has_many :relationships_requested, #unaccepted (by others)
+#           :class_name => "Relationship",
+#           :foreign_key => :network_id,
+#           :conditions => "accepted_at IS NULL",
+#           :order => "created_at DESC",
+#           :dependent => :destroy
+#           
+#  has_many :relationships_accepted, #accepted (by me)
+#           :class_name => "Relationship",
+#           :foreign_key => :relation_id,
+#           :conditions => ["accepted_at < ?", Time.now],
+#           :order => "accepted_at DESC",
+#           :dependent => :destroy
+#           
+#  has_many :relationships_pending, #unaccepted (by me)
+#           :class_name => "Relationship",
+#           :foreign_key => :relation_id,
+#           :conditions => "accepted_at IS NULL",
+#           :order => "created_at DESC",
+#           :dependent => :destroy
+#
+#  def relationships
+#    (relationships_completed + relationships_requested + relationships_accepted + relationships_pending).sort do |a, b|
+#      b.created_at <=> a.created_at
+#    end
+#  end
   
   has_and_belongs_to_many :relations,
                           :class_name => "Network",
@@ -88,12 +95,6 @@ class Network < ActiveRecord::Base
                           :association_foreign_key => :relation_id,
                           :conditions => ["accepted_at < ?", Time.now],
                           :order => "accepted_at DESC"
-                          
-  def relationships
-    (relationships_completed + relationships_requested + relationships_accepted + relationships_pending).sort do |a, b|
-      b.created_at <=> a.created_at
-    end
-  end
                           
   alias_method :original_relations, :relations
   def relations
@@ -121,7 +122,7 @@ class Network < ActiveRecord::Base
 #    original_parents.each do |r|
 #      rtn << Network.find(r.network_id)
 #    end
-#    
+    
 #    return rtn
 #  end
                           

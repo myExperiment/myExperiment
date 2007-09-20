@@ -49,7 +49,7 @@ class Policy < ActiveRecord::Base
         return true if private?(category, contributor)
         
         # true if contribution.contributor and contributor are related and policy[category_protected]
-        return true if (contribution.contributor.related? contributor and protected?(category))
+        return true if (contribution.contributor.protected? contributor and protected?(category))
       end
       
       # true if policy[category_public]
@@ -96,14 +96,23 @@ private
   end
   
   def private?(category, contrib)
-    begin
-      if (p = Permission.find_by_policy_id_and_contributor_id_and_contributor_type(id, contrib.id, contrib.class.to_s))
-        return p.attributes["#{category}"] == true
-      end
-    rescue ActiveRecord::RecordNotFound
-      return nil
+    if (p = Permission.find(:first, :conditions => ["policy_id = ? AND contributor_id = ? AND contributor_type = ?", id, contrib.id, contrib.class.to_s]))
+      return p.attributes["#{category}"] == true
     else
-      return nil
+      case contrib.class.to_s
+      when "User"
+        contrib.all_networks.each do |n|
+          return true if private?(category, n)
+        end
+      when "Network"
+        contrib.parents.each do |p|
+          return true if private?(category, p)
+        end
+      else
+        return nil
+      end
     end
+    
+    return nil
   end
 end

@@ -95,13 +95,14 @@ class User < ActiveRecord::Base
   
   acts_as_ferret :fields => [:openid_url, :unique]
   
-  def related?(other)
+  # protected? asks the question "is other protected by me?"
+  def protected?(other)
     if other.kind_of? User        # if other is a User...
       return friend?(other.id)    #       ...is other a friend of mine?
     elsif other.kind_of? Network  # if other is a Network...
-      return false                #       ...false
+      return other.member?(id)    #       ...am I a member of other?
     else                          # otherwise...
-      return false                #       ...false
+      return false                #       ...no
     end
   end
   
@@ -228,6 +229,16 @@ class User < ActiveRecord::Base
   has_many :networks_owned,
            :class_name => "Network",
            :dependent => :nullify
+           
+  def all_networks
+    rtn = []
+    
+    (original_networks.collect { |n| n.id } + networks_owned.collect { |n| n.id }).uniq.each do |network_id|
+      rtn << Network.find(network_id)
+    end
+    
+    return rtn
+  end
                           
   has_many :memberships, #all
            :order => "created_at DESC",

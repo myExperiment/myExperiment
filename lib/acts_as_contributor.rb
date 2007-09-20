@@ -75,9 +75,19 @@ module Mib
         end
 
         # this method is called by the Policy instance when authorizing protected attributes.
-        def related?(other)
+        def protected?(other)
           # extend in instance class
           false
+        end
+        
+        # first method in the authorization chain
+        # Mib::Acts::Contributor.authorized? --> Mib::Acts::Contributable.authorized? --> Contribution.authorized? --> Policy.authorized? --> Permission[s].authorized? --> true / false
+        def authorized?(action_name, contributable)
+          if contributable.kind_of? Mib::Acts::Contributable
+            return contributable.authorized?(action_name, self)
+          else
+            return false
+          end
         end
       end
     end
