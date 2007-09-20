@@ -1,9 +1,61 @@
 <p>
-  <b>Number of viewings:</b> 
+  <b>Total viewings:</b> 
   <%=h history.viewings_count %>
 </p>
 
+<table>
+  <tr>
+    <th>User</th>
+    <th>Count</th>
+    <th>Percentage</th>
+  </tr>
+  <% Viewing.most_by_contribution(history).each do |v| %>
+    <tr>
+      <td>
+        <% if (name = name(v.user_id, true)) %>
+          <%=avatar(v.user_id, '60x60') %><br/><%= name %>
+        <% else %>
+          <%= "Anonymous" %>
+        <% end %>
+      </td>
+      <td>
+        <%=h v.count %>
+      </td>
+      <td>
+        <%=h (v.count.to_f / history.viewings_count.to_f) * 100.0 %>%
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<hr/>
+
 <p>
-  <b>Number of downloads:</b> 
+  <b>Total downloads:</b> 
   <%=h history.downloads_count %>
 </p>
+
+<table>
+  <tr>
+    <th>User</th>
+    <th>Count</th>
+    <th>Percentage</th>
+  </tr>
+  <% Download.most_by_contribution(history).each do |d| %>
+    <tr>
+      <td>
+        <% if (name = name(d.user_id, true)) %>
+          <%=avatar(d.user_id, '60x60') %><br/><%= name %>
+        <% else %>
+          <%= "Anonymous" %>
+        <% end %>
+      </td>
+      <td>
+        <%=h d.count %>
+      </td>
+      <td>
+        <%=h (d.count.to_f / history.downloads_count.to_f) * 100.0 %>%
+      </td>
+    </tr>
+  <% end %>
+</table>
