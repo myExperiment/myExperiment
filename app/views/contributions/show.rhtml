@@ -31,9 +31,11 @@
   <%=datetime @contribution.updated_at %>
 </p>
 
-<h3>History</h3>
+<% if logged_in? and @contribution.owner? current_user %>
+  <h3>History</h3>
 
-<%= render :partial => "contributions/history", :object => @contribution %>
+  <%= render :partial => "contributions/history", :object => @contribution %>
+<% end %>
 
 <br/>
 

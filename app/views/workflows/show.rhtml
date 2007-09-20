@@ -123,9 +123,11 @@
 
 <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
 
-<h3>History</h3>
+<% if logged_in? and @workflow.owner? current_user %>
+  <h3>History</h3>
 
-<%= render :partial => "history", :object => @workflow %>
+  <%= render :partial => "history", :object => @workflow %>
+<% end %>
 
 <br/>
 

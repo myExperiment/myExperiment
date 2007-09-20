@@ -1,3 +1,5 @@
+<% max_viewings = max_downloads = 10 -%>
+
 <p>
   <b>Total viewings:</b> 
   <%=h history.viewings_count %>
@@ -22,11 +24,25 @@
         <%=h v.count %>
       </td>
       <td>
-        <%=h (v.count.to_f / history.viewings_count.to_f) * 100.0 %>%
+        <%=h ((v.count.to_f / history.viewings_count.to_f) * 100.0).round %>%
       </td>
     </tr>
   <% end %>
 </table>
+
+<p>
+  <b>Most recent viewings:</b>
+  <% viewings = history.viewings; viewings = viewings[0...max_viewings] unless (viewings.length < max_viewings) -%>
+  <ul><% viewings.each do |v| %>
+    <li>
+      <% if (name = name(v.user_id, true)) %>
+        <%= datetime v.created_at, false %> - <%= name %>
+      <% else %>
+        <%= datetime v.created_at, false %> - <%= "Anonymous" %>
+      <% end %>
+    </li>
+  <% end %></ul>
+</p>
 
 <hr/>
 
@@ -54,8 +70,22 @@
         <%=h d.count %>
       </td>
       <td>
-        <%=h (d.count.to_f / history.downloads_count.to_f) * 100.0 %>%
+        <%=h ((d.count.to_f / history.downloads_count.to_f) * 100.0).round %>%
       </td>
     </tr>
   <% end %>
 </table>
+
+<p>
+  <b>Most recent downloads:</b>
+  <% downloads = history.downloads; downloads = downloads[0...max_downloads] unless (downloads.length < max_downloads) -%>
+  <ul><% downloads.each do |d| %>
+    <li>
+      <% if (name = name(d.user_id, true)) %>
+        <%= datetime d.created_at, false %> - <%= name %>
+      <% else %>
+        <%= datetime d.created_at, false %> - <%= "Anonymous" %>
+      <% end %>
+    </li>
+  <% end %></ul>
+</p>

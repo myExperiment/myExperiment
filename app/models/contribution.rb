@@ -26,8 +26,11 @@ class Contribution < ActiveRecord::Base
   belongs_to :contributable, :polymorphic => true
   belongs_to :policy
   
-  has_many :downloads
-  has_many :viewings
+  has_many :downloads,
+           :order => "created_at DESC"
+           
+  has_many :viewings,
+           :order => "created_at DESC"
   
   # returns the 'most downloaded' Contributions
   # the maximum number of results is set by #limit#
