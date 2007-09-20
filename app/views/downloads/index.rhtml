@@ -10,8 +10,14 @@
 <% for download in @downloads %>
   <tr>
     <% unless @contribution %><td><%=h download.contribution_id %></td><% end %>
-    <td><%=avatar(download.user_id, '60x60') %><br/><%=name(download.user_id, true) %></td>
-    <td><%=h download.created_at %></td>
+    <td>
+      <% if (name = name(download.user_id, true)) %>
+        <%=avatar(download.user_id, '60x60') %><br/><%= name%>
+      <% else %>
+        <%=null_avatar '60x60' %><br/><%= "Anonymous" %>
+      <% end %>
+    </td>
+    <td><%=datetime download.created_at, false %></td>
     <td><%= link_to 'Show', download_path(download.contribution, download) %></td>
   </tr>
 <% end %>

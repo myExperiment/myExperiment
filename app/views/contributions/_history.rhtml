@@ -17,7 +17,7 @@
         <% if (name = name(v.user_id, true)) %>
           <%=avatar(v.user_id, '60x60') %><br/><%= name %>
         <% else %>
-          <%= "Anonymous" %>
+          <%=null_avatar '60x60' %><br/><%= "Anonymous" %>
         <% end %>
       </td>
       <td>
@@ -63,7 +63,7 @@
         <% if (name = name(d.user_id, true)) %>
           <%=avatar(d.user_id, '60x60') %><br/><%= name %>
         <% else %>
-          <%= "Anonymous" %>
+          <%=null_avatar '60x60' %><br/><%= "Anonymous" %>
         <% end %>
       </td>
       <td>

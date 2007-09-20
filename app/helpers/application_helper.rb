@@ -105,6 +105,10 @@ module ApplicationHelper
     end
   end
   
+  def null_avatar(size="200x200")
+    image_tag("avatar.png", :title => "Anonymous", :size => size)
+  end
+  
   def profile_link(user_id)
     begin
       user = User.find(user_id)

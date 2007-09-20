@@ -5,7 +5,7 @@
 
 <p>
   <b>User:</b>
-  <%=name @viewing.user_id, true %>
+  <%=name(@viewing.user_id, true) || "Anonymous" %>
 </p>
 
 <p>
