@@ -96,21 +96,21 @@ private
   end
   
   def private?(category, contrib)
-    if (p = Permission.find(:first, :conditions => ["policy_id = ? AND contributor_id = ? AND contributor_type = ?", id, contrib.id, contrib.class.to_s]))
+    if (p = Permission.find(:first, :conditions => ["policy_id = ? AND contributor_id = ? AND contributor_type = ?", self.id, contrib.id, contrib.class.to_s]))
       return p.attributes["#{category}"] == true
-    else
-      case contrib.class.to_s
-      when "User"
-        contrib.all_networks.each do |n|
-          return true if private?(category, n)
-        end
-      when "Network"
-        contrib.parents.each do |p|
-          return true if private?(category, p)
-        end
-      else
-        return nil
-      end
+    #else
+      #case contrib.class.to_s
+      #when "User"
+        #contrib.all_networks.each do |n|
+          #return true if private?(category, n)
+        #end
+      #when "Network"
+        #contrib.parents.each do |p|
+          #return true if private?(category, p)
+        #end
+      #else
+        #return nil
+      #end
     end
     
     return nil
