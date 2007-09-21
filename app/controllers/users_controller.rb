@@ -121,7 +121,7 @@ class UsersController < ApplicationController
 protected
 
   def find_users
-    @users = User.find(:all, :order => "created_at DESC")
+    @users = User.find(:all, :order => "name ASC")
   end
 
   def find_user

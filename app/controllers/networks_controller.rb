@@ -127,9 +127,9 @@ protected
 
   def find_networks
     if params[:user_id]
-      @networks = Network.find(:all, :conditions => ["user_id = ?", params[:user_id]], :order => "created_at DESC")
+      @networks = Network.find(:all, :conditions => ["user_id = ?", params[:user_id]], :order => "title ASC")
     else  
-      @networks = Network.find(:all, :order => "created_at DESC")
+      @networks = Network.find(:all, :order => "title ASC")
     end
   end
 
