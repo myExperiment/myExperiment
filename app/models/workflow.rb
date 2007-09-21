@@ -43,9 +43,9 @@ class Workflow < ActiveRecord::Base
     :versions => {
       :thumb    => { :size => "100x100!" }, 
       :medium   => { :size => "650x300>" },
-      :padlock => { :transformation => Proc.new { |image| image.resize(100, 100).composite(Magick::ImageList.new("#{RAILS_ROOT}/public/images/padlock.gif"), 
-                                                                                           Magick::SouthEastGravity, 
-                                                                                           Magick::OverCompositeOp) } }
+      :padlock => { :transformation => Proc.new { |image| image.resize(100, 100).blur_image.composite(Magick::ImageList.new("#{RAILS_ROOT}/public/images/padlock.gif"), 
+                                                                                                      Magick::SouthEastGravity, 
+                                                                                                      Magick::OverCompositeOp) } }
     }
   }
   
