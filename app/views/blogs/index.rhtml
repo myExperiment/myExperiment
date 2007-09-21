@@ -1,24 +1,5 @@
 <h1>Listing blogs</h1>
 
-<table>
-  <tr>
-    <th>Contributor</th>
-    <th>Title</th>
-    <th>Posts</th>
-    <th>Last Post</th>
-  </tr>
-  
-<% for blog in @blogs %>
-  <tr>
-    <td><%= contributor(blog.contributor_id, blog.contributor_type) %></td>
-    <td><%=h blog.title %></td>
-    <td><%=h blog.posts.length %></td>
-    <td><%=h(blog.posts[-1].created_at) unless blog.posts.empty? %></td>
-    <td><%= link_to 'Show', blog_path(blog) %></td>
-    <td><%= link_to 'Edit', edit_blog_path(blog) %></td>
-    <td><%= link_to 'Destroy', blog_path(blog), :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
+<%= render :partial => "blogs/table", :locals => { :collection => @blogs } %>
 
 <br />

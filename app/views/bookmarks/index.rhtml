@@ -1,19 +1,27 @@
 <h1>Listing bookmarks</h1>
 
-<table>
+<% unless @bookmarks.empty? %>
+
+<table class="alt_table">
   <tr>
-    <th>Workflow</th>
+    <th width="400">Workflow</th>
     <th>Bookmarked at</th>
+    <th> </th>
   </tr>
   
+<% odd_row = false -%>
 <% for bookmark in @bookmarks %>
-  <tr>
-    <td><%= link_to h(bookmark.bookmarkable.title), workflow_path(bookmark.bookmarkable) %></td>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="400"><%= contributable(bookmark.bookmarkable_id, bookmark.bookmarkable_type, true, true) %></td>
     <td><%=datetime bookmark.created_at, false %></td>
-    <td><%= link_to 'Show', bookmark_path(bookmark) %></td>
-    <td><%= link_to 'Destroy', bookmark_path(bookmark), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td class="actions">
+      <%= link_to 'Show', bookmark_path(bookmark) %> 
+      <%= link_to 'Destroy', bookmark_path(bookmark), :confirm => 'Are you sure?', :method => :delete %>
+    </td>
   </tr>
 <% end %>
 </table>
+
+<% end %>
 
 <br />

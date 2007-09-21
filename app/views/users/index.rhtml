@@ -1,16 +1,13 @@
 <h1>Listing users</h1>
 
-<%= render :partial => "hlist", :locals => { :collection => @users } %>
-
-<br />
-
 <% if false %>
 
-<p>This table is produced using a ruby call to <code><%=h 'render :partial => "users/table", :locals => { :collection => @users }' %></code>.</p>
-
-<%= render :partial => "table", :locals => { :collection => @users } %>
+<%= render :partial => "hlist", :locals => { :collection => @users } %>
 
 <br />
 
 <% end %>
 
+<%= render :partial => "table", :locals => { :collection => @users } %>
+
+<br />

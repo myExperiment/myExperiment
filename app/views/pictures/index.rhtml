@@ -8,14 +8,15 @@
   <h1>Listing pictures</h1>
 <% end %>
 
-<table>
+<table class="alt_table">
   <tr>
     <th> </th>
     <th>Data</th>
   </tr>
   
+<% odd_row = false -%>
 <% for picture in @pictures %>
-  <tr>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
     <td width="150">
       <% if picture.selected? %> 
         <%= image_tag("people.png", :size => "60x60", :text => "selected") %><br/>
@@ -40,11 +41,13 @@
                               :id         => picture.id,
                               :size       => '200' %>
     </td>
-    <td><%= link_to 'Show', picture_path(picture.user_id, picture) %></td>
-    <% if my_page? picture.user_id %>
-    <td><%= link_to 'Edit', edit_picture_path(picture.user_id, picture) %></td>
-    <td><%= link_to 'Destroy', picture_path(picture.user_id, picture), :confirm => 'Are you sure?', :method => :delete %></td>
-    <% end %>
+    <td class="actions">
+      <%= link_to 'Show', picture_path(picture.user_id, picture) %> 
+      <% if my_page? picture.user_id %>
+        <%= link_to 'Edit', edit_picture_path(picture.user_id, picture) %> 
+        <%= link_to 'Destroy', picture_path(picture.user_id, picture), :confirm => 'Are you sure?', :method => :delete %>
+      <% end %>
+    </td>
   </tr>
 <% end %>
 </table>

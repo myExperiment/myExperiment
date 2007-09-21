@@ -1,26 +1,30 @@
 <% unless collection.empty? %>
 
-<table>
+<table class="alt_table">
   <tr>
-    <th>Openid url</th>
+    <th width="100">Name</th>
     <th>Username</th>
-    <th>Name</th>
+    <th>OpenID</th>
     <th>Created at</th>
     <th>Updated at</th>
+    <th> </th>
   </tr>
   
+<% odd_row = false -%> 
 <% for user in collection %>
-  <tr>
-    <td><%=h user.openid_url %></td>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100"><%= contributor(user.id, "User", true, true, "60x60") %></td>
     <td><%=h user.username %></td>
-    <td><%=h user.name %></td>
+    <td><%=h user.openid_url %></td>
     <td><%=datetime user.created_at, false %></td>
     <td><%=datetime user.updated_at, false %></td>
-    <td><%= link_to 'Show', user_path(user) %></td>
-    <% if my_page? user.id %>
-    <td><%= link_to 'Edit', edit_user_path(user) %></td>
-    <td><%= link_to 'Destroy', user_path(user), :confirm => 'Are you sure?', :method => :delete %></td>
-    <% end %>
+    <td class="actions">
+      <%= link_to 'Show', user_path(user) %> 
+      <% if my_page? user.id %>
+        <%= link_to 'Edit', edit_user_path(user) %> 
+        <%= link_to 'Destroy', user_path(user), :confirm => 'Are you sure?', :method => :delete %>
+      <% end %>
+    </td>
   </tr>
 <% end %>
 </table>

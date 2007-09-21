@@ -1,16 +1,18 @@
 <h1>Listing viewings</h1>
 
-<table>
+<table class="alt_table">
   <tr>
-    <% unless @contribution %><th>Contribution</th><% end %>
-    <th>User</th>
+    <% unless @contribution %><th width="400">Contribution</th><% end %>
+    <th width="100">User</th>
     <th>Created at</th>
+    <th> </th>
   </tr>
   
+<% odd_row = false -%>
 <% for viewing in @viewings %>
-  <tr>
-    <% unless @contribution %><td><%=h viewing.contribution_id %></td><% end %>
-    <td>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <% unless @contribution %><td width="400"><%=h viewing.contribution_id %></td><% end %>
+    <td width="100">
       <% if viewing.user_id %>
         <%= contributor(viewing.user_id, "User", true, true, "60x60") %>
       <% else %>
@@ -18,7 +20,9 @@
       <% end %>
     </td>
     <td><%=datetime viewing.created_at, false %></td>
-    <td><%= link_to 'Show', viewing_path(viewing.contribution, viewing) %></td>
+    <td class="actions">
+      <%= link_to 'Show', viewing_path(viewing.contribution, viewing) %>
+    </td>
   </tr>
 <% end %>
 </table>

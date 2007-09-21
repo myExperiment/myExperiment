@@ -1,26 +1,29 @@
 <% unless collection.empty? %>
 
-<table>
+<table class="alt_table">
   <tr>
-    <th>Contributor</th>
+    <th width="100">Contributor</th>
     <th>Download</th>
     <th>Edit</th>
     <th>View</th>
     <th>Created at</th>
     <th>Updated at</th>
   </tr>
-  
+
+<% odd_row = false -%>
 <% for permission in collection %>
-  <tr>
-    <td><%= contributor(permission.contributor_id, permission.contributor_type, true, true, "60x60") %></td>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100"><%= contributor(permission.contributor_id, permission.contributor_type, true, true, "60x60") %></td>
     <td><%=h permission.download %></td>
     <td><%=h permission.edit %></td>
     <td><%=h permission.view %></td>
     <td><%=datetime permission.created_at, false %></td>
     <td><%=datetime permission.updated_at, false %></td>
-    <td><%= link_to 'Show', permission_path(permission.policy, permission) %></td>
-    <td><%= link_to 'Edit', edit_permission_path(permission.policy, permission) %></td>
-    <td><%= link_to 'Destroy', permission_path(permission.policy, permission), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td class="actions">
+      <%= link_to 'Show', permission_path(permission.policy, permission) %> 
+      <%= link_to 'Edit', edit_permission_path(permission.policy, permission) %> 
+      <%= link_to 'Destroy', permission_path(permission.policy, permission), :confirm => 'Are you sure?', :method => :delete %>
+    </td>
   </tr>
 <% end %>
 </table>

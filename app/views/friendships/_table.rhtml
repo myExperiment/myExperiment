@@ -1,23 +1,27 @@
 <% unless collection.empty? %>
 
-<table>
+<table class="alt_table">
   <tr>
-    <th>User</th>
-    <th>Friend</th>
+    <th width="100">User</th>
+    <th width="100">Friend</th>
     <th>Created at</th>
     <th>Accepted at</th>
+    <th> </th>
   </tr>
   
+<% odd_row = false -%>
 <% for friendship in collection %>
-  <tr>
-    <td><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.user, "User", true, true, "60x60") %><%= "</b>" unless friendship.accepted? %></td>
-    <td><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.friend, "User", true, true, "60x60") %><%= "</b>" unless friendship.accepted? %></td>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100"><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.user, "User", true, true, "60x60") %><%= "</b>" unless friendship.accepted? %></td>
+    <td width="100"><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.friend, "User", true, true, "60x60") %><%= "</b>" unless friendship.accepted? %></td>
     <td><%= "<b>" unless friendship.accepted? %><%=datetime friendship.created_at, false %><%= "</b>" unless friendship.accepted? %></td>
     <td><%= "<b>" unless friendship.accepted? %><%=datetime(friendship.accepted_at, false) || "Pending" %><%= "</b>" unless friendship.accepted? %></td>
-    <% if my_page? friendship.friend_id %>
-    <td><%= link_to "Show#{friendship.accepted? ? "" : " / Accept"}", friendship_path(friendship.friend_id, friendship) %></td>
-    <td><%= link_to 'Delete', friendship_path(friendship.friend_id, friendship), :confirm => 'Are you sure?', :method => :delete %></td>
-    <% end %>
+    <td class="actions">
+      <% if my_page? friendship.friend_id %>
+        <%= link_to "Show#{friendship.accepted? ? "" : " / Accept"}", friendship_path(friendship.friend_id, friendship) %> 
+        <%= link_to 'Delete', friendship_path(friendship.friend_id, friendship), :confirm => 'Are you sure?', :method => :delete %>
+      <% end %>
+    </td>
   </tr>
 <% end %>
 </table>

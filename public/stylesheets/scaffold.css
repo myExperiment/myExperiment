@@ -223,12 +223,22 @@ list-style: none;
 border: thin solid black;
 }
 
-#contributions tr.odd_row td
+table.alt_table tr.odd_row td
 {
   background-color: #eee;
 }
 
-#contributions tr.even_row td
+table.alt_table tr.even_row td
 {
   background-color: #fff;
+}
+
+table.alt_table tr td 
+{
+  padding: 5px 5px 5px 5px;
+}
+
+table.alt_table tr td.actions
+{
+  text-align: left;
 }

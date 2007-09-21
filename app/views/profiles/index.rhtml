@@ -1,30 +1,32 @@
 <h1>Listing profiles</h1>
 
-<table>
+<table class="alt_table">
   <tr>
-    <th>User</th>
-    <th>Picture</th>
+    <th width="100">User</th>
     <th>Email</th>
     <th>Website</th>
     <th>Description</th>
     <th>Created at</th>
     <th>Updated at</th>
+    <th> </th>
   </tr>
-  
+ 
+<% odd_row = false -%> 
 <% for profile in @profiles %>
-  <tr>
-    <td><%=h openid(profile.user_id) %></td>
-    <td><%=avatar(profile.user_id, "100x100") %></td>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100"><%= contributor(profile.user_id, "User", true, true, "60x60") %></td>
     <td><%=h profile.email %></td>
     <td><%=h profile.website %></td>
     <td><%=h profile.description %></td>
     <td><%=datetime profile.created_at, false %></td>
     <td><%=datetime profile.updated_at, false %></td>
-    <td><%= link_to 'Show', profile_path(profile) %></td>
-    <% if my_page? profile.user_id %>
-    <td><%= link_to 'Edit', edit_profile_path(profile) %></td>
-    <td><%= link_to 'Destroy', profile_path(profile), :confirm => 'Are you sure?', :method => :delete %></td>
-    <% end %>
+    <td class="actions">
+      <%= link_to 'Show', profile_path(profile) %> 
+      <% if my_page? profile.user_id %>
+        <%= link_to 'Edit', edit_profile_path(profile) %> 
+        <%= link_to 'Destroy', profile_path(profile), :confirm => 'Are you sure?', :method => :delete %>
+      <% end %>
+    </td>
   </tr>
 <% end %>
 </table>

@@ -1,21 +1,25 @@
 <% unless collection.empty? %>
 
-<table>
+<table class="alt_table">
   <tr>
-    <th>Contributor</th>
-    <th>Title</th>
-    <th>Image</th>
+    <th width="100">Contributor</th>
+    <th width="200">Title</th>
+    <th width="150">Image</th>
+    <% if false %>
     <th>Created at</th>
     <th>Updated at</th>
+    <% end %>
     <th>Version</th>
     <th>Rating</th>
+    <th> </th>
   </tr>
-  
+
+<% odd_row = false -%>
 <% for workflow in collection %>
-  <tr>
-    <td><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type) %></td>
-    <td><%=h workflow.title %></td>
-    <td>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100"><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, true, "60x60") %></td>
+    <td width="200"><%=h workflow.title %></td>
+    <td width="150">
       <% unless workflow.image.nil? %>
         <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
           <%= image_tag url_for_file_column(workflow, "image", "thumb") %>
@@ -24,14 +28,18 @@
         <% end %>
       <% end %>
     </td>
+    <% if false %>
     <td><%=datetime workflow.created_at, false %></td>
     <td><%=datetime workflow.updated_at, false %></td>
+    <% end %>
     <td><%=h workflow.version %></td>
     <td><%= number_with_precision(workflow.rating*20, 0) %>&#37 (<%= pluralize workflow.ratings.count, 'rating' %>)</td>
-    <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><td><%= link_to 'Download', download_workflow_path(workflow) %></td><% end %>
-    <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><td><%= link_to 'Show', workflow_path(workflow) %></td><% end %>
-    <% if logged_in? and workflow.authorized?("destroy", current_user) %><td><%= link_to 'Edit', edit_workflow_path(workflow) %></td><% end %>
-    <% if logged_in? and workflow.authorized?("destroy", current_user) %><td><%= link_to 'Destroy', workflow_path(workflow), :confirm => 'Are you sure?', :method => :delete %></td><% end %>
+    <td class="actions">
+      <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to 'Download', download_workflow_path(workflow) %> <% end %>
+      <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to 'Show', workflow_path(workflow) %> <% end %>
+      <% if logged_in? and workflow.authorized?("destroy", current_user) %><%= link_to 'Edit', edit_workflow_path(workflow) %> <% end %>
+      <% if logged_in? and workflow.authorized?("destroy", current_user) %><%= link_to 'Destroy', workflow_path(workflow), :confirm => 'Are you sure?', :method => :delete %><% end %>
+    </td>
   </tr>
 <% end %>
 </table>

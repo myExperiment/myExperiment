@@ -1,23 +1,27 @@
 <% unless collection.empty? %>
 
-<table>
+<table class="alt_table">
   <tr>
-    <th>User</th>
-    <th>Network</th>
+    <th width="100">User</th>
+    <th width="100">Network</th>
     <th>Created at</th>
     <th>Accepted at</th>
+    <th> </th>
   </tr>
   
+<% odd_row = false -%>
 <% for membership in collection %>
-  <tr>
-    <td><%= "<b>" unless membership.accepted? %><%= contributor(membership.user_id, "User", true, true, "60x60") %><%= "</b>" unless membership.accepted? %></td>
-    <td><%= "<b>" unless membership.accepted? %><%= contributor(membership.network_id, "Network", true, true, "60x60") %><%= "</b>" unless membership.accepted? %></td>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.user_id, "User", true, true, "60x60") %><%= "</b>" unless membership.accepted? %></td>
+    <td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.network_id, "Network", true, true, "60x60") %><%= "</b>" unless membership.accepted? %></td>
     <td><%= "<b>" unless membership.accepted? %><%=datetime membership.created_at, false %><%= "</b>" unless membership.accepted? %></td>
     <td><%= "<b>" unless membership.accepted? %><%=datetime(membership.accepted_at, false) || "Pending" %><%= "</b>" unless membership.accepted? %></td>
-    <% if my_page? membership.network.owner.id %>
-    <td><%= link_to "Show#{membership.accepted? ? "" : " / Accept"}", membership_path(membership.user_id, membership) %></td>
-    <td><%= link_to 'Delete', membership_path(membership.user_id, membership), :confirm => 'Are you sure?', :method => :delete %></td>
-    <% end %>
+    <td class="actions">
+      <% if my_page? membership.network.owner.id %>
+        <%= link_to "Show#{membership.accepted? ? "" : " / Accept"}", membership_path(membership.user_id, membership) %> 
+        <%= link_to 'Delete', membership_path(membership.user_id, membership), :confirm => 'Are you sure?', :method => :delete %>
+      <% end %>
+    </td>
   </tr>
 <% end %>
 </table>

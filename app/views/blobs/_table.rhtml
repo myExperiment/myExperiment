@@ -1,21 +1,25 @@
 <% unless collection.empty? %>
 
-<table>
+<table class="alt_table">
   <tr>
-    <th>Contributor</th>
+    <th width="100">Contributor</th>
     <th>Local name</th>
     <th>Content type</th>
+    <th> </th>
   </tr>
   
+<% odd_row = false -%>
 <% for blob in @blobs %>
-  <tr>
-    <td><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, true, true, "60x60") %></td>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100"><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, true, true, "60x60") %></td>
     <td><%=h blob.local_name %></td>
     <td><%=h blob.content_type %></td>
-    <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><td><%= link_to 'Download', download_blob_path(blob) %></td><% end %>
-    <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><td><%= link_to 'Show', blob_path(blob) %></td><% end %>
-    <% if logged_in? and blob.authorized?("edit", current_user) %><td><%= link_to 'Edit', edit_blob_path(blob) %></td><% end %>
-    <% if logged_in? and blob.authorized?("destroy", current_user) %><td><%= link_to 'Destroy', blob_path(blob), :confirm => 'Are you sure?', :method => :delete %></td><% end %>
+    <td class="actions">
+      <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to 'Download', download_blob_path(blob) %> <% end %>
+      <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to 'Show', blob_path(blob) %> <% end %>
+      <% if logged_in? and blob.authorized?("edit", current_user) %><%= link_to 'Edit', edit_blob_path(blob) %> <% end %>
+      <% if logged_in? and blob.authorized?("destroy", current_user) %><%= link_to 'Destroy', blob_path(blob), :confirm => 'Are you sure?', :method => :delete %><% end %>
+    </td>
   </tr>
 <% end %>
 </table>
