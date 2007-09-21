@@ -3,7 +3,9 @@
 <%= error_messages_for :blob %>
 
 <% form_for(:blob, :url => blob_path(@blob), :html => { :method => :put }) do |f| %>
-  <%= render :partial => "policies/listform", :locals => { :contribution => @blob.contribution, :user => current_user } if @blob.authorized?("destroy", current_user) %>
+  <% if @blob.authorized?("destroy", current_user) %>
+    <%= render :partial => "policies/listform", :locals => { :contribution => @blob.contribution, :user => current_user } %>
+  <% end %>
 
   <p>
     <%= submit_tag "Save Changes" %>

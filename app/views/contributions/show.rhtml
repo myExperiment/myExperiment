@@ -13,11 +13,7 @@
 <% if logged_in? and @contribution.authorized?("destroy", current_user) %>
   <p>
     <b>Policy:</b>
-    <% if @contribution.policy %>
-      <%= link_to h(@contribution.policy.name), policy_path(@contribution.policy) %> (managed by: <%= link_to name(id=((con=@contribution.policy.contributor).id || con.owner.id)), user_path(id) %>)
-    <% else %>
-      Public (none)
-    <% end %>
+    <%= policy_link(@contribution.policy_id) %>
   </p>
 <% end %>
 
@@ -35,7 +31,7 @@
 
 <%= render :partial => "contributions/statistics", :object => @contribution %>
 
-<% if logged_in? and @contribution.owner? current_user %>
+<% if logged_in? and @contribution.authorized?("destroy", current_user) %>
   <h3>History</h3>
 
   <%= render :partial => "contributions/history", :object => @contribution %>

@@ -3,15 +3,7 @@
 <%= error_messages_for :contribution %>
 
 <% form_for(:contribution, :url => contributions_path) do |f| %>
-  <p>
-    <b>Contributor</b><br />
-    <%= f.text_field :contributor_id %>
-  </p>
-
-  <p>
-    <b>Contributor type</b><br />
-    <%= f.text_field :contributor_type %>
-  </p>
+  <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user } %>
 
   <p>
     <b>Contributable</b><br />
@@ -23,10 +15,7 @@
     <%= f.text_field :contributable_type %>
   </p>
 
-  <p>
-    <b>Policy</b><br />
-    <%= f.text_field :policy_id %>
-  </p>
+  <%= render :partial => "policies/listform", :locals => { :contribution => @contribution, :user => current_user } %>
 
   <p>
     <%= submit_tag "Create" %>

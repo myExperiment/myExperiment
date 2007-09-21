@@ -1,56 +1,9 @@
 <% if false %>
-
-<br/>
-
 <%= link_to image_tag("mail.png", :title => "Compose Message", :size => "50x50"), new_message_path %> 
-
 <% end %>
 
 <h1>Inbox</h1>
 
-<table class="alt_table">
-  <tr>
-    <th>From</th>
-    <th>Subject</th>
-    <th>Received at</th>
-    <th> </th>
-  </tr>
-  
-<% odd_row = false -%>
-<% for message in @messages %>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td><%= "<b>" unless message.read? %><%=h name(message.from) %><%= "</b>" unless message.read? %></td>
-    <td><%= "<b>" unless message.read? %><%=link_to h(message.subject), message_path(message) %><%= "</b>" unless message.read? %></td>
-    <td><%= "<b>" unless message.read? %><%=datetime message.created_at, false %><%= "</b>" unless message.read? %></td>
-    <td class="actions">
-      <%= link_to 'Reply', reply_message_path(message) %>
-    </td>
-  </tr>
-<% end %>
-</table>
+<%= render :partial => "messages/table", :locals => { :collection => @messages } %>
 
 <br />
-
-<% if false %>
-
-<h1>Sent</h1>
-
-<table>
-  <tr>
-    <th>From</th>
-    <th>Subject</th>
-    <th>Sent at</th>
-  </tr>
-  
-<% for message in current_user.messages_sent %>
-  <tr>
-    <td><%=h name(message.from) %></td>
-    <td><%=link_to h(message.subject), message_path(message) %></td>
-    <td><%=h message.created_at %></td>
-  </tr>
-<% end %>
-</table>
-
-<br/>
-
-<% end %>

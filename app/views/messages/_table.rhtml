@@ -1,0 +1,24 @@
+<% unless collection.empty? %>
+
+<table class="alt_table">
+  <tr>
+    <th>From</th>
+    <th>Subject</th>
+    <th>Received at</th>
+    <th> </th>
+  </tr>
+  
+<% odd_row = false -%>
+<% for message in collection %>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td><%= "<b>" unless message.read? %><%=h name(message.from) %><%= "</b>" unless message.read? %></td>
+    <td><%= "<b>" unless message.read? %><%=link_to h(message.subject), message_path(message) %><%= "</b>" unless message.read? %></td>
+    <td><%= "<b>" unless message.read? %><%=datetime message.created_at, false %><%= "</b>" unless message.read? %></td>
+    <td class="actions">
+      <%= link_to 'Reply', reply_message_path(message) %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

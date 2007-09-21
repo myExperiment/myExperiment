@@ -3,7 +3,9 @@
 <%= error_messages_for :contribution %>
 
 <% form_for(:contribution, :url => contribution_path(@contribution), :html => { :method => :put }) do |f| %>
-  <%= render :partial => "policies/listform", :locals => { :contribution => @contribution, :user => current_user } if @contribution.authorized?("destroy", current_user) %>
+  <% if @contribution.authorized?("destroy", current_user) %>
+    <%= render :partial => "policies/listform", :locals => { :contribution => @contribution, :user => current_user } %>
+  <% end %>
 
   <p>
     <%= submit_tag "Update" %>

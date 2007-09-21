@@ -8,7 +8,7 @@
   <%=avatar(@profile.user_id) %>
 </p>
 
-<%= render :partial => "profile", :locals => { :profile => @profile } %>
+<%= render :partial => "profiles/profile", :locals => { :profile => @profile } %>
 
 
 <%= link_to 'Back', user_path(@profile.owner) %>

@@ -1,31 +1,6 @@
 <h1>Listing downloads</h1>
 
-<table class="alt_table">
-  <tr>
-    <% unless @contribution %><th width="400">Contribution</th><% end %>
-    <th width="100">User</th>
-    <th>Created at</th>
-    <th> </th>
-  </tr>
-  
-<% odd_row = false -%>
-<% for download in @downloads %>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <% unless @contribution %><td width="400"><%= contributable(download.contribution.contributable_id, download.contribution.contributable_type, true, true) %></td><% end %>
-    <td width="100">
-      <% if download.user_id %>
-        <%= contributor(download.user_id, "User", true, true, "60x60") %>
-      <% else %>
-        <%=null_avatar '60x60' %><br/><%= "Anonymous" %>
-      <% end %>
-    </td>
-    <td><%=datetime download.created_at, false %></td>
-    <td class="actions">
-      <%= link_to 'Show', download_path(download.contribution, download) %>
-    </td>
-  </tr>
-<% end %>
-</table>
+<%= render :partial => "downloads/table", :locals => { :collection => @downloads, :contribution => @contribution } %>
 
 <br />
 

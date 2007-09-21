@@ -1,31 +1,6 @@
 <h1>Listing viewings</h1>
 
-<table class="alt_table">
-  <tr>
-    <% unless @contribution %><th width="400">Contribution</th><% end %>
-    <th width="100">User</th>
-    <th>Created at</th>
-    <th> </th>
-  </tr>
-  
-<% odd_row = false -%>
-<% for viewing in @viewings %>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <% unless @contribution %><td width="400"><%= contributable(viewing.contribution.contributable_id, viewing.contribution.contributable_type, true, true) %></td><% end %>
-    <td width="100">
-      <% if viewing.user_id %>
-        <%= contributor(viewing.user_id, "User", true, true, "60x60") %>
-      <% else %>
-        <%=null_avatar '60x60' %><br/><%= "Anonymous" %>
-      <% end %>
-    </td>
-    <td><%=datetime viewing.created_at, false %></td>
-    <td class="actions">
-      <%= link_to 'Show', viewing_path(viewing.contribution, viewing) %>
-    </td>
-  </tr>
-<% end %>
-</table>
+<%= render :partial => "viewings/table", :locals => { :collection => @viewings, :contribution => @contribution } %>
 
 <br />
 

@@ -3,7 +3,7 @@
 <%= error_messages_for :policy %>
 
 <% form_for(:policy, :url => policies_path) do |f| %>
-  <%= render :partial => "form", :object => f %>
+  <%= render :partial => "policies/form", :object => f %>
   
   <%= hidden_field_tag :from, value=(params[:from] || nil) %>
 

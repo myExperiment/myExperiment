@@ -17,9 +17,11 @@
   <%= render :partial => "blog_posts/post", :collection => @blog.posts %>
 <% end %>
 
-<h3>History</h3>
+<% if logged_in? and @blog.authorized?("destroy", current_user) %>
+  <h3>History</h3>
 
-<%= render :partial => "contributions/history", :object => @blog.contribution %>
+  <%= render :partial => "contributions/history", :object => @blog.contribution %>
+<% end %>
 
 <br/>
 
