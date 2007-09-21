@@ -6,18 +6,22 @@
     <th>Contributable</th>
     <th>Contributable type</th>
     <th>Policy</th>
+    <% if false %>
     <th>Created at</th>
     <th>Updated at</th>
+    <% end %>
   </tr>
   
 <% for contribution in collection %>
   <tr>
     <td><%= contributor(contribution.contributor_id, contribution.contributor_type, true, true, "60x60") %></td>
-    <td><%=h contribution.contributable_id %></td>
+    <td><%= contributable(contribution.contributable_id, contribution.contributable_type, true, true) %></td>
     <td><%=h contribution.contributable_type %></td>
-    <td><%=h contribution.policy_id %></td>
+    <td><%= policy_link(contribution.policy_id, false) %></td>
+    <% if false %>
     <td><%=datetime contribution.created_at, false %></td>
     <td><%=datetime contribution.updated_at, false %></td>
+    <% end %>
     <td><%= link_to 'Show', contribution_path(contribution) %></td>
     <td><%= link_to 'Edit', edit_contribution_path(contribution) %></td>
     <td><%= link_to 'Destroy', contribution_path(contribution), :confirm => 'Are you sure?', :method => :delete %></td>

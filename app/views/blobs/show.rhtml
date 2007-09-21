@@ -18,11 +18,7 @@
 <% if logged_in? and @blob.authorized?("destroy", current_user) %>
   <p>
     <b>Policy:</b>
-    <% if @blob.contribution.policy %>
-      <%= link_to h(@blob.contribution.policy.name), policy_path(@blob.contribution.policy) %> (managed by: <%= link_to name(id=((con=@blob.contribution.policy.contributor).id || con.owner.id)), user_path(id) %>)
-    <% else %>
-      Public (none)
-    <% end %>
+    <%= policy_link(@blob.contribution.policy_id) %>
   </p>
 <% end %>
 

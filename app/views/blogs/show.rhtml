@@ -4,6 +4,13 @@
   By <%= contributor(@blog.contribution.contributor_id, @blog.contribution.contributor_type) %>
 </p>
 
+<% if logged_in? and @blog.authorized?("destroy", current_user) %>
+  <p>
+    <b>Policy:</b>
+    <%= policy_link(@blog.contribution.policy_id) %>
+  </p>
+<% end %>
+
 <% unless @blog.posts.empty? %>
   <h3>Recent Posts</h3>
 

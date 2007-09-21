@@ -606,6 +606,12 @@ module Squirrel # :nodoc
     end
     my_puts "END Phase 8"
     
+    #my_puts "BEGIN Phase 9 - User Activity Histories"
+    #@tuples["histories"].each do |history_tuple|
+      # id, user_id, execution_time, action, controller, params_id
+    #end
+    #my_puts "END Phase 9"
+    
     true
   end
 

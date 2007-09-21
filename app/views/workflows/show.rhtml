@@ -68,11 +68,7 @@
 <% if logged_in? and @workflow.authorized?("destroy", current_user) %>
   <p>
     <b>Policy:</b>
-    <% if @workflow.contribution.policy %>
-      <%= link_to h(@workflow.contribution.policy.name), policy_path(@workflow.contribution.policy) %> (managed by: <%= link_to name(id=((con=@workflow.contribution.policy.contributor).id || con.owner.id)), user_path(id) %>)
-    <% else %>
-      Public (none)
-    <% end %>
+    <%= policy_link(@workflow.contribution.policy_id) %>
   </p>
 <% end %>
 

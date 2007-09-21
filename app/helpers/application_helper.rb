@@ -217,4 +217,69 @@ module ApplicationHelper
       return nil
     end
   end
+  
+  def contributable(contributableid, contributabletype, link=true, thumb=false)
+    case contributabletype.to_s
+    when "Blob"
+      if b = Blob.find(:first, :conditions => ["id = ?", contributableid])
+        name = h(b.local_name)
+        
+        return link ? link_to(name, blob_path(b)) : name
+      else
+        return nil
+      end
+    when "Blog"
+      if b = Blog.find(:first, :conditions => ["id = ?", contributableid])
+        name = h(b.title)
+        
+        return link ? link_to(name, blog_path(b)) : name
+      else
+        return nil
+      end
+    when "Forum"
+      if f = Forum.find(:first, :conditions => ["id = ?", contributableid])
+        name = h(f.name)
+        
+        return link ? link_to(name, forum_path(f)) : name
+      else
+        return nil
+      end
+    when "Workflow"
+      if w = Workflow.find(:first, :conditions => ["id = ?", contributableid])
+        name = h(w.title)
+        
+        if thumb
+          unless w.image.nil?
+            if w.authorized?("show", (logged_in? ? current_user : nil))
+              dot = image_tag url_for_file_column(w, "image", "thumb")
+            else
+              dot = image_tag url_for_file_column(w, "image", "padlock")
+            end
+            
+            name = "#{dot}<br/>#{name}"
+          end
+        else
+          dot = ""
+        end
+        
+        return link ? link_to(name, workflow_path(w)) : name
+      else
+        return nil
+      end
+    end
+  end
+  
+  def policy_link(policyid, managedby=true)
+    if policyid.nil?
+      return "Public (all)"
+    elsif  p = Policy.find(:first, :conditions => ["id = ?", policyid])
+      link = link_to h(p.name), policy_path(p)
+      
+      link = link + " (managed by: #{contributor(p.contributor_id, p.contributor_type)})" if managedby
+      
+      return link
+    else
+      return nil
+    end
+  end
 end

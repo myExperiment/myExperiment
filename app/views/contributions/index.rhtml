@@ -10,18 +10,16 @@
 </ol>
 <% end %>
 
-<p>
+<% if false %>
 
 <%= render :partial => "list", :locals => { :collection => @contributions } %>
 
 <br />
 
-<% if false %>
-
 <p>This table is produced using a ruby call to <code>render :partial => "contributions/table", :locals => { :collection => @contributables }</code>.</p>
+
+<% end %>
 
 <%= render :partial => "table", :locals => { :collection => @contributions } %>
 
 <br/>
-
-<% end %>
