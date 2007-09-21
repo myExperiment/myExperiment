@@ -222,3 +222,13 @@ display: inline;
 list-style: none;
 border: thin solid black;
 }
+
+#contributions tr.odd_row td
+{
+  background-color: #eee;
+}
+
+#contributions tr.even_row td
+{
+  background-color: #fff;
+}
