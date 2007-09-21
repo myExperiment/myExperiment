@@ -59,14 +59,28 @@ class JobsController < ApplicationController
     @job = Job.find(params[:id])
     @workflow = Workflow.find(@job.workflow_id)
     update_status @job
-    @status = @job.status
+	
+	@status = @job.status
+	
     if @status == 'COMPLETE'
       @output_location = get_output_location(get_job(@job.server_job))
       @outputs = Baclava::Reader.read(get_output(@output_location))
     end
+	
+	if ['RUNNING', 'COMPLETE', 'FAILED'].include? @job.status
+	  @report = TavernaService::Report.fromXML(get_job_report(@job.server_job))
+    end
+	
     #    puts '****************************************************************'
     #    puts Baclava::Writer.write(@output)
     #    puts '****************************************************************'
+  end
+  
+  def report
+	@job = Job.find(params[:id])
+	if ['RUNNING', 'COMPLETE', 'FAILED'].include? @job.status
+	  @report = TavernaService::Report.fromXML(get_job_report(@job.server_job))
+    end  	
   end
   
   def input
@@ -110,7 +124,7 @@ class JobsController < ApplicationController
     
     if remote_workflow
       if not workflow_exists? remote_workflow
-        workflow_location = submit_workflow(workflow_id)
+        workflow_location = submit_workflow(user_url, workflow_id)
         remote_workflow.update_attribute(:workflow_location, workflow_location)
       end
     else
@@ -179,7 +193,7 @@ class JobsController < ApplicationController
     url = URI.parse(job_location)
     req = Net::HTTP::Get.new(url.path + '/report')
     req.basic_auth @@USER_NAME, @@PASSWORD
-    req['Accept'] = 'application/vnd.taverna.rest+xml'
+    req['Accept'] = 'application/vnd.taverna.report+xml'
     Net::HTTP.start(url.host, url.port) {|http|
       http.request(req)
     }.body

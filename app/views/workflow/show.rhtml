@@ -10,9 +10,8 @@
     <%= render :partial => "rating/rating", :locals => { :rateable => @workflow, :controller => "workflow" } %>
 </div>
 
-<!--
-<h3><%= link_to 'Execute this workflow', :controller => 'jobs', :action => 'new', :id => @workflow %></h3>
--->
+<h3><%= link_to 'Run this workflow', :controller => 'jobs', :action => 'new', :id => @workflow %></h3>
+
 
   <h3><%= link_to 'Download this workflow', :action => 'download', :id => @workflow %></h3>
 

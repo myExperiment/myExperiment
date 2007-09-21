@@ -55,6 +55,15 @@ included in all copies or substantial portions of the Software.
 
 .jobResult {list-style: none; margin: 1em 0; padding: 0;}
 .jobResult li {margin: 0.5em; padding: 0;  border: 0px; background-color: white;}
+.jobReport table { width: 100%; margin: 0 0 0.5em 0; }
+/*
+.jobReport .processor { width: 1em; }
+.jobReport .status { width: 3em; }
+.jobReport .detail { width: 3em; }
+.jobReport .time { width: 3em; }
+*/
+.jobReport table th { background-color: #ccc; padding: 0.5em; border-bottom: 2px solid black;}
+.jobReport table td { background-color: #eee; padding: 0.5em; border-bottom: 2px solid white;}
 
 .jobInputDescription { background-color: #dddddd; background-color: #dddddd; border: 1px solid green; } 
 
