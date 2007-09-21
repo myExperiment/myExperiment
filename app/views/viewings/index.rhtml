@@ -11,7 +11,7 @@
 <% odd_row = false -%>
 <% for viewing in @viewings %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <% unless @contribution %><td width="400"><%=h viewing.contribution_id %></td><% end %>
+    <% unless @contribution %><td width="400"><%= contributable(viewing.contribution.contributable_id, viewing.contribution.contributable_type, true, true) %></td><% end %>
     <td width="100">
       <% if viewing.user_id %>
         <%= contributor(viewing.user_id, "User", true, true, "60x60") %>
