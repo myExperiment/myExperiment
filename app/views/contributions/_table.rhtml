@@ -4,15 +4,15 @@
   <tr>
     <% unless params[:contributable_type] %><th width="100">Type</th><% end %>
     <th width="100">Contributor</th>
-    <th width="300">Contributable</th>
+    <th width="400">Contributable</th>
   </tr>
   
 <% odd_row = false -%>
 <% for contribution in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <% unless params[:contributable_type] %><td><%= link_to(h(contribution.contributable_type), contributions_path + "?contributable_type=#{contribution.contributable_type}") %></td><% end %>
-    <td><%= contributor(contribution.contributor_id, contribution.contributor_type, true, true, "60x60") %></td>
-    <td><%= contributable(contribution.contributable_id, contribution.contributable_type, true, true) %></td>
+    <% unless params[:contributable_type] %><td width="100"><%= link_to(h(contribution.contributable_type), contributions_path + "?contributable_type=#{contribution.contributable_type}") %></td><% end %>
+    <td width="100"><%= contributor(contribution.contributor_id, contribution.contributor_type, true, true, "60x60") %></td>
+    <td width="400"><%= contributable(contribution.contributable_id, contribution.contributable_type, true, true) %></td>
     <% if contribution.authorized?("show", (logged_in? ? current_user : nil)) %><td><%= link_to 'Show', contribution_path(contribution) %></td><% end %>
     <% if contribution.authorized?("edit", (logged_in? ? current_user : nil)) %><td><%= link_to 'Edit', edit_contribution_path(contribution) %></td><% end %>
     <% if contribution.authorized?("destroy", (logged_in? ? current_user : nil)) %><td><%= link_to 'Destroy', contribution_path(contribution), :confirm => 'Are you sure?', :method => :delete %></td><% end %>
