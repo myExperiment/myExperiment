@@ -22,10 +22,11 @@
 <% end %>
 
 <p>
-  Filter by: <%= link_to "Blobs", contributions_path + "?contributable_type=Blob" %> | 
-             <%= link_to "Blogs", contributions_path + "?contributable_type=Blog" %> | 
-             <%= link_to "Forums", contributions_path + "?contributable_type=Forum" %> | 
-             <%= link_to "Workflows", contributions_path + "?contributable_type=Workflow" %>
+  <%= link_to "Show all", contributions_path %> or filter by 
+  <%= link_to "Blobs", contributions_path + "?contributable_type=Blob" %> | 
+  <%= link_to "Blogs", contributions_path + "?contributable_type=Blog" %> | 
+  <%= link_to "Forums", contributions_path + "?contributable_type=Forum" %> | 
+  <%= link_to "Workflows", contributions_path + "?contributable_type=Workflow" %>
 </p>
 
 <%= render :partial => "table", :locals => { :collection => @contributions } %>
