@@ -12,13 +12,14 @@
   <tr>
     <td><%= contributor(contribution.contributor_id, contribution.contributor_type, true, true, "60x60") %></td>
     <td><%= contributable(contribution.contributable_id, contribution.contributable_type, true, true) %></td>
-    <td><%=h contribution.contributable_type %></td>
+    <td><%= link_to(h(contribution.contributable_type), contributions_path + "?contributable_type=#{contribution.contributable_type}") %></td>
     <td><%= policy_link(contribution.policy_id, false) %></td>
     <% if contribution.authorized?("show", (logged_in? ? current_user : nil)) %><td><%= link_to 'Show', contribution_path(contribution) %></td><% end %>
     <% if contribution.authorized?("edit", (logged_in? ? current_user : nil)) %><td><%= link_to 'Edit', edit_contribution_path(contribution) %></td><% end %>
     <% if contribution.authorized?("destroy", (logged_in? ? current_user : nil)) %><td><%= link_to 'Destroy', contribution_path(contribution), :confirm => 'Are you sure?', :method => :delete %></td><% end %>
   </tr>
 <% end %>
+
 </table>
 
 <% end %>

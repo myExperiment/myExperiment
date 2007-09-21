@@ -17,6 +17,17 @@
 
 <h1>Listing contributions</h1>
 
+<% if params[:contributable_type] %>
+  <h2>Currently listing <%= params[:contributable_type].pluralize %></h2>
+<% end %>
+
+<p>
+  Filter by: <%= link_to "Blobs", contributions_path + "?contributable_type=Blob" %> | 
+             <%= link_to "Blogs", contributions_path + "?contributable_type=Blog" %> | 
+             <%= link_to "Forums", contributions_path + "?contributable_type=Forum" %> | 
+             <%= link_to "Workflows", contributions_path + "?contributable_type=Workflow" %>
+</p>
+
 <%= render :partial => "table", :locals => { :collection => @contributions } %>
 
 <br/>

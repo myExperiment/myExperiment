@@ -273,11 +273,13 @@ module ApplicationHelper
     if policyid.nil?
       return "Public (all)"
     elsif  p = Policy.find(:first, :conditions => ["id = ?", policyid])
-      link = link_to h(p.name), policy_path(p)
+      link = link_to(h(p.name), policy_path(p))
       
-      link = link + " (managed by: #{contributor(p.contributor_id, p.contributor_type)})" if managedby
-      
-      return link
+      if managedby
+        return "#{link} (managed by: #{contributor(p.contributor_id, p.contributor_type)})"
+      else
+        return link
+      end
     else
       return nil
     end
