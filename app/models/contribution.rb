@@ -45,7 +45,7 @@ class Contribution < ActiveRecord::Base
   # the maximum number of results is set by #limit#
   def self.most_viewed(klass="*", limit=10)
     self.find(:all, 
-              :conditions => ["downloads_count != 0 AND contributable_type = ?", klass],
+              :conditions => ["viewings_count != 0 AND contributable_type = ?", klass],
               :order => "viewings_count DESC", 
               :limit => limit)
   end
