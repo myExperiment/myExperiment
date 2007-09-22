@@ -82,7 +82,7 @@
 <% unless @user.contributions.empty? %>
   <h3>Contributions</h3>
 
-  <%= render :partial => "contributions/list", :locals => { :collection => @user.contributions } %>
+  <%= render :partial => "contributions/list", :locals => { :collection => @user.contributions, :title => true } %>
 <% end %>
 
 <br/>

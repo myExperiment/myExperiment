@@ -1,48 +1,45 @@
-<table width="640">
+<% image = !(workflow.image.nil?) -%>
+<% show = workflow.authorized?("show", (logged_in? ? current_user : nil)) -%>
+<table width="<%= image ? 420 : 320 %>" class="contributable">
   <tr>
-    <th width="100" rowspan="4">
-      <% unless workflow.image.nil? %>
-        <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
+    <% if image %>
+      <th width="100" rowspan="3">
+        <% if show %>
           <%= image_tag url_for_file_column(workflow, "image", "thumb") %>
         <% else %>
           <%= image_tag url_for_file_column(workflow, "image", "padlock") %>
         <% end %>
-      <% end %>
-    </th>
-    <th width="540" colspan="2">
+      </th>
+    <% end %>
+    <th width="320" colspan="2">
       <%=h workflow.title %>
     </th>
    </tr>
-   <tr>
-    <td colspan="2">
-      <% if workflow.description %>
-        <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
-          <%= ((d = workflow.description).length > (i = 200) ? "#{h(d[0..i])}... #{link_to('[read more]', workflow_path(workflow))}" : h(d)) %>
+   <% if show and desc = workflow.description %>
+    <tr>
+      <td width="320" colspan="<%= image ? 2 : 3 %>">
+        <% if desc.length < 100 %>
+          <%=h desc %>
         <% else %>
-          <!-- not authorized -->
+          <%=h desc[0..100] %>..
         <% end %>
-      <% end %>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <center>
-        <b>Contributor:</b> <%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type) %>
-      </center>
-    </td>
-  </tr>
-  <tr>
+      </td>
+    </tr>
+  <% end %>
+  <tr>   
     <td>
       <strong>Viewed:</strong> <%=pluralize workflow.contribution.viewings_count, "time" %><br/>
       <strong>Downloaded:</strong> <%=pluralize workflow.contribution.downloads_count, "time" %><br/>
     </td>
     <td>
-      <strong>Created at:</strong> <%=datetime workflow.created_at, false %><br/>
-      <strong>Updated at:</strong> <%=datetime workflow.updated_at, false %>
+      <center>
+        <b>Contributor:</b><br />
+        <%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, true, "60x60") %>
+      </center>
     </td>
   </tr>
   <tr>
-    <td colspan="3">
+    <td colspan="<%= show ? 3 : 2 %>">
       <center>
         <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to '[download]', download_workflow_path(workflow) %> <% end %>
         <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to '[show]', workflow_path(workflow) %> <% end %>

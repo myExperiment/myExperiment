@@ -1,11 +1,8 @@
-<p>
-  <b>User:</b>
-  <%=h openid(@profile.user_id) %>
-</p>
+<h3>Details</h3>
 
 <p>
-  <b>Picture:</b>
-  <%=avatar(@profile.user_id) %>
+  <b>User:</b><br />
+  <%= render :partial => "users/avatar", :locals => { :user => @profile.owner } %><br/>
 </p>
 
 <%= render :partial => "profiles/profile", :locals => { :profile => @profile } %>

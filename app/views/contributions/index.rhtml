@@ -1,19 +1,21 @@
+<% type = params[:contributable_type] -%>
+
 <% if false %>
 <%= render :partial => "list", :locals => { :collection => @contributions } %>
 <% end %>
 
 <h1>Listing contributions</h1>
 
-<% if params[:contributable_type] %>
-  <h2>Currently listing <%= params[:contributable_type].pluralize %></h2>
+<% if type %>
+  <h2>Currently listing <%= type.pluralize %></h2>
 <% end %>
 
 <p>
   <%= link_to "Show all", contributions_path %> or filter by 
-  <%= link_to "Blobs", contributions_path + "?contributable_type=Blob" %> | 
-  <%= link_to "Blogs", contributions_path + "?contributable_type=Blog" %> | 
-  <%= link_to "Forums", contributions_path + "?contributable_type=Forum" %> | 
-  <%= link_to "Workflows", contributions_path + "?contributable_type=Workflow" %>
+  <% types = ["Blob", "Blog", "Forum", "Workflow"]; types.delete(params[:contributable_type]) if params[:contributable_type] -%>
+  <% types.each do |t| %>
+    <%= "|" unless types.index(t) == 0 %> <%= link_to t, contributions_path + "?contributable_type=" + t %> 
+  <% end %>
 </p>
 
 <%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>

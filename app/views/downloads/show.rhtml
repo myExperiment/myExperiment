@@ -1,3 +1,5 @@
+<h3>Details</h3>
+
 <p>
   <b>User:</b><br/>
   <% if @download.user_id %>
@@ -9,7 +11,7 @@
 
 <p>
   <b>Contribution:</b>
-  <%= render :partial => "contributions/list", :locals => { :collection => [@download.contribution] } %>
+  <%= render :partial => "#{@download.contribution.contributable_type.pluralize.downcase}/#{@download.contribution.contributable_type.downcase}", :collection => [@download.contribution.contributable] %>
 </p>
 
 <p>

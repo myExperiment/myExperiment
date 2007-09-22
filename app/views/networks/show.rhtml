@@ -1,13 +1,21 @@
-<% if false %>
-<p>
-  <b>Owner:</b><br/>
-  <%= contributor(@network.user_id, "User", true, true, "100x100") %>
-</p>
+<% if my_page? @network.owner.id %>
+  <% unless @network.memberships_pending.empty? %>
+    <h3>Memberships Pending</h3>
+
+    <%= render :partial => "memberships/table", :locals => { :collection => @network.memberships_pending } %>
+  <% end %>
 <% end %>
+
+<h3>Details</h3>
 
 <p>
   <b>Title:</b>
   <%=h @network.title %>
+</p>
+
+<p>
+  <b>Owner:</b><br />
+  <%= render :partial => "users/avatar", :locals => { :user => @network.owner } %>
 </p>
 
 <p>
@@ -25,13 +33,6 @@
   <%=datetime @network.updated_at %>
 </p>
 
-<% if my_page? @network.owner.id %>
-  <h3>Memberships Pending</h3>
-  <p>This section is only visible to the owner of the network when logged in.</p>
-
-  <%= render :partial => "memberships/table", :locals => { :collection => @network.memberships_pending } %>
-<% end %>
-
 <h3>Members</h3>
 
 <% if my_page? @network.owner.id %>
@@ -43,12 +44,12 @@
   <% end %>
 <% end %>
 
-<%= render :partial => "members", :locals => { :collection => @network.members, :network => @network } %>
+<%= render :partial => "networks/members", :locals => { :collection => @network.members, :network => @network } %>
 
 <% unless @network.contributions.empty? %>
   <h3>Contributions</h3>
 
-  <%= render :partial => "contributions/list", :locals => { :collection => @network.contributions } %>
+  <%= render :partial => "contributions/list", :locals => { :collection => @network.contributions, :title => true } %>
 <% end %>
 
 <br/>

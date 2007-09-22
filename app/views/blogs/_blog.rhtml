@@ -1,4 +1,4 @@
-<table width="640">
+<table width="320" class="contributable">
   <tr>
     <th colspan="2">
       <%=h blog.title %> (<%= pluralize(blog.posts.length, "post") %>)
@@ -6,8 +6,17 @@
   <tr>
   <tr>
     <td>
-      <strong>Created at:</strong> <%=datetime blog.created_at, false %><br/>
-      <strong>Updated at:</strong> <%=datetime blog.updated_at, false %>
+      <% if (post = blog.posts[-1]) %>
+        <strong>Last post:</strong><br />
+        <% if post.body.length < 100 %>
+          <%=h post.body %>
+        <% else %>
+          <%=h post.body[0..100] %>...
+        <% end %>
+      <% else %>
+        <strong>Created at:</strong><br />
+        <%=datetime blog.created_at %>
+      <% end %>
     </td>
     <td>
       <strong>Contributor:</strong><br/>
@@ -23,5 +32,4 @@
       </center>
     </td>
   </tr>
-  <tr><td> </td></tr>
 </table>

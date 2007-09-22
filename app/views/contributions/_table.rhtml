@@ -2,29 +2,32 @@
 
 <table class="alt_table">
   <tr>
-    <% unless params[:contributable_type] %><th width="100">Type</th><% end %>
+    <% if false %>
     <th width="100">Contributor</th>
-    <th width="400">Contributable</th>
+    <% end %>
+    <% unless params[:contributable_type] %><th width="100">Type</th><% end %>
+    <th width="430">Contributable</th>
     <th> </th>
   </tr>
   
 <% odd_row = false -%>
 <% for contribution in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <% unless params[:contributable_type] %><td width="100"><%= link_to(h(contribution.contributable_type), contributions_path + "?contributable_type=#{contribution.contributable_type}") %></td><% end %>
+    <% if false %>
     <td width="100"><%= contributor(contribution.contributor_id, contribution.contributor_type, true, true, "60x60") %></td>
-    <td width="400"><%= contributable(contribution.contributable_id, contribution.contributable_type, true, true) %></td>
+    <% end %>
+    <% unless params[:contributable_type] %><td width="100"><%= link_to(h(contribution.contributable_type), contributions_path + "?contributable_type=#{contribution.contributable_type}") %></td><% end %>
+    <td width="420" class="contributable">
+      <center>
+        <%= render :partial => "#{contribution.contributable_type.pluralize.downcase}/#{contribution.contributable_type.downcase}", :collection => [contribution.contributable] %>
+      </center>
+    </td>
     <td class="actions">
-      <% case contribution.contributable_type.to_s; when "Blob" %>
-        <% if contribution.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to 'Download', download_blob_path(contribution.contributable_id) %> <% end %>
-      <% when "Workflow" %>
-        <% if contribution.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to 'Download', download_workflow_path(contribution.contributable_id) %> <% end %>
-      <% else %>
-        
+      <% if contribution.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to 'Show', contribution_path(contribution) %> <% end %>
+      <% if logged_in? and contribution.owner?(current_user) %>
+        <%= link_to 'Edit', edit_contribution_path(contribution) %> 
+        <%= link_to 'Destroy', contribution_path(contribution), :confirm => 'Are you sure?', :method => :delete %>
       <% end %>
-      <% if contribution.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to 'Show', url_for(:controller => contribution.contributable_type.pluralize.downcase, :action => "show", :id => contribution.contributable_id) %> <% end %>
-      <% if logged_in? and contribution.authorized?("edit", current_user) %><%= link_to 'Edit', url_for(:controller => contribution.contributable_type.pluralize.downcase, :action => "edit", :id => contribution.contributable_id) %> <% end %>
-      <% if logged_in? and contribution.owner?(current_user) %><%= link_to 'Destroy', url_for(:controller => contribution.contributable_type.pluralize.downcase, :action => "show", :id => contribution.contributable_id), :confirm => 'Are you sure?', :method => :delete %><% end %>
     </td>
   </tr>
 <% end %>

@@ -1,15 +1,20 @@
-<table width="640">
+<table width="320" class="contributable">
   <tr>
-    <td rowspan="2">
-      <strong>Local name:</strong> <%=h blob.local_name %><br/>
-      <strong>Content type:</strong> <%=h blob.content_type %>
+    <td>
+      <p>
+        <strong>Local name:</strong> <%=h blob.local_name %><br/>
+        <strong>Content type:</strong> <%=h blob.content_type %>
+      </p>
+      
+      <p>
+        <strong>Downloaded:</strong> <%=pluralize blob.contribution.downloads_count, "time" %>
+      </p>
     </td>
     <td>
       <strong>Contributor:</strong><br/>
       <%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, true, true, "60x60") %>
     </td>
   </tr>
-  <tr><td> </td></tr>
   <tr>
     <td colspan="2">
       <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to '[download]', download_blob_path(blob) %> <% end %>

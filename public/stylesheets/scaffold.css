@@ -84,6 +84,7 @@ a img, a img:hover {
 
 #hlist
 {
+margin: 10px;
 width: 100%;
 }
 
@@ -100,6 +101,12 @@ float: left;
 display: inline;
 list-style: none;
 text-align: center;
+padding: 3px;
+}
+
+#hlist ul li:hover
+{
+  border: thin solid black;
 }
 
 #openid_url {
@@ -247,6 +254,17 @@ table.alt_table tr td.actions
   text-align: left;
 }
 
+table.alt_table tr td.contributable
+{
+  margin: 5px 0px 5px 0px;
+  padding: 0px;
+}
+
+table.contributable:hover
+{
+  border: thin solid black;
+}
+
 /* http://www.mis-algoritmos.com/wp-content/uploads/pagstyle.php?q=manu */
 .pagination {
 	padding: 3px;
@@ -295,4 +313,15 @@ table.alt_table tr td.actions
 	margin: 2px;
 	border: 1px solid #EEE;
 	color: #DDD;
+}
+
+.network_banner 
+{
+  padding: 5px;
+  width: 540px;
+}
+
+.network_banner:hover
+{
+  border: thin solid black;
 }
