@@ -23,6 +23,10 @@
   <%= render :partial => "networks/table", :locals => { :collection => @networks } %>
 <% end %>
 
+<%= render :partial => "layouts/paginate", :locals => { :collection => @networks } %>
+
 <%= render :partial => "networks/list", :locals => { :collection => @networks } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @networks } %>
 
 <br />

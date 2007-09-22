@@ -3,10 +3,12 @@
 <table class="alt_table">
   <tr>
     <th width="100">Name</th>
-    <th>Username</th>
-    <th>OpenID</th>
-    <th>Created at</th>
+    <th width="150">Username</th>
+    <th width="150">OpenID</th>
+    <th>Joined</th>
+    <% if false %>
     <th>Updated at</th>
+    <% end %>
     <th> </th>
   </tr>
   
@@ -14,10 +16,28 @@
 <% for user in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
     <td width="100"><%= contributor(user.id, "User", true, true, "60x60") %></td>
-    <td><%=h user.username %></td>
-    <td><%=h user.openid_url %></td>
+    <td width="150">
+      <% if user.username %>
+        <%=h user.username %>
+      <% elsif my_page? user.id %>
+        Click <%= link_to 'here', edit_user_path(user) %> to create your RESTful username and password
+      <% else %>
+        Not created yet
+      <% end %>
+    </td>
+    <td width="150">
+      <% if user.openid_url %>
+        <%=h user.openid_url %>
+      <% elsif my_page? user.id %>
+        Click <%= link_to 'here', edit_user_path(user) %> to validate your OpenID URL
+      <% else %>
+        Not created yet
+      <% end %>
+    </td>
     <td><%=datetime user.created_at, false %></td>
+    <% if false %>
     <td><%=datetime user.updated_at, false %></td>
+    <% end %>
     <td class="actions">
       <%= link_to 'Show', user_path(user) %> 
       <% if my_page? user.id %>

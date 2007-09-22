@@ -6,7 +6,6 @@
     <th width="100">Title</th>
     <th>Unique</th>
     <th>Created at</th>
-    <th>Updated at</th>
     <th> </th>
   </tr>
 
@@ -17,9 +16,8 @@
     <td width="100"><%= contributor(network.id, "Network", true, true, "60x60") %></td>
     <td><%=h network.unique_name %></td>
     <td><%=datetime network.created_at, false %></td>
-    <td><%=datetime network.updated_at, false %></td>
-    <td><%= link_to 'Show', network_path(network) %></td>
     <td class="actions">
+      <%= link_to 'Show', network_path(network) %> 
       <% if my_page? network.owner.id %>
         <%= link_to 'Edit', edit_network_path(network) %>
         <%= link_to 'Destroy', network_path(network), :confirm => 'Are you sure?', :method => :delete %>

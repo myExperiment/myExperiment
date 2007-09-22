@@ -229,16 +229,6 @@ class User < ActiveRecord::Base
   has_many :networks_owned,
            :class_name => "Network",
            :dependent => :nullify
-           
-  def all_networks
-    rtn = []
-    
-    (original_networks.collect { |n| n.id } + networks_owned.collect { |n| n.id }).uniq.each do |network_id|
-      rtn << Network.find(network_id)
-    end
-    
-    return rtn
-  end
                           
   has_many :memberships, #all
            :order => "created_at DESC",

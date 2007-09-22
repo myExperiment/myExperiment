@@ -6,8 +6,6 @@
     <th>Download</th>
     <th>Edit</th>
     <th>View</th>
-    <th>Created at</th>
-    <th>Updated at</th>
   </tr>
 
 <% odd_row = false -%>
@@ -17,8 +15,6 @@
     <td><%=h permission.download %></td>
     <td><%=h permission.edit %></td>
     <td><%=h permission.view %></td>
-    <td><%=datetime permission.created_at, false %></td>
-    <td><%=datetime permission.updated_at, false %></td>
     <td class="actions">
       <%= link_to 'Show', permission_path(permission.policy, permission) %> 
       <%= link_to 'Edit', edit_permission_path(permission.policy, permission) %> 

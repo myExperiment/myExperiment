@@ -6,8 +6,7 @@
     <th>Email</th>
     <th>Website</th>
     <th>Description</th>
-    <th>Created at</th>
-    <th>Updated at</th>
+    <th>Last updated</th>
     <th> </th>
   </tr>
  
@@ -18,7 +17,6 @@
     <td><%=h profile.email %></td>
     <td><%=h profile.website %></td>
     <td><%=h profile.description %></td>
-    <td><%=datetime profile.created_at, false %></td>
     <td><%=datetime profile.updated_at, false %></td>
     <td class="actions">
       <%= link_to 'Show', profile_path(profile) %> 

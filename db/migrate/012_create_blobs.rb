@@ -29,6 +29,8 @@ class CreateBlobs < ActiveRecord::Migration
       t.column :local_name, :string
       t.column :content_type, :string
       t.column :data, :binary
+      t.column :created_at, :datetime
+      t.column :updated_at, :datetime
     end
   end
 

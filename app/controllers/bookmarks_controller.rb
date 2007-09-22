@@ -59,7 +59,11 @@ class BookmarksController < ApplicationController
 protected
 
   def find_bookmarks_auth
-    @bookmarks = Bookmark.find(:all, :conditions => ["user_id = ?", current_user.id], :order => "created_at DESC")
+    @bookmarks = Bookmark.find(:all, 
+                               :conditions => ["user_id = ?", current_user.id], 
+                               :order => "created_at DESC",
+                               :page => { :size => 20, 
+                                          :current => params[:page] })
   end
   
   def find_bookmark_auth

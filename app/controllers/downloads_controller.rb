@@ -60,9 +60,14 @@ protected
     if params[:contribution_id]
       find_contribution
       
-      @downloads = Download.find(:all, :conditions => ["contribution_id = ?", @contribution.id])
+      @downloads = Download.find(:all, 
+                                 :conditions => ["contribution_id = ?", @contribution.id],
+                                 :page => { :size => 20, 
+                                            :current => params[:page] })
     else
-      @downloads = Download.find(:all)
+      @downloads = Download.find(:all,
+                                 :page => { :size => 20, 
+                                            :current => params[:page] })
     end
   end
   

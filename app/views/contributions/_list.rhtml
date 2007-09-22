@@ -1,11 +1,12 @@
-<% filter_contributables(collection).each do |klass, contributables| %>
+<% title ||= false; new_link ||= false -%>
+<% filter_contributables(collection).each do |klass,contributables| %>
 
-<h2><%= klass.pluralize %></h2>
-
-<% if false %>
-<% if logged_in? %>
-<p><%= link_to "New #{klass}", url_for(:controller => "#{klass.pluralize.downcase}", :action => "new") %></p>
+<% if title %>
+  <h2><%= klass.pluralize %></h2>
 <% end %>
+
+<% if new_link %>
+  <p><%= link_to "New #{klass}", url_for(:controller => "#{klass.pluralize.downcase}", :action => "new") %></p>
 <% end %>
 
 <%= render :partial => "#{klass.pluralize.downcase}/#{klass.downcase}", :collection => contributables, :spacer_template => "contributions/list_spacer" %>

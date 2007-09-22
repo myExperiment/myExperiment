@@ -2,7 +2,13 @@
 
 <p>
   <b>Openid url:</b>
-  <%=h @user.openid_url %>
+  <% if @user.openid_url %>
+    <%=h @user.openid_url %>
+  <% elsif my_page? @user.id %>
+    Click <%= link_to 'here', edit_user_path(@user) %> to validate your OpenID URL
+  <% else %>
+    Not created yet (what is <%= link_to 'OpenID', "http://en.wikipedia.org/wiki/OpenID" %>?)
+  <% end %>
 </p>
 
 <p>
@@ -22,13 +28,13 @@
 </p>
 
 <p>
-  <b>Created at:</b>
+  <b>Joined:</b>
   <%=datetime @user.created_at %>
 </p>
 
 <p>
-  <b>Updated at:</b>
-  <%=datetime @user.updated_at %>
+  <b>Last seen:</b>
+  <%=datetime @user.last_seen_at %>
 </p>
 
 <%= link_to '[edit account settings]', edit_user_path(@user) if my_page? @user.id %>

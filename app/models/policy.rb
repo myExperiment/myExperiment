@@ -46,7 +46,8 @@ class Policy < ActiveRecord::Base
         return true if (contribution.owner?(contributor) or contribution.admin?(contributor))
         
         # true if permission and permission[category]
-        return true if private?(category, contributor)
+        private = private?(category, contributor)
+        return private unless private.nil?
         
         # true if contribution.contributor and contributor are related and policy[category_protected]
         return true if (contribution.contributor.protected? contributor and protected?(category))
@@ -96,23 +97,64 @@ private
   end
   
   def private?(category, contrib)
-    if (p = Permission.find(:first, :conditions => ["policy_id = ? AND contributor_id = ? AND contributor_type = ?", self.id, contrib.id, contrib.class.to_s]))
-      return p.attributes["#{category}"] == true
-    #else
-      #case contrib.class.to_s
-      #when "User"
-        #contrib.all_networks.each do |n|
-          #return true if private?(category, n)
-        #end
-      #when "Network"
-        #contrib.parents.each do |p|
-          #return true if private?(category, p)
-        #end
-      #else
-        #return nil
-      #end
-    end
+    found = []
     
-    return nil
+    # call recursive method
+    private!(category, contrib, found)
+    
+    unless found.empty?
+      rtn = nil
+      
+      found.each do |f|
+        id, type, result = f[0], f[1], f[2]
+        
+        case type.to_s
+        when "User"
+          return result
+        when "Network"
+          if rtn.nil?
+            rtn = result
+          else
+            rtn = result if result == true
+          end
+        else
+          # do nothing!
+        end
+      end
+      
+      return rtn
+    else
+      return nil
+    end
+  end
+  
+  def private!(category, contrib, found)
+    result = permission?(category, contrib)
+    found << [contrib.id, contrib.class.to_s, result] unless result.nil?
+    
+    case contrib.class.to_s
+    when "User"
+      contrib.networks.each do |n| # test networks that user is a member of 
+        private!(category, n, found)
+      end
+      
+      contrib.networks_owned.each do |n| # test networks owned by user
+        private!(category, n, found)
+      end
+    when "Network"
+      # network related tests
+    else
+      # do nothing!
+    end
+  end
+  
+  def permission?(category, contrib)
+    if (p = Permission.find(:first, 
+                            :conditions => ["policy_id = ? AND contributor_id = ? AND contributor_type = ?", 
+                                            self.id, contrib.id, contrib.class.to_s]))
+      return p.attributes["#{category}"]
+    else
+      return nil
+    end
   end
 end

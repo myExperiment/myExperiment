@@ -40,7 +40,8 @@ class ForumsController < ApplicationController
   def create
     # hack for select contributor form
     if params[:contributor_pair]
-      params[:forum][:contributor_type], params[:forum][:contributor_id] = params[:contributor_pair][:class_id].split("-")
+      params[:forum][:contributor_type], params[:forum][:contributor_id] = "User", current_user.id                                       # forum contributed by current_user..
+      params[:contribution][:contributor_type], params[:contribution][:contributor_id] = params[:contributor_pair][:class_id].split("-") # ..but owned by contributor_pair
       params.delete("contributor_pair")
     end
     
@@ -62,8 +63,16 @@ class ForumsController < ApplicationController
   end
 
   def update
+    # remove protected columns
+    [:contributor_id, :contributor_type, :topics_count, :posts_count].each do |column_name|
+      params[:forum].delete(column_name)
+    end
+    
     respond_to do |format|
       if @forum.update_attributes(params[:forum])
+        # security fix (only allow the owner to change the policy)
+        @forum.contribution.update_attributes(params[:contribution]) if @forum.contribution.owner?(current_user)
+        
         flash[:notice] = 'Forum was successfully updated.'
         format.html { redirect_to forums_path }
         format.xml  { head :ok }

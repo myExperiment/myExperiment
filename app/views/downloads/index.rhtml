@@ -1,6 +1,10 @@
 <h1>Listing downloads</h1>
 
+<%= render :partial => "layouts/paginate", :locals => { :collection => @downloads } %>
+
 <%= render :partial => "downloads/table", :locals => { :collection => @downloads, :contribution => @contribution } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @downloads } %>
 
 <br />
 

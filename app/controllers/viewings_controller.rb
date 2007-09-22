@@ -60,9 +60,14 @@ protected
     if params[:contribution_id]
       find_contribution
       
-      @viewings = Viewing.find(:all, :conditions => ["contribution_id = ?", @contribution.id])
+      @viewings = Viewing.find(:all, 
+                               :conditions => ["contribution_id = ?", @contribution.id],
+                               :page => { :size => 20, 
+                                          :current => params[:page] })
     else
-      @viewings = Viewing.find(:all)
+      @viewings = Viewing.find(:all,
+                               :page => { :size => 20, 
+                                          :current => params[:page] })
     end
   end
   

@@ -8,6 +8,10 @@
 
 <h3>Listing workflows</h3>
 
+<%= render :partial => "layouts/paginate", :locals => { :collection => @workflows } %>
+
 <%= render :partial => "workflows/table", :locals => { :collection => @workflows } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @workflows } %>
 
 <br />

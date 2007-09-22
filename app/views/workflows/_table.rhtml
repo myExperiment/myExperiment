@@ -37,7 +37,7 @@
     <td class="actions">
       <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to 'Download', download_workflow_path(workflow) %> <% end %>
       <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to 'Show', workflow_path(workflow) %> <% end %>
-      <% if logged_in? and workflow.authorized?("destroy", current_user) %><%= link_to 'Edit', edit_workflow_path(workflow) %> <% end %>
+      <% if logged_in? and workflow.authorized?("edit", current_user) %><%= link_to 'Edit', edit_workflow_path(workflow) %> <% end %>
       <% if logged_in? and workflow.authorized?("destroy", current_user) %><%= link_to 'Destroy', workflow_path(workflow), :confirm => 'Are you sure?', :method => :delete %><% end %>
     </td>
   </tr>

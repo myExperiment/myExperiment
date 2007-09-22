@@ -18,8 +18,8 @@
     <% if false %><td><%=h(blog.posts[-1].created_at) unless blog.posts.empty? %></td><% end %>
     <td class="actions">
       <% if blog.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to 'Show', blog_path(blog) %> <% end %>
-      <% if blog.authorized?("edit", (logged_in? ? current_user : nil)) %><%= link_to 'Edit', edit_blog_path(blog) %> <% end %>
-      <% if blog.authorized?("destroy", (logged_in? ? current_user : nil)) %><%= link_to 'Destroy', blog_path(blog), :confirm => 'Are you sure?', :method => :delete %><% end %>
+      <% if logged_in? and blog.authorized?("edit", current_user) %><%= link_to 'Edit', edit_blog_path(blog) %> <% end %>
+      <% if logged_in? and blog.owner?(current_user) %><%= link_to 'Destroy', blog_path(blog), :confirm => 'Are you sure?', :method => :delete %><% end %>
     </td>
   </tr>
 <% end %>

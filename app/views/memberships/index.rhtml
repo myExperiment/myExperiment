@@ -18,7 +18,11 @@
 
 <h1>Listing memberships for All</h1>
 
+<%= render :partial => "layouts/paginate", :locals => { :collection => @memberships } %>
+
 <%= render :partial => "memberships/table", :locals => { :collection => @memberships } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @memberships } %>
 
 <% end %>
 

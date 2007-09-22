@@ -63,7 +63,8 @@ class BlogsController < ApplicationController
   def create
     # hack for select contributor form
     if params[:contributor_pair]
-      params[:blog][:contributor_type], params[:blog][:contributor_id] = params[:contributor_pair][:class_id].split("-")
+      params[:blog][:contributor_type], params[:blog][:contributor_id] = "User", current_user.id                                       # forum contributed by current_user..
+      params[:contribution][:contributor_type], params[:contribution][:contributor_id] = params[:contributor_pair][:class_id].split("-") # ..but owned by contributor_pair
       params.delete("contributor_pair")
     end
     
@@ -87,6 +88,11 @@ class BlogsController < ApplicationController
   # PUT /blogs/1
   # PUT /blogs/1.xml
   def update
+    # remove protected columns
+    [:contributor_id, :contributor_type, :created_at, :updated_at].each do |column_name|
+      params[:blog].delete(column_name)
+    end
+    
     respond_to do |format|
       if @blog.update_attributes(params[:blog])
         # security fix (only allow the owner to change the policy)
@@ -116,7 +122,10 @@ class BlogsController < ApplicationController
 protected
 
   def find_blogs
-    @blogs = Blog.find(:all, :order => "created_at DESC")
+    @blogs = Blog.find(:all, 
+                       :order => "created_at DESC",
+                       :page => { :size => 20, 
+                                  :current => params[:page] })
   end
   
   def find_blog_auth

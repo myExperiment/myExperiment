@@ -159,7 +159,10 @@ protected
         error("User not found", "is invalid", :user_id)
       end
     else
-      @memberships = Membership.find(:all, :order => "created_at DESC")
+      @memberships = Membership.find(:all, 
+                                     :order => "created_at DESC",
+                                     :page => { :size => 20, 
+                                                :current => params[:page] })
     end
   end
 

@@ -124,7 +124,10 @@ class ProfilesController < ApplicationController
 protected
 
   def find_profiles
-    @profiles = Profile.find(:all, :order => "created_at DESC")
+    @profiles = Profile.find(:all, 
+                             :order => "created_at DESC",
+                             :page => { :size => 20, 
+                                        :current => params[:page] })
   end
 
   def find_profile

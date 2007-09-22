@@ -109,6 +109,10 @@ padding-left: 18px;
 
 /* begin css tabs */
 
+ul#tabnav { /*IE only rule. Delete extra margin-bottom*/
+margin-bottom: 0;
+}
+
 ul#tabnav { /* general settings */
   text-align: center; /* set to left, right or center */
   margin: 0; /* set margins as desired */
@@ -241,4 +245,54 @@ table.alt_table tr td
 table.alt_table tr td.actions
 {
   text-align: left;
+}
+
+/* http://www.mis-algoritmos.com/wp-content/uploads/pagstyle.php?q=manu */
+.pagination {
+	padding: 3px;
+	margin: 3px;
+	text-align: center;
+}
+
+.pagination ul {
+	list-style-type: none;
+	
+}
+
+.pagination ul li {
+	display: inline;
+}
+
+/* light green = #cfc */
+/* dark green = #6c6 */
+
+/* logo red = #CE0434 */
+/* logo green = #179032 */
+
+.pagination a {
+	padding: 2px 5px 2px 5px;
+	margin: 2px;
+	border: 1px solid #cfc;
+	text-decoration: none; /* no underline */
+	color: #179032;
+}
+
+.pagination a:hover,
+.pagination a:active {
+	border: 1px solid #CE0434;
+	color: #179032;
+}
+.pagination .currentpage {
+	padding: 2px 5px 2px 5px;
+	margin: 2px;
+	border: 1px solid #179032;
+	font-weight: bold;
+	background-color: #179032;
+	color: #FFF;
+}
+.pagination .disabledpage {
+	padding: 2px 5px 2px 5px;
+	margin: 2px;
+	border: 1px solid #EEE;
+	color: #DDD;
 }

@@ -25,7 +25,8 @@ class ContributionsController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_contributions, :only => [:index]
-  before_filter :find_contribution_auth, :only => [:show, :edit, :update, :destroy]
+  before_filter :find_contribution, :only => [:show]
+  before_filter :find_contribution_auth, :only => [:edit, :update, :destroy]
   
   # GET /contributions
   # GET /contributions.xml
@@ -75,6 +76,11 @@ class ContributionsController < ApplicationController
   # PUT /contributions/1
   # PUT /contributions/1.xml
   def update
+    # security bugfix: do not allow owner to change protected columns
+    [:contributor_id, :contributor_type, :contributable_id, :contributable_type].each do |column_name|
+      params[:contribution].delete(column_name)
+    end
+    
     respond_to do |format|
       if @contribution.update_attributes(params[:contribution])
         flash[:notice] = 'Contribution was successfully updated.'
@@ -114,20 +120,36 @@ protected
       end
     end
     
-    options = {:order => "contributable_type ASC, created_at DESC"}
-    options = options.merge({:conditions => [cond_sql] + cond_params}) unless cond_sql.empty?
+    options = { :order => "contributable_type ASC, created_at DESC",
+                :page => { :size => 20, 
+                           :current => params[:page] } }
+    options = options.merge( { :conditions => [cond_sql] + cond_params }) unless cond_sql.empty?
     
     @contributions = Contribution.find(:all, options)
   end
   
-  def find_contribution_auth
+  def find_contribution
     begin
       contribution = Contribution.find(params[:id])
       
       if contribution.authorized?(action_name, (logged_in? ? current_user : nil))
         @contribution = contribution
       else
-        error("Contribution not found (id not authorized)", "is invalid (not owner)")
+        error("Contribution not found (id not authorized)", "is invalid (not authorized)")
+      end
+    rescue ActiveRecord::RecordNotFound
+      error("Contribution not found", "is invalid")
+    end
+  end
+  
+  def find_contribution_auth
+    begin
+      contribution = Contribution.find(params[:id])
+      
+      if contribution.owner?(current_user)
+        @contribution = contribution
+      else
+        error("Contribution not found (id not owner)", "is invalid (not owner)")
       end
     rescue ActiveRecord::RecordNotFound
       error("Contribution not found", "is invalid")

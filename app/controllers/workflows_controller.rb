@@ -155,7 +155,8 @@ class WorkflowsController < ApplicationController
   def create
     # hack for select contributor form
     if params[:contributor_pair]
-      params[:workflow][:contributor_type], params[:workflow][:contributor_id] = params[:contributor_pair][:class_id].split("-")
+      params[:workflow][:contributor_type], params[:workflow][:contributor_id] = "User", current_user.id                                       # forum contributed by current_user..
+      params[:contribution][:contributor_type], params[:contribution][:contributor_id] = params[:contributor_pair][:class_id].split("-") # ..but owned by contributor_pair
       params.delete("contributor_pair")
     end
     
@@ -179,10 +180,20 @@ class WorkflowsController < ApplicationController
   # PUT /workflows/1
   # PUT /workflows/1.xml
   def update
+    # remove protected columns
+    [:contributor_id, :contributor_type, :image, :created_at, :updated_at, :version].each do |column_name|
+      params[:workflow].delete(column_name)
+    end
+    
+    # remove owner only columns
+    unless @workflow.contribution.owner?(current_user)
+      [:unique_name, :license].each do |column_name|
+        params[:workflow].delete(column_name)
+      end
+    end
+    
     # update contributor with 'latest' uploader (or "editor")
-    #@workflow.contributor_id = current_user.id
-    #@workflow.contributor_type = current_user.class.to_s
-    @workflow.contributor = current_user
+    params[:workflow][:contributor_type], params[:workflow][:contributor_id] = "User", current_user.id
     
     respond_to do |format|
       if @workflow.update_attributes(params[:workflow])
@@ -215,7 +226,8 @@ protected
   def find_workflows
     login_required if login_available?
     
-    found = Workflow.find(:all, construct_options)
+    found = Workflow.find(:all, 
+                          construct_options.merge({:page => { :size => 20, :current => params[:page] }}))
     
     found.each do |workflow|
       workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))

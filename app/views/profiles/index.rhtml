@@ -1,5 +1,9 @@
 <h1>Listing profiles</h1>
 
+<%= render :partial => "layouts/paginate", :locals => { :collection => @profiles } %>
+
 <%= render :partial => "profiles/table", :locals => { :collection => @profiles } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @profiles } %>
 
 <br />

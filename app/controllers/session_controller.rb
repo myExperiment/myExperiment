@@ -58,7 +58,7 @@ class SessionController < ApplicationController
       
       # create user object if one does not exist
       unless @user = User.find_first(["openid_url = ?", response.identity_url])
-        @user = User.new(:openid_url => response.identity_url, :name => "Joe Bloggs BSc (CHANGE ME!!)")
+        @user = User.new(:openid_url => response.identity_url, :name => "Joe Bloggs BSc (CHANGE ME!!)", :last_seen_at => Time.now)
         redirect_to_edit_user = @user.save
       end
 
@@ -138,6 +138,9 @@ class SessionController < ApplicationController
   private
   
     def successful_login(user)
+      # update "last seen" attribute
+      user.update_attribute(:last_seen_at, Time.now)
+      
       respond_to do |format|
         flash[:notice] = "Logged in successfully. Welcome to myExperiment!"
         format.html { redirect_back_or_default(user_path(user)) }

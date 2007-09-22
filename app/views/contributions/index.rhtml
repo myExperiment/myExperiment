@@ -16,6 +16,10 @@
   <%= link_to "Workflows", contributions_path + "?contributable_type=Workflow" %>
 </p>
 
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
+
 <%= render :partial => "contributions/table", :locals => { :collection => @contributions } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
 
 <br/>

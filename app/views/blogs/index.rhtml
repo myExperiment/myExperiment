@@ -1,5 +1,9 @@
 <h1>Listing blogs</h1>
 
+<%= render :partial => "layouts/paginate", :locals => { :collection => @blogs } %>
+
 <%= render :partial => "blogs/table", :locals => { :collection => @blogs } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @blogs } %>
 
 <br />

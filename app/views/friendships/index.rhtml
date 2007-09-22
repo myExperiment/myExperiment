@@ -48,7 +48,11 @@
 
   <h1>Listing friendships for All</h1>
 
+  <%= render :partial => "layouts/paginate", :locals => { :collection => @friendships } %>
+
   <%= render :partial => "friendships/table", :locals => { :collection => @friendships } %>
+  
+  <%= render :partial => "layouts/paginate", :locals => { :collection => @friendships } %>
 
   <br/>
 

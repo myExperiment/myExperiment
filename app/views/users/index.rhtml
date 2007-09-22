@@ -8,6 +8,10 @@
 
 <% end %>
 
+<%= render :partial => "layouts/paginate", :locals => { :collection => @users } %>
+
 <%= render :partial => "users/table", :locals => { :collection => @users } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @users } %>
 
 <br />

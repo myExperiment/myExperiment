@@ -121,7 +121,10 @@ class UsersController < ApplicationController
 protected
 
   def find_users
-    @users = User.find(:all, :order => "name ASC")
+    @users = User.find(:all, 
+                       :order => "name ASC",
+                       :page => { :size => 20, 
+                                  :current => params[:page] })
   end
 
   def find_user

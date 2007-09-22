@@ -1,0 +1,18 @@
+<p>
+  <b>Original Version:</b><br/>
+  <%= versioned_workflow_link(workflow, 1) %>
+</p>
+
+<% if @workflow.versions.size > 1 %>
+<p>
+  <b>Previous Versions:</b><br/>
+  <% (2...@workflow.versions.size).each do |v| %>
+    <%= versioned_workflow_link(workflow, v) %><br/>
+  <% end %>
+</p>
+<% end %>
+
+<p>
+  <b>Latest Version:</b><br/>
+  <%= versioned_workflow_link(workflow, workflow.versions.size) %>
+</p>

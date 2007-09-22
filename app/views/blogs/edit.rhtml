@@ -3,7 +3,7 @@
 <%= error_messages_for :blog %>
 
 <% form_for(:blog, :url => blog_path(@blog), :html => { :method => :put }) do |f| %>
-  <% if @blog.authorized?("destroy", current_user) %>
+  <% if @blog.owner?(current_user) %>
     <%= render :partial => "policies/listform", :locals => { :contribution => @blog.contribution, :user => current_user } %>
   <% end %>
 

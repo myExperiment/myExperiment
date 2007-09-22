@@ -72,7 +72,8 @@ class BlobsController < ApplicationController
   def create
     # hack for select contributor form
     if params[:contributor_pair]
-      params[:blob][:contributor_type], params[:blob][:contributor_id] = params[:contributor_pair][:class_id].split("-")
+      params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id                                       # forum contributed by current_user..
+      params[:contribution][:contributor_type], params[:contribution][:contributor_id] = params[:contributor_pair][:class_id].split("-") # ..but owned by contributor_pair
       params.delete("contributor_pair")
     end
     
@@ -100,6 +101,11 @@ class BlobsController < ApplicationController
   # PUT /blobs/1
   # PUT /blobs/1.xml
   def update
+    # remove protected columns
+    [:contributor_id, :contributor_type, :content_type, :local_name, :created_at, :updated_at].each do |column_name|
+      params[:blob].delete(column_name)
+    end
+    
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
         # security fix (only allow the owner to change the policy)
@@ -129,7 +135,10 @@ class BlobsController < ApplicationController
 protected
 
   def find_blobs
-    @blobs = Blob.find(:all, :order => "local_name ASC")
+    @blobs = Blob.find(:all, 
+                       :order => "local_name ASC",
+                       :page => { :size => 20, 
+                                  :current => params[:page] })
   end
   
   def find_blob_auth

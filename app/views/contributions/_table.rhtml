@@ -15,9 +15,16 @@
     <td width="100"><%= contributor(contribution.contributor_id, contribution.contributor_type, true, true, "60x60") %></td>
     <td width="400"><%= contributable(contribution.contributable_id, contribution.contributable_type, true, true) %></td>
     <td class="actions">
-      <% if contribution.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to 'Show', contribution_path(contribution) %> <% end %>
-      <% if contribution.authorized?("edit", (logged_in? ? current_user : nil)) %><%= link_to 'Edit', edit_contribution_path(contribution) %> <% end %>
-      <% if contribution.authorized?("destroy", (logged_in? ? current_user : nil)) %><%= link_to 'Destroy', contribution_path(contribution), :confirm => 'Are you sure?', :method => :delete %><% end %>
+      <% case contribution.contributable_type.to_s; when "Blob" %>
+        <% if contribution.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to 'Download', download_blob_path(contribution.contributable_id) %> <% end %>
+      <% when "Workflow" %>
+        <% if contribution.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to 'Download', download_workflow_path(contribution.contributable_id) %> <% end %>
+      <% else %>
+        
+      <% end %>
+      <% if contribution.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to 'Show', url_for(:controller => contribution.contributable_type.pluralize.downcase, :action => "show", :id => contribution.contributable_id) %> <% end %>
+      <% if logged_in? and contribution.authorized?("edit", current_user) %><%= link_to 'Edit', url_for(:controller => contribution.contributable_type.pluralize.downcase, :action => "edit", :id => contribution.contributable_id) %> <% end %>
+      <% if logged_in? and contribution.owner?(current_user) %><%= link_to 'Destroy', url_for(:controller => contribution.contributable_type.pluralize.downcase, :action => "show", :id => contribution.contributable_id), :confirm => 'Are you sure?', :method => :delete %><% end %>
     </td>
   </tr>
 <% end %>
