@@ -25,7 +25,7 @@
 <% elsif my_page? @friendship.friend_id %>
 
 <%= link_to 'Accept friendship request', accept_friendship_path(@friendship.friend_id, @friendship) %> |
-<%= link_to 'Reject friendship request', friendship_path(@friendship.friend_id, @friendship), :method => :delete %> |
+<%= link_to 'Reject friendship request', friendship_path(@friendship.friend_id, @friendship), :confirm => "Are you sure?", :method => :delete %> |
 
 <% else %>
 

@@ -9,9 +9,11 @@
       <% if (post = blog.posts[-1]) %>
         <strong>Last post:</strong><br />
         <% if post.body.length < 100 %>
-          <%=h post.body %>
+          <!-- needs whitelisting -->
+          <%= post.body %>
         <% else %>
-          <%=h post.body[0..100] %>...
+          <!-- needs whitelisting -->
+          <%= post.body[0..100] %>...
         <% end %>
       <% else %>
         <strong>Created at:</strong><br />

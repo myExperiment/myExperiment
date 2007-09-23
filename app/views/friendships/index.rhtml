@@ -1,46 +1,51 @@
 <% if @user %>
 
   <% if my_page? @user.id %>
+    
+    <% unless @user.friendships_pending.empty? %>
+      <h3>Pending a response (from me)</h3>
+      
+      <p>
+        What does "<b>Friendships (<%= @user.friendships_pending.length %>)</b>" mean?<br />
+        You have <%=pluralize @user.friendships_pending.length, "friendship request" %> to review!
+      </p>
+    
+      <p>
+        Messages sent by myExperiment users to request friendship with you are listed here. <br />
+        Click on the link for "Show / Accept" to the right of the table row to review and accept/deny the request. 
+      </p>
+    
+      <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_pending } %>
+    <% end %>
+    
+    <% unless @user.friendships_requested.empty? %>
+      <h3>Waiting for response (from friend)</h3>
+      
+      <p>
+        Requests you've sent which have not been accepted yet are listed here. <br />
+        If the <b>friend</b> is taking a while, why not send them a <%= link_to "message", messages_path %>?
+      </p>
+    
+      <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_requested } %>
+    <% end %>
+    
+    <% unless @user.friends.empty? %>
+      <h3>Friends</h3>
+      
+      <p>
+        Friends can be given special permissions in your access control <%= link_to "policies", policies_path %> as they belong to the <b>protected</b> group.
+      </p>
 
-    <h1>Listing friendships requested (by me)</h1>
-
-    <p>The <strong>User</strong> (me) initiates the Friendship request with the <strong>Friend</strong>.</p>
-
-    <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_requested } %>
-
-    <br/>
-
-    <h1>Listing friendships accepted (by others)</h1>
-
-    <p>The <strong>Friend</strong> decides whether or not to accept the Friendship request from the <strong>User</strong> (me).</p>
-
-    <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_completed } %>
-
-    <br/>
-
-    <h1>Listing friendships requested (by others)</h1>
-
-    <p>The <strong>Friend</strong> (me) can have many Friendship requests pending acceptance.</p>
-
-    <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_pending } %>
-
-    <br/>
-
-    <h1>Listing friendships accepted (by me)</h1>
-
-    <p>Friendships are only valid once they have been accepted by the <strong>Friend</strong> (me).</p>
-
-    <%= render :partial => 'friendships/table', :locals => { :collection => @user.friendships_accepted } %>
-
-    <br/>
+      <%= render :partial => "users/friends", :locals => { :collection => @user.friends, :user => @user } %>
+    <% end %>
 
   <% else %>
   
-    <h1>Listing friendships for <%=h @user.name %></h1>
+    <h3>Friends of <%=name @user.id %></h3>
   
-    <%= render :partial => "users/friends", :locals => { :collection => @user.friends } %>
-  
-    <br/>
+    <% unless @user.friends.empty? %>
+      <%= render :partial => "users/friends", :locals => { :collection => @user.friends, :user => @user } %>
+    <% end %>
 
   <% end %>
   

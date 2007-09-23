@@ -1,43 +1,51 @@
-<% if @user and my_page? @user.id %>
+<% if @user %>
 
-<h1>Listing memberships for <%=h @user.name %></h1>
+  <% if my_page? @user.id %>
 
-<p>The <strong>User</strong> initiates a Membership request with the <strong>Network</strong> who can accept/reject.</p>
-
-<%= render :partial => "memberships/table", :locals => { :collection => @user.memberships } %>
-
-<br />
-
-<h1>Listing membership requests for networks owned by <%= @user.name %></h1>
-
-<p>The <strong>User</strong> manages membership requests for all <strong>Owned Networks</strong>.</p>
-
-<%= render :partial => "memberships/table", :locals => { :collection => @user.memberships_pending } %>
+    <% unless @user.memberships_pending.empty? %>
+      <h3>Requests for my networks</h3>
+    
+      <p>
+        What does "<b>Memberships (<%= @user.memberships_pending.length %>)</b>" mean?<br />
+        You have <%=pluralize @user.memberships_pending.length, "membership request" %> to review!
+      </p>
+    
+      <p>
+        Messages sent by myExperiment users to request membership in your networks are listed here. <br />
+        Click on the link for "Show / Accept" to the right of the table row to review and accept/deny the request. 
+      </p>
+  
+      <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships_pending } %>
+    <% end %>
+    
+    <h3>Memberships</h3>
+  
+    <p>
+      Your memberships are listed here. You can <%= link_to "contribute", contributions_path %> myExperiment objects for <b>any</b> network listed in this table.
+    </p>
+  
+    <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships } %>
+  
+  <% else %>
+  
+    <h3>Memberships for <%=name @user.id %></h3>
+    
+    <% unless @user.memberships.empty? %>
+      <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships } %>
+    <% end %>
+  
+  <% end %>
 
 <% else %>
 
-<h1>Listing memberships for All</h1>
+  <h1>Listing memberships for All</h1>
 
-<%= render :partial => "layouts/paginate", :locals => { :collection => @memberships } %>
+  <%= render :partial => "layouts/paginate", :locals => { :collection => @memberships } %>
 
-<%= render :partial => "memberships/table", :locals => { :collection => @memberships } %>
+  <%= render :partial => "memberships/table", :locals => { :collection => @memberships } %>
 
-<%= render :partial => "layouts/paginate", :locals => { :collection => @memberships } %>
+  <%= render :partial => "layouts/paginate", :locals => { :collection => @memberships } %>
 
 <% end %>
 
 <br />
-
-<% if false %>
-<% if @user %>
-
-<h1>Listing network's owned by <%=h @user.name %></h1>
-
-<p>The <strong>User</strong> is automatically a member of all <strong>Owned Networks</strong>.</p>
-
-<%= render :partial => "networks/list", :locals => { :collection => @user.networks_owned } %>
-
-<br/>
-
-<% end %>
-<% end %>

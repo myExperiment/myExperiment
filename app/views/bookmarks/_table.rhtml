@@ -2,7 +2,7 @@
 
 <table class="alt_table">
   <tr>
-    <th width="400">Workflow</th>
+    <th width="420">Workflow</th>
     <th>Bookmarked at</th>
     <th> </th>
   </tr>
@@ -10,7 +10,11 @@
 <% odd_row = false -%>
 <% for bookmark in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="400"><%= contributable(bookmark.bookmarkable_id, bookmark.bookmarkable_type, true, true) %></td>
+    <td width="420" class="contributable">
+      <center>
+        <%= render :partial => "#{bookmark.bookmarkable_type.pluralize.downcase}/#{bookmark.bookmarkable_type.downcase}", :collection => [bookmark.bookmarkable] %>
+      </center>
+    </td>
     <td><%=datetime bookmark.created_at, false %></td>
     <td class="actions">
       <%= link_to 'Show', bookmark_path(bookmark) %> 

@@ -25,7 +25,7 @@
 <% elsif my_page? @membership.network.owner.id %>
 
 <%= link_to 'Accept membership request', accept_membership_path(@membership.user_id, @membership) %> |
-<%= link_to 'Reject membership request', membership_path(@membership.user_id, @membership), :method => :delete %> |
+<%= link_to 'Reject membership request', membership_path(@membership.user_id, @membership), :confirm => "Are you sure?", :method => :delete %> |
 
 <% else %>
 
@@ -37,4 +37,4 @@
 <% end %>
 
 
-<%= link_to 'Back', memberships_path(@membership.user_id) %>
+<%= link_to 'Back', memberships_path(@membership.network.user_id) %>

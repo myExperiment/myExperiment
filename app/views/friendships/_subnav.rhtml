@@ -1,6 +1,8 @@
 <% case controller.action_name.to_s; when "index" %>
 
-  <!-- no subnav options -->
+  <% if @user and logged_in? and !@user.friend? current_user.id %>
+    <li><%= request_friendship_link(@user.id) %></li>
+  <% end %>
 
 <% when "show" %>
 

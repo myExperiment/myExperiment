@@ -1,3 +1,4 @@
+<% owner ||= true %>
 <div class="network_banner">
   <p>
     <strong><%= link_to h(network.title), network_path(network.id) %></strong> (NID #<%= network.id %>) 
@@ -7,5 +8,5 @@
     <% end %>
   </p>
 
-  <%= render :partial => "networks/members", :locals => { :collection => network.members, :network => network } %>
+  <%= render :partial => "networks/members", :locals => { :collection => network.members, :network => network, :owner => owner } %>
 </div>

@@ -62,7 +62,7 @@
 <% unless @user.friends.empty? %>
   <h3>Friends</h3>
 
-  <%= render :partial => "friends", :locals => { :collection => @user.friends, :user => @user } %>
+  <%= render :partial => "users/friends", :locals => { :collection => @user.friends, :user => @user } %>
 <% end %>
 
 <% unless @user.networks_owned.empty? %>

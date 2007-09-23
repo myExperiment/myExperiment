@@ -10,11 +10,19 @@
       <%=h forum.name %>
     </th>
   </tr>
-  <tr>
-    <td colspan="2">
-      <%=h forum.description %>
-    </td>
-  </tr>
+  <% if desc = forum.description %>
+    <tr>
+      <td colspan="2">
+        <% if desc.length < 200 %>
+          <!-- needs whitelisting -->
+          <%= desc %>
+        <% else %>
+          <!-- needs whitelisting -->
+          <%= desc[0..200] %>..
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
   <tr>
     <td>
       <strong>Topics:</strong> <%=h forum.topics_count %><br/>

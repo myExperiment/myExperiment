@@ -104,11 +104,6 @@ text-align: center;
 padding: 3px;
 }
 
-#hlist ul li:hover
-{
-  border: thin solid black;
-}
-
 #openid_url {
 background: url(/images/openid.gif) no-repeat;
 padding-left: 18px;

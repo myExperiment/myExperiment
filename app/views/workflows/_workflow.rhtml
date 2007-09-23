@@ -19,9 +19,11 @@
     <tr>
       <td width="320" colspan="<%= image ? 2 : 3 %>">
         <% if desc.length < 100 %>
-          <%=h desc %>
+          <!-- needs whitelisting -->
+          <%= desc %>
         <% else %>
-          <%=h desc[0..100] %>..
+          <!-- needs whitelisting -->
+          <%= desc[0..100] %>..
         <% end %>
       </td>
     </tr>
