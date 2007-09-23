@@ -18,7 +18,7 @@
           <%= desc %>
         <% else %>
           <!-- needs whitelisting -->
-          <%= desc[0..200] %>..
+          <%= desc[0..200].strip %>..
         <% end %>
       </td>
     </tr>

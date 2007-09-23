@@ -3,11 +3,12 @@
 <table class="alt_table">
   <tr>
     <th width="100">Contributor</th>
-    <th width="200">Title</th>
-    <th width="150">Image</th>
+    <th width="200">Details</th>
+    <th width="110">Image</th>
     <% if false %>
     <th>Created at</th>
     <th>Updated at</th>
+    <th width="420">Workflow</th>
     <% end %>
     <th>Version</th>
     <th>Rating</th>
@@ -18,8 +19,21 @@
 <% for workflow in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
     <td width="100"><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, true, "60x60") %></td>
-    <td width="200"><%=h workflow.title %></td>
-    <td width="150">
+    <td width="200">
+      <p>
+        <b><%=h workflow.title %></b>
+        <% if desc = workflow.description %>
+          <br /><% if desc.length < 200 %>
+            <!-- needs whitelisting -->
+            <%= desc %>
+          <% else %>
+            <!-- needs whitelisting -->
+            <%= desc[0..200].strip %>..
+          <% end %>
+        <% end %>
+      </p>
+    </td>
+    <td width="110">
       <% unless workflow.image.nil? %>
         <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
           <%= image_tag url_for_file_column(workflow, "image", "thumb") %>
@@ -31,6 +45,11 @@
     <% if false %>
     <td><%=datetime workflow.created_at, false %></td>
     <td><%=datetime workflow.updated_at, false %></td>
+    <td width="420" class="contributable">
+      <center>
+        <%= render :partial => "workflows/workflow", :collection => [workflow] %>
+      </center>
+    </td>
     <% end %>
     <td><%=h workflow.version %></td>
     <td><%= number_with_precision(workflow.rating*20, 0) %>&#37 (<%= pluralize workflow.ratings.count, 'rating' %>)</td>

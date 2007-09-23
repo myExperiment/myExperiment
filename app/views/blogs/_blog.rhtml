@@ -13,7 +13,7 @@
           <%= post.body %>
         <% else %>
           <!-- needs whitelisting -->
-          <%= post.body[0..100] %>...
+          <%= post.body[0..100].strip %>...
         <% end %>
       <% else %>
         <strong>Created at:</strong><br />
