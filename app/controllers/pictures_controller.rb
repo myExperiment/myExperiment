@@ -63,6 +63,9 @@ class PicturesController < ApplicationController
   #  end
   #end
   flex_image :action => 'show', :class => Picture
+  
+  # adding this line 'should' cache the show method within Mongrel/WebBrick
+  caches_page :show
 
   # GET /users/1/pictures/new
   # GET /pictures/new
