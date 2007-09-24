@@ -236,7 +236,7 @@ margin-bottom: 5px;
 float: left;
 display: inline;
 list-style: none;
-border: thin solid black;
+border: 1px solid black;
 }
 
 table.alt_table tr.odd_row td
@@ -262,12 +262,21 @@ table.alt_table tr td.actions
 table.alt_table tr td.contributable
 {
   margin: 5px 0px 5px 0px;
-  padding: 0px;
+  padding: 3px 0px 3px 0px;
 }
 
-table.contributable:hover
+table.alt_table tr.even_row td.contributable table.contributable:hover,
+table.alt_table tr.odd_row td.contributable table.contributable:hover
 {
-  border: thin solid black;
+  border: 1px solid black;
+}
+
+table.contributable {
+  border: 1px solid transparent;
+}
+
+table.contributable:hover {
+  border: 1px solid black;
 }
 
 /* http://www.mis-algoritmos.com/wp-content/uploads/pagstyle.php?q=manu */
@@ -322,5 +331,5 @@ table.contributable:hover
 
 .network_banner:hover
 {
-  border: thin solid black;
+  border: 1px solid black;
 }
