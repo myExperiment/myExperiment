@@ -111,48 +111,54 @@ padding-left: 18px;
 
 /* begin css tabs */
 
-ul#tabnav { /*IE only rule. Delete extra margin-bottom*/
+#tabnav
+{
+text-align: center;
+padding: 3px 0;
+margin-left: 0;
 margin-bottom: 0;
+border-bottom: 1px solid #6c6;
+font-weight: bold;
 }
 
-ul#tabnav { /* general settings */
-  text-align: center; /* set to left, right or center */
-  margin: 0; /* set margins as desired */
-  border-bottom: 1px solid #6c6; /* set border COLOR as desired */
-  list-style-type: none;
-  padding: 0px 0px 4px 0px; /* THIRD number must change with respect to padding-top (X) below */
+#tabnav li
+{
+list-style: none;
+margin: 0;
+display: inline;
 }
 
-ul#tabnav li { /* do not change */
-  display: inline;
+#tabnav li a
+{
+padding: 3px 0.5em;
+margin-left: 3px;
+border: 1px solid #6c6;
+background: #fff;
+border-bottom: 1px solid #fff;
+text-decoration: none;
 }
 
-ul#tabnav li#selected_tabnav a {
-  /* settings for selected tab */
-  background-color: #cfc !important; /* set selected tab background color as desired */
-  color: #000; /* set selected tab link color as desired */
-  position: relative;
-  border-bottom: 1px solid #cfc;
-  padding-top: 5px; /* must change with respect to padding (X) above and below */
+#tabnav li a:link { color: #666; }
+#tabnav li a:visited { color: #666; }
+
+#tabnav li a:hover
+{
+color: #1a1a1a;
+background: #cfc;
+border-color: CE0434;
 }
 
-ul#tabnav li a { 
-  /* settings for all tab links */
-  padding: 5px 9px; /* set padding (tab size) as desired; FIRST number must change with respect to padding-top (X) above */
-  border: 1px solid #6c6; /* set border COLOR as desired; usually matches border color specified in #tabnav */
-  background-color: #fff; /* set unselected tab background color as desired */
-  color: #666; /* set unselected tab link color as desired */
-  margin-right: 3px; /* set additional spacing between tabs as desired */
-  margin-left: 3px;
-  text-decoration: none;
-  border-bottom: none;
+#tabnav li#selected_tabnav a
+{
+background: #cfc;
+border-bottom: 1px solid #cfc;
 }
 
-ul#tabnav a:hover { 
-  /* settings for hover effect */
-  background-color: #cfc; /* set desired hover color */
-  color: #1a1a1a !important;
-}
+/* light green = #cfc */
+/* dark green = #6c6 */
+
+/* logo red = #CE0434 */
+/* logo green = #179032 */
 
 /* end css tabs */
 
@@ -168,20 +174,18 @@ ul#tabnav a:hover {
 }
 
 #myexp_header {
-  padding-bottom: 1em;
+  margin-bottom: 10px;
 }
 
-#navbar {
-  padding-bottom: 1em;
+#myexp_navbar {
+  margin-bottom: 10px;
 }
 
 #subnav { 
   text-align: center; 
   background-color: #cfc;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
+  margin: 0;
+  padding: 5px;
 }
 
 #subnav li { 
@@ -200,7 +204,8 @@ ul#tabnav a:hover {
 }
 
 #searchbar {
-  padding-top: 0em;
+  padding-top: 0;
+  margin-top: 0;
   text-align: center; 
   background: #ffffff url('/images/searchfade.png') repeat-x center;
 }
@@ -275,12 +280,6 @@ table.contributable:hover
 .pagination ul li {
 	display: inline;
 }
-
-/* light green = #cfc */
-/* dark green = #6c6 */
-
-/* logo red = #CE0434 */
-/* logo green = #179032 */
 
 .pagination a {
 	padding: 2px 5px 2px 5px;

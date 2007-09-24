@@ -44,7 +44,7 @@
 
 </div>
 
-<div id="navbar">
+<div id="myexp_navbar">
   <ul id="tabnav">
     <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Users", users_path %></li>
     <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Networks", networks_path %></li>
