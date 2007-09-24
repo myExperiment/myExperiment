@@ -511,7 +511,7 @@ module Squirrel # :nodoc
       forum = Forum.new(:id                  => forum_tuple["id"],
                         :contributor_id      => forums[forum_tuple["id"]],
                         :contributor_type    => "Network",
-                        :name                => forum_tuple["name"],
+                        :name                => forum_tuple["name"].gsub(/_/, ' '),
                         :posts_count         => forum_tuple["posts_count"],
                         :topics_count        => forum_tuple["topics_count"],
                         :position            => forum_tuple["position"],
