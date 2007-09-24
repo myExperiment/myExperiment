@@ -33,13 +33,15 @@
     <%= link_to "My Bookmarks", bookmarks_path %>
   </p>
 <% else %>
-  <% form_tag session_path do %>
-    <label for="username">Username:</label> <%= text_field_tag 'session[username]' %> 
-    <label for="password">Password:</label> <%= password_field_tag 'session[password]' %> 
-    <label for="remember_me">Remember me:</label> <%= check_box_tag 'session[remember_me]' %> ...or use: 
-    <label for="openid_url">OpenID:</label> <%= text_field_tag 'openid_url' %> 
-    <%= submit_tag 'Sign in', :disable_with => "Signing in" %>
-  <% end %>
+  <div id="myexp_login">
+    <% form_tag session_path do %>
+      <label for="username">Username:</label> <%= text_field_tag 'session[username]' %> 
+      <label for="password">Password:</label> <%= password_field_tag 'session[password]' %> 
+      <label for="remember_me">Remember me:</label> <%= check_box_tag 'session[remember_me]' %> ...or use: 
+      <label for="openid_url">OpenID:</label> <%= text_field_tag 'openid_url' %> 
+      <%= submit_tag 'Sign in', :disable_with => "Signing in" %>
+    <% end %>
+  </div>
 <% end %>
 
 </div>
@@ -49,7 +51,7 @@
     <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Users", users_path %></li>
     <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Networks", networks_path %></li>
     <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path %></li>
-    <li <%= (["contributions", "blobs", "blogs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Contributions", contributions_path %></li>
+    <li <%= (["contributions", "blobs", "blogs", "downloads", "viewings", "policies"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Contributions", contributions_path %></li>
     <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
   </ul>
   <ul id="subnav">

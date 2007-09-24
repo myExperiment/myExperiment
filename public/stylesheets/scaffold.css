@@ -133,7 +133,7 @@ padding: 3px 10px;
 margin-left: 3px;
 border: 1px solid #6c6;
 background: #fff;
-border-bottom: 1px solid #fff;
+border-bottom: 1px solid transparent;
 text-decoration: none;
 }
 
@@ -150,7 +150,7 @@ border-color: CE0434;
 #tabnav li#selected_tabnav a
 {
 background: #cfc;
-border-bottom: 1px solid #cfc;
+border-bottom: 1px solid transparent;
 color: black;
 }
 
@@ -177,6 +177,11 @@ color: black;
   margin-bottom: 10px;
 }
 
+#myexp_login form {
+  padding: 0;
+  margin: 0;
+}
+
 #myexp_navbar {
   margin-bottom: 10px;
 }
@@ -187,8 +192,6 @@ color: black;
   background-color: #cfc;
   margin: 0;
   padding: 5px;
-  position: relative;
-  top: -1px;
 }
 
 #subnav li { 
