@@ -134,7 +134,7 @@ class User < ActiveRecord::Base
   has_many :friendships_completed, # accepted (by others)
            :class_name => "Friendship",
            :foreign_key => :user_id,
-           :conditions => ["accepted_at < ?", Time.now],
+           :conditions => "accepted_at IS NOT NULL",
            :order => "created_at DESC",
            :dependent => :destroy
   
@@ -150,7 +150,7 @@ class User < ActiveRecord::Base
   has_many :friendships_accepted, #accepted (by me)
            :class_name => "Friendship",
            :foreign_key => :friend_id,
-           :conditions => ["accepted_at < ?", Time.now],
+           :conditions => "accepted_at IS NOT NULL",
            :order => "accepted_at DESC",
            :dependent => :destroy
            
@@ -173,7 +173,7 @@ class User < ActiveRecord::Base
                           :join_table => :friendships,
                           :foreign_key => :user_id,
                           :association_foreign_key => :friend_id,
-                          :conditions => ["accepted_at < ?", Time.now],
+                          :conditions => "accepted_at IS NOT NULL",
                           :order => "accepted_at DESC"
                           
   alias_method :original_friends_of_mine, :friends_of_mine
@@ -192,7 +192,7 @@ class User < ActiveRecord::Base
                           :join_table => :friendships,
                           :foreign_key => :friend_id,
                           :association_foreign_key => :user_id,
-                          :conditions => ["accepted_at < ?", Time.now],
+                          :conditions => "accepted_at IS NOT NULL",
                           :order => "accepted_at DESC"
                           
   alias_method :original_friends_with_me, :friends_with_me
@@ -212,7 +212,7 @@ class User < ActiveRecord::Base
   
   has_and_belongs_to_many :networks,
                           :join_table => :memberships,
-                          :conditions => ["accepted_at < ?", Time.now],
+                          :conditions => "accepted_at IS NOT NULL",
                           :order => "accepted_at DESC"
                           
   alias_method :original_networks, :networks
@@ -237,7 +237,7 @@ class User < ActiveRecord::Base
   has_many :memberships_accepted, #accepted (by others)
            :class_name => "Membership",
            :foreign_key => :user_id,
-           :conditions => ["accepted_at < ?", Time.now],
+           :conditions => "accepted_at IS NOT NULL",
            :order => "accepted_at DESC"
   
   has_many :memberships_requested, #unaccepted (by others)

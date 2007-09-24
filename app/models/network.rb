@@ -93,7 +93,7 @@ class Network < ActiveRecord::Base
                           :join_table => :relationships,
                           :foreign_key => :network_id,
                           :association_foreign_key => :relation_id,
-                          :conditions => ["accepted_at < ?", Time.now],
+                          :conditions => "accepted_at IS NOT NULL",
                           :order => "accepted_at DESC"
                           
   alias_method :original_relations, :relations
@@ -132,7 +132,7 @@ class Network < ActiveRecord::Base
            
   has_many :memberships_accepted, #accepted (by owner of this network)
            :class_name => "Membership",
-           :conditions => ["accepted_at < ?", Time.now],
+           :conditions => "accepted_at IS NOT NULL",
            :order => "accepted_at DESC",
            :dependent => :destroy
            
@@ -146,7 +146,7 @@ class Network < ActiveRecord::Base
   has_and_belongs_to_many :members,
                           :class_name => "User",
                           :join_table => :memberships,
-                          :conditions => ["accepted_at < ?", Time.now],
+                          :conditions => "accepted_at IS NOT NULL",
                           :order => "accepted_at DESC"
                           
   alias_method :original_members, :members
