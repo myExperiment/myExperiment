@@ -117,7 +117,6 @@ text-align: center;
 padding: 3px 0;
 margin-left: 0;
 margin-bottom: 0;
-border-bottom: 1px solid #6c6;
 font-weight: bold;
 }
 
@@ -130,7 +129,7 @@ display: inline;
 
 #tabnav li a
 {
-padding: 3px 0.5em;
+padding: 3px 10px;
 margin-left: 3px;
 border: 1px solid #6c6;
 background: #fff;
@@ -152,6 +151,7 @@ border-color: CE0434;
 {
 background: #cfc;
 border-bottom: 1px solid #cfc;
+color: black;
 }
 
 /* light green = #cfc */
@@ -182,10 +182,13 @@ border-bottom: 1px solid #cfc;
 }
 
 #subnav { 
+  border-top: 1px solid #6c6;
   text-align: center; 
   background-color: #cfc;
   margin: 0;
   padding: 5px;
+  position: relative;
+  top: -1px;
 }
 
 #subnav li { 
@@ -213,6 +216,8 @@ border-bottom: 1px solid #cfc;
   margin-top: 0;
   text-align: center; 
   background: #ffffff url('/images/searchfade.png') repeat-x center;
+  position: relative;
+  top: -1px;
 }
 
 #policies_div
