@@ -84,24 +84,17 @@ a img, a img:hover {
 
 #hlist
 {
-margin: 10px;
 width: 100%;
 }
 
-#hlist ul
+#hlist li
 {
-width: 100%;
-display: inline;
 list-style: none;
-}
-#hlist ul li
-{
-width: 200px;
 float: left;
+width: 150px;
+margin: 3px;
 display: inline;
-list-style: none;
 text-align: center;
-padding: 3px;
 }
 
 #openid_url {
@@ -219,8 +212,6 @@ color: black;
   margin-top: 0;
   text-align: center; 
   background: #ffffff url('/images/searchfade.png') repeat-x center;
-  position: relative;
-  top: -1px;
 }
 
 #policies_div
@@ -228,22 +219,15 @@ color: black;
 width: 100%;
 }
 
-#policies_div ul
+#policies_div li
 {
-width: 100%;
-display: inline;
 list-style: none;
-}
-
-#policies_div ul li
-{
+float: left;
 width: 300px;
-padding-left: 10px;
 margin-left: 5px;
 margin-bottom: 5px;
-float: left;
+padding-left: 10px;
 display: inline;
-list-style: none;
 border: 1px solid black;
 }
 
