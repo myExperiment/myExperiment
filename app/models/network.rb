@@ -153,7 +153,7 @@ class Network < ActiveRecord::Base
   def members
     rtn = [User.find(owner.id)]
     
-    original_members.each do |m|
+    original_members(force_reload = true).each do |m|
       rtn << User.find(m.user_id)
     end
     

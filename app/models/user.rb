@@ -180,7 +180,7 @@ class User < ActiveRecord::Base
   def friends_of_mine
     rtn = []
     
-    original_friends_of_mine.each do |f|
+    original_friends_of_mine(force_reload = true).each do |f|
       rtn << User.find(f.friend_id)
     end
     
@@ -199,7 +199,7 @@ class User < ActiveRecord::Base
   def friends_with_me
     rtn = []
     
-    original_friends_with_me.each do |f|
+    original_friends_with_me(force_reload = true).each do |f|
       rtn << User.find(f.user_id)
     end
     
@@ -219,7 +219,7 @@ class User < ActiveRecord::Base
   def networks
     rtn = []
     
-    original_networks.each do |n|
+    original_networks(force_reload = true).each do |n|
       rtn << Network.find(n.network_id)
     end
     
