@@ -169,7 +169,7 @@ module Squirrel # :nodoc
         profile.update_attributes({ :picture_id   => pictures[profile_tuple["user_id"]],
                                     :email        => profile_tuple["email"],
                                     :website      => profile_tuple["website"],
-                                    :description  => profile_tuple["profile"],
+                                    :body         => profile_tuple["profile"],
                                     :created_at   => profile_tuple["created_at"],
                                     :updated_at   => profile_tuple["updated_at"] })
                                     
@@ -298,7 +298,7 @@ module Squirrel # :nodoc
         my_puts "Saved Workflow #{workflow.id} from SCUFL" if verbose
         
         workflow.update_attributes(:title       => workflow_tuple["title"],
-                                   :description => workflow_tuple["description"])
+                                   :body => workflow_tuple["description"])
                                    
         my_puts "Updated Workflow record with database values" if verbose
         
@@ -682,13 +682,13 @@ private
       d.content_type = "image/png"
     end
     
-    rtn = Workflow.new(:id => old_id,
-                       :scufl => sf.read, 
-                       :contributor_id => contributor_id, 
-                       :contributor_type => contributor_type,
-                       :title => title,
-                       :unique_name => unique_name,
-                       :description => scufl_model.description.description)
+    rtn = Workflow.new(:id                => old_id,
+                       :scufl             => sf.read, 
+                       :contributor_id    => contributor_id, 
+                       :contributor_type  => contributor_type,
+                       :title             => title,
+                       :unique_name       => unique_name,
+                       :body              => scufl_model.description.description)
                        
     unless RUBY_PLATFORM =~ /mswin32/
       rtn.image = d

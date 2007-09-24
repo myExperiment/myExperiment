@@ -291,7 +291,7 @@ protected
                        :contributor_type => wf[:contributor_type],
                        :title => title,
                        :unique_name => unique_name,
-                       :description => scufl_model.description.description)
+                       :body => scufl_model.description.description)
                        
     unless RUBY_PLATFORM =~ /mswin32/
       rtn.image = d

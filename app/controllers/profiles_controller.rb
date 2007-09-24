@@ -125,7 +125,8 @@ protected
 
   def find_profiles
     @profiles = Profile.find(:all, 
-                             :order => "created_at DESC",
+                             :include => :owner, 
+                             :order => "users.name ASC",
                              :page => { :size => 20, 
                                         :current => params[:page] })
   end

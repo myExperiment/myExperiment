@@ -20,8 +20,7 @@
 
 <p>
   <b>Body:</b><br/>
-  <!-- needs whitelisting -->
-  <%= @message.body %>
+  <%= @message.body_html %>
 </p>
 
 <% if @message.reply? %>

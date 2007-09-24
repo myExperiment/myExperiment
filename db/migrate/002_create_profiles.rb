@@ -28,9 +28,11 @@ class CreateProfiles < ActiveRecord::Migration
       t.column :picture_id, :integer
       t.column :email, :string
       t.column :website, :string
-      t.column :description, :text
       t.column :created_at, :datetime
       t.column :updated_at, :datetime
+      
+      t.column :body, :text
+      t.column :body_html, :text
     end
   end
 

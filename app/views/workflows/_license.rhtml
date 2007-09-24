@@ -8,7 +8,7 @@
 <Work rdf:about="">
    <dc:title><%= workflow.title %></dc:title>
    <dc:date><%= workflow.created_at %></dc:date>
-   <dc:description><%= workflow.description %></dc:description>
+   <dc:description><%= workflow.body_html %></dc:description>
    <dc:creator><Agent>
       <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:creator>
@@ -46,7 +46,7 @@
 <Work rdf:about="">
    <dc:title><%= workflow.title %></dc:title>
    <dc:date><%= workflow.created_at %></dc:date>
-   <dc:description><%= workflow.description %></dc:description>
+   <dc:description><%= workflow.body_html %></dc:description>
    <dc:creator><Agent>
       <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:creator>
@@ -85,7 +85,7 @@
 <Work rdf:about="">
    <dc:title><%= workflow.title %></dc:title>
    <dc:date><%= workflow.created_at %></dc:date>
-   <dc:description><%= workflow.description %></dc:description>
+   <dc:description><%= workflow.body_html %></dc:description>
    <dc:creator><Agent>
       <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:creator>

@@ -29,11 +29,13 @@ class Workflow < ActiveRecord::Base
   acts_as_versioned
   
   acts_as_ferret :fields => { :title => { :store => :yes }, 
-                              :description => { :store => :yes }, 
+                              :body => { :store => :yes }, 
                               :tag_list => { :store => :yes },
                               :rating => { :index => :untokenized } }
   
   validates_presence_of :title, :scufl
+  
+  format_attribute :body
   
   validates_uniqueness_of :unique_name
   

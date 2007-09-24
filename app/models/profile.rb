@@ -40,6 +40,8 @@ class Profile < ActiveRecord::Base
     end
   end
   
+  format_attribute :body
+  
   belongs_to :owner,
              :class_name => "User",
              :foreign_key => :user_id

@@ -31,6 +31,7 @@ class CreateMessages < ActiveRecord::Migration
       t.column :reply_id, :integer
       t.column :created_at, :datetime
       t.column :read_at, :datetime
+      t.column :body_html, :text
     end
   end
 

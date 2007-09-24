@@ -56,4 +56,6 @@ class Message < ActiveRecord::Base
   def reply?
     self.reply_id != nil
   end
+  
+  format_attribute :body
 end

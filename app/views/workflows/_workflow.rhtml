@@ -15,14 +15,12 @@
       <%=h workflow.title %>
     </th>
    </tr>
-   <% if show and desc = workflow.description %>
+   <% if show and desc = workflow.body_html %>
     <tr>
       <td width="320" colspan="<%= image ? 2 : 3 %>">
         <% if desc.length < 100 %>
-          <!-- needs whitelisting -->
           <%= desc %>
         <% else %>
-          <!-- needs whitelisting -->
           <%= desc[0..100].strip %>..
         <% end %>
       </td>

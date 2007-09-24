@@ -32,7 +32,9 @@ class CreateWorkflows < ActiveRecord::Migration
       
       t.column :title, :string
       t.column :unique_name, :string
-      t.column :description, :text
+      
+      t.column :body, :text
+      t.column :body_html, :text
       
       t.column :created_at, :datetime
       t.column :updated_at, :datetime

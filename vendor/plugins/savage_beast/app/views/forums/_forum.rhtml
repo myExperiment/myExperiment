@@ -10,14 +10,12 @@
       <%=h forum.name %>
     </th>
   </tr>
-  <% if desc = forum.description %>
+  <% if desc = forum.description_html %>
     <tr>
       <td colspan="2">
         <% if desc.length < 200 %>
-          <!-- needs whitelisting -->
           <%= desc %>
         <% else %>
-          <!-- needs whitelisting -->
           <%= desc[0..200].strip %>..
         <% end %>
       </td>

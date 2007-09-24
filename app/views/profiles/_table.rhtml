@@ -3,9 +3,6 @@
 <table class="alt_table">
   <tr>
     <th width="100">User</th>
-    <th>Email</th>
-    <th>Website</th>
-    <th>Description</th>
     <th>Last updated</th>
     <th> </th>
   </tr>
@@ -14,9 +11,6 @@
 <% for profile in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
     <td width="100"><%= contributor(profile.user_id, "User", true, true, "60x60") %></td>
-    <td><%=h profile.email %></td>
-    <td><%=h profile.website %></td>
-    <td><%=h profile.description %></td>
     <td><%=datetime profile.updated_at, false %></td>
     <td class="actions">
       <%= link_to 'Show', profile_path(profile) %> 

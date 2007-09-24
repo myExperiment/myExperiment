@@ -29,6 +29,7 @@ class CreateBlogPosts < ActiveRecord::Migration
       t.column :body, :text
       t.column :created_at, :datetime
       t.column :updated_at, :datetime
+      t.column :body_html, :text
     end
   end
 

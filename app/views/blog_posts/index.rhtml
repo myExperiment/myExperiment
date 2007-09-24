@@ -4,7 +4,6 @@
   <tr>
     <th>Blog</th>
     <th>Title</th>
-    <th>Body</th>
     <th>Created at</th>
     <th>Updated at</th>
   </tr>
@@ -13,7 +12,6 @@
   <tr>
     <td><%=h blog_post.blog_id %></td>
     <td><%=h blog_post.title %></td>
-    <td><%=h blog_post.body %></td>
     <td><%=datetime blog_post.created_at, false %></td>
     <td><%=datetime blog_post.updated_at, false %></td>
     <td><%= link_to 'Show', blog_post_path(blog_post.blog, blog_post) %></td>

@@ -22,12 +22,10 @@
     <td width="200">
       <p>
         <b><%=h workflow.title %></b>
-        <% if desc = workflow.description %>
+        <% if desc = workflow.body_html %>
           <br /><% if desc.length < 200 %>
-            <!-- needs whitelisting -->
             <%= desc %>
           <% else %>
-            <!-- needs whitelisting -->
             <%= desc[0..200].strip %>..
           <% end %>
         <% end %>

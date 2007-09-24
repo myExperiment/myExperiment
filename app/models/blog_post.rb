@@ -23,6 +23,8 @@
 
 class BlogPost < ActiveRecord::Base
   belongs_to :blog
+  
+  format_attribute :body
 
   validates_presence_of :title, :body
 end
