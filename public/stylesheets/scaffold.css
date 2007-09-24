@@ -332,6 +332,7 @@ table.contributable:hover {
 {
   padding: 5px;
   width: 540px;
+  border: 1px solid transparent;
 }
 
 .network_banner:hover
