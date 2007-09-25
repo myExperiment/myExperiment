@@ -5,7 +5,7 @@
   <% if @user.openid_url %>
     <%=h @user.openid_url %>
   <% elsif my_page? @user.id %>
-    Click <%= link_to 'here', edit_user_path(@user) %> to validate your OpenID URL
+    Click <%= link_to 'here', new_openid_path %> to validate your OpenID URL
   <% else %>
     Not created yet (what is <%= link_to 'OpenID', "http://en.wikipedia.org/wiki/OpenID" %>?)
   <% end %>

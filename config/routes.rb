@@ -5,8 +5,11 @@ ActionController::Routing::Routes.draw do |map|
   # tags and bookmarks
   map.resources :tags, :bookmarks
 
-  # sessions and authentication
+  # sessions and RESTful authentication
   map.resource :session
+  
+  # openid authentication
+  map.resource :openid
 
   # workflows (downloadable)
   map.resources :workflows, :collection => { :search => :get }, :member => { :download => :get, :bookmark => :post, :comment => :post, :rate => :post, :tag => :post }
