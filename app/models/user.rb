@@ -28,6 +28,12 @@ require 'acts_as_contributor'
 class User < ActiveRecord::Base
   validates_uniqueness_of :openid_url, :allow_nil => true
   
+  def self.most_recent(limit=5)
+    self.find(:all,
+              :order => "created_at DESC",
+              :limit => limit)
+  end
+  
   acts_as_tagger
   
   has_many :downloads

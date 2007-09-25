@@ -1,12 +1,8 @@
+<h1>Recent members</h1>
+
+<%= render :partial => "users/hlist", :locals => { :collection => @most_recent } %>
+
 <h1>Listing users</h1>
-
-<% if false %>
-
-<%= render :partial => "users/hlist", :locals => { :collection => @users } %>
-
-<br />
-
-<% end %>
 
 <%= render :partial => "layouts/paginate", :locals => { :collection => @users } %>
 

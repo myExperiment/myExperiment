@@ -31,6 +31,8 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.xml
   def index
+    @most_recent = User.most_recent
+    
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @users.to_xml }
