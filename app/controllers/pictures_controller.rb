@@ -60,7 +60,7 @@ class PicturesController < ApplicationController
   def show
     size = params[:size] || "200x200"
     
-    if cached_data?(@picture, size) # look in file system cache before attempting db access
+    if cache_exists?(@picture, size) # look in file system cache before attempting db access
       send_file(full_cache_path(@picture, size), :type => 'image/jpeg', :disposition => 'inline')
     else
       # resize and encode the picture
@@ -195,24 +195,25 @@ private
   end
   
   # returns true if /pictures/show/:id?size=#{size}x#{size} is cached in file system
-  def cached_data?(picture, size=nil)
+  def cache_exists?(picture, size=nil)
     File.exists?(full_cache_path(picture, size))
   end
   
   # caches data (where size = #{size}x#{size})
   def cache_data!(picture, size=nil)
-    FileUtils.mkpath(cache_path(picture, size))
+    FileUtils.mkdir_p(cache_path(picture, size))
     File.open(full_cache_path(picture, size), "wb+") { |f| f.write(picture.data) }
   end
   
-  def cache_path(picture, size=nil)
-    root = "#{RAILS_ROOT}/public/pictures/show"
-    root = "#{root}/#{size}" if size
+  def cache_path(picture, size=nil, include_local_name=false)
+    rtn = "#{RAILS_ROOT}/public/pictures/show"
+    rtn = "#{rtn}/#{size}" if size
+    rtn = "#{rtn}/#{picture.id}.jpg" if include_local_name
     
-    return root
+    return rtn
   end
   
-  def full_cache_path(picture, size=nil)
-    "#{cache_path(picture, size)}/#{picture.id}.jpg"
+  def full_cache_path(picture, size=nil) 
+    cache_path(picture, size, true) 
   end
 end
