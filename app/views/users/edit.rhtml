@@ -2,41 +2,50 @@
 
 <%= error_messages_for :user %>
 
+<h3>Name</h3>
+
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
   <p>
     <b>Name</b><br />
     <%= f.text_field :name %>
   </p>
   
-  <fieldset>
-    <legend>RESTful Authentication details:</legend>
-    
-    <p>myExperiment offers a <%= link_to 'Representational State Transfer', "http://en.wikipedia.org/wiki/Representational_State_Transfer" %> (REST) interface for use with 
+  <p>
+    <%= submit_tag "Save Changes" %>
+  </p>
+<% end %>
+
+<h3>REST</h3>
+
+<% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+  <p>
+    myExperiment offers a <%= link_to 'Representational State Transfer', "http://en.wikipedia.org/wiki/Representational_State_Transfer" %> (REST) interface for use with 
     any compatable client (such as <%= link_to 'cURL', "http://curl.haxx.se/" %>). In order to maintain a session, you must log-in to myExperiment using a separate username 
-    and password.</p>
+    and password.
+  </p>
     
-    <p>If you signed up to myExperiment using an OpenID and want to use the REST interface, you must fill in the fields below:</p>
+  <p>If you signed up to myExperiment using an OpenID and want to use the REST interface, you must fill in the fields below:</p>
     
-    <p>
-      <b>Username</b><br />
-      <%= f.text_field :username %>
-    </p>
+  <p>
+    <b>Username</b><br />
+    <%= f.text_field :username %>
+  </p>
     
-    <p>
-      <b>New Password</b><br />
-      <%= f.password_field :password %>
-    </p>
+  <p>
+    <b>New Password</b><br />
+    <%= f.password_field :password %>
+  </p>
     
-    <p>
-      <b>Confirm New Password</b><br />
-      <%= f.password_field :password_confirmation %>
-    </p>
-  </fieldset>
+  <p>
+    <b>Confirm New Password</b><br />
+    <%= f.password_field :password_confirmation %>
+  </p>
 
   <p>
     <%= submit_tag "Save Changes" %>
   </p>
 <% end %>
 
+<h3>OpenID</h3>
 
-<%= link_to 'Back', users_path %>
+<%= render "openid/new" %>

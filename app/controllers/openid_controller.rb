@@ -10,7 +10,7 @@ class OpenidController < ApplicationController
 
   def create
     openid_url = params[:openid_url]
-    response = openid_consumer.begin openid_url
+    response = consumer.begin openid_url
 
     if response.status == OpenID::SUCCESS
       return_to = url_for(:action=> 'complete')
@@ -26,12 +26,18 @@ class OpenidController < ApplicationController
   end
 
   def complete
-    response = openid_consumer.complete params
+    response = consumer.complete params
 
     case response.status
       when OpenID::SUCCESS
-        current_user.update_attribute(:openid_url, response.identity_url)
-        redirect_to user_path(current_user)
+        current_user.openid_url = response.identity_url
+        if current_user.save
+          redirect_to user_path(current_user)
+        else
+          flash[:error] = 'OpenID already registered to another myExperiment account'
+          redirect_to new_openid_url
+        end
+        
         return
       when OpenID::SETUP_NEEDED
         redirect_to response.setup_url # <== here!

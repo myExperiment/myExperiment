@@ -26,6 +26,8 @@ require 'digest/sha1'
 require 'acts_as_contributor'
 
 class User < ActiveRecord::Base
+  validates_uniqueness_of :openid_url, :allow_nil => true
+  
   acts_as_tagger
   
   has_many :downloads
@@ -93,7 +95,7 @@ class User < ActiveRecord::Base
   
   acts_as_contributor
   
-  acts_as_ferret :fields => [:openid_url, :unique]
+  acts_as_ferret :fields => [:openid_url, :name, :username]
   
   # protected? asks the question "is other protected by me?"
   def protected?(other)

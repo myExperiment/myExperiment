@@ -1,20 +1,16 @@
-<% if openid = current_user.openid_url %>
-  <p>
-    The OpenID URL registered to your myExperiment account is: <br/>
-    <b><%=link_to h(openid), openid %></b>
-  </p>
-<% else %>
-  <p>
-    There is no OpenID URL registered to this myExperiment account. <br/>
-    Please use the form below to validate a new OpenID URL.
-  </p>
-<% end %>
-
-<br />
+<p>
+  <b>Current OpenID:</b><br />
+  <%= current_user.openid_url || "Not created yet" %>
+</p>
 
 <div id="myexp_login">
   <% form_tag openid_path do %>
-    <label for="openid_url">New OpenID:</label> <%= text_field_tag 'openid_url' %> 
+  
+    <p>
+      <b>New OpenID:</b><br />
+      <%= text_field_tag 'openid_url' %> 
+    </p>
+    
     <%= submit_tag 'Validate', :disable_with => "Validating..." %>
   <% end %>
 </div>
