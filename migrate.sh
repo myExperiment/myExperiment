@@ -24,6 +24,7 @@ mkdir carlin
 
 cd carlin
 
+rm -rf public/pictures
 rm -rf public/workflow
 cp ${DUMP_SRC} myexperiment_production.sql
 cp -r ${SCUFL_SRC} scufl
