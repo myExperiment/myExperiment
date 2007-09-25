@@ -39,7 +39,7 @@
       <%= image_tag url_for :controller => 'pictures',
                               :action     => 'show',
                               :id         => picture.id,
-                              :size       => '200' %>
+                              :size       => '200x200' %>
     </td>
     <td class="actions">
       <%= link_to 'Show', picture_path(picture.user_id, picture) %> 
