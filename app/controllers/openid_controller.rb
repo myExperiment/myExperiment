@@ -44,8 +44,13 @@ class OpenidController < ApplicationController
 
 protected
   
-  def openid_consumer
-      @openid_consumer ||= OpenID::Consumer.new(session,      
-        OpenID::FilesystemStore.new("#{RAILS_ROOT}/tmp/openid"))
-    end
+  # Get the OpenID::Consumer object.
+  def consumer
+    # create the OpenID store for storing associations and nonces,
+    # putting it in your app's db directory
+    store_dir = Pathname.new(RAILS_ROOT).join('db').join('openid-store')
+    store = OpenID::FilesystemStore.new(store_dir)
+
+    return OpenID::Consumer.new(session, store)
+  end
 end
