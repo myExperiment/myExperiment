@@ -44,7 +44,7 @@ class Picture < FlexImage::Model
   end
   
   def selected?
-    owner.profile.picture and owner.profile.picture.id.to_i == id.to_i
+    owner.profile.avatar? and owner.profile.picture.id.to_i == id.to_i
   end
   
   #file_column :data, :magick => {

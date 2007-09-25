@@ -25,6 +25,7 @@ class PicturesController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_pictures, :only => [:index]
+  before_filter :find_picture, :only => [:show]
   before_filter :find_picture_auth, :only => [:select, :edit, :update, :destroy]
   
   # GET /users/1/pictures/1/select
@@ -56,13 +57,28 @@ class PicturesController < ApplicationController
 
   # GET /users/1/pictures/1
   # GET /pictures/1
-  #def show
-  #  respond_to do |format|
-  #    format.html # index.rhtml
-  #    format.xml  { render :xml => @picture.to_xml }
-  #  end
-  #end
-  flex_image :action => 'show', :class => Picture
+  def show
+    size = params[:size] || "200x200"
+    
+    if cached_data?(@picture, size) # look in file system cache before attempting db access
+      send_file(full_cache_path(@picture, size), :type => 'image/jpeg', :disposition => 'inline')
+    else
+      # resize and encode the picture
+      @picture.resize!(:size => size, 
+                       :padding => true, 
+                       :upsample => true)
+      @picture.to_jpg!
+      
+      # cache data
+      cache_data!(@picture, size)
+      
+      send_data(@picture.data, :type => 'image/jpeg', :disposition => 'inline')
+    end
+  end
+  
+  #flex_image :action => :show, 
+  #           :class => Picture, 
+  #           :padding => true
   
   # adding this line 'should' cache the show method within Mongrel/WebBrick
   # caches_page :show
@@ -141,6 +157,18 @@ protected
       error("Please supply a User ID", "not supplied", :user_id)
     end
   end
+  
+  def find_picture
+    if params[:id]
+      if picture = Picture.find(:first, :conditions => ["id = ?", params[:id]])
+        @picture = picture
+      else
+        error("Picture not found (id not found)", "is invalid (not found)")
+      end
+    else
+      error("Please supply an ID", "not supplied")
+    end
+  end
 
   def find_picture_auth
     if params[:user_id]
@@ -164,5 +192,27 @@ private
       format.html { redirect_to logged_in? ? pictures_url(current_user) : '' }
       format.xml { render :xml => err.to_xml }
     end
+  end
+  
+  # returns true if /pictures/show/:id?size=#{size}x#{size} is cached in file system
+  def cached_data?(picture, size=nil)
+    File.exists?(full_cache_path(picture, size))
+  end
+  
+  # caches data (where size = #{size}x#{size})
+  def cache_data!(picture, size=nil)
+    FileUtils.mkpath(cache_path(picture, size))
+    File.open(full_cache_path(picture, size), "wb+") { |f| f.write(picture.data) }
+  end
+  
+  def cache_path(picture, size=nil)
+    root = "#{RAILS_ROOT}/public/pictures/show"
+    root = "#{root}/#{size}" if size
+    
+    return root
+  end
+  
+  def full_cache_path(picture, size=nil)
+    "#{cache_path(picture, size)}/#{picture.id}.jpg"
   end
 end

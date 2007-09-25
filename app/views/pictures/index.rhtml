@@ -12,6 +12,7 @@
   <tr>
     <th> </th>
     <th>Data</th>
+    <th> </th>
   </tr>
   
 <% odd_row = false -%>
@@ -42,9 +43,9 @@
                               :size       => '200x200' %>
     </td>
     <td class="actions">
-      <%= link_to 'Show', picture_path(picture.user_id, picture) %> 
+      <% if false %><%= link_to 'Show', picture_path(picture.user_id, picture) %> <% end %>
       <% if my_page? picture.user_id %>
-        <%= link_to 'Edit', edit_picture_path(picture.user_id, picture) %> 
+        <% if false %><%= link_to 'Edit', edit_picture_path(picture.user_id, picture) %> <% end %>
         <%= link_to 'Destroy', picture_path(picture.user_id, picture), :confirm => 'Are you sure?', :method => :delete %>
       <% end %>
     </td>

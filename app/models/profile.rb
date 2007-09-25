@@ -49,8 +49,6 @@ class Profile < ActiveRecord::Base
   belongs_to :picture
   
   def avatar?
-    return true if picture_id and !(picture_id.to_i == 0)
-    
-    return false
+    not (picture_id.nil? or picture_id.zero?)
   end
 end

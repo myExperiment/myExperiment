@@ -69,9 +69,8 @@ module ApplicationHelper
     begin
       user = User.find(user_id)
       
-      if user.profile.avatar?
+      if user.profile and user.profile.avatar?
         # need code for deciding whether to use small, medium or large!
-        
         #img = image_tag(url_for_file_column(user.profile.picture, "data", "large"), 
         #                :title => h(user.name),
         #                :size => size)
@@ -83,7 +82,6 @@ module ApplicationHelper
                         :title => h(user.name))
           
         if link_to
-          #return link_to img, profile_path(user.profile)
           return link_to(img, user_path(user))
         else
           return img
@@ -94,7 +92,6 @@ module ApplicationHelper
                         :size => size)
         
         if link_to
-          #return link_to img, profile_path(user.profile)
           return link_to(img, user_path(user))
         else
           return img
