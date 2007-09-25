@@ -59,7 +59,7 @@ class PicturesController < ApplicationController
   # GET /pictures/1
   def show
     size = params[:size] || "200x200"
-    size = size[0..-($1.length.to_i + 1)] if size =~ /[0-9]+x[0-9]+\.([a-z0-9]+)/ # trim file extension
+    size = size[0..-($1.length.to_i + 2)] if size =~ /[0-9]+x[0-9]+\.([a-z0-9]+)/ # trim file extension
     
     if cache_exists?(@picture, size) # look in file system cache before attempting db access
       send_file(full_cache_path(@picture, size), :type => 'image/jpeg', :disposition => 'inline')
