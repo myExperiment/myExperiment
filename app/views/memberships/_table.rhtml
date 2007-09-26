@@ -18,8 +18,9 @@
     <td><%= "<b>" unless membership.accepted? %><%=datetime(membership.accepted_at, false) || "Pending" %><%= "</b>" unless membership.accepted? %></td>
     <td class="actions">
       <% if my_page? membership.network.owner.id %>
-        <%= link_to "Show#{membership.accepted? ? "" : " / Accept"}", membership_path(membership.user_id, membership) %> 
-        <%= link_to 'Delete', membership_path(membership.user_id, membership), :confirm => 'Are you sure?', :method => :delete %>
+        <%= link_to "Review", membership_path(membership.user_id, membership) %> or 
+        <% unless membership.accepted? %><%= link_to "Accept", accept_membership_path(membership.user_id, membership) %> <% end %>
+        <%= link_to "Reject", membership_path(membership.user_id, membership), :confirm => "Are you sure?", :method => :delete %>
       <% end %>
     </td>
   </tr>

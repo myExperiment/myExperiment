@@ -1,4 +1,6 @@
-<h1>Listing blogs</h1>
+<%= render :partial => "contributions/most", :locals => { :type => "Blog" } %>
+
+<h3>Listing blogs</h3>
 
 <%= render :partial => "layouts/paginate", :locals => { :collection => @blogs } %>
 

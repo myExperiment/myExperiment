@@ -18,8 +18,9 @@
     <td><%= "<b>" unless friendship.accepted? %><%=datetime(friendship.accepted_at, false) || "Pending" %><%= "</b>" unless friendship.accepted? %></td>
     <td class="actions">
       <% if my_page? friendship.friend_id %>
-        <%= link_to "Show#{friendship.accepted? ? "" : " / Accept"}", friendship_path(friendship.friend_id, friendship) %> 
-        <%= link_to 'Delete', friendship_path(friendship.friend_id, friendship), :confirm => 'Are you sure?', :method => :delete %>
+        <%= link_to "Review", friendship_path(friendship.friend_id, friendship) %> or 
+        <% unless friendship.accepted? %><%= link_to "Accept", accept_friendship_path(friendship.friend_id, friendship) %> <% end %>
+        <%= link_to "Reject", friendship_path(friendship.friend_id, friendship), :confirm => "Are you sure?", :method => :delete %>
       <% end %>
     </td>
   </tr>

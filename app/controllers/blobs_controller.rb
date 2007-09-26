@@ -136,7 +136,7 @@ protected
 
   def find_blobs
     @blobs = Blob.find(:all, 
-                       :order => "local_name ASC",
+                       :order => "content_type ASC, local_name ASC, created_at DESC",
                        :page => { :size => 20, 
                                   :current => params[:page] })
   end

@@ -3,9 +3,9 @@
 <table class="alt_table">
   <tr>
     <th width="100">Contributor</th>
-    <th>Title</th>
+    <th width="200">Title</th>
     <th>Posts</th>
-    <% if false %><th>Last Post</th><% end %>
+    <th>Last Post</th>
     <th> </th>
   </tr>
   
@@ -13,9 +13,9 @@
 <% for blog in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
     <td width="100"><%= contributor(blog.contributor_id, blog.contributor_type, true, true, "60x60") %></td>
-    <td><%=h blog.title %></td>
+    <td width="200"><%=h blog.title %></td>
     <td><%=h blog.posts.length %></td>
-    <% if false %><td><%=h(blog.posts[-1].created_at) unless blog.posts.empty? %></td><% end %>
+    <td><%=datetime(blog.posts[-1].created_at, false) unless blog.posts.empty? %></td>
     <td class="actions">
       <% if blog.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to 'Show', blog_path(blog) %> <% end %>
       <% if logged_in? and blog.authorized?("edit", current_user) %><%= link_to 'Edit', edit_blog_path(blog) %> <% end %>

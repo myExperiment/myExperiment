@@ -3,8 +3,10 @@
 <table class="alt_table">
   <tr>
     <th width="100">Name</th>
+    <% if false %>
     <th width="150">Username</th>
     <th width="150">OpenID</th>
+    <% end %>
     <th>Joined</th>
     <% if false %>
     <th>Updated at</th>
@@ -16,6 +18,7 @@
 <% for user in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
     <td width="100"><%= contributor(user.id, "User", true, true, "60x60") %></td>
+    <% if false %>
     <td width="150">
       <% if user.username %>
         <%=h user.username %>
@@ -34,6 +37,7 @@
         Not created yet
       <% end %>
     </td>
+    <% end %>
     <td><%=datetime user.created_at, false %></td>
     <% if false %>
     <td><%=datetime user.updated_at, false %></td>

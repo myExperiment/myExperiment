@@ -123,7 +123,7 @@ protected
 
   def find_blogs
     @blogs = Blog.find(:all, 
-                       :order => "created_at DESC",
+                       :order => "title ASC, created_at DESC",
                        :page => { :size => 20, 
                                   :current => params[:page] })
   end

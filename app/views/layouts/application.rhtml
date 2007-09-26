@@ -50,9 +50,13 @@
   <ul id="tabnav">
     <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Users", users_path %></li>
     <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Networks", networks_path %></li>
-    <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path %></li>
-    <li <%= (["contributions", "blobs", "blogs", "downloads", "viewings", "policies"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Contributions", contributions_path %></li>
+    <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blobs", blobs_path %></li>
+    <li <%= (["blogs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path %></li>
     <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
+    <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path %></li>
+    <% if false %>
+    <li <%= (["contributions", "workflows", "blobs", "blogs", "downloads", "viewings", "policies"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Contributions", contributions_path %></li>
+    <% end %>
   </ul>
   <ul id="subnav">
     <%= render :partial => "subnav" %>
