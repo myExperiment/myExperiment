@@ -3,7 +3,7 @@
   <%= versioned_workflow_link(workflow, 1) %>
 </p>
 
-<% if @workflow.versions.size > 1 %>
+<% if @workflow.versions.size > 2 %>
 <p>
   <b>Previous Versions:</b><br/>
   <% (2...@workflow.versions.size).each do |v| %>

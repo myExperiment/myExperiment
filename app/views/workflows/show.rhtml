@@ -90,16 +90,24 @@
 
 <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
 
-<h3>Comments</h3>
-
 <% if logged_in? %>
-  <% form_remote_tag(:url => comment_workflow_path(@workflow), :update => 'comments', :position => 'bottom') do %>
-    <%= text_area_tag :comment, nil, :size => "30x4" %><br/>
-    <%= submit_tag "Add Comment" %>
+  <h3>Comments</h3>
+  
+  <% if logged_in? %>
+    <% form_remote_tag(:url => comment_workflow_path(@workflow), :update => 'comments', :position => 'bottom') do %>
+      <%= text_area_tag :comment, nil, :size => "30x4" %><br/>
+      <%= submit_tag "Add Comment" %>
+    <% end %>
+  <% end %>
+  
+  <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
+<% else %>
+  <% unless @workflow.comments.empty? %>
+    <h3>Comments</h3>
+    
+    <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
   <% end %>
 <% end %>
-
-<%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
 
 <h3>Statistics</h3>
 
