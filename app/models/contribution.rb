@@ -34,18 +34,24 @@ class Contribution < ActiveRecord::Base
   
   # returns the 'most downloaded' Contributions
   # the maximum number of results is set by #limit#
-  def self.most_downloaded(klass="*", limit=10)
+  def self.most_downloaded(limit=10, klass=nil)
+    conditions = "downloads_count != 0"
+    conditions = ["#{conditions} AND contributable_type = ?", klass] if klass
+    
     self.find(:all, 
-              :conditions => ["downloads_count != 0 AND contributable_type = ?", klass], 
+              :conditions => conditions, 
               :order => "downloads_count DESC", 
               :limit => limit)
   end
   
   # returns the 'most viewed' Contributions
   # the maximum number of results is set by #limit#
-  def self.most_viewed(klass="*", limit=10)
+  def self.most_viewed(limit=10, klass=nil)
+    conditions = "viewings_count != 0"
+    conditions = ["#{conditions} AND contributable_type = ?", klass] if klass
+    
     self.find(:all, 
-              :conditions => ["viewings_count != 0 AND contributable_type = ?", klass],
+              :conditions => conditions,
               :order => "viewings_count DESC", 
               :limit => limit)
   end

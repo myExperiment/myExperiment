@@ -1,14 +1,8 @@
 <% type = params[:contributable_type] -%>
 
-<% if false %>
-<%= render :partial => "list", :locals => { :collection => @contributions } %>
-<% end %>
+<%= render :partial => "contributions/most", :locals => { :type => type } %>
 
-<h1>Listing contributions</h1>
-
-<% if type %>
-  <h2>Currently listing <%= type.pluralize %></h2>
-<% end %>
+<h3>Listing <%= type ? h(type.pluralize.downcase) : "contributions" %></h3>
 
 <p>
   <%= link_to "Show all", contributions_path %> or filter by 

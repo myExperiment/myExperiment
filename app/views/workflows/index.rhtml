@@ -1,10 +1,4 @@
-<h3>Most viewed</h3>
-
-<%= render :partial => "contributions/list", :locals => { :collection => Contribution.most_viewed("Workflow", 5) } %>
-
-<h3>Most downloaded</h3>
-
-<%= render :partial => "contributions/list", :locals => { :collection => Contribution.most_downloaded("Workflow", 5) } %>
+<%= render :partial => "contributions/most", :locals => { :type => "Workflow" } %>
 
 <h3>Listing workflows</h3>
 

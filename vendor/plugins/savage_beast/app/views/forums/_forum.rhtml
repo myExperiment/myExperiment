@@ -13,11 +13,7 @@
   <% if desc = forum.description_html %>
     <tr>
       <td colspan="2">
-        <% if desc.length < 200 %>
-          <%= desc %>
-        <% else %>
-          <%= desc[0..200].strip %>..
-        <% end %>
+        <%= trim_body_html(desc, 200) %>
       </td>
     </tr>
   <% end %>

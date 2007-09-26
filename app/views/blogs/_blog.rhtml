@@ -8,11 +8,7 @@
     <td>
       <% if (post = blog.posts[-1]) and (body = post.body_html) %>
         <strong>Last post:</strong><br />
-        <% if body.length < 100 %>
-          <%= body %>
-        <% else %>
-          <%= body[0..100].strip %>...
-        <% end %>
+        <%= trim_body_html(body, 100) %>
       <% else %>
         <strong>Created at:</strong><br />
         <%=datetime blog.created_at %>

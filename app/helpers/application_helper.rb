@@ -309,4 +309,10 @@ module ApplicationHelper
     html << yield(pagingEnum.last_page) if always_show_anchors and not last == pagingEnum.last_page
     html
   end
+  
+  def trim_body_html(body, limit=nil)
+    body = "#{body[0..limit]}.." if limit and body.length > limit
+    
+    white_list(body)
+  end
 end

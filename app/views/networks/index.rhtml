@@ -1,3 +1,5 @@
+<h3>Frequently asked questions</h3>
+
 <h1>What is a network?</h1>
 
 <p>
@@ -8,16 +10,17 @@
 <h1>What additional security does this provide?</h1>
 
 <p>
-  Networks provide four layers of access control using a very simple security model:
+  Networks provide five layers of access control using a very simple security model:
   <ul>
-    <li><b>Private access</b> - <b>Only network members</b> are permitted to access contributions</li>
+    <li><b>Private access</b> - Only the <b>owner</b> is permitted to access contributions</li>
+    <li><b>Protected access</b> - Only <b>network members</b> are permitted to access contributions</li>
     <li><b>Whitelisting</b> - Named users and networks are <b>allowed</b> to access contributions</li>
     <li><b>Blacklisting</b> - Named users and networks are <b>denied</b> access to contributions</li>
     <li><b>Public access</b> - <b>All users</b> (including network members) are permitted to access contributions.</li>
   </ul>
 </p>
 
-<h1>Listing networks</h1>
+<h3>Listing networks</h3>
 
 <% if false %>
   <%= render :partial => "networks/table", :locals => { :collection => @networks } %>

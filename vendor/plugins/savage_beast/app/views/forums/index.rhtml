@@ -43,7 +43,8 @@
     <td class="inv lp">
       <% if forum.posts.last %>
         <%= time_ago_in_words(forum.posts.last.created_at) %><br />
-        by <strong><%= h(forum.posts.last.user.display_name) %></strong>
+        by <%= avatar_for forum.posts.last.user %><br />
+        <strong><%= h(forum.posts.last.user.display_name) %></strong>
         <span>(<%= link_to 'view', topic_path(:forum_id => forum, :id => forum.posts.last.topic_id, :page => forum.posts.last.topic.last_page, :anchor => forum.posts.last.dom_id) %>)</span>
       <% end %>
     </td>
