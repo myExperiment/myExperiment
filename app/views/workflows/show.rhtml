@@ -1,38 +1,5 @@
 <%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
 
-<h3>Actions</h3>
-
-<p>
-  <b>Bookmarked by:</b><br/>
-  <div id="bookmarks"><%=h @workflow.bookmarks.collect {|b| b.user.name}.join(", ") %></div>
-</p>
-
-<p>
-  <b>Rating:</b> 
-  <% if logged_in? %>
-    <div id="star-ratings-block">
-      <%= render :partial => "ratings/rating", :locals => { :rateable => @workflow, :controller => controller.controller_name } %>
-    </div>
-  <% else %>
-    <%= number_with_precision(@workflow.rating*20, 0) %>&#37 (<%= pluralize @workflow.ratings.count, 'rating' %>)
-  <% end %>
-</p>
-
-<p>
-  <b>Tags:</b><br/>
-  <div id="tags"><%=h @workflow.tags.join(", ") %></div>
-</p>
-
-<% if logged_in? %>
-  <% form_remote_tag (:url => tag_workflow_path(@workflow), :update => 'tags', :success => "var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
-    <p>
-      <%= text_field_tag :tag_list %>
-    </p>
-    
-    <%= submit_tag "Add tags" %>
-  <% end %>
-<% end %>
-
 <h3>Details</h3>
 
 <p>
@@ -89,6 +56,39 @@
 <h3>Versions</h3>
 
 <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
+
+<h3>Actions</h3>
+
+<p>
+  <b>Bookmarked by:</b><br/>
+  <div id="bookmarks"><%=h @workflow.bookmarks.collect {|b| b.user.name}.join(", ") %></div>
+</p>
+
+<p>
+  <b>Rating:</b> 
+  <% if logged_in? %>
+    <div id="star-ratings-block">
+      <%= render :partial => "ratings/rating", :locals => { :rateable => @workflow, :controller => controller.controller_name } %>
+    </div>
+  <% else %>
+    <%= number_with_precision(@workflow.rating*20, 0) %>&#37 (<%= pluralize @workflow.ratings.count, 'rating' %>)
+  <% end %>
+</p>
+
+<p>
+  <b>Tags:</b><br/>
+  <div id="tags"><%=h @workflow.tags.join(", ") %></div>
+</p>
+
+<% if logged_in? %>
+  <% form_remote_tag (:url => tag_workflow_path(@workflow), :update => 'tags', :success => "var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
+    <p>
+      <%= text_field_tag :tag_list %>
+    </p>
+    
+    <%= submit_tag "Add tags" %>
+  <% end %>
+<% end %>
 
 <% if logged_in? %>
   <h3>Comments</h3>
