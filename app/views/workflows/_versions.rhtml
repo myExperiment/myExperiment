@@ -12,7 +12,13 @@
 </p>
 <% end %>
 
-<p>
-  <b>Latest Version:</b><br/>
-  <%= versioned_workflow_link(workflow, workflow.versions.size) %>
-</p>
+<% unless workflow.version.to_i == 1 %>
+  <p>
+    <b>Latest Version:</b><br/>
+    <%= versioned_workflow_link(workflow, workflow.versions.size) %>
+  </p>
+<% else %>
+  <p>
+    This workflow is <b>unmodified</b>.
+  </p>
+<% end %>
