@@ -27,6 +27,60 @@
   <%= link_to '[edit public/protected]', edit_policy_path(@policy) %> <%= link_to '[new permission]', new_permission_path(@policy) %>
 </p>
 
+<h3>Test</h3>
+
+<% form_remote_tag(:url => test_policy_path(@policy), :method => :post, :update => 'testing_div') do %>
+  <script type="text/javascript">
+    <!--
+      function showID(node) {
+        var klass = node.value;
+      
+        if (klass == "User") {
+          $("user_contributor_id_div").style.display="block";
+          $("network_contributor_id_div").style.display="none";
+        } else if (klass == "Network") {
+          $("user_contributor_id_div").style.display="none";
+          $("network_contributor_id_div").style.display="block";
+        } else {
+          // do nothing
+        }
+      }
+    -->
+  </script>
+  
+  <p>
+    <b>Contributor type</b><br />
+    <input checked="checked" id="contributor_type" name="contributor_type" type="radio" value="User" onChange="showID(this); return false;" />User<br />
+    <input id="contributor_type" name="contributor_type" type="radio" value="Network" onChange="showID(this); return false;" />Network
+  </p>
+    
+  <p>
+    <b>Contributor</b><br />
+    
+    <div id="user_contributor_id_div">
+      <%= select_tag :user_contributor_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %>
+    </div>
+    
+    <div id="network_contributor_id_div" style="display: none;">
+      <%= select_tag :network_contributor_id, options_from_collection_for_select(Network.find(:all, :order => "title ASC"), :id.to_i, :title) %>
+    </div>
+  </p>
+  
+  <p>
+    <b>Contribution</b><br />
+    <%= select_tag :contribution_id, options_from_collection_for_select(@policy.contributions, :id.to_i, :contributable) %>
+  </p>
+  
+  <%= submit_tag "Test Permissions" %>
+<% end %>
+
+<p>
+  <b>Results</b><br />
+  <div id="testing_div">
+    <p>Click "Test Permissions"</p>
+  </div>
+</p>
+
 <% unless @policy.contributions.empty? %>
   <h3>Contributions moderated with this</h3>
 

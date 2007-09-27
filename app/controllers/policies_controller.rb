@@ -25,7 +25,27 @@ class PoliciesController < ApplicationController
   before_filter :login_required
   
   before_filter :find_policies_auth, :only => [:index]
-  before_filter :find_policy_auth, :only => [:show, :edit, :update, :destroy]
+  before_filter :find_policy_auth, :only => [:test, :show, :edit, :update, :destroy]
+  
+  # POST /policies/1;test
+  def test
+    contribution, contributor = Contribution.find(params[:contribution_id]), nil
+    
+    # hack for javascript contributor selection form
+    case params[:contributor_type].to_s
+    when "User"
+      contributor = User.find(params[:user_contributor_id])
+    when "Network"
+      contributor = Network.find(params[:network_contributor_id])
+    else
+      error("Contributor ID not selected", "not selected", :contributor_id)  
+    end
+    
+    respond_to do |format|
+      format.html { render :partial => "policies/test", :locals => { :policy => @policy, :contribution => contribution, :contributor => contributor } }
+      format.xml { head :ok }
+    end
+  end
   
   # GET /policies
   # GET /policies.xml

@@ -36,7 +36,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # all policies for all contributables
-  map.resources :policies do |policy|
+  map.resources :policies, :member => { :test => :post } do |policy|
     # policies have nested permissions that name contributors
     policy.resources :permissions
   end
