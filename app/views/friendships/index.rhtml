@@ -10,10 +10,7 @@
         You have <%=pluralize @user.friendships_pending.length, "friendship request" %> to review!
       </p>
     
-      <p>
-        Messages sent by myExperiment users to request friendship with you are listed here. <br />
-        Click on the link for "Show / Accept" to the right of the table row to review and accept/deny the request. 
-      </p>
+      <p>Messages sent by myExperiment users to request friendship with you are listed here.</p>
     
       <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_pending } %>
     <% end %>

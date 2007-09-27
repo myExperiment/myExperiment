@@ -10,10 +10,7 @@
         You have <%=pluralize @user.memberships_pending.length, "membership request" %> to review!
       </p>
     
-      <p>
-        Messages sent by myExperiment users to request membership in your networks are listed here. <br />
-        Click on the link for "Show / Accept" to the right of the table row to review and accept/deny the request. 
-      </p>
+      <p>Messages sent by myExperiment users to request membership in your networks are listed here.</p>
   
       <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships_pending } %>
     <% end %>
