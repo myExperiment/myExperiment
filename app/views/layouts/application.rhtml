@@ -71,13 +71,9 @@
 
 <%= yield  %>
 
-<% unless (controller.controller_name.to_s == "tags" and controller.action_name.to_s == "index") or (controller.controller_name.to_s == "users" and controller.action_name.to_s == "show") or (controller.controller_name.to_s == "networks" and controller.action_name.to_s == "show") %>
-  <hr/>
+<hr />
 
-  <p>
-    <%= tag_cloud %>
-  </p>
-<% end %>
+<%= render :partial => "layouts/tags" %>
 
 </div>
 

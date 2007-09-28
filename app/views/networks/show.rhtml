@@ -62,22 +62,6 @@
   <%= render :partial => "contributions/list", :locals => { :collection => @network.contributions, :title => true } %>
 <% end %>
 
-<h3>Tags</h3>
-
-<% unless (con_tags = @network.contribution_tags).empty? %>
-  <p>
-    <b>Tags for contributions:</b><br />
-    <%= tag_cloud_from_collection(con_tags) %>
-  </p>
-<% end %>
-
-<% unless (member_tags = collection_contribution_tags(@network, @network.members)).empty? %>
-  <p>
-    <b>Tags for contributions owned by members:</b><br />
-    <%= tag_cloud_from_collection(member_tags) %>
-  </p>
-<% end %>
-
 <br/>
 
 <%= link_to 'Back', networks_path %>
