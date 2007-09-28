@@ -69,7 +69,8 @@
   
     <p>
       <b>Contribution</b><br />
-      <%= select_tag :contribution_id, options_from_collection_for_select(@policy.contributions, :id.to_i, :contributable) %>
+      <%= select_tag :contribution_id, options_from_collection_for_select(@policy.contributions, :id.to_i, :contributable) if false %>
+      <%= select_tag :contribution_id, options_from_contributions_for_select(@policy.contributions) %>
     </p>
   
     <%= submit_tag "Test Permissions" %>

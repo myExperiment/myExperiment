@@ -315,4 +315,32 @@ module ApplicationHelper
     
     white_list(body)
   end
+  
+  def options_from_contributions_for_select(collection=[])
+    hash = {}
+    
+    collection.each do |contribution|
+      if hash.key? contribution.contributable_type
+        hash[contribution.contributable_type] << contribution
+      else 
+        hash[contribution.contributable_type] = [contribution]
+      end
+    end
+    
+    html = ""
+    
+    hash.sort.each do |key_value_array|
+      klass, arr = key_value_array[0], key_value_array[1]
+      
+      html = html + "<optgroup label=\"#{klass}\">"
+      
+      arr.each do |contribution|
+        html = html + "<option value=\"#{contribution.id}\">#{contributable(contribution.contributable_id, contribution.contributable_type, false, false)}</option>"
+      end
+      
+      html = html + "</optgroup>"
+    end
+    
+    return html
+  end
 end

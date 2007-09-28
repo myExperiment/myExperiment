@@ -32,7 +32,7 @@ module Mib
         def acts_as_contributor
           has_many :contributions,
                    :as => :contributor,
-                   :order => "created_at DESC",
+                   :order => "contributable_type ASC, created_at DESC",
                    :dependent => :destroy
 
           has_many :policies,
