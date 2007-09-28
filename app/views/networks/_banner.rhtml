@@ -1,7 +1,7 @@
 <% owner ||= true %>
 <div class="network_banner">
   <p>
-    <strong><%= link_to h(network.title), network_path(network.id) %></strong> (NID #<%= network.id %>) 
+    <strong><%= link_to h(network.title), network_path(network.id) %></strong> 
     <% if logged_in? and network.owner? current_user.id %>
       <%= link_to '[edit]', edit_network_path(network) %> 
       <%= link_to '[destroy]', network_path(network), :confirm => "Are you sure?", :method => "destroy" %>

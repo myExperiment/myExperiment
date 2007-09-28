@@ -3,8 +3,9 @@
 <table class="alt_table">
   <tr>
     <th width="100">Administrator</th>
-    <th width="100">Title</th>
-    <th>Unique</th>
+    <th width="200">Title</th>
+    <% if false %><th>Unique</th><% end %>
+    <th>Members</th>
     <th>Created at</th>
     <th> </th>
   </tr>
@@ -13,8 +14,9 @@
 <% for network in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
     <td width="100"><%= contributor(network.user_id, "User", true, true, "60x60") %></td>
-    <td width="100"><%= contributor(network.id, "Network", true, true, "60x60") %></td>
-    <td><%=h network.unique_name %></td>
+    <td width="200"><%= contributor(network.id, "Network", true, true, "60x60") %></td>
+    <% if false %><td><%=h network.unique_name %></td><% end %>
+    <td><%= network.members.length %></td>
     <td><%=datetime network.created_at, false %></td>
     <td class="actions">
       <%= link_to 'Show', network_path(network) %> 

@@ -20,6 +20,10 @@
   </ul>
 </p>
 
+<h3>Recently created</h3>
+
+<%= render :partial => "networks/table", :locals => { :collection => Network.recently_created } %>
+
 <h3>Listing networks</h3>
 
 <% if false %>

@@ -30,6 +30,10 @@ class Network < ActiveRecord::Base
   
   format_attribute :description
   
+  def self.recently_created(limit=5)
+    self.find(:all, :order => "created_at DESC", :limit => limit)
+  end
+  
   # protected? asks the question "is other protected by me?"
   def protected?(other)
     if other.kind_of? User        # if other is a User...
