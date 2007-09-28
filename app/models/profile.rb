@@ -26,8 +26,9 @@ class Profile < ActiveRecord::Base
   
   validates_presence_of :user_id
   
-  validates_uniqueness_of :email, 
-                          :allow_nil => true
+  validates_uniqueness_of :email, :allow_nil => true
+  
+  validates_format_of :website, :with => /^http:\/\//, :message => "must begin with http:\/\/", :if => Proc.new { |profile| !profile.website.nil? }
   
   validates_each :picture_id do |record, attr, value|
     # picture_id = nil  => null avatar
