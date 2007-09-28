@@ -34,7 +34,7 @@
     <td width="110">
       <% unless workflow.image.nil? %>
         <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
-          <%= image_tag url_for_file_column(workflow, "image", "thumb") %>
+          <%= link_to image_tag(url_for_file_column(workflow, "image", "thumb")), workflow_path(workflow) %>
         <% else %>
           <%= image_tag url_for_file_column(workflow, "image", "padlock") %>
         <% end %>
