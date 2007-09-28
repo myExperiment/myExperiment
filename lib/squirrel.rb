@@ -172,7 +172,13 @@ module Squirrel # :nodoc
         my_puts "Existing Profile found for User #{profile_tuple["user_id"]}" if verbose
         
         # fix badly formed url's
-        profile_tuple["website"] = "http:\/\/#{profile_tuple["website"]}" unless profile_tuple["website"] =~ /^http:\/\//
+        if profile_tuple["website"]
+          profile_tuple["website"].strip!
+          
+          unless profile_tuple["website"] =~ /^http:\/\//
+            profile_tuple["website"] = "http:\/\/#{profile_tuple["website"]}"
+          end
+        end
       
         profile.update_attributes({ :picture_id   => pictures[profile_tuple["user_id"]],
                                     :email        => profile_tuple["email"],
