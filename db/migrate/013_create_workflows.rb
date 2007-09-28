@@ -29,6 +29,7 @@ class CreateWorkflows < ActiveRecord::Migration
       
       t.column :scufl, :binary
       t.column :image, :string
+      t.column :svg, :string
       
       t.column :title, :string
       t.column :unique_name, :string

@@ -694,11 +694,15 @@ private
       i = Tempfile.new("image")
       Scufl::Dot.new.write_dot(i, scufl_model)
       i.close(false)
-      d = StringIO.new(`dot -Tpng #{i.path}`)
+      img = StringIO.new(`dot -Tpng #{i.path}`)
+      svg = StringIO.new(`dot -Tsvg #{i.path}`)
       i.unlink
-      d.extend FileUpload
-      d.original_filename = "#{unique_name}.png"
-      d.content_type = "image/png"
+      img.extend FileUpload
+      img.original_filename = "#{unique_name}.png"
+      img.content_type = "image/png"
+      svg.extend FileUpload
+      svg.original_filename = "#{unique_name}.svg"
+      svg.content_type = "image/svg+xml"
     end
     
     rtn = Workflow.new(:id                => old_id,
@@ -710,7 +714,8 @@ private
                        :body              => scufl_model.description.description)
                        
     unless RUBY_PLATFORM =~ /mswin32/
-      rtn.image = d
+      rtn.image = img
+      rtn.svg = svg
     end
     
     return rtn

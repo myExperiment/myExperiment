@@ -75,6 +75,10 @@
   <%= link_to '[view my friendships]', friendships_path(@user) if my_page? @user.id %>
 <% end %>
 
+<% if logged_in? and !current_user.networks_owned.empty? %>
+  <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
+<% end %>
+
 <% unless @user.networks_owned.empty? %>
   <h3>Networks</h3>
 

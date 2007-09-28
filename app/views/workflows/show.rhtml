@@ -64,11 +64,20 @@
 </p>
 <% end %>
 
+<% unless @workflow.svg.nil? %>
+  <p>
+    <b>SVG:</b><br />
+    <%= link_to '[download svg]', url_for_file_column(@workflow, "svg") %>
+  </p>
+<% end %>
+
 <% if logged_in? and @workflow.authorized?("destroy", current_user) %>
   <p>
     <b>Policy:</b>
     <%= policy_link(@workflow.contribution.policy_id) %>
   </p>
+  
+  <%= render :partial => "policies/policy", :object => @workflow.contribution.policy, :locals => { :read_only => true } unless @workflow.contribution.policy.nil? %>
 <% end %>
 
 <p>
@@ -142,4 +151,4 @@
 <br/>
 
 
-<%= link_to 'Back', contributions_path %>
+<%= link_to 'Back', workflows_path %>

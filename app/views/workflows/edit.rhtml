@@ -2,11 +2,19 @@
 
 <%= error_messages_for :workflow %>
 
-<% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
-  <% if @workflow.owner?(current_user) %>
+<% if @workflow.owner?(current_user) %>
+  <% form_for(:contribution, :url => contribution_path(@workflow.contribution), :html => { :method => :put }) do |f| %>
     <%= render :partial => "policies/listform", :locals => { :contribution => @workflow.contribution, :user => current_user } %>
+    
+    <p>
+      <%= submit_tag "Update" %>
+    </p>
   <% end %>
-  
+<% end %>
+
+<h3>Edit Workflow</h3>
+
+<% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
   <p>
     <b>Title</b><br />
     <%= f.text_field :title %>
@@ -47,4 +55,4 @@
 <% end %>
 
 
-<%= link_to 'Back', contributions_path %>
+<%= link_to 'Back', workflow_path(@workflow) %>

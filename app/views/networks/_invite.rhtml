@@ -1,0 +1,72 @@
+<script type="text/javascript">
+  function inviteAndDisable() {
+    $("my_networks_button").disabled = true;
+    
+    <% current.networks_owned.each do |n| %>
+      if ($("my_network_<%= n.id %>").checked) {
+        // do nothing!!
+      } else {
+        $("my_network_<%= n.id %>").disabled = true;
+        var font = $("my_network_font_<%= n.id %>")
+        
+        if (font == null) {
+          // do nothing!! (already grey)
+        } else {
+          font.color = "grey";
+        }
+      }
+    <% end %>
+  
+    <% current.networks_owned.each do |n| %>
+      <% unless n.member?(user.id) %>
+        if ($("my_network_<%= n.id %>").checked) {
+          var xmlhttp_<%= n.id %> =  new XMLHttpRequest();
+          
+          xmlhttp_<%= n.id %>.open('GET', '<%= membership_create_network_path(n) %>?user_id=<%= user.id %>', true);
+          
+          $("my_networks_button").value = "Creating (<%= h(n.title) %>)";
+          xmlhttp_<%= n.id %>.onreadystatechange = function() {
+            $("my_network_<%= n.id %>").disabled = true;
+          
+            if (xmlhttp_<%= n.id %>.readyState == 4) {
+              $("my_network_font_<%= n.id %>").color = "green";
+              
+              $("my_networks_button").value = "Created (<%= h(n.title) %>)";
+            } else {
+              $("my_network_font_<%= n.id %>").color = "red";
+            }
+          }
+          
+          xmlhttp_<%= n.id %>.send(null);
+        }
+      <% end %>
+    <% end %>
+  }
+</script>
+
+<h3>Create Memberships</h3>
+
+<p>
+  Here's a really quick way to add <%= h(user.name) %> to one of your networks. <br/>
+  The network name goes <font color="green">green</font> when the membership has been created successfully!
+</p>
+
+<form>
+  <% networks_owned = current.networks_owned -%>
+  <% networks_owned.each_index do |index| %>
+    <% n = networks_owned[index] -%>
+    <% if n.member?(user.id) %>
+      <input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>" disabled=true/> - <font color="grey"><%= title(n.id) %></font>
+    <% else %>
+      <input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>"/> - <font id="my_network_font_<%= n.id %>"><%= title(n.id) %></font>
+    <% end %>
+        
+    <%= "<br />" unless (index.to_i == (networks_owned.length.to_i - 1)) %>
+  <% end %><br/>
+    
+  <small>Hint: You can tick as many boxes as you want</small>
+    
+  <p>
+    <input id="my_networks_button" onclick="inviteAndDisable();" type="button" value="Create" />
+  </p>
+</form>
