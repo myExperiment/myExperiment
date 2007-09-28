@@ -26,8 +26,6 @@ require 'digest/sha1'
 require 'acts_as_contributor'
 
 class User < ActiveRecord::Base
-  validates_uniqueness_of :openid_url, :allow_nil => true
-  
   def self.most_recent(limit=5)
     self.find(:all,
               :order => "created_at DESC",
@@ -49,9 +47,19 @@ class User < ActiveRecord::Base
   validates_presence_of     :password_confirmation,      :if => :password_required?
   validates_length_of       :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
-  validates_length_of       :username, :within => 3..40, :if => :not_openid?
-  validates_uniqueness_of   :username, :case_sensitive => false, :if => (Proc.new { |user| !user.username.nil? } and :not_openid?)
+  #validates_length_of       :username, :within => 3..40, :if => :not_openid?
+  validates_length_of       :username, :within => 3..40, :if => Proc.new { |user| !user.username.nil? }
+  #validates_uniqueness_of   :username, :case_sensitive => false, :if => (Proc.new { |user| !user.username.nil? } and :not_openid?)
+  validates_uniqueness_of   :username, :case_sensitive => false, :if => Proc.new { |user| !user.username.nil? }
   before_save :encrypt_password
+  
+  validates_format_of       :username,
+                            :with => /^[a-z0-9_]*$/,
+                            :message => "can only contain lower case characters, numbers and _",
+                            :if => Proc.new { |user| !user.username.nil? }
+                            
+  validates_presence_of     :openid_url,                 :if => Proc.new { |user| !user.openid_url.nil? }
+  validates_uniqueness_of :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
   
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(username, password)
@@ -343,7 +351,7 @@ protected
   end
     
   def password_required?
-    not_openid? && (crypted_password.blank? || !password.blank?)
+    !username.nil? && (crypted_password.blank? || !password.blank?)
   end
 
   def not_openid?

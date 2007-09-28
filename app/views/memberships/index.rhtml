@@ -15,20 +15,31 @@
       <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships_pending } %>
     <% end %>
     
+    <% unless @user.memberships_requested.empty? %>
+      <h3>Waiting for response (from network administrator)</h3>
+      
+      <p>
+        Requests you've sent which have not been accepted yet are listed here. <br />
+        If the <b>network</b> is taking a while, why not send the administrator a <%= link_to "message", messages_path %>?
+      </p>
+      
+      <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships_requested, :user => false } %>
+    <% end %>
+    
     <h3>Memberships</h3>
   
     <p>
       Your memberships are listed here. You can <%= link_to "contribute", contributions_path %> myExperiment objects for <b>any</b> network listed in this table.
     </p>
   
-    <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships } %>
+    <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships, :user => false } %>
   
   <% else %>
   
     <h3>Memberships for <%=name @user.id %></h3>
     
     <% unless @user.memberships.empty? %>
-      <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships } %>
+      <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships, :user => false } %>
     <% end %>
   
   <% end %>

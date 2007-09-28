@@ -22,6 +22,9 @@
 ##
 
 class Policy < ActiveRecord::Base
+  validates_uniqueness_of :name, 
+                          :scope => [:contributor_id, :contributor_type]
+  
   belongs_to :contributor, :polymorphic => true
   
   has_many :contributions,

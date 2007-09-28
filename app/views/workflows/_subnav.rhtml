@@ -1,6 +1,8 @@
+<li><%= link_to 'New Workflow', new_workflow_path %></li>
+
 <% case controller.action_name.to_s; when "index" %>
 
-  <li><%= link_to 'New Workflow', new_workflow_path %></li>
+  <!-- no subnav options -->
 
 <% when "show" %>
 

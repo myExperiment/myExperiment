@@ -40,6 +40,11 @@ module Squirrel # :nodoc
       pictures[user_tuple["id"]] = user_tuple["avatar"]
     end
     
+    pages = {}
+    @tuples["pages"].each do |page_tuple|
+      pages[page_tuple["pageable_id"]] = page_tuple["content"]
+    end
+    
     forums = {}
     @tuples["projects"].each do |project_tuple|
       forums[project_tuple["forum_id"]] = project_tuple["id"]
@@ -229,7 +234,8 @@ module Squirrel # :nodoc
                             :title       => project_tuple["title"],
                             :unique_name => project_tuple["unique"],
                             :created_at  => project_tuple["created_at"],
-                            :updated_at  => project_tuple["updated_at"])
+                            :updated_at  => project_tuple["updated_at"],
+                            :description => pages[project_tuple["id"]])
                             
       if network.save
         my_puts "Saved Network #{network.id} (#{network.title})" if verbose

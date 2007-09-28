@@ -1,6 +1,8 @@
+<li><%= link_to 'New Blob', new_blob_path %></li>
+
 <% case controller.action_name.to_s; when "index" %>
 
-  <li><%= link_to 'New Blob', new_blob_path %></li>
+  <!-- no subnav options -->
 
 <% when "show" %>
 

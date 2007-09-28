@@ -12,7 +12,7 @@
     
       <p>Messages sent by myExperiment users to request friendship with you are listed here.</p>
     
-      <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_pending } %>
+      <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_pending, :friend => false } %>
     <% end %>
     
     <% unless @user.friendships_requested.empty? %>
@@ -23,7 +23,7 @@
         If the <b>friend</b> is taking a while, why not send them a <%= link_to "message", messages_path %>?
       </p>
     
-      <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_requested } %>
+      <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_requested, :user => false } %>
     <% end %>
     
     <% unless @user.friends.empty? %>

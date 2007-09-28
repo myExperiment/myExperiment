@@ -1,9 +1,12 @@
+<% user = true if user.nil? -%>
+<% friend = true if friend.nil? -%>
+
 <% unless collection.empty? %>
 
 <table class="alt_table">
   <tr>
-    <th width="100">User</th>
-    <th width="100">Friend</th>
+    <% if user %><th width="100">User</th><% end %>
+    <% if friend %><th width="100">Friend</th><% end %>
     <th>Created at</th>
     <th>Accepted at</th>
     <th> </th>
@@ -12,15 +15,15 @@
 <% odd_row = false -%>
 <% for friendship in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100"><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.user, "User", true, true, "60x60") %><%= "</b>" unless friendship.accepted? %></td>
-    <td width="100"><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.friend, "User", true, true, "60x60") %><%= "</b>" unless friendship.accepted? %></td>
+    <% if user %><td width="100"><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.user, "User", true, true, "60x60") %><%= "</b>" unless friendship.accepted? %></td><% end %>
+    <% if friend %><td width="100"><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.friend, "User", true, true, "60x60") %><%= "</b>" unless friendship.accepted? %></td><% end %>
     <td><%= "<b>" unless friendship.accepted? %><%=datetime friendship.created_at, false %><%= "</b>" unless friendship.accepted? %></td>
     <td><%= "<b>" unless friendship.accepted? %><%=datetime(friendship.accepted_at, false) || "Pending" %><%= "</b>" unless friendship.accepted? %></td>
     <td class="actions">
       <% if my_page? friendship.friend_id %>
         <%= link_to "Review", friendship_path(friendship.friend_id, friendship) %> or 
         <% unless friendship.accepted? %><%= link_to "Accept", accept_friendship_path(friendship.friend_id, friendship) %> <% end %>
-        <%= link_to "Reject", friendship_path(friendship.friend_id, friendship), :confirm => "Are you sure?", :method => :delete %>
+        <%= link_to (friendship.accepted? ? "Destroy" : "Reject"), friendship_path(friendship.friend_id, friendship), :confirm => "Are you sure?", :method => :delete %>
       <% end %>
     </td>
   </tr>

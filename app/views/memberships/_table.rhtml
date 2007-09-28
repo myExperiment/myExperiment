@@ -1,9 +1,12 @@
+<% user = true if user.nil? -%>
+<% network = true if network.nil? -%>
+
 <% unless collection.empty? %>
 
 <table class="alt_table">
   <tr>
-    <th width="100">User</th>
-    <th width="100">Network</th>
+    <% if user %><th width="100">User</th><% end %>
+    <% if network %><th width="100">Network</th><% end %>
     <th>Created at</th>
     <th>Accepted at</th>
     <th> </th>
@@ -12,15 +15,15 @@
 <% odd_row = false -%>
 <% for membership in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.user_id, "User", true, true, "60x60") %><%= "</b>" unless membership.accepted? %></td>
-    <td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.network_id, "Network", true, true, "60x60") %><%= "</b>" unless membership.accepted? %></td>
+    <% if user %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.user_id, "User", true, true, "60x60") %><%= "</b>" unless membership.accepted? %></td><% end %>
+    <% if network %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.network_id, "Network", true, true, "60x60") %><%= "</b>" unless membership.accepted? %></td><% end %>
     <td><%= "<b>" unless membership.accepted? %><%=datetime membership.created_at, false %><%= "</b>" unless membership.accepted? %></td>
     <td><%= "<b>" unless membership.accepted? %><%=datetime(membership.accepted_at, false) || "Pending" %><%= "</b>" unless membership.accepted? %></td>
     <td class="actions">
       <% if my_page? membership.network.owner.id %>
         <%= link_to "Review", membership_path(membership.user_id, membership) %> or 
         <% unless membership.accepted? %><%= link_to "Accept", accept_membership_path(membership.user_id, membership) %> <% end %>
-        <%= link_to "Reject", membership_path(membership.user_id, membership), :confirm => "Are you sure?", :method => :delete %>
+        <%= link_to (membership.accepted? ? "Destroy" : "Reject"), membership_path(membership.user_id, membership), :confirm => "Are you sure?", :method => :delete %>
       <% end %>
     </td>
   </tr>

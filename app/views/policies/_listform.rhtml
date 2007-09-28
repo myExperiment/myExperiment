@@ -1,12 +1,24 @@
 <% fields_for :contribution, contribution do |c_f| %>
-  <h3>Policy</h3>
+  <h3>Access control</h3>
   
-  <p>Select an <b>access control</b> policy from the list below or click <%= link_to 'here', new_policy_path + "?from=" + controller.controller_name %> to create a new policy.</p>
+  <p>
+    Please select the level of security that you require from the list below:
+  </p>
     
   <p>
-    <%= c_f.radio_button(:policy_id, "") %> - Public (all)<br/>
+    <p>
+      <%= c_f.radio_button(:policy_id, "") %> - Public (all) - anyone can see and edit this (even if they're not logged in)
+    </p>
+    
     <% for p in user.policies %>
-      <%= c_f.radio_button(:policy_id, p.id) %> - <%=h p.name %><br/>
+      <p>
+        <%= c_f.radio_button(:policy_id, p.id) %> - <%= link_to h(p.name), policy_path(p) %><br />
+        <%= render :partial => "policies/policy", :locals => { :policy => p, :read_only => true } %>
+      </p>
     <% end %>
+    
+    <p>
+      <input type="radio" name="policy_id" disabled="true"> - Create new <b><u>(feature to be completed)</u></b>
+    </p>
   </p>
 <% end %>

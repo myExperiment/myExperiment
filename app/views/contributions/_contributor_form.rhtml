@@ -1,5 +1,10 @@
 <% fields_for :contributor_pair do |f| %>
-  <h3>Contributor</h3>
+  <h3>Ownership</h3>
+  
+  <p>
+    As the currently logged in user, you are automatically registered as the 'most recent editor' and 'owner' of this contribution.<br />
+    If you would like to change this setting, please select a new owner from the list below.
+  </p>
 
   <p>
     <p>
@@ -7,7 +12,7 @@
     </p>
     <% unless user.networks_owned.empty? %>
       <p>
-        <b>Owner of..</b><br/>
+        <b>Creator of..</b><br/>
         <% for n in user.networks_owned %>
           <%= f.radio_button(:class_id, "Network-#{n.id}") %> - <%= link_to h(n.title), network_path(n) %><br/>
         <% end %>

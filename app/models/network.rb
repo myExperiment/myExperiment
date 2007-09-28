@@ -26,7 +26,9 @@ require 'acts_as_contributor'
 class Network < ActiveRecord::Base
   acts_as_contributor
   
-  acts_as_ferret :fields => [:title, :unique_name]
+  acts_as_ferret :fields => [:title, :unique_name, :owner_name]
+  
+  format_attribute :description
   
   # protected? asks the question "is other protected by me?"
   def protected?(other)
@@ -52,6 +54,10 @@ class Network < ActiveRecord::Base
              
   def owner?(userid)
     user_id.to_i == userid.to_i
+  end
+  
+  def owner_name
+    owner.name
   end
   
 #  has_many :relationships_completed, #accepted (by others)
@@ -150,8 +156,8 @@ class Network < ActiveRecord::Base
                           :order => "accepted_at DESC"
                           
   alias_method :original_members, :members
-  def members
-    rtn = [User.find(owner.id)]
+  def members(incl_owner=true)
+    rtn = incl_owner ? [User.find(owner.id)] : []
     
     original_members(force_reload = true).each do |m|
       rtn << User.find(m.user_id)

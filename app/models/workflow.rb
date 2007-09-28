@@ -31,7 +31,8 @@ class Workflow < ActiveRecord::Base
   acts_as_ferret :fields => { :title => { :store => :yes }, 
                               :body => { :store => :yes }, 
                               :tag_list => { :store => :yes },
-                              :rating => { :index => :untokenized } }
+                              :rating => { :index => :untokenized },
+                              :contributor_name => { :store => :yes } }
   
   validates_presence_of :title, :scufl
   
@@ -50,6 +51,17 @@ class Workflow < ActiveRecord::Base
                                                                                                       Magick::OverCompositeOp) } }
     }
   }
+  
+  def contributor_name
+    case contribution.contributor.class.to_s
+    when "User"
+      return contribution.contributor.name
+    when "Network"
+      return contribution.contributor.title
+    else
+      return nil
+    end
+  end
   
   non_versioned_fields.push("image", "license") # acts_as_versioned and file_column don't get on
 end

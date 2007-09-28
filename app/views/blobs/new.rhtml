@@ -7,8 +7,14 @@
   
   <%= render :partial => "policies/listform", :locals => { :contribution => @blob.contribution, :user => current_user } %>
 
+  <h3>Upload file</h3>
+  
   <p>
-    <b>Data</b><br />
+    Please locate the file (on your local machine) that you would like to contribute.
+  </p>
+
+  <p>
+    <b>File</b><br />
     <%= file_field :blob, :data %>
   </p>
   

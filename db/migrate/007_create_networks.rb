@@ -29,6 +29,8 @@ class CreateNetworks < ActiveRecord::Migration
       t.column :unique_name, :string
       t.column :created_at, :datetime
       t.column :updated_at, :datetime
+      t.column :description, :text
+      t.column :description_html, :text
     end
   end
 
