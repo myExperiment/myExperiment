@@ -65,7 +65,7 @@ module Mib
       module InstanceMethods
         def contributables
           rtn = []
-
+          
           Contribution.find_all_by_contributor_id_and_contributor_type(self.id, self.class.to_s, { :order => "contributable_type ASC, contributable_id ASC" }).each do |c|
             # rtn << c.contributable_type.classify.constantize.find(c.contributable_id)
             rtn << c.contributable
@@ -89,6 +89,65 @@ module Mib
             return false
           end
         end
+  
+        def contribution_tags
+          tags = contribution_tags!
+          
+          rtn = []
+          
+          tags.each { |key, value|
+            rtn << value
+          }
+          
+          return rtn
+        end
+        
+        def collection_contribution_tags(collection)
+          tags = collection_contribution_tags!(collection)
+          
+          rtn = []
+          
+          tags.each { |key, value|
+            rtn << value
+          }
+          
+          return rtn
+        end
+        
+protected
+        
+        def collection_contribution_tags!(collection)
+          tags = { }
+          
+          collection.each do |contributor|
+            contributor.contribution_tags!.each { |key, value|
+              if tags.key? key
+                tags[key].taggings_count = tags[key].taggings_count.to_i + value.taggings_count.to_i
+              else
+                tags[key] = Tag.new(:name => key, :taggings_count => value.taggings_count)
+              end
+            }
+          end
+          
+          return tags
+        end
+  
+        def contribution_tags!
+          tags = {}
+          
+          self.contributions.each do |c|
+            c.contributable.tags.each do |t|
+              if tags.key? t.name
+                tags[t.name].taggings_count = tags[t.name].taggings_count.to_i + 1
+              else
+                tags[t.name] = Tag.new(:name => t.name, :taggings_count => 1)
+              end
+            end
+          end
+          
+          return tags
+        end
+      
       end
     end
   end

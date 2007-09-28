@@ -13,6 +13,10 @@ module ActsAsTaggableHelper
     # TODO: add options to specify different limits and sorts
     tags = Tag.find(:all, l_option.merge({ :order => 'taggings_count DESC'})).sort_by(&:name)
     
+    return tag_cloud_from_collection(tags, true)
+  end
+    
+  def tag_cloud_from_collection(tags, original=false)
     # TODO: add option to specify which classes you want and overide this if you want?
     classes = %w(popular v-popular vv-popular vvv-popular vvvv-popular)
     
@@ -28,7 +32,13 @@ module ActsAsTaggableHelper
     html <<   %(  <ul class="popularity">\n)
     tags.each do |tag|
       html << %(    <li>)
-      html << link_to(tag.name, tag_url(tag), :class => classes[(tag.taggings_count - min) / divisor]) 
+      
+      if original
+        html << link_to(tag.name, tag_url(tag), :class => classes[(tag.taggings_count - min) / divisor]) 
+      else
+        html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{tag.name}</a>"
+      end
+      
       html << %(</li> \n)
     end
     html <<   %(  </ul>\n)

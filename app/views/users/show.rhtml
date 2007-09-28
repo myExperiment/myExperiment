@@ -107,6 +107,29 @@
   <%= render :partial => "contributions/list", :locals => { :collection => @user.contributions, :title => true } %>
 <% end %>
 
+<h3>Tags</h3>
+
+<% unless (con_tags = @user.contribution_tags).empty? %>
+  <p>
+    <b>Tags for contributions:</b><br />
+    <%= tag_cloud_from_collection(con_tags) %>
+  </p>
+<% end %>
+
+<% unless (friend_tags = collection_contribution_tags(@user, @user.friends)).empty? %>
+  <p>
+    <b>Tags for contributions owned by friends:</b><br />
+    <%= tag_cloud_from_collection(friend_tags) %>
+  </p>
+<% end %>
+
+<% unless (network_tags = collection_contribution_tags(@user, @user.networks_owned)).empty? %>
+  <p>
+    <b>Tags for contributions owned by networks:</b><br />
+    <%= tag_cloud_from_collection(network_tags) %>
+  </p>
+<% end %>
+
 <br/>
 
 

@@ -343,4 +343,8 @@ module ApplicationHelper
     
     return html
   end
+  
+  def collection_contribution_tags(contributor, collection)
+    contributor.collection_contribution_tags(collection)
+  end
 end

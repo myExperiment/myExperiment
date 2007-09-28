@@ -341,6 +341,19 @@ class User < ActiveRecord::Base
     friends_r_wrapper
   end
   
+  def my_tags(mine, friends, owned_networks, membership_networks)
+    rtn = []
+    
+    mine_tags = mine ? contribution_tags! : { }
+    friends_tags = mine ? collection_contribution_tags!(friends) : { }
+    owned_networks_tags = mine ? collection_contribution_tags!(owned_networks) : { }
+    
+    # merge hash's
+    # extract Tags
+    
+    return rtn
+  end
+  
 protected
 
   # BEGIN Authentication "before filter"s #
