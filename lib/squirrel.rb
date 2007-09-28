@@ -27,7 +27,7 @@ module Squirrel # :nodoc
   
   def self.go(force_exit=false, verbose=false)
     my_puts "BEGIN Phase 0 - House Keeping"
-    @tuples = self.sql_to_hash(@export_sql_file, "pictures", "posts", "topics")
+    @tuples = self.sql_to_hash(@export_sql_file, verbose, "pictures", "posts", "topics")
     my_puts "Tuples data structure created successfully" if verbose
 
     names = {}
@@ -638,7 +638,7 @@ module Squirrel # :nodoc
   #     # do something with object
   #   end
   # end
-  def self.sql_to_hash(sql_dump, *exclude)
+  def self.sql_to_hash(sql_dump, verbose=false, *exclude)
     rtn = {}
     
     my_puts "BEGIN read #{sql_dump}" if verbose
