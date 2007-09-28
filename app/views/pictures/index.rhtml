@@ -54,3 +54,7 @@
 </table>
 
 <br />
+
+<% if params[:user_id] and my_page? params[:user_id] %>
+  <%= link_to 'Back', user_path(params[:user_id])
+<% end %>
