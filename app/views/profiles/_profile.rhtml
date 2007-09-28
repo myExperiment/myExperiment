@@ -1,17 +1,23 @@
-<p>
-  <b>Email:</b>
-  <%=h profile.email %>
-</p>
+<% unless profile.email.nil? %>
+  <p>
+    <b>Email:</b>
+    <%=link_to profile.email.gsub(/@/, " [at] "), "mailto:#{profile.email}" %>
+  </p>
+<% end %>
 
-<p>
-  <b>Website:</b>
-  <%=h profile.website %>
-</p>
+<% unless profile.website.nil? %>
+  <p>
+    <b>Website:</b>
+    <%=link_to h(profile.website), profile.website %>
+  </p>
+<% end %>
 
-<p>
-  <b>Description:</b><br />
-  <%= profile.body_html %>
-</p>
+<% unless profile.body.nil? %>
+  <p>
+    <b>Description:</b><br />
+    <%= profile.body_html %>
+  </p>
+<% end %>
 
 <% if false %>
 <p>

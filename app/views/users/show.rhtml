@@ -1,43 +1,63 @@
-<h3>Details</h3>
+<table width="100%">
+  <tr>
+    <% if @user.profile %>
+      <td width="210" vAlign="top">
+        <%= avatar(@user, size="200x200", link_to=false) %>
+      </td>
+    <% end %>
+    <td vAlign="top" class="details">
+      <h3>Details</h3>
 
-<p>
-  <b>Openid url:</b>
-  <% if @user.openid_url %>
-    <%=h @user.openid_url %>
-  <% elsif my_page? @user.id %>
-    Click <%= link_to 'here', new_openid_path %> to validate your OpenID URL
-  <% else %>
-    Not created yet (what is <%= link_to 'OpenID', "http://en.wikipedia.org/wiki/OpenID" %>?)
+      <p>
+        <b>Name:</b>
+        <%=h @user.name %>
+      </p>
+
+      <p>
+        <b>Openid url:</b>
+        <% if @user.openid_url %>
+          <%=h @user.openid_url %>
+        <% elsif my_page? @user.id %>
+          Click <%= link_to 'here', new_openid_path %> to validate your OpenID URL
+        <% else %>
+          Not created yet (what is <%= link_to 'OpenID', "http://en.wikipedia.org/wiki/OpenID" %>?)
+        <% end %>
+      </p>
+
+      <p>
+        <b>Username:</b>
+        <% if @user.username %>
+          <%=h @user.username %>
+        <% elsif my_page? @user.id %>
+          Click <%= link_to 'here', edit_user_path(@user) %> to register your username and password
+        <% else %>
+          Not created yet
+        <% end %>
+      </p>
+
+      <p>
+        <b>Joined:</b>
+        <%=datetime @user.created_at %>
+      </p>
+
+      <p>
+        <b>Last seen:</b>
+        <%=datetime @user.last_seen_at %>
+      </p>
+    </td>
+  </tr>
+  <% if my_page? @user.id %>
+    <tr>
+      <td colspan="<%= @user.profile ? 2 : 1 %>">
+        <p>
+          <%= link_to '[edit account details]', edit_user_path(@user) %> |
+          <%= link_to '[upload new picture]', new_picture_path(@user) %> |
+          <%= link_to '[select avatar]', pictures_path(@user) %>
+        </p>
+      </td>
+    </tr>
   <% end %>
-</p>
-
-<p>
-  <b>Username:</b>
-  <% if @user.username %>
-    <%=h @user.username %>
-  <% elsif my_page? @user.id %>
-    Click <%= link_to 'here', edit_user_path(@user) %> to create your RESTful username and password
-  <% else %>
-    Not created yet (what is <%= link_to 'REST', "http://en.wikipedia.org/wiki/Representational_State_Transfer" %>?)
-  <% end %>
-</p>
-
-<p>
-  <b>Name:</b>
-  <%=h @user.name %>
-</p>
-
-<p>
-  <b>Joined:</b>
-  <%=datetime @user.created_at %>
-</p>
-
-<p>
-  <b>Last seen:</b>
-  <%=datetime @user.last_seen_at %>
-</p>
-
-<%= link_to '[edit account settings]', edit_user_path(@user) if my_page? @user.id %>
+</table>
 
 <% unless @user.profile.nil? %>
   <h3>Profile</h3>
@@ -47,28 +67,20 @@
   <%= link_to '[edit profile]', edit_profile_path(@user.profile) if my_page? @user.id %>
 <% end %>
 
-<h3>Avatar</h3>
-
-<% if @user.profile.avatar? %>
-  <%= avatar(@user, size="200x200", link_to=false) %>
-<% end %>
-
-<% if my_page?(@user.id) %>
-  <p>
-    <%= link_to '[upload new]', new_picture_path(@user) %> | <%= link_to '[manage collection / select avatar]', pictures_path(@user) %>
-  </p>
-<% end %>
-
 <% unless @user.friends.empty? %>
   <h3>Friends</h3>
 
   <%= render :partial => "users/friends", :locals => { :collection => @user.friends, :user => @user } %>
+  
+  <%= link_to '[view my friendships]', friendships_path(@user) if my_page? @user.id %>
 <% end %>
 
 <% unless @user.networks_owned.empty? %>
   <h3>Networks</h3>
 
   <%= render :partial => "networks/list", :locals => { :collection => @user.networks_owned } %>
+  
+  <%= link_to '[view my networks]', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if my_page? @user.id %>
 <% end %>
 
 <% unless @user.memberships_accepted.empty? %>
@@ -77,6 +89,12 @@
   <ul><% @user.memberships_accepted.each do |m| %>
   <li><%= link_to h(m.network.title), network_path(m.network) %> (accepted at: <%= m.accepted_at %>)</li>
   <% end %></ul>
+  
+  <% if my_page? @user.id %>
+    <p>
+      <%= link_to '[view my memberships]', memberships_path(@user) %>
+    </p>
+  <% end %>
 <% end %>
 
 <% unless @user.contributions.empty? %>

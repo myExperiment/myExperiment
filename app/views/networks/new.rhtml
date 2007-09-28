@@ -4,7 +4,7 @@
 
 <% form_for(:network, :url => networks_path) do |f| %>
   <p>
-    <b>User</b><br />
+    <b>Administrator</b><br />
     <%=h current_user.name %> (<%=h current_user.openid_url %>)
     <%= f.hidden_field :user_id, :value => current_user.id %>
   </p>
@@ -28,6 +28,11 @@
       <%= f.text_field :unique_name %>
     </p>
   </fieldset>
+  
+  <p>
+    <b>Description</b><br />
+    <%= f.text_area :description, :cols => 50, :rows => 10 %>
+  </p>
 
   <p>
     <%= submit_tag "Create" %>

@@ -326,3 +326,8 @@ table.contributable:hover {
 {
   border: 1px solid black;
 }
+
+table tr td.details 
+{
+  text-align: left;
+}
