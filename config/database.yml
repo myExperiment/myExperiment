@@ -30,7 +30,7 @@ test:
 
 production:
   adapter: mysql
-  database: m2_development
+  database: m2_production
   username: root
   password: 
   host: localhost

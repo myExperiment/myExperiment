@@ -1,8 +1,10 @@
 #!/bin/bash
 
-RAILS_ROOT=~/mark-branch
+export RAILS_ENV=production
+
+RAILS_ROOT=/var/www/m2b
 DB_USER=root
-DB=m2_development
+DB=m2_${RAILS_ENV}
 DUMP_SRC=~/myexperiment/backup/myexperiment_production.sql
 WORKFLOW_SRC=~/myexperiment/backup/workflow
 SCUFL_SRC=${WORKFLOW_SRC}/scufl
