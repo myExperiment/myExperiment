@@ -641,14 +641,18 @@ module Squirrel # :nodoc
   def self.sql_to_hash(sql_dump, *exclude)
     rtn = {}
     
+    my_puts "BEGIN read #{sql_dump}" if verbose
     read(sql_dump, rtn)
+    my_puts "END read #{sql_dump}" if verbose
     
     exclude << "schema_info" if rtn["schema_info"] and !exclude.include?("schema_info")
     exclude.each do |table_name|
       rtn.delete(table_name) if rtn.key?(table_name)
     end
   
+    my_puts "BEGIN parse #{sql_dump}" if verbose
     parse(rtn)
+    my_puts "END parse #{sql_dump}" if verbose
   
     return rtn
   end
