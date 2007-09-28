@@ -71,17 +71,13 @@
 
 <%= yield  %>
 
-<hr/>
+<% unless (controller.controller_name.to_s == "tags" and controller.action_name.to_s == "index") or (controller.controller_name.to_s == "users" and controller.action_name.to_s == "show") or (controller.controller_name.to_s == "networks" and controller.action_name.to_s == "show") %>
+  <hr/>
 
-<% unless (controller.controller_name.to_s == "tags" and controller.action_name.to_s == "index") %>
   <p>
     <%= tag_cloud %>
   </p>
 <% end %>
-
-<p>
-  <b>What is a <%= link_to 'tag cloud', "http://en.wikipedia.org/wiki/Tag_cloud" %>?</b>
-</p>
 
 </div>
 
