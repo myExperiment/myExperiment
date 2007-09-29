@@ -22,11 +22,23 @@
 ##
 
 class NetworksController < ApplicationController
-  before_filter :login_required, :except => [:index, :show]
+  before_filter :login_required, :except => [:index, :show, :search]
   
   before_filter :find_networks, :only => [:index]
   before_filter :find_network, :only => [:membership_request, :show]
   before_filter :find_network_auth, :only => [:membership_create, :edit, :update, :destroy]
+  
+  # GET /networks;search
+  # GET /networks.xml;search
+  def search
+    @query = params[:query] || ""
+    
+    unless @query.empty?
+      @networks = Network.find_by_contents(@query)
+    else
+      @networks = find_networks
+    end
+  end
   
   # GET /networks/1;membership_create
   def membership_create

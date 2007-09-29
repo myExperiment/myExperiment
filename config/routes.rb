@@ -1,6 +1,9 @@
 ActionController::Routing::Routes.draw do |map|
   # forums
   map.from_plugin :savage_beast
+  
+  # search
+  map.resource :search
 
   # tags and bookmarks
   map.resources :tags, :bookmarks
@@ -48,7 +51,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :relationships, :memberships, :friendships
 
   # all users
-  map.resources :users do |user|
+  map.resources :users, :collection => { :search => :get } do |user|
     # friendships 'owned by' user (user --> friendship --> friend)
     user.resources :friendships, :member => { :accept => :get }
 
@@ -63,7 +66,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # all networks
-  map.resources :networks, :member => { :membership_create => :get, :membership_request => :get } do |network|
+  map.resources :networks, :collection => { :search => :get }, :member => { :membership_create => :get, :membership_request => :get } do |network|
     # relationships 'accepted by' network (relation --> relationship --> network)
     network.resources :relationships, :member => { :accept => :get }
   end

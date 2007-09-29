@@ -1,0 +1,9 @@
+<h1><%= pluralize(@networks.length, "Network") %> found</h1>
+
+<p>
+  <b><%= @query ? "Using the query: \"#{@query}\"" : "" %></b>
+</p>
+
+<%= render :partial => "networks/table", :locals => { :collection => @networks } %>
+
+<br />

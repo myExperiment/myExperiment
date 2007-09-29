@@ -22,11 +22,23 @@
 ##
 
 class UsersController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :new, :create]
+  before_filter :login_required, :except => [:index, :show, :new, :create, :search]
   
   before_filter :find_users, :only => [:index]
   before_filter :find_user, :only => [:show]
   before_filter :find_user_auth, :only => [:edit, :update, :destroy]
+  
+  # GET /users;search
+  # GET /users.xml;search
+  def search
+    @query = params[:query] || ""
+    
+    unless @query.empty?
+      @users = User.find_by_contents(@query)
+    else
+      @users = find_users
+    end
+  end
   
   # GET /users
   # GET /users.xml

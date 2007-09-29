@@ -119,7 +119,9 @@ class User < ActiveRecord::Base
   
   acts_as_contributor
   
-  acts_as_ferret :fields => [:openid_url, :name, :username]
+  acts_as_ferret :fields => { :openid_url => { :store => :yes }, 
+                              :name => { :store => :yes }, 
+                              :username => { :store => :yes } }
   
   # protected? asks the question "is other protected by me?"
   def protected?(other)
