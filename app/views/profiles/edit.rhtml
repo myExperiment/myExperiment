@@ -4,11 +4,6 @@
 
 <% form_for(:profile, :url => profile_path(@profile), :html => { :method => :put }) do |f| %>
   <p>
-    <b>Picture</b><br />
-    <%= f.text_field :picture_id %>
-  </p>
-
-  <p>
     <b>Email</b><br />
     <%= f.text_field :email %>
   </p>
