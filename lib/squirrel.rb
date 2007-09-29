@@ -173,10 +173,14 @@ module Squirrel # :nodoc
         
         # fix badly formed url's
         if profile_tuple["website"]
-          profile_tuple["website"].strip!
+          profile_tuple["website"].strip! 
           
-          unless profile_tuple["website"] =~ /^http:\/\//
-            profile_tuple["website"] = "http:\/\/#{profile_tuple["website"]}"
+          if profile_tuple["website"].empty?
+            profile_tuple["website"] = nil
+          elsif  profile_tuple["website"][0...7].to_s == "http://"
+            # do nothing!
+          else
+            profile_tuple["website"] = "http://#{profile_tuple["website"]}"
           end
         end
       

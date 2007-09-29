@@ -12,7 +12,7 @@
   </p>
 <% end %>
 
-<% unless profile.body.nil? %>
+<% unless profile.body.nil? or profile.body.empty? %>
   <p>
     <b>Description:</b><br />
     <%= profile.body_html %>

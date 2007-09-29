@@ -1,2 +1,5 @@
-<% size ||= '100x100' -%>
-<%= link_to avatar(user.id, size, false) + "<br/>" + name(user.id), user_path(user) %>
+<% size ||= 100 -%>
+<div style="position: inline; width: <%= size.to_i+10 %>px; height: <%= size.to_i+25 %>px;">
+<%= link_to avatar(user.id, "#{size}x#{size}", false), user_path(user) %><br />
+<%= link_to name(user.id), user_path(user) %>
+</div>
