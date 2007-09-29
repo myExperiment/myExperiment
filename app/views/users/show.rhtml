@@ -16,7 +16,7 @@
       <p>
         <b>Openid url:</b>
         <% if @user.openid_url %>
-          <%=h @user.openid_url %>
+          <%=link_to @user.openid_url, @user.openid_url %>
         <% elsif my_page? @user.id %>
           Click <%= link_to 'here', new_openid_path %> to validate your OpenID URL
         <% else %>
@@ -75,7 +75,7 @@
   <%= link_to '[view my friendships]', friendships_path(@user) if my_page? @user.id %>
 <% end %>
 
-<% if logged_in? and !current_user.networks_owned.empty? %>
+<% if logged_in? and !my_page? @user.id and !current_user.networks_owned.empty? %>
   <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
 <% end %>
 

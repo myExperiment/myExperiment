@@ -1,0 +1,47 @@
+<% if (controller.controller_name.to_s == "tags" and controller.action_name.to_s == "index") %>
+
+<% if false %>
+
+<% elsif (controller.controller_name.to_s == "users" and controller.action_name.to_s == "show") %>
+  <% unless (con_tags = @user.contribution_tags).empty? %>
+    <p>
+      <b><%=h @user.name %>: Tags</b><br />
+      <%= tag_cloud_from_collection(con_tags) %>
+    </p>
+  <% end %>
+
+  <% unless (friend_tags = collection_contribution_tags(@user, @user.friends)).empty? %>
+    <p>
+      <b><%=h @user.name %>'s Friends: Tags</b><br />
+      <%= tag_cloud_from_collection(friend_tags) %>
+    </p>
+  <% end %>
+
+  <% unless (network_tags = collection_contribution_tags(@user, @user.networks_owned)).empty? %>
+    <p>
+      <b><%=h @user.name %>'s Networks: Tags</b><br />
+      <%= tag_cloud_from_collection(network_tags) %>
+    </p>
+  <% end %>
+<% elsif (controller.controller_name.to_s == "networks" and controller.action_name.to_s == "show") %>
+  <% unless (con_tags = @network.contribution_tags).empty? %>
+    <p>
+      <b><%=h @network.title %>: Tags</b><br />
+      <%= tag_cloud_from_collection(con_tags) %>
+    </p>
+  <% end %>
+
+  <% unless (member_tags = collection_contribution_tags(@network, @network.members)).empty? %>
+    <p>
+      <b><%=h @network.title %> Members: Tags</b><br />
+      <%= tag_cloud_from_collection(member_tags) %>
+    </p>
+  <% end %>
+
+<% end %>
+
+<% else %>
+  <p>
+    <%= tag_cloud %>
+  </p>
+<% end %>

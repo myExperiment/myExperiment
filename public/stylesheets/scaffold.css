@@ -331,3 +331,8 @@ table tr td.details
 {
   text-align: left;
 }
+
+/* fix to make rss feed icons look nice in the h3 headers */
+h3 a img {
+  margin-top: 8px;
+}

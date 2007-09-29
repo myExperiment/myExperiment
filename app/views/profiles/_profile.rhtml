@@ -1,7 +1,7 @@
 <% unless profile.email.nil? %>
   <p>
     <b>Email:</b>
-    <%=link_to profile.email.gsub(/@/, " [at] "), "mailto:#{profile.email}" %>
+    <%=mail_to profile.email, nil, { :replace_at => " [at] " } %>
   </p>
 <% end %>
 

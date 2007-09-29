@@ -126,6 +126,10 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @workflows.to_xml }
+      format.rss do
+        #@workflows = Workflow.find(:all, :order => "updated_at DESC") # list all (if required)
+        render :action => 'index.rxml', :layout => false
+      end
     end
   end
 
