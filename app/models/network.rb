@@ -28,7 +28,9 @@ class Network < ActiveRecord::Base
   
   acts_as_ferret :fields => { :title => { :store => :yes, :index => :untokenized }, 
                               :unique_name => { :store => :yes }, 
-                              :owner_name => { :store => :yes } }
+                              :owner_name => { :store => :yes },
+                              :description => { :store => :yes } ,
+                              :tag_list => { :store => :yes } }
   
   format_attribute :description
   

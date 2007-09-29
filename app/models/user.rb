@@ -121,7 +121,8 @@ class User < ActiveRecord::Base
   
   acts_as_ferret :fields => { :openid_url => { :store => :yes }, 
                               :name => { :store => :yes }, 
-                              :username => { :store => :yes } }
+                              :username => { :store => :yes },
+                              :tag_list => { :store => :yes } }
   
   # protected? asks the question "is other protected by me?"
   def protected?(other)
@@ -341,19 +342,6 @@ class User < ActiveRecord::Base
 # alias for friends_recursive
   def friends!
     friends_r_wrapper
-  end
-  
-  def my_tags(mine, friends, owned_networks, membership_networks)
-    rtn = []
-    
-    mine_tags = mine ? contribution_tags! : { }
-    friends_tags = mine ? collection_contribution_tags!(friends) : { }
-    owned_networks_tags = mine ? collection_contribution_tags!(owned_networks) : { }
-    
-    # merge hash's
-    # extract Tags
-    
-    return rtn
   end
   
 protected

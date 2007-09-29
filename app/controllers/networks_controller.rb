@@ -34,7 +34,7 @@ class NetworksController < ApplicationController
     @query = params[:query] || ""
     
     unless @query.empty?
-      @networks = Network.find_by_contents(@query)
+      @networks = Network.find_with_ferret(@query)
     else
       @networks = find_networks
     end

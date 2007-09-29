@@ -114,6 +114,17 @@ module Mib
           return rtn
         end
         
+        def tag_list
+          rtn = StringIO.new
+          
+          self.contribution_tags.each do |t|
+            rtn << t.name
+            rtn << " "
+          end
+          
+          return rtn.string
+        end
+        
 protected
         
         def collection_contribution_tags!(collection)
