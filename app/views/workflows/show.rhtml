@@ -97,7 +97,11 @@
 
 <h3>Versions</h3>
 
-<%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
+<% if params[:version] %>
+  <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow, :versions => @latest_version } %>
+<% else %>
+  <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
+<% end %>
 
 <% if logged_in? %>
   <h3>Comments</h3>

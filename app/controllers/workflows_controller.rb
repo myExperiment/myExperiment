@@ -249,6 +249,7 @@ protected
       
       if workflow.authorized?(action_name, (logged_in? ? current_user : nil))
         if params[:version]
+          @latest_version = workflow.versions.length
           if workflow.revert_to(params[:version])
             @workflow = workflow
           else
