@@ -56,9 +56,9 @@
   <% networks_owned.each_index do |index| %>
     <% n = networks_owned[index] -%>
     <% if n.member?(user.id) %>
-      <input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>" disabled=true/> - <font color="grey"><%= title(n.id) %></font>
+      <input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>" disabled=true/> - <font color="grey"><%= h(n.title) %></font>
     <% else %>
-      <input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>"/> - <font id="my_network_font_<%= n.id %>"><%= title(n.id) %></font>
+      <input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>"/> - <font id="my_network_font_<%= n.id %>"><%= h(n.title) %></font>
     <% end %>
         
     <%= "<br />" unless (index.to_i == (networks_owned.length.to_i - 1)) %>
