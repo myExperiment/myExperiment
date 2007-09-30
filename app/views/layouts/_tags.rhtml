@@ -45,7 +45,7 @@
 
   <% unless (workflow_tags = @workflow.tags).empty? %>
     <p>
-      <b>Tags for <%=h @workflow.title %></b><br />
+      <b>Tags for <%=h truncate(@workflow.title, 15) %></b><br />
       <%= tag_cloud_from_collection(workflow_tags) %>
     </p>
   <% end %>

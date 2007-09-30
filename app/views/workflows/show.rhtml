@@ -4,7 +4,13 @@
 
 <p>
   <b>Bookmarked by:</b><br/>
-  <div id="bookmarks"><%=h @workflow.bookmarks.collect {|b| b.user.name}.join(", ") %></div>
+  <div id="bookmarks">
+    <% unless @workflow.bookmarks.empty? %>
+      <%=h @workflow.bookmarks.collect {|b| b.user.name}.join(", ") %>
+    <% else %>
+      No bookmarks
+    <% end %>
+  </div>
 </p>
 
 <p>
@@ -25,7 +31,7 @@
   </div>
 </p>
 
-<% if logged_in? %>
+<% if logged_in? and @workflow.authorized?("tag", current_user) %>
   <% form_remote_tag (:url => tag_workflow_path(@workflow), :update => 'tags', :success => "var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
     <p>
       <%= text_field_tag :tag_list %>
