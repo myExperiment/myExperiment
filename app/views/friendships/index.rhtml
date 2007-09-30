@@ -26,8 +26,14 @@
       <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_requested, :user => false } %>
     <% end %>
     
+    <% unless @user.friendships_accepted.empty? %>
+      <h3>Accepted requests</h3>
+      
+      <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_accepted, :friend => false } %>
+    <% end %>
+    
     <% unless @user.friends.empty? %>
-      <h3>Friends</h3>
+      <h3>All Friends</h3>
       
       <p>
         Friends can be given special permissions in your access control <%= link_to "policies", policies_path %> as they belong to the <b>protected</b> group.
@@ -35,16 +41,10 @@
 
       <%= render :partial => "friendships/friends", :locals => { :collection => @user.friends } %>
     <% end %>
-    
-    <% unless @user.friendships_accepted.empty? %>
-      <h3>Friendships Accepted</h3>
-      
-      <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_accepted, :friend => false } %>
-    <% end %>
 
   <% else %>
   
-    <h3>Friends of <%=name @user.id %></h3>
+    <h3><%=name @user %>'s Friends</h3>
   
     <% unless @user.friends.empty? %>
       <%= render :partial => "friendships/friends", :locals => { :collection => @user.friends } %>
