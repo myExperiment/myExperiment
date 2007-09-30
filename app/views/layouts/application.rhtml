@@ -47,7 +47,7 @@
 </div>
 
 <div id="myexp_navbar">
-  <ul id="tabnav">
+  <ul class="tabnav">
     <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Users", users_path %></li>
     <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Networks", networks_path %></li>
     <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blobs", blobs_path %></li>
@@ -58,8 +58,10 @@
     <li <%= (["contributions", "workflows", "blobs", "blogs", "downloads", "viewings", "policies"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Contributions", contributions_path %></li>
     <% end %>
   </ul>
-  <ul id="subnav">
+  <ul class="subnav">
+    <% if false %>
     <%= render :partial => "subnav" %>
+    <% end %>
   </ul>
   <div id="searchbar">
     <%= render :partial => "layouts/search" %>
@@ -69,15 +71,35 @@
 <p style="color: red"><%= flash[:error] %></p>
 <p style="color: green"><%= flash[:notice] %></p>
 
-<%= yield  %>
+<% unless (controller.controller_name.to_s == "tags" and controller.action_name.to_s == "index") %>
 
-<hr />
+<div id="myexp_sidebar">
+  <p>
+    <ul class="sidenav">
+      <%= render :partial => "subnav" %>
+    </ul>
+  </p>
 
-<%= render :partial => "layouts/tags" %>
+  <div id="tag_clouds">
+    <%= render :partial => "layouts/tags" %>
+  </div>
+</div>
+
+<div id="myexp_body">
+  <%= yield  %>
+</div>
+
+<% else %>
+
+<%= yield %>
+
+<% end %>
 
 </div>
 
 </div>
+
+<br />
 
 </body>
 </html>

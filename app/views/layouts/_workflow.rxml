@@ -1,5 +1,5 @@
 xm.item do
-  xm.title h(workflow.title)
+  xm.title "#{h(workflow.title)} by #{h(workflow.contribution.contributor.name || workflow.contribution.contributor.title)}"
   xm.description white_list(workflow.body_html)
   xm.version workflow.version
   xm.pubDate workflow.created_at.rfc822

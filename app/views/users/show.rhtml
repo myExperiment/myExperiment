@@ -1,3 +1,5 @@
+<h3>Details</h3>
+
 <table width="100%">
   <tr>
     <% if @user.profile %>
@@ -6,8 +8,6 @@
       </td>
     <% end %>
     <td vAlign="top" class="details">
-      <h3>Details</h3>
-
       <p>
         <b>Name:</b>
         <%=h @user.name %>
@@ -39,11 +39,17 @@
         <b>Joined:</b>
         <%=datetime @user.created_at %>
       </p>
+      
+      <% unless @user.profile.nil? %>
+        <%= render :partial => "profiles/profile", :locals => { :profile => @user.profile } %>
+      <% end %>
 
+      <% if false %>
       <p>
         <b>Last seen:</b>
         <%=datetime @user.last_seen_at %>
       </p>
+      <% end %>
     </td>
   </tr>
   <% if my_page? @user.id %>
@@ -53,19 +59,12 @@
           <%= link_to '[edit account details]', edit_user_path(@user) %> |
           <%= link_to '[upload new picture]', new_picture_path(@user) %> |
           <%= link_to '[select avatar]', pictures_path(@user) %>
+          <% if !@user.profile.nil? and my_page? @user.id %> | <%= link_to '[edit profile]', edit_profile_path(@user.profile) %><% end %>
         </p>
       </td>
     </tr>
   <% end %>
 </table>
-
-<% unless @user.profile.nil? %>
-  <h3>Profile</h3>
-
-  <%= render :partial => "profiles/profile", :locals => { :profile => @user.profile } %>
-
-  <%= link_to '[edit profile]', edit_profile_path(@user.profile) if my_page? @user.id %>
-<% end %>
 
 <% unless @user.friends.empty? %>
   <h3>Friends</h3>

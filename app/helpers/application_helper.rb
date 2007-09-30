@@ -53,7 +53,7 @@ module ApplicationHelper
       return nil
     end
     
-    return link_to user.openid_url, user.openid_url
+    return link_to(user.openid_url, user.openid_url)
   end
   
   def name(user_id, truncate_to=nil)
@@ -67,7 +67,7 @@ module ApplicationHelper
     end
     
     name = truncate_to ? truncate(user.name, truncate_to) : user.name
-    return link_to h(name), user_url(user)
+    return link_to(h(name), user_url(user))
   end
   
   def title(network_id, truncate_to=nil)
@@ -81,7 +81,7 @@ module ApplicationHelper
     end
     
     title = truncate_to ? truncate(network.title, truncate_to) : network.title
-    return link_to h(title), network_url(network)
+    return link_to(h(title), network_url(network))
   end
   
   def avatar(user_id, size=200)
@@ -104,7 +104,7 @@ module ApplicationHelper
       img = null_avatar(size)
     end
     
-    return link_to img, user_url(user)
+    return link_to(img, user_url(user))
   end
   
   def null_avatar(size=200)
@@ -126,7 +126,7 @@ module ApplicationHelper
     inbox = "Inbox (#{user.messages_unread.length})"
     rtn = !user.messages_unread.empty? ? "<strong>" + inbox + "</strong>" : inbox
       
-    return link_to rtn, messages_path
+    return link_to(rtn, messages_path)
   end
   
   def memberships_pending_link(user_id)
@@ -142,7 +142,7 @@ module ApplicationHelper
     mships = "Memberships (#{user.memberships_pending.length})"
     rtn = !user.memberships_pending.empty? ? "<strong>" + mships + "</strong>" : mships
       
-    return link_to rtn, memberships_path(user)
+    return link_to(rtn, memberships_path(user))
   end
   
   def friendships_pending_link(user_id)
@@ -158,18 +158,18 @@ module ApplicationHelper
     fships = "Friendships (#{user.friendships_pending.length})"
     rtn = !user.friendships_pending.empty? ? "<strong>" + fships + "</strong>" : fships
       
-    return link_to rtn, friendships_path(user)
+    return link_to(rtn, friendships_path(user))
   end
   
   def request_membership_link(user_id, network_id)
-    link_to "Request membership", url_for(:controller => 'memberships', 
+    link_to("Request membership", url_for(:controller => 'memberships', 
                                           :action => 'new', 
                                           :user_id => user_id, 
-                                          :network_id => network_id)
+                                          :network_id => network_id))
   end
 
   def request_friendship_link(user_id)
-    link_to "Request friendship", new_friendship_url(:user_id => user_id)
+    link_to("Request friendship", new_friendship_url(:user_id => user_id))
   end
   
   def versioned_workflow_link(workflow_id, version_id)
@@ -221,7 +221,7 @@ module ApplicationHelper
       network = Network.find(:first, :select => "id, title", :conditions => ["id = ?", contributorid])
       return nil unless network
       
-      return link_to title(network), network_path(network)
+      return title(network)
     else
       return nil
     end
@@ -321,7 +321,7 @@ module ApplicationHelper
     html
   end
   
-  def trim_body_html(body, limit=nil)
+  def trim_body_html(body, limit=nil, truncate_string="...")
     body = "#{body[0..limit]}.." if limit and body.length > limit
     
     white_list(body)

@@ -1,47 +1,62 @@
 <% if (controller.controller_name.to_s == "tags" and controller.action_name.to_s == "index") %>
 
-<% if false %>
+  <!-- no extra tags needed!! -->
 
 <% elsif (controller.controller_name.to_s == "users" and controller.action_name.to_s == "show") %>
+
   <% unless (con_tags = @user.contribution_tags).empty? %>
     <p>
-      <b><%=h @user.name %>: Tags</b><br />
+      <b>Tags for <%=my_page?(@user.id) ? "my" : h(@user.name) + "'s" %> workflows</b><br />
       <%= tag_cloud_from_collection(con_tags) %>
     </p>
   <% end %>
 
   <% unless (friend_tags = collection_contribution_tags(@user, @user.friends)).empty? %>
     <p>
-      <b><%=h @user.name %>'s Friends: Tags</b><br />
+      <b>Tags for <%=my_page?(@user.id) ? "my" : h(@user.name) + "'s" %> friend's workflows</b><br />
       <%= tag_cloud_from_collection(friend_tags) %>
     </p>
   <% end %>
 
   <% unless (network_tags = collection_contribution_tags(@user, @user.networks_owned)).empty? %>
     <p>
-      <b><%=h @user.name %>'s Networks: Tags</b><br />
+      <b>Tags for <%=my_page?(@user.id) ? "my" : h(@user.name) + "'s" %> network's workflows</b><br />
       <%= tag_cloud_from_collection(network_tags) %>
     </p>
   <% end %>
+  
 <% elsif (controller.controller_name.to_s == "networks" and controller.action_name.to_s == "show") %>
+
   <% unless (con_tags = @network.contribution_tags).empty? %>
     <p>
-      <b><%=h @network.title %>: Tags</b><br />
+      <b>Tags for <%=h @network.title %> workflows</b><br />
       <%= tag_cloud_from_collection(con_tags) %>
     </p>
   <% end %>
 
   <% unless (member_tags = collection_contribution_tags(@network, @network.members)).empty? %>
     <p>
-      <b><%=h @network.title %> Members: Tags</b><br />
+      <b>Tags for workflows by <%=h @network.title %> members</b><br />
       <%= tag_cloud_from_collection(member_tags) %>
     </p>
   <% end %>
 
-<% end %>
+<% elsif (controller.controller_name.to_s == "workflows" and controller.action_name.to_s == "show") %>
+
+  <% unless (workflow_tags = @workflow.tags).empty? %>
+    <p>
+      <b>Tags for <%=h @workflow.title %></b><br />
+      <%= tag_cloud_from_collection(workflow_tags) %>
+    </p>
+  <% end %>
 
 <% else %>
-  <p>
-    <%= tag_cloud %>
-  </p>
+
+  <!-- no extra tags!! -->
+
 <% end %>
+
+<p>
+  <b>myExperiment Top 20</b><br />
+  <%= tag_cloud(limit=20) %>
+</p>
