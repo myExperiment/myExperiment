@@ -1,8 +1,8 @@
+<% if logged_in? %><li><%= link_to 'New Policy', new_policy_path %></li><% end %>
+
 <% case controller.action_name.to_s; when "index" %>
 
-  <% if logged_in? %>
-    <li><%= link_to 'New Policy', new_policy_path %></li>
-  <% end %>
+  <!-- no subnav options -->
 
 <% when "show" %>
 
