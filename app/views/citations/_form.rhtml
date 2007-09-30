@@ -1,0 +1,49 @@
+  <%= form.hidden_field :user_id %>
+  <%= form.hidden_field :workflow_id %>
+  <%= form.hidden_field :workflow_version %>
+
+  <p>
+    <b>Title <font color="red">*</font></b><br />
+    <%= form.text_field :title %>
+  </p>
+  
+  <p>
+    <b>Authors <font color="red">*</font></b><br />
+    <%= form.text_area :authors, :cols => 30, :rows => 4 %>
+  </p>
+    
+  <p>
+    <b>Published at <font color="red">*</font></b><br />
+    <%= form.date_select :published_at, :order => [:day, :month, :year], :use_month_numbers => false, :start_year => 1900 %>
+  </p>
+    
+  <p>
+    <small><font color="red">*</font> - Required fields</small>
+  </p>
+  
+  <p>
+    <b>Publication</b><br />
+    <%= form.text_field :publication %>
+  </p>
+
+  <p>
+    <b>Website</b><br />
+    <%= form.text_field :url %>
+  </p>
+  
+  <p>
+    <b>Accessed at</b><br />
+    <%= form.date_select :accessed_at, :order => [:day, :month, :year], :use_month_numbers => false, :start_year => 1900, :include_blank => true %>
+  </p>
+
+<% if false %>
+  <p>
+    <b>Isbn (10 or 13 digits)</b><br />
+    <%= form.text_field :isbn %>
+  </p>
+  
+  <p>
+    <b>Issn (8 digits)</b><br />
+    <%= form.text_field :issn %>
+  </p>
+<% end %>

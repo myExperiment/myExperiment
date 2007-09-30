@@ -1,0 +1,20 @@
+<h1>Listing citations for <%=contributable(@workflow.id, "Workflow") %>:</h1>
+
+<%= render :partial => "citations/table", :locals => { :collection => @citations, :workflow => @workflow } %>
+
+<h3>Preview</h3>
+
+<% unless @citations.empty? %>
+  <% @citations.each_index do |i| %>
+    <p>
+      <%= i.to_i + 1 %>.  <%= render :partial => "citations/citation", :object => @citations[i] %>
+    </p>
+  <% end %>
+<% else %>
+  <p>No citations</p>
+<% end %>
+
+<br />
+
+<%= link_to 'New citation', new_citation_path(@workflow) %> |
+<%= link_to 'Back', workflow_path(@workflow) %>

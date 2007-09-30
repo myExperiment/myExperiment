@@ -1,0 +1,23 @@
+<h3>Preview</h3>
+
+<p>
+  <%= render :partial => "citations/citation", :object => @citation %>
+</p>
+
+<h3>Details</h3>
+
+<p>
+  <b>Created at:</b>
+  <%=datetime @citation.created_at %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%=datetime @citation.updated_at %>
+</p>
+
+<br />
+
+
+<%= link_to 'Edit', edit_citation_path(@citation, @workflow) %> |
+<%= link_to 'Back', citations_path(@workflow) %>

@@ -26,6 +26,8 @@ require 'digest/sha1'
 require 'acts_as_contributor'
 
 class User < ActiveRecord::Base
+  has_many :citations, :order => "created_at DESC"
+  
   def self.most_recent(limit=5)
     self.find(:all,
               :order => "created_at DESC",

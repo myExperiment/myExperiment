@@ -1,0 +1,14 @@
+<h1>Editing citation</h1>
+
+<%= error_messages_for :citation %>
+
+<% form_for(:citation, :url => citation_path(@workflow, @citation), :html => { :method => :put }) do |f| %>
+  <%= render :partial => "citations/form", :object => f %>
+
+  <p>
+    <%= submit_tag "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', citation_path(@workflow, @citation) %> |
+<%= link_to 'Back', citations_path(@workflow) %>

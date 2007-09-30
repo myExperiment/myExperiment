@@ -95,6 +95,23 @@
   <%=datetime @workflow.updated_at %>
 </p>
 
+<h3>Citations</h3>
+
+<% unless (citations = @workflow.citations).empty? %>
+  <% citations.each_index do |i| %>
+    <p>
+      <%= i.to_i + 1 %>.  <%= render :partial => "citations/citation", :object => citations[i] %>
+    </p>
+  <% end %>
+<% else %>
+  <p>None</p>
+<% end %>
+
+<% if logged_in? and @workflow.authorized?("edit", current_user) %>
+  <%= link_to '[new citation]', new_citation_path(@workflow) %> 
+  <%= link_to '[edit citations]', citations_path(@workflow) %>
+<% end %>
+
 <h3>Versions</h3>
 
 <% if params[:version] %>

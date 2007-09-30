@@ -13,9 +13,15 @@ ActionController::Routing::Routes.draw do |map|
   
   # openid authentication
   map.resource :openid
+  
+  # all citations
+  # map.resources :citations
 
   # workflows (downloadable)
-  map.resources :workflows, :collection => { :search => :get }, :member => { :download => :get, :bookmark => :post, :comment => :post, :rate => :post, :tag => :post }
+  map.resources :workflows, :collection => { :search => :get }, :member => { :download => :get, :bookmark => :post, :comment => :post, :rate => :post, :tag => :post } do |workflow|
+    # workflows have nested citations
+    workflow.resources :citations
+  end
 
   # blobs (downloadable)
   map.resources :blobs, :member => { :download => :get }

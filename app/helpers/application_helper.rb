@@ -34,6 +34,14 @@ module ApplicationHelper
     
     return long ? rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)") : rtn.strftime("%d/%m/%y @ %H:%M:%S")
   end
+  
+  def date(old_dt, long=true)
+    return nil unless old_dt
+    
+    rtn = Time.at(old_dt)
+    
+    return long ? rtn.strftime("%d %B %Y") : rtn.strftime("%d/%m/%y")
+  end
 
   def openid(user_id, link_to=false)
     begin
@@ -348,5 +356,23 @@ module ApplicationHelper
   
   def collection_contribution_tags(contributor, collection)
     contributor.collection_contribution_tags(collection)
+  end
+  
+  def formatted_isbn(isbn)
+    return nil if isbn.nil?
+    
+    if isbn.length.to_i == 10
+      return "#{isbn[0..8]}-#{isbn[9..9]}"
+    elsif isbn.length.to_i == 13
+      return "#{isbn[0]}-#{isbn[1..6]}-#{isbn[7..12]}"
+    else
+      return nil
+    end
+  end
+  
+  def formatted_issn(issn)
+    return nil if issn.nil?
+    
+    return "#{issn[0..3]}-#{issn[4..7]}"
   end
 end

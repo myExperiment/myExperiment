@@ -1,6 +1,7 @@
 <% max_viewings = max_downloads = 10 -%>
 <% history = Contribution.find(history.id) -%>
 
+<% unless (viewings = Viewing.most_by_contribution(history)).empty? %>
 <p>
   <b>Viewings by User:</b>
 </p>
@@ -11,7 +12,7 @@
     <th>Count</th>
     <th>Percentage</th>
   </tr>
-  <% Viewing.most_by_contribution(history).each do |v| %>
+  <% viewings.each do |v| %>
     <tr>
       <td>
         <% if (name = name(v.user_id, true)) %>
@@ -43,9 +44,9 @@
     </li>
   <% end %></ul>
 </p>
+<% end %>
 
-<hr/>
-
+<% unless (downloads = Download.most_by_contribution(history)).empty? %>
 <p>
   <b>Downloads by User:</b>
 </p>
@@ -56,7 +57,7 @@
     <th>Count</th>
     <th>Percentage</th>
   </tr>
-  <% Download.most_by_contribution(history).each do |d| %>
+  <% downloads.each do |d| %>
     <tr>
       <td>
         <% if (name = name(d.user_id, true)) %>
@@ -88,3 +89,4 @@
     </li>
   <% end %></ul>
 </p>
+<% end %>

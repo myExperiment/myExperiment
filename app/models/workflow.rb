@@ -24,6 +24,8 @@
 require 'acts_as_contributable'
 
 class Workflow < ActiveRecord::Base
+  has_many :citations, :order => "created_at DESC"
+  
   acts_as_contributable
   
   acts_as_versioned
@@ -66,5 +68,5 @@ class Workflow < ActiveRecord::Base
     end
   end
   
-  non_versioned_fields.push("image", "license") # acts_as_versioned and file_column don't get on
+  non_versioned_fields.push("image", "svg", "license") # acts_as_versioned and file_column don't get on
 end
