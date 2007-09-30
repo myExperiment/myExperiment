@@ -12,7 +12,11 @@
   
   <% if logged_in? %>
     <li><%= link_to_remote 'Bookmark Workflow', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %></li> 
+    
     <% if @workflow.authorized?("edit", current_user) %><li><%= link_to 'Edit Workflow', edit_workflow_path(@workflow) %></li><% end %>
+    <% if @workflow.authorized?("destroy", current_user) %><li><%= link_to 'Destroy Workflow', workflow_path(@workflow), :confirm => 'Are you sure?', :method => :delete %></li><% end %>
+    <% if @workflow.authorized?("edit", current_user) %><li><%= link_to 'New Citation', new_citation_path(@workflow) %></li><% end %>
+    <% if @workflow.authorized?("edit", current_user) %><li><%= link_to 'Edit Citations', citations_path(@workflow) %></li><% end %>
   <% end %>
 
 <% else %>

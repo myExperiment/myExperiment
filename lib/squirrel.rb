@@ -491,7 +491,7 @@ module Squirrel # :nodoc
                             :tag_id          => tagging_tuple["tag_id"],
                             :taggable_id     => tagging_tuple["taggable_id"],
                             :taggable_type   => tagging_tuple["taggable_type"],
-                            :user_id         => nil,
+                            :user_id         => Workflow.find(tagging_tuple["taggable_id"]).contributor_id, # taggings belong to user who owns workflow
                             :created_at      => Time.now)
                             
       if tagging.save

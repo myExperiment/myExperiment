@@ -1,11 +1,7 @@
 <% if params[:user_id] %>
-  <% if my_page? params[:user_id] %>
-    <h1>Listing my pictures</h1>
-  <% else %>
-    <h1>Listing <%= name(params[:user_id]) %>'s pictures</h1>
-  <% end %>
+  <h3>Listing <%= my_page?(params[:user_id]) ? "my" : name(params[:user_id]) + "'s" %> pictures</h3>
 <% else %>
-  <h1>Listing pictures</h1>
+  <h3>Listing pictures</h3>
 <% end %>
 
 <table class="alt_table">

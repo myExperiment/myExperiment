@@ -104,10 +104,12 @@ class WorkflowsController < ApplicationController
   # POST /workflows/1.xml;tag
   def tag
     @workflow.user_id = current_user # acts_as_taggable_redux
-    @workflow.update_attributes(:tag_list => "#{@workflow.tag_list}, #{params[:tag_list]}") if params[:tag_list]
+    @workflow.tag_list = "#{@workflow.tag_list}, #{params[:tag_list]}" if params[:tag_list]
+    @workflow.update_tags # hack to get around acts_as_versioned
     
     respond_to do |format|
-      format.html { render :inline => "<%=h @workflow.tags.join(', ') %>" }
+      #format.html { render :inline => "<%=h @workflow.tags.join(', ') %>" }
+      format.html { render :inline => "<%= tag_cloud_from_collection(@workflow.tags) %>" }
       format.xml { render :xml => @workflow.tags.to_xml }
     end
   end

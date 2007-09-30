@@ -20,7 +20,9 @@
 
 <p>
   <b>Tags:</b><br/>
-  <div id="tags"><%=h @workflow.tags.join(", ") %></div>
+  <div id="tags">
+    <%= tag_cloud_from_collection(@workflow.tags) %>
+  </div>
 </p>
 
 <% if logged_in? %>

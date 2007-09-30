@@ -10,7 +10,7 @@ module ActiveRecord
           has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag
           has_many :tags, :through => :taggings
           
-          after_save :update_tags
+          #after_save :update_tags
           
           extend ActiveRecord::Acts::Taggable::SingletonMethods          
           include ActiveRecord::Acts::Taggable::InstanceMethods

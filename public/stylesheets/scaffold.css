@@ -219,6 +219,7 @@ color: black;
 
 .sidenav li {
 	list-style-type: none;
+	line-height: 2em;
 }
 
 .sidenav li a {
@@ -262,6 +263,11 @@ margin-bottom: 5px;
 padding-left: 10px;
 display: inline;
 border: 1px solid black;
+}
+
+table.alt_table
+{
+width: 100%;
 }
 
 table.alt_table tr.odd_row td

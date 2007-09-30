@@ -1,6 +1,8 @@
-<h1>Listing citations for <%=contributable(@workflow.id, "Workflow") %>:</h1>
+<h3>Listing citations</h3>
 
 <%= render :partial => "citations/table", :locals => { :collection => @citations, :workflow => @workflow } %>
+
+<br />
 
 <h3>Preview</h3>
 
