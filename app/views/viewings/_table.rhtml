@@ -14,9 +14,9 @@
     <% unless contribution %><td width="400"><%= contributable(viewing.contribution.contributable_id, viewing.contribution.contributable_type, true, true) %></td><% end %>
     <td width="100">
       <% if viewing.user_id %>
-        <%= contributor(viewing.user_id, "User", true, true, "60x60") %>
+        <%= contributor(viewing.user_id, "User", true, 60) %>
       <% else %>
-        <%=null_avatar '60x60' %><br/><%= "Anonymous" %>
+        <%=null_avatar 60 %><br/><%= "Anonymous" %>
       <% end %>
     </td>
     <td><%=datetime viewing.created_at, false %></td>

@@ -1,0 +1,15 @@
+<% unless collection.empty? %>
+
+<div id="hlist">
+  <ul id="friends">
+    <% for friend in collection %>
+      <%= render :partial => "friendships/friend", :locals => { :friend => friend, :size => 100 } %>
+    <% end %>
+  </ul>
+</div>
+
+<div style="clear: both;"/>
+
+<br />
+
+<% end %>

@@ -1,9 +1,3 @@
 <li class="member">
-  <%= render :partial => "users/avatar", :locals => { :user => member, :size => 60 } %><br/>
-  
-  <% if my_page? network.owner.id %>
-    <% membership = Membership.find_by_user_id_and_network_id(member.id, network.id) %>
-    <%= link_to 'Show', membership_path(membership.user_id, membership) %>
-    <%= link_to 'Delete', membership_path(membership.user_id, membership), :confirm => 'Are you sure?', :method => :delete %>
-  <% end %>
+  <%= render :partial => "users/avatar", :locals => { :user => member, :size => 60 } %>
 </li>

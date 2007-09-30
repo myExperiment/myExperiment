@@ -40,19 +40,25 @@
 <% if my_page? @network.owner.id %>
   <h3>Members</h3>
   
-  <% form_remote_tag(:url => membership_create_network_path(@network), :method => :get, :update => 'members', :position => 'bottom', :success => "var t=getElementById('user_id'); t.value=''") do %>
+  <% form_remote_tag(:url => membership_create_network_path(@network), :method => :get, :update => 'members', :position => 'bottom', :success => "var t=getElementById('user_id'); t.value='';") do %>
     <fieldset>
       <legend>New Member</legend>
       <label for="user_id">User:</label> <%= select_tag :user_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %> <%= submit_tag "Add" %>
     </fieldset>
   <% end %>
   
-  <%= render :partial => "networks/members", :locals => { :collection => @network.members, :network => @network } %>
+  <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :network => @network } %>
+  
+  <h3>Memberships Accepted</h3>
+  
+  <% unless @network.memberships_accepted.empty? %>
+    <%= render :partial => "memberships/table", :locals => { :collection => @network.memberships_accepted, :network => false } %>
+  <% end %>
 <% else %>
   <% unless @network.members(false).empty? %>
     <h3>Members</h3>
   
-    <%= render :partial => "networks/members", :locals => { :collection => @network.members, :network => @network } %>
+    <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :network => @network } %>
   <% end %>
 <% end %>
 

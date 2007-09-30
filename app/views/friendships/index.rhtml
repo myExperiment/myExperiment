@@ -33,7 +33,13 @@
         Friends can be given special permissions in your access control <%= link_to "policies", policies_path %> as they belong to the <b>protected</b> group.
       </p>
 
-      <%= render :partial => "users/friends", :locals => { :collection => @user.friends, :user => @user } %>
+      <%= render :partial => "friendships/friends", :locals => { :collection => @user.friends } %>
+    <% end %>
+    
+    <% unless @user.friendships_accepted.empty? %>
+      <h3>Friendships Accepted</h3>
+      
+      <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_accepted, :friend => false } %>
     <% end %>
 
   <% else %>
@@ -41,7 +47,7 @@
     <h3>Friends of <%=name @user.id %></h3>
   
     <% unless @user.friends.empty? %>
-      <%= render :partial => "users/friends", :locals => { :collection => @user.friends, :user => @user } %>
+      <%= render :partial => "friendships/friends", :locals => { :collection => @user.friends } %>
     <% end %>
 
   <% end %>

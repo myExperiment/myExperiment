@@ -11,7 +11,7 @@
 <% odd_row = false -%>
 <% for permission in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100"><%= contributor(permission.contributor_id, permission.contributor_type, true, true, "60x60") %></td>
+    <td width="100"><%= contributor(permission.contributor_id, permission.contributor_type, true, 60) %></td>
     <td><%=h permission.download %></td>
     <td><%=h permission.edit %></td>
     <td><%=h permission.view %></td>

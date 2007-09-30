@@ -15,8 +15,8 @@
 <% odd_row = false -%>
 <% for friendship in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <% if user %><td width="100"><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.user, "User", true, true, "60x60") %><%= "</b>" unless friendship.accepted? %></td><% end %>
-    <% if friend %><td width="100"><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.friend, "User", true, true, "60x60") %><%= "</b>" unless friendship.accepted? %></td><% end %>
+    <% if user %><td width="100"><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.user, "User", true, 60) %><%= "</b>" unless friendship.accepted? %></td><% end %>
+    <% if friend %><td width="100"><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.friend, "User", true, 60) %><%= "</b>" unless friendship.accepted? %></td><% end %>
     <td><%= "<b>" unless friendship.accepted? %><%=datetime friendship.created_at, false %><%= "</b>" unless friendship.accepted? %></td>
     <td><%= "<b>" unless friendship.accepted? %><%=datetime(friendship.accepted_at, false) || "Pending" %><%= "</b>" unless friendship.accepted? %></td>
     <td class="actions">

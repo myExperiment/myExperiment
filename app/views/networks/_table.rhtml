@@ -13,8 +13,8 @@
 <% odd_row = false -%>
 <% for network in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100"><%= contributor(network.user_id, "User", true, true, "60x60") %></td>
-    <td width="200"><%= contributor(network.id, "Network", true, true, "60x60") %></td>
+    <td width="100"><%= contributor(network.user_id, "User", true, 60) %></td>
+    <td width="200"><%= contributor(network.id, "Network", true, 60) %></td>
     <% if false %><td><%=h network.unique_name %></td><% end %>
     <td><%= network.members.length %></td>
     <td><%=datetime network.created_at, false %></td>

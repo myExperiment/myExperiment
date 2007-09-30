@@ -3,9 +3,9 @@
 <p>
   <b>User:</b><br/>
   <% if @viewing.user_id %>
-    <%= contributor(@viewing.user_id, "User", true, true, "100x100") %>
+    <%= contributor(@viewing.user_id, "User", true, 100) %>
   <% else %>
-    <%= null_avatar '100x100' %><br/><%= "Anonymous" %>
+    <%= null_avatar 100 %><br/><%= "Anonymous" %>
   <% end %>
 </p>
 

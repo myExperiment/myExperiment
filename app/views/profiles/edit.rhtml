@@ -1,8 +1,25 @@
-<h1>Editing profile for <%= openid(@profile.user_id) %></h1>
+<h1>Editing profile</h1>
 
 <%= error_messages_for :profile %>
 
 <% form_for(:profile, :url => profile_path(@profile), :html => { :method => :put }) do |f| %>
+  <p>
+    <b>Picture</b><br />
+    <div id="hlist">
+      <ul>
+      <li>
+        <center><%= null_avatar 100 %><br/><%= f.radio_button :picture_id, nil %></center>
+      </li>
+      <% @profile.owner.pictures.each do |p| %>
+        <li>
+          <center><%= image_tag url_for :controller => 'pictures', :action  => 'show', :id => p.id, :size => '100x100' %><br/><%= f.radio_button :picture_id, p.id %></center>
+        </li>
+      <% end %>
+      </ul>
+    </div>
+    <div style="clear:both;" />
+  </p>
+
   <p>
     <b>Email</b><br />
     <%= f.text_field :email %>

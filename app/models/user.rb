@@ -26,7 +26,8 @@ require 'digest/sha1'
 require 'acts_as_contributor'
 
 class User < ActiveRecord::Base
-  has_many :citations, :order => "created_at DESC"
+  has_many :citations, 
+           :order => "created_at DESC"
   
   def self.most_recent(limit=5)
     self.find(:all,
@@ -36,10 +37,16 @@ class User < ActiveRecord::Base
   
   acts_as_tagger
   
-  has_many :downloads
-  has_many :viewings
+  has_many :downloads, 
+           :order => "created_at DESC", 
+           :dependent => :nullify
   
-  has_many :bookmarks
+  has_many :viewings, 
+           :order => "created_at DESC",
+           :dependent => :nullify
+  
+  has_many :bookmarks, 
+           :order => "created_at DESC"
   
   # BEGIN RESTful Authentication #
   attr_accessor :password
@@ -148,6 +155,10 @@ class User < ActiveRecord::Base
   
   has_many :pictures,
            :dependent => :destroy
+           
+  def avatar?
+    self.profile and !(self.profile.picture_id.nil? or self.profile.picture_id.zero?)
+  end
            
   # BEGIN SavageBeast #
   include SavageBeast::UserInit

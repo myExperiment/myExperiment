@@ -5,7 +5,7 @@
   <% if @download.user_id %>
     <%= contributor(@download.user_id, "User", true, true, "100x100") %>
   <% else %>
-    <%=null_avatar '100x100' %><br/><%= "Anonymous" %>
+    <%=null_avatar 100 %><br/><%= "Anonymous" %>
   <% end %>
 </p>
 

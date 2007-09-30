@@ -15,10 +15,10 @@
   <% viewings.each do |v| %>
     <tr>
       <td>
-        <% if (name = name(v.user_id, true)) %>
-          <%=avatar(v.user_id, '60x60') %><br/><%= name %>
+        <% if (name = name(v.user)) %>
+          <%=avatar(v.user, 60) %><br/><%= name %>
         <% else %>
-          <%=null_avatar '60x60' %><br/><%= "Anonymous" %>
+          <%=null_avatar 60 %><br/><%= "Anonymous" %>
         <% end %>
       </td>
       <td>
@@ -36,7 +36,7 @@
   <% viewings = history.viewings; viewings = viewings[0...max_viewings] unless (viewings.length < max_viewings) -%>
   <ul><% viewings.each do |v| %>
     <li>
-      <% if (name = name(v.user_id, true)) %>
+      <% if (name = name(v.user)) %>
         <%= datetime v.created_at, false %> - <%= name %>
       <% else %>
         <%= datetime v.created_at, false %> - <%= "Anonymous" %>
@@ -45,6 +45,8 @@
   <% end %></ul>
 </p>
 <% end %>
+
+<% if ["Workflow", "Blob"].include? history.contributable_type.to_s %>
 
 <% unless (downloads = Download.most_by_contribution(history)).empty? %>
 <p>
@@ -60,10 +62,10 @@
   <% downloads.each do |d| %>
     <tr>
       <td>
-        <% if (name = name(d.user_id, true)) %>
-          <%=avatar(d.user_id, '60x60') %><br/><%= name %>
+        <% if (name = name(d.user)) %>
+          <%=avatar(d.user, 60) %><br/><%= name %>
         <% else %>
-          <%=null_avatar '60x60' %><br/><%= "Anonymous" %>
+          <%=null_avatar 60 %><br/><%= "Anonymous" %>
         <% end %>
       </td>
       <td>
@@ -81,7 +83,7 @@
   <% downloads = history.downloads; downloads = downloads[0...max_downloads] unless (downloads.length < max_downloads) -%>
   <ul><% downloads.each do |d| %>
     <li>
-      <% if (name = name(d.user_id, true)) %>
+      <% if (name = name(d.user)) %>
         <%= datetime d.created_at, false %> - <%= name %>
       <% else %>
         <%= datetime d.created_at, false %> - <%= "Anonymous" %>
@@ -89,4 +91,6 @@
     </li>
   <% end %></ul>
 </p>
+<% end %>
+
 <% end %>

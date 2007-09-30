@@ -1,0 +1,18 @@
+<li><%= link_to 'New Citation', new_citation_path(@workflow) %></li>
+
+<% case controller.action_name.to_s; when "index" %>
+
+  <!-- no subnav options -->
+
+<% when "show" %>
+  
+  <% if logged_in? %>
+    <% if @workflow.authorized?("edit", current_user) %> <%= link_to 'Edit', edit_citation_path(workflow, citation) %><% end %>
+    <% if @workflow.authorized?("destroy", current_user) %> <%= link_to 'Destroy', citation_path(workflow, citation), :confirm => 'Are you sure?', :method => :delete %><% end %>
+  <% end %>
+
+<% else %>
+
+  <!-- no subnav options -->
+
+<% end %>

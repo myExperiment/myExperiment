@@ -17,7 +17,7 @@
 <% odd_row = false -%> 
 <% for user in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100"><%= contributor(user.id, "User", true, true, "60x60") %></td>
+    <td width="100"><%= contributor(user, "User", true, 60) %></td>
     <% if false %>
     <td width="150">
       <% if user.username %>
@@ -30,7 +30,7 @@
     </td>
     <td width="150">
       <% if user.openid_url %>
-        <%=h user.openid_url %>
+        <%=openid user %>
       <% elsif my_page? user.id %>
         Click <%= link_to 'here', edit_user_path(user) %> to validate your OpenID URL
       <% else %>

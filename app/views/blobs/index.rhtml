@@ -2,8 +2,6 @@
 
 <h3>Listing blobs</h3>
 
-<p>What is a <%= link_to 'Binary Large OBject', 'http://en.wikipedia.org/wiki/Binary_large_object' %>?</p>
-
 <%= render :partial => "layouts/paginate", :locals => { :collection => @blobs } %>
 
 <%= render :partial => "blobs/table", :locals => { :collection => @blobs } %>

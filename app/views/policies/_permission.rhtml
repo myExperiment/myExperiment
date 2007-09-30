@@ -1,11 +1,7 @@
 <% read_only ||= false -%>
     <tr>
       <td>
-        <% case permission.contributor_type.to_s; when "User" %>
-          <%=avatar(permission.contributor_id, '60x60') %><br/><%=name(permission.contributor_id, true) %>
-        <% when "Network" %>
-          <%=title(permission.contributor_id, true) %>
-        <% end %>
+        <%=contributor permission.contributor_id, permission.contributor_type, true, 60 %>
       </td>
       <td><%= check_box_tag "view_private_#{permission.id}", 1, checked = permission.view, :disabled => true %></td>
       <td><%= check_box_tag "download_private_#{permission.id}", 1, checked = permission.download, :disabled => true %></td>

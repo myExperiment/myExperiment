@@ -23,8 +23,8 @@
 
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
-  def my_page?(user_id, user_type="User")
-    logged_in? and current_user.id.to_i == user_id.to_i and current_user.class.to_s == user_type.to_s
+  def my_page?(contributor_id, contributor_type="User")
+    logged_in? and current_user.id.to_i == contributor_id.to_i and current_user.class.to_s == contributor_type.to_s
   end
   
   def datetime(old_dt, long=true)
@@ -43,125 +43,122 @@ module ApplicationHelper
     return long ? rtn.strftime("%d %B %Y") : rtn.strftime("%d/%m/%y")
   end
 
-  def openid(user_id, link_to=false)
-    begin
-      openid = User.find(user_id).openid_url
-      
-      return link_to ? link_to(openid, user_path(user_id)) : openid
-    rescue ActiveRecord::RecordNotFound
-      nil
+  def openid(user_id)
+    if user_id.kind_of? Fixnum
+      user = User.find(:first, :select => "id, openid_url", :conditions => ["id = ?", user_id]) 
+      return nil unless user
+    elsif user_id.kind_of? User
+      user = user_id
+    else
+      return nil
     end
+    
+    return link_to user.openid_url, user.openid_url
   end
   
-  def name(user_id, link_to=false)
-    begin
-      name = h(User.find(user_id).name)
-      
-      return link_to ? link_to(name, user_path(user_id)) : name
-    rescue ActiveRecord::RecordNotFound
-      nil
+  def name(user_id, truncate_to=nil)
+    if user_id.kind_of? Fixnum
+      user = User.find(:first, :select => "id, name", :conditions => ["id = ?", user_id]) 
+      return nil unless user
+    elsif user_id.kind_of? User
+      user = user_id
+    else
+      return nil
     end
+    
+    name = truncate_to ? truncate(user.name, truncate_to) : user.name
+    return link_to h(name), user_url(user)
   end
   
-  def title(network_id, link_to=false)
-    begin
-      title = h(Network.find(network_id).title)
-      
-      return link_to ? link_to(title, network_path(network_id)) : title
-    rescue ActiveRecord::RecordNotFound
-      nil
+  def title(network_id, truncate_to=nil)
+    if network_id.kind_of? Fixnum
+      network = Network.find(:first, :select => "id, title", :conditions => ["id = ?", network_id]) 
+      return nil unless network
+    elsif network_id.kind_of? Network
+      network = network_id
+    else
+      return nil
     end
+    
+    title = truncate_to ? truncate(network.title, truncate_to) : network.title
+    return link_to h(title), network_url(network)
   end
   
-  def avatar(user_id, size="200x200", link_to=true)
-    begin
-      user = User.find(user_id)
-      
-      if user.profile and user.profile.avatar?
-        # need code for deciding whether to use small, medium or large!
-        #img = image_tag(url_for_file_column(user.profile.picture, "data", "large"), 
-        #                :title => h(user.name),
-        #                :size => size)
-        
-        img = image_tag(url_for(:controller => 'pictures',
-                                :action     => 'show',
-                                :id         => user.profile.picture_id,
-                                :size       => size),
-                        :title => h(user.name))
-          
-        if link_to
-          return link_to(img, user_path(user))
-        else
-          return img
-        end
-      else
-        img = image_tag("avatar.png", 
-                        :title => h(user.name),
-                        :size => size)
-        
-        if link_to
-          return link_to(img, user_path(user))
-        else
-          return img
-        end
-      end
-    rescue ActiveRecord::RecordNotFound
-      nil
+  def avatar(user_id, size=200)
+    if user_id.kind_of? Fixnum
+      user = User.find(:first, :select => "id, name", :conditions => ["id = ?", user_id]) 
+      return nil unless user
+    elsif user_id.kind_of? User
+      user = user_id
+    else
+      return nil
     end
+    
+    if user.avatar?
+      img = image_tag url_for(:controller => 'pictures',
+                              :action => 'show',
+                              :id => user.profile.picture_id,
+                              :size => "#{size}x#{size}"),
+                      :title => h(user.name)
+    else
+      img = null_avatar(size)
+    end
+    
+    return link_to img, user_url(user)
   end
   
-  def null_avatar(size="200x200")
-    image_tag("avatar.png", :title => "Anonymous", :size => size)
-  end
-  
-  def profile_link(user_id)
-    begin
-      user = User.find(user_id)
-      
-      #link_to h(user.name), profile_path(user.profile)
-      return link_to(h(user.name), user_path(user))
-    rescue ActiveRecord::RecordNotFound
-      nil
-    end
+  def null_avatar(size=200)
+    image_tag "avatar.png", 
+              :title => "Anonymous", 
+              :size => "#{size}x#{size}"
   end
   
   def messages_link(user_id)
-    begin
-      user = User.find(user_id)
-      
-      foo = "Inbox (#{user.messages_unread.length})"
-      str = !user.messages_unread.empty? ? "<strong>" + foo + "</strong>" : foo
-      
-      link_to str, messages_path
-    rescue ActiveRecord::RecordNotFound
-      nil
+    if user_id.kind_of? Fixnum
+      user = User.find(:first, :select => "id, openid_url", :conditions => ["id = ?", user_id]) 
+      return nil unless user
+    elsif user_id.kind_of? User
+      user = user_id
+    else
+      return nil
     end
+    
+    inbox = "Inbox (#{user.messages_unread.length})"
+    rtn = !user.messages_unread.empty? ? "<strong>" + inbox + "</strong>" : inbox
+      
+    return link_to rtn, messages_path
   end
   
   def memberships_pending_link(user_id)
-    begin
-      user = User.find(user_id)
-      
-      foo = "Memberships (#{user.memberships_pending.length})"
-      str = !user.memberships_pending.empty? ? "<strong>" + foo + "</strong>" : foo
-      
-      link_to str, memberships_path(user.id)
-    rescue ActiveRecord::RecordNotFound
-      nil
+    if user_id.kind_of? Fixnum
+      user = User.find(:first, :select => "id", :conditions => ["id = ?", user_id]) 
+      return nil unless user
+    elsif user_id.kind_of? User
+      user = user_id
+    else
+      return nil
     end
+    
+    mships = "Memberships (#{user.memberships_pending.length})"
+    rtn = !user.memberships_pending.empty? ? "<strong>" + mships + "</strong>" : mships
+      
+    return link_to rtn, memberships_path(user)
   end
   
   def friendships_pending_link(user_id)
-    begin
-      user = User.find(user_id)
-      
-      foo = "Friendships (#{user.friendships_pending.length})"
-      str = !user.friendships_pending.empty? ? "<strong>" + foo + "</strong>" : foo
-      
-      link_to str, friendships_path(user.id)
-    rescue ActiveRecord::RecordNotFound
-      nil
+    if user_id.kind_of? Fixnum
+      user = User.find(:first, :select => "id", :conditions => ["id = ?", user_id]) 
+      return nil unless user
+    elsif user_id.kind_of? User
+      user = user_id
+    else
+      return nil
     end
+    
+    fships = "Friendships (#{user.friendships_pending.length})"
+    rtn = !user.friendships_pending.empty? ? "<strong>" + fships + "</strong>" : fships
+      
+    return link_to rtn, friendships_path(user)
   end
   
   def request_membership_link(user_id, network_id)
@@ -176,22 +173,25 @@ module ApplicationHelper
   end
   
   def versioned_workflow_link(workflow_id, version_id)
-    begin
-      workflow = Workflow.find(workflow_id)
-      
-      if workflow.revert_to(version_id)
-        url = url_for(:controller => 'workflows',
-                      :action => 'show',
-                      :id => workflow.id,
-                      :version => workflow.version)
-        
-        "#{link_to "[#{workflow.version}]", url} - #{link_to "#{h(workflow.title)}", url} by #{contributor(workflow.contributor_id, workflow.contributor_type)} (#{datetime(workflow.updated_at, false)})"
-      else
-        nil
-      end
-    rescue ActiveRecord::RecordNotFound
-      nil
+    if workflow_id.kind_of? Fixnum
+      workflow = Workflow.find(:first, :conditions => ["id = ?", workflow_id])
+      return nil unless workflow
+    elsif workflow_id.kind_of? Workflow
+      workflow = workflow_id
+    else
+      return nil
     end
+    
+    if workflow.revert_to(version_id)
+      url = url_for(:controller => 'workflows',
+                    :action => 'show',
+                    :id => workflow.id,
+                    :version => workflow.version)
+    else
+      return nil
+    end
+    
+    return "#{link_to "[#{workflow.version}]", url} - #{link_to "#{h(workflow.title)}", url} by #{contributor(workflow.contributor_id, workflow.contributor_type)} (#{datetime(workflow.updated_at, false)})"
   end
   
   def filter_contributables(contributions)
@@ -210,17 +210,18 @@ module ApplicationHelper
     return rtn
   end
   
-  def contributor(contributorid, contributortype, link=true, avatar=false, size="100x100")
+  def contributor(contributorid, contributortype, avatar=false, size=100)
     if contributortype.to_s == "User"
-      if avatar
-        return avatar(contributorid, size, link) + "<br/>" + name(contributorid, link)
-        
-        #return render(:partial => "users/avatar", :locals => { :user => User.find(contributorid), :size => size })
-      else
-        return link ? profile_link(contributorid) : name(contributorid)
-      end
+      user = User.find(:first, :select => "id, name", :conditions => ["id = ?", contributorid])
+      return nil unless user
+      
+      return name(user) unless avatar
+      return avatar(user, size) + "<br/>" + name(user)
     elsif contributortype.to_s == "Network"
-      return link ? link_to(title(contributorid), network_path(contributorid)) : title(contributorid)
+      network = Network.find(:first, :select => "id, title", :conditions => ["id = ?", contributorid])
+      return nil unless network
+      
+      return link_to title(network), network_path(network)
     else
       return nil
     end
@@ -232,7 +233,7 @@ module ApplicationHelper
       if b = Blob.find(:first, :conditions => ["id = ?", contributableid])
         name = h(b.local_name)
         
-        return link ? link_to(name, blob_path(b)) : name
+        return link ? link_to(name, blob_url(b)) : name
       else
         return nil
       end
@@ -240,7 +241,7 @@ module ApplicationHelper
       if b = Blog.find(:first, :conditions => ["id = ?", contributableid])
         name = h(b.title)
         
-        return link ? link_to(name, blog_path(b)) : name
+        return link ? link_to(name, blog_url(b)) : name
       else
         return nil
       end
@@ -248,7 +249,7 @@ module ApplicationHelper
       if f = Forum.find(:first, :conditions => ["id = ?", contributableid])
         name = h(f.name)
         
-        return link ? link_to(name, forum_path(f)) : name
+        return link ? link_to(name, forum_url(f)) : name
       else
         return nil
       end
@@ -270,7 +271,7 @@ module ApplicationHelper
           dot = ""
         end
         
-        return link ? link_to(name, workflow_path(w)) : name
+        return link ? link_to(name, workflow_url(w)) : name
       else
         return nil
       end

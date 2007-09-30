@@ -15,7 +15,7 @@
 <% unless profile.body.nil? or profile.body.empty? %>
   <p>
     <b>Description:</b><br />
-    <%= profile.body_html %>
+    <%= white_list profile.body_html %>
   </p>
 <% end %>
 

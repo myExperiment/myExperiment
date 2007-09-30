@@ -15,8 +15,8 @@
 <% odd_row = false -%>
 <% for membership in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <% if user %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.user_id, "User", true, true, "60x60") %><%= "</b>" unless membership.accepted? %></td><% end %>
-    <% if network %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.network_id, "Network", true, true, "60x60") %><%= "</b>" unless membership.accepted? %></td><% end %>
+    <% if user %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.user_id, "User", true, 60) %><%= "</b>" unless membership.accepted? %></td><% end %>
+    <% if network %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.network_id, "Network", true, 60) %><%= "</b>" unless membership.accepted? %></td><% end %>
     <td><%= "<b>" unless membership.accepted? %><%=datetime membership.created_at, false %><%= "</b>" unless membership.accepted? %></td>
     <td><%= "<b>" unless membership.accepted? %><%=datetime(membership.accepted_at, false) || "Pending" %><%= "</b>" unless membership.accepted? %></td>
     <td class="actions">

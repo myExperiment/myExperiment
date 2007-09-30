@@ -5,7 +5,19 @@
 <% form_for(:profile, :url => profiles_path) do |f| %>
   <p>
     <b>Picture</b><br />
-    <%= f.text_field :picture_id %>
+    <div id="hlist">
+      <ul>
+      <li>
+        <center><%= null_avatar 100 %><br/><%= f.radio_button :picture_id, nil %></center>
+      </li>
+      <% @profile.owner.pictures.each do |p| %>
+        <li>
+          <center><%= image_tag url_for :controller => 'pictures', :action  => 'show', :id => p.id, :size => '100x100' %><br/><%= f.radio_button :picture_id, p.id %></center>
+        </li>
+      <% end %>
+      </ul>
+    </div>
+    <div style="clear:both;" />
   </p>
 
   <p>

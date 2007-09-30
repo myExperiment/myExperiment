@@ -6,12 +6,12 @@
 
 <% when "show" %>
 
-  <% if @blob.authorized?("edit", (logged_in? ? current_user : nil)) %>
-    <li><%= link_to 'Edit Blob', edit_blob_path(@blob) %></li>
-  <% end %>
-
   <% if @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
     <li><%= link_to 'Download Blob', download_blob_path(@blob) %></li>
+  <% end %>
+  
+  <% if logged_in? and @blob.authorized?("edit", current_user) %>
+    <li><%= link_to 'Edit Blob', edit_blob_path(@blob) %></li>
   <% end %>
 
 <% else %>

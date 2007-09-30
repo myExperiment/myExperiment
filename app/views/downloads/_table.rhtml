@@ -16,7 +16,7 @@
       <% if download.user_id %>
         <%= contributor(download.user_id, "User", true, true, "60x60") %>
       <% else %>
-        <%=null_avatar '60x60' %><br/><%= "Anonymous" %>
+        <%=null_avatar 60 %><br/><%= "Anonymous" %>
       <% end %>
     </td>
     <td><%=datetime download.created_at, false %></td>

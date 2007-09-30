@@ -4,6 +4,6 @@ xm.item do
   xm.version workflow.version
   xm.pubDate workflow.created_at.rfc822
   xm.guid [request.host_with_port, "workflow", workflow.id.to_s].join(":"), "isPermaLink" => "false"
-  xm.author contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, false)
+  xm.author h(workflow.contribution.contributor.name || workflow.contribution.contributor.title)
   xm.link workflow_url(workflow)
 end

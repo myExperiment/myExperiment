@@ -11,7 +11,7 @@
 <% odd_row = false -%>
 <% for blob in @blobs %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100"><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, true, true, "60x60") %></td>
+    <td width="100"><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, true, 60) %></td>
     <td><%=h blob.local_name %></td>
     <td><%=h blob.content_type %></td>
     <td class="actions">
@@ -23,5 +23,9 @@
   </tr>
 <% end %>
 </table>
+
+<% else %>
+
+<p>No <%= controller.controller_name %> yet</p>
 
 <% end %>

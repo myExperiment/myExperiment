@@ -11,11 +11,8 @@
   <% end %>
   
   <% if logged_in? %>
-    <li><%= link_to_remote 'Bookmark Workflow', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %></li>
-  <% end %>
-
-  <% if @workflow.authorized?("edit", (logged_in? ? current_user : nil)) %>
-    <li><%= link_to 'Edit Workflow', edit_workflow_path(@workflow) %></li>
+    <li><%= link_to_remote 'Bookmark Workflow', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %></li> 
+    <% if @workflow.authorized?("edit", current_user) %><li><%= link_to 'Edit Workflow', edit_workflow_path(@workflow) %></li><% end %>
   <% end %>
 
 <% else %>

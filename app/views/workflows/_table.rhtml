@@ -20,7 +20,7 @@
 <% odd_row = false -%>
 <% for workflow in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100"><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, true, "60x60") %></td>
+    <td width="100"><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %></td>
     <td width="200">
       <p>
         <b><%=h workflow.title %></b>

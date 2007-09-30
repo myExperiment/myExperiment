@@ -24,7 +24,9 @@
 require 'acts_as_contributable'
 
 class Workflow < ActiveRecord::Base
-  has_many :citations, :order => "created_at DESC"
+  has_many :citations, 
+           :order => "created_at DESC",
+           :dependent => :destroy
   
   acts_as_contributable
   

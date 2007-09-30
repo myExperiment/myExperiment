@@ -12,7 +12,7 @@
 <% odd_row = false -%>
 <% for blog in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100"><%= contributor(blog.contributor_id, blog.contributor_type, true, true, "60x60") %></td>
+    <td width="100"><%= contributor(blog.contributor_id, blog.contributor_type, true, 60) %></td>
     <td width="200"><%=h blog.title %></td>
     <td><%=h blog.posts.length %></td>
     <td><%=datetime(blog.posts[-1].created_at, false) unless blog.posts.empty? %></td>

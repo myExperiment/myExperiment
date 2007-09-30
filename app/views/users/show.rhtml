@@ -2,7 +2,7 @@
   <tr>
     <% if @user.profile %>
       <td width="210" vAlign="top">
-        <%= avatar(@user, size="200x200", link_to=false) %>
+        <%= avatar @user, 200 %>
       </td>
     <% end %>
     <td vAlign="top" class="details">
@@ -16,7 +16,7 @@
       <p>
         <b>Openid url:</b>
         <% if @user.openid_url %>
-          <%=link_to @user.openid_url, @user.openid_url %>
+          <%=openid @user %>
         <% elsif my_page? @user.id %>
           Click <%= link_to 'here', new_openid_path %> to validate your OpenID URL
         <% else %>
@@ -70,7 +70,7 @@
 <% unless @user.friends.empty? %>
   <h3>Friends</h3>
 
-  <%= render :partial => "users/friends", :locals => { :collection => @user.friends, :user => @user } %>
+  <%= render :partial => "friendships/friends", :locals => { :collection => @user.friends } %>
   
   <%= link_to '[view my friendships]', friendships_path(@user) if my_page? @user.id %>
 <% end %>

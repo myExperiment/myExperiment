@@ -84,7 +84,7 @@ a img, a img:hover {
 
 #hlist
 {
-width: 100%;
+/*width: 100%;*/
 }
 
 #hlist li
@@ -94,7 +94,7 @@ float: left;
 width: 150px;
 margin: 3px;
 display: inline;
-text-align: center;
+/*text-align: center;*/
 }
 
 #openid_url {
@@ -317,8 +317,9 @@ table.contributable:hover {
 
 .network_banner 
 {
-  padding: 5px;
-  width: 540px;
+  /*width: 640px;*/
+  padding-left: 10px;
+  padding-right: 10px;
   border: 1px solid transparent;
 }
 

@@ -1,6 +1,6 @@
 <% case controller.action_name.to_s; when "show" %>
 
-  <% if @blog_post.blog.authorized?("edit", (logged_in? ? current_user : nil)) %>
+  <% if logged_in? and @blog_post.blog.authorized?("edit", current_user) %>
     <li><%= link_to 'Edit Blog Post', edit_blog_post_path(@blog_post.blog, @blog_post) %></li>
   <% end %>
 
