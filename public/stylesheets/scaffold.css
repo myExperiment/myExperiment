@@ -218,7 +218,7 @@ color: black;
 .sidenav {
 	width: 14em;
 	border-right: 1px solid #000;
-	padding: 0 0 1em 0;
+	padding: 0;
 	font-family: Verdana, Lucida, Geneva, Helvetica, Arial, sans-serif;
 	font-weight: bold;
 	background-color: #90bade;
