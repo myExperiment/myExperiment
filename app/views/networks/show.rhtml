@@ -49,9 +49,9 @@
   
   <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :network => @network } %>
   
-  <h3>Memberships Accepted</h3>
-  
   <% unless @network.memberships_accepted.empty? %>
+    <h3>Memberships Accepted</h3>
+  
     <%= render :partial => "memberships/table", :locals => { :collection => @network.memberships_accepted, :network => false } %>
   <% end %>
 <% else %>
