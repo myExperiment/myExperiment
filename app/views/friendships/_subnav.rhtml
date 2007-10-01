@@ -1,8 +1,8 @@
+<% if @user %><li><%= link_to 'Back to '+truncate(@user.name, 10), user_path(@user) %></li><% end %>
+
 <% case controller.action_name.to_s; when "index" %>
 
-  <% if @user and logged_in? and !@user.friend? current_user.id %>
-    <li><%= request_friendship_link(@user.id) %></li>
-  <% end %>
+  <!-- no subnav options -->
 
 <% when "show" %>
 
