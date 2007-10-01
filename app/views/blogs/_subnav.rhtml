@@ -6,9 +6,15 @@
 
 <% when "show" %>
 
-  <% if @blog.authorized?("edit", (logged_in? ? current_user : nil)) %>
-    <li><%= link_to 'New Blog Post', new_blog_post_path(@blog) %></li>
-    <li><%= link_to 'Edit Blog', edit_blog_path(@blog) %></li>
+  <% if logged_in? %>
+    <% if @blog.authorized?("edit", current_user) %>
+      <li><%= link_to 'New Post', new_blog_post_path(@blog) %></li>
+      <li><%= link_to 'Edit '+truncate(@blog.title, 10), edit_blog_path(@blog) %></li>
+    <% end %>
+    
+    <% if @blog.authorized?("destroy", current_user) %>
+      <li><%= link_to 'Destroy '+truncate(@blog.title, 10), blog_path(@blog), :confirm => 'Are you sure?', :method => :delete %></li>
+    <% end %>
   <% end %>
 
 <% else %>

@@ -87,7 +87,8 @@
 <% unless @policy.contributions.empty? %>
   <h3>Contributions moderated with this</h3>
 
-  <%= render :partial => "contributions/list", :locals => { :collection => @policy.contributions } %>
+  <%= render :partial => "contributions/list", :locals => { :collection => @policy.contributions } if false %>
+  <%= render :partial => "contributions/table", :locals => { :collection => @policy.contributions } %>
 <% end %>
 
 <br />

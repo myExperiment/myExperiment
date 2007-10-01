@@ -56,10 +56,9 @@
     <tr>
       <td colspan="<%= @user.profile ? 2 : 1 %>">
         <p>
-          <%= link_to '[edit account details]', edit_user_path(@user) %> |
-          <%= link_to '[upload new picture]', new_picture_path(@user) %> |
-          <%= link_to '[select avatar]', pictures_path(@user) %>
+          <%= link_to '[edit account details]', edit_user_path(@user) %>
           <% if !@user.profile.nil? and my_page? @user.id %> | <%= link_to '[edit profile]', edit_profile_path(@user.profile) %><% end %>
+           | <%= link_to '[upload new picture]', new_picture_path(@user) %>
         </p>
       </td>
     </tr>

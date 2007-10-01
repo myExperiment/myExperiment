@@ -1,4 +1,7 @@
-<% if @policy %><li><%= link_to 'New permission', new_permission_path(@policy) %></li><% end %>
+<% if @permission.policy %>
+  <li><%= link_to 'Back to '+truncate(@permission.policy.name, 10), policy_path(@permission.policy) %></li>
+  <li><%= link_to 'New permission', new_permission_path(@permission.policy) %></li>
+<% end %>
 
 <% case controller.action_name.to_s; when "index" %>
 
@@ -7,6 +10,7 @@
 <% when "show" %>
 
   <li><%= link_to 'Edit Permission', edit_permission_path(@permission.policy, @permission) %></li>
+  <li><%= link_to 'Destroy Permission', permission_path(@permission.policy, @permission), :confirm => 'Are you sure?', :method => :delete %></li>
 
 <% else %>
 

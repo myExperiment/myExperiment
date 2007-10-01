@@ -6,12 +6,15 @@
 
 <% when "show" %>
 
-  <% if logged_in? and !@network.member? current_user.id %>
-    <li><%= request_membership_link(current_user.id, @network.id) %></li>
-  <% end %>
+  <% if logged_in? %>
+    <% unless @network.member? current_user.id %>
+      <li><%= request_membership_link(current_user.id, @network.id) %></li>
+    <% end %>
 
-  <% if my_page? @network.owner.id %>
-    <li><%= link_to 'Edit Network', edit_network_path(@network) %></li>
+    <% if my_page? @network.owner.id %>
+      <li><%= link_to 'Edit Network', edit_network_path(@network) %></li>
+      <li><%= link_to 'Destroy Network', network_path(@network), :confirm => 'Are you sure?', :method => :delete %></li>
+    <% end %>
   <% end %>
 
 <% else %>

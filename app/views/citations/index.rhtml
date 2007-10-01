@@ -4,16 +4,14 @@
 
 <br />
 
-<h3>Preview</h3>
-
 <% unless @citations.empty? %>
+  <h3>Preview</h3>
+
   <% @citations.each_index do |i| %>
     <p>
       <%= i.to_i + 1 %>.  <%= render :partial => "citations/citation", :object => @citations[i] %>
     </p>
   <% end %>
-<% else %>
-  <p>No citations</p>
 <% end %>
 
 <br />

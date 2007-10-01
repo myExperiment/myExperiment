@@ -1,13 +1,21 @@
+<% unless logged_in? %><li><%= link_to 'New User', new_user_path %></li><% end %>
+
 <% case controller.action_name.to_s; when "index" %>
 
-  <% unless logged_in? %>
-    <li><%= link_to 'New User', new_user_path %></li>
-  <% end %>
+  <!-- no subnav options -->
 
 <% when "show" %>
 
-  <% if logged_in? and !@user.friend? current_user.id %>
-    <li><%= request_friendship_link(@user.id) %></li>
+  <% if logged_in? %>
+    <% if my_page? @user.id %>
+      <li><%= link_to 'Edit Account Details', edit_user_path(@user) %></li>
+      <% unless @user.profile.nil? %><li><%= link_to 'Edit Profile', edit_profile_path(@user.profile) %></li><% end %>
+      <li><%= link_to 'Upload New Picture', new_picture_path(@user) %></li>
+    <% end %>
+  
+    <% unless @user.friend? current_user.id %>
+      <li><%= request_friendship_link(@user.id) %></li>
+    <% end %>
   <% end %>
 
 <% else %>

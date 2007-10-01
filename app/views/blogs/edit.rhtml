@@ -6,6 +6,8 @@
   <% if @blog.owner?(current_user) %>
     <%= render :partial => "policies/listform", :locals => { :contribution => @blog.contribution, :user => current_user } %>
   <% end %>
+  
+  <h3>Details</h3>
 
   <p>
     <b>Title</b><br />
