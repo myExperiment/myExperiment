@@ -74,11 +74,9 @@
 <% unless (controller.controller_name.to_s == "tags" and controller.action_name.to_s == "index") %>
 
 <div id="myexp_sidebar">
-  <p>
-    <ul class="sidenav">
-      <%= render :partial => "subnav" %>
-    </ul>
-  </p>
+  <ul class="sidenav">
+    <%= render :partial => "subnav" %>
+  </ul>
 
   <div id="tag_clouds">
     <%= render :partial => "layouts/tags" %>
