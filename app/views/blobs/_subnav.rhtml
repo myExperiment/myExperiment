@@ -12,7 +12,7 @@
   
   <% if logged_in? %>
     <% if @blob.authorized?("edit", current_user) %><li><%= link_to 'Edit '+truncate(@blob.local_name, 10), edit_blob_path(@blob) %></li><% end %>
-    <% if @blob.authorized?("destroy", current_user) %><li><%= link_to 'Destroy '+truncate(@blob.local_name, 10), blob_path(@blob), :confirm => 'Are you sure?', :method => :delete % %></li><% end %>
+    <% if @blob.authorized?("destroy", current_user) %><li><%= link_to 'Destroy '+truncate(@blob.local_name, 10), blob_path(@blob), :confirm => 'Are you sure?', :method => :delete %></li><% end %>
   <% end %>
 
 <% else %>
