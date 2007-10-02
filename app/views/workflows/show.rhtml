@@ -1,54 +1,8 @@
-<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
+<h1><%=h @workflow.title %></h1>
 
-<h3>Actions</h3>
-
-<p>
-  <b>Bookmarked by:</b><br/>
-  <div id="bookmarks"><%=h @workflow.bookmarks.collect {|b| b.user.name}.join(", ") %></div>
-</p>
-
-<p>
-  <b>Rating:</b> 
-  <% if logged_in? %>
-    <div id="star-ratings-block">
-      <%= render :partial => "ratings/rating", :locals => { :rateable => @workflow, :controller => controller.controller_name } %>
-    </div>
-  <% else %>
-    <%= number_with_precision(@workflow.rating*20, 0) %>&#37 (<%= pluralize @workflow.ratings.count, 'rating' %>)
-  <% end %>
-</p>
-
-<p>
-  <b>Tags:</b><br/>
-  <div id="tags"><%=h @workflow.tags.join(", ") %></div>
-</p>
-
-<% if logged_in? %>
-  <% form_remote_tag (:url => tag_workflow_path(@workflow), :update => 'tags', :success => "var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
-    <p>
-      <%= text_field_tag :tag_list %>
-    </p>
-    
-    <%= submit_tag "Add tags" %>
-  <% end %>
-<% end %>
-
-<h3>Details</h3>
-
-<p>
-  <b>Title:</b>
-  <%=h @workflow.title %>
-</p>
-
-<p>
-  <b>Contributor:</b><br/>
-  <%= contributor(@workflow.contribution.contributor_id, @workflow.contribution.contributor_type, true, true, "100x100") %>
-</p>
-
-<p>
-  <b>Description:</b><br/>
+<div class="description">
   <%= @workflow.body_html %>
-</p>
+</div>
 
 <% if false %>
 <p>
@@ -58,10 +12,8 @@
 <% end %>
 
 <% unless @workflow.image.nil? %>
-<p>
-  <b>Image:</b><br/>
-  <%= image_tag url_for_file_column(@workflow, "image", "medium") %>
-</p>
+
+<p><%= image_tag url_for_file_column(@workflow, "image", "medium") %></p>
 <% end %>
 
 <% if logged_in? and @workflow.authorized?("destroy", current_user) %>
@@ -71,75 +23,10 @@
   </p>
 <% end %>
 
+<!--
 <p>
   <b>Unique:</b>
   <%=h @workflow.unique_name %>
-</p>
-
-<p>
-  <b>Created at:</b>
-  <%=datetime @workflow.created_at %>
-</p>
-
-<p>
-  <b>Updated at:</b>
-  <%=datetime @workflow.updated_at %>
-</p>
-
-<h3>Versions</h3>
-
-<%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
-
-<% if logged_in? %>
-  <h3>Comments</h3>
-  
-  <% if logged_in? %>
-    <% form_remote_tag(:url => comment_workflow_path(@workflow), :update => 'comments', :position => 'bottom') do %>
-      <%= text_area_tag :comment, nil, :size => "30x4" %><br/>
-      <%= submit_tag "Add Comment" %>
-    <% end %>
-  <% end %>
-  
-  <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
-<% else %>
-  <% unless @workflow.comments.empty? %>
-    <h3>Comments</h3>
-    
-    <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
-  <% end %>
-<% end %>
-
-<h3>Statistics</h3>
-
-<%= render :partial => "contributions/statistics", :object => @workflow.contribution %>
-
-<p>
-  <b>Number of bookmarks:</b> 
-  <%=h @workflow.bookmarks.length %>
-</p>
-
-<p>
-  <b>Number of comments:</b> 
-  <%=h @workflow.comments.length %>
-</p>
-
-<p>
-  <b>Number of ratings:</b> 
-  <%=h @workflow.ratings.length %>
-</p>
-
-<p>
-  <b>Number of taggings:</b> 
-  <%=h @workflow.taggings.length %>
-</p>
-
-<% if logged_in? and @workflow.owner? current_user %>
-  <h3>History</h3>
-
-  <%= render :partial => "contributions/history", :object => @workflow.contribution %>
-<% end %>
-
-<br/>
+</p> -->
 
 
-<%= link_to 'Back', contributions_path %>

@@ -1,0 +1,10 @@
+<h3>Search workflows</h3>
+
+
+<% form_tag search_workflows_path, :method => :get do %>
+
+
+<p><%= text_field_tag :query, '', :size => 20 %> <%= submit_tag "Search" %></p>
+
+
+<% end %>

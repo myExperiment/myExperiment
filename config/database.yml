@@ -13,7 +13,7 @@
 #   http://dev.mysql.com/doc/refman/5.0/en/old-client.html
 development:
   adapter: mysql
-  database: m2_development
+  database: ui_development
   username: root
   password:
   host: localhost
@@ -32,5 +32,5 @@ production:
   adapter: mysql
   database: m2_development
   username: root
-  password: 
+  password:
   host: localhost

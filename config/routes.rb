@@ -7,7 +7,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # sessions and RESTful authentication
   map.resource :session
-  
+
   # openid authentication
   map.resource :openid
 
@@ -22,7 +22,7 @@ ActionController::Routing::Routes.draw do |map|
     # blogs have nested posts
     blog.resources :blog_posts
   end
-  
+
   # all downloads and viewings
   map.resources :downloads, :viewings
 
@@ -81,7 +81,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # You can have the root of your site routed by hooking up ''
   # -- just remember to delete public/index.html.
-  map.connect '', :controller => 'users'
+  map.connect '', :controller => 'splash'
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'

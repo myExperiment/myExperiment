@@ -1,0 +1,133 @@
+body{
+background-color: #eee;
+color: #000;
+font-family: sans-serif;
+
+ }
+
+h1{ font-size: 1.9em; font-weight: bold; }
+
+#logo{background:url('/images/logo.png') no-repeat;border:0;margin:0em 0em 1em 0.5em;padding:0; padding-top: 0;}
+#logo a{display:block;text-decoration:none;overflow:hidden;border:0;margin:0;padding:0;padding-top:48px;height:0px !important;width:282px;cursor:pointer;}
+
+
+#top{ background-color: #fff; position: relative; height: 5.5em;border-bottom: 1px solid #6c6; /* set border COLOR as desired */ padding-top: 0.5em; }
+
+
+#searchbar{ background-color: cyan;
+
+position: absolute; top: 2.3em; right: 1em;
+
+ }
+
+#login{ position: absolute; top: 0.3em; right: 1em; font-size: 0.9em; line-height: 2em;}
+
+#login a{ font-weight: bold; }
+
+#columns{ position: relative; }
+
+#sidebar{ width: 30%; position: absolute; top: 1em; right: 1em;  font-size: 0.8em; padding-top: 2px; }
+
+#sidebar li{ margin-bottom: 8px; }
+
+#content{ width: 63%; background-color: white; top: 1em; left: 1em; position: absolute; padding: 15px;  border-bottom: 4em #eee solid; padding-bottom: 2em; }
+
+
+
+ul#tabnav { /* general settings */
+position: absolute;
+bottom: 0;
+width: 50%;
+text-align: left; /* set to left, right or center */
+margin: 0em 0 0 1em; /* set margins as desired */
+}
+
+ul#usernav{
+position: absolute;
+bottom: 0;
+right: 0;
+width: 50%;
+text-align: right; /* set to left, right or center */
+margin: 0em 0 0 1em; /* set margins as desired */
+
+
+ }
+
+.tabs{ font: 0.9em verdana, arial, sans-serif; /* set font as desired */
+list-style-type: none;
+padding: 3px 10px 3px 10px; /* THIRD number must change with respect to padding-top (X) below */ }
+
+ul.tabs li { /* do not change */
+display: inline;
+}
+
+#selected_tabnav, #selected_usernav{
+border-bottom: 0px solid #eee; /* set border color to page background color */
+background-color: #eee; /* set background color to match above border color */
+}
+
+#selected_tabnav a, #selected_usernav{
+background-color: #eee !important; /* set selected tab background color as desired */
+color: #000; /* set selected tab link color as desired */
+position: relative;
+border-bottom: 1px solid #eee;
+}
+
+ul.tabs li a { /* settings for all tab links */
+padding: 3px 4px; /* set padding (tab size) as desired; FIRST number must change with respect to padding-top (X) above */
+border: 1px solid #6c6; /* set border COLOR as desired; usually matches border color specified in #tabnav */
+background-color: #cfc; /* set unselected tab background color as desired */
+color: #666; /* set unselected tab link color as desired */
+margin-right: 0px; /* set additional spacing between tabs as desired */
+text-decoration: none;
+border-bottom: none;
+}
+
+ul.tabs a:hover { /* settings for hover effect */
+background: #fff; /* set desired hover color */
+}
+
+
+
+#sid2ebar li a{ background-color: #eee; padding: 6px; border-top: 1px solid #666;  border-left: 1px solid #666; border-right: 3px solid #666; border-bottom: 3px solid #666; display: block; width: 12em; font-size: 0.9em; text-decoration: none; }
+
+textarea{ width: 100%; }
+
+table{ background-color: cyan; } /* make tables horrible */
+
+.netscape4{ display: none !important; }
+
+#sidebar h3{ background-color: #222; color: white; padding: 0.1em; font-weight:bold; margin-bottom: 1em; }
+
+.metadata{ background-color: #fff; padding: 8px; }
+
+#content h1{ font-size: 1.3em; width: 70%; margin-bottom: 0.8em; }
+
+.description{ font-size: 0.9em; margin-bottom: 1em; }
+
+.fixmefixme{ background-color: magenta; padding: 1em; }
+
+.bullet{ list-style: square; margin-left: 2em; }
+
+.bullet li{ line-height: 1.5em; }
+
+#frontpageimages { position: relative; height: 200px; background-color: white;  margin-top: 23px;}
+
+#frontpageimages span{ color: black; text-decoration: none; display: block; text-align: center; margin-top: -140px; padding-top: 140px; }
+
+.squareimage{ width: 128px; background-color: white; float: left; margin-left: 20px; background-repeat: no-repeat; padding-top: 140px; font-weight: bold; font-size: 1.2em; text-align: center; }
+
+.visualClear{ clear: both; }
+
+#sidebar label{ width: 5em;float: left; }
+
+#sidebar input { float: left;  }
+
+
+
+#sidebar p{ clear: both; padding-bottom: 2em; }
+
+
+fieldset{ padding: 0.5em; position: relative; }
+
+fieldset .small{ position: absolute; bottom: -1em; right: 2em; }

@@ -1,0 +1,333 @@
+body { 
+  background: #8e8e8e url('/images/body-bg.gif') repeat-y center;
+}
+
+body, p, ol, ul, td {
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size:   13px;
+  line-height: 18px;
+}
+
+td {
+  text-align: center;
+}
+
+pre {
+  background-color: #eee;
+  padding: 10px;
+  font-size: 11px;
+}
+
+a { color: black; }
+a:visited { color: black; }
+a:hover { color: red; }
+
+.fieldWithErrors {
+  padding: 2px;
+  background-color: red;
+  display: table;
+}
+
+#errorExplanation {
+  width: 400px;
+  border: 2px solid red;
+  padding: 7px;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+}
+
+#errorExplanation h2 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px 15px;
+  font-size: 12px;
+  margin: -7px;
+  background-color: #c00;
+  color: #fff;
+}
+
+#errorExplanation p {
+  color: #333;
+  margin-bottom: 0;
+  padding: 5px;
+}
+
+#errorExplanation ul li {
+  font-size: 12px;
+  list-style: square;
+}
+
+div.uploadStatus {
+  margin: 5px;
+}
+
+div.progressBar {
+  margin: 5px;
+}
+
+div.progressBar div.border {
+  background-color: #fff;
+  border: 1px solid grey;
+  width: 100%;
+}
+
+div.progressBar div.background {
+  background-color: #333;
+  height: 18px;
+  width: 0%;
+}
+
+a img, a img:hover {
+  border: 0;
+}
+
+#hlist
+{
+width: 100%;
+}
+
+#hlist li
+{
+list-style: none;
+float: left;
+width: 150px;
+margin: 3px;
+display: inline;
+text-align: center;
+}
+
+#openid_url {
+background: url(/images/openid.gif) no-repeat;
+padding-left: 18px;
+}
+
+/* begin css tabs */
+
+#tabnav
+{
+text-align: center;
+padding: 3px 0;
+margin-left: 0;
+margin-bottom: 0;
+font-weight: bold;
+}
+
+#tabnav li
+{
+list-style: none;
+margin: 0;
+display: inline;
+}
+
+#tabnav li a
+{
+padding: 3px 10px;
+margin-left: 3px;
+border: 1px solid #6c6;
+background: #fff;
+border-bottom: 1px solid transparent;
+text-decoration: none;
+}
+
+#tabnav li a:link { color: #666; }
+#tabnav li a:visited { color: #666; }
+
+#tabnav li a:hover
+{
+color: #1a1a1a;
+background: #cfc;
+border-color: CE0434;
+}
+
+#tabnav li#selected_tabnav a
+{
+background: #cfc;
+border-bottom: 1px solid transparent;
+color: black;
+}
+
+/* light green = #cfc */
+/* dark green = #6c6 */
+
+/* logo red = #CE0434 */
+/* logo green = #179032 */
+
+/* end css tabs */
+
+#myexp_wrapper{
+  width:960px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#myexp_inner { 
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+#myexp_header {
+  margin-bottom: 10px;
+}
+
+#myexp_login form {
+  padding: 0;
+  margin: 0;
+}
+
+#myexp_navbar {
+  margin-bottom: 10px;
+}
+
+#subnav { 
+  border-top: 1px solid #6c6;
+  text-align: center; 
+  background-color: #cfc;
+  margin: 0;
+  padding: 5px;
+}
+
+#subnav li { 
+  display: inline; 
+}
+
+#subnav li a { 
+  color: blue;
+  font-weight: bold !important; 
+  text-decoration: none; 
+  margin-right: 1em; 
+}
+
+#subnav li a:hover {
+  color: red;
+}
+
+#searchbar form {
+  padding: 0;
+  margin: 0;
+}
+
+#searchbar {
+  padding-top: 0;
+  margin-top: 0;
+  text-align: center; 
+  background: #ffffff url('/images/searchfade.png') repeat-x center;
+}
+
+#policies_div
+{
+width: 100%;
+}
+
+#policies_div li
+{
+list-style: none;
+float: left;
+width: 300px;
+margin-left: 5px;
+margin-bottom: 5px;
+padding-left: 10px;
+display: inline;
+border: 1px solid black;
+}
+
+table.alt_table tr.odd_row td
+{
+  background-color: #eee;
+}
+
+table.alt_table tr.even_row td
+{
+  background-color: #fff;
+}
+
+table.alt_table tr td 
+{
+  padding: 5px 5px 5px 5px;
+}
+
+table.alt_table tr td.actions
+{
+  text-align: left;
+}
+
+table.alt_table tr td.contributable
+{
+  margin: 5px 0px 5px 0px;
+  padding: 3px 0px 3px 0px;
+}
+
+table.alt_table tr.even_row td.contributable table.contributable:hover,
+table.alt_table tr.odd_row td.contributable table.contributable:hover
+{
+  border: 1px solid black;
+}
+
+table.contributable {
+  border: 1px solid transparent;
+}
+
+table.contributable:hover {
+  border: 1px solid black;
+}
+
+/* http://www.mis-algoritmos.com/wp-content/uploads/pagstyle.php?q=manu */
+.pagination {
+	padding: 3px;
+	margin: 3px;
+	text-align: center;
+}
+
+.pagination ul {
+	list-style-type: none;
+	
+}
+
+.pagination ul li {
+	display: inline;
+}
+
+.pagination a {
+	padding: 2px 5px 2px 5px;
+	margin: 2px;
+	border: 1px solid #cfc;
+	text-decoration: none; /* no underline */
+	color: #179032;
+}
+
+.pagination a:hover,
+.pagination a:active {
+	border: 1px solid #CE0434;
+	color: #179032;
+}
+.pagination .currentpage {
+	padding: 2px 5px 2px 5px;
+	margin: 2px;
+	border: 1px solid #179032;
+	font-weight: bold;
+	background-color: #179032;
+	color: #FFF;
+}
+.pagination .disabledpage {
+	padding: 2px 5px 2px 5px;
+	margin: 2px;
+	border: 1px solid #EEE;
+	color: #DDD;
+}
+
+.network_banner 
+{
+  padding: 5px;
+  width: 540px;
+  border: 1px solid transparent;
+}
+
+.network_banner:hover
+{
+  border: 1px solid black;
+}
+
+table tr td.details 
+{
+  text-align: left;
+}

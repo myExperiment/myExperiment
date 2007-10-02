@@ -24,20 +24,22 @@
 class SessionController < ApplicationController
   # GET /session/new
   # new renders new.rhtml
-  
+
+  layout 'blank'
+
   # POST /session
   # POST /session.xml
   def create
     # record return_to address if required
     session[:return_to] = request.env['HTTP_REFERER'] unless session[:return_to] and !session[:return_to].empty?
-    
+
     if using_open_id?
       open_id_authentication
     else
       password_authentication
     end
   end
-  
+
   # DELETE /session
   # DELETE /session.xml
   def destroy
@@ -47,15 +49,15 @@ class SessionController < ApplicationController
     flash[:notice] = "You have been logged out. Thank you for using myExperiment!"
     redirect_to ''
   end
-  
+
   # handle the openid server response
   def complete
     response = consumer.complete(params)
-    
+
     case response.status
     when OpenID::SUCCESS
       redirect_to_edit_user = false
-      
+
       # create user object if one does not exist
       unless @user = User.find_first(["openid_url = ?", response.identity_url])
         @user = User.new(:openid_url => response.identity_url, :name => "Joe Bloggs BSc (CHANGE ME!!)", :last_seen_at => Time.now)
@@ -67,13 +69,13 @@ class SessionController < ApplicationController
       self.current_user = @user
 
       flash[:notice] = "Logged in as #{@user.name}"
-       
+
       if redirect_to_edit_user == true
         redirect_to url_for(:controller => 'users', :action => 'edit', :id => self.current_user)
       else
         successful_login(self.current_user)
       end
-      
+
       return
 
     when OpenID::FAILURE
@@ -90,15 +92,15 @@ class SessionController < ApplicationController
     else
       flash[:notice] = 'Unknown response from OpenID server.'
     end
-  
+
     failed_login(flash[:notice])
   end
 
   protected
-  
+
     def password_authentication
       login, password = params[:session][:username], params[:session][:password]
-      
+
       self.current_user = User.authenticate(login, password)
       if logged_in?
         if params[:remember_me] == "1"
@@ -113,19 +115,19 @@ class SessionController < ApplicationController
 
     def open_id_authentication
       openid_url = params[:openid_url]
-      
+
       if request.post?
         request = consumer.begin(openid_url)
-        
+
         case request.status
         when OpenID::SUCCESS
           return_to = url_for(:action=> 'complete')
           trust_root = url_for(:controller=>'')
-          
+
           url = request.redirect_url(trust_root, return_to)
           redirect_to(url)
           return
-          
+
         when OpenID::FAILURE
           escaped_url = CGI::escape(openid_url)
           flash[:notice] = "Could not find OpenID server for #{escaped_url}"
@@ -136,11 +138,11 @@ class SessionController < ApplicationController
     end
 
   private
-  
+
     def successful_login(user)
       # update "last seen" attribute
       user.update_attribute(:last_seen_at, Time.now)
-      
+
       respond_to do |format|
         flash[:notice] = "Logged in successfully. Welcome to myExperiment!"
         format.html { redirect_back_or_default(user_path(user)) }
@@ -155,7 +157,7 @@ class SessionController < ApplicationController
         format.xml { head :forbidden }
       end
     end
-    
+
   # Get the OpenID::Consumer object.
   def consumer
     # create the OpenID store for storing associations and nonces,

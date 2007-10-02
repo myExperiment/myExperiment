@@ -1,6 +1,7 @@
-<h2>Please sign in</h2>
+<li><h3>Log in to myExperiment</h3>
 
 <% form_tag session_path do -%>
+<fieldset>
 <p><label for="username">Username: </label>
 <%= text_field_tag 'session[username]' %></p>
 
@@ -9,9 +10,10 @@
 
 <p><%= check_box_tag 'session[remember_me]' %><label for="remember_me" style="width: 90%;">Remember me on this computer</label></p>
 
-<p class="small"><%= link_to "Login using an OpenID", :action => "openid" %>
-
 <p>
   <%= submit_tag 'Sign in', :disable_with => "Signing in&hellip;" %>
 </p>
-<% end -%>
+
+<p class="small"><%= link_to "Login using an OpenID", :controller => 'session', :action => "openid" %>
+</fieldset>
+<% end -%></li>

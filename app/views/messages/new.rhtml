@@ -15,13 +15,13 @@
 
   <p>
     <b>Body</b><br />
-    <%= f.text_area :body %>
+    <%= f.text_area :body, :size => '25x6' %>
   </p>
 
   <p>
     <%= submit_tag "Send" %>
   </p>
-  
+
   <%= f.hidden_field :from %>
   <%= f.hidden_field :reply_id %>
 <% end %>

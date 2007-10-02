@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="/home/mattl/myexperiment/branches/mattl-ui/public/images"
+   sodipodi:docname="buttons.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient3134">
+      <stop
+         style="stop-color:#fffbfb;stop-opacity:1;"
+         offset="0"
+         id="stop3136" />
+      <stop
+         style="stop-color:#dbdbdb;stop-opacity:1;"
+         offset="1"
+         id="stop3138" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3134"
+       id="linearGradient8037"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.7633533,0,0,0.5824254,13.0813,40.172682)"
+       x1="153.02266"
+       y1="43.513973"
+       x2="153.02266"
+       y2="96.363007" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3134"
+       id="linearGradient8061"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.7156772,0,0,0.583091,22.111307,107.69342)"
+       x1="153.02266"
+       y1="43.513973"
+       x2="153.02266"
+       y2="96.363007" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3134"
+       id="linearGradient8085"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.8657875,0,0,0.5810647,11.18625,170.45683)"
+       x1="153.02266"
+       y1="43.513973"
+       x2="153.02266"
+       y2="96.363007" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3134"
+       id="linearGradient8099"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.7986727,0,0,0.5819461,14.173537,221.44567)"
+       x1="153.02266"
+       y1="43.513973"
+       x2="153.02266"
+       y2="96.363007" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3134"
+       id="linearGradient8113"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.8358107,0,0,0.581418,9.0799949,280.70106)"
+       x1="153.02266"
+       y1="43.513973"
+       x2="153.02266"
+       y2="96.363007" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3134"
+       id="linearGradient8127"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9814311,0,0,0.5797576,1.4645036,333.90948)"
+       x1="153.02266"
+       y1="43.513973"
+       x2="153.02266"
+       y2="96.363007" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3134"
+       id="linearGradient8181"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.8251053,0,0,0.5815458,3.1983372,400.15012)"
+       x1="153.02266"
+       y1="43.513973"
+       x2="153.02266"
+       y2="96.363007" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.9382716"
+     inkscape:cx="174.32297"
+     inkscape:cy="916.39008"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1024"
+     inkscape:window-height="694"
+     inkscape:window-x="0"
+     inkscape:window-y="25" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g8029"
+       transform="translate(2.7226891,17.357143)">
+      <rect
+         ry="4.9911909"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+         y="65.427902"
+         x="55.065731"
+         height="30.868542"
+         width="146.56383"
+         id="rect2160"
+         style="fill:url(#linearGradient8037);fill-opacity:1;stroke:#d8d8d8;stroke-width:1.13145745;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+         id="text7029"
+         y="85.481911"
+         x="78.599998"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:14px;font-weight:bold;letter-spacing:-0.413681;font-family:Liberation Sans"
+           y="85.481911"
+           x="78.599998"
+           id="tspan7031"
+           sodipodi:role="line">Upload a workflow</tspan></text>
+      <g
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+         transform="matrix(0.6697325,0,0,0.6697325,19.651725,26.706142)"
+         id="g8025">
+        <path
+           sodipodi:type="arc"
+           style="fill:#008000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="path6049"
+           sodipodi:cx="68.561989"
+           sodipodi:cy="54.096203"
+           sodipodi:rx="9.794569"
+           sodipodi:ry="9.794569"
+           d="M 78.356558 54.096203 A 9.794569 9.794569 0 1 1  58.76742,54.096203 A 9.794569 9.794569 0 1 1  78.356558 54.096203 z"
+           transform="matrix(1.1543874,0,0,1.1543874,-8.3379091,18.414208)"
+           inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <path
+           style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 62.883871,82.749279 L 66.070968,86.794441 L 78.451613,74.781537"
+           id="path7038"
+           inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+      </g>
+    </g>
+    <rect
+       style="fill:url(#linearGradient8061);fill-opacity:1;stroke:#d8d8d8;stroke-width:1.09618044;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect8041"
+       width="137.41003"
+       height="30.903818"
+       x="61.473557"
+       y="132.97749"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addfile.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       ry="4.9968948" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="85.025459"
+       y="153.04915"
+       id="text8043"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addfile.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan8045"
+         x="85.025459"
+         y="153.04915"
+         style="font-size:14px;font-weight:bold;letter-spacing:-0.413681;font-family:Liberation Sans">Upload a new file</tspan></text>
+    <g
+       id="g8047"
+       transform="matrix(0.6697325,0,0,0.6697325,26.077189,94.273379)"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addfile.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+         transform="matrix(1.1543874,0,0,1.1543874,-8.3379091,18.414208)"
+         d="M 78.356558 54.096203 A 9.794569 9.794569 0 1 1  58.76742,54.096203 A 9.794569 9.794569 0 1 1  78.356558 54.096203 z"
+         sodipodi:ry="9.794569"
+         sodipodi:rx="9.794569"
+         sodipodi:cy="54.096203"
+         sodipodi:cx="68.561989"
+         id="path8049"
+         style="fill:#008000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         sodipodi:type="arc" />
+      <path
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+         id="path8051"
+         d="M 62.883871,82.749279 L 66.070968,86.794441 L 78.451613,74.781537"
+         style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <rect
+       style="fill:url(#linearGradient8085);fill-opacity:1;stroke:#d8d8d8;stroke-width:1.20357513;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect8065"
+       width="166.23122"
+       height="30.796423"
+       x="58.804565"
+       y="195.65303"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addnetwork.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       ry="4.9795299" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="82.302773"
+       y="215.67101"
+       id="text8067"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addnetwork.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan8069"
+         x="82.302773"
+         y="215.67101"
+         style="font-size:14px;font-weight:bold;letter-spacing:-0.413681;font-family:Liberation Sans">Create a new network</tspan></text>
+    <g
+       id="g8071"
+       transform="matrix(0.6697325,0,0,0.6697325,23.3545,156.89523)"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addnetwork.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+         transform="matrix(1.1543874,0,0,1.1543874,-8.3379091,18.414208)"
+         d="M 78.356558 54.096203 A 9.794569 9.794569 0 1 1  58.76742,54.096203 A 9.794569 9.794569 0 1 1  78.356558 54.096203 z"
+         sodipodi:ry="9.794569"
+         sodipodi:rx="9.794569"
+         sodipodi:cy="54.096203"
+         sodipodi:cx="68.561989"
+         id="path8073"
+         style="fill:#008000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         sodipodi:type="arc" />
+      <path
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+         id="path8075"
+         d="M 62.883871,82.749279 L 66.070968,86.794441 L 78.451613,74.781537"
+         style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <rect
+       style="fill:url(#linearGradient8099);fill-opacity:1;stroke:#d8d8d8;stroke-width:1.15686071;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect8087"
+       width="153.34515"
+       height="30.843138"
+       x="58.100529"
+       y="246.68011"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addforum.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       ry="4.9870834" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="81.622093"
+       y="266.72144"
+       id="text8089"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addforum.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan8091"
+         x="81.622093"
+         y="266.72144"
+         style="font-size:14px;font-weight:bold;letter-spacing:-0.413681;font-family:Liberation Sans">Create a new forum</tspan></text>
+    <g
+       id="g8093"
+       transform="matrix(0.6697325,0,0,0.6697325,22.673821,207.94565)"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addforum.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+         transform="matrix(1.1543874,0,0,1.1543874,-8.3379091,18.414208)"
+         d="M 78.356558 54.096203 A 9.794569 9.794569 0 1 1  58.76742,54.096203 A 9.794569 9.794569 0 1 1  78.356558 54.096203 z"
+         sodipodi:ry="9.794569"
+         sodipodi:rx="9.794569"
+         sodipodi:cy="54.096203"
+         sodipodi:cx="68.561989"
+         id="path8095"
+         style="fill:#008000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         sodipodi:type="arc" />
+      <path
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+         id="path8097"
+         d="M 62.883871,82.749279 L 66.070968,86.794441 L 78.451613,74.781537"
+         style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <rect
+       style="fill:url(#linearGradient8113);fill-opacity:1;stroke:#d8d8d8;stroke-width:1.0760572;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect8101"
+       width="132.32512"
+       height="30.923941"
+       x="54.997108"
+       y="305.85822"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addblog.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       ry="5.0001488" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="78.559074"
+       y="325.93994"
+       id="text8103"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addblog.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan8105"
+         x="78.559074"
+         y="325.93994"
+         style="font-size:14px;font-weight:bold;letter-spacing:-0.413681;font-family:Liberation Sans">Add a blog post</tspan></text>
+    <g
+       id="g8107"
+       transform="matrix(0.6697325,0,0,0.6697325,19.610799,267.16415)"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addblog.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+         transform="matrix(1.1543874,0,0,1.1543874,-8.3379091,18.414208)"
+         d="M 78.356558 54.096203 A 9.794569 9.794569 0 1 1  58.76742,54.096203 A 9.794569 9.794569 0 1 1  78.356558 54.096203 z"
+         sodipodi:ry="9.794569"
+         sodipodi:rx="9.794569"
+         sodipodi:cy="54.096203"
+         sodipodi:cx="68.561989"
+         id="path8109"
+         style="fill:#008000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         sodipodi:type="arc" />
+      <path
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_addworkflow.png"
+         id="path8111"
+         d="M 62.883871,82.749279 L 66.070968,86.794441 L 78.451613,74.781537"
+         style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <rect
+       style="fill:url(#linearGradient8127);fill-opacity:1;stroke:#d8d8d8;stroke-width:1.16436803;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect8115"
+       width="155.37967"
+       height="30.83563"
+       x="55.381592"
+       y="358.99478"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_downloadworkflow.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       ry="4.9858694" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="78.899399"
+       y="379.03235"
+       id="text8117"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_downloadworkflow.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan8119"
+         x="78.899399"
+         y="379.03235"
+         style="font-size:14px;font-weight:bold;letter-spacing:-0.413681;font-family:Liberation Sans">Download workflow</tspan></text>
+    <path
+       sodipodi:type="arc"
+       style="fill:#008000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path8123"
+       sodipodi:cx="68.561989"
+       sodipodi:cy="54.096203"
+       sodipodi:rx="9.794569"
+       sodipodi:ry="9.794569"
+       d="M 78.356558 54.096203 A 9.794569 9.794569 0 1 1  58.76742,54.096203 A 9.794569 9.794569 0 1 1  78.356558 54.096203 z"
+       transform="matrix(0.7731308,0,0,0.7731308,14.366962,332.58915)"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_downloadworkflow.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:50.7067337px;font-style:normal;font-weight:bold;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="58.877007"
+       y="-362.38458"
+       id="text8131"
+       transform="scale(1,-1)"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_downloadworkflow.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan8133"
+         x="58.877007"
+         y="-362.38458"
+         style="font-size:20.28269386px;font-weight:bold;fill:#ffffff">^</tspan></text>
+    <rect
+       style="fill:url(#linearGradient8181);fill-opacity:1;stroke:#d8d8d8;stroke-width:1.06926107;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect8135"
+       width="130.63023"
+       height="30.930737"
+       x="48.527317"
+       y="425.31277"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_killworkflow.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       ry="5.0012474" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="72.092682"
+       y="445.39792"
+       id="text8137"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_killworkflow.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan8139"
+         x="72.092682"
+         y="445.39792"
+         style="font-size:14px;font-weight:bold;letter-spacing:-0.413681;font-family:Liberation Sans">Delete workflow</tspan></text>
+    <path
+       sodipodi:type="arc"
+       style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path8141"
+       sodipodi:cx="68.561989"
+       sodipodi:cy="54.096203"
+       sodipodi:rx="9.794569"
+       sodipodi:ry="9.794569"
+       d="M 78.356558 54.096203 A 9.794569 9.794569 0 1 1  58.76742,54.096203 A 9.794569 9.794569 0 1 1  78.356558 54.096203 z"
+       transform="matrix(0.7731308,0,0,0.7731308,7.5602395,398.9547)"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_killworkflow.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:54.57101822px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="52.703491"
+       y="447.55695"
+       id="text8183"
+       inkscape:export-filename="/home/mattl/myexperiment/branches/mattl-ui/public/images/button_killworkflow.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan8185"
+         x="52.703491"
+         y="447.55695"
+         style="font-size:19.09985542px;font-weight:bold;fill:#ffffff">X</tspan></text>
+    <path
+       style="fill:#ffffff"
+       d="M 107.42106,482.3685 C 107.15068,478.931 107.31813,475.69446 107.79317,475.17619 C 108.91608,473.9511 118.42845,473.9511 119.55135,475.17619 C 120.02639,475.69446 120.19384,478.931 119.92347,482.3685 L 119.43188,488.6185 L 113.67226,488.6185 L 107.91265,488.6185 L 107.42106,482.3685 z M 118.67226,483.1185 L 118.67226,478.6185 L 113.67226,478.6185 L 108.67226,478.6185 L 108.67226,483.1185 L 108.67226,487.6185 L 113.67226,487.6185 L 118.67226,487.6185 L 118.67226,483.1185 z M 110.86721,483.1185 C 110.84683,481.4685 111.05428,480.67244 111.3282,481.34947 C 111.60212,482.0265 111.6188,483.3765 111.36526,484.34947 C 111.11171,485.32244 110.88759,484.7685 110.86721,483.1185 z M 114.86721,483.1185 C 114.84683,481.4685 115.05427,480.67244 115.3282,481.34947 C 115.60212,482.0265 115.6188,483.3765 115.36525,484.34947 C 115.11171,485.32244 114.88759,484.7685 114.86721,483.1185 z M 119.67226,476.7435 C 119.67226,475.47266 114.16465,474.57002 110.67226,475.2685 C 105.62166,476.27862 107.33215,477.6185 113.67226,477.6185 C 116.97226,477.6185 119.67226,477.22475 119.67226,476.7435 z "
+       id="path8263" />
+  </g>
+</svg>

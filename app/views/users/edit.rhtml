@@ -1,33 +1,39 @@
-<h1>Editing user</h1>
+<h1>Edit your profile</h1>
+
+<%= avatar(@user, size="100x100", link_to=false) %>
+
+<ul>
+<li><%= link_to "Change your name", :action => "name" %></li>
+<li><%= link_to "Change your password", :action => "password" %></li>
+<li><%= link_to "Add/Change OpenIDs", :action => "openid" %></li>
+</ul>
 
 <%= error_messages_for :user %>
-
-<h3>Name</h3>
 
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
   <p>
     <b>Name</b><br />
     <%= f.text_field :name %>
   </p>
-  
+
   <p>
     <%= submit_tag "Save Changes" %>
   </p>
 <% end %>
 
-<h3>Username & Password</h3>
+
 
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
   <p>
     <b>Username</b><br />
     <%= f.text_field :username %>
   </p>
-    
+
   <p>
     <b>New Password</b><br />
     <%= f.password_field :password %>
   </p>
-    
+
   <p>
     <b>Confirm New Password</b><br />
     <%= f.password_field :password_confirmation %>

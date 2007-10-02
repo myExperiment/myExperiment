@@ -1,0 +1,18 @@
+html, body{
+
+background-color: #eee;
+font-family: sans-serif;
+
+ }
+
+body{ background-color: white; width: 30em; margin: 5em auto 5em auto; padding: 2em; border: 5px solid #ccc; position: relative; font-size: 1em }
+
+label{ width: 10em;float: left; }
+
+input { float: left;  }
+
+
+
+p{ clear: both; padding-bottom: 1em; }
+
+.small{ font-size: 0.9em; position: absolute; bottom: 1em; right: 1em; }
