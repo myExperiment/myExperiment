@@ -110,7 +110,7 @@ module Scufl
         stream.puts " subgraph cluster_#{prefix}sources {"
         stream.puts '  style="dotted"'
         stream.puts '  label="Workflow Inputs"'
-        stream.puts '  fontname="Helvetica\"'
+        stream.puts '  fontname="Helvetica"'
         stream.puts '  fontsize="10"'
         stream.puts '  fontcolor="black"'
         stream.puts '  rank="same"'
@@ -141,7 +141,7 @@ module Scufl
         stream.puts " subgraph cluster_#{prefix}sinks {"
         stream.puts '  style="dotted"'
         stream.puts '  label="Workflow Outputs"'
-        stream.puts '  fontname="Helvetica\"'
+        stream.puts '  fontname="Helvetica"'
         stream.puts '  fontsize="10"'
         stream.puts '  fontcolor="black"'
         stream.puts '  rank="same"'
