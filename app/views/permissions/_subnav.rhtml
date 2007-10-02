@@ -1,6 +1,5 @@
 <% if @permission.policy %>
-  <li><%= link_to 'Back to '+truncate(@permission.policy.name, 10), policy_path(@permission.policy) %></li>
-  <li><%= link_to 'New permission', new_permission_path(@permission.policy) %></li>
+  <li class="with_sep_bottom"><%= link_to 'New permission', new_permission_path(@permission.policy) %></li>
 <% end %>
 
 <% case controller.action_name.to_s; when "index" %>

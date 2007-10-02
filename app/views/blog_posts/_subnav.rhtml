@@ -1,5 +1,3 @@
-<li><%= link_to 'Back to '+truncate(@blog_post.blog.title, 10), blog_path(@blog_post.blog) %></li>
-
 <% case controller.action_name.to_s; when "show" %>
 
   <% if logged_in? and @blog_post.blog.authorized?("edit", current_user) %>

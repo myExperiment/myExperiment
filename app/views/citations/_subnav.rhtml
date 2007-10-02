@@ -1,6 +1,5 @@
-<li><%= link_to "Back to #{h(truncate(@workflow.title, 10))}", workflow_path(@workflow) %></li>
 <li><%= link_to 'All Citations', citations_path(@workflow) %></li>
-<li><%= link_to 'New Citation', new_citation_path(@workflow) %></li>
+<li class="with_sep_bottom"><%= link_to 'New Citation', new_citation_path(@workflow) %></li>
 
 <% case controller.action_name.to_s; when "index" %>
 

@@ -1,4 +1,4 @@
-<li><%= link_to 'New Workflow', new_workflow_path %></li>
+<li class="with_sep_bottom"><%= link_to 'New Workflow', new_workflow_path %></li>
 
 <% case controller.action_name.to_s; when "index" %>
 
@@ -7,16 +7,19 @@
 <% when "show" %>
 
   <% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
-    <li><%= link_to 'Download Workflow', download_workflow_path(@workflow) %></li>
+    <li class="with_sep_bottom"><%= link_to 'Download Workflow', download_workflow_path(@workflow) %></li>
   <% end %>
   
   <% if logged_in? %>
-    <li><%= link_to_remote 'Bookmark Workflow', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %></li> 
+    <li class="with_sep_bottom"><%= link_to_remote 'Bookmark Workflow', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %></li> 
     
     <% if @workflow.authorized?("edit", current_user) %><li><%= link_to 'Edit Workflow', edit_workflow_path(@workflow) %></li><% end %>
     <% if @workflow.authorized?("destroy", current_user) %><li><%= link_to 'Destroy Workflow', workflow_path(@workflow), :confirm => 'Are you sure?', :method => :delete %></li><% end %>
-    <% if @workflow.authorized?("edit", current_user) %><li><%= link_to 'New Citation', new_citation_path(@workflow) %></li><% end %>
-    <% if @workflow.authorized?("edit", current_user) %><li><%= link_to 'Edit Citations', citations_path(@workflow) %></li><% end %>
+    
+    <% if @workflow.authorized?("edit", current_user) %>
+      <li class="with_sep_top"><%= link_to 'New Citation', new_citation_path(@workflow) %></li>
+      <li><%= link_to 'Edit Citations', citations_path(@workflow) %></li>
+    <% end %>
   <% end %>
 
 <% else %>

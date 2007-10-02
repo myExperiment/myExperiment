@@ -1,4 +1,7 @@
-<% if logged_in? %><li><%= link_to 'New Policy', new_policy_path %></li><% end %>
+<% if logged_in? %>
+  <li class="with_sep_bottom"><%= link_to 'New Policy', new_policy_path %></li>
+  <li class="with_sep_bottom"><%= link_to 'New permission', new_permission_path(@policy) %></li>
+<% end %>
 
 <% case controller.action_name.to_s; when "index" %>
 
@@ -7,12 +10,11 @@
 <% when "show" %>
 
   <li><%= link_to 'Edit Policy', edit_policy_path(@policy) %></li>
-  
-  <li><%= link_to 'New permission', new_permission_path(@policy) %></li>
+  <li><%= link_to 'Destroy Policy', policy_path(@policy), :confirm => 'Are you sure?', :method => :delete %></li>
 
 <% when "edit" %>
 
-  <li><%= link_to 'Edit Permissions', permissions_path(@policy) %></li>
+  <!-- no subnav options -->
 
 <% else %>
 

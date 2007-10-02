@@ -18,9 +18,9 @@ pre {
   font-size: 11px;
 }
 
-a { color: black; }
+a { color: black; text-decoration: none; border-bottom: 1px dashed transparent;}
 a:visited { color: black; }
-a:hover { color: red; }
+a:hover { color: red; border-bottom: 1px dashed grey;}
 
 .fieldWithErrors {
   padding: 2px;
@@ -174,13 +174,13 @@ color: black;
 }
 
 #myexp_sidebar {
-  float: left;
+  float: right;
   width: 190px;
-  padding-right: 10px;
+  padding-left: 10px;
 }
 
 #myexp_body {
-  float: right;
+  float: left;
   width: 720px;
 }
 
@@ -201,10 +201,12 @@ color: black;
   font-weight: bold !important; 
   text-decoration: none; 
   /*margin-right: 1em; */
+  border-bottom: 1px solid transparent;
 }
 
 .subnav li a:hover {
   color: red;
+  border-bottom: 1px dashed grey;
 }
 
 
@@ -217,7 +219,8 @@ color: black;
 /* http://css.maxdesign.com.au/listamatic/vertical10.htm */
 .sidenav {
 	width: 14em;
-	border-right: 1px solid #000;
+	/*border-right: 1px solid #000;
+	border-left: 1px solid #000;*/
 	padding: 0;
 	margin-left: 0;
 	font-family: Verdana, Lucida, Geneva, Helvetica, Arial, sans-serif;
@@ -235,6 +238,19 @@ color: black;
 
 .sidenav li {
 	list-style-type: none;
+	border-bottom: 1px solid #90bade;
+	margin: 0;
+}
+
+.sidenav li.with_sep_bottom {
+	list-style-type: none;
+	border-bottom: 1em solid white;
+	margin: 0;
+}
+
+.sidenav li.with_sep_top {
+	list-style-type: none;
+	border-top: 1em solid white;
 	border-bottom: 1px solid #90bade;
 	margin: 0;
 }

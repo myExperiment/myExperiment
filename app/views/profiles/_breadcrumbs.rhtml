@@ -14,7 +14,7 @@
   <% when "new" %>
     <li><%= link_to "Create Profile", new_profile_path(@user) %></li>
   <% when "edit" %>
-    <li><%= link_to "Edit Profile", edit_profile_path(@user, @profile) %>
+    <li><%= link_to "Edit Profile", edit_profile_path(@user) %></li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>
