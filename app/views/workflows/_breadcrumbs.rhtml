@@ -1,6 +1,6 @@
 <li><%= link_to 'Workflows', workflows_path %></li>
 
-<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit", "search"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
@@ -9,6 +9,8 @@
     <li><%= link_to "Create Workflow", new_workflow_path(@workflow) %></li>
   <% when "edit" %>
     <li><%= link_to "Edit: #{h(@workflow.title)}", edit_workflow_path(@workflow) %>
+  <% when "search" %>  
+    <li><%= link_to "Search Results", search_workflows_path(:query => @query) %></li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>
