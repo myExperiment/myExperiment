@@ -2,6 +2,9 @@ ActionController::Routing::Routes.draw do |map|
   # forums
   map.from_plugin :savage_beast
   
+  # mashup
+  map.resource :mashup
+  
   # search
   map.resource :search
 
