@@ -1,1 +1,15 @@
-<!-- no breadcrumbs -->
+<li><%= link_to 'Tags', tags_path %></li>
+
+<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= link_to "View: #{h(@tag.name)}", tag_path(@tag) %></li>
+  <% when "new" %>
+    <!-- no breadcrumb -->
+  <% when "edit" %>
+    <!-- no breadcrumb -->
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>
