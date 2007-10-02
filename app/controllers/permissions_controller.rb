@@ -163,6 +163,7 @@ protected
         policy = Policy.find(params[:policy_id], :conditions => ["contributor_id = ? AND contributor_type = ?", current_user.id, current_user.class.to_s])
         
         if permission.policy.id.to_i == policy.id.to_i
+          @policy = policy
           @permission = permission
         else
           error("Permission not found (invalid Policy id)", "is invalid (does not match permission.policy_id)", :policy_id)

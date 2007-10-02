@@ -136,12 +136,14 @@ protected
     begin
       if params[:user_id]
         begin
-          @profile = User.find(params[:user_id]).profile
+          @user = User.find(params[:user_id])
+          @profile = @user.profile
         rescue ActiveRecord::RecordNotFound
           error("User not found (id unknown)", "not found", attr=:user_id)
         end
       else
         @profile = Profile.find(params[:id])
+        @user = @profile.owner
       end
     rescue ActiveRecord::RecordNotFound
       error("Profile not found (id unknown)", "not found")
@@ -152,12 +154,14 @@ protected
     begin
       if params[:user_id]
         begin
-          @profile = User.find(params[:user_id], :conditions => ["id = ?", current_user.id]).profile
+          @user = User.find(params[:user_id], :conditions => ["id = ?", current_user.id])
+          @profile = @user.profile
         rescue ActiveRecord::RecordNotFound
           error("User not found (id unknown)", "not found", attr=:user_id)
         end
       else
         @profile = Profile.find(params[:id], :conditions => ["user_id = ?", current_user.id])
+        @user = @profile.owner
       end
     rescue ActiveRecord::RecordNotFound
       error("Profile not found (id not authorized)", "is invalid (not owner)")

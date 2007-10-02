@@ -1,0 +1,23 @@
+<% if @user %>
+  <li><%= link_to 'Users', users_path %></li>
+
+  <li><b>&#187;</b></li>
+
+  <li><%= link_to h(@user.name), user_path(@user) %></li>
+
+  <li><b>&#187;</b></li>
+  
+  <li><%= link_to 'Friendships', friendships_path(@user) %></li>
+<% else %>
+  <li><%= link_to 'Friendships', url_for(:controller => :friendships) %>
+<% end %>
+
+<% if ["show"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= link_to "View: #{h(@friendship.user.name)}", friendship_path(@friendship.friend, @friendship) %></li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

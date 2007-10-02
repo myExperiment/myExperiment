@@ -65,6 +65,9 @@
     <% if false %>
     <%= render :partial => "subnav" %>
     <% end %>
+    <li><%= link_to "Home", "/" %></li>
+    <li><b>&#187;</b></li>
+    <%= render :partial => "breadcrumbs" %>
   </ul>
   <div id="searchbar">
     <%= render :partial => "layouts/search" %>

@@ -11,7 +11,7 @@
 <% odd_row = false -%>
 <% for message in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td><%= "<b>" unless message.read? %><%=h name(message.from) %><%= "</b>" unless message.read? %></td>
+    <td><%= "<b>" unless message.read? %><%=name message.from %><%= "</b>" unless message.read? %></td>
     <td><%= "<b>" unless message.read? %><%=link_to h(message.subject), message_path(message) %><%= "</b>" unless message.read? %></td>
     <td><%= "<b>" unless message.read? %><%=datetime message.created_at, false %><%= "</b>" unless message.read? %></td>
     <td class="actions">

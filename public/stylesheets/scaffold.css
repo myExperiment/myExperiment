@@ -186,7 +186,7 @@ color: black;
 
 .subnav { 
   border-top: 1px solid #6c6;
-  text-align: center; 
+  text-align: left; 
   background-color: #cfc;
   margin: 0;
   padding: 5px;
@@ -200,7 +200,7 @@ color: black;
   color: blue;
   font-weight: bold !important; 
   text-decoration: none; 
-  margin-right: 1em; 
+  /*margin-right: 1em; */
 }
 
 .subnav li a:hover {

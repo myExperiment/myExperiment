@@ -1,0 +1,29 @@
+<% if params[:user_id] %>
+  <li><%= link_to 'Users', users_path %></li>
+  
+  <li><b>&#187;</b></li>
+  
+  <li><%= link_to contributor_name(params[:user_id], "User"), user_path(params[:user_id]) %></li>
+  
+  <li><b>&#187;</b></li>
+<% end %>
+
+<li><%= link_to 'Pictures', pictures_path %></li>
+
+<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <% if logged_in? %>
+      <li><%= link_to "View: ##{@picture.id}", picture_path(current_user, @picture) %></li>
+    <% else %>
+      <li><%= link_to "View: ##{@picture.id}", picture_path(@picture.owner, @picture) %></li>
+    <% end %>
+  <% when "new" %>
+    <li><%= link_to "Upload New Picture", new_picture_path(current_user) %></li>
+  <% when "edit" %>
+    <li><%= link_to "Edit: ##{@picture.id}", edit_picture_path(current_user, @picture) %></li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

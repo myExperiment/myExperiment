@@ -1,0 +1,21 @@
+<% if @user %>
+  <li><%= link_to 'Users', users_path %></li>
+  
+  <li><b>&#187;</b></li>
+
+  <li><%= link_to h(@user.name), user_path(@user) %></li>
+<% end %>
+
+<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= link_to "View Profile", profile_path(@profile) %></li>
+  <% when "new" %>
+    <li><%= link_to "Create Profile", new_profile_path(@user) %></li>
+  <% when "edit" %>
+    <li><%= link_to "Edit Profile", edit_profile_path(@user, @profile) %>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

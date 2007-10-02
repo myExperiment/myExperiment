@@ -227,6 +227,22 @@ module ApplicationHelper
     end
   end
   
+  def contributor_name(contributorid, contributortype)
+    if contributortype.to_s == "User"
+      user = User.find(:first, :select => "id, name", :conditions => ["id = ?", contributorid])
+      return nil unless user
+      
+      return h(user.name)
+    elsif contributortype.to_s == "Network"
+      network = Network.find(:first, :select => "id, title", :conditions => ["id = ?", contributorid])
+      return nil unless network
+      
+      return h(network.title)
+    else
+      return nil
+    end
+  end
+  
   def contributable(contributableid, contributabletype, link=true, thumb=false)
     case contributabletype.to_s
     when "Blob"

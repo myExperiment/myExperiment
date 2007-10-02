@@ -228,12 +228,16 @@ module Squirrel # :nodoc
                             :created_at  => message_tuple["created_at"],
                             :read_at     => message_tuple["read_at"])
                             
-      if message.save
-        my_puts "Saved Message #{message.id}" if verbose
-      else
-        puts message.errors.full_messages
+      unless message.subject.to_s == "You have a new friend request"
+        if message.save
+          my_puts "Saved Message #{message.id}" if verbose
+        else
+          puts message.errors.full_messages
         
-        exit if force_exit
+          exit if force_exit
+        end
+      else
+        my_puts "Saving NOT COMPLETED (Friend Request)" if verbose
       end
     end
     my_puts "END Phase 2", "", ""

@@ -1,0 +1,15 @@
+<li><%= link_to 'Blobs', blobs_path %></li>
+
+<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= link_to "View: #{h(@blob.local_name)}", blob_path(@blob) %></li>
+  <% when "new" %>
+    <li><%= link_to "Upload Blob", new_blob_path %></li>
+  <% when "edit" %>
+    <li><%= link_to "Edit: #{h(@blob.local_name)}", edit_blob_path(@blob) %>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

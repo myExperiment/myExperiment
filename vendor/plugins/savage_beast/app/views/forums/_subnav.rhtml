@@ -7,6 +7,11 @@
   <% if logged_in? %>
     <li><%= link_to "New Topic", new_topic_path(@forum) %></li>
   <% end%>
+  
+  <% if logged_in? %>
+    <% if @forum.authorized?("edit", current_user) %><li><%= link_to 'Edit Workflow', edit_forum_path(@forum) %></li><% end %>
+    <% if @forum.authorized?("destroy", current_user) %><li><%= link_to 'Destroy Workflow', forum_path(@forum), :confirm => 'Are you sure?', :method => :delete %></li><% end %>
+  <% end %>
 
 <% else %>
 
