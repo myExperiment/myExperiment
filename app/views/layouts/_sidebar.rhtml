@@ -1,0 +1,5 @@
+<%if false %>
+  <%= render :partial => "gadgets/network_monitor", :locals => { :network => Network.find(7) } %>
+<% end %>
+
+<%= render :partial => "gadgets/user_monitor", :locals => { :user => current_user } %>

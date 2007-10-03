@@ -53,7 +53,7 @@
     <label for="user_id">User:</label> <%= select_tag :user_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %> <%= submit_tag "Add" %>
   <% end %>
   
-  <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :network => @network } %>
+  <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :size => 60 } %>
   
   <% unless @network.memberships_accepted.empty? %>
     <h3>Memberships Accepted</h3>
@@ -64,7 +64,7 @@
   <% unless @network.members(false).empty? %>
     <h3>Members</h3>
   
-    <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :network => @network } %>
+    <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :size => 60 } %>
   <% end %>
 <% end %>
 

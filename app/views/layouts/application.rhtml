@@ -83,10 +83,12 @@
   <ul class="sidenav">
     <%= render :partial => "subnav" %>
   </ul>
-
-  <div id="tag_clouds">
-    <%= render :partial => "layouts/tags" %>
-  </div>
+  
+  <% if logged_in? %>
+    <%= render :partial => "layouts/sidebar", :locals => { :user => current_user } %>
+  <% end %>
+  
+  <%= render :partial => "gadgets/tag_most_popular", :locals => { :limit => 25 } %>
 </div>
 
 <div id="myexp_body">

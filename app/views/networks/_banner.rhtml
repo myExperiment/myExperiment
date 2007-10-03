@@ -14,7 +14,9 @@
         <%= render :partial => "users/avatar", :locals => { :user => network.owner, :size => 100 } %>
       </td>
       <td>
-        <%= render :partial => "networks/members", :locals => { :collection => network.members(false) } %>
+        <%= render :partial => "networks/members", :locals => { :collection => network.members(false), :size => 60 } %>
+        
+        <div style="clear: both;"/>
       </td>
     </tr>
   </table>

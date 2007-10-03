@@ -1,0 +1,9 @@
+<% limit ||= 25 -%>
+<div class="myexperiment_gadget">
+  <p>
+    <b>Tag cloud</b><br/>
+    <small><%= pluralize(limit, "tag") %></small>
+  </p>
+  
+  <%= tag_cloud(limit) %>
+</div>

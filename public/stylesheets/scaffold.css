@@ -1,3 +1,23 @@
+.myexperiment_gadget {
+	border: 1px dashed grey;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	margin-bottom: 1em;
+}
+
+.myexperiment_gadget .header {
+	text-align: center;
+}
+
+.myexperiment_gadget ul.gadget_list {
+	list-style-type: none;
+	padding-left: 0;
+}
+
+.myexperiment_gadget .hTagcloud {
+	margin-bottom: 0.5em;
+}
+
 body { 
   background: #8e8e8e url('/images/body-bg.gif') repeat-y center;
 }

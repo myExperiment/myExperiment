@@ -1,3 +1,4 @@
+<% size ||= 100 -%>
 <li class="member">
-  <%= render :partial => "users/avatar", :locals => { :user => member, :size => 60 } %>
+  <%= render :partial => "users/avatar", :locals => { :user => member, :size => size } %>
 </li>

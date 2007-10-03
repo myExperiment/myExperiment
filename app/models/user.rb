@@ -249,7 +249,9 @@ class User < ActiveRecord::Base
   end
   
   def friends
-    (friends_of_mine + friends_with_me).uniq
+    (friends_of_mine + friends_with_me).uniq.sort { |a, b|
+      a.name <=> b.name
+    }
   end
   
   has_and_belongs_to_many :networks,

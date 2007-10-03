@@ -306,6 +306,16 @@ module ApplicationHelper
     end
   end
   
+  def contributable_name(contributableid, contributabletype, truncate=nil)
+    str = contributable(contributableid, contributabletype, false)
+    
+    return truncate ? truncate(str, truncate) : str
+  end
+  
+  def contributable_url(contributableid, contributabletype)
+    return url_for(:controller => contributabletype.downcase.pluralize, :action => "show", :id => contributableid)
+  end
+  
   def policy_link(policyid, managedby=true)
     if policyid.nil?
       return "Public (all)"
