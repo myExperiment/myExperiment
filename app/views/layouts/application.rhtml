@@ -33,6 +33,8 @@
   </tr>
 </table>
 
+<p> </p>
+
 <% if logged_in? %>
   <p>
     Logged in as <%= name(current_user) %> [<%= link_to "Logout", session_path, :method => :delete %>] -
