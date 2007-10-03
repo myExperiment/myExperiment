@@ -1,5 +1,5 @@
 .myexperiment_gadget {
-	border: 1px dashed grey;
+	border: 1px dashed gray;
 	padding-left: 0.5em;
 	padding-right: 0.5em;
 	margin-bottom: 1em;
@@ -40,7 +40,7 @@ pre {
 
 a { color: black; text-decoration: none; border-bottom: 1px dashed transparent;}
 a:visited { color: black; }
-a:hover { color: red; border-bottom: 1px dashed grey;}
+a:hover { color: red; border-bottom: 1px dashed gray;}
 
 .fieldWithErrors {
   padding: 2px;
@@ -88,7 +88,7 @@ div.progressBar {
 
 div.progressBar div.border {
   background-color: #fff;
-  border: 1px solid grey;
+  border: 1px solid gray;
   width: 100%;
 }
 
@@ -144,27 +144,26 @@ display: inline;
 {
 padding: 3px 10px;
 margin-left: 3px;
-border: 1px solid #6c6;
+border: 1px solid #317eff;
 background: #fff;
 border-bottom: 1px solid transparent;
 text-decoration: none;
 }
 
-.tabnav li a:link { color: #666; }
-.tabnav li a:visited { color: #666; }
+.tabnav li a:link { color: #333333; }
+.tabnav li a:visited { color: #333333; }
 
 .tabnav li a:hover
 {
 color: #1a1a1a;
-background: #cfc;
-border-color: CE0434;
+background: #317eff;
 }
 
 .tabnav li#selected_tabnav a
 {
-background: #cfc;
+background: #317eff;
 border-bottom: 1px solid transparent;
-color: black;
+color: white;
 }
 
 /* end css tabs */
@@ -205,19 +204,20 @@ color: black;
 }
 
 .subnav { 
-  border-top: 1px solid #6c6;
+  border-top: 1px solid #317eff;
   text-align: left; 
-  background-color: #cfc;
+  background-color: #317eff;
   margin: 0;
   padding: 5px;
 }
 
 .subnav li { 
   display: inline; 
+  color: white;
 }
 
 .subnav li a { 
-  color: blue;
+  color: #eeeeee;
   font-weight: bold !important; 
   text-decoration: none; 
   /*margin-right: 1em; */
@@ -225,13 +225,13 @@ color: black;
 }
 
 .subnav li a:hover {
-  color: red;
-  border-bottom: 1px dashed grey;
+  color: #eea0a0;
+  border-bottom: 1px dashed gray;
 }
 
 
-/* light green = #cfc */
-/* dark green = #6c6 */
+/* light color = #317eff */
+/* dark color = #317eff */
 
 /* logo red = #CE0434 */
 /* logo green = #179032 */
@@ -305,10 +305,13 @@ html>body .sidenav li a { width: auto; }
 }
 
 #searchbar {
+  height: 30px;
   padding-top: 0;
   margin-top: 0;
   text-align: center; 
-  background: #ffffff url('/images/searchfade.png') repeat-x center;
+  background-image: url('/images/searchfade.png');
+  background-repeat: repeat-x;
+  background-position: top center;
 }
 
 #policies_div
@@ -392,7 +395,7 @@ table.contributable:hover {
 .pagination a {
 	padding: 2px 5px 2px 5px;
 	margin: 2px;
-	border: 1px solid #cfc;
+	border: 1px solid #317eff;
 	text-decoration: none; /* no underline */
 	color: #179032;
 }
