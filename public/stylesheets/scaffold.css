@@ -238,10 +238,11 @@ color: white;
 
 /* http://css.maxdesign.com.au/listamatic/vertical10.htm */
 .sidenav {
-	width: 14em;
+	width: 100%;
 	/*border-right: 1px solid #000;
 	border-left: 1px solid #000;*/
 	padding: 0;
+	margin-top: 9px;
 	margin-left: 0;
 	font-family: Verdana, Lucida, Geneva, Helvetica, Arial, sans-serif;
 	font-weight: bold;

@@ -74,11 +74,6 @@
   </div>
 </div>
 
-<p style="color: red"><%= flash[:error] %></p>
-<p style="color: green"><%= flash[:notice] %></p>
-
-<% unless (controller.controller_name.to_s == "tags" and controller.action_name.to_s == "index") %>
-
 <div id="myexp_sidebar">
   <ul class="sidenav">
     <%= render :partial => "subnav" %>
@@ -92,14 +87,11 @@
 </div>
 
 <div id="myexp_body">
+  <p style="color: red"><%= flash[:error] %></p>
+  <p style="color: green"><%= flash[:notice] %></p>
+
   <%= yield  %>
 </div>
-
-<% else %>
-
-<%= yield %>
-
-<% end %>
 
 </div>
 
@@ -109,4 +101,3 @@
 
 </body>
 </html>
-
