@@ -3,9 +3,6 @@
 
 <% if controller.action_name == "new" || (@forum.contribution && my_page?(@forum.contribution.contributor_id, @forum.contribution.contributor_type)) %>
 
-<fieldset>
-<legend>Owner only</legend>
-
 <p id="forum_contributor">
 
 <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user } %>
@@ -14,36 +11,21 @@
   
 <%= render :partial => "policies/listform", :locals => { :contribution => @forum.contribution, :user => current_user } %>
 
-</fieldset>
-
 <% end %>
 
 <% if controller.action_name == "edit" && @forum.contribution.owner?(current_user) %>
-
-<fieldset>
-<legend>Owner only</legend>
 
 <p id="forum_policy"></p>
   
 <%= render :partial => "policies/listform", :locals => { :contribution => @forum.contribution, :user => current_user } %>
 
-</fieldset>
-
 <% end %>
 
-<p id="forum_name"></p>
+<h3>Details</h3>
 
-<table border="0" cellspacing="0" cellpadding="0" class="noborder nopad wide">
-  <td>
-    <label><%= _('Title') %></label><br />
-    <%= form.text_field :name, :class => "primary" %>
-  </td>
-  <td style="text-align:right">
-    <label><%= _('Position') %></label><br />
-    <%= form.text_field :position, :size => 5 %>
-
-  </td>
-</table>
+<p id="forum_name">
+<label><%= _('Title') %></label><br />
+<%= form.text_field :name, :class => "primary" %></p>
 
 </p>
 <p id="forum_descripion">

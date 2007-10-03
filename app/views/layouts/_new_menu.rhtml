@@ -1,0 +1,32 @@
+<script type="text/javascript">
+  function redirectToNew() {
+    var klass = $("new_object_type").value;
+    
+    if (klass == "Blog") {
+      location.href = "<%= new_blog_path %>";
+    } else if (klass == "Blob") {
+      location.href = "<%= new_blob_path %>";
+    } else if (klass == "Forum") {
+      location.href = "<%= new_forum_path %>";
+    } else if (klass == "Workflow") {
+      location.href = "<%= new_workflow_path %>";
+    } else {
+      // do nothing!!
+    }
+  }
+</script>
+
+<div id="new_object_form">
+  <form onsubmit="redirectToNew(); return false;">
+    <p>
+      <select id="new_object_type">
+        <option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>New Blob</option>
+        <option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>New Blog</option>
+        <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>New Forum</option>
+        <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>New Workflow</option>
+      </select>
+  
+      <%= image_submit_tag("add_16.png") %>
+    </p>
+  </form>
+</div>

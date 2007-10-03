@@ -1,7 +1,5 @@
 <% case controller.action_name.to_s; when "index" %>
 
-  <li><%= link_to "New Forum", new_forum_path %></li>
-
 <% when "show" %>
 
   <% if logged_in? %>

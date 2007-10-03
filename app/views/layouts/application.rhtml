@@ -22,9 +22,16 @@
 
 <div id="myexp_header">
 
-<p>
-  <%= image_tag("logo.png") %>
-</p>
+<table width="100%" border="0">
+  <tr>
+    <td width="50%" style="text-align: left">
+      <%= image_tag("logo.png") %>
+    </td>
+    <td width="50%" style="text-align: right">
+      <%= render :partial => "layouts/new_menu" %>
+    </td>
+  </tr>
+</table>
 
 <% if logged_in? %>
   <p>
