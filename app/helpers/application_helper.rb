@@ -24,7 +24,19 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   def my_page?(contributor_id, contributor_type="User")
-    logged_in? and current_user.id.to_i == contributor_id.to_i and current_user.class.to_s == contributor_type.to_s
+    #logged_in? and current_user.id.to_i == contributor_id.to_i and current_user.class.to_s == contributor_type.to_s
+    
+    return false unless logged_in?
+    
+    case contributor_type.to_s
+    when "User"
+      return current_user.id.to_i == contributor_id.to_i
+    when "Network"
+      return false unless Network.find(:first, :conditions => ["id = ? AND user_id = ?", contributor_id, current_user.id])
+      return true
+    else
+      return false
+    end
   end
   
   def datetime(old_dt, long=true)
@@ -391,5 +403,96 @@ module ApplicationHelper
     return nil if issn.nil?
     
     return "#{issn[0..3]}-#{issn[4..7]}"
+  end
+  
+  def news(contributor, before=nil, after=nil, incl_assc=true)
+    rtn = {}
+    
+    contributor_news(contributor, before, after, 0, incl_assc).each do |news_item|
+      nearest_day = news_item[0] - (news_item[0].hour.hours + news_item[0].min.minutes + news_item[0].sec.seconds)
+      
+      if rtn.has_key? nearest_day
+        rtn[nearest_day] << news_item[1]
+      else
+        rtn[nearest_day] = [news_item[1]]
+      end
+    end
+    
+    return rtn.sort { |a, b|
+      b[0] <=> a[0]
+    }
+  end
+  
+protected
+  
+  def contributor_news(contributor, before, after, depth, incl_assc)
+    rtn = []
+    
+    return rtn unless depth.to_i < 2
+    
+    if contributor.kind_of? User
+      rtn = rtn + contributor_news!(contributor.memberships_accepted, before, after) # networks this user has joined
+      rtn = rtn + contributor_news!(contributor.friendships_accepted, before, after) # friends this user has made
+      rtn = rtn + contributor_news!(contributor.contributions, before, after) # contributions this user has made
+      rtn = rtn + contributor_news!(contributor.networks_owned, before, after) # networks this user has created
+      
+      if incl_assc
+        contributor.networks_owned.each do |network| # foreach network owned by the user
+          rtn = rtn + contributor_news(network, before, after, depth.to_i+1, incl_assc)
+        end
+      
+        contributor.friends.each do |friend| # foreach friend of the user
+          rtn = rtn + contributor_news(friend, before, after, depth.to_i+1, incl_assc)
+        end
+      end
+    elsif contributor.kind_of? Network
+      rtn = rtn + contributor_news!(contributor.memberships_accepted, before, after) # memberships the network admin has accepted
+      rtn = rtn + contributor_news!(contributor.contributions, before, after) # contributions this network has made
+      
+      #contributor.members(false).each do |member| # foreach member of the network
+      #  rtn = rtn + contributor_news(member, before, after, depth.to_i+1, incl_assc)
+      #end
+    else
+      return nil
+    end
+    
+    #return rtn.sort { |a, b|
+    #  b[0] <=> a[0]
+    #}
+    
+    return rtn
+  end
+  
+  def contributor_news!(collection, before, after)
+    rtn = []
+    
+    collection.each do |item|
+      case (item.class.to_s)
+      when "Membership"
+        next if before and item.accepted_at > before
+        next if after and item.accepted_at < after
+      
+        rtn << [item.accepted_at, "#{name(item.user)} has joined the #{title(item.network)} network."]
+      when "Friendship"
+        next if before and item.accepted_at > before
+        next if after and item.accepted_at < after
+      
+        rtn << [item.accepted_at, "#{name(item.user)} and #{name(item.friend)} have become friends."]
+      when "Network"
+        next if before and item.created_at > before
+        next if after and item.created_at < after
+      
+        rtn << [item.created_at, "#{name(item.owner)} has created the #{title(item)} network."]
+      when "Contribution"
+        next if before and item.created_at > before
+        next if after and item.created_at < after
+      
+        rtn << [item.created_at, "#{contributor(item.contributor_id, item.contributor_type)} has created the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.downcase}."]
+      else
+        # do nothing!!
+      end
+    end
+    
+    return rtn
   end
 end

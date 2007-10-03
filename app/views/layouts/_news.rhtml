@@ -1,0 +1,12 @@
+<div class="news_feed_div">
+<% news(contributor, Time.now, Time.now-1.week, my_page?(contributor.id, contributor.class.to_s)).each do |news_day| %>
+  <p>
+    <b><%=date news_day[0], false %></b>
+    <ul class="news_feed_day">
+      <% news_day[1].each do |news_item| %>
+        <li class="news_feed_item"><%= news_item %></li>
+      <% end %>
+    </ul>
+  </p>
+<% end %>
+</div>

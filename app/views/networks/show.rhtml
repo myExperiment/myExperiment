@@ -1,10 +1,14 @@
-<% if my_page? @network.owner.id %>
+<% if false and my_page? @network.owner.id %>
   <% unless @network.memberships_pending.empty? %>
     <h3>Memberships Pending</h3>
 
     <%= render :partial => "memberships/table", :locals => { :collection => @network.memberships_pending } %>
   <% end %>
 <% end %>
+
+<h3>News</h3>
+
+<%= render :partial => "layouts/news", :locals => { :contributor => @network } %>
 
 <h3>Details</h3>
 
