@@ -14,7 +14,7 @@
   <% case controller.action_name.to_s; when "show" %>
     <li><%= link_to "View: #{h(@citation.title)}", citation_path(@workflow, @citation) %></li>
   <% when "new" %>
-    <li><%= link_to "Create Citation", new_workflow_path(@workflow) %></li>
+    <li><%= link_to "Create Citation", new_citation_path(@citation.workflow) %></li>
   <% when "edit" %>
     <li><%= link_to "Edit: #{h(@citation.title)}", edit_citation_path(@workflow, @citation) %>
   <% else %>
