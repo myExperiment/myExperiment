@@ -1,12 +1,3 @@
-<li><%= link_to 'New Blob', new_blob_path %></li>
-<li><%= link_to 'New Blog', new_blog_path %></li>
-<li><%= link_to 'New Forum', new_forum_path %></li>
-<li class="with_sep_bottom"><%= link_to 'New Workflow', new_workflow_path %></li>
-  
-<% if logged_in? %>
-  <li class="with_sep_bottom"><%= link_to 'New Policy', new_policy_path %></li>
-<% end %>
-
 <% case controller.action_name.to_s; when "index" %>
 
   <!-- no subnav options -->

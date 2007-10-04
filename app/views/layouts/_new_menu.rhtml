@@ -14,6 +14,12 @@
     } else if (klass == "User") {
       location.href = "<%= new_user_path %>";
     <% end %>
+    } else if (klass == "Network") {
+      location.href = "<%= new_network_path %>";
+    <% if logged_in? %>
+    } else if (klass == "Picture") {
+      location.href = "<%= new_picture_path(current_user) %>";
+    <% end %>
     } else {
       // do nothing!!
     }
@@ -27,6 +33,10 @@
         <option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>New Blob</option>
         <option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>New Blog</option>
         <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>New Forum</option>
+        <option value="Network" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>New Network</option>
+        <% if logged_in? %>
+        <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>New Picture</options>
+        <% end %>
         <% unless logged_in? %>
         <option value="User" <%= "selected" if ["users"].include? controller.controller_name.to_s %>>New User</option>
         <% end %>

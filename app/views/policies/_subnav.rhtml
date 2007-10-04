@@ -1,11 +1,10 @@
-<li class="with_sep_bottom"><%= link_to 'New Policy', new_policy_path %></li>
-<% if @policy %><li class="with_sep_bottom"><%= link_to 'New permission', new_permission_path(@policy) %></li><% end %>
-
 <% case controller.action_name.to_s; when "index" %>
 
   <!-- no subnav options -->
 
 <% when "show" %>
+
+  <li class="with_sep_bottom"><%= link_to 'New permission', new_permission_path(@policy) %></li>
 
   <li><%= link_to 'Edit Policy', edit_policy_path(@policy) %></li>
   <li><%= link_to 'Destroy Policy', policy_path(@policy), :confirm => 'Are you sure?', :method => :delete %></li>
@@ -19,26 +18,3 @@
   <!-- no subnav options -->
 
 <% end %>
-
-
-<% if params[:from] %>
-  
-    <% case params[:from]; when "blobs" %>
-    
-      <li><%= link_to 'New Blob', new_blob_path %></li>
-    
-    <% when "blogs" %>
-    
-      <li><%= link_to 'New Blog', new_blog_path %></li>
-    
-    <% when "forums" %>
-    
-      <li><%= link_to 'New Forum', new_forum_path %></li>
-    
-    <% when "workflows" %>
-    
-      <li><%= link_to 'New Workflow', new_workflow_path %></li>
-    
-    <% end %>
-  
- <% end %>

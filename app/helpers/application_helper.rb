@@ -456,6 +456,8 @@ protected
         end
       end
     elsif contributor.kind_of? Network
+      rtn << [contributor.created_at, "#{name(contributor.owner)} has created the #{title(contributor)} network."]
+      
       rtn = rtn + contributor_news!(contributor.memberships_accepted, before, after) # memberships the network admin has accepted
       rtn = rtn + contributor_news!(contributor.contributions, before, after) # contributions this network has made
       

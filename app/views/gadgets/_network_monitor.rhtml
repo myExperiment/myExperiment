@@ -2,31 +2,38 @@
   <div class="header">
     <p>
       <b><%= title(network) %></b><br/>
-      <small><%= pluralize(network.members(false).length, "member") %>, <%= pluralize(network.contributions.length, "contribution") %></small>
+      <small>
+        <%= pluralize(network.members(false).length, "member") %>, <%= pluralize(network.contributions.length, "contribution") %>
+      </small>
     </p>
   </div>
   
-  <div class="fold">
-    <div class="foldTitle">Members</div>
-    <div class="foldContent">
-      <ul class="gadget_list">
-        <% network.members(false).each do |member| %>
-          <li><%= name(member) %></li>
-        <% end %>
-      </ul>
+  <% unless network.members(false).empty? %>
+    <div class="fold">
+      <div class="foldTitle">Members</div>
+      <div class="foldContent">
+        <ul class="gadget_list">
+          <% network.members(false).each do |member| %>
+            <li><%= name(member) %></li>
+          <% end %>
+        </ul>
+      </div>
     </div>
-  </div>
+  <% end %>
   
-  <div class="fold">
-    <div class="foldTitle">Contributions</div>
-    <div class="foldContent">
-      <ul class="gadget_list">
-        <% network.contributions.each do |contribution| %>
-          <li>
-            <%= link_to contributable_name(contribution.contributable_id, contribution.contributable_type, 20), contributable_url(contribution.contributable_id, contribution.contributable_type), :alt => contributable_name(contribution.contributable_id, contribution.contributable_type) %>
-          </li>
-        <% end %>
-      </ul>
+  <% unless network.contributions.empty? %>
+    <div class="fold">
+      <div class="foldTitle">Contributions</div>
+      <div class="foldContent">
+        <ul class="gadget_list">
+          <% network.contributions.each do |contribution| %>
+            <li>
+              <%= link_to contributable_name(contribution.contributable_id, contribution.contributable_type, 20), contributable_url(contribution.contributable_id, contribution.contributable_type), :alt => contributable_name(contribution.contributable_id, contribution.contributable_type) %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
     </div>
-  </div>
+  <% end %>
+  
 </div>

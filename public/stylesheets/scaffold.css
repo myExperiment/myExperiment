@@ -4,6 +4,24 @@
   width: 200px;
 }
 
+.news_feed_div p.title {
+	font-weight: bold;
+	width: 100%;
+	text-align: left;
+	border-bottom: 1px solid #e2e2e2;
+}
+
+.news_feed_div ul.news_feed_day {
+	padding-left: 2em;
+	list-style-type: none;
+	margin-bottom: 1em;
+	line-height: 1.5em;
+}
+
+.news_feed_div ul.news_feed_day li.news_feed_item {
+	
+}
+
 .myexperiment_gadget {
 	border: 1px dashed gray;
 	padding-left: 0.5em;

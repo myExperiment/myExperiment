@@ -85,7 +85,7 @@ img { border-width:0; }
 
 p.pages
 {
-	xfloat:right;
+	float:right;
 	font-size:0.85em;
 	margin-top:1.2em;
 }
@@ -515,7 +515,7 @@ label
 
 .smallutils
 {
-	xfloat:right;
+	float:right;
 	margin-top:-0.5em;
 	margin-bottom:0em;
 	text-align:right;
