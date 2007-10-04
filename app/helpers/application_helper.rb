@@ -482,6 +482,10 @@ protected
       rtn = rtn + contributor_news!(contributor.contributions, before, after) # contributions this user has made
       rtn = rtn + contributor_news!(contributor.networks_owned, before, after) # networks this user has created
       
+      contributor.networks.each do |network| # foreach network that the user is a member of
+        rtn = rtn + contributor_news(network, before, after, depth.to_i+1, incl_assc) # networks this user has joined
+      end
+      
       if incl_assc
         contributor.networks_owned.each do |network| # foreach network owned by the user
           rtn = rtn + contributor_news(network, before, after, depth.to_i+1, incl_assc)
@@ -493,7 +497,7 @@ protected
       end
     elsif contributor.kind_of? Network
       if (before and contributor.created_at < before) and (after and contributor.created_at > after)
-        rtn << [contributor.created_at, "#{name(contributor.owner)} has created the #{title(contributor)} network."]
+        rtn << [contributor.created_at, "#{name(contributor.owner)} created the #{title(contributor)} network."]
       end
       
       rtn = rtn + contributor_news!(contributor.memberships_accepted, before, after) # memberships the network admin has accepted
@@ -518,22 +522,29 @@ protected
         next if before and item.accepted_at > before
         next if after and item.accepted_at < after
       
-        rtn << [item.accepted_at, "#{name(item.user)} has joined the #{title(item.network)} network."]
+        rtn << [item.accepted_at, "#{name(item.user)} joined the #{title(item.network)} network."]
       when "Friendship"
         next if before and item.accepted_at > before
         next if after and item.accepted_at < after
       
-        rtn << [item.accepted_at, "#{name(item.user)} and #{name(item.friend)} have become friends."]
+        rtn << [item.accepted_at, "#{name(item.user)} and #{name(item.friend)} became friends."]
       when "Network"
         next if before and item.created_at > before
         next if after and item.created_at < after
       
-        rtn << [item.created_at, "#{name(item.owner)} has created the #{title(item)} network."]
+        rtn << [item.created_at, "#{name(item.owner)} created the #{title(item)} network."]
       when "Contribution"
         next if before and item.created_at > before
         next if after and item.created_at < after
-      
-        rtn << [item.created_at, "#{contributor(item.contributor_id, item.contributor_type)} has created the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.downcase}."]
+        
+        owner = contributor(item.contributor_id, item.contributor_type)
+        editor = contributor(item.contributable.contributor_id, item.contributable.contributor_type)
+        
+        if owner.to_s == editor.to_s
+          rtn << [item.created_at, "#{owner} created the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.downcase}."]
+        else
+          rtn << [item.created_at, "#{editor} created the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.downcase} for the #{owner} network."]
+        end
       else
         # do nothing!!
       end
