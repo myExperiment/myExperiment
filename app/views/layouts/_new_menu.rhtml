@@ -19,6 +19,8 @@
     <% if logged_in? %>
     } else if (klass == "Picture") {
       location.href = "<%= new_picture_path(current_user) %>";
+    } else if (klass == "Policy") {
+      location.href = "<%= new_policy_path %>";
     <% end %>
     } else {
       // do nothing!!
@@ -36,6 +38,7 @@
         <option value="Network" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>New Network</option>
         <% if logged_in? %>
         <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>New Picture</options>
+        <option value="Policy" <%= "selected" if ["policy"].include? controller.controller_name.to_s %>>New Policy</options>
         <% end %>
         <% unless logged_in? %>
         <option value="User" <%= "selected" if ["users"].include? controller.controller_name.to_s %>>New User</option>

@@ -26,7 +26,7 @@
       </div>
     <% end %>
   
-    <% unless user.networks_owned.empty? %>
+    <% unless user.networks_owned.empty? and user.networks.empty? %>
       <div class="fold">
         <div class="foldTitle">Networks</div>
         <div class="foldContent">
