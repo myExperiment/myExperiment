@@ -451,8 +451,28 @@ module ApplicationHelper
     return array
   end
   
-protected
+  # url = url for hyperlink
+  # alt = alternative text
+  # size = size in pixels
+  def icon(method, size=16, url=nil, alt=nil)
+    return nil unless (filename = method_to_icon_filename(method, size))
+    
+    return url_for image_tag(filename, :alt => alt), url
+  end
   
+  def method_to_icon_filename(method, size=16)
+    return nil unless [16, 24, 32].include? size
+    
+    case (method.to_s)
+    when "new"
+      return "manhattan_studio/add_#{size}.png"
+    else
+      return nil
+    end
+  end
+  
+protected
+
   def contributor_news(contributor, before, after, depth, incl_assc)
     rtn = []
     
