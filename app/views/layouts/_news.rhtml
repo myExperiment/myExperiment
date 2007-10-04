@@ -1,7 +1,8 @@
 <% before ||= Time.now -%>
 <% after ||= Time.now-1.week -%>
+<% limit ||= nil %>
 
-<% my_news = news(contributor, Time.now, Time.now-1.week, my_page?(contributor.id, contributor.class.to_s)) %>
+<% my_news = news(contributor, Time.now, Time.now-1.week, my_page?(contributor.id, contributor.class.to_s), limit) %>
 
 <% unless my_news.empty? %>
   <h3>News</h3>

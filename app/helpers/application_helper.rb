@@ -415,7 +415,7 @@ module ApplicationHelper
     return "#{issn[0..3]}-#{issn[4..7]}"
   end
   
-  def news(contributor, before=nil, after=nil, incl_assc=true)
+  def news(contributor, before=nil, after=nil, incl_assc=true, limit=nil)
     rtn = {}
     
     contributor_news(contributor, before, after, 0, incl_assc).each do |news_item|
@@ -428,9 +428,27 @@ module ApplicationHelper
       end
     end
     
-    return rtn.sort { |a, b|
+    array = rtn.sort { |a, b|
       b[0] <=> a[0]
     }
+    
+    if limit
+      total = 0
+      array.each_index do |i|
+        news_day = array[i]
+        total = total.to_i + news_day[1].length
+        
+        if total > limit
+          diff = total - limit
+          
+          news_day[1] = news_day[1][0...(news_day[1].length - diff)]
+          
+          return array[0..i]
+        end
+      end
+    end
+    
+    return array
   end
   
 protected
@@ -470,11 +488,7 @@ protected
       return nil
     end
     
-    #return rtn.sort { |a, b|
-    #  b[0] <=> a[0]
-    #}
-    
-    return rtn
+    return rtn.uniq # remove duplicate items due to recursion
   end
   
   def contributor_news!(collection, before, after)

@@ -4,15 +4,14 @@
 
 <% when "show" %>
 
+  <% unless @user.friend? current_user.id %>
+      <li class="with_sep_bottom"><%= request_friendship_link(@user.id) %></li>
+    <% end %>
+  
   <% if logged_in? %>
     <% if my_page? @user.id %>
       <li><%= link_to 'Edit Account Details', edit_user_path(@user) %></li>
       <% unless @user.profile.nil? %><li><%= link_to 'Edit Profile', edit_profile_path(@user.profile) %></li><% end %>
-      <li><%= link_to 'Upload New Picture', new_picture_path(@user) %></li>
-    <% end %>
-  
-    <% unless @user.friend? current_user.id %>
-      <li><%= request_friendship_link(@user.id) %></li>
     <% end %>
   <% end %>
 
