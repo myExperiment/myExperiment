@@ -22,6 +22,10 @@
 	
 }
 
+.news_feed_div ul.news_feed_day li.news_feed_item a, .news_feed_div ul.news_feed_day li.news_feed_item a:visited {
+	color: blue;
+}
+
 body { 
   background: #8e8e8e url('/images/body-bg.gif') repeat-y center;
 }
