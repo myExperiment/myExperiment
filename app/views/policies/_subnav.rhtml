@@ -1,7 +1,5 @@
-<% if logged_in? %>
-  <li class="with_sep_bottom"><%= link_to 'New Policy', new_policy_path %></li>
-  <li class="with_sep_bottom"><%= link_to 'New permission', new_permission_path(@policy) %></li>
-<% end %>
+<li class="with_sep_bottom"><%= link_to 'New Policy', new_policy_path %></li>
+<% if @policy %><li class="with_sep_bottom"><%= link_to 'New permission', new_permission_path(@policy) %></li><% end %>
 
 <% case controller.action_name.to_s; when "index" %>
 
