@@ -1,6 +1,6 @@
-<h1>New user with Username and Password</h1>
-
 <%= error_messages_for :user %>
+
+<h1>New user with Username and Password</h1>
 
 <% form_for(:user, :url => users_path) do |f| %>
   <fieldset>
@@ -54,5 +54,3 @@
     <%= submit_tag 'Create with OpenID', :disable_with => "Verifying&hellip;" %>
   </p>
 <% end %>
-
-<%= link_to 'Back', users_path %>

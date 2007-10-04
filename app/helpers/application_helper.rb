@@ -451,13 +451,16 @@ module ApplicationHelper
     return array
   end
   
-  def icon(method, url=nil, alt=nil)
-    return nil unless (filename = method_to_icon_filename(method, size))
+  def icon(method, url=nil, alt=nil, url_options={})
+    return nil unless (filename = method_to_icon_filename(method.downcase))
     
     # if method.to_s == "info"
     # make into cool javascript div thing!
     
-    return url_for image_tag(filename, :alt => alt), url
+    image_options = alt ? { :alt => alt } : { :alt => method.humanize }
+    img_tag = image_tag(filename, image_options)
+    
+    return url ? link_to(img_tag, url, url_options) : img_tag
   end
   
   def method_to_icon_filename(method)
@@ -466,12 +469,16 @@ module ApplicationHelper
       return "manhattan_studio/add_16.png"
     when "download"
       return "manhattan_studio/arrow-down_16.png"
+      #return "manhattan_studio/save_24.png"
     when "show"
       return "manhattan_studio/arrow-forward_16.png"
+      #return "redmond_studio/arrow-forward_24.png"
     when "edit"
       return "famfamfam_silk/pencil.png"
+      #return "manhattan_studio/cut_24.png"
     when "destroy"
       return "manhattan_studio/delete_16.png"
+      #return "manhattan_studio/delete_24.png"
     when "tag"
       return "famfamfam_silk/tag_blue.png"
     when "bookmark"
@@ -485,7 +492,7 @@ module ApplicationHelper
     when "reject"
       return "famfamfam_silk/cancel.png"
     when "network-member"
-      return "famfamfam_silk/workflow.png"
+      return "famfamfam_silk/world.png"
     when "user"
       return "famfamfam_silk/user.png"
     when "save"

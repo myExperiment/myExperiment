@@ -1,39 +1,43 @@
 <h3>Friendship</h3>
 
-<p>
-  <b>User:</b><br/>
-  <%= render :partial => "users/avatar", :locals => { :user => @friendship.user } %>
-</p>
+<% unless my_page? @friendship.user_id %>
+  <p>
+    <b>User:</b><br/>
+    <%= render :partial => "users/avatar", :locals => { :user => @friendship.user } %>
+  </p>
+<% end %>
+
+<% unless my_page? @friendship.friend_id %>
+  <p>
+    <b>Friend:</b><br/>
+    <%= render :partial => "users/avatar", :locals => { :user => @friendship.friend } %>
+  </p>
+<% end %>
 
 <p>
-  <b>Friend:</b><br/>
-  <%= render :partial => "users/avatar", :locals => { :user => @friendship.friend } %>
-</p>
-
-<p>
-  <b>Created at:</b>
+  <b>Created at:</b><br/>
   <%=datetime @friendship.created_at %>
 </p>
 
 <% if @friendship.accepted? %>
 
-<p>
-  <b>Accepted at:</b>
-  <%=datetime @friendship.accepted_at %>
-</p>
+  <p>
+    <b>Accepted at:</b><br/>
+    <%=datetime @friendship.accepted_at %>
+  </p>
 
 <% elsif my_page? @friendship.friend_id %>
 
-<%= link_to 'Accept friendship request', accept_friendship_path(@friendship.friend_id, @friendship) %> |
-<%= link_to 'Reject friendship request', friendship_path(@friendship.friend_id, @friendship), :confirm => "Are you sure?", :method => :delete %> |
+  <p>
+    <%= icon "confirm", accept_friendship_path(@friendship.friend_id, @friendship) %> 
+    <%= icon "reject", friendship_path(@friendship.friend_id, @friendship), nil, :confirm => "Are you sure?", :method => :delete %>
+  </p>
 
 <% else %>
 
-<p>
-  <b>Accepted at:</b>
-  Pending
-</p>
+  <p>
+    <b>Accepted at:</b><br/>
+    Pending
+  </p>
 
 <% end %>
-
-<%= link_to 'Back', friendships_path(@friendship.friend_id) %>

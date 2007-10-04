@@ -1,9 +1,11 @@
 <h3>Membership</h3>
 
-<p>
-  <b>User:</b><br/>
-  <%= render :partial => "users/avatar", :locals => { :user => @membership.user } %>
-</p>
+<% unless my_page? @membership.user_id %>
+  <p>
+    <b>User:</b><br/>
+    <%= render :partial => "users/avatar", :locals => { :user => @membership.user } %>
+  </p>
+<% end %>
 
 <p>
   <b>Network:</b>
@@ -11,30 +13,29 @@
 </p>
 
 <p>
-  <b>Created at:</b>
+  <b>Created at:</b><br />
   <%=datetime @membership.created_at %>
 </p>
 
 <% if @membership.accepted? %>
 
-<p>
-  <b>Accepted at:</b>
-  <%=datetime @membership.accepted_at %>
-</p>
+  <p>
+    <b>Accepted at:</b><br />
+    <%=datetime @membership.accepted_at %>
+  </p>
 
 <% elsif my_page? @membership.network.owner.id %>
 
-<%= link_to 'Accept membership request', accept_membership_path(@membership.user_id, @membership) %> |
-<%= link_to 'Reject membership request', membership_path(@membership.user_id, @membership), :confirm => "Are you sure?", :method => :delete %> |
+  <p>
+    <%= icon "confirm", accept_membership_path(@membership.user_id, @membership) %> 
+    <%= icon "reject", membership_path(@membership.user_id, @membership), nil, :confirm => "Are you sure?", :method => :delete %>
+  </p>
 
 <% else %>
 
-<p>
-  <b>Accepted at:</b>
-  Pending
-</p>
+  <p>
+    <b>Accepted at:</b><br />
+    Pending
+  </p>
 
 <% end %>
-
-
-<%= link_to 'Back', memberships_path(@membership.network.user_id) %>

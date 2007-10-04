@@ -7,7 +7,3 @@
 <%= render :partial => "layouts/paginate", :locals => { :collection => @downloads } %>
 
 <br />
-
-<% if @contribution %>
-  <p><%= link_to "Back", contribution_path(@contribution) %></p>
-<% end %>

@@ -23,10 +23,10 @@
       </center>
     </td>
     <td class="actions">
-      <% if contribution.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to 'Show', contribution_path(contribution) %> <% end %>
+      <% if contribution.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", contribution_path(contribution) %> <% end %>
       <% if logged_in? and contribution.owner?(current_user) %>
-        <%= link_to 'Edit', edit_contribution_path(contribution) %> 
-        <%= link_to 'Destroy', contribution_path(contribution), :confirm => 'Are you sure?', :method => :delete %>
+        <%= icon "edit", edit_contribution_path(contribution) %> 
+        <%= icon "destroy", contribution_path(contribution), nil, :confirm => 'Are you sure?', :method => :delete %>
       <% end %>
     </td>
   </tr>

@@ -13,8 +13,3 @@
 <h3>Bookmarkable</h3>
 
 <%= render :partial => "#{@bookmark.bookmarkable_type.pluralize.downcase}/#{@bookmark.bookmarkable_type.downcase}", :collection => [@bookmark.bookmarkable] %>
-
-<br/>
-
-
-<%= link_to 'Back', bookmarks_path %>

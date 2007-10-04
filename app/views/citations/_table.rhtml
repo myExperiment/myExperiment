@@ -26,9 +26,9 @@
     <td><%=formatted_issn citation.issn %></td>
     <% end %>
     <td class="actions">
-      <%= link_to 'Show', citation_path(workflow, citation) %> 
-      <% if logged_in? and @workflow.authorized?("edit", current_user) %><%= link_to 'Edit', edit_citation_path(workflow, citation) %> <% end %>
-      <% if logged_in? and @workflow.authorized?("destroy", current_user) %><%= link_to 'Destroy', citation_path(workflow, citation), :confirm => 'Are you sure?', :method => :delete %><% end %>
+      <%= icon "show", citation_path(workflow, citation) %> 
+      <% if logged_in? and @workflow.authorized?("edit", current_user) %><%= icon "edit", edit_citation_path(workflow, citation) %> <% end %>
+      <% if logged_in? and @workflow.authorized?("destroy", current_user) %><%= icon "destroy", citation_path(workflow, citation), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
     </td>
   </tr>
 <% end %>

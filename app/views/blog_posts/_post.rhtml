@@ -1,10 +1,9 @@
 <p>
-  <b><%=h post.title %></b> (<%=h post.created_at %>)
+  <b><%=h post.title %></b> (<%=datetime post.created_at, false %>)
   
   <% if my_page?(post.blog.contribution.contributor_id, post.blog.contribution.contributor_type) %>
-    <br/>
-    <%= link_to '[edit]', edit_blog_post_path(post.blog, post) %> | 
-    <%= link_to '[delete]', blog_post_path(post.blog, post), :method => "delete" %>
+     <%= icon "edit", edit_blog_post_path(post.blog, post) %>
+     <%= icon "destroy", blog_post_path(post.blog, post), nil, :confirm => "Are you sure?", :method => "delete" %>
   <% end %>
 </p>
 

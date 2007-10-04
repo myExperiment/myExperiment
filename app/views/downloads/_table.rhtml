@@ -14,14 +14,14 @@
     <% unless contribution %><td width="400"><%= contributable(download.contribution.contributable_id, download.contribution.contributable_type, true, true) %></td><% end %>
     <td width="100">
       <% if download.user_id %>
-        <%= contributor(download.user_id, "User", true, true, "60x60") %>
+        <%= contributor(download.user_id, "User", true, 60) %>
       <% else %>
         <%=null_avatar 60 %><br/><%= "Anonymous" %>
       <% end %>
     </td>
     <td><%=datetime download.created_at, false %></td>
     <td class="actions">
-      <%= link_to 'Show', download_path(download.contribution, download) %>
+      <%= icon "show", download_path(download.contribution, download) %>
     </td>
   </tr>
 <% end %>

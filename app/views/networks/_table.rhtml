@@ -19,10 +19,10 @@
     <td><%= network.members.length %></td>
     <td><%=datetime network.created_at, false %></td>
     <td class="actions">
-      <%= link_to 'Show', network_path(network) %> 
+      <%= icon "show", network_path(network) %> 
       <% if my_page? network.owner.id %>
-        <%= link_to 'Edit', edit_network_path(network) %>
-        <%= link_to 'Destroy', network_path(network), :confirm => 'Are you sure?', :method => :delete %>
+        <%= icon "edit", edit_network_path(network) %>
+        <%= icon "destroy", network_path(network), nil, :confirm => 'Are you sure?', :method => :delete %>
       <% end %>
     </td>
   </tr>

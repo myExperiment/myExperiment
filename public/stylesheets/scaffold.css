@@ -362,10 +362,13 @@ table.alt_table tr td
   padding: 5px 5px 5px 5px;
 }
 
+/*
 table.alt_table tr td.actions
 {
+  width: 100px;
   text-align: left;
 }
+*/
 
 table.alt_table tr td.contributable
 {

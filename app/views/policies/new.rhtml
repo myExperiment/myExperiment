@@ -4,13 +4,8 @@
 
 <% form_for(:policy, :url => policies_path) do |f| %>
   <%= render :partial => "policies/form", :object => f %>
-  
-  <%= hidden_field_tag :from, value=(params[:from] || nil) %>
 
   <p>
     <%= submit_tag "Create" %>
   </p>
 <% end %>
-
-
-<%= link_to 'Back', policies_path %>

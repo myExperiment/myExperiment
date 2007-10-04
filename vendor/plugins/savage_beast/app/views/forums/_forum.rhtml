@@ -29,9 +29,9 @@
   </tr>
   <tr>
     <td colspan="<%= show ? 2 : 3 %>">
-      <% if forum.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to '[show]', forum_path(forum) %> <% end %>
-      <% if logged_in? and forum.authorized?("edit", current_user) %><%= link_to '[edit]', edit_forum_path(forum) %> <% end %>
-      <% if logged_in? and forum.authorized?("destroy", current_user) %><%= link_to '[destroy]', forum_path(forum), :confirm => 'Are you sure?', :method => :delete %><% end %>
+      <% if forum.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", forum_path(forum) %> <% end %>
+      <% if logged_in? and forum.authorized?("edit", current_user) %><%= icon "edit", edit_forum_path(forum) %> <% end %>
+      <% if logged_in? and forum.authorized?("destroy", current_user) %><%= icon "destroy", forum_path(forum), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
     </td>
   </tr>
 </table>

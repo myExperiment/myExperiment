@@ -19,7 +19,7 @@
         <div class="foldContent">
           <ul class="gadget_list">
             <% user.friends.each do |friend| %>
-              <li><%= name(friend) %></li>
+              <li><%= icon "user" %> <%= link_to truncate(h(friend.name), 15), user_path(friend) %></li>
             <% end %>
           </ul>
         </div>
@@ -32,10 +32,10 @@
         <div class="foldContent">
           <ul class="gadget_list">
             <% user.networks_owned.each do |network_owned| %>
-              <li><%= title(network_owned) %></li>
+              <li><%= icon "network-member" %> <%= link_to truncate(h(network_owned.title), 15), network_path(network_owned) %></li>
             <% end %>
             <% user.networks.each do |network_member| %>
-              <li><%= title(network_member) %></li>
+              <li><%= icon "network-member" %> <%= link_to truncate(h(network_member.title), 15), network_path(network_member) %></li>
             <% end %>
           </ul>
         </div>
@@ -49,7 +49,7 @@
           <ul class="gadget_list">
             <% user.contributions.each do |contribution| %>
               <li>
-                <%= link_to contributable_name(contribution.contributable_id, contribution.contributable_type, 20), contributable_url(contribution.contributable_id, contribution.contributable_type), :alt => contributable_name(contribution.contributable_id, contribution.contributable_type) %>
+                <%= link_to contributable_name(contribution.contributable_id, contribution.contributable_type, 15), contributable_url(contribution.contributable_id, contribution.contributable_type), :alt => contributable_name(contribution.contributable_id, contribution.contributable_type) %>
               </li>
             <% end %>
           </ul>
@@ -64,7 +64,7 @@
           <ul class="gadget_list">
             <% user.policies.each do |policy| %>
               <li>
-                <%= link_to h(truncate(policy.name, 20)), policy_path(policy) %>
+                <%= link_to h(truncate(policy.name, 15)), policy_path(policy) %>
               </li>
             <% end %>
           </ul>

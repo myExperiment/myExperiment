@@ -15,10 +15,10 @@
     <td><%=h blob.local_name %></td>
     <td><%=h blob.content_type %></td>
     <td class="actions">
-      <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= link_to 'Download', download_blob_path(blob) %> <% end %>
-      <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><%= link_to 'Show', blob_path(blob) %> <% end %>
-      <% if logged_in? and blob.authorized?("edit", current_user) %><%= link_to 'Edit', edit_blob_path(blob) %> <% end %>
-      <% if logged_in? and blob.authorized?("destroy", current_user) %><%= link_to 'Destroy', blob_path(blob), :confirm => 'Are you sure?', :method => :delete %><% end %>
+      <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_blob_path(blob) %> <% end %>
+      <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", blob_path(blob) %> <% end %>
+      <% if logged_in? and blob.authorized?("edit", current_user) %><%= icon "edit", edit_blob_path(blob) %> <% end %>
+      <% if logged_in? and blob.authorized?("destroy", current_user) %><%= icon "destroy", blob_path(blob), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
     </td>
   </tr>
 <% end %>

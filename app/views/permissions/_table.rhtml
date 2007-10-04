@@ -16,9 +16,9 @@
     <td><%=h permission.edit %></td>
     <td><%=h permission.view %></td>
     <td class="actions">
-      <%= link_to 'Show', permission_path(permission.policy, permission) %> 
-      <%= link_to 'Edit', edit_permission_path(permission.policy, permission) %> 
-      <%= link_to 'Destroy', permission_path(permission.policy, permission), :confirm => 'Are you sure?', :method => :delete %>
+      <%= icon "show", permission_path(permission.policy, permission) %> 
+      <%= icon "edit", edit_permission_path(permission.policy, permission) %> 
+      <%= icon "destroy", permission_path(permission.policy, permission), nil, :confirm => 'Are you sure?', :method => :delete %>
     </td>
   </tr>
 <% end %>
