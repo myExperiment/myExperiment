@@ -154,7 +154,7 @@ display: inline;
 padding: 4px 12px;
 margin-left: 3px;
 border: 1px solid #317eff;
-background: #F0F0F0;
+background: #F5F5DC;
 border-bottom: 1px solid transparent;
 text-decoration: none;
 }
@@ -165,7 +165,7 @@ text-decoration: none;
 .tabnav li a:hover
 {
 /*color: #1a1a1a;*/
-color: #FF7C6D;
+color: #F5F5DC;
 background: #317eff;
 }
 
@@ -471,7 +471,7 @@ h3 a img {
 .myexperiment_gadget .header {
 	border: #999999 0px solid;
 	border-width: 0 1px 1px 1px;
-	background-color: #F7F7F7;
+	background-color: #F5F5DC;
 	font-weight: bold;
 	padding: 0.3em 0 0.5em 0;
 	text-align: center;
@@ -506,7 +506,7 @@ h3 a img {
 }
 
 .xb2, .xb3, .xb4 {
-	background: #F7F7F7;
+	background: #F5F5DC;
 	border-left: 1px solid #999999;
 	border-right: 1px solid #999999;
 }
