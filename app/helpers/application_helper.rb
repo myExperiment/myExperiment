@@ -451,21 +451,19 @@ module ApplicationHelper
     return array
   end
   
-  # url = url for hyperlink
-  # alt = alternative text
-  # size = size in pixels
-  def icon(method, size=16, url=nil, alt=nil)
+  def icon(method, url=nil, alt=nil)
     return nil unless (filename = method_to_icon_filename(method, size))
+    
+    # if method.to_s == "info"
+    # make into cool javascript div thing!
     
     return url_for image_tag(filename, :alt => alt), url
   end
   
-  def method_to_icon_filename(method, size=16)
-    return nil unless [16, 24, 32].include? size
-    
+  def method_to_icon_filename(method)
     case (method.to_s)
     when "new"
-      return "manhattan_studio/add_#{size}.png"
+      return "manhattan_studio/add_16.png"
     else
       return nil
     end
