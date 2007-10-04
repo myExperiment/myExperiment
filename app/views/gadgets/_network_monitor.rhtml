@@ -1,4 +1,6 @@
 <div class="myexperiment_gadget">
+  <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+
   <div class="header">
     <p>
       <b><%= title(network) %></b><br/>
@@ -8,32 +10,35 @@
     </p>
   </div>
   
-  <% unless network.members(false).empty? %>
-    <div class="fold">
-      <div class="foldTitle">Members</div>
-      <div class="foldContent">
-        <ul class="gadget_list">
-          <% network.members(false).each do |member| %>
-            <li><%= name(member) %></li>
-          <% end %>
-        </ul>
+  <div class="contents">
+    <% unless network.members(false).empty? %>
+      <div class="fold">
+        <div class="foldTitle">Members</div>
+        <div class="foldContent">
+          <ul class="gadget_list">
+            <% network.members(false).each do |member| %>
+              <li><%= name(member) %></li>
+            <% end %>
+          </ul>
+        </div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
   
-  <% unless network.contributions.empty? %>
-    <div class="fold">
-      <div class="foldTitle">Contributions</div>
-      <div class="foldContent">
-        <ul class="gadget_list">
-          <% network.contributions.each do |contribution| %>
-            <li>
-              <%= link_to contributable_name(contribution.contributable_id, contribution.contributable_type, 20), contributable_url(contribution.contributable_id, contribution.contributable_type), :alt => contributable_name(contribution.contributable_id, contribution.contributable_type) %>
-            </li>
-          <% end %>
-        </ul>
+    <% unless network.contributions.empty? %>
+      <div class="fold">
+        <div class="foldTitle">Contributions</div>
+        <div class="foldContent">
+          <ul class="gadget_list">
+            <% network.contributions.each do |contribution| %>
+              <li>
+                <%= link_to contributable_name(contribution.contributable_id, contribution.contributable_type, 20), contributable_url(contribution.contributable_id, contribution.contributable_type), :alt => contributable_name(contribution.contributable_id, contribution.contributable_type) %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
   
+  <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 </div>

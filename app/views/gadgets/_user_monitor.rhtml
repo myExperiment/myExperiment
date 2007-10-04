@@ -1,4 +1,6 @@
 <div class="myexperiment_gadget">
+  <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+
   <div class="header">
     <p>
       <%= avatar(user, 60) %><br/>
@@ -10,63 +12,66 @@
     </p>
   </div>
   
-  <% unless user.friends.empty? %>
-    <div class="fold">
-      <div class="foldTitle">Friends</div>
-      <div class="foldContent">
-        <ul class="gadget_list">
-          <% user.friends.each do |friend| %>
-            <li><%= name(friend) %></li>
-          <% end %>
-        </ul>
+  <div class="contents">
+    <% unless user.friends.empty? %>
+      <div class="fold">
+        <div class="foldTitle">Friends</div>
+        <div class="foldContent">
+          <ul class="gadget_list">
+            <% user.friends.each do |friend| %>
+              <li><%= name(friend) %></li>
+            <% end %>
+          </ul>
+        </div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
   
-  <% unless user.networks_owned.empty? %>
-    <div class="fold">
-      <div class="foldTitle">Networks</div>
-      <div class="foldContent">
-        <ul class="gadget_list">
-          <% user.networks_owned.each do |network_owned| %>
-            <li><%= title(network_owned) %></li>
-          <% end %>
-          <% user.networks.each do |network_member| %>
-            <li><%= title(network_member) %></li>
-          <% end %>
-        </ul>
+    <% unless user.networks_owned.empty? %>
+      <div class="fold">
+        <div class="foldTitle">Networks</div>
+        <div class="foldContent">
+          <ul class="gadget_list">
+            <% user.networks_owned.each do |network_owned| %>
+              <li><%= title(network_owned) %></li>
+            <% end %>
+            <% user.networks.each do |network_member| %>
+              <li><%= title(network_member) %></li>
+            <% end %>
+          </ul>
+        </div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
   
-  <% unless user.contributions.empty? %>
-    <div class="fold">
-      <div class="foldTitle">Contributions</div>
-      <div class="foldContent">
-        <ul class="gadget_list">
-          <% user.contributions.each do |contribution| %>
-            <li>
-              <%= link_to contributable_name(contribution.contributable_id, contribution.contributable_type, 20), contributable_url(contribution.contributable_id, contribution.contributable_type), :alt => contributable_name(contribution.contributable_id, contribution.contributable_type) %>
-            </li>
-          <% end %>
-        </ul>
+    <% unless user.contributions.empty? %>
+      <div class="fold">
+        <div class="foldTitle">Contributions</div>
+        <div class="foldContent">
+          <ul class="gadget_list">
+            <% user.contributions.each do |contribution| %>
+              <li>
+                <%= link_to contributable_name(contribution.contributable_id, contribution.contributable_type, 20), contributable_url(contribution.contributable_id, contribution.contributable_type), :alt => contributable_name(contribution.contributable_id, contribution.contributable_type) %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
   
-  <% unless user.policies.empty? %>
-    <div class="fold">
-      <div class="foldTitle">Policies</div>
-      <div class="foldContent">
-        <ul class="gadget_list">
-          <% user.policies.each do |policy| %>
-            <li>
-              <%= link_to h(truncate(policy.name, 20)), policy_path(policy) %>
-            </li>
-          <% end %>
-        </ul>
+    <% unless user.policies.empty? %>
+      <div class="fold">
+        <div class="foldTitle">Policies</div>
+        <div class="foldContent">
+          <ul class="gadget_list">
+            <% user.policies.each do |policy| %>
+              <li>
+                <%= link_to h(truncate(policy.name, 20)), policy_path(policy) %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
   
+  <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 </div>

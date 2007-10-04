@@ -22,26 +22,6 @@
 	
 }
 
-.myexperiment_gadget {
-	border: 1px dashed gray;
-	padding-left: 0.5em;
-	padding-right: 0.5em;
-	margin-bottom: 1em;
-}
-
-.myexperiment_gadget .header {
-	text-align: center;
-}
-
-.myexperiment_gadget ul.gadget_list {
-	list-style-type: none;
-	padding-left: 0;
-}
-
-.myexperiment_gadget .hTagcloud {
-	margin-bottom: 0.5em;
-}
-
 body { 
   background: #8e8e8e url('/images/body-bg.gif') repeat-y center;
 }
@@ -151,10 +131,11 @@ padding-left: 18px;
 .tabnav
 {
 text-align: center;
-padding: 3px 0;
+padding: 5px 0;
 margin-left: 0;
 margin-bottom: 0;
 font-weight: bold;
+font-size: 1.2em;
 }
 
 .tabnav li
@@ -166,10 +147,10 @@ display: inline;
 
 .tabnav li a
 {
-padding: 3px 10px;
+padding: 4px 12px;
 margin-left: 3px;
 border: 1px solid #317eff;
-background: #fff;
+background: #F0F0F0;
 border-bottom: 1px solid transparent;
 text-decoration: none;
 }
@@ -179,7 +160,8 @@ text-decoration: none;
 
 .tabnav li a:hover
 {
-color: #1a1a1a;
+/*color: #1a1a1a;*/
+color: #FF7C6D;
 background: #317eff;
 }
 
@@ -466,4 +448,83 @@ table tr td.details
 /* fix to make rss feed icons look nice in the h3 headers */
 h3 a img {
   margin-top: 8px;
+}
+
+.myexperiment_gadget {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	margin-bottom: 1em;
+}
+
+.myexperiment_gadget ul.gadget_list {
+	list-style-type: none;
+	padding-left: 0;
+}
+
+.myexperiment_gadget .header {
+	border: #999999 0px solid;
+	border-width: 0 1px 1px 1px;
+	background-color: #F7F7F7;
+	font-weight: bold;
+	padding: 0.3em 0 0.5em 0;
+	text-align: center;
+}
+
+.myexperiment_gadget .contents {
+	border-top: none;
+	border-right: #999999 1px solid;
+	border-bottom: none;
+	border-left: #999999 1px solid;
+	color: #000000;
+	padding: 1em;
+	margin-top: 0;   
+	text-align: left;
+	background-color: #FFFFFF;
+}
+
+/* Based on Snazzy Corners: */
+.xtop, .xbottom {
+	display: block;
+	background: transparent;
+	font-size: 1px;
+}
+
+.xb1, .xb2, .xb3, .xb4, .xb5, .xb6, .xb7 {
+	display: block;
+	overflow: hidden;
+}
+
+.xb1, .xb2, .xb3, .xb6, .xb7 { 
+	height: 1px;
+}
+
+.xb2, .xb3, .xb4 {
+	background: #F7F7F7;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+}
+
+.xb5, .xb6, .xb7 {
+	background: #FFFFFF;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+}
+
+.xb1 {
+	margin: 0 5px;
+	background: #999999;
+}
+
+.xb2, .xb7 {
+	margin: 0 3px;
+	border-width: 0 2px;
+}
+
+.xb3, .xb6 {
+	margin: 0 2px;
+}
+
+.xb4, .xb5 {
+	height: 2px;
+	margin: 0 1px;
 }
