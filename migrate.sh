@@ -2,11 +2,11 @@
 
 export RAILS_ENV=production
 
-RAILS_ROOT=/var/www/m2b
+RAILS_ROOT=/home/dgc/mark-branch
 DB_USER=root
 DB=m2_${RAILS_ENV}
-DUMP_SRC=~/myexperiment/backup/myexperiment_production.sql
-WORKFLOW_SRC=~/myexperiment/backup/workflow
+DUMP_SRC=/home/dgc/myexperiment/backup/myexperiment_production.sql
+WORKFLOW_SRC=/home/dgc/myexperiment/backup/workflow
 SCUFL_SRC=${WORKFLOW_SRC}/scufl
 
 if [ ! -e $DUMP_SRC ]; then

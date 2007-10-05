@@ -567,6 +567,7 @@ h3 a img {
 .myexperiment_gadget ul.gadget_list {
 	list-style-type: none;
 	padding-left: 0;
+	margin-left: 0;
 }
 
 .myexperiment_gadget .header {
