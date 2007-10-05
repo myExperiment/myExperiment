@@ -171,9 +171,9 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       if @workflow.save
-        if wf[:tag_list]
-          rtn.user_id = current_user
-          rtn.tag_list = wf[:tag_list]
+        if params[:workflow][:tag_list]
+          @workflow.user_id = current_user
+          @workflow.tag_list = params[:workflow][:tag_list]
           @workflow.update_tags
         end
         
