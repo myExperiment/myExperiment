@@ -10,10 +10,6 @@
       location.href = "<%= new_forum_path %>";
     } else if (klass == "Workflow") {
       location.href = "<%= new_workflow_path %>";
-    <% unless logged_in? %>
-    } else if (klass == "User") {
-      location.href = "<%= new_user_path %>";
-    <% end %>
     } else if (klass == "Network") {
       location.href = "<%= new_network_path %>";
     <% if logged_in? %>
@@ -40,9 +36,6 @@
 	        <% if logged_in? %>
 	        <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>Upload Picture</option>
 	        <option value="Policy" <%= "selected" if ["policy"].include? controller.controller_name.to_s %>>New Policy</option>
-	        <% end %>
-	        <% unless logged_in? %>
-	        <option value="User" <%= "selected" if ["users"].include? controller.controller_name.to_s %>>New User</option>
 	        <% end %>
 	        <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Upload Workflow</option>
 	      </select>
