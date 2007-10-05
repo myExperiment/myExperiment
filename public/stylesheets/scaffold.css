@@ -206,16 +206,18 @@ color: white;
 }
 
 #myexp_header {
-  margin-bottom: 10px;
+  margin-top: 20px;
+  margin-bottom: 30px;
 }
 
 #myexp_login form {
-  padding: 0;
+  padding-left: 20px;
+  padding-right: 20px;
   margin: 0;
 }
 
 #myexp_navbar {
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 #myexp_sidebar {
