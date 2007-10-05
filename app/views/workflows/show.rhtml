@@ -1,5 +1,51 @@
 <%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
 
+<h3>Details</h3>
+
+<p>
+  <b>Title:</b>
+  <%=h @workflow.title %>
+</p>
+
+<p>
+  <b>Contributor:</b><br/>
+  <%= contributor(@workflow.contribution.contributor_id, @workflow.contribution.contributor_type, true, 100) %>
+</p>
+
+<p>
+  <b>Description:</b><br/>
+  <%= white_list @workflow.body_html %>
+</p>
+  
+<% unless @workflow.image.nil? %>
+  <p>
+    <b>Image:</b><br/>
+    <%= image_tag url_for_file_column(@workflow, "image", "medium") %>
+  </p>
+<% end %>
+
+<% unless @workflow.svg.nil? %>
+  <p>
+    <b>SVG:</b><br />
+    <%= link_to '[download svg]', url_for_file_column(@workflow, "svg") %>
+  </p>
+<% end %>
+    
+<p>
+  <b>Unique:</b>
+  <%=h @workflow.unique_name %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=datetime @workflow.created_at %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%=datetime @workflow.updated_at %>
+</p>
+
 <div id="tabsContainer" class="tabsContainer"></div>
 
 <div class="tabContainer">
@@ -45,57 +91,6 @@
         <%= submit_tag "Add tags" %>
       <% end %>
     <% end %>
-  </div>
-</div>
-
-<div class="tabContainer">
-  <div class="tabTitle">Details</div>
-  <div class="tabContent">
-    <h3>Details</h3>
-
-    <p>
-      <b>Title:</b>
-      <%=h @workflow.title %>
-    </p>
-
-    <p>
-      <b>Contributor:</b><br/>
-      <%= contributor(@workflow.contribution.contributor_id, @workflow.contribution.contributor_type, true, 100) %>
-    </p>
-
-    <p>
-      <b>Description:</b><br/>
-      <%= white_list @workflow.body_html %>
-    </p>
-  
-    <% unless @workflow.image.nil? %>
-      <p>
-        <b>Image:</b><br/>
-        <%= image_tag url_for_file_column(@workflow, "image", "medium") %>
-      </p>
-    <% end %>
-
-    <% unless @workflow.svg.nil? %>
-      <p>
-        <b>SVG:</b><br />
-        <%= link_to '[download svg]', url_for_file_column(@workflow, "svg") %>
-      </p>
-    <% end %>
-    
-    <p>
-      <b>Unique:</b>
-      <%=h @workflow.unique_name %>
-    </p>
-
-    <p>
-      <b>Created at:</b>
-      <%=datetime @workflow.created_at %>
-    </p>
-
-    <p>
-      <b>Updated at:</b>
-      <%=datetime @workflow.updated_at %>
-    </p>
   </div>
 </div>
 

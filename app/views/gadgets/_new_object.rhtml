@@ -1,0 +1,66 @@
+<script type="text/javascript">
+  function redirectToNew() {
+    var klass = $("new_object_type").value;
+    
+    if (klass == "Blog") {
+      location.href = "<%= new_blog_path %>";
+    } else if (klass == "Blob") {
+      location.href = "<%= new_blob_path %>";
+    } else if (klass == "Forum") {
+      location.href = "<%= new_forum_path %>";
+    } else if (klass == "Workflow") {
+      location.href = "<%= new_workflow_path %>";
+    <% unless logged_in? %>
+    } else if (klass == "User") {
+      location.href = "<%= new_user_path %>";
+    <% end %>
+    } else if (klass == "Network") {
+      location.href = "<%= new_network_path %>";
+    <% if logged_in? %>
+    } else if (klass == "Picture") {
+      location.href = "<%= new_picture_path(current_user) %>";
+    } else if (klass == "Policy") {
+      location.href = "<%= new_policy_path %>";
+    <% end %>
+    } else {
+      // do nothing!!
+    }
+  }
+</script>
+
+<div class="myexperiment_gadget">
+  <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+
+  <div class="header">
+    <p>
+      Create / Upload..
+    </p>
+  </div>
+  
+  <div class="contents">
+    <div id="new_object_form">
+      <form onsubmit="redirectToNew(); return false;">
+        <p>
+          <select id="new_object_type">
+            <option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>Blob</option>
+            <option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
+            <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>
+            <option value="Network" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Network</option>
+            <% if logged_in? %>
+              <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>Picture</option>
+              <option value="Policy" <%= "selected" if ["policy"].include? controller.controller_name.to_s %>>Policy</option>
+            <% end %>
+            <% unless logged_in? %>
+              <option value="User" <%= "selected" if ["users"].include? controller.controller_name.to_s %>>User</option>
+            <% end %>
+            <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Workflow</option>
+          </select>
+          
+          <%= submit_tag "GO" %>
+        </p>
+      </form>
+    </div>
+  </div>
+  
+  <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+</div>
