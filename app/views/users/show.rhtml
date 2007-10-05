@@ -65,47 +65,64 @@
   <% end %>
 </table>
 
-<%= render :partial => "layouts/news", :locals => { :contributor => @user, :limit => 30 } %>
-
-<% unless @user.friends.empty? %>
-  <h3>Friends</h3>
-
-  <%= render :partial => "friendships/friends", :locals => { :collection => @user.friends } %>
-  
-  <%= link_to '[view my friendships]', friendships_path(@user) if my_page? @user.id %>
-<% end %>
-
 <% if logged_in? and !my_page? @user.id and !current_user.networks_owned.empty? %>
   <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
 <% end %>
 
-<% unless @user.networks_owned.empty? %>
-  <h3>Networks</h3>
+<div id="tabsContainer" class="tabsContainer"></div>
 
-  <%= render :partial => "networks/list", :locals => { :collection => @user.networks_owned } %>
+<div class="tabContainer">
+  <div class="tabTitle">News</div>
+  <div class="tabContent">
+    <%= render :partial => "layouts/news", :locals => { :contributor => @user, :limit => 30 } %>
+  </div>
+</div>
+
+<% unless @user.friends.empty? %>
+  <div class="tabContainer">
+    <div class="tabTitle">Friends</div>
+    <div class="tabContent">
+      <h3>Friends</h3>
+      
+      <div>
+        <%= render :partial => "friendships/friends", :locals => { :collection => @user.friends } %>
+      </div>
   
-  <%= link_to '[view my networks]', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if my_page? @user.id %>
+      <%= link_to '[view my friendships]', friendships_path(@user) if my_page? @user.id %>
+    </div>
+  </div>
+<% end %>
+
+<% unless @user.networks_owned.empty? %>
+  <div class="tabContainer">
+    <div class="tabTitle">Networks</div>
+    <div class="tabContent">
+      <h3>Networks</h3>
+
+      <%= render :partial => "networks/list", :locals => { :collection => @user.networks_owned } %>
+  
+      <%= link_to '[view my networks]', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if my_page? @user.id %>
+    </div>
+  </div>
 <% end %>
 
 <% unless @user.memberships_accepted.empty? %>
-  <h3>Memberships</h3>
+  <div class="tabContainer">
+    <div class="tabTitle">Memberships</div>
+    <div class="tabContent">
+      <h3>Memberships</h3>
 
-  <ul><% @user.memberships_accepted.each do |m| %>
-  <li><%= link_to h(m.network.title), network_path(m.network) %> (accepted at: <%= m.accepted_at %>)</li>
-  <% end %></ul>
+      <ul><% @user.memberships_accepted.each do |m| %>
+        <li><%= link_to h(m.network.title), network_path(m.network) %> (accepted at: <%= m.accepted_at %>)</li>
+      <% end %></ul>
   
-  <% if my_page? @user.id %>
-    <p>
-      <%= link_to '[view my memberships]', memberships_path(@user) %>
-    </p>
-  <% end %>
+      <% if my_page? @user.id %>
+        <p><%= link_to '[view my memberships]', memberships_path(@user) %></p>
+      <% end %>
+    </div>
+  </div>
 <% end %>
 
 <% unless @user.contributions.empty? %>
-  <h3>Contributions</h3>
-
-  <% if false %>
-  <%= render :partial => "contributions/list", :locals => { :collection => @user.contributions, :title => true } %>
-  <% end %>
-  <%= render :partial => "contributions/table", :locals => { :collection => @user.contributions } %>
+  <%= render :partial => "contributions/tabs", :locals => { :collection => @user.contributions } %>
 <% end %>

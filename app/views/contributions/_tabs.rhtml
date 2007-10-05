@@ -1,0 +1,10 @@
+<% filter_contributables(collection).each do |klass,contributables| %>
+
+<div class="tabContainer">
+  <div class="tabTitle"><%= klass.humanize.pluralize %></div>
+  <div class="tabContent">
+    <%= render :partial => "#{klass.pluralize.downcase}/#{klass.downcase}", :collection => contributables, :spacer_template => "contributions/list_spacer" %>
+  </div>
+</div>
+
+<% end %>
