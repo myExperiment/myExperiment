@@ -4,6 +4,8 @@
 
 <% form_for(:contribution, :url => contribution_path(@contribution), :html => { :method => :put }) do |f| %>
   <% if @contribution.owner?(current_user) %>
+    <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user } %>
+  
     <%= render :partial => "policies/listform", :locals => { :contribution => @contribution, :user => current_user } %>
   <% end %>
 

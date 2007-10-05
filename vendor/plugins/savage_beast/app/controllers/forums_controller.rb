@@ -63,9 +63,17 @@ class ForumsController < ApplicationController
   end
 
   def update
+    # hack for select contributor form
+    if params[:contributor_pair]
+      params[:contribution][:contributor_type], params[:contribution][:contributor_id] = params[:contributor_pair][:class_id].split("-")
+      params.delete("contributor_pair")
+    end
+    
     # remove protected columns
-    [:contributor_id, :contributor_type, :topics_count, :posts_count].each do |column_name|
-      params[:forum].delete(column_name)
+    if params[:forum]
+      [:contributor_id, :contributor_type, :topics_count, :posts_count].each do |column_name|
+        params[:forum].delete(column_name)
+      end
     end
     
     respond_to do |format|

@@ -88,9 +88,17 @@ class BlogsController < ApplicationController
   # PUT /blogs/1
   # PUT /blogs/1.xml
   def update
+    # hack for select contributor form
+    if params[:contributor_pair]
+      params[:contribution][:contributor_type], params[:contribution][:contributor_id] = params[:contributor_pair][:class_id].split("-")
+      params.delete("contributor_pair")
+    end
+    
     # remove protected columns
-    [:contributor_id, :contributor_type, :created_at, :updated_at].each do |column_name|
-      params[:blog].delete(column_name)
+    if params[:blog]
+      [:contributor_id, :contributor_type, :created_at, :updated_at].each do |column_name|
+        params[:blog].delete(column_name)
+      end
     end
     
     respond_to do |format|

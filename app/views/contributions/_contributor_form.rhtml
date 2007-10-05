@@ -1,3 +1,5 @@
+<% current ||= current_user %>
+
 <% fields_for :contributor_pair do |f| %>
   <h3>Ownership</h3>
   
@@ -8,13 +10,13 @@
 
   <p>
     <p>
-      <%= f.radio_button(:class_id, "User-#{user.id}", {:checked => true}) %> - <%= link_to 'Me', user_path(user) %>
+      <%= f.radio_button(:class_id, "User-#{user.id}", { :checked => (current.type.to_s == "User" and current.id.to_i == user.id) }) %> - <%= link_to 'Me', user_path(user) %>
     </p>
     <% unless user.networks_owned.empty? %>
       <p>
         <b>Creator of..</b><br/>
         <% for n in user.networks_owned %>
-          <%= f.radio_button(:class_id, "Network-#{n.id}") %> - <%= link_to h(n.title), network_path(n) %><br/>
+          <%= f.radio_button(:class_id, "Network-#{n.id}", { :checked => (current.type.to_s == "Network" and current.id.to_i == n.id) }) %> - <%= link_to h(n.title), network_path(n) %><br/>
         <% end %>
       </p>
     <% end %>
@@ -22,7 +24,7 @@
       <p>
         <b>Member of..</b><br/>
         <% for n in user.networks %>
-          <%= f.radio_button(:class_id, "Network-#{n.id}") %> - <%= link_to h(n.title), network_path(n) %><br/>
+          <%= f.radio_button(:class_id, "Network-#{n.id}", { :checked => (current.type.to_s == "Network" and current.id.to_i == n.id) }) %> - <%= link_to h(n.title), network_path(n) %><br/>
         <% end %>
       </p>
     <% end %>

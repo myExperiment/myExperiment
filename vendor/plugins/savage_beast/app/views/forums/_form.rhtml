@@ -3,7 +3,7 @@
 
 <% if controller.action_name == "new" || (@forum.contribution && my_page?(@forum.contribution.contributor_id, @forum.contribution.contributor_type)) %>
 
-<p id="forum_contributor">
+<p id="forum_contributor"></p>
 
 <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user } %>
 
@@ -14,6 +14,10 @@
 <% end %>
 
 <% if controller.action_name == "edit" && @forum.contribution.owner?(current_user) %>
+
+<p id="forum_contributor"></p>
+
+<%= render :partial => "contributions/contributor_form", :locals => { :user => current_user, :current => @forum.contribution.contributor } %>
 
 <p id="forum_policy"></p>
   

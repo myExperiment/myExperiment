@@ -113,15 +113,15 @@ module ApplicationHelper
                               :size => "#{size}x#{size}"),
                       :title => h(user.name)
     else
-      img = null_avatar(size)
+      img = null_avatar(size, h(user.name))
     end
     
     return link_to(img, user_url(user))
   end
   
-  def null_avatar(size=200)
+  def null_avatar(size=200, alt="Anonymous")
     image_tag "avatar.png", 
-              :title => "Anonymous", 
+              :title => alt, 
               :size => "#{size}x#{size}"
   end
   

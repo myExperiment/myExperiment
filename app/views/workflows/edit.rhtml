@@ -3,6 +3,8 @@
 <%= error_messages_for :workflow %>
 
 <% if @workflow.owner?(current_user) %>
+  <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user, :current => @workflow.contribution.contributor } %>
+
   <% form_for(:contribution, :url => contribution_path(@workflow.contribution), :html => { :method => :put }) do |f| %>
     <%= render :partial => "policies/listform", :locals => { :contribution => @workflow.contribution, :user => current_user } %>
     

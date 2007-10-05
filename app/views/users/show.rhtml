@@ -104,5 +104,8 @@
 <% unless @user.contributions.empty? %>
   <h3>Contributions</h3>
 
+  <% if false %>
   <%= render :partial => "contributions/list", :locals => { :collection => @user.contributions, :title => true } %>
+  <% end %>
+  <%= render :partial => "contributions/table", :locals => { :collection => @user.contributions } %>
 <% end %>

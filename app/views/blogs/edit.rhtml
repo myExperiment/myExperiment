@@ -4,6 +4,8 @@
 
 <% form_for(:blog, :url => blog_path(@blog), :html => { :method => :put }) do |f| %>
   <% if @blog.owner?(current_user) %>
+    <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user, :current => @blog.contribution.contributor } %>
+  
     <%= render :partial => "policies/listform", :locals => { :contribution => @blog.contribution, :user => current_user } %>
   <% end %>
   
