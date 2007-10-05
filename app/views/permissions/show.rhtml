@@ -4,28 +4,6 @@
   <b>Policy:</b> <%= link_to @permission.policy.name, policy_path(@permission.policy) %>
 </p>
 
-<% if false %>
-<p>
-  <b>Contributor:</b><br/>
-  <%= contributor(@permission.contributor_id, @permission.contributor_type, true, 100) %>
-</p>
-
-<p>
-  <b>Download:</b>
-  <%=h @permission.download %>
-</p>
-
-<p>
-  <b>Edit:</b>
-  <%=h @permission.edit %>
-</p>
-
-<p>
-  <b>View:</b>
-  <%=h @permission.view %>
-</p>
-<% end %>
-
 <table>
   <tr>
     <th> </th>

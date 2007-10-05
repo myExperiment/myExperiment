@@ -1,178 +1,216 @@
 <%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
 
-<h3>Actions</h3>
+<div id="tabsContainer" class="tabsContainer"></div>
 
-<p>
-  <b>Bookmarked by:</b><br/>
-  <div id="bookmarks">
-    <% unless @workflow.bookmarks.empty? %>
-      <%=h @workflow.bookmarks.collect {|b| b.user.name}.join(", ") %>
-    <% else %>
-      No bookmarks
-    <% end %>
-  </div>
-</p>
+<div class="tabContainer">
+  <div class="tabTitle">Actions</div>
+  <div class="tabContent">
+    <h3>Actions</h3>
 
-<p>
-  <b>Rating:</b> 
-  <% if logged_in? %>
-    <div id="star-ratings-block">
-      <%= render :partial => "ratings/rating", :locals => { :rateable => @workflow, :controller => controller.controller_name } %>
-    </div>
-  <% else %>
-    <%= number_with_precision(@workflow.rating*20, 0) %>&#37 (<%= pluralize @workflow.ratings.count, 'rating' %>)
-  <% end %>
-</p>
-
-<p>
-  <b>Tags:</b><br/>
-  <div id="tags">
-    <%= tag_cloud_from_collection(@workflow.tags) %>
-  </div>
-</p>
-
-<% if logged_in? and @workflow.authorized?("tag", current_user) %>
-  <% form_remote_tag (:url => tag_workflow_path(@workflow), :update => 'tags', :success => "var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
     <p>
-      <%= text_field_tag :tag_list %>
+      <b>Bookmarked by:</b><br/>
+      <div id="bookmarks">
+        <% unless @workflow.bookmarks.empty? %>
+          <%=h @workflow.bookmarks.collect {|b| b.user.name}.join(", ") %>
+        <% else %>
+          No bookmarks
+        <% end %>
+      </div>
     </p>
     
-    <%= submit_tag "Add tags" %>
-  <% end %>
-<% end %>
+    <p>
+      <b>Rating:</b> 
+      <% if logged_in? %>
+        <div id="star-ratings-block">
+          <%= render :partial => "ratings/rating", :locals => { :rateable => @workflow, :controller => controller.controller_name } %>
+        </div>
+      <% else %>
+        <%= number_with_precision(@workflow.rating*20, 0) %>&#37 (<%= pluralize @workflow.ratings.count, 'rating' %>)
+      <% end %>
+    </p>
 
-<h3>Details</h3>
+    <p>
+      <b>Tags:</b><br/>
+      <div id="tags">
+        <%= tag_cloud_from_collection(@workflow.tags) %>
+      </div>
+    </p>
 
-<p>
-  <b>Title:</b>
-  <%=h @workflow.title %>
-</p>
+    <% if logged_in? and @workflow.authorized?("tag", current_user) %>
+      <% form_remote_tag (:url => tag_workflow_path(@workflow), :update => 'tags', :success => "var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
+        <p>
+          <%= text_field_tag :tag_list %>
+        </p>
+    
+        <%= submit_tag "Add tags" %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
 
-<p>
-  <b>Contributor:</b><br/>
-  <%= contributor(@workflow.contribution.contributor_id, @workflow.contribution.contributor_type, true, 100) %>
-</p>
+<div class="tabContainer">
+  <div class="tabTitle">Details</div>
+  <div class="tabContent">
+    <h3>Details</h3>
 
-<p>
-  <b>Description:</b><br/>
-  <%= white_list @workflow.body_html %>
-</p>
+    <p>
+      <b>Title:</b>
+      <%=h @workflow.title %>
+    </p>
 
-<% if false %>
-<p>
-  <b>QR Code (<%= link_to 'what is this?', "http://en.wikipedia.org/wiki/QR_Code" %>):</b>
-  <%= qrcode(h("http://www.myexperiment.com/workflows/#{@workflow.unique_name}"), 2) %>
-</p>
-<% end %>
+    <p>
+      <b>Contributor:</b><br/>
+      <%= contributor(@workflow.contribution.contributor_id, @workflow.contribution.contributor_type, true, 100) %>
+    </p>
 
-<% unless @workflow.image.nil? %>
-<p>
-  <b>Image:</b><br/>
-  <%= image_tag url_for_file_column(@workflow, "image", "medium") %>
-</p>
-<% end %>
+    <p>
+      <b>Description:</b><br/>
+      <%= white_list @workflow.body_html %>
+    </p>
+  
+    <% unless @workflow.image.nil? %>
+      <p>
+        <b>Image:</b><br/>
+        <%= image_tag url_for_file_column(@workflow, "image", "medium") %>
+      </p>
+    <% end %>
 
-<% unless @workflow.svg.nil? %>
-  <p>
-    <b>SVG:</b><br />
-    <%= link_to '[download svg]', url_for_file_column(@workflow, "svg") %>
-  </p>
-<% end %>
+    <% unless @workflow.svg.nil? %>
+      <p>
+        <b>SVG:</b><br />
+        <%= link_to '[download svg]', url_for_file_column(@workflow, "svg") %>
+      </p>
+    <% end %>
+    
+    <p>
+      <b>Unique:</b>
+      <%=h @workflow.unique_name %>
+    </p>
+
+    <p>
+      <b>Created at:</b>
+      <%=datetime @workflow.created_at %>
+    </p>
+
+    <p>
+      <b>Updated at:</b>
+      <%=datetime @workflow.updated_at %>
+    </p>
+  </div>
+</div>
 
 <% if logged_in? and @workflow.authorized?("destroy", current_user) %>
-  <p>
-    <b>Policy:</b>
-    <%= policy_link(@workflow.contribution.policy_id) %>
-  </p>
+  <div class="tabContainer">
+    <div class="tabTitle">Policy</div>
+    <div class="tabContent">
+      <p>
+        <b>Policy:</b>
+        <%= policy_link(@workflow.contribution.policy_id) %>
+      </p>
   
-  <%= render :partial => "policies/policy", :object => @workflow.contribution.policy, :locals => { :read_only => true } unless @workflow.contribution.policy.nil? %>
+      <%= render :partial => "policies/policy", :object => @workflow.contribution.policy, :locals => { :read_only => true } unless @workflow.contribution.policy.nil? %>
+    </div>
+  </div>
 <% end %>
 
-<p>
-  <b>Unique:</b>
-  <%=h @workflow.unique_name %>
-</p>
+<div class="tabContainer">
+  <div class="tabTitle">Citations</div>
+  <div class="tabContent">
+    <h3>Citations</h3>
 
-<p>
-  <b>Created at:</b>
-  <%=datetime @workflow.created_at %>
-</p>
+    <% unless (citations = @workflow.citations).empty? %>
+      <% citations.each_index do |i| %>
+        <p>
+          <%= i.to_i + 1 %>.  <%= render :partial => "citations/citation", :object => citations[i] %>
+        </p>
+      <% end %>
+    <% else %>
+      <p>None</p>
+    <% end %>
 
-<p>
-  <b>Updated at:</b>
-  <%=datetime @workflow.updated_at %>
-</p>
+    <% if logged_in? and @workflow.authorized?("edit", current_user) %>
+      <%= link_to '[new citation]', new_citation_path(@workflow) %> 
+      <%= link_to '[edit citations]', citations_path(@workflow) %>
+    <% end %>
+  </div>
+</div>
 
-<h3>Citations</h3>
+<div class="tabContainer">
+  <div class="tabTitle">Versions</div>
+  <div class="tabContent">
+    <h3>Versions</h3>
 
-<% unless (citations = @workflow.citations).empty? %>
-  <% citations.each_index do |i| %>
-    <p>
-      <%= i.to_i + 1 %>.  <%= render :partial => "citations/citation", :object => citations[i] %>
-    </p>
-  <% end %>
-<% else %>
-  <p>None</p>
-<% end %>
-
-<% if logged_in? and @workflow.authorized?("edit", current_user) %>
-  <%= link_to '[new citation]', new_citation_path(@workflow) %> 
-  <%= link_to '[edit citations]', citations_path(@workflow) %>
-<% end %>
-
-<h3>Versions</h3>
-
-<% if params[:version] %>
-  <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow, :versions => @latest_version } %>
-<% else %>
-  <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
-<% end %>
+    <% if params[:version] %>
+      <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow, :versions => @latest_version } %>
+    <% else %>
+      <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
+    <% end %>
+  </div>
+</div>
 
 <% if logged_in? %>
-  <h3>Comments</h3>
+  <div class="tabContainer">
+    <div class="tabTitle">Comments</div>
+    <div class="tabContent">
+      <h3>Comments</h3>
   
-  <% if logged_in? %>
-    <% form_remote_tag(:url => comment_workflow_path(@workflow), :update => 'comments', :position => 'bottom') do %>
-      <%= text_area_tag :comment, nil, :size => "30x4" %><br/>
-      <%= submit_tag "Add Comment" %>
-    <% end %>
-  <% end %>
+      <% form_remote_tag(:url => comment_workflow_path(@workflow), :update => 'comments', :position => 'bottom') do %>
+        <%= text_area_tag :comment, nil, :size => "30x4" %><br/>
+        <%= submit_tag "Add Comment" %>
+      <% end %>
   
-  <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
+      <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
+    </div>
+  </div>
 <% else %>
   <% unless @workflow.comments.empty? %>
-    <h3>Comments</h3>
+    <div class="tabContainer">
+      <div class="tabTitle">Comments</div>
+      <div class="tabContent">
+        <h3>Comments</h3>
     
-    <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
+        <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
+      </div>
+    </div>
   <% end %>
 <% end %>
 
-<h3>Statistics</h3>
+<div class="tabContainer">
+  <div class="tabTitle">Statistics</div>
+  <div class="tabContent">
+    <h3>Statistics</h3>
 
-<%= render :partial => "contributions/statistics", :object => @workflow.contribution %>
+    <%= render :partial => "contributions/statistics", :object => @workflow.contribution %>
 
-<p>
-  <b>Number of bookmarks:</b> 
-  <%=h @workflow.bookmarks.length %>
-</p>
+    <p>
+      <b>Number of bookmarks:</b> 
+      <%=h @workflow.bookmarks.length %>
+    </p>
 
-<p>
-  <b>Number of comments:</b> 
-  <%=h @workflow.comments.length %>
-</p>
+    <p>
+      <b>Number of comments:</b> 
+      <%=h @workflow.comments.length %>
+    </p>
 
-<p>
-  <b>Number of ratings:</b> 
-  <%=h @workflow.ratings.length %>
-</p>
+    <p>
+      <b>Number of ratings:</b> 
+      <%=h @workflow.ratings.length %>
+    </p>
 
-<p>
-  <b>Number of taggings:</b> 
-  <%=h @workflow.taggings.length %>
-</p>
+    <p>
+      <b>Number of taggings:</b> 
+      <%=h @workflow.taggings.length %>
+    </p>
+  </div>
+</div>
 
 <% if logged_in? and @workflow.owner? current_user %>
-  <h3>History</h3>
+  <div class="tabContainer">
+    <div class="tabTitle">History</div>
+    <div class="tabContent">
+      <h3>History</h3>
 
-  <%= render :partial => "contributions/history", :object => @workflow.contribution %>
+      <%= render :partial => "contributions/history", :object => @workflow.contribution %>
+    </div>
+  </div>
 <% end %>

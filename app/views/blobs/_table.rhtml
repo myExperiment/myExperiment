@@ -9,7 +9,7 @@
   </tr>
   
 <% odd_row = false -%>
-<% for blob in @blobs %>
+<% for blob in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
     <td width="100"><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, true, 60) %></td>
     <td><%=h blob.local_name %></td>

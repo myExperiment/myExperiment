@@ -3,7 +3,7 @@
 <div class="tabContainer">
   <div class="tabTitle"><%= klass.humanize.pluralize %></div>
   <div class="tabContent">
-    <%= render :partial => "#{klass.pluralize.downcase}/#{klass.downcase}", :collection => contributables, :spacer_template => "contributions/list_spacer" %>
+    <%= render :partial => "#{klass.pluralize.downcase}/table", :locals => { :collection => contributables } %>
   </div>
 </div>
 

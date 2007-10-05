@@ -19,74 +19,89 @@
   <%= link_to '[edit policy settings]', edit_policy_path(@policy) %>
 </p>
 
-<h3>Permissions</h3>
+<div id="tabsContainer" class="tabsContainer"></div>
 
-<%= render :partial => "policies/policy", :object => @policy %>
+<div class="tabContainer">
+  <div class="tabTitle">Permissions</div>
+  <div class="tabContent">
+    <h3>Permissions</h3>
 
-<p>
-  <%= link_to '[edit public/protected]', edit_policy_path(@policy) %> <%= link_to '[new permission]', new_permission_path(@policy) %>
-</p>
+    <%= render :partial => "policies/policy", :object => @policy %>
+
+    <p>
+      <%= link_to '[edit public/protected]', edit_policy_path(@policy) %> <%= link_to '[new permission]', new_permission_path(@policy) %>
+    </p>
+  </div>
+</div>
 
 <% unless @policy.contributions.empty? %>
-  <h3>Test</h3>
+  <div class="tabContainer">
+    <div class="tabTitle">Test</div>
+    <div class="tabContent">
+      <h3>Test</h3>
 
-  <% form_remote_tag(:url => test_policy_path(@policy), :method => :post, :update => 'testing_div') do %>
-    <script type="text/javascript">
-      <!--
-        function showID(node) {
-          var klass = node.value;
+      <% form_remote_tag(:url => test_policy_path(@policy), :method => :post, :update => 'testing_div') do %>
+        <script type="text/javascript">
+          <!--
+            function showID(node) {
+              var klass = node.value;
       
-          if (klass == "User") {
-            $("user_contributor_id_div").style.display="block";
-            $("network_contributor_id_div").style.display="none";
-          } else if (klass == "Network") {
-            $("user_contributor_id_div").style.display="none";
-            $("network_contributor_id_div").style.display="block";
-          } else {
-            // do nothing
-          }
-        }
-      -->
-    </script>
+              if (klass == "User") {
+                $("user_contributor_id_div").style.display="block";
+                $("network_contributor_id_div").style.display="none";
+              } else if (klass == "Network") {
+                $("user_contributor_id_div").style.display="none";
+                $("network_contributor_id_div").style.display="block";
+              } else {
+                // do nothing
+              }
+            } 
+          -->
+        </script>
   
-    <p>
-      <b>Contributor type</b><br />
-      <input checked="checked" id="contributor_type" name="contributor_type" type="radio" value="User" onChange="showID(this); return false;" />User<br />
-      <input id="contributor_type" name="contributor_type" type="radio" value="Network" onChange="showID(this); return false;" />Network
-    </p>
+        <p>
+          <b>Contributor type</b><br />
+          <input checked="checked" id="contributor_type" name="contributor_type" type="radio" value="User" onChange="showID(this); return false;" />User<br />
+          <input id="contributor_type" name="contributor_type" type="radio" value="Network" onChange="showID(this); return false;" />Network
+        </p>
     
-    <p>
-      <b>Contributor</b><br />
+        <p>
+          <b>Contributor</b><br />
     
-      <div id="user_contributor_id_div">
-        <%= select_tag :user_contributor_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %>
-      </div>
+          <div id="user_contributor_id_div">
+            <%= select_tag :user_contributor_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %>
+          </div>
     
-      <div id="network_contributor_id_div" style="display: none;">
-        <%= select_tag :network_contributor_id, options_from_collection_for_select(Network.find(:all, :order => "title ASC"), :id.to_i, :title) %>
-      </div>
-    </p>
+          <div id="network_contributor_id_div" style="display: none;">
+            <%= select_tag :network_contributor_id, options_from_collection_for_select(Network.find(:all, :order => "title ASC"), :id.to_i, :title) %>
+          </div>
+        </p>
   
-    <p>
-      <b>Contribution</b><br />
-      <%= select_tag :contribution_id, options_from_collection_for_select(@policy.contributions, :id.to_i, :contributable) if false %>
-      <%= select_tag :contribution_id, options_from_contributions_for_select(@policy.contributions) %>
-    </p>
+        <p>
+          <b>Contribution</b><br />
+          <%= select_tag :contribution_id, options_from_contributions_for_select(@policy.contributions) %>
+        </p>
   
-    <%= submit_tag "Test Permissions" %>
-  <% end %>
+        <%= submit_tag "Test Permissions" %>
+      <% end %>
+      
+      <p>
+        <b>Results</b><br />
+        <div id="testing_div">
+          <p>Click "Test Permissions"</p>
+        </div>
+      </p>
+    </div>
+  </div>
 <% end %>
 
-<p>
-  <b>Results</b><br />
-  <div id="testing_div">
-    <p>Click "Test Permissions"</p>
-  </div>
-</p>
-
 <% unless @policy.contributions.empty? %>
-  <h3>Contributions moderated with this</h3>
+  <div class="tabContainer">
+    <div class="tabTitle">Contributions</div>
+    <div class="tabContent">
+      <h3>Contributions moderated with this</h3>
 
-  <%= render :partial => "contributions/list", :locals => { :collection => @policy.contributions } if false %>
-  <%= render :partial => "contributions/table", :locals => { :collection => @policy.contributions } %>
+      <%= render :partial => "contributions/table", :locals => { :collection => @policy.contributions } %>
+    </div>
+  </div>
 <% end %>

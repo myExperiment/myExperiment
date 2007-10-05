@@ -1,38 +1,60 @@
-<h3>Details</h3>
+<div id="tabsContainer" class="tabsContainer"></div>
 
-<p>
-  <b>Contributor:</b><br/>
-  <%= contributor(@contribution.contributor_id, @contribution.contributor_type, true, 100) %>
-</p>
+<div class="tabContainer">
+  <div class="tabTitle">Details</div>
+  <div class="tabContent">
+    <h3>Details</h3>
 
-<p>
-  <b>Contributable:</b>
-  <%= render :partial => "contributions/list", :locals => { :collection => [@contribution] } %>
-</p>
+    <p>
+      <b>Contributor:</b><br/>
+      <%= contributor(@contribution.contributor_id, @contribution.contributor_type, true, 100) %>
+    </p>
+
+    <p>
+      <b>Contributable:</b>
+      <%= render :partial => "contributions/list", :locals => { :collection => [@contribution] } %>
+    </p>
+    
+    <p>
+      <b>Created at:</b>
+      <%=datetime @contribution.created_at %>
+    </p>
+
+    <p>
+      <b>Updated at:</b>
+      <%=datetime @contribution.updated_at %>
+    </p>
+  </div>
+</div>
 
 <% if logged_in? and @contribution.authorized?("destroy", current_user) %>
-  <p>
-    <b>Policy:</b>
-    <%= policy_link(@contribution.policy_id) %>
-  </p>
+  <div class="tabContainer">
+    <div class="tabTitle">Policy</div>
+    <div class="tabContent">
+      <p>
+        <b>Policy:</b>
+        <%= policy_link(@contribution.policy_id) %>
+      </p>
+    </div>
+  </div>
 <% end %>
 
-<p>
-  <b>Created at:</b>
-  <%=datetime @contribution.created_at %>
-</p>
-
-<p>
-  <b>Updated at:</b>
-  <%=datetime @contribution.updated_at %>
-</p>
-
-<h3>Statistics</h3>
-
-<%= render :partial => "contributions/statistics", :object => @contribution %>
+<div class="tabContainer">
+  <div class="tabTitle">Statistics</div>
+  <div class="tabContent">
+    <h3>Statistics</h3>
+    
+    <%= render :partial => "contributions/statistics", :object => @contribution %>
+  </div>
+</div>
 
 <% if logged_in? and @contribution.authorized?("destroy", current_user) %>
-  <h3>History</h3>
+  <div class="tabContainer">
+    <div class="tabTitle">History</div>
+    <div class="tabContent">
+      <h3>History</h3>
 
-  <%= render :partial => "contributions/history", :object => @contribution %>
+      <%= render :partial => "contributions/history", :object => @contribution %>
+    </div>
+  </div>
 <% end %>

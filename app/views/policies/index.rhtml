@@ -30,10 +30,10 @@
       
         <%= render :partial => "policies/policy", :object => policy, :locals => { :read_only => true } %>
         
-        <p>
-          <%= link_to '[show]', policy_path(policy) %> 
-          <%= link_to '[destroy]', policy_path(policy), :confirm => 'Are you sure?', :method => :delete %>
-        </p>
+        <center>
+          <%= icon "show", policy_path(policy) %> 
+          <%= icon "destroy", policy_path(policy), nil, :confirm => 'Are you sure?', :method => :delete %>
+        </center>
       </li>
     <% end %>
   </ul>

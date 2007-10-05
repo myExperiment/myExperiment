@@ -25,41 +25,66 @@
   <%=datetime @network.updated_at %>
 </p>
 
-<%= render :partial => "layouts/news", :locals => { :contributor => @network, :limit => 30 } %>
+<div id="tabsContainer" class="tabsContainer"></div>
 
-<h3>Description</h3>
+<div class="tabContainer">
+  <div class="tabTitle">News</div>
+  <div class="tabContent">
+    <%= render :partial => "layouts/news", :locals => { :contributor => @network, :limit => 30 } %>
+  </div>
+</div>
 
-<%= white_list @network.description_html %>
+<div class="tabContainer">
+  <div class="tabTitle">Description</div>
+  <div class="tabContent">
+    <h3>Description</h3>
+
+    <%= white_list @network.description_html %>
+  </div>
+</div>
 
 <% if my_page? @network.owner.id %>
-  <h3>Create Memberships</h3>
+  <div class="tabContainer">
+    <div class="tabTitle">Create Memberships</div>
+    <div class="tabContent">
+      <h3>Create Memberships</h3>
   
-  <p>
-    Here's a really quick way to add anyone you like to this network. <br/>
-    Select each name from the list and click "Add".
-  </p>
+      <p>
+        Here's a really quick way to add anyone you like to this network. <br/>
+        Select each name from the list and click "Add".
+      </p>
   
-  <% form_remote_tag(:url => membership_create_network_path(@network), :method => :get, :update => 'members', :position => 'bottom', :success => "var t=getElementById('user_id'); t.value='';") do %>
-    <label for="user_id">User:</label> <%= select_tag :user_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %> <%= submit_tag "Add" %>
-  <% end %>
+      <% form_remote_tag(:url => membership_create_network_path(@network), :method => :get, :update => 'members', :position => 'bottom', :success => "var t=getElementById('user_id'); t.value='';") do %>
+        <label for="user_id">User:</label> <%= select_tag :user_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %> <%= submit_tag "Add" %>
+      <% end %>
   
-  <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :size => 60 } %>
+      <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :size => 60 } %>
+    </div>
+  </div>
   
   <% unless @network.memberships_accepted.empty? %>
-    <h3>Memberships Accepted</h3>
+    <div class="tabContainer">
+      <div class="tabTitle">Memberships Accepted</div>
+      <div class="tabContent">
+        <h3>Memberships Accepted</h3>
   
-    <%= render :partial => "memberships/table", :locals => { :collection => @network.memberships_accepted, :network => false } %>
+        <%= render :partial => "memberships/table", :locals => { :collection => @network.memberships_accepted, :network => false } %>
+      </div>
+    </div>
   <% end %>
 <% else %>
   <% unless @network.members(false).empty? %>
-    <h3>Members</h3>
+    <div class="tabContainer">
+      <div class="tabTitle">Members</div>
+      <div class="tabContent">
+        <h3>Members</h3>
   
-    <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :size => 60 } %>
+        <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :size => 60 } %>
+      </div>
+    </div>
   <% end %>
 <% end %>
 
 <% unless @network.contributions.empty? %>
-  <h3>Contributions</h3>
-
-  <%= render :partial => "contributions/list", :locals => { :collection => @network.contributions, :title => true } %>
+  <%= render :partial => "contributions/tabs", :locals => { :collection => @network.contributions } %>
 <% end %>

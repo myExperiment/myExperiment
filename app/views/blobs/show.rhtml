@@ -1,33 +1,55 @@
-<h3>Details</h3>
+<div id="tabsContainer" class="tabsContainer"></div>
 
-<p>
-  <b>Contributor:</b><br/>
-  <%= contributor(@blob.contribution.contributor_id, @blob.contribution.contributor_type, true, 100) %>
-</p>
+<div class="tabContainer">
+  <div class="tabTitle">Details</div>
+  <div class="tabContent">
+    <h3>Details</h3>
 
-<p>
-  <b>Local name:</b>
-  <%=h @blob.local_name %>
-</p>
+    <p>
+      <b>Contributor:</b><br/>
+      <%= contributor(@blob.contribution.contributor_id, @blob.contribution.contributor_type, true, 100) %>
+    </p>
 
-<p>
-  <b>File type:</b>
-  <%=h @blob.content_type %>
-</p>
+    <p>
+      <b>Local name:</b>
+      <%=h @blob.local_name %>
+    </p>
+
+    <p>
+      <b>File type:</b>
+      <%=h @blob.content_type %>
+    </p>
+  </div>
+</div>
 
 <% if logged_in? and @blob.authorized?("destroy", current_user) %>
-  <p>
-    <b>Policy:</b>
-    <%= policy_link(@blob.contribution.policy_id) %>
-  </p>
+  <div class="tabContainer">
+    <div class="tabTitle">Policy</div>
+    <div class="tabContent">
+      <p>
+        <b>Policy:</b>
+        <%= policy_link(@blob.contribution.policy_id) %>
+      </p>
+    </div>
+  </div>
 <% end %>
 
-<h3>Statistics</h3>
+<div class="tabContainer">
+  <div class="tabTitle">Statistics</div>
+  <div class="tabContent">
+    <h3>Statistics</h3>
 
-<%= render :partial => "contributions/statistics", :object => @blob.contribution %>
+    <%= render :partial => "contributions/statistics", :object => @blob.contribution %>
+  </div>
+</div>
 
 <% if logged_in? and @blob.authorized?("destroy", current_user) %>
-  <h3>History</h3>
+  <div class="tabContainer">
+    <div class="tabTitle">History</div>
+    <div class="tabContent">
+      <h3>History</h3>
 
-  <%= render :partial => "contributions/history", :object => @blob.contribution %>
+      <%= render :partial => "contributions/history", :object => @blob.contribution %>
+    </div>
+  </div>
 <% end %>

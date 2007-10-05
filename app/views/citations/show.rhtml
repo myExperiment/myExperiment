@@ -1,17 +1,29 @@
-<h3>Preview</h3>
+<div id="tabsContainer" class="tabsContainer"></div>
 
-<p>
-  <%= render :partial => "citations/citation", :object => @citation %>
-</p>
+<div class="tabContainer">
+  <div class="tabTitle">Details</div>
+  <div class="tabContent">
+    <h3>Details</h3>
 
-<h3>Details</h3>
+    <p>
+      <b>Created at:</b>
+      <%=datetime @citation.created_at %>
+    </p>
 
-<p>
-  <b>Created at:</b>
-  <%=datetime @citation.created_at %>
-</p>
+    <p>
+      <b>Updated at:</b>
+      <%=datetime @citation.updated_at %>
+    </p>
+  </div>
+</div>
 
-<p>
-  <b>Updated at:</b>
-  <%=datetime @citation.updated_at %>
-</p>
+<div class="tabContainer">
+  <div class="tabTitle">Preview</div>
+  <div class="tabContent">
+    <h3>Preview</h3>
+
+    <p>
+      <%= render :partial => "citations/citation", :object => @citation %>
+    </p>
+  </div>
+</div>
