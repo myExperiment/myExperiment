@@ -1,7 +1,23 @@
-#new_object_form form select#new_object_type {
-  font-weight: bolder;
-  background-color: beige;
-  width: 200px;
+#new_object_form {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	margin-bottom: 1em;
+}
+
+#new_object_form form #new_object_box {
+	background-color: #F7F7F7;
+	border: solid 1px #999999;
+	text-align: center;
+}
+
+#new_object_form form #new_object_box select #new_object_type {
+	width: 130px;
+	font-weight: bold;
+}
+
+#new_object_form form #new_object_box input {
+	margin-top: 0.5em;
+	width: 50px;
 }
 
 .news_feed_div p.title {
@@ -154,7 +170,7 @@ display: inline;
 padding: 4px 12px;
 margin-left: 3px;
 border: 1px solid #317eff;
-background: #F5F5DC;
+background: #F7F7F7;
 border-bottom: 1px solid transparent;
 text-decoration: none;
 }
@@ -165,7 +181,7 @@ text-decoration: none;
 .tabnav li a:hover
 {
 /*color: #1a1a1a;*/
-color: #F5F5DC;
+color: #F7F7F7;
 background: #317eff;
 }
 
@@ -532,7 +548,7 @@ h3 a img {
 .myexperiment_gadget .header {
 	border: #999999 0px solid;
 	border-width: 0 1px 1px 1px;
-	background-color: #F5F5DC;
+	background-color: #F7F7F7;
 	font-weight: bold;
 	padding: 0.3em 0 0.5em 0;
 	text-align: center;
@@ -550,7 +566,7 @@ h3 a img {
 	background-color: #FFFFFF;
 }
 
-/* Based on Snazzy Corners: */
+/* Based on "Snazzy Corners:" */
 .xtop, .xbottom {
 	display: block;
 	background: transparent;
@@ -567,7 +583,7 @@ h3 a img {
 }
 
 .xb2, .xb3, .xb4 {
-	background: #F5F5DC;
+	background: #F7F7F7;
 	border-left: 1px solid #999999;
 	border-right: 1px solid #999999;
 }

@@ -30,23 +30,25 @@
 
 <div id="new_object_form">
   <form onsubmit="redirectToNew(); return false;">
-    <p>
-      <select id="new_object_type">
-        <option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>New Blob</option>
-        <option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>New Blog</option>
-        <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>New Forum</option>
-        <option value="Network" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>New Network</option>
-        <% if logged_in? %>
-        <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>New Picture</option>
-        <option value="Policy" <%= "selected" if ["policy"].include? controller.controller_name.to_s %>>New Policy</option>
-        <% end %>
-        <% unless logged_in? %>
-        <option value="User" <%= "selected" if ["users"].include? controller.controller_name.to_s %>>New User</option>
-        <% end %>
-        <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>New Workflow</option>
-      </select>
-  
-      <%= image_submit_tag(method_to_icon_filename("new")) %>
-    </p>
+	<div id="new_object_box">
+		<p>
+	      <select id="new_object_type">
+	        <option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>Upload Blob</option>
+	        <option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>New Blog</option>
+	        <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>New Forum</option>
+	        <option value="Network" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>New Network</option>
+	        <% if logged_in? %>
+	        <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>Upload Picture</option>
+	        <option value="Policy" <%= "selected" if ["policy"].include? controller.controller_name.to_s %>>New Policy</option>
+	        <% end %>
+	        <% unless logged_in? %>
+	        <option value="User" <%= "selected" if ["users"].include? controller.controller_name.to_s %>>New User</option>
+	        <% end %>
+	        <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Upload Workflow</option>
+	      </select>
+	  
+	      <input type="button" value="GO"/>
+	    </p>
+	</div>
   </form>
 </div>
