@@ -475,6 +475,29 @@ h3 a img {
   margin-top: 8px;
 }
 
+/* folding */
+
+.fold {
+  margin-bottom: 1em;
+  padding: 0px;
+}
+
+.foldTitle {
+  background: #222;
+  border-bottom: 1px solid black;
+  color: white;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.foldContent {
+  border: 1px solid #aaa;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+/* tabs */
+
 .tabsContainer {
   padding: 0;
   margin: 0;

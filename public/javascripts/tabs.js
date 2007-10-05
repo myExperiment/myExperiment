@@ -3,22 +3,6 @@
 tabTitles = new Array();
 tabPanes  = new Array();
 
-function getElementByClassName(el, cl) {
-  for (var i = 0; i < el.childNodes.length; i++) {
-    if (el.childNodes[i].className == cl) {
-      return el.childNodes[i];
-    }
-  }
-}
-
-function getTabTitleDiv(el) {
-  return getElementByClassName(el, 'tabTitle');
-}
-
-function getTabContentDiv(el) {
-  return getElementByClassName(el, 'tabContent');
-}
-
 function selectTab(t) {
 
   var html = '<table cellspacing=0 cellpadding=0><tr>';
@@ -59,8 +43,23 @@ function selectTab(t) {
   document.getElementById('tabsContainer').innerHTML = html;
 }
 
-
 function initialiseTabs() {
+
+  function getElementByClassName(el, cl) {
+    for (var i = 0; i < el.childNodes.length; i++) {
+      if (el.childNodes[i].className == cl) {
+        return el.childNodes[i];
+      }
+    }
+  }
+
+  function getTabTitleDiv(el) {
+    return getElementByClassName(el, 'tabTitle');
+  }
+
+  function getTabContentDiv(el) {
+    return getElementByClassName(el, 'tabContent');
+  }
 
   if (document.getElementById('tabsContainer') == undefined)
     return;
