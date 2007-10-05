@@ -1,4 +1,4 @@
-<h1>Upload blob</h1>
+<h1>Upload file</h1>
 
 <%= error_messages_for :blob %>
 
@@ -7,7 +7,7 @@
   
   <%= render :partial => "policies/listform", :locals => { :contribution => @blob.contribution, :user => current_user } %>
 
-  <h3>Upload file</h3>
+  <h3>Data</h3>
   
   <p>
     Please locate the file (on your local machine) that you would like to contribute.

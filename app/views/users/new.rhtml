@@ -1,6 +1,8 @@
 <%= error_messages_for :user %>
 
-<h1>New user with Username and Password</h1>
+<h1>Register for myExperiment</h1>
+
+<h3>New user with Username and Password</h3>
 
 <% form_for(:user, :url => users_path) do |f| %>
   <fieldset>
@@ -34,7 +36,7 @@
 
 <br/>
 
-<h1>New user with OpenID</h1>
+<h3>New user with OpenID</h3>
 
 <% form_tag session_path do %>
   <fieldset>
