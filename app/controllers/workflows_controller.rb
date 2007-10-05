@@ -171,6 +171,12 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       if @workflow.save
+        if wf[:tag_list]
+          rtn.user_id = current_user
+          rtn.tag_list = wf[:tag_list]
+          @workflow.update_tags
+        end
+        
         @workflow.contribution.update_attributes(params[:contribution])
         
         flash[:notice] = 'Workflow was successfully created.'
@@ -315,11 +321,6 @@ protected
     unless RUBY_PLATFORM =~ /mswin32/
       rtn.image = img
       rtn.svg = svg
-    end
-                       
-    if wf[:tag_list]
-      rtn.user_id = current_user
-      rtn.tag_list = wf[:tag_list]
     end
     
     return rtn
