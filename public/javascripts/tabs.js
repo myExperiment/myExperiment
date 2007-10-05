@@ -62,6 +62,9 @@ function selectTab(t) {
 
 function initialiseTabs() {
 
+  if (document.getElementById('tabsContainer') == undefined)
+    return;
+
   var divs = document.getElementsByTagName('DIV');
 
   for (var i = 0; i < divs.length; i++) {
@@ -79,9 +82,8 @@ function initialiseTabs() {
     }
   }
 
-//  selectTab(0);
+  selectTab(0);
 }
 
-//initialiseTabs();
-
+initialiseTabs();
 
