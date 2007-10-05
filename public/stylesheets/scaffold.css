@@ -457,6 +457,67 @@ h3 a img {
   margin-top: 8px;
 }
 
+.tabsContainer {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  position: relative;
+  top: 1px;
+}
+
+.tabsContainer IMG {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+
+.tabsContainer TABLE {
+  height: 24px;
+  border-spacing: 0;
+}
+
+.tabsContainer TABLE TR TD {
+  padding: 0;
+  border-bottom: 1px solid #909090;
+  vertical-align: middle;
+}
+
+.tabSelected {
+  border-top: 1px solid #909090;
+  border-bottom: 1px transparent;
+  padding: 0;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.tabUnselected {
+  border-top: 1px solid #909090;
+  color: gray;
+  background: #d8d8d8;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.tabTitle {
+  background: #222;
+  color: white;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.tabContent {
+  border: 1px solid #909090;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  margin-bottom: 1.0em;
+  background: white;
+}
+
 .myexperiment_gadget {
 	padding-left: 0.5em;
 	padding-right: 0.5em;
@@ -535,3 +596,4 @@ h3 a img {
 	height: 2px;
 	margin: 0 1px;
 }
+
