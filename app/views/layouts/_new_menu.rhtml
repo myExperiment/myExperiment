@@ -37,8 +37,8 @@
         <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>New Forum</option>
         <option value="Network" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>New Network</option>
         <% if logged_in? %>
-        <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>New Picture</options>
-        <option value="Policy" <%= "selected" if ["policy"].include? controller.controller_name.to_s %>>New Policy</options>
+        <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>New Picture</option>
+        <option value="Policy" <%= "selected" if ["policy"].include? controller.controller_name.to_s %>>New Policy</option>
         <% end %>
         <% unless logged_in? %>
         <option value="User" <%= "selected" if ["users"].include? controller.controller_name.to_s %>>New User</option>
