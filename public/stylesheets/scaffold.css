@@ -39,7 +39,7 @@
 }
 
 .news_feed_div ul.news_feed_day li.news_feed_item a, .news_feed_div ul.news_feed_day li.news_feed_item a:visited {
-	color: blue;
+	color: #000099;
 }
 
 body { 
@@ -532,6 +532,7 @@ h3 a img {
   vertical-align: middle;
   white-space: nowrap;
   pointer: pointer;
+  cursor: pointer;
 }
 
 .tabUnselected {
@@ -544,6 +545,7 @@ h3 a img {
   vertical-align: middle;
   white-space: nowrap;
   pointer: pointer;
+  cursor: pointer;
 }
 
 .tabSelIMG {
