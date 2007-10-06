@@ -26,6 +26,11 @@ require 'acts_as_contributor'
 class Network < ActiveRecord::Base
   acts_as_contributor
   
+  has_many :blobs, :as => :contributor
+  has_many :blogs, :as => :contributor
+  has_many :forums, :as => :contributor
+  has_many :workflows, :as => :contributor
+  
   acts_as_ferret :fields => { :title => { :store => :yes, :index => :untokenized }, 
                               :unique_name => { :store => :yes }, 
                               :owner_name => { :store => :yes },

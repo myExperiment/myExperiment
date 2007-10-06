@@ -128,6 +128,11 @@ class User < ActiveRecord::Base
   
   acts_as_contributor
   
+  has_many :blobs, :as => :contributor
+  has_many :blogs, :as => :contributor
+  has_many :forums, :as => :contributor
+  has_many :workflows, :as => :contributor
+  
   acts_as_ferret :fields => { :openid_url => { :store => :yes }, 
                               :name => { :store => :yes }, 
                               :username => { :store => :yes },

@@ -1,7 +1,7 @@
 <% filter_contributables(collection).each do |klass,contributables| %>
 
 <div class="tabContainer">
-  <div class="tabTitle"><%= klass.humanize.pluralize %></div>
+  <div class="tabTitle"><%= klass.to_s == "Blob" ? "Files" : klass.humanize.pluralize %></div>
   <div class="tabContent">
     <%= render :partial => "#{klass.pluralize.downcase}/table", :locals => { :collection => contributables } %>
   </div>

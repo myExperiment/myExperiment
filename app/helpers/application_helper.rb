@@ -184,7 +184,7 @@ module ApplicationHelper
     link_to("Request friendship", new_friendship_url(:user_id => user_id))
   end
   
-  def versioned_workflow_link(workflow_id, version_id)
+  def versioned_workflow_link(workflow_id, version_id, long_description=true)
     if workflow_id.kind_of? Fixnum
       workflow = Workflow.find(:first, :conditions => ["id = ?", workflow_id])
       return nil unless workflow
@@ -203,7 +203,11 @@ module ApplicationHelper
       return nil
     end
     
-    return "#{link_to "[#{workflow.version}]", url} - #{link_to "#{h(workflow.title)}", url} by #{contributor(workflow.contributor_id, workflow.contributor_type)} (#{datetime(workflow.updated_at, false)})"
+    if long_description
+      return "#{link_to "[#{workflow.version}]", url} - #{link_to "#{h(workflow.title)}", url} by #{contributor(workflow.contributor_id, workflow.contributor_type)} (#{datetime(workflow.updated_at, false)})"
+    else
+      return link_to("#{h(workflow.title)} [#{workflow.version}]", url)
+    end
   end
   
   def filter_contributables(contributions)
@@ -415,40 +419,27 @@ module ApplicationHelper
     return "#{issn[0..3]}-#{issn[4..7]}"
   end
   
-  def news(contributor, before=nil, after=nil, my_page=false, limit=nil)
-    rtn = {}
+  def news(contributor, restrict_contributor, before=Time.now, after=Time.now-1.week, limit=30)
+    hash = {}
     
-    contributor_news(contributor, before, after, 0, (my_page ? nil : contributor)).each do |news_item|
+    contributor_news(contributor, before, after, 0, (restrict_contributor ? nil : contributor)).sort! { |a, b|
+      b[0] <=> a[0]
+    }[0..limit].each do |news_item|
       nearest_day = news_item[0] - (news_item[0].hour.hours + news_item[0].min.minutes + news_item[0].sec.seconds)
+      time = "#{news_item[0].hour}:#{news_item[0].min}"
       
-      if rtn.has_key? nearest_day
-        rtn[nearest_day] << news_item[1]
+      if hash.has_key? nearest_day
+        hash[nearest_day] << "#{time} #{news_item[1]}"
       else
-        rtn[nearest_day] = [news_item[1]]
+        hash[nearest_day] = ["#{time} #{news_item[1]}"]
       end
     end
     
-    array = rtn.sort { |a, b|
+    rtn = hash.sort { |a, b|
       b[0] <=> a[0]
     }
     
-    if limit
-      total = 0
-      array.each_index do |i|
-        news_day = array[i]
-        total = total.to_i + news_day[1].length
-        
-        if total > limit
-          diff = total - limit
-          
-          news_day[1] = news_day[1][0...(news_day[1].length - diff)]
-          
-          return array[0..i]
-        end
-      end
-    end
-    
-    return array
+    return rtn
   end
   
   def icon(method, url=nil, alt=nil, url_options={})
@@ -511,92 +502,141 @@ protected
     
     return rtn unless depth.to_i < 2
     
-    if contributor.kind_of? User
-      rtn = rtn + contributor_news!(contributor.memberships_accepted, before, after, restrict_contributor) # networks this user has joined
-      rtn = rtn + contributor_news!(contributor.friendships_accepted, before, after, restrict_contributor) # friends this user has made
-      rtn = rtn + contributor_news!(contributor.contributions, before, after, restrict_contributor) # contributions this user has made
-      rtn = rtn + contributor_news!(contributor.networks_owned, before, after, restrict_contributor) # networks this user has created
-      
-      contributor.networks.each do |network| # foreach network that the user is a member of
-        rtn = rtn + contributor_news(network, before, after, depth.to_i+1, restrict_contributor) # networks this user has joined
-      end
-        
-      contributor.networks_owned.each do |network| # foreach network owned by the user
-        rtn = rtn + contributor_news(network, before, after, depth.to_i+1, restrict_contributor)
-      end
-      
-      contributor.friends.each do |friend| # foreach friend of the user
-        rtn = rtn + contributor_news(friend, before, after, depth.to_i+1, restrict_contributor)
-      end
-    elsif contributor.kind_of? Network
-      if (before and contributor.created_at < before) and (after and contributor.created_at > after)
-        rtn << [contributor.created_at, "#{name(contributor.owner)} created the #{title(contributor)} network."]
-      end
-      
-      rtn = rtn + contributor_news!(contributor.memberships_accepted, before, after, restrict_contributor) # memberships the network admin has accepted
-      rtn = rtn + contributor_news!(contributor.contributions, before, after, restrict_contributor) # contributions this network has made
-      
-      #contributor.members(false).each do |member| # foreach member of the network
-      #  rtn = rtn + contributor_news(member, before, after, depth.to_i+1, incl_assc)
-      #end
+    collections = [[contributor], contributor.contributions, contributor.workflows, contributor.blogs]
+    recursions = []
+    
+    case contributor.class.to_s
+    when "User"
+      collections = collections + [contributor.memberships_accepted, contributor.friendships_accepted, contributor.networks_owned]
+      recursions = recursions + [contributor.networks, contributor.networks_owned, contributor.friends]
+    when "Network"
+      collections = collections + [contributor.memberships_accepted]
+      recursions = recursions + [contributor.members]
     else
-      return nil
+      # do nothing!
+    end
+    
+    collections.each do |collection|
+      collection.each do |item|
+        rtn = rtn + contributor_news!(item, before, after, restrict_contributor)
+      end
+    end
+    
+    recursions.each do |collection|
+      collection.each do |c|
+        rtn = rtn + contributor_news(c, before, after, depth.to_i+1, restrict_contributor)
+      end
     end
     
     return rtn.uniq # remove duplicate items due to recursion
   end
   
-  def contributor_news!(collection, before, after, restrict_contributor)
+  def contributor_news!(item, before, after, restrict_contributor)
     rtn = []
     
-    collection.each do |item|
-      case (item.class.to_s)
-      when "Membership"
-        next if before and item.accepted_at > before
-        next if after and item.accepted_at < after
+    case (item.class.to_s)
+    when "Membership"
+      return rtn if before and item.accepted_at > before
+      return rtn if after and item.accepted_at < after
         
-        if restrict_contributor 
-          next unless (restrict_contributor.class.to_s == "User" and item.user.id.to_i == restrict_contributor.id.to_i)
+      if restrict_contributor
+        case restrict_contributor.class.to_s
+        when "User"
+          return rtn unless item.user.id.to_i == restrict_contributor.id.to_i
+        when "Network"
+          return rtn unless item.network.id.to_i == restrict_contributor.id.to_i
+        else
+          return rtn
         end
+      end
       
-        rtn << [item.accepted_at, "#{name(item.user)} joined the #{title(item.network)} network."]
-      when "Friendship"
-        next if before and item.accepted_at > before
-        next if after and item.accepted_at < after
+      rtn << [item.accepted_at, "#{name(item.user)} joined the #{title(item.network)} network."]
+    when "Friendship"
+      return rtn if before and item.accepted_at > before
+      return rtn if after and item.accepted_at < after
         
-        if restrict_contributor 
-          next unless (restrict_contributor.class.to_s == "User" and [item.user.id.to_i, item.friend.id.to_i].include? restrict_contributor.id.to_i)
-        end
+      if restrict_contributor 
+        return rtn unless (restrict_contributor.class.to_s == "User" and [item.user.id.to_i, item.friend.id.to_i].include? restrict_contributor.id.to_i)
+      end
       
-        rtn << [item.accepted_at, "#{name(item.user)} and #{name(item.friend)} became friends."]
-      when "Network"
-        next if before and item.created_at > before
-        next if after and item.created_at < after
+      rtn << [item.accepted_at, "#{name(item.user)} and #{name(item.friend)} became friends."]
+    when "Network"
+      return rtn if before and item.created_at > before
+      return rtn if after and item.created_at < after
+        
+      if restrict_contributor
+        case restrict_contributor.class.to_s
+        when "User"
+          return rtn unless item.owner.id.to_i == restrict_contributor.id.to_i
+        when "Network"
+          return rtn unless item.id.to_i == restrict_contributor.id.to_i
+        else
+          return rtn
+        end
+      end
+      
+      rtn << [item.created_at, "#{name(item.owner)} created the #{title(item)} network."]
+    when "User"
+      return rtn if before and item.created_at > before
+      return rtn if after and item.created_at < after
+        
+      if restrict_contributor
+        return rtn unless (restrict_contributor.class.to_s == "User" and item.id.to_i == restrict_contributor.id.to_i)
+      end
+      
+      rtn << [item.created_at, "#{name(item)} joined #{link_to "myExperiment", "/"}."]
+    when "Contribution"
+      return rtn if before and item.created_at > before
+      return rtn if after and item.created_at < after
+        
+      owner = contributor(item.contributor_id, item.contributor_type)
+      editor = contributor(item.contributable.contributor_id, item.contributable.contributor_type)
+        
+      if restrict_contributor 
+        return rtn unless ([item.contributable.contributor_type, item.contributor_type].include? restrict_contributor.class.to_s and [item.contributable.contributor_id, item.contributor_id].include? restrict_contributor.id.to_i)
+      end
+        
+      if owner.to_s == editor.to_s
+        rtn << [item.created_at, "#{owner} created the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.downcase}."]
+      else
+        case item.contributor_type
+        when "Network"
+          owner_string = "the #{owner} network"
+        else
+          owner_string = owner
+        end
+        
+        rtn << [item.created_at, "#{editor} created the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.to_s == "Blob" ? "file" : item.contributable_type.downcase} for #{owner_string}."]
+      end
+    when "Blog"
+      if restrict_contributor
+        return rtn unless (restrict_contributor.class.to_s == item.contributor_type.to_s and restrict_contributor.id.to_i == item.contributor_id.to_i)
+      end
+      
+      owner = contributor(item.contributor_id, item.contributor_type)
+    
+      item.posts.each do |blog_post|
+        next if before and blog_post.created_at > before
+        next if after and blog_post.created_at < after
+        
+        rtn << [blog_post.created_at, "#{owner} has created a new post on #{contributable(item.id, "Blog")}."]
+      end
+    when "Workflow"
+      item.versions.each do |workflow|
+        next if workflow.version.to_i == 1
+        next if before and workflow.updated_at > before
+        next if after and workflow.updated_at < after
+        
+        editor = contributor(workflow.contributor_id, workflow.contributor_type)
         
         if restrict_contributor
-          next unless (restrict_contributor.class.to_s == "User" and item.owner.id.to_i == restrict_contributor.id.to_i)
-        end
-      
-        rtn << [item.created_at, "#{name(item.owner)} created the #{title(item)} network."]
-      when "Contribution"
-        next if before and item.created_at > before
-        next if after and item.created_at < after
-        
-        owner = contributor(item.contributor_id, item.contributor_type)
-        editor = contributor(item.contributable.contributor_id, item.contributable.contributor_type)
-        
-        if restrict_contributor 
-          next unless ([item.contributable.contributor_type, item.contributor_type].include? restrict_contributor.class.to_s and [item.contributable.contributor_id.to_i, item.contributor_id.to_i].include? restrict_contributor.id.to_i)
+          next unless (workflow.contributor_type.to_s == restrict_contributor.class.to_s and workflow.contributor_id.to_i == restrict_contributor.id.to_i)
         end
         
-        if owner.to_s == editor.to_s
-          rtn << [item.created_at, "#{owner} created the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.downcase}."]
-        else
-          rtn << [item.created_at, "#{editor} edited the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.downcase} for the #{owner} network."]
-        end
-      else
-        # do nothing!!
+        rtn << [workflow.updated_at, "#{editor} edited the #{versioned_workflow_link(item.id, workflow.version, false)} workflow."]
       end
+    else
+      return rtn
     end
     
     return rtn

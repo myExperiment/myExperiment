@@ -1,14 +1,6 @@
-<% before ||= Time.now -%>
-<% after ||= Time.now-1.week -%>
-<% limit ||= nil %>
-
-<% my_news = news(contributor, Time.now, Time.now-1.week, my_page?(contributor.id, contributor.class.to_s), limit) %>
-
-<% unless my_news.empty? %>
-  <h3>News</h3>
-
+<% unless collection.empty? %>
   <div class="news_feed_div">
-  <% my_news.each do |news_day| %>
+  <% collection.each do |news_day| %>
     <p class="title">
       <% if news_day[0] > Time.now - 1.day %>
         Today
@@ -27,4 +19,6 @@
     </ul>
   <% end %>
   </div>
+<% else %>
+  <p>No news</p>
 <% end %>

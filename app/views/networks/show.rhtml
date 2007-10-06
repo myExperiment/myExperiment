@@ -30,7 +30,9 @@
 <div class="tabContainer">
   <div class="tabTitle">News</div>
   <div class="tabContent">
-    <%= render :partial => "layouts/news", :locals => { :contributor => @network, :limit => 30 } %>
+    <h3>News</h3>
+    
+    <%= render :partial => "layouts/news", :locals => { :collection => news(@network, (logged_in? and @network.member?(current_user.id))) } %>
   </div>
 </div>
 
