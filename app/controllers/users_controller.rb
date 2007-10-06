@@ -33,10 +33,11 @@ class UsersController < ApplicationController
   def search
     @query = params[:query] || ""
     
-    unless @query.empty?
-      @users = User.find_by_contents(@query)
-    else
-      @users = find_users
+    @users = User.find_with_ferret(@query)
+    
+    respond_to do |format|
+      format.html # search.rhtml
+      format.xml  { render :xml => @users.to_xml }
     end
   end
   

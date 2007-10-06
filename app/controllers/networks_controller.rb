@@ -33,10 +33,11 @@ class NetworksController < ApplicationController
   def search
     @query = params[:query] || ""
     
-    unless @query.empty?
-      @networks = Network.find_with_ferret(@query)
-    else
-      @networks = find_networks
+    @networks = Network.find_with_ferret(@query)
+    
+    respond_to do |format|
+      format.html # search.rhtml
+      format.xml  { render :xml => @networks.to_xml }
     end
   end
   

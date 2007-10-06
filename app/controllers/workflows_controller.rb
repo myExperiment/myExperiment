@@ -37,23 +37,7 @@ class WorkflowsController < ApplicationController
   def search
     @query = params[:query] || ""
     
-    unless @query.empty?
-      #ferret = Workflow.find_by_contents(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true))
-      
-      #matches = []
-      #ferret.each do |f|
-      #  @workflows.each do |w|
-      #    if f.id.to_i == w.id.to_i
-      #      matches << f
-      #      break
-      #    end
-      #  end
-      #end
-      #@workflows = matches
-      @workflows = Workflow.find_by_contents(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true))
-    else
-      @workflows = find_workflows
-    end
+    @workflows = Workflow.find_with_ferret(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true))
     
     respond_to do |format|
       format.html # search.rhtml
