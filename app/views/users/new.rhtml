@@ -2,15 +2,16 @@
 
 <h1>Register for myExperiment</h1>
 
-<h3>New user with Username and Password</h3>
+<h3>Register with Username and Password</h3>
 
 <% form_for(:user, :url => users_path) do |f| %>
   <fieldset>
     <legend>Username and Password</legend>
     
     <small>
-      Usernames must be atleast 3 characters long and cannot include any special symbols (except "_").<br />
-      Passwords must be atleast 4 characters long and are case sensitive.
+      Choose a username which is at least 3 characters long (don't use any special symbols other than "_"). <br />
+	  Note that the display name that other people will see can be different to your username and can be changed by editing your account details. <br />
+	  Your password must be at least 4 characters long and is case sensitive.<br />      
     </small>
   
     <p>
@@ -36,15 +37,15 @@
 
 <br/>
 
-<h3>New user with OpenID</h3>
+<h3>Register with OpenID</h3>
 
 <% form_tag session_path do %>
   <fieldset>
     <legend>OpenID Authentication details:</legend>
     
-    <p>Simply enter and verify your OpenID username and a myExperiment account will automatically be created.</p>
+    <small>OpenID is a distributed identity system which gives you single sign-on anywhere that OpenID is supported. If you already have an OpenID you can enter it here and your myExperiment account will automatically be created (note that if you have an AOL or AIM account, or a LiveJournal or Wordpress blog, then you already have an OpenID).</small>
     
-    <p><b>Don't have an OpenID? Get one FREE from <%= link_to 'myOpenID', "https://www.myopenid.com/" %>.</b></p>
+    <p><b>Don't have an OpenID? Get one FREE from <%= link_to 'myOpenID', "https://www.myopenid.com/" %> or <%= link_to 'other providers', "http://openiddirectory.com/openid-providers-c-1.html" %>.</b></p>
     
     <p>
       <b>OpenID</b><br/>
