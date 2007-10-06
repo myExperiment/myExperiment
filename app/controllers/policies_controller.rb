@@ -42,7 +42,7 @@ class PoliciesController < ApplicationController
     end
     
     respond_to do |format|
-      format.html { render :partial => "policies/test", :locals => { :policy => @policy, :contribution => contribution, :contributor => contributor } }
+      format.html { render :partial => "policies/test_results", :locals => { :policy => @policy, :contribution => contribution, :contributor => contributor } }
       format.xml { head :ok }
     end
   end

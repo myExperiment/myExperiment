@@ -35,38 +35,44 @@ class Policy < ActiveRecord::Base
   
   validates_presence_of :contributor, :name
   
-  def authorized?(action_name, contribution, contributor=nil)
-    begin
+  def authorized?(action_name, c_ution=nil, c_utor=nil)
+    if c_ution
       # false unless correct policy for contribution
-      return false unless contribution.policy.id.to_i == id.to_i
-      
-      # false unless action can be categorized
-      return false unless category = categorize(action_name)
-      
-      unless contributor.nil?
-        # true if owner of contribution or administrator of contribution.policy
-        return true if (contribution.owner?(contributor) or contribution.admin?(contributor))
-        
-        # true if permission and permission[category]
-        private = private?(category, contributor)
-        return private unless private.nil?
-        
-        # true if contribution.contributor and contributor are related and policy[category_protected]
-        return true if (contribution.contributor.protected? contributor and protected?(category))
-      end
-      
-      # true if policy[category_public]
-      return public?(category)
-    rescue
-      # all errors return false
-      return false
-    else
-      # end of method
-      return false
+      return false unless c_ution.policy.id.to_i == id.to_i
     end
+      
+    # false unless action can be categorized
+    return false unless category = categorize(action_name)
+      
+    unless c_utor.nil?
+      if c_ution
+        # true if owner of contribution or administrator of contribution.policy
+        return true if (c_ution.owner?(c_utor) or c_ution.admin?(c_utor))
+      else
+        # true if administrator of self
+        return true if admin?(c_utor)
+      end
+        
+      # true if permission and permission[category]
+      private = private?(category, c_utor)
+      return private unless private.nil?
+        
+      if c_ution
+        # true if contribution.contributor and contributor are related and policy[category_protected]
+        return true if (c_ution.contributor.protected? c_utor and protected?(category))
+      else
+        # true if policy.contributor and contributor are related and policy[category_protected]
+        return true if (self.contributor.protected? c_utor and protected?(category))
+      end
+    end
+      
+    # true if policy[category_public]
+    return public?(category)
   end
   
   def admin?(c_utor)
+    return false unless c_utor
+    
     contributor_id.to_i == c_utor.id.to_i and contributor_type.to_s == c_utor.class.to_s
   end
   
