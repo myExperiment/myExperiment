@@ -16,23 +16,23 @@ function selectTab(t) {
 
       tabPanes[i].style.display = 'block';
 
-      html += '<td><img src="/images/tabs/selected_tab_start.png"></td>';
+      html += '<td class="tabSelIMG"><img src="/images/tabs/selected_tab_start.png"></td>';
       html += '<td class="tabSelected"><span onmousedown="';
       html += 'javascript:return false;">';
       html += tabTitles[i];
       html += '</span></td>';
-      html += '<td><img src="/images/tabs/selected_tab_end.png"></td>';
+      html += '<td class="tabSelIMG"><img src="/images/tabs/selected_tab_end.png"></td>';
 
     } else {
 
       tabPanes[i].style.display = 'none';
 
-      html += '<td><img src="/images/tabs/unselected_tab_start.png"></td>';
+      html += '<td class="tabUnselIMG"><img src="/images/tabs/unselected_tab_start.png"></td>';
       html += '<td class="tabUnselected"><span onmousedown="';
       html += 'javascript:selectTab(' + i + '); return false;">';
       html += tabTitles[i];
       html += '</span></td>';
-      html += '<td><img src="/images/tabs/unselected_tab_end.png"></td>';
+      html += '<td class="tabUnselIMG"><img src="/images/tabs/unselected_tab_end.png"></td>';
     }
 
     html += '<td><img src="/images/tabs/tab_separator.png"></td>';

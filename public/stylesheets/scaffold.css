@@ -520,28 +520,38 @@ h3 a img {
 
 .tabsContainer TABLE TR TD {
   padding: 0;
-  border-bottom: 1px solid #909090;
   vertical-align: middle;
 }
 
 .tabSelected {
   border-top: 1px solid #909090;
-  border-bottom: 1px transparent;
+  border-bottom: 1px solid white;
   padding: 0;
   padding-left: 0.5em;
   padding-right: 0.5em;
   vertical-align: middle;
   white-space: nowrap;
+  pointer: pointer;
 }
 
 .tabUnselected {
   border-top: 1px solid #909090;
+  border-bottom: 1px solid #909090;
   color: #404040;
   background: #d8d8d8;
   padding-left: 0.5em;
   padding-right: 0.5em;
   vertical-align: middle;
   white-space: nowrap;
+  pointer: pointer;
+}
+
+.tabSelIMG {
+  border-bottom: 1px solid white;
+}
+
+.tabUnselIMG {
+  border-bottom: 1px solid #909090;
 }
 
 .tabTitle {
