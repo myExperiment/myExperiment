@@ -22,6 +22,7 @@
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
     <td width="100"><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %></td>
     <td width="200">
+      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
       <p>
         <b><%=h workflow.title %></b>
         <% if desc = workflow.body_html %>

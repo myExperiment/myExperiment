@@ -3,6 +3,10 @@
 <div class="tabContainer">
   <div class="tabTitle"><%= klass.to_s == "Blob" ? "Files" : klass.humanize.pluralize %></div>
   <div class="tabContent">
+    <% if klass.to_s == "Workflow" %>
+      <%= render :partial => "workflows/anchors", :locals => { :collection => contributables } %>
+    <% end %>
+  
     <%= render :partial => "#{klass.pluralize.downcase}/table", :locals => { :collection => contributables } %>
   </div>
 </div>
