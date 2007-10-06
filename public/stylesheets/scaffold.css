@@ -63,7 +63,7 @@ pre {
 }
 
 a { color: #000099; text-decoration: none; border-bottom: 1px dashed transparent;}
-a:visited { color: black; }
+a:visited { color: #000099; }
 a:hover { color: red; border-bottom: 1px dashed gray;}
 
 .fieldWithErrors {
