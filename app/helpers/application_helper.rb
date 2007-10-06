@@ -415,10 +415,10 @@ module ApplicationHelper
     return "#{issn[0..3]}-#{issn[4..7]}"
   end
   
-  def news(contributor, before=nil, after=nil, incl_assc=true, limit=nil)
+  def news(contributor, before=nil, after=nil, my_page=false, limit=nil)
     rtn = {}
     
-    contributor_news(contributor, before, after, 0, incl_assc).each do |news_item|
+    contributor_news(contributor, before, after, 0, (my_page ? nil : contributor)).each do |news_item|
       nearest_day = news_item[0] - (news_item[0].hour.hours + news_item[0].min.minutes + news_item[0].sec.seconds)
       
       if rtn.has_key? nearest_day
@@ -506,37 +506,35 @@ module ApplicationHelper
   
 protected
 
-  def contributor_news(contributor, before, after, depth, incl_assc)
+  def contributor_news(contributor, before, after, depth, restrict_contributor)
     rtn = []
     
     return rtn unless depth.to_i < 2
     
     if contributor.kind_of? User
-      rtn = rtn + contributor_news!(contributor.memberships_accepted, before, after) # networks this user has joined
-      rtn = rtn + contributor_news!(contributor.friendships_accepted, before, after) # friends this user has made
-      rtn = rtn + contributor_news!(contributor.contributions, before, after) # contributions this user has made
-      rtn = rtn + contributor_news!(contributor.networks_owned, before, after) # networks this user has created
+      rtn = rtn + contributor_news!(contributor.memberships_accepted, before, after, restrict_contributor) # networks this user has joined
+      rtn = rtn + contributor_news!(contributor.friendships_accepted, before, after, restrict_contributor) # friends this user has made
+      rtn = rtn + contributor_news!(contributor.contributions, before, after, restrict_contributor) # contributions this user has made
+      rtn = rtn + contributor_news!(contributor.networks_owned, before, after, restrict_contributor) # networks this user has created
       
       contributor.networks.each do |network| # foreach network that the user is a member of
-        rtn = rtn + contributor_news(network, before, after, depth.to_i+1, incl_assc) # networks this user has joined
+        rtn = rtn + contributor_news(network, before, after, depth.to_i+1, restrict_contributor) # networks this user has joined
+      end
+        
+      contributor.networks_owned.each do |network| # foreach network owned by the user
+        rtn = rtn + contributor_news(network, before, after, depth.to_i+1, restrict_contributor)
       end
       
-      if incl_assc
-        contributor.networks_owned.each do |network| # foreach network owned by the user
-          rtn = rtn + contributor_news(network, before, after, depth.to_i+1, incl_assc)
-        end
-      
-        contributor.friends.each do |friend| # foreach friend of the user
-          rtn = rtn + contributor_news(friend, before, after, depth.to_i+1, incl_assc)
-        end
+      contributor.friends.each do |friend| # foreach friend of the user
+        rtn = rtn + contributor_news(friend, before, after, depth.to_i+1, restrict_contributor)
       end
     elsif contributor.kind_of? Network
       if (before and contributor.created_at < before) and (after and contributor.created_at > after)
         rtn << [contributor.created_at, "#{name(contributor.owner)} created the #{title(contributor)} network."]
       end
       
-      rtn = rtn + contributor_news!(contributor.memberships_accepted, before, after) # memberships the network admin has accepted
-      rtn = rtn + contributor_news!(contributor.contributions, before, after) # contributions this network has made
+      rtn = rtn + contributor_news!(contributor.memberships_accepted, before, after, restrict_contributor) # memberships the network admin has accepted
+      rtn = rtn + contributor_news!(contributor.contributions, before, after, restrict_contributor) # contributions this network has made
       
       #contributor.members(false).each do |member| # foreach member of the network
       #  rtn = rtn + contributor_news(member, before, after, depth.to_i+1, incl_assc)
@@ -548,7 +546,7 @@ protected
     return rtn.uniq # remove duplicate items due to recursion
   end
   
-  def contributor_news!(collection, before, after)
+  def contributor_news!(collection, before, after, restrict_contributor)
     rtn = []
     
     collection.each do |item|
@@ -556,16 +554,28 @@ protected
       when "Membership"
         next if before and item.accepted_at > before
         next if after and item.accepted_at < after
+        
+        if restrict_contributor 
+          next unless (restrict_contributor.class.to_s == "User" and item.user.id.to_i == restrict_contributor.id.to_i)
+        end
       
         rtn << [item.accepted_at, "#{name(item.user)} joined the #{title(item.network)} network."]
       when "Friendship"
         next if before and item.accepted_at > before
         next if after and item.accepted_at < after
+        
+        if restrict_contributor 
+          next unless (restrict_contributor.class.to_s == "User" and [item.user.id.to_i, item.friend.id.to_i].include? restrict_contributor.id.to_i)
+        end
       
         rtn << [item.accepted_at, "#{name(item.user)} and #{name(item.friend)} became friends."]
       when "Network"
         next if before and item.created_at > before
         next if after and item.created_at < after
+        
+        if restrict_contributor
+          next unless (restrict_contributor.class.to_s == "User" and item.owner.id.to_i == restrict_contributor.id.to_i)
+        end
       
         rtn << [item.created_at, "#{name(item.owner)} created the #{title(item)} network."]
       when "Contribution"
@@ -575,10 +585,14 @@ protected
         owner = contributor(item.contributor_id, item.contributor_type)
         editor = contributor(item.contributable.contributor_id, item.contributable.contributor_type)
         
+        if restrict_contributor 
+          next unless ([item.contributable.contributor_type, item.contributor_type].include? restrict_contributor.class.to_s and [item.contributable.contributor_id.to_i, item.contributor_id.to_i].include? restrict_contributor.id.to_i)
+        end
+        
         if owner.to_s == editor.to_s
           rtn << [item.created_at, "#{owner} created the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.downcase}."]
         else
-          rtn << [item.created_at, "#{editor} created the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.downcase} for the #{owner} network."]
+          rtn << [item.created_at, "#{editor} edited the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.downcase} for the #{owner} network."]
         end
       else
         # do nothing!!
