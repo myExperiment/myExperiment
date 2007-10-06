@@ -62,7 +62,7 @@ pre {
   font-size: 11px;
 }
 
-a { color: black; text-decoration: none; border-bottom: 1px dashed transparent;}
+a { color: #000099; text-decoration: none; border-bottom: 1px dashed transparent;}
 a:visited { color: black; }
 a:hover { color: red; border-bottom: 1px dashed gray;}
 
@@ -151,7 +151,7 @@ padding-left: 18px;
 .tabnav
 {
 text-align: center;
-padding: 5px 0;
+padding: 7px 0;
 margin-left: 0;
 margin-bottom: 0;
 font-weight: bold;
@@ -167,7 +167,7 @@ display: inline;
 
 .tabnav li a
 {
-padding: 4px 12px;
+padding: 6px 12px;
 margin-left: 3px;
 border: 1px solid #317eff;
 background: #F7F7F7;
@@ -244,8 +244,8 @@ color: white;
   color: white;
 }
 
-.subnav li a { 
-  color: #eeeeee;
+.subnav li a {
+  color: white;
   font-weight: bold !important; 
   text-decoration: none; 
   /*margin-right: 1em; */
@@ -584,9 +584,14 @@ h3 a img {
 	border: #999999 0px solid;
 	border-width: 0 1px 1px 1px;
 	background-color: #F7F7F7;
-	font-weight: bold;
-	padding: 0.3em 0 0.5em 0;
 	text-align: center;
+	padding: 0.3em 0 0.5em 0;
+	line-height: 1em;
+}
+
+.myexperiment_gadget .header p {
+	font-weight: bold;
+	padding: 0;
 }
 
 .myexperiment_gadget .contents {
