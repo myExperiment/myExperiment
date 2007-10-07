@@ -7,10 +7,7 @@
       <b><%= name(user) %></b><br/>
       <small>
         <%= pluralize(user.friends.length, "friend") %>, <%= pluralize(user.networks_owned.length + user.networks.length, "network") %>,<br />
-        <% filter_contributables(user.contributions).each do |klass,contributables| %>
-          <%= pluralize(contributables.length, klass.sub(/\b\w/) { $&.downcase } ) %>,
-        <% end %>
-        <%= pluralize(user.policies.length, "policy") %>
+        <%= pluralize(user.contributions.length, "contribution") %>, <%= pluralize(user.policies.length, "policy") %>
       </small>
     </p>
   </div>
@@ -46,18 +43,20 @@
     <% end %>
   
     <% unless user.contributions.empty? %>
-      <div class="fold">
-        <div class="foldTitle">Contributions</div>
-        <div class="foldContent">
-          <ul class="gadget_list">
-            <% user.contributions.each do |contribution| %>
-              <li>
-                <%= link_to contributable_name(contribution.contributable_id, contribution.contributable_type, 15), contributable_url(contribution.contributable_id, contribution.contributable_type), :alt => contributable_name(contribution.contributable_id, contribution.contributable_type) %>
-              </li>
-            <% end %>
-          </ul>
+      <% filter_contributables(user.contributions).each do |klass, array| %>
+        <div class="fold">
+          <div class="foldTitle"><%= klass.to_s == "Blob" ? "Files" : klass.pluralize %></div>
+          <div class="foldContent">
+            <ul class="gadget_list">
+              <% array.each do |instance| %>
+                <li>
+                  <%= link_to contributable_name(instance.id, klass, 15), contributable_url(instance.id, klass), :alt => contributable_name(instance.id, klass) %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
         </div>
-      </div>
+      <% end %>
     <% end %>
   
     <% unless user.policies.empty? %>
