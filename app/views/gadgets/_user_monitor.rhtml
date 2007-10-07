@@ -7,7 +7,10 @@
       <b><%= name(user) %></b><br/>
       <small>
         <%= pluralize(user.friends.length, "friend") %>, <%= pluralize(user.networks_owned.length + user.networks.length, "network") %>,<br />
-        <%= pluralize(user.contributions.length, "contribution") %>, <%= pluralize(user.policies.length, "policy") %>
+        <% filter_contributables(user.contributions).each do |klass,contributables| %>
+          <%= pluralize(contributables.length, klass.sub(/\b\w/) { $&.downcase } ) %>,
+        <% end %>
+        <%= pluralize(user.policies.length, "policy") %>
       </small>
     </p>
   </div>
