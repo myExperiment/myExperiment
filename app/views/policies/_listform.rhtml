@@ -10,7 +10,7 @@
   </p>
   
   <p>
-    <%= c_f.radio_button(:policy_id, "") %> - Default - only your friends will be allowed to view <% if ["blobs", "workflows"].include? controller.controller_name.to_s %>and download <% end %>this <%= controller.controller_name.singularize %>
+    <%= c_f.radio_button(:policy_id, "") %> - Default - only your friends will be allowed to view <% if ["blobs", "workflows"].include? controller.controller_name.to_s %>and download <% end %>this <%= controller.controller_name.to_s == "blobs" ? "file" : controller.controller_name.singularize %>
   </p>
     
   <p>
