@@ -21,6 +21,8 @@
 ##
 ##
 
+require 'uri'
+
 class SessionController < ApplicationController
   # GET /session/new
   # new renders new.rhtml
@@ -140,10 +142,9 @@ class SessionController < ApplicationController
     def successful_login(user)
       # update "last seen" attribute
       user.update_attribute(:last_seen_at, Time.now)
-      
       respond_to do |format|
         flash[:notice] = "Logged in successfully. Welcome to myExperiment!"
-        format.html { redirect_back_or_default(user_path(user)) }
+        format.html { URI.parse(session[:return_to]).path == '/' ? redirect_to(user_path(user)) : redirect_back_or_default(user_path(user)) }
         format.xml { head :ok }
       end
     end
