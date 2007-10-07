@@ -1,9 +1,7 @@
 <% fields_for :contribution, contribution do |c_f| %>
 <div class="fold">
-  <div class="foldTitle">Access control (Friends can view and download by default)</div>
+  <div class="foldTitle">Sharing permissions (Friends can view and download by default)</div>
   <div class="foldContent" style="display: none;">
-    
-  <h3>Access control</h3>
   
   <p>
     Please select the level of security that you require from the list below:
@@ -14,7 +12,7 @@
   </p>
     
   <p>
-    <input type="radio" name="policy_id" disabled="true"> - <%= link_to "Create new using the wizard", policy_wizard_path %>
+    <input type="radio" name="policy_id" disabled="true"> - <%= link_to "Create new sharing permissions policy using the wizard", policy_wizard_path %>
   </p>
   
   <p>
@@ -25,12 +23,14 @@
   <% for p in user.policies %>
     <p>
       <%= c_f.radio_button(:policy_id, p.id) %> - <%= link_to h(p.name), policy_path(p) %><br/>
+      <% if false %>
       <div class="fold" style="width: 400px;">
         <div class="foldTitle">Preview</div>
         <div class="foldContent" style="display: none;">
           <%= render :partial => "policies/policy", :locals => { :policy => p, :read_only => true } %>
         </div>
       </div>
+      <% end %>
     </p>
   <% end %>
   
