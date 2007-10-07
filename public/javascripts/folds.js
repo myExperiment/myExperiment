@@ -14,9 +14,7 @@ function foldUpdate(el) {
   newTitle.setAttribute('class', 'foldTitle');
   newTitle.setAttribute('onclick', 'javascript:foldToggle(this); return false;');
 
-  newTitle.innerHTML = '<table width="100%"><tr><td class="foldText">' +
-    el.titleHTML + '</td><td class="foldImage"><img src="' + img +
-    '"></td></tr></table>';
+  newTitle.innerHTML = '<table width="100%"><tr><td class="foldText">' + el.titleHTML + '</td><td class="foldImage"><img src="' + img + '"></td></tr></table>';
 
   el.insertBefore(newTitle, title);
   el.removeChild(title);
