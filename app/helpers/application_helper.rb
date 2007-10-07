@@ -606,9 +606,22 @@ protected
       if restrict_contributor 
         return rtn unless ([item.contributable.contributor_type, item.contributor_type].include? restrict_contributor.class.to_s and [item.contributable.contributor_id, item.contributor_id].include? restrict_contributor.id.to_i)
       end
+      
+      case item.contributable_type.to_s
+      when "Workflow"
+        if item.contributable.version.to_i == 1
+          title = item.contributable.title
+        else
+          title = item.contributable.versions[0].title
+        end
+          
+        link = link_to h(title), url_for(:controller => :workflows, :action => :show, :id => item.contributable_id, :version => 1)
+      else
+        link = contributable(item.contributable_id, item.contributable_type)
+      end
         
       if owner.to_s == editor.to_s
-        rtn << [item.created_at, "#{owner} created the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.downcase}."]
+        rtn << [item.created_at, "#{owner} created the #{link} #{item.contributable_type.downcase}."]
       else
         case item.contributor_type
         when "Network"
@@ -617,7 +630,7 @@ protected
           owner_string = owner
         end
         
-        rtn << [item.created_at, "#{editor} created the #{contributable(item.contributable_id, item.contributable_type)} #{item.contributable_type.to_s == "Blob" ? "file" : item.contributable_type.downcase} for #{owner_string}."]
+        rtn << [item.created_at, "#{editor} created the #{link} #{item.contributable_type.to_s == "Blob" ? "file" : item.contributable_type.downcase} for #{owner_string}."]
       end
     when "Blog"
       if restrict_contributor
