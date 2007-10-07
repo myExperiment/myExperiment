@@ -1,3 +1,10 @@
+.info_text
+{
+	font-size: 1em;
+	font-style: italic;
+	padding: 0.1em 0;
+}
+
 .home_header
 {
     padding: 0.5em 3em 0.1em 3em;
@@ -324,6 +331,7 @@ color: white;
 #myexp_header {
   margin-top: 20px;
   margin-bottom: 30px;
+  padding: 0px 5px;
 }
 
 #myexp_login form {
@@ -344,7 +352,8 @@ color: white;
 
 #myexp_body {
   float: left;
-  width: 720px;
+  width: 710px;
+  padding: 0px 5px;
 }
 
 .subnav { 

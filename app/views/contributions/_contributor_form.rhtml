@@ -2,12 +2,11 @@
 
 <% fields_for :contributor_pair do |f| %>
   <div class="fold">
-    <div class="foldTitle">Ownership (You are selected by default)</div>
+    <div class="foldTitle">Ownership (Default: You)</div>
     <div class="foldContent" style="display: none;">
   
   <p>
-    As the currently logged in user, you are automatically registered as the 'most recent editor' and 'owner' of this contribution.<br />
-    If you would like to change this setting, please select a new owner from the list below.
+    Please select the owner, from the list below:
   </p>
 
   <p>
@@ -16,7 +15,7 @@
     </p>
     <% unless user.networks_owned.empty? %>
       <p>
-        <b>Creator of..</b><br/>
+        <b>Administrator of...</b><br/>
         <% for n in user.networks_owned %>
           <%= f.radio_button(:class_id, "Network-#{n.id}", { :checked => (current.type.to_s == "Network" and current.id.to_i == n.id) }) %> - <%= link_to h(n.title), network_path(n) %><br/>
         <% end %>
