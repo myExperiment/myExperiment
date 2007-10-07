@@ -8,7 +8,7 @@
   
   <% if logged_in? %>
     <% if @workflow.authorized?("edit", current_user) %><li><%= link_to 'Edit Citation', edit_citation_path(@workflow, @citation) %></li><% end %>
-    <% if @workflow.authorized?("destroy", current_user) %><li><%= link_to 'Destroy Citation', citation_path(@workflow, @citation), :confirm => 'Are you sure?', :method => :delete %></li><% end %>
+    <% if @workflow.authorized?("destroy", current_user) %><li><%= link_to 'Remove Citation', citation_path(@workflow, @citation), :confirm => 'Are you sure?', :method => :delete %></li><% end %>
   <% end %>
 
 <% else %>

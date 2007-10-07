@@ -11,7 +11,7 @@
     <% end %>
     
     <% if @blog.authorized?("destroy", current_user) %>
-      <li><%= link_to 'Destroy '+truncate(@blog.title, 10), blog_path(@blog), :confirm => 'Are you sure?', :method => :delete %></li>
+      <li><%= link_to 'Remove '+truncate(@blog.title, 10), blog_path(@blog), :confirm => 'Are you sure?', :method => :delete %></li>
     <% end %>
   <% end %>
 

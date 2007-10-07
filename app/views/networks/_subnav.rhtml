@@ -11,7 +11,7 @@
 
     <% if my_page? @network.owner.id %>
       <li><%= link_to 'Edit Network', edit_network_path(@network) %></li>
-      <li><%= link_to 'Destroy Network', network_path(@network), :confirm => 'Are you sure?', :method => :delete %></li>
+      <li><%= link_to 'Remove Network', network_path(@network), :confirm => 'Are you sure?', :method => :delete %></li>
     <% end %>
   <% end %>
 

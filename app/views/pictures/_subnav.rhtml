@@ -5,7 +5,7 @@
 <% when "show" %>
 
   <li><%= link_to 'Edit Picture', edit_picture_path(@picture.user_id, @picture) %></li>
-  <li><%= link_to 'Destroy Picture', picture_path(@picture.user_id, @picture), :confirm => 'Are you sure?', :method => :delete %></li>
+  <li><%= link_to 'Remove Picture', picture_path(@picture.user_id, @picture), :confirm => 'Are you sure?', :method => :delete %></li>
 
 <% else %>
 

@@ -9,7 +9,7 @@
 <% when "show" %>
 
   <li><%= link_to 'Edit Permission', edit_permission_path(@permission.policy, @permission) %></li>
-  <li><%= link_to 'Destroy Permission', permission_path(@permission.policy, @permission), :confirm => 'Are you sure?', :method => :delete %></li>
+  <li><%= link_to 'Remove Permission', permission_path(@permission.policy, @permission), :confirm => 'Are you sure?', :method => :delete %></li>
 
 <% else %>
 
