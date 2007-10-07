@@ -444,7 +444,12 @@ module ApplicationHelper
     return rtn
   end
   
-  def icon(method, url=nil, alt=nil, url_options={}, label=nil)
+  def icon(method, url=nil, alt=nil, url_options={}, label=method.humanize)
+
+    if (label == 'Destroy')
+      label = 'Remove';
+    end
+
     return nil unless (filename = method_to_icon_filename(method.downcase))
     
     # if method.to_s == "info"
@@ -453,9 +458,11 @@ module ApplicationHelper
     image_options = alt ? { :alt => alt } : { :alt => method.humanize }
     img_tag = image_tag(filename, image_options)
     
-    img_and_label_tags = "#{img_tag}&nbsp;#{label}" unless label == nil
+    inner = img_tag;
 
-    return url ? link_to(img_and_label_tags, url, url_options) : img_and_label_tags
+    inner = "#{img_tag}&nbsp;#{label}" unless label == nil
+
+    return url ? link_to(inner, url, url_options) : inner
   end
 
   def method_to_icon_filename(method)
