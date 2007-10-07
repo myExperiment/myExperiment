@@ -8,7 +8,7 @@
       <small>
         <%= pluralize(user.friends.length, "friend") %>, <%= pluralize(user.networks_owned.length + user.networks.length, "network") %>,<br />
         <% filter_contributables(user.contributions).each do |klass,contributables| %>
-          <%= pluralize(contributables.length, klass.downcase) %>,
+          <%= pluralize(contributables.length, (klass.to_s == "Blob" ? "File" : klass).downcase) %>,
         <% end %>
         <%= pluralize(user.policies.length, "policy") %>
       </small>
