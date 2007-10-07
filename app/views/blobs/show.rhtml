@@ -1,26 +1,21 @@
+<h3>Details</h3>
+
+<p>
+  <b>Contributor:</b><br/>
+  <%= contributor(@blob.contribution.contributor_id, @blob.contribution.contributor_type, true, 100) %>
+</p>
+
+<p>
+  <b>Local name:</b>
+  <%=h @blob.local_name %>
+</p>
+
+<p>
+  <b>File type:</b>
+  <%=h @blob.content_type %>
+</p>
+
 <div id="tabsContainer" class="tabsContainer"></div>
-
-<div class="tabContainer">
-  <div class="tabTitle">Details</div>
-  <div class="tabContent">
-    <h3>Details</h3>
-
-    <p>
-      <b>Contributor:</b><br/>
-      <%= contributor(@blob.contribution.contributor_id, @blob.contribution.contributor_type, true, 100) %>
-    </p>
-
-    <p>
-      <b>Local name:</b>
-      <%=h @blob.local_name %>
-    </p>
-
-    <p>
-      <b>File type:</b>
-      <%=h @blob.content_type %>
-    </p>
-  </div>
-</div>
 
 <% if logged_in? and @blob.authorized?("destroy", current_user) %>
   <div class="tabContainer">

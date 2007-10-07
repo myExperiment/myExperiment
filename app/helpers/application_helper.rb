@@ -426,7 +426,9 @@ module ApplicationHelper
       b[0] <=> a[0]
     }[0..limit].each do |news_item|
       nearest_day = news_item[0] - (news_item[0].hour.hours + news_item[0].min.minutes + news_item[0].sec.seconds)
-      time = "#{news_item[0].hour}:#{news_item[0].min}"
+      
+      # bugfix to 'pad out' hours and minutes which are less than ten.. eg: 3:2 --> 03:02 [am]
+      time = "#{(news_item[0].hour < 10 ? "0#{news_item[0].hour}" : news_item[0].hour)}:#{(news_item[0].min < 10 ? "0#{news_item[0].min}" : news_item[0].min)} -"
       
       if hash.has_key? nearest_day
         hash[nearest_day] << "#{time} #{news_item[1]}"
