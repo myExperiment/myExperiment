@@ -76,6 +76,23 @@ class Policy < ActiveRecord::Base
     contributor_id.to_i == c_utor.id.to_i and contributor_type.to_s == c_utor.class.to_s
   end
   
+  # THIS IS THE DEFAULT POLICY (see /app/views/policies/_list_form.rhtml)
+  # IT IS CALLED IN contribution.rb::authorized?
+  def self._default(c_utor, c_ution=nil)
+    rtn = Policy.new(:name => "Friends can download and view",
+                     :contributor => c_utor,
+                     :view_public => false, 
+                     :view_protected => true,      # friends can view
+                     :download_public => false, 
+                     :download_protected => true,  # friends can download
+                     :edit_public => false, 
+                     :edit_protected => true)
+                     
+    c_ution.policy = rtn unless c_ution.nil?
+    
+    return rtn
+  end
+  
 private
 
   # categorize action names here (make sure you include each one as an 

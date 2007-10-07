@@ -322,7 +322,7 @@ module ApplicationHelper
   
   def policy_link(policyid, managedby=true)
     if policyid.nil?
-      return "Public (all)"
+      return "Friends can view and download"
     elsif  p = Policy.find(:first, :conditions => ["id = ?", policyid])
       link = link_to(h(p.name), policy_path(p))
       

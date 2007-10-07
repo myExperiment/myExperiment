@@ -1,8 +1,16 @@
 <% fields_for :contribution, contribution do |c_f| %>
+<div class="fold">
+  <div class="foldTitle">Access control (Friends can view and download by default)</div>
+  <div class="foldContent" style="display: none;">
+    
   <h3>Access control</h3>
   
   <p>
     Please select the level of security that you require from the list below:
+  </p>
+  
+  <p>
+    <%= c_f.radio_button(:policy_id, "") %> - Default - only your friends will be allowed to view <% if ["blobs", "workflows"].include? controller.controller_name.to_s %>and download <% end %>this <%= controller.controller_name.singularize %>
   </p>
     
   <p>
@@ -14,14 +22,18 @@
     When you've finished the wizard, the policy will be available the next time you access this page!
   </p>
   
-  <p>
-    <%= c_f.radio_button(:policy_id, "") %> - Public (all) - anyone can see and edit this (even if they're not logged in)
-  </p>
-    
   <% for p in user.policies %>
     <p>
-      <%= c_f.radio_button(:policy_id, p.id) %> - <%= link_to h(p.name), policy_path(p) %><br />
-      <%= render :partial => "policies/policy", :locals => { :policy => p, :read_only => true } %>
+      <%= c_f.radio_button(:policy_id, p.id) %> - <%= link_to h(p.name), policy_path(p) %><br/>
+      <div class="fold" style="width: 400px;">
+        <div class="foldTitle">Preview</div>
+        <div class="foldContent" style="display: none;">
+          <%= render :partial => "policies/policy", :locals => { :policy => p, :read_only => true } %>
+        </div>
+      </div>
     </p>
   <% end %>
+  
+  </div>
+</div>
 <% end %>

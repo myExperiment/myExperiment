@@ -1,6 +1,10 @@
 <% current ||= current_user %>
 
 <% fields_for :contributor_pair do |f| %>
+  <div class="fold">
+    <div class="foldTitle">Ownership (You are selected by default)</div>
+    <div class="foldContent" style="display: none;">
+      
   <h3>Ownership</h3>
   
   <p>
@@ -29,4 +33,7 @@
       </p>
     <% end %>
   </p>
+  
+    </div>
+  </div>
 <% end %>
