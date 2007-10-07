@@ -51,9 +51,9 @@
       <b>OpenID</b><br/>
       <%= text_field_tag 'openid_url' %>
     </p>
+    
+    <p>
+      <%= submit_tag 'Create with OpenID', :disable_with => "Verifying&hellip;" %>
+    </p>
   </fieldset>
-  
-  <p>
-    <%= submit_tag 'Create with OpenID', :disable_with => "Verifying&hellip;" %>
-  </p>
 <% end %>
