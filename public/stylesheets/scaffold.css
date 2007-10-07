@@ -779,3 +779,13 @@ h3 a img {
 	margin: 0 1px;
 }
 
+.icon A {
+  white-space: nowrap;
+  padding-right: 2px;
+}
+
+.icon IMG {
+  vertical-align: middle;
+  padding: 2px;
+}
+

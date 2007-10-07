@@ -459,10 +459,10 @@ module ApplicationHelper
     img_tag = image_tag(filename, image_options)
     
     inner = img_tag;
+    inner = "#{img_tag} #{label}" unless label == nil
 
-    inner = "#{img_tag}&nbsp;#{label}" unless label == nil
-
-    return url ? link_to(inner, url, url_options) : inner
+    return '<span class="icon">' +
+      (url ? link_to(inner, url, url_options) : inner) + '</span>';
   end
 
   def method_to_icon_filename(method)
