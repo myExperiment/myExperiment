@@ -1,63 +1,83 @@
   <%= form.hidden_field :contributor_id %>
   <%= form.hidden_field :contributor_type %>
   
+  <h3>Name</h3>
+  
   <p>
     <b>Name</b><br />
     <%= form.text_field :name %>
   </p>
   
-  <table>
+  <h3>Anonymous access</h3>
+
+  <table width="100%">
     <tr>
-      <th> </th>
-      <th>View</th>
-      <th>Download</th>
-      <th>Edit</th>
-    </tr>
-    <tr>
-      <td><b>Public</b></td>
-      <td><%= form.check_box :view_public %></td>
-      <td><%= form.check_box :download_public %></td>
-      <td><%= form.check_box :edit_public %></td>
-    </tr>
-    <tr>
-      <td><b>Protected</b></td>
-      <td><%= form.check_box :view_protected %></td>
-      <td><%= form.check_box :download_protected %></td>
-      <td><%= form.check_box :edit_protected %></td>
+      <td width="150">
+        <%= null_avatar 100 %>
+      </td>
+      <td>
+        <p>
+          <b>What does public mean?</b><br/>
+          myExperiment allows you to control the level of access given to anonymous users (who are not logged in) with "<b>public</b>".
+        </p>
+      </td>
     </tr>
   </table>
 
-  <% if false %>
-
   <p>
-    <b>Download public</b><br />
-    <%= form.check_box :download_public %>
-  </p>
-
-  <p>
-    <b>Edit public</b><br />
-    <%= form.check_box :edit_public %>
-  </p>
-
-  <p>
-    <b>View public</b><br />
-    <%= form.check_box :view_public %>
-  </p>
-
-  <p>
-    <b>Download protected</b><br />
-    <%= form.check_box :download_protected %>
-  </p>
-
-  <p>
-    <b>Edit protected</b><br />
-    <%= form.check_box :edit_protected %>
-  </p>
-
-  <p>
-    <b>View protected</b><br />
-    <%= form.check_box :view_protected %>
+    Please select the most appropriate:
   </p>
   
-  <% end %>
+  <p>
+    <%= form.radio_button :view_public, true %> - Anonymous users can <b>view</b> my contributions.<br/>
+    <%= form.radio_button :view_public, false %> - Anonymous users can't <b>view</b> my contributions.
+  </p>
   
+  <p>
+    <%= form.radio_button :download_public, true %> - Anonymous users can <b>download</b> my files and workflows.<br/>
+    <%= form.radio_button :download_public, false %> - Anonymous users can't <b>download</b> my files and workflows.
+  </p>
+  
+  <p>
+    <%= form.radio_button :edit_public, true %> - Anonymous users can <b>edit</b> my contributions. <font color="red">*NOT RECOMMENDED*</font><br/>
+    <%= form.radio_button :edit_public, false %> - Anonymous users can't <b>edit</b> my contributions. <font color="red">*RECOMMENDED*</font>
+  </p>
+  
+  <h3>Friends access</h3>
+
+  <table width="100%">
+    <tr>
+      <td width="150">
+        <%= avatar(current_user, 100) %>
+      </td>
+      <td>
+        <p>
+          <b>What does protected mean?</b><br/>
+          myExperiment allows you to control the level of access given to your friends using "<b>protected</b>".
+        </p>
+      
+        <p>
+          <font color="red">*Protected settings override public settings*</font>
+        </p>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+    Please select the most appropriate:
+  </p>
+  
+  <p>
+    <%= form.radio_button :view_protected, true %> - My friends can <b>view</b> my contributions.<br/>
+    <%= form.radio_button :view_protected, false %> - My friends can't <b>view</b> my contributions.
+  </p>
+  
+  <p>
+    <%= form.radio_button :download_protected, true %> - My friends can <b>download</b> my files and workflows.<br/>
+    <%= form.radio_button :download_protected, false %> - My friends can't <b>download</b> my files and workflows.
+  </p>
+  
+  <p>
+    <%= form.radio_button :edit_protected, true %> - My friends can <b>edit</b> my contributions. <font color="red">*NOT RECOMMENDED*</font><br/>
+    <%= form.radio_button :edit_protected, false %> - My friends can't <b>edit</b> my contributions. <font color="red">*RECOMMENDED*</font>
+  </p>

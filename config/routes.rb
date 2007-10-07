@@ -2,6 +2,9 @@ ActionController::Routing::Routes.draw do |map|
   # forums
   map.from_plugin :savage_beast
   
+  # policy wizard
+  map.resource :policy_wizard
+  
   # mashup
   map.resource :mashup
   

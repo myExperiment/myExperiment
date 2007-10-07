@@ -1,0 +1,17 @@
+<li><%= link_to "Policy Wizard", policy_wizard_path %></li>
+
+<li><b>&#187;</b></li>
+  
+<li><%= link_to "Public", url_for(:controller => :policy_wizard, :action => :public, :id => @policy.id) %></li>
+
+<li><b>&#187;</b></li>
+  
+<li><%= link_to "Protected", url_for(:controller => :policy_wizard, :action => :protected, :id => @policy.id) %></li>
+
+<li><b>&#187;</b></li>
+  
+<li><%= link_to "Private", url_for(:controller => :policy_wizard, :action => :private, :id => @policy.id) %></li>
+
+<li><b>&#187;</b></li>
+  
+<li><%= link_to "Finished", url_for(:controller => :policy_wizard, :action => :finish, :id => @policy.id) %></li>

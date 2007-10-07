@@ -1,0 +1,40 @@
+<h1>Public (step 2/5)</h1>
+
+<h3>Anonymous access</h3>
+
+<table width="100%">
+  <tr>
+    <td width="150">
+      <%= null_avatar 100 %>
+    </td>
+    <td>
+      <p>
+        <b>What does public mean?</b><br/>
+        myExperiment allows you to control the level of access given to anonymous users (who are not logged in) with "<b>public</b>".
+      </p>
+    </td>
+  </tr>
+</table>
+
+<% form_for(:policy, :url => url_for(:controller => :policy_wizard, :action => :protected, :id => @policy.id)) do |form| %>
+  <p>
+    Please select the most appropriate:
+  </p>
+  
+  <p>
+    <%= form.radio_button :view_public, true %> - Anonymous users can <b>view</b> my contributions.<br/>
+    <%= form.radio_button :view_public, false %> - Anonymous users can't <b>view</b> my contributions.
+  </p>
+  
+  <p>
+    <%= form.radio_button :download_public, true %> - Anonymous users can <b>download</b> my files and workflows.<br/>
+    <%= form.radio_button :download_public, false %> - Anonymous users can't <b>download</b> my files and workflows.
+  </p>
+  
+  <p>
+    <%= form.radio_button :edit_public, true %> - Anonymous users can <b>edit</b> my contributions. <font color="red">*NOT RECOMMENDED*</font><br/>
+    <%= form.radio_button :edit_public, false %> - Anonymous users can't <b>edit</b> my contributions. <font color="red">*RECOMMENDED*</font>
+  </p>
+  
+  <%= submit_tag "Next" %>
+<% end %>

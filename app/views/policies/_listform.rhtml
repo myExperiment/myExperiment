@@ -6,19 +6,22 @@
   </p>
     
   <p>
-    <p>
-      <%= c_f.radio_button(:policy_id, "") %> - Public (all) - anyone can see and edit this (even if they're not logged in)
-    </p>
-    
-    <% for p in user.policies %>
-      <p>
-        <%= c_f.radio_button(:policy_id, p.id) %> - <%= link_to h(p.name), policy_path(p) %><br />
-        <%= render :partial => "policies/policy", :locals => { :policy => p, :read_only => true } %>
-      </p>
-    <% end %>
-    
-    <p>
-      <input type="radio" name="policy_id" disabled="true"> - <%= link_to "Create new", new_policy_path %> (inline form coming soon)
-    </p>
+    <input type="radio" name="policy_id" disabled="true"> - <%= link_to "Create new using the wizard", policy_wizard_path %>
   </p>
+  
+  <p>
+    The policy wizard will take you through the steps required to create a deployable sharing policy.<br/>
+    When you've finished the wizard, the policy will be available the next time you access this page!
+  </p>
+  
+  <p>
+    <%= c_f.radio_button(:policy_id, "") %> - Public (all) - anyone can see and edit this (even if they're not logged in)
+  </p>
+    
+  <% for p in user.policies %>
+    <p>
+      <%= c_f.radio_button(:policy_id, p.id) %> - <%= link_to h(p.name), policy_path(p) %><br />
+      <%= render :partial => "policies/policy", :locals => { :policy => p, :read_only => true } %>
+    </p>
+  <% end %>
 <% end %>
