@@ -11,10 +11,7 @@ function foldUpdate(el) {
 
   var newTitle = document.createElement('DIV');
 
-  newTitle.setAttribute('class', 'foldTitle');
-  newTitle.setAttribute('onclick', 'javascript:foldToggle(this); return false;');
-
-  newTitle.innerHTML = '<table width="100%"><tr><td class="foldText">' + el.titleHTML + '</td><td class="foldImage"><img src="' + img + '"></td></tr></table>';
+  newTitle.innerHTML = '<table class="foldTitle" onclick="javascript:foldToggle(this); return false;" width="100%"><tr><td class="foldText">' + el.titleHTML + '</td><td class="foldImage"><img src="' + img + '"></td></tr></table>';
 
   el.insertBefore(newTitle, title);
   el.removeChild(title);
@@ -30,7 +27,7 @@ function foldToggle(el) {
     return el.parentNode;
   }
 
-  var pane = parent(el);
+  var pane = parent(parent(el));
 
   var style = getPaneBodyDiv(pane).style;
 
