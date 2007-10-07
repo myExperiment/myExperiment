@@ -2,16 +2,24 @@
 
 function foldUpdate(el) {
 
-  var children = getPaneTitleDiv(el).childNodes;
+  var title = getPaneTitleDiv(el);
 
   var img = "/images/folds/fold.png";
 
   if (getPaneBodyDiv(el).style.display == 'none')
     img = "/images/folds/unfold.png";
 
-  children[0].innerHTML =
-    '<img src="' + img + '"' + 
-    ' onclick="javascript:foldToggle(this);">&nbsp;&nbsp;';
+  var newTitle = document.createElement('DIV');
+
+  newTitle.setAttribute('class', 'foldTitle');
+  newTitle.setAttribute('onclick', 'javascript:foldToggle(this); return false;');
+
+  newTitle.innerHTML = '<table width="100%"><tr><td class="foldText">' +
+    el.titleHTML + '</td><td class="foldImage"><img src="' + img +
+    '"></td></tr></table>';
+
+  el.insertBefore(newTitle, title);
+  el.removeChild(title);
 }
 
 function foldToggle(el) {
@@ -24,7 +32,7 @@ function foldToggle(el) {
     return el.parentNode;
   }
 
-  var pane = parent(parent(parent(el)));
+  var pane = parent(el);
 
   var style = getPaneBodyDiv(pane).style;
 
@@ -83,6 +91,8 @@ function initialiseFolds() {
       var title        = getPaneTitleDiv(div);
 
       title.insertBefore(paneCommands, title.firstChild);
+
+      div.titleHTML = title.innerHTML;
 
       foldUpdate(div);
     }

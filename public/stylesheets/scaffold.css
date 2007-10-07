@@ -606,6 +606,14 @@ h3 a img {
   padding-right: 0.5em;
 }
 
+.foldText {
+  text-align: left;
+}
+
+.foldImage {
+  text-align: right;
+}
+
 .foldContent {
   border: 1px solid #aaa;
   padding-left: 0.5em;
