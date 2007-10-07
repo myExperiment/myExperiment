@@ -1,3 +1,124 @@
+.home_header
+{
+    padding: 0.5em 3em 0.1em 3em;
+    text-align: left;
+}
+
+#myexp_header p.logo
+{
+    padding-bottom: 0.5em;
+    text-align: center;
+}
+
+#myexp_header p.heading 
+{
+    text-align: center;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 1.5em;
+    line-height: 1.6em;
+    font-weight: normal;
+}
+
+#myexp_home_content
+{
+  padding-left: 4em;
+  padding-right: 4em;
+}
+
+#myexp_home_content a
+{
+    color: blue;
+}
+
+#myexp_home_content .header
+{
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 1.5em;
+    margin-top: 1.5em;
+    color: #333333;
+}
+
+.myexp_home_content_box
+{
+    border: 1px dotted #999999;
+    padding: 2em;
+}
+
+.myexp_home_image_action
+{
+    padding-top: 1em;
+    font-size: 1.2em;
+    line-height: 1.3em;
+    font-weight: bolder;
+}
+
+table.login {
+	border-top: none;
+	border-bottom: none;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+}
+
+table.login *
+{
+    vertical-align: middle;
+}
+
+
+table.login td {
+	border-width: 0;
+	background-color: #f7f7f7;
+	padding: 0.2em 0.6em;
+}
+
+#myexp_home_logonbox .xtop, #myexp_home_logonbox .xbottom {
+	display: block;
+	background: transparent;
+	font-size: 1px;
+}
+
+#myexp_home_logonbox .xb1, 
+#myexp_home_logonbox .xb2, 
+#myexp_home_logonbox .xb3, 
+#myexp_home_logonbox .xb4 {
+	display: block;
+	overflow: hidden;
+}
+
+#myexp_home_logonbox .xb1, 
+#myexp_home_logonbox .xb2, 
+#myexp_home_logonbox .xb3 { 
+	height: 1px;
+}
+
+#myexp_home_logonbox .xb2, 
+#myexp_home_logonbox .xb3, 
+#myexp_home_logonbox .xb4 {
+	background: #F7F7F7;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+}
+
+#myexp_home_logonbox .xb1 {
+	margin: 0 5px;
+	background: #999999;
+}
+
+#myexp_home_logonbox .xb2 {
+	margin: 0 3px;
+	border-width: 0 2px;
+}
+
+#myexp_home_logonbox .xb3 {
+	margin: 0 2px;
+}
+
+#myexp_home_logonbox .xb4 {
+	height: 2px;
+	margin: 0 1px;
+}
+
 #new_object_form {
 	padding-left: 0.5em;
 	padding-right: 0.5em;
