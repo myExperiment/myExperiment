@@ -4,10 +4,6 @@
 
 <% when "show" %>
 
-  <% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
-    <li class="with_sep_bottom"><%= link_to 'Download Workflow', download_workflow_path(@workflow) %></li>
-  <% end %>
-  
   <% if logged_in? %>
     <li class="with_sep_bottom"><%= link_to_remote 'Bookmark Workflow', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %></li> 
     
