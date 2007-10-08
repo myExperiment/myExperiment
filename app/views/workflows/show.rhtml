@@ -52,6 +52,7 @@
   <div class="sectionIcons">
     <ul class="sectionIcons">
    
+      <% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %><li><%= icon('download', download_workflow_url(@workflow), nil, nil, 'Download workflow') %></li><% end %>
       <li><%= icon('bookmark', nil, nil, nil, nil, true) %> <%= link_to_remote 'Bookmark Workflow', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %></li> 
       <% if @workflow.authorized?("edit", current_user) %><li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit workflow')%></li><% end %>
 

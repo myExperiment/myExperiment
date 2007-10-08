@@ -504,6 +504,8 @@ module ApplicationHelper
       return "famfamfam_silk/world.png"
     when "user"
       return "famfamfam_silk/user.png"
+    when "avatar"
+      return "famfamfam_silk/status_online.png"
     when "save"
       return "famfamfam_silk/save.png"
     when "help"

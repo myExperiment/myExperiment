@@ -52,17 +52,6 @@
       <% end %>
     </td>
   </tr>
-  <% if my_page? @user.id %>
-    <tr>
-      <td colspan="<%= @user.profile ? 2 : 1 %>">
-        <p>
-          <%= link_to '[edit account details]', edit_user_path(@user) %>
-          <% if !@user.profile.nil? and my_page? @user.id %> | <%= link_to '[edit profile]', edit_profile_path(@user.profile) %><% end %>
-           | <%= link_to '[upload new picture]', new_picture_path(@user) %>
-        </p>
-      </td>
-    </tr>
-  <% end %>
 </table>
 
 <ul class="sectionIcons">
@@ -74,6 +63,7 @@
     <% if my_page? @user.id %>
       <li><%= icon('edit', edit_user_path(@user), nil, nil, 'Edit account details') %></li>
       <% unless @user.profile.nil? %><li><%= icon('edit', edit_profile_path(@user.profile), nil, nil, 'Edit profile') %></li><% end %>
+      <li><%= icon('avatar', new_picture_path(@user), nil, nil, 'Upload new picture')%></li>
     <% end %>
   <% end %>
 </ul>
