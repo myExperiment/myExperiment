@@ -720,8 +720,9 @@ h3 a img {
 	border-width: 0 1px 1px 1px;
 	background-color: #F7F7F7;
 	text-align: center;
-	padding: 0.3em 0 0.5em 0;
+	padding: 0.1em 0 0.2em 0;
 	line-height: 1em;
+	margin: 0;
 }
 
 .myexperiment_gadget .header p {
