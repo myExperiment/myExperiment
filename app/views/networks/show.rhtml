@@ -32,7 +32,7 @@
 <div class="tabContainer">
   <div class="tabTitle">News</div>
   <div class="tabContent">  
-    <%= render :partial => "layouts/news", :locals => { :collection => news(@network, !(logged_in? and @network.member?(current_user.id))) } %>
+    <%= render :partial => "layouts/news", :locals => { :collection => news(@network, true) } %>
   </div>
 </div>
 
