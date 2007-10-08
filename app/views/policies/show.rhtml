@@ -29,7 +29,7 @@
     <%= render :partial => "policies/policy", :object => @policy %>
 
     <p>
-      <%= link_to '[edit public/protected]', edit_policy_path(@policy) %> <%= link_to '[new permission]', new_permission_path(@policy) %>
+      <%= link_to '[new explicit permission]', new_permission_path(@policy) %>
     </p>
   </div>
 </div>
