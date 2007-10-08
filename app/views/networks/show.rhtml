@@ -57,7 +57,7 @@
       </p>
   
       <% form_remote_tag(:url => membership_create_network_path(@network), :method => :get, :update => 'members', :position => 'bottom', :success => "var t=getElementById('user_id'); t.value='';") do %>
-        <label for="user_id">User:</label> <%= select_tag :user_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %> <%= submit_tag "Add" %>
+        <label for="user_id">User:</label> <%= select_tag :user_id, options_from_collection_for_select(@network.owner.friends, :id.to_i, :name) %> <%= submit_tag "Add" %>
       <% end %>
   
       <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :size => 60 } %>
