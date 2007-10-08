@@ -15,6 +15,21 @@
   <%=h @blob.content_type %>
 </p>
 
+<ul class="sectionIcons">
+  <% if @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
+    <li><%= icon('download', download_blob_path(@blob), nil, nil, 'Download ' + truncate(@blob.local_name, 10)) %></li>
+  <% end %>
+  
+  <% if logged_in? %>
+    <% if @blob.authorized?("edit", current_user) %>
+      <li><%= icon('edit', edit_blob_path(@blob), nil, nil, 'Edit ' + truncate(@blob.local_name, 10)) %></li><% end %>
+    <% if @blob.authorized?("destroy", current_user) %>
+      <li><%= icon('destroy', blob_path(@blob), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove ' + truncate(@blob.local_name, 10)) %></li>
+    <% end %>
+
+  <% end %>
+</ul>
+
 <br/>
 
 <div id="tabsContainer" class="tabsContainer"></div>

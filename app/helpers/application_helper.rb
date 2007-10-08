@@ -444,7 +444,7 @@ module ApplicationHelper
     return rtn
   end
   
-  def icon(method, url=nil, alt=nil, url_options={}, label=method.humanize)
+  def icon(method, url=nil, alt=nil, url_options={}, label=method.humanize, remote=false)
 
     if (label == 'Destroy')
       label = 'Remove';
@@ -461,8 +461,15 @@ module ApplicationHelper
     inner = img_tag;
     inner = "#{img_tag} #{label}" unless label == nil
 
-    return '<span class="icon">' +
-      (url ? link_to(inner, url, url_options) : inner) + '</span>';
+    if (url)
+      if (remote)
+        inner = link_to_remote(inner, url, url_options);
+      else
+        inner = link_to(inner, url, url_options)
+      end
+    end
+
+    return '<span class="icon">' + inner + '</span>';
   end
 
   def method_to_icon_filename(method)
@@ -501,6 +508,8 @@ module ApplicationHelper
       return "famfamfam_silk/save.png"
     when "help"
       return "famfamfam_silk/help.png"
+    when "reply"
+      return "famfamfam_silk/email.png"
     else
       return nil
     end

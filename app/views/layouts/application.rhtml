@@ -84,10 +84,6 @@
   
   <%= render :partial => "gadgets/new_object" %>
   
-  <ul class="sidenav">
-    <%= render :partial => "subnav" %>
-  </ul>
-  
   <% if logged_in? %>
     <%= render :partial => "layouts/sidebar", :locals => { :user => current_user } %>
   <% end %>
@@ -96,6 +92,9 @@
 </div>
 
 <div id="myexp_body">
+
+  <%= render :partial => "subnav" %>
+  
   <p style="color: red"><%= flash[:error] %></p>
   <p style="color: green"><%= flash[:notice] %></p>
 

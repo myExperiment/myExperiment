@@ -10,6 +10,10 @@
   <%=datetime @bookmark.created_at %>
 </p>
 
+<ul class="sectionIcons">
+  <li><%= icon('destroy', bookmark_path(@bookmark), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove bookmark') %></li>
+</ul>
+
 <h3>Bookmarkable</h3>
 
 <%= render :partial => "#{@bookmark.bookmarkable_type.pluralize.downcase}/#{@bookmark.bookmarkable_type.downcase}", :collection => [@bookmark.bookmarkable] %>

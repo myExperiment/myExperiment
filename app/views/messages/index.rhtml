@@ -2,6 +2,10 @@
 <%= link_to image_tag("mail.png", :title => "Compose Message", :size => "50x50"), new_message_path %> 
 <% end %>
 
+<ul class="sectionIcons">
+  <li><%= icon('new', new_message_path, nil, nil, 'Compose new message') %></li>
+</ul>
+
 <h1>Inbox</h1>
 
 <%= render :partial => "messages/table", :locals => { :collection => @messages } %>

@@ -1,3 +1,16 @@
+
+<ul class="sectionIcons">
+  <% if logged_in? %>
+    <% if @workflow.authorized?("edit", current_user) %>
+      <li><%= icon('edit', edit_citation_path(@workflow, @citation), nil, nil, 'Edit citation') %></li>
+    <% end %>
+
+    <% if @workflow.authorized?("destroy", current_user) %>
+      <li><%= icon('destroy', citation_path(@workflow, @citation), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove citation') %></li>
+    <% end %>
+  <% end %>
+</ul>
+
 <div id="tabsContainer" class="tabsContainer"></div>
 
 <div class="tabContainer">

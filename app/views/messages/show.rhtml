@@ -29,3 +29,8 @@
     <%=link_to h(@message.reply_to.subject), message_path(@message.reply_to) %>
   </p>
 <% end %>
+
+<ul class="sectionIcons">
+  <li><%= icon('reply', reply_message_path(@message), nil, nil, 'Reply to this message') %></li>
+</ul>
+

@@ -48,6 +48,19 @@
 
 <br/>
 
+<% if logged_in? %>
+  <div class="sectionIcons">
+    <ul class="sectionIcons">
+   
+      <li><%= icon('bookmark', nil, nil, nil, nil, true) %> <%= link_to_remote 'Bookmark Workflow', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %></li> 
+      <% if @workflow.authorized?("edit", current_user) %><li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit workflow')%></li><% end %>
+
+      <% if @workflow.authorized?("destroy", current_user) %><li><%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove workflow') %><% end %>
+
+    </ul>
+  </div>
+<% end %>
+
 <% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
   <h3>Download</h3>
 
@@ -150,10 +163,15 @@
       <p>None</p>
     <% end %>
 
-    <% if logged_in? and @workflow.authorized?("edit", current_user) %>
-      <%= link_to '[new citation]', new_citation_path(@workflow) %> 
-      <%= link_to '[edit citations]', citations_path(@workflow) %>
+    <% if logged_in? %>
+      <% if @workflow.authorized?("edit", current_user) %>
+        <ul class="sectionIcons">
+          <li><%= icon('new', new_citation_path(@workflow), nil, nil, 'New citation', nil) %></li>
+          <li><%= icon('edit', citations_path(@workflow), nil, nil, 'Edit citations', nil) %></li>
+        </ul>
+      <% end %>
     <% end %>
+
   </div>
 </div>
 

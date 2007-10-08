@@ -27,6 +27,14 @@
   </div>
 </div>
 
+<% if logged_in? and @contribution.owner? current_user %>
+  <ul class="sectionIcons">
+    <li><%= icon('edit', edit_contribution_path(@contribution), nil, nil, 'Edit contribution') %></li>
+    <li><%= icon('destroy', contribution_path(@contribution), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove contribution') %></li>
+  </ul>
+<% end %>
+
+
 <% if logged_in? and @contribution.authorized?("destroy", current_user) %>
   <div class="tabContainer">
     <div class="tabTitle">Policy</div>

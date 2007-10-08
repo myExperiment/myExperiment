@@ -1,18 +1,6 @@
 <% if @permission.policy %>
-  <li class="with_sep_bottom"><%= link_to 'New permission', new_permission_path(@permission.policy) %></li>
+  <ul class="sectionIcons">
+    <li><%= icon('new', new_permission_path(@permission.policy), nil, nil, 'New permission') %></li>
+  </ul>
 <% end %>
 
-<% case controller.action_name.to_s; when "index" %>
-
-  <!-- no subnav options -->
-
-<% when "show" %>
-
-  <li><%= link_to 'Edit Permission', edit_permission_path(@permission.policy, @permission) %></li>
-  <li><%= link_to 'Remove Permission', permission_path(@permission.policy, @permission), :confirm => 'Are you sure?', :method => :delete %></li>
-
-<% else %>
-
-  <!-- no subnav options -->
-
-<% end %>

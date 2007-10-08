@@ -25,3 +25,9 @@
   <b>Updated at:</b>
   <%=datetime @permission.updated_at %>
 </p>
+
+<ul class="sectionIcons">
+  <li><%= icon('edit', edit_permission_path(@permission.policy, @permission), nil, nil, 'Edit permission') %></li>
+  <li><%= icon('destroy', permission_path(@permission.policy, @permission), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove permission') %></li>
+</ul>
+
