@@ -27,7 +27,8 @@ class Policy < ActiveRecord::Base
   belongs_to :contributor, :polymorphic => true
   
   has_many :contributions,
-           :dependent => :nullify
+           :dependent => :nullify,
+           :order => "contributable_type ASC"
   
   has_many :permissions,
            :dependent => :destroy,
