@@ -44,11 +44,12 @@
   }
 </script>
 
-<h3>Create Memberships</h3>
+<div class="user_context_panel">
+
+<h4>Add to Your Networks</h4>
 
 <p>
-  Here's a really quick way to add <%= h(user.name) %> to one of your networks. <br/>
-  The network name goes <font color="green">green</font> when the membership has been created successfully!
+  Below you can add <%= h(user.name) %> to any of your networks. This will add them immediately.
 </p>
 
 <form>
@@ -62,11 +63,13 @@
     <% end %>
         
     <%= "<br />" unless (index.to_i == (networks_owned.length.to_i - 1)) %>
-  <% end %><br/>
-    
-  <small>Hint: You can tick as many boxes as you want</small>
+  <% end %>
+  
+  <br/>
     
   <p>
-    <input id="my_networks_button" onclick="inviteAndDisable();" type="button" value="Create" />
+    <input id="my_networks_button" onclick="inviteAndDisable();" type="button" value="Add" />
   </p>
 </form>
+
+</div>

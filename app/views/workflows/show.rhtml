@@ -1,5 +1,3 @@
-<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
-
 <h3>Details</h3>
 
 <p>
@@ -46,6 +44,10 @@
   <%=datetime @workflow.updated_at %>
 </p>
 
+<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
+
+<br/>
+
 <% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
   <h3>Download</h3>
 
@@ -56,7 +58,7 @@
       </td>
       <td>
         <p>
-          <b>Execute this workflow in <%= link_to "Taverna Workbench", "http://taverna.sourceforge.net/" %></b><br/>
+          <b>Execute this workflow in the <%= link_to "Taverna Workbench", "http://taverna.sourceforge.net/" %></b><br/>
           Copy and paste this link into "Open workflow location..."<br/>
           <%= link_to download_workflow_url(@workflow), download_workflow_url(@workflow) %>
         </p>
@@ -70,12 +72,13 @@
   <br />
 <% end %>
 
+<br/>
+
 <div id="tabsContainer" class="tabsContainer"></div>
 
 <div class="tabContainer">
   <div class="tabTitle">Actions</div>
   <div class="tabContent">
-    <h3>Actions</h3>
 
     <p>
       <b>Bookmarked by:</b><br/>
@@ -115,16 +118,17 @@
         <%= submit_tag "Add tags" %>
       <% end %>
     <% end %>
+	
+	<br/>
   </div>
 </div>
 
 <% if logged_in? and @workflow.authorized?("destroy", current_user) %>
   <div class="tabContainer">
-    <div class="tabTitle">Policy</div>
+    <div class="tabTitle">Sharing Permissions</div>
     <div class="tabContent">
       <p>
-        <b>Policy:</b>
-        <%= policy_link(@workflow.contribution.policy_id) %>
+        <b>Policy:</b> <%= policy_link(@workflow.contribution.policy_id) %>
       </p>
   
       <%= render :partial => "policies/policy", :object => @workflow.contribution.policy, :locals => { :read_only => true } unless @workflow.contribution.policy.nil? %>
@@ -135,7 +139,6 @@
 <div class="tabContainer">
   <div class="tabTitle">Citations</div>
   <div class="tabContent">
-    <h3>Citations</h3>
 
     <% unless (citations = @workflow.citations).empty? %>
       <% citations.each_index do |i| %>
@@ -157,8 +160,6 @@
 <div class="tabContainer">
   <div class="tabTitle">Versions</div>
   <div class="tabContent">
-    <h3>Versions</h3>
-
     <% if params[:version] %>
       <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow, :versions => @latest_version } %>
     <% else %>
@@ -171,13 +172,10 @@
   <div class="tabContainer">
     <div class="tabTitle">Comments</div>
     <div class="tabContent">
-      <h3>Comments</h3>
-  
       <% form_remote_tag(:url => comment_workflow_path(@workflow), :update => 'comments', :position => 'bottom') do %>
         <%= text_area_tag :comment, nil, :size => "30x4" %><br/>
         <%= submit_tag "Add Comment" %>
       <% end %>
-  
       <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
     </div>
   </div>
@@ -186,8 +184,6 @@
     <div class="tabContainer">
       <div class="tabTitle">Comments</div>
       <div class="tabContent">
-        <h3>Comments</h3>
-    
         <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
       </div>
     </div>
@@ -197,8 +193,6 @@
 <div class="tabContainer">
   <div class="tabTitle">Statistics</div>
   <div class="tabContent">
-    <h3>Statistics</h3>
-
     <%= render :partial => "contributions/statistics", :object => @workflow.contribution %>
 
     <p>
@@ -227,8 +221,6 @@
   <div class="tabContainer">
     <div class="tabTitle">History</div>
     <div class="tabContent">
-      <h3>History</h3>
-
       <%= render :partial => "contributions/history", :object => @workflow.contribution %>
     </div>
   </div>

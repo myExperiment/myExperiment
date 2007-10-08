@@ -1,10 +1,3 @@
-.info_text
-{
-	font-size: 1em;
-	font-style: italic;
-	padding: 0.1em 0;
-}
-
 .home_header
 {
     padding: 0.5em 3em 0.1em 3em;
@@ -175,6 +168,40 @@ body, p, ol, ul, td {
   line-height: 18px;
 }
 
+h1
+{
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 1.2em;
+	color: Black;
+	background-color: white;
+	padding: 0.5em 0em;
+	margin: 0 0 1.5em 0;
+}
+
+h3
+{
+	/* font-family:'Lucida Grande', 'Trebuchet MS', Arial, Helvetica, sans-serif; */
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 1.1em;
+	color: Black;
+	background-color: #f7f7f7;
+	padding: 0.5em;
+	margin: 1.5em 0 1.5em 0;
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+}
+
+h4
+{
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 1.1em;
+	color: Black;
+	padding: 0.2em 0;
+	margin: 0;
+}
+
 td {
   text-align: center;
 }
@@ -292,8 +319,9 @@ display: inline;
 {
 padding: 6px 12px;
 margin-left: 3px;
-border: 1px solid #317eff;
-background: #F7F7F7;
+/*border: 1px solid #317eff;*/
+border: 1px solid #999999;
+background: #F5F5F5;
 border-bottom: 1px solid transparent;
 text-decoration: none;
 }
@@ -341,7 +369,7 @@ color: white;
 }
 
 #myexp_navbar {
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 #myexp_sidebar {
@@ -354,6 +382,28 @@ color: white;
   float: left;
   width: 710px;
   padding: 0px 5px;
+}
+
+#myexp_breadcrumbs_bar
+{
+  font-weight: bold !important; 
+  color: #333333;
+  text-decoration: none;
+  padding: 0.5em;
+  margin-bottom: 10px;
+}
+
+#myexp_breadcrumbs_bar ul
+{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+#myexp_breadcrumbs_bar li
+{
+	display: inline; 
 }
 
 .subnav { 
@@ -381,7 +431,6 @@ color: white;
   color: #eea0a0;
   border-bottom: 1px dashed gray;
 }
-
 
 /* light color = #317eff */
 /* dark color = #317eff */
@@ -471,6 +520,7 @@ html>body .sidenav li a { width: auto; }
 #policies_div
 {
 width: 100%;
+text-align: center;
 }
 
 #policies_div li
@@ -480,9 +530,9 @@ float: left;
 width: 300px;
 margin-left: 5px;
 margin-bottom: 5px;
-padding-left: 10px;
 display: inline;
-border: 1px solid black;
+border: 1px dotted #999999;
+padding: 1em;
 }
 
 table.alt_table
@@ -516,21 +566,24 @@ table.alt_table tr td.actions
 table.alt_table tr td.contributable
 {
   margin: 5px 0px 5px 0px;
-  padding: 3px 0px 3px 0px;
+  padding: 1em;
 }
 
 table.alt_table tr.even_row td.contributable table.contributable:hover,
 table.alt_table tr.odd_row td.contributable table.contributable:hover
 {
-  border: 1px solid black;
+  border: 1px dotted #999999;
 }
 
 table.contributable {
-  border: 1px solid transparent;
+  border: 1px dotted #999999;
+  padding: 1em;
+  margin-left: 5px;
+  margin-bottom: 10px;
 }
 
 table.contributable:hover {
-  border: 1px solid black;
+  border: 1px dotted #999999;
 }
 
 /* http://www.mis-algoritmos.com/wp-content/uploads/pagstyle.php?q=manu */
@@ -587,17 +640,12 @@ table.contributable:hover {
 
 .network_banner:hover
 {
-  border: 1px solid black;
+  /*border: 1px solid black;*/
 }
 
 table tr td.details 
 {
   text-align: left;
-}
-
-/* fix to make rss feed icons look nice in the h3 headers */
-h3 a img {
-  margin-top: 8px;
 }
 
 /* folding */
@@ -819,5 +867,19 @@ h3 a img {
 .icon IMG {
   vertical-align: middle;
   padding: 2px;
+}
+
+.user_context_panel
+{
+	padding: 1em;
+	border: 1px dotted #999999;
+	margin: 1.5em 0;
+}
+
+.info_text
+{
+	font-size: 1em;
+	font-style: italic;
+	padding: 0.1em 0;
 }
 

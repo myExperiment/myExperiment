@@ -69,13 +69,13 @@
   <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
 <% end %>
 
+<br/>
+
 <div id="tabsContainer" class="tabsContainer"></div>
 
 <div class="tabContainer">
   <div class="tabTitle">News</div>
-  <div class="tabContent">
-    <h3>News</h3>
-    
+  <div class="tabContent">   
     <%= render :partial => "layouts/news", :locals => { :collection => news(@user, !my_page?(@user.id)) } %>
   </div>
 </div>
@@ -83,13 +83,10 @@
 <% unless @user.friends.empty? %>
   <div class="tabContainer">
     <div class="tabTitle">Friends</div>
-    <div class="tabContent">
-      <h3>Friends</h3>
-      
+    <div class="tabContent">      
       <div>
         <%= render :partial => "friendships/friends", :locals => { :collection => @user.friends } %>
       </div>
-  
       <%= link_to '[view my friendships]', friendships_path(@user) if my_page? @user.id %>
     </div>
   </div>
@@ -99,10 +96,7 @@
   <div class="tabContainer">
     <div class="tabTitle">Networks</div>
     <div class="tabContent">
-      <h3>Networks</h3>
-
       <%= render :partial => "networks/list", :locals => { :collection => @user.networks_owned } %>
-  
       <%= link_to '[view my networks]', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if my_page? @user.id %>
     </div>
   </div>
@@ -112,7 +106,6 @@
   <div class="tabContainer">
     <div class="tabTitle">Memberships</div>
     <div class="tabContent">
-      <h3>Memberships</h3>
 
       <ul><% @user.memberships_accepted.each do |m| %>
         <li><%= link_to h(m.network.title), network_path(m.network) %> (accepted at: <%= m.accepted_at %>)</li>

@@ -12,7 +12,7 @@
   <% case controller.action_name.to_s; when "show" %>
     <li><%= link_to "View Profile", profile_path(@profile) %></li>
   <% when "new" %>
-    <li><%= link_to "Create Profile", new_profile_path(@user) %></li>
+    <li><%= link_to "New Profile", new_profile_path(@user) %></li>
   <% when "edit" %>
     <li><%= link_to "Edit Profile", edit_profile_path(@user) %></li>
   <% else %>

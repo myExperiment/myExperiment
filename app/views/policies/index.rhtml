@@ -1,6 +1,4 @@
-<h3>Frequently asked questions</h3>
-
-<h1>What are policies?</h1>
+<h1>What are Policies?</h1>
 
 <p>
   myExperiment uses "Policies and Permissions" to provide an Access Control List (what is an <%= link_to 'ACL', "http://en.wikipedia.org/wiki/Access_control_list" %>?) which can be easily created, managed and attached to as many contributions as you like.
@@ -14,7 +12,9 @@
   You can quickly attach Permissions for <b>individual users</b> or <b>whole networks</b> which override the Policy (for example, to give editing access to your team).
 </p>
 
-<h3>Listing policies</h3>
+<br/>
+
+<h3>All My Policies</h3>
 
 <div id="policies_div">
   <ul>
@@ -30,6 +30,8 @@
       
         <%= render :partial => "policies/policy", :object => policy, :locals => { :read_only => true } %>
         
+		<br/>
+		
         <center>
           <%= icon "show", policy_path(policy) %> 
           <%= icon "destroy", policy_path(policy), nil, :confirm => 'Are you sure?', :method => :delete %>

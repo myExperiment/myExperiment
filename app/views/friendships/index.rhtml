@@ -3,7 +3,7 @@
   <% if my_page? @user.id %>
     
     <% unless @user.friendships_pending.empty? %>
-      <h3>Pending a response (from me)</h3>
+      <h3>Pending a Response (from me)</h3>
       
       <p>
         What does "<b>Friendships (<%= @user.friendships_pending.length %>)</b>" mean?<br />
@@ -24,12 +24,16 @@
       </p>
     
       <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_requested, :user => false } %>
+	  
+	  <br/>
     <% end %>
     
     <% unless @user.friendships_accepted.empty? %>
-      <h3>Accepted requests</h3>
+      <h3>Accepted Requests</h3>
       
       <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_accepted, :friend => false } %>
+	  
+	  <br/>
     <% end %>
     
     <% unless @user.friends.empty? %>
@@ -54,7 +58,7 @@
   
 <% else %>
 
-  <h3>Listing all friendships</h3>
+  <h3>All Friendships</h3>
 
   <%= render :partial => "layouts/paginate", :locals => { :collection => @friendships } %>
 

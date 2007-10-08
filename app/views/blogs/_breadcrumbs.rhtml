@@ -6,7 +6,7 @@
   <% case controller.action_name.to_s; when "show" %>
     <li><%= link_to "View: #{h(@blog.title)}", blog_path(@blog) %></li>
   <% when "new" %>
-    <li><%= link_to "Create Blog", new_blog_path %></li>
+    <li><%= link_to "New Blog", new_blog_path %></li>
   <% when "edit" %>
     <li><%= link_to "Edit: #{h(@blog.title)}", edit_blog_path(@blog) %>
   <% else %>

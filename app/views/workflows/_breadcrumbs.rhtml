@@ -6,7 +6,7 @@
   <% case controller.action_name.to_s; when "show" %>
     <li><%= link_to "View: #{h(@workflow.title)}", workflow_path(@workflow) %></li>
   <% when "new" %>
-    <li><%= link_to "Create Workflow", new_workflow_path %></li>
+    <li><%= link_to "Upload Workflow", new_workflow_path %></li>
   <% when "edit" %>
     <li><%= link_to "Edit: #{h(@workflow.title)}", edit_workflow_path(@workflow) %>
   <% when "search" %>  

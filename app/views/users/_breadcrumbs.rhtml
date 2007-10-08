@@ -6,7 +6,7 @@
   <% case controller.action_name.to_s; when "show" %>
     <li><%= link_to "View: #{h(@user.name)}", user_path(@user) %></li>
   <% when "new" %>
-    <li><%= link_to "Create User", new_user_path %></li>
+    <li><%= link_to "New User", new_user_path %></li>
   <% when "edit" %>
     <li><%= link_to "Edit: #{h(@user.name)}", edit_user_path(@user) %>
   <% when "search" %>  

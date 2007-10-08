@@ -25,13 +25,13 @@
   <%=datetime @network.updated_at %>
 </p>
 
+<br/>
+
 <div id="tabsContainer" class="tabsContainer"></div>
 
 <div class="tabContainer">
   <div class="tabTitle">News</div>
-  <div class="tabContent">
-    <h3>News</h3>
-    
+  <div class="tabContent">  
     <%= render :partial => "layouts/news", :locals => { :collection => news(@network, !(logged_in? and @network.member?(current_user.id))) } %>
   </div>
 </div>
@@ -39,8 +39,6 @@
 <div class="tabContainer">
   <div class="tabTitle">Description</div>
   <div class="tabContent">
-    <h3>Description</h3>
-
     <%= white_list @network.description_html %>
   </div>
 </div>
@@ -49,7 +47,6 @@
   <div class="tabContainer">
     <div class="tabTitle">Create Memberships</div>
     <div class="tabContent">
-      <h3>Create Memberships</h3>
   
       <p>
         Here's a really quick way to add anyone you like to this network. <br/>
@@ -68,8 +65,6 @@
     <div class="tabContainer">
       <div class="tabTitle">Memberships Accepted</div>
       <div class="tabContent">
-        <h3>Memberships Accepted</h3>
-  
         <%= render :partial => "memberships/table", :locals => { :collection => @network.memberships_accepted, :network => false } %>
       </div>
     </div>
@@ -79,8 +74,6 @@
     <div class="tabContainer">
       <div class="tabTitle">Members</div>
       <div class="tabContent">
-        <h3>Members</h3>
-  
         <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :size => 60 } %>
       </div>
     </div>

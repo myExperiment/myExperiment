@@ -1,31 +1,33 @@
-<table width="320" class="contributable">
-  <tr>
-    <th colspan="2">
-      <%=h blog.title %> (<%= pluralize(blog.posts.length, "post") %>)
-    </th>
-  <tr>
-  <tr>
-    <td>
-      <% if (post = blog.posts[-1]) and (body = post.body_html) %>
-        <strong>Last post:</strong><br />
-        <%= trim_body_html(body, 100) %>
-      <% else %>
-        <strong>Created at:</strong><br />
-        <%=datetime blog.created_at %>
-      <% end %>
-    </td>
-    <td>
-      <strong>Contributor:</strong><br/>
-      <%= contributor(blog.contribution.contributor_id, blog.contribution.contributor_type, true, 60) %>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <center>
-        <% if blog.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", blog_path(blog) %> <% end %>
-        <% if logged_in? and blog.authorized?("edit", current_user) %><%= icon "edit", edit_blog_path(blog) %> <% end %>
-        <% if logged_in? and blog.authorized?("destroy", current_user) %><%= icon "destroy", blog_path(blog), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
-      </center>
-    </td>
-  </tr>
-</table>
+<center>
+	<table width="320" class="contributable">
+	  <tr>
+	    <th colspan="2">
+	      <%=h blog.title %> (<%= pluralize(blog.posts.length, "post") %>)
+	    </th>
+	  <tr>
+	  <tr>
+	    <td>
+	      <% if (post = blog.posts[-1]) and (body = post.body_html) %>
+	        <strong>Last post:</strong><br />
+	        <%= trim_body_html(body, 100) %>
+	      <% else %>
+	        <strong>Created at:</strong><br />
+	        <%=datetime blog.created_at %>
+	      <% end %>
+	    </td>
+	    <td>
+	      <strong>Contributor:</strong><br/>
+	      <%= contributor(blog.contribution.contributor_id, blog.contribution.contributor_type, true, 60) %>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td colspan="2">
+	      <center>
+	        <% if blog.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", blog_path(blog) %> <% end %>
+	        <% if logged_in? and blog.authorized?("edit", current_user) %><%= icon "edit", edit_blog_path(blog) %> <% end %>
+	        <% if logged_in? and blog.authorized?("destroy", current_user) %><%= icon "destroy", blog_path(blog), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
+	      </center>
+	    </td>
+	  </tr>
+	</table>
+</center>

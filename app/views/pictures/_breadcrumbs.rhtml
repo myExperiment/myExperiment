@@ -20,7 +20,7 @@
       <li><%= link_to "View: ##{@picture.id}", picture_path(@picture.owner, @picture) %></li>
     <% end %>
   <% when "new" %>
-    <li><%= link_to "Upload New Picture", new_picture_path(current_user) %></li>
+    <li><%= link_to "Upload Picture", new_picture_path(current_user) %></li>
   <% when "edit" %>
     <li><%= link_to "Edit: ##{@picture.id}", edit_picture_path(current_user, @picture) %></li>
   <% else %>
