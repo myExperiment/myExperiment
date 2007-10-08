@@ -15,14 +15,14 @@
     </p>
   </div>
   
-  <div class="contents">
+  <div id="myexp_userprofile_gadget_contents" class="contents">
     <% unless user.friends.empty? %>
-      <div class="fold">
-        <div class="foldTitle">Friends</div>
-        <div class="foldContent">
+      <div>
+        <div class="title">Friends</div>
+        <div class="content">
           <ul class="gadget_list">
             <% user.friends.each do |friend| %>
-              <li><%= icon "user", nil, nil, nil, "" %> <%= link_to truncate(h(friend.name), 15), user_path(friend) %></li>
+              <li><%= icon "user", nil, nil, nil, "" %> <%= link_to truncate(h(friend.name), 20), user_path(friend) %></li>
             <% end %>
           </ul>
         </div>
@@ -30,15 +30,15 @@
     <% end %>
   
     <% unless user.networks_owned.empty? and user.networks.empty? %>
-      <div class="fold">
-        <div class="foldTitle">Networks</div>
-        <div class="foldContent">
+      <div>
+        <div class="title">Networks</div>
+        <div class="content">
           <ul class="gadget_list">
             <% user.networks_owned.each do |network_owned| %>
-              <li><%= icon "network-member", nil, nil, nil, "" %> <%= link_to truncate(h(network_owned.title), 15), network_path(network_owned) %></li>
+              <li><%= icon "network-member", nil, nil, nil, "" %> <%= link_to truncate(h(network_owned.title), 20), network_path(network_owned) %></li>
             <% end %>
             <% user.networks.each do |network_member| %>
-              <li><%= icon "network-member", nil, nil, nil, "" %> <%= link_to truncate(h(network_member.title), 15), network_path(network_member) %></li>
+              <li><%= icon "network-member", nil, nil, nil, "" %> <%= link_to truncate(h(network_member.title), 20), network_path(network_member) %></li>
             <% end %>
           </ul>
         </div>
@@ -47,13 +47,13 @@
   
     <% unless user.contributions.empty? %>
       <% filter_contributables(user.contributions).each do |klass, array| %>
-        <div class="fold">
-          <div class="foldTitle"><%= klass.to_s == "Blob" ? "Files" : klass.pluralize %></div>
-          <div class="foldContent">
+        <div>
+          <div class="title"><%= klass.to_s == "Blob" ? "Files" : klass.pluralize %></div>
+          <div class="content">
             <ul class="gadget_list">
               <% array.each do |instance| %>
                 <li>
-                  <%= link_to contributable_name(instance.id, klass, 15), contributable_url(instance.id, klass), :alt => contributable_name(instance.id, klass) %>
+                  <%= link_to contributable_name(instance.id, klass, 20), contributable_url(instance.id, klass), :alt => contributable_name(instance.id, klass) %>
                 </li>
               <% end %>
             </ul>
@@ -63,13 +63,13 @@
     <% end %>
   
     <% unless user.policies.empty? %>
-      <div class="fold">
-        <div class="foldTitle">Policies</div>
-        <div class="foldContent">
+      <div>
+        <div class="title">Policies</div>
+        <div class="content">
           <ul class="gadget_list">
             <% user.policies.each do |policy| %>
               <li>
-                <%= link_to h(truncate(policy.name, 15)), policy_path(policy) %>
+                <%= link_to h(truncate(policy.name, 20)), policy_path(policy) %>
               </li>
             <% end %>
           </ul>

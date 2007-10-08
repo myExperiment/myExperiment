@@ -741,6 +741,28 @@ h3 a img {
 	background-color: #FFFFFF;
 }
 
+/* User Profile Gadget styles */
+
+#myexp_userprofile_gadget_contents
+{
+	height: 150px;
+	overflow: auto;
+}
+
+#myexp_userprofile_gadget_contents .title
+{
+	margin-top: 0.5em;
+	padding: 0.1em 0;
+	border-bottom: 1px dotted #999999;
+	font-weight: bold;
+}
+
+#myexp_userprofile_gadget_contents .content
+{
+	line-height: 1.1em;
+}
+
+
 /* Based on "Snazzy Corners:" */
 .xtop, .xbottom {
 	display: block;
