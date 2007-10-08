@@ -6,8 +6,10 @@
     <th width="100">Contributor</th>
     <% end %>
     <% unless params[:contributable_type] %><th width="100">Type</th><% end %>
-    <th width="430">Contributable</th>
+    <th>Description</th>
+    <% if false %>
     <th> </th>
+    <% end %>
   </tr>
   
 <% odd_row = false -%>
@@ -16,12 +18,13 @@
     <% if false %>
     <td width="100"><%= contributor(contribution.contributor_id, contribution.contributor_type, true, true, "60x60") %></td>
     <% end %>
-    <% unless params[:contributable_type] %><td width="100"><%= link_to(h(contribution.contributable_type), contributions_path + "?contributable_type=#{contribution.contributable_type}") %></td><% end %>
-    <td width="420" class="contributable">
+    <% unless params[:contributable_type] %><td width="100"><%= link_to(h(contribution.contributable_type.to_s == "Blob" ? "File" : contribution.contributable_type), contributions_path + "?contributable_type=#{contribution.contributable_type}") %></td><% end %>
+    <td class="contributable">
       <center>
         <%= render :partial => "#{contribution.contributable_type.pluralize.downcase}/#{contribution.contributable_type.downcase}", :collection => [contribution.contributable] %>
       </center>
     </td>
+    <% if false %>
     <td class="actions">
       <% if contribution.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", contribution_path(contribution) %> <% end %>
       <% if logged_in? and contribution.owner?(current_user) %>
@@ -29,6 +32,7 @@
         <%= icon "destroy", contribution_path(contribution), nil, :confirm => 'Are you sure?', :method => :delete %>
       <% end %>
     </td>
+    <% end %>
   </tr>
 <% end %>
 

@@ -76,7 +76,7 @@
   <div class="tabContent">
     <h3>News</h3>
     
-    <%= render :partial => "layouts/news", :locals => { :collection => news(@user, my_page?(@user.id)) } %>
+    <%= render :partial => "layouts/news", :locals => { :collection => news(@user, !my_page?(@user.id)) } %>
   </div>
 </div>
 

@@ -419,10 +419,10 @@ module ApplicationHelper
     return "#{issn[0..3]}-#{issn[4..7]}"
   end
   
-  def news(contributor, restrict_contributor, before=Time.now, after=Time.now-1.week, limit=30)
+  def news(contributor, restrict_contributor=true, before=Time.now, after=Time.now-1.week, limit=30)
     hash = {}
     
-    contributor_news(contributor, before, after, 0, (restrict_contributor ? nil : contributor)).sort! { |a, b|
+    contributor_news(contributor, before, after, 0, (restrict_contributor ? contributor : nil)).sort! { |a, b|
       b[0] <=> a[0]
     }[0..limit].each do |news_item|
       nearest_day = news_item[0] - (news_item[0].hour.hours + news_item[0].min.minutes + news_item[0].sec.seconds)

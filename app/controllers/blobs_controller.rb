@@ -88,7 +88,7 @@ class BlobsController < ApplicationController
         # update policy
         @blob.contribution.update_attributes(params[:contribution])
         
-        flash[:notice] = 'Blob was successfully created.'
+        flash[:notice] = 'File was successfully created.'
         format.html { redirect_to blob_url(@blob) }
         format.xml  { head :created, :location => blob_url(@blob) }
       else
@@ -119,7 +119,7 @@ class BlobsController < ApplicationController
         # security fix (only allow the owner to change the policy)
         @blob.contribution.update_attributes(params[:contribution]) if @blob.contribution.owner?(current_user)
         
-        flash[:notice] = 'Blob was successfully updated.'
+        flash[:notice] = 'File was successfully updated.'
         format.html { redirect_to blob_url(@blob) }
         format.xml  { head :ok }
       else
@@ -157,13 +157,13 @@ protected
         @blob = blob
       else
         if logged_in? 
-          error("Blob not found (id not authorized)", "is invalid (not authorized)")
+          error("File not found (id not authorized)", "is invalid (not authorized)")
         else
           find_blob_auth if login_required
         end
       end
     rescue ActiveRecord::RecordNotFound
-      error("Blob not found", "is invalid")
+      error("File not found", "is invalid")
     end
   end
   
