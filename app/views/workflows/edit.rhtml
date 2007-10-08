@@ -34,15 +34,18 @@
   </p>
 
 <% if @workflow.owner?(current_user) %>
-  <h3>Science Commons</h3>
-
-  <p><%= image_tag "sc.logo.png", :alt => "Science Commons" %></p>
-  <p>You can also configure what rights you will give to people with your workflow. Sharing your workflows and letting others build upon them is a useful contribution.</p>
-  <p>When someone downloads this workflow, do you want to allow them to be able to build upon it?</p>
-  <p><%= f.radio_button :license, "by-sa" %> Yes, as long as they <strong>give me credit (attribution)</strong> and they also <strong>share</strong> their workflow <strong>under the same conditions</strong>.</p>
-  <p><%= f.radio_button :license, "by" %> Yes, as long as they <strong>give me credit (attribution)</strong>.</p>
-  <p><%= f.radio_button :license, "by-nd" %> No. They may only use the workflow for reference.</p>
-  <p><small>Nothing in these licenses impairs or restricts the author's moral rights.</small></p>
+  <div class="fold">
+    <div class="foldTitle">Science Commons</div>
+    <div class="foldContent" style="display: none;">
+      <p><%= image_tag "sc.logo.png", :alt => "Science Commons" %></p>
+      <p>You can also configure what rights you will give to people with your workflow. Sharing your workflows and letting others build upon them is a useful contribution.</p>
+      <p>When someone downloads this workflow, do you want to allow them to be able to build upon it?</p>
+      <p><%= f.radio_button :license, "by-sa" %> Yes, as long as they <strong>give me credit (attribution)</strong> and they also <strong>share</strong> their workflow <strong>under the same conditions</strong>.</p>
+      <p><%= f.radio_button :license, "by" %> Yes, as long as they <strong>give me credit (attribution)</strong>.</p>
+      <p><%= f.radio_button :license, "by-nd" %> No. They may only use the workflow for reference.</p>
+      <p><small>Nothing in these licenses impairs or restricts the author's moral rights.</small></p>
+    </div>
+  </div>
 <% end %>
 
   <p>
