@@ -22,6 +22,16 @@
 
 <% @page_title = @forum.name %>
 
+<div class="sectionIcons">
+  <ul class="sectionIcons">
+    <% if logged_in? %>
+      <li><%= icon('new', nil, nil, nil, nil, true) %> <%= link_to "New Topic", new_topic_path(@forum) %></li>
+      <% if @forum.authorized?("edit", current_user) %><li><%= icon('edit', nil, nil, nil, nil, true) %> <%= link_to 'Edit Forum', edit_forum_path(@forum) %></li><% end %>
+      <% if @forum.authorized?("destroy", current_user) %><li><%= icon('destroy', nil, nil, nil, nil, true) %> <%= link_to 'Destroy Forum', forum_path(@forum), :confirm => 'Are you sure?', :method => :delete %></li><% end %>
+    <% end %>
+  </ul>
+</div>
+
 <h1 style="margin-top:0.5em">
   <%= h @forum.name %>
 </h1>
@@ -30,8 +40,6 @@
   Owned by: <%= contributor(@forum.contribution.contributor_id, @forum.contribution.contributor_type) %><br/>
   <%= pluralize @forum.topics_count, _('topic') %>, <%= pluralize @forum.posts_count, _('post') %>
 </p>
-
-
 
 <% if @topic_pages.page_count > 1 -%>
 <% if logged_in? %>

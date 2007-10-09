@@ -25,7 +25,7 @@ module Squirrel # :nodoc
   @export_sql_file = "#{RAILS_ROOT}/carlin/myexperiment_production.sql"
   @export_scufl_directory = "#{RAILS_ROOT}/carlin/scufl"
   
-  def self.go(force_exit=false, verbose=false)
+  def self.go(force_exit=false, verbose=true)
     my_puts "BEGIN Phase 0 - House Keeping"
     @tuples = self.sql_to_hash(@export_sql_file, verbose, "pictures", "posts", "topics")
     my_puts "Tuples data structure created successfully" if verbose
@@ -629,13 +629,122 @@ module Squirrel # :nodoc
     end
     my_puts "END Phase 8"
     
-    #my_puts "BEGIN Phase 9 - User Activity Histories"
-    #@tuples["histories"].each do |history_tuple|
-      # id, user_id, execution_time, action, controller, params_id
-    #end
-    #my_puts "END Phase 9"
+    my_puts "BEGIN Phase 9 - Optimize Policies"
+    Policy.find(:all, :order => "created_at DESC").each do |policy|
+      name = humanize_policy_name(policy)
+      my_puts "Humanized name for Policy #{policy.id} is #{name}" if verbose
+      
+      unless name.empty?
+        same = Policy.find(:first, :conditions => ["contributor_id = ? AND contributor_type = ? AND name = ?", policy.contributor_id, policy.contributor_type, name], :order => "created_at DESC")
+        
+        unless same.nil?
+          my_puts "Policy with same name already created!" if verbose
+        
+          policy.contributions.each do |contribution|
+            my_puts "Updating Policy #{same.id} for #{contribution.contributable_type} #{contribution.contributable_id}" if verbose
+            
+            contribution.update_attribute(:policy_id, same.id)
+          end
+          
+          my_puts "Destroying Policy #{policy.id}" if verbose
+          
+          policy.destroy
+        else
+          my_puts "Updating Policy #{policy.id} with new name" if verbose
+          
+          policy.update_attribute(:name, name)
+        end
+      else
+        # do nothing!
+      end
+    end
+    my_puts "END Phase 9"
     
     true
+  end
+  
+  def humanize_policy_name(policy)
+    public = []
+    protected = []
+    private = []
+      
+    public << "view" if policy.view_public
+    public << "edit" if policy.edit_public
+    public << "download" if policy.download_public
+      
+    protected << "view" if policy.view_protected
+    protected << "edit" if policy.edit_protected
+    protected << "download" if policy.download_protected
+      
+    policy.permissions.each do |permission|
+      case permission.contributor_type.to_s
+      when "User"
+        if permission.contributor.name.length > 15
+          private << "#{permission.contributor.name[0...15]}.."
+        else
+          private << permission.contributor.name
+        end
+      when "Network"
+        if permission.contributor.title.length > 15
+          private << "#{permission.contributor.title[0...15]}.."
+        else
+          private << permission.contributor.title
+        end
+      else
+        # do nothing!!
+      end
+    end
+      
+    public_str = public.empty? ? "" : "Anonymous users can "
+    public.each do |str|
+      public_str = public_str + str
+      case public.index(str).to_i
+      when public.length.to_i - 1
+        # do nothing
+      when public.length.to_i - 2
+        public_str = public_str + " and "
+      else
+        public_str = public_str + ", "
+      end
+    end
+    
+    protected_str = protected.empty? ? "" : "Friends can "
+    protected.each do |str|
+      protected_str = protected_str + str
+      case protected.index(str).to_i
+      when protected.length.to_i - 1
+        # do nothing
+      when protected.length.to_i - 2
+        protected_str = protected_str + " and "
+      else
+        protected_str = protected_str + ", "
+      end
+    end
+    
+    private_str = private.empty? ? "" : "Permissions for "
+    private.each do |str|
+      private_str = private_str + str
+      case private.index(str).to_i
+      when private.length.to_i - 1
+        # do nothing
+      when private.length.to_i - 2
+        private_str = private_str + " and "
+      else
+        private_str = private_str + ", "
+      end
+    end
+      
+    rtn = ""
+    [protected_str, public_str, private_str].each do |str|
+      if rtn.empty?
+        rtn = str unless str.empty?
+      else
+        rtn = "#{rtn}. #{str}" unless str.empty?
+      end
+    end
+    rtn = "Owner only" if rtn.empty?
+    
+    return rtn
   end
 
   # The Squirrel serves a single purpose, to convert the SQL dump of a database into a 

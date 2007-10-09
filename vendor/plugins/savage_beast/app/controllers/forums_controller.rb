@@ -78,6 +78,9 @@ class ForumsController < ApplicationController
     
     respond_to do |format|
       if @forum.update_attributes(params[:forum])
+        # bug fix to not save 'default' workflow unless policy_id is selected
+        @forum.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
+        
         # security fix (only allow the owner to change the policy)
         @forum.contribution.update_attributes(params[:contribution]) if @forum.contribution.owner?(current_user)
         

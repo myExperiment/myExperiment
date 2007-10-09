@@ -27,21 +27,21 @@
 
 <% end -%>
 
+<% if logged_in? and @topic.editable_by?(current_user) -%>
+  <div class="sectionIcons">
+    <ul class="sectionIcons">
+      <li><%= icon('new', nil, nil, nil, nil, true) %> <%= link_to_function 'Reply To Topic', "ReplyForm.init()" %></li>
+      <li><%= icon('edit', nil, nil, nil, nil, true) %> <%= link_to('Edit Topic', edit_topic_path(@forum, @topic)) %></li>
+      <li><%= icon('destroy', nil, nil, nil, nil, true) %> <%= link_to('Destroy Topic', topic_path(@forum, @topic), :method => :delete, :confirm => 'Are you sure?') %></li>
+  </ul>
+</div>
+<% end %>
 
-<h1 id="topic-title" style="margin-top:0.5em;"<%= %( onmouseover="$('topic_mod').show();" onmouseout="$('topic_mod').hide();") if logged_in? %>>
 
-
+<h1 id="topic-title" style="margin-top:0.5em;">
   <%= h @topic.title %>
   <% if @topic.locked? %>
   <span><%= _('(locked)') %></span>
-  <% end %>
-  <% if logged_in? %>
-    <span style="display:none;" id="topic_mod">
-      <% if @topic.editable_by?(current_user) -%>
-        <%= link_to(_('edit'), edit_topic_path(@forum, @topic), :class => "utility") %> |
-        <%= link_to(_('delete'), topic_path(@forum, @topic), :class => "utility", :method => :delete, :confirm => _('Delete this topic forever?')) %>
-      <% end -%>
-    </span>
   <% end %>
 </h1>
 
