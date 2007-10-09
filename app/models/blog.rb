@@ -28,7 +28,8 @@ class Blog < ActiveRecord::Base
   
   has_many :posts,
            :class_name => "BlogPost",
-           :order => "blog_posts.created_at DESC"
+           :order => "blog_posts.created_at DESC",
+           :dependent => :destroy
            
   validates_presence_of :title
 end

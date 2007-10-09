@@ -82,12 +82,12 @@ class Policy < ActiveRecord::Base
   def self._default(c_utor, c_ution=nil)
     rtn = Policy.new(:name => "Friends can download and view",
                      :contributor => c_utor,
-                     :view_public => false, 
+                     :view_public => false,        # anonymous can't view
+                     :download_public => false,    # anonymous can't download
+                     :edit_public => false,        # anonymous can't edit
                      :view_protected => true,      # friends can view
-                     :download_public => false, 
                      :download_protected => true,  # friends can download
-                     :edit_public => false, 
-                     :edit_protected => true)
+                     :edit_protected => false)     # friends can't edit
                      
     c_ution.policy = rtn unless c_ution.nil?
     

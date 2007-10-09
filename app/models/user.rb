@@ -27,7 +27,8 @@ require 'acts_as_contributor'
 
 class User < ActiveRecord::Base
   has_many :citations, 
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
   
   def self.most_recent(limit=5)
     self.find(:all,
@@ -39,14 +40,15 @@ class User < ActiveRecord::Base
   
   has_many :downloads, 
            :order => "created_at DESC", 
-           :dependent => :nullify
+           :dependent => :destroy
   
   has_many :viewings, 
            :order => "created_at DESC",
-           :dependent => :nullify
+           :dependent => :destroy
   
   has_many :bookmarks, 
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
   
   # BEGIN RESTful Authentication #
   attr_accessor :password
@@ -277,7 +279,7 @@ class User < ActiveRecord::Base
                           
   has_many :networks_owned,
            :class_name => "Network",
-           :dependent => :nullify
+           :dependent => :destroy
                           
   has_many :memberships, #all
            :order => "created_at DESC",
@@ -287,13 +289,15 @@ class User < ActiveRecord::Base
            :class_name => "Membership",
            :foreign_key => :user_id,
            :conditions => "accepted_at IS NOT NULL",
-           :order => "accepted_at DESC"
+           :order => "accepted_at DESC",
+           :dependent => :destroy
   
   has_many :memberships_requested, #unaccepted (by others)
            :class_name => "Membership",
            :foreign_key => :user_id,
            :conditions => "accepted_at IS NULL",
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
            
   def memberships_pending
     rtn = []
@@ -318,18 +322,21 @@ class User < ActiveRecord::Base
   has_many :messages_sent,
            :class_name => "Message",
            :foreign_key => :from,
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
            
   has_many :messages_inbox,
            :class_name => "Message",
            :foreign_key => :to,
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
            
   has_many :messages_unread,
            :class_name => "Message",
            :foreign_key => :to,
            :conditions => "read_at IS NULL",
-           :order => "created_at DESC"
+           :order => "created_at DESC",
+           :dependent => :destroy
            
   def friend?(user_id)
     return true if id.to_i == user_id.to_i

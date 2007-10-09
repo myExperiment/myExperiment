@@ -32,7 +32,8 @@ class Picture < FlexImage::Model
              :foreign_key => :user_id
              
   has_many :profiles,
-           :foreign_key => :picture_id
+           :foreign_key => :picture_id,
+           :dependent => :nullify
            
   def select!
     unless selected?
