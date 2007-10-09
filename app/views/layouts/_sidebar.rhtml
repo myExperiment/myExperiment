@@ -1,5 +1,7 @@
-<%if false %>
-  <%= render :partial => "gadgets/network_monitor", :locals => { :network => Network.find(7) } %>
+<% if logged_in? %>
+  <%= render :partial => "gadgets/new_object" %>
 <% end %>
 
-<%= render :partial => "gadgets/user_monitor", :locals => { :user => current_user } %>
+<%= render :partial => "gadgets/user_monitor" %>
+
+<%= render :partial => "gadgets/tag_most_popular", :locals => { :limit => 25 } %>

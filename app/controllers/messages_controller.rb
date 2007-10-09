@@ -31,7 +31,12 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.xml
   def index
-    @messages = current_user.messages_inbox
+    #@messages = current_user.messages_inbox
+    @messages = Message.find(:all, 
+                             :conditions => ["`to` = ?", current_user.id],
+                             :order => "created_at DESC",
+                             :page => { :size => 20, 
+                                        :current => params[:page] })
     
     respond_to do |format|
       format.html # index.rhtml

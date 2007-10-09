@@ -293,8 +293,8 @@ display: inline;
 }
 
 #openid_url {
-background: url(/images/openid.gif) no-repeat;
-padding-left: 18px;
+	background: url(/images/openid.gif) no-repeat;
+	padding-left: 16px;
 }
 
 /* begin css tabs */
@@ -346,44 +346,36 @@ color: white;
 
 /* end css tabs */
 
-#myexp_wrapper{
-  width:960px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#myexp_inner { 
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
 #myexp_header {
-  margin-top: 20px;
-  margin-bottom: 30px;
-  padding: 0px 5px;
+  width: 900px;
+  margin: 10px auto 10px auto;
+  padding: 0;
 }
 
-#myexp_login form {
-  padding-left: 20px;
-  padding-right: 20px;
-  margin: 0;
-  text-align: right;
+#myexp_middle {
+  width: 900px;
+  margin: 10px auto 10px auto;
+  padding: 0;
 }
 
-#myexp_navbar {
-  margin-bottom: 10px;
-}
-
-#myexp_sidebar {
-  float: right;
-  width: 190px;
-  padding-left: 10px;
+#myexp_footer {
+  width: 900px;
+  margin: 10px auto 10px auto;
+  padding: 0;
 }
 
 #myexp_body {
   float: left;
-  width: 710px;
-  padding: 0px 5px;
+  width: 700px;
+  padding: 0;
+  margin: 0;
+}
+
+#myexp_sidebar {
+  float: left;
+  width: 190px;
+  margin: 0 0 0 10px;
+  padding: 0;
 }
 
 #myexp_breadcrumbs_bar
@@ -496,13 +488,18 @@ width: 100%;
 text-align: center;
 }
 
+#policies_div ul
+{
+padding-left: 0;	
+}
+
 #policies_div li
 {
 list-style: none;
 float: left;
 width: 300px;
-margin-left: 5px;
-margin-bottom: 5px;
+margin-left: 10px;
+margin-bottom: 10px;
 display: inline;
 border: 1px dotted #999999;
 padding: 1em;
@@ -725,9 +722,12 @@ table tr td.details
 }
 
 .myexperiment_gadget {
-	padding-left: 0.5em;
-	padding-right: 0.5em;
-	margin-bottom: 1em;
+	margin: 0 0 1em 1em;
+	padding: 0;
+}
+
+.myexperiment_gadget form {
+  margin: 0;
 }
 
 .myexperiment_gadget ul.gadget_list {

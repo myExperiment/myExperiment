@@ -15,7 +15,12 @@
     <td><%= "<b>" unless message.read? %><%=link_to h(message.subject), message_path(message) %><%= "</b>" unless message.read? %></td>
     <td><%= "<b>" unless message.read? %><%=datetime message.created_at, false %><%= "</b>" unless message.read? %></td>
     <td class="actions">
-      <%= link_to 'Reply', reply_message_path(message) %>
+      <ul class="sectionIcons">
+        <% unless message.read? %>
+          <li><%= icon('message', message_path(message), nil, nil, 'Read') %></li>
+        <% end %>
+        <li><%= icon('reply', url_for(:controller => :messages, :action => :new, :reply_id => message.id), nil, nil, 'Reply') %></li>
+      </ul>
     </td>
   </tr>
 <% end %>

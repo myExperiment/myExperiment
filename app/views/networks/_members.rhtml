@@ -1,13 +1,15 @@
-<% size ||= 100 %>
+<% unless collection.empty? %>
 
 <div id="hlist">
   <ul id="members">
     <% unless collection.empty? %>
     <% for member in collection %>
-      <%= render :partial => "networks/member", :locals => { :member => member, :size => size } %>
+      <%= render :partial => "networks/member", :locals => { :member => member, :size => (size || 100) } %>
     <% end %>
     <% end %>
   </ul>
 </div>
 
-<div style="clear: both;"></div>
+<br style="clear: both;" />
+
+<% end %>

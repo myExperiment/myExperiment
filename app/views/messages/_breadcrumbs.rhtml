@@ -4,7 +4,7 @@
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "View Message", message_path(@message) %></li>
+    <li><%= link_to "View: #{h(@message.subject)}", message_path(@message) %></li>
   <% when "new" %>
     <li><%= link_to "New Message", new_message_path %></li>
   <% else %>

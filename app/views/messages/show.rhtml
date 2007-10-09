@@ -1,36 +1,63 @@
-<p>
-  <b>From:</b>
-  <%=h name(@message.from) %>
-</p>
+<h3><%=h @message.subject %></h3>
 
-<p>
-  <b>To:</b>
-  <%=h name(@message.to) %>
-</p>
-
-<p>
-  <b>Received at:</b>
-  <%=datetime @message.created_at %>
-</p>
-
-<p>
-  <b>Subject:</b>
-  <%=h @message.subject %>
-</p>
-
-<p>
-  <b>Body:</b><br/>
-  <%= @message.body_html %>
-</p>
+<ul class="sectionIcons">
+  <li><%= icon('reply', url_for(:controller => :messages, :action => :new, :reply_id => @message.id), nil, nil, 'Reply to this message') %></li>
+</ul>
 
 <% if @message.reply? %>
   <p>
-    <b>Reply to:</b>
-    <%=link_to h(@message.reply_to.subject), message_path(@message.reply_to) %>
+    <b>Reply to:</b> <%= link_to h(@message.reply_to.subject), message_path(@message.reply_to) %>
   </p>
 <% end %>
 
-<ul class="sectionIcons">
-  <li><%= icon('reply', reply_message_path(@message), nil, nil, 'Reply to this message') %></li>
-</ul>
-
+<% odd_row = false -%>
+<table class="alt_table">
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100">
+      <b>From:</b>
+    </td>
+    <td>
+      <center><%= render :partial => "users/avatar", :locals => { :user => @message.to, :size => 60 } %></center>
+    </td>
+  </tr>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100">
+      <b>To:</b>
+    </td>
+    <td>
+      <center><%= render :partial => "users/avatar", :locals => { :user => @message.to, :size => 60 } %></center>
+    </td>
+  </tr>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100">
+      <b>Sent:</b>
+    </td>
+    <td>
+      <%=datetime @message.created_at %>
+    </td>
+  </tr>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100">
+      <b>Received:</b>
+    </td>
+    <td>
+      <%=datetime @message.read_at %>
+    </td>
+  </tr>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100">
+      <b>Subject:</b>
+    </td>
+    <td>
+      <%=h @message.subject %>
+    </td>
+  </tr>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="100">
+      <b>Body:</b>
+    </td>
+    <td>
+      <%=white_list @message.body_html %>
+    </td>
+  </tr>
+</table>

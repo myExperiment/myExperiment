@@ -510,8 +510,20 @@ module ApplicationHelper
       return "famfamfam_silk/save.png"
     when "help"
       return "famfamfam_silk/help.png"
-    when "reply"
+    when "message"
       return "famfamfam_silk/email.png"
+    when "reply"
+      return "famfamfam_silk/email_go.png"
+    when "blob"
+      return "famfamfam_silk/disk.png"
+    when "blog"
+      return "famfamfam_silk/note.png"
+    when "forum"
+      return "famfamfam_silk/group.png"
+    when "workflow"
+      return "famfamfam_silk/page_white_text.png"
+    when "policy"
+      return "famfamfam_silk/key.png"
     else
       return nil
     end

@@ -1,11 +1,16 @@
-<h1><%= params[:reply_id] ? h("Reply to message") : h("New message") %></h1>
+<h3><%= params[:reply_id] ? h("Reply to message") : h("New message") %></h3>
 
 <%= error_messages_for :message %>
 
 <% form_for(:message, :url => messages_path) do |f| %>
   <p>
     <b>To</b><br />
-    <%= select(:message, :to, User.find(:all, :order => "name ASC").collect {|u| [ u.name, u.id ] }, { :include_blank => false }) %>
+    <% if @message.to %>
+      <%= render :partial => "users/avatar", :locals => { :user => @message.to } %>
+      <%= f.hidden_field :to %>
+    <% else %>
+      <%= select(:message, :to, User.find(:all, :order => "name ASC").collect {|u| [ u.name, u.id ] }, { :include_blank => false }) %>
+    <% end %>
   </p>
 
   <p>

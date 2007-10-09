@@ -16,93 +16,61 @@
 </head>
 <body>
 
-<div id="myexp_wrapper">
-
-<div id="myexp_inner">
-
 <div id="myexp_header">
+  <p><%= image_tag("logo.png") %></p>
 
-<p>
-  <%= image_tag("logo.png") %>
-</p>
-
-<% if logged_in? %>
-  <p>
-    Logged in as <%= name(current_user) %> [<%= link_to "Logout", session_path, :method => :delete %>] -
-    <%= messages_link(current_user.id) %> -
-    <%= memberships_pending_link(current_user.id) %> -
-    <%= friendships_pending_link(current_user.id) %> -
-    <%= link_to "My Policies", policies_path %> -
-    <%= link_to "My Bookmarks", bookmarks_path %>
-  </p>
-<% else %>
-  <div id="myexp_login">
-    <% form_tag session_path do %>
-      <label for="username">Username:</label> <%= text_field_tag 'session[username]' %> 
-      <label for="password">Password:</label> <%= password_field_tag 'session[password]' %> 
-      <label for="remember_me">Remember me:</label> <%= check_box_tag 'session[remember_me]' %> ...or use: 
-      <label for="openid_url">OpenID:</label> <%= text_field_tag 'openid_url' %> 
-      <%= submit_tag 'Sign in', :disable_with => "Signing in" %>
-	  <a href="<%= new_user_path %>">Sign Up</a>
-    <% end %>
-  </div>
-<% end %>
-
-</div>
-
-<div id="myexp_navbar">
+  <% if logged_in? %>
+    <p>
+      Logged in as <%= name(current_user) %> [<%= link_to "Logout", session_path, :method => :delete %>] -
+      <%= messages_link(current_user.id) %> -
+      <%= memberships_pending_link(current_user.id) %> -
+      <%= friendships_pending_link(current_user.id) %> -
+      <%= link_to "My Policies", policies_path %> -
+      <%= link_to "My Bookmarks", bookmarks_path %>
+    </p>
+  <% end %>
+      
   <ul class="tabnav">
     <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Users", users_path %></li>
     <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Networks", networks_path %></li>
     <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path %></li>
-	<li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Files", blobs_path %></li>
-	<li <%= (["blogs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path %></li>
+    <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Files", blobs_path %></li>
+    <li <%= (["blogs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path %></li>
     <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
-    <% if false %>
-    <li <%= (["contributions", "workflows", "blobs", "blogs", "downloads", "viewings", "policies"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Contributions", contributions_path %></li>
-    <% end %>
   </ul>
-  <ul class="subnav">
-    <% if false %>
+      
+  <ul class="subnav"></ul>
+      
+  <div id="searchbar"><%= render :partial => "layouts/search" %></div>
+</div>
+    
+<div id="myexp_middle">
+  <div id="myexp_body">
+    <div id="myexp_breadcrumbs_bar">
+      <ul class="breadcrumbs">
+        <li><%= link_to "Home", "/" %></li>
+        <li><b>&#187;</b></li>
+        <%= render :partial => "breadcrumbs" %>
+      </ul>
+    </div>
+    
+    <p style="color: red"><%= flash[:error] %></p>
+    <p style="color: green"><%= flash[:notice] %></p>
+
     <%= render :partial => "subnav" %>
-    <% end %>
-  </ul>
-  <div id="searchbar">
-    <%= render :partial => "layouts/search" %>
+
+    <%= yield  %>
   </div>
+      
+  <div id="myexp_sidebar">
+    <%= render :partial => "layouts/sidebar" %>
+  </div>
+      
+  <br style="clear: both;" />
 </div>
 
-<div id="myexp_breadcrumbs_bar">
-	<ul class="breadcrumbs">
-		<li><%= link_to "Home", "/" %></li>
-	    <li><b>&#187;</b></li>
-	    <%= render :partial => "breadcrumbs" %>
-	</ul>
-</div>
-
-<div id="myexp_sidebar">
-  
-  <%= render :partial => "gadgets/new_object" %>
-  
-  <% if logged_in? %>
-    <%= render :partial => "layouts/sidebar", :locals => { :user => current_user } %>
-  <% end %>
-  
-  <%= render :partial => "gadgets/tag_most_popular", :locals => { :limit => 25 } %>
-</div>
-
-<div id="myexp_body">
-
-  <%= render :partial => "subnav" %>
-  
-  <p style="color: red"><%= flash[:error] %></p>
-  <p style="color: green"><%= flash[:notice] %></p>
-
-  <%= yield  %>
-</div>
-
-</div>
-
+<div id="myexp_footer">
+  <!-- insert footer here -->
 </div>
 
 <%= javascript_include_tag "tabs.js" %>

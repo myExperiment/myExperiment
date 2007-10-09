@@ -2,7 +2,7 @@
 
 <%= render :partial => "contributions/most", :locals => { :type => type } %>
 
-<h3>Listing <%= type ? h(type.pluralize.downcase) : "contributions" %></h3>
+<h3>Listing <%= type ? h(type.pluralize) : "Contributions" %></h3>
 
 <p>
   <%= link_to "Show all", contributions_path %> or filter by 
