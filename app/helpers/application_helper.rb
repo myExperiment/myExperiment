@@ -502,6 +502,8 @@ module ApplicationHelper
       return "famfamfam_silk/cancel.png"
     when "network-member"
       return "famfamfam_silk/world.png"
+    when "network-owned"
+      return "famfamfam_silk/world_add.png"
     when "user"
       return "famfamfam_silk/user.png"
     when "avatar"
@@ -524,6 +526,14 @@ module ApplicationHelper
       return "famfamfam_silk/page_white_text.png"
     when "policy"
       return "famfamfam_silk/key.png"
+    when "logout"
+      return "famfamfam_silk/door_out.png"
+    when "membership"
+      return "famfamfam_silk/vcard.png"
+    when "friendship"
+      return "famfamfam_silk/user_comment.png"
+    when "wizard"
+      return "famfamfam_silk/wand.png"
     else
       return nil
     end

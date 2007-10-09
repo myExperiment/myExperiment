@@ -16,8 +16,8 @@
 </p>
 
 <ul class="sectionIcons">
-  <li><%= icon('new', new_permission_path(@policy), nil, nil, 'New permission') %></li>
-  <li><%= icon('edit', edit_policy_path(@policy), nil, nil, 'Edit policy') %></li>
+  <li><%= icon('edit', edit_policy_path(@policy), nil, nil, 'Edit policy (1 page)') %></li>
+  <li><%= icon('wizard', url_for(:controller => :policy_wizard, :action => :public, :id => @policy.id), nil, nil, 'Edit using wizard') %></li>
   <li><%= icon('destroy', policy_path(@policy), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove policy') %></li>
 </ul>
 
@@ -27,10 +27,12 @@
   <div class="tabTitle">Permissions</div>
   <div class="tabContent">
     <h3>Permissions</h3>
+    
+    <ul class="sectionIcons">
+      <li><%= icon('new', new_permission_path(@policy), nil, nil, 'New permission') %></li>
+    </ul>
 
     <%= render :partial => "policies/policy", :object => @policy %>
-
-    <li><%= icon('new', new_permission_path(@policy), nil, nil, 'New permission') %></li>
   </div>
 </div>
 

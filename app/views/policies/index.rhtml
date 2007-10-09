@@ -34,6 +34,7 @@
 		
         <center>
           <%= icon "show", policy_path(policy) %> 
+          <%= icon('wizard', url_for(:controller => :policy_wizard, :action => :public, :id => policy.id)) %>
           <%= icon "destroy", policy_path(policy), nil, :confirm => 'Are you sure?', :method => :delete %>
         </center>
       </li>
