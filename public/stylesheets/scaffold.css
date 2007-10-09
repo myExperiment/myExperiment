@@ -141,7 +141,7 @@ table.login td {
 	font-weight: bold;
 	width: 100%;
 	text-align: left;
-	border-bottom: 1px solid #e2e2e2;
+	border-bottom: 1px dotted #999999;
 }
 
 .news_feed_div ul.news_feed_day {
