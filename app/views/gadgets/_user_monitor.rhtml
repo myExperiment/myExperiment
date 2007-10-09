@@ -51,19 +51,19 @@
     </p>
     
     <ul class="sectionIcons">
-      <li><%= icon('message', messages_path, nil, nil, "Inbox (#{current_user.messages_unread.length})") %></li>
+      <li><%=messages_link(current_user) %></li>
     </ul>
     
     <ul class="sectionIcons">
-      <li><%= icon('membership', memberships_path(current_user), nil, nil, "Memberships (#{current_user.memberships_pending.length})") %></li>
+      <li><%=memberships_pending_link(current_user) %></li>
     </ul>
     
     <ul class="sectionIcons">
-      <li><%= icon('friendship', friendships_path(current_user), nil, nil, "Friendships (#{current_user.friendships_pending.length})") %></li>
+      <li><%=friendships_pending_link(current_user) %></li>
     </ul>
     
     <ul class="sectionIcons">
-      <li><%= icon('logout', url_for(:controller => :session, :method => :destroy), nil, nil, 'Sign out') %></li>
+      <li><%=signout_link %></li>
     </ul>
   </div>
   

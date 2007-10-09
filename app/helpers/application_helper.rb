@@ -124,6 +124,10 @@ module ApplicationHelper
               :title => alt, 
               :size => "#{size}x#{size}"
   end
+
+  def signout_link
+    link_to("#{icon('logout', nil, nil, nil, nil)} Sign Out", session_path, :method => :delete)
+  end
   
   def messages_link(user_id)
     if user_id.kind_of? Fixnum
@@ -135,7 +139,7 @@ module ApplicationHelper
       return nil
     end
     
-    inbox = "Inbox (#{user.messages_unread.length})"
+    inbox = icon('message', nil, nil, nil, nil) + " Inbox (#{user.messages_unread.length})"
     rtn = !user.messages_unread.empty? ? "<strong>" + inbox + "</strong>" : inbox
       
     return link_to(rtn, messages_path)
@@ -151,7 +155,7 @@ module ApplicationHelper
       return nil
     end
     
-    mships = "Memberships (#{user.memberships_pending.length})"
+    mships = icon('membership', nil, nil, nil, nil) + " Memberships (#{user.memberships_pending.length})"
     rtn = !user.memberships_pending.empty? ? "<strong>" + mships + "</strong>" : mships
       
     return link_to(rtn, memberships_path(user))
@@ -167,7 +171,7 @@ module ApplicationHelper
       return nil
     end
     
-    fships = "Friendships (#{user.friendships_pending.length})"
+    fships = icon('friendship', nil, nil, nil, nil) + " Friendships (#{user.friendships_pending.length})"
     rtn = !user.friendships_pending.empty? ? "<strong>" + fships + "</strong>" : fships
       
     return link_to(rtn, friendships_path(user))
