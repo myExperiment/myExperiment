@@ -1,9 +1,10 @@
+<% size ||= 100 -%>
 <% unless collection.empty? %>
 
 <div id="hlist">
   <ul id="friends">
     <% for friend in collection %>
-      <%= render :partial => "friendships/friend", :locals => { :friend => friend, :size => (size || 100) } %>
+      <%= render :partial => "friendships/friend", :locals => { :friend => friend, :size => size } %>
     <% end %>
   </ul>
 </div>
