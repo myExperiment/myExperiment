@@ -201,6 +201,9 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       if @workflow.update_attributes(params[:workflow])
+        # bug fix to not save 'default' workflow unless policy_id is selected
+        @workflow.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
+        
         # security fix (only allow the owner to change the policy)
         @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
         

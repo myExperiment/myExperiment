@@ -87,6 +87,9 @@ class ContributionsController < ApplicationController
       params[:contribution].delete(column_name)
     end
     
+    # bug fix to not save 'default' workflow unless policy_id is selected
+    @contribution.policy = nil if (params[:policy_id].nil? or params[:policy_id].empty?)
+    
     respond_to do |format|
       if @contribution.update_attributes(params[:contribution])
         flash[:notice] = 'Contribution was successfully updated.'

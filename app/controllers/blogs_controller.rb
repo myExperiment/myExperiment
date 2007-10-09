@@ -103,6 +103,9 @@ class BlogsController < ApplicationController
     
     respond_to do |format|
       if @blog.update_attributes(params[:blog])
+        # bug fix to not save 'default' workflow unless policy_id is selected
+        @blog.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
+        
         # security fix (only allow the owner to change the policy)
         @blog.contribution.update_attributes(params[:contribution]) if @blog.contribution.owner?(current_user)
         

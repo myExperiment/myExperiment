@@ -44,6 +44,11 @@ class NetworksController < ApplicationController
   # GET /networks/1;membership_create
   def membership_create
     respond_to do |format|
+      unless params[:user_id]
+        format.html { render :inline => " "} # no responce, rendered inline
+        format.xml { head :bad_request }
+      end
+      
       @membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id)
         
       if @membership.save
@@ -85,7 +90,7 @@ class NetworksController < ApplicationController
 
   # GET /networks/new
   def new
-    @network = Network.new
+    @network = Network.new(:user_id => current_user.id)
   end
 
   # GET /networks/1;edit

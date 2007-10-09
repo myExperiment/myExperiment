@@ -7,13 +7,8 @@ class PolicyWizardController < ApplicationController
   end
   
   def start
-    @policy = Policy.new(:contributor => current_user, 
-                         :view_public => true, 
-                         :download_public => false, 
-                         :edit_public => false, 
-                         :view_protected => true, 
-                         :download_protected => true, 
-                         :edit_protected => false)
+    @policy = Policy._default(current_user)
+    @policy.name = nil
   end
 
   def create

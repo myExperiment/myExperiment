@@ -116,6 +116,9 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
+        # bug fix to not save 'default' workflow unless policy_id is selected
+        @blob.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
+        
         # security fix (only allow the owner to change the policy)
         @blob.contribution.update_attributes(params[:contribution]) if @blob.contribution.owner?(current_user)
         
