@@ -1,13 +1,13 @@
-<% if logged_in? %>
+<% if @user %>
   <li><%= link_to 'Users', users_path %></li>
 
   <li><b>&#187;</b></li>
-
-  <li><%= link_to h(current_user.name), user_path(current_user) %></li>
-
-  <li><b>&#187;</b></li>
   
-  <li><%= link_to 'Memberships', memberships_path(current_user) %></li>
+  <li><%= name(@user) %></li>
+    
+  <li><b>&#187;</b></li>
+    
+  <li><%= link_to 'Memberships', memberships_path(@user) %></li>
 <% else %>
   <li><%= link_to 'Memberships', url_for(:controller => :memberships) %>
 <% end %>
@@ -15,9 +15,5 @@
 <% if ["show"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
-  <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "View: #{h(@membership.user.name)} - #{h(@membership.network.title)}", membership_path(@membership.user, @membership) %></li>
-  <% else %>
-    <!-- no breadcrumb -->
-  <% end %>
+  <li><%= link_to "View: #{h(@membership.network.title)}", membership_path(@membership.user, @membership) %></li>
 <% end %>

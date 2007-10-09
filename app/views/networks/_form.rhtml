@@ -1,0 +1,31 @@
+  <p>
+    <b>Administrator</b><br />
+    <%= render :partial => "users/avatar", :locals => { :user => @network.owner } %>
+    <%= form.hidden_field :user_id %>
+  </p>
+
+  <p>
+    <b>Title</b><br />
+    <%= form.text_field :title %>
+  </p>
+  
+  <fieldset>
+    <legend>Persistent URL (what is a <%= link_to 'pURL', "http://en.wikipedia.org/wiki/Persistent_Uniform_Resource_Locator" %>?)</legend>
+    
+    <p>
+      If you set a unique identifier, it will be used in future versions of myExperiment to provide a persistent and human-readable URL for your network.
+    </p> 
+    
+    <p><b>Reserve yours now!</b></p>
+    
+    <p>
+      <b>Unique Identifier</b><br />
+      <%= form.text_field :unique_name %>
+    </p>
+  </fieldset>
+  
+  <p>
+    <b>Description</b><br />
+    <small>HTML may be used in this text area.</small><br />
+    <%= form.text_area :description, :cols => 50, :rows => 10 %>
+  </p>

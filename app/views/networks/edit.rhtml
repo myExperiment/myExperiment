@@ -3,30 +3,7 @@
 <%= error_messages_for :network %>
 
 <% form_for(:network, :url => network_path(@network), :html => { :method => :put }) do |f| %>
-  <p>
-    <b>Title</b><br />
-    <%= f.text_field :title %>
-  </p>
-
-  <fieldset>
-    <legend>Persistent URL (what is a <%= link_to 'pURL', "http://en.wikipedia.org/wiki/Persistent_Uniform_Resource_Locator" %>?)</legend>
-    
-    <p>
-      If you set a unique identifier, it will be used in future versions of myExperiment to provide a persistent and human-readable URL for your network.
-    </p> 
-    
-    <p><b>Reserve yours now!</b></p>
-    
-    <p>
-      <b>Unique Identifier</b><br />
-      <%= f.text_field :unique_name %>
-    </p>
-  </fieldset>
-  
-  <p>
-    <b>Description</b><br />
-    <%= f.text_area :description, :cols => 50, :rows => 10 %>
-  </p>
+  <%= render :partial => "networks/form", :object => f %>
 
   <p>
     <%= submit_tag "Update" %>

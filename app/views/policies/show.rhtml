@@ -15,16 +15,11 @@
   <%=datetime @policy.updated_at %>
 </p>
 
-<p>
-  <%= link_to '[edit policy settings]', edit_policy_path(@policy) %>
-</p>
-
 <ul class="sectionIcons">
   <li><%= icon('new', new_permission_path(@policy), nil, nil, 'New permission') %></li>
   <li><%= icon('edit', edit_policy_path(@policy), nil, nil, 'Edit policy') %></li>
   <li><%= icon('destroy', policy_path(@policy), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove policy') %></li>
 </ul>
-
 
 <div id="tabsContainer" class="tabsContainer"></div>
 
@@ -35,9 +30,7 @@
 
     <%= render :partial => "policies/policy", :object => @policy %>
 
-    <p>
-      <%= link_to '[new explicit permission]', new_permission_path(@policy) %>
-    </p>
+    <li><%= icon('new', new_permission_path(@policy), nil, nil, 'New permission') %></li>
   </div>
 </div>
 

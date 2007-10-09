@@ -7,6 +7,19 @@
     <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user, :current => @workflow.contribution.contributor } %>
   
     <%= render :partial => "policies/listform", :locals => { :contribution => @workflow.contribution, :user => current_user } %>
+    
+    <div class="fold">
+      <div class="foldTitle">Science Commons</div>
+      <div class="foldContent" style="display: none;">
+        <p><%= image_tag "sc.logo.png", :alt => "Science Commons" %></p>
+        <p>You can also configure what rights you will give to people with your workflow. Sharing your workflows and letting others build upon them is a useful contribution.</p>
+        <p>When someone downloads this workflow, do you want to allow them to be able to build upon it?</p>
+        <p><%= f.radio_button :license, "by-sa" %> Yes, as long as they <strong>give me credit (attribution)</strong> and they also <strong>share</strong> their workflow <strong>under the same conditions</strong>.</p>
+        <p><%= f.radio_button :license, "by" %> Yes, as long as they <strong>give me credit (attribution)</strong>.</p>
+        <p><%= f.radio_button :license, "by-nd" %> No. They may only use the workflow for reference.</p>
+        <p><small>Nothing in these licenses impairs or restricts the author's moral rights.</small></p>
+      </div>
+    </div>
   <% end %>
 
   <h3>Edit Workflow</h3>
@@ -18,35 +31,31 @@
 
   <p>
     <b>Description</b><br />
+    <small>HTML may be used in this text area.</small><br />
     <%= f.text_area :body %>
   </p>
 
-<% if @workflow.owner?(current_user) %>
-  <p>
-    <b>Unique</b><br />
-    <%= f.text_field :unique_name %>
-  </p>
+<% if false and @workflow.owner?(current_user) %>
+  <fieldset>
+    <legend>Persistent URL (what is a <%= link_to 'pURL', "http://en.wikipedia.org/wiki/Persistent_Uniform_Resource_Locator" %>?)</legend>
+    
+    <p>
+      If you set a unique identifier, it will be used in future versions of myExperiment to provide a persistent and human-readable URL for your workflow.
+    </p> 
+    
+    <p><b>Reserve yours now!</b></p>
+    
+    <p>
+      <b>Unique Identifier</b><br />
+      <%= f.text_field :unique_name %>
+    </p>
+  </fieldset>
 <% end %>
   
   <p>
     <b>Tags (comma separated)</b><br />
     <%= f.text_field :tag_list %>
   </p>
-
-<% if @workflow.owner?(current_user) %>
-  <div class="fold">
-    <div class="foldTitle">Science Commons</div>
-    <div class="foldContent" style="display: none;">
-      <p><%= image_tag "sc.logo.png", :alt => "Science Commons" %></p>
-      <p>You can also configure what rights you will give to people with your workflow. Sharing your workflows and letting others build upon them is a useful contribution.</p>
-      <p>When someone downloads this workflow, do you want to allow them to be able to build upon it?</p>
-      <p><%= f.radio_button :license, "by-sa" %> Yes, as long as they <strong>give me credit (attribution)</strong> and they also <strong>share</strong> their workflow <strong>under the same conditions</strong>.</p>
-      <p><%= f.radio_button :license, "by" %> Yes, as long as they <strong>give me credit (attribution)</strong>.</p>
-      <p><%= f.radio_button :license, "by-nd" %> No. They may only use the workflow for reference.</p>
-      <p><small>Nothing in these licenses impairs or restricts the author's moral rights.</small></p>
-    </div>
-  </div>
-<% end %>
 
   <p>
     <%= submit_tag "Update" %>

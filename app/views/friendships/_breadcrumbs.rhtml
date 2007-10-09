@@ -3,7 +3,7 @@
 
   <li><b>&#187;</b></li>
 
-  <li><%= link_to h(@user.name), user_path(@user) %></li>
+  <li><%= name(@user) %></li>
 
   <li><b>&#187;</b></li>
   
@@ -15,9 +15,5 @@
 <% if ["show"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
-  <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "View: #{h(@friendship.user.name)}", friendship_path(@friendship.friend, @friendship) %></li>
-  <% else %>
-    <!-- no breadcrumb -->
-  <% end %>
+  <li><%= link_to "View: #{h(@friendship.user.name)}", friendship_path(@friendship.friend, @friendship) %></li>
 <% end %>
