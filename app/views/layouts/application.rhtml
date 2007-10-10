@@ -26,10 +26,6 @@
     <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Files", blobs_path %></li>
     <li <%= (["blogs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path %></li>
     <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
-    <% if logged_in? %>
-      <li <%= (["policies"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "My Policies", policies_path %></li>
-      <li <%= (["bookmarks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "My Bookmarks", bookmarks_path %></li>
-    <% end %>
   </ul>
       
   <ul class="subnav"></ul>
