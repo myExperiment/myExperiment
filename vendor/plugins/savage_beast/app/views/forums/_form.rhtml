@@ -1,18 +1,6 @@
 <p style="float:right; margin-top:0">
 </p>
 
-<% if @forum.contribution.owner?(current_user) %>
-
-<p id="forum_contributor"></p>
-
-<%= render :partial => "contributions/contributor_form", :locals => { :user => current_user, :current => @forum.contribution.contributor } %>
-
-<p id="forum_policy"></p>
-  
-<%= render :partial => "policies/listform", :locals => { :contribution => @forum.contribution, :user => current_user } %>
-
-<% end %>
-
 <h3>Details</h3>
 
 <p id="forum_name">

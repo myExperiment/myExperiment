@@ -1,6 +1,14 @@
 <h1><%= _('New Forum') %></h1>
 
 <% form_for :forum, :url => forums_path do |f| -%>
+<p id="forum_contributor"></p>
+
+<%= render :partial => "contributions/contributor_form", :locals => { :user => current_user, :current => @forum.contributor } %>
+
+<p id="forum_policy"></p>
+  
+<%= render :partial => "policies/listform", :locals => { :contribution => @forum.contribution, :user => current_user } %>
+
 <%= render :partial => "form", :object => f %>
 <%= submit_tag _('Create'), :or => link_to(_('Cancel'), forums_path) %>
 <% end -%>
