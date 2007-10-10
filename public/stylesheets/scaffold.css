@@ -836,24 +836,31 @@ table tr td.details
   margin-left: 0px;
   margin-top: 1em;
   margin-bottom: 1em;
-  padding-left: 0px;
+  padding-left: 3px;
 }
 
 .sectionIcons LI {
-  margin-right: 0.5em;
+  margin: -3px;
   display: inline;
-  border: 1px solid blue;
-  padding: 3px;
-  background-color: #b1ceff;
 }
 
 .sectionIcons LI:hover {
-  margin-right: 0.5em;
+  margin: -3px;
+}
+
+.sectionIcons LI A {
+  padding: 4px;
+  margin: 1px;
 }
 
 .sectionIcons LI A:hover {
+  border: 1px solid gray;
+  padding: 3px;
+  margin-left: 1px;
+  margin-right: 1px;
   color: red;
   text-decoration: none; 
+  background-color: #ddd;
 }
 
 .icon A {
