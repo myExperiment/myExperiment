@@ -7,6 +7,7 @@
   <div class="header">
     <p>Sign in / Sign up</p>
   </div>
+  
   <div class="contents">
     <% form_tag session_path do %>
       <center>
@@ -40,14 +41,7 @@
   <div class="header">
     <p>
       <%= avatar(current_user, 60) %><br/>
-      <b><%= name(current_user) %></b><br/>
-      <small>
-        <%= pluralize(current_user.friends.length, "friend") %>, <%= pluralize(current_user.networks_owned.length + current_user.networks.length, "network") %>,<br />
-        <% filter_contributables(current_user.contributions).each do |klass,contributables| %>
-          <%= pluralize(contributables.length, (klass.to_s == "Blob" ? "File" : klass).downcase) %>,
-        <% end %>
-        <%= pluralize(current_user.policies.length, "policy") %>
-      </small>
+      <b><%= name(current_user) %></b>
     </p>
 	
     <ul class="sectionIcons">
@@ -58,10 +52,10 @@
   <div id="myexp_userprofile_gadget_contents" class="contents">
 		<ul class="gadget_list">
       <li><%=messages_link(current_user) %></li>
-      <li><%=memberships_pending_link(current_user) %></li>
+      <li><%=link_to "#{icon("bookmark", nil, nil, nil, "")}Bookmarks", bookmarks_path %></li>
       <li><%=friendships_pending_link(current_user) %></li>
-      <li><%=link_to "#{icon("policy", nil, nil, nil, "")} My Policies", policies_path %></li>
-      <li><%=link_to "#{icon("bookmark", nil, nil, nil, "")}My Bookmarks", bookmarks_path %></li>
+      <li><%=memberships_pending_link(current_user) %></li>
+      <li><%=link_to "#{icon("policy", nil, nil, nil, "")} Policies", policies_path %></li>
     </ul>
 	
     <% unless current_user.messages_unread.empty? %>
@@ -70,68 +64,20 @@
         <div class="content">
           <ul class="gadget_list">
             <% current_user.messages_unread.each do |message| %>
-              <li><%= icon "message", nil, nil, nil, "" %> <%= link_to truncate(h(message.subject), gadget_characters_limit), message_path(message) %></li>
+              <li><b><%= icon "message", nil, nil, nil, "" %> <%= link_to truncate(h(message.subject), gadget_characters_limit), message_path(message) %></b></li>
             <% end %>
           </ul>
         </div>
       </div>
     <% end %>
     
-    <% unless current_user.friends.empty? %>
+    <% unless current_user.messages_unread.empty? %>
       <div>
-        <div class="title">Friends</div>
+        <div class="title"><%= pluralize(current_user.friendships_pending.length, "new friendship request") %>!</div>
         <div class="content">
           <ul class="gadget_list">
-            <% current_user.friends.each do |friend| %>
-              <li><%= icon "user", nil, nil, nil, "" %> <%= link_to truncate(h(friend.name), gadget_characters_limit), user_path(friend) %></li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
-    <% end %>
-  
-    <% unless current_user.networks_owned.empty? and current_user.networks.empty? %>
-      <div>
-        <div class="title">Networks</div>
-        <div class="content">
-          <ul class="gadget_list">
-            <% current_user.networks_owned.each do |network_owned| %>
-              <li><%= icon "network-owned", nil, nil, nil, "" %> <%= link_to truncate(h(network_owned.title), gadget_characters_limit), network_path(network_owned) %></li>
-            <% end %>
-            <% current_user.networks.each do |network_member| %>
-              <li><%= icon "network-member", nil, nil, nil, "" %> <%= link_to truncate(h(network_member.title), gadget_characters_limit), network_path(network_member) %></li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
-    <% end %>
-  
-    <% unless current_user.contributions.empty? %>
-      <% filter_contributables(current_user.contributions).each do |klass, array| %>
-        <div>
-          <div class="title"><%= klass.to_s == "Blob" ? "Files" : klass.pluralize %></div>
-          <div class="content">
-            <ul class="gadget_list">
-              <% array.each do |instance| %>
-                <li>
-                  <%= icon klass.downcase, nil, nil, nil, "" %> <%= link_to contributable_name(instance.id, klass, gadget_characters_limit), contributable_url(instance.id, klass), :alt => contributable_name(instance.id, klass) %>
-                </li>
-              <% end %>
-            </ul>
-          </div>
-        </div>
-      <% end %>
-    <% end %>
-  
-    <% unless current_user.policies.empty? %>
-      <div>
-        <div class="title">Policies</div>
-        <div class="content">
-          <ul class="gadget_list">
-            <% current_user.policies.each do |policy| %>
-              <li>
-                <%= icon "policy", nil, nil, nil, "" %> <%= link_to h(truncate(policy.name, gadget_characters_limit)), policy_path(policy) %>
-              </li>
+            <% current_user.friendships_pending.each do |friendship| %>
+              <li><b><%= icon "user", nil, nil, nil, "" %> <%= link_to truncate(h(friendship.user.name), gadget_characters_limit), friendship_path(current_user, friendship) %></b></li>
             <% end %>
           </ul>
         </div>

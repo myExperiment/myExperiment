@@ -139,8 +139,13 @@ module ApplicationHelper
       return nil
     end
     
-    inbox = icon('message', nil, nil, nil, nil) + " Inbox (#{user.messages_unread.length})"
-    rtn = !user.messages_unread.empty? ? "<strong>" + inbox + "</strong>" : inbox
+    inbox = icon('message', nil, nil, nil, nil) + " Inbox"
+    
+    unless (length = user.messages_unread.length) == 0
+      rtn = "<b>" + inbox + " (#{length})</b>"
+    else
+      rtn = inbox
+    end
       
     return link_to(rtn, messages_path)
   end
@@ -155,8 +160,13 @@ module ApplicationHelper
       return nil
     end
     
-    mships = icon('membership', nil, nil, nil, nil) + " Memberships (#{user.memberships_pending.length})"
-    rtn = !user.memberships_pending.empty? ? "<strong>" + mships + "</strong>" : mships
+    mships = icon('membership', nil, nil, nil, nil) + " Memberships"
+    
+    unless (length = user.memberships_pending.length) == 0
+      rtn = "<b>" + mships + " (#{length})</b>"
+    else
+      rtn = mships
+    end
       
     return link_to(rtn, memberships_path(user))
   end
@@ -171,8 +181,13 @@ module ApplicationHelper
       return nil
     end
     
-    fships = icon('friendship', nil, nil, nil, nil) + " Friendships (#{user.friendships_pending.length})"
-    rtn = !user.friendships_pending.empty? ? "<strong>" + fships + "</strong>" : fships
+    fships = icon('friendship', nil, nil, nil, nil) + " Friendships"
+    
+    unless (length = user.friendships_pending.length) == 0
+       rtn = "<b>" + fships + " (#{length})</b>"
+    else
+      rtn = fships
+    end
       
     return link_to(rtn, friendships_path(user))
   end
