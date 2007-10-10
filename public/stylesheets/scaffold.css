@@ -305,6 +305,7 @@ text-align: center;
 padding: 7px 0;
 margin-left: 0;
 margin-bottom: 0;
+margin-top: 10px;
 font-weight: bold;
 font-size: 1.2em;
 }
@@ -348,7 +349,7 @@ color: white;
 
 #myexp_header {
   width: 900px;
-  margin: 10px auto 10px auto;
+  margin: 20px auto 10px auto;
   padding: 0;
 }
 
@@ -757,7 +758,7 @@ table tr td.details
 	border-bottom: none;
 	border-left: #999999 1px solid;
 	color: #000000;
-	padding: 1em;
+	padding: 0.6em;
 	margin-top: 0;   
 	text-align: left;
 	background-color: #FFFFFF;
@@ -842,6 +843,10 @@ table tr td.details
 .sectionIcons LI {
   margin: -3px;
   display: inline;
+  border: 1px solid blue;
+  padding: 0.4em;
+  background-color: #b1ceff;
+  font-weight: bold;
 }
 
 .sectionIcons LI:hover {
@@ -866,6 +871,7 @@ table tr td.details
 .icon A {
   white-space: nowrap;
   padding-right: 2px;
+  vertical-align: middle;
 }
 
 .icon IMG {
