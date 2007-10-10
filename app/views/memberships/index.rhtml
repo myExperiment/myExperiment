@@ -26,6 +26,14 @@
       <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships_requested, :user => false } %>
     <% end %>
     
+    <% unless @user.networks_owned.empty? %>
+      <h3>Networks Administrated</h3>
+      
+      <p>You are an administrator of (and therefore a member of) the following networks:</p>
+      
+      <%= render :partial => "networks/table", :locals => { :collection => @user.networks_owned } %>
+    <% end %>
+    
     <h3>Memberships</h3>
   
     <p>

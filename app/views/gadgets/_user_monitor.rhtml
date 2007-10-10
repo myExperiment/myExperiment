@@ -49,23 +49,20 @@
         <%= pluralize(current_user.policies.length, "policy") %>
       </small>
     </p>
-	<ul class="sectionIcons">
-	  <li><%=signout_link %></li>
+	
+    <ul class="sectionIcons">
+      <li><%=signout_link %></li>
     </ul>
   </div>
   
   <div id="myexp_userprofile_gadget_contents" class="contents">
-  
-	<div>
 		<ul class="gadget_list">
-	      <li><%=messages_link(current_user) %></li>
-	      <li><%=memberships_pending_link(current_user) %></li>
-	      <li><%=friendships_pending_link(current_user) %></li>
-	      <li><%=link_to "#{icon("policy", nil, nil, nil, "")} My Policies", policies_path %></li>
-	      <li><%=link_to "#{icon("bookmark", nil, nil, nil, "")}My Bookmarks", bookmarks_path %></li>
-	      
-	    </ul>
-	</div>
+      <li><%=messages_link(current_user) %></li>
+      <li><%=memberships_pending_link(current_user) %></li>
+      <li><%=friendships_pending_link(current_user) %></li>
+      <li><%=link_to "#{icon("policy", nil, nil, nil, "")} My Policies", policies_path %></li>
+      <li><%=link_to "#{icon("bookmark", nil, nil, nil, "")}My Bookmarks", bookmarks_path %></li>
+    </ul>
 	
     <% unless current_user.messages_unread.empty? %>
       <div>
