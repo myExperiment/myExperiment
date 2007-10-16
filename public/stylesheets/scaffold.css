@@ -1,3 +1,31 @@
+.boxoverTooltipHeader
+{
+	display: none;
+	border: 0;
+	height: 0;
+}
+
+.boxoverTooltipBody
+{
+	border: solid 1px Gray;
+	color: #000000;
+	background-color: #FFFF66;
+	font-size: 1em;
+	font-weight: normal;
+	padding: 0.4em 0.6em;
+	max-width: 500px;
+}
+
+.info_text
+{
+	font-size: 1em;
+	background-color: #FFFF99;
+    margin: 1.5em;
+    padding: 1em;
+    border: 1px dotted #999999;
+    font-style: normal;
+}
+
 .home_header
 {
     padding: 0.5em 3em 0.1em 3em;
@@ -169,14 +197,20 @@ body, p, ol, ul, td {
   line-height: 18px;
 }
 
+hr
+{
+	margin: 2em 0;
+}
+
 h1
 {
 	font-family: verdana, arial, helvetica, sans-serif;
-	font-size: 1.2em;
+	font-size: 1.4em;
 	color: Black;
 	background-color: white;
 	padding: 0.5em 0em;
 	margin: 0 0 1.5em 0;
+	text-align: center;
 }
 
 h3
@@ -622,16 +656,18 @@ table tr td.details
 /* folding */
 
 .fold {
-  margin-bottom: 1em;
+  margin-bottom: 2em;
   padding: 0px;
 }
 
-.foldTitle {
-  background: #222;
-  border-bottom: 1px solid black;
+.foldTitle 
+{
+  font-weight: bold;
+  background: #444444;
   color: white;
   padding-left: 0.5em;
   padding-right: 0.5em;
+  
 }
 
 .foldText {
@@ -644,8 +680,7 @@ table tr td.details
 
 .foldContent {
   border: 1px solid #aaa;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
+  padding: 0 1em;
 }
 
 /* tabs */
@@ -884,12 +919,5 @@ table tr td.details
 	padding: 1em;
 	border: 1px dotted #999999;
 	margin: 1.5em 0;
-}
-
-.info_text
-{
-	font-size: 1em;
-	font-style: italic;
-	padding: 0.1em 0;
 }
 
