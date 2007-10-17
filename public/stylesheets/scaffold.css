@@ -92,7 +92,7 @@ table.login *
 
 table.login td {
 	border-width: 0;
-	background-color: #f7f7f7;
+	background-color: #F5F5F5;
 	padding: 0.2em 0.6em;
 }
 
@@ -119,7 +119,7 @@ table.login td {
 #myexp_home_logonbox .xb2, 
 #myexp_home_logonbox .xb3, 
 #myexp_home_logonbox .xb4 {
-	background: #F7F7F7;
+	background: #F5F5F5;
 	border-left: 1px solid #999999;
 	border-right: 1px solid #999999;
 }
@@ -150,7 +150,7 @@ table.login td {
 }
 
 #new_object_form form #new_object_box {
-	background-color: #F7F7F7;
+	background-color: #F5F5F5;
 	border: solid 1px #999999;
 	text-align: center;
 }
@@ -219,7 +219,7 @@ h3
 	font-family: verdana, arial, helvetica, sans-serif;
 	font-size: 1.1em;
 	color: Black;
-	background-color: #f7f7f7;
+	background-color: #F5F5F5;
 	padding: 0.5em;
 	margin: 1.5em 0 1.5em 0;
 	border-top: 1px solid #999999;
@@ -355,10 +355,9 @@ display: inline;
 {
 padding: 6px 12px;
 margin-left: 3px;
-/*border: 1px solid #317eff;*/
 border: 1px solid #999999;
-background: #F5F5F5;
 border-bottom: 1px solid transparent;
+background: #F5F5F5;
 text-decoration: none;
 }
 
@@ -367,8 +366,7 @@ text-decoration: none;
 
 .tabnav li a:hover
 {
-/*color: #1a1a1a;*/
-color: #F7F7F7;
+color: #FFFFFF;
 background: #317eff;
 }
 
@@ -376,7 +374,7 @@ background: #317eff;
 {
 background: #317eff;
 border-bottom: 1px solid transparent;
-color: white;
+color: #FFFFFF;
 }
 
 /* end css tabs */
@@ -775,7 +773,7 @@ table tr td.details
 .myexperiment_gadget .header {
 	border: #999999 0px solid;
 	border-width: 0 1px 1px 1px;
-	background-color: #F7F7F7;
+	background-color: #F5F5F5;
 	text-align: center;
 	padding: 0.1em 0 0.2em 0;
 	line-height: 1em;
@@ -857,7 +855,7 @@ table tr td.details
 }
 
 .xb2, .xb3, .xb4 {
-	background: #F7F7F7;
+	background: #F5F5F5;
 	border-left: 1px solid #999999;
 	border-right: 1px solid #999999;
 }
