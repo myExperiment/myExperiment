@@ -44,6 +44,11 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.xml
   def index
+    @users.each do |user|
+      user.salt = nil
+      user.crypted_password = nil
+    end
+    
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @users.to_xml }
@@ -53,6 +58,9 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
+    @user.salt = nil
+    @user.crypted_password = nil
+    
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @user.to_xml }
