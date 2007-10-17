@@ -78,6 +78,15 @@
           Copy and paste this link into "Open workflow location..."<br/>
           <%= link_to download_workflow_url(@workflow), download_workflow_url(@workflow) %>
         </p>
+        
+        <p>
+          <b>Authenticate the download using your username and password</b><br/>
+          <% if logged_in? and current_user.username.nil? %>
+          	Click <%= link_to 'here', edit_user_path(current_user) %> to register your username and password
+          <% else %>
+          	Replace <font color="#000099">http://</font> with <font color="#000099">http://<%=(logged_in? and !current_user.username.nil?) ? h(current_user.username) : "yourusername" %>:yourpassword@</font>
+          <% end %> 
+        </p>
       </td>
       <td width="70">
         <%= image_tag "taverna.png" %>
