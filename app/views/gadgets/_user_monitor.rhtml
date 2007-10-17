@@ -49,7 +49,7 @@
     </ul>
   </div>
   
-  <div id="myexp_userprofile_gadget_contents" class="contents">
+  <div id="myexp_usermonitor_gadget_contents" class="contents">
 		<ul class="gadget_list">
       <li><%=messages_link(current_user) %></li>
       <li><%=link_to "#{icon("bookmark", nil, nil, nil, "")}Bookmarks", bookmarks_path %></li>
@@ -71,7 +71,7 @@
       </div>
     <% end %>
     
-    <% unless current_user.messages_unread.empty? %>
+    <% unless current_user.friendships_pending.empty? %>
       <div>
         <div class="title"><%= pluralize(current_user.friendships_pending.length, "new friendship request") %>!</div>
         <div class="content">

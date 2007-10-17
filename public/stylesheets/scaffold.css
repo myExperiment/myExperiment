@@ -799,15 +799,15 @@ table tr td.details
 	background-color: #FFFFFF;
 }
 
-/* User Profile Gadget styles */
+/* Asset Manager Gadget styles */
 
-#myexp_userprofile_gadget_contents
+#myexp_assetmanager_gadget_contents
 {
-	height: 180px;
+	height: 150px;
 	overflow: auto;
 }
 
-#myexp_userprofile_gadget_contents .title
+#myexp_assetmanager_gadget_contents .title
 {
 	margin-top: 0.5em;
 	padding: 0.1em 0;
@@ -815,7 +815,26 @@ table tr td.details
 	font-weight: bold;
 }
 
-#myexp_userprofile_gadget_contents .content
+#myexp_assetmanager_gadget_contents .content
+{
+	line-height: 1.1em;
+}
+
+/* User Monitor Gadget styles */
+
+#myexp_usermonitor_gadget_contents
+{
+}
+
+#myexp_usermonitor_gadget_contents .title
+{
+	margin-top: 0.5em;
+	padding: 0.1em 0;
+	border-bottom: 1px dotted #999999;
+	font-weight: bold;
+}
+
+#myexp_usermonitor_gadget_contents .content
 {
 	line-height: 1.1em;
 }
@@ -870,18 +889,12 @@ table tr td.details
 
 .sectionIcons {
   margin-left: 0px;
-  margin-top: 1em;
-  margin-bottom: 1em;
   padding-left: 3px;
 }
 
 .sectionIcons LI {
   margin: -3px;
   display: inline;
-  border: 1px solid blue;
-  padding: 0.4em;
-  background-color: #b1ceff;
-  font-weight: bold;
 }
 
 .sectionIcons LI:hover {
@@ -894,13 +907,13 @@ table tr td.details
 }
 
 .sectionIcons LI A:hover {
-  border: 1px solid gray;
+  border: 1px solid blue;
   padding: 3px;
   margin-left: 1px;
   margin-right: 1px;
   color: red;
   text-decoration: none; 
-  background-color: #ddd;
+  background-color: #b1ceff;
 }
 
 .icon A {
