@@ -15,12 +15,7 @@
   
     <%= render :partial => "policies/listform", :locals => { :contribution => @workflow.contribution, :user => current_user } %>
     
-    <div class="fold">
-      <div class="foldTitle">License/Rights</div>
-      <div class="foldContent" style="display: none;">
-        <%= render :partial => "workflows/license_form" %>
-      </div>
-    </div>
+    <%= render :partial => "workflows/license_form" %>
   <% end %>
 
   <h3>Edit Workflow</h3>

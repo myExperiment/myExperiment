@@ -42,7 +42,7 @@ class CreateWorkflows < ActiveRecord::Migration
       
       t.column :license, :string, 
                :limit => 10, :null => false, 
-               :default => "by-nd"
+               :default => "by-sa"
     end
     
     Workflow.create_versioned_table

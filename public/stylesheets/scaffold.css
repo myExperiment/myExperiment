@@ -691,6 +691,11 @@ table tr td.details
   padding: 0.8em;
 }
 
+.foldPlaintext
+{
+  font-weight: normal;
+}
+
 .foldImage 
 {
   text-align: center;
