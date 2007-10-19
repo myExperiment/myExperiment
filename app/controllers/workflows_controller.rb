@@ -201,6 +201,12 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       if @workflow.update_attributes(params[:workflow])
+        if params[:workflow][:tag_list]
+          @workflow.user_id = current_user
+          @workflow.tag_list = params[:workflow][:tag_list]
+          @workflow.update_tags
+        end
+        
         # bug fix to not save 'default' workflow unless policy_id is selected
         @workflow.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
         
