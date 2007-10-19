@@ -1,0 +1,21 @@
+<p class="info_text">This section allows you to specify the <b>rights</b> that people have when they download and use this Workflow, by setting the license.</p>
+
+<p>
+  <b>What license do you want people to adhere to if they download and use this Workflow?</b><br />
+</p>
+
+<div style="padding: 1em; border: 1px dotted #999999; text-align: center; width: 500px; margin-left: auto; margin-right: auto;">
+  <p><%= image_tag "sc.logo.png", :alt => "Science Commons" %></p>
+    
+  <p>Below you can configure what rights people will have with this Workflow, based on the <%= link_to "Science Commons", "http://sciencecommons.org/resources/faq/sciencecommons/" %> licenses. Sharing Workflows and letting others build upon them is a useful contribution and is highly recommended.</p>
+</div>
+  
+<p>When someone downloads this Workflow, are they allowed to build upon it (such as extend, reuse, repurpose and so on)?</p>
+
+<p><%= radio_button :workflow, :license, "by-sa" %> Yes, as long as they <b>give the author(s) credit (attribution)</b> and they also <b>share</b> the resulting work <b>under the same conditions</b>.</p>
+
+<p><%= radio_button :workflow, :license, "by" %> Yes, as long as they <b>give the author(s) credit (attribution)</b>.</p>
+
+<p><%= radio_button :workflow, :license, "by-nd" %> No. They may only use the Workflow for reference.</p>
+
+<p><small>Nothing in these licenses impairs or restricts the author's moral rights.</small></p>

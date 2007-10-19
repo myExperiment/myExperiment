@@ -1,0 +1,99 @@
+    <%= hidden_field :workflow, :tag_list %>
+    
+      <p class="info_text">This section allows you to add tags to <b>describe</b> this Workflow.</p>
+      
+      <p>
+        <b>Tags:</b><br />
+        <p>
+          <div id="tag_list" style="margin: 5px;"><% @workflow.taggings.each_index do |i| %><%=h @workflow.taggings[i].tag.name %><% unless i.to_i == @workflow.taggings.length.to_i - 1 %>, <% end %><% end %></div>
+        </p>
+      </p>
+      
+      <br />
+      
+      <script type="text/javascript">
+        function trim(tag) {
+          var length = tag.length;
+          
+          var start = 0;
+          for (var i = 0; i < length; i++) {
+            var char = tag.charAt(i);
+            
+            if (char == ' ') {
+              // do nothing!
+            } else {
+              start = i;
+              break;
+            }
+          }
+          
+          var end = 0;
+          for (var i = length - 1; i > 0; i--) {
+            var char = tag.charAt(i);
+            
+            if (char == ' ') {
+              // do nothing!
+            } else {
+              end = i;
+              break;
+            }
+          }
+          
+          return tag.substring(start, end + 1);
+        }
+      
+        function contains(tag) {
+          var array = $("tag_list").innerHTML.split(",");
+        
+          for (var i = 0; i < array.length; i++) {
+            var next = trim(array[i]);
+            
+            if (next == tag) {
+              return true;
+            }
+          }
+          
+          return false;
+        }
+      
+        function addTag(tag) {
+          if (contains(tag)) {
+            return;
+          }
+        
+          if (tag == "") {
+            return;
+          }
+        
+          if ($("workflow_tag_list").value == "") {
+            $("tag_list").innerHTML = tag;
+            $("workflow_tag_list").value = "\"" + tag + "\"";
+          } else {
+            $("tag_list").innerHTML = $("tag_list").innerHTML + ", " + tag;
+            $("workflow_tag_list").value = $("workflow_tag_list").value + ", \"" + tag + "\"";
+          }
+        }
+      </script>
+      
+      <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
+        <p>Add one or more tags manually (seperated by commas; click on 'Add' to add to the list):</p>
+        
+        <form>
+          <input id="new_tag" type="text" size="75"> <a onclick="addTag(trim($('new_tag').value)); $('new_tag').value = ''; return false;">Add</a>
+        </form>
+      </div>
+      
+      <br />
+      
+      <% unless current_user.taggings.empty? %>
+      <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
+        <p>Add from your existing tags in myExperiment (click on tag to add):</p>
+        
+        <% current_user.taggings.each_index do |i| %>
+          <a onclick="addTag('<%=h (tag = current_user.taggings[i].tag.name) %>'); return false;"><%=h tag %></a>
+          <% unless i.to_i == current_user.taggings.length.to_i - 1 %> | <% end %>
+        <% end %>
+      </div>
+      
+      <br />
+      <% end %>

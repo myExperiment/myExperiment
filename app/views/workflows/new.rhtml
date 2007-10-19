@@ -3,40 +3,35 @@
 <%= error_messages_for :workflow %>
 
 <% form_tag({:action => :create}, :multipart => true) do %>
+  <p>
+    <b>Workflow File:</b> <%= file_field :workflow, :scufl %>
+  </p>
+  
+  <br />
+
+  <div class="fold">
+    <div class="foldTitle">Tags</div>
+    <div class="foldContent" style="display: none;">
+      <%= render :partial => "workflows/tags_form" %>
+    </div>
+  </div>
+
   <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user } %>
 
   <%= render :partial => "policies/listform", :locals => { :contribution => @workflow.contribution, :user => current_user } %>
   
   <div class="fold">
-    <div class="foldTitle">Science Commons</div>
+    <div class="foldTitle">License/Rights</div>
     <div class="foldContent" style="display: none;">
-      <p><%= image_tag "sc.logo.png", :alt => "Science Commons" %></p>
-      <p>You can also configure what rights you will give to people with your workflow. Sharing your workflows and letting others build upon them is a useful contribution.</p>
-      <p>When someone downloads this workflow, do you want to allow them to be able to build upon it?</p>
-      <p><%= radio_button :workflow, :license, "by-sa" %> Yes, as long as they <strong>give me credit (attribution)</strong> and they also <strong>share</strong> their workflow <strong>under the same conditions</strong>.</p>
-      <p><%= radio_button :workflow, :license, "by" %> Yes, as long as they <strong>give me credit (attribution)</strong>.</p>
-      <p><%= radio_button :workflow, :license, "by-nd" %> No. They may only use the workflow for reference.</p>
-      <p><small>Nothing in these licenses impairs or restricts the author's moral rights.</small></p>
+      <%= render :partial => "workflows/license_form" %>
     </div>
   </div>
   
-  <h3>Workflow File and Metadata</h3>
-  
-  <p>
-    <b>Workflow file</b><br />
-    <%= file_field :workflow, :scufl %>
-  </p>
-  
-  <p>
-    <b>Tags (comma separated)</b><br />
-    <%= text_field :workflow, :tag_list %>
-  </p>
-  
   <p class="info_text">
-	Note: You are responsible for any content that you upload. You may remove your content at any time. This is a trial service and we do not guarantee to keep the content available on the site for any particular duration. We may make copies for operational purposes. Please contact us for further information about Terms and Conditions.
+    <b>Note:</b> You are responsible for any content that you upload. You may remove your content at any time. This is a trial service and we do not guarantee to keep the content available on the site for any particular duration. We may make copies for operational purposes. Please contact us for further information about Terms and Conditions.
   </p>
   
   <p>
-    <%= submit_tag "Upload" %>
+    <%= submit_tag "Upload and Save" %>
   </p>
 <% end %>
