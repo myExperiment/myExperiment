@@ -2,66 +2,67 @@
 
 <h1>Register for myExperiment</h1>
 
-<h3>Register with Username and Password</h3>
 
 <% form_for(:user, :url => users_path) do |f| %>
-  <fieldset>
-    <legend>Username and Password</legend>
-    
-    <p class="info_text">
-      Choose a username which is at least 3 characters long (don't use any special symbols other than "_").
-	</p>
-	
-	<p class="info_text">
-	  Note that the display name that other people will see can be different to your username and can be changed by editing your account details.
-	</p>
-	
-	<p class="info_text">
-	  Your password must be at least 4 characters long and is case sensitive.
-    </p>
-  
-    <p>
-      <b>Username</b><br />
-      <%= f.text_field :username %>
-    </p>
-  
-    <p>
-      <b>Password</b><br />
-      <%= f.password_field :password %>
-    </p>
-  
-    <p>
-      <b>Confirm Password</b><br />
-      <%= f.password_field :password_confirmation %>
-    </p>
-
-    <p>
-      <%= submit_tag "Create" %>
-    </p>
-  </fieldset>
+  	<div class="fold">
+  		<div class="foldTitle">
+            Register with Username and Password
+        </div>
+        <div class="foldContent" style="display: none;">
+			<p class="info_text">
+			  Choose a username which is at least 3 characters long (don't use any special symbols other than "_").
+			  <br/>
+			  <br/>
+			  Note that the display name that other people will see can be different to your username and can be changed by editing your account details.
+			  <br/>
+			  <br/>
+			  Your password must be at least 4 characters long and is case sensitive.
+			</p>
+			
+			<p>
+			  <b>Username</b><br />
+			  <%= f.text_field :username %>
+			</p>
+			
+			<p>
+			  <b>Password</b><br />
+			  <%= f.password_field :password %>
+			</p>
+			
+			<p>
+			  <b>Confirm Password</b><br />
+			  <%= f.password_field :password_confirmation %>
+			</p>
+			
+			<p>
+			  <%= submit_tag "Create" %>
+			</p>
+		</div>
+  	</div>
 <% end %>
 
-<br/>
-
-<h3>Register with OpenID</h3>
+<center><span style="font-size: 1.3em; font-weight: bold;">OR</span></center>
 
 <% form_tag session_path do %>
-  <fieldset>
-    <legend>OpenID Authentication details:</legend>
-    
-    <p class="info_text">
-		OpenID is a distributed identity system which gives you single sign-on anywhere that OpenID is supported. If you already have an OpenID you can enter it here and your myExperiment account will automatically be created (note that if you have an AOL or AIM account, or a LiveJournal or Wordpress blog, then you already have an OpenID).
-	</p>
-    
-    <p><b>Don't have an OpenID? Get one FREE from <%= link_to 'myOpenID', "https://www.myopenid.com/" %> or <%= link_to 'other providers', "http://openiddirectory.com/openid-providers-c-1.html" %>.</b></p>
-    
-    <p>
-      <b>OpenID</b><br/>
-      <%= text_field_tag 'openid_url' %>
-    </p>
-    
-    <p>
-      <%= submit_tag 'Create with OpenID', :disable_with => "Verifying&hellip;" %>
-    </p>
-  </fieldset>
+	<div class="fold" style="margin-top: 3em;">
+  		<div class="foldTitle">
+            Register with OpenID
+        </div>
+        <div class="foldContent" style="display: none;">
+			<p class="info_text">
+				OpenID is a distributed identity system which gives you single sign-on anywhere that OpenID is supported. If you already have an OpenID you can enter it here and your myExperiment account will automatically be created (note that if you have an AOL or AIM account, or a LiveJournal or Wordpress blog, then you already have an OpenID).
+			</p>
+			
+			<p><b>Don't have an OpenID? Get one FREE from <%= link_to 'myOpenID', "https://www.myopenid.com/" %> or <%= link_to 'other providers', "http://openiddirectory.com/openid-providers-c-1.html" %>.</b></p>
+			
+			<p>
+				<strong>OpenID</strong><br/>
+				<%= text_field_tag 'openid_url', nil, :size => 35 %>
+			</p>
+			
+			<p>
+				<%= submit_tag 'Create with OpenID', :disable_with => "Verifying&hellip;" %>
+			</p>
+		</div>
+	</div>
 <% end %>
