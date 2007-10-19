@@ -1,15 +1,5 @@
-<h3>Details</h3>
+<h1>Tags Results</h1>
 
-<p>
-  <b>Name:</b>
-  <%=h @tag.name %>
-</p>
+<h3>Items tagged with "<%=h @tag.name %>" (<%= @tag.taggings_count %>)</h3>
 
-<p>
-  <b>Taggings count:</b>
-  <%= @tag.taggings_count %>
-</p>
-
-<h3>Contributions tagged with this</h3>
-
-<%= render :partial => "contributions/list", :locals => { :collection => @tagged_with } %>
+<%= render :partial => "contributions/table", :locals => { :collection => @tagged_with } %>

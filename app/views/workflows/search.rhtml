@@ -1,10 +1,6 @@
-<h3>Search Results</h3>
+<h1>Search Results</h1>
 
-<h1><%= pluralize(@workflows.length, "Workflow") %> found</h1>
-
-<p>
-  <b>by any <%= params["contributor_type"] || "contributor" %> <%= params["contributor_id"] ? "with ID #{params["contributor_id"]}" : "" %> <%= @query ? "using the query: \"#{@query}\"" : "" %></b>
-</p>
+<h3><%= pluralize(@workflows.length, "Workflow") %> found for <%= @query ? "\"#{@query}\"" : "" %></h3>
 
 <%= render :partial => "workflows/table", :locals => { :collection => @workflows } %>
 
