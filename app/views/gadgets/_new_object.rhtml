@@ -42,10 +42,8 @@
             <option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
             <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>
             <option value="Network" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Network</option>
-            <% if logged_in? %>
-              <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>Picture</option>
-              <option value="Policy" <%= "selected" if ["policy"].include? controller.controller_name.to_s %>>Policy</option>
-            <% end %>
+            <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>Picture</option>
+            <option value="Policy" <%= "selected" if ["policies", "policy_wizard"].include? controller.controller_name.to_s %>>Policy</option>
             <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Workflow</option>
           </select>
           
