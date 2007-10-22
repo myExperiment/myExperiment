@@ -29,7 +29,7 @@
 
   <div class="header">
     <p>
-      New / Upload...
+      New/Upload
     </p>
   </div>
   
@@ -46,7 +46,6 @@
             <option value="Policy" <%= "selected" if ["policies", "policy_wizard"].include? controller.controller_name.to_s %>>Policy</option>
             <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Workflow</option>
           </select>
-          
           <%= submit_tag "GO" %>
         </p>
       </form>

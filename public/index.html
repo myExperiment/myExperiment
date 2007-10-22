@@ -1,26 +1,30 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html" />
     <title>myExperiment - index</title>
     <link rel="shortcut icon" href="http://www.semanticgrid.org/wallace/images/favicon.png" />
-    <link href="stylesheets/scaffold.css" media="screen" rel="Stylesheet" type="text/css" />
+    <link href="stylesheets/reset-fonts-grids.css" media="screen" rel="Stylesheet" type="text/css" />
+	<link href="stylesheets/base-min.css" media="screen" rel="Stylesheet" type="text/css" />
+	<link href="stylesheets/scaffold.css" media="screen" rel="Stylesheet" type="text/css" />
+	<link href="stylesheets/styles.css" media="screen" rel="Stylesheet" type="text/css" />
+	<link href="stylesheets/homepage.css" media="screen" rel="Stylesheet" type="text/css" />
 </head>
 <body>
-
-            <div id="myexp_header" class="home_header">
-                <p class="logo">
-                    <img alt="Logo" src="images/logo.png" />
-                </p>
-                <p class="heading">
-                    myExperiment makes it really easy to find, use and share scientific workflows and
-                    other research objects, and to build communities.
-                </p>
-            </div>
+	<div id="doc2">
+		<div id="hd" class="myexp_home_header">
+		    <p class="logo">
+		        <img alt="Logo" src="images/logo.png" />
+		    </p>
+		    <p class="heading">
+		        myExperiment makes it really easy to find, use and share scientific workflows and
+		        other research objects, and to build communities.
+		    </p>
+		</div>
             
-          <div id="myexp_middle">
+          <div id="bd">
             <div id="myexp_home_content">
-                <div class="header">
+                <div class="heading">
                     Quick Start:
                 </div>
                 <div style="text-align: center; padding: 0;">
@@ -52,7 +56,7 @@
                                     </table>
                                 </td>
                                 <td style="padding: 1em;" valign="middle">
-                                    <span style="font-size: 1.5em; vertical-align: middle; font-weight: bolder;">OR</span></td>
+                                    <span style="font-size: 197%; vertical-align: middle; font-weight: bolder;">OR</span></td>
                                 <td class="myexp_home_content_box">
                                     <table border="0" style="border-spacing: 8px;">
                                         <tbody>
@@ -69,29 +73,31 @@
                                                     <div id="myexp_home_logonbox">
                                                         <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4">
                                                         </b></b>
-                                                        <table class="login" width="100px" style="border-spacing: 0;">
+                                                        <table class="login">
                                                             <tbody>
                                                                 <tr>
                                                                     <td>
                                                                         <form action="/session" method="post">
-                                                                            <label for="username">
-                                                                                Username:</label>
-                                                                            <input id="session[username]" name="session[username]" type="text" />
-                                                                            <label for="password">
-                                                                                Password:</label>
-                                                                            <input id="session[password]" name="session[password]" type="password" />
-                                                                            <label for="remember_me">
-                                                                                Remember me:</label>
-                                                                            <input id="session[remember_me]" name="session[remember_me]" value="1" type="checkbox" />
-                                                                            <br />
-                                                                            <br />
-                                                                            <label for="openid_url">
-                                                                                Or use OpenID:</label>
-                                                                            <input id="openid_url" name="openid_url" type="text" />
                                                                             <p>
+																				<label for="username">
+	                                                                                Username:</label>
+	                                                                            <input id="session[username]" name="session[username]" type="text" />
+	                                                                            <label for="password">
+	                                                                                Password:</label>
+	                                                                            <input id="session[password]" name="session[password]" type="password" />
+	                                                                            <label for="remember_me">
+	                                                                                Remember me:</label>
+	                                                                            <input id="session[remember_me]" name="session[remember_me]" value="1" type="checkbox" />
                                                                             </p>
-                                                                            <input name="commit" onclick="this.disabled=true;this.value='Signing in';this.form.submit();"
-                                                                                value="Sign in" type="submit" />
+																			<p>
+	                                                                            <label for="openid_url">
+	                                                                                Or use OpenID:</label>
+	                                                                            <input id="openid_url" name="openid_url" type="text" />
+                                                                            </p>
+																			<p>
+	                                                                            <input name="commit" onclick="this.disabled=true;this.value='Signing in';this.form.submit();"
+	                                                                                value="Sign In" type="submit" />
+																			</p>
                                                                         </form>
                                                                     </td>
                                                                 </tr>
@@ -117,21 +123,21 @@
                     <tbody>
                         <tr valign="top">
                             <td style="text-align: left;">
-                                <div class="header">
+                                <div class="heading">
                                     About:
                                 </div>
                                 <div class="myexp_home_content_box" style="padding: 0;">
-                                    <table border="0" width="100%" style="border-spacing: 8px;">
+                                    <table border="0" style="border-spacing: 16px;">
                                         <tbody>
                                             <tr valign="top">
-                                                <td style="text-align: center; padding: 1em 0.5em;">
+                                                <td style="text-align: center; padding: 2em 1em 2em 2em;">
                                                     <a href="http://wiki.myexperiment.org/">
                                                         <img src="images/my.png" alt="About myExperiment" /></a>
                                                 </td>
-                                                <td style="text-align: left; padding: 0 1em;">
+                                                <td style="text-align: left; padding: 1.5em 1em;">
                                                     <p>
                                                         The myExperiment Virtual Research Environment enables you and your colleagues to
-                                                        share digital items associated with your research &mdash in particular it enables
+                                                        share digital items associated with your research &mdash; in particular it enables
                                                         you to share and execute scientific workflows.</p>
                                                     <p>
                                                         You can use myexperiment.org to <a href="/workflows">
@@ -148,16 +154,15 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                </div>
-                            </td>
+                                </div></td>
                             <td>
                                 &nbsp;&nbsp;&nbsp;</td>
                             <td style="text-align: left;">
-                                <div class="header">
+                                <div class="heading">
                                     News:
                                 </div>
                                 <div style="text-align: left;">
-                                    <ul style="vertical-align: top;">
+                                    <ul id="myexp_home_news">
                                         <li>myExperiment trials commence October 2007</li>
                                         <li>myExperiment featured in Web 2.0 workshop at the Open Grid Forum</li>
                                         <li>Initial integration with Triana completed</li>
@@ -170,6 +175,11 @@
                 <br />
                 <br />
             </div>
+			
+			<div id="ft">
+				<!-- insert footer here -->
+			</div>
+		</div>
 
     <script language="javascript">document.getElementById('session[username]').focus();</script>
 

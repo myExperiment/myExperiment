@@ -29,34 +29,7 @@
   <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 
   <div class="header">
-    <p>Asset Manager</p>
-  
-    <div id="new_object_form">
-      <form>
-        <select style="width: 90%; text-align:center; font-weight: bold;" id="new_object_type">
-          <option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
-          <option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
-          <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>
-          <option value="Network" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Network</option>
-          <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>Picture</option>
-          <option value="Policy" <%= "selected" if ["policies", "policy_wizard"].include? controller.controller_name.to_s %>>Policy</option>
-          <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Workflow</option>
-        </select>
-      </form>
-      
-      <ul class="sectionIcons">
-        <li><a onclick="redirectToNew(); return false;"><span class="icon"><img alt="New" src="/images/manhattan_studio/add_16.png" /></span> New / Upload</a></li>
-      </ul>
-      
-      <p>
-        <small>
-          <%= pluralize(current_user.friends.length, "friend") %>, <%= pluralize(current_user.networks_owned.length + current_user.networks.length, "network") %>, 
-          <% filter_contributables(current_user.contributions).each do |klass,contributables| %>
-            <%= pluralize(contributables.length, (klass.to_s == "Blob" ? "File" : klass).downcase) %>, <% end %>
-          <%= pluralize(current_user.policies.length, "policy") %>
-        </small>
-      </p>
-    </div>
+    <p>My Stuff</p>
   </div>
     
   <div id="myexp_assetmanager_gadget_contents" class="contents">

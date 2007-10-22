@@ -1,0 +1,610 @@
+/* 
+   This stylesheet relies on base stylesheets from the
+   Yahoo UI library (http://developer.yahoo.com/yui/),
+   licensed under the BSD License 
+   
+   Note that for font-size, only use %ages according to: 
+   http://developer.yahoo.com/yui/fonts/#fontsize
+*/
+
+body {
+	background: #8e8e8e url('/images/body-bg.gif') repeat-y center;
+	/* Only need to define one font here because the 
+	   YUI Fonts CSS provides a degradation path
+	   (see: http://developer.yahoo.com/yui/fonts/) */
+	font-family: verdana;
+}
+
+p {
+	font-family: verdana;
+	padding: 0.2em 0;
+	line-height: 1.5em;
+	text-align: left;
+	margin-bottom: 0;
+}
+
+hr {
+	margin: 1em 0;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	font-family: verdana;
+}
+
+h1 {
+	text-align: center;
+	font-size: 131%;
+}
+
+h2 {
+	background-image: url('/images/header-bg.png');
+	background-position: top;
+	background-repeat: repeat-x;
+	background-color: #F5F5F5;
+	padding: 0.4em 0.6em;
+	border: 1px solid #999999;
+	font-size: 116%;
+}
+
+h3 {
+	background-color: transparent;
+	color: black;
+	font-size: 116%;
+}
+
+table {
+	margin: 0;
+}
+
+th, td {
+	text-align: center;
+	border: none;
+}
+
+pre {
+	background-color: #eee;
+	padding: 1em;
+	font-size: 85%;
+}
+
+a {
+	color: #000099;
+	text-decoration: none;
+	border-bottom: 1px dashed transparent;
+}
+
+a:hover {
+	color: red;
+	border-bottom: 1px dashed gray;
+}
+
+#myexp_logo {
+	margin: 1em 0 0 0.5em;
+}
+
+#myexp_searchbar {
+	height: 20px;
+	text-align: center;
+	background-image: url('/images/searchfade.png');
+	background-repeat: no-repeat;
+	background-position: top center;
+	padding: 10px 0;
+}
+
+#myexp_searchbar * {
+	vertical-align: middle;
+}
+
+#myexp_content {
+	padding-right: 1.5em;
+	padding-left: 0.5em;
+}
+
+#myexp_sidebar {
+	padding: 0 0.5em 1em 0.5em;
+	background-color: #456AAA;
+}
+
+#tag_clouds {
+	text-align: center;
+}
+
+#openid_url {
+	background: url(/images/openid.gif) no-repeat;
+	padding-left: 16px;
+}
+
+#hlist { /*width: 100%;*/
+	
+}
+
+#hlist li {
+	list-style: none;
+	float: left;
+	/*width: 145px;*/
+	margin: 3px;
+	display: inline;
+	/*text-align: center;*/
+}
+
+/* begin css tabs */
+.tabnav {
+	text-align: center;
+	font-weight: bold;
+	font-size: 123.1%;
+	padding: 6px 0;
+	margin-left: 0;
+	margin-bottom: 0;
+	margin-top: 0;
+}
+
+.tabnav li {
+	list-style: none;
+	margin: 0;
+	display: inline;
+}
+
+.tabnav li a {
+	padding: 6px 12px;
+	margin-left: 3px;
+	border: 1px solid #999999;
+	border-bottom: 1px solid transparent;
+	background-color: #eee;
+	text-decoration: none;
+}
+
+.tabnav li a:link {
+	color: #333333;
+}
+
+.tabnav li a:visited {
+	color: #333333;
+}
+
+.tabnav li a:hover {
+	color: #FFFFFF;
+	background: #317eff;
+}
+
+.tabnav li#selected_tabnav a {
+	background-color: #317eff;
+	border-bottom: 1px solid transparent;
+	color: #FFFFFF;
+}
+
+/* end css tabs */
+
+/* begin css breadcrumbs */
+
+#myexp_breadcrumbs_bar {
+	font-weight: bold !important;
+	font-size: 85%;
+	text-decoration: none;
+	padding: 0.7em 0.5em;
+	background-color: #eee;
+	border-top: 2px solid ffffff;
+}
+
+#myexp_breadcrumbs_bar ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+#myexp_breadcrumbs_bar li {
+	display: inline;
+}
+
+#myexp_breadcrumbs_bar a {
+	color: #993333;
+}
+
+#myexp_breadcrumbs_bar a:hover {
+	color: red;
+}
+
+/* end css breadcrumbs */ 
+
+/* begin css tooltips/boxovers */
+
+.boxoverTooltipHeader {
+	display: none;
+	border: 0;
+	height: 0;
+}
+
+.boxoverTooltipBody {
+	border: solid 1px Gray;
+	color: #000000;
+	background-color: #FFFF66;
+	font-size: 85%;
+	font-weight: normal;
+	padding: 0.4em 0.6em;
+	max-width: 500px;
+}
+
+.boxoverInfoHeader
+{
+	display: none;
+	border: 0;
+	height: 0;
+}
+
+.boxoverInfoBody
+{
+	border: solid 1px Gray;
+	color: #333333; 
+	padding: 0.4em; 
+	background-color: #ebf3ff; 
+	font-size: 85%;
+	text-align: left;
+	max-width: 400px;
+}
+
+/* end css tooltips/boxovers */
+
+.info_text {
+	font-size: 85%;
+	background-color: #FFFF99;
+	margin: 1.5em;
+	padding: 1em;
+	border: 1px dotted #999999;
+	font-style: normal;
+}
+
+/* begin css folds */
+
+.fold {
+	margin-bottom: 1.5em;
+}
+
+.foldTitle {
+	background-image: url('/images/header-bg.png');
+	background-position: top;
+	background-repeat: repeat-x;
+	background-color: #F5F5F5;
+	color: #333333;
+	border-collapse: collapse;
+	border: 1px solid #999999;
+	border-bottom: 2px solid #aaa;
+}
+
+.foldTitle hr {
+	margin: 0.4em 0;
+}
+
+.foldText {
+	font-weight: bold;
+	text-align: left;
+	padding: 0.6em;
+}
+
+.foldPlaintext {
+	font-weight: normal;
+	font-size: 85%;
+}
+
+.foldImage {
+	text-align: center;
+	padding: 0 0.5em;
+	vertical-align: middle;
+	width: 20px;
+}
+
+.foldContent {
+	border: 1px solid #999999;
+	border-top: 1px solid transparent;
+	padding: 0 1em;
+	margin-left: -1px;
+	*margin-left: 0;
+}
+
+/* end css folds */
+
+/* begin css tabs */
+
+.tabsContainer {
+	padding: 0;
+	margin: 0;
+	border: 0;
+	position: relative;
+	top: 1px;
+}
+
+.tabsContainer IMG {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	vertical-align: middle;
+}
+
+.tabsContainer TABLE {
+	height: 24px;
+	border-spacing: 0;
+}
+
+.tabsContainer TABLE TR TD {
+	padding: 0;
+	vertical-align: middle;
+}
+
+.tabSelected {
+	border-top: 1px solid #909090;
+	border-bottom: 1px solid white;
+	padding: 0;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	vertical-align: middle;
+	white-space: nowrap;
+	pointer: pointer;
+	cursor: pointer;
+}
+
+.tabUnselected {
+	border-top: 1px solid #909090;
+	border-bottom: 1px solid #909090;
+	color: #404040;
+	background: #d8d8d8;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	vertical-align: middle;
+	white-space: nowrap;
+	pointer: pointer;
+	cursor: pointer;
+}
+
+.tabSelIMG {
+	border-bottom: 1px solid white;
+}
+
+.tabUnselIMG {
+	border-bottom: 1px solid #909090;
+}
+
+.tabTitle {
+	background: #222;
+	color: white;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+
+.tabContent {
+	border: 1px solid #909090;
+	padding: 0.5em;
+	margin-bottom: 1.0em;
+	background: white;
+}
+
+/* end css tabs */
+
+/* begin css newsfeed */
+
+.news_feed_div p.title {
+	font-weight: bold;
+	width: 100%;
+	text-align: left;
+	border-bottom: 1px dotted #999999;
+}
+
+.news_feed_div ul.news_feed_day {
+	padding-left: 2em;
+	list-style-type: none;
+	margin-bottom: 1em;
+	line-height: 1.5em;
+}
+
+.news_feed_div ul.news_feed_day li.news_feed_item {
+	
+}
+
+.news_feed_div ul.news_feed_day li.news_feed_item a,.news_feed_div ul.news_feed_day li.news_feed_item a:visited {
+	color: #000099;
+}
+
+/* end css newsfeed */ 
+
+.fieldWithErrors {
+	padding: 2px;
+	background-color: red;
+	display: table;
+}
+
+#errorExplanation {
+	width: 400px;
+	border: 2px solid red;
+	padding: 7px;
+	padding-bottom: 12px;
+	margin-bottom: 20px;
+	background-color: #f0f0f0;
+}
+
+#errorExplanation h2 {
+	text-align: left;
+	font-weight: bold;
+	padding: 5px 5px 5px 15px;
+	font-size: 93%;
+	margin: -7px;
+	background-color: #c00;
+	color: #fff;
+}
+
+#errorExplanation p {
+	color: #333;
+	margin-bottom: 0;
+	padding: 5px;
+}
+
+#errorExplanation ul li {
+	font-size: 93%;
+	list-style: square;
+}
+
+div.uploadStatus {
+	margin: 5px;
+}
+
+div.progressBar {
+	margin: 5px;
+}
+
+div.progressBar div.border {
+	background-color: #fff;
+	border: 1px solid gray;
+	width: 100%;
+}
+
+div.progressBar div.background {
+	background-color: #333;
+	height: 18px;
+	width: 0%;
+}
+
+table.alt_table {
+	width: 100%;
+}
+
+table.alt_table tr.odd_row td {
+	background-color: #f5f5f5;
+}
+
+table.alt_table tr.even_row td {
+	background-color: #eeeeee;
+}
+
+table.alt_table tr td {
+	padding: 5px 5px 5px 5px;
+}
+
+/*
+table.alt_table tr td.actions
+{
+  width: 100px;
+  text-align: left;
+}
+*/
+
+table.alt_table tr td.contributable {
+	margin: 5px 0px 5px 0px;
+	padding: 1em;
+}
+
+table.alt_table tr.even_row td.contributable table.contributable:hover,table.alt_table tr.odd_row td.contributable table.contributable:hover {
+	border: 1px dotted #999999;
+}
+
+table.contributable {
+	border: 1px dotted #999999;
+	padding: 1em;
+	margin-left: 5px;
+	margin-bottom: 10px;
+}
+
+table.contributable:hover {
+	border: 1px dotted #999999;
+}
+
+/* http://www.mis-algoritmos.com/wp-content/uploads/pagstyle.php?q=manu */
+.pagination {
+	padding: 3px;
+	margin: 3px;
+	text-align: center;
+}
+
+.pagination ul {
+	list-style-type: none;
+}
+
+.pagination ul li {
+	display: inline;
+}
+
+.pagination a {
+	padding: 2px 5px 2px 5px;
+	margin: 2px;
+	border: 1px solid #317eff;
+	text-decoration: none; /* no underline */
+	color: #179032;
+}
+
+.pagination a:hover,.pagination a:active {
+	border: 1px solid #CE0434;
+	color: #179032;
+}
+
+.pagination .currentpage {
+	padding: 2px 5px 2px 5px;
+	margin: 2px;
+	border: 1px solid #179032;
+	font-weight: bold;
+	background-color: #179032;
+	color: #FFF;
+}
+
+.pagination .disabledpage {
+	padding: 2px 5px 2px 5px;
+	margin: 2px;
+	border: 1px solid #EEE;
+	color: #DDD;
+}
+
+.network_banner { /*width: 640px;*/
+	padding-left: 10px;
+	padding-right: 10px;
+	border: 1px solid transparent;
+}
+
+.network_banner:hover { /*border: 1px solid black;*/
+	
+}
+
+table tr td.details {
+	text-align: left;
+}
+
+.sectionIcons {
+	margin-left: 0px;
+	padding-left: 3px;
+}
+
+.sectionIcons LI {
+	margin: -3px;
+	display: inline;
+}
+
+.sectionIcons LI:hover {
+	margin: -3px;
+}
+
+.sectionIcons LI A {
+	padding: 4px;
+	margin: 0 1px;
+	border: 1px solid transparent;
+	text-decoration: none;
+}
+
+.sectionIcons LI A:hover {
+	border: 1px solid blue;
+	padding: 4px;
+	margin: 1px;
+	color: red;
+	text-decoration: none;
+	background-color: #b1ceff;
+}
+
+.icon A {
+	white-space: nowrap;
+	padding-right: 2px;
+	vertical-align: middle;
+}
+
+.icon IMG {
+	vertical-align: middle;
+	padding: 2px;
+}
+
+.user_context_panel {
+	padding: 1em;
+	border: 1px dotted #999999;
+	margin: 1.5em 0;
+}
