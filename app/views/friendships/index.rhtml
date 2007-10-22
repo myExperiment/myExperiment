@@ -3,7 +3,7 @@
   <% if my_page? @user.id %>
     
     <% unless @user.friendships_pending.empty? %>
-      <h3>Pending a Response (from me)</h3>
+      <h2>You need to respond to</h2>
       
       <p>
         What does "<b>Friendships (<%= @user.friendships_pending.length %>)</b>" mean?<br />
@@ -16,7 +16,7 @@
     <% end %>
     
     <% unless @user.friendships_requested.empty? %>
-      <h3>Waiting for response (from friend)</h3>
+      <h2>Waiting for response (from friend)</h2>
       
       <p>
         Requests you've sent which have not been accepted yet are listed here. <br />
@@ -29,7 +29,7 @@
     <% end %>
     
     <% unless @user.friendships_accepted.empty? %>
-      <h3>Accepted Requests</h3>
+      <h2>Accepted Requests</h2>
       
       <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_accepted, :friend => false } %>
 	  
@@ -37,7 +37,7 @@
     <% end %>
     
     <% unless @user.friends.empty? %>
-      <h3>All Friends</h3>
+      <h2>All Friends</h2>
       
       <p>
         Friends can be given special permissions in your access control <%= link_to "policies", policies_path %> as they belong to the <b>protected</b> group.
@@ -48,7 +48,7 @@
 
   <% else %>
   
-    <h3><%=name @user %>'s Friends</h3>
+    <h2><%=name @user %>'s Friends</h2>
   
     <% unless @user.friends.empty? %>
       <%= render :partial => "friendships/friends", :locals => { :collection => @user.friends } %>
@@ -58,7 +58,7 @@
   
 <% else %>
 
-  <h3>All Friendships</h3>
+  <h2>All Friendships</h2>
 
   <%= render :partial => "layouts/paginate", :locals => { :collection => @friendships } %>
 

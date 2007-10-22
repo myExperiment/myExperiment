@@ -1,11 +1,11 @@
 <% unless (most_v = Contribution.most_viewed(3, type)).empty? %>
-  <h3>Most Viewed</h3>
+  <h2>Most Viewed</h2>
 
   <%= render :partial => "contributions/list", :locals => { :collection => most_v } %>
 <% end %>
 
 <% unless (most_d = Contribution.most_downloaded(3, type)).empty? %>
-  <h3>Most Downloaded</h3>
+  <h2>Most Downloaded</h2>
 
   <%= render :partial => "contributions/list", :locals => { :collection => most_d } %>
 <% end %>

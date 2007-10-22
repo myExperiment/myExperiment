@@ -1,11 +1,11 @@
-<h3>All Citations</h3>
+<h2>All Citations</h2>
 
 <%= render :partial => "citations/table", :locals => { :collection => @citations, :workflow => @workflow } %>
 
 <br />
 
 <% unless @citations.empty? %>
-  <h3>Preview</h3>
+  <h2>Preview</h2>
 
   <% @citations.each_index do |i| %>
     <p>

@@ -3,7 +3,7 @@
   <% if my_page? @user.id %>
 
     <% unless @user.memberships_pending.empty? %>
-      <h3>Requests for my networks</h3>
+      <h2>Requests for my Networks</h2>
     
       <p>
         What does "<b>Memberships (<%= @user.memberships_pending.length %>)</b>" mean?<br />
@@ -16,7 +16,7 @@
     <% end %>
     
     <% unless @user.memberships_requested.empty? %>
-      <h3>Waiting for response (from network administrator)</h3>
+      <h2>Waiting for response (from Network administrator)</h2>
       
       <p>
         Requests you've sent which have not been accepted yet are listed here. <br />
@@ -27,14 +27,14 @@
     <% end %>
     
     <% unless @user.networks_owned.empty? %>
-      <h3>Networks Administrated</h3>
+      <h2>Networks Administrated</h2>
       
       <p>You are an administrator of (and therefore a member of) the following networks:</p>
       
       <%= render :partial => "networks/table", :locals => { :collection => @user.networks_owned } %>
     <% end %>
     
-    <h3>Memberships</h3>
+    <h2>Memberships</h2>
   
     <p>
       You are a member of the following networks. You can share files and workflows with any of them.
@@ -44,7 +44,7 @@
   
   <% else %>
   
-    <h3>Memberships for <%=name @user.id %></h3>
+    <h2>Memberships for <%=name @user.id %></h2>
     
     <% unless @user.memberships.empty? %>
       <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships, :user => false } %>
@@ -54,7 +54,7 @@
 
 <% else %>
 
-  <h3>Listing all memberships</h3>
+  <h2>Listing all memberships</h2>
 
   <%= render :partial => "layouts/paginate", :locals => { :collection => @memberships } %>
 

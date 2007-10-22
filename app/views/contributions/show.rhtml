@@ -3,7 +3,6 @@
 <div class="tabContainer">
   <div class="tabTitle">Details</div>
   <div class="tabContent">
-    <h3>Details</h3>
 
     <p>
       <b>Contributor:</b><br/>
@@ -49,9 +48,7 @@
 
 <div class="tabContainer">
   <div class="tabTitle">Statistics</div>
-  <div class="tabContent">
-    <h3>Statistics</h3>
-    
+  <div class="tabContent">    
     <%= render :partial => "contributions/statistics", :object => @contribution %>
   </div>
 </div>
@@ -60,8 +57,6 @@
   <div class="tabContainer">
     <div class="tabTitle">History</div>
     <div class="tabContent">
-      <h3>History</h3>
-
       <%= render :partial => "contributions/history", :object => @contribution %>
     </div>
   </div>

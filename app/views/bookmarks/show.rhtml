@@ -1,4 +1,4 @@
-<h3>Details</h3>
+<h2>Details</h2>
 
 <p>
   <b>Title:</b>
@@ -14,6 +14,6 @@
   <li><%= icon('destroy', bookmark_path(@bookmark), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove bookmark') %></li>
 </ul>
 
-<h3>Workflow</h3>
+<h2>Workflow</h2>
 
 <%= render :partial => "#{@bookmark.bookmarkable_type.pluralize.downcase}/#{@bookmark.bookmarkable_type.downcase}", :collection => [@bookmark.bookmarkable] %>

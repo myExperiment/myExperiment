@@ -1,8 +1,8 @@
-<h3>Recent Members</h3>
+<h2>Recent Members</h2>
 
 <%= render :partial => "users/hlist", :locals => { :collection => User.most_recent } %>
 
-<h3>All Users</h3>
+<h2>All Users</h2>
 
 <%= render :partial => "layouts/paginate", :locals => { :collection => @users } %>
 

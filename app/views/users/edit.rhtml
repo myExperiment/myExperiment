@@ -1,8 +1,8 @@
-<h3>Editing User</h3>
+<h1>Editing User</h1>
 
 <%= error_messages_for :user %>
 
-<h3>Name</h3>
+<h2>Name</h2>
 
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
   <p>
@@ -15,7 +15,7 @@
   </p>
 <% end %>
 
-<h3>Username & Password</h3>
+<h2>Username & Password</h2>
 
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
   <p>
@@ -38,6 +38,6 @@
   </p>
 <% end %>
 
-<h3>OpenID</h3>
+<h2>OpenID</h2>
 
 <%= render "openid/new" %>

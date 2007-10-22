@@ -1,4 +1,6 @@
-<h3><%=h @message.subject %></h3>
+<h1>View Message</h1>
+
+<h2><%=h @message.subject %></h2>
 
 <ul class="sectionIcons">
   <li><%= icon('reply', url_for(:controller => :messages, :action => :new, :reply_id => @message.id), nil, nil, 'Reply to this message') %></li>

@@ -2,7 +2,7 @@
   <li><%= icon('new', new_message_path, nil, nil, 'Compose new message') %></li>
 </ul>
 
-<h3>Inbox</h3>
+<h2>Inbox</h2>
 
 <%= render :partial => "layouts/paginate", :locals => { :collection => @messages } %>
 

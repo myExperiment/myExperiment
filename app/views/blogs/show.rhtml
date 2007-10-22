@@ -25,13 +25,13 @@
 <% end %>
 
 <% unless @blog.posts.empty? %>
-  <h3>Recent Posts</h3>
+  <h2>Recent Posts</h2>
 
   <%= render :partial => "blog_posts/post", :collection => @blog.posts %>
 <% end %>
 
 <% if logged_in? and @blog.authorized?("destroy", current_user) %>
-  <h3>History</h3>
+  <h2>History</h2>
 
   <%= render :partial => "contributions/history", :object => @blog.contribution %>
 <% end %>

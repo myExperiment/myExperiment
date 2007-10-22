@@ -1,4 +1,4 @@
-<h3>Editing Blog</h3>
+<h1>Editing Blog</h1>
 
 <%= error_messages_for :blog %>
 
@@ -9,7 +9,7 @@
     <%= render :partial => "policies/listform", :locals => { :contribution => @blog.contribution, :user => current_user } %>
   <% end %>
   
-  <h3>Details</h3>
+  <h2>Details</h2>
 
   <p>
     <b>Title</b><br />

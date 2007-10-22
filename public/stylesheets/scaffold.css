@@ -213,7 +213,7 @@ h1
 	text-align: center;
 }
 
-h3
+h2
 {
 	/* font-family:'Lucida Grande', 'Trebuchet MS', Arial, Helvetica, sans-serif; */
 	font-family: verdana, arial, helvetica, sans-serif;
@@ -228,7 +228,7 @@ h3
 	border-right: 1px solid #999999;
 }
 
-h4
+h3
 {
 	font-family: verdana, arial, helvetica, sans-serif;
 	font-size: 1.1em;
