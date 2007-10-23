@@ -10,13 +10,11 @@
       location.href = "<%= new_forum_path %>";
     } else if (klass == "Workflow") {
       location.href = "<%= new_workflow_path %>";
-    } else if (klass == "Network") {
+    } else if (klass == "Group") {
       location.href = "<%= new_network_path %>";
     <% if logged_in? %>
     } else if (klass == "Picture") {
       location.href = "<%= new_picture_path(current_user) %>";
-    } else if (klass == "Policy") {
-      location.href = "<%= policy_wizard_path %>";
     <% end %>
     } else {
       // do nothing!!
@@ -41,9 +39,8 @@
             <option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
             <option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
             <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>
-            <option value="Network" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Network</option>
+            <option value="Network" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
             <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>Picture</option>
-            <option value="Policy" <%= "selected" if ["policies", "policy_wizard"].include? controller.controller_name.to_s %>>Policy</option>
             <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Workflow</option>
           </select>
           <%= submit_tag "GO" %>
