@@ -73,36 +73,30 @@
                                                     <div id="myexp_home_logonbox">
                                                         <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4">
                                                         </b></b>
-                                                        <table class="login">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <form action="/session" method="post">
-                                                                            <p>
-																				<label for="username">
-	                                                                                Username:</label>
-	                                                                            <input id="session[username]" name="session[username]" type="text" />
-	                                                                            <label for="password">
-	                                                                                Password:</label>
-	                                                                            <input id="session[password]" name="session[password]" type="password" />
-	                                                                            <label for="remember_me">
-	                                                                                Remember me:</label>
-	                                                                            <input id="session[remember_me]" name="session[remember_me]" value="1" type="checkbox" />
-                                                                            </p>
-																			<p>
-	                                                                            <label for="openid_url">
-	                                                                                Or use OpenID:</label>
-	                                                                            <input id="openid_url" name="openid_url" type="text" />
-                                                                            </p>
-																			<p>
-	                                                                            <input name="commit" onclick="this.disabled=true;this.value='Signing in';this.form.submit();"
-	                                                                                value="Sign In" type="submit" />
-																			</p>
-                                                                        </form>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
+                                                        <div class="login">
+                                                            <form action="/session" method="post">
+                                                                <p>
+																	<label for="username">
+                                                                        Username:</label>
+                                                                    <input id="session[username]" name="session[username]" type="text" />
+                                                                    <label for="password">
+                                                                        Password:</label>
+                                                                    <input id="session[password]" name="session[password]" type="password" />
+                                                                    <label for="remember_me">
+                                                                        Remember me:</label>
+                                                                    <input id="session[remember_me]" name="session[remember_me]" value="1" type="checkbox" />
+                                                                </p>
+																<p>
+                                                                    <label for="openid_url">
+                                                                        Or use OpenID:</label>
+                                                                    <input id="openid_url" name="openid_url" type="text" />
+                                                                </p>
+																<p>
+                                                                    <input name="commit" onclick="this.disabled=true;this.value='Signing in';this.form.submit();"
+                                                                        value="Sign In" type="submit" />
+																</p>
+                                                            </form>
+                                                        </div>
                                                         <b class="xbottom"><b class="xb4"></b><b class="xb3"></b><b class="xb2"></b><b class="xb1">
                                                         </b></b>
                                                         <br />

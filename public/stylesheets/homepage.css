@@ -11,8 +11,9 @@
 
 .myexp_home_header p.heading {
 	text-align: center;
-	font-size: 153.9%;
+	font-size: 167%;
 	font-weight: normal;
+	margin-top: 0.5em;
 }
 
 #myexp_home_content {
@@ -43,33 +44,23 @@
 	text-align: center;
 }
 
-table.login {
+.login {
 	border-top: none;
 	border-bottom: none;
 	border-left: 1px solid #999999;
 	border-right: 1px solid #999999;
-	margin: 0;
-	border-collapse: collapse;
-	border-spacing: 0;
-	border-width: 1px;
-	margin-left: 1px;
-	*margin-left: 0;
-	width: 100px;
-}
-
-table.login p {
-	text-align: center;
-}
-
-table.login * {
-	vertical-align: middle;
-}
-
-table.login td {
-	border-width: 0;
 	background-color: #F5F5F5;
 	padding: 0.2em 0.6em;
 }
+
+.login p {
+	text-align: center;
+}
+
+.login * {
+	vertical-align: middle;
+}
+
 
 #myexp_home_logonbox .xtop,#myexp_home_logonbox .xbottom {
 	display: block;

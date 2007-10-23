@@ -57,6 +57,7 @@ h3 {
 
 table {
 	margin: 0;
+	border-collapse: separate;
 }
 
 th, td {
@@ -200,6 +201,10 @@ a:hover {
 	display: inline;
 }
 
+#myexp_breadcrumbs_bar li * {
+	vertical-align: middle;
+}
+
 #myexp_breadcrumbs_bar a {
 	color: #993333;
 }
@@ -269,7 +274,6 @@ a:hover {
 	background-repeat: repeat-x;
 	background-color: #F5F5F5;
 	color: #333333;
-	border-collapse: collapse;
 	border: 1px solid #999999;
 	border-bottom: 2px solid #aaa;
 	pointer: pointer;
@@ -303,8 +307,6 @@ a:hover {
 	border: 1px solid #999999;
 	border-top: 1px solid transparent;
 	padding: 1em;
-	margin-left: -1px;
-	*margin-left: 0;
 }
 
 /* end css folds */
@@ -351,8 +353,9 @@ a:hover {
 .tabUnselected {
 	border-top: 1px solid #909090;
 	border-bottom: 1px solid #909090;
-	color: #404040;
+	color: #333333;
 	background: #d8d8d8;
+	padding: 0;
 	padding-left: 0.5em;
 	padding-right: 0.5em;
 	vertical-align: middle;
@@ -370,14 +373,14 @@ a:hover {
 }
 
 .tabTitle {
-	background: #222;
-	color: white;
-	padding-left: 0.5em;
-	padding-right: 0.5em;
+	background: #f5f5f5;
+	border: 1px solid #999999;
+	color: #333333;
+	padding: 0.5em;
 }
 
 .tabContent {
-	border: 1px solid #909090;
+	border: 1px solid #999999;
 	padding: 0.5em;
 	margin-bottom: 1.0em;
 	background: white;

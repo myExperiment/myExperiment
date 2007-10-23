@@ -11,7 +11,7 @@
       location.href = "<%= new_forum_path %>";
     } else if (klass == "Workflow") {
       location.href = "<%= new_workflow_path %>";
-    } else if (klass == "Network") {
+    } else if (klass == "Group") {
       location.href = "<%= new_network_path %>";
     <% if logged_in? %>
     } else if (klass == "Picture") {
@@ -32,7 +32,7 @@
     <p>My Stuff</p>
 	<p>
         <small>
-          <%= pluralize(current_user.friends.length, "friend") %>, <%= pluralize(current_user.networks_owned.length + current_user.networks.length, "network") %>, 
+          <%= pluralize(current_user.friends.length, "friend") %>, <%= pluralize(current_user.networks_owned.length + current_user.networks.length, "group") %>, 
           <% filter_contributables(current_user.contributions).each do |klass,contributables| %>
             <%= pluralize(contributables.length, (klass.to_s == "Blob" ? "File" : klass).downcase) %>, <% end %>
           <%= pluralize(current_user.policies.length, "policy") %>
@@ -56,7 +56,7 @@
   
     <% unless current_user.networks_owned.empty? and current_user.networks.empty? %>
       <div>
-        <div class="title">Networks</div>
+        <div class="title">Groups</div>
         <div class="content">
           <ul class="gadget_list">
             <% current_user.networks_owned.each do |network_owned| %>
