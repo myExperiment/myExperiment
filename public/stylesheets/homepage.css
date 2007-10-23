@@ -1,0 +1,120 @@
+.myexp_home_header {
+	padding: 0.5em 3em 0.1em 3em;
+	text-align: left;
+}
+
+.myexp_home_header p.logo {
+	padding-top: 1.5em;
+	padding-bottom: 0.5em;
+	text-align: center;
+}
+
+.myexp_home_header p.heading {
+	text-align: center;
+	font-size: 153.9%;
+	font-weight: normal;
+}
+
+#myexp_home_content {
+	padding-left: 4em;
+	padding-right: 4em;
+}
+
+#myexp_home_content .heading {
+	font-size: 123.1%;
+	font-weight: bold;
+	margin-bottom: 1.5em;
+	margin-top: 1em;
+	color: #333333;
+}
+
+.myexp_home_content_box {
+	border: 1px dotted #999999;
+	padding: 2em;
+}
+
+.myexp_home_image_action {
+	padding-top: 1em;
+	font-size: 123.1%;
+	font-weight: bolder;
+}
+
+#myexp_home_logonbox {
+	text-align: center;
+}
+
+table.login {
+	border-top: none;
+	border-bottom: none;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+	margin: 0;
+	border-collapse: collapse;
+	border-spacing: 0;
+	border-width: 1px;
+	margin-left: 1px;
+	*margin-left: 0;
+	width: 100px;
+}
+
+table.login p {
+	text-align: center;
+}
+
+table.login * {
+	vertical-align: middle;
+}
+
+table.login td {
+	border-width: 0;
+	background-color: #F5F5F5;
+	padding: 0.2em 0.6em;
+}
+
+#myexp_home_logonbox .xtop,#myexp_home_logonbox .xbottom {
+	display: block;
+	background: transparent;
+	font-size: 1px;
+}
+
+#myexp_home_logonbox .xb1,#myexp_home_logonbox .xb2,#myexp_home_logonbox .xb3,#myexp_home_logonbox .xb4 {
+	display: block;
+	overflow: hidden;
+}
+
+#myexp_home_logonbox .xb1,#myexp_home_logonbox .xb2,#myexp_home_logonbox .xb3 {
+	height: 1px;
+}
+
+#myexp_home_logonbox .xb2,#myexp_home_logonbox .xb3,#myexp_home_logonbox .xb4 {
+	background: #F5F5F5;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+}
+
+#myexp_home_logonbox .xb1 {
+	margin: 0 5px;
+	background: #999999;
+}
+
+#myexp_home_logonbox .xb2 {
+	margin: 0 3px;
+	border-width: 0 2px;
+}
+
+#myexp_home_logonbox .xb3 {
+	margin: 0 2px;
+}
+
+#myexp_home_logonbox .xb4 {
+	height: 2px;
+	margin: 0 1px;
+}
+
+#myexp_home_news {
+	vertical-align: top;
+}
+
+#myexp_home_news li {
+	margin-bottom: 0.5em;
+}

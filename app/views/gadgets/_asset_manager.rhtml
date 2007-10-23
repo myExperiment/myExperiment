@@ -1,4 +1,4 @@
-<% gadget_characters_limit ||= 13 -%>
+<% gadget_characters_limit ||= 25 -%>
 <script type="text/javascript">
   function redirectToNew() {
     var klass = $("new_object_type").value;
@@ -30,6 +30,14 @@
 
   <div class="header">
     <p>My Stuff</p>
+	<p>
+        <small>
+          <%= pluralize(current_user.friends.length, "friend") %>, <%= pluralize(current_user.networks_owned.length + current_user.networks.length, "network") %>, 
+          <% filter_contributables(current_user.contributions).each do |klass,contributables| %>
+            <%= pluralize(contributables.length, (klass.to_s == "Blob" ? "File" : klass).downcase) %>, <% end %>
+          <%= pluralize(current_user.policies.length, "policy") %>
+        </small>
+     </p>
   </div>
     
   <div id="myexp_assetmanager_gadget_contents" class="contents">

@@ -12,11 +12,11 @@ body {
 	/* Only need to define one font here because the 
 	   YUI Fonts CSS provides a degradation path
 	   (see: http://developer.yahoo.com/yui/fonts/) */
-	font-family: verdana;
+	font-family: arial;
 }
 
 p {
-	font-family: verdana;
+	font-family: arial;
 	padding: 0.2em 0;
 	line-height: 1.5em;
 	text-align: left;
@@ -28,7 +28,7 @@ hr {
 }
 
 h1,h2,h3,h4,h5,h6 {
-	font-family: verdana;
+	font-family: arial;
 }
 
 h1 {
@@ -130,12 +130,13 @@ a:hover {
 	/*text-align: center;*/
 }
 
-/* begin css tabs */
+/* begin css tabs nav */
 .tabnav {
 	text-align: center;
-	font-weight: bold;
+	font-weight: bolder;
 	font-size: 108%;
 	padding: 7px 0;
+	*padding: 6px 0;
 	margin-left: 0;
 	margin-bottom: 0;
 	margin-top: 0;
@@ -175,7 +176,7 @@ a:hover {
 	color: #FFFFFF;
 }
 
-/* end css tabs */
+/* end css tabs nav */
 
 /* begin css breadcrumbs */
 
@@ -248,7 +249,7 @@ a:hover {
 /* end css tooltips/boxovers */
 
 .info_text {
-	font-size: 85%;
+	font-size: 93%;
 	background-color: #FFFF99;
 	margin: 1.5em;
 	padding: 1em;
@@ -271,6 +272,8 @@ a:hover {
 	border-collapse: collapse;
 	border: 1px solid #999999;
 	border-bottom: 2px solid #aaa;
+	pointer: pointer;
+	cursor: pointer;
 }
 
 .foldTitle hr {
@@ -299,7 +302,7 @@ a:hover {
 .foldContent {
 	border: 1px solid #999999;
 	border-top: 1px solid transparent;
-	padding: 0 1em;
+	padding: 1em;
 	margin-left: -1px;
 	*margin-left: 0;
 }

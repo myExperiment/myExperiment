@@ -33,6 +33,12 @@
 	text-align: center;
 }
 
+.myexperiment_gadget .header small {
+	font-size: 85%;
+	line-height: 1.4em;
+	color: #333333;
+}
+
 .myexperiment_gadget .contents {
 	border-top: none;
 	border-right: #999999 1px solid;
@@ -41,8 +47,12 @@
 	color: #000000;
 	padding: 0.6em;
 	margin-top: 0;
-	text-align: left;
+	text-align: center;
 	background-color: #FFFFFF;
+}
+
+.myexperiment_gadget .contents p {
+	text-align: center;
 }
 
 .myexperiment_gadget .sectionIcons { 
@@ -138,6 +148,7 @@
 
 #myexp_usermonitor_gadget_contents {
 	margin: 0;
+	text-align: left;
 }
 
 #myexp_usermonitor_gadget_contents .content {
@@ -153,17 +164,18 @@
 	overflow: auto;
 	font-size: 85%;
 	line-height: 1.1em;
+	text-align: left;
 }
 
 #myexp_assetmanager_gadget_contents .title {
-	margin-top: 0.5em;
-	padding: 0.1em 0;
+	margin-top: 1em;
+	margin-bottom: 0.2em;
+	padding: 0.2em 0;
 	border-bottom: 1px dotted #999999;
 	font-weight: bold;
 }
 
-#myexp_assetmanager_gadget_contents .content {
-	
+#myexp_assetmanager_gadget_contents .content {	
 }
 
 /* end css Asset Manager Gadget styles */
