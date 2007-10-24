@@ -6,21 +6,21 @@
 
   <% unless (con_tags = @user.contribution_tags).empty? %>
     <p>
-      <b>Tags for <%=my_page?(@user.id) ? "my" : h(@user.name) + "'s" %> workflows</b><br />
+      <b>Tags for <%=my_page?(@user.id) ? "my" : h(@user.name) + "'s" %> Workflows</b><br />
       <%= tag_cloud_from_collection(con_tags) %>
     </p>
   <% end %>
 
   <% unless (friend_tags = collection_contribution_tags(@user, @user.friends)).empty? %>
     <p>
-      <b>Tags for <%=my_page?(@user.id) ? "my" : h(@user.name) + "'s" %> friend's workflows</b><br />
+      <b>Tags for <%=my_page?(@user.id) ? "my" : h(@user.name) + "'s" %> Friend's Workflows</b><br />
       <%= tag_cloud_from_collection(friend_tags) %>
     </p>
   <% end %>
 
   <% unless (network_tags = collection_contribution_tags(@user, @user.networks_owned)).empty? %>
     <p>
-      <b>Tags for <%=my_page?(@user.id) ? "my" : h(@user.name) + "'s" %> network's workflows</b><br />
+      <b>Tags for <%=my_page?(@user.id) ? "my" : h(@user.name) + "'s" %> Group's Workflows</b><br />
       <%= tag_cloud_from_collection(network_tags) %>
     </p>
   <% end %>
@@ -29,14 +29,14 @@
 
   <% unless (con_tags = @network.contribution_tags).empty? %>
     <p>
-      <b>Tags for <%=h @network.title %> workflows</b><br />
+      <b>Tags for <%=h @network.title %> Workflows</b><br />
       <%= tag_cloud_from_collection(con_tags) %>
     </p>
   <% end %>
 
   <% unless (member_tags = collection_contribution_tags(@network, @network.members)).empty? %>
     <p>
-      <b>Tags for workflows by <%=h @network.title %> members</b><br />
+      <b>Tags for Workflows by <%=h @network.title %> members</b><br />
       <%= tag_cloud_from_collection(member_tags) %>
     </p>
   <% end %>
@@ -57,7 +57,7 @@
 <% end %>
 
 <p>
-  <b>myExperiment Top 20</b><br />
+  <center><b>myExperiment Top 20</b></center><br />
   <%= tag_cloud(limit=20) %>
 </p>
 

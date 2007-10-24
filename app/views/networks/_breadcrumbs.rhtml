@@ -1,4 +1,4 @@
-<li><%= link_to 'Networks', networks_path %></li>
+<li><%= link_to 'Groups', networks_path %></li>
 
 <% if ["show", "new", "edit", "search"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
@@ -6,7 +6,7 @@
   <% case controller.action_name.to_s; when "show" %>
     <li><%= link_to "View: #{h(@network.title)}", network_path(@network) %></li>
   <% when "new" %>
-    <li><%= link_to "New Network", new_network_path %></li>
+    <li><%= link_to "New Group", new_network_path %></li>
   <% when "edit" %>
     <li><%= link_to "Edit: #{h(@network.title)}", edit_network_path(@network) %>
   <% when "search" %>  

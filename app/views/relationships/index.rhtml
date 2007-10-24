@@ -1,12 +1,12 @@
 <h1>Listing relationships for <%= params[:network_id] ? Network.find(params[:network_id]).title : "All" %></h1>
 
-<p>The <strong>Relation</strong> initiates a Relationship request with the <strong>Network</strong> who can accept/reject.<br/>
-The relationship is analogous to the parent/child relationship (ie: <strong>Network parentOf Relation</strong>, <strong>Relation childOf Network</strong>).</p>
+<p>The <strong>Relation</strong> initiates a Relationship request with the <strong>Group</strong> who can accept/reject.<br/>
+The relationship is analogous to the parent/child relationship (ie: <strong>Group parentOf Relation</strong>, <strong>Relation childOf Group</strong>).</p>
 
 <table width="100%">
   <tr>
     <th>Relation</th>
-    <th>Network</th>
+    <th>Group</th>
     <th>Created at</th>
     <th>Accepted at</th>
     <th colspan="2"> </th>

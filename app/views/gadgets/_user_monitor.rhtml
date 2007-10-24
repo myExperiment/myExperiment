@@ -52,7 +52,6 @@
       <li><%=link_to "#{icon("bookmark", nil, nil, nil, "")}Bookmarks", bookmarks_path %></li>
       <li><%=friendships_pending_link(current_user) %></li>
       <li><%=memberships_pending_link(current_user) %></li>
-      <li><%=link_to "#{icon("policy", nil, nil, nil, "")} Policies", policies_path %></li>
     </ul>
 	
     <% unless current_user.messages_unread.empty? %>

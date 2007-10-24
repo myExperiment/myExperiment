@@ -1,3 +1,5 @@
+<%= render :partial => "layouts/tags" %>
+
 <%= render :partial => "contributions/most", :locals => { :type => "Workflow" } %>
 
 <h2><%= feed_icon_tag "Latest Workflows", formatted_workflows_path(:rss) %> All Workflows</h2>

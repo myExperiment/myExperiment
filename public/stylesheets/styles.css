@@ -183,55 +183,6 @@ a:hover {
 	color: #FFFFFF;
 }
 
-/*
-.tabnav .xtop {
-	display: block;
-	background: transparent;
-	font-size: 1px;
-}
-
-.tabnav .xb1, 
-.tabnav .xb2, 
-.tabnav .xb3, 
-.tabnav .xb4 {
-	display: block;
-	overflow: hidden;
-}
-
-.tabnav .xb1, 
-.tabnav .xb2, 
-.tabnav .xb3 {
-	height: 1px;
-}
-
-.tabnav .xb2, 
-.tabnav .xb3, 
-.tabnav .xb4 {
-	background: #DFDFDF;
-	border-left: 1px solid #999999;
-	border-right: 1px solid #999999;
-}
-
-.tabnav .xb1 {
-	margin: 0 5px;
-	background: #999999;
-}
-
-.tabnav .xb2 {
-	margin: 0 3px;
-	border-width: 0 2px;
-}
-
-.tabnav .xb3 {
-	margin: 0 2px;
-}
-
-.tabnav .xb4 {
-	height: 2px;
-	margin: 0 1px;
-}
-*/
-
 /* end css tabs nav */
 
 /* begin css breadcrumbs */
@@ -242,7 +193,8 @@ a:hover {
 	text-decoration: none;
 	padding: 0.7em 0.5em;
 	background-color: #eee;
-	border-top: 2px solid ffffff;
+	border-top: 2px solid #f5f5f5;
+	margin-left: 1px;
 }
 
 #myexp_breadcrumbs_bar ul {
@@ -527,6 +479,7 @@ div.progressBar div.background {
 
 table.alt_table {
 	width: 100%;
+	border-collapse: collapse;
 }
 
 table.alt_table tr.odd_row td {

@@ -32,8 +32,8 @@
     <% end %>
 
     <% if my_page? @network.owner.id %>
-      <li><%= icon('edit', edit_network_path(@network), nil, nil, 'Edit network') %></li>
-      <li><%= icon('destroy', network_path(@network), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove network') %></li>
+      <li><%= icon('edit', edit_network_path(@network), nil, nil, 'Edit Group') %></li>
+      <li><%= icon('destroy', network_path(@network), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
     <% end %>
   </ul>
 <% end %>
@@ -63,7 +63,7 @@
     <div class="tabContent">
   
       <p>
-        Here's a really quick way to add anyone you like to this network. <br/>
+        Here's a really quick way to add anyone you like to this Group. <br/>
         Select each name from the list and click "Add".
       </p>
   

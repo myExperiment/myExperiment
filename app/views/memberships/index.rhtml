@@ -3,14 +3,14 @@
   <% if my_page? @user.id %>
 
     <% unless @user.memberships_pending.empty? %>
-      <h2>Requests for my Networks</h2>
+      <h2>Requests for my Groupss</h2>
     
       <p>
         What does "<b>Memberships (<%= @user.memberships_pending.length %>)</b>" mean?<br />
         You have <%=pluralize @user.memberships_pending.length, "membership request" %> to review!
       </p>
     
-      <p>Messages sent by myExperiment users to request membership in your networks are listed here.</p>
+      <p>Messages sent by myExperiment users to request membership in your Groups are listed here.</p>
   
       <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships_pending } %>
     <% end %>
@@ -20,16 +20,16 @@
       
       <p>
         Requests you've sent which have not been accepted yet are listed here. <br />
-        If the <b>network</b> is taking a while, why not send the administrator a <%= link_to "message", messages_path %>?
+        If the <b>Group</b> is taking a while, why not send the administrator a <%= link_to "message", messages_path %>?
       </p>
       
       <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships_requested, :user => false } %>
     <% end %>
     
     <% unless @user.networks_owned.empty? %>
-      <h2>Networks Administrated</h2>
+      <h2>Groups Administrated</h2>
       
-      <p>You are an administrator of (and therefore a member of) the following networks:</p>
+      <p>You are an administrator of (and therefore a member of) the following Groups:</p>
       
       <%= render :partial => "networks/table", :locals => { :collection => @user.networks_owned } %>
     <% end %>
@@ -37,7 +37,7 @@
     <h2>Memberships</h2>
   
     <p>
-      You are a member of the following networks. You can share files and workflows with any of them.
+      You are a member of the following Groups. You can share files and workflows with any of them.
     </p>
   
     <%= render :partial => "memberships/table", :locals => { :collection => @user.memberships, :user => false } %>
