@@ -28,5 +28,6 @@
             :class => 'five-stars', :name => '5 stars out of 5') %>
     </li>
 </ul>
-<br>
-<%= number_with_precision(rateable.rating*20, 0) %>&#37 (<%= pluralize rateable.ratings.count, 'rating' %>)
+<p style="margin-top: 0.2em;">
+  <%= number_with_precision(rateable.rating*20, 0) %>&#37 (<%= pluralize rateable.ratings.count, 'rating' %>)
+</p>

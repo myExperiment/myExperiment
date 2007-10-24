@@ -46,7 +46,7 @@ class SessionController < ApplicationController
     self.current_user.forget_me if logged_in?
     cookies.delete :auth_token
     reset_session # clears session[:return_to]
-    flash[:notice] = "You have been logged out. Thank you for using myExperiment!"
+    #flash[:notice] = "You have been logged out. Thank you for using myExperiment!"
     redirect_to ''
   end
   

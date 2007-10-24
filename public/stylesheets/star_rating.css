@@ -1,15 +1,24 @@
     /*             styles for the star rater                */    
-    .star-rating{
-        list-style:none;
+    .star-ratings-block{
+		text-align: center;
+	}
+	
+	.star-rating{
+        list-style: none;
+		list-style-image: none;
+		list-style-type: none;
         margin: 0px;
         padding:0px;
         width: 150px;
         height: 30px;
         position: relative;
-        background: url(/images/star_rating.gif) top left repeat-x;        
+        background: url(/images/star_rating.gif) top left repeat-x;
     }
     .star-rating li{
-        padding:0px;
+        list-style: none;
+		list-style-image: none;
+		list-style-type: none;
+		padding:0px;
         margin:0px;
         /*\*/
         float: left;

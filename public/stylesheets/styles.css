@@ -20,7 +20,7 @@ p {
 	padding: 0.2em 0;
 	line-height: 1.5em;
 	text-align: left;
-	margin-bottom: 0;
+	margin-bottom: 0em;
 }
 
 hr {
@@ -34,7 +34,7 @@ h1,h2,h3,h4,h5,h6 {
 h1 {
 	text-align: center;
 	font-size: 123.1%;
-	color: #993333;
+	color: #990000;
 	margin-bottom: 1.5em;
 }
 
@@ -82,6 +82,17 @@ a:hover {
 	border-bottom: 1px dashed gray;
 }
 
+small {
+	line-height: 1.2em;
+}
+
+.clearer
+{
+	padding: 0;
+	height: 1px;
+	clear: both;
+}
+
 #myexp_logo {
 	margin: 1em 0 0 0.5em;
 }
@@ -107,6 +118,7 @@ a:hover {
 #myexp_sidebar {
 	padding: 0 0.5em 1em 0.5em;
 	background-color: #456AAA;
+	border-left: 2px solid #eee;
 }
 
 #tag_clouds {
@@ -193,9 +205,8 @@ a:hover {
 	text-decoration: none;
 	padding: 0.4em 0.5em;
 	background-color: #eee;
-	border-top: 2px solid #f5f5f5;
-	border-right: 2px solid #f5f5f5;
-	margin-left: 1px;
+	border-top: 2px solid #F5F5F5;
+	*margin-left: 1px;
 }
 
 #myexp_breadcrumbs_bar ul {
@@ -214,7 +225,7 @@ a:hover {
 }
 
 #myexp_breadcrumbs_bar a {
-	color: #993333;
+	color: #990000;
 }
 
 #myexp_breadcrumbs_bar a:hover {
@@ -260,15 +271,6 @@ a:hover {
 }
 
 /* end css tooltips/boxovers */
-
-.info_text {
-	font-size: 93%;
-	background-color: #FFFF99;
-	margin: 1em;
-	padding: 1em;
-	border: 1px dotted #999999;
-	font-style: normal;
-}
 
 /* begin css folds */
 
@@ -622,8 +624,63 @@ table tr td.details {
 	padding: 2px;
 }
 
+.info_text {
+	font-size: 93%;
+	background-color: #FFFF99;
+	margin: 0.5em;
+	margin-bottom: 1em;
+	padding: 0.5em;
+	border: 1px dotted #999999;
+	font-style: normal;
+}
+
 .user_context_panel {
 	padding: 1em;
 	border: 1px dotted #999999;
 	margin: 1.5em 0;
+}
+
+.workflow_left_box {
+	float: left;
+	width: 73%;
+}
+
+.workflow_version_box {
+	border: 1px dotted #999999;
+	padding: 0.5em;
+	margin-bottom: 1em;
+}
+
+.workflow_description {
+	
+}
+
+.workflow_right_box {
+	float: right;
+	width: 25%;
+}
+
+.workflow_section_box {
+	/*background-color: #FFFFDE;*/
+	background-color: #FFFFCC;
+	/*background-color: #EEFFEE;*/
+	padding: 0.3em;
+	border: 1px dotted #999999;
+	text-align: center;
+	margin-bottom: 1em;
+}
+
+.workflow_section_box p {
+	text-align: center;
+}
+
+.workflow_section_box hr {
+	margin: 0.6em 0;
+	*margin: 0.2em 0;
+	color: #999999;
+}
+
+.workflow_section_box .hTagcloud {
+	margin-top: 0.3em;
+	margin-bottom: 0.5em;
 }

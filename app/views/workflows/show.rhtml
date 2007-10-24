@@ -1,54 +1,147 @@
-<h2>Details</h2>
+<h1>Workflow: <%=h @workflow.title %></h1>
+
+<div class="workflow_left_box">
+	<div class="workflow_section_box">
+		<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
+	</div>
+	<div class="workflow_version_box">
+		<p>
+			<b>Title:</b>
+			<%=h @workflow.title %>
+		</p>
+		
+		<% unless @workflow.image.nil? %>
+			<p>
+				<b>Diagram:</b><br/>
+			</p>
+			<center><%= link_to image_tag(url_for_file_column(@workflow, "image", "medium")), url_for_file_column(@workflow, "image") %></center>
+		<% end %>
+		
+		<div class="workflow_description">
+			<p>
+				<b>Description:</b><br/>
+				<%= white_list @workflow.body_html %>
+			</p>
+		</div>
+		
+		<% unless @workflow.svg.nil? %>
+			<p>
+				<b>SVG:</b><br />
+				<%= link_to '[Download SVG]', url_for_file_column(@workflow, "svg") %>
+			</p>
+		<% end %>
+
+	</div>
+</div>
+
+<div class="workflow_right_box">
+	<div class="workflow_section_box">
+		<p>
+			<b>Uploader:</b>
+		</p>
+		<p>
+			<%= contributor(@workflow.contribution.contributor_id, @workflow.contribution.contributor_type, true, 60) %>
+		</p>
+		
+		<% if false %>
+			<p>
+				<b>Unique:</b>
+				<%=h @workflow.unique_name %>
+			</p>
+		<% end %>
+	</div>
+	
+	<div class="workflow_section_box">
+		<p>
+			<!--<img src="images/help.png" title="header=[] body=[The size of the tags show how popular the tag is on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>-->
+			<strong>Tags</strong>
+		</p>
+		
+		<div id="tags">	
+			<% unless (tags = @workflow.tags).empty? %>
+				<%= tag_cloud_from_collection(tags) %>
+			<% else %>
+				<p><i>None</i></p>
+			<% end %>
+		</div>
+		
+		<p><small>Note: the size of the tags show how popular they are on myExperiment.</small></p>
+		
+		<% if logged_in? %>
+			<div class="fold" style="margin-bottom: 0; margin-top: 0.6em; font-size: 85%;">
+				<div class="foldTitle">Add Tags</div>
+				<div class="foldContent" style="display: none; padding: 0.3em;">
+					<% form_remote_tag(:url => tag_workflow_path(@workflow), :update => 'tags', :success => "var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
+						<p><small>(Comma seperated)</small></p>
+						<p>
+							<%= text_field_tag :tag_list %>
+						</p>
+						<%= submit_tag "Add" %>
+					<% end %>
+				</div>
+			</div>
+		<% else %>
+			<p><strong><%= link_to "Sign in", new_session_url %> to add Tags</strong></p>
+		<% end %>
+	</div>
+	
+	<div class="workflow_section_box">
+		<p>
+			<strong>Ratings</strong>
+		</p>
+		
+		<center>
+			<% if logged_in? %>
+				<p><small>Hover and click to rate</small></p>
+				<div id="star-ratings-block">
+					<%= render :partial => "ratings/rating", :locals => { :rateable => @workflow, :controller => controller.controller_name } %>
+				</div>
+			<% else %>
+				<%= number_with_precision(@workflow.rating*20, 0) %>&#37 (<%= pluralize @workflow.ratings.count, 'rating' %>)
+				<p><strong><%= link_to "Sign in", new_session_url %> to rate</strong></p>
+			<% end %>
+		</center>
+	</div>
+	
+	<div class="fold">
+		<div class="foldTitle">Statistics</div>
+		<div class="foldContent" style="display: none;">
+			<%= render :partial => "contributions/statistics", :object => @workflow.contribution %>
+
+		    <p>
+		      <b>Number of bookmarks:</b> 
+		      <%=h @workflow.bookmarks.length %>
+		    </p>
+		
+		    <p>
+		      <b>Number of comments:</b> 
+		      <%=h @workflow.comments.length %>
+		    </p>
+		
+		    <p>
+		      <b>Number of ratings:</b> 
+		      <%=h @workflow.ratings.length %>
+		    </p>
+		
+		    <p>
+		      <b>Number of taggings:</b> 
+		      <%=h @workflow.taggings.length %>
+		    </p>
+		</div>
+	</div>
+</div>
+
+<div class="clearer">&nbsp;</div>
 
 <p>
-  <b>Title:</b>
-  <%=h @workflow.title %>
-</p>
-
-<p>
-  <b>Contributor:</b><br/>
-  <%= contributor(@workflow.contribution.contributor_id, @workflow.contribution.contributor_type, true, 100) %>
-</p>
-
-<p>
-  <b>Description:</b><br/>
-  <%= white_list @workflow.body_html %>
-</p>
-  
-<% unless @workflow.image.nil? %>
-  <p>
-    <b>Image:</b><br/>
-    <%= link_to image_tag(url_for_file_column(@workflow, "image", "medium")), url_for_file_column(@workflow, "image") %>
-  </p>
-<% end %>
-
-<% unless @workflow.svg.nil? %>
-  <p>
-    <b>SVG:</b><br />
-    <%= link_to '[download svg]', url_for_file_column(@workflow, "svg") %>
-  </p>
-<% end %>
-    
-<% if false %>
-<p>
-  <b>Unique:</b>
-  <%=h @workflow.unique_name %>
-</p>
-<% end %>
-
-<p>
-  <b>Created at:</b>
-  <%=datetime @workflow.created_at %>
-</p>
-
-<p>
-  <b>Updated at:</b>
-  <%=datetime @workflow.updated_at %>
-</p>
-
-<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
-
-<br/>
+			<b>Created at:</b>
+			<%=datetime @workflow.created_at %>
+		</p>
+		
+		<p>
+			<b>Updated at:</b>
+			<%=datetime @workflow.updated_at %>
+		</p>
 
 <% if logged_in? %>
   <div class="sectionIcons">
@@ -116,34 +209,6 @@
       </div>
     </p>
     
-    <p>
-      <b>Rating:</b> 
-      <% if logged_in? %>
-        <div id="star-ratings-block">
-          <%= render :partial => "ratings/rating", :locals => { :rateable => @workflow, :controller => controller.controller_name } %>
-        </div>
-      <% else %>
-        <%= number_with_precision(@workflow.rating*20, 0) %>&#37 (<%= pluralize @workflow.ratings.count, 'rating' %>)
-      <% end %>
-    </p>
-
-    <p>
-      <b>Tags:</b><br/>
-      <div id="tags">
-        <%= tag_cloud_from_collection(@workflow.tags) %>
-      </div>
-    </p>
-
-    <% if logged_in? and @workflow.authorized?("tag", current_user) %>
-      <% form_remote_tag (:url => tag_workflow_path(@workflow), :update => 'tags', :success => "var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
-        <p>
-          <%= text_field_tag :tag_list %>
-        </p>
-    
-        <%= submit_tag "Add tags" %>
-      <% end %>
-    <% end %>
-	
 	<br/>
   </div>
 </div>
@@ -176,10 +241,10 @@
     <% end %>
 
     <% if logged_in? %>
-      <% if @workflow.authorized?("edit", current_user) %>
+      <% if logged_in? %>
         <ul class="sectionIcons">
-          <li><%= icon('new', new_citation_path(@workflow), nil, nil, 'New citation', nil) %></li>
-          <li><%= icon('edit', citations_path(@workflow), nil, nil, 'Edit citations', nil) %></li>
+          <li><%= icon('new', new_citation_path(@workflow), nil, nil, 'New Citation', nil) %></li>
+          <li><%= icon('edit', citations_path(@workflow), nil, nil, 'Edit Citations', nil) %></li>
         </ul>
       <% end %>
     <% end %>
@@ -219,33 +284,6 @@
     </div>
   <% end %>
 <% end %>
-
-<div class="tabContainer">
-  <div class="tabTitle">Statistics</div>
-  <div class="tabContent">
-    <%= render :partial => "contributions/statistics", :object => @workflow.contribution %>
-
-    <p>
-      <b>Number of bookmarks:</b> 
-      <%=h @workflow.bookmarks.length %>
-    </p>
-
-    <p>
-      <b>Number of comments:</b> 
-      <%=h @workflow.comments.length %>
-    </p>
-
-    <p>
-      <b>Number of ratings:</b> 
-      <%=h @workflow.ratings.length %>
-    </p>
-
-    <p>
-      <b>Number of taggings:</b> 
-      <%=h @workflow.taggings.length %>
-    </p>
-  </div>
-</div>
 
 <% if logged_in? and @workflow.owner? current_user %>
   <div class="tabContainer">

@@ -5,6 +5,10 @@
 	text-align: center;
 }
 
+.myexperiment_gadget p {
+	margin: 0;
+}
+
 .myexperiment_gadget ul.gadget_list {
 	list-style: none;
 	padding-left: 0;
@@ -180,13 +184,3 @@
 }
 
 /* end css Asset Manager Gadget styles */
-
-/* begin css Most Popular Tags Gadget styles */
-
-.myexperiment_gadget .hTagcloud .popularity .popular { font-size:77%% }
-.myexperiment_gadget .hTagcloud .popularity .v-popular { font-size:85%; }
-.myexperiment_gadget .hTagcloud .popularity .vv-popular { font-size:100%; }
-.myexperiment_gadget .hTagcloud .popularity .vvv-popular { font-size:116%; }
-.myexperiment_gadget .hTagcloud .popularity .vvvv-popular { font-size:131%; }
-
-/* end css Most Popular Tags Gadget styles */
