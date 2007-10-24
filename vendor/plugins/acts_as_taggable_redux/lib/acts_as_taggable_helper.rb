@@ -33,6 +33,8 @@ module ActsAsTaggableHelper
     
     divisor = ((max - min) / classes.size) + 1
     
+    count = 0;
+    
     html =    %(<div class="hTagcloud">\n)
     html <<   %(  <ul class="popularity">\n)
     tags.each do |tag|
@@ -44,7 +46,13 @@ module ActsAsTaggableHelper
         html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{tag.name}</a>"
       end
       
-      html << %(</li> \n)
+      html << %(</li>\n)
+      
+      count += 1;
+      
+      if count < tags.length
+        html << %(<li> | </li>\n)
+      end
     end
     html <<   %(  </ul>\n)
     html <<   %(</div>\n)

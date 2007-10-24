@@ -37,6 +37,7 @@
 	font-size: 85%;
 	line-height: 1.4em;
 	color: #333333;
+	margin: 0 0.5em;
 }
 
 .myexperiment_gadget .contents {
@@ -168,7 +169,7 @@
 }
 
 #myexp_assetmanager_gadget_contents .title {
-	margin-top: 1em;
+	margin-top: 0.6em;
 	margin-bottom: 0.2em;
 	padding: 0.2em 0;
 	border-bottom: 1px dotted #999999;
