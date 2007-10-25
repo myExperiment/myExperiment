@@ -299,6 +299,7 @@ small {
 	font-weight: bold;
 	text-align: left;
 	padding: 0.5em;
+	*padding: 0.3em;
 }
 
 .foldPlaintext {
@@ -644,13 +645,7 @@ table tr td.details {
 
 .workflow_left_box {
 	float: left;
-	width: 73%;
-}
-
-.workflow_version_box {
-	border: 1px dotted #999999;
-	padding: 0.5em;
-	margin-bottom: 1em;
+	width: 74%;
 }
 
 .workflow_description {
@@ -669,7 +664,7 @@ table tr td.details {
 	padding: 0.3em;
 	border: 1px dotted #999999;
 	text-align: center;
-	margin-bottom: 1em;
+	margin-bottom: 0.6em;
 }
 
 .workflow_section_box p {
@@ -694,7 +689,8 @@ table tr td.details {
 }
 
 .workflow_section_box .foldText {
-	padding: 0.2em;
+	padding: 0.4em;
+	*padding: 0.2em;
 }
 
 .workflow_section_box .foldContent {
@@ -715,4 +711,41 @@ table tr td.details {
 	list-style: none;
 	padding: 0;
 	margin: 0;
+}
+
+.workflow_version_selector_box {
+	margin: 0;
+	padding: 0.1em 0.5em;
+	border: 1px dotted #999999;
+	border-bottom: none;
+	background-color: #EEEEEE;
+	color: #333333;
+}
+
+.workflow_version_selector_box * {
+	vertical-align: middle;	
+}
+
+.workflow_version_selector_box table {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	border-collapse: collapse;
+}
+
+.workflow_version_box {
+	border: 1px dotted #999999;
+	padding: 0.5em;
+	margin-bottom: 1em;
+}
+
+.workflow_currentlicense_box {
+	margin: 0 0 0.5em 0;
+	padding: 0.3em 0.8em;
+	text-align: center;
+	font-style: italic;
+}
+
+.workflow_currentlicense_box p {
+	text-align: center;
 }

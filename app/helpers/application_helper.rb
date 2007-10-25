@@ -229,6 +229,28 @@ module ApplicationHelper
     end
   end
   
+  def versioned_workflow_url(workflow_id, version_id)
+    if workflow_id.kind_of? Fixnum
+      workflow = Workflow.find(:first, :conditions => ["id = ?", workflow_id])
+      return nil unless workflow
+    elsif workflow_id.kind_of? Workflow
+      workflow = workflow_id
+    else
+      return nil
+    end
+    
+    if workflow.revert_to(version_id)
+      url = url_for(:controller => 'workflows',
+                    :action => 'show',
+                    :id => workflow.id,
+                    :version => workflow.version)
+    else
+      return nil
+    end
+    
+    return url
+  end
+  
   def filter_contributables(contributions)
     rtn = {}
     

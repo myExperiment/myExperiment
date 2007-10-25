@@ -1,10 +1,54 @@
+<script type="text/javascript">
+  function showWorkflowVersion() {
+    var url = $("workflow_versions").value;
+	location.href = url;
+  }
+</script>
+
 <h1>Workflow: <%=h @workflow.title %></h1>
 
 <div class="workflow_left_box">
-	<div class="workflow_section_box">
-		<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
+	<div class="workflow_version_selector_box">
+		<% versions_count = @workflow.versions.size -%>
+		<table>
+			<tbody>
+				<tr>
+					<td style="text-align: left; font-size: 108%; font-weight: bold; color: #990000;">
+						Version: 
+						<% if (params[:version] == nil || params[:version] == versions_count.to_s) %>
+							<%= versions_count.to_s + ' (latest)' %>
+						<% elsif (params[:version].to_i == 1) %>
+							<%= '1 (original)' %>
+						<% else %>
+							<%= params[:version].to_s %>
+						<% end %>
+					</td>
+					<td>
+						<% if versions_count > 1 %>
+							<form onsubmit="showWorkflowVersion(); return false;" style="text-align: right;">
+								<b>Change to: </b>
+								<select id="workflow_versions">
+									<option value="<%= versioned_workflow_url(@workflow, versions_count.to_s) %>"><%= versions_count.to_s %> (latest)</option>
+									<% v = versions_count-1 -%>
+									<% until v < 1 %>
+										<option value="<%= versioned_workflow_url(@workflow, v) %>"><%= v.to_s %> <%= ' (original)' if v == 1 %></option>
+										<% v -= 1 -%>
+									<% end %>
+								</select>
+								<%= submit_tag "GO" %>
+							</form>
+						<% end %>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 	<div class="workflow_version_box">
+		
+		<div class="workflow_currentlicense_box">
+			<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
+		</div>
+		
 		<p>
 			<b>Title:</b>
 			<%=h @workflow.title %>
@@ -12,7 +56,7 @@
 		
 		<% unless @workflow.image.nil? %>
 			<p>
-				<b>Diagram:</b><br/>
+				<b>Diagram: (click to expand)</b><br/>
 			</p>
 			<center><%= link_to image_tag(url_for_file_column(@workflow, "image", "medium")), url_for_file_column(@workflow, "image") %></center>
 		<% end %>
