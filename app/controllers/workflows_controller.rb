@@ -35,9 +35,9 @@ class WorkflowsController < ApplicationController
   # GET /workflows;search
   # GET /workflows.xml;search
   def search
-    @query = params[:query] || ""
+    @query = params[:query] == nil ? "" : params[:query] + "~"
     
-    @workflows = Workflow.find_with_ferret(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true))
+    @workflows = Workflow.find_with_ferret(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true), :limit => :all)
     
     respond_to do |format|
       format.html # search.rhtml

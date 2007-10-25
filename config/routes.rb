@@ -30,7 +30,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # blobs (downloadable)
-  map.resources :blobs, :member => { :download => :get }
+  map.resources :blobs, :collection => { :search => :get }, :member => { :download => :get }
 
   # bloGs
   map.resources :blogs do |blog|

@@ -1,5 +1,16 @@
 class SearchController < ApplicationController
   def show
+    
+    # Hacks for 'Groups' --> 'Networks' and 'Files' --> 'Blobs' renames
+    
+    if params[:type].to_s == 'groups'
+      params[:type] = 'networks'
+    end
+    
+    if params[:type].to_s == 'files'
+      params[:type] = 'blobs'
+    end
+
     error(params[:type]) unless @@valid_types.include? params[:type]
     
     redirect_to :controller => params[:type], :action => "search", :query => params[:query]
@@ -7,7 +18,7 @@ class SearchController < ApplicationController
   
 private
 
-  @@valid_types = ["workflows", "users", "networks"]
+  @@valid_types = ["workflows", "users", "networks", "blobs"]
 
   def error(type)
     flash[:notice] = "#{type} is an invalid search type"

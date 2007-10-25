@@ -1,7 +1,7 @@
-<% valid_types = ["users", "groups", "workflows"] -%>
+<% valid_types = ["users", "groups", "workflows", "files"] -%>
 
 <% form_tag search_path, :method => :get do %>
   <%= text_field_tag :query %> 
-  <%= select_tag :type, options_for_select(valid_types.collect { |t| [t.capitalize, t] }, (valid_types.include?(controller.controller_name) ? controller.controller_name : "workflows")) %> 
+  <%= select_tag :type, options_for_select(valid_types.collect { |t| [t.capitalize, t] }, (valid_types.include?(controller.controller_name) ? controller.controller_name : (controller.controller_name == 'networks' ? 'groups' : (controller.controller_name == 'blobs' ? 'files' : 'workflows')))) %> 
   <%= submit_tag "Search", :disable_with => "Searching..." %>
 <% end %>

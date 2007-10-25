@@ -22,11 +22,24 @@
 ##
 
 class BlobsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download]
+  before_filter :login_required, :except => [:index, :show, :download, :search]
   
   before_filter :find_blobs, :only => [:index]
   #before_filter :find_blob_auth, :only => [:download, :show, :edit, :update, :destroy]
-  before_filter :find_blob_auth, :except => [:index, :new, :create]
+  before_filter :find_blob_auth, :except => [:search, :index, :new, :create]
+  
+  # GET /blobs;search
+  # GET /blobs.xml;search
+  def search
+    @query = params[:query] == nil ? "" : params[:query] + "~"
+    
+    @blobs = Blob.find_with_ferret(@query, :sort => Ferret::Search::SortField.new(:local_name, :reverse => false), :limit => :all)
+    
+    respond_to do |format|
+      format.html # search.rhtml
+      format.xml  { render :xml => @blobs.to_xml }
+    end
+  end
   
   # GET /blobs/1;download
   def download
