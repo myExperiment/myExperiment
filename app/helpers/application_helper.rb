@@ -718,8 +718,4 @@ protected
     return rtn
   end
   
-  def gadget_characters_limit
-	return 20
-  end
-  
 end

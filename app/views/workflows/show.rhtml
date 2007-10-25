@@ -68,9 +68,9 @@
 		<p><small>Note: the size of the tags show how popular they are on myExperiment.</small></p>
 		
 		<% if logged_in? %>
-			<div class="fold" style="margin-bottom: 0; margin-top: 0.6em; font-size: 85%;">
+			<div class="fold">
 				<div class="foldTitle">Add Tags</div>
-				<div class="foldContent" style="display: none; padding: 0.3em;">
+				<div class="foldContent" style="display: none;">
 					<% form_remote_tag(:url => tag_workflow_path(@workflow), :update => 'tags', :success => "var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
 						<p><small>(Comma seperated)</small></p>
 						<p>
@@ -98,9 +98,26 @@
 				</div>
 			<% else %>
 				<%= number_with_precision(@workflow.rating*20, 0) %>&#37 (<%= pluralize @workflow.ratings.count, 'rating' %>)
-				<p><strong><%= link_to "Sign in", new_session_url %> to rate</strong></p>
+				<p><strong><%= link_to "Sign in", new_session_url %> to rate and see breakdown of ratings</strong></p>
 			<% end %>
 		</center>
+		
+		<% if logged_in? %>
+			<% unless (ratings = @workflow.ratings).empty? %>
+				<div class="fold">
+					<div class="foldTitle">Breakdown</div>
+					<div class="foldContent" style="display: none; text-align: left;">
+						<ul>			
+							<% ratings.each do |rating| %>
+								<li>
+									<%= name(rating.user_id) %> - <%= rating.rating %>
+								</li>
+							<% end %>
+						</ul>
+					</div>
+				</div>
+			<% end %>
+		<% end %>
 	</div>
 	
 	<div class="fold">

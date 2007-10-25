@@ -316,7 +316,7 @@ small {
 }
 
 .foldContent {
-	border: 1px solid #999999;
+	border: 1px solid #aaa;
 	border-top: 1px solid transparent;
 	padding: 1em;
 }
@@ -685,4 +685,34 @@ table tr td.details {
 .workflow_section_box .hTagcloud {
 	margin-top: 0.3em;
 	margin-bottom: 0.5em;
+}
+
+.workflow_section_box .fold {
+	margin-bottom: 0; 
+	margin-top: 0.6em; 
+	font-size: 85%;
+}
+
+.workflow_section_box .foldText {
+	padding: 0.2em;
+}
+
+.workflow_section_box .foldContent {
+	padding: 0.2em;
+	background-color: #ffffff;
+	/*border: 1px solid #cccccc;
+	border-top: 1px solid transparent;*/
+}
+
+.workflow_section_box .foldContent ul {
+	list-style: none;
+	padding: 0;
+	padding-left: 1em;
+	margin: 0;
+}
+
+.workflow_section_box .foldContent ul li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
 }
