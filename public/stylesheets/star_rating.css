@@ -1,6 +1,5 @@
     /*             styles for the star rater                */    
     .star-ratings-block{
-		text-align: center;
 	}
 	
 	.star-rating{
@@ -77,5 +76,6 @@
         display: block;
         text-indent: -9000px;
         z-index: 1;
+		left: 0;
     }
 
