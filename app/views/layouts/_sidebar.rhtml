@@ -4,4 +4,6 @@
 
 <% if logged_in? %><%= render :partial => "gadgets/asset_manager" %><% end %>
 
+<% if logged_in? %><%= render :partial => "gadgets/user_tags" %><% end %>
+
 <%= render :partial => "gadgets/tag_most_popular", :locals => { :limit => 25 } %>
