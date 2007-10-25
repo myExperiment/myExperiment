@@ -26,7 +26,6 @@ require 'acts_as_contributable'
 class Blob < ActiveRecord::Base
   acts_as_contributable
   
-  acts_as_ferret :fields => { :local_name => { :index => :untokenized },
-                              :content_type => { :store => :yes },
-                              :contributor_name => { :store => :yes } }
+  acts_as_ferret :fields => { :local_name => { :store => :yes },
+                              :content_type => { :store => :yes } }
 end

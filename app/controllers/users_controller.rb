@@ -33,7 +33,7 @@ class UsersController < ApplicationController
   def search
     @query = params[:query] || ""
     
-    @users = User.find_with_ferret(@query)
+    @users = User.find_with_ferret(@query, :limit => :all)
     
     respond_to do |format|
       format.html # search.rhtml

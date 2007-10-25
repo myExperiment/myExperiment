@@ -34,7 +34,7 @@ h1,h2,h3,h4,h5,h6 {
 h1 {
 	text-align: center;
 	font-size: 123.1%;
-	color: #990000;
+	color: #000033;
 	margin-bottom: 1.5em;
 }
 
@@ -225,7 +225,7 @@ small {
 }
 
 #myexp_breadcrumbs_bar a {
-	color: #990000;
+	color: #000033;
 }
 
 #myexp_breadcrumbs_bar a:hover {
@@ -292,18 +292,20 @@ small {
 
 .foldTitle hr {
 	margin: 0.4em 0;
-	*margin: 0.2em 0;
+	*margin: 0;
 }
 
 .foldText {
 	font-weight: bold;
 	text-align: left;
-	padding: 0.6em;
+	padding: 0.5em;
 }
 
 .foldPlaintext {
 	font-weight: normal;
 	font-size: 85%;
+	line-height: 1.2em;
+	padding: 0.1em 0;
 }
 
 .foldImage {

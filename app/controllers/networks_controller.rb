@@ -33,7 +33,7 @@ class NetworksController < ApplicationController
   def search
     @query = params[:query] || ""
     
-    @networks = Network.find_with_ferret(@query)
+    @networks = Network.find_with_ferret(@query, :limit => :all)
     
     respond_to do |format|
       format.html # search.rhtml

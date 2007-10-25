@@ -33,7 +33,7 @@ class BlobsController < ApplicationController
   def search
     @query = params[:query] == nil ? "" : params[:query] + "~"
     
-    @blobs = Blob.find_with_ferret(@query, :sort => Ferret::Search::SortField.new(:local_name, :reverse => false), :limit => :all)
+    @blobs = Blob.find_with_ferret(@query, :limit => :all)
     
     respond_to do |format|
       format.html # search.rhtml
