@@ -7,6 +7,10 @@
 
 <h1>Workflow: <%=h @workflow.title %></h1>
 
+<div class="workflow_currentlicense_box">
+	<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
+</div>
+	
 <div class="workflow_left_box">
 	<div class="workflow_version_selector_box">
 		<% versions_count = @workflow.versions.size -%>
@@ -14,6 +18,7 @@
 			<tbody>
 				<tr>
 					<td style="text-align: left; font-size: 108%; font-weight: bold; color: #990000;">
+						<img src="/images/famfamfam_silk/help.png" title="header=[] body=[] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
 						Version: 
 						<% if (params[:version] == nil || params[:version] == versions_count.to_s) %>
 							<%= versions_count.to_s + ' (latest)' %>
@@ -43,15 +48,15 @@
 			</tbody>
 		</table>
 	</div>
-	<div class="workflow_version_box">
-		
-		<div class="workflow_currentlicense_box">
-			<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
-		</div>
-		
+	<div class="workflow_version_box">		
 		<p>
 			<b>Title:</b>
 			<%=h @workflow.title %>
+		</p>
+		
+		<p>
+			<b>Version created on:</b>
+			<%=datetime @workflow.created_at %>
 		</p>
 		
 		<% unless @workflow.image.nil? %>
@@ -68,40 +73,90 @@
 			</p>
 		</div>
 		
-		<% unless @workflow.svg.nil? %>
-			<p>
-				<b>SVG:</b><br />
-				<%= link_to '[Download SVG]', url_for_file_column(@workflow, "svg") %>
-			</p>
+		<% if logged_in? %>
+			<div class="sectionIcons">
+				<ul class="sectionIcons">
+					<% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %><li><%= icon('download', download_workflow_url(@workflow), nil, nil, 'Download Workflow') %></li><% end %>
+					<% unless @workflow.svg.nil? %><li><%= link_to 'Download Scalable Diagram (SVG)', url_for_file_column(@workflow, "svg") %></li><% end %>
+					<% if @workflow.authorized?("destroy", current_user) %><li><%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Workflow Version)') %><% end %>
+				</ul>
+			</div>
 		<% end %>
+		
+		<br/>
 
+		<% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
+			<h2>
+				<img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section provides options for executing the workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+				Run
+			</h2>
+		
+			<table width="100%">
+				<tr>
+					<td width="70">
+						<%= image_tag "taverna.png" %>
+					</td>
+					<td>
+						<p style="text-align: center;">
+							<b>Run this workflow in the <%= link_to "Taverna Workbench", "http://taverna.sourceforge.net/" %></b><br/>
+							Copy and paste this link into "Open workflow location..."<br/>
+							<%= link_to download_workflow_url(@workflow), download_workflow_url(@workflow) %>
+						</p>
+			
+						<p style="text-align: center;">
+							<b>Authenticate the download using your username and password</b><br/>
+							<% if logged_in? and current_user.username.nil? %>
+								Click <%= link_to 'here', edit_user_path(current_user) %> to register your username and password
+							<% else %>
+								Replace <font color="#000099">http://</font> with <font color="#000099">http://<%=(logged_in? and !current_user.username.nil?) ? h(current_user.username) : "yourusername" %>:yourpassword@</font>
+							<% end %> 
+						</p>
+					</td>
+					<td width="70">
+						<%= image_tag "taverna.png" %>
+					</td>
+				</tr>
+			</table>
+			<br />
+		<% end %>
 	</div>
 </div>
 
 <div class="workflow_right_box">
 	<div class="workflow_section_box">
-		<p>
-			<b>Uploader:</b>
+		<p class="heading">
+			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The uploader is the person who uploaded this workflow on to myExperiment, and who manages the workflow on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+			Uploader:
 		</p>
 		<p>
 			<%= contributor(@workflow.contribution.contributor_id, @workflow.contribution.contributor_type, true, 60) %>
 		</p>
 		
 		<% if false %>
+			<p class="heading">
+				<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The unique name assigned to the workflow in myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+				Unique:
+			</p>
 			<p>
-				<b>Unique:</b>
 				<%=h @workflow.unique_name %>
 			</p>
 		<% end %>
 	</div>
 	
 	<div class="workflow_section_box">
-		<p>
-			<!--<img src="images/help.png" title="header=[] body=[The size of the tags show how popular the tag is on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>-->
-			<strong>Tags</strong>
+		<p class="heading">
+			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The size of the tags show how popular they are on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+			Tags
 		</p>
 		
-		<div id="tags">	
+		<div id="tags">
+			<p style="text-align: center; border-top: 1px dotted #666666; border-bottom: 1px dotted #666666; padding: 0.2em 0; margin: 0.4em 0 0.6em 0;">
+				<small>
+					<a href="">All Tags</a>
+					&nbsp;&nbsp;&nbsp;
+					<a href=""><% if (logged_in? and current_user.id == @workflow.contribution.contributor_id and @workflow.contribution.contributor_type == 'User')%> My <% else %> Uploader's <% end %> Tags</a>
+				</small>
+			</p>
 			<% unless (tags = @workflow.tags).empty? %>
 				<%= tag_cloud_from_collection(tags) %>
 			<% else %>
@@ -130,8 +185,9 @@
 	</div>
 	
 	<div class="workflow_section_box">
-		<p>
-			<strong>Ratings</strong>
+		<p class="heading">
+			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[...] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+			Ratings
 		</p>
 		
 		<center>
@@ -140,8 +196,9 @@
 				<div id="star-ratings-block">
 					<%= render :partial => "ratings/rating", :locals => { :rateable => @workflow, :controller => controller.controller_name } %>
 				</div>
+				<p>You rated it: </p>
 			<% else %>
-				<%= number_with_precision(@workflow.rating*20, 0) %>&#37 (<%= pluralize @workflow.ratings.count, 'rating' %>)
+				Current: <%= number_with_precision(@workflow.rating, 2) %>/5 (<%= pluralize @workflow.ratings.count, 'rating' %>)
 				<p><strong><%= link_to "Sign in", new_session_url %> to rate and see breakdown of ratings</strong></p>
 			<% end %>
 		</center>
@@ -154,7 +211,7 @@
 						<ul>			
 							<% ratings.each do |rating| %>
 								<li>
-									<%= name(rating.user_id) %> - <%= rating.rating %>
+									<%= name(rating.user_id) %> - <%= rating.rating %>/5
 								</li>
 							<% end %>
 						</ul>
@@ -165,7 +222,10 @@
 	</div>
 	
 	<div class="fold">
-		<div class="foldTitle">Statistics</div>
+		<div class="foldTitle">
+			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The size of the tags show how popular they are on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+			Statistics
+		</div>
 		<div class="foldContent" style="display: none;">
 			<%= render :partial => "contributions/statistics", :object => @workflow.contribution %>
 
@@ -190,87 +250,46 @@
 		    </p>
 		</div>
 	</div>
+	
+	<br/>
+	
+	<% if logged_in? %>
+		<div class="sectionIcons">
+			<ul class="sectionIcons">
+				<% if @workflow.authorized?("edit", current_user) %><li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit Workflow Entry')%></li><% end %>
+				<% if @workflow.authorized?("destroy", current_user) %><li><%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Workflow (incl all versions)') %><% end %>
+			</ul>
+		</div>
+	<% end %>
 </div>
 
 <div class="clearer">&nbsp;</div>
-
-<p>
-			<b>Created at:</b>
-			<%=datetime @workflow.created_at %>
-		</p>
-		
-		<p>
-			<b>Updated at:</b>
-			<%=datetime @workflow.updated_at %>
-		</p>
-
-<% if logged_in? %>
-  <div class="sectionIcons">
-    <ul class="sectionIcons">
-   
-      <% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %><li><%= icon('download', download_workflow_url(@workflow), nil, nil, 'Download workflow') %></li><% end %>
-      <li><%= icon('bookmark', nil, nil, nil, nil, true) %> <%= link_to_remote 'Bookmark Workflow', :url => bookmark_workflow_path(@workflow), :update => 'bookmarks', :success => "new Effect.Highlight('bookmarks', { duration: 1.5 });" %></li> 
-      <% if @workflow.authorized?("edit", current_user) %><li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit workflow')%></li><% end %>
-
-      <% if @workflow.authorized?("destroy", current_user) %><li><%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove workflow') %><% end %>
-
-    </ul>
-  </div>
-<% end %>
-
-<% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
-  <h2>Download</h2>
-
-  <table width="100%">
-    <tr>
-      <td width="70">
-        <%= image_tag "taverna.png" %>
-      </td>
-      <td>
-        <p>
-          <b>Execute this workflow in the <%= link_to "Taverna Workbench", "http://taverna.sourceforge.net/" %></b><br/>
-          Copy and paste this link into "Open workflow location..."<br/>
-          <%= link_to download_workflow_url(@workflow), download_workflow_url(@workflow) %>
-        </p>
-        
-        <p>
-          <b>Authenticate the download using your username and password</b><br/>
-          <% if logged_in? and current_user.username.nil? %>
-          	Click <%= link_to 'here', edit_user_path(current_user) %> to register your username and password
-          <% else %>
-          	Replace <font color="#000099">http://</font> with <font color="#000099">http://<%=(logged_in? and !current_user.username.nil?) ? h(current_user.username) : "yourusername" %>:yourpassword@</font>
-          <% end %> 
-        </p>
-      </td>
-      <td width="70">
-        <%= image_tag "taverna.png" %>
-      </td>
-    </tr>
-  </table>
-  
-  <br />
-<% end %>
 
 <br/>
 
 <div id="tabsContainer" class="tabsContainer"></div>
 
 <div class="tabContainer">
-  <div class="tabTitle">Actions</div>
+  <div class="tabTitle">Citations</div>
   <div class="tabContent">
 
-    <p>
-      <b>Bookmarked by:</b><br/>
-      <div id="bookmarks">
-        <% unless @workflow.bookmarks.empty? %>
-          <%=h @workflow.bookmarks.collect {|b| b.user.name}.join(", ") %>
-        <% else %>
-          No bookmarks
-        <% end %>
-      </div>
-    </p>
-    
-	<br/>
+    <% unless (citations = @workflow.citations).empty? %>
+      <% citations.each_index do |i| %>
+        <p>
+          <%= i.to_i + 1 %>.  <%= render :partial => "citations/citation", :object => citations[i] %>
+        </p>
+      <% end %>
+    <% else %>
+      <p>None</p>
+    <% end %>
+
+    <% if logged_in? %>
+	    <ul class="sectionIcons">
+	      <li><%= icon('new', new_citation_path(@workflow), nil, nil, 'New Citation', nil) %></li>
+	      <li><%= icon('edit', citations_path(@workflow), nil, nil, 'Edit Citations', nil) %></li>
+	    </ul>
+    <% end %>
+
   </div>
 </div>
 
@@ -288,33 +307,7 @@
 <% end %>
 
 <div class="tabContainer">
-  <div class="tabTitle">Citations</div>
-  <div class="tabContent">
-
-    <% unless (citations = @workflow.citations).empty? %>
-      <% citations.each_index do |i| %>
-        <p>
-          <%= i.to_i + 1 %>.  <%= render :partial => "citations/citation", :object => citations[i] %>
-        </p>
-      <% end %>
-    <% else %>
-      <p>None</p>
-    <% end %>
-
-    <% if logged_in? %>
-      <% if logged_in? %>
-        <ul class="sectionIcons">
-          <li><%= icon('new', new_citation_path(@workflow), nil, nil, 'New Citation', nil) %></li>
-          <li><%= icon('edit', citations_path(@workflow), nil, nil, 'Edit Citations', nil) %></li>
-        </ul>
-      <% end %>
-    <% end %>
-
-  </div>
-</div>
-
-<div class="tabContainer">
-  <div class="tabTitle">Versions</div>
+  <div class="tabTitle">Versions History</div>
   <div class="tabContent">
     <% if params[:version] %>
       <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow, :versions => @latest_version } %>
@@ -324,33 +317,26 @@
   </div>
 </div>
 
-<% if logged_in? %>
-  <div class="tabContainer">
-    <div class="tabTitle">Comments</div>
-    <div class="tabContent">
-      <% form_remote_tag(:url => comment_workflow_path(@workflow), :update => 'comments', :position => 'bottom') do %>
-        <%= text_area_tag :comment, nil, :size => "30x4" %><br/>
-        <%= submit_tag "Add Comment" %>
-      <% end %>
-      <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
-    </div>
-  </div>
-<% else %>
-  <% unless @workflow.comments.empty? %>
-    <div class="tabContainer">
-      <div class="tabTitle">Comments</div>
-      <div class="tabContent">
-        <%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
-      </div>
-    </div>
-  <% end %>
-<% end %>
-
 <% if logged_in? and @workflow.owner? current_user %>
   <div class="tabContainer">
-    <div class="tabTitle">History</div>
+    <div class="tabTitle">Viewing History</div>
     <div class="tabContent">
       <%= render :partial => "contributions/history", :object => @workflow.contribution %>
     </div>
   </div>
+<% end %>
+
+<br/>
+
+<h2>Comments</h2>
+
+<% unless @workflow.comments.empty? %>
+	<%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
+<% end %>
+
+<% if logged_in? %>
+	<% form_remote_tag(:url => comment_workflow_path(@workflow), :update => 'comments', :position => 'bottom') do %>
+		<%= text_area_tag :comment, nil, :size => "30x4" %><br/>
+		<%= submit_tag "Add Comment" %>
+	<% end %>
 <% end %>

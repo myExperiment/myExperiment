@@ -14,6 +14,7 @@
 	<%= stylesheet_link_tag 'styles' %>
 	<%= stylesheet_link_tag 'gadgets' %>
 	<%= javascript_include_tag :defaults %>
+	<%= javascript_include_tag "boxover.js" %>
 	<% if controller.controller_name.to_s == "workflows" and controller.action_name.to_s == "index" %>
 		<link href="<%= workflows_url %>.rss" rel="alternate" type="application/rss+xml" title="myExperiment - Latest Workflows" />
 	<% end %>

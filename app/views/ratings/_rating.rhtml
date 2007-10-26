@@ -29,5 +29,5 @@
     </li>
 </ul>
 <p style="margin-top: 0.2em;">
-  <%= number_with_precision(rateable.rating*20, 0) %>&#37 (<%= pluralize rateable.ratings.count, 'rating' %>)
+  Current: <%= number_with_precision(rateable.rating, 2) %>/5 (<%= pluralize rateable.ratings.count, 'rating' %>)
 </p>
