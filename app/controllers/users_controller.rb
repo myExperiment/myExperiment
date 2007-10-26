@@ -31,7 +31,7 @@ class UsersController < ApplicationController
   # GET /users;search
   # GET /users.xml;search
   def search
-    @query = params[:query] || ""
+    @query = params[:query] == nil ? "" : params[:query] + "~"
     
     @users = User.find_with_ferret(@query, :limit => :all)
     

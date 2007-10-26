@@ -31,7 +31,7 @@ class NetworksController < ApplicationController
   # GET /networks;search
   # GET /networks.xml;search
   def search
-    @query = params[:query] || ""
+    @query = @query = params[:query] == nil ? "" : params[:query] + "~"
     
     @networks = Network.find_with_ferret(@query, :limit => :all)
     
