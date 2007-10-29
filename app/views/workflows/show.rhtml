@@ -3,6 +3,22 @@
     var url = $("workflow_versions").value;
 	location.href = url;
   }
+  
+  function showAllTags() {
+  	Element.show('all_tags'); 
+	Element.hide('user_tags'); 
+	$('tagsSelectAllLink').className = "tagsSelectorOn"; 
+	$('tagsSelectUserLink').className = "tagsSelectorOff"; 
+	return false;
+  }
+  
+  function showUsersTags() {
+  	Element.hide('all_tags'); 
+	Element.show('user_tags'); 
+	$('tagsSelectAllLink').className = "tagsSelectorOff"; 
+	$('tagsSelectUserLink').className = "tagsSelectorOn"; 
+	return false;
+  }
 </script>
 
 <h1>Workflow: <%=h @workflow.title %></h1>
@@ -167,15 +183,36 @@
 		</p>
 		
 		<div id="tags">
-			<p style="text-align: center; border-top: 1px dotted #666666; border-bottom: 1px dotted #666666; padding: 0.2em 0; margin: 0.4em 0 0.6em 0;">
-				<small>
-					<a href="">All Tags</a>
-					&nbsp;&nbsp;&nbsp;
-					<a href=""><% if (logged_in? and current_user.id == @workflow.contribution.contributor_id and @workflow.contribution.contributor_type == 'User')%> My <% else %> Uploader's <% end %> Tags</a>
-				</small>
-			</p>
 			<% unless (tags = @workflow.tags).empty? %>
-				<%= tag_cloud_from_collection(tags) %>
+				<p style="text-align: center; margin: 0.4em 0 0.6em 0;">
+					<a id="tagsSelectAllLink" 
+					   class="tagsSelectorOn" 
+					   href="" 
+					   onclick="showAllTags(); return false;">
+					   All Tags 	
+				   </a>
+	
+					<% if (logged_in? and current_user.id == @workflow.contribution.contributor_id and @workflow.contribution.contributor_type == 'User') then tagLink2Text = "My" else tagLink2Text = "Uploader's" end; tagLink2Text += " Tags" -%>
+					
+					<a id="tagsSelectUserLink" 
+					   class="tagsSelectorOff" 
+					   href="" 
+					   onclick="showUsersTags(); return false;">
+					   <%= tagLink2Text %>	
+				   </a>
+				</p>
+				<div id="all_tags">
+					<% unless (tags = @workflow.tags).empty? %>
+						<%= tag_cloud_from_collection(tags) %>
+					<% end %>
+				</div>
+				<div id="user_tags"  style="display: none;">
+					<% if logged_in? %>
+						<% unless (tags = current_user.contribution_tags).empty? %>
+							<%= tag_cloud_from_collection(tags) %>
+						<% end %>
+					<% end %>
+				</div>
 			<% else %>
 				<p><i>None</i></p>
 			<% end %>
@@ -364,7 +401,7 @@
 							   :loading => "Element.show('addcomment_indicator')",
 	                    	   :complete => "Element.hide('addcomment_indicator')") do %>
 				<textarea id="comment" name="comment" rows="10" style="width: 99%;"></textarea><br/>
-				<p style="font-size: 85%; color: #333333; padding: 0.5em 0 1.4em 0; text-align">Note: some HTML is allowed: &lt;p&gt;, &lt;a&gt;, &lt;b&gt;, &lt;blockquote&gt;, &lt;em&gt;, &lt;i&gt;, &lt;strong&gt; and &lt;u&gt;. </a></p>
+				<p style="font-size: 85%; color: #333333; padding: 0.5em 0 1.4em 0; text-align">Note: some HTML is allowed: &lt;p&gt;, &lt;a&gt;, &lt;b&gt;, &lt;blockquote&gt;, &lt;em&gt;, &lt;i&gt;, &lt;strong&gt; and &lt;u&gt;.</p>
 				<%= submit_tag "Submit Comment" %>
 				<img id="addcomment_indicator" style="margin-left: 1em; display: none;" src="/images/spinner.gif" />
 			<% end %>
