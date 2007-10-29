@@ -70,19 +70,5 @@ require 'acts_as_ferret'
 
 require 'smtp_tls'
 
-ActionMailer::Base.smtp_settings = {
-  :address  => "smtp.gmail.com",
-  :port  => 25, 
-  :domain  => "myexpmail@gmail.com",
-  :user_name  => "myexpmail@gmail.com",
-  :authentication  => :login
-} 
-
-ActionMailer::Base.server_settings = {
-  :address => "smtp.gmail.com",
-  :port => "587",
-  :domain => "myexpmail@gmail.com",
-  :authentication => :plain,
-  :user_name => "myexpmail@gmail.com",
-}
+load 'config/environment_private.rb' if FileTest.exist?('config/environment_private.rb')
 
