@@ -1,0 +1,39 @@
+<% unless logged_in? %>
+
+<div class="myexperiment_gadget">
+  <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+    
+  <div class="header">
+    <p>Sign in / Sign up</p>
+  </div>
+  
+  <div class="contents">
+    <% form_tag session_path do %>
+      <p>
+        Username:<br />
+        <%= text_field_tag 'session[username]' %><br />
+        Password:<br />
+        <%= password_field_tag 'session[password]' %><br />
+        Remember me: <%= check_box_tag 'session[remember_me]' %>
+      </p>
+            
+      <p>
+        OR use OpenID:<br />
+        <%= text_field_tag 'openid_url', nil, :size => 17 %>
+      </p>
+      
+      <p>
+        <%= submit_tag "Sign in", :disable_with => "Signing in..." %>
+      </p>
+    <% end %>
+    
+    <p>
+      <b>Need an account?</b><br />
+      <%= link_to "Click here to sign up", new_user_url %>
+    </p>
+  </div>
+  
+  <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+</div>
+
+<% end %>
