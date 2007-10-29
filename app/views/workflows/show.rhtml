@@ -291,7 +291,7 @@
         </p>
       <% end %>
     <% else %>
-      <p>None</p>
+      <p><i>None</i></p>
     <% end %>
 
     <% if logged_in? %>
@@ -349,6 +349,8 @@
 
 	<% unless @workflow.comments.empty? %>
 		<%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
+	<% else %>
+		<p><i>No comments yet</i></p>
 	<% end %>
 	
 	<br/>
