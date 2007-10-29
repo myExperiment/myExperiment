@@ -808,7 +808,7 @@ table.comment td.avatar {
 	width: 70px; 
 	padding: 0.8em; 
 	text-align: center; 
-	background-color: #EEEEEE; 
+	background-color: #f5f5f5; 
 }
 
 table.comment td.header {
@@ -816,7 +816,7 @@ table.comment td.header {
 	height: 1.5em;
 	vertical-align: middle;
 	text-align: left; 
-	background-color: #EEEEEE; 
+	background-color: #f5f5f5; 
 	color: #333333; 
 	padding: 0.5em 0.8em;
 }

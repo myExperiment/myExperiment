@@ -243,26 +243,22 @@
 		</div>
 		<div class="foldContent" style="display: none;">
 			<%= render :partial => "contributions/statistics", :object => @workflow.contribution %>
-
-		    <p>
-		      <b>Number of bookmarks:</b> 
-		      <%=h @workflow.bookmarks.length %>
-		    </p>
 		
+			<p>
+		      <b>Number of tags:</b> 
+		      <%=h @workflow.taggings.length %>
+		    </p>
+			
+			<p>
+		      <b>Number of ratings:</b> 
+		      <%=h @workflow.ratings.length %>
+		    </p>
+			
 		    <p>
 		      <b>Number of comments:</b> 
 		      <%=h @workflow.comments.length %>
 		    </p>
-		
-		    <p>
-		      <b>Number of ratings:</b> 
-		      <%=h @workflow.ratings.length %>
-		    </p>
-		
-		    <p>
-		      <b>Number of taggings:</b> 
-		      <%=h @workflow.taggings.length %>
-		    </p>
+		    
 		</div>
 	</div>
 	
