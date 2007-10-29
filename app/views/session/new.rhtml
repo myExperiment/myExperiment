@@ -1,33 +1,6 @@
-<h1>Sign In</h1>
-
-<p>Please enter your myExperiment username or password (if you have one) or sign in using OpenID.</p>
-
-<% form_tag session_path do -%>
-<p><label for="username">Username</label><br/>
-<%= text_field_tag 'session[username]' %></p>
-
-<p><label for="password">Password</label><br/>
-<%= password_field_tag 'session[password]' %></p>
-
-<p><label for="remember_me">Remember me:</label>
-<%= check_box_tag 'session[remember_me]' %></p>
-
-<p>
-  ...or use:
-</p>
-
-<p>
-  <label for="openid_url">OpenID:</label>
-  <%= text_field_tag 'openid_url' %>
-</p>
-
-<p>
-  <%= submit_tag 'Sign in', :disable_with => "Signing in&hellip;" %>
-</p>
-
 <br/>
-
-<p>
-	<a href="<%= new_user_path %>">Sign Up</a>
-</p>
-<% end -%>
+<center>
+	<div style="width: 190px;">
+		<%= render :partial => "gadgets/sign_in" %>
+	</div>
+</center>

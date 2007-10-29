@@ -1,20 +1,20 @@
 <li>
-  <table width="600">
+  <table class="comment">
     <tr>
-      <td width="100">
-        <%= avatar(comment.user, 100) %><br/>
-        <%= name(comment.user) %>
+      <td class="avatar" rowspan="2">
+        <%= avatar(comment.user, 60) %><br/>
+        <p style="text-align: center;"><%= name(comment.user) %></p>
       </td>
-      <td width="500">
+      <td class="header" height="1.5em">
+		  <!--<% unless comment.title.nil? %><b><%=h comment.title %></b><br/><% end %>-->
+	      <%=datetime comment.created_at %>
+	  </td>
+	<tr>
+	  <td class="content">        
         <p>
-          <% unless comment.title.nil? %><b><%=h comment.title %></b><br/><% end %>
-          <%=datetime comment.created_at %>
+          <%= comment.comment %>
         </p>
-        
-        <p>
-          <%=h comment.comment %>
-        </p>
-      </td>
-    </tr>
+	  </td>
+	</tr>
   </table>
 </li>
