@@ -2,6 +2,14 @@
   <h2>All Pictures</h3>
 <% end %>
 
+<% if my_page? params[:user_id] %>
+  <ul class="sectionIcons">
+    <li><%= icon('avatar', new_picture_path(current_user), nil, nil, 'Upload new picture')%></li>
+  </ul>
+<% end %>
+
+<% unless @pictures.empty? %>
+
 <table class="alt_table">
   <tr>
     <th> </th>
@@ -42,5 +50,11 @@
   </tr>
 <% end %>
 </table>
+
+<% else %>
+
+<p>No pictures yet!</p>
+
+<% end %>
 
 <br />

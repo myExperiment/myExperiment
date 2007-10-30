@@ -2,6 +2,6 @@
 
 <h2><%= pluralize(@workflows.length, "Workflow") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
 
-<%= render :partial => "workflows/table", :locals => { :collection => @workflows } %>
+<%= render :partial => "workflows/table", :locals => { :collection => @workflows, :query => @query } %>
 
 <br />

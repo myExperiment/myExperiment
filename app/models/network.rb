@@ -58,8 +58,8 @@ class Network < ActiveRecord::Base
   
   validates_presence_of :user_id, :title
   
-  validates_uniqueness_of :unique_name, 
-                          :allow_nil => true
+  # bugfix. after unique_name has been set, if you un-set it, Rails throws an error!
+  validates_uniqueness_of :unique_name, :if => Proc.new { |network| !(network.unique_name.nil? or network.unique_name.empty?) }
   
   belongs_to :owner,
              :class_name => "User",

@@ -18,6 +18,7 @@
 	<ul class="gadget_list">
       <li><%=messages_link(current_user) %></li>
       <li><%=link_to "#{icon("bookmark", nil, nil, nil, "")}Bookmarks", bookmarks_path %></li>
+      <li><%=link_to "#{icon("pictures", nil, nil, nil, "")}Pictures", pictures_path(current_user) %></li>
       <li><%=friendships_pending_link(current_user) %></li>
       <li><%=memberships_pending_link(current_user) %></li>
     </ul>

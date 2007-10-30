@@ -1,3 +1,14 @@
+<% if false %>
+# all commented workflows
+@user.comments.collect {|c| c.commentable if c.commentable_type.to_s == "Workflow" }
+
+# all rated workflows
+@user.ratings.collect {|c| c.rateable if c.commentable_type.to_s == "Workflow" }
+
+# all commented workflows
+@user.taggings.collect { |c| c.commentable if c.commentable_type.to_s == "Workflow" }
+<% end %>
+
 <h2>Details</h2>
 
 <table width="100%">

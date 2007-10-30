@@ -38,6 +38,14 @@ class User < ActiveRecord::Base
   
   acts_as_tagger
   
+  has_many :ratings,
+           :order => "created_at DESC",
+           :dependent => :destroy
+  
+  has_many :comments,
+           :order => "created_at DESC",
+           :dependent => :destroy
+  
   has_many :downloads, 
            :order => "created_at DESC", 
            :dependent => :destroy

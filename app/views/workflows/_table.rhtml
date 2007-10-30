@@ -24,14 +24,8 @@
     <td width="200">
       <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
       <p>
-        <b><%=h workflow.title %></b>
-        <% if desc = workflow.body_html %>
-          <br /><% if desc.length < 200 %>
-            <%= desc %>
-          <% else %>
-            <%= desc[0..200].strip %>..
-          <% end %>
-        <% end %>
+        <b><%=query ? highlight_all(workflow.title, query) : h(workflow.title) %></b><br />
+        <%=query ? highlight_all(truncate(workflow.body_html, 200), query) : truncate(workflow.body_html, 200) %>
       </p>
     </td>
     <% unless RUBY_PLATFORM =~ /mswin32/ %>

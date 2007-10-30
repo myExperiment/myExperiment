@@ -575,9 +575,21 @@ module ApplicationHelper
       return "famfamfam_silk/user_comment.png"
     when "wizard"
       return "famfamfam_silk/wand.png"
+    when "pictures"
+      return "famfamfam_silk/photos.png"
     else
       return nil
     end
+  end
+  
+  def highlight_all(text, string)
+    rtn = text
+    
+    string.each(separator=" ") { |substr|
+      rtn = highlight(text, substr)
+    }
+    
+    return rtn
   end
   
 protected
