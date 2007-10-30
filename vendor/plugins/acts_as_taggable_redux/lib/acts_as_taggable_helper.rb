@@ -19,7 +19,7 @@ module ActsAsTaggableHelper
     
   def tag_cloud_from_collection(tags, original=false)
     tags = tags.sort { |a, b|
-      a.name <=> b.name
+      a.name.downcase <=> b.name.downcase
     }
     
     # TODO: add option to specify which classes you want and overide this if you want?
