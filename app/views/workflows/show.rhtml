@@ -393,7 +393,7 @@
 							   :update => 'comments', 
 							   :position => 'bottom', 
 							   :loading => "Element.show('addcomment_indicator')",
-	                    	   :complete => "Element.hide('addcomment_indicator'); new Effect.Highlight('all_tags', { duration: 1.5 });") do %>
+	                    	   :complete => "Element.hide('addcomment_indicator'); new Effect.Highlight('comments', { duration: 1.5 });") do %>
 				<textarea id="comment" name="comment" rows="10" style="width: 99%;"></textarea><br/>
 				<p style="font-size: 85%; color: #333333; padding: 0.5em 0 1.4em 0; text-align">Note: some HTML is allowed: &lt;p&gt;, &lt;a&gt;, &lt;b&gt;, &lt;blockquote&gt;, &lt;em&gt;, &lt;i&gt;, &lt;strong&gt; and &lt;u&gt;.</p>
 				<%= submit_tag "Submit Comment" %>

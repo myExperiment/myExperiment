@@ -125,6 +125,10 @@ small {
 	border-left: 2px solid #eee;
 }
 
+#ft {
+	margin: 2em 0;
+}
+
 #tag_clouds {
 	text-align: center;
 }
@@ -152,8 +156,7 @@ small {
 	text-align: center;
 	font-weight: bolder;
 	font-size: 108%;
-	padding: 7px 0;
-	*padding: 6px 0;
+	padding: 6px 0;
 	margin-left: 0;
 	margin-bottom: 0;
 	margin-top: 0;

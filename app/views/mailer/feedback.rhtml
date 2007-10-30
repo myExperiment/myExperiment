@@ -1,3 +1,6 @@
-myExperiment feedback from: <%= @name %>
+myExperiment feedback from: <%= white_list @name %>
 
-<%= @content %>
+Subject: <%= white_list @subject %>
+
+Message:
+<%= white_list @content %>

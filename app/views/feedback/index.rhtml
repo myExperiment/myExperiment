@@ -1,2 +1,29 @@
-<h1>Feedback#index</h1>
-<p>Find me in app/views/feedback/index.rhtml</p>
+<h1>Give us Feedback</h1>
+
+<div style="margin-left: 3em; margin-top: 3em;">
+	<% form_tag ({:action => :create}) do %>
+		<p>
+	    	<b>From</b><br />
+	    	<%= text_field_tag :from, logged_in? ? current_user.name : '', :size => '50%' %>
+	  	</p>
+		
+		<p>
+	    	<b>Email (optional)</b><br />
+	    	<%= text_field_tag :email, (logged_in? && current_user.email) ? current_user.email : '', :size => '50%' %>
+	  	</p>
+		
+		<p>
+	    	<b>Subject</b><br />
+	    	<%= text_field_tag :subject, nil, :size => '50%' %>
+	  	</p>
+		
+		<p>
+			<b>Message</b><br />
+			<textarea id="feedback_content" name="content" rows="6" style="width: 50%;"></textarea><br/>
+		</p>
+		
+		<p>
+	    	<%= submit_tag "Submit Feedback", :disable_with => "Submitting&hellip;" %>
+	  	</p>
+	<% end %>
+</div>

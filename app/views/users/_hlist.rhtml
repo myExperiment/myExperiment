@@ -5,13 +5,6 @@
 <li>
   <p>
     <%= render :partial => "users/avatar", :locals => { :user => user } %><br/>
-    <% if my_page? user.id %>
-    <%= link_to 'Show', user_path(user) %>
-    <%= link_to 'Edit', edit_user_path(user) %>
-    <%= link_to 'Destroy', user_path(user), :confirm => 'Are you sure?', :method => :delete %>
-    <% else %>
-     
-    <% end %>
   </p>
 </li>
 <% end %></ul>

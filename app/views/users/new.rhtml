@@ -35,7 +35,7 @@
 			</p>
 			
 			<p>
-			  <%= submit_tag "Create" %>
+			  <%= submit_tag "Register", :disable_with => "Registering&hellip;" %>
 			</p>
 		</div>
   	</div>
@@ -57,11 +57,11 @@
 			
 			<p>
 				<strong>OpenID</strong><br/>
-				<%= text_field_tag 'openid_url', nil, :size => 35 %>
+				<%= text_field_tag 'openid_url', nil, :size => '35' %>
 			</p>
 			
 			<p>
-				<%= submit_tag 'Create with OpenID', :disable_with => "Verifying&hellip;" %>
+				<%= submit_tag 'Register with OpenID', :disable_with => "Verifying&hellip;" %>
 			</p>
 		</div>
 	</div>
