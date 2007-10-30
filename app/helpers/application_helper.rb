@@ -582,6 +582,20 @@ module ApplicationHelper
     end
   end
   
+  def user_tags_for_workflow(workflow, user_id)
+    all_tags = workflow.taggings
+    final_tags = []
+    
+    all_tags.each do |tagging|
+      if tagging.user_id == user_id 
+        tag = tagging.tag
+        final_tags += [tag]
+      end
+    end
+    
+    return final_tags
+  end
+
   def highlight_all(text, string)
     rtn = text
     

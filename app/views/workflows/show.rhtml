@@ -8,7 +8,8 @@
   	Element.show('all_tags'); 
 	Element.hide('user_tags'); 
 	$('tagsSelectAllLink').className = "tagsSelectorOn"; 
-	$('tagsSelectUserLink').className = "tagsSelectorOff"; 
+	$('tagsSelectUserLink').className = "tagsSelectorOff";
+	new Effect.Highlight('all_tags', { duration: 1.5 });
 	return false;
   }
   
@@ -16,7 +17,8 @@
   	Element.hide('all_tags'); 
 	Element.show('user_tags'); 
 	$('tagsSelectAllLink').className = "tagsSelectorOff"; 
-	$('tagsSelectUserLink').className = "tagsSelectorOn"; 
+	$('tagsSelectUserLink').className = "tagsSelectorOn";
+	new Effect.Highlight('user_tags', { duration: 1.5 });
 	return false;
   }
 </script>
@@ -161,16 +163,8 @@
 		<hr/>
 		
 		<p class="heading">
-			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[Who gets the credit for this Workflow?] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
-			Credits:
-		</p>
-		<p>&nbsp;</p>
-
-		<hr/>
-		
-		<p class="heading">
-			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[What other Workflows is this one based on?] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
-			Based on:
+			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[Who gets the credit for this Workflow? And what other Workflows is this one based on?] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+			Credits/Attribution:
 		</p>
 		<p>&nbsp;</p>
 		
@@ -207,8 +201,8 @@
 					<% end %>
 				</div>
 				<div id="user_tags"  style="display: none;">
-					<% if logged_in? %>
-						<% unless (tags = current_user.contribution_tags).empty? %>
+					<% if @workflow.contribution.contributor_type == 'User' %>
+						<% unless (tags = user_tags_for_workflow(@workflow, @workflow.contributor_id)).empty? %>
 							<%= tag_cloud_from_collection(tags) %>
 						<% end %>
 					<% end %>
@@ -399,7 +393,7 @@
 							   :update => 'comments', 
 							   :position => 'bottom', 
 							   :loading => "Element.show('addcomment_indicator')",
-	                    	   :complete => "Element.hide('addcomment_indicator')") do %>
+	                    	   :complete => "Element.hide('addcomment_indicator'); new Effect.Highlight('all_tags', { duration: 1.5 });") do %>
 				<textarea id="comment" name="comment" rows="10" style="width: 99%;"></textarea><br/>
 				<p style="font-size: 85%; color: #333333; padding: 0.5em 0 1.4em 0; text-align">Note: some HTML is allowed: &lt;p&gt;, &lt;a&gt;, &lt;b&gt;, &lt;blockquote&gt;, &lt;em&gt;, &lt;i&gt;, &lt;strong&gt; and &lt;u&gt;.</p>
 				<%= submit_tag "Submit Comment" %>

@@ -838,8 +838,8 @@ table.comment td.content p {
 }
 
 a.tagsSelectorOff {
-	margin: 0 0.5em;
-	padding: 0.3em 0.6em;
+	margin: 0 0.2em;
+	padding: 0.3em 0.4em;
 	border: 1px solid #999999;
 	background-color: transparent;
 	color: #333333;
@@ -848,8 +848,8 @@ a.tagsSelectorOff {
 }
 
 a.tagsSelectorOff:hover {
-	margin: 0 0.5em;
-	padding: 0.3em 0.6em;
+	margin: 0 0.2em;
+	padding: 0.3em 0.4em;
 	border: 1px solid #999999;
 	color: #FFFFFF;
 	background-color: #317eff;
@@ -858,8 +858,8 @@ a.tagsSelectorOff:hover {
 }
 
 a.tagsSelectorOn {
-	margin: 0 0.5em;
-	padding: 0.3em 0.6em;
+	margin: 0 0.2em;
+	padding: 0.3em 0.4em;
 	border: 1px solid #999999;
 	color: #FFFFFF;
 	background-color: #317eff;
