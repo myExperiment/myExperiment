@@ -588,12 +588,25 @@ module ApplicationHelper
     
     all_tags.each do |tagging|
       if tagging.user_id == user_id 
-        tag = tagging.tag
-        final_tags += [tag]
+        final_tags += [tagging.tag]
       end
     end
     
     return final_tags
+  end
+  
+  def all_tags_for_workflows()
+    taggings = Tagging.find(:all, :conditions => ["taggable_type = ?", "Workflow"])
+    tags = []
+    
+    taggings.each do |tagging|
+      tag = tagging.tag
+      unless tags.include? tag
+        tags += [tagging.tag]
+      end
+    end
+    
+    return tags
   end
 
   def highlight_all(text, string)

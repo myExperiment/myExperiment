@@ -22,7 +22,7 @@
 <body>
 	<div id="doc2" class="yui-t4">
 		<div id="hd">
-  			<div id="myexp_logo"><%= image_tag("logo.png") %></div>
+  			<div id="myexp_logo"><%= link_to image_tag("logo.png"), "/" %></div>
 			<ul class="tabnav">
 			  <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
 				<%= link_to "Users", users_path %>
@@ -40,7 +40,11 @@
   				<div class="yui-b">
 				    <div id="myexp_breadcrumbs_bar">
 					    <ul class="breadcrumbs">
-					    	<li><%= link_to "Home", "/" %></li>
+					    	<% if logged_in? %>
+					    		<li><%= link_to "Home", user_url(current_user) %></li>
+							<% else %>
+								<li><%= link_to "Home", "/" %></li>
+							<% end %>
 					    	<li><b>&#187;</b></li>
 					    	<%= render :partial => "breadcrumbs" %>
 					    </ul>
