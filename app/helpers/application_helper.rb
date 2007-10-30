@@ -702,7 +702,7 @@ protected
         end
       end
       
-      rtn << [item.created_at, "#{name(item.owner)} created the #{title(item)} network."]
+      rtn << [item.created_at, "#{name(item.owner)} created the #{title(item)} Group."]
     when "User"
       return rtn if before and item.created_at > before
       return rtn if after and item.created_at < after
@@ -737,7 +737,7 @@ protected
       end
         
       if owner.to_s == editor.to_s
-        rtn << [item.created_at, "#{owner} created the #{link} #{item.contributable_type.downcase}."]
+        rtn << [item.created_at, "#{owner} created the #{link} #{item.contributable_type.downcase == "blob" ? "File" : item.contributable_type.downcase}."]
       else
         case item.contributor_type
         when "Network"
@@ -746,7 +746,7 @@ protected
           owner_string = owner
         end
         
-        rtn << [item.created_at, "#{editor} created the #{link} #{item.contributable_type.to_s == "Blob" ? "file" : item.contributable_type.downcase} for #{owner_string}."]
+        rtn << [item.created_at, "#{editor} created the #{link} #{item.contributable_type.downcase == "blob" ? "File" : item.contributable_type.downcase} for #{owner_string}."]
       end
     when "Blog"
       if restrict_contributor
@@ -773,7 +773,7 @@ protected
           next unless (workflow.contributor_type.to_s == restrict_contributor.class.to_s and workflow.contributor_id.to_i == restrict_contributor.id.to_i)
         end
         
-        rtn << [workflow.updated_at, "#{editor} edited the #{versioned_workflow_link(item.id, workflow.version, false)} workflow."]
+        rtn << [workflow.updated_at, "#{editor} edited the #{versioned_workflow_link(item.id, workflow.version, false)} Workflow."]
       end
     when "PictureSelection"
       return rtn if before and item.created_at > before
