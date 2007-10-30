@@ -24,6 +24,7 @@
 require 'digest/sha1'
 
 require 'acts_as_contributor'
+require 'acts_as_creditor'
 
 class User < ActiveRecord::Base
   has_many :citations, 
@@ -143,6 +144,8 @@ class User < ActiveRecord::Base
   has_many :forums, :as => :contributor
   has_many :workflows, :as => :contributor
   
+  acts_as_creditor
+
   acts_as_ferret :fields => { :openid_url => { :store => :yes }, 
                               :name => { :store => :yes }, 
                               :username => { :store => :yes },

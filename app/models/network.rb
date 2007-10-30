@@ -22,9 +22,11 @@
 ##
 
 require 'acts_as_contributor'
+require 'acts_as_creditor'
 
 class Network < ActiveRecord::Base
   acts_as_contributor
+  acts_as_creditor
   
   has_many :blobs, :as => :contributor
   has_many :blogs, :as => :contributor

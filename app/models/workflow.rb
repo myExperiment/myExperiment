@@ -22,6 +22,9 @@
 ##
 
 require 'acts_as_contributable'
+require 'acts_as_creditable'
+require 'acts_as_attributor'
+require 'acts_as_attributable'
 
 class Workflow < ActiveRecord::Base
   has_many :citations, 
@@ -30,6 +33,11 @@ class Workflow < ActiveRecord::Base
   
   acts_as_contributable
   
+  acts_as_creditable
+
+  acts_as_attributor
+  acts_as_attributable
+
   acts_as_versioned
   
   acts_as_ferret :fields => { :title => { :store => :yes }, 
