@@ -1,5 +1,10 @@
 <li><%= link_to 'Users', users_path %></li>
 
+<% if ["edit"].include? controller.action_name.to_s %>
+	<li><b>&#187;</b></li>
+	<li><%= link_to h(@user.name), user_path(@user) %></li>
+<% end %>
+
 <% if ["show", "new", "edit", "search"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
@@ -8,7 +13,7 @@
   <% when "new" %>
     <li><%= link_to "New User", new_user_path %></li>
   <% when "edit" %>
-    <li><%= link_to "Edit: #{h(@user.name)}", edit_user_path(@user) %>
+    <li><%= link_to "Edit Account", edit_user_path(@user) %>
   <% when "search" %>  
     <li><%= link_to "Search Results", search_users_path(:query => @query) %></li>
   <% else %>
