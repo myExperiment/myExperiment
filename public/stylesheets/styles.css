@@ -294,6 +294,7 @@ small {
 	border-bottom: 2px solid #aaa;
 	pointer: pointer;
 	cursor: pointer;
+	width: 100%;
 }
 
 .foldTitle hr {

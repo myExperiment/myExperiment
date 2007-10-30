@@ -374,14 +374,14 @@
 
 <div class="commentsBox">
 	
-	<% unless logged_in? %>
-		<p><strong><%= link_to "Sign in", new_session_url %> to add a comment</strong></p>
-	<% end %>
-
 	<% unless @workflow.comments.empty? %>
 		<%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>
 	<% else %>
 		<p><i>No comments yet</i></p>
+	<% end %>
+	
+	<% unless logged_in? %>
+		<p><strong><%= link_to "Sign in", new_session_url %> to add a comment </strong></p>
 	<% end %>
 	
 	<br/>
