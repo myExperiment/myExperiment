@@ -35,6 +35,9 @@ class Picture < FlexImage::Model
            :foreign_key => :picture_id,
            :dependent => :nullify
            
+  has_many :picture_selections,
+           :dependent => :destroy
+           
   def select!
     unless selected?
       owner.profile.update_attribute :picture_id, id

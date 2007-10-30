@@ -34,6 +34,9 @@ class PicturesController < ApplicationController
   # GET /pictures/1/select.xml
   def select
     if @picture.select!
+      # create and save picture selection record
+      PictureSelection.create(:user => current_user, :picture => @picture)
+      
       respond_to do |format|
         flash[:notice] = 'Picture was successfully selected as profile avatar.'
         format.html { redirect_to pictures_url(@picture.owner) }

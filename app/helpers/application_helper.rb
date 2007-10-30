@@ -107,16 +107,19 @@ module ApplicationHelper
     end
     
     if user.avatar?
-      img = image_tag url_for(:controller => 'pictures',
-                              :action => 'show',
-                              :id => user.profile.picture_id,
-                              :size => "#{size}x#{size}"),
-                      :title => h(user.name)
+      img = image_tag avatar_url(user.profile.picture_id, size), :title => h(user.name)
     else
       img = null_avatar(size, h(user.name))
     end
     
     return link_to(img, user_url(user))
+  end
+  
+  def avatar_url(picture_id, size=200)
+    url_for(:controller => 'pictures',
+            :action => 'show',
+            :id => picture_id,
+            :size => "#{size}x#{size}")
   end
   
   def null_avatar(size=200, alt="Anonymous")
@@ -631,7 +634,7 @@ protected
     
     case contributor.class.to_s
     when "User"
-      collections = collections + [contributor.memberships_accepted, contributor.friendships_accepted, contributor.networks_owned]
+      collections = collections + [contributor.memberships_accepted, contributor.friendships_accepted, contributor.networks_owned, contributor.picture_selections]
       recursions = recursions + [contributor.networks, contributor.networks_owned, contributor.friends]
     when "Network"
       collections = collections + [contributor.memberships_accepted]
@@ -772,6 +775,15 @@ protected
         
         rtn << [workflow.updated_at, "#{editor} edited the #{versioned_workflow_link(item.id, workflow.version, false)} workflow."]
       end
+    when "PictureSelection"
+      return rtn if before and item.created_at > before
+      return rtn if after and item.created_at < after
+        
+      if restrict_contributor
+        return rtn unless (restrict_contributor.class.to_s == "User" and item.user_id.to_i == restrict_contributor.id.to_i)
+      end
+      
+      rtn << [item.created_at, "#{name(item.user)} selected a new avatar #{link_to image_tag(avatar_url(item.picture_id, 50)), user_path(item.user)}."]
     else
       return rtn
     end

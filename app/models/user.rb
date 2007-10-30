@@ -171,6 +171,10 @@ class User < ActiveRecord::Base
   has_many :pictures,
            :dependent => :destroy
            
+  has_many :picture_selections,
+           :order => "created_at DESC",
+           :dependent => :destroy
+           
   def avatar?
     self.profile and !(self.profile.picture_id.nil? or self.profile.picture_id.zero?)
   end
