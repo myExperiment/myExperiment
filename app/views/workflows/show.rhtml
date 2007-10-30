@@ -3,24 +3,6 @@
     var url = $("workflow_versions").value;
 	location.href = url;
   }
-  
-  function showAllTags() {
-  	Element.show('all_tags'); 
-	Element.hide('user_tags'); 
-	$('tagsSelectAllLink').className = "tagsSelectorOn"; 
-	$('tagsSelectUserLink').className = "tagsSelectorOff";
-	new Effect.Highlight('all_tags', { duration: 1.5 });
-	return false;
-  }
-  
-  function showUsersTags() {
-  	Element.hide('all_tags'); 
-	Element.show('user_tags'); 
-	$('tagsSelectAllLink').className = "tagsSelectorOff"; 
-	$('tagsSelectUserLink').className = "tagsSelectorOn";
-	new Effect.Highlight('user_tags', { duration: 1.5 });
-	return false;
-  }
 </script>
 
 <h1>Workflow: <%=h @workflow.title %></h1>
@@ -175,53 +157,23 @@
 			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The size of the tags show how popular they are on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
 			Tags
 		</p>
-		
-		<div id="tags">
-			<% unless (tags = @workflow.tags).empty? %>
-				<p style="text-align: center; margin: 0.4em 0 0.6em 0;">
-					<a id="tagsSelectAllLink" 
-					   class="tagsSelectorOn" 
-					   href="" 
-					   onclick="showAllTags(); return false;">
-					   All Tags 	
-				   </a>
-	
-					<% if (logged_in? and current_user.id == @workflow.contribution.contributor_id and @workflow.contribution.contributor_type == 'User') then tagLink2Text = "My" else tagLink2Text = "Uploader's" end; tagLink2Text += " Tags" -%>
-					
-					<a id="tagsSelectUserLink" 
-					   class="tagsSelectorOff" 
-					   href="" 
-					   onclick="showUsersTags(); return false;">
-					   <%= tagLink2Text %>	
-				   </a>
-				</p>
-				<div id="all_tags">
-					<% unless (tags = @workflow.tags).empty? %>
-						<%= tag_cloud_from_collection(tags) %>
-					<% end %>
-				</div>
-				<div id="user_tags"  style="display: none;">
-					<% if @workflow.contribution.contributor_type == 'User' %>
-						<% unless (tags = user_tags_for_workflow(@workflow, @workflow.contributor_id)).empty? %>
-							<%= tag_cloud_from_collection(tags) %>
-						<% end %>
-					<% end %>
-				</div>
-			<% else %>
-				<p><i>None</i></p>
-			<% end %>
-		</div>
+		<%= render :partial => "workflows/tags_for_workflow", :locals => { :workflow => @workflow } %>		
 		<p><small>Note: the size of the tags show how popular they are on myExperiment.</small></p>
 		<% if logged_in? %>
 			<div class="fold">
 				<div class="foldTitle">Add Tags</div>
-				<div class="foldContent" style="display: none; background-color: #eeeeee;">
-					<% form_remote_tag(:url => tag_workflow_path(@workflow), :update => 'tags', :success => "var t=getElementById('tag_list'); t.value=''; new Effect.Highlight('tags', { duration: 1.5 });") do %>
+				<div class="foldContent" style="display: none; background-color: #f5f5f5;">
+					<% form_remote_tag(:url => tag_workflow_path(@workflow), 
+									   :update => 'tags', 
+ 							 		   :success => "$('tag_list').value=''; new Effect.Highlight('tags', { duration: 1.5 });",
+								       :loading => "Element.show('addtag_indicator')",
+	                    	   	       :complete => "Element.hide('addtag_indicator')") do %>
 						<p><small>(Comma seperated)</small></p>
 						<p>
 							<%= text_field_tag :tag_list %>
 						</p>
 						<%= submit_tag "Add" %>
+						<img id="addtag_indicator" style="margin-left: 1em; display: none;" src="/images/spinner.gif" />
 					<% end %>
 				</div>
 			</div>

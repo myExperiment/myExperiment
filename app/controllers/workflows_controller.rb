@@ -95,7 +95,7 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       #format.html { render :inline => "<%=h @workflow.tags.join(', ') %>" }
-      format.html { render :inline => "<%= tag_cloud_from_collection(@workflow.tags) %>" }
+      format.html { render :inline => "<%= render :partial => 'workflows/tags_for_workflow', :locals => { :workflow => @workflow } %>" }
       format.xml { render :xml => @workflow.tags.to_xml }
     end
   end

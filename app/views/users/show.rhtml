@@ -101,7 +101,6 @@
       <div>
         <%= render :partial => "friendships/friends", :locals => { :collection => @user.friends } %>
       </div>
-      <%= link_to '[view my friendships]', friendships_path(@user) if my_page? @user.id %>
     </div>
   </div>
 <% end %>
@@ -126,7 +125,7 @@
       <% end %></ul>
   
       <% if my_page? @user.id %>
-        <p><%= link_to '[View my memberships]', memberships_path(@user) %></p>
+        <p><%= link_to '[View my Memberships]', memberships_path(@user) %></p>
       <% end %>
     </div>
   </div>
