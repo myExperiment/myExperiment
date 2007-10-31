@@ -209,6 +209,49 @@ class WorkflowsController < ApplicationController
     params[:workflow][:contributor_type], params[:workflow][:contributor_id] = "User", current_user.id
     
     respond_to do |format|
+      scufl = params[:workflow][:scufl]
+      
+      # hack to only update the workflow version table if the scufl has been altered
+      unless scufl.nil?
+        # create new scufl model
+        scufl_model = Scufl::Parser.new.parse(scufl.read)
+        scufl.rewind
+        
+        unless RUBY_PLATFORM =~ /mswin32/
+          # create new diagrams and append new version number to filename
+          img, svg = create_workflow_diagrams(scufl_model, "#{@workflow.unique_name}_#{@workflow.version.to_i + 1}")
+          
+          @workflow.image, @workflow.svg, @workflow.scufl = img, svg, scufl.read
+        end
+        
+        params[:workflow].delete("scufl") # remove scufl attribute from received workflow parameters
+        
+        # REPEATED CODE
+        # See line 207
+        if @workflow.update_attributes(params[:workflow])
+          if params[:workflow][:tag_list]
+            @workflow.user_id = current_user
+            @workflow.tag_list = params[:workflow][:tag_list]
+            @workflow.update_tags
+          end
+        
+          # bug fix to not save 'default' workflow unless policy_id is selected
+          @workflow.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
+        
+          # security fix (only allow the owner to change the policy)
+          @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
+        
+          flash[:notice] = 'Workflow was successfully updated.'
+          format.html { redirect_to workflow_url(@workflow) }
+          format.xml  { head :ok }
+        else
+          format.html { render :action => "edit" }
+          format.xml  { render :xml => @workflow.errors.to_xml }
+        end
+        # END REPEATED CODE
+      else
+        Workflow.without_revision do 
+          
       if @workflow.update_attributes(params[:workflow])
         if params[:workflow][:tag_list]
           @workflow.user_id = current_user
@@ -228,6 +271,9 @@ class WorkflowsController < ApplicationController
       else
         format.html { render :action => "edit" }
         format.xml  { render :xml => @workflow.errors.to_xml }
+      end
+          
+        end
       end
     end
   end
@@ -298,34 +344,33 @@ protected
     salt = rand 32768
     title, unique_name = scufl_model.description.title.blank? ? ["untitled", "untitled_#{salt}"] : [scufl_model.description.title,  "#{scufl_model.description.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"]
     
-    unless RUBY_PLATFORM =~ /mswin32/
-      i = Tempfile.new("image")
-      Scufl::Dot.new.write_dot(i, scufl_model)
-      i.close(false)
-      img = StringIO.new(`dot -Tpng #{i.path}`)
-      svg = StringIO.new(`dot -Tsvg #{i.path}`)
-      i.unlink
-      img.extend FileUpload
-      img.original_filename = "#{unique_name}.png"
-      img.content_type = "image/png"
-      svg.extend FileUpload
-      svg.original_filename = "#{unique_name}.svg"
-      svg.content_type = "image/svg+xml"
-    end
-    
     rtn = Workflow.new(:scufl => wf[:scufl].read, 
                        :contributor_id => wf[:contributor_id], 
                        :contributor_type => wf[:contributor_type],
                        :title => title,
                        :unique_name => unique_name,
-                       :body => ae_some_html(scufl_model.description.description))
+                       :body => scufl_model.description.description)
                        
-    unless RUBY_PLATFORM =~ /mswin32/
-      rtn.image = img
-      rtn.svg = svg
-    end
+    rtn.image, rtn.svg = create_workflow_diagrams(scufl_model, unique_name) unless RUBY_PLATFORM =~ /mswin32/
     
     return rtn
+  end
+  
+  def create_workflow_diagrams(scufl_model, unique_name)
+    i = Tempfile.new("image")
+    Scufl::Dot.new.write_dot(i, scufl_model)
+    i.close(false)
+    img = StringIO.new(`dot -Tpng #{i.path}`)
+    svg = StringIO.new(`dot -Tsvg #{i.path}`)
+    i.unlink
+    img.extend FileUpload
+    img.original_filename = "#{unique_name}.png"
+    img.content_type = "image/png"
+    svg.extend FileUpload
+    svg.original_filename = "#{unique_name}.svg"
+    svg.content_type = "image/svg+xml"
+    
+    return img, svg
   end
 
 private
