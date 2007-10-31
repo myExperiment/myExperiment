@@ -278,10 +278,12 @@
     <% end %>
 
     <% if logged_in? %>
+      <% if @workflow.authorized?("edit", current_user) %>
 	    <ul class="sectionIcons">
 	      <li><%= icon('new', new_citation_path(@workflow), nil, nil, 'New Citation', nil) %></li>
 	      <li><%= icon('edit', citations_path(@workflow), nil, nil, 'Edit Citations', nil) %></li>
 	    </ul>
+	  <% end %>
     <% end %>
 
   </div>

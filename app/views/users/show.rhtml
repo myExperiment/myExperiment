@@ -1,15 +1,10 @@
-<% if false %>
-# all commented workflows
-@user.comments.collect {|c| c.commentable if c.commentable_type.to_s == "Workflow" }
-
-# all rated workflows
-@user.ratings.collect {|c| c.rateable if c.commentable_type.to_s == "Workflow" }
-
-# all commented workflows
-@user.taggings.collect { |c| c.commentable if c.commentable_type.to_s == "Workflow" }
+<% if logged_in? %>
+    <% if my_page? @user.id %>
+		<h1>You</h1>
+	<% else %>
+		<h1>User: <%=h @user.name %></h1>
+	<% end %>
 <% end %>
-
-<h2>Details</h2>
 
 <table width="100%">
   <tr>
@@ -74,6 +69,7 @@
     <% if my_page? @user.id %>
       <li><%= icon('edit', edit_user_path(@user), nil, nil, 'Edit account details') %></li>
       <% unless @user.profile.nil? %><li><%= icon('edit', edit_profile_path(@user.profile), nil, nil, 'Edit profile') %></li><% end %>
+	  <li><%= icon("pictures", pictures_path(current_user), nil, nil, "Profile Pictures") %></li>
       <li><%= icon('avatar', new_picture_path(@user), nil, nil, 'Upload new picture')%></li>
     <% end %>
   <% end %>
@@ -133,4 +129,57 @@
 
 <% unless @user.contributions.empty? %>
   <%= render :partial => "contributions/tabs", :locals => { :collection => @user.contributions } %>
+<% end %>
+
+<% if logged_in? and my_page? @user.id %>
+  <div class="tabContainer">
+    <div class="tabTitle">My History</div>
+    <div class="tabContent"> 
+	
+		<div class="fold">
+			<div class="foldTitle">Tags by You</div>
+			<div class="foldContent" style="display: none;">  
+				<% unless (tags = @user.taggings.collect).empty? %>
+					<ul>
+						<% tags.each do |t| %>
+							<li><%= datetime t.created_at, false %> - <%= link_to_tag t.tag %> for <%= contributable(t.taggable_id, t.taggable_type) %><br/><br/></li>
+						<% end %>
+					</ul>
+				<% else %>
+					<p><i>You have not tagged anything yet</i></p>			
+				<% end %>
+			</div>
+		</div>
+		
+		<div class="fold">
+			<div class="foldTitle">Comments by You</div>
+			<div class="foldContent" style="display: none;">  
+				<% unless (comments = @user.comments.collect).empty? %>
+					<ul>
+						<% comments.each do |c| %>
+							<li><%= datetime c.created_at, false %> - <br/><br/>"<%= truncate(c.comment, 100) %>"<br/><br/>for <%= contributable(c.commentable_id, c.commentable_type) %><br/><br/></li>
+						<% end %>
+					</ul>
+				<% else %>
+					<p><i>You have not made any comments yet</i></p>			
+				<% end %>
+			</div>
+		</div>
+		
+		<div class="fold">
+			<div class="foldTitle">Ratings by You</div>
+			<div class="foldContent" style="display: none;">  
+				<% unless (ratings = @user.ratings.collect).empty? %>
+					<ul>
+						<% ratings.each do |r| %>
+							<li><%= datetime r.created_at, false %> - <%= r.rating.to_s %>/5 for <%= contributable(r.rateable_id, r.rateable_type) %><br/><br/></li>
+						<% end %>
+					</ul>
+				<% else %>
+					<p><i>You have not rated anything yet</i></p>			
+				<% end %>
+			</div>
+		</div>
+    </div>
+  </div>
 <% end %>
