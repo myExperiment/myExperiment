@@ -91,6 +91,11 @@ small {
 	line-height: 1.2em;
 }
 
+fieldset {
+	border: 1px solid #CCCCCC;
+	padding: 1em;
+}
+
 .clearer
 {
 	padding: 0;

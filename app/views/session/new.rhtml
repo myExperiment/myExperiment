@@ -1,6 +1,13 @@
-<br/>
-<center>
-	<div style="width: 190px;">
-		<%= render :partial => "gadgets/sign_in" %>
-	</div>
-</center>
+<h1>Sign In</h1>
+<% if logged_in? %>
+	<br/>
+	<p style="text-align:center;">You are already signed in.</p>
+	<p style="text-align:center;"><%= signout_link %></p>
+<% else %>
+	<br/>
+	<center>
+		<div style="width: 190px;">
+			<%= render :partial => "gadgets/sign_in" %>
+		</div>
+	</center>
+<% end %>

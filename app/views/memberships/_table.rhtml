@@ -1,7 +1,11 @@
 <% user = true if user.nil? -%>
 <% network = true if network.nil? -%>
 
-<% unless collection.empty? %>
+<% if collection.empty? %>
+
+<p><i>None</i></p>
+
+<% else %>
 
 <table class="alt_table">
   <tr>

@@ -12,10 +12,6 @@
       location.href = "<%= new_workflow_path %>";
     } else if (klass == "Group") {
       location.href = "<%= new_network_path %>";
-    <% if logged_in? %>
-    } else if (klass == "Picture") {
-      location.href = "<%= new_picture_path(current_user) %>";
-    <% end %>
     } else {
       // do nothing!!
     }
@@ -40,7 +36,6 @@
             <option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
             <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>
             <option value="Group" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
-            <option value="Picture" <%= "selected" if ["pictures"].include? controller.controller_name.to_s %>>Picture</option>
             <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Workflow</option>
           </select>
           <%= submit_tag "GO" %>

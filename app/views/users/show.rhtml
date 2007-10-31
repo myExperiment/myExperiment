@@ -24,7 +24,7 @@
         <% if @user.openid_url %>
           <%=openid @user %>
         <% elsif my_page? @user.id %>
-          Click <%= link_to 'here', new_openid_path %> to validate your OpenID URL
+          <%= link_to 'Add an OpenID to this account', new_openid_path %>
         <% else %>
           Not created yet (what is <%= link_to 'OpenID', "http://en.wikipedia.org/wiki/OpenID" %>?)
         <% end %>
@@ -35,7 +35,7 @@
         <% if @user.username %>
           <%=h @user.username %>
         <% elsif my_page? @user.id %>
-          Click <%= link_to 'here', edit_user_path(@user) %> to register your username and password
+          <%= link_to 'Register a username and password for this account', edit_user_path(@user) %> 
         <% else %>
           Not created yet
         <% end %>
