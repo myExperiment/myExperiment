@@ -35,6 +35,7 @@
 }
 
 .myexp_home_image_action {
+	display: block;
 	padding-top: 1em;
 	font-size: 123.1%;
 	font-weight: bolder;
