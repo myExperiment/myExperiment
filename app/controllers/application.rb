@@ -65,5 +65,25 @@ class ApplicationController < ActionController::Base
     s      
   end
   
+  # This method takes a comma seperated list of tags (where multiple words don't need to be in quote marks)
+  # and formats it into a new comma seperated list where multiple words ARE in quote marks.
+  # (Note: it will actually put quote marks around all the words and then out commas).
+  # eg: 
+  #    this, is a, tag
+  #        becomes:
+  #    "this","is a","tag"
+  #
+  # This is so we can map the tags entered in by users to the format required by the act_as_taggable_redux gem.
+  def convert_tags_to_gem_format(tags_string)
+    list = tags_string.split(',')
+    converted = '' 
+    
+    list.each do |s|
+      converted = converted + '"' + s.strip + '",'
+    end
+    
+    return converted
+  end
+  
   helper_method :ae_some_html 
 end

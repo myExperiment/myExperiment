@@ -90,7 +90,7 @@ class WorkflowsController < ApplicationController
   # POST /workflows/1.xml;tag
   def tag
     @workflow.user_id = current_user # acts_as_taggable_redux
-    @workflow.tag_list = "#{@workflow.tag_list}, #{params[:tag_list]}" if params[:tag_list]
+    @workflow.tag_list = "#{@workflow.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @workflow.update_tags # hack to get around acts_as_versioned
     
     respond_to do |format|

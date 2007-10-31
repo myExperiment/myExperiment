@@ -162,7 +162,7 @@
 		<% if logged_in? %>
 			<div class="fold">
 				<div class="foldTitle">Add Tags</div>
-				<div class="foldContent" style="display: none; background-color: #f5f5f5;">
+				<div class="foldContent" style="display: none; background-color: #EEEEEE;">
 					<% form_remote_tag(:url => tag_workflow_path(@workflow), 
 									   :update => 'tags', 
  							 		   :success => "$('tag_list').value=''; new Effect.Highlight('tags', { duration: 1.5 });",
@@ -294,7 +294,6 @@
       <p>
         <b>Policy:</b> <%= policy_link(@workflow.contribution.policy_id) %>
       </p>
-  
       <%= render :partial => "policies/policy", :object => @workflow.contribution.policy, :locals => { :read_only => true } unless @workflow.contribution.policy.nil? %>
     </div>
   </div>

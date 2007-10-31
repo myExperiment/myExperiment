@@ -39,12 +39,16 @@
 		<div id="all_tags">
 			<% unless (tags = workflow.tags).empty? %>
 				<%= tag_cloud_from_collection(tags) %>
+			<% else %>
+      			<p><i>None</i></p>
 			<% end %>
 		</div>
 		<div id="user_tags"  style="display: none;">
 			<% if workflow.contribution.contributor_type == 'User' %>
 				<% unless (tags = user_tags_for_workflow(workflow, workflow.contributor_id)).empty? %>
 					<%= tag_cloud_from_collection(tags) %>
+				<% else %>
+      				<p><i>None</i></p>
 				<% end %>
 			<% end %>
 		</div>
