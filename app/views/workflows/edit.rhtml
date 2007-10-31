@@ -1,4 +1,8 @@
+<%= javascript_include_tag "osp.js" %>
+
 <h1>Editing Workflow</h1>
+
+<div>Sharing mode = <%= @sharing_mode %></div>
 
 <%= error_messages_for :workflow %>
 
@@ -13,8 +17,8 @@
   <% if @workflow.owner?(current_user) %>
     <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user, :current => @workflow.contribution.contributor } %>
   
-    <%= render :partial => "policies/listform", :locals => { :contribution => @workflow.contribution, :user => current_user } %>
-    
+  <%= render :partial => "sharing", :locals => { :edit => true } %>
+
     <%= render :partial => "workflows/license_form" %>
   <% end %>
 

@@ -1,32 +1,424 @@
-<h1>Upload Workflow</h1>
+<%= javascript_include_tag "osp.js" %>
+
+<h1>New Workflow</h1>
 
 <%= error_messages_for :workflow %>
 
 <% form_tag({:action => :create}, :multipart => true) do %>
-  <p>
-    <b>Workflow File:</b> <%= file_field :workflow, :scufl %>
-  </p>
+
+  <!-- Workflow File -->
+
+  <div>
+    <p>
+      <strong>Workflow File:</strong>
+      <input id="workflow_scufl" name="workflow[scufl]" size="50" type="file"/>
+    </p>
+  </div>
   
   <br />
+  <br />
+                
+  <!-- Tags -->
+
+  <input id="tag_list" type="hidden" name="workflow[tag_list]"/>
 
   <div class="fold">
-    <div class="foldTitle">Tags</div>
-    <div class="foldContent" style="display: none;">
-      <%= render :partial => "workflows/tags_form" %>
+    <div class="foldTitle">
+      <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to add tags to <strong>describe</strong> this Workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>Tags</img></div>
+      <div class="foldContent" style="display: none;">
+        <p class="info_text">This section allows you to add tags to <strong>describe</strong> this Workflow.</p>
+        <hr />
+        <div>
+          <p><strong>Tags: </strong></p>
+          <div style="padding-left: 2em;">
+            <p id="tags_current_list"><i>None</i></p>
+          </div>
+        </div>
+        <br />
+        <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
+          <p>Add one or more tags manually (seperated by commas; click on 'Add' to add to the list):</p>
+          <p><input id="tags_input" type="text" style="width: 500px;" name="tags_input">&nbsp;&nbsp;</input>
+            <a href="" onclick="javascript:addTag(document.getElementById('tags_input').value); document.getElementById('tags_input').value = ''; return false;">Add</a></p>
+        </div>
+
+        <% if (tags = current_user.contribution_tags).empty? == false %>
+
+        <br />
+        <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
+          <p>Add from your existing tags in myExperiment (click on tag to add):</p>                            
+          <div style="padding: 0 1em;"><a href="" onclick="javascript:addTag('SEG'); return false;">SEG</a></div>
+        </div>
+
+        <% end %>
+
+      <div style="clear: both;">&nbsp;</div>
     </div>
   </div>
 
-  <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user } %>
+                
+  <!-- Credit and Attribution -->
 
-  <%= render :partial => "policies/listform", :locals => { :contribution => @workflow.contribution, :user => current_user } %>
+                <div class="fold">
+                    <div class="foldTitle">
+                        <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to specify which people/organisations get the <strong>credit</strong> for this Workflow (for example, the <strong>author(s)</strong> of this Workflow). Note: they do not have to be on myExperiment for you to give credit. By default, you are the only author.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+                        Credit and Attribution 
+            <hr/>
+            <small>Default: you are the only author</small>
+          </div>
+                    <div class="foldContent" style="display: none;">
+                        <p class="info_text">
+                            This section allows you to specify which people/organisations/networks get the <strong>credit</strong> for this Workflow (for example, the <strong>author(s)</strong> of this Workflow). Note: they do not have to be on myExperiment for you to give credit.
+                            <br />
+                            <br />
+                            You can also specify the Workflows that this Workflow is <strong>based on</strong> (if any).                           
+                        </p>
+                        <hr />
+                        <p>
+                            <strong>Which people/organisations/networks get the credit for this Workflow?</strong>
+                        </p>
+                        <div style="padding-left: 1em;">
+                            <p id="authors_list">
+                                Me&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="return false;">delete</a>]</small>
+                            </p>
+                            <br />
+                            <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
+                                Select an option then click on 'Add' to add the value to the list:
+                                <br />
+                                <br />
+                                <p>
+                                    <input id="author_option_2" name="add_author_option" checked="checked"
+                                        value="1" type="radio" onclick="javascript:update_author(this.id);" />
+                                    - One of my Friends
+                                </p>
+                                <div id="author_friends_box" style="display: block; padding-left: 2em;">
+                                    <p>
+                                        <select id="author_friends_dropdown">
+                                            <option value="1">Amy Smith</option>
+                                            <option value="2">Hannah Patel</option>
+                                            <option value="3">John Dorian</option>
+                                            <option value="4">Jose Gonzalez</option>
+                                            <option value="5">Josiah Bartlett</option>
+                                            <option value="6">Manny</option>
+                                            <option value="7">Tom Winterbottom</option>
+                                            <option value="8">Tristan Coombes</option>
+                                        </select>
+                                    </p>
+                                </div>
+                                <p>
+                                    <input id="author_option_6" name="add_author_option"
+                                        value="2" type="radio" onclick="javascript:update_author(this.id);" />
+                                    - A user on myExperiment who is not a Friend.
+                                </p>
+                                <div id="author_otheruser_box" style="display: none; padding-left: 2em;">
+                                    <p>
+                                        <select id="author_otheruser_dropdown">
+                                            <option value="1">Mary Contrary</option>
+                                            <option value="2">I.P. Diamonds</option>
+                                            <option value="3">John Doe</option>
+                                            <option value="4">David Bentley</option>
+                                            <option value="5">Roque Santa Cruz</option>
+                                        </select>
+                                    </p>
+                                </div>
+                                <p>
+                                    <input id="author_option_3" name="add_author_option"
+                                        value="3" type="radio" onclick="javascript:update_author(this.id);" />
+                                    - Someone else
+                                </p>
+                                <div id="author_someoneelse_box" style="display: none; padding-left: 2em;">
+                                    <p>
+                                         <label for="author_someoneelse_forenames">Forename(s): </label>
+                                         <input id="author_someoneelse_forenames" size="25" value="" type="text"/>
+                                         <label for="author_someoneelse_surname">Surname: </label>
+                                         <input id="author_someoneelse_surname" size="25" value="" type="text"/>
+                                    </p>
+                                </div>
+                                <p>
+                                    <input id="author_option_4" name="add_author_option"
+                                        value="4" type="radio" onclick="javascript:update_author(this.id);" />
+                                    - An organisation
+                                </p>
+                                <div id="author_organisation_box" style="display: none; padding-left: 2em;">
+                                    <p>
+                                         <input id="author__organisation" size="50" value="" type="text"/>
+                                    </p>
+                                </div>
+                                <p>
+                                    <input id="author_option_5" name="add_author_option"
+                                        value="5" type="radio" onclick="javascript:update_author(this.id);" />
+                                    - A myExperiment Network
+                                </p>
+                                <div id="author_networks_box" style="display: none; padding-left: 2em;">
+                                    <p>
+                                        <select id="author_networks_dropdown">
+                                            <option value="1">EBI</option>
+                                            <option value="2">University of Manchester</option>
+                                            <option value="3">University of Southampton</option>
+                                            <option value="4">Pete's Network</option>
+                                            <option value="5">myExperiment Hackers</option>
+                                        </select>
+                                    </p>
+                                </div>
+                                <br />
+                                <a href="" onclick="javascript:add_author(); return false;" >Add</a>
+                            </div>           
+                        </div>
+                        <hr />
+                        <p>
+                            <strong>If this Workflow is based on any existing Workflows, please list them below:</strong>
+                        </p>
+                        <div style="padding-left: 1em;">
+                            <p id="basedon_workflows_list">
+                                <i>None</i>
+                            </p>
+                            <br />
+                            <p>Use the boxes below to add references to Workflows. Note that multiple references can be added.</p>
+                            <div style="padding: 1em; float: left; border: 1px dotted #999999; text-align: center;">
+                                Choose an existing Workflow on myExperiment:
+                                <br />
+                                <br />
+                                <select id="basedon_workflows_existinglist" style="width: 250px;">
+                                    <option value="1">BioAID_DiseaseDiscovery</option>
+                                    <option value="5">Fetch today's Dilbert comic</option>
+                                    <option value="2">QR code (matrix code) generator</option>
+                                </select>
+                                <br />
+                                <br />
+                                <a href="" onclick="javascript:add_workflowreference_string(document.getElementById('basedon_workflows_existinglist').options[document.getElementById('basedon_workflows_existinglist').selectedIndex].text); return false;" >Add</a>
+                            </div>
+                            <div style="padding: 1em; float: left; border: 1px dotted #999999; margin-left: 1em; text-align: center;">
+                                Link to a Workflow somewhere else:
+                                <br />
+                                <br />
+                                <label for="basedon_extworkflow_name">Name: </label>
+                                <input id="basedon_extworkflow_name" size="25" value="" type="text"/>
+                                <br />
+                                <br />
+                                <label for="basedon_extworkflow_uri">Link: </label>
+                                <input id="basedon_extworkflow_uri" size="25" value="" type="text"/>
+                                <br />
+                                <br />
+                                <a href="" onclick="javascript:add_workflowreference_string(document.getElementById('basedon_extworkflow_name').value + ' (' + document.getElementById('basedon_extworkflow_uri').value + ')'); return false;" >Add</a>
+                            </div> 
+                            <div style="clear: both;">&nbsp;</div>                       
+                            <br />
+                        </div>
+                    </div>
+                </div>
+                
+  <%= render :partial => "sharing", :locals => { :edit => false } %>
+                
+                <!-- Updating Privileges -->
+                <div class="fold">
+                    <div class="foldTitle">
+                        <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to give updating privileges to your Friends and/or your Networks. This will allow them to update the description and upload new versions of the Workflow. <br/><br/>By default, no one else is allowed to update this Workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+                        <span></span>Who can update this workflow?
+            <hr />
+            <small>Default: no one else is allowed to update</small>
+                    </div>
+                    <div class="foldContent" style="display: none;">
+                        <p class="info_text">
+                            This section allows you to give updating priviledges to your Friends and/or your Networks. 
+                            This will allow them to update the description and upload new versions of the Workflow.
+              <br/>
+              <br/>
+              Note that updating privileges only affect how other users can update this Workflow entry on myExperiment. 
+              If the user downloads the Workflow file, they can still edit it away from myExperiment and possibly upload it as a new Workflow entry. 
+              <br/>
+              <br/>
+              Furthermore, Workflow entries on myExperiment can have multiple versions of the actual Workflow file. 
+              Giving updating privileges will allow other users to upload a new a modified version of the Workflow file (all previous versions are still available), 
+              which will create a new version of the Workflow entry on myExperiment.
+              Also, updating the description of the Workflow entry will create a new version.
+
+                        </p>
+                        <hr />
+                        <p>
+                            <strong>Who else is allowed to update this Workflow?</strong> 
+                        </p>
+            <p>
+                            Note that settings here take precedence over the Sharing permissions above. 
+              So if you give someone updating privileges, they will automatically be granted view AND download permissions as well.
+                        </p>
+                        <div style="padding-left: 1em;">
+              <p>
+                                <input id="updating_option_7" name="updating[class_id]"
+                                    value="User-70" type="radio" onclick="javascript:update_updating(this.id);" />
+                                - All those who can view or download (from your Sharing permissions above).
+                            </p>
+                            <p>
+                                <input id="updating_option_1" name="updating[class_id]"
+                                    value="User-70" type="radio" onclick="javascript:update_updating(this.id);" />
+                                - All my Friends and the members of all my Networks.
+                            </p>
+                            <p>
+                                <input id="updating_option_2" name="updating[class_id]"
+                                    value="User-70" type="radio" onclick="javascript:update_updating(this.id);" />
+                                - All my Friends and only the administrators of all my Networks.
+                            </p>
+                            <p>
+                                <input id="updating_option_3" name="updating[class_id]"
+                                    value="User-70" type="radio" onclick="javascript:update_updating(this.id);" />
+                                - The members of some of my Networks.
+                            </p>
+                            <div id="updating_networksmembers_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em;">
+                                <p>
+                                    <input value="1" type="checkbox" name="updating_networkmembers[network_id]"/>EBI <br />
+                                    <input value="2" type="checkbox" name="updating_networkmembers[network_id]"/>University of Manchester <br />
+                                    <input value="3" type="checkbox" name="updating_networkmembers[network_id]"/>University of Southampton <br />
+                                    <input value="4" type="checkbox" name="updating_networkmembers[network_id]"/>Pete's Network <br />
+                                    <input value="5" type="checkbox" name="updating_networkmembers[network_id]"/>myExperiment Hackers <br />
+                                </p>
+                            </div>
+                            <p>
+                                <input id="updating_option_4" name="updating[class_id]"
+                                    value="User-70" type="radio" onclick="javascript:update_updating(this.id);" />
+                                - The administrators of some of my Networks
+                            </p>
+                            <div id="updating_networksadmins_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em;">
+                                <p>
+                                    <input value="1" type="checkbox" name="updating_networkadmins[network_id]"/>EBI <br />
+                                    <input value="2" type="checkbox" name="updating_networkadmins[network_id]"/>University of Manchester <br />
+                                    <input value="3" type="checkbox" name="updating_networkadmins[network_id]"/>University of Southampton <br />
+                                    <input value="4" type="checkbox" name="updating_networkadmins[network_id]"/>Pete's Network <br />
+                                    <input value="5" type="checkbox" name="updating_networkadmins[network_id]"/>myExperiment Hackers <br />
+                                </p>
+                            </div>
+              <p>
+                                <input id="updating_option_7" name="updating[class_id]"
+                                    value="User-70" type="radio" onclick="javascript:update_updating(this.id);" />
+                                - Some of my Friends
+                            </p>
+                            <div id="updating_somefriends_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em;">
+                                <p>
+                                    <input value="1" type="checkbox" name="updating_somefriends[friend_id]"/>Amy Smith <br />
+                                    <input value="2" type="checkbox" name="updating_somefriends[friend_id]"/>Hannah Patel <br />
+                                    <input value="3" type="checkbox" name="updating_somefriends[friend_id]"/>John Dorian <br />
+                                    <input value="4" type="checkbox" name="updating_somefriends[friend_id]"/>Jose Gonzalez <br />
+                                    <input value="5" type="checkbox" name="updating_somefriends[friend_id]"/>Josiah Bartlett <br />
+                  <input value="5" type="checkbox" name="updating_somefriends[friend_id]"/>Manny <br />
+                  <input value="5" type="checkbox" name="updating_somefriends[friend_id]"/>Tom Winterbottom <br />
+                  <input value="5" type="checkbox" name="updating_somefriends[friend_id]"/>Tristan Coombes <br />
+                                </p>
+                            </div>
+                            <p>
+                                <input id="updating_option_5" name="updating[class_id]" checked="checked"
+                                    value="User-70" type="radio" onclick="javascript:update_updating(this.id);" />
+                                - No one else.
+                            </p>
+                            <p>
+                                <input id="updating_option_6" name="updating[class_id]"
+                                    value="" type="radio" onclick="javascript:update_updating(this.id);" />
+                                - Custom list of people.
+                            </p>
+                            <div id="updating_custom_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em; text-align: left;">
+                                <p id="updating_permissions_list" style="text-align: left;">
+                                    <i>None</i>
+                                </p>
+                                <br />
+                                <p>Use the boxes below to add people</p>
+                                <div style="padding: 1em; float: left; border: 1px dotted #999999; text-align: center;">
+                                    Add a Friend:
+                                    <br />
+                                    <br />
+                                    <select id="updating_permissions_friendslist">
+                                        <option value="1">Amy Smith</option>
+                                        <option value="2">Hannah Patel</option>
+                                        <option value="3">John Dorian</option>
+                                        <option value="4">Jose Gonzalez</option>
+                                        <option value="5">Josiah Bartlett</option>
+                                        <option value="6">Manny</option>
+                                        <option value="7">Tom Winterbottom</option>
+                                        <option value="8">Tristan Coombes</option>
+                                    </select>
+                                    <br />
+                                    <br />
+                                    <a href="" onclick="javascript:add_updaterpermission_string('Friend: ' + document.getElementById('updating_permissions_friendslist').options[document.getElementById('updating_permissions_friendslist').selectedIndex].text); return false;" >Add Friend</a>
+                  <br />
+                  <a href="" onclick="javascript:add_updaterpermission_string('ALL Friends'); return false;" >Add ALL Friends</a>
+                                </div>
+                                <div style="padding: 1em; float: left; border: 1px dotted #999999; margin-left: 1em; text-align: center;">
+                                    Add a Network:
+                                    <br />
+                                    <br />
+                                    <select id="updating_permissions_networkslist">
+                                        <option value="1">EBI</option>
+                                        <option value="2">University of Manchester</option>
+                                        <option value="3">University of Southampton</option>
+                                        <option value="4">Pete's Network</option>
+                                        <option value="5">myExperiment Hackers</option>
+                                    </select>
+                                    <br />
+                                    <br />
+                                    <a href="" onclick="javascript:add_updaterpermission_string('All members of Network: ' + document.getElementById('updating_permissions_networkslist').options[document.getElementById('updating_permissions_networkslist').selectedIndex].text); return false;" >Add all members of Network</a>
+                                    <br />
+                                    <a href="" onclick="javascript:add_updaterpermission_string('Administrator of Network: ' + document.getElementById('updating_permissions_networkslist').options[document.getElementById('updating_permissions_networkslist').selectedIndex].text); return false;" >Add only administrator of Network</a>
+                                </div> 
+                                <div style="clear: both;">&nbsp;</div>                       
+                                <br />
+                            </div>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- License/Rights -->
+                <div class="fold">
+                    <div class="foldTitle">
+                        <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to specify the <strong>rights</strong> that people have when they download and use this Workflow, by setting the license. <br/><br/>By default, the license specifies that people are allowed to build on this Workflow as long as they give the original author credit and share their resulting work under the same conditions.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+                        License/Rights
+            <hr />
+            <small>Default: people are allowed to build on this Workflow, but must give author(s) credit and share under the same conditions</small>
+                    </div>
+                    <div class="foldContent" style="display: none;">
+                        <p class="info_text">
+                            This section allows you to specify the <strong>rights</strong> that people have when they download and use this Workflow, by setting the license.
+                        </p>
+                        <hr />
+                        <p>
+                            <strong>What license do you want people to adhere to if they download and use this Workflow?</strong>
+                        </p>
+                        <div style="padding-left: 1em;">
+                            <div style="padding: 0.5em; border: 1px dotted #999999; margin: 1.5em 3em; text-align: center;">
+                                <p>
+                                    <img alt="Science Commons" src="/images/sc.logo.png" /></p>
+                                <p>
+                                    Below you can configure what rights people will have with this Workflow, based on
+                                    the <a href="http://sciencecommons.org/resources/faq/sciencecommons/">Science Commons</a>
+                                    licenses. Sharing Workflows and letting others build upon them is a useful contribution
+                                    and is highly recommended.</p>
+                            </div>
+                            <p>
+                                When someone downloads this Workflow, are they allowed to build upon it (such as
+                                extend, reuse, repurpose and so on)?</p>
+                            <p>
+                                <input id="workflow_license_bysa" checked="checked" name="workflow[license]" type="radio"
+                                    value="by-sa">
+                                Yes, as long as they <strong>give the author(s) credit (attribution)</strong>
+                                and they also <strong>share</strong> the resulting work <strong>under the same conditions</strong>.</p>
+                            <p>
+                                <input id="workflow_license_by" name="workflow[license]" type="radio" value="by">
+                                Yes, as long as they <strong>give the author(s) credit (attribution)</strong>.</p>
+                            <p>
+                                <input id="workflow_license_bynd" name="workflow[license]" type="radio" value="by-nd">
+                                No. They may only use the Workflow for reference.</p>
+                            <p>
+                                <small>Nothing in these licenses impairs or restricts the author's moral rights.</small></p>
+                        </div>
+                    </div>
+                </div>
+                
+
+                
+                <p style="margin: 3.5em; padding: 0.6em; border-top: 1px dotted #999999; border-bottom: 1px dotted #999999; color: #660000;">
+                    <strong>Note:</strong> You are responsible for any content that you upload. You may remove your content
+                    at any time. This is a trial service and we do not guarantee to keep the content
+                    available on the site for any particular duration. We may make copies for operational
+                    purposes. Please contact us for further information about Terms and Conditions.
+                </p>
+                <p style="text-align: center;">
+                    <%= submit_tag "Upload and Save" %>
+                </p>
   
-  <%= render :partial => "workflows/license_form" %>
-  
-  <p class="info_text">
-    <b>Note:</b> You are responsible for any content that you upload. You may remove your content at any time. This is a trial service and we do not guarantee to keep the content available on the site for any particular duration. We may make copies for operational purposes. Please contact us for further information about Terms and Conditions.
-  </p>
-  
-  <p>
-    <%= submit_tag "Upload and Save" %>
-  </p>
 <% end %>
+

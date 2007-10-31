@@ -132,6 +132,7 @@ class WorkflowsController < ApplicationController
   # GET /workflows/1.xml
   def show
     @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
+    @sharing_mode = determine_sharing_mode(@workflow.contribution.policy)
     
     respond_to do |format|
       format.html # show.rhtml
@@ -147,17 +148,15 @@ class WorkflowsController < ApplicationController
   # GET /workflows/1;edit
   def edit
     
+    @sharing_mode = determine_sharing_mode(@workflow.contribution.policy)
+
   end
 
   # POST /workflows
   # POST /workflows.xml
   def create
-    # hack for select contributor form
-    if params[:contributor_pair]
-      params[:workflow][:contributor_type], params[:workflow][:contributor_id] = "User", current_user.id                                       # forum contributed by current_user..
-      params[:contribution][:contributor_type], params[:contribution][:contributor_id] = params[:contributor_pair][:class_id].split("-") # ..but owned by contributor_pair
-      params.delete("contributor_pair")
-    end
+
+    params[:workflow][:contributor_type], params[:workflow][:contributor_id] = "User", current_user.id
     
     # create workflow using helper methods
     @workflow = create_workflow(params[:workflow])
@@ -171,7 +170,9 @@ class WorkflowsController < ApplicationController
         end
         
         @workflow.contribution.update_attributes(params[:contribution])
-        
+
+        update_workflow_policy(@workflow, params)
+
         flash[:notice] = 'Workflow was successfully created.'
         format.html { redirect_to workflow_url(@workflow) }
         format.xml  { head :created, :location => workflow_url(@workflow) }
@@ -185,12 +186,7 @@ class WorkflowsController < ApplicationController
   # PUT /workflows/1
   # PUT /workflows/1.xml
   def update
-    # hack for select contributor form
-    if params[:contributor_pair]
-      params[:contribution][:contributor_type], params[:contribution][:contributor_id] = params[:contributor_pair][:class_id].split("-")
-      params.delete("contributor_pair")
-    end
-    
+
     # remove protected columns
     if params[:workflow]
       [:contributor_id, :contributor_type, :image, :created_at, :updated_at, :version].each do |column_name|
@@ -260,11 +256,13 @@ class WorkflowsController < ApplicationController
         end
         
         # bug fix to not save 'default' workflow unless policy_id is selected
-        @workflow.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
+#@workflow.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
         
         # security fix (only allow the owner to change the policy)
         @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
         
+        update_workflow_policy(@workflow, params)
+
         flash[:notice] = 'Workflow was successfully updated.'
         format.html { redirect_to workflow_url(@workflow) }
         format.xml  { head :ok }
@@ -411,6 +409,137 @@ private
     
     options
   end
+
+  def update_workflow_policy(workflow, params)
+
+    view_protected     = false
+    view_public        = false
+    download_protected = false
+    download_public    = false
+    edit_protected     = false
+    edit_public        = false
+
+    sharing_class = params[:sharing][:class_id]
+
+    case sharing_class
+      when "0"
+        view_public        = "1"
+        download_public    = "1"
+      when "1"
+        view_public        = "1"
+        download_protected = "1"
+      when "2"
+        view_public        = "1"
+      when "3"
+        view_protected     = "1"
+        download_protected = "1"          
+      when "4"
+        view_protected     = "1"
+    end
+
+    policy = Policy.new(:name => 'auto',
+        :contributor_type => 'User', :contributor_id => current_user.id,
+        :view_protected     => view_protected,
+        :view_public        => view_public,
+        :download_protected => download_protected,
+        :download_public    => download_public,
+        :edit_protected     => edit_protected,
+        :edit_public        => edit_public)
+
+    case sharing_class
+      when "5"
+        params[:sharing_networks1].each do |n|
+          Permission.new(:policy => policy,
+              :contributor => (Network.find n[1].to_i),
+              :view => 1, :download => 1, :edit => 0).save
+        end
+      when "6"
+        params[:sharing_networks2].each do |n|
+          Permission.new(:policy => policy,
+              :contributor => (Network.find n[1].to_i),
+              :view => 1, :download => 0, :edit => 0).save
+        end
+    end
+
+    @workflow.contribution.policy = policy
+    @workflow.contribution.save
+
+    puts "------ Workflow create summary ------------------------------------"
+    puts "current_user  = #{current_user.id}"
+    puts "sharing_class = #{sharing_class}"
+    puts "policy        = #{policy}"
+    puts "Sharing net1  = #{params[:sharing_networks1]}"
+    puts "-------------------------------------------------------------------"
+
+  end
+
+  def determine_sharing_mode(policy)
+
+    v_pub  = policy.view_public;
+    v_prot = policy.view_protected;
+    d_pub  = policy.download_public;
+    d_prot = policy.download_protected;
+    e_pub  = policy.edit_public;
+    e_prot = policy.edit_protected;
+
+    if (policy.permissions.length == 0)
+
+      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == true ) && (d_prot == false) && (e_pub  == false) && (e_prot == false))
+        return 0
+      end
+
+      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == false) && (d_prot == true ) && (e_pub  == false) && (e_prot == false))
+        return 1;
+      end
+
+      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == false) && (d_prot == false) && (e_pub  == false) && (e_prot == false))
+        return 2;
+      end
+
+      if ((v_pub  == false) && (v_prot == true ) && (d_pub  == false) && (d_prot == true ) && (e_pub  == false) && (e_prot == false))
+        return 3;
+      end
+
+      if ((v_pub  == false) && (v_prot == true ) && (d_pub  == false) && (d_prot == false) && (e_pub  == false) && (e_prot == false))
+        return 4;
+      end
+
+      if ((v_pub  == false) && (v_prot == false) && (d_pub  == false) && (d_prot == false) && (e_pub  == false) && (e_prot == false))
+        return 7;
+      end
+
+    else        
+
+      mode5 = true
+      mode6 = true
+
+      policy.permissions.each do |p|
+
+        if (p.contributor_type != 'Network')
+          mode5 = false
+          mode6 = false
+        end
+
+        puts "p.view = #{p.view}"
+        if ((p.view != true) || (p.download != true) || (p.edit != false))
+          mode5 = false
+        end
+
+        if ((p.view != true) || (p.download != false) || (p.edit != false))
+          mode6 = false
+        end
+
+      end
+
+      return 5 if mode5
+      return 6 if mode6
+
+    end
+
+    return 8
+
+  end
+
 end
 
 module FileUpload

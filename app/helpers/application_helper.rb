@@ -628,6 +628,15 @@ module ApplicationHelper
     return rtn
   end
   
+  
+  def effective_policy(contribution)
+    if contribution.policy == nil
+      return Policy._default contribution.contributor
+    else 
+      return contribution.policy
+    end
+  end
+
 protected
 
   def contributor_news(contributor, before, after, depth, restrict_contributor)
@@ -796,5 +805,5 @@ protected
     
     return rtn
   end
-  
+
 end

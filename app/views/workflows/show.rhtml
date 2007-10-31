@@ -293,10 +293,9 @@
   <div class="tabContainer">
     <div class="tabTitle">Sharing Permissions</div>
     <div class="tabContent">
-      <p>
-        <b>Policy:</b> <%= policy_link(@workflow.contribution.policy_id) %>
-      </p>
-      <%= render :partial => "policies/policy", :object => @workflow.contribution.policy, :locals => { :read_only => true } unless @workflow.contribution.policy.nil? %>
+
+      <%= render :partial => "sharing_summary" %>
+
     </div>
   </div>
 <% end %>
