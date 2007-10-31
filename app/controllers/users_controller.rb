@@ -22,9 +22,9 @@
 ##
 
 class UsersController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :new, :create, :search]
+  before_filter :login_required, :except => [:index, :show, :new, :create, :search, :all]
   
-  before_filter :find_users, :only => [:index]
+  before_filter :find_users, :only => [:index, :all]
   before_filter :find_user, :only => [:show]
   before_filter :find_user_auth, :only => [:edit, :update, :destroy]
   
@@ -52,6 +52,13 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @users.to_xml }
+    end
+  end
+  
+  # GET /users/all
+  def all
+    respond_to do |format|
+      format.html # all.rhtml
     end
   end
 

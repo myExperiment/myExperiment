@@ -1,6 +1,6 @@
 <li><%= link_to 'Groups', networks_path %></li>
 
-<% if ["show", "new", "edit", "search"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit", "search", "all"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
@@ -11,6 +11,8 @@
     <li><%= link_to "Edit: #{h(@network.title)}", edit_network_path(@network) %>
   <% when "search" %>  
     <li><%= link_to "Search Results", search_networks_path(:query => @query) %></li>
+  <% when "all" %>
+    <li><%= link_to "All Groups", "networks/all" %>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

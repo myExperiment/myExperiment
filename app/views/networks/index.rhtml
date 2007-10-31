@@ -1,5 +1,10 @@
-<h2>What is a Group?</h2>
+<div style="margin-bottom: 0.5em; font-size: 108%; font-weight: bold;">
+	<p style="text-align: right;">
+		<%= link_to "View All Groups", "networks/all" %>
+	</p>
+</div>
 
+<h2>What is a Group?</h2>
 <p>
   <font color="red" weight="bold">TODO!</font> A network is a group of people who are collaborating. You could set up a network for the members of a project, for example, 
   or for a group of colleagues with a common interest. A network has a title, an administrator and a number of members. 
@@ -8,20 +13,13 @@
 
 <br/>
 
-<h2>Recently Created</h2>
+<div id="tabsContainer" class="tabsContainer"></div>
 
-<%= render :partial => "networks/table", :locals => { :collection => Network.recently_created } %>
-
-<h2>All Groups</h2>
-
-<% if false %>
-  <%= render :partial => "networks/table", :locals => { :collection => @networks } %>
+<% unless (recent = Network.recently_created).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Recent</div>
+  	<div class="tabContent">
+	    <%= render :partial => "networks/table", :locals => { :collection => recent } %>
+  	</div>
+  </div>
 <% end %>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @networks } %>
-
-<%= render :partial => "networks/list", :locals => { :collection => @networks } %>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @networks } %>
-
-<br />

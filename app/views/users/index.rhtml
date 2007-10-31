@@ -1,13 +1,16 @@
-<h2>Recent Members</h2>
+<div style="margin-bottom: 0.5em; font-size: 108%; font-weight: bold;">
+	<p style="text-align: right;">
+		<%= link_to "View All Users", "users/all" %>
+	</p>
+</div>
 
-<%= render :partial => "users/hlist", :locals => { :collection => User.most_recent } %>
+<div id="tabsContainer" class="tabsContainer"></div>
 
-<h2>All Users</h2>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @users } %>
-
-<%= render :partial => "users/table", :locals => { :collection => @users } %>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @users } %>
-
-<br />
+<% unless (recent = User.most_recent).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Recent</div>
+  	<div class="tabContent">
+	    <%= render :partial => "users/hlist", :locals => { :collection => recent } %>
+  	</div>
+  </div>
+<% end %>

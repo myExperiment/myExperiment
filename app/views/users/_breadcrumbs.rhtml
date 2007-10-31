@@ -5,7 +5,7 @@
 	<li><%= link_to h(@user.name), user_path(@user) %></li>
 <% end %>
 
-<% if ["show", "new", "edit", "search"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit", "search", "all"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
@@ -16,6 +16,8 @@
     <li><%= link_to "Edit Account", edit_user_path(@user) %>
   <% when "search" %>  
     <li><%= link_to "Search Results", search_users_path(:query => @query) %></li>
+  <% when "all" %>
+    <li><%= link_to "All Users", "users/all" %>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

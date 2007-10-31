@@ -22,9 +22,9 @@
 ##
 
 class NetworksController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :search]
+  before_filter :login_required, :except => [:index, :show, :search, :all]
   
-  before_filter :find_networks, :only => [:index]
+  before_filter :find_networks, :only => [:index, :all]
   before_filter :find_network, :only => [:membership_request, :show]
   before_filter :find_network_auth, :only => [:membership_create, :edit, :update, :destroy]
   
@@ -76,6 +76,13 @@ class NetworksController < ApplicationController
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @networks.to_xml }
+    end
+  end
+  
+  # GET /networks/all
+  def all
+    respond_to do |format|
+      format.html # all.rhtml
     end
   end
 

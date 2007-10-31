@@ -23,6 +23,12 @@ ActionController::Routing::Routes.draw do |map|
   # all citations
   # map.resources :citations
 
+  # all users
+  map.connect 'users/all', :controller => 'users', :action => 'all'
+
+  # all networks (aka groups)
+  map.connect 'networks/all', :controller => 'networks', :action => 'all'
+
   # all workflows
   map.connect 'workflows/all', :controller => 'workflows', :action => 'all'
 
