@@ -75,7 +75,7 @@ class MembershipsController < ApplicationController
         
         @membership = Membership.new(:user_id => current_user.id, :network_id => @network.id)
       rescue ActiveRecord::RecordNotFound
-        error("Network not found", "is invalid", :network_id)
+        error("Group not found", "is invalid", :network_id)
       end
     else
       @membership = Membership.new(:user_id => current_user.id)

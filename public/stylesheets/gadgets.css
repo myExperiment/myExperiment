@@ -60,6 +60,12 @@
 	text-align: center;
 }
 
+.myexperiment_gadget .contents hr {
+	height: 1px;
+	border-bottom: 1px dotted #999999;
+	margin: 0.2em 0;
+}
+
 .myexperiment_gadget .sectionIcons { 
 	margin: 0.5em 0;
 }

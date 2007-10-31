@@ -1,25 +1,23 @@
-<h1>New Friendship Request</h1>
+<h1>New Friend</h1>
 
 <%= error_messages_for :friendship %>
 
 <% form_for(:friendship, :url => friendships_path) do |f| %>
+  <%= f.hidden_field :user_id, :value => current_user.id %>
+  <p style="text-align:center;">
+    Send friend request to user?
+  </p>
   <p>
-    <b>User</b><br />
-    <%= f.hidden_field :user_id, :value => current_user.id %>
-    <%= render :partial => "users/avatar", :locals => { :user => current_user } %>
+    <center>
+	    <% unless params[:user_id] %>
+	      <%= f.text_field :friend_id, :value => params[:user_id] %>
+	    <% else %>
+	      <%= f.hidden_field :friend_id, :value => params[:user_id] %>
+	      <%= render :partial => "users/avatar", :locals => { :user => User.find(params[:user_id]) } %>
+	    <% end %>
+	</center>
   </p>
 
-  <p>
-    <b>Friend</b><br />
-    <% unless params[:user_id] %>
-      <%= f.text_field :friend_id, :value => params[:user_id] %>
-    <% else %>
-      <%= f.hidden_field :friend_id, :value => params[:user_id] %>
-      <%= render :partial => "users/avatar", :locals => { :user => User.find(params[:user_id]) } %>
-    <% end %>
-  </p>
-
-  <p>
-    <%= submit_tag "Confirm Friendship Request" %> <%= button_to "Cancel Friendship Request", :controller => 'users', :action => 'show', :id => params[:user_id] %>
-  </p>
+  <p style="text-align:center;"><%= submit_tag "Yes", :style => 'width:60px' %></p> 
+  <p style="text-align:center;"><center><%= button_to "Cancel", :controller => 'users', :action => 'show', :id => params[:user_id] %></center></p>
 <% end %>

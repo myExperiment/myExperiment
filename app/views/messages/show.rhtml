@@ -15,50 +15,50 @@
 <% odd_row = false -%>
 <table class="alt_table">
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100">
+    <td width="100" style="text-align: right;">
       <b>From:</b>
     </td>
-    <td>
+    <td style="text-align: left;">
       <center><%= render :partial => "users/avatar", :locals => { :user => @message.to, :size => 60 } %></center>
     </td>
   </tr>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100">
+    <td width="100" style="text-align: right;">
       <b>To:</b>
     </td>
-    <td>
+    <td style="text-align: left;">
       <center><%= render :partial => "users/avatar", :locals => { :user => @message.to, :size => 60 } %></center>
     </td>
   </tr>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100">
+    <td width="100" style="text-align: right;">
       <b>Sent:</b>
     </td>
-    <td>
+    <td style="text-align: left;">
       <%=datetime @message.created_at %>
     </td>
   </tr>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100">
+    <td width="100" style="text-align: right;">
       <b>Received:</b>
     </td>
-    <td>
+    <td style="text-align: left;">
       <%=datetime @message.read_at %>
     </td>
   </tr>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100">
+    <td width="100" style="text-align: right;">
       <b>Subject:</b>
     </td>
-    <td>
+    <td style="text-align: left;">
       <%=h @message.subject %>
     </td>
   </tr>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100">
+    <td width="100" style="text-align: right;">
       <b>Body:</b>
     </td>
-    <td>
+    <td style="text-align: left;">
       <%=white_list @message.body_html %>
     </td>
   </tr>

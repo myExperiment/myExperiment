@@ -1,8 +1,26 @@
-<h2>Details</h2>
+<h1>Group: <%=h @network.title %></h1>
+
+<% if logged_in? %>
+  <ul class="sectionIcons">
+    <% unless @network.member? current_user.id %>
+      <li class="with_sep_bottom"><%= request_membership_link(current_user.id, @network.id) %></li>
+    <% end %>
+
+    <% if my_page? @network.owner.id %>
+      <li><%= icon('edit', edit_network_path(@network), nil, nil, 'Edit Group') %></li>
+      <li><%= icon('destroy', network_path(@network), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
+    <% end %>
+  </ul>
+<% end %>
 
 <p>
   <b>Title:</b>
   <%=h @network.title %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= white_list @network.description_html %>
 </p>
 
 <p>
@@ -25,19 +43,6 @@
   <%=datetime @network.updated_at %>
 </p>
 
-<% if logged_in? %>
-  <ul class="sectionIcons">
-    <% unless @network.member? current_user.id %>
-      <li class="with_sep_bottom"><%= request_membership_link(current_user.id, @network.id) %></li>
-    <% end %>
-
-    <% if my_page? @network.owner.id %>
-      <li><%= icon('edit', edit_network_path(@network), nil, nil, 'Edit Group') %></li>
-      <li><%= icon('destroy', network_path(@network), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
-    <% end %>
-  </ul>
-<% end %>
-
 
 <br/>
 
@@ -47,13 +52,6 @@
   <div class="tabTitle">News</div>
   <div class="tabContent">  
     <%= render :partial => "layouts/news", :locals => { :collection => news(@network, true) } %>
-  </div>
-</div>
-
-<div class="tabContainer">
-  <div class="tabTitle">Description</div>
-  <div class="tabContent">
-    <%= white_list @network.description_html %>
   </div>
 </div>
 

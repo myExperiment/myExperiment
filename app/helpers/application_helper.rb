@@ -196,14 +196,14 @@ module ApplicationHelper
   end
   
   def request_membership_link(user_id, network_id)
-    link_to("Request membership", url_for(:controller => 'memberships', 
+    link_to("Request Membership", url_for(:controller => 'memberships', 
                                           :action => 'new', 
                                           :user_id => user_id, 
                                           :network_id => network_id))
   end
 
   def request_friendship_link(user_id)
-    link_to("Request friendship", new_friendship_url(:user_id => user_id))
+    link_to("Request Friendship", new_friendship_url(:user_id => user_id))
   end
   
   def versioned_workflow_link(workflow_id, version_id, long_description=true)
@@ -490,7 +490,7 @@ module ApplicationHelper
   def icon(method, url=nil, alt=nil, url_options={}, label=method.humanize, remote=false)
 
     if (label == 'Destroy')
-      label = 'Remove';
+      label = 'Delete';
     end
 
     return nil unless (filename = method_to_icon_filename(method.downcase))

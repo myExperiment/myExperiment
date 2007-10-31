@@ -21,8 +21,9 @@
     </ul>
 	
     <% unless current_user.messages_unread.empty? %>
+	  <hr/>
       <div>
-        <div class="title"><%= pluralize(current_user.messages_unread.length, "new message") %>!</div>
+        <div class="title"><%= pluralize(current_user.messages_unread.length, "new message") %></div>
         <div class="content">
           <ul class="gadget_list">
             <% current_user.messages_unread.each do |message| %>
@@ -34,12 +35,31 @@
     <% end %>
     
     <% unless current_user.friendships_pending.empty? %>
-      <div>
-        <div class="title"><%= pluralize(current_user.friendships_pending.length, "new friendship request") %>!</div>
+      <hr/>
+	  <div>
+        <div class="title"><%= pluralize(current_user.friendships_pending.length, "new friendship request") %></div>
         <div class="content">
           <ul class="gadget_list">
             <% current_user.friendships_pending.each do |friendship| %>
               <li><b><%= icon "user", nil, nil, nil, "" %> <%= link_to truncate(h(friendship.user.name)), friendship_path(current_user, friendship) %></b></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+	
+	<% unless current_user.memberships_pending.empty? %>
+      <hr/>
+	  <div>
+        <div class="title"><%= pluralize(current_user.memberships_pending.length, "new membership request") %></div>
+        <div class="content">
+          <ul class="gadget_list">
+            <% current_user.memberships_pending.each do |membership| %>
+              <li>
+              	<b><%= icon "user", nil, nil, nil, "" %> <%= link_to truncate(h(membership.user.name)), membership_path(membership.user, membership) %></b>
+				for
+				<b><%= title membership.network_id %></b>
+			  </li>
             <% end %>
           </ul>
         </div>

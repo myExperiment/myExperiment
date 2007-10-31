@@ -9,7 +9,7 @@
       <%= f.text_field :user_id, :value => current_user.id %>
     <% else %>
       <%= f.hidden_field :user_id, :value => current_user.id %>
-      <%=h current_user.name %> (<%=h current_user.openid_url %>)
+      <%=h current_user.name %><%= (" (" + h(current_user.openid_url) + ")") if current_user.openid_url %>
     <% end %>
   </p>
 

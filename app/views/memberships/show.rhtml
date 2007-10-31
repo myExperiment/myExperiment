@@ -2,40 +2,52 @@
 
 <% unless my_page? @membership.user_id %>
   <p>
-    <b>User:</b><br/>
-    <%= render :partial => "users/avatar", :locals => { :user => @membership.user } %>
+    <center>
+		<b>User:</b><br/>
+	    <%= render :partial => "users/avatar", :locals => { :user => @membership.user } %>
+	</center>
   </p>
 <% end %>
 
 <p>
-  <b>Group:</b> 
-  <%=title @membership.network %>
+  <center>
+	  <b>Group:</b> 
+	  <%=title @membership.network %>
+  </center>
 </p>
 
 <p>
-  <b>Created at:</b><br />
-  <%=datetime @membership.created_at %>
+  <center>
+	  <b>Requested at:</b><br/>
+	  <%=datetime @membership.created_at %>
+  </center>
 </p>
 
 <% if @membership.accepted? %>
 
   <p>
-    <b>Accepted at:</b><br />
-    <%=datetime @membership.accepted_at %>
+    <center>
+		<b>Accepted at:</b><br />
+	    <%=datetime @membership.accepted_at %>
+	</center>
   </p>
 
 <% elsif my_page? @membership.network.owner.id %>
 
   <p>
-    <%= icon "confirm", accept_membership_path(@membership.user_id, @membership) %> 
-    <%= icon "reject", membership_path(@membership.user_id, @membership), nil, :confirm => "Are you sure?", :method => :delete %>
+    <center>
+		<%= icon "confirm", accept_membership_path(@membership.user_id, @membership), "Accept", nil, "Accept" %> 
+	    <%= icon "reject", membership_path(@membership.user_id, @membership), nil, :confirm => "Are you sure?", :method => :delete %>
+	</center>
   </p>
 
 <% else %>
 
   <p>
-    <b>Accepted at:</b><br />
-    Pending
+    <center>
+		<b>Accepted at:</b><br />
+	    Pending
+	</center>
   </p>
 
 <% end %>
