@@ -1,13 +1,9 @@
+<div style="margin-bottom: 0.5em; font-size: 108%; font-weight: bold;">
+	<p style="text-align: right;">
+		<%= link_to "Show All Workflows", "workflows/all" %>
+	</p>
+</div>
+
 <%= render :partial => "workflows/all_tags" %>
 
 <%= render :partial => "contributions/most", :locals => { :type => "Workflow" } %>
-
-<h2><%= feed_icon_tag "Latest Workflows", formatted_workflows_path(:rss) %> All Workflows</h2>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @workflows } %>
-
-<%= render :partial => "workflows/table", :locals => { :collection => @workflows } %>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @workflows } %>
-
-<br />

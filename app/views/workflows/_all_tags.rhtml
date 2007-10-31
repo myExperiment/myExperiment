@@ -1,5 +1,6 @@
-<% unless (tags = all_tags_for_workflows).empty? %>
-	<p>
-      	<%= tag_cloud_from_collection(tags) %>
-    </p>
+<% unless (tags = all_tags_for_workflows(50)).empty? %>
+	<h2>Top <%= tags.length %> tags for Workflows</h2>
+    <%= tag_cloud_from_collection(tags) %>
+	<br/>
+	<br/>
  <% end %>

@@ -22,11 +22,11 @@
 ##
 
 class WorkflowsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download, :search]
+  before_filter :login_required, :except => [:index, :show, :download, :search, :all]
   
-  before_filter :find_workflows, :only => [:index]
+  before_filter :find_workflows, :only => [:index, :all]
   #before_filter :find_workflow_auth, :only => [:bookmark, :comment, :rate, :tag, :download, :show, :edit, :update, :destroy]
-  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create]
+  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all]
   
   require 'scufl/model'
   require 'scufl/parser'
@@ -118,6 +118,13 @@ class WorkflowsController < ApplicationController
         #@workflows = Workflow.find(:all, :order => "updated_at DESC") # list all (if required)
         render :action => 'index.rxml', :layout => false
       end
+    end
+  end
+  
+  # GET /workflows/all
+  def all
+    respond_to do |format|
+      format.html # all.rhtml
     end
   end
 
@@ -311,7 +318,7 @@ protected
                        :contributor_type => wf[:contributor_type],
                        :title => title,
                        :unique_name => unique_name,
-                       :body => scufl_model.description.description)
+                       :body => ae_some_html(scufl_model.description.description))
                        
     unless RUBY_PLATFORM =~ /mswin32/
       rtn.image = img

@@ -17,10 +17,10 @@
 	      <%=h workflow.title %>
 	    </th>
 	   </tr>
-	   <% if show and desc = workflow.body_html %>
+	   <% if show and desc = workflow.body %>
 	    <tr>
 	      <td width="320" colspan="<%= image ? 2 : 3 %>">
-	        <%= trim_body_html(desc, 100) %>
+	        <%= truncate(desc, 100) %>
 	      </td>
 	    </tr>
 	  <% end %>
@@ -31,7 +31,7 @@
 	    </td>
 	    <td>
 	      <center>
-	        <b>Contributor:</b><br />
+	        <b>Uploader:</b><br />
 	        <%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %>
 	      </center>
 	    </td>

@@ -2,71 +2,71 @@
        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-	<title>myExperiment - <%= controller.controller_name.humanize %> - <%= controller.action_name.humanize %></title>
-	<%= stylesheet_link_tag 'reset-fonts-grids' %>
-	<%= stylesheet_link_tag 'savagebeast' %>
-	<%= stylesheet_link_tag 'base-min' %>
-	<%= stylesheet_link_tag 'scaffold' %>
-	<%= stylesheet_link_tag 'acts_as_taggable_stylesheet' %>
-	<%= stylesheet_link_tag 'star_rating' %>
-	<%= stylesheet_link_tag 'styles' %>
-	<%= stylesheet_link_tag 'gadgets' %>
-	<%= javascript_include_tag :defaults %>
-	<%= javascript_include_tag "boxover.js" %>
-	<% if controller.controller_name.to_s == "workflows" and controller.action_name.to_s == "index" %>
-		<link href="<%= workflows_url %>.rss" rel="alternate" type="application/rss+xml" title="myExperiment - Latest Workflows" />
-	<% end %>
-</head>
-<body>
-	<div id="doc2" class="yui-t4">
-		<div id="hd">
-  			<div id="myexp_logo"><%= link_to image_tag("logo.png"), "/" %></div>
-			<ul class="tabnav">
-			  <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
-				<%= link_to "Users", users_path %>
-			  </li>
-			  <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Groups", networks_path %></li>
-			  <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path %></li>
-			  <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Files", blobs_path %></li>
-			  <li <%= (["blogs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path %></li>
-			  <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
-			</ul>
-  			<div id="myexp_searchbar"><%= render :partial => "layouts/search" %></div>
-		</div>
-		<div id="bd">
-			<div id="yui-main"> 
-  				<div class="yui-b">
-				    <div id="myexp_breadcrumbs_bar">
-					    <ul class="breadcrumbs">
-					    	<% if logged_in? %>
-					    		<li><%= link_to "Home", user_url(current_user) %></li>
-							<% else %>
-								<li><%= link_to "Home", "/" %></li>
-							<% end %>
-					    	<li><b>&#187;</b></li>
-					    	<%= render :partial => "breadcrumbs" %>
-					    </ul>
-				    </div>
-    				<div id="myexp_content">
-						<p style="color: red"><%= flash[:error] %></p>
-	    				<p style="color: green"><%= flash[:notice] %></p>
-	    				<%= render :partial => "subnav" %>
-	    				<%= yield  %>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+		<title>myExperiment - <%= controller.controller_name.humanize %> - <%= controller.action_name.humanize %></title>
+		<%= stylesheet_link_tag 'reset-fonts-grids' %>
+		<%= stylesheet_link_tag 'savagebeast' %>
+		<%= stylesheet_link_tag 'base-min' %>
+		<%= stylesheet_link_tag 'scaffold' %>
+		<%= stylesheet_link_tag 'acts_as_taggable_stylesheet' %>
+		<%= stylesheet_link_tag 'star_rating' %>
+		<%= stylesheet_link_tag 'styles' %>
+		<%= stylesheet_link_tag 'gadgets' %>
+		<%= javascript_include_tag :defaults %>
+		<%= javascript_include_tag "boxover.js" %>
+		<% if controller.controller_name.to_s == "workflows" and controller.action_name.to_s == "index" %>
+			<link href="<%= workflows_url %>.rss" rel="alternate" type="application/rss+xml" title="myExperiment - Latest Workflows" />
+		<% end %>
+	</head>
+	<body>
+		<div id="doc2" class="yui-t4">
+			<div id="hd">
+	  			<div id="myexp_logo"><%= link_to image_tag("logo.png"), "/" %></div>
+				<ul class="tabnav">
+				  <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
+					<%= link_to "Users", users_path %>
+				  </li>
+				  <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Groups", networks_path %></li>
+				  <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path %></li>
+				  <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Files", blobs_path %></li>
+				  <li <%= (["blogs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path %></li>
+				  <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
+				</ul>
+	  			<div id="myexp_searchbar"><%= render :partial => "layouts/search" %></div>
+			</div>
+			<div id="bd">
+				<div id="yui-main"> 
+	  				<div class="yui-b">
+					    <div id="myexp_breadcrumbs_bar">
+						    <ul class="breadcrumbs">
+						    	<% if logged_in? %>
+						    		<li><%= link_to "Home", user_url(current_user) %></li>
+								<% else %>
+									<li><%= link_to "Home", "/" %></li>
+								<% end %>
+						    	<li><b>&#187;</b></li>
+						    	<%= render :partial => "breadcrumbs" %>
+						    </ul>
+					    </div>
+	    				<div id="myexp_content">
+							<p style="color: red"><%= flash[:error] %></p>
+		    				<p style="color: green"><%= flash[:notice] %></p>
+		    				<%= render :partial => "subnav" %>
+		    				<%= yield  %>
+						</div>
 					</div>
 				</div>
+				<div id="myexp_sidebar" class="yui-b">
+					<%= render :partial => "layouts/sidebar" %>
+				</div>
 			</div>
-			<div id="myexp_sidebar" class="yui-b">
-				<%= render :partial => "layouts/sidebar" %>
-			</div>
-		</div>
-		<div id="ft">
-			<%= render :partial => "layouts/footer" %>
+			<div id="ft">
+				<%= render :partial => "layouts/footer" %>
+			</div>			
 		</div>
 		
 		<%= javascript_include_tag "tabs.js" %>
 		<%= javascript_include_tag "folds.js" %>
-
 	</body>
 </html>

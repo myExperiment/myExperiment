@@ -3,7 +3,7 @@
 
 <table class="alt_table">
   <tr>
-    <th width="100">Contributor</th>
+    <th width="100">Uploader</th>
     <th width="200">Details</th>
     <% unless RUBY_PLATFORM =~ /mswin32/ %>
     <th width="110">Image</th>
@@ -26,7 +26,7 @@
       <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
       <p>
         <b><%=query ? highlight_all(workflow.title, query) : h(workflow.title) %></b><br />
-        <%=query ? highlight_all(truncate(workflow.body_html, 200), query) : truncate(workflow.body_html, 200) %>
+        <%=query ? highlight_all(truncate(workflow.body, 200), query) : truncate(workflow.body, 200) %>
       </p>
     </td>
     <% unless RUBY_PLATFORM =~ /mswin32/ %>

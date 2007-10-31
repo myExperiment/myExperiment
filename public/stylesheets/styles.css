@@ -13,6 +13,7 @@ body {
 	   YUI Fonts CSS provides a degradation path
 	   (see: http://developer.yahoo.com/yui/fonts/) */
 	font-family: arial;
+	/*background-color: #FFFFFF;*/
 }
 
 p {

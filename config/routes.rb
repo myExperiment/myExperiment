@@ -23,6 +23,9 @@ ActionController::Routing::Routes.draw do |map|
   # all citations
   # map.resources :citations
 
+  # all workflows
+  map.connect 'workflows/all', :controller => 'workflows', :action => 'all'
+
   # workflows (downloadable)
   map.resources :workflows, :collection => { :search => :get }, :member => { :download => :get, :bookmark => :post, :comment => :post, :rate => :post, :tag => :post } do |workflow|
     # workflows have nested citations

@@ -1,11 +1,19 @@
-<% unless (most_v = Contribution.most_viewed(3, type)).empty? %>
-  <h2>Most Viewed</h2>
+<div id="tabsContainer" class="tabsContainer"></div>
 
-  <%= render :partial => "contributions/list", :locals => { :collection => most_v } %>
+<% unless (most_v = Contribution.most_viewed(10, type)).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Viewed</div>
+  	<div class="tabContent">
+	    <%= render :partial => "contributions/list", :locals => { :collection => most_v, :table => false } %>
+  	</div>
+  </div>
 <% end %>
 
-<% unless (most_d = Contribution.most_downloaded(3, type)).empty? %>
-  <h2>Most Downloaded</h2>
-
-  <%= render :partial => "contributions/list", :locals => { :collection => most_d } %>
+<% unless (most_d = Contribution.most_downloaded(10, type)).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Downloaded</div>
+  	<div class="tabContent">
+	    <%= render :partial => "contributions/list", :locals => { :collection => most_d, :table => false } %>
+  	</div>
+  </div> 
 <% end %>

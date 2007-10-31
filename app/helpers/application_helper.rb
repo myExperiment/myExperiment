@@ -407,9 +407,8 @@ module ApplicationHelper
     html
   end
   
-  def trim_body_html(body, limit=nil, truncate_string="...")
-    body = "#{body[0..limit]}.." if limit and body.length > limit
-    
+  def trim_body_html(body, limit=nil)
+    truncate(body, limit)
     white_list(body)
   end
   
@@ -598,7 +597,7 @@ module ApplicationHelper
     return final_tags
   end
   
-  def all_tags_for_workflows()
+  def all_tags_for_workflows(limit=-1)
     taggings = Tagging.find(:all, :conditions => ["taggable_type = ?", "Workflow"])
     tags = []
     
@@ -607,6 +606,13 @@ module ApplicationHelper
       unless tags.include? tag
         tags += [tagging.tag]
       end
+    end
+    
+    unless limit == -1
+      tags = tags.sort! { |x,y| 
+        y.taggings_count <=> x.taggings_count
+      }
+      tags = tags.first(limit)
     end
     
     return tags
