@@ -1,25 +1,48 @@
 <h1>Give us Feedback</h1>
 
-<div style="margin-left: 3em; margin-top: 3em;">
+<div class="info_text">
+	<p>We would really appreciate feedback on your experiences of using myExperiment, especially in the following areas:</p>
+	<ul>
+	  <li><b>User Interface:</b>  
+	    <ul>
+	      <li>How easy is the website to navigate?</li>
+	      <li>How have you found it to upload, search for and comment on workflows?</li> 
+	      <li>Have you found any features of the myExperiment difficult to use, if so why? Do you have any suggestions of how to make these features easier to use.</li>
+	    </ul>
+	  </li>
+	  <li><b>Bug Reporting:</b>
+	    <ul>
+	      <li>Did any of the features you tried to use not work properly? Report them here and we will endeavour to fix them as quickly as possible.</li>
+	    </ul>
+	  </li>
+	  <li><b>Feature Requests:</b>
+	    <ul>
+	      <li>Is there any features that you would like that myExperiment doesn't currently provide. Tell us about them and we will see if we can implement them for you.</li>
+	    </ul>
+	  </li>
+	</ul>
+</div>
+
+<div style="margin: 2em; text-align: center;">
 	<% form_tag ({:action => :create}) do %>
 		<p>
 	    	<b>From</b><br />
-	    	<%= text_field_tag :from, logged_in? ? current_user.name : '', :size => '50%' %>
+	    	<%= text_field_tag :from, logged_in? ? current_user.name : '', :size => '30' %>
 	  	</p>
 		
 		<p>
 	    	<b>Email (optional)</b><br />
-	    	<%= text_field_tag :email, (logged_in? && current_user.email) ? current_user.email : '', :size => '50%' %>
+	    	<%= text_field_tag :email, (logged_in? && current_user.email) ? current_user.email : '', :size => '30' %>
 	  	</p>
 		
 		<p>
 	    	<b>Subject</b><br />
-	    	<%= text_field_tag :subject, nil, :size => '50%' %>
+	    	<%= text_field_tag :subject, nil, :size => '30' %>
 	  	</p>
 		
 		<p>
 			<b>Message</b><br />
-			<textarea id="feedback_content" name="content" rows="6" style="width: 50%;"></textarea><br/>
+			<textarea id="feedback_content" name="content" rows="6" style="width: 400px;"></textarea><br/>
 		</p>
 		
 		<p>
