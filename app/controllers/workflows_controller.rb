@@ -232,7 +232,7 @@ class WorkflowsController < ApplicationController
           end
         
           # bug fix to not save 'default' workflow unless policy_id is selected
-          @workflow.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
+# @workflow.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
         
           # security fix (only allow the owner to change the policy)
           @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
@@ -509,27 +509,27 @@ private
 
     if (policy.permissions.length == 0)
 
-      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == true ) && (d_prot == false) && (e_pub  == false) && (e_prot == false))
+      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == true ) && (d_prot == false))
         return 0
       end
 
-      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == false) && (d_prot == true ) && (e_pub  == false) && (e_prot == false))
+      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == false) && (d_prot == true ))
         return 1;
       end
 
-      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == false) && (d_prot == false) && (e_pub  == false) && (e_prot == false))
+      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == false) && (d_prot == false))
         return 2;
       end
 
-      if ((v_pub  == false) && (v_prot == true ) && (d_pub  == false) && (d_prot == true ) && (e_pub  == false) && (e_prot == false))
+      if ((v_pub  == false) && (v_prot == true ) && (d_pub  == false) && (d_prot == true ))
         return 3;
       end
 
-      if ((v_pub  == false) && (v_prot == true ) && (d_pub  == false) && (d_prot == false) && (e_pub  == false) && (e_prot == false))
+      if ((v_pub  == false) && (v_prot == true ) && (d_pub  == false) && (d_prot == false))
         return 4;
       end
 
-      if ((v_pub  == false) && (v_prot == false) && (d_pub  == false) && (d_prot == false) && (e_pub  == false) && (e_prot == false))
+      if ((v_pub  == false) && (v_prot == false) && (d_pub  == false) && (d_prot == false))
         return 7;
       end
 
@@ -546,11 +546,11 @@ private
         end
 
         puts "p.view = #{p.view}"
-        if ((p.view != true) || (p.download != true) || (p.edit != false))
+        if ((p.view != true) || (p.download != true))
           mode5 = false
         end
 
-        if ((p.view != true) || (p.download != false) || (p.edit != false))
+        if ((p.view != true) || (p.download != false))
           mode6 = false
         end
 
