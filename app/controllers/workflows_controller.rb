@@ -165,7 +165,7 @@ class WorkflowsController < ApplicationController
       if @workflow.save
         if params[:workflow][:tag_list]
           @workflow.user_id = current_user
-          @workflow.tag_list = params[:workflow][:tag_list]
+          @workflow.tag_list = convert_tags_to_gem_format params[:workflow][:tag_list]
           @workflow.update_tags
         end
         
