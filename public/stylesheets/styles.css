@@ -147,6 +147,8 @@ fieldset {
 
 #ft {
 	margin: 2em 0;
+	padding: 1em;
+	border-top: 2px dotted #999999;
 }
 
 #tag_clouds {
@@ -781,7 +783,7 @@ table tr td.details {
 .workflow_version_selector_box {
 	margin: 0;
 	padding: 0.1em 0.5em;
-	border: 1px dotted #999999;
+	border: 1px solid #999999;
 	border-bottom: none;
 	background-color: #EEEEEE;
 	color: #333333;
@@ -799,14 +801,14 @@ table tr td.details {
 }
 
 .workflow_version_box {
-	border: 1px dotted #999999;
+	border: 1px solid #999999;
 	padding: 0.5em;
 	margin-bottom: 1em;
 }
 
 .workflow_currentlicense_box {
 	margin: 0 0 0.5em 0;
-	padding: 0em 0.8em;
+	padding: 0em 0.4em;
 	text-align: center;
 	font-style: italic;
 }
