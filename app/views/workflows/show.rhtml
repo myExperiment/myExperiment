@@ -89,10 +89,10 @@
 		<br/>
 
 		<% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
-			<h2>
+			<h3>
 				<img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section provides options for executing the workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
 				Run
-			</h2>
+			</h3>
 		
 			<table width="100%">
 				<tr>
@@ -129,7 +129,7 @@
 	<div class="workflow_section_box">
 		<p class="heading">
 			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The uploader is the person who uploaded this workflow on to myExperiment, and who manages the workflow on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
-			Uploader:
+			Uploader
 		</p>
 		<p>
 			<%= contributor(@workflow.contribution.contributor_id, @workflow.contribution.contributor_type, true, 60) %>
@@ -138,7 +138,7 @@
 		<% if false %>
 			<p class="heading">
 				<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The unique name assigned to the workflow in myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
-				Unique:
+				Unique
 			</p>
 			<p>
 				<%=h @workflow.unique_name %>
@@ -146,12 +146,38 @@
 		<% end %>
 		
 		<hr/>
+				
+		<p class="heading">
+			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[Who gets the credit for this Workflow?] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+			Credits <span style="font-size: 85%; color: #666666;">(People)</span>
+		</p>
+		<% unless (creditors = @workflow.creditors).empty? %>
+			<div style="text-align: left; 1.2em; font-size: 85%;">
+				<ul>
+					<% creditors.each do |c| %>
+						<li style="margin-bottom: 0.4em;"><%= name(c.creditor_id) %></li>
+					<% end %>
+				</ul>
+			</div>
+		<% else %>
+			<p style="text-align: left;"><i>None</i></p>
+		<% end %>
 		
 		<p class="heading">
-			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[Who gets the credit for this Workflow? And what other Workflows is this one based on?] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
-			Credits/Attribution:
+			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[What other Workflows is this one based on?] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+			Attribution <span style="font-size: 85%; color: #666666;">(Workflows)</span>
 		</p>
-		<p>&nbsp;</p>
+		<% unless (attributors = @workflow.attributors).empty? %>
+			<div style="text-align: left; font-size: 85%;">
+				<ul>
+					<% attributors.each do |a| %>
+						<li style="margin-bottom: 0.4em;"><%= contributable(a.attributor_id, "Workflow") %></li>
+					<% end %>
+				</ul>
+			</div>
+		<% else %>
+			<p style="text-align: left;"><i>None</i></p>
+		<% end %>
 		
 	</div>
 	
@@ -244,17 +270,17 @@
 			<%= render :partial => "contributions/statistics", :object => @workflow.contribution %>
 		
 			<p>
-		      <b>Number of tags:</b> 
+		      <b>No. of tags:</b> 
 		      <%=h @workflow.taggings.length %>
 		    </p>
 			
 			<p>
-		      <b>Number of ratings:</b> 
+		      <b>No. of ratings:</b> 
 		      <%=h @workflow.ratings.length %>
 		    </p>
 			
 		    <p>
-		      <b>Number of comments:</b> 
+		      <b>No. of comments:</b> 
 		      <%=h @workflow.comments.length %>
 		    </p>
 		    
@@ -326,6 +352,7 @@
 <% end %>
 
 <br/>
+<br/>
 
 <h2>Comments</h2>
 
@@ -345,7 +372,7 @@
 	
 	<% if logged_in? %>
 		<div class="addCommentBox">
-			<h3>Make a Comment:</h3>
+			<h4>Make a Comment:</h4>
 			<% form_remote_tag(:url => comment_workflow_path(@workflow), 
 							   :update => 'comments', 
 							   :position => 'bottom', 
