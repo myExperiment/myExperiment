@@ -419,7 +419,8 @@ private
     edit_protected     = false
     edit_public        = false
 
-    sharing_class = params[:sharing][:class_id]
+    sharing_class  = params[:sharing][:class_id]
+    updating_class = params[:updating][:class_id]
 
     case sharing_class
       when "0"
@@ -435,6 +436,14 @@ private
         download_protected = "1"          
       when "4"
         view_protected     = "1"
+    end
+
+    case updating_class
+      when "0"
+        edit_protected = true if view_protected == "1" or download_protected == "1"
+        edit_public    = true if view_public    == "1" or download_public    == "1"
+      when "1"
+        edit_protected = true
     end
 
     policy = Policy.new(:name => 'auto',
@@ -461,14 +470,30 @@ private
         end
     end
 
+    case updating_class
+      when "3" # some of my networks
+        params[:updating_networkmembers].each do |n|
+          Permission.new(:policy => policy,
+              :contributor => (Network.find n[1].to_i),
+              :view => 0, :download => 0, :edit => 1).save
+        end
+      when "5" # some of my friends
+        params[:updating_somefriends].each do |f|
+          Permission.new(:policy => policy,
+              :contributor => (User.find f[1].to_i),
+              :view => 0, :download => 0, :edit => 1).save
+        end
+    end
+
     @workflow.contribution.policy = policy
     @workflow.contribution.save
 
     puts "------ Workflow create summary ------------------------------------"
-    puts "current_user  = #{current_user.id}"
-    puts "sharing_class = #{sharing_class}"
-    puts "policy        = #{policy}"
-    puts "Sharing net1  = #{params[:sharing_networks1]}"
+    puts "current_user   = #{current_user.id}"
+    puts "updating_class = #{updating_class}"
+    puts "sharing_class  = #{sharing_class}"
+    puts "policy         = #{policy}"
+    puts "Sharing net1   = #{params[:sharing_networks1]}"
     puts "-------------------------------------------------------------------"
 
   end

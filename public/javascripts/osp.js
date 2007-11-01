@@ -244,42 +244,42 @@ function update_sharing(mode) {
     }
 }
 
-function update_updating(parentId) {
+function update_updating(mode) {
 
-    if (parentId == 'updating_option_3') 
+    if (mode == 3) 
     {
         document.getElementById('updating_networksmembers_box').style.display = 'block';
         document.getElementById('updating_networksadmins_box').style.display = 'none';
+	document.getElementById('updating_somefriends_box').style.display = 'none';
         document.getElementById('updating_custom_box').style.display = 'none';
-		document.getElementById('updating_somefriends_box').style.display = 'none';
     }
-    else if (parentId == 'updating_option_4')
+    else if (mode == 4)
     {
         document.getElementById('updating_networksmembers_box').style.display = 'none';
         document.getElementById('updating_networksadmins_box').style.display = 'block';
+	document.getElementById('updating_somefriends_box').style.display = 'none';
         document.getElementById('updating_custom_box').style.display = 'none';
-		document.getElementById('updating_somefriends_box').style.display = 'none';
     }
-    else if (parentId == 'updating_option_6')
+    else if (mode == 5)
     {
         document.getElementById('updating_networksmembers_box').style.display = 'none';
         document.getElementById('updating_networksadmins_box').style.display = 'none';
-        document.getElementById('updating_custom_box').style.display = 'block';
-		document.getElementById('updating_somefriends_box').style.display = 'none';
-    }
-	else if (parentId == 'updating_option_7')
-    {
-        document.getElementById('updating_networksmembers_box').style.display = 'none';
-        document.getElementById('updating_networksadmins_box').style.display = 'none';
+	document.getElementById('updating_somefriends_box').style.display = 'block';
         document.getElementById('updating_custom_box').style.display = 'none';
-		document.getElementById('updating_somefriends_box').style.display = 'block';
     } 
+    else if (mode == 7)
+    {
+        document.getElementById('updating_networksmembers_box').style.display = 'none';
+        document.getElementById('updating_networksadmins_box').style.display = 'none';
+	document.getElementById('updating_somefriends_box').style.display = 'none';
+        document.getElementById('updating_custom_box').style.display = 'block';
+    }
     else
     {
         document.getElementById('updating_networksmembers_box').style.display = 'none';
         document.getElementById('updating_networksadmins_box').style.display = 'none';
+	document.getElementById('updating_somefriends_box').style.display = 'none';
         document.getElementById('updating_custom_box').style.display = 'none';
-		document.getElementById('updating_somefriends_box').style.display = 'none';
     }
 }
 
