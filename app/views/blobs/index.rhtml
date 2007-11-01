@@ -1,11 +1,7 @@
+<div style="margin-bottom: 0.5em; font-size: 108%; font-weight: bold;">
+	<p style="text-align: right;">
+		<%= link_to "View All Files", "blobs/all" %>
+	</p>
+</div>
+
 <%= render :partial => "contributions/most", :locals => { :type => "Blob" } %>
-
-<h2>All Files</h2>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @blobs } %>
-
-<%= render :partial => "blobs/table", :locals => { :collection => @blobs } %>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @blobs } %>
-
-<br />

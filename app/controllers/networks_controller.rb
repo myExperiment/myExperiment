@@ -53,7 +53,7 @@ class NetworksController < ApplicationController
         
       if @membership.save
         @membership.accept!
-        format.html { render :partial => "networks/member", :locals => { :network => @network, :member => @membership.user } }
+        format.html { render :partial => "networks/member", :locals => { :network => @network, :member => @membership.user, :size => 60 } }
         format.xml  { head :ok }
       else
         format.html { render :inline => " "} # no responce, rendered inline

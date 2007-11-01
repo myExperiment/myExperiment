@@ -56,8 +56,18 @@
 </div>
 
 <% if my_page? @network.owner.id %>
+  
+  <% unless @network.memberships_accepted.empty? %>
+    <div class="tabContainer">
+      <div class="tabTitle">Memberships</div>
+      <div class="tabContent">
+        <%= render :partial => "memberships/table", :locals => { :collection => @network.memberships_accepted, :network => false } %>
+      </div>
+    </div>
+  <% end %>
+  
   <div class="tabContainer">
-    <div class="tabTitle">Create Memberships</div>
+    <div class="tabTitle">Add Users</div>
     <div class="tabContent">
   
       <p>
@@ -73,14 +83,6 @@
     </div>
   </div>
   
-  <% unless @network.memberships_accepted.empty? %>
-    <div class="tabContainer">
-      <div class="tabTitle">Memberships Accepted</div>
-      <div class="tabContent">
-        <%= render :partial => "memberships/table", :locals => { :collection => @network.memberships_accepted, :network => false } %>
-      </div>
-    </div>
-  <% end %>
 <% else %>
   <% unless @network.members(false).empty? %>
     <div class="tabContainer">

@@ -23,6 +23,9 @@ ActionController::Routing::Routes.draw do |map|
   # all citations
   # map.resources :citations
 
+  # all blobs (aka files)
+  map.connect 'blobs/all', :controller => 'blobs', :action => 'all'
+
   # all users
   map.connect 'users/all', :controller => 'users', :action => 'all'
 

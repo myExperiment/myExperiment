@@ -22,11 +22,11 @@
 ##
 
 class BlobsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download, :search]
+  before_filter :login_required, :except => [:index, :show, :download, :search, :all]
   
-  before_filter :find_blobs, :only => [:index]
+  before_filter :find_blobs, :only => [:index, :all]
   #before_filter :find_blob_auth, :only => [:download, :show, :edit, :update, :destroy]
-  before_filter :find_blob_auth, :except => [:search, :index, :new, :create]
+  before_filter :find_blob_auth, :except => [:search, :index, :new, :create, :all]
   
   # GET /blobs;search
   # GET /blobs.xml;search
@@ -56,6 +56,13 @@ class BlobsController < ApplicationController
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @blobs.to_xml }
+    end
+  end
+  
+  # GET /blobs/all
+  def all
+    respond_to do |format|
+      format.html # all.rhtml
     end
   end
 
