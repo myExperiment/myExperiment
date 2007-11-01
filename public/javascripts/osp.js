@@ -26,9 +26,9 @@ function updateTagList() {
   } else {
 
     for (var i = 0; i < tags.length; i++)
-      markup += '<div>' + tags[i] +
+      markup += tags[i] +
         ' <small>[<a href="" onclick="javascript:deleteTag(\'' + tags[i] +
-        '\'); return false;">delete</a>]</small>';
+        '\'); return false;">delete</a>]</small><br />';
   }
 
   document.getElementById('tags_current_list').innerHTML = markup;
