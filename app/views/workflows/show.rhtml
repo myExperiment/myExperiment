@@ -5,7 +5,7 @@
   }
 </script>
 
-<h1>Workflow: <%=h @workflow.title %></h1>
+<h1>Workflow Entry: <%=h @workflow.title %></h1>
 
 <div class="workflow_currentlicense_box">
 	<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
@@ -73,12 +73,15 @@
 			</p>
 		</div>
 		
+		<div style="padding:1em; text-align:center;">
+			<% if logged_in? and @workflow.authorized?("download", (logged_in? ? current_user : nil)) %><li> <a href="<%= download_workflow_url(@workflow) %>"><%= image_tag(image_path("download_button.png")) %></a></li><% end %>
+		</div>
+		
 		<% if logged_in? %>
 			<div class="sectionIcons">
 				<ul class="sectionIcons">
-					<% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %><li><%= icon('download', download_workflow_url(@workflow), nil, nil, 'Download Workflow') %></li><% end %>
-					<% unless @workflow.svg.nil? %><li><%= link_to 'Download Scalable Diagram (SVG)', url_for_file_column(@workflow, "svg") %></li><% end %>
-					<% if @workflow.authorized?("destroy", current_user) %><li><%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Workflow Version)') %><% end %>
+					<% unless @workflow.svg.nil? %><li><%= icon('picture', url_for_file_column(@workflow, "svg"), nil, nil, 'Download Scalable Diagram (SVG)') %></li><% end %>
+					<% if @workflow.authorized?("destroy", current_user) %><li><%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Workflow Version') %><% end %>
 				</ul>
 			</div>
 		<% end %>
@@ -151,6 +154,19 @@
 		<p>&nbsp;</p>
 		
 	</div>
+	
+	<% if logged_in? %>
+		<div class="actions">
+			<% if @workflow.authorized?("edit", current_user) %>
+				<li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit Workflow Entry')%></li>
+			<% end %>
+			<% if @workflow.authorized?("destroy", current_user) %>
+				<li>
+					<%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow Entry') %>
+				</li>
+			<% end %>
+		</div>
+	<% end %>
 	
 	<div class="workflow_section_box">
 		<p class="heading">
@@ -244,17 +260,6 @@
 		    
 		</div>
 	</div>
-	
-	<br/>
-	
-	<% if logged_in? %>
-		<div class="sectionIcons">
-			<ul class="sectionIcons">
-				<% if @workflow.authorized?("edit", current_user) %><li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit Workflow Entry')%></li><% end %>
-				<% if @workflow.authorized?("destroy", current_user) %><li><%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Workflow (incl all versions)') %><% end %>
-			</ul>
-		</div>
-	<% end %>
 </div>
 
 <div class="clearer">&nbsp;</div>

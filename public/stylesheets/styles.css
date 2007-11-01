@@ -37,10 +37,16 @@ h1,h2,h3,h4,h5,h6 * {
 }
 
 h1 {
+	background-image: url('/images/header-bg2.png');
+	background-position: top;
+	background-repeat: repeat-x;
+	padding: 0.5em 0 1.2em 0;
 	text-align: center;
 	font-size: 123.1%;
 	color: #000033;
-	margin-bottom: 1em;
+	border: 1px solid #999999;
+	border-bottom: none;
+	margin: 0.3em 0 0.8em 0;
 }
 
 h2 {
@@ -317,11 +323,20 @@ fieldset {
 	*margin: 0;
 }
 
+.foldTitle small {
+	font-size: 85%;
+	font-weight: normal;
+}
+
 .foldText {
 	font-weight: bold;
 	text-align: left;
 	padding: 0.5em;
 	*padding: 0.3em;
+}
+
+.foldText * {
+	vertical-align: middle;
 }
 
 .foldPlaintext {
@@ -685,9 +700,20 @@ table tr td.details {
 	width: 25%;
 }
 
-.workflow_right_box .sectionIcons LI {
-	margin: 0px;
+.workflow_right_box .actions {
+	margin: 1em 0;
+}
+
+.workflow_right_box .actions * {
+	vertical-align: middle;
+}
+
+.workflow_right_box .actions a {
+	white-space: normal;
+	margin: 0.2em 0;
+	padding: 0;
 	display: block;
+	vertical-align: middle;
 }
 
 .workflow_section_box {

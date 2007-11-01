@@ -222,25 +222,25 @@ function update_sharing(mode) {
     {
         document.getElementById('sharing_networks1_box').style.display = 'block';
         document.getElementById('sharing_networks2_box').style.display = 'none';
-        document.getElementById('sharing_custom_box').style.display = 'none';
+        //document.getElementById('sharing_custom_box').style.display = 'none';
     }
     else if (mode == 6)
     {
         document.getElementById('sharing_networks1_box').style.display = 'none';
         document.getElementById('sharing_networks2_box').style.display = 'block';
-        document.getElementById('sharing_custom_box').style.display = 'none';
+        //document.getElementById('sharing_custom_box').style.display = 'none';
     }
     else if (mode == 8)
     {
         document.getElementById('sharing_networks1_box').style.display = 'none';
         document.getElementById('sharing_networks2_box').style.display = 'none';
-        document.getElementById('sharing_custom_box').style.display = 'block';
+        //document.getElementById('sharing_custom_box').style.display = 'block';
     }
     else 
     {
         document.getElementById('sharing_networks1_box').style.display = 'none';
         document.getElementById('sharing_networks2_box').style.display = 'none';
-        document.getElementById('sharing_custom_box').style.display = 'none';
+        //document.getElementById('sharing_custom_box').style.display = 'none';
     }
 }
 
@@ -250,36 +250,36 @@ function update_updating(mode) {
     {
         document.getElementById('updating_networksmembers_box').style.display = 'block';
         document.getElementById('updating_networksadmins_box').style.display = 'none';
-	document.getElementById('updating_somefriends_box').style.display = 'none';
-        document.getElementById('updating_custom_box').style.display = 'none';
+		document.getElementById('updating_somefriends_box').style.display = 'none';
+        //document.getElementById('updating_custom_box').style.display = 'none';
     }
     else if (mode == 4)
     {
         document.getElementById('updating_networksmembers_box').style.display = 'none';
         document.getElementById('updating_networksadmins_box').style.display = 'block';
-	document.getElementById('updating_somefriends_box').style.display = 'none';
-        document.getElementById('updating_custom_box').style.display = 'none';
+		document.getElementById('updating_somefriends_box').style.display = 'none';
+        //document.getElementById('updating_custom_box').style.display = 'none';
     }
     else if (mode == 5)
     {
         document.getElementById('updating_networksmembers_box').style.display = 'none';
         document.getElementById('updating_networksadmins_box').style.display = 'none';
-	document.getElementById('updating_somefriends_box').style.display = 'block';
-        document.getElementById('updating_custom_box').style.display = 'none';
+		document.getElementById('updating_somefriends_box').style.display = 'block';
+        //document.getElementById('updating_custom_box').style.display = 'none';
     } 
     else if (mode == 7)
     {
         document.getElementById('updating_networksmembers_box').style.display = 'none';
         document.getElementById('updating_networksadmins_box').style.display = 'none';
-	document.getElementById('updating_somefriends_box').style.display = 'none';
-        document.getElementById('updating_custom_box').style.display = 'block';
+		document.getElementById('updating_somefriends_box').style.display = 'none';
+        //document.getElementById('updating_custom_box').style.display = 'block';
     }
     else
     {
         document.getElementById('updating_networksmembers_box').style.display = 'none';
         document.getElementById('updating_networksadmins_box').style.display = 'none';
-	document.getElementById('updating_somefriends_box').style.display = 'none';
-        document.getElementById('updating_custom_box').style.display = 'none';
+		document.getElementById('updating_somefriends_box').style.display = 'none';
+        //document.getElementById('updating_custom_box').style.display = 'none';
     }
 }
 

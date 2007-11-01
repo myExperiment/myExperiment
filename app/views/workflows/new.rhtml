@@ -24,7 +24,7 @@
 
   <div class="fold">
     <div class="foldTitle">
-      <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to add tags to <strong>describe</strong> this Workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>Tags</img></div>
+      <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to add tags to <strong>describe</strong> this Workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/> Tags</img></div>
       <div class="foldContent" style="display: none;">
         <p class="info_text">This section allows you to add tags to <strong>describe</strong> this Workflow.</p>
         <hr />
@@ -45,8 +45,16 @@
 
         <br />
         <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
-          <p>Add from your existing tags in myExperiment (click on tag to add):</p>                            
-          <div style="padding: 0 1em;"><a href="" onclick="javascript:addTag('SEG'); return false;">SEG</a></div>
+	      <p>Add from your existing tags in myExperiment (click on tag to add):</p>                            
+	      <div style="padding: 0 1em;">
+		    <% unless (tags = current_user.contribution_tags).empty? %>
+				<% tags.each do |t| %>
+		  			<a href="" onclick="javascript:addTag('<%= t.name %>'); return false;"><%= t.name %></a> | 
+				<% end %>
+			<% else %>
+				
+			<% end %>
+		  </div>
         </div>
 
         <% end %>
@@ -63,7 +71,7 @@
                         <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to specify which people/organisations get the <strong>credit</strong> for this Workflow (for example, the <strong>author(s)</strong> of this Workflow). Note: they do not have to be on myExperiment for you to give credit. By default, you are the only author.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
                         Credit and Attribution 
             <hr/>
-            <small>Default: you are the only author</small>
+            <small>Default: you are the only person who get's credit and </small>
           </div>
                     <div class="foldContent" style="display: none;">
                         <p class="info_text">
@@ -226,9 +234,9 @@
                         </p>
                         <div style="padding-left: 1em;">
                             <div style="padding: 0.5em; border: 1px dotted #999999; margin: 1.5em 3em; text-align: center;">
-                                <p>
+                                <p style="text-align: center;">
                                     <img alt="Science Commons" src="/images/sc.logo.png" /></p>
-                                <p>
+                                <p style="text-align: center;">
                                     Below you can configure what rights people will have with this Workflow, based on
                                     the <a href="http://sciencecommons.org/resources/faq/sciencecommons/">Science Commons</a>
                                     licenses. Sharing Workflows and letting others build upon them is a useful contribution

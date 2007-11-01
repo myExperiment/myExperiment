@@ -577,6 +577,8 @@ module ApplicationHelper
       return "famfamfam_silk/user_comment.png"
     when "wizard"
       return "famfamfam_silk/wand.png"
+    when "picture"
+      return "famfamfam_silk/picture.png"
     when "pictures"
       return "famfamfam_silk/photos.png"
     else
