@@ -1,99 +1,54 @@
-    <%= hidden_field :workflow, :tag_list %>
-    
-      <p class="info_text">This section allows you to add tags to <b>describe</b> this Workflow.</p>
-      
-      <p>
-        <b>Tags:</b><br />
-        <p>
-          <div id="tag_list" style="margin: 5px;"><% @workflow.taggings.each_index do |i| %><%=h @workflow.taggings[i].tag.name %><% unless i.to_i == @workflow.taggings.length.to_i - 1 %>, <% end %><% end %></div>
-        </p>
-      </p>
-      
-      <br />
-      
-      <script type="text/javascript">
-        function trim(tag) {
-          var length = tag.length;
-          
-          var start = 0;
-          for (var i = 0; i < length; i++) {
-            var char = tag.charAt(i);
-            
-            if (char == ' ') {
-              // do nothing!
-            } else {
-              start = i;
-              break;
-            }
-          }
-          
-          var end = 0;
-          for (var i = length - 1; i > 0; i--) {
-            var char = tag.charAt(i);
-            
-            if (char == ' ') {
-              // do nothing!
-            } else {
-              end = i;
-              break;
-            }
-          }
-          
-          return tag.substring(start, end + 1);
-        }
-      
-        function contains(tag) {
-          var array = $("tag_list").innerHTML.split(",");
-        
-          for (var i = 0; i < array.length; i++) {
-            var next = trim(array[i]);
-            
-            if (next == tag) {
-              return true;
-            }
-          }
-          
-          return false;
-        }
-      
-        function addTag(tag) {
-          if (contains(tag)) {
-            return;
-          }
-        
-          if (tag == "") {
-            return;
-          }
-        
-          if ($("workflow_tag_list").value == "") {
-            $("tag_list").innerHTML = tag;
-            $("workflow_tag_list").value = "\"" + tag + "\"";
-          } else {
-            $("tag_list").innerHTML = $("tag_list").innerHTML + ", " + tag;
-            $("workflow_tag_list").value = $("workflow_tag_list").value + " " + "\"" + tag + "\"";
-          }
-        }
-      </script>
-      
-      <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
-        <p>Add one or more tags manually (seperated by commas; click on 'Add' to add to the list):</p>
-        
-        <form>
-          <input id="new_tag" type="text" size="75"> <a onclick="addTag(trim($('new_tag').value)); $('new_tag').value = ''; return false;">Add</a>
-        </form>
+<% if workflow and !(tags = workflow.tags).empty? %>
+	<% tags.each do |t| %>
+		<% value = TODOTODOTODO %>
+	<% end %>
+	<input id="tag_list" type="hidden" name="workflow[tag_list]" value=""/>
+<% else %>
+	<input id="tag_list" type="hidden" name="workflow[tag_list]"/>
+<% end %>
+
+<div class="fold">
+<div class="foldTitle">
+  <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to add tags to <strong>describe</strong> this Workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/> Tags</img></div>
+  <div class="foldContent" style="display: none;">
+    <p class="info_text">This section allows you to add tags to <strong>describe</strong> this Workflow.</p>
+    <hr />
+    <div>
+      <p><strong>Tags: </strong></p>
+      <div style="padding-left: 2em;">
+	  		<p id="tags_current_list">
+				<% if workflow and !(tags = workflow.tags).empty? %>
+					<% tags.each do |t| %>
+						<%= t.name %> <small>[<a href="" onclick="javascript:deleteTag('<%= t.name %>'); return false;">delete</a>]</small><br />
+					<% end %>
+				<% else %>
+	        		<i>None</i>
+				<% end %>
+			</p>
       </div>
-      
-      <br />
-      
-      <% unless current_user.taggings.empty? %>
-      <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
-        <p>Add from your existing tags in myExperiment (click on tag to add):</p>
-        
-        <% current_user.taggings.each_index do |i| %>
-          <a onclick="addTag('<%=h (tag = current_user.taggings[i].tag.name) %>'); return false;"><%=h tag %></a>
-          <% unless i.to_i == current_user.taggings.length.to_i - 1 %> | <% end %>
-        <% end %>
-      </div>
-      
-      <br />
-      <% end %>
+    </div>
+    <br />
+    <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
+      <p>Add one or more tags manually (seperated by commas; click on 'Add' to add to the list):</p>
+      <p><input id="tags_input" type="text" style="width: 500px;" name="tags_input">&nbsp;&nbsp;</input>
+        <a href="" onclick="javascript:addTag(document.getElementById('tags_input').value); document.getElementById('tags_input').value = ''; return false;">Add</a></p>
+    </div>
+
+    <% unless (tags = current_user.contribution_tags).empty? %>
+	    <br />
+	    <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
+	      <p>Add from your existing tags in myExperiment (click on tag to add):</p>                            
+	      <div style="padding: 0 1em;">
+		    <% unless (tags = current_user.contribution_tags).empty? %>
+				<% tags.each do |t| %>
+		  			<a href="" onclick="javascript:addTag('<%= t.name %>'); return false;"><%= t.name %></a> | 
+				<% end %>
+			<% else %>
+				
+			<% end %>
+		  </div>
+	    </div>
+    <% end %>
+
+</div>
+</div>

@@ -73,9 +73,11 @@
 			</p>
 		</div>
 		
-		<div style="padding:1em; text-align:center;">
-			<% if logged_in? and @workflow.authorized?("download", (logged_in? ? current_user : nil)) %><li> <a href="<%= download_workflow_url(@workflow) %>"><%= image_tag(image_path("download_button.png")) %></a></li><% end %>
-		</div>
+		<% if logged_in? and @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
+			<div style="padding:1em; text-align:center;">
+				<a href="<%= download_workflow_url(@workflow) %>"><%= image_tag(image_path("download_button.png")) %></a>
+			</div>
+		<% end %>
 		
 		<% if logged_in? %>
 			<div class="sectionIcons">
@@ -90,7 +92,7 @@
 
 		<% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
 			<h3>
-				<img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section provides options for executing the workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+				<img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section provides options for running the workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
 				Run
 			</h3>
 		

@@ -7,35 +7,14 @@
 <%= error_messages_for :workflow %>
 
 <% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
-  <div class="fold">
-    <div class="foldTitle">Tags</div>
-    <div class="foldContent" style="display: none;">
-      <%= render :partial => "workflows/tags_form" %>
-    </div>
-  </div>
+  <%= render :partial => "workflows/tags_form", :locals => { :workflow => @workflow } %>
 
   <% if @workflow.owner?(current_user) %>
-    <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user, :current => @workflow.contribution.contributor } %>
-  
-  <%= render :partial => "sharing", :locals => { :edit => true } %>
-
+  	<%= render :partial => "sharing", :locals => { :edit => true } %>
     <%= render :partial => "workflows/license_form" %>
   <% end %>
 
-  <h2>Edit Workflow</h2>
-
   <p>
-    <b>Title</b><br />
-    <%= f.text_field :title %>
-  </p>
-
-  <p>
-    <b>Description</b><br />
-    <small>HTML may be used in this text area.</small><br />
-    <%= f.text_area :body %>
-  </p>
-
-  <p>
-    <%= submit_tag "Update" %>
+    <center><%= submit_tag "Update" %></center>
   </p>
 <% end %>
