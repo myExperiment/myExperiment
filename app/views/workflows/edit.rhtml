@@ -8,10 +8,11 @@
 
 <% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
   <%= render :partial => "workflows/tags_form", :locals => { :workflow => @workflow } %>
+  <%= render :partial => "workflows/credit_attribution_form", :locals => { :workflow => @workflow } %>
 
   <% if @workflow.owner?(current_user) %>
-  	<%= render :partial => "sharing", :locals => { :edit => true } %>
-    <%= render :partial => "workflows/license_form" %>
+  	<%= render :partial => "workflows/sharing_form", :locals => { :edit => true } %>
+    <%= render :partial => "workflows/license_form", :locals => { :workflow => @workflow } %>
   <% end %>
 
   <p>

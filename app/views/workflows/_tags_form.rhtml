@@ -1,6 +1,6 @@
 <% if workflow and !(tags = workflow.tags).empty? %>
 	<% tags.each do |t| %>
-		<% value = TODOTODOTODO %>
+		<% value = 'TODOTODOTODO' %>
 	<% end %>
 	<input id="tag_list" type="hidden" name="workflow[tag_list]" value=""/>
 <% else %>

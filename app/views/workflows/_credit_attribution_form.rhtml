@@ -1,0 +1,147 @@
+<div class="fold">
+	<div class="foldTitle">
+	    <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to specify which people/organisations get the <strong>credit</strong> for this Workflow (for example, the <strong>author(s)</strong> of this Workflow). Note: they do not have to be on myExperiment for you to give credit. By default, you are the only person who gets credit.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+	    Credit and Attribution 
+	    <hr/>
+	    <small>Default: you are the only person who gets credit</small>
+  	</div>
+    <div class="foldContent" style="display: none;">
+        <p class="info_text">
+            This section allows you to specify which people/organisations/networks get the <strong>credit</strong> for this Workflow (for example, the <strong>author(s)</strong> of this Workflow). Note: they do not have to be on myExperiment for you to give credit.
+            <br />
+            <br />
+            You can also specify the Workflows that this Workflow is <strong>based on</strong> (if any).                           
+        </p>
+        <hr />
+        <p>
+            <strong>Which people/organisations/networks get the credit for this Workflow?</strong>
+        </p>
+        <div style="padding-left: 1em;">
+            <p id="authors_list">
+                Me&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="return false;">delete</a>]</small>
+            </p>
+            <br />
+            <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
+                Select an option then click on 'Add' to add the value to the list:
+                <br />
+                <br />
+                <p>
+                    <input id="author_option_2" name="add_author_option" checked="checked"
+                        value="1" type="radio" onclick="javascript:update_author(this.id);" />
+                    - One of my Friends
+                </p>
+                <div id="author_friends_box" style="display: block; padding-left: 2em;">
+                    <p>
+                        <select id="author_friends_dropdown">
+                            <option value="1">Amy Smith</option>
+                            <option value="2">Hannah Patel</option>
+                            <option value="3">John Dorian</option>
+                            <option value="4">Jose Gonzalez</option>
+                            <option value="5">Josiah Bartlett</option>
+                            <option value="6">Manny</option>
+                            <option value="7">Tom Winterbottom</option>
+                            <option value="8">Tristan Coombes</option>
+                        </select>
+                    </p>
+                </div>
+                <p>
+                    <input id="author_option_6" name="add_author_option"
+                        value="2" type="radio" onclick="javascript:update_author(this.id);" />
+                    - A user on myExperiment who is not a Friend.
+                </p>
+                <div id="author_otheruser_box" style="display: none; padding-left: 2em;">
+                    <p>
+                        <select id="author_otheruser_dropdown">
+                            <option value="1">Mary Contrary</option>
+                            <option value="2">I.P. Diamonds</option>
+                            <option value="3">John Doe</option>
+                            <option value="4">David Bentley</option>
+                            <option value="5">Roque Santa Cruz</option>
+                        </select>
+                    </p>
+                </div>
+                <p>
+                    <input id="author_option_3" name="add_author_option"
+                        value="3" type="radio" onclick="javascript:update_author(this.id);" />
+                    - Someone else
+                </p>
+                <div id="author_someoneelse_box" style="display: none; padding-left: 2em;">
+                    <p>
+                         <label for="author_someoneelse_forenames">Forename(s): </label>
+                         <input id="author_someoneelse_forenames" size="25" value="" type="text"/>
+                         <label for="author_someoneelse_surname">Surname: </label>
+                         <input id="author_someoneelse_surname" size="25" value="" type="text"/>
+                    </p>
+                </div>
+                <p>
+                    <input id="author_option_4" name="add_author_option"
+                        value="4" type="radio" onclick="javascript:update_author(this.id);" />
+                    - An organisation
+                </p>
+                <div id="author_organisation_box" style="display: none; padding-left: 2em;">
+                    <p>
+                         <input id="author__organisation" size="50" value="" type="text"/>
+                    </p>
+                </div>
+                <p>
+                    <input id="author_option_5" name="add_author_option"
+                        value="5" type="radio" onclick="javascript:update_author(this.id);" />
+                    - A myExperiment Network
+                </p>
+                <div id="author_networks_box" style="display: none; padding-left: 2em;">
+                    <p>
+                        <select id="author_networks_dropdown">
+                            <option value="1">EBI</option>
+                            <option value="2">University of Manchester</option>
+                            <option value="3">University of Southampton</option>
+                            <option value="4">Pete's Network</option>
+                            <option value="5">myExperiment Hackers</option>
+                        </select>
+                    </p>
+                </div>
+                <br />
+                <a href="" onclick="javascript:add_author(); return false;" >Add</a>
+            </div>           
+        </div>
+        <hr />
+        <p>
+            <strong>If this Workflow is based on any existing Workflows, please list them below:</strong>
+        </p>
+        <div style="padding-left: 1em;">
+            <p id="basedon_workflows_list">
+                <i>None</i>
+            </p>
+            <br />
+            <p>Use the boxes below to add references to Workflows. Note that multiple references can be added.</p>
+            <div style="padding: 1em; float: left; border: 1px dotted #999999; text-align: center;">
+                Choose an existing Workflow on myExperiment:
+                <br />
+                <br />
+                <select id="basedon_workflows_existinglist" style="width: 250px;">
+                    <option value="1">BioAID_DiseaseDiscovery</option>
+                    <option value="5">Fetch today's Dilbert comic</option>
+                    <option value="2">QR code (matrix code) generator</option>
+                </select>
+                <br />
+                <br />
+                <a href="" onclick="javascript:add_workflowreference_string(document.getElementById('basedon_workflows_existinglist').options[document.getElementById('basedon_workflows_existinglist').selectedIndex].text); return false;" >Add</a>
+            </div>
+            <div style="padding: 1em; float: left; border: 1px dotted #999999; margin-left: 1em; text-align: center;">
+                Link to a Workflow somewhere else:
+                <br />
+                <br />
+                <label for="basedon_extworkflow_name">Name: </label>
+                <input id="basedon_extworkflow_name" size="25" value="" type="text"/>
+                <br />
+                <br />
+                <label for="basedon_extworkflow_uri">Link: </label>
+                <input id="basedon_extworkflow_uri" size="25" value="" type="text"/>
+                <br />
+                <br />
+                <a href="" onclick="javascript:add_workflowreference_string(document.getElementById('basedon_extworkflow_name').value + ' (' + document.getElementById('basedon_extworkflow_uri').value + ')'); return false;" >Add</a>
+            </div> 
+            <div style="clear: both;">&nbsp;</div>                       
+            <br />
+        </div>
+    </div>
+</div>
