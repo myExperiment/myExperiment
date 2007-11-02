@@ -113,6 +113,18 @@ function updateAuthorList() {
     		'return false;">delete</a>]</small><br/>';
 	}
 	
+	for (var key in credit_otherusers)
+	{
+		markup += 'Other user: ' + credit_otherusers[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" t="otheruser" key="' + key + '" onclick="javascript:deleteAuthor(this); ' +
+    		'return false;">delete</a>]</small><br/>';
+	}
+	
+	for (var key in credit_groups)
+	{
+		markup += 'Group: ' + credit_groups[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" t="group" key="' + key + '" onclick="javascript:deleteAuthor(this); ' +
+    		'return false;">delete</a>]</small><br/>';
+	}
+	
 	if (markup == '')
 	{
 		markup = '<i>None</i>';
@@ -137,6 +149,26 @@ function updateAuthorList() {
 	} 
 	
 	document.getElementById('credits_friends').value = friends_list;
+	
+	// Other users
+	var otherusers_list;
+	
+	for (var key in otherusers_list)
+	{
+		otherusers_list += key + ',';
+	} 
+	
+	document.getElementById('credits_otherusers').value = otherusers_list;
+	
+	// Groups
+	var groups_list;
+	
+	for (var key in groups_list)
+	{
+		groups_list += key + ',';
+	} 
+	
+	document.getElementById('credits_groups').value = groups_list;
 }
 
 function addAuthor() {
@@ -160,12 +192,24 @@ function addAuthor() {
 	// A user on myExperiment who is not a Friend.
 	else if (document.getElementById('author_option_3').checked)
 	{
+		var x = document.getElementById('author_otheruser_dropdown');
 		
+		if (x.options.length > 0)
+		{
+			var y = x.options[x.selectedIndex];
+	     	credit_otherusers[y.value] = y.text;
+		}
 	}
 	// A myExperiment Group
 	else if (document.getElementById('author_option_4').checked)
 	{
+		var x = document.getElementById('author_networks_dropdown');
 		
+		if (x.options.length > 0)
+		{
+			var y = x.options[x.selectedIndex];
+	     	credit_groups[y.value] = y.text;
+		}
 	}
 	
 	updateAuthorList();
@@ -181,6 +225,14 @@ function deleteAuthor(obj) {
 		else if (obj.t == 'friend')
 		{
 			delete credit_friends[obj.key];
+		}
+		else if (obj.t == 'otheruser')
+		{
+			delete credit_otherusers[obj.key];
+		}
+		else if (obj.t == 'group')
+		{
+			delete credit_groups[obj.key];
 		}
 	}
 	
@@ -215,6 +267,22 @@ function update_author(parentId) {
     }
 }
 
+var attributions = new Object();
+
+function updateAttributionsList() {
+	
+}
+
+function addAttribution() {
+    
+}
+
+function deleteAttribution() {
+	
+}
+
+// end credit and attribution
+
 function toggle_copy_inherit(obj) {
     var f = document.getElementById('copy_inherit_sharing_box');
     
@@ -229,20 +297,6 @@ function toggle_copy_inherit(obj) {
         f.style.display = 'block';
         obj.oldText = obj.innerHTML;
         obj.innerHTML = 'Hide';
-    }
-}
-
-function add_workflowreference_string(workflow_string) {
-    var f = document.getElementById('basedon_workflows_list');
-    
-    if (!f.hasValues)
-    {
-        f.innerHTML = workflow_string;
-        f.hasValues = 'true';
-    }    
-    else
-    {
-        f.innerHTML = f.innerHTML + '<br/>' + workflow_string;
     }
 }
 

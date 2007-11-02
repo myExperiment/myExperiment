@@ -639,6 +639,13 @@ module ApplicationHelper
     end
   end
   
+  def all_workflows
+    workflows = Workflow.find_all
+    workflows.sort! { |x,y|
+      x.title.downcase <=> y.title.downcase
+    }
+  end
+  
   def all_networks
     networks = Network.find_all
     networks.sort! { |x,y|

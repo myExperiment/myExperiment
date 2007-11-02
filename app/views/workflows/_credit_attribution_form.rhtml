@@ -1,7 +1,7 @@
-<input id="credits_me" type="hidden" name="workflow[credits_me]" value="true"/>
-<input id="credits_friends" type="hidden" name="workflow[credits_friends]"/>
-<input id="credits_otherusers" type="hidden" name="workflow[credits_otherusers]"/>
-<input id="credits_groups" type="hidden" name="workflow[credits_groups]"/>
+<input id="credits_me" type="hidden" name="credits_me" value="true"/>
+<input id="credits_friends" type="hidden" name="credits_friends"/>
+<input id="credits_otherusers" type="hidden" name="credits_otherusers"/>
+<input id="credits_groups" type="hidden" name="credits_groups"/>
 
 <div class="fold">
 	<div class="foldTitle">
@@ -124,20 +124,22 @@
                 <i>None</i>
             </p>
             <br />
-            <p>Use the boxes below to add references to Workflows. Note that multiple references can be added.</p>
             <div style="padding: 1em; float: left; border: 1px dotted #999999; text-align: center;">
-                Choose an existing Workflow on myExperiment:
+                Add an attribution to an existing Workflow on myExperiment:
                 <br />
                 <br />
-                <select id="basedon_workflows_existinglist" style="width: 250px;">
-                    <option value="1">BioAID_DiseaseDiscovery</option>
-                    <option value="5">Fetch today's Dilbert comic</option>
-                    <option value="2">QR code (matrix code) generator</option>
+                <select id="basedon_workflows_existinglist" style="width: 300px;">
+                    <% all_workflows.each do |w| %>
+                        	<option value="<%= w.id %>"><%= w.title %></option>
+                        <% end %>
                 </select>
                 <br />
                 <br />
-                <a href="" onclick="javascript:add_workflowreference_string(document.getElementById('basedon_workflows_existinglist').options[document.getElementById('basedon_workflows_existinglist').selectedIndex].text); return false;" >Add</a>
+                <a href="" onclick="javascript:addAttribution(); return false;" >Add</a>
             </div>
+			
+			<% if false %>
+			
             <div style="padding: 1em; float: left; border: 1px dotted #999999; margin-left: 1em; text-align: center;">
                 Link to a Workflow somewhere else:
                 <br />
@@ -151,9 +153,11 @@
                 <br />
                 <br />
                 <a href="" onclick="javascript:add_workflowreference_string(document.getElementById('basedon_extworkflow_name').value + ' (' + document.getElementById('basedon_extworkflow_uri').value + ')'); return false;" >Add</a>
-            </div> 
+            </div>
+			
+			<% end %>
+			
             <div style="clear: both;">&nbsp;</div>                       
-            <br />
         </div>
     </div>
 </div>
