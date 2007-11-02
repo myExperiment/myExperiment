@@ -75,7 +75,7 @@
 		
 		<% if logged_in? and @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
 			<div style="padding:1em; text-align:center;">
-				<a href="<%= download_workflow_url(@workflow) %>"><%= image_tag(image_path("download_button.png")) %></a>
+				<a href="<%= download_workflow_url(@workflow) %>"><%= image_tag(image_path("download_button.png"), :alt => 'Download the Workflow file') %></a>
 			</div>
 		<% end %>
 		
@@ -186,8 +186,8 @@
 	<% if logged_in? %>
 		<div class="actions">
 			<% if @workflow.authorized?("edit", current_user) %>
+				<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
 				<li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit Workflow Entry')%></li>
-				<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload new version')%></li>
 			<% end %>
 			<% if @workflow.authorized?("destroy", current_user) %>
 				<li>

@@ -638,6 +638,20 @@ module ApplicationHelper
       return contribution.policy
     end
   end
+  
+  def all_networks
+    networks = Network.find_all
+    networks.sort! { |x,y|
+      x.title.downcase <=> y.title.downcase
+    }
+  end
+  
+  def all_nonfriends(user)
+    users = User.find_all - user.friends - [ user ]
+    users.sort! { |x,y|
+      x.name.downcase <=> y.name.downcase
+    } 
+  end
 
 protected
 

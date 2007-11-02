@@ -27,7 +27,7 @@ function updateTagList() {
 
     for (var i = 0; i < tags.length; i++)
       markup += tags[i] +
-        ' <small>[<a href="" onclick="javascript:deleteTag(\'' + tags[i] +
+        '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteTag(\'' + tags[i] +
         '\'); return false;">delete</a>]</small><br />';
   }
 
@@ -78,6 +78,8 @@ function deleteTag(tag) {
   updateTagList();
 }
 
+// end tags
+
 function toggle_visibility(id) {
    var e = document.getElementById(id);
    if(e.style.display == 'block')
@@ -86,101 +88,127 @@ function toggle_visibility(id) {
       e.style.display = 'block';
 }
 
-function add_author() {
-    var f = document.getElementById('authors_list');
+// credit and attribution
+
+var credit_me = true;
+var credit_friends = new Object();
+var credit_otherusers = new Object();
+var credit_groups = new Object();
+
+function updateAuthorList() {
+	
+	var markup = '';
+	
+	if (credit_me)
+	{
+		markup += 'Me&nbsp;&nbsp;&nbsp;<small>[<a href="" t="me" onclick="javascript:deleteAuthor(this); ' +
+    		'return false;">delete</a>]</small><br/>';
+	}
+	
+	for (var key in credit_friends)
+	{
+		markup += 'Friend: ' + credit_friends[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" t="friend" key="' + key + '" onclick="javascript:deleteAuthor(this); ' +
+    		'return false;">delete</a>]</small><br/>';
+	}
+	
+	if (markup == '')
+	{
+		markup = '<i>None</i>';
+	}
+	
+	document.getElementById('authors_list').innerHTML = markup;
+	
+	// Also update web form (the hidden input fields)
+	
+	// Me
+	if (credit_me)
+	{
+		document.getElementById('credits_me').value = "true";
+	}
+	
+	// Friends
+	var friends_list;
+	
+	for (var key in credit_friends)
+	{
+		friends_list += key + ',';
+	} 
+	
+	document.getElementById('credits_friends').value = friends_list;
+}
+
+function addAuthor() {
     
-    var form = document.getElementById('new_workflow_form');
-    
-    var author_string = '';
-    
-    // Note that the code belows requires that the <form> element in which the radio buttons are in 
-    // have to have an id of 'new_workflow_form'
-    
-    if (form.add_author_option[0].checked == true)
-    {
-        var x = document.getElementById('author_friends_dropdown');
-        author_string = 'Friend: ' + x.options[x.selectedIndex].text;
-    }
-    else if (form.add_author_option[1].checked == true)
-    {
-        var x = document.getElementById('author_otheruser_dropdown');
-        author_string = 'Other myExperiment user: ' + x.options[x.selectedIndex].text;
-    }
-    else if (form.add_author_option[2].checked == true)
-    {
-        var x = document.getElementById('author_someoneelse_forenames');
-        var y = document.getElementById('author_someoneelse_surname');
-        
-        author_string = 'Someone else: ' + x.value + ' ' + y.value;   
-        
-        x.value = '';
-        y.value = '';     
-    }
-    else if (form.add_author_option[3].checked == true)
-    {
-        var x = document.getElementById('author__organisation');
-        
-        author_string = 'Organisation: ' + x.value;
-        
-        x.value = '';
-    }
-    else if (form.add_author_option[4].checked == true)
-    {
-        var x = document.getElementById('author_networks_dropdown');
-        author_string = 'A myExperiment Network: ' + x.options[x.selectedIndex].text;
-    }
-    
-    f.innerHTML = f.innerHTML + '<br/>' + author_string;
+	// Me
+    if (document.getElementById('author_option_1').checked)
+	{
+		credit_me = true;
+	}
+	// One of my Friends 
+	else if (document.getElementById('author_option_2').checked)
+	{
+		var x = document.getElementById('author_friends_dropdown');
+		
+		if (x.options.length > 0)
+		{
+			var y = x.options[x.selectedIndex];
+	     	credit_friends[y.value] = y.text;
+		}
+	}
+	// A user on myExperiment who is not a Friend.
+	else if (document.getElementById('author_option_3').checked)
+	{
+		
+	}
+	// A myExperiment Group
+	else if (document.getElementById('author_option_4').checked)
+	{
+		
+	}
+	
+	updateAuthorList();
+}
+
+function deleteAuthor(obj) {
+	if (obj.t)
+	{
+		if (obj.t == 'me')
+		{
+			credit_me = false;
+		}
+		else if (obj.t == 'friend')
+		{
+			delete credit_friends[obj.key];
+		}
+	}
+	
+	updateAuthorList();
 }
 
 function update_author(parentId) {
-    
+
     if (parentId == 'author_option_2')
     {
         document.getElementById('author_friends_box').style.display = 'block';
         document.getElementById('author_otheruser_box').style.display = 'none';
-        document.getElementById('author_someoneelse_box').style.display = 'none';
-        document.getElementById('author_organisation_box').style.display = 'none';
         document.getElementById('author_networks_box').style.display = 'none';
     }
     else if (parentId == 'author_option_3')
     {
         document.getElementById('author_friends_box').style.display = 'none';
-        document.getElementById('author_otheruser_box').style.display = 'none';
-        document.getElementById('author_someoneelse_box').style.display = 'block';
-        document.getElementById('author_organisation_box').style.display = 'none';
+        document.getElementById('author_otheruser_box').style.display = 'block';
         document.getElementById('author_networks_box').style.display = 'none';
     }
     else if (parentId == 'author_option_4')
     {
         document.getElementById('author_friends_box').style.display = 'none';
         document.getElementById('author_otheruser_box').style.display = 'none';
-        document.getElementById('author_someoneelse_box').style.display = 'none';
-        document.getElementById('author_organisation_box').style.display = 'block';
-        document.getElementById('author_networks_box').style.display = 'none';
-    }
-    else if (parentId == 'author_option_6')
-    {
-        document.getElementById('author_friends_box').style.display = 'none';
-        document.getElementById('author_otheruser_box').style.display = 'block';
-        document.getElementById('author_someoneelse_box').style.display = 'none';
-        document.getElementById('author_organisation_box').style.display = 'none';
-        document.getElementById('author_networks_box').style.display = 'none';
-    }
-    else if (parentId == 'author_option_5')
-    {
-        document.getElementById('author_friends_box').style.display = 'none';
-        document.getElementById('author_otheruser_box').style.display = 'none';
-        document.getElementById('author_someoneelse_box').style.display = 'none';
-        document.getElementById('author_organisation_box').style.display = 'none';
         document.getElementById('author_networks_box').style.display = 'block';
     }
     else
     {
         document.getElementById('author_friends_box').style.display = 'none';
         document.getElementById('author_otheruser_box').style.display = 'none';
-        document.getElementById('author_someoneelse_box').style.display = 'none';
-        document.getElementById('author_organisation_box').style.display = 'none';
         document.getElementById('author_networks_box').style.display = 'none';
     }
 }
