@@ -100,7 +100,7 @@ private
   # xxx_public and xxx_protected column in ++policies++ and an xxx 
   # column in ++permissions+)
   @@categories = { "download" => ["download"], 
-                   "edit" => ["new", "create", "edit", "update"], 
+                   "edit" => ["new", "create", "edit", "update", "new_version"], 
                    "view" => ["index", "show", "search", "bookmark", "comment", "rate", "tag"],
                    "owner" => ["destroy"] } # you don't need a boolean column for this but you do need to categorize 'owner only' actions!
   

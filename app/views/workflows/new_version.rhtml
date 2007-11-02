@@ -1,0 +1,18 @@
+<h1>Upload new version of <%= @workflow.title %></h1>
+
+<% form_tag('/workflows/53', :multipart => true, :method => :put) do %>
+
+  <div>
+    <p>
+      <strong>New Workflow File:</strong>
+      <input id="workflow_scufl" name="workflow[scufl]" size="50" type="file"/>
+    </p>
+  </div>
+
+  <br />
+  <br />
+
+  <%= submit_tag "Upload new version" %>
+
+<% end %>
+

@@ -187,6 +187,7 @@
 		<div class="actions">
 			<% if @workflow.authorized?("edit", current_user) %>
 				<li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit Workflow Entry')%></li>
+				<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload new version')%></li>
 			<% end %>
 			<% if @workflow.authorized?("destroy", current_user) %>
 				<li>

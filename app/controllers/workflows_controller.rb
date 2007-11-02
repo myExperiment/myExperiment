@@ -145,6 +145,10 @@ class WorkflowsController < ApplicationController
     @workflow = Workflow.new
   end
 
+  # GET /workflows/1;new_version
+  def new_version
+  end
+
   # GET /workflows/1;edit
   def edit
     
@@ -202,7 +206,7 @@ class WorkflowsController < ApplicationController
     end
     
     # update contributor with 'latest' uploader (or "editor")
-    params[:workflow][:contributor_type], params[:workflow][:contributor_id] = "User", current_user.id
+    #params[:workflow][:contributor_type], params[:workflow][:contributor_id] = "User", current_user.id
     
     respond_to do |format|
       scufl = params[:workflow][:scufl]
