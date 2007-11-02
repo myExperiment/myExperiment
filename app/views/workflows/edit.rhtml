@@ -1,13 +1,16 @@
 <%= javascript_include_tag "osp.js" %>
 
-<h1>Editing Workflow</h1>
+<h1>Editing Workflow &quot;<%= @workflow.title %>&quot;</h1>
 
+<% if false %>
 <div>Sharing mode = <%= @sharing_mode %></div>
+<div>Updating mode = <%= @updating_mode %></div>
+<% end %>
 
 <%= error_messages_for :workflow %>
 
 <% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
-  <%= render :partial => "workflows/tags_form", :locals => { :workflow => @workflow } %>
+  <%= render :partial => "workflows/tags_form", :locals => { :workflow => @workflow, :edit => true } %>
   <%= render :partial => "workflows/credit_attribution_form", :locals => { :workflow => @workflow } %>
 
   <% if @workflow.owner?(current_user) %>

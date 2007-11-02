@@ -3,10 +3,8 @@
 <% perms = [] %>
 <% perms = @workflow.contribution.policy.permissions if edit %>
 
-<% @updating_mode = 2 %>
-
 <% @sharing_mode  = 1 if edit == false %>
-<% @updating_mode = 1 if edit == false %>
+<% @updating_mode = 6 if edit == false %>
 
 <div class="fold">
 

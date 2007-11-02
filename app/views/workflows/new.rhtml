@@ -1,25 +1,5 @@
 <%= javascript_include_tag "osp.js" %>
 
-<script type="text/javascript"> 
-
-function handleEnter(evt) {
-
-  var evt = (evt) ? evt : ((event) ? event : null); 
-  var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); 
-
-  if (evt.keyCode == 13) {
-    if (node.id == "tags_input") {
-      addTag(document.getElementById('tags_input').value);
-      document.getElementById('tags_input').value = '';
-      return false;
-    }
-  }
-} 
-
-document.onkeypress = handleEnter; 
-
-</script> 
-
 <h1>New Workflow</h1>
 
 <%= error_messages_for :workflow %>
@@ -39,7 +19,7 @@ document.onkeypress = handleEnter;
   <br />
                 
   <!-- Tags -->
-  <%= render :partial => "workflows/tags_form" %>
+  <%= render :partial => "workflows/tags_form", :locals => { :workflow => @workflow, :edit => false } %>
                 
   <!-- Credit and Attribution -->
   <%= render :partial => "workflows/credit_attribution_form" %>

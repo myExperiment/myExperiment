@@ -27,7 +27,7 @@ function updateTagList() {
 
     for (var i = 0; i < tags.length; i++)
       markup += tags[i] +
-        '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteTag(\'' + tags[i] +
+        '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteTag(\'' + tags[i].replace("'", "\\'") +
         '\'); return false;">delete</a>]</small><br />';
   }
 
@@ -54,6 +54,8 @@ function addTag(str) {
   for (var i = 0; i < newTags.length; i++) {
 
     var tag = trimSpaces(newTags[i]);
+
+    tag = tag.replace('"', '');
 
     if (tag.length == 0)
       continue;

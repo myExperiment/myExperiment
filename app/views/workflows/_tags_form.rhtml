@@ -1,14 +1,28 @@
-<% if workflow and !(tags = workflow.tags).empty? %>
-	<% tags.each do |t| %>
-		<% value = 'TODOTODOTODO' %>
-	<% end %>
-	<input id="tag_list" type="hidden" name="workflow[tag_list]" value=""/>
-<% else %>
-	<input id="tag_list" type="hidden" name="workflow[tag_list]"/>
-<% end %>
+<script type="text/javascript"> 
+
+function handleEnter(evt) {
+
+  var evt = evt ? evt : (event ? event : null); 
+  var node = evt.target ? evt.target : (evt.srcElement ? evt.srcElement : null); 
+
+  if (evt.keyCode == 13) {
+    if (node.id == "tags_input") {
+      addTag(document.getElementById('tags_input').value);
+      document.getElementById('tags_input').value = '';
+      return false;
+    }
+  }
+} 
+
+document.onkeypress = handleEnter; 
+
+</script> 
+
+
+<input id="tag_list" type="hidden" name="workflow[tag_list]"/>
 
 <div class="fold">
-<div class="foldTitle">
+  <div class="foldTitle">
   <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to add tags to <strong>describe</strong> this Workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/> Tags</img></div>
   <div class="foldContent" style="display: none;">
     <p class="info_text">This section allows you to add tags to <strong>describe</strong> this Workflow.</p>
@@ -16,15 +30,8 @@
     <div>
       <p><strong>Tags: </strong></p>
       <div style="padding-left: 2em;">
-	  		<p id="tags_current_list">
-				<% if workflow and !(tags = workflow.tags).empty? %>
-					<% tags.each do |t| %>
-						<%= t.name %> <small>[<a href="" onclick="javascript:deleteTag('<%= t.name %>'); return false;">delete</a>]</small><br />
-					<% end %>
-				<% else %>
-	        		<i>None</i>
-				<% end %>
-			</p>
+	<p id="tags_current_list">
+	</p>
       </div>
     </div>
     <br />
@@ -50,5 +57,15 @@
 	    </div>
     <% end %>
 
+  </div>
 </div>
-</div>
+
+<% if edit %>
+  <script>
+    <% workflow.tags.each do |t| %>
+      tags.push(<%= "\"#{t.to_s.gsub(/\"/, '\\\"')}\"" %>);
+    <% end %>
+    updateTagList();
+  </script>
+<% end %>
+

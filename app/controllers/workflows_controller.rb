@@ -153,6 +153,7 @@ class WorkflowsController < ApplicationController
   def edit
     
     @sharing_mode = determine_sharing_mode(@workflow.contribution.policy)
+    @updating_mode = determine_updating_mode(@workflow.contribution.policy)
 
   end
 
@@ -567,6 +568,10 @@ private
 
     return 8
 
+  end
+
+  def determine_updating_mode(policy)
+    return 1
   end
 
 end
