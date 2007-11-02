@@ -14,7 +14,7 @@
     <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to specify who can <strong>see</strong> and <strong>use</strong> this Workflow on myExperiment, by setting '<strong>view</strong>' and '<strong>download</strong>' permissions. <br/><br/>By default, <strong>everyone</strong> is allowed to <strong>view</strong>, but only your <strong>Friends</strong> and <strong>Networks</strong> are allowed to <strong>download</strong>.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
     Sharing
     <hr />
-    <small>Default: everyone can view, but only Friends/Networks can download</small>
+    <small>Default: everyone can view, but only Friends/Groups can download</small>
   </div>
 
   <div class="foldContent" style="display: none;">
@@ -30,7 +30,7 @@
 
     <p>Note that "everyone" means all users who have not logged in (anonymous
     users) and all registered users (including all your Friends and people
-    within Networks).</p>
+    within Groups).</p>
 
     <div style="padding-left: 1em;">
      
@@ -40,7 +40,7 @@
 
       <p><input <%= 'checked="checked"' if @sharing_mode == 1 %> id="sharing_option_2" name="sharing[class_id]"
               value="1" type="radio" onclick="javascript:update_sharing(1);" />
-          - Everyone can view, but only my Friends and Networks are allowed to download.</p>
+          - Everyone can view, but only my Friends and Groups are allowed to download.</p>
 
       <p><input <%= 'checked="checked"' if @sharing_mode == 2 %> id="sharing_option_9" name="sharing[class_id]"
               value="2" type="radio" onclick="javascript:update_sharing(2);" />
@@ -48,15 +48,15 @@
 
       <p><input <%= 'checked="checked"' if @sharing_mode == 3 %> id="sharing_option_3" name="sharing[class_id]"
               value="3" type="radio" onclick="javascript:update_sharing(3);" />
-          - Only my Friends and Networks can view and download.</p>
+          - Only my Friends and Groups can view and download.</p>
 
       <p><input <%= 'checked="checked"' if @sharing_mode == 4 %> id="sharing_option_4" name="sharing[class_id]"
               value="4" type="radio" onclick="javascript:update_sharing(4);" />
-          - Only my Friends and Networks can view, but no one can download.</p>
+          - Only my Friends and Groups can view, but no one can download.</p>
 
       <p><input <%= 'checked="checked"' if @sharing_mode == 5 %> id="sharing_option_5" name="sharing[class_id]"
               value="5" type="radio" onclick="javascript:update_sharing(5);" />
-          - Only some of my Networks can view and download.</p>
+          - Only some of my Groups can view and download.</p>
 
       <div id="sharing_networks1_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em;">
         <p>
@@ -69,7 +69,7 @@
 
       <p><input <%= 'checked="checked"' if @sharing_mode == 6 %> id="sharing_option_6" name="sharing[class_id]"
               value="6" type="radio" onclick="javascript:update_sharing(6);" />
-          - Only some of my Networks can view, but no one can download.</p>
+          - Only some of my Groups can view, but no one can download.</p>
 
       <div id="sharing_networks2_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em;">
         <p>
@@ -331,7 +331,7 @@
                                         <tbody>
                                             <tr>
                                                 <td colspan="4" style="text-align: left;">
-                                                    <strong>Networks: </strong>
+                                                    <strong>Groups: </strong>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -453,7 +453,7 @@
   <div class="foldContent" style="display: none;">
 
     <p class="info_text">This section allows you to give updating priviledges
-    to your Friends and/or your Networks.  This will allow them to update the
+    to your Friends and/or your Groups.  This will allow them to update the
     description and upload new versions of the Workflow.
     <br/> <br/>
     Note that updating privileges only affect how other users can update this
@@ -463,10 +463,8 @@
     <br/> <br/>
     Furthermore, Workflow entries on myExperiment can have multiple versions of
     the actual Workflow file.  Giving updating privileges will allow other
-    users to upload a new a modified version of the Workflow file (all previous
-    versions are still available), which will create a new version of the
-    Workflow entry on myExperiment.  Also, updating the description of the
-    Workflow entry will create a new version.</p>
+    users to upload a new version of the Workflow file (all previous
+    versions are still available). </p>
 
     <hr />
 
@@ -485,17 +483,17 @@
       
       <p><input <%= 'checked="checked"' if @updating_mode == 1 %> id="updating_option_1" name="updating[class_id]"
       value="1" type="radio" onclick="javascript:update_updating(1);" />
-      - All my Friends and the members of all my Networks.</p>
+      - All my Friends and the members of all my Groups.</p>
 
 <% if false %>
       <p><input <%= 'checked="checked"' if @updating_mode == 2 %> id="updating_option_2" name="updating[class_id]"
       value="2" type="radio" onclick="javascript:update_updating(2);" />
-      - All my Friends and only the administrators of all my Networks.</p>
+      - All my Friends and only the administrators of all my Groups.</p>
 <% end %>
 
       <p><input <%= 'checked="checked"' if @updating_mode == 3 %> id="updating_option_3" name="updating[class_id]"
       value="3" type="radio" onclick="javascript:update_updating(3);" />
-      - The members of some of my Networks.</p>
+      - The members of some of my Groups.</p>
 
       <div id="updating_networksmembers_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em;">
         <p>
@@ -509,7 +507,7 @@
 <% if false %>
       <p><input <%= 'checked="checked"' if @updating_mode == 4 %> id="updating_option_4" name="updating[class_id]"
       value="4" type="radio" onclick="javascript:update_updating(4);" />
-      - The administrators of some of my Networks</p>
+      - The administrators of some of my Groups</p>
 <% end %>
 
       <div id="updating_networksadmins_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em;">

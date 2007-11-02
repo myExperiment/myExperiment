@@ -3,7 +3,7 @@
         <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to specify the <strong>rights</strong> that people have when they download and use this Workflow, by setting the license. <br/><br/>By default, the license specifies that people are allowed to build on this Workflow as long as they give the original author credit and share their resulting work under the same conditions.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
         License/Rights
 		<hr />
-		<small>Default: people are allowed to build on this Workflow, but must give author(s) credit and share under the same conditions</small>
+		<small>Default: people are allowed to build on this Workflow, but must give author(s) credit and give attribution to this Workflow. They must also share under the same conditions.</small>
     </div>
     <div class="foldContent" style="display: none;">
         <p class="info_text">
@@ -25,18 +25,18 @@
             </div>
             <p>
                 When someone downloads this Workflow, are they allowed to build upon it (such as
-                extend, reuse, repurpose and so on)?</p>
+                extend, reuse, repurpose etc)?</p>
             <p>
-                <input id="workflow_license_bysa" checked="checked" name="workflow[license]" type="radio"
-                    value="by-sa">
-                Yes, as long as they <strong>give the author(s) credit (attribution)</strong>
-                and they also <strong>share</strong> the resulting work <strong>under the same conditions</strong>.</p>
+                <input id="workflow_license_bysa" <%= 'checked="checked"' if (!workflow or workflow.license = 'by-sa') %> name="workflow[license]" type="radio" value="by-sa"/>
+                Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this Workflow</strong>. 
+				They must also <strong>share</strong> the resulting work <strong>under the same conditions</strong>.
             <p>
-                <input id="workflow_license_by" name="workflow[license]" type="radio" value="by">
-                Yes, as long as they <strong>give the author(s) credit (attribution)</strong>.</p>
+                <input id="workflow_license_by" <%= 'checked="checked"' if (workflow and workflow.license = 'by') %> name="workflow[license]" type="radio" value="by"/>
+            	Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this Workflow</strong>.
+			</p>
             <p>
-                <input id="workflow_license_bynd" name="workflow[license]" type="radio" value="by-nd">
-                No. They may only use the Workflow for reference.</p>
+                <input id="workflow_license_bynd" <%= 'checked="checked"' if (workflow and workflow.license = 'by-nd') %> name="workflow[license]" type="radio" value="by-nd"/>
+            	No. They may only use the Workflow for reference.
             <p>
                 <small>Nothing in these licenses impairs or restricts the author's moral rights.</small></p>
         </div>

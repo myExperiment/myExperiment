@@ -4,23 +4,23 @@
 
 <% when 1 %>
 
-<p>Everyone can view, but only Friends and Networks are allowed to download.</p>
+<p>Everyone can view, but only Friends and Groups are allowed to download.</p>
 
 <% when 2 %>
 
-<p>Everyone can view, but only the owner can download.</p>
+<p>Everyone can view, but only the uploader can download.</p>
 
 <% when 3 %>
 
-<p>Only Friends and Networks can view and download.</p>
+<p>Only Friends and Groups can view and download.</p>
 
 <% when 4 %>
 
-<p>Only Friends and Networks can view, and only the owner can download.</p>
+<p>Only Friends and Groups can view, and only the owner can download.</p>
 
 <% when 5 %>
 
-<p>Only the following Networks can view and download.</p>
+<p>Only the following Groups can view and download.</p>
 
 <ul>
 <% @workflow.contribution.policy.permissions.each do |p| %>
@@ -30,7 +30,7 @@
 
 <% when 6 %>
 
-<p>Only the following Networks can view, and only the owner can download.</p>
+<p>Only the following Groups can view, and only the owner can download.</p>
 
 <ul>
 <% @workflow.contribution.policy.permissions.each do |p| %>
