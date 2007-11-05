@@ -1,10 +1,14 @@
+<p><b>Sharing permission (Who can view and download)</b></p>
+
 <p><%= sharing_mode_text @sharing_mode %></p>
 
 <% if @sharing_mode == 5 %>
 	
 	<ul>
 		<% @workflow.contribution.policy.permissions.each do |p| %>
-		  <li><%= h Network.find(p.contributor_id).title %></li>
+                  <% if (p.view or p.edit) and (p.contributor_type == 'Network') %>
+		    <li><%= h Network.find(p.contributor_id).title %></li>
+                  <% end %>
 		<% end %>
 	</ul>
 	
@@ -12,7 +16,9 @@
 	
 	<ul>
 		<% @workflow.contribution.policy.permissions.each do |p| %>
-		  <li><%= h Network.find(p.contributor_id).title %></li>
+                  <% if (p.view or p.edit) and (p.contributor_type == 'Network') %>
+		    <li><%= h Network.find(p.contributor_id).title %></li>
+                  <% end %>
 		<% end %>
 	</ul>
 	
