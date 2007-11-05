@@ -340,7 +340,7 @@
 
 <% if logged_in? and @workflow.authorized?("destroy", current_user) %>
   <div class="tabContainer">
-    <div class="tabTitle">Sharing Permissions</div>
+    <div class="tabTitle">Permissions</div>
     <div class="tabContent">
 
       <%= render :partial => "sharing_summary" %>

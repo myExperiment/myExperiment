@@ -663,11 +663,11 @@ module ApplicationHelper
   def license_link(license_type)
     case license_type.downcase
     when "by-nd"
-      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by-nd/3.0/">Creative Commons Attribution-NoDerivs 3.0 License</a>'
+      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by-nd/3.0/" target="_blank">Creative Commons Attribution-NoDerivs 3.0 License</a>'
     when "by"
-      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 License</a>'
+      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by/3.0/" target="_blank">Creative Commons Attribution 3.0 License</a>'
     when "by-sa"
-      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 License</a>'
+      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons Attribution-Share Alike 3.0 License</a>'
     end
   end
   
@@ -690,7 +690,28 @@ module ApplicationHelper
     when 7
       return 'This is a private Workflow - only the uploader can view and download.'
     when 8
-      return 'This Workflow has custom permissions.'
+      return 'This Workflow has custom sharing permissions.'
+    end
+  end
+  
+  def updating_mode_text(mode)
+    case mode
+    when 0
+      return "All those that can view or download can also edit."
+    when 1
+      return "All the uploader's Friends and the members of the uploader's Groups."
+    when 2
+      return "All the uploader's Friends and administrators of the uploader's Groups."
+    when 3
+      return "The members of the specific Groups."
+    when 4
+      return "The administrators of specific Groups."
+    when 5
+      return "A specific set of Users."
+    when 6
+      return "Only the uploader may update this Workflow."
+    when 7
+      return 'This Workflow has custom updating permissions.'
     end
   end
 

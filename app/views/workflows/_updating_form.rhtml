@@ -1,0 +1,165 @@
+<% perms = [] %>
+<% perms = @workflow.contribution.policy.permissions if edit %>
+
+<% @updating_mode = 6 if edit == false %>
+
+<!-- Updating Privileges -->
+
+<div class="fold">
+  <div class="foldTitle">
+    <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to give updating privileges to your Friends and/or your Groups. This will allow them to update the description and upload new versions of the Workflow. <br/><br/>By default, no one else is allowed to update this Workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+    Who can update this Workflow?
+	<% if edit %>
+		<hr/>
+		<small>Current: <%= updating_mode_text @updating_mode %></small>
+	<% else %>
+	    <hr />
+	    <small>Default: no one else is allowed to update</small>
+	<% end %>
+  </div>
+
+  <div class="foldContent" style="display: none;">
+
+    <p class="info_text">This section allows you to give updating priviledges
+    to your Friends and/or your Groups.  This will allow them to update the
+    description and upload new versions of the Workflow.
+    <br/> <br/>
+    Note that updating privileges only affect how other users can update this
+    Workflow entry on myExperiment.  If the user downloads the Workflow file,
+    they can still edit it away from myExperiment and possibly upload it as a
+    new Workflow entry.
+    <br/> <br/>
+    Furthermore, Workflow entries on myExperiment can have multiple versions of
+    the actual Workflow file.  Giving updating privileges will allow other
+    users to upload a new version of the Workflow file (all previous
+    versions are still available). </p>
+
+    <hr />
+
+    <p><strong>Who else is allowed to update this Workflow?</strong></p>
+
+    <p>Note that settings here take precedence over the Sharing permissions
+    above.  So if you give someone updating privileges, they will automatically
+    be granted view AND download permissions as well.</p>
+
+    <div style="padding-left: 1em;">
+
+      <p><input <%= 'checked="checked"' if @updating_mode == 0 %> id="updating_option_7" name="updating[class_id]"
+      value="0" type="radio" onclick="javascript:update_updating(0);" />
+      - All those who can view or download (from your Sharing permissions
+          above).</p>
+      
+      <p><input <%= 'checked="checked"' if @updating_mode == 1 %> id="updating_option_1" name="updating[class_id]"
+      value="1" type="radio" onclick="javascript:update_updating(1);" />
+      - All my Friends and the members of all my Groups.</p>
+
+<% if false %>
+      <p><input <%= 'checked="checked"' if @updating_mode == 2 %> id="updating_option_2" name="updating[class_id]"
+      value="2" type="radio" onclick="javascript:update_updating(2);" />
+      - All my Friends and only the administrators of all my Groups.</p>
+<% end %>
+
+      <p><input <%= 'checked="checked"' if @updating_mode == 3 %> id="updating_option_3" name="updating[class_id]"
+      value="3" type="radio" onclick="javascript:update_updating(3);" />
+      - The members of some of my Groups.</p>
+
+      <div id="updating_networksmembers_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em;">
+        <p>
+        <% for n in (current_user.networks + current_user.networks_owned) %>
+          <input <%= 'checked' if (perms.select do |p| (p.contributor_id == n.id) && @updating_mode == 3 end).length > 0 %>
+          value="<%= n.id %>" type="checkbox" name="updating_networkmembers[<%= n.id %>]"/><%= h(n.title) %><br />
+        <% end %>
+        </p>
+      </div>
+
+<% if false %>
+      <p><input <%= 'checked="checked"' if @updating_mode == 4 %> id="updating_option_4" name="updating[class_id]"
+      value="4" type="radio" onclick="javascript:update_updating(4);" />
+      - The administrators of some of my Groups</p>
+<% end %>
+
+      <div id="updating_networksadmins_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em;">
+        <p>
+        <% for n in (current_user.networks + current_user.networks_owned) %>
+          <input <%= 'checked' if (perms.select do |p| (p.contributor_id == n.id) && @updating_mode == 4 end).length > 0 %>
+          value="<%= n.id %>" type="checkbox" name="updating_networkadmins[<%= n.id %>]"/><%= h(n.title) %><br />
+        <% end %>
+        </p>
+      </div>
+
+      <p><input <%= 'checked="checked"' if @updating_mode == 5 %> id="updating_option_5" name="updating[class_id]"
+      value="5" type="radio" onclick="javascript:update_updating(5);" />
+      - Some of my Friends</p>
+
+      <div id="updating_somefriends_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em;">
+        <p>
+        <% for f in current_user.friends %>
+          <input <%= 'checked' if (perms.select do |p| (p.contributor_id == f.id) && @updating_mode == 5 end).length > 0 %>
+          value="<%= f.id %>" type="checkbox" name="updating_somefriends[<%= f.id %>]"/><%= h(f.name) %><br />
+        <% end %>
+        </p>
+      </div>
+
+      <p><input <%= 'checked="checked"' if @updating_mode == 6 %> id="updating_option_6" name="updating[class_id]"
+      value="6" type="radio" onclick="javascript:update_updating(6);" />
+      - No one else.</p>
+
+<% if false %>
+
+      <p><input <%= 'checked="checked"' if @updating_mode == 7 %> id="updating_option_7" name="updating[class_id]"
+      value="7" type="radio" onclick="javascript:update_updating(7);" />
+      - Custom list of people.</p>
+
+                            <div id="updating_custom_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em; text-align: left;">
+                                <p id="updating_permissions_list" style="text-align: left;">
+                                    <i>None</i>
+                                </p>
+                                <br />
+                                <p>Use the boxes below to add people</p>
+                                <div style="padding: 1em; float: left; border: 1px dotted #999999; text-align: center;">
+                                    Add a Friend:
+                                    <br />
+                                    <br />
+                                    <select id="updating_permissions_friendslist">
+                                        <option value="1">Amy Smith</option>
+                                        <option value="2">Hannah Patel</option>
+                                        <option value="3">John Dorian</option>
+                                        <option value="4">Jose Gonzalez</option>
+                                        <option value="5">Josiah Bartlett</option>
+                                        <option value="6">Manny</option>
+                                        <option value="7">Tom Winterbottom</option>
+                                        <option value="8">Tristan Coombes</option>
+                                    </select>
+                                    <br />
+                                    <br />
+                                    <a href="" onclick="javascript:add_updaterpermission_string('Friend: ' + document.getElementById('updating_permissions_friendslist').options[document.getElementById('updating_permissions_friendslist').selectedIndex].text); return false;" >Add Friend</a>
+                  <br />
+                  <a href="" onclick="javascript:add_updaterpermission_string('ALL Friends'); return false;" >Add ALL Friends</a>
+                                </div>
+                                <div style="padding: 1em; float: left; border: 1px dotted #999999; margin-left: 1em; text-align: center;">
+                                    Add a Network:
+                                    <br />
+                                    <br />
+                                    <select id="updating_permissions_networkslist">
+                                        <option value="1">EBI</option>
+                                        <option value="2">University of Manchester</option>
+                                        <option value="3">University of Southampton</option>
+                                        <option value="4">Pete's Network</option>
+                                        <option value="5">myExperiment Hackers</option>
+                                    </select>
+                                    <br />
+                                    <br />
+                                    <a href="" onclick="javascript:add_updaterpermission_string('All members of Network: ' + document.getElementById('updating_permissions_networkslist').options[document.getElementById('updating_permissions_networkslist').selectedIndex].text); return false;" >Add all members of Network</a>
+                                    <br />
+                                    <a href="" onclick="javascript:add_updaterpermission_string('Administrator of Network: ' + document.getElementById('updating_permissions_networkslist').options[document.getElementById('updating_permissions_networkslist').selectedIndex].text); return false;" >Add only administrator of Network</a>
+                                </div> 
+                                <div style="clear: both;">&nbsp;</div>                       
+                                <br />
+                            </div>
+                            <br />
+<% end %>
+                        </div>
+                    </div>
+                </div>
+
+<script>update_updating(<%= @updating_mode %>)</script>

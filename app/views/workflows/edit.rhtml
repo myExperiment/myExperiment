@@ -15,10 +15,14 @@
 
   <% if @workflow.owner?(current_user) %>
   	<%= render :partial => "workflows/sharing_form", :locals => { :edit => true } %>
+	<%= render :partial => "workflows/updating_form", :locals => { :edit => true } %>
     <%= render :partial => "workflows/license_form", :locals => { :edit => true } %>
   <% end %>
 
   <p>
-    <center><%= submit_tag "Update" %></center>
+    <center>
+    	<%= submit_tag "Update" %> 
+		or <%= link_to "Cancel", contributable_url(@workflow.id, 'Workflow') %>
+	</center>
   </p>
 <% end %>

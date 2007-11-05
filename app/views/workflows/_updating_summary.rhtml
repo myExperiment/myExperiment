@@ -1,20 +1,8 @@
-<p><b>Updating permission (Who can edit)</b></p>
+<p><b>Updating Permissions (who can update):</b></p>
 
-<% case @updating_mode; when 0 %>
+<p><%= updating_mode_text @updating_mode %></p>
 
-  <p>All those that can view or download can also edit.</p>
-      
-<% when 1 %>
-
-  <p>All the uploader's friends and the members of the uploader's groups.</p>
-
-<% when 2 %>
-
-  <p>All the uploader's friends and administrators of the uploader's groups.</p>
-
-<% when 3 %>
-
-  <p>The members of the following groups:</p>
+<% if @updating_mode == 3 %>
 
   <ul>
     <% for p in @workflow.contribution.policy.permissions %>
@@ -24,24 +12,20 @@
     <% end %>
   </ul>
 
-<% when 4 %>
+<% elseif @updating_mode == 4 %>
 
-  <p>The administrators of some of the Networks.</p>
+	<% if false %>
+	
+	    <p>
+	        <% for n in (current_user.networks + current_user.networks_owned) %>
+	          <input <%= 'checked' if (perms.select do |p| (p.contributor_id == n.id) && @updating_mode == 4 end).length > 0 %>
+	          value="<%= n.id %>" type="checkbox" name="updating_networkadmins[<%= n.id %>]"/><%= h(n.title) %><br />
+	        <% end %>
+	    </p>
+	
+	<% end %>
 
-<% if false %>
-
-        <p>
-        <% for n in (current_user.networks + current_user.networks_owned) %>
-          <input <%= 'checked' if (perms.select do |p| (p.contributor_id == n.id) && @updating_mode == 4 end).length > 0 %>
-          value="<%= n.id %>" type="checkbox" name="updating_networkadmins[<%= n.id %>]"/><%= h(n.title) %><br />
-        <% end %>
-        </p>
-
-<% end %>
-
-<% when 5 %>
-
-  <p>The following users may edit this workflow:</p>
+<% elseif @updating_mode == 5 %>
 
   <ul>
     <% for p in @workflow.contribution.policy.permissions %>
@@ -51,13 +35,9 @@
     <% end %>
   </ul>
 
-<% when 6 %>
+<% elseif @updating_mode == 7 %>
 
-  <p>Only the uploader may edit this workflow.</p>
-
-<% when 7 %>
-
-  <p>The following may edit this workflow:</p>
+  <p></p>
 
 <% end %>
 
