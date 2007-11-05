@@ -755,6 +755,9 @@ table tr td.details {
 	border-bottom: 1px dotted #999999;
 }
 
+.workflow_section_box li {
+}
+
 .workflow_section_box .heading {
 	font-size: 108%;
 	font-weight: bold;

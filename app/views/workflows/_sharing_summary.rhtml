@@ -1,50 +1,24 @@
-<% case @sharing_mode; when 0 %>
+<p><%= sharing_mode_text @sharing_mode %></p>
 
-<p>Everyone can view and download.</p>
-
-<% when 1 %>
-
-<p>Everyone can view, but only Friends and Groups are allowed to download.</p>
-
-<% when 2 %>
-
-<p>Everyone can view, but only the uploader can download.</p>
-
-<% when 3 %>
-
-<p>Only Friends and Groups can view and download.</p>
-
-<% when 4 %>
-
-<p>Only Friends and Groups can view, and only the owner can download.</p>
-
-<% when 5 %>
-
-<p>Only the following Groups can view and download.</p>
-
-<ul>
-<% @workflow.contribution.policy.permissions.each do |p| %>
-  <li><%= h Network.find(p.contributor_id).title %></li>
-<% end %>
-</ul>
-
-<% when 6 %>
-
-<p>Only the following Groups can view, and only the owner can download.</p>
-
-<ul>
-<% @workflow.contribution.policy.permissions.each do |p| %>
-  <li><%= h Network.find(p.contributor_id).title %></li>
-<% end %>
-</ul>
-
-<% when 7 %>
-
-<p>This is a private Workflow.</p>
-
-<% when 8 %>
-
-<p>This Workflow has custom permissions.</p>
-
+<% if @sharing_mode == 5 %>
+	
+	<ul>
+		<% @workflow.contribution.policy.permissions.each do |p| %>
+		  <li><%= h Network.find(p.contributor_id).title %></li>
+		<% end %>
+	</ul>
+	
+<% elsif @sharing_mode == 6 %>
+	
+	<ul>
+		<% @workflow.contribution.policy.permissions.each do |p| %>
+		  <li><%= h Network.find(p.contributor_id).title %></li>
+		<% end %>
+	</ul>
+	
+<% elsif @sharing_mode == 8 %>
+	
+	<p></p>
+	
 <% end %>
 

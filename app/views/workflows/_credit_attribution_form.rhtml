@@ -8,9 +8,14 @@
 <div class="fold">
 	<div class="foldTitle">
 	    <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to give <strong>credit</strong> to users/groups for this Workflow (for example, the <strong>author(s)</strong> of this Workflow). <br/><br/>You can also attribute the Workflows that this Workflow is <strong>based on</strong> (if any). <br/><br/>By default, you are the only person who gets credit.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
-	    Credit and Attribution 
-	    <hr/>
-	    <small>Default: you are the only person who gets credit</small>
+	    Credit and Attribution
+		<% if edit %>
+			<hr/>
+			<small>Current: <%= @workflow.creditors.length %> credits, <%= @workflow.attributors.length %> attributions.</small>
+		<% else %>
+		    <hr/>
+		    <small>Default: you are the only person who gets credit</small>
+		<% end %>
   	</div>
     <div class="foldContent" style="display: none;">
         <p class="info_text">

@@ -23,7 +23,12 @@ document.onkeypress = handleEnter;
 
 <div class="fold">
   <div class="foldTitle">
-  <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to add tags to <strong>describe</strong> this Workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/> Tags</img></div>
+  	<img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to add tags to <strong>describe</strong> this Workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/> Tags</img>
+	<% if edit %>
+		<hr />
+		<small>Current: <%= @workflow.tags.count %> tags</small>
+	<% end %>
+  </div>
   <div class="foldContent" style="display: none;">
     <p class="info_text">This section allows you to add tags to <strong>describe</strong> this Workflow.</p>
     <hr />

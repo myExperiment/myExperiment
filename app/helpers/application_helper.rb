@@ -659,6 +659,40 @@ module ApplicationHelper
       x.name.downcase <=> y.name.downcase
     } 
   end
+  
+  def license_link(license_type)
+    case license_type.downcase
+    when "by-nd"
+      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by-nd/3.0/">Creative Commons Attribution-NoDerivs 3.0 License</a>'
+    when "by"
+      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 License</a>'
+    when "by-sa"
+      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 License</a>'
+    end
+  end
+  
+  def sharing_mode_text(mode)
+    case mode
+    when 0
+      return 'Everyone can view and download.'
+    when 1
+      return 'Everyone can view, but only Friends and Groups are allowed to download.'
+    when 2
+      return 'Everyone can view, but only the uploader can download.'
+    when 3
+      return 'Only Friends and Groups can view and download.'
+    when 4
+      return 'Only Friends and Groups can view, but only the uploader can download.'
+    when 5
+      return 'Only specific Groups can view and download.'
+    when 6
+      return 'Only specific Groups can view, but only the uploader can download.'
+    when 7
+      return 'This is a private Workflow - only the uploader can view and download.'
+    when 8
+      return 'This Workflow has custom permissions.'
+    end
+  end
 
 protected
 

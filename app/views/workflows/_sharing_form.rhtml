@@ -11,8 +11,13 @@
   <div class="foldTitle">
     <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to specify who can <strong>see</strong> and <strong>use</strong> this Workflow on myExperiment, by setting '<strong>view</strong>' and '<strong>download</strong>' permissions. <br/><br/>By default, <strong>everyone</strong> is allowed to <strong>view</strong>, but only your <strong>Friends</strong> and <strong>Networks</strong> are allowed to <strong>download</strong>.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
     Sharing
-    <hr />
-    <small>Default: everyone can view, but only Friends/Groups can download</small>
+	<% if edit %>
+		<hr/>
+		<small>Current: <%= sharing_mode_text @sharing_mode %></small>
+	<% else %>
+	    <hr />
+	    <small>Default: everyone can view, but only Friends/Groups can download</small>
+	<% end %>
   </div>
 
   <div class="foldContent" style="display: none;">

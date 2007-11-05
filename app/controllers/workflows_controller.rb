@@ -589,19 +589,22 @@ private
     
     # Current user
     if (params[:credits_me].downcase == 'true')
-      Creditation.new(:creditor_type => 'User', :creditor_id => current_user.id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
+      c = Creditation.new(:creditor_type => 'User', :creditor_id => current_user.id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
+      c.save
     end
     
     # Friends + other users
     user_ids = parse_comma_seperated_string(params[:credits_friends]) + parse_comma_seperated_string(params[:credits_otherusers])
     user_ids.each do |id|
-      Creditation.new(:creditor_type => 'User', :creditor_id => id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
+      c = Creditation.new(:creditor_type => 'User', :creditor_id => id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
+      c.save
     end
     
     # Networks (aka Groups)
     network_ids = parse_comma_seperated_string(params[:credits_groups])
     network_ids.each do |id|
-      Creditation.new(:creditor_type => 'Network', :creditor_id => id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
+      c = Creditation.new(:creditor_type => 'Network', :creditor_id => id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
+      c.save
     end
     
   end
@@ -621,7 +624,8 @@ private
     # In future, it is likely that other types of files can be used (re: EMOs)
     attributor_type = 'Workflow'
     attributor_ids.each do |id|
-      Attribution.new(:attributor_type => attributor_type, :attributor_id => id, :attributable_type => 'Workflow', :attributable_id  => workflow.id)
+      a = Attribution.new(:attributor_type => attributor_type, :attributor_id => id, :attributable_type => 'Workflow', :attributable_id  => workflow.id)
+      a.save
     end
     
   end

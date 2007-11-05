@@ -4,8 +4,13 @@
     <div class="foldTitle">
         <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to specify the <strong>rights</strong> that people have when they download and use this Workflow, by setting the license. <br/><br/>By default, the license specifies that people are allowed to build on this Workflow as long as they give the original author credit and share their resulting work under the same conditions.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
         License/Rights
-		<hr />
-		<small>Default: people are allowed to build on this Workflow, but must give author(s) credit and give attribution to this Workflow. They must also share under the same conditions.</small>
+		<% if edit %>
+			<hr />
+			<small>Current: <%= license_link license %></small>
+		<% else %>
+			<hr />
+			<small>Default: people are allowed to build on this Workflow, but must give author(s) credit and give attribution to this Workflow. They must also share under the same conditions. (<%= license_link license %>)</small>
+		<% end %>
     </div>
     <div class="foldContent" style="display: none;">
         <p class="info_text">
@@ -27,19 +32,49 @@
             </div>
             <p>
                 When someone downloads this Workflow, are they allowed to build upon it (such as
-                extend, reuse, repurpose etc)?</p>
-            <p>
-                <input id="workflow_license_bysa" <%= 'checked="checked"' if (license == 'by-sa') %> name="workflow[license]" type="radio" value="by-sa"/>
-                Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this Workflow</strong>. 
-				They must also <strong>share</strong> the resulting work <strong>under the same conditions</strong>.
-            <p>
-                <input id="workflow_license_by" <%= 'checked="checked"' if (license == 'by') %> name="workflow[license]" type="radio" value="by"/>
-            	Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this Workflow</strong>.
+                extend, reuse, repurpose etc)?
 			</p>
-            <p>
-                <input id="workflow_license_bynd" <%= 'checked="checked"' if (license == 'by-nd') %> name="workflow[license]" type="radio" value="by-nd"/>
-            	No. They may only use the Workflow for reference.
-            <p>
+            <table style="border-collapse: collapse; border-spacing: 0;">
+            	<tbody>
+            		<tr>
+						<td style="vertical-align: top; text-align: center;">
+			                <input id="workflow_license_bysa" <%= 'checked="checked"' if (license == 'by-sa') %> name="workflow[license]" type="radio" value="by-sa"/>
+						</td>
+						<td style="vertical-align: top; text-align: left;">
+			                <p style="padding: 0; margin: 0;">
+			                	Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this Workflow</strong>. 
+								They must also <strong>share</strong> the resulting work <strong>under the same conditions</strong>.
+								<br/>
+								- <%= license_link "by-sa" %>
+							</p>
+						</td>
+            		</tr>
+					<tr>
+						<td style="vertical-align: top; text-align: center;">
+                			<input id="workflow_license_by" <%= 'checked="checked"' if (license == 'by') %> name="workflow[license]" type="radio" value="by"/>
+						</td>
+						<td style="vertical-align: top; text-align: left;">	
+            				<p style="padding: 0; margin: 0;">
+            					Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this Workflow</strong>.
+								<br/>
+								- <%= license_link "by" %>
+							</p>
+						</td>
+            		</tr>
+					<tr>
+						<td style="vertical-align: top; text-align: center;">
+                			<input id="workflow_license_bynd" <%= 'checked="checked"' if (license == 'by-nd') %> name="workflow[license]" type="radio" value="by-nd"/>
+						</td>
+						<td style="vertical-align: top; text-align: left;">
+            				<p style="padding: 0; margin: 0;">
+								No. They may only use the Workflow for reference.
+								<br/>
+								- <%= license_link "by-nd" %>
+							</p>
+						</td>
+            		</tr>
+            	</tbody>
+        	</table>
                 <small>Nothing in these licenses impairs or restricts the author's moral rights.</small></p>
         </div>
     </div>

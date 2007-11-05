@@ -83,7 +83,7 @@
 			<div class="sectionIcons">
 				<ul class="sectionIcons">
 					<% unless @workflow.svg.nil? %><li><%= icon('picture', url_for_file_column(@workflow, "svg"), nil, nil, 'Download Scalable Diagram (SVG)') %></li><% end %>
-					<% if @workflow.authorized?("destroy", current_user) %><li><%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Workflow Version') %><% end %>
+					<% if @workflow.authorized?("destroy", current_user) %><li><%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'Are you sure you want to delete this version of the Workflow file (including title/description metdata)?', :method => :delete }, 'TODO: Delete Workflow Version') %><% end %>
 				</ul>
 			</div>
 		<% end %>
@@ -181,6 +181,8 @@
 			<p style="text-align: left;"><i>None</i></p>
 		<% end %>
 		
+		<p style="text-align: right;"><small>[<%= link_to "edit", edit_workflow_path(@workflow)%>]</small></p>
+		
 	</div>
 	
 	<% if logged_in? %>
@@ -199,11 +201,11 @@
 	
 	<div class="workflow_section_box">
 		<p class="heading">
-			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The size of the tags show how popular they are on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The tags for this Workflow entry (applies to all Workflow versions). Note: the size of the tags show how popular they are on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
 			Tags
 		</p>
-		<%= render :partial => "workflows/tags_for_workflow", :locals => { :workflow => @workflow } %>		
-		<p><small>Note: the size of the tags show how popular they are on myExperiment.</small></p>
+		<%= render :partial => "workflows/tags_for_workflow", :locals => { :workflow => @workflow } %>
+		<p style="text-align: right;"><small>[<%= link_to "edit", edit_workflow_path(@workflow)%>]</small></p>	
 		<% if logged_in? %>
 			<div class="fold">
 				<div class="foldTitle">Add Tags</div>
