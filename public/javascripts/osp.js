@@ -93,8 +93,7 @@ function toggle_visibility(id) {
 // credit and attribution
 
 var credit_me = true;
-var credit_friends = new Object();
-var credit_otherusers = new Object();
+var credit_users = new Object();
 var credit_groups = new Object();
 
 function updateAuthorList() {
@@ -107,15 +106,9 @@ function updateAuthorList() {
     		'return false;">delete</a>]</small><br/>';
 	}
 	
-	for (var key in credit_friends)
+	for (var key in credit_users)
 	{
-		markup += 'Friend: ' + credit_friends[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAuthor(\'friend\', ' + key + '); ' +
-    		'return false;">delete</a>]</small><br/>';
-	}
-	
-	for (var key in credit_otherusers)
-	{
-		markup += 'Other user: ' + credit_otherusers[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAuthor(\'otheruser\', ' + key + '); ' +
+		markup += 'User: ' + credit_users[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAuthor(\'user\', ' + key + '); ' +
     		'return false;">delete</a>]</small><br/>';
 	}
 	
@@ -144,25 +137,15 @@ function updateAuthorList() {
 		document.getElementById('credits_me').value = "false";
 	}
 	
-	// Friends
-	var friends_list = '';
+	// Users (friends + other users)
+	var users_list = '';
 	
-	for (var key in credit_friends)
+	for (var key in credit_users)
 	{
-		friends_list += key + ',';
+		users_list += key + ',';
 	}
 	
-	document.getElementById('credits_friends').value = friends_list;
-	
-	// Other users
-	var otherusers_list = '';
-	
-	for (var key in credit_otherusers)
-	{
-		otherusers_list += key + ',';
-	} 
-	
-	document.getElementById('credits_otherusers').value = otherusers_list;
+	document.getElementById('credits_users').value = users_list;
 	
 	// Groups
 	var groups_list = '';
@@ -190,7 +173,7 @@ function addAuthor() {
 		if (x.options.length > 0)
 		{
 			var y = x.options[x.selectedIndex];
-	     	credit_friends[y.value] = y.text;
+	     	credit_users[y.value] = y.text;
 		}
 	}
 	// A user on myExperiment who is not a Friend.
@@ -201,7 +184,7 @@ function addAuthor() {
 		if (x.options.length > 0)
 		{
 			var y = x.options[x.selectedIndex];
-	     	credit_otherusers[y.value] = y.text;
+	     	credit_users[y.value] = y.text;
 		}
 	}
 	// A myExperiment Group
@@ -225,13 +208,9 @@ function deleteAuthor(type, key) {
 	{
 		credit_me = false;
 	}
-	else if (type == 'friend')
+	else if (type == 'user')
 	{
-		delete credit_friends[key];
-	}
-	else if (type == 'otheruser')
-	{
-		delete credit_otherusers[key];
+		delete credit_users[key];
 	}
 	else if (type == 'group')
 	{

@@ -1,6 +1,5 @@
 <input id="credits_me" type="hidden" name="credits_me" value="true"/>
-<input id="credits_friends" type="hidden" name="credits_friends"/>
-<input id="credits_otherusers" type="hidden" name="credits_otherusers"/>
+<input id="credits_users" type="hidden" name="credits_users"/>
 <input id="credits_groups" type="hidden" name="credits_groups"/>
 
 <input id="attributions_workflows" type="hidden" name="attributions_workflows"/>
@@ -168,3 +167,28 @@
         </div>
     </div>
 </div>
+
+<% if edit %>
+  <script>
+    // Credits
+	credit_me = false;
+	<% @workflow.creditors.each do |c| %>
+      <% if c.creditor_type == 'User' and c.creditor_id == current_user.id %>
+	  	credit_me = true;
+	  <% elsif c.creditor_type == 'User' %>
+	  	credit_users[<%= c.creditor_id %>] = '<%= contributor_name(c.creditor_id, 'User') %>';
+	  <% elsif c.creditor_type == 'Network' %>
+	  	credit_groups[<%= c.creditor_id %>] = '<%= contributor_name(c.creditor_id, 'Network') %>';
+	  <% end %>
+    <% end %>
+    updateAuthorList();
+	
+	// Attributions
+	<% @workflow.attributors.each do |a| %>
+	  <% if a.attributor_type == 'Workflow' %>
+	  	attributions_workflows[<%= a.attributor_id %>] = '<%= contributable_name(a.attributor_id, 'Workflow') %>';
+	  <% end %>
+    <% end %>
+    updateAttributionsList();
+  </script>
+<% end %>

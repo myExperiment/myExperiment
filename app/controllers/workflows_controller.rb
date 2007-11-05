@@ -595,7 +595,7 @@ private
     end
     
     # Friends + other users
-    user_ids = parse_comma_seperated_string(params[:credits_friends]) + parse_comma_seperated_string(params[:credits_otherusers])
+    user_ids = parse_comma_seperated_string(params[:credits_users])
     user_ids.each do |id|
       c = Creditation.new(:creditor_type => 'User', :creditor_id => id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
       c.save

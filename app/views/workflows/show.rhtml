@@ -151,13 +151,16 @@
 				
 		<p class="heading">
 			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[Who gets the credit for this Workflow?] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
-			Credits <span style="font-size: 85%; color: #666666;">(People)</span>
+			Credits <span style="font-size: 85%; color: #666666;">(People/Groups)</span>
 		</p>
 		<% unless (creditors = @workflow.creditors).empty? %>
 			<div style="text-align: left; 1.2em; font-size: 85%;">
-				<ul>
+				<ul style="margin-top: 0;">
 					<% creditors.each do |c| %>
-						<li style="margin-bottom: 0.4em;"><%= name(c.creditor_id) %></li>
+						<li style="margin-bottom: 0.4em;">
+							<%= if c.creditor_type == 'Network' then 'Group' else c.creditor_type end %>: 
+							<%= contributor(c.creditor_id, c.creditor_type) %>
+						</li>
 					<% end %>
 				</ul>
 			</div>
@@ -171,9 +174,12 @@
 		</p>
 		<% unless (attributors = @workflow.attributors).empty? %>
 			<div style="text-align: left; font-size: 85%;">
-				<ul>
+				<ul style="margin-top: 0;">
 					<% attributors.each do |a| %>
-						<li style="margin-bottom: 0.4em;"><%= contributable(a.attributor_id, "Workflow") %></li>
+						<li style="margin-bottom: 0.4em;">
+							<%= if a.attributor_type == 'Blob' then 'File' else a.attributor_type end %>: 
+							<%= contributable(a.attributor_id, a.attributor_type) %>
+						</li>
 					<% end %>
 				</ul>
 			</div>
@@ -181,7 +187,9 @@
 			<p style="text-align: left;"><i>None</i></p>
 		<% end %>
 		
-		<p style="text-align: right;"><small>[<%= link_to "edit", edit_workflow_path(@workflow)%>]</small></p>
+		<% if @workflow.authorized?("edit", current_user) %>
+			<p style="text-align: right;"><small>[<%= link_to "edit", edit_workflow_path(@workflow)%>]</small></p>
+		<% end %>
 		
 	</div>
 	
@@ -204,8 +212,13 @@
 			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The tags for this Workflow entry (applies to all Workflow versions). Note: the size of the tags show how popular they are on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
 			Tags
 		</p>
+		
 		<%= render :partial => "workflows/tags_for_workflow", :locals => { :workflow => @workflow } %>
-		<p style="text-align: right;"><small>[<%= link_to "edit", edit_workflow_path(@workflow)%>]</small></p>	
+		
+		<% if @workflow.authorized?("edit", current_user) %>
+			<p style="text-align: right;"><small>[<%= link_to "edit", edit_workflow_path(@workflow)%>]</small></p>
+		<% end %>			
+		
 		<% if logged_in? %>
 			<div class="fold">
 				<div class="foldTitle">Add Tags</div>
@@ -331,6 +344,12 @@
     <div class="tabContent">
 
       <%= render :partial => "sharing_summary" %>
+	  
+	  <% if @workflow.authorized?("edit", current_user) %>
+		  <ul class="sectionIcons">
+		  	<li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit')%></li>
+		  </ul>
+	  <% end %>
 
     </div>
   </div>
