@@ -173,10 +173,14 @@ class WorkflowsController < ApplicationController
           @workflow.tag_list = convert_tags_to_gem_format params[:workflow][:tag_list]
           @workflow.update_tags
         end
-        
+                
         @workflow.contribution.update_attributes(params[:contribution])
 
         update_workflow_policy(@workflow, params)
+        
+        # Credits and Attributions:
+        update_workflow_credits(@workflow, params)
+        update_workflow_attributions(@workflow, params)
 
         flash[:notice] = 'Workflow was successfully created.'
         format.html { redirect_to workflow_url(@workflow) }
@@ -574,6 +578,54 @@ private
     return 1
   end
 
+  def update_workflow_credits(workflow, params)
+    
+    # First delete old creditations:
+    workflow.creditations.each do |c|
+      c.destroy
+    end
+    
+    # Then create new creditations:
+    
+    # Current user
+    if (params[:credits_me].downcase == 'true')
+      Creditation.new(:creditor_type => 'User', :creditor_id => current_user.id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
+    end
+    
+    # Friends + other users
+    user_ids = parse_comma_seperated_string(params[:credits_friends]) + parse_comma_seperated_string(params[:credits_otherusers])
+    user_ids.each do |id|
+      Creditation.new(:creditor_type => 'User', :creditor_id => id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
+    end
+    
+    # Networks (aka Groups)
+    network_ids = parse_comma_seperated_string(params[:credits_groups])
+    network_ids.each do |id|
+      Creditation.new(:creditor_type => 'Network', :creditor_id => id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
+    end
+    
+  end
+  
+  def update_workflow_attributions(workflow, params)
+    
+    # First delete old attributions:
+    workflow.attributions.each do |a|
+      a.destroy
+    end
+    
+    # Then create new attributions:
+    
+    attributor_ids = parse_comma_seperated_string(params[:attributions_workflows])
+    
+    # Note: currently only existing workflows can be used in attributions.
+    # In future, it is likely that other types of files can be used (re: EMOs)
+    attributor_type = 'Workflow'
+    attributor_ids.each do |id|
+      Attribution.new(:attributor_type => attributor_type, :attributor_id => id, :attributable_type => 'Workflow', :attributable_id  => workflow.id)
+    end
+    
+  end
+  
 end
 
 module FileUpload

@@ -75,7 +75,7 @@ class ApplicationController < ActionController::Base
   #
   # This is so we can map the tags entered in by users to the format required by the act_as_taggable_redux gem.
   def convert_tags_to_gem_format(tags_string)
-    list = tags_string.split(',')
+    list = parse_comma_seperated_string(tags_string)
     converted = '' 
     
     list.each do |s|
@@ -85,5 +85,12 @@ class ApplicationController < ActionController::Base
     return converted
   end
   
-  helper_method :ae_some_html 
+  helper_method :ae_some_html
+  
+  # This method converts a comma seperated string of values into a collection of those values.
+  # Note: currently does not cater for values in quotation marks and does not remove empty values
+  # (although it does ignore a trailing comma)
+  def parse_comma_seperated_string(s)
+    list = s.split(',')
+  end
 end

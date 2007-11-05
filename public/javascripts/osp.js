@@ -145,7 +145,7 @@ function updateAuthorList() {
 	}
 	
 	// Friends
-	var friends_list;
+	var friends_list = '';
 	
 	for (var key in credit_friends)
 	{
@@ -155,7 +155,7 @@ function updateAuthorList() {
 	document.getElementById('credits_friends').value = friends_list;
 	
 	// Other users
-	var otherusers_list;
+	var otherusers_list = '';
 	
 	for (var key in credit_otherusers)
 	{
@@ -165,7 +165,7 @@ function updateAuthorList() {
 	document.getElementById('credits_otherusers').value = otherusers_list;
 	
 	// Groups
-	var groups_list;
+	var groups_list = '';
 	
 	for (var key in credit_groups)
 	{
@@ -269,15 +269,15 @@ function update_author(parentId) {
     }
 }
 
-var attributions = new Object();
+var attributions_workflows = new Object();
 
 function updateAttributionsList() {
 	
 	var markup = '';
 	
-	for (var key in attributions)
+	for (var key in attributions_workflows)
 	{
-		markup += attributions[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAttribution(' + key + '); ' +
+		markup += attributions_workflows[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAttribution(' + key + '); ' +
     		'return false;">delete</a>]</small><br/>';
 	}
 	
@@ -290,14 +290,14 @@ function updateAttributionsList() {
 	
 	// Also update web form (the hidden input fields)
 	
-	var attributions_list;
+	var attr_workflows_list = '';
 	
-	for (var key in attributions)
+	for (var key in attributions_workflows)
 	{
-		attributions_list += key + ',';
+		attr_workflows_list += key + ',';
 	} 
 	
-	document.getElementById('attributions').value = attributions_list;
+	document.getElementById('attributions_workflows').value = attr_workflows_list;
 }
 
 function addAttribution() {
@@ -306,14 +306,14 @@ function addAttribution() {
 	if (x.options.length > 0)
 	{
 		var y = x.options[x.selectedIndex];
-     	attributions[y.value] = y.text;
+     	attributions_workflows[y.value] = y.text;
 	}
 	
 	updateAttributionsList();
 }
 
 function deleteAttribution(id) {
-	delete attributions[id];
+	delete attributions_workflows[id];
 	
 	updateAttributionsList();
 }
