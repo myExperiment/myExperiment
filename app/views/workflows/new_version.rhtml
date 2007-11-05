@@ -1,6 +1,6 @@
 <h1>Upload New Version of Workflow: <%= @workflow.title %></h1>
 
-<% form_tag('/workflows/53', :multipart => true, :method => :put) do %>
+<% form_tag('/workflows/' + @workflow.id.to_s, :multipart => true, :method => :put) do %>
 
   <div>
     <p>
