@@ -1,56 +1,42 @@
 <% unless collection.empty? %>
 
-<table class="alt_table">
-  <tr>
-    <th width="100">Name</th>
-    <% if false %>
-    <th width="150">Username</th>
-    <th width="150">OpenID</th>
-    <% end %>
-    <th>Joined</th>
-    <% if false %>
-    <th>Updated at</th>
-    <% end %>
-    <th> </th>
-  </tr>
-  
-<% odd_row = false -%> 
-<% for user in collection %>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100"><%= contributor(user, "User", true, 60) %></td>
-    <% if false %>
-    <td width="150">
-      <% if user.username %>
-        <%=h user.username %>
-      <% elsif my_page? user.id %>
-        Click <%= link_to 'here', edit_user_path(user) %> to create your RESTful username and password
-      <% else %>
-        Not created yet
-      <% end %>
-    </td>
-    <td width="150">
-      <% if user.openid_url %>
-        <%=openid user %>
-      <% elsif my_page? user.id %>
-        Click <%= link_to 'here', edit_user_path(user) %> to validate your OpenID URL
-      <% else %>
-        Not created yet
-      <% end %>
-    </td>
-    <% end %>
-    <td><%=datetime user.created_at, false %></td>
-    <% if false %>
-    <td><%=datetime user.updated_at, false %></td>
-    <% end %>
-    <td class="actions">
-      <%= icon "show", user_path(user) %> 
-      <% if my_page? user.id %>
-        <%= icon "edit", edit_user_path(user) %> 
-        <!--<%= icon "destroy", user_path(user), nil, :confirm => 'Are you sure?', :method => :delete %>-->
-      <% end %>
-    </td>
-  </tr>
-<% end %>
-</table>
+	<table class="alt_table">
+		<% odd_row = false -%> 
+		<% for user in collection %>
+		  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+			    <td width="100px"><%= avatar user, 60 %></td>
+			    <td class="mid" style="text-align: left;">
+			    	<strong><%= name user.id %></strong>
+					<% if user.profile %>
+						<p style="font-size: 85%;">
+							<%= truncate user.profile.body, 160 %>
+						</p>
+						<p style="font-size: 85%;">
+							<% if user.profile.website %>
+								<b>Website:</b>
+								<%= link_to h(user.profile.website), h(user.profile.website), :popup => true %>
+							<% end %>
+						</p>
+					<% end %>
+					<% if user.last_seen_at %>
+						<p style="font-size: 85%;">
+							<b>Last active:</b>
+							<%= datetime user.last_seen_at %>
+						</p>
+					<% end %>
+				</td>
+			    <td class="actions">
+		      		<%= link_to "View Profile", user_path(user.id) %>
+		      		<% if my_page? user.id %>
+			        	<%= link_to "Edit", edit_user_path(user) %> 
+			        	<!--<%= icon "destroy", user_path(user), nil, :confirm => 'Are you sure?', :method => :delete %>-->
+					<% else %>
+						<%= link_to 'Request Friendship', new_friendship_url(:user_id => user.id) %>
+						<%= link_to 'Send Message', new_message_path %>
+		      		<% end %>
+		    	</td>
+		  	</tr>
+		<% end %>
+	</table>
 
 <% end %>
