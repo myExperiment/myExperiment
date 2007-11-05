@@ -356,7 +356,8 @@ protected
                        :contributor_type => wf[:contributor_type],
                        :title => title,
                        :unique_name => unique_name,
-                       :body => scufl_model.description.description)
+                       :body => scufl_model.description.description,
+                       :license => wf[:license])
                        
     rtn.image, rtn.svg = create_workflow_diagrams(scufl_model, unique_name) unless RUBY_PLATFORM =~ /mswin32/
     
@@ -581,7 +582,7 @@ private
   def update_workflow_credits(workflow, params)
     
     # First delete old creditations:
-    workflow.creditations.each do |c|
+    workflow.creditors.each do |c|
       c.destroy
     end
     
@@ -612,7 +613,7 @@ private
   def update_workflow_attributions(workflow, params)
     
     # First delete old attributions:
-    workflow.attributions.each do |a|
+    workflow.attributors.each do |a|
       a.destroy
     end
     
