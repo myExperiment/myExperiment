@@ -31,6 +31,7 @@ document.onkeypress = handleEnter;
       <p><strong>Tags: </strong></p>
       <div style="padding-left: 2em;">
 	<p id="tags_current_list">
+		<i>None</i>
 	</p>
       </div>
     </div>
@@ -51,7 +52,7 @@ document.onkeypress = handleEnter;
 		  			<a href="" onclick="javascript:addTag('<%= t.name %>'); return false;"><%= t.name %></a> | 
 				<% end %>
 			<% else %>
-				
+				<p><i>None</i></p>
 			<% end %>
 		  </div>
 	    </div>
@@ -62,7 +63,7 @@ document.onkeypress = handleEnter;
 
 <% if edit %>
   <script>
-    <% workflow.tags.each do |t| %>
+    <% @workflow.tags.each do |t| %>
       tags.push(<%= "\"#{t.to_s.gsub(/\"/, '\\\"')}\"" %>);
     <% end %>
     updateTagList();

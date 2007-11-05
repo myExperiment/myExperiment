@@ -3,6 +3,8 @@
 <input id="credits_otherusers" type="hidden" name="credits_otherusers"/>
 <input id="credits_groups" type="hidden" name="credits_groups"/>
 
+<input id="attributions" type="hidden" name="attributions"/>
+
 <div class="fold">
 	<div class="foldTitle">
 	    <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to give <strong>credit</strong> to users/groups for this Workflow (for example, the <strong>author(s)</strong> of this Workflow). <br/><br/>You can also attribute the Workflows that this Workflow is <strong>based on</strong> (if any). <br/><br/>By default, you are the only person who gets credit.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
@@ -23,7 +25,7 @@
         </p>
         <div style="padding-left: 1em;">
             <p id="authors_list">
-                Me&nbsp;&nbsp;&nbsp;<small>[<a href="" t="me" onclick="javascript:deleteAuthor(this); return false;">delete</a>]</small><br/>
+                Me&nbsp;&nbsp;&nbsp;<small>[<a href="" t="me" onclick="javascript:deleteAuthor('me', null); return false;">delete</a>]</small><br/>
             </p>
             <br />
             <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
@@ -120,15 +122,15 @@
             <strong>If this Workflow is based on any existing Workflows, please list them below:</strong>
         </p>
         <div style="padding-left: 1em;">
-            <p id="basedon_workflows_list">
+            <p id="attribution_list">
                 <i>None</i>
             </p>
             <br />
-            <div style="padding: 1em; float: left; border: 1px dotted #999999; text-align: center;">
+            <div style="padding: 1em; float: left; border: 1px dotted #999999; text-align: left;">
                 Add an attribution to an existing Workflow on myExperiment:
                 <br />
                 <br />
-                <select id="basedon_workflows_existinglist" style="width: 300px;">
+                <select id="existingworkflows_dropdown" style="width: 400px;">
                     <% all_workflows.each do |w| %>
                         	<option value="<%= w.id %>"><%= w.title %></option>
                         <% end %>

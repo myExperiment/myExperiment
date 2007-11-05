@@ -19,16 +19,16 @@
   <br />
                 
   <!-- Tags -->
-  <%= render :partial => "workflows/tags_form", :locals => { :workflow => @workflow, :edit => false } %>
+  <%= render :partial => "workflows/tags_form", :locals => { :edit => false } %>
                 
   <!-- Credit and Attribution -->
-  <%= render :partial => "workflows/credit_attribution_form" %>
+  <%= render :partial => "workflows/credit_attribution_form", :locals => { :edit => false } %>
                 
   <!-- Sharing -->              
   <%= render :partial => "workflows/sharing_form", :locals => { :edit => false } %>
                 
   <!-- License/Rights -->
-  <%= render :partial => "workflows/license_form" %>
+  <%= render :partial => "workflows/license_form", :locals => { :edit => false } %>
   
   <p style="margin: 3.5em; padding: 0.6em; border-top: 1px dotted #999999; border-bottom: 1px dotted #999999; color: #660000;">
     <strong>Note:</strong> You are responsible for any content that you upload. You may remove your content

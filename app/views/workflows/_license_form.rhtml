@@ -1,5 +1,4 @@
-
-<% license = workflow ? workflow.license : 'by-sa' %>
+<% if edit then license = @workflow.license else license = 'by-sa' end %>
 
 <div class="fold">
     <div class="foldTitle">

@@ -103,25 +103,25 @@ function updateAuthorList() {
 	
 	if (credit_me)
 	{
-		markup += 'Me&nbsp;&nbsp;&nbsp;<small>[<a href="" t="me" onclick="javascript:deleteAuthor(this); ' +
+		markup += 'Me&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAuthor(\'me\', null); ' +
     		'return false;">delete</a>]</small><br/>';
 	}
 	
 	for (var key in credit_friends)
 	{
-		markup += 'Friend: ' + credit_friends[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" t="friend" key="' + key + '" onclick="javascript:deleteAuthor(this); ' +
+		markup += 'Friend: ' + credit_friends[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAuthor(\'friend\', ' + key + '); ' +
     		'return false;">delete</a>]</small><br/>';
 	}
 	
 	for (var key in credit_otherusers)
 	{
-		markup += 'Other user: ' + credit_otherusers[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" t="otheruser" key="' + key + '" onclick="javascript:deleteAuthor(this); ' +
+		markup += 'Other user: ' + credit_otherusers[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAuthor(\'otheruser\', ' + key + '); ' +
     		'return false;">delete</a>]</small><br/>';
 	}
 	
 	for (var key in credit_groups)
 	{
-		markup += 'Group: ' + credit_groups[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" t="group" key="' + key + '" onclick="javascript:deleteAuthor(this); ' +
+		markup += 'Group: ' + credit_groups[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAuthor(\'group\', ' + key + '); ' +
     		'return false;">delete</a>]</small><br/>';
 	}
 	
@@ -139,6 +139,10 @@ function updateAuthorList() {
 	{
 		document.getElementById('credits_me').value = "true";
 	}
+	else 
+	{
+		document.getElementById('credits_me').value = "false";
+	}
 	
 	// Friends
 	var friends_list;
@@ -146,14 +150,14 @@ function updateAuthorList() {
 	for (var key in credit_friends)
 	{
 		friends_list += key + ',';
-	} 
+	}
 	
 	document.getElementById('credits_friends').value = friends_list;
 	
 	// Other users
 	var otherusers_list;
 	
-	for (var key in otherusers_list)
+	for (var key in credit_otherusers)
 	{
 		otherusers_list += key + ',';
 	} 
@@ -163,7 +167,7 @@ function updateAuthorList() {
 	// Groups
 	var groups_list;
 	
-	for (var key in groups_list)
+	for (var key in credit_groups)
 	{
 		groups_list += key + ',';
 	} 
@@ -215,25 +219,23 @@ function addAuthor() {
 	updateAuthorList();
 }
 
-function deleteAuthor(obj) {
-	if (obj.t)
+function deleteAuthor(type, key) {
+
+	if (type == 'me')
 	{
-		if (obj.t == 'me')
-		{
-			credit_me = false;
-		}
-		else if (obj.t == 'friend')
-		{
-			delete credit_friends[obj.key];
-		}
-		else if (obj.t == 'otheruser')
-		{
-			delete credit_otherusers[obj.key];
-		}
-		else if (obj.t == 'group')
-		{
-			delete credit_groups[obj.key];
-		}
+		credit_me = false;
+	}
+	else if (type == 'friend')
+	{
+		delete credit_friends[key];
+	}
+	else if (type == 'otheruser')
+	{
+		delete credit_otherusers[key];
+	}
+	else if (type == 'group')
+	{
+		delete credit_groups[key];
 	}
 	
 	updateAuthorList();
@@ -271,14 +273,49 @@ var attributions = new Object();
 
 function updateAttributionsList() {
 	
+	var markup = '';
+	
+	for (var key in attributions)
+	{
+		markup += attributions[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAttribution(' + key + '); ' +
+    		'return false;">delete</a>]</small><br/>';
+	}
+	
+	if (markup == '')
+	{
+		markup = '<i>None</i>';
+	}
+	
+	document.getElementById('attribution_list').innerHTML = markup;
+	
+	// Also update web form (the hidden input fields)
+	
+	var attributions_list;
+	
+	for (var key in attributions)
+	{
+		attributions_list += key + ',';
+	} 
+	
+	document.getElementById('attributions').value = attributions_list;
 }
 
 function addAttribution() {
-    
+    var x = document.getElementById('existingworkflows_dropdown');
+		
+	if (x.options.length > 0)
+	{
+		var y = x.options[x.selectedIndex];
+     	attributions[y.value] = y.text;
+	}
+	
+	updateAttributionsList();
 }
 
-function deleteAttribution() {
+function deleteAttribution(id) {
+	delete attributions[id];
 	
+	updateAttributionsList();
 }
 
 // end credit and attribution
