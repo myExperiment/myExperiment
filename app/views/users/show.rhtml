@@ -13,10 +13,10 @@
   
   <% if logged_in? %>
     <% if my_page? @user.id %>
-      <li><%= icon('edit', edit_user_path(@user), nil, nil, 'Edit account details') %></li>
-      <% unless @user.profile.nil? %><li><%= icon('edit', edit_profile_path(@user.profile), nil, nil, 'Edit profile') %></li><% end %>
+      <li><%= icon('edit', edit_user_path(@user), nil, nil, 'Edit Account Details') %></li>
+      <% unless @user.profile.nil? %><li><%= icon('edit', edit_profile_path(@user.profile), nil, nil, 'Edit Profile') %></li><% end %>
 	  <li><%= icon("pictures", pictures_path(current_user), nil, nil, "Profile Pictures") %></li>
-      <li><%= icon('avatar', new_picture_path(@user), nil, nil, 'Upload new picture')%></li>
+      <li><%= icon('avatar', new_picture_path(@user), nil, nil, 'Upload New Profile Pic')%></li>
     <% end %>
   <% end %>
 </ul>

@@ -22,7 +22,7 @@
   <p>
     <center>
     	<%= submit_tag "Update" %> 
-		or <%= link_to "Cancel", contributable_url(@workflow.id, 'Workflow') %>
+		or <%= link_to "Cancel", workflow_path(@workflow) %>
 	</center>
   </p>
 <% end %>
