@@ -273,6 +273,8 @@ class WorkflowsController < ApplicationController
         @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
         
         update_workflow_policy(@workflow, params)
+        update_workflow_credits(@workflow, params)
+        update_workflow_attributions(@workflow, params)
 
         flash[:notice] = 'Workflow was successfully updated.'
         format.html { redirect_to workflow_url(@workflow) }
