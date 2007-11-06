@@ -9,24 +9,54 @@
 	    <td width="100">
 	    	<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
 			<%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %>
-			<% unless (creditors = workflow.creditors).empty? %>
-				<p style="font-size: 85%"><%= creditors.length %> people/groups credited.</p>
-			<% end %>
-			<% unless (attributors = workflow.attributors).empty? %>
-				<p style="font-size: 85%"><%= attributors.length %> workflows/files attributed.</p>
-			<% end %>
 		</td>
 	    <td style="text-align: left;">
 	      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
-	      <b><%=link_to(query ? highlight_all(workflow.title, query) : h(workflow.title), workflow_path(workflow)) %></b>
-		  <p style="font-size: 85%;">
-	        <%=query ? highlight_all(truncate(workflow.body, 400), query) : truncate(workflow.body, 400) %>
-	      </p>
+	      <p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
+		  	<%=link_to(query ? highlight_all(workflow.title, query) : h(workflow.title), workflow_path(workflow)) %>
+		  </p>
+		  <% unless (creditors = workflow.creditors).empty? %>
+		  	<p style="font-size:85%;">
+				<b>Credits:</b>
+				<% creditors.each do |c| %>
+					<% if c.creditor_type == 'User' %>
+						<%= icon('user', nil, nil, nil, '') %> 
+					<% elsif c.creditor_type == 'Network' %>
+						<%= icon('network-member', nil, nil, nil, '') %>
+					<% end %>
+					<%= contributor(c.creditor_id, c.creditor_type) %>
+				<% end %>
+		  	</p>
+		  <% end %>
+		  <% unless (attributors = workflow.attributors).empty? %>
+		  	<p style="font-size:85%;">
+				<b>Attributions:</b>
+				<% attributors.each do |a| %>
+					<% if a.attributor_type == 'Workflow' %>
+						<%= icon('workflow', nil, nil, nil, '') %> 
+					<% elsif a.attributor_type == 'Blob' %>
+						<%= icon('blob', nil, nil, nil, '') %>
+					<% end %>
+					<%= contributable(a.attributor_id, a.attributor_type) %>
+				<% end %>
+		  	</p>
+		  <% end %>
+		  <% if workflow.body and workflow.body.length > 0 %>
+			  <p class="desc">
+		        <%=query ? highlight_all(truncate(workflow.body, 400), query) : truncate(workflow.body, 400) %>
+		      </p>
+		  <% end %>
 		  <p style="font-size: 85%;">
 		  	<b>Versions: </b><%= h workflow.version %>
 		  </p>
 		  <p style="font-size: 85%;">
 		  	<b>Rating: </b><%= number_with_precision(workflow.rating, 2) %>/5 (<%= pluralize workflow.ratings.count, 'rating' %>)
+		  </p>
+		  <p style="font-size: 85%;">
+		  	<b>Viewed:</b> <%=pluralize workflow.contribution.viewings_count, "time" %><br/>
+		  </p>
+		  <p style="font-size: 85%;">
+	      	<b>Downloaded:</b> <%=pluralize workflow.contribution.downloads_count, "time" %><br/>
 		  </p>
 	    </td>
 	    <% unless RUBY_PLATFORM =~ /mswin32/ %>

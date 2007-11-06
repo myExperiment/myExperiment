@@ -523,7 +523,7 @@ module ApplicationHelper
       return "manhattan_studio/arrow-down_16.png"
       #return "manhattan_studio/save_24.png"
     when "show"
-      return "manhattan_studio/arrow-forward_16.png"
+      return "famfamfam_silk/zoom.png"
       #return "redmond_studio/arrow-forward_24.png"
     when "edit"
       return "famfamfam_silk/pencil.png"

@@ -572,6 +572,16 @@ table.alt_table tr td.actions a {
 	display: block;
 	border-bottom: 0px solid #999999;
 	margin-bottom: 0.3em;
+	font-size: 85%;
+	font-weight: normal;
+}
+
+table.alt_table p.desc {
+	font-size: 85%; 
+	border: 1px dotted #999999; 
+	margin: 0.2em 0; 
+	padding: 0.5em;
+	background-color: #FFFFCC;
 }
 
 table.alt_table tr td.contributable {

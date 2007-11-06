@@ -4,7 +4,7 @@
   <div class="tabContainer">
   	<div class="tabTitle">Most Viewed</div>
   	<div class="tabContent">
-	    <%= render :partial => "contributions/list", :locals => { :collection => most_v, :table => false } %>
+	    <%= render :partial => "contributions/list", :locals => { :collection => most_v, :table => true } %>
   	</div>
   </div>
 <% end %>
@@ -13,7 +13,7 @@
   <div class="tabContainer">
   	<div class="tabTitle">Most Downloaded</div>
   	<div class="tabContent">
-	    <%= render :partial => "contributions/list", :locals => { :collection => most_d, :table => false } %>
+	    <%= render :partial => "contributions/list", :locals => { :collection => most_d, :table => true } %>
   	</div>
   </div> 
 <% end %>
