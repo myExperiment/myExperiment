@@ -11,7 +11,7 @@
 
 <% unless my_page? @friendship.friend_id %>
   <p>
-    </center>
+    <center>
 		<b>Friend:</b><br/>
 	    <%= render :partial => "users/avatar", :locals => { :user => @friendship.friend } %>
 	</center>
