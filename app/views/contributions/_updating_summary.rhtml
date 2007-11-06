@@ -1,18 +1,18 @@
 <p><b>Updating Permissions (who can update):</b></p>
 
-<p><%= updating_mode_text @updating_mode %></p>
+<p><%= updating_mode_text contributable, @updating_mode %></p>
 
 <% if @updating_mode == 3 %>
 
   <ul>
-    <% for p in @workflow.contribution.policy.permissions %>
+    <% for p in contributable.contribution.policy.permissions %>
       <% if p.edit %>
         <li><%= h(Network.find(p.contributor_id).title) %></li>
       <% end %>
     <% end %>
   </ul>
 
-<% elseif @updating_mode == 4 %>
+<% elsif @updating_mode == 4 %>
 
 	<% if false %>
 	
@@ -25,17 +25,17 @@
 	
 	<% end %>
 
-<% elseif @updating_mode == 5 %>
+<% elsif @updating_mode == 5 %>
 
   <ul>
-    <% for p in @workflow.contribution.policy.permissions %>
+    <% for p in contributable.contribution.policy.permissions %>
       <% if p.edit %>
         <li><%= h(User.find(p.contributor_id).name) %></li>
       <% end %>
     <% end %>
   </ul>
 
-<% elseif @updating_mode == 7 %>
+<% elsif @updating_mode == 7 %>
 
   <p></p>
 

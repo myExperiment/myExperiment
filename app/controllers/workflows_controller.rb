@@ -133,8 +133,8 @@ class WorkflowsController < ApplicationController
   def show
     @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
 
-    @sharing_mode  = determine_sharing_mode(@workflow.contribution.policy)
-    @updating_mode = determine_updating_mode(@workflow.contribution.policy)
+    @sharing_mode  = determine_sharing_mode(@workflow)
+    @updating_mode = determine_updating_mode(@workflow)
     
     respond_to do |format|
       format.html # show.rhtml
@@ -145,6 +145,9 @@ class WorkflowsController < ApplicationController
   # GET /workflows/new
   def new
     @workflow = Workflow.new
+
+    @sharing_mode  = 1
+    @updating_mode = 6
   end
 
   # GET /workflows/1;new_version
@@ -153,10 +156,8 @@ class WorkflowsController < ApplicationController
 
   # GET /workflows/1;edit
   def edit
-    
-    @sharing_mode  = determine_sharing_mode(@workflow.contribution.policy)
-    @updating_mode = determine_updating_mode(@workflow.contribution.policy)
-
+    @sharing_mode  = determine_sharing_mode(@workflow)
+    @updating_mode = determine_updating_mode(@workflow)
   end
 
   # POST /workflows
@@ -178,7 +179,7 @@ class WorkflowsController < ApplicationController
                 
         @workflow.contribution.update_attributes(params[:contribution])
 
-        update_workflow_policy(@workflow, params)
+        update_policy(@workflow, params)
         
         # Credits and Attributions:
         update_workflow_credits(@workflow, params)
@@ -272,7 +273,7 @@ class WorkflowsController < ApplicationController
         # security fix (only allow the owner to change the policy)
         @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
         
-        update_workflow_policy(@workflow, params)
+        update_policy(@workflow, params)
         update_workflow_credits(@workflow, params)
         update_workflow_attributions(@workflow, params)
 
@@ -422,265 +423,6 @@ private
     options = options.merge({:conditions => [cond_sql] + cond_params}) unless cond_sql.empty?
     
     options
-  end
-
-  def update_workflow_policy(workflow, params)
-
-    view_protected     = false
-    view_public        = false
-    download_protected = false
-    download_public    = false
-    edit_protected     = false
-    edit_public        = false
-
-    sharing_class  = params[:sharing][:class_id]
-    updating_class = params[:updating][:class_id]
-
-    case sharing_class
-      when "0"
-        view_public        = "1"
-        download_public    = "1"
-      when "1"
-        view_public        = "1"
-        download_protected = "1"
-      when "2"
-        view_public        = "1"
-      when "3"
-        view_protected     = "1"
-        download_protected = "1"          
-      when "4"
-        view_protected     = "1"
-    end
-
-    case updating_class
-      when "0"
-        edit_protected = true if view_protected == "1" or download_protected == "1"
-        edit_public    = true if view_public    == "1" or download_public    == "1"
-      when "1"
-        edit_protected = true
-    end
-
-    policy = Policy.new(:name => 'auto',
-        :contributor_type => 'User', :contributor_id => current_user.id,
-        :view_protected     => view_protected,
-        :view_public        => view_public,
-        :download_protected => download_protected,
-        :download_public    => download_public,
-        :edit_protected     => edit_protected,
-        :edit_public        => edit_public,
-        :share_mode         => sharing_class,
-        :update_mode        => updating_class)
-
-    case sharing_class
-      when "5"
-        params[:sharing_networks1].each do |n|
-          Permission.new(:policy => policy,
-              :contributor => (Network.find n[1].to_i),
-              :view => 1, :download => 1, :edit => (updating_class == "0")).save
-        end
-      when "6"
-        params[:sharing_networks2].each do |n|
-          Permission.new(:policy => policy,
-              :contributor => (Network.find n[1].to_i),
-              :view => 1, :download => 0, :edit => (updating_class == "0")).save
-        end
-    end
-
-    case updating_class
-      when "3" # some of my networks
-        params[:updating_networkmembers].each do |n|
-          Permission.new(:policy => policy,
-              :contributor => (Network.find n[1].to_i),
-              :view => 0, :download => 0, :edit => 1).save
-        end
-      when "5" # some of my friends
-        params[:updating_somefriends].each do |f|
-          Permission.new(:policy => policy,
-              :contributor => (User.find f[1].to_i),
-              :view => 0, :download => 0, :edit => 1).save
-        end
-    end
-
-    @workflow.contribution.policy = policy
-    @workflow.contribution.save
-
-    puts "------ Workflow create summary ------------------------------------"
-    puts "current_user   = #{current_user.id}"
-    puts "updating_class = #{updating_class}"
-    puts "sharing_class  = #{sharing_class}"
-    puts "policy         = #{policy}"
-    puts "Sharing net1   = #{params[:sharing_networks1]}"
-    puts "-------------------------------------------------------------------"
-
-  end
-
-  def determine_sharing_mode(policy)
-
-    return policy.share_mode if !policy.share_mode.nil?
-
-    v_pub  = policy.view_public;
-    v_prot = policy.view_protected;
-    d_pub  = policy.download_public;
-    d_prot = policy.download_protected;
-    e_pub  = policy.edit_public;
-    e_prot = policy.edit_protected;
-
-    if (policy.permissions.length == 0)
-
-      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == true ) && (d_prot == false))
-        return 0
-      end
-
-      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == false) && (d_prot == true ))
-        return 1;
-      end
-
-      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == false) && (d_prot == false))
-        return 2;
-      end
-
-      if ((v_pub  == false) && (v_prot == true ) && (d_pub  == false) && (d_prot == true ))
-        return 3;
-      end
-
-      if ((v_pub  == false) && (v_prot == true ) && (d_pub  == false) && (d_prot == false))
-        return 4;
-      end
-
-      if ((v_pub  == false) && (v_prot == false) && (d_pub  == false) && (d_prot == false))
-        return 7;
-      end
-
-    else        
-
-      mode5 = true
-      mode6 = true
-
-      policy.permissions.each do |p|
-
-        if (p.contributor_type != 'Network')
-          mode5 = false
-          mode6 = false
-        end
-
-        if ((p.view != true) || (p.download != true))
-          mode5 = false
-        end
-
-        if ((p.view != true) || (p.download != false))
-          mode6 = false
-        end
-
-      end
-
-      return 5 if mode5
-      return 6 if mode6
-
-    end
-
-    return 8
-
-  end
-
-  def determine_updating_mode(policy)
-
-    return policy.update_mode if !policy.update_mode.nil?
-
-    v_pub  = policy.view_public;
-    v_prot = policy.view_protected;
-    d_pub  = policy.download_public;
-    d_prot = policy.download_protected;
-    e_pub  = policy.edit_public;
-    e_prot = policy.edit_protected;
-
-    perms  = policy.permissions.select do |p| p.edit end
-
-    if (perms.empty?)
-
-      # mode 1? only friends and network members can edit
-   
-      if (e_pub == false and e_prot == true)
-        return 1
-      end
-   
-      # mode 6? noone else
-   
-      if (e_pub == false and e_prot == false)
-        return 6
-      end
-
-    else
-
-      # mode 0? same as those that can view or download
-
-      if (e_pub == v_pub or d_pub)
-        if (e_prot == v_prot or d_prot)
-          if (perms.collect do |p| p.edit != p.view or p.download end).empty?
-            return 0;
-          end
-        end
-      end
-
-      contributor = User.find(@workflow.contributor_id)
-
-      contributors_friends  = contributor.friends.map do |f| f.id end
-      contributors_networks = (contributor.networks + contributor.networks_owned).map do |n| n.id end
-
-      my_networks    = []
-      other_networks = []
-      my_friends     = []
-      other_users    = []
-
-      puts "contributors_networks = #{contributors_networks.map do |n| n.id end}"
-
-      perms.each do |p|
-      puts "contributor_id = #{p.contributor_id}"
-        case
-          when 'Network'
-
-            if contributors_networks.index(p.contributor_id).nil?
-              other_networks.push p
-            else
-              my_networks.push p
-            end
-
-          when 'User'
-
-            if contributors_friends.index(p.contributor_id).nil?
-              other_users.push p
-            else
-              friends.push p
-            end
-
-        end
-      end
-
-      puts "my_networks    = #{my_networks.length}"
-      puts "other_networks = #{other_networks.length}"
-      puts "my_friends     = #{my_friends.length}"
-      puts "other_users    = #{other_users.length}"
-
-      if (other_networks.empty? and other_users.empty?)
-
-        # mode 3? members of some of my networks?
-   
-        if (!my_networks.empty? and my_friends.empty?)
-          return 3 
-        end
-
-        # mode 5? some of my friends?
-
-        if (my_networks.empty? and !my_friends.empty?)
-          return 5
-        end
-
-      end
-    end
-
-    # custom
-
-    return 7
-
   end
 
   def update_workflow_credits(workflow, params)

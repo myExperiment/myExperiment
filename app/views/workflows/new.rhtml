@@ -25,10 +25,10 @@
   <%= render :partial => "workflows/credit_attribution_form", :locals => { :edit => false } %>
                 
   <!-- Sharing -->              
-  <%= render :partial => "workflows/sharing_form", :locals => { :edit => false } %>
+  <%= render :partial => "contributions/sharing_form", :locals => { :edit => false, :contributable => @workflow } %>
   
   <!-- Updating -->              
-  <%= render :partial => "workflows/updating_form", :locals => { :edit => false } %>
+  <%= render :partial => "contributions/updating_form", :locals => { :edit => false, :contributable => @workflow } %>
                 
   <!-- License/Rights -->
   <%= render :partial => "workflows/license_form", :locals => { :edit => false } %>

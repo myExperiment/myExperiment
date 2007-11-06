@@ -80,23 +80,23 @@ class BlobsController < ApplicationController
   # GET /blobs/new
   def new
     @blob = Blob.new
+
+    @sharing_mode  = 1
+    @updating_mode = 6
   end
 
   # GET /blobs/1;edit
   def edit
 
+    @sharing_mode  = determine_sharing_mode(@blob)
+    @updating_mode = determine_updating_mode(@blob)
   end
 
   # POST /blobs
   # POST /blobs.xml
   def create
-    # hack for select contributor form
-    if params[:contributor_pair]
-      params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id                                       # forum contributed by current_user..
-      params[:contribution][:contributor_type], params[:contribution][:contributor_id] = params[:contributor_pair][:class_id].split("-") # ..but owned by contributor_pair
-      params.delete("contributor_pair")
-    end
-    
+
+    params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
     params[:blob][:local_name] = params[:blob][:data].original_filename
     params[:blob][:content_type] = params[:blob][:data].content_type
     params[:blob][:data] = params[:blob][:data].read
@@ -108,6 +108,8 @@ class BlobsController < ApplicationController
         # update policy
         @blob.contribution.update_attributes(params[:contribution])
         
+        update_policy(@blob, params)
+
         flash[:notice] = 'File was successfully created.'
         format.html { redirect_to blob_url(@blob) }
         format.xml  { head :created, :location => blob_url(@blob) }
@@ -142,6 +144,8 @@ class BlobsController < ApplicationController
         # security fix (only allow the owner to change the policy)
         @blob.contribution.update_attributes(params[:contribution]) if @blob.contribution.owner?(current_user)
         
+        update_policy(@blob, params)
+
         flash[:notice] = 'File was successfully updated.'
         format.html { redirect_to blob_url(@blob) }
         format.xml  { head :ok }

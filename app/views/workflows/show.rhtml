@@ -343,8 +343,8 @@
     <div class="tabTitle">Permissions</div>
     <div class="tabContent">
 
-      <%= render :partial => "sharing_summary" %>
-      <%= render :partial => "updating_summary" %>
+      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @workflow } %>
+      <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @workflow } %>
 	  
 	  <% if @workflow.authorized?("edit", current_user) %>
 		  <ul class="sectionIcons">

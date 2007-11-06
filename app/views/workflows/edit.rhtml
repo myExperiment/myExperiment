@@ -14,8 +14,8 @@
   <%= render :partial => "workflows/credit_attribution_form", :locals => { :edit => true } %>
 
   <% if @workflow.owner?(current_user) %>
-  	<%= render :partial => "workflows/sharing_form", :locals => { :edit => true } %>
-	<%= render :partial => "workflows/updating_form", :locals => { :edit => true } %>
+  	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @workflow } %>
+	<%= render :partial => "contributions/updating_form", :locals => { :edit => true, :contributable => @workflow } %>
     <%= render :partial => "workflows/license_form", :locals => { :edit => true } %>
   <% end %>
 

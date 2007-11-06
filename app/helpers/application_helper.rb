@@ -675,7 +675,21 @@ module ApplicationHelper
     end
   end
   
-  def sharing_mode_text(mode)
+  def visible_name(entity)
+    case entity.class.to_s
+    when "Blob"
+      return "File"
+    when "Network"
+      return "Group"
+    else
+      return entity.class.to_s
+    end
+  end
+
+  def sharing_mode_text(contributable, mode)
+
+    c_type = visible_name(contributable)
+
     case mode
     when 0
       return 'Everyone can view and download.'
@@ -692,13 +706,16 @@ module ApplicationHelper
     when 6
       return 'Only specific Groups can view, but only the uploader can download.'
     when 7
-      return 'This is a private Workflow - only the uploader can view and download.'
+      return "This is a private #{c_type} - only the uploader can view and download."
     when 8
-      return 'This Workflow has custom sharing permissions.'
+      return "This #{c_type} has custom sharing permissions."
     end
   end
   
-  def updating_mode_text(mode)
+  def updating_mode_text(contributable, mode)
+
+    c_type = visible_name(contributable)
+
     case mode
     when 0
       return "All those that can view or download can also edit."
@@ -713,9 +730,9 @@ module ApplicationHelper
     when 5
       return "A specific set of Users."
     when 6
-      return "Only the uploader may update this Workflow."
+      return "Only the uploader may update this #{c_type}."
     when 7
-      return 'This Workflow has custom updating permissions.'
+      return "This #{c_type} has custom updating permissions."
     end
   end
 
