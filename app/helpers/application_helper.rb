@@ -107,7 +107,7 @@ module ApplicationHelper
     end
     
     if user.avatar?
-      img = image_tag avatar_url(user.profile.picture_id, size), :title => h(user.name)
+      img = image_tag avatar_url(user.profile.picture_id, size), :title => h(user.name), :class => 'framed'
     else
       img = null_avatar(size, h(user.name))
     end
@@ -125,7 +125,8 @@ module ApplicationHelper
   def null_avatar(size=200, alt="Anonymous")
     image_tag "avatar.png", 
               :title => alt, 
-              :size => "#{size}x#{size}"
+              :size => "#{size}x#{size}",
+              :class => 'framed'
   end
 
   def signout_link

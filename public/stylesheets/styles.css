@@ -187,6 +187,16 @@ fieldset {
 	float: left;
 }
 
+.framed {
+	border: 1px solid #CCCCCC;
+	padding: 3px;
+	background-color: #FFFFFF;
+}
+
+.framed_nospace {
+	border: 1px solid #CCCCCC;
+}
+
 /* begin css tabs nav */
 .tabnav {
 	text-align: center;

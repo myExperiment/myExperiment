@@ -12,7 +12,7 @@
 		</td>
 	    <td style="text-align: left;">
 	      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
-	      <p style="margin-top:0; padding-top:0; margin-bottom: 0.3em; font-weight:bold; font-size: 108%;">
+	      <p style="margin-top:0; padding-top:0; margin-bottom: 0.2em; font-weight:bold; font-size: 108%;">
 		  	<%=link_to(query ? highlight_all(workflow.title, query) : h(workflow.title), workflow_path(workflow)) %>
 		  </p>
 		  <% unless (creditors = workflow.creditors).empty? %>
@@ -46,7 +46,7 @@
 		      <% unless workflow.image.nil? %>
 			  	<div style="padding: 0.2em 0; width: 100px; float: left; display: inline;">
 			        <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
-			          <%= link_to image_tag(url_for_file_column(workflow, "image", "thumb")), workflow_path(workflow) %>
+			          <%= link_to image_tag(url_for_file_column(workflow, "image", "thumb"), :class => 'framed_nospace'), workflow_path(workflow) %>
 			        <% else %>
 			          <%= image_tag url_for_file_column(workflow, "image", "padlock") %>
 			        <% end %>
