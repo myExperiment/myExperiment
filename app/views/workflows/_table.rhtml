@@ -6,13 +6,13 @@
 	<% for workflow in collection %>
 	  <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
 	  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-	    <td width="100">
+	    <td style="width: 100px;">
 	    	<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
 			<%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %>
 		</td>
 	    <td style="text-align: left;">
 	      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
-	      <p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
+	      <p style="margin-top:0; padding-top:0; margin-bottom: 0.3em; font-weight:bold; font-size: 108%;">
 		  	<%=link_to(query ? highlight_all(workflow.title, query) : h(workflow.title), workflow_path(workflow)) %>
 		  </p>
 		  <% unless (creditors = workflow.creditors).empty? %>
@@ -41,35 +41,40 @@
 				<% end %>
 		  	</p>
 		  <% end %>
-		  <% if workflow.body and workflow.body.length > 0 %>
-			  <p class="desc">
-		        <%=query ? highlight_all(truncate(workflow.body, 400), query) : truncate(workflow.body, 400) %>
-		      </p>
-		  <% end %>
+		  
+		  <div>
+		      <% unless workflow.image.nil? %>
+			  	<div style="padding: 0.2em 0; width: 100px; float: left; display: inline;">
+			        <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
+			          <%= link_to image_tag(url_for_file_column(workflow, "image", "thumb")), workflow_path(workflow) %>
+			        <% else %>
+			          <%= image_tag url_for_file_column(workflow, "image", "padlock") %>
+			        <% end %>
+				</div>
+		      <% end %>
+			  
+			  <% if workflow.body and workflow.body.length > 0 %>
+				  <div class="desc" style=" margin-left: 1em; width: 370px; float: left; display: inline;">
+			        <%=query ? highlight_all(truncate(workflow.body, 400), query) : truncate(workflow.body, 400) %>
+			      </div>
+			  <% end %>
+			  <div class="clearer">&nbsp;</div>
+		  </div>
+		  
 		  <p style="font-size: 85%;">
-		  	<b>Versions: </b><%= h workflow.version %>
+		  	<b>Rating: </b><%= number_with_precision(workflow.rating, 2) %>/5 (<%= pluralize workflow.ratings.count, 'rating' %>) |
+			<b>Versions: </b><%= h workflow.version %> |
+		  	<b>Viewed:</b> <%=pluralize workflow.contribution.viewings_count, "time" %> |
+	      	<b>Downloaded:</b> <%=pluralize workflow.contribution.downloads_count, "time" %>
 		  </p>
-		  <p style="font-size: 85%;">
-		  	<b>Rating: </b><%= number_with_precision(workflow.rating, 2) %>/5 (<%= pluralize workflow.ratings.count, 'rating' %>)
-		  </p>
-		  <p style="font-size: 85%;">
-		  	<b>Viewed:</b> <%=pluralize workflow.contribution.viewings_count, "time" %><br/>
-		  </p>
-		  <p style="font-size: 85%;">
-	      	<b>Downloaded:</b> <%=pluralize workflow.contribution.downloads_count, "time" %><br/>
-		  </p>
+		  
+			<% if workflow.tags.length > 0 %>
+				<p style="font-size: 85%;"><b>Tags:</b></p>
+				<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection workflow.tags, true %></div>
+			<% else %>
+				<p style="font-size: 85%;"><i>This Workflow has no tags!</i></p>
+			<% end %>	
 	    </td>
-	    <% unless RUBY_PLATFORM =~ /mswin32/ %>
-	    <td width="110">
-	      <% unless workflow.image.nil? %>
-	        <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
-	          <%= link_to image_tag(url_for_file_column(workflow, "image", "thumb")), workflow_path(workflow) %>
-	        <% else %>
-	          <%= image_tag url_for_file_column(workflow, "image", "padlock") %>
-	        <% end %>
-	      <% end %>
-	    </td>
-	    <% end %>
 	    <td class="actions" style="width: 80px;">
 	      <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", workflow_path(workflow), nil, nil, "View" %> <% end %>
 		  <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_workflow_path(workflow) %> <% end %>

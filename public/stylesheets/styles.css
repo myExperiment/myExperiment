@@ -576,7 +576,7 @@ table.alt_table tr td.actions a {
 	font-weight: normal;
 }
 
-table.alt_table p.desc {
+table.alt_table .desc {
 	font-size: 85%; 
 	border: 1px dotted #999999; 
 	margin: 0.2em 0; 

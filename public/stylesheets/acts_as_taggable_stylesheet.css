@@ -13,3 +13,10 @@
 .tags_smaller .hTagcloud .popularity .vvv-popular { font-size:116%; }
 .tags_smaller .hTagcloud .popularity .vvvv-popular { font-size:131%; }
 
+.tags_onesize .hTagcloud { font-size:85%; text-align: left; color: #999999; display: inline; }
+.tags_onesize .hTagcloud .popularity .popular { font-size:100%; }
+.tags_onesize .hTagcloud .popularity .v-popular { font-size:100%; }
+.tags_onesize .hTagcloud .popularity .vv-popular { font-size:100%; }
+.tags_onesize .hTagcloud .popularity .vvv-popular { font-size:100%; }
+.tags_onesize .hTagcloud .popularity .vvvv-popular { font-size:100%; }
+
