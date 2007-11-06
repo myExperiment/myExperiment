@@ -202,7 +202,7 @@ fieldset {
 	text-align: center;
 	font-weight: bolder;
 	font-size: 108%;
-	padding: 6px 0;
+	padding: 4px 0;
 	margin-left: 0;
 	margin-bottom: 0;
 	margin-top: 0;
@@ -215,7 +215,7 @@ fieldset {
 }
 
 .tabnav li a {
-	padding: 6px 12px;
+	padding: 4px 12px;
 	margin-left: 3px;
 	border-top: 1px solid #999999; 
 	border-left: 1px solid #999999;
