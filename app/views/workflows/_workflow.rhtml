@@ -1,6 +1,7 @@
 <% image = !(workflow.image.nil?) -%>
 <% show = workflow.authorized?("show", (logged_in? ? current_user : nil)) -%>
 
+<% if show %>
 <center>
 	<table width="<%= image ? 420 : 320 %>" class="contributable">
 	  <tr>
@@ -52,3 +53,4 @@
 	  </tr>
 	</table>
 </center>
+<% end %>

@@ -564,7 +564,7 @@ table.alt_table .mid {
 }
 
 table.alt_table tr td.actions {
-	width: 135px;
+	/*width: 135px;*/
 	text-align: left;
 }
 

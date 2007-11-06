@@ -29,13 +29,13 @@
 						</p>
 					<% end %>
 				</td>
-			    <td class="actions">
+			    <td class="actions"  style="width: 120px;">
 		      		<%= link_to "View Profile", user_path(user.id) %>
 		      		<% if my_page? user.id %>
 			        	<%= link_to "Edit", edit_user_path(user) %> 
 			        	<!--<%= icon "destroy", user_path(user), nil, :confirm => 'Are you sure?', :method => :delete %>-->
 					<% else %>
-						<%= link_to 'Request Friendship', new_friendship_url(:user_id => user.id) %>
+						<% unless user.friend? current_user.id %><%= link_to 'Request Friendship', new_friendship_url(:user_id => user.id) %><% end %>
 						<%= link_to 'Send Message', new_message_path %>
 		      		<% end %>
 		    	</td>

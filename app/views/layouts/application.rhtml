@@ -22,7 +22,12 @@
 	<body>
 		<div id="doc2" class="yui-t4">
 			<div id="hd">
-	  			<div id="myexp_logo"><%= link_to image_tag("logo.png"), "/" %></div>
+	  			<div id="myexp_logo">
+	  				<%= link_to image_tag("logo.png"), "/" %>
+					<span style="float: right; vertical-align: top;">
+						<b><%= link_to "Give us Feedback", "/feedback" %></b>
+					</span>
+				</div>
 				<ul class="tabnav">
 				  <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
 					<%= link_to "Users", users_path %>
@@ -62,8 +67,8 @@
 				</div>
 			</div>
 			<div id="ft">
-				<%= render :partial => "layouts/footer" %>
-			</div>			
+				<% if false %><%= render :partial => "layouts/footer" %><% end %>
+			</div>		
 		</div>
 		
 		<%= javascript_include_tag "tabs.js" %>

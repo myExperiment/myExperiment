@@ -129,7 +129,7 @@ module ApplicationHelper
   end
 
   def signout_link
-    link_to("#{icon('logout', nil, nil, nil, nil)} Sign Out", session_path, :method => :delete)
+    link_to("#{icon('logout', nil, nil, nil, nil)} Logout", session_path, :method => :delete)
   end
   
   def messages_link(user_id)
@@ -518,9 +518,9 @@ module ApplicationHelper
   def method_to_icon_filename(method)
     case (method.to_s)
     when "new"
-      return "manhattan_studio/add_16.png"
+      return "redmond_studio/add_16.png"
     when "download"
-      return "manhattan_studio/arrow-down_16.png"
+      return "redmond_studio/arrow-down_16.png"
       #return "manhattan_studio/save_24.png"
     when "show"
       return "famfamfam_silk/zoom.png"
@@ -528,8 +528,10 @@ module ApplicationHelper
     when "edit"
       return "famfamfam_silk/pencil.png"
       #return "manhattan_studio/cut_24.png"
+    when "manage"
+      return "famfamfam_silk/wrench.png"
     when "destroy"
-      return "manhattan_studio/delete_16.png"
+      return "redmond_studio/delete_16.png"
       #return "manhattan_studio/delete_24.png"
     when "tag"
       return "famfamfam_silk/tag_blue.png"
@@ -546,7 +548,7 @@ module ApplicationHelper
     when "network-member"
       return "famfamfam_silk/world.png"
     when "network-owned"
-      return "famfamfam_silk/world_add.png"
+      return "famfamfam_silk/world.png"
     when "user"
       return "famfamfam_silk/user.png"
     when "avatar"
@@ -560,13 +562,13 @@ module ApplicationHelper
     when "reply"
       return "famfamfam_silk/email_go.png"
     when "blob"
-      return "famfamfam_silk/disk.png"
+      return "redmond_studio/documents_16.png"
     when "blog"
       return "famfamfam_silk/note.png"
     when "forum"
       return "famfamfam_silk/group.png"
     when "workflow"
-      return "famfamfam_silk/page_white_text.png"
+      return "redmond_studio/applications_16.png"
     when "policy"
       return "famfamfam_silk/key.png"
     when "logout"
@@ -581,6 +583,8 @@ module ApplicationHelper
       return "famfamfam_silk/picture.png"
     when "pictures"
       return "famfamfam_silk/photos.png"
+    when "profile"
+      return "famfamfam_silk/user_suit.png"
     else
       return nil
     end

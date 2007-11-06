@@ -1,10 +1,10 @@
 <% query ||= false -%>
+<% odd_row = false -%>
 <% unless collection.empty? %>
 
-<table class="alt_table">
-
-	<% odd_row = false -%>
+<table class="alt_table">	
 	<% for workflow in collection %>
+	  <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
 	  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 	    <td width="100">
 	    	<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
@@ -70,12 +70,13 @@
 	      <% end %>
 	    </td>
 	    <% end %>
-	    <td class="actions">
-	      <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_workflow_path(workflow) %> <% end %>
-	      <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", workflow_path(workflow) %> <% end %>
-	      <% if logged_in? and workflow.authorized?("edit", current_user) %><%= icon "edit", edit_workflow_path(workflow) %> <% end %>
+	    <td class="actions" style="width: 80px;">
+	      <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", workflow_path(workflow), nil, nil, "View" %> <% end %>
+		  <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_workflow_path(workflow) %> <% end %>
+	      <% if logged_in? and workflow.authorized?("edit", current_user) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %> <% end %>
 	    </td>
 	  </tr>
+  	  <% end %>
 	<% end %>
 
 </table>
