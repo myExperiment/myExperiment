@@ -70,6 +70,9 @@ class BlobsController < ApplicationController
   # GET /blobs/1.xml
   def show
     @viewing = Viewing.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
+
+    @sharing_mode  = determine_sharing_mode(@blob)
+    @updating_mode = determine_updating_mode(@blob)
     
     respond_to do |format|
       format.html # show.rhtml

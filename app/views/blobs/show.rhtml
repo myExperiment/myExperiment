@@ -38,12 +38,15 @@
   <div class="tabContainer">
     <div class="tabTitle">Sharing Permissions</div>
     <div class="tabContent">
-      <p>
-        <b>Policy:</b>
-        <%= policy_link(@blob.contribution.policy_id) %>
-      </p>
+
+      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @blob } %>
+      <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @blob } %>
 	  
-	  <%= render :partial => "policies/policy", :object => @blob.contribution.policy, :locals => { :read_only => true } unless @blob.contribution.policy.nil? %>
+      <% if @blob.authorized?("edit", current_user) %>
+        <ul class="sectionIcons">
+          <li><%= icon('edit', edit_blob_path(@blob), nil, nil, 'Edit')%></li>
+        </ul>
+      <% end %>
     </div>
   </div>
 <% end %>
