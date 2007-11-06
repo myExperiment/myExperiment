@@ -1,5 +1,9 @@
 <h1>Upload File</h1>
 
+<div style="padding: 1em; background: yellow; border: 2px dashed black; text-align: center; margin: 1em">
+The options on this page will become similar to the options available when uploading a workflow.
+</div>
+
 <%= error_messages_for :blob %>
 
 <% form_tag ({:action => :create}, :multipart => true) do %>
