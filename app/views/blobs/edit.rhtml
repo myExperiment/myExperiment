@@ -1,6 +1,6 @@
 <%= javascript_include_tag "osp.js" %>
 
-<h1>Editing File</h1>
+<h1>Manage File: <%= @blob.local_name %></h1>
 
 <%= error_messages_for :blob %>
 
@@ -13,6 +13,9 @@
   <%= render :partial => "contributions/updating_form", :locals => { :edit => true, :contributable => @blob } %>
 
   <p>
-    <%= submit_tag "Save Changes" %>
+    <center>
+    	<%= submit_tag "Update" %> 
+		or <%= link_to "Cancel", blob_path(@blob) %>
+	</center>
   </p>
 <% end %>

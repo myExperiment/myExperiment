@@ -8,7 +8,7 @@
   <% when "new" %>
     <li><%= link_to "Upload Workflow", new_workflow_path %></li>
   <% when "edit" %>
-    <li><%= link_to "Edit: #{h(@workflow.title)}", edit_workflow_path(@workflow) %>
+    <li><%= link_to "Manage: #{h(@workflow.title)}", edit_workflow_path(@workflow) %>
   <% when "search" %>  
     <li><%= link_to "Search Results", search_workflows_path(:query => @query) %></li>
   <% when "all" %>

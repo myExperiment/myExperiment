@@ -8,7 +8,7 @@
   <% when "new" %>
     <li><%= link_to "Upload File", new_blob_path %></li>
   <% when "edit" %>
-    <li><%= link_to "Edit: #{h(@blob.local_name)}", edit_blob_path(@blob) %>
+    <li><%= link_to "Manage: #{h(@blob.local_name)}", edit_blob_path(@blob) %>
   <% when "all" %>
     <li><%= link_to "All Files", "workflows/all" %>
   <% else %>
