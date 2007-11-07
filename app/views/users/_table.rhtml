@@ -34,7 +34,6 @@
 		      		<%= icon "show", user_path(user.id), nil, nil, "View Profile" %>
 		      		<% if my_page? user.id %>
 			        	<%= icon "edit", edit_user_path(user), nil, nil, "Edit" %>
-			        	<!--<%= icon "destroy", user_path(user), nil, :confirm => 'Are you sure?', :method => :delete %>-->
 					<% else %>
 						<% unless user.friend? current_user.id %>
 							<%= icon "friendship", new_friendship_url(:user_id => user.id), nil, nil, "Request Friendship" %>

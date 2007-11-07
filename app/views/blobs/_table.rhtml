@@ -1,27 +1,84 @@
+<% query ||= false -%>
 <% unless collection.empty? %>
 
 <table class="alt_table">
-  <tr>
-    <th width="100">Uploader</th>
-    <th>File name</th>
-    <th>File type</th>
-    <th> </th>
-  </tr>
-  
-<% odd_row = false -%>
-<% for blob in collection %>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100"><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, true, 60) %></td>
-    <td><%=h blob.local_name %></td>
-    <td><%=h blob.content_type %></td>
-    <td class="actions">
-      <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_blob_path(blob) %> <% end %>
-      <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", blob_path(blob) %> <% end %>
-      <% if logged_in? and blob.authorized?("edit", current_user) %><%= icon "edit", edit_blob_path(blob) %> <% end %>
-      <% if logged_in? and blob.authorized?("destroy", current_user) %><%= icon "destroy", blob_path(blob), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
-    </td>
-  </tr>
-<% end %>
+	<% odd_row = false -%>
+	<% for blob in collection %>
+		<% if blob.authorized?("show", (logged_in? ? current_user : nil)) %>
+			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+				<td style="width: 100px;">
+					<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
+					<%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, true, 60) %>
+				</td>
+				<td style="text-align: left;">
+					<a name="<%= blob.local_name.gsub(/ /, "_") %>"></a>
+					<p style="margin-top:0; padding-top:0; margin-bottom: 0.2em; font-weight:bold; font-size: 108%;">
+						<%= icon "blob", nil, nil, nil, '' %>
+						<%=link_to(query ? highlight_all(blob.local_name, query) : h(blob.local_name), blob_path(blob)) %>
+					</p>
+					
+					<p><b>File type: </b><%= h blob.content_type %></p>
+					
+					<% if false %>
+					<% unless (creditors = blob.creditors).empty? %>
+						<p style="font-size:85%;">
+						<b>Credits:</b>
+						<% creditors.each do |c| %>
+							<% if c.creditor_type == 'User' %>
+								<%= icon('user', nil, nil, nil, '') %> 
+							<% elsif c.creditor_type == 'Network' %>
+								<%= icon('network-member', nil, nil, nil, '') %>
+							<% end %>
+							<%= contributor(c.creditor_id, c.creditor_type) %>
+						<% end %>
+						</p>
+					<% end %>
+					<% unless (attributors = blob.attributors).empty? %>
+						<p style="font-size:85%;">
+						<b>Attributions:</b>
+						<% attributors.each do |a| %>
+							<% if a.attributor_type == 'Workflow' %>
+								<%= icon('workflow', nil, nil, nil, '') %> 
+							<% elsif a.attributor_type == 'Blob' %>
+								<%= icon('blob', nil, nil, nil, '') %>
+							<% end %>
+							<%= contributable(a.attributor_id, a.attributor_type) %>
+						<% end %>
+						</p>
+					<% end %>
+					<% end %>
+					
+					<% if false %>
+					<% if blob.body and blob.body.length > 0 %>
+					  	<div class="desc">
+					    	<%=query ? highlight_all(truncate(blob.body, 400), query) : truncate(blob.body, 400) %>
+					  	</div>
+					<% end %>
+					<% end %>
+					
+					<p style="font-size: 85%;">
+						<b>Rating: </b><%= number_with_precision(blob.rating, 2) %>/5 (<%= pluralize blob.ratings.count, 'rating' %>) |
+						<% if false %><b>Versions: </b><%= h blob.version %> | <% end %>
+						<b>Viewed:</b> <%=pluralize blob.contribution.viewings_count, "time" %> |
+						<b>Downloaded:</b> <%=pluralize blob.contribution.downloads_count, "time" %>
+					</p>
+					
+					<% unless (tags = blob.tags).empty? %>
+						<p style="font-size: 85%;"><b>Tags:</b></p>
+						<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
+					<% else %>
+						<p style="font-size: 85%;"><i>This File has no tags!</i></p>
+					<% end %>	
+				</td>
+				
+				<td class="actions" style="width: 80px;">
+			      <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", blob_path(blob), nil, nil, "View" %><% end %>
+				  <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_blob_path(blob) %><% end %>
+			      <% if logged_in? and blob.authorized?("edit", current_user) %><%= icon "manage", edit_blob_path(blob), nil, nil, "Manage" %><% end %>
+			    </td>
+			</tr>
+		<% end %>
+	<% end %>
 </table>
 
 <% end %>

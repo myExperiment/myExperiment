@@ -69,12 +69,12 @@
 	      	<b>Downloaded:</b> <%=pluralize workflow.contribution.downloads_count, "time" %>
 		  </p>
 		  
-			<% if workflow.tags.length > 0 %>
-				<p style="font-size: 85%;"><b>Tags:</b></p>
-				<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection workflow.tags, true %></div>
-			<% else %>
-				<p style="font-size: 85%;"><i>This Workflow has no tags!</i></p>
-			<% end %>	
+		  <% unless (tags = workflow.tags).empty? %>
+			<p style="font-size: 85%;"><b>Tags:</b></p>
+			<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
+		  <% else %>
+			<p style="font-size: 85%;"><i>This Workflow has no tags!</i></p>
+		  <% end %>	
 	    </td>
 	    <td class="actions" style="width: 80px;">
 	      <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", workflow_path(workflow), nil, nil, "View" %><% end %>
