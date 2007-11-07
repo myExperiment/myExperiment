@@ -1,3 +1,5 @@
+<% c_type = visible_name contributable %>
+
 <script type="text/javascript"> 
 
 function handleEnter(evt) {
@@ -19,18 +21,18 @@ document.onkeypress = handleEnter;
 </script> 
 
 
-<input id="tag_list" type="hidden" name="workflow[tag_list]"/>
+<input id="tag_list" type="hidden" name="<%= contributable.class.to_s.downcase %>[tag_list]"/>
 
 <div class="fold">
   <div class="foldTitle">
-  	<img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to add tags to <strong>describe</strong> this Workflow.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/> Tags</img>
+  	<img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to add tags to <strong>describe</strong> this <%= c_type %>.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/> Tags
 	<% if edit %>
 		<hr />
-		<small>Current: <%= @workflow.tags.count %> tags</small>
+		<small>Current: <%= contributable.tags.count %> tags</small>
 	<% end %>
   </div>
   <div class="foldContent" style="display: none;">
-    <p class="info_text">This section allows you to add tags to <strong>describe</strong> this Workflow.</p>
+    <p class="info_text">This section allows you to add tags to <strong>describe</strong> this <%= c_type %>.</p>
     <hr />
     <div>
       <p><strong>Tags: </strong></p>
@@ -43,7 +45,7 @@ document.onkeypress = handleEnter;
     <br />
     <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
       <p>Add one or more tags manually (seperated by commas; click on 'Add' to add to the list):</p>
-      <p><input id="tags_input" type="text" style="width: 500px;" name="tags_input">&nbsp;&nbsp;</input>
+      <p><input id="tags_input" type="text" style="width: 500px;" name="tags_input"/>&nbsp;&nbsp;
         <a href="" onclick="javascript:addTag(document.getElementById('tags_input').value); document.getElementById('tags_input').value = ''; return false;">Add</a></p>
     </div>
 
@@ -68,7 +70,7 @@ document.onkeypress = handleEnter;
 
 <% if edit %>
   <script>
-    <% @workflow.tags.each do |t| %>
+    <% contributable.tags.each do |t| %>
       tags.push(<%= "\"#{t.to_s.gsub(/\"/, '\\\"')}\"" %>);
     <% end %>
     updateTagList();

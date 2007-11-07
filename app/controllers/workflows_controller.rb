@@ -243,9 +243,6 @@ class WorkflowsController < ApplicationController
             @workflow.update_tags
           end
         
-          # bug fix to not save 'default' workflow unless policy_id is selected
-# @workflow.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
-        
           # security fix (only allow the owner to change the policy)
           @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
         
@@ -266,9 +263,6 @@ class WorkflowsController < ApplicationController
           @workflow.tag_list = params[:workflow][:tag_list]
           @workflow.update_tags
         end
-        
-        # bug fix to not save 'default' workflow unless policy_id is selected
-#@workflow.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
         
         # security fix (only allow the owner to change the policy)
         @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)

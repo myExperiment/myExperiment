@@ -25,6 +25,8 @@ The options on this page will become similar to the options available when uploa
     <%= render :partial => "policies/listform", :locals => { :contribution => @blob.contribution, :user => current_user } %>
   <% end %>
 
+  <%= render :partial => "contributions/tags_form", :locals => { :edit => false, :contributable => @blob } %>
+
   <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @blob } %>
 
   <%= render :partial => "contributions/updating_form", :locals => { :edit => false, :contributable => @blob } %>

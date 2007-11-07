@@ -19,7 +19,7 @@
   <br />
                 
   <!-- Tags -->
-  <%= render :partial => "workflows/tags_form", :locals => { :edit => false } %>
+  <%= render :partial => "contributions/tags_form", :locals => { :edit => false, :contributable => @workflow } %>
                 
   <!-- Credit and Attribution -->
   <%= render :partial => "workflows/credit_attribution_form", :locals => { :edit => false } %>

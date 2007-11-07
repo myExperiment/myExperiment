@@ -6,6 +6,8 @@
 
 <% form_for(:blob, :url => blob_path(@blob), :html => { :method => :put }) do |f| %>
 
+  <%= render :partial => "contributions/tags_form", :locals => { :edit => true, :contributable => @blob } %>
+
   <%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @blob } %>
 
   <%= render :partial => "contributions/updating_form", :locals => { :edit => true, :contributable => @blob } %>

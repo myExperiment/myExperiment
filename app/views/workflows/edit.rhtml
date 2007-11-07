@@ -10,7 +10,7 @@
 <%= error_messages_for :workflow %>
 
 <% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
-  <%= render :partial => "workflows/tags_form", :locals => { :edit => true } %>
+  <%= render :partial => "contributions/tags_form", :locals => { :edit => true, :contributable => @workflow } %>
   <%= render :partial => "workflows/credit_attribution_form", :locals => { :edit => true } %>
 
   <% if @workflow.owner?(current_user) %>

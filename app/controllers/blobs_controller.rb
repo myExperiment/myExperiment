@@ -108,6 +108,11 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       if @blob.save
+        if params[:blob][:tag_list]
+          @blob.user_id = current_user
+          @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
+          @blob.update_tags
+        end
         # update policy
         @blob.contribution.update_attributes(params[:contribution])
         
@@ -141,8 +146,12 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
-        # bug fix to not save 'default' workflow unless policy_id is selected
-        @blob.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
+
+        if params[:blob][:tag_list]
+          @blob.user_id = current_user
+          @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
+          @blob.update_tags
+        end
         
         # security fix (only allow the owner to change the policy)
         @blob.contribution.update_attributes(params[:contribution]) if @blob.contribution.owner?(current_user)
