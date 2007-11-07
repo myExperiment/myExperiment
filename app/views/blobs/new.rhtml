@@ -1,14 +1,10 @@
 <%= javascript_include_tag "osp.js" %>
 
-<%= error_messages_for :blob %>
-
 <h1>Upload File</h1>
 
 <%= error_messages_for :blob %>
 
 <% form_tag ({:action => :create}, :multipart => true) do %>
-
-  <h2>Data</h2>
 
   <p>
     <strong>File to upload:</strong>
