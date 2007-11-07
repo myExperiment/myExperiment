@@ -134,7 +134,7 @@ fieldset {
 	
 
 #myexp_logo {
-	margin: 1em 0 0 0.5em;
+	margin: 1em 0.5em 0 0.5em;
 }
 
 #myexp_searchbar {
@@ -726,14 +726,20 @@ table tr td.details {
 	background-color: #b1ceff;
 }
 
-.icon A {
-	white-space: nowrap;
-	padding-right: 2px;
+.sectionIcons LI A * {
 	vertical-align: middle;
 }
 
-.icon IMG {
+.icon * {
 	vertical-align: middle;
+}
+
+.icon A {
+	white-space: nowrap;
+	padding-right: 2px;
+}
+
+.icon IMG {
 	padding: 2px;
 }
 

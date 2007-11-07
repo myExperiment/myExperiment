@@ -23,21 +23,27 @@
 		<div id="doc2" class="yui-t4">
 			<div id="hd">
 	  			<div id="myexp_logo">
-	  				<%= link_to image_tag("logo.png"), "/" %>
-					<span style="float: right; vertical-align: top;">
+	  				<div style="float: left; width:300px;">
+						<%= link_to image_tag("logo.png"), "/" %>
+					</div>
+					<div style="float: right; width: 300px; text-align: right; font-size: 93%;">
+						<%= if logged_in? then "<b>" + signout_link + "</b>" + "&nbsp;&nbsp;|&nbsp;" end %>
 						<b><%= link_to "Give us Feedback", "/feedback" %></b>
-					</span>
+					</div>
+					<div class="clearer">&nbsp;</div>
 				</div>
-				<ul class="tabnav">
-				  <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
-					<%= link_to "Users", users_path %>
-				  </li>
-				  <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Groups", networks_path %></li>
-				  <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path %></li>
-				  <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Files", blobs_path %></li>
-				  <li <%= (["blogs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path %></li>
-				  <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
-				</ul>
+				<div>
+					<ul class="tabnav">
+					  <li <%= (["users"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
+						<%= link_to "Users", users_path %>
+					  </li>
+					  <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Groups", networks_path %></li>
+					  <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path %></li>
+					  <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Files", blobs_path %></li>
+					  <li <%= (["blogs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path %></li>
+					  <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
+					</ul>
+				</div>
 	  			<div id="myexp_searchbar"><%= render :partial => "layouts/search" %></div>
 			</div>
 			<div id="bd">
