@@ -16,7 +16,7 @@
   
   <div id="myexp_usermonitor_gadget_contents" class="contents">
 	<ul class="gadget_list">
-	  <li><%= icon "profile", nil, nil, nil, "" %><%= link_to("Profile", user_url(current_user)) %></li>
+	  <li><%= icon "profile", user_url(current_user), nil, nil, "Profile" %></li>
       <li><%= messages_link(current_user) %></li>
       <li><%= memberships_pending_link(current_user) %></li>
     </ul>

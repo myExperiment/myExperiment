@@ -162,9 +162,27 @@ fieldset {
 }
 
 #ft {
+	
 	margin: 3em 0 2em 0;
-	padding: 1em;
-	border-top: 2px dotted #999999;
+	border-top: 0px dotted #999999;
+}
+
+#ft .content {
+	background-image: url('/images/footer.png');
+	background-repeat: no-repeat;
+	background-position: bottom center;
+	color: #F5F5F5;
+	font-size: 85%;
+	height: 20px;
+	padding: 6px 1em 14px 1em;
+}
+
+#ft .content a {
+	color: #F5F5F5;
+}
+
+#ft .content * {
+	vertical-align: middle;
 }
 
 #tag_clouds {

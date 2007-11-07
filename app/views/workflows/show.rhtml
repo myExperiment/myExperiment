@@ -158,7 +158,11 @@
 				<ul style="margin-top: 0;">
 					<% creditors.each do |c| %>
 						<li style="margin-bottom: 0.4em;">
-							<%= if c.creditor_type == 'Network' then 'Group' else c.creditor_type end %>: 
+							<% if c.creditor_type == 'User' %>
+								<%= icon('user', nil, nil, nil, '') %> 
+							<% elsif c.creditor_type == 'Network' %>
+								<%= icon('network-member', nil, nil, nil, '') %>
+							<% end %>
 							<%= contributor(c.creditor_id, c.creditor_type) %>
 						</li>
 					<% end %>
@@ -177,7 +181,11 @@
 				<ul style="margin-top: 0;">
 					<% attributors.each do |a| %>
 						<li style="margin-bottom: 0.4em;">
-							<%= if a.attributor_type == 'Blob' then 'File' else a.attributor_type end %>: 
+							<% if a.attributor_type == 'Workflow' %>
+								<%= icon('workflow', nil, nil, nil, '') %> 
+							<% elsif a.attributor_type == 'Blob' %>
+								<%= icon('blob', nil, nil, nil, '') %>
+							<% end %> 
 							<%= contributable(a.attributor_id, a.attributor_type) %>
 						</li>
 					<% end %>

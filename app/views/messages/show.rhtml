@@ -19,7 +19,7 @@
       <b>From:</b>
     </td>
     <td style="text-align: left;">
-      <center><%= render :partial => "users/avatar", :locals => { :user => @message.to, :size => 60 } %></center>
+      <center><%= render :partial => "users/avatar", :locals => { :user => @message.from, :size => 60 } %></center>
     </td>
   </tr>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">

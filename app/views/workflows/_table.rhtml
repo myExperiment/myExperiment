@@ -76,9 +76,9 @@
 			<% end %>	
 	    </td>
 	    <td class="actions" style="width: 80px;">
-	      <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", workflow_path(workflow), nil, nil, "View" %> <% end %>
-		  <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_workflow_path(workflow) %> <% end %>
-	      <% if logged_in? and workflow.authorized?("edit", current_user) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %> <% end %>
+	      <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", workflow_path(workflow), nil, nil, "View" %><% end %>
+		  <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_workflow_path(workflow) %><% end %>
+	      <% if logged_in? and workflow.authorized?("edit", current_user) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
 	    </td>
 	  </tr>
   	  <% end %>

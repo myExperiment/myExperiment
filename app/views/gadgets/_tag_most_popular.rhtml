@@ -5,7 +5,8 @@
   <div class="header">
     <p>
       <b>Popular Tags</b><br />
-      <small><%= pluralize(limit, "tag") %></small>
+      <small><%= pluralize(limit, "tag") %></small><br/>
+	  <small>[<%= link_to "All Tags", tags_path %>]</small>
     </p>
   </div>
   

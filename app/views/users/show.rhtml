@@ -2,16 +2,17 @@
     <% if my_page? @user.id %>
 		<h1>You</h1>
 	<% else %>
-		<h1>User: <%=h @user.name %></h1>
+		<h1>User: <%=h @user.name %>&nbsp;&nbsp;<%= image_tag("friend_badge.png") if(@user.friend? current_user.id) %></h1>
 	<% end %>
 <% end %>
 
 <ul class="sectionIcons">
   <% unless @user.friend? current_user.id %>
-    <li><%= icon('new', new_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
+    <li><%= icon('user', new_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
   <% end %>
   
   <% if logged_in? %>
+  	<li><%= icon("messsage", new_message_path, nil, nil, "Send Message") %></li>
     <% if my_page? @user.id %>
       <li><%= icon('edit', edit_user_path(@user), nil, nil, 'Edit Account Details') %></li>
       <% unless @user.profile.nil? %><li><%= icon('edit', edit_profile_path(@user.profile), nil, nil, 'Edit Profile') %></li><% end %>
