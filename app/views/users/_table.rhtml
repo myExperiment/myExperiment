@@ -7,6 +7,7 @@
 			    <td width="100px"><%= avatar user, 60 %></td>
 			    <td class="mid" style="text-align: left;">
 			    	<p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
+						<%= icon "user", nil, nil, nil, '' %>
 						<%= name user.id %>&nbsp;&nbsp;<%= image_tag("friend_badge.png") if(user.friend? current_user.id) %>
 					</p>
 					<% if user.profile %>
@@ -36,7 +37,7 @@
 			        	<!--<%= icon "destroy", user_path(user), nil, :confirm => 'Are you sure?', :method => :delete %>-->
 					<% else %>
 						<% unless user.friend? current_user.id %>
-							<%= icon "user", new_friendship_url(:user_id => user.id), nil, nil, "Request Friendship" %>
+							<%= icon "friendship", new_friendship_url(:user_id => user.id), nil, nil, "Request Friendship" %>
 						<% end %>
 						<%= icon "message", new_message_path, nil, nil, "Send Message" %>
 		      		<% end %>

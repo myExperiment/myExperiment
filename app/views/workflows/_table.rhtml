@@ -13,7 +13,8 @@
 	    <td style="text-align: left;">
 	      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
 	      <p style="margin-top:0; padding-top:0; margin-bottom: 0.2em; font-weight:bold; font-size: 108%;">
-		  	<%=link_to(query ? highlight_all(workflow.title, query) : h(workflow.title), workflow_path(workflow)) %>
+		  	<%= icon "workflow", nil, nil, nil, '' %>
+			<%=link_to(query ? highlight_all(workflow.title, query) : h(workflow.title), workflow_path(workflow)) %>
 		  </p>
 		  <% unless (creditors = workflow.creditors).empty? %>
 		  	<p style="font-size:85%;">

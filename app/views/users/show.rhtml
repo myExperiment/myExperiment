@@ -8,7 +8,7 @@
 
 <ul class="sectionIcons">
   <% unless @user.friend? current_user.id %>
-    <li><%= icon('user', new_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
+    <li><%= icon('friendship', new_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
   <% end %>
   
   <% if logged_in? %>

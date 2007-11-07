@@ -53,7 +53,8 @@ protected
       
       @tagged_with = []
       @tag.taggings.each do |t|
-        @tagged_with << t.taggable.contribution
+        c = t.taggable.contribution
+        @tagged_with << c if c.authorized?("show", (logged_in? ? current_user : nil))
       end
     rescue ActiveRecord::RecordNotFound
       error("Tag not found", "is invalid")

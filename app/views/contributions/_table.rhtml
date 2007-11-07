@@ -1,41 +1,10 @@
 <% unless collection.empty? %>
 
-<table class="alt_table">
-  <tr>
-    <% if false %>
-    <th width="100">Contributor</th>
-    <% end %>
-    <% unless params[:contributable_type] %><th width="100">Type</th><% end %>
-    <th>Description</th>
-    <% if false %>
-    <th> </th>
-    <% end %>
-  </tr>
-  
-<% odd_row = false -%>
-<% for contribution in collection %>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <% if false %>
-    <td width="100"><%= contributor(contribution.contributor_id, contribution.contributor_type, true, true, "60x60") %></td>
-    <% end %>
-    <% unless params[:contributable_type] %><td width="100"><%= link_to(h(contribution.contributable_type.to_s == "Blob" ? "File" : contribution.contributable_type), contributions_path + "?contributable_type=#{contribution.contributable_type}") %></td><% end %>
-    <td class="contributable">
-      <center>
-        <%= render :partial => "#{contribution.contributable_type.pluralize.downcase}/#{contribution.contributable_type.downcase}", :collection => [contribution.contributable] %>
-      </center>
-    </td>
-    <% if false %>
-    <td class="actions">
-      <% if contribution.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", contribution_path(contribution) %> <% end %>
-      <% if logged_in? and contribution.owner?(current_user) %>
-        <%= icon "edit", edit_contribution_path(contribution) %> 
-        <%= icon "destroy", contribution_path(contribution), nil, :confirm => 'Are you sure?', :method => :delete %>
-      <% end %>
-    </td>
-    <% end %>
-  </tr>
-<% end %>
-
-</table>
+	<% for contribution in collection %>
+	    <% unless params[:contributable_type] %>
+			<p style="margin-top: 0.5em;"><b><%= visible_name(contribution.contributable) %></b></p>
+		<% end %>
+	    <%= render :partial => "#{contribution.contributable_type.pluralize.downcase}/table", :locals => {:collection => [contribution.contributable]} %>
+	<% end %>
 
 <% end %>
