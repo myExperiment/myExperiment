@@ -45,8 +45,10 @@ document.onkeypress = handleEnter;
     <br />
     <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
       <p>Add one or more tags manually (seperated by commas; click on 'Add' to add to the list):</p>
-      <p><input id="tags_input" type="text" style="width: 500px;" name="tags_input"/>&nbsp;&nbsp;
-        <a href="" onclick="javascript:addTag(document.getElementById('tags_input').value); document.getElementById('tags_input').value = ''; return false;">Add</a></p>
+      <p>
+      	<input id="tags_input" type="text" style="width: 500px;" name="tags_input"/>&nbsp;&nbsp;
+        <a href="" onclick="javascript:addTag(document.getElementById('tags_input').value); document.getElementById('tags_input').value = ''; return false;">Add</a>
+	  </p>
     </div>
 
     <% unless (tags = current_user.contribution_tags).empty? %>
