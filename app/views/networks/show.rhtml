@@ -57,7 +57,7 @@
 
 <% unless (contributions = all_contributables_for_network(@network)).empty? %>
 	<div class="tabContainer">
-	    <div class="tabTitle">Workflows and Files</div>
+	    <div class="tabTitle">Stuff</div>
 	    <div class="tabContent">
 	    	<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
     	</div>
