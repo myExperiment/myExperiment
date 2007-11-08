@@ -1,0 +1,53 @@
+<% if @user and my_page? @user.id %>
+
+	<h1>History for <%= name @user %></h1>
+
+	<% tags = @user.taggings.collect -%>
+	<div class="fold">
+		<div class="foldTitle">Tags by You (<%= tags.length %>)</div>
+		<div class="foldContent" style="display: none;">
+			<% unless tags.empty? %>
+				<ul>
+					<% tags.each do |t| %>
+						<li><%= datetime t.created_at, false %> - <%= link_to_tag t.tag %> for <%= contributable(t.taggable_id, t.taggable_type) %><br/><br/></li>
+					<% end %>
+				</ul>
+			<% else %>
+				<p><i>You have not tagged anything yet</i></p>			
+			<% end %>
+		</div>
+	</div>
+	
+	<% comments = @user.comments.collect -%>
+	<div class="fold">
+		<div class="foldTitle">Comments by You (<%= comments.length %>)</div>
+		<div class="foldContent" style="display: none;">  
+			<% unless comments.empty? %>
+				<ul>
+					<% comments.each do |c| %>
+						<li><%= datetime c.created_at, false %> - <br/><br/>"<%= truncate(c.comment, 100) %>"<br/><br/>for <%= contributable(c.commentable_id, c.commentable_type) %><br/><br/></li>
+					<% end %>
+				</ul>
+			<% else %>
+				<p><i>You have not made any comments yet</i></p>			
+			<% end %>
+		</div>
+	</div>
+	
+	<% ratings = @user.ratings.collect -%>
+	<div class="fold">
+		<div class="foldTitle">Ratings by You (<%= ratings.length %>)</div>
+		<div class="foldContent" style="display: none;">  
+			<% unless ratings.empty? %>
+				<ul>
+					<% ratings.each do |r| %>
+						<li><%= datetime r.created_at, false %> - <%= r.rating.to_s %>/5 for <%= contributable(r.rateable_id, r.rateable_type) %><br/><br/></li>
+					<% end %>
+				</ul>
+			<% else %>
+				<p><i>You have not rated anything yet</i></p>			
+			<% end %>
+		</div>
+	</div>
+
+<% end %>

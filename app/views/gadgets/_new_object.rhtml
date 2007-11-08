@@ -32,11 +32,11 @@
       <form onsubmit="redirectToNew(); return false;">
         <p>
           <select id="new_object_type">
-            <option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
-            <option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
-            <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>
-            <option value="Group" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
             <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Workflow</option>
+			<option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
+			<option value="Group" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
+			<option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
+            <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>
           </select>
           <%= submit_tag "GO" %>
         </p>

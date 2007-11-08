@@ -15,6 +15,7 @@
 	  <li><%= icon "profile", user_url(current_user), nil, nil, "Profile" %></li>
       <li><%= messages_link(current_user) %></li>
       <li><%= memberships_pending_link(current_user) %></li>
+	  <li><%= icon "history", userhistory_url(current_user), nil, nil, "History" %></li>
     </ul>
 	
     <% unless current_user.messages_unread.empty? %>

@@ -17,7 +17,7 @@
 						<%=link_to(query ? highlight_all(blob.local_name, query) : h(blob.local_name), blob_path(blob)) %>
 					</p>
 					
-					<p><b>File type: </b><%= h blob.content_type %></p>
+					<p style="font-size:85%;"><b>File type: </b><%= h blob.content_type %></p>
 					
 					<% if false %>
 					<% unless (creditors = blob.creditors).empty? %>

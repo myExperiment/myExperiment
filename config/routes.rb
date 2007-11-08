@@ -87,6 +87,9 @@ ActionController::Routing::Routes.draw do |map|
 
     # pictures 'owned by' user
     user.resources :pictures, :member => { :select => :get }
+    
+    # user's history
+    user.resource :userhistory, :controller => :userhistory
   end
 
   # all networks

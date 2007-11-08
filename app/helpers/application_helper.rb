@@ -547,9 +547,9 @@ module ApplicationHelper
     when "reject"
       return "famfamfam_silk/cancel.png"
     when "network-member"
-      return "famfamfam_silk/world.png"
+      return "famfamfam_silk/group.png"
     when "network-owned"
-      return "famfamfam_silk/world.png"
+      return "famfamfam_silk/group_key.png"
     when "user"
       return "famfamfam_silk/user.png"
     when "avatar"
@@ -586,6 +586,8 @@ module ApplicationHelper
       return "famfamfam_silk/photos.png"
     when "profile"
       return "famfamfam_silk/user_suit.png"
+    when "history"
+      return "famfamfam_silk/time.png"    
     else
       return nil
     end

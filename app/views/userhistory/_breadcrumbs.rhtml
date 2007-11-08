@@ -1,0 +1,15 @@
+<% if @user %>
+  <li><%= link_to 'Users', users_path %></li>
+
+  <li><b>&#187;</b></li>
+  
+  <li><%= name(@user) %></li>
+  
+  <% if ["show"].include? controller.action_name.to_s %>
+	<li><b>&#187;</b></li>
+	  
+    <li><%= link_to "My History", userhistory_path(@user) if @user == current_user %></li>
+  <% end %>
+<% else %>
+  <li><%= link_to 'User History', url_for(:controller => :userhistory) %>
+<% end %>

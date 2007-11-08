@@ -18,6 +18,7 @@
       <% unless @user.profile.nil? %><li><%= icon('edit', edit_profile_path(@user.profile), nil, nil, 'Edit Profile') %></li><% end %>
 	  <li><%= icon("pictures", pictures_path(current_user), nil, nil, "Profile Pictures") %></li>
       <li><%= icon('avatar', new_picture_path(@user), nil, nil, 'Upload New Profile Pic')%></li>
+	  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
     <% end %>
   <% end %>
 </ul>
@@ -102,27 +103,19 @@
   </div>
 <% end %>
 
-<% unless @user.networks_owned.empty? %>
+<% unless @user.networks_owned.empty? and @user.networks.empty? %>
   <div class="tabContainer">
     <div class="tabTitle">Groups</div>
     <div class="tabContent">
-      <%= render :partial => "networks/list", :locals => { :collection => @user.networks_owned } %>
-      <%= link_to '[View my Groups]', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if my_page? @user.id %>
-    </div>
-  </div>
-<% end %>
-
-<% unless @user.memberships_accepted.empty? %>
-  <div class="tabContainer">
-    <div class="tabTitle">Memberships</div>
-    <div class="tabContent">
-
-      <ul><% @user.memberships_accepted.each do |m| %>
-        <li><%= link_to h(m.network.title), network_path(m.network) %> (accepted at: <%= m.accepted_at %>)</li>
-      <% end %></ul>
+      <h2>Groups that <%= @user.name %> owns/administrates</h2>
+	  <%= render :partial => "networks/list", :locals => { :collection => @user.networks_owned } %>
+      <% if false %><%= link_to '[View my Groups]', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if my_page? @user.id %><% end %>
+	  
+	  <h2>Other Groups that <%= @user.name %> belongs to</h2>
+	  <%= render :partial => "networks/list", :locals => { :collection => @user.networks } %>
   
       <% if my_page? @user.id %>
-        <p><%= link_to '[View my Memberships]', memberships_path(@user) %></p>
+        <p><%= link_to '[View all of ' + @user.name + ' Memberships in detail]', memberships_path(@user) %></p>
       <% end %>
     </div>
   </div>
@@ -130,60 +123,4 @@
 
 <% unless @user.contributions.empty? %>
   <%= render :partial => "contributions/tabs", :locals => { :collection => @user.contributions } %>
-<% end %>
-
-<% if logged_in? and my_page? @user.id %>
-  <div class="tabContainer">
-    <div class="tabTitle">My History</div>
-    <div class="tabContent"> 
-	
-		<% tags = @user.taggings.collect -%>
-		<div class="fold">
-			<div class="foldTitle">Tags by You (<%= tags.length %>)</div>
-			<div class="foldContent" style="display: none;">
-				<% unless tags.empty? %>
-					<ul>
-						<% tags.each do |t| %>
-							<li><%= datetime t.created_at, false %> - <%= link_to_tag t.tag %> for <%= contributable(t.taggable_id, t.taggable_type) %><br/><br/></li>
-						<% end %>
-					</ul>
-				<% else %>
-					<p><i>You have not tagged anything yet</i></p>			
-				<% end %>
-			</div>
-		</div>
-		
-		<% comments = @user.comments.collect -%>
-		<div class="fold">
-			<div class="foldTitle">Comments by You (<%= comments.length %>)</div>
-			<div class="foldContent" style="display: none;">  
-				<% unless comments.empty? %>
-					<ul>
-						<% comments.each do |c| %>
-							<li><%= datetime c.created_at, false %> - <br/><br/>"<%= truncate(c.comment, 100) %>"<br/><br/>for <%= contributable(c.commentable_id, c.commentable_type) %><br/><br/></li>
-						<% end %>
-					</ul>
-				<% else %>
-					<p><i>You have not made any comments yet</i></p>			
-				<% end %>
-			</div>
-		</div>
-		
-		<% ratings = @user.ratings.collect -%>
-		<div class="fold">
-			<div class="foldTitle">Ratings by You (<%= ratings.length %>)</div>
-			<div class="foldContent" style="display: none;">  
-				<% unless ratings.empty? %>
-					<ul>
-						<% ratings.each do |r| %>
-							<li><%= datetime r.created_at, false %> - <%= r.rating.to_s %>/5 for <%= contributable(r.rateable_id, r.rateable_type) %><br/><br/></li>
-						<% end %>
-					</ul>
-				<% else %>
-					<p><i>You have not rated anything yet</i></p>			
-				<% end %>
-			</div>
-		</div>
-    </div>
-  </div>
 <% end %>
