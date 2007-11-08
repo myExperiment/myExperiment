@@ -3,30 +3,34 @@
 <%= error_messages_for :message %>
 
 <% form_for(:message, :url => messages_path) do |f| %>
-  <p>
+  <p style="text-align: center;">
     <b>To</b><br />
+	<center>
     <% if @message.to %>
       <%= render :partial => "users/avatar", :locals => { :user => @message.to } %>
       <%= f.hidden_field :to %>
     <% else %>
       <%= select(:message, :to, User.find(:all, :order => "name ASC").collect {|u| [ u.name, u.id ] }, { :include_blank => false }) %>
     <% end %>
+	</center>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <b>Subject</b><br />
     <%= f.text_field :subject %>
   </p>
 
-  <p>
-    <b>Body</b><br />
+  <p style="text-align: center;">
+    <b>Message</b><br />
     <%= f.text_area :body %>
   </p>
 
-  <p>
+  <p style="text-align: center;">
     <%= submit_tag "Send" %>
   </p>
   
-  <%= f.hidden_field :from %>
-  <%= f.hidden_field :reply_id %>
+  <center>
+	  <%= f.hidden_field :from %>
+	  <%= f.hidden_field :reply_id %>
+  </center>
 <% end %>

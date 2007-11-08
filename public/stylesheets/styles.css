@@ -1001,3 +1001,16 @@ a.tagsSelectorOn {
 	font-weight: bold;
 	font-size: 85%
 }
+
+.message_box {
+	padding: 2em 3em;
+	border: 1px dotted #999999;
+	background-color: #F5F5F5;
+	margin: 0 0.5em;
+}
+
+.message_box .message {
+	padding: 1em;
+	border: 1px dotted #999999;
+	background-color: #FFFFFF;
+}

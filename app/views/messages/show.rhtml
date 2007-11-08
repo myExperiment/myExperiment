@@ -1,65 +1,41 @@
-<h1>View Message</h1>
-
-<h2><%=h @message.subject %></h2>
+<h1>View Message: <%=h @message.subject %></h1>
 
 <ul class="sectionIcons">
-  <li><%= icon('reply', url_for(:controller => :messages, :action => :new, :reply_id => @message.id), nil, nil, 'Reply to this message') %></li>
+  <li><%= icon('reply', url_for(:controller => :messages, :action => :new, :reply_id => @message.id), nil, nil, 'Reply to this Message') %></li>
 </ul>
 
 <% if @message.reply? %>
-  <p>
-    <b>Reply to:</b> <%= link_to h(@message.reply_to.subject), message_path(@message.reply_to) %>
+  <br/>
+  <p class="info_text">
+    <b>This message is a reply to:</b> <%= link_to h(@message.reply_to.subject), message_path(@message.reply_to) %>
   </p>
 <% end %>
 
-<% odd_row = false -%>
-<table class="alt_table">
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100" style="text-align: right;">
-      <b>From:</b>
-    </td>
-    <td style="text-align: left;">
-      <center><%= render :partial => "users/avatar", :locals => { :user => @message.from, :size => 60 } %></center>
-    </td>
-  </tr>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100" style="text-align: right;">
-      <b>To:</b>
-    </td>
-    <td style="text-align: left;">
-      <center><%= render :partial => "users/avatar", :locals => { :user => @message.to, :size => 60 } %></center>
-    </td>
-  </tr>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100" style="text-align: right;">
-      <b>Sent:</b>
-    </td>
-    <td style="text-align: left;">
-      <%=datetime @message.created_at %>
-    </td>
-  </tr>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100" style="text-align: right;">
-      <b>Received:</b>
-    </td>
-    <td style="text-align: left;">
-      <%=datetime @message.read_at %>
-    </td>
-  </tr>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100" style="text-align: right;">
-      <b>Subject:</b>
-    </td>
-    <td style="text-align: left;">
-      <%=h @message.subject %>
-    </td>
-  </tr>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100" style="text-align: right;">
-      <b>Body:</b>
-    </td>
-    <td style="text-align: left;">
-      <%=white_list @message.body_html %>
-    </td>
-  </tr>
-</table>
+<br/>
+
+<div class="message_box">
+	<div style="float: left;">
+		<b>From: </b>
+		<%= render :partial => "users/avatar", :locals => { :user => @message.from, :size => 60 } %>
+	</div>
+	
+	<div style="float: left; margin-left: 3em;">
+		<b>To: </b>
+		<%= render :partial => "users/avatar", :locals => { :user => @message.to, :size => 60 } %>
+	</div>
+	
+	<div style="float: left; margin-left: 3em; width: 390px;">
+		<p><b>Subject:</b></p>
+		<p style="font-weight: 108%; background-color: #FFFFCC; border: 1px dotted #999999; padding: 0.5em; margin-bottom: 1em;">
+			<%=h @message.subject %>
+		</p>
+		<p><b>Sent: </b><%=datetime @message.created_at %></p>
+	</div>
+	
+	<div class="clearer">&nbsp;</div>
+	
+	<p><b>Message:</b></p>
+	<div class="message">
+		<%=white_list @message.body_html %>
+	</div>
+</div>
