@@ -14,12 +14,12 @@
 <br/>
 
 <div class="message_box">
-	<div style="float: left;">
+	<div style="float: left; text-align: center;">
 		<b>From: </b>
 		<%= render :partial => "users/avatar", :locals => { :user => @message.from, :size => 60 } %>
 	</div>
 	
-	<div style="float: left; margin-left: 3em;">
+	<div style="float: left; text-align: center; margin-left: 3em;">
 		<b>To: </b>
 		<%= render :partial => "users/avatar", :locals => { :user => @message.to, :size => 60 } %>
 	</div>

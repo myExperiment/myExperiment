@@ -207,6 +207,7 @@ fieldset {
 	margin: 0.2em;
 	display: inline;
 	float: left;
+	margin-left: 0.5em;
 }
 
 .framed {
@@ -810,9 +811,10 @@ table tr td.details {
 }
 
 .workflow_section_box {
-	/*background-color: #FFFFDE;*/
+	background-image: url('/images/box-bg1.png');
+	background-position: top;
+	background-repeat: repeat-x;
 	background-color: #FFFFCC;
-	/*background-color: #EEFFEE;*/
 	padding: 0.3em;
 	border: 1px dotted #333333;
 	text-align: center;
@@ -876,7 +878,10 @@ table tr td.details {
 	padding: 0.1em 0.5em;
 	border: 1px dotted #333333;
 	border-bottom: none;
-	background-color: #EEEEEE;
+	background-image: url('/images/header-bg.png');
+	background-position: top;
+	background-repeat: repeat-x;
+	background-color: #F5F5F5;
 	color: #333333;
 }
 

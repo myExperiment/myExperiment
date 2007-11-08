@@ -5,8 +5,7 @@
 
   <div class="header">
     <p>
-      <%= avatar(current_user, 60) %><br/>
-      <b><%= name(current_user) %></b>
+      <%= render :partial => "users/avatar", :locals => { :user => current_user, :size => 60 } %>
     </p>
   </div>
   
