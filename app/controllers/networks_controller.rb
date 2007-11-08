@@ -45,19 +45,19 @@ class NetworksController < ApplicationController
   def membership_create
     respond_to do |format|
       unless params[:user_id]
-        format.html { render :inline => " "} # no responce, rendered inline
-        format.xml { head :bad_request }
+        flash[:error] = 'Failed to add User to Group. Please report this.'
+        format.html { redirect_to network_url(@network) }
       end
       
       @membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id)
         
       if @membership.save
         @membership.accept!
-        format.html { render :partial => "networks/member", :locals => { :network => @network, :member => @membership.user, :size => 60 } }
-        format.xml  { head :ok }
+        flash[:notice] = 'User successfully added to Group.'
+        format.html { redirect_to network_url(@network) }
       else
-        format.html { render :inline => " "} # no responce, rendered inline
-        format.xml  { render :xml => @membership.errors.to_xml }
+        flash[:error] = 'Failed to add User to Group. Please try again or report this.'
+        format.html { redirect_to network_url(@network) }
       end
     end
   end

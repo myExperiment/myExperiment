@@ -25,7 +25,7 @@
 		<p><i>None</i></p>
 	<% end %>
     
-	<h2>Groups you are the administrator of (i.e.: your Groups)</h2>
+	<h2>Groups you are the administrator of (i.e: your Groups)</h2>
     <% unless @user.networks_owned.empty? %>
       <p>You are an administrator of (and therefore a member of) the following Groups:</p>
       <%= render :partial => "networks/table", :locals => { :collection => @user.networks_owned } %>
@@ -34,6 +34,14 @@
     <% end %>
     
     <h2>Other Groups you are a member of</h2>
+    <% unless @user.networks.empty? %>
+      <p>You are a member of the following Groups. You can share Files and Workflows with any of them.</p>
+      <%= render :partial => "networks/table", :locals => { :collection => @user.networks } %>
+    <% else %>
+		<p><i>None</i></p>
+    <% end %>
+	
+	<% if false %>
     <% unless @user.memberships.empty? %>
 	    <p>
 	      You are a member of the following Groups. You can share files and workflows with any of them.
@@ -42,6 +50,7 @@
   	<% else %>
 		<p><i>None</i></p>
     <% end %>
+	<% end %>
   
   <% else %>
   

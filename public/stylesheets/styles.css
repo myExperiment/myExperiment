@@ -198,6 +198,8 @@ fieldset {
 
 #hlist { 
 	width: 100%;
+	margin: 0;
+	padding-left: 1em;
 }
 
 #hlist li {
@@ -589,6 +591,12 @@ table.alt_table tr.even_row td {
 	background-color: #eeeeee;
 }
 
+table.alt_table hr {
+	height: 1px;
+	border-bottom: 1px dotted #999999;
+	margin: 0;	
+}
+
 table.alt_table .mid {
 	text-align: left:
 }
@@ -604,6 +612,14 @@ table.alt_table tr td.actions a {
 	margin-bottom: 0.3em;
 	font-size: 85%;
 	font-weight: normal;
+}
+
+table.alt_table p.title {
+	margin-top: 0; 
+	padding-top: 0; 
+	margin-bottom: 0.2em; 
+	font-weight: bold; 
+	font-size: 108%;
 }
 
 table.alt_table .desc {

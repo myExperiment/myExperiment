@@ -28,7 +28,6 @@
         <%= icon "show", membership_path(membership.user_id, membership) %>
       <% end %>
       <% if my_page? membership.network.owner.id %>
-         or 
         <% unless membership.accepted? %><%= icon "confirm", accept_membership_path(membership.user_id, membership) %><% end %>
          <%= icon (membership.accepted? ? "destroy" : "reject"), membership_path(membership.user_id, membership), nil, :confirm => "Are you sure?", :method => :delete %>
       <% end %>

@@ -55,11 +55,20 @@
   </div>
 </div>
 
+<% unless @network.members(true).empty? %>
+	<div class="tabContainer">
+	  <div class="tabTitle">Members</div>
+	  <div class="tabContent">
+	    <%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
+	  </div>
+	</div>
+<% end %>
+
 <% if my_page? @network.owner.id %>
   
   <% unless @network.memberships_accepted.empty? %>
     <div class="tabContainer">
-      <div class="tabTitle">Memberships</div>
+      <div class="tabTitle">Manage Memberships</div>
       <div class="tabContent">
         <%= render :partial => "memberships/table", :locals => { :collection => @network.memberships_accepted, :network => false } %>
       </div>
@@ -71,29 +80,29 @@
     <div class="tabContent">
   
       <p>
-        Here's a really quick way to add anyone you like to this Group. <br/>
+        Here's a quick way to add your Friends to this Group. <br/>
         Select each name from the list and click "Add".
       </p>
   
-      <% form_remote_tag(:url => membership_create_network_path(@network), :method => :get, :update => 'members', :position => 'bottom', :success => "var t=getElementById('user_id'); t.value='';") do %>
+      <% form_tag(membership_create_network_path(@network), :method => :get) do %>
         <label for="user_id">User:</label> <%= select_tag :user_id, options_from_collection_for_select(@network.owner.friends, :id.to_i, :name) %> <%= submit_tag "Add" %>
       <% end %>
   
-      <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :size => 60 } %>
+      <%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
     </div>
   </div>
-  
-<% else %>
-  <% unless @network.members(false).empty? %>
-    <div class="tabContainer">
-      <div class="tabTitle">Members</div>
-      <div class="tabContent">
-        <%= render :partial => "networks/members", :locals => { :collection => @network.members(false), :size => 60 } %>
-      </div>
-    </div>
-  <% end %>
+
 <% end %>
 
 <% unless @network.contributions.empty? %>
   <%= render :partial => "contributions/tabs", :locals => { :collection => @network.contributions } %>
+<% end %>
+
+<% unless (contributions = all_contributables_for_network(@network)).empty? %>
+	<div class="tabContainer">
+	    <div class="tabTitle">Workflows and Files</div>
+	    <div class="tabContent">
+	    	<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
+    	</div>
+	</div>
 <% end %>

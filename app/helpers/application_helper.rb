@@ -738,6 +738,22 @@ module ApplicationHelper
       return "This #{c_type} has custom updating permissions."
     end
   end
+  
+  def all_contributables_for_network(network)
+    list = []
+    
+    if network
+      network.members(true).each do |user|
+        user.contributions.each do |c|
+          if c.authorized?("show", (logged_in? ? current_user : nil))
+            list << c
+          end
+        end
+      end
+    end
+    
+    return list
+  end
 
 protected
 

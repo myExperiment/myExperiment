@@ -1,34 +1,48 @@
-<% unless collection.empty? %>
-
-<table class="alt_table">
-  <tr>
-    <th width="100">Administrator</th>
-    <th width="200">Title</th>
-    <% if false %><th>Unique</th><% end %>
-    <th>Members</th>
-    <th>Created at</th>
-    <th> </th>
-  </tr>
-
+<% query ||= false -%>
 <% odd_row = false -%>
-<% for network in collection %>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="100"><%= contributor(network.user_id, "User", true, 60) %></td>
-    <td width="200"><%= contributor(network.id, "Network", true, 60) %></td>
-    <% if false %><td><%=h network.unique_name %></td><% end %>
-    <td><%= network.members.length %></td>
-    <td><%=datetime network.created_at, false %></td>
-    <td class="actions">
-      <%= icon "show", network_path(network) %> 
-      <% if my_page? network.owner.id %>
-        <%= icon "edit", edit_network_path(network) %>
-        <%= icon "destroy", network_path(network), nil, :confirm => 'Are you sure?', :method => :delete %>
-      <% end %>
-    </td>
-  </tr>
-<% end %>
-</table>
-
-<br/>
-
+<% unless collection.empty? %>
+	<table class="alt_table">
+		<% for network in collection %>
+			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+				<td style="width: 120px;">
+					<p style="margin-top:0; padding-top:0; text-align: center;"><b>Administrator:</b></p>
+					<%= contributor(network.user_id, "User", true, 100) %>
+				</td>
+				<td style="text-align: left;">
+					<p class="title">
+						<% if network.user_id == current_user.id %>
+							<%= icon "network-owner", nil, nil, nil, '' %>
+						<% else %>
+							<%= icon "network-member", nil, nil, nil, '' %>
+						<% end %>
+						<%=link_to(query ? highlight_all(network.title, query) : h(network.title), network_path(network)) %>
+					</p>
+					<p style="font-size: 85%;">
+						<% if network.unique_name and network.unique_name.length > 0 %>
+							<b>Unique name: </b><%=h network.unique_name %> | 
+						<% end %>
+						<b>Created: </b><%=datetime network.created_at, true %>
+					</p>
+					
+					<% if network.description and network.description.length > 0 %>
+						<p class="desc"><%= network.description %></p>
+					<% end %>
+					
+					<% unless network.members.empty? %>
+						<div class="desc" style="margin-top: 1em;">
+							<p><b>Members (<%= network.members.length %>):</b></p>
+							<%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 60 } %>
+						</div>
+					<% end %>
+				</td>
+				<td class="actions">
+					<%= icon "show", network_path(network) %> 
+					<% if my_page? network.owner.id %>
+						<%= icon "edit", edit_network_path(network) %>
+					<% end %>
+				</td>
+			</tr>
+		<% end %>
+	</table>
+	<br/>
 <% end %>
