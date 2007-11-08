@@ -745,7 +745,7 @@ module ApplicationHelper
     if network
       network.members(true).each do |user|
         user.contributions.each do |c|
-          if c.authorized?("show", (logged_in? ? current_user : nil))
+          if c.authorized?("show", network)
             list << c
           end
         end

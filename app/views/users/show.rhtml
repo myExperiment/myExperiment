@@ -12,7 +12,9 @@
   <% end %>
   
   <% if logged_in? %>
-  	<li><%= icon("message", new_message_path, nil, nil, "Send Message") %></li>
+  	<% unless my_page? @user.id %>
+		<li><%= icon("message", new_message_path, nil, nil, "Send Message") %></li>
+	<% end %>
     <% if my_page? @user.id %>
       <li><%= icon('edit', edit_user_path(@user), nil, nil, 'Edit Account Details') %></li>
       <% unless @user.profile.nil? %><li><%= icon('edit', edit_profile_path(@user.profile), nil, nil, 'Edit Profile') %></li><% end %>

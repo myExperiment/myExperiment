@@ -55,6 +55,15 @@
   </div>
 </div>
 
+<% unless (contributions = all_contributables_for_network(@network)).empty? %>
+	<div class="tabContainer">
+	    <div class="tabTitle">Workflows and Files</div>
+	    <div class="tabContent">
+	    	<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
+    	</div>
+	</div>
+<% end %>
+
 <% unless @network.members(true).empty? %>
 	<div class="tabContainer">
 	  <div class="tabTitle">Members</div>
@@ -96,13 +105,4 @@
 
 <% unless @network.contributions.empty? %>
   <%= render :partial => "contributions/tabs", :locals => { :collection => @network.contributions } %>
-<% end %>
-
-<% unless (contributions = all_contributables_for_network(@network)).empty? %>
-	<div class="tabContainer">
-	    <div class="tabTitle">Workflows and Files</div>
-	    <div class="tabContent">
-	    	<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
-    	</div>
-	</div>
 <% end %>
