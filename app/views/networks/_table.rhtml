@@ -6,7 +6,7 @@
 			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 				<td style="width: 120px;">
 					<p style="margin-top:0; padding-top:0; text-align: center;"><b>Administrator:</b></p>
-					<%= contributor(network.user_id, "User", true, 100) %>
+					<%= contributor(network.user_id, "User", true, 80) %>
 				</td>
 				<td style="text-align: left;">
 					<p class="title">
@@ -29,9 +29,9 @@
 					<% end %>
 					
 					<% unless network.members.empty? %>
-						<div class="desc" style="margin-top: 1em;">
+						<div class="desc" style="margin-top: 1em; font-size: 85%;">
 							<p><b>Members (<%= network.members.length %>):</b></p>
-							<%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 60 } %>
+							<p style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40 } %></p>
 						</div>
 					<% end %>
 				</td>

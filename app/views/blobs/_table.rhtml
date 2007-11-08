@@ -50,7 +50,7 @@
 					
 					<% if false %>
 					<% if blob.body and blob.body.length > 0 %>
-					  	<div class="desc">
+					  	<div class="desc" style="font-size: 85%;">
 					    	<%=query ? highlight_all(truncate(blob.body, 400), query) : truncate(blob.body, 400) %>
 					  	</div>
 					<% end %>

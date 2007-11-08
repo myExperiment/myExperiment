@@ -11,8 +11,8 @@
 <% odd_row = false -%>
 <% for message in collection %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td style="text-align: center; width: 70px;">
-		<%= "<b>" unless message.read? %><%= render :partial => "users/avatar", :locals => { :user => message.from, :size => 60 } %><%= "</b>" unless message.read? %>
+    <td style="text-align: center; width: 45px; font-size: 85%;">
+		<%= "<b>" unless message.read? %><%= render :partial => "users/avatar", :locals => { :user => message.from, :size => 40 } %><%= "</b>" unless message.read? %>
 	</td>
     <td style="text-align: center;"><%= "<b>" unless message.read? %><%=link_to h(message.subject), message_path(message) %><%= "</b>" unless message.read? %></td>
     <td><%= "<b>" unless message.read? %><%=datetime message.created_at, false %><%= "</b>" unless message.read? %></td>
