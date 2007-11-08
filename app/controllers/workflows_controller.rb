@@ -267,7 +267,10 @@ class WorkflowsController < ApplicationController
         # security fix (only allow the owner to change the policy)
         @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
         
-        update_policy(@workflow, params)
+        if ((params[:sharing] != nil) and (params[:updating] != nil))
+          update_policy(@workflow, params)
+        end
+
         update_workflow_credits(@workflow, params)
         update_workflow_attributions(@workflow, params)
 
