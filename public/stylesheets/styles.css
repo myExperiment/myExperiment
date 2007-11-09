@@ -785,7 +785,10 @@ table tr td.details {
 }
 
 .workflow_description {
-	
+	padding: 0.2em 0;
+	line-height: 1.5em;
+	text-align: left;
+	margin-bottom: 0em;
 }
 
 .workflow_right_box {
@@ -818,6 +821,16 @@ table tr td.details {
 	border: 1px dotted #333333;
 	text-align: center;
 	margin-bottom: 0.6em;
+}
+
+.workflow_section_box ul {
+	margin-top: 0;
+	margin-left: 0.6em;
+}
+
+.workflow_section_box li {
+	list-style-type: none;
+	margin-bottom: 0.2em;
 }
 
 .workflow_section_box p {

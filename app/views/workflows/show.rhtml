@@ -67,10 +67,8 @@
 		<% end %>
 		
 		<div class="workflow_description">
-			<p>
-				<b>Description:</b><br/>
-				<%= white_list @workflow.body_html %>
-			</p>
+			<b>Description:</b><br/>
+			<%= white_list @workflow.body_html %>
 		</div>
 		
 		<% if logged_in? and @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
@@ -154,10 +152,10 @@
 			Credits <span style="font-size: 85%; color: #666666;">(People/Groups)</span>
 		</p>
 		<% unless (creditors = @workflow.creditors).empty? %>
-			<div style="text-align: left; 1.2em; font-size: 85%;">
-				<ul style="margin-top: 0;">
+			<div style="text-align: left; font-size: 85%;">
+				<ul>
 					<% creditors.each do |c| %>
-						<li style="margin-bottom: 0.4em;">
+						<li>
 							<% if c.creditor_type == 'User' %>
 								<%= icon('user', nil, nil, nil, '') %> 
 							<% elsif c.creditor_type == 'Network' %>
@@ -178,9 +176,9 @@
 		</p>
 		<% unless (attributors = @workflow.attributors).empty? %>
 			<div style="text-align: left; font-size: 85%;">
-				<ul style="margin-top: 0;">
+				<ul>
 					<% attributors.each do |a| %>
-						<li style="margin-bottom: 0.4em;">
+						<li>
 							<% if a.attributor_type == 'Workflow' %>
 								<%= icon('workflow', nil, nil, nil, '') %> 
 							<% elsif a.attributor_type == 'Blob' %>

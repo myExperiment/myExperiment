@@ -55,7 +55,7 @@
 		      <% end %>
 			  
 			  <% if workflow.body and workflow.body.length > 0 %>
-				  <div class="desc" style=" margin-left: 1em; width: 370px; float: left; display: inline; font-size: 85%;">
+				  <div class="desc" style="margin-left: 1em; width: 370px; float: left; display: inline; font-size: 85%;">
 			        <%=query ? highlight_all(truncate(workflow.body, 400), query) : truncate(workflow.body, 400) %>
 			      </div>
 			  <% end %>

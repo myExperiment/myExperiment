@@ -12,9 +12,9 @@
 					</p>
 					<% if user.profile %>
 						<% if user.profile.body and user.profile.body.length > 0 %>
-							<p class="desc" style="font-size: 85%;">
+							<div class="desc" style="font-size: 85%;">
 								<%= truncate user.profile.body, 160 %>
-							</p>
+							</div>
 						<% end %>
 						<p style="font-size: 85%;">
 							<% if user.profile.website %>
