@@ -101,18 +101,18 @@
 					</td>
 					<td>
 						<p style="text-align: center;">
-							<b>Run this workflow in the <%= link_to "Taverna Workbench", "http://taverna.sourceforge.net/" %></b><br/>
-							Copy and paste this link into "Open workflow location..."<br/>
+							<b>Run this Workflow in the <%= link_to "Taverna Workbench", "http://taverna.sourceforge.net/" %></b><br/>
+							Copy and paste this link into File > Open workflow location...<br/>
 							<%= link_to download_workflow_url(@workflow), download_workflow_url(@workflow) %>
 						</p>
 			
 						<p style="text-align: center;">
-							<b>Authenticate the download using your username and password</b><br/>
+							<b>You need to provide your username and password in the URL so that Taverna can access the Workflow</b><br/>
 							<% if logged_in? and current_user.username.nil? %>
-								Click <%= link_to 'here', edit_user_path(current_user) %> to register your username and password
+								Click <%= link_to 'here', edit_user_path(current_user) %> to register a username and password
 							<% else %>
 								Replace <font color="#000099">http://</font> with <font color="#000099">http://<%=(logged_in? and !current_user.username.nil?) ? h(current_user.username) : "yourusername" %>:yourpassword@</font>
-							<% end %> 
+							<% end %>
 						</p>
 					</td>
 					<td width="70">
