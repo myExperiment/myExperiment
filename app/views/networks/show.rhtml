@@ -55,15 +55,6 @@
   </div>
 </div>
 
-<% unless (contributions = all_contributables_for_network(@network)).empty? %>
-	<div class="tabContainer">
-	    <div class="tabTitle">Stuff</div>
-	    <div class="tabContent">
-	    	<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
-    	</div>
-	</div>
-<% end %>
-
 <% unless @network.members(true).empty? %>
 	<div class="tabContainer">
 	  <div class="tabTitle">Members</div>
@@ -71,6 +62,17 @@
 	    <%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
 	  </div>
 	</div>
+<% end %>
+
+<% if logged_in? and @network.member? current_user.id %>
+	<% unless (contributions = all_contributables_for_network(@network)).empty? %>
+		<div class="tabContainer">
+		    <div class="tabTitle">Stuff</div>
+		    <div class="tabContent">
+		    	<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
+	    	</div>
+		</div>
+	<% end %>
 <% end %>
 
 <% if my_page? @network.owner.id %>
