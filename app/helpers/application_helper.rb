@@ -197,10 +197,11 @@ module ApplicationHelper
   end
   
   def request_membership_link(user_id, network_id)
-    link_to("Request Membership", url_for(:controller => 'memberships', 
-                                          :action => 'new', 
-                                          :user_id => user_id, 
-                                          :network_id => network_id))
+    icon('membership-new',
+         url_for(:controller => 'memberships', :action => 'new', :user_id => user_id, :network_id => network_id),
+         nil,
+         nil,
+         "Request Membership")
   end
 
   def request_friendship_link(user_id)
@@ -576,6 +577,8 @@ module ApplicationHelper
       return "famfamfam_silk/door_out.png"
     when "membership"
       return "famfamfam_silk/vcard.png"
+    when "membership-new"
+      return "famfamfam_silk/vcard_add.png"
     when "friendship"
       return "famfamfam_silk/user_comment.png"
     when "wizard"
