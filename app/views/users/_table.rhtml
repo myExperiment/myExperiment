@@ -8,7 +8,7 @@
 			    <td class="mid" style="text-align: left;">
 			    	<p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
 						<%= icon "user", nil, nil, nil, '' %>
-						<%= name user.id %>&nbsp;&nbsp;<%= image_tag("friend_badge.png") if(user.friend? current_user.id) %>
+						<%= name user.id %><%= friend_badge(user) %>
 					</p>
 					<% if user.profile %>
 						<% if user.profile.body and user.profile.body.length > 0 %>
@@ -38,7 +38,7 @@
 						<% unless user.friend? current_user.id %>
 							<%= icon "friendship", new_friendship_url(:user_id => user.id), nil, nil, "Request Friendship" %>
 						<% end %>
-						<%= icon "message", new_message_path, nil, nil, "Send Message" %>
+						<%= icon "message", new_message_path(:user_id => user.id), nil, nil, "Send Message" %>
 		      		<% end %>
 		    	</td>
 		  	</tr>

@@ -1031,3 +1031,10 @@ a.tagsSelectorOn {
 	border: 1px dotted #999999;
 	background-color: #FFFFFF;
 }
+
+.friend_badge {
+	padding: 0;
+	margin: 0;
+	margin-left: 0.4em;
+	margin-bottom: 0.4em;
+} 

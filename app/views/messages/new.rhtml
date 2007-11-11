@@ -1,3 +1,5 @@
+<% @message.to = params[:user_id] if params[:user_id] -%>
+
 <h1><%= params[:reply_id] ? h("Reply to Message") : h("New Message") %></h1>
 
 <%= error_messages_for :message %>

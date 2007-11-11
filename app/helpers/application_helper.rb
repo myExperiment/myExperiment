@@ -741,7 +741,6 @@ module ApplicationHelper
   
   def all_contributables_for_network(network)
     list = []
-    
     if network
       network.members(true).each do |user|
         user.contributions.each do |c|
@@ -753,6 +752,14 @@ module ApplicationHelper
     end
     
     return list
+  end
+  
+  def friend_badge(user)
+    if user and logged_in? and user.id != current_user.id
+      return image_tag("friend_badge.png", :class => 'friend_badge') if(user.friend? current_user.id)
+    else 
+      return ''
+    end
   end
 
 protected
