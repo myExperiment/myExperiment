@@ -1,3 +1,7 @@
+<% if logged_in? %>
+	<a href="#make_comment">Make a comment</a>
+<% end %>
+
 <% unless commentable.comments.empty? %>
 	<ul id="comments" class="comments">
 		<%= render :partial => "comments/comment", :collection => commentable.comments %>
@@ -7,12 +11,13 @@
 <% end %>
 
 <% unless logged_in? %>
-	<p><strong><%= link_to "Sign in", new_session_url %> to add a comment </strong></p>
+	<p><strong><%= link_to "Sign in", new_session_url %> to make a comment </strong></p>
 <% end %>
 
 <br/>
 
 <% if logged_in? %>
+	<a name="make_comment"></a>
 	<div class="addCommentBox">
 		<h4>Make a Comment:</h4>
 		<% form_remote_tag(:url => add_form_url, 
