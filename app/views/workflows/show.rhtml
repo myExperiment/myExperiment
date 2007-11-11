@@ -385,9 +385,9 @@
 <br/>
 <br/>
 
-<h2>Comments</h2>
-
 <div class="commentsBox">
+
+<h2>Comments (<%= @workflow.comments.length %>)</h2>
 	
 	<% unless @workflow.comments.empty? %>
 		<%= render :partial => "comments/list", :locals => { :commentable => @workflow } %>

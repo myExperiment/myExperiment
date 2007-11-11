@@ -975,6 +975,7 @@ table.comment td.header {
 
 table.comment td.content {
 	padding: 1em 1.2em;
+	text-align: left;
 }
 
 table.comment td.content p {
