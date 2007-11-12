@@ -1,8 +1,7 @@
-<% if logged_in? %>
-	<a href="#make_comment">Make a comment</a>
-<% end %>
-
 <% unless commentable.comments.empty? %>
+	<% if logged_in? %>
+		<a href="#make_comment">Make a comment</a>
+	<% end %>
 	<ul id="comments" class="comments">
 		<%= render :partial => "comments/comment", :collection => commentable.comments %>
 	</ul>
