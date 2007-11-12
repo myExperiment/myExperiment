@@ -36,6 +36,8 @@
   <% end %>
 
   <%= render :partial => "contributions/tags_form", :locals => { :edit => false, :contributable => @blob } %>
+  
+  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => false, :contributable => @blob } %>
 
   <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @blob } %>
 

@@ -118,6 +118,9 @@ class BlobsController < ApplicationController
         
         update_policy(@blob, params)
         
+        update_credits(@blob, params)
+        update_attributions(@blob, params)
+        
         flash[:notice] = 'File was successfully created.'
         format.html { redirect_to blob_url(@blob) }
         format.xml  { head :created, :location => blob_url(@blob) }
@@ -158,6 +161,9 @@ class BlobsController < ApplicationController
         @blob.contribution.update_attributes(params[:contribution]) if @blob.contribution.owner?(current_user)
         
         update_policy(@blob, params)
+        
+        update_credits(@blob, params)
+        update_attributions(@blob, params)
         
         flash[:notice] = 'File was successfully updated.'
         format.html { redirect_to blob_url(@blob) }

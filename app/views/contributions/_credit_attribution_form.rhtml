@@ -5,13 +5,15 @@
 <input id="attributions_workflows" type="hidden" name="attributions_workflows"/>
 <input id="attributions_files" type="hidden" name="attributions_files"/>
 
+<% c_type = visible_name contributable %>
+
 <div class="fold">
 	<div class="foldTitle">
-	    <%= info_icon_with_tooltip("This section allows you to give <strong>credit</strong> to users/groups for this Workflow (for example, the <strong>author(s)</strong> of this Workflow). <br/><br/>You can also attribute the Workflows that this Workflow is <strong>based on</strong> (if any). <br/><br/>By default, you are the only person who gets credit.") %>
+	    <%= info_icon_with_tooltip("This section allows you to give <strong>credit</strong> to users/groups for this #{c_type} (for example, the <strong>author(s)</strong> of this #{c_type}). <br/><br/>You can also attribute the Workflows/Files that this #{c_type} is <strong>based on</strong> (if any). <br/><br/>By default, you are the only person who gets credit.") %>
 	    Credit and Attribution
 		<% if edit %>
 			<hr/>
-			<small>Current: <%= @workflow.creditors.length %> credits, <%= @workflow.attributors.length %> attributions.</small>
+			<small>Current: <%= contributable.creditors.length %> credits, <%= contributable.attributors.length %> attributions.</small>
 		<% else %>
 		    <hr/>
 		    <small>Default: you are the only person who gets credit</small>
@@ -19,14 +21,14 @@
   	</div>
     <div class="foldContent" style="display: none;">
         <p class="info_text">
-            This section allows you to give <strong>credit</strong> to users/groups for this Workflow (for example, the <strong>author(s)</strong> of this Workflow).
+            This section allows you to give <strong>credit</strong> to users/groups for this <%= c_type %> (for example, the <strong>author(s)</strong> of this <%= c_type %>).
             <br />
             <br />
-            You can also attribute the Workflows that this Workflow is <strong>based on</strong> (if any).                           
+            You can also attribute the Workflows/Files that this <%= c_type %> is <strong>based on</strong> (if any).                           
         </p>
         <hr />
         <p>
-            <strong>Which users/groups get the credit for this Workflow?</strong>
+            <strong>Which users/groups get the credit for this <%= c_type %>?</strong>
         </p>
         <div style="padding-left: 1em;">
             <p id="authors_list">
@@ -124,7 +126,7 @@
         </div>
         <hr />
         <p>
-            <strong>If this Workflow is based on any existing Workflows or Files, please list them below:</strong>
+            <strong>If this <%= c_type %> is based on any existing Workflows or Files, please list them below:</strong>
         </p>
         <div style="padding-left: 1em;">
             <p id="attribution_list">
@@ -132,7 +134,7 @@
             </p>
             <br />
             <div style="padding: 1em; float: left; border: 1px dotted #999999; text-align: left; width: 300px;">
-                Existing Workflowz on myExperiment:
+                Existing Workflows on myExperiment:
                 <br />
                 <br />
                 <select id="existingworkflows_dropdown" style="width: 280px;">
@@ -168,7 +170,7 @@
   <script>
     // Credits
 	credit_me = false;
-	<% @workflow.creditors.each do |c| %>
+	<% contributable.creditors.each do |c| %>
       <% if c.creditor_type == 'User' and c.creditor_id == current_user.id %>
 	  	credit_me = true;
 	  <% elsif c.creditor_type == 'User' %>
@@ -180,7 +182,7 @@
     updateAuthorList();
 	
 	// Attributions
-	<% @workflow.attributors.each do |a| %>
+	<% contributable.attributors.each do |a| %>
 	  <% if a.attributor_type == 'Workflow' %>
 	  	attributions_workflows[<%= a.attributor_id %>] = '<%= escape_javascript contributable_name(a.attributor_id, 'Workflow') %>';
 	  <% elsif a.attributor_type == 'Blob' %>

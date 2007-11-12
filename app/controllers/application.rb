@@ -400,4 +400,62 @@ class ApplicationController < ActionController::Base
 
   end
 
+  def update_credits(creditable, params)
+    
+    # First delete old creditations:
+    creditable.creditors.each do |c|
+      c.destroy
+    end
+    
+    # Then create new creditations:
+    
+    # Current user
+    if (params[:credits_me].downcase == 'true')
+      c = Creditation.new(:creditor_type => 'User', :creditor_id => current_user.id, :creditable_type => creditable.class.to_s, :creditable_id => creditable.id)
+      c.save
+    end
+    
+    # Friends + other users
+    user_ids = parse_comma_seperated_string(params[:credits_users])
+    user_ids.each do |id|
+      c = Creditation.new(:creditor_type => 'User', :creditor_id => id, :creditable_type => creditable.class.to_s, :creditable_id => creditable.id)
+      c.save
+    end
+    
+    # Networks (aka Groups)
+    network_ids = parse_comma_seperated_string(params[:credits_groups])
+    network_ids.each do |id|
+      c = Creditation.new(:creditor_type => 'Network', :creditor_id => id, :creditable_type => creditable.class.to_s, :creditable_id => creditable.id)
+      c.save
+    end
+    
+  end
+  
+  def update_attributions(attributable, params)
+    
+    # First delete old attributions:
+    attributable.attributors.each do |a|
+      a.destroy
+    end
+    
+    # Then create new attributions:
+    
+    # Workflows
+    attributor_workflow_ids = parse_comma_seperated_string(params[:attributions_workflows])
+    attributor_type = 'Workflow'
+    attributor_workflow_ids.each do |id|
+      a = Attribution.new(:attributor_type => attributor_type, :attributor_id => id, :attributable_type => attributable.class.to_s, :attributable_id  => attributable.id)
+      a.save
+    end
+    
+    # Files
+    attributor_file_ids = parse_comma_seperated_string(params[:attributions_files])
+    attributor_type = 'Blob'
+    attributor_file_ids.each do |id|
+      a = Attribution.new(:attributor_type => attributor_type, :attributor_id => id, :attributable_type => attributable.class.to_s, :attributable_id  => attributable.id)
+      a.save
+    end
+    
+  end
+  
 end

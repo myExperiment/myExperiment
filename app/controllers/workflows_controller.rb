@@ -199,8 +199,8 @@ class WorkflowsController < ApplicationController
         update_policy(@workflow, params)
         
         # Credits and Attributions:
-        update_workflow_credits(@workflow, params)
-        update_workflow_attributions(@workflow, params)
+        update_credits(@workflow, params)
+        update_attributions(@workflow, params)
 
         flash[:notice] = 'Workflow was successfully created.'
         format.html { redirect_to workflow_url(@workflow) }
@@ -282,8 +282,8 @@ class WorkflowsController < ApplicationController
           
           update_policy(@workflow, params)
   
-          update_workflow_credits(@workflow, params)
-          update_workflow_attributions(@workflow, params)
+          update_credits(@workflow, params)
+          update_attributions(@workflow, params)
   
           flash[:notice] = 'Workflow was successfully updated.'
           format.html { redirect_to workflow_url(@workflow) }
@@ -433,64 +433,6 @@ private
     options
   end
 
-  def update_workflow_credits(workflow, params)
-    
-    # First delete old creditations:
-    workflow.creditors.each do |c|
-      c.destroy
-    end
-    
-    # Then create new creditations:
-    
-    # Current user
-    if (params[:credits_me].downcase == 'true')
-      c = Creditation.new(:creditor_type => 'User', :creditor_id => current_user.id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
-      c.save
-    end
-    
-    # Friends + other users
-    user_ids = parse_comma_seperated_string(params[:credits_users])
-    user_ids.each do |id|
-      c = Creditation.new(:creditor_type => 'User', :creditor_id => id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
-      c.save
-    end
-    
-    # Networks (aka Groups)
-    network_ids = parse_comma_seperated_string(params[:credits_groups])
-    network_ids.each do |id|
-      c = Creditation.new(:creditor_type => 'Network', :creditor_id => id, :creditable_type => 'Workflow', :creditable_id => workflow.id)
-      c.save
-    end
-    
-  end
-  
-  def update_workflow_attributions(workflow, params)
-    
-    # First delete old attributions:
-    workflow.attributors.each do |a|
-      a.destroy
-    end
-    
-    # Then create new attributions:
-    
-    # Workflows
-    attributor_workflow_ids = parse_comma_seperated_string(params[:attributions_workflows])
-    attributor_type = 'Workflow'
-    attributor_workflow_ids.each do |id|
-      a = Attribution.new(:attributor_type => attributor_type, :attributor_id => id, :attributable_type => 'Workflow', :attributable_id  => workflow.id)
-      a.save
-    end
-    
-    # Files
-    attributor_file_ids = parse_comma_seperated_string(params[:attributions_files])
-    attributor_type = 'Blob'
-    attributor_file_ids.each do |id|
-      a = Attribution.new(:attributor_type => attributor_type, :attributor_id => id, :attributable_type => 'Workflow', :attributable_id  => workflow.id)
-      a.save
-    end
-    
-  end
-  
 end
 
 module FileUpload
