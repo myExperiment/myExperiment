@@ -9,5 +9,10 @@
   <%= render :partial => "contributions/updating_form", :locals => { :edit => false, :contributable => @forum } %>
   
   <%= render :partial => "form", :object => f %>
-  <%= submit_tag _('Create'), :or => link_to(_('Cancel'), forums_path) %>
+  
+  <p>
+  	<center>
+  		<%= submit_tag _('Create'), :or => link_to(_('Cancel'), forums_path), :disable_with => "Creating..." %>
+	</center>
+  </p>
 <% end -%>

@@ -19,7 +19,9 @@
   <%= render :partial => "contributions/updating_form", :locals => { :edit => false, :contributable => @blog } %>
   
   <p>
-    <%= submit_tag "Create" %>
+  	<center>
+    	<%= submit_tag "Create", :disable_with => "Creating..." %>
+	</center>
   </p>
 
 <% end %>

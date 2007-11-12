@@ -1,6 +1,6 @@
 <%= javascript_include_tag "osp.js" %>
 
-<h1>Editing Blog</h1>
+<h1>Manage Blog</h1>
 
 <%= error_messages_for :blog %>
 
@@ -22,6 +22,8 @@
   <% end %>
 
   <p>
-    <%= submit_tag "Update" %>
+  	<center>
+    	<%= submit_tag "Update", :disable_with => "Updating..." %>
+	</center>
   </p>
 <% end %>
