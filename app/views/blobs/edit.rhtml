@@ -6,15 +6,33 @@
 
 <% form_for(:blob, :url => blob_path(@blob), :html => { :method => :put }) do |f| %>
 
+  <p>
+  	<strong>Title: </strong>
+	<br/>
+	<%= f.text_field :title %>
+  </p>
+  
+  <p>
+  	<strong>Description: </strong>
+	<br/>
+	<small>Note: some HTML allowed</small>
+	<br/>
+	<%= f.text_area :body %>
+  </p>
+  
+  <br/>
+
   <%= render :partial => "contributions/tags_form", :locals => { :edit => true, :contributable => @blob } %>
 
-  <%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @blob } %>
-
-  <%= render :partial => "contributions/updating_form", :locals => { :edit => true, :contributable => @blob } %>
+  <% if @blob.owner?(current_user) %>
+  	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @blob } %>
+  	<%= render :partial => "contributions/updating_form", :locals => { :edit => true, :contributable => @blob } %>
+	<%= render :partial => "blobs/license_form", :locals => { :edit => true } %>
+  <% end %>
 
   <p>
     <center>
-    	<%= submit_tag "Update" %> 
+    	<%= submit_tag "Update",:disable_with => "Updating..." %> 
 		or <%= link_to "Cancel", blob_path(@blob) %>
 	</center>
   </p>

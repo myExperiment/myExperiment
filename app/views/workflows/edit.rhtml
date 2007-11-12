@@ -21,7 +21,7 @@
 
   <p>
     <center>
-    	<%= submit_tag "Update" %> 
+    	<%= submit_tag "Update", :disable_with => "Updating..." %> 
 		or <%= link_to "Cancel", workflow_path(@workflow) %>
 	</center>
   </p>

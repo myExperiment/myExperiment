@@ -1,48 +1,48 @@
-<% if edit then license = @workflow.license else license = 'by-sa' end %>
+<% if edit then license = @blob.license else license = 'by-sa' end %>
 
 <div class="fold">
     <div class="foldTitle">
-        <%= info_icon_with_tooltip("This section allows you to specify the <strong>rights</strong> that people have when they download and use this Workflow, by setting the license. <br/><br/>By default, the license specifies that people are allowed to build on this Workflow as long as they give the original author credit and share their resulting work under the same conditions.") %>
+        <%= info_icon_with_tooltip("This section allows you to specify the <strong>rights</strong> that people have when they download and use this File, by setting the license. <br/><br/>By default, the license specifies that people are allowed to build on this File as long as they give the original author credit and share their resulting work under the same conditions.") %>
         License/Rights
 		<% if edit %>
 			<hr />
 			<small>Current: <%= license_link license %></small>
 		<% else %>
 			<hr />
-			<small>Default: people are allowed to build on this Workflow, but must give author(s) credit and give attribution to this Workflow. They must also share under the same conditions. (<%= license_link license %>)</small>
+			<small>Default: people are allowed to build on this File, but must give author(s) credit and give attribution to this File. They must also share under the same conditions. (<%= license_link license %>)</small>
 		<% end %>
     </div>
     <div class="foldContent" style="display: none;">
         <p class="info_text">
-            This section allows you to specify the <strong>rights</strong> that people have when they download and use this Workflow, by setting the license.
+            This section allows you to specify the <strong>rights</strong> that people have when they download and use this File, by setting the license.
         </p>
         <hr />
         <p>
-            <strong>What license do you want people to adhere to if they download and use this Workflow?</strong>
+            <strong>What license do you want people to adhere to if they download and use this File?</strong>
         </p>
         <div style="padding-left: 1em;">
             <div style="padding: 0.5em; border: 1px dotted #999999; margin: 1.5em 3em; text-align: center;">
                 <p style="text-align: center;">
                     <img alt="Science Commons" src="/images/sc.logo.png" /></p>
                 <p style="text-align: center;">
-                    Below you can configure what rights people will have with this Workflow, based on
+                    Below you can configure what rights people will have with this File, based on
                     the <a href="http://sciencecommons.org/resources/faq/sciencecommons/">Science Commons</a>
-                    licenses. Sharing Workflows and letting others build upon them is a useful contribution
+                    licenses. Sharing Files and letting others build upon them is a useful contribution
                     and is highly recommended.</p>
             </div>
             <p>
-                When someone downloads this Workflow, are they allowed to build upon it (such as
+                When someone downloads this Files, are they allowed to build upon it (such as
                 extend, reuse, repurpose etc)?
 			</p>
             <table style="border-collapse: collapse; border-spacing: 0;">
             	<tbody>
             		<tr>
 						<td style="vertical-align: top; text-align: center;">
-			                <input id="workflow_license_bysa" <%= 'checked="checked"' if (license == 'by-sa') %> name="workflow[license]" type="radio" value="by-sa"/>
+			                <input id="blob_license_bysa" <%= 'checked="checked"' if (license == 'by-sa') %> name="blob[license]" type="radio" value="by-sa"/>
 						</td>
 						<td style="vertical-align: top; text-align: left;">
 			                <p style="padding: 0; margin: 0;">
-			                	Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this Workflow</strong>. 
+			                	Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this File</strong>. 
 								They must also <strong>share</strong> the resulting work <strong>under the same conditions</strong>.
 								<br/>
 								- <%= license_link "by-sa" %>
@@ -51,11 +51,11 @@
             		</tr>
 					<tr>
 						<td style="vertical-align: top; text-align: center;">
-                			<input id="workflow_license_by" <%= 'checked="checked"' if (license == 'by') %> name="workflow[license]" type="radio" value="by"/>
+                			<input id="blob_license_by" <%= 'checked="checked"' if (license == 'by') %> name="blob[license]" type="radio" value="by"/>
 						</td>
 						<td style="vertical-align: top; text-align: left;">	
             				<p style="padding: 0; margin: 0;">
-            					Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this Workflow</strong>.
+            					Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this File</strong>.
 								<br/>
 								- <%= license_link "by" %>
 							</p>
@@ -63,11 +63,11 @@
             		</tr>
 					<tr>
 						<td style="vertical-align: top; text-align: center;">
-                			<input id="workflow_license_bynd" <%= 'checked="checked"' if (license == 'by-nd') %> name="workflow[license]" type="radio" value="by-nd"/>
+                			<input id="blob_license_bynd" <%= 'checked="checked"' if (license == 'by-nd') %> name="blob[license]" type="radio" value="by-nd"/>
 						</td>
 						<td style="vertical-align: top; text-align: left;">
             				<p style="padding: 0; margin: 0;">
-								No. They may only use the Workflow for reference.
+								No. They may only use the File for reference.
 								<br/>
 								- <%= license_link "by-nd" %>
 							</p>

@@ -146,11 +146,12 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
-        
-        if params[:blob][:tag_list]
-          @blob.user_id = current_user
-          @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
-          @blob.update_tags
+        if @blob.save
+          if params[:blob][:tag_list]
+            @blob.user_id = current_user
+            @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
+            @blob.update_tags
+          end
         end
         
         # security fix (only allow the owner to change the policy)

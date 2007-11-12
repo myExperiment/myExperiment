@@ -44,7 +44,7 @@
 	
 	<% if logged_in? and @blob.authorized?("destroy", current_user) %>
 	  <div class="tabContainer">
-	    <div class="tabTitle">Sharing Permissions</div>
+	    <div class="tabTitle">Permissions</div>
 	    <div class="tabContent">
 	
 	      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @blob } %>
@@ -58,13 +58,6 @@
 	    </div>
 	  </div>
 	<% end %>
-	
-	<div class="tabContainer">
-	  <div class="tabTitle">Statistics</div>
-	  <div class="tabContent">
-	    <%= render :partial => "contributions/statistics", :object => @blob.contribution %>
-	  </div>
-	</div>
 	
 	<% if logged_in? and @blob.authorized?("destroy", current_user) %>
 	  <div class="tabContainer">

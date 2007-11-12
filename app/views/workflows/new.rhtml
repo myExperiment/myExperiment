@@ -1,6 +1,6 @@
 <%= javascript_include_tag "osp.js" %>
 
-<h1>New Workflow</h1>
+<h1>Upload Workflow</h1>
 
 <%= error_messages_for :workflow %>
 
@@ -42,7 +42,7 @@
   </p>
 
   <p style="text-align: center;">
-    <%= submit_tag "Upload and Save" %>
+    <%= submit_tag "Upload and Save", :disable_with => "Uploading and saving in..." %>
   </p>
   
 <% end %>

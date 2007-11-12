@@ -272,26 +272,26 @@ class WorkflowsController < ApplicationController
       else
         Workflow.without_revision do 
           
-      if @workflow.update_attributes(params[:workflow])
-        if params[:workflow][:tag_list]
-          refresh_tags(@workflow, params[:workflow][:tag_list], current_user)
+        if @workflow.update_attributes(params[:workflow])
+          if params[:workflow][:tag_list]
+            refresh_tags(@workflow, params[:workflow][:tag_list], current_user)
+          end
+          
+          # security fix (only allow the owner to change the policy)
+          @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
+          
+          update_policy(@workflow, params)
+  
+          update_workflow_credits(@workflow, params)
+          update_workflow_attributions(@workflow, params)
+  
+          flash[:notice] = 'Workflow was successfully updated.'
+          format.html { redirect_to workflow_url(@workflow) }
+          format.xml  { head :ok }
+        else
+          format.html { render :action => "edit" }
+          format.xml  { render :xml => @workflow.errors.to_xml }
         end
-        
-        # security fix (only allow the owner to change the policy)
-        @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
-        
-        update_policy(@workflow, params)
-
-        update_workflow_credits(@workflow, params)
-        update_workflow_attributions(@workflow, params)
-
-        flash[:notice] = 'Workflow was successfully updated.'
-        format.html { redirect_to workflow_url(@workflow) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @workflow.errors.to_xml }
-      end
           
         end
       end

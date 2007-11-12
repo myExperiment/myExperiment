@@ -39,4 +39,6 @@ class Blob < ActiveRecord::Base
                               :content_type => { :store => :yes } }
   
   validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
+  
+  format_attribute :body
 end
