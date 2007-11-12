@@ -176,9 +176,9 @@
       <% if c.creditor_type == 'User' and c.creditor_id == current_user.id %>
 	  	credit_me = true;
 	  <% elsif c.creditor_type == 'User' %>
-	  	credit_users[<%= c.creditor_id %>] = '<%= contributor_name(c.creditor_id, 'User') %>';
+	  	credit_users[<%= c.creditor_id %>] = '<%= escape_javascript contributor_name(c.creditor_id, 'User') %>';
 	  <% elsif c.creditor_type == 'Network' %>
-	  	credit_groups[<%= c.creditor_id %>] = '<%= contributor_name(c.creditor_id, 'Network') %>';
+	  	credit_groups[<%= c.creditor_id %>] = '<%= escape_javascript contributor_name(c.creditor_id, 'Network') %>';
 	  <% end %>
     <% end %>
     updateAuthorList();
@@ -186,7 +186,7 @@
 	// Attributions
 	<% @workflow.attributors.each do |a| %>
 	  <% if a.attributor_type == 'Workflow' %>
-	  	attributions_workflows[<%= a.attributor_id %>] = '<%= contributable_name(a.attributor_id, 'Workflow') %>';
+	  	attributions_workflows[<%= a.attributor_id %>] = '<%= escape_javascript contributable_name(a.attributor_id, 'Workflow') %>';
 	  <% end %>
     <% end %>
     updateAttributionsList();
