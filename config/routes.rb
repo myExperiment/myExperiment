@@ -42,7 +42,10 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # blobs (downloadable)
-  map.resources :blobs, :collection => { :search => :get }, :member => { :download => :get }
+  map.resources :blobs, :collection => { :search => :get }, :member => { :download => :get, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post } do |blob|
+    # blobs have nested citations
+    blob.resources :citations
+  end
 
   # bloGs
   map.resources :blogs do |blog|
