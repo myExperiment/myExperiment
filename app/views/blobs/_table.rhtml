@@ -15,10 +15,8 @@
 					<p class="title">
 						<%= icon "blob", nil, nil, nil, '' %>
 						<% title = contributable_name(blob.id, 'Blob') %>
-						<%=link_to(query ? highlight_all(title), query) : title, blob_path(blob)) %>
+						<%=link_to(query ? highlight_all(title, query) : title, blob_path(blob)) %>
 					</p>
-					
-					<p style="font-size:85%;"><b>File type: </b><%= h blob.content_type %></p>
 					
 					<% unless (creditors = blob.creditors).empty? %>
 						<p style="font-size:85%;">
@@ -52,6 +50,8 @@
 					    	<%= query ? highlight_all(truncate(h(blob.body), 400), query) : truncate(h(blob.body), 400) %>
 					  	</div>
 					<% end %>
+					
+					<p style="font-size:85%;"><b>File type: </b><%= h blob.content_type %></p>
 					
 					<p style="font-size: 85%;">
 						<b>Rating: </b><%= number_with_precision(blob.rating, 2) %>/5 (<%= pluralize blob.ratings.count, 'rating' %>) |
