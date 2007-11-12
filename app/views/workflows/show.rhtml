@@ -131,31 +131,7 @@
 
 	<div id="tabsContainer" class="tabsContainer"></div>
 	
-	<div class="tabContainer">
-	  <div class="tabTitle">Citations</div>
-	  <div class="tabContent">
-	
-	    <% unless (citations = @workflow.citations).empty? %>
-	      <% citations.each_index do |i| %>
-	        <p>
-	          <%= i.to_i + 1 %>.  <%= render :partial => "citations/citation", :object => citations[i] %>
-	        </p>
-	      <% end %>
-	    <% else %>
-	      <p><i>None</i></p>
-	    <% end %>
-	
-	    <% if logged_in? %>
-	      <% if @workflow.authorized?("edit", current_user) %>
-		    <ul class="sectionIcons">
-		      <li><%= icon('new', new_citation_path(@workflow), nil, nil, 'New Citation', nil) %></li>
-		      <li><%= icon('edit', citations_path(@workflow), nil, nil, 'Edit Citations', nil) %></li>
-		    </ul>
-		  <% end %>
-	    <% end %>
-	
-	  </div>
-	</div>
+	<%= render :partial => "contributions/citations_tab", :locals => { :item => @workflow } %>
 	
 	<% if logged_in? and @workflow.authorized?("destroy", current_user) %>
 	  <div class="tabContainer">
@@ -231,31 +207,7 @@
 	
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @workflow } %>
 	
-	<div class="fold">
-		<div class="foldTitle">
-			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The size of the tags show how popular they are on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
-			Statistics
-		</div>
-		<div class="foldContent">
-			<%= render :partial => "contributions/statistics", :object => @workflow.contribution %>
-		
-			<p>
-		      <b>No. of tags:</b> 
-		      <%=h @workflow.taggings.length %>
-		    </p>
-			
-			<p>
-		      <b>No. of ratings:</b> 
-		      <%=h @workflow.ratings.length %>
-		    </p>
-			
-		    <p>
-		      <b>No. of comments:</b> 
-		      <%=h @workflow.comments.length %>
-		    </p>
-		    
-		</div>
-	</div>
+	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @workflow } %>
 </div>
 
 <div class="clearer">&nbsp;</div>

@@ -781,7 +781,7 @@ table tr td.details {
 
 .contribution_left_box {
 	float: left;
-	width: 74%;
+	width: 73.5%;
 }
 
 .contribution_description {
@@ -817,7 +817,7 @@ table tr td.details {
 	background-position: top;
 	background-repeat: repeat-x;
 	background-color: #FFFFCC;
-	padding: 0.3em;
+	padding: 0.3em 0.5em;
 	border: 1px dotted #333333;
 	text-align: center;
 	margin-bottom: 0.6em;

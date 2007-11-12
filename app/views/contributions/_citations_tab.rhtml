@@ -1,0 +1,25 @@
+<div class="tabContainer">
+  <div class="tabTitle">Citations</div>
+  <div class="tabContent">
+
+    <% unless (citations = item.citations).empty? %>
+      <% citations.each_index do |i| %>
+        <p>
+          <%= i.to_i + 1 %>.  <%= render :partial => "citations/citation", :object => citations[i] %>
+        </p>
+      <% end %>
+    <% else %>
+      <p><i>None</i></p>
+    <% end %>
+
+    <% if logged_in? %>
+      <% if item.authorized?("edit", current_user) %>
+	    <ul class="sectionIcons">
+	      <li><%= icon('new', new_citation_path(item), nil, nil, 'New Citation', nil) %></li>
+	      <li><%= icon('edit', citations_path(item), nil, nil, 'Edit Citations', nil) %></li>
+	    </ul>
+	  <% end %>
+    <% end %>
+
+  </div>
+</div>

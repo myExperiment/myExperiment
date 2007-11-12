@@ -1,0 +1,26 @@
+<div class="contribution_section_box">
+	<p class="heading">
+		Statistics
+	</p>
+	
+	<div style="font-size: 85%;"> 
+	
+		<%= render :partial => "contributions/statistics", :object => contributable.contribution %>
+			
+		<p>
+	      <b>No. of tags:</b> 
+	      <%=h contributable.taggings.length %>
+	    </p>
+		
+		<p>
+	      <b>No. of ratings:</b> 
+	      <%=h contributable.ratings.length %>
+	    </p>
+		
+	    <p>
+	      <b>No. of comments:</b> 
+	      <%=h contributable.comments.length %>
+	    </p>
+	
+	</div>
+</div>

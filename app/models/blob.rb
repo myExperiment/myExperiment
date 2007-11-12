@@ -28,10 +28,6 @@ require 'acts_as_attributor'
 require 'acts_as_attributable'
 
 class Blob < ActiveRecord::Base
-  has_many :citations, 
-           :order => "created_at DESC",
-           :dependent => :destroy
-           
   acts_as_contributable
   
   acts_as_creditable
