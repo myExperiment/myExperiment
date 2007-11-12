@@ -208,6 +208,23 @@ class BlobsController < ApplicationController
     end
   end
   
+  # POST /blobs/1;rate
+  # POST /blobs/1.xml;rate
+  def rate
+    Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @blob.class.to_s, @blob.id, current_user.id])
+    
+    @blob.ratings << Rating.create(:user => current_user, :rating => params[:rating])
+    
+    respond_to do |format|
+      format.html { 
+        render :update do |page|
+          page.replace_html "ratings_inner", :partial => "contributions/ratings_box_inner", :locals => { :contributable => @blob, :controller_name => controller.controller_name }
+          page.replace_html "ratings_breakdown", :partial => "contributions/ratings_box_breakdown", :locals => { :contributable => @blob }
+        end }
+      format.xml { render :xml => @rateable.ratings.to_xml }
+    end
+  end
+  
   # POST /blobs/1;tag
   # POST /blobs/1.xml;tag
   def tag
@@ -216,7 +233,7 @@ class BlobsController < ApplicationController
     @blob.update_tags # hack to get around acts_as_versioned
     
     respond_to do |format|
-      format.html { render :partial => "contributions/tags_inner_box", :locals => { :contributable => @blob } }
+      format.html { render :partial => "contributions/tags_box_inner", :locals => { :contributable => @blob } }
       format.xml { render :xml => @blob.tags.to_xml }
     end
   end

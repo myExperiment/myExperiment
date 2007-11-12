@@ -771,6 +771,19 @@ module ApplicationHelper
               :style => "vertical-align:middle;")
   end
 
+  def get_user_rating(contributable, user_id)
+    rating = nil;
+    
+    contributable.ratings.each do |r|
+      if r.user_id == user_id
+        rating = r
+        break
+      end
+    end
+    
+    return rating
+  end
+  
 protected
 
   def contributor_news(contributor, before, after, depth, restrict_contributor)

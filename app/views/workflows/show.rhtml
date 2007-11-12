@@ -156,42 +156,7 @@
 	
 	<%= render :partial => "contributions/tags_box", :locals => { :contributable => @workflow, :add_path => tag_workflow_path(@workflow), :edit_path => edit_workflow_path(@workflow) } %>
 	
-	<div class="contribution_section_box">
-		<p class="heading">
-			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[...] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
-			Ratings
-		</p>
-		
-		<center>
-			<% if logged_in? %>
-				<p><small>Hover and click to rate</small></p>
-				<div id="star-ratings-block">
-					<%= render :partial => "ratings/rating", :locals => { :rateable => @workflow, :controller => controller.controller_name } %>
-				</div>
-				<p>You rated it: </p>
-			<% else %>
-				Current: <%= number_with_precision(@workflow.rating, 2) %>/5 (<%= pluralize @workflow.ratings.count, 'rating' %>)
-				<p><strong><%= link_to "Sign in", new_session_url %> to rate and see breakdown of ratings</strong></p>
-			<% end %>
-		</center>
-		
-		<% if logged_in? %>
-			<% unless (ratings = @workflow.ratings).empty? %>
-				<div class="fold">
-					<div class="foldTitle">Breakdown</div>
-					<div class="foldContent" style="display: none; text-align: left;">
-						<ul>			
-							<% ratings.each do |rating| %>
-								<li>
-									<%= name(rating.user_id) %> - <%= rating.rating %>/5
-								</li>
-							<% end %>
-						</ul>
-					</div>
-				</div>
-			<% end %>
-		<% end %>
-	</div>
+	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @workflow, :add_path => tag_workflow_path(@workflow), :edit_path => edit_workflow_path(@workflow) } %>
 	
 	<div class="fold">
 		<div class="foldTitle">

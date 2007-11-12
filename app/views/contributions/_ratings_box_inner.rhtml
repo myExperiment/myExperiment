@@ -1,0 +1,17 @@
+<center>
+	<% if logged_in? %>
+		<p><small>Hover and click to rate</small></p>
+		<div id="star-ratings-block">
+			<%= render :partial => "ratings/rating", :locals => { :rateable => contributable, :controller => controller_name } %>
+		</div>
+		
+		<% if (rating = get_user_rating(contributable, current_user.id)) %>
+			<p style="font-size: 85%; font-weight: bold;">You rated it: <%= rating.rating %>/5</p>
+		<% else %>
+			<p style="font-size: 85%; font-weight: bold;"><i>You haven't rated yet</i></p>
+		<% end %>
+	<% else %>
+		<p style="margin-top: 0.2em; font-size: 85%; font-weight: bold;">Current: <%= number_with_precision(contributable.rating, 2) %>/5 (<%= pluralize contributable.ratings.count, 'rating' %>)</p>
+		<p><strong><%= link_to "Sign in", new_session_url %> to rate and see breakdown of ratings</strong></p>
+	<% end %>
+</center>

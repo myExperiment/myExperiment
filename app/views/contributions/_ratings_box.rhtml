@@ -1,0 +1,21 @@
+<div class="contribution_section_box">
+	<p class="heading">
+		<%= info_icon_with_tooltip("How does this #{visible_name contributable} rate overall?") %>
+		Ratings
+	</p>
+	
+	<div id="ratings_inner">
+		<%= render :partial => "contributions/ratings_box_inner", :locals => { :contributable => contributable, :controller_name => controller.controller_name } %>
+	</div>
+	
+	<% if logged_in? %>
+		<div class="fold">
+			<div class="foldTitle">Breakdown</div>
+			<div class="foldContent" style="display: none; text-align: left;">
+				<div id="ratings_breakdown">
+					<%= render :partial => "contributions/ratings_box_breakdown", :locals => { :contributable => contributable } %>
+				</div>
+			</div>
+		</div>
+	<% end %>
+</div>

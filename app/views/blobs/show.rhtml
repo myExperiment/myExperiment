@@ -57,6 +57,10 @@
 			<% end %>
 		</div>
 	<% end %>
+	
+	<%= render :partial => "contributions/tags_box", :locals => { :contributable => @blob, :add_path => tag_blob_path(@blob), :edit_path => edit_blob_path(@blob) } %>
+	
+	
 </div>	
 
 <div class="clearer">&nbsp;</div>

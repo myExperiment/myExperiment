@@ -1,6 +1,6 @@
 <div class="contribution_section_box">
 	<p class="heading">
-		<%= info_icon_with_tooltip("The uploader is the person who uploaded/created this #{contributable.contribution.contributable_type} on myExperiment, and who manages it on myExperiment.") %>
+		<%= info_icon_with_tooltip("The uploader is the person who uploaded/created this #{visible_name contributable} on myExperiment, and who manages it on myExperiment.") %>
 		Uploader
 	</p>
 	<p>
@@ -10,7 +10,7 @@
 	<hr/>
 			
 	<p class="heading">
-		<%= info_icon_with_tooltip("Which people/groups get the credit for this #{contributable.contribution.contributable_type}?") %>
+		<%= info_icon_with_tooltip("Which people/groups get the credit for this #{visible_name contributable}?") %>
 		Credits
 		<span style="font-size: 77%; color: #666666; display: block; padding: 0.1em 0.5em; margin: 0;">(People/Groups)</span>
 	</p>

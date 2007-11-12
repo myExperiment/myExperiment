@@ -97,7 +97,8 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       format.html { 
         render :update do |page|
-          page.replace_html "star-ratings-block", :partial => 'ratings/rating', :locals => { :rateable => @workflow, :controller => "workflows" } 
+          page.replace_html "ratings_inner", :partial => "contributions/ratings_box_inner", :locals => { :contributable => @workflow, :controller_name => controller.controller_name }
+          page.replace_html "ratings_breakdown", :partial => "contributions/ratings_box_breakdown", :locals => { :contributable => @workflow }
         end }
       format.xml { render :xml => @rateable.ratings.to_xml }
     end
@@ -111,7 +112,7 @@ class WorkflowsController < ApplicationController
     @workflow.update_tags # hack to get around acts_as_versioned
     
     respond_to do |format|
-      format.html { render :partial => "contributions/tags_inner_box", :locals => { :contributable => @workflow } }
+      format.html { render :partial => "contributions/tags_box_inner", :locals => { :contributable => @workflow } }
       format.xml { render :xml => @workflow.tags.to_xml }
     end
   end
