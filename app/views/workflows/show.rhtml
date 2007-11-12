@@ -7,12 +7,12 @@
 
 <h1>Workflow Entry: <%=h @workflow.title %></h1>
 
-<div class="workflow_currentlicense_box">
+<div class="contribution_currentlicense_box">
 	<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
 </div>
 	
-<div class="workflow_left_box">
-	<div class="workflow_version_selector_box">
+<div class="contribution_left_box">
+	<div class="contribution_version_selector_box">
 		<% versions_count = @workflow.versions.size -%>
 		<table>
 			<tbody>
@@ -48,7 +48,7 @@
 			</tbody>
 		</table>
 	</div>
-	<div class="workflow_version_box">		
+	<div class="contribution_version_box">		
 		<p>
 			<b>Title:</b>
 			<%=h @workflow.title %>
@@ -66,7 +66,7 @@
 			<center><%= link_to image_tag(url_for_file_column(@workflow, "image", "medium")), url_for_file_column(@workflow, "image") %></center>
 		<% end %>
 		
-		<div class="workflow_description">
+		<div class="contribution_description">
 			<b>Description:</b><br/>
 			<%= white_list @workflow.body_html %>
 		</div>
@@ -125,8 +125,8 @@
 	</div>
 </div>
 
-<div class="workflow_right_box">
-	<div class="workflow_section_box">
+<div class="contribution_right_box">
+	<div class="contribution_section_box">
 		<p class="heading">
 			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The uploader is the person who uploaded this workflow on to myExperiment, and who manages the workflow on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
 			Uploader
@@ -213,7 +213,7 @@
 		</div>
 	<% end %>
 	
-	<div class="workflow_section_box">
+	<div class="contribution_section_box">
 		<p class="heading">
 			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[The tags for this Workflow entry (applies to all Workflow versions). Note: the size of the tags show how popular they are on myExperiment.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
 			Tags
@@ -248,7 +248,7 @@
 		<% end %>
 	</div>
 	
-	<div class="workflow_section_box">
+	<div class="contribution_section_box">
 		<p class="heading">
 			<img src="/images/famfamfam_silk/help.png" title="header=[] body=[...] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
 			Ratings

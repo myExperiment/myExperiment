@@ -65,7 +65,7 @@ class WorkflowsController < ApplicationController
     @workflow.comments << comment
     
     respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow, :add_form_url => comment_workflow_path(@workflow) } }
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow, :add_url => comment_workflow_path(@workflow) } }
       format.xml { render :xml => @workflow.comments.to_xml }
     end
   end
@@ -82,7 +82,7 @@ class WorkflowsController < ApplicationController
     end
     
     respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow, :add_form_url => comment_workflow_path(@workflow) } }
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow, :add_url => comment_workflow_path(@workflow) } }
       format.xml { render :xml => @workflow.comments.to_xml }
     end
   end
