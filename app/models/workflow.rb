@@ -22,6 +22,7 @@
 ##
 
 require 'acts_as_contributable'
+require 'acts_as_contributable'
 require 'acts_as_creditable'
 require 'acts_as_attributor'
 require 'acts_as_attributable'

@@ -111,8 +111,7 @@ class WorkflowsController < ApplicationController
     @workflow.update_tags # hack to get around acts_as_versioned
     
     respond_to do |format|
-      #format.html { render :inline => "<%=h @workflow.tags.join(', ') %>" }
-      format.html { render :inline => "<%= render :partial => 'workflows/tags_for_workflow', :locals => { :workflow => @workflow } %>" }
+      format.html { render :partial => "contributions/tags_inner_box", :locals => { :contributable => @workflow } }
       format.xml { render :xml => @workflow.tags.to_xml }
     end
   end

@@ -1,0 +1,34 @@
+<div class="contribution_section_box">
+	<p class="heading">
+		<%= info_icon_with_tooltip("The tags for this #{contributable.contribution.contributable_type} entry (applies to all #{contributable.contribution.contributable_type} versions in this entry). Note: the size of the tags show how popular they are on myExperiment.") %>
+		Tags
+	</p>
+
+	<%= render :partial => "contributions/tags_inner_box", :locals => { :contributable => contributable } %>
+	
+	<% if contributable.authorized?("edit", current_user) %>
+		<p style="text-align: right;"><small>[<%= link_to "edit", edit_path %>]</small></p>
+	<% end %>
+	
+	<% if logged_in? %>
+		<div class="fold">
+			<div class="foldTitle">Add Tags</div>
+			<div class="foldContent" style="display: none; background-color: #EEEEEE;">
+				<% form_remote_tag(:url => add_path, 
+								   :update => 'tags', 
+							 		   :success => "$('tag_list').value=''; new Effect.Highlight('tags', { duration: 1.5 });",
+							       :loading => "Element.show('addtag_indicator')",
+                    	   	       :complete => "Element.hide('addtag_indicator')") do %>
+					<p><small>(Comma seperated)</small></p>
+					<p>
+						<%= text_field_tag :tag_list %>
+					</p>
+					<%= submit_tag "Add" %>
+					<img id="addtag_indicator" style="margin-left: 1em; display: none;" src="/images/spinner.gif" />
+				<% end %>
+			</div>
+		</div>
+	<% else %>
+		<p><strong><%= link_to "Sign in", new_session_url %> to add Tags</strong></p>
+	<% end %>
+</div>

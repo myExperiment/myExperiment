@@ -208,6 +208,19 @@ class BlobsController < ApplicationController
     end
   end
   
+  # POST /blobs/1;tag
+  # POST /blobs/1.xml;tag
+  def tag
+    @blob.user_id = current_user # acts_as_taggable_redux
+    @blob.tag_list = "#{@blob.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
+    @blob.update_tags # hack to get around acts_as_versioned
+    
+    respond_to do |format|
+      format.html { render :partial => "contributions/tags_inner_box", :locals => { :contributable => @blob } }
+      format.xml { render :xml => @blob.tags.to_xml }
+    end
+  end
+  
   protected
   
   def find_blobs

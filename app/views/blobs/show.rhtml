@@ -2,37 +2,66 @@
 	<b>Note: </b> this page is currently being redeveloped and will look like the page you see when you view Workflows.
 </p>
 
-<h1>File Entry: <%=h @blob.title %></h1>
+<% if @blob.title and @blob.title.length > 0 %>
+	<h1>File Entry: <%=h @blob.title %></h1>
+<% else %>
+	<h1>File Entry: <%=h @blob.local_name %></h1>
+<% end %>	
 
-<p>
-  <b>Contributor:</b><br/>
-  <%= contributor(@blob.contribution.contributor_id, @blob.contribution.contributor_type, true, 100) %>
-</p>
+<div class="contribution_currentlicense_box">
+	<%= render :partial => "blobs/license", :locals => { :blob => @blob } %>
+</div>
 
-<p>
-  <b>Local name:</b>
-  <%=h @blob.local_name %>
-</p>
+<div class="contribution_left_box">
+	<div class="contribution_version_box">
+		<p>
+		    <b>Title:</b>
+		    <%=h @blob.title %>
+		</p>
+		
+		<p>
+		    <b>File name:</b>
+		    <%=h @blob.local_name %>
+		</p>
+		
+		<p>
+		    <b>File type:</b>
+		    <%=h @blob.content_type %>
+		</p>
+		
+		<div class="contribution_description">
+			<b>Description:</b><br/>
+			<%= white_list @blob.body_html %>
+		</div>
+		
+		<% if logged_in? and @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
+			<div style="padding:1em; text-align:center;">
+				<a href="<%= download_blob_path(@blob) %>"><%= image_tag(image_path("download_button.png"), :alt => 'Download the file') %></a>
+			</div>
+		<% end %>
+	</div>
+</div>
 
-<p>
-  <b>File type:</b>
-  <%=h @blob.content_type %>
-</p>
+<div class="contribution_right_box">
+	<%= render :partial => "contributions/uploader_credits_attributions_box", :locals => { :contributable => @blob, :edit_path => edit_blob_path(@blob) } %>
+	
+	<% if logged_in? %>
+		<div class="actions">
+			<% if @blob.authorized?("edit", current_user) %>
+				<li><%= icon('manage', edit_blob_path(@blob), nil, nil, 'Manage File Entry')%></li>
+			<% end %>
+			<% if @blob.authorized?("destroy", current_user) %>
+				<li>
+					<%= icon('destroy', blob_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete File Entry') %>
+				</li>
+			<% end %>
+		</div>
+	<% end %>
+</div>	
 
-<ul class="sectionIcons">
-  <% if @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
-    <li><%= icon('download', download_blob_path(@blob), nil, nil, 'Download ' + truncate(@blob.local_name, 10)) %></li>
-  <% end %>
-  
-  <% if logged_in? %>
-    <% if @blob.authorized?("edit", current_user) %>
-      <li><%= icon('edit', edit_blob_path(@blob), nil, nil, 'Edit ' + truncate(@blob.local_name, 10)) %></li><% end %>
-    <% if @blob.authorized?("destroy", current_user) %>
-      <li><%= icon('destroy', blob_path(@blob), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove ' + truncate(@blob.local_name, 10)) %></li>
-    <% end %>
+<div class="clearer">&nbsp;</div>
 
-  <% end %>
-</ul>
+
 
 <br/>
 

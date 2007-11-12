@@ -1,4 +1,4 @@
-<% case (workflow.license.to_s); when "by-nd" %>
+<% case (blob.license.to_s); when "by-nd" %>
 
 <!--
 
@@ -6,14 +6,14 @@
     xmlns:dc="http://purl.org/dc/elements/1.1/"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <Work rdf:about="">
-   <dc:title><%= workflow.title %></dc:title>
-   <dc:date><%= workflow.created_at %></dc:date>
-   <dc:description><%= workflow.body_html %></dc:description>
+   <dc:title><%= blob.title %></dc:title>
+   <dc:date><%= blob.created_at %></dc:date>
+   <dc:description><%= blob.body_html %></dc:description>
    <dc:creator><Agent>
-      <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
+      <dc:title><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:creator>
    <dc:rights><Agent>
-      <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
+      <dc:title><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:rights>
    <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
    <dc:source rdf:resource="http://beta.myexperiment.org<%= request.request_uri %>"/>
@@ -40,14 +40,14 @@
     xmlns:dc="http://purl.org/dc/elements/1.1/"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <Work rdf:about="">
-   <dc:title><%= workflow.title %></dc:title>
-   <dc:date><%= workflow.created_at %></dc:date>
-   <dc:description><%= workflow.body_html %></dc:description>
+   <dc:title><%= blob.title %></dc:title>
+   <dc:date><%= blob.created_at %></dc:date>
+   <dc:description><%= blob.body_html %></dc:description>
    <dc:creator><Agent>
-      <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
+      <dc:title><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:creator>
    <dc:rights><Agent>
-      <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
+      <dc:title><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:rights>
    <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
    <dc:source rdf:resource="http://beta.myexperiment.org<%= request.request_uri %>"/>
@@ -75,14 +75,14 @@
     xmlns:dc="http://purl.org/dc/elements/1.1/"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <Work rdf:about="">
-   <dc:title><%= workflow.title %></dc:title>
-   <dc:date><%= workflow.created_at %></dc:date>
-   <dc:description><%= workflow.body_html %></dc:description>
+   <dc:title><%= blob.title %></dc:title>
+   <dc:date><%= blob.created_at %></dc:date>
+   <dc:description><%= blob.body_html %></dc:description>
    <dc:creator><Agent>
-      <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
+      <dc:title><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:creator>
    <dc:rights><Agent>
-      <dc:title><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, link=false) %></dc:title>
+      <dc:title><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:rights>
    <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
    <dc:source rdf:resource="http://beta.myexperiment.org<%= request.request_uri %>"/>
@@ -104,5 +104,5 @@
 <% end %>
 
 <p>
-  All versions of this Workflow are licensed under the <%= license_link workflow.license.to_s %>.
+  All versions of this File are licensed under the <%= license_link blob.license.to_s %>.
 </p>

@@ -1,0 +1,64 @@
+<div class="contribution_section_box">
+	<p class="heading">
+		<%= info_icon_with_tooltip("The uploader is the person who uploaded/created this #{contributable.contribution.contributable_type} on myExperiment, and who manages it on myExperiment.") %>
+		Uploader
+	</p>
+	<p>
+		<%= contributor(contributable.contribution.contributor_id, contributable.contribution.contributor_type, true, 60) %>
+	</p>
+	
+	<hr/>
+			
+	<p class="heading">
+		<%= info_icon_with_tooltip("Which people/groups get the credit for this #{contributable.contribution.contributable_type}?") %>
+		Credits
+		<span style="font-size: 77%; color: #666666; display: block; padding: 0.1em 0.5em; margin: 0;">(People/Groups)</span>
+	</p>
+	<% unless (creditors = contributable.creditors).empty? %>
+		<div style="text-align: left; font-size: 85%;">
+			<ul>
+				<% creditors.each do |c| %>
+					<li>
+						<% if c.creditor_type == 'User' %>
+							<%= icon('user', nil, nil, nil, '') %> 
+						<% elsif c.creditor_type == 'Network' %>
+							<%= icon('network-member', nil, nil, nil, '') %>
+						<% end %>
+						<%= contributor(c.creditor_id, c.creditor_type) %>
+					</li>
+				<% end %>
+			</ul>
+		</div>
+	<% else %>
+		<p style="text-align: left;"><i>None</i></p>
+	<% end %>
+	
+	<p class="heading">
+		<%= info_icon_with_tooltip("What other Workflows/Files is this one based on?") %>
+		Attribution
+		<span style="font-size: 77%; color: #666666; display: block; padding: 0.1em 0.5em; margin: 0;">(Workflows/Files)</span>
+	</p>
+	<% unless (attributors = contributable.attributors).empty? %>
+		<div style="text-align: left; font-size: 85%;">
+			<ul>
+				<% attributors.each do |a| %>
+					<li>
+						<% if a.attributor_type == 'Workflow' %>
+							<%= icon('workflow', nil, nil, nil, '') %> 
+						<% elsif a.attributor_type == 'Blob' %>
+							<%= icon('blob', nil, nil, nil, '') %>
+						<% end %> 
+						<%= contributable(a.attributor_id, a.attributor_type) %>
+					</li>
+				<% end %>
+			</ul>
+		</div>
+	<% else %>
+		<p style="text-align: left;"><i>None</i></p>
+	<% end %>
+	
+	<% if contributable.authorized?("edit", current_user) %>
+		<p style="text-align: right;"><small>[<%= link_to "edit", edit_path %>]</small></p>
+	<% end %>
+	
+</div>

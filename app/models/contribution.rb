@@ -33,7 +33,7 @@ class Contribution < ActiveRecord::Base
   has_many :viewings,
            :order => "created_at DESC",
            :dependent => :destroy
-  
+           
   # returns the 'most downloaded' Contributions
   # the maximum number of results is set by #limit#
   def self.most_downloaded(limit=10, klass=nil)

@@ -596,8 +596,8 @@ module ApplicationHelper
     end
   end
   
-  def user_tags_for_workflow(workflow, user_id)
-    all_tags = workflow.taggings
+  def user_tags_for_contributable(contributable, user_id)
+    all_tags = contributable.taggings
     final_tags = []
     
     all_tags.each do |tagging|
@@ -763,6 +763,12 @@ module ApplicationHelper
     else 
       return ''
     end
+  end
+  
+  def info_icon_with_tooltip(info_text, delay=200)
+    return image_tag("famfamfam_silk/help.png",
+              :title => "header=[] body=[#{info_text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[#{delay}]",
+              :style => "vertical-align:middle;")
   end
 
 protected

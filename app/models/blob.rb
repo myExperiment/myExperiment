@@ -22,9 +22,22 @@
 ##
 
 require 'acts_as_contributable'
+require 'acts_as_contributable'
+require 'acts_as_creditable'
+require 'acts_as_attributor'
+require 'acts_as_attributable'
 
 class Blob < ActiveRecord::Base
+  has_many :citations, 
+           :order => "created_at DESC",
+           :dependent => :destroy
+           
   acts_as_contributable
+  
+  acts_as_creditable
+
+  acts_as_attributor
+  acts_as_attributable
   
   acts_as_ferret :fields => { :local_name => { :store => :yes },
                               :content_type => { :store => :yes } }

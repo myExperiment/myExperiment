@@ -1,5 +1,4 @@
 <script type="text/javascript">
- 
   function showAllTags() {
   	Element.show('all_tags'); 
 	Element.hide('user_tags'); 
@@ -20,7 +19,7 @@
 </script>
 
 <div id="tags">
-	<% unless (tags = workflow.tags).empty? %>
+	<% unless (tags = contributable.tags).empty? %>
 		<p style="text-align: center; margin: 0.4em 0 0.6em 0; border-bottom: 0px solid #999999; padding-bottom: 0;">
 			<a id="tagsSelectAllLink" 
 			   class="tagsSelectorOn" 
@@ -28,7 +27,7 @@
 			   onclick="showAllTags(); return false;">
 			   All Tags</a>
 
-			<% if (logged_in? and current_user.id == workflow.contribution.contributor_id and workflow.contribution.contributor_type == 'User') then tagLink2Text = "My" else tagLink2Text = "Uploader's" end; tagLink2Text += " Tags" -%>
+			<% if (logged_in? and current_user.id == contributable.contribution.contributor_id and contributable.contribution.contributor_type == 'User') then tagLink2Text = "My" else tagLink2Text = "Uploader's" end; tagLink2Text += " Tags" -%>
 			
 			<a id="tagsSelectUserLink" 
 			   class="tagsSelectorOff" 
@@ -37,15 +36,15 @@
 			   <%= tagLink2Text %></a>
 		</p>
 		<div id="all_tags">
-			<% unless (tags = workflow.tags).empty? %>
+			<% unless (tags = contributable.tags).empty? %>
 				<%= tag_cloud_from_collection(tags) %>
 			<% else %>
       			<p><i>None</i></p>
 			<% end %>
 		</div>
 		<div id="user_tags"  style="display: none;">
-			<% if workflow.contribution.contributor_type == 'User' %>
-				<% unless (tags = user_tags_for_workflow(workflow, workflow.contributor_id)).empty? %>
+			<% if contributable.contribution.contributor_type == 'User' %>
+				<% unless (tags = user_tags_for_contributable(contributable, contributable.contributor_id)).empty? %>
 					<%= tag_cloud_from_collection(tags) %>
 				<% else %>
       				<p><i>None</i></p>
