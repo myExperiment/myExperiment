@@ -1,17 +1,16 @@
+<%= javascript_include_tag "osp.js" %>
+
 <h1><%= _('Edit Forum') %></h1>
 
 <% form_for :forum,
      :url  => forum_path(@forum),
      :html => { :method => :put } do |f| -%>
+
 <% if @forum.owner?(current_user) %>
 
-<p id="forum_contributor"></p>
+  <%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @forum } %>
 
-<%= render :partial => "contributions/contributor_form", :locals => { :user => current_user, :current => @forum.contributor } %>
-
-<p id="forum_policy"></p>
-  
-<%= render :partial => "policies/listform", :locals => { :contribution => @forum.contribution, :user => current_user } %>
+  <%= render :partial => "contributions/updating_form", :locals => { :edit => true, :contributable => @forum } %>
 
 <% end %>
      

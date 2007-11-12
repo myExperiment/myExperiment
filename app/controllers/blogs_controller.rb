@@ -42,6 +42,9 @@ class BlogsController < ApplicationController
   def show
     @viewing = Viewing.create(:contribution => @blog.contribution, :user => (logged_in? ? current_user : nil))
     
+    @sharing_mode  = determine_sharing_mode(@blog)
+    @updating_mode = determine_updating_mode(@blog)
+    
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @blog.to_xml }
@@ -51,29 +54,33 @@ class BlogsController < ApplicationController
   # GET /blogs/new
   def new
     @blog = Blog.new
+
+    @sharing_mode  = 0
+    @updating_mode = 6
   end
 
   # GET /blogs/1;edit
   def edit
 
+    @sharing_mode  = determine_sharing_mode(@blog)
+    @updating_mode = determine_updating_mode(@blog)
   end
 
   # POST /blogs
   # POST /blogs.xml
   def create
-    # hack for select contributor form
-    if params[:contributor_pair]
-      params[:blog][:contributor_type], params[:blog][:contributor_id] = "User", current_user.id                                       # forum contributed by current_user..
-      params[:contribution][:contributor_type], params[:contribution][:contributor_id] = params[:contributor_pair][:class_id].split("-") # ..but owned by contributor_pair
-      params.delete("contributor_pair")
-    end
+
+    params[:blog][:contributor_type] = "User"
+    params[:blog][:contributor_id]   = current_user.id
     
     @blog = Blog.new(params[:blog])
     
     respond_to do |format|
       if @blog.save
-        # update policy
+
         @blog.contribution.update_attributes(params[:contribution])
+
+        update_policy(@blog, params)
         
         flash[:notice] = 'Blog was successfully created.'
         format.html { redirect_to blog_url(@blog) }
@@ -88,11 +95,6 @@ class BlogsController < ApplicationController
   # PUT /blogs/1
   # PUT /blogs/1.xml
   def update
-    # hack for select contributor form
-    if params[:contributor_pair]
-      params[:contribution][:contributor_type], params[:contribution][:contributor_id] = params[:contributor_pair][:class_id].split("-")
-      params.delete("contributor_pair")
-    end
     
     # remove protected columns
     if params[:blog]
@@ -103,12 +105,12 @@ class BlogsController < ApplicationController
     
     respond_to do |format|
       if @blog.update_attributes(params[:blog])
-        # bug fix to not save 'default' workflow unless policy_id is selected
-        @blog.contribution.policy = nil if (params[:contribution][:policy_id].nil? or params[:contribution][:policy_id].empty?)
         
         # security fix (only allow the owner to change the policy)
         @blog.contribution.update_attributes(params[:contribution]) if @blog.contribution.owner?(current_user)
         
+        update_policy(@blog, params)
+
         flash[:notice] = 'Blog was successfully updated.'
         format.html { redirect_to blog_url(@blog) }
         format.xml  { head :ok }

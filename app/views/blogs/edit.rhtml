@@ -1,20 +1,25 @@
+<%= javascript_include_tag "osp.js" %>
+
 <h1>Editing Blog</h1>
 
 <%= error_messages_for :blog %>
 
 <% form_for(:blog, :url => blog_path(@blog), :html => { :method => :put }) do |f| %>
-  <% if @blog.owner?(current_user) %>
-    <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user, :current => @blog.contribution.contributor } %>
-  
-    <%= render :partial => "policies/listform", :locals => { :contribution => @blog.contribution, :user => current_user } %>
-  <% end %>
-  
-  <h2>Details</h2>
 
   <p>
     <b>Title</b><br />
     <%= f.text_field :title %>
   </p>
+
+  <br />
+  <br />
+
+  <% if @blog.owner?(current_user) %>
+    <%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @blog } %>
+
+    <%= render :partial => "contributions/updating_form", :locals => { :edit => true, :contributable => @blog } %>
+
+  <% end %>
 
   <p>
     <%= submit_tag "Update" %>

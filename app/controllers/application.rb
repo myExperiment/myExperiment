@@ -96,6 +96,8 @@ class ApplicationController < ActionController::Base
 
   def update_policy(contributable, params)
 
+    return if params[:sharing].nil? or params[:updating].nil?
+
     view_protected     = false
     view_public        = false
     download_protected = false
