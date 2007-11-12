@@ -255,9 +255,7 @@ class WorkflowsController < ApplicationController
         # See line 207
         if @workflow.update_attributes(params[:workflow])
           if params[:workflow][:tag_list]
-            @workflow.user_id = current_user
-            @workflow.tag_list = params[:workflow][:tag_list]
-            @workflow.update_tags
+            refresh_tags(@workflow, params[:workflow][:tag_list], current_user)
           end
         
           # security fix (only allow the owner to change the policy)
@@ -276,9 +274,7 @@ class WorkflowsController < ApplicationController
           
       if @workflow.update_attributes(params[:workflow])
         if params[:workflow][:tag_list]
-          @workflow.user_id = current_user
-          @workflow.tag_list = params[:workflow][:tag_list]
-          @workflow.update_tags
+          refresh_tags(@workflow, params[:workflow][:tag_list], current_user)
         end
         
         # security fix (only allow the owner to change the policy)

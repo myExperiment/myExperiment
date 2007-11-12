@@ -1,4 +1,5 @@
-<% tags = current_user.contribution_tags -%>
+<% tags = (Tagging.find_all_by_user_id(current_user).map do |tagging| tagging.tag end).uniq %>
+
 <div class="myexperiment_gadget">
   <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 
