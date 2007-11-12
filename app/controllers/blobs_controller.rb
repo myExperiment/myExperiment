@@ -65,12 +65,12 @@ class BlobsController < ApplicationController
       format.html # all.rhtml
     end
   end
-
+  
   # GET /blobs/1
   # GET /blobs/1.xml
   def show
     @viewing = Viewing.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
-
+    
     @sharing_mode  = determine_sharing_mode(@blob)
     @updating_mode = determine_updating_mode(@blob)
     
@@ -79,26 +79,26 @@ class BlobsController < ApplicationController
       format.xml  { render :xml => @blob.to_xml }
     end
   end
-
+  
   # GET /blobs/new
   def new
     @blob = Blob.new
-
+    
     @sharing_mode  = 1
     @updating_mode = 6
   end
-
+  
   # GET /blobs/1;edit
   def edit
-
+    
     @sharing_mode  = determine_sharing_mode(@blob)
     @updating_mode = determine_updating_mode(@blob)
   end
-
+  
   # POST /blobs
   # POST /blobs.xml
   def create
-
+    
     params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
     params[:blob][:local_name] = params[:blob][:data].original_filename
     params[:blob][:content_type] = params[:blob][:data].content_type
@@ -117,7 +117,7 @@ class BlobsController < ApplicationController
         @blob.contribution.update_attributes(params[:contribution])
         
         update_policy(@blob, params)
-
+        
         flash[:notice] = 'File was successfully created.'
         format.html { redirect_to blob_url(@blob) }
         format.xml  { head :created, :location => blob_url(@blob) }
@@ -127,7 +127,7 @@ class BlobsController < ApplicationController
       end
     end
   end
-
+  
   # PUT /blobs/1
   # PUT /blobs/1.xml
   def update
@@ -146,7 +146,7 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
-
+        
         if params[:blob][:tag_list]
           @blob.user_id = current_user
           @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
@@ -157,7 +157,7 @@ class BlobsController < ApplicationController
         @blob.contribution.update_attributes(params[:contribution]) if @blob.contribution.owner?(current_user)
         
         update_policy(@blob, params)
-
+        
         flash[:notice] = 'File was successfully updated.'
         format.html { redirect_to blob_url(@blob) }
         format.xml  { head :ok }
@@ -167,25 +167,54 @@ class BlobsController < ApplicationController
       end
     end
   end
-
+  
   # DELETE /blobs/1
   # DELETE /blobs/1.xml
   def destroy
     @blob.destroy
-
+    
     respond_to do |format|
       format.html { redirect_to blobs_url }
       format.xml  { head :ok }
     end
   end
   
-protected
-
+  # POST /blobs/1;comment
+  # POST /blobs/1.xml;comment
+  def comment 
+    comment = Comment.create(:user => current_user, :comment => (ae_some_html params[:comment]))
+    @blob.comments << comment
+    
+    respond_to do |format|
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @blob, :add_url => comment_blob_path(@blob) } }
+      format.xml { render :xml => @blob.comments.to_xml }
+    end
+  end
+  
+  # DELETE /blobs/1;comment_delete
+  # DELETE /blobs/1.xml;comment_delete
+  def comment_delete
+    if params[:comment_id]
+      comment = Comment.find(params[:comment_id].to_i)
+      # security checks:
+      if comment.user_id == current_user.id and comment.commentable_type.downcase == 'blob' and comment.commentable_id == @blob.id
+        comment.destroy
+      end
+    end
+    
+    respond_to do |format|
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @blob, :add_url => comment_blob_path(@blob) } }
+      format.xml { render :xml => @blob.comments.to_xml }
+    end
+  end
+  
+  protected
+  
   def find_blobs
     @blobs = Blob.find(:all, 
                        :order => "content_type ASC, local_name ASC, created_at DESC",
-                       :page => { :size => 20, 
-                                  :current => params[:page] })
+    :page => { :size => 20, 
+      :current => params[:page] })
   end
   
   def find_blob_auth
@@ -201,16 +230,16 @@ protected
           find_blob_auth if login_required
         end
       end
-    rescue ActiveRecord::RecordNotFound
+      rescue ActiveRecord::RecordNotFound
       error("File not found", "is invalid")
     end
   end
   
-private
-
+  private
+  
   def error(notice, message, attr=:id)
     flash[:notice] = notice
-    (err = Blob.new.errors).add(attr, message)
+     (err = Blob.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to blobs_url }

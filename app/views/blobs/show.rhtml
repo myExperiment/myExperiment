@@ -2,7 +2,7 @@
 	<b>Note: </b> this page is currently being redeveloped and will look like the page you see when you view Workflows.
 </p>
 
-<h2>Details</h2>
+<h1>File Entry: <%=h @blob.title %></h1>
 
 <p>
   <b>Contributor:</b><br/>
@@ -70,3 +70,9 @@
     </div>
   </div>
 <% end %>
+
+<a name="comments"></a>
+<h2>Comments (<%= @blob.comments.length %>)</h2>
+<div id="commentsBox" class="commentsBox">
+	<%= render :partial => "comments/comments", :locals => { :commentable => @blob, :add_url => comment_blob_path(@blob) } %>
+</div>
