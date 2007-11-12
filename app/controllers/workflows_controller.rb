@@ -473,12 +473,18 @@ private
     
     # Then create new attributions:
     
-    attributor_ids = parse_comma_seperated_string(params[:attributions_workflows])
-    
-    # Note: currently only existing workflows can be used in attributions.
-    # In future, it is likely that other types of files can be used (re: EMOs)
+    # Workflows
+    attributor_workflow_ids = parse_comma_seperated_string(params[:attributions_workflows])
     attributor_type = 'Workflow'
-    attributor_ids.each do |id|
+    attributor_workflow_ids.each do |id|
+      a = Attribution.new(:attributor_type => attributor_type, :attributor_id => id, :attributable_type => 'Workflow', :attributable_id  => workflow.id)
+      a.save
+    end
+    
+    # Files
+    attributor_file_ids = parse_comma_seperated_string(params[:attributions_files])
+    attributor_type = 'Blob'
+    attributor_file_ids.each do |id|
       a = Attribution.new(:attributor_type => attributor_type, :attributor_id => id, :attributable_type => 'Workflow', :attributable_id  => workflow.id)
       a.save
     end

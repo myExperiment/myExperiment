@@ -1,6 +1,6 @@
 <%= javascript_include_tag "osp.js" %>
 
-<h1>Manage File: <%= @blob.local_name %></h1>
+<h1>Manage File: <%= contributable_name(@blob.id, 'Blob') %></h1>
 
 <%= error_messages_for :blob %>
 

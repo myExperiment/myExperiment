@@ -1,8 +1,4 @@
-<% if @blob.title and @blob.title.length > 0 %>
-	<h1>File Entry: <%=h @blob.title %></h1>
-<% else %>
-	<h1>File Entry: <%=h @blob.local_name %></h1>
-<% end %>	
+<h1>File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
 
 <div class="contribution_currentlicense_box">
 	<%= render :partial => "blobs/license", :locals => { :blob => @blob } %>

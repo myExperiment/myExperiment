@@ -14,12 +14,12 @@
 					<a name="<%= blob.local_name.gsub(/ /, "_") %>"></a>
 					<p class="title">
 						<%= icon "blob", nil, nil, nil, '' %>
-						<%=link_to(query ? highlight_all(blob.local_name, query) : h(blob.local_name), blob_path(blob)) %>
+						<% title = contributable_name(blob.id, 'Blob') %>
+						<%=link_to(query ? highlight_all(title), query) : title, blob_path(blob)) %>
 					</p>
 					
 					<p style="font-size:85%;"><b>File type: </b><%= h blob.content_type %></p>
 					
-					<% if false %>
 					<% unless (creditors = blob.creditors).empty? %>
 						<p style="font-size:85%;">
 						<b>Credits:</b>
@@ -46,14 +46,11 @@
 						<% end %>
 						</p>
 					<% end %>
-					<% end %>
 					
-					<% if false %>
 					<% if blob.body and blob.body.length > 0 %>
 					  	<div class="desc" style="font-size: 85%;">
-					    	<%=query ? highlight_all(truncate(blob.body, 400), query) : truncate(blob.body, 400) %>
+					    	<%= query ? highlight_all(truncate(h(blob.body), 400), query) : truncate(h(blob.body), 400) %>
 					  	</div>
-					<% end %>
 					<% end %>
 					
 					<p style="font-size: 85%;">

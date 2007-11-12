@@ -249,6 +249,7 @@ function update_author(parentId) {
 }
 
 var attributions_workflows = new Object();
+var attributions_files = new Object();
 
 function updateAttributionsList() {
 	
@@ -256,7 +257,13 @@ function updateAttributionsList() {
 	
 	for (var key in attributions_workflows)
 	{
-		markup += attributions_workflows[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAttribution(' + key + '); ' +
+		markup += 'Workflow: ' + attributions_workflows[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAttribution(\'workflow\', ' + key + '); ' +
+    		'return false;">delete</a>]</small><br/>';
+	}
+	
+	for (var key in attributions_files)
+	{
+		markup += 'File: ' + attributions_files[key] + '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteAttribution(\'file\', ' + key + '); ' +
     		'return false;">delete</a>]</small><br/>';
 	}
 	
@@ -274,25 +281,50 @@ function updateAttributionsList() {
 	for (var key in attributions_workflows)
 	{
 		attr_workflows_list += key + ',';
-	} 
+	}
 	
 	document.getElementById('attributions_workflows').value = attr_workflows_list;
+	
+	var attr_files_list = '';
+	
+	for (var key in attributions_files)
+	{
+		attr_files_list += key + ',';
+	} 
+	
+	document.getElementById('attributions_files').value = attr_files_list;
 }
 
-function addAttribution() {
-    var x = document.getElementById('existingworkflows_dropdown');
+function addAttribution(type) {
+	
+	if (type == 'existing_workflow') {
+		var x = document.getElementById('existingworkflows_dropdown');
 		
-	if (x.options.length > 0)
-	{
-		var y = x.options[x.selectedIndex];
-     	attributions_workflows[y.value] = y.text;
+		if (x.options.length > 0) {
+			var y = x.options[x.selectedIndex];
+			attributions_workflows[y.value] = y.text;
+		}
 	}
+	else if (type == 'existing_file') {
+		var x = document.getElementById('existingfiles_dropdown');
+		
+		if (x.options.length > 0) {
+			var y = x.options[x.selectedIndex];
+			attributions_files[y.value] = y.text;
+		}
+	} 
 	
 	updateAttributionsList();
 }
 
-function deleteAttribution(id) {
-	delete attributions_workflows[id];
+function deleteAttribution(type, id) {
+	
+	if (type == 'workflow') {
+		delete attributions_workflows[id];
+	}
+	else if (type == 'file') {
+		delete attributions_files[id];
+	}
 	
 	updateAttributionsList();
 }

@@ -14,7 +14,8 @@
 	      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
 	      <p class="title">
 		  	<%= icon "workflow", nil, nil, nil, '' %>
-			<%=link_to(query ? highlight_all(workflow.title, query) : h(workflow.title), workflow_path(workflow)) %>
+			<% title = contributable_name(workflow.id, 'Workflow')%>
+			<%=link_to(query ? highlight_all(title, query) : title, workflow_path(workflow)) %>
 		  </p>
 		  <% unless (creditors = workflow.creditors).empty? %>
 		  	<p style="font-size:85%;">
@@ -56,7 +57,7 @@
 			  
 			  <% if workflow.body and workflow.body.length > 0 %>
 				  <div class="desc" style="margin-left: 1em; width: 370px; float: left; display: inline; font-size: 85%;">
-			        <%=query ? highlight_all(truncate(workflow.body, 400), query) : truncate(workflow.body, 400) %>
+			        <%= query ? highlight_all(truncate(h(workflow.body), 400), query) : truncate(h(workflow.body), 400) %>
 			      </div>
 			  <% end %>
 			  <div class="clearer">&nbsp;</div>

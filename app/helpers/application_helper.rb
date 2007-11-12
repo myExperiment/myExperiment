@@ -309,7 +309,15 @@ module ApplicationHelper
     case contributabletype.to_s
     when "Blob"
       if b = Blob.find(:first, :conditions => ["id = ?", contributableid])
-        name = h(b.local_name)
+        if (b.title)
+          if (b.title.length > 0)
+            name = h(b.title)
+          else 
+            name = h(b.local_name)
+          end
+        else
+          name = h(b.local_name)
+        end
         
         return link ? link_to(name, blob_url(b)) : name
       else
@@ -653,6 +661,15 @@ module ApplicationHelper
     workflows = Workflow.find_all
     workflows.sort! { |x,y|
       x.title.downcase <=> y.title.downcase
+    }
+  end
+  
+  def all_blobs
+    blobs = Blob.find_all
+    blobs.sort! { |x,y|
+      x_title = (x.title and x.title.length > 0) ? x.title : x.local_name
+      y_title = (y.title and y.title.length > 0) ? y.title : y.local_name
+      x_title.downcase <=> y_title.downcase
     }
   end
   

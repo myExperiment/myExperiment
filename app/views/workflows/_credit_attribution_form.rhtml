@@ -3,10 +3,11 @@
 <input id="credits_groups" type="hidden" name="credits_groups"/>
 
 <input id="attributions_workflows" type="hidden" name="attributions_workflows"/>
+<input id="attributions_files" type="hidden" name="attributions_files"/>
 
 <div class="fold">
 	<div class="foldTitle">
-	    <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to give <strong>credit</strong> to users/groups for this Workflow (for example, the <strong>author(s)</strong> of this Workflow). <br/><br/>You can also attribute the Workflows that this Workflow is <strong>based on</strong> (if any). <br/><br/>By default, you are the only person who gets credit.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+	    <%= info_icon_with_tooltip("This section allows you to give <strong>credit</strong> to users/groups for this Workflow (for example, the <strong>author(s)</strong> of this Workflow). <br/><br/>You can also attribute the Workflows that this Workflow is <strong>based on</strong> (if any). <br/><br/>By default, you are the only person who gets credit.") %>
 	    Credit and Attribution
 		<% if edit %>
 			<hr/>
@@ -52,7 +53,7 @@
                     <p>
                         <select id="author_friends_dropdown">
                         	<% current_user.friends.each do |f| %>
-                            	<option value="<%= f.id %>"><%= f.name %></option>
+                            	<option value="<%= f.id %>"><%= h(f.name) %></option>
                             <% end %>
                         </select>
                     </p>
@@ -67,7 +68,7 @@
                     <p>
                         <select id="author_otheruser_dropdown">
                             <% (all_nonfriends(current_user)).each do |f| %>
-                            	<option value="<%= f.id %>"><%= f.name %></option>
+                            	<option value="<%= f.id %>"><%= h(f.name) %></option>
                             <% end %>
                         </select>
                     </p>
@@ -82,7 +83,7 @@
                     <p>
                         <select id="author_networks_dropdown">
                             <% all_networks.each do |n| %>
-                            	<option value="<%= n.id %>"><%= n.title %></option>
+                            	<option value="<%= n.id %>"><%= h(n.title) %></option>
                             <% end %>
                         </select>
                     </p>
@@ -123,45 +124,40 @@
         </div>
         <hr />
         <p>
-            <strong>If this Workflow is based on any existing Workflows, please list them below:</strong>
+            <strong>If this Workflow is based on any existing Workflows or Files, please list them below:</strong>
         </p>
         <div style="padding-left: 1em;">
             <p id="attribution_list">
                 <i>None</i>
             </p>
             <br />
-            <div style="padding: 1em; float: left; border: 1px dotted #999999; text-align: left;">
-                Add an attribution to an existing Workflow on myExperiment:
+            <div style="padding: 1em; float: left; border: 1px dotted #999999; text-align: left; width: 300px;">
+                Existing Workflowz on myExperiment:
                 <br />
                 <br />
-                <select id="existingworkflows_dropdown" style="width: 400px;">
+                <select id="existingworkflows_dropdown" style="width: 280px;">
                     <% all_workflows.each do |w| %>
-                        	<option value="<%= w.id %>"><%= w.title %></option>
+                        	<option value="<%= w.id %>"><%= h(w.title) %></option>
                         <% end %>
                 </select>
                 <br />
                 <br />
-                <a href="" onclick="javascript:addAttribution(); return false;" >Add</a>
+                <a href="" onclick="javascript:addAttribution('existing_workflow'); return false;" >Add</a>
             </div>
 			
-			<% if false %>
-			
-            <div style="padding: 1em; float: left; border: 1px dotted #999999; margin-left: 1em; text-align: center;">
-                Link to a Workflow somewhere else:
+            <div style="padding: 1em; float: left; border: 1px dotted #999999; margin-left: 1em; text-align: center; width: 300px;">
+                Existing Files on myExperiment:
                 <br />
                 <br />
-                <label for="basedon_extworkflow_name">Name: </label>
-                <input id="basedon_extworkflow_name" size="25" value="" type="text"/>
+                <select id="existingfiles_dropdown" style="width: 280px;">
+                    <% all_blobs.each do |b| %>
+                        	<option value="<%= b.id %>"><%= contributable_name(b.id, 'Blob') %></option>
+                        <% end %>
+                </select>
                 <br />
                 <br />
-                <label for="basedon_extworkflow_uri">Link: </label>
-                <input id="basedon_extworkflow_uri" size="25" value="" type="text"/>
-                <br />
-                <br />
-                <a href="" onclick="javascript:add_workflowreference_string(document.getElementById('basedon_extworkflow_name').value + ' (' + document.getElementById('basedon_extworkflow_uri').value + ')'); return false;" >Add</a>
+                <a href="" onclick="javascript:addAttribution('existing_file'); return false;" >Add</a>
             </div>
-			
-			<% end %>
 			
             <div style="clear: both;">&nbsp;</div>                       
         </div>
@@ -187,6 +183,8 @@
 	<% @workflow.attributors.each do |a| %>
 	  <% if a.attributor_type == 'Workflow' %>
 	  	attributions_workflows[<%= a.attributor_id %>] = '<%= escape_javascript contributable_name(a.attributor_id, 'Workflow') %>';
+	  <% elsif a.attributor_type == 'Blob' %>
+	    attributions_files[<%= a.attributor_id %>] = '<%= escape_javascript contributable_name(a.attributor_id, 'Blob') %>';
 	  <% end %>
     <% end %>
     updateAttributionsList();
