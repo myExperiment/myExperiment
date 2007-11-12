@@ -20,7 +20,7 @@
 	<a name="make_comment"></a>
 	<div class="addCommentBox">
 		<h4>Make a Comment:</h4>
-		<% form_remote_tag(:url => add_form_url, 
+		<% form_remote_tag(:url => add_url, 
 						   :update => 'commentsBox', 
 						   :loading => "Element.show('addcomment_indicator')",
                     	   :complete => "Element.hide('addcomment_indicator'); new Effect.Highlight('comments', { duration: 1.5 }); $('comment').value = '';") do %>

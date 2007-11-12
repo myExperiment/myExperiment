@@ -70,6 +70,23 @@ class WorkflowsController < ApplicationController
     end
   end
   
+  # DELETE /workflows/1;comment_delete
+  # DELETE /workflows/1.xml;comment_delete
+  def comment_delete
+    if params[:comment_id]
+      comment = Comment.find(params[:comment_id].to_i)
+      # security checks:
+      if comment.user_id == current_user.id and comment.commentable_type.downcase == 'workflow' and comment.commentable_id == @workflow.id
+        comment.destroy
+      end
+    end
+    
+    respond_to do |format|
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow, :add_form_url => comment_workflow_path(@workflow) } }
+      format.xml { render :xml => @workflow.comments.to_xml }
+    end
+  end
+  
   # POST /workflows/1;rate
   # POST /workflows/1.xml;rate
   def rate

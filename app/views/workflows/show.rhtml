@@ -388,5 +388,5 @@
 <a name="comments"></a>
 <h2>Comments (<%= @workflow.comments.length %>)</h2>
 <div id="commentsBox" class="commentsBox">
-	<%= render :partial => "comments/comments", :locals => { :commentable => @workflow, :add_form_url => comment_workflow_path(@workflow) } %>
+	<%= render :partial => "comments/comments", :locals => { :commentable => @workflow, :add_url => comment_workflow_path(@workflow) } %>
 </div>
