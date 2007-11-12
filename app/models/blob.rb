@@ -28,4 +28,6 @@ class Blob < ActiveRecord::Base
   
   acts_as_ferret :fields => { :local_name => { :store => :yes },
                               :content_type => { :store => :yes } }
+  
+  validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
 end
