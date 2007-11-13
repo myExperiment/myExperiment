@@ -1,5 +1,5 @@
 
-class ModifyBlobs < ActiveRecord::Migration
+class RenameDescToBody < ActiveRecord::Migration
   def self.up
     rename_column :blobs, :description, :body
     add_column :blobs, :body_html, :text

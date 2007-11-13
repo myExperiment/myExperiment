@@ -1,5 +1,5 @@
 
-class ModifyBlobs < ActiveRecord::Migration
+class AddLicenseToBlobs < ActiveRecord::Migration
   def self.up
     add_column :blobs, :license, :string, :limit => 10, :null => false, :default => "by-nd"
   end
