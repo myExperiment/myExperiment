@@ -25,7 +25,13 @@
 			<% unless comments.empty? %>
 				<ul>
 					<% comments.each do |c| %>
-						<li><%= datetime c.created_at, false %> - <br/><br/>"<%= truncate(c.comment, 100) %>"<br/><br/>for <%= contributable(c.commentable_id, c.commentable_type) %><br/><br/></li>
+						<li>
+							<%= datetime c.created_at, false %> -
+							<br/><br/>
+							<div class="info_text" style="background-color: #FFFFCC;"><%= truncate(c.comment, 300) %></div>
+							for <%= contributable(c.commentable_id, c.commentable_type) %>
+							<br/><br/>
+						</li>
 					<% end %>
 				</ul>
 			<% else %>
