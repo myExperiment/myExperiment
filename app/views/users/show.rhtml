@@ -1,5 +1,9 @@
-<% if logged_in? and my_page? @user.id %>
-	<h1>You</h1>
+<% if logged_in? %> 
+	<% if my_page? @user.id %>
+		<h1>You</h1>
+	<% else %>
+		<h1>User: <%=h @user.name %><%= friend_badge(@user) %></h1>
+	<% end %>
 <% else %>
 	<h1>User: <%=h @user.name %><%= friend_badge(@user) %></h1>
 <% end %>
