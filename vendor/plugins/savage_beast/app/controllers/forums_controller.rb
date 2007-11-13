@@ -56,7 +56,7 @@ class ForumsController < ApplicationController
         update_policy(@forum, params);
 
         flash[:notice] = 'Forum was successfully created.'
-        format.html { redirect_to forums_path(@forum) }
+        format.html { redirect_to forum_path(@forum) }
         format.xml  { head :created, :location => formatted_forum_url(:id => @forum, :format => :xml) }
       else
         format.html { render :action => "new" }
