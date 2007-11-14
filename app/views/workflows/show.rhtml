@@ -66,10 +66,12 @@
 			<center><%= link_to image_tag(url_for_file_column(@workflow, "image", "medium")), url_for_file_column(@workflow, "image") %></center>
 		<% end %>
 		
-		<div class="contribution_description">
-			<b>Description:</b><br/>
-			<%= white_list @workflow.body_html %>
-		</div>
+		<% if @workflow.body and @workflow.body.length > 0 %>
+			<div class="contribution_description">
+				<b>Description:</b><br/>
+				<%= white_list @workflow.body_html %>
+			</div>
+		<% end %>
 		
 		<% if logged_in? and @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
 			<div style="padding:1em; text-align:center;">

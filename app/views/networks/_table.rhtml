@@ -25,7 +25,9 @@
 					</p>
 					
 					<% if network.description and network.description.length > 0 %>
-						<div class="desc"><%= h network.description %></div>
+						<div class="desc">
+							<%= query ? highlight_all(truncate(white_list(network.description_html), 400), query) : truncate(white_list(network.description_html), 400) %>
+						</div>
 					<% end %>
 					
 					<% unless network.members.empty? %>

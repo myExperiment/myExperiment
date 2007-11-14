@@ -57,7 +57,7 @@
 			  
 			  <% if workflow.body and workflow.body.length > 0 %>
 				  <div class="desc" style="margin-left: 1em; width: 370px; float: left; display: inline; font-size: 85%;">
-			        <%= query ? highlight_all(truncate(h(workflow.body), 400), query) : truncate(h(workflow.body), 400) %>
+			        <%= query ? highlight_all(truncate(white_list(workflow.body_html), 400), query) : truncate(white_list(workflow.body_html), 400) %>
 			      </div>
 			  <% end %>
 			  <div class="clearer">&nbsp;</div>

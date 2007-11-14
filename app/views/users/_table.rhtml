@@ -13,7 +13,7 @@
 					<% if user.profile %>
 						<% if user.profile.body and user.profile.body.length > 0 %>
 							<div class="desc" style="font-size: 85%;">
-								<%= truncate h(user.profile.body), 160 %>
+								<%= truncate white_list(user.profile.body_html), 160 %>
 							</div>
 						<% end %>
 						<p style="font-size: 85%;">

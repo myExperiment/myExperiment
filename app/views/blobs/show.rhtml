@@ -21,10 +21,12 @@
 		    <%=h @blob.content_type %>
 		</p>
 		
-		<div class="contribution_description">
-			<b>Description:</b><br/>
-			<%= white_list @blob.body_html %>
-		</div>
+		<% if @blob.body and @blob.body.length > 0 %>
+			<div class="contribution_description">
+				<b>Description:</b><br/>
+				<%= white_list @blob.body_html %>
+			</div>
+		<% end %>
 		
 		<% if logged_in? and @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
 			<div style="padding:1em; text-align:center;">
