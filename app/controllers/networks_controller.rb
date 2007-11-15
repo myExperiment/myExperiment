@@ -115,7 +115,7 @@ class NetworksController < ApplicationController
 
     respond_to do |format|
       if @network.save
-        flash[:notice] = 'Network was successfully created.'
+        flash[:notice] = 'Group was successfully created.'
         format.html { redirect_to network_url(@network) }
         format.xml  { head :created, :location => network_url(@network) }
       else

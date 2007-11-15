@@ -24,17 +24,17 @@
 					</td>
 					<td>
 						<% if @workflow.versions.count > 1 %>
-                                                  <form onsubmit="showWorkflowVersion(); return false;" style="text-align: right;">
-						    <b>Change to: </b>
-						    <select id="workflow_versions">
-                                                      <% @workflow.versions.reverse.each do |w| %>
-                                                        <option value="<%= versioned_workflow_url(@workflow, w.version.to_s) %>">
-                                                          <%= "#{w.version} #{@workflow.describe_version(w.version)}" %>
-                                                        </option>
-                                                      <% end %>
-                                                    </select>
-                                                  <%= submit_tag "GO" %>
-                                                  </form>
+                           	<form onsubmit="showWorkflowVersion(); return false;" style="text-align: right;">
+						    	<b>Change to: </b>
+						    	<select id="workflow_versions">
+							  		<% @workflow.versions.reverse.each do |w| %>
+							    		<option value="<%= versioned_workflow_url(@workflow, w.version.to_s) %>">
+							      			<%= "#{w.version} #{@workflow.describe_version(w.version)}" %>
+							    		</option>
+							  		<% end %>
+								</select>
+								<%= submit_tag "GO" %>
+							</form>
 						<% end %>
 					</td>
 				</tr>
@@ -75,11 +75,12 @@
 		<% if logged_in? %>
 			<div class="sectionIcons">
 				<ul class="sectionIcons">
-					<% unless @workflow.svg.nil? %><li><%= icon('picture', url_for_file_column(@workflow, "svg"), nil, nil, 'Download Scalable Diagram (SVG)') %></li><% end %>
-                                        
-                                        <% if @workflow.versions.length > 1 %>
-					<% if @workflow.authorized?("destroy", current_user) %><li><%= icon('destroy', versioned_workflow_url(@workflow, this_version.to_s), nil, { :confirm => "Are you sure you want to delete this version (Version #{this_version.to_s}) of the Workflow file (including title/description metdata)?", :method => :delete }, 'Delete Workflow Version') %><% end %>
-                                        <% end %>
+					<% unless @workflow.svg.nil? %>
+						<li><%= icon('picture', url_for_file_column(@workflow, "svg"), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
+					<% end %>
+                    <% if @workflow.versions.length > 1 %>
+						<% if @workflow.authorized?("destroy", current_user) %><li><%= icon('destroy', versioned_workflow_url(@workflow, this_version.to_s), nil, { :confirm => "Are you sure you want to delete this version (Version #{this_version.to_s}) of the Workflow file (including title/description metadata)?", :method => :delete }, 'Delete Workflow Version') %><% end %>
+                    <% end %>
 				</ul>
 			</div>
 		<% end %>
