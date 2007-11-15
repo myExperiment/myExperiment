@@ -25,15 +25,17 @@
 					</p>
 					
 					<% if network.description and network.description.length > 0 %>
+						<% # desc = truncate(white_list(network.description_html), 400) %>
+						<% desc = truncate(h(network.description), 400) %>
 						<div class="desc">
-							<%= query ? highlight_all(truncate(white_list(network.description_html), 400), query) : truncate(white_list(network.description_html), 400) %>
+							<%= query ? highlight_all(desc, query) : desc %>
 						</div>
 					<% end %>
 					
 					<% unless network.members.empty? %>
 						<div class="desc" style="margin-top: 1em; font-size: 85%;">
 							<p><b>Members (<%= network.members.length %>):</b></p>
-							<p style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40 } %></p>
+							<div style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40 } %></div>
 						</div>
 					<% end %>
 				</td>

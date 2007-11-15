@@ -46,8 +46,10 @@
 					<% end %>
 					
 					<% if blob.body and blob.body.length > 0 %>
+						<% # desc = truncate(white_list(blob.body_html), 400) %>
+				  		<% desc = truncate(h(blob.body), 400) %>
 					  	<div class="desc" style="font-size: 85%;">
-					    	<%= query ? highlight_all(truncate(white_list(blob.body_html), 400), query) : truncate(white_list(blob.body_html), 400) %>
+					    	<%= query ? highlight_all(desc, query) : desc %>
 					  	</div>
 					<% end %>
 					

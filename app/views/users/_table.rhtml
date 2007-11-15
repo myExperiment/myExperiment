@@ -1,3 +1,5 @@
+<% query ||= false -%>
+
 <% unless collection.empty? %>
 
 	<table class="alt_table">
@@ -12,8 +14,10 @@
 					</p>
 					<% if user.profile %>
 						<% if user.profile.body and user.profile.body.length > 0 %>
+							<% # desc = truncate(white_list(user.profile.body_html), 180) %>
+				  			<% desc = truncate(h(user.profile.body), 180) %>
 							<div class="desc" style="font-size: 85%;">
-								<%= truncate white_list(user.profile.body_html), 160 %>
+								<%= query ? highlight_all(desc, query) : desc %>
 							</div>
 						<% end %>
 						<p style="font-size: 85%;">
