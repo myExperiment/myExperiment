@@ -35,7 +35,9 @@ class Blob < ActiveRecord::Base
   acts_as_attributor
   acts_as_attributable
   
-  acts_as_ferret :fields => { :local_name => { :store => :yes },
+  acts_as_ferret :fields => { :title => { :store => :yes },
+                              :local_name => { :store => :yes },
+                              :body => { :store => :yes },
                               :content_type => { :store => :yes } }
   
   validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
