@@ -17,8 +17,6 @@
   <% if @blog.owner?(current_user) %>
     <%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @blog } %>
 
-    <%= render :partial => "contributions/updating_form", :locals => { :edit => true, :contributable => @blog } %>
-
   <% end %>
 
   <p>

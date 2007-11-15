@@ -22,27 +22,21 @@
 
   <div class="foldContent" style="display: none;">
 
-    <% if c_type == 'Workflow' or c_type == 'File' %>
+    <p class="info_text">This section allows you to give updating priviledges
+    to your Friends and/or your Groups.  This will allow them to update the
+    description and upload new versions of the <%= c_type %>.
+    <br/> <br/>
+    Note that updating privileges only affect how other users can update this
+    <%= c_type %> entry on myExperiment.  If the user downloads the <%= resource %>,
+    they can still edit it away from myExperiment and possibly upload it as a
+    new <%= c_type %> entry.
+    <br/> <br/>
+    Furthermore, <%= c_type %> entries on myExperiment can have multiple versions of
+    the actual <%= resource %>.  Giving updating privileges will allow other
+    users to upload a new version of the <%= resource %> (all previous
+    versions are still available).</p>
 
-      <p class="info_text">This section allows you to give updating priviledges
-      to your Friends and/or your Groups.  This will allow them to update the
-      description and upload new versions of the <%= c_type %>.
-      <br/> <br/>
-      Note that updating privileges only affect how other users can update this
-      <%= c_type %> entry on myExperiment.  If the user downloads the
-      <%= resource %>,
-      they can still edit it away from myExperiment and possibly upload it as a
-      new <%= c_type %> entry.
-      <br/> <br/>
-      Furthermore, <%= c_type %> entries on myExperiment can have multiple
-      versions of
-      the actual <%= resource %>.  Giving updating privileges will allow other
-      users to upload a new version of the <%= resource %> (all previous
-      versions are still available).</p>
-
-      <hr />
-
-    <% end %>
+    <hr />
 
     <p><strong>Who else is allowed to update this <%= c_type %>?</strong></p>
 

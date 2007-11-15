@@ -16,8 +16,6 @@
 
   <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @blog } %>
 
-  <%= render :partial => "contributions/updating_form", :locals => { :edit => false, :contributable => @blog } %>
-  
   <p>
   	<center>
     	<%= submit_tag "Create", :disable_with => "Creating..." %>

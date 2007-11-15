@@ -43,7 +43,6 @@ class BlogsController < ApplicationController
     @viewing = Viewing.create(:contribution => @blog.contribution, :user => (logged_in? ? current_user : nil))
     
     @sharing_mode  = determine_sharing_mode(@blog)
-    @updating_mode = determine_updating_mode(@blog)
     
     respond_to do |format|
       format.html # show.rhtml
@@ -56,14 +55,11 @@ class BlogsController < ApplicationController
     @blog = Blog.new
 
     @sharing_mode  = 0
-    @updating_mode = 6
   end
 
   # GET /blogs/1;edit
   def edit
-
     @sharing_mode  = determine_sharing_mode(@blog)
-    @updating_mode = determine_updating_mode(@blog)
   end
 
   # POST /blogs

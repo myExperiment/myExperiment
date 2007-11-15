@@ -122,7 +122,7 @@ class WorkflowsController < ApplicationController
   def download
     @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
     
-    send_data(@workflow.scufl, :filename => @workflow.unique_name + ".xml", :type => "text/xml")
+    send_data(@workflow.scufl, :filename => @workflow.unique_name + ".xml", :type => "application/vnd.taverna.scufl+xml")
   end
   
   # GET /workflows

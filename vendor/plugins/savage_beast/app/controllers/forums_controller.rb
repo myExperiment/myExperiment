@@ -33,12 +33,10 @@ class ForumsController < ApplicationController
     @forum = Forum.new
 
     @sharing_mode  = 1
-    @updating_mode = 6
   end
   
   def edit
     @sharing_mode  = determine_sharing_mode(@forum)
-    @updating_mode = determine_updating_mode(@forum)
   end
   
   def create
@@ -83,7 +81,7 @@ class ForumsController < ApplicationController
         update_policy(@forum, params);
 
         flash[:notice] = 'Forum was successfully updated.'
-        format.html { redirect_to forums_path }
+        format.html { redirect_to forum_path(@forum) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
