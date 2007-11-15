@@ -1,29 +1,4 @@
 <% gadget_characters_limit ||= 22 -%>
-<script type="text/javascript">
-  function redirectToNew() {
-    var klass = $("new_object_type").value;
-    
-    if (klass == "Blog") {
-      location.href = "<%= new_blog_path %>";
-    } else if (klass == "Blob") {
-      location.href = "<%= new_blob_path %>";
-    } else if (klass == "Forum") {
-      location.href = "<%= new_forum_path %>";
-    } else if (klass == "Workflow") {
-      location.href = "<%= new_workflow_path %>";
-    } else if (klass == "Group") {
-      location.href = "<%= new_network_path %>";
-    <% if logged_in? %>
-    } else if (klass == "Picture") {
-      location.href = "<%= new_picture_path(current_user) %>";
-    } else if (klass == "Policy") {
-      location.href = "<%= policy_wizard_path %>";
-    <% end %>
-    } else {
-      // do nothing!!
-    }
-  }
-</script>
 
 <div class="myexperiment_gadget">
   <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
@@ -32,9 +7,12 @@
     <p>My Stuff</p>
 	<p>
         <small>
-            <%= pluralize(current_user.friends.length, "friend") %><span style="color:#999999;"> | </span><%= pluralize(current_user.networks_owned.length + current_user.networks.length, "group") %>
+            <%= link_to(pluralize(current_user.friends.length, "friend"), user_url(current_user) + "#friends") %>
+			<span style="color:#999999;"> | </span>
+			<%= link_to(pluralize(current_user.networks_owned.length + current_user.networks.length, "group"), user_url(current_user) + "#groups") %>
 			<% filter_contributables(current_user.contributions).each do |klass,contributables| %>
-				<span style="color:#999999;">|</span> <%= pluralize(contributables.length, (klass.to_s == "Blob" ? "File" : klass).downcase) %><% end %>
+				<span style="color:#999999;">|</span> <%= link_to(pluralize(contributables.length, (klass.to_s == "Blob" ? "File" : klass).downcase), user_url(current_user) + "##{klass.pluralize.downcase}") %>
+			<% end %>
         </small>
      </p>
   </div>

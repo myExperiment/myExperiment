@@ -1,6 +1,6 @@
 <% filter_contributables(collection).each do |klass,contributables| %>
 
-<div class="tabContainer">
+<div id="<%= klass.pluralize.downcase %>" class="tabContainer">
   <div class="tabTitle"><%= klass.to_s == "Blob" ? "Files" : klass.humanize.pluralize %></div>
   <div class="tabContent">
     <% if klass.to_s == "Workflow" %>

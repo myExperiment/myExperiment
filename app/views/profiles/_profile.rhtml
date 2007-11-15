@@ -13,9 +13,9 @@
 <% end %>
 
 <% unless profile.body.nil? or profile.body.empty? %>
-  <p>
+  <div>
     <%= white_list profile.body_html %>
-  </p>
+  </div>
 <% end %>
 
 <% if false %>

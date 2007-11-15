@@ -12,6 +12,8 @@
       location.href = "<%= new_workflow_path %>";
     } else if (klass == "Group") {
       location.href = "<%= new_network_path %>";
+    } else if (klass == "Message") {
+      location.href = "<%= new_message_path %>";
     } else {
       // do nothing!!
     }
@@ -37,6 +39,7 @@
 			<option value="Group" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
 			<option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
             <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>
+			<% if logged_in? %><option value="Message" <%= "selected" if ["messages"].include? controller.controller_name.to_s %>>Message</option><% end %>
           </select>
           <%= submit_tag "GO" %>
         </p>

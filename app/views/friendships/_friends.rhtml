@@ -2,7 +2,7 @@
 <% unless collection.empty? %>
 
 <div id="hlist">
-  <ul id="friends">
+  <ul>
     <% for friend in collection %>
       <%= render :partial => "friendships/friend", :locals => { :friend => friend, :size => size } %>
     <% end %>

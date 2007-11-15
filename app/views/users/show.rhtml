@@ -96,7 +96,7 @@
 </div>
 
 <% unless @user.friends.empty? %>
-  <div class="tabContainer">
+  <div id="friends" class="tabContainer">
     <div class="tabTitle">Friends</div>
     <div class="tabContent">      
       <div>
@@ -107,7 +107,7 @@
 <% end %>
 
 <% unless @user.networks_owned.empty? and @user.networks.empty? %>
-  <div class="tabContainer">
+  <div id="groups" class="tabContainer">
     <div class="tabTitle">Groups</div>
     <div class="tabContent">
       <% unless @user.networks_owned.empty? %>

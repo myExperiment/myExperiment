@@ -133,7 +133,7 @@ module ApplicationHelper
     link_to("#{icon('logout', nil, nil, nil, nil)} Logout", session_path, :method => :delete)
   end
   
-  def messages_link(user_id)
+  def messages_link(user_id, text=nil)
     if user_id.kind_of? Fixnum
       user = User.find(:first, :select => "id, openid_url", :conditions => ["id = ?", user_id]) 
       return nil unless user
@@ -143,18 +143,20 @@ module ApplicationHelper
       return nil
     end
     
-    inbox = icon('message', nil, nil, nil, nil) + " Inbox"
+    if !text
+      text = "Inbox"  
+    end
     
     unless (length = user.messages_unread.length) == 0
-      rtn = "<b>" + inbox + " (#{length})</b>"
-    else
-      rtn = inbox
+      text = "<b>" + text + " (#{length})</b>"
     end
-      
-    return link_to(rtn, messages_path)
+    
+    inbox = icon('message', messages_path, nil, nil, text)
+    
+    return inbox      
   end
   
-  def memberships_pending_link(user_id)
+  def memberships_pending_link(user_id, text=nil)
     if user_id.kind_of? Fixnum
       user = User.find(:first, :select => "id", :conditions => ["id = ?", user_id]) 
       return nil unless user
@@ -164,15 +166,18 @@ module ApplicationHelper
       return nil
     end
     
-    mships = icon('membership', nil, nil, nil, nil) + " Memberships"
+    if !text
+      text = "Memberships"  
+    end
     
     unless (length = user.memberships_pending.length) == 0
-      rtn = "<b>" + mships + " (#{length})</b>"
-    else
-      rtn = mships
+      rtn = "<b>" + text + " (#{length})</b>"
     end
+    
+    mships = icon('membership', memberships_path(user), nil, nil, text)
+    
+    return mships
       
-    return link_to(rtn, memberships_path(user))
   end
   
   def friendships_pending_link(user_id)
@@ -599,7 +604,9 @@ module ApplicationHelper
     when "profile"
       return "famfamfam_silk/user_suit.png"
     when "history"
-      return "famfamfam_silk/time.png"    
+      return "famfamfam_silk/time.png"   
+    when "news"
+      return "famfamfam_silk/newspaper.png"  
     else
       return nil
     end
