@@ -1,7 +1,7 @@
 <% versions ||= workflow.versions.size %>
 
 <p>
-  <b>Original Version:</b><br/>
+  <b>Earliest Version:</b><br/>
   <%= versioned_workflow_link(workflow, 1) %>
 </p>
 
@@ -21,6 +21,6 @@
   </p>
 <% else %>
   <p>
-    This workflow is <b>unmodified</b>.
+    This Workflow has only one version.
   </p>
 <% end %>

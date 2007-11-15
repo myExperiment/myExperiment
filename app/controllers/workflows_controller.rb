@@ -301,10 +301,32 @@ class WorkflowsController < ApplicationController
   # DELETE /workflows/1
   # DELETE /workflows/1.xml
   def destroy
-    @workflow.destroy
+
+    if params[:version]
+
+      if @workflow.revert_to(params[:version]) == false
+        error("Version not found (is invalid)", "not found (is invalid)", :version)
+      end
+
+      if @workflow.versions.length < 2
+        error("Can't delete all versions", " is not allowed", :version)
+      end
+
+      @workflow.destroy_version(@workflow.version)
+
+    else
+
+      @workflow.destroy
+    end
 
     respond_to do |format|
-      format.html { redirect_to workflows_url }
+
+      if params[:version]
+        format.html { redirect_to workflow_url(@workflow) }
+      else
+        format.html { redirect_to workflows_url }
+      end
+
       format.xml  { head :ok }
     end
   end

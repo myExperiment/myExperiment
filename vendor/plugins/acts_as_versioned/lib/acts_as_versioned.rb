@@ -275,6 +275,27 @@ module ActiveRecord #:nodoc:
           versions.find(:all, options)
         end
 
+        def destroy_version(version)
+          sql = "DELETE FROM #{self.class.versioned_table_name} WHERE version = #{version} AND #{self.class.versioned_foreign_key} = #{self.id}"
+          self.class.versioned_class.connection.execute sql
+        end
+
+        def describe_version(version)
+
+          return "" if versions.length < 2
+
+          if version == versions.first.version
+            return "(earliest)"
+          end
+
+          if version == versions.last.version
+            return "(latest)"
+          end
+
+          return ""
+
+        end
+
         # Reverts a model to a given version.  Takes either a version number or an instance of the versioned model
         def revert_to(version)
           if version.is_a?(self.class.versioned_class)
