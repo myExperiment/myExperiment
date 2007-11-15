@@ -25,6 +25,17 @@
       <%= form.text_field :unique_name %>
     </p>
   </fieldset>
+
+  <fieldset>
+    <legend>Auto Accept Join Requests</legend>
+    <p>
+    You can configure this group such that users that request to become a
+    member are accepted automatically.
+    <p>
+      <%= form.check_box :auto_accept %>
+      <b>Auto Accept Join Requests</b><br />
+    </p>
+  </fieldset>
   
   <br/>
   
