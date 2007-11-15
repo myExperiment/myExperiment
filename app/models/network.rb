@@ -1,4 +1,4 @@
-##
+#
 ##
 ## myExperiment - a social network for scientists
 ##
@@ -114,8 +114,8 @@ class Network < ActiveRecord::Base
                           :join_table => :relationships,
                           :foreign_key => :network_id,
                           :association_foreign_key => :relation_id,
-                          :conditions => "accepted_at IS NOT NULL",
-                          :order => "accepted_at DESC"
+                          :conditions => "user_established_at IS NOT NULL AND network_established_at IS NOT NULL",
+                          :order => "GREATEST(user_established_at, network_established_at) DESC"
                           
   alias_method :original_relations, :relations
   def relations
@@ -151,24 +151,24 @@ class Network < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
            
-  has_many :memberships_accepted, #accepted (by owner of this network)
+  has_many :memberships_accepted, #accepted by both parties
            :class_name => "Membership",
-           :conditions => "accepted_at IS NOT NULL",
-           :order => "accepted_at DESC",
+           :conditions => "user_established_at IS NOT NULL AND network_established_at IS NOT NULL",
+           :order => "GREATEST(user_established_at, network_established_at) DESC",
            :dependent => :destroy
            
-  has_many :memberships_pending, #unaccepted (by owner of this network)
+  has_many :memberships_pending, #unaccepted by both parties
            :class_name => "Membership",
            :foreign_key => :network_id,
-           :conditions => "accepted_at IS NULL",
+           :conditions => "user_established_at IS NULL OR network_established_at IS NULL",
            :order => "created_at DESC",
            :dependent => :destroy
   
   has_and_belongs_to_many :members,
                           :class_name => "User",
                           :join_table => :memberships,
-                          :conditions => "accepted_at IS NOT NULL",
-                          :order => "accepted_at DESC"
+                          :conditions => "user_established_at IS NOT NULL AND network_established_at IS NOT NULL",
+                          :order => "GREATEST(user_established_at, network_established_at) DESC"
                           
   alias_method :original_members, :members
   def members(incl_owner=true)

@@ -278,8 +278,8 @@ class User < ActiveRecord::Base
   
   has_and_belongs_to_many :networks,
                           :join_table => :memberships,
-                          :conditions => "accepted_at IS NOT NULL",
-                          :order => "accepted_at DESC"
+                          :conditions => "user_established_at IS NOT NULL AND network_established_at IS NOT NULL",
+                          :order => "GREATEST(user_established_at, network_established_at) DESC"
                           
   alias_method :original_networks, :networks
   def networks
@@ -300,17 +300,17 @@ class User < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
            
-  has_many :memberships_accepted, #accepted (by others)
+  has_many :memberships_accepted, #accepted
            :class_name => "Membership",
            :foreign_key => :user_id,
-           :conditions => "accepted_at IS NOT NULL",
-           :order => "accepted_at DESC",
+           :conditions => "user_established_at IS NOT NULL AND network_established_at IS NOT NULL",
+           :order => "GREATEST(user_established_at, network_established_at) DESC",
            :dependent => :destroy
   
-  has_many :memberships_requested, #unaccepted (by others)
+  has_many :memberships_requested, #unaccepted
            :class_name => "Membership",
            :foreign_key => :user_id,
-           :conditions => "accepted_at IS NULL",
+           :conditions => "user_established_at IS NULL OR network_established_at IS NULL",
            :order => "created_at DESC",
            :dependent => :destroy
            

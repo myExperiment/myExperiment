@@ -32,16 +32,46 @@ class Membership < ActiveRecord::Base
     model.errors.add attr, "already member" if model.network.member? value
   end
 
-  def accept!
-    unless accepted?
-      update_attribute :accepted_at, Time.now
+  def user_establish!
+    if self.user_established_at.nil?
+      update_attribute :user_established_at, Time.now
       return true
     else
       return false
     end
   end
 
-  def accepted?
-    self.accepted_at != nil
+  def network_establish!
+    if self.network_established_at.nil?
+      update_attribute :network_established_at, Time.now
+      return true
+    else
+      return false
+    end
   end
+
+# def accept!
+#   unless accepted?
+#     update_attribute :accepted_at, Time.now
+#     return true
+#   else
+#     return false
+#   end
+# end
+
+  def accepted?
+    self.user_established_at != nil and self.network_established_at != nil
+  end
+
+  def accepted_at
+
+    user_established_at    = self.user_established_at
+    network_established_at = self.network_established_at
+
+    return nil if user_established_at.nil? or network_established_at.nil?
+
+    return user_established_at > network_established_at ? user_established_at : network_established_at;
+
+  end
+
 end

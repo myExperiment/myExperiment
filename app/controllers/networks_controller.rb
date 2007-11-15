@@ -52,7 +52,10 @@ class NetworksController < ApplicationController
       @membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id)
         
       if @membership.save
-        @membership.accept!
+
+        @membership.network_establish!
+        @membership.user_establish!
+
         flash[:notice] = 'User successfully added to Group.'
         format.html { redirect_to network_url(@network) }
       else
