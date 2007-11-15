@@ -278,7 +278,8 @@ module ApplicationHelper
       return nil unless user
       
       return name(user) unless avatar
-      return avatar(user, size) + "<br/>" + name(user)
+      #return avatar(user, size) + "<br/>" + name(user)
+      return render(:partial => "users/avatar", :locals => { :user => user, :size => size })
     elsif contributortype.to_s == "Network"
       network = Network.find(:first, :select => "id, title", :conditions => ["id = ?", contributorid])
       return nil unless network

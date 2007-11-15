@@ -1,5 +1,5 @@
 <% size ||= 100 -%>
-<p style="text-align:center; width: <%= size+6 %>px; line-height: 1.2em;">
-	<%= link_to avatar(user, size), user_path(user) %>
-	<span style="display:block;margin-top:2px;"><%= name user %></span>
-</p>
+<div style="text-align:center; width: <%= size+6 %>px; line-height: 1.2em; padding: 0.2em 0;">
+	<%= avatar(user, size) %>
+	<span style="display:block;margin-top:2px;text-align:center;"><%= name user %></span>
+</div>
