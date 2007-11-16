@@ -207,6 +207,8 @@
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @workflow } %>
 	
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @workflow } %>
+	
+	<%if false %><%= render :partial => "gadgets/bookmark_with", :locals => { :title => @workflow.title, :url => workflow_path(@workflow) } %><% end %>
 </div>
 
 <div class="clearer">&nbsp;</div>
