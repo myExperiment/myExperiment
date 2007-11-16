@@ -670,14 +670,11 @@ module ApplicationHelper
   end
   
   def all_workflows
-    workflows = Workflow.find_all
-    workflows.sort! { |x,y|
-      x.title.downcase <=> y.title.downcase
-    }
+    Workflow.find(:all, :order => "title ASC")
   end
   
   def all_blobs
-    blobs = Blob.find_all
+    blobs = Blob.find(:all)
     blobs.sort! { |x,y|
       x_title = (x.title and x.title.length > 0) ? x.title : x.local_name
       y_title = (y.title and y.title.length > 0) ? y.title : y.local_name
@@ -686,14 +683,11 @@ module ApplicationHelper
   end
   
   def all_networks
-    networks = Network.find_all
-    networks.sort! { |x,y|
-      x.title.downcase <=> y.title.downcase
-    }
+    Network.find(:all, :order => "title ASC")
   end
   
   def all_nonfriends(user)
-    users = User.find_all - user.friends - [ user ]
+    users = User.find(:all) - user.friends - [ user ]
     users.sort! { |x,y|
       x.name.downcase <=> y.name.downcase
     } 
