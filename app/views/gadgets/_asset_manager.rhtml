@@ -20,7 +20,9 @@
   <div id="myexp_assetmanager_gadget_contents" class="contents">
     <% unless current_user.friends.empty? %>
       <div>
-        <div class="title">Friends</div>
+        <div class="title">
+        	<%= link_to("Friends", user_url(current_user) + "#friends")%>
+		</div>
         <div class="content">
           <ul class="gadget_list">
             <% current_user.friends.each do |friend| %>
@@ -33,7 +35,9 @@
   
     <% unless current_user.networks_owned.empty? and current_user.networks.empty? %>
       <div>
-        <div class="title">Groups</div>
+        <div class="title">
+        	<%= link_to("Groups", user_url(current_user) + "#groups") %>
+		</div>
         <div class="content">
           <ul class="gadget_list">
             <% current_user.networks_owned.each do |network_owned| %>
@@ -50,7 +54,9 @@
     <% unless current_user.contributions.empty? %>
       <% filter_contributables(current_user.contributions).each do |klass, array| %>
         <div>
-          <div class="title"><%= klass.to_s == "Blob" ? "Files" : klass.pluralize %></div>
+          <div class="title">
+          	<%= link_to((klass.to_s == "Blob" ? "File" : klass.pluralize), user_url(current_user) + "##{klass.pluralize.downcase}") %>
+		  </div>
           <div class="content">
             <ul class="gadget_list">
               <% array.each do |instance| %>

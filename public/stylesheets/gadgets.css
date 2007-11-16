@@ -19,6 +19,7 @@
 	list-style: none;
 	padding: 0;
 	margin: 0;
+	font-size: 93%;
 }
 
 .myexperiment_gadget .header {
@@ -194,7 +195,6 @@
 #myexp_assetmanager_gadget_contents {
 	height: 150px;
 	overflow: auto;
-	font-size: 85%;
 	line-height: 1.1em;
 	text-align: left;
 }
@@ -207,7 +207,12 @@
 	font-weight: bold;
 }
 
-#myexp_assetmanager_gadget_contents .content {	
+#myexp_assetmanager_gadget_contents .content {
+}
+
+#myexp_assetmanager_gadget_contents li {
+	font-size: 85%;
+	font-weight: normal;
 }
 
 /* end css Asset Manager Gadget styles */
