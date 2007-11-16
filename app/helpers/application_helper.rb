@@ -130,7 +130,7 @@ module ApplicationHelper
   end
 
   def signout_link
-    link_to("#{icon('logout', nil, nil, nil, nil)} Logout", session_path, :method => :delete)
+    icon('logout', session_path, nil, {:method => :delete}, "Logout")
   end
   
   def messages_link(user_id, text=nil)
@@ -589,6 +589,8 @@ module ApplicationHelper
       return "famfamfam_silk/key.png"
     when "logout"
       return "famfamfam_silk/door_out.png"
+    when "login"
+      return "famfamfam_silk/door_in.png"
     when "membership"
       return "famfamfam_silk/vcard.png"
     when "membership-new"
@@ -606,7 +608,9 @@ module ApplicationHelper
     when "history"
       return "famfamfam_silk/time.png"   
     when "news"
-      return "famfamfam_silk/newspaper.png"  
+      return "famfamfam_silk/newspaper.png"
+    when "feedback"
+      return "famfamfam_silk/sound.png" 
     else
       return nil
     end

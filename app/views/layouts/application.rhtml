@@ -22,13 +22,20 @@
 	<body>
 		<div id="doc2" class="yui-t4">
 			<div id="hd">
-	  			<div id="myexp_logo">
-	  				<div style="float: left; width:300px;">
+	  			<div id="myexp_header">
+	  				<div class="logo">
 						<%= link_to image_tag("logo.png"), "/" %>
 					</div>
-					<div style="float: right; width: 300px; text-align: right; font-size: 93%;">
-						<%= if logged_in? then "<b>" + signout_link + "</b>" + "&nbsp;&nbsp;|&nbsp;" end %>
-						<b><%= link_to "Give us Feedback", "/feedback" %></b>
+					<div class="links">
+						<% if logged_in? %>
+							<span><b><%= signout_link %></b></span>
+						<% else %>
+							<span><b><%= icon "login", new_session_url, nil, nil, "Log in" %></b></span>
+							<span>&nbsp|&nbsp;</span>
+							<span><b><%= icon "user", new_user_url, nil, nil, "Register" %></b></span>
+						<% end %>
+						<span>&nbsp|&nbsp;</span>
+						<span><b><%= icon "feedback", "/feedback", nil, nil, "Give us Feedback" %></b></span>
 					</div>
 					<div class="clearer">&nbsp;</div>
 				</div>

@@ -66,6 +66,27 @@
 	margin: 0.2em 0;
 }
 
+.myexperiment_gadget .contents .box1 {
+	border: 1px dotted #999999;
+	padding: 0.2em 0;
+}
+
+.myexperiment_gadget .contents .label {
+	font-size: 93%;
+	color: #333333;
+	padding: 0.2em 0;
+	line-height: 1em;
+	margin: 0;
+}
+
+.myexperiment_gadget .contents .field {
+	border: solid 1px #CCCCCC;
+	background-color:#F0F8FF;
+	color: #333333;
+	padding: 2px;
+	font-size: 93%;
+}
+
 .myexperiment_gadget .sectionIcons { 
 	margin: 0.5em 0;
 }

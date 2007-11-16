@@ -133,8 +133,22 @@ fieldset {
 }
 	
 
-#myexp_logo {
+#myexp_header {
 	margin: 1em 0.5em 0 0.5em;
+}
+
+#myexp_header .logo {
+	float: left; 
+	width: 300px;
+}
+
+
+#myexp_header .links {
+	float: right; 
+	width: 300px; 
+	text-align: right; 
+	font-size: 93%;
+	color: #999999;
 }
 
 #myexp_searchbar {

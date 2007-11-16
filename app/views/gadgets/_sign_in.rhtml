@@ -4,32 +4,49 @@
   <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
     
   <div class="header">
-    <p>Sign in / Sign up</p>
+    <p>Log in / Register</p>
   </div>
   
   <div class="contents">
     <% form_tag session_path do %>
-      <p>
-        Username:<br />
-        <%= text_field_tag 'session[username]' %><br />
-        Password:<br />
-        <%= password_field_tag 'session[password]' %><br />
-        Remember me: <%= check_box_tag 'session[remember_me]' %>
-      </p>
+      <div class="box1">
+		  <p class="label">
+	        Username:
+		  </p>
+		  <p>
+	        <%= text_field_tag 'session[username]', nil, :class => 'field' %>
+		  </p>
+	      <p class="label">
+			Password:
+		  </p>
+		  <p>
+	        <%= password_field_tag 'session[password]', nil, :class => 'field' %>
+		  </p>
+		  <p class="label">
+	        Remember me: <%= check_box_tag 'session[remember_me]' %>
+	      </p>
+	  </div>
+	  
+	  <p><b>OR</b></p>
             
-      <p>
-        OR use OpenID:<br />
-        <%= text_field_tag 'openid_url', nil, :size => 17 %>
-      </p>
+      <div class="box1" style="margin-bottom: 0.4em;">
+		  <p class="label">
+	         Use OpenID:
+		  </p>
+		  <p>
+	        <%= text_field_tag 'openid_url', nil, :size => 17, :class => 'field' %>
+	      </p>
+	  </div>
       
       <p>
-        <%= submit_tag "Sign in", :disable_with => "Signing in..." %>
+        <%= submit_tag "Log in", :disable_with => "Logging in..." %>
       </p>
+	  
     <% end %>
     
     <p>
       <b>Need an account?</b><br />
-      <%= link_to "Click here to sign up", new_user_url %>
+      <%= link_to "Click here to register", new_user_url %>
     </p>
   </div>
   
