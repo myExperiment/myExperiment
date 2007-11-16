@@ -93,13 +93,26 @@ class MembershipsController < ApplicationController
   # POST /memberships
   # POST /memberships.xml
   def create
+    # TODO: test if "user_established_at" and "network_established_at" can be hacked through API calls,
+    # thereby creating memberships that are accepted.
     if (@membership = Membership.new(params[:membership]) unless Membership.find_by_user_id_and_network_id(params[:membership][:user_id], params[:membership][:network_id]) or Network.find(params[:membership][:network_id]).owner? params[:membership][:user_id])
-      # set initial datetime
-      @membership.accepted_at = nil
+      
+      # Take into account network's "auto accept" setting
+      if (@membership.network.auto_accept)
+        @membership.user_establish!
+        @membership.network_establish!
+      else
+        @membership.user_establish!
+        @membership.network_established_at = nil
+      end
 
       respond_to do |format|
         if @membership.save
-          flash[:notice] = 'Membership was successfully requested.'
+          if (@membersip.network.auto_accept)
+            flash[:notice] = 'You have successfully joined the Group.'
+          else
+            flash[:notice] = 'Membership was successfully requested.'
+          end
           format.html { redirect_to membership_url(@membership.user_id, @membership) }
           format.xml  { head :created, :location => membership_url(@membership.user_id, @membership) }
         else
@@ -118,7 +131,8 @@ class MembershipsController < ApplicationController
   # PUT /memberships/1.xml
   def update
     # no spoofing of acceptance
-    params[:membership].delete('accepted_at') if params[:membership][:accepted_at]
+    params[:membership].delete('network_established_at') if params[:membership][:network_established_at]
+    params[:membership].delete('network_established_at') if params[:membership][:network_established_at]
     
     respond_to do |format|
       if @membership.update_attributes(params[:membership])
@@ -193,10 +207,40 @@ protected
       begin
         membership = Membership.find(params[:id])
         
-        if Network.find(membership.network_id).owner? current_user.id
+        is_error = false;
+        
+        if action_name.to_s == "accept"
+        
+          # Either the owner or the user can approve, 
+          # depending on who initiated it        
+          if membership.user_established_at == nil
+            if membership.user_id != current_user.id
+              is_error = true;
+            end
+          elsif membership.network_established_at == nil
+            if current_user.id != membership.network.owner.id
+              is_error = true;
+            end
+          end
+          
+        elsif action_name.to_s == "delete"
+          
+          # Only the owner of the network can delete memberships, for now
+          if current_user.id != membership.network.owner.id
+            is_error = true
+          end
+        
+        else
+        
+          # don't allow anything else, for now
+          is_error = true;
+        
+        end
+      
+        if !is_error
           @membership = membership
         else
-          error("Membership not found (id not authorized)", "is invalid (not owner)", :network_id)
+          error("Membership not found (id not authorized)", "is invalid", :network_id)
         end
       rescue ActiveRecord::RecordNotFound
         error("Membership not found", "is invalid")

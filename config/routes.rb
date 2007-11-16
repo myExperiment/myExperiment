@@ -93,7 +93,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # all networks
-  map.resources :networks, :collection => { :search => :get }, :member => { :membership_create => :get, :membership_request => :get } do |network|
+  map.resources :networks, :collection => { :search => :get }, :member => { :membership_invite => :get, :membership_request => :get } do |network|
     # relationships 'accepted by' network (relation --> relationship --> network)
     network.resources :relationships, :member => { :accept => :get }
   end

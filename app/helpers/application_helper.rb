@@ -156,7 +156,7 @@ module ApplicationHelper
     return inbox      
   end
   
-  def memberships_pending_link(user_id, text=nil)
+  def memberships_link(user_id, text=nil)
     if user_id.kind_of? Fixnum
       user = User.find(:first, :select => "id", :conditions => ["id = ?", user_id]) 
       return nil unless user
@@ -170,8 +170,8 @@ module ApplicationHelper
       text = "Memberships"  
     end
     
-    unless (length = user.memberships_pending.length) == 0
-      rtn = "<b>" + text + " (#{length})</b>"
+    unless (length = user.networks_membership_requests_pending.length + user.memberships_invited.length) == 0
+      text = "<b>" + text + " (#{length})</b>"
     end
     
     mships = icon('membership', memberships_path(user), nil, nil, text)
@@ -557,6 +557,8 @@ module ApplicationHelper
       return "famfamfam_silk/comment.png"
     when "info"
       return "famfamfam_silk/information.png"
+    when "help"
+      return "famfamfam_silk/help.png"
     when "confirm"
       return "famfamfam_silk/accept.png"
     when "reject"
@@ -571,8 +573,6 @@ module ApplicationHelper
       return "famfamfam_silk/status_online.png"
     when "save"
       return "famfamfam_silk/save.png"
-    when "help"
-      return "famfamfam_silk/help.png"
     when "message"
       return "famfamfam_silk/email.png"
     when "reply"
@@ -789,7 +789,7 @@ module ApplicationHelper
   end
   
   def info_icon_with_tooltip(info_text, delay=200)
-    return image_tag("famfamfam_silk/help.png",
+    return image_tag("famfamfam_silk/information.png",
               :title => "header=[] body=[#{info_text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[#{delay}]",
               :style => "vertical-align:middle;")
   end
@@ -805,6 +805,19 @@ module ApplicationHelper
     end
     
     return rating
+  end
+  
+  # This method checks to see if the current user is allowed to approve a membership that is still pending approval
+  def allow_membership_pending_approval(membership)
+    if logged_in?
+      if membership.user_established_at == nil
+        return membership.user_id == current_user.id
+      elsif membership.network_established_at == nil
+        return current_user.id == membership.network.owner.id
+      end 
+    else
+      return false
+    end
   end
   
 protected

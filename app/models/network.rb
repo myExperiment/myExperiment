@@ -157,10 +157,17 @@ class Network < ActiveRecord::Base
            :order => "GREATEST(user_established_at, network_established_at) DESC",
            :dependent => :destroy
            
-  has_many :memberships_pending, #unaccepted by both parties
+  has_many :memberships_requested, #unaccepted by network admin
            :class_name => "Membership",
            :foreign_key => :network_id,
-           :conditions => "user_established_at IS NULL OR network_established_at IS NULL",
+           :conditions => "network_established_at IS NULL",
+           :order => "created_at DESC",
+           :dependent => :destroy
+           
+  has_many :memberships_invited, #unaccepted by user
+           :class_name => "Membership",
+           :foreign_key => :network_id,
+           :conditions => "user_established_at IS NULL",
            :order => "created_at DESC",
            :dependent => :destroy
   

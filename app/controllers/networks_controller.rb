@@ -26,7 +26,7 @@ class NetworksController < ApplicationController
   
   before_filter :find_networks, :only => [:index, :all]
   before_filter :find_network, :only => [:membership_request, :show]
-  before_filter :find_network_auth, :only => [:membership_create, :edit, :update, :destroy]
+  before_filter :find_network_auth, :only => [:membership_invite, :edit, :update, :destroy]
   
   # GET /networks;search
   # GET /networks.xml;search
@@ -41,8 +41,8 @@ class NetworksController < ApplicationController
     end
   end
   
-  # GET /networks/1;membership_create
-  def membership_create
+  # GET /networks/1;membership_invite
+  def membership_invite
     respond_to do |format|
       unless params[:user_id]
         flash[:error] = 'Failed to add User to Group. Please report this error.'
@@ -54,12 +54,11 @@ class NetworksController < ApplicationController
       if @membership.save
 
         @membership.network_establish!
-        @membership.user_establish!
 
-        flash[:notice] = 'User successfully added to Group.'
+        flash[:notice] = 'An invitation has been sent to the User.'
         format.html { redirect_to network_url(@network) }
       else
-        flash[:error] = 'Failed to add User to Group. Please try again or report this.'
+        flash[:error] = 'Failed to send invitation to User. Please try again or report this.'
         format.html { redirect_to network_url(@network) }
       end
     end

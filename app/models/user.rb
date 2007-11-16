@@ -307,18 +307,35 @@ class User < ActiveRecord::Base
            :order => "GREATEST(user_established_at, network_established_at) DESC",
            :dependent => :destroy
   
-  has_many :memberships_requested, #unaccepted
+  has_many :memberships_requested, #unaccepted by network admin
            :class_name => "Membership",
            :foreign_key => :user_id,
-           :conditions => "user_established_at IS NULL OR network_established_at IS NULL",
+           :conditions => "network_established_at IS NULL",
+           :order => "created_at DESC",
+           :dependent => :destroy
+ 
+  has_many :memberships_invited, #unaccepted by user
+           :class_name => "Membership",
+           :foreign_key => :user_id,
+           :conditions => "user_established_at IS NULL",
            :order => "created_at DESC",
            :dependent => :destroy
            
-  def memberships_pending
+  def networks_membership_requests_pending
     rtn = []
     
     networks_owned.each do |n|
-      rtn.concat n.memberships_pending
+      rtn.concat n.memberships_requested
+    end
+    
+    return rtn
+  end
+  
+  def networks_membership_invites_pending
+    rtn = []
+    
+    networks_owned.each do |n|
+      rtn.concat n.memberships_invited
     end
     
     return rtn

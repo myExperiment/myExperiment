@@ -33,8 +33,8 @@
 					<% end %>
 					
 					<% unless network.members.empty? %>
-						<div class="desc" style="margin-top: 1em; font-size: 85%;">
-							<p><b>Members (<%= network.members.length %>):</b></p>
+						<div class="desc" style="margin-top: 1em;">
+							<p style="font-size: 85%;"><b>Members (<%= network.members.length %>):</b></p>
 							<div style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40 } %></div>
 						</div>
 					<% end %>

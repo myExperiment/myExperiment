@@ -4,26 +4,40 @@
 
 <% form_for(:membership, :url => memberships_path(params[:user_id])) do |f| %>
   <p>
-    <b>User</b><br />
-    <% unless params[:user_id] %>
-      <%= f.text_field :user_id, :value => current_user.id %>
-    <% else %>
-      <%= f.hidden_field :user_id, :value => current_user.id %>
-      <%=h current_user.name %><%= (" (" + h(current_user.openid_url) + ")") if current_user.openid_url %>
-    <% end %>
+  	<center>
+      <b>User:</b><br />
+      <% unless params[:user_id] %>
+        <%= f.text_field :user_id, :value => current_user.id %>
+      <% else %>
+        <%= f.hidden_field :user_id, :value => current_user.id %>
+        <%= render :partial => "users/avatar", :locals => { :user => current_user } %>
+      <% end %>
+	</center>
   </p>
 
   <p>
-    <b>Group</b><br />
-    <% if params[:network_id] %>
-      <%= f.hidden_field :network_id, :value => @network.id %>
-      <%=h @network.title %> (<%=h @network.unique_name %>)
-    <% else %>
-      <%= select_tag "membership[network_id]", options_from_collection_for_select(Network.find(:all, :order => "title ASC"), :id.to_i, :title) %>
-    <% end %>
+  	<center>
+      <b>Group</b><br />
+      <% if params[:network_id] %>
+        <%= f.hidden_field :network_id, :value => @network.id %>
+        <%=title @network %>
+	    (administrator: <%= name @network.user_id %>)
+      <% else %>
+        <%= select_tag "membership[network_id]", options_from_collection_for_select(Network.find(:all, :order => "title ASC"), :id.to_i, :title) %>
+      <% end %>
+	</center>
   </p>
+  
+  <br/>
 
   <p>
-    <%= submit_tag "Confirm Membership Request" %> <%= (params[:network_id] ? button_to("Cancel Membership Request", :controller => 'networks', :action => 'show', :id => @network.id) : button_to("Cancel Membership Request", :controller => 'networks', :action => 'index')) %>
+  	<center>
+      <%= submit_tag "Confirm", :disable_with => "Sending request..." %>
+	</center>
+  </p>
+  <p>
+  	<center>
+  	  <%= (params[:network_id] ? button_to("Cancel", :controller => 'networks', :action => 'show', :id => @network.id) : button_to("Cancel Membership Request", :controller => 'networks', :action => 'index')) %>
+	</center>
   </p>
 <% end %>

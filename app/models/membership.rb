@@ -50,14 +50,18 @@ class Membership < ActiveRecord::Base
     end
   end
 
-# def accept!
-#   unless accepted?
-#     update_attribute :accepted_at, Time.now
-#     return true
-#   else
-#     return false
-#   end
-# end
+  def accept!
+    unless accepted?
+      if self.user_established_at == nil
+        self.user_establish!
+      elsif self.network_established_at == nil
+        self.network_establish!
+      end
+      return true
+    else
+      return false
+    end
+  end
 
   def accepted?
     self.user_established_at != nil and self.network_established_at != nil

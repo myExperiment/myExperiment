@@ -1,18 +1,19 @@
+<% allow_approval = allow_membership_pending_approval(@membership) %>
+
 <h1>Membership</h1>
 
-<% unless my_page? @membership.user_id %>
-  <p>
-    <center>
+<p>
+	<center>
 		<b>User:</b><br/>
 	    <%= render :partial => "users/avatar", :locals => { :user => @membership.user } %>
 	</center>
-  </p>
-<% end %>
+</p>
 
 <p>
   <center>
 	  <b>Group:</b> 
 	  <%=title @membership.network %>
+	  (administrator: <%= name @membership.network.user_id %>)
   </center>
 </p>
 
@@ -23,6 +24,8 @@
   </center>
 </p>
 
+<br/>
+
 <% if @membership.accepted? %>
 
   <p>
@@ -32,7 +35,7 @@
 	</center>
   </p>
 
-<% elsif my_page? @membership.network.owner.id %>
+<% elsif allow_approval %>
 
   <p>
     <center>
@@ -45,8 +48,7 @@
 
   <p>
     <center>
-		<b>Accepted at:</b><br />
-	    Pending
+	    <i>Pending approval</i>
 	</center>
   </p>
 

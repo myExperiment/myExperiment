@@ -38,10 +38,6 @@
     
     <% unless @user.friends.empty? %>
       <h2>All Friends</h2>
-      
-      <p>
-        Friends can be given special permissions in your access control <%= link_to "policies", policies_path %> as they belong to the <b>protected</b> group.
-      </p>
 
       <%= render :partial => "friendships/friends", :locals => { :collection => @user.friends } %>
     <% end %>

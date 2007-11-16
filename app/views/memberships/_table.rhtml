@@ -18,6 +18,7 @@
   
 <% odd_row = false -%>
 <% for membership in collection %>
+  <% allow_approval = allow_membership_pending_approval(membership) %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
     <% if user %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.user_id, "User", true, 60) %><%= "</b>" unless membership.accepted? %></td><% end %>
     <% if network %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.network_id, "Network", true, 60) %><%= "</b>" unless membership.accepted? %></td><% end %>
@@ -27,7 +28,7 @@
       <% if my_page? membership.user.id or my_page? membership.network.owner.id %>
         <%= icon "show", membership_path(membership.user_id, membership) %>
       <% end %>
-      <% if my_page? membership.network.owner.id %>
+      <% if allow_approval %>
         <% unless membership.accepted? %><%= icon "confirm", accept_membership_path(membership.user_id, membership) %><% end %>
          <%= icon (membership.accepted? ? "destroy" : "reject"), membership_path(membership.user_id, membership), nil, :confirm => "Are you sure?", :method => :delete %>
       <% end %>

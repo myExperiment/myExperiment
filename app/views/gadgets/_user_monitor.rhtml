@@ -11,7 +11,7 @@
 	<ul class="gadget_list">
 	  <li><%= icon "profile", user_url(current_user), nil, nil, " My Profile" %></li>
       <li><%= messages_link(current_user, "My Inbox") %></li>
-      <li><%= memberships_pending_link(current_user, "My Memberships") %></li>
+      <li><%= memberships_link(current_user, "My Memberships") %></li>
 	  <li><%= icon "history", userhistory_url(current_user), nil, nil, "My History" %></li>
 	  <li><%= icon "news", user_url(current_user), nil, nil, "My News" %></li>
     </ul>
@@ -23,7 +23,7 @@
         <div class="content">
           <ul class="gadget_list">
             <% current_user.messages_unread.each do |message| %>
-              <li><b><%= icon "message", nil, nil, nil, "" %> <%= link_to truncate(h(message.subject)), message_path(message) %></b></li>
+              <li><b><%= icon "message", message_path(message), nil, nil, h(message.subject) %></b></li>
             <% end %>
           </ul>
         </div>
@@ -37,24 +37,46 @@
         <div class="content">
           <ul class="gadget_list">
             <% current_user.friendships_pending.each do |friendship| %>
-              <li><b><%= icon "user", nil, nil, nil, "" %> <%= link_to truncate(h(friendship.user.name)), friendship_path(current_user, friendship) %></b></li>
+              <li><b><%= icon "user", friendship_path(current_user, friendship), nil, nil, h(friendship.user.name) %></b></li>
             <% end %>
           </ul>
         </div>
       </div>
     <% end %>
 	
-	<% unless current_user.memberships_pending.empty? %>
+	<% unless (membership_invites = current_user.memberships_invited).empty? %>
       <hr/>
 	  <div>
-        <div class="title"><%= pluralize(current_user.memberships_pending.length, "new membership request") %></div>
+        <div class="title">
+        	<%= info_icon_with_tooltip("You have been invited to join groups") %>
+        	<%= pluralize(membership_invites.length, "new membership invite") %>
+		</div>
         <div class="content">
           <ul class="gadget_list">
-            <% current_user.memberships_pending.each do |membership| %>
+            <% membership_invites.each do |membership| %>
               <li>
-              	<b><%= icon "user", nil, nil, nil, "" %> <%= link_to truncate(h(membership.user.name)), membership_path(membership.user, membership) %></b>
-				for
-				<b><%= title membership.network_id %></b>
+              	<b><%= icon "membership", membership_path(membership.user, membership), nil, nil, h(membership.user.name) %></b>
+				<span style="margin-left: 20px; display: block;">(for <%= title membership.network_id %>)</span>
+			  </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+	
+	<% unless (membership_requests = current_user.networks_membership_requests_pending).empty? %>
+      <hr/>
+	  <div>
+        <div class="title">
+        	<%= info_icon_with_tooltip("Users are requesting to join your groups") %>
+        	<%= pluralize(membership_requests.length, "new membership request") %>
+		</div>
+        <div class="content">
+          <ul class="gadget_list">
+            <% membership_requests.each do |membership| %>
+              <li>
+              	<b><%= icon "membership", membership_path(membership.user, membership), nil, nil, h(membership.user.name) %></b>
+				<br/><span style="margin-left: 20px">(for <%= title membership.network_id %>)</span>
 			  </li>
             <% end %>
           </ul>

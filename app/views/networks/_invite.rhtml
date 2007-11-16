@@ -22,7 +22,7 @@
         if ($("my_network_<%= n.id %>").checked) {
           var xmlhttp_<%= n.id %> =  new XMLHttpRequest();
           
-          xmlhttp_<%= n.id %>.open('GET', '<%= membership_create_network_path(n) %>?user_id=<%= user.id %>', true);
+          xmlhttp_<%= n.id %>.open('GET', '<%= membership_invite_network_path(n) %>?user_id=<%= user.id %>', true);
           
           $("my_networks_button").value = "Creating (<%= h(n.title) %>)";
           xmlhttp_<%= n.id %>.onreadystatechange = function() {

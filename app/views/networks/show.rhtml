@@ -87,16 +87,16 @@
   <% end %>
   
   <div class="tabContainer">
-    <div class="tabTitle">Add Users</div>
+    <div class="tabTitle">Invite Users</div>
     <div class="tabContent">
   
       <p>
-        Here's a quick way to add your Friends to this Group. <br/>
-        Select each name from the list and click "Add".
+        Here you can invite Users to this Group. <br/>
+        Select a name from the list and click "Invite".
       </p>
   
-      <% form_tag(membership_create_network_path(@network), :method => :get) do %>
-        <label for="user_id">User:</label> <%= select_tag :user_id, options_from_collection_for_select(@network.owner.friends, :id.to_i, :name) %> <%= submit_tag "Add" %>
+      <% form_tag(membership_invite_network_path(@network), :method => :get) do %>
+        <label for="user_id">User:</label> <%= select_tag :user_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %> <%= submit_tag "Invite", :disable_with => 'Inviting...' %>
       <% end %>
   
       <%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
