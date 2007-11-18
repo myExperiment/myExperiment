@@ -80,10 +80,6 @@
   </tr>
 </table>
 
-<% if logged_in? and !my_page? @user.id and !current_user.networks_owned.empty? %>
-  <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
-<% end %>
-
 <br/>
 
 <div id="tabsContainer" class="tabsContainer"></div>
@@ -130,4 +126,8 @@
 
 <% unless @user.contributions.empty? %>
   <%= render :partial => "contributions/tabs", :locals => { :collection => @user.contributions } %>
+<% end %>
+
+<% if logged_in? and !my_page? @user.id and !current_user.networks_owned.empty? %>
+  <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
 <% end %>

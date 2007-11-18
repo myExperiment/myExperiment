@@ -49,7 +49,7 @@
 <h4>Add to Your Groups</h4>
 
 <p>
-  Below you can add <%= h(user.name) %> to any of your Groups. This will add them immediately.
+  Below you can invite <%= h(user.name) %> to join your Groups. Select the Group(s) you want to invite them to and then click the "invite" button.
 </p>
 
 <form>
@@ -66,9 +66,10 @@
   <% end %>
   
   <br/>
+  <br/>
     
   <p>
-    <input id="my_networks_button" onclick="inviteAndDisable();" type="button" value="Add" />
+    <input id="my_networks_button" onclick="inviteAndDisable();" type="button" value="Invite" />
   </p>
 </form>
 
