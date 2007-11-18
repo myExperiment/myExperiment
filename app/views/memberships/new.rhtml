@@ -37,7 +37,7 @@
   </p>
   <p>
   	<center>
-  	  <%= (params[:network_id] ? button_to("Cancel", :controller => 'networks', :action => 'show', :id => @network.id) : button_to("Cancel Membership Request", :controller => 'networks', :action => 'index')) %>
+  	  <%= (params[:network_id] ? button_to("Cancel", :controller => 'networks', :action => 'show', :id => @network.id) : button_to("Cancel", :controller => 'networks', :action => 'index')) %>
 	</center>
   </p>
 <% end %>

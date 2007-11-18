@@ -93,26 +93,25 @@ class MembershipsController < ApplicationController
   # POST /memberships
   # POST /memberships.xml
   def create
-    # TODO: test if "user_established_at" and "network_established_at" can be hacked through API calls,
-    # thereby creating memberships that are accepted.
+    # TODO: test if "user_established_at" and "network_established_at" can be hacked (ie: set) through API calls,
+    # thereby creating memberships that are already 'accepted' at creation.
     if (@membership = Membership.new(params[:membership]) unless Membership.find_by_user_id_and_network_id(params[:membership][:user_id], params[:membership][:network_id]) or Network.find(params[:membership][:network_id]).owner? params[:membership][:user_id])
+      # set initial datetime
+      @membership.user_established_at = nil
+      @membership.network_established_at = nil
       
-      # Take into account network's "auto accept" setting
-      if (@membership.network.auto_accept)
-        @membership.user_establish!
-        @membership.network_establish!
-      else
-        @membership.user_establish!
-        @membership.network_established_at = nil
-      end
-
       respond_to do |format|
         if @membership.save
-          if (@membersip.network.auto_accept)
+          
+          # Take into account network's "auto accept" setting
+          if (@membership.network.auto_accept)
+            @membership.accept!
             flash[:notice] = 'You have successfully joined the Group.'
           else
+            @membership.user_establish!
             flash[:notice] = 'Membership was successfully requested.'
           end
+
           format.html { redirect_to membership_url(@membership.user_id, @membership) }
           format.xml  { head :created, :location => membership_url(@membership.user_id, @membership) }
         else
@@ -132,7 +131,7 @@ class MembershipsController < ApplicationController
   def update
     # no spoofing of acceptance
     params[:membership].delete('network_established_at') if params[:membership][:network_established_at]
-    params[:membership].delete('network_established_at') if params[:membership][:network_established_at]
+    params[:membership].delete('user_established_at') if params[:membership][:user_established_at]
     
     respond_to do |format|
       if @membership.update_attributes(params[:membership])

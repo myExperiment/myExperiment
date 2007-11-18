@@ -34,8 +34,7 @@ class Membership < ActiveRecord::Base
 
   def user_establish!
     if self.user_established_at.nil?
-      update_attribute :user_established_at, Time.now
-      return true
+      return update_attribute(:user_established_at, Time.now)
     else
       return false
     end
@@ -43,8 +42,7 @@ class Membership < ActiveRecord::Base
 
   def network_establish!
     if self.network_established_at.nil?
-      update_attribute :network_established_at, Time.now
-      return true
+      return update_attribute(:network_established_at, Time.now)
     else
       return false
     end
@@ -54,7 +52,8 @@ class Membership < ActiveRecord::Base
     unless accepted?
       if self.user_established_at == nil
         self.user_establish!
-      elsif self.network_established_at == nil
+      end
+      if self.network_established_at == nil
         self.network_establish!
       end
       return true

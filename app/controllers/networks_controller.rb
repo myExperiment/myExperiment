@@ -45,7 +45,7 @@ class NetworksController < ApplicationController
   def membership_invite
     respond_to do |format|
       unless params[:user_id]
-        flash[:error] = 'Failed to add User to Group. Please report this error.'
+        flash[:error] = 'Failed to invite User to Group. Please report this error.'
         format.html { redirect_to network_url(@network) }
       end
       
