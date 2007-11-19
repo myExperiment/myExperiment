@@ -5,7 +5,7 @@
     <% unless (citations = item.citations).empty? %>
       <% citations.each_index do |i| %>
         <p>
-          <%= i.to_i + 1 %>.  <%= render :partial => "citations/citation", :locals => { :citation => citations[i], :item => item, :actions = > true } %>
+          <%= i.to_i + 1 %>.  <%= render :partial => "citations/citation", :locals => { :citation => citations[i], :item => item, :actions => true } %>
         </p>
       <% end %>
     <% else %>
