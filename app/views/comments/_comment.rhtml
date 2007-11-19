@@ -23,7 +23,7 @@
 							:update => "commentsBox", 
 							:url => { :controller => controller.controller_name.to_s, :action => "comment_delete", :comment_id => comment.id },
 							:method => :delete,
-							:complete => "Element.hide('addcomment_indicator'); new Effect.Highlight('comments', { duration: 1.5 }); $('comment').value = '';",
+							:complete => "new Effect.Highlight('comments', { duration: 1.5 }); $('comment').value = '';",
 							:confirm => "Are you sure you want to delete this comment?" ) %>
 					]
 				</small>

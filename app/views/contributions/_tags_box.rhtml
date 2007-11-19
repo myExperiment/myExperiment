@@ -22,6 +22,12 @@
 					<p><small>(Comma seperated)</small></p>
 					<p>
 						<%= text_field_tag :tag_list %>
+						<div class="auto_complete" id="tags_auto_complete" ></div>
+						<%= auto_complete_field :tag_list,
+								:update => "tags_auto_complete",
+								:url => {:controller => 'tags', :action => 'auto_complete'},
+								:tokens => ',',
+								:indicator => "addtag_indicator" -%>
 					</p>
 					<%= submit_tag "Add" %>
 					<img id="addtag_indicator" style="margin-left: 1em; display: none;" src="/images/spinner.gif" />

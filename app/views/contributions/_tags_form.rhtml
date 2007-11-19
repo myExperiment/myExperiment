@@ -46,8 +46,15 @@ document.onkeypress = handleEnter;
     <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
       <p>Add one or more tags manually (seperated by commas; click on 'Add' to add to the list):</p>
       <p>
-      	<input id="tags_input" type="text" style="width: 500px;" name="tags_input"/>&nbsp;&nbsp;
-        <a href="" onclick="javascript:addTag(document.getElementById('tags_input').value); document.getElementById('tags_input').value = ''; return false;">Add</a>
+      	<input id="tags_input" type="text" style="width: 500px;" name="tags_input" autocomplete="off"/>&nbsp;&nbsp;
+		<a href="" onclick="javascript:addTag(document.getElementById('tags_input').value); document.getElementById('tags_input').value = ''; return false;">Add</a>
+		<div class="auto_complete" id="tags_auto_complete" ></div>
+		<%= auto_complete_field "tags_input",
+								:update => "tags_auto_complete",
+								:url => {:controller => 'tags', :action => 'auto_complete'},
+								:tokens => ',',
+								:indicator => "tagautocomplete_indicator" -%>
+			<img id="tagautocomplete_indicator" style="margin-top: 0.2em; display: none;" src="/images/spinner.gif" />&nbsp;
 	  </p>
     </div>
 

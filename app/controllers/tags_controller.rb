@@ -41,6 +41,23 @@ class TagsController < ApplicationController
     end
   end
   
+  def auto_complete
+    text = '';
+    
+    if params[:tag_list]
+      text = params[:tag_list]
+    elsif params[:tags_input]
+      text = params[:tags_input]
+    end
+    
+    @tags = Tag.find(:all, 
+                     :conditions => ["LOWER(name) LIKE ?", text.downcase + '%'], 
+                     :order => 'name ASC', 
+                     :limit => 20, 
+                     :select => 'DISTINCT *')
+    render :inline => "<%= auto_complete_result @tags, 'name' %>"
+  end
+  
 protected
 
   def find_tags

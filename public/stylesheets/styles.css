@@ -6,7 +6,6 @@
    Note that for font-size, only use %ages according to: 
    http://developer.yahoo.com/yui/fonts/#fontsize
 */
-
 body {
 	background: #8e8e8e url('/images/body-bg.gif') repeat-y center;
 	/* Only need to define one font here because the 
@@ -36,8 +35,7 @@ h1,h2,h3,h4,h5,h6 * {
 	vertical-align: middle;
 }
 
-h1 {
-	/*background-image: url('/images/header-bg2.png');
+h1 { /*background-image: url('/images/header-bg2.png');
 	background-position: top;
 	background-repeat: repeat-x;
 	padding: 0.5em 0 1.2em 0;
@@ -89,7 +87,7 @@ table {
 	border-collapse: separate;
 }
 
-th, td {
+th,td {
 	text-align: center;
 	border: none;
 }
@@ -103,14 +101,14 @@ pre {
 a {
 	color: #000099;
 	text-decoration: none;
-	border-bottom: 1px dashed transparent;
-	*border: none;
+	border-bottom: 1px dashed transparent; *
+	border: none;
 }
 
 a:hover {
 	color: red;
-	border-bottom: 1px dashed gray;
-	*border: none;
+	border-bottom: 1px dashed gray; *
+	border: none;
 }
 
 small {
@@ -131,22 +129,20 @@ fieldset {
 #doc2 {
 	background-color: #FFFFFF;
 }
-	
 
 #myexp_header {
 	margin: 1em 0.5em 0 0.5em;
 }
 
 #myexp_header .logo {
-	float: left; 
+	float: left;
 	width: 300px;
 }
 
-
 #myexp_header .links {
-	float: right; 
-	width: 300px; 
-	text-align: right; 
+	float: right;
+	width: 300px;
+	text-align: right;
 	font-size: 93%;
 	color: #999999;
 }
@@ -177,7 +173,6 @@ fieldset {
 }
 
 #ft {
-	
 	margin: 0 0 2em 0;
 	border-top: 0px dotted #999999;
 }
@@ -210,7 +205,7 @@ fieldset {
 	padding-left: 16px;
 }
 
-#hlist { 
+#hlist {
 	width: 100%;
 	margin: 0;
 	padding-left: 1em;
@@ -254,7 +249,7 @@ fieldset {
 .tabnav li a {
 	padding: 4px 12px;
 	margin-left: 3px;
-	border-top: 1px solid #999999; 
+	border-top: 1px solid #999999;
 	border-left: 1px solid #999999;
 	border-right: 1px solid #999999;
 	border-bottom: 1px solid transparent;
@@ -285,18 +280,15 @@ fieldset {
 	color: #FFFFFF;
 }
 
-/* end css tabs nav */
-
-/* begin css breadcrumbs */
-
+/* end css tabs nav */ /* begin css breadcrumbs */
 #myexp_breadcrumbs_bar {
 	font-weight: bold !important;
 	font-size: 85%;
 	text-decoration: none;
 	padding: 0.4em 0.5em;
 	background-color: #eee;
-	border-top: 2px solid #F5F5F5;
-	*margin-left: 1px;
+	border-top: 2px solid #F5F5F5; *
+	margin-left: 1px;
 }
 
 #myexp_breadcrumbs_bar ul {
@@ -322,10 +314,7 @@ fieldset {
 	color: red;
 }
 
-/* end css breadcrumbs */ 
-
-/* begin css tooltips/boxovers */
-
+/* end css breadcrumbs */ /* begin css tooltips/boxovers */
 .boxoverTooltipHeader {
 	display: none;
 	border: 0;
@@ -343,29 +332,24 @@ fieldset {
 	text-align: left;
 }
 
-.boxoverInfoHeader
-{
+.boxoverInfoHeader {
 	display: none;
 	border: 0;
 	height: 0;
 }
 
-.boxoverInfoBody
-{
+.boxoverInfoBody {
 	border: solid 1px Gray;
-	color: #333333; 
-	padding: 0.4em; 
-	background-color: #ebf3ff; 
+	color: #333333;
+	padding: 0.4em;
+	background-color: #ebf3ff;
 	font-size: 85%;
 	text-align: left;
 	max-width: 400px;
 	text-align: left;
 }
 
-/* end css tooltips/boxovers */
-
-/* begin css folds */
-
+/* end css tooltips/boxovers */ /* begin css folds */
 .fold {
 	margin-bottom: 1.5em;
 }
@@ -384,8 +368,8 @@ fieldset {
 }
 
 .foldTitle hr {
-	margin: 0.4em 0;
-	*margin: 0;
+	margin: 0.4em 0; *
+	margin: 0;
 }
 
 .foldTitle small {
@@ -396,8 +380,8 @@ fieldset {
 .foldText {
 	font-weight: bold;
 	text-align: left;
-	padding: 0.5em;
-	*padding: 0.3em;
+	padding: 0.5em; *
+	padding: 0.3em;
 }
 
 .foldText * {
@@ -424,10 +408,7 @@ fieldset {
 	padding: 1em;
 }
 
-/* end css folds */
-
-/* begin css tabs */
-
+/* end css folds */ /* begin css tabs */
 .tabsContainer {
 	padding: 0;
 	margin: 0;
@@ -501,10 +482,7 @@ fieldset {
 	background: white;
 }
 
-/* end css tabs */
-
-/* begin css newsfeed */
-
+/* end css tabs */ /* begin css newsfeed */
 .news_feed_div p.title {
 	font-weight: bold;
 	width: 100%;
@@ -523,12 +501,12 @@ fieldset {
 	list-style: none;
 }
 
-.news_feed_div ul.news_feed_day li.news_feed_item a,.news_feed_div ul.news_feed_day li.news_feed_item a:visited {
+.news_feed_div ul.news_feed_day li.news_feed_item a,.news_feed_div ul.news_feed_day li.news_feed_item a:visited
+	{
 	color: #000099;
 }
 
-/* end css newsfeed */ 
-
+/* end css newsfeed */
 .fieldWithErrors {
 	padding: 2px;
 	background-color: red;
@@ -609,15 +587,14 @@ table.alt_table tr.even_row td {
 table.alt_table hr {
 	height: 1px;
 	border-bottom: 1px dotted #999999;
-	margin: 0;	
+	margin: 0;
 }
 
 table.alt_table .mid {
-	text-align: left:
+	text-align: left :
 }
 
-table.alt_table tr td.actions {
-	/*width: 135px;*/
+table.alt_table tr td.actions { /*width: 135px;*/
 	text-align: left;
 }
 
@@ -630,16 +607,16 @@ table.alt_table tr td.actions a {
 }
 
 table.alt_table p.title {
-	margin-top: 0; 
-	padding-top: 0; 
-	margin-bottom: 0.2em; 
-	font-weight: bold; 
+	margin-top: 0;
+	padding-top: 0;
+	margin-bottom: 0.2em;
+	font-weight: bold;
 	font-size: 108%;
 }
 
 table.alt_table .desc {
-	border: 1px dotted #999999; 
-	margin: 0.2em 0; 
+	border: 1px dotted #999999;
+	margin: 0.2em 0;
 	padding: 0.5em;
 	background-color: #FFFFCC;
 }
@@ -649,7 +626,8 @@ table.alt_table tr td.contributable {
 	padding: 1em;
 }
 
-table.alt_table tr.even_row td.contributable table.contributable:hover,table.alt_table tr.odd_row td.contributable table.contributable:hover {
+table.alt_table tr.even_row td.contributable table.contributable:hover,table.alt_table tr.odd_row td.contributable table.contributable:hover
+	{
 	border: 1px dotted #999999;
 }
 
@@ -852,8 +830,8 @@ table tr td.details {
 }
 
 .contribution_section_box hr {
-	margin: 0.2em 0;
-	*margin: 0em 0;
+	margin: 0.2em 0; *
+	margin: 0em 0;
 	height: 1px;
 	border-bottom: 1px dotted #999999;
 }
@@ -869,14 +847,14 @@ table tr td.details {
 }
 
 .contribution_section_box .fold {
-	margin-bottom: 0; 
-	margin-top: 0.6em; 
+	margin-bottom: 0;
+	margin-top: 0.6em;
 	font-size: 85%;
 }
 
 .contribution_section_box .foldText {
-	padding: 0.4em;
-	*padding: 0.2em;
+	padding: 0.4em; *
+	padding: 0.2em;
 }
 
 .contribution_section_box .foldContent {
@@ -912,7 +890,7 @@ table tr td.details {
 }
 
 .contribution_version_selector_box * {
-	vertical-align: middle;	
+	vertical-align: middle;
 }
 
 .contribution_version_selector_box table {
@@ -971,19 +949,19 @@ table.comment td {
 }
 
 table.comment td.avatar {
-	width: 70px; 
-	padding: 0.8em; 
-	text-align: center; 
-	background-color: #EEEEEE; 
+	width: 70px;
+	padding: 0.8em;
+	text-align: center;
+	background-color: #EEEEEE;
 }
 
 table.comment td.header {
-	font-size: 85%; 
+	font-size: 85%;
 	height: 1.5em;
 	vertical-align: middle;
-	text-align: left; 
-	background-color: #EEEEEE; 
-	color: #333333; 
+	text-align: left;
+	background-color: #EEEEEE;
+	color: #333333;
 	padding: 0.5em 0.8em;
 }
 
@@ -1052,4 +1030,40 @@ a.tagsSelectorOn {
 	margin: 0;
 	margin-left: 0.4em;
 	margin-bottom: 0.4em;
-} 
+}
+
+/* begin autocomplete styles */
+/* From the book: "Agile Web Development with Rails, 2nd ed" p.548 */
+
+div.auto_complete {
+	background: #fff;
+	width: 99%;
+	z-index: 10;
+}
+
+div.auto_complete ul {
+	border: 1px solid #888;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	list-style-type: none;
+}
+
+div.auto_complete ul li {
+	margin: 0;
+	padding: 3px;
+	text-align: left;
+	list-style-type: none;
+}
+
+div.auto_complete ul li.selected {
+	background-color: #ffb;
+}
+
+div.auto_complete ul strong.highlight {
+	color: #800;
+	margin: 0;
+	padding: 0;
+}
+
+/* end autocomplete styles */
