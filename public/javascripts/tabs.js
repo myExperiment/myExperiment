@@ -10,6 +10,18 @@ function parent(el) {
   return el.parentNode;
 }
 
+function addEvent(type, element, func) {
+  if (element.addEventListener){
+    element.addEventListener(type, func, false); 
+  } else if (element.attachEvent){
+    element.attachEvent('on' + type, func);
+  }
+}
+
+function deSlash(str) {
+  return str.replace(/^\//, '');
+}
+
 function selectTab(tabsDiv, t) {
 
   var html = '<table cellspacing=0 cellpadding=0><tr>';
@@ -53,6 +65,25 @@ function selectTab(tabsDiv, t) {
   html += '</td></tr></table>';
 
   tabsDiv.innerHTML = html;
+}
+
+function showFragment(fragment, scroll) {
+
+  var root = document.all ? "BODY" : "HTML";
+  var el   = document.getElementById(fragment);
+
+  if (el != undefined) {
+
+    for (; el.tagName != root; el = parent(el)) {
+      if (el.className == 'tabContainer') {
+        selectTab(el.tabsDiv, el.tabsIndex);
+      }
+    }
+  }
+
+  if (scroll) {
+    document.getElementById(fragment).scrollIntoView(false);
+  }
 }
 
 function initialiseTabs() {
@@ -113,21 +144,32 @@ function initialiseTabs() {
   }
 
   if (window.location.hash.length > 0) {
+    showFragment(window.location.hash.substring(1));
+  }
 
-    var hash = window.location.hash.substring(1);
-    var root = document.all ? "BODY" : "HTML";
-    var el   = document.getElementById(hash);
+  var anchors = document.getElementsByTagName('A');
+  var loc     = window.location;
 
-    if (el != undefined) {
+  for (var i = 0; i < anchors.length; i++) {
 
-      for (; el.tagName != root; el = parent(el)) {
-        if (el.className == 'tabContainer') {
-          selectTab(el.tabsDiv, el.tabsIndex);
-        }
-      }
+    if ((anchors[i].hash != undefined) &&
+        (anchors[i].protocol == loc.protocol) &&
+        (anchors[i].hostname == loc.hostname) &&
+        (anchors[i].search == loc.search) &&
+        (deSlash(anchors[i].pathname) == deSlash(loc.pathname))) {
+
+      addEvent('click', anchors[i], hashClicked);
     }
   }
 }
 
-initialiseTabs();
+function hashClicked(evt) {
+
+  var el = evt.target ? evt.target : event.srcElement;
+
+  showFragment(el.hash.substring(1), true);
+  return false;
+}
+
+addEvent('load', window, initialiseTabs);
 
