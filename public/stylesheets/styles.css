@@ -45,7 +45,7 @@ h1 { /*background-image: url('/images/header-bg2.png');
 	text-align: center;
 	font-size: 123.1%;
 	color: #000033;
-	margin-bottom: 1em;
+	margin-bottom: 0.8em;
 }
 
 h2 {
@@ -181,6 +181,7 @@ fieldset {
 	background-image: url('/images/footer.png');
 	background-repeat: no-repeat;
 	background-position: bottom center;
+	background-color: transparent;
 	color: #F5F5F5;
 	font-size: 85%;
 	height: 20px;
@@ -194,6 +195,7 @@ fieldset {
 
 #ft .content * {
 	vertical-align: middle;
+	background-color: transparent;
 }
 
 #tag_clouds {
@@ -701,10 +703,16 @@ table tr td.details {
 }
 
 .sectionIcons {
-	margin-left: 0px;
-	padding-left: 3px;
+	margin: 0.5em 0;
+	*margin-bottom: 1em;
+	padding: 3px;
 	font-size: 93%;
 	font-weight: bold;
+	text-align: center;
+}
+
+.sectionIcons * {
+	vertical-align: middle;
 }
 
 .sectionIcons LI {
@@ -724,18 +732,29 @@ table tr td.details {
 .sectionIcons LI A {
 	padding: 0.4em;
 	margin: 0 1px;
-	border: 1px solid transparent;
 	text-decoration: none;
 	vertical-align: middle;
+	border: 1px solid #999999;
+	background-image: url('/images/header-bg.png');
+	background-position: top;
+	background-repeat: repeat-x;
+	background-color: #F5F5F5;
+	margin-left: 7px;
 }
 
 .sectionIcons LI A:hover {
-	border: 1px solid blue;
+	/*border: 1px solid blue;*/
+	border: 1px solid #999999;
 	padding: 0.4em;
 	margin: 1px;
 	color: red;
 	text-decoration: none;
-	background-color: #b1ceff;
+	background-image: none;
+	/*background-color: #b1ceff;*/
+	background-color: #0099FF;
+	vertical-align: middle;
+	margin-left: 7px;
+	color: #FFFFFF;
 }
 
 .sectionIcons LI A * {
@@ -749,10 +768,12 @@ table tr td.details {
 .icon A {
 	white-space: nowrap;
 	padding-right: 2px;
+	vertical-align: middle;
 }
 
 .icon IMG {
 	padding: 2px;
+	vertical-align: middle;
 }
 
 .info_text {
@@ -788,6 +809,8 @@ table tr td.details {
 	width: 25%;
 }
 
+/*
+
 .contribution_right_box .actions {
 	margin: 1em 0;
 }
@@ -803,6 +826,8 @@ table tr td.details {
 	display: block;
 	vertical-align: middle;
 }
+
+*/
 
 .contribution_section_box {
 	background-image: url('/images/box-bg1.png');
@@ -908,9 +933,12 @@ table tr td.details {
 
 .contribution_currentlicense_box {
 	margin: 0 0 0.5em 0;
-	padding: 0em 0.4em;
+	padding: 0.3em 0.4em;
 	text-align: center;
 	font-style: italic;
+	font-size: 93%;
+	font-weight: bold;
+	color: #666666;
 }
 
 .contribution_currentlicense_box p {
@@ -997,7 +1025,7 @@ a.tagsSelectorOff:hover {
 	padding: 0.3em 0.4em;
 	border: 1px solid #999999;
 	color: #FFFFFF;
-	background-color: #317eff;
+	background-color: #0099FF;
 	font-weight: bold;
 	font-size: 85%
 }
@@ -1007,7 +1035,7 @@ a.tagsSelectorOn {
 	padding: 0.3em 0.4em;
 	border: 1px solid #999999;
 	color: #FFFFFF;
-	background-color: #317eff;
+	background-color: #0099FF;
 	font-weight: bold;
 	font-size: 85%
 }

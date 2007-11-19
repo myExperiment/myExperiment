@@ -1,8 +1,21 @@
 <h1>File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
 
-<div class="contribution_currentlicense_box">
+<div class="contribution_section_box" style="font-size: 93%; font-style: italic; margin: 0 3em;">
 	<%= render :partial => "blobs/license", :locals => { :blob => @blob } %>
 </div>
+
+<% if logged_in? %>
+	<ul class="sectionIcons">
+		<% if @blob.authorized?("edit", current_user) %>
+			<li><%= icon('manage', edit_blob_path(@blob), nil, nil, 'Manage File Entry')%></li>
+		<% end %>
+		<% if @blob.authorized?("destroy", current_user) %>
+			<li>
+				<%= icon('destroy', blob_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete File Entry') %>
+			</li>
+		<% end %>
+	</ul>
+<% end %>
 
 <div class="contribution_left_box">
 	<div class="contribution_version_box">
@@ -72,19 +85,6 @@
 
 <div class="contribution_right_box">
 	<%= render :partial => "contributions/uploader_credits_attributions_box", :locals => { :contributable => @blob, :edit_path => edit_blob_path(@blob) } %>
-	
-	<% if logged_in? %>
-		<div class="actions">
-			<% if @blob.authorized?("edit", current_user) %>
-				<li><%= icon('manage', edit_blob_path(@blob), nil, nil, 'Manage File Entry')%></li>
-			<% end %>
-			<% if @blob.authorized?("destroy", current_user) %>
-				<li>
-					<%= icon('destroy', blob_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete File Entry') %>
-				</li>
-			<% end %>
-		</div>
-	<% end %>
 	
 	<%= render :partial => "contributions/tags_box", :locals => { :contributable => @blob, :add_path => tag_blob_path(@blob), :edit_path => edit_blob_path(@blob) } %>
 	

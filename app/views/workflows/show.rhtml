@@ -9,10 +9,24 @@
 
 <h1>Workflow Entry: <%=h @workflow.title %></h1>
 
+<% if logged_in? %>
+	<ul class="sectionIcons">
+		<% if @workflow.authorized?("edit", current_user) %>
+			<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
+			<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow Entry')%></li>
+		<% end %>
+		<% if @workflow.authorized?("destroy", current_user) %>
+			<li>
+				<%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow Entry') %>
+			</li>
+		<% end %>
+	</ul>
+<% end %>
+
 <div class="contribution_currentlicense_box">
 	<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
 </div>
-	
+
 <div class="contribution_left_box">
 	<div class="contribution_version_selector_box">
 		<table>
@@ -187,20 +201,6 @@
 			<p>
 				<%=h @workflow.unique_name %>
 			</p>
-		</div>
-	<% end %>
-	
-	<% if logged_in? %>
-		<div class="actions">
-			<% if @workflow.authorized?("edit", current_user) %>
-				<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
-				<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow Entry')%></li>
-			<% end %>
-			<% if @workflow.authorized?("destroy", current_user) %>
-				<li>
-					<%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow Entry') %>
-				</li>
-			<% end %>
 		</div>
 	<% end %>
 	
