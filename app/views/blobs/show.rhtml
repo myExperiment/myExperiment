@@ -28,11 +28,13 @@
 			</div>
 		<% end %>
 		
-		<% if logged_in? and @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
-			<div style="padding:1em; text-align:center;">
+		<div style="padding:1em; text-align:center;">
+			<% if @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
 				<a href="<%= download_blob_path(@blob) %>"><%= image_tag(image_path("download_button.png"), :alt => 'Download the file') %></a>
-			</div>
-		<% end %>
+			<% else %>
+				<b><i>You cannot download this File</i></b>
+			<% end %>
+		</div>
 	</div>
 	
 	<br/>

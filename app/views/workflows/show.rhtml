@@ -66,11 +66,13 @@
 			</div>
 		<% end %>
 		
-		<% if logged_in? and @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
-			<div style="padding:1em; text-align:center;">
+		<div style="padding:1em; text-align:center;">
+			<% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
 				<a href="<%= download_workflow_url(@workflow) %>"><%= image_tag(image_path("download_button.png"), :alt => 'Download the Workflow file') %></a>
-			</div>
-		<% end %>
+			<% else %>
+				<b><i>You cannot download this Workflow</i></b>
+			<% end %>
+		</div>
 		
 		<% if logged_in? %>
 			<div class="sectionIcons">
