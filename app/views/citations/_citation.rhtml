@@ -1,3 +1,5 @@
+<% actions ||= false -%>
+
 <% arr = ["#{h(citation.authors)}, <b>#{h(citation.title)}</b>"] -%>
 <% arr << "<i>#{h(citation.publication)}</i>" if citation.publication and !citation.publication.empty? -%>
 <% arr << "#{date(citation.published_at)}" if citation.published_at -%>
@@ -8,4 +10,9 @@
 
 <% arr.each_index do |i| %>
   <%= arr[i] %><%= "," unless i.to_i == arr.length.to_i - 1 %>
+<% end %>
+
+<% if actions and item.authorized?("edit", (logged_in? ? current_user : nil)) %>
+	&nbsp;&nbsp;<small>[<%= link_to "view", citation_path(item, citation) %>]</small>
+	&nbsp;<small>[<%= link_to "edit", edit_citation_path(item, citation) %>]</small>
 <% end %>

@@ -9,7 +9,8 @@
   
   <p>
     <b>Authors <font color="red">*</font></b><br />
-    <%= form.text_area :authors, :cols => 30, :rows => 4 %>
+    <% if false %><%= form.text_area :authors, :cols => 30, :rows => 4 %><% end %>
+		<%= form.text_field :authors %>
   </p>
     
   <p>

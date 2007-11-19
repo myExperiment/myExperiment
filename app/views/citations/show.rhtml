@@ -1,3 +1,5 @@
+<h1>View Citation: <%= h @citation.title %></h1>
+
 <ul class="sectionIcons">
   <% if logged_in? %>
     <% if @workflow.authorized?("edit", current_user) %>
@@ -10,31 +12,66 @@
   <% end %>
 </ul>
 
-<div id="tabsContainer" class="tabsContainer"></div>
+<p>
+	<b>For Workflow:</b>
+	<%= contributable(@workflow.id, 'Workflow') -%>
+</p>
 
-<div class="tabContainer">
-  <div class="tabTitle">Details</div>
-  <div class="tabContent">
+<hr/>
 
-    <p>
-      <b>Created at:</b>
-      <%=datetime @citation.created_at %>
-    </p>
+<p>
+	<b>Title:</b>
+	<%= h @citation.title -%>
+</p>
 
-    <p>
-      <b>Updated at:</b>
-      <%=datetime @citation.updated_at %>
-    </p>
-  </div>
-</div>
+<p>
+	<b>Authors:</b>
+	<%= h @citation.authors -%>
+</p>
 
-<div class="tabContainer">
-  <div class="tabTitle">Preview</div>
-  <div class="tabContent">
-    <h2>Preview</h2>
+<p>
+	<b>Published:</b>
+	<%= date @citation.published_at -%>
+</p>
 
-    <p>
-      <%= render :partial => "citations/citation", :object => @citation %>
-    </p>
-  </div>
-</div>
+<p>
+	<b>Publication:</b>
+	<%= h @citation.publication -%>
+</p>
+
+<p>
+	<b>Website:</b>
+	<%= h @citation.url -%>
+</p>
+
+<p>
+	<b>Accessed at:</b>
+	<%= date @citation.accessed_at -%>
+</p>
+
+<hr/>
+
+<p>
+  <b>Created at:</b>
+  <%= datetime @citation.created_at %>
+</p>
+
+<p>
+  <b>Created by:</b>
+  <%= name @citation.user_id %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%= datetime @citation.updated_at %>
+</p>
+
+<br/>
+<br/>
+
+<h2>Preview</h2>
+
+<p>
+  <%= render :partial => "citations/citation", :locals => { :citation => @citation, :item => @workflow } %>
+</p>
+
