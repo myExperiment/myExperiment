@@ -1,9 +1,5 @@
 <h1>File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
 
-<div class="contribution_section_box" style="font-size: 93%; font-style: italic; margin: 0 3em;">
-	<%= render :partial => "blobs/license", :locals => { :blob => @blob } %>
-</div>
-
 <% if logged_in? %>
 	<ul class="sectionIcons">
 		<% if @blob.authorized?("edit", current_user) %>
@@ -16,6 +12,10 @@
 		<% end %>
 	</ul>
 <% end %>
+
+<div class="contribution_currentlicense_box">
+	<%= render :partial => "blobs/license", :locals => { :blob => @blob } %>
+</div>
 
 <div class="contribution_left_box">
 	<div class="contribution_version_box">

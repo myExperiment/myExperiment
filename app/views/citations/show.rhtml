@@ -1,11 +1,11 @@
 <ul class="sectionIcons">
   <% if logged_in? %>
     <% if @workflow.authorized?("edit", current_user) %>
-      <li><%= icon('edit', edit_citation_path(@workflow, @citation), nil, nil, 'Edit citation') %></li>
+      <li><%= icon('edit', edit_citation_path(@workflow, @citation), nil, nil, 'Edit Citation') %></li>
     <% end %>
 
     <% if @workflow.authorized?("destroy", current_user) %>
-      <li><%= icon('destroy', citation_path(@workflow, @citation), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove citation') %></li>
+      <li><%= icon('destroy', citation_path(@workflow, @citation), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Citation') %></li>
     <% end %>
   <% end %>
 </ul>
@@ -15,7 +15,6 @@
 <div class="tabContainer">
   <div class="tabTitle">Details</div>
   <div class="tabContent">
-    <h2>Details</h2>
 
     <p>
       <b>Created at:</b>
