@@ -1,23 +1,25 @@
-<% versions = workflow.versions.size %>
-
 <p>
   <b>Earliest Version:</b><br/>
   <%= versioned_workflow_link(workflow, 1) %>
 </p>
 
-<% if versions > 2 %>
+<% if @latest_version_number > 2 %>
 <p>
   <b>Previous Versions:</b><br/>
-  <% (2...versions).each do |v| %>
-    <%= versioned_workflow_link(workflow, v) %><br/>
+  <% (2...@latest_version_number).each do |v| %>
+		<% if (link = versioned_workflow_link(workflow, v)) %>
+    	<%= link %><br/>
+		<% else %>
+			<p>[<%= v.to_s %>] - <i>does not exist</i></p>
+		<% end %>
   <% end %>
 </p>
 <% end %>
 
-<% if versions > 1 %>
+<% if @latest_version_number > 1 %>
   <p>
     <b>Latest Version:</b><br/>
-    <%= versioned_workflow_link(workflow, workflow.versions.size) %>
+    <%= versioned_workflow_link(workflow, @latest_version_number) %>
   </p>
 <% else %>
   <p>

@@ -122,7 +122,7 @@ class WorkflowsController < ApplicationController
   def download
     @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
     
-    send_data(@workflow.scufl, :filename => @workflow.unique_name + ".xml", :type => "application/vnd.taverna.scufl+xml")
+    send_data(@viewing_version.scufl, :filename => @workflow.unique_name + ".xml", :type => "application/vnd.taverna.scufl+xml")
   end
   
   # GET /workflows
@@ -246,8 +246,10 @@ class WorkflowsController < ApplicationController
           # create new diagrams and append new version number to filename
           img, svg = create_workflow_diagrams(scufl_model, "#{@workflow.unique_name}_#{@workflow.version.to_i + 1}")
           
-          @workflow.image, @workflow.svg, @workflow.scufl = img, svg, scufl.read
+          @workflow.image, @workflow.svg = img, svg
         end
+        
+        @workflow.scufl = scufl.read
         
         params[:workflow].delete("scufl") # remove scufl attribute from received workflow parameters
         
@@ -265,7 +267,11 @@ class WorkflowsController < ApplicationController
           format.html { redirect_to workflow_url(@workflow) }
           format.xml  { head :ok }
         else
-          format.html { render :action => "edit" }
+          if scufl.nil?
+            format.html { render :action => "edit" }
+          else
+            format.html { render :action => "new_version" }  
+          end
           format.xml  { render :xml => @workflow.errors.to_xml }
         end
         # END REPEATED CODE
@@ -289,7 +295,11 @@ class WorkflowsController < ApplicationController
           format.html { redirect_to workflow_url(@workflow) }
           format.xml  { head :ok }
         else
-          format.html { render :action => "edit" }
+          if scufl.nil?
+            format.html { render :action => "edit" }
+          else
+            format.html { render :action => "new_version" }
+          end
           format.xml  { render :xml => @workflow.errors.to_xml }
         end
           
@@ -354,19 +364,33 @@ protected
       workflow = Workflow.find(params[:id])
       
       if workflow.authorized?(action_name, (logged_in? ? current_user : nil))
+        @latest_version_number = workflow.version
+        @workflow = workflow
         if params[:version]
-          @latest_version = workflow.versions.length
-          if workflow.revert_to(params[:version])
-            @workflow = workflow
+          if (viewing = Workflow.find_version(workflow.id, params[:version]))
+            @viewing_version_number = params[:version]
+            @viewing_version = viewing
           else
             error("Version not found (is invalid)", "not found (is invalid)", :version)
           end
         else
-          @workflow = workflow
+          @viewing_version_number = @latest_version_number
+          @viewing_version = Workflow.find_version(workflow.id, @latest_version_number)
         end
         
+        @authorised_to_download = @workflow.authorized?("download", (logged_in? ? current_user : nil))
+        
         # remove scufl from workflow if the user is not authorized for download
-        @workflow.scufl = nil unless @workflow.authorized?("download", (logged_in? ? current_user : nil))
+        @viewing_version.scufl = nil unless @authorised_to_download
+        @workflow.scufl = nil unless @authorised_to_download
+        
+        @download_url = url_for :action => 'download',
+                                :id => @workflow.id, 
+                                :version => @viewing_version_number.to_s
+                                
+        puts "@latest_version_number = #{@latest_version_number}"
+        puts "@viewing_version_number = #{@viewing_version_number}"
+        puts "@workflow.image != nil = #{@workflow.image != nil}"
       else
         if logged_in?
           error("Workflow not found (id not authorized)", "is invalid (not authorized)")
