@@ -169,11 +169,7 @@
 	<div class="tabContainer">
 	  <div class="tabTitle">Versions History</div>
 	  <div class="tabContent">
-	    <% if params[:version] %>
-	      <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow, :versions => @latest_version } %>
-	    <% else %>
 	      <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
-	    <% end %>
 	  </div>
 	</div>
 	
