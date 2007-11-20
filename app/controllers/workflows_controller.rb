@@ -218,7 +218,7 @@ class WorkflowsController < ApplicationController
 
     # remove protected columns
     if params[:workflow]
-      [:contributor_id, :contributor_type, :image, :created_at, :updated_at, :version].each do |column_name|
+      [:contribution, :contributor_id, :contributor_type, :image, :created_at, :updated_at, :version].each do |column_name|
         params[:workflow].delete(column_name)
       end
     end
@@ -230,18 +230,19 @@ class WorkflowsController < ApplicationController
       end
     end
     
-    # update contributor with 'latest' uploader (or "editor")
-    #params[:workflow][:contributor_type], params[:workflow][:contributor_id] = "User", current_user.id
-    
     respond_to do |format|
       scufl = params[:workflow][:scufl]
       
-      # hack to only update the workflow version table if the scufl has been altered
+      # process scufl if it's there
       unless scufl.nil?
+
         # create new scufl model
         scufl_model = Scufl::Parser.new.parse(scufl.read)
         scufl.rewind
         
+        @workflow.title, @workflow.unique_name = determine_title_and_unique(scufl_model)
+        @workflow.body = scufl_model.description.description
+
         unless RUBY_PLATFORM =~ /mswin32/
           # create new diagrams and append new version number to filename
           img, svg = create_workflow_diagrams(scufl_model, "#{@workflow.unique_name}_#{@workflow.version.to_i + 1}")
@@ -252,59 +253,41 @@ class WorkflowsController < ApplicationController
         @workflow.scufl = scufl.read
         
         params[:workflow].delete("scufl") # remove scufl attribute from received workflow parameters
-        
-        # REPEATED CODE
-        # See line 207
-        if @workflow.update_attributes(params[:workflow])
-          if params[:workflow][:tag_list]
-            refresh_tags(@workflow, params[:workflow][:tag_list], current_user)
-          end
-        
-          # security fix (only allow the owner to change the policy)
-          @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
-        
-          flash[:notice] = 'Workflow was successfully updated.'
-          format.html { redirect_to workflow_url(@workflow) }
-          format.xml  { head :ok }
-        else
-          if scufl.nil?
-            format.html { render :action => "edit" }
-          else
-            format.html { render :action => "new_version" }  
-          end
-          format.xml  { render :xml => @workflow.errors.to_xml }
-        end
-        # END REPEATED CODE
-      else
+      end
+
+      success = nil;
+
+      if scufl.nil?
         Workflow.without_revision do 
-          
-        if @workflow.update_attributes(params[:workflow])
-          if params[:workflow][:tag_list]
-            refresh_tags(@workflow, params[:workflow][:tag_list], current_user)
-          end
-          
-          # security fix (only allow the owner to change the policy)
-          @workflow.contribution.update_attributes(params[:contribution]) if @workflow.contribution.owner?(current_user)
-          
+          success = @workflow.update_attributes(params[:workflow])
+        end
+      else
+        success = @workflow.update_attributes(params[:workflow])
+      end
+
+      if success
+        refresh_tags(@workflow, params[:workflow][:tag_list], current_user) if params[:workflow][:tag_list]
+        
+        # There are two specific update actions: one to upload a new scufl
+        # file, and the second to update the policy, credits and attributions
+
+        if scufl.nil?
           update_policy(@workflow, params)
-  
           update_credits(@workflow, params)
           update_attributions(@workflow, params)
-  
-          flash[:notice] = 'Workflow was successfully updated.'
-          format.html { redirect_to workflow_url(@workflow) }
-          format.xml  { head :ok }
+        end
+
+        flash[:notice] = 'Workflow was successfully updated.'
+        format.html { redirect_to workflow_url(@workflow) }
+        format.xml  { head :ok }
+      else
+        if scufl.nil?
+          format.html { render :action => "edit" }
         else
-          if scufl.nil?
-            format.html { render :action => "edit" }
-          else
-            format.html { render :action => "new_version" }
+          format.html { render :action => "new_version" }  
           end
           format.xml  { render :xml => @workflow.errors.to_xml }
         end
-          
-        end
-      end
     end
   end
 
@@ -403,12 +386,16 @@ protected
     end
   end
   
+  def determine_title_and_unique(scufl_model)
+    salt = rand 32768
+    return scufl_model.description.title.blank? ? ["untitled", "untitled_#{salt}"] : [scufl_model.description.title,  "#{scufl_model.description.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"]
+  end
+
   def create_workflow(wf)
     scufl_model = Scufl::Parser.new.parse(wf[:scufl].read)
     wf[:scufl].rewind
-    
-    salt = rand 32768
-    title, unique_name = scufl_model.description.title.blank? ? ["untitled", "untitled_#{salt}"] : [scufl_model.description.title,  "#{scufl_model.description.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"]
+
+    title, unique_name = determine_title_and_unique(scufl_model)
     
     rtn = Workflow.new(:scufl => wf[:scufl].read, 
                        :contributor_id => wf[:contributor_id], 
