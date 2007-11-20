@@ -364,7 +364,7 @@ class ApplicationController < ActionController::Base
   def refresh_tags(taggable, tags, tagger)
 
     old_tags = taggable.tags.map do |tag| tag.name end
-    new_tags = Tag.parse(tags)
+    new_tags = tags.split(",").map do |t| t.strip end
 
     puts "#DEBUG: old_tags = #{old_tags}"
     puts "#DEBUG: new_tags = #{new_tags}"
