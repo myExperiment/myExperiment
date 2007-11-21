@@ -58,7 +58,7 @@ class Workflow < ActiveRecord::Base
   file_column :image, :magick => {
     :versions => {
       :thumb    => { :size => "100x100!" }, 
-      :medium   => { :size => "650x300>" },
+      :medium   => { :size => "500x500>" },
       :full     => { },
       :padlock => { :transformation => Proc.new { |image| image.resize(100, 100).blur_image.composite(Magick::ImageList.new("#{RAILS_ROOT}/public/images/padlock.gif"), 
                                                                                                       Magick::SouthEastGravity, 
