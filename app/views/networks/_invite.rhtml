@@ -24,14 +24,14 @@
           
           xmlhttp_<%= n.id %>.open('GET', '<%= membership_invite_network_path(n) %>?user_id=<%= user.id %>', true);
           
-          $("my_networks_button").value = "Creating (<%= h(n.title) %>)";
+          $("my_networks_button").value = "Inviting (<%= h(n.title) %>)";
           xmlhttp_<%= n.id %>.onreadystatechange = function() {
             $("my_network_<%= n.id %>").disabled = true;
           
             if (xmlhttp_<%= n.id %>.readyState == 4) {
               $("my_network_font_<%= n.id %>").color = "green";
               
-              $("my_networks_button").value = "Created (<%= h(n.title) %>)";
+              $("my_networks_button").value = "Invited (<%= h(n.title) %>)";
             } else {
               $("my_network_font_<%= n.id %>").color = "red";
             }
@@ -46,7 +46,7 @@
 
 <div class="user_context_panel">
 
-<h4>Add to Your Groups</h4>
+<h4>Inviting to Your Groups</h4>
 
 <p>
   Below you can invite <%= h(user.name) %> to join your Groups. Select the Group(s) you want to invite them to and then click the "invite" button.

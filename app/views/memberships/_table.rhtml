@@ -27,10 +27,15 @@
     <td class="actions">
       <% if my_page? membership.user.id or my_page? membership.network.owner.id %>
         <%= icon "show", membership_path(membership.user_id, membership) %>
+				<% if membership.accepted? %>
+					<%= icon "destroy", membership_path(membership.user_id, membership), nil, { :confirm => "Are you sure?", :method => :delete }, "Remove" %>
+				<% end %>
       <% end %>
       <% if allow_approval %>
-        <% unless membership.accepted? %><%= icon "confirm", accept_membership_path(membership.user_id, membership) %><% end %>
-         <%= icon (membership.accepted? ? "destroy" : "reject"), membership_path(membership.user_id, membership), nil, :confirm => "Are you sure?", :method => :delete %>
+        <% unless membership.accepted? %>
+					<%= icon "confirm", accept_membership_path(membership.user_id, membership) %>
+         	<%= icon "reject", membership_path(membership.user_id, membership), nil, :confirm => "Are you sure?", :method => :delete %>
+				<% end %>
       <% end %>
     </td>
   </tr>

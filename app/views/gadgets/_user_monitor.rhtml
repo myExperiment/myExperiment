@@ -50,14 +50,14 @@
         <div class="title">
         	<%= info_icon_with_tooltip("You have been invited to join groups") %>
         	<%= pluralize(membership_invites.length, "new membership invite") %>
-		</div>
+				</div>
         <div class="content">
           <ul class="gadget_list">
             <% membership_invites.each do |membership| %>
               <li>
-              	<b><%= icon "membership", membership_path(membership.user, membership), nil, nil, h(membership.user.name) %></b>
-				<span style="margin-left: 20px; display: block;">(for <%= title membership.network_id %>)</span>
-			  </li>
+              	<b><%= icon "membership", membership_path(membership.user, membership), nil, nil, h("To #{membership.user.name}") %></b>
+								<span style="margin-left: 20px; display: block;">(for <%= title membership.network_id %>)</span>
+						  </li>
             <% end %>
           </ul>
         </div>
@@ -70,12 +70,12 @@
         <div class="title">
         	<%= info_icon_with_tooltip("Users are requesting to join your groups") %>
         	<%= pluralize(membership_requests.length, "new membership request") %>
-		</div>
+				</div>
         <div class="content">
           <ul class="gadget_list">
             <% membership_requests.each do |membership| %>
               <li>
-              	<b><%= icon "membership", membership_path(membership.user, membership), nil, nil, h(membership.user.name) %></b>
+              	<b><%= icon "membership", membership_path(membership.user, membership), nil, nil, h("From #{membership.user.name}") %></b>
 				<br/><span style="margin-left: 20px">(for <%= title membership.network_id %>)</span>
 			  </li>
             <% end %>

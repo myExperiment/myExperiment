@@ -77,14 +77,17 @@
 
 <% if my_page? @network.owner.id %>
   
-  <% unless @network.memberships_accepted.empty? %>
-    <div class="tabContainer">
-      <div class="tabTitle">Manage Memberships</div>
-      <div class="tabContent">
-        <%= render :partial => "memberships/table", :locals => { :collection => @network.memberships_accepted, :network => false } %>
-      </div>
+  <% memberships = @network.memberships_accepted %>
+  <div class="tabContainer">
+    <div class="tabTitle">Manage Memberships</div>
+    <div class="tabContent">
+    	<% unless memberships.empty? %>
+      	<%= render :partial => "memberships/table", :locals => { :collection => memberships, :network => false } %>
+			<% else %>
+				<p><i>No additional members belong to this Group</i></p>
+			<% end %>
     </div>
-  <% end %>
+  </div>
   
   <div class="tabContainer">
     <div class="tabTitle">Invite Users</div>

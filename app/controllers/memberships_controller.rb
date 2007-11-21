@@ -155,6 +155,7 @@ class MembershipsController < ApplicationController
     @membership.destroy
 
     respond_to do |format|
+      params[:notice] = "User succesfully removed from Group"
       format.html { redirect_to network_path(network_id) }
       format.xml  { head :ok }
     end
@@ -222,7 +223,7 @@ protected
             end
           end
           
-        elsif action_name.to_s == "delete"
+        elsif action_name.to_s == "destroy"
           
           # Only the owner of the network can delete memberships, for now
           if current_user.id != membership.network.owner.id
