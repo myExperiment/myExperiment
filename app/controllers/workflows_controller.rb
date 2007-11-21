@@ -22,7 +22,7 @@
 ##
 
 class WorkflowsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download, :search, :all]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :search, :all]
   
   before_filter :find_workflows, :only => [:index, :all]
   #before_filter :find_workflow_auth, :only => [:bookmark, :comment, :rate, :tag, :download, :show, :edit, :update, :destroy]
@@ -125,6 +125,17 @@ class WorkflowsController < ApplicationController
     send_data(@viewing_version.scufl, :filename => @workflow.unique_name + ".xml", :type => "application/vnd.taverna.scufl+xml")
   end
   
+  # GET /workflows/:id/download/:name.:format
+  def named_download
+
+    # check that we got the right filename for this workflow
+    if "#{params[:name]}.#{params[:format]}" == "#{@viewing_version.unique_name}.xml"
+      download
+    else
+      render :nothing => true, :status => "404 Not Found"
+    end
+  end
+
   # GET /workflows
   # GET /workflows.xml
   def index
