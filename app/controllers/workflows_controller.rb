@@ -305,6 +305,8 @@ class WorkflowsController < ApplicationController
   # DELETE /workflows/1
   # DELETE /workflows/1.xml
   def destroy
+    
+    workflow_title = @workflow.title
 
     if params[:version]
 
@@ -326,8 +328,10 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
 
       if params[:version]
+        flash[:notice] = "Workflow file version #{params[:version]} has been deleted"
         format.html { redirect_to workflow_url(@workflow) }
       else
+        flash[:notice] = "Workflow entry \"#{workflow_title}\" has been deleted"
         format.html { redirect_to workflows_url }
       end
 
@@ -441,7 +445,7 @@ protected
 private
 
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Workflow.new.errors).add(attr, message)
     
     respond_to do |format|
