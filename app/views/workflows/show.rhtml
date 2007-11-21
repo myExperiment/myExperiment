@@ -39,7 +39,7 @@
 					<td>
 						<% if @latest_version_number > 1 %>
              	<form onsubmit="showWorkflowVersion(); return false;" style="text-align: right;">
-					    	<b>Change to: </b>
+					    	<b>View version: </b>
 					    	<select id="workflow_versions">
 						  		<% @workflow.versions.reverse.each do |w| %>
 						    		<option value="<%= versioned_workflow_url(@workflow, w.version.to_s) %>">
