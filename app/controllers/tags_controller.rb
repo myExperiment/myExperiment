@@ -61,7 +61,7 @@ class TagsController < ApplicationController
 protected
 
   def find_tags
-    @tags = Tag.find(:all, :order => "name ASC")
+    @tags = Tag.find(:all, :order => "name ASC", :conditions => "taggings_count > 0")
   end
   
   def find_tag_and_tagged_with

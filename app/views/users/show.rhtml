@@ -128,6 +128,19 @@
   <%= render :partial => "contributions/tabs", :locals => { :collection => @user.contributions } %>
 <% end %>
 
+<% unless (tags = tags_for_user(@user.id)).empty? %>
+  <div id="user_tags" class="tabContainer">
+    <div class="tabTitle">
+    	<%= (logged_in? and my_page? @user.id) ? "My Tags" : "User's Tags" %>
+		</div>
+    <div class="tabContent">
+			<div style="border: 1px dotted #999999; background-color: #FFFFCC; padding: 1em; margin: 0.5em;">
+				<%= tag_cloud_from_collection(tags) %>
+			</div>
+    </div>
+  </div>
+<% end %>
+
 <% if logged_in? and !my_page? @user.id and !current_user.networks_owned.empty? %>
   <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
 <% end %>

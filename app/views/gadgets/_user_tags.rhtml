@@ -1,4 +1,4 @@
-<% tags = (Tagging.find_all_by_user_id(current_user).map do |tagging| tagging.tag end).uniq %>
+<% tags = tags_for_user(current_user.id) %>
 
 <div class="myexperiment_gadget">
   <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
@@ -11,13 +11,13 @@
   </div>
   
   <div class="contents">
-     <% if !tags.empty? %>
-		<div class="tags_smaller">
-			<%= tag_cloud_from_collection(tags) %>
-		</div>
-	<% else %>
-		<center><i>None</i></center>
-	<% end %>
+    <% unless tags.empty? %>
+			<div class="tags_smaller">
+				<%= tag_cloud_from_collection(tags) %>
+			</div>
+		<% else %>
+			<center><i>None</i></center>
+		<% end %>
   </div>
   
   <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>

@@ -652,6 +652,14 @@ module ApplicationHelper
     
     return tags
   end
+  
+  def tags_for_user(user_id)
+    tags = (Tagging.find_all_by_user_id(user_id).map do |tagging| tagging.tag end).uniq
+    tags = tags.sort { |a, b|
+      a.name.downcase <=> b.name.downcase
+    }
+    return tags
+  end
 
   def highlight_all(text, string)
     rtn = text
