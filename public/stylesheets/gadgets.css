@@ -51,7 +51,7 @@
 	border-bottom: none;
 	border-left: #999999 1px solid;
 	color: #000000;
-	padding: 0.6em;
+	padding: 0.5em;
 	margin-top: 0;
 	text-align: center;
 	background-color: #FFFFFF;
@@ -78,6 +78,12 @@
 	padding: 0.2em 0;
 	line-height: 1em;
 	margin: 0;
+}
+
+.myexperiment_gadget .contents .title {
+	font-size: 93%;
+	font-weight: bold;
+	color: #990000;
 }
 
 .myexperiment_gadget .contents .field {
