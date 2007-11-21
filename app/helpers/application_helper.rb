@@ -629,8 +629,11 @@ module ApplicationHelper
     return final_tags
   end
   
-  def all_tags_for_workflows(limit=-1)
-    taggings = Tagging.find(:all, :conditions => ["taggable_type = ?", "Workflow"])
+  def tags_for_type(type, limit=-1)
+    
+    return nil unless ["Workflow", "Blob"].include?(type)
+    
+    taggings = Tagging.find(:all, :conditions => ["taggable_type = ?", type])
     tags = []
     
     taggings.each do |tagging|
