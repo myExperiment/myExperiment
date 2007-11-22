@@ -21,7 +21,7 @@
     </td>
     <td><%=datetime viewing.created_at, false %></td>
     <td class="actions">
-      <%= icon "show", viewing_path(viewing.contribution, viewing) %>
+      <%= icon "show", viewing_path(viewing.contribution, viewing), nil, nil, "View" %>
     </td>
   </tr>
 <% end %>

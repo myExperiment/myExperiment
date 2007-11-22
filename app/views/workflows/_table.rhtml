@@ -1,10 +1,11 @@
 <% query ||= false -%>
 <% odd_row = false -%>
+<% show = workflow.authorized?("show", (logged_in? ? current_user : nil)) -%>
 <% unless collection.empty? %>
 
 <table class="alt_table">	
 	<% for workflow in collection %>
-	  <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
+	  <% if show %>
 	  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 	    <td style="width: 100px;">
 	    	<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
@@ -47,7 +48,7 @@
 		  <div>
 		      <% unless workflow.image.nil? %>
 			  	<div style="padding: 0.2em 0; width: 100px; float: left; display: inline;">
-			        <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %>
+			        <% if show %>
 			          <%= link_to image_tag(url_for_file_column(workflow, "image", "thumb"), :class => 'framed_nospace'), workflow_path(workflow) %>
 			        <% else %>
 			          <%= image_tag url_for_file_column(workflow, "image", "padlock") %>
@@ -80,7 +81,7 @@
 		  <% end %>	
 	    </td>
 	    <td class="actions" style="width: 85px;">
-	      <% if workflow.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", workflow_path(workflow), nil, nil, "View" %><% end %>
+	      <% if show %><%= icon "show", workflow_path(workflow), nil, nil, "View" %><% end %>
 		  	<% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
 	      <% if logged_in? and workflow.authorized?("edit", current_user) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
 	    </td>

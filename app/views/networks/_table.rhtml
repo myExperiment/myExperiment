@@ -40,7 +40,7 @@
 					<% end %>
 				</td>
 				<td class="actions">
-					<%= icon "show", network_path(network) %> 
+					<%= icon "show", network_path(network), nil, nil, "View" %> 
 					<% if my_page? network.owner.id %>
 						<%= icon "edit", edit_network_path(network) %>
 					<% end %>

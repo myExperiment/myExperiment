@@ -21,7 +21,7 @@
     </td>
     <td><%=datetime download.created_at, false %></td>
     <td class="actions">
-      <%= icon "show", download_path(download.contribution, download) %>
+      <%= icon "show", download_path(download.contribution, download), nil, nil, "View" %>
     </td>
   </tr>
 <% end %>

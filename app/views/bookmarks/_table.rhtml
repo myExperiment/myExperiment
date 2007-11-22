@@ -17,7 +17,7 @@
     </td>
     <td><%=datetime bookmark.created_at, false %></td>
     <td class="actions">
-      <%= icon "show", bookmark_path(bookmark) %> 
+      <%= icon "show", bookmark_path(bookmark), nil, nil, "View" %> 
       <%= icon "destroy", bookmark_path(bookmark), nil, :confirm => 'Are you sure?', :method => :delete %>
     </td>
   </tr>
