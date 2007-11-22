@@ -14,13 +14,13 @@
 	        Username:
 		  </p>
 		  <p>
-	        <%= text_field_tag 'session[username]', nil, :class => 'field' %>
+	        <%= text_field_tag 'session[username]', nil, :class => 'field', :style => "width: 140px;" %>
 		  </p>
 	      <p class="label">
 			Password:
 		  </p>
 		  <p>
-	        <%= password_field_tag 'session[password]', nil, :class => 'field' %>
+	        <%= password_field_tag 'session[password]', nil, :class => 'field', :style => "width: 140px;" %>
 		  </p>
 		  <p class="label">
 	        Remember me: <%= check_box_tag 'session[remember_me]' %>
@@ -34,7 +34,7 @@
 	         Use OpenID:
 		  </p>
 		  <p>
-	        <%= text_field_tag 'openid_url', nil, :size => 17, :class => 'field' %>
+	        <%= text_field_tag 'openid_url', nil, :size => 17, :class => 'field', :style => "width: 130px;" %>
 	      </p>
 	  </div>
       
