@@ -38,28 +38,29 @@
         <b>Name:</b>
         <%=h @user.name %>
       </p>
+			
+			<% if logged_in? and my_page? @user.id %>
+	      <p>
+	        <b>Openid url:</b>
+	        <% if @user.openid_url %>
+	          <%=openid @user %>
+	        <% else %>
+	          <%= link_to 'Add an OpenID to this account [optional]', new_openid_path %>
+						<small>(what is <%= link_to 'OpenID', "http://en.wikipedia.org/wiki/OpenID" %>?)</small>
+	        <% end %>
+	      </p>
+			<% end %>
 
-      <p>
-        <b>Openid url:</b>
-        <% if @user.openid_url %>
-          <%=openid @user %>
-        <% elsif my_page? @user.id %>
-          <%= link_to 'Add an OpenID to this account [optional]', new_openid_path %>
-        <% else %>
-          Not created yet (what is <%= link_to 'OpenID', "http://en.wikipedia.org/wiki/OpenID" %>?)
-        <% end %>
-      </p>
-
-      <p>
-        <b>Username:</b>
-        <% if @user.username %>
-          <%=h @user.username %>
-        <% elsif my_page? @user.id %>
-          <%= link_to 'Register a username and password for this account [optional]', edit_user_path(@user) %> 
-        <% else %>
-          Not created yet
-        <% end %>
-      </p>
+			<% if logged_in? and my_page? @user.id %>
+	      <p>
+	        <b>Username:</b>
+	        <% if @user.username %>
+	          <%=h @user.username %>
+	        <% else %>
+	          <%= link_to 'Register a username and password for this account [optional]', edit_user_path(@user) %>
+	        <% end %>
+	      </p>
+			<% end %>
 
       <p>
         <b>Joined:</b>
