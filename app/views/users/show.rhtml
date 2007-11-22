@@ -97,7 +97,7 @@
     <div class="tabTitle">Friends</div>
     <div class="tabContent">      
       <div>
-        <%= render :partial => "friendships/friends", :locals => { :collection => @user.friends } %>
+        <%= render :partial => "users/table", :locals => { :collection => @user.friends } %>
       </div>
     </div>
   </div>
