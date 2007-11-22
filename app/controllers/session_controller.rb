@@ -116,24 +116,28 @@ class SessionController < ApplicationController
     def open_id_authentication
       openid_url = params[:openid_url]
       
-      if request.post?
-        request = consumer.begin(openid_url)
-        
-        case request.status
-        when OpenID::SUCCESS
-          return_to = url_for(:action=> 'complete')
-          trust_root = url_for(:controller=>'')
+      begin
+        if request.post?
+          request = consumer.begin(openid_url)
           
-          url = request.redirect_url(trust_root, return_to)
-          redirect_to(url)
-          return
-          
-        when OpenID::FAILURE
-          escaped_url = CGI::escape(openid_url)
-          flash[:notice] = "Could not find OpenID server for #{escaped_url}"
-        else
-          flash[:notice] = "An unknown error occured."
+          case request.status
+          when OpenID::SUCCESS
+            return_to = url_for(:action=> 'complete')
+            trust_root = url_for(:controller=>'')
+            
+            url = request.redirect_url(trust_root, return_to)
+            redirect_to(url)
+            return
+            
+          when OpenID::FAILURE
+            escaped_url = CGI::escape(openid_url)
+            failed_login("Could not find OpenID server for #{escaped_url}")
+          else
+            failed_login("An unknown error occured. Please check your OpenID url.")
+          end
         end
+      rescue
+        failed_login("An unknown error occurred. Please check your OpenID url and that you are connected to the internet.")
       end
     end
 
