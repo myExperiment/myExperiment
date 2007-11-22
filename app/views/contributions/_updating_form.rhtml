@@ -22,7 +22,7 @@
 
   <div class="foldContent" style="display: none;">
 
-    <p class="info_text">This section allows you to give updating priviledges
+    <p class="box_infotext">This section allows you to give updating priviledges
     to your Friends and/or your Groups.  This will allow them to update the
     description and upload new versions of the <%= c_type %>.
     <br/> <br/>
@@ -36,15 +36,15 @@
     users to upload a new version of the <%= resource %> (all previous
     versions are still available).</p>
 
-    <hr />
+    <br />
 
     <p><strong>Who else is allowed to update this <%= c_type %>?</strong></p>
 
-    <p>Note that settings here take precedence over the Sharing permissions
-    above.  So if you give someone updating privileges, they will automatically
-    be granted view AND download permissions as well.</p>
-
-    <div style="padding-left: 1em;">
+		<div class="box_editing" style="padding-left: 1em; font-size: 93%;">
+		
+	    <p style="color: #666666; font-size: 93%;"><i>Note that settings here take precedence over the Sharing permissions
+	    above.  So if you give someone updating privileges, they will automatically
+	    be granted view AND download permissions as well.</i></p>
 
       <p><input <%= 'checked="checked"' if @updating_mode == 0 %> id="updating_option_7" name="updating[class_id]"
       value="0" type="radio" onclick="javascript:update_updating(0);" />

@@ -12,7 +12,7 @@
 			<small><%= memberships.length %> requires approval from you</small>
         </div>
         <div class="foldContent" style="display: none;">
-			<div class="info_text"> 
+			<div class="box_infotext"> 
 				<p>These are the membership requests sent by users who want to join your groups.</p>
 			</div>
 		    <% unless memberships.empty? %>
@@ -32,7 +32,7 @@
         </div>
         <div class="foldContent" style="display: none;">
 		    <% unless memberships.empty? %>
-		    	<div class="info_text">
+		    	<div class="box_infotext">
 		    		<p>These are the membership invites you have been sent from users to join their groups.</p>
 					<p>If the <b>Group</b> is taking a while, why not send the administrator a <%= link_to "message", messages_path %>?</p>
 				</div>
@@ -51,7 +51,7 @@
 			<small><%= memberships.length %> waiting approval from others</small>
         </div>
         <div class="foldContent" style="display: none;">
-			<div class="info_text">
+			<div class="box_infotext">
 	    		<p>These are the membership requests you have sent to users to join their groups.</p>
 				<p>If the <b>Group</b> is taking a while, why not send the administrator a <%= link_to "message", messages_path %>?</p>
 			</div>
@@ -71,7 +71,7 @@
 			<small><%= memberships.length %> waiting approval from others</small>
         </div>
         <div class="foldContent" style="display: none;">
-		    <div class="info_text">
+		    <div class="box_infotext">
 				<p>These are the membership invitations you have sent to users to join your groups.</p>
 			</div>
 			<% unless memberships.empty? %>
@@ -91,7 +91,7 @@
         </div>
         <div class="foldContent" style="display: none;">
 		    <% unless groups.empty? %>
-		    	<div class="info_text">
+		    	<div class="box_infotext">
 		    		<p>These are the groups that you are the administrator of.</p>
 					<p>You can share Workflows and Files with them.</p>
 				</div>
@@ -111,7 +111,7 @@
         </div>
         <div class="foldContent" style="display: none;">
 		    <% unless groups.empty? %>
-		    	<div class="info_text">
+		    	<div class="box_infotext">
 		    		<p>These are the other groups that you are a member of.</p>
 					<p>You can share Workflows and Files with them.</p>
 				</div>

@@ -6,7 +6,7 @@
 
 <% if @message.reply? %>
   <br/>
-  <p class="info_text">
+  <p class="box_infotext">
     <b>This message is a reply to:</b> <%= link_to h(@message.reply_to.subject), message_path(@message.reply_to) %>
   </p>
 <% end %>

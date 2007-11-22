@@ -20,148 +20,147 @@
 		<% end %>
   	</div>
     <div class="foldContent" style="display: none;">
-        <p class="info_text">
+        <p class="box_infotext">
             This section allows you to give <strong>credit</strong> to users/groups for this <%= c_type %> (for example, the <strong>author(s)</strong> of this <%= c_type %>).
             <br />
             <br />
             You can also attribute the Workflows/Files that this <%= c_type %> is <strong>based on</strong> (if any).                           
         </p>
-        <hr />
-        <p>
-            <strong>Which users/groups get the credit for this <%= c_type %>?</strong>
-        </p>
-        <div style="padding-left: 1em;">
-            <p id="authors_list">
-                Me&nbsp;&nbsp;&nbsp;<small>[<a href="" t="me" onclick="javascript:deleteAuthor('me', null); return false;">delete</a>]</small><br/>
-            </p>
+        <br/>
+        <p><b>Which users/groups get the credit for this <%= c_type %>?</b></p>
+				<div class="box_editing" style="padding-left: 1em;">
+					<p style="color: #666666;"><i>Build up the list of credits below by adding from the options</i></p>
+          <p id="authors_list" class="box_editing_inner">
+              Me&nbsp;&nbsp;&nbsp;<small>[<a href="" t="me" onclick="javascript:deleteAuthor('me', null); return false;">delete</a>]</small><br/>
+          </p>
+          <div class="box_simple" style="font-size: 93%; margin-top: 1em;">
+            Select an option then click on 'Add' to add to the list:
             <br />
-            <div style="padding: 1em; border: 1px dotted #999999; text-align: left;">
-                Select an option then click on 'Add' to add to the list:
-                <br />
-                <br />
-				
-				<p>
-                    <input id="author_option_1" name="add_author_option" checked="checked"
-                        value="1" type="radio" onclick="javascript:update_author(this.id);" />
-                    - Me
-                </p>
-				
+            <br />
+		
+						<p>
+                <input id="author_option_1" name="add_author_option" checked="checked"
+                    value="1" type="radio" onclick="javascript:update_author(this.id);" />
+                - Me
+            </p>
+		
+            <p>
+                <input id="author_option_2" name="add_author_option"
+                    value="2" type="radio" onclick="javascript:update_author(this.id);" />
+                - One of my Friends
+            </p>
+            <div id="author_friends_box" style="display: none; padding-left: 2em;">
                 <p>
-                    <input id="author_option_2" name="add_author_option"
-                        value="2" type="radio" onclick="javascript:update_author(this.id);" />
-                    - One of my Friends
+                    <select id="author_friends_dropdown">
+                    	<% current_user.friends.each do |f| %>
+                        	<option value="<%= f.id %>"><%= h(f.name) %></option>
+                        <% end %>
+                    </select>
                 </p>
-                <div id="author_friends_box" style="display: none; padding-left: 2em;">
-                    <p>
-                        <select id="author_friends_dropdown">
-                        	<% current_user.friends.each do |f| %>
-                            	<option value="<%= f.id %>"><%= h(f.name) %></option>
-                            <% end %>
-                        </select>
-                    </p>
-                </div>
-                
-				<p>
-                    <input id="author_option_3" name="add_author_option"
-                        value="3" type="radio" onclick="javascript:update_author(this.id);" />
-                    - A user on myExperiment who is not a Friend.
-                </p>
-                <div id="author_otheruser_box" style="display: none; padding-left: 2em;">
-                    <p>
-                        <select id="author_otheruser_dropdown">
-                            <% (all_nonfriends(current_user)).each do |f| %>
-                            	<option value="<%= f.id %>"><%= h(f.name) %></option>
-                            <% end %>
-                        </select>
-                    </p>
-                </div>
-				
-				<p>
-                    <input id="author_option_4" name="add_author_option"
-                        value="4" type="radio" onclick="javascript:update_author(this.id);" />
-                    - A myExperiment Group
-                </p>
-                <div id="author_networks_box" style="display: none; padding-left: 2em;">
-                    <p>
-                        <select id="author_networks_dropdown">
-                            <% all_networks.each do |n| %>
-                            	<option value="<%= n.id %>"><%= h(n.title) %></option>
-                            <% end %>
-                        </select>
-                    </p>
-                </div>
-                
-				<% if false %>
-				
-					<p>
-	                    <input id="author_option_5" name="add_author_option"
-	                        value="5" type="radio" onclick="javascript:update_author(this.id);" />
-	                    - Someone else
-	                </p>
-	                <div id="author_someoneelse_box" style="display: none; padding-left: 2em;">
-	                    <p>
-	                         <label for="author_someoneelse_forenames">Forename(s): </label>
-	                         <input id="author_someoneelse_forenames" size="25" value="" type="text"/>
-	                         <label for="author_someoneelse_surname">Surname: </label>
-	                         <input id="author_someoneelse_surname" size="25" value="" type="text"/>
-	                    </p>
-	                </div>
-					
-	                <p>
-	                    <input id="author_option_6" name="add_author_option"
-	                        value="6" type="radio" onclick="javascript:update_author(this.id);" />
-	                    - An organisation
-	                </p>
-	                <div id="author_organisation_box" style="display: none; padding-left: 2em;">
-	                    <p>
-	                         <input id="author__organisation" size="50" value="" type="text"/>
-	                    </p>
-	                </div>
-                
-				<% end %>
-				
-                <br />
-                <a href="" onclick="javascript:addAuthor(); return false;" >Add</a>
-            </div>           
-        </div>
-        <hr />
-        <p>
-            <strong>If this <%= c_type %> is based on any existing Workflows or Files, please list them below:</strong>
-        </p>
-        <div style="padding-left: 1em;">
-            <p id="attribution_list">
-                <i>None</i>
+            </div>
+            
+						<p>
+                <input id="author_option_3" name="add_author_option"
+                    value="3" type="radio" onclick="javascript:update_author(this.id);" />
+                - A user on myExperiment who is not a Friend.
             </p>
+            <div id="author_otheruser_box" style="display: none; padding-left: 2em;">
+                <p>
+                    <select id="author_otheruser_dropdown">
+                        <% (all_nonfriends(current_user)).each do |f| %>
+                        	<option value="<%= f.id %>"><%= h(f.name) %></option>
+                        <% end %>
+                    </select>
+                </p>
+            </div>
+		
+						<p>
+                <input id="author_option_4" name="add_author_option"
+                    value="4" type="radio" onclick="javascript:update_author(this.id);" />
+                - A myExperiment Group
+            </p>
+            <div id="author_networks_box" style="display: none; padding-left: 2em;">
+                <p>
+                    <select id="author_networks_dropdown">
+                        <% all_networks.each do |n| %>
+                        	<option value="<%= n.id %>"><%= h(n.title) %></option>
+                        <% end %>
+                    </select>
+                </p>
+            </div>
+            
+						<% if false %>
+		
+							<p>
+                  <input id="author_option_5" name="add_author_option"
+                      value="5" type="radio" onclick="javascript:update_author(this.id);" />
+                  - Someone else
+              </p>
+              <div id="author_someoneelse_box" style="display: none; padding-left: 2em;">
+                  <p>
+                       <label for="author_someoneelse_forenames">Forename(s): </label>
+                       <input id="author_someoneelse_forenames" size="25" value="" type="text"/>
+                       <label for="author_someoneelse_surname">Surname: </label>
+                       <input id="author_someoneelse_surname" size="25" value="" type="text"/>
+                  </p>
+              </div>
+			
+              <p>
+                  <input id="author_option_6" name="add_author_option"
+                      value="6" type="radio" onclick="javascript:update_author(this.id);" />
+                  - An organisation
+              </p>
+              <div id="author_organisation_box" style="display: none; padding-left: 2em;">
+                  <p>
+                       <input id="author__organisation" size="50" value="" type="text"/>
+                  </p>
+              </div>
+            
+						<% end %>
+		
             <br />
-            <div style="padding: 1em; float: left; border: 1px dotted #999999; text-align: left; width: 300px;">
-                Existing Workflows on myExperiment:
-                <br />
-                <br />
-                <select id="existingworkflows_dropdown" style="width: 280px;">
-                    <% all_workflows.each do |w| %>
-                        	<option value="<%= w.id %>"><%= h(w.title) %></option>
-                        <% end %>
-                </select>
-                <br />
-                <br />
-                <a href="" onclick="javascript:addAttribution('existing_workflow'); return false;" >Add</a>
+            <b><a href="" onclick="javascript:addAuthor(); return false;" >Add</a></b>
+					</div>
+        </div>
+        <br/>
+				<br/>
+        <p><b>If this <%= c_type %> is based on any existing Workflows or Files, please list them below:</b></p>
+        <div class="box_editing" style="padding-left: 1em;">
+					<p style="color: #666666;"><i>Build up the list of attributions below by adding from the options</i></p>
+          <p id="attribution_list" class="box_editing_inner">
+              <i>None</i>
+          </p>
+          <div style="font-size: 93%; margin-top: 1em;">
+            <div class="box_simple" style="font-size: 93%; float: left; text-align: left; width: 300px;">
+              Existing Workflows on myExperiment:
+              <br />
+              <br />
+              <select id="existingworkflows_dropdown" style="width: 280px;">
+                  <% all_workflows.each do |w| %>
+                      	<option value="<%= w.id %>"><%= h(w.title) %></option>
+                      <% end %>
+              </select>
+              <br />
+              <br />
+              <b><a href="" onclick="javascript:addAttribution('existing_workflow'); return false;" >Add</a></b>
             </div>
 			
-            <div style="padding: 1em; float: left; border: 1px dotted #999999; margin-left: 1em; text-align: left; width: 300px;">
-                Existing Files on myExperiment:
-                <br />
-                <br />
-                <select id="existingfiles_dropdown" style="width: 280px;">
-                    <% all_blobs.each do |b| %>
-                        	<option value="<%= b.id %>"><%= contributable_name(b.id, 'Blob') %></option>
-                        <% end %>
-                </select>
-                <br />
-                <br />
-                <a href="" onclick="javascript:addAttribution('existing_file'); return false;" >Add</a>
+            <div class="box_simple" style="font-size: 93%;float: left; margin-left: 1em; text-align: left; width: 300px;">
+              Existing Files on myExperiment:
+              <br />
+              <br />
+              <select id="existingfiles_dropdown" style="width: 280px;">
+                  <% all_blobs.each do |b| %>
+                      	<option value="<%= b.id %>"><%= contributable_name(b.id, 'Blob') %></option>
+                      <% end %>
+              </select>
+              <br />
+              <br />
+              <b><a href="" onclick="javascript:addAttribution('existing_file'); return false;" >Add</a></b>
             </div>
 			
-            <div style="clear: both;">&nbsp;</div>                       
+            <div style="clear: both;">&nbsp;</div>  
+					</div>                     
         </div>
     </div>
 </div>
