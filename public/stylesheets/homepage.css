@@ -111,3 +111,29 @@
 #myexp_home_news li {
 	margin-bottom: 0.5em;
 }
+
+#myexp_home_content .links {
+	margin: 0.5em 0 0 0;
+	padding: 0;
+	font-size: 108%;
+	color: #666666;
+	text-align: center;
+}
+
+#myexp_home_content .links * {
+	vertical-align: middle;
+}
+
+#myexp_home_content .links li {
+	display: inline;
+	vertical-align: middle;
+}
+
+#myexp_home_content .links li * {
+	vertical-align: middle;
+}
+
+#myexp_home_content .links li a {
+	font-weight: bold;
+}
+

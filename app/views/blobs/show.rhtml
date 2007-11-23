@@ -11,11 +11,9 @@
 			<li><%= icon('destroy', blob_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete File Entry') %></li>
 		<% end %>
 	</ul>
+<% else %>
+	<br/>
 <% end %>
-
-<div class="contribution_currentlicense_box">
-	<%= render :partial => "blobs/license", :locals => { :blob => @blob } %>
-</div>
 
 <div class="contribution_left_box">
 	<div class="contribution_version_box">
@@ -85,6 +83,8 @@
 
 <div class="contribution_right_box">
 	<%= render :partial => "contributions/uploader_credits_attributions_box", :locals => { :contributable => @blob, :edit_path => edit_blob_path(@blob) } %>
+	
+	<%= render :partial => "contributions/license_box", :locals => { :contributable => @blob } %>
 	
 	<%= render :partial => "contributions/tags_box", :locals => { :contributable => @blob, :add_path => tag_blob_path(@blob), :edit_path => edit_blob_path(@blob) } %>
 	

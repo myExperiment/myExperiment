@@ -21,11 +21,9 @@
 			</li>
 		<% end %>
 	</ul>
+<% else %>
+	<br/>
 <% end %>
-
-<div class="contribution_currentlicense_box">
-	<%= render :partial => "workflows/license", :locals => { :workflow => @workflow } %>
-</div>
 
 <div class="contribution_left_box">
 	<div class="contribution_version_selector_box">
@@ -194,6 +192,8 @@
 
 <div class="contribution_right_box">
 	<%= render :partial => "contributions/uploader_credits_attributions_box", :locals => { :contributable => @workflow, :edit_path => edit_workflow_path(@workflow) } %>
+	
+	<%= render :partial => "contributions/license_box", :locals => { :contributable => @workflow } %>
 	
 	<% if false %>
 		<div class="contribution_section_box">

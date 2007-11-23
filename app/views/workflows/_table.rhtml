@@ -19,6 +19,7 @@
 			<% title = contributable_name(workflow.id, 'Workflow')%>
 			<%=link_to(query ? highlight_all(title, query) : title, workflow_path(workflow)) %>
 		  </p>
+			
 		  <% unless (creditors = workflow.creditors).empty? %>
 		  	<p style="font-size:85%;">
 				<b>Credits:</b>
@@ -45,6 +46,8 @@
 				<% end %>
 		  	</p>
 		  <% end %>
+			
+			<p style="font-size:85%;"><b>License: </b><%= license_link workflow.license.to_s %></p>
 		  
 		  <div>
 		      <% unless workflow.image.nil? %>

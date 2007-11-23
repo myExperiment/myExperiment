@@ -33,6 +33,7 @@
   </p>
 
 	<% if allow_approval %>
+		<br/>
 	 	<ul class="sectionIcons">
 			<li><%= icon "confirm", accept_membership_path(@membership.user_id, @membership), "Accept", nil, "Accept" %></li> 
 		  <li><%= icon "reject", membership_path(@membership.user_id, @membership), nil, :confirm => "Are you sure?", :method => :delete %></li>

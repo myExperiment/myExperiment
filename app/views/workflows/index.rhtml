@@ -3,8 +3,6 @@
 	<li><%= icon "view-all", url_for(:action => 'all'), nil, nil, "View All Workflows" %></li>
 </ul>
 
-<br/>
-
 <%= render :partial => "workflows/all_tags" %>
 
 <%= render :partial => "contributions/most_tabs", :locals => { :type => "Workflow" } %>

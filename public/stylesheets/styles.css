@@ -493,7 +493,7 @@ fieldset {
 }
 
 .news_feed_div ul.news_feed_day {
-	padding-left: 1.5em;
+	padding-left: 0.8em;
 	list-style-type: none;
 	margin-bottom: 1em;
 	line-height: 1.5em;
@@ -707,9 +707,8 @@ table tr td.details {
 }
 
 .sectionIcons {
-	margin: 0.5em 0;
-	*margin-bottom: 1em;
-	padding: 3px;
+	margin: 0.5em 0 1em 0;
+	*margin: 0.5em 0 2em 0;
 	font-size: 93%;
 	font-weight: bold;
 	text-align: center;
@@ -720,44 +719,31 @@ table tr td.details {
 }
 
 .sectionIcons LI {
-	margin: -3px;
 	display: inline;
 	vertical-align: middle;
+}
+
+.sectionIcons LI:hover {
 }
 
 .sectionIcons LI * {
 	vertical-align: middle;
 }
 
-.sectionIcons LI:hover {
-	margin: -3px;
-}
-
 .sectionIcons LI A {
-	padding: 0.4em;
-	margin: 0 1px;
+	padding: 0.5em;
 	text-decoration: none;
-	vertical-align: middle;
 	border: 1px solid #999999;
 	background-image: url('/images/header-bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
 	background-color: #F5F5F5;
-	margin-left: 7px;
+	margin-left: 8px;
 }
 
 .sectionIcons LI A:hover {
-	/*border: 1px solid blue;*/
-	border: 1px solid #999999;
-	padding: 0.4em;
-	margin: 1px;
-	color: red;
-	text-decoration: none;
 	background-image: none;
-	/*background-color: #b1ceff;*/
 	background-color: #0099FF;
-	vertical-align: middle;
-	margin-left: 7px;
 	color: #FFFFFF;
 }
 
@@ -823,7 +809,7 @@ table tr td.details {
 	background-repeat: repeat-x;
 	background-color: #FFFFCC;
 	padding: 0.3em 0.3em;
-	border: 1px dotted #333333;
+	border: 1px dotted #999999;
 	text-align: center;
 	margin-bottom: 0.6em;
 }
@@ -835,7 +821,9 @@ table tr td.details {
 
 .contribution_section_box li {
 	list-style-type: none;
-	margin-bottom: 0.2em;
+	margin-bottom: 0;
+	line-height: 1em;
+	
 }
 
 .contribution_section_box p {
@@ -898,7 +886,7 @@ table tr td.details {
 .contribution_version_selector_box {
 	margin: 0;
 	padding: 0.1em 0.5em;
-	border: 1px dotted #333333;
+	border: 1px solid #999999;
 	border-bottom: none;
 	background-image: url('/images/header-bg.png');
 	background-position: top;
@@ -923,23 +911,21 @@ table tr td.details {
 }
 
 .contribution_version_box {
-	border: 1px dotted #333333;
+	border: 1px solid #999999;
 	padding: 0.5em;
 	margin-bottom: 1em;
 }
 
-.contribution_currentlicense_box {
-	margin: 0 0 0.5em 0;
-	padding: 0.3em 0.4em;
-	text-align: center;
-	font-style: italic;
-	font-size: 93%;
-	font-weight: bold;
-	color: #666666;
+.contribution_currentlicense {
+	padding: 0 0 0.5em 0;
 }
 
-.contribution_currentlicense_box p {
+.contribution_currentlicense p {
 	text-align: center;
+	font-size: 85%;
+	font-weight: bold;
+	color: #666666;
+	line-height: 1.3em;
 }
 
 .commentsBox {
