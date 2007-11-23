@@ -10,7 +10,7 @@
 	  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 	    <td style="width: 100px;">
 	    	<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
-			<%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %>
+				<center><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %></center>
 		</td>
 	    <td style="text-align: left;">
 	      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>

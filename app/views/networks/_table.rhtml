@@ -6,7 +6,7 @@
 			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 				<td style="width: 120px;">
 					<p style="margin-top:0; padding-top:0; text-align: center;"><b>Administrator:</b></p>
-					<%= contributor(network.user_id, "User", true, 80) %>
+					<center><%= contributor(network.user_id, "User", true, 80) %></center>
 				</td>
 				<td style="text-align: left;">
 					<p class="title">
@@ -42,7 +42,7 @@
 				<td class="actions">
 					<%= icon "show", network_path(network), nil, nil, "View" %> 
 					<% if my_page? network.owner.id %>
-						<%= icon "edit", edit_network_path(network) %>
+						<%= icon "manage", edit_network_path(network) %>
 					<% end %>
 				</td>
 			</tr>

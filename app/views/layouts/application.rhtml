@@ -41,10 +41,10 @@
 				</div>
 				<div>
 					<ul class="tabnav">
-					  <li <%= (["users", "profiles", "userhistory", "friendships", "pictures"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
+					  <li <%= (["users", "profiles", "userhistory", "friendships", "memberships", "pictures"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
 						<%= link_to "Users", users_path %>
 					  </li>
-					  <li <%= (["networks", "memberships"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Groups", networks_path %></li>
+					  <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Groups", networks_path %></li>
 					  <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path %></li>
 					  <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Files", blobs_path %></li>
 					  <li <%= (["blogs", "blog_posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path %></li>
