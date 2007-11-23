@@ -4,6 +4,6 @@
 
 <% form_for(:picture, :url => picture_path(@picture.user_id, @picture), :html => { :method => :put }) do |f| %>
   <p>
-    <%= submit_tag "Update" %>
+    <%= submit_tag "Update", :disable_with => "Updating..." %>
   </p>
 <% end %>

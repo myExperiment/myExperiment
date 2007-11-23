@@ -1,33 +1,26 @@
 <% if params[:user_id] %>
-  <h2>All Pictures</h3>
+  <h1>Profile Pictures</h1>
 <% end %>
 
 <% if my_page? params[:user_id] %>
   <ul class="sectionIcons">
-    <li><%= icon('avatar', new_picture_path(current_user), nil, nil, 'Upload new picture')%></li>
+    <li><%= icon('avatar', new_picture_path(current_user), nil, nil, 'Upload New Picture')%></li>
   </ul>
 <% end %>
 
 <% unless @pictures.empty? %>
 
+<br/>
+
 <table class="alt_table">
-  <tr>
-    <th> </th>
-    <th>Data</th>
-    <th> </th>
-  </tr>
   
 <% odd_row = false -%>
 <% for picture in @pictures %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
     <td width="150">
       <% if picture.selected? %> 
-        <%= image_tag("people.png", :size => "60x60", :text => "selected") %><br/>
-        selected
-      <% else %>
-        <% if my_page? picture.user_id %>
-          <%= link_to("[select as avatar]", select_picture_path(picture.user_id, picture)) %>
-        <% end %>
+        <%= image_tag("people.png", :size => "60x60", :text => "current profile pic") %><br/>
+        Current
       <% end %>
     </td>
     <% unless params[:user_id] %>
@@ -39,13 +32,19 @@
       <% if false %>
         <%= image_tag(url_for_file_column(picture, "data", "large")) %>
       <% end %>
-      <%= image_tag url_for :controller => 'pictures',
-                              :action     => 'show',
-                              :id         => picture.id,
-                              :size       => '200x200' %>
+      <%= image_tag (url_for :controller => 'pictures',
+                             :action     => 'show',
+                             :id         => picture.id,
+                             :size       => '100x100' ),
+										:class => 'framed' %>
     </td>
     <td class="actions">
-      <% if my_page? picture.user_id %><%= link_to "destroy", picture_path(picture.user_id, picture), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
+      <% if my_page? picture.user_id %>
+				<% unless picture.selected? %>
+					<%= icon "picture", select_picture_path(picture.user_id, picture), nil, nil, "Make Profile Pic" %>
+				<% end %>
+				<%= icon "destroy", picture_path(picture.user_id, picture), nil, { :confirm => 'Are you sure?', :method => :delete }, "Delete"  %>
+			<% end %>
     </td>
   </tr>
 <% end %>

@@ -17,9 +17,9 @@
 			<li><%= icon("message", new_message_path(:user_id => @user.id), nil, nil, "Send Message") %></li>
 		<% end %>
 	    <% if my_page? @user.id %>
-	      <li><%= icon('edit', edit_user_path(@user), nil, nil, 'Edit Account Details') %></li>
+	      <li><%= icon('manage', edit_user_path(@user), nil, nil, 'Manage Account') %></li>
 	      <% unless @user.profile.nil? %><li><%= icon('edit', edit_profile_path(@user.profile), nil, nil, 'Edit Profile') %></li><% end %>
-		  <li><%= icon("pictures", pictures_path(current_user), nil, nil, "Profile Pictures") %></li>
+		  <li><%= icon("pictures", pictures_path(@user), nil, nil, "Profile Pictures") %></li>
 	      <li><%= icon('avatar', new_picture_path(@user), nil, nil, 'Upload New Profile Pic')%></li>
 		  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
 	    <% end %>
