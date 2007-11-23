@@ -59,8 +59,8 @@
           <ul class="gadget_list">
             <% membership_invites.each do |membership| %>
               <li>
-              	<b><%= icon "membership", membership_path(membership.user, membership), nil, nil, h("To #{membership.user.name}") %></b>
-								<span style="margin-left: 20px; display: block;">(for <%= title membership.network_id %>)</span>
+              	<b><%= icon "membership", membership_path(membership.user, membership), nil, nil, h("From #{membership.network.owner.name}") %></b>
+								<span style="margin-left: 20px; display: block;"><small>(for Group: <%= title membership.network_id %>)</small></span>
 						  </li>
             <% end %>
           </ul>
@@ -80,7 +80,7 @@
             <% membership_requests.each do |membership| %>
               <li>
               	<b><%= icon "membership", membership_path(membership.user, membership), nil, nil, h("From #{membership.user.name}") %></b>
-				<br/><span style="margin-left: 20px">(for <%= title membership.network_id %>)</span>
+				<br/><span style="margin-left: 20px"><small>(for Group: <%= title membership.network_id %>)</small></span>
 			  </li>
             <% end %>
           </ul>

@@ -50,10 +50,10 @@ class Membership < ActiveRecord::Base
 
   def accept!
     unless accepted?
-      if self.user_established_at == nil
+      if self.user_established_at.nil?
         self.user_establish!
       end
-      if self.network_established_at == nil
+      if self.network_established_at.nil?
         self.network_establish!
       end
       return true
@@ -75,6 +75,16 @@ class Membership < ActiveRecord::Base
 
     return user_established_at > network_established_at ? user_established_at : network_established_at;
 
+  end
+  
+  def is_invite?
+    if user_established_at.nil?
+      return true
+    elsif network_established_at.nil?
+      return false
+    else
+      return user_established_at > network_established_at ? true : false
+    end
   end
 
 end

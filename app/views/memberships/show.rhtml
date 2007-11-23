@@ -1,25 +1,14 @@
 <% allow_approval = allow_membership_pending_approval(@membership) %>
 
-<h1>Membership</h1>
+<% if @membership.accepted? %>
+	<h1>Membership</h1>
+<% else %>
+	<h1>Membership <%= @membership.is_invite? ? "Invite" : "Request" %></h1>
+<% end %>
 
 <p>
-	<center>
-		<b>User:</b><br/>
-	    <%= render :partial => "users/avatar", :locals => { :user => @membership.user } %>
-	</center>
-</p>
-
-<p>
-  <center>
-	  <b>Group:</b> 
-	  <%=title @membership.network %>
-	  (administrator: <%= name @membership.network.user_id %>)
-  </center>
-</p>
-
-<p>
-  <center>
-	  <b>Requested at:</b><br/>
+  <center style="color: #666666; font-size: 93%;">
+	  <b><%= @membership.is_invite? ? "Invited" : "Requested" %> at:</b><br/>
 	  <%=datetime @membership.created_at %>
   </center>
 </p>
@@ -29,27 +18,47 @@
 <% if @membership.accepted? %>
 
   <p>
-    <center>
-		<b>Accepted at:</b><br />
+    <center style="color: #666666; font-size: 93%;">
+			<b>Accepted at:</b><br />
 	    <%=datetime @membership.accepted_at %>
-	</center>
-  </p>
-
-<% elsif allow_approval %>
-
-  <p>
-    <center>
-		<%= icon "confirm", accept_membership_path(@membership.user_id, @membership), "Accept", nil, "Accept" %> 
-	    <%= icon "reject", membership_path(@membership.user_id, @membership), nil, :confirm => "Are you sure?", :method => :delete %>
-	</center>
+		</center>
   </p>
 
 <% else %>
 
-  <p>
-    <center>
-	    <i>Pending approval</i>
-	</center>
+	<p>
+    <center style="font-size: 108%; color: #990000;">
+	    <b><i>Pending approval</i></b>
+		</center>
   </p>
 
+	<% if allow_approval %>
+	 	<ul class="sectionIcons">
+			<li><%= icon "confirm", accept_membership_path(@membership.user_id, @membership), "Accept", nil, "Accept" %></li> 
+		  <li><%= icon "reject", membership_path(@membership.user_id, @membership), nil, :confirm => "Are you sure?", :method => :delete %></li>
+	  </ul>
+	<% end %>
+
 <% end %>
+
+<br/>
+
+<p>
+	<center>
+		<b>User:</b><br/>
+	  <%= render :partial => "users/avatar", :locals => { :user => @membership.user } %>
+	</center>
+</p>
+
+<br/>
+
+<p>
+  <center>
+	  <b>Group:</b>
+	</center>
+</p>
+<p>
+  <center>
+	  <%= render :partial => "networks/table", :locals => { :collection => [ @membership.network ] } %>
+  </center>
+</p>
