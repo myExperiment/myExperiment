@@ -1,8 +1,9 @@
-<div style="margin-bottom: 0.5em; font-size: 108%; font-weight: bold;">
-	<p style="text-align: right;">
-		<%= link_to "View All Groups", "networks/all" %>
-	</p>
-</div>
+<ul class="sectionIcons">
+	<li><%= icon "network-member", new_network_path, nil, nil, "Create New Group" %></li>
+	<li><%= icon "view-all", url_for(:action => 'all'), nil, nil, "View All Groups" %></li>
+</ul>
+
+<br/>
 
 <h2>What is a Group?</h2>
 <p>

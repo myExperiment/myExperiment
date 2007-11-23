@@ -1,8 +1,9 @@
-<div style="margin-bottom: 0.5em; font-size: 108%; font-weight: bold;">
-	<p style="text-align: right;">
-		<%= link_to "View All Workflows", "workflows/all" %>
-	</p>
-</div>
+<ul class="sectionIcons">
+	<li><%= icon "workflow", new_workflow_path, nil, nil, "Upload New Workflow" %></li>
+	<li><%= icon "view-all", url_for(:action => 'all'), nil, nil, "View All Workflows" %></li>
+</ul>
+
+<br/>
 
 <%= render :partial => "workflows/all_tags" %>
 

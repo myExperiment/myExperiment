@@ -610,7 +610,9 @@ module ApplicationHelper
     when "news"
       return "famfamfam_silk/newspaper.png"
     when "feedback"
-      return "famfamfam_silk/sound.png" 
+      return "famfamfam_silk/sound.png"
+    when "view-all"
+      return "famfamfam_silk/table_go.png"
     else
       return nil
     end
