@@ -624,6 +624,7 @@ table.alt_table .desc {
 	margin: 0.2em 0;
 	padding: 0.5em;
 	background-color: #FFFFCC;
+	text-align: left;
 }
 
 table.alt_table tr td.contributable {
