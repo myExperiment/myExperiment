@@ -1,14 +1,14 @@
-<h1>File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
+<h1 style="margin-bottom: 0.2em;">File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
 
-<% if logged_in? %>
+<p style="color: #666666; font-size: 85%; text-align: center; margin-top: 0; padding-top: 0;">
+	<b>Last updated: </b><%= datetime @blob.updated_at %>
+</p>
+
+<% if @blob.authorized?("edit", (logged_in? ? current_user : nil)) %>
 	<ul class="sectionIcons">
-		<% if @blob.authorized?("edit", current_user) %>
-			<li><%= icon('manage', edit_blob_path(@blob), nil, nil, 'Manage File Entry')%></li>
-		<% end %>
+		<li><%= icon('manage', edit_blob_path(@blob), nil, nil, 'Manage File Entry')%></li>
 		<% if @blob.authorized?("destroy", current_user) %>
-			<li>
-				<%= icon('destroy', blob_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete File Entry') %>
-			</li>
+			<li><%= icon('destroy', blob_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete File Entry') %></li>
 		<% end %>
 	</ul>
 <% end %>
