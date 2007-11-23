@@ -38,7 +38,7 @@ class PicturesController < ApplicationController
       PictureSelection.create(:user => current_user, :picture => @picture)
       
       respond_to do |format|
-        flash[:notice] = 'Picture was successfully selected as profile avatar.'
+        flash[:notice] = 'Picture was successfully selected as profile picture.'
         format.html { redirect_to pictures_url(@picture.owner) }
         format.xml  { head :ok }
       end
@@ -106,7 +106,7 @@ class PicturesController < ApplicationController
 
     respond_to do |format|
       if @picture.save
-        flash[:notice] = 'Picture was successfully created.'
+        flash[:notice] = 'Picture was successfully uploaded.'
         format.html { redirect_to pictures_url(@picture.user_id) }
         format.xml  { head :created, :location => picture_url(@picture.user_id, @picture) }
       else
