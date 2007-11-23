@@ -1,10 +1,11 @@
 <% query ||= false -%>
 <% odd_row = false -%>
-<% show = workflow.authorized?("show", (logged_in? ? current_user : nil)) -%>
+
 <% unless collection.empty? %>
 
 <table class="alt_table">	
 	<% for workflow in collection %>
+		<% show = workflow.authorized?("show", (logged_in? ? current_user : nil)) -%>
 	  <% if show %>
 	  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 	    <td style="width: 100px;">
