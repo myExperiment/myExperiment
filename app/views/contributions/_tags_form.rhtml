@@ -26,10 +26,10 @@ document.onkeypress = handleEnter;
 <div class="fold">
   <div class="foldTitle">
   	<img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to add tags to <strong>describe</strong> this <%= c_type %>.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/> Tags
-	<% if edit %>
-		<hr />
-		<small>Current: <%= contributable.tags.count %> tags</small>
-	<% end %>
+		<% if edit %>
+			<hr />
+			<small>Current: <%= contributable.tags.count %> tags</small>
+		<% end %>
   </div>
   <div class="foldContent" style="display: none;">
     <p class="box_infotext">This section allows you to add tags to <strong>describe</strong> this <%= c_type %>.</p>
@@ -37,7 +37,7 @@ document.onkeypress = handleEnter;
     <p><strong>Tags: </strong></p>
     <div class="box_editing" style="padding-left: 1em;">
 			<p style="color: #666666; font-size: 93%;"><i>Build up the list of tags below by adding from the two different boxes further below</i></p>
-			<p class="box_editing_inner">
+			<p id="tags_current_list" class="box_editing_inner">
 				<i>None</i>
 			</p>
 	    <div class="box_simple" style="font-size: 93%; text-align: left; margin-top: 1em;">
