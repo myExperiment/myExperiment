@@ -101,14 +101,14 @@ pre {
 a {
 	color: #000099;
 	text-decoration: none;
-	border-bottom: 1px dashed transparent; *
-	border: none;
+	border-bottom: 1px dashed transparent; 
+	*border: none;
 }
 
 a:hover {
 	color: red;
-	border-bottom: 1px dashed gray; *
-	border: none;
+	border-bottom: 1px dotted gray; 
+	*border: none;
 }
 
 small {
