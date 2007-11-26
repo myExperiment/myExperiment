@@ -25,7 +25,8 @@ document.onkeypress = handleEnter;
 
 <div class="fold">
   <div class="foldTitle">
-  	<img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to add tags to <strong>describe</strong> this <%= c_type %>.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/> Tags
+  	<%= info_icon_with_tooltip("This section allows you to add tags to <strong>describe</strong> this #{c_type}.") %>
+		Tags
 		<% if edit %>
 			<hr />
 			<small>Current: <%= contributable.tags.count %> tags</small>

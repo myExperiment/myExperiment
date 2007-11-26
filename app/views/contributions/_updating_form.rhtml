@@ -9,7 +9,7 @@
 
 <div class="fold">
   <div class="foldTitle">
-    <img src="/images/famfamfam_silk/help.png" title="header=[] body=[This section allows you to give updating privileges to your Friends and/or your Groups. This will allow them to update the description and upload new versions of the <%= c_type %>. <br/><br/>By default, no one else is allowed to update this <%= c_type %>.] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]" style="vertical-align:middle;"/>
+    <%= info_icon_with_tooltip("This section allows you to give updating privileges to your Friends and/or your Groups. This will allow them to update the description and upload new versions of the #{c_type}. <br/><br/>By default, no one else is allowed to update this #{c_type}.") %>
     Who can update this <%= c_type %>?
 	<% if edit %>
 		<hr/>
