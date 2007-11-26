@@ -25,7 +25,7 @@
 module ApplicationHelper
   def my_page?(contributor_id, contributor_type="User")
     #logged_in? and current_user.id.to_i == contributor_id.to_i and current_user.class.to_s == contributor_type.to_s
-    
+
     return false unless logged_in?
     
     case contributor_type.to_s
@@ -34,6 +34,30 @@ module ApplicationHelper
     when "Network"
       return false unless Network.find(:first, :conditions => ["id = ? AND user_id = ?", contributor_id, current_user.id])
       return true
+    else
+      return false
+    end
+  end
+  
+  def mine?(thing)
+    return false if thing.nil?
+    return false unless logged_in?
+    
+    c_id = current_user.id.to_i
+    
+    case thing.class.to_s
+    when "Workflow"
+      return c_id == thing.contributor_id.to_i
+    when "Blob"
+      return c_id == thing.contributor_id.to_i
+    when "Network"
+      return c_id == thing.user_id.to_i
+    when "Friendship"
+      return c_id == thing.friend_id
+    when "Profile"
+      return c_id == thing.user_id
+    when "User"
+      return c_id == thing.id 
     else
       return false
     end
@@ -620,8 +644,10 @@ module ApplicationHelper
     end
   end
   
-  def user_tags_for_contributable(contributable, user_id)
-    all_tags = contributable.taggings
+  def user_tags_for_thing(taggable, user_id)
+    return [] if taggable.nil? or user_id.nil? 
+    
+    all_tags = taggable.taggings
     final_tags = []
     
     all_tags.each do |tagging|

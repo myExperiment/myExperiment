@@ -86,7 +86,11 @@
 	
 	<%= render :partial => "contributions/license_box", :locals => { :contributable => @blob } %>
 	
-	<%= render :partial => "contributions/tags_box", :locals => { :contributable => @blob, :add_path => tag_blob_path(@blob), :edit_path => edit_blob_path(@blob) } %>
+	<%= render :partial => "tags/tags_box", :locals => { :taggable => @blob, 
+																											 :owner_id => ((@blob.contributor_type == 'User') ? @blob.contributor_id : nil), 
+																											 :add_path => tag_blob_path(@blob), 
+																											 :edit_path => edit_blob_path(@blob),
+																											 :allow_edit => @blob.authorized?("edit", logged_in? ? current_user : nil ) } %>
 	
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @blob } %>
 	

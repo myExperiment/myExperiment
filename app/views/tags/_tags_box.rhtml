@@ -1,12 +1,12 @@
 <div class="contribution_section_box">
 	<p class="heading">
-		<%= info_icon_with_tooltip("The tags for this #{visible_name contributable} entry (applies to all #{visible_name contributable} versions in this entry). Note: the size of the tags show how popular they are on myExperiment.") %>
+		<%= info_icon_with_tooltip("The tags for this #{visible_name taggable} entry (applies to all #{visible_name taggable} versions in this entry). Note: the size of the tags show how popular they are on myExperiment.") %>
 		Tags
 	</p>
 
-	<%= render :partial => "contributions/tags_box_inner", :locals => { :contributable => contributable } %>
+	<%= render :partial => "tags/tags_box_inner", :locals => { :taggable => taggable, :owner_id => owner_id } %>
 	
-	<% if contributable.authorized?("edit", current_user) %>
+	<% if allow_edit %>
 		<p style="text-align: right;"><small>[<%= link_to "edit", edit_path %>]</small></p>
 	<% end %>
 	

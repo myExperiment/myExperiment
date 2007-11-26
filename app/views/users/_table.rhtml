@@ -36,7 +36,7 @@
 				</td>
 			    <td class="actions"  style="width: 130px;">
 		      		<%= icon "show", user_path(user.id), nil, nil, "View Profile" %>
-		      		<% if my_page? user.id %>
+		      		<% if mine? user %>
 			        	<%= icon "edit", edit_user_path(user), nil, nil, "Edit" %>
 					<% else %>
 						<% unless user.friend? current_user.id %>

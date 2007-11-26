@@ -6,7 +6,7 @@
       <li class="with_sep_bottom"><%= request_membership_link(current_user.id, @network.id) %></li>
     <% end %>
 
-    <% if my_page? @network.owner.id %>
+    <% if mine? @network %>
       <li><%= icon('edit', edit_network_path(@network), nil, nil, 'Edit Group') %></li>
       <li><%= icon('destroy', network_path(@network), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
     <% end %>
@@ -75,7 +75,7 @@
 	<% end %>
 <% end %>
 
-<% if my_page? @network.owner.id %>
+<% if mine? @network %>
   
   <% memberships = @network.memberships_accepted %>
   <div class="tabContainer">

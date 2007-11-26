@@ -19,7 +19,7 @@
 </script>
 
 <div id="tags">
-	<% unless (tags = contributable.tags).empty? %>
+	<% unless (tags = taggable.tags).empty? %>
 		<p style="text-align: center; margin: 0.4em 0 0.6em 0; border-bottom: 0px solid #999999; padding-bottom: 0;">
 			<a id="tagsSelectAllLink" 
 			   class="tagsSelectorOn" 
@@ -27,7 +27,7 @@
 			   onclick="showAllTags(); return false;">
 			   All Tags</a>
 
-			<% if (logged_in? and current_user.id == contributable.contribution.contributor_id and contributable.contribution.contributor_type == 'User') then tagLink2Text = "My" else tagLink2Text = "Uploader's" end; tagLink2Text += " Tags" -%>
+			<% if (logged_in? and mine?(taggable)) then tagLink2Text = "My" else tagLink2Text = "Uploader's" end; tagLink2Text += " Tags" -%>
 			
 			<a id="tagsSelectUserLink" 
 			   class="tagsSelectorOff" 
@@ -36,19 +36,17 @@
 			   <%= tagLink2Text %></a>
 		</p>
 		<div id="all_tags">
-			<% unless (tags = contributable.tags).empty? %>
+			<% unless (tags = taggable.tags).empty? %>
 				<%= tag_cloud_from_collection(tags) %>
 			<% else %>
-      			<p><i>None</i></p>
+      	<p><i>None</i></p>
 			<% end %>
 		</div>
 		<div id="user_tags"  style="display: none;">
-			<% if contributable.contribution.contributor_type == 'User' %>
-				<% unless (tags = user_tags_for_contributable(contributable, contributable.contributor_id)).empty? %>
-					<%= tag_cloud_from_collection(tags) %>
-				<% else %>
-      				<p><i>None</i></p>
-				<% end %>
+			<% unless (tags = user_tags_for_thing(taggable, owner_id)).empty? %>
+				<%= tag_cloud_from_collection(tags) %>
+			<% else %>
+    		<p><i>None</i></p>
 			<% end %>
 		</div>
 	<% else %>

@@ -1,5 +1,5 @@
 <% if logged_in? %> 
-	<% if my_page? @user.id %>
+	<% if mine? @user %>
 		<h1>My Profile</h1>
 	<% else %>
 		<h1>User Profile: <%=h @user.name %><%= friend_badge(@user) %></h1>
@@ -13,10 +13,10 @@
 	    <% unless @user.friend? current_user.id %>
 	    	<li><%= icon('friendship', new_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
 	  	<% end %>
-	  	<% unless my_page? @user.id %>
+	  	<% unless mine? @user %>
 			<li><%= icon("message", new_message_path(:user_id => @user.id), nil, nil, "Send Message") %></li>
 		<% end %>
-	    <% if my_page? @user.id %>
+	    <% if mine? @user %>
 	      <li><%= icon('manage', edit_user_path(@user), nil, nil, 'Manage Account') %></li>
 	      <% unless @user.profile.nil? %><li><%= icon('edit', edit_profile_path(@user.profile), nil, nil, 'Edit Profile') %></li><% end %>
 		  <li><%= icon("pictures", pictures_path(@user), nil, nil, "Profile Pictures") %></li>
@@ -39,7 +39,7 @@
         <%=h @user.name %>
       </p>
 			
-			<% if logged_in? and my_page? @user.id %>
+			<% if logged_in? and mine? @user %>
 	      <p>
 	        <b>Openid url:</b>
 	        <% if @user.openid_url %>
@@ -51,7 +51,7 @@
 	      </p>
 			<% end %>
 
-			<% if logged_in? and my_page? @user.id %>
+			<% if logged_in? and mine? @user %>
 	      <p>
 	        <b>Username:</b>
 	        <% if @user.username %>
@@ -88,7 +88,7 @@
 <div class="tabContainer">
   <div class="tabTitle">News</div>
   <div class="tabContent">   
-    <%= render :partial => "layouts/news", :locals => { :collection => news(@user, !my_page?(@user.id)) } %>
+    <%= render :partial => "layouts/news", :locals => { :collection => news(@user, !mine?(@user)) } %>
   </div>
 </div>
 
@@ -110,7 +110,7 @@
       <% unless @user.networks_owned.empty? %>
 	      <h2>Groups that <%= @user.name %> owns</h2>
 		  <%= render :partial => "networks/table", :locals => { :collection => @user.networks_owned } %>
-	      <% if false %><%= link_to '[View my Groups]', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if my_page? @user.id %><% end %>
+	      <% if false %><%= link_to '[View my Groups]', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if mine? @user %><% end %>
 	  <% end %>
 	  
 	  <% unless @user.networks.empty? %>
@@ -118,7 +118,7 @@
 		  <%= render :partial => "networks/table", :locals => { :collection => @user.networks } %>
 	  <% end %>
   
-      <% if my_page? @user.id %>
+      <% if mine? @user %>
         <p><%= link_to '[View all Memberships in detail]', memberships_path(@user) %></p>
       <% end %>
     </div>
@@ -132,7 +132,7 @@
 <% unless (tags = tags_for_user(@user.id)).empty? %>
   <div id="user_tags" class="tabContainer">
     <div class="tabTitle">
-    	<%= (logged_in? and my_page? @user.id) ? "My Tags" : "User's Tags" %>
+    	<%= (logged_in? and mine? @user) ? "My Tags" : "User's Tags" %>
 		</div>
     <div class="tabContent">
 			<div style="border: 1px dotted #999999; background-color: #FFFFCC; padding: 1em; margin: 0.5em;">
@@ -142,6 +142,6 @@
   </div>
 <% end %>
 
-<% if logged_in? and !my_page? @user.id and !current_user.networks_owned.empty? %>
+<% if logged_in? and !mine?(@user) and !current_user.networks_owned.empty? %>
   <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
 <% end %>
