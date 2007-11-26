@@ -257,13 +257,9 @@ class WorkflowsController < ApplicationController
         @workflow.title, @workflow.unique_name = determine_title_and_unique(scufl_model)
         @workflow.body = scufl_model.description.description
 
-        unless RUBY_PLATFORM =~ /mswin32/
-          # create new diagrams and append new version number to filename
-          img, svg = create_workflow_diagrams(scufl_model, "#{@workflow.unique_name}_#{@workflow.version.to_i + 1}")
+        # create new diagrams and append new version number to filename
+        create_workflow_diagrams(@workflow, scufl_model, "#{@workflow.unique_name}_#{@workflow.current_version.to_i + 1}")
           
-          @workflow.image, @workflow.svg = img, svg
-        end
-        
         @workflow.scufl = scufl.read
       end
     
@@ -312,13 +308,9 @@ class WorkflowsController < ApplicationController
         @workflow.title, @workflow.unique_name = determine_title_and_unique(scufl_model)
         @workflow.body = scufl_model.description.description
 
-        unless RUBY_PLATFORM =~ /mswin32/
-          # create new diagrams and append new version number to filename
-          img, svg = create_workflow_diagrams(scufl_model, "#{@workflow.unique_name}_#{@workflow.version.to_i + 1}")
+        # create new diagrams and append new version number to filename
+        create_workflow_diagrams(@workflow, scufl_model, "#{@workflow.unique_name}_#{@workflow.current_version.to_i + 1}")
           
-          @workflow.image, @workflow.svg = img, svg
-        end
-        
         @workflow.scufl = scufl.read
         
         params[:workflow].delete("scufl") # remove scufl attribute from received workflow parameters
@@ -520,26 +512,29 @@ protected
                        :body => scufl_model.description.description,
                        :license => wf[:license])
                        
-    rtn.image, rtn.svg = create_workflow_diagrams(scufl_model, unique_name) unless RUBY_PLATFORM =~ /mswin32/
+    create_workflow_diagrams(rtn, scufl_model, "#{unique_name}_1")
     
     return rtn
   end
   
-  def create_workflow_diagrams(scufl_model, unique_name)
-    i = Tempfile.new("image")
-    Scufl::Dot.new.write_dot(i, scufl_model)
-    i.close(false)
-    img = StringIO.new(`dot -Tpng #{i.path}`)
-    svg = StringIO.new(`dot -Tsvg #{i.path}`)
-    i.unlink
-    img.extend FileUpload
-    img.original_filename = "#{unique_name}.png"
-    img.content_type = "image/png"
-    svg.extend FileUpload
-    svg.original_filename = "#{unique_name}.svg"
-    svg.content_type = "image/svg+xml"
-    
-    return img, svg
+  def create_workflow_diagrams(workflow, scufl_model, unique_name)
+    unless RUBY_PLATFORM =~ /mswin32/
+      i = Tempfile.new("image")
+      Scufl::Dot.new.write_dot(i, scufl_model)
+      i.close(false)
+      img = StringIO.new(`dot -Tpng #{i.path}`)
+      svg = StringIO.new(`dot -Tsvg #{i.path}`)
+      i.unlink
+      img.extend FileUpload
+      img.original_filename = "#{unique_name}.png"
+      img.content_type = "image/png"
+      svg.extend FileUpload
+      svg.original_filename = "#{unique_name}.svg"
+      svg.content_type = "image/svg+xml"
+      
+      workflow.image = img
+      workflow.svg = svg
+    end
   end
 
 private
