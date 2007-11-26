@@ -166,7 +166,11 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @workflow.to_xml }
+      if params[:version]
+        format.xml { render :xml => @viewing_version.to_xml(:root => 'workflow-version') }
+      else
+        format.xml  { render :xml => @workflow.to_xml(:methods => [ :tag_list_comma, :rating, :contributor_name ]) }
+      end
     end
   end
 

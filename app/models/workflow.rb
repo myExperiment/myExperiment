@@ -95,4 +95,16 @@ class Workflow < ActiveRecord::Base
     end
   end
   
+  def tag_list_comma
+    list = ''
+    tags.each do |t|
+      if list == ''
+        list = t.name
+      else
+        list += (", " + t.name)
+      end
+    end
+    return list
+  end
+  
 end
