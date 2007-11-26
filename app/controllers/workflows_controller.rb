@@ -122,14 +122,14 @@ class WorkflowsController < ApplicationController
   def download
     @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
     
-    send_data(@viewing_version.scufl, :filename => @workflow.unique_name + ".xml", :type => "application/vnd.taverna.scufl+xml")
+    send_data(@viewing_version.scufl, :filename => @viewing_version.unique_name + ".xml", :type => "application/vnd.taverna.scufl+xml")
   end
   
-  # GET /workflows/:id/download/:name.:format
+  # GET /workflows/:id/download/:name
   def named_download
 
     # check that we got the right filename for this workflow
-    if "#{params[:name]}.#{params[:format]}" == "#{@viewing_version.unique_name}.xml"
+    if params[:name] == "#{@viewing_version.unique_name}.xml"
       download
     else
       render :nothing => true, :status => "404 Not Found"
@@ -481,7 +481,12 @@ protected
         @download_url = url_for :action => 'download',
                                 :id => @workflow.id, 
                                 :version => @viewing_version_number.to_s
-                                
+        
+        @named_download_url = url_for :action => 'named_download',
+                                      :id => @workflow.id, 
+                                      :version => @viewing_version_number.to_s,
+                                      :name => "#{@viewing_version.unique_name}.xml"
+
         puts "@latest_version_number = #{@latest_version_number}"
         puts "@viewing_version_number = #{@viewing_version_number}"
         puts "@workflow.image != nil = #{@workflow.image != nil}"

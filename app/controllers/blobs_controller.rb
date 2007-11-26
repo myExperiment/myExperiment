@@ -22,7 +22,7 @@
 ##
 
 class BlobsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download, :search, :all]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :search, :all]
   
   before_filter :find_blobs, :only => [:index, :all]
   #before_filter :find_blob_auth, :only => [:download, :show, :edit, :update, :destroy]
@@ -49,7 +49,18 @@ class BlobsController < ApplicationController
     
     #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type)
   end
-  
+
+  # GET /blobs/:id/download/:name
+  def named_download
+
+    # check that we got the right filename for this workflow
+    if params[:name] == @blob.local_name
+      download
+    else
+      render :nothing => true, :status => "404 Not Found"
+    end
+  end
+
   # GET /blobs
   # GET /blobs.xml
   def index
@@ -260,6 +271,12 @@ class BlobsController < ApplicationController
       
       if blob.authorized?(action_name, (logged_in? ? current_user : nil))
         @blob = blob
+
+        @named_download_url = url_for :action => 'named_download',
+                                      :id => @blob.id, 
+                                      :version => 1, # blobs aren't versioned (yet)
+                                      :name => @blob.local_name
+
       else
         if logged_in? 
           error("File not found (id not authorized)", "is invalid (not authorized)")

@@ -41,7 +41,7 @@
 		
 		<div style="padding:1em; text-align:center;">
 			<% if @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
-				<a href="<%= download_blob_path(@blob) %>"><%= image_tag(image_path("download_button.png"), :alt => 'Download the file') %></a>
+				<a href="<%= @named_download_url %>"><%= image_tag(image_path("download_button.png"), :alt => 'Download the file') %></a>
 			<% else %>
 				<b><i>You cannot download this File</i></b>
 			<% end %>

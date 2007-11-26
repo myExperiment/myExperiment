@@ -84,7 +84,7 @@
 		
 		<div style="padding:1em; text-align:center;">
 			<% if @authorised_to_download %>
-				<a href="<%= @download_url %>"><%= image_tag(image_path("download_button.png"), :alt => "Download Workflow file (version #{@viewing_version_number.to_s})") %></a>
+				<a href="<%= @named_download_url %>"><%= image_tag(image_path("download_button.png"), :alt => "Download Workflow file (version #{@viewing_version_number.to_s})") %></a>
 			<% else %>
 				<b><i>You cannot download this Workflow file</i></b>
 			<% end %>

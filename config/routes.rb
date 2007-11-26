@@ -121,7 +121,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'exercise', :controller => 'redirects', :action => 'exercise'
 
   # alternate download link to work around lack of browser redirects when downloading
-  map.connect ':controller/:id/download/:name.:format', :action => 'named_download'
+  map.connect ':controller/:id/download/:name', :action => 'named_download', :requirements => { :name => /.*/ } 
 
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id.:format'
