@@ -26,6 +26,7 @@ require 'acts_as_contributable'
 require 'acts_as_creditable'
 require 'acts_as_attributor'
 require 'acts_as_attributable'
+require 'explicit_versioning'
 
 class Workflow < ActiveRecord::Base
   has_many :citations, 
@@ -39,7 +40,22 @@ class Workflow < ActiveRecord::Base
   acts_as_attributor
   acts_as_attributable
 
-  acts_as_versioned
+  explicit_versioning(:version_column => "current_version", :file_columns => ["image", "svg"], :white_list_columns => ["body"]) do
+    file_column :image, :magick => {
+      :versions => {
+        :thumb    => { :size => "100x100!" }, 
+        :medium   => { :size => "500x500>" },
+        :full     => { }
+      }
+    }
+  
+    file_column :svg
+    
+    format_attribute :body
+  end
+  
+  #non_versioned_fields.push("image", "svg", "license", "tag_list") # acts_as_versioned and file_column don't get on
+  non_versioned_columns.push("license", "tag_list", "body_html")
   
   acts_as_ferret :fields => { :title => { :store => :yes }, 
                               :body => { :store => :yes }, 
@@ -79,5 +95,4 @@ class Workflow < ActiveRecord::Base
     end
   end
   
-  non_versioned_fields.push("image", "svg", "license", "tag_list") # acts_as_versioned and file_column don't get on
 end

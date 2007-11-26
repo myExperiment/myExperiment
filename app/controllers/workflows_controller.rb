@@ -187,6 +187,10 @@ class WorkflowsController < ApplicationController
     @sharing_mode  = determine_sharing_mode(@workflow)
     @updating_mode = determine_updating_mode(@workflow)
   end
+  
+  # GET /workflows/1;edit_version
+  def edit_version
+  end
 
   # POST /workflows
   # POST /workflows.xml
@@ -218,6 +222,60 @@ class WorkflowsController < ApplicationController
         format.xml  { head :created, :location => workflow_url(@workflow) }
       else
         format.html { render :action => "new" }
+        format.xml  { render :xml => @workflow.errors.to_xml }
+      end
+    end
+  end
+  
+  # POST /workflows/1;create_version
+  # POST /workflows/1.xml;create_version
+  def create_version
+    # remove protected columns
+    if params[:workflow]
+      [:contribution, :contributor_id, :contributor_type, :image, :created_at, :updated_at, :version].each do |column_name|
+        params[:workflow].delete(column_name)
+      end
+    end
+    
+    # remove owner only columns
+    unless @workflow.contribution.owner?(current_user)
+      [:unique_name, :license].each do |column_name|
+        params[:workflow].delete(column_name)
+      end
+    end
+    
+    respond_to do |format|
+      scufl = params[:workflow][:scufl]
+      
+      # process scufl if it's there
+      unless scufl.nil?
+
+        # create new scufl model
+        scufl_model = Scufl::Parser.new.parse(scufl.read)
+        scufl.rewind
+        
+        @workflow.title, @workflow.unique_name = determine_title_and_unique(scufl_model)
+        @workflow.body = scufl_model.description.description
+
+        unless RUBY_PLATFORM =~ /mswin32/
+          # create new diagrams and append new version number to filename
+          img, svg = create_workflow_diagrams(scufl_model, "#{@workflow.unique_name}_#{@workflow.version.to_i + 1}")
+          
+          @workflow.image, @workflow.svg = img, svg
+        end
+        
+        @workflow.scufl = scufl.read
+      end
+    
+      success = @workflow.save_as_new_version(ae_some_html(params[:comments]))
+      
+      if success
+        flash[:notice] = 'Workflow version successfully created.'
+        format.html { redirect_to workflow_url(@workflow) }
+        format.xml  { head :ok }
+      else
+        flash[:error] = 'Failed to upload new version. Please report this error.'       
+        format.html { render :action => :new_version }  
         format.xml  { render :xml => @workflow.errors.to_xml }
       end
     end
@@ -269,10 +327,6 @@ class WorkflowsController < ApplicationController
       success = nil;
 
       if scufl.nil?
-        Workflow.without_revision do 
-          success = @workflow.update_attributes(params[:workflow])
-        end
-      else
         success = @workflow.update_attributes(params[:workflow])
       end
 
@@ -296,46 +350,91 @@ class WorkflowsController < ApplicationController
           format.html { render :action => "edit" }
         else
           format.html { render :action => "new_version" }  
-          end
-          format.xml  { render :xml => @workflow.errors.to_xml }
         end
+        format.xml  { render :xml => @workflow.errors.to_xml }
+      end
     end
   end
-
+  
+  # PUT /workflows/1;update_version
+  # PUT /workflows/1.xml;update_version
+  def update_version
+    workflow_title = @workflow.title
+    
+    if params[:version]
+      success = @workflow.update_version(params[:version], :title => params[:title], :body => params[:body])
+    else
+      success = false;
+    end
+    
+    respond_to do |format|
+      if success
+        flash[:notice] = "Workflow version #{params[:version]}: \"#{workflow_title}\" has been updated"
+        format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
+        format.xml  { head :ok }
+      else
+        flash[:error] = "Failed to update Workflow version. Please report this."
+        if params[:version]
+          format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
+        else
+          format.html { redirect_to workflow_url(@workflow) }
+        end
+        format.xml  { render :xml => @workflow.errors.to_xml }
+      end
+    end
+  end
+  
   # DELETE /workflows/1
   # DELETE /workflows/1.xml
   def destroy
-    
     workflow_title = @workflow.title
 
-    if params[:version]
+    success = @workflow.destroy
 
-      if @workflow.revert_to(params[:version]) == false
+    respond_to do |format|
+      if success
+        flash[:notice] = "Workflow \"#{workflow_title}\" has been deleted"
+        format.html { redirect_to workflows_url }
+        format.xml  { head :ok }
+      else
+        flash[:error] = "Failed to delete Workflow entry \"#{workflow_title}\""
+        format.html { redirect_to workflow_url(@workflow) }
+        format.xml  { render :xml => @workflow.errors.to_xml }
+      end
+    end
+  end
+  
+  # DELETE /workflows/1;destroy_version?version=1
+  # DELETE /workflows/1.xml;destroy_version?version=1
+  def destroy_version
+    workflow_title = @viewing_version.title
+    
+    if params[:version]
+      if @workflow.find_version(params[:version]) == false
         error("Version not found (is invalid)", "not found (is invalid)", :version)
       end
-
       if @workflow.versions.length < 2
         error("Can't delete all versions", " is not allowed", :version)
       end
-
-      @workflow.destroy_version(@workflow.version)
-
+      success = @workflow.destroy_version(params[:version].to_i)
     else
-
-      @workflow.destroy
+      success = false
     end
-
+  
     respond_to do |format|
-
-      if params[:version]
-        flash[:notice] = "Workflow file version #{params[:version]} has been deleted"
+      if success
+        flash[:notice] = "Workflow version #{params[:version]}: \"#{workflow_title}\" has been deleted"
         format.html { redirect_to workflow_url(@workflow) }
+        format.xml  { head :ok }
       else
-        flash[:notice] = "Workflow entry \"#{workflow_title}\" has been deleted"
-        format.html { redirect_to workflows_url }
+        flash[:error] = "Failed to delete Workflow version. Please report this."
+        if params[:version]
+          format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
+        else
+          format.html { redirect_to workflow_url(@workflow) }
+        end
+        format.xml  { render :xml => @workflow.errors.to_xml }
       end
-
-      format.xml  { head :ok }
     end
   end
   
@@ -362,21 +461,22 @@ protected
       workflow = Workflow.find(params[:id])
       
       if workflow.authorized?(action_name, (logged_in? ? current_user : nil))
-        @latest_version_number = workflow.version
+        @latest_version_number = workflow.current_version
         @workflow = workflow
         if params[:version]
-          if (viewing = Workflow.find_version(workflow.id, params[:version]))
-            @viewing_version_number = params[:version]
+          if (viewing = @workflow.find_version(params[:version]))
+            @viewing_version_number = params[:version].to_i
             @viewing_version = viewing
           else
-            error("Version not found (is invalid)", "not found (is invalid)", :version)
+            error("Workflow version not found (possibly has been deleted)", "not found (is invalid)", :version)
           end
         else
           @viewing_version_number = @latest_version_number
-          @viewing_version = Workflow.find_version(workflow.id, @latest_version_number)
+          @viewing_version = @workflow.find_version(@latest_version_number)
         end
         
         @authorised_to_download = @workflow.authorized?("download", (logged_in? ? current_user : nil))
+        @authorised_to_edit = @workflow.authorized?("edit", (logged_in? ? current_user : nil))
         
         # remove scufl from workflow if the user is not authorized for download
         @viewing_version.scufl = nil unless @authorised_to_download

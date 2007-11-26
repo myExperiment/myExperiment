@@ -76,7 +76,7 @@
 		  
 		  <p style="font-size: 85%;">
 		  	<b>Rating: </b><%= number_with_precision(workflow.rating, 2) %>/5 (<%= pluralize workflow.ratings.count, 'rating' %>) |
-				<b>Versions: </b><%= h workflow.version %> |
+				<b>Versions: </b><%= h workflow.versions.count %> |
 		  	<b>Viewed:</b> <%=pluralize workflow.contribution.viewings_count, "time" %> |
 	      <b>Downloaded:</b> <%=pluralize workflow.contribution.downloads_count, "time" %>
 		  </p>

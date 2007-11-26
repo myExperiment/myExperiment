@@ -4,7 +4,7 @@
 
 <br/>
 
-<% form_tag(workflow_url(@workflow.id), :multipart => true, :method => :put) do %>
+<% form_tag("/workflows/#{@workflow.id};create_version", :multipart => true, :method => :post) do %>
 
   <div>
     <p>
@@ -13,6 +13,20 @@
 	      <input id="workflow_scufl" name="workflow[scufl]" size="45" type="file"/>
 			</center>
     </p>
+		
+		<br/>
+		
+		<p>
+			<center>
+				<b>Revision comments: </b><br/>
+			</center>
+		</p>
+		<%= allowed_html_text('center') %>
+		<p>
+			<center>
+				<textarea id="workflow_revision_comments" name="comments" rows="10" cols="60"></textarea>
+			</center>
+		</p>
   </div>
 
   <br />

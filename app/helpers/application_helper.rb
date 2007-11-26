@@ -213,7 +213,7 @@ module ApplicationHelper
     link_to("Request Friendship", new_friendship_url(:user_id => user_id))
   end
   
-  def versioned_workflow_link(workflow_id, version_id, long_description=true)
+  def versioned_workflow_link(workflow_id, version_number, long_description=true)
     if workflow_id.kind_of? Fixnum
       workflow = Workflow.find(:first, :conditions => ["id = ?", workflow_id])
       return nil unless workflow
@@ -223,23 +223,25 @@ module ApplicationHelper
       return nil
     end
     
-    if workflow.revert_to(version_id)
+    if (ver = workflow.find_version(version_number))
       url = url_for(:controller => 'workflows',
                     :action => 'show',
                     :id => workflow.id,
-                    :version => workflow.version)
+                    :version => version_number)
     else
       return nil
     end
     
+    return nil unless url
+    
     if long_description
-      return "#{link_to "[#{workflow.version}]", url} - #{link_to "#{h(workflow.title)}", url} by #{contributor(workflow.contributor_id, workflow.contributor_type)} (#{datetime(workflow.updated_at, false)})"
+      return "#{link_to "[#{ver.version}]", url} - #{link_to "#{h(ver.title)}", url} by #{contributor(workflow.contributor_id, workflow.contributor_type)} (#{datetime(ver.updated_at, false)})"
     else
-      return link_to("#{h(workflow.title)} [#{workflow.version}]", url)
+      return link_to("#{h(ver.title)} [#{ver.version}]", url)
     end
   end
   
-  def versioned_workflow_url(workflow_id, version_id)
+  def versioned_workflow_url(workflow_id, version_number)
     if workflow_id.kind_of? Fixnum
       workflow = Workflow.find(:first, :conditions => ["id = ?", workflow_id])
       return nil unless workflow
@@ -249,11 +251,11 @@ module ApplicationHelper
       return nil
     end
     
-    if workflow.revert_to(version_id)
+    if workflow.find_version(version_number)
       url = url_for(:controller => 'workflows',
                     :action => 'show',
                     :id => workflow.id,
-                    :version => workflow.version)
+                    :version => version_number)
     else
       return nil
     end
@@ -833,6 +835,11 @@ module ApplicationHelper
     end
   end
   
+  def allowed_html_text(align='left')
+    return "<p style=\"font-size: 85%; color: #333333; text-align:#{align}\">Note: some HTML is allowed: &lt;p&gt;, &lt;a&gt;, &lt;b&gt;, &lt;blockquote&gt;, &lt;em&gt;, &lt;i&gt;, &lt;strong&gt; and &lt;u&gt;.</p>"    
+  end
+  
+  
 protected
 
   def contributor_news(contributor, before, after, depth, restrict_contributor)
@@ -936,7 +943,7 @@ protected
       
       case item.contributable_type.to_s
       when "Workflow"
-        if item.contributable.version.to_i == 1
+        if item.contributable.current_version.to_i == 1
           title = item.contributable.title
         else
           title = item.contributable.versions[0].title
