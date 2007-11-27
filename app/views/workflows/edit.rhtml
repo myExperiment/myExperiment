@@ -10,12 +10,12 @@
 <%= error_messages_for :workflow %>
 
 <% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
-  <%= render :partial => "contributions/tags_form", :locals => { :edit => true, :contributable => @workflow } %>
+  <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @workflow } %>
   <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => true, :contributable => @workflow } %>
 
   <% if @workflow.owner?(current_user) %>
   	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @workflow } %>
-	<%= render :partial => "contributions/updating_form", :locals => { :edit => true, :contributable => @workflow } %>
+	  <%= render :partial => "contributions/updating_form", :locals => { :edit => true, :contributable => @workflow } %>
     <%= render :partial => "workflows/license_form", :locals => { :edit => true } %>
   <% end %>
 

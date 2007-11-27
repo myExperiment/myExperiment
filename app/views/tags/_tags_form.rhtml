@@ -1,4 +1,4 @@
-<% c_type = visible_name contributable %>
+<% c_type = visible_name taggable %>
 
 <script type="text/javascript"> 
 
@@ -21,7 +21,7 @@ document.onkeypress = handleEnter;
 </script> 
 
 
-<input id="tag_list" type="hidden" name="<%= contributable.class.to_s.downcase %>[tag_list]"/>
+<input id="tag_list" type="hidden" name="<%= taggable.class.to_s.downcase %>[tag_list]"/>
 
 <div class="fold">
   <div class="foldTitle">
@@ -29,7 +29,7 @@ document.onkeypress = handleEnter;
 		Tags
 		<% if edit %>
 			<hr />
-			<small>Current: <%= contributable.tags.count %> tags</small>
+			<small>Current: <%= taggable.tags.count %> tags</small>
 		<% end %>
   </div>
   <div class="foldContent" style="display: none;">
@@ -76,7 +76,7 @@ document.onkeypress = handleEnter;
 
 <% if edit %>
   <script>
-    <% contributable.tags.each do |t| %>
+    <% taggable.tags.each do |t| %>
       tags.push(<%= "\"#{t.to_s.gsub(/\"/, '\\\"')}\"" %>);
     <% end %>
     updateTagList();

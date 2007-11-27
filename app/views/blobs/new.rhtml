@@ -35,7 +35,7 @@
     <%= render :partial => "policies/listform", :locals => { :contribution => @blob.contribution, :user => current_user } %>
   <% end %>
 
-  <%= render :partial => "contributions/tags_form", :locals => { :edit => false, :contributable => @blob } %>
+  <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @blob } %>
   
   <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => false, :contributable => @blob } %>
 
