@@ -116,6 +116,9 @@ ActionController::Routing::Routes.draw do |map|
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
   map.connect ':controller/service.wsdl', :action => 'wsdl'
+  
+  # Sitealizer
+  map.connect '/sitealizer/:action', :controller => 'sitealizer'
 
   # Explicit redirections
   map.connect 'exercise', :controller => 'redirects', :action => 'exercise'

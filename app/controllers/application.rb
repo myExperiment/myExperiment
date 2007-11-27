@@ -25,6 +25,11 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  
+  include Sitealizer
+  before_filter :use_sitealizer
+
+  
   include AuthenticatedSystem
   before_filter :login_from_cookie
   
