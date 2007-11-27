@@ -70,7 +70,7 @@ class UsersController < ApplicationController
     
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @user.to_xml }
+      format.xml  { render :xml => @user.to_xml(:include => [ :profile ]) }
     end
   end
 

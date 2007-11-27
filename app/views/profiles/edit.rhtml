@@ -1,41 +1,14 @@
-<h1>Editing Profile</h1>
+<h1>Edit Profile for <%= name @user.id %></h1>
 
 <%= error_messages_for :profile %>
 
 <% form_for(:profile, :url => profile_path(@profile), :html => { :method => :put }) do |f| %>
-  <p>
-    <b>Picture</b><br />
-    <div id="hlist">
-      <ul>
-      <li>
-        <center><%= null_avatar 100 %><br/><%= f.radio_button :picture_id, nil %></center>
-      </li>
-      <% @profile.owner.pictures.each do |p| %>
-        <li>
-          <center><%= image_tag url_for :controller => 'pictures', :action  => 'show', :id => p.id, :size => '100x100' %><br/><%= f.radio_button :picture_id, p.id %></center>
-        </li>
-      <% end %>
-      </ul>
-    </div>
-    <br style="clear:both;" />
-  </p>
+
+	<% if mine? @user %>
+		<%= render :partial => "form", :object => f. :pictures => @user.pictures %>
+	<% end %>
 
   <p>
-    <b>Email (public)</b><br />
-    <%= f.text_field :email %>
-  </p>
-
-  <p>
-    <b>Website</b><br />
-    <%= f.text_field :website %>
-  </p>
-
-  <p>
-    <b>Description</b><br />
-    <%= f.text_area :body %>
-  </p>
-
-  <p>
-    <%= submit_tag "Update" %>
+    <%= submit_tag "Update", :disable_with => "Updating..." %>
   </p>
 <% end %>

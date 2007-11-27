@@ -1,0 +1,39 @@
+<p>
+  <b>Picture</b><br />
+  <div id="hlist">
+    <ul>
+    <li>
+      <center><%= null_avatar 60 %><br/><%= form.radio_button :picture_id, nil %></center>
+    </li>
+    <% pictures.each do |p| %>
+      <li>
+        <center>
+        	<%= image_tag url_for :controller => 'pictures', :action  => 'show', :id => p.id, :size => '60x60' %>
+					<br/>
+					<%= form.radio_button :picture_id, p.id %>
+				</center>
+      </li>
+    <% end %>
+    </ul>
+  </div>
+  <div class="clearer">&nbsp;</div>
+</p>
+
+<p style="color: #666666; font-weight: bold;">
+	Note: all information you enter here will be visible to everyone (ie: will be public).
+</p>
+
+<p>
+  <b>Email (public):</b>
+  <%= form.text_field :email %>
+</p>
+
+<p>
+  <b>Website</b>
+  <%= form.text_field :website %>
+</p>
+
+<p>
+  <b>Description</b><br />
+  <%= form.text_area :body %>
+</p>
