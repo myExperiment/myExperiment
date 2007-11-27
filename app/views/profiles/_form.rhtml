@@ -1,5 +1,10 @@
+<p style="color: #666666; font-weight: bold;">
+	Note: information you enter on this page will be visible to everyone (ie: will be public), but all fields are optional.
+</p>
+
+<h2>Your display picture</h2>
+
 <p>
-  <b>Picture</b><br />
   <div id="hlist">
     <ul>
     <li>
@@ -19,21 +24,72 @@
   <div class="clearer">&nbsp;</div>
 </p>
 
-<p style="color: #666666; font-weight: bold;">
-	Note: all information you enter here will be visible to everyone (ie: will be public).
-</p>
+<h2>Your contact details</h2>
 
 <p>
-  <b>Email (public):</b>
+  <b>Email (public):</b><br/>
   <%= form.text_field :email %>
 </p>
 
 <p>
-  <b>Website</b>
+  <b>Website:</b><br/>
   <%= form.text_field :website %>
 </p>
 
 <p>
-  <b>Description</b><br />
-  <%= form.text_area :body %>
+  <b>Other contact details:</b><br/>
+  <%= form.text_area :contact_details, :size => "30x4" %>
+</p>
+
+<br/>
+<br/>
+
+<h2>Your work/professional life</h2>
+
+<p>
+  <b>Field/Industry:</b><br/>
+  <%= form.text_field :field_or_industry, :size => 50 %>
+</p>
+
+<p>
+  <b>Occupation/Role(s):</b><br/>
+  <%= form.text_field :occupation_or_roles, :size => 50 %>
+</p>
+
+<p>
+  <b>Organisation(s) you belong to:</b><br/>
+  <%= form.text_area :organisations, :size => "30x4" %>
+</p>
+
+<br/>
+<br/>
+
+<h2>Your location</h2>
+
+<p>
+  <b>City:</b><br/>
+  <%= form.text_field :location_city %>
+</p>
+
+<p>
+  <b>Country:</b><br/>
+  <%= form.country_select :location_country, ["United Kingdom"], { :prompt => "- Please select a country -" } %>
+</p>
+
+<br/>
+<br/>
+
+<h2>Your other personal information</h2>
+
+<p>
+  <b>Interests:</b><br/>
+  <%= form.text_area :interests, :size => "60x5" %>
+</p>
+
+<br/>
+
+<p>
+  <b>Description:</b>
+	<span style="font-size: 85%; display:block; padding: 0.2em 0 0.5em 0; color: #333333;">Here you can enter a summary or detailed description of yourself. <br/>This is what other people see when they look at a listing of users.</span>
+  <%= form.text_area :body, :size => "60x15" %>
 </p>

@@ -23,6 +23,8 @@
 
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  require 'country_codes'
+  
   def my_page?(contributor_id, contributor_type="User")
     #logged_in? and current_user.id.to_i == contributor_id.to_i and current_user.class.to_s == contributor_type.to_s
 
@@ -704,7 +706,7 @@ module ApplicationHelper
   
   def effective_policy(contribution)
     if contribution.policy == nil
-      return Policy._default contribution.contributor
+      return Policy._default(contribution.contributor)
     else 
       return contribution.policy
     end
@@ -865,6 +867,27 @@ module ApplicationHelper
     return "<p style=\"font-size: 85%; color: #333333; text-align:#{align}\">Note: some HTML is allowed: &lt;p&gt;, &lt;a&gt;, &lt;b&gt;, &lt;blockquote&gt;, &lt;em&gt;, &lt;i&gt;, &lt;strong&gt; and &lt;u&gt;.</p>"    
   end
   
+  def flag_icon(country)
+    return nil if country.nil?
+    
+    code = nil
+    
+    if country.length > 2
+      code = CountryCodes.code(country)
+    else
+      code = country if CountryCodes.valid_code?(country)
+    end
+    
+    #puts "code = " + code
+    
+    if code
+      return image_tag("famfamfam_flags/#{code}.png",
+              :title => "header=[] body=[#{country}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
+              :style => "vertical-align:middle;")
+    else
+      return ''
+    end
+  end
   
 protected
 

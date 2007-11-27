@@ -9,7 +9,7 @@
 			    <td width="100px"><%= avatar user, 60 %></td>
 			    <td class="mid" style="text-align: left;">
 			    	<p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
-						<%= icon "user", nil, nil, nil, '' %>
+						<%= flag_icon(user.profile.nil? ? nil : user.profile.location_country) %>&nbsp;
 						<%= name user.id %><%= friend_badge(user) %>
 					</p>
 					<% if user.profile %>

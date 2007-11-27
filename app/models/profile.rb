@@ -53,4 +53,8 @@ class Profile < ActiveRecord::Base
   def avatar?
     not (picture_id.nil? or picture_id.zero?)
   end
+  
+  def location
+    return (location_city unless location_city.nil? or location_city.empty?) + ((", " + location_country) unless location_country.nil? or location_country.empty?)
+  end
 end

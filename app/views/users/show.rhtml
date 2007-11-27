@@ -1,8 +1,8 @@
 <% if logged_in? %> 
 	<% if mine? @user %>
-		<h1>My Profile</h1>
+		<h1><%= flag_icon(@user.profile.nil? ? nil : @user.profile.location_country) %>&nbsp;&nbsp;My Profile</h1>
 	<% else %>
-		<h1>User Profile: <%=h @user.name %><%= friend_badge(@user) %></h1>
+		<h1><%= flag_icon(@user.profile.nil? ? nil : @user.profile.location_country) %>&nbsp;&nbsp;User Profile: <%=h @user.name %><%= friend_badge(@user) %></h1>
 	<% end %>
 <% else %>
 	<h1>User: <%=h @user.name %><%= friend_badge(@user) %></h1>
@@ -29,11 +29,11 @@
 <table width="100%">
   <tr>
     <% if @user.profile %>
-      <td width="210" vAlign="middle">
+      <td style="padding: 0 0.8em; vertical-align: top;">
         <%= avatar @user, 200 %>
       </td>
     <% end %>
-    <td vAlign="top" class="details">
+    <td class="details" style="vertical-align: top;">
       <p>
         <b>Name:</b>
         <%=h @user.name %>

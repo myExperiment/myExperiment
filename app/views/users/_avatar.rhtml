@@ -1,5 +1,10 @@
 <% size ||= 100 -%>
 <div style="text-align:center; width: <%= size+6 %>px; line-height: 1.2em; padding: 0.2em 0;">
 	<%= avatar(user, size) %>
-	<span style="display:block;margin-top:2px;text-align:center;"><%= name user %></span>
+	<span style="display:block;margin-top:2px;text-align:center;">
+		<% if size > 59 %>
+			<%= flag_icon(user.profile.nil? ? nil : user.profile.location_country) %>&nbsp;
+		<% end %>
+		<%= name user %>
+	</span>
 </div>
