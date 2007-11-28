@@ -37,7 +37,7 @@
 <div style="float: left; padding: 0 0.6em;">
 	<% if @user.profile %>
     <td style=" vertical-align: top;">
-      <%= avatar @user, 120 %>
+      <%= avatar @user, 160 %>
     </td>
   <% end %>
 </div>
@@ -88,6 +88,28 @@
 	    <%= render :partial => "profiles/profile", :locals => { :profile => @user.profile } %>
 	  <% end %>
 	<% end %>
+	
+	<% unless @user.profile.email.nil? or @user.profile.email.empty? %>
+	  <p>
+	    <b>Email:</b>
+	    <%=mail_to @user.profile.email, h(@user.profile.email), { :replace_at => " [at] " } %>
+	  </p>
+	<% end %>
+	
+	<% unless @user.profile.website.nil? or @user.profile.website.empty? %>
+	  <p>
+	    <b>Website:</b>
+	    <%=link_to h(@user.profile.website), @user.profile.website %>
+	  </p>
+	<% end %>
+	
+	<% unless @user.profile.location.nil? or @user.profile.location.empty? %>
+	  <p>
+	  	<b>Location:</b>
+	    <%= h @user.profile.location %>
+	  </p>
+	<% end %>
+	
 </div>
 
 <div class="clearer">&nbsp;</div>
@@ -102,22 +124,8 @@
 	
 	<br/>
 	
-	<div style="float: left; padding: 0 0.6em; width: 37%;">
+	<div class="box_simple" style="float: left; padding: 0 0.6em; width: 46%;">
 	
-		<% unless @user.profile.email.nil? %>
-		  <p>
-		    <b>Email:</b>
-		    <%=mail_to @user.profile.email, h(@user.profile.email), { :replace_at => " [at] " } %>
-		  </p>
-		<% end %>
-		
-		<% unless @user.profile.website.nil? %>
-		  <p>
-		    <b>Website:</b>
-		    <%=link_to h(@user.profile.website), @user.profile.website %>
-		  </p>
-		<% end %>
-		
 		<% unless @user.profile.contact_details.nil? or @user.profile.contact_details.empty? %>
 		  <p>
 		  	<b>Other contact details:</b>
@@ -125,16 +133,16 @@
 		  <%= simple_format(sanitize(@user.profile.contact_details)) %>
 		<% end %>
 		
-		<% unless @user.profile.location.nil? or @user.profile.location.empty? %>
+		<% unless @user.profile.interests.nil? or @user.profile.interests.empty? %>
 		  <p>
-		  	<b>Location:</b>
-		    <%= h @user.profile.location %>
-		  </p>
+		  	<b>Interests:</b>
+			</p>
+		  <%= simple_format(sanitize(@user.profile.interests)) %>
 		<% end %>
 	
 	</div>
 	
-	<div style="float: left; padding: 0 0.6em; width: 60%;">
+	<div class="box_simple" style="float: right; padding: 0 0.6em; width: 46%;">
 	
 		<% unless @user.profile.field_or_industry.nil? or @user.profile.field_or_industry.empty? %>
 		  <p>
@@ -157,19 +165,12 @@
 		  <%= simple_format(sanitize(@user.profile.organisations)) %>
 		<% end %>
 		
-		<% unless @user.profile.interests.nil? or @user.profile.interests.empty? %>
-		  <p>
-		  	<b>Interests:</b>
-			</p>
-		  <%= simple_format(sanitize(@user.profile.interests)) %>
-		<% end %>
-	
 	</div>
 	
 	<div class="clearer">&nbsp;</div>
 	
 	<% if mine? @user %>
-		<p style="text-align: right;">
+		<p style="text-align: right; margin-top: 0.5em;">
 			<%= link_to "[Edit profile]", edit_profile_path(@user.profile) %>
 		</p>
 	<% end %>
