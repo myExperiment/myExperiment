@@ -33,11 +33,18 @@
 					<% end %>
 					
 					<% unless network.members.empty? %>
-						<div class="desc" style="margin-top: 1em;">
+						<div class="desc" style="margin-top: 0.6em;">
 							<p style="font-size: 85%;"><b>Members (<%= network.members.length %>):</b></p>
 							<div style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40 } %></div>
 						</div>
 					<% end %>
+					
+					<% unless (tags = network.tags).empty? %>
+						<p style="font-size: 85%;"><b>Tags:</b></p>
+						<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
+				  <% else %>
+						<p style="font-size: 85%;"><i>This Workflow has no tags!</i></p>
+				  <% end %>	
 				</td>
 				<td class="actions">
 					<%= icon "show", network_path(network), nil, nil, "View" %> 

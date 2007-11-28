@@ -82,10 +82,10 @@
 		  </p>
 		  
 		  <% unless (tags = workflow.tags).empty? %>
-			<p style="font-size: 85%;"><b>Tags:</b></p>
-			<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
+				<p style="font-size: 85%;"><b>Tags:</b></p>
+				<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
 		  <% else %>
-			<p style="font-size: 85%;"><i>This Workflow has no tags!</i></p>
+				<p style="font-size: 85%;"><i>This Workflow has no tags!</i></p>
 		  <% end %>	
 	    </td>
 	    <td class="actions" style="width: 85px;">
