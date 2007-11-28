@@ -20,20 +20,20 @@
 
 <div id="tags">
 	<% unless (tags = taggable.tags).empty? %>
-		<p style="text-align: center; margin: 0.4em 0 0.6em 0; border-bottom: 0px solid #999999; padding-bottom: 0;">
+		<p style="text-align: center; margin: 0.5em 0 0.8em 0; padding-bottom: 0;">
 			<a id="tagsSelectAllLink" 
 			   class="tagsSelectorOn" 
 			   href="" 
 			   onclick="showAllTags(); return false;">
-			   All Tags</a>
+			   All Tags
+			 </a>
 
-			<% if (logged_in? and mine?(taggable)) then tagLink2Text = "My" else tagLink2Text = "Uploader's" end; tagLink2Text += " Tags" -%>
-			
 			<a id="tagsSelectUserLink" 
 			   class="tagsSelectorOff" 
 			   href="" 
 			   onclick="showUsersTags(); return false;">
-			   <%= tagLink2Text %></a>
+			   <%= if (logged_in? and mine?(taggable)) then "My" else owner_text(taggable) end %> Tags
+			 </a>
 		</p>
 		<div id="all_tags">
 			<% unless (tags = taggable.tags).empty? %>

@@ -135,7 +135,7 @@
   <%= render :partial => "contributions/tabs", :locals => { :collection => @user.contributions } %>
 <% end %>
 
-<% unless (tags = tags_for_user(@user.id)).empty? %>
+<% unless (tags = @user.tags).empty? %>
   <div id="user_tags" class="tabContainer">
     <div class="tabTitle">
     	<%= (logged_in? and mine? @user) ? "My Tags" : "User's Tags" %>

@@ -120,7 +120,7 @@ class BlobsController < ApplicationController
     respond_to do |format|
       if @blob.save
         if params[:blob][:tag_list]
-          @blob.user_id = current_user
+          @blob.tags_user_id = current_user
           @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
           @blob.update_tags
         end
@@ -204,7 +204,7 @@ class BlobsController < ApplicationController
     @blob.comments << comment
     
     respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @blob, :add_url => comment_blob_path(@blob) } }
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @blob } }
       format.xml { render :xml => @blob.comments.to_xml }
     end
   end
@@ -221,7 +221,7 @@ class BlobsController < ApplicationController
     end
     
     respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @blob, :add_url => comment_blob_path(@blob) } }
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @blob } }
       format.xml { render :xml => @blob.comments.to_xml }
     end
   end
@@ -246,12 +246,12 @@ class BlobsController < ApplicationController
   # POST /blobs/1;tag
   # POST /blobs/1.xml;tag
   def tag
-    @blob.user_id = current_user # acts_as_taggable_redux
+    @blob.tags_user_id = current_user # acts_as_taggable_redux
     @blob.tag_list = "#{@blob.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @blob.update_tags # hack to get around acts_as_versioned
     
     respond_to do |format|
-      format.html { render :partial => "contributions/tags_box_inner", :locals => { :contributable => @blob } }
+      format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @blob, :owner_id => @blob.contributor_id } }
       format.xml { render :xml => @blob.tags.to_xml }
     end
   end

@@ -28,6 +28,9 @@ class Network < ActiveRecord::Base
   acts_as_contributor
   acts_as_creditor
   
+  acts_as_commentable
+  acts_as_taggable
+  
   has_many :blobs, :as => :contributor
   has_many :blogs, :as => :contributor
   has_many :forums, :as => :contributor

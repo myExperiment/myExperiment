@@ -1,11 +1,18 @@
+<%= javascript_include_tag "osp.js" %>
+
 <h1>Edit Group</h1>
 
 <%= error_messages_for :network %>
 
 <% form_for(:network, :url => network_path(@network), :html => { :method => :put }) do |f| %>
   <%= render :partial => "networks/form", :object => f %>
+	
+	<br/>
+	
+	<!-- Tags -->
+  <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @network } %>
 
-  <p>
+  <p style="text-align: center;">
     <%= submit_tag "Update", :disable_with => "Updating..." %>
   </p>
 <% end %>

@@ -65,6 +65,23 @@ module ApplicationHelper
     end
   end
   
+  def owner_text(thing)
+    return '' if thing.nil?
+    
+    case thing.class.to_s
+    when "Workflow"
+      return "Uploader"
+    when "Blob"
+      return "Uploader"
+    when "Network"
+      return "Admin"
+    when "Profile"
+      return "User"
+    else
+      return ''
+    end
+  end
+  
   def datetime(old_dt, long=true)
     return nil unless old_dt
     
@@ -663,7 +680,7 @@ module ApplicationHelper
   
   def tags_for_type(type, limit=-1)
     
-    return nil unless ["Workflow", "Blob"].include?(type)
+    return [] unless ["workflow", "blob", "network"].include?(type.downcase)
     
     taggings = Tagging.find(:all, :conditions => ["taggable_type = ?", type])
     tags = []
@@ -682,14 +699,6 @@ module ApplicationHelper
       tags = tags.first(limit)
     end
     
-    return tags
-  end
-  
-  def tags_for_user(user_id)
-    tags = (Tagging.find_all_by_user_id(user_id).map do |tagging| tagging.tag end).uniq
-    tags = tags.sort { |a, b|
-      a.name.downcase <=> b.name.downcase
-    }
     return tags
   end
 

@@ -13,36 +13,41 @@
   </ul>
 <% end %>
 
-<p>
-  <b>Title:</b>
-  <%=h @network.title %>
-</p>
+<div class="contribution_left_box">
+	
+	<% unless @network.description.nil? or @network.description.empty? %>
+		<div class="box_simple" style="margin: 0 0 0.4em 0;">
+		  <%= white_list @network.description_html %>
+		</div>
+	<% else %>
+		<p><i>No description</i></p>
+	<% end %>
+	
+	<p>
+	  <b>Created at:</b>
+	  <%=datetime @network.created_at %>
+	</p>
+	
+	<% unless @network.unique_name.nil? or @network.unique_name.empty? %>
+		<p>
+		  <b>Unique name:</b>
+		  <%=h @network.unique_name %>
+		</p>
+	<% end %>
+	
+</div>
 
-<p>
-  <b>Description:</b>
-  <%= white_list @network.description_html %>
-</p>
+<div class="contribution_right_box">
+	<%= render :partial => "owner_box", :locals => { :network => @network } %>
+	<%= render :partial => "statistics_box", :locals => { :network => @network } %>
+	<%= render :partial => "tags/tags_box", :locals => { :taggable => @network,
+																											 :owner_id => (@network.user_id),  
+																											 :add_path => tag_network_path(@network), 
+																											 :edit_path => edit_network_path(@network),
+																											 :allow_edit => logged_in? ? @network.user_id == current_user.id : false } %>
+</div>
 
-<p>
-  <b>Administrator:</b><br />
-  <%= render :partial => "users/avatar", :locals => { :user => @network.owner } %>
-</p>
-
-<p>
-  <b>Unique:</b>
-  <%=h @network.unique_name %>
-</p>
-
-<p>
-  <b>Created at:</b>
-  <%=datetime @network.created_at %>
-</p>
-
-<p>
-  <b>Updated at:</b>
-  <%=datetime @network.updated_at %>
-</p>
-
+<div class="clearer">&nbsp;</div>
 
 <br/>
 
@@ -111,3 +116,11 @@
 <% unless @network.contributions.empty? %>
   <%= render :partial => "contributions/tabs", :locals => { :collection => @network.contributions } %>
 <% end %>
+
+<br/>
+
+<a name="comments"></a>
+<h2>Comments (<%= @network.comments.length %>)</h2>
+<div id="commentsBox" class="commentsBox">
+	<%= render :partial => "comments/comments", :locals => { :commentable => @network } %>
+</div>

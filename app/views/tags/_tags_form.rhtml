@@ -57,18 +57,18 @@ document.onkeypress = handleEnter;
 		  	</p>
 	    </div>
 
-	    <% unless (tags = tags_for_user(current_user.id)).empty? %>
-		    <div class="box_simple" style="font-size: 93%; text-align: left; margin-top: 1em;">
-		      <p>Add from your existing tags in myExperiment (click on tag to add):</p>                            
-		      <div style="padding: 0 1em;">
-			    <% unless tags.empty? %>
-						<% tags.each do |t| %>
-				  			<a href="" onclick="javascript:addTag('<%= t.name %>'); return false;"><%= t.name %></a><span style="color: #999999;"> | </span> 
-						<% end %>
+	    <div class="box_simple" style="font-size: 93%; text-align: left; margin-top: 1em;">
+	      <p>Add from your existing tags in myExperiment (click on tag to add):</p>                            
+	      <div style="padding: 0 1em;">
+		    <% unless (tags = current_user.tags.sort {|a,b| a.name <=> b.name }).empty? %>
+					<% tags.each do |t| %>
+			  			<a href="" onclick="javascript:addTag('<%= t.name %>'); return false;"><%= t.name %></a><span style="color: #999999;"> | </span> 
 					<% end %>
-		  		</div>
-	    	</div>
-	  	<% end %>
+				<% else %>
+					<p><i>You have not tagged anything yet</i></p>
+				<% end %>
+	  		</div>
+    	</div>
 		
 		</div>
   </div>
@@ -76,7 +76,7 @@ document.onkeypress = handleEnter;
 
 <% if edit %>
   <script>
-    <% taggable.tags.each do |t| %>
+    <% taggable.tags.sort{|a,b| a.name <=> b.name}.each do |t| %>
       tags.push(<%= "\"#{t.to_s.gsub(/\"/, '\\\"')}\"" %>);
     <% end %>
     updateTagList();

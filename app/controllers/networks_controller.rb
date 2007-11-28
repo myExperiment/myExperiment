@@ -25,7 +25,7 @@ class NetworksController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :search, :all]
   
   before_filter :find_networks, :only => [:index, :all]
-  before_filter :find_network, :only => [:membership_request, :show]
+  before_filter :find_network, :only => [:membership_request, :show, :comment, :comment_delete, :tag]
   before_filter :find_network_auth, :only => [:membership_invite, :edit, :update, :destroy]
   
   # GET /networks;search
@@ -114,6 +114,11 @@ class NetworksController < ApplicationController
 
     respond_to do |format|
       if @network.save
+        if params[:network][:tag_list]
+          @network.tags_user_id = current_user
+          @network.tag_list = convert_tags_to_gem_format params[:network][:tag_list]
+          @network.update_tags
+        end
         flash[:notice] = 'Group was successfully created.'
         format.html { redirect_to network_url(@network) }
         format.xml  { head :created, :location => network_url(@network) }
@@ -129,6 +134,7 @@ class NetworksController < ApplicationController
   def update
     respond_to do |format|
       if @network.update_attributes(params[:network])
+        refresh_tags(@network, params[:network][:tag_list], current_user) if params[:network][:tag_list]
         flash[:notice] = 'Network was successfully updated.'
         format.html { redirect_to network_url(@network) }
         format.xml  { head :ok }
@@ -147,6 +153,48 @@ class NetworksController < ApplicationController
     respond_to do |format|
       format.html { redirect_to networks_url }
       format.xml  { head :ok }
+    end
+  end
+  
+  # POST /networks/1;comment
+  # POST /networks/1.xml;comment
+  def comment
+    comment = Comment.create(:user => current_user, :comment => (ae_some_html params[:comment]))
+    @network.comments << comment
+    
+    respond_to do |format|
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @network } }
+      format.xml { render :xml => @network.comments.to_xml }
+    end
+  end
+  
+  # DELETE /networks/1;comment_delete
+  # DELETE /networks/1.xml;comment_delete
+  def comment_delete
+    if params[:comment_id]
+      comment = Comment.find(params[:comment_id].to_i)
+      # security checks:
+      if comment.user_id == current_user.id and comment.commentable_type.downcase == 'network' and comment.commentable_id == @network.id
+        comment.destroy
+      end
+    end
+    
+    respond_to do |format|
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @network } }
+      format.xml { render :xml => @network.comments.to_xml }
+    end
+  end
+  
+  # POST /networks/1;tag
+  # POST /networks/1.xml;tag
+  def tag
+    @network.tags_user_id = current_user
+    @network.tag_list = "#{@network.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
+    @network.update_tags # hack to get around acts_as_versioned
+    
+    respond_to do |format|
+      format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @network, :owner_id => @network.user_id } }
+      format.xml { render :xml => @workflow.tags.to_xml }
     end
   end
   
@@ -172,7 +220,7 @@ protected
       @network = Network.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       error("Network not found", "is invalid (not owner)")
-    end
+    end 
   end
 
   def find_network_auth

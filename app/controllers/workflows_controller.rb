@@ -65,7 +65,7 @@ class WorkflowsController < ApplicationController
     @workflow.comments << comment
     
     respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow, :add_url => comment_workflow_path(@workflow) } }
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow } }
       format.xml { render :xml => @workflow.comments.to_xml }
     end
   end
@@ -82,7 +82,7 @@ class WorkflowsController < ApplicationController
     end
     
     respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow, :add_url => comment_workflow_path(@workflow) } }
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow } }
       format.xml { render :xml => @workflow.comments.to_xml }
     end
   end
@@ -107,12 +107,12 @@ class WorkflowsController < ApplicationController
   # POST /workflows/1;tag
   # POST /workflows/1.xml;tag
   def tag
-    @workflow.user_id = current_user # acts_as_taggable_redux
+    @workflow.tags_user_id = current_user # acts_as_taggable_redux
     @workflow.tag_list = "#{@workflow.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @workflow.update_tags # hack to get around acts_as_versioned
     
     respond_to do |format|
-      format.html { render :partial => "contributions/tags_box_inner", :locals => { :contributable => @workflow } }
+      format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @workflow, :owner_id => @workflow.contributor_id } }
       format.xml { render :xml => @workflow.tags.to_xml }
     end
   end
@@ -208,7 +208,7 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       if @workflow.save
         if params[:workflow][:tag_list]
-          @workflow.user_id = current_user
+          @workflow.tags_user_id = current_user
           @workflow.tag_list = convert_tags_to_gem_format params[:workflow][:tag_list]
           @workflow.update_tags
         end

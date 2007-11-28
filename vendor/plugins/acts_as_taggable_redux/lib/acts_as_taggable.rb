@@ -60,7 +60,7 @@ module ActiveRecord
           end
         end
         
-        def user_id=(new_user_id)
+        def tags_user_id=(new_user_id)
           @new_user_id = User.find(new_user_id).id
         end
         

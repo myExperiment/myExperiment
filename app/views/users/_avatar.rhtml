@@ -1,4 +1,5 @@
 <% size ||= 100 -%>
+<% if user.kind_of? Fixnum then user = User.find(user) end -%>
 <div style="text-align:center; width: <%= size+6 %>px; line-height: 1.2em; padding: 0.2em 0;">
 	<%= avatar(user, size) %>
 	<span style="display:block;margin-top:2px;text-align:center;">

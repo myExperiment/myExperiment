@@ -102,5 +102,5 @@
 <a name="comments"></a>
 <h2>Comments (<%= @blob.comments.length %>)</h2>
 <div id="commentsBox" class="commentsBox">
-	<%= render :partial => "comments/comments", :locals => { :commentable => @blob, :add_url => comment_blob_path(@blob) } %>
+	<%= render :partial => "comments/comments", :locals => { :commentable => @blob } %>
 </div>
