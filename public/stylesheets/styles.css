@@ -768,10 +768,11 @@ table.contributable:hover {
 }
 
 .contribution_description {
-	padding: 0.2em 0;
-	line-height: 1.5em;
 	text-align: left;
-	margin-bottom: 0em;
+	padding: 0.8em;
+	margin: 0.6em 0.8em;
+	border: 1px dotted #999999;
+	background-color: #FFFFCC;
 }
 
 .contribution_right_box {

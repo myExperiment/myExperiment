@@ -54,14 +54,26 @@
 		</table>
 	</div>
 	<div class="contribution_version_box">		
+		<div class="box_simple" style="font-size: 85%; padding: 0.4em; margin-bottom: 0.6em; line-height: 1.2em; color: #333333;">
+			<p>
+				<b>Version created on:</b>
+				<%= datetime @viewing_version.updated_at %>
+			</p>
+			
+			<% unless @viewing_version.revision_comments.nil? or @viewing_version.revision_comments.empty? %>
+				<p>
+					<b>Revision comments:</b>
+				</p>
+				<div>
+					<%= @viewing_version.revision_comments %>
+				</div>
+			<% end %>
+			
+		</div>
+		
 		<p>
 			<b>Title:</b>
 			<%=h @viewing_version.title %>
-		</p>
-		
-		<p>
-			<b>Version created on:</b>
-			<%= datetime @viewing_version.updated_at %>
 		</p>
 		
 		<% unless @viewing_version.image.nil? %>
@@ -77,7 +89,6 @@
 		
 		<% if @viewing_version.body and @viewing_version.body.length > 0 %>
 			<div class="contribution_description">
-				<b>Description:</b><br/>
 				<%= white_list @viewing_version.body_html %>
 			</div>
 		<% end %>
@@ -141,50 +152,6 @@
 		<% end %>
 	</div>
 	
-	<!-- Begin tabs -->
-	
-	<br/>
-	<br/>
-
-	<div id="tabsContainer" class="tabsContainer"></div>
-	
-	<%= render :partial => "contributions/citations_tab", :locals => { :item => @workflow } %>
-	
-	<% if logged_in? and @workflow.authorized?("destroy", current_user) %>
-	  <div class="tabContainer">
-	    <div class="tabTitle">Permissions</div>
-	    <div class="tabContent">
-	
-	      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @workflow } %>
-	      <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @workflow } %>
-		  
-		  <% if @workflow.authorized?("edit", current_user) %>
-			  <ul class="sectionIcons">
-			  	<li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit')%></li>
-			  </ul>
-		  <% end %>
-	
-	    </div>
-	  </div>
-	<% end %>
-	
-	<div class="tabContainer">
-	  <div class="tabTitle">Versions History</div>
-	  <div class="tabContent">
-	      <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
-	  </div>
-	</div>
-	
-	<% if logged_in? and @workflow.owner? current_user %>
-	  <div class="tabContainer">
-	    <div class="tabTitle">Viewing History</div>
-	    <div class="tabContent">
-	      <%= render :partial => "contributions/history", :object => @workflow.contribution %>
-	    </div>
-	  </div>
-	<% end %>
-	
-	<!-- End tabs -->
 </div>
 
 <div class="contribution_right_box">
@@ -218,6 +185,51 @@
 </div>
 
 <div class="clearer">&nbsp;</div>
+
+<!-- Begin tabs -->
+	
+<br/>
+<br/>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+
+<%= render :partial => "contributions/citations_tab", :locals => { :item => @workflow } %>
+
+<% if logged_in? and @workflow.authorized?("destroy", current_user) %>
+  <div class="tabContainer">
+    <div class="tabTitle">Permissions</div>
+    <div class="tabContent">
+
+      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @workflow } %>
+      <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @workflow } %>
+	  
+	  <% if @workflow.authorized?("edit", current_user) %>
+		  <ul class="sectionIcons">
+		  	<li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit')%></li>
+		  </ul>
+	  <% end %>
+
+    </div>
+  </div>
+<% end %>
+
+<div class="tabContainer">
+  <div class="tabTitle">Versions History</div>
+  <div class="tabContent">
+      <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
+  </div>
+</div>
+
+<% if logged_in? and @workflow.owner? current_user %>
+  <div class="tabContainer">
+    <div class="tabTitle">Viewing History</div>
+    <div class="tabContent">
+      <%= render :partial => "contributions/history", :object => @workflow.contribution %>
+    </div>
+  </div>
+<% end %>
+
+<!-- End tabs -->
 
 <br/>
 

@@ -278,7 +278,7 @@ module ApplicationHelper
     return nil unless url
     
     if long_description
-      return "#{link_to "[#{ver.version}]", url} - #{link_to "#{h(ver.title)}", url} by #{contributor(workflow.contributor_id, workflow.contributor_type)} (#{datetime(ver.updated_at, false)})"
+      return "#{link_to "[#{ver.version}]", url} - #{link_to "#{h(ver.title)}", url}"
     else
       return link_to("#{h(ver.title)} [#{ver.version}]", url)
     end
