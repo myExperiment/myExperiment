@@ -55,6 +55,6 @@ class Profile < ActiveRecord::Base
   end
   
   def location
-    return (location_city unless location_city.nil? or location_city.empty?) + ((", " + location_country) unless location_country.nil? or location_country.empty?)
+    return [location_city, location_country].to_sentence(:connector => "/")
   end
 end

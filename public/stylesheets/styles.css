@@ -327,9 +327,9 @@ fieldset {
 	border: solid 1px Gray;
 	color: #000000;
 	background-color: #FFFF66;
-	font-size: 108%;
+	font-size: 93%;
 	font-weight: normal;
-	padding: 0.4em 0.6em;
+	padding: 0.3em 0.6em;
 	max-width: 500px;
 	text-align: left;
 }
@@ -345,7 +345,7 @@ fieldset {
 	color: #333333;
 	padding: 0.4em;
 	background-color: #ebf3ff;
-	font-size: 108%;
+	font-size: 93%;
 	text-align: left;
 	max-width: 400px;
 	text-align: left;

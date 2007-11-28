@@ -1,8 +1,14 @@
 <% if logged_in? %> 
 	<% if mine? @user %>
-		<h1><%= flag_icon(@user.profile.nil? ? nil : @user.profile.location_country) %>&nbsp;&nbsp;My Profile</h1>
+		<h1>
+			<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
+			My Profile
+		</h1>
 	<% else %>
-		<h1><%= flag_icon(@user.profile.nil? ? nil : @user.profile.location_country) %>&nbsp;&nbsp;User Profile: <%=h @user.name %><%= friend_badge(@user) %></h1>
+		<h1>
+			<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
+			User Profile: <%=h @user.name %><%= friend_badge(@user) %>
+		</h1>
 	<% end %>
 <% else %>
 	<h1>User: <%=h @user.name %><%= friend_badge(@user) %></h1>

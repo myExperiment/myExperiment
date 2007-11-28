@@ -3,7 +3,7 @@
 	<%= avatar(user, size) %>
 	<span style="display:block;margin-top:2px;text-align:center;">
 		<% if size > 59 %>
-			<%= flag_icon(user.profile.nil? ? nil : user.profile.location_country) %>&nbsp;
+			<%= if user.profile then flag_icon(user.profile.location_country, user.profile.location) end %>
 		<% end %>
 		<%= name user %>
 	</span>

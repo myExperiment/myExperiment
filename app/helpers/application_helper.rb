@@ -867,10 +867,10 @@ module ApplicationHelper
     return "<p style=\"font-size: 85%; color: #333333; text-align:#{align}\">Note: some HTML is allowed: &lt;p&gt;, &lt;a&gt;, &lt;b&gt;, &lt;blockquote&gt;, &lt;em&gt;, &lt;i&gt;, &lt;strong&gt; and &lt;u&gt;.</p>"    
   end
   
-  def flag_icon(country)
-    return nil if country.nil?
+  def flag_icon(country, text=country, margin_right='0.3em')
+    return '' if country.nil?
     
-    code = nil
+    code = ''
     
     if country.length > 2
       code = CountryCodes.code(country)
@@ -880,10 +880,10 @@ module ApplicationHelper
     
     #puts "code = " + code
     
-    if code
+    unless code.empty?
       return image_tag("famfamfam_flags/#{code}.png",
-              :title => "header=[] body=[#{country}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
-              :style => "vertical-align:middle;")
+              :title => "header=[] body=[#{text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
+              :style => "vertical-align:middle; margin-right: #{margin_right};")
     else
       return ''
     end
