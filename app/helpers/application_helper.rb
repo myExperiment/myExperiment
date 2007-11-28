@@ -877,11 +877,15 @@ module ApplicationHelper
   end
   
   def flag_icon(country, text=country, margin_right='0.3em')
-    return '' if country.nil?
+    return '' if country.nil? or country.empty?
     
     code = ''
     
-    if country.length > 2
+    if country.downcase == "great britain"
+      code = "gb"
+    elsif ["england", "wales", "scotland"].include?(country.downcase)
+      code = country
+    elsif country.length > 2
       code = CountryCodes.code(country)
     else
       code = country if CountryCodes.valid_code?(country)
@@ -890,7 +894,7 @@ module ApplicationHelper
     #puts "code = " + code
     
     unless code.nil? or code.empty?
-      return image_tag("famfamfam_flags/#{code}.png",
+      return image_tag("famfamfam_flags/#{code.downcase}.png",
               :title => "header=[] body=[<b>Location: </b>#{text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
               :style => "vertical-align:middle; margin-right: #{margin_right};")
     else
