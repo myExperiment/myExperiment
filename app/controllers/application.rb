@@ -41,6 +41,7 @@ class ApplicationController < ActionController::Base
   session :session_key => '_m2_session_id'
   
   # Safe HTML - http://www.anyexample.com/webdev/rails/how_to_allow_some_safe_html_in_rails_projects.xml
+  # Note: should only be used for text that doesn't need updating later.
   def ae_some_html(s)
     # converting newlines
     s.gsub!(/\r\n?/, "\n")

@@ -68,11 +68,6 @@ class ProfilesController < ApplicationController
   # POST /profiles
   # POST /profiles.xml
   def create
-    # Cleanup certain data (ie: the ones that allow html but aren't white listed)
-    params[:profile][:organisations] = ae_some_html(params[:profile][:organisations]) if params[:profile][:organisations]
-    params[:profile][:contact_details] = ae_some_html(params[:profile][:contact_details]) if params[:profile][:contact_details]
-    params[:profile][:interests] = ae_some_html(params[:profile][:interests]) if params[:profile][:interests]
-    
     if (@profile = Profile.new(params[:profile]) unless current_user.profile)
       # set legal value for "null avatar"
       (@profile.picture_id = nil) if (@profile.picture_id.to_i == 0)
@@ -98,11 +93,6 @@ class ProfilesController < ApplicationController
   # PUT /profiles/1
   # PUT /profiles/1.xml
   def update
-    # Cleanup certain data (ie: the ones that allow html but aren't white listed)
-    params[:profile][:organisations] = ae_some_html(params[:profile][:organisations]) if params[:profile][:organisations]
-    params[:profile][:contact_details] = ae_some_html(params[:profile][:contact_details]) if params[:profile][:contact_details]
-    params[:profile][:interests] = ae_some_html(params[:profile][:interests]) if params[:profile][:interests]
-    
     # maintain legal value for "null avatar"
     (params[:profile][:picture_id] = nil) if (params[:profile][:picture_id].to_i == 0)
     
@@ -179,7 +169,7 @@ protected
   end
   
 private
-  
+
   def error(notice, message, attr=:id)
     flash[:notice] = notice
     (err = Profile.new.errors).add(attr, message)

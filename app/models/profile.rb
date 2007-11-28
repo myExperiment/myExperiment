@@ -55,6 +55,13 @@ class Profile < ActiveRecord::Base
   end
   
   def location
-    return [location_city, location_country].to_sentence(:connector => "/")
+    if (location_city.nil? or location_city.empty?) and (location_country.nil? or location_country.empty?)
+      return nil
+    elsif (location_city.nil? or location_city.empty?) or (location_country.nil? or location_country.empty?)
+      return location_city unless location_city.nil? or location_city.empty?
+      return location_country unless location_country.nil? or location_country.empty?
+    else
+      return "#{location_city}, #{location_country}"
+    end
   end
 end

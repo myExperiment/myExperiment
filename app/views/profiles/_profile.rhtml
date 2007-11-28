@@ -22,7 +22,7 @@
   <p>
   	<b>Other contact details:</b>
 	</p>
-  <%= profile.contact_details %>
+  <%= simple_format(sanitize(profile.contact_details)) %>
 <% end %>
 
 <% unless profile.field_or_industry.nil? or profile.field_or_industry.empty? %>
@@ -43,7 +43,7 @@
   <p>
   	<b>Organisation(s):</b>
 	</p>
-  <%= profile.organisations %>
+  <%= simple_format(sanitize(profile.organisations)) %>
 <% end %>
 
 <% unless profile.location.nil? or profile.location.empty? %>
@@ -57,6 +57,6 @@
   <p>
   	<b>Interests:</b>
 	</p>
-  <%= profile.interests %>
+  <%= simple_format(sanitize(profile.interests)) %>
 <% end %>
 
