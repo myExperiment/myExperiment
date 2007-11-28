@@ -889,7 +889,7 @@ module ApplicationHelper
     
     #puts "code = " + code
     
-    unless code.empty?
+    unless code.nil? or code.empty?
       return image_tag("famfamfam_flags/#{code}.png",
               :title => "header=[] body=[<b>Location: </b>#{text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
               :style => "vertical-align:middle; margin-right: #{margin_right};")
