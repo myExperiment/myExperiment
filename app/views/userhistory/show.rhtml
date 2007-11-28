@@ -2,14 +2,19 @@
 
 	<h1>My History</h1>
 
-	<% tags = @user.taggings.collect -%>
+	<% tags = @user.taggings -%>
 	<div class="fold">
 		<div class="foldTitle">Tags by You (<%= tags.length %>)</div>
 		<div class="foldContent" style="display: none;">
 			<% unless tags.empty? %>
 				<ul>
 					<% tags.each do |t| %>
-						<li><%= datetime t.created_at, false %> - <%= link_to_tag t.tag %> for <%= contributable(t.taggable_id, t.taggable_type) %><br/><br/></li>
+						<li>
+							<%= datetime t.created_at, false %> - <%= link_to_tag t.tag %>
+							for <%= visible_name t.taggable %>: 
+							<%= t.taggable_type == 'Network' ? title(t.taggable_id) : contributable(t.taggable_id, t.taggable_type) %>
+							<br/><br/>
+						</li>
 					<% end %>
 				</ul>
 			<% else %>
@@ -18,7 +23,7 @@
 		</div>
 	</div>
 	
-	<% comments = @user.comments.collect -%>
+	<% comments = @user.comments -%>
 	<div class="fold">
 		<div class="foldTitle">Comments by You (<%= comments.length %>)</div>
 		<div class="foldContent" style="display: none;">  
@@ -26,10 +31,12 @@
 				<ul>
 					<% comments.each do |c| %>
 						<li>
-							<%= datetime c.created_at, false %> -
-							<br/><br/>
-							<div class="box_standout" style="background-color: #FFFFCC;"><%= truncate(c.comment, 300) %></div>
-							for <%= contributable(c.commentable_id, c.commentable_type) %>
+							<%= datetime c.created_at, false %> - for <%= visible_name c.commentable %>: 
+							<%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %>
+							<div class="box_standout" style="background-color: #FFFFCC; margin: 0.5em 0;">
+								<%= truncate(c.comment, 300) %>
+							</div>
+							
 							<br/><br/>
 						</li>
 					<% end %>
@@ -40,14 +47,14 @@
 		</div>
 	</div>
 	
-	<% ratings = @user.ratings.collect -%>
+	<% ratings = @user.ratings -%>
 	<div class="fold">
 		<div class="foldTitle">Ratings by You (<%= ratings.length %>)</div>
 		<div class="foldContent" style="display: none;">  
 			<% unless ratings.empty? %>
 				<ul>
 					<% ratings.each do |r| %>
-						<li><%= datetime r.created_at, false %> - <%= r.rating.to_s %>/5 for <%= contributable(r.rateable_id, r.rateable_type) %><br/><br/></li>
+						<li><%= datetime r.created_at, false %> - <%= r.rating.to_s %>/5 for <%= visible_name r.rateable %>: <%= contributable(r.rateable_id, r.rateable_type) %><br/><br/></li>
 					<% end %>
 				</ul>
 			<% else %>
