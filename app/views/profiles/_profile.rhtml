@@ -25,6 +25,13 @@
   <%= simple_format(sanitize(profile.contact_details)) %>
 <% end %>
 
+<% unless profile.location.nil? or profile.location.empty? %>
+  <p>
+  	<b>Location:</b>
+    <%= h profile.location %>
+  </p>
+<% end %>
+
 <% unless profile.field_or_industry.nil? or profile.field_or_industry.empty? %>
   <p>
   	<b>Field/Industry:</b>
@@ -44,13 +51,6 @@
   	<b>Organisation(s):</b>
 	</p>
   <%= simple_format(sanitize(profile.organisations)) %>
-<% end %>
-
-<% unless profile.location.nil? or profile.location.empty? %>
-  <p>
-  	<b>Location:</b>
-    <%= h profile.location %>
-  </p>
 <% end %>
 
 <% unless profile.interests.nil? or profile.interests.empty? %>

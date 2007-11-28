@@ -20,72 +20,161 @@
 	    	<li><%= icon('friendship', new_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
 	  	<% end %>
 	  	<% unless mine? @user %>
-			<li><%= icon("message", new_message_path(:user_id => @user.id), nil, nil, "Send Message") %></li>
-		<% end %>
+				<li><%= icon("message", new_message_path(:user_id => @user.id), nil, nil, "Send Message") %></li>
+			<% end %>
 	    <% if mine? @user %>
-	      <li><%= icon('manage', edit_user_path(@user), nil, nil, 'Manage Account') %></li>
-	      <% unless @user.profile.nil? %><li><%= icon('edit', edit_profile_path(@user.profile), nil, nil, 'Edit Profile') %></li><% end %>
-		  <li><%= icon("pictures", pictures_path(@user), nil, nil, "Profile Pictures") %></li>
-	      <li><%= icon('avatar', new_picture_path(@user), nil, nil, 'Upload New Profile Pic')%></li>
-		  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
+	    	<li><%= icon('manage', edit_user_path(@user), nil, nil, 'Manage Account') %></li>
+		    <% unless @user.profile.nil? %>
+					<li><%= icon('edit', edit_profile_path(@user.profile), nil, nil, 'Edit Profile') %></li>
+				<% end %>
+			  <li><%= icon("pictures", pictures_path(@user), nil, nil, "Profile Pictures") %></li>
+		    <li><%= icon('avatar', new_picture_path(@user), nil, nil, 'Upload New Profile Pic')%></li>
+			  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
 	    <% end %>
 	</ul>
 <% end %>
 
-<table width="100%">
-  <tr>
-    <% if @user.profile %>
-      <td style="padding: 0 0.8em; vertical-align: top;">
-        <%= avatar @user, 200 %>
-      </td>
-    <% end %>
-    <td class="details" style="vertical-align: top;">
-      <p>
-        <b>Name:</b>
-        <%=h @user.name %>
-      </p>
-			
-			<% if logged_in? and mine? @user %>
-	      <p>
-	        <b>Openid url:</b>
-	        <% if @user.openid_url %>
-	          <%=openid @user %>
-	        <% else %>
-	          <%= link_to 'Add an OpenID to this account [optional]', new_openid_path %>
-						<small>(what is <%= link_to 'OpenID', "http://en.wikipedia.org/wiki/OpenID" %>?)</small>
-	        <% end %>
-	      </p>
-			<% end %>
-
-			<% if logged_in? and mine? @user %>
-	      <p>
-	        <b>Username:</b>
-	        <% if @user.username %>
-	          <%=h @user.username %>
-	        <% else %>
-	          <%= link_to 'Register a username and password for this account [optional]', edit_user_path(@user) %>
-	        <% end %>
-	      </p>
-			<% end %>
-
-      <p>
-        <b>Joined:</b>
-        <%=datetime @user.created_at %>
-      </p>
-      
-      <% unless @user.profile.nil? %>
-        <%= render :partial => "profiles/profile", :locals => { :profile => @user.profile } %>
-      <% end %>
-
-      <% if false %>
-      <p>
-        <b>Last seen:</b>
-        <%=datetime @user.last_seen_at %>
-      </p>
-      <% end %>
+<div style="float: left; padding: 0 0.6em;">
+	<% if @user.profile %>
+    <td style=" vertical-align: top;">
+      <%= avatar @user, 120 %>
     </td>
-  </tr>
-</table>
+  <% end %>
+</div>
+
+<div style="float: left; padding: 0 0.6em;">
+	<p>
+    <b>Name:</b>
+    <%=h @user.name %>
+  </p>
+	
+	<% if logged_in? and mine? @user %>
+    <p>
+      <b>Openid url:</b>
+      <% if @user.openid_url %>
+        <%=openid @user %>
+      <% else %>
+        <%= link_to 'Add an OpenID to this account [optional]', new_openid_path %>
+				<small>(what is <%= link_to 'OpenID', "http://en.wikipedia.org/wiki/OpenID" %>?)</small>
+      <% end %>
+    </p>
+	<% end %>
+
+	<% if logged_in? and mine? @user %>
+    <p>
+      <b>Username:</b>
+      <% if @user.username %>
+        <%=h @user.username %>
+      <% else %>
+        <%= link_to 'Register a username and password for this account [optional]', edit_user_path(@user) %>
+      <% end %>
+    </p>
+	<% end %>
+
+  <p>
+    <b>Joined:</b>
+    <%=datetime @user.created_at %>
+  </p>
+	
+	<% if false %>
+  <p>
+    <b>Last seen:</b>
+    <%=datetime @user.last_seen_at %>
+  </p>
+  <% end %>
+  
+	<% if false %>
+	  <% unless @user.profile.nil? %>
+	    <%= render :partial => "profiles/profile", :locals => { :profile => @user.profile } %>
+	  <% end %>
+	<% end %>
+</div>
+
+<div class="clearer">&nbsp;</div>
+
+<div style="margin: 1em 0.6em;">
+
+	<% unless @user.profile.body.nil? or @user.profile.body.empty? %>
+	  <div class="box_standout">
+	    <%= white_list @user.profile.body_html %>
+	  </div>
+	<% end %>
+	
+	<br/>
+	
+	<div style="float: left; padding: 0 0.6em; width: 37%;">
+	
+		<% unless @user.profile.email.nil? %>
+		  <p>
+		    <b>Email:</b>
+		    <%=mail_to @user.profile.email, h(@user.profile.email), { :replace_at => " [at] " } %>
+		  </p>
+		<% end %>
+		
+		<% unless @user.profile.website.nil? %>
+		  <p>
+		    <b>Website:</b>
+		    <%=link_to h(@user.profile.website), @user.profile.website %>
+		  </p>
+		<% end %>
+		
+		<% unless @user.profile.contact_details.nil? or @user.profile.contact_details.empty? %>
+		  <p>
+		  	<b>Other contact details:</b>
+			</p>
+		  <%= simple_format(sanitize(@user.profile.contact_details)) %>
+		<% end %>
+		
+		<% unless @user.profile.location.nil? or @user.profile.location.empty? %>
+		  <p>
+		  	<b>Location:</b>
+		    <%= h @user.profile.location %>
+		  </p>
+		<% end %>
+	
+	</div>
+	
+	<div style="float: left; padding: 0 0.6em; width: 60%;">
+	
+		<% unless @user.profile.field_or_industry.nil? or @user.profile.field_or_industry.empty? %>
+		  <p>
+		  	<b>Field/Industry:</b>
+		    <%= h @user.profile.field_or_industry %>
+		  </p>
+		<% end %>
+		
+		<% unless @user.profile.occupation_or_roles.nil? or @user.profile.occupation_or_roles.empty? %>
+		  <p>
+		  	<b>Occupation/Role(s):</b>
+		    <%= h @user.profile.occupation_or_roles %>
+		  </p>
+		<% end %>
+		
+		<% unless @user.profile.organisations.nil? or @user.profile.organisations.empty? %>
+		  <p>
+		  	<b>Organisation(s):</b>
+			</p>
+		  <%= simple_format(sanitize(@user.profile.organisations)) %>
+		<% end %>
+		
+		<% unless @user.profile.interests.nil? or @user.profile.interests.empty? %>
+		  <p>
+		  	<b>Interests:</b>
+			</p>
+		  <%= simple_format(sanitize(@user.profile.interests)) %>
+		<% end %>
+	
+	</div>
+	
+	<div class="clearer">&nbsp;</div>
+	
+	<% if mine? @user %>
+		<p style="text-align: right;">
+			<%= link_to "[Edit profile]", edit_profile_path(@user.profile) %>
+		</p>
+	<% end %>
+
+</div>
 
 <br/>
 

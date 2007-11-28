@@ -891,7 +891,7 @@ module ApplicationHelper
     
     unless code.empty?
       return image_tag("famfamfam_flags/#{code}.png",
-              :title => "header=[] body=[#{text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
+              :title => "header=[] body=[<b>Location: </b>#{text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
               :style => "vertical-align:middle; margin-right: #{margin_right};")
     else
       return ''

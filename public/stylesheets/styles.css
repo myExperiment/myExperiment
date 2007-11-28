@@ -702,10 +702,6 @@ table.contributable:hover {
 	
 }
 
-table tr td.details {
-	text-align: left;
-}
-
 .sectionIcons {
 	margin: 0.5em 0 1em 0;
 	*margin: 0.5em 0 2em 0;
@@ -1084,6 +1080,12 @@ div.auto_complete ul strong.highlight {
 .box_simple {
 	padding: 0.8em; 
 	border: 1px dotted #999999;
+}
+
+.box_standout {
+	padding: 0.8em; 
+	border: 1px dotted #999999;
+	background-color: #FFFFCC;
 }
 
 .box_inplace {
