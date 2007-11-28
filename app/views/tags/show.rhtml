@@ -2,4 +2,4 @@
 
 <h2>Items tagged with "<%=h @tag.name %>" (<%= @tagged_with.length %>)</h2>
 
-<%= render :partial => "contributions/table", :locals => { :collection => @tagged_with } %>
+<%= render :partial => "tags/table", :locals => { :collection => @tagged_with } %>

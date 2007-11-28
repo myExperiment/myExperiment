@@ -1,0 +1,10 @@
+<% unless collection.empty? %>
+
+	<% for item in collection %>
+	    <% unless params[:contributable_type] %>
+				<p style="margin-top: 0.5em;"><b><%= visible_name(item) %></b></p>
+			<% end %>
+	    <%= render :partial => "#{item.class.to_s.pluralize.downcase}/table", :locals => {:collection => [item]} %>
+	<% end %>
+
+<% end %>
