@@ -28,7 +28,7 @@
 						<li>
 							<%= datetime c.created_at, false %> -
 							<br/><br/>
-							<div class="box_infotext" style="background-color: #FFFFCC;"><%= truncate(c.comment, 300) %></div>
+							<div class="box_standout" style="background-color: #FFFFCC;"><%= truncate(c.comment, 300) %></div>
 							for <%= contributable(c.commentable_id, c.commentable_type) %>
 							<br/><br/>
 						</li>
