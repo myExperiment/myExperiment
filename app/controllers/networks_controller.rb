@@ -135,7 +135,7 @@ class NetworksController < ApplicationController
     respond_to do |format|
       if @network.update_attributes(params[:network])
         refresh_tags(@network, params[:network][:tag_list], current_user) if params[:network][:tag_list]
-        flash[:notice] = 'Network was successfully updated.'
+        flash[:notice] = 'Group was successfully updated.'
         format.html { redirect_to network_url(@network) }
         format.xml  { head :ok }
       else
