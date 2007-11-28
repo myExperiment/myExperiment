@@ -44,6 +44,21 @@
 <br/>
 <br/>
 
+<h2>Your location</h2>
+
+<p>
+  <b>City:</b><br/>
+  <%= form.text_field :location_city %>
+</p>
+
+<p>
+  <b>Country:</b><br/>
+  <%= form.country_select :location_country, ["United Kingdom"], { :prompt => "- Please select a country -" } %>
+</p>
+
+<br/>
+<br/>
+
 <h2>Your work/professional life</h2>
 
 <p>
@@ -59,21 +74,6 @@
 <p>
   <b>Organisation(s) you belong to:</b><br/>
   <%= form.text_area :organisations, :size => "30x4" %>
-</p>
-
-<br/>
-<br/>
-
-<h2>Your location</h2>
-
-<p>
-  <b>City:</b><br/>
-  <%= form.text_field :location_city %>
-</p>
-
-<p>
-  <b>Country:</b><br/>
-  <%= form.country_select :location_country, ["United Kingdom"], { :prompt => "- Please select a country -" } %>
 </p>
 
 <br/>
