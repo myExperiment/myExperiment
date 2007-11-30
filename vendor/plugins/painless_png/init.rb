@@ -1,1 +1,0 @@
-require 'painless_png'
