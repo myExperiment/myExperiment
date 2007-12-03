@@ -94,7 +94,7 @@
 	<p>
     <b>Email (public):</b>
 		<% unless @user.profile.email.nil? or @user.profile.email.empty? %>
-    	<%=mail_to @user.profile.email, h(@user.profile.email), { :replace_at => " [at] " } %>
+    	<%=mail_to @user.profile.email, nil, {  :encode => "hex", :replace_at => " [at] " } %>
 		<% else %>
 			<%= none_text %>	  
 		<% end %>
