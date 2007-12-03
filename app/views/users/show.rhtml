@@ -1,3 +1,5 @@
+<% none_text = '<font style="font-style:italic;color:#666666;">Not specified</font>' -%>
+
 <% if logged_in? %> 
 	<% if mine? @user %>
 		<h1>
@@ -89,26 +91,32 @@
 	  <% end %>
 	<% end %>
 	
-	<% unless @user.profile.email.nil? or @user.profile.email.empty? %>
-	  <p>
-	    <b>Email:</b>
-	    <%=mail_to @user.profile.email, h(@user.profile.email), { :replace_at => " [at] " } %>
-	  </p>
-	<% end %>
+	<p>
+    <b>Email (public):</b>
+		<% unless @user.profile.email.nil? or @user.profile.email.empty? %>
+    	<%=mail_to @user.profile.email, h(@user.profile.email), { :replace_at => " [at] " } %>
+		<% else %>
+			<%= none_text %>	  
+		<% end %>
+	</p>
 	
-	<% unless @user.profile.website.nil? or @user.profile.website.empty? %>
-	  <p>
-	    <b>Website:</b>
+	<p>
+    <b>Website:</b>
+		<% unless @user.profile.website.nil? or @user.profile.website.empty? %>
 	    <%=link_to h(@user.profile.website), @user.profile.website %>
-	  </p>
-	<% end %>
+	  <% else %>
+			<%= none_text %>
+		<% end %>
+	</p>
 	
-	<% unless @user.profile.location.nil? or @user.profile.location.empty? %>
-	  <p>
-	  	<b>Location:</b>
+	<p>
+  	<b>Location:</b>
+		<% unless @user.profile.location.nil? or @user.profile.location.empty? %>
 	    <%= h @user.profile.location %>
-	  </p>
-	<% end %>
+	  <% else %>
+			<%= none_text %>
+		<% end %>
+	</p>
 	
 </div>
 
@@ -124,45 +132,55 @@
 	
 	<br/>
 	
-	<div style="float: left; width: 45%;">
+	<div style="float: left; width: 41%;">
 	
-		<% unless @user.profile.contact_details.nil? or @user.profile.contact_details.empty? %>
-		  <p>
-		  	<b>Other contact details:</b>
-			</p>
+		<p>
+	  	<b>Other contact details:</b>
+		</p>
+		<% unless @user.profile.contact_details.nil? or @user.profile.contact_details.empty? %>  
 		  <%= simple_format(sanitize(@user.profile.contact_details)) %>
+		<% else %>
+			<%= none_text %>
 		<% end %>
 		
+		<p>
+	  	<b>Interests:</b>
+		</p>
 		<% unless @user.profile.interests.nil? or @user.profile.interests.empty? %>
-		  <p>
-		  	<b>Interests:</b>
-			</p>
 		  <%= simple_format(sanitize(@user.profile.interests)) %>
+		<% else %>
+			<%= none_text %>
 		<% end %>
 	
 	</div>
 	
-	<div style="float: right; width: 46%;">
+	<div style="float: right; width: 51%;">
 	
-		<% unless @user.profile.field_or_industry.nil? or @user.profile.field_or_industry.empty? %>
-		  <p>
-		  	<b>Field/Industry:</b>
+		<p>
+	  	<b>Field/Industry:</b>
+			<% unless @user.profile.field_or_industry.nil? or @user.profile.field_or_industry.empty? %>
 		    <%= h @user.profile.field_or_industry %>
-		  </p>
-		<% end %>
+		  <% else %>
+				<%= none_text %>
+			<% end %>
+		</p>
 		
-		<% unless @user.profile.occupation_or_roles.nil? or @user.profile.occupation_or_roles.empty? %>
-		  <p>
-		  	<b>Occupation/Role(s):</b>
+		<p>
+		 	<b>Occupation/Role(s):</b>
+			<% unless @user.profile.occupation_or_roles.nil? or @user.profile.occupation_or_roles.empty? %>
 		    <%= h @user.profile.occupation_or_roles %>
-		  </p>
-		<% end %>
+		  <% else %>
+				<%= none_text %>
+			<% end %>
+		</p>
 		
+		<p>
+	  	<b>Organisation(s):</b>
+		</p>
 		<% unless @user.profile.organisations.nil? or @user.profile.organisations.empty? %>
-		  <p>
-		  	<b>Organisation(s):</b>
-			</p>
 		  <%= simple_format(sanitize(@user.profile.organisations)) %>
+		<% else %>
+			<%= none_text %>
 		<% end %>
 		
 	</div>
@@ -170,8 +188,8 @@
 	<div class="clearer">&nbsp;</div>
 	
 	<% if mine? @user %>
-		<p style="text-align: right; margin-top: 0.5em;">
-			<%= link_to "[Edit profile]", edit_profile_path(@user.profile) %>
+		<p style="text-align: right; margin-top: 0.5em; color: #666666;">
+			[ <%= link_to "Edit profile", edit_profile_path(@user.profile) %> ]
 		</p>
 	<% end %>
 
@@ -206,7 +224,7 @@
       <% unless @user.networks_owned.empty? %>
 	      <h2>Groups that <%= @user.name %> owns</h2>
 		  <%= render :partial => "networks/table", :locals => { :collection => @user.networks_owned } %>
-	      <% if false %><%= link_to '[View my Groups]', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if mine? @user %><% end %>
+	      <% if false %><p style="color: #666666;">[ <%= link_to 'View my Groups', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if mine? @user %> ]</p><% end %>
 	  <% end %>
 	  
 	  <% unless @user.networks.empty? %>
@@ -215,7 +233,7 @@
 	  <% end %>
   
       <% if mine? @user %>
-        <p><%= link_to '[View all Memberships in detail]', memberships_path(@user) %></p>
+        <p style="color: #666666;">[ <%= link_to 'View all Memberships in detail', memberships_path(@user) %> ]</p>
       <% end %>
     </div>
   </div>

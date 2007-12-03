@@ -78,25 +78,25 @@
   <%= form.text_area :organisations, :size => "30x4" %>
 </p>
 
-<br/>
-<br/>
-
-<h2>Your other personal information</h2>
-
 <p>
-  <b>Interests:</b><br/>
+  <b> Professional Interests:</b><br/>
   <%= form.text_area :interests, :size => "60x5" %>
 </p>
 
 <br/>
+<br/>
+
+<h2>Description/summary</h2>
 
 <p>
-  <b>Description:</b>
 	<span style="font-size: 85%; display:block; padding: 0.2em 0 0.5em 0; color: #333333;">
 		Here you can enter a summary or detailed description of yourself. 
 		<br/>
 		This is what other people see when they look at a listing of users and what they see on your profile page.
 	</span>
-  <%= fckeditor_textarea(:profile, :body, :toolbarSet => 'Simple', :width => '700px', :height => '200px') %>
-	<% if false %><%= form.text_area :body, :size => "60x15" %> <% end %>
 </p>
+
+<%= fckeditor_textarea(:profile, :body, :toolbarSet => 'Simple', :width => '700px', :height => '300px') %>
+
+<br/>
+<br/>
