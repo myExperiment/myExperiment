@@ -1,3 +1,4 @@
+<%= javascript_include_tag :fckeditor %>
 <%= javascript_include_tag "osp.js" %>
 
 <h1>Upload File</h1>
@@ -6,26 +7,27 @@
 
 <% form_tag ({:action => :create}, :multipart => true) do %>
 
-  <p>
+  <p style="text-align: center;">
     <strong>File to upload: </strong>
     <%= file_field :blob, :data %>
   </p>
   
   <br/>
   
-  <p>
+  <p style="text-align: center;">
   	<strong>Title: </strong>
-	<br/>
-	<%= text_field_tag "blob[title]", nil, :size => 30 %>
+		<br/>
+		<%= text_field_tag "blob[title]", nil, :size => 60 %>
   </p>
+	
+	<br/>
   
-  <p>
+  <p style="text-align: center;">
   	<strong>Description: </strong>
-	<br/>
-	<small>Note: some HTML allowed</small>
-	<br/>
-	<%= text_area_tag "blob[body]", nil, :size => "30x10" %>
-  </p>
+	</p>
+	<center>
+		<%= fckeditor_textarea(:blob, :body, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
+	</center>
 
   <br />
                 

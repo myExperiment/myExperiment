@@ -1,3 +1,5 @@
+<%= javascript_include_tag :fckeditor %>
+
 <h1>Edit Version <%= @viewing_version_number.to_s %> of Workflow: <%= contributable @workflow.id, "Workflow" %></h1>
 
 <%= error_messages_for :workflow %>
@@ -21,12 +23,9 @@
 				<b>Description: </b><br/>
 			</center>
 		</p>
-		<%= allowed_html_text('center') %>
-		<p>
-			<center>
-				<%= text_area_tag "body", @viewing_version.body, :size => "60x10" %>
-			</center>
-		</p>
+		<center>
+			<%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '600px', :height => '500px') %>
+		</center>
   </div>
 
   <br />

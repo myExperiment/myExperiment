@@ -1,3 +1,4 @@
+<%= javascript_include_tag :fckeditor %>
 <%= javascript_include_tag "osp.js" %>
 
 <h1>Manage File: <%= contributable_name(@blob.id, 'Blob') %></h1>
@@ -6,19 +7,20 @@
 
 <% form_for(:blob, :url => blob_path(@blob), :html => { :method => :put }) do |f| %>
 
-  <p>
+  <p style="text-align: center;">
   	<strong>Title: </strong>
 	<br/>
-	<%= f.text_field :title %>
+	<%= f.text_field :title, :size => 60 %>
   </p>
+	
+	<br/>
   
-  <p>
+  <p style="text-align: center;">
   	<strong>Description: </strong>
-	<br/>
-	<small>Note: some HTML allowed</small>
-	<br/>
-	<%= f.text_area :body %>
-  </p>
+	</p>
+	<center>
+		<%= fckeditor_textarea(:blob, :body, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
+	</center>
   
   <br/>
 
