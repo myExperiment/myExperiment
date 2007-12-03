@@ -1,29 +1,28 @@
 <script type="text/javascript">
-  function showWorkflowVersion() {
+  function showWorkflowVersion(form) {
     var url = $("workflow_versions").value;
 		location.href = url;
+		form.submit
   }
 </script>
 
-<h1 style="margin-bottom: 0.2em;">Workflow Entry: <%=h @workflow.title %></h1>
-
-<p style="color: #666666; font-size: 85%; text-align: center; margin-top: 0; padding-top: 0;">
-	<b>Last updated: </b><%= datetime @workflow.updated_at %>
-</p>
-
 <% if @workflow.authorized?("edit", (logged_in? ? current_user : nil)) %>
 	<ul class="sectionIcons">
-		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
 		<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow Entry')%></li>
+		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
 		<% if @workflow.authorized?("destroy", current_user) %>
 			<li>
 				<%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow Entry') %>
 			</li>
 		<% end %>
 	</ul>
-<% else %>
-	<br/>
 <% end %>
+
+<h1 style="margin-bottom: 0.2em;">Workflow Entry: <%=h @workflow.title %></h1>
+
+<p style="color: #666666; font-size: 85%; text-align: center; margin-top: 0; padding-top: 0; margin-bottom: 0.8em;">
+	<b>Last updated: </b><%= datetime @workflow.updated_at %>
+</p>
 
 <div class="contribution_left_box">
 	<div class="contribution_version_selector_box">
@@ -36,40 +35,53 @@
 					</td>
 					<td>
 						<% if @latest_version_number > 1 %>
-             	<form onsubmit="showWorkflowVersion(); return false;" style="text-align: right;">
+             	<form onsubmit="showWorkflowVersion(this)"; return false;" style="text-align: right;">
 					    	<b>View version: </b>
-					    	<select id="workflow_versions">
+					    	<select id="workflow_versions" onchange="showWorkflowVersion(this.form)">
 						  		<% @workflow.versions.reverse.each do |w| %>
-						    		<option value="<%= versioned_workflow_url(@workflow, w.version.to_s) %>">
+						    		<option value="<%= versioned_workflow_url(@workflow, w.version.to_s) %>" <%= "selected" if w.version == @viewing_version_number -%>>
 						      			<%= "#{w.version.to_s} #{@workflow.describe_version(w.version)}" %>
 						    		</option>
 						  		<% end %>
 								</select>
-								<%= submit_tag "GO" %>
 							</form>
 						<% end %>
 					</td>
 				</tr>
 			</tbody>
 		</table>
-	</div>
-	<div class="contribution_version_box">		
-		<div class="box_simple" style="font-size: 85%; padding: 0.4em; margin-bottom: 0.6em; line-height: 1.2em; color: #333333;">
+		
+		<p style="color: #999999; font-size: 85%; text-align: left; padding-left: 0.5em; padding-top: 0; margin-bottom: 0.4em;">
+			[ <%= link_to_function "Show/hide version info", visual_effect(:toggle_blind, "version_info_box", :duration => 0.5) %> ]
+		</p>		
+		<div id="version_info_box" class="box_standout" style="display: none; font-size: 85%; padding: 0.2em 0.4em; margin: 0.2em 0 0.8em 0; line-height: 1.1em; color: #333333;">
 			<p>
 				<b>Version created on:</b>
 				<%= datetime @viewing_version.updated_at %>
 			</p>
-			
+			<p>
+				<b>Revision comments:</b>
+			</p>
 			<% unless @viewing_version.revision_comments.nil? or @viewing_version.revision_comments.empty? %>
-				<p>
-					<b>Revision comments:</b>
-				</p>
 				<div>
 					<%= @viewing_version.revision_comments %>
 				</div>
+			<% else %>
+				<p><i>None</i></p>
 			<% end %>
-			
 		</div>
+	</div>
+	<div class="contribution_version_box">
+		<% if logged_in? and @authorised_to_edit %>
+			<ul class="sectionIcons">
+				<li><%= icon('edit', "/workflows/#{@workflow.id};edit_version?version=#{@viewing_version_number.to_s}", nil, nil, "Edit Workflow Version") %></li>
+        <% if @latest_version_number > 1 %>
+					<% if @workflow.authorized?("destroy", current_user) %>
+						<li><%= icon('destroy', "/workflows/#{@workflow.id};destroy_version?version=#{@viewing_version_number.to_s}", nil, { :confirm => "Are you sure you want to delete this version (Version #{@viewing_version_number.to_s}) of the Workflow file (including title/description metadata)?", :method => :delete }, 'Delete Workflow Version') %></li>
+					<% end %>
+        <% end %>
+			</ul>
+		<% end %>
 		
 		<p>
 			<b>Title:</b>
@@ -93,36 +105,27 @@
 			</div>
 		<% end %>
 		
-		<div style="padding:1em; text-align:center;">
-			<% if @authorised_to_download %>
-				<a href="<%= @named_download_url %>"><%= image_tag(image_path("download_button.png"), :alt => "Download Workflow file (version #{@viewing_version_number.to_s})") %></a>
-			<% else %>
-				<b><i>You cannot download this Workflow file</i></b>
-			<% end %>
-		</div>
+		<br/>
 		
-		<% if logged_in? %>
+		<h3>
+			<%= info_icon_with_tooltip("This section provides links to the different downloads for this Workflow file version") %>
+			Download
+		</h3>
+		
+		<% if @authorised_to_download %>
 			<ul class="sectionIcons">
+				<li><%= icon('workflow', @named_download_url, "Download Workflow File (version #{@viewing_version_number.to_s})", nil, "Download Workflow File (SCUFL)") %></li>
 				<% unless @viewing_version.svg.nil? %>
 					<li><%= icon('picture', url_for_file_column(@viewing_version, "svg"), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
 				<% end %>
 			</ul>
-		
-			<ul class="sectionIcons">
-				<% if @authorised_to_edit %>
-					<li><%= icon('edit', "/workflows/#{@workflow.id};edit_version?version=#{@viewing_version_number.to_s}", nil, nil, "Edit Workflow Version") %></li>
-				<% end %>
-        <% if @latest_version_number > 1 %>
-					<% if @workflow.authorized?("destroy", current_user) %>
-						<li><%= icon('destroy', "/workflows/#{@workflow.id};destroy_version?version=#{@viewing_version_number.to_s}", nil, { :confirm => "Are you sure you want to delete this version (Version #{@viewing_version_number.to_s}) of the Workflow file (including title/description metadata)?", :method => :delete }, 'Delete Workflow Version') %></li>
-					<% end %>
-        <% end %>
-			</ul>
+		<% else %>
+			<b><i>You cannot download any associated files</i></b>
 		<% end %>
 		
 		<br/>
 
-		<% if @workflow.authorized?("download", (logged_in? ? current_user : nil)) %>
+		<% if @authorised_to_download %>
 			<h3>
 				<%= info_icon_with_tooltip("This section provides options for running this Workflow file.") %>
 				Run
