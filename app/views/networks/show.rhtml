@@ -1,5 +1,3 @@
-<h1>Group: <%=h @network.title %></h1>
-
 <% if logged_in? %>
   <ul class="sectionIcons">
     <% unless @network.member? current_user.id %>
@@ -12,6 +10,8 @@
     <% end %>
   </ul>
 <% end %>
+
+<h1>Group: <%=h @network.title %></h1>
 
 <div class="contribution_left_box">
 	

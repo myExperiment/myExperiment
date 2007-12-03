@@ -1,21 +1,5 @@
 <% none_text = '<font style="font-style:italic;color:#666666;">Not specified</font>' -%>
 
-<% if logged_in? %> 
-	<% if mine? @user %>
-		<h1>
-			<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
-			My Profile
-		</h1>
-	<% else %>
-		<h1>
-			<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
-			User Profile: <%=h @user.name %><%= friend_badge(@user) %>
-		</h1>
-	<% end %>
-<% else %>
-	<h1>User: <%=h @user.name %><%= friend_badge(@user) %></h1>
-<% end %>
-
 <% if logged_in? %>
 	<ul class="sectionIcons">
 	    <% unless @user.friend? current_user.id %>
@@ -34,6 +18,22 @@
 			  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
 	    <% end %>
 	</ul>
+<% end %>
+
+<% if logged_in? %> 
+	<% if mine? @user %>
+		<h1>
+			<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
+			My Profile
+		</h1>
+	<% else %>
+		<h1>
+			<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
+			User Profile: <%=h @user.name %><%= friend_badge(@user) %>
+		</h1>
+	<% end %>
+<% else %>
+	<h1>User: <%=h @user.name %><%= friend_badge(@user) %></h1>
 <% end %>
 
 <div style="float: left; padding: 0 0.6em;">

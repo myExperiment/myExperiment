@@ -1,19 +1,17 @@
-<h1 style="margin-bottom: 0.2em;">File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
-
-<p style="color: #666666; font-size: 85%; text-align: center; margin-top: 0; padding-top: 0;">
-	<b>Last updated: </b><%= datetime @blob.updated_at %>
-</p>
-
 <% if @blob.authorized?("edit", (logged_in? ? current_user : nil)) %>
 	<ul class="sectionIcons">
 		<li><%= icon('manage', edit_blob_path(@blob), nil, nil, 'Manage File Entry')%></li>
 		<% if @blob.authorized?("destroy", current_user) %>
-			<li><%= icon('destroy', blob_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete File Entry') %></li>
+			<li><%= icon('destroy', blob_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and ratings. Are you sure?', :method => :delete }, 'Delete File Entry') %></li>
 		<% end %>
 	</ul>
-<% else %>
-	<br/>
 <% end %>
+
+<h1 style="margin-bottom: 0.2em;">File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
+
+<p style="color: #666666; font-size: 85%; text-align: center; margin-top: 0; padding-top: 0; margin-bottom: 0.8em;">
+	<b>Last updated: </b><%= datetime @blob.updated_at %>
+</p>
 
 <div class="contribution_left_box">
 	<div class="contribution_version_box">
@@ -38,15 +36,24 @@
 			</div>
 		<% end %>
 		
-		<div style="padding:1em; text-align:center;">
-			<% if @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
-				<a href="<%= @named_download_url %>"><%= image_tag(image_path("download_button.png"), :alt => 'Download the file') %></a>
-			<% else %>
-				<b><i>You cannot download this File</i></b>
-			<% end %>
-		</div>
-	</div>
+		<br/>
+		<br/>
+		
+		<h3>
+			<%= info_icon_with_tooltip("This section provides links to the download(s) for this File") %>
+			Download
+		</h3>
+		
+		<% if @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
+			<ul class="sectionIcons">
+				<li><%= icon('blob', @named_download_url, "Download File", nil, "Download File") %></li>
+			</ul>
+		<% else %>
+			<b><i>You cannot download this File</i></b>
+		<% end %>
 	
+	</div>
+				
 	<br/>
 	<br/>
 
