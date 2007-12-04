@@ -50,6 +50,16 @@ class Contribution < ActiveRecord::Base
               :limit => limit)
   end
   
+  # returns the 'last updated' Contributions
+  # the maximum number of results is set by #limit#
+  def self.last_updated(limit=10, klass=nil)
+    conditions = ["contributable_type = ?", klass] if klass
+    self.find(:all,
+              :conditions => conditions,
+              :order => "updated_at DESC",
+              :limit => limit)
+  end
+  
   # is c_utor authorized to edit the policy for this contribution
   def admin?(c_utor)
     #policy.contributor_id.to_i == c_utor.id.to_i and policy.contributor_type.to_s == c_utor.class.to_s

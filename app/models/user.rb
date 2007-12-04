@@ -19,6 +19,10 @@ class User < ActiveRecord::Base
               :limit => limit)
   end
   
+  def self.last_updated(limit=5)
+    self.find_by_sql ["SELECT u.*, p.* FROM users u, profiles p WHERE u.id = p.user_id ORDER BY GREATEST(u.updated_at, p.updated_at) DESC LIMIT ?", limit]
+  end
+  
   acts_as_tagger
   
   has_many :ratings,

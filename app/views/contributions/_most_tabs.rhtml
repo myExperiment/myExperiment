@@ -9,6 +9,15 @@
   </div>
 <% end %>
 
+<% unless (last_u = Contribution.last_updated(10, type)).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Last Updated</div>
+  	<div class="tabContent">
+	    <%= render :partial => "contributions/list", :locals => { :collection => last_u, :table => true } %>
+  	</div>
+  </div>
+<% end %>
+
 <% unless (most_v = Contribution.most_viewed(10, type)).empty? %>
   <div class="tabContainer">
   	<div class="tabTitle">Most Viewed</div>
