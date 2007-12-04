@@ -99,8 +99,8 @@ class Network < ActiveRecord::Base
                           :join_table => :relationships,
                           :foreign_key => :network_id,
                           :association_foreign_key => :relation_id,
-                          :conditions => "user_established_at IS NOT NULL AND network_established_at IS NOT NULL",
-                          :order => "GREATEST(user_established_at, network_established_at) DESC"
+                          :conditions => "accepted_at IS NOT NULL",
+                          :order => "accepted_at DESC"
                           
   alias_method :original_relations, :relations
   def relations
