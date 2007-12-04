@@ -133,6 +133,7 @@ class NetworksController < ApplicationController
     @network.destroy
 
     respond_to do |format|
+      flash[:notice] = 'Group was successfully deleted.'
       format.html { redirect_to networks_url }
       format.xml  { head :ok }
     end
