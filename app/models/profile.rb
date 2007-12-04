@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class Profile < ActiveRecord::Base
+  
+  validates_email_veracity_of :email
+  
   validates_associated :owner, :picture
   
   validates_presence_of :user_id
