@@ -12,11 +12,12 @@
     <p>
       <center>
 				<strong>Title:</strong>
-	      <%= text_field_tag 'title', @viewing_version.title, :size => '45' %>
+	      <%= text_field_tag 'workflow[title]', @viewing_version.title, :size => '45' %>
 			</center>
     </p>
 		
 		<br/>
+		
 		
 		<p>
 			<center>
@@ -26,6 +27,21 @@
 		<center>
 			<%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '600px', :height => '500px') %>
 		</center>
+		
+		<% if false %>
+		<p>
+			<center>
+				<b>Description: </b><br/>
+			</center>
+		</p>
+		<%= allowed_html_text('center') %>
+		<p>
+			<center>
+				<%= text_area_tag "body", @viewing_version.body, :size => "60x10" %>
+			</center>
+		</p>
+		<% end %>
+		
   </div>
 
   <br />

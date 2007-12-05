@@ -340,7 +340,7 @@ class WorkflowsController < ApplicationController
     workflow_title = @workflow.title
     
     if params[:version]
-      success = @workflow.update_version(params[:version], :title => params[:title], :body => params[:body])
+      success = @workflow.update_version(params[:version], :title => params[:workflow][:title], :body => params[:workflow][:body])
     else
       success = false;
     end

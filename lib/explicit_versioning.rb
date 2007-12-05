@@ -85,6 +85,7 @@ module Jits
         end
         
         def update_version(version_number, attributes)
+          return false if version_number.nil? or version_number.to_i < 1
           return false if attributes.nil? or attributes.empty?
           return false unless (ver = find_version(version_number))
           
@@ -172,6 +173,8 @@ module Jits
               clone_versioned_model(ver, self, process_file_columns)
               self.send("#{self.class.version_column}=", version_number)
               return self.save
+            else
+              return false
             end
           end
           
