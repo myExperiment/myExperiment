@@ -939,7 +939,7 @@ protected
         end
       end
       
-      rtn << [item.accepted_at, "#{name(item.user)} joined the #{title(item.network)} network."]
+      rtn << [item.accepted_at, "#{name(item.user)} joined the #{title(item.network)} Group."]
     when "Friendship"
       return rtn if before and item.accepted_at > before
       return rtn if after and item.accepted_at < after
