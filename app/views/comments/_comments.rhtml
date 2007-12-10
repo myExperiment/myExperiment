@@ -1,3 +1,5 @@
+<%= javascript_include_tag :fckeditor %>
+
 <h2>Comments (<%= commentable.comments.length %>)</h2>
 
 <div class="commentsBox">
@@ -26,12 +28,20 @@
 		<a name="make_comment"></a>
 		<div class="addCommentBox">
 			<h4>Make a Comment:</h4>
-			<%= allowed_html_text %>
-			<% form_remote_tag(:url => { :controller => controller.controller_name.to_s, :action => "comment" }, 
+			<% if false %><%= allowed_html_text %><% end %>
+			
+			<% # Hack for FCKEditor: -%>
+			<% @comment = Comment.new; @comment.id = 0 -%>
+			
+			<% form_remote_tag(:url => { :controller => controller.controller_name.to_s, :action => "comment" },
+								 :before => fckeditor_before_js("comment", "comment"),
 							   :update => 'commentsBox', 
 							   :loading => "Element.show('addcomment_indicator')",
 	               :complete => "Element.hide('addcomment_indicator'); new Effect.Highlight('comments', { duration: 1.5 }); $('comment').value = '';") do %>
-				<textarea id="comment" name="comment" rows="10" style="width: 99%;"></textarea><br/>
+				
+				<%= fckeditor_textarea("comment", "comment", :ajax => true, :toolbarSet => 'Basic', :width => '99%', :height => '200px') %>
+				<% if false %><textarea id="comment" name="comment" rows="10" style="width: 99%;"></textarea><% end %>
+				<br/>
 				<%= submit_tag "Submit Comment" %>
 				<%= image_tag "/images/spinner.gif", :id => "addcomment_indicator", :style => "margin-left: 1em; display: none;" %>
 			<% end %>

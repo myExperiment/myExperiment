@@ -25,6 +25,8 @@ class ApplicationController < ActionController::Base
   # Safe HTML - http://www.anyexample.com/webdev/rails/how_to_allow_some_safe_html_in_rails_projects.xml
   # Note: should only be used for text that doesn't need updating later.
   def ae_some_html(s)
+    return '' if s.nil?    
+    
     # converting newlines
     s.gsub!(/\r\n?/, "\n")
  

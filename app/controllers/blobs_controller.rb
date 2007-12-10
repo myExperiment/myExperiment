@@ -182,8 +182,12 @@ class BlobsController < ApplicationController
   # POST /blobs/1;comment
   # POST /blobs/1.xml;comment
   def comment 
-    comment = Comment.create(:user => current_user, :comment => (ae_some_html params[:comment]))
-    @blob.comments << comment
+    text = params[:comment][:comment]
+    
+    if text and text.length > 0
+      comment = Comment.create(:user => current_user, :comment => text)
+      @blob.comments << comment
+    end
     
     respond_to do |format|
       format.html { render :partial => "comments/comments", :locals => { :commentable => @blob } }

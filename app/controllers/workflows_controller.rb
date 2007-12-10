@@ -43,9 +43,13 @@ class WorkflowsController < ApplicationController
   # POST /workflows/1;comment
   # POST /workflows/1.xml;comment
   def comment
-    comment = Comment.create(:user => current_user, :comment => (ae_some_html params[:comment]))
-    @workflow.comments << comment
+    text = params[:comment][:comment]
     
+    if text and text.length > 0
+      comment = Comment.create(:user => current_user, :comment => text)
+      @workflow.comments << comment
+    end
+  
     respond_to do |format|
       format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow } }
       format.xml { render :xml => @workflow.comments.to_xml }
