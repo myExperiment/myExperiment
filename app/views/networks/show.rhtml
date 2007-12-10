@@ -13,6 +13,10 @@
 
 <h1>Group: <%=h @network.title %></h1>
 
+<div style="color: #999999; font-size: 85%; text-align: center; margin-bottom: 0.8em;">
+	| <%= link_to "Comments (#{@network.comments.length})", "#comments" %> |
+</div>
+
 <div class="contribution_left_box">
 	
 	<% unless @network.description.nil? or @network.description.empty? %>
@@ -119,8 +123,6 @@
 
 <br/>
 
-<a name="comments"></a>
-<h2>Comments (<%= @network.comments.length %>)</h2>
-<div id="commentsBox" class="commentsBox">
+<div id="commentsBox">
 	<%= render :partial => "comments/comments", :locals => { :commentable => @network } %>
 </div>

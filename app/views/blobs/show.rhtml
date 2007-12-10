@@ -9,9 +9,13 @@
 
 <h1 style="margin-bottom: 0.2em;">File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
 
-<p style="color: #666666; font-size: 85%; text-align: center; margin-top: 0; padding-top: 0; margin-bottom: 0.8em;">
+<p style="color: #666666; font-size: 85%; text-align: center; margin-top: 0; padding-top: 0; margin-bottom: 0.3em;">
 	<b>Last updated: </b><%= datetime @blob.updated_at %>
 </p>
+
+<div style="color: #999999; font-size: 85%; text-align: center; margin-bottom: 0.8em;">
+	| <%= link_to "Comments (#{@blob.comments.length})", "#comments" %> |
+</div>
 
 <div class="contribution_left_box">
 	<div class="contribution_version_box">
@@ -105,8 +109,6 @@
 
 <div class="clearer">&nbsp;</div>
 
-<a name="comments"></a>
-<h2>Comments (<%= @blob.comments.length %>)</h2>
-<div id="commentsBox" class="commentsBox">
+<div id="commentsBox">
 	<%= render :partial => "comments/comments", :locals => { :commentable => @blob } %>
 </div>

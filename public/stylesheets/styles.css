@@ -959,23 +959,23 @@ table.comment td {
 
 table.comment td.avatar {
 	width: 70px;
-	padding: 0.8em;
+	padding: 0.2em 0.6em;
 	text-align: center;
 	background-color: #EEEEEE;
 }
 
 table.comment td.header {
 	font-size: 85%;
-	height: 1.5em;
+	height: 1.2em;
 	vertical-align: middle;
 	text-align: left;
 	background-color: #EEEEEE;
 	color: #333333;
-	padding: 0.5em 0.8em;
+	padding: 0.2em 0.8em;
 }
 
 table.comment td.content {
-	padding: 1em 1.2em;
+	padding: 0.8em 1em;
 	text-align: left;
 }
 
