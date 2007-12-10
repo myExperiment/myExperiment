@@ -9,6 +9,10 @@
 
 <%= error_messages_for :workflow %>
 
+<p style="font-size: 93%; color: #333333; margin-bottom: 1.2em; text-align: left;">
+	<%= link_to "Click here", url_for(:controller => "workflows", :action => "edit_version", :id => @workflow.id, :version => @workflow.current_version) %> if you wanted to edit the title/description of the latest version 
+</p>
+
 <% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
   <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @workflow } %>
   <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => true, :contributable => @workflow } %>
