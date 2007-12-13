@@ -113,28 +113,28 @@ function deleteProfile() {
 
 // Network functions
 
-function networkID() {
-  return document.getElementById('network-id').value;
+function groupID() {
+  return document.getElementById('group-id').value;
 }
 
 function newNetwork() {
-  getDocumentSync('POST', '/networks', input());
+  getDocumentSync('POST', '/groups', input());
 }
 
 function listNetworks() {
-  getDocumentSync('GET', '/networks', null);
+  getDocumentSync('GET', '/groups', null);
 }
 
 function getNetwork() {
-  getDocumentSync('GET', '/networks/' + networkID(), null);
+  getDocumentSync('GET', '/groups/' + groupID(), null);
 }
 
 function updateNetwork() {
-  getDocumentSync('PUT', '/networks/' + networkID(), input());
+  getDocumentSync('PUT', '/groups/' + groupID(), input());
 }
 
 function deleteNetwork() {
-  getDocumentSync('DELETE', '/networks/' + networkID(), null);
+  getDocumentSync('DELETE', '/groups/' + groupID(), null);
 }
 
 // Message functions

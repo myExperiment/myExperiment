@@ -4,7 +4,7 @@
 
 <%= error_messages_for :network %>
 
-<% form_for(:network, :url => network_path(@network), :html => { :method => :put }) do |f| %>
+<% form_for(:network, :url => group_path(@network), :html => { :method => :put }) do |f| %>
   <%= render :partial => "networks/form", :object => f %>
 	
 	<br/>

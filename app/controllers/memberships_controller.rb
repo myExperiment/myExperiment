@@ -138,7 +138,7 @@ class MembershipsController < ApplicationController
 
     respond_to do |format|
       params[:notice] = "User succesfully removed from Group"
-      format.html { redirect_to network_path(network_id) }
+      format.html { redirect_to group_path(network_id) }
       format.xml  { head :ok }
     end
   end

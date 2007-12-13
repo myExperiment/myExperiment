@@ -15,7 +15,7 @@
 						<% else %>
 							<%= icon "network-member", nil, nil, nil, '' %>
 						<% end %>
-						<%=link_to(query ? highlight_all(h(network.title), query) : h(network.title), network_path(network)) %>
+						<%=link_to(query ? highlight_all(h(network.title), query) : h(network.title), group_path(network)) %>
 					</p>
 					<p style="font-size: 85%;">
 						<% if network.unique_name and network.unique_name.length > 0 %>
@@ -47,9 +47,9 @@
 				  <% end %>	
 				</td>
 				<td class="actions">
-					<%= icon "show", network_path(network), nil, nil, "View" %> 
+					<%= icon "show", group_path(network), nil, nil, "View" %> 
 					<% if mine? network %>
-						<%= icon "manage", edit_network_path(network) %>
+						<%= icon "manage", edit_group_path(network) %>
 					<% end %>
 				</td>
 			</tr>

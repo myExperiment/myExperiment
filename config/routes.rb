@@ -24,13 +24,13 @@ ActionController::Routing::Routes.draw do |map|
   # map.resources :citations
 
   # all blobs (aka files)
-  map.connect 'blobs/all', :controller => 'blobs', :action => 'all'
+  map.connect 'files/all', :controller => 'blobs', :action => 'all'
 
   # all users
   map.connect 'users/all', :controller => 'users', :action => 'all'
 
   # all networks (aka groups)
-  map.connect 'networks/all', :controller => 'networks', :action => 'all'
+  map.connect 'groups/all', :controller => 'networks', :action => 'all'
 
   # all workflows
   map.connect 'workflows/all', :controller => 'workflows', :action => 'all'
@@ -41,8 +41,8 @@ ActionController::Routing::Routes.draw do |map|
     workflow.resources :citations
   end
 
-  # blobs (downloadable)
-  map.resources :blobs, :collection => { :search => :get }, :member => { :download => :get, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post }
+  # files (downloadable)
+  map.resources :files, :controller => :blobs, :collection => { :search => :get }, :member => { :download => :get, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post }
 
   # bloGs
   map.resources :blogs do |blog|
@@ -92,10 +92,9 @@ ActionController::Routing::Routes.draw do |map|
     user.resource :userhistory, :controller => :userhistory
   end
 
-  # all networks
-  map.resources :networks, :collection => { :search => :get }, :member => { :membership_invite => :get, :membership_request => :get, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post } do |network|
-    # relationships 'accepted by' network (relation --> relationship --> network)
-    network.resources :relationships, :member => { :accept => :get }
+  map.resources :groups, :controller => :networks, :collection => { :search => :get }, :member => { :membership_invite => :get, :membership_request => :get, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post } do |group|
+    # relationships 'accepted by' group (relation --> relationship --> group)
+    group.resources :relationships, :member => { :accept => :get }
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

@@ -15,7 +15,7 @@
 					<p class="title">
 						<%= icon "blob", nil, nil, nil, '' %>
 						<% title = contributable_name(blob.id, 'Blob') %>
-						<%=link_to(query ? highlight_all(title, query) : title, blob_path(blob)) %>
+						<%=link_to(query ? highlight_all(title, query) : title, file_path(blob)) %>
 					</p>
 					
 					<% unless (creditors = blob.creditors).empty? %>
@@ -73,9 +73,9 @@
 				</td>
 				
 				<td class="actions" style="width: 80px;">
-			      <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", blob_path(blob), nil, nil, "View" %><% end %>
-				  <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_blob_path(blob) %><% end %>
-			      <% if logged_in? and blob.authorized?("edit", current_user) %><%= icon "manage", edit_blob_path(blob), nil, nil, "Manage" %><% end %>
+			      <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", file_path(blob), nil, nil, "View" %><% end %>
+				  <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_file_path(blob) %><% end %>
+			      <% if logged_in? and blob.authorized?("edit", current_user) %><%= icon "manage", edit_file_path(blob), nil, nil, "Manage" %><% end %>
 			    </td>
 			</tr>
 		<% end %>

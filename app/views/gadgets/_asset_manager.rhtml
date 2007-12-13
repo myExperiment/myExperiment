@@ -41,10 +41,10 @@
         <div class="content">
           <ul class="gadget_list">
             <% current_user.networks_owned.each do |network_owned| %>
-              <li><%= icon "network-owned", nil, nil, nil, "" %> <%= link_to truncate(h(network_owned.title), gadget_characters_limit), network_path(network_owned) %></li>
+              <li><%= icon "network-owned", nil, nil, nil, "" %> <%= link_to truncate(h(network_owned.title), gadget_characters_limit), group_path(network_owned) %></li>
             <% end %>
             <% current_user.networks.each do |network_member| %>
-              <li><%= icon "network-member", nil, nil, nil, "" %> <%= link_to truncate(h(network_member.title), gadget_characters_limit), network_path(network_member) %></li>
+              <li><%= icon "network-member", nil, nil, nil, "" %> <%= link_to truncate(h(network_member.title), gadget_characters_limit), group_path(network_member) %></li>
             <% end %>
           </ul>
         </div>

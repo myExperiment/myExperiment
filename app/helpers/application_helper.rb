@@ -118,7 +118,7 @@ module ApplicationHelper
     end
     
     title = truncate_to ? truncate(network.title, truncate_to) : network.title
-    return link_to(h(title), network_url(network))
+    return link_to(h(title), group_url(network))
   end
   
   def avatar(user_id, size=200)
@@ -352,7 +352,7 @@ module ApplicationHelper
           name = h(b.local_name)
         end
         
-        return link ? link_to(name, blob_url(b)) : name
+        return link ? link_to(name, file_url(b)) : name
       else
         return nil
       end

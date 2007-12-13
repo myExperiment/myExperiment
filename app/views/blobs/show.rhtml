@@ -1,8 +1,8 @@
 <% if @blob.authorized?("edit", (logged_in? ? current_user : nil)) %>
 	<ul class="sectionIcons">
-		<li><%= icon('manage', edit_blob_path(@blob), nil, nil, 'Manage File Entry')%></li>
+		<li><%= icon('manage', edit_file_path(@blob), nil, nil, 'Manage File Entry')%></li>
 		<% if @blob.authorized?("destroy", current_user) %>
-			<li><%= icon('destroy', blob_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and ratings. Are you sure?', :method => :delete }, 'Delete File Entry') %></li>
+			<li><%= icon('destroy', file_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and ratings. Are you sure?', :method => :delete }, 'Delete File Entry') %></li>
 		<% end %>
 	</ul>
 <% end %>
@@ -73,7 +73,7 @@
 		  
 	      <% if @blob.authorized?("edit", current_user) %>
 	        <ul class="sectionIcons">
-	          <li><%= icon('edit', edit_blob_path(@blob), nil, nil, 'Edit')%></li>
+	          <li><%= icon('edit', edit_file_path(@blob), nil, nil, 'Edit')%></li>
 	        </ul>
 	      <% end %>
 	    </div>
@@ -92,14 +92,14 @@
 </div>
 
 <div class="contribution_right_box">
-	<%= render :partial => "contributions/uploader_credits_attributions_box", :locals => { :contributable => @blob, :edit_path => edit_blob_path(@blob) } %>
+	<%= render :partial => "contributions/uploader_credits_attributions_box", :locals => { :contributable => @blob, :edit_path => edit_file_path(@blob) } %>
 	
 	<%= render :partial => "contributions/license_box", :locals => { :contributable => @blob } %>
 	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @blob, 
 																											 :owner_id => ((@blob.contributor_type == 'User') ? @blob.contributor_id : nil), 
-																											 :add_path => tag_blob_path(@blob), 
-																											 :edit_path => edit_blob_path(@blob),
+																											 :add_path => tag_file_path(@blob), 
+																											 :edit_path => edit_file_path(@blob),
 																											 :allow_edit => @blob.authorized?("edit", logged_in? ? current_user : nil ) } %>
 	
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @blob } %>

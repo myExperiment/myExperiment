@@ -115,8 +115,8 @@ class BlobsController < ApplicationController
         update_attributions(@blob, params)
         
         flash[:notice] = 'File was successfully created.'
-        format.html { redirect_to blob_url(@blob) }
-        format.xml  { head :created, :location => blob_url(@blob) }
+        format.html { redirect_to file_url(@blob) }
+        format.xml  { head :created, :location => file_url(@blob) }
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @blob.errors.to_xml }
@@ -159,7 +159,7 @@ class BlobsController < ApplicationController
         update_attributions(@blob, params)
         
         flash[:notice] = 'File was successfully updated.'
-        format.html { redirect_to blob_url(@blob) }
+        format.html { redirect_to file_url(@blob) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -174,7 +174,7 @@ class BlobsController < ApplicationController
     @blob.destroy
     
     respond_to do |format|
-      format.html { redirect_to blobs_url }
+      format.html { redirect_to files_url }
       format.xml  { head :ok }
     end
   end
@@ -282,7 +282,7 @@ class BlobsController < ApplicationController
      (err = Blob.new.errors).add(attr, message)
     
     respond_to do |format|
-      format.html { redirect_to blobs_url }
+      format.html { redirect_to files_url }
       format.xml { render :xml => err.to_xml }
     end
   end

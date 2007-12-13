@@ -1,10 +1,10 @@
 <% owner ||= true %>
 <div class="network_banner">
   <p>
-    <strong><%= link_to h(network.title), network_path(network.id) %></strong> 
+    <strong><%= link_to h(network.title), group_path(network.id) %></strong> 
     <% if logged_in? and network.owner? current_user.id %>
-      <%= icon "edit", edit_network_path(network) %> 
-      <%= icon "destroy", network_path(network), nil, :confirm => "Are you sure?", :method => "destroy" %>
+      <%= icon "edit", edit_group_path(network) %> 
+      <%= icon "destroy", group_path(network), nil, :confirm => "Are you sure?", :method => "destroy" %>
     <% end %>
   </p>
   

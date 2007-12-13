@@ -5,7 +5,7 @@
 
 <%= error_messages_for :blob %>
 
-<% form_for(:blob, :url => blob_path(@blob), :html => { :method => :put }) do |f| %>
+<% form_for(:blob, :url => file_path(@blob), :html => { :method => :put }) do |f| %>
 
   <p style="text-align: center;">
   	<strong>Title: </strong>
@@ -37,7 +37,7 @@
   <p>
     <center>
     	<%= submit_tag "Update",:disable_with => "Updating..." %> 
-		or <%= link_to "Cancel", blob_path(@blob) %>
+		or <%= link_to "Cancel", file_path(@blob) %>
 	</center>
   </p>
 <% end %>

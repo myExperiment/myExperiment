@@ -5,8 +5,8 @@
     <% end %>
 
     <% if mine? @network %>
-      <li><%= icon('edit', edit_network_path(@network), nil, nil, 'Edit Group') %></li>
-      <li><%= icon('destroy', network_path(@network), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
+      <li><%= icon('edit', edit_group_path(@network), nil, nil, 'Edit Group') %></li>
+      <li><%= icon('destroy', group_path(@network), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
     <% end %>
   </ul>
 <% end %>
@@ -46,8 +46,8 @@
 	<%= render :partial => "statistics_box", :locals => { :network => @network } %>
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @network,
 																											 :owner_id => (@network.user_id),  
-																											 :add_path => tag_network_path(@network), 
-																											 :edit_path => edit_network_path(@network),
+																											 :add_path => tag_group_path(@network), 
+																											 :edit_path => edit_group_path(@network),
 																											 :allow_edit => logged_in? ? @network.user_id == current_user.id : false } %>
 </div>
 
@@ -107,7 +107,7 @@
         Select a name from the list and click "Invite".
       </p>
   
-      <% form_tag(membership_invite_network_path(@network), :method => :get) do %>
+      <% form_tag(membership_invite_group_path(@network), :method => :get) do %>
         <label for="user_id">User:</label> <%= select_tag :user_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %> <%= submit_tag "Invite", :disable_with => 'Inviting...' %>
       <% end %>
   
