@@ -31,10 +31,10 @@
 							<span><b><%= signout_link %></b></span>
 						<% else %>
 							<span><b><%= icon "login", new_session_url, nil, nil, "Log in" %></b></span>
-							<span>&nbsp|&nbsp;</span>
+							<span>&nbsp;|&nbsp;</span>
 							<span><b><%= icon "user", new_user_url, nil, nil, "Register" %></b></span>
 						<% end %>
-						<span>&nbsp|&nbsp;</span>
+						<span>&nbsp;|&nbsp;</span>
 						<span><b><%= icon "feedback", "/feedback", nil, nil, "Give us Feedback" %></b></span>
 					</div>
 					<div class="clearer">&nbsp;</div>
@@ -68,8 +68,12 @@
 						    </ul>
 					    </div>
 	    				<div id="myexp_content">
-								<p style="color: red"><%= flash[:error] %></p>
-		    				<p style="color: green"><%= flash[:notice] %></p>
+								<% if flash[:error] %>
+									<p style="color: red; font-weight: bold; padding: 0.3em 0 ;"><%= flash[:error] %></p>
+								<% end %>
+		    				<% if flash[:notice] %>
+									<p style="color: green; font-weight: bold; padding: 0.3em 0;"><%= flash[:notice] %></p>
+								<% end %>
 		    				<%= render :partial => "subnav" %>
 		    				<%= yield  %>
 						</div>

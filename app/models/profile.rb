@@ -5,11 +5,13 @@
 
 class Profile < ActiveRecord::Base
   
-  validates_email_veracity_of :email
-  
-  validates_associated :owner, :picture
+  belongs_to :owner,
+             :class_name => "User",
+             :foreign_key => :user_id
   
   validates_presence_of :user_id
+  
+  validates_associated :picture
   
   validates_format_of :website, :with => /^http:\/\//, :message => "must begin with http://", :if => Proc.new { |profile| !profile.website.nil? and !profile.website.empty? }
   
@@ -29,11 +31,9 @@ class Profile < ActiveRecord::Base
   
   format_attribute :body
   
-  belongs_to :owner,
-             :class_name => "User",
-             :foreign_key => :user_id
-  
   belongs_to :picture
+  
+  validates_email_veracity_of :email
   
   def avatar?
     not (picture_id.nil? or picture_id.zero?)

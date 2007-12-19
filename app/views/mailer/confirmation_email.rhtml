@@ -1,0 +1,16 @@
+Hi <%= @name %>,
+ 
+Thank you for registering with myExperiment. 
+
+Your username is: <%= @username %>
+
+To confirm your email address and activate your account, please follow the link below (you might need to copy/paste it into your browser):
+ 
+<%= url_for :only_path => false,
+						:host => @base_url,
+						:controller => 'users',
+						:action => 'confirm_email',
+						:hash => @hash %>
+ 
+- The myExperiment Team
+http://www.myexperiment.org

@@ -13,7 +13,6 @@ class ApplicationController < ActionController::Base
   include Sitealizer
   before_filter :use_sitealizer
 
-  
   include AuthenticatedSystem
   before_filter :login_from_cookie
   
@@ -21,6 +20,10 @@ class ApplicationController < ActionController::Base
 
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_m2_session_id'
+  
+  def base_host
+    request.host_with_port
+  end
   
   # Safe HTML - http://www.anyexample.com/webdev/rails/how_to_allow_some_safe_html_in_rails_projects.xml
   # Note: should only be used for text that doesn't need updating later.

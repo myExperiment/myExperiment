@@ -33,7 +33,10 @@
 		</h1>
 	<% end %>
 <% else %>
-	<h1>User: <%=h @user.name %><%= friend_badge(@user) %></h1>
+	<h1>
+		<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
+		User: <%=h @user.name %><%= friend_badge(@user) %>
+	</h1>
 <% end %>
 
 <div style="float: left; padding: 0 0.6em;">
@@ -91,32 +94,36 @@
 	  <% end %>
 	<% end %>
 	
-	<p>
-    <b>Email (public):</b>
-		<% unless @user.profile.email.nil? or @user.profile.email.empty? %>
-    	<%=mail_to @user.profile.email, nil, {  :encode => "hex", :replace_at => " [at] " } %>
-		<% else %>
-			<%= none_text %>	  
-		<% end %>
-	</p>
+	<% unless @user.profile.nil? %>
 	
-	<p>
-    <b>Website:</b>
-		<% unless @user.profile.website.nil? or @user.profile.website.empty? %>
-	    <%=link_to h(@user.profile.website), @user.profile.website %>
-	  <% else %>
-			<%= none_text %>
-		<% end %>
-	</p>
+		<p>
+	    <b>Email (public):</b>
+			<% unless @user.profile.email.nil? or @user.profile.email.empty? %>
+	    	<%=mail_to @user.profile.email, nil, {  :encode => "hex", :replace_at => " [at] " } %>
+			<% else %>
+				<%= none_text %>	  
+			<% end %>
+		</p>
+		
+		<p>
+	    <b>Website:</b>
+			<% unless @user.profile.website.nil? or @user.profile.website.empty? %>
+		    <%=link_to h(@user.profile.website), @user.profile.website %>
+		  <% else %>
+				<%= none_text %>
+			<% end %>
+		</p>
+		
+		<p>
+	  	<b>Location:</b>
+			<% unless @user.profile.location.nil? or @user.profile.location.empty? %>
+		    <%= h @user.profile.location %>
+		  <% else %>
+				<%= none_text %>
+			<% end %>
+		</p>
 	
-	<p>
-  	<b>Location:</b>
-		<% unless @user.profile.location.nil? or @user.profile.location.empty? %>
-	    <%= h @user.profile.location %>
-	  <% else %>
-			<%= none_text %>
-		<% end %>
-	</p>
+	<% end %>
 	
 </div>
 
@@ -124,73 +131,77 @@
 
 <div style="margin: 1em 0.6em;">
 
-	<% unless @user.profile.body.nil? or @user.profile.body.empty? %>
+	<% unless @user.profile.nil? or @user.profile.body.nil? or @user.profile.body.empty? %>
 	  <div class="box_standout">
 	    <%= white_list @user.profile.body_html %>
 	  </div>
 	<% end %>
 	
-	<br/>
+	<% unless @user.profile.nil? %>
 	
-	<div style="float: left; width: 41%;">
+		<br/>
 	
-		<p>
-	  	<b>Other contact details:</b>
-		</p>
-		<% unless @user.profile.contact_details.nil? or @user.profile.contact_details.empty? %>  
-		  <%= simple_format(sanitize(@user.profile.contact_details)) %>
-		<% else %>
-			<%= none_text %>
-		<% end %>
+		<div style="float: left; width: 41%;">
 		
-		<p>
-	  	<b>Interests:</b>
-		</p>
-		<% unless @user.profile.interests.nil? or @user.profile.interests.empty? %>
-		  <%= simple_format(sanitize(@user.profile.interests)) %>
-		<% else %>
-			<%= none_text %>
-		<% end %>
-	
-	</div>
-	
-	<div style="float: right; width: 51%;">
-	
-		<p>
-	  	<b>Field/Industry:</b>
-			<% unless @user.profile.field_or_industry.nil? or @user.profile.field_or_industry.empty? %>
-		    <%= h @user.profile.field_or_industry %>
-		  <% else %>
+			<p>
+		  	<b>Other contact details:</b>
+			</p>
+			<% unless @user.profile.contact_details.nil? or @user.profile.contact_details.empty? %>  
+			  <%= simple_format(sanitize(@user.profile.contact_details)) %>
+			<% else %>
 				<%= none_text %>
 			<% end %>
-		</p>
-		
-		<p>
-		 	<b>Occupation/Role(s):</b>
-			<% unless @user.profile.occupation_or_roles.nil? or @user.profile.occupation_or_roles.empty? %>
-		    <%= h @user.profile.occupation_or_roles %>
-		  <% else %>
+			
+			<p>
+		  	<b>Interests:</b>
+			</p>
+			<% unless @user.profile.interests.nil? or @user.profile.interests.empty? %>
+			  <%= simple_format(sanitize(@user.profile.interests)) %>
+			<% else %>
 				<%= none_text %>
 			<% end %>
-		</p>
 		
-		<p>
-	  	<b>Organisation(s):</b>
-		</p>
-		<% unless @user.profile.organisations.nil? or @user.profile.organisations.empty? %>
-		  <%= simple_format(sanitize(@user.profile.organisations)) %>
-		<% else %>
-			<%= none_text %>
+		</div>
+		
+		<div style="float: right; width: 51%;">
+		
+			<p>
+		  	<b>Field/Industry:</b>
+				<% unless @user.profile.field_or_industry.nil? or @user.profile.field_or_industry.empty? %>
+			    <%= h @user.profile.field_or_industry %>
+			  <% else %>
+					<%= none_text %>
+				<% end %>
+			</p>
+			
+			<p>
+			 	<b>Occupation/Role(s):</b>
+				<% unless @user.profile.occupation_or_roles.nil? or @user.profile.occupation_or_roles.empty? %>
+			    <%= h @user.profile.occupation_or_roles %>
+			  <% else %>
+					<%= none_text %>
+				<% end %>
+			</p>
+			
+			<p>
+		  	<b>Organisation(s):</b>
+			</p>
+			<% unless @user.profile.organisations.nil? or @user.profile.organisations.empty? %>
+			  <%= simple_format(sanitize(@user.profile.organisations)) %>
+			<% else %>
+				<%= none_text %>
+			<% end %>
+			
+		</div>
+		
+		<div class="clearer">&nbsp;</div>
+		
+		<% if mine? @user %>
+			<p style="text-align: right; margin-top: 0.5em; color: #666666;">
+				[ <%= link_to "Edit profile", edit_profile_path(@user.profile) %> ]
+			</p>
 		<% end %>
-		
-	</div>
 	
-	<div class="clearer">&nbsp;</div>
-	
-	<% if mine? @user %>
-		<p style="text-align: right; margin-top: 0.5em; color: #666666;">
-			[ <%= link_to "Edit profile", edit_profile_path(@user.profile) %> ]
-		</p>
 	<% end %>
 
 </div>

@@ -5,6 +5,7 @@
 	<table class="alt_table">
 		<% odd_row = false -%> 
 		<% for user in collection %>
+			<% if user.activated? %>
 		  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 			    <td width="100px"><%= avatar user, 60 %></td>
 			    <td class="mid" style="text-align: left;">
@@ -46,6 +47,7 @@
 		      		<% end %>
 		    	</td>
 		  	</tr>
+			<% end %>
 		<% end %>
 	</table>
 

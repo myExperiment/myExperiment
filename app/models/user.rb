@@ -9,6 +9,7 @@ require 'acts_as_contributor'
 require 'acts_as_creditor'
 
 class User < ActiveRecord::Base
+  
   has_many :citations, 
            :order => "created_at DESC",
            :dependent => :destroy
@@ -16,11 +17,13 @@ class User < ActiveRecord::Base
   def self.most_recent(limit=5)
     self.find(:all,
               :order => "created_at DESC",
-              :limit => limit)
+              :limit => limit,
+              :conditions => "activated_at IS NOT NULL")
+            
   end
   
   def self.last_updated(limit=5)
-    self.find_by_sql ["SELECT u.*, p.* FROM users u, profiles p WHERE u.id = p.user_id ORDER BY GREATEST(u.updated_at, p.updated_at) DESC LIMIT ?", limit]
+    self.find_by_sql ["SELECT u.*, p.* FROM users u, profiles p WHERE u.id = p.user_id and activated_at IS NOT NULL ORDER BY GREATEST(u.updated_at, p.updated_at) DESC LIMIT ?", limit]
   end
   
   acts_as_tagger
@@ -61,11 +64,56 @@ class User < ActiveRecord::Base
   
   validates_format_of       :username,
                             :with => /^[a-z0-9_]*$/,
-                            :message => "can only contain lower case characters, numbers and _",
+                            :message => "can only contain characters, numbers and _",
                             :if => Proc.new { |user| !user.username.nil? }
                             
-  validates_presence_of     :openid_url,                 :if => Proc.new { |user| !user.openid_url.nil? }
-  validates_uniqueness_of :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
+  validates_presence_of     :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
+  validates_uniqueness_of   :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
+  
+  validates_email_veracity_of :email
+  validates_email_veracity_of :unconfirmed_email
+  
+  # For checking email entered in form (user has to enter twice to prevent errors/typos)
+  validates_confirmation_of :unconfirmed_email, :if => Proc.new { |user| user.not_openid? and !user.unconfirmed_email.blank? }
+  validates_presence_of     :unconfirmed_email_confirmation, :if => Proc.new { |user| user.not_openid? and !user.unconfirmed_email.blank? }
+  
+  #validates_uniqueness_of :email, :case_sensitive => false, :if => Proc.new { |user| !user.username.nil? and !(user.email.nil? or user.email.empty?) }, :message => "is already registered"
+  #validates_uniqueness_of :unconfirmed_email, :case_sensitive => false, :if => Proc.new { |user| !user.username.nil? and !(user.unconfirmed_email.nil? or user.unconfirmed_email.empty?) }, :message => "is already registered"
+    
+  before_validation :cleanup_input
+  before_save :check_email_uniqueness
+  before_save :check_non_openid_conditions
+  
+  # Prevent the "email" field from being set externally (ie: deny write access)
+  def email=(new_email)
+    errors.add(:email, "cannot be set directly. Must go through the email confirmation mechanism by using the 'unconfirmed_email' attribute first.")
+    return false
+  end
+  
+  # Carries out the process of confirming the email address in the "unconfirmed_email" field.
+  # Also activates the user if not previously activated.
+  def confirm_email!
+    unless self.unconfirmed_email.blank?
+      
+      # BEGIN DEBUG
+      puts "Username: #{self.username}"
+      puts "Unconfirmed email: #{self.unconfirmed_email}"
+      puts "Confirmed email: #{self.email}"
+      # END DEBUG
+      
+      # Note: need to bypass the explicitly defined setter for 'email'
+      self[:email] = self.unconfirmed_email
+      self.email_confirmed_at = Time.now
+      self.unconfirmed_email = nil
+      
+      # Activate user if not previously activated
+      self.activated_at = Time.now unless self.activated?
+      
+      return self.save
+    else
+      return false
+    end
+  end
   
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(username, password)
@@ -152,10 +200,10 @@ class User < ActiveRecord::Base
   
   has_one :profile,
           :dependent => :destroy
-  
-  before_create do |u|
-    u.profile = Profile.new(:user_id => u.id)
-  end
+          
+  validates_associated :profile
+          
+  before_create :create_profile
   
   has_many :pictures,
            :dependent => :destroy
@@ -175,9 +223,6 @@ class User < ActiveRecord::Base
     "#{name}"
   end
   
-  def email
-    "#{profile.email}"
-  end
   # END SavageBeast #
   
   # SELF --> friendship --> Friend
@@ -389,8 +434,63 @@ class User < ActiveRecord::Base
     friends_r_wrapper
   end
   
+  def email_confirmed?
+    !self.email_confirmed_at.nil? and !self.email.nil?
+  end
+  
+  def activated?
+    self.activated_at != nil
+  end
+  
+  def not_openid?
+    openid_url.blank?
+  end
+  
 protected
 
+  # clean up emails and username before validation
+  def cleanup_input
+    self.unconfirmed_email = User.clean_string(self.unconfirmed_email || "")
+    self.username = User.clean_string(self.username || "")
+  end
+  
+  def check_email_uniqueness
+    unique = true
+    
+    unless self.unconfirmed_email.blank?
+      user = User.find_by_email(self.unconfirmed_email)
+      if user and !(user.id == self.id)
+        unique = false
+      else
+        user2 = User.find_by_unconfirmed_email(self.unconfirmed_email)
+        if user2 and !(user2.id == self.id)
+          unique = false
+        end
+      end
+      
+      unless unique
+        errors.add_to_base("The email provided has already been registered")
+        errors.add(:unconfirmed_email, "")
+      end
+    end
+    
+    return unique
+  end
+  
+  def check_non_openid_conditions
+    ok = true
+    
+    if self.not_openid?
+      # Then either 'email' or 'unconfirmed_email' (or both) should be set
+      if self.unconfirmed_email.blank? and self.email.blank?
+        errors.add_to_base("Either 'email' or 'unconfirmed_email' (or both) should be set for this user (since they do not have an OpenID)")
+        ok = false
+      end
+    end
+    
+    return ok
+  end
+  
   # BEGIN Authentication "before filter"s #
   def encrypt_password
     return if password.blank?
@@ -401,12 +501,17 @@ protected
   def password_required?
     !username.nil? && (crypted_password.blank? || !password.blank?)
   end
-
-  def not_openid?
-    openid_url.blank?
-  end
+  
   # END Authentication "before filter"s #
 
+  def create_profile
+    if self.profile.nil?
+      self.profile = Profile.new(:user_id => self.id) 
+      puts "ERRORS!" unless self.profile.errors.empty?
+      self.profile.errors.full_messages.each { |e| puts e }
+    end
+  end
+    
   def friend_r?(user_id, depth=0)
     unless depth > @@maxdepth
       return true if friend? user_id
@@ -439,6 +544,11 @@ protected
   end
   
 private
+
+  # clean string to remove spaces and force lowercase
+  def self.clean_string(string)
+    (string.downcase).gsub(" ","")
+  end
   
   @@maxdepth = 7 # maximum level of recursion for depth first search
 end

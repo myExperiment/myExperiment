@@ -42,7 +42,7 @@ class SessionController < ApplicationController
       
       # create user object if one does not exist
       unless @user = User.find_first(["openid_url = ?", response.identity_url])
-        @user = User.new(:openid_url => response.identity_url, :name => "Joe Bloggs BSc (CHANGE ME!!)", :last_seen_at => Time.now)
+        @user = User.new(:openid_url => response.identity_url, :name => response.identity_url, :activated_at => Time.now, :last_seen_at => Time.now)
         redirect_to_edit_user = @user.save
       end
 

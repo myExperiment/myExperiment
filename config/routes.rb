@@ -23,6 +23,13 @@ ActionController::Routing::Routes.draw do |map|
   # all citations
   # map.resources :citations
 
+  # For email confirmations (user accounts)
+  map.connect 'users/confirm_email/:hash', :controller => "users", :action => "confirm_email"
+  
+  # For password resetting (user accounts)
+  map.connect 'users/forgot_password', :controller => "users", :action => "forgot_password"
+  map.connect 'users/reset_password/:reset_code', :controller => "users", :action => "reset_password"
+
   # all blobs (aka files)
   map.connect 'files/all', :controller => 'blobs', :action => 'all'
 

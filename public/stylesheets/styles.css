@@ -45,6 +45,7 @@ h1 { /*background-image: url('/images/header-bg2.png');
 	text-align: center;
 	font-size: 123.1%;
 	color: #000033;
+	margin-top: 0.8em;
 	margin-bottom: 0.8em;
 }
 
@@ -163,7 +164,8 @@ fieldset {
 #myexp_content {
 	padding-right: 1.5em;
 	padding-left: 0.5em;
-	margin-bottom: 3em
+	margin-top: 1em;
+	margin-bottom: 3em;
 }
 
 #myexp_sidebar {
@@ -1088,6 +1090,14 @@ div.auto_complete ul strong.highlight {
 	padding: 0.8em; 
 	border: 1px dotted #999999;
 	background-color: #FFFFCC;
+}
+
+.box_dynamic_help {
+	padding: 0.4em 0.8em; 
+	border: 1px dotted #999999;
+	background-color: #FFFFCC;
+	font-size: 85%;
+	margin-bottom: 0.4em;
 }
 
 .box_inplace {

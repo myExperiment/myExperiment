@@ -15,14 +15,9 @@
   </p>
 <% end %>
 
-<h2>Username & Password</h2>
+<h2>Password</h2>
 
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
-  <p>
-    <b>Username</b><br />
-    <%= f.text_field :username %>
-  </p>
-    
   <p>
     <b>New Password</b><br />
     <%= f.password_field :password %>

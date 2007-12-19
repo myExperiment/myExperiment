@@ -11,7 +11,7 @@
     <% form_tag session_path do %>
       <div class="box1">
 		  <p class="label">
-	        Username:
+	        Username or Email:
 		  </p>
 		  <p>
 	        <%= text_field_tag 'session[username]', nil, :class => 'field', :style => "width: 140px;" %>
@@ -44,10 +44,14 @@
 	  
     <% end %>
     
-    <p>
+    <p style="margin-top: 0.6em; line-height: 1.3em; font-size: 93%;">
       <b>Need an account?</b><br />
-      <%= link_to "Click here to register", new_user_url %>
+      <b><%= link_to "Click here to register", new_user_url %></b>
     </p>
+		
+		<p style="margin-top: 0.6em; font-size: 93%;">
+			<b><%= link_to "Forgot Password?", url_for(:controller => "users", :action => "forgot_password") %></b>
+		</p>
   </div>
   
   <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>

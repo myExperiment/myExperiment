@@ -822,10 +822,20 @@ module ApplicationHelper
     end
   end
   
+  def help_icon_with_tooltip(info_text, delay=200)
+    return image_tag("famfamfam_silk/help.png",
+              :title => tooltip_title_attrib(info_text, delay),
+              :style => "vertical-align:middle;")
+  end
+  
   def info_icon_with_tooltip(info_text, delay=200)
     return image_tag("famfamfam_silk/information.png",
-              :title => "header=[] body=[#{info_text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[#{delay}]",
+              :title => tooltip_title_attrib(info_text, delay),
               :style => "vertical-align:middle;")
+  end
+  
+  def tooltip_title_attrib(text, delay=200)
+    return "header=[] body=[#{text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[#{delay}]"
   end
 
   def get_user_rating(contributable, user_id)

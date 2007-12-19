@@ -7,7 +7,7 @@
 .hTagcloud .popularity .vvv-popular		{ font-size:146.5%; }
 .hTagcloud .popularity .vvvv-popular	{ font-size:161.6%; }
 
-.tags_smaller .hTagcloud .popularity li	{ display:inline; text-decoration:none; line-height: 1.3em; }
+.tags_smaller .hTagcloud .popularity li	{ display:inline; text-decoration:none; line-height: 1.2em; }
 .tags_smaller .hTagcloud .popularity .popular { font-size:77% }
 .tags_smaller .hTagcloud .popularity .v-popular { font-size:85%; }
 .tags_smaller .hTagcloud .popularity .vv-popular { font-size:100%; }
