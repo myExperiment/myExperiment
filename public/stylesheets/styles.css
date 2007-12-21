@@ -893,9 +893,9 @@ table.contributable:hover {
 
 .contribution_version_selector_box {
 	margin: 0;
-	padding: 0.1em 0.5em;
-	border: 1px solid #999999;
-	border-bottom: none;
+	margin-bottom: 0.7em;
+	padding: 0.4em 0.5em;
+	border: 1px solid #BBBBBB;
 	/*background-image: url('/images/header-bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
@@ -916,7 +916,7 @@ table.contributable:hover {
 }
 
 .contribution_version_selector_box table td {
-	padding: 0.3em 0.5em;
+	padding: 0em 0.5em;
 }
 
 .contribution_version_selector_box .heading {
@@ -927,8 +927,8 @@ table.contributable:hover {
 }
 
 .contribution_version_box {
-	border: 1px solid #999999;
-	padding: 0.7em 0.7em;
+	border: 2px solid #BBBBBB;
+	padding: 0.6em 0.7em;
 	margin-bottom: 1em;
 }
 
