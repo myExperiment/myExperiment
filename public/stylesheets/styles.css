@@ -927,7 +927,7 @@ table.contributable:hover {
 }
 
 .contribution_version_box {
-	border: 2px solid #BBBBBB;
+	border: 1px solid #999999;
 	padding: 0.6em 0.7em;
 	margin-bottom: 1em;
 }
