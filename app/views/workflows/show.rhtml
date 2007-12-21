@@ -18,13 +18,13 @@
 	</ul>
 <% end %>
 
-<h1 style="margin-bottom: 0.2em;">Workflow Entry: <%=h @workflow.title %></h1>
+<h1 class="contribution_title">Workflow Entry: <%=h @workflow.title %></h1>
 
-<p style="color: #666666; font-size: 85%; text-align: center; margin-top: 0; padding-top: 0; margin-bottom: 0.3em;">
+<div class="contribution_aftertitle">
 	<b>Last updated: </b><%= datetime @workflow.updated_at %>
-</p>
+</div>
 
-<div style="color: #999999; font-size: 85%; text-align: center; margin-bottom: 0.8em;">
+<div class="contribution_mini_nav">
 	| <%= link_to "Comments (#{@workflow.comments.length})", "#comments" %> |
 </div>
 
@@ -33,9 +33,9 @@
 		<table>
 			<tbody>
 				<tr>
-					<td style="text-align: left; font-size: 108%; font-weight: bold; color: #990000;">
+					<td class="heading">
 						<%= info_icon_with_tooltip("This box shows version #{@viewing_version_number.to_s} of the Workflow file for this Workflow entry") %>
-						<%= "Version: #{@viewing_version_number.to_s} #{@workflow.describe_version(@viewing_version_number)}" %>
+						<%= "Version #{@viewing_version_number.to_s} #{@workflow.describe_version(@viewing_version_number)}" %>
 					</td>
 					<td>
 						<% if @latest_version_number > 1 %>
@@ -56,7 +56,7 @@
 		</table>
 		
 		<p style="color: #999999; font-size: 85%; text-align: left; padding-left: 0.5em; padding-top: 0; margin-bottom: 0.4em;">
-			[ <%= link_to_function "Show/hide version info", visual_effect(:toggle_blind, "version_info_box", :duration => 0.5) %> ]
+			[ <%= link_to_function "Show/hide version meta info", visual_effect(:toggle_blind, "version_info_box", :duration => 0.5) %> ]
 		</p>		
 		<div id="version_info_box" class="box_standout" style="display: none; font-size: 85%; padding: 0.2em 0.4em; margin: 0.2em 0 0.8em 0; line-height: 1.1em; color: #333333;">
 			<p>
@@ -74,14 +74,16 @@
 				<p><i>None</i></p>
 			<% end %>
 		</div>
+	
 	</div>
+	
 	<div class="contribution_version_box">
 		<% if logged_in? and @authorised_to_edit %>
 			<ul class="sectionIcons">
-				<li><%= icon('edit', "/workflows/#{@workflow.id};edit_version?version=#{@viewing_version_number.to_s}", nil, nil, "Edit Workflow Version") %></li>
+				<li><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit Workflow Version") %></li>
         <% if @latest_version_number > 1 %>
 					<% if @workflow.authorized?("destroy", current_user) %>
-						<li><%= icon('destroy', "/workflows/#{@workflow.id};destroy_version?version=#{@viewing_version_number.to_s}", nil, { :confirm => "Are you sure you want to delete this version (Version #{@viewing_version_number.to_s}) of the Workflow file (including title/description metadata)?", :method => :delete }, 'Delete Workflow Version') %></li>
+						<li><%= icon('destroy', workflow_version_delete_url(@workflow.id, @viewing_version.version), nil, { :confirm => "Are you sure you want to delete this version (Version #{@viewing_version_number.to_s}) of the Workflow file (including title/description metadata)?", :method => :delete }, 'Delete Workflow Version') %></li>
 					<% end %>
         <% end %>
 			</ul>
@@ -89,31 +91,56 @@
 		
 		<p>
 			<b>Title:</b>
-			<%=h @viewing_version.title %>
+			<span class="title"><%=h @viewing_version.title %></span>
 		</p>
 		
+		<br/>
+		
+		<h3>
+			<%= info_icon_with_tooltip("This section shows the preview of this version of the Workflow (click on the image to expand)") %>
+			Preview
+		</h3>
+		
 		<% unless @viewing_version.image.nil? %>
-			<p>
-				<b>Diagram: (click to expand)</b><br/>
+			<p style="font-size: 85%; font-weight: normal;">
+				 (Click on the image to get the full size)
 			</p>
 			<div style="width: 100%;">
 				<center>
 					<%= link_to image_tag(url_for_file_column(@viewing_version, "image", "medium")), url_for_file_column(@viewing_version, "image"), :popup => true %>
 				</center>
 			</div>
+		<% else %>
+			<p class="none_text">
+				Not available
+			</p>
 		<% end %>
 		
-		<% if @viewing_version.body and @viewing_version.body.length > 0 %>
-			<div class="contribution_description">
-				<%= white_list @viewing_version.body_html %>
-			</div>
-		<% end %>
-		
-		<br/>
 		<br/>
 		
 		<h3>
-			<%= info_icon_with_tooltip("This section provides links to the different downloads for this Workflow file version") %>
+			<%= info_icon_with_tooltip("This section shows the overall description for this version of the Workflow") %>
+			Description
+		</h3>
+		
+		<% unless @viewing_version.body.blank? %>
+			<div class="contribution_description">
+				<%= white_list @viewing_version.body_html %>
+			</div>
+			<% if logged_in? and @authorised_to_edit %>
+				<br/>
+				<p style="text-align: right; color: #666666;">[ <%= link_to "edit", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
+			<% end %>
+		<% else %>
+			<p class="none_text">
+				Not set
+			</p>
+		<% end %>
+		
+		<br/>
+		
+		<h3>
+			<%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
 			Download
 		</h3>
 		
@@ -125,18 +152,19 @@
 				<% end %>
 			</ul>
 		<% else %>
-			<b><i>You cannot download any associated files</i></b>
+			<p class="none_text">
+				You do not have permissions to download
+			</p>
 		<% end %>
 		
 		<br/>
-		<br/>
-
-		<% if @authorised_to_download %>
-			<h3>
-				<%= info_icon_with_tooltip("This section provides options for running this Workflow file.") %>
-				Run
-			</h3>
+		
+		<h3>
+			<%= info_icon_with_tooltip("This section provides options for running this version of the Workflow") %>
+			Run
+		</h3>
 			
+		<% if @authorised_to_download %>
 			<div style="margin: 0 1.5em;">
 				<p style="text-align: center;">
 					<b>Run this Workflow in the Taverna Workbench*</b><br/>
@@ -157,8 +185,12 @@
 					<%= link_to "* http://taverna.sourceforge.net/", "http://taverna.sourceforge.net/" %>
 				</p>
 			</div>
-		
+		<% else %>
+			<p class="none_text">
+				You do not have permissions to run this Workflow
+			</p>
 		<% end %>
+	
 	</div>
 	
 </div>

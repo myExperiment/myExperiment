@@ -894,6 +894,20 @@ module ApplicationHelper
     end
   end
   
+  def workflow_version_edit_url(workflow_id, version_number)
+    return url_for(:controller => "workflows",
+                   :id => workflow_id,
+                   :action => "edit_version",
+                   :version => version_number)
+  end
+  
+  def workflow_version_delete_url(workflow_id, version_number)
+    return url_for(:controller => "workflows",
+                   :id => workflow_id,
+                   :action => "destroy_version",
+                   :version => version_number)
+  end
+  
 protected
 
   def contributor_news(contributor, before, after, depth, restrict_contributor)

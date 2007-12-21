@@ -7,13 +7,13 @@
 	</ul>
 <% end %>
 
-<h1 style="margin-bottom: 0.2em;">File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
+<h1 class="contribution_title">File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
 
-<p style="color: #666666; font-size: 85%; text-align: center; margin-top: 0; padding-top: 0; margin-bottom: 0.3em;">
+<div class="contribution_aftertitle">
 	<b>Last updated: </b><%= datetime @blob.updated_at %>
-</p>
+</div>
 
-<div style="color: #999999; font-size: 85%; text-align: center; margin-bottom: 0.8em;">
+<div class="contribution_mini_nav">
 	| <%= link_to "Comments (#{@blob.comments.length})", "#comments" %> |
 </div>
 
@@ -21,7 +21,7 @@
 	<div class="contribution_version_box">
 		<p>
 		    <b>Title:</b>
-		    <%=h @blob.title %>
+		    <span class="title"><%=h @blob.title %></span>
 		</p>
 		
 		<p>
@@ -34,13 +34,23 @@
 		    <%=h @blob.content_type %>
 		</p>
 		
-		<% if @blob.body and @blob.body.length > 0 %>
+		<br/>
+		
+		<h3>
+			<%= info_icon_with_tooltip("This section shows the overall description for this version of the Workflow") %>
+			Description
+		</h3>
+		
+		<% unless @blob.body.blank? %>
 			<div class="contribution_description">
 				<%= white_list @blob.body_html %>
 			</div>
+		<% else %>
+			<p class="none_text">
+				Not set
+			</p>
 		<% end %>
 		
-		<br/>
 		<br/>
 		
 		<h3>
@@ -53,7 +63,9 @@
 				<li><%= icon('blob', @named_download_url, "Download File", nil, "Download File") %></li>
 			</ul>
 		<% else %>
-			<b><i>You cannot download this File</i></b>
+			<p class="none_text">
+				You cannot download this File
+			</p>
 		<% end %>
 	
 	</div>

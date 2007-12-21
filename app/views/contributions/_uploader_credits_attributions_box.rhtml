@@ -60,7 +60,7 @@
 	<% end %>
 	
 	<% if contributable.authorized?("edit", current_user) %>
-		<p style="text-align: right;"><small>[<%= link_to "edit", edit_path %>]</small></p>
+		<p style="text-align: right;"><small>[ <%= link_to "edit", edit_path %> ]</small></p>
 	<% end %>
 	
 </div>
