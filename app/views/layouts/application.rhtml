@@ -69,10 +69,10 @@
 					    </div>
 	    				<div id="myexp_content">
 								<% if flash[:error] %>
-									<p style="color: red; font-weight: bold; padding: 0.3em 0 ;"><%= flash[:error] %></p>
+									<p style="color: red; font-weight: bold; padding: 0.3em 0; margin-bottom: 1em;"><%= flash[:error] %></p>
 								<% end %>
 		    				<% if flash[:notice] %>
-									<p style="color: green; font-weight: bold; padding: 0.3em 0;"><%= flash[:notice] %></p>
+									<p style="color: green; font-weight: bold; padding: 0.3em 0; margin-bottom: 1em;"><%= flash[:notice] %></p>
 								<% end %>
 		    				<%= render :partial => "subnav" %>
 		    				<%= yield  %>

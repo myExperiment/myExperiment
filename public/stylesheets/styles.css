@@ -893,9 +893,9 @@ table.contributable:hover {
 
 .contribution_version_selector_box {
 	margin: 0;
-	margin-bottom: 0.7em;
+	margin-bottom: 1em;
 	padding: 0.4em 0.5em;
-	border: 1px solid #BBBBBB;
+	border: 1px dotted #BBBBBB;
 	/*background-image: url('/images/header-bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
