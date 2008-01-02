@@ -5,7 +5,7 @@
 	<%= render :partial => "gadgets/asset_manager" %>
 	<%= render :partial => "gadgets/user_tags" %>
 <% else %>
-	<% unless (controller.controller_name.to_s == "session" and controller.action_name.to_s == "new") %>
+	<% unless (controller.controller_name.to_s == "session") %>
 		<%= render :partial => "gadgets/sign_in" %>
 	<% end %>
 <% end %>
