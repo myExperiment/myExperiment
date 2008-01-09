@@ -1114,6 +1114,20 @@ div.auto_complete ul strong.highlight {
 	background-color: #FFFFCC;
 }
 
+.box_important {
+	padding: 0.5em 0.8em; 
+	border: 2px solid #993333;
+	background-color: #FFCCCC;
+}
+
+.box_currentuser_specific {
+	padding: 0.5em 0.8em;
+	border: 2px solid #99CCFF;
+	/*border-top: 1px dotted #999999;
+	border-bottom: 1px dotted #999999;
+	background-color: #CFE0EF;*/
+}
+
 .box_dynamic_help {
 	padding: 0.4em 0.8em; 
 	border: 1px dotted #999999;
@@ -1147,12 +1161,6 @@ div.auto_complete ul strong.highlight {
 	margin: 0.8em; 
 	padding: 0.5em;
 	border: 2px solid #CCCC99;
-}
-
-.box_currentusercontext {
-	padding: 0.8em;
-	border: 1px dotted #999999;
-	margin: 1.5em 0;
 }
 
 .none_text {
