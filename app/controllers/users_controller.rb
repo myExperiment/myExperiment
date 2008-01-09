@@ -13,9 +13,10 @@ class UsersController < ApplicationController
   # GET /users;search
   # GET /users.xml;search
   def search
-    @query = params[:query] == nil ? "" : params[:query] + "~"
+
+    @query = params[:query]
     
-    results = User.find_with_ferret(@query, :limit => :all)
+    results = User.find_by_solr(@query, :limit => 100).results
     
     # Only show activated users!
     @users = results.select { |u| u.activated? }

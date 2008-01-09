@@ -39,12 +39,9 @@ class Workflow < ActiveRecord::Base
   #non_versioned_fields.push("image", "svg", "license", "tag_list") # acts_as_versioned and file_column don't get on
   non_versioned_columns.push("license", "tag_list", "body_html")
   
-  acts_as_ferret :fields => { :title => { :store => :yes }, 
-                              :body => { :store => :yes }, 
-                              :tag_list => { :store => :yes },
-                              :rating => { :index => :untokenized },
-                              :contributor_name => { :store => :yes } }
-  
+  acts_as_solr :fields => [ :title, :body, :tag_list, :contributor_name, { :rating => :integer } ],
+               :include => [ :comments ]
+
   validates_presence_of :title, :scufl
   
   format_attribute :body

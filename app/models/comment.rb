@@ -13,6 +13,8 @@ class Comment < ActiveRecord::Base
   # NOTE: Comments belong to a user
   belongs_to :user
   
+  acts_as_solr :fields => [ :comment ]
+
   # Helper class method to lookup all comments assigned
   # to all commentable types for a given user.
   def self.find_comments_by_user(user)

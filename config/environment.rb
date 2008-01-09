@@ -64,7 +64,6 @@ Mime::Type.register "application/vnd.taverna.baclava+xml", :taverna_baclava
 Mime::Type.register "application/vnd.taverna.report+xml", :taverna_report
 
 # Include your application configuration below
-require 'acts_as_ferret'
 
 # SMTP configuration
 

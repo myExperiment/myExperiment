@@ -13,9 +13,10 @@ class BlobsController < ApplicationController
   # GET /blobs;search
   # GET /blobs.xml;search
   def search
-    @query = params[:query] == nil ? "" : params[:query] + "~"
+
+    @query = params[:query] == nil ? "" : params[:query]
     
-    @blobs = Blob.find_with_ferret(@query, :limit => :all)
+    @blobs = Blob.find_by_solr(@query, :limit => 100).results
     
     respond_to do |format|
       format.html # search.rhtml

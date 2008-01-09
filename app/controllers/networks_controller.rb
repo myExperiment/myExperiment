@@ -13,9 +13,10 @@ class NetworksController < ApplicationController
   # GET /networks;search
   # GET /networks.xml;search
   def search
-    @query = @query = params[:query] == nil ? "" : params[:query] + "~"
+
+    @query = params[:query]
     
-    @networks = Network.find_with_ferret(@query, :limit => :all)
+    @networks = Network.find_by_solr(@query, :limit => 100).results
     
     respond_to do |format|
       format.html # search.rhtml

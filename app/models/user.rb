@@ -181,11 +181,8 @@ class User < ActiveRecord::Base
   
   acts_as_creditor
 
-  acts_as_ferret :fields => { :openid_url => { :store => :yes }, 
-                              :name => { :store => :yes }, 
-                              :username => { :store => :yes },
-                              :tag_list => { :store => :yes } }
-  
+  acts_as_solr :fields => [ :openid_url, :name, :username, :tag_list ]
+
   # protected? asks the question "is other protected by me?"
   def protected?(other)
     if other.kind_of? User        # if other is a User...

@@ -17,11 +17,10 @@ class WorkflowsController < ApplicationController
   # GET /workflows;search
   # GET /workflows.xml;search
   def search
-    # why is there a + "~"
-    # @query = params[:query] == nil ? "" : params[:query] + "~"
+
     @query = params[:query]
     
-    @workflows = Workflow.find_with_ferret(@query, :sort => Ferret::Search::SortField.new(:rating, :reverse => true), :limit => :all)
+    @workflows = Workflow.find_by_solr(@query, :limit => 100).results
     
     respond_to do |format|
       format.html # search.rhtml

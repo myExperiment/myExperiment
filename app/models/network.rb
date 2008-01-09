@@ -18,12 +18,8 @@ class Network < ActiveRecord::Base
   has_many :forums, :as => :contributor
   has_many :workflows, :as => :contributor
   
-  acts_as_ferret :fields => { :title => { :store => :yes, :index => :untokenized }, 
-                              :unique_name => { :store => :yes }, 
-                              :owner_name => { :store => :yes },
-                              :description => { :store => :yes } ,
-                              :tag_list => { :store => :yes } }
-  
+  acts_as_solr :fields => [ :title, :unique_name, :owner_name, :description, :tag_list ]
+
   format_attribute :description
   
   def self.recently_created(limit=5)

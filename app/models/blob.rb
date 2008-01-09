@@ -17,12 +17,14 @@ class Blob < ActiveRecord::Base
   acts_as_attributor
   acts_as_attributable
   
-  acts_as_ferret :fields => { :title => { :store => :yes },
-                              :local_name => { :store => :yes },
-                              :body => { :store => :yes },
-                              :content_type => { :store => :yes } }
-  
+  acts_as_solr :fields => [:title, :local_name, :body, :content_type, :uploader],
+               :include => [ :comments ]
+
   validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
   
   format_attribute :body
+
+  def uploader
+    return contribution.contributor.name
+  end
 end
