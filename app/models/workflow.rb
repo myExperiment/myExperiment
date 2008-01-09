@@ -39,8 +39,8 @@ class Workflow < ActiveRecord::Base
   #non_versioned_fields.push("image", "svg", "license", "tag_list") # acts_as_versioned and file_column don't get on
   non_versioned_columns.push("license", "tag_list", "body_html")
   
-  acts_as_solr :fields => [ :title, :body, :tag_list, :contributor_name, { :rating => :integer } ],
-               :include => [ :comments ]
+  acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, { :rating => :integer } ],
+               :include => [ :comments ]) if SOLR_ENABLE
 
   validates_presence_of :title, :scufl
   

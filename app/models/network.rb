@@ -18,7 +18,7 @@ class Network < ActiveRecord::Base
   has_many :forums, :as => :contributor
   has_many :workflows, :as => :contributor
   
-  acts_as_solr :fields => [ :title, :unique_name, :owner_name, :description, :tag_list ]
+  acts_as_solr(:fields => [ :title, :unique_name, :owner_name, :description, :tag_list ]) if SOLR_ENABLE
 
   format_attribute :description
   

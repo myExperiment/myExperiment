@@ -16,7 +16,7 @@ class BlobsController < ApplicationController
 
     @query = params[:query] == nil ? "" : params[:query]
     
-    @blobs = Blob.find_by_solr(@query, :limit => 100).results
+    @blobs = SOLR_ENABLE ? Blob.find_by_solr(@query, :limit => 100).results : []
     
     respond_to do |format|
       format.html # search.rhtml

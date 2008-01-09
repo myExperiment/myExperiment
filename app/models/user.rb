@@ -181,7 +181,7 @@ class User < ActiveRecord::Base
   
   acts_as_creditor
 
-  acts_as_solr :fields => [ :openid_url, :name, :username, :tag_list ]
+  acts_as_solr(:fields => [ :openid_url, :name, :username, :tag_list ]) if SOLR_ENABLE
 
   # protected? asks the question "is other protected by me?"
   def protected?(other)

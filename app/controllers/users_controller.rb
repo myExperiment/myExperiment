@@ -16,7 +16,7 @@ class UsersController < ApplicationController
 
     @query = params[:query]
     
-    results = User.find_by_solr(@query, :limit => 100).results
+    results = SOLR_ENABLE ? User.find_by_solr(@query, :limit => 100).results : []
     
     # Only show activated users!
     @users = results.select { |u| u.activated? }
