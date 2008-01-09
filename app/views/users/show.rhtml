@@ -1,7 +1,7 @@
 <% none_text = '<font class="none_text">Not specified</font>' -%>
 
 <% if mine? @user and @user.unconfirmed_email.blank? and @user.email.blank? %>
-	<div id="email_notice" class="box_standout" style="color: #333333; font-weight: bold; margin-bottom: 2em;">
+	<div id="email_notice" class="box_standout" style="color: #333333; font-weight: bold; margin-bottom: 1.5em;">
 		<%= link_to_function image_tag("close.gif", :style => "float: right;"), 
 												 visual_effect(:toggle_slide, "email_notice", :duration => 0.3) %>
 		You can now <%= link_to "register an email address to your account", edit_user_path(@user)%>. 

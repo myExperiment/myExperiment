@@ -81,6 +81,10 @@ class FriendshipsController < ApplicationController
 
       respond_to do |format|
         if @friendship.save
+          friend = @friendship.friend
+          
+          Notifier.deliver_friendship_request(friend, @friendship.user.name, base_host) if friend.send_notifications?
+          
           flash[:notice] = 'Friendship was successfully requested.'
           format.html { redirect_to friendship_url(@friendship.friend_id, @friendship) }
           format.xml  { head :created, :location => friendship_url(@friendship.friend_id, @friendship) }

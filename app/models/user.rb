@@ -433,8 +433,9 @@ class User < ActiveRecord::Base
   end
   
   def email_confirmed?
-    !self.email_confirmed_at.nil? and !self.email.nil?
+    not self.email_confirmed_at.blank? and not self.email.blank?
   end
+  
   
   def activated?
     self.activated_at != nil
@@ -442,6 +443,10 @@ class User < ActiveRecord::Base
   
   def not_openid?
     openid_url.blank?
+  end
+  
+  def send_notifications?
+    activated? and email_confirmed? and self.receive_notifications
   end
   
 protected
