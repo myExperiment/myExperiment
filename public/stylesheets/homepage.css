@@ -127,6 +127,7 @@
 #myexp_home_content .links li {
 	display: inline;
 	vertical-align: middle;
+	margin: 0 0.2em;
 }
 
 #myexp_home_content .links li * {
