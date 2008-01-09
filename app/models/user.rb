@@ -8,6 +8,8 @@ require 'digest/sha1'
 require 'acts_as_contributor'
 require 'acts_as_creditor'
 
+require 'write_once_of'
+
 class User < ActiveRecord::Base
   
   has_many :citations, 
@@ -60,29 +62,24 @@ class User < ActiveRecord::Base
   validates_length_of       :username, :within => 3..40, :if => Proc.new { |user| !user.username.nil? }
   #validates_uniqueness_of   :username, :case_sensitive => false, :if => (Proc.new { |user| !user.username.nil? } and :not_openid?)
   validates_uniqueness_of   :username, :case_sensitive => false, :if => Proc.new { |user| !user.username.nil? }
-  before_save :encrypt_password
+  before_save               :encrypt_password
   
   validates_format_of       :username,
                             :with => /^[a-z0-9_]*$/,
                             :message => "can only contain characters, numbers and _",
                             :if => Proc.new { |user| !user.username.nil? }
                             
+  validates_write_once_of   :username, :on => :update, :if => Proc.new { |user| !user.username.nil? }, :message => "cannot be changed"  
+                          
   validates_presence_of     :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
   validates_uniqueness_of   :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
   
   validates_email_veracity_of :email
   validates_email_veracity_of :unconfirmed_email
   
-  # For checking email entered in form (user has to enter twice to prevent errors/typos)
-  validates_confirmation_of :unconfirmed_email, :if => Proc.new { |user| user.not_openid? and !user.unconfirmed_email.blank? }
-  validates_presence_of     :unconfirmed_email_confirmation, :if => Proc.new { |user| user.not_openid? and !user.unconfirmed_email.blank? }
-  
-  #validates_uniqueness_of :email, :case_sensitive => false, :if => Proc.new { |user| !user.username.nil? and !(user.email.nil? or user.email.empty?) }, :message => "is already registered"
-  #validates_uniqueness_of :unconfirmed_email, :case_sensitive => false, :if => Proc.new { |user| !user.username.nil? and !(user.unconfirmed_email.nil? or user.unconfirmed_email.empty?) }, :message => "is already registered"
-    
   before_validation :cleanup_input
   before_save :check_email_uniqueness
-  before_save :check_non_openid_conditions
+  before_create :check_email_non_openid_conditions  # NOTE: use before_save if you want validation to occur on updates as well. before_create is being used here because of old user base.
   
   # Prevent the "email" field from being set externally (ie: deny write access)
   def email=(new_email)
@@ -127,7 +124,7 @@ class User < ActiveRecord::Base
       u = find(:first, :conditions => ["email = ?", login]) 
     end
     
-    u && u.authenticated?(password) ? u : nil
+    u && u.activated? && u.authenticated?(password) ? u : nil
   end
 
   # Encrypts some data with the salt.
@@ -137,7 +134,12 @@ class User < ActiveRecord::Base
 
   # Encrypts the password with the user salt
   def encrypt(password)
-    self.class.encrypt(password, salt)
+    e = self.class.encrypt(password, salt)
+    
+    # Clear password virtual attribute to prevent it from being shown in forms after update
+    self.password = nil
+    self.password_confirmation = nil #if self.respond_to?(password_confirmation)
+    return e
   end
 
   def authenticated?(password)
@@ -200,7 +202,7 @@ class User < ActiveRecord::Base
   has_one :profile,
           :dependent => :destroy
           
-  validates_associated :profile
+  #validates_associated :profile
           
   before_create :create_profile
   
@@ -449,14 +451,34 @@ protected
 
   # clean up emails and username before validation
   def cleanup_input
-    self.unconfirmed_email = User.clean_string(self.unconfirmed_email || "")
-    self.username = User.clean_string(self.username || "")
+    # BEGIN DEBUG
+    puts 'BEGIN cleanup_input'
+    # END DEBUG
+    
+    self.unconfirmed_email = User.clean_string(self.unconfirmed_email) unless self.unconfirmed_email.blank?
+    self.username = User.clean_string(self.username) unless self.username.blank?
+    
+    # BEGIN DEBUG
+    puts 'END cleanup_input'
+    # END DEBUG
   end
   
   def check_email_uniqueness
+    # BEGIN DEBUG
+    puts 'BEGIN check_email_uniqueness'
+    # END DEBUG
+    
     unique = true
     
-    unless self.unconfirmed_email.blank?
+    unless self.unconfirmed_email.blank? or self.email.blank?
+      if self.unconfirmed_email == self.email
+        unique = false
+        errors.add_to_base("Your current email is already the same as the one provided")
+        errors.add(:unconfirmed_email, "")
+      end
+    end
+    
+    unless !unique or self.unconfirmed_email.blank?
       user = User.find_by_email(self.unconfirmed_email)
       if user and !(user.id == self.id)
         unique = false
@@ -468,24 +490,36 @@ protected
       end
       
       unless unique
-        errors.add_to_base("The email provided has already been registered")
+        errors.add_to_base("The email provided has already been registered (or is awaiting confirmation)")
         errors.add(:unconfirmed_email, "")
       end
     end
     
+    # BEGIN DEBUG
+    puts 'END check_email_uniqueness'
+    # END DEBUG
+    
     return unique
   end
   
-  def check_non_openid_conditions
+  def check_email_non_openid_conditions
+    # BEGIN DEBUG
+    puts 'BEGIN check_email_non_openid_conditions'
+    # END DEBUG
+    
     ok = true
     
     if self.not_openid?
       # Then either 'email' or 'unconfirmed_email' (or both) should be set
       if self.unconfirmed_email.blank? and self.email.blank?
-        errors.add_to_base("Either 'email' or 'unconfirmed_email' (or both) should be set for this user (since they do not have an OpenID)")
+        errors.add_to_base("An email address is required")
         ok = false
       end
     end
+    
+    # BEGIN DEBUG
+    puts 'END check_email_non_openid_conditions'
+    # END DEBUG
     
     return ok
   end
@@ -493,7 +527,7 @@ protected
   # BEGIN Authentication "before filter"s #
   def encrypt_password
     return if password.blank?
-    self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{username}--") if new_record?
+    self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{username}--") if self.salt.nil?
     self.crypted_password = encrypt(password)
   end
     
@@ -506,8 +540,11 @@ protected
   def create_profile
     if self.profile.nil?
       self.profile = Profile.new(:user_id => self.id) 
-      puts "ERRORS!" unless self.profile.errors.empty?
-      self.profile.errors.full_messages.each { |e| puts e }
+      
+      # BEGIN DEBUG
+      #puts "ERRORS!" unless self.profile.errors.empty?
+      #self.profile.errors.full_messages.each { |e| puts e }
+      # END DEBUG
     end
   end
     

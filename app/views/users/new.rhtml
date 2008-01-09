@@ -16,7 +16,7 @@
 							<div class="box_simple">
 								<p style="color: #990000; font-weight: bold; font-size: 108%;">First...</p>
 								<p>
-									Provide an email address:
+									Provide an <b>email address</b>:
 									<span style="margin-left: 0.5em; font-size: 85%; vertical-align: middle;">(<%= link_to_function "Why?", visual_effect(:toggle_blind, "email_why", :duration => 0.3) %>)</span>
 								</p>
 								<div id="email_why" class="box_dynamic_help" style="display: none;">
@@ -24,30 +24,33 @@
 									<p>You also benefit by being able to:</p>
 									<ul style="margin-top: 0.1em;">
 										<li>Receive email notifications for friendship requests, group invitations and so on [optional].</li>
-										<li>Reset your password (only for accounts with a username/password) in case you have forgotten it.</li>
+										<li>Reset your password in case you have forgotten it (only for accounts with a username/password).</li>
 									</ul>
 								</div>
 								
 								<p>
-								  <b>Email</b>
-									<br/>
-									<%= f.text_field :unconfirmed_email %>
+									<%= f.text_field :unconfirmed_email, :size => '50' %>
 								</p>
-								
-								<p>
-								  <b>Confirm Email</b>
-									<br/>
-									<%= f.text_field :unconfirmed_email_confirmation %>
+								<p style="font-size: 85%; color: #333333;">
+									Before submitting, please check that you have spelt it correctly. 
 								</p>
 								
 								<br/>
 								
 								<table>
 									<tr>
-										<td style="vertical-align: top;"><%= f.check_box :receive_notifications %></td>
+										<td style="text-align: left; vertical-align: top; padding-left: 0;"><%= check_box_tag('make_email_public') %></td>
+										<td style="text-align: left;">Make my email public (this will <b>copy</b> your email address to your Profile)</td>
+									</tr>
+								</table>
+								
+								<table>
+									<tr>
+										<td style="text-align: left; vertical-align: top; padding-left: 0;"><%= f.check_box :receive_notifications %></td>
 										<td style="text-align: left;">I would like to receive email notifications for events that relate to me</td>
 									</tr>
 								</table>
+								
 							</div>
 							
 						</td>
@@ -92,7 +95,7 @@
 				
 				<p class="box_infotext">
 					When you click register, an email will be sent to you with a confirmation link. Your account will only be activated once you follow this link.
-					We reserve the right to remove unactivated accounts after 30 days.
+					We reserve the right to remove <b>unactivated</b> accounts after 30 days.
 				</p>
 				
 				<p style="text-align: center;">

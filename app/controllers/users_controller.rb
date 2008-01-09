@@ -95,7 +95,14 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.save
         # DO NOT log in user yet, since account needs to be validated and activated first (through email).
-        Mailer.deliver_confirmation_email(@user, confirmation_hash(@user.unconfirmed_email), base_host)        
+        Mailer.deliver_account_confirmation(@user, confirmation_hash(@user.unconfirmed_email), base_host)
+        
+        # If required, copy the email address to the Profile
+        if params[:make_email_public]
+          @user.profile.email = @user.unconfirmed_email
+          @user.profile.save
+        end
+        
         flash[:notice] = "Thank you for registering! We have sent a confirmation email to #{@user.unconfirmed_email} with instructions on how to activate your account."
         format.html { redirect_to(:action => "index") }
         format.xml  { head :created, :location => user_url(@user) }
@@ -110,12 +117,31 @@ class UsersController < ApplicationController
   # PUT /users/1.xml
   def update
     # openid url's must be validated and updated separately
+    # FIXME: shouldn't the line below be for params[:user][:openid_url]
     params.delete("openid_url") if params[:openid_url]
     
     respond_to do |format|
       if @user.update_attributes(params[:user])
-        flash[:notice] = 'You have succesfully updated your account'
-        format.html { redirect_to user_url(@user) }
+        
+        # Check to see if user tried to set the new email address to the same as an existing one
+        if !@user.unconfirmed_email.blank? and @user.unconfirmed_email == @user.email
+          # Reset the field
+          @user.unconfirmed_email = nil;
+          @user.save
+          
+          flash.now[:error] = 'The new email address you are trying to set is the same as your current email address'
+        else
+          # If a new email address was set, then need to send out a confirmation email
+          if params[:user][:unconfirmed_email]
+            Mailer.deliver_update_email_address(@user, confirmation_hash(@user.unconfirmed_email), base_host)
+            flash.now[:notice] = "We have sent an email to #{@user.unconfirmed_email} with instructions on how to confirm this new email address"
+          else
+            flash.now[:notice] = 'You have succesfully updated your account'
+          end
+        end
+        
+        #format.html { redirect_to user_url(@user) }
+        format.html { render :action => "edit" }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -177,7 +203,7 @@ class UsersController < ApplicationController
     
     respond_to do |format|
       if confirmed
-        flash[:notice] = "Thank you for confirming your email. Your account is now active."
+        flash[:notice] = "Thank you for confirming your email. Your account is now active (if it wasn't before), and the new email address registered on your account. We hope you enjoy using myExperiment!"
         format.html { redirect_to user_url(@user) }
       else
         flash[:error] = "Invalid confirmation URL"
@@ -264,7 +290,7 @@ protected
     # TODO: if user is nil... redirect to a 404 page or provide a decent error message
     
     unless @user.activated?
-      error("User not found", "is invalid (not owner)")
+      error("User not activated", "is invalid (not owner)")
     end
   end
 
@@ -278,7 +304,7 @@ protected
     # TODO: if user is nil... redirect to a 404 page or provide a decent error message
     
     unless @user.activated?
-      error("User not found (id not authorized)", "is invalid (not owner)")
+      error("User not activated (id not authorized)", "is invalid (not owner)")
     end
   end
   

@@ -13,7 +13,7 @@ class Mailer < ActionMailer::Base
          :content => content
   end
   
-  def confirmation_email(user, hash, base_url)
+  def account_confirmation(user, hash, base_url)
     recipients user.unconfirmed_email
     from NOTIFICATIONS_EMAIL
     subject "Welcome to myExperiment. Please activate your account."
@@ -34,6 +34,18 @@ class Mailer < ActionMailer::Base
          :reset_code => user.reset_password_code, 
          :base_url => base_url
          
+  end
+  
+  def update_email_address(user, hash, base_url)
+    recipients user.unconfirmed_email
+    from NOTIFICATIONS_EMAIL
+    subject "myExperiment - Update Email Address on Account"
+
+    body :name => user.name, 
+         :username => user.username, 
+         :hash => hash, 
+         :base_url => base_url,
+         :email => user.unconfirmed_email
   end
 
 end
