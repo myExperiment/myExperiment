@@ -24,7 +24,9 @@
     <%= versioned_workflow_link(workflow, @latest_version_number) %>
 		<%= render :partial => "version_meta", :locals => { :version => workflow.versions.last } %>
   </p>
-<% else %>
+<% end %>
+
+<% if workflow.versions.length == 1 %>
   <p>
     This Workflow has only one version.
   </p>
