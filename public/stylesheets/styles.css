@@ -199,6 +199,7 @@ fieldset {
 
 #openid_url {
 	background: url(/images/openid.gif) no-repeat;
+	background-color: #FFFFFF;
 	padding-left: 16px;
 }
 
