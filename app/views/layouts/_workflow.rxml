@@ -1,8 +1,8 @@
 xm.item do
   xm.title "#{h(workflow.title)} by #{h(workflow.contribution.contributor.name || workflow.contribution.contributor.title)}"
   xm.description white_list(workflow.body_html)
-  xm.version workflow.version
-  xm.pubDate workflow.created_at.rfc822
+  xm.version workflow.current_version
+  xm.pubDate workflow.updated_at.rfc822
   xm.guid [request.host_with_port, "workflow", workflow.id.to_s].join(":"), "isPermaLink" => "false"
   xm.author h(workflow.contribution.contributor.name || workflow.contribution.contributor.title)
   xm.link workflow_url(workflow)
