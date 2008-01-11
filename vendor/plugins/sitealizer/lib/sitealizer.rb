@@ -58,11 +58,20 @@ module Sitealizer
         mutex = Mutex.new
         mutex.lock
         $visits.each do |env|
+
+          ip = env['REMOTE_ADDR']
+
+          if Module.constants.index('TRUSTED_PROXY')
+            if ip == TRUSTED_PROXY
+              ip = env['HTTP_X_FORWARDED_FOR'] if env['HTTP_X_FORWARDED_FOR']
+            end
+          end
+
           SiteTracker.create(
             :user_agent => env['HTTP_USER_AGENT'],
             :language => env['HTTP_ACCEPT_LANGUAGE'],
             :path => env['PATH_INFO'],
-            :ip => env['REMOTE_ADDR'],
+            :ip => ip,
             :referer => env['HTTP_REFERER']
           )
         end

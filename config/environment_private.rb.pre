@@ -25,3 +25,5 @@ SECRET_WORD = "our_secret_word_that_no_one_knows"
 # server
 SOLR_ENABLE = false
 
+TRUSTED_PROXY = 'xxx.xxx.xxx.xxx'
+
