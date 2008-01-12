@@ -81,9 +81,14 @@ class FriendshipsController < ApplicationController
 
       respond_to do |format|
         if @friendship.save
-          friend = @friendship.friend
           
-          Notifier.deliver_friendship_request(friend, @friendship.user.name, base_host) if friend.send_notifications?
+          begin
+            friend = @friendship.friend
+            Notifier.deliver_friendship_request(friend, @friendship.user.name, base_host) if friend.send_notifications?
+          rescue
+            puts "ERROR: failed to send Friendship Request email notification"
+            logger.error("ERROR: failed to send Friendship Request email notification")
+          end
           
           flash[:notice] = 'Friendship was successfully requested.'
           format.html { redirect_to friendship_url(@friendship.friend_id, @friendship) }
