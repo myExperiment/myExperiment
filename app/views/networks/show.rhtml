@@ -39,6 +39,17 @@
 		</p>
 	<% end %>
 	
+	<br/>
+	
+	<div class="contribution_section_box">
+		<p class="heading">
+			Members
+		</p>
+		<div>
+			<%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
+		</div>
+	</div>
+	
 </div>
 
 <div class="contribution_right_box">
@@ -63,15 +74,6 @@
     <%= render :partial => "layouts/news", :locals => { :collection => news(@network, true) } %>
   </div>
 </div>
-
-<% unless @network.members(true).empty? %>
-	<div class="tabContainer">
-	  <div class="tabTitle">Members</div>
-	  <div class="tabContent">
-	    <%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
-	  </div>
-	</div>
-<% end %>
 
 <% if logged_in? and @network.member? current_user.id %>
 	<% unless (contributions = all_contributables_for_network(@network)).empty? %>
