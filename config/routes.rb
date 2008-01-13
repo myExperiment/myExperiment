@@ -103,7 +103,7 @@ ActionController::Routing::Routes.draw do |map|
     # relationships 'accepted by' group (relation --> relationship --> group)
     group.resources :relationships, :member => { :accept => :get }
   end
-
+  
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:

@@ -78,7 +78,7 @@ class MembershipsController < ApplicationController
     # TODO: test if "user_established_at" and "network_established_at" can be hacked (ie: set) through API calls,
     # thereby creating memberships that are already 'accepted' at creation.
     if (@membership = Membership.new(params[:membership]) unless Membership.find_by_user_id_and_network_id(params[:membership][:user_id], params[:membership][:network_id]) or Network.find(params[:membership][:network_id]).owner? params[:membership][:user_id])
-      # set initial datetime
+      
       @membership.user_established_at = nil
       @membership.network_established_at = nil
       
@@ -88,9 +88,29 @@ class MembershipsController < ApplicationController
           # Take into account network's "auto accept" setting
           if (@membership.network.auto_accept)
             @membership.accept!
+            
+            begin
+              user = @membership.user
+              network = @membership.network
+              Notifier.deliver_auto_join_group(user, network, base_host) if network.owner.send_notifications?
+            rescue
+              puts "ERROR: failed to send email notification for auto join group. Membership ID: #{@membership.id}"
+              logger.error("ERROR: failed to send email notification for auto join group. Membership ID: #{@membership.id}")
+            end
+            
             flash[:notice] = 'You have successfully joined the Group.'
           else
             @membership.user_establish!
+            
+            begin
+              user = @membership.user
+              network = @membership.network
+              Notifier.deliver_membership_request(user, network, base_host) if network.owner.send_notifications?
+            rescue
+              puts "ERROR: failed to send Membership Request email notification. Membership ID: #{@membership.id}"
+              logger.error("ERROR: failed to send Membership Request email notification. Membership ID: #{@membership.id}")
+            end
+            
             flash[:notice] = 'Membership was successfully requested.'
           end
 
@@ -207,8 +227,8 @@ protected
           
         elsif action_name.to_s == "destroy"
           
-          # Only the owner of the network can delete memberships, for now
-          if current_user.id != membership.network.owner.id
+          # Only the owner of the network OR the person who the membership is for can delete memberships
+          if current_user.id != membership.network.owner.id and current_user.id != membership.user_id
             is_error = true
           end
         

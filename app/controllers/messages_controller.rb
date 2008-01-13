@@ -83,6 +83,14 @@ class MessagesController < ApplicationController
     
     respond_to do |format|
       if !errors and @message.save
+        
+        #begin
+          Notifier.deliver_new_message(@message, base_host) if @message.u_to.send_notifications?
+        #rescue
+          #puts "ERROR: failed to send New Message email notification. Message ID: #{@message.id}"
+          #logger.error("ERROR: failed to send New Message email notification. Message ID: #{@message.id}")
+        #end
+        
         flash[:notice] = 'Message was successfully sent.'
         format.html { redirect_to messages_url }
         format.xml  { head :ok } 

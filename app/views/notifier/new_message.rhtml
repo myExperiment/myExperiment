@@ -1,0 +1,14 @@
+Hi <%= @name %>,
+ 
+<%= @from_name %> has sent you a message on myExperiment.
+
+Subject: <%= @subject %>
+
+Please go to <%= url_for :only_path => false, :host => @base_url, :controller => '' %> and log in to see and reply to this message.
+
+Your username is: <%= @username %>
+
+Thanks,
+ 
+- The myExperiment Team
+http://www.myexperiment.org

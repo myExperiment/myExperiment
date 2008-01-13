@@ -26,24 +26,34 @@ class NetworksController < ApplicationController
   
   # GET /networks/1;membership_invite
   def membership_invite
-    respond_to do |format|
-      unless params[:user_id]
-        flash[:error] = 'Failed to invite User to Group. Please report this error.'
-        format.html { redirect_to group_url(@network) }
-      end
+            
+    if (@membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id) unless Membership.find_by_user_id_and_network_id(params[:user_id], @network.id) or Network.find(@network.id).owner? params[:user_id])
       
-      @membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id)
+      @membership.user_established_at = nil
+      @membership.network_established_at = nil
         
-      if @membership.save
-
-        @membership.network_establish!
-
-        flash[:notice] = 'An invitation has been sent to the User.'
-        format.html { redirect_to group_url(@network) }
-      else
-        flash[:error] = 'Failed to send invitation to User. Please try again or report this.'
-        format.html { redirect_to group_url(@network) }
+      respond_to do |format|
+        if @membership.save
+  
+          @membership.network_establish!
+          
+          begin
+            user = @membership.user
+            Notifier.deliver_membership_invite(user, @membership.network, base_host) if user.send_notifications?
+          rescue
+            puts "ERROR: failed to send Membership Invite email notification. Membership ID: #{@membership.id}"
+            logger.error("ERROR: failed to send Membership Invite email notification. Membership ID: #{@membership.id}")
+          end
+  
+          flash[:notice] = 'An invitation has been sent to the User.'
+          format.html { redirect_to group_url(@network) }
+        else
+          flash[:error] = 'Failed to send invitation to User. Please try again or report this.'
+          format.html { redirect_to group_url(@network) }
+        end
       end
+    else
+      error("Membership invite not created (already exists)", "not created, already exists")
     end
   end
   
