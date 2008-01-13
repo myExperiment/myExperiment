@@ -69,38 +69,7 @@
 		<% end %>
 	
 	</div>
-				
-	<br/>
-	<br/>
 
-	<div id="tabsContainer" class="tabsContainer"></div>
-	
-	<% if logged_in? and @blob.authorized?("destroy", current_user) %>
-	  <div class="tabContainer">
-	    <div class="tabTitle">Permissions</div>
-	    <div class="tabContent">
-	
-	      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @blob } %>
-	      <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @blob } %>
-		  
-	      <% if @blob.authorized?("edit", current_user) %>
-	        <ul class="sectionIcons">
-	          <li><%= icon('edit', edit_file_path(@blob), nil, nil, 'Edit')%></li>
-	        </ul>
-	      <% end %>
-	    </div>
-	  </div>
-	<% end %>
-	
-	<% if logged_in? and @blob.authorized?("destroy", current_user) %>
-	  <div class="tabContainer">
-	    <div class="tabTitle">History</div>
-	    <div class="tabContent">
-	      <%= render :partial => "contributions/history", :object => @blob.contribution %>
-	    </div>
-	  </div>
-	<% end %>
-	
 </div>
 
 <div class="contribution_right_box">
@@ -117,9 +86,48 @@
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @blob } %>
 	
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @blob } %>
+	
+	<%= render :partial => "layouts/bookmark_with", :locals => { :title => contributable_name(@blob.id, 'Blob'), :url => @blob_url } %>
 </div>	
 
 <div class="clearer">&nbsp;</div>
+
+<!-- BEGIN tabs -->
+	
+<br/>
+<br/>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+	
+<% if logged_in? and @blob.authorized?("destroy", current_user) %>
+  <div class="tabContainer">
+    <div class="tabTitle">Permissions</div>
+    <div class="tabContent">
+
+      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @blob } %>
+      <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @blob } %>
+	  
+      <% if @blob.authorized?("edit", current_user) %>
+        <ul class="sectionIcons">
+          <li><%= icon('edit', edit_file_path(@blob), nil, nil, 'Edit')%></li>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% if logged_in? and @blob.authorized?("destroy", current_user) %>
+  <div class="tabContainer">
+    <div class="tabTitle">History</div>
+    <div class="tabContent">
+      <%= render :partial => "contributions/history", :object => @blob.contribution %>
+    </div>
+  </div>
+<% end %>
+
+<!-- END tabs -->
+
+<br/>
 
 <div id="commentsBox">
 	<%= render :partial => "comments/comments", :locals => { :commentable => @blob } %>

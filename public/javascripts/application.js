@@ -1,6 +1,19 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+// http://labnol.blogspot.com/2006/01/add-to-favorites-ie-bookmark-firefox.html
+function CreateBookmarkLink() {
+
+title = "<%=h title %>"; 
+url = "<%= url %>";
+
+if (window.sidebar) { // Mozilla Firefox Bookmark
+	window.sidebar.addPanel(title, url,"");
+} else { // IE, Opera, etc
+	return true;
+}
+}
+
 var TopicForm = {
   editNewTitle: function(txtField) {
     $('new_topic').innerHTML = (txtField.value.length > 5) ? txtField.value : 'New Topic';

@@ -462,6 +462,10 @@ protected
         # remove scufl from workflow if the user is not authorized for download
         @viewing_version.scufl = nil unless @authorised_to_download
         @workflow.scufl = nil unless @authorised_to_download
+          
+        @workflow_entry_url = url_for :only_path => false,
+                                :host => base_host,
+                                :id => @workflow.id
         
         @download_url = url_for :action => 'download',
                                 :id => @workflow.id, 

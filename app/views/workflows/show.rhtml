@@ -223,12 +223,13 @@
 	
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @workflow } %>
 	
-	<%if false %><%= render :partial => "gadgets/bookmark_with", :locals => { :title => @workflow.title, :url => workflow_path(@workflow) } %><% end %>
+	<%= render :partial => "layouts/bookmark_with", :locals => { :title => @workflow.title, :url => @workflow_entry_url } %>
+	
 </div>
 
 <div class="clearer">&nbsp;</div>
 
-<!-- Begin tabs -->
+<!-- BEGIN tabs -->
 	
 <br/>
 <br/>
@@ -271,7 +272,7 @@
   </div>
 <% end %>
 
-<!-- End tabs -->
+<!-- END tabs -->
 
 <br/>
 

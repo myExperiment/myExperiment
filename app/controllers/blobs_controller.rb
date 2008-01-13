@@ -258,6 +258,10 @@ class BlobsController < ApplicationController
       
       if blob.authorized?(action_name, (logged_in? ? current_user : nil))
         @blob = blob
+        
+        @blob_url = url_for :only_path => false,
+                            :host => base_host,
+                            :id => @blob.id
 
         @named_download_url = url_for :action => 'named_download',
                                       :id => @blob.id, 

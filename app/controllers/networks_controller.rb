@@ -206,6 +206,9 @@ protected
   def find_network
     begin
       @network = Network.find(params[:id])
+      @network_url = url_for :only_path => false,
+                             :host => base_host,
+                             :id => @network.id
     rescue ActiveRecord::RecordNotFound
       error("Network not found", "is invalid (not owner)")
     end 

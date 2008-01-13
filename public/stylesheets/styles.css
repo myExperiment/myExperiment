@@ -1129,6 +1129,10 @@ div.auto_complete ul strong.highlight {
 	background-color: #CFE0EF;*/
 }
 
+.box_currentuser_specific * {
+	vertical-align: middle;
+}
+
 .box_dynamic_help {
 	padding: 0.4em 0.8em; 
 	border: 1px dotted #999999;
