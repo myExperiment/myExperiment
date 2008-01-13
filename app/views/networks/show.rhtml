@@ -50,6 +50,14 @@
 		</div>
 	</div>
 	
+	<div class="box_currentuser_specific">
+		<% if @network.auto_accept %>
+			You have set this Group to automatically accept all Membership Requests
+		<% else %>
+			You have set this Group to send you all Membership Requests for confirmation first
+		<% end %>
+	</div>
+	
 </div>
 
 <div class="contribution_right_box">
