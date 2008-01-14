@@ -62,119 +62,123 @@
 	</h1>
 <% end %>
 
-<div style="float: left; padding: 0 0.6em;">
-	<% if @user.profile %>
-    <td style=" vertical-align: top;">
-      <%= avatar @user, 160 %>
-    </td>
-  <% end %>
-</div>
-
-<div style="float: left; padding: 0 0.6em;">
-	<p>
-    <b>Name:</b>
-    <%=h @user.name %>
-  </p>
-	
-  <p>
-    <b>Joined:</b>
-    <%=datetime @user.created_at %>
-  </p>
-	
-	<% if false %>
-  <p>
-    <b>Last seen:</b>
-    <%=datetime @user.last_seen_at %>
-  </p>
-  <% end %>
-  
-	<% if false %>
-	  <% unless @user.profile.nil? %>
-	    <%= render :partial => "profiles/profile", :locals => { :profile => @user.profile } %>
+<table>
+	<tr>
+		
+		<% if @user.profile %>
+	    <td style="vertical-align: top;">
+	      <%= avatar @user, 160 %>
+	    </td>
 	  <% end %>
-	<% end %>
-	
+		
+		<td style="padding-left: 1.5em; vertical-align: top;">
+			<p>
+		    <b>Name:</b>
+		    <%=h @user.name %>
+		  </p>
+			
+		  <p>
+		    <b>Joined:</b>
+		    <%=datetime @user.created_at %>
+		  </p>
+			
+			<% if false %>
+		  <p>
+		    <b>Last seen:</b>
+		    <%=datetime @user.last_seen_at %>
+		  </p>
+		  <% end %>
+		  
+			<% if false %>
+			  <% unless @user.profile.nil? %>
+			    <%= render :partial => "profiles/profile", :locals => { :profile => @user.profile } %>
+			  <% end %>
+			<% end %>
+			
+			<% unless @user.profile.nil? %>
+			
+				<p>
+			    <b>Email (public):</b>
+					<% unless @user.profile.email.nil? or @user.profile.email.empty? %>
+			    	<%=mail_to @user.profile.email, nil, {  :encode => "hex", :replace_at => " [at] " } %>
+					<% else %>
+						<%= none_text %>	  
+					<% end %>
+				</p>
+				
+				<p>
+			    <b>Website:</b>
+					<% unless @user.profile.website.nil? or @user.profile.website.empty? %>
+				    <%=link_to h(@user.profile.website), @user.profile.website %>
+				  <% else %>
+						<%= none_text %>
+					<% end %>
+				</p>
+				
+				<p>
+			  	<b>Location:</b>
+					<% unless @user.profile.location.nil? or @user.profile.location.empty? %>
+				    <%= h @user.profile.location %>
+				  <% else %>
+						<%= none_text %>
+					<% end %>
+				</p>
+			
+			<% end %>
+			
+			<% if logged_in? and mine? @user %>
+				<div class="box_currentuser_specific" style="margin: 0.5em 0;">
+					<p style="font-size: 85%;">Note: the information here is private and cannot be seen by anyone else.</p>
+					<p>
+			      <b>Username:</b>
+			      <% if @user.username %>
+			        <%=h @user.username %>
+			      <% else %>
+			        <%= link_to 'Register a username and password for this account [optional]', edit_user_path(@user) %>
+			      <% end %>
+			    </p>
+					
+					<p>
+			      <b>Openid url:</b>
+			      <% if @user.openid_url %>
+			        <%=openid @user %>
+			      <% else %>
+			        <%= link_to 'Add an OpenID to this account [optional]', new_openid_path %>
+							<small>(what is <%= link_to 'OpenID', "http://en.wikipedia.org/wiki/OpenID" %>?)</small>
+			      <% end %>
+			    </p>
+					
+		    	<% if @user.email.blank? and @user.unconfirmed_email.blank? %>
+						<p>You do not have an email address registered. <%= link_to "Register one here", edit_user_path(@user)%>.</p>
+					<% else %>
+						<% unless @user.email.blank? %>
+							<p><b>Account Email</b>: <%= h @user.email %></p>
+						<% end %>
+						<% unless @user.unconfirmed_email.blank? %>
+							<p>We are awaiting confirmation for a new email address: <%= h @user.unconfirmed_email %></p>
+						<% end %>
+					<% end %>
+				</div>
+			<% end %>	
+		</td>
+		
+	</tr>
+</table>
+
+<div style="margin: 0.6em 0.6em;">
+
 	<% unless @user.profile.nil? %>
-	
-		<p>
-	    <b>Email (public):</b>
-			<% unless @user.profile.email.nil? or @user.profile.email.empty? %>
-	    	<%=mail_to @user.profile.email, nil, {  :encode => "hex", :replace_at => " [at] " } %>
-			<% else %>
-				<%= none_text %>	  
-			<% end %>
-		</p>
-		
-		<p>
-	    <b>Website:</b>
-			<% unless @user.profile.website.nil? or @user.profile.website.empty? %>
-		    <%=link_to h(@user.profile.website), @user.profile.website %>
-		  <% else %>
-				<%= none_text %>
-			<% end %>
-		</p>
-		
-		<p>
-	  	<b>Location:</b>
-			<% unless @user.profile.location.nil? or @user.profile.location.empty? %>
-		    <%= h @user.profile.location %>
-		  <% else %>
-				<%= none_text %>
-			<% end %>
-		</p>
-	
-	<% end %>
-	
-	<% if logged_in? and mine? @user %>
-		<div class="box_currentuser_specific" style="margin: 0.5em 0;">
-			<p style="font-size: 85%;">Note: the information here is private and cannot be seen by anyone else.</p>
-			<p>
-	      <b>Username:</b>
-	      <% if @user.username %>
-	        <%=h @user.username %>
-	      <% else %>
-	        <%= link_to 'Register a username and password for this account [optional]', edit_user_path(@user) %>
-	      <% end %>
-	    </p>
-			
-			<p>
-	      <b>Openid url:</b>
-	      <% if @user.openid_url %>
-	        <%=openid @user %>
-	      <% else %>
-	        <%= link_to 'Add an OpenID to this account [optional]', new_openid_path %>
-					<small>(what is <%= link_to 'OpenID', "http://en.wikipedia.org/wiki/OpenID" %>?)</small>
-	      <% end %>
-	    </p>
-			
-    	<% if @user.email.blank? and @user.unconfirmed_email.blank? %>
-				<p>You do not have an email address registered. <%= link_to "Register one here", edit_user_path(@user)%>.</p>
-			<% else %>
-				<% unless @user.email.blank? %>
-					<p><b>Account Email</b>: <%= h @user.email %></p>
-				<% end %>
-				<% unless @user.unconfirmed_email.blank? %>
-					<p>We are awaiting confirmation for a new email address: <%= h @user.unconfirmed_email %></p>
-				<% end %>
-			<% end %>
-		</div>
-	<% end %>
-	
-</div>
-
-<div class="clearer">&nbsp;</div>
-
-<div style="margin: 1em 0.6em;">
-
-	<% unless @user.profile.nil? or @user.profile.body.nil? or @user.profile.body.empty? %>
 	  <div class="box_standout">
-	    <%= white_list @user.profile.body_html %>
+	    <% unless @user.profile.body.blank? %>
+				<%= white_list @user.profile.body_html %>
+			<% else %>
+				<p class="none_text">Description/summary not set</p>
+			<% end %>	
 	  </div>
+		<br/>
 	<% end %>
 	
 	<% unless @user.profile.nil? %>
-	
-		<br/>
 	
 		<div class="box_simple" style="float: left; width: 41%;">
 		
