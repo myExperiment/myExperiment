@@ -157,7 +157,7 @@ private
     (err = Profile.new.errors).add(attr, message)
     
     respond_to do |format|
-      format.html { redirect_to profiles_url(current_user.id) }
+      format.html { redirect_to profile_url(profile.id) }
       format.xml { render :xml => err.to_xml }
     end
   end
