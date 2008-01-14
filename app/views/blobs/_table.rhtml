@@ -60,6 +60,7 @@
 					<p style="font-size: 85%;">
 						<b>Rating: </b><%= number_with_precision(blob.rating, 2) %>/5 (<%= pluralize blob.ratings.count, 'rating' %>) |
 						<% if false %><b>Versions: </b><%= h blob.version %> | <% end %>
+						<b>Comments: </b><%= blob.comments.count %> |
 						<b>Viewed:</b> <%=pluralize blob.contribution.viewings_count, "time" %> |
 						<b>Downloaded:</b> <%=pluralize blob.contribution.downloads_count, "time" %>
 					</p>
