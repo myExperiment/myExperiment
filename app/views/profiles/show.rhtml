@@ -8,6 +8,6 @@
 <%= render :partial => "profiles/profile", :locals => { :profile => @profile } %>
 
 <ul class="sectionIcons">
-  <li><%= icon('edit', edit_profile_path(@profile), nil, nil, 'Edit profile') %></li>
+  <li><%= icon('edit', edit_profile_path(@profile.user_id), nil, nil, 'Edit profile') %></li>
 </ul>
 

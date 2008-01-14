@@ -10,7 +10,7 @@
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "View Profile", profile_path(@profile) %></li>
+    <li><%= link_to "View Profile", profile_path(@user) %></li>
   <% when "new" %>
     <li><%= link_to "New Profile", new_profile_path(@user) %></li>
   <% when "edit" %>

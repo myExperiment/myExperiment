@@ -13,10 +13,10 @@
     <td width="100"><%= contributor(profile.user_id, "User", true, 60) %></td>
     <td><%=datetime profile.updated_at, false %></td>
     <td class="actions">
-      <%= icon "show", profile_path(profile) %> 
+      <%= icon "show", profile_path(profile.user_id) %> 
       <% if mine? profile %>
-        <%= icon "edit", edit_profile_path(profile) %> 
-        <%= icon "destroy", profile_path(profile), nil, :confirm => 'Are you sure?', :method => :delete %>
+        <%= icon "edit", edit_profile_path(profile.user_id) %> 
+        <%= icon "destroy", profile_path(profile.user_id), nil, :confirm => 'Are you sure?', :method => :delete %>
       <% end %>
     </td>
   </tr>
