@@ -71,7 +71,7 @@
 	    </td>
 	  <% end %>
 		
-		<td style="padding-left: 1.5em; vertical-align: top;">
+		<td style="padding-left: 1em; vertical-align: top;">
 			<p>
 		    <b>Name:</b>
 		    <%=h @user.name %>
@@ -162,6 +162,27 @@
 			<% end %>	
 		</td>
 		
+		<td style="padding-left: 0.5em; vertical-align: top;">
+			<div class="contribution_section_box" style="width: 130px; font-size: 85%; padding: 0.3em 0.8em;">
+				<p>
+		      <b><%= pluralize @user.friends.length, "Friend" %></b> 
+		    </p>
+				
+				<p>
+		      <b><%= pluralize @user.networks_owned.length, "Group" %> (admin)</b> 
+		    </p>
+				
+				<p>
+		      <b><%= pluralize @user.networks.length, "Group" %> (member)</b> 
+		    </p>
+				
+				<% filter_contributables(@user.contributions).each do |klass,contributables| %>
+					<p>
+			      <b><%= pluralize contributables.length, klass.to_s == "Blob" ? "File" : klass.humanize %></b> 
+			    </p>
+				<% end %>		
+			</div>
+		</td>
 	</tr>
 </table>
 
