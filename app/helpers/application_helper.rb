@@ -748,6 +748,17 @@ module ApplicationHelper
       return entity.class.to_s
     end
   end
+  
+  def controller_visible_name(humanized_controller_for)
+    case humanized_controller_for
+    when "Blobs"
+      return "Files"
+    when "Networks"
+      return "Groups"
+    else
+      return humanized_controller_for
+    end
+  end
 
   def sharing_mode_text(contributable, mode)
 

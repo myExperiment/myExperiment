@@ -1,3 +1,5 @@
+<% t "#{@user.name}" -%>
+
 <% none_text = '<font class="none_text">Not specified</font>' -%>
 
 <% if mine? @user and @user.unconfirmed_email.blank? and @user.email.blank? %>
