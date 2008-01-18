@@ -8,7 +8,7 @@
 		<% end %>
 		
 		<% if not user.name =~ /[ ]/ %>
-		  <%= name user, size/5 %>
+		  <%= name user, size/6 %>
 		<% elsif user.name.length > 30 %>
 			<%= name user, 30 %>
 		<% else %>
