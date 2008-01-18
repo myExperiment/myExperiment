@@ -6,6 +6,14 @@
 		<% if size > 59 %>
 			<%= if user.profile then flag_icon(user.profile.location_country, user.profile.location) end %>
 		<% end %>
-		<%= name user %>
+		
+		<% if user.name =~ /\A\b\S+\b\z/ %>
+		  <%= name user, size/5 %>
+		<% elsif user.name.length > 30 %>
+			<%= name user, 30 %>
+		<% else %>
+			<%= name user %>
+		<% end %>
+		
 	</span>
 </div>
