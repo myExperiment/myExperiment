@@ -131,7 +131,10 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'google', :controller => 'redirects', :action => 'google'
 
   # alternate download link to work around lack of browser redirects when downloading
-  map.connect ':controller/:id/download/:name', :action => 'named_download', :requirements => { :name => /.*/ } 
+  map.connect ':controller/:id/download/:name', :action => 'named_download', :requirements => { :name => /.*/ }
+  
+  # simple_pages plugin
+  map.from_plugin :simple_pages
 
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id.:format'

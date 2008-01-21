@@ -1,0 +1,11 @@
+<%= link_to 'back to all pages', simple_pages_path %>
+
+  <h1>You are now editing "<%= @simple_page.title %>"</h1>
+
+  <%= form_tag simple_page_path(@simple_page), :method => 'put' %>
+  
+  <%= render :partial => 'fields' %>
+  
+  </form>
+
+<%= render :partial => 'simple_page_version', :collection => @simple_page.versions.reverse if @simple_page.respond_to?(:versions)  %>

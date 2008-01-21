@@ -27,3 +27,6 @@ SOLR_ENABLE = false
 
 TRUSTED_PROXY = 'xxx.xxx.xxx.xxx'
 
+# Comma-seperated list of usernames (lower case) of the users allowed to create/edit pages in the simple_pages plugin (http://siteurl/pages) 
+INFO_PAGES_EDITORS = ["list", "of", "usernames"] 
+

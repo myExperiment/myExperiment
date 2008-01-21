@@ -25,6 +25,12 @@ class ApplicationController < ActionController::Base
     request.host_with_port
   end
   
+  def can_manage_pages?
+    return false unless logged_in?
+    return false if current_user.username.blank?
+    return INFO_PAGES_EDITORS.include?(current_user.username.downcase)
+  end
+  
   # Safe HTML - http://www.anyexample.com/webdev/rails/how_to_allow_some_safe_html_in_rails_projects.xml
   # Note: should only be used for text that doesn't need updating later.
   def ae_some_html(s)
