@@ -283,20 +283,27 @@ fieldset {
 	font-weight: bold !important;
 	font-size: 85%;
 	text-decoration: none;
-	padding: 0.2em 0.5em;
-	background-color: #eee;
+	padding: 0.4em 0.5em;
+	*padding: 0.2em 0.5em;
+	background-color: #EEEEEE;
 	border-top: 2px solid #F5F5F5; *
 	margin-left: 1px;
 }
 
 #myexp_breadcrumbs_bar table {
 	width: 100%;
+	padding: 0;
+	margin: 0;
 }
 
 #myexp_breadcrumbs_bar td {
 	text-align: left;
 	margin: 0;
 	padding: 0;
+}
+
+#myexp_breadcrumbs_bar td * {
+	vertical-align: top;
 }
 
 ul.breadcrumb_list {
@@ -306,12 +313,16 @@ ul.breadcrumb_list {
 	border: none;
 }
 
+ul.breadcrumb_list * {
+	vertical-align: top;
+}
+
 ul.breadcrumb_list li {
 	display: inline;
 }
 
 ul.breadcrumb_list li * {
-	vertical-align: middle;
+	vertical-align: top;
 }
 
 ul.breadcrumb_list a {
