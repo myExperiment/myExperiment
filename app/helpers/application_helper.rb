@@ -756,6 +756,8 @@ module ApplicationHelper
       return "Files"
     when "Networks"
       return "Groups"
+    when "Simple pages"
+      return "Info"
     else
       return humanized_controller_for
     end
