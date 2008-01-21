@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-		<%= t :site => "myExperiment - #{controller_visible_name(controller.controller_name.humanize)}", :separator => "-" %>
+		<%= t :site => "myExperiment.org &#45; #{controller_visible_name(controller.controller_name.humanize)}", :separator => "&#45;" %>
 		<%= stylesheet_link_tag 'reset-fonts-grids' %>
 		<%= stylesheet_link_tag 'savagebeast' %>
 		<%= stylesheet_link_tag 'base-min' %>
@@ -57,16 +57,9 @@
 				<div id="yui-main"> 
 	  				<div class="yui-b">
 					    <div id="myexp_breadcrumbs_bar">
-						    <ul class="breadcrumbs">
-						    	<% if logged_in? -%>
-						    		<li><%= link_to "Home", user_url(current_user) %></li>
-									<% else -%>
-										<li><%= link_to "Home", "/" %></li>
-									<% end -%>
-						    	<li><b>&#187;</b></li>
-						    	<%= render :partial => "breadcrumbs" %>
-						    </ul>
-					    </div>
+								<%= render :partial => "layouts/breadcrumbs_bar" %>
+							</div>
+							
 	    				<div id="myexp_content">
 								<% if flash[:error] %>
 									<div id="error_flash" class="box_standout" style="color: red; font-weight: bold; margin-bottom: 1.5em;">
@@ -82,8 +75,10 @@
 										<%= flash[:notice] %>
 									</div>
 								<% end %>
+								
 		    				<%= render :partial => "subnav" %>
-		    				<%= yield :layout %>
+		    				
+								<%= yield :layout %>
 						</div>
 					</div>
 				</div>

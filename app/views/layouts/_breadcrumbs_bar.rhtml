@@ -1,0 +1,25 @@
+<table>
+	<tr>
+		<td>
+			<ul class="breadcrumb_list">
+				<% if logged_in? -%>
+					<li><%= link_to "Home", user_url(current_user) %></li>
+				<% else -%>
+					<li><%= link_to "Home", "/" %></li>
+				<% end -%>
+				<li><b>&#187;</b></li>
+				<%= render :partial => "breadcrumbs" %>
+			</ul>
+		</td>
+		<td style="text-align: right; padding-left: 1em;">
+			<!-- AddThis Bookmark Button BEGIN -->
+			<script type="text/javascript">
+			  addthis_url    = location.href;   
+			  addthis_title  = document.title;  
+			  addthis_pub    = 'myexperiment';     
+			</script><script type="text/javascript" src="http://s7.addthis.com/js/addthis_widget.php?v=12" ></script>
+			<!-- AddThis Bookmark Button END -->
+		</td>
+	</tr>
+</table>
+
