@@ -1,3 +1,8 @@
+# myExperiment: app/controllers/userhistory_controller.rb
+#
+# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
 class UserhistoryController < ApplicationController
   before_filter :login_required, :only => [:index]
   
