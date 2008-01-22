@@ -105,7 +105,7 @@ module ApplicationHelper
     
     name = truncate_to ? truncate(user.name, truncate_to) : name = user.name
     
-    return link_to(h(name), user_url(user), :title => tooltip_title_attrib(user.name))
+    return link_to(h(name), user_url(user), :title => tooltip_title_attrib(h(user.name)))
   end
   
   def title(network_id, truncate_to=nil)

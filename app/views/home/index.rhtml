@@ -23,6 +23,7 @@
 					<ul class="list" style="font-size: 85%;">
 						<% groups.each do |g| %>
 							<li>
+								<%= icon('network', nil, nil, 'group icon', '') %>
 								<b><%= link_to g.title, group_path(g) %></b> 
 								by <b><%= contributor(g.owner, 'User') %></b>
 								(<%= timeago_fuzzy g.created_at %>)
@@ -46,7 +47,7 @@
 						<% taggings.each do |t| %>
 							<li>
 								'<b><%= link_to_tag(t.tag) %></b>' on 
-								<% if false %><b><%= c_type = visible_name(t.taggable); icon(t.taggable_type.to_s, nil, nil, c_type, c_type) %>:</b><% end %>
+								<b><%= c_type = visible_name(t.taggable); icon(t.taggable_type.to_s, nil, nil, c_type, '') %></b>
 								<%= t.taggable_type == 'Network' ? title(t.taggable_id) : contributable(t.taggable_id, t.taggable_type) %>
 								by <b><%= contributor(t.user_id, 'User') %></b>
 								(<%= timeago_fuzzy t.created_at %>)
@@ -77,13 +78,13 @@
 			</div>
 		</div>
 		
-		<!-- Latest Items -->
+		<!-- Updated Items -->
 		<div class="box">
 			<div class="title">
-				Latest Items
+				Updated Items
 			</div>
 			<div class="content">
-				<% unless (contributions = Contribution.most_recent).empty? %>
+				<% unless (contributions = Contribution.last_updated).empty? %>
 					<ul class="list">
 						<% contributions.each do |c| %>
 							<li>
@@ -94,6 +95,22 @@
 							</li>
 						<% end %>
 					</ul>
+				<% else %>
+					<p class="none_text">None</p>
+				<% end %>
+			</div>
+		</div>
+		
+		<!-- New Users -->
+		<div class="box">
+			<div class="title">
+				New Users
+			</div>
+			<div class="content">
+				<% unless (users = User.most_recent(6)).empty? %>
+					<div style="font-size: 93%;">
+						<%= render :partial => "users/hlist", :locals => { :collection => users, :size => 60 } %>
+					</div>
 				<% else %>
 					<p class="none_text">None</p>
 				<% end %>

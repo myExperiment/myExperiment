@@ -5,7 +5,7 @@
 
 <div id="tabsContainer" class="tabsContainer"></div>
 
-<% unless (recent = User.most_recent).empty? %>
+<% unless (recent = User.most_recent(6)).empty? %>
   <div class="tabContainer">
   	<div class="tabTitle">Most Recent</div>
   	<div class="tabContent">

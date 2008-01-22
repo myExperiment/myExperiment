@@ -209,6 +209,10 @@ fieldset {
 	padding-left: 1em;
 }
 
+#hlist ul {
+	margin: 0;
+}
+
 #hlist li {
 	list-style: none;
 	margin: 0.2em;
@@ -388,7 +392,7 @@ ul.breadcrumb_list a:hover {
 }
 
 #home_container .box {
-	border: 1px solid #BBBBBB;
+	border: 2px solid #BBBBBB;
 	margin-bottom: 1em;
 }
 
@@ -402,7 +406,7 @@ ul.breadcrumb_list a:hover {
 	background-position: top;
 	background-repeat: repeat-x;
 	background-color: #F5F5F5;*/
-	border-bottom: 1px solid #BBBBBB;
+	border-bottom: 2px solid #BBBBBB;
 	background-color: #CFDFEF;
 }
 
