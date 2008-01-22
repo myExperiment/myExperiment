@@ -5,7 +5,7 @@ unless defined? SOLR_PORT
   SOLR_PORT = ENV['PORT'] || case ENV['RAILS_ENV']
               when 'test' then 8981
               when 'production' then 8983
-              else 8982
+              else 8983
               end
 end
 

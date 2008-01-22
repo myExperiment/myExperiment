@@ -4,7 +4,7 @@
 # them in your Solr config file
 
 development:
-  url: http://localhost:8982/solr
+  url: http://localhost:8983/solr
   
 production:
   url: http://localhost:8983/solr

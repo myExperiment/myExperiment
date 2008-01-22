@@ -2,7 +2,7 @@
 
 <h1>Search Results</h1>
 
-<h2><%= pluralize(@blobs.length, "Files") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
+<h2><%= pluralize(@blobs.length, "file") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
 
 <%= render :partial => "blobs/table", :locals => { :collection => @blobs } %>
 

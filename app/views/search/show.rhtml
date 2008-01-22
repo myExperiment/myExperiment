@@ -1,0 +1,34 @@
+<% t "Search" -%>
+
+<h1>Search Results</h1>
+
+<% if @results.empty? %>
+
+  <p>No search results.</p>
+  
+<% else %>
+
+  <% if not @workflows.empty? %>
+    <h2><%= pluralize(@workflows.length, "workflow") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
+    <%= render :partial => "workflows/table", :locals => { :collection => @workflows, :query => @query } %>
+  <% end %>
+
+  <% if not @blobs.empty? %>
+    <h2><%= pluralize(@blobs.length, "file") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
+    <%= render :partial => "blobs/table", :locals => { :collection => @blobs } %>
+  <% end %>
+
+  <% if not @users.empty? %>
+    <h2><%= pluralize(@users.length, "user") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
+    <%= render :partial => "users/table", :locals => { :collection => @users } %>
+  <% end %>
+
+  <% if not @networks.empty? %>
+    <h2><%= pluralize(@networks.length, "group") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>	
+    <%= render :partial => "networks/table", :locals => { :collection => @networks } %>
+  <% end %>
+
+<% end %>
+
+<br />
+
