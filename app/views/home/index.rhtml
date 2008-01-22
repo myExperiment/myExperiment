@@ -6,10 +6,13 @@
 				Announcements
 			</div>
 			<div class="content">
+				<% if false %>
 				<ul class="announcements">
 					<li>Google acquires myExperiment for $1.7 trillion</li>
 					<li>"myExperiment changed my life" - Bill Gates</li>
 				</ul>
+				<% end %>
+				<p class="none_text">None</p>
 			</div>
 		</div>
 		
@@ -130,14 +133,12 @@
 								<p>
 									<b><%= c_type = visible_name(c.commentable); icon(c.commentable_type.to_s, nil, nil, c_type, c_type) %>:</b>
 									<%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %>
+									by <b><%= name c.user %></b>
+									(<%= timeago_fuzzy c.created_at %>)
 								</p>
 								<div class="box_standout" style="margin: 0.2em 0; padding: 0.2em 0.5em;">
 									<%= truncate(white_list(c.comment), 60) %>
 								</div>
-								<p>
-									by <b><%= name c.user %></b>
-									(<%= timeago_fuzzy c.created_at %>)
-								</p>
 							</li>
 						<% end %>
 					</ul>
