@@ -41,6 +41,7 @@
 				</div>
 				<div>
 					<ul class="tabnav">
+						<li <%= (["home"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Home", home_url %></li>
 					  <li <%= (["users", "profiles", "userhistory", "friendships", "memberships", "pictures"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
 						<%= link_to "Users", users_path %>
 					  </li>

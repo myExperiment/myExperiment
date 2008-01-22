@@ -368,7 +368,74 @@ ul.breadcrumb_list a:hover {
 	text-align: left;
 }
 
-/* end css tooltips/boxovers */ /* begin css folds */
+/* end css tooltips/boxovers */
+
+/* begin home styles */
+
+#home_container {
+}
+
+#home_container .left {
+	float: left;
+	width: 28%;
+	border: 0px dotted #999999;
+}
+
+#home_container .right {
+	float: right;
+	width: 70%;
+	border: 0px dotted #999999;
+}
+
+#home_container .box {
+	border: 1px solid #BBBBBB;
+	margin-bottom: 1em;
+}
+
+#home_container .box .title {
+	font-size: 100%;
+	font-weight: bold;
+	color: #333333;
+	padding: 0.3em 1em;
+	text-align: center;
+	/*background-image: url('/images/header-bg.png');
+	background-position: top;
+	background-repeat: repeat-x;
+	background-color: #F5F5F5;*/
+	border-bottom: 1px solid #BBBBBB;
+	background-color: #CFDFEF;
+}
+
+#home_container .box .content {
+	padding: 0.4em 0.6em;
+}
+
+#home_container .announcements {
+	margin: 0;
+	list-style: none;
+	font-size: 85%;
+}
+
+#home_container .announcements li {
+	list-style-type: none;
+}
+
+#home_container .list {
+	margin: 0;
+	list-style: none;
+	font-size: 93%;
+}
+
+#home_container .list li {
+	list-style-type: none;
+	margin: 0.6em 0;
+}
+
+
+/* end home styles */
+
+/* begin css folds */
+
 .fold {
 	margin-bottom: 1.5em;
 }
@@ -501,8 +568,11 @@ ul.breadcrumb_list a:hover {
 	background: white;
 }
 
-/* end css tabs */ /* begin css newsfeed */
-.news_feed_div p.title {
+/* end css tabs */ 
+
+/* begin css newsfeed */
+
+.news_feed_div p.news_feed_day_title {
 	font-weight: bold;
 	width: 100%;
 	text-align: left;
@@ -512,20 +582,19 @@ ul.breadcrumb_list a:hover {
 .news_feed_div ul.news_feed_day {
 	padding-left: 0.8em;
 	list-style-type: none;
-	margin-bottom: 1em;
-	line-height: 1.5em;
+	margin-top: 0.4em;
+	margin-left: 0.5em;
+	margin-bottom: 0.5em;
+	line-height: 1.4em;
 }
 
 .news_feed_div ul.news_feed_day li.news_feed_item {
 	list-style: none;
-}
-
-.news_feed_div ul.news_feed_day li.news_feed_item a,.news_feed_div ul.news_feed_day li.news_feed_item a:visited
-	{
-	color: #000099;
+	font-size: 93%;
 }
 
 /* end css newsfeed */
+
 .fieldWithErrors {
 	padding: 2px;
 	background-color: red;

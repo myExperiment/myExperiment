@@ -1,0 +1,135 @@
+<div id="home_container">
+	<div class="left">
+		<!-- Announcements -->
+		<div class="box">
+			<div class="title">
+				Announcements
+			</div>
+			<div class="content">
+				<ul class="announcements">
+					<li>Google acquires myExperiment for $1.7 trillion</li>
+					<li>"myExperiment changed my life" - Bill Gates</li>
+				</ul>
+			</div>
+		</div>
+		
+		<!-- Latest Groups -->
+		<div class="box">
+			<div class="title">
+				Latest Groups
+			</div>
+			<div class="content">
+				<% unless (groups = Network.recently_created).empty? %>
+					<ul class="list" style="font-size: 85%;">
+						<% groups.each do |g| %>
+							<li>
+								<b><%= link_to g.title, group_path(g) %></b> 
+								by <b><%= contributor(g.owner, 'User') %></b>
+								(<%= timeago_fuzzy g.created_at %>)
+							</li>
+						<% end %>
+					</ul>
+				<% else %>
+					<p class="none_text">None</p>
+				<% end %>
+			</div>
+		</div>
+		
+		<!-- Latest Tags -->
+		<div class="box">
+			<div class="title">
+				Latest Tags
+			</div>
+			<div class="content">
+				<% unless (taggings = Tagging.latest).empty? %>
+					<ul class="list" style="font-size: 85%;">
+						<% taggings.each do |t| %>
+							<li>
+								'<b><%= link_to_tag(t.tag) %></b>' on 
+								<% if false %><b><%= c_type = visible_name(t.taggable); icon(t.taggable_type.to_s, nil, nil, c_type, c_type) %>:</b><% end %>
+								<%= t.taggable_type == 'Network' ? title(t.taggable_id) : contributable(t.taggable_id, t.taggable_type) %>
+								by <b><%= contributor(t.user_id, 'User') %></b>
+								(<%= timeago_fuzzy t.created_at %>)
+							</li>
+						<% end %>
+					</ul>
+				<% else %>
+					<p class="none_text">None</p>
+				<% end %>
+			</div>
+		</div>
+	</div>
+	
+	<div class="right">
+		<!-- News -->
+		<div class="box">
+			<div class="title">
+				News
+			</div>
+			<div class="content">
+				<% if logged_in? %>
+					<%= render :partial => "layouts/news", :locals => { :collection => news(current_user, false) } %>
+				<% else %>
+					<p class="none_text">
+						<p><strong><%= link_to "Log in", new_session_url %> to view your News</strong></p>
+					</p>
+				<% end %>
+			</div>
+		</div>
+		
+		<!-- Latest Items -->
+		<div class="box">
+			<div class="title">
+				Latest Items
+			</div>
+			<div class="content">
+				<% unless (contributions = Contribution.most_recent).empty? %>
+					<ul class="list">
+						<% contributions.each do |c| %>
+							<li>
+								<b><%= c_type = visible_name(c.contributable); icon(c.contributable_type.to_s, nil, nil, c_type, c_type) %>:</b>
+								<%= c.contributable_type == 'Network' ? title(c.contributable_id) : contributable(c.contributable_id, c.contributable_type) %>
+								by <b><%= contributor(c.contributor_id, c.contributor_type) %></b>
+								(<%= timeago_fuzzy c.created_at %>)
+							</li>
+						<% end %>
+					</ul>
+				<% else %>
+					<p class="none_text">None</p>
+				<% end %>
+			</div>
+		</div>
+		
+		<!-- Latest Comments -->
+		<div class="box">
+			<div class="title">
+				Latest Comments
+			</div>
+			<div class="content">
+				<% unless (comments = Comment.latest).empty? %>
+					<ul class="list">
+						<% comments.each do |c| %>
+							<li>
+								<p>
+									<b><%= c_type = visible_name(c.commentable); icon(c.commentable_type.to_s, nil, nil, c_type, c_type) %>:</b>
+									<%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %>
+								</p>
+								<div class="box_standout" style="margin: 0.2em 0; padding: 0.2em 0.5em;">
+									<%= truncate(white_list(c.comment), 60) %>
+								</div>
+								<p>
+									by <b><%= name c.user %></b>
+									(<%= timeago_fuzzy c.created_at %>)
+								</p>
+							</li>
+						<% end %>
+					</ul>
+				<% else %>
+					<p class="none_text">None</p>
+				<% end %>
+			</div>
+		</div>
+	</div>
+	
+	<div class="clearer">&nbsp;</div>
+</div>

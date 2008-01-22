@@ -14,6 +14,14 @@ class Comment < ActiveRecord::Base
   belongs_to :user
   
   acts_as_solr :fields => [ :comment ] if SOLR_ENABLE
+  
+  # returns the 'last created' Comments
+  # the maximum number of results is set by #limit#
+  def self.latest(limit=10)
+    self.find(:all,
+              :order => "created_at DESC",
+              :limit => limit)
+  end
 
   # Helper class method to lookup all comments assigned
   # to all commentable types for a given user.

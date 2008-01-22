@@ -13,7 +13,7 @@
       <li><%= messages_link(current_user, "My Inbox") %></li>
       <li><%= memberships_link(current_user, "My Memberships") %></li>
 	  <li><%= icon "history", userhistory_url(current_user), nil, nil, "My History" %></li>
-	  <li><%= icon "news", user_url(current_user), nil, nil, "My News" %></li>
+	  <li><%= icon "news", home_url, nil, nil, "My News" %></li>
     </ul>
 	
     <% unless current_user.messages_unread.empty? %>

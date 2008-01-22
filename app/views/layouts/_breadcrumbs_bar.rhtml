@@ -2,11 +2,7 @@
 	<tr>
 		<td>
 			<ul class="breadcrumb_list">
-				<% if logged_in? -%>
-					<li><%= link_to "Home", user_url(current_user) %></li>
-				<% else -%>
-					<li><%= link_to "Home", "/" %></li>
-				<% end -%>
+				<li><%= link_to "Home", home_url %></li>
 				<li><b>&#187;</b></li>
 				<%= render :partial => "breadcrumbs" %>
 			</ul>

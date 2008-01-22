@@ -273,7 +273,7 @@
 <div class="tabContainer">
   <div class="tabTitle">News</div>
   <div class="tabContent">   
-    <%= render :partial => "layouts/news", :locals => { :collection => news(@user, !mine?(@user)) } %>
+    <%= render :partial => "layouts/news", :locals => { :collection => news(@user, true) } %>
   </div>
 </div>
 

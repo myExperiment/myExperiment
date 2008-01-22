@@ -1,13 +1,13 @@
 <% unless collection.empty? %>
   <div class="news_feed_div">
   <% collection.each do |news_day| %>
-    <p class="title">
-      <% if news_day[0] > Time.now - 1.day %>
+    <p class="news_feed_day_title">
+			<% if news_day[0] > Time.now - 1.day %>
         Today
       <% elsif news_day[0] > Time.now - 2.days %>
         Yesterday
       <% else %>
-        <%=date news_day[0], false %>
+				<%= timeago_fuzzy news_day[0] %>
       <% end %>
     </p>
     <ul class="news_feed_day">
