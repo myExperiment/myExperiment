@@ -21,17 +21,25 @@
 	padding-right: 4em;
 }
 
+#myexp_home_content table {
+	border-spacing: 5px;
+	border-collapse: collapse;
+}
+
 #myexp_home_content .heading {
 	font-size: 123.1%;
 	font-weight: bold;
-	margin-bottom: 1.5em;
-	margin-top: 1em;
+	margin-bottom: 0.6em;
+	margin-top: 1.8em;
 	color: #333333;
+	background-color: #CFDFEF;
+	padding: 0.3em 0.8em;
+	border: 1px dotted #999999;
 }
 
 .myexp_home_content_box {
 	border: 1px dotted #999999;
-	padding: 2em;
+	padding: 1em;
 }
 
 .myexp_home_image_action {
