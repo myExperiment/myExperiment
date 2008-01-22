@@ -1023,6 +1023,11 @@ module ApplicationHelper
     end
   end
   
+  def thing_authorized?(action, thing)
+    return true unless thing.respond_to?(:authorized?)
+    return thing.authorized?(action, (logged_in? ? current_user : nil))
+  end
+  
 protected
 
   def contributor_news(contributor, before, after, depth, restrict_contributor)

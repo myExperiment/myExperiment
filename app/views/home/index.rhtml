@@ -25,12 +25,14 @@
 				<% unless (groups = Network.recently_created).empty? %>
 					<ul class="list" style="font-size: 85%;">
 						<% groups.each do |g| %>
-							<li>
-								<%= icon('network', nil, nil, 'group icon', '') %>
-								<b><%= link_to g.title, group_path(g) %></b> 
-								by <b><%= contributor(g.owner, 'User') %></b>
-								(<%= timeago_fuzzy g.created_at %>)
-							</li>
+							<% if thing_authorized?('show', g) %>
+								<li>
+									<%= icon('network', nil, nil, 'group icon', '') %>
+									<b><%= link_to g.title, group_path(g) %></b> 
+									by <b><%= contributor(g.owner, 'User') %></b>
+									(<%= timeago_fuzzy g.created_at %>)
+								</li>
+							<% end %>
 						<% end %>
 					</ul>
 				<% else %>
@@ -48,13 +50,15 @@
 				<% unless (taggings = Tagging.latest).empty? %>
 					<ul class="list" style="font-size: 85%;">
 						<% taggings.each do |t| %>
-							<li>
-								'<b><%= link_to_tag(t.tag) %></b>' on 
-								<b><%= c_type = visible_name(t.taggable); icon(t.taggable_type.to_s, nil, nil, c_type, '') %></b>
-								<%= t.taggable_type == 'Network' ? title(t.taggable_id) : contributable(t.taggable_id, t.taggable_type) %>
-								by <b><%= contributor(t.user_id, 'User') %></b>
-								(<%= timeago_fuzzy t.created_at %>)
-							</li>
+							<% if thing_authorized?('show', t.taggable) %>
+								<li>
+									'<b><%= link_to_tag(t.tag) %></b>' on 
+									<b><%= c_type = visible_name(t.taggable); icon(t.taggable_type.to_s, nil, nil, c_type, '') %></b>
+									<%= t.taggable_type == 'Network' ? title(t.taggable_id) : contributable(t.taggable_id, t.taggable_type) %>
+									by <b><%= contributor(t.user_id, 'User') %></b>
+									(<%= timeago_fuzzy t.created_at %>)
+								</li>
+							<% end %>
 						<% end %>
 					</ul>
 				<% else %>
@@ -90,12 +94,14 @@
 				<% unless (contributions = Contribution.last_updated).empty? %>
 					<ul class="list">
 						<% contributions.each do |c| %>
-							<li>
-								<b><%= c_type = visible_name(c.contributable); icon(c.contributable_type.to_s, nil, nil, c_type, c_type) %>:</b>
-								<%= c.contributable_type == 'Network' ? title(c.contributable_id) : contributable(c.contributable_id, c.contributable_type) %>
-								by <b><%= contributor(c.contributor_id, c.contributor_type) %></b>
-								(<%= timeago_fuzzy c.created_at %>)
-							</li>
+							<% if thing_authorized?('show', c) %>
+								<li>
+									<b><%= c_type = visible_name(c.contributable); icon(c.contributable_type.to_s, nil, nil, c_type, c_type) %>:</b>
+									<%= c.contributable_type == 'Network' ? title(c.contributable_id) : contributable(c.contributable_id, c.contributable_type) %>
+									by <b><%= contributor(c.contributor_id, c.contributor_type) %></b>
+									(<%= timeago_fuzzy c.updated_at %>)
+								</li>
+							<% end %>
 						<% end %>
 					</ul>
 				<% else %>
@@ -129,17 +135,19 @@
 				<% unless (comments = Comment.latest).empty? %>
 					<ul class="list">
 						<% comments.each do |c| %>
-							<li>
-								<p>
-									<b><%= c_type = visible_name(c.commentable); icon(c.commentable_type.to_s, nil, nil, c_type, c_type) %>:</b>
-									<%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %>
-									by <b><%= name c.user %></b>
-									(<%= timeago_fuzzy c.created_at %>)
-								</p>
-								<div class="box_standout" style="margin: 0.2em 0; padding: 0.2em 0.5em;">
-									<%= truncate(white_list(c.comment), 60) %>
-								</div>
-							</li>
+							<% if thing_authorized?('show', c.commentable) %>
+								<li>
+									<p>
+										<b><%= c_type = visible_name(c.commentable); icon(c.commentable_type.to_s, nil, nil, c_type, c_type) %>:</b>
+										<%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %>
+										by <b><%= name c.user %></b>
+										(<%= timeago_fuzzy c.created_at %>)
+									</p>
+									<div class="box_standout" style="margin: 0.2em 0; padding: 0.2em 0.5em;">
+										<%= truncate(white_list(c.comment), 60) %>
+									</div>
+								</li>
+							<% end %>
 						<% end %>
 					</ul>
 				<% else %>
