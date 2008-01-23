@@ -172,6 +172,11 @@ class User < ActiveRecord::Base
   end
   # END RESTful Authentication #
   
+  def admin?
+    return false if self.username.blank?
+    return ADMINS.include?(self.username.downcase)
+  end
+  
   acts_as_contributor
   
   has_many :blobs, :as => :contributor

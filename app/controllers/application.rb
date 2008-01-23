@@ -26,9 +26,7 @@ class ApplicationController < ActionController::Base
   end
   
   def can_manage_pages?
-    return false unless logged_in?
-    return false if current_user.username.blank?
-    return INFO_PAGES_EDITORS.include?(current_user.username.downcase)
+    return admin?  # from authenticated_system
   end
   
   # Safe HTML - http://www.anyexample.com/webdev/rails/how_to_allow_some_safe_html_in_rails_projects.xml
