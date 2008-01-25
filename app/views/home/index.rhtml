@@ -18,15 +18,15 @@
 							</li>
 						<% end %>
 					</ul>
-					<p style="font-size: 85%; text-align: center;">
-						<% if logged_in? and current_user.admin? %>
-							[ <%= link_to "New", new_announcement_url %> ]
-						<% end %>
-						[ <%= link_to "See All", announcements_url %> ]
-					</p>
 				<% else %>
 					<p class="none_text">None</p>
 				<% end %>
+				<p style="font-size: 85%; text-align: center;">
+					<% if logged_in? and current_user.admin? %>
+						[ <%= link_to "New", new_announcement_url %> ]
+					<% end %>
+					[ <%= link_to "See All", announcements_url %> ]
+				</p>
 			</div>
 		</div>
 		
@@ -162,6 +162,7 @@
 									</p>
 									<div class="box_standout" style="margin: 0.2em 2em; padding: 0.2em 0.5em;">
 										<%= truncate(white_list(c.comment), 60) %>
+										<p style="text-align: right;">[ <%= link_to "More", (c.commentable_type == 'Network' ? group_url(c.commentable) : contributable_url(c.commentable_id, c.commentable_type)) %> ]</p>
 									</div>
 									<br/>
 								</li>
