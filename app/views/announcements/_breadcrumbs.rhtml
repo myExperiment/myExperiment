@@ -1,0 +1,15 @@
+<li><%= link_to 'Announcements', announcements_path %></li>
+
+<% if ["show", "new", "edit", "search", "all", "forgot_password"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= link_to "View: #{h(@announcement.title)}", announcement_path(@announcement) %></li>
+  <% when "new" %>
+    <li><%= link_to "New Announcement", new_announcement_path %></li>
+  <% when "edit" %>
+    <li><%= link_to "Edit Announcement", edit_announcement_path(@announcement) %>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

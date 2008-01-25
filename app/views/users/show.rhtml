@@ -1,4 +1,4 @@
-<% t "#{@user.name}" -%>
+<% t "#{h @user.name}" -%>
 
 <% none_text = '<font class="none_text">Not specified</font>' -%>
 
@@ -72,6 +72,12 @@
 	  <% end %>
 		
 		<td style="padding-left: 1em; vertical-align: top;">
+			<% if @user.admin? %>
+				<p class="admin_text">
+					myExperiment Admin
+				</p>
+			<% end %>
+			
 			<p>
 		    <b>Name:</b>
 		    <%=h @user.name %>

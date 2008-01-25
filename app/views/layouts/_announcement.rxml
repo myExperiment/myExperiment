@@ -1,0 +1,8 @@
+xm.item do
+  xm.title announcement.title
+  xm.description white_list(announcement.body_html)
+  xm.pubDate announcement.updated_at.rfc822
+  xm.guid [request.host_with_port, "announcement", announcement.id.to_s].join(":"), "isPermaLink" => "false"
+  xm.author h(announcement.user.name)
+  xm.link announcement_url(announcement)
+end

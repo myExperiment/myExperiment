@@ -13,6 +13,11 @@
 						<%= if user.profile then flag_icon(user.profile.location_country, user.profile.location) end %>
 						<%= name user.id %><%= friend_badge(user) %>
 					</p>
+					<% if user.admin? %>
+						<p class="admin_text">
+							myExperiment Admin
+						</p>
+					<% end %>
 					<% if user.profile %>
 						<% if user.profile.body and user.profile.body.length > 0 %>
 							<% # desc = truncate(white_list(user.profile.body_html), 180) %>

@@ -3,16 +3,30 @@
 		<!-- Announcements -->
 		<div class="box">
 			<div class="title">
+				<%= feed_icon_tag "Announcements", formatted_announcements_path(:rss) %>
 				Announcements
 			</div>
 			<div class="content">
-				<% if false %>
-				<ul class="announcements">
-					<li>Google acquires myExperiment for $1.7 trillion</li>
-					<li>"myExperiment changed my life" - Bill Gates</li>
-				</ul>
+				<% unless (announcements = Announcement.latest).empty? %>
+					<ul class="announcements">
+						<% announcements.each do |a| %>
+							<li>
+								<p><b><%= datetime a.updated_at, false %></b> by <b><%= name a.user %></b></p>
+								<p class="box_standout" style="padding: 0.2em 0.4em; margin: 0.2em 0;">
+									<%= link_to h(a.title), announcement_url(a) %>
+								</p>
+							</li>
+						<% end %>
+					</ul>
+					<p style="font-size: 85%; text-align: center;">
+						<% if logged_in? and current_user.admin? %>
+							[ <%= link_to "New", new_announcement_url %> ]
+						<% end %>
+						[ <%= link_to "See All", announcements_url %> ]
+					</p>
+				<% else %>
+					<p class="none_text">None</p>
 				<% end %>
-				<p class="none_text">None</p>
 			</div>
 		</div>
 		
@@ -52,7 +66,7 @@
 						<% taggings.each do |t| %>
 							<% if thing_authorized?('show', t.taggable) %>
 								<li>
-									'<b><%= link_to_tag(t.tag) %></b>' on 
+									<span class="box_standout" style="padding: 0.1em 0.4em;"><b><%= link_to_tag(t.tag) %></b></span> on 
 									<b><%= c_type = visible_name(t.taggable); icon(t.taggable_type.to_s, nil, nil, c_type, '') %></b>
 									<%= t.taggable_type == 'Network' ? title(t.taggable_id) : contributable(t.taggable_id, t.taggable_type) %>
 									by <b><%= contributor(t.user_id, 'User') %></b>
@@ -140,12 +154,16 @@
 									<p>
 										<b><%= c_type = visible_name(c.commentable); icon(c.commentable_type.to_s, nil, nil, c_type, c_type) %>:</b>
 										<%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %>
-										by <b><%= name c.user %></b>
-										(<%= timeago_fuzzy c.created_at %>)
+										<br/>
+										<span style="padding-left: 2em">
+											<b><%= name c.user %></b> said:
+											(<%= timeago_fuzzy c.created_at %>)
+										</span>
 									</p>
-									<div class="box_standout" style="margin: 0.2em 0; padding: 0.2em 0.5em;">
+									<div class="box_standout" style="margin: 0.2em 2em; padding: 0.2em 0.5em;">
 										<%= truncate(white_list(c.comment), 60) %>
 									</div>
+									<br/>
 								</li>
 							<% end %>
 						<% end %>

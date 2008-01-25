@@ -10,11 +10,18 @@
   <div id="myexp_usermonitor_gadget_contents" class="contents">
 	<ul class="gadget_list">
 	  <li><%= icon "profile", user_url(current_user), nil, nil, " My Profile" %></li>
-      <li><%= messages_link(current_user, "My Inbox") %></li>
-      <li><%= memberships_link(current_user, "My Memberships") %></li>
+    <li><%= messages_link(current_user, "My Inbox") %></li>
+    <li><%= memberships_link(current_user, "My Memberships") %></li>
 	  <li><%= icon "history", userhistory_url(current_user), nil, nil, "My History" %></li>
 	  <li><%= icon "news", home_url, nil, nil, "My News" %></li>
-    </ul>
+  </ul>
+	
+	<% if current_user.admin? %>
+		<hr/>	
+		<ul class="gadget_list">
+			<li><%= icon "announcement", announcements_url, nil, nil, "Manage Announcements" %></li>
+		</ul>
+	<% end %>
 	
     <% unless current_user.messages_unread.empty? %>
 	  <hr/>

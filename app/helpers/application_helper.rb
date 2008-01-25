@@ -643,6 +643,8 @@ module ApplicationHelper
       return "famfamfam_silk/sound.png"
     when "view-all"
       return "famfamfam_silk/table_go.png"
+    when "announcement"
+      return "famfamfam_silk/transmit.png"
     else
       return nil
     end

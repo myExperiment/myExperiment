@@ -1,0 +1,9 @@
+<h1>Announcements</h1>
+
+<% if logged_in? and current_user.admin? %>
+	<ul class="sectionIcons">
+	  <li><%= icon('announcement', new_announcement_path, nil, nil, 'New Announcement') %></li>
+	</ul>
+<% end %>
+
+<%= render :partial => "announcements/table", :locals => { :collection => @announcements } %>

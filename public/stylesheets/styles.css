@@ -411,7 +411,7 @@ ul.breadcrumb_list a:hover {
 }
 
 #home_container .box .content {
-	padding: 0.4em 0.6em;
+	padding: 0.4em 0.8em;
 }
 
 #home_container .announcements {
@@ -422,6 +422,7 @@ ul.breadcrumb_list a:hover {
 
 #home_container .announcements li {
 	list-style-type: none;
+	margin: 0.8em 0;
 }
 
 #home_container .list {
@@ -432,7 +433,7 @@ ul.breadcrumb_list a:hover {
 
 #home_container .list li {
 	list-style-type: none;
-	margin: 0.6em 0;
+	margin: 0.8em 0;
 }
 
 
@@ -1147,8 +1148,16 @@ a.tagsSelectorOn {
 	margin: 0 0.5em;
 }
 
+.message_box .subject {
+	font-weight: 108%; 
+	background-color: #FFFFCC; 
+	border: 1px dotted #999999; 
+	padding: 0.5em; 
+	margin-bottom: 1em;
+}
+
 .message_box .message {
-	padding: 1em;
+	padding: 0.6em 1em;
 	border: 1px dotted #999999;
 	background-color: #FFFFFF;
 }
@@ -1265,5 +1274,13 @@ div.auto_complete ul strong.highlight {
 .none_text {
 	font-style:italic;
 	color:#666666;
+}
+
+.admin_text {
+	color: red;
+	font-weight: bold; 
+	font-size: 93%;
+	padding-top: 0;
+	margin-top: 0;
 }
 	
