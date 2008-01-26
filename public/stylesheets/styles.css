@@ -382,17 +382,14 @@ ul.breadcrumb_list a:hover {
 #home_container .left {
 	float: left;
 	width: 28%;
-	border: 0px dotted #999999;
 }
 
 #home_container .right {
 	float: right;
 	width: 70%;
-	border: 0px dotted #999999;
 }
 
 #home_container .box {
-	border: 2px solid #BBBBBB;
 	margin-bottom: 1em;
 }
 
@@ -400,18 +397,22 @@ ul.breadcrumb_list a:hover {
 	font-size: 100%;
 	font-weight: bold;
 	color: #333333;
-	padding: 0.3em 1em;
+	padding: 0em 1em 0.3em 1em;
 	text-align: center;
-	/*background-image: url('/images/header-bg.png');
+	background-image: url('/images/header-bg2.png');
 	background-position: top;
 	background-repeat: repeat-x;
-	background-color: #F5F5F5;*/
-	border-bottom: 2px solid #BBBBBB;
 	background-color: #CFDFEF;
+	border: #999999 0px solid;
+	border-width: 0 1px 1px 1px;
 }
 
 #home_container .box .content {
-	padding: 0.4em 0.8em;
+	padding: 0.3em 0.8em;
+	border-top: none;
+	border-right: #999999 1px solid;
+	border-bottom: none;
+	border-left: #999999 1px solid;
 }
 
 #home_container .announcements {
@@ -436,6 +437,73 @@ ul.breadcrumb_list a:hover {
 	margin: 0.8em 0;
 }
 
+/* begin css rounded corners - based on "Snazzy Corners" */
+
+#home_container .xtop, 
+#home_container .xbottom {
+	display: block;
+	background: transparent;
+	font-size: 1px;
+}
+
+#home_container .xb1, 
+#home_container .xb2, 
+#home_container .xb3, 
+#home_container .xb4,
+#home_container .xb5, 
+#home_container .xb6, 
+#home_container .xb7 {
+	display: block;
+	overflow: hidden;
+}
+
+#home_container .xb1, 
+#home_container .xb2, 
+#home_container .xb3, 
+#home_container .xb6, 
+#home_container .xb7 {
+	height: 1px;
+}
+
+#home_container .xb2, 
+#home_container .xb3, 
+#home_container .xb4 {
+	background: #ACCCED;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+}
+
+#home_container .xb5, 
+#home_container .xb6, 
+#home_container .xb7 {
+	background: #FFFFFF;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+}
+
+#home_container .xb1 {
+	margin: 0 5px;
+	background: #999999;
+}
+
+#home_container .xb2, 
+#home_container .xb7 {
+	margin: 0 3px;
+	border-width: 0 2px;
+}
+
+#home_container .xb3, 
+#home_container .xb6 {
+	margin: 0 2px;
+}
+
+#home_container .xb4, 
+#home_container .xb5 {
+	height: 2px;
+	margin: 0 1px;
+}
+
+/* end css rounded corners - based on "Snazzy Corners" */
 
 /* end home styles */
 
