@@ -4,7 +4,7 @@
 
 <!--[form:announcement]-->
 <p><label for="announcement_title">Title</label><br/>
-<%= text_field 'announcement', 'title', :size => 70 %></p>
+<%= form.text_field :title, :size => 70 %></p>
 
 <p><label for="announcement_body">Body</label><br/>
 <%= fckeditor_textarea(:announcement, :body, :toolbarSet => 'Simple', :width => '700px', :height => '500px') %></p>

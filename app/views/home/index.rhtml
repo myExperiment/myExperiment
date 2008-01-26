@@ -12,10 +12,10 @@
 					<ul class="announcements">
 						<% announcements.each do |a| %>
 							<li>
-								<p><b><%= datetime a.updated_at, false %></b> by <b><%= name a.user %></b></p>
 								<p class="box_standout" style="padding: 0.2em 0.4em; margin: 0.2em 0;">
 									<%= link_to h(a.title), announcement_url(a) %>
 								</p>
+								<p><b><%= datetime a.updated_at, false %></b> by <b><%= name a.user %></b></p>
 							</li>
 						<% end %>
 					</ul>
