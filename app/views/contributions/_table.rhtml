@@ -2,8 +2,8 @@
 
 	<% for contribution in collection %>
 	    <% unless params[:contributable_type] %>
-			<p style="margin-top: 0.5em;"><b><%= visible_name(contribution.contributable) %></b></p>
-		<% end %>
+				<p style="margin-top: 0.5em;"><b><%= visible_name(contribution.contributable) %></b></p>
+			<% end %>
 	    <%= render :partial => "#{contribution.contributable_type.pluralize.downcase}/table", :locals => {:collection => [contribution.contributable]} %>
 	<% end %>
 

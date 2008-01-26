@@ -26,7 +26,7 @@
 					
 					<% if network.description and network.description.length > 0 %>
 						<% # desc = truncate(white_list(network.description_html), 400) %>
-						<% desc = truncate(h(network.description), 400) %>
+						<% desc = truncate(strip_html(network.description), 400) %>
 						<div class="desc">
 							<%= query ? highlight_all(desc, query) : desc %>
 						</div>
