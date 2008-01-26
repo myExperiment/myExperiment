@@ -1,10 +1,10 @@
 <div id="home_container">
 	<div class="left">
-		<!-- Announcements -->
+		<!-- Site Announcements -->
 		<div class="box">
 			<div class="title">
-				<%= feed_icon_tag "Announcements", formatted_announcements_path(:rss) %>
-				Announcements
+				<%= feed_icon_tag "Site Announcements", formatted_announcements_path(:rss) %>
+				Site Announcements
 			</div>
 			<div class="content">
 				<% unless (announcements = Announcement.latest).empty? %>
@@ -66,8 +66,10 @@
 						<% taggings.each do |t| %>
 							<% if thing_authorized?('show', t.taggable) %>
 								<li>
-									<span class="box_standout" style="padding: 0.1em 0.4em;"><b><%= link_to_tag(t.tag) %></b></span> on 
-									<b><%= c_type = visible_name(t.taggable); icon(t.taggable_type.to_s, nil, nil, c_type, '') %></b>
+									<span class="box_standout" style="padding: 0.1em 0.4em;">
+										<b><%= link_to_tag(t.tag) %></b>
+									</span>
+									&nbsp;&nbsp;on <b><%= c_type = visible_name(t.taggable); icon(t.taggable_type.to_s, nil, nil, c_type, '') %></b>
 									<%= t.taggable_type == 'Network' ? title(t.taggable_id) : contributable(t.taggable_id, t.taggable_type) %>
 									by <b><%= contributor(t.user_id, 'User') %></b>
 									(<%= timeago_fuzzy t.created_at %>)

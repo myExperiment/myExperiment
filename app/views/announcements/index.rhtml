@@ -1,4 +1,7 @@
-<h1>Announcements (<%= @announcements.length %>)</h1>
+<h1>
+	<%= feed_icon_tag "Site Announcements", formatted_announcements_path(:rss) %>
+	Site Announcements (<%= @announcements.length %>)
+</h1>
 
 <% if logged_in? and current_user.admin? %>
 	<ul class="sectionIcons">

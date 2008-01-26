@@ -1,6 +1,6 @@
 <% t "#{h @announcement.title}" -%>
 
-<h1>Announcement: <%= h @announcement.title %></h1>
+<h1>Site Announcement: <%= h @announcement.title %></h1>
 
 <% if logged_in? and current_user.admin? %>
 	<ul class="sectionIcons">
