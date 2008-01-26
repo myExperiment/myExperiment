@@ -1030,6 +1030,12 @@ module ApplicationHelper
     return thing.authorized?(action, (logged_in? ? current_user : nil))
   end
   
+def strip_html(str, preserve_tags=[])
+    str = str.strip || ''
+    preserve_arr = preserve_tags.join('|') << '|\/'
+    str.gsub(/<(\/|\s)*[^(#{preserve_arr})][^>]*>/,'')
+end
+  
 protected
 
   def contributor_news(contributor, before, after, depth, restrict_contributor)

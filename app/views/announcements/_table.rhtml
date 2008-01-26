@@ -20,7 +20,7 @@
 						
 						<% if announcement.body and announcement.body.length > 0 %>
 							<div class="desc" style="font-size: 85%;">
-								<%= truncate(h(announcement.body), 180) %>
+								<%= truncate(strip_html(announcement.body), 180) %>
 							</div>
 						<% end %>
 						
