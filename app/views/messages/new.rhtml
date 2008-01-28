@@ -4,35 +4,30 @@
 
 <%= error_messages_for :message %>
 
-<% form_for(:message, :url => messages_path) do |f| %>
-  <p style="text-align: center;">
-    <b>To</b><br />
-	<center>
-    <% if @message.to %>
-      <%= render :partial => "users/avatar", :locals => { :user => @message.to } %>
-      <%= f.hidden_field :to %>
-    <% else %>
-      <%= select(:message, :to, User.find(:all, :order => "name ASC").collect {|u| [ u.name, u.id ] }, { :include_blank => false }) %>
-    <% end %>
-	</center>
-  </p>
-
-  <p style="text-align: center;">
-    <b>Subject</b><br />
-    <%= f.text_field :subject %>
-  </p>
-
-  <p style="text-align: center;">
-    <b>Message</b><br />
-    <%= f.text_area :body %>
-  </p>
-
-  <p style="text-align: center;">
-    <%= submit_tag "Send", :disable_with => "Sending..." %>
-  </p>
-  
-  <center>
-	  <%= f.hidden_field :from %>
-	  <%= f.hidden_field :reply_id %>
-  </center>
-<% end %>
+<center>
+	<div class="box_form" style="width: 400px; text-align: left;">
+		<% form_for(:message, :url => messages_path) do |f| %>
+	    <% if @message.to %>
+				<p style="text-align: center;"><b>To</b></p>
+	      <center><%= render :partial => "users/avatar", :locals => { :user => @message.to } %></center>
+	      <%= f.hidden_field :to %>
+	    <% else %>
+			<p><b>To</b></p>
+	      <%= select(:message, :to, User.find(:all, :order => "name ASC").collect {|u| [ u.name, u.id ] }, { :include_blank => false }) %>
+	    <% end %>
+		
+		  <p><b>Subject</b></p>
+		  <%= f.text_field :subject, :size => 55 %>
+		
+		  <p><b>Message</b></p>
+		  <%= f.text_area :body, :size => "47x12" %>
+			
+			<br/><br>
+		
+    	<center><%= submit_tag "Send Message", :disable_with => "Sending..." %></center>
+		  
+		  <%= f.hidden_field :from %>
+		  <%= f.hidden_field :reply_id %>
+		<% end %>
+	</div>
+</center>

@@ -34,31 +34,23 @@
 </div>
 
 <center>
-	<div class="box_form" style="width: 410px; margin: 2em 0;">
+	<div class="box_form" style="width: 410px; margin: 2em 0; text-align: left;">
 		<% form_tag ({:action => :create}) do %>
-			<p>
-		    	<b>From</b><br />
-		    	<%= text_field_tag :from, logged_in? ? current_user.name : '', :size => 30 %>
-		  	</p>
+			<p><b>From</b></p>
+		  <%= text_field_tag :from, logged_in? ? current_user.name : '', :size => 30 %>
 			
-			<p>
-		    	<b>Email (optional)</b><br />
-		    	<%= text_field_tag :email, (logged_in? && current_user.email) ? current_user.email : '', :size => 30 %>
-		  	</p>
+			<p><b>Email (optional)</b></p>
+    	<%= text_field_tag :email, (logged_in? && current_user.email) ? current_user.email : '', :size => 30 %>
 			
-			<p>
-		    	<b>Subject</b><br />
-		    	<%= text_field_tag :subject, nil, :size => 60 %>
-		  	</p>
+			<p><b>Subject</b></p>
+    	<%= text_field_tag :subject, nil, :size => 60 %>
 			
-			<p>
-				<b>Message</b><br />
-				<textarea id="feedback_content" name="content" rows="8" style="width: 400px;"></textarea><br/>
-			</p>
+			<p><b>Message</b></p>
+			<textarea id="feedback_content" name="content" rows="8" style="width: 400px;"></textarea><br/>
 			
-			<p>
-		    	<%= submit_tag "Submit Feedback", :disable_with => "Submitting&hellip;" %>
-		  	</p>
+		  <br/><br>
+		
+    	<center><%= submit_tag "Submit Feedback", :disable_with => "Submitting&hellip;" %></center>
 		<% end %>
 	</div>
 </center>
