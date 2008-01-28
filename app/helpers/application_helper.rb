@@ -926,10 +926,26 @@ module ApplicationHelper
                    :version => version_number)
   end
   
-  def home_url
-    return url_for(:controller => 'home')
+  def thing_authorized?(action, thing)
+    return true unless thing.respond_to?(:authorized?)
+    return thing.authorized?(action, (logged_in? ? current_user : nil))
   end
   
+  def strip_html(str, preserve_tags=[])
+    str = str.strip || ''
+    preserve_arr = preserve_tags.join('|') << '|\/'
+    str.gsub(/<(\/|\s)*[^(#{preserve_arr})][^>]*>/,'')
+  end
+  
+  def feed_icon_tag(title, url)
+    (@feed_icons ||= []) << { :url => url, :title => title }
+    alt_text = "Subscribe to #{title}"
+    link_to image_tag('feed-icon.png', :alt => alt_text, :title => tooltip_title_attrib(alt_text), :style => "vertical-align: middle; padding: 0;"), url
+  end
+  
+  # NOTE: the timeago methods below are used instead of the built in Rails DateHelper methods
+  # because they don't seem to be working.
+
   # From: http://actsasflinn.com/articles/2007/04/10/time-ago-method-for-ruby-on-rails
   # options
   # :start_date, sets the time to measure against, defaults to now
@@ -995,7 +1011,7 @@ module ApplicationHelper
     date_format = options.delete(:date_format) || :default
     delta_minutes = (start_date.to_i - time.to_i).floor / 60
     if delta_minutes.abs <= (8724*60) # eight weeks… I’m lazy to count days for longer than that
-      distance = distance_of_time_in_words(delta_minutes);
+      distance = time_distance_in_words(delta_minutes);
       if delta_minutes < 0
         "#{distance} from now"
       else
@@ -1006,7 +1022,7 @@ module ApplicationHelper
     end
   end
 
-  def distance_of_time_in_words(minutes)
+  def time_distance_in_words(minutes)
     case
       when minutes < 1
         "less than a minute"
@@ -1025,16 +1041,9 @@ module ApplicationHelper
     end
   end
   
-  def thing_authorized?(action, thing)
-    return true unless thing.respond_to?(:authorized?)
-    return thing.authorized?(action, (logged_in? ? current_user : nil))
+  def home_url
+    return url_for(:controller => 'home')
   end
-  
-def strip_html(str, preserve_tags=[])
-    str = str.strip || ''
-    preserve_arr = preserve_tags.join('|') << '|\/'
-    str.gsub(/<(\/|\s)*[^(#{preserve_arr})][^>]*>/,'')
-end
   
 protected
 

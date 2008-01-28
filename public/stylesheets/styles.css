@@ -395,9 +395,10 @@ ul.breadcrumb_list a:hover {
 
 #home_container .box .title {
 	font-size: 100%;
+	line-height: 1em;
 	font-weight: bold;
 	color: #333333;
-	padding: 0em 1em 0.3em 1em;
+	padding: 0.1em 1em 0.4em 1em;
 	text-align: center;
 	background-image: url('/images/header-bg2.png');
 	background-position: top;

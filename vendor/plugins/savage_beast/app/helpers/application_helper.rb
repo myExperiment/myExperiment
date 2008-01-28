@@ -20,10 +20,11 @@ module ApplicationHelper
     avatar(user, size)
   end
 
-  def feed_icon_tag(title, url)
-    (@feed_icons ||= []) << { :url => url, :title => title }
-    link_to image_tag('feed-icon.png', :size => '14x14', :alt => "Subscribe to #{title}"), url
-  end
+  # Update 2008-01-28 [Jits]: Moved to main application_helper
+  #def feed_icon_tag(title, url)
+  #  (@feed_icons ||= []) << { :url => url, :title => title }
+  #  link_to image_tag('feed-icon.png', :size => '14x14', :alt => "Subscribe to #{title}"), url
+  #end
 
   def search_posts_title
     returning(params[:q].blank? ? 'Recent Posts' : "Searching for '#{h params[:q]}'") do |title|
