@@ -1,5 +1,14 @@
 <div class="contribution_section_box">
-	<p style="text-align: center; font-size: 108%; font-weight: bold;">
-	 	<%= pluralize network.members(true).length, "member" %>
+	<p style="font-size: 108%;">
+	 	<b><%= pluralize network.members(true).length, "member" %></b>
 	</p>
+	
+	<% if mine? network %>
+		<p>
+			<%= pluralize network.memberships_requested.length, "request" %> pending
+		</p>
+		<p>
+			<%= pluralize network.memberships_invited.length, "invite" %> pending
+		</p>
+	<% end %>
 </div>

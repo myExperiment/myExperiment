@@ -41,6 +41,17 @@
 		</p>
 	<% end %>
 	
+	<% if mine? @network %>
+		<br/>
+		<div class="box_currentuser_specific">
+			<% if @network.auto_accept %>
+				You have set this Group to automatically accept all Membership Requests
+			<% else %>
+				You have set this Group to send you all Membership Requests for confirmation first
+			<% end %>
+		</div>
+	<% end %>
+	
 	<br/>
 	
 	<div class="contribution_section_box">
@@ -51,16 +62,6 @@
 			<%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
 		</div>
 	</div>
-	
-	<% if mine? @network %>
-		<div class="box_currentuser_specific">
-			<% if @network.auto_accept %>
-				You have set this Group to automatically accept all Membership Requests
-			<% else %>
-				You have set this Group to send you all Membership Requests for confirmation first
-			<% end %>
-		</div>
-	<% end %>
 	
 </div>
 
@@ -115,7 +116,33 @@
     </div>
   </div>
   
+	<% requests = @network.memberships_requested %>
   <div class="tabContainer">
+    <div class="tabTitle">Requests Pending</div>
+    <div class="tabContent">
+    	<% unless requests.empty? %>
+				<p></p>
+      	<%= render :partial => "memberships/table", :locals => { :collection => requests, :network => false } %>
+			<% else %>
+				<p><i>No requests are pending for this Group</i></p>
+			<% end %>
+    </div>
+  </div>
+	
+	<% invited = @network.memberships_invited %>
+  <div class="tabContainer">
+    <div class="tabTitle">Invites Pending</div>
+    <div class="tabContent">
+    	<% unless invited.empty? %>
+				<p></p>
+      	<%= render :partial => "memberships/table", :locals => { :collection => invited, :network => false } %>
+			<% else %>
+				<p><i>No invites are pending for this Group</i></p>
+			<% end %>
+    </div>
+  </div>
+	
+	<div class="tabContainer">
     <div class="tabTitle">Invite Users</div>
     <div class="tabContent">
   
