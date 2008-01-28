@@ -10,37 +10,38 @@
   <div class="contents">
     <% form_tag session_path do %>
       <div class="box1">
-		  <p class="label">
+		  	<p class="label">
 	        Username or Email:
-		  </p>
-		  <p>
-	        <%= text_field_tag 'session[username]', nil, :class => 'field', :style => "width: 140px;" %>
-		  </p>
+		  	</p>
+			  <p>
+		    	<%= text_field_tag 'session[username]', nil, :class => 'field', :style => "width: 140px;" %>
+			  </p>
 	      <p class="label">
-			Password:
-		  </p>
-		  <p>
-	        <%= password_field_tag 'session[password]', nil, :class => 'field', :style => "width: 140px;" %>
-		  </p>
-		  <p class="label">
-	        Remember me: <%= check_box_tag 'session[remember_me]' %>
+					Password:
+				</p>
+		  	<p>
+	      	<%= password_field_tag 'session[password]', nil, :class => 'field', :style => "width: 140px;" %>
+		  	</p>
+		  	<p class="label">
+	      	Remember me: <%= check_box_tag 'session[remember_me]' %>
 	      </p>
-	  </div>
+	  	</div>
 	  
-	  <p><b>OR</b></p>
+	  	<p><b>OR</b></p>
             
-      <div class="box1" style="margin-bottom: 0.4em;">
-		  <p class="label">
+    	<div class="box1" style="margin-bottom: 0.4em;">
+		  	<p class="label">
 	         Use OpenID:
-		  </p>
-		  <p>
+		  	</p>
+		  	<p>
 	        <%= text_field_tag 'openid_url', nil, :size => 17, :class => 'field', :style => "width: 130px;" %>
+					<span style="font-size: 77%; color: #333333;">(eg: name.openid.com)</span>
 	      </p>
-	  </div>
-      
-      <p>
-        <%= submit_tag "Log in", :disable_with => "Logging in..." %>
-      </p>
+  		</div>
+	    
+	    <p>
+	      <%= submit_tag "Log in", :disable_with => "Logging in..." %>
+	    </p>
 	  
     <% end %>
     
