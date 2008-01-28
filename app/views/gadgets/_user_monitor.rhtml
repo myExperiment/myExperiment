@@ -1,5 +1,7 @@
 <% if logged_in? %>
 
+<% trunc_length = 22 -%>
+
 <div class="myexperiment_gadget">
   <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 
@@ -32,7 +34,10 @@
         <div class="content">
           <ul class="gadget_list">
             <% current_user.messages_unread.each do |message| %>
-              <li><b><%= icon "message", message_path(message), nil, nil, h(message.subject) %></b></li>
+              <li>
+             		<%= icon "message", message_path(message), nil, nil, "" %>
+								<b><%= link_to truncate(h(message.subject), trunc_length), message_path(message), :title => tooltip_title_attrib(h(message.subject)) -%></b>
+							</li>
             <% end %>
           </ul>
         </div>
@@ -48,7 +53,10 @@
         <div class="content">
           <ul class="gadget_list">
             <% current_user.friendships_pending.each do |friendship| %>
-              <li><b><%= icon "user", friendship_path(current_user, friendship), nil, nil, h(friendship.user.name) %></b></li>
+              <li>
+              	<%= icon "user", friendship_path(current_user, friendship), nil, nil, "" %>
+								<b><%= link_to truncate(h(friendship.user.name), trunc_length), friendship_path(current_user, friendship), :title => tooltip_title_attrib(h(friendship.user.name)) -%></b>
+							</li>
             <% end %>
           </ul>
         </div>
@@ -66,7 +74,8 @@
           <ul class="gadget_list">
             <% membership_invites.each do |membership| %>
               <li>
-              	<b><%= icon "membership", membership_path(membership.user, membership), nil, nil, h("From #{membership.network.owner.name}") %></b>
+              	<%= icon "membership", membership_path(membership.user, membership), nil, nil, "" -%>
+								<b><%= link_to truncate("From #{h(membership.network.owner.name)}", trunc_length), membership_path(membership.user, membership), :title => tooltip_title_attrib("From #{h(membership.network.owner.name)}") -%></b>
 								<span style="margin-left: 20px; display: block;"><small>(for Group: <%= title membership.network_id %>)</small></span>
 						  </li>
             <% end %>
@@ -86,9 +95,10 @@
           <ul class="gadget_list">
             <% membership_requests.each do |membership| %>
               <li>
-              	<b><%= icon "membership", membership_path(membership.user, membership), nil, nil, h("From #{membership.user.name}") %></b>
-				<br/><span style="margin-left: 20px"><small>(for Group: <%= title membership.network_id %>)</small></span>
-			  </li>
+              	<%= icon "membership", membership_path(membership.user, membership), nil, nil, "" -%>
+								<b><%= link_to truncate("From #{h(membership.user.name)}", trunc_length), membership_path(membership.user, membership), :title => tooltip_title_attrib("From #{h(membership.user.name)}") -%></b>
+								<span style="margin-left: 20px; display: block;"><small>(for Group: <%= title membership.network_id %>)</small></span>
+			  			</li>
             <% end %>
           </ul>
         </div>
