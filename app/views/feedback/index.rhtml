@@ -1,10 +1,15 @@
 <h1>Give us Feedback</h1>
 
-<p>Fill in the form below and submit, or alternatively you can email: <a href="mailto:bugs@myexperiment.org?subject=myExperiment Feedback">bugs@myexperiment.org</a></p>
+<p style="text-align: center;">
+	Fill in the form below and submit, or alternatively you can email:
+	<b><%= mail_to "bugs@myexperiment.org", nil, { :subject => "myExperiment Feedback", :encode => "hex" } %></b>
+</p>
 
-<br/>
+<p style="text-align: center;">
+	Click <b><%= link_to_function "here", visual_effect(:toggle_blind, "feedback_help", :duration => 0.3) %></b> for more info.
+</p>
 
-<div class="box_standout" style="font-size: 85%;">
+<div id="feedback_help" class="box_standout" style="display: none; font-size: 93%;">
 	<p>We would really appreciate feedback on your experiences with myExperiment, especially in the following areas:</p>
 	<ul>
 	  <li><b>User Interface:</b>  
@@ -28,33 +33,35 @@
 	<p style="font-weight: bold;">Please indicate any URLs (web address to a page) if your feedback is about particular parts of the site. Thanks!</p>
 </div>
 
-<div style="margin: 2em; text-align: center;">
-	<% form_tag ({:action => :create}) do %>
-		<p>
-	    	<b>From</b><br />
-	    	<%= text_field_tag :from, logged_in? ? current_user.name : '', :size => '30' %>
-	  	</p>
-		
-		<p>
-	    	<b>Email (optional)</b><br />
-	    	<%= text_field_tag :email, (logged_in? && current_user.email) ? current_user.email : '', :size => '30' %>
-	  	</p>
-		
-		<p>
-	    	<b>Subject</b><br />
-	    	<%= text_field_tag :subject, nil, :size => '30' %>
-	  	</p>
-		
-		<p>
-			<b>Message</b><br />
-			<textarea id="feedback_content" name="content" rows="6" style="width: 400px;"></textarea><br/>
-		</p>
-		
-		<p>
-	    	<%= submit_tag "Submit Feedback", :disable_with => "Submitting&hellip;" %>
-	  	</p>
-	<% end %>
-</div>
+<center>
+	<div class="box_form" style="width: 410px; margin: 2em 0;">
+		<% form_tag ({:action => :create}) do %>
+			<p>
+		    	<b>From</b><br />
+		    	<%= text_field_tag :from, logged_in? ? current_user.name : '', :size => 30 %>
+		  	</p>
+			
+			<p>
+		    	<b>Email (optional)</b><br />
+		    	<%= text_field_tag :email, (logged_in? && current_user.email) ? current_user.email : '', :size => 30 %>
+		  	</p>
+			
+			<p>
+		    	<b>Subject</b><br />
+		    	<%= text_field_tag :subject, nil, :size => 60 %>
+		  	</p>
+			
+			<p>
+				<b>Message</b><br />
+				<textarea id="feedback_content" name="content" rows="8" style="width: 400px;"></textarea><br/>
+			</p>
+			
+			<p>
+		    	<%= submit_tag "Submit Feedback", :disable_with => "Submitting&hellip;" %>
+		  	</p>
+		<% end %>
+	</div>
+</center>
 
 <div class="box_standout">
 		If you have a moment, please could you fill in a <b><%= link_to "questionnaire", "http://www.keysurvey.com/survey/173025/21cd/", :popup => true %></b>?

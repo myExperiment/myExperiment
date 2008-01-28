@@ -1283,8 +1283,14 @@ div.auto_complete ul strong.highlight {
 /* end autocomplete styles */
 
 .box_simple {
-	padding: 0.8em; 
+	padding: 0.5em 0.8em;
 	border: 1px dotted #999999;
+}
+
+.box_form {
+	background-color: #EEEEEE;
+	border: 1px dotted #999999;
+	padding: 0.8em 1.4em;
 }
 
 .box_standout {
