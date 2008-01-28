@@ -157,7 +157,7 @@ class MembershipsController < ApplicationController
     @membership.destroy
 
     respond_to do |format|
-      params[:notice] = "User succesfully removed from Group"
+      params[:notice] = "Membership successfully deleted"
       format.html { redirect_to group_path(network_id) }
       format.xml  { head :ok }
     end
