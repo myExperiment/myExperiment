@@ -250,7 +250,8 @@ fieldset {
 	border-top: 1px solid #999999;
 	border-left: 1px solid #999999;
 	border-right: 1px solid #999999;
-	border-bottom: 1px solid transparent;
+	border-bottom: none;
+	*border-bottom: 1px solid transparent;
 	text-decoration: none;
 	background-image: url('/images/header-bg.png');
 	background-position: top;
@@ -274,7 +275,6 @@ fieldset {
 .tabnav li#selected_tabnav a {
 	background-color: #317eff;
 	background-image: none;
-	border-bottom: 1px solid transparent;
 	color: #FFFFFF;
 }
 
