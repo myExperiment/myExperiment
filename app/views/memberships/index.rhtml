@@ -7,7 +7,7 @@
 	<% memberships = @user.networks_membership_requests_pending %>
 	<div class="fold">
   		<div class="foldTitle">
-			Pending requests sent by users who want to join your Groups (<%= memberships.length %>)
+			Pending requests sent by users who want to join your Groups <span style="color: red;">(<%= memberships.length %>)</span>
 			<hr/>
 			<small><%= memberships.length %> requires approval from you</small>
         </div>
@@ -26,7 +26,7 @@
 	<% memberships = @user.memberships_invited %>
 	<div class="fold">
   		<div class="foldTitle">
-			Pending invitations you have been sent from users to join their Groups (<%= memberships.length %>)
+			Pending invitations you have been sent from users to join their Groups <span style="color: red;">(<%= memberships.length %>)</span>
 			<hr/>
 			<small><%= memberships.length %> requires approval from you</small>
         </div>
@@ -135,6 +135,8 @@
 
 <% else %>
 
+	<% if false %>
+
   <h2>All Memberships</h2>
 
   <%= render :partial => "layouts/paginate", :locals => { :collection => @memberships } %>
@@ -142,6 +144,8 @@
   <%= render :partial => "memberships/table", :locals => { :collection => @memberships } %>
 
   <%= render :partial => "layouts/paginate", :locals => { :collection => @memberships } %>
+	
+	<% end %>
 
 <% end %>
 
