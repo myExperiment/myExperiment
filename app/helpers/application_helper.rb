@@ -834,7 +834,15 @@ module ApplicationHelper
   
   def friend_badge(user)
     if user and logged_in? and user.id != current_user.id
-      return image_tag("friend_badge.png", :class => 'friend_badge') if (user.friend? current_user.id)
+      return image_tag("friend_badge.png", :class => 'badge') if (user.friend? current_user.id)
+    else 
+      return ''
+    end
+  end
+  
+  def admin_badge(user)
+    if user.admin?
+      return image_tag("admin_badge.png", :class => 'badge')
     else 
       return ''
     end

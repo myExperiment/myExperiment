@@ -1233,10 +1233,10 @@ a.tagsSelectorOn {
 	background-color: #FFFFFF;
 }
 
-.friend_badge {
+.badge {
 	padding: 0;
 	margin: 0;
-	margin-left: 0.4em;
+	margin-left: 0.2em;
 	vertical-align: middle;
 }
 

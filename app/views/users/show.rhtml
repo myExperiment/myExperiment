@@ -48,17 +48,22 @@
 		<h1>
 			<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
 			My Profile
+			<%= admin_badge(@user) %>
 		</h1>
 	<% else %>
 		<h1>
 			<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
-			User Profile: <%=h @user.name %><%= friend_badge(@user) %>
+			User Profile: <%=h @user.name %>
+			<%= friend_badge(@user) %>
+			<%= admin_badge(@user) %>
 		</h1>
 	<% end %>
 <% else %>
 	<h1>
 		<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
-		User: <%=h @user.name %><%= friend_badge(@user) %>
+		User: <%=h @user.name %>
+		<%= friend_badge(@user) %>
+		<%= admin_badge(@user) %>
 	</h1>
 <% end %>
 
@@ -72,11 +77,6 @@
 	  <% end %>
 		
 		<td style="padding-left: 1em; vertical-align: top;">
-			<% if @user.admin? %>
-				<p class="admin_text">
-					myExperiment Admin
-				</p>
-			<% end %>
 			
 			<p>
 		    <b>Name:</b>

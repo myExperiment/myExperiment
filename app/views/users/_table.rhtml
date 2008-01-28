@@ -11,17 +11,14 @@
 			    <td class="mid" style="text-align: left;">
 			    	<p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
 						<%= if user.profile then flag_icon(user.profile.location_country, user.profile.location) end %>
-						<%= name user.id %><%= friend_badge(user) %>
+						<%= name user.id %>
+						<%= friend_badge(user) %>
+						<%= admin_badge(user) %>
 					</p>
-					<% if user.admin? %>
-						<p class="admin_text">
-							myExperiment Admin
-						</p>
-					<% end %>
 					<% if user.profile %>
 						<% if user.profile.body and user.profile.body.length > 0 %>
 							<% # desc = truncate(white_list(user.profile.body_html), 180) %>
-				  			<% desc = truncate(strip_html(user.profile.body), 180) %>
+				  		<% desc = truncate(strip_html(user.profile.body), 180) %>
 							<div class="desc" style="font-size: 85%;">
 								<%= query ? highlight_all(desc, query) : desc %>
 							</div>
