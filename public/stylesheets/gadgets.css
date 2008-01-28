@@ -51,7 +51,7 @@
 	border-bottom: none;
 	border-left: #999999 1px solid;
 	color: #000000;
-	padding: 0.5em;
+	padding: 0.4em;
 	margin-top: 0;
 	text-align: center;
 	background-color: #FFFFFF;
@@ -64,7 +64,8 @@
 .myexperiment_gadget .contents hr {
 	height: 1px;
 	border-bottom: 1px dotted #999999;
-	margin: 0.5em 0;
+	margin: 0.3em 0;
+	padding: 0;
 }
 
 .myexperiment_gadget .contents .box1 {

@@ -3,7 +3,7 @@
 	Site Announcements (<%= @announcements.length %>)
 </h1>
 
-<% if logged_in? and current_user.admin? %>
+<% if admin? %>
 	<ul class="sectionIcons">
 	  <li><%= icon('announcement', new_announcement_path, nil, nil, 'New Announcement') %></li>
 	</ul>

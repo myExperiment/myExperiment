@@ -23,7 +23,7 @@
 					<p class="none_text">None</p>
 				<% end %>
 				<p style="font-size: 85%; text-align: center;">
-					<% if logged_in? and current_user.admin? %>
+					<% if admin? %>
 						[ <%= link_to "New", new_announcement_url %> ]
 					<% end %>
 					[ <%= link_to "See All", announcements_url %> ]
@@ -86,8 +86,8 @@
 					<p class="none_text">None</p>
 				<% end %>
 			</div>
+			<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 		</div>
-		<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 	</div>
 	
 	<div class="right">

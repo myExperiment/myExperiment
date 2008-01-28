@@ -2,7 +2,7 @@
 
 <h1>Site Announcement: <%= h @announcement.title %></h1>
 
-<% if logged_in? and current_user.admin? %>
+<% if admin? %>
 	<ul class="sectionIcons">
 	  <li><%= icon('edit', edit_announcement_path(@announcement), nil, nil, 'Edit') %></li>
 		<li>

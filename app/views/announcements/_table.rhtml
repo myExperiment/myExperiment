@@ -27,7 +27,7 @@
 					</td>
 			    <td class="actions"  style="width: 80px;">
 		      	<%= icon "show", announcement_path(announcement), nil, nil, "View" %>
-						<% if logged_in? and current_user.admin? %>
+						<% if admin? %>
 							<%= icon('edit', edit_announcement_path(announcement), nil, nil, 'Edit') %>
 						<% end %>
 		    	</td>

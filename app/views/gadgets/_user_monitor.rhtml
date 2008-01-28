@@ -16,7 +16,7 @@
 	  <li><%= icon "news", home_url, nil, nil, "My News" %></li>
   </ul>
 	
-	<% if current_user.admin? %>
+	<% if admin? %>
 		<hr/>	
 		<ul class="gadget_list">
 			<li><%= icon "announcement", announcements_url, nil, nil, "Manage Announcements" %></li>
