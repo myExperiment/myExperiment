@@ -64,7 +64,8 @@
 .myexperiment_gadget .contents hr {
 	height: 1px;
 	border-bottom: 1px dotted #999999;
-	margin: 0.3em 0;
+	margin: 0.7em 0;
+	*margin: 0;
 	padding: 0;
 }
 

@@ -12,17 +12,17 @@
 					<ul class="announcements">
 						<% announcements.each do |a| %>
 							<li>
-								<p class="box_standout" style="padding: 0.2em 0.4em; margin: 0.2em 0;">
+								<p class="box_standout" style="font-size: 93%; padding: 0.2em 0.5em; margin: 0.1em 0;">
 									<%= link_to h(a.title), announcement_url(a) %>
 								</p>
-								<p><b><%= datetime a.created_at, false %></b> by <b><%= name a.user %></b></p>
+								<p style="font-size: 77%; padding-left: 1.5em;"><b><%= datetime a.created_at, false %></b> by <b><%= name a.user %></b></p>
 							</li>
 						<% end %>
 					</ul>
 				<% else %>
 					<p class="none_text">None</p>
 				<% end %>
-				<p style="font-size: 85%; text-align: center;">
+				<p style="font-size: 77%; text-align: center;">
 					<% if admin? %>
 						[ <%= link_to "New", new_announcement_url %> ]
 					<% end %>
@@ -66,7 +66,7 @@
 				Latest Tags
 			</div>
 			<div class="content">
-				<% unless (taggings = Tagging.latest).empty? %>
+				<% unless (taggings = Tagging.latest(20)).empty? %>
 					<ul class="list" style="font-size: 85%;">
 						<% taggings.each do |t| %>
 							<% if thing_authorized?('show', t.taggable) %>
@@ -116,7 +116,7 @@
 				Updated Items
 			</div>
 			<div class="content">
-				<% unless (contributions = Contribution.last_updated).empty? %>
+				<% unless (contributions = Contribution.last_updated(15)).empty? %>
 					<ul class="list">
 						<% contributions.each do |c| %>
 							<% if thing_authorized?('show', c) %>
