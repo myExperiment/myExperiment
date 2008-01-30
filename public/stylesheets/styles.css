@@ -876,37 +876,42 @@ table.contributable:hover {
 	vertical-align: middle;
 }
 
-.sectionIcons LI {
+.sectionIcons li {
 	display: inline;
 	vertical-align: middle;
+	margin: 0;
+	margin-left: 8px;
+	/*border: 2px solid #F5F5F5;*/ 
 }
 
-.sectionIcons LI:hover {
+.sectionIcons li:hover {
 }
 
-.sectionIcons LI * {
+.sectionIcons li * {
 	vertical-align: middle;
 }
 
-.sectionIcons LI A {
-	padding: 0.5em;
-	*padding: 0.3em;
+.sectionIcons li a {
+	width: 100%;
+	padding: 0.5em 0.5em;
+	*padding: 0.2em 0.5em;
+	line-height: 1em;
 	text-decoration: none;
-	border: 1px solid #999999;
-	background-image: url('/images/header-bg.png');
-	background-position: top;
-	background-repeat: repeat-x;
-	background-color: #F5F5F5;
-	margin-left: 8px;
+	border: 1px solid #BBBBBB;
+	/*border-width: 1px 2px 2px 1px;*/
+	/*background-image: url('/images/button-bg.png');
+	background-position: center;
+	background-repeat: repeat-x;*/
+	background-color: #EEF2FF;
 }
 
-.sectionIcons LI A:hover {
+.sectionIcons li a:hover {
 	background-image: none;
 	background-color: #0099FF;
-	color: #FFFFFF;
+	color: #F5F5F5;
 }
 
-.sectionIcons LI A * {
+.sectionIcons li a * {
 	vertical-align: middle;
 }
 
@@ -1117,6 +1122,8 @@ table.contributable:hover {
 	line-height: 1.3em;
 }
 
+/* Begin Comments styles */
+
 .commentsBox {
 	padding-left: 2em;
 }
@@ -1181,6 +1188,68 @@ table.comment td.content p {
 	background-color: #EEEEEE;
 	border: 1px dotted #999999;
 }
+
+/* End Comments styles */
+
+/* Begin Reviews styles */
+
+.reviewsBox {
+	padding-left: 2em;
+}
+
+ul.reviews {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.reviews li {
+	margin-top: 1.5em;
+	list-style: none;
+}
+
+table.review {
+	width: 100%;
+	border: 1px dotted #999999;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+table.review p {
+	padding: 0;
+}
+
+table.review td {
+	padding: 0.2em;
+	vertical-align: top;
+}
+
+table.review td.avatar {
+	width: 70px;
+	padding: 0.2em 0.6em;
+	text-align: center;
+	background-color: #EEEEEE;
+}
+
+table.review td.header {
+	height: 1.2em;
+	vertical-align: middle;
+	text-align: left;
+	background-color: #EEEEEE;
+	color: #333333;
+	padding: 0.2em 0.8em;
+}
+
+table.review td.content {
+	padding: 0.8em 1em;
+	text-align: left;
+}
+
+table.review td.content p {
+	margin-bottom: 1em;
+}
+
+/* End Reviews styles */
 
 a.tagsSelectorOff {
 	margin: 0 0.2em;
