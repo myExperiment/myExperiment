@@ -1255,8 +1255,8 @@ a.tagsSelectorOff {
 	margin: 0 0.2em;
 	padding: 0.3em 0.4em;
 	border: 1px solid #999999;
-	background-color: #f5f5f5;
-	color: #333333;
+	background-color: #EEF2FF;
+	color: #000099;
 	font-weight: bold;
 	font-size: 85%
 }
@@ -1265,7 +1265,7 @@ a.tagsSelectorOff:hover {
 	margin: 0 0.2em;
 	padding: 0.3em 0.4em;
 	border: 1px solid #999999;
-	color: #FFFFFF;
+	color: #F5F5F5;
 	background-color: #0099FF;
 	font-weight: bold;
 	font-size: 85%
@@ -1275,7 +1275,7 @@ a.tagsSelectorOn {
 	margin: 0 0.2em;
 	padding: 0.3em 0.4em;
 	border: 1px solid #999999;
-	color: #FFFFFF;
+	color: #F5F5F5;
 	background-color: #0099FF;
 	font-weight: bold;
 	font-size: 85%
