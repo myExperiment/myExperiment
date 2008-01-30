@@ -1,6 +1,9 @@
 <%= javascript_include_tag :fckeditor %>
 
-<h2>Comments (<%= commentable.comments.length %>)</h2>
+<h2>
+	<%= icon "comments", nil, nil, nil, "" -%>
+	Comments (<%= commentable.comments.length %>)
+</h2>
 
 <div class="commentsBox">
 	

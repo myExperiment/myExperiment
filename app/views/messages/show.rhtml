@@ -15,18 +15,18 @@
 
 <div class="message_box">
 	<div style="float: left; text-align: center;">
-		<b>From: </b>
+		<b>From </b>
 		<%= render :partial => "users/avatar", :locals => { :user => @message.from, :size => 50 } %>
 	</div>
 	
 	<div style="float: left; text-align: center; margin-left: 3em;">
-		<b>To: </b>
+		<b>To </b>
 		<%= render :partial => "users/avatar", :locals => { :user => @message.to, :size => 50 } %>
 	</div>
 	
-	<div style="float: left; margin-left: 3em; width: 420px;">
-		<p><b>Subject:</b></p>
-		<p style="font-weight: 108%; background-color: #FFFFCC; border: 1px dotted #999999; padding: 0.5em; margin-bottom: 1em;">
+	<div style="float: left; margin-left: 3em; width: 470px;">
+		<p><b>Subject</b></p>
+		<p class="subject">
 			<%=h @message.subject %>
 		</p>
 		<p><b>Sent: </b><%=datetime @message.created_at %></p>
@@ -34,8 +34,14 @@
 	
 	<div class="clearer">&nbsp;</div>
 	
-	<p><b>Message:</b></p>
+	<br/>
+	
+	<p><b>Message</b></p>
 	<div class="message">
-		<%=white_list @message.body_html %>
+		<% unless @message.body.blank? %>
+			<%=white_list @message.body_html %>
+		<% else %>
+			<p class="none_text">No message body</p>
+		<% end %>
 	</div>
 </div>

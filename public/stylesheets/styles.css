@@ -963,26 +963,6 @@ table.contributable:hover {
 	width: 25%;
 }
 
-/*
-
-.contribution_right_box .actions {
-	margin: 1em 0;
-}
-
-.contribution_right_box .actions * {
-	vertical-align: middle;
-}
-
-.contribution_right_box .actions a {
-	white-space: normal;
-	margin: 0.2em 0;
-	padding: 0;
-	display: block;
-	vertical-align: middle;
-}
-
-*/
-
 .contribution_section_box {
 	background-image: url('/images/box-bg1.png');
 	background-position: top;
@@ -1063,16 +1043,25 @@ table.contributable:hover {
 	margin: 0;
 }
 
-.contribution_version_selector_box {
-	margin: 0;
+.contribution_version_box {
+	border: 1px dotted #999999;
 	margin-bottom: 1em;
-	padding: 0.4em 0.5em;
-	border: 1px dotted #BBBBBB;
-	/*background-image: url('/images/header-bg.png');
+}
+
+.contribution_version_box .title {
+	font-size: 108%; 
+	font-weight: bold; 
+	color: #990000;
+}
+
+.contribution_version_selector_box {
+	padding: 0.6em 0.5em 0.4em 0.5em;
+	border: 0px dotted #999999;
+	border-width: 0 0 1px 0;
+	background-image: url('/images/box-bg1.png');
 	background-position: top;
 	background-repeat: repeat-x;
-	background-color: #F5F5F5;*/
-	background-color: #EEEEEE;
+	background-color: #FFFFCC;
 	color: #333333;
 }
 
@@ -1098,16 +1087,8 @@ table.contributable:hover {
 	color: #333333;
 }
 
-.contribution_version_box {
-	border: 1px solid #999999;
+.contribution_version_inner_box {
 	padding: 0.6em 0.7em;
-	margin-bottom: 1em;
-}
-
-.contribution_version_box .title {
-	font-size: 108%; 
-	font-weight: bold; 
-	color: #990000;
 }
 
 .contribution_currentlicense {
@@ -1197,58 +1178,6 @@ table.comment td.content p {
 	padding-left: 2em;
 }
 
-ul.reviews {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-
-ul.reviews li {
-	margin-top: 1.5em;
-	list-style: none;
-}
-
-table.review {
-	width: 100%;
-	border: 1px dotted #999999;
-	border-collapse: collapse;
-	border-spacing: 0;
-}
-
-table.review p {
-	padding: 0;
-}
-
-table.review td {
-	padding: 0.2em;
-	vertical-align: top;
-}
-
-table.review td.avatar {
-	width: 70px;
-	padding: 0.2em 0.6em;
-	text-align: center;
-	background-color: #EEEEEE;
-}
-
-table.review td.header {
-	height: 1.2em;
-	vertical-align: middle;
-	text-align: left;
-	background-color: #EEEEEE;
-	color: #333333;
-	padding: 0.2em 0.8em;
-}
-
-table.review td.content {
-	padding: 0.8em 1em;
-	text-align: left;
-}
-
-table.review td.content p {
-	margin-bottom: 1em;
-}
-
 /* End Reviews styles */
 
 a.tagsSelectorOff {
@@ -1282,7 +1211,7 @@ a.tagsSelectorOn {
 }
 
 .message_box {
-	padding: 2em 3em;
+	padding: 1.5em 2em;
 	border: 1px dotted #999999;
 	background-color: #F5F5F5;
 	margin: 0 0.5em;
@@ -1292,7 +1221,7 @@ a.tagsSelectorOn {
 	font-weight: 108%; 
 	background-color: #FFFFCC; 
 	border: 1px dotted #999999; 
-	padding: 0.5em; 
+	padding: 0.2em 0.5em; 
 	margin-bottom: 1em;
 }
 

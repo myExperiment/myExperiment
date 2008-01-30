@@ -5,7 +5,7 @@
 			<%= render :partial => "ratings/rating", :locals => { :rateable => contributable, :controller => controller_name } %>
 		</div>
 		
-		<% if (rating = get_user_rating(contributable, current_user.id)) %>
+		<% if (rating = contributable.user_rating(current_user)) %>
 			<p style="font-size: 85%; font-weight: bold;">You rated it: <%= rating.rating %>/5</p>
 		<% else %>
 			<p style="font-size: 85%; font-weight: bold;"><i>You haven't rated yet</i></p>

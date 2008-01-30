@@ -49,10 +49,16 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :workflows, :collection => { :search => :get }, :member => { :new_version => :get, :download => :get, :bookmark => :post, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post, :create_version => :post, :destroy_version => :delete, :edit_version => :get, :update_version => :put } do |workflow|
     # workflows have nested citations
     workflow.resources :citations
+    workflow.resources :reviews
   end
 
   # files (downloadable)
-  map.resources :files, :controller => :blobs, :collection => { :search => :get }, :member => { :download => :get, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post }
+  map.resources :files, :controller => :blobs, :collection => { :search => :get }, :member => { :download => :get, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post } do |file|
+    # Due to restrictions in the version of Rails used (v1.2.3), 
+    # we cannot have reviews as nested resources in more than one top level resource.
+    # ie: we cannot have polymorphic nested resources.
+    #file.resources :reviews
+  end
 
   # bloGs
   map.resources :blogs do |blog|

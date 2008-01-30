@@ -86,6 +86,17 @@ module Juixe
           end
           rtn
         end
+        
+        # Method added [2008-01-30, by Jits]
+        def user_rating(user)
+          rtn = nil;
+          if user
+            self.ratings.each { |b|
+              return b if user.id == b.user_id
+            }
+          end
+          rtn
+        end
       end
     end
   end

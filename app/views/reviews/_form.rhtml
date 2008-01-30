@@ -1,0 +1,11 @@
+<%= javascript_include_tag :fckeditor %>
+
+<%= error_messages_for 'review' %>
+
+<!-- Add rating option -->
+
+<p><b>Title</b></p>
+<%= form.text_field :title, :size => 70 %>
+
+<p><b>Your review</b></p>
+<%= fckeditor_textarea(:review, :review, :toolbarSet => 'Basic', :width => '455px', :height => '400px') %>

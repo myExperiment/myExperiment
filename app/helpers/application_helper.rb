@@ -583,6 +583,8 @@ module ApplicationHelper
       return "famfamfam_silk/book_open.png"
     when "comment"
       return "famfamfam_silk/comment.png"
+    when "comments"
+      return "famfamfam_silk/comments.png"
     when "info"
       return "famfamfam_silk/information.png"
     when "help"
@@ -645,6 +647,8 @@ module ApplicationHelper
       return "famfamfam_silk/table_go.png"
     when "announcement"
       return "famfamfam_silk/transmit.png"
+    when "review"
+      return "famfamfam_silk/report.png"
     else
       return nil
     end
@@ -862,19 +866,6 @@ module ApplicationHelper
   
   def tooltip_title_attrib(text, delay=200)
     return "header=[] body=[#{text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[#{delay}]"
-  end
-
-  def get_user_rating(contributable, user_id)
-    rating = nil;
-    
-    contributable.ratings.each do |r|
-      if r.user_id == user_id
-        rating = r
-        break
-      end
-    end
-    
-    return rating
   end
   
   # This method checks to see if the current user is allowed to approve a membership that is still pending approval

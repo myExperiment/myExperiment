@@ -27,7 +27,11 @@
 </div>
 
 <div class="contribution_mini_nav">
-	| <%= link_to "Comments (#{@workflow.comments.length})", "#comments" %> |
+	|
+	<%= link_to "Comments (#{@workflow.comments.length})", "#comments" %>
+	|
+	<%= link_to "Reviews (#{@workflow.reviews.length})", "#reviews" %>
+	|
 </div>
 
 <div class="contribution_left_box">
@@ -78,8 +82,10 @@
 					<p><i>None</i></p>
 				<% end %>
 			</div>
-			
-			<% if logged_in? and @authorised_to_edit %>
+		</div>
+		
+		<% if logged_in? and @authorised_to_edit %>
+			<div style="margin-top: 1em;">
 				<ul class="sectionIcons" style="margin-top: 0.7em; margin-bottom: 0.6em;">
 					<li><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit Workflow Version") %></li>
 	        <% if @latest_version_number > 1 %>
@@ -88,111 +94,117 @@
 						<% end %>
 	        <% end %>
 				</ul>
-			<% end %>
-		
-		</div>
-		
-		<p>
-			<b>Title:</b>
-			<span class="title"><%=h @viewing_version.title %></span>
-		</p>
-		
-		<br/>
-		
-		<h3>
-			<%= info_icon_with_tooltip("This section shows the preview of this version of the Workflow (click on the image to expand)") %>
-			Preview
-		</h3>
-		
-		<% unless @viewing_version.image.nil? %>
-			<p style="font-size: 85%; font-weight: normal;">
-				 (Click on the image to get the full size)
-			</p>
-			<div style="width: 100%;">
-				<center>
-					<%= link_to image_tag(url_for_file_column(@viewing_version, "image", "medium")), url_for_file_column(@viewing_version, "image"), :popup => true %>
-				</center>
 			</div>
-		<% else %>
-			<p class="none_text">
-				Not available
-			</p>
 		<% end %>
 		
-		<br/>
-		
-		<h3>
-			<%= info_icon_with_tooltip("This section shows the overall description for this version of the Workflow") %>
-			Description
-		</h3>
-		
-		<% unless @viewing_version.body.blank? %>
-			<div class="contribution_description">
-				<%= white_list @viewing_version.body_html %>
-			</div>
-			<% if logged_in? and @authorised_to_edit %>
-				<br/>
-				<p style="text-align: right; color: #666666;">[ <%= link_to "edit", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
-			<% end %>
-		<% else %>
-			<p class="none_text">
-				Not set
+		<div class="contribution_version_inner_box">
+			<p>
+				<b>Title:</b>
+				<span class="title"><%=h @viewing_version.title %></span>
 			</p>
-		<% end %>
-		
-		<br/>
-		
-		<h3>
-			<%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
-			Download
-		</h3>
-		
-		<% if @authorised_to_download %>
-			<ul class="sectionIcons">
-				<li><%= icon('workflow', @named_download_url, "Download Workflow File (version #{@viewing_version_number.to_s})", nil, "Download Workflow File (SCUFL)") %></li>
-				<% unless @viewing_version.svg.nil? %>
-					<li><%= icon('picture', url_for_file_column(@viewing_version, "svg"), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
-				<% end %>
-			</ul>
-		<% else %>
-			<p class="none_text">
-				You do not have permissions to download
-			</p>
-		<% end %>
-		
-		<br/>
-		
-		<h3>
-			<%= info_icon_with_tooltip("This section provides options for running this version of the Workflow") %>
-			Run
-		</h3>
 			
-		<% if @authorised_to_download %>
-			<div style="margin: 0 1.5em;">
-				<p style="text-align: center;">
-					<b>Run this Workflow in the Taverna Workbench*</b><br/>
-					Copy and paste this link into File > Open workflow location...<br/>
-					<%= link_to @download_url, @download_url %>
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section shows the preview of this version of the Workflow (click on the image to expand)") %>
+				Preview
+			</h3>
+			
+			<% unless @viewing_version.image.nil? %>
+				<p style="font-size: 85%; font-weight: normal;">
+					 (Click on the image to get the full size)
 				</p>
-	
-				<p style="text-align: center; margin-top: 0.5em;">
-					If you are having problems downloading it in Taverna, you may need to provide your username and password in the URL so that Taverna can access the Workflow: <br/>
-					<% if logged_in? and current_user.username.nil? %>
-						First you need to <%= link_to 'register a username and password', edit_user_path(current_user) %> on your myExperiment account.
-					<% else %>
-						<b>Replace <font color="#990000">http://</font> in the link above with <font color="#990000">http://<%=(logged_in? and !current_user.username.nil?) ? h(current_user.username) : "yourusername" %>:yourpassword@</font></b>
-					<% end %>
+				<div style="width: 100%;">
+					<center>
+						<%= link_to image_tag(url_for_file_column(@viewing_version, "image", "medium")), url_for_file_column(@viewing_version, "image"), :popup => true %>
+					</center>
+				</div>
+			<% else %>
+				<p class="none_text">
+					Not available
 				</p>
+			<% end %>
+			
+			<br/>
+			
+			<% unless @viewing_version.svg.nil? %>
+				<ul class="sectionIcons">
+					<li><%= icon('picture', url_for_file_column(@viewing_version, "svg"), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
+				</ul>
+			<% end %>
+			
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section shows the overall description for this version of the Workflow") %>
+				Description
+			</h3>
+			
+			<% unless @viewing_version.body.blank? %>
+				<div class="contribution_description">
+					<%= white_list @viewing_version.body_html %>
+				</div>
+				<% if logged_in? and @authorised_to_edit %>
+					<br/>
+					<p style="text-align: right; color: #666666;">[ <%= link_to "edit", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
+				<% end %>
+			<% else %>
+				<p class="none_text">
+					Not set
+				</p>
+			<% end %>
+			
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
+				Download
+			</h3>
+			
+			<% if @authorised_to_download %>
+				<ul class="sectionIcons">
+					<li><%= icon('workflow', @named_download_url, "Download Workflow Definition file (for version #{@viewing_version_number.to_s})", nil, "Download Workflow Definition (SCUFL)") %></li>
+				</ul>
+			<% else %>
+				<p class="none_text">
+					You do not have permissions to download
+				</p>
+			<% end %>
+			
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section provides options for running this version of the Workflow") %>
+				Run
+			</h3>
 				
-				<p style="font-size: 85%; margin-top: 0.5em;">
-					<%= link_to "* http://taverna.sourceforge.net/", "http://taverna.sourceforge.net/" %>
+			<% if @authorised_to_download %>
+				<div style="margin: 0 1.5em;">
+					<p style="text-align: center;">
+						<b>Run this Workflow in the Taverna Workbench*</b><br/>
+						Copy and paste this link into File > Open workflow location...<br/>
+						<%= link_to @download_url, @download_url %>
+					</p>
+		
+					<p style="text-align: center; margin-top: 0.5em;">
+						If you are having problems downloading it in Taverna, you may need to provide your username and password in the URL so that Taverna can access the Workflow: <br/>
+						<% if logged_in? and current_user.username.nil? %>
+							First you need to <%= link_to 'register a username and password', edit_user_path(current_user) %> on your myExperiment account.
+						<% else %>
+							<b>Replace <font color="#990000">http://</font> in the link above with <font color="#990000">http://<%=(logged_in? and !current_user.username.nil?) ? h(current_user.username) : "yourusername" %>:yourpassword@</font></b>
+						<% end %>
+					</p>
+					
+					<p style="font-size: 85%; margin-top: 0.5em;">
+						<%= link_to "* http://taverna.sourceforge.net/", "http://taverna.sourceforge.net/" %>
+					</p>
+				</div>
+			<% else %>
+				<p class="none_text">
+					You do not have permissions to run this Workflow
 				</p>
-			</div>
-		<% else %>
-			<p class="none_text">
-				You do not have permissions to run this Workflow
-			</p>
-		<% end %>
+			<% end %>
+		</div>
 	
 	</div>
 	
@@ -276,6 +288,13 @@
 
 <!-- END tabs -->
 
+<br/>
+
+<div id="ratingsBox">
+	<%= render :partial => "reviews/reviews", :locals => { :reviewable => @workflow } %>
+</div>
+
+<br/>
 <br/>
 
 <div id="commentsBox">

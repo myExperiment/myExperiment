@@ -21,54 +21,56 @@
 
 <div class="contribution_left_box">
 	<div class="contribution_version_box">
-		<p>
-		    <b>Title:</b>
-		    <span class="title"><%=h @blob.title %></span>
-		</p>
-		
-		<p>
-		    <b>File name:</b>
-		    <%=h @blob.local_name %>
-		</p>
-		
-		<p>
-		    <b>File type:</b>
-		    <%=h @blob.content_type %>
-		</p>
-		
-		<br/>
-		
-		<h3>
-			<%= info_icon_with_tooltip("This section shows the overall description for this version of the Workflow") %>
-			Description
-		</h3>
-		
-		<% unless @blob.body.blank? %>
-			<div class="contribution_description">
-				<%= white_list @blob.body_html %>
-			</div>
-		<% else %>
-			<p class="none_text">
-				Not set
+		<div class="contribution_version_inner_box">
+			<p>
+			    <b>Title:</b>
+			    <span class="title"><%=h @blob.title %></span>
 			</p>
-		<% end %>
-		
-		<br/>
-		
-		<h3>
-			<%= info_icon_with_tooltip("This section provides links to the download(s) for this File") %>
-			Download
-		</h3>
-		
-		<% if @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
-			<ul class="sectionIcons">
-				<li><%= icon('blob', @named_download_url, "Download File", nil, "Download File") %></li>
-			</ul>
-		<% else %>
-			<p class="none_text">
-				You cannot download this File
+			
+			<p>
+			    <b>File name:</b>
+			    <%=h @blob.local_name %>
 			</p>
-		<% end %>
+			
+			<p>
+			    <b>File type:</b>
+			    <%=h @blob.content_type %>
+			</p>
+			
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section shows the overall description for this version of the Workflow") %>
+				Description
+			</h3>
+			
+			<% unless @blob.body.blank? %>
+				<div class="contribution_description">
+					<%= white_list @blob.body_html %>
+				</div>
+			<% else %>
+				<p class="none_text">
+					Not set
+				</p>
+			<% end %>
+			
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section provides links to the download(s) for this File") %>
+				Download
+			</h3>
+			
+			<% if @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
+				<ul class="sectionIcons">
+					<li><%= icon('blob', @named_download_url, "Download File", nil, "Download File") %></li>
+				</ul>
+			<% else %>
+				<p class="none_text">
+					You cannot download this File
+				</p>
+			<% end %>
+		</div>
 	
 	</div>
 

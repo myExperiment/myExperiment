@@ -9,6 +9,7 @@ require 'acts_as_creditable'
 require 'acts_as_attributor'
 require 'acts_as_attributable'
 require 'explicit_versioning'
+require 'acts_as_reviewable'
 
 class Workflow < ActiveRecord::Base
   has_many :citations, 
@@ -21,6 +22,8 @@ class Workflow < ActiveRecord::Base
 
   acts_as_attributor
   acts_as_attributable
+  
+  acts_as_reviewable
 
   explicit_versioning(:version_column => "current_version", :file_columns => ["image", "svg"], :white_list_columns => ["body"]) do
     file_column :image, :magick => {

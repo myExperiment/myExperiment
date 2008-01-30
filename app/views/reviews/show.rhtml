@@ -1,0 +1,45 @@
+<% t "#{h @review.title}" -%>
+
+<% user = logged_in? ? current_user : nil -%>
+
+<h1>Review: <%= h @review.title -%></h1>
+
+<% if @review.allow_edit?(user) %>
+	<ul class="sectionIcons">
+	  <li><%= icon('edit', edit_review_path(@reviewable, @review), nil, nil, 'Edit') %></li>
+		<li>
+			<%= icon('destroy', review_path(@reviewable, @review), nil, { :confirm => 'Are you sure you want to delete this review?', :method => :delete }, 'Delete') %>
+		</li>
+	</ul>
+<% end %>
+
+<%= render :partial => "for_reviewable" %>
+
+<br/>
+
+<div class="message_box">
+	<div style="float: left;">
+		<p style="text-align: center;"><b>By</b></p>
+		<%= render :partial => "users/avatar", :locals => { :user => @review.user, :size => 60 } %>
+	</div>
+	
+	<div style="float: left; margin-left: 3em; width: 550px;">
+		<p><b>Title:</b></p>
+		<p class="subject">
+			<%=h @review.title %>
+		</p>
+		<p><b>Created: </b><%=datetime @review.created_at %></p>
+	</div>
+	
+	<div class="clearer">&nbsp;</div>
+	
+	<br/>
+	
+	<div class="message">
+		<% unless strip_html(@review.review).blank? %>
+			<%=white_list @review.review %>
+		<% else %>
+			<p class="none_text">No text</p>
+		<% end %>
+	</div>
+</div>

@@ -22,6 +22,10 @@ module Mib
           acts_as_commentable
           acts_as_rateable
           acts_as_taggable
+          
+          # NOTE: because we cannot do polymorphic nested resources with Rails 1.2.3,
+          # the line below has been moved to the Workflow model class. 
+          #acts_as_reviewable
                   
           class_eval do
             extend Mib::Acts::Contributable::SingletonMethods

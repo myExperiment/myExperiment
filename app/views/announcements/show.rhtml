@@ -12,13 +12,13 @@
 <% end %>
 
 <div class="message_box">
-	<div style="float: left; text-align: center;">
-		<b>By: </b>
-		<%= render :partial => "users/avatar", :locals => { :user => @announcement.user, :size => 50 } %>
+	<div style="float: left;">
+		<p style="text-align: center;"><b>By</b></p>
+		<%= render :partial => "users/avatar", :locals => { :user => @announcement.user, :size => 60 } %>
 	</div>
 	
-	<div style="float: left; margin-left: 3em; width: 420px;">
-		<p><b>Title:</b></p>
+	<div style="float: left; margin-left: 3em; width: 550px;">
+		<p><b>Title</b></p>
 		<p class="subject">
 			<%=h @announcement.title %>
 		</p>
@@ -26,6 +26,8 @@
 	</div>
 	
 	<div class="clearer">&nbsp;</div>
+	
+	<br/>
 	
 	<div class="message">
 		<%=white_list @announcement.body_html %>
