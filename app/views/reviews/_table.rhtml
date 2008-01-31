@@ -13,6 +13,15 @@
 							Title: <%= link_to h(review.title), review_url(reviewable, review) %>
 						</p>
 						
+						<p>
+							<b>Rating: </b>
+							<% if (rating = review.associated_rating) %>
+								<%= rating.rating %> out of 5
+							<% else %>
+								<span class="none_text">not yet rated</span>
+							<% end %>
+						</p>
+						
 						<p style="font-size: 85%; color: #666666;">
 							<b>Created:</b> <%=datetime review.created_at, false %>
 							|

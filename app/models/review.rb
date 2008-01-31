@@ -10,6 +10,8 @@ class Review < ActiveRecord::Base
   
   belongs_to :user
   
+  before_create :check_multiple
+  
   acts_as_solr :fields => [ :title, :review ] if SOLR_ENABLE
   
   # returns the 'last created' Reviews
@@ -52,4 +54,16 @@ class Review < ActiveRecord::Base
     return false unless user
     return user.id == self.user_id 
   end
+  
+protected
+  
+  def check_multiple
+    if Review.find(:first, :conditions => ["user_id = ? AND reviewable_type = ? AND reviewable_id = ?", self.user_id, self.reviewable_type, self.reviewable_id])
+      errors.add_to_base("You have already made a Review for this item")
+      return false
+    else
+      return true
+    end
+  end
+  
 end

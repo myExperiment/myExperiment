@@ -80,6 +80,7 @@ class CitationsController < ApplicationController
     @citation.destroy
 
     respond_to do |format|
+      flash[:notice] = 'Citation was successfully deleted.'
       format.html { redirect_to citations_url(@workflow) }
       format.xml  { head :ok }
     end

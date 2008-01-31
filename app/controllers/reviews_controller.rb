@@ -18,9 +18,6 @@ class ReviewsController < ApplicationController
   before_filter :find_review, :only => [ :show ]
   before_filter :find_review_auth, :only => [ :edit, :update, :destroy ]
   
-  #after_filter :find_currentuser_rating, :only => [ :new ]
-  before_filter :find_currentuser_rating, :only => [ :edit, :update ]
-  
   def index
     respond_to do |format|
       format.html # index.rhtml
@@ -38,18 +35,17 @@ class ReviewsController < ApplicationController
   def new
     @review = Review.new
     @review.reviewable = @reviewable
-    @review.user = current_user
+    @review.user_id = current_user.id
   end
 
   def create
     @review = Review.new(params[:review])
     @review.reviewable = @reviewable
-    @review.user = current_user
+    @review.user_id = current_user.id
     
-    # TODO: add creation of rating (if required).
-
     respond_to do |format|
       if @review.save
+        update_rating(@review, params[:rating])
         flash[:notice] = 'Thank you for your review!'
         format.html { redirect_to review_url(@reviewable, @review) }
         format.xml  { head :created, :location => review_url(@reviewable, @review) }
@@ -67,7 +63,7 @@ class ReviewsController < ApplicationController
   def update
     respond_to do |format|
       if @review.update_attributes(params[:review])
-        # TODO: add updating of rating, if required.
+        update_rating(@review, params[:rating])
         flash[:notice] = 'Review was successfully updated.'
         format.html { redirect_to review_url(@reviewable, @review) }
         format.xml  { head :ok }
@@ -82,12 +78,30 @@ class ReviewsController < ApplicationController
     @review.destroy
 
     respond_to do |format|
-      format.html { redirect_to review_url(@reviewable, @review) }
+      flash[:notice] = 'Review was successfully deleted.'
+      format.html { redirect_to reviews_url(@reviewable) }
       format.xml  { head :ok }
     end
   end
   
 protected
+
+  def update_rating(review, rating_param)
+    if ["1", "2", "3", "4", "5"].include?(rating_param)
+      rating_val = rating_param.to_i
+      if (rating = review.associated_rating)
+        rating.rating = rating_val
+        rating.save
+      else
+        rating = Rating.new(
+          :rating => rating_val, 
+          :user_id => review.user_id,
+          :rateable_type => review.reviewable_type,
+          :rateable_id => review.reviewable_id)
+        rating.save
+      end
+    end
+  end
 
   def find_reviewable_auth
     # IMPORTANT NOTE: currently the only reviewable supported is "Workflow".
@@ -133,11 +147,6 @@ protected
     else
       error("Review not found (id not authorized)", "is invalid (not authorized)")
     end
-  end
-  
-  # Finds the rating made by the current user for the reviewable, if available.
-  def find_currentuser_rating
-    @rating = Rating.find(:first, :conditions => ["user_id = ? AND rateable_type = ? AND rateable_id = ?", current_user.id, @review.reviewable_type, @review.reviewable_id])
   end
 
 private

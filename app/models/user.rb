@@ -50,6 +50,10 @@ class User < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
   
+  has_many :reviews,
+           :order => "updated_at DESC",
+           :dependent => :destroy
+  
   # BEGIN RESTful Authentication #
   attr_accessor :password
   

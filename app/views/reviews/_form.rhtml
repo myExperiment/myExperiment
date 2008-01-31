@@ -2,10 +2,27 @@
 
 <%= error_messages_for 'review' %>
 
-<!-- Add rating option -->
-
 <p><b>Title</b></p>
 <%= form.text_field :title, :size => 70 %>
+
+<div class="box_inplace" style="text-align: center; margin: 1em 3em; padding: 0.5em;">
+	<% rating = @review.associated_rating -%>
+	<p style="text-align: center;">
+		<% if rating %>
+			<b>You have already given a rating of <%= rating.rating %> (out of 5). <br/>This will be associated with your review.</b>
+			<br/>
+			You can change this below:
+		<% else %>
+			<b>You can set a Rating now (optional) <br/>This will be associated with your review.</b>
+		<% end %>
+	</p>
+	<p style="text-align: center;">
+		<%= select_tag 'rating', 
+				"<option value=''>--none--</option>" + options_for_select([ '1', '2', '3', '4', '5' ], 
+				rating ? rating.rating.to_s : '' ) -%>
+		out of 5
+	</p>
+</div>
 
 <p><b>Your review</b></p>
 <%= fckeditor_textarea(:review, :review, :toolbarSet => 'Basic', :width => '455px', :height => '400px') %>
