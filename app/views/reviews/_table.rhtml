@@ -4,7 +4,7 @@
 		<% odd_row = false -%> 
 		<% for review in collection %>
 		  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-			    <td width="100px" style="text-align: center;">
+			    <td width="80px" style="text-align: center;">
 			    	<b>By</b>
 						<%= contributor(review.user_id, 'User', true, 60) %>
 					</td>
@@ -30,7 +30,7 @@
 						
 						<div class="desc" style="font-size: 85%;">
 							<% unless (text = strip_html(review.review)).blank? %>
-								<%= truncate(text, 180) %>
+								<%= truncate(text, 500) %>
 							<% else %>
 								<p class="none_text">No text</p>
 							<% end %>
