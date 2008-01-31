@@ -1,0 +1,52 @@
+<% t "Edit Version" -%>
+
+<%= javascript_include_tag :fckeditor %>
+
+<h1>Edit Version <%= @viewing_version_number.to_s %> of Workflow: <%= contributable @workflow.id, "Workflow" %></h1>
+
+<%= error_messages_for :workflow %>
+
+<br/>
+
+<% form_tag("/workflows/#{@workflow.id};update_version?version=#{@viewing_version_number}", :method => :put) do %>
+
+  <div>
+    <p>
+      <center>
+				<strong>Title:</strong>
+	      <%= text_field_tag 'workflow[title]', @viewing_version.title, :size => '45' %>
+			</center>
+    </p>
+		
+		<br/>
+		
+		<p>
+			<center>
+				<b>Description: </b><br/>
+			</center>
+		</p>
+		<center>
+			<%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '600px', :height => '500px') %>
+		</center>
+		
+		<% if false %>
+		<p>
+			<center>
+				<b>Description: </b><br/>
+			</center>
+		</p>
+		<%= allowed_html_text('center') %>
+		<p>
+			<center>
+				<%= text_area_tag "body", @viewing_version.body, :size => "60x10" %>
+			</center>
+		</p>
+		<% end %>
+		
+  </div>
+
+  <br />
+
+  <center><%= submit_tag "Update", :disable_with => "Updating..." %></center>
+
+<% end %>

@@ -1,4 +1,22 @@
-<% form_tag ({:action => 'create'}, :multipart => true) do %>
-  <%= render :partial => 'form' %>
-  <%= submit_tag "Upload picture" %>
+<h1>Upload Profile Picture</h1>
+
+<%= error_messages_for :picture %>
+
+<% form_tag ({:action => :create}, :multipart => true) do %>
+  <br/>
+	
+	<p>
+    <center>
+			<b>Picture file: </b>
+	    <%= file_field 'picture', 'data' %>
+		</center>
+  </p>
+	
+	<br/>
+  
+  <p>
+  	<center>
+    	<%= submit_tag "Upload", :disable_with => "Uploading..." %>
+		</center>
+  </p>
 <% end %>

@@ -1,0 +1,19 @@
+<li><%= link_to 'Forums', forums_path %></li>
+
+<li><b>&#187;</b></li>
+
+<li><%= link_to h(@forum.name), forum_path(@forum) %></li>
+
+<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= link_to "View: #{h(@topic.title)}", topic_path(@forum, @topic) %></li>
+  <% when "new" %>
+    <li><%= link_to "Create Topic", new_topic_path(@forum) %></li>
+  <% when "edit" %>
+    <li><%= link_to "Edit: #{h(@topic.title)}", edit_topic_path(@forum, @topic) %>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

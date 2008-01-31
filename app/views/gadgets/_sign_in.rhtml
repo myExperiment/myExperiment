@@ -1,0 +1,62 @@
+<% unless logged_in? %>
+
+<div class="myexperiment_gadget">
+  <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+    
+  <div class="header">
+    <p>Log in / Register</p>
+  </div>
+  
+  <div class="contents">
+    <% form_tag session_path do %>
+      <div class="box1">
+		  	<p class="label">
+	        Username or Email:
+		  	</p>
+			  <p>
+		    	<%= text_field_tag 'session[username]', nil, :class => 'field', :style => "width: 140px;" %>
+			  </p>
+	      <p class="label">
+					Password:
+				</p>
+		  	<p>
+	      	<%= password_field_tag 'session[password]', nil, :class => 'field', :style => "width: 140px;" %>
+		  	</p>
+		  	<p class="label">
+	      	Remember me: <%= check_box_tag 'session[remember_me]' %>
+	      </p>
+	  	</div>
+	  
+	  	<p><b>OR</b></p>
+            
+    	<div class="box1" style="margin-bottom: 0.4em;">
+		  	<p class="label">
+	         Use OpenID:
+		  	</p>
+		  	<p>
+	        <%= text_field_tag 'openid_url', nil, :size => 17, :class => 'field', :style => "width: 130px;" %>
+					<br/>
+					<span style="font-size: 77%; color: #333333;">(eg: name.openid.com)</span>
+	      </p>
+  		</div>
+	    
+	    <p>
+	      <%= submit_tag "Log in", :disable_with => "Logging in..." %>
+	    </p>
+	  
+    <% end %>
+    
+    <p style="margin-top: 0.6em; line-height: 1.3em; font-size: 93%;">
+      <b>Need an account?</b><br />
+      <b><%= link_to "Click here to register", new_user_url %></b>
+    </p>
+		
+		<p style="margin-top: 0.6em; font-size: 93%;">
+			<b><%= link_to "Forgot Password?", url_for(:controller => "users", :action => "forgot_password") %></b>
+		</p>
+  </div>
+  
+  <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+</div>
+
+<% end %>

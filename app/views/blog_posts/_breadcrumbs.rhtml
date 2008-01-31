@@ -1,0 +1,19 @@
+<li><%= link_to 'Blogs', blogs_path %></li>
+
+<li><b>&#187;</b></li>
+
+<li><%= link_to "#{h(@blog_post.blog.title)}", blog_path(@blog_post.blog) %></li>
+
+<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= link_to "View: #{h(@blog_post.title)}", blog_post_path(@blog_post.blog, @blog_post) %></li>
+  <% when "new" %>
+    <li><%= link_to "New Blog Post", new_blog_post_path(@blog_post.blog) %></li>
+  <% when "edit" %>
+    <li><%= link_to "Edit: #{h(@blog_post.title)}", edit_blog_post_path(@blog_post.blog, @blog_post) %>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

@@ -1,0 +1,33 @@
+<center>
+	<table width="320" class="contributable">
+	  <tr>
+	    <td>
+	      <p>
+	        <strong>File name:</strong><br/> 
+	        <%=h blob.local_name %>
+	      </p>
+	      
+	      <p>
+	        <strong>File type:</strong><br />
+	        <%=h blob.content_type %>
+	      </p>
+	      
+	      <p>
+	        <strong>Downloaded:</strong> <%=pluralize blob.contribution.downloads_count, "time" %>
+	      </p>
+	    </td>
+	    <td>
+	      <strong>Uploader:</strong><br/>
+	      <%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, true, 60) %>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td colspan="2">
+	      <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_file_path(blob) %> <% end %>
+	      <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", file_path(blob), nil, nil, "View" %> <% end %>
+	      <% if logged_in? and blob.authorized?("edit", current_user) %><%= icon "edit", edit_file_path(blob) %> <% end %>
+	      <% if logged_in? and blob.owner?(current_user) %><%= icon "destroy", file_path(blob), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
+	    </td>
+	  </tr>
+	</table>
+</center>

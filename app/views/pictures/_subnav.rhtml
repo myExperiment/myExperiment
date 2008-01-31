@@ -1,0 +1,16 @@
+<% case controller.action_name.to_s; when "index" %>
+
+  <!-- no subnav options -->
+
+<% when "show" %>
+
+  <ul class="sectionIcons">
+o    <li><%= link_to 'Edit Picture', edit_picture_path(@picture.user_id, @picture) %></li>
+    <li><%= link_to 'Remove Picture', picture_path(@picture.user_id, @picture), :confirm => 'Are you sure?', :method => :delete %></li>
+  </ul>
+
+<% else %>
+
+  <!-- no subnav options -->
+
+<% end %>

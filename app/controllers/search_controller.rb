@@ -1,33 +1,58 @@
-##
-##
-## myExperiment - a social network for scientists
-##
-## Copyright (C) 2007 University of Manchester/University of Southampton
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU Affero General Public License
-## as published by the Free Software Foundation; either version 3 of the
-## License, or (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU Affero General Public License for more details.
-##
-## You should have received a copy of the GNU Affero General Public License
-## along with this program; if not, see http://www.gnu.org/licenses
-## or write to the Free Software Foundation,Inc., 51 Franklin Street,
-## Fifth Floor, Boston, MA 02110-1301  USA
-##
-##
-
 class SearchController < ApplicationController
+  def show
+    
+    # Hacks for 'Groups' --> 'Networks' and 'Files' --> 'Blobs' renames
+    
+    if params[:type].to_s == 'groups'
+      params[:type] = 'networks'
+    end
+    
+    if params[:type].to_s == 'files'
+      params[:type] = 'blobs'
+    end
 
-  def bouncer
+    error(params[:type]) unless @@valid_types.include? params[:type]
+    
+    if params[:type] == "all"
+      search_all
+    else
+      redirect_to :controller => params[:type], :action => "search", :query => params[:query]
+    end
   end
   
-  def search
-    redirect_to :controller => params[:search][:type], :action => 'search', :query => params[:search][:query]
+private
+
+  @@valid_types = ["all", "workflows", "users", "networks", "blobs"]
+
+  def error(type)
+    flash[:notice] = "#{type} is an invalid search type"
+    (err = BlogPost.new.errors).add(:type, "is an invalid type")
+    
+    respond_to do |format|
+      format.html { redirect_to url_for(:controller => type) }
+      format.xml { render :xml => err.to_xml }
+    end
   end
-  
+
+  def search_all
+    
+    @query = params[:query]
+
+    @results = []
+
+    if SOLR_ENABLE and not @query.nil? and @query != ""
+      @results = User.multi_solr_search(@query, :limit => 100,
+          :models => [User, Workflow, Blob, Network]).results
+    end
+
+    @users     = @results.select do |r| r.instance_of?(User)     end
+    @workflows = @results.select do |r| r.instance_of?(Workflow) end
+    @blobs     = @results.select do |r| r.instance_of?(Blob)     end
+    @networks  = @results.select do |r| r.instance_of?(Network)  end
+
+    respond_to do |format|
+      format.html # search.rhtml
+      format.xml  { render :xml => @results.to_xml }
+    end
+  end
 end

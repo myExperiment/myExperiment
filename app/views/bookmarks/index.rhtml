@@ -1,0 +1,9 @@
+<h1>My Bookmarks</h1>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @bookmarks } %>
+
+<%= render :partial => "bookmarks/table", :locals => { :collection => @bookmarks } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @bookmarks } %>
+
+<br />

@@ -1,7 +1,0 @@
-<% if session[:user_id] %>
-    <ul>
-        <li><%= link_to 'Upload a new workflow', :controller => 'workflow', :action => 'new' %></li>
-        <li><%= link_to 'Import workflows', :action => 'import' %></li>
-    </ul>
-<% end %>
-

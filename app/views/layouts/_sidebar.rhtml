@@ -1,0 +1,13 @@
+<%= render :partial => "gadgets/new_object" %>
+
+<% if logged_in? %>
+	<%= render :partial => "gadgets/user_monitor" %>
+	<%= render :partial => "gadgets/asset_manager" %>
+	<%= render :partial => "gadgets/user_tags" %>
+<% else %>
+	<% unless (controller.controller_name.to_s == "session") %>
+		<%= render :partial => "gadgets/sign_in" %>
+	<% end %>
+<% end %>
+
+<%= render :partial => "gadgets/tag_most_popular", :locals => { :limit => 25 } %>

@@ -1,0 +1,18 @@
+<div class="box_standout" style="font-size: 85%; padding: 0.4em; margin-bottom: 0.6em; margin-left: 2.5em; line-height: 1.2em; color: #333333;">
+	<p>
+		<b>Version created on:</b>
+		<%= datetime version.updated_at %>
+	</p>
+	
+	<p>
+		<b>Revision comments:</b>
+	</p>
+	<% unless version.revision_comments.nil? or version.revision_comments.empty? %>
+		<div>
+			<%= version.revision_comments %>
+		</div>
+	<% else %>
+		<p><i>None</i></p>
+	<% end %>
+	
+</div>

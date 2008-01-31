@@ -1,0 +1,21 @@
+<% type = params[:contributable_type] -%>
+
+<%= render :partial => "contributions/most", :locals => { :type => type } %>
+
+<h2>Listing <%= type ? h(type.pluralize) : "Contributions" %></h2>
+
+<p>
+  <%= link_to "Show all", contributions_path %> or filter by 
+  <% types = ["Blob", "Blog", "Forum", "Workflow"]; types.delete(params[:contributable_type]) if params[:contributable_type] -%>
+  <% types.each do |t| %>
+    <%= "|" unless types.index(t) == 0 %> <%= link_to t, contributions_path + "?contributable_type=" + t %> 
+  <% end %>
+</p>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
+
+<%= render :partial => "contributions/table", :locals => { :collection => @contributions } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
+
+<br/>

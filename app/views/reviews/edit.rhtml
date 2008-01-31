@@ -1,0 +1,13 @@
+<h1>Edit Review</h1>
+
+<%= render :partial => "for_reviewable" %>
+
+<center>
+	<div class="box_form" style="width: 460px; margin: 2em 0; text-align: left;">
+		<% form_for(:review, :url => review_path(@reviewable, @review), :html => { :method => :put }) do |form| %>
+		  <%= render :partial => 'form', :object => form %>
+			<br/><br/>
+		  <center><%= submit_tag 'Update', :disable_with => "Updating..." %></center>
+		<% end -%>
+	</div>
+</center>

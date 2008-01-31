@@ -1,0 +1,11 @@
+<h3>Editing Policy</h3>
+
+<%= error_messages_for :policy %>
+
+<% form_for(:policy, :url => policy_path(@policy), :html => { :method => :put }) do |f| %>
+  <%= render :partial => "policies/form", :object => f %>
+
+  <p>
+    <%= submit_tag "Update" %>
+  </p>
+<% end %>

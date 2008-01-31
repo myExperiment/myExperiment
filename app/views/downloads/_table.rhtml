@@ -1,0 +1,34 @@
+<% unless collection.empty? %>
+
+<table class="alt_table">
+  <tr>
+    <% unless contribution %><th width="400">Contribution</th><% end %>
+    <th width="100">User</th>
+    <th>Downloaded at</th>
+    <th> </th>
+  </tr>
+  
+<% odd_row = false -%>
+<% for download in collection %>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <% unless contribution %><td width="400"><%= contributable(download.contribution.contributable_id, download.contribution.contributable_type, true, true) %></td><% end %>
+    <td width="100">
+      <% if download.user_id %>
+        <%= contributor(download.user_id, "User", true, 60) %>
+      <% else %>
+        <%=null_avatar 60 %><br/><%= "Anonymous" %>
+      <% end %>
+    </td>
+    <td><%=datetime download.created_at, false %></td>
+    <td class="actions">
+      <%= icon "show", download_path(download.contribution, download), nil, nil, "View" %>
+    </td>
+  </tr>
+<% end %>
+</table>
+      
+<% else %>
+
+No downloads
+
+<% end %>

@@ -1,0 +1,376 @@
+<% t "#{h @user.name}" -%>
+
+<% none_text = '<font class="none_text">Not specified</font>' -%>
+
+<% if mine? @user and @user.unconfirmed_email.blank? and @user.email.blank? %>
+	<div id="email_notice" class="box_standout" style="color: #333333; font-weight: bold; margin-bottom: 1.5em;">
+		<%= link_to_function image_tag("close.gif", :style => "float: right;"), 
+												 visual_effect(:toggle_slide, "email_notice", :duration => 0.3) %>
+		You can now <%= link_to "register an email address to your account", edit_user_path(@user)%>. 
+		Click <%= link_to_function "here", visual_effect(:toggle_blind, "email_why", :duration => 0.3) %> to see the benefits of doing this.
+		<div id="email_why" class="box_simple" style="font-weight: normal; display: none; margin-top: 0.5em;">
+			<ul style="margin-top: 0.1em;">
+				<li>So you can receive email notifications for friendship requests, group invitations and so on [optional].</li>
+				<li>So you can reset your password in case you have forgotten it (only for accounts with a username/password).</li>
+			</ul>
+			<p>Note that:</p>
+			<ul style="margin-top: 0.1em;">
+				<li>This email address is a different setting to the public email address in your Profile.</li> 
+				<li>We require confirmation of any new email address set here (through a confirmation email). Once confirmed, the new email address will replace the old one.</li>
+				<lI>You can log on with this email address and your password, if you have a username and password set.</lI>
+			</ul>
+		</div>
+	</div>
+<% end %>
+
+<% if logged_in? %>
+	<ul class="sectionIcons">
+	    <% unless @user.friend? current_user.id %>
+	    	<li><%= icon('friendship', new_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
+	  	<% end %>
+	  	<% unless mine? @user %>
+				<li><%= icon("message", new_message_path(:user_id => @user.id), nil, nil, "Send Message") %></li>
+			<% end %>
+	    <% if mine? @user %>
+	    	<li><%= icon('manage', edit_user_path(@user), nil, nil, 'Manage Account') %></li>
+		    <% unless @user.profile.nil? %>
+					<li><%= icon('edit', edit_profile_path(@user), nil, nil, 'Edit Profile') %></li>
+				<% end %>
+			  <li><%= icon("pictures", pictures_path(@user), nil, nil, "Profile Pictures") %></li>
+		    <li><%= icon('avatar', new_picture_path(@user), nil, nil, 'Upload New Profile Pic')%></li>
+			  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
+	    <% end %>
+	</ul>
+<% end %>
+
+<% if logged_in? %> 
+	<% if mine? @user %>
+		<h1>
+			<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
+			My Profile
+			<%= admin_badge(@user) %>
+		</h1>
+	<% else %>
+		<h1>
+			<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
+			User Profile: <%=h @user.name %>
+			<%= friend_badge(@user) %>
+			<%= admin_badge(@user) %>
+		</h1>
+	<% end %>
+<% else %>
+	<h1>
+		<%= if @user.profile then flag_icon(@user.profile.location_country, @user.profile.location) end %>
+		User: <%=h @user.name %>
+		<%= friend_badge(@user) %>
+		<%= admin_badge(@user) %>
+	</h1>
+<% end %>
+
+<table style="width: 100%">
+	<tr>
+		
+		<% if @user.profile %>
+	    <td style="vertical-align: top;">
+	      <%= avatar @user, 160 %>
+	    </td>
+	  <% end %>
+		
+		<td style="padding-left: 1em; vertical-align: top;">
+			
+			<p>
+		    <b>Name:</b>
+		    <%=h @user.name %>
+		  </p>
+			
+		  <p>
+		    <b>Joined:</b>
+		    <%=datetime @user.created_at %>
+		  </p>
+			
+			<% if false %>
+		  <p>
+		    <b>Last seen:</b>
+		    <%=datetime @user.last_seen_at %>
+		  </p>
+		  <% end %>
+		  
+			<% if false %>
+			  <% unless @user.profile.nil? %>
+			    <%= render :partial => "profiles/profile", :locals => { :profile => @user.profile } %>
+			  <% end %>
+			<% end %>
+			
+			<% unless @user.profile.nil? %>
+			
+				<p>
+			    <b>Email (public):</b>
+					<% unless @user.profile.email.nil? or @user.profile.email.empty? %>
+			    	<%=mail_to @user.profile.email, nil, {  :encode => "hex", :replace_at => " [at] " } %>
+					<% else %>
+						<%= none_text %>	  
+					<% end %>
+				</p>
+				
+				<p>
+			    <b>Website:</b>
+					<% unless @user.profile.website.nil? or @user.profile.website.empty? %>
+				    <%=link_to h(@user.profile.website), @user.profile.website %>
+				  <% else %>
+						<%= none_text %>
+					<% end %>
+				</p>
+				
+				<p>
+			  	<b>Location:</b>
+					<% unless @user.profile.location.nil? or @user.profile.location.empty? %>
+				    <%= h @user.profile.location %>
+				  <% else %>
+						<%= none_text %>
+					<% end %>
+				</p>
+			
+			<% end %>
+			
+			<% if logged_in? and mine? @user %>
+				<div class="box_currentuser_specific" style="margin: 0.5em 0;">
+					<p style="font-size: 85%;">Note: the information here is private and cannot be seen by anyone else.</p>
+					<p>
+			      <b>Username:</b>
+			      <% if @user.username %>
+			        <%=h @user.username %>
+			      <% else %>
+			        <%= link_to 'Register a username and password for this account [optional]', edit_user_path(@user) %>
+			      <% end %>
+			    </p>
+					
+					<p>
+			      <b>Openid url:</b>
+			      <% if @user.openid_url %>
+			        <%=openid @user %>
+			      <% else %>
+			        <%= link_to 'Add an OpenID to this account [optional]', new_openid_path %>
+							<small>(what is <%= link_to 'OpenID', "http://en.wikipedia.org/wiki/OpenID" %>?)</small>
+			      <% end %>
+			    </p>
+					
+		    	<% if @user.email.blank? and @user.unconfirmed_email.blank? %>
+						<p>You do not have an email address registered. <%= link_to "Register one here", edit_user_path(@user)%>.</p>
+					<% else %>
+						<% unless @user.email.blank? %>
+							<p><b>Account Email</b>: <%= h @user.email %></p>
+						<% end %>
+						<% unless @user.unconfirmed_email.blank? %>
+							<p>We are awaiting confirmation for a new email address: <%= h @user.unconfirmed_email %></p>
+						<% end %>
+					<% end %>
+				</div>
+			<% end %>	
+		</td>
+		
+		<td style="padding-left: 7px; width: 137px; vertical-align: top; text-align: right;">
+			
+			<div class="contribution_section_box" style="width: 130px; padding: 0.4em 0.8em;">
+				<div class="stats_box">
+					<p>
+			      <b>
+			      	<%= link_to(pluralize(@user.friends.length, "Friend"), user_url(@user) + "#friends") -%>
+						</b> 
+			    </p>
+					
+					<p>
+			      <b>
+			      	<%= link_to(pluralize(@user.networks_owned.length, "Group") + " (admin)", user_url(@user) + "#groups") -%>
+						</b> 
+			    </p>
+					
+					<p>
+			      <b>
+			      	<%= link_to(pluralize(@user.networks.length, "Group") + " (member)", user_url(@user) + "#groups") -%>
+						</b> 
+			    </p>
+					
+					<% filter_contributables(@user.contributions).each do |klass,contributables| %>
+						<p>
+				      <b>
+				      	<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize)), user_url(@user) + "##{controller_visible_name(klass.humanize.pluralize).downcase}") %>
+							</b>
+				    </p>
+					<% end %>
+				</div>	
+			</div>
+			
+			<div class="contribution_section_box" style="width: 130px; padding: 0.4em 0.8em; font-size: 93%;">
+				<p>
+					<b>
+						<%= @user.name -%> has been credited
+						<%= link_to((pluralize @user.creditations.length, "time"), user_url(@user) + "#creditations") -%>
+					</b>
+				</p>
+			</div>
+			
+		</td>
+	</tr>
+</table>
+
+<div style="margin: 0.6em 0.6em;">
+
+	<% unless @user.profile.nil? %>
+	  <div class="box_standout">
+	    <% unless @user.profile.body.blank? %>
+				<%= white_list @user.profile.body_html %>
+			<% else %>
+				<p class="none_text">Description/summary not set</p>
+			<% end %>	
+	  </div>
+		<br/>
+	<% end %>
+	
+	<% unless @user.profile.nil? %>
+	
+		<div class="box_simple" style="float: left; width: 41%;">
+		
+			<p>
+		  	<b>Other contact details:</b>
+			</p>
+			<% unless @user.profile.contact_details.nil? or @user.profile.contact_details.empty? %>  
+			  <%= simple_format(sanitize(@user.profile.contact_details)) %>
+			<% else %>
+				<%= none_text %>
+			<% end %>
+			
+			<p>
+		  	<b>Interests:</b>
+			</p>
+			<% unless @user.profile.interests.nil? or @user.profile.interests.empty? %>
+			  <%= simple_format(sanitize(@user.profile.interests)) %>
+			<% else %>
+				<%= none_text %>
+			<% end %>
+		
+		</div>
+		
+		<div class="box_simple" style="float: right; width: 51%;">
+		
+			<p>
+		  	<b>Field/Industry:</b>
+				<% unless @user.profile.field_or_industry.nil? or @user.profile.field_or_industry.empty? %>
+			    <%= h @user.profile.field_or_industry %>
+			  <% else %>
+					<%= none_text %>
+				<% end %>
+			</p>
+			
+			<p>
+			 	<b>Occupation/Role(s):</b>
+				<% unless @user.profile.occupation_or_roles.nil? or @user.profile.occupation_or_roles.empty? %>
+			    <%= h @user.profile.occupation_or_roles %>
+			  <% else %>
+					<%= none_text %>
+				<% end %>
+			</p>
+			
+			<p>
+		  	<b>Organisation(s):</b>
+			</p>
+			<% unless @user.profile.organisations.nil? or @user.profile.organisations.empty? %>
+			  <%= simple_format(sanitize(@user.profile.organisations)) %>
+			<% else %>
+				<%= none_text %>
+			<% end %>
+			
+		</div>
+		
+		<div class="clearer">&nbsp;</div>
+		
+		<% if mine? @user %>
+			<p style="text-align: right; margin-top: 0.5em; color: #666666;">
+				[ <%= link_to "Edit Profile", edit_profile_path(@user) %> ]
+			</p>
+		<% end %>
+	
+	<% end %>
+
+</div>
+
+<br/>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+
+<div class="tabContainer">
+  <div class="tabTitle">News</div>
+  <div class="tabContent">   
+    <%= render :partial => "layouts/news", :locals => { :collection => news(@user, true) } %>
+  </div>
+</div>
+
+<% unless @user.friends.empty? %>
+  <div id="friends" class="tabContainer">
+    <div class="tabTitle">Friends</div>
+    <div class="tabContent">      
+      <div>
+        <%= render :partial => "users/table", :locals => { :collection => @user.friends } %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% unless @user.networks_owned.empty? and @user.networks.empty? %>
+  <div id="groups" class="tabContainer">
+    <div class="tabTitle">Groups</div>
+    <div class="tabContent">
+      <% unless @user.networks_owned.empty? %>
+	      <h2>Groups that <%= @user.name %> owns</h2>
+		  <%= render :partial => "networks/table", :locals => { :collection => @user.networks_owned } %>
+	      <% if false %><p style="color: #666666;">[ <%= link_to 'View my Groups', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if mine? @user %> ]</p><% end %>
+	  <% end %>
+	  
+	  <% unless @user.networks.empty? %>
+		  <h2>Other Groups that <%= @user.name %> belongs to</h2>
+		  <%= render :partial => "networks/table", :locals => { :collection => @user.networks } %>
+	  <% end %>
+  
+      <% if mine? @user %>
+        <p style="color: #666666;">[ <%= link_to 'View all Memberships in detail', memberships_path(@user) %> ]</p>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% unless @user.contributions.empty? %>
+  <%= render :partial => "contributions/tabs", :locals => { :collection => @user.contributions } %>
+<% end %>
+
+<div id="creditations" class="tabContainer">
+  <div class="tabTitle">
+  	Creditations
+	</div>
+  <div class="tabContent">
+		<% unless (creditations = @user.creditations).empty? %>
+			<% creditations.each do |c| %>
+				<%= render :partial => "contributions/table", :locals => {:collection => [c.creditable.contribution]} %>
+			<% end %>
+		<% else %>
+			<p class="none_text">No creditations yet</p>
+		<% end %>
+  </div>
+</div>
+
+<div id="user_tags" class="tabContainer">
+  <div class="tabTitle">
+  	<%= (logged_in? and mine? @user) ? "My Tags" : "User's Tags" %>
+	</div>
+  <div class="tabContent">
+		<% unless (tags = @user.tags).empty? %>
+			<div style="border: 1px dotted #999999; background-color: #FFFFCC; padding: 1em; margin: 0.5em;">
+				<%= tag_cloud_from_collection(tags) %>
+			</div>
+		<% else %>
+			<p class="none_text">No tags made yet</p>
+		<% end %>
+  </div>
+</div>
+
+<% if logged_in? and !mine?(@user) and !current_user.networks_owned.empty? %>
+  <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
+<% end %>

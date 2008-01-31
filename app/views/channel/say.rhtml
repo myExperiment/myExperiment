@@ -1,3 +1,0 @@
-<% if @channelmessage %>new Insertion.Bottom('stage', '<%= escape_javascript channelmessage_content(@channelmessage) %>');
-$('conversation').scrollTop = $('conversation').scrollHeight + $('conversation').clientHeight;<% end %>
-<% escape_javascript @aux_command if @aux_command %>

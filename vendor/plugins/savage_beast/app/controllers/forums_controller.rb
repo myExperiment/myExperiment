@@ -1,9 +1,8 @@
 class ForumsController < ApplicationController
-  before_filter :login_required
+  before_filter :login_required, :except => [:index, :show]
   
-  before_filter :find_forum, :except => :index
-  
-  before_filter :find_authorized_forums, :only => :index
+  before_filter :find_forums, :only => [:index]
+  before_filter :find_forum_auth, :only => [:edit, :show, :update, :destroy]
 
   helper :application
   
@@ -13,20 +12,15 @@ class ForumsController < ApplicationController
       format.xml { render :xml => @forums.to_xml }
     end
   end
-  
-  def edit 
-    unless Moderatorship.find_by_forum_id_and_user_id(@forum, current_user.id)
-      flash[:notice] = "Error! Not authorized to edit forum with ID #{params[:id]}"
-      redirect_to :action => :show, :id => params[:id]
-    end
-  end
 
   def show
+    @viewing = Viewing.create(:contribution => @forum.contribution, :user => (logged_in? ? current_user : nil))
+    
     respond_to do |format|
       format.html do
         # keep track of when we last viewed this forum for activity indicators
         (session[:forums] ||= {})[@forum.id] = Time.now.utc if logged_in?
-        @topic_pages, @topics = paginate(:topics, :per_page => 25, :conditions => ['forum_id = ?', @forum.id], :include => :replied_by_user, :order => 'sticky desc, replied_at desc')
+        @topic_pages, @topics = paginate(:topics, :per_page => 25, :conditions => ['forum_id = ?', params[:id]], :include => :replied_by_user, :order => 'sticky desc, replied_at desc')
       end
       
       format.xml do
@@ -35,72 +29,108 @@ class ForumsController < ApplicationController
     end
   end
 
-  # new renders new.rhtml
+  def new
+    @forum = Forum.new
+
+    @sharing_mode  = 1
+  end
+  
+  def edit
+    @sharing_mode  = determine_sharing_mode(@forum)
+  end
   
   def create
-    @forum.attributes = params[:forum]
-    @forum.save!
+
+    params[:forum][:contributor_type] = "User"
+    params[:forum][:contributor_id]   = current_user.id
+    
+    @forum = Forum.new(params[:forum])
+    
     respond_to do |format|
-      format.html { redirect_to forums_path }
-      format.xml  { head :created, :location => formatted_forum_url(:id => @forum, :format => :xml) }
+      if @forum.save
+
+        @forum.contribution.update_attributes(params[:contribution])
+        
+        update_policy(@forum, params);
+
+        flash[:notice] = 'Forum was successfully created.'
+        format.html { redirect_to forum_path(@forum) }
+        format.xml  { head :created, :location => formatted_forum_url(:id => @forum, :format => :xml) }
+      else
+        format.html { render :action => "new" }
+        format.xml  { render :xml => @forum.errors.to_xml }
+      end
     end
   end
 
   def update
-    @forum.attributes = params[:forum]
-    @forum.save!
+
+    # remove protected columns
+    if params[:forum]
+      [:contributor_id, :contributor_type, :topics_count, :posts_count].each do |column_name|
+        params[:forum].delete(column_name)
+      end
+    end
+    
     respond_to do |format|
-      format.html { redirect_to forums_path }
-      format.xml  { head 200 }
+      if @forum.update_attributes(params[:forum])
+        
+        # security fix (only allow the owner to change the policy)
+        @forum.contribution.update_attributes(params[:contribution]) if @forum.contribution.owner?(current_user)
+        
+        update_policy(@forum, params);
+
+        flash[:notice] = 'Forum was successfully updated.'
+        format.html { redirect_to forum_path(@forum) }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @forum.errors.to_xml }
+      end
     end
   end
   
   def destroy
     @forum.destroy
+    
     respond_to do |format|
       format.html { redirect_to forums_path }
-      format.xml  { head 200 }
+      format.xml  { head :ok }
     end
   end
   
-protected
-  def authorized?(forum=@forum)
-    forum.public or Moderatorship.find_by_forum_id_and_user_id(forum.id, current_user.id) or Membership.find_by_project_id_and_user_id(Project.find(forum.owner_id).id, current_user.id)
-  end
-    
-  def find_authorized_forums
-    @forums = []
-    Forum.find(:all).each do |forum|
-      @forums << forum if authorized? forum
+  protected
+    def find_forums
+      @forums = Forum.find(:all, :order => "position")
     end
-  end
-    
-  def find_forum
-    if params[:id]
-      if project = Project.find_by_unique(params[:id])
-        @forum = Forum.find(project.forum_id)
-      else
-        begin
-          @forum = Forum.find(params[:id])
-        rescue ActiveRecord::RecordNotFound
-          @forum = nil
-        end
-      end
+  
+    def find_forum_auth
+      begin
+        forum = Forum.find(params[:id])
         
-      if @forum
-        unless authorized?
-          @forum = nil
-          flash[:notice] = "Error! Not authorized to view forum with ID #{params[:id]}"
-          redirect_to :action => :index
+        if forum.authorized?(action_name, (logged_in? ? current_user : nil))
+          @forum = forum
+        else
+          if logged_in? 
+            error("Forum not found (id not authorized)", "is invalid (not authorized)")
+          else
+            find_forum_auth if login_required
+          end
         end
-      else
-        flash[:notice] = "Error! Forum with ID #{params[:id]} not found"
-        redirect_to :action => :index
+      rescue ActiveRecord::RecordNotFound
+        error("Forum not found", "is invalid")
       end
-    else
-      flash[:notice] = "Error! No Forum ID suppled"
-      redirect_to :action => :index
+    end
+
+private
+
+  def error(notice, message, attr=:id)
+    flash[:notice] = notice
+    (err = Forum.new.errors).add(attr, message)
+    
+    respond_to do |format|
+      format.html { redirect_to forums_path }
+      format.xml { render :xml => err.to_xml }
     end
   end
-  
 end

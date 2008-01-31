@@ -1,0 +1,10 @@
+<p style="text-align: center;">
+	<b>
+		For <%= visible_name(@reviewable) %>: 
+		<%= link_to_function @reviewable.title, visual_effect(:toggle_blind, "review_item", :duration => 0.3) %>
+	</b>
+</p>
+
+<div id="review_item" style="display: none;">
+	<%= render :partial => "#{@reviewable.class.to_s.downcase.pluralize}/table", :locals => { :collection => [ @reviewable ] } %>
+</div>

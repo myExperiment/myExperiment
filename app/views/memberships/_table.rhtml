@@ -1,0 +1,45 @@
+<% user = true if user.nil? -%>
+<% network = true if network.nil? -%>
+
+<% if collection.empty? %>
+
+<p><i>None</i></p>
+
+<% else %>
+
+<table class="alt_table">
+  <tr>
+    <% if user %><th width="100">User</th><% end %>
+    <% if network %><th width="100">Group</th><% end %>
+    <th>Created at</th>
+    <th>Accepted at</th>
+    <th> </th>
+  </tr>
+  
+<% odd_row = false -%>
+<% for membership in collection %>
+  <% allow_approval = allow_membership_pending_approval(membership) %>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <% if user %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.user_id, "User", true, 60) %><%= "</b>" unless membership.accepted? %></td><% end %>
+    <% if network %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.network_id, "Network", true, 60) %><%= "</b>" unless membership.accepted? %></td><% end %>
+    <td><%= "<b>" unless membership.accepted? %><%=datetime membership.created_at, false %><%= "</b>" unless membership.accepted? %></td>
+    <td><%= "<b>" unless membership.accepted? %><%=datetime(membership.accepted_at, false) || "Pending" %><%= "</b>" unless membership.accepted? %></td>
+    <td class="actions">
+      <% if my_page? membership.user.id or my_page? membership.network.owner.id %>
+        <%= icon "show", membership_path(membership.user_id, membership), nil, nil, "View" %>
+				<% if membership.accepted? %>
+					<%= icon "destroy", membership_path(membership.user_id, membership), nil, { :confirm => "Are you sure?", :method => :delete }, "Remove" %>
+				<% end %>
+      <% end %>
+      <% if allow_approval %>
+        <% unless membership.accepted? %>
+					<%= icon "confirm", accept_membership_path(membership.user_id, membership) %>
+         	<%= icon "reject", membership_path(membership.user_id, membership), nil, :confirm => "Are you sure?", :method => :delete %>
+				<% end %>
+      <% end %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

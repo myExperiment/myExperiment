@@ -1,0 +1,77 @@
+<h1>View Citation: <%= h @citation.title %></h1>
+
+<ul class="sectionIcons">
+  <% if logged_in? %>
+    <% if @workflow.authorized?("edit", current_user) %>
+      <li><%= icon('edit', edit_citation_path(@workflow, @citation), nil, nil, 'Edit Citation') %></li>
+    <% end %>
+
+    <% if @workflow.authorized?("destroy", current_user) %>
+      <li><%= icon('destroy', citation_path(@workflow, @citation), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Citation') %></li>
+    <% end %>
+  <% end %>
+</ul>
+
+<p>
+	<b>For Workflow:</b>
+	<%= contributable(@workflow.id, 'Workflow') -%>
+</p>
+
+<hr/>
+
+<p>
+	<b>Title:</b>
+	<%= h @citation.title -%>
+</p>
+
+<p>
+	<b>Authors:</b>
+	<%= h @citation.authors -%>
+</p>
+
+<p>
+	<b>Published:</b>
+	<%= date @citation.published_at -%>
+</p>
+
+<p>
+	<b>Publication:</b>
+	<%= h @citation.publication -%>
+</p>
+
+<p>
+	<b>Website:</b>
+	<%= h @citation.url -%>
+</p>
+
+<p>
+	<b>Accessed at:</b>
+	<%= date @citation.accessed_at -%>
+</p>
+
+<hr/>
+
+<p>
+  <b>Created at:</b>
+  <%= datetime @citation.created_at %>
+</p>
+
+<p>
+  <b>Created by:</b>
+  <%= name @citation.user_id %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%= datetime @citation.updated_at %>
+</p>
+
+<br/>
+<br/>
+
+<h2>Preview</h2>
+
+<p>
+  <%= render :partial => "citations/citation", :locals => { :citation => @citation, :item => @workflow } %>
+</p>
+

@@ -1,0 +1,43 @@
+<p><b>Updating Permissions (who can update):</b></p>
+
+<p><%= updating_mode_text contributable, @updating_mode %></p>
+
+<% if @updating_mode == 3 %>
+
+  <ul>
+    <% for p in contributable.contribution.policy.permissions %>
+      <% if p.edit %>
+        <li><%= h(Network.find(p.contributor_id).title) %></li>
+      <% end %>
+    <% end %>
+  </ul>
+
+<% elsif @updating_mode == 4 %>
+
+	<% if false %>
+	
+	    <p>
+	        <% for n in (current_user.networks + current_user.networks_owned) %>
+	          <input <%= 'checked' if (perms.select do |p| (p.contributor_id == n.id) && @updating_mode == 4 end).length > 0 %>
+	          value="<%= n.id %>" type="checkbox" name="updating_networkadmins[<%= n.id %>]"/><%= h(n.title) %><br />
+	        <% end %>
+	    </p>
+	
+	<% end %>
+
+<% elsif @updating_mode == 5 %>
+
+  <ul>
+    <% for p in contributable.contribution.policy.permissions %>
+      <% if p.edit %>
+        <li><%= h(User.find(p.contributor_id).name) %></li>
+      <% end %>
+    <% end %>
+  </ul>
+
+<% elsif @updating_mode == 7 %>
+
+  <p></p>
+
+<% end %>
+

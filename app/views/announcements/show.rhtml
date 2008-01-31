@@ -1,0 +1,35 @@
+<% t "#{h @announcement.title}" -%>
+
+<h1>Site Announcement: <%= h @announcement.title %></h1>
+
+<% if admin? %>
+	<ul class="sectionIcons">
+	  <li><%= icon('edit', edit_announcement_path(@announcement), nil, nil, 'Edit') %></li>
+		<li>
+			<%= icon('destroy', announcement_path(@announcement), nil, { :confirm => 'Are you sure you want to delete this announcement?', :method => :delete }, 'Delete') %>
+		</li>
+	</ul>
+<% end %>
+
+<div class="message_box">
+	<div style="float: left;">
+		<p style="text-align: center;"><b>By</b></p>
+		<%= render :partial => "users/avatar", :locals => { :user => @announcement.user, :size => 60 } %>
+	</div>
+	
+	<div style="float: left; margin-left: 3em; width: 550px;">
+		<p><b>Title</b></p>
+		<p class="subject">
+			<%=h @announcement.title %>
+		</p>
+		<p><b>Created: </b><%=datetime @announcement.created_at %></p>
+	</div>
+	
+	<div class="clearer">&nbsp;</div>
+	
+	<br/>
+	
+	<div class="message">
+		<%=white_list @announcement.body_html %>
+	</div>
+</div>

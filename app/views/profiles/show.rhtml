@@ -1,0 +1,13 @@
+<h2>Details</h2>
+
+<p>
+  <b>User:</b><br />
+  <%= render :partial => "users/avatar", :locals => { :user => @profile.owner } %><br/>
+</p>
+
+<%= render :partial => "profiles/profile", :locals => { :profile => @profile } %>
+
+<ul class="sectionIcons">
+  <li><%= icon('edit', edit_profile_path(@profile.user_id), nil, nil, 'Edit profile') %></li>
+</ul>
+

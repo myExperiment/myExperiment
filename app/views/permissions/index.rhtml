@@ -1,0 +1,23 @@
+<h1>All Permissions<% if @policy %> for <%=h @policy.name %><% end %></h1>
+
+<% if @policy %>
+  <% if false %>
+  <%= render :partial => "permissions/table", :locals => { :collection => @permissions } %>
+  <% end %>
+  
+  <table>
+    <tr>
+      <th> </th>
+      <th>View</th>
+      <th>Download</th>
+      <th>Edit</th>
+    </tr>
+    <%= render :partial => "policies/permission", :collection => @permissions %>
+  </table>
+<% else %>
+  <p>
+    This table is not rendered for security reasons. To view this table, access a policy first!
+  </p>
+<% end %>
+
+<br />

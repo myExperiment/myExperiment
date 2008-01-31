@@ -1,0 +1,24 @@
+<p>
+  <b>Blog:</b>
+  <%=h @blog_post.blog_id %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%=h @blog_post.title %>
+</p>
+
+<p>
+  <b>Body:</b><br />
+  <%= white_list @blog_post.body_html %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=datetime @blog_post.created_at %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%=datetime @blog_post.updated_at %>
+</p>

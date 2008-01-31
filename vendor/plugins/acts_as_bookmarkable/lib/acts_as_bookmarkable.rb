@@ -2,11 +2,11 @@
 module Juixe
   module Acts #:nodoc:
     module Bookmarkable #:nodoc:
-      
+
       def self.included(base)
         base.extend ClassMethods  
       end
-      
+
       module ClassMethods
         def acts_as_bookmarkable
           has_many :bookmarks, :as => :bookmarkable, :dependent => true
@@ -20,23 +20,14 @@ module Juixe
         # Helper class method to lookup comments for
         # the mixin commentable type written by a given user.  
         # This method is NOT equivalent to Bookmark.find_bookmarks_for_user
-        def find_bookmarks_by_user(user, options = {}) 
+        def find_bookmarks_by_user(user) 
           bookmarkable = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
           
-          Bookmark.find(:all, {
+          Bookmark.find(:all,
             :conditions => ["user_id = ? and bookmarkable_type = ?", user.id, bookmarkable],
-            :order => "created_at DESC" }.merge(options)
+            :order => "created_at DESC"
           )
         end
-        
-        def find_bookmarked_by_user(user, options = {})
-          bookmarks = find_bookmarks_by_user(user, options)
-          for bookmark in bookmarks
-            bookmark = bookmark.bookmarkable
-          end
-          return bookmarks
-        end
-        
       end
       
       # This module contains instance methods

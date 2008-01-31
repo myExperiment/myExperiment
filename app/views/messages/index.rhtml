@@ -1,0 +1,15 @@
+<h1>My Messages</h1>
+
+<ul class="sectionIcons">
+  <li><%= icon('new', new_message_path, nil, nil, 'Write New Message') %></li>
+</ul>
+
+<h2>Inbox</h2>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @messages } %>
+
+<%= render :partial => "messages/table", :locals => { :collection => @messages } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @messages } %>
+
+<br />

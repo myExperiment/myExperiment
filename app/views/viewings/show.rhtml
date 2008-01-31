@@ -1,0 +1,20 @@
+<h2>Details</h2>
+
+<p>
+  <b>User:</b><br/>
+  <% if @viewing.user_id %>
+    <%= contributor(@viewing.user_id, "User", true, 100) %>
+  <% else %>
+    <%= null_avatar 100 %><br/><%= "Anonymous" %>
+  <% end %>
+</p>
+
+<p>
+  <b>Contribution:</b>
+  <%= render :partial => "contributions/list", :locals => { :collection => [@viewing.contribution] } %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=datetime @viewing.created_at %>
+</p>

@@ -1,0 +1,37 @@
+<div id="tabsContainer" class="tabsContainer"></div>
+
+<% unless (most_r = Contribution.most_recent(10, type)).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Latest</div>
+  	<div class="tabContent">
+	    <%= render :partial => "contributions/list", :locals => { :collection => most_r, :table => true } %>
+  	</div>
+  </div>
+<% end %>
+
+<% unless (last_u = Contribution.last_updated(10, type)).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Last Updated</div>
+  	<div class="tabContent">
+	    <%= render :partial => "contributions/list", :locals => { :collection => last_u, :table => true } %>
+  	</div>
+  </div>
+<% end %>
+
+<% unless (most_v = Contribution.most_viewed(10, type)).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Viewed</div>
+  	<div class="tabContent">
+	    <%= render :partial => "contributions/list", :locals => { :collection => most_v, :table => true } %>
+  	</div>
+  </div>
+<% end %>
+
+<% unless (most_d = Contribution.most_downloaded(10, type)).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Downloaded</div>
+  	<div class="tabContent">
+	    <%= render :partial => "contributions/list", :locals => { :collection => most_d, :table => true } %>
+  	</div>
+  </div> 
+<% end %>

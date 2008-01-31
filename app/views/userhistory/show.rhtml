@@ -1,0 +1,65 @@
+<% if @user and mine? @user %>
+
+	<h1>My History</h1>
+
+	<% tags = @user.taggings -%>
+	<div class="fold">
+		<div class="foldTitle">Tags by You (<%= tags.length %>)</div>
+		<div class="foldContent" style="display: none;">
+			<% unless tags.empty? %>
+				<ul>
+					<% tags.each do |t| %>
+						<li>
+							<%= datetime t.created_at, false %> - <%= link_to_tag t.tag %>
+							for <%= visible_name t.taggable %>: 
+							<%= t.taggable_type == 'Network' ? title(t.taggable_id) : contributable(t.taggable_id, t.taggable_type) %>
+							<br/><br/>
+						</li>
+					<% end %>
+				</ul>
+			<% else %>
+				<p><i>You have not tagged anything yet</i></p>			
+			<% end %>
+		</div>
+	</div>
+	
+	<% comments = @user.comments -%>
+	<div class="fold">
+		<div class="foldTitle">Comments by You (<%= comments.length %>)</div>
+		<div class="foldContent" style="display: none;">  
+			<% unless comments.empty? %>
+				<ul>
+					<% comments.each do |c| %>
+						<li>
+							<%= datetime c.created_at, false %> - for <%= visible_name c.commentable %>: 
+							<%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %>
+							<div class="box_standout" style="margin: 0.5em 0;">
+								<%= truncate(white_list(c.comment), 300) %>
+							</div>
+							<br/><br/>
+						</li>
+					<% end %>
+				</ul>
+			<% else %>
+				<p><i>You have not made any comments yet</i></p>			
+			<% end %>
+		</div>
+	</div>
+	
+	<% ratings = @user.ratings -%>
+	<div class="fold">
+		<div class="foldTitle">Ratings by You (<%= ratings.length %>)</div>
+		<div class="foldContent" style="display: none;">  
+			<% unless ratings.empty? %>
+				<ul>
+					<% ratings.each do |r| %>
+						<li><%= datetime r.created_at, false %> - <%= r.rating.to_s %>/5 for <%= visible_name r.rateable %>: <%= contributable(r.rateable_id, r.rateable_type) %><br/><br/></li>
+					<% end %>
+				</ul>
+			<% else %>
+				<p><i>You have not rated anything yet</i></p>			
+			<% end %>
+		</div>
+	</div>
+
+<% end %>

@@ -1,0 +1,13 @@
+<h1>New Review</h1>
+
+<%= render :partial => "for_reviewable" %>
+
+<center>
+	<div class="box_form" style="width: 460px; margin: 2em 0; text-align: left;">
+		<% form_for :review, :url => reviews_path(@reviewable) do |form| -%>
+		  <%= render :partial => 'form', :object => form %>
+		  <br/><br/>
+			<center><%= submit_tag "Create", :disable_with => "Creating..." %></center>
+		<% end -%>
+	</div>
+</center>

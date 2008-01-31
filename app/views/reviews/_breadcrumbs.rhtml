@@ -1,0 +1,21 @@
+<li><%= link_to 'Workflows', workflows_path %></li>
+<li><b>&#187;</b></li>
+
+<li><%= link_to "#{h(@reviewable.title)}", workflow_path(@reviewable) %></li>
+<li><b>&#187;</b></li>
+
+<li><%= link_to 'Reviews', reviews_path(@reviewable) %></li>
+
+<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= link_to "View: #{h(@review.title)}", review_path(@reviewable, @review) %></li>
+  <% when "new" %>
+    <li><%= link_to "New Review", new_review_path(@reviewable) %></li>
+  <% when "edit" %>
+    <li><%= link_to "Edit: #{h(@review.title)}", edit_review_path(@reviewable, @review) %>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

@@ -1,0 +1,303 @@
+<% t "#{h @workflow.title} (#{h @workflow.contributor_name})" -%>
+
+<script type="text/javascript">
+  function showWorkflowVersion(form) {
+    var url = $("workflow_versions").value;
+		location.href = url;
+		form.submit
+  }
+</script>
+
+<% if @workflow.authorized?("edit", (logged_in? ? current_user : nil)) %>
+	<ul class="sectionIcons">
+		<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow Entry')%></li>
+		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
+		<% if @workflow.authorized?("destroy", current_user) %>
+			<li>
+				<%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow Entry') %>
+			</li>
+		<% end %>
+	</ul>
+<% end %>
+
+<h1 class="contribution_title">Workflow Entry: <%=h @workflow.title %></h1>
+
+<div class="contribution_aftertitle">
+	<b>Last updated: </b><%= datetime @workflow.updated_at %>
+</div>
+
+<div class="contribution_mini_nav">
+	|
+	<%= link_to "Comments (#{@workflow.comments.length})", "#comments" %>
+	|
+	<%= link_to "Reviews (#{@workflow.reviews.length})", "#reviews" %>
+	|
+</div>
+
+<div class="contribution_left_box">
+	
+	<div class="contribution_version_box">
+		<div class="contribution_version_selector_box">
+			<table>
+				<tbody>
+					<tr>
+						<td class="heading">
+							<%= info_icon_with_tooltip("This box shows version #{@viewing_version_number.to_s} of the Workflow file for this Workflow entry") %>
+							<%= "Version #{@viewing_version_number.to_s} #{@workflow.describe_version(@viewing_version_number)}" %>
+							<font class="count_text">(of <%= @workflow.versions.length -%>)</font>
+						</td>
+						<td>
+							<% if @latest_version_number > 1 %>
+	             	<form onsubmit="showWorkflowVersion(this)"; return false;" style="text-align: right;">
+						    	<b>View version: </b>
+						    	<select id="workflow_versions" onchange="showWorkflowVersion(this.form)">
+							  		<% @workflow.versions.reverse.each do |w| %>
+							    		<option value="<%= versioned_workflow_url(@workflow, w.version.to_s) %>" <%= "selected" if w.version == @viewing_version_number -%>>
+							      			<%= "#{w.version.to_s} #{@workflow.describe_version(w.version)}" %>
+							    		</option>
+							  		<% end %>
+									</select>
+								</form>
+							<% end %>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<p style="color: #999999; font-size: 85%; text-align: left; padding-left: 0.5em; padding-top: 0.1em;">
+				[ <%= link_to_function "Show/hide version meta info", visual_effect(:toggle_blind, "version_info_box", :duration => 0.5) %> ]
+			</p>		
+			<div id="version_info_box" class="box_standout" style="display: none; font-size: 85%; padding: 0.2em 0.4em; margin: 0.2em 0 1em 0; line-height: 1.1em; color: #333333;">
+				<p>
+					<b>Version created on:</b>
+					<%= datetime @viewing_version.updated_at %>
+				</p>
+				<p>
+					<b>Revision comments:</b>
+				</p>
+				<% unless @viewing_version.revision_comments.nil? or @viewing_version.revision_comments.empty? %>
+					<div>
+						<%= @viewing_version.revision_comments %>
+					</div>
+				<% else %>
+					<p><i>None</i></p>
+				<% end %>
+			</div>
+		</div>
+		
+		<% if logged_in? and @authorised_to_edit %>
+			<div style="margin-top: 1em;">
+				<ul class="sectionIcons" style="margin-top: 0.7em; margin-bottom: 0.6em;">
+					<li><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit Workflow Version") %></li>
+	        <% if @latest_version_number > 1 %>
+						<% if @workflow.authorized?("destroy", current_user) %>
+							<li><%= icon('destroy', workflow_version_delete_url(@workflow.id, @viewing_version.version), nil, { :confirm => "Are you sure you want to delete this version (Version #{@viewing_version_number.to_s}) of the Workflow file (including title/description metadata)?", :method => :delete }, 'Delete Workflow Version') %></li>
+						<% end %>
+	        <% end %>
+				</ul>
+			</div>
+		<% end %>
+		
+		<div class="contribution_version_inner_box">
+			<p>
+				<b>Title:</b>
+				<span class="title"><%=h @viewing_version.title %></span>
+			</p>
+			
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section shows the preview of this version of the Workflow (click on the image to expand)") %>
+				Preview
+			</h3>
+			
+			<% unless @viewing_version.image.nil? %>
+				<p style="font-size: 85%; font-weight: normal;">
+					 (Click on the image to get the full size)
+				</p>
+				<div style="width: 100%;">
+					<center>
+						<%= link_to image_tag(url_for_file_column(@viewing_version, "image", "medium")), url_for_file_column(@viewing_version, "image"), :popup => true %>
+					</center>
+				</div>
+			<% else %>
+				<p class="none_text">
+					Not available
+				</p>
+			<% end %>
+			
+			<br/>
+			
+			<% unless @viewing_version.svg.nil? %>
+				<ul class="sectionIcons">
+					<li><%= icon('picture', url_for_file_column(@viewing_version, "svg"), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
+				</ul>
+			<% end %>
+			
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section shows the overall description for this version of the Workflow") %>
+				Description
+			</h3>
+			
+			<% unless @viewing_version.body.blank? %>
+				<div class="contribution_description">
+					<%= white_list @viewing_version.body_html %>
+				</div>
+				<% if logged_in? and @authorised_to_edit %>
+					<br/>
+					<p style="text-align: right; color: #666666;">[ <%= link_to "edit", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
+				<% end %>
+			<% else %>
+				<p class="none_text">
+					Not set
+				</p>
+			<% end %>
+			
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
+				Download
+			</h3>
+			
+			<% if @authorised_to_download %>
+				<ul class="sectionIcons">
+					<li><%= icon('workflow', @named_download_url, "Download Workflow Definition file (for version #{@viewing_version_number.to_s})", nil, "Download Workflow Definition (SCUFL)") %></li>
+				</ul>
+			<% else %>
+				<p class="none_text">
+					You do not have permissions to download
+				</p>
+			<% end %>
+			
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section provides options for running this version of the Workflow") %>
+				Run
+			</h3>
+				
+			<% if @authorised_to_download %>
+				<div style="margin: 0 1.5em;">
+					<p style="text-align: center;">
+						<b>Run this Workflow in the Taverna Workbench*</b><br/>
+						Copy and paste this link into File > Open workflow location...<br/>
+						<%= link_to @download_url, @download_url %>
+					</p>
+		
+					<p style="text-align: center; margin-top: 0.5em;">
+						If you are having problems downloading it in Taverna, you may need to provide your username and password in the URL so that Taverna can access the Workflow: <br/>
+						<% if logged_in? and current_user.username.nil? %>
+							First you need to <%= link_to 'register a username and password', edit_user_path(current_user) %> on your myExperiment account.
+						<% else %>
+							<b>Replace <font color="#990000">http://</font> in the link above with <font color="#990000">http://<%=(logged_in? and !current_user.username.nil?) ? h(current_user.username) : "yourusername" %>:yourpassword@</font></b>
+						<% end %>
+					</p>
+					
+					<p style="font-size: 85%; margin-top: 0.5em;">
+						<%= link_to "* http://taverna.sourceforge.net/", "http://taverna.sourceforge.net/" %>
+					</p>
+				</div>
+			<% else %>
+				<p class="none_text">
+					You do not have permissions to run this Workflow
+				</p>
+			<% end %>
+		</div>
+	
+	</div>
+	
+</div>
+
+<div class="contribution_right_box">
+	<%= render :partial => "contributions/uploader_credits_attributions_box", :locals => { :contributable => @workflow, :edit_path => edit_workflow_path(@workflow) } %>
+	
+	<%= render :partial => "contributions/license_box", :locals => { :contributable => @workflow } %>
+	
+	<% if false %>
+		<div class="contribution_section_box">
+			<p class="heading">
+				<%= info_icon_with_tooltip("The unique name assigned to the workflow in myExperiment.") %>
+				Unique Name
+			</p>
+			<p>
+				<%=h @workflow.unique_name %>
+			</p>
+		</div>
+	<% end %>
+	
+	<%= render :partial => "tags/tags_box", :locals => { :taggable => @workflow,
+																											 :owner_id => ((@workflow.contributor_type == 'User') ? @workflow.contributor_id : nil),  
+																											 :add_path => tag_workflow_path(@workflow), 
+																											 :edit_path => edit_workflow_path(@workflow),
+																											 :allow_edit => @workflow.authorized?("edit", logged_in? ? current_user : nil ) } %>
+	
+	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @workflow } %>
+	
+	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @workflow } %>
+	
+	<% if false %><%= render :partial => "layouts/bookmark_with", :locals => { :title => @workflow.title, :url => @workflow_entry_url } %><% end %>
+	
+</div>
+
+<div class="clearer">&nbsp;</div>
+
+<!-- BEGIN tabs -->
+	
+<br/>
+<br/>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+
+<%= render :partial => "contributions/citations_tab", :locals => { :item => @workflow } %>
+
+<% if logged_in? and @workflow.authorized?("destroy", current_user) %>
+  <div class="tabContainer">
+    <div class="tabTitle">Permissions</div>
+    <div class="tabContent">
+
+      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @workflow } %>
+      <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @workflow } %>
+	  
+	  <% if @workflow.authorized?("edit", current_user) %>
+		  <ul class="sectionIcons">
+		  	<li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit')%></li>
+		  </ul>
+	  <% end %>
+
+    </div>
+  </div>
+<% end %>
+
+<div class="tabContainer">
+  <div class="tabTitle">Versions History</div>
+  <div class="tabContent">
+      <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
+  </div>
+</div>
+
+<% if logged_in? and @workflow.owner? current_user %>
+  <div class="tabContainer">
+    <div class="tabTitle">Viewing History</div>
+    <div class="tabContent">
+      <%= render :partial => "contributions/history", :object => @workflow.contribution %>
+    </div>
+  </div>
+<% end %>
+
+<!-- END tabs -->
+
+<br/>
+
+<div id="ratingsBox">
+	<%= render :partial => "reviews/reviews", :locals => { :reviewable => @workflow } %>
+</div>
+
+<br/>
+<br/>
+
+<div id="commentsBox">
+	<%= render :partial => "comments/comments", :locals => { :commentable => @workflow } %>
+</div>

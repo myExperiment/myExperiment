@@ -1,0 +1,33 @@
+<p>
+  <b>Earliest Version:</b><br/>
+  <%= versioned_workflow_link(workflow, workflow.versions.first.version ) %>
+	<%= render :partial => "version_meta", :locals => { :version => workflow.versions.first } %>
+</p>
+
+<% if @latest_version_number > 2 %>
+<p>
+  <b>Previous Versions:</b><br/>
+  <% (2...@latest_version_number).each do |v| %>
+		<% if (link = versioned_workflow_link(workflow, v)) %>
+    	<%= link %><br/>
+			<%= render :partial => "version_meta", :locals => { :version => workflow.find_version(v) } %>
+		<% else %>
+			<p>[<%= v.to_s %>] - <i>does not exist</i></p>
+		<% end %>
+  <% end %>
+</p>
+<% end %>
+
+<% if @latest_version_number > 1 %>
+  <p>
+    <b>Latest Version:</b><br/>
+    <%= versioned_workflow_link(workflow, @latest_version_number) %>
+		<%= render :partial => "version_meta", :locals => { :version => workflow.versions.last } %>
+  </p>
+<% end %>
+
+<% if workflow.versions.length == 1 %>
+  <p>
+    This Workflow only has one version.
+  </p>
+<% end %>

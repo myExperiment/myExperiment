@@ -1,0 +1,57 @@
+# Mailer configuration
+
+ActionMailer::Base.smtp_settings = {
+  :address  => "smtp.example.com",
+  :port  => 25, 
+  :domain  => "",
+  :user_name  => "username",
+  :password  => "password",
+  :authentication  => :login
+} 
+
+ActionMailer::Base.server_settings = {
+  :address => "smtp.example.com",
+  :port => "587",
+  :domain => "",
+  :authentication => :plain,
+  :user_name => "username",
+  :password  => "password"
+}
+
+# Secret word used for email confirmation hashes (and possibly other things)
+SECRET_WORD = "our_secret_word_that_no_one_knows"
+
+# Set SOLR_ENABLE to true to enable the search facility - this requires a solr
+# server
+SOLR_ENABLE = false
+
+TRUSTED_PROXY = 'xxx.xxx.xxx.xxx'
+
+# Comma-seperated list of usernames (must be lowercase) of the users who are regarded as Admins.
+ADMINS = ["list", "of", "usernames"]
+
+
+# ---
+# BEGIN web analytics settings
+
+# Switch web analytics on or off
+USE_WEBANALYTICS = false
+
+# Tracker code for Google Analytics
+GOOGLEANALYTICS_TRACKER_CODE = "enter_tracker_code_here"
+
+# END web analytics settings
+# ---
+
+
+# ---
+# BEGIN addthis.com bookmarking widget settings
+
+USE_BOOKMARK_WIDGET = false
+
+# addthis.com username
+ADDTHIS_WIDGET_USERNAME = "addthis.com username"
+
+# END addthis.com bookmarking widget settings
+# ---
+

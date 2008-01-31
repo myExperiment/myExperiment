@@ -1,0 +1,103 @@
+<% query ||= false -%>
+<% odd_row = false -%>
+
+<% unless collection.empty? %>
+
+<table class="alt_table">	
+	<% for workflow in collection %>
+		<% show = workflow.authorized?("show", (logged_in? ? current_user : nil)) -%>
+	  <% if show %>
+	  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+	    <td style="width: 100px;">
+	    	<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
+				<center><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %></center>
+		</td>
+	    <td style="text-align: left;">
+	      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
+	      <p class="title">
+		  	<%= icon "workflow", nil, nil, nil, '' %>
+			<% title = contributable_name(workflow.id, 'Workflow')%>
+			<%=link_to(query ? highlight_all(title, query) : title, workflow_path(workflow)) %>
+		  </p>
+			
+		  <% unless (creditors = workflow.creditors).empty? %>
+		  	<p style="font-size:85%;">
+				<b>Credits:</b>
+				<% creditors.each do |c| %>
+					<% if c.creditor_type == 'User' %>
+						<%= icon('user', nil, nil, nil, '') %> 
+					<% elsif c.creditor_type == 'Network' %>
+						<%= icon('network-member', nil, nil, nil, '') %>
+					<% end %>
+					<%= contributor(c.creditor_id, c.creditor_type) %>
+				<% end %>
+		  	</p>
+		  <% end %>
+		  <% unless (attributors = workflow.attributors).empty? %>
+		  	<p style="font-size:85%;">
+				<b>Attributions:</b>
+				<% attributors.each do |a| %>
+					<% if a.attributor_type == 'Workflow' %>
+						<%= icon('workflow', nil, nil, nil, '') %> 
+					<% elsif a.attributor_type == 'Blob' %>
+						<%= icon('blob', nil, nil, nil, '') %>
+					<% end %>
+					<%= contributable(a.attributor_id, a.attributor_type) %>
+				<% end %>
+		  	</p>
+		  <% end %>
+			
+			<p style="font-size:85%;"><b>License: </b><%= license_link workflow.license.to_s %></p>
+		  
+		  <div>
+		      <% unless workflow.image.nil? %>
+					<table>
+						<tbody>
+							<tr>
+								<td style="margin: 0; padding: 0.2em 0; border: 0;">
+									<% if show %>
+					          <%= link_to image_tag(url_for_file_column(workflow, "image", "thumb"), :class => 'framed_nospace'), workflow_path(workflow) %>
+					        <% end %>
+								</td>
+								<td style="margin: 0; padding: 0.2em 0; border: 0;">
+									<% if workflow.body and workflow.body.length > 0 %>
+							  	  <% # desc = truncate(white_list(workflow.body_html), 400) %>
+									  <% desc = truncate(strip_html(workflow.body), 400) %>
+									  <div class="desc" style="margin-left: 0.8em; font-size: 85%;">
+							        <%= query ? highlight_all(desc, query) : desc %>
+							      </div>
+							  	<% end %>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+	      <% end %>
+		  </div>
+		  
+		  <p style="font-size: 85%;">
+				<b>Rating: </b><%= number_with_precision(workflow.rating, 2) %>/5 (<%= pluralize workflow.ratings.count, 'rating' %>) |
+				<b>Versions: </b><%= workflow.versions.count %> |
+				<b>Comments: </b><%= workflow.comments.count %> |
+		  	<b>Viewed:</b> <%=pluralize workflow.contribution.viewings_count, "time" %> |
+	      <b>Downloaded:</b> <%=pluralize workflow.contribution.downloads_count, "time" %>
+		  </p>
+		  
+		  <% unless (tags = workflow.tags).empty? %>
+				<p style="font-size: 85%;"><b>Tags:</b></p>
+				<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
+		  <% else %>
+				<p style="font-size: 85%;"><i>This Workflow has no tags!</i></p>
+		  <% end %>	
+	    </td>
+	    <td class="actions" style="width: 85px;">
+	      <% if show %><%= icon "show", workflow_path(workflow), nil, nil, "View" %><% end %>
+		  	<% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
+	      <% if logged_in? and workflow.authorized?("edit", current_user) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
+	    </td>
+	  </tr>
+  	  <% end %>
+	<% end %>
+
+</table>
+
+<% end %>

@@ -110,7 +110,7 @@ module Scufl
         stream.puts " subgraph cluster_#{prefix}sources {"
         stream.puts '  style="dotted"'
         stream.puts '  label="Workflow Inputs"'
-        stream.puts '  fontname="Helvetica\"'
+        stream.puts '  fontname="Helvetica"'
         stream.puts '  fontsize="10"'
         stream.puts '  fontcolor="black"'
         stream.puts '  rank="same"'
@@ -127,9 +127,9 @@ module Scufl
     end
     
     def write_source(stream, source, prefix)
-      stream.puts " \"#{prefix}WORKFLOWINTERNALSOURCE_#{source.name}\" ["
+      stream.puts " \"#{prefix}WORKFLOWINTERNALSOURCE_#{source}\" ["
       stream.puts '   shape="box",'
-      stream.puts "   label=\"#{source.name}\""
+      stream.puts "   label=\"#{source}\""
       stream.puts '   width="0",'
       stream.puts '   height="0",'
       stream.puts '   fillcolor="skyblue"'
@@ -141,7 +141,7 @@ module Scufl
         stream.puts " subgraph cluster_#{prefix}sinks {"
         stream.puts '  style="dotted"'
         stream.puts '  label="Workflow Outputs"'
-        stream.puts '  fontname="Helvetica\"'
+        stream.puts '  fontname="Helvetica"'
         stream.puts '  fontsize="10"'
         stream.puts '  fontcolor="black"'
         stream.puts '  rank="same"'
@@ -158,9 +158,9 @@ module Scufl
     end
     
     def write_sink(stream, sink, prefix)
-      stream.puts " \"#{prefix}WORKFLOWINTERNALSINK_#{sink.name}\" ["
+      stream.puts " \"#{prefix}WORKFLOWINTERNALSINK_#{sink}\" ["
       stream.puts '   shape="box",'
-      stream.puts "   label=\"#{sink.name}\""
+      stream.puts "   label=\"#{sink}\""
       stream.puts '   width="0",'
       stream.puts '   height="0",'
       stream.puts '   fillcolor="lightsteelblue2"'
@@ -168,7 +168,7 @@ module Scufl
     end
     
     def write_link(stream, link, model, prefix)
-      if model.sources.select{|s| s.name == link.source} != []
+      if model.sources.include? link.source
         stream.write " \"#{prefix}WORKFLOWINTERNALSOURCE_#{link.source}\""
       else 
         processor = model.processors.select{|p| p.name == link.source.split(':')[0]}[0]
@@ -179,7 +179,7 @@ module Scufl
         end
       end
       stream.write '->'
-      if model.sinks.select{|s| s.name == link.sink} != []
+      if model.sinks.include? link.sink
         stream.write "\"#{prefix}WORKFLOWINTERNALSINK_#{link.sink}\""
       else 
         processor = model.processors.select{|p| p.name == link.sink.split(':')[0]}[0]

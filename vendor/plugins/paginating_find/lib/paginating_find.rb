@@ -7,8 +7,8 @@ module PaginatingFind
     base.extend(ClassMethods)
     base.class_eval do
       class << self
-        alias_method :original_find, :find unless method_defined?(:original_find)
-        alias_method :find, :paginating_find
+        VALID_FIND_OPTIONS << :page
+        alias_method_chain :find, :pagination
       end
     end
   end
@@ -47,8 +47,12 @@ module PaginatingFind
     #                           :current => 1, 
     #                           :auto => true})
     #
-    def paginating_find(*args)
-      options = extract_options_from_args!(args) 
+    def find_with_pagination(*args)
+      options = if args.respond_to?(:extract_options!)
+        args.extract_options!
+      else
+        extract_options_from_args!(args)
+      end
       page_options = options.delete(:page) || (args.delete(:page) ? {} : nil)
       if page_options
         # The :page option was specified, so page the query results
@@ -86,73 +90,47 @@ module PaginatingFind
             # :with_scope options were specified, so 
             # the with_scope method must be invoked
             self.with_scope(cached_scoped_methods) do
-              original_find(*(args << options))
+              find_without_pagination(*(args << options))
             end
           else
-            original_find(*(args << options))
+            find_without_pagination(*(args << options))
           end
         end
       else
         # The :page option was not specified, so invoke the
         # usual AR::Base#find method
-        original_find(*(args << options))
+        find_without_pagination(*(args << options))
       end
-    end
-    
-    def validate_find_options(options)
-      options.assert_valid_keys [:page, :conditions, :include, :joins, :limit, :offset, :order, :select, :readonly, :group]
     end
     
     def collect_count_options(options)
       rtn = {}.merge(options)
       rtn[:select] = "#{table_name}.#{primary_key}"
       
+      # If original :select includes the distinct keyword, then
+      # also include it in the count query
+      if rtn[:select].to_s.index(/\s*DISTINCT\s+/i) != nil
+        rtn[:select] = "DISTINCT #{table_name}.#{primary_key}"
+      else
+        rtn[:select] = "#{table_name}.#{primary_key}"
+      end
+      
       # AR::Base#find does not support :having, but some folks tack it on to the :group option,
       # and it is supported by calculations, so we'll support it here.
       scope = scope(:find)
       group = options[:group] || (scope ? scope[:group] : nil)
       if group
-        having = group.split(/HAVING/i)
-        rtn[:having] = having[1] if having.size == 2 # 'HAVING' was tacked on to the :group option.
+        having = group.split(/\s+HAVING\s+/i)
+        if having.size == 2 # 'HAVING' was tacked on to the :group option.
+          rtn[:group] = having[0]
+          rtn[:having] = having[1]
+        end
       end
       
       # Eliminate count options like :order, :limit, :offset.
       rtn.delete_if { |k, v| !VALID_COUNT_OPTIONS.include?(k.to_sym) }
       rtn
     end
-
-#def paginating_ferret_search(options)
-#   count = find_by_contents(options[:q], {:lazy => true}).total_hits
-#
-#   PagingEnumerator.new(options[:size], count, false, options[:current], 1) do |page|
-#      offset = (options[:current].to_i - 1) * options[:size]
-#      limit = options[:size]
-#
-#      res = find_by_contents(options[:q], {:offset => offset, :limit => limit})
-#    end
-#end
-
-def ferret_find(query, options, find_options = {})
-   count = find_by_contents(query, {:lazy => true}) .total_hits
-
-   PagingEnumerator.new(options[:page][:size], count, false, options[:page][:current], options[:page][:first]) do |page|
-      options[:offset] = (options[:page][:current].to_i - 1) * options[:page][:size]
-      options[:limit] = options[:page][:size]
-
-      res = find_by_contents(query, options, find_options)
-    end
-end
-
-def paginating_ferret_multi_search(options)
-   count = multi_search(options[:q], [List], {:limit => :all, :lazy => true}).total_hits
-
-   PagingEnumerator.new(options[:size], count, false, options[:current], 1) do |page|
-      offset = (options[:current].to_i - 1) * options[:size]
-      limit = options[:size]
-
-      multi_search(options[:q], [List], {:offset => offset, :limit => limit})
-    end
-end
     
   end
 end

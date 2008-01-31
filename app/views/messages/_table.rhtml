@@ -1,0 +1,31 @@
+<% unless collection.empty? %>
+
+<table class="alt_table">
+  <tr>
+    <th>From</th>
+    <th>Subject</th>
+    <th>Received at</th>
+    <th> </th>
+  </tr>
+  
+<% odd_row = false -%>
+<% for message in collection %>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td style="text-align: center; width: 45px; font-size: 85%;">
+		<%= "<b>" unless message.read? %><%= render :partial => "users/avatar", :locals => { :user => message.from, :size => 40 } %><%= "</b>" unless message.read? %>
+	</td>
+    <td style="text-align: center;"><%= "<b>" unless message.read? %><%=link_to h(message.subject), message_path(message) %><%= "</b>" unless message.read? %></td>
+    <td><%= "<b>" unless message.read? %><%=datetime message.created_at, false %><%= "</b>" unless message.read? %></td>
+    <td class="actions">
+        <%= icon('message', message_path(message), nil, nil, 'Read') %>
+        <%= icon('reply', url_for(:controller => :messages, :action => :new, :reply_id => message.id), nil, nil, 'Reply') %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<% else %>
+
+<i>No Messages</i>
+
+<% end %>

@@ -1,0 +1,62 @@
+<% unless profile.body.nil? or profile.body.empty? %>
+  <div class="box_simple" style="margin: 0.4em 0;">
+    <%= white_list profile.body_html %>
+  </div>
+<% end %>
+
+<% unless profile.email.nil? %>
+  <p>
+    <b>Email:</b>
+    <%=mail_to profile.email, h(profile.email), { :replace_at => " [at] " } %>
+  </p>
+<% end %>
+
+<% unless profile.website.nil? %>
+  <p>
+    <b>Website:</b>
+    <%=link_to h(profile.website), profile.website %>
+  </p>
+<% end %>
+
+<% unless profile.contact_details.nil? or profile.contact_details.empty? %>
+  <p>
+  	<b>Other contact details:</b>
+	</p>
+  <%= simple_format(sanitize(profile.contact_details)) %>
+<% end %>
+
+<% unless profile.location.nil? or profile.location.empty? %>
+  <p>
+  	<b>Location:</b>
+    <%= h profile.location %>
+  </p>
+<% end %>
+
+<% unless profile.field_or_industry.nil? or profile.field_or_industry.empty? %>
+  <p>
+  	<b>Field/Industry:</b>
+    <%= h profile.field_or_industry %>
+  </p>
+<% end %>
+
+<% unless profile.occupation_or_roles.nil? or profile.occupation_or_roles.empty? %>
+  <p>
+  	<b>Occupation/Role(s):</b>
+    <%= h profile.occupation_or_roles %>
+  </p>
+<% end %>
+
+<% unless profile.organisations.nil? or profile.organisations.empty? %>
+  <p>
+  	<b>Organisation(s):</b>
+	</p>
+  <%= simple_format(sanitize(profile.organisations)) %>
+<% end %>
+
+<% unless profile.interests.nil? or profile.interests.empty? %>
+  <p>
+  	<b>Interests:</b>
+	</p>
+  <%= simple_format(sanitize(profile.interests)) %>
+<% end %>
+

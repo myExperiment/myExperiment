@@ -3,6 +3,18 @@ require File.dirname(__FILE__) + '/abstract_test.rb'
 class PaginatingFindTest < Test::Unit::TestCase
   fixtures :authors, :edits, :articles
   
+  def test_should_not_bonk_on_marshal_dump
+    results = Article.find(:all, :page => {:size => 2})
+    Marshal.dump(results)
+  end
+  
+  def test_should_preserve_enumerator_stats_on_marshal_load
+    results = Article.find(:all, :page => {:size => 2})
+    loaded = Marshal.load(Marshal.dump(results))
+    assert_equal 2, loaded.page_size
+    assert_equal Article.count, loaded.size
+  end
+  
   def test_should_auto_paginate
     h = ArticleHelper.new(112)
     h.find_articles(:all, :page => {:size => 10, :auto => true}) do |results|
@@ -77,6 +89,7 @@ class PaginatingFindTest < Test::Unit::TestCase
                            :page => {:size => 10})
     assert_equal 1, results.size
     assert_equal 10, results.page_size
+    assert_equal authors(:alex), results.to_a.first.author
   end
   
   def test_should_correctly_count_through_associations
@@ -90,7 +103,7 @@ class PaginatingFindTest < Test::Unit::TestCase
   end
   
   def test_should_respect_scope
-    Article.with_scope(:find => { :conditions => "name = 1" }) do
+    Article.find_with_scope({ :conditions => "name = 1" }) do
       h = ArticleHelper.new(20)
       h.find_articles(:all, :page => {:size => 10}) do |results|
         assert_equal 1, results.size
@@ -102,7 +115,7 @@ class PaginatingFindTest < Test::Unit::TestCase
   
   def test_should_respect_scope_with_include
     h = ArticleHelper.new(20)
-    Article.with_scope(:find => { :conditions => "articles.name >= 1 and articles.name <= 3" }) do
+    Article.find_with_scope({:conditions => "articles.name >= 1 and articles.name <= 3" }) do
       h.find_articles(:all, :include => [:author, :edits], :page => {:size => 10, :current => 1, :first => 1}, :order => "articles.name ASC") do |results|
         assert_equal 3, results.size
         assert_equal 3, results.to_a.size
@@ -113,8 +126,8 @@ class PaginatingFindTest < Test::Unit::TestCase
   
   def test_should_respect_nested_scope
     h = ArticleHelper.new(20)
-    Article.with_scope(:find => { :conditions => "name = 1" }) do
-      Article.with_scope(:find => { :conditions => "name = 2" }) do
+    Article.find_with_scope({ :conditions => "name = 1" }) do
+      Article.find_with_scope({ :conditions => "name = 2" }) do
         h.find_articles(:all, :page => {:size => 10}) do |results|
           assert_equal 0, results.size
           assert_equal 0, results.to_a.size
@@ -128,7 +141,7 @@ class PaginatingFindTest < Test::Unit::TestCase
   def test_should_respect_out_of_scope_scope
     results = nil
     (1..20).each { |n| Article.create(:name => n, :author_id => 1) }
-    Article.with_scope(:find => { :conditions => "name >= 1 and name <= 15" }) do
+    Article.find_with_scope({ :conditions => "name >= 1 and name <= 15" }) do
       results = Article.find(:all, :page => {:size => 10, :auto => true})
     end
     assert_equal 10, results.page_size
@@ -139,7 +152,7 @@ class PaginatingFindTest < Test::Unit::TestCase
   def test_should_respect_out_of_scope_scope_with_include
     results = nil
     (1..20).each { |n| Article.create(:name => n, :author_id => 1) }
-    Article.with_scope(:find => { :conditions => "articles.name >= 1 and articles.name <= 15 and authors.id = 1", :include => [:author, :edits]}) do
+    Article.find_with_scope({ :conditions => "articles.name >= 1 and articles.name <= 15 and authors.id = 1", :include => [:author, :edits]}) do
       results = Article.find(:all, :page => {:size => 10, :auto => true})
     end
     assert_equal 10, results.page_size

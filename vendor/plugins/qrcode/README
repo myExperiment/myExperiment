@@ -1,0 +1,36 @@
+QRCode for Rails
+================
+
+A plugin for Ruby on Rails to generate QRCode(QRコード).
+
+About
+-----
+This plugin use javascript to generate QRCode. The original javascript program 
+is developed by Kazuhiko Arase. (http://www.d-project.com/qrcode/index.html)
+
+Usage
+-----
+ - In your rails project, install the plugin by following command:
+   ./script/plugin install http://qrcode-rails.googlecode.com/svn/trunk/plugins/qrcode
+   
+ - Add javascript include tag in HTML header: 
+   <%= javascript_include_tag :defaults %>
+
+ - Add following funtion to where you want to generate QRCode.
+   <%= qrcode('http://www.google.com/', 2, 'my-qrcode') %>
+  
+  * The first parameter is URL
+  * The second optional parameter is pixel size.
+  * The third optional parameter is ID of the generated div
+
+Example
+-------
+You can find source of an example project here: http://qrcode-rails.googlecode.com/svn/trunk/examples
+  
+License
+-------
+Released under the MIT license.
+
+Author
+-------
+ * Francis Chong - siuying [at] reality [dot] hk 

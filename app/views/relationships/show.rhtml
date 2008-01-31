@@ -1,0 +1,34 @@
+<p>
+  <b>Group:</b>
+  <%=h @relationship.network_id %>
+</p>
+
+<p>
+  <b>Relation:</b>
+  <%=h @relationship.relation_id %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=datetime @relationship.created_at %>
+</p>
+
+<% if @relationship.accepted? %>
+
+<p>
+  <b>Accepted at:</b>
+  <%=datetime @relationship.accepted_at %>
+</p>
+
+<% else%>
+
+<% if Network.find(@relationship.network_id).owner? session[:user_id] %>
+
+<%= link_to 'Accept Relationship', accept_relationship_path(@relationship.network_id, @relationship) %> | 
+
+<% end %>
+
+<% end %>
+
+
+<%= link_to 'Back', relationships_path(@relationship.network_id) %>

@@ -1,0 +1,21 @@
+<% unless collection.empty? %>
+
+<table>
+  <tr>
+    <th>User</th>
+  </tr>
+  
+<% for moderatorship in collection %>
+  <tr>
+    <td><%=h moderatorship.user_id %></td>
+    <td><%= link_to 'Show', moderatorship_path(@forum, moderatorship) %></td>
+    <td><%= link_to 'Destroy', moderatorship_path(@forum, moderatorship), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<% else %>
+
+<p>No moderatorships have been created.</p>
+
+<% end %>

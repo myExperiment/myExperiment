@@ -1,0 +1,11 @@
+<%= render :partial => "contributions/most_tabs", :locals => { :type => "Blog" } %>
+
+<h2>All Blogs</h2>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @blogs } %>
+
+<%= render :partial => "blogs/table", :locals => { :collection => @blogs } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @blogs } %>
+
+<br />

@@ -1,0 +1,68 @@
+<h3>Details</h3>
+
+<p>
+  <b>Name:</b>
+  <%=h @policy.name %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=datetime @policy.created_at %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%=datetime @policy.updated_at %>
+</p>
+
+<ul class="sectionIcons">
+  <li><%= icon('edit', edit_policy_path(@policy), nil, nil, 'Edit policy (1 page)') %></li>
+  <li><%= icon('wizard', url_for(:controller => :policy_wizard, :action => :public, :id => @policy.id), nil, nil, 'Edit using wizard') %></li>
+  <li><%= icon('destroy', policy_path(@policy), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove policy') %></li>
+</ul>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+
+<div class="tabContainer">
+  <div class="tabTitle">Permissions</div>
+  <div class="tabContent">
+    <h3>Permissions</h3>
+    
+    <ul class="sectionIcons">
+      <li><%= icon('new', new_permission_path(@policy), nil, nil, 'New permission') %></li>
+    </ul>
+
+    <%= render :partial => "policies/policy", :object => @policy %>
+  </div>
+</div>
+
+<div class="tabContainer">
+  <div class="tabTitle">Breakdown</div>
+  <div class="tabContent">
+    <h3>Breakdown</h3>
+
+    <%= render :partial => "policies/breakdown", :locals => { :policy => @policy, :user => current_user } %>
+  </div>
+</div>
+
+<% unless @policy.contributions.empty? %>
+  <div class="tabContainer">
+    <div class="tabTitle">Test</div>
+    <div class="tabContent">
+      <h3>Test</h3>
+
+      <%= render :partial => "policies/test", :locals => { :policy => @policy } %>
+    </div>
+  </div>
+<% end %>
+
+<% unless @policy.contributions.empty? %>
+  <div class="tabContainer">
+    <div class="tabTitle">Contributions</div>
+    <div class="tabContent">
+      <h3>Contributions moderated with this</h3>
+
+      <%= render :partial => "contributions/table", :locals => { :collection => @policy.contributions } %>
+    </div>
+  </div>
+<% end %>

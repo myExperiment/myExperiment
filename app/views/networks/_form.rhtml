@@ -1,0 +1,49 @@
+  <%= javascript_include_tag :fckeditor %>
+	
+	<p>
+    <b>Administrator</b><br />
+    <%= render :partial => "users/avatar", :locals => { :user => @network.owner } %>
+    <%= form.hidden_field :user_id %>
+  </p>
+
+  <p>
+    <b>Title</b><br />
+    <%= form.text_field :title, :size => 60 %>
+  </p>
+  
+  <br/>
+  
+  <fieldset>
+    <legend>Persistent URL</legend>
+    <p>What is a <%= link_to 'pURL', "http://en.wikipedia.org/wiki/Persistent_Uniform_Resource_Locator", :popup => true %>?</p>
+    <p>
+      If you set a unique identifier, it will be used in future versions of myExperiment to provide a persistent and human-readable URL for your Group.
+    </p> 
+    
+    <p><b>Reserve yours now!</b></p>
+    
+    <p>
+      <b>Unique Identifier</b><br />
+      <%= form.text_field :unique_name %>
+    </p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Auto Accept Join Requests</legend>
+    <p>
+    	You can configure this group to automatically accept requests from users to join.
+		</p>
+    <p>
+      <%= form.check_box :auto_accept %>
+      <b>Auto Accept Join Requests</b><br />
+    </p>
+  </fieldset>
+  
+  <br/>
+	
+	<p>
+  	<strong>Description: </strong>
+	</p>
+	<%= fckeditor_textarea(:network, :description, :toolbarSet => 'Simple', :width => '700px', :height => '300px') %>
+
+ 

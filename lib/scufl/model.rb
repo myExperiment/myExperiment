@@ -31,12 +31,4 @@ module Scufl
     attr_accessor :controller, :target
   end
   
-  class Source
-  	attr_accessor :name, :description
-  end
-  
-  class Sink
-	attr_accessor :name, :description
-  end  	
-  
 end

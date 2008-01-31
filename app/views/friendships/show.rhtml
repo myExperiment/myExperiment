@@ -1,0 +1,57 @@
+<h1>Friendship</h1>
+
+<% unless my_page? @friendship.user_id %>
+  <p>
+    <center>
+		<b>User:</b><br/>
+	    <%= render :partial => "users/avatar", :locals => { :user => @friendship.user } %>
+	</center>
+  </p>
+<% end %>
+
+<% unless my_page? @friendship.friend_id %>
+  <p>
+    <center>
+		<b>Friend:</b><br/>
+	    <%= render :partial => "users/avatar", :locals => { :user => @friendship.friend } %>
+	</center>
+  </p>
+<% end %>
+
+<p>
+  <center>
+	  <b>Requested at:</b><br/>
+	  <%=datetime @friendship.created_at %>
+  </center>
+</p>
+
+<% if @friendship.accepted? %>
+
+  <p>
+    <center>
+		<b>Accepted at:</b><br/>
+	    <%=datetime @friendship.accepted_at %>
+	</center>
+  </p>
+
+<% elsif my_page? @friendship.friend_id %>
+
+  <br/>
+  
+  <p>
+    <center>
+		<%= icon "confirm", accept_friendship_path(@friendship.friend_id, @friendship), "Accept", nil, "Accept" %> 
+	    <%= icon "reject", friendship_path(@friendship.friend_id, @friendship), nil, :confirm => "Are you sure?", :method => :delete %>
+	</center>
+  </p>
+
+<% else %>
+
+  <p>
+    <center>
+		<b>Accepted at:</b><br/>
+	    Pending
+	</center>
+  </p>
+
+<% end %>

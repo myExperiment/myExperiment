@@ -1,0 +1,25 @@
+<%= javascript_include_tag "osp.js" %>
+
+<h1>New Blog</h1>
+
+<%= error_messages_for :blog %>
+
+<% form_for(:blog, :url => blogs_path) do |f| %>
+
+  <p>
+    <b>Title</b><br />
+    <%= f.text_field :title %>
+  </p>
+
+  <br />
+  <br />
+
+  <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @blog } %>
+
+  <p>
+  	<center>
+    	<%= submit_tag "Create", :disable_with => "Creating..." %>
+	</center>
+  </p>
+
+<% end %>

@@ -1,0 +1,36 @@
+<% current ||= current_user %>
+
+<% fields_for :contributor_pair do |f| %>
+  <div class="fold">
+    <div class="foldTitle">Ownership (Default: You)</div>
+    <div class="foldContent" style="display: none;">
+  
+  <p>
+    Please select the owner, from the list below:
+  </p>
+
+  <p>
+    <p>
+      <%= f.radio_button(:class_id, "User-#{user.id}", { :checked => (current.type.to_s == "User" and current.id.to_i == user.id) }) %> - <%= link_to 'Me', user_path(user) %>
+    </p>
+    <% unless user.networks_owned.empty? %>
+      <p>
+        <b>Administrator of...</b><br/>
+        <% for n in user.networks_owned %>
+          <%= f.radio_button(:class_id, "Network-#{n.id}", { :checked => (current.type.to_s == "Network" and current.id.to_i == n.id) }) %> - <%= link_to h(n.title), group_path(n) %><br/>
+        <% end %>
+      </p>
+    <% end %>
+    <% unless user.networks.empty? %>
+      <p>
+        <b>Member of..</b><br/>
+        <% for n in user.networks %>
+          <%= f.radio_button(:class_id, "Network-#{n.id}", { :checked => (current.type.to_s == "Network" and current.id.to_i == n.id) }) %> - <%= link_to h(n.title), group_path(n) %><br/>
+        <% end %>
+      </p>
+    <% end %>
+  </p>
+  
+    </div>
+  </div>
+<% end %>

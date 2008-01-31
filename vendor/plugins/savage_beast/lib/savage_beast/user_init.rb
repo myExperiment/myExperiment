@@ -1,5 +1,8 @@
+
 module SavageBeast
+
   module UserInit
+
     def self.included(base)
       base.class_eval do
 
@@ -26,9 +29,11 @@ module SavageBeast
             
       end
       base.extend(ClassMethods)
+
     end
 
     module ClassMethods
+
       def currently_online
         User.find(:all, :conditions => ["last_seen_at > ?", Time.now.utc-5.minutes])
       end
@@ -52,10 +57,6 @@ module SavageBeast
       "implement display_name in your user model"
     end
     
-    #implement in your user model 
-    def email
-      "implement email in your user model"
-    end
     
     #implement in your user model 
     def admin?
@@ -65,6 +66,7 @@ module SavageBeast
     #implement in your user model 
     def logged_in?
       false
-    end   
+    end
+      
   end
 end

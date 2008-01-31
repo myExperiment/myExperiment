@@ -1,0 +1,65 @@
+<% allow_approval = allow_membership_pending_approval(@membership) %>
+
+<% if @membership.accepted? %>
+	<h1>Membership</h1>
+<% else %>
+	<h1>Membership <%= @membership.is_invite? ? "Invite" : "Request" %></h1>
+<% end %>
+
+<p>
+  <center style="color: #666666; font-size: 93%;">
+	  <b><%= @membership.is_invite? ? "Invited" : "Requested" %> at:</b><br/>
+	  <%=datetime @membership.created_at %>
+  </center>
+</p>
+
+<br/>
+
+<% if @membership.accepted? %>
+
+  <p>
+    <center style="color: #666666; font-size: 93%;">
+			<b>Accepted at:</b><br />
+	    <%=datetime @membership.accepted_at %>
+		</center>
+  </p>
+
+<% else %>
+
+	<p>
+    <center style="font-size: 108%; color: #990000;">
+	    <b><i>Pending approval (<%= allow_approval ? "from you" : "from group admin" %>)</i></b>
+		</center>
+  </p>
+
+	<% if allow_approval %>
+		<br/>
+	 	<ul class="sectionIcons">
+			<li><%= icon "confirm", accept_membership_path(@membership.user_id, @membership), "Accept", nil, "Accept" %></li> 
+		  <li><%= icon "reject", membership_path(@membership.user_id, @membership), nil, :confirm => "Are you sure?", :method => :delete %></li>
+	  </ul>
+	<% end %>
+
+<% end %>
+
+<br/>
+
+<p>
+	<center>
+		<b>User:</b><br/>
+	  <%= render :partial => "users/avatar", :locals => { :user => @membership.user } %>
+	</center>
+</p>
+
+<br/>
+
+<p>
+  <center>
+	  <b>Group:</b>
+	</center>
+</p>
+<p>
+  <center>
+	  <%= render :partial => "networks/table", :locals => { :collection => [ @membership.network ] } %>
+  </center>
+</p>

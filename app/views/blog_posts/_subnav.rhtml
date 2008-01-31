@@ -1,0 +1,13 @@
+<% case controller.action_name.to_s; when "show" %>
+
+  <% if logged_in? and @blog_post.blog.authorized?("edit", current_user) %>
+    <ul class="sectionIcons">
+      <li><%= link_to 'Edit Blog Post', edit_blog_post_path(@blog_post.blog, @blog_post) %></li>
+    </ul>       
+  <% end %>
+
+<% else %>
+
+  <!-- no subnav options -->
+
+<% end %>

@@ -1,0 +1,85 @@
+<% c_type = visible_name taggable %>
+
+<script type="text/javascript"> 
+
+function handleEnter(evt) {
+
+  var evt = evt ? evt : (event ? event : null); 
+  var node = evt.target ? evt.target : (evt.srcElement ? evt.srcElement : null); 
+
+  if (evt.keyCode == 13) {
+    if (node.id == "tags_input") {
+      addTag(document.getElementById('tags_input').value);
+      document.getElementById('tags_input').value = '';
+      return false;
+    }
+  }
+} 
+
+document.onkeypress = handleEnter; 
+
+</script> 
+
+
+<input id="tag_list" type="hidden" name="<%= taggable.class.to_s.downcase %>[tag_list]"/>
+
+<div class="fold">
+  <div class="foldTitle">
+  	<%= info_icon_with_tooltip("This section allows you to add tags to <strong>describe</strong> this #{c_type}.") %>
+		Tags
+		<% if edit %>
+			<hr />
+			<small>Current: <%= taggable.tags.count %> tags</small>
+		<% end %>
+  </div>
+  <div class="foldContent" style="display: none;">
+    <p class="box_infotext">This section allows you to add tags to <strong>describe</strong> this <%= c_type %>.</p>
+    <br />
+    <p><strong>Tags: </strong></p>
+    <div class="box_editing" style="padding-left: 1em;">
+			<p style="color: #666666; font-size: 93%;"><i>Build up the list of tags below by adding from the two different boxes further below</i></p>
+			<p id="tags_current_list" class="box_editing_inner">
+				<i>None</i>
+			</p>
+	    <div class="box_simple" style="font-size: 93%; text-align: left; margin-top: 1em;">
+	      <p>Add one or more tags manually (seperated by commas; click on 'Add' to add to the list):</p>
+	      <p>
+	      	<input id="tags_input" type="text" style="width: 500px;" name="tags_input" autocomplete="off"/>&nbsp;&nbsp;
+					<div class="auto_complete" id="tags_auto_complete" ></div>
+					<%= auto_complete_field "tags_input",
+										:update => "tags_auto_complete",
+										:url => {:controller => 'tags', :action => 'auto_complete'},
+										:tokens => ',',
+										:indicator => "tagautocomplete_indicator" -%>
+					<img id="tagautocomplete_indicator" style="margin-top: 0.2em; display: none;" src="/images/spinner.gif" />&nbsp;
+					<br/>
+					<b><a href="" onclick="javascript:addTag(document.getElementById('tags_input').value); document.getElementById('tags_input').value = ''; return false;">Add</a></b>
+		  	</p>
+	    </div>
+
+	    <div class="box_simple" style="font-size: 93%; text-align: left; margin-top: 1em;">
+	      <p>Add from your existing tags in myExperiment (click on tag to add):</p>                            
+	      <div style="padding: 0 1em;">
+		    <% unless (tags = current_user.tags.sort {|a,b| a.name <=> b.name }).empty? %>
+					<% tags.each do |t| %>
+			  			<a href="" onclick="javascript:addTag('<%= t.name %>'); return false;"><%= t.name %></a><span style="color: #999999;"> | </span> 
+					<% end %>
+				<% else %>
+					<p><i>You have not tagged anything yet</i></p>
+				<% end %>
+	  		</div>
+    	</div>
+		
+		</div>
+  </div>
+</div>
+
+<% if edit %>
+  <script>
+    <% taggable.tags.sort{|a,b| a.name <=> b.name}.each do |t| %>
+      tags.push(<%= "\"#{t.to_s.gsub(/\"/, '\\\"')}\"" %>);
+    <% end %>
+    updateTagList();
+  </script>
+<% end %>
+

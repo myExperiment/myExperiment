@@ -1,0 +1,172 @@
+<% t "#{h @network.title}" -%>
+
+<% if logged_in? %>
+  <ul class="sectionIcons">
+    <% unless @network.member? current_user.id %>
+      <li class="with_sep_bottom"><%= request_membership_link(current_user.id, @network.id) %></li>
+    <% end %>
+
+    <% if mine? @network %>
+      <li><%= icon('edit', edit_group_path(@network), nil, nil, 'Edit Group') %></li>
+      <li><%= icon('destroy', group_path(@network), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<h1>Group: <%=h @network.title %></h1>
+
+<div style="color: #999999; font-size: 85%; text-align: center; margin-bottom: 0.8em;">
+	| <%= link_to "Comments (#{@network.comments.length})", "#comments" %> |
+</div>
+
+<div class="contribution_left_box">
+	
+	<% unless @network.description.nil? or @network.description.empty? %>
+		<div class="box_simple" style="margin: 0 0 0.4em 0;">
+		  <%= white_list @network.description_html %>
+		</div>
+	<% else %>
+		<p><i>No description</i></p>
+	<% end %>
+	
+	<p>
+	  <b>Created at:</b>
+	  <%=datetime @network.created_at %>
+	</p>
+	
+	<% unless @network.unique_name.nil? or @network.unique_name.empty? %>
+		<p>
+		  <b>Unique name:</b>
+		  <%=h @network.unique_name %>
+		</p>
+	<% end %>
+	
+	<% if mine? @network %>
+		<br/>
+		<div class="box_currentuser_specific">
+			<% if @network.auto_accept %>
+				You have set this Group to automatically accept all Membership Requests
+			<% else %>
+				You have set this Group to send you all Membership Requests for confirmation first
+			<% end %>
+		</div>
+	<% end %>
+	
+	<br/>
+	
+	<div class="contribution_section_box">
+		<p class="heading">
+			Members
+		</p>
+		<div>
+			<%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
+		</div>
+	</div>
+	
+</div>
+
+<div class="contribution_right_box">
+	<%= render :partial => "owner_box", :locals => { :network => @network } %>
+	<%= render :partial => "statistics_box", :locals => { :network => @network } %>
+	<%= render :partial => "tags/tags_box", :locals => { :taggable => @network,
+																											 :owner_id => (@network.user_id),  
+																											 :add_path => tag_group_path(@network), 
+																											 :edit_path => edit_group_path(@network),
+																											 :allow_edit => logged_in? ? @network.user_id == current_user.id : false } %>
+																								 
+	<% if false %><%= render :partial => "layouts/bookmark_with", :locals => { :title => @network.title, :url => @network_url } %><% end %>
+	
+</div>
+
+<div class="clearer">&nbsp;</div>
+
+<br/>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+
+<div class="tabContainer">
+  <div class="tabTitle">News</div>
+  <div class="tabContent">  
+    <%= render :partial => "layouts/news", :locals => { :collection => news(@network, true) } %>
+  </div>
+</div>
+
+<% if logged_in? and @network.member? current_user.id %>
+	<% unless (contributions = all_contributables_for_network(@network)).empty? %>
+		<div class="tabContainer">
+		    <div class="tabTitle">Stuff</div>
+		    <div class="tabContent">
+		    	<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
+	    	</div>
+		</div>
+	<% end %>
+<% end %>
+
+<% if mine? @network %>
+  
+  <% memberships = @network.memberships_accepted %>
+  <div class="tabContainer">
+    <div class="tabTitle">Manage Memberships</div>
+    <div class="tabContent">
+    	<% unless memberships.empty? %>
+      	<%= render :partial => "memberships/table", :locals => { :collection => memberships, :network => false } %>
+			<% else %>
+				<p><i>No additional members belong to this Group</i></p>
+			<% end %>
+    </div>
+  </div>
+  
+	<% requests = @network.memberships_requested %>
+  <div class="tabContainer">
+    <div class="tabTitle">Requests Pending</div>
+    <div class="tabContent">
+    	<% unless requests.empty? %>
+				<p></p>
+      	<%= render :partial => "memberships/table", :locals => { :collection => requests, :network => false } %>
+			<% else %>
+				<p><i>No requests are pending for this Group</i></p>
+			<% end %>
+    </div>
+  </div>
+	
+	<% invited = @network.memberships_invited %>
+  <div class="tabContainer">
+    <div class="tabTitle">Invites Pending</div>
+    <div class="tabContent">
+    	<% unless invited.empty? %>
+				<p></p>
+      	<%= render :partial => "memberships/table", :locals => { :collection => invited, :network => false } %>
+			<% else %>
+				<p><i>No invites are pending for this Group</i></p>
+			<% end %>
+    </div>
+  </div>
+	
+	<div class="tabContainer">
+    <div class="tabTitle">Invite Users</div>
+    <div class="tabContent">
+  
+      <p>
+        Here you can invite Users to this Group. <br/>
+        Select a name from the list and click "Invite".
+      </p>
+  
+      <% form_tag(membership_invite_group_path(@network), :method => :get) do %>
+        <label for="user_id">User:</label> <%= select_tag :user_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %> <%= submit_tag "Invite", :disable_with => 'Inviting...' %>
+      <% end %>
+  
+      <%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
+    </div>
+  </div>
+
+<% end %>
+
+<% unless @network.contributions.empty? %>
+  <%= render :partial => "contributions/tabs", :locals => { :collection => @network.contributions } %>
+<% end %>
+
+<br/>
+
+<div id="commentsBox">
+	<%= render :partial => "comments/comments", :locals => { :commentable => @network } %>
+</div>

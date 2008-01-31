@@ -1,0 +1,23 @@
+<% owner ||= true %>
+<div class="network_banner">
+  <p>
+    <strong><%= link_to h(network.title), group_path(network.id) %></strong> 
+    <% if logged_in? and network.owner? current_user.id %>
+      <%= icon "edit", edit_group_path(network) %> 
+      <%= icon "destroy", group_path(network), nil, :confirm => "Are you sure?", :method => "destroy" %>
+    <% end %>
+  </p>
+  
+  <table width="100%">
+    <tr>
+      <td width="150">
+        <%= render :partial => "users/avatar", :locals => { :user => network.owner, :size => 100 } %>
+      </td>
+      <td>
+        <%= render :partial => "networks/members", :locals => { :collection => network.members(false), :size => 60 } %>
+        
+        <div style="clear: both;"/>
+      </td>
+    </tr>
+  </table>
+</div>

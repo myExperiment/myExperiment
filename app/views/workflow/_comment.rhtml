@@ -1,8 +1,0 @@
-<li>
-<%= profile_link User.find(@comment.user) %>
-on <%= @comment.created_at.strftime("%d %B, %Y")%>
-<div class="avatar">
-<%= avatar(User.find(@comment.user), '50x50') %>
-</div>
-<pre><%=h @comment.comment %><pre>
-</li>

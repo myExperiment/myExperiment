@@ -1,0 +1,24 @@
+<br/>
+<ul class="sectionIcons">
+	<li><%= icon "view-all", url_for(:action => 'all'), nil, nil, "View All Users" %></li>
+</ul>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+
+<% unless (recent = User.most_recent(6)).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Recent</div>
+  	<div class="tabContent">
+	    <%= render :partial => "users/hlist", :locals => { :collection => recent } %>
+  	</div>
+  </div>
+<% end %>
+
+<% unless (updated = User.last_updated).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Last Updated</div>
+  	<div class="tabContent">
+	    <%= render :partial => "users/table", :locals => { :collection => updated } %>
+  	</div>
+  </div>
+<% end %>

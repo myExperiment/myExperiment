@@ -1,0 +1,52 @@
+<% unless collection.empty? %>
+
+	<table class="alt_table">
+		<% odd_row = false -%> 
+		<% for review in collection %>
+		  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+			    <td width="80px" style="text-align: center;">
+			    	<b>By</b>
+						<%= contributor(review.user_id, 'User', true, 60) %>
+					</td>
+			    <td class="mid" style="text-align: left;">
+			    	<p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
+							Title: <%= link_to h(review.title), review_url(reviewable, review) %>
+						</p>
+						
+						<p>
+							<b>Rating: </b>
+							<% if (rating = review.associated_rating) %>
+								<%= rating.rating %> out of 5
+							<% else %>
+								<span class="none_text">not yet rated</span>
+							<% end %>
+						</p>
+						
+						<p style="font-size: 85%; color: #666666;">
+							<b>Created:</b> <%=datetime review.created_at, false %>
+							|
+							<b>Updated:</b> <%=datetime review.updated_at, false %>
+						</p>
+						
+						<div class="desc" style="font-size: 85%;">
+							<% unless (text = strip_html(review.review)).blank? %>
+								<%= truncate(text, 500) %>
+							<% else %>
+								<p class="none_text">No text</p>
+							<% end %>
+							<p style="text-align: right;">
+								[ <%= link_to "more", review_url(reviewable, review) %> ]
+							</p>
+						</div>
+					</td>
+			    <td class="actions"  style="width: 80px;">
+		      	<%= icon "show", review_path(reviewable, review), nil, nil, "View" %>
+						<% if review.allow_edit?(logged_in? ? current_user : nil) %>
+							<%= icon('edit', edit_review_path(reviewable, review), nil, nil, 'Edit') %>
+						<% end %>
+		    	</td>
+		  	</tr>
+		<% end %>
+	</table>
+
+<% end %>

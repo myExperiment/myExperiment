@@ -1,0 +1,11 @@
+<li><%= link_to 'Bookmarks', bookmarks_path %></li>
+
+<% if ["show"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= link_to "View: #{contributable(@bookmark.bookmarkable_id, @bookmark.bookmarkable_type, false)}", bookmark_path(@bookmark) %></li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

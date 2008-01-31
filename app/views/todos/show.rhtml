@@ -1,8 +1,0 @@
-<% for column in Todo.content_columns %>
-<p>
-  <b><%= column.human_name %>:</b> <%=h @todo.send(column.name) %>
-</p>
-<% end %>
-
-<%= link_to 'Edit', :action => 'edit', :id => @todo %> |
-<%= link_to 'Back', :action => 'list' %>

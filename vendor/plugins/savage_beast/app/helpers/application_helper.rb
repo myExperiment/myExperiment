@@ -15,18 +15,16 @@ module ApplicationHelper
     "<img src='/images/#{spinner}' style='display:none; vertical-align:middle;' id='#{id.to_s}_spinner'> "
   end
 
-  def avatar_for(user, size=60)
-    # image_tag "http://www.gravatar.com/avatar.php?gravatar_id=#{MD5.md5(user.email)}&rating=PG&size=#{size}", :size => "#{size}x#{size}", :class => 'photo'
-    
-    # image_tag url_for(:controller => 'pictures', :action => 'show', :id => user.avatar, :size => size)
-    
-    return avatar user, "#{size}x#{size}"
+  def avatar_for(user, size='50')
+    #image_tag "http://www.gravatar.com/avatar.php?gravatar_id=#{MD5.md5(user.email)}&rating=PG&size=#{size}", :size => "#{size}x#{size}", :class => 'photo'
+    avatar(user, size)
   end
 
-  def feed_icon_tag(title, url)
-    (@feed_icons ||= []) << { :url => url, :title => title }
-    link_to image_tag('feed-icon.png', :size => '14x14', :alt => "Subscribe to #{title}"), url
-  end
+  # Update 2008-01-28 [Jits]: Moved to main application_helper
+  #def feed_icon_tag(title, url)
+  #  (@feed_icons ||= []) << { :url => url, :title => title }
+  #  link_to image_tag('feed-icon.png', :size => '14x14', :alt => "Subscribe to #{title}"), url
+  #end
 
   def search_posts_title
     returning(params[:q].blank? ? 'Recent Posts' : "Searching for '#{h params[:q]}'") do |title|

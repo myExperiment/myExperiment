@@ -1,0 +1,55 @@
+<%= javascript_include_tag :fckeditor %>
+
+<h2>
+	<%= icon "comments", nil, nil, nil, "" -%>
+	Comments <font class="count_text">(<%= commentable.comments.length %>)</font>
+</h2>
+
+<div class="commentsBox">
+	
+	<% unless commentable.comments.empty? %>
+		<% if logged_in? %>
+			<%= link_to "Make a comment", "#make_comment" %>
+		<% else %>
+			<p><strong><%= link_to "Log in", new_session_url %> to make a comment </strong></p>
+		<% end %>
+		<a name="comments"></a>
+		<ul id="comments" class="comments">
+			<%= render :partial => "comments/comment", :collection => commentable.comments %>
+		</ul>
+	<% else %>
+		<p><i>No comments yet</i></p>
+		<a name="comments"></a>
+		<% unless logged_in? %>
+			<p style="margin-top: 0.6em;"><strong><%= link_to "Log in", new_session_url %> to make a comment </strong></p>
+		<% end %>
+	<% end %>
+	
+	<br/>
+	
+	<% if logged_in? %>
+		<a name="make_comment"></a>
+		<div class="addCommentBox">
+			<h4>Make a Comment:</h4>
+			<% if false %><%= allowed_html_text %><% end %>
+			
+			<% # Hack for FCKEditor: -%>
+			<% @comment = Comment.new; @comment.id = 0 -%>
+			
+			<% form_remote_tag(:url => { :controller => controller.controller_name.to_s, :action => "comment" },
+								 :before => fckeditor_before_js("comment", "comment"),
+							   :update => 'commentsBox', 
+							   :loading => "Element.show('addcomment_indicator')",
+	               :complete => "Element.hide('addcomment_indicator'); new Effect.Highlight('comments', { duration: 1.5 }); $('comment').value = '';") do %>
+				
+				<%= fckeditor_textarea("comment", "comment", :ajax => true, :toolbarSet => 'Basic', :width => '99%', :height => '200px') %>
+				<% if false %><textarea id="comment" name="comment" rows="10" style="width: 99%;"></textarea><% end %>
+				<br/>
+				<%= submit_tag "Submit Comment" %>
+				<%= image_tag "/images/spinner.gif", :id => "addcomment_indicator", :style => "margin-left: 1em; display: none;" %>
+			<% end %>
+		</div>
+	<% end %>
+
+</div>
+

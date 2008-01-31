@@ -1,0 +1,105 @@
+<%= javascript_include_tag :fckeditor %>
+
+<p style="color: #666666; font-weight: bold;">
+	Note: information you enter on this page will be visible to everyone (ie: will be public), but all fields are optional.
+</p>
+
+<h2>Your display picture</h2>
+
+<p>
+  <div id="hlist">
+    <ul>
+    <li>
+      <center><%= null_avatar 60 %><br/><%= form.radio_button :picture_id, nil %></center>
+    </li>
+    <% pictures.each do |p| %>
+      <li>
+        <center>
+        	<%= image_tag url_for :controller => 'pictures', :action  => 'show', :id => p.id, :size => '60x60' %>
+					<br/>
+					<%= form.radio_button :picture_id, p.id %>
+				</center>
+      </li>
+    <% end %>
+    </ul>
+  </div>
+  <div class="clearer">&nbsp;</div>
+</p>
+
+<h2>Your contact details</h2>
+
+<p>
+  <b>Email (public):</b><br/>
+  <%= form.text_field :email %>
+</p>
+<p style="font-size: 85%; color: #333333;">
+	Note that this email is a different setting to the email address registered on the account. 
+</p>
+
+<p>
+  <b>Website:</b><br/>
+  <%= form.text_field :website %>
+</p>
+
+<p>
+  <b>Other contact details:</b><br/>
+  <%= form.text_area :contact_details, :size => "30x4" %>
+</p>
+
+<br/>
+<br/>
+
+<h2>Your location</h2>
+
+<p>
+  <b>City:</b><br/>
+  <%= form.text_field :location_city %>
+</p>
+
+<p>
+  <b>Country:</b><br/>
+  <%= form.country_select :location_country, ["United Kingdom"], { :prompt => "- Please select a country -" } %>
+</p>
+
+<br/>
+<br/>
+
+<h2>Your work/professional life</h2>
+
+<p>
+  <b>Field/Industry:</b><br/>
+  <%= form.text_field :field_or_industry, :size => 50 %>
+</p>
+
+<p>
+  <b>Occupation/Role(s):</b><br/>
+  <%= form.text_field :occupation_or_roles, :size => 50 %>
+</p>
+
+<p>
+  <b>Organisation(s) you belong to:</b><br/>
+  <%= form.text_area :organisations, :size => "30x4" %>
+</p>
+
+<p>
+  <b> Professional Interests:</b><br/>
+  <%= form.text_area :interests, :size => "60x5" %>
+</p>
+
+<br/>
+<br/>
+
+<h2>Description/summary</h2>
+
+<p>
+	<span style="font-size: 85%; display:block; padding: 0.2em 0 0.5em 0; color: #333333;">
+		Here you can enter a summary or detailed description of yourself. 
+		<br/>
+		This is what other people see when they look at a listing of users and what they see on your profile page.
+	</span>
+</p>
+
+<%= fckeditor_textarea(:profile, :body, :toolbarSet => 'Simple', :width => '700px', :height => '300px') %>
+
+<br/>
+<br/>

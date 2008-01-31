@@ -1,0 +1,24 @@
+<% unless collection.empty? %>
+  <div class="news_feed_div">
+  <% collection.each do |news_day| %>
+    <p class="news_feed_day_title">
+			<% if news_day[0] > Time.now - 1.day %>
+        Today
+      <% elsif news_day[0] > Time.now - 2.days %>
+        Yesterday
+      <% else %>
+				<%= timeago_fuzzy news_day[0] %>
+      <% end %>
+    </p>
+    <ul class="news_feed_day">
+      <% news_day[1].each do |news_item| %>
+        <li class="news_feed_item">
+          <%= news_item %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+  </div>
+<% else %>
+  <p>No news</p>
+<% end %>

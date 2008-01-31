@@ -1,0 +1,24 @@
+<h2>All Blog Posts</h2>
+
+<table>
+  <tr>
+    <th>Blog</th>
+    <th>Title</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+  </tr>
+  
+<% for blog_post in @blog_posts %>
+  <tr>
+    <td><%=h blog_post.blog_id %></td>
+    <td><%=h blog_post.title %></td>
+    <td><%=datetime blog_post.created_at, false %></td>
+    <td><%=datetime blog_post.updated_at, false %></td>
+    <td><%= link_to 'View', blog_post_path(blog_post.blog, blog_post) %></td>
+    <td><%= link_to 'Edit', edit_blog_post_path(blog_post.blog, blog_post) %></td>
+    <td><%= link_to 'Delete', blog_post_path(blog_post.blog, blog_post), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />

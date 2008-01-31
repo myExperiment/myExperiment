@@ -1,0 +1,14 @@
+<h1>Edit User Profile</h1>
+
+<%= error_messages_for :profile %>
+
+<% form_for(:profile, :url => profile_path(@profile.user_id), :html => { :method => :put }) do |f| %>
+
+	<% if mine? @user %>
+		<%= render :partial => "form", :object => f, :locals => { :pictures => @user.pictures } %>
+	<% end %>
+
+  <p>
+    <%= submit_tag "Update", :disable_with => "Updating..." %>
+  </p>
+<% end %>

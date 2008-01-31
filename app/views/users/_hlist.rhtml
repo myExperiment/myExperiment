@@ -1,0 +1,16 @@
+<% unless collection.empty? %>
+<% size ||= 100 %>
+
+<div id="hlist">
+<ul><% for user in collection %>
+<li>
+  <p>
+    <%= render :partial => "users/avatar", :locals => { :user => user, :size => size } %>
+  </p>
+</li>
+<% end %></ul>
+</div>
+
+<br style="clear: both;" />
+
+<% end %>

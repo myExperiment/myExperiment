@@ -1,0 +1,16 @@
+<% read_only ||= false -%>
+    <tr>
+      <td>
+        <%=contributor permission.contributor_id, permission.contributor_type, true, 60 %>
+      </td>
+      <td><%= check_box_tag "view_private_#{permission.id}", 1, checked = permission.view, :disabled => true %></td>
+      <td><%= check_box_tag "download_private_#{permission.id}", 1, checked = permission.download, :disabled => true %></td>
+      <td><%= check_box_tag "edit_private_#{permission.id}", 1, checked = permission.edit, :disabled => true %></td>
+      <% if !read_only && permission.policy.admin?(current_user) %>
+        <td class="actions">
+          <%= icon "show", permission_path(permission.policy, permission) %> 
+          <%= icon "edit", edit_permission_path(permission.policy, permission) %> 
+          <%= icon "destroy", permission_path(permission.policy, permission), nil, :confirm => 'Are you sure?', :method => :delete %>
+        </td>
+      <% end %>
+    </tr>

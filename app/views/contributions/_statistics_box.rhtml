@@ -1,0 +1,35 @@
+<div class="contribution_section_box">
+	<p class="heading">
+		Statistics
+	</p>
+	
+	<div class="stats_box"> 
+	
+		<%= render :partial => "contributions/statistics", :object => contributable.contribution %>
+		
+		<p>
+			<b><%= pluralize contributable.creditors.length, "credit" %></b> 
+		</p>
+		
+		<p>
+			<b><%= pluralize contributable.attributors.length, "attribution" %></b> 
+		</p>
+		
+		<p>
+      <b><%= pluralize contributable.taggings.length, "tag" %></b>
+    </p>
+		
+		<p>
+      <b><%= pluralize contributable.ratings.length, "rating" %></b>
+    </p>
+		
+		<p>
+      <b><%= pluralize contributable.reviews.length, "review" %></b>
+    </p>
+		
+    <p>
+    	<b><%= pluralize contributable.comments.length, "comment" %></b>
+    </p>
+	
+	</div>
+</div>

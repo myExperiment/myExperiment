@@ -1,0 +1,6 @@
+<% unless (tags = tags_for_type("Workflow", 50)).empty? %>
+	<h2>Top <%= tags.length %> tags for Workflows&nbsp&nbsp&nbsp<small>[<%= link_to "See All Tags", tags_path %>]</small></h2>
+    <%= tag_cloud_from_collection(tags) %>
+	<br/>
+	<br/>
+ <% end %>

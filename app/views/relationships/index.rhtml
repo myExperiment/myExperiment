@@ -1,0 +1,27 @@
+<h1>Listing relationships for <%= params[:network_id] ? Network.find(params[:network_id]).title : "All" %></h1>
+
+<p>The <strong>Relation</strong> initiates a Relationship request with the <strong>Group</strong> who can accept/reject.<br/>
+The relationship is analogous to the parent/child relationship (ie: <strong>Group parentOf Relation</strong>, <strong>Relation childOf Group</strong>).</p>
+
+<table width="100%">
+  <tr>
+    <th>Relation</th>
+    <th>Group</th>
+    <th>Created at</th>
+    <th>Accepted at</th>
+    <th colspan="2"> </th>
+  </tr>
+  
+<% for relationship in @relationships %>
+  <tr>
+    <td><%=h relationship.relation_id %></td>
+    <td><%=h relationship.network_id %></td>
+    <td><%=datetime relationship.created_at, false %></td>
+    <td><%=datetime(relationship.accepted_at, false) || "Pending" %></td>
+    <td><%= link_to "Show#{relationship.accepted? ? "" : " / Accept"}", relationship_path(relationship.network_id, relationship) %></td>
+    <td><%= link_to 'Destroy', relationship_path(relationship.network_id, relationship), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />

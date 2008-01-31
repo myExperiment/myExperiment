@@ -1,0 +1,63 @@
+<% t "New" -%>
+
+<%= javascript_include_tag :fckeditor %>
+<%= javascript_include_tag "osp.js" %>
+
+<h1>Upload File</h1>
+
+<%= error_messages_for :blob %>
+
+<% form_tag ({:action => :create}, :multipart => true) do %>
+
+  <p style="text-align: center;">
+    <strong>File to upload: </strong>
+    <%= file_field :blob, :data %>
+  </p>
+  
+  <br/>
+  
+  <p style="text-align: center;">
+  	<strong>Title: </strong>
+		<br/>
+		<%= text_field_tag "blob[title]", nil, :size => 60 %>
+  </p>
+	
+	<br/>
+  
+  <p style="text-align: center;">
+  	<strong>Description: </strong>
+	</p>
+	<center>
+		<%= fckeditor_textarea(:blob, :body, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
+	</center>
+
+  <br />
+                
+  <% if false %>
+    <%= render :partial => "contributions/contributor_form", :locals => { :user => current_user } %>
+    
+    <%= render :partial => "policies/listform", :locals => { :contribution => @blob.contribution, :user => current_user } %>
+  <% end %>
+
+  <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @blob } %>
+  
+  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => false, :contributable => @blob } %>
+
+  <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @blob } %>
+
+  <%= render :partial => "contributions/updating_form", :locals => { :edit => false, :contributable => @blob } %>
+  
+  <%= render :partial => "blobs/license_form", :locals => { :edit => false } %>
+  
+  <p style="text-align: center; margin: 2em 3em; padding: 0.6em; border-top: 1px dotted #999999; border-bottom: 1px dotted #999999; color: #660000;">
+    <strong>Note:</strong> You are responsible for any content that you upload. 
+	You may remove your content at any time. We may make copies for operational purposes. 
+	This service is governed by the <%= link_to "JANET Acceptable Use Policy", "http://www.ja.net/services/publications/policy/aup.html", :target => "_blank" %>. 
+	Takedown requests will be reviewed by the myExperiment Management Committee. 
+	The sharing functionality is under beta test. Please contact us for further information about Terms and Conditions.
+  </p>
+  
+  <p style="text-align: center;">
+    <%= submit_tag "Upload and Save", :disable_with => "Uploading and saving..." %>
+  </p>
+<% end %>

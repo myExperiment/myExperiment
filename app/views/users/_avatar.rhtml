@@ -1,0 +1,19 @@
+<% size ||= 100 -%>
+<% if user.kind_of? Fixnum then user = User.find(user) end -%>
+<div style="text-align:center; width: <%= size+6 %>px; line-height: 1.2em; padding: 0.2em 0;">
+	<%= avatar(user, size) %>
+	<span style="display:block;margin-top:2px;text-align:center;">
+		<% if size > 59 %>
+			<%= if user.profile then flag_icon(user.profile.location_country, user.profile.location) end %>
+		<% end %>
+		
+		<% if not user.name =~ /[ ]/ %>
+		  <%= name user, size/6 %>
+		<% elsif user.name.length > 30 %>
+			<%= name user, 30 %>
+		<% else %>
+			<%= name user %>
+		<% end %>
+		
+	</span>
+</div>

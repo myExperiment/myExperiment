@@ -1,0 +1,9 @@
+<% t "Search" -%>
+
+<h1>Search Results</h1>
+
+<h2><%= pluralize(@users.length, "user") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
+
+<%= render :partial => "users/table", :locals => { :collection => @users } %>
+
+<br />

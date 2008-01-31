@@ -1,0 +1,34 @@
+<% t "Manage" -%>
+
+<%= javascript_include_tag "osp.js" %>
+
+<h1>Manage Workflow: <%= @workflow.title %></h1>
+
+<% if false %>
+<div>Sharing mode = <%= @sharing_mode %></div>
+<div>Updating mode = <%= @updating_mode %></div>
+<% end %>
+
+<%= error_messages_for :workflow %>
+
+<p style="font-size: 93%; color: #333333; margin-bottom: 1.2em; text-align: left;">
+	<%= link_to "Click here", url_for(:controller => "workflows", :action => "edit_version", :id => @workflow.id, :version => @workflow.current_version) %> if you wanted to edit the title/description of the latest version 
+</p>
+
+<% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
+  <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @workflow } %>
+  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => true, :contributable => @workflow } %>
+
+  <% if @workflow.owner?(current_user) %>
+  	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @workflow } %>
+	  <%= render :partial => "contributions/updating_form", :locals => { :edit => true, :contributable => @workflow } %>
+    <%= render :partial => "workflows/license_form", :locals => { :edit => true } %>
+  <% end %>
+
+  <p>
+    <center>
+    	<%= submit_tag "Update", :disable_with => "Updating..." %> 
+		or <%= link_to "Cancel", workflow_path(@workflow) %>
+	</center>
+  </p>
+<% end %>

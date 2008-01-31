@@ -1,0 +1,16 @@
+<% c_type = visible_name contributable %>
+
+<div class="contribution_section_box">
+	<p class="heading">
+		<%= info_icon_with_tooltip("This specifies what rights users have when they download and use this #{c_type}.") %>
+		License
+	</p>
+	
+	<div class="contribution_currentlicense">
+		<% if contributable.class.to_s.downcase == "workflow" %>
+			<%= render :partial => "workflows/license", :locals => { :workflow => contributable } %>
+		<% elsif contributable.class.to_s.downcase == "blob" %>
+			<%= render :partial => "blobs/license", :locals => { :blob => contributable } %>
+		<% end %>
+	</div>
+</div>

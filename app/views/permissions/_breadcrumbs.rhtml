@@ -1,0 +1,31 @@
+<li><%= link_to 'Policies', policies_path %></li>
+
+<li><b>&#187;</b></li>
+
+<% if @policy %>
+  <li><%= link_to h(@policy.name), policy_path(@policy) %></li>
+
+  <li><b>&#187;</b></li>
+
+  <li><%= link_to 'Permissions', permissions_path(@policy) %></li>
+<% else %>
+  <li><%= link_to h(@permission.policy.name), policy_path(@permission.policy) %></li>
+
+  <li><b>&#187;</b></li>
+
+  <li><%= link_to 'Permissions', permissions_path(@permission.policy) %></li>
+<% end %>
+
+<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= link_to "View: #{contributor_name(@permission.contributor_id, @permission.contributor_type)}", permission_path(@policy, @permission) %></li>
+  <% when "new" %>
+    <li><%= link_to "New Permission", new_permission_path(@permission.policy) %></li>
+  <% when "edit" %>
+    <li><%= link_to "Edit: #{contributor_name(@permission.contributor_id, @permission.contributor_type)}", edit_permission_path(@policy, @permission) %></li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

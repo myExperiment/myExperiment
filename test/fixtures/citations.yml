@@ -1,0 +1,29 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+one:
+  id: 1
+  user_id: 1
+  workflow_id: 1
+  workflow_version: 1
+  author: MyString
+  title: MyString
+  publication: MyString
+  published_at: 2007-09-29 22:23:01
+  accessed_at: 2007-09-29 22:23:01
+  url: MyString
+  isbn: MyString
+  created_at: 2007-09-29 22:23:01
+  updated_at: 2007-09-29 22:23:01
+two:
+  id: 2
+  user_id: 1
+  workflow_id: 1
+  workflow_version: 1
+  author: MyString
+  title: MyString
+  publication: MyString
+  published_at: 2007-09-29 22:23:01
+  accessed_at: 2007-09-29 22:23:01
+  url: MyString
+  isbn: MyString
+  created_at: 2007-09-29 22:23:01
+  updated_at: 2007-09-29 22:23:01

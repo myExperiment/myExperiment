@@ -1,136 +1,203 @@
-##
-##
-## myExperiment - a social network for scientists
-##
-## Copyright (C) 2007 University of Manchester/University of Southampton
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU Affero General Public License
-## as published by the Free Software Foundation; either version 3 of the
-## License, or (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU Affero General Public License for more details.
-##
-## You should have received a copy of the GNU Affero General Public License
-## along with this program; if not, see http://www.gnu.org/licenses
-## or write to the Free Software Foundation,Inc., 51 Franklin Street,
-## Fifth Floor, Boston, MA 02110-1301  USA
-##
-##
+# myExperiment: app/controllers/pictures_controller.rb
+#
+# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# See license.txt for details.
 
 class PicturesController < ApplicationController
-
-  before_filter :login_required
-
-  def index
-    list
-    render :action => 'list'
-  end
+  before_filter :login_required, :except => [:index, :show]
   
-  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-  :redirect_to => { :action => :list }
+  before_filter :find_pictures, :only => [:index]
+  before_filter :find_picture, :only => [:show]
+  before_filter :find_picture_auth, :only => [:select, :edit, :update, :destroy]
   
-  def list
-    @user = User.find(session[:user_id])
-    @pictures = Picture.find_all_by_user_id(session[:user_id])
-  end
-  
+  # GET /users/1/pictures/1/select
+  # GET /users/1/pictures/1/select.xml
+  # GET /pictures/1/select
+  # GET /pictures/1/select.xml
   def select
-    if params[:id]
-      @user = User.find(session[:user_id]);
-      picture = Picture.find(params[:id])
-      if picture.user_id == nil or picture.user_id == @user.id
-        @user.avatar = params[:id]
-        
-        if @user.save
-          flash[:notice] = 'Picture was successfully updated.'
-          redirect_to :controller => 'profile', :action => 'index'
-        else
-          redirect_to :action => 'list'
-        end
-      else
-        redirect_to :action => 'list'
+    if @picture.select!
+      # create and save picture selection record
+      PictureSelection.create(:user => current_user, :picture => @picture)
+      
+      respond_to do |format|
+        flash[:notice] = 'Picture was successfully selected as profile picture.'
+        format.html { redirect_to pictures_url(@picture.owner) }
+        format.xml  { head :ok }
       end
     else
-      @user.avatar = Picture.find_by_user_id(@user.id)
-      
-      if @user.save
-        flash[:notice] = 'Picture was successfully removed.'
-        redirect_to :controller => 'profile', :action => 'index'
-      end
+      error("Picture already selected", "already selected")
     end
   end
   
-  flex_image :action => 'show',  :class => Picture
+  # GET /users/1/pictures
+  # GET /users/1/pictures.xml
+  # GET /pictures
+  # GET /pictures.xml
+  def index
+    respond_to do |format|
+      format.html # index.rhtml
+      format.xml  { render :xml => @pictures.to_xml }
+    end
+  end
+
+  # GET /users/1/pictures/1
+  # GET /pictures/1
+  def show
+    size = params[:size] || "200x200"
+    size = size[0..-($1.length.to_i + 2)] if size =~ /[0-9]+x[0-9]+\.([a-z0-9]+)/ # trim file extension
+    
+    if cache_exists?(@picture, size) # look in file system cache before attempting db access
+      send_file(full_cache_path(@picture, size), :type => 'image/jpeg', :disposition => 'inline')
+    else
+      # resize and encode the picture
+      @picture.resize!(:size => size)
+      @picture.to_jpg!
+      
+      # cache data
+      cache_data!(@picture, size)
+      
+      send_data(@picture.data, :type => 'image/jpeg', :disposition => 'inline')
+    end
+  end
   
+  #flex_image :action => :show, 
+  #           :class => Picture, 
+  #           :padding => true
+  
+  # adding this line 'should' cache the show method within Mongrel/WebBrick
+  # caches_page :show
+
+  # GET /users/1/pictures/new
+  # GET /pictures/new
   def new
     @picture = Picture.new
   end
-  
-  def create
-    if params[:picture] and params[:picture][:data] and not params[:picture][:data].blank?
-      @picture = Picture.create(:data => params[:picture][:data])
-      if @picture.data
-        @picture.user_id = session[:user_id]
-        if @picture.save
-          flash[:notice] = 'Picture was successfully created.'
-          #        redirect_to :action => 'list'
-          render :action => 'crop'
-        else
-          render :action => 'new'
-        end
-      else
-        flash[:notice] = 'No picture was uploaded. Please try again.'
-        render :action => 'new'
-      end
-    else
-      flash[:notice] = 'Please select an image to upload.'
-      render :action => 'new'
-    end
-  end
-  
-  def crop
-    @picture = Picture.find(params[:id])
-    if @picture
-      if params[:cancel]
-        flash[:notice] = "Cropping canceled."
-        redirect_to :action => 'list'
-      else
-        # cancel was not clicked, so crop the image
-        @picture.krop! params
-        if @picture.save
-          flash[:notice] = "Image cropped and saved successfully."
-          redirect_to :action => 'list'
-        end
-      end
-    else
-      flash[:error] = "Nothing to crop."
-      redirect_to :action => 'new'
-    end
-  rescue Picture::InvalidCropRect
-    flash[:error] = "Sorry, could not crop the image."
-  end
-  
+
+  # GET /users/1/pictures/1;edit
+  # GET /pictures/1;edit
   def edit
-    @picture = Picture.find(params[:id])
+    
   end
-  
+
+  # POST /users/1/pictures
+  # POST /users/1/pictures.xml
+  # POST /pictures
+  # POST /pictures.xml
+  def create
+    @picture = Picture.create(:data => params[:picture][:data], :user_id => current_user.id)
+
+    respond_to do |format|
+      if @picture.save
+        flash[:notice] = 'Picture was successfully uploaded.'
+        format.html { redirect_to pictures_url(@picture.user_id) }
+        format.xml  { head :created, :location => picture_url(@picture.user_id, @picture) }
+      else
+        format.html { render :action => "new" }
+        format.xml  { render :xml => @picture.errors.to_xml }
+      end
+    end
+  end
+
+  # PUT /users/1/pictures/1
+  # PUT /users/1/pictures/1.xml
+  # PUT /pictures/1
+  # PUT /pictures/1.xml
   def update
-    @picture = Picture.find(params[:id])
-    if @picture.update_attributes(params[:picture])
-      flash[:notice] = 'Picture was successfully updated.'
-      redirect_to :action => 'show', :id => @picture
-    else
-      render :action => 'edit'
+    respond_to do |format|
+      if @picture.update_attributes(params[:picture])
+        flash[:notice] = 'Picture was successfully updated.'
+        format.html { redirect_to pictures_url(@picture.user_id) }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @picture.errors.to_xml }
+      end
+    end
+  end
+
+  # DELETE /users/1/pictures/1
+  # DELETE /users/1/pictures/1.xml
+  # DELETE /pictures/1
+  # DELETE /pictures/1.xml
+  def destroy
+    user_id = @picture.user_id
+    
+    @picture.destroy
+
+    respond_to do |format|
+      format.html { redirect_to pictures_url(user_id) }
+      format.xml  { head :ok }
     end
   end
   
-  def destroy
-    Picture.find(params[:id]).destroy
-    redirect_to :action => 'list'
+protected
+
+  def find_pictures
+    if params[:user_id]
+      @pictures = Picture.find(:all, :conditions => ["user_id = ?", params[:user_id]])
+    elsif logged_in?
+      redirect_to pictures_url(current_user)
+    else
+      error("Please supply a User ID", "not supplied", :user_id)
+    end
+  end
+  
+  def find_picture
+    if params[:id]
+      if picture = Picture.find(:first, :conditions => ["id = ?", params[:id]])
+        @picture = picture
+      else
+        error("Picture not found (id not found)", "is invalid (not found)")
+      end
+    else
+      error("Please supply an ID", "not supplied")
+    end
+  end
+
+  def find_picture_auth
+    if params[:user_id]
+      begin
+        @picture = Picture.find(params[:id], :conditions => ["user_id = ?", params[:user_id]])
+      rescue ActiveRecord::RecordNotFound
+        error("Picture not found (id not authorized)", "is invalid (not owner)")
+      end
+    else
+      error("Please supply a User ID", "not supplied", :user_id)
+    end
+  end
+
+private
+  
+  def error(notice, message, attr=:id)
+    flash[:notice] = notice
+    (err = Picture.new.errors).add(attr, message)
+    
+    respond_to do |format|
+      format.html { redirect_to logged_in? ? pictures_url(current_user) : '' }
+      format.xml { render :xml => err.to_xml }
+    end
+  end
+  
+  # returns true if /pictures/show/:id?size=#{size}x#{size} is cached in file system
+  def cache_exists?(picture, size=nil)
+    File.exists?(full_cache_path(picture, size))
+  end
+  
+  # caches data (where size = #{size}x#{size})
+  def cache_data!(picture, size=nil)
+    FileUtils.mkdir_p(cache_path(picture, size))
+    File.open(full_cache_path(picture, size), "wb+") { |f| f.write(picture.data) }
+  end
+  
+  def cache_path(picture, size=nil, include_local_name=false)
+    rtn = "#{RAILS_ROOT}/public/pictures/show"
+    rtn = "#{rtn}/#{size}" if size
+    rtn = "#{rtn}/#{picture.id}.jpg" if include_local_name
+    
+    return rtn
+  end
+  
+  def full_cache_path(picture, size=nil) 
+    cache_path(picture, size, true) 
   end
 end

@@ -1,0 +1,22 @@
+<% t "New" -%>
+
+<%= javascript_include_tag "osp.js" %>
+
+<h1>New Group</h1>
+
+<%= error_messages_for :network %>
+
+<% form_for(:network, :url => groups_path) do |f| %>
+  <%= render :partial => "networks/form", :object => f %>
+	
+	<br/>
+	<br/>
+	<br/>
+
+	<!-- Tags -->
+  <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @network } %>
+	
+  <p style="text-align: center;">
+    <%= submit_tag "Create",:disable_with => "Creating..." %>
+  </p>
+<% end %>

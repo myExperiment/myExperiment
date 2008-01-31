@@ -1,0 +1,83 @@
+# myExperiment: lib/acts_as_contributable.rb
+#
+# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
+module Mib
+  module Acts #:nodoc:
+    module Contributable #:nodoc:
+      def self.included(mod)
+        mod.extend(ClassMethods)
+      end
+      
+      module ClassMethods
+        def acts_as_contributable
+          belongs_to :contributor, :polymorphic => true
+          
+          has_one :contribution, 
+                  :as => :contributable,
+                  :dependent => :destroy
+                  
+          acts_as_bookmarkable
+          acts_as_commentable
+          acts_as_rateable
+          acts_as_taggable
+          
+          # NOTE: because we cannot do polymorphic nested resources with Rails 1.2.3,
+          # the line below has been moved to the Workflow model class. 
+          #acts_as_reviewable
+                  
+          class_eval do
+            extend Mib::Acts::Contributable::SingletonMethods
+          end
+          include Mib::Acts::Contributable::InstanceMethods
+          
+          before_create do |c|
+            c.contribution = Contribution.new(:contributor_id => c.contributor_id, :contributor_type => c.contributor_type, :contributable => c)
+          end
+        end
+      end
+      
+      module SingletonMethods
+        def find_all_by_contributor(contributor, options = {})
+          find_all_by_contributor_id_and_contributor_type(contributor.id, contributor.class.to_s, options)
+        end
+        
+        def find_all_by_contributor_id_and_contributor_type(contributor_id, contributor_type, options = {})
+          # protect the original sql statement
+          options.delete(:select) if options[:select]
+          options.delete(:joins) if options[:joins]
+          
+          select_columns = ""
+          columns.each do |c|
+            select_columns << ", " unless select_columns.empty?
+            select_columns << "#{table_name}.#{c.name}"
+          end
+          
+          find(:all, { :select => select_columns, 
+                       :joins => "LEFT OUTER JOIN contributions ON contributions.contributor_id = #{contributor_id} AND contributions.contributor_type = '#{contributor_type}'"}.merge(options))
+        end
+      end
+      
+      module InstanceMethods
+        def authorized?(action_name, contributor=nil)
+          contribution.authorized?(action_name, contributor)
+        end
+        
+        # the owner of the contribution record for this contributable
+        def owner?(c_utor)
+          contribution.owner?(c_utor)
+        end
+        
+        # the last contributor to upload this contributable
+        def uploader?(c_utor)
+          contributor_id.to_i == c_utor.id.to_i and contributor_type.to_s == c_utor.class.to_s
+        end
+      end
+    end
+  end
+end
+
+ActiveRecord::Base.class_eval do
+  include Mib::Acts::Contributable
+end

@@ -1,0 +1,140 @@
+<script type="text/javascript">
+  <!--
+    function showID(node) {
+      var klass = node.value;
+      
+      if (klass == "User") {
+        $("user_contributor_id_div").style.display="block";
+        $("network_contributor_id_div").style.display="none";
+      } else if (klass == "Network") {
+        $("user_contributor_id_div").style.display="none";
+        $("network_contributor_id_div").style.display="block";
+      } else {
+        // do nothing
+      }
+    } 
+  -->
+</script>
+
+<h1>Private (step 4/5)</h1>
+
+<h3>Finished?</h3>
+
+<% form_for(:policy, :url => url_for(:controller => :policy_wizard, :action => :finish, :id => @policy.id)) do |form| %>
+  <center>
+    <p>
+      If you're happy with your sharing policy <b>as it is</b> please click this button to complete the wizard:
+    </p>
+    
+    <%= submit_tag "Finished" %>
+  </center>
+<% end %>
+
+<br />
+
+<h3>Create sharing permissions</h3>
+
+<table width="100%">
+  <tr>
+    <td width="150">
+      <%= avatar(current_user, 100) %>
+    </td>
+    <td>
+      <p>
+        <b>What does private mean?</b><br/>
+        myExperiment allows you to set individual ("<b>private</b>") sharing permissions for named users and networks.
+      </p>
+      
+      <p>
+        <font color="red">
+          *Settings for networks apply to <u>ALL MEMBERS</u> of that network*<br />
+          *Private settings override <u>ALL</u> other settings*
+        </font>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<% form_remote_tag :url => url_for(:controller => :policy_wizard, :action => :permission, :id =>@policy.id), :update => "policy_table_div", :position => :bottom do %>
+  <p>
+    <b>
+      <input checked="checked" id="contributor_type" name="contributor_type" type="radio" value="User" onChange="showID(this); return false;" />User 
+      <input id="contributor_type" name="contributor_type" type="radio" value="Network" onChange="showID(this); return false;" />Network
+    </b>
+  </p>      
+  
+  <p>
+    <div id="user_contributor_id_div">
+      <b>User</b><br />
+      <%= select_tag :user_contributor_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %>
+    </div>
+    
+    <div id="network_contributor_id_div" style="display: none;">
+      <b>Network</b><br />
+      <%= select_tag :network_contributor_id, options_from_collection_for_select(Network.find(:all, :order => "title ASC"), :id.to_i, :title) %>
+    </div>
+  </p>
+  
+  <br />
+  
+  <table width="45%">
+    <tr>
+      <td width="15%">
+        <p>
+          <b>View</b><br />
+          <%= check_box_tag :view %>
+        </p>
+      </td>
+      <td width="15%">
+        <p>
+          <b>Download</b><br />
+          <%= check_box_tag :download %>
+        </p>
+      </td>
+      <td width="15%">
+        <p>
+          <b>Edit</b><br />
+          <%= check_box_tag :edit %>
+        </p>
+      </td>
+    </tr>
+  </table>
+  
+  <br />
+  
+  <%= submit_tag "Create" %>
+  
+  <p>
+    <font color="red">You can use this form as many times as you want</font>
+  </p>
+<% end %>
+
+<h3>Preview</h3>
+
+<table>
+  <tbody id="policy_table_div">
+    <tr>
+      <th> </th>
+      <th>View</th>
+      <th>Download</th>
+      <th>Edit</th>
+    </tr>
+    <% @policy.permissions.each do |p| %>
+      <%= render :partial => "policies/permission", :object => p, :locals => { :read_only => true } %>
+    <% end %>
+  </tbody>
+</table>
+
+<br />
+
+<h3>Finished?</h3>
+
+<% form_for(:policy, :url => url_for(:controller => :policy_wizard, :action => :finish, :id => @policy.id)) do |form| %>
+  <center>
+    <p>
+      If you're happy with your sharing policy <b>as it is</b> please click this button to complete the wizard:
+    </p>
+    
+    <%= submit_tag "Finished" %>
+  </center>
+<% end %>

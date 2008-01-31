@@ -1,1 +1,0 @@
-page.replace_html "star-ratings-block", :partial => 'rating/rating', :locals => { :rateable => @rateable } 

@@ -1,0 +1,39 @@
+<% fields_for :contribution, contribution do |c_f| %>
+<div class="fold">
+  <div class="foldTitle">Sharing permissions (Default: Friends can view and download)</div>
+  <div class="foldContent" style="display: none;">
+  
+  <p>
+    Please select the level of security that you require from the list below:
+  </p>
+  
+  <p>
+    <%= c_f.radio_button(:policy_id, "") %> - Default - only your friends will be allowed to view <% if ["blobs", "workflows"].include? controller.controller_name.to_s %>and download <% end %>this <%= controller.controller_name.to_s == "blobs" ? "file" : controller.controller_name.singularize %>
+  </p>
+    
+  <p>
+    <input type="radio" name="policy_id" disabled="true"> - <%= link_to "Create new sharing permissions policy using the wizard", policy_wizard_path %>
+  </p>
+  
+  <p>
+    The policy wizard will take you through the steps required to create a deployable sharing policy.<br/>
+    When you've finished the wizard, the policy will be available the next time you access this page!
+  </p>
+  
+  <% for p in user.policies %>
+    <p>
+      <%= c_f.radio_button(:policy_id, p.id) %> - <%= link_to h(p.name), policy_path(p) %><br/>
+      <% if false %>
+      <div class="fold" style="width: 400px;">
+        <div class="foldTitle">Preview</div>
+        <div class="foldContent" style="display: none;">
+          <%= render :partial => "policies/policy", :locals => { :policy => p, :read_only => true } %>
+        </div>
+      </div>
+      <% end %>
+    </p>
+  <% end %>
+  
+  </div>
+</div>
+<% end %>

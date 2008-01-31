@@ -1,0 +1,9 @@
+<h1>Editing Membership</h1>
+
+<%= error_messages_for :membership %>
+
+<% form_for(:membership, :url => membership_path(@membership.user_id, @membership), :html => { :method => :put }) do |f| %>
+  <p>
+    <%= submit_tag "Save Changes" %>
+  </p>
+<% end %>

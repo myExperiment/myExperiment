@@ -1,0 +1,16 @@
+<p>
+  <b>Current OpenID:</b><br />
+  <%= current_user.openid_url || "Not created yet" %>
+</p>
+
+<div id="myexp_login">
+  <% form_tag openid_path do %>
+  
+    <p>
+      <b>New OpenID:</b><br />
+      <%= text_field_tag 'openid_url', nil, :size => '40' %> 
+    </p>
+    
+    <%= submit_tag 'Validate', :disable_with => "Validating..." %>
+  <% end %>
+</div>

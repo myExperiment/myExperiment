@@ -1,0 +1,108 @@
+<% case (blob.license.to_s); when "by-nd" %>
+
+<!--
+
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:title><%= blob.title %></dc:title>
+   <dc:date><%= blob.created_at %></dc:date>
+   <dc:description><%= blob.body_html %></dc:description>
+   <dc:creator><Agent>
+      <dc:title><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, link=false) %></dc:title>
+   </Agent></dc:creator>
+   <dc:rights><Agent>
+      <dc:title><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, link=false) %></dc:title>
+   </Agent></dc:rights>
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
+   <dc:source rdf:resource="http://www.myexperiment.org<%= request.request_uri %>"/>
+   <license rdf:resource="http://creativecommons.org/licenses/by-nd/3.0/" />
+</Work>
+
+<License rdf:about="http://creativecommons.org/licenses/by-nd/3.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <prohibits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+</License>
+
+</rdf:RDF>
+
+-->
+
+<% when "by-sa" %>
+
+<!--
+
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:title><%= blob.title %></dc:title>
+   <dc:date><%= blob.created_at %></dc:date>
+   <dc:description><%= blob.body_html %></dc:description>
+   <dc:creator><Agent>
+      <dc:title><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, link=false) %></dc:title>
+   </Agent></dc:creator>
+   <dc:rights><Agent>
+      <dc:title><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, link=false) %></dc:title>
+   </Agent></dc:rights>
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
+   <dc:source rdf:resource="http://www.myexperiment.org<%= request.request_uri %>"/>
+   <license rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
+</Work>
+
+<License rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+   <requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+</License>
+
+</rdf:RDF>
+
+-->
+
+<% when "by" %>
+
+<!--
+
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:title><%= blob.title %></dc:title>
+   <dc:date><%= blob.created_at %></dc:date>
+   <dc:description><%= blob.body_html %></dc:description>
+   <dc:creator><Agent>
+      <dc:title><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, link=false) %></dc:title>
+   </Agent></dc:creator>
+   <dc:rights><Agent>
+      <dc:title><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, link=false) %></dc:title>
+   </Agent></dc:rights>
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
+   <dc:source rdf:resource="http://www.myexperiment.org<%= request.request_uri %>"/>
+   <license rdf:resource="http://creativecommons.org/licenses/by/3.0/" />
+</Work>
+
+<License rdf:about="http://creativecommons.org/licenses/by/3.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+</License>
+
+</rdf:RDF>
+
+-->
+
+<% end %>
+
+<p>
+  All versions of this File are licensed under the <%= license_link blob.license.to_s %>.
+</p>

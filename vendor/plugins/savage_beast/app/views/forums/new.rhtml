@@ -1,10 +1,16 @@
-<div class="crumbs">
-  <%= link_to "Forums", forum_home_path %> <span class="arrow">&rarr;</span>
-</div>
+<%= javascript_include_tag "osp.js" %>
 
-<h1>New Forum</h1>
+<h1><%= _('New Forum') %></h1>
 
 <% form_for :forum, :url => forums_path do |f| -%>
-<%= render :partial => "form", :object => f %>
-<%= submit_tag "Create", :or => link_to("Cancel", forums_path) %>
+
+  <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @forum } %>
+
+  <%= render :partial => "form", :object => f %>
+  
+  <p>
+  	<center>
+  		<%= submit_tag _('Create'), :or => link_to(_('Cancel'), forums_path), :disable_with => "Creating..." %>
+	</center>
+  </p>
 <% end -%>

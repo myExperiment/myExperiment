@@ -1,9 +1,9 @@
-<h1>Editing picture</h1>
+<h1>Editing Picture</h1>
 
-<% form_tag :action => 'update', :id => @picture do %>
-  <%= render :partial => 'form' %>
-  <%= submit_tag 'Edit' %>
+<%= error_messages_for :picture %>
+
+<% form_for(:picture, :url => picture_path(@picture.user_id, @picture), :html => { :method => :put }) do |f| %>
+  <p>
+    <%= submit_tag "Update", :disable_with => "Updating..." %>
+  </p>
 <% end %>
-
-<%= link_to 'Show', :action => 'show', :id => @picture %> |
-<%= link_to 'Back', :action => 'list' %>

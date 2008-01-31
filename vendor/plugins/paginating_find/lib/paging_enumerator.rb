@@ -53,6 +53,7 @@ class PagingEnumerator
     end
     # force usage of next_page method
     self.page = self.page - 1
+    self
   end
   
   def move!(page)
@@ -89,11 +90,7 @@ class PagingEnumerator
   end
   
   def next_page
-    if page >= page_count
-      nil
-    else
-      page + 1
-    end
+    page >= page_count ? nil : page + 1
   end
   
   # Move to the previous page if auto paging is disabled.
@@ -106,11 +103,7 @@ class PagingEnumerator
   end
   
   def previous_page
-    if page == first_page
-      nil
-    else
-      page - 1
-    end
+    page == first_page ? nil : page - 1
   end
   
   def first_item
@@ -138,10 +131,28 @@ class PagingEnumerator
     each { |e| array << e }
     array
   end
+  
+  def to_xml(options = {})
+    to_a.to_xml(options)
+  end  
 
   # Load the next page using the callback
   def load_page
+    raise "Cannot load page because callback is not available. Has this enumerator been serialized?" unless @callback
     self.results = @callback.call(page)
+  end
+  
+  def _dump(depth)
+    load_page
+   Marshal.dump([results, page_size, size, false, page, first_page])
+  end
+  
+  def PagingEnumerator._load(str)
+    params = Marshal.load(str)
+    results = params.shift
+    e = PagingEnumerator.new(*params)
+    e.results = results
+    e
   end
     
 end

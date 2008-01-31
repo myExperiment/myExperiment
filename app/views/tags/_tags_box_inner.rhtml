@@ -1,0 +1,55 @@
+<script type="text/javascript">
+  function showAllTags() {
+  	Element.show('all_tags'); 
+	Element.hide('user_tags'); 
+	$('tagsSelectAllLink').className = "tagsSelectorOn"; 
+	$('tagsSelectUserLink').className = "tagsSelectorOff";
+	new Effect.Highlight('all_tags', { duration: 1.5 });
+	return false;
+  }
+  
+  function showUsersTags() {
+  	Element.hide('all_tags'); 
+	Element.show('user_tags'); 
+	$('tagsSelectAllLink').className = "tagsSelectorOff"; 
+	$('tagsSelectUserLink').className = "tagsSelectorOn";
+	new Effect.Highlight('user_tags', { duration: 1.5 });
+	return false;
+  }
+</script>
+
+<div id="tags">
+	<% unless (tags = taggable.tags).empty? %>
+		<p style="text-align: center; margin: 0.5em 0 0.8em 0; padding-bottom: 0;">
+			<a id="tagsSelectAllLink" 
+			   class="tagsSelectorOn" 
+			   href="" 
+			   onclick="showAllTags(); return false;">
+			   All Tags
+			 </a>
+
+			<a id="tagsSelectUserLink" 
+			   class="tagsSelectorOff" 
+			   href="" 
+			   onclick="showUsersTags(); return false;">
+			   <%= if (logged_in? and mine?(taggable)) then "My" else owner_text(taggable) end %> Tags
+			 </a>
+		</p>
+		<div id="all_tags">
+			<% unless (tags = taggable.tags).empty? %>
+				<%= tag_cloud_from_collection(tags) %>
+			<% else %>
+      	<p><i>None</i></p>
+			<% end %>
+		</div>
+		<div id="user_tags"  style="display: none;">
+			<% unless (tags = user_tags_for_thing(taggable, owner_id)).empty? %>
+				<%= tag_cloud_from_collection(tags) %>
+			<% else %>
+    		<p><i>None</i></p>
+			<% end %>
+		</div>
+	<% else %>
+		<p><i>None</i></p>
+	<% end %>
+</div>

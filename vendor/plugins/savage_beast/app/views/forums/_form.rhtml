@@ -1,17 +1,11 @@
 <p style="float:right; margin-top:0">
 </p>
 
-<table border="0" cellspacing="0" cellpadding="0" class="noborder nopad wide">
-  <td>
-    <p id="forum_name"><label>Title</label><br />
-    <%= form.text_field :name, :size => "96", :maxlength => "255", :class => "primary" %></p>
-  </td>
-  <td>
-    <label>Visibility</label><br />
-    <%= form.select :public, [ ["Public", true], ["Private", false] ] %>
-  </td>
-</table>
+<p id="forum_name">
+<label><%= _('Title') %></label><br />
+<%= form.text_field :name, :class => "primary" %></p>
 
+</p>
 <p id="forum_descripion">
-<label>Description</label><br />
+<label><%= _('Description') %></label><br />
 <%= form.text_area :description, :rows => 7 %></p>

@@ -1,0 +1,18 @@
+<% actions ||= false -%>
+
+<% arr = ["#{h(citation.authors)}, <b>#{h(citation.title)}</b>"] -%>
+<% arr << "<i>#{h(citation.publication)}</i>" if citation.publication and !citation.publication.empty? -%>
+<% arr << "#{date(citation.published_at)}" if citation.published_at -%>
+<% arr << link_to(h(citation.url), citation.url) if citation.url and !citation.url.empty? -%>
+<% arr << "Accessed at: #{date(citation.published_at)}" if citation.accessed_at -%>
+<% arr << "ISBN #{formatted_isbn(citation.isbn)}" if citation.isbn and !citation.isbn.empty? -%>
+<% arr << "ISSN #{formatted_issn(citation.issn)}" if citation.issn and !citation.issn.empty? -%>
+
+<% arr.each_index do |i| %>
+  <%= arr[i] %><%= "," unless i.to_i == arr.length.to_i - 1 %>
+<% end %>
+
+<% if actions and item.authorized?("edit", (logged_in? ? current_user : nil)) %>
+	&nbsp;&nbsp;<small>[<%= link_to "view", citation_path(item, citation) %>]</small>
+	&nbsp;<small>[<%= link_to "edit", edit_citation_path(item, citation) %>]</small>
+<% end %>

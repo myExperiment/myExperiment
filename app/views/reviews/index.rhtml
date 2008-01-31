@@ -1,0 +1,15 @@
+<% if @reviewable %>
+
+	<h1>Reviews (<%= @reviews.length %>)</h1>
+	
+	<ul class="sectionIcons">
+	  <li><%= icon('review', new_review_path(@reviewable), nil, nil, 'Write a Review') %></li>
+	</ul>
+	
+	<%= render :partial => "for_reviewable" %>
+	
+	<br/>
+	
+	<%= render :partial => "reviews/table", :locals => { :reviewable => @reviewable, :collection => @reviews } %>
+
+<% end %>

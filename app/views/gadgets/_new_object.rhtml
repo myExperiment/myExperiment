@@ -1,0 +1,51 @@
+<script type="text/javascript">
+  function redirectToNew() {
+    var klass = $("new_object_type").value;
+    
+    if (klass == "Blog") {
+      location.href = "<%= new_blog_path %>";
+    } else if (klass == "Blob") {
+      location.href = "<%= new_file_path %>";
+    } else if (klass == "Forum") {
+      location.href = "<%= new_forum_path %>";
+    } else if (klass == "Workflow") {
+      location.href = "<%= new_workflow_path %>";
+    } else if (klass == "Group") {
+      location.href = "<%= new_group_path %>";
+    } else if (klass == "Message") {
+      location.href = "<%= new_message_path %>";
+    } else {
+      // do nothing!!
+    }
+  }
+</script>
+
+<div class="myexperiment_gadget">
+  <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+
+  <div class="header">
+    <p>
+      New/Upload
+    </p>
+  </div>
+  
+  <div class="contents">
+    <div id="new_object_form">
+      <form onsubmit="redirectToNew(); return false;">
+        <p>
+          <select id="new_object_type">
+            <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Workflow</option>
+			<option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
+			<option value="Group" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
+			<option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
+            <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>
+			<% if logged_in? %><option value="Message" <%= "selected" if ["messages"].include? controller.controller_name.to_s %>>Message</option><% end %>
+          </select>
+          <%= submit_tag "GO" %>
+        </p>
+      </form>
+    </div>
+  </div>
+  
+  <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+</div>

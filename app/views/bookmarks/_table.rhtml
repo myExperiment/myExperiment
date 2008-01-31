@@ -1,0 +1,31 @@
+<% unless collection.empty? %>
+
+<table class="alt_table">
+  <tr>
+    <th width="420">Workflow</th>
+    <th>Bookmarked at</th>
+    <th> </th>
+  </tr>
+  
+<% odd_row = false -%>
+<% for bookmark in collection %>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <td width="420" class="contributable">
+      <center>
+        <%= render :partial => "#{bookmark.bookmarkable_type.pluralize.downcase}/#{bookmark.bookmarkable_type.downcase}", :collection => [bookmark.bookmarkable] %>
+      </center>
+    </td>
+    <td><%=datetime bookmark.created_at, false %></td>
+    <td class="actions">
+      <%= icon "show", bookmark_path(bookmark), nil, nil, "View" %> 
+      <%= icon "destroy", bookmark_path(bookmark), nil, :confirm => 'Are you sure?', :method => :delete %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<% else %>
+
+No bookmarks
+
+<% end %>

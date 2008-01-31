@@ -58,37 +58,23 @@ module Scufl
     end
     
     def add_source(model, element, version)
-      source = Source.new
-	  
       if version == '0.1'
         name = element.text
-        source.name = name.value if name
+        model.sources.push name.strip if name
       else
         name = element.attribute('name')
-        source.name = name.value if name
-		element.each_element('s:metadata') { |metadata|
-			metadata.each_element('s:description') {|description| source.description = description.text}			
-		}
+        model.sources.push name.value if name
       end
-	  
-	  model.sources.push source
     end
     
     def add_sink(model, element, version)
-	  sink = Sink.new
-	  
       if version == '0.1'
         name = element.text
-        sink.name = name.value if name
+        model.sinks.push name.strip if name
       else
         name = element.attribute('name')
-        sink.name = name.value if name
-		element.each_element('s:metadata') { |metadata|
-			metadata.each_element('s:description') {|description| sink.description = description.text}			
-		}
+        model.sinks.push name.value if name
       end
-
-	  model.sinks.push sink
     end
     
     def add_processor(model, element, version)

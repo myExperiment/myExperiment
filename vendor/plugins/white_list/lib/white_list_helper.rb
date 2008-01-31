@@ -1,13 +1,28 @@
 module WhiteListHelper
-  PROTOCOL_ATTRIBUTES = Set.new %w(src href)
-  PROTOCOL_SEPARATOR  = /:|(&#0*58)|(&#x70)|(%|&#37;)3A/
+  @@protocol_attributes = Set.new %w(src href)
+  @@protocol_separator  = /:|(&#0*58)|(&#x70)|(%|&#37;)3A/
+  mattr_reader :protocol_attributes, :protocol_separator
 
-  [:bad_tags, :tags, :attributes, :protocols].each do |attr|
-    klass = class << self; self; end
-    klass.send(:define_method, "#{attr}=") { |value| class_variable_set("@@#{attr}", Set.new(value)) }
-    define_method("white_listed_#{attr}") { ::WhiteListHelper.send(attr) }
-    mattr_reader attr
+  def self.contains_bad_protocols?(white_listed_protocols, value)
+    value =~ protocol_separator && !white_listed_protocols.include?(value.split(protocol_separator).first)
   end
+
+  klass = class << self; self; end
+  klass_methods = []
+  inst_methods  = []
+  [:bad_tags, :tags, :attributes, :protocols].each do |attr|
+    # Add class methods to the module itself
+    klass_methods << <<-EOS
+      def #{attr}=(value) @@#{attr} = Set.new(value) end
+      def #{attr}() @@#{attr} end
+    EOS
+    
+    # prefix the instance methods with white_listed_*
+    inst_methods << "def white_listed_#{attr}() ::WhiteListHelper.#{attr} end"
+  end
+  
+  klass.class_eval klass_methods.join("\n"), __FILE__, __LINE__
+  class_eval       inst_methods.join("\n"),  __FILE__, __LINE__
 
   # This White Listing helper will html encode all tags and strip all attributes that aren't specifically allowed.  
   # It also strips href/src tags with invalid protocols, like javascript: especially.  It does its best to counter any
@@ -48,17 +63,20 @@ module WhiteListHelper
         node = HTML::Node.parse(nil, 0, 0, token, false)
         new_text << case node
           when HTML::Tag
-            unless tags.include?(node.name)
+            node.attributes.keys.each do |attr_name|
+              value = node.attributes[attr_name].to_s
+              if !attrs.include?(attr_name) || (protocol_attributes.include?(attr_name) && contains_bad_protocols?(value))
+                node.attributes.delete(attr_name)
+              else
+                node.attributes[attr_name] = CGI::escapeHTML(value)
+              end
+            end if node.attributes
+            if tags.include?(node.name)
+              bad = nil
+              node
+            else
               bad = node.name
               block.call node, bad
-            else
-              bad = nil
-              if node.closing != :close
-                node.attributes.delete_if do |attr_name, value|
-                  !attrs.include?(attr_name) || (PROTOCOL_ATTRIBUTES.include?(attr_name) && contains_bad_protocols?(value))
-                end if attributes.any?
-              end
-              node
             end
           else
             block.call node, bad
@@ -69,11 +87,11 @@ module WhiteListHelper
   
   protected
     def contains_bad_protocols?(value)
-      value =~ PROTOCOL_SEPARATOR && !white_listed_protocols.include?(value.split(PROTOCOL_SEPARATOR).first)
+      WhiteListHelper.contains_bad_protocols?(white_listed_protocols, value)
     end
 end
 
-WhiteListHelper.bad_tags   = %w(script)
-WhiteListHelper.tags       = %w(strong em b i p code pre tt output samp kbd var sub sup dfn cite big small address hr br div span h1 h2 h3 h4 h5 h6 ul ol li dt dd abbr acronym a img blockquote del ins fieldset legend)
-WhiteListHelper.attributes = %w(href src width height alt cite datetime title class)
+WhiteListHelper.bad_tags   = %w(script div span fieldset legend style)
+WhiteListHelper.tags       = %w(strong em b i u p code pre tt output samp kbd var sub sup dfn cite big small address hr br h1 h2 h3 h4 h5 h6 ul ol li dt dd abbr acronym a img blockquote del ins)
+WhiteListHelper.attributes = %w(href src width height alt cite datetime title class style)
 WhiteListHelper.protocols  = %w(ed2k ftp http https irc mailto news gopher nntp telnet webcal xmpp callto feed)

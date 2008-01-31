@@ -1,0 +1,20 @@
+<% limit ||= 25 -%>
+<div class="myexperiment_gadget">
+  <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+
+  <div class="header">
+    <p>
+      <b>Popular Tags</b><br />
+      <small><%= pluralize(limit, "tag") %></small><br/>
+	  <small>[<%= link_to "All Tags", tags_path %>]</small>
+    </p>
+  </div>
+  
+  <div class="contents">
+    <div class="tags_smaller">
+		<%= tag_cloud(limit) %>
+	</div>
+  </div>
+  
+  <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+</div>

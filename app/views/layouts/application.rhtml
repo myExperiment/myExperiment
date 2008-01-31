@@ -1,165 +1,98 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-  <head>
-    <title>myExperiment.org</title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-    <% if not @is_rubbish_browser %>
-         <%= stylesheet_link_tag 'reset' %>
-         <% if not @is_mobile_device %>
-                    <%= stylesheet_link_tag "kropper" %>
-                                <%= stylesheet_link_tag 'savage_beast' %>
-                <%= stylesheet_link_tag 'formatting' %>
-                <%= stylesheet_link_tag 'myexperiment' %>
-                <%= stylesheet_link_tag 'paginate' %>
-                <%= javascript_include_tag :defaults %>
-                <%= javascript_include_tag 'reflection' %>
-                <%= javascript_include_tag "dom-drag" %>
-                <%= javascript_include_tag "kropper" %>
-         <% else %>
-                <% if not @is_apple_iphone %>
-                   <%= stylesheet_link_tag 'mobile' %>
-                <% else %>
-                   <%= stylesheet_link_tag 'iphoney' %>
-                <% end %>
-         <% end %>
-         <%= stylesheet_link_tag 'starrating' %>
-    <% end %>
-
-    <!--
-
-     myExperiment - a social network for scientists
-
-     Copyright (C) 2007 University of Manchester/University of
-     Southampton
-
-     This program is free software; you can redistribute it and/or
-     modify it under the terms of the GNU Affero General Public
-     License as published by the Free Software Foundation; either
-     version 3 of the License, or (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-     Affero General Public License for more details.
-
-     You should have received a copy of the GNU Affero General Public
-     License along with this program; if not, see
-     http://www.gnu.org/licenses or write to the Free Software
-     Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-     02110-1301  USA
-
-     //-->
-
-  </head>
-  <body id="<%= controller.controller_name %>"  <%=" onload='#{@onload}'"%>>
-
-        <div id="wrapper">
-
-            <div id="betatop">Use of the myExperiment beta is subject to the <a href="http://beta.myexperiment.org/terms/">terms and conditions</a> and the understanding that bugs may still exist and you may lose data. <a href="http://wiki.myexperiment.org/fb/default.php?pg=pgPublicEdit"><strong>Report a bug</strong></a></div>
-
-             <div id="header">
-
-                  <h1 id="logo"><a href="/">myExperiment</a></h1>
-
-
-                  <ul id="nav">
-                  <% if session[:user_id] %>
-                  <%= message_status @user %> <!-- inbox link -->
-                  | Logged in as: <% if not @user.profile.name %>
-                  <%= @user.openid_url %><br />(<%= link_to 'You can set a proper name here', :controller => 'profile', :action => 'edit' %>)
-                  <% else %>
-                  <%= link_to @user.profile.name, :controller => 'profile', :action => 'edit' %>
-                  <% end %>
-                 <li><%= button_to 'Logout', :controller => 'auth/logout' %></li>
-                  <% else %>
-                  <li>Already a member? <%= link_to 'Log in to your account', :controller => 'auth/login' %></li>
-                  <% end %>
-                  </ul>
-
-             </div>
-
-                  <% if session[:user_id] %>
-
-             <div id="navbar">
-               <ul id="tabnav">
-                  <li id="tabMy"><%= link_to 'My', :controller => 'my' %></li>
-                  <li id="tabPeople"><%= link_to 'People', :controller => 'people' %></li>
-
-                  <li id="tabProjects"><%= link_to 'Projects', :controller => 'Projects' %></li>
-                  <li id="tabWorkflows"><%= link_to 'Workflows', :controller => 'workflow' %></li>
-                  <li id="tabAbout"><%= link_to 'About', :controller => 'faq' %></li>
-               </ul>
-
-               <div id="searchbar">
-
-               <ul id="subnav">
-
-                 <%= render_partial 'sidebar' %>
-
-               </ul>
-
-
-                 <% form_tag :action => 'search', :controller => 'search' do %>
-                 <%= text_field 'search', 'query'  %>
-                 <%= select 'search', 'type',
-                     [["Workflows", "workflow"], ["People", "people"], ["Projects", "projects"]],
-                     :selected => controller.controller_name %>
-                 <%= submit_tag "Search" %>
-               <% end %>
-
-               </div>
-
-             </div>
-
-             <% end %>
-
-             <div id="columns">
-
-                  <div id="content">
-
-                <div id="inner">
-
-                  <% if not flash[:error] %>
-
-                <% if flash[:notice] %>
-
-                <div id="flash">
-
-                <p><%= flash[:notice]%></p>
-
-                </div>
-
-                <% end %>
-
-                <% else %>
-
-                <div id="flash" class="error">
-
-                <p><%= flash[:error]%></p>
-
-                </div>
-
-                <% end %>
-
-
-                <%= yield %>
-
-
-
-                  </div>                  </div>
-
-
-
-
-                </div>
-
-             </div>
-
-
-        </div>
-
-</body>
-<!-- it's not finished! -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+		<%= t :site => "myExperiment.org &#45; #{controller_visible_name(controller.controller_name.humanize)}", :separator => "&#45;" %>
+		<%= stylesheet_link_tag 'reset-fonts-grids' %>
+		<%= stylesheet_link_tag 'savagebeast' %>
+		<%= stylesheet_link_tag 'base-min' %>
+		<%= stylesheet_link_tag 'scaffold' %>
+		<%= stylesheet_link_tag 'acts_as_taggable_stylesheet' %>
+		<%= stylesheet_link_tag 'star_rating' %>
+		<%= stylesheet_link_tag 'styles' %>
+		<%= stylesheet_link_tag 'gadgets' %>
+		<%= javascript_include_tag :defaults %>
+		<%= javascript_include_tag "boxover.js" %>
+		<%= render :partial => "layouts/feed_link_tags" %>
+	</head>
+	<body>
+		<div id="doc2" class="yui-t4">
+			<div id="hd">
+	  			<div id="myexp_header">
+	  				<div class="logo">
+						<%= link_to image_tag("logo.png"), "/" %>
+					</div>
+					<div class="links">
+						<% if logged_in? -%>
+							<span><b><%= signout_link -%></b></span>
+						<% else -%>
+							<span><b><%= icon "login", new_session_url, nil, nil, "Log in" -%></b></span>
+							<span>&nbsp;|&nbsp;</span>
+							<span><b><%= icon "user", new_user_url, nil, nil, "Register" -%></b></span>
+						<% end %>
+						<span>&nbsp;|&nbsp;</span>
+						<span><b><%= icon "feedback", "/feedback", nil, nil, "Give us Feedback" -%></b></span>
+					</div>
+					<div class="clearer">&nbsp;</div>
+				</div>
+				<div>
+					<ul class="tabnav">
+						<li <%= (["home"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Home", home_url %></li>
+					  <li <%= (["users", "profiles", "userhistory", "friendships", "memberships", "pictures"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
+						<%= link_to "Users", users_path %>
+					  </li>
+					  <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Groups", groups_path %></li>
+					  <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path %></li>
+					  <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Files", files_path %></li>
+					  <li <%= (["blogs", "blog_posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path %></li>
+					  <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path %></li>
+					</ul>
+				</div>
+	  			<div id="myexp_searchbar"><%= render :partial => "layouts/search" %></div>
+			</div>
+			<div id="bd">
+				<div id="yui-main"> 
+	  				<div class="yui-b">
+					    <div id="myexp_breadcrumbs_bar">
+								<%= render :partial => "layouts/breadcrumbs_bar" %>
+							</div>
+							
+	    				<div id="myexp_content">
+								<% if flash[:error] %>
+									<div id="error_flash" class="box_standout" style="color: red; font-weight: bold; margin-bottom: 1.5em;">
+										<%= link_to_function image_tag("close.gif", :style => "float: right;"), 
+																				 visual_effect(:toggle_slide, "error_flash", :duration => 0.3) %>
+										<%= flash[:error] %>
+									</div>
+								<% end %>
+		    				<% if flash[:notice] %>
+									<div id="notice_flash" class="box_standout" style="color: green; font-weight: bold; margin-bottom: 1.5em;">
+										<%= link_to_function image_tag("close.gif", :style => "float: right;"), 
+																				 visual_effect(:toggle_slide, "notice_flash", :duration => 0.3) %>
+										<%= flash[:notice] %>
+									</div>
+								<% end %>
+								
+		    				<%= render :partial => "subnav" %>
+		    				
+								<%= yield :layout %>
+						</div>
+					</div>
+				</div>
+				<div id="myexp_sidebar" class="yui-b">
+					<%= render :partial => "layouts/sidebar" %>
+				</div>
+			</div>
+			<div id="ft">
+				<%= render :partial => "layouts/footer" %>
+			</div>		
+		</div>
+		
+		<%= javascript_include_tag "tabs.js" %>
+		<%= javascript_include_tag "folds.js" %>
+		
+		<%= render :partial => "layouts/web_analytics" if USE_WEBANALYTICS %>
+	</body>
 </html>
-<!-- it's finished. -->

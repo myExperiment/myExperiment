@@ -1,12 +1,22 @@
-<div class="crumbs">
-  <%= link_to "Forums", { :controller => "forums", :action => "index" } %> <span class="arrow">&rarr;</span>
-</div>
+<%= javascript_include_tag "osp.js" %>
 
-<h1>Edit Forum</h1>
+<h1><%= _('Edit Forum') %></h1>
 
 <% form_for :forum,
-     :url  => { :controller => :forums, :action => :update },
+     :url  => forum_path(@forum),
      :html => { :method => :put } do |f| -%>
+
+<% if @forum.owner?(current_user) %>
+
+  <%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @forum } %>
+
+<% end %>
+     
 <%= render :partial => "form", :object => f %>
-<%= submit_tag "Save Forum", :or => link_to("Cancel", forums_path) %>
+
+<p>
+	<center>
+		<%= submit_tag _('Update'), :or => link_to(_('Cancel'), forums_path), :disable_with => "Updating..." %>
+	</center>
+</p>
 <% end -%>

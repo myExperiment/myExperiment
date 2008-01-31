@@ -1,0 +1,14 @@
+<% size ||= 100 -%>
+<% unless collection.empty? %>
+
+<div id="hlist">
+  <ul>
+    <% for friend in collection %>
+      <%= render :partial => "friendships/friend", :locals => { :friend => friend, :size => size } %>
+    <% end %>
+  </ul>
+</div>
+
+<div class="clearer">&nbsp;</div>
+
+<% end %>

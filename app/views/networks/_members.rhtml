@@ -1,0 +1,16 @@
+<% size ||= 100 -%>
+<% unless collection.empty? %>
+
+<div id="hlist">
+  <ul id="members">
+    <% unless collection.empty? %>
+    <% for member in collection %>
+      <%= render :partial => "networks/member", :locals => { :member => member, :size => size } %>
+    <% end %>
+    <% end %>
+  </ul>
+</div>
+
+<div class="clearer">&nbsp;</div>
+
+<% end %>

@@ -1,0 +1,148 @@
+.myexp_home_header {
+	padding: 0.5em 3em 0.1em 3em;
+	text-align: left;
+}
+
+.myexp_home_header p.logo {
+	padding-top: 1.5em;
+	padding-bottom: 0.5em;
+	text-align: center;
+}
+
+.myexp_home_header p.heading {
+	text-align: center;
+	font-size: 167%;
+	font-weight: normal;
+	margin-top: 0.5em;
+}
+
+#myexp_home_content {
+	padding-left: 4em;
+	padding-right: 4em;
+}
+
+#myexp_home_content table {
+	border-spacing: 5px;
+	border-collapse: collapse;
+}
+
+#myexp_home_content .heading {
+	font-size: 123.1%;
+	font-weight: bold;
+	margin-bottom: 0.6em;
+	margin-top: 1.8em;
+	color: #333333;
+	/*background-color: #CFDFEF;
+	padding: 0.3em 0.8em;
+	border: 1px dotted #999999;*/
+}
+
+.myexp_home_content_box {
+	border: 1px dotted #999999;
+	padding: 1em;
+}
+
+.myexp_home_image_action {
+	display: block;
+	padding-top: 1em;
+	font-size: 123.1%;
+	font-weight: bolder;
+}
+
+#myexp_home_logonbox {
+	text-align: center;
+}
+
+.login {
+	border-top: none;
+	border-bottom: none;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+	background-color: #F5F5F5;
+	padding: 0.2em 0.5em;
+}
+
+.login p {
+	text-align: center;
+}
+
+.login * {
+	vertical-align: middle;
+}
+
+
+#myexp_home_logonbox .xtop,#myexp_home_logonbox .xbottom {
+	display: block;
+	background: transparent;
+	font-size: 1px;
+}
+
+#myexp_home_logonbox .xb1,#myexp_home_logonbox .xb2,#myexp_home_logonbox .xb3,#myexp_home_logonbox .xb4 {
+	display: block;
+	overflow: hidden;
+}
+
+#myexp_home_logonbox .xb1,#myexp_home_logonbox .xb2,#myexp_home_logonbox .xb3 {
+	height: 1px;
+}
+
+#myexp_home_logonbox .xb2,#myexp_home_logonbox .xb3,#myexp_home_logonbox .xb4 {
+	background: #F5F5F5;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+}
+
+#myexp_home_logonbox .xb1 {
+	margin: 0 5px;
+	background: #999999;
+}
+
+#myexp_home_logonbox .xb2 {
+	margin: 0 3px;
+	border-width: 0 2px;
+}
+
+#myexp_home_logonbox .xb3 {
+	margin: 0 2px;
+}
+
+#myexp_home_logonbox .xb4 {
+	height: 2px;
+	margin: 0 1px;
+}
+
+#myexp_home_news {
+	vertical-align: top;
+	margin-left: 1em;
+}
+
+#myexp_home_news li {
+	margin-bottom: 0.5em;
+}
+
+#myexp_home_content .links {
+	margin: 0.5em 0 0 0;
+	padding: 0;
+	font-size: 108%;
+	color: #666666;
+	text-align: center;
+}
+
+#myexp_home_content .links * {
+	vertical-align: middle;
+}
+
+#myexp_home_content .links li {
+	display: inline;
+	vertical-align: middle;
+	margin: 0 0.15em;
+}
+
+#myexp_home_content .links li * {
+	vertical-align: middle;
+}
+
+#myexp_home_content .links li a {
+	font-weight: bold;
+}
+

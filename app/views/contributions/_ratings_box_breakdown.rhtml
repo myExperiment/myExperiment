@@ -1,0 +1,13 @@
+<%unless (ratings = contributable.ratings).empty? %>
+	<ul>
+	    <% ratings.each do |rating| %>
+	    <li>
+	        <%=name(rating.user_id) %>- <%=rating.rating %>/5
+	    </li>
+	    <%end %>
+	</ul>
+<%else %>
+	<p>
+	    <i>No ratings yet</i>
+	</p>
+<%end %>

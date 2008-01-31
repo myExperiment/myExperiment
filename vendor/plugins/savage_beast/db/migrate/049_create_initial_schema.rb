@@ -2,13 +2,13 @@ class CreateInitialSchema < ActiveRecord::Migration
   def self.up
     create_table "forums", :force => true do |t|
       t.column "name",             :string
+      t.column "contributor_id", :integer
+      t.column "contributor_type", :string
       t.column "description",      :string
       t.column "topics_count",     :integer, :default => 0
       t.column "posts_count",      :integer, :default => 0
       t.column "position",         :integer
       t.column "description_html", :text
-      t.column "owner_type",       :string
-      t.column "owner_id",         :integer
     end
 
     create_table "moderatorships", :force => true do |t|

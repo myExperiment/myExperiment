@@ -1,0 +1,14 @@
+<h1>New User Profile></h1>
+
+<%= error_messages_for :profile %>
+
+<% form_for(:profile, :url => profiles_path) do |f| %>
+  
+	<% if mine? @user %>
+		<%= render :partial => "form", :object => f, :locals => { :pictures => @user.pictures } %>
+	<% end %>
+
+  <p>
+    <%= submit_tag "Create", :disable_with => "Creating..." %>
+  </p>
+<% end %>

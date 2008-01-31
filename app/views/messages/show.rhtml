@@ -1,9 +1,47 @@
-<div class="message">
-<%= avatar @from, '50x50' %>
-<p id="subject"><%=h @message.subject %></p>
-<p id="from">from <%= profile_link @from %>
-at <%= @message.created_at.strftime("%l:%M%p on %A %d %B %Y")%></p>
-<div id="body"><%=textilize sanitize(@message.body) %></div>
-</div>
+<h1>View Message: <%=h @message.subject %></h1>
 
-<%= button_to 'Reply', :action => 'reply', :id => @message %>
+<ul class="sectionIcons">
+  <li><%= icon('reply', url_for(:controller => :messages, :action => :new, :reply_id => @message.id), nil, nil, 'Reply to this Message') %></li>
+</ul>
+
+<% if @message.reply? %>
+  <br/>
+  <p class="box_infotext">
+    <b>This message is a reply to:</b> <%= link_to h(@message.reply_to.subject), message_path(@message.reply_to) %>
+  </p>
+<% end %>
+
+<br/>
+
+<div class="message_box">
+	<div style="float: left; text-align: center;">
+		<b>From </b>
+		<%= render :partial => "users/avatar", :locals => { :user => @message.from, :size => 50 } %>
+	</div>
+	
+	<div style="float: left; text-align: center; margin-left: 3em;">
+		<b>To </b>
+		<%= render :partial => "users/avatar", :locals => { :user => @message.to, :size => 50 } %>
+	</div>
+	
+	<div style="float: left; margin-left: 3em; width: 470px;">
+		<p><b>Subject</b></p>
+		<p class="subject">
+			<%=h @message.subject %>
+		</p>
+		<p><b>Sent: </b><%=datetime @message.created_at %></p>
+	</div>
+	
+	<div class="clearer">&nbsp;</div>
+	
+	<br/>
+	
+	<p><b>Message</b></p>
+	<div class="message">
+		<% unless @message.body.blank? %>
+			<%=white_list @message.body_html %>
+		<% else %>
+			<p class="none_text">No message body</p>
+		<% end %>
+	</div>
+</div>

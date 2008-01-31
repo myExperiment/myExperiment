@@ -1,0 +1,14 @@
+<% unless collection.empty? %>
+  <div class="fold">
+    <div class="foldTitle">Contents (click to expand/contract)</div>
+    <div class="foldContent" style="display: none;">
+      <p>
+        <% collection.each_index do |i| %>
+          <% workflow = collection[i] %>
+        
+          <a href="#<%= h(workflow.title).gsub(/ /, "_") %>"><%= i.to_i + 1 %>. <%= h(workflow.title) %></a><br/>
+        <% end %>
+      </p>
+    </div>
+  </div>
+<% end %>

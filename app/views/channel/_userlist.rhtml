@@ -1,9 +1,0 @@
-<h3>People</h3>
-
-<% @channel.users.each do |user| %>
-    <div class="user"><%= user.profile.name %> 
-    <% if (user.profile.unique) %>
-        <small>(<%= user.profile.id %>)</small>
-    <% end %>
-    </div>
-<% end %>

@@ -1,0 +1,33 @@
+<ul class='star-rating'>
+    <li class='current-rating' style='width:<%= (rateable.rating * 30).to_i -%>px;'>
+          Currently <%= number_with_precision(rateable.rating, 0) %>/5 Stars.
+    </li>
+    <li>
+        <%= link_to_remote( "1", {:url => { :controller => controller.to_s, 
+            :action => "rate", :id => rateable.id, :rating => 1}},
+            :class => 'one-star', :name => '1 star out of 5') %>
+    </li>
+    <li>
+        <%= link_to_remote( "2", {:url => { :controller => controller.to_s, 
+            :action => "rate", :id => rateable.id, :rating => 2}},
+            :class => 'two-stars', :name => '2 stars out of 5') %>    
+    </li>
+    <li>
+        <%= link_to_remote( "3", {:url => { :controller => controller.to_s, 
+            :action => "rate", :id => rateable.id, :rating => 3}},
+            :class => 'three-stars', :name => '3 stars out of 5') %>
+    </li>
+    <li>
+        <%= link_to_remote( "4", {:url => { :controller => controller.to_s, 
+            :action => "rate", :id => rateable.id, :rating => 4}},
+            :class => 'four-stars', :name => '4 stars out of 5') %>    
+    </li>
+    <li>
+        <%= link_to_remote( "5", {:url => { :controller => controller.to_s, 
+            :action => "rate", :id => rateable.id, :rating => 5}},
+            :class => 'five-stars', :name => '5 stars out of 5') %>
+    </li>
+</ul>
+<p style="margin-top: 0.2em; font-size: 85%; font-weight: bold;">
+  Current: <%= number_with_precision(rateable.rating, 2) %>/5 (<%= pluralize rateable.ratings.count, 'rating' %>)
+</p>

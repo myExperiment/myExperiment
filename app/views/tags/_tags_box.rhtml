@@ -1,0 +1,40 @@
+<div class="contribution_section_box">
+	<p class="heading">
+		<%= info_icon_with_tooltip("The tags for this #{visible_name taggable} entry (applies to all #{visible_name taggable} versions in this entry). Note: the size of the tags show how popular they are on myExperiment.") %>
+		Tags <font class="count_text">(<%= taggable.taggings.length -%>)</font>
+	</p>
+
+	<%= render :partial => "tags/tags_box_inner", :locals => { :taggable => taggable, :owner_id => owner_id } %>
+	
+	<% if allow_edit %>
+		<p style="text-align: right;"><small>[ <%= link_to "edit", edit_path %> ]</small></p>
+	<% end %>
+	
+	<% if logged_in? %>
+		<div class="fold">
+			<div class="foldTitle">Add Tags</div>
+			<div class="foldContent" style="display: none; background-color: #EEEEEE;">
+				<% form_remote_tag(:url => add_path, 
+								   :update => 'tags', 
+							 		   :success => "$('tag_list').value=''; new Effect.Highlight('tags', { duration: 1.5 });",
+							       :loading => "Element.show('addtag_indicator')",
+                    	   	       :complete => "Element.hide('addtag_indicator')") do %>
+					<p><small>(use commas to seperate different tags)</small></p>
+					<p>
+						<%= text_field_tag :tag_list %>
+						<div class="auto_complete" id="tags_auto_complete" ></div>
+						<%= auto_complete_field :tag_list,
+								:update => "tags_auto_complete",
+								:url => {:controller => 'tags', :action => 'auto_complete'},
+								:tokens => ',',
+								:indicator => "addtag_indicator" -%>
+					</p>
+					<%= submit_tag "Add" %>
+					<%= image_tag "/images/spinner.gif", :id => "addtag_indicator", :style => "margin-left: 1em; display: none;" %>
+				<% end %>
+			</div>
+		</div>
+	<% else %>
+		<p><strong><%= link_to "Log in", new_session_url %> to add Tags</strong></p>
+	<% end %>
+</div>

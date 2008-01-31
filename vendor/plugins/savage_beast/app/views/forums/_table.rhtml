@@ -1,0 +1,46 @@
+<table border="0" cellspacing="0" cellpadding="0" class="wide forums">
+  <tr>
+    <th class="la" width="70%" colspan="3"><%= _('Forum') %></th>
+    <% if false %>
+    <th width="5%">Topics</th>
+    <th width="5%">Posts</th>
+    <% end %>
+    <th class="la" width="30%" colspan="1"><%= _('Last Post') %></th>
+  </tr>
+<% for forum in collection do %>  
+  <tr>
+    <td class="vat c1">
+      <% if recent_forum_activity(forum) %>
+      <%= image_tag "clearbits/comment.gif", :class => "icon green", :title => _('Recent activity') %>
+      <% else %>
+      <%= image_tag "clearbits/comment.gif", :class => "icon grey", :title => _('No recent activity') %>
+      <% end %>
+    </td>
+    <td class="c2 vat">
+      <% auth_show = forum.authorized?("show", (logged_in? ? current_user : nil)) %> 
+      <%= link_to h(forum.name + (auth_show ? "" : " (Private)")), forum_path(forum), :class => "title" %>
+      <div class="posts">
+        <%= number_with_delimiter(forum.topics_count) %> <%= _('topics') %>, 
+        <%= number_with_delimiter(forum.posts_count) %> <%= _('posts') %>
+      </div>
+      <p class="desc"><%= forum.description_html %>
+        </p>
+    </td>
+    <td class="c3">
+      <%= link_to _('Edit'), edit_forum_path(forum), :class => "tiny", :rel => "directory", :style => "float:right" if admin? %>
+    </td>
+    <% if false %>
+    <td class="ca inv"><%= number_with_delimiter(forum.topics_count) %></td>
+    <td class="ca inv"><%= number_with_delimiter(forum.posts_count) %></td>
+    <% end %>
+    <td class="inv lp">
+      <% if forum.posts.last %>
+        <%= time_ago_in_words(forum.posts.last.created_at) %><br />
+        by <%= avatar_for forum.posts.last.user %><br />
+        <strong><%= h(forum.posts.last.user.display_name) %></strong>
+        <span>(<%= link_to 'view', topic_path(:forum_id => forum, :id => forum.posts.last.topic_id, :page => forum.posts.last.topic.last_page, :anchor => forum.posts.last.dom_id) %>)</span>
+      <% end %>
+    </td>
+  </tr>
+<% end %>
+</table>

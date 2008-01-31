@@ -1,0 +1,33 @@
+<% user = true if user.nil? -%>
+<% friend = true if friend.nil? -%>
+
+<% unless collection.empty? %>
+
+<table class="alt_table">
+  <tr>
+    <% if user %><th width="100">User</th><% end %>
+    <% if friend %><th width="100">Friend</th><% end %>
+    <th>Created at</th>
+    <th>Accepted at</th>
+    <th> </th>
+  </tr>
+  
+<% odd_row = false -%>
+<% for friendship in collection %>
+  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+    <% if user %><td width="100"><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.user, "User", true, 60) %><%= "</b>" unless friendship.accepted? %></td><% end %>
+    <% if friend %><td width="100"><%= "<b>" unless friendship.accepted? %><%= contributor(friendship.friend, "User", true, 60) %><%= "</b>" unless friendship.accepted? %></td><% end %>
+    <td><%= "<b>" unless friendship.accepted? %><%=datetime friendship.created_at, false %><%= "</b>" unless friendship.accepted? %></td>
+    <td><%= "<b>" unless friendship.accepted? %><%=datetime(friendship.accepted_at, false) || "Pending" %><%= "</b>" unless friendship.accepted? %></td>
+    <td class="actions">
+      <% if mine? friendship %>
+        <%= icon "show", friendship_path(friendship.friend_id, friendship), nil, nil, "View" %>
+        <% unless friendship.accepted? %> <%= icon "confirm", accept_friendship_path(friendship.friend_id, friendship) %><% end %>
+         <%= icon (friendship.accepted? ? "destroy" : "reject"), friendship_path(friendship.friend_id, friendship), nil, :confirm => "Are you sure?", :method => :delete %>
+      <% end %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

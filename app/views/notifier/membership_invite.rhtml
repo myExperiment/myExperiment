@@ -1,0 +1,15 @@
+Hi <%= @name %>,
+ 
+You have been sent a Membership Invite for the following Group on myExperiment:
+
+Name: <%= @network.title %>
+Administrator: <%= @network.owner.name %>
+
+Please go to <%= url_for :only_path => false, :host => @base_url, :controller => '' %> and log in to confirm/reject this invite.
+
+Your username is: <%= @username %>
+
+Thanks,
+ 
+- The myExperiment Team
+http://www.myexperiment.org

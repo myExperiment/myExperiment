@@ -1,12 +1,11 @@
 class TopicsController < ApplicationController
-  before_filter :login_required
+  before_filter :login_required, :except => [:index, :show]
   
-  before_filter :find_forum_and_topic, :except => :index
+  before_filter :find_forum_auth, :only => [:index, :new, :create]
+  before_filter :find_forum_and_topic, :except => [:index, :new, :create]
   
-  before_filter :find_forum, :only => :index
-  
-  before_filter :update_last_seen_at, :only => :show
-  
+  before_filter :update_last_seen_at, :only => [:show]
+
   def index
     respond_to do |format|
       format.html { redirect_to forum_path(params[:forum_id]) }
@@ -19,13 +18,6 @@ class TopicsController < ApplicationController
 
   def new
     @topic = Topic.new
-  end
-  
-  def edit
-    unless @topic.editable_by? current_user
-      flash[:notice] = "Error! Not authorized to edit topic with ID #{params[:id]}"
-      redirect_to :action => :show, :forum_id => @forum, :id => @topic
-    end
   end
   
   def show
@@ -75,7 +67,7 @@ class TopicsController < ApplicationController
     @topic.save!
     respond_to do |format|
       format.html { redirect_to topic_path(@forum, @topic) }
-      format.xml  { head 200 }
+      format.xml  { head :ok }
     end
   end
   
@@ -84,11 +76,12 @@ class TopicsController < ApplicationController
     flash[:notice] = "Topic '#{CGI::escapeHTML @topic.title}' was deleted."
     respond_to do |format|
       format.html { redirect_to forum_path(@forum) }
-      format.xml  { head 200 }
+      format.xml  { head :ok }
     end
   end
   
 protected
+  
   def assign_protected
     @topic.user     = current_user if @topic.new_record?
     # admins and moderators can sticky and lock topics
@@ -99,55 +92,61 @@ protected
     @topic.forum_id = params[:topic][:forum_id] if params[:topic][:forum_id]
   end
     
-  def authorized?(forum=@forum)
-    # forums_controller::authorized?
-    forum.public or Moderatorship.find_by_forum_id_and_user_id(forum.id, current_user.id) or Membership.find_by_project_id_and_user_id(Project.find(forum.owner_id).id, current_user.id)
-  end
-    
-  def find_forum
+  def find_forum_auth
     if params[:forum_id]
-      if project = Project.find_by_unique(params[:forum_id])
-        @forum = Forum.find(project.forum_id)
-      else
-        begin
-          @forum = Forum.find(params[:forum_id])
-        rescue ActiveRecord::RecordNotFound
-          @forum = nil
-        end
-      end
+      begin
+        forum = Forum.find(params[:forum_id])
         
-      if @forum
-        unless authorized?
-          @forum = nil
-          flash[:notice] = "Error! Not authorized to view forum with ID #{params[:forum_id]}"
-          redirect_to :controller => :forums
+        if forum.authorized?("show", (logged_in? ? current_user : nil)) # the forum authorization is always "show" ('in forum' editing is handled separately)
+          @forum = forum
+        else
+          if logged_in? 
+            error("Forum not found (id not authorized)", "is invalid (not authorized)", :forum_id)
+          else
+            find_forum_auth if login_required
+          end
         end
-      else
-        flash[:notice] = "Error! Forum with ID #{params[:forum_id]} not found"
-        redirect_to :controller => :forums
+      rescue ActiveRecord::RecordNotFound
+        error("Forum not found", "is invalid", :forum_id)
       end
     else
-      flash[:notice] = "Error! No Forum ID suppled"
-      redirect_to :controller => :forums
+      error("Please supply a Forum ID", "is invalid", :forum_id)
     end
   end
   
   def find_topic
     if params[:id]
-      unless @topic = Topic.find_by_id_and_forum_id(params[:id], @forum.id)
-        flash[:notice] = "Error! Topic with ID #{params[:id]} not found"
-        redirect_to :controller => :forums, :action => :show, :id => @forum.id
+      begin
+        topic = @forum.topics.find(params[:id])
+        
+        if %w(show).include?(action_name) || topic.editable_by?(current_user)
+          @topic = topic
+        else
+          error("Topic not found (id not authorized)", "is invalid (not authorized)")
+        end
+      rescue ActiveRecord::RecordNotFound
+        error("Topic not found (id invalid)", "is invalid")
       end
     else
-      flash[:notice] = "Error! No Topic ID suppled"
-      redirect_to :controller => :forums
+      error("Please supply a Topic ID", "is invalid")
     end
   end
     
   def find_forum_and_topic
-    find_forum
-      
+    find_forum_auth
+    
     find_topic if @forum
   end
-  
+    
+private
+
+  def error(notice, message, attr=:id)
+    flash[:notice] = notice
+    (err = Topic.new.errors).add(attr, message)
+    
+    respond_to do |format|
+      format.html { redirect_to forums_path }
+      format.xml { render :xml => err.to_xml }
+    end
+  end
 end

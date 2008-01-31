@@ -1,0 +1,56 @@
+<% image = !(workflow.image.nil?) -%>
+<% show = workflow.authorized?("show", (logged_in? ? current_user : nil)) -%>
+
+<% if show %>
+<center>
+	<table width="<%= image ? 420 : 320 %>" class="contributable">
+	  <tr>
+	    <% if image %>
+	      <th width="100" rowspan="3">
+	        <% if show %>
+	          <%= link_to image_tag(url_for_file_column(workflow, "image", "thumb")), workflow_path(workflow) %>
+	        <% else %>
+	          <%= image_tag url_for_file_column(workflow, "image", "padlock") %>
+	        <% end %>
+	      </th>
+	    <% end %>
+	    <th width="320" colspan="2">
+	      <%=h workflow.title %>
+	    </th>
+	   </tr>
+	   <% if show and desc = workflow.body %>
+	    <tr>
+	      <td width="320" colspan="<%= image ? 2 : 3 %>">
+	        <%= truncate(desc, 100) %>
+	      </td>
+	    </tr>
+	  <% end %>
+	  <tr>   
+	    <td>
+	      <strong>Viewed:</strong> <%=pluralize workflow.contribution.viewings_count, "time" %><br/>
+	      <strong>Downloaded:</strong> <%=pluralize workflow.contribution.downloads_count, "time" %><br/>
+	    </td>
+	    <td>
+	      <center>
+	        <b>Uploader:</b><br />
+	        <%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %>
+	      </center>
+	    </td>
+	  </tr>
+	  <tr>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+	  </tr>
+	  <tr>
+	    <td colspan="<%= show ? 3 : 2 %>">
+	      <center>
+	        <% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_workflow_path(workflow) %> <% end %>
+	        <% if show %><%= icon "show", workflow_path(workflow) %> <% end %>
+	        <% if logged_in? and workflow.authorized?("edit", current_user) %><%= icon "edit", edit_workflow_path(workflow) %> <% end %>
+	        <% if logged_in? and workflow.authorized?("destroy", current_user) %><%= icon "destroy", workflow_path(workflow), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
+	      </center>
+	    </td>
+	  </tr>
+	</table>
+</center>
+<% end %>

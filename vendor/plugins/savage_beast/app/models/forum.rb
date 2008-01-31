@@ -1,5 +1,9 @@
+require 'acts_as_contributable'
+
 class Forum < ActiveRecord::Base
   acts_as_list
+  
+  acts_as_contributable
 
   validates_presence_of :name
 
@@ -25,8 +29,6 @@ class Forum < ActiveRecord::Base
       @last_post ||= find(:first, :include => :user)
     end
   end
-
-  belongs_to :owner, :polymorphic => true
 
   format_attribute :description
 end

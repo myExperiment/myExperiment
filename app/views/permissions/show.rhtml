@@ -1,0 +1,33 @@
+<h2>Details</h2>
+
+<p>
+  <b>Policy:</b> <%= link_to @permission.policy.name, policy_path(@permission.policy) %>
+</p>
+
+<table>
+  <tr>
+    <th> </th>
+    <th>View</th>
+    <th>Download</th>
+    <th>Edit</th>
+  </tr>
+  <%= render :partial => "policies/permission", :collection => [@permission], :locals => { :read_only => true } %>
+</table>
+
+<br/>
+
+<p>
+  <b>Created at:</b>
+  <%=datetime @permission.created_at %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%=datetime @permission.updated_at %>
+</p>
+
+<ul class="sectionIcons">
+  <li><%= icon('edit', edit_permission_path(@permission.policy, @permission), nil, nil, 'Edit permission') %></li>
+  <li><%= icon('destroy', permission_path(@permission.policy, @permission), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove permission') %></li>
+</ul>
+

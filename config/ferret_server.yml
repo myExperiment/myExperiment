@@ -1,4 +1,0 @@
-production:
-  host: localhost
-  port: 9010
-  pid_file: log/ferret.pid

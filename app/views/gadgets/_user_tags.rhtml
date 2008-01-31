@@ -1,0 +1,24 @@
+<% tags = current_user.tags %>
+
+<div class="myexperiment_gadget">
+  <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+
+  <div class="header">
+    <p>
+      <b>My Tags</b><br />
+      <small><%= pluralize(tags.length, "tag") %></small>
+    </p>
+  </div>
+  
+  <div class="contents">
+    <% unless tags.empty? %>
+			<div class="tags_smaller">
+				<%= tag_cloud_from_collection(tags) %>
+			</div>
+		<% else %>
+			<center><i>None</i></center>
+		<% end %>
+  </div>
+  
+  <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+</div>

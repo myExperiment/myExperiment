@@ -1,0 +1,104 @@
+
+<%= javascript_include_tag 'mashup' %>
+
+<h2>Input / Output</h2>
+
+<textarea id="input" cols="45" style="font-size: 0.9em" rows="20"></textarea>
+<textarea id="output" cols="45" rows="20" style="font-size: 0.9em"></textarea><br />
+
+<h2>HTTP Request</h2>
+
+<p>Method: 
+  <select id="custom-method">
+   <option value="GET">GET</option>
+   <option value="POST">POST</option>
+   <option value="PUT">PUT</option>
+   <option value="DELETE">DELETE</option>
+  </select>
+ URI: <input id="custom-uri" size="80" />
+  <input type="button" value="Go" onclick="javascript:doCustom()" />
+</p>
+
+<h2>REST commands</h2>
+
+<table summary="">
+
+ <tr>
+  <td>Auth ID</td>
+  <td><input value="1" id="auth-id" size="4" /></td>
+  <td>
+
+   <input type="button" value="Login" onclick="javascript:login()" />
+   <input type="button" value="Logout" onclick="javascript:logout()" />
+
+  </td>
+ </tr>
+
+
+ <tr>
+  <td>User ID</td>
+  <td><input value="1" id="user-id" size="4" /></td>
+  <td>
+
+   <input type="button" value="New user" onclick="javascript:newUser()" />
+   <input type="button" value="List users" onclick="javascript:listUsers()" />
+   <input type="button" value="Get user" onclick="javascript:getUser()" />
+   <input type="button" value="Update user" onclick="javascript:updateUser()" />
+   <input type="button" value="Delete user" onclick="javascript:deleteUser()" />
+
+  </td>
+ </tr>
+
+ <tr>
+  <td>Profile ID</td>
+  <td><input value="1" id="profile-id" size="4" /></td>
+  <td>
+
+   <input type="button" value="New profile" onclick="javascript:newProfile()" />
+   <input type="button" value="List profiles" onclick="javascript:listProfiles()" />
+   <input type="button" value="Get profile" onclick="javascript:getProfile()" />
+   <input type="button" value="Update profile" onclick="javascript:updateProfile()" />
+   <input type="button" value="Delete profile" onclick="javascript:deleteProfile()" />
+   
+  </td>
+ </tr>
+
+ <tr>
+  <td>Group ID</td>
+  <td><input value="1" id="group-id" size="4" /></td>
+  <td>
+
+   <input type="button" value="New group" onclick="javascript:newNetwork()" />
+   <input type="button" value="List groups" onclick="javascript:listNetworks()" />
+   <input type="button" value="Get group" onclick="javascript:getNetwork()" />
+   <input type="button" value="Update group" onclick="javascript:updateNetwork()" />
+   <input type="button" value="Delete group" onclick="javascript:deleteNetwork()" />
+   
+  </td>
+ </tr>
+
+ <tr>
+  <td>Message ID</td>
+  <td><input value="1" id="message-id" size="4" /></td>
+  <td>
+
+   <input type="button" value="New message" onclick="javascript:newMessage()" />
+   <input type="button" value="List messages" onclick="javascript:listMessages()" />
+   <input type="button" value="Get message" onclick="javascript:getMessage()" />
+   <input type="button" value="Update message" onclick="javascript:updateMessage()" />
+   <input type="button" value="Delete message" onclick="javascript:deleteMessage()" />
+   
+  </td>
+ </tr>
+</table>
+
+<h2>Google Gadgets</h2>
+
+<script src="http://gmodules.com/ig/ifr?url=http://hosting.gmodules.com/ig/gadgets/file/102930279039750035480/myexp_wf.xml&amp;up_limit=10&amp;synd=open&amp;w=350&amp;h=300&amp;title=myExperiment+Workflow+Gadget&amp;border=http%3A%2F%2Fgmodules.com%2Fig%2Fimages%2F&amp;output=js"></script>
+
+<p>Add this to your iGoogle home page with the following URL:<br/>
+<%= link_to 'right click and copy location', 'http://hosting.gmodules.com/ig/gadgets/file/102930279039750035480/myexp_wf.xml' %></p>
+
+<p>Add this to your website with the following code:</p>
+
+<%= text_field_tag :code, value='<script src="http://gmodules.com/ig/ifr?url=http://hosting.gmodules.com/ig/gadgets/file/102930279039750035480/myexp_wf.xml&amp;up_limit=10&amp;synd=open&amp;w=350&amp;h=300&amp;title=myExperiment+Workflow+Gadget&amp;border=http%3A%2F%2Fgmodules.com%2Fig%2Fimages%2F&amp;output=js"></script>', :size => 50 %>
