@@ -93,6 +93,6 @@
 		<%= javascript_include_tag "tabs.js" %>
 		<%= javascript_include_tag "folds.js" %>
 		
-		<%= render :partial => "layouts/web_analytics" %>
+		<%= render :partial => "layouts/web_analytics" if USE_WEBANALYTICS %>
 	</body>
 </html>

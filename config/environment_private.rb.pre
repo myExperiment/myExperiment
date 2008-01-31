@@ -28,5 +28,15 @@ SOLR_ENABLE = false
 TRUSTED_PROXY = 'xxx.xxx.xxx.xxx'
 
 # Comma-seperated list of usernames (must be lowercase) of the users who are regarded as Admins.
-ADMINS = ["list", "of", "usernames"] 
+ADMINS = ["list", "of", "usernames"]
+
+# BEGIN web analytics settings
+
+# Switch web analytics on or off
+USE_WEBANALYTICS = true
+
+# Tracker code for Google Analytics
+GOOGLEANALYTICS_TRACKER_CODE = "enter_tracker_code_here"
+
+# END web analytics settings
 
