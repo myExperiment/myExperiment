@@ -1,11 +1,7 @@
-<% statistics = Contribution.find(statistics.id) -%>
-
 <p>
-  <b>Total viewings:</b> 
-  <%=h statistics.viewings_count %>
+  <b><%= pluralize statistics.viewings_count, "viewing" %></b> 
 </p>
 
 <p>
-  <b>Total downloads:</b> 
-  <%=h statistics.downloads_count %>
+  <b><%= pluralize statistics.downloads_count, "download" %></b>  
 </p>

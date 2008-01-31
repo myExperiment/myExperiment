@@ -13,7 +13,7 @@
 			
 	<p class="heading" style="margin-bottom: 0; padding-bottom: 0;">
 		<%= info_icon_with_tooltip("Which people/groups get the credit for this #{visible_name contributable}?") %>
-		Credits
+		Credits <font class="count_text">(<%= contributable.creditors.length -%>)</font>
 	</p>
 	<span style="font-size: 85%; color: #666666; display: block; padding: 0.1em 0.5em; margin: 0; line-height: 1em;">(People/Groups)</span>
 	<% unless (creditors = contributable.creditors).empty? %>
@@ -37,7 +37,7 @@
 	
 	<p class="heading" style="margin-bottom: 0; padding-bottom: 0;">
 		<%= info_icon_with_tooltip("What other Workflows/Files is this one based on?") %>
-		Attribution
+		Attributions <font class="count_text">(<%= contributable.attributors.length -%>)</font>
 	</p>
 	<span style="font-size: 85%; color: #666666; display: block; padding: 0.1em 0.5em; margin: 0; line-height: 1em;">(Workflows/Files)</span>
 	<% unless (attributors = contributable.attributors).empty? %>

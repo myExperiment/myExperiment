@@ -993,6 +993,7 @@ table.contributable:hover {
 .contribution_section_box .stats_box p {
 	font-size: 85%;
 	text-align: centre;
+	line-height: 1.1em;
 }
 
 .contribution_section_box hr {
@@ -1349,13 +1350,13 @@ div.auto_complete ul strong.highlight {
 .none_text {
 	font-style:italic;
 	color:#666666;
+	vertical-align: middle;
 }
 
-.admin_text {
-	color: red;
-	font-weight: bold; 
-	font-size: 93%;
-	padding-top: 0;
-	margin-top: 0;
+.count_text {
+	color: #999999;
+	vertical-align: middle;
 }
+
+
 	
