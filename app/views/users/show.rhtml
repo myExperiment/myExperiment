@@ -169,25 +169,43 @@
 		</td>
 		
 		<td style="padding-left: 7px; width: 137px; vertical-align: top; text-align: right;">
-			<div class="contribution_section_box" style="width: 130px; font-size: 85%; padding: 0.4em 0.8em;">
-				<p>
-		      <b><%= pluralize @user.friends.length, "Friend" %></b> 
-		    </p>
-				
-				<p>
-		      <b><%= pluralize @user.networks_owned.length, "Group" %> (admin)</b> 
-		    </p>
-				
-				<p>
-		      <b><%= pluralize @user.networks.length, "Group" %> (member)</b> 
-		    </p>
-				
-				<% filter_contributables(@user.contributions).each do |klass,contributables| %>
+			
+			<div class="contribution_section_box" style="width: 130px; padding: 0.4em 0.8em;">
+				<div class="stats_box">
 					<p>
-			      <b><%= pluralize contributables.length, klass.to_s == "Blob" ? "File" : klass.humanize %></b> 
+			      <b>
+			      	<%= link_to(pluralize(@user.friends.length, "Friend"), user_url(@user) + "#friends") %>
+						</b> 
 			    </p>
-				<% end %>		
+					
+					<p>
+			      <b>
+			      	<%= link_to(pluralize(@user.networks_owned.length, "Group") + " (admin)", user_url(@user) + "#groups") %>
+						</b> 
+			    </p>
+					
+					<p>
+			      <b>
+			      	<%= link_to(pluralize(@user.networks.length, "Group") + " (member)", user_url(@user) + "#groups") %>
+						</b> 
+			    </p>
+					
+					<% filter_contributables(@user.contributions).each do |klass,contributables| %>
+						<p>
+				      <b>
+				      	<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize)), user_url(@user) + "##{controller_visible_name(klass.humanize.pluralize).downcase}") %>
+							</b> 
+				    </p>
+					<% end %>
+				</div>	
 			</div>
+			
+			<div class="contribution_section_box" style="width: 130px; padding: 0.4em 0.8em; font-size: 93%;">
+				<p>
+					<b><%= @user.name -%> has been credited <%= pluralize @user.creditations.length, "time" -%></b>
+				</p>
+			</div>
+			
 		</td>
 	</tr>
 </table>
@@ -320,18 +338,21 @@
   <%= render :partial => "contributions/tabs", :locals => { :collection => @user.contributions } %>
 <% end %>
 
-<% unless (tags = @user.tags).empty? %>
-  <div id="user_tags" class="tabContainer">
-    <div class="tabTitle">
-    	<%= (logged_in? and mine? @user) ? "My Tags" : "User's Tags" %>
-		</div>
-    <div class="tabContent">
+
+<div id="user_tags" class="tabContainer">
+  <div class="tabTitle">
+  	<%= (logged_in? and mine? @user) ? "My Tags" : "User's Tags" %>
+	</div>
+  <div class="tabContent">
+		<% unless (tags = @user.tags).empty? %>
 			<div style="border: 1px dotted #999999; background-color: #FFFFCC; padding: 1em; margin: 0.5em;">
 				<%= tag_cloud_from_collection(tags) %>
 			</div>
-    </div>
+		<% else %>
+			<p class="none_text">No tags made yet</p>
+		<% end %>
   </div>
-<% end %>
+</div>
 
 <% if logged_in? and !mine?(@user) and !current_user.networks_owned.empty? %>
   <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>

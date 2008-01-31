@@ -1,7 +1,7 @@
 <% filter_contributables(collection).each do |klass,contributables| %>
 
-<div id="<%= klass.pluralize.downcase %>" class="tabContainer">
-  <div class="tabTitle"><%= klass.to_s == "Blob" ? "Files" : klass.humanize.pluralize %></div>
+<div id="<%= controller_visible_name(klass.humanize.pluralize).downcase %>" class="tabContainer">
+  <div class="tabTitle"><%= controller_visible_name(klass.humanize.pluralize) %></div>
   <div class="tabContent">
     <% if klass.to_s == "Workflow" %>
       <%= render :partial => "workflows/anchors", :locals => { :collection => contributables } %>
