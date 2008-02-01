@@ -23,13 +23,15 @@
       <b><%= pluralize contributable.ratings.length, "rating" %></b>
     </p>
 		
-		<p>
-      <b><%= pluralize contributable.reviews.length, "review" %></b>
-    </p>
-		
     <p>
     	<b><%= pluralize contributable.comments.length, "comment" %></b>
     </p>
+		
+		<% if contributable.class.to_s.downcase == 'workflow' %>
+			<p>
+	      <b><%= pluralize contributable.reviews.length, "review" %></b>
+	    </p>
+		<% end %>
 	
 	</div>
 </div>
