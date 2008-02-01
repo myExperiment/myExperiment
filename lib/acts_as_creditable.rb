@@ -12,8 +12,11 @@ module Dgc
       
       module ClassMethods
         def acts_as_creditable
-          belongs_to :creditor, :polymorphic => true
-          
+          has_many :creditations,
+                   :as => :creditable,
+                   :order => "creditable_type ASC, created_at DESC",
+                   :dependent => :destroy
+
           class_eval do
             extend Dgc::Acts::Creditable::SingletonMethods
           end
