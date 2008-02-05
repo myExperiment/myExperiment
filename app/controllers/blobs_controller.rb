@@ -141,21 +141,13 @@ class BlobsController < ApplicationController
       end
     end
     
+    # 'Data' (ie: the actual file) cannot be updated!
+    params[:blob][:data] = nil
+    
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
-        if @blob.save
-          if params[:blob][:tag_list]
-            @blob.user_id = current_user
-            @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
-            @blob.update_tags
-          end
-        end
-        
-        # security fix (only allow the owner to change the policy)
-        @blob.contribution.update_attributes(params[:contribution]) if @blob.contribution.owner?(current_user)
-        
+        refresh_tags(@blob, params[:blob][:tag_list], current_user) if params[:blob][:tag_list]
         update_policy(@blob, params)
-        
         update_credits(@blob, params)
         update_attributions(@blob, params)
         

@@ -143,39 +143,95 @@ class ApplicationController < ActionController::Base
         edit_protected = true
     end
 
-    policy = Policy.new(:name => 'auto',
-        :contributor_type => 'User', :contributor_id => current_user.id,
-        :view_protected     => view_protected,
-        :view_public        => view_public,
-        :download_protected => download_protected,
-        :download_public    => download_public,
-        :edit_protected     => edit_protected,
-        :edit_public        => edit_public,
-        :share_mode         => sharing_class,
-        :update_mode        => updating_class)
+    unless contributable.contribution.policy
+      policy = Policy.new(:name => 'auto',
+          :contributor_type => 'User', :contributor_id => current_user.id,
+          :view_protected     => view_protected,
+          :view_public        => view_public,
+          :download_protected => download_protected,
+          :download_public    => download_public,
+          :edit_protected     => edit_protected,
+          :edit_public        => edit_public,
+          :share_mode         => sharing_class,
+          :update_mode        => updating_class)
+      contributable.contribution.policy = policy
+      contributable.contribution.save
+    else
+       policy = contributable.contribution.policy
+       policy.view_protected = view_protected,
+       policy.view_public = view_public,
+       policy.download_protected = download_protected,
+       policy.download_public = download_public,
+       policy.edit_protected = edit_protected,
+       policy.edit_public = edit_public,
+       policy.share_mode = sharing_class,
+       policy.update_mode = updating_class
+       policy.save
+    end
 
-    # Processing Update permissions for "Some of my Friends"
+    # Process 'update' permissions for "Some of my Friends"
+
+    # Delete old User permissions
+    policy.permissions.each do |p|
+      if p.contributor_type == 'User'
+        p.destroy
+      end
+    end
+    
+    # Now create new User permissions, if required
     if updating_class == "5"
       params[:updating_somefriends].each do |f|
         Permission.new(:policy => policy,
             :contributor => (User.find f[1].to_i),
-            :view => 0, :download => 0, :edit => 1).save
+            :view => 1, :download => 1, :edit => 1).save
       end
     end
     
     # Process explicit Group permissions now
     if params[:group_sharing]
-      params[:group_sharing].each do |n|
-        # Note: n[1] is used because n is an array and n[1] returns it's value (which in turn is a hash)
-        if n[1][:id]
-          p = Permission.new(:policy => policy, :contributor => (Network.find n[1][:id].to_i))
-          p.set_level!(n[1][:level]) if n[1][:level]
+      
+      # First delete any Permission objects that don't have a checked entry in the form
+      policy.permissions.each do |p|
+        params[:group_sharing].each do |n|
+          unless n[1][:id]
+            if p.contributor_type == 'Network' and p.contributor_id == n[0].to_i
+              p.destroy
+            end
+          end
         end
       end
+    
+      # Now create or update Permissions
+      params[:group_sharing].each do |n|
+        
+        # Note: n[1] is used because n is an array and n[1] returns it's value (which in turn is a hash)
+        if n[1][:id]
+          
+          n_id = n[1][:id].to_i
+          level = n[1][:level]
+          
+          unless (perm = Permission.find(:first, :conditions => ["policy_id = ? AND contributor_type = ? AND contributor_id = ?", policy.id, 'Network', n_id]))
+            # Only create new Permission if it doesn't already exist
+            p = Permission.new(:policy => policy, :contributor => (Network.find(n_id)))
+            p.set_level!(level) if level
+          else
+            # Update the 'level' on the existing permission
+            perm.set_level!(level) if level
+          end
+          
+        else
+          
+          n_id = n[1][:id].to_i
+          
+          # Delete permission if it exists (because this one is unchecked)
+          if (perm = Permission.find(:first, :conditions => ["policy_id = ? AND contributor_type = ? AND contributor_id = ?", policy.id, 'Network', n_id]))
+            perm.destroy
+          end
+          
+        end
+      
+      end
     end
-
-    contributable.contribution.policy = policy
-    contributable.contribution.save
 
     puts "------ Workflow create summary ------------------------------------"
     puts "current_user   = #{current_user.id}"

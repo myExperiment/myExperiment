@@ -269,7 +269,6 @@ class WorkflowsController < ApplicationController
   # PUT /workflows/1
   # PUT /workflows/1.xml
   def update
-
     # remove protected columns
     if params[:workflow]
       [:contribution, :contributor_id, :contributor_type, :image, :created_at, :updated_at, :version].each do |column_name|
@@ -284,54 +283,21 @@ class WorkflowsController < ApplicationController
       end
     end
     
+    # Remove sculf in case (since scufl can never be updated, only new versions can be uploaded (see seperate actions for that)
+    params[:workflow][:scufl] = nil
+    
     respond_to do |format|
-      scufl = params[:workflow][:scufl]
-      
-      # process scufl if it's there
-      unless scufl.nil?
-
-        # create new scufl model
-        scufl_model = Scufl::Parser.new.parse(scufl.read)
-        scufl.rewind
-        
-        @workflow.title, @workflow.unique_name = determine_title_and_unique(scufl_model)
-        @workflow.body = scufl_model.description.description
-
-        # create new diagrams and append new version number to filename
-        create_workflow_diagrams(@workflow, scufl_model, "#{@workflow.unique_name}_#{@workflow.current_version.to_i + 1}")
-          
-        @workflow.scufl = scufl.read
-        
-        params[:workflow].delete("scufl") # remove scufl attribute from received workflow parameters
-      end
-
-      success = nil;
-
-      if scufl.nil?
-        success = @workflow.update_attributes(params[:workflow])
-      end
-
-      if success
+      if @workflow.update_attributes(params[:workflow])
         refresh_tags(@workflow, params[:workflow][:tag_list], current_user) if params[:workflow][:tag_list]
-        
-        # There are two specific update actions: one to upload a new scufl
-        # file, and the second to update the policy, credits and attributions
-
-        if scufl.nil?
-          update_policy(@workflow, params)
-          update_credits(@workflow, params)
-          update_attributions(@workflow, params)
-        end
+        update_policy(@workflow, params)
+        update_credits(@workflow, params)
+        update_attributions(@workflow, params)
 
         flash[:notice] = 'Workflow was successfully updated.'
         format.html { redirect_to workflow_url(@workflow) }
         format.xml  { head :ok }
       else
-        if scufl.nil?
-          format.html { render :action => "edit" }
-        else
-          format.html { render :action => "new_version" }  
-        end
+        format.html { render :action => "edit" }
         format.xml  { render :xml => @workflow.errors.to_xml }
       end
     end

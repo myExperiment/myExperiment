@@ -787,7 +787,7 @@ module ApplicationHelper
     when 4
       return 'Only Friends can view, but only the uploader can download.'
     when 5, 6, 7
-      return "This is a private #{c_type} - only the uploader can view and download (and Groups explicitly shared with)."
+      return "This is a private #{c_type} - only the uploader can view and download (and any Groups explicitly shared with)."
     when 8
       return "This #{c_type} has custom sharing permissions."
     end
@@ -801,11 +801,11 @@ module ApplicationHelper
     when 0
       return "All those that can view or download can also update."
     when 1
-      return "All the uploader's Friends."
+      return "All the uploader's Friends can update."
     when 5
-      return "A specific set of Users."
+      return "A specific set of Users can update."
     when 2, 3, 4, 6
-      return "Only the uploader may update this #{c_type} (and Groups explicitly given update permissions)."
+      return "Only the uploader may update this #{c_type} (and any Groups explicitly given update permissions)."
     when 7
       return "This #{c_type} has custom updating permissions."
     end
@@ -1035,7 +1035,7 @@ module ApplicationHelper
   
   def find_permission_for_contributor(perms, contributor_type, contributor_id)
     perm = nil;
-    filtered = perms.select { |p| (p.contributor_id == n.contributor_id and p.contributor_type == n.contributor_type) }
+    filtered = perms.select { |p| (p.contributor_id == contributor_id and p.contributor_type == contributor_type) }
     if filtered.length > 0
       perm = filtered[0]
     end
