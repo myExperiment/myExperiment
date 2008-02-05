@@ -166,8 +166,11 @@ class ApplicationController < ActionController::Base
     # Process explicit Group permissions now
     if params[:group_sharing]
       params[:group_sharing].each do |n|
-        p = Permission.new(:policy => policy, :contributor => (Network.find n[1].to_i))
-        p.set_level!(n[1][:level]) if n[1][:level]
+        # Note: n[1] is used because n is an array and n[1] returns it's value (which in turn is a hash)
+        if n[1][:id]
+          p = Permission.new(:policy => policy, :contributor => (Network.find n[1][:id].to_i))
+          p.set_level!(n[1][:level]) if n[1][:level]
+        end
       end
     end
 

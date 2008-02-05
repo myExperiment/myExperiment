@@ -108,8 +108,9 @@
 
 <div id="tabsContainer" class="tabsContainer"></div>
 	
-<% if logged_in? and @blob.authorized?("destroy", current_user) %>
-  <div class="tabContainer">
+<% if logged_in? and @blob.owner? current_user %>
+  
+	<div class="tabContainer">
     <div class="tabTitle">Permissions</div>
     <div class="tabContent">
 
@@ -123,15 +124,14 @@
       <% end %>
     </div>
   </div>
-<% end %>
-
-<% if logged_in? and @blob.authorized?("destroy", current_user) %>
+	
   <div class="tabContainer">
-    <div class="tabTitle">History</div>
+    <div class="tabTitle">Viewing History</div>
     <div class="tabContent">
       <%= render :partial => "contributions/history", :object => @blob.contribution %>
     </div>
   </div>
+	
 <% end %>
 
 <!-- END tabs -->

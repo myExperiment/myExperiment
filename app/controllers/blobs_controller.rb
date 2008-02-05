@@ -172,11 +172,18 @@ class BlobsController < ApplicationController
   # DELETE /blobs/1
   # DELETE /blobs/1.xml
   def destroy
-    @blob.destroy
-    
+    success = @blob.destroy
+
     respond_to do |format|
-      format.html { redirect_to files_url }
-      format.xml  { head :ok }
+      if success
+        flash[:notice] = "File has been deleted."
+        format.html { redirect_to files_url }
+        format.xml  { head :ok }
+      else
+        flash[:error] = "Failed to delete File. Please contact your administrator."
+        format.html { redirect_to file_url(@blob) }
+        format.xml  { render :xml => @blob.errors.to_xml }
+      end
     end
   end
   

@@ -607,10 +607,10 @@
       <% for n in (current_user.networks + current_user.networks_owned) %>
           <p>
           	<% perm = find_permission_for_contributor(perms, "Network", n.id) if edit -%>
-						<input <%= 'checked' if perm %>
-          		value="<%= n.id %>" type="checkbox" name="group_sharing[<%= n.id %>]"/>
+						<input <%= 'checked' if perm %> style="margin-right: 0.3em;"
+          		value="<%= n.id %>" type="checkbox" name="group_sharing[n_<%= n.id %>][id]"/>
 						<%= h(n.title) %>
-						<select name="group_sharing[<%= n.id %>][level]" style="font-size: 85%; margin: 0 0.5em;">
+						<select name="group_sharing[n_<%= n.id %>][level]" style="font-size: 85%; margin: 0 0.5em;">
 							<option value="0" <%= 'selected="selected"' if perm and perm.level == 0 %>>View only</option>
 							<option value="1" <%= 'selected="selected"' if !edit or (perm and perm.level) == 1 %>>View and Download only</option>
 							<option value="2" <%= 'selected="selected"' if perm and perm.level == 2 %>>View, Download and Update</option>
