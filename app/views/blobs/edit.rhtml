@@ -32,7 +32,6 @@
 
   <% if @blob.owner?(current_user) %>
   	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @blob } %>
-  	<%= render :partial => "contributions/updating_form", :locals => { :edit => true, :contributable => @blob } %>
 	<%= render :partial => "blobs/license_form", :locals => { :edit => true } %>
   <% end %>
 

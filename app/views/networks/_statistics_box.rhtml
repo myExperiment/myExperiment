@@ -3,6 +3,10 @@
 	 	<b><%= pluralize network.members(true).length, "member" %></b>
 	</p>
 	
+	<p style="font-size: 108%;">
+	 	<b><%= pluralize network.shared_contributions.length, "shared item" %></b>
+	</p>
+	
 	<% if mine? network %>
 		<p>
 			<%= pluralize network.memberships_requested.length, "request" %> pending
@@ -11,4 +15,5 @@
 			<%= pluralize network.memberships_invited.length, "invite" %> pending
 		</p>
 	<% end %>
+	
 </div>

@@ -95,4 +95,14 @@ class Contribution < ActiveRecord::Base
     #contributable.contributor_id.to_i == c_utor.id.to_i and contributable.contributor_type.to_s == c_utor.class.to_s
     contributable.uploader?(c_utor)
   end
+  
+  def shared_with_networks
+    networks = []
+    self.policy.permissions.each do |p|
+      if p.contributor_type == 'Network'
+        networks << p.contributor
+      end
+    end
+    networks
+  end
 end

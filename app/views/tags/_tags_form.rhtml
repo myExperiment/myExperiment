@@ -25,7 +25,7 @@ document.onkeypress = handleEnter;
 
 <div class="fold">
   <div class="foldTitle">
-  	<%= info_icon_with_tooltip("This section allows you to add tags to <strong>describe</strong> this #{c_type}.") %>
+  	<%= info_icon_with_tooltip("Here you can add tags to <strong>describe</strong> this #{c_type}.") %>
 		Tags
 		<% if edit %>
 			<hr />
@@ -33,11 +33,11 @@ document.onkeypress = handleEnter;
 		<% end %>
   </div>
   <div class="foldContent" style="display: none;">
-    <p class="box_infotext">This section allows you to add tags to <strong>describe</strong> this <%= c_type %>.</p>
+    <div class="box_infotext"><p>Here you can add tags to <strong>describe</strong> this <%= c_type %>.</p></div>
     <br />
     <p><strong>Tags: </strong></p>
     <div class="box_editing" style="padding-left: 1em;">
-			<p style="color: #666666; font-size: 93%;"><i>Build up the list of tags below by adding from the two different boxes further below</i></p>
+			<p style="color: #666666;">Build up the list of tags below by adding from the two different boxes further below</p>
 			<p id="tags_current_list" class="box_editing_inner">
 				<i>None</i>
 			</p>

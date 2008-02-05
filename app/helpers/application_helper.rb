@@ -777,11 +777,11 @@ module ApplicationHelper
 
     case mode
     when 0
-      return 'Everyone can view and download.'
+      return 'Anyone can view and download.'
     when 1
-      return 'Everyone can view, but only Friends and Groups are allowed to download.'
+      return 'Anyone can view, but only Friends and Groups are allowed to download.'
     when 2
-      return 'Everyone can view, but only the uploader can download.'
+      return 'Anyone can view, but only the uploader can download.'
     when 3
       return 'Only Friends and Groups can view and download.'
     when 4
@@ -821,19 +821,18 @@ module ApplicationHelper
     end
   end
   
-  def all_contributables_for_network(network)
-    list = []
-    if network
-      network.members(true).each do |user|
-        user.contributions.each do |c|
-          if c.authorized?("show", network)
-            list << c
-          end
-        end
-      end
-    end
+  def c_resource_string(contributable)
     
-    return list
+    c_type = visible_name(contributable)
+    
+    case c_type
+    when "File"
+      return 'file';
+    when "Workflow"
+      return 'Workflow file'
+    else
+      return c_type
+    end
   end
   
   def friend_badge(user)
@@ -1042,6 +1041,15 @@ module ApplicationHelper
   
   def home_url
     return url_for(:controller => 'home')
+  end
+  
+  def find_permission_for_contributor(perms, contributor_type, contributor_id)
+    perm = nil;
+    filtered = perms.select { |p| (p.contributor_id == n.contributor_id and p.contributor_type == n.contributor_type) }
+    if filtered.length > 0
+      perm = filtered[0]
+    end
+    perm
   end
   
 protected

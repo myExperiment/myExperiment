@@ -228,6 +228,17 @@ class Network < ActiveRecord::Base
     relations_r
   end
   
+  # Finds all the contributions that have been explicitly shared via Permissions
+  def shared_contributions
+    list = []
+    self.permissions.each do |p|
+      p.policy.contributions.each do |c|
+        list << c
+      end
+    end
+    list
+  end
+  
 protected
 
   def member_r?(userid, depth=0)

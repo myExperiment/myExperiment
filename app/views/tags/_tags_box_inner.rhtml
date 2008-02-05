@@ -39,17 +39,17 @@
 			<% unless (tags = taggable.tags).empty? %>
 				<%= tag_cloud_from_collection(tags) %>
 			<% else %>
-      	<p><i>None</i></p>
+      	<p class="none_text">None</p>
 			<% end %>
 		</div>
 		<div id="user_tags"  style="display: none;">
 			<% unless (tags = user_tags_for_thing(taggable, owner_id)).empty? %>
 				<%= tag_cloud_from_collection(tags) %>
 			<% else %>
-    		<p><i>None</i></p>
+    		<p class="none_text">None</p>
 			<% end %>
 		</div>
 	<% else %>
-		<p><i>None</i></p>
+		<p class="none_text">None</p>
 	<% end %>
 </div>

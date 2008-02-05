@@ -92,14 +92,16 @@
 </div>
 
 <% if logged_in? and @network.member? current_user.id %>
-	<% unless (contributions = all_contributables_for_network(@network)).empty? %>
-		<div class="tabContainer">
-		    <div class="tabTitle">Stuff</div>
-		    <div class="tabContent">
-		    	<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
-	    	</div>
-		</div>
-	<% end %>
+	<div class="tabContainer">
+    <div class="tabTitle">Shared Items</div>
+    <div class="tabContent">
+    	<% unless (contributions = @network.shared_contributions).empty? %>
+    		<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
+			<% else %>
+				<p class="none_text">No items have been shared with this Group yet.</p>
+			<% end %>
+  	</div>
+	</div>
 <% end %>
 
 <% if mine? @network %>
@@ -161,7 +163,7 @@
 
 <% end %>
 
-<% unless @network.contributions.empty? %>
+<% if logged_in? and @network.member? current_user.id and !@network.contributions.empty? %>
   <%= render :partial => "contributions/tabs", :locals => { :collection => @network.contributions } %>
 <% end %>
 

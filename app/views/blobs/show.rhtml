@@ -77,9 +77,13 @@
 </div>
 
 <div class="contribution_right_box">
-	<%= render :partial => "contributions/uploader_credits_attributions_box", :locals => { :contributable => @blob, :edit_path => edit_file_path(@blob) } %>
+	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @blob } %>
 	
 	<%= render :partial => "contributions/license_box", :locals => { :contributable => @blob } %>
+	
+	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @blob, :edit_path => edit_file_path(@blob) } %>
+	
+	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @blob } %>
 	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @blob, 
 																											 :owner_id => ((@blob.contributor_type == 'User') ? @blob.contributor_id : nil), 

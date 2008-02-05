@@ -95,19 +95,29 @@ class ApplicationController < ActionController::Base
 
   def update_policy(contributable, params)
 
-    return if params[:sharing].nil?
+    # BEGIN validation and initialisation
+    
+    return if params[:sharing].nil? or params[:sharing][:class_id].blank?
+    
+    params[:updating][:class_id] = "6" if params[:updating].nil? or params[:updating][:class_id].blank?
 
-    params[:updating] = "6" if params[:updating].nil?
-
+    sharing_class  = params[:sharing][:class_id]
+    updating_class = params[:updating][:class_id]
+    
+    # Check allowed sharing_class values
+    return unless [ "0", "1", "2", "3", "4", "7" ].include? sharing_class
+    
+    # Check allowed updating_class values
+    return unless [ "0", "1", "5", "6" ].include? updating_class
+    
     view_protected     = false
     view_public        = false
     download_protected = false
     download_public    = false
     edit_protected     = false
     edit_public        = false
-
-    sharing_class  = params[:sharing][:class_id]
-    updating_class = params[:updating][:class_id]
+    
+    # BEGIN initialisation and validation
 
     case sharing_class
       when "0"
@@ -144,34 +154,21 @@ class ApplicationController < ActionController::Base
         :share_mode         => sharing_class,
         :update_mode        => updating_class)
 
-    case sharing_class
-      when "5"
-        params[:sharing_networks1].each do |n|
-          Permission.new(:policy => policy,
-              :contributor => (Network.find n[1].to_i),
-              :view => 1, :download => 1, :edit => (updating_class == "0")).save
-        end
-      when "6"
-        params[:sharing_networks2].each do |n|
-          Permission.new(:policy => policy,
-              :contributor => (Network.find n[1].to_i),
-              :view => 1, :download => 0, :edit => (updating_class == "0")).save
-        end
+    # Processing Update permissions for "Some of my Friends"
+    if updating_class == "5"
+      params[:updating_somefriends].each do |f|
+        Permission.new(:policy => policy,
+            :contributor => (User.find f[1].to_i),
+            :view => 0, :download => 0, :edit => 1).save
+      end
     end
-
-    case updating_class
-      when "3" # some of my networks
-        params[:updating_networkmembers].each do |n|
-          Permission.new(:policy => policy,
-              :contributor => (Network.find n[1].to_i),
-              :view => 0, :download => 0, :edit => 1).save
-        end
-      when "5" # some of my friends
-        params[:updating_somefriends].each do |f|
-          Permission.new(:policy => policy,
-              :contributor => (User.find f[1].to_i),
-              :view => 0, :download => 0, :edit => 1).save
-        end
+    
+    # Process explicit Group permissions now
+    if params[:group_sharing]
+      params[:group_sharing].each do |n|
+        p = Permission.new(:policy => policy, :contributor => (Network.find n[1].to_i))
+        p.set_level!(n[1][:level]) if n[1][:level]
+      end
     end
 
     contributable.contribution.policy = policy
@@ -182,7 +179,7 @@ class ApplicationController < ActionController::Base
     puts "updating_class = #{updating_class}"
     puts "sharing_class  = #{sharing_class}"
     puts "policy         = #{policy}"
-    puts "Sharing net1   = #{params[:sharing_networks1]}"
+    puts "group_sharing  = #{params[:group_sharing]}"
     puts "-------------------------------------------------------------------"
 
   end
@@ -225,31 +222,6 @@ class ApplicationController < ActionController::Base
       if ((v_pub  == false) && (v_prot == false) && (d_pub  == false) && (d_prot == false))
         return 7;
       end
-
-    else        
-
-      mode5 = true
-      mode6 = true
-
-      policy.permissions.each do |p|
-
-        if (p.contributor_type != 'Network')
-          mode5 = false
-          mode6 = false
-        end
-
-        if ((p.view != true) || (p.download != true))
-          mode5 = false
-        end
-
-        if ((p.view != true) || (p.download != false))
-          mode6 = false
-        end
-
-      end
-
-      return 5 if mode5
-      return 6 if mode6
 
     end
 
@@ -311,7 +283,7 @@ class ApplicationController < ActionController::Base
       puts "contributors_networks = #{contributors_networks.map do |n| n.id end}"
 
       perms.each do |p|
-      puts "contributor_id = #{p.contributor_id}"
+        puts "contributor_id = #{p.contributor_id}"
         case
           when 'Network'
 
@@ -338,12 +310,6 @@ class ApplicationController < ActionController::Base
       puts "other_users    = #{other_users.length}"
 
       if (other_networks.empty? and other_users.empty?)
-
-        # mode 3? members of some of my networks?
-   
-        if (!my_networks.empty? and my_friends.empty?)
-          return 3 
-        end
 
         # mode 5? some of my friends?
 

@@ -212,21 +212,13 @@
 </div>
 
 <div class="contribution_right_box">
-	<%= render :partial => "contributions/uploader_credits_attributions_box", :locals => { :contributable => @workflow, :edit_path => edit_workflow_path(@workflow) } %>
+	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @workflow } %>
 	
 	<%= render :partial => "contributions/license_box", :locals => { :contributable => @workflow } %>
 	
-	<% if false %>
-		<div class="contribution_section_box">
-			<p class="heading">
-				<%= info_icon_with_tooltip("The unique name assigned to the workflow in myExperiment.") %>
-				Unique Name
-			</p>
-			<p>
-				<%=h @workflow.unique_name %>
-			</p>
-		</div>
-	<% end %>
+	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @workflow, :edit_path => edit_workflow_path(@workflow) } %>
+	
+	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @workflow } %>
 	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @workflow,
 																											 :owner_id => ((@workflow.contributor_type == 'User') ? @workflow.contributor_id : nil),  
