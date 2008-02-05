@@ -779,19 +779,15 @@ module ApplicationHelper
     when 0
       return 'Anyone can view and download.'
     when 1
-      return 'Anyone can view, but only Friends and Groups are allowed to download.'
+      return 'Anyone can view, but only Friends are allowed to download.'
     when 2
       return 'Anyone can view, but only the uploader can download.'
     when 3
-      return 'Only Friends and Groups can view and download.'
+      return 'Only Friends can view and download.'
     when 4
-      return 'Only Friends and Groups can view, but only the uploader can download.'
-    when 5
-      return 'Only specific Groups can view and download.'
-    when 6
-      return 'Only specific Groups can view, but only the uploader can download.'
-    when 7
-      return "This is a private #{c_type} - only the uploader can view and download."
+      return 'Only Friends can view, but only the uploader can download.'
+    when 5, 6, 7
+      return "This is a private #{c_type} - only the uploader can view and download (and Groups explicitly shared with)."
     when 8
       return "This #{c_type} has custom sharing permissions."
     end
@@ -803,19 +799,13 @@ module ApplicationHelper
 
     case mode
     when 0
-      return "All those that can view or download can also edit."
+      return "All those that can view or download can also update."
     when 1
-      return "All the uploader's Friends and the members of the uploader's Groups."
-    when 2
-      return "All the uploader's Friends and administrators of the uploader's Groups."
-    when 3
-      return "The members of the specific Groups."
-    when 4
-      return "The administrators of specific Groups."
+      return "All the uploader's Friends."
     when 5
       return "A specific set of Users."
-    when 6
-      return "Only the uploader may update this #{c_type}."
+    when 2, 3, 4, 6
+      return "Only the uploader may update this #{c_type} (and Groups explicitly given update permissions)."
     when 7
       return "This #{c_type} has custom updating permissions."
     end

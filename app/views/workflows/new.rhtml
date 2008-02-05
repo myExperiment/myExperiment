@@ -27,7 +27,7 @@
   <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => false, :contributable => @workflow } %>
                 
   <!-- Sharing -->              
-  <%= render :partial => "contributions/sharing_form", :locals => { :edit => false, :contributable => @workflow } %>
+  <%= render :partial => "contributions/sharing_form", :locals => { :edit => false, :contributable => @workflow, :update_perms => true } %>
                 
   <!-- License/Rights -->
   <%= render :partial => "workflows/license_form", :locals => { :edit => false } %>
