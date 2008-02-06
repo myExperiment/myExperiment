@@ -32,6 +32,10 @@
 						</div>
 					<% end %>
 					
+					<p class="box_standout">
+						<b><%= pluralize network.shared_contributions.length, "shared item" -%></b>
+					</p>
+					
 					<% unless network.members.empty? %>
 						<div class="desc" style="margin-top: 0.6em;">
 							<p style="font-size: 85%;"><b>Members (<%= network.members.length %>):</b></p>
@@ -44,7 +48,7 @@
 						<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
 				  <% else %>
 						<p style="font-size: 85%;"><i>This Group has not been tagged yet!</i></p>
-				  <% end %>	
+				  <% end %>
 				</td>
 				<td class="actions">
 					<%= icon "show", group_path(network), nil, nil, "View" %> 

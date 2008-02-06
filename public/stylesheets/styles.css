@@ -13,6 +13,8 @@ body {
 	   (see: http://developer.yahoo.com/yui/fonts/) */
 	font-family: arial;
 	/*background-color: #FFFFFF;*/
+	
+	line-height: 1em;
 }
 
 p {
@@ -21,6 +23,11 @@ p {
 	line-height: 1.4em;
 	text-align: left;
 	margin-bottom: 0em;
+	vertical-align: middle;
+}
+
+p * {
+	vertical-align: middle;
 }
 
 hr {
@@ -29,6 +36,7 @@ hr {
 
 h1,h2,h3,h4,h5,h6 {
 	font-family: arial;
+	vertical-align: middle;
 }
 
 h1 *, h2 *, h3 *, h4 *, h5 *, h6 * {
@@ -40,7 +48,7 @@ h1 {
 	font-size: 123.1%;
 	color: #000033;
 	margin-top: 0.8em;
-	margin-bottom: 0.8em;
+	margin-bottom: 1em;
 }
 
 h2 {
@@ -232,7 +240,7 @@ fieldset {
 	text-align: center;
 	font-weight: bolder;
 	font-size: 108%;
-	padding: 4px 0;
+	padding: 6px 0;
 	margin-left: 0;
 	margin-bottom: 0;
 	margin-top: 0;
@@ -438,6 +446,7 @@ ul.breadcrumb_list a:hover {
 #home_container .list li {
 	list-style-type: none;
 	margin: 1em 0;
+	line-height: 1.4em;
 }
 
 /* begin css rounded corners - based on "Snazzy Corners" */
@@ -931,7 +940,7 @@ table.contributable:hover {
 }
 
 .contribution_title {
-	margin-bottom: 0.3em;
+	margin-bottom: 0.6em;
 }
 
 .contribution_aftertitle {
@@ -993,7 +1002,7 @@ table.contributable:hover {
 .contribution_section_box .stats_box p {
 	font-size: 85%;
 	text-align: centre;
-	line-height: 1.1em;
+	line-height: 1.3em;
 }
 
 .contribution_section_box hr {

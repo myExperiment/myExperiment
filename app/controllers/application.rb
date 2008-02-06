@@ -137,8 +137,8 @@ class ApplicationController < ActionController::Base
 
     case updating_class
       when "0"
-        edit_protected = true if view_protected == "1" or download_protected == "1"
-        edit_public    = true if view_public    == "1" or download_public    == "1"
+        edit_protected = true if view_protected == "1" and download_protected == "1"
+        edit_public    = true if view_public    == "1" and download_public    == "1"
       when "1"
         edit_protected = true
     end

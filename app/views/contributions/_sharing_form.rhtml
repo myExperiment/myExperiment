@@ -91,13 +91,15 @@
 			<p><strong>Who can update this <%= c_type %> on myExperiment?</strong></p>
 	
 			<div class="box_editing" style="padding-left: 1em; font-size: 93%;">
-				<p style="color: red;">Note that settings here take precedence over the Sharing permissions
-		    above.  So if you give someone updating privileges, they will automatically
-		    be granted view AND download permissions as well.</p>
+				<p style="color: #666666;">
+					Note that settings here take precedence over the Sharing permissions
+			    above. So those with updating privileges will automatically
+			    get to view and download as well.
+				</p>
 	
 	      <p><input <%= 'checked="checked"' if @updating_mode == 0 %> id="updating_option_7" name="updating[class_id]"
 	      value="0" type="radio" onclick="javascript:update_updating(0);" />
-	      - All those who can view or download (from your View/Download permissions
+	      - All those who can view AND download (from your View/Download permissions
 	          above).</p>
 	      
 	      <p><input <%= 'checked="checked"' if @updating_mode == 1 %> id="updating_option_1" name="updating[class_id]"

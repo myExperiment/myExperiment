@@ -91,18 +91,22 @@
   </div>
 </div>
 
-<% if logged_in? and @network.member? current_user.id %>
-	<div class="tabContainer">
-    <div class="tabTitle">Shared Items</div>
-    <div class="tabContent">
-    	<% unless (contributions = @network.shared_contributions).empty? %>
-    		<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
+
+<div class="tabContainer">
+  <div class="tabTitle">Shared Items</div>
+  <div class="tabContent">
+  	<% if logged_in? and @network.member? current_user.id %>
+			<% unless (contributions = @network.shared_contributions).empty? %>
+	  		<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
 			<% else %>
 				<p class="none_text">No items have been shared with this Group yet.</p>
 			<% end %>
-  	</div>
+		<% else %>
+			<p class="none_text">You need to be a member of this Group to see the shared items.</p>
+		<% end %>
 	</div>
-<% end %>
+</div>
+
 
 <% if mine? @network %>
   

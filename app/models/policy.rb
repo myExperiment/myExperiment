@@ -26,6 +26,9 @@ class Policy < ActiveRecord::Base
       
     # false unless action can be categorized
     return false unless category = categorize(action_name)
+    
+    # Bit of hack for update permissions - 'view' and 'download' is authorized if 'edit' is authorized
+    return true if ['download', 'view'].include?(category) and authorized?('edit', c_ution, c_utor) 
       
     unless c_utor.nil?
       if c_ution
@@ -83,7 +86,7 @@ private
   # column in ++permissions+)
   @@categories = { "download" => ["download", "named_download"], 
                    "edit" => ["new", "create", "edit", "update", "new_version", "create_version", "destroy_version", "edit_version", "update_version"], 
-                   "view" => ["index", "show", "search", "bookmark", "comment", "comment_delete", "rate", "tag"],
+                   "view" => ["index", "show", "search", "bookmark", "comment", "comment_delete", "rate", "tag", "view"],
                    "owner" => ["destroy"] } # you don't need a boolean column for this but you do need to categorize 'owner only' actions!
   
   # the policy class contains a hash table of action (method) names and their categories

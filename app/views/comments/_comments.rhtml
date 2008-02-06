@@ -1,8 +1,11 @@
 <%= javascript_include_tag :fckeditor %>
 
 <h2>
-	<%= icon "comments", nil, nil, nil, "" -%>
-	Comments <font class="count_text">(<%= commentable.comments.length %>)</font>
+	<p>
+		<%= icon "comments", nil, nil, nil, "" -%>
+		Comments
+		<font class="count_text">(<%= commentable.comments.length %>)</font>
+	</p>
 </h2>
 
 <div class="commentsBox">

@@ -195,9 +195,7 @@ class User < ActiveRecord::Base
   # protected? asks the question "is other protected by me?"
   def protected?(other)
     if other.kind_of? User               # if other is a User...
-      return true if friend?(other.id)   #       ...is other a friend of mine?
-      return (other.networks.select do |n| n.member?(self.id) end).length > 0
-                                         #       ...is a member of a group that i'm a member of
+      return friend?(other.id)   #       ...is other a friend of mine?
     elsif other.kind_of? Network         # if other is a Network...
       return other.member?(id)           #       ...am I a member of other?
     else                                 # otherwise...

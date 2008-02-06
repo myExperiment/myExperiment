@@ -13,7 +13,8 @@
 	text-align: center;
 	font-size: 167%;
 	font-weight: normal;
-	margin-top: 0.5em;
+	margin: 0.5em 2em 0.3em 2em;
+	line-height: 1.5em;
 }
 
 #myexp_home_content {

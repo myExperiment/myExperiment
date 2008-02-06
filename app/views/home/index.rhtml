@@ -166,15 +166,13 @@
 						<% comments.each do |c| %>
 							<% if thing_authorized?('show', c.commentable) %>
 								<li>
-									<p>
-										<b><%= c_type = visible_name(c.commentable); icon(c.commentable_type.to_s, nil, nil, c_type, c_type) %>:</b>
-										<%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %>
-										<br/>
-										<span style="padding-left: 2em">
-											<b><%= name c.user %></b> said:
-											(<%= timeago_fuzzy c.created_at %>)
-										</span>
-									</p>
+									<b><%= c_type = visible_name(c.commentable); icon(c.commentable_type.to_s, nil, nil, c_type, c_type) %>:</b>
+									<span><%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %></span>
+									<br/>
+									<span style="padding-left: 2em;">
+										<b><%= name c.user %></b> said:
+										(<%= timeago_fuzzy c.created_at %>)
+									</span>
 									<div class="box_standout" style="margin: 0.2em 2em; padding: 0.2em 0.5em;">
 										<%= truncate(white_list(c.comment), 60) %>
 										<p style="text-align: right;">[ <%= link_to "More", (c.commentable_type == 'Network' ? group_url(c.commentable) : contributable_url(c.commentable_id, c.commentable_type)) %> ]</p>

@@ -799,7 +799,7 @@ module ApplicationHelper
 
     case mode
     when 0
-      return "All those that can view or download can also update."
+      return "All those that can view and download can also update."
     when 1
       return "All the uploader's Friends can update."
     when 5

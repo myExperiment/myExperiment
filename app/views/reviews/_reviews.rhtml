@@ -1,8 +1,11 @@
 <%= javascript_include_tag :fckeditor %>
 
 <h2>
-	<%= icon "review", nil, nil, nil, "" -%>
-	<%= link_to "Reviews", reviews_path(reviewable) %> <font class="count_text">(<%= reviewable.reviews.length %>)</font>
+	<p>
+		<%= icon "review", nil, nil, nil, "" -%>
+		<%= link_to "Reviews", reviews_path(reviewable) %>
+		<font class="count_text">(<%= reviewable.reviews.length %>)</font>
+	</p>
 </h2>
 
 <div class="reviewsBox">
