@@ -14,13 +14,13 @@ body {
 	font-family: arial;
 	/*background-color: #FFFFFF;*/
 	
-	line-height: 1em;
+	line-height: 1.0;
 }
 
 p {
 	font-family: arial;
 	padding: 0.3em 0;
-	line-height: 1.4em;
+	line-height: 1.4;
 	text-align: left;
 	margin-bottom: 0em;
 	vertical-align: middle;
@@ -103,6 +103,7 @@ pre {
 a {
 	color: #000099;
 	text-decoration: none;
+	vertical-align: middle;
 }
 
 a:hover {
@@ -110,7 +111,7 @@ a:hover {
 }
 
 small {
-	line-height: 1.2em;
+	line-height: 1.3;
 }
 
 fieldset {
@@ -241,6 +242,7 @@ fieldset {
 	font-weight: bolder;
 	font-size: 108%;
 	padding: 6px 0;
+	*padding: 7px 0; /* hack for IE */
 	margin-left: 0;
 	margin-bottom: 0;
 	margin-top: 0;
@@ -258,8 +260,7 @@ fieldset {
 	border-top: 1px solid #999999;
 	border-left: 1px solid #999999;
 	border-right: 1px solid #999999;
-	border-bottom: none;
-	*border-bottom: 1px solid transparent;
+	border-bottom: 1px solid transparent;
 	text-decoration: none;
 	background-image: url('/images/header-bg.png');
 	background-position: top;
@@ -399,7 +400,7 @@ ul.breadcrumb_list a:hover {
 
 #home_container .box .title {
 	font-size: 100%;
-	line-height: 1em;
+	line-height: 1.0;
 	font-weight: bold;
 	color: #222222;
 	padding: 0.1em 1em 0.4em 1em;
@@ -446,7 +447,7 @@ ul.breadcrumb_list a:hover {
 #home_container .list li {
 	list-style-type: none;
 	margin: 1em 0;
-	line-height: 1.4em;
+	line-height: 1.4;
 }
 
 /* begin css rounded corners - based on "Snazzy Corners" */
@@ -562,7 +563,7 @@ ul.breadcrumb_list a:hover {
 .foldPlaintext {
 	font-weight: normal;
 	font-size: 85%;
-	line-height: 1.2em;
+	line-height: 1.2;
 	padding: 0.1em 0;
 }
 
@@ -670,7 +671,7 @@ ul.breadcrumb_list a:hover {
 	margin-top: 0.4em;
 	margin-left: 0.5em;
 	margin-bottom: 0.5em;
-	line-height: 1.4em;
+	line-height: 1.4;
 }
 
 .news_feed_div ul.news_feed_day li.news_feed_item {
@@ -904,7 +905,7 @@ table.contributable:hover {
 	width: 100%;
 	padding: 0.5em 0.5em;
 	*padding: 0.2em 0.5em;
-	line-height: 1em;
+	line-height: 1.0;
 	text-decoration: none;
 	border: 1px solid #BBBBBB;
 	/*border-width: 1px 2px 2px 1px;*/
@@ -991,7 +992,7 @@ table.contributable:hover {
 .contribution_section_box li {
 	list-style-type: none;
 	margin-bottom: 0;
-	line-height: 1em;
+	line-height: 1.0;
 }
 
 .contribution_section_box p {
@@ -1002,7 +1003,7 @@ table.contributable:hover {
 .contribution_section_box .stats_box p {
 	font-size: 85%;
 	text-align: centre;
-	line-height: 1.3em;
+	line-height: 1.3;
 }
 
 .contribution_section_box hr {
@@ -1015,7 +1016,7 @@ table.contributable:hover {
 .contribution_section_box .heading {
 	font-size: 108%;
 	font-weight: bold;
-	line-height: 1em;
+	line-height: 1.0;
 	margin-top: 0.2em;
 }
 
@@ -1112,7 +1113,7 @@ table.contributable:hover {
 	font-size: 85%;
 	font-weight: bold;
 	color: #666666;
-	line-height: 1.3em;
+	line-height: 1.3;
 }
 
 /* Begin Comments styles */
@@ -1230,7 +1231,7 @@ a.tagsSelectorOn {
 }
 
 .message_box .subject {
-	font-weight: 108%; 
+	font-size: 108%; 
 	background-color: #FFFFCC; 
 	border: 1px dotted #999999; 
 	padding: 0.2em 0.5em; 

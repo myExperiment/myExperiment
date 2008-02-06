@@ -14,7 +14,7 @@
 	font-size: 167%;
 	font-weight: normal;
 	margin: 0.5em 2em 0.3em 2em;
-	line-height: 1.5em;
+	line-height: 1.5;
 }
 
 #myexp_home_content {
@@ -119,6 +119,7 @@
 
 #myexp_home_news li {
 	margin-bottom: 0.5em;
+	line-height: 1.3;
 }
 
 #myexp_home_content .links {

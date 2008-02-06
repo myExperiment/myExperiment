@@ -101,8 +101,8 @@
 				<% if logged_in? %>
 					<%= render :partial => "layouts/news", :locals => { :collection => news(current_user, false) } %>
 				<% else %>
-					<p class="none_text">
-						<p><strong><%= link_to "Log in", new_session_url %> to view your News</strong></p>
+					<p>
+						<b><%= link_to "Log in", new_session_url %> to view your News</b>
 					</p>
 				<% end %>
 			</div>
