@@ -26,7 +26,7 @@ document.onkeypress = handleEnter;
 <div class="fold">
   <div class="foldTitle">
   	<%= info_icon_with_tooltip("Here you can add tags to <strong>describe</strong> this #{c_type}.") %>
-		Tags
+		<span>Tags</span>
 		<% if edit %>
 			<hr />
 			<small>Current: <%= taggable.tags.count %> tags</small>

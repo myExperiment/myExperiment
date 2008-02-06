@@ -7,7 +7,7 @@
 	<% memberships = @user.networks_membership_requests_pending %>
 	<div class="fold">
   		<div class="foldTitle">
-			Pending requests sent by users who want to join your Groups <span style="color: red;">(<%= memberships.length %>)</span>
+			<p>Pending requests sent by users who want to join your Groups <span style="color: red;">(<%= memberships.length %>)</span></p>
 			<hr/>
 			<small><%= memberships.length %> requires approval from you</small>
         </div>
@@ -26,7 +26,7 @@
 	<% memberships = @user.memberships_invited %>
 	<div class="fold">
   		<div class="foldTitle">
-			Pending invitations you have been sent from users to join their Groups <span style="color: red;">(<%= memberships.length %>)</span>
+			<p>Pending invitations you have been sent from users to join their Groups <span style="color: red;">(<%= memberships.length %>)</span></p>
 			<hr/>
 			<small><%= memberships.length %> requires approval from you</small>
         </div>
@@ -46,7 +46,7 @@
 	<% memberships = @user.memberships_requested %>
 	<div class="fold">
   		<div class="foldTitle">
-			Pending requests you have sent to users to join their Groups
+			<p>Pending requests you have sent to users to join their Groups</p>
 			<hr/>
 			<small><%= memberships.length %> waiting approval from others</small>
         </div>
@@ -66,7 +66,7 @@
 	<% memberships = @user.networks_membership_invites_pending %>
 	<div class="fold">
   		<div class="foldTitle">
-			Pending invitations you have sent to users to join your Groups
+			<p>Pending invitations you have sent to users to join your Groups</p>
 			<hr/>
 			<small><%= memberships.length %> waiting approval from others</small>
         </div>
@@ -85,7 +85,7 @@
 	<% groups = @user.networks_owned %>
 	<div class="fold">
   		<div class="foldTitle">
-			Groups you are the administrator of (i.e: your Groups)
+			<p>Groups you are the administrator of (i.e: your Groups)</p>
 			<hr/>
 			<small><%= groups.length %> groups</small>
         </div>
@@ -105,7 +105,7 @@
 	<% groups = @user.networks %>
 	<div class="fold">
   		<div class="foldTitle">
-			Other Groups you are a member of
+			<p>Other Groups you are a member of</p>
 			<hr/>
 			<small><%= groups.length %> groups</small>
         </div>

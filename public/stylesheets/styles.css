@@ -26,10 +26,6 @@ p {
 	vertical-align: middle;
 }
 
-p * {
-	vertical-align: middle;
-}
-
 hr {
 	margin: 1em 0;
 }
@@ -37,10 +33,7 @@ hr {
 h1,h2,h3,h4,h5,h6 {
 	font-family: arial;
 	vertical-align: middle;
-}
-
-h1 *, h2 *, h3 *, h4 *, h5 *, h6 * {
-	vertical-align: middle;
+	line-height: 1.0;
 }
 
 h1 {
@@ -103,7 +96,6 @@ pre {
 a {
 	color: #000099;
 	text-decoration: none;
-	vertical-align: middle;
 }
 
 a:hover {
@@ -242,7 +234,6 @@ fieldset {
 	font-weight: bolder;
 	font-size: 108%;
 	padding: 6px 0;
-	*padding: 7px 0; /* hack for IE */
 	margin-left: 0;
 	margin-bottom: 0;
 	margin-top: 0;
@@ -287,16 +278,17 @@ fieldset {
 	color: #FFFFFF;
 }
 
-/* end css tabs nav */ /* begin css breadcrumbs */
+/* end css tabs nav */ 
+
+/* begin css breadcrumbs */
 #myexp_breadcrumbs_bar {
 	font-weight: bold !important;
 	font-size: 85%;
 	text-decoration: none;
-	padding: 0.4em 0.5em;
-	*padding: 0.2em 0.5em;
+	padding: 0.3em 0.5em;
 	background-color: #EEEEEE;
-	border-top: 2px solid #F5F5F5; *
-	margin-left: 1px;
+	border-top: 2px solid #F5F5F5;
+	*margin-left: 1px;
 }
 
 #myexp_breadcrumbs_bar table {
@@ -308,11 +300,7 @@ fieldset {
 #myexp_breadcrumbs_bar td {
 	text-align: left;
 	margin: 0;
-	padding: 0;
-}
-
-#myexp_breadcrumbs_bar td * {
-	vertical-align: top;
+	padding: 0.3em 0;
 }
 
 ul.breadcrumb_list {
@@ -322,16 +310,8 @@ ul.breadcrumb_list {
 	border: none;
 }
 
-ul.breadcrumb_list * {
-	vertical-align: top;
-}
-
 ul.breadcrumb_list li {
 	display: inline;
-}
-
-ul.breadcrumb_list li * {
-	vertical-align: top;
 }
 
 ul.breadcrumb_list a {
@@ -374,7 +354,6 @@ ul.breadcrumb_list a:hover {
 	font-size: 93%;
 	text-align: left;
 	max-width: 400px;
-	text-align: left;
 }
 
 /* end css tooltips/boxovers */
@@ -539,21 +518,35 @@ ul.breadcrumb_list a:hover {
 	width: 100%;
 }
 
+.foldTitle p {
+	padding: 0.1em 0;
+	line-height: 1.0;
+	vertical-align: middle;
+}
+
+.foldTitle p * {
+	vertical-align: top;
+}
+
 .foldTitle hr {
-	margin: 0.4em 0; *
-	margin: 0;
+	margin: 0.4em 0;
+	*margin: 0;
+	line-height: 1.0;
 }
 
 .foldTitle small {
 	font-size: 85%;
 	font-weight: normal;
+	line-height: 1.2;
 }
 
 .foldText {
 	font-weight: bold;
 	text-align: left;
-	padding: 0.5em; *
-	padding: 0.3em;
+	padding: 0.5em;
+	*padding: 0.3em;
+	vertical-align: middle;
+	
 }
 
 .foldText * {
@@ -876,7 +869,6 @@ table.contributable:hover {
 
 .sectionIcons {
 	margin: 0.5em 0 1em 0;
-	*margin: 0.5em 0 1.5em 0;
 	font-size: 85%;
 	font-weight: bold;
 	text-align: center;
@@ -1362,12 +1354,10 @@ div.auto_complete ul strong.highlight {
 .none_text {
 	font-style:italic;
 	color:#666666;
-	vertical-align: middle;
 }
 
 .count_text {
 	color: #999999;
-	vertical-align: middle;
 }
 
 	

@@ -1,7 +1,7 @@
 <div class="contribution_section_box">
 	<p class="heading">
 		<%= info_icon_with_tooltip("The tags for this #{visible_name taggable} entry (applies to all #{visible_name taggable} versions in this entry). Note: the size of the tags show how popular they are on myExperiment.") %>
-		Tags <font class="count_text">(<%= taggable.taggings.length -%>)</font>
+		Tags <span class="count_text">(<%= taggable.taggings.length -%>)</span>
 	</p>
 
 	<%= render :partial => "tags/tags_box_inner", :locals => { :taggable => taggable, :owner_id => owner_id } %>
