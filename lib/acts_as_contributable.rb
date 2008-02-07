@@ -23,6 +23,8 @@ module Mib
           acts_as_rateable
           acts_as_taggable
           
+          after_save :save_contributable_record
+
           # NOTE: because we cannot do polymorphic nested resources with Rails 1.2.3,
           # the line below has been moved to the Workflow model class. 
           #acts_as_reviewable
@@ -72,6 +74,12 @@ module Mib
         # the last contributor to upload this contributable
         def uploader?(c_utor)
           contributor_id.to_i == c_utor.id.to_i and contributor_type.to_s == c_utor.class.to_s
+        end
+
+        # This is so that the updated_at time on the record tallies up with the
+        # contributable
+        def save_contributable_record
+          contribution.save
         end
       end
     end
