@@ -245,10 +245,16 @@ class BlobsController < ApplicationController
   protected
   
   def find_blobs
-    @blobs = Blob.find(:all, 
+   found = Blob.find(:all, 
                        :order => "content_type ASC, local_name ASC, created_at DESC",
-    :page => { :size => 20, 
-      :current => params[:page] })
+                       :page => { :size => 20, 
+                       :current => params[:page] })
+      
+    found.each do |blob|
+      blob.data = nil unless blob.authorized?("download", (logged_in? ? current_user : nil))
+    end
+    
+    @blobs = found
   end
   
   def find_blob_auth

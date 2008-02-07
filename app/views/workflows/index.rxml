@@ -6,6 +6,6 @@ xml.rss "version" => "2.0", 'xmlns:opensearch' => "http://a9.com/-/spec/opensear
     xml.ttl "60"
     xml.tag! "atom:link", :rel => 'search', :type => 'application/opensearchdescription+xml', :href => "http://#{request.host_with_port}/open_search.xml"
     xml.description "RSS feed listing the latest Workflows which have been uploaded to myExperiment.org"
-    render(:partial => "layouts/workflow", :collection => @workflows, :locals => { :xm => xml })
+    render(:partial => "layouts/workflow", :collection => @rss_workflows, :locals => { :xm => xml })
   end
 end

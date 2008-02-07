@@ -398,6 +398,14 @@ protected
     end
     
     @workflows = found
+    
+    found2 = Workflow.find(:all, :order => "updated_at DESC", :limit => 30)
+    
+    @rss_workflows = [ ]
+    
+    found2.each do |workflow|
+      @rss_workflows << workflow if workflow.authorized?("show", (logged_in? ? current_user : nil))
+    end
   end
   
   def find_workflow_auth

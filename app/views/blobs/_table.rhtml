@@ -48,11 +48,10 @@
 					<p style="font-size:85%;"><b>License: </b><%= license_link blob.license.to_s %></p>
 					
 					<% if blob.body and blob.body.length > 0 %>
-						<% # desc = truncate(white_list(blob.body_html), 400) %>
-				  		<% desc = truncate(strip_html(blob.body), 400) %>
-					  	<div class="desc" style="font-size: 85%;">
-					    	<%= query ? highlight_all(desc, query) : desc %>
-					  	</div>
+			  		<% desc = truncate(strip_html(blob.body), 500) %>
+				  	<div class="desc" style="font-size: 85%;">
+				    	<%= query ? highlight_all(desc, query) : desc %>
+				  	</div>
 					<% end %>
 					
 					<p style="font-size:85%;"><b>File type: </b><%= h blob.content_type %></p>

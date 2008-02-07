@@ -27,17 +27,17 @@
 					<% if network.description and network.description.length > 0 %>
 						<% # desc = truncate(white_list(network.description_html), 400) %>
 						<% desc = truncate(strip_html(network.description), 400) %>
-						<div class="desc">
+						<div class="desc" style="font-size: 85%;">
 							<%= query ? highlight_all(desc, query) : desc %>
 						</div>
 					<% end %>
 					
-					<p class="box_standout">
+					<p class="box_standout" style="margin-top: 0.4em;">
 						<b><%= pluralize network.shared_contributions.length, "shared item" -%></b>
 					</p>
 					
 					<% unless network.members.empty? %>
-						<div class="desc" style="margin-top: 0.6em;">
+						<div class="desc" style="margin-top: 0.4em;">
 							<p style="font-size: 85%;"><b>Members (<%= network.members.length %>):</b></p>
 							<div style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40 } %></div>
 						</div>
