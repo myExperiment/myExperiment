@@ -99,10 +99,8 @@ class ApplicationController < ActionController::Base
     
     return if params[:sharing].nil? or params[:sharing][:class_id].blank?
     
-    params[:updating][:class_id] = "6" if params[:updating].nil? or params[:updating][:class_id].blank?
-
     sharing_class  = params[:sharing][:class_id]
-    updating_class = params[:updating][:class_id]
+    updating_class = (params[:updating] and !params[:updating][:class_id].blank?) ? params[:updating][:class_id] : "6"
     
     # Check allowed sharing_class values
     return unless [ "0", "1", "2", "3", "4", "7" ].include? sharing_class
@@ -123,11 +121,15 @@ class ApplicationController < ActionController::Base
       when "0"
         view_public        = "1"
         download_public    = "1"
+        view_protected     = "1"
+        download_protected = "1"
       when "1"
         view_public        = "1"
+        view_protected     = "1"
         download_protected = "1"
       when "2"
         view_public        = "1"
+        view_protected     = "1"
       when "3"
         view_protected     = "1"
         download_protected = "1"          
