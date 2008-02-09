@@ -284,7 +284,7 @@ class WorkflowsController < ApplicationController
     end
     
     # Remove sculf in case (since scufl can never be updated, only new versions can be uploaded (see seperate actions for that)
-    params[:workflow][:scufl] = nil
+    params[:workflow].delete('scufl') if params[:workflow][:scufl]
     
     respond_to do |format|
       if @workflow.update_attributes(params[:workflow])

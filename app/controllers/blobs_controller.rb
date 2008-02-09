@@ -142,7 +142,7 @@ class BlobsController < ApplicationController
     end
     
     # 'Data' (ie: the actual file) cannot be updated!
-    params[:blob][:data] = nil
+    params[:blob].delete('data') if params[:blob][:data]
     
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
