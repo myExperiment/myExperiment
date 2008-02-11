@@ -642,7 +642,7 @@ module ApplicationHelper
     when "news"
       return "famfamfam_silk/newspaper.png"
     when "feedback"
-      return "famfamfam_silk/sound.png"
+      return "famfamfam_silk/user_comment.png"
     when "view-all"
       return "famfamfam_silk/table_go.png"
     when "announcement"
@@ -766,6 +766,8 @@ module ApplicationHelper
       return "Groups"
     when "Simple pages"
       return "Info"
+    when "Session"
+      return "Log in"
     else
       return humanized_controller_for
     end

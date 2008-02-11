@@ -23,7 +23,6 @@ p {
 	line-height: 1.4;
 	text-align: left;
 	margin-bottom: 0em;
-	vertical-align: middle;
 }
 
 hr {
@@ -32,7 +31,6 @@ hr {
 
 h1,h2,h3,h4,h5,h6 {
 	font-family: arial;
-	vertical-align: middle;
 	line-height: 1.0;
 }
 
@@ -48,7 +46,7 @@ h2 {
 	background-image: url('/images/header-bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
-	background-color: #F5F5F5;
+	background-color: #EEEEEE;
 	padding: 0.5em 0.6em;
 	border: 1px solid #999999;
 	color: #333333;
@@ -111,6 +109,10 @@ fieldset {
 	padding: 1em;
 }
 
+li {
+	line-height: 1.4;
+}
+
 .clearer {
 	padding: 0;
 	height: 1px;
@@ -161,34 +163,67 @@ fieldset {
 #myexp_sidebar {
 	padding: 0 0.5em 0 0.5em;
 	background-color: #456AAA;
-	border-left: 2px solid #eee;
+	border-left: 0px solid #DEDEDE;
+	border-width: 0 0 1px 1px;
 }
+
+/* Begin Footer styles */
 
 #ft {
-	margin: 0 0 2em 0;
-	border-top: 0px dotted #999999;
+	margin: 2em 0;
+	border: 0px dotted #999999;
+	border-width: 1px 0 1px 0;
+	color: #333333;
+	background-image: url('/images/footer-bg.png');
+	background-position: top;
+	background-repeat: repeat-x;
+	background-color: #EEEEEE;
 }
 
-#ft .content {
-	background-image: url('/images/footer.png');
-	background-repeat: no-repeat;
-	background-position: bottom center;
-	background-color: transparent;
-	color: #F5F5F5;
-	font-size: 85%;
-	height: 20px;
-	padding: 6px 1em 14px 1em;
+#ft .copyright {
+	text-align: center;
+	font-weight: bold;
+	font-size: 93%;
+	border-bottom: 1px dotted #999999;
+	padding: 0.5em;
+}
+
+#ft table {
+	width: 100%;
+	border-spacing: 0;
 	margin: 0;
 }
 
-#ft .content a {
-	color: #F5F5F5;
+#ft td {
+	padding: 0.8em 2em;
+	vertical-align: top;
 }
 
-#ft .content * {
-	vertical-align: middle;
-	background-color: transparent;
+#ft .left {
+	width: 100px; 
+	text-align: left;
+	font-size: 85%;
 }
+
+#ft .middle {
+	width: 350px; 
+	text-align: left;
+	font-size: 85%;
+	border-left: 1px dotted #999999;
+}
+
+#ft .right {
+	width: 150px; 
+	text-align: center;
+	font-size: 77%; 
+	border-left: 1px dotted #999999;
+}
+
+#ft .right p {
+	text-align: center;
+}
+
+/* End Footer styles */
 
 #tag_clouds {
 	text-align: center;
@@ -233,7 +268,8 @@ fieldset {
 	text-align: center;
 	font-weight: bolder;
 	font-size: 108%;
-	padding: 6px 0;
+	padding: 4px 0;
+	*padding: 3px 0;
 	margin-left: 0;
 	margin-bottom: 0;
 	margin-top: 0;
@@ -253,7 +289,7 @@ fieldset {
 	border-right: 1px solid #999999;
 	border-bottom: 1px solid transparent;
 	text-decoration: none;
-	background-image: url('/images/header-bg.png');
+	background-image: url('/images/tab-bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
 	background-color: #F5F5F5;
@@ -285,9 +321,11 @@ fieldset {
 	font-weight: bold !important;
 	font-size: 85%;
 	text-decoration: none;
-	padding: 0.3em 0.5em;
+	padding: 0.4em 0.5em;
+	*padding: 0.2em 0.5em;
 	background-color: #EEEEEE;
-	border-top: 2px solid #F5F5F5;
+	border: 0px solid #DEDEDE;
+	border-width: 0 0 1px 1px;
 	*margin-left: 1px;
 }
 
@@ -300,7 +338,12 @@ fieldset {
 #myexp_breadcrumbs_bar td {
 	text-align: left;
 	margin: 0;
-	padding: 0.3em 0;
+	padding: 0;
+	vertical-align: middle;
+}
+
+#myexp_breadcrumbs_bar td * {
+	vertical-align: middle;
 }
 
 ul.breadcrumb_list {
@@ -308,10 +351,15 @@ ul.breadcrumb_list {
 	margin: 0;
 	padding: 0;
 	border: none;
+	vertical-align: middle;
 }
 
 ul.breadcrumb_list li {
 	display: inline;
+}
+
+ul.breadcrumb_list li * {
+	vertical-align: middle;
 }
 
 ul.breadcrumb_list a {
@@ -322,7 +370,10 @@ ul.breadcrumb_list a:hover {
 	color: red;
 }
 
-/* end css breadcrumbs */ /* begin css tooltips/boxovers */
+/* end css breadcrumbs */ 
+
+/* begin css tooltips/boxovers */
+
 .boxoverTooltipHeader {
 	display: none;
 	border: 0;
@@ -335,9 +386,10 @@ ul.breadcrumb_list a:hover {
 	background-color: #FFFF66;
 	font-size: 93%;
 	font-weight: normal;
-	padding: 0.3em 0.6em;
+	padding: 0.4em 0.6em;
 	max-width: 500px;
 	text-align: left;
+	line-height: 1.4em;
 }
 
 .boxoverInfoHeader {
@@ -354,6 +406,7 @@ ul.breadcrumb_list a:hover {
 	font-size: 93%;
 	text-align: left;
 	max-width: 400px;
+	line-height: 1.4em;
 }
 
 /* end css tooltips/boxovers */
@@ -509,7 +562,7 @@ ul.breadcrumb_list a:hover {
 	background-image: url('/images/header-bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
-	background-color: #F5F5F5;
+	background-color: #EEEEEE;
 	color: #333333;
 	border: 1px solid #999999;
 	border-bottom: 2px solid #aaa;

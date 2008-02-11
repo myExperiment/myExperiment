@@ -25,10 +25,10 @@
 .myexperiment_gadget .header {
 	border: #999999 0px solid;
 	border-width: 0 1px 1px 1px;
-	background-image: url('/images/header-bg.png');
+	background-image: url('/images/gadget-hd-bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
-	background-color: #F5F5F5;
+	background-color: #EEEEEE;
 	text-align: center;
 	padding: 0 0.5em 0.2em 0.5em;
 }
@@ -133,7 +133,7 @@
 .myexperiment_gadget .xb2, 
 .myexperiment_gadget .xb3, 
 .myexperiment_gadget .xb4 {
-	background: #DFDFDF;
+	background: #DEDEDE;
 	border-left: 1px solid #999999;
 	border-right: 1px solid #999999;
 }

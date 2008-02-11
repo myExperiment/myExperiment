@@ -1,11 +1,37 @@
-<div class="content">
+<p class="copyright">
+	Copyright (c) 2007 
+	<%= link_to "The University of Manchester", "http://www.manchester.ac.uk/", :target => '_blank' %>
+	and
+	<%= link_to "University of Southampton", "http://www.soton.ac.uk/", :target => '_blank' %>
+</p>
 
-	<% if false %>
-	<p style="text-align: left; font-size: 108%;">
-		<b><%= link_to "Give us Feedback", "/feedback" %></b>
-	</p>
-	<% end %>
-	
-	<p>Icons courtesy of: Silk icon set 1.3 [<%= link_to "http://www.famfamfam.com/lab/icons/silk/", "http://www.famfamfam.com/lab/icons/silk/", :target => '_blank' %>]</p>
-
+<div>
+	<table>
+		<tr>
+			<td class="left">
+				<p><%= link_to "Home", "/home" %></p>
+				<p><%= link_to "Wiki", "http://wiki.myexperiment.org/", :target => '_blank' %></p>
+				<p><%= link_to "Mailing List", "http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss", :target => '_blank' %></p>
+				<p><%= link_to "Contact Us", "/feedback", :target => '_blank' %></p>
+			</td>
+			<td class="middle">
+				<p><%= link_to "myGrid / Taverna", "http://www.mygrid.org.uk", :target => '_blank' %></p>
+			</td>
+			<td class="middle">
+				<p><%= link_to "JISC", "http://jisc.ac.uk/", :target => '_blank' %></p>
+				<p><%= link_to "Microsoft", "http://www.microsoft.com", :target => '_blank' %></p>
+			</td>
+			<td class="right">
+				<p>Powered by:</p>
+				<%= link_to image_tag('rails.png'), "http://www.rubyonrails.com", :target => '_blank' %>
+				
+				<p style="margin-top: 0.2em;">
+					Icons:
+					<br/>
+					<b><%= link_to "Silk icon set 1.3", "http://www.famfamfam.com/lab/icons/silk/", :target => '_blank' %></b>
+				</p>
+			</td>
+		</tr>
+	</table>
 </div>
+
