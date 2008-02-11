@@ -200,13 +200,13 @@ li {
 }
 
 #ft .left {
-	width: 100px; 
+	width: 150px; 
 	text-align: left;
 	font-size: 85%;
 }
 
 #ft .middle {
-	width: 350px; 
+	width: 325px; 
 	text-align: left;
 	font-size: 85%;
 	border-left: 1px dotted #999999;
