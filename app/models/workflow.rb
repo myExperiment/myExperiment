@@ -16,6 +16,8 @@ class Workflow < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
   
+  has_many :jobs
+
   acts_as_contributable
   
   acts_as_creditable

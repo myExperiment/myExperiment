@@ -200,6 +200,10 @@
 						<%= link_to "* http://taverna.sourceforge.net/", "http://taverna.sourceforge.net/" %>
 					</p>
 				</div>
+
+                                <div>
+                                  <p><%= link_to 'Run', :action => 'new', :controller => 'jobs', :id => @workflow.id %> this workflow using the Remote Taverna Service.</p>
+                                </div>
 			<% else %>
 				<p class="none_text">
 					You do not have permissions to run this Workflow

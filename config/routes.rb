@@ -22,7 +22,10 @@ ActionController::Routing::Routes.draw do |map|
   
   # openid authentication
   map.resource :openid
-  
+
+  # jobs
+  map.resource :jobs
+
   # all citations
   # map.resources :citations
 

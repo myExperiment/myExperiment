@@ -55,3 +55,17 @@ ADDTHIS_WIDGET_USERNAME = "addthis.com username"
 # END addthis.com bookmarking widget settings
 # ---
 
+# ---
+# BEGIN Taverna Service configuration
+
+TAVERNA_SERVICE_USER_NAME = 'username'
+TAVERNA_SERVICE_PASSWORD  = 'password'
+TAVERNA_SERVICE_HOST      = 'http://localhost:8080'
+TAVERNA_SERVICE_NAME      = 'remotetaverna'
+TAVERNA_SERVICE_VERSION   = 'v1'
+TAVERNA_SERVICE_PATH      = "/#{TAVERNA_SERVICE_NAME}/#{TAVERNA_SERVICE_VERSION}"
+TAVERNA_SERVICE_USER      = "#{TAVERNA_SERVICE_HOST}#{TAVERNA_SERVICE_PATH}/users/#{TAVERNA_SERVICE_USER_NAME}"
+
+# END Taverna Service configuration
+# ---
+
