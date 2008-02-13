@@ -4,17 +4,16 @@
 # See license.txt for details.
 
 class ExperimentsController < ApplicationController
+  
+  before_filter :login_required
+  
+  before_filter :find_experiments, :only => [:index]
+  before_filter :find_experiment, :except => [:search, :index, :new, :create, :all]
+  
   def index
-    list
-    render :action => 'list'
-  end
-
-  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :list }
-
-  def list
-    @experiment_pages, @experiments = paginate :experiments, :per_page => 10
+    respond_to do |format|
+      format.html # index.rhtml
+    end
   end
 
   def show

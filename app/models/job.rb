@@ -10,4 +10,9 @@ class Job < ActiveRecord::Base
   belongs_to :experiment
   
   format_attribute :description
+  
+  def authorized?(action_name, c_utor=nil)
+    # Use authorization logic from parent Experiment
+    return self.experiment.authorized?(action_name, c_utor)
+  end
 end

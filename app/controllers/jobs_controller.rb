@@ -4,6 +4,15 @@
 # See license.txt for details.
 
 class JobsController < ApplicationController
+  
+  before_filter :login_required, :except => [ :index, :show ]
+  
+  before_filter :find_reviewable_auth
+  
+  before_filter :find_reviews, :only => [ :index ]
+  before_filter :find_review, :only => [ :show ]
+  before_filter :find_review_auth, :only => [ :edit, :update, :destroy ]
+  
   def index
     list
     render :action => 'list'
