@@ -10,6 +10,7 @@ require 'acts_as_attributor'
 require 'acts_as_attributable'
 require 'explicit_versioning'
 require 'acts_as_reviewable'
+require 'acts_as_runnable'
 
 class Workflow < ActiveRecord::Base
   has_many :citations, 
@@ -47,6 +48,8 @@ class Workflow < ActiveRecord::Base
   acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name ],
                :include => [ :comments ]) if SOLR_ENABLE
 
+  acts_as_runnable
+  
   validates_presence_of :title, :scufl
   
   format_attribute :body
