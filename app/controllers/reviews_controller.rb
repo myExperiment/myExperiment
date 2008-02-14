@@ -36,6 +36,9 @@ class ReviewsController < ApplicationController
     @review = Review.new
     @review.reviewable = @reviewable
     @review.user_id = current_user.id
+    respond_to do |format|
+      format.html # new.rhtml
+    end
   end
 
   def create
@@ -57,7 +60,9 @@ class ReviewsController < ApplicationController
   end
 
   def edit
-    @review = Review.find(params[:id])
+    respond_to do |format|
+      format.html # edit.rhtml
+    end
   end
 
   def update
@@ -145,14 +150,14 @@ protected
     if review = @reviewable.reviews.find(:first, :conditions => ["id = ? AND user_id = ?", params[:id], current_user.id])
       @review = review
     else
-      error("Review not found (id not authorized)", "is invalid (not authorized)")
+      error("Review not found or action not authorized", "is invalid (not authorized)")
     end
   end
 
 private
 
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Review.new.errors).add(attr, message)
     
     respond_to do |format|
@@ -160,5 +165,4 @@ private
       format.xml { render :xml => err.to_xml }
     end
   end
-
 end
