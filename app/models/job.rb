@@ -6,11 +6,17 @@
 class Job < ActiveRecord::Base
   
   belongs_to :runnable, :polymorphic => true
+  validates_presence_of :runnable
+  
   belongs_to :runner, :polymorphic => true
+  validates_presence_of :runner
   
   belongs_to :experiment
+  validates_presence_of :experiment
   
   format_attribute :description
+  
+  validates_presence_of :title
   
   def authorized?(action_name, c_utor=nil)
     # Use authorization logic from parent Experiment
