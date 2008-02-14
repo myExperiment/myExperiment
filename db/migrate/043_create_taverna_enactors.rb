@@ -10,7 +10,7 @@ class CreateTavernaEnactors < ActiveRecord::Migration
       
       t.column :url, :string
       t.column :username, :string
-      t.column :crypted_password, :string, :limit => 40
+      t.column :crypted_password, :string
       
       t.column :created_at, :datetime
       t.column :updated_at, :datetime

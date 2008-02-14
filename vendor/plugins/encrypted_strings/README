@@ -1,0 +1,92 @@
+= encrypted_strings
+
++encrypted_strings+ provides dead-simple string encryption/decryption syntax.
+
+== Resources
+
+Announcement
+
+* http://www.pluginaweek.org
+
+Wiki
+
+* http://wiki.pluginaweek.org/Encrypted_strings
+
+API
+
+* http://api.pluginaweek.org/encrypted_strings
+
+Development
+
+* http://dev.pluginaweek.org/browse/trunk/plugins/ruby/string/encrypted_strings
+
+Source
+
+* http://svn.pluginaweek.org/trunk/plugins/ruby/string/encrypted_strings
+
+== Description
+
+Encrypting and decrypting data is not exactly the most straightforward and DRY
+way.  encrypted_strings greatly improves upon this syntax and adds
+straightforward support for encrypting values using SHA-1, Symmetric, and
+Asymmetric modes.
+
+== Usage
+
+=== SHA Encryption
+
+  >> password = "shhhh"
+  => "shhhh"
+  >> crypted_password = password.encrypt
+  => "66c85d26dadde7e1db27e15a0776c921e27143bd"
+  >> crypted_password.class
+  => String
+  >> crypted_password.encryptor
+  => #<PluginAWeek::EncryptedStrings::ShaEncryptor:0x2b9238889460 @salt="salt">
+  >> crypted_password == "shhhh"
+  => true
+  >> crypted_password.decrypt
+  NotImplementedError: Decryption is not supported using a(n) PluginAWeek::EncryptedStrings::ShaEncryptor
+          from ./script/../config/../config/../vendor/plugins/encrypted_strings/lib/encrypted_strings/encryptor.rb:13:in `decrypt'
+          from ./script/../config/../config/../vendor/plugins/encrypted_strings/lib/encrypted_strings/extensions/string.rb:52:in `decrypt'
+          from (irb):40
+
+When encrypt is called, it creates an +encryptor+ instance which is used for
+future encryption and decryption of the string.  The default encryptor uses
+SHA-1 encryption.  For encryption modes that do not support decryption, equality
+with other strings is tested by encrypting the other string and checking whether
+the resulting encrypted value is the same.
+
+=== Symmetric Encryption
+
+  >> password = "shhhh"
+  => "shhhh"
+  >> crypted_password = password.encrypt(:symmetric, :key => "my_key")
+  => "jDACXI5hMPI=\n"
+  >> crypted_password.class
+  => String
+  >> crypted_password == "shhhh"
+  => true
+  >> password = crypted_password.decrypt
+  => "shhhh"
+
+=== Asymmetric encryption
+
+  >> password = "shhhh"
+  => "shhhh"
+  >> crypted_password = password.encrypt(:asymmetric, :public_key_file => "./public.key", :private_key_file => "./private.key")
+  => "NEwVzcikYUKfS8HTc9L9eg/dMxBCLZ/nFr7J1aQYjkl3I2MPUD0lmjr/saC6\nTJEPwOl60Ki24H8TUwnGtZy14A==\n"
+  >> crypted_password.class
+  => String
+  >> crypted_password == "shhhh"
+  => true
+  >> password = crypted_password.decrypt
+  => "shhhh"
+
+== Dependencies
+
+This plugin does not depend on the presence of any other plugins.
+
+== References
+
+* Rick Olson - sentry[http://svn.techno-weenie.net/projects/plugins/sentry]

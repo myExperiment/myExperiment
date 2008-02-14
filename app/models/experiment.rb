@@ -4,11 +4,15 @@
 # See license.txt for details.
 
 class Experiment < ActiveRecord::Base
-  belongs_to :contributor, :polymorphic => true
   
-  has_many :jobs
+  belongs_to :contributor, :polymorphic => true
+  validates_presence_of :contributor
+  
+  has_many :jobs, :dependant => :destroy
   
   format_attribute :description
+  
+  validates_presence_of :title
   
   # Note: at the moment (Feb 2008), Experiments (and associated Jobs) are private to the owner, if a User owns it, 
   # OR accessible by all members of a Group, if a Group owns it. 

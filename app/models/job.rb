@@ -4,6 +4,7 @@
 # See license.txt for details.
 
 class Job < ActiveRecord::Base
+  
   belongs_to :runnable, :polymorphic => true
   belongs_to :runner, :polymorphic => true
   

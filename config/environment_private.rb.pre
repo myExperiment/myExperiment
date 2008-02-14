@@ -18,6 +18,9 @@ ActionMailer::Base.server_settings = {
   :password  => "password"
 }
 
+# Key used for Symmetric Encryption
+SYM_ENCRYPTION_KEY = "your_symmetric_encryption_key"
+
 # Secret word used for email confirmation hashes (and possibly other things)
 SECRET_WORD = "our_secret_word_that_no_one_knows"
 
