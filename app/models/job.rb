@@ -22,4 +22,8 @@ class Job < ActiveRecord::Base
     # Use authorization logic from parent Experiment
     return self.experiment.authorized?(action_name, c_utor)
   end
+  
+  def submit_and_run(inputs)
+    
+  end
 end
