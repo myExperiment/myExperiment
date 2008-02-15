@@ -77,10 +77,10 @@ protected
   def find_experiments
     # Currently, only return the Experiments that the current user has access to,
     # ie: Experiments the user owns, and Experiments owned by the user's groups.
-    @experiments = Experiment.find(:all, :conditions => ["contributor_type = ? AND contributor_type = ?", 'User', current_user.id])
+    @experiments = Experiment.find_by_contributor('User', current_user.id)
     @group_experiments = []
     [current_user.networks + current_user.networks_owned].each do |n|
-      @group_experiments << Experiment.find(:all, :conditions => ["contributor_type = ? AND contributor_type = ?", 'Network', n.id])
+      @group_experiments << Experiment.find_by_contributor('Network', n.id)
     end
   end
   

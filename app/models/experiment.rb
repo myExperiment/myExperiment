@@ -14,6 +14,10 @@ class Experiment < ActiveRecord::Base
   
   validates_presence_of :title
   
+  def self.find_by_contributor(contributor_type, contributor_id)
+    Experiment.find(:all, :conditions => ["contributor_type = ? AND contributor_id = ?", contributor_type, contributor_id])
+  end
+  
   # Note: at the moment (Feb 2008), Experiments (and associated Jobs) are private to the owner, if a User owns it, 
   # OR accessible by all members of a Group, if a Group owns it. 
   def authorized?(action_name, c_utor=nil)

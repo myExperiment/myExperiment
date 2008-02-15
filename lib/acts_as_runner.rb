@@ -28,7 +28,8 @@ module Jits
 
       module InstanceMethods
         # TODO: abstract out the set of methods that define a contract for a runner and declare them here.
-        # to be overridden in the specialised model object.
+        # To be overridden in the specialised model object.
+        # e.g: submit_job
       end
     end
   end

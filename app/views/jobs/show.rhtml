@@ -1,8 +1,11 @@
-<% for column in Job.content_columns %>
-<p>
-  <b><%= column.human_name %>:</b> <%=h @job.send(column.name) %>
-</p>
-<% end %>
+<% t "#{h @job.title}" -%>
 
-<%= link_to 'Edit', :action => 'edit', :id => @job %> |
-<%= link_to 'Back', :action => 'list' %>
+<h1>Job: <%= h @job.title %></h1>
+
+<p class"sub-heading">
+	<b>Part of Experiment: </b>
+	<%= link_to h(@experiment.title), experiment_url(@experiment) %>
+</p>
+
+
+

@@ -2,6 +2,9 @@ ActionController::Routing::Routes.draw do |map|
   # forums
   map.from_plugin :savage_beast
   
+  # Runners
+  map.resources :runners
+  
   # Experiments
   map.resources :experiments do |e|
     # Experiments have nested Jobs

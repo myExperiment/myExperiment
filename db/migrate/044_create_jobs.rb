@@ -1,8 +1,6 @@
 class CreateJobs < ActiveRecord::Migration
   def self.up
     create_table :jobs do |t|
-      t.column :job_uri, :string
-      
       t.column :title, :string
       
       t.column :description, :text
@@ -24,7 +22,11 @@ class CreateJobs < ActiveRecord::Migration
       t.column :last_status, :string
       t.column :last_status_at, :datetime
       
-      t.column :job_manifest, :binary, :limit => 1073741824
+      t.column :job_uri, :string
+      t.column :job_manifest, :binary, :limit => 104857600 # in bytes; = 100MB
+      t.column :inputs_uri, :string
+      t.column :inputs_data, :binary, :limit => 104857600 # in bytes; = 100MB
+      t.column :outputs_uri, :string
       
       t.column :created_at, :datetime
       t.column :updated_at, :datetime

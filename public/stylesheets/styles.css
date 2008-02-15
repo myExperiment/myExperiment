@@ -1413,4 +1413,10 @@ div.auto_complete ul strong.highlight {
 	color: #999999;
 }
 
+.sub-heading {
+	text-align: center; 
+	font-size: 108%; 
+	margin-bottom: 0.5em;
+}
+
 	

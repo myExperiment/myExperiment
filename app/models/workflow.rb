@@ -94,4 +94,21 @@ class Workflow < ActiveRecord::Base
     return list
   end
   
+  # Begin SCUFL specific methods
+
+  def get_input_ports(version=nil)
+    if version
+      return nil unless (workflow_version = self.find_version(version))
+      version_scufl = workflow_version.scufl
+    else
+      version_scufl = self.scufl
+    end
+    
+    parser = Scufl::Parser.new
+    model  = parser.parse(version_scufl)
+    
+    return model.sources
+  end
+
+  # End SCUFL specific methods
 end

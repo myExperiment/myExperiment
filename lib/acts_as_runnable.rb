@@ -27,6 +27,9 @@ module Jits
       end
 
       module InstanceMethods
+        # TODO: abstract out the set of methods that define a contract for a runnable and declare them here.
+        # To be overridden in the specialised model object.
+        # eg: get_input_ports
       end
     end
   end
