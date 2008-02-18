@@ -7,5 +7,31 @@
 	<%= link_to h(@experiment.title), experiment_url(@experiment) %>
 </p>
 
+<h2>Runnable Item</h2>
+
+<%= render :partial => "#{@job.runnable_type.downcase.pluralize}/table", :locals => { :collection => [ @job.runnable ] } %>
+
+<br/><br/>
+
+<h2>Runner</h2>
+
+<%= render :partial => "runners/table", :locals => { :collection => [ @job.runner ] } %>
+
+<br/><br/>
+
+<h2>Input Data</h2>
 
 
+<br/><br/>
+
+<h2>Status</h2>
+
+<h3>Progress Report</h3>
+
+
+<br/><br/>
+
+<h2>Output Data</h2>
+
+
+<br/>

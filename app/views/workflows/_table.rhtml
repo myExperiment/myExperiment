@@ -20,6 +20,12 @@
 			<%=link_to(query ? highlight_all(title, query) : title, workflow_path(workflow)) %>
 		  </p>
 			
+			<p style="font-size: 85%; color: #666666;">
+				<b>Created:</b> <%=datetime workflow.created_at, false %>
+				|
+				<b>Updated:</b> <%=datetime workflow.updated_at, false %>
+			</p>
+			
 		  <% unless (creditors = workflow.creditors).empty? %>
 		  	<p style="font-size:85%;">
 				<b>Credits:</b>
