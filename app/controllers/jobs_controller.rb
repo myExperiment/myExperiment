@@ -27,17 +27,51 @@ class JobsController < ApplicationController
   def new
     @job = Job.new
     @job.experiment = @experiment
+    
+    # Set defaults
+    @job.title = "Job_#{Time.now.strftime('%Y%m%d-%H%M')}_#{current_user.name}"
+    @job.runnable_type = "Workflow"
+    @job.runner_type = "TavernaEnactor"
+    
     respond_to do |format|
       format.html # new.rhtml
     end
   end
 
   def create
+    success = true
+    
+    # Hard code certain values, for now.
+    params[:job][:runnable_type] = 'Workflow'
+    params[:job][:runner_type] = 'TavernaEnactor'
+    
     @job = Job.new(params[:job])
     @job.experiment = @experiment
-    # TODO: add other custom logic for creation
+    
+    # Check runnable is a valid one
+    # (for now we can assume it's a Workflow)
+    runnable = Workflow.find(:first, :conditions => ["id = ?", params[:job][:runnable_id]])
+    if !runnable or !runnable.authorized?('download', current_user)
+      success = false
+      @job.errors.add(:runnable_id, "not valid or not authorized")
+    else
+      # Look for the specific version of that Workflow
+      unless runnable.find_version(params[:job][:runnable_version])
+        success = false
+        @job.errors.add(:runnable_version, "not valid")
+      end
+    end
+    
+    # Check runner is a valid one
+    # (for now we can assume it's a TavernaEnactor)
+    runner = TavernaEnactor.find(:first, :conditions => ["id = ?", params[:job][:runner_id]])
+    if !runner or !runner.authorized?('run', current_user)
+      success = false
+      @job.errors.add(:runner_id, "not valid or not authorized")
+    end
+    
     respond_to do |format|
-      if @job.save
+      if success and @job.save
         flash[:notice] = "Job successfully created."
         format.html { redirect_to job_url(@experiment, @job) }
       else
@@ -78,7 +112,7 @@ class JobsController < ApplicationController
 protected
 
   def find_experiment_auth
-    experiment = Experiment.find(params[:experiment_id])
+    experiment = Experiment.find(:first, :conditions => ["id = ?", params[:experiment_id]])
     
     if experiment and experiment.authorized?(action_name, current_user)
       @experiment = experiment
@@ -86,9 +120,13 @@ protected
       error("The Experiment that this Job belongs to could not be found or the action is not authorized", "is invalid (not authorized)")
     end
   end
+  
+  def find_jobs
+    @jobs = Job.find(:all, :conditions => ["experiment_id = ?", params[:experiment_id]])
+  end
 
   def find_job_auth
-    job = Job.find(params[:id])
+    job = Job.find(:first, :conditions => ["id = ?", params[:id]])
       
     if job and job.authorized?(action_name, current_user)
       @job = job

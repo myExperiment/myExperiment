@@ -1,33 +1,44 @@
+<%= javascript_include_tag :fckeditor %>
+
 <h1>New Job</h1>
 
-<p class"sub-heading">
+<p class="sub-heading">
 	<b>Part of Experiment: </b>
-	<%= link_to h(@experiment.title), experiment_url(@experiment) %>
+	<%= link_to h(@experiment.title), experiment_url(@experiment), :target => '_blank' %>
 </p>
 
+<%= error_messages_for :job %>
+
 <center>
-	<div class="box_form" style="width: 460px; margin: 2em 0; text-align: left;">
+	<div class="box_form" style="width: 550px; margin: 2em 0; text-align: left;">
 		<% form_for :job, :url => jobs_path(@experiment) do |form| -%>
 			<p><b>Title</b></p>
-			<%= form.text_field :title, :size => 70 %>
+			<%= form.text_field :title, :size => 86 %>
 			
 			<p><b>Description</b></p>
-			<%= fckeditor_textarea(:job, :description, :toolbarSet => 'Basic', :width => '455px', :height => '200px') %>
+			<%= fckeditor_textarea(:job, :description, :toolbarSet => 'Simple', :width => '550px', :height => '300px') %>
 			
-			<p>
-				<b>Workflow ID: </b>
-				<%= form.text_field :runnable_id, :size => 5 %>
-				<%= form.hidden_field :runnable_type, 'Workflow' %>
-				&nbsp;&nbsp;&nbsp;
-				<b>Workflow Version: </b>
-				<%= form.text_field :runnable_version, :size => 5 %>
-			</p>
-			
-			<p>
-				<b>Runner to use: </b>
-				<%= form.select :runner_id, TavernaEnactor.find_by_contributor('User', current_user.id), :prompt => 'Select Runner' %>
-				<%= form.hidden_field :runner_type, 'TavernaEnactor' %>
-			</p>
+			<fieldset>
+				<legend>Enactment Setup</legend>
+				
+				<p>
+					<b>Workflow ID: </b>
+					<%= form.text_field :runnable_id, :size => 8 %>
+					<%= form.hidden_field :runnable_type %>
+				</p>
+				<p>
+					<b>Workflow Version: </b>
+					<%= form.text_field :runnable_version, :size => 8 %>
+				</p>
+				
+				<p>
+					<b>Runner to use: </b>
+					<%= form.select :runner_id, 
+													TavernaEnactor.for_user(current_user).collect {|r| [ r.title, r.id ]}, 
+													:prompt => '--- Select Runner ---' %>
+					<%= form.hidden_field :runner_type %>
+				</p>
+			</fieldset>
 			
 			<br/><br/>
 			<center><%= submit_tag "Create", :disable_with => "Creating..." %></center>

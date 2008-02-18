@@ -24,17 +24,31 @@ class ExperimentsController < ApplicationController
 
   def new
     @experiment = Experiment.new
+    # Set a default title
+    @experiment.title = "Experiment_#{Time.now.strftime('%Y%m%d-%H%M')}_#{current_user.name}"
     respond_to do |format|
       format.html # new.rhtml
     end
   end
 
   def create
+    success = true;
+    
     @experiment = Experiment.new(params[:experiment])
-    @experiment.contributor = current_user
+    
+    if params[:assign_to_group]
+      network = Network.find(params[:assign_to_group_id])
+      if network
+        @experiment.contributor = network
+      else
+        success = false
+      end
+    else
+      @experiment.contributor = current_user
+    end
     
     respond_to do |format|
-      if @experiment.save
+      if success and @experiment.save
         flash[:notice] = "Your new Experiment has successfully been created."
         format.html { redirect_to experiment_url(@experiment) }
       else
@@ -85,7 +99,7 @@ protected
   end
   
   def find_experiment_auth
-    experiment = Experiment.find(params[:id])
+    experiment = Experiment.find(:first, :conditions => ["id = ?", params[:id]])
     
     if experiment and experiment.authorized?(action_name, current_user)
       @experiment = experiment

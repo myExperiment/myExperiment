@@ -23,6 +23,14 @@ class TavernaEnactor < ActiveRecord::Base
     TavernaEnactor.find(:all, :conditions => ["contributor_type = ? AND contributor_id = ?", contributor_type, contributor_id])
   end
   
+  def self.for_user(user)
+    return [ ] if user.nil?
+    
+    # For now only return the Runners that belong to that person.
+    # TODO: get runners that the user has access to based on OSP settings.
+    TavernaEnactor.find_by_contributor('User', user.id)
+  end
+  
   # Note: at the moment (Feb 2008), only the creator of the TavernaEnactor is authorized 
   # OR the administrator of the Group that owns the TavernaEnactor. 
   def authorized?(action_name, c_utor=nil)

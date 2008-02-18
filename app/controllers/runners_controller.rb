@@ -88,7 +88,7 @@ protected
   end
   
   def find_runner_auth
-    runner = TavernaEnactor.find(params[:id])
+    runner = TavernaEnactor.find(:first, :conditions => ["id = ?", params[:id]])
     
     if runner and runner.authorized?(action_name, current_user)
       @runner = runner

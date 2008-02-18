@@ -379,6 +379,10 @@ class User < ActiveRecord::Base
     return rtn
   end
   
+  def all_networks
+    self.networks + self.networks_owned
+  end
+  
   def relationships_pending
     rtn = []
     

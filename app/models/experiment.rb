@@ -8,7 +8,7 @@ class Experiment < ActiveRecord::Base
   belongs_to :contributor, :polymorphic => true
   validates_presence_of :contributor
   
-  has_many :jobs, :dependant => :destroy
+  has_many :jobs, :dependent => :destroy
   
   format_attribute :description
   

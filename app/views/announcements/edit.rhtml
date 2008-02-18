@@ -1,5 +1,7 @@
 <h1>Editing Announcement</h1>
 
+<%= error_messages_for :announcement %>
+
 <%  form_for(:announcement, :url => announcement_path(@announcement), :html => { :method => :put }) do |form| %>
   <%= render :partial => 'form', :object => form %>
   <%= submit_tag 'Update', :disable_with => "Updating..." %>

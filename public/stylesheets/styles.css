@@ -109,6 +109,11 @@ fieldset {
 	padding: 1em;
 }
 
+legend {
+	font-weight: bold;
+	margin-bottom: 0.5em;
+}
+
 li {
 	line-height: 1.4;
 }
@@ -325,7 +330,7 @@ li {
 	*padding: 0.2em 0.5em;
 	background-color: #EEEEEE;
 	border: 0px solid #DEDEDE;
-	border-width: 0 0 1px 1px;
+	border-width: 0 1px 1px 1px;
 	*margin-left: 1px;
 }
 
