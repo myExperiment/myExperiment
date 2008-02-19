@@ -1,3 +1,5 @@
+<%= javascript_include_tag "enactment.js" %>
+
 <% t "#{h @job.title}" -%>
 
 <h1>Job: <%= h @job.title %></h1>
@@ -65,46 +67,89 @@
 
 <h2>Input Data</h2>
 
-<% inputs = @job.runnable.get_input_ports(@job.runnable_version) -%>
-<% if inputs and not inputs.empty? -%>
-	<% form_tag save_inputs_job_path(@experiment, @job), :multipart => true do -%>
-		<% inputs.each do |i| -%>
-			<h3>Input Port: <%= i.name %></h3>
-			
-			<table>
-				<tr>
-					<td>
-						No input
-					</td>
-					<td>
-						Single input
-					</td>
-					<td>
-						List of inputs
-					</td>
-					<td>
-						From file
-					</td>
-				</tr>
-			</table>
-			
-			<br/>
+<div style="margin-left: 1.5em;">
+
+	<% if @job.allow_run? -%>
+		<% inputs = @job.runnable.get_input_ports(@job.runnable_version) -%>
+		<% if inputs and not inputs.empty? -%>
+			<% form_tag save_inputs_job_path(@experiment, @job), :multipart => true do -%>
+				<% inputs.each do |i| -%>
+					<h4>Input Port: <%= i.name %></h4>
+					
+					<div class="box_editing">
+						<table style="font-size: 93%; margin-bottom: 0.5em; margin-left: 0;">
+							<tr>
+								<td>
+									<%= radio_button_tag "#{i.name}_input_type", 'none', true, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', 'none');" -%>
+									No input
+								</td>
+								<td>
+									<%= radio_button_tag "#{i.name}_input_type", 'single', false, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', 'single');" -%>
+									Single input
+								</td>
+								<td>
+									<%= radio_button_tag "#{i.name}_input_type", 'list', false, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', 'list');" -%>
+									List of inputs
+								</td>
+								<td>
+									<%= radio_button_tag "#{i.name}_input_type", 'file', false, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', 'file');" -%>
+									From file
+								</td>
+							</tr>
+						</table>
+						
+						<div id="<%= i.name -%>_single_input_box" class="box_editing_inner" style="display: none; width: 440px;">
+							<center><%= text_area_tag "#{i.name}_single_input", nil, :size => "50x10" -%></center>
+						</div>
+						
+						<div id="<%= i.name -%>_list_input_box" class="box_editing_inner" style="display: none; width: 575px;">
+							<div id="<%= i.name -%>_list" style="margin-bottom: 0.5em;">
+								<%= text_field_tag "#{i.name}_list_input", nil, :size => 90 -%>
+							</div>
+							<p style="font-size: 93%; font-weight: bold;">
+								<%= 
+									link_to_function "Add input", nil, nil do |page| 
+										page.insert_html :bottom, "#{i.name}_list", text_field_tag("#{i.name}_list_input", nil, :size => 90)
+									end						
+								-%>
+							</p>
+						</div>
+						
+						<div id="<%= i.name -%>_file_input_box" class="box_editing_inner" style="display: none; width: 500px;">
+							<center><%= file_field_tag "#{i.name}_file_input", :size => 60 -%></center>
+						</div>
+					</div>
+					
+					<br/>
+				<% end -%>
+			<% end %>
+		<% else -%>
+			<p class="none_text">No input ports found</p>
 		<% end -%>
-	<% end %>
-<% else -%>
-	<p class="none_text">No input ports found</p>
-<% end -%>
+	
+	<% else -%>
+	
+	<% end -%>
+
+</div>
 
 <br/><br/>
 
 <h2>Status</h2>
 
-<h3>Progress Report</h3>
+<div style="margin-left: 1.5em;">
 
+	<h3>Progress Report</h3>
+
+</div>
 
 <br/><br/>
 
 <h2>Output Data</h2>
+
+<div style="margin-left: 1.5em;">
+
+</div>
 
 
 <br/>

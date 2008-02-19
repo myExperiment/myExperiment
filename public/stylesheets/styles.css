@@ -1400,6 +1400,12 @@ div.auto_complete ul strong.highlight {
 	background-color: #DDEEFF;
 }
 
+.box_editing_inner2 {
+	background-color: #EEEEEE;
+	padding: 0.5em 0.8em;
+	border: 1px dotted #999999;
+}
+
 .box_infotext {
 	font-size: 93%;
 	background-color: #FFFFCC;
@@ -1423,4 +1429,13 @@ div.auto_complete ul strong.highlight {
 	margin-bottom: 0.5em;
 }
 
+.inputs_list {
+	list-style: none;
+	margin: 0;
+	margin-bottom: 0.5em;
+}
+
+.inputs_list li {
+	list-style: none;
+}
 	
