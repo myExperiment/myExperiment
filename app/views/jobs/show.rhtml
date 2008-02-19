@@ -2,20 +2,32 @@
 
 <h1>Job: <%= h @job.title %></h1>
 
-<p class="sub-heading">
-	<b>Part of Experiment: </b>
-	<%= link_to h(@experiment.title), experiment_url(@experiment) %>
+<p>
+	<b>Experiment:</b>
+	<%= link_to_function h(@experiment.title), visual_effect(:toggle_blind, "job_experiment_listing", :duration => 0.3) %>
 </p>
 
-<h2>Runnable Item</h2>
+<div id="job_experiment_listing" style="display: none;">
+	<%= render :partial => "experiments/table", :locals => { :collection => [ @experiment ] } %>
+</div>
 
-<%= render :partial => "#{@job.runnable_type.downcase.pluralize}/table", :locals => { :collection => [ @job.runnable ] } %>
+<p>
+	<b>Runnable Item:</b>
+	<%= link_to_function h(@job.runnable.title), visual_effect(:toggle_blind, "job_runnable_listing", :duration => 0.3) %>
+</p>
 
-<br/><br/>
+<div id="job_runnable_listing" style="display: none;">
+	<%= render :partial => "#{@job.runnable_type.downcase.pluralize}/table", :locals => { :collection => [ @job.runnable ] } %>
+</div>
 
-<h2>Runner</h2>
+<p>
+	<b>Runner:</b>
+	<%= link_to_function h(@job.runner.title), visual_effect(:toggle_blind, "job_runner_listing", :duration => 0.3) %>
+</p>
 
-<%= render :partial => "runners/table", :locals => { :collection => [ @job.runner ] } %>
+<div id="job_runner_listing" style="display: none;">
+	<%= render :partial => "runners/table", :locals => { :collection => [ @job.runner ] } %>
+</div>
 
 <br/><br/>
 
