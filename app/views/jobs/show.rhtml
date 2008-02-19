@@ -80,19 +80,19 @@
 						<table style="font-size: 93%; margin-bottom: 0.5em; margin-left: 0;">
 							<tr>
 								<td>
-									<%= radio_button_tag "#{i.name}_input_type", 'none', true, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', 'none');" -%>
+									<%= radio_button_tag "#{i.name}_input_type", 'none', true, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
 									No input
 								</td>
 								<td>
-									<%= radio_button_tag "#{i.name}_input_type", 'single', false, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', 'single');" -%>
+									<%= radio_button_tag "#{i.name}_input_type", 'single', false, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
 									Single input
 								</td>
 								<td>
-									<%= radio_button_tag "#{i.name}_input_type", 'list', false, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', 'list');" -%>
+									<%= radio_button_tag "#{i.name}_input_type", 'list', false, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
 									List of inputs
 								</td>
 								<td>
-									<%= radio_button_tag "#{i.name}_input_type", 'file', false, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', 'file');" -%>
+									<%= radio_button_tag "#{i.name}_input_type", 'file', false, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
 									From file
 								</td>
 							</tr>

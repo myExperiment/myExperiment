@@ -3,9 +3,14 @@
 <h1>New Job</h1>
 
 <p class="sub-heading">
-	<b>Part of Experiment: </b>
-	<%= link_to h(@experiment.title), experiment_url(@experiment), :target => '_blank' %>
+	<b>
+		For Experiment:
+		<%= link_to_function h(@experiment.title), visual_effect(:toggle_blind, "experiment_listing", :duration => 0.3) %>
+	</b>
 </p>
+<div id="experiment_listing" style="display: none;">
+	<%= render :partial => "experiments/table", :locals => { :collection => [ @experiment ] } %>
+</div>
 
 <%= error_messages_for :job %>
 
