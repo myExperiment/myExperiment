@@ -8,6 +8,8 @@ class CreateJobs < ActiveRecord::Migration
       
       t.column :experiment_id, :integer
       
+      t.column :user_id, :integer
+      
       t.column :runnable_id, :integer
       t.column :runnable_version, :integer
       t.column :runnable_type, :string

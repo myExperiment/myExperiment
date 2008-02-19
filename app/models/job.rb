@@ -15,6 +15,9 @@ class Job < ActiveRecord::Base
   belongs_to :experiment
   validates_presence_of :experiment
   
+  belongs_to :user
+  validates_presence_of :user
+  
   format_attribute :description
   
   validates_presence_of :title

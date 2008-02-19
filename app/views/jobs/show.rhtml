@@ -2,16 +2,34 @@
 
 <h1>Job: <%= h @job.title %></h1>
 
-<p>
-	<b>Created:</b>
-	<%= datetime @job.created_at %>
-</p>
-<p>
-	<b>Last updated:</b>
-	<%= datetime @job.updated_at %>
-</p>
+<center>
+	<table class="box_simple">
+		<tr>
+			<td style="vertical-align: top; padding: 0.3em 1.5em;">
+				<p>
+					<b>Created by:</b>
+				</p>
+				<div style="font-size: 93%;">
+					<%= render :partial => "users/avatar", :locals => { :user => @job.user, :size => 60 } %>
+				</div>
+			</td>
+			<td style="vertical-align: top;">
+				<p>
+					<b>Created:</b>
+					<%= datetime @job.created_at %>
+				</p>
+				<p>
+					<b>Last updated:</b>
+					<%= datetime @job.updated_at %>
+				</p>
+			</td>
+		</tr>
+	</table>
+</center>
 
-<p>
+<br/>
+
+<p style="text-align: center;">
 	<b>Experiment:</b>
 	<%= link_to_function h(@experiment.title), visual_effect(:toggle_blind, "job_experiment_listing", :duration => 0.3) %>
 </p>
@@ -20,8 +38,9 @@
 	<%= render :partial => "experiments/table", :locals => { :collection => [ @experiment ] } %>
 </div>
 
-<p>
+<p style="text-align: center;">
 	<b>Runnable Item:</b>
+	<b><%= c_type = visible_name(@job.runnable); icon(@job.runnable_type, nil, nil, c_type, c_type) %> -</b>
 	<%= link_to_function h(@job.runnable.title), visual_effect(:toggle_blind, "job_runnable_listing", :duration => 0.3) %>
 </p>
 
@@ -29,8 +48,9 @@
 	<%= render :partial => "#{@job.runnable_type.downcase.pluralize}/table", :locals => { :collection => [ @job.runnable ] } %>
 </div>
 
-<p>
+<p style="text-align: center;">
 	<b>Runner:</b>
+	<b><%= icon('runner', nil, nil, @job.runner_type, @job.runner_type) %> -</b>
 	<%= link_to_function h(@job.runner.title), visual_effect(:toggle_blind, "job_runner_listing", :duration => 0.3) %>
 </p>
 
@@ -42,6 +62,16 @@
 
 <h2>Input Data</h2>
 
+<% unless (inputs = @job.runnable.get_input_ports).empty? -%>
+	
+	<% inputs.each do |i| -%>
+		<h3>Input Port: <%= i.name %></h3>
+			
+		<br/>
+	<% end -%>
+<% else -%>
+	<p class="none_text">No input ports defined</p>
+<% end -%>
 
 <br/><br/>
 

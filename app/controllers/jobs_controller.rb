@@ -10,7 +10,7 @@ class JobsController < ApplicationController
   before_filter :find_experiment_auth
   
   before_filter :find_jobs, :only => [:index]
-  before_filter :find_job_auth, :only => [:show, :edit, :update, :destroy]
+  before_filter :find_job_auth, :except => [:index, :new, :create]
   
   def index
     respond_to do |format|
@@ -47,6 +47,7 @@ class JobsController < ApplicationController
     
     @job = Job.new(params[:job])
     @job.experiment = @experiment
+    @job.user = current_user
     
     # Check runnable is a valid one
     # (for now we can assume it's a Workflow)
@@ -106,6 +107,14 @@ class JobsController < ApplicationController
         flash[:error] = "Failed to delete Job"
         format.html { redirect_to job_url(@experiment, @job) }
       end
+    end
+  end
+  
+  def save_inputs
+    
+      
+    respond_to do |format|
+      format.html { render :action => "show" }
     end
   end
   
