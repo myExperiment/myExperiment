@@ -2,6 +2,8 @@
 
 <h1>Job: <%= h @job.title %></h1>
 
+<% # TODO: check that Workflow and Runner are still authorized, and check that Workflow version still exists. -%>
+
 <center>
 	<table class="box_simple">
 		<tr>
@@ -42,6 +44,7 @@
 	<b>Runnable Item:</b>
 	<b><%= c_type = visible_name(@job.runnable); icon(@job.runnable_type, nil, nil, c_type, c_type) %> -</b>
 	<%= link_to_function h(@job.runnable.title), visual_effect(:toggle_blind, "job_runnable_listing", :duration => 0.3) %>
+	(version <%= @job.runnable_version %>)
 </p>
 
 <div id="job_runnable_listing" style="display: none;">
@@ -62,15 +65,34 @@
 
 <h2>Input Data</h2>
 
-<% unless (inputs = @job.runnable.get_input_ports).empty? -%>
-	
-	<% inputs.each do |i| -%>
-		<h3>Input Port: <%= i.name %></h3>
+<% inputs = @job.runnable.get_input_ports(@job.runnable_version) -%>
+<% if inputs and not inputs.empty? -%>
+	<% form_tag save_inputs_job_path(@experiment, @job), :multipart => true do -%>
+		<% inputs.each do |i| -%>
+			<h3>Input Port: <%= i.name %></h3>
 			
-		<br/>
-	<% end -%>
+			<table>
+				<tr>
+					<td>
+						No input
+					</td>
+					<td>
+						Single input
+					</td>
+					<td>
+						List of inputs
+					</td>
+					<td>
+						From file
+					</td>
+				</tr>
+			</table>
+			
+			<br/>
+		<% end -%>
+	<% end %>
 <% else -%>
-	<p class="none_text">No input ports defined</p>
+	<p class="none_text">No input ports found</p>
 <% end -%>
 
 <br/><br/>

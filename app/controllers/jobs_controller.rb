@@ -19,6 +19,7 @@ class JobsController < ApplicationController
   end
 
   def show
+    #@save_inputs_url
     respond_to do |format|
       format.html # show.rhtml
     end
