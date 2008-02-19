@@ -3,6 +3,15 @@
 <h1>Job: <%= h @job.title %></h1>
 
 <p>
+	<b>Created:</b>
+	<%= datetime @job.created_at %>
+</p>
+<p>
+	<b>Last updated:</b>
+	<%= datetime @job.updated_at %>
+</p>
+
+<p>
 	<b>Experiment:</b>
 	<%= link_to_function h(@experiment.title), visual_effect(:toggle_blind, "job_experiment_listing", :duration => 0.3) %>
 </p>
