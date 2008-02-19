@@ -4,7 +4,7 @@
 
 <center>
 	<div class="box_form" style="width: 300px; margin: 1em 0; text-align: left;">
-		<p style="text-align: center; font-size: 93%;">Note: the runner will NOT be verified / validated on creation.</p>
+		<p style="text-align: center; font-size: 85%;">Note: the runner will NOT be verified / validated on creation.</p>
 		
 		<% form_tag runners_path do -%>
 			<p><b>Title</b></p>
@@ -22,10 +22,10 @@
 				<legend>Access Credentials</legend>
 				
 				<p><b>Username</b></p>
-				<%= text_field_tag "runner[username]", nil, :size => 18 %>
+				<%= text_field_tag "runner[username]", nil, :size => 22 %>
 				
-				<p><b>Password (will be encrypted)</b></p>
-				<%= text_field_tag "runner[password]", nil, :size => 18 %>
+				<p><b>Password</b> (will be encrypted)</p>
+				<%= text_field_tag "runner[password]", nil, :size => 22 %>
 			</fieldset>
 			
 			<br/><br/>

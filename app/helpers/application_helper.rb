@@ -649,6 +649,12 @@ module ApplicationHelper
       return "famfamfam_silk/transmit.png"
     when "review"
       return "famfamfam_silk/report.png"
+    when "experiment"
+      return "famfamfam_silk/folder_wrench.png"
+    when "job"
+      return "famfamfam_silk/script_gear.png"
+    when "runner"
+      return "famfamfam_silk/server_key.png"
     else
       return nil
     end
