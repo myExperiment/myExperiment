@@ -47,7 +47,7 @@ class Job < ActiveRecord::Base
         
         # Only continue if runner service is valid
         unless runner.service_valid?
-          run_errors.add("The #{humanize self.runner_type} is invalid or inaccessible. Please check the settings you have registered for this Runner.")
+          run_errors << "The #{humanize self.runner_type} is invalid or inaccessible. Please check the settings you have registered for this Runner."
           success = false
         end
         
@@ -69,17 +69,17 @@ class Job < ActiveRecord::Base
           self.last_status_at = Time.now
           self.save!
         else
-          run_errors.add("Failed to submit the runnable item to the runner service. The item might not exist anymore or access may have been denied at the service.")
+          run_errors << "Failed to submit the runnable item to the runner service. The item might not exist anymore or access may have been denied at the service."
           success = false
         end
         
       rescue Exception => ex
-        run_errors.add("An exception has occurred whilst submitting and running this job: #{ex}")
+        run_errors << "An exception has occurred whilst submitting and running this job: #{ex}"
         success = false
       end
       
     else
-      run_errors.add("This Job has already been submitted and cannot be rerun.")
+      run_errors << "This Job has already been submitted and cannot be rerun."
       success = false;
     end
     
@@ -123,6 +123,19 @@ class Job < ActiveRecord::Base
   
   def has_inputs?
     return self.inputs_data
+  end
+  
+  def report
+    begin
+      if self.job_uri
+        return runner.get_job_report(self.job_uri)
+      else
+        return nil
+      end
+    rescue Exception => ex
+      puts "ERROR occurred whilst fetching report for job #{self.job_uri}. Exception: #{ex}"
+      return nil
+    end
   end
   
 protected

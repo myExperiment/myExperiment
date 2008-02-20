@@ -5,14 +5,19 @@
 		<p class="none_text" style="text-align: center;">This job has not been submitted yet.</p>
 		
 		<p>
-			<center><%= button_to "Submit Job", submit_job_job_path(experiment, job), :disable_with => "Submitting..." -%></center>
+			<center>
+				<% form_tag submit_job_job_path(experiment, job) do -%>
+					<center><%= submit_tag "Submit Job", :disable_with => "Submitting..." -%></center>
+				<% end -%>
+			</center>
 		</p>
 		
 	<% else -%>
 		
 		<% unless status.blank? -%>
 			<p style="text-align: center;">
-				This Job has been submitted and the last status is: <b><%= h status -%></b>
+				This Job has been submitted and the last status is:
+				<font style="color: #990000; font-weight: bold;"><%= h status -%></font>
 				as of <%= datetime job.last_status_at -%>.
 			</p>			
 		<% else -%>
@@ -22,6 +27,32 @@
 		<% end -%>
 		
 		<h3>Progress Report</h3>
+		
+		<% if (report = job.report) -%>
+			<table class="job_report">
+			  <tr>
+			    <th>Processor</th>
+			    <th>Status</th>
+			    <th>Detail</th>
+			    <th>Time</th>
+			  </tr>
+			
+				<% for processor in report.processors -%>
+				  <tr>
+				    <td><%= h processor.name -%></td>
+				    <td><%= h processor.status -%></td>
+						<td>
+							<% if processor.status == 'ITERATING' -%>
+								<%= h processor.number -%> of <%= h processor.total -%>
+							<% end %>
+						</td>
+				    <td><%= datetime processor.time -%></td>
+				  </tr>
+				<% end %>
+			</table>
+		<% else %>
+			<p class="none_text">Report unavailable at this time</p>
+		<% end %>
 		
 	<% end -%>
 

@@ -196,7 +196,7 @@
 					
 					<script>field_counter = <%= s_field_counter -%></script>
 					
-					<center><%= submit_tag "Save Input Data", :disable_with => "Save..." %></center>
+					<center><%= submit_tag "Save Input Data", :disable_with => "Save..." -%></center>
 				<% end %>
 			<% else -%>
 				<p class="none_text">No input ports found</p>
@@ -230,7 +230,7 @@
 <center><%= image_tag "spinner.gif", :id => "refresh_indicator", :style => "margin-left: 1em; display: none;" %></center>
 
 <div id="status_box" style="margin-left: 1.5em;">
-	<%= render :partial => "status_info", :locals => { :job => @job, :experiment => @experiment } %>
+	<%= render :partial => "status_info", :locals => { :job => @job, :experiment => @experiment } -%>
 </div>
 
 <br/><br/>
@@ -240,6 +240,5 @@
 <div style="margin-left: 1.5em;">
 
 </div>
-
 
 <br/>

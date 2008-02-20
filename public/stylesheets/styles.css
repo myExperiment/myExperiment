@@ -1437,4 +1437,20 @@ div.auto_complete ul strong.highlight {
 .inputs_list li {
 	list-style: none;
 }
+
+table.job_report {
+	border-collapse: collapse;
+}
+
+table.job_report th,
+table.job_report td {
+	border: 1px solid #CCCCCC;
+	padding: 0.2em 0.5em;
+}
+
+table.job_report th {
+	background-color: #EEEEEE;
+	font-weight: bold;
+}
+
 	

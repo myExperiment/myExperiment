@@ -96,6 +96,10 @@ class TavernaEnactor < ActiveRecord::Base
     service_client.get_job_status(job_uri)
   end
   
+  def get_job_report(job_uri)
+    service_client.get_job_report(job_uri)
+  end
+  
 protected
   
   # Lazy loading of enactor service client.
