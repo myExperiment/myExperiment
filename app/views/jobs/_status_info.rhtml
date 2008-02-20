@@ -1,0 +1,28 @@
+<% if job -%>
+
+	<% if job.allow_run? -%>
+		
+		<p class="none_text" style="text-align: center;">This job has not been submitted yet.</p>
+		
+		<p>
+			<center><%= button_to "Submit Job", submit_job_job_path(experiment, job), :disable_with => "Submitting..." -%></center>
+		</p>
+		
+	<% else -%>
+		
+		<% unless status.blank? -%>
+			<p style="text-align: center;">
+				This Job has been submitted and the last status is: <b><%= h status -%></b>
+				as of <%= datetime job.last_status_at -%>.
+			</p>			
+		<% else -%>
+			<p style="text-align: center;">
+				This Job has been submitted but no status is currently available.
+			</p>
+		<% end -%>
+		
+		<h3>Progress Report</h3>
+		
+	<% end -%>
+
+<% end -%>

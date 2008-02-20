@@ -655,6 +655,8 @@ module ApplicationHelper
       return "famfamfam_silk/script_gear.png"
     when "runner"
       return "famfamfam_silk/server_key.png"
+    when "refresh"
+      return "famfamfam_silk/refresh.png"
     else
       return nil
     end

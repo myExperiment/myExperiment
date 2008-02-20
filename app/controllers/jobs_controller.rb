@@ -199,6 +199,12 @@ class JobsController < ApplicationController
     end
   end
   
+  def update_status
+    respond_to do |format|
+      format.html { render :partial => "status_info", :locals => { :job => @job, :experiment => @experiment } }
+    end
+  end
+  
 protected
 
   def find_experiment_auth
