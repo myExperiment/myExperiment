@@ -19,7 +19,16 @@ class JobsController < ApplicationController
   end
 
   def show
-    #@save_inputs_url
+      
+    unless @job.runnable.authorized?(action_name, current_user) 
+      flash[:error] = "The runnable item (#{@job.runnable_type}) is not authorized anymore - you need download priviledges include it in a Job."
+    end
+    
+    unless @job.runner.authorized?(action_name, current_user) 
+      flash[:error] += "<br/>" unless flash[:error].blank?
+      flash[:error] += "The runner is not authorized for use anymore."
+    end
+
     respond_to do |format|
       format.html # show.rhtml
     end
@@ -150,6 +159,43 @@ class JobsController < ApplicationController
       end
       
       format.html { redirect_to job_url(@experiment, @job) }
+    end
+  end
+  
+  def submit_job
+    success = true
+    errors_text = ''
+    
+    # Authorize the runnable and runner
+    
+    unless @job.runnable.authorized?(action_name, current_user) 
+      success = false;
+      errors_text += "<p>The runnable item (#{@job.runnable_type}) is not authorized anymore - you need download priviledges to run it.</p>"
+    end
+    
+    unless @job.runner.authorized?(action_name, current_user) 
+      success = false;
+      errors_text += "<p>The runner is not authorized for use anymore.</p>"
+    end
+    
+    if success
+      success = @job.submit_and_run!
+    end
+    
+    unless success
+      @job.run_errors.each do |err|
+        errors_text += "<p>#{err}</p>"  
+      end
+    end
+    
+    respond_to do |format|
+      if success
+        flash[:notice] = "Job has been successfully submitted. You can monitor progress in the 'Status' section."
+        format.html { redirect_to job_url(@experiment, @job) }
+      else
+        flash[:error] = "Failed to submit job. Errors: " + errors_text
+        format.html { redirect_to job_url(@experiment, @job) }
+      end
     end
   end
   

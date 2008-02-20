@@ -37,7 +37,7 @@ class Job < ActiveRecord::Base
     self.job_uri.blank? and self.submitted_at.blank?
   end
   
-  def submit_and_run
+  def submit_and_run!
     run_errors.clear
     success = true
     
