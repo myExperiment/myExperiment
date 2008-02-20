@@ -123,7 +123,18 @@ class JobsController < ApplicationController
       when "single"
         inputs_hash[i.name] = params["#{i.name}_single_input".to_sym]
       when "list"
-        inputs_hash[i.name] = params["#{i.name}_list_input".to_sym]
+        h = params["#{i.name}_list_input".to_sym]
+        if h and h.is_a?(Hash)
+          # Need to sort because we need to assume that order is important!
+          h = h.sort {|a,b| a[0]<=>b[0]}
+          vals = [ ]
+          h.each do |v|
+            vals << v[1]
+          end
+          inputs_hash[i.name] = vals
+        else
+          flash[:error] += "Failed to read list of inputs for port: #{i.name}. "
+        end
       when "file"
         inputs_hash[i.name] = params["#{i.name}_file_input".to_sym].read
       end
@@ -133,7 +144,7 @@ class JobsController < ApplicationController
     
     respond_to do |format|
       if @job.save  
-        flash[:notice] = "Input data successfully saved"
+        flash[:notice] = "Input data successfully saved" if flash[:error].blank?
       else
         flash[:error] = "An error has occurred whilst saving the inputs data"
       end

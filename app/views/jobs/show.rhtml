@@ -104,7 +104,18 @@
 			
 			<% form_tag save_inputs_job_path(@experiment, @job), :multipart => true do -%>
 				<% inputs.each do |i| -%>
+					<% #input_type = @job.current_input_type(i.name) -%>
+					
 					<h4>Input Port: <%= i.name %></h4>
+					
+					<p class="box_standout" style="margin-bottom: 0.5em; padding: 0.3em 0.5em;">
+						<b>Description: </b>
+						<% unless i.description.blank? -%>
+							<%= h i.description -%>
+						<% else -%>
+							<span class="none_text">none</span>
+						<% end -%>
+					</p>
 					
 					<div class="box_editing">
 						<table style="font-size: 93%; margin-bottom: 0.5em; margin-left: 0;">
@@ -132,18 +143,14 @@
 							<center><%= text_area_tag "#{i.name}_single_input", nil, :size => "50x10" -%></center>
 						</div>
 						
-						<div id="<%= i.name -%>_list_input_box" class="box_editing_inner" style="display: none; width: 575px;">
-							<% list_field_counter = 0 -%>
+						<div id="<%= i.name -%>_list_input_box" class="box_editing_inner" style="display: none; width: 640px;">
 							<div id="<%= i.name -%>_list" style="margin-bottom: 0.5em;">
-								<%= text_field_tag "#{i.name}_list_input[#{list_field_counter}]", nil, :size => 90 -%>
+								<p>
+									<%= text_field_tag "#{i.name}_list_input[0]", nil, :size => 90 -%>
+								</p>
 							</div>
 							<p style="font-size: 93%; font-weight: bold;">
-								<%= 
-									link_to_function "Add input", nil, nil do |page|
-										list_field_counter = list_field_counter + 1
-										page.insert_html :bottom, "#{i.name}_list", text_field_tag("#{i.name}_list_input[#{list_field_counter}]", nil, :size => 90)
-									end						
-								-%>
+								<a href="" onclick="javascript:add_input_field('<%= i.name -%>', '<%= i.name -%>_list'); return false;">Add another input</a>
 							</p>
 						</div>
 						
