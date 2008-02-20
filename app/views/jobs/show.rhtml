@@ -2,9 +2,13 @@
 
 <% t "#{h @job.title}" -%>
 
+<% status = @job.last_status -%>
+
 <h1>Job: <%= h @job.title %></h1>
 
 <% # TODO: check that Workflow and Runner are still authorized, and check that Workflow version still exists. -%>
+
+<%= error_messages_for :job %>
 
 <center>
 	<table class="box_simple">
@@ -22,9 +26,29 @@
 					<b>Created:</b>
 					<%= datetime @job.created_at %>
 				</p>
+				
+				<% if false -%>
 				<p>
 					<b>Last updated:</b>
 					<%= datetime @job.updated_at %>
+				</p>
+				<% end -%>
+				
+				<p>
+					<b>Last status:</b>
+					<% unless status.blank? -%>
+						<%= h status -%>
+					<% else -%>
+						<span class="none_text">Not yet submitted</span>
+					<% end -%>
+				</p>
+				<p>
+					<b>Last status check:</b>
+					<% unless (status = @job.last_status_at).blank? -%>
+						<%= datetime @job.last_status_at -%>
+					<% else -%>
+						<span class="none_text">N/A</span>
+					<% end -%>
 				</p>
 			</td>
 		</tr>
@@ -72,6 +96,12 @@
 	<% if @job.allow_run? -%>
 		<% inputs = @job.runnable.get_input_ports(@job.runnable_version) -%>
 		<% if inputs and not inputs.empty? -%>
+			<p style="font-size: 93%; color: #990000;">
+				Remember to click 'save' when you are done with setting/editing the input data.
+			</p>
+			
+			<br/>
+			
 			<% form_tag save_inputs_job_path(@experiment, @job), :multipart => true do -%>
 				<% inputs.each do |i| -%>
 					<h4>Input Port: <%= i.name %></h4>
@@ -116,19 +146,25 @@
 						</div>
 						
 						<div id="<%= i.name -%>_file_input_box" class="box_editing_inner" style="display: none; width: 500px;">
+							<p style="font-size: 85%; color: #333333; padding-top: 0; text-align: center;">
+								Note: this will create a single input for this port, with the contents of the file as the input data.
+							</p>
 							<center><%= file_field_tag "#{i.name}_file_input", :size => 60 -%></center>
 						</div>
 					</div>
 					
 					<br/>
 				<% end -%>
+				
+				<center><%= submit_tag "Save Input Data", :disable_with => "Save..." %></center>
 			<% end %>
 		<% else -%>
 			<p class="none_text">No input ports found</p>
 		<% end -%>
 	
 	<% else -%>
-	
+		<p class="none_text">This Job has already been submitted and therefore inputs cannot be changed now.</p>
+		<p>TODO: show set of inputs here</p>
 	<% end -%>
 
 </div>
@@ -139,7 +175,22 @@
 
 <div style="margin-left: 1.5em;">
 
-	<h3>Progress Report</h3>
+	<% if @job.allow_run? -%>
+		<p class="none_text">This job has not been submitted yet.</p>
+	<% else -%>
+		<% unless status.blank? -%>
+			<p>
+				This Job has been submitted and the last status is: <b><%= h status -%></b>
+				as of <%= datetime @job.last_status_at -%>.
+			</p>			
+		<% else -%>
+			<p>
+				This Job has been submitted but no status is currently available.
+			</p>
+		<% end -%>
+		
+		<h3>Progress Report</h3>
+	<% end -%>
 
 </div>
 

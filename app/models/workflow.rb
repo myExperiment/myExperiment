@@ -12,6 +12,10 @@ require 'explicit_versioning'
 require 'acts_as_reviewable'
 require 'acts_as_runnable'
 
+require 'scufl/model'
+require 'scufl/parser'
+require 'scufl/dot'
+
 class Workflow < ActiveRecord::Base
   has_many :citations, 
            :order => "created_at DESC",

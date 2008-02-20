@@ -37,23 +37,6 @@ class Job < ActiveRecord::Base
     self.job_uri.blank? and self.submitted_at.blank?
   end
   
-  def save_inputs(inputs)
-    unless inputs.is_a?(Hash)
-      run_errors.add("Internal error: the inputs need to be in a Hash!")
-      return false
-    end
-    
-    if allow_run?
-      self.inputs_data = inputs
-      self.save!
-    else
-      run_errors.add("Cannot save inputs now - Job has already been submitted.")
-      return false
-    end
-    
-    return true
-  end
-  
   def submit_and_run
     run_errors.clear
     success = true
@@ -106,13 +89,22 @@ class Job < ActiveRecord::Base
   
   def last_status
     begin
-      self.last_status = runner.get_job_status(self.job_uri)
-      self.last_status_at = Time.now
-      self.save
-    rescue
+      if self.job_uri
+        self.last_status = runner.get_job_status(self.job_uri)
+        self.last_status_at = Time.now
+        self.save
+      end 
+    rescue Exception => ex
+      puts "ERROR occurred whilst fetching last status for job #{self.job_uri}. Exception: #{ex}"
     end
     
     return self[:last_status]
+  end
+  
+  def inputs_data=(data)
+    if allow_run?
+      self[:inputs_data] = data
+    end
   end
   
 protected

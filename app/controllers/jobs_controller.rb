@@ -112,10 +112,31 @@ class JobsController < ApplicationController
   end
   
   def save_inputs
+    inputs_hash = { }
     
-      
+    input_ports = @job.runnable.get_input_ports(@job.runnable_version)
+    
+    input_ports.each do |i|
+      case params["#{i.name}_input_type".to_sym]
+      when "single"
+        inputs_hash[i.name] = params["#{i.name}_single_input".to_sym]
+      when "list"
+        inputs_hash[i.name] = params["#{i.name}_list_input".to_sym]
+      when "file"
+        inputs_hash[i.name] = params["#{i.name}_file_input".to_sym].read
+      end
+    end
+    
+    @job.inputs_data = inputs_hash
+    
     respond_to do |format|
-      format.html { render :action => "show" }
+      if @job.save  
+        flash[:notice] = "Input data successfully saved"
+      else
+        flash[:error] = "An error has occurred whilst saving the inputs data"
+      end
+      
+      format.html { redirect_to job_url(@experiment, @job) }
     end
   end
   

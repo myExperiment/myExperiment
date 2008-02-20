@@ -390,7 +390,7 @@ ul.breadcrumb_list a:hover {
 	background-color: #FFFF66;
 	font-size: 93%;
 	font-weight: normal;
-	padding: 0.4em 0.6em;
+	padding: 0.2em 0.6em;
 	max-width: 500px;
 	text-align: left;
 	line-height: 1.4em;
@@ -1415,8 +1415,8 @@ div.auto_complete ul strong.highlight {
 }
 
 .none_text {
-	font-style:italic;
-	color:#666666;
+	font-style: italic;
+	color: #666666;
 }
 
 .count_text {
