@@ -133,13 +133,15 @@
 						</div>
 						
 						<div id="<%= i.name -%>_list_input_box" class="box_editing_inner" style="display: none; width: 575px;">
+							<% list_field_counter = 0 -%>
 							<div id="<%= i.name -%>_list" style="margin-bottom: 0.5em;">
-								<%= text_field_tag "#{i.name}_list_input", nil, :size => 90 -%>
+								<%= text_field_tag "#{i.name}_list_input[#{list_field_counter}]", nil, :size => 90 -%>
 							</div>
 							<p style="font-size: 93%; font-weight: bold;">
 								<%= 
-									link_to_function "Add input", nil, nil do |page| 
-										page.insert_html :bottom, "#{i.name}_list", text_field_tag("#{i.name}_list_input", nil, :size => 90)
+									link_to_function "Add input", nil, nil do |page|
+										list_field_counter = list_field_counter + 1
+										page.insert_html :bottom, "#{i.name}_list", text_field_tag("#{i.name}_list_input[#{list_field_counter}]", nil, :size => 90)
 									end						
 								-%>
 							</p>

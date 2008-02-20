@@ -118,6 +118,8 @@ class JobsController < ApplicationController
     
     input_ports.each do |i|
       case params["#{i.name}_input_type".to_sym]
+      when "none"
+        inputs_hash[i.name] = nil
       when "single"
         inputs_hash[i.name] = params["#{i.name}_single_input".to_sym]
       when "list"
