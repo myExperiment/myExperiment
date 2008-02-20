@@ -22,7 +22,7 @@ class Job < ActiveRecord::Base
   
   validates_presence_of :title
   
-  serialize :inputs_data, Hash
+  serialize :inputs_data
   
   def authorized?(action_name, c_utor=nil)
     # Use authorization logic from parent Experiment
@@ -105,6 +105,24 @@ class Job < ActiveRecord::Base
     if allow_run?
       self[:inputs_data] = data
     end
+  end
+  
+  def current_input_type(input_name)
+    return 'none' if input_name.blank? or !self.inputs_data or self.inputs_data.empty?
+    
+    vals = self.inputs_data[input_name]
+    
+    return 'none' if vals.blank?
+    
+    if vals.is_a?(Array)
+      return 'list'
+    else
+      return 'single' 
+    end
+  end
+  
+  def has_inputs?
+    return self.inputs_data
   end
   
 protected

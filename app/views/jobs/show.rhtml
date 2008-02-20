@@ -22,19 +22,27 @@
 				</div>
 			</td>
 			<td style="vertical-align: top;">
-				<p>
+				<div class="box_standout" style="padding: 0em 0.5em; margin-bottom: 0.5em;">
+					<% unless @job.description.blank? -%>
+						<%= white_list @job.description_html -%>
+					<% else -%>
+						<span class="none_text">No description</span>
+					<% end -%>
+				</div>
+				
+				<p style="font-size: 93%;">
 					<b>Created:</b>
 					<%= datetime @job.created_at %>
 				</p>
 				
 				<% if false -%>
-				<p>
+				<p  style="font-size: 93%;">
 					<b>Last updated:</b>
 					<%= datetime @job.updated_at %>
 				</p>
 				<% end -%>
 				
-				<p>
+				<p  style="font-size: 93%;">
 					<b>Last status:</b>
 					<% unless status.blank? -%>
 						<%= h status -%>
@@ -42,7 +50,7 @@
 						<span class="none_text">Not yet submitted</span>
 					<% end -%>
 				</p>
-				<p>
+				<p  style="font-size: 93%;">
 					<b>Last status check:</b>
 					<% unless (status = @job.last_status_at).blank? -%>
 						<%= datetime @job.last_status_at -%>
@@ -103,12 +111,14 @@
 			<br/>
 			
 			<% form_tag save_inputs_job_path(@experiment, @job), :multipart => true do -%>
+				<% s_field_counter = 0 -%>
+				
 				<% inputs.each do |i| -%>
-					<% #input_type = @job.current_input_type(i.name) -%>
+					<% input_type = @job.current_input_type(i.name) -%>
 					
 					<h4>Input Port: <%= i.name %></h4>
 					
-					<p class="box_standout" style="margin-bottom: 0.5em; padding: 0.3em 0.5em;">
+					<p class="box_standout" style="margin-bottom: 0.5em; padding: 0.2em 0.5em;">
 						<b>Description: </b>
 						<% unless i.description.blank? -%>
 							<%= h i.description -%>
@@ -121,15 +131,15 @@
 						<table style="font-size: 93%; margin-bottom: 0.5em; margin-left: 0;">
 							<tr>
 								<td>
-									<%= radio_button_tag "#{i.name}_input_type", 'none', true, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
+									<%= radio_button_tag "#{i.name}_input_type", 'none', (input_type == 'none'), :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
 									No input
 								</td>
 								<td>
-									<%= radio_button_tag "#{i.name}_input_type", 'single', false, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
+									<%= radio_button_tag "#{i.name}_input_type", 'single', (input_type == 'single'), :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
 									Single input
 								</td>
 								<td>
-									<%= radio_button_tag "#{i.name}_input_type", 'list', false, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
+									<%= radio_button_tag "#{i.name}_input_type", 'list', (input_type == 'list'), :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
 									List of inputs
 								</td>
 								<td>
@@ -140,17 +150,30 @@
 						</table>
 						
 						<div id="<%= i.name -%>_single_input_box" class="box_editing_inner" style="display: none; width: 440px;">
-							<center><%= text_area_tag "#{i.name}_single_input", nil, :size => "50x10" -%></center>
+							<center>
+								<%= text_area_tag "#{i.name}_single_input", 
+																	input_type == 'single' ? h(@job.inputs_data[i.name]) : nil, 
+																	:size => "50x10" -%>
+							</center>
 						</div>
 						
 						<div id="<%= i.name -%>_list_input_box" class="box_editing_inner" style="display: none; width: 640px;">
 							<div id="<%= i.name -%>_list" style="margin-bottom: 0.5em;">
-								<p>
-									<%= text_field_tag "#{i.name}_list_input[0]", nil, :size => 90 -%>
-								</p>
+								<%- if input_type == 'none' or @job.inputs_data[i.name].nil? %>
+									<p><%= text_field_tag "#{i.name}_list_input[0]", nil, :size => 90 -%></p>
+								<% else -%>
+									<% @job.inputs_data[i.name].each do |val| -%>
+										<% s_field_counter = s_field_counter + 1 -%>
+										<% p_id = i.name + '_p_' + s_field_counter.to_s -%>
+										<p id="<%= p_id %>">
+											<%= text_field_tag "#{i.name}_list_input[#{s_field_counter}]", val, :size => 90 -%>
+											&nbsp;&nbsp;<small>[<a href="" onclick="javascript:Element.remove('<%= p_id %>'); return false;">delete</a>]</small>
+									  </p>
+									<% end -%>
+								<% end -%>
 							</div>
 							<p style="font-size: 93%; font-weight: bold;">
-								<a href="" onclick="javascript:add_input_field('<%= i.name -%>', '<%= i.name -%>_list'); return false;">Add another input</a>
+								<a href="" onclick="javascript:add_input_field('<%= escape_javascript i.name -%>', '<%= escape_javascript i.name -%>_list'); return false;">Add another input</a>
 							</p>
 						</div>
 						
@@ -162,8 +185,12 @@
 						</div>
 					</div>
 					
+					<script>update_inputs_states('<%= escape_javascript i.name -%>', '<%= input_type -%>')</script>
+					
 					<br/>
 				<% end -%>
+				
+				<script>field_counter = <%= s_field_counter -%></script>
 				
 				<center><%= submit_tag "Save Input Data", :disable_with => "Save..." %></center>
 			<% end %>
