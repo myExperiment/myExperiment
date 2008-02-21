@@ -2,31 +2,52 @@
 
 	<% if job.allow_run? -%>
 		
-		<p class="none_text" style="text-align: center;">This job has not been submitted yet.</p>
+		<p style="text-align: center;"><b>This job has not been submitted yet.</b></p>
 		
 		<p>
-			<center>
-				<% form_tag submit_job_job_path(experiment, job) do -%>
-					<center><%= submit_tag "Submit Job", :disable_with => "Submitting..." -%></center>
-				<% end -%>
-			</center>
+			<% form_tag submit_job_job_path(experiment, job) do -%>
+				<center><%= submit_tag "Submit Job", :disable_with => "Submitting..." -%></center>
+			<% end -%>
 		</p>
 		
 	<% else -%>
 		
-		<% unless status.blank? -%>
+		<% unless job.last_status.blank? -%>
 			<p style="text-align: center;">
-				This Job has been submitted and the last status is:
-				<font style="color: #990000; font-weight: bold;"><%= h status -%></font>
-				as of <%= datetime job.last_status_at -%>.
+				Status:
+				<font style="color: #990000; font-weight: bold;"><%= h job.last_status -%></font>,
+				last checked at <%= datetime job.last_status_at -%>.
 			</p>			
 		<% else -%>
-			<p style="text-align: center;">
-				This Job has been submitted but no status is currently available.
+			<p class="none_text" style="text-align: center;">
+				Status not available
 			</p>
 		<% end -%>
 		
-		<h3>Progress Report</h3>
+		<div class="box_simple" style="margin: 1em 0 2em 0; font-size: 93%;">
+			<p>
+				Job submitted at 
+				<b><%= datetime job.submitted_at -%></b>
+			</p>
+			<p>
+				Job started at 
+				<% unless job.started_at.blank? -%>
+					<b><%= datetime job.started_at -%></b>
+				<% else -%>
+					<span class="none_text">unknown</span>
+				<% end -%>
+			</p>
+			<p>
+				Job completed at 
+				<% unless job.completed_at.blank? -%>
+					<b><%= datetime job.completed_at -%></b>
+				<% else -%>
+					<span class="none_text">unknown</span>
+				<% end -%>
+			</p>
+		</div>	
+		
+		<h4>Progress Report</h4>
 		
 		<% if (report = job.report) -%>
 			<table class="job_report">
@@ -46,7 +67,7 @@
 								<%= h processor.number -%> of <%= h processor.total -%>
 							<% end %>
 						</td>
-				    <td><%= datetime processor.time -%></td>
+				    <td><%= h processor.time -%></td>
 				  </tr>
 				<% end %>
 			</table>

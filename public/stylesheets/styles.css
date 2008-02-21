@@ -1422,6 +1422,12 @@ div.auto_complete ul strong.highlight {
 	color: #999999;
 }
 
+.note_text {
+	font-size: 93%;
+	font-weight: bold;
+	color: #900000;
+}
+
 .sub-heading {
 	text-align: center; 
 	font-size: 108%; 
@@ -1440,12 +1446,13 @@ div.auto_complete ul strong.highlight {
 
 table.job_report {
 	border-collapse: collapse;
+	font-size: 93%;
 }
 
 table.job_report th,
 table.job_report td {
 	border: 1px solid #CCCCCC;
-	padding: 0.2em 0.5em;
+	padding: 0.3em 0.6em;
 }
 
 table.job_report th {

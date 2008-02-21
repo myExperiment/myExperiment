@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 require 'acts_as_runner'
+require 'enactor/client'
+require 'document/data'
+require 'document/report'
 
 class TavernaEnactor < ActiveRecord::Base
   
@@ -98,6 +101,10 @@ class TavernaEnactor < ActiveRecord::Base
   
   def get_job_report(job_uri)
     service_client.get_job_report(job_uri)
+  end
+  
+  def get_job_completed_at(job_uri)
+    service_client.get_completed_at(job_uri)
   end
   
 protected

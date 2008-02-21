@@ -2,8 +2,6 @@
 
 <% t "#{h @job.title}" -%>
 
-<% status = @job.last_status -%>
-
 <h1>Job: <%= h @job.title %></h1>
 
 <% # TODO: check that Workflow and Runner are still authorized, and check that Workflow version still exists. -%>
@@ -44,15 +42,15 @@
 				
 				<p  style="font-size: 93%;">
 					<b>Last status:</b>
-					<% unless status.blank? -%>
-						<%= h status -%>
+					<% unless @job.last_status.blank? -%>
+						<%= h @job.last_status -%>
 					<% else -%>
-						<span class="none_text">Not yet submitted</span>
+						<span class="none_text">not yet submitted</span>
 					<% end -%>
 				</p>
 				<p  style="font-size: 93%;">
 					<b>Last status check:</b>
-					<% unless (status = @job.last_status_at).blank? -%>
+					<% unless @job.last_status_at.blank? -%>
 						<%= datetime @job.last_status_at -%>
 					<% else -%>
 						<span class="none_text">N/A</span>
@@ -108,7 +106,7 @@
 		<% if @job.allow_run? -%>
 			<% inputs = @job.runnable.get_input_ports(@job.runnable_version) -%>
 			<% if inputs and not inputs.empty? -%>
-				<p style="font-size: 93%; color: #990000;">
+				<p class="note_text">
 					Remember to click 'save' when you are done with setting/editing the input data.
 				</p>
 				
@@ -122,7 +120,7 @@
 						
 						<h4>Input Port: <%= i.name %></h4>
 						
-						<p class="box_standout" style="margin-bottom: 0.5em; padding: 0.2em 0.5em;">
+						<p class="box_standout" style="font-size: 93%; margin-bottom: 0.6em; padding: 0.2em 0.5em;">
 							<b>Description: </b>
 							<% unless i.description.blank? -%>
 								<%= h i.description -%>
@@ -203,8 +201,13 @@
 			<% end -%>
 		
 		<% else -%>
-			<p class="none_text">This Job has already been submitted and therefore inputs cannot be changed now.</p>
-			<p>TODO: show set of inputs here</p>
+			<p class="note_text">This Job has already been submitted and therefore inputs cannot be changed now.</p>
+			
+			<% if @job.inputs_data.nil? -%>
+				<p class="none_text">No input data was provided.</p>
+			<% else -%>
+				<p>TODO: show set of inputs here</p>
+			<% end -%>
 		<% end -%>
 		
 	</div>
@@ -215,21 +218,22 @@
 
 <h2>Status</h2>
 
-<ul class="sectionIcons">
-	<li>
-		<%= link_to_remote "#{image_tag 'refresh.gif'} Refresh Status",
-									 :url => update_status_job_url(@experiment, @job),
-									 :method => :get,
-									 :update => 'status_box',
-									 :success => "new Effect.Highlight('status_box', { duration: 1.5 });",
-									 :loading => "Element.show('refresh_indicator')",
-                   :complete => "Element.hide('refresh_indicator')" -%>
-	</li>
-</ul>
+<div style="margin: 0 1.5em;">
 
-<center><%= image_tag "spinner.gif", :id => "refresh_indicator", :style => "margin-left: 1em; display: none;" %></center>
+	<ul class="sectionIcons" style="margin-top: 1.5em;">
+		<li style="margin-left: 0;">
+			<%= link_to_remote "#{image_tag 'refresh.gif'} Refresh",
+										 :url => update_status_job_url(@experiment, @job),
+										 :method => :get,
+										 :update => 'status_box',
+										 :success => "new Effect.Highlight('status_box', { duration: 1.5 });",
+										 :loading => "Element.show('refresh_indicator')",
+	                   :complete => "Element.hide('refresh_indicator')" -%>
+		</li>
+	</ul>
+	
+	<center><%= image_tag "spinner.gif", :id => "refresh_indicator", :style => "display: none;" %></center>
 
-<div id="status_box" style="margin-left: 1.5em;">
 	<%= render :partial => "status_info", :locals => { :job => @job, :experiment => @experiment } -%>
 </div>
 

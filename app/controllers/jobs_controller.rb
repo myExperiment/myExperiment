@@ -19,7 +19,7 @@ class JobsController < ApplicationController
   end
 
   def show
-      
+    
     unless @job.runnable.authorized?(action_name, current_user) 
       flash[:error] = "The runnable item (#{@job.runnable_type}) is not authorized anymore - you need download priviledges include it in a Job."
     end
@@ -28,6 +28,8 @@ class JobsController < ApplicationController
       flash[:error] += "<br/>" unless flash[:error].blank?
       flash[:error] += "The runner is not authorized for use anymore."
     end
+    
+    @job.refresh_status!
 
     respond_to do |format|
       format.html # show.rhtml
@@ -200,6 +202,7 @@ class JobsController < ApplicationController
   end
   
   def update_status
+    @job.refresh_status!
     respond_to do |format|
       format.html { render :partial => "status_info", :locals => { :job => @job, :experiment => @experiment } }
     end

@@ -47,34 +47,36 @@ class Job < ActiveRecord::Base
         
         # Only continue if runner service is valid
         unless runner.service_valid?
-          run_errors << "The #{humanize self.runner_type} is invalid or inaccessible. Please check the settings you have registered for this Runner."
+          run_errors << "The #{self.runner_type.humanize} is invalid or inaccessible. Please check the settings you have registered for this Runner."
           success = false
-        end
-        
-        # Ask the runner for the uri for the runnable object on the service
-        # (should submit the object to the service if required)
-        remote_runnable_uri = runner.get_remote_runnable_uri(self.runnable_type, self.runnable_id, self.runnable_version)
-        
-        if remote_runnable_uri
-          # Submit inputs (if available) to runner service
-          unless self.inputs_data.blank?
-            self.inputs_uri = runner.submit_inputs(self.inputs_data)
-            self.save!
-          end
+        else        
+          # Ask the runner for the uri for the runnable object on the service
+          # (should submit the object to the service if required)
+          remote_runnable_uri = runner.get_remote_runnable_uri(self.runnable_type, self.runnable_id, self.runnable_version)
           
-          # Submit the job to the runner, which should begin to execute it, then get status
-          self.job_uri = runner.submit_job(remote_runnable_uri, self.inputs_uri)
-          self.submitted_at = Time.now
-          self.last_status = runner.get_job_status(self.job_uri)
-          self.last_status_at = Time.now
-          self.save!
-        else
-          run_errors << "Failed to submit the runnable item to the runner service. The item might not exist anymore or access may have been denied at the service."
-          success = false
+          if remote_runnable_uri
+            # Submit inputs (if available) to runner service
+            unless self.inputs_data.blank?
+              self.inputs_uri = runner.submit_inputs(self.inputs_data)
+              self.save!
+            end
+            
+            # Submit the job to the runner, which should begin to execute it, then get status
+            self.job_uri = runner.submit_job(remote_runnable_uri, self.inputs_uri)
+            self.submitted_at = Time.now
+            self.last_status = runner.get_job_status(self.job_uri)
+            self.last_status_at = Time.now
+            self.save!
+          else
+            run_errors << "Failed to submit the runnable item to the runner service. The item might not exist anymore or access may have been denied at the service."
+            success = false
+          end
         end
         
       rescue Exception => ex
         run_errors << "An exception has occurred whilst submitting and running this job: #{ex}"
+        puts ex
+        puts ex.backtrace
         success = false
       end
       
@@ -87,18 +89,23 @@ class Job < ActiveRecord::Base
     
   end
   
-  def last_status
+  def refresh_status!
     begin
       if self.job_uri
         self.last_status = runner.get_job_status(self.job_uri)
         self.last_status_at = Time.now
+        
+        if self.last_status == 'COMPLETED' and !self.completed_at
+          self.completed_at = runner.get_job_completed_at(self.job_uri)
+        end
+        
         self.save
       end 
     rescue Exception => ex
       puts "ERROR occurred whilst fetching last status for job #{self.job_uri}. Exception: #{ex}"
+      puts ex.backtrace
+      return false
     end
-    
-    return self[:last_status]
   end
   
   def inputs_data=(data)
@@ -134,6 +141,7 @@ class Job < ActiveRecord::Base
       end
     rescue Exception => ex
       puts "ERROR occurred whilst fetching report for job #{self.job_uri}. Exception: #{ex}"
+      puts ex.backtrace
       return nil
     end
   end
