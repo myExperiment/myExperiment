@@ -56,7 +56,7 @@ class Job < ActiveRecord::Base
           
           if remote_runnable_uri
             # Submit inputs (if available) to runner service
-            unless self.inputs_data.blank?
+            unless self.inputs_data.nil?
               self.inputs_uri = runner.submit_inputs(self.inputs_data)
               self.save!
             end
@@ -95,8 +95,13 @@ class Job < ActiveRecord::Base
         self.last_status = runner.get_job_status(self.job_uri)
         self.last_status_at = Time.now
         
-        if self.last_status == 'COMPLETED' and !self.completed_at
-          self.completed_at = runner.get_job_completed_at(self.job_uri)
+        if self.completed? 
+          unless self.completed_at
+            #self.completed_at = runner.get_job_completed_at(self.job_uri)
+          end
+          unless self.outputs_uri
+            self.outputs_uri = runner.get_job_outputs_uri(self.job_uri)
+          end
         end
         
         self.save
@@ -144,6 +149,10 @@ class Job < ActiveRecord::Base
       puts ex.backtrace
       return nil
     end
+  end
+  
+  def completed?
+    return self.last_status == 'COMPLETE'
   end
   
 protected

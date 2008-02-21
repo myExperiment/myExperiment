@@ -19,7 +19,6 @@ class JobsController < ApplicationController
   end
 
   def show
-    
     unless @job.runnable.authorized?(action_name, current_user) 
       flash[:error] = "The runnable item (#{@job.runnable_type}) is not authorized anymore - you need download priviledges include it in a Job."
     end
@@ -205,6 +204,32 @@ class JobsController < ApplicationController
     @job.refresh_status!
     respond_to do |format|
       format.html { render :partial => "status_info", :locals => { :job => @job, :experiment => @experiment } }
+    end
+  end
+  
+  def download_outputs_xml
+    available = true
+    
+    
+    
+    if not available
+      respond_to do |format|
+        flash[:error] = "Failed to download outputs XML"
+        format.html { render :action => 'show' }
+      end
+    end
+  end
+  
+  def download_outputs_package
+    available = true
+    
+    
+    
+    if not available
+      respond_to do |format|
+        flash[:error] = "Failed to download outputs package"
+        format.html { render :action => 'show' }
+      end
     end
   end
   

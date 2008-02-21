@@ -45,6 +45,24 @@
 					<span class="none_text">unknown</span>
 				<% end -%>
 			</p>
+			<p>
+				Job inputs URI:
+				<% unless job.inputs_uri.blank? -%>
+					<%= link_to job.inputs_uri, job.inputs_uri, :target => '_blank' -%>
+				<% else -%>
+					<span class="none_text">not available</span>
+				<% end -%>
+			</p>
+			<p>
+				Job outputs URI:
+				<% unless job.outputs_uri.blank? -%>
+					<%= link_to job.outputs_uri, job.outputs_uri, :target => '_blank' -%>
+				<% else -%>
+					<span class="none_text">not available</span>
+				<% end -%>
+			</p>
+			
+			<% # TODO: download Job Manifest %>
 		</div>	
 		
 		<h4>Progress Report</h4>

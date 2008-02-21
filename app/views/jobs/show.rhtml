@@ -1,4 +1,4 @@
-<%= javascript_include_tag "enactment.js" %>
+<%= javascript_include_tag "enactment.js" -%>
 
 <% t "#{h @job.title}" -%>
 
@@ -6,7 +6,7 @@
 
 <% # TODO: check that Workflow and Runner are still authorized, and check that Workflow version still exists. -%>
 
-<%= error_messages_for :job %>
+<%= error_messages_for :job -%>
 
 <center>
 	<table class="box_simple">
@@ -103,8 +103,8 @@
 
   <div class="foldContent" style="display: <%= @job.allow_run? ? 'block' : 'none' -%>; padding: 1em 2em;">
 
+		<% inputs = @job.runnable.get_input_ports(@job.runnable_version) -%>
 		<% if @job.allow_run? -%>
-			<% inputs = @job.runnable.get_input_ports(@job.runnable_version) -%>
 			<% if inputs and not inputs.empty? -%>
 				<p class="note_text">
 					Remember to click 'save' when you are done with setting/editing the input data.
@@ -194,7 +194,7 @@
 					
 					<script>field_counter = <%= s_field_counter -%></script>
 					
-					<center><%= submit_tag "Save Input Data", :disable_with => "Save..." -%></center>
+					<center><%= submit_tag "Save Input Data", :disable_with => "Saving..." -%></center>
 				<% end %>
 			<% else -%>
 				<p class="none_text">No input ports found</p>
@@ -206,7 +206,26 @@
 			<% if @job.inputs_data.nil? -%>
 				<p class="none_text">No input data was provided.</p>
 			<% else -%>
-				<p>TODO: show set of inputs here</p>
+				<% inputs.each do |i| -%>
+					<% input_type = @job.current_input_type(i.name) -%>
+					
+					<h4>Input Port: <%= i.name %></h4>
+						<% if input_type == 'none' -%>
+							<p>No input</p>
+						<% elsif input_type == 'single' -%>
+							<p>Single input:</p>
+							<p class="box_simple">
+								<%= h @job.inputs_data[i.name] -%>
+							</p>
+						<% elsif input_type == 'list' -%>
+							<p>List of inputs:</p>
+							<ul>
+								<% @job.inputs_data[i.name].each do |val| -%>
+									<li><%= h val -%></li>
+								<% end -%>
+							</ul>
+						<% end %>
+				<% end -%>
 			<% end -%>
 		<% end -%>
 		
@@ -232,7 +251,7 @@
 		</li>
 	</ul>
 	
-	<center><%= image_tag "spinner.gif", :id => "refresh_indicator", :style => "display: none;" %></center>
+	<center><%= image_tag "spinner.gif", :id => "refresh_indicator", :style => "display: none;" -%></center>
 
 	<%= render :partial => "status_info", :locals => { :job => @job, :experiment => @experiment } -%>
 </div>
@@ -241,8 +260,13 @@
 
 <h2>Output Data</h2>
 
-<div style="margin-left: 1.5em;">
-
+<div style="margin: 0 1.5em;">
+	<% if @job.completed? -%>
+		<p><%= icon "xml", download_outputs_xml_job_path(@experiment, @job), nil, nil, "Download as XML" -%></p>
+		<p><%= icon "package", download_outputs_package_job_path(@experiment, @job), nil, nil, "Download as compressed package" -%></p>
+	<% else -%>
+		<p class="none_text">None</p>
+	<% end -%>
 </div>
 
 <br/>

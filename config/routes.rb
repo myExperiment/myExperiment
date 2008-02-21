@@ -8,7 +8,7 @@ ActionController::Routing::Routes.draw do |map|
   # Experiments
   map.resources :experiments do |e|
     # Experiments have nested Jobs
-    e.resources :jobs, :member => { :save_inputs => :post, :submit_job => :post, :update_status => :get }
+    e.resources :jobs, :member => { :save_inputs => :post, :submit_job => :post, :update_status => :get, :download_outputs_xml => :get, :download_outputs_package => :get }
   end
   
   # announcements

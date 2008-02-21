@@ -88,7 +88,12 @@ class TavernaEnactor < ActiveRecord::Base
   end
   
   def submit_inputs(hash)
-    service_client.upload_data(hash)
+    # Translate to format required (ie: key => Data::Document)
+    inputs_hash = { }
+    hash.each do |k,v|
+      inputs_hash[k] = Document::Data.new(v)
+    end
+    service_client.upload_data(inputs_hash)
   end
   
   def submit_job(remote_runnable_uri, inputs_uri)
@@ -105,6 +110,10 @@ class TavernaEnactor < ActiveRecord::Base
   
   def get_job_completed_at(job_uri)
     service_client.get_completed_at(job_uri)
+  end
+  
+  def get_job_outputs_uri(job_uri)
+    service_client.get_job_outputs_url(job_uri)
   end
   
 protected
