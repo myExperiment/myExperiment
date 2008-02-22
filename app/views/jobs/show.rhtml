@@ -282,12 +282,13 @@
 		
 		<% outputs = @job.outputs_data -%>
 		<% if outputs.nil? or outputs.empty? -%>
-			<p class="none_text">No output data available</p>
+			<p class="none_text">No output data available (runner may be offline)</p>
 		<% else -%>
 			<p><b><%= pluralize outputs.size, "output" %>:</b></p>
 			<% outputs.each do |k,v| -%>
 				<div class="box_simple" style="margin-top: 0.5em;">
 					<h4>Output port: <%= h k -%></h4>
+					<p><b>Mime type(s):</b> <%= v.annotation -%></p>
 				</div>
 			<% end -%>
 		<% end -%>
