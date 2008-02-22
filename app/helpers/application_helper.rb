@@ -67,7 +67,11 @@ module ApplicationHelper
   def datetime(old_dt, long=true)
     return nil unless old_dt
     
-    rtn = Time.at(old_dt)
+    if old_dt.is_a?(DateTime)
+      rtn = old_dt
+    else
+      rtn = Time.at(old_dt)
+    end
     
     return long ? rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)") : rtn.strftime("%d/%m/%y @ %H:%M:%S")
   end

@@ -207,30 +207,19 @@ class JobsController < ApplicationController
     end
   end
   
-  def download_outputs_xml
-    available = true
-    
-    
-    
-    if not available
-      respond_to do |format|
-        flash[:error] = "Failed to download outputs XML"
-        format.html { render :action => 'show' }
+  def outputs_xml
+    respond_to do |format|
+      if @job.completed?
+        format.xml { render :xml => @job.outputs_as_xml }
+      else
+        flash[:error] = "Outputs XML unavailable - Job not completed yet."
+        format.html { redirect_to job_url(@experiment, @job) }
       end
     end
   end
   
-  def download_outputs_package
-    available = true
+  def outputs_package
     
-    
-    
-    if not available
-      respond_to do |format|
-        flash[:error] = "Failed to download outputs package"
-        format.html { render :action => 'show' }
-      end
-    end
   end
   
 protected

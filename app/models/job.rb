@@ -3,6 +3,8 @@
 # Copyright (c) 2008 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'rexml/document'
+
 class Job < ActiveRecord::Base
   
   belongs_to :runnable, :polymorphic => true
@@ -95,10 +97,17 @@ class Job < ActiveRecord::Base
         self.last_status = runner.get_job_status(self.job_uri)
         self.last_status_at = Time.now
         
-        if self.completed? 
+        unless self.started_at
+          self.started_at = runner.get_job_started_at(self.job_uri)
+        end
+        
+        if self.finished?
           unless self.completed_at
-            #self.completed_at = runner.get_job_completed_at(self.job_uri)
+            self.completed_at = runner.get_job_completed_at(self.job_uri, self.last_status)
           end
+        end
+        
+        if self.completed?
           unless self.outputs_uri
             self.outputs_uri = runner.get_job_outputs_uri(self.job_uri)
           end
@@ -107,7 +116,7 @@ class Job < ActiveRecord::Base
         self.save
       end 
     rescue Exception => ex
-      puts "ERROR occurred whilst fetching last status for job #{self.job_uri}. Exception: #{ex}"
+      puts "ERROR occurred whilst refreshing status for job #{self.job_uri}. Exception: #{ex}"
       puts ex.backtrace
       return false
     end
@@ -152,7 +161,20 @@ class Job < ActiveRecord::Base
   end
   
   def completed?
-    return self.last_status == 'COMPLETE'
+    return runner.verify_job_completed?(self.last_status)
+  end
+  
+  def finished?
+    return runner.verify_job_finished?(self.last_status)
+  end
+  
+  def outputs_as_xml
+    xml_doc = runner.get_job_outputs_xml(self.job_uri)
+    if xml_doc 
+      return xml_doc.to_s
+    else
+      return 'Error: could not retrieve outputs XML document.'
+    end
   end
   
 protected

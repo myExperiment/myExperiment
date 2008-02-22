@@ -108,12 +108,32 @@ class TavernaEnactor < ActiveRecord::Base
     service_client.get_job_report(job_uri)
   end
   
-  def get_job_completed_at(job_uri)
-    service_client.get_completed_at(job_uri)
+  def get_job_started_at(job_uri)
+    service_client.get_job_created_date(job_uri)
+  end
+  
+  def get_job_completed_at(job_uri, current_status)
+    if verify_job_finished?(current_status)
+      return service_client.get_job_modified_date(job_uri)
+    else
+      return nil
+    end
   end
   
   def get_job_outputs_uri(job_uri)
     service_client.get_job_outputs_url(job_uri)
+  end
+  
+  def get_job_outputs_xml(job_uri)
+    service_client.get_job_outputs_doc(job_uri)
+  end
+  
+  def verify_job_completed?(current_status)
+    return current_status == 'COMPLETE'
+  end
+  
+  def verify_job_finished?(current_status)
+    return Enactor::Status.finished?(current_status)
   end
   
 protected
