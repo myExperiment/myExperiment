@@ -1,0 +1,98 @@
+<% if job -%>
+
+	<% if job.allow_run? -%>
+		
+		<p style="text-align: center;"><b>This job has not been submitted yet.</b></p>
+		
+		<p>
+			<% form_tag submit_job_job_path(experiment, job) do -%>
+				<center><%= submit_tag "Submit Job", :disable_with => "Submitting..." -%></center>
+			<% end -%>
+		</p>
+		
+	<% else -%>
+		
+		<% unless job.last_status.blank? -%>
+			<p style="text-align: center;">
+				Status:
+				<font style="color: #990000; font-weight: bold;"><%= h job.last_status -%></font>,
+				last checked at <%= datetime job.last_status_at -%>.
+			</p>			
+		<% else -%>
+			<p class="none_text" style="text-align: center;">
+				Status not available
+			</p>
+		<% end -%>
+		
+		<div class="box_simple" style="margin: 1em 0 2em 0; font-size: 93%;">
+			<p>
+				Job submitted at 
+				<b><%= datetime job.submitted_at -%></b>
+			</p>
+			<p>
+				Job started at 
+				<% unless job.started_at.blank? -%>
+					<b><%= datetime job.started_at -%></b>
+				<% else -%>
+					<span class="none_text">unknown</span>
+				<% end -%>
+			</p>
+			<p>
+				Job completed at 
+				<% unless job.completed_at.blank? -%>
+					<b><%= datetime job.completed_at -%></b>
+				<% else -%>
+					<span class="none_text">unknown</span>
+				<% end -%>
+			</p>
+			<p>
+				Job inputs URI:
+				<% unless job.inputs_uri.blank? -%>
+					<%= link_to job.inputs_uri, job.inputs_uri, :target => '_blank' -%>
+				<% else -%>
+					<span class="none_text">not available</span>
+				<% end -%>
+			</p>
+			<p>
+				Job outputs URI:
+				<% unless job.outputs_uri.blank? -%>
+					<%= link_to job.outputs_uri, job.outputs_uri, :target => '_blank' -%>
+				<% else -%>
+					<span class="none_text">not available</span>
+				<% end -%>
+			</p>
+			
+			<% # TODO: download Job Manifest %>
+		</div>	
+		
+		<h4>Progress Report</h4>
+		
+		<% if (report = job.report) -%>
+			<table class="job_report">
+			  <tr>
+			    <th>Processor</th>
+			    <th>Status</th>
+			    <th>Detail</th>
+			    <th>Time</th>
+			  </tr>
+			
+				<% for processor in report.processors -%>
+				  <tr>
+				    <td><%= h processor.name -%></td>
+				    <td><%= h processor.status -%></td>
+						<td>
+							<% if processor.status == 'ITERATING' -%>
+								<%= h processor.number -%> of <%= h processor.total -%>
+							<% end %>
+						</td>
+				    <td><%= h processor.time -%></td>
+				  </tr>
+				<% end %>
+			</table>
+		<% else %>
+			<p class="none_text">Report unavailable at this time</p>
+		<% end %>
+		
+	<% end -%>
+
+<% end -%>

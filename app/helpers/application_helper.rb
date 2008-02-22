@@ -67,7 +67,11 @@ module ApplicationHelper
   def datetime(old_dt, long=true)
     return nil unless old_dt
     
-    rtn = Time.at(old_dt)
+    if old_dt.is_a?(DateTime)
+      rtn = old_dt
+    else
+      rtn = Time.at(old_dt)
+    end
     
     return long ? rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)") : rtn.strftime("%d/%m/%y @ %H:%M:%S")
   end
@@ -649,6 +653,16 @@ module ApplicationHelper
       return "famfamfam_silk/transmit.png"
     when "review"
       return "famfamfam_silk/report.png"
+    when "experiment"
+      return "famfamfam_silk/folder_wrench.png"
+    when "job"
+      return "famfamfam_silk/script_gear.png"
+    when "runner"
+      return "famfamfam_silk/server_key.png"
+    when "xml"
+      return "famfamfam_silk/page_code.png"
+    when "package"
+      return "famfamfam_silk/package.png"
     else
       return nil
     end

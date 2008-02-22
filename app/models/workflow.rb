@@ -10,6 +10,11 @@ require 'acts_as_attributor'
 require 'acts_as_attributable'
 require 'explicit_versioning'
 require 'acts_as_reviewable'
+require 'acts_as_runnable'
+
+require 'scufl/model'
+require 'scufl/parser'
+require 'scufl/dot'
 
 class Workflow < ActiveRecord::Base
   has_many :citations, 
@@ -47,6 +52,8 @@ class Workflow < ActiveRecord::Base
   acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name ],
                :include => [ :comments ]) if SOLR_ENABLE
 
+  acts_as_runnable
+  
   validates_presence_of :title, :scufl
   
   format_attribute :body
@@ -91,4 +98,15 @@ class Workflow < ActiveRecord::Base
     return list
   end
   
+  # Begin SCUFL specific methods
+
+  def get_input_ports(version)
+    return nil unless (workflow_version = self.find_version(version))
+    parser = Scufl::Parser.new
+    model  = parser.parse(workflow_version.scufl)
+    
+    return model.sources
+  end
+
+  # End SCUFL specific methods
 end

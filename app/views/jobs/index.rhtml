@@ -1,0 +1,9 @@
+<% if @experiment %>
+
+	<% t "Jobs for Experiment: #{h @experiment.title}" -%>
+
+	<h1>Jobs for Experiment: <%= h @experiment.title %></h1>
+	
+	<%= render :partial => "jobs/table", :locals => { :collection => @experiment.jobs } %>
+
+<% end %>

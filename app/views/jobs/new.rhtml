@@ -1,0 +1,52 @@
+<%= javascript_include_tag :fckeditor %>
+
+<h1>New Job</h1>
+
+<p class="sub-heading">
+	<b>
+		For Experiment:
+		<%= link_to_function h(@experiment.title), visual_effect(:toggle_blind, "experiment_listing", :duration => 0.3) %>
+	</b>
+</p>
+<div id="experiment_listing" style="display: none;">
+	<%= render :partial => "experiments/table", :locals => { :collection => [ @experiment ] } %>
+</div>
+
+<%= error_messages_for :job %>
+
+<center>
+	<div class="box_form" style="width: 550px; margin: 2em 0; text-align: left;">
+		<% form_for :job, :url => jobs_path(@experiment) do |form| -%>
+			<p><b>Title</b></p>
+			<%= form.text_field :title, :size => 86 %>
+			
+			<p><b>Description</b></p>
+			<%= fckeditor_textarea(:job, :description, :toolbarSet => 'Simple', :width => '550px', :height => '300px') %>
+			
+			<fieldset>
+				<legend>Enactment Setup</legend>
+				
+				<p>
+					<b>Workflow ID: </b>
+					<%= form.text_field :runnable_id, :size => 8 %>
+					<%= form.hidden_field :runnable_type %>
+				</p>
+				<p>
+					<b>Workflow Version: </b>
+					<%= form.text_field :runnable_version, :size => 8 %>
+				</p>
+				
+				<p>
+					<b>Runner to use: </b>
+					<%= form.select :runner_id, 
+													TavernaEnactor.for_user(current_user).collect {|r| [ r.title, r.id ]}, 
+													:prompt => '--- Select Runner ---' %>
+					<%= form.hidden_field :runner_type %>
+				</p>
+			</fieldset>
+			
+			<br/><br/>
+			<center><%= submit_tag "Create", :disable_with => "Creating..." %></center>
+		<% end -%>
+	</div>
+</center>

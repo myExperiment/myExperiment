@@ -1,0 +1,15 @@
+<li><%= link_to 'Experiments', experiments_path %></li>
+
+<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= link_to "View: #{h(@experiment.title)}", experiment_path(@experiment) %></li>
+  <% when "new" %>
+    <li><%= link_to "New Experiment", new_experiment_path %></li>
+  <% when "edit" %>
+    <li><%= link_to "Edit Experiment", edit_experiment_path(@experiment) %>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

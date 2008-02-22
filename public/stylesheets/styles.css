@@ -38,8 +38,7 @@ h1 {
 	text-align: center;
 	font-size: 123.1%;
 	color: #000033;
-	margin-top: 0.8em;
-	margin-bottom: 1em;
+	margin: 1em 0;
 }
 
 h2 {
@@ -70,7 +69,7 @@ h4 {
 	font-size: 108%;
 	font-weight: bold;
 	border: none;
-	padding: 0;
+	padding: 0.3em 0;
 	margin-top: 0;
 	margin-bottom: 0.6em;
 }
@@ -107,6 +106,11 @@ small {
 fieldset {
 	border: 1px solid #CCCCCC;
 	padding: 1em;
+}
+
+legend {
+	font-weight: bold;
+	margin-bottom: 0.5em;
 }
 
 li {
@@ -268,8 +272,7 @@ li {
 	text-align: center;
 	font-weight: bolder;
 	font-size: 108%;
-	padding: 4px 0;
-	*padding: 3px 0;
+	padding: 3px 0;
 	margin-left: 0;
 	margin-bottom: 0;
 	margin-top: 0;
@@ -325,7 +328,7 @@ li {
 	*padding: 0.2em 0.5em;
 	background-color: #EEEEEE;
 	border: 0px solid #DEDEDE;
-	border-width: 0 0 1px 1px;
+	border-width: 0 1px 1px 1px;
 	*margin-left: 1px;
 }
 
@@ -386,7 +389,7 @@ ul.breadcrumb_list a:hover {
 	background-color: #FFFF66;
 	font-size: 93%;
 	font-weight: normal;
-	padding: 0.4em 0.6em;
+	padding: 0.2em 0.6em;
 	max-width: 500px;
 	text-align: left;
 	line-height: 1.4em;
@@ -428,6 +431,10 @@ ul.breadcrumb_list a:hover {
 
 #home_container .box {
 	margin-bottom: 1em;
+}
+
+#home_container .box p {
+	padding: 0.2em 0;
 }
 
 #home_container .box .title {
@@ -792,19 +799,19 @@ table.alt_table {
 }
 
 table.alt_table td {
-	border-top: 1px dotted #666666;
-	border-bottom: 1px dotted #666666;
+	border-top: 1px solid #BBBBBB;
+	border-bottom: 1px solid #BBBBBB;
 	margin-bottom: 0.5em;
-	padding: 0.8em 0.5em;
+	padding: 1em 0.5em;
 	vertical-align: top;
 }
 
 table.alt_table tr.odd_row td {
-	background-color: #f5f5f5;
+	background-color: #F5F5F5;
 }
 
 table.alt_table tr.even_row td {
-	background-color: #eeeeee;
+	background-color: #EEEEEE;
 }
 
 table.alt_table hr {
@@ -1396,6 +1403,12 @@ div.auto_complete ul strong.highlight {
 	background-color: #DDEEFF;
 }
 
+.box_editing_inner2 {
+	background-color: #EEEEEE;
+	padding: 0.5em 0.8em;
+	border: 1px dotted #999999;
+}
+
 .box_infotext {
 	font-size: 93%;
 	background-color: #FFFFCC;
@@ -1405,12 +1418,51 @@ div.auto_complete ul strong.highlight {
 }
 
 .none_text {
-	font-style:italic;
-	color:#666666;
+	font-style: italic;
+	color: #666666;
 }
 
 .count_text {
 	color: #999999;
+}
+
+.note_text {
+	font-size: 93%;
+	font-weight: bold;
+	color: #900000;
+}
+
+.sub-heading {
+	text-align: center; 
+	font-size: 108%; 
+	margin-bottom: 0.5em;
+}
+
+.inputs_list {
+	list-style: none;
+	margin: 0;
+	margin-bottom: 0.5em;
+}
+
+.inputs_list li {
+	list-style: none;
+}
+
+table.job_report {
+	border-collapse: collapse;
+	font-size: 93%;
+	margin-top: 0.3em;
+}
+
+table.job_report th,
+table.job_report td {
+	border: 1px solid #CCCCCC;
+	padding: 0.3em 0.6em;
+}
+
+table.job_report th {
+	background-color: #EEEEEE;
+	font-weight: bold;
 }
 
 	

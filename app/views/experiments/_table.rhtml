@@ -1,0 +1,38 @@
+<% unless collection.empty? %>
+
+	<table class="alt_table">
+		<% odd_row = false -%> 
+		<% for experiment in collection %>
+		  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+			    <td width="100px">
+			    	<b>Owner:</b><br/>
+						<%= contributor(experiment.contributor_id, experiment.contributor_type, true, 60) %>
+					</td>
+			    <td class="mid" style="text-align: left;">
+			    	<p class="title">
+							<%= icon "experiment", nil, nil, nil, '' %>
+							<%= link_to h(experiment.title), experiment_url(experiment) %>
+						</p>
+						
+						<p style="font-size: 85%; color: #666666;">
+							<b>Created:</b> <%=datetime experiment.created_at, false %>
+						</p>
+						
+						<% unless experiment.description.blank? %>
+							<div class="desc" style="font-size: 85%;">
+								<%= truncate(strip_html(experiment.description), 180) %>
+							</div>
+						<% end %>
+						
+					</td>
+			    <td class="actions"  style="width: 80px;">
+		      	<%= icon "show", experiment_path(experiment), nil, nil, "View" %>
+						<% if experiment.authorized?("edit", logged_in? ? current_user : nil) %>
+							<%= icon('edit', edit_experiment_path(experiment), nil, nil, 'Edit') %>
+						<% end %>
+		    	</td>
+		  	</tr>
+		<% end %>
+	</table>
+
+<% end %>

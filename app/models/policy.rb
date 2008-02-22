@@ -84,7 +84,7 @@ private
   # categorize action names here (make sure you include each one as an 
   # xxx_public and xxx_protected column in ++policies++ and an xxx 
   # column in ++permissions+)
-  @@categories = { "download" => ["download", "named_download"], 
+  @@categories = { "download" => ["download", "named_download", "submit_job"], 
                    "edit" => ["new", "create", "edit", "update", "new_version", "create_version", "destroy_version", "edit_version", "update_version"], 
                    "view" => ["index", "show", "search", "bookmark", "comment", "comment_delete", "rate", "tag", "view"],
                    "owner" => ["destroy"] } # you don't need a boolean column for this but you do need to categorize 'owner only' actions!

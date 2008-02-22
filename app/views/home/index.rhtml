@@ -154,6 +154,53 @@
 			<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 		</div>
 		
+		<!-- Latest Reviews -->
+		<div class="box">
+			<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+			<div class="title">
+				Latest Reviews
+			</div>
+			<div class="content">
+				<% unless (reviews = Review.latest).empty? %>
+					<ul class="list">
+						<% reviews.each do |r| %>
+							<% if thing_authorized?('show', r.reviewable) %>
+								<li>
+									<b><%= r_type = visible_name(r.reviewable); icon(r.reviewable_type.to_s, nil, nil, r_type, r_type) %>:</b>
+									<span><%= contributable(r.reviewable_id, r.reviewable_type) %></span>
+									<br/>
+									<span style="padding-left: 2em;">
+										Review by 
+										<b><%= name r.user %></b>:
+										(<%= timeago_fuzzy r.created_at %>)
+									</span>
+									<div class="box_standout" style="font-size: 85%; margin: 0.4em 2em; padding: 0.2em 0.5em;">
+										<p>
+											<b><%= link_to h(r.title), review_url(r.reviewable, r) -%></b>
+											<br/>
+											<span style="color: #666666;">
+												<% if (rating = r.associated_rating) -%>
+													Rated: <%= rating.rating -%> out of 5
+												<% else -%>
+													No rating given
+												<% end -%>
+											</span>
+										</p>
+										<%= truncate(strip_html(white_list(r.review)), 150) %>
+										<p style="text-align: right;">[ <%= link_to "More", review_url(r.reviewable, r) -%> ]</p>
+									</div>
+									<br/>
+								</li>
+							<% end %>
+						<% end %>
+					</ul>
+				<% else %>
+					<p class="none_text">None</p>
+				<% end %>
+			</div>
+			<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+		</div>
+		
 		<!-- Latest Comments -->
 		<div class="box">
 			<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
@@ -173,8 +220,8 @@
 										<b><%= name c.user %></b> said:
 										(<%= timeago_fuzzy c.created_at %>)
 									</span>
-									<div class="box_standout" style="margin: 0.2em 2em; padding: 0.2em 0.5em;">
-										<%= truncate(white_list(c.comment), 60) %>
+									<div class="box_standout" style="font-size: 85%; margin: 0.4em 2em; padding: 0.2em 0.5em;">
+										<%= truncate(strip_html(white_list(c.comment)), 150) %>
 										<p style="text-align: right;">[ <%= link_to "More", (c.commentable_type == 'Network' ? group_url(c.commentable) : contributable_url(c.commentable_id, c.commentable_type)) %> ]</p>
 									</div>
 									<br/>

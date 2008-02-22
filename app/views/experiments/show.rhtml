@@ -1,0 +1,8 @@
+<% for column in Experiment.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @experiment.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @experiment %> |
+<%= link_to 'Back', :action => 'list' %>

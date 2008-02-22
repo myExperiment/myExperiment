@@ -1,0 +1,11 @@
+<h1>Editing taverna_enactor</h1>
+
+<%= error_messages_for :runner %>
+
+<% form_tag :action => 'update', :id => @taverna_enactor do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Edit' %>
+<% end %>
+
+<%= link_to 'Show', :action => 'show', :id => @taverna_enactor %> |
+<%= link_to 'Back', :action => 'list' %>

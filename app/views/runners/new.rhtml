@@ -1,0 +1,35 @@
+<h1>New Taverna Enactor Runner</h1>
+
+<%= error_messages_for :runner %>
+
+<center>
+	<div class="box_form" style="width: 300px; margin: 1em 0; text-align: left;">
+		<p style="text-align: center; font-size: 85%;">Note: the runner will NOT be verified / validated on creation.</p>
+		
+		<% form_tag runners_path do -%>
+			<p><b>Title</b></p>
+			<%= text_field_tag "runner[title]", nil, :size => 45 %>
+			
+			<p><b>Description</b></p>
+			<%= text_area_tag "runner[description]", nil, :size => "35x6" %>
+			
+			<p><b>URL</b></p>
+			<%= text_field_tag "runner[url]", nil, :size => 45 %>
+			
+			<br/>
+			
+			<fieldset>
+				<legend>Access Credentials</legend>
+				
+				<p><b>Username</b></p>
+				<%= text_field_tag "runner[username]", nil, :size => 22 %>
+				
+				<p><b>Password</b> (will be encrypted)</p>
+				<%= text_field_tag "runner[password]", nil, :size => 22 %>
+			</fieldset>
+			
+			<br/><br/>
+			<center><%= submit_tag "Create", :disable_with => "Creating..." %></center>
+		<% end -%>
+	</div>
+</center>

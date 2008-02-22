@@ -2,6 +2,15 @@ ActionController::Routing::Routes.draw do |map|
   # forums
   map.from_plugin :savage_beast
   
+  # Runners
+  map.resources :runners
+  
+  # Experiments
+  map.resources :experiments do |e|
+    # Experiments have nested Jobs
+    e.resources :jobs, :member => { :save_inputs => :post, :submit_job => :post, :update_status => :get, :outputs_xml => :get, :outputs_package => :get }
+  end
+  
   # announcements
   map.resources :announcements
   
@@ -60,7 +69,7 @@ ActionController::Routing::Routes.draw do |map|
     #file.resources :reviews
   end
 
-  # bloGs
+  # blogs
   map.resources :blogs do |blog|
     # blogs have nested posts
     blog.resources :blog_posts

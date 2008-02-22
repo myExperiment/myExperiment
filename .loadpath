@@ -8,4 +8,5 @@
 	<pathentry path="GEM_LIB/actionpack-1.13.3/lib" type="var"/>
 	<pathentry path="GEM_LIB/actionwebservice-1.2.3/lib" type="var"/>
 	<pathentry path="GEM_LIB/activesupport-1.4.2/lib" type="var"/>
+	<pathentry path="C:/InstantRails/ruby/lib/ruby/gems/1.8/gems/taverna-0.5.0" type="lib"/>
 </loadpath>

@@ -15,10 +15,19 @@
 	    <td style="text-align: left;">
 	      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
 	      <p class="title">
-		  	<%= icon "workflow", nil, nil, nil, '' %>
-			<% title = contributable_name(workflow.id, 'Workflow')%>
-			<%=link_to(query ? highlight_all(title, query) : title, workflow_path(workflow)) %>
-		  </p>
+			  	<%= icon "workflow", nil, nil, nil, '' %>
+					<% title = contributable_name(workflow.id, 'Workflow')%>
+					<%=link_to(query ? highlight_all(title, query) : title, workflow_path(workflow)) %>
+					<span style="font-weight:normal;">
+						(v<%= workflow.current_version %>)
+					</span>
+			  </p>
+			
+			<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
+				<b>Created:</b> <%=datetime workflow.created_at, false %>
+				|
+				<b>Updated:</b> <%=datetime workflow.updated_at, false %>
+			</p>
 			
 		  <% unless (creditors = workflow.creditors).empty? %>
 		  	<p style="font-size:85%;">

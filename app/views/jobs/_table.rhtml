@@ -1,0 +1,38 @@
+<% unless collection.empty? %>
+
+	<table class="alt_table">
+		<% odd_row = false -%> 
+		<% for job in collection %>
+		  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+			    <td width="100px">
+			    	<b>Creator:</b><br/>
+						<%= contributor(job.user_id, 'User', true, 60) %>
+					</td>
+			    <td class="mid" style="text-align: left;">
+			    	<p class="title">
+							<%= icon "experiment", nil, nil, nil, '' %>
+							<%= link_to h(job.title), job_url(job.experiment, job) %>
+						</p>
+						
+						<p style="font-size: 85%; color: #666666;">
+							<b>Created:</b> <%=datetime job.created_at, false %>
+						</p>
+						
+						<% unless job.description.blank? %>
+							<div class="desc" style="font-size: 85%;">
+								<%= truncate(strip_html(job.description), 180) %>
+							</div>
+						<% end %>
+						
+					</td>
+			    <td class="actions"  style="width: 80px;">
+		      	<%= icon "show", job_url(job.experiment, job), nil, nil, "View" %>
+						<% if job.authorized?("edit", logged_in? ? current_user : nil) %>
+							<%= icon('edit', edit_job_path(job.experiment, job), nil, nil, 'Edit') %>
+						<% end %>
+		    	</td>
+		  	</tr>
+		<% end %>
+	</table>
+
+<% end %>

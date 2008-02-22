@@ -1,0 +1,8 @@
+<% for column in TavernaEnactor.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @taverna_enactor.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @taverna_enactor %> |
+<%= link_to 'Back', :action => 'list' %>

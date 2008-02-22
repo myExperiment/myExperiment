@@ -1,0 +1,300 @@
+<%= javascript_include_tag "enactment.js" -%>
+
+<% t "#{h @job.title}" -%>
+
+<h1>Job: <%= h @job.title %></h1>
+
+<% # TODO: check that Workflow and Runner are still authorized, and check that Workflow version still exists. -%>
+
+<%= error_messages_for :job -%>
+
+<center>
+	<table class="box_simple">
+		<tr>
+			<td style="vertical-align: top; padding: 0.3em 1.5em;">
+				<p>
+					<b>Created by:</b>
+				</p>
+				<div style="font-size: 93%;">
+					<%= render :partial => "users/avatar", :locals => { :user => @job.user, :size => 60 } %>
+				</div>
+			</td>
+			<td style="vertical-align: top;">
+				<div class="box_standout" style="padding: 0em 0.5em; margin-bottom: 0.5em;">
+					<% unless @job.description.blank? -%>
+						<%= white_list @job.description_html -%>
+					<% else -%>
+						<span class="none_text">No description</span>
+					<% end -%>
+				</div>
+				
+				<p style="font-size: 93%;">
+					<b>Created:</b>
+					<%= datetime @job.created_at %>
+				</p>
+				
+				<% if false -%>
+				<p  style="font-size: 93%;">
+					<b>Last updated:</b>
+					<%= datetime @job.updated_at %>
+				</p>
+				<% end -%>
+				
+				<p  style="font-size: 93%;">
+					<b>Last status:</b>
+					<% unless @job.last_status.blank? -%>
+						<%= h @job.last_status -%>
+					<% else -%>
+						<span class="none_text">not yet submitted</span>
+					<% end -%>
+				</p>
+				<p  style="font-size: 93%;">
+					<b>Last status check:</b>
+					<% unless @job.last_status_at.blank? -%>
+						<%= datetime @job.last_status_at -%>
+					<% else -%>
+						<span class="none_text">N/A</span>
+					<% end -%>
+				</p>
+			</td>
+		</tr>
+	</table>
+</center>
+
+<br/>
+
+<p style="text-align: center;">
+	<b>Experiment:</b>
+	<%= link_to_function h(@experiment.title), visual_effect(:toggle_blind, "job_experiment_listing", :duration => 0.3) %>
+</p>
+
+<div id="job_experiment_listing" style="display: none;">
+	<%= render :partial => "experiments/table", :locals => { :collection => [ @experiment ] } %>
+</div>
+
+<p style="text-align: center;">
+	<b>Runnable Item:</b>
+	<b><%= c_type = visible_name(@job.runnable); icon(@job.runnable_type, nil, nil, c_type, c_type) %> -</b>
+	<%= link_to_function h(@job.runnable.title), visual_effect(:toggle_blind, "job_runnable_listing", :duration => 0.3) %>
+	(version <%= @job.runnable_version %>)
+</p>
+
+<div id="job_runnable_listing" style="display: none;">
+	<%= render :partial => "#{@job.runnable_type.downcase.pluralize}/table", :locals => { :collection => [ @job.runnable ] } %>
+</div>
+
+<p style="text-align: center;">
+	<b>Runner:</b>
+	<b><%= icon('runner', nil, nil, @job.runner_type, @job.runner_type) %> -</b>
+	<%= link_to_function h(@job.runner.title), visual_effect(:toggle_blind, "job_runner_listing", :duration => 0.3) %>
+</p>
+
+<div id="job_runner_listing" style="display: none;">
+	<%= render :partial => "runners/table", :locals => { :collection => [ @job.runner ] } %>
+</div>
+
+<br/><br/>
+
+
+<!-- Inputs -->
+
+<div class="fold">
+
+  <div class="foldTitle">
+    Input Data
+  </div>
+
+  <div class="foldContent" style="display: <%= @job.allow_run? ? 'block' : 'none' -%>; padding: 1em 2em;">
+
+		<% inputs = @job.runnable.get_input_ports(@job.runnable_version) -%>
+		<% if @job.allow_run? -%>
+			<% if inputs and not inputs.empty? -%>
+				<p class="note_text">
+					Remember to click 'save' when you are done with setting/editing the input data.
+				</p>
+				
+				<br/>
+				
+				<% form_tag save_inputs_job_path(@experiment, @job), :multipart => true do -%>
+					<% s_field_counter = 0 -%>
+					
+					<% inputs.each do |i| -%>
+						<% input_type = @job.current_input_type(i.name) -%>
+						
+						<h4>Input Port: <%= i.name %></h4>
+						
+						<p class="box_standout" style="font-size: 93%; margin-bottom: 0.6em; padding: 0.2em 0.5em;">
+							<b>Description: </b>
+							<% unless i.description.blank? -%>
+								<%= h i.description -%>
+							<% else -%>
+								<span class="none_text">none</span>
+							<% end -%>
+						</p>
+						
+						<div class="box_editing" style="padding-top: 0;">
+							<table style="font-size: 93%; margin-bottom: 0.5em; margin-left: 0;">
+								<tr>
+									<td>
+										<%= radio_button_tag "#{i.name}_input_type", 'none', (input_type == 'none'), :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
+										No input
+									</td>
+									<td>
+										<%= radio_button_tag "#{i.name}_input_type", 'single', (input_type == 'single'), :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
+										Single input
+									</td>
+									<td>
+										<%= radio_button_tag "#{i.name}_input_type", 'list', (input_type == 'list'), :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
+										List of inputs
+									</td>
+									<td>
+										<%= radio_button_tag "#{i.name}_input_type", 'file', false, :onclick => "javascript:update_inputs_states('#{escape_javascript i.name}', this.value);" -%>
+										From file
+									</td>
+								</tr>
+							</table>
+							
+							<div id="<%= i.name -%>_single_input_box" class="box_editing_inner" style="display: none; width: 440px;">
+								<center>
+									<%= text_area_tag "#{i.name}_single_input", 
+																		input_type == 'single' ? h(@job.inputs_data[i.name]) : nil, 
+																		:size => "50x10" -%>
+								</center>
+							</div>
+							
+							<div id="<%= i.name -%>_list_input_box" class="box_editing_inner" style="display: none; width: 635px;">
+								<div id="<%= i.name -%>_list" style="margin-bottom: 0.5em;">
+									<%- if input_type == 'none' or @job.inputs_data[i.name].nil? %>
+										<p><%= text_field_tag "#{i.name}_list_input[0]", nil, :size => 90 -%></p>
+									<% else -%>
+										<% @job.inputs_data[i.name].each do |val| -%>
+											<% s_field_counter = s_field_counter + 1 -%>
+											<% p_id = i.name + '_p_' + s_field_counter.to_s -%>
+											<p id="<%= p_id %>">
+												<%= text_field_tag "#{i.name}_list_input[#{s_field_counter}]", val, :size => 90 -%>
+												&nbsp;&nbsp;<small>[<a href="" onclick="javascript:Element.remove('<%= p_id %>'); return false;">delete</a>]</small>
+										  </p>
+										<% end -%>
+									<% end -%>
+								</div>
+								<p style="font-size: 93%; font-weight: bold;">
+									<a href="" onclick="javascript:add_input_field('<%= escape_javascript i.name -%>', '<%= escape_javascript i.name -%>_list'); return false;">Add another input</a>
+								</p>
+							</div>
+							
+							<div id="<%= i.name -%>_file_input_box" class="box_editing_inner" style="display: none; width: 500px;">
+								<p style="font-size: 85%; color: #333333; padding-top: 0; text-align: center;">
+									Note: this will create a single input for this port, with the contents of the file as the input data.
+								</p>
+								<center><%= file_field_tag "#{i.name}_file_input", :size => 60 -%></center>
+							</div>
+						</div>
+						
+						<script>update_inputs_states('<%= escape_javascript i.name -%>', '<%= input_type -%>')</script>
+						
+						<br/><br/>
+					<% end -%>
+					
+					<script>field_counter = <%= s_field_counter -%></script>
+					
+					<center><%= submit_tag "Save Input Data", :disable_with => "Saving..." -%></center>
+				<% end %>
+			<% else -%>
+				<p class="none_text">No input ports found</p>
+			<% end -%>
+		
+		<% else -%>
+			<p class="note_text">
+				This Job has already been submitted and therefore inputs cannot be changed now.
+			</p>
+			
+			<% if @job.inputs_data.nil? -%>
+				<p class="none_text">No input data was provided.</p>
+			<% else -%>
+				<% inputs.each do |i| -%>
+					<% input_type = @job.current_input_type(i.name) -%>
+					<div class="box_simple" style="margin-top: 0.5em;">
+						<h4>Input Port: <%= i.name %></h4>
+						<% if input_type == 'none' -%>
+							<p>No input</p>
+						<% elsif input_type == 'single' -%>
+							<p>Single input:</p>
+							<p style="margin-left: 1em;"><%= h @job.inputs_data[i.name] -%></p>
+						<% elsif input_type == 'list' -%>
+							<p>List of inputs:</p>
+							<ul style="margin-top: 0;">
+								<% @job.inputs_data[i.name].each do |val| -%>
+									<li><%= h val -%></li>
+								<% end -%>
+							</ul>
+						<% end %>
+					</div>
+				<% end -%>
+			<% end -%>
+		<% end -%>
+		
+	</div>
+	
+</div>
+
+<br/>
+
+<h2>Status</h2>
+
+<div style="margin: 0 1.5em;">
+
+	<ul class="sectionIcons" style="margin-top: 1.5em;">
+		<li style="margin-left: 0;">
+			<%= link_to_remote "#{image_tag 'refresh.gif'} Refresh",
+										 :url => update_status_job_url(@experiment, @job),
+										 :method => :get,
+										 :update => 'status_box',
+										 :success => "new Effect.Highlight('status_box', { duration: 1.5 });",
+										 :loading => "Element.show('refresh_indicator')",
+	                   :complete => "Element.hide('refresh_indicator')" -%>
+		</li>
+	</ul>
+	
+	<center><%= image_tag "spinner.gif", :id => "refresh_indicator", :style => "display: none;" -%></center>
+	
+	<div id="status_box">
+		<%= render :partial => "status_info", :locals => { :job => @job, :experiment => @experiment } -%>
+	</div>
+</div>
+
+<br/><br/>
+
+<h2>Output Data</h2>
+
+<div style="margin: 0 1.5em;">
+
+	<% if @job.completed? -%>
+		<ul class="sectionIcons" style="margin-top: 1.5em;">
+			<li style="margin-left: 0;">
+				<%= icon "xml", outputs_xml_job_path(@experiment, @job), nil, nil, "Download as XML" -%>
+			</li>
+			<% if false -%>
+				<li>
+					<p><%= icon "package", outputs_package_job_path(@experiment, @job), nil, nil, "Download as compressed package" -%></p>
+				</li>
+			<% end -%>
+		</ul>
+		
+		<% outputs = @job.outputs_data -%>
+		<% if outputs.nil? or outputs.empty? -%>
+			<p class="none_text">No output data available</p>
+		<% else -%>
+			<p><b><%= pluralize outputs.size, "output" %>:</b></p>
+			<% outputs.each do |k,v| -%>
+				<div class="box_simple" style="margin-top: 0.5em;">
+					<h4>Output port: <%= h k -%></h4>
+				</div>
+			<% end -%>
+		<% end -%>
+	<% else -%>
+		<p class="none_text">Job not submitted yet</p>
+	<% end -%>
+	
+</div>
+
+<br/>
