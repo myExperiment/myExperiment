@@ -433,6 +433,10 @@ ul.breadcrumb_list a:hover {
 	margin-bottom: 1em;
 }
 
+#home_container .box p {
+	padding: 0.2em 0;
+}
+
 #home_container .box .title {
 	font-size: 100%;
 	line-height: 1.0;
