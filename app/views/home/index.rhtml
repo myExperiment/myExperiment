@@ -175,7 +175,17 @@
 										(<%= timeago_fuzzy r.created_at %>)
 									</span>
 									<div class="box_standout" style="font-size: 85%; margin: 0.4em 2em; padding: 0.2em 0.5em;">
-										<p><b><%= link_to h(r.title), review_url(r.reviewable, r) -%></b></p>
+										<p>
+											<b><%= link_to h(r.title), review_url(r.reviewable, r) -%></b>
+											<br/>
+											<span style="color: #666666;">
+												<% if (rating = r.associated_rating) -%>
+													Rated: <%= rating.rating -%> out of 5
+												<% else -%>
+													No rating given
+												<% end -%>
+											</span>
+										</p>
 										<%= truncate(strip_html(white_list(r.review)), 150) %>
 										<p style="text-align: right;">[ <%= link_to "More", review_url(r.reviewable, r) -%> ]</p>
 									</div>
