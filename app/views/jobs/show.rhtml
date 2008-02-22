@@ -220,7 +220,7 @@
 							<p>No input</p>
 						<% elsif input_type == 'single' -%>
 							<p>Single input:</p>
-							<%= h @job.inputs_data[i.name] -%>
+							<p style="margin-left: 1em;"><%= h @job.inputs_data[i.name] -%></p>
 						<% elsif input_type == 'list' -%>
 							<p>List of inputs:</p>
 							<ul style="margin-top: 0;">
@@ -268,12 +268,22 @@
 <h2>Output Data</h2>
 
 <div style="margin: 0 1.5em;">
+
 	<% if @job.completed? -%>
-		<p><%= icon "xml", outputs_xml_job_path(@experiment, @job), nil, { :target => '_blank' }, "Download as XML" -%></p>
-		<p><%= icon "package", outputs_package_job_path(@experiment, @job), nil, { :target => '_blank' }, "Download as compressed package" -%></p>
+		<ul class="sectionIcons" style="margin-top: 1.5em;">
+			<li style="margin-left: 0;">
+				<p><%= icon "xml", outputs_xml_job_path(@experiment, @job), nil, nil, "Download as XML" -%></p>
+			</li>
+			<% if false -%>
+				<li>
+					<p><%= icon "package", outputs_package_job_path(@experiment, @job), nil, nil, "Download as compressed package" -%></p>
+				</li>
+			<% end -%>
+		</ul>
 	<% else -%>
 		<p class="none_text">None</p>
 	<% end -%>
+	
 </div>
 
 <br/>

@@ -208,14 +208,14 @@ class JobsController < ApplicationController
   end
   
   def outputs_xml
-    respond_to do |format|
       if @job.completed?
-        format.xml { render :xml => @job.outputs_as_xml }
+        send_data(@job.outputs_as_xml, :filename => "Job_#{@job.id}_#{@job.title}_outputs.xml", :type => "application/xml")
       else
-        flash[:error] = "Outputs XML unavailable - Job not completed yet."
-        format.html { redirect_to job_url(@experiment, @job) }
+        respond_to do |format|
+          flash[:error] = "Outputs XML unavailable - Job not completed successfully yet."
+          format.html { redirect_to job_url(@experiment, @job) }
+        end
       end
-    end
   end
   
   def outputs_package
