@@ -128,6 +128,10 @@ class TavernaEnactor < ActiveRecord::Base
     service_client.get_job_outputs_doc(job_uri)
   end
   
+  def get_job_outputs(job_uri)
+    service_client.get_job_outputs(job_uri)
+  end
+  
   def verify_job_completed?(current_status)
     return current_status == 'COMPLETE'
   end

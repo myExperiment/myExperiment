@@ -69,7 +69,7 @@ h4 {
 	font-size: 108%;
 	font-weight: bold;
 	border: none;
-	padding: 0;
+	padding: 0.3em 0;
 	margin-top: 0;
 	margin-bottom: 0.6em;
 }
@@ -1447,6 +1447,7 @@ div.auto_complete ul strong.highlight {
 table.job_report {
 	border-collapse: collapse;
 	font-size: 93%;
+	margin-top: 0.3em;
 }
 
 table.job_report th,

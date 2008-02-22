@@ -213,7 +213,6 @@
 			<% else -%>
 				<% inputs.each do |i| -%>
 					<% input_type = @job.current_input_type(i.name) -%>
-					
 					<div class="box_simple" style="margin-top: 0.5em;">
 						<h4>Input Port: <%= i.name %></h4>
 						<% if input_type == 'none' -%>
@@ -272,7 +271,7 @@
 	<% if @job.completed? -%>
 		<ul class="sectionIcons" style="margin-top: 1.5em;">
 			<li style="margin-left: 0;">
-				<p><%= icon "xml", outputs_xml_job_path(@experiment, @job), nil, nil, "Download as XML" -%></p>
+				<%= icon "xml", outputs_xml_job_path(@experiment, @job), nil, nil, "Download as XML" -%>
 			</li>
 			<% if false -%>
 				<li>
@@ -280,8 +279,20 @@
 				</li>
 			<% end -%>
 		</ul>
+		
+		<% outputs = @job.outputs_data -%>
+		<% if outputs.nil? or outputs.empty? -%>
+			<p class="none_text">No output data available</p>
+		<% else -%>
+			<p><b><%= pluralize outputs.size, "output" %>:</b></p>
+			<% outputs.each do |k,v| -%>
+				<div class="box_simple" style="margin-top: 0.5em;">
+					<h4>Output port: <%= h k -%></h4>
+				</div>
+			<% end -%>
+		<% end -%>
 	<% else -%>
-		<p class="none_text">None</p>
+		<p class="none_text">Job not submitted yet</p>
 	<% end -%>
 	
 </div>

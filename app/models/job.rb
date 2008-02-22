@@ -168,12 +168,32 @@ class Job < ActiveRecord::Base
     return runner.verify_job_finished?(self.last_status)
   end
   
+  # Note: this will return outputs in a format as defined by the Runner.
+  def outputs_data
+    begin
+      if completed?
+        return runner.get_job_outputs(self.job_uri)
+      else
+        return nil
+      end
+    rescue Exception => ex
+      puts "ERROR occurred whilst fetching outputs for job #{self.job_uri}. Exception: #{ex}"
+      puts ex.backtrace
+      return nil
+    end
+  end
+  
   def outputs_as_xml
-    xml_doc = runner.get_job_outputs_xml(self.job_uri)
-    if xml_doc 
-      return xml_doc.to_s
-    else
-      return 'Error: could not retrieve outputs XML document.'
+    begin
+      if completed? and (xml_doc = runner.get_job_outputs_xml(self.job_uri))
+        return xml_doc.to_s
+      else
+        return 'Error: could not retrieve outputs XML document.'
+      end
+    rescue Exception => ex
+      puts "ERROR occurred whilst fetching outputs XML for job #{self.job_uri}. Exception: #{ex}"
+      puts ex.backtrace
+      return nil
     end
   end
   
