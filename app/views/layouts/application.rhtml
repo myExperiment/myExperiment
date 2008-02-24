@@ -87,7 +87,8 @@
 			</div>
 			<div id="ft">
 				<%= render :partial => "layouts/footer" %>
-			</div>		
+			</div>
+			<%= render :partial => "layouts/debug" if SHOW_DEBUG %> 
 		</div>
 		
 		<%= javascript_include_tag "tabs.js" %>

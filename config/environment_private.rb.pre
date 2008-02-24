@@ -18,6 +18,8 @@ ActionMailer::Base.server_settings = {
   :password  => "password"
 }
 
+SHOW_DEBUG = false
+
 # Key used for Symmetric Encryption
 SYM_ENCRYPTION_KEY = "your_symmetric_encryption_key"
 

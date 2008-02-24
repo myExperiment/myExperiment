@@ -18,6 +18,12 @@
 						<%=link_to(query ? highlight_all(title, query) : title, file_path(blob)) %>
 					</p>
 					
+					<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
+						<b>Created:</b> <%=datetime blob.created_at, false %>
+						|
+						<b>Updated:</b> <%=datetime blob.updated_at, false %>
+					</p>
+					
 					<% unless (creditors = blob.creditors).empty? %>
 						<p style="font-size:85%;">
 						<b>Credits:</b>
@@ -47,12 +53,14 @@
 					
 					<p style="font-size:85%;"><b>License: </b><%= license_link blob.license.to_s %></p>
 					
-					<% if blob.body and blob.body.length > 0 %>
-			  		<% desc = truncate(strip_html(blob.body), 500) %>
-				  	<div class="desc" style="font-size: 85%;">
+					<div class="desc" style="font-size: 85%;">
+						<% if blob.body and blob.body.length > 0 %>
+				  		<% desc = truncate(strip_html(blob.body), 500) %>
 				    	<%= query ? highlight_all(desc, query) : desc %>
-				  	</div>
-					<% end %>
+					  <% else -%>
+							<span class="none_text">No description</span>	
+						<% end %>
+					</div>
 					
 					<p style="font-size:85%;"><b>File type: </b><%= h blob.content_type %></p>
 					

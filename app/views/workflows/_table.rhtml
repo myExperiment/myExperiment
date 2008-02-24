@@ -11,7 +11,7 @@
 	    <td style="width: 100px;">
 	    	<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
 				<center><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %></center>
-		</td>
+			</td>
 	    <td style="text-align: left;">
 	      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
 	      <p class="title">
@@ -58,29 +58,27 @@
 			
 			<p style="font-size:85%;"><b>License: </b><%= license_link workflow.license.to_s %></p>
 		  
-		  <div>
-		      <% unless workflow.image.nil? %>
-					<table>
-						<tbody>
-							<tr>
-								<td style="margin: 0; padding: 0.2em 0; border: 0;">
-									<% if show %>
-					          <%= link_to image_tag(url_for_file_column(workflow, "image", "thumb"), :class => 'framed_nospace'), workflow_path(workflow) %>
-					        <% end %>
-								</td>
-								<td style="margin: 0; padding: 0.2em 0; border: 0;">
-									<% if workflow.body and workflow.body.length > 0 %>
-									  <% desc = truncate(strip_html(workflow.body), 500) %>
-									  <div class="desc" style="margin-left: 0.8em; font-size: 85%;">
-							        <%= query ? highlight_all(desc, query) : desc %>
-							      </div>
-							  	<% end %>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-	      <% end %>
-		  </div>
+			<table>
+				<tbody>
+					<tr>
+						<% unless workflow.image.nil? -%>
+							<td style="margin: 0; padding: 0.2em 0; border: 0; padding-right: 0.8em;">
+				      	<%= link_to image_tag(url_for_file_column(workflow, "image", "thumb"), :class => 'framed_nospace'), workflow_path(workflow) %>
+							</td>
+						<% end -%>
+						<td style="margin: 0; padding: 0.2em 0; border: 0;">
+							<div class="desc" style="font-size: 85%;">
+								<% if workflow.body and workflow.body.length > 0 -%>
+								  <% desc = truncate(strip_html(workflow.body), 500) -%>
+						      <%= query ? highlight_all(desc, query) : desc %>
+								<% else -%>
+									<span class="none_text">No description</span>								      
+						  	<% end -%>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		  
 		  <p style="font-size: 85%;">
 				<b>Rating: </b><%= number_with_precision(workflow.rating, 2) %>/5 (<%= pluralize workflow.ratings.count, 'rating' %>) |
