@@ -1426,6 +1426,29 @@ div.auto_complete ul strong.highlight {
 	color: #999999;
 }
 
+.rest_table TABLE {
+  border: 1px solid black;
+  margin: 1px;
+}
+
+.rest_table TABLE THEAD {
+  background: #e0e0ff
+}
+
+.rest_table TABLE THEAD TR TD {
+  text-align: left;
+  vertical-align: top;
+}
+
+.rest_table TABLE TBODY {
+  background: white
+}
+
+.rest_table TABLE TBODY TR TD {
+  text-align: left;
+  vertical-align: top;
+}
+
 .note_text {
 	font-size: 93%;
 	font-weight: bold;
@@ -1465,4 +1488,3 @@ table.job_report th {
 	font-weight: bold;
 }
 
-	

@@ -1,7 +1,12 @@
+require 'lib/rest'
+
 ActionController::Routing::Routes.draw do |map|
   # forums
   map.from_plugin :savage_beast
   
+  # rest routes
+  rest_routes(map)
+
   # Runners
   map.resources :runners
   
@@ -131,7 +136,7 @@ ActionController::Routing::Routes.draw do |map|
   # Sample of named route:
   # map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
   # This route can be invoked with purchase_url(:id => product.id)
-  map.owned_networks 'users/:user_id/networks', :controller => 'networks', :action => 'index'
+  map.owned_groups 'users/:user_id/groups', :controller => 'networks', :action => 'index'
 
   # You can have the root of your site routed by hooking up ''
   # -- just remember to delete public/index.html.
@@ -158,3 +163,4 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:action/:id.:format'
   map.connect ':controller/:action/:id'
 end
+

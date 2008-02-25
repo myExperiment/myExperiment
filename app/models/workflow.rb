@@ -75,17 +75,6 @@ class Workflow < ActiveRecord::Base
   
   file_column :svg
   
-  def contributor_name
-    case contribution.contributor.class.to_s
-    when "User"
-      return contribution.contributor.name
-    when "Network"
-      return contribution.contributor.title
-    else
-      return nil
-    end
-  end
-  
   def tag_list_comma
     list = ''
     tags.each do |t|

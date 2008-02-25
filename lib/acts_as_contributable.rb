@@ -76,6 +76,11 @@ module Mib
           contributor_id.to_i == c_utor.id.to_i and contributor_type.to_s == c_utor.class.to_s
         end
 
+        def contributor_name
+          return contribution.contributor.name  if contribution.contributor.respond_to?('name')
+          return contribution.contributor.title if contribution.contributor.respond_to?('title')
+        end
+        
         # This is so that the updated_at time on the record tallies up with the
         # contributable
         def save_contributable_record

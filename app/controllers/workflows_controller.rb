@@ -251,6 +251,7 @@ class WorkflowsController < ApplicationController
         create_workflow_diagrams(@workflow, scufl_model, "#{@workflow.unique_name}_#{@workflow.current_version.to_i + 1}")
           
         @workflow.scufl = scufl.read
+        @workflow.content_type = "application/vnd.taverna.scufl+xml"
       end
     
       success = @workflow.save_as_new_version(ae_some_html(params[:comments]))
@@ -491,6 +492,7 @@ protected
     title, unique_name = determine_title_and_unique(scufl_model)
     
     rtn = Workflow.new(:scufl => wf[:scufl].read, 
+                       :content_type => "application/vnd.taverna.scufl+xml",
                        :contributor_id => wf[:contributor_id], 
                        :contributor_type => wf[:contributor_type],
                        :title => title,
