@@ -12,6 +12,8 @@ class CitationsController < ApplicationController
   before_filter :find_citation, :only => :show
   before_filter :find_citation_auth, :only => [ :edit, :update, :destroy ]
   
+  before_filter :invalidate_listing_cache, :only => [ :create, :update, :destroy ]
+  
   # GET /citations
   # GET /citations.xml
   def index
@@ -129,6 +131,12 @@ protected
       @citation = citation
     else
       error("Citation not found (id not authorized)", "is invalid (not authorized)")
+    end
+  end
+  
+  def invalidate_listing_cache
+    if params[:workflow_id]
+      expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => params[:workflow_id])
     end
   end
 

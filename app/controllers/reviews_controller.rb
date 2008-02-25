@@ -18,6 +18,8 @@ class ReviewsController < ApplicationController
   before_filter :find_review, :only => [ :show ]
   before_filter :find_review_auth, :only => [ :edit, :update, :destroy ]
   
+  before_filter :invalidate_listing_cache, :only => [ :create, :update, :destroy ]
+  
   def index
     respond_to do |format|
       format.html # index.rhtml
@@ -151,6 +153,12 @@ protected
       @review = review
     else
       error("Review not found or action not authorized", "is invalid (not authorized)")
+    end
+  end
+  
+  def invalidate_listing_cache
+    if params[:workflow_id]
+      expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => params[:workflow_id])
     end
   end
 
