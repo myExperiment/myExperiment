@@ -24,8 +24,9 @@ class Contribution < ActiveRecord::Base
     
     self.find(:all, 
               :conditions => conditions, 
-              :order => "downloads_count DESC", 
-              :limit => limit)
+              :order => "contributions.downloads_count DESC", 
+              :limit => limit,
+              :include => [ { :policy => :permissions } ])
   end
   
   # returns the 'most viewed' Contributions
@@ -36,8 +37,9 @@ class Contribution < ActiveRecord::Base
     
     self.find(:all, 
               :conditions => conditions,
-              :order => "viewings_count DESC", 
-              :limit => limit)
+              :order => "contributions.viewings_count DESC", 
+              :limit => limit,
+              :include => [ { :policy => :permissions } ])
   end
   
   # returns the 'most recent' Contributions
@@ -46,8 +48,9 @@ class Contribution < ActiveRecord::Base
     conditions = ["contributable_type = ?", klass] if klass
     self.find(:all,
               :conditions => conditions,
-              :order => "created_at DESC",
-              :limit => limit)
+              :order => "contributions.created_at DESC",
+              :limit => limit,
+              :include => [ { :policy => :permissions } ])
   end
   
   # returns the 'last updated' Contributions
@@ -56,8 +59,9 @@ class Contribution < ActiveRecord::Base
     conditions = ["contributable_type = ?", klass] if klass
     self.find(:all,
               :conditions => conditions,
-              :order => "updated_at DESC",
-              :limit => limit)
+              :order => "contributions.updated_at DESC",
+              :limit => limit,
+              :include => [ { :policy => :permissions } ])
   end
   
   # is c_utor authorized to edit the policy for this contribution

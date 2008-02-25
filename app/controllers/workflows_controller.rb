@@ -6,7 +6,7 @@
 class WorkflowsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :search, :all]
   
-  before_filter :find_workflows, :only => [:all]
+  before_filter :find_workflows, :only => [:index, :all]
   before_filter :find_workflows_rss, :only => [:index]
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all]
   
@@ -96,6 +96,9 @@ class WorkflowsController < ApplicationController
     @workflow.tags_user_id = current_user # acts_as_taggable_redux
     @workflow.tag_list = "#{@workflow.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @workflow.update_tags # hack to get around acts_as_versioned
+    
+    expire_fragment(:controller => 'workflows', :action => 'all_tags')
+    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
     
     respond_to do |format|
       format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @workflow, :owner_id => @workflow.contributor_id } }
@@ -392,16 +395,20 @@ protected
   def find_workflows
     login_required if login_available?
     
-    found = Workflow.find(:all, 
-                          construct_options.merge({:page => { :size => 20, :current => params[:page] },
-                          :include => [ { :contribution => :policy }, :tags, :ratings ],
-                          :order => "workflows.updated_at DESC" }))
-    
-    found.each do |workflow|
-      workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
+    # Only get all if REST API XML request has been made or 'all' action has been called.
+    # TODO: Don needs to check this for compliance.
+    if action_name == 'all' or (params[:format] and params[:format].downcase == 'xml')
+      found = Workflow.find(:all, 
+                            construct_options.merge({:page => { :size => 20, :current => params[:page] },
+                            :include => [ { :contribution => :policy }, :tags, :ratings ],
+                            :order => "workflows.updated_at DESC" }))
+      
+      found.each do |workflow|
+        workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
+      end
+      
+      @workflows = found
     end
-    
-    @workflows = found
   end
   
   def find_workflows_rss

@@ -3,6 +3,8 @@
 	<li><%= icon "view-all", url_for(:action => 'all'), nil, nil, "View All Files" %></li>
 </ul>
 
-<%= render :partial => "blobs/all_tags" %>
+<% cache(:controller => 'files', :action => 'all_tags') do -%>
+	<%= render :partial => "blobs/all_tags" %>
+<% end -%>
 
 <%= render :partial => "contributions/most_tabs", :locals => { :type => "Blob" } %>

@@ -18,9 +18,9 @@ class User < ActiveRecord::Base
   
   def self.most_recent(limit=5)
     self.find(:all,
-              :order => "created_at DESC",
+              :order => "users.created_at DESC",
               :limit => limit,
-              :conditions => "activated_at IS NOT NULL",
+              :conditions => "users.activated_at IS NOT NULL",
               :include => :profile)
             
   end
@@ -121,12 +121,14 @@ class User < ActiveRecord::Base
   def self.authenticate(login, password)
     return nil if login.blank? or password.blank?
     
+    eager_include = [ :contributions, :tags ]
+    
     # Either, check for a User with username matching 'login'
-    u = find(:first, :conditions => ["username = ?", login])
+    u = find(:first, :conditions => ["username = ?", login], :include => eager_include)
     
     # Or, check for a User with email address matching 'login'
     unless u
-      u = find(:first, :conditions => ["email = ?", login]) 
+      u = find(:first, :conditions => ["email = ?", login], :include => eager_include) 
     end
     
     u && u.activated? && u.authenticated?(password) ? u : nil

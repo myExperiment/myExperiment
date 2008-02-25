@@ -275,10 +275,10 @@ protected
 
   def find_users
     @users = User.find(:all, 
-                       :order => "name ASC",
+                       :order => "users.name ASC",
                        :page => { :size => 20, 
                                   :current => params[:page] },
-                       :conditions => "activated_at IS NOT NULL",
+                       :conditions => "users.activated_at IS NOT NULL",
                        :include => :profile)
   end
 

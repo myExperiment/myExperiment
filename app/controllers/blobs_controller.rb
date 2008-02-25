@@ -236,6 +236,9 @@ class BlobsController < ApplicationController
     @blob.tag_list = "#{@blob.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @blob.update_tags # hack to get around acts_as_versioned
     
+    expire_fragment(:controller => 'files', :action => 'all_tags')
+    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
+    
     respond_to do |format|
       format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @blob, :owner_id => @blob.contributor_id } }
       format.xml { render :xml => @blob.tags.to_xml }

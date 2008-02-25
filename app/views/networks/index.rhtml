@@ -3,7 +3,9 @@
 	<li><%= icon "view-all", url_for(:action => 'all'), nil, nil, "View All Groups" %></li>
 </ul>
 
-<%= render :partial => "networks/all_tags" %>
+<% cache(:controller => 'groups', :action => 'all_tags') do -%>
+	<%= render :partial => "networks/all_tags" %>
+<% end -%>
 
 <h2>What is a Group?</h2>
 <p>

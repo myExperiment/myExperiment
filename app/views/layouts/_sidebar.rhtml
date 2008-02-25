@@ -10,4 +10,6 @@
 	<% end %>
 <% end %>
 
-<%= render :partial => "gadgets/tag_most_popular", :locals => { :limit => 25 } %>
+<% cache(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags') do -%>
+	<%= render :partial => "gadgets/most_popular_tags", :locals => { :limit => 25 } %>
+<% end -%>

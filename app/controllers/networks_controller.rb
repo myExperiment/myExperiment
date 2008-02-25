@@ -190,6 +190,9 @@ class NetworksController < ApplicationController
     @network.tag_list = "#{@network.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @network.update_tags # hack to get around acts_as_versioned
     
+    expire_fragment(:controller => 'groups', :action => 'all_tags')
+    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
+    
     respond_to do |format|
       format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @network, :owner_id => @network.user_id } }
       format.xml { render :xml => @workflow.tags.to_xml }
