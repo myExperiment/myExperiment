@@ -1006,7 +1006,7 @@ module ApplicationHelper
     end
   end
   
-  # From: http://actsasflinn.com/articles/2007/04/10/time-ago-method-for-ruby-on-rails
+  # Based on: http://actsasflinn.com/articles/2007/04/10/time-ago-method-for-ruby-on-rails
   # options
   # :start_date, sets the time to measure against, defaults to now
   # :date_format, used with <tt>to_formatted_s<tt>, default to :default
@@ -1014,7 +1014,7 @@ module ApplicationHelper
     start_date = options.delete(:start_date) || Time.new
     date_format = options.delete(:date_format) || :default
     delta_minutes = (start_date.to_i - time.to_i).floor / 60
-    if delta_minutes.abs <= (8724*60) # eight weeks… I’m lazy to count days for longer than that
+    if delta_minutes.abs <= (8760*60) # 365 days
       distance = time_distance_in_words(delta_minutes);
       if delta_minutes < 0
         "#{distance} from now"
@@ -1022,7 +1022,7 @@ module ApplicationHelper
         "#{distance} ago"
       end
     else
-      return "on #{system_date.to_formatted_s(date_format)}"
+      return "more than 1 year ago"
     end
   end
 

@@ -130,7 +130,8 @@ class SessionController < ApplicationController
       user.update_attribute(:last_seen_at, Time.now)
       respond_to do |format|
         flash[:notice] = "Logged in successfully. Welcome to myExperiment!"
-        format.html { URI.parse(session[:return_to]).path == '/' ? redirect_to(user_path(user)) : redirect_back_or_default(user_path(user)) }
+        home_url = url_for(:controller => 'home')
+        format.html { URI.parse(session[:return_to]).path == '/' ? redirect_to(home_url) : redirect_back_or_default(home_url) }
         format.xml { head :ok }
       end
     end
