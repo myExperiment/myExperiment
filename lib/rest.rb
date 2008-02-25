@@ -45,13 +45,10 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
 
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{entity_name}/>")
 
-  doc.root.add_attributes( { 'resource' => uri } )
-
-  if query['api_version'] == 'yes'
-    doc.root.add_attribute('api-version', API_VERSION)
-  end
-
-  doc.root.add_attribute('uri', rest_access_url(ob))
+  doc.root.add_attribute('uri', rest_access_uri(ob))
+  doc.root.add_attribute('resource', uri)
+  doc.root.add_attribute('api-version', API_VERSION) if query['api_version'] == 'yes'
+  doc.root.add_attribute('version', ob.versions.last.version.to_s) if ob.respond_to?('versions')
 
   data = TABLES['REST'][:data][req_uri][request.method.to_s.upcase]
 
@@ -99,9 +96,9 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
 
           item_attrs = { }
 
-          item_uri = object_url(item)
+          item_uri = rest_resource_uri(item)
           item_attrs['resource'] = item_uri if item_uri
-          item_attrs['uri'] = rest_access_url(item)
+          item_attrs['uri'] = rest_access_uri(item)
 
           list_element_accessor = model_data['List Element Accessor'][i]
           list_element_text     = list_element_accessor ? eval("item.#{model_data['List Element Accessor'][i]}") : item
@@ -117,8 +114,8 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
       else
 
         if model_data['Foreign Accessor'][i]
-          attrs['resource'] = eval("object_url(ob.#{model_data['Foreign Accessor'][i]})")
-          attrs['uri'] = eval("rest_access_url(ob.#{model_data['Foreign Accessor'][i]})")
+          attrs['resource'] = eval("rest_resource_uri(ob.#{model_data['Foreign Accessor'][i]})")
+          attrs['uri'] = eval("rest_access_uri(ob.#{model_data['Foreign Accessor'][i]})")
         end
 
         doc.root.add_element(model_data['REST Attribute'][i], attrs).add_text(text)
@@ -157,7 +154,7 @@ def rest_crud_request(rules)
   end
 
   response.content_type = "application/xml"
-  rest_get_request(ob, params[:uri], eval("object_url(ob)"), rest_name, query).to_s
+  rest_get_request(ob, params[:uri], eval("rest_resource_uri(ob)"), rest_name, query).to_s
 end
 
 def rest_index_request(rules, query)
@@ -199,7 +196,7 @@ def rest_index_request(rules, query)
   obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", (logged_in? ? current_user : nil)) end)
 
   obs.map do |c|
-    el = doc.root.add_element(rest_name, { 'resource' => eval("object_url(c)") } )
+    el = doc.root.add_element(rest_name, { 'resource' => eval("rest_resource_uri(c)") } )
     el.add_text(eval("c.#{rules['Element text accessor']}"))
   end
 
@@ -212,7 +209,7 @@ def object_owner(ob)
   return ob.owner if ob.respond_to?("owner")
 end
 
-def object_url(ob)
+def rest_resource_uri(ob)
 
   case ob.class.to_s
     when 'Workflow'; return workflow_url(ob)
@@ -220,18 +217,20 @@ def object_url(ob)
     when 'Network';  return group_url(ob)
     when 'User';     return user_url(ob)
     when 'Review';   return review_url(ob.reviewable, ob)
-    when 'Comment';  return "#{object_url(ob.commentable)}/comments/#{ob.id}"
+    when 'Comment';  return "#{rest_resource_uri(ob.commentable)}/comments/#{ob.id}"
     when 'Blog';     return blog_url(ob)
     when 'BlogPost'; return blog_post_url(ob.blog, ob)
-    when 'Rating';   return "#{object_url(ob.rateable)}/ratings/#{ob.id}"
+    when 'Rating';   return "#{rest_resource_uri(ob.rateable)}/ratings/#{ob.id}"
     when 'Tag';      return tag_url(ob)
     when 'Picture';  return picture_url(ob.owner, ob)
     when 'Message';  return message_url(ob)
     when 'Citation'; return citation_url(ob.workflow, ob)
+
+    when 'Workflow::Version'; "#{rest_resource_uri(ob.workflow)}?version=#{ob.version}"
   end
 end
 
-def rest_access_url(ob)
+def rest_access_uri(ob)
 
   base = "#{request.protocol}#{request.host_with_port}"
 
@@ -249,6 +248,8 @@ def rest_access_url(ob)
     when 'Picture';  return "#{base}/picture.xml?id=#{ob.id}"
     when 'Message';  return "#{base}/message.xml?id=#{ob.id}"
     when 'Citation'; return "#{base}/citation.xml?id=#{ob.id}"
+
+    when 'Workflow::Version'; return "#{base}/workflow.xml?id=#{ob.workflow.id}&version=#{ob.version}"
   end
 end
 
@@ -265,11 +266,14 @@ def rest_reference(ob, query)
     when 'Rating';      tag = 'rating';      text = ob.rating.to_s
     when 'Creditation'; tag = 'creditation'; text = ''
     when 'Citation';    tag = 'citation';    text = ob.title
+
+    when 'Workflow::Version'; tag = 'workflow'; text = ob.title
   end
 
   el = REXML::Element.new(tag)
-  el.add_attribute('resource', object_url(ob))
-  el.add_attribute('uri', rest_access_url(ob))
+  el.add_attribute('resource', rest_resource_uri(ob))
+  el.add_attribute('uri', rest_access_uri(ob))
+  el.add_attribute('version', ob.version) if ob.respond_to?('version')
   el.add_text(text)
 
   el

@@ -65,7 +65,7 @@ module MashupHelper
     query['version'] = 1 if show_version
 
     ob = eval(model_name.camelize).find(id.to_i)
-    doc = rest_get_request(ob, rest_name, object_url(ob), rest_name, query)
+    doc = rest_get_request(ob, rest_name, rest_resource_uri(ob), rest_name, query)
 
     trim_and_wrap(doc)
   end
