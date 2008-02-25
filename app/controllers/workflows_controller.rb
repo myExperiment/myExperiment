@@ -6,8 +6,8 @@
 class WorkflowsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :search, :all]
   
-  before_filter :find_workflows, :only => [:index, :all]
-  #before_filter :find_workflow_auth, :only => [:bookmark, :comment, :rate, :tag, :download, :show, :edit, :update, :destroy]
+  before_filter :find_workflows, :only => [:all]
+  before_filter :find_workflows_rss, :only => [:index]
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all]
   
   # These are provided by the Taverna gem
@@ -392,20 +392,27 @@ protected
     login_required if login_available?
     
     found = Workflow.find(:all, 
-                          construct_options.merge({:page => { :size => 20, :current => params[:page] }}))
+                          construct_options.merge({:page => { :size => 20, :current => params[:page] },
+                          :include => [ { :contribution => :policy }, :tags, :ratings ],
+                          :order => "workflows.updated_at DESC" }))
     
     found.each do |workflow|
       workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
     end
     
     @workflows = found
-    
-    found2 = Workflow.find(:all, :order => "updated_at DESC", :limit => 30)
-    
-    @rss_workflows = [ ]
-    
-    found2.each do |workflow|
-      @rss_workflows << workflow if workflow.authorized?("show", (logged_in? ? current_user : nil))
+  end
+  
+  def find_workflows_rss
+    # Only carry out if request is for RSS
+    if params[:format] and params[:format].downcase == 'rss'
+      found = Workflow.find(:all, :order => "workflows.updated_at DESC", :limit => 30, :include => [ { :contribution => :policy } ])
+      
+      @rss_workflows = [ ]
+      
+      found.each do |workflow|
+        @rss_workflows << workflow if workflow.authorized?("show", (logged_in? ? current_user : nil))
+      end
     end
   end
   
@@ -414,7 +421,13 @@ protected
       # attempt to authenticate the user before you return the workflow
       login_required if login_available?
     
-      workflow = Workflow.find(params[:id])
+      # Use eager loading only for 'show' action
+      if action_name == 'show'
+        workflow = Workflow.find(params[:id], :include => [ { :contribution => :policy }, :citations, :tags, :ratings, :versions, :reviews, :comments ])
+      else
+        workflow = Workflow.find(params[:id])
+      end
+      
       
       if workflow.authorized?(action_name, (logged_in? ? current_user : nil))
         @latest_version_number = workflow.current_version

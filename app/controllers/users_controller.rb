@@ -278,12 +278,13 @@ protected
                        :order => "name ASC",
                        :page => { :size => 20, 
                                   :current => params[:page] },
-                       :conditions => "activated_at IS NOT NULL")
+                       :conditions => "activated_at IS NOT NULL",
+                       :include => :profile)
   end
 
   def find_user
     begin
-      @user = User.find(params[:id])
+      @user = User.find(params[:id], :include => [ { :contributions => :policy }, :profile, :tags ])
     rescue ActiveRecord::RecordNotFound
       error("User not found", "is invalid (not owner)")
     end

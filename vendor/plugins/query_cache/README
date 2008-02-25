@@ -1,0 +1,12 @@
+QueryCache
+==========
+
+Rails 2.0 will introduce a query cache. This thing is just a simple cache of sql queries to reduce trips to the database for identical things.
+
+This project is a plugin that just copies the query cache code and its tests so that it can be used in older versions of Rails, namely 1.2.3. There isn't anything original here :) Just lots of copy and paste from the edge branch.
+
+Thanks to everyone that actually did the real work on getting a query cache together.  DHH and Tobias are the main committers to this I believe.
+
+UNIT TESTING
+------------
+As far as unit testing the plugin.  It makes the assumption that you have Rails frozen inside RAILS_ROOT/vendor/rails.  It reuses the fixtures and models that Rails uses for the framework.  It also assumes you are using mysql locally to test, and you have the activerecord_unittest and activerecord_unittest2 databases as well as the rails@localhost user setup.
