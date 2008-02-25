@@ -284,7 +284,7 @@ protected
 
   def find_user
     begin
-      @user = User.find(params[:id], :include => [ { :contributions => :policy }, :profile, :tags ])
+      @user = User.find(params[:id], :include => [ :contributions, :profile, :tags ])
     rescue ActiveRecord::RecordNotFound
       error("User not found", "is invalid (not owner)")
     end
