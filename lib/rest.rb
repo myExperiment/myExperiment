@@ -45,15 +45,13 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
 
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{entity_name}/>")
 
-  doc.root.add_attributes( { 'uri' => uri } )
+  doc.root.add_attributes( { 'resource' => uri } )
 
   if query['api_version'] == 'yes'
     doc.root.add_attribute('api-version', API_VERSION)
   end
 
-  if query['rest_uris'] == 'yes'
-    doc.root.add_attribute('rest-uri', rest_access_url(ob))
-  end
+  doc.root.add_attribute('uri', rest_access_url(ob))
 
   data = TABLES['REST'][:data][req_uri][request.method.to_s.upcase]
 
@@ -102,11 +100,8 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
           item_attrs = { }
 
           item_uri = object_url(item)
-          item_attrs['uri'] = item_uri if item_uri
-
-          if query['rest_uris'] == 'yes'#
-            item_attrs['rest-uri'] = rest_access_url(item)
-          end
+          item_attrs['resource'] = item_uri if item_uri
+          item_attrs['uri'] = rest_access_url(item)
 
           list_element_accessor = model_data['List Element Accessor'][i]
           list_element_text     = list_element_accessor ? eval("item.#{model_data['List Element Accessor'][i]}") : item
@@ -122,11 +117,8 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
       else
 
         if model_data['Foreign Accessor'][i]
-          attrs['uri'] = eval("object_url(ob.#{model_data['Foreign Accessor'][i]})")
-
-          if query['rest_uris'] == 'yes'#
-            attrs['rest-uri'] = eval("rest_access_url(ob.#{model_data['Foreign Accessor'][i]})")
-          end
+          attrs['resource'] = eval("object_url(ob.#{model_data['Foreign Accessor'][i]})")
+          attrs['uri'] = eval("rest_access_url(ob.#{model_data['Foreign Accessor'][i]})")
         end
 
         doc.root.add_element(model_data['REST Attribute'][i], attrs).add_text(text)
@@ -207,7 +199,7 @@ def rest_index_request(rules, query)
   obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", (logged_in? ? current_user : nil)) end)
 
   obs.map do |c|
-    el = doc.root.add_element(rest_name, { 'uri' => eval("object_url(c)") } )
+    el = doc.root.add_element(rest_name, { 'resource' => eval("object_url(c)") } )
     el.add_text(eval("c.#{rules['Element text accessor']}"))
   end
 
@@ -276,12 +268,9 @@ def rest_reference(ob, query)
   end
 
   el = REXML::Element.new(tag)
-  el.add_attribute('uri', object_url(ob))
+  el.add_attribute('resource', object_url(ob))
+  el.add_attribute('uri', rest_access_url(ob))
   el.add_text(text)
-
-  if query['rest_uris'] == 'yes'
-    el.add_attribute('rest-uri', rest_access_url(ob))
-  end
 
   el
 end

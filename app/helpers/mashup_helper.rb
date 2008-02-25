@@ -60,7 +60,7 @@ module MashupHelper
   
   def rest_example(method, rest_name, model_name, id, show_version)
 
-    query = { 'id' => id, 'elements' => 'all' }
+    query = { 'id' => id, 'all_elements' => 'yes' }
 
     query['version'] = 1 if show_version
 
