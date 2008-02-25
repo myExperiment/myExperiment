@@ -85,9 +85,12 @@
 					<%= render :partial => "layouts/sidebar" %>
 				</div>
 			</div>
-			<div id="ft">
-				<%= render :partial => "layouts/footer" %>
-			</div>
+			<% cache(:controller => 'global_cache', :action => 'footer') do -%>
+				<div id="ft">
+					<%= render :partial => "layouts/footer" %>
+				</div>
+			<% end -%>
+			
 			<%= render :partial => "layouts/debug" if SHOW_DEBUG %> 
 		</div>
 		
