@@ -1,0 +1,28 @@
+<% if job.completed? -%>
+	<% outputs = job.outputs_data -%>
+	
+	<% if outputs and outputs.size > 0 -%>
+		<p><%= icon "xml", outputs_xml_job_path(experiment, job), nil, nil, "Download as XML" -%></p>
+	<% end -%>
+	<% if false -%>
+		<p><%= icon "package", outputs_package_job_path(experiment, job), nil, nil, "Download as compressed package" -%></p>
+	<% end -%>
+	
+	<br/><br/>
+	
+	<% if outputs.nil? or outputs.empty? -%>
+		<p class="none_text">No output data available (runner may be offline)</p>
+	<% else -%>
+		<h4>Summary</h4>
+		<p class="note_text"><%= pluralize outputs.size, "output" %></b>
+		<% outputs.each do |k,v| -%>
+			<div class="box_simple" style="margin-top: 0.5em;">
+				<h4>Output port: <%= h k -%></h4>
+				<p><b>Output type:</b> <%= job.get_output_type(v) -%></p>
+				<p><b>Mime type(s):</b> <%= job.get_output_mime_types(v) -%></p>
+			</div>
+		<% end -%>
+	<% end -%>
+<% else -%>
+	<p class="none_text">Job not submitted yet</p>
+<% end -%>

@@ -64,8 +64,11 @@ class Job < ActiveRecord::Base
             end
             
             # Submit the job to the runner, which should begin to execute it, then get status
-            self.job_uri = runner.submit_job(remote_runnable_uri, self.inputs_uri)
             self.submitted_at = Time.now
+            self.job_uri = runner.submit_job(remote_runnable_uri, self.inputs_uri)
+            self.save!
+            
+            # Get status
             self.last_status = runner.get_job_status(self.job_uri)
             self.last_status_at = Time.now
             self.save!
@@ -195,6 +198,16 @@ class Job < ActiveRecord::Base
       puts ex.backtrace
       return nil
     end
+  end
+  
+  def get_output_type(output_data)
+    # Delegate out to the runner to handle it's own specific output format
+    runner.get_output_type(output_data)
+  end
+  
+  def get_output_mime_types(output_data)
+    # Delegate out to the runner to handle it's own specific output format
+    runner.get_output_mime_types(output_data)
   end
   
 protected

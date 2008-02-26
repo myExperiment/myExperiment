@@ -150,6 +150,28 @@ class TavernaEnactor < ActiveRecord::Base
     return Enactor::Status.finished?(current_status)
   end
   
+  def get_output_type(output_data_doc)
+    if output_data_doc.is_a?(Document::Data)
+      if output_data_doc.value.is_a?(Array)
+        return 'list'
+      elsif output_data_doc.value.is_a?(String)
+        return 'string'
+      else
+        return output_data_doc.value.class.to_s
+      end
+    else
+      return 'unknown'
+    end
+  end
+  
+  def get_output_mime_types(output_data_doc)
+    if output_data_doc.is_a?(Document::Data)
+      return output_data_doc.annotation
+    else
+      return 'unknown'
+    end
+  end
+  
 protected
   
   # Lazy loading of enactor service client.

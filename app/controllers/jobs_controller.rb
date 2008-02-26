@@ -201,10 +201,16 @@ class JobsController < ApplicationController
     end
   end
   
-  def update_status
+  def refresh_status
     @job.refresh_status!
     respond_to do |format|
       format.html { render :partial => "status_info", :locals => { :job => @job, :experiment => @experiment } }
+    end
+  end
+  
+  def refresh_outputs
+    respond_to do |format|
+      format.html { render :partial => "outputs", :locals => { :job => @job, :experiment => @experiment } }
     end
   end
   
