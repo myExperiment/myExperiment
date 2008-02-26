@@ -38,9 +38,10 @@ class ExperimentsController < ApplicationController
     
     if params[:assign_to_group]
       network = Network.find(params[:assign_to_group_id])
-      if network
+      if network and network.member?(current_user.id)
         @experiment.contributor = network
       else
+        flash[:error] = "Experiment could not be created because could not assign ownership to Group."
         success = false
       end
     else
@@ -93,8 +94,8 @@ protected
     # ie: Experiments the user owns, and Experiments owned by the user's groups.
     @experiments = Experiment.find_by_contributor('User', current_user.id)
     @group_experiments = []
-    [current_user.networks + current_user.networks_owned].each do |n|
-      @group_experiments << Experiment.find_by_contributor('Network', n.id)
+    current_user.all_networks.each do |n|
+      @group_experiments = @group_experiments + Experiment.find_by_contributor('Network', n.id)
     end
   end
   

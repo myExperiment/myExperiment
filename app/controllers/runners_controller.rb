@@ -38,7 +38,18 @@ class RunnersController < ApplicationController
     @runner.url = params[:runner][:url]
     @runner.username = params[:runner][:username]
     @runner.password = params[:runner][:password]
-    @runner.contributor = current_user
+    
+    if params[:assign_to_group]
+      network = Network.find(params[:assign_to_group_id])
+      if network and network.member?(current_user.id)
+        @runner.contributor = network
+      else
+        flash[:error] = "Experiment could not be created because could not assign ownership to Group."
+        success = false
+      end
+    else
+      @runner.contributor = current_user
+    end
     
     respond_to do |format|
       if @runner.save

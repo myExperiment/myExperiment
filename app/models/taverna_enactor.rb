@@ -29,27 +29,37 @@ class TavernaEnactor < ActiveRecord::Base
   def self.for_user(user)
     return [ ] if user.nil?
     
-    # For now only return the Runners that belong to that person.
-    # TODO: get runners that the user has access to based on OSP settings.
-    TavernaEnactor.find_by_contributor('User', user.id)
+    # Return the runners that are owned by the user, or are owned by groups that the user is a part of.
+    owned_runners = TavernaEnactor.find_by_contributor('User', user.id)
+    group_runners = []
+    user.all_networks.each do |n|
+      group_runners = group_runners + TavernaEnactor.find_by_contributor('Network', n.id)
+    end
+    
+    return owned_runners + group_runners
   end
   
-  # Note: at the moment (Feb 2008), only the creator of the TavernaEnactor is authorized 
-  # OR the administrator of the Group that owns the TavernaEnactor. 
+  # Note: at the moment (Feb 2008), updates and deletes are only allowed by the creator of the TavernaEnactor 
+  # OR the administrator of the Group that owns the TavernaEnactor.
+  # For all other actions, only creator OR members of the Group that owns the TavernaEnactor are authorized.
   def authorized?(action_name, c_utor=nil)
     return false if c_utor.nil?
     
     # Cannot ask authorization for a 'Network' contributor
-    return false if c_utor.class.to_s == 'Network' 
+    return false if c_utor.class.to_s == 'Network'
     
     case self.contributor_type.to_s
     when "User"
       return self.contributor_id.to_i == c_utor.id.to_i
     when "Network"
-      return self.contributor.owner?(c_utor.id)
+      if ['edit','update','delete'].include?(action_name.downcase)
+        return self.contributor.owner?(c_utor.id)
+      else
+        return self.contributor.member?(c_utor.id)
+      end
     else
       return false
-    end 
+    end
   end
   
   def service_valid?

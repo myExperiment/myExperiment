@@ -19,13 +19,14 @@ class JobsController < ApplicationController
   end
 
   def show
-    unless @job.runnable.authorized?(action_name, current_user) 
-      flash[:error] = "The runnable item (#{@job.runnable_type}) is not authorized anymore - you need download priviledges include it in a Job."
+    unless @job.runnable.authorized?(action_name, current_user)
+      flash[:error] = "<p>You will not be able to submit this Job, but you can still see the details of it."
+      flash[:error] = "<p>The runnable item (#{@job.runnable_type}) is not authorized - you need download priviledges to run it.</p>"
     end
     
-    unless @job.runner.authorized?(action_name, current_user) 
-      flash[:error] += "<br/>" unless flash[:error].blank?
-      flash[:error] += "The runner is not authorized for use anymore."
+    unless @job.runner.authorized?(action_name, current_user)
+      flash[:error] = "You will not be able to submit this Job, but you can still see the details of it." unless flash[:error]
+      flash[:error] += "<p>The runner is not authorized - you need to either own it or be part of a Group that owns it.</p>"
     end
     
     @job.refresh_status!
@@ -60,7 +61,7 @@ class JobsController < ApplicationController
     @job.experiment = @experiment
     @job.user = current_user
     
-    # Check runnable is a valid one
+    # Check runnable is a valid and authorized one
     # (for now we can assume it's a Workflow)
     runnable = Workflow.find(:first, :conditions => ["id = ?", params[:job][:runnable_id]])
     if !runnable or !runnable.authorized?('download', current_user)
@@ -74,10 +75,10 @@ class JobsController < ApplicationController
       end
     end
     
-    # Check runner is a valid one
+    # Check runner is a valid and authorized one
     # (for now we can assume it's a TavernaEnactor)
     runner = TavernaEnactor.find(:first, :conditions => ["id = ?", params[:job][:runner_id]])
-    if !runner or !runner.authorized?('run', current_user)
+    if !runner or !runner.authorized?('execute', current_user)
       success = false
       @job.errors.add(:runner_id, "not valid or not authorized")
     end
@@ -171,12 +172,12 @@ class JobsController < ApplicationController
     
     unless @job.runnable.authorized?(action_name, current_user) 
       success = false;
-      errors_text += "<p>The runnable item (#{@job.runnable_type}) is not authorized anymore - you need download priviledges to run it.</p>"
+      errors_text += "<p>The runnable item (#{@job.runnable_type}) is not authorized - you need download priviledges to run it.</p>"
     end
     
     unless @job.runner.authorized?(action_name, current_user) 
       success = false;
-      errors_text += "<p>The runner is not authorized for use anymore.</p>"
+      errors_text += "<p>The runner is not authorized - you need to either own it or be part of a Group that owns it.</p>"
     end
     
     if success
