@@ -5,7 +5,11 @@
 		<% for experiment in collection %>
 		  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 			    <td width="100px">
-			    	<b>Owner:</b><br/>
+			    	<p style="text-align: center; padding-top: 0;">
+							<b>Owner:</b> 
+							<br/>
+							<span style="font-size: 85%; color: #666666;">(<%= visible_name experiment.contributor -%>)</span>
+						</p>
 						<%= contributor(experiment.contributor_id, experiment.contributor_type, true, 60) %>
 					</td>
 			    <td class="mid" style="text-align: left;">
@@ -32,6 +36,7 @@
 						<% if experiment.authorized?("edit", logged_in? ? current_user : nil) %>
 							<%= icon('edit', edit_experiment_path(experiment), nil, nil, 'Edit') %>
 						<% end %>
+						<%= icon "job", new_job_path(experiment), nil, nil, "New Job" %>
 		    	</td>
 		  	</tr>
 		<% end %>
