@@ -105,7 +105,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :relationships, :memberships, :friendships
 
   # all users
-  map.resources :users, :collection => { :search => :get, :news => :get, :friends => :get, :groups => :get, :workflows => :get, :files => :get, :forums => :get, :blogs => :get, :credits => :get, :tags => :get } do |user|
+  map.resources :users, :collection => { :search => :get } do |user|
 
     # friendships 'owned by' user (user --> friendship --> friend)
     user.resources :friendships, :member => { :accept => :get }
@@ -123,6 +123,10 @@ ActionController::Routing::Routes.draw do |map|
     user.resource :userhistory, :controller => :userhistory
   end
 
+  [ 'news', 'friends', 'groups', 'workflows', 'files', 'forums', 'blogs', 'credits', 'tags' ].each do |tab|
+    map.connect "users/:id/#{tab}", :controller => 'users', :action => tab
+  end
+
   map.resources :groups, :controller => :networks, :collection => { :search => :get }, :member => { :membership_invite => :get, :membership_request => :get, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post } do |group|
     # relationships 'accepted by' group (relation --> relationship --> group)
     group.resources :relationships, :member => { :accept => :get }
@@ -137,7 +141,6 @@ ActionController::Routing::Routes.draw do |map|
   # Sample of named route:
   # map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
   # This route can be invoked with purchase_url(:id => product.id)
-  map.owned_groups 'users/:user_id/groups', :controller => 'networks', :action => 'index'
 
   # You can have the root of your site routed by hooking up ''
   # -- just remember to delete public/index.html.
