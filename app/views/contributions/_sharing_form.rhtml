@@ -33,7 +33,7 @@
 			<% if update_perms -%>
 				<p>
 					You can also set <b>update</b> permissions for this <%= c_type %>.
-					<%= link_to_function "Click here", visual_effect(:toggle_blind, "update_perms_info", :duration => 0.3) %> for more information.
+					<%= link_to_function "Click here" + expand_image, visual_effect(:toggle_blind, "update_perms_info", :duration => 0.3) %> for more information.
 				</p>
 				<div id="update_perms_info" class="box_simple" style="display: none; margin: 0.5em 0;">
 					By giving update permission to someone, you allow them to edit certain things (such as titles and descriptions) 

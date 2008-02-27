@@ -7,7 +7,7 @@
 		<%= link_to_function image_tag("close.gif", :style => "float: right;"), 
 												 visual_effect(:toggle_slide, "email_notice", :duration => 0.3) %>
 		You can now <%= link_to "register an email address to your account", edit_user_path(@user)%>. 
-		<%= link_to_function "Click here", visual_effect(:toggle_blind, "email_why", :duration => 0.3) %> to see the benefits of doing this.
+		<%= link_to_function "Click here" + expand_image("0.3em"), visual_effect(:toggle_blind, "email_why", :duration => 0.3) %> to see the benefits of doing this.
 		<div id="email_why" class="box_simple" style="font-weight: normal; display: none; margin-top: 0.5em;">
 			<ul style="margin-top: 0.1em;">
 				<li>So you can receive email notifications for friendship requests, group invitations and so on [optional].</li>

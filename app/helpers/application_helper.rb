@@ -663,9 +663,19 @@ module ApplicationHelper
       return "famfamfam_silk/page_code.png"
     when "package"
       return "famfamfam_silk/package.png"
+    when "refresh"
+      return "famfamfam_silk/arrow_refresh_small.png"
     else
       return nil
     end
+  end
+  
+  def refresh_image
+    image_tag "refresh.gif", :style => "vertical-align: middle;"
+  end
+  
+  def expand_image(margin_left="0.5em")
+    image_tag "folds/unfold.png", :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Expand'
   end
   
   def user_tags_for_thing(taggable, user_id)

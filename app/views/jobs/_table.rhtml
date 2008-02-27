@@ -15,14 +15,31 @@
 						</p>
 						
 						<p style="font-size: 85%; color: #666666;">
-							<b>Created:</b> <%=datetime job.created_at, false %>
+							<b>Created:</b> <%=datetime job.created_at, false %> |
+							<b>Last Status:</b> <%= h job.last_status %>
 						</p>
 						
 						<% unless job.description.blank? %>
-							<div class="desc" style="font-size: 85%;">
+							<div class="desc" style="font-size: 85%; margin: 0.3em 0;">
 								<%= truncate(strip_html(job.description), 180) %>
 							</div>
 						<% end %>
+						
+						<p style="font-size: 85%;">
+							<b>Part of Experiment: </b>
+							<%= link_to h(job.experiment.title), experiment_url(job.experiment) -%>
+						</p>
+						
+						<p style="font-size: 85%;">
+							<b>Runnable item:</b> 
+							<b><%= c_type = visible_name(job.runnable); icon(job.runnable_type, nil, nil, c_type, c_type) %> -</b>
+							<%= contributable(job.runnable_id, job.runnable_type) %>
+							| <b>Version:</b> <%= job.runnable_version %>
+						</p>
+						
+						<p style="font-size: 85%;">
+							<b>Runner item:</b> <%= contributable(job.runnable_id, job.runnable_type) %>
+						</p>
 						
 					</td>
 			    <td class="actions"  style="width: 80px;">

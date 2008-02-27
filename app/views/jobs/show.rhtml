@@ -40,11 +40,7 @@
 				
 				<p  style="font-size: 93%;">
 					<b>Last status:</b>
-					<% unless @job.last_status.blank? -%>
-						<%= h @job.last_status -%>
-					<% else -%>
-						<span class="none_text">not yet submitted</span>
-					<% end -%>
+					<%= h @job.last_status -%>
 				</p>
 				<p  style="font-size: 93%;">
 					<b>Last status check:</b>
@@ -62,8 +58,8 @@
 <br/>
 
 <p style="text-align: center;">
-	<b>Experiment:</b>
-	<%= link_to_function h(@experiment.title), visual_effect(:toggle_blind, "job_experiment_listing", :duration => 0.3) %>
+	<b>Part of Experiment:</b>
+	<%= link_to_function h(@experiment.title) + expand_image, visual_effect(:toggle_blind, "job_experiment_listing", :duration => 0.3) %>
 </p>
 
 <div id="job_experiment_listing" style="display: none;">
@@ -73,8 +69,8 @@
 <p style="text-align: center;">
 	<b>Runnable Item:</b>
 	<b><%= c_type = visible_name(@job.runnable); icon(@job.runnable_type, nil, nil, c_type, c_type) %> -</b>
-	<%= link_to_function h(@job.runnable.title), visual_effect(:toggle_blind, "job_runnable_listing", :duration => 0.3) %>
-	(version <%= @job.runnable_version %>)
+	<%= link_to_function h(@job.runnable.title) + expand_image, visual_effect(:toggle_blind, "job_runnable_listing", :duration => 0.3) %>
+	<b>Version:</b> <%= @job.runnable_version %>
 </p>
 
 <div id="job_runnable_listing" style="display: none;">
@@ -84,15 +80,49 @@
 <p style="text-align: center;">
 	<b>Runner:</b>
 	<b><%= icon('runner', nil, nil, @job.runner_type, @job.runner_type) %> -</b>
-	<%= link_to_function h(@job.runner.title), visual_effect(:toggle_blind, "job_runner_listing", :duration => 0.3) %>
+	<%= link_to_function h(@job.runner.title) + expand_image, visual_effect(:toggle_blind, "job_runner_listing", :duration => 0.3) %>
 </p>
 
 <div id="job_runner_listing" style="display: none;">
 	<%= render :partial => "runners/table", :locals => { :collection => [ @job.runner ] } %>
 </div>
 
+<p style="text-align: center;">
+	<b>Parent Job:</b>
+	<% if @job.parent_job -%>
+		<%= link_to_function h(@job.parent_job.title) + expand_image, visual_effect(:toggle_blind, "job_parent_listing", :duration => 0.3) %>
+	<% else -%>
+		<span class="none_text">None</span>
+	<% end -%>
+</p>
+
+<% if @job.parent_job -%>
+	<div id="job_parent_listing" style="display: none;">
+		<%= render :partial => "jobs/table", :locals => { :collection => [ @job.parent_job ] } %>
+	</div>
+<% end -%>
+
 <br/><br/>
 
+<!-- Child Jobs -->
+
+<div class="fold">
+  <div class="foldTitle">
+    Child Jobs
+  </div>
+  <div class="foldContent" style="display: none; padding: padding: 1em 2em;">
+		<% if @job.child_jobs and !@job.child_jobs.empty? -%>
+			<% @job.child_jobs.each do |j| -%>
+				<p>
+					<%= link_to h(j.title), job_url(j.experiment, j) -%>
+					<span style="color: #666666;">(<%= datetime j.created_at -%>)</span>
+				</p>
+			<% end -%>
+		<% else -%>
+			<p class="none_text">No child jobs have been spawned from this job.</p>
+		<% end -%>
+	</div>
+</div>
 
 <!-- Inputs -->
 
@@ -235,7 +265,9 @@
 	
 </div>
 
-<br/><br/>
+<br/>
+
+<!-- Status -->
 
 <h2>Status</h2>
 
@@ -243,7 +275,7 @@
 
 	<ul class="sectionIcons" style="margin-top: 1.5em;">
 		<li style="margin-left: 0;">
-			<%= link_to_remote "#{image_tag 'refresh.gif'} Refresh",
+			<%= link_to_remote "#{refresh_image} Refresh",
 										 :url => refresh_status_job_url(@experiment, @job),
 										 :method => :get,
 										 :update => 'status_box',
@@ -262,6 +294,8 @@
 
 <br/><br/><br/>
 
+<!-- Outputs -->
+
 <div class="fold">
   <div class="foldTitle">
     Output Data
@@ -269,7 +303,7 @@
   <div class="foldContent" style="display: block; padding: 0 1.5em 1.5em 1.5em;">
 		<ul class="sectionIcons" style="margin-top: 1.5em;">
 			<li style="margin-left: 0;">
-				<%= link_to_remote "#{image_tag 'refresh.gif'} Refresh",
+				<%= link_to_remote "#{refresh_image} Refresh",
 											 :url => refresh_outputs_job_url(@experiment, @job),
 											 :method => :get,
 											 :update => 'outputs_box',

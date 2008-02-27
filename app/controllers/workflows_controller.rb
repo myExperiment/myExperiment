@@ -10,7 +10,7 @@ class WorkflowsController < ApplicationController
   before_filter :find_workflows_rss, :only => [:index]
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all]
   
-  before_filter :invalidate_listing_cache, :only => [:update, :update_version, :comment, :comment_delete, :rate, :tag, :destroy, :destroy_version]
+  before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :update_version, :comment, :comment_delete, :rate, :tag, :destroy, :destroy_version]
   
   # These are provided by the Taverna gem
   require 'scufl/model'

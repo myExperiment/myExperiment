@@ -3,8 +3,6 @@
 # Copyright (c) 2008 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'rexml/document'
-
 class Job < ActiveRecord::Base
   
   belongs_to :runnable, :polymorphic => true
@@ -20,6 +18,10 @@ class Job < ActiveRecord::Base
   belongs_to :user
   validates_presence_of :user
   
+  belongs_to :parent_job, :class_name => "Job", :foreign_key => "parent_job_id"
+  
+  has_many :child_jobs, :class_name => "Job", :foreign_key => "parent_job_id"
+  
   format_attribute :description
   
   validates_presence_of :title
@@ -29,6 +31,14 @@ class Job < ActiveRecord::Base
   def authorized?(action_name, c_utor=nil)
     # Use authorization logic from parent Experiment
     return self.experiment.authorized?(action_name, c_utor)
+  end
+  
+  def last_status
+    if self[:last_status].nil?
+      return "not yet submitted"
+    else
+      return self[:last_status]
+    end
   end
   
   def run_errors

@@ -1,7 +1,7 @@
 <p style="text-align: center;">
 	<b>
 		For <%= visible_name(@reviewable) %>: 
-		<%= link_to_function h(@reviewable.title), visual_effect(:toggle_blind, "review_item", :duration => 0.3) %>
+		<%= link_to_function h(@reviewable.title) + expand_image, visual_effect(:toggle_blind, "review_item", :duration => 0.3) %>
 	</b>
 </p>
 
