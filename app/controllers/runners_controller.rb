@@ -10,7 +10,7 @@ class RunnersController < ApplicationController
   before_filter :login_required
   
   before_filter :find_runners, :only => [:index]
-  before_filter :find_runner_auth, :only => [:show, :edit, :update, :destroy]
+  before_filter :find_runner_auth, :only => [:show, :edit, :update, :destroy, :verify]
   
   def index
     respond_to do |format|
@@ -33,27 +33,9 @@ class RunnersController < ApplicationController
 
   def create
     @runner = TavernaEnactor.new
-    @runner.title = params[:runner][:title]
-    @runner.description = params[:runner][:description]
-    @runner.url = params[:runner][:url]
-    @runner.username = params[:runner][:username]
-    @runner.password = params[:runner][:password]
-    
-    if params[:assign_to_group]
-      network = Network.find(params[:assign_to_group_id])
-      if network and network.member?(current_user.id)
-        @runner.contributor = network
-      else
-        flash[:error] = "Experiment could not be created because could not assign ownership to Group."
-        success = false
-      end
-    else
-      @runner.contributor = current_user
-    end
-    
     respond_to do |format|
-      if @runner.save
-        flash[:notice] = "Your Runner of type 'Taverna Enactor' has successfully been registered."
+      if update_runner!(@runner)
+        flash[:notice] = "Your Runner of type 'Taverna Enactor' has been successfully registered."
         format.html { redirect_to runner_url(@runner) }
       else
         format.html { render :action => "new" }
@@ -67,11 +49,10 @@ class RunnersController < ApplicationController
     end
   end
 
-  # TODO: need to make this action more generic, like the "create" action.
   def update
     respond_to do |format|
-      if @runner.update_attributes(params[:taverna_enactor])
-        flash[:notice] = "Your Taverna Enactor Runner has been successfully updated."
+      if update_runner!(@runner)
+        flash[:notice] = "Your Runner of type 'Taverna Enactor' has been successfully updated."
         format.html { redirect_to runner_url(@runner) }
       else
         format.html { render :action => "edit" }
@@ -91,7 +72,37 @@ class RunnersController < ApplicationController
     end
   end
   
+  def verify
+    respond_to do |format|
+      format.html { render :partial => "status", :locals => { :service_valid => @runner.service_valid? } }
+    end
+  end
+  
 protected
+
+  def update_runner!(runner)
+    success = true
+    
+    runner.title = params[:runner][:title] if params[:runner][:title]
+    runner.description = params[:runner][:description] if params[:runner][:description]
+    runner.url = params[:runner][:url] if params[:runner][:url]
+    runner.username = params[:runner][:username] if params[:runner][:username]
+    runner.password = params[:runner][:password] if params[:runner][:password]
+    
+    if params[:assign_to_group]
+      network = Network.find(params[:assign_to_group_id])
+      if network and network.member?(current_user.id)
+        @runner.contributor = network
+      else
+        flash[:error] = "Experiment could not be created because could not assign ownership to Group."
+        success = false
+      end
+    else
+      @runner.contributor = current_user
+    end
+    
+    success ? @runner.save : false
+  end
 
   def find_runners
     # Currently, only return the runners for the current user

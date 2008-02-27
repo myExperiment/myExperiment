@@ -21,13 +21,13 @@
 
 <div class="contribution_left_box">
 	
-	<% unless @network.description.nil? or @network.description.empty? %>
-		<div class="box_simple" style="margin: 0 0 0.4em 0;">
-		  <%= white_list @network.description_html %>
-		</div>
-	<% else %>
-		<p><i>No description</i></p>
-	<% end %>
+	<div class="box_simple" style="margin: 0 0 0.4em 0;">
+		<% unless @network.description.nil? or @network.description.empty? %>
+			<%= white_list @network.description_html %>
+		<% else %>
+			<p><i>No description</i></p>
+		<% end %>
+	</div>
 	
 	<p>
 	  <b>Created at:</b>

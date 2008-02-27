@@ -1,8 +1,48 @@
-<% for column in TavernaEnactor.content_columns %>
-<p>
-  <b><%= column.human_name %>:</b> <%=h @taverna_enactor.send(column.name) %>
-</p>
-<% end %>
+<% t "#{@runner.class.to_s} - #{h @runner.title}" -%>
 
-<%= link_to 'Edit', :action => 'edit', :id => @taverna_enactor %> |
-<%= link_to 'Back', :action => 'list' %>
+<% if @runner.authorized?('edit', current_user) -%>
+	<ul class="sectionIcons">
+	  <li><%= icon('edit', edit_runner_path(@runner), nil, nil, 'Edit Runner') %></li>
+	  <li><%= icon('destroy', runner_path(@runner), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Runner') %></li>
+	</ul>
+<% end -%>
+
+<h1>Runner: <%= h @runner.title %></h1>
+
+<div class="box_simple" style="margin: 0 0 0.4em 0;">
+	<% unless @runner.description.nil? or @runner.description.empty? %>
+		<%= simple_format(h(@runner.description)) %>
+	<% else %>
+		<p><i>No description</i></p>
+	<% end %>
+</div>
+
+<p><b>Owner:</b> <%= contributor(@runner.contributor_id, @runner.contributor_type) -%> (<%= @runner.contributor_type -%>)</p>
+
+<p><b>Type:</b> <%= @runner.class.to_s -%></p>
+<p><b>URL (to Service):</b> <%= h @runner.url -%></p>
+
+<p><b>Created:</b> <%= datetime @runner.created_at -%></p>
+<p><b>Last Updated:</b> <%= datetime @runner.updated_at -%></p>
+
+<br/><br/>
+
+<h2>Status</h2>
+
+<ul class="sectionIcons" style="margin-top: 1.5em; text-align: left;">
+	<li style="margin-left: 0;">
+		<%= link_to_remote "#{image_tag 'refresh.gif'} Verify Status",
+									 :url =>verify_runner_url(@runner),
+									 :method => :get,
+									 :update => 'status_box',
+									 :success => "new Effect.Highlight('status_box', { duration: 1.5 });",
+									 :loading => "Element.show('refresh_indicator')",
+                   :complete => "Element.hide('refresh_indicator')" -%>
+		
+		<%= image_tag "spinner.gif", :id => "refresh_indicator", :style => "display: none; margin-left: 1em;" -%>
+	</li>
+</ul>
+
+<div id="status_box" style="margin-top: 1.5em; font-weight: bold; color: #990000;">
+	<% render :partial => "status", :locals => { :service_valid => @runner.service_valid? } -%>
+</div>

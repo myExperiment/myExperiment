@@ -8,7 +8,7 @@ ActionController::Routing::Routes.draw do |map|
   rest_routes(map)
 
   # Runners
-  map.resources :runners
+  map.resources :runners, :member => { :verify => :get }
   
   # Experiments
   map.resources :experiments do |e|

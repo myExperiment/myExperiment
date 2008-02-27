@@ -24,6 +24,8 @@ class JobsController < ApplicationController
       flash[:error] = "<p>The runnable item (#{@job.runnable_type}) is not authorized - you need download priviledges to run it.</p>"
     end
     
+    # TODO: check that runnable version still exists
+    
     unless @job.runner.authorized?(action_name, current_user)
       flash[:error] = "You will not be able to submit this Job, but you can still see the details of it." unless flash[:error]
       flash[:error] += "<p>The runner is not authorized - you need to either own it or be part of a Group that owns it.</p>"
