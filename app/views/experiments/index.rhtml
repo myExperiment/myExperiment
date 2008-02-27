@@ -1,1 +1,35 @@
-<h1>TODO: show the current user's Experiments here</h1>
+<% t "My Experiments" -%>
+
+<h1>My Experiments</h1>
+
+<ul class="sectionIcons">
+  <li style="margin-left: 0;"><%= icon('new', new_experiment_path, nil, nil, 'New Experiment') %></li>
+</ul>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+
+<div class="tabContainer">
+  <div class="tabTitle">Personal</div>
+  <div class="tabContent">
+		
+		
+		<% unless @personal_experiments.empty? -%>
+			<%= render :partial => "experiments/table", :locals => { :collection => @personal_experiments } %>
+		<% else -%>
+			<p class="none_text">None</p>
+		<% end -%>
+	</div>
+</div>
+
+<div class="tabContainer">
+  <div class="tabTitle">From Groups</div>
+  <div class="tabContent">
+		
+		
+		<% unless @group_experiments.empty? -%>
+			<%= render :partial => "experiments/table", :locals => { :collection => @group_experiments } %>
+		<% else -%>
+			<p class="none_text">None</p>
+		<% end -%>
+	</div>
+</div>

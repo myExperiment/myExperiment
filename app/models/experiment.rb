@@ -8,7 +8,7 @@ class Experiment < ActiveRecord::Base
   belongs_to :contributor, :polymorphic => true
   validates_presence_of :contributor
   
-  has_many :jobs, :dependent => :destroy
+  has_many :jobs, :dependent => :destroy, :order => "updated_at DESC"
   
   format_attribute :description
   

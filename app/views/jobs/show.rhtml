@@ -13,7 +13,7 @@
 <center>
 	<table class="box_simple">
 		<tr>
-			<td style="vertical-align: top; padding: 0.3em 1.5em;">
+			<td style="vertical-align: top; padding: 0.3em 1em;">
 				<p>
 					<b>Created by:</b>
 				</p>
@@ -114,8 +114,8 @@
   <div class="foldTitle">
     Child Jobs
   </div>
-  <div class="foldContent" style="display: none; padding: padding: 1em 2em;">
-		<% if @job.child_jobs and !@job.child_jobs.empty? -%>
+  <div class="foldContent" style="display: none; padding: 1em 2em;">
+		<% unless @job.child_jobs.empty? -%>
 			<% @job.child_jobs.each do |j| -%>
 				<p>
 					<%= link_to h(j.title), job_url(j.experiment, j) -%>

@@ -1,8 +1,67 @@
-<% for column in Experiment.content_columns %>
-<p>
-  <b><%= column.human_name %>:</b> <%=h @experiment.send(column.name) %>
-</p>
-<% end %>
+<% t "#{h @experiment.title}" -%>
 
-<%= link_to 'Edit', :action => 'edit', :id => @experiment %> |
-<%= link_to 'Back', :action => 'list' %>
+<% if @experiment.authorized?('edit', current_user) -%>
+	<ul class="sectionIcons">
+	  <li><%= icon('edit', edit_experiment_path(@experiment), nil, nil, 'Edit Experiment') %></li>
+	</ul>
+<% end -%>
+
+<h1>Experiment: <%= h @experiment.title %></h1>
+
+<center>
+	<table class="box_simple">
+		<tr>
+			<td style="vertical-align: top; padding: 0.3em 1em;">
+				<p style="text-align: center;">
+					<b>Owner:</b> 
+					<br/>
+					<span style="font-size: 93%; color: #666666;">(<%= visible_name @experiment.contributor -%>)</span>
+				</p>
+				<div style="font-size: 93%; margin-top: 0.5em; text-align: center;">
+					<%= contributor(@experiment.contributor_id, @experiment.contributor_type, true, 60) -%>
+				</div>
+			</td>
+			<td style="vertical-align: top;">
+				<div class="box_standout" style="padding: 0em 0.5em; margin-bottom: 0.5em;">
+					<% unless @experiment.description.blank? -%>
+						<%= white_list @experiment.description_html -%>
+					<% else -%>
+						<p class="none_text">No description</p>
+					<% end -%>
+				</div>
+				
+				<p style="font-size: 93%;">
+					<b>Created:</b>
+					<%= datetime @experiment.created_at %>
+				</p>
+				
+				<% if false -%>
+				<p  style="font-size: 93%;">
+					<b>Last updated:</b>
+					<%= datetime @experiment.updated_at %>
+				</p>
+				<% end -%>
+				
+			</td>
+		</tr>
+	</table>
+</center>
+
+<br/><br/>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+
+<div class="tabContainer">
+  <div class="tabTitle">Jobs</div>
+  <div class="tabContent">
+		<ul class="sectionIcons">
+		  <li><%= icon('new', new_job_path(@experiment), nil, nil, 'New Job') %></li>
+		</ul>
+		
+		<% unless @experiment.jobs.empty? -%>
+			<%= render :partial => "jobs/table", :locals => { :collection => @experiment.jobs } %>
+		<% else -%>
+			<p class="none_text">No jobs have been created as part of this Experiment.</p>
+		<% end -%>
+	</div>
+</div>

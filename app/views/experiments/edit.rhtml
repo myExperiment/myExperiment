@@ -1,11 +1,39 @@
-<h1>Editing experiment</h1>
+<%= javascript_include_tag :fckeditor %>
+
+<h1>Edit Experiment</h1>
 
 <%= error_messages_for :experiment %>
 
-<% form_tag :action => 'update', :id => @experiment do %>
-  <%= render :partial => 'form' %>
-  <%= submit_tag 'Edit' %>
-<% end %>
-
-<%= link_to 'Show', :action => 'show', :id => @experiment %> |
-<%= link_to 'Back', :action => 'list' %>
+<center>
+	<div class="box_form" style="width: 550px; margin: 1em 0; text-align: left;">
+		<% form_for :experiment, :url => experiment_path(@experiment), :html => { :method => :put } do |form| -%>
+			<p><b>Title</b></p>
+			<%= form.text_field :title, :size => 86 %>
+			
+			<p><b>Description</b></p>
+			<%= fckeditor_textarea(:experiment, :description, :toolbarSet => 'Simple', :width => '550px', :height => '300px') %>
+			
+			<fieldset>
+				<legend>Ownership</legend>
+				
+				<p style="font-size: 93%;">
+					<b>By default, this Experiment will be owned by you.</b>
+				</p>
+				<p style="font-size: 93%;">
+					However, you can assign it to one of your Groups, 
+					which will allow members of that Group to access it and create Jobs within it.
+				</p>
+				
+				<p>
+					<%= check_box_tag 'assign_to_group', "1", (@experiment.contributor_type == 'Network') -%> Assign to Group:
+					<%= select_tag "assign_to_group_id", 
+												 options_from_collection_for_select(current_user.all_networks, "id", "title", (@experiment.contributor_type == 'Network' ? @experiment.contributor_id : nil)), 
+												 :include_blank => "--- Select Group ---" -%>
+			 	</p> 
+			</fieldset>
+			
+			<br/><br/>
+			<center><%= submit_tag "Update", :disable_with => "Updating..." %></center>
+		<% end -%>
+	</div>
+</center>

@@ -32,24 +32,9 @@ class ExperimentsController < ApplicationController
   end
 
   def create
-    success = true;
-    
     @experiment = Experiment.new(params[:experiment])
-    
-    if params[:assign_to_group]
-      network = Network.find(params[:assign_to_group_id])
-      if network and network.member?(current_user.id)
-        @experiment.contributor = network
-      else
-        flash[:error] = "Experiment could not be created because could not assign ownership to Group."
-        success = false
-      end
-    else
-      @experiment.contributor = current_user
-    end
-    
     respond_to do |format|
-      if success and @experiment.save
+      if update_ownership(@experiment) and @experiment.save
         flash[:notice] = "Your new Experiment has successfully been created."
         format.html { redirect_to experiment_url(@experiment) }
       else
@@ -66,7 +51,7 @@ class ExperimentsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @experiment.update_attributes(params[:experiment])
+      if update_ownership(@experiment) and @experiment.update_attributes(params[:experiment])
         flash[:notice] = "Experiment was successfully updated."
         format.html { redirect_to experiment_url(@experiment) }
       else
@@ -92,11 +77,29 @@ protected
   def default_title
     "Experiment_#{Time.now.strftime('%Y%m%d-%H%M')}_#{current_user.name}"
   end
+  
+  def update_ownership(experiment)
+    success = true
+    
+    if params[:assign_to_group]
+      network = Network.find(params[:assign_to_group_id])
+      if network and network.member?(current_user.id)
+        @experiment.contributor = network
+      else
+        flash[:error] = "Experiment could not be created because could not assign ownership to Group."
+        success = false
+      end
+    else
+      @experiment.contributor = current_user
+    end
+    
+    return success
+  end
 
   def find_experiments
     # Currently, only return the Experiments that the current user has access to,
     # ie: Experiments the user owns, and Experiments owned by the user's groups.
-    @experiments = Experiment.find_by_contributor('User', current_user.id)
+    @personal_experiments = Experiment.find_by_contributor('User', current_user.id)
     @group_experiments = []
     current_user.all_networks.each do |n|
       @group_experiments = @group_experiments + Experiment.find_by_contributor('Network', n.id)
