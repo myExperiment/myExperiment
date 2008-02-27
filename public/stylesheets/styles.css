@@ -330,6 +330,7 @@ li {
 	border: 0px solid #DEDEDE;
 	border-width: 0 1px 1px 1px;
 	*margin-left: 1px;
+	color: #666666;
 }
 
 #myexp_breadcrumbs_bar table {
