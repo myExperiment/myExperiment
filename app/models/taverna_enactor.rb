@@ -29,20 +29,20 @@ class TavernaEnactor < ActiveRecord::Base
   def self.find_by_groups(user)
     return nil unless user.is_a?(User)
     
-    group_runners = []
+    runners = []
     user.all_networks.each do |n|
-      group_runners = group_runners + TavernaEnactor.find_by_contributor('Network', n.id)
+      runners = runners + TavernaEnactor.find_by_contributor('Network', n.id)
     end
     
-    return group_runners
+    return runners
   end
   
   def self.for_user(user)
     return [ ] if user.nil? or !user.is_a?(User)
     
-    # Return the runners that are owned by the user, or are owned by groups that the user is a part of.
-    owned_runners = TavernaEnactor.find_by_contributor('User', user.id)
-    return owned_runners + find_by_groups(user)
+    # Return the runners that are owned by the user, and are owned by groups that the user is a part of.
+    runners = TavernaEnactor.find_by_contributor('User', user.id)
+    return runners + TavernaEnactor.find_by_groups(user)
   end
   
   # Note: at the moment (Feb 2008), updates and deletes are only allowed by the creator of the TavernaEnactor 

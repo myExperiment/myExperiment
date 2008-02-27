@@ -25,7 +25,7 @@ class ExperimentsController < ApplicationController
   def new
     @experiment = Experiment.new
     # Set a default title
-    @experiment.title = default_title
+    @experiment.title = Experiment.default_title(current_user)
     respond_to do |format|
       format.html # new.rhtml
     end
@@ -74,10 +74,6 @@ class ExperimentsController < ApplicationController
   
 protected
 
-  def default_title
-    "Experiment_#{Time.now.strftime('%Y%m%d-%H%M')}_#{current_user.name}"
-  end
-  
   def update_ownership(experiment)
     success = true
     
@@ -100,10 +96,7 @@ protected
     # Currently, only return the Experiments that the current user has access to,
     # ie: Experiments the user owns, and Experiments owned by the user's groups.
     @personal_experiments = Experiment.find_by_contributor('User', current_user.id)
-    @group_experiments = []
-    current_user.all_networks.each do |n|
-      @group_experiments = @group_experiments + Experiment.find_by_contributor('Network', n.id)
-    end
+    @group_experiments = Experiment.find_by_groups(current_user)
   end
   
   def find_experiment_auth

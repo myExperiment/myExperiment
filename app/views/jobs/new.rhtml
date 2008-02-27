@@ -2,21 +2,47 @@
 
 <h1>New Job</h1>
 
-<p class="sub-heading">
-	<b>
-		For Experiment:
-		<%= link_to_function h(@experiment.title) + expand_image, visual_effect(:toggle_blind, "experiment_listing", :duration => 0.3) %>
-	</b>
-</p>
-<div id="experiment_listing" style="display: none;">
-	<%= render :partial => "experiments/table", :locals => { :collection => [ @experiment ] } %>
-</div>
-
-<%= error_messages_for :job %>
-
 <center>
-	<div class="box_form" style="width: 550px; margin: 2em 0; text-align: left;">
-		<% form_for :job, :url => jobs_path(@experiment) do |form| -%>
+	<%= error_messages_for :job %>
+</center>
+
+<% form_for :job, :url => jobs_path(@experiment) do |form| -%>
+
+	<p class="sub-heading">
+		<b>
+			For Experiment:
+			<%= link_to_function h(@experiment.title) + expand_image, visual_effect(:toggle_blind, "experiment_listing", :duration => 0.3) %>
+		</b>
+		<span style="margin-left: 1em; vertical-align: center;">
+			[ <%= link_to_function "change" + expand_image, visual_effect(:toggle_blind, "change_experiment", :duration => 0.3) %> ]
+		</span>
+	</p>
+	<div id="experiment_listing" style="display: none;">
+		<%= render :partial => "experiments/table", :locals => { :collection => [ @experiment ] } %>
+	</div>
+	
+	<center>
+		<div id="change_experiment" class="box_simple" style="width: 420px; display: none;">
+			<p class="box_infotext" style="font-size: 85%; text-align: center; margin-bottom: 0.3em; font-weight: bold;">
+				Here you can change which Experiment this new Job becomes a part of
+			</p>
+			
+			<p>
+				<%= radio_button_tag "change_experiment", 'new', (params[:change_experiment] == 'new') -%>
+				Brand new Experiment (with a default title)
+			</p>
+			
+			<p>
+				<%= radio_button_tag "change_experiment", 'existing', (params[:change_experiment] == 'existing') -%>
+				Existing Experiment: 
+				<%= select_tag "change_experiment_id", 
+											 options_from_collection_for_select(Experiment.for_user(current_user), "id", "title", params[:change_experiment_id]) -%>
+			</p>
+		</div>
+	</center>
+	
+	<center>
+		<div class="box_form" style="width: 550px; margin: 2em 0; text-align: left;">
 			<p><b>Title</b></p>
 			<%= form.text_field :title, :size => 86 %>
 			
@@ -47,6 +73,7 @@
 			
 			<br/><br/>
 			<center><%= submit_tag "Create", :disable_with => "Creating..." %></center>
-		<% end -%>
-	</div>
-</center>
+		</div>
+	</center>
+
+<% end -%>

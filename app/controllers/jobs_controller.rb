@@ -43,7 +43,7 @@ class JobsController < ApplicationController
     @job.experiment = @experiment
     
     # Set defaults
-    @job.title = default_title
+    @job.title = Job.default_title(current_user)
     @job.runnable_type = "Workflow"
     @job.runner_type = "TavernaEnactor"
     
@@ -87,8 +87,9 @@ class JobsController < ApplicationController
     
     respond_to do |format|
       if success and @job.save
+        update_parent_experiment!(@job)
         flash[:notice] = "Job successfully created."
-        format.html { redirect_to job_url(@experiment, @job) }
+        format.html { redirect_to job_url(@job.experiment, @job) }
       else
         format.html { render :action => "new" }
       end
@@ -255,8 +256,25 @@ class JobsController < ApplicationController
   
 protected
 
-  def default_title
-    "Job_#{Time.now.strftime('%Y%m%d-%H%M')}_#{current_user.name}"
+  def update_parent_experiment!(job)
+    if params[:change_experiment]
+      if params[:change_experiment] == 'new'
+        job.experiment = Experiment.new(:title => Experiment.default_title(current_user), :contributor => current_user)
+      elsif params[:change_experiment] == 'existing'
+        experiment = Experiment.find(params[:change_experiment_id])
+        if experiment and experiment.authorized?('edit', current_user)
+          job.experiment = experiment
+        else
+          flash[:error] = "Job could not be created because could not assign the parent Experiment."
+          return false
+        end
+      end
+    else
+      # Otherwise set it to the experiment defined in the URL as part of the nested resource
+      job.experiment = @experiment
+    end
+    
+    job.save
   end
 
   def find_experiment_auth

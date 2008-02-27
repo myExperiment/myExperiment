@@ -27,6 +27,12 @@ class Job < ActiveRecord::Base
   validates_presence_of :title
   
   serialize :inputs_data
+
+  def self.default_title(user)
+    s = "Job_#{Time.now.strftime('%Y%m%d-%H%M')}"
+    s = s + "_#{user.name}" if user
+    return s
+  end
   
   def authorized?(action_name, c_utor=nil)
     # Use authorization logic from parent Experiment
