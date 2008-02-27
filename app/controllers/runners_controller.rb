@@ -105,8 +105,8 @@ protected
   end
 
   def find_runners
-    # Currently, only return the runners for the current user
-    @runners = TavernaEnactor.find(:all, :conditions => ["contributor_type = ? AND contributor_type = ?", 'User', current_user.id])
+    @personal_runners = TavernaEnactor.find_by_contributor('User', current_user.id)
+    @group_runners = TavernaEnactor.find_by_groups(current_user)
   end
   
   def find_runner_auth

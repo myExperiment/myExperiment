@@ -1,3 +1,31 @@
-<h1>My Runners</h1>
+<% t "Your Runners" -%>
 
-<h1>TODO</h1>
+<h1>Your Runners</h1>
+
+<ul class="sectionIcons">
+  <li style="margin-left: 0;"><%= icon('new', new_runner_path, nil, nil, 'New Runner') %></li>
+</ul>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+
+<div class="tabContainer">
+  <div class="tabTitle">Personal</div>
+  <div class="tabContent">
+		<% unless @personal_runners.empty? -%>
+			<%= render :partial => "runners/table", :locals => { :collection => @personal_runners } %>
+		<% else -%>
+			<p class="none_text">None</p>
+		<% end -%>
+	</div>
+</div>
+
+<div class="tabContainer">
+  <div class="tabTitle">From Groups</div>
+  <div class="tabContent">
+		<% unless @group_runners.empty? -%>
+			<%= render :partial => "runners/table", :locals => { :collection => @group_runners } %>
+		<% else -%>
+			<p class="none_text">None</p>
+		<% end -%>
+	</div>
+</div>

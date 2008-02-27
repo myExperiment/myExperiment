@@ -5,7 +5,11 @@
 		<% for runner in collection %>
 		  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 			    <td width="100px">
-			    	<b>Owner:</b><br/>
+			    	<p style="text-align: center; padding-top: 0;">
+							<b>Owner:</b> 
+							<br/>
+							<span style="font-size: 85%; color: #666666;">(<%= visible_name runner.contributor -%>)</span>
+						</p>
 						<%= contributor(runner.contributor_id, runner.contributor_type, true, 60) %>
 					</td>
 			    <td class="mid" style="text-align: left;">
@@ -23,6 +27,10 @@
 								<%= truncate(strip_html(runner.description), 180) %>
 							</div>
 						<% end %>
+						
+						<p style="font-size: 85%;">
+							<b>URL:</b> <%= h runner.url %>
+						</p>
 						
 					</td>
 			    <td class="actions"  style="width: 80px;">
