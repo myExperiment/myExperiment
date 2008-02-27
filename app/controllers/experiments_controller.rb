@@ -25,7 +25,7 @@ class ExperimentsController < ApplicationController
   def new
     @experiment = Experiment.new
     # Set a default title
-    @experiment.title = "Experiment_#{Time.now.strftime('%Y%m%d-%H%M')}_#{current_user.name}"
+    @experiment.title = default_title
     respond_to do |format|
       format.html # new.rhtml
     end
@@ -88,6 +88,10 @@ class ExperimentsController < ApplicationController
   end
   
 protected
+
+  def default_title
+    "Experiment_#{Time.now.strftime('%Y%m%d-%H%M')}_#{current_user.name}"
+  end
 
   def find_experiments
     # Currently, only return the Experiments that the current user has access to,

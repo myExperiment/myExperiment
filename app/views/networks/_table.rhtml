@@ -24,13 +24,14 @@
 						<b>Created: </b><%=datetime network.created_at, true %>
 					</p>
 					
-					<% if network.description and network.description.length > 0 %>
-						<% # desc = truncate(white_list(network.description_html), 400) %>
-						<% desc = truncate(strip_html(network.description), 400) %>
-						<div class="desc" style="font-size: 85%;">
+					<div class="desc" style="font-size: 85%;">
+						<% if network.description and network.description.length > 0 %>
+							<% desc = truncate(strip_html(network.description), 400) %>
 							<%= query ? highlight_all(desc, query) : desc %>
-						</div>
-					<% end %>
+						<% else -%>
+							<span class="none_text">No description</span>
+						<% end %>
+					</div>
 					
 					<p class="box_standout" style="margin-top: 0.4em;">
 						<b><%= pluralize network.shared_contributions.length, "shared item" -%></b>

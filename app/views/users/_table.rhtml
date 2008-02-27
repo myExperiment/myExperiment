@@ -15,14 +15,17 @@
 						<%= friend_badge(user) %>
 						<%= admin_badge(user) %>
 					</p>
-					<% if user.profile %>
+					
+					<div class="desc" style="font-size: 85%;">
 						<% if user.profile.body and user.profile.body.length > 0 %>
-							<% # desc = truncate(white_list(user.profile.body_html), 180) %>
 				  		<% desc = truncate(strip_html(user.profile.body), 180) %>
-							<div class="desc" style="font-size: 85%;">
-								<%= query ? highlight_all(desc, query) : desc %>
-							</div>
+							<%= query ? highlight_all(desc, query) : desc %>
+						<% else -%>
+							<span class="none_text">No description</span>	
 						<% end %>
+					</div>
+						
+					<% if user.profile %>
 						<p style="font-size: 85%;">
 							<% if user.profile.website %>
 								<b>Website:</b>
@@ -30,6 +33,7 @@
 							<% end %>
 						</p>
 					<% end %>
+					
 					<% if user.last_seen_at %>
 						<p style="font-size: 85%;">
 							<b>Last active:</b>

@@ -10,7 +10,7 @@
 					</td>
 			    <td class="mid" style="text-align: left;">
 			    	<p class="title">
-							<%= icon "experiment", nil, nil, nil, '' %>
+							<%= icon "job", nil, nil, nil, '' %>
 							<%= link_to h(job.title), job_url(job.experiment, job) %>
 						</p>
 						
@@ -44,9 +44,11 @@
 					</td>
 			    <td class="actions"  style="width: 80px;">
 		      	<%= icon "show", job_url(job.experiment, job), nil, nil, "View" %>
-						<% if job.authorized?("edit", logged_in? ? current_user : nil) %>
+						<% if false -%>
+						<% if job.authorized?("edit", logged_in? ? current_user : nil) -%>
 							<%= icon('edit', edit_job_path(job.experiment, job), nil, nil, 'Edit') %>
-						<% end %>
+						<% end -%>
+						<% end -%>
 		    	</td>
 		  	</tr>
 		<% end %>

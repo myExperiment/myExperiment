@@ -43,7 +43,7 @@ class JobsController < ApplicationController
     @job.experiment = @experiment
     
     # Set defaults
-    @job.title = "Job_#{Time.now.strftime('%Y%m%d-%H%M')}_#{current_user.name}"
+    @job.title = default_title
     @job.runnable_type = "Workflow"
     @job.runner_type = "TavernaEnactor"
     
@@ -231,7 +231,33 @@ class JobsController < ApplicationController
     
   end
   
+  def rerun
+    child_job = Job.new
+    
+    child_job.title = default_title
+    child_job.experiment = @job.experiment
+    child_job.user = current_user
+    child_job.runnable = @job.runnable
+    child_job.runnable_version = @job.runnable_version
+    child_job.runner = @job.runner
+    child_job.inputs_data = @job.inputs_data
+    child_job.parent_job = @job
+    
+    respond_to do |format|
+      if child_job.save
+        flash[:notice] = "Job successfully created, based on Job #{@job.title}'."
+        format.html { redirect_to job_url(@experiment, child_job) }
+      else
+        format.html { render :action => "new" }
+      end
+    end
+  end
+  
 protected
+
+  def default_title
+    "Job_#{Time.now.strftime('%Y%m%d-%H%M')}_#{current_user.name}"
+  end
 
   def find_experiment_auth
     experiment = Experiment.find(:first, :conditions => ["id = ?", params[:experiment_id]])

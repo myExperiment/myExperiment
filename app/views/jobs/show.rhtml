@@ -2,6 +2,10 @@
 
 <% t "#{h @job.title}" -%>
 
+<ul class="sectionIcons">
+  <li><%= icon('rerun', rerun_job_path(@experiment, @job), nil, { :confirm => 'Note: this will create a new Job with the settings and input data copied from this Job. Continue?', :method => :post }, 'Rerun Job') %></li>
+</ul>
+
 <h1>Job: <%= h @job.title %></h1>
 
 <%= error_messages_for :job -%>
