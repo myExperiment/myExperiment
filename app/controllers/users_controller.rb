@@ -4,10 +4,14 @@
 # See license.txt for details.
 
 class UsersController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password]
+
+  contributable_actions = [:workflows, :files, :blogs, :forums]
+  show_actions = [:show, :news, :friends, :groups, :credits, :tags] + contributable_actions
+
+  before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password] + show_actions
   
   before_filter :find_users, :only => [:index, :all]
-  before_filter :find_user, :only => [:show]
+  before_filter :find_user, :only => show_actions
   before_filter :find_user_auth, :only => [:edit, :update, :destroy]
   
   # GET /users;search
@@ -51,6 +55,9 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
+
+    @tab = "News" if @tab.nil?
+
     @user.salt = nil
     @user.crypted_password = nil
     
@@ -59,6 +66,51 @@ class UsersController < ApplicationController
       format.xml  { render :xml => @user.to_xml(:except => [ :id, :username, :crypted_password, :salt, :remember_token, :remember_token_expires_at, :email, :unconfirmed_email, :activated_at, :receive_notifications, :reset_password_code, :reset_password_code_until ], 
                                                 :include => [ :profile ]) }
     end
+  end
+
+  def news
+    @tab = "News"
+    render :action => 'show'
+  end
+
+  def friends
+    @tab = "Friends"
+    render :action => 'show'
+  end
+
+  def groups
+    @tab = "Groups"
+    render :action => 'show'
+  end
+
+  def workflows
+    @tab = "Workflows"
+    render :action => 'show'
+  end
+
+  def files
+    @tab = "Files"
+    render :action => 'show'
+  end
+
+  def forums
+    @tab = "Forums"
+    render :action => 'show'
+  end
+
+  def blogs
+    @tab = "Blogs"
+    render :action => 'show'
+  end
+
+  def credits
+    @tab = "Credits"
+    render :action => 'show'
+  end
+
+  def tags
+    @tab = "Tags"
+    render :action => 'show'
   end
 
   # GET /users/new
@@ -284,7 +336,7 @@ protected
 
   def find_user
     begin
-      @user = User.find(params[:id], :include => [ :contributions, :profile, :tags ])
+      @user = User.find(params[:id], :include => [ :profile, :tags ])
     rescue ActiveRecord::RecordNotFound
       error("User not found", "is invalid (not owner)")
     end

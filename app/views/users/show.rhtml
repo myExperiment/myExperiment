@@ -295,30 +295,20 @@
 
 <br/>
 
-<div id="tabsContainer" class="tabsContainer"></div>
+<% tabnav :user do %>
 
-<div class="tabContainer">
-  <div class="tabTitle">News</div>
-  <div class="tabContent">   
+  <% case @tab; when "News" %>
+
     <%= render :partial => "layouts/news", :locals => { :collection => news(@user, true) } %>
-  </div>
-</div>
 
-<% unless @user.friends.empty? %>
-  <div id="friends" class="tabContainer">
-    <div class="tabTitle">Friends</div>
-    <div class="tabContent">      
-      <div>
-        <%= render :partial => "users/table", :locals => { :collection => @user.friends } %>
-      </div>
+  <% when "Friends" %>
+
+    <div>
+      <%= render :partial => "users/table", :locals => { :collection => @user.friends } %>
     </div>
-  </div>
-<% end %>
 
-<% unless @user.networks_owned.empty? and @user.networks.empty? %>
-  <div id="groups" class="tabContainer">
-    <div class="tabTitle">Groups</div>
-    <div class="tabContent">
+  <% when "Groups" %>
+
       <% unless @user.networks_owned.empty? %>
 	      <h2>Groups that <%= @user.name %> owns</h2>
 		  <%= render :partial => "networks/table", :locals => { :collection => @user.networks_owned } %>
@@ -333,43 +323,51 @@
       <% if mine? @user %>
         <p style="color: #666666;">[ <%= link_to 'View all Memberships in detail', memberships_path(@user) %> ]</p>
       <% end %>
-    </div>
-  </div>
+
+  <% when "Workflows" %>
+
+    <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Workflow' end).map do |c| c.contributable end  %>
+    <%= render :partial => "workflows/anchors", :locals => { :collection => contributables } %>
+    <%= render :partial => "workflows/table", :locals => { :collection => contributables } %>
+
+  <% when "Files" %>
+
+    <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Blob' end).map do |c| c.contributable end  %>
+    <%= render :partial => "blobs/table", :locals => { :collection => contributables } %>
+
+  <% when "Forums" %>
+    
+    <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Forum' end).map do |c| c.contributable end  %>
+    <%= render :partial => "forums/table", :locals => { :collection => contributables } %>
+
+  <% when "Blogs" %>
+
+    <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Blog' end).map do |c| c.contributable end  %>
+    <%= render :partial => "blogs/table", :locals => { :collection => contributables } %>
+
+  <% when "Credits" %>
+
+    <% unless (creditations = @user.creditations).empty? %>
+      <% creditations.each do |c| %>
+        <%= render :partial => "contributions/table", :locals => {:collection => [c.creditable.contribution]} %>
+      <% end %>
+    <% else %>
+      <p class="none_text">No credits yet</p>
+    <% end %>
+
+  <% when "Tags" %>
+
+    <% unless (tags = @user.tags).empty? %>
+      <div style="border: 1px dotted #999999; background-color: #FFFFCC; padding: 1em; margin: 0.5em;">
+        <%= tag_cloud_from_collection(tags) %>
+      </div>
+    <% else %>
+      <p class="none_text">No tags made yet</p>
+    <% end %>
+
+  <% end %>
+
 <% end %>
-
-<% unless @user.contributions.empty? %>
-  <%= render :partial => "contributions/tabs", :locals => { :collection => @user.contributions } %>
-<% end %>
-
-<div id="creditations" class="tabContainer">
-  <div class="tabTitle">
-  	Creditations
-	</div>
-  <div class="tabContent">
-		<% unless (creditations = @user.creditations).empty? %>
-			<% creditations.each do |c| %>
-				<%= render :partial => "contributions/table", :locals => {:collection => [c.creditable.contribution]} %>
-			<% end %>
-		<% else %>
-			<p class="none_text">No creditations yet</p>
-		<% end %>
-  </div>
-</div>
-
-<div id="user_tags" class="tabContainer">
-  <div class="tabTitle">
-  	<%= (logged_in? and mine? @user) ? "My Tags" : "User's Tags" %>
-	</div>
-  <div class="tabContent">
-		<% unless (tags = @user.tags).empty? %>
-			<div style="border: 1px dotted #999999; background-color: #FFFFCC; padding: 1em; margin: 0.5em;">
-				<%= tag_cloud_from_collection(tags) %>
-			</div>
-		<% else %>
-			<p class="none_text">No tags made yet</p>
-		<% end %>
-  </div>
-</div>
 
 <% if logged_in? and !mine?(@user) and !current_user.networks_owned.empty? %>
   <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>

@@ -105,7 +105,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :relationships, :memberships, :friendships
 
   # all users
-  map.resources :users, :collection => { :search => :get } do |user|
+  map.resources :users, :collection => { :search => :get, :news => :get, :friends => :get, :groups => :get, :workflows => :get, :files => :get, :forums => :get, :blogs => :get, :credits => :get, :tags => :get } do |user|
+
     # friendships 'owned by' user (user --> friendship --> friend)
     user.resources :friendships, :member => { :accept => :get }
 
