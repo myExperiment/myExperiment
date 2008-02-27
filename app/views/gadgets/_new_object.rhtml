@@ -3,18 +3,24 @@
     var klass = $("new_object_type").value;
     
     if (klass == "Blog") {
-      location.href = "<%= new_blog_path %>";
+      location.href = "<%= new_blog_path -%>";
     } else if (klass == "Blob") {
-      location.href = "<%= new_file_path %>";
+      location.href = "<%= new_file_path -%>";
     } else if (klass == "Forum") {
-      location.href = "<%= new_forum_path %>";
+      location.href = "<%= new_forum_path -%>";
     } else if (klass == "Workflow") {
-      location.href = "<%= new_workflow_path %>";
+      location.href = "<%= new_workflow_path -%>";
     } else if (klass == "Group") {
-      location.href = "<%= new_group_path %>";
+      location.href = "<%= new_group_path -%>";
     } else if (klass == "Message") {
-      location.href = "<%= new_message_path %>";
-    } else {
+      location.href = "<%= new_message_path -%>";
+    } else if (klass == "Experiment") {
+      location.href = "<%= new_experiment_path -%>";
+		} else if (klass == "Job") {
+      location.href = "<%= url_for :controller => 'jobs', :action => 'new' -%>";
+		} else if (klass == "Runner") {
+      location.href = "<%= new_runner_path -%>";
+		} else {
       // do nothing!!
     }
   }
@@ -35,11 +41,16 @@
         <p>
           <select id="new_object_type">
             <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Workflow</option>
-			<option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
-			<option value="Group" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
-			<option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
+						<option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
+						<option value="Group" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
+						<option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
             <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>
-			<% if logged_in? %><option value="Message" <%= "selected" if ["messages"].include? controller.controller_name.to_s %>>Message</option><% end %>
+						<% if logged_in? %>
+							<option value="Message" <%= "selected" if ["messages"].include? controller.controller_name.to_s %>>Message</option>
+							<option value="Experiment" <%= "selected" if ["experiments"].include? controller.controller_name.to_s %>>Experiment</option>
+							<option value="Job" <%= "selected" if ["jobs"].include? controller.controller_name.to_s %>>Job</option>
+							<option value="Runner" <%= "selected" if ["runners"].include? controller.controller_name.to_s %>>Runner</option>
+						<% end %>
           </select>
           <%= submit_tag "GO" %>
         </p>

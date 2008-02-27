@@ -1,4 +1,4 @@
-<%= javascript_include_tag :fckeditor %>
+<%= javascript_include_tag :fckeditor -%>
 
 <h1>New Job</h1>
 
@@ -6,37 +6,44 @@
 	<%= error_messages_for :job %>
 </center>
 
-<% form_for :job, :url => jobs_path(@experiment) do |form| -%>
+<% form_for :job, :url => (@job.experiment ? jobs_path(@job.experiment) : { :controller => 'jobs', :action => 'create' }) do |form| -%>
 
 	<p class="sub-heading">
-		<b>
-			For Experiment:
-			<%= link_to_function h(@experiment.title) + expand_image, visual_effect(:toggle_blind, "experiment_listing", :duration => 0.3) %>
-		</b>
-		<span style="margin-left: 1em; vertical-align: center;">
-			[ <%= link_to_function "change" + expand_image, visual_effect(:toggle_blind, "change_experiment", :duration => 0.3) %> ]
-		</span>
+		<% if @job.experiment -%>
+			<b>
+				For Experiment:
+				<%= link_to_function h(@job.experiment.title) + expand_image, visual_effect(:toggle_blind, "experiment_listing", :duration => 0.3) %>
+			</b>
+			<span style="margin-left: 1em; vertical-align: center;">
+				[ <%= link_to_function "change" + expand_image, visual_effect(:toggle_blind, "change_experiment", :duration => 0.3) %> ]
+			</span>
+		<% else -%>
+			<b>A Job must belong to an Experiment! Please select from the options below.</b>
+		<% end -%>
 	</p>
-	<div id="experiment_listing" style="display: none;">
-		<%= render :partial => "experiments/table", :locals => { :collection => [ @experiment ] } %>
-	</div>
+	
+	<% if @job.experiment -%>
+		<div id="experiment_listing" style="display: none;">
+			<%= render :partial => "experiments/table", :locals => { :collection => [ @job.experiment ] } %>
+		</div>
+	<% end -%>
 	
 	<center>
-		<div id="change_experiment" class="box_simple" style="width: 420px; display: none;">
+		<div id="change_experiment" class="box_simple" style="width: 450px; display: <%= @job.experiment ? 'none' : 'block' -%>;">
 			<p class="box_infotext" style="font-size: 85%; text-align: center; margin-bottom: 0.3em; font-weight: bold;">
-				Here you can change which Experiment this new Job becomes a part of
+				Here you can assign/change which Experiment this new Job becomes a part of
 			</p>
 			
 			<p>
-				<%= radio_button_tag "change_experiment", 'new', (params[:change_experiment] == 'new') -%>
+				<%= radio_button_tag "change_experiment", 'new' -%>
 				Brand new Experiment (with a default title)
 			</p>
 			
 			<p>
-				<%= radio_button_tag "change_experiment", 'existing', (params[:change_experiment] == 'existing') -%>
+				<%= radio_button_tag "change_experiment", 'existing' -%>
 				Existing Experiment: 
 				<%= select_tag "change_experiment_id", 
-											 options_from_collection_for_select(Experiment.for_user(current_user), "id", "title", params[:change_experiment_id]) -%>
+											 options_from_collection_for_select(Experiment.for_user(current_user), "id", "title", params[:change_experiment_id].to_i) -%>
 			</p>
 		</div>
 	</center>
@@ -50,7 +57,7 @@
 			<%= fckeditor_textarea(:job, :description, :toolbarSet => 'Simple', :width => '550px', :height => '300px') %>
 			
 			<fieldset>
-				<legend>Enactment Setup</legend>
+				<legend>Setup</legend>
 				
 				<p>
 					<b>Workflow ID: </b>

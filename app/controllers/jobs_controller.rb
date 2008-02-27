@@ -40,12 +40,15 @@ class JobsController < ApplicationController
 
   def new
     @job = Job.new
-    @job.experiment = @experiment
+    @job.experiment = @experiment if @experiment
     
     # Set defaults
     @job.title = Job.default_title(current_user)
     @job.runnable_type = "Workflow"
     @job.runner_type = "TavernaEnactor"
+    
+    @job.runnable_id = params[:runnable_id] if params[:runnable_id]
+    @job.runnable_version = params[:runnable_version] if params[:runnable_version]
     
     respond_to do |format|
       format.html # new.rhtml
@@ -60,7 +63,6 @@ class JobsController < ApplicationController
     params[:job][:runner_type] = 'TavernaEnactor'
     
     @job = Job.new(params[:job])
-    @job.experiment = @experiment
     @job.user = current_user
     
     # Check runnable is a valid and authorized one
@@ -85,9 +87,10 @@ class JobsController < ApplicationController
       @job.errors.add(:runner_id, "not valid or not authorized")
     end
     
+    success = update_parent_experiment(@job)
+    
     respond_to do |format|
       if success and @job.save
-        update_parent_experiment!(@job)
         flash[:notice] = "Job successfully created."
         format.html { redirect_to job_url(@job.experiment, @job) }
       else
@@ -256,25 +259,24 @@ class JobsController < ApplicationController
   
 protected
 
-  def update_parent_experiment!(job)
+  def update_parent_experiment(job)
     if params[:change_experiment]
       if params[:change_experiment] == 'new'
-        job.experiment = Experiment.new(:title => Experiment.default_title(current_user), :contributor => current_user)
       elsif params[:change_experiment] == 'existing'
         experiment = Experiment.find(params[:change_experiment_id])
         if experiment and experiment.authorized?('edit', current_user)
           job.experiment = experiment
+          flash[:error] = "Job could not be created because could not assign the parent Experiment."
         else
           flash[:error] = "Job could not be created because could not assign the parent Experiment."
           return false
         end
       end
     else
-      # Otherwise set it to the experiment defined in the URL as part of the nested resource
       job.experiment = @experiment
     end
     
-    job.save
+    return true
   end
 
   def find_experiment_auth
@@ -283,7 +285,10 @@ protected
     if experiment and experiment.authorized?(action_name, current_user)
       @experiment = experiment
     else
-      error("The Experiment that this Job belongs to could not be found or the action is not authorized", "is invalid (not authorized)")
+      # New and Create actions are allowed to run outside of the context of an Experiment
+      unless ['new', 'create'].include?(action_name.downcase)
+        error("The Experiment that this Job belongs to could not be found or the action is not authorized", "is invalid (not authorized)")
+      end
     end
   end
   

@@ -64,7 +64,7 @@
 				</tbody>
 			</table>
 			
-			<p style="color: #999999; font-size: 85%; text-align: left; padding-left: 0.5em; padding-top: 0.1em;">
+			<p style="color: #999999; font-size: 85%; text-align: left; padding-left: 0.5em; padding-top: 0.1em; margin: 0.4em 0;">
 				[ <%= link_to_function "Version meta info" + expand_image, visual_effect(:toggle_blind, "version_info_box", :duration => 0.5) %> ]
 			</p>		
 			<div id="version_info_box" class="box_standout" style="display: none; font-size: 85%; padding: 0.2em 0.4em; margin: 0.2em 0 1em 0; line-height: 1.1em; color: #333333;">
@@ -183,11 +183,11 @@
 				<div style="margin: 0 1.5em;">
 					<p style="text-align: center;">
 						<b>Run this Workflow in the Taverna Workbench*</b><br/>
-						Copy and paste this link into File > Open workflow location...<br/>
+						Copy and paste this link into File > 'Open workflow location...'<br/>
 						<%= link_to @download_url, @download_url %>
 					</p>
 		
-					<p style="text-align: center; margin-top: 0.5em;">
+					<p style="text-align: center; margin-top: 0.5em; font-size: 85%;">
 						If you are having problems downloading it in Taverna, you may need to provide your username and password in the URL so that Taverna can access the Workflow: <br/>
 						<% if logged_in? and current_user.username.nil? %>
 							First you need to <%= link_to 'register a username and password', edit_user_path(current_user) %> on your myExperiment account.
@@ -196,8 +196,28 @@
 						<% end %>
 					</p>
 					
-					<p style="font-size: 85%; margin-top: 0.5em;">
-						<%= link_to "* http://taverna.sourceforge.net/", "http://taverna.sourceforge.net/" %>
+					<p style="font-size: 85%; margin-top: 0.5em; text-align: center;">
+						* Taverna is available from <%= link_to "http://taverna.sourceforge.net/", "http://taverna.sourceforge.net/" %>
+					</p>
+					
+					<p style="font-size: 138.5%; font-weight: bold; text-align: center;">
+						OR
+					</p>
+					
+					<ul class="sectionIcons">
+						<li style="margin-left: 0;">
+							<%= icon 'run-now', 
+											 url_for(:controller => 'jobs', :action => 'new', :runnable_id => @workflow.id, :runnable_version => @viewing_version_number), 
+											 "Run this Workflow using a remote Taverna Enactor", 
+											 nil, 
+											 "Run Remotely **" -%>
+						</li>
+					</ul>
+					
+					<p style="font-size: 85%; margin-top: 0.5em; text-align: center;">
+						** Note: you need to have access to a remote Taverna Execution Service in order to run Workflows. 
+						If you do, <%= link_to "register it as a 'Runner' here", new_runner_url -%> then you can use it in Jobs to carry out the enactment. 
+						For more information, <%= link_to "contact us", "/feedback" -%>.
 					</p>
 				</div>
 			<% else %>

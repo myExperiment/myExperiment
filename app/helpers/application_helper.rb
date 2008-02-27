@@ -667,6 +667,8 @@ module ApplicationHelper
       return "famfamfam_silk/arrow_refresh_small.png"
     when "rerun"
       return "famfamfam_silk/script_link.png"
+    when "run-now"
+      return "famfamfam_silk/script_add.png"
     else
       return nil
     end
