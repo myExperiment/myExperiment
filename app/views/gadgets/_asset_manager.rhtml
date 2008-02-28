@@ -7,12 +7,12 @@
     <p>My Stuff</p>
 		<p>
     	<small>
-      	<%= link_to(pluralize(current_user.friends.length, "friend"), user_url(current_user) + "#friends") %>
+      	<%= link_to(pluralize(current_user.friends.length, "friend"), currentusers_things_url('friends')) %>
 				<span style="color:#999999;"> | </span>
-				<%= link_to(pluralize(current_user.networks_owned.length + current_user.networks.length, "group"), user_url(current_user) + "#groups") %>
+				<%= link_to(pluralize(current_user.networks_owned.length + current_user.networks.length, "group"), currentusers_things_url('groups')) %>
 				<% filter_contributables(current_user.contributions).each do |klass,contributables| %>
 					<span style="color:#999999;">|</span> 
-					<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize)), user_url(current_user) + "##{controller_visible_name(klass.humanize.pluralize).downcase}") %>
+					<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize)), currentusers_things_url(controller_visible_name(klass.humanize.pluralize).downcase)) %>
 				<% end %>
       </small>
      </p>
@@ -22,7 +22,7 @@
     <% unless current_user.friends.empty? %>
       <div>
         <div class="title">
-        	<%= link_to("Friends", user_url(current_user) + "#friends")%>
+        	<%= link_to("Friends", currentusers_things_url('friends'))%>
 		</div>
         <div class="content">
           <ul class="gadget_list">
@@ -37,8 +37,8 @@
     <% unless current_user.networks_owned.empty? and current_user.networks.empty? %>
       <div>
         <div class="title">
-        	<%= link_to("Groups", user_url(current_user) + "#groups") %>
-		</div>
+        	<%= link_to("Groups", currentusers_things_url('groups')) %>
+				</div>
         <div class="content">
           <ul class="gadget_list">
             <% current_user.networks_owned.each do |network_owned| %>
@@ -56,8 +56,8 @@
       <% filter_contributables(current_user.contributions).each do |klass, array| %>
         <div>
           <div class="title">
-          	<%= link_to((klass.to_s == "Blob" ? "File" : klass.pluralize), user_url(current_user) + "##{klass.pluralize.downcase}") %>
-		  </div>
+          	<%= link_to((klass.to_s == "Blob" ? "File" : klass.pluralize), currentusers_things_url(controller_visible_name(klass.humanize.pluralize).downcase)) %>
+		  		</div>
           <div class="content">
             <ul class="gadget_list">
               <% array.each do |instance| %>
