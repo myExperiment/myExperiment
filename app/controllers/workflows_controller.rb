@@ -95,9 +95,16 @@ class WorkflowsController < ApplicationController
   # POST /workflows/1;tag
   # POST /workflows/1.xml;tag
   def tag
+
+    Tag.parse(convert_tags_to_gem_format(params[:tag_list])).each do |name|
+      @workflow.add_tag(name)
+    end
+
+    @workflow.tag_list = "#{@workflow.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @workflow.tags_user_id = current_user # acts_as_taggable_redux
     @workflow.tag_list = "#{@workflow.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @workflow.update_tags # hack to get around acts_as_versioned
+
     
     expire_fragment(:controller => 'workflows', :action => 'all_tags')
     expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
@@ -199,9 +206,7 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       if @workflow.save
         if params[:workflow][:tag_list]
-          @workflow.tags_user_id = current_user
-          @workflow.tag_list = convert_tags_to_gem_format params[:workflow][:tag_list]
-          @workflow.update_tags
+          @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
         end
                 
         @workflow.contribution.update_attributes(params[:contribution])
@@ -295,7 +300,11 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       if @workflow.update_attributes(params[:workflow])
-        refresh_tags(@workflow, params[:workflow][:tag_list], current_user) if params[:workflow][:tag_list]
+
+        if params[:workflow][:tag_list]
+          @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
+        end
+
         update_policy(@workflow, params)
         update_credits(@workflow, params)
         update_attributions(@workflow, params)

@@ -43,8 +43,15 @@
   <input type="button" value="Go" onclick="javascript:doCustom()" />
 </p>
 
-<textarea id="input" cols="48" style="font-size: 0.9em" rows="20"></textarea>
-<textarea id="output" cols="48" rows="20" style="font-size: 0.9em"></textarea><br />
+<div class="try_it_out_box">
+  <p><b>Input:</b></p>
+  <textarea id="input" cols="100" style="font-size: 0.9em" rows="4"></textarea><br /><br />
+</div>
+
+<div class="try_it_out_box">
+  <p><b>Output:</b></p>
+  <textarea class="try_it_out_box" id="output" cols="100" rows="20" style="font-size: 0.9em"></textarea><br />
+</div>
 
 <!--
 <h2>REST commands</h2>
@@ -175,22 +182,22 @@
 
 <p>The search facility is available from the following URL:</p>
 
-<pre>  <%= root %>search.xml?query=bioaid</pre>
+<pre>  <%= try_it_now_link('GET', '/search.xml?query=bioaid') %></pre>
 
 <p>Particular types can be specified by the <tt>type</tt> query option:</p>
 
-<pre>  <%= root %>search.xml?query=bioaid&type=workflows</pre>
+<pre>  <%= try_it_now_link('GET', '/search.xml?query=bioaid&type=workflows') %></pre>
 
 <h2 id="elements">Element selection</h2>
 
 <p>The elements within each REST response can be tailored to include only the
 parts of the response of interest.  This saves bandwidth and response time!</p>
 
-<pre>  <%= root %>workflow.xml?elements=title,description</pre>
+<pre>  <%= try_it_now_link('GET', "/workflow.xml?id=#{rest_example_id('workflow')}&elements=title,description") %></pre>
 
 <p>All elements can be returned too.</p>
 
-<pre>  <%= root %>workflow.xml?id=20&all_elements=yes</pre>
+<pre>  <%= try_it_now_link('GET', "/workflow.xml?id=#{rest_example_id('workflow')}&all_elements=yes") %></pre>
 
 <h2 id="versions">Versions</h2>
 
@@ -198,7 +205,7 @@ parts of the response of interest.  This saves bandwidth and response time!</p>
 specific version to be worked on by including <tt>version</tt> in the URI
 query.  For example:</p>
 
-<pre>  <%= root %>workflow.xml?id=20&version=1</pre>
+<pre>  <%= try_it_now_link('GET', '/workflow.xml?id=20&version=1') %></pre>
 
 <h2 id="pagination">Pagination</h2>
 
@@ -206,13 +213,13 @@ query.  For example:</p>
 be raised to 100 by using adding <tt>num</tt> to the query.  A particular
 page of results can be selected by adding <tt>page</tt> to the query.</p>
 
-<pre>  <%= root %>workflow.xml?num=50&page=2</pre>
+<pre>  <%= try_it_now_link('GET', '/workflows.xml?num=50&page=2') %></pre>
 
 <h2 id="tags">Index filtered by tag</h2>
 
 <p>For indices of taggable items, the index can be filtered on a particular tag.</p>
 
-<pre>  <%= root %>workflows.xml?tag=bioaid</pre>
+<pre>  <%= try_it_now_link('GET', '/workflows.xml?tag=bioaid') %></pre>
 
 <!--
 <h2 id="rest-uris">REST URIs</h2>
@@ -223,7 +230,7 @@ these, "REST URIs" can be requested within each API response by including
 
 <p>The REST URIs are useful endpoints for further API calls.</p>
 
-<pre>  <%= root %>workflow.xml?id=36&rest_uris=yes</pre>
+<pre>  <%= try_it_now_link('GET', '/workflow.xml?id=36&rest_uris=yes') %></pre>
 -->
 
 <h2 id="api-version">API version</h2>
@@ -231,5 +238,6 @@ these, "REST URIs" can be requested within each API response by including
 <p>The version of the REST API that the server uses can be requested by
 including <tt>api_version</tt> in the query.</p>
 
-<pre>  <%= root %>workflows.xml?api_version=yes</pre>
+<pre>  <%= try_it_now_link('GET', '/workflows.xml?api_version=yes') %></pre>
+
 

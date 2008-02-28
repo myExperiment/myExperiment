@@ -1451,6 +1451,11 @@ div.auto_complete ul strong.highlight {
   vertical-align: top;
 }
 
+.try_it_out_box TEXTAREA {
+  font-family: monospace;
+  font-size: 10pt;
+}
+
 .note_text {
 	font-size: 93%;
 	font-weight: bold;

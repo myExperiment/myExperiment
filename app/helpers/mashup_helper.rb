@@ -24,6 +24,12 @@ module MashupHelper
     rules['Example'][rules['REST Attribute'].index('id')]
   end
 
+  def rest_example_id(type)
+    case type
+      when "workflow"; return "20"
+    end
+  end
+
   def trim_and_wrap(doc)
 
     doc.root.elements.each do |element|
@@ -45,7 +51,7 @@ module MashupHelper
       end
     end
 
-    sw = StringIO.new; doc.write(sw, 2); text = sw.string
+    sw = StringIO.new; doc.write(sw, 0); text = sw.string
 
     line_limit = 100
 
@@ -74,6 +80,11 @@ module MashupHelper
     doc = rest_index_request(TABLES['REST'][:data][thing]['GET'], {} )
 
     trim_and_wrap(doc)
+  end
+
+  def try_it_now_link(method, uri)
+    target = "#{request.protocol}#{request.host_with_port}#{uri}"
+    "#{target} <input type=\"button\" value=\"Try it now\" onclick=\"javascript:getDocumentSync('#{method}', '#{target}')\" />"
   end
 
 end

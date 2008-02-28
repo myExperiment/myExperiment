@@ -36,6 +36,8 @@ function getDocumentSync(command, url, data) {
 
   var xhr = obtainXHR();
 
+  document.getElementById('output').scrollIntoView(false);
+
   document.getElementById('custom-method').value = command;
   document.getElementById('custom-uri').value = url;
 

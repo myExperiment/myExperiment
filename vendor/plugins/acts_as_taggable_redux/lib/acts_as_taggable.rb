@@ -71,7 +71,35 @@ module ActiveRecord
             tags.delete_if { |tag| !user.tags.include?(tag) }.collect { |tag| tag.name.include?(" ") ? %("#{tag.name}") : tag.name }.join(" ")
           end
         end
-        
+
+        def add_tag(tag, tagger = current_user)
+          Tag.find_or_create_by_name(tag).tag(self, tagger.id)
+        end
+
+        def remove_tag(name)
+
+          return unless tag = Tag.find_by_name(name)
+
+          return unless tagging = Tagging.find_by_tag_id_and_taggable_type_and_taggable_id(tag.id,
+              self.contribution.contributable_type, self.contribution.contributable_id)
+
+          tagging.destroy
+          tag = Tag.find_by_name(name)
+          tag.destroy if tag.taggings_count == 0
+        end
+
+        def refresh_tags(tag_list, tagger)
+
+          Tag.transaction do
+
+            old_tags = tags.map do |tag| tag.name end
+            new_tags = Tag.parse(tag_list).map do |t| t.strip end
+
+            (old_tags - new_tags).each do |name| remove_tag(name)      end
+            (new_tags - old_tags).each do |name| add_tag(name, tagger) end
+          end
+        end
+
         def update_tags
           if @new_tag_list
             Tag.transaction do

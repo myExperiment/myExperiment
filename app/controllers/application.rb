@@ -387,47 +387,6 @@ class ApplicationController < ActionController::Base
 
   end
 
-  def refresh_tags(taggable, tags, tagger)
-
-    old_tags = taggable.tags.map do |tag| tag.name end
-    new_tags = tags.split(",").map do |t| t.strip end
-
-    puts "#DEBUG: old_tags = #{old_tags}"
-    puts "#DEBUG: new_tags = #{new_tags}"
-
-    # remove tags
-
-    taggable.taggings.each do |tagging|
-
-      name = tagging.tag.name
-
-      if new_tags.index(name) == nil
-        tagging.destroy
-        tag = Tag.find_by_name(name)
-        tag.destroy if tag.taggings_count == 0
-      end
-
-    end
-
-    # add tags
-
-    (new_tags - old_tags).each do |name|
-
-      tag = Tag.find_by_name(name);
-
-      if tag.nil?
-        tag = Tag.new(:name => name)
-        tag.save
-      end
-
-      Tagging.new(:tag_id => tag.id,
-          :taggable_type => taggable.class.to_s,
-          :taggable_id => taggable.id,
-          :user_id => tagger.id).save
-    end
-
-  end
-
   def update_credits(creditable, params)
     
     # First delete old creditations:

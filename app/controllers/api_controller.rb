@@ -21,11 +21,15 @@ class ApiController < ApplicationController
     rules = TABLES['REST'][:data][uri][method]
 
     case rules['Type']
-      when 'index'; render :xml => rest_index_request(rules, query).to_s
-      when 'crud';  render :xml => rest_crud_request(rules)
-      when 'call';  render :xml => rest_call_request(rules, query).to_s
+      when 'index'; doc = rest_index_request(rules, query)
+      when 'crud';  doc = rest_crud_request(rules)
+      when 'call';  doc = rest_call_request(rules, query)
       else;         bad_rest_request
     end
+
+    sw = StringIO.new; doc.write(sw, 0); text = sw.string
+
+    render :xml => text
   end
 end
 

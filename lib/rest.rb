@@ -38,7 +38,9 @@ end
 def rest_get_request(ob, req_uri, uri, entity_name, query)
 
   if query['version']
-# check for versionable and that the version exists
+    return rest_error_response('Resource not versioned') unless ob.respond_to?('versions')
+    return rest_error_response('Version not found') if query['version'].to_i < 1
+    return rest_error_response('Version not found') if ob.versions[query['version'].to_i - 1].nil?
   end
 
   elements = query['elements'] ? query['elements'].split(',') : nil
@@ -48,7 +50,14 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
   doc.root.add_attribute('uri', rest_access_uri(ob))
   doc.root.add_attribute('resource', uri)
   doc.root.add_attribute('api-version', API_VERSION) if query['api_version'] == 'yes'
-  doc.root.add_attribute('version', ob.versions.last.version.to_s) if ob.respond_to?('versions')
+
+  if ob.respond_to?('versions')
+    if query['version']
+      doc.root.add_attribute('version', query['version'])
+    else
+      doc.root.add_attribute('version', ob.versions.last.version.to_s)
+    end
+  end
 
   data = TABLES['REST'][:data][req_uri][request.method.to_s.upcase]
 
@@ -154,7 +163,7 @@ def rest_crud_request(rules)
   end
 
   response.content_type = "application/xml"
-  rest_get_request(ob, params[:uri], eval("rest_resource_uri(ob)"), rest_name, query).to_s
+  rest_get_request(ob, params[:uri], eval("rest_resource_uri(ob)"), rest_name, query)
 end
 
 def rest_index_request(rules, query)
@@ -179,6 +188,8 @@ def rest_index_request(rules, query)
   part = { :size => limit, :current => page }
 
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{rest_name.pluralize}/>")
+
+  doc.root.add_attribute('api-version', API_VERSION) if query['api_version'] == 'yes'
 
   if query['tag']
     tag = Tag.find_by_name(query['tag'])
@@ -277,6 +288,15 @@ def rest_reference(ob, query)
   el.add_text(text)
 
   el
+end
+
+def get_rest_uri(rules, query)
+
+  return bad_rest_request if query['resource'].nil?
+
+  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", (logged_in? ? current_user : nil)) end)
+  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><rest-uri/>")
+  "bing"
 end
 
 def search(rules, query)
