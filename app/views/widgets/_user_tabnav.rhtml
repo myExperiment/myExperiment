@@ -12,7 +12,8 @@
 #   :html => aHash #=> sets html options for the tabnav's div (es :html => {:class=> 'myCssClass', :id=>'myCssId'}) 
 #     
 render_tabnav :user, 
-              :generate_css => true do 
+              :generate_css => false,
+							:html => {:id => 'user_tabnav', :class => 'tabnav2'} do 
     
   # this generates a tab for every controller in your app
   # you'll probably want to delete this and

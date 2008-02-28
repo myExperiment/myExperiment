@@ -174,26 +174,26 @@
 				<div class="stats_box">
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.friends.length, "Friend"), user_url(@user) + "#friends") -%>
+			      	<%= link_to(pluralize(@user.friends.length, "Friend"), currentusers_things_url('friends')) -%>
 						</b> 
 			    </p>
 					
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.networks_owned.length, "Group") + " (admin)", user_url(@user) + "#groups") -%>
+			      	<%= link_to(pluralize(@user.networks_owned.length, "Group") + " (admin)", currentusers_things_url('groups')) -%>
 						</b> 
 			    </p>
 					
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.networks.length, "Group") + " (member)", user_url(@user) + "#groups") -%>
+			      	<%= link_to(pluralize(@user.networks.length, "Group") + " (member)", currentusers_things_url('groups')) -%>
 						</b> 
 			    </p>
 					
 					<% filter_contributables(@user.contributions).each do |klass,contributables| %>
 						<p>
 				      <b>
-				      	<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize)), user_url(@user) + "##{controller_visible_name(klass.humanize.pluralize).downcase}") %>
+				      	<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize)), currentusers_things_url(controller_visible_name(klass.humanize.pluralize).downcase)) %>
 							</b>
 				    </p>
 					<% end %>
@@ -204,7 +204,7 @@
 				<p>
 					<b>
 						<%= @user.name -%> has been credited
-						<%= link_to((pluralize @user.creditations.length, "time"), user_url(@user) + "#creditations") -%>
+						<%= link_to((pluralize @user.creditations.length, "time"), currentusers_things_url('creditations')) -%>
 					</b>
 				</p>
 			</div>

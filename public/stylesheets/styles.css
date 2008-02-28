@@ -1490,3 +1490,56 @@ table.job_report th {
 	font-weight: bold;
 }
 
+/* Begin new tabs styles */
+
+.tabnav2 {
+	border-bottom: 1px solid #999999;
+	color: #333333;
+	font-size: 100%;
+	padding-left: 10px;
+	font-weight: bold;
+	z-index: 1;
+}
+
+.tabnav2 ul {
+	margin: 0;
+	padding: 3px 0;
+}
+
+.tabnav2 li {
+	display: inline;
+	list-style-type: none;
+	overflow: hidden;
+}
+
+.tabnav2 li a {
+	padding: 3px 6px 4px 6px;
+	margin-left: 1px;
+	border: 1px solid #999999;
+	text-decoration: none;
+	background-color: #EEF2FF;
+}
+
+.tabnav2 li a:link {
+	color: #333333;
+}
+
+.tabnav2 li a:visited {
+	color: #333333;
+}
+
+.tabnav2 li a:hover,
+.tabnav2 li.active a {
+	border-bottom: 1px solid #FFFFFF;
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+.tabnav2_content {
+	border: 0px solid #BBBBBB;
+	border-width: 0 1px 1px 1px;
+	padding: 0.5em;
+	z-index: 2;
+}
+
+/* End new tabs styles */

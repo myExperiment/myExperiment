@@ -1072,6 +1072,13 @@ module ApplicationHelper
     perm
   end
   
+  def currentusers_things_url(thing)
+    return nil unless current_user
+    return url_for(:controller => 'users',
+                   :id => current_user.id,
+                   :action => thing)
+  end
+  
 protected
 
   def contributor_news(contributor, before, after, depth, restrict_contributor)
