@@ -40,12 +40,12 @@ module MashupHelper
         lines = lines[0..4] + ['...'] if lines.length > 5
 
         lines = lines.map do |line|
-          "        #{line.strip}"
+          "    #{line.strip}"
         end
 
         text = lines.join("\n").strip
 
-        text = "\n        #{text}\n      " if element.attributes['encoding'] == 'base64'
+        text = "\n    #{text}\n  " if element.attributes['encoding'] == 'base64'
 
         element.text = text
       end
