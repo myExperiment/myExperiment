@@ -141,9 +141,9 @@
 		<% inputs = @job.runnable.get_input_ports(@job.runnable_version) -%>
 		<% if @job.allow_run? -%>
 			<% if inputs and not inputs.empty? -%>
-				<p class="note_text">
-					Remember to click 'save' when you are done with setting/editing the input data.
-				</p>
+				<p class="note_text" style="text-align: center;">
+						Remember to click 'save' when you are done with setting/editing the input data.
+					</p>
 				
 				<br/>
 				
@@ -229,7 +229,13 @@
 					
 					<script>field_counter = <%= s_field_counter -%></script>
 					
-					<center><%= submit_tag "Save Input Data", :disable_with => "Saving..." -%></center>
+					<p class="note_text" style="text-align: center;">
+						Remember to click 'save' when you are done with setting/editing the input data.
+					</p>
+					
+					<p>
+						<center><%= submit_tag "Save Input Data", :disable_with => "Saving..." -%></center>
+					</p>
 				<% end %>
 			<% else -%>
 				<p class="none_text">No input ports found</p>
