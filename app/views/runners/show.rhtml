@@ -3,7 +3,6 @@
 <% if @runner.authorized?('edit', current_user) -%>
 	<ul class="sectionIcons">
 	  <li><%= icon('edit', edit_runner_path(@runner), nil, nil, 'Edit Runner') %></li>
-	  <li><%= icon('destroy', runner_path(@runner), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Runner') %></li>
 	</ul>
 <% end -%>
 
