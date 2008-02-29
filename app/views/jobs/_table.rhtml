@@ -38,7 +38,7 @@
 						</p>
 						
 						<p style="font-size: 85%;">
-							<b>Runner item:</b> <%= contributable(job.runnable_id, job.runnable_type) %>
+							<b>Runner:</b> <%= link_to h(job.runner.title), runner_url(job.runner) %>
 						</p>
 						
 					</td>
