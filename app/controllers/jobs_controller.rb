@@ -262,11 +262,11 @@ protected
   def update_parent_experiment(job)
     if params[:change_experiment]
       if params[:change_experiment] == 'new'
+        job.experiment = Experiment.new(:title => Experiment.default_title(current_user), :contributor => current_user)
       elsif params[:change_experiment] == 'existing'
         experiment = Experiment.find(params[:change_experiment_id])
         if experiment and experiment.authorized?('edit', current_user)
           job.experiment = experiment
-          flash[:error] = "Job could not be created because could not assign the parent Experiment."
         else
           flash[:error] = "Job could not be created because could not assign the parent Experiment."
           return false
