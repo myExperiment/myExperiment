@@ -238,7 +238,7 @@ class JobsController < ApplicationController
   def rerun
     child_job = Job.new
     
-    child_job.title = default_title
+    child_job.title = Job.default_title(current_user)
     child_job.experiment = @job.experiment
     child_job.user = current_user
     child_job.runnable = @job.runnable
