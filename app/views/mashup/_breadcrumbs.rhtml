@@ -1,1 +1,13 @@
 <li><%= link_to 'Mashup', mashup_path %></li>
+
+<% if ["show", "api"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= link_to "Resources", :action => 'show' %></li>
+  <% when "api" %>
+    <li><%= link_to "REST API", :action => 'api' %></li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>
