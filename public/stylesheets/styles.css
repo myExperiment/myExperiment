@@ -105,12 +105,13 @@ small {
 
 fieldset {
 	border: 1px solid #CCCCCC;
-	padding: 1em;
+	padding: 0 1em 1em 1em;
+	margin: 1em 0;
 }
 
 legend {
 	font-weight: bold;
-	margin-bottom: 0.5em;
+	margin: 0 0.5em 0.5em 0.5em;
 }
 
 li {
