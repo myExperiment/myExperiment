@@ -95,6 +95,12 @@
 			<p class="none_text">Report unavailable at this time</p>
 		<% end %>
 		
+		<br/><br/>
+		
+		<ul class="sectionIcons">
+		  <li><%= icon('rerun', rerun_job_path(experiment, job), nil, { :confirm => 'Note: this will create a new Job with the settings and input data copied from this Job. Continue?', :method => :post }, 'Rerun Job') %></li>
+		</ul>
+		
 	<% end -%>
 
 <% end -%>

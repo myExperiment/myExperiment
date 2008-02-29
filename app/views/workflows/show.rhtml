@@ -182,7 +182,9 @@
 			<% if @authorised_to_download %>
 				<div style="margin: 0 1.5em;">
 					<p style="text-align: center;">
-						<b>Run this Workflow in the Taverna Workbench</b><br/>
+						<b>Run this Workflow in the Taverna Workbench</b>
+					</p>
+					<p style="font-size: 93%; text-align: center;">
 						Copy and paste this link into File > 'Open workflow location...'<br/>
 						<%= link_to @download_url, @download_url %><br/>
 						<small>[ <%= link_to_function "More Info" + expand_image, visual_effect(:toggle_blind, "run_taverna_more_box", :duration => 0.3) -%> ]</small>
@@ -207,6 +209,16 @@
 						OR
 					</p>
 					
+					<p style="text-align: center;">
+						<b>Run this Workflow Remotely</b>
+					</p>
+					<p style="font-size: 93%; text-align: center;">
+						<font style="color: #990000; font-weight: bold">Note:</font> 
+						you need to have access to a remote Taverna Execution Service in order to run Workflows through myExperiment. 
+						If you do, <%= link_to "register it as a 'Runner' here", new_runner_url -%>, then you can use it in Jobs to carry out the enactment. 
+						For more information, <%= link_to "contact us", "/feedback" -%>.
+					</p>
+					
 					<ul class="sectionIcons">
 						<li style="margin-left: 0;">
 							<%= icon 'run-now', 
@@ -216,13 +228,6 @@
 											 "Run Remotely" -%>
 						</li>
 					</ul>
-					
-					<p style="font-size: 85%; margin-top: 0.5em; text-align: center;">
-						<font style="color: #990000; font-weight: bold">Note:</font> 
-						you need to have access to a remote Taverna Execution Service in order to run Workflows through myExperiment. 
-						If you do, <%= link_to "register it as a 'Runner'", new_runner_url -%>, then you can use it in Jobs to carry out the enactment. 
-						For more information, <%= link_to "contact us", "/feedback" -%>.
-					</p>
 				</div>
 			<% else %>
 				<p class="none_text">
