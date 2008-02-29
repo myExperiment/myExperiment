@@ -284,7 +284,7 @@ def rest_reference(ob, query)
   el = REXML::Element.new(tag)
   el.add_attribute('resource', rest_resource_uri(ob))
   el.add_attribute('uri', rest_access_uri(ob))
-  el.add_attribute('version', ob.version) if ob.respond_to?('version')
+  el.add_attribute('version', ob.version.to_s) if ob.respond_to?('version')
   el.add_text(text)
 
   el
