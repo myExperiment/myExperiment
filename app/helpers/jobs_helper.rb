@@ -1,18 +1,31 @@
 module JobsHelper
-  def create_list(job, key, data, metadata, index = 0)
+  def build_output_content(job, output_port)
     result = ''
-    if data.kind_of? Array
-      result += "<ul class=\"jobResult\">\n"
-      for element in data do
-        result += create_list(job, key, element, metadata, index+=1)
+    
+    if job and output_port and (outputs = job.outputs_data)
+      data = outputs[output_port]
+      o_type = job.get_output_type(data)
+      m_types = job.get_output_mime_types(data)
+      
+      case o_type
+      when "list"
+        if data.value.size == 1
+          result += get_content(data.value, m_types)
+        else
+          result += "<ul class=\"outputs_list\">\n"
+          result += build_nested_list(data.value, m_types)
+          result += "</ul>\n"
+        end
+      when "string"
+        result += get_content(data.value, m_types)
+      else
+        result += get_content(data.value, m_types)
       end
+      
       result += "</ul>\n"
-    elsif index == 0
-      result += "<p>#{get_value(job, key, data, metadata, index)}</p>\n"
-    else
-      result += "<li>#{get_value(job, key, data, metadata, index)}</li>\n"
     end
-    result
+    
+    return result
   end
   
   def get_value(job, key, data, metadata, index)
@@ -32,4 +45,32 @@ module JobsHelper
     end
     Base64.decode64(data)
   end
+  
+  def mime_types_snippet(types)
+    return "<span class=\"none_text\">#{types.to_sentence(:connector => '')}</span>"
+  end
+  
+  private
+  
+  def build_nested_list(data_array, m_types)
+    result = ''
+    data_array.each do |v|
+      if v.is_a?(Array)
+        result += "<li><b>List:</b></li>\n"
+        result += "<ul>\n"
+        result += build_nested_list(v, m_types)
+        result += "</ul>\n"
+      elsif v.is_a?(String)
+        result += "<li>#{get_content(v, m_types)}</li>\n"
+      else
+        result += "<li>#{get_content(v, m_types)}</li>\n"
+      end
+    end
+    return result
+  end
+  
+  def get_content(data, m_types)
+    return data.to_s
+  end
+  
 end

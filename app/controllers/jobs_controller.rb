@@ -209,6 +209,8 @@ class JobsController < ApplicationController
   
   def refresh_status
     @job.refresh_status!
+    @stop_timer = (@job.allow_run? or @job.completed?)
+    puts "Stop timer? - #{@stop_timer}"
     respond_to do |format|
       format.html { render :partial => "status_info", :locals => { :job => @job, :experiment => @experiment } }
     end
@@ -254,6 +256,13 @@ class JobsController < ApplicationController
       else
         format.html { render :action => "new" }
       end
+    end
+  end
+  
+  def render_output
+    # TODO: employ some form of caching here so that we don't have to always go back to the service for the outputs data.
+    respond_to do |format|
+      format.html { render :partial => "output_content", :locals => { :job => @job, :output_port => params[:output_port] } }
     end
   end
   

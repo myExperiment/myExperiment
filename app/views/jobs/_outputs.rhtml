@@ -13,13 +13,46 @@
 	<% if outputs.nil? or outputs.empty? -%>
 		<p class="none_text">No output data available (runner may be offline)</p>
 	<% else -%>
+		<h4>Data Viewer</h4>
+		
+		<table class="outputs_viewer">
+			<tr>
+				<th>Output Ports (<%= outputs.size -%>)</th>
+				<th>Data</th>
+			</tr>
+			<tr>
+				<td class="nav">
+					<div id="op_list">
+						<% outputs.each do |k,v| -%>
+							<%= link_to_remote "<b>#{h k}</b> - #{job.get_output_type(v)}<br/>#{mime_types_snippet(job.get_output_mime_types(v))}",
+											 { :url => {:action => 'render_output', :output_port => k},
+											 :method => :get,
+											 :update => 'output_content_box',
+											 :success => "update_op_list('op_#{k}'); new Effect.Highlight('output_content_box', { duration: 1.5 });",
+											 :loading => "Element.show('outputs_refresh_indicator')",
+		                   :complete => "Element.hide('outputs_refresh_indicator')" },
+											 { :id => "op_#{k}" } -%>
+						<% end -%>
+					</div>
+				</td>
+				<td class="content">
+					<%= image_tag "spinner.gif", :id => "outputs_refresh_indicator", :style => "display: none;" -%>
+					<div id="output_content_box">
+						<%= render :partial => "output_content", :locals => { :job => job } -%>
+					</div>
+				</td>
+			</tr>
+		</table>
+		
+		<br/><br/>
+		
 		<h4>Summary</h4>
 		<p class="note_text"><%= pluralize outputs.size, "output" %></b>
 		<% outputs.each do |k,v| -%>
 			<div class="box_simple" style="margin-top: 0.5em;">
 				<h4>Output port: <%= h k -%></h4>
 				<p><b>Output type:</b> <%= job.get_output_type(v) -%></p>
-				<p><b>Mime type(s):</b> <%= job.get_output_mime_types(v) -%></p>
+				<p><b>Mime type(s):</b> <%= job.get_output_mime_types(v).to_sentence(:connector => '') -%></p>
 			</div>
 		<% end -%>
 	<% end -%>

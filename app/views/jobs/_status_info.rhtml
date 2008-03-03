@@ -1,3 +1,10 @@
+<% if @stop_timer -%>
+	<script>
+		stop_timer = true;
+		$('refresh_timer_text').remove();
+	</script>
+<% end %>
+
 <% if job -%>
 
 	<% if job.allow_run? -%>

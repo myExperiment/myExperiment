@@ -282,27 +282,43 @@
 <h2>Status</h2>
 
 <div style="margin: 0 1.5em;">
-
-	<ul class="sectionIcons" style="margin-top: 1.5em;">
-		<li style="margin-left: 0;">
-			<%= link_to_remote "#{refresh_image} Refresh",
-										 :url => refresh_status_job_url(@experiment, @job),
-										 :method => :get,
-										 :update => 'status_box',
-										 :success => "new Effect.Highlight('status_box', { duration: 1.5 });",
-										 :loading => "Element.show('refresh_indicator1')",
-	                   :complete => "Element.hide('refresh_indicator1')" -%>
-		</li>
-	</ul>
 	
-	<center><%= image_tag "spinner.gif", :id => "refresh_indicator1", :style => "display: none;" -%></center>
+	<% unless @job.allow_run? -%>
+		<ul class="sectionIcons" style="margin-top: 1.5em;">
+			<li style="margin-left: 0;">
+				<%= link_to_remote "#{refresh_image} Refresh",
+											 :url => refresh_status_job_url(@experiment, @job),
+											 :method => :get,
+											 :update => 'status_box',
+											 :success => "new Effect.Highlight('status_box', { duration: 1.5 });",
+											 :loading => "Element.show('refresh_indicator1')",
+		                   :complete => "Element.hide('refresh_indicator1')" -%>
+			</li>
+		</ul>
+		
+		<center><%= image_tag "spinner.gif", :id => "refresh_indicator1", :style => "display: none;" -%></center>
+	<% end -%>
+		
+	<% unless @job.allow_run? or @job.completed? -%>
+		<p id="refresh_timer_text" class="note_text" style="text-align: center;">
+			Note: this section will automatically refresh every 10 seconds until job completion.
+		</p>
+		<%= periodically_call_remote(:url => refresh_status_job_url(@experiment, @job), 
+																 :frequency => '10', 
+																 :update => 'status_box', 
+																 :method => :get,
+																 :success => "new Effect.Highlight('status_box', { duration: 1.5 });",
+																 :loading => "Element.show('refresh_indicator1')",
+		                   					 :complete => "Element.hide('refresh_indicator1')",
+																 :condition => "stop_timer == false" ) -%>
+	<% end -%>
 	
 	<div id="status_box">
 		<%= render :partial => "status_info", :locals => { :job => @job, :experiment => @experiment } -%>
 	</div>
 </div>
 
-<br/><br/><br/>
+<br/><br/>
 
 <!-- Outputs -->
 

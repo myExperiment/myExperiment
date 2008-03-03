@@ -2,6 +2,8 @@
 
 var field_counter = 1;
 
+var stop_timer = false;
+
 function update_inputs_states(input_name, input_type_selected) {
 	if (input_type_selected == 'single')
   {
@@ -41,4 +43,13 @@ function add_input_field(input_name, parent_id) {
 	html += '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:Element.remove(\'' + p_id + '\'); return false;">delete</a>]</small>';
 	
 	new Insertion.Bottom(parent_id, html);
+}
+
+function update_op_list(id) {
+	var children = $A($("op_list").childNodes);
+	children.each(function(child) {
+ 		child.setAttribute("class", '');
+	});
+
+	$(id).setAttribute("class", 'selected');
 }

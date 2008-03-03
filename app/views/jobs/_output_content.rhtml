@@ -1,0 +1,5 @@
+<% if job and output_port -%>
+	<%= build_output_content job, output_port -%>
+<% else %>
+	<p>No port selected or data unavailable</p>
+<% end %>
