@@ -70,7 +70,14 @@ module JobsHelper
   end
   
   def get_content(data, m_types)
-    return data.to_s
+    m = m_types.to_sentence.downcase
+    if m =~ /image/
+      return "This is an image!"
+    elsif m =~ /html/
+      return data.to_s
+    else
+      return "<pre>#{h data.to_s}</pre>"
+    end
   end
   
 end

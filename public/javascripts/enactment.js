@@ -47,15 +47,18 @@ function add_input_field(input_name, parent_id) {
 
 function update_op_list(id) {
 	setTimeout(function() {
-		var op_list = document.getElementById("op_list");
+		var op_list = $("op_list");
 	
 		for (var i = 0; i < op_list.childNodes.length; i++) {
-	    if (op_list.childNodes[i].id == id) {
-				op_list.childNodes[i].className = 'selected';
-			}
-			else {
-				op_list.childNodes[i].className = '';
-			}
+	    var c_node = op_list.childNodes[i];
+			if (c_node.nodeType == 1) {
+		  	if (c_node.id == id) {
+		  		c_node.className = 'selected';
+		  	}
+		  	else {
+		  		c_node.className = '';
+		  	}
+	  	}
 	  }
 	}, 100);
 }

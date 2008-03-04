@@ -36,7 +36,7 @@
 					</div>
 				</td>
 				<td class="content">
-					<%= image_tag "spinner.gif", :id => "outputs_refresh_indicator", :style => "display: none;" -%>
+					<%= image_tag "spinner.gif", :id => "outputs_refresh_indicator", :style => "display: none; margin-top: 0.5em;" -%>
 					<div id="output_content_box">
 						<%= render :partial => "output_content", :locals => { :job => job, :output_port => nil } -%>
 					</div>

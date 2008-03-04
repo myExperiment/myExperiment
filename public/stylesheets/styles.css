@@ -85,7 +85,7 @@ th,td {
 }
 
 pre {
-	background-color: #eee;
+	background-color: #EEEEEE;
 	padding: 1em;
 	font-size: 85%;
 }
@@ -1554,7 +1554,6 @@ table.job_report th {
 
 table.outputs_viewer {
 	border: 1px solid #CCCCCC;
-	width: 100%;
 	border-collapse: collapse;
 }
 
@@ -1582,10 +1581,17 @@ table.outputs_viewer .nav {
 
 table.outputs_viewer .content {
 	vertical-align: top;
+	padding: 0;
+}
+
+table.outputs_viewer .content #output_content_box {
 	padding: 1em 2em;
-	overflow: scroll;
+	overflow: auto;
 	text-align: left;
-	width: auto;
+	width: 480px;
+	max-width: 480px;
+	height: inherit;
+	max-height: 1000px;
 }
 
 table.outputs_viewer .nav a {
@@ -1595,6 +1601,7 @@ table.outputs_viewer .nav a {
 	border-bottom: 1px solid #DDDDDD;
 	background-color: #FFFFFF;
 	line-height: 1.2;
+	overflow: hidden;
 }
 
 table.outputs_viewer .nav a:hover,

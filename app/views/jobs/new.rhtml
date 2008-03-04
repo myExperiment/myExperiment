@@ -18,7 +18,7 @@
 				[ <%= link_to_function "change" + expand_image, visual_effect(:toggle_blind, "change_experiment", :duration => 0.3) %> ]
 			</span>
 		<% else -%>
-			<b>A Job must belong to an Experiment! Please select from the options below.</b>
+			<b style="color: #990000;">A Job must belong to an Experiment! Please select from the options below.</b>
 		<% end -%>
 	</p>
 	
@@ -29,7 +29,7 @@
 	<% end -%>
 	
 	<center>
-		<div id="change_experiment" class="box_simple" style="width: 450px; display: <%= @job.experiment ? 'none' : 'block' -%>;">
+		<div id="change_experiment" class="box_simple" style="width: 480px; display: <%= @job.experiment ? 'none' : 'block' -%>;">
 			<p class="box_infotext" style="font-size: 85%; text-align: center; margin-bottom: 0.3em; font-weight: bold;">
 				Here you can assign/change which Experiment this new Job becomes a part of
 			</p>
