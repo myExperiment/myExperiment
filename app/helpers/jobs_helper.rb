@@ -12,17 +12,15 @@ module JobsHelper
         if data.value.size == 1
           result += get_content(data.value, m_types)
         else
-          result += "<ul class=\"outputs_list\">\n"
+          result += "<ol class=\"outputs_list\">\n"
           result += build_nested_list(data.value, m_types)
-          result += "</ul>\n"
+          result += "</ol>\n"
         end
       when "string"
         result += get_content(data.value, m_types)
       else
         result += get_content(data.value, m_types)
       end
-      
-      result += "</ul>\n"
     end
     
     return result
@@ -57,9 +55,9 @@ module JobsHelper
     data_array.each do |v|
       if v.is_a?(Array)
         result += "<li><b>List:</b></li>\n"
-        result += "<ul>\n"
+        result += "<ol>\n"
         result += build_nested_list(v, m_types)
-        result += "</ul>\n"
+        result += "</ol>\n"
       elsif v.is_a?(String)
         result += "<li>#{get_content(v, m_types)}</li>\n"
       else

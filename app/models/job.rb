@@ -216,6 +216,21 @@ class Job < ActiveRecord::Base
     end
   end
   
+  # Returns the size of the outputs in Bytes.
+  def outputs_size
+    begin
+      if completed?
+        return runner.get_job_output_size(self.job_uri)
+      else
+        return nil
+      end
+    rescue Exception => ex
+      puts "ERROR occurred whilst getting outputs size for job #{self.job_uri}. Exception: #{ex}"
+      puts ex.backtrace
+      return nil
+    end
+  end
+  
   def get_output_type(output_data)
     # Delegate out to the runner to handle it's own specific output format
     runner.get_output_type(output_data)

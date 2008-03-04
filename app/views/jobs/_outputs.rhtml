@@ -1,19 +1,50 @@
 <% if job.completed? -%>
 	<% outputs = job.outputs_data -%>
 	
-	<% if outputs and outputs.size > 0 -%>
-		<p><%= icon "xml", outputs_xml_job_path(experiment, job), nil, nil, "Download as XML" -%></p>
-	<% end -%>
 	<% if false -%>
 		<p><%= icon "package", outputs_package_job_path(experiment, job), nil, nil, "Download as compressed package" -%></p>
 	<% end -%>
 	
-	<br/><br/>
+	<p class="note_text" style="text-align: center;">
+		Note: if the total data size exceeds 10MB, it won't be fetched from the Runner Service.
+	</p>
 	
-	<% if outputs.nil? or outputs.empty? -%>
+	<br/>
+	
+	<% if outputs.nil? -%>
 		<p class="none_text">No output data available (runner may be offline)</p>
+	<% elsif outputs.empty? -%>
+		<p class="none_text">No output data produced</p>
 	<% else -%>
+		<% size = job.outputs_size -%>
+		
+		<center>
+			<p class="box_standout" style="width: 260px; font-size: 108%; font-weight: bold; margin-bottom: 1em; text-align: center;">
+				<%= pluralize outputs.size, "output" -%>
+				<% if size -%>
+					, <%= number_to_human_size size, 2 -%> total size.
+				<% end -%>
+			</p>
+		</center>
+		
+		<h4>Download Data</h4>
+		
+		<p>
+			<%= icon "xml", outputs_xml_job_path(experiment, job), nil, nil, "Download as XML" -%>
+		</p>
+		<p style="font-size: 93%; color: #666666; margin-left: 2em;">
+			You can open this XML file in the Taverna Data Viewer
+			(see the Taverna installation directory).
+		</p>
+		
+		<br/><br/>
+		
 		<h4>Data Viewer</h4>
+		
+		<p class="note_text">
+			Warning: large data may slow down your browser.
+		</p>
+		<br/>
 		
 		<table class="outputs_viewer">
 			<tr>
@@ -36,7 +67,7 @@
 					</div>
 				</td>
 				<td class="content">
-					<%= image_tag "spinner.gif", :id => "outputs_refresh_indicator", :style => "display: none; margin-top: 0.5em;" -%>
+					<%= image_tag "spinner.gif", :id => "outputs_refresh_indicator", :style => "display: none; margin-top: 1em;" -%>
 					<div id="output_content_box">
 						<%= render :partial => "output_content", :locals => { :job => job, :output_port => nil } -%>
 					</div>
@@ -47,7 +78,6 @@
 		<br/><br/>
 		
 		<h4>Summary</h4>
-		<p class="note_text"><%= pluralize outputs.size, "output" %></b>
 		<% outputs.each do |k,v| -%>
 			<div class="box_simple" style="margin-top: 0.5em;">
 				<h4>Output port: <%= h k -%></h4>

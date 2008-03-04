@@ -145,7 +145,16 @@ class TavernaEnactor < ActiveRecord::Base
   end
   
   def get_job_outputs(job_uri)
-    service_client.get_job_outputs(job_uri)
+    # Limit size to 10MB
+    if get_job_output_size(job_uri) <= 10*1024*1024
+      service_client.get_job_outputs(job_uri)
+    else
+      return nil
+    end
+  end
+  
+  def get_job_output_size(job_uri)
+    service_client.get_job_outputs_size(job_uri)
   end
   
   def verify_job_completed?(current_status)

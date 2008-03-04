@@ -59,6 +59,8 @@
 		</ul>
 		
 		<% unless @experiment.jobs.empty? -%>
+			<p class="note_text"><%= pluralize @experiment.jobs.size, "job" %></p>
+			<br/>
 			<%= render :partial => "jobs/table", :locals => { :collection => @experiment.jobs } %>
 		<% else -%>
 			<p class="none_text">No jobs have been created as part of this Experiment.</p>

@@ -308,7 +308,7 @@ protected
   def find_job_auth
     job = Job.find(:first, :conditions => ["id = ?", params[:id]])
       
-    if job and job.authorized?(action_name, current_user)
+    if job and job.experiment.id == @experiment.id and job.authorized?(action_name, current_user) 
       @job = job
     else
       error("Job not found or action not authorized", "is invalid (not authorized)")

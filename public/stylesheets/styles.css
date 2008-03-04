@@ -433,6 +433,7 @@ ul.breadcrumb_list a:hover {
 
 #home_container .box {
 	margin-bottom: 1em;
+	overflow: hidden;
 }
 
 #home_container .box p {
@@ -1585,11 +1586,11 @@ table.outputs_viewer .content {
 }
 
 table.outputs_viewer .content #output_content_box {
-	padding: 1em 2em;
+	padding: 1em;
 	overflow: auto;
 	text-align: left;
-	width: 480px;
-	max-width: 480px;
+	width: 500px;
+	max-width: 500px;
 	height: inherit;
 	max-height: 1000px;
 }
@@ -1613,27 +1614,33 @@ table.outputs_viewer .nav a.selected {
 
 /* Begin outputs content list styles */
 
-ul.outputs_list {
+ol.outputs_list {
 	width: auto;
 	text-align: left;
+	margin-left: 2em;
 }
 
-ul.outputs_list, 
-ul.outputs_list ul {
+ol.outputs_list, 
+ol.outputs_list ol {
 	padding-left: 0;
-	margin: 0;
+	list-style-position: outside;
+	list-style-type: decimal;
 }
 
-ul.outputs_list ul {
-	margin: 0 0 0.5em 2em;
+ol.outputs_list ol {
+	margin: 0 0 0.5em 1em;
 }
 
-ul.outputs_list li {
-	display: block;
+ol.outputs_list li {
+	display: list-item;
 	width: auto;
-	list-style-type: disc;
-	list-style: disc;
-	padding: 0.5em 0;
+	padding: 0.4em 0.1em;
+	list-style-position: outside;
+	list-style-type: decimal;
+}
+
+ol.outputs_list ol li {
+	list-style-position: outside;
 }
 
 /* End outputs content list styles */
