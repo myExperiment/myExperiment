@@ -46,10 +46,16 @@ function add_input_field(input_name, parent_id) {
 }
 
 function update_op_list(id) {
-	var children = $A($("op_list").childNodes);
-	children.each(function(child) {
- 		child.setAttribute("class", '');
-	});
-
-	$(id).setAttribute("class", 'selected');
+	setTimeout(function() {
+		var op_list = document.getElementById("op_list");
+	
+		for (var i = 0; i < op_list.childNodes.length; i++) {
+	    if (op_list.childNodes[i].id == id) {
+				op_list.childNodes[i].className = 'selected';
+			}
+			else {
+				op_list.childNodes[i].className = '';
+			}
+	  }
+	}, 100);
 }

@@ -1567,31 +1567,34 @@ table.outputs_viewer td {
 table.outputs_viewer th {
 	background-color: #EEEEEE;
 	font-weight: bold;
-	padding: 0.4em 0.6em;
+	padding: 0.7em 0.6em;
+	font-size: 100%;
 }
 
 table.outputs_viewer .nav {
-	width: 150px;
-	padding: 4px;
+	width: 140px;
 	overflow: auto;
 	font-size: 93%;
 	vertical-align: top;
+	background-color: #F5F5F5;
+	padding: 0;
 }
 
 table.outputs_viewer .content {
 	vertical-align: top;
-	padding: 1em 1.5em;
-	height: 500px;
+	padding: 1em 2em;
 	overflow: scroll;
 	text-align: left;
+	width: auto;
 }
 
 table.outputs_viewer .nav a {
 	display: block;
-	width: 142px;
-	padding: 0.3em 0.6em;
-	border: 1px solid #DDDDDD;
-	line-height: 1.4;
+	width: 140px;
+	padding: 0.6em;
+	border-bottom: 1px solid #DDDDDD;
+	background-color: #FFFFFF;
+	line-height: 1.2;
 }
 
 table.outputs_viewer .nav a:hover,

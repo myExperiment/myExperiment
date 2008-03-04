@@ -47,7 +47,7 @@ module JobsHelper
   end
   
   def mime_types_snippet(types)
-    return "<span class=\"none_text\">#{types.to_sentence(:connector => '')}</span>"
+    return "<span style=\"display:block;font-size:85%;color:#666666;margin-top:0.4em;\">#{types.to_sentence(:connector => '')}</span>"
   end
   
   private

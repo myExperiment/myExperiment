@@ -24,13 +24,13 @@
 				<td class="nav">
 					<div id="op_list">
 						<% outputs.each do |k,v| -%>
-							<%= link_to_remote "<b>#{h k}</b> - #{job.get_output_type(v)}<br/>#{mime_types_snippet(job.get_output_mime_types(v))}",
+							<%= link_to_remote "<b>#{h k}</b> - #{job.get_output_type(v)} #{mime_types_snippet(job.get_output_mime_types(v))}",
 											 { :url => {:action => 'render_output', :output_port => k},
 											 :method => :get,
 											 :update => 'output_content_box',
-											 :success => "update_op_list('op_#{k}'); new Effect.Highlight('output_content_box', { duration: 1.5 });",
-											 :loading => "Element.show('outputs_refresh_indicator')",
-		                   :complete => "Element.hide('outputs_refresh_indicator')" },
+											 :success => "new Effect.Highlight('output_content_box', { duration: 1.5 });",
+											 :loading => "Element.show('outputs_refresh_indicator');",
+		                   :complete => "Element.hide('outputs_refresh_indicator');" },
 											 { :id => "op_#{k}" } -%>
 						<% end -%>
 					</div>
@@ -38,7 +38,7 @@
 				<td class="content">
 					<%= image_tag "spinner.gif", :id => "outputs_refresh_indicator", :style => "display: none;" -%>
 					<div id="output_content_box">
-						<%= render :partial => "output_content", :locals => { :job => job } -%>
+						<%= render :partial => "output_content", :locals => { :job => job, :output_port => nil } -%>
 					</div>
 				</td>
 			</tr>

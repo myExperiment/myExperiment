@@ -1,5 +1,11 @@
+<% if output_port -%>
+	<script>
+		update_op_list('op_<%= output_port -%>');
+	</script>
+<% end -%>
+
 <% if job and output_port -%>
 	<%= build_output_content job, output_port -%>
-<% else %>
+<% else -%>
 	<p>No port selected or data unavailable</p>
-<% end %>
+<% end -%>
