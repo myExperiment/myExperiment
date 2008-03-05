@@ -1,0 +1,28 @@
+<%= javascript_include_tag "osp.js" %>
+
+<h1>Manage Question</h1>
+
+<%= error_messages_for :question %>
+
+<% form_for(:question, :url => question_path(@question), :html => { :method => :put }) do |f| %>
+
+  <p>
+    <b>Question</b>:&nbsp;<%= @question.title %>
+  </p>
+
+  <br />
+  <br />
+
+  <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @question } %>
+  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => true, :contributable => @question } %>
+
+  <% if @question.owner?(current_user) %>
+  	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @question, :update_perms => true } %>
+  <% end %>
+
+  <p>
+  	<center>
+    	<%= submit_tag "Update", :disable_with => "Updating..." %>
+	</center>
+  </p>
+<% end %>

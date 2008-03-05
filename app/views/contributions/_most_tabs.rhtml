@@ -35,3 +35,12 @@
   	</div>
   </div> 
 <% end %>
+
+<% unless (highest_r = Contribution.highest_rated(10, type)).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Highest Rated</div>
+  	<div class="tabContent">
+	    <%= render :partial => "contributions/list", :locals => { :collection => highest_r, :table => true } %>
+  	</div>
+  </div> 
+<% end %>

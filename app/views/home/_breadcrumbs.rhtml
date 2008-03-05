@@ -1,0 +1,7 @@
+<% if ["not_found"].include? controller.action_name.to_s %>
+  <% case controller.action_name.to_s; when "not_found" %>
+    <li><%= link_to "404", :controller => 'home', :action => 'not_found' %></li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

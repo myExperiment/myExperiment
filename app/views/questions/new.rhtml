@@ -1,0 +1,31 @@
+<%= javascript_include_tag "osp.js" %>
+
+<h1>New Question</h1>
+
+<%= error_messages_for :question %>
+
+<% form_for(:question, :url => questions_path) do |f| %>
+
+  <p>
+    <b>Question:</b>&nbsp;<%= f.text_field :title, :size => 90 %>
+    
+  </p>
+
+  <br />
+  <br />
+  <!-- Tags -->
+  <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @question } %>
+                
+  <!-- Credit and Attribution -->
+  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => false, :contributable => @question } %>
+  
+  <!-- Sharing -->
+  <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @question } %>
+
+  <p>
+  	<center>
+    	<%= submit_tag "Submit", :disable_with => "Submitting..." %>
+	</center>
+  </p>
+
+<% end %>

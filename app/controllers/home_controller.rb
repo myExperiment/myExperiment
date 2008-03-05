@@ -14,6 +14,9 @@ class HomeController < ApplicationController
     end
   end
   
+  def not_found
+    render 'home/404', :status => 404
+  end
 protected
   
 end

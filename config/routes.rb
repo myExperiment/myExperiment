@@ -1,5 +1,9 @@
 require 'lib/rest'
 
+# SET QUESTIONS_ENABLE to enable questions
+QUESTIONS_ENABLE = false
+
+
 ActionController::Routing::Routes.draw do |map|
   # forums
   map.from_plugin :savage_beast
@@ -58,6 +62,8 @@ ActionController::Routing::Routes.draw do |map|
 
   # all workflows
   map.connect 'workflows/all', :controller => 'workflows', :action => 'all'
+  
+  
 
   # workflows (downloadable)
   map.resources :workflows, :collection => { :search => :get }, :member => { :new_version => :get, :download => :get, :bookmark => :post, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post, :create_version => :post, :destroy_version => :delete, :edit_version => :get, :update_version => :put } do |workflow|
@@ -82,7 +88,18 @@ ActionController::Routing::Routes.draw do |map|
   
   # all downloads and viewings
   map.resources :downloads, :viewings
-
+  
+  # questions
+  if QUESTIONS_ENABLE == true
+    map.connect 'questions/all', :controller => 'questions', :action => 'all'  # all questions
+    map.resources :questions, :collection => { :search => :get }, :member => { :bookmark => :post, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post, } do |question|
+      # Nought in here at the moment
+    end
+  else
+    map.connect 'questions/:action/:id.:format', :controller => 'home', :action => 'not_found'
+    map.connect 'questions/:action/:id', :controller => 'home', :action => 'not_found'
+  end
+  
   # contributions (all types)
   map.resources :contributions do |contribution|
     # download history
@@ -164,7 +181,8 @@ ActionController::Routing::Routes.draw do |map|
   map.from_plugin :simple_pages
 
   # Install the default route as the lowest priority.
-  map.connect ':controller/:action/:id.:format'
+  map.connect ':controller/:action/:id.:format' 
   map.connect ':controller/:action/:id'
+  
 end
 

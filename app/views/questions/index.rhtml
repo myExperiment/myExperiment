@@ -1,0 +1,25 @@
+<ul class="sectionIcons">
+	<li><%= icon "question", new_question_path, nil, nil, "Submit New Question" %></li>
+	<li><%= icon "view-all", url_for(:action => 'all'), nil, nil, "View All Questions" %></li>
+</ul>
+
+<%= render :partial => "questions/all_tags" %>
+
+<h2>What is a Question?</h2>
+<p>
+  There is a lot of data stored within myExperiment and finding a specific piece 
+  of information can be difficult because even a good user interface cannot structure the
+  data in every conceivable way a user could want.
+</p>
+<p>  
+  Questions are designed to provide a Natural Language (NL) interface to myExperiment.  
+  At the moment they are only a one way process, i.e. questions can be submitted but 
+  answers cannot yet be returned.  For the timebeing these questions will inform the 
+  design of both the user interface and in the future a fully functioning NL interface.
+</p>
+<br />
+<span style="float: right;">
+	<%= feed_icon_tag "Latest Questions", formatted_questions_path(:rss) %>
+</span>
+
+<%= render :partial => "contributions/most_tabs", :locals => { :type => "Question" } %>

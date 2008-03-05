@@ -48,6 +48,7 @@
 					  <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Files", files_path -%></li>
 					  <li <%= (["blogs", "blog_posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path -%></li>
 					  <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path -%></li>
+					  <% if QUESTIONS_ENABLE == true %><li <%= (["questions"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Questions", questions_path %></li><% end %>
 					</ul>
 				</div>
 	  			<div id="myexp_searchbar"><%= render :partial => "layouts/search" %></div>

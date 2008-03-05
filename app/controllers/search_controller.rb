@@ -23,6 +23,12 @@ class SearchController < ApplicationController
 private
 
   @@valid_types = ["all", "workflows", "users", "networks", "blobs"]
+  models = ["User", "Workflow", "Blob", "Network"]
+  if QUESTIONS_ENABLE == true
+    @@valid_type.push("questions")
+    models.push("Question")
+  end 
+    
 
   def error(type)
     flash[:notice] = "#{type} is an invalid search type"
@@ -42,13 +48,16 @@ private
 
     if SOLR_ENABLE and not @query.nil? and @query != ""
       @results = User.multi_solr_search(@query, :limit => 100,
-          :models => [User, Workflow, Blob, Network]).results
+          :models => @@models).results
     end
 
     @users     = @results.select do |r| r.instance_of?(User)     end
     @workflows = @results.select do |r| r.instance_of?(Workflow) end
     @blobs     = @results.select do |r| r.instance_of?(Blob)     end
     @networks  = @results.select do |r| r.instance_of?(Network)  end
+    if QUESTIONS_ENABLE == true
+      @questions = @results.select do |r| r.instance_of?(Question) end
+    end
 
     respond_to do |format|
       format.html # search.rhtml

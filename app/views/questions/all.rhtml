@@ -1,0 +1,9 @@
+<% t "All" -%>
+
+<h2><%= feed_icon_tag "Latest Questions", formatted_questions_path(:rss) %> All Questions</h2>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @questions } %>
+
+<%= render :partial => "questions/table", :locals => { :collection => @questions } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @questions } %>

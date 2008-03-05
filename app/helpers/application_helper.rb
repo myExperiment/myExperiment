@@ -377,6 +377,14 @@ module ApplicationHelper
       else
         return nil
       end
+    when "Question"
+      if q = Question.find(:first, :conditions => ["id = ?", contributableid])
+        name = h(q.title)
+        
+        return link ? link_to(name, question_url(q)) : name
+      else
+        return nil
+      end
     when "Workflow"
       if w = Workflow.find(:first, :conditions => ["id = ?", contributableid])
         name = h(w.title)
@@ -621,6 +629,8 @@ module ApplicationHelper
       return "famfamfam_silk/group.png"
     when "workflow"
       return "redmond_studio/applications_16.png"
+    when "question"
+      return "question.png"
     when "policy"
       return "famfamfam_silk/key.png"
     when "logout"
@@ -698,8 +708,11 @@ module ApplicationHelper
   end
   
   def tags_for_type(type, limit=-1)
-    
-    return [] unless ["workflow", "blob", "network"].include?(type.downcase)
+    tag_types = ["workflow", "blob", "network"]
+    if QUESTIONS_ENABLE == true
+      tag_types.push("questions")
+    end
+    return [] unless tag_types.include?(type.downcase)
     
     taggings = Tagging.find(:all, :conditions => ["taggable_type = ?", type])
     tags = []

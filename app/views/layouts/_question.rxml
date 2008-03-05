@@ -1,0 +1,7 @@
+xm.item do
+  xm.title "#{h(question.title)} (#{h(question.contribution.contributor.name || question.contribution.contributor.title)})"
+  xm.pubDate question.created_at.rfc822
+  xm.guid [request.host_with_port, "question", question.id.to_s].join(":"), "isPermaLink" => "false"
+  xm.author h(question.contribution.contributor.name || question.contribution.contributor.title)
+  xm.link question_url(question)
+end

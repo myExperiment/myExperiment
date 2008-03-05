@@ -1,0 +1,34 @@
+<br />
+<h1><%=h @question.title %></h1>
+
+<p style="text-align: center;">
+  By <%= contributor(@question.contribution.contributor_id, @question.contribution.contributor_type) %>
+</p>
+<br />
+<% if logged_in? %>
+  <ul class="sectionIcons">
+    
+    <% if @question.authorized?("destroy", current_user) %>
+      <li><%= icon('destroy', question_path(@question), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove Question') %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if logged_in? and @question.authorized?("destroy", current_user) %>
+ <table><tr>
+ 	<td width="25%" style="vertical-align: top;"><%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @question, :edit_path => edit_question_path(@question) } %></td>
+	
+	<td width="25%" style="vertical-align: top;"><%= render :partial => "tags/tags_box", :locals => { :taggable => @question,
+																											 :owner_id => ((@question.contributor_type == 'User') ? @question.contributor_id : nil),  
+																											 :add_path => tag_question_path(@question), 
+																											 :edit_path => edit_question_path(@question),
+																											 :allow_edit => @question.authorized?("edit", logged_in? ? current_user : nil ) } %></td>
+	
+	<td width="25%" style="vertical-align: top;"><%= render :partial => "contributions/ratings_box", :locals => { :contributable => @question } %></td>
+	
+	<td width="25%" style="vertical-align: top;"><%= render :partial => "contributions/statistics_box", :locals => { :contributable => @question } %></td>
+	
+	<% if false %><td width="25%"  style="vertical-align: top;"><%= render :partial => "layouts/bookmark_with", :locals => { :title => contributable_name(@question.id, 'Question'), :url => @question_url } %></td><% end %>
+	
+</tr></table>	
+<% end %>

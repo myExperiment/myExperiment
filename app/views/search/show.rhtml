@@ -27,7 +27,11 @@
     <h2><%= pluralize(@networks.length, "group") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>	
     <%= render :partial => "networks/table", :locals => { :collection => @networks } %>
   <% end %>
-
+  
+   <% if not @questions.empty? %>
+    <h2><%= pluralize(@questions.length, "question") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>	
+    <%= render :partial => "questions/table", :locals => { :collection => @questions } %>
+  <% end %>
 <% end %>
 
 <br />

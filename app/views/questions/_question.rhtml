@@ -1,0 +1,32 @@
+<center>
+	<table width="320" class="contributable">
+	  <tr>
+	    <th colspan="2">
+	      <%=h question.title %>
+	    </th>
+	  <tr>
+	  <tr>
+	    <td>
+	        <strong>Created at:</strong><br />
+	        <%=datetime question.created_at %>
+	    </td>
+	    <td>
+	        <strong>Updated at:</strong><br />
+	        <%=datetime question.updated_up %>
+	    </td>
+	    <td>
+	      <strong>Contributor:</strong><br/>
+	      <%= contributor(question.contribution.contributor_id, question.contribution.contributor_type, true, 60) %>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td colspan="2">
+	      <center>
+	        <% if question.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", question_path(question), nil, nil, "View" %> <% end %>
+	        <% if logged_in? and question.authorized?("edit", current_user) %><%= icon "edit", edit_question_path(question) %> <% end %>
+	        <% if logged_in? and question.authorized?("destroy", current_user) %><%= icon "destroy", question_path(question), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
+	      </center>
+	    </td>
+	  </tr>
+	</table>
+</center>

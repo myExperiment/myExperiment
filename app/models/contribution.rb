@@ -29,6 +29,13 @@ class Contribution < ActiveRecord::Base
               :include => [ { :policy => :permissions } ])
   end
   
+  # returns the 'highest rated' Contributions
+  # the maximum number of results is set by #limit#
+  def self.highest_rated(limit=10, klass=nil)
+    query = ["SELECT * FROM contributions INNER JOIN ratings ON contributions.contributable_id=ratings.rateable_id AND contributions.contributable_type=ratings.rateable_type WHERE contributable_type = ? GROUP BY contributions.id ORDER BY AVG(ratings.rating) DESC LIMIT ? ", klass, limit]
+    self.find_by_sql(query)
+  end
+  
   # returns the 'most viewed' Contributions
   # the maximum number of results is set by #limit#
   def self.most_viewed(limit=10, klass=nil)

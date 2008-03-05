@@ -12,6 +12,8 @@
       location.href = "<%= new_workflow_path -%>";
     } else if (klass == "Group") {
       location.href = "<%= new_group_path -%>";
+    } else if (klass == "Question") {
+      location.href = "<%= new_question_path unless QUESTIONS_ENABLE == false %>";
     } else if (klass == "Message") {
       location.href = "<%= new_message_path -%>";
     } else if (klass == "Experiment") {
@@ -41,10 +43,11 @@
         <p>
           <select id="new_object_type">
             <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Workflow</option>
-						<option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
-						<option value="Group" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
-						<option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
-            <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>
+	    <option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
+	    <option value="Group" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
+	    <option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
+            <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option
+            <% if QUESTIONS_ENABLE == true %><option value="Question" <%= "selected" if ["questions"].include? controller.controller_name.to_s %>>Question</option><% end %>
 						<% if logged_in? %>
 							<option value="Message" <%= "selected" if ["messages"].include? controller.controller_name.to_s %>>Message</option>
 							<option value="Experiment" <%= "selected" if ["experiments"].include? controller.controller_name.to_s %>>Experiment</option>
