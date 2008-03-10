@@ -669,6 +669,8 @@ module ApplicationHelper
       return "famfamfam_silk/script_link.png"
     when "run-now"
       return "famfamfam_silk/script_add.png"
+    when "timeline"
+      return "famfamfam_silk/timeline_marker.png"
     else
       return nil
     end

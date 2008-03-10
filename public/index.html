@@ -1,195 +1,245 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-    <head>
-        <meta http-equiv="content-type" content="text/html"/>
-        <title>myExperiment</title>
-        <link rel="shortcut icon" href="http://www.semanticgrid.org/wallace/images/favicon.png"/>
-        <link href="stylesheets/reset-fonts-grids.css" media="screen" rel="Stylesheet" type="text/css"/>
-        <link href="stylesheets/base-min.css" media="screen" rel="Stylesheet" type="text/css"/>
-        <link href="stylesheets/scaffold.css" media="screen" rel="Stylesheet" type="text/css"/>
-        <link href="stylesheets/styles.css" media="screen" rel="Stylesheet" type="text/css"/>
-        <link href="stylesheets/homepage.css" media="screen" rel="Stylesheet" type="text/css"/>
-    </head>
-    <body>
-        <div id="doc2">
-            <div id="hd" class="myexp_home_header">
-                <p class="logo">
-                    <img alt="Logo" src="images/logo.png"/>
-                </p>
-                <p class="heading">
-                    myExperiment makes it really easy to find, use and share scientific workflows and
-                    other research objects, and to build communities.
-                </p>
-            </div>
-            <div id="bd">
-                <div id="myexp_home_content">
-                    <ul class="links">
-											<li><a href="/home">Let Me In!</a></li>
-											<li>|</li>
-											<li><a href="http://wiki.myexperiment.org/" target="_blank">myExperiment Wiki</a></li>
-											<li>|</li>
-											<li><a href="http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss" target="_blank">Mailing List</a></li>
-											<li>|</li>
-											<li><a href="http://www.mygrid.org.uk" target="_blank">myGrid / Taverna</a></li>
-											<li>|</li>
-											<li><a href="/feedback">Give us Feedback</a></li>
-										</ul>
-										<div class="heading">
-                        Quick Start:
-                    </div>
-                    <div style="text-align: center; padding: 0;">
-                        <table border="0" width="100%">
-                            <tbody>
-                                <tr valign="top">
-                                    <td class="myexp_home_content_box" style="vertical-align: middle;">
-                                        <table border="0">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="vertical-align: middle;">
-                                                        <a href="/workflows/72"><img src="images/workflow.png" alt="Look at a Workflow"/><span class="myexp_home_image_action" href="/workflows/72">Look at a Workflow</span></a>
-                                                    </td>
-                                                    <td style="vertical-align: middle;">
-                                                        <a href="/workflows"><img src="images/find.png" alt="Find Workflows"/><span class="myexp_home_image_action" href="/workflows">Find Workflows</span></a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                    <td style="padding: 1em; vertical-align: middle;" valign="middle">
-                                        <span style="font-size: 197%; vertical-align: middle; font-weight: bolder;">OR</span>
-                                    </td>
-                                    <td class="myexp_home_content_box" style="vertical-align: middle;">
-                                        <table border="0">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="vertical-align: middle;">
-                                                        <a href="/users/new"><img src="images/people.png" alt="Register / Sign Up"/><span class="myexp_home_image_action" href="/users/new">Register / Sign Up</span></a>
-                                                    </td>
-                                                    <td style="vertical-align: middle;">
-                                                        <div id="myexp_home_logonbox">
-                                                            <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-                                                            <div class="login">
-                                                                <form action="/session" method="post">
-                                                                    <p>
-                                                                        <label for="username">
-                                                                            Username or Email:
-                                                                        </label>
-                                                                        <input id="session[username]" name="session[username]" type="text"/>
-                                                                        <label for="password">
-                                                                            Password:
-                                                                        </label>
-                                                                        <input id="session[password]" name="session[password]" type="password"/>
-                                                                        <label for="remember_me">
-                                                                            Remember me:
-                                                                        </label>
-                                                                        <input id="session[remember_me]" name="session[remember_me]" value="1" type="checkbox"/>
-                                                                    </p>
-                                                                    <p style="margin: 0.4em 0; border: 0px dotted #999999; border-width: 1px 0;">
-                                                                        <label for="openid_url">
-                                                                            Or use OpenID:
-                                                                        </label>
-                                                                        <input id="openid_url" name="openid_url" type="text"/>
-																																				<br/>
-																																				<span style="font-size: 77%; color: #333333;">(eg: name.openid.com)</span>
-                                                                    </p>
-                                                                    <p>
-                                                                        <input name="commit" value="Log In" type="submit"/>
-                                                                    </p>
-																																		<p>
-																																			<b><a href="/users/forgot_password">Forgot Password?</a></b>
-																																		</p>
-                                                                </form>
-                                                            </div>
-																														<b class="xbottom"><b class="xb4"></b><b class="xb3"></b><b class="xb2"></b><b class="xb1"></b></b>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <table border="0" width="100%">
-                        <tbody>
-                            <tr valign="top">
-                                <td style="text-align: left;">
-                                    <div class="heading">
-                                        About:
-                                    </div>
-                                    <div class="myexp_home_content_box" style="padding: 0;">
-                                        <table border="0" style="border-spacing: 8px;">
-                                            <tbody>
-                                                <tr valign="top">
-                                                    <td style="text-align: center; padding: 2em 1em 2em 2em;">
-                                                        <a href="http://wiki.myexperiment.org/"><img src="images/my.png" alt="About myExperiment"/></a>
-                                                    </td>
-                                                    <td style="text-align: left; padding: 1.5em 1em;">
-                                                        <p>
-                                                            The myExperiment Virtual Research Environment enables you and your colleagues to
-                                                            share digital items associated with your research &mdash; in particular it enables
-                                                            you to share and execute scientific workflows.
-                                                        </p>
-                                                        <p>
-                                                            You can use myexperiment.org to <a href="/workflows"><b>find</b></a>
-                                                            publicly available workflows. If you want further access, and 
-                                                            the ability to upload and share workflows, you will need to <a href="/users/new"><b>sign up</b></a>.
-                                                        </p>
-                                                        <p>
-                                                            The software that powers myexperiment.org is downloadable so that you can run your
-                                                            own myExperiment instance.
-                                                        </p>
-                                                        <p>
-                                                            See the <a href="http://wiki.myexperiment.org/"><b>myExperiment Wiki</b></a>
-                                                            for
-                                                            further information about myExperiment and how to join the user and developer communities.
-                                                        </p>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </td>
-                                <td>
-                                    &nbsp;&nbsp;&nbsp;
-                                </td>
-                                <td style="text-align: left;">
-                                    <div class="heading">
-                                        News:
-                                    </div>
-                                    <div style="text-align: left;">
-                                        <ul id="myexp_home_news">
-                                            <li>
-                                                We are pleased to announce that myExperiment moved to <b>open beta</b>
-                                                on 12th November 2007
-                                            </li>
-                                            <li>
-                                                Please give us your feedback using the "<a href="/feedback">Give us Feedback</a>" link.
-                                            </li>
-                                            <li>
-                                                You can also report any problems to <a href="mailto:bugs@myexperiment.org?subject=myExperiment">bugs@myexperiment.org</a>
-                                            </li>
-                                            <li>
-                                                For more info about myExperiment please see the <a href="http://wiki.myexperiment.org/"><b>myExperiment Wiki</b></a>
-                                            </li>
-                                            <li>
-                                                Thank you to everyone who participated in testing!
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <br/>
-                    <br/>
+  <head>
+    <meta http-equiv="content-type" content="text/html"/>
+    <title>myExperiment</title>
+    <link rel="shortcut icon" href="http://www.semanticgrid.org/wallace/images/favicon.png"/>
+    <link href="stylesheets/reset-fonts-grids.css" media="screen" rel="Stylesheet" type="text/css"/>
+    <link href="stylesheets/base-min.css" media="screen" rel="Stylesheet" type="text/css"/>
+    <link href="stylesheets/scaffold.css" media="screen" rel="Stylesheet" type="text/css"/>
+    <link href="stylesheets/styles.css" media="screen" rel="Stylesheet" type="text/css"/>
+    <link href="stylesheets/front.css" media="screen" rel="Stylesheet" type="text/css"/>
+  </head>
+  <body>
+		<div id="doc2">
+      <div id="hd" class="frontpage_header">
+        <img alt="Logo" src="images/logo.png" class="logo"/>
+        <div class="text">
+          myExperiment makes it really easy to <b>find</b>, <b>use</b> and <b>share</b> <b>scientific workflows</b> and
+          other <b>research objects</b>, and to build <b>communities</b>.
+        </div>
+				<div class="clearer">&nbsp;</div>
+      </div>
+      <div id="bd">
+        <div id="frontpage_body">
+        	
+					<!-- Search Bar -->
+					<div class="search">
+						<form action="/search" method="get">
+							<input id="query" name="query" style="width: 250px; padding: 0.1em;" />
+							<select id="type" name="type">
+								<option value="all" selected>All</option>
+								<option value="users">Users</option>
+								<option value="groups">Groups</option>
+								<option value="workflows">Workflows</option>
+								<option value="files">Files</option>
+							</select> 
+							<input type="submit" value="Search" name="commit" onclick="this.disabled=true; this.value='Searching...'; this.form.submit();" />
+						</form>
+					</div>
+					
+					<!-- Quick Start -->
+					<div class="box" style="margin-right: 2em; width: 280px;">
+						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+						<div class="content" style="height: 350px;">
+							<div class="links">
+								<p class="heading">
+									Use myExperiment to...
+								</p>
+								<a href="/workflows">
+									<img src="images/redmond_studio/applications_16.png" alt="Find Workflows"/>
+									<span>Find Workflows</span>
+								</a>
+								<a href="/workflows/new">
+									<img src="images/redmond_studio/add_16.png" alt="Share Your Workflows"/>
+									<span>Share Your Workflows</span>
+								</a>
+								<a href="/files/new">
+									<img src="images/redmond_studio/documents_16.png" alt="Share Your Other Files"/>
+									<span>Share Your Other Files</span>
+								</a>
+								<a href="/groups">
+									<img src="images/famfamfam_silk/group.png" alt="Join Groups"/>
+									<span>Join Groups</span>
+								</a>
+								<a href="/users">
+									<img src="images/famfamfam_silk/user.png" alt="Find People and Make Friends"/>
+									<span>Find People and Make Friends</span>
+								</a>
+								<a href="/messages/new">
+									<img src="images/famfamfam_silk/email.png" alt="Send Messages"/>
+									<span>Send Messages</span>
+								</a>
+								<p>
+									<img src="images/famfamfam_silk/user_comment.png" alt="Get Feedback"/>
+									<span><b>Get Feedback</b></span>
+								</p>
+								<p>
+									<img src="images/famfamfam_silk/tag_blue.png" alt="Tag and Rate things"/>
+									<span><b>Tag and Rate things</b></span>
+								</p>
+								<p>
+									<img src="images/famfamfam_silk/comment.png" alt="Write Reviews and Comments"/>
+									<span><b>Write Reviews and Comments</b></span>
+								</p>
+								<p>
+									<img src="images/famfamfam_silk/award_star_gold_1.png" alt="Build your Profile and Reputation"/>
+									<span><b>Build your Profile and Reputation</b></span>
+								</p>
+							</div>
+						</div>
+						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+					</div>
+					
+					<!-- Quick Links -->
+					<div class="box" style="margin-right: 2em; width: 285px;">
+						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+						<div class="content" style="height: 350px; text-align: center;">
+							<div class="links">
+								<a href="/home">
+									<img src="images/letmein-button.png" alt="Let me in button"/>
+								</a>
+								<a href="/workflows/72">
+									<img src="images/lookworkflow-button.png" alt="Look at a Workflow button"/>
+								</a>
+								<a href="http://wiki.myexperiment.org/" target="_blank" style="margin-top: 1.4em;">myExperiment Wiki</a>
+								<a href="http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss" target="_blank">Mailing List</a>
+								<a href="/feedback">Give us Feedback</a>
+								<a href="http://www.mygrid.org.uk" target="_blank">myGrid / Taverna</a>
+							</div>
+						</div>
+						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+					</div>
+					
+					<!-- Register / Login -->
+					<div class="box" style="width: 250px;">
+						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+						<div class="content" style="height: 350px;">
+							<div class="links">
+								<a href="/users/new">
+									<img src="images/register-button.png" alt="Register / Sign Up button"/>
+								</a>
+							</div>
+							<div id="login">
+                <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+                <div class="login">
+                  <form action="/session" method="post">
+										<p>
+                      <label for="username">
+                          Username or Email:
+                      </label>
+											<br/>
+                      <input id="session[username]" name="session[username]" type="text"/>
+											<br/>
+											<label for="password">
+                          Password:
+                      </label>
+											<br/>
+                      <input id="session[password]" name="session[password]" type="password"/>
+                      <label for="remember_me">
+                          Remember me:
+                      </label>
+                      <input id="session[remember_me]" name="session[remember_me]" value="1" type="checkbox"/>
+                    </p>
+                    <p style="margin: 0.4em 0; border: 0px dotted #999999; border-width: 1px 0;">
+                      <label for="openid_url">
+                          Or use OpenID:
+                      </label>
+                      <input id="openid_url" name="openid_url" type="text" style="width: 160px;"/>
+											<br/>
+											<span style="font-size: 77%; color: #333333;">(eg: name.openid.com)</span>
+                    </p>
+                    <p>
+                      <input name="commit" value="Log In" type="submit"/>
+                    </p>
+										<p>
+											<b><a href="/users/forgot_password">Forgot Password?</a></b>
+										</p>
+                  </form>
                 </div>
-                <div id="ft">
-                    <!-- insert footer here -->
-                </div>
-            </div>
-            <script language="javascript">document.getElementById('session[username]').focus();
-            </script>
-            </body>
-        </html>
+								<b class="xbottom"><b class="xb4"></b><b class="xb3"></b><b class="xb2"></b><b class="xb1"></b></b>
+							</div>
+						</div>
+						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+					</div>
+					
+					<div class="clearer">&nbsp;</div>
+					
+					<div class="stats">
+						myExperiment has over 600 users, 140 workflows and 60 groups
+					</div>
+					
+					<!-- About -->
+					<div class="box" style="margin-right: 2em; width: 420px;">
+						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+						<div class="content" style="height: 300px; padding: 0.3em 1.5em;">
+							<p class="heading">
+								About
+							</p>
+							<p>
+                The myExperiment Virtual Research Environment enables you and your colleagues to
+                share digital items associated with your research &mdash; in particular it enables
+                you to share and execute scientific workflows.
+              </p>
+              <p>
+                You can use myexperiment.org to <a href="/workflows"><b>find</b></a>
+                publicly available workflows. If you want further access, and 
+                the ability to upload and share workflows, you will need to <a href="/users/new"><b>sign up</b></a>.
+              </p>
+              <p>
+                The software that powers myexperiment.org is downloadable so that you can run your
+                own myExperiment instance.
+              </p>
+              <p>
+                See the <a href="http://wiki.myexperiment.org/"><b>myExperiment Wiki</b></a>
+                for
+                further information about myExperiment and how to join the user and developer communities.
+              </p>
+						</div>
+						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+					</div>
+					
+					<!-- Who -->						
+					<div class="box" style="width: 420px;">
+						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+						<div class="content" style="height: 300px; padding: 0.3em 1.5em;">
+							<p class="heading">
+								Who?
+							</p>
+							<p>
+                myExperiment is brought to you by a joint team from the universities of Southampton and Manchester in the UK, 
+								led by David De Roure and Carole Goble, and is funded by JISC under the Virtual Research Environments programme 
+								and by Microsoft's Technical Computing Initiative.
+              </p>
+							<p>
+								myExperiment is part of the myGrid consortium, 
+								which develops the Taverna workbench for creating and executing scientific workflows, 
+								and also builds on CombeChem - two of the original UK e-Science Pilot Projects. 
+								The related Triana activity in Cardiff is supported by the OMII-UK Commissioned Software Programme.
+							</p>
+						</div>
+						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+					</div>
+					
+					<div class="clearer">&nbsp;</div>
+					
+					<p style="color: #333333; font-weight: bold; font-size: 116%; text-align: center; margin: 1em 0;">
+						<a href="mailto:bugs@myexperiment.org?subject=myExperiment">Report a Problem</a>
+					</p>
+					
+        </div>
+      </div>
+			<div id="ft">
+        <p class="copyright">
+					Copyright (c) 2007 - 2008
+					<a href="http://www.manchester.ac.uk/" target="_blank">The University of Manchester</a>
+					and
+					<a href="http://www.soton.ac.uk/" target="_blank">University of Southampton</a>
+				</p>
+      </div>
+			
+      <script language="javascript">document.getElementById('session[username]').focus();
+      </script>
+		</div>
+	</body>
+</html>

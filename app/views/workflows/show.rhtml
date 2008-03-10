@@ -320,5 +320,5 @@
 <br/>
 
 <div id="commentsBox">
-	<%= render :partial => "comments/comments", :locals => { :commentable => @workflow } %>
+	<%= render :partial => "comments/comments", :locals => { :commentable => @workflow, :url_to_timeline => comments_timeline_workflow_path(@workflow) } %>
 </div>

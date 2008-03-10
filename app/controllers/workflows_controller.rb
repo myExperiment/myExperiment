@@ -75,6 +75,19 @@ class WorkflowsController < ApplicationController
     end
   end
   
+  def comments_timeline
+    respond_to do |format|
+      format.html # comments_timeline.rhtml
+    end
+  end
+  
+  def comments
+    @comments = Comment.find(:all, :conditions => [ "commentable_id = ? AND commentable_type = ? AND created_at > ? AND created_at < ?", @workflow.id, 'Workflow', params[:start].to_time, params[:end].to_time ] )
+    respond_to do |format|
+      format.json { render :partial => 'comments/timeline_json', :layout => false }
+    end
+  end
+  
   # POST /workflows/1;rate
   # POST /workflows/1.xml;rate
   def rate

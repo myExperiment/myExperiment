@@ -1,6 +1,6 @@
 <li><%= link_to 'Workflows', workflows_path %></li>
 
-<% if ["show", "new", "edit", "search", "all", "new_version"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit", "search", "all", "new_version", "comments_timeline"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
@@ -17,6 +17,10 @@
     <li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
 		<li><b>&#187;</b></li>
 		<li><%= link_to "New Version", new_version_workflow_url(@workflow) %>
+	<% when "comments_timeline" %>
+		<li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
+		<li><b>&#187;</b></li>
+    <li><%= link_to "Comments Timeline", comments_timeline_workflow_path(@workflow) %>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

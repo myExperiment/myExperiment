@@ -120,7 +120,7 @@ li {
 
 .clearer {
 	padding: 0;
-	height: 1px;
+	margin: 0;
 	clear: both;
 }
 
@@ -189,12 +189,12 @@ li {
 	text-align: center;
 	font-weight: bold;
 	font-size: 93%;
-	border-bottom: 1px dotted #999999;
 	padding: 0.5em;
 }
 
 #ft table {
 	width: 100%;
+	border-top: 1px dotted #999999;
 	border-spacing: 0;
 	margin: 0;
 }
@@ -1418,7 +1418,7 @@ div.auto_complete ul strong.highlight {
 	background-color: #FFFFCC;
 	margin: 0; 
 	padding: 0.3em 0.8em;
-	border: 1px solid #CCDD99;
+	border: 1px solid #EED799;
 }
 
 .none_text {
@@ -1645,3 +1645,8 @@ ol.outputs_list ol li {
 
 /* End outputs content list styles */
 
+
+.default_timeline { 
+	width: 100%; 
+	height: 600px; 
+}

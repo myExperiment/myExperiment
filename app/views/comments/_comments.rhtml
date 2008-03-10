@@ -1,5 +1,7 @@
 <%= javascript_include_tag :fckeditor %>
 
+<% url_to_timeline ||= false -%>
+
 <h2>
 	<p>
 		<%= icon "comments", nil, nil, nil, "" -%>
@@ -7,6 +9,12 @@
 		<font class="count_text">(<%= commentable.comments.length %>)</font>
 	</p>
 </h2>
+
+<% if url_to_timeline -%>
+	<ul class="sectionIcons">
+		<li><%= icon('timeline', url_to_timeline, nil, nil, 'View Timeline')%></li>
+	</ul>
+<% end -%>
 
 <div class="commentsBox">
 	

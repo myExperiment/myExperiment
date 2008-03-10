@@ -2,7 +2,7 @@
 
 <%= javascript_include_tag "osp.js" %>
 
-<h1>Manage Workflow: <%= @workflow.title %></h1>
+<h1>Manage Workflow: <%= h @workflow.title %></h1>
 
 <% if false %>
 <div>Sharing mode = <%= @sharing_mode %></div>

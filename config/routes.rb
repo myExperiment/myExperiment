@@ -60,7 +60,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'workflows/all', :controller => 'workflows', :action => 'all'
 
   # workflows (downloadable)
-  map.resources :workflows, :collection => { :search => :get }, :member => { :new_version => :get, :download => :get, :bookmark => :post, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post, :create_version => :post, :destroy_version => :delete, :edit_version => :get, :update_version => :put } do |workflow|
+  map.resources :workflows, :collection => { :search => :get }, :member => { :new_version => :get, :download => :get, :bookmark => :post, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post, :create_version => :post, :destroy_version => :delete, :edit_version => :get, :update_version => :put, :comments_timeline => :get, :comments => :get } do |workflow|
     # workflows have nested citations
     workflow.resources :citations
     workflow.resources :reviews
