@@ -1,7 +1,7 @@
 <% valid_types = ["all", "users", "groups", "workflows", "files"] -%>
 
 <% form_tag search_path, :method => :get do %>
-  <%= text_field_tag :query %> 
+  <%= text_field_tag :query, nil, :style => "padding: 0.1em;" %> 
   <%= select_tag :type, options_for_select(valid_types.collect { |t| [t.capitalize, t] }, 'all') %>
   <%= submit_tag "Search", :disable_with => "Searching..." %>
 <% end %>
