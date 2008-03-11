@@ -138,7 +138,7 @@ end
 def rest_error_response(message)
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><error/>")
   doc.root.add_text(message)
-  return doc.to_s
+  return doc
 end
 
 def rest_crud_request(rules)
