@@ -2,10 +2,9 @@ a {
 	font-weight: bold;
 }
 
-a span,
 a img,
-p span,
-p img {
+p img,
+li img {
 	vertical-align: middle;
 }
 
@@ -48,13 +47,24 @@ p img {
 	background-color: #D5E4F4;
 }
 
+#frontpage_body .stats {
+	text-align: center;
+	margin-top: 0.5em;
+	margin-bottom: 1.5em;	
+	padding: 0.7em 1em;
+	background-color: #D5E4F4;
+	font-weight: bold;
+	font-size: 108%;
+	color: #000033;
+}
+
 #frontpage_body .box {
 	float: left;
 	margin: 0;
 }
 
 #frontpage_body .box .content {
-	padding: 0.3em 0.8em;
+	padding: 0.1em 0.8em;
 	border-top: none;
 	border-right: #D5E4F4 1px solid;
 	border-bottom: none;
@@ -66,23 +76,42 @@ p img {
 }
 
 #frontpage_body .box .heading {
-	color: #333333; 
+	color: #000033; 
 	font-weight: bold; 
 	font-size: 116%; 
 	text-align: center; 
 }
 
+#frontpage_body .box .heading2 {
+	color: #000033; 
+	font-weight: bold;
+	font-size: 100%;
+	text-align: left !important;
+	padding-bottom: 0.3em !important;
+	border-bottom: 1px dotted #999999; 
+}
+
+#frontpage_body ul.use {
+	list-style: none;
+	margin-left: 1em;
+}
+
+#frontpage_body ul.use li {
+	list-style: none;
+	text-align: left;
+	margin: 0.8em;
+}
+
 #frontpage_body .box .links a {
-	display: block;
-	margin: 1em 0;
 	font-weight: bold;
 }
 
 #frontpage_body .box .links p {
 	text-align: center;
+	text-align: center;
 	padding: 0;
 	line-height: 1;
-	margin: 1em 0;
+	margin: 0.8em 0;
 	color: #333333;
 }
 
@@ -214,7 +243,7 @@ p img {
 }
 
 #frontpage_body .login p {
-	line-height: 1.4;
+	line-height: 1.2;
 	color: #333333;
 	margin: 0;
 	padding: 0.4em;
@@ -226,13 +255,3 @@ p img {
 }
 
 /* end login styles */
-
-#frontpage_body .stats {
-	text-align: center;
-	margin-bottom: 1em;	
-	padding: 0.7em 1em;
-	background-color: #D5E4F4;
-	font-weight: bold;
-	font-size: 108%;
-	color: #333333;
-}

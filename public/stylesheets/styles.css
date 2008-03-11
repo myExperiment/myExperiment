@@ -32,6 +32,7 @@ hr {
 h1,h2,h3,h4,h5,h6 {
 	font-family: arial;
 	line-height: 1.0;
+	color: #333333;
 }
 
 h1 {
@@ -48,13 +49,11 @@ h2 {
 	background-color: #EEEEEE;
 	padding: 0.5em 0.6em;
 	border: 1px solid #999999;
-	color: #333333;
 	font-size: 100%;
 }
 
 h3 {
 	background-color: transparent;
-	color: black;
 	font-size: 108%;
 	font-weight: bold;
 	border: none;
@@ -65,7 +64,6 @@ h3 {
 
 h4 {
 	background-color: transparent;
-	color: black;
 	font-size: 108%;
 	font-weight: bold;
 	border: none;
@@ -1120,7 +1118,7 @@ table.contributable:hover {
 .contribution_version_box .title {
 	font-size: 108%; 
 	font-weight: bold; 
-	color: #990000;
+	color: #660000;
 }
 
 .contribution_version_selector_box {
