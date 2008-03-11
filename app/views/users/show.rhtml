@@ -174,26 +174,26 @@
 				<div class="stats_box">
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.friends.length, "Friend"), currentusers_things_url('friends')) -%>
+			      	<%= link_to(pluralize(@user.friends.length, "Friend"), url_for(:action => 'friends')) -%>
 						</b> 
 			    </p>
 					
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.networks_owned.length, "Group") + " (admin)", currentusers_things_url('groups')) -%>
+			      	<%= link_to(pluralize(@user.networks_owned.length, "Group") + " (admin)", url_for(:action => 'groups')) -%>
 						</b> 
 			    </p>
 					
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.networks.length, "Group") + " (member)", currentusers_things_url('groups')) -%>
+			      	<%= link_to(pluralize(@user.networks.length, "Group") + " (member)", url_for(:action => 'groups')) -%>
 						</b> 
 			    </p>
 					
 					<% filter_contributables(@user.contributions).each do |klass,contributables| %>
 						<p>
 				      <b>
-				      	<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize)), currentusers_things_url(controller_visible_name(klass.humanize.pluralize).downcase)) %>
+				      	<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize)), url_for(:action => controller_visible_name(klass.humanize.pluralize).downcase)) %>
 							</b>
 				    </p>
 					<% end %>
