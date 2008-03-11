@@ -209,7 +209,7 @@ li img {
 #frontpage_body .box #login .xb2,
 #frontpage_body .box #login .xb3,
 #frontpage_body .box #login .xb4 {
-	background: #F5F5F5;
+	background: #EEEEEE;
 	border-left: 1px solid #AAAAAA;
 	border-right: 1px solid #AAAAAA;
 }
@@ -238,7 +238,7 @@ li img {
 	border-bottom: none;
 	border-left: 1px solid #AAAAAA;
 	border-right: 1px solid #AAAAAA;
-	background-color: #F5F5F5;
+	background-color: #EEEEEE;
 	padding: 0.2em 0.5em;
 }
 
@@ -248,6 +248,14 @@ li img {
 	margin: 0;
 	padding: 0.4em;
 	text-align: center;
+}
+
+#frontpage_body .login .submit {
+	border: none;
+	height: 25px;
+	width: 120px;
+	background: url('/images/login-button.png') no-repeat left top;
+	cursor: pointer;
 }
 
 #frontpage_body .login * {
