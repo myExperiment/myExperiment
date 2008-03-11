@@ -176,7 +176,7 @@
   <h4>Example curl request:</h4>
   <p><tt>curl <%= "#{url_for(:controller => '/', :only_path => false)}#{route[0]}.xml?id=#{get_example_id(attrs)}" %></tt></p>
 
-  <pre><%=h rest_example(route[1], route[2]['REST Entity'], route[2]['Model Entity'], 1, false) %></pre>
+  <pre><%=h rest_example(route[1], route[2]['REST Entity'], route[2]['Model Entity'], get_example_id(attrs).to_i, false) %></pre>
 
 <% end %>
 
@@ -241,5 +241,6 @@ these, "REST URIs" can be requested within each API response by including
 including <tt>api_version</tt> in the query.</p>
 
 <pre>  <%= try_it_now_link('GET', '/workflows.xml?api_version=yes') %></pre>
+
 
 
