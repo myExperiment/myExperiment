@@ -93,13 +93,13 @@ li img {
 
 #frontpage_body ul.use {
 	list-style: none;
-	margin-left: 1em;
+	margin-left: 2.5em;
 }
 
 #frontpage_body ul.use li {
 	list-style: none;
 	text-align: left;
-	margin: 0.8em;
+	margin: 0.8em 0;
 }
 
 #frontpage_body .box .links a {
@@ -263,3 +263,17 @@ li img {
 }
 
 /* end login styles */
+
+#frontpage_body ul#announcements {
+	list-style: none;
+	margin-left: 0.1em;
+	overflow: hidden;
+}
+
+#frontpage_body ul#announcements li {
+	list-style: none;
+	text-align: left;
+	margin: 0 0 1em 1.5em;
+	text-indent: -1em;
+}
+
