@@ -10,6 +10,8 @@ class NetworksController < ApplicationController
   before_filter :find_network, :only => [:membership_request, :show, :comment, :comment_delete, :tag]
   before_filter :find_network_auth, :only => [:membership_invite, :edit, :update, :destroy]
   
+  before_filter :invalidate_listing_cache, :only => [:update, :comment, :comment_delete, :tag, :destroy]
+  
   # GET /networks;search
   # GET /networks.xml;search
   def search
@@ -127,7 +129,7 @@ class NetworksController < ApplicationController
   def update
     respond_to do |format|
       if @network.update_attributes(params[:network])
-        refresh_tags(@network, params[:network][:tag_list], current_user) if params[:network][:tag_list]
+        @network.refresh_tags(convert_tags_to_gem_format(params[:network][:tag_list]), current_user) if params[:network][:tag_list]
         flash[:notice] = 'Group was successfully updated.'
         format.html { redirect_to group_url(@network) }
         format.xml  { head :ok }
@@ -232,6 +234,12 @@ protected
       @network = Network.find(params[:id], :conditions => ["user_id = ?", current_user.id])
     rescue ActiveRecord::RecordNotFound
       error("Network not found (id not authorized)", "is invalid (not owner)")
+    end
+  end
+  
+  def invalidate_listing_cache
+    if params[:id]
+      expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => params[:id])
     end
   end
   

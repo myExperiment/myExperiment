@@ -1,64 +1,66 @@
 <% query ||= false -%>
 <% odd_row = false -%>
-<% unless collection.empty? %>
+<% unless collection.empty? -%>
 	<table class="alt_table">
-		<% for network in collection %>
-			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-				<td style="width: 120px;">
-					<p style="margin-top:0; padding-top:0; text-align: center;"><b>Administrator:</b></p>
-					<center><%= contributor(network.user_id, "User", true, 80) %></center>
-				</td>
-				<td style="text-align: left;">
-					<p class="title">
-						<% if network.user_id == current_user.id %>
-							<%= icon "network-owner", nil, nil, nil, '' %>
-						<% else %>
-							<%= icon "network-member", nil, nil, nil, '' %>
-						<% end %>
-						<%=link_to(query ? highlight_all(h(network.title), query) : h(network.title), group_path(network)) %>
-					</p>
-					<p style="font-size: 85%;">
-						<% if network.unique_name and network.unique_name.length > 0 %>
-							<b>Unique name: </b><%=h network.unique_name %> | 
-						<% end %>
-						<b>Created: </b><%=datetime network.created_at, true %>
-					</p>
-					
-					<div class="desc" style="font-size: 85%;">
-						<% if network.description and network.description.length > 0 %>
-							<% desc = truncate(strip_html(network.description), 400) %>
-							<%= query ? highlight_all(desc, query) : desc %>
-						<% else -%>
-							<span class="none_text">No description</span>
-						<% end %>
-					</div>
-					
-					<p class="box_standout" style="margin-top: 0.4em;">
-						<b><%= pluralize network.shared_contributions.length, "shared item" -%></b>
-					</p>
-					
-					<% unless network.members.empty? %>
-						<div class="desc" style="margin-top: 0.4em;">
-							<p style="font-size: 85%;"><b>Members (<%= network.members.length %>):</b></p>
-							<div style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40 } %></div>
+		<% for network in collection -%>
+			<% cache(:controller => 'groups_cache', :action => 'listing', :id => network.id) do -%>
+				<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+					<td style="width: 120px;">
+						<p style="margin-top:0; padding-top:0; text-align: center;"><b>Administrator:</b></p>
+						<center><%= contributor(network.user_id, "User", true, 80) %></center>
+					</td>
+					<td style="text-align: left;">
+						<p class="title">
+							<% if network.user_id == current_user.id %>
+								<%= icon "network-owned", nil, nil, nil, '' %>
+							<% else %>
+								<%= icon "network-member", nil, nil, nil, '' %>
+							<% end %>
+							<%=link_to(query ? highlight_all(h(network.title), query) : h(network.title), group_path(network)) %>
+						</p>
+						<p style="font-size: 85%;">
+							<% if network.unique_name and network.unique_name.length > 0 %>
+								<b>Unique name: </b><%=h network.unique_name -%>
+							<% end %>
+							<b>Created: </b><%=datetime network.created_at, true -%>
+						</p>
+						
+						<div class="desc" style="font-size: 85%;">
+							<% if network.description and network.description.length > 0 -%>
+								<% desc = truncate(strip_html(network.description), 400) -%>
+								<%= query ? highlight_all(desc, query) : desc -%>
+							<% else -%>
+								<span class="none_text">No description</span>
+							<% end -%>
 						</div>
-					<% end %>
-					
-					<% unless (tags = network.tags).empty? %>
-						<p style="font-size: 85%;"><b>Tags:</b></p>
-						<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
-				  <% else %>
-						<p style="font-size: 85%;"><i>This Group has not been tagged yet!</i></p>
-				  <% end %>
-				</td>
-				<td class="actions">
-					<%= icon "show", group_path(network), nil, nil, "View" %> 
-					<% if mine? network %>
-						<%= icon "manage", edit_group_path(network) %>
-					<% end %>
-				</td>
-			</tr>
-		<% end %>
+						
+						<p class="box_standout" style="margin-top: 0.4em;">
+							<b><%= pluralize network.shared_contributions.length, "shared item" -%></b>
+						</p>
+						
+						<% unless network.members.empty? -%>
+							<div class="desc" style="margin-top: 0.4em;">
+								<p style="font-size: 85%;"><b>Members (<%= network.members.length %>):</b></p>
+								<div style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40 } %></div>
+							</div>
+						<% end -%>
+						
+						<% unless (tags = network.tags).empty? -%>
+							<p style="font-size: 85%;"><b>Tags:</b></p>
+							<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
+					  <% else -%>
+							<p style="font-size: 85%;"><i>This Group has not been tagged yet!</i></p>
+					  <% end -%>
+					</td>
+					<td class="actions">
+						<%= icon "show", group_path(network), nil, nil, "View" %> 
+						<% if mine? network -%>
+							<%= icon "manage", edit_group_path(network) %>
+						<% end -%>
+					</td>
+				</tr>
+			<% end -%>
+		<% end -%>
 	</table>
 	<br/>
-<% end %>
+<% end -%>

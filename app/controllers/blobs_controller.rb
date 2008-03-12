@@ -146,7 +146,7 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
-        refresh_tags(@blob, params[:blob][:tag_list], current_user) if params[:blob][:tag_list]
+        @blob.refresh_tags(convert_tags_to_gem_format(params[:blob][:tag_list]), current_user) if params[:blob][:tag_list]
         update_policy(@blob, params)
         update_credits(@blob, params)
         update_attributions(@blob, params)

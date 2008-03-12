@@ -195,9 +195,13 @@ class ApplicationController < ActionController::Base
       # First delete any Permission objects that don't have a checked entry in the form
       policy.permissions.each do |p|
         params[:group_sharing].each do |n|
+          # If a hash value with key 'id' wasn't returned then that means the checkbox was unchecked.
           unless n[1][:id]
             if p.contributor_type == 'Network' and p.contributor_id == n[0].to_i
               p.destroy
+              
+              # Invalidate the associated caches
+              expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => p.contributor_id)
             end
           end
         end
@@ -207,6 +211,7 @@ class ApplicationController < ActionController::Base
       params[:group_sharing].each do |n|
         
         # Note: n[1] is used because n is an array and n[1] returns it's value (which in turn is a hash)
+        # In this hash, is a value with key 'id' is present then the checkbox for that group was checked.
         if n[1][:id]
           
           n_id = n[1][:id].to_i
@@ -221,13 +226,19 @@ class ApplicationController < ActionController::Base
             perm.set_level!(level) if level
           end
           
+          # Invalidate the associated caches
+          expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => n_id)
+          
         else
           
-          n_id = n[1][:id].to_i
+          n_id = n[0].to_i
           
           # Delete permission if it exists (because this one is unchecked)
           if (perm = Permission.find(:first, :conditions => ["policy_id = ? AND contributor_type = ? AND contributor_id = ?", policy.id, 'Network', n_id]))
             perm.destroy
+            
+            # Invalidate the associated caches
+            expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => perm.contributor_id)
           end
           
         end
