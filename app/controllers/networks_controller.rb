@@ -204,13 +204,9 @@ class NetworksController < ApplicationController
 protected
 
   def find_networks
-    if params[:user_id]
-      @networks = Network.find(:all, 
-                               :conditions => ["user_id = ?", params[:user_id]], 
-                               :order => "title ASC",
-                               :page => { :size => 20, 
-                                          :current => params[:page] })
-    else  
+    # Only get all if REST API XML request has been made or 'all' action has been called.
+    # TODO: Don needs to check this for compliance.
+    if action_name == 'all' or (params[:format] and params[:format].downcase == 'xml')
       @networks = Network.find(:all, 
                                :order => "title ASC",
                                :page => { :size => 20, 
