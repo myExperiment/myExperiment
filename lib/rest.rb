@@ -32,7 +32,12 @@ def bad_rest_request
 end
 
 def file_column_url(ob, field)
-  "#{request.protocol}#{request.host_with_port}#{ActionView::Base.new.url_for_file_column(ob, field)}"
+
+  fields = (field.split('/').map do |f| "'#{f}'" end).join(', ')
+
+  path = eval("ActionView::Base.new.url_for_file_column(ob, #{fields})")
+
+  "#{request.protocol}#{request.host_with_port}#{path}"
 end
 
 def rest_get_request(ob, req_uri, uri, entity_name, query)
@@ -77,7 +82,7 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
 
       text = ''
 
-      unless accessor.nil?
+      unless accessor.nil? or model_data['Encoding'][i] == 'file-column'
         if query['version'] and model_data['Versioned'][i] == 'yes'
           text = eval("ob.versions[#{(query['version'].to_i - 1).to_s}].#{accessor}").to_s
         else
