@@ -24,6 +24,7 @@
   <li><a href="#search">General search</a></li>
   <li><a href="#elements">Element selection</a></li>
   <li><a href="#versions">Versions</a></li>
+  <li><a href="#sorting">Sorting</a></li>
   <li><a href="#pagination">Pagination</a></li>
   <li><a href="#tags">Index filtered by tag</a></li>
 <!--
@@ -208,6 +209,17 @@ specific version to be worked on by including <tt>version</tt> in the URI
 query.  For example:</p>
 
 <pre>  <%= try_it_now_link('GET', '/workflow.xml?id=20&version=1') %></pre>
+
+<h2 id="sorting">Sorting</h2>
+
+<p>Index and search requests can be sorted.  By default, these results are
+sorted by ascending creation order but sorting by update time, title and name
+is also possible.  In addition, the results can be returned in reverse
+order.</p>
+
+<pre>  <%= try_it_now_link('GET', '/workflows.xml?sort=title') %></pre>
+
+<pre>  <%= try_it_now_link('GET', '/files.xml?sort=title&order=reverse') %></pre>
 
 <h2 id="pagination">Pagination</h2>
 

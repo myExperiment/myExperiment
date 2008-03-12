@@ -200,7 +200,19 @@ def rest_index_request(rules, query)
       obs = []
     end
   else
-    obs = eval(model_name.camelize).find(:all, :page => part)
+
+    sort  = 'id'
+    order = 'ASC'
+
+    case query['sort']
+      when 'updated'; sort = 'updated_at' if eval(model_name.camelize).new.respond_to?('updated_at')
+      when 'title';   sort = 'title'      if eval(model_name.camelize).new.respond_to?('title')
+      when 'name';    sort = 'name'       if eval(model_name.camelize).new.respond_to?('name')
+    end
+
+    order = 'DESC' if query['order'] == 'reverse'
+
+    obs = eval(model_name.camelize).find(:all, :page => part, :order => "#{sort} #{order}")
   end
 
   # filter out ones they are not allowed to get
