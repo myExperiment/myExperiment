@@ -252,8 +252,8 @@ li img {
 
 #frontpage_body .login .submit {
 	border: none;
-	height: 25px;
-	width: 120px;
+	height: 26px;
+	width: 115px;
 	background: url('/images/login-button.png') no-repeat left top;
 	cursor: pointer;
 }
