@@ -45,12 +45,14 @@
 						<option value="Group" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
 						<option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
             <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>
-						<% if logged_in? %>
+						<% if logged_in? -%>
 							<option value="Message" <%= "selected" if ["messages"].include? controller.controller_name.to_s %>>Message</option>
-							<option value="Experiment" <%= "selected" if ["experiments"].include? controller.controller_name.to_s %>>Experiment</option>
-							<option value="Job" <%= "selected" if ["jobs"].include? controller.controller_name.to_s %>>Job</option>
 							<option value="Runner" <%= "selected" if ["runners"].include? controller.controller_name.to_s %>>Runner</option>
-						<% end %>
+							<% unless TavernaEnactor.for_user(current_user).empty? -%>
+								<option value="Experiment" <%= "selected" if ["experiments"].include? controller.controller_name.to_s %>>Experiment</option>
+								<option value="Job" <%= "selected" if ["jobs"].include? controller.controller_name.to_s %>>Job</option>
+							<% end -%>
+						<% end -%>
           </select>
           <%= submit_tag "GO" %>
         </p>

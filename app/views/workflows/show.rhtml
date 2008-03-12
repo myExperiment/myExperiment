@@ -205,29 +205,33 @@
 						</p>
 					</div>
 					
-					<p style="font-size: 138.5%; font-weight: bold; text-align: center; margin: 0.2em 0;">
-						OR
-					</p>
+					<% unless TavernaEnactor.for_user(current_user).empty? -%>
 					
-					<p style="text-align: center;">
-						<b>Run this Workflow Remotely</b>
-					</p>
-					<p style="font-size: 93%; text-align: center;">
-						<font style="color: #990000; font-weight: bold">Note:</font> 
-						you need to have access to a remote Taverna Execution Service in order to run Workflows through myExperiment. 
-						If you do, <%= link_to "register it as a 'Runner' here", new_runner_url -%>, then you can use it in Jobs to carry out the enactment. 
-						For more information, <%= link_to "contact us", "/feedback" -%>.
-					</p>
+						<p style="font-size: 138.5%; font-weight: bold; text-align: center; margin: 0.2em 0;">
+							OR
+						</p>
+						
+						<p style="text-align: center;">
+							<b>Run this Workflow Remotely</b>
+						</p>
+						<p style="font-size: 93%; text-align: center;">
+							<font style="color: #990000; font-weight: bold">Note:</font> 
+							you need to have access to a remote Taverna Execution Service in order to run Workflows through myExperiment. 
+							If you do, <%= link_to "register it as a 'Runner' here", new_runner_url -%>, then you can use it in Jobs to carry out the enactment. 
+							For more information, <%= link_to "contact us", "/feedback" -%>.
+						</p>
+						
+						<ul class="sectionIcons">
+							<li style="margin-left: 0;">
+								<%= icon 'run-now', 
+												 url_for(:controller => 'jobs', :action => 'new', :runnable_id => @workflow.id, :runnable_version => @viewing_version_number), 
+												 "Run this Workflow using a remote Taverna Enactor", 
+												 nil, 
+												 "Run Remotely" -%>
+							</li>
+						</ul>
 					
-					<ul class="sectionIcons">
-						<li style="margin-left: 0;">
-							<%= icon 'run-now', 
-											 url_for(:controller => 'jobs', :action => 'new', :runnable_id => @workflow.id, :runnable_version => @viewing_version_number), 
-											 "Run this Workflow using a remote Taverna Enactor", 
-											 nil, 
-											 "Run Remotely" -%>
-						</li>
-					</ul>
+					<% end -%>
 				</div>
 			<% else %>
 				<p class="none_text">
