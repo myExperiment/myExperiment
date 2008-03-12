@@ -275,6 +275,43 @@
 			
       <script language="javascript">document.getElementById('session[username]').focus();
       </script>
+
+      <script language="javascript">
+
+        div = document.getElementById('announcements')
+        div.updated = false;
+        div.innerHTML = '<li>Loading announcements...</li>';
+
+        xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('MSXML2.XMLHTTP.3.0');
+
+        xhr.open('GET', '/announcements.xml?num=3&order=reverse', true);
+        xhr.setRequestHeader('Accept', 'application/xml');
+
+        xhr.onreadystatechange = function() {
+
+          if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+
+              ans = xhr.responseXML.getElementsByTagName('announcement');
+              txt = '';
+
+              for (i = 0; i < ans.length; i++) {
+                txt += '<li><a href="' + ans[i].attributes.getNamedItem('resource').nodeValue +
+                  '">' + ans[i].firstChild.nodeValue + '</a></li>';
+              }
+
+              div.innerHTML = txt;
+
+            } else {
+              div.innerHTML = '<li>Announcements unavailable.</li>';
+            }
+          }
+        }
+
+        xhr.send(null);
+
+      </script>
+
 		</div>
 	</body>
 </html>
