@@ -27,7 +27,7 @@
         <div class="content">
           <ul class="gadget_list">
             <% current_user.friends.each do |friend| %>
-              <li><%= icon "user", nil, nil, nil, "" %> <%= link_to truncate(h(friend.name), gadget_characters_limit), user_path(friend) %></li>
+              <li><%= icon "user", nil, nil, nil, "" %> <%= link_to truncate(h(friend.name), gadget_characters_limit), user_path(friend), :title => tooltip_title_attrib(h(friend.name)) %></li>
             <% end %>
           </ul>
         </div>
@@ -42,10 +42,10 @@
         <div class="content">
           <ul class="gadget_list">
             <% current_user.networks_owned.each do |network_owned| %>
-              <li><%= icon "network-owned", nil, nil, nil, "" %> <%= link_to truncate(h(network_owned.title), gadget_characters_limit), group_path(network_owned) %></li>
+              <li><%= icon "network-owned", nil, nil, nil, "" %> <%= link_to truncate(h(network_owned.title), gadget_characters_limit), group_path(network_owned), :title => tooltip_title_attrib(h(network_owned.title)) %></li>
             <% end %>
             <% current_user.networks.each do |network_member| %>
-              <li><%= icon "network-member", nil, nil, nil, "" %> <%= link_to truncate(h(network_member.title), gadget_characters_limit), group_path(network_member) %></li>
+              <li><%= icon "network-member", nil, nil, nil, "" %> <%= link_to truncate(h(network_member.title), gadget_characters_limit), group_path(network_member), :title => tooltip_title_attrib(h(network_member.title)) %></li>
             <% end %>
           </ul>
         </div>
@@ -62,7 +62,7 @@
             <ul class="gadget_list">
               <% array.each do |instance| %>
                 <li>
-                  <%= icon klass.downcase, nil, nil, nil, "" %> <%= link_to contributable_name(instance.id, klass, gadget_characters_limit), contributable_url(instance.id, klass), :alt => contributable_name(instance.id, klass) %>
+                  <%= icon klass.downcase, nil, nil, nil, "" %> <%= link_to contributable_name(instance.id, klass, gadget_characters_limit), contributable_url(instance.id, klass), :alt => contributable_name(instance.id, klass), :title => tooltip_title_attrib(contributable_name(instance.id, klass)) %>
                 </li>
               <% end %>
             </ul>
