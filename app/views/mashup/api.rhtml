@@ -213,9 +213,10 @@ query.  For example:</p>
 <h2 id="sorting">Sorting</h2>
 
 <p>Index and search requests can be sorted.  By default, these results are
-sorted by ascending creation order but sorting by update time, title and name
-is also possible.  In addition, the results can be returned in reverse
-order.</p>
+sorted by ascending creation order but sorting by creation time
+(<tt>created</tt>), update time (<tt>updated</tt>), title (<tt>title</tt>) and
+name (<tt>name</tt>) is also possible.  In addition, the results can be
+returned in reverse order.</p>
 
 <pre>  <%= try_it_now_link('GET', '/workflows.xml?sort=title') %></pre>
 

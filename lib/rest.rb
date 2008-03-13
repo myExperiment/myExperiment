@@ -210,6 +210,7 @@ def rest_index_request(rules, query)
     order = 'ASC'
 
     case query['sort']
+      when 'created'; sort = 'created_at' if eval(model_name.camelize).new.respond_to?('created_at')
       when 'updated'; sort = 'updated_at' if eval(model_name.camelize).new.respond_to?('updated_at')
       when 'title';   sort = 'title'      if eval(model_name.camelize).new.respond_to?('title')
       when 'name';    sort = 'name'       if eval(model_name.camelize).new.respond_to?('name')
