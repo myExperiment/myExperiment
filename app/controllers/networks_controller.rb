@@ -210,13 +210,14 @@ protected
       @networks = Network.find(:all, 
                                :order => "title ASC",
                                :page => { :size => 20, 
-                                          :current => params[:page] })
+                                          :current => params[:page] },
+                               :include => [ :owner ])
     end
   end
 
   def find_network
     begin
-      @network = Network.find(params[:id])
+      @network = Network.find(params[:id], :include => [ :owner, :memberships ])
       @network_url = url_for :only_path => false,
                              :host => base_host,
                              :id => @network.id
@@ -227,7 +228,7 @@ protected
 
   def find_network_auth
     begin
-      @network = Network.find(params[:id], :conditions => ["user_id = ?", current_user.id])
+      @network = Network.find(params[:id], :conditions => ["networks.user_id = ?", current_user.id], :include => [ :owner, :memberships ])
     rescue ActiveRecord::RecordNotFound
       error("Network not found (id not authorized)", "is invalid (not owner)")
     end
