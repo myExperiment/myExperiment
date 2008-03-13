@@ -10,9 +10,6 @@ class ApplicationController < ActionController::Base
   
   WhiteListHelper.tags.merge %w(table tr td th div span)
   
-  include Sitealizer
-  before_filter :use_sitealizer
-
   include AuthenticatedSystem
   before_filter :login_from_cookie
   
