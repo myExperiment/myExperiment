@@ -7,6 +7,8 @@ class JobsController < ApplicationController
   
   before_filter :login_required
   
+  before_filter :check_runner_available, :only => [:new, :update]
+  
   before_filter :find_experiment_auth
   
   before_filter :find_jobs, :only => [:index]
@@ -287,6 +289,15 @@ protected
     
     return true
   end
+  
+  def check_runner_available
+    if TavernaEnactor.for_user(current_user).empty?
+      flash[:error] = "You cannot create a job until you have access to an enactment service registered as a runner here."
+      respond_to do |format|
+        format.html { redirect_to new_runner_url }
+      end
+    end
+  end
 
   def find_experiment_auth
     experiment = Experiment.find(:first, :conditions => ["id = ?", params[:experiment_id]])
@@ -323,7 +334,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to jobs_url(params[:experiment_id]) }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end
