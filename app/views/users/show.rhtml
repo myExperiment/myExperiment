@@ -204,7 +204,7 @@
 				<p>
 					<b>
 						<%= @user.name -%> has been credited
-						<%= link_to((pluralize @user.creditations.length, "time"), currentusers_things_url('creditations')) -%>
+						<%= link_to(pluralize(@user.creditations.length, "time"), url_for(:action => 'credits')) -%>
 					</b>
 				</p>
 			</div>
