@@ -325,31 +325,38 @@
       <% end %>
 
   <% when "Workflows" %>
-
+		
+		<%= view_privileges_notice %>
     <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Workflow' end).map do |c| c.contributable end  %>
     <%= render :partial => "workflows/anchors", :locals => { :collection => contributables } %>
     <%= render :partial => "workflows/table", :locals => { :collection => contributables } %>
 
   <% when "Files" %>
-
+		
+		<%= view_privileges_notice %>
     <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Blob' end).map do |c| c.contributable end  %>
     <%= render :partial => "blobs/table", :locals => { :collection => contributables } %>
 
   <% when "Forums" %>
     
+		<%= view_privileges_notice %>
     <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Forum' end).map do |c| c.contributable end  %>
     <%= render :partial => "forums/table", :locals => { :collection => contributables } %>
 
   <% when "Blogs" %>
-
+		
+		<%= view_privileges_notice %>
     <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Blog' end).map do |c| c.contributable end  %>
     <%= render :partial => "blogs/table", :locals => { :collection => contributables } %>
 
   <% when "Credits" %>
 
     <% unless (creditations = @user.creditations).empty? %>
+			<%= view_privileges_notice %>
       <% creditations.each do |c| %>
-        <%= render :partial => "contributions/table", :locals => {:collection => [c.creditable.contribution]} %>
+				<% if c.creditable %>
+        	<%= render :partial => "contributions/table", :locals => { :collection => [c.creditable.contribution] } %>
+				<% end %>
       <% end %>
     <% else %>
       <p class="none_text">No credits yet</p>

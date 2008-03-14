@@ -1081,6 +1081,13 @@ module ApplicationHelper
                    :action => thing)
   end
   
+  def view_privileges_notice
+    content_tag(:p, 
+                "Note: you will only be able to see the items here that you have at least view privileges for.",
+                :class => "box_currentuser_specific",
+                :style => "font-size: 93%; font-weight: bold; color: #990000;")
+  end
+  
 protected
 
   def contributor_news(contributor, before, after, depth, restrict_contributor)

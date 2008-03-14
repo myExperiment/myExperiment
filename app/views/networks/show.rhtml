@@ -91,21 +91,17 @@
   </div>
 </div>
 
-
 <div class="tabContainer">
   <div class="tabTitle">Shared Items</div>
   <div class="tabContent">
-		<p class="box_currentuser_specific">
-			Note: you will only be able to see the entries in here that you have at least view privileges for. So there may be some hidden items here.
-		</p>
 		<% unless (contributions = @network.shared_contributions).empty? %>
-  		<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
+  		<%= view_privileges_notice %>
+			<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
 		<% else %>
 			<p class="none_text">No items have been shared with this Group yet.</p>
 		<% end %>
 	</div>
 </div>
-
 
 <% if mine? @network %>
   

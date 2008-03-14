@@ -4,7 +4,13 @@
 
 <table class="alt_table">
 	<% for blob in collection %>
-		<% if blob.authorized?("show", (logged_in? ? current_user : nil)) %>
+		<% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
+		<% if collection.size == 1 -%>
+			<% show ||= blob.authorized?("show", current_user) -%>
+		<% else -%>
+			<% show = blob.authorized?("show", current_user) -%>
+		<% end -%>
+	  <% if show -%>
 			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 				<td style="width: 100px;">
 					<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
@@ -80,10 +86,10 @@
 				</td>
 				
 				<td class="actions" style="width: 80px;">
-			      <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", file_path(blob), nil, nil, "View" %><% end %>
-				  <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_file_path(blob) %><% end %>
-			      <% if logged_in? and blob.authorized?("edit", current_user) %><%= icon "manage", edit_file_path(blob), nil, nil, "Manage" %><% end %>
-			    </td>
+			    <%= icon "show", file_path(blob), nil, nil, "View" %>
+				  <% if blob.authorized?("download", current_user) %><%= icon "download", download_file_path(blob) %><% end %>
+			    <% if logged_in? and blob.authorized?("edit", current_user) %><%= icon "manage", edit_file_path(blob), nil, nil, "Manage" %><% end %>
+			  </td>
 			</tr>
 		<% end %>
 	<% end %>

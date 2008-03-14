@@ -5,7 +5,12 @@
 
 <table class="alt_table">	
 	<% for workflow in collection %>
-		<% show = workflow.authorized?("show", (logged_in? ? current_user : nil)) -%>
+		<% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
+		<% if collection.size == 1 -%>
+			<% show ||= workflow.authorized?("show", current_user) -%>
+		<% else -%>
+			<% show = workflow.authorized?("show", current_user) -%>
+		<% end -%>
 	  <% if show -%>
 			<% cache(:controller => 'workflows_cache', :action => 'listing', :id => workflow.id) do -%>
 			  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
@@ -102,8 +107,8 @@
 					  <% end %>	
 			    </td>
 			    <td class="actions" style="width: 85px;">
-			      <% if show %><%= icon "show", workflow_path(workflow), nil, nil, "View" %><% end %>
-				  	<% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
+			      <%= icon "show", workflow_path(workflow), nil, nil, "View" %>
+				  	<% if workflow.authorized?("download", current_user) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
 			      <% if logged_in? and workflow.authorized?("edit", current_user) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
 			    </td>
 			  </tr>
