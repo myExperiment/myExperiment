@@ -60,3 +60,5 @@ ADDTHIS_WIDGET_USERNAME = "addthis.com username"
 # END addthis.com bookmarking widget settings
 # ---
 
+# The number of seconds for the cache timeout
+CACHE_TIMEOUT_SECS = 120

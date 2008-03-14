@@ -235,8 +235,8 @@ protected
   end
   
   def invalidate_listing_cache
-    if params[:id]
-      expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => params[:id])
+    if @network
+      expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => @network.id)
     end
   end
   

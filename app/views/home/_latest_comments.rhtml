@@ -1,0 +1,37 @@
+<!-- Latest Comments -->
+<% cache_timeout({:controller => 'home_cache', :action => 'latest_comments', :id => (logged_in? ? current_user.id : 0)}, 
+								CACHE_TIMEOUT_SECS.seconds.from_now) do -%>
+<div class="box">
+	<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+	<div class="title">
+		Latest Comments
+	</div>
+	<div class="content">
+		<% unless (comments = Comment.latest).empty? %>
+			<ul class="list">
+				<% comments.each do |c| %>
+					<% if thing_authorized?('show', c.commentable) %>
+						<li>
+							<b><%= c_type = visible_name(c.commentable); icon(c.commentable_type.to_s, nil, nil, c_type, c_type) %>:</b>
+							<span><%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %></span>
+							<br/>
+							<span style="padding-left: 2em;">
+								<b><%= name c.user %></b> said:
+								(<%= timeago_fuzzy c.created_at %>)
+							</span>
+							<div class="box_standout" style="font-size: 85%; margin: 0.4em 2em; padding: 0.2em 0.5em;">
+								<%= truncate(strip_html(white_list(c.comment)), 150) %>
+								<p style="text-align: right;">[ <%= link_to "More", (c.commentable_type == 'Network' ? group_url(c.commentable) : contributable_url(c.commentable_id, c.commentable_type)) %> ]</p>
+							</div>
+							<br/>
+						</li>
+					<% end %>
+				<% end %>
+			</ul>
+		<% else %>
+			<p class="none_text">None</p>
+		<% end %>
+	</div>
+	<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+</div>
+<% end -%>

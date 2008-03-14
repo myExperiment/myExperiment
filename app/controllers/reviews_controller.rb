@@ -20,6 +20,8 @@ class ReviewsController < ApplicationController
   
   before_filter :invalidate_listing_cache, :only => [ :create, :update, :destroy ]
   
+  before_filter :invalidate_home_cache, :only => [:update, :destroy]
+  
   def index
     respond_to do |format|
       format.html # index.rhtml
@@ -157,8 +159,14 @@ protected
   end
   
   def invalidate_listing_cache
-    if params[:workflow_id]
-      expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => params[:workflow_id])
+    if @workflow
+      expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => @workflow.id)
+    end
+  end
+  
+  def invalidate_home_cache
+    if @review
+      expire_fragment(:controller => 'home_cache', :action => 'latest_reviews_listing', :id => @review.id)
     end
   end
 

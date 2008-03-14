@@ -1,0 +1,29 @@
+<!-- Latest Groups -->
+<% cache_timeout({:controller => 'home_cache', :action => 'latest_groups', :id => (logged_in? ? current_user.id : 0)}, 
+								 CACHE_TIMEOUT_SECS.seconds.from_now) do -%>
+	<div class="box">
+		<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+		<div class="title">
+			Latest Groups
+		</div>
+		<div class="content">
+			<% unless (groups = Network.recently_created).empty? %>
+				<ul class="list" style="font-size: 85%;">
+					<% groups.each do |g| %>
+						<% if thing_authorized?('show', g) %>
+							<li>
+								<%= icon('network', nil, nil, 'group icon', '') %>
+								<b><%= link_to g.title, group_path(g) %></b> 
+								by <b><%= contributor(g.owner, 'User') %></b>
+								(<%= timeago_fuzzy g.created_at %>)
+							</li>
+						<% end %>
+					<% end %>
+				</ul>
+			<% else %>
+				<p class="none_text">None</p>
+			<% end %>
+		</div>
+		<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+	</div>
+<% end -%>

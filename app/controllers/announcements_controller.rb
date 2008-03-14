@@ -8,6 +8,8 @@ class AnnouncementsController < ApplicationController
   
   before_filter :find_announcements, :only => [:index]
   
+  before_filter :invalidate_home_cache, :only => [:create, :update, :destroy]
+  
   def index
     respond_to do |format|
       format.html # index.rhtml
@@ -67,5 +69,9 @@ protected
   
   def find_announcements
     @announcements = Announcement.find(:all, :order => "created_at DESC")
+  end
+  
+  def invalidate_home_cache
+    expire_fragment(:controller => 'home_cache', :action => 'announcements')
   end
 end

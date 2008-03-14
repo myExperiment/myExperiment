@@ -294,7 +294,7 @@ li {
 	background-image: url('/images/tab-bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
-	background-color: #F5F5F5;
+	background-color: #EEEEEE;
 }
 
 .tabnav li a:link {
@@ -486,8 +486,8 @@ ul.breadcrumb_list a:hover {
 
 #home_container .list li {
 	list-style-type: none;
-	margin: 1em 0;
-	line-height: 1.4;
+	margin: 1.2em 0;
+	line-height: 1.5;
 }
 
 /* begin css rounded corners - based on "Snazzy Corners" */

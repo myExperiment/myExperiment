@@ -1,0 +1,20 @@
+<!-- News -->
+<% cache_timeout({:controller => 'home_cache', :action => 'news', :id => (logged_in? ? current_user.id : 0)}, 
+								 CACHE_TIMEOUT_SECS.seconds.from_now) do -%>
+	<div class="box">
+		<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+		<div class="title">
+			My News
+		</div>
+		<div class="content">
+			<% if logged_in? %>
+				<%= render :partial => "layouts/news", :locals => { :collection => news(current_user, false) } %>
+			<% else %>
+				<p>
+					<b><%= link_to "Log in", new_session_url %> to view your News</b>
+				</p>
+			<% end %>
+		</div>
+		<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+	</div>
+<% end -%>

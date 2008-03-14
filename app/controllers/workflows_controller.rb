@@ -512,8 +512,8 @@ protected
   end
   
   def invalidate_listing_cache
-    if params[:id]
-      expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => params[:id])
+    if @workflow
+      expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => @workflow.id)
     end
   end
   

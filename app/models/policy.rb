@@ -23,6 +23,9 @@ class Policy < ActiveRecord::Base
       # false unless correct policy for contribution
       return false unless c_ution.policy.id.to_i == id.to_i
     end
+    
+    # Authenticated system sets current_user to 0 if not logged in
+    c_utor = nil if c_utor == 0
       
     # false unless action can be categorized
     return false unless category = categorize(action_name)

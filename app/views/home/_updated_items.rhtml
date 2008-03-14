@@ -1,0 +1,29 @@
+<!-- Updated Items -->
+<% cache_timeout({:controller => 'home_cache', :action => 'updated_items', :id => (logged_in? ? current_user.id : 0)}, 
+								 CACHE_TIMEOUT_SECS.seconds.from_now) do -%>
+	<div class="box">
+		<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+		<div class="title">
+			Updated Items
+		</div>
+		<div class="content">
+			<% unless (contributions = Contribution.last_updated(15)).empty? %>
+				<ul class="list">
+					<% contributions.each do |c| %>
+						<% if thing_authorized?('show', c) %>
+							<li>
+								<b><%= c_type = visible_name(c.contributable); icon(c.contributable_type.to_s, nil, nil, c_type, c_type) %>:</b>
+								<%= c.contributable_type == 'Network' ? title(c.contributable_id) : contributable(c.contributable_id, c.contributable_type) %>
+								by <b><%= contributor(c.contributor_id, c.contributor_type) %></b>
+								(<%= timeago_fuzzy c.updated_at %>)
+							</li>
+						<% end %>
+					<% end %>
+				</ul>
+			<% else %>
+				<p class="none_text">None</p>
+			<% end %>
+		</div>
+		<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+	</div>
+<% end -%>
