@@ -7,7 +7,7 @@ class PicturesController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_pictures, :only => [:index]
-  before_filter :find_picture, :only => [:show]
+# before_filter :find_picture, :only => [:show]
   before_filter :find_picture_auth, :only => [:select, :edit, :update, :destroy]
   
   # GET /users/1/pictures/1/select
@@ -46,10 +46,15 @@ class PicturesController < ApplicationController
     size = params[:size] || "200x200"
     size = size[0..-($1.length.to_i + 2)] if size =~ /[0-9]+x[0-9]+\.([a-z0-9]+)/ # trim file extension
     
-    if cache_exists?(@picture, size) # look in file system cache before attempting db access
-      send_file(full_cache_path(@picture, size), :type => 'image/jpeg', :disposition => 'inline')
+    id = params[:id].to_i
+
+    if cache_exists?(id, size) # look in file system cache before attempting db access
+      send_file(full_cache_path(id, size), :type => 'image/jpeg', :disposition => 'inline')
     else
-      # resize and encode the picture
+
+      find_picture
+
+      # resize and encomde the picture
       @picture.resize!(:size => size)
       @picture.to_jpg!
       
@@ -190,9 +195,11 @@ private
   end
   
   def cache_path(picture, size=nil, include_local_name=false)
+
+    id = picture.kind_of?(Integer) ? picture : picture.id
     rtn = "#{RAILS_ROOT}/public/pictures/show"
     rtn = "#{rtn}/#{size}" if size
-    rtn = "#{rtn}/#{picture.id}.jpg" if include_local_name
+    rtn = "#{rtn}/#{id}.jpg" if include_local_name
     
     return rtn
   end
