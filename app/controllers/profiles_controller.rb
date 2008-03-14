@@ -10,6 +10,8 @@ class ProfilesController < ApplicationController
   before_filter :find_profile, :only => [:show]
   before_filter :find_profile_auth, :only => [:edit, :update, :destroy]
   
+  before_filter :invalidate_listing_cache, :only => [:update, :destroy]
+  
   # GET /profiles
   # GET /profiles.xml
   def index
@@ -147,6 +149,12 @@ protected
       end
     rescue ActiveRecord::RecordNotFound
       error("Profile not found (id not authorized)", "is invalid (not owner)")
+    end
+  end
+  
+  def invalidate_listing_cache
+    if @profile
+      expire_fragment(:controller => 'users_cache', :action => 'listing', :id => @profile.user_id)
     end
   end
   

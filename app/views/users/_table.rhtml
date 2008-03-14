@@ -6,53 +6,83 @@
 		<% odd_row = false -%> 
 		<% for user in collection %>
 			<% if user.activated? %>
-		  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-			    <td width="100px"><%= avatar user, 60 %></td>
-			    <td class="mid" style="text-align: left;">
-			    	<p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
-						<%= if user.profile then flag_icon(user.profile.location_country, user.profile.location) end %>
-						<%= name user.id %>
-						<%= friend_badge(user) %>
-						<%= admin_badge(user) %>
-					</p>
-					
-					<div class="desc" style="font-size: 85%;">
-						<% if user.profile.body and user.profile.body.length > 0 %>
-				  		<% desc = truncate(strip_html(user.profile.body), 180) %>
-							<%= query ? highlight_all(desc, query) : desc %>
-						<% else -%>
-							<span class="none_text">No description</span>	
-						<% end %>
-					</div>
+				<% cache(:controller => 'users_cache', :action => 'listing', :id => user.id) do -%>
+			  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+				    <td width="100px"><%= avatar user, 60 %></td>
+				    <td class="mid" style="text-align: left;">
+				    	<p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
+								<%= if user.profile then flag_icon(user.profile.location_country, user.profile.location) end %>
+								<%= name user.id %>
+								<%= friend_badge(user) %>
+								<%= admin_badge(user) %>
+							</p>
 						
-					<% if user.profile %>
-						<p style="font-size: 85%;">
-							<% if user.profile.website %>
-								<b>Website:</b>
-								<%= link_to h(user.profile.website), h(user.profile.website), :popup => true %>
-							<% end %>
-						</p>
-					<% end %>
-					
-					<% if user.last_seen_at %>
-						<p style="font-size: 85%;">
-							<b>Last active:</b>
-							<%= datetime user.last_seen_at %>
-						</p>
-					<% end %>
-				</td>
-			    <td class="actions"  style="width: 130px;">
-		      		<%= icon "show", user_path(user.id), nil, nil, "View Profile" %>
-		      		<% if mine? user %>
-			        	<%= icon "edit", edit_user_path(user), nil, nil, "Edit" %>
-					<% else %>
-						<% unless user.friend? current_user.id %>
-							<%= icon "friendship", new_friendship_url(:user_id => user.id), nil, nil, "Request Friendship" %>
+						<% unless user.created_at.blank? %>
+							<p style="font-size: 85%;">
+								<b>Joined:</b>
+								<%= datetime user.created_at %>
+							</p>
 						<% end %>
-						<%= icon "message", new_message_path(:user_id => user.id), nil, nil, "Send Message" %>
-		      		<% end %>
-		    	</td>
-		  	</tr>
+						
+						<div class="desc" style="font-size: 85%;">
+							<% unless user.profile.body.blank? %>
+					  		<% desc = truncate(strip_html(user.profile.body), 180) %>
+								<%= query ? highlight_all(desc, query) : desc %>
+							<% else -%>
+								<span class="none_text">No description</span>	
+							<% end %>
+						</div>
+						
+						<% unless user.last_seen_at.blank? %>
+							<p style="font-size: 85%;">
+								<b>Last active:</b>
+								<%= datetime user.last_seen_at %>
+							</p>
+						<% end %>
+						
+						<% if user.profile %>
+						
+							<p style="font-size: 85%;">
+								<% unless user.profile.website.blank? %>
+									<b>Website:</b>
+									<%= link_to h(user.profile.website), h(user.profile.website), :popup => true %>
+									|
+								<% end %>
+								
+								<% unless user.profile.email.blank? %>
+									<b>Email (public):</b>
+						    	<%= mail_to user.profile.email, nil, {  :encode => "hex", :replace_at => " [at] " } %>
+								<% end %>
+							</p>
+								
+							<p style="font-size: 85%;">
+								<% unless user.profile.field_or_industry.blank? %>
+							    <b>Field/Industry:</b>
+									<%= h user.profile.field_or_industry %>
+									|
+							  <% end %>
+								
+								<% unless user.profile.occupation_or_roles.blank? %>
+							    <b>Occupation/Role(s):</b>
+									<%= h user.profile.occupation_or_roles %>
+							  <% end %>
+							</p>
+						
+						<% end %>
+					</td>
+				    <td class="actions"  style="width: 130px;">
+			      		<%= icon "show", user_path(user.id), nil, nil, "View Profile" %>
+			      		<% if mine? user %>
+				        	<%= icon "edit", edit_user_path(user), nil, nil, "Edit" %>
+						<% else %>
+							<% unless user.friend? current_user.id %>
+								<%= icon "friendship", new_friendship_url(:user_id => user.id), nil, nil, "Request Friendship" %>
+							<% end %>
+							<%= icon "message", new_message_path(:user_id => user.id), nil, nil, "Send Message" %>
+			      		<% end %>
+			    	</td>
+			  	</tr>
+				<% end %>
 			<% end %>
 		<% end %>
 	</table>

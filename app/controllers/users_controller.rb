@@ -14,6 +14,8 @@ class UsersController < ApplicationController
   before_filter :find_user, :only => show_actions
   before_filter :find_user_auth, :only => [:edit, :update, :destroy]
   
+  before_filter :invalidate_listing_cache, :only => [:update, :destroy]
+  
   # GET /users;search
   # GET /users.xml;search
   def search
@@ -34,11 +36,6 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.xml
   def index
-    @users.each do |user|
-      user.salt = nil
-      user.crypted_password = nil
-    end
-    
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @users.to_xml }
@@ -326,12 +323,21 @@ class UsersController < ApplicationController
 protected
 
   def find_users
-    @users = User.find(:all, 
-                       :order => "users.name ASC",
-                       :page => { :size => 20, 
-                                  :current => params[:page] },
-                       :conditions => "users.activated_at IS NOT NULL",
-                       :include => :profile)
+    # Only get all if REST API XML request has been made or 'all' action has been called.
+    # TODO: Don needs to check this for compliance.
+    if action_name == 'all' or (params[:format] and params[:format].downcase == 'xml')
+      @users = User.find(:all, 
+                         :order => "users.name ASC",
+                         :page => { :size => 20, 
+                                    :current => params[:page] },
+                         :conditions => "users.activated_at IS NOT NULL",
+                         :include => :profile)
+                         
+      @users.each do |user|
+        user.salt = nil
+        user.crypted_password = nil
+      end
+    end
   end
 
   def find_user
@@ -359,6 +365,12 @@ protected
     
     unless @user.activated?
       error("User not activated (id not authorized)", "is invalid (not owner)")
+    end
+  end
+  
+  def invalidate_listing_cache
+    if params[:id]
+      expire_fragment(:controller => 'users_cache', :action => 'listing', :id => params[:id])
     end
   end
   

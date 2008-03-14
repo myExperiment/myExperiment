@@ -13,9 +13,9 @@
   </div>
 <% end %>
 
-<% unless (updated = User.last_updated).empty? %>
+<% unless (updated = User.last_updated(10)).empty? %>
   <div class="tabContainer">
-  	<div class="tabTitle">Last Updated</div>
+  	<div class="tabTitle">Last Active</div>
   	<div class="tabContent">
 	    <%= render :partial => "users/table", :locals => { :collection => updated } %>
   	</div>
