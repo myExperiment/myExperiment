@@ -31,6 +31,7 @@
   <li><a href="#rest-uris">REST URIs</a></li>
 -->
   <li><a href="#api-version">API version</a></li>
+  <li><a href="#errors">Error responses</a></li>
 </ul>
 
 <h2 id="try-it-out">Try it out</h2>
@@ -255,5 +256,38 @@ including <tt>api_version</tt> in the query.</p>
 
 <pre>  <%= try_it_now_link('GET', '/workflows.xml?api_version=yes') %></pre>
 
+<h2 id="errors">Error responses</h2>
 
+<p>The general format of an error response from the REST API is an XML document
+with an <tt>error</tt> element.  The <tt>code</tt> attribute contains a number
+that determines the class of error.  The <tt>message</tt> attribute of the
+error element contains a human readable message describing the error.</p>
+
+<h3>Example error response</h3>
+
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt; 
+&lt;error message="Resource not found" code="404"/&gt; 
+</pre>
+
+<h3>Error messages</h3>
+
+<div class="rest_table" summary="">
+  <table>
+    <thead>
+      <tr>
+        <td>Message</td>
+        <td>Code</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Resource not found</td><td>404</td></tr>
+        <td>Not authorized</td><td>403</td></tr>
+        <td>Resource not versioned</td><td>400</td></tr>
+        <td>Resource version not found</td><td>404</td></tr>
+      </tr>
+    </tbody>
+  </table>
+</div>
 

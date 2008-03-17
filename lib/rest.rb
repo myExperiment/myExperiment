@@ -43,9 +43,9 @@ end
 def rest_get_request(ob, req_uri, uri, entity_name, query)
 
   if query['version']
-    return rest_error_response('Resource not versioned') unless ob.respond_to?('versions')
-    return rest_error_response('Version not found') if query['version'].to_i < 1
-    return rest_error_response('Version not found') if ob.versions[query['version'].to_i - 1].nil?
+    return rest_error_response(400, 'Resource not versioned') unless ob.respond_to?('versions')
+    return rest_error_response(404, 'Resource version not found') if query['version'].to_i < 1
+    return rest_error_response(404, 'Resource version not found') if ob.versions[query['version'].to_i - 1].nil?
   end
 
   elements = query['elements'] ? query['elements'].split(',') : nil
@@ -140,9 +140,10 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
   doc
 end
 
-def rest_error_response(message)
+def rest_error_response(code, message)
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><error/>")
-  doc.root.add_text(message)
+  doc.root.add_attribute("code", code.to_s)
+  doc.root.add_attribute("message", message)
   return doc
 end
 
@@ -155,7 +156,7 @@ def rest_crud_request(rules)
 
   ob = eval(model_name.camelize).find_by_id(params[:id].to_i)
 
-  return rest_error_response('Not found') if ob.nil?
+  return rest_error_response(404, 'Resource not found') if ob.nil?
 
   perm_ob = ob
 
@@ -163,8 +164,8 @@ def rest_crud_request(rules)
 
   case rules['Permission']
     when 'public'; # do nothing
-    when 'view'; return rest_error_response('Not authorized') if not perm_ob.authorized?("show", (logged_in? ? current_user : nil))
-    when 'owner'; return rest_error_response('Not authorized') if logged_in?.nil? or object_owner(perm_ob) != current_user
+    when 'view'; return rest_error_response(403, 'Not authorized') if not perm_ob.authorized?("show", (logged_in? ? current_user : nil))
+    when 'owner'; return rest_error_response(403, 'Not authorized') if logged_in?.nil? or object_owner(perm_ob) != current_user
   end
 
   response.content_type = "application/xml"
