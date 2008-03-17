@@ -155,7 +155,7 @@ def rest_crud_request(rules)
 
   ob = eval(model_name.camelize).find_by_id(params[:id].to_i)
 
-  return rest_error_response('Not authorized') if ob.nil?
+  return rest_error_response('Not found') if ob.nil?
 
   perm_ob = ob
 
