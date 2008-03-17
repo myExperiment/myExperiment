@@ -1,20 +1,17 @@
 <!-- New Users -->
-<% cache_timeout({:controller => 'home_cache', :action => 'new_users', :id => (logged_in? ? current_user.id : 0)}, 
-								 CACHE_TIMEOUT_SECS.seconds.from_now) do -%>
-	<div class="box">
-		<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-		<div class="title">
-			New Users
-		</div>
-		<div class="content">
-			<% unless (users = User.most_recent(6)).empty? %>
-				<div style="font-size: 93%;">
-					<%= render :partial => "users/hlist", :locals => { :collection => users, :size => 60 } %>
-				</div>
-			<% else %>
-				<p class="none_text">None</p>
-			<% end %>
-		</div>
-		<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+<div class="box">
+	<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+	<div class="title">
+		New Users
 	</div>
-<% end -%>
+	<div class="content">
+		<% unless (users = User.most_recent(6)).empty? %>
+			<div style="font-size: 93%;">
+				<%= render :partial => "users/hlist", :locals => { :collection => users, :size => 60 } %>
+			</div>
+		<% else %>
+			<p class="none_text">None</p>
+		<% end %>
+	</div>
+	<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+</div>

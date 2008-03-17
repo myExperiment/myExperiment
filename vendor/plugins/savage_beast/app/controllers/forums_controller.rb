@@ -3,7 +3,7 @@ class ForumsController < ApplicationController
   
   before_filter :find_forums, :only => [:index]
   before_filter :find_forum_auth, :only => [:edit, :show, :update, :destroy]
-
+  
   helper :application
   
   def index
@@ -99,29 +99,30 @@ class ForumsController < ApplicationController
     end
   end
   
-  protected
-    def find_forums
-      @forums = Forum.find(:all, :order => "position")
-    end
-  
-    def find_forum_auth
-      begin
-        forum = Forum.find(params[:id])
-        
-        if forum.authorized?(action_name, (logged_in? ? current_user : nil))
-          @forum = forum
-        else
-          if logged_in? 
-            error("Forum not found (id not authorized)", "is invalid (not authorized)")
-          else
-            find_forum_auth if login_required
-          end
-        end
-      rescue ActiveRecord::RecordNotFound
-        error("Forum not found", "is invalid")
-      end
-    end
+protected
 
+  def find_forums
+    @forums = Forum.find(:all, :order => "position")
+  end
+
+  def find_forum_auth
+    begin
+      forum = Forum.find(params[:id])
+      
+      if forum.authorized?(action_name, (logged_in? ? current_user : nil))
+        @forum = forum
+      else
+        if logged_in? 
+          error("Forum not found (id not authorized)", "is invalid (not authorized)")
+        else
+          find_forum_auth if login_required
+        end
+      end
+    rescue ActiveRecord::RecordNotFound
+      error("Forum not found", "is invalid")
+    end
+  end
+  
 private
 
   def error(notice, message, attr=:id)

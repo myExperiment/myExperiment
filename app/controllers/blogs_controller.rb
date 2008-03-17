@@ -8,7 +8,7 @@ class BlogsController < ApplicationController
   
   before_filter :find_blogs, :only => [:index]
   #before_filter :find_blog_auth, :only => [:show, :edit, :update, :destroy]
-  before_filter :find_blog_auth, :except => [:index, :new, :create]
+  before_filter :find_blog_auth, :except => [:index, :new, :create, :update, :destroy]
   
   # GET /blogs
   # GET /blogs.xml

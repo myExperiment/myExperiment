@@ -8,6 +8,8 @@
 
 class ApplicationController < ActionController::Base
   
+  after_filter :invalidate_home_cache_for_current_user
+  
   WhiteListHelper.tags.merge %w(table tr td th div span)
   
   include AuthenticatedSystem
@@ -451,5 +453,46 @@ class ApplicationController < ActionController::Base
       a.save
     end
     
+  end
+  
+protected
+  
+  # Handle ALL fragment cache invalidations (EXCEPT site announcements) for the 'Home' page in this one method
+  def invalidate_home_cache_for_current_user
+    puts "Hitting invalidate_home_cache_for_current_user method in application controller"
+    
+    if logged_in?
+      
+      # Updated Items box
+      if ["workflows", "blobs", "blogs", "forums"].include?(controller_name) and
+        ["create", "update", "destroy", "destroy_version", "update_version"].include?(action_name)
+        expire_timeout_fragment(:controller => 'home_cache', :action => 'updated_items', :id => current_user.id)
+      end
+      
+      # Latest Reviews box
+      if ["reviews", "workflows"].include?(controller_name) and
+        ["create", "update", "destroy", "destroy_version", "update_version"].include?(action_name)
+        expire_timeout_fragment(:controller => 'home_cache', :action => 'latest_reviews', :id => current_user.id)
+      end
+      
+      # Latest Comments box
+      if ["workflows", "blobs", "networks"].include?(controller_name) and
+        ["comment", "comment_delete", "update", "destroy", "destroy_version", "update_version"].include?(action_name)
+        expire_timeout_fragment(:controller => 'home_cache', :action => 'latest_comments', :id => current_user.id)
+      end
+      
+      # Latest Groups box
+      if ["networks"].include?(controller_name) and
+        ["create", "update", "destroy"].include?(action_name)
+        expire_timeout_fragment(:controller => 'home_cache', :action => 'latest_groups', :id => current_user.id)
+      end
+      
+      # Latest Tags box
+      if ["workflows", "blobs", "networks"].include?(controller_name) and
+        ["tag", "create", "update", "destroy", "destroy_version", "update_version"].include?(action_name)
+        expire_timeout_fragment(:controller => 'home_cache', :action => 'latest_tags', :id => current_user.id)
+      end
+      
+    end
   end
 end
