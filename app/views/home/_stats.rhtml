@@ -1,0 +1,7 @@
+<div class="stats">
+	myExperiment currently has
+	<%= pluralize User.count(:conditions => "users.activated_at IS NOT NULL"), "user" -%>,
+	<%= pluralize Network.count, "group" -%>,
+	<%= pluralize Workflow.count, "workflow" -%> and
+	<%= pluralize Blob.count, "file" -%>.
+</div>

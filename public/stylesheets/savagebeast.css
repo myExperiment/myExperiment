@@ -23,7 +23,7 @@
 	margin-top:1em;
 	float:left;
 	width:19%;
-	font-family:'Lucida Grande', 'Trebuchet MS', Arial, Helvetica, sans-serif;
+	/* font-family:'Lucida Grande', 'Trebuchet MS', Arial, Helvetica, sans-serif; */
 	margin-left:1.25em;
 	margin-left:3%;
 	margin-right:0;
@@ -46,7 +46,7 @@
 {
 	margin:0 auto;
 	margin-bottom:1em;
-	font-family:'Lucida Grande', Tahoma, Arial, Helvetica, sans-serif;
+	/* font-family:'Lucida Grande', Tahoma, Arial, Helvetica, sans-serif; */
 	font-size:0.75em;
 	color:#333;
 	
@@ -138,7 +138,7 @@ p.sections a.action { color:#c00; }
 
 h1,h2,h3,h4,h5,h6
 {
-font-family:'Lucida Grande', 'Trebuchet MS', Arial, Helvetica, sans-serif;	
+/* font-family:'Lucida Grande', 'Trebuchet MS', Arial, Helvetica, sans-serif; */	
 }
 
 h1 {	
@@ -149,7 +149,7 @@ h1 img { vertical-align:middle; }
 
 p.subtitle
 {
-	font-family: 'Lucida Grande', Tahoma, Arial, Helvetica, sans-serif;
+	/* font-family: 'Lucida Grande', Tahoma, Arial, Helvetica, sans-serif; */
 	font-size:0.75em;
 	color:#888;
 	font-weight:bold;
@@ -176,7 +176,7 @@ h3
   color:white;
 	font-size:0.70em;
   border-bottom:1px solid #999;
-  font-family: 'Lucida Grande', Tahoma, Arial, Helvetica, sans-serif;
+  /* font-family: 'Lucida Grande', Tahoma, Arial, Helvetica, sans-serif; */
 }
 
 h6 { margin-bottom:0; }
@@ -385,7 +385,7 @@ div.upload a
 
 p
 {
-	font-family:'Lucida Grande', 'Trebuchet MS', Arial, Helvetica, sans-serif;
+	/* font-family:'Lucida Grande', 'Trebuchet MS', Arial, Helvetica, sans-serif; */
 }
 
 
@@ -446,7 +446,7 @@ p
 #header ul#nav li
 {
 	color:gold;
-	font-family:'Lucida Grande', Verdana, Arial, Helvetica, sans-serif;
+	/* font-family:'Lucida Grande', Verdana, Arial, Helvetica, sans-serif; */
 	font-size:0.7em;
 	float:left;
 	margin-left:2em;
@@ -500,9 +500,9 @@ td.code,
 
 label
 {
-	font-family:'Lucida Grande', Tahoma, Arial, Helvetica, sans-serif;
-	color:#666;
-	font-size:0.75em;
+	/* font-family:'Lucida Grande', Tahoma, Arial, Helvetica, sans-serif; */
+	color:#333333;
+	/* font-size:0.75em; */
 	font-weight:normal;
 }
 
@@ -671,7 +671,7 @@ div.stats
 {
 	margin-top:2em;
 	background:#ded;
-	font-family: 'Lucida Grande', Tahoma, Arial, Helvetica, sans-serif;
+	/* font-family: 'Lucida Grande', Tahoma, Arial, Helvetica, sans-serif; */
 	font-size:0.8em;
 	padding:15px 15px;
 	border:2px solid #393;

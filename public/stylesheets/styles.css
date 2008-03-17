@@ -419,6 +419,18 @@ ul.breadcrumb_list a:hover {
 #home_container {
 }
 
+#home_container .stats {
+	background-color: #FFFFCC;
+	margin: 0;
+	margin-bottom: 1em;
+	padding: 0.6em 1.2em;
+	border: 1px solid #EED799;
+	font-weight: bold; 
+	font-size: 100%; 
+	color: #333333; 
+	text-align: center; 
+}
+
 #home_container .left {
 	float: left;
 	width: 28%;
