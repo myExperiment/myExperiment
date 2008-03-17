@@ -10,6 +10,8 @@ class BlobsController < ApplicationController
   #before_filter :find_blob_auth, :only => [:download, :show, :edit, :update, :destroy]
   before_filter :find_blob_auth, :except => [:search, :index, :new, :create, :all]
   
+  before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :comment, :comment_delete, :rate, :tag, :destroy]
+  
   # GET /blobs;search
   # GET /blobs.xml;search
   def search
@@ -248,16 +250,20 @@ class BlobsController < ApplicationController
   protected
   
   def find_blobs
-   found = Blob.find(:all, 
-                       :order => "content_type ASC, local_name ASC, created_at DESC",
-                       :page => { :size => 20, 
-                       :current => params[:page] })
+    # Only get all if REST API XML request has been made or 'all' action has been called.
+    # TODO: Don needs to check this for compliance.
+    if action_name == 'all' or (params[:format] and params[:format].downcase == 'xml')
+      found = Blob.find(:all, 
+                         :order => "content_type ASC, local_name ASC, created_at DESC",
+                         :page => { :size => 20, 
+                         :current => params[:page] })
       
-    found.each do |blob|
-      blob.data = nil unless blob.authorized?("download", (logged_in? ? current_user : nil))
+      found.each do |blob|
+        blob.data = nil unless blob.authorized?("download", (logged_in? ? current_user : nil))
+      end
+      
+      @blobs = found
     end
-    
-    @blobs = found
   end
   
   def find_blob_auth
@@ -285,6 +291,12 @@ class BlobsController < ApplicationController
       end
       rescue ActiveRecord::RecordNotFound
       error("File not found", "is invalid")
+    end
+  end
+  
+  def invalidate_listing_cache
+    if @blob
+      expire_fragment(:controller => 'files_cache', :action => 'listing', :id => @blob.id)
     end
   end
   
