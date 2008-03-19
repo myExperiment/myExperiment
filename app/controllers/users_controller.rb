@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   contributable_actions = [:workflows, :files, :blogs, :forums]
   show_actions = [:show, :news, :friends, :groups, :credits, :tags] + contributable_actions
 
-  before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password, :timeline] + show_actions
+  before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password] + show_actions
   
   before_filter :find_users, :only => [:index, :all]
   before_filter :find_user, :only => show_actions
