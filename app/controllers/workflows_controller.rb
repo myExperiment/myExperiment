@@ -81,6 +81,7 @@ class WorkflowsController < ApplicationController
     end
   end
   
+  # For simile timeline
   def comments
     @comments = Comment.find(:all, :conditions => [ "commentable_id = ? AND commentable_type = ? AND created_at > ? AND created_at < ?", @workflow.id, 'Workflow', params[:start].to_time, params[:end].to_time ] )
     respond_to do |format|
@@ -502,12 +503,14 @@ protected
       else
         if logged_in?
           error("Workflow not found (id not authorized)", "is invalid (not authorized)")
+          return false
         else
           find_workflow_auth if login_required
         end
       end
     rescue ActiveRecord::RecordNotFound
       error("Workflow not found", "is invalid")
+      return false
     end
   end
   

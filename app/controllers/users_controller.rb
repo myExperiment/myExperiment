@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   contributable_actions = [:workflows, :files, :blogs, :forums]
   show_actions = [:show, :news, :friends, :groups, :credits, :tags] + contributable_actions
 
-  before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password] + show_actions
+  before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password, :timeline] + show_actions
   
   before_filter :find_users, :only => [:index, :all]
   before_filter :find_user, :only => show_actions
@@ -320,6 +320,20 @@ class UsersController < ApplicationController
     end 
   end
   
+  def timeline
+    respond_to do |format|
+      format.html # timeline.rhtml
+    end
+  end
+  
+  # For simile timeline
+  def users_for_timeline
+    @users = User.find(:all, :conditions => [ "users.activated_at IS NOT NULL AND users.created_at > ? AND users.created_at < ?", params[:start].to_time, params[:end].to_time ], :include => [ :profile ] )
+    respond_to do |format|
+      format.json { render :partial => 'users/timeline_json', :layout => false }
+    end
+  end
+  
 protected
 
   def find_users
@@ -345,12 +359,17 @@ protected
       @user = User.find(params[:id], :include => [ :profile, :tags ])
     rescue ActiveRecord::RecordNotFound
       error("User not found", "is invalid (not owner)")
+      return false
     end
     
-    # TODO: if user is nil... redirect to a 404 page or provide a decent error message
+    unless @user
+      error("User not found", "is invalid (not owner)")
+      return false
+    end
     
     unless @user.activated?
       error("User not activated", "is invalid (not owner)")
+      return false
     end
   end
 
@@ -359,12 +378,17 @@ protected
       @user = User.find(params[:id], :conditions => ["id = ?", current_user.id])
     rescue ActiveRecord::RecordNotFound
       error("User not found (id not authorized)", "is invalid (not owner)")
+      return false
     end
     
-    # TODO: if user is nil... redirect to a 404 page or provide a decent error message
+    unless @user
+      error("User not found (or not authorized)", "is invalid (not owner)")
+      return false
+    end
     
     unless @user.activated?
       error("User not activated (id not authorized)", "is invalid (not owner)")
+      return false
     end
   end
   

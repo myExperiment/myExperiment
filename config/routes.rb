@@ -104,6 +104,10 @@ ActionController::Routing::Routes.draw do |map|
   # all ***ship's
   map.resources :relationships, :memberships, :friendships
 
+  # User timeline
+  map.connect 'users/timeline', :controller => 'users', :action => 'timeline'
+  map.connect 'users/users_for_timeline', :controller => 'users', :action => 'users_for_timeline'
+
   # all users
   map.resources :users, :collection => { :search => :get } do |user|
 

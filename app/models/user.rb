@@ -54,6 +54,26 @@ class User < ActiveRecord::Base
   has_many :reviews,
            :order => "updated_at DESC",
            :dependent => :destroy
+           
+  acts_as_simile_timeline_event(
+    :fields => {
+      :start       => :created_at,
+      :title       => :simile_title,
+      :description => :simile_description,
+    }
+  )
+  
+  def simile_title
+    "#{self.name}"
+  end
+  
+  def simile_description
+    if profile and !profile.body.blank?
+      "#{profile.body}"
+    else
+      ''
+    end
+  end
   
   # BEGIN RESTful Authentication #
   attr_accessor :password
