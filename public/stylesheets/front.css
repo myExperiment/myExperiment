@@ -73,10 +73,11 @@ li img {
 	background-position: top;
 	background-repeat: repeat-x;
 	background-color: #EEF2FF;
+	overflow: hidden;
 }
 
 #frontpage_body .box .heading {
-	color: #000033; 
+	color: #000033;
 	font-weight: bold; 
 	font-size: 116%; 
 	text-align: center; 
