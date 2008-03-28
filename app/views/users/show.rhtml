@@ -70,11 +70,15 @@
 <table style="width: 100%">
 	<tr>
 		
-		<% if @user.profile %>
+		<% if @user.profile -%>
 	    <td style="vertical-align: top;">
-	      <%= avatar @user, 160 %>
+				<% if mine? @user -%>
+	      	<%= avatar @user, 160, pictures_path(@user) -%>
+				<% else -%>
+					<%= avatar @user, 160 -%>
+				<% end -%>
 	    </td>
-	  <% end %>
+	  <% end -%>
 		
 		<td style="padding-left: 1em; vertical-align: top;">
 			

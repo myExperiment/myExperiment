@@ -126,7 +126,7 @@ module ApplicationHelper
     return link_to(h(title), group_url(network))
   end
   
-  def avatar(user_id, size=200)
+  def avatar(user_id, size=200, url=nil)
     if user_id.kind_of? Fixnum
       user = User.find(:first, :select => "id, name", :conditions => ["id = ?", user_id]) 
       return nil unless user
@@ -142,7 +142,11 @@ module ApplicationHelper
       img = null_avatar(size, h(user.name))
     end
     
-    return link_to(img, user_url(user))
+    unless url
+      url = user_url(user)
+    end
+    
+    return link_to(img, url)
   end
   
   def avatar_url(picture_id, size=200)
