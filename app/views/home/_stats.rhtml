@@ -1,7 +1,7 @@
 <div class="stats">
 	myExperiment currently has
-	<%= pluralize User.count(:conditions => "users.activated_at IS NOT NULL"), "user" -%>,
-	<%= pluralize Network.count, "group" -%>,
-	<%= pluralize Workflow.count, "workflow" -%> and
-	<%= pluralize Blob.count, "file" -%>.
+	<%= link_to pluralize(User.count(:conditions => "users.activated_at IS NOT NULL"), "user"), users_url -%>,
+	<%= link_to pluralize(Network.count, "group"), groups_url -%>,
+	<%= link_to pluralize(Workflow.count, "workflow"), workflows_url -%> and
+	<%= link_to pluralize(Blob.count, "file"), files_url -%>.
 </div>
