@@ -72,7 +72,7 @@ module ActiveRecord
           end
         end
 
-        def add_tag(tag, tagger = current_user)
+        def add_tag(tag, tagger)
           Tag.find_or_create_by_name(tag).tag(self, tagger.id)
         end
 

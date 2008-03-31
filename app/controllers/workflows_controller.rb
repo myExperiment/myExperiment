@@ -111,7 +111,7 @@ class WorkflowsController < ApplicationController
   def tag
 
     Tag.parse(convert_tags_to_gem_format(params[:tag_list])).each do |name|
-      @workflow.add_tag(name)
+      @workflow.add_tag(name, current_user)
     end
 
     @workflow.tag_list = "#{@workflow.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
