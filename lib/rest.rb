@@ -207,8 +207,9 @@ def rest_index_request(rules, query)
     end
   else
 
-    sort  = 'id'
-    order = 'ASC'
+    sort       = 'id'
+    order      = 'ASC'
+    conditions = model_index_conditions(model_name)
 
     case query['sort']
       when 'created'; sort = 'created_at' if eval(model_name.camelize).new.respond_to?('created_at')
@@ -219,7 +220,11 @@ def rest_index_request(rules, query)
 
     order = 'DESC' if query['order'] == 'reverse'
 
-    obs = eval(model_name.camelize).find(:all, :page => part, :order => "#{sort} #{order}")
+    find_args = { :page => part, :order => "#{sort} #{order}" }
+
+    find_args[:conditions] = conditions if conditions
+
+    obs = eval(model_name.camelize).find(:all, find_args)
   end
 
   # filter out ones they are not allowed to get
@@ -237,6 +242,12 @@ def object_owner(ob)
   return User.find(ob.to) if ob.class == Message
   return ob.user  if ob.respond_to?("user")
   return ob.owner if ob.respond_to?("owner")
+end
+
+def model_index_conditions(model_name)
+  case model_name
+    when 'user'; return 'users.activated_at IS NOT NULL'
+  end
 end
 
 def rest_resource_uri(ob)
