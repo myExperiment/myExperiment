@@ -352,6 +352,16 @@ def search(rules, query)
   doc
 end
 
+def user_count(rules, query)
+  
+  users = User.find(:all).select do |user| user.activated? end
+
+  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><user-count/>")
+  doc.root.add_text(users.length.to_s)
+
+  doc
+end
+
 def rest_call_request(rules, query)
   eval("#{rules['Function']}(rules, query)")
 end
