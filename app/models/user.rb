@@ -29,6 +29,15 @@ class User < ActiveRecord::Base
     self.find_by_sql ["SELECT u.*, p.* FROM users u, profiles p WHERE u.id = p.user_id and activated_at IS NOT NULL ORDER BY GREATEST(u.updated_at, p.updated_at) DESC LIMIT ?", limit]
   end
   
+  def self.last_active(limit=5)
+    self.find(:all,
+              :order => "users.last_seen_at DESC",
+              :limit => limit,
+              :conditions => "users.activated_at IS NOT NULL",
+              :include => :profile)
+            
+  end
+  
   acts_as_tagger
   
   has_many :ratings,
