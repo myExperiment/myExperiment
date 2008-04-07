@@ -4,6 +4,14 @@
 
 <%= error_messages_for :user %>
 
+<div class="box_infotext">
+	<strong>Please note: all user profiles are public</strong> on myExperiment.org and 
+	therefore can be viewed by anyone and be indexed by search engines such as Google.
+	However, usernames and registered email addresses (different to profile email addresses) are not exposed.
+</div> 
+
+<br/>
+
 <% form_for(:user, :url => users_path) do |f| %>
   	<div class="fold">
   		<div class="foldTitle">

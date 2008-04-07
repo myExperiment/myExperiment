@@ -1429,8 +1429,9 @@ div.auto_complete ul strong.highlight {
 	font-size: 93%;
 	background-color: #FFFFCC;
 	margin: 0; 
-	padding: 0.3em 0.8em;
+	padding: 0.5em 0.8em;
 	border: 1px solid #EED799;
+	line-height: 1.4;
 }
 
 .none_text {
