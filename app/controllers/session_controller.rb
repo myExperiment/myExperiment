@@ -118,8 +118,12 @@ class SessionController < ApplicationController
             failed_login("An unknown error occured. Please check your OpenID url.")
           end
         end
-      rescue
-        failed_login("An unknown error occurred. Please check your OpenID url and that you are connected to the internet.")
+      rescue RuntimeError, Timeout::Error => e
+        if e.class == Timeout::Error
+          failed_login("Could not contact your OpenID server.")
+        else
+          failed_login("An unknown error occurred. Please check your OpenID url and that you are connected to the internet.")
+        end
       end
     end
 
