@@ -139,9 +139,9 @@
           <br />
           <br />
           <select id="existingworkflows_dropdown" style="width: 280px;">
-              <% all_workflows.each do |w| %>
-                  	<option value="<%= w.id %>"><%= h(w.title) %></option>
-                  <% end %>
+            <% all_workflows.each do |w| %>
+            	<option value="<%= w.id %>"><%= h(w.title) -%> (<%= contributor_name(w.contributor_id, w.contributor_type) -%>)</option>
+            <% end %>
           </select>
           <br />
           <br />
@@ -153,9 +153,9 @@
           <br />
           <br />
           <select id="existingfiles_dropdown" style="width: 280px;">
-              <% all_blobs.each do |b| %>
-                  	<option value="<%= b.id %>"><%= contributable_name(b.id, 'Blob') %></option>
-                  <% end %>
+            <% all_blobs.each do |b| %>
+            	<option value="<%= b.id %>"><%= contributable_name(b.id, 'Blob') -%> (<%= contributor_name(b.contributor_id, b.contributor_type) -%>)</option>
+            <% end %>
           </select>
           <br />
           <br />
