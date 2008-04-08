@@ -85,6 +85,12 @@
 			<p>
 		    <b>Name:</b>
 		    <%=h @user.name %>
+				
+				<% if mine? @user -%>
+					<span style="font-size: 85%; margin-left: 0.5em; color: #666666; vertical-align: middle;">
+						[ <%= link_to "edit", edit_user_path(@user) %> ]
+					</span>
+				<% end -%>
 		  </p>
 			
 		  <p>
