@@ -72,7 +72,7 @@
 
 <p style="text-align: center;">
 	<b>Runnable Item:</b>
-	<b><%= c_type = visible_name(@job.runnable); icon(@job.runnable_type, nil, nil, c_type, c_type) %> -</b>
+	<b><%= c_type = visible_name(@job.runnable_type); icon(@job.runnable_type, nil, nil, c_type, c_type) %> -</b>
 	<%= link_to_function h(@job.runnable.title) + expand_image, visual_effect(:toggle_blind, "job_runnable_listing", :duration => 0.3) %>
 	<b>Version:</b> <%= @job.runnable_version %>
 </p>

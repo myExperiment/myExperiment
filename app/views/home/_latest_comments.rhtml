@@ -12,7 +12,7 @@
 				<% comments.each do |c| %>
 					<% if thing_authorized?('show', c.commentable) %>
 						<li>
-							<b><%= c_type = visible_name(c.commentable); icon(c.commentable_type.to_s, nil, nil, c_type, c_type) %>:</b>
+							<b><%= c_type = visible_name(c.commentable_type); icon(c.commentable_type.to_s, nil, nil, c_type, c_type) %>:</b>
 							<span><%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %></span>
 							<br/>
 							<span style="padding-left: 2em;">

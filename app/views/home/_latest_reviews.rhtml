@@ -12,7 +12,7 @@
 					<% reviews.each do |r| %>
 						<% if thing_authorized?('show', r.reviewable) %>
 							<li>
-								<b><%= r_type = visible_name(r.reviewable); icon(r.reviewable_type.to_s, nil, nil, r_type, r_type) %>:</b>
+								<b><%= r_type = visible_name(r.reviewable_type); icon(r.reviewable_type.to_s, nil, nil, r_type, r_type) %>:</b>
 								<span><%= contributable(r.reviewable_id, r.reviewable_type) %></span>
 								<br/>
 								<span style="padding-left: 2em;">

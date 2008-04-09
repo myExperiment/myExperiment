@@ -15,7 +15,7 @@
 								<span class="box_standout" style="padding: 0.1em 0.4em;">
 									<b><%= link_to_tag(t.tag) %></b>
 								</span>
-								&nbsp;&nbsp;on <b><%= c_type = visible_name(t.taggable); icon(t.taggable_type.to_s, nil, nil, c_type, '') %></b>
+								&nbsp;&nbsp;on <b><%= c_type = visible_name(t.taggable_type); icon(t.taggable_type.to_s, nil, nil, c_type, '') %></b>
 								<%= t.taggable_type == 'Network' ? title(t.taggable_id) : contributable(t.taggable_id, t.taggable_type) %>
 								by <b><%= contributor(t.user_id, 'User') %></b>
 								(<%= timeago_fuzzy t.created_at %>)

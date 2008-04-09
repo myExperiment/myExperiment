@@ -774,13 +774,14 @@ module ApplicationHelper
   end
   
   def visible_name(entity)
-    case entity.class.to_s
+    type = ( entity.instance_of?(String) ) ? entity : entity.class.to_s
+    case type
     when "Blob"
       return "File"
     when "Network"
       return "Group"
     else
-      return entity.class.to_s
+      return type
     end
   end
   
