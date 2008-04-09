@@ -14,7 +14,7 @@
 							<li>
 								<%= icon('network', nil, nil, 'group icon', '') %>
 								<b><%= link_to g.title, group_path(g) %></b> 
-								by <b><%= contributor(g.owner, 'User') %></b>
+								by <b><%= contributor(g.user_id,, 'User') %></b>
 								(<%= timeago_fuzzy g.created_at %>)
 							</li>
 						<% end %>
