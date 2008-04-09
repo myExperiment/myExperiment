@@ -706,24 +706,16 @@ module ApplicationHelper
   def tags_for_type(type, limit=-1)
     
     return [] unless ["workflow", "blob", "network"].include?(type.downcase)
-    
-    taggings = Tagging.find(:all, :conditions => ["taggable_type = ?", type])
-    tags = []
-    
-    taggings.each do |tagging|
-      tag = tagging.tag
-      unless tags.include? tag
-        tags += [tagging.tag]
-      end
-    end
-    
-    unless limit == -1
-      tags = tags.sort! { |x,y| 
-        y.taggings_count <=> x.taggings_count
-      }
-      tags = tags.first(limit)
-    end
-    
+   
+    # HANDCRAFTED_SQL 
+    sql="SELECT DISTINCT tags.* FROM tags INNER JOIN taggings ON tags.id=taggings.tag_id WHERE ( taggings.taggable_type = ? )  ORDER BY tags.taggings_count DESC"
+
+    unless limit < 0
+      sql+=" LIMIT #{limit}"
+    end 
+
+    tags=Tag.find_by_sql [  sql, type.capitalize ]
+
     return tags
   end
 
