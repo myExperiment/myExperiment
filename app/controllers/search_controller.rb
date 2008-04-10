@@ -30,7 +30,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to url_for(:controller => type) }
-      format.xml { render :xml => err.to_xml }
     end
   end
 
@@ -52,7 +51,6 @@ private
 
     respond_to do |format|
       format.html # search.rhtml
-      format.xml  { render :xml => @results.to_xml }
     end
   end
 end

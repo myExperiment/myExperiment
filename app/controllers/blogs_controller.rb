@@ -11,16 +11,13 @@ class BlogsController < ApplicationController
   before_filter :find_blog_auth, :except => [:index, :new, :create, :update, :destroy]
   
   # GET /blogs
-  # GET /blogs.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @blogs.to_xml }
     end
   end
 
   # GET /blogs/1
-  # GET /blogs/1.xml
   def show
     @viewing = Viewing.create(:contribution => @blog.contribution, :user => (logged_in? ? current_user : nil))
     
@@ -28,7 +25,6 @@ class BlogsController < ApplicationController
     
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @blog.to_xml }
     end
   end
 
@@ -45,7 +41,6 @@ class BlogsController < ApplicationController
   end
 
   # POST /blogs
-  # POST /blogs.xml
   def create
 
     params[:blog][:contributor_type] = "User"
@@ -62,16 +57,13 @@ class BlogsController < ApplicationController
         
         flash[:notice] = 'Blog was successfully created.'
         format.html { redirect_to blog_url(@blog) }
-        format.xml  { head :created, :location => blog_url(@blog) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @blog.errors.to_xml }
       end
     end
   end
 
   # PUT /blogs/1
-  # PUT /blogs/1.xml
   def update
     
     # remove protected columns
@@ -91,22 +83,18 @@ class BlogsController < ApplicationController
 
         flash[:notice] = 'Blog was successfully updated.'
         format.html { redirect_to blog_url(@blog) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @blog.errors.to_xml }
       end
     end
   end
 
   # DELETE /blogs/1
-  # DELETE /blogs/1.xml
   def destroy
     @blog.destroy
 
     respond_to do |format|
       format.html { redirect_to blogs_url }
-      format.xml  { head :ok }
     end
   end
   
@@ -145,7 +133,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to blogs_url }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

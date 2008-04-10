@@ -18,7 +18,6 @@ class WorkflowsController < ApplicationController
   require 'scufl/dot'
   
   # GET /workflows;search
-  # GET /workflows.xml;search
   def search
 
     @query = params[:query]
@@ -27,23 +26,19 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       format.html # search.rhtml
-      format.xml  { render :xml => @workflows.to_xml }
     end
   end
   
   # POST /workflows/1;bookmark
-  # POST /workflows/1.xml;bookmark
   def bookmark
     @workflow.bookmarks << Bookmark.create(:user => current_user, :title => @workflow.title) unless @workflow.bookmarked_by_user?(current_user)
     
     respond_to do |format|
       format.html { render :inline => "<%=h @workflow.bookmarks.collect {|b| b.user.name}.join(', ') %>" }
-      format.xml { render :xml => @workflow.bookmarks.to_xml }
     end
   end
   
   # POST /workflows/1;comment
-  # POST /workflows/1.xml;comment
   def comment
     text = params[:comment][:comment]
     
@@ -54,12 +49,10 @@ class WorkflowsController < ApplicationController
   
     respond_to do |format|
       format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow } }
-      format.xml { render :xml => @workflow.comments.to_xml }
     end
   end
   
   # DELETE /workflows/1;comment_delete
-  # DELETE /workflows/1.xml;comment_delete
   def comment_delete
     if params[:comment_id]
       comment = Comment.find(params[:comment_id].to_i)
@@ -71,7 +64,6 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow } }
-      format.xml { render :xml => @workflow.comments.to_xml }
     end
   end
   
@@ -90,7 +82,6 @@ class WorkflowsController < ApplicationController
   end
   
   # POST /workflows/1;rate
-  # POST /workflows/1.xml;rate
   def rate
     Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @workflow.class.to_s, @workflow.id, current_user.id])
     
@@ -102,12 +93,10 @@ class WorkflowsController < ApplicationController
           page.replace_html "ratings_inner", :partial => "contributions/ratings_box_inner", :locals => { :contributable => @workflow, :controller_name => controller.controller_name }
           page.replace_html "ratings_breakdown", :partial => "contributions/ratings_box_breakdown", :locals => { :contributable => @workflow }
         end }
-      format.xml { render :xml => @rateable.ratings.to_xml }
     end
   end
   
   # POST /workflows/1;tag
-  # POST /workflows/1.xml;tag
   def tag
 
     Tag.parse(convert_tags_to_gem_format(params[:tag_list])).each do |name|
@@ -125,12 +114,10 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @workflow, :owner_id => @workflow.contributor_id } }
-      format.xml { render :xml => @workflow.tags.to_xml }
     end
   end
   
   # GET /workflows/1;download
-  # GET /workflows/1.xml;download
   def download
     @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
     
@@ -149,11 +136,9 @@ class WorkflowsController < ApplicationController
   end
 
   # GET /workflows
-  # GET /workflows.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @workflows.to_xml }
       format.rss do
         #@workflows = Workflow.find(:all, :order => "updated_at DESC") # list all (if required)
         render :action => 'index.rxml', :layout => false
@@ -169,7 +154,6 @@ class WorkflowsController < ApplicationController
   end
 
   # GET /workflows/1
-  # GET /workflows/1.xml
   def show
     @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
 
@@ -178,11 +162,6 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       format.html # show.rhtml
-      if params[:version]
-        format.xml { render :xml => @viewing_version.to_xml(:root => 'workflow-version') }
-      else
-        format.xml  { render :xml => @workflow.to_xml(:methods => [ :tag_list_comma, :rating, :contributor_name ]) }
-      end
     end
   end
 
@@ -209,7 +188,6 @@ class WorkflowsController < ApplicationController
   end
 
   # POST /workflows
-  # POST /workflows.xml
   def create
 
     params[:workflow][:contributor_type], params[:workflow][:contributor_id] = "User", current_user.id
@@ -233,16 +211,13 @@ class WorkflowsController < ApplicationController
 
         flash[:notice] = 'Workflow was successfully created.'
         format.html { redirect_to workflow_url(@workflow) }
-        format.xml  { head :created, :location => workflow_url(@workflow) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @workflow.errors.to_xml }
       end
     end
   end
   
   # POST /workflows/1;create_version
-  # POST /workflows/1.xml;create_version
   def create_version
     # remove protected columns
     if params[:workflow]
@@ -283,17 +258,14 @@ class WorkflowsController < ApplicationController
       if success
         flash[:notice] = 'Workflow version successfully created.'
         format.html { redirect_to workflow_url(@workflow) }
-        format.xml  { head :ok }
       else
         flash[:error] = 'Failed to upload new version. Please report this error.'       
         format.html { render :action => :new_version }  
-        format.xml  { render :xml => @workflow.errors.to_xml }
       end
     end
   end
 
   # PUT /workflows/1
-  # PUT /workflows/1.xml
   def update
     # remove protected columns
     if params[:workflow]
@@ -325,16 +297,13 @@ class WorkflowsController < ApplicationController
 
         flash[:notice] = 'Workflow was successfully updated.'
         format.html { redirect_to workflow_url(@workflow) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @workflow.errors.to_xml }
       end
     end
   end
   
   # PUT /workflows/1;update_version
-  # PUT /workflows/1.xml;update_version
   def update_version
     workflow_title = @workflow.title
     
@@ -348,7 +317,6 @@ class WorkflowsController < ApplicationController
       if success
         flash[:notice] = "Workflow version #{params[:version]}: \"#{workflow_title}\" has been updated"
         format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
-        format.xml  { head :ok }
       else
         flash[:error] = "Failed to update Workflow version. Please report this."
         if params[:version]
@@ -356,13 +324,11 @@ class WorkflowsController < ApplicationController
         else
           format.html { redirect_to workflow_url(@workflow) }
         end
-        format.xml  { render :xml => @workflow.errors.to_xml }
       end
     end
   end
   
   # DELETE /workflows/1
-  # DELETE /workflows/1.xml
   def destroy
     workflow_title = @workflow.title
 
@@ -372,17 +338,14 @@ class WorkflowsController < ApplicationController
       if success
         flash[:notice] = "Workflow \"#{workflow_title}\" has been deleted"
         format.html { redirect_to workflows_url }
-        format.xml  { head :ok }
       else
         flash[:error] = "Failed to delete Workflow entry \"#{workflow_title}\""
         format.html { redirect_to workflow_url(@workflow) }
-        format.xml  { render :xml => @workflow.errors.to_xml }
       end
     end
   end
   
   # DELETE /workflows/1;destroy_version?version=1
-  # DELETE /workflows/1.xml;destroy_version?version=1
   def destroy_version
     workflow_title = @viewing_version.title
     
@@ -402,7 +365,6 @@ class WorkflowsController < ApplicationController
       if success
         flash[:notice] = "Workflow version #{params[:version]}: \"#{workflow_title}\" has been deleted"
         format.html { redirect_to workflow_url(@workflow) }
-        format.xml  { head :ok }
       else
         flash[:error] = "Failed to delete Workflow version. Please report this."
         if params[:version]
@@ -410,7 +372,6 @@ class WorkflowsController < ApplicationController
         else
           format.html { redirect_to workflow_url(@workflow) }
         end
-        format.xml  { render :xml => @workflow.errors.to_xml }
       end
     end
   end
@@ -420,9 +381,8 @@ protected
   def find_workflows
     login_required if login_available?
     
-    # Only get all if REST API XML request has been made or 'all' action has been called.
-    # TODO: Don needs to check this for compliance.
-    if action_name == 'all' or (params[:format] and params[:format].downcase == 'xml')
+    # Only get all if the 'all' action has been called.
+    if action_name == 'all'
       found = Workflow.find(:all, 
                             construct_options.merge({:page => { :size => 20, :current => params[:page] },
                             :include => [ { :contribution => :policy }, :tags, :ratings ],
@@ -573,7 +533,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to workflows_url }
-      format.xml { render :xml => err.to_xml }
     end
   end
   

@@ -13,7 +13,6 @@ class NetworksController < ApplicationController
   before_filter :invalidate_listing_cache, :only => [:update, :comment, :comment_delete, :tag, :destroy]
   
   # GET /networks;search
-  # GET /networks.xml;search
   def search
 
     @query = params[:query]
@@ -22,7 +21,6 @@ class NetworksController < ApplicationController
     
     respond_to do |format|
       format.html # search.rhtml
-      format.xml  { render :xml => @networks.to_xml }
     end
   end
   
@@ -68,11 +66,9 @@ class NetworksController < ApplicationController
   end
   
   # GET /networks
-  # GET /networks.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @networks.to_xml }
     end
   end
   
@@ -84,11 +80,9 @@ class NetworksController < ApplicationController
   end
 
   # GET /networks/1
-  # GET /networks/1.xml
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @network.to_xml }
     end
   end
 
@@ -103,7 +97,6 @@ class NetworksController < ApplicationController
   end
 
   # POST /networks
-  # POST /networks.xml
   def create
     @network = Network.new(params[:network])
 
@@ -116,44 +109,36 @@ class NetworksController < ApplicationController
         end
         flash[:notice] = 'Group was successfully created.'
         format.html { redirect_to group_url(@network) }
-        format.xml  { head :created, :location => group_url(@network) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @network.errors.to_xml }
       end
     end
   end
 
   # PUT /networks/1
-  # PUT /networks/1.xml
   def update
     respond_to do |format|
       if @network.update_attributes(params[:network])
         @network.refresh_tags(convert_tags_to_gem_format(params[:network][:tag_list]), current_user) if params[:network][:tag_list]
         flash[:notice] = 'Group was successfully updated.'
         format.html { redirect_to group_url(@network) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @network.errors.to_xml }
       end
     end
   end
 
   # DELETE /networks/1
-  # DELETE /networks/1.xml
   def destroy
     @network.destroy
 
     respond_to do |format|
       flash[:notice] = 'Group was successfully deleted.'
       format.html { redirect_to groups_url }
-      format.xml  { head :ok }
     end
   end
   
   # POST /networks/1;comment
-  # POST /networks/1.xml;comment
   def comment
     text = params[:comment][:comment]
     
@@ -164,12 +149,10 @@ class NetworksController < ApplicationController
     
     respond_to do |format|
       format.html { render :partial => "comments/comments", :locals => { :commentable => @network } }
-      format.xml { render :xml => @network.comments.to_xml }
     end
   end
   
   # DELETE /networks/1;comment_delete
-  # DELETE /networks/1.xml;comment_delete
   def comment_delete
     if params[:comment_id]
       comment = Comment.find(params[:comment_id].to_i)
@@ -181,12 +164,10 @@ class NetworksController < ApplicationController
     
     respond_to do |format|
       format.html { render :partial => "comments/comments", :locals => { :commentable => @network } }
-      format.xml { render :xml => @network.comments.to_xml }
     end
   end
   
   # POST /networks/1;tag
-  # POST /networks/1.xml;tag
   def tag
     @network.tags_user_id = current_user
     @network.tag_list = "#{@network.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
@@ -197,16 +178,14 @@ class NetworksController < ApplicationController
     
     respond_to do |format|
       format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @network, :owner_id => @network.user_id } }
-      format.xml { render :xml => @workflow.tags.to_xml }
     end
   end
   
 protected
 
   def find_networks
-    # Only get all if REST API XML request has been made or 'all' action has been called.
-    # TODO: Don needs to check this for compliance.
-    if action_name == 'all' or (params[:format] and params[:format].downcase == 'xml')
+    # Only get all if the 'all' action
+    if action_name == 'all'
       @networks = Network.find(:all, 
                                :order => "title ASC",
                                :page => { :size => 20, 
@@ -248,7 +227,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to groups_url }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

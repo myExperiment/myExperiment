@@ -11,20 +11,16 @@ class ContributionsController < ApplicationController
   before_filter :find_contribution_auth, :only => [:edit, :update, :destroy]
   
   # GET /contributions
-  # GET /contributions.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @contributions.to_xml }
     end
   end
 
   # GET /contributions/1
-  # GET /contributions/1.xml
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @contribution.to_xml }
     end
   end
 
@@ -39,7 +35,6 @@ class ContributionsController < ApplicationController
   end
 
   # POST /contributions
-  # POST /contributions.xml
   def create
     @contribution = Contribution.new(params[:contribution])
 
@@ -47,16 +42,13 @@ class ContributionsController < ApplicationController
       if @contribution.save
         flash[:notice] = 'Contribution was successfully created.'
         format.html { redirect_to contribution_url(@contribution) }
-        format.xml  { head :created, :location => contribution_url(@contribution) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @contribution.errors.to_xml }
       end
     end
   end
 
   # PUT /contributions/1
-  # PUT /contributions/1.xml
   def update
     # hack for select contributor form
     if params[:contributor_pair]
@@ -76,22 +68,18 @@ class ContributionsController < ApplicationController
       if @contribution.update_attributes(params[:contribution])
         flash[:notice] = 'Contribution was successfully updated.'
         format.html { redirect_to contribution_url(@contribution) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @contribution.errors.to_xml }
       end
     end
   end
 
   # DELETE /contributions/1
-  # DELETE /contributions/1.xml
   def destroy
     @contribution.destroy
 
     respond_to do |format|
       format.html { redirect_to contributions_url }
-      format.xml  { head :ok }
     end
   end
   
@@ -155,7 +143,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to contributions_url }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

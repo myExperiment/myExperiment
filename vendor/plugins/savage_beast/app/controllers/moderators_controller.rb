@@ -22,10 +22,10 @@ class ModeratorsController < ApplicationController
     respond_to do |format|
       if @moderatorship.save
         format.html { redirect_to moderatorships_path(@forum) }
-        format.xml  { head :ok }
+#       format.xml  { head :ok }
       else
         format.html { render :action => "new" }
-        format.xml { render :xml => @moderatorship.errors.to_xml }
+#       format.xml { render :xml => @moderatorship.errors.to_xml }
       end
     end
   end
@@ -35,7 +35,7 @@ class ModeratorsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to moderatorships_path(@forum) }
-      format.xml  { head :ok }
+#     format.xml  { head :ok }
     end
   end
 
@@ -89,7 +89,7 @@ private
     
     respond_to do |format|
       format.html { redirect_to moderators_url }
-      format.xml { render :xml => err.to_xml }
+#     format.xml { render :xml => err.to_xml }
     end
   end
 end

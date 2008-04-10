@@ -69,7 +69,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to policies_url }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

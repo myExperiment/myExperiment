@@ -5,24 +5,18 @@ class ViewingsController < ApplicationController
   before_filter :find_viewing, :only => [:show]
   
   # GET /viewings
-  # GET /viewings.xml
   # GET /contribution/1/viewings
-  # GET /contribution/1/viewings.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @viewings.to_xml }
     end
   end
 
   # GET /viewings/1
-  # GET /viewings/1.xml
   # GET /contribution/1/viewings/1
-  # GET /contribution/1/viewings/1.xml
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @viewing.to_xml }
     end
   end
   
@@ -99,7 +93,6 @@ private
       else
         format.html { redirect_to contributions_url }
       end
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

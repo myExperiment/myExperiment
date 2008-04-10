@@ -15,20 +15,16 @@ class CitationsController < ApplicationController
   before_filter :invalidate_listing_cache, :only => [ :create, :update, :destroy ]
   
   # GET /citations
-  # GET /citations.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @citations.to_xml }
     end
   end
 
   # GET /citations/1
-  # GET /citations/1.xml
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @citation.to_xml }
     end
   end
 
@@ -43,7 +39,6 @@ class CitationsController < ApplicationController
   end
 
   # POST /citations
-  # POST /citations.xml
   def create
     params[:user_id], params[:workflow_id], params[:workflow_version] = current_user.id, @workflow.id, @workflow.versions.length
     
@@ -53,38 +48,31 @@ class CitationsController < ApplicationController
       if @citation.save
         flash[:notice] = 'Citation was successfully created.'
         format.html { redirect_to citation_url(@workflow, @citation) }
-        format.xml  { head :created, :location => citation_url(@workflow, @citation) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @citation.errors.to_xml }
       end
     end
   end
 
   # PUT /citations/1
-  # PUT /citations/1.xml
   def update
     respond_to do |format|
       if @citation.update_attributes(params[:citation])
         flash[:notice] = 'Citation was successfully updated.'
         format.html { redirect_to citation_url(@workflow, @citation) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @citation.errors.to_xml }
       end
     end
   end
 
   # DELETE /citations/1
-  # DELETE /citations/1.xml
   def destroy
     @citation.destroy
 
     respond_to do |format|
       flash[:notice] = 'Citation was successfully deleted.'
       format.html { redirect_to citations_url(@workflow) }
-      format.xml  { head :ok }
     end
   end
   
@@ -148,7 +136,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to citations_url(params[:workflow_id]) }
-      format.xml { render :xml => err.to_xml }
     end
   end
   

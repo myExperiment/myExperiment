@@ -11,20 +11,16 @@ class BlogPostsController < ApplicationController
   before_filter :find_blog_auth, :only => [:new]
   
   # GET /blog_posts
-  # GET /blog_posts.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @blog_posts.to_xml }
     end
   end
 
   # GET /blog_posts/1
-  # GET /blog_posts/1.xml
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @blog_post.to_xml }
     end
   end
 
@@ -39,7 +35,6 @@ class BlogPostsController < ApplicationController
   end
 
   # POST /blog_posts
-  # POST /blog_posts.xml
   def create
     @blog_post = BlogPost.new(params[:blog_post])
 
@@ -47,37 +42,30 @@ class BlogPostsController < ApplicationController
       if @blog_post.save
         flash[:notice] = 'BlogPost was successfully created.'
         format.html { redirect_to blog_url(@blog_post.blog) }
-        format.xml  { head :created, :location => blog_url(@blog_post.blog) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @blog_post.errors.to_xml }
       end
     end
   end
 
   # PUT /blog_posts/1
-  # PUT /blog_posts/1.xml
   def update
     respond_to do |format|
       if @blog_post.update_attributes(params[:blog_post])
         flash[:notice] = 'BlogPost was successfully updated.'
         format.html { redirect_to blog_url(@blog_post.blog) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @blog_post.errors.to_xml }
       end
     end
   end
 
   # DELETE /blog_posts/1
-  # DELETE /blog_posts/1.xml
   def destroy
     @blog_post.destroy
 
     respond_to do |format|
       format.html { redirect_to blog_url(@blog_post.blog) }
-      format.xml  { head :ok }
     end
   end
   
@@ -132,7 +120,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to blog_posts_url(params[:blog_id]) }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

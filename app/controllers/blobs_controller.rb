@@ -13,7 +13,6 @@ class BlobsController < ApplicationController
   before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :comment, :comment_delete, :rate, :tag, :destroy]
   
   # GET /blobs;search
-  # GET /blobs.xml;search
   def search
 
     @query = params[:query] == nil ? "" : params[:query]
@@ -22,7 +21,6 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       format.html # search.rhtml
-      format.xml  { render :xml => @blobs.to_xml }
     end
   end
   
@@ -47,11 +45,9 @@ class BlobsController < ApplicationController
   end
 
   # GET /blobs
-  # GET /blobs.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @blobs.to_xml }
     end
   end
   
@@ -63,7 +59,6 @@ class BlobsController < ApplicationController
   end
   
   # GET /blobs/1
-  # GET /blobs/1.xml
   def show
     @viewing = Viewing.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
     
@@ -72,7 +67,6 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @blob.to_xml }
     end
   end
   
@@ -92,7 +86,6 @@ class BlobsController < ApplicationController
   end
   
   # POST /blobs
-  # POST /blobs.xml
   def create
     
     params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
@@ -119,16 +112,13 @@ class BlobsController < ApplicationController
         
         flash[:notice] = 'File was successfully created.'
         format.html { redirect_to file_url(@blob) }
-        format.xml  { head :created, :location => file_url(@blob) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @blob.errors.to_xml }
       end
     end
   end
   
   # PUT /blobs/1
-  # PUT /blobs/1.xml
   def update
     # hack for select contributor form
     if params[:contributor_pair]
@@ -155,16 +145,13 @@ class BlobsController < ApplicationController
         
         flash[:notice] = 'File was successfully updated.'
         format.html { redirect_to file_url(@blob) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @blob.errors.to_xml }
       end
     end
   end
   
   # DELETE /blobs/1
-  # DELETE /blobs/1.xml
   def destroy
     success = @blob.destroy
 
@@ -172,17 +159,14 @@ class BlobsController < ApplicationController
       if success
         flash[:notice] = "File has been deleted."
         format.html { redirect_to files_url }
-        format.xml  { head :ok }
       else
         flash[:error] = "Failed to delete File. Please contact your administrator."
         format.html { redirect_to file_url(@blob) }
-        format.xml  { render :xml => @blob.errors.to_xml }
       end
     end
   end
   
   # POST /blobs/1;comment
-  # POST /blobs/1.xml;comment
   def comment 
     text = params[:comment][:comment]
     
@@ -193,12 +177,10 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       format.html { render :partial => "comments/comments", :locals => { :commentable => @blob } }
-      format.xml { render :xml => @blob.comments.to_xml }
     end
   end
   
   # DELETE /blobs/1;comment_delete
-  # DELETE /blobs/1.xml;comment_delete
   def comment_delete
     if params[:comment_id]
       comment = Comment.find(params[:comment_id].to_i)
@@ -210,12 +192,10 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       format.html { render :partial => "comments/comments", :locals => { :commentable => @blob } }
-      format.xml { render :xml => @blob.comments.to_xml }
     end
   end
   
   # POST /blobs/1;rate
-  # POST /blobs/1.xml;rate
   def rate
     Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @blob.class.to_s, @blob.id, current_user.id])
     
@@ -227,12 +207,10 @@ class BlobsController < ApplicationController
           page.replace_html "ratings_inner", :partial => "contributions/ratings_box_inner", :locals => { :contributable => @blob, :controller_name => controller.controller_name }
           page.replace_html "ratings_breakdown", :partial => "contributions/ratings_box_breakdown", :locals => { :contributable => @blob }
         end }
-      format.xml { render :xml => @rateable.ratings.to_xml }
     end
   end
   
   # POST /blobs/1;tag
-  # POST /blobs/1.xml;tag
   def tag
     @blob.tags_user_id = current_user # acts_as_taggable_redux
     @blob.tag_list = "#{@blob.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
@@ -243,7 +221,6 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @blob, :owner_id => @blob.contributor_id } }
-      format.xml { render :xml => @blob.tags.to_xml }
     end
   end
   
@@ -308,7 +285,6 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       format.html { redirect_to files_url }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

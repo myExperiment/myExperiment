@@ -11,15 +11,12 @@ class FriendshipsController < ApplicationController
   before_filter :find_friendship_auth, :only => [:accept, :edit, :update, :destroy]
   
   # GET /users/1/friendships/1/accept
-  # GET /users/1/friendships/1/accept.xml
   # GET /friendships/1/accept
-  # GET /friendships/1/accept.xml
   def accept
     respond_to do |format|
       if @friendship.accept!
         flash[:notice] = 'Friendship was successfully accepted.'
         format.html { redirect_to friendships_url(current_user.id) }
-        format.xml  { head :ok }
       else
         error("Friendship already accepted", "already accepted")
       end
@@ -27,24 +24,18 @@ class FriendshipsController < ApplicationController
   end
   
   # GET /users/1/friendships
-  # GET /users/1/friendships.xml
   # GET /friendships
-  # GET /friendships.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @friendships.to_xml }
     end
   end
 
   # GET /users/1/friendships/1
-  # GET /users/1/friendships/1.xml
   # GET /friendships/1
-  # GET /friendships/1.xml
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @friendship.to_xml }
     end
   end
 
@@ -71,9 +62,7 @@ class FriendshipsController < ApplicationController
   end
 
   # POST /users/1/friendships
-  # POST /users/1/friendships.xml
   # POST /friendships
-  # POST /friendships.xml
   def create
     if (@friendship = Friendship.new(params[:friendship]) unless Friendship.find_by_user_id_and_friend_id(params[:friendship][:user_id], params[:friendship][:friend_id]))
       # set initial datetime
@@ -92,10 +81,8 @@ class FriendshipsController < ApplicationController
           
           flash[:notice] = 'Friendship was successfully requested.'
           format.html { redirect_to friendship_url(@friendship.friend_id, @friendship) }
-          format.xml  { head :created, :location => friendship_url(@friendship.friend_id, @friendship) }
         else
           format.html { render :action => "new" }
-          format.xml  { render :xml => @friendship.errors.to_xml }
         end
       end
     else
@@ -104,9 +91,7 @@ class FriendshipsController < ApplicationController
   end
 
   # PUT /users/1/friendships/1
-  # PUT /users/1/friendships/1.xml
   # PUT /friendships/1
-  # PUT /friendships/1.xml
   def update
     # no spoofing of acceptance
     params[:friendship].delete('accepted_at') if params[:friendship][:accepted_at]
@@ -115,18 +100,14 @@ class FriendshipsController < ApplicationController
       if @friendship.update_attributes(params[:friendship])
         flash[:notice] = 'Friendship was successfully updated.'
         format.html { redirect_to friendship_url(@friendship.user_id, @friendship) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @friendship.errors.to_xml }
       end
     end
   end
 
   # DELETE users/1/friendships/1
-  # DELETE users/1/friendships/1.xml
   # DELETE /friendships/1
-  # DELETE /friendships/1.xml
   def destroy
     friend_id = @friendship.friend_id
     
@@ -134,7 +115,6 @@ class FriendshipsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to friendships_url(friend_id) }
-      format.xml  { head :ok }
     end
   end
   
@@ -199,7 +179,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to friendships_url(current_user.id) }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

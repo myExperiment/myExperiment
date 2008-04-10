@@ -11,9 +11,7 @@ class PicturesController < ApplicationController
   before_filter :find_picture_auth, :only => [:select, :edit, :update, :destroy]
   
   # GET /users/1/pictures/1/select
-  # GET /users/1/pictures/1/select.xml
   # GET /pictures/1/select
-  # GET /pictures/1/select.xml
   def select
     if @picture.select!
       # create and save picture selection record
@@ -22,7 +20,6 @@ class PicturesController < ApplicationController
       respond_to do |format|
         flash[:notice] = 'Picture was successfully selected as profile picture.'
         format.html { redirect_to pictures_url(@picture.owner) }
-        format.xml  { head :ok }
       end
     else
       error("Picture already selected", "already selected")
@@ -30,13 +27,10 @@ class PicturesController < ApplicationController
   end
   
   # GET /users/1/pictures
-  # GET /users/1/pictures.xml
   # GET /pictures
-  # GET /pictures.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @pictures.to_xml }
     end
   end
 
@@ -85,9 +79,7 @@ class PicturesController < ApplicationController
   end
 
   # POST /users/1/pictures
-  # POST /users/1/pictures.xml
   # POST /pictures
-  # POST /pictures.xml
   def create
     @picture = Picture.create(:data => params[:picture][:data], :user_id => current_user.id)
 
@@ -95,35 +87,27 @@ class PicturesController < ApplicationController
       if @picture.save
         flash[:notice] = 'Picture was successfully uploaded.'
         format.html { redirect_to pictures_url(@picture.user_id) }
-        format.xml  { head :created, :location => picture_url(@picture.user_id, @picture) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @picture.errors.to_xml }
       end
     end
   end
 
   # PUT /users/1/pictures/1
-  # PUT /users/1/pictures/1.xml
   # PUT /pictures/1
-  # PUT /pictures/1.xml
   def update
     respond_to do |format|
       if @picture.update_attributes(params[:picture])
         flash[:notice] = 'Picture was successfully updated.'
         format.html { redirect_to pictures_url(@picture.user_id) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @picture.errors.to_xml }
       end
     end
   end
 
   # DELETE /users/1/pictures/1
-  # DELETE /users/1/pictures/1.xml
   # DELETE /pictures/1
-  # DELETE /pictures/1.xml
   def destroy
     user_id = @picture.user_id
     
@@ -131,7 +115,6 @@ class PicturesController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to pictures_url(user_id) }
-      format.xml  { head :ok }
     end
   end
   
@@ -179,7 +162,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to logged_in? ? pictures_url(current_user) : '' }
-      format.xml { render :xml => err.to_xml }
     end
   end
   

@@ -168,7 +168,6 @@ ActionController::Routing::Routes.draw do |map|
   map.from_plugin :simple_pages
 
   # Install the default route as the lowest priority.
-  map.connect ':controller/:action/:id.:format'
   map.connect ':controller/:action/:id'
 end
 

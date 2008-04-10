@@ -12,14 +12,12 @@ class TagsController < ApplicationController
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @tags.to_xml }
     end
   end
   
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @tag.to_xml }
     end
   end
   
@@ -68,7 +66,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to tags_url }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

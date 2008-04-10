@@ -13,15 +13,12 @@ class MembershipsController < ApplicationController
   before_filter :invalidate_listing_cache, :only => [:accept, :update, :destroy]
   
   # GET /users/1/memberships/1;accept
-  # GET /users/1/memberships/1.xml;accept
   # GET /memberships/1;accept
-  # GET /memberships/1.xml;accept
   def accept
     respond_to do |format|
       if @membership.accept!
         flash[:notice] = 'Membership was successfully accepted.'
         format.html { redirect_to memberships_url(current_user.id) }
-        format.xml  { head :ok }
       else
         error("Membership already accepted", "already accepted")
       end
@@ -29,24 +26,18 @@ class MembershipsController < ApplicationController
   end
   
   # GET /users/1/memberships
-  # GET /users/1/memberships.xml
   # GET /memberships
-  # GET /memberships.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @memberships.to_xml }
     end
   end
 
   # GET /users/1/memberships/1
-  # GET /users/1/memberships/1.xml
   # GET /memberships/1
-  # GET /memberships/1.xml
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @membership.to_xml }
     end
   end
 
@@ -73,9 +64,7 @@ class MembershipsController < ApplicationController
   end
 
   # POST /users/1/memberships
-  # POST /users/1/memberships.xml
   # POST /memberships
-  # POST /memberships.xml
   def create
     # TODO: test if "user_established_at" and "network_established_at" can be hacked (ie: set) through API calls,
     # thereby creating memberships that are already 'accepted' at creation.
@@ -117,10 +106,8 @@ class MembershipsController < ApplicationController
           end
 
           format.html { redirect_to membership_url(@membership.user_id, @membership) }
-          format.xml  { head :created, :location => membership_url(@membership.user_id, @membership) }
         else
           format.html { render :action => "new" }
-          format.xml  { render :xml => @membership.errors.to_xml }
         end
       end
     else
@@ -129,9 +116,7 @@ class MembershipsController < ApplicationController
   end
 
   # PUT /users/1/memberships/1
-  # PUT /users/1/memberships/1.xml
   # PUT /memberships/1
-  # PUT /memberships/1.xml
   def update
     # no spoofing of acceptance
     params[:membership].delete('network_established_at') if params[:membership][:network_established_at]
@@ -141,18 +126,14 @@ class MembershipsController < ApplicationController
       if @membership.update_attributes(params[:membership])
         flash[:notice] = 'Membership was successfully updated.'
         format.html { redirect_to membership_url(@membership.user_id, @membership) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @membership.errors.to_xml }
       end
     end
   end
 
   # DELETE /users/1/memberships/1
-  # DELETE /users/1/memberships/1.xml
   # DELETE /memberships/1
-  # DELETE /memberships/1.xml
   def destroy
     network_id = @membership.network_id
     
@@ -161,7 +142,6 @@ class MembershipsController < ApplicationController
     respond_to do |format|
       params[:notice] = "Membership successfully deleted"
       format.html { redirect_to group_path(network_id) }
-      format.xml  { head :ok }
     end
   end
   
@@ -268,7 +248,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to memberships_url(current_user.id) }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

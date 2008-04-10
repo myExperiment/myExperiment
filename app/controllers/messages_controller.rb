@@ -11,7 +11,6 @@ class MessagesController < ApplicationController
   before_filter :find_reply_by_to, :only => [:new]
   
   # GET /messages
-  # GET /messages.xml
   def index
     #@messages = current_user.messages_inbox
     @messages = Message.find(:all, 
@@ -22,19 +21,16 @@ class MessagesController < ApplicationController
     
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @messages.to_xml }
     end
   end
 
   # GET /messages/1
-  # GET /messages/1.xml
   def show
     # mark message as read if it is viewed by the receiver
     @message.read! if @message.to.to_i == current_user.id.to_i
       
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @message.to_xml }
     end
   end
 
@@ -51,7 +47,6 @@ class MessagesController < ApplicationController
   end
 
   # POST /messages
-  # POST /messages.xml
   def create
     @message = Message.new(params[:message])
     @message.from ||= current_user.id
@@ -93,22 +88,18 @@ class MessagesController < ApplicationController
         
         flash[:notice] = 'Message was successfully sent.'
         format.html { redirect_to messages_url }
-        format.xml  { head :ok } 
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @message.errors.to_xml }
       end
     end
   end
 
   # DELETE /messages/1
-  # DELETE /messages/1.xml
   def destroy
     @message.destroy
 
     respond_to do |format|
       format.html { redirect_to messages_url }
-      format.xml  { head :ok }
     end
   end
   
@@ -148,7 +139,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to messages_url }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

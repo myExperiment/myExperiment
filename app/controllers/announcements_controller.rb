@@ -13,7 +13,6 @@ class AnnouncementsController < ApplicationController
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @announcements.to_xml }
       format.rss do
         render :action => 'index.rxml', :layout => false
       end

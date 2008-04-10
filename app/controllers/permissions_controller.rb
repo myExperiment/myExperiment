@@ -10,24 +10,18 @@ class PermissionsController < ApplicationController
   before_filter :find_permission_auth, :only => [:show, :edit, :update, :destroy]
   
   # GET /policies/1/permissions
-  # GET /policies/1/permissions.xml
   # GET /permissions
-  # GET /permissions.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @permissions.to_xml }
     end
   end
 
   # GET /policies/1/permissions
-  # GET /policies/1/permissions.xml
   # GET /permissions/1
-  # GET /permissions/1.xml
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @permission.to_xml }
     end
   end
 
@@ -51,9 +45,7 @@ class PermissionsController < ApplicationController
   end
 
   # POST /policies/1/permissions
-  # POST /policies/1/permissions.xml
   # POST /permissions
-  # POST /permissions.xml
   def create
     # hack for javascript contributor selection form
     case params[:permission][:contributor_type].to_s
@@ -72,36 +64,28 @@ class PermissionsController < ApplicationController
         flash[:notice] = 'Permission was successfully created.'
         #format.html { redirect_to permission_url(@permission.policy, @permission) }
         format.html { redirect_to policy_url(@permission.policy) }
-        format.xml  { head :created, :location => permission_url(@permission.policy, @permission) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @permission.errors.to_xml }
       end
     end
   end
 
   # PUT /policies/1/permissions/1
-  # PUT /policies/1/permissions/1.xml
   # PUT /permissions/1
-  # PUT /permissions/1.xml
   def update
     respond_to do |format|
       if @permission.update_attributes(params[:permission])
         flash[:notice] = 'Permission was successfully updated.'
         #format.html { redirect_to permission_url(@permission.policy, @permission) }
         format.html { redirect_to policy_url(@permission.policy) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @permission.errors.to_xml }
       end
     end
   end
 
   # DELETE /policies/1/permissions/1
-  # DELETE /policies/1/permissions/1.xml
   # DELETE /permissions/1
-  # DELETE /permissions/1.xml
   def destroy
     policy = @permission.policy
     
@@ -110,7 +94,6 @@ class PermissionsController < ApplicationController
     respond_to do |format|
       #format.html { redirect_to permissions_url(@permission.policy)}
       format.html { redirect_to policy_url(policy) }
-      format.xml  { head :ok }
     end
   end
   
@@ -166,7 +149,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to policies_url }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

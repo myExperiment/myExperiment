@@ -33,7 +33,7 @@ class PostsController < ApplicationController
   def show
     respond_to do |format|
       format.html { redirect_to topic_path(@post.forum_id, @post.topic_id) }
-      format.xml  { render :xml => @post.to_xml }
+#     format.xml  { render :xml => @post.to_xml }
     end
   end
 
@@ -45,9 +45,9 @@ class PostsController < ApplicationController
           flash[:notice] = 'This topic is locked.'
           redirect_to(topic_path(:forum_id => params[:forum_id], :id => params[:topic_id]))
         end
-        format.xml do
-          render :text => 'This topic is locked.', :status => 400
-        end
+#       format.xml do
+#         render :text => 'This topic is locked.', :status => 400
+#       end
       end
       return
     end
@@ -59,7 +59,7 @@ class PostsController < ApplicationController
       format.html do
         redirect_to topic_path(:forum_id => params[:forum_id], :id => params[:topic_id], :anchor => @post.dom_id, :page => params[:page] || '1')
       end
-      format.xml { head :created, :location => formatted_post_url(:forum_id => params[:forum_id], :topic_id => params[:topic_id], :id => @post, :format => :xml) }
+#     format.xml { head :created, :location => formatted_post_url(:forum_id => params[:forum_id], :topic_id => params[:topic_id], :id => @post, :format => :xml) }
     end
   rescue ActiveRecord::RecordInvalid
     flash[:bad_reply] = 'Please post something at least...'
@@ -67,7 +67,7 @@ class PostsController < ApplicationController
       format.html do
         redirect_to topic_path(:forum_id => params[:forum_id], :id => params[:topic_id], :anchor => 'reply-form', :page => params[:page] || '1')
       end
-      format.xml { render :xml => @post.errors.to_xml, :status => 400 }
+#     format.xml { render :xml => @post.errors.to_xml, :status => 400 }
     end
   end
   
@@ -89,7 +89,7 @@ class PostsController < ApplicationController
         redirect_to topic_path(:forum_id => params[:forum_id], :id => params[:topic_id], :anchor => @post.dom_id, :page => params[:page] || '1')
       end
       format.js
-      format.xml { head :ok }
+#     format.xml { head :ok }
     end
   end
 
@@ -102,7 +102,7 @@ class PostsController < ApplicationController
       format.html do
         redirect_to topic_path(:forum_id => params[:forum_id], :id => params[:topic_id], :page => params[:page]) unless performed?
       end
-      format.xml { head :ok }
+#     format.xml { head :ok }
     end
   end
 
@@ -177,7 +177,7 @@ protected
     respond_to do |format|
       format.html { render :action => "#{template_name}.rhtml" }
       format.rss  { render :action => "#{template_name}.rxml", :layout => false }
-      format.xml  { render :xml => @posts.to_xml }
+#     format.xml  { render :xml => @posts.to_xml }
     end
   end
   
@@ -189,7 +189,7 @@ private
     
     respond_to do |format|
       format.html { redirect_to forums_path }
-      format.xml { render :xml => err.to_xml }
+#     format.xml { render :xml => err.to_xml }
     end
   end
 end

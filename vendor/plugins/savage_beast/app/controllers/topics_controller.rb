@@ -9,10 +9,10 @@ class TopicsController < ApplicationController
   def index
     respond_to do |format|
       format.html { redirect_to forum_path(params[:forum_id]) }
-      format.xml do
-        @topics = Topic.find_all_by_forum_id(params[:forum_id], :order => 'sticky desc, replied_at desc', :limit => 25)
-        render :xml => @topics.to_xml
-      end
+#     format.xml do
+#       @topics = Topic.find_all_by_forum_id(params[:forum_id], :order => 'sticky desc, replied_at desc', :limit => 25)
+#       render :xml => @topics.to_xml
+#     end
     end
   end
 
@@ -33,9 +33,9 @@ class TopicsController < ApplicationController
         @voices = @posts.map(&:user) ; @voices.uniq!
         @post   = Post.new
       end
-      format.xml do
-        render :xml => @topic.to_xml
-      end
+#     format.xml do
+#       render :xml => @topic.to_xml
+#     end
       format.rss do
         @posts = @topic.posts.find(:all, :order => 'created_at desc', :limit => 25)
         render :action => 'show.rxml', :layout => false
@@ -57,7 +57,7 @@ class TopicsController < ApplicationController
     end
     respond_to do |format|
       format.html { redirect_to topic_path(@forum, @topic) }
-      format.xml  { head :created, :location => formatted_topic_url(:forum_id => @forum, :id => @topic, :format => :xml) }
+#     format.xml  { head :created, :location => formatted_topic_url(:forum_id => @forum, :id => @topic, :format => :xml) }
     end
   end
   
@@ -67,7 +67,7 @@ class TopicsController < ApplicationController
     @topic.save!
     respond_to do |format|
       format.html { redirect_to topic_path(@forum, @topic) }
-      format.xml  { head :ok }
+#     format.xml  { head :ok }
     end
   end
   
@@ -76,7 +76,7 @@ class TopicsController < ApplicationController
     flash[:notice] = "Topic '#{CGI::escapeHTML @topic.title}' was deleted."
     respond_to do |format|
       format.html { redirect_to forum_path(@forum) }
-      format.xml  { head :ok }
+#     format.xml  { head :ok }
     end
   end
   
@@ -146,7 +146,7 @@ private
     
     respond_to do |format|
       format.html { redirect_to forums_path }
-      format.xml { render :xml => err.to_xml }
+#     format.xml { render :xml => err.to_xml }
     end
   end
 end

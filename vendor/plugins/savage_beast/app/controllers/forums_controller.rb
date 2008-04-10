@@ -9,7 +9,7 @@ class ForumsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.xml { render :xml => @forums.to_xml }
+#     format.xml { render :xml => @forums.to_xml }
     end
   end
 
@@ -23,9 +23,9 @@ class ForumsController < ApplicationController
         @topic_pages, @topics = paginate(:topics, :per_page => 25, :conditions => ['forum_id = ?', params[:id]], :include => :replied_by_user, :order => 'sticky desc, replied_at desc')
       end
       
-      format.xml do
-        render :xml => @forum.to_xml
-      end
+#     format.xml do
+#       render :xml => @forum.to_xml
+#     end
     end
   end
 
@@ -55,10 +55,10 @@ class ForumsController < ApplicationController
 
         flash[:notice] = 'Forum was successfully created.'
         format.html { redirect_to forum_path(@forum) }
-        format.xml  { head :created, :location => formatted_forum_url(:id => @forum, :format => :xml) }
+#       format.xml  { head :created, :location => formatted_forum_url(:id => @forum, :format => :xml) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @forum.errors.to_xml }
+#       format.xml  { render :xml => @forum.errors.to_xml }
       end
     end
   end
@@ -82,10 +82,10 @@ class ForumsController < ApplicationController
 
         flash[:notice] = 'Forum was successfully updated.'
         format.html { redirect_to forum_path(@forum) }
-        format.xml  { head :ok }
+#       format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @forum.errors.to_xml }
+#       format.xml  { render :xml => @forum.errors.to_xml }
       end
     end
   end
@@ -95,7 +95,7 @@ class ForumsController < ApplicationController
     
     respond_to do |format|
       format.html { redirect_to forums_path }
-      format.xml  { head :ok }
+#     format.xml  { head :ok }
     end
   end
   
@@ -131,7 +131,7 @@ private
     
     respond_to do |format|
       format.html { redirect_to forums_path }
-      format.xml { render :xml => err.to_xml }
+#     format.xml { render :xml => err.to_xml }
     end
   end
 end

@@ -5,24 +5,18 @@ class DownloadsController < ApplicationController
   before_filter :find_download, :only => [:show]
   
   # GET /downloads
-  # GET /downloads.xml
   # GET /contribution/1/downloads
-  # GET /contribution/1/downloads.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @downloads.to_xml }
     end
   end
 
   # GET /downloads/1
-  # GET /downloads/1.xml
   # GET /contribution/1/downloads/1
-  # GET /contribution/1/downloads/1.xml
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @download.to_xml }
     end
   end
   
@@ -99,7 +93,6 @@ private
       else
         format.html { redirect_to contributions_url }
       end
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

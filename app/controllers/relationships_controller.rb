@@ -11,15 +11,12 @@ class RelationshipsController < ApplicationController
   before_filter :find_relationship_auth, :only => [:accept, :edit, :update, :destroy]
   
   # GET /networks/1/relationships/1;accept
-  # GET /networks/1/relationships/1.xml;accept
   # GET /relationships/1;accept
-  # GET /relationships/1.xml;accept
   def accept
     respond_to do |format|
       if @relationship.accept!
         flash[:notice] = 'Relationship was successfully accepted.'
         format.html { redirect_to relationships_url(@relationship.network_id) }
-        format.xml  { head :ok }
       else
         error("Relationship already accepted", "already accepted")
       end
@@ -27,24 +24,18 @@ class RelationshipsController < ApplicationController
   end
   
   # GET /networks/1/relationships
-  # GET /networks/1/relationships.xml
   # GET /relationships
-  # GET /relationships.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @relationships.to_xml }
     end
   end
 
   # GET /networks/1/relationships/1
-  # GET /networks/1/relationships/1.xml
   # GET /relationships/1
-  # GET /relationships/1.xml
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @relationship.to_xml }
     end
   end
 
@@ -68,9 +59,7 @@ class RelationshipsController < ApplicationController
   end
 
   # POST /networks/1/relationships
-  # POST /networks/1/relationships.xml
   # POST /relationships
-  # POST /relationships.xml
   def create
     if (@relationship = Relationship.new(params[:relationship]) unless Relationship.find_by_network_id_and_relation_id(params[:relationship][:network_id], params[:relationship][:relation_id]))
       # set initial datetime
@@ -83,10 +72,8 @@ class RelationshipsController < ApplicationController
         if @relationship.save
           flash[:notice] = 'Relationship was successfully created.'
           format.html { redirect_to relationship_url(@relationship.network_id, @relationship) }
-          format.xml  { head :created, :location => relationship_url(@relationship.network_id, @relationship) }
         else
           format.html { render :action => "new" }
-          format.xml  { render :xml => @relationship.errors.to_xml }
         end
       end
     else
@@ -95,9 +82,7 @@ class RelationshipsController < ApplicationController
   end
 
   # PUT /networks/1/relationships/1
-  # PUT /networks/1/relationships/1.xml
   # PUT /relationships/1
-  # PUT /relationships/1.xml
   def update
     # no spoofing of acceptance
     params[:relationship].delete('accepted_at') if params[:relationship][:accepted_at]
@@ -106,18 +91,14 @@ class RelationshipsController < ApplicationController
       if @relationship.update_attributes(params[:relationship])
         flash[:notice] = 'Relationship was successfully updated.'
         format.html { redirect_to relationship_url(@relationship.network_id, @relationship) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @relationship.errors.to_xml }
       end
     end
   end
 
   # DELETE /networks/1/relationships/1
-  # DELETE /networks/1/relationships/1.xml
   # DELETE /relationships/1
-  # DELETE /relationships/1.xml
   def destroy
     network_id = @relationship.network_id
     
@@ -125,7 +106,6 @@ class RelationshipsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to relationships_url(network_id) }
-      format.xml  { head :ok }
     end
   end
   
@@ -193,7 +173,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to relationships_url(params[:network_id]) }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

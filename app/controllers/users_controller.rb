@@ -17,7 +17,6 @@ class UsersController < ApplicationController
   before_filter :invalidate_listing_cache, :only => [:update, :destroy]
   
   # GET /users;search
-  # GET /users.xml;search
   def search
 
     @query = params[:query]
@@ -29,16 +28,13 @@ class UsersController < ApplicationController
     
     respond_to do |format|
       format.html # search.rhtml
-      format.xml  { render :xml => @users.to_xml }
     end
   end
   
   # GET /users
-  # GET /users.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @users.to_xml }
     end
   end
   
@@ -50,7 +46,6 @@ class UsersController < ApplicationController
   end
 
   # GET /users/1
-  # GET /users/1.xml
   def show
 
     @tab = "News" if @tab.nil?
@@ -60,8 +55,6 @@ class UsersController < ApplicationController
     
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @user.to_xml(:except => [ :id, :username, :crypted_password, :salt, :remember_token, :remember_token_expires_at, :email, :unconfirmed_email, :activated_at, :receive_notifications, :reset_password_code, :reset_password_code_until ], 
-                                                :include => [ :profile ]) }
     end
   end
 
@@ -121,7 +114,6 @@ class UsersController < ApplicationController
   end
 
   # POST /users
-  # POST /users.xml
   def create
     if params[:user][:username] && params[:user][:password] && params[:user][:password_confirmation]
       params[:user].delete("openid_url") if params[:user][:openid_url] # strip params[:user] of it's openid_url if username and password is provided
@@ -155,16 +147,13 @@ class UsersController < ApplicationController
         
         flash[:notice] = "Thank you for registering! We have sent a confirmation email to #{@user.unconfirmed_email} with instructions on how to activate your account."
         format.html { redirect_to(:action => "index") }
-        format.xml  { head :created, :location => user_url(@user) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @user.errors.to_xml }
       end
     end
   end
 
   # PUT /users/1
-  # PUT /users/1.xml
   def update
     # openid url's must be validated and updated separately
     # FIXME: shouldn't the line below be for params[:user][:openid_url]
@@ -192,16 +181,13 @@ class UsersController < ApplicationController
         
         #format.html { redirect_to user_url(@user) }
         format.html { render :action => "edit" }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @user.errors.to_xml }
       end
     end
   end
 
   # DELETE /users/1
-  # DELETE /users/1.xml
   def destroy
     flash[:notice] = 'Please contact the administrator to have your account removed.'
     redirect_to :action => :index
@@ -216,12 +202,10 @@ class UsersController < ApplicationController
     #respond_to do |format|
     #  flash[:notice] = 'User was successfully destroyed'
     #  format.html { redirect_to users_url }
-    #  format.xml { head :ok }
     #end
   end
   
   # GET /users/confirm_email/:hash
-  # GET /users/confirm_email/:hash.xml
   # TODO: NOTE: this action is not "API safe" yet (ie: it doesnt cater for a request with an XML response)
   def confirm_email
     # NOTE: this action is used for both:
@@ -337,9 +321,8 @@ class UsersController < ApplicationController
 protected
 
   def find_users
-    # Only get all if REST API XML request has been made or 'all' action has been called.
-    # TODO: Don needs to check this for compliance.
-    if action_name == 'all' or (params[:format] and params[:format].downcase == 'xml')
+    # Only get all if the 'all' action has been called.
+    if action_name == 'all'
       @users = User.find(:all, 
                          :order => "users.name ASC",
                          :page => { :size => 20, 
@@ -406,7 +389,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to users_url }
-      format.xml { render :xml => err.to_xml }
     end
   end
   

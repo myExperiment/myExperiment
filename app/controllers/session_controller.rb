@@ -10,7 +10,6 @@ class SessionController < ApplicationController
   # new renders new.rhtml
   
   # POST /session
-  # POST /session.xml
   def create
     # record return_to address if required
     session[:return_to] = request.env['HTTP_REFERER'] unless session[:return_to] and !session[:return_to].empty?
@@ -23,7 +22,6 @@ class SessionController < ApplicationController
   end
   
   # DELETE /session
-  # DELETE /session.xml
   def destroy
     self.current_user.forget_me if logged_in?
     cookies.delete :auth_token
@@ -136,7 +134,6 @@ class SessionController < ApplicationController
         flash[:notice] = "Logged in successfully. Welcome to myExperiment!"
         home_url = url_for(:controller => 'home')
         format.html { URI.parse(session[:return_to]).path == '/' ? redirect_to(home_url) : redirect_back_or_default(home_url) }
-        format.xml { head :ok }
       end
     end
 
@@ -144,7 +141,6 @@ class SessionController < ApplicationController
       respond_to do |format|
         flash.now[:error] = message
         format.html { render :action => 'new' }
-        format.xml { head :forbidden }
       end
     end
     
