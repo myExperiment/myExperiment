@@ -30,7 +30,18 @@ def parse_excel_2003_xml(xml_text, args)
       x = 1
       y = row.attributes['ss:Index'].to_i if row.attributes['ss:Index']
 
-      registers = {} unless y == (last_y + 1)
+      reset_registers = true
+
+      row.each_element('Cell') do |cell|
+        if cell.elements['Data']
+          reset_registers = false
+          break
+        end
+      end
+
+      reset_registers = true if y != (last_y + 1)
+
+      registers = {} if reset_registers
   
       if opts and opts[:lists]
         opts[:lists].each do |list|

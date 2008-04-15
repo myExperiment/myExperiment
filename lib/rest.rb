@@ -231,7 +231,7 @@ def rest_index_request(rules, query)
   obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", (logged_in? ? current_user : nil)) end)
 
   obs.map do |c|
-    el = doc.root.add_element(rest_name, { 'resource' => eval("rest_resource_uri(c)") } )
+    el = doc.root.add_element(rest_name, { 'uri' => rest_access_uri(c), 'resource' => eval("rest_resource_uri(c)") } )
     el.add_text(eval("c.#{rules['Element text accessor']}"))
   end
 
@@ -369,6 +369,16 @@ def user_count(rules, query)
 
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><user-count/>")
   doc.root.add_text(users.length.to_s)
+
+  doc
+end
+
+def group_count(rules, query)
+  
+  groups = Network.find(:all)
+
+  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><group-count/>")
+  doc.root.add_text(groups.length.to_s)
 
   doc
 end
