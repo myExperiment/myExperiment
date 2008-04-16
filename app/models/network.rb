@@ -15,7 +15,7 @@ class Network < ActiveRecord::Base
   
   has_many :blobs, :as => :contributor
   has_many :blogs, :as => :contributor
-  has_many :forums, :as => :contributor
+  has_many :forums, :as => :contributor, :dependent => :destroy
   has_many :workflows, :as => :contributor
   
   acts_as_solr(:fields => [ :title, :unique_name, :owner_name, :description, :tag_list ]) if SOLR_ENABLE

@@ -84,7 +84,9 @@ module Mib
         # This is so that the updated_at time on the record tallies up with the
         # contributable
         def save_contributable_record
-          contribution.save
+          if contribution
+            contribution.save
+          end
         end
       end
     end
