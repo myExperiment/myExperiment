@@ -37,13 +37,6 @@ ActionController::Routing::Routes.draw do |map|
   # openid authentication
   map.resource :openid
 
-  # For email confirmations (user accounts)
-  map.connect 'users/confirm_email/:hash', :controller => "users", :action => "confirm_email"
-  
-  # For password resetting (user accounts)
-  map.connect 'users/forgot_password', :controller => "users", :action => "forgot_password"
-  map.connect 'users/reset_password/:reset_code', :controller => "users", :action => "reset_password"
-
   # workflows (downloadable)
   map.resources :workflows, 
     :collection => { :all => :get, :search => :get }, 
@@ -112,6 +105,17 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'users/timeline', :controller => 'users', :action => 'timeline'
   map.connect 'users/users_for_timeline', :controller => 'users', :action => 'users_for_timeline'
 
+  # For email confirmations (user accounts)
+  map.connect 'users/confirm_email/:hash', :controller => "users", :action => "confirm_email"
+  
+  # For password resetting (user accounts)
+  map.connect 'users/forgot_password', :controller => "users", :action => "forgot_password"
+  map.connect 'users/reset_password/:reset_code', :controller => "users", :action => "reset_password"
+  
+  [ 'news', 'friends', 'groups', 'workflows', 'files', 'forums', 'blogs', 'credits', 'tags' ].each do |tab|
+    map.connect "users/:id/#{tab}", :controller => 'users', :action => tab
+  end
+  
   # all users
   map.resources :users, 
     :collection => { :all => :get, :search => :get } do |user|
@@ -130,10 +134,6 @@ ActionController::Routing::Routes.draw do |map|
     
     # user's history
     user.resource :userhistory, :controller => :userhistory
-  end
-
-  [ 'news', 'friends', 'groups', 'workflows', 'files', 'forums', 'blogs', 'credits', 'tags' ].each do |tab|
-    map.connect "users/:id/#{tab}", :controller => 'users', :action => tab
   end
 
   map.resources :groups, 
