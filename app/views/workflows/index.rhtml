@@ -1,6 +1,6 @@
 <ul class="sectionIcons">
 	<li><%= icon "workflow", new_workflow_path, nil, nil, "Upload New Workflow" %></li>
-	<li><%= icon "view-all", url_for(:action => 'all'), nil, nil, "View All Workflows" %></li>
+	<li><%= icon "view-all", all_workflows_path, nil, nil, "View All Workflows" %></li>
 </ul>
 
 <% cache(:controller => 'workflows', :action => 'all_tags') do -%>

@@ -36,9 +36,6 @@ ActionController::Routing::Routes.draw do |map|
   
   # openid authentication
   map.resource :openid
-  
-  # all citations
-  # map.resources :citations
 
   # For email confirmations (user accounts)
   map.connect 'users/confirm_email/:hash', :controller => "users", :action => "confirm_email"
@@ -47,27 +44,34 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'users/forgot_password', :controller => "users", :action => "forgot_password"
   map.connect 'users/reset_password/:reset_code', :controller => "users", :action => "reset_password"
 
-  # all blobs (aka files)
-  map.connect 'files/all', :controller => 'blobs', :action => 'all'
-
-  # all users
-  map.connect 'users/all', :controller => 'users', :action => 'all'
-
-  # all networks (aka groups)
-  map.connect 'groups/all', :controller => 'networks', :action => 'all'
-
-  # all workflows
-  map.connect 'workflows/all', :controller => 'workflows', :action => 'all'
-
   # workflows (downloadable)
-  map.resources :workflows, :collection => { :search => :get }, :member => { :new_version => :get, :download => :get, :bookmark => :post, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post, :create_version => :post, :destroy_version => :delete, :edit_version => :get, :update_version => :put, :comments_timeline => :get, :comments => :get } do |workflow|
+  map.resources :workflows, 
+    :collection => { :all => :get, :search => :get }, 
+    :member => { :new_version => :get, 
+                 :download => :get, 
+                 :bookmark => :post, 
+                 :comment => :post, 
+                 :comment_delete => :delete, 
+                 :rate => :post, :tag => :post, 
+                 :create_version => :post, 
+                 :destroy_version => :delete, 
+                 :edit_version => :get, 
+                 :update_version => :put, 
+                 :comments_timeline => :get, 
+                 :comments => :get } do |workflow|
     # workflows have nested citations
     workflow.resources :citations
     workflow.resources :reviews
   end
 
   # files (downloadable)
-  map.resources :files, :controller => :blobs, :collection => { :search => :get }, :member => { :download => :get, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post } do |file|
+  map.resources :files, 
+    :controller => :blobs, 
+    :collection => { :all => :get, :search => :get }, 
+    :member => { :download => :get, 
+                 :comment => :post, 
+                 :comment_delete => :delete, 
+                 :rate => :post, :tag => :post } do |file|
     # Due to restrictions in the version of Rails used (v1.2.3), 
     # we cannot have reviews as nested resources in more than one top level resource.
     # ie: we cannot have polymorphic nested resources.
@@ -109,7 +113,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'users/users_for_timeline', :controller => 'users', :action => 'users_for_timeline'
 
   # all users
-  map.resources :users, :collection => { :search => :get } do |user|
+  map.resources :users, 
+    :collection => { :all => :get, :search => :get } do |user|
 
     # friendships 'owned by' user (user --> friendship --> friend)
     user.resources :friendships, :member => { :accept => :get }
@@ -131,7 +136,15 @@ ActionController::Routing::Routes.draw do |map|
     map.connect "users/:id/#{tab}", :controller => 'users', :action => tab
   end
 
-  map.resources :groups, :controller => :networks, :collection => { :search => :get }, :member => { :membership_invite => :get, :membership_request => :get, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post } do |group|
+  map.resources :groups, 
+    :controller => :networks, 
+    :collection => { :all => :get, :search => :get }, 
+    :member => { :membership_invite => :get, 
+                 :membership_request => :get, 
+                 :comment => :post, 
+                 :comment_delete => :delete, 
+                 :rate => :post, 
+                 :tag => :post } do |group|
     # relationships 'accepted by' group (relation --> relationship --> group)
     group.resources :relationships, :member => { :accept => :get }
   end

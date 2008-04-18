@@ -1,6 +1,6 @@
 <ul class="sectionIcons">
 	<li><%= icon "network-member", new_group_path, nil, nil, "Create New Group" %></li>
-	<li><%= icon "view-all", url_for(:action => 'all'), nil, nil, "View All Groups" %></li>
+	<li><%= icon "view-all", all_groups_path, nil, nil, "View All Groups" %></li>
 </ul>
 
 <% cache(:controller => 'groups', :action => 'all_tags') do -%>
