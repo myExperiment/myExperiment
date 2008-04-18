@@ -1,0 +1,113 @@
+<% t "#{contributable_name(@pack.id, 'Pack')} (#{h @pack.contributor_name})" -%>
+
+<% if @pack.authorized?("edit", current_user) %>
+	<ul class="sectionIcons">
+		<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Edit Pack')%></li>
+		<% if @pack.authorized?("destroy", current_user) %>
+			<li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments. Are you sure?', :method => :delete }, 'Delete Pack') %></li>
+		<% end %>
+	</ul>
+<% end %>
+
+<h1 class="contribution_title">Pack: <%= contributable_name(@pack.id, 'Pack') %></h1>
+
+<div class="contribution_aftertitle">
+	<b>Last updated: </b><%= datetime @pack.updated_at %>
+</div>
+
+<div class="contribution_mini_nav">
+	| <%= link_to "Comments (#{@pack.comments.length})", "#comments" %> |
+</div>
+
+<div class="contribution_left_box">
+	<div class="contribution_version_box">
+		<div class="contribution_version_inner_box">
+			<p>
+			    <b>Title:</b>
+			    <span class="title"><%=h @pack.title %></span>
+			</p>
+			
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section shows the overall description of this Pack") %>
+				Description
+			</h3>
+			
+			<% unless @pack.description.blank? %>
+				<div class="contribution_description">
+					<%= white_list @pack.description_html %>
+				</div>
+			<% else %>
+				<p class="none_text">
+					Not set
+				</p>
+			<% end %>
+			
+		</div>
+	
+	</div>
+
+</div>
+
+<div class="contribution_right_box">
+	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @pack } %>
+	
+	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @pack } %>
+	
+	<%= render :partial => "tags/tags_box", :locals => { :taggable => @pack, 
+																											 :owner_id => ((@pack.contributor_type == 'User') ? @pack.contributor_id : nil), 
+																											 :add_path => tag_pack_path(@pack), 
+																											 :edit_path => edit_pack_path(@pack),
+																											 :allow_edit => @pack.authorized?("edit", current_user) } %>
+	
+	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @pack } %>
+	
+	<% if false %><%= render :partial => "layouts/bookmark_with", :locals => { :title => contributable_name(@pack.id, 'pack'), :url => @pack_url } %><% end %>
+	
+</div>	
+
+<div class="clearer">&nbsp;</div>
+
+<!-- BEGIN tabs -->
+	
+<br/>
+<br/>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+	
+<% if logged_in? and @pack.owner? current_user %>
+  
+	<div class="tabContainer">
+    <div class="tabTitle">Permissions</div>
+    <div class="tabContent">
+
+      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @pack } %>
+      <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @pack } %>
+	  
+      <% if @pack.authorized?("edit", current_user) %>
+        <ul class="sectionIcons">
+          <li><%= icon('edit', edit_pack_path(@pack), nil, nil, 'Edit')%></li>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+	
+	<% if false %>
+  <div class="tabContainer">
+    <div class="tabTitle">Viewing History</div>
+    <div class="tabContent">
+      <%= render :partial => "contributions/history", :object => @pack.contribution %>
+    </div>
+  </div>
+	<% end %>
+	
+<% end %>
+
+<!-- END tabs -->
+
+<br/>
+
+<div id="commentsBox">
+	<%= render :partial => "comments/comments", :locals => { :commentable => @pack } %>
+</div>

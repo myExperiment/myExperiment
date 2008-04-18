@@ -27,11 +27,13 @@
   </div>
 <% end %>
 
-<% unless (most_d = Contribution.most_downloaded(10, type)).empty? %>
-  <div class="tabContainer">
-  	<div class="tabTitle">Most Downloaded</div>
-  	<div class="tabContent">
-	    <%= render :partial => "contributions/list", :locals => { :collection => most_d, :table => true } %>
-  	</div>
-  </div> 
-<% end %>
+<% if downloadable? type -%>
+	<% unless (most_d = Contribution.most_downloaded(10, type)).empty? %>
+	  <div class="tabContainer">
+	  	<div class="tabTitle">Most Downloaded</div>
+	  	<div class="tabContent">
+		    <%= render :partial => "contributions/list", :locals => { :collection => most_d, :table => true } %>
+	  	</div>
+	  </div> 
+	<% end %>
+<% end -%>

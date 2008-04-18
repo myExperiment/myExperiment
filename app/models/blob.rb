@@ -25,8 +25,4 @@ class Blob < ActiveRecord::Base
   format_attribute :body
   
   validates_presence_of :data
-
-  def uploader
-    return contribution.contributor.name
-  end
 end

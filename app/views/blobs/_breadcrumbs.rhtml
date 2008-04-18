@@ -10,7 +10,7 @@
   <% when "edit" %>
     <li><%= link_to "Manage: #{contributable_name(@blob.id, 'Blob')}", edit_file_path(@blob) %>
   <% when "all" %>
-    <li><%= link_to "All Files", "workflows/all" %>
+    <li><%= link_to "All Files", all_files_path %>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

@@ -12,7 +12,7 @@
   <% when "search" %>  
     <li><%= link_to "Search Results", search_workflows_path(:query => @query) %></li>
   <% when "all" %>
-    <li><%= link_to "All Workflows", "workflows/all" %>
+    <li><%= link_to "All Workflows", all_workflows_path %>
 	<% when "new_version" %>
     <li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
 		<li><b>&#187;</b></li>

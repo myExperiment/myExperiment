@@ -7,27 +7,37 @@
 	
 		<%= render :partial => "contributions/statistics", :object => contributable.contribution %>
 		
-		<p>
-			<b><%= pluralize contributable.creditors.length, "credit" %></b> 
-		</p>
+		<% type = contributable.class.to_s -%>
 		
-		<p>
-			<b><%= pluralize contributable.attributors.length, "attribution" %></b> 
-		</p>
+		<% if allow_credits_and_attributions? type -%>
+			<p>
+				<b><%= pluralize contributable.creditors.length, "credit" %></b> 
+			</p>
+			
+			<p>
+				<b><%= pluralize contributable.attributors.length, "attribution" %></b> 
+			</p>
+		<% end -%>
 		
-		<p>
-      <b><%= pluralize contributable.taggings.length, "tag" %></b>
-    </p>
+		<% if taggable? type -%>
+			<p>
+	      <b><%= pluralize contributable.taggings.length, "tag" %></b>
+	    </p>
+		<% end -%>
 		
-		<p>
-      <b><%= pluralize contributable.ratings.length, "rating" %></b>
-    </p>
+		<% if rateable? type -%>
+			<p>
+	      <b><%= pluralize contributable.ratings.length, "rating" %></b>
+	    </p>
+		<% end -%>
 		
-    <p>
-    	<b><%= pluralize contributable.comments.length, "comment" %></b>
-    </p>
+		<% if commentable? type -%>
+	    <p>
+	    	<b><%= pluralize contributable.comments.length, "comment" %></b>
+	    </p>
+		<% end -%>
 		
-		<% if contributable.class.to_s.downcase == 'workflow' %>
+		<% if reviewable? type %>
 			<p>
 	      <b><%= pluralize contributable.reviews.length, "review" %></b>
 	    </p>

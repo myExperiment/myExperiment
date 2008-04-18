@@ -34,6 +34,8 @@ module ApplicationHelper
       return c_id == thing.contributor_id.to_i
     when "Blob"
       return c_id == thing.contributor_id.to_i
+    when "Pack"
+      return c_id == thing.contributor_id.to_i
     when "Network"
       return c_id == thing.user_id.to_i
     when "Friendship"
@@ -55,6 +57,8 @@ module ApplicationHelper
       return "Uploader"
     when "Blob"
       return "Uploader"
+    when "Blob"
+      return "Creator"
     when "Network"
       return "Admin"
     when "Profile"
@@ -365,6 +369,12 @@ module ApplicationHelper
       else
         return nil
       end
+    when "Pack"
+      if p = Pack.find(:first, :conditions => ["id = ?", contributableid])
+        return link ? link_to(p.title, pack_url(p)) : p.title
+      else
+        return nil
+      end
     when "Blog"
       if b = Blog.find(:first, :conditions => ["id = ?", contributableid])
         name = h(b.title)
@@ -619,6 +629,8 @@ module ApplicationHelper
       return "famfamfam_silk/email_go.png"
     when "blob"
       return "redmond_studio/documents_16.png"
+    when "pack"
+      return "redmond_studio/copy_16.png"
     when "blog"
       return "famfamfam_silk/note.png"
     when "forum"
@@ -1083,6 +1095,54 @@ module ApplicationHelper
                 "Note: you will only be able to see the items here that you have at least view privileges for.",
                 :class => "box_currentuser_specific",
                 :style => "font-size: 93%; font-weight: bold; color: #990000;")
+  end
+  
+  def downloadable?(type)
+    if ['workflow', 'blob'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def reviewable?(type)
+    if ['workflow'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def commentable?(type)
+    if ['workflow', 'network', 'blob', 'pack'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def taggable?(type)
+    if ['workflow', 'network', 'blob', 'pack'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def rateable?(type)
+    if ['workflow', 'blob'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def allow_credits_and_attributions?(type)
+    if ['workflow', 'blob'].include? type.downcase
+      return true
+    else
+      return false
+    end
   end
   
 protected

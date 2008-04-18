@@ -13,7 +13,15 @@ ActionController::Routing::Routes.draw do |map|
   # Experiments
   map.resources :experiments do |e|
     # Experiments have nested Jobs
-    e.resources :jobs, :member => { :save_inputs => :post, :submit_job => :post, :refresh_status => :get, :refresh_outputs => :get, :outputs_xml => :get, :outputs_package => :get, :rerun => :post, :render_output => :get }
+    e.resources :jobs, 
+      :member => { :save_inputs => :post, 
+                   :submit_job => :post, 
+                   :refresh_status => :get, 
+                   :refresh_outputs => :get, 
+                   :outputs_xml => :get, 
+                   :outputs_package => :get, 
+                   :rerun => :post, 
+                   :render_output => :get }
   end
   
   # announcements
@@ -36,6 +44,16 @@ ActionController::Routing::Routes.draw do |map|
   
   # openid authentication
   map.resource :openid
+  
+  # packs
+  map.resources :packs, 
+    :collection => { :all => :get }, 
+    :member => { :comment => :post, 
+                 :comment_delete => :delete,
+                 :tag => :post } do |file|
+    # No nested resources yet
+  end
+    
 
   # workflows (downloadable)
   map.resources :workflows, 
@@ -45,7 +63,8 @@ ActionController::Routing::Routes.draw do |map|
                  :bookmark => :post, 
                  :comment => :post, 
                  :comment_delete => :delete, 
-                 :rate => :post, :tag => :post, 
+                 :rate => :post, 
+                 :tag => :post, 
                  :create_version => :post, 
                  :destroy_version => :delete, 
                  :edit_version => :get, 
@@ -64,7 +83,8 @@ ActionController::Routing::Routes.draw do |map|
     :member => { :download => :get, 
                  :comment => :post, 
                  :comment_delete => :delete, 
-                 :rate => :post, :tag => :post } do |file|
+                 :rate => :post, 
+                 :tag => :post } do |file|
     # Due to restrictions in the version of Rails used (v1.2.3), 
     # we cannot have reviews as nested resources in more than one top level resource.
     # ie: we cannot have polymorphic nested resources.
@@ -95,7 +115,7 @@ ActionController::Routing::Routes.draw do |map|
     policy.resources :permissions
   end
 
-  # message center for current_user (User.find session[:user_id])
+  # messages
   map.resources :messages
 
   # all ***ship's

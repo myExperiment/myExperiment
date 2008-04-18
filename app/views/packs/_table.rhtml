@@ -1,0 +1,66 @@
+<% query ||= false -%>
+<% odd_row = false -%>
+<% unless collection.empty? %>
+
+<table class="alt_table">
+	<% for pack in collection %>
+		<% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
+		<% if collection.size == 1 -%>
+			<% show ||= pack.authorized?("show", current_user) -%>
+		<% else -%>
+			<% show = pack.authorized?("show", current_user) -%>
+		<% end -%>
+	  <% if show -%>
+			<% cache(:controller => 'packs_cache', :action => 'listing', :id => pack.id) do -%>
+				<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+					<td style="width: 100px;">
+						<p style="margin-top:0; padding-top:0; text-align: center;"><b><%= owner_text blob -%>:</b></p>
+						<center><%= contributor(pack.contribution.contributor_id, pack.contribution.contributor_type, true, 60) %></center>
+					</td>
+					<td style="text-align: left;">
+						<a name="<%= pack.local_name.gsub(/ /, "_") %>"></a>
+						<p class="title">
+							<%= icon "pack", nil, nil, nil, '' %>
+							<% title = contributable_name(pack.id, 'Pack') %>
+							<%=link_to(query ? highlight_all(title, query) : title, pack_path(pack)) %>
+						</p>
+						
+						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
+							<b>Created:</b> <%=datetime pack.created_at, false %>
+							|
+							<b>Updated:</b> <%=datetime pack.updated_at, false %>
+						</p>
+						
+						<div class="desc" style="font-size: 85%;">
+							<% unless pack.description.blank? %>
+					  		<% desc = truncate(strip_html(pack.description), 500) %>
+					    	<%= query ? highlight_all(desc, query) : desc %>
+						  <% else -%>
+								<span class="none_text">No description</span>
+							<% end %>
+						</div>
+						
+						<p style="font-size: 85%;">
+							<b>Comments: </b><%= pack.comments_count %> |
+							<b>Viewed:</b> <%=pluralize pack.contribution.viewings_count, "time" %> |
+						</p>
+						
+						<% unless (tags = pack.tags).empty? %>
+							<p style="font-size: 85%;"><b>Tags:</b></p>
+							<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
+						<% else %>
+							<p style="font-size: 85%;"><i>This Pack has no tags!</i></p>
+						<% end %>	
+					</td>
+					
+					<td class="actions" style="width: 80px;">
+				    <%= icon "show", pack_path(pack), nil, nil, "View" %>
+				    <% if logged_in? and pack.authorized?("edit", current_user) %><%= icon "manage", edit_pack_path(pack), nil, nil, "Manage" %><% end %>
+				  </td>
+				</tr>
+			<% end %>
+		<% end %>
+	<% end %>
+</table>
+
+<% end %>

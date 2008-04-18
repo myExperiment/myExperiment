@@ -6,6 +6,8 @@
       location.href = "<%= new_blog_path -%>";
     } else if (klass == "Blob") {
       location.href = "<%= new_file_path -%>";
+		} else if (klass == "Pack") {
+      location.href = "<%= new_pack_path -%>";
     } else if (klass == "Forum") {
       location.href = "<%= new_forum_path -%>";
     } else if (klass == "Workflow") {
@@ -42,6 +44,7 @@
           <select id="new_object_type">
             <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Workflow</option>
 						<option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
+						<option value="Pack" <%= "selected" if ["packs"].include? controller.controller_name.to_s %>>Pack</option>
 						<option value="Group" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
 						<option value="Blog" <%= "selected" if ["blogs"].include? controller.controller_name.to_s %>>Blog</option>
             <option value="Forum" <%= "selected" if ["forums"].include? controller.controller_name.to_s %>>Forum</option>

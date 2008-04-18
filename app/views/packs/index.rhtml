@@ -1,0 +1,10 @@
+<ul class="sectionIcons">
+	<li><%= icon "pack", new_pack_path, nil, nil, "Create New Pack" %></li>
+	<li><%= icon "view-all", all_packs_path, nil, nil, "View All Packs" %></li>
+</ul>
+
+<% cache(:controller => 'packs', :action => 'all_tags') do -%>
+	<%= render :partial => "packs/all_tags" %>
+<% end -%>
+
+<%= render :partial => "contributions/most_tabs", :locals => { :type => "Pack" } %>

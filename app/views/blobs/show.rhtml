@@ -1,4 +1,4 @@
-<% t "#{contributable_name(@blob.id, 'Blob')} (#{h @blob.uploader})" -%>
+<% t "#{contributable_name(@blob.id, 'Blob')} (#{h @blob.contributor_name})" -%>
 
 <% if @blob.authorized?("edit", (logged_in? ? current_user : nil)) %>
 	<ul class="sectionIcons">
@@ -125,12 +125,14 @@
     </div>
   </div>
 	
+	<% if false %>
   <div class="tabContainer">
     <div class="tabTitle">Viewing History</div>
     <div class="tabContent">
       <%= render :partial => "contributions/history", :object => @blob.contribution %>
     </div>
   </div>
+	<% end %>
 	
 <% end %>
 

@@ -17,9 +17,9 @@
   <% when "search" %>  
     <li><%= link_to "Search Results", search_users_path(:query => @query) %></li>
   <% when "all" %>
-    <li><%= link_to "All Users", "users/all" %>
+    <li><%= link_to "All Users", all_users_path %>
 	<% when "forgot_password" %>
-    <li><%= link_to "All Users", "users/forgot_password" %>
+    <li><%= link_to "Forgot Password", "users/forgot_password" %>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>
