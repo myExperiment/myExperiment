@@ -31,15 +31,24 @@
 						<%= link_to image_tag("logo.png"), home_url %>
 					</div>
 					<div class="links">
-						<% if logged_in? -%>
-							<span><b><%= signout_link -%></b></span>
-						<% else -%>
-							<span><b><%= icon "login", new_session_url, nil, nil, "Log in" -%></b></span>
+						<div style="text-align: left; float: left; width: 49%; padding-top: 6px;">
+							<span><b><%= link_to "Wiki", "http://wiki.myexperiment.org/", :target => '_blank' %></b></span>
 							<span>&nbsp;|&nbsp;</span>
-							<span><b><%= icon "user", new_user_url, nil, nil, "Register" -%></b></span>
-						<% end %>
-						<span>&nbsp;|&nbsp;</span>
-						<span><b><%= icon "feedback", "/feedback", nil, nil, "Give us Feedback" -%></b></span>
+							<span><b><%= link_to "Mailing List", "http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss", :target => '_blank' %></b></span>
+							<span>&nbsp;|&nbsp;</span>
+							<span><b><%= link_to "Publications", "http://www.semanticgrid.org/myexperiment/", :target => '_blank' %></b></span>
+						</div>
+						<div style="text-align: right; float: right; width: 49%;">
+							<% if logged_in? -%>
+								<span><b><%= signout_link -%></b></span>
+							<% else -%>
+								<span><b><%= icon "login", new_session_url, nil, nil, "Log in" -%></b></span>
+								<span>&nbsp;|&nbsp;</span>
+								<span><b><%= icon "user", new_user_url, nil, nil, "Register" -%></b></span>
+							<% end %>
+							<span>&nbsp;|&nbsp;</span>
+							<span><b><%= icon "feedback", "/feedback", nil, nil, "Give us Feedback" -%></b></span>
+						</div>
 					</div>
 					<div class="clearer">&nbsp;</div>
 				</div>

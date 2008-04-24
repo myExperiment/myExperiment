@@ -138,8 +138,7 @@ li {
 
 #myexp_header .links {
 	float: right;
-	width: 300px;
-	text-align: right;
+	width: 600px;
 	font-size: 93%;
 	color: #999999;
 }
@@ -203,16 +202,21 @@ li {
 	vertical-align: top;
 }
 
+#ft table p {
+	padding: 0.3em 0;
+	line-height: 1;
+}
+
 #ft .left {
 	width: 150px; 
 	text-align: left;
-	font-size: 85%;
+	font-size: 93%;
 }
 
 #ft .middle {
 	width: 325px; 
 	text-align: left;
-	font-size: 85%;
+	font-size: 93%;
 	border-left: 1px dotted #999999;
 }
 

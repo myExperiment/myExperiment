@@ -1,4 +1,4 @@
-<% t "#{h @workflow.title} (#{h @workflow.contributor_name})" -%>
+<% t "#{h @workflow.title} (#{h @workflow.contributor_name}) (Taverna Workflow)" -%>
 
 <script type="text/javascript">
   function showWorkflowVersion(form) {
@@ -20,7 +20,7 @@
 	</ul>
 <% end %>
 
-<h1 class="contribution_title">Workflow Entry: <%=h @workflow.title %></h1>
+<h1 class="contribution_title">Workflow Entry: <%=h @workflow.title %> (Taverna Workflow)</h1>
 
 <div class="contribution_aftertitle">
 	<b>Last updated: </b><%= datetime @workflow.updated_at %>
