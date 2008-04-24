@@ -326,7 +326,7 @@
     <Cell ss:Index="7"><Data ss:Type="String">index</Data></Cell>
     <Cell ss:StyleID="s70"><Data ss:Type="String">announcement</Data></Cell>
     <Cell ss:StyleID="s70"><Data ss:Type="String">announcement</Data></Cell>
-    <Cell ss:StyleID="s70"><Data ss:Type="String">body</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">title</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:Index="4" ss:StyleID="s63"/>
@@ -517,8 +517,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>28</ActiveRow>
-     <ActiveCol>10</ActiveCol>
+     <ActiveRow>29</ActiveRow>
+     <ActiveCol>9</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
