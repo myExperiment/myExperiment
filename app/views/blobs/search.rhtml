@@ -4,6 +4,9 @@
 
 <h2><%= pluralize(@blobs.length, "file") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
 
+<%= view_privileges_notice %>
+<br/>
+
 <%= render :partial => "blobs/table", :locals => { :collection => @blobs } %>
 
 <br />

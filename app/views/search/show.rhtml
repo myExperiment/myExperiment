@@ -1,4 +1,4 @@
-<% t "Search" -%>
+<% t "Results" -%>
 
 <h1>Search Results</h1>
 
@@ -7,6 +7,9 @@
   <p>No search results.</p>
   
 <% else %>
+
+	<%= view_privileges_notice %>
+	<br/>
 
   <% if not @workflows.empty? %>
     <h2><%= pluralize(@workflows.length, "workflow") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
