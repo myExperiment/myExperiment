@@ -1686,6 +1686,7 @@ table.simple th {
 }
 
 table.simple td {
+	background-color: #FFFFFF;
 	text-align: left;
 	vertical-align: top;
 	line-height: 1.3;
