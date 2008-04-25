@@ -101,7 +101,12 @@
 		<div class="contribution_version_inner_box">
 			<p>
 				<b>Title:</b>
-				<span class="title"><%=h @viewing_version.title %></span>
+				<span class="title"><%= h @viewing_version.title %></span>
+			</p>
+			
+			<p>
+				<b>Type:</b>
+				<%= h @workflow.content_type %>
 			</p>
 			
 			<br/>
@@ -238,6 +243,16 @@
 					You do not have permissions to run this Workflow
 				</p>
 			<% end %>
+		
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section shows the internals of this Workflow version") %>
+				Internals
+			</h3>
+			
+			<%= render :partial => "internals", :locals => { :workflow => @workflow, :version => @viewing_version_number } -%>
+		
 		</div>
 	
 	</div>

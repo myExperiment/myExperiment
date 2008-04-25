@@ -1,0 +1,142 @@
+<% if (model = workflow.get_sculf_model(version)) -%>
+	
+	<!-- Sources -->
+	<% sources = model.sources -%>
+	<div class="fold">
+		<div class="foldTitle">
+	    Sources (<%= sources.length -%>)
+		</div>
+	  <div class="foldContent" style="display: none;">
+			<% unless sources.blank? -%>
+				<table class="simple">
+				  <tr>
+				    <th>Name</th>
+				    <th>Description</th>
+				  </tr>
+				
+					<% sources.each do |s| -%>
+					  <tr>
+					    <td><b><%= h s.name -%></b></td>
+					    <td><%= h s.description -%></td>
+					  </tr>
+					<% end %>
+				</table>
+			<% else %>
+				<p class="none_text">None</p>
+			<% end %>
+		</div>
+	</div>
+	
+	<!-- Processors -->
+	<% processors = model.processors -%>
+	<div class="fold">
+		<div class="foldTitle">
+	    Processors (<%= processors.length -%>)
+		</div>
+	  <div class="foldContent" style="display: none;">
+			<% unless processors.blank? -%>
+				<table class="simple">
+				  <tr>
+				    <th>Name</th>
+						<th>Type</th>
+				    <th>Description</th>
+				  </tr>
+				
+					<% processors.each do |p| -%>
+					  <tr>
+					    <td><b><%= h p.name -%></b></td>
+							<td><%= h p.type -%></td>
+					    <td><%= h p.description -%></td>
+					  </tr>
+					<% end %>
+				</table>
+			<% else %>
+				<p class="none_text">None</p>
+			<% end %>
+		</div>
+	</div>
+	
+	<!-- Sinks -->
+	<% sinks = model.sinks -%>
+	<div class="fold">
+		<div class="foldTitle">
+	    Sinks (<%= sinks.length -%>)
+		</div>
+	  <div class="foldContent" style="display: none;">
+			<% unless sinks.blank? -%>
+				<table class="simple">
+				  <tr>
+				    <th>Name</th>
+				    <th>Description</th>
+				  </tr>
+				
+					<% sinks.each do |s| -%>
+					  <tr>
+					    <td><b><%= h s.name -%></b></td>
+					    <td><%= h s.description -%></td>
+					  </tr>
+					<% end %>
+				</table>
+			<% else %>
+				<p class="none_text">None</p>
+			<% end %>
+		</div>
+	</div>
+	
+	<!-- Links -->
+	<% links = model.links -%>
+	<div class="fold">
+		<div class="foldTitle">
+	    Links (<%= links.length -%>)
+		</div>
+	  <div class="foldContent" style="display: none;">
+			<% unless links.blank? -%>
+				<table class="simple">
+				  <tr>
+				    <th>Sink</th>
+				    <th>Source</th>
+				  </tr>
+				
+					<% links.each do |l| -%>
+					  <tr>
+					    <td><%= h l.sink -%></td>
+					    <td><%= h l.source -%></td>
+					  </tr>
+					<% end %>
+				</table>
+			<% else %>
+				<p class="none_text">None</p>
+			<% end %>
+		</div>
+	</div>
+	
+	<!-- Coordinations -->
+	<% coordinations = model.coordinations -%>
+	<div class="fold">
+		<div class="foldTitle">
+	    Coordinations (<%= coordinations.length -%>)
+		</div>
+	  <div class="foldContent" style="display: none;">
+			<% unless coordinations.blank? -%>
+				<table class="simple">
+				  <tr>
+				    <th>Controller</th>
+				    <th>Target</th>
+				  </tr>
+				
+					<% coordinations.each do |c| -%>
+					  <tr>
+					    <td><%= h c.controller -%></td>
+					    <td><%= h c.target -%></td>
+					  </tr>
+					<% end %>
+				</table>
+			<% else %>
+				<p class="none_text">None</p>
+			<% end %>
+		</div>
+	</div>
+
+<% else %>
+		<p class="none_text">Unavailable</p>
+<% end -%>

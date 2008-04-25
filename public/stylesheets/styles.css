@@ -1667,3 +1667,29 @@ ol.outputs_list ol li {
 	width: 100%; 
 	height: 600px; 
 }
+
+table.simple {
+	border-collapse: collapse;
+	font-size: 93%;
+	margin-top: 0.3em;
+}
+
+table.simple th,
+table.simple td {
+	border: 1px solid #CCCCCC;
+}
+
+table.simple th {
+	background-color: #EEEEEE;
+	font-weight: bold;
+	padding: 0.5em 0.8em;
+}
+
+table.simple td {
+	text-align: left;
+	vertical-align: top;
+	line-height: 1.3;
+	padding: 0.3em 0.6em;
+}
+
+

@@ -96,6 +96,14 @@ class Workflow < ActiveRecord::Base
     
     return model.sources
   end
+  
+  def get_sculf_model(version)
+    return nil unless (workflow_version = self.find_version(version))
+    parser = Scufl::Parser.new
+    model  = parser.parse(workflow_version.scufl)
+    
+    return model
+  end
 
   # End SCUFL specific methods
 end
