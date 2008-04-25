@@ -4,32 +4,48 @@
 
 <% if @results.empty? %>
 
-  <p>No search results.</p>
+  <p class="none_text">No search results.</p>
   
 <% else %>
 
 	<%= view_privileges_notice %>
 	<br/>
+	
+	<% unless @users.empty? %>
+	  <div class="tabContainer">
+	  	<div class="tabTitle">Users (<%= @users.length -%>)</div>
+	  	<div class="tabContent">
+		    <%= render :partial => "users/table", :locals => { :collection => @users, :query => @query } %>
+	  	</div>
+	  </div>
+	<% end %>
+	
+	<% unless @networks.empty? %>
+	  <div class="tabContainer">
+	  	<div class="tabTitle">Groups (<%= @networks.length -%>)</div>
+	  	<div class="tabContent">
+		    <%= render :partial => "networks/table", :locals => { :collection => @networks, :query => @query } %>
+	  	</div>
+	  </div>
+	<% end %>
 
-  <% if not @workflows.empty? %>
-    <h2><%= pluralize(@workflows.length, "workflow") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
-    <%= render :partial => "workflows/table", :locals => { :collection => @workflows, :query => @query } %>
-  <% end %>
-
-  <% if not @blobs.empty? %>
-    <h2><%= pluralize(@blobs.length, "file") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
-    <%= render :partial => "blobs/table", :locals => { :collection => @blobs } %>
-  <% end %>
-
-  <% if not @users.empty? %>
-    <h2><%= pluralize(@users.length, "user") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
-    <%= render :partial => "users/table", :locals => { :collection => @users } %>
-  <% end %>
-
-  <% if not @networks.empty? %>
-    <h2><%= pluralize(@networks.length, "group") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>	
-    <%= render :partial => "networks/table", :locals => { :collection => @networks } %>
-  <% end %>
+	<% unless @workflows.empty? %>
+	  <div class="tabContainer">
+	  	<div class="tabTitle">Workflows (<%= @workflows.length -%>)</div>
+	  	<div class="tabContent">
+    		<%= render :partial => "workflows/table", :locals => { :collection => @workflows, :query => @query } %>
+	  	</div>
+	  </div>
+	<% end %>
+	
+	<% unless @blobs.empty? %>
+	  <div class="tabContainer">
+	  	<div class="tabTitle">Files (<%= @blobs.length -%>)</div>
+	  	<div class="tabContent">
+		    <%= render :partial => "blobs/table", :locals => { :collection => @blobs, :query => @query } %>
+	  	</div>
+	  </div>
+	<% end %>
 
 <% end %>
 
