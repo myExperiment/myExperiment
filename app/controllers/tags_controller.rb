@@ -47,14 +47,30 @@ protected
   def find_tag_and_tagged_with
     begin
       @tag = Tag.find(params[:id])
-      
-      @tagged_with = []
-      @tag.taggings.each do |t|
-        i = t.taggable
-        @tagged_with << i if (["network"].include?(t.taggable_type.downcase) ? true : i.contribution.authorized?("show", (logged_in? ? current_user : nil)))
-      end
     rescue ActiveRecord::RecordNotFound
       error("Tag not found", "is invalid")
+    end
+    
+    @tagged_with = []
+    taggings = []
+    @internal_type = parse_to_internal_type(params[:type])
+    
+    if @internal_type
+      # Filter by the type
+      sql="SELECT DISTINCT taggings.* FROM taggings INNER JOIN tags ON tags.id=taggings.tag_id WHERE ( taggings.taggable_type = ? AND taggings.tag_id = ? ) ORDER BY taggings.taggable_type DESC"
+      taggings = Tagging.find_by_sql [ sql, @internal_type, @tag.id ]
+    else
+      # Get all taggings
+      taggings = @tag.taggings
+    end
+    
+    # Authorise entries now
+    taggings.each do |t|
+      if t.taggable.respond_to?(:contribution)
+        @tagged_with << t.taggable if t.taggable.contribution.authorized?("show", current_user)
+      else
+        @tagged_with << t.taggable
+      end
     end
   end
   
@@ -66,6 +82,18 @@ private
     
     respond_to do |format|
       format.html { redirect_to tags_url }
+    end
+  end
+  
+  # This needs to be refactored into a library somewhere!
+  # (eg: a myExperiment system library)
+  def parse_to_internal_type(type)
+    return nil if type.blank?
+    
+    case type.downcase.singularize
+      when 'workflow'; return 'Workflow'
+      when 'file';     return 'Blob'
+      when 'group';    return 'Network'
     end
   end
 end

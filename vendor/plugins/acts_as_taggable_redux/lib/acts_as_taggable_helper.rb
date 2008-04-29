@@ -17,7 +17,7 @@ module ActsAsTaggableHelper
     return tag_cloud_from_collection(tags, true)
   end
     
-  def tag_cloud_from_collection(tags, original=false)
+  def tag_cloud_from_collection(tags, original=false, link_to_type=nil)
     tags = tags.sort { |a, b|
       a.name.downcase <=> b.name.downcase
     }
@@ -41,9 +41,17 @@ module ActsAsTaggableHelper
       html << %(    <li>)
       
       if original
-        html << link_to(tag.name, tag_url(tag), :class => classes[(tag.taggings_count - min) / divisor]) 
+        unless link_to_type.blank?
+          html << link_to(tag.name, tag_url(tag) + "?type=#{link_to_type}", :class => classes[(tag.taggings_count - min) / divisor])
+        else
+          html << link_to(tag.name, tag_url(tag), :class => classes[(tag.taggings_count - min) / divisor])
+        end
       else
-        html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{tag.name}</a>"
+        unless link_to_type.blank?
+          html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}?type=#{link_to_type}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{tag.name}</a>"
+        else
+          html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{tag.name}</a>"
+        end
       end
       
       html << %(</li>\n)

@@ -1,7 +1,15 @@
-<% t "#{h @tag.name}" -%>
+<% if @internal_type -%>
+	<% t "For #{visible_name(@internal_type).pluralize} - #{h @tag.name}" -%>
+<% else -%>
+	<% t "#{h @tag.name}" -%>
+<% end -%>
 
 <h1>Tag Results</h1>
 
-<h2>Items tagged with "<%=h @tag.name %>" (<%= @tagged_with.length %>)</h2>
+<h2><%= @internal_type ? visible_name(@internal_type).pluralize : "Items" -%> tagged with "<%= h @tag.name -%>" (<%= @tagged_with.length -%>)</h2>
 
-<%= render :partial => "tags/table", :locals => { :collection => @tagged_with } %>
+<% if @internal_type -%>
+	<%= render :partial => "#{@internal_type.downcase.pluralize}/table", :locals => { :collection => @tagged_with } %>
+<% else -%>
+	<%= render :partial => "tags/table", :locals => { :collection => @tagged_with } %>
+<% end -%>
