@@ -1,5 +1,3 @@
-<%= javascript_include_tag "tabs.js" %>
-
 <% t "Results" -%>
 
 <h1>Search Results</h1>
@@ -12,6 +10,8 @@
 
 	<%= view_privileges_notice %>
 	<br/>
+	
+	<div id="tabsContainer" class="tabsContainer"></div>
 	
 	<% unless @users.empty? %>
 	  <div class="tabContainer">
