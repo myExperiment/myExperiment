@@ -73,6 +73,7 @@ li img {
 	background-position: top;
 	background-repeat: repeat-x;
 	background-color: #EEF2FF;
+	background-color: #E0EDF8;
 	overflow: hidden;
 }
 
@@ -155,7 +156,7 @@ li img {
 #frontpage_body .box .xb5, 
 #frontpage_body .box .xb6, 
 #frontpage_body .box .xb7 {
-	background: #EEF2FF;
+	background: #E0EDF8;
 	border-left: 1px solid #D5E4F4;
 	border-right: 1px solid #D5E4F4;
 }
