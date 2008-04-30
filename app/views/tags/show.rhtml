@@ -1,18 +1,40 @@
 <% if @internal_type -%>
-	<% t "For #{visible_name(@internal_type).pluralize} - #{h @tag.name}" -%>
+	<% t "#{visible_name(@internal_type).pluralize} only - #{h @tag.name}" -%>
 <% else -%>
 	<% t "#{h @tag.name}" -%>
 <% end -%>
 
-<h1>Tag Results</h1>
+<h1>Tag Results <%= @internal_type ? "(for #{visible_name(@internal_type).pluralize} only)" : "" %></h1>
 
-<h2><%= @internal_type ? visible_name(@internal_type).pluralize : "Items" -%> tagged with "<%= h @tag.name -%>" (<%= @tagged_with.length -%>)</h2>
+<h2>
+	<%= @internal_type ? visible_name(@internal_type).pluralize : "Items" -%> tagged with "<%= h @tag.name -%>" (<%= @tagged_with.length -%>)
+	<% if @internal_type -%>
+		&nbsp;&nbsp;<small>[<%= link_to "See results for all types", tag_path(@tag) %>]</small>
+	<% end -%>
+</h2>
 
 <%= view_privileges_notice %>
 <br/>
 
 <% if @internal_type -%>
+		<%= render :partial => "#{@internal_type.downcase.pluralize}/table", :locals => { :collection => @tagged_with } %>
+<% else -%>
+	<div id="tabsContainer" class="tabsContainer"></div>
+	<% aggregate_taggables(@tagged_with).each do |type, taggables| %>
+		<div class="tabContainer">
+	  	<div class="tabTitle"><%= visible_name(type).pluralize -%> (<%= taggables.length -%>)</div>
+	  	<div class="tabContent">
+		    <%= render :partial => "#{type.pluralize.downcase}/table", :locals => { :collection => taggables } %>
+	  	</div>
+	  </div>
+	<% end %>
+<% end -%>
+
+
+<% if false # legacy... %>
+<% if @internal_type -%>
 	<%= render :partial => "#{@internal_type.downcase.pluralize}/table", :locals => { :collection => @tagged_with } %>
 <% else -%>
 	<%= render :partial => "tags/table", :locals => { :collection => @tagged_with } %>
 <% end -%>
+<% end %>

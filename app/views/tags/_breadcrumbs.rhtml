@@ -1,10 +1,16 @@
-<li><%= link_to 'Tags', tags_path %></li>
+<li><%= link_to "Tags", tags_path %></li>
 
 <% if ["show", "new", "edit"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "View: #{h(@tag.name)}", tag_path(@tag) %></li>
+    <li>
+			<% if @internal_type %>
+				<%= link_to "#{h(@tag.name)} (#{visible_name(@internal_type).pluralize} only)", tag_path(@tag) + "?type=#{params[:type]}" %>
+			<% else %>
+				<%= link_to "#{h(@tag.name)}", tag_path(@tag) %>
+			<% end %>
+		</li>
   <% when "new" %>
     <!-- no breadcrumb -->
   <% when "edit" %>
