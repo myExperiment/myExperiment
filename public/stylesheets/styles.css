@@ -1386,10 +1386,8 @@ div.auto_complete ul strong.highlight {
 
 .box_currentuser_specific {
 	padding: 0.5em 0.8em;
-	border: 2px solid #99CCFF;
-	/*border-top: 1px dotted #999999;
-	border-bottom: 1px dotted #999999;
-	background-color: #CFE0EF;*/
+	border: 1px solid #99CCFF;
+	background-color: #EEF6FF;
 }
 
 .box_currentuser_specific * {
@@ -1518,7 +1516,6 @@ table.job_report th {
 
 .tabnav2 {
 	border-bottom: 1px solid #999999;
-	color: #333333;
 	font-size: 100%;
 	padding-left: 10px;
 	font-weight: bold;
@@ -1542,14 +1539,15 @@ table.job_report th {
 	border: 1px solid #999999;
 	text-decoration: none;
 	background-color: #EEF2FF;
+	color: #000099;
 }
 
 .tabnav2 li a:link {
-	color: #333333;
+	color: #000099;
 }
 
 .tabnav2 li a:visited {
-	color: #333333;
+	color: #000099;
 }
 
 .tabnav2 li a:hover,
