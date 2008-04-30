@@ -57,8 +57,9 @@ protected
     
     if @internal_type
       # Filter by the type
-      sql="SELECT DISTINCT taggings.* FROM taggings INNER JOIN tags ON tags.id=taggings.tag_id WHERE ( taggings.taggable_type = ? AND taggings.tag_id = ? ) ORDER BY taggings.taggable_type DESC"
-      taggings = Tagging.find_by_sql [ sql, @internal_type, @tag.id ]
+      taggings = Tagging.find(:all, 
+                               :conditions => [ "tag_id = ? AND taggable_type = ?", @tag.id, @internal_type],
+                               :order => "taggable_type DESC") 
     else
       # Get all taggings
       taggings = @tag.taggings
