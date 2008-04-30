@@ -8,6 +8,9 @@
 
 <h2><%= @internal_type ? visible_name(@internal_type).pluralize : "Items" -%> tagged with "<%= h @tag.name -%>" (<%= @tagged_with.length -%>)</h2>
 
+<%= view_privileges_notice %>
+<br/>
+
 <% if @internal_type -%>
 	<%= render :partial => "#{@internal_type.downcase.pluralize}/table", :locals => { :collection => @tagged_with } %>
 <% else -%>
