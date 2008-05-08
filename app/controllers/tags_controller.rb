@@ -89,7 +89,7 @@ private
   # This needs to be refactored into a library somewhere!
   # (eg: a myExperiment system library)
   def parse_to_internal_type(type)
-    return nil if type.blank?
+    return nil if type.blank? or type.downcase == "all"
     
     case type.downcase.singularize
       when 'workflow'; return 'Workflow'
