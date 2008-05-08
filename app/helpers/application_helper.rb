@@ -1089,7 +1089,7 @@ module ApplicationHelper
   
   def view_privileges_notice
     content_tag(:p, 
-                "Note: only items that you have view priviledges are visible here.",
+                "Note: some items may not be visible due to viewing permissions.",
                 :class => "box_currentuser_specific",
                 :style => "font-size: 93%; font-weight: bold; color: #990000;")
   end
