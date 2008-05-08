@@ -8,7 +8,7 @@
   }
 </script>
 
-<% if @workflow.authorized?("edit", (logged_in? ? current_user : nil)) %>
+<% if @authorised_to_edit %>
 	<ul class="sectionIcons">
 		<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow Entry')%></li>
 		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
@@ -150,8 +150,7 @@
 				<div class="contribution_description">
 					<%= white_list @viewing_version.body_html %>
 				</div>
-				<% if logged_in? and @authorised_to_edit %>
-					<br/>
+				<% if @authorised_to_edit %>
 					<p style="text-align: right; color: #666666;">[ <%= link_to "edit", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
 				<% end %>
 			<% else %>
