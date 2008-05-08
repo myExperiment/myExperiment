@@ -308,7 +308,7 @@
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @workflow } %>
       <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @workflow } %>
 	  
-	  <% if @workflow.authorized?("edit", current_user) %>
+	  <% if @authorised_to_edit %>
 		  <ul class="sectionIcons">
 		  	<li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit')%></li>
 		  </ul>
