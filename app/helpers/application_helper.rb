@@ -57,7 +57,7 @@ module ApplicationHelper
       return "Uploader"
     when "Blob"
       return "Uploader"
-    when "Blob"
+    when "Pack"
       return "Creator"
     when "Network"
       return "Admin"
@@ -716,17 +716,14 @@ module ApplicationHelper
   end
   
   def tags_for_type(type, limit=-1)
-    
-    return [] unless ["workflow", "blob", "network"].include?(type.downcase)
-   
-    # HANDCRAFTED_SQL 
+    # Use a custom handcrafted sql query instead of the Tagging plugin functions (for perf reasons):
     sql="SELECT DISTINCT tags.* FROM tags INNER JOIN taggings ON tags.id=taggings.tag_id WHERE ( taggings.taggable_type = ? )  ORDER BY tags.taggings_count DESC"
 
     unless limit < 0
       sql+=" LIMIT #{limit}"
     end 
 
-    tags=Tag.find_by_sql [  sql, type.capitalize ]
+    tags=Tag.find_by_sql [ sql, type.capitalize ]
 
     return tags
   end
@@ -788,12 +785,12 @@ module ApplicationHelper
   def visible_name(entity)
     type = ( entity.instance_of?(String) ) ? entity : entity.class.to_s
     case type
-    when "Blob"
-      return "File"
-    when "Network"
-      return "Group"
-    else
-      return type
+      when "Blob"
+        return "File"
+      when "Network"
+        return "Group"
+      else
+        return type
     end
   end
   
@@ -1092,7 +1089,7 @@ module ApplicationHelper
   
   def view_privileges_notice
     content_tag(:p, 
-                "Note: you will only be able to see the items here that you have at least view privileges for.",
+                "Note: only items that you have view priviledges are visible here.",
                 :class => "box_currentuser_specific",
                 :style => "font-size: 93%; font-weight: bold; color: #990000;")
   end
@@ -1143,6 +1140,20 @@ module ApplicationHelper
     else
       return false
     end
+  end
+  
+  def aggregate_taggables(taggables)
+    rtn = {}
+    
+    taggables.each do |t|
+      if (arr = rtn[(klass = t.class.to_s)])
+        arr << t
+      else
+        rtn[klass] = [t]
+      end
+    end
+    
+    return rtn
   end
   
 protected
