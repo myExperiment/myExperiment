@@ -193,10 +193,6 @@ def rest_index_request(rules, query)
   
   part = { :size => limit, :current => page }
 
-  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{rest_name.pluralize}/>")
-
-  doc.root.add_attribute('api-version', API_VERSION) if query['api_version'] == 'yes'
-
   if query['tag']
     tag = Tag.find_by_name(query['tag'])
 
@@ -230,9 +226,16 @@ def rest_index_request(rules, query)
   # filter out ones they are not allowed to get
   obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", (logged_in? ? current_user : nil)) end)
 
-  obs.map do |c|
-    el = doc.root.add_element(rest_name, { 'uri' => rest_access_uri(c), 'resource' => eval("rest_resource_uri(c)") } )
-    el.add_text(eval("c.#{rules['Element text accessor']}"))
+  produce_rest_list(rules, query, obs, rest_name.pluralize)
+end
+
+def produce_rest_list(rules, query, obs, tag)
+  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{tag}/>")
+
+  doc.root.add_attribute('api-version', API_VERSION) if query['api_version'] == 'yes'
+
+  obs.map do |ob|
+    doc.root.add_element(rest_reference(ob, query))
   end
 
   doc
@@ -310,6 +313,7 @@ def rest_reference(ob, query)
     when 'Creditation';  tag = 'creditation';  text = ''
     when 'Citation';     tag = 'citation';     text = ob.title
     when 'Announcement'; tag = 'announcement'; text = ob.title
+    when 'Tag';          tag = 'tag';          text = ob.name
 
     when 'Workflow::Version'; tag = 'workflow'; text = ob.title
   end
@@ -379,6 +383,45 @@ def group_count(rules, query)
 
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><group-count/>")
   doc.root.add_text(groups.length.to_s)
+
+  doc
+end
+
+def get_tagged(rules, query)
+
+  obs = Tagging.find_by_tag_count
+
+  # filter out ones they are not allowed to get
+  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", (logged_in? ? current_user : nil)) end)
+
+  produce_rest_list(rules, query, obs.map do |ob| ob.taggable end, 'tagged')
+end
+
+def tag_cloud(rules, query)
+
+  num  = 25
+  type = nil
+
+  num  = query['num'].to_i if query['num']
+  type = query['type']     if query['type']
+
+
+  if query['type']
+    type = query['type'].camelize
+
+    type = 'Network' if type == 'Group'
+    type = 'Blob'    if type == 'File'
+  end
+
+  tags = Tag.find_by_tag_count(num, type)
+
+  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><tag-cloud/>")
+
+  doc.root.add_attributes( { 'type' => query['type'] } )
+
+  tags.each do |tag|
+    doc.root.add_element(rest_reference(tag, query)).add_attribute('count', tag.taggings_count)
+  end
 
   doc
 end
