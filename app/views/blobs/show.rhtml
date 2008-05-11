@@ -1,15 +1,13 @@
 <% t "#{contributable_name(@blob.id, 'Blob')} (#{h @blob.contributor_name})" -%>
 
-<% if @blob.authorized?("edit", (logged_in? ? current_user : nil)) %>
-	<ul class="sectionIcons">
-		<% if mine?(@blob) -%>
-			<li><%= icon('manage', edit_file_path(@blob), nil, nil, 'Manage File Entry')%></li>
-		<% end -%>
-		<% if @blob.authorized?("destroy", current_user) %>
-			<li><%= icon('destroy', file_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and ratings. Are you sure?', :method => :delete }, 'Delete File Entry') %></li>
-		<% end %>
-	</ul>
-<% end %>
+<ul class="sectionIcons">
+	<% if mine?(@blob) -%>
+		<li><%= icon('manage', edit_file_path(@blob), nil, nil, 'Manage File Entry')%></li>
+	<% end -%>
+	<% if @blob.authorized?("destroy", current_user) %>
+		<li><%= icon('destroy', file_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and ratings. Are you sure?', :method => :delete }, 'Delete File Entry') %></li>
+	<% end %>
+</ul>
 
 <h1 class="contribution_title">File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
 

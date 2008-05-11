@@ -89,7 +89,7 @@
 					<td class="actions" style="width: 80px;">
 				    <%= icon "show", file_path(blob), nil, nil, "View" %>
 					  <% if blob.authorized?("download", current_user) %><%= icon "download", download_file_path(blob) %><% end %>
-				    <% if logged_in? and blob.authorized?("edit", current_user) %><%= icon "manage", edit_file_path(blob), nil, nil, "Manage" %><% end %>
+				    <% if mine?(blob) %><%= icon "manage", edit_file_path(blob), nil, nil, "Manage" %><% end %>
 				  </td>
 				</tr>
 			<% end %>

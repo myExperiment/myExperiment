@@ -8,19 +8,16 @@
   }
 </script>
 
-<% if @authorised_to_edit %>
-	<ul class="sectionIcons">
-		<% if mine?(@workflow) -%>
-			<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow Entry')%></li>
-		<% end -%>
-		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
-		<% if @workflow.authorized?("destroy", current_user) %>
-			<li>
-				<%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow Entry') %>
-			</li>
-		<% end %>
-	</ul>
-<% end %>
+<ul class="sectionIcons">
+	<% if mine?(@workflow) -%>
+		<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow Entry')%></li>
+	<% end -%>
+	<% if @workflow.authorized?("destroy", current_user) %>
+		<li>
+			<%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow Entry') %>
+		</li>
+	<% end %>
+</ul>
 
 <h1 class="contribution_title">Workflow Entry: <%=h @workflow.title %> (Taverna Workflow)</h1>
 
@@ -90,12 +87,15 @@
 		<% if @authorised_to_edit %>
 			<div style="margin-top: 1em;">
 				<ul class="sectionIcons" style="margin-top: 0.7em; margin-bottom: 0.6em;">
-					<li><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit Workflow Version") %></li>
-	        <% if @latest_version_number > 1 %>
+					<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
+					<li><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit This Version") %></li>
+	        <% if false %>
+					<% if @latest_version_number > 1 %>
 						<% if @workflow.authorized?("destroy", current_user) %>
-							<li><%= icon('destroy', workflow_version_delete_url(@workflow.id, @viewing_version.version), nil, { :confirm => "Are you sure you want to delete this version (Version #{@viewing_version_number.to_s}) of the Workflow file (including title/description metadata)?", :method => :delete }, 'Delete Workflow Version') %></li>
+							<li><%= icon('destroy', workflow_version_delete_url(@workflow.id, @viewing_version.version), nil, { :confirm => "Are you sure you want to delete this version (Version #{@viewing_version_number.to_s}) of the Workflow file (including title/description metadata)?", :method => :delete }, 'Delete This Version') %></li>
 						<% end %>
 	        <% end %>
+					<% end %>
 				</ul>
 			</div>
 		<% end %>

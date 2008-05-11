@@ -7,8 +7,9 @@ class BlobsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :search, :all]
   
   before_filter :find_blobs, :only => [:index, :all]
-  #before_filter :find_blob_auth, :only => [:download, :show, :edit, :update, :destroy]
   before_filter :find_blob_auth, :except => [:search, :index, :new, :create, :all]
+  
+  before_filter :check_is_owner, :only => [:edit, :update]
   
   before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :comment, :comment_delete, :rate, :tag, :destroy]
   
@@ -268,6 +269,12 @@ class BlobsController < ApplicationController
       end
       rescue ActiveRecord::RecordNotFound
       error("File not found", "is invalid")
+    end
+  end
+  
+  def check_is_owner
+    if @blob
+      error("You are not authorised to manage this File", "") unless @blob.owner?(current_user)
     end
   end
   

@@ -10,6 +10,8 @@ class WorkflowsController < ApplicationController
   before_filter :find_workflows_rss, :only => [:index]
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all]
   
+  before_filter :check_is_owner, :only => [:edit, :update]
+  
   before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :update_version, :comment, :comment_delete, :rate, :tag, :destroy, :destroy_version]
   
   # These are provided by the Taverna gem
@@ -421,7 +423,6 @@ protected
         workflow = Workflow.find(params[:id])
       end
       
-      
       if workflow.authorized?(action_name, (logged_in? ? current_user : nil))
         @latest_version_number = workflow.current_version
         @workflow = workflow
@@ -471,6 +472,12 @@ protected
     rescue ActiveRecord::RecordNotFound
       error("Workflow not found", "is invalid")
       return false
+    end
+  end
+  
+  def check_is_owner
+    if @workflow
+      error("You are not authorised to manage this Workflow", "") unless @workflow.owner?(current_user)
     end
   end
   

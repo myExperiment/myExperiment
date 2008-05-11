@@ -109,7 +109,7 @@
 			    <td class="actions" style="width: 85px;">
 			      <%= icon "show", workflow_path(workflow), nil, nil, "View" %>
 				  	<% if workflow.authorized?("download", current_user) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
-			      <% if logged_in? and workflow.authorized?("edit", current_user) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
+			      <% if mine?(workflow) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
 			    </td>
 			  </tr>
 			<% end -%>
