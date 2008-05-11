@@ -10,7 +10,9 @@
 
 <% if @authorised_to_edit %>
 	<ul class="sectionIcons">
-		<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow Entry')%></li>
+		<% if mine?(@workflow) -%>
+			<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow Entry')%></li>
+		<% end -%>
 		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
 		<% if @workflow.authorized?("destroy", current_user) %>
 			<li>
@@ -117,10 +119,10 @@
 			</h3>
 			
 			<% unless @viewing_version.image.nil? %>
-				<p style="font-size: 85%; font-weight: normal;">
+				<p style="font-size: 85%; font-weight: normal; margin-bottom: 0.5em; text-align: center;">
 					 (Click on the image to get the full size)
 				</p>
-				<div style="width: 100%;">
+				<div class="contribution_preview" style="width: 100%;">
 					<center>
 						<%= link_to image_tag(url_for_file_column(@viewing_version, "image", "medium")), url_for_file_column(@viewing_version, "image"), :popup => true %>
 					</center>
@@ -135,7 +137,7 @@
 			
 			<% unless @viewing_version.svg.nil? %>
 				<ul class="sectionIcons">
-					<li><%= icon('picture', url_for_file_column(@viewing_version, "svg"), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
+					<li style="margin-left: 0;"><%= icon('picture', url_for_file_column(@viewing_version, "svg"), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
 				</ul>
 			<% end %>
 			
@@ -286,7 +288,6 @@
 <!-- BEGIN tabs -->
 	
 <br/>
-<br/>
 
 <div id="tabsContainer" class="tabsContainer"></div>
 
@@ -330,6 +331,7 @@
 
 <!-- END tabs -->
 
+<br/>
 <br/>
 
 <div id="ratingsBox">
