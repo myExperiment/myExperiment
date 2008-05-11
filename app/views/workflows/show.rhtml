@@ -87,7 +87,7 @@
 			</div>
 		</div>
 		
-		<% if logged_in? and @authorised_to_edit %>
+		<% if @authorised_to_edit %>
 			<div style="margin-top: 1em;">
 				<ul class="sectionIcons" style="margin-top: 0.7em; margin-bottom: 0.6em;">
 					<li><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit Workflow Version") %></li>
