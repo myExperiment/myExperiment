@@ -389,12 +389,16 @@ end
 
 def get_tagged(rules, query)
 
-  obs = Tagging.find_by_tag_count
+  return rest_error_response(400, 'Bad Request') if query['tag'].nil?
+
+  tag = Tag.find_by_name(query['tag'])
+
+  obs = tag ? tag.tagged : []
 
   # filter out ones they are not allowed to get
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", (logged_in? ? current_user : nil)) end)
+  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?('index', (logged_in? ? current_user : nil)) end)
 
-  produce_rest_list(rules, query, obs.map do |ob| ob.taggable end, 'tagged')
+  produce_rest_list(rules, query, obs, 'tagged')
 end
 
 def tag_cloud(rules, query)

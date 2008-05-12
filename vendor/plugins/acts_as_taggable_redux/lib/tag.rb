@@ -53,7 +53,7 @@ class Tag < ActiveRecord::Base
   # returns a list of taggings sorted by popularity of the tag
   def self.find_by_tag_count(limit = 25, type = nil)
 
-    sql  = 'SELECT DISTINCT tags.* FROM taggings INNER JOIN tags ON taggings.tag_id = tags.id'
+    sql  = 'SELECT tags.id, tags.name, COUNT(*) AS taggings_count FROM taggings INNER JOIN tags ON taggings.tag_id = tags.id'
     args = []
 
     if type
@@ -61,7 +61,7 @@ class Tag < ActiveRecord::Base
       args += [type]
     end
 
-    sql  += ' ORDER BY tags.taggings_count DESC LIMIT ?'
+    sql  += ' GROUP BY name ORDER BY tags.taggings_count DESC LIMIT ?'
     args += [limit]
 
     Tag.find_by_sql([sql] + args)
