@@ -406,9 +406,13 @@ def tag_cloud(rules, query)
   num  = 25
   type = nil
 
-  num  = query['num'].to_i if query['num']
-  type = query['type']     if query['type']
-
+  if query['num']
+    if query['num'] == 'all'
+      num = nil
+    else
+      num = query['num'].to_i
+    end
+  end
 
   if query['type']
     type = query['type'].camelize

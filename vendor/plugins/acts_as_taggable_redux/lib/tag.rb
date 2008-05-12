@@ -61,8 +61,12 @@ class Tag < ActiveRecord::Base
       args += [type]
     end
 
-    sql  += ' GROUP BY name ORDER BY tags.taggings_count DESC LIMIT ?'
-    args += [limit]
+    sql  += ' GROUP BY name ORDER BY taggings_count DESC'
+
+    unless limit.nil?
+      sql  += ' LIMIT ?'
+      args += [limit]
+    end
 
     Tag.find_by_sql([sql] + args)
   end
