@@ -414,7 +414,7 @@ def tag_cloud(rules, query)
     end
   end
 
-  if query['type']
+  if query['type'] and query['type'] != 'all'
     type = query['type'].camelize
 
     type = 'Network' if type == 'Group'
@@ -425,7 +425,7 @@ def tag_cloud(rules, query)
 
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><tag-cloud/>")
 
-  doc.root.add_attributes( { 'type' => query['type'] } )
+  doc.root.add_attributes( { 'type' => query['type'] ? query['type'] : 'all' } )
 
   tags.each do |tag|
     doc.root.add_element(rest_reference(tag, query)).add_attribute('count', tag.taggings_count)
