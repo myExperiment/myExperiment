@@ -5,9 +5,9 @@
 	
 	<div class="stats_box"> 
 	
-		<%= render :partial => "contributions/statistics", :object => contributable.contribution %>
-		
 		<% type = contributable.class.to_s -%>
+		
+		<%= render :partial => "contributions/statistics", :object => contributable.contribution, :locals => { :type => type } %>
 		
 		<% if allow_credits_and_attributions? type -%>
 			<p>

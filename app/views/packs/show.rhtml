@@ -78,6 +78,12 @@
 <div class="contribution_right_box">
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @pack } %>
 	
+	<div class="contribution_section_box">
+		<p style="font-size: 108%;">
+		 	<b><%= pluralize @pack.items_count, "item" %> in this pack</b>
+		</p>
+	</div>
+	
 	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @pack } %>
 	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @pack, 
