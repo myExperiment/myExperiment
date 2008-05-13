@@ -67,7 +67,7 @@
 
 <div class="contribution_right_box">
 	<%= render :partial => "owner_box", :locals => { :network => @network } %>
-	<%= render :partial => "statistics_box", :locals => { :network => @network } %>
+	<%= render :partial => "statistics_box", :locals => { :network => @network, :items => @shared_items } %>
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @network,
 																											 :owner_id => (@network.user_id),  
 																											 :add_path => tag_group_path(@network), 
@@ -92,11 +92,11 @@
 </div>
 
 <div class="tabContainer">
-  <div class="tabTitle">Shared Items</div>
+  <div class="tabTitle">Shared Items (<%= @shared_items.length -%>)</div>
   <div class="tabContent">
-		<% unless (contributions = @network.shared_contributions).empty? %>
+		<% unless @shared_items.empty? %>
   		<%= view_privileges_notice %>
-			<%= render :partial => "contributions/table", :locals => { :collection => contributions } %>
+			<%= render :partial => "contributions/table", :locals => { :collection => @shared_items } %>
 		<% else %>
 			<p class="none_text">No items have been shared with this Group yet.</p>
 		<% end %>

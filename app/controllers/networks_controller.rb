@@ -81,6 +81,7 @@ class NetworksController < ApplicationController
 
   # GET /networks/1
   def show
+    @shared_items = @network.shared_contributions
     respond_to do |format|
       format.html # show.rhtml
     end
