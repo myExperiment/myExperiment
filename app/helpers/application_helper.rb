@@ -1099,7 +1099,7 @@ module ApplicationHelper
   end
   
   def view_privileges_text
-    return "Note: some items may not be visible here, due to viewing permissions."
+    return "Note: some items may not be visible to you, due to viewing permissions."
   end
   
   def downloadable?(type)
