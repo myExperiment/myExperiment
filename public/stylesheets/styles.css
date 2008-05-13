@@ -49,7 +49,7 @@ h2 {
 	background-repeat: repeat-x;
 	background-color: #EEEEEE;
 	padding: 0.5em 0.6em;
-	border: 1px solid #999999;
+	border: 1px solid #CCCCCC;
 	font-size: 100%;
 }
 
@@ -157,7 +157,7 @@ li {
 }
 
 #myexp_content {
-	padding-right: 1.5em;
+	padding-right: 1em;
 	padding-left: 0.5em;
 	margin-top: 1em;
 	margin-bottom: 3em;
@@ -277,9 +277,7 @@ li {
 	font-weight: bolder;
 	font-size: 108%;
 	padding: 3px 0;
-	margin-left: 0;
-	margin-bottom: 0;
-	margin-top: 0;
+	margin: 0;
 }
 
 .tabnav li {
@@ -291,15 +289,15 @@ li {
 .tabnav li a {
 	padding: 4px 12px;
 	margin-left: 3px;
-	border-top: 1px solid #999999;
-	border-left: 1px solid #999999;
-	border-right: 1px solid #999999;
+	border-top: 1px solid #BBBBBB;
+	border-left: 1px solid #BBBBBB;
+	border-right: 1px solid #BBBBBB;
 	border-bottom: 1px solid transparent;
 	text-decoration: none;
 	background-image: url('/images/tab-bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
-	background-color: #EEEEEE;
+	background-color: #EDEDED;
 }
 
 .tabnav li a:link {
@@ -332,7 +330,7 @@ li {
 	*padding: 0.2em 0.5em;
 	background-color: #EEEEEE;
 	border: 0px solid #DEDEDE;
-	border-width: 0 1px 1px 1px;
+	border-width: 1px 1px 1px 1px;
 	*margin-left: 1px;
 	color: #666666;
 }
@@ -466,17 +464,17 @@ ul.breadcrumb_list a:hover {
 	background-position: top;
 	background-repeat: repeat-x;
 	background-color: #CFDFEF;
-	border: #999999 0px solid;
+	border: #CCCCCC 0px solid;
 	border-width: 0 1px 1px 1px;
 }
 
 #home_container .box .content {
 	padding: 0.3em 0.8em;
 	border-top: none;
-	border-right: #999999 1px solid;
+	border-right: #CCCCCC 1px solid;
 	border-bottom: none;
-	border-left: #999999 1px solid;
-	background-color: #FAFAFA;
+	border-left: #CCCCCC 1px solid;
+	background-color: #F7F7F7;
 }
 
 #home_container li.seperator {
@@ -539,21 +537,21 @@ ul.breadcrumb_list a:hover {
 #home_container .xb3, 
 #home_container .xb4 {
 	background: #ACCCED;
-	border-left: 1px solid #999999;
-	border-right: 1px solid #999999;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
 }
 
 #home_container .xb5, 
 #home_container .xb6, 
 #home_container .xb7 {
-	background: #FAFAFA;
-	border-left: 1px solid #999999;
-	border-right: 1px solid #999999;
+	background: #F7F7F7;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
 }
 
 #home_container .xb1 {
 	margin: 0 5px;
-	background: #999999;
+	background: #CCCCCC;
 }
 
 #home_container .xb2, 
@@ -872,6 +870,18 @@ table.alt_table .desc {
 	overflow: hidden;
 }
 
+table.alt_table .standout {
+	border: 1px dotted #999999;
+	margin: 0.2em 0;
+	padding: 0.5em 0.6em;
+	background-color: #FFFFCC;
+	text-align: left;
+	line-height: 1;
+	font-size: 93%;
+	font-weight: bold;
+	color: #333333;
+}
+
 table.alt_table tr td.contributable {
 	margin: 0.5em 0;
 	padding: 1em;
@@ -966,6 +976,10 @@ table.contributable:hover {
 	/*border: 2px solid #F5F5F5;*/ 
 }
 
+.sectionIcons li:first {
+	margin-left: 0;
+}
+
 .sectionIcons li:hover {
 }
 
@@ -1037,7 +1051,15 @@ table.contributable:hover {
 
 .contribution_description {
 	text-align: left;
-	margin: 0em 1.5em;
+	background-color: #FFFFFF;
+	border: 1px solid #CCCCCC;
+	padding: 0.3em 1em;
+}
+
+.contribution_preview img {
+	background-color: #FFFFFF;
+	border: 1px solid #DDDDDD;
+	padding: 0.5em;
 }
 
 .contribution_right_box {
@@ -1131,6 +1153,7 @@ table.contributable:hover {
 .contribution_version_box {
 	border: 1px dotted #999999;
 	margin-bottom: 1em;
+	background-color: #F7F7F7;
 }
 
 .contribution_version_box .title {
@@ -1372,6 +1395,14 @@ div.auto_complete ul strong.highlight {
 	padding: 0.8em 1.4em;
 }
 
+.box_form input {
+	margin-bottom: 1em;
+}
+
+.box_form .step {
+	color: #660000;
+}
+
 .box_standout {
 	padding: 0.5em 0.8em; 
 	border: 1px dotted #999999;
@@ -1442,7 +1473,7 @@ div.auto_complete ul strong.highlight {
 }
 
 .count_text {
-	color: #999999;
+	color: #666666;
 }
 
 .rest_table TABLE {
@@ -1691,4 +1722,29 @@ table.simple td {
 	padding: 0.3em 0.6em;
 }
 
+#packItems ul {
+	margin: 0;
+	list-style: none;
+	font-size: 93%;
+	border-top: 1px solid #CCCCCC;
+}
 
+#packItems ul li {
+	list-style-type: none;
+	margin: 0;
+	line-height: 1.4;
+	padding: 0.4em 0.5em 0.4em 0.5em;
+	border-bottom: 1px solid #CCCCCC;
+	background-color: #FFFFFF;
+}
+
+#packItems .comment {
+	padding-left: 22px;
+	color: #666666;
+	font-style: italic;
+}
+
+#packItems .user {
+	color: #333333;
+	padding-left: 22px;
+}

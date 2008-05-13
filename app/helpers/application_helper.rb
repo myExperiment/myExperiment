@@ -31,11 +31,11 @@ module ApplicationHelper
     
     case thing.class.to_s
     when "Workflow"
-      return c_id == thing.contributor_id.to_i
+      return (c_id == thing.contributor_id.to_i and thing.contributor_type == "User")
     when "Blob"
-      return c_id == thing.contributor_id.to_i
+      return (c_id == thing.contributor_id.to_i and thing.contributor_type == "User")
     when "Pack"
-      return c_id == thing.contributor_id.to_i
+      return (c_id == thing.contributor_id.to_i and thing.contributor_type == "User")
     when "Network"
       return c_id == thing.user_id.to_i
     when "Friendship"
@@ -631,6 +631,8 @@ module ApplicationHelper
       return "redmond_studio/documents_16.png"
     when "pack"
       return "redmond_studio/copy_16.png"
+    when "remote-resource"
+      return "famfamfam_silk/page_world.png"
     when "blog"
       return "famfamfam_silk/note.png"
     when "forum"
@@ -687,6 +689,8 @@ module ApplicationHelper
       return "famfamfam_silk/script_add.png"
     when "timeline"
       return "famfamfam_silk/timeline_marker.png"
+    when "external"
+      return "famfamfam_silk/world_link.png"
     else
       return nil
     end
@@ -1089,9 +1093,13 @@ module ApplicationHelper
   
   def view_privileges_notice
     content_tag(:p, 
-                "Note: some items may not be visible due to viewing permissions.",
+                view_privileges_text,
                 :class => "box_currentuser_specific",
-                :style => "font-size: 93%; font-weight: bold; color: #990000;")
+                :style => "font-size: 93%; font-weight: bold; color: #333333; padding: 0.3em 0.5em;")
+  end
+  
+  def view_privileges_text
+    return "Note: some items may not be visible here, due to viewing permissions."
   end
   
   def downloadable?(type)
@@ -1154,6 +1162,18 @@ module ApplicationHelper
     end
     
     return rtn
+  end
+  
+  def delete_image(style=nil, tooltip="Delete")
+    return image_tag("redmond_studio/delete_16.png",
+              :title => "header=[] body=[#{tooltip}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
+              :style => style)
+  end
+  
+  def edit_image(style=nil, tooltip="Edit") 
+    return image_tag("famfamfam_silk/pencil.png",
+              :title => "header=[] body=[#{tooltip}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
+              :style => style)
   end
   
 protected

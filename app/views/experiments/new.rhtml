@@ -27,10 +27,10 @@
 				</p>
 				
 				<p>
-					<%= check_box_tag('assign_to_group') -%> Assign to Group:
+					<%= check_box_tag('assign_to_group', "1", false, :style => "margin-bottom: 0") -%> Assign to Group:
 					<%= select_tag "assign_to_group_id", 
 												 options_from_collection_for_select(current_user.all_networks, "id", "title"), 
-												 :include_blank => "--- Select Group ---" -%>
+												 :style => "margin-bottom: 0" -%>
 			 	</p> 
 			</fieldset>
 			

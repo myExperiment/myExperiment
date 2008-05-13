@@ -20,6 +20,7 @@
 		
 		<%= javascript_include_tag :defaults %>
 		<%= javascript_include_tag "boxover.js" %>
+		
 		<%= render :partial => "layouts/feed_link_tags" %>
 	</head>
 	<body>
@@ -48,6 +49,7 @@
 							<span>&nbsp;|&nbsp;</span>
 							<span><b><%= icon "feedback", "/feedback", nil, nil, "Give us Feedback" -%></b></span>
 						</div>
+						<div class="clearer">&nbsp;</div>
 					</div>
 					<div class="clearer">&nbsp;</div>
 				</div>
@@ -60,7 +62,7 @@
 					  <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Groups", groups_path -%></li>
 					  <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path -%></li>
 					  <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Files", files_path -%></li>
-						<% if false %><li <%= (["packs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Packs", packs_path -%></li><% end %>
+						<li <%= (["packs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Packs", packs_path -%></li>
 					  <li <%= (["blogs", "blog_posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path -%></li>
 					  <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path -%></li>
 					</ul>

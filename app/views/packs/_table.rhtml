@@ -14,11 +14,11 @@
 			<% cache(:controller => 'packs_cache', :action => 'listing', :id => pack.id) do -%>
 				<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 					<td style="width: 100px;">
-						<p style="margin-top:0; padding-top:0; text-align: center;"><b><%= owner_text blob -%>:</b></p>
+						<p style="margin-top:0; padding-top:0; text-align: center;"><b><%= owner_text pack -%>:</b></p>
 						<center><%= contributor(pack.contribution.contributor_id, pack.contribution.contributor_type, true, 60) %></center>
 					</td>
 					<td style="text-align: left;">
-						<a name="<%= pack.local_name.gsub(/ /, "_") %>"></a>
+						<a name="<%= pack.title.gsub(/ /, "_") %>"></a>
 						<p class="title">
 							<%= icon "pack", nil, nil, nil, '' %>
 							<% title = contributable_name(pack.id, 'Pack') %>
@@ -40,6 +40,10 @@
 							<% end %>
 						</div>
 						
+						<p class="standout" style="margin-top: 0.4em;">
+							<%= pluralize pack.items_count, "item" -%> in this pack.
+						</p>
+						
 						<p style="font-size: 85%;">
 							<b>Comments: </b><%= pack.comments_count %> |
 							<b>Viewed:</b> <%=pluralize pack.contribution.viewings_count, "time" %> |
@@ -55,7 +59,8 @@
 					
 					<td class="actions" style="width: 80px;">
 				    <%= icon "show", pack_path(pack), nil, nil, "View" %>
-				    <% if logged_in? and pack.authorized?("edit", current_user) %><%= icon "manage", edit_pack_path(pack), nil, nil, "Manage" %><% end %>
+				    <% if mine?(pack) %><%= icon "manage", edit_pack_path(pack), nil, nil, "Manage" %><% end %>
+						<% if pack.authorized?('edit', current_user) -%><%= icon('new', new_item_pack_path(pack), nil, nil, 'Add New Item') -%><% end -%>
 				  </td>
 				</tr>
 			<% end %>

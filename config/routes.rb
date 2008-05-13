@@ -50,7 +50,12 @@ ActionController::Routing::Routes.draw do |map|
     :collection => { :all => :get }, 
     :member => { :comment => :post, 
                  :comment_delete => :delete,
-                 :tag => :post } do |file|
+                 :tag => :post,
+                 :new_item => :get,
+                 :create_item => :post, 
+                 :edit_item => :get,
+                 :update_item => :put,
+                 :destroy_item => :delete } do |pack|
     # No nested resources yet
   end
     

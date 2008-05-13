@@ -1,0 +1,59 @@
+<div id="packItems">
+	
+	<% if pack.items_count > 0 -%>
+		<%= view_privileges_notice -%>
+		<br/>
+		
+		<ul id="packItemsList">
+			<% pack.contributable_entries.each do |e| %>
+				<% if thing_authorized?('show', e.contributable) %>
+					<li>
+						<% if mine?(pack) -%>
+							<%= remove_item_button(pack.id, "contributable", e.id) -%>
+						<% end -%>
+						<b><%= c_type = visible_name(e.contributable_type); icon(e.contributable_type.to_s, nil, nil, c_type, c_type) %>:</b>
+						<%= contributable(e.contributable_id, e.contributable_type) %>
+						<br/>
+						<% unless e.comment.blank? -%>
+							<span class="comment">
+								<%= h e.comment -%>
+							</span>
+							<br/>
+						<% end -%>
+						<span class="user">
+							<%= user_and_created_at_bit(e) -%>
+						</span>
+					</li>
+				<% end -%>
+			<% end -%>
+			
+			<% pack.remote_entries.each do |e| %>
+				<li>
+					<% if mine?(pack) -%>
+						<%= remove_item_button(pack.id, "external", e.id) -%>
+					<% end -%>
+					<b><%= icon('external', nil, nil, nil, "External") %>:</b>
+					<%= link_to h(e.title), h(e.uri), :popup => true %>
+					<% unless e.alternate_uri.blank? -%>
+						<span style="margin-left: 1em;"><small>(<%= link_to("Alternate link", h(e.alternate_uri), :popup => true) -%>)</small></span>
+					<% end -%>
+					<br/>
+					<% unless e.comment.blank? -%>
+						<span class="comment">
+							<%= h e.comment -%>
+						</span>
+						<br/>
+					<% end -%>
+					<span class="user">
+						<%= user_and_created_at_bit(e) -%>
+					</span>
+				</li>
+			<% end -%>
+		</ul>
+	<% else -%>
+		<p class="none_text">
+			None
+		</p>
+	<% end -%>
+
+</div>

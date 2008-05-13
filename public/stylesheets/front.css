@@ -212,13 +212,13 @@ li img {
 #frontpage_body .box #login .xb3,
 #frontpage_body .box #login .xb4 {
 	background: #EEEEEE;
-	border-left: 1px solid #AAAAAA;
-	border-right: 1px solid #AAAAAA;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
 }
 
 #frontpage_body .box #login .xb1 {
 	margin: 0 5px;
-	background: #AAAAAA;
+	background: #CCCCCC;
 }
 
 #frontpage_body .box #login .xb2 {
@@ -238,8 +238,8 @@ li img {
 #frontpage_body .login {
 	border-top: none;
 	border-bottom: none;
-	border-left: 1px solid #AAAAAA;
-	border-right: 1px solid #AAAAAA;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
 	background-color: #EEEEEE;
 	padding: 0.2em 0.5em;
 }

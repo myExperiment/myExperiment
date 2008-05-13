@@ -1,8 +1,10 @@
 <% t "#{contributable_name(@pack.id, 'Pack')} (#{h @pack.contributor_name})" -%>
 
-<% if @pack.authorized?("edit", current_user) %>
+<% if @authorised_to_edit %>
 	<ul class="sectionIcons">
-		<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Edit Pack')%></li>
+		<% if mine?(@pack) -%>
+			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack')%></li>
+		<% end -%>
 		<% if @pack.authorized?("destroy", current_user) %>
 			<li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments. Are you sure?', :method => :delete }, 'Delete Pack') %></li>
 		<% end %>
@@ -23,8 +25,8 @@
 	<div class="contribution_version_box">
 		<div class="contribution_version_inner_box">
 			<p>
-			    <b>Title:</b>
-			    <span class="title"><%=h @pack.title %></span>
+		    <b>Title:</b>
+		    <span class="title"><%=h @pack.title %></span>
 			</p>
 			
 			<br/>
@@ -38,6 +40,10 @@
 				<div class="contribution_description">
 					<%= white_list @pack.description_html %>
 				</div>
+				<% if mine?(@pack) %>
+					<br/>
+					<p style="text-align: right; color: #666666;">[ <%= link_to "edit", edit_pack_path(@pack) %> ]</p>
+				<% end %>
 			<% else %>
 				<p class="none_text">
 					Not set
@@ -45,7 +51,26 @@
 			<% end %>
 			
 		</div>
+	</div>
 	
+	<div class="contribution_version_box" style="background-color: #EFEFEF;">
+		<div class="contribution_version_inner_box">
+			<h4>
+				<%= image_tag "spinner.gif", :id => "refresh_indicator1", :style => "display: none; float: right; vertical-align: top;" -%>
+				<%= info_icon_with_tooltip("This section shows all the items that make up this Pack. #{view_privileges_text}") %>
+				Items <span class="count_text">(<%= @pack.items_count -%>)</span>
+			</h4>
+			
+			<%= render :partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } -%>
+			
+			<br/>
+			
+			<ul class="sectionIcons">
+				<% if @authorised_to_edit %>
+					<li><%= icon('new', new_item_pack_path(@pack), nil, nil, 'Add New Item') %></li>
+				<% end %>
+			</ul>
+		</div>
 	</div>
 
 </div>
@@ -65,13 +90,12 @@
 	
 	<% if false %><%= render :partial => "layouts/bookmark_with", :locals => { :title => contributable_name(@pack.id, 'pack'), :url => @pack_url } %><% end %>
 	
-</div>	
+</div>
 
 <div class="clearer">&nbsp;</div>
 
 <!-- BEGIN tabs -->
 	
-<br/>
 <br/>
 
 <div id="tabsContainer" class="tabsContainer"></div>
@@ -85,7 +109,7 @@
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @pack } %>
       <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @pack } %>
 	  
-      <% if @pack.authorized?("edit", current_user) %>
+      <% if @authorised_to_edit %>
         <ul class="sectionIcons">
           <li><%= icon('edit', edit_pack_path(@pack), nil, nil, 'Edit')%></li>
         </ul>
@@ -93,19 +117,11 @@
     </div>
   </div>
 	
-	<% if false %>
-  <div class="tabContainer">
-    <div class="tabTitle">Viewing History</div>
-    <div class="tabContent">
-      <%= render :partial => "contributions/history", :object => @pack.contribution %>
-    </div>
-  </div>
-	<% end %>
-	
 <% end %>
 
 <!-- END tabs -->
 
+<br/>
 <br/>
 
 <div id="commentsBox">

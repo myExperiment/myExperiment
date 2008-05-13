@@ -8,20 +8,14 @@
 <%= error_messages_for :pack %>
 
 <% form_tag :action => :create do %>
-
-  <p style="text-align: center;">
-  	<strong>Title: </strong>
-		<br/>
-		<%= text_field_tag "pack[title]", nil, :size => 60 %>
-  </p>
-	
-	<br/>
-  
-  <p style="text-align: center;">
-  	<strong>Description: </strong>
-	</p>
-	<center>
-		<%= fckeditor_textarea(:pack, :description, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
+  <center>
+		<div class="box_form" style="width: 550px; margin: 1em 0; text-align: left;">
+			<p><b>Title: </b></p>
+			<%= text_field_tag "pack[title]", nil, :size => 86 %>
+			
+		  <p><b>Description: </b></p>
+			<%= fckeditor_textarea(:pack, :description, :toolbarSet => 'Simple', :width => '550px', :height => '300px') %>
+		</div>
 	</center>
 
   <br />
@@ -34,3 +28,4 @@
     <%= submit_tag "Create", :disable_with => "Creating..." %>
   </p>
 <% end %>
+	

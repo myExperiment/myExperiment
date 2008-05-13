@@ -63,19 +63,19 @@
 				
 				<p>
 					<b>Workflow ID: </b>
-					<%= form.text_field :runnable_id, :size => 8 %>
+					<%= form.text_field :runnable_id, :size => 8, :style => "margin-bottom: 0" %>
 					<%= form.hidden_field :runnable_type %>
 				</p>
 				<p>
 					<b>Workflow Version: </b>
-					<%= form.text_field :runnable_version, :size => 8 %>
+					<%= form.text_field :runnable_version, :size => 8, :style => "margin-bottom: 0" %>
 				</p>
 				
 				<p>
 					<b>Runner to use: </b>
 					<%= form.select :runner_id, 
 													TavernaEnactor.for_user(current_user).collect {|r| [ r.title, r.id ]},
-													:prompt => '--- Select Runner ---' %>
+													:prompt => '--- Select Runner ---', :style => "margin-bottom: 0" %>
 					<%= form.hidden_field :runner_type %>
 				</p>
 			</fieldset>

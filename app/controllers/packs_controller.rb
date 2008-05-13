@@ -134,7 +134,7 @@ class PacksController < ApplicationController
     if params[:comment_id]
       comment = Comment.find(params[:comment_id].to_i)
       # security checks:
-      if comment.user_id == current_user.id and comment.commentable_type.downcase == 'pack' and comment.commentable_id == @pack.id
+      if comment.user_id == current_user.id and comment.commentable_type == 'Pack' and comment.commentable_id == @pack.id
         comment.destroy
       end
     end
@@ -158,6 +158,91 @@ class PacksController < ApplicationController
     end
   end
   
+  def new_item
+    # Hack for multi level params to be treated as non null in the view
+    params[:contributable] = { } if params[:contributable].nil?
+    params[:remote] = { } if params[:remote].nil?
+    
+    # Set any initial data if provided in the url as query strings
+    if params[:contributable_type]
+      params[:contributable][:type] = params[:contributable_type].capitalize
+      @type = 'contributable'
+    end
+    if params[:contributable_id]
+      params[:contributable][:id] = params[:contributable_id]
+      @type = 'contributable'
+    end
+    if params[:contributable_version]
+      params[:contributable][:version] = params[:contributable_version]
+      @type = 'contributable'
+    end
+    
+    # Will render packs/new_item.rhtml
+  end
+  
+  def create_item
+    if params[:entry_type]
+      @type = params[:entry_type]
+      
+      respond_to do |format|
+        case @type
+          when 'contributable'
+            e = PackContributableEntry.new
+            e.contributable_type = params[:contributable][:type]
+            e.contributable_id = params[:contributable][:id]
+            e.contributable_version = params[:contributable][:version]
+          when 'remote'
+            e = PackRemoteEntry.new
+            e.title = params[:remote][:title]
+            e.uri = params[:remote][:uri]
+            e.alternate_uri = params[:remote][:alternate_uri]
+        end
+        
+        e.pack = @pack
+        e.user = current_user
+        e.comment = params[:comment]
+        
+        if e.save
+          flash[:notice] = 'Item succesfully added to pack.'
+          format.html { redirect_to pack_url(@pack) }
+        else
+          # Hack for multi level params to be treated as non null in the view
+          params[:contributable] = { } if params[:contributable].nil?
+          params[:remote] = { } if params[:remote].nil?
+          
+          flash[:error] = 'Failed to add item to pack.'
+          format.html { render :action => "new_item" }
+        end
+      end
+    end
+  end
+  
+  def edit_item
+    
+  end
+  
+  def update_item
+    
+  end
+  
+  def destroy_item
+    # Note: at this point, we are assuming that authorisation for deleting of items has been given by a before_filter method
+    if params[:item_type] and params[:item_id]
+      case params[:item_type].downcase
+        when 'contributable' 
+          i = PackContributableEntry.find(:first, :conditions => ["id = ?", params[:item_id]])
+          i.destroy if i
+        when 'external'
+          i = PackRemoteEntry.find(:first, :conditions => ["id = ?", params[:item_id]])
+          i.destroy if i
+      end
+    end
+    
+    respond_to do |format|
+      format.html { render :partial => "packs/items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } }
+    end
+  end
+  
   protected
   
   def find_packs
@@ -174,17 +259,15 @@ class PacksController < ApplicationController
       if pack.authorized?(action_name, (logged_in? ? current_user : nil))
         @pack = pack
         
+        @authorised_to_edit = @pack.authorized?("edit", current_user)
+        
         @pack_url = url_for :only_path => false,
                             :host => base_host,
                             :id => @pack.id
       else
-        if logged_in? 
-          error("Pack not found (id not authorized)", "is invalid (not authorized)")
-        else
-          find_pack_auth if login_required
-        end
+        error("You are not authorised to perform this action", "is not authorized")
       end
-      rescue ActiveRecord::RecordNotFound
+    rescue ActiveRecord::RecordNotFound
       error("Pack not found", "is invalid")
     end
   end

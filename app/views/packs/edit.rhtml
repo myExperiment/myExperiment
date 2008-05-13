@@ -8,20 +8,14 @@
 <%= error_messages_for :pack %>
 
 <% form_for(:pack, :url => pack_path(@pack), :html => { :method => :put }) do |f| %>
-
-  <p style="text-align: center;">
-  	<strong>Title: </strong>
-	<br/>
-	<%= f.text_field :title, :size => 60 %>
-  </p>
-	
-	<br/>
-  
-  <p style="text-align: center;">
-  	<strong>Description: </strong>
-	</p>
 	<center>
-		<%= fckeditor_textarea(:pack, :description, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
+		<div class="box_form" style="width: 550px; margin: 1em 0; text-align: left;">
+			<p><b>Title: </b></p>
+			<%= f.text_field :title, :size => 86 %>
+			
+		  <p><b>Description: </b></p>
+			<%= fckeditor_textarea(:pack, :description, :toolbarSet => 'Simple', :width => '550px', :height => '300px') %>
+		</div>
 	</center>
   
   <br/>

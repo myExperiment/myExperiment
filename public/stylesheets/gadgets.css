@@ -23,8 +23,9 @@
 }
 
 .myexperiment_gadget .header {
-	border: #999999 0px solid;
+	border: #CCCCCC 0px solid;
 	border-width: 0 1px 1px 1px;
+	border-bottom-color: #CCCCCC;
 	background-image: url('/images/gadget-hd-bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
@@ -47,9 +48,9 @@
 
 .myexperiment_gadget .contents {
 	border-top: none;
-	border-right: #999999 1px solid;
+	border-right: #CCCCCC 1px solid;
 	border-bottom: none;
-	border-left: #999999 1px solid;
+	border-left: #CCCCCC 1px solid;
 	color: #000000;
 	padding: 0.4em;
 	margin-top: 0;
@@ -134,21 +135,21 @@
 .myexperiment_gadget .xb3, 
 .myexperiment_gadget .xb4 {
 	background: #DEDEDE;
-	border-left: 1px solid #999999;
-	border-right: 1px solid #999999;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
 }
 
 .myexperiment_gadget .xb5, 
 .myexperiment_gadget .xb6, 
 .myexperiment_gadget .xb7 {
 	background: #FFFFFF;
-	border-left: 1px solid #999999;
-	border-right: 1px solid #999999;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
 }
 
 .myexperiment_gadget .xb1 {
 	margin: 0 5px;
-	background: #999999;
+	background: #CCCCCC;
 }
 
 .myexperiment_gadget .xb2, 
