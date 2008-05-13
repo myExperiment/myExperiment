@@ -630,7 +630,7 @@ module ApplicationHelper
     when "blob"
       return "redmond_studio/documents_16.png"
     when "pack"
-      return "redmond_studio/copy_16.png"
+      return "manhattan_studio/folder-closed_16.png"
     when "remote-resource"
       return "famfamfam_silk/page_world.png"
     when "blog"
