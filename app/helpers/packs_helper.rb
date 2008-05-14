@@ -5,7 +5,7 @@
 
 module PacksHelper
   def remove_item_button(pack_id, item_type, item_id)
-    return link_to_remote delete_image("float: right; margin-left: 0.4em; margin-top: 0.4em", "Remove item from pack"),
+    return link_to_remote delete_image("float: right; margin-left: 0.4em;", "Remove item from pack"),
                          :update => "packItems",
                          :url => { :controller => "Packs", :id => pack_id, :action => "destroy_item", :item_type => item_type, :item_id => item_id },
                          :method => :delete,

@@ -31,7 +31,7 @@
 				<p>
 					<b>Type of item on myExperiment: </b>
 					<%= select_tag "contributable[type]", 
-													options_for_select(["Workflow", "File", "Pack"], params[:contributable][:type]),
+													options_for_select({"Workflow" => "Workflow", "File" => "Blob", "Pack" => "Pack"}, params[:contributable][:type]),
 													:style => "margin-bottom: 0" -%>
 			 	</p>
 												 

@@ -8,45 +8,73 @@
 			<% pack.contributable_entries.each do |e| %>
 				<% if thing_authorized?('show', e.contributable) %>
 					<li>
-						<% if mine?(pack) -%>
-							<%= remove_item_button(pack.id, "contributable", e.id) -%>
-						<% end -%>
-						<b><%= c_type = visible_name(e.contributable_type); icon(e.contributable_type.to_s, nil, nil, c_type, c_type) %>:</b>
-						<%= contributable(e.contributable_id, e.contributable_type) %>
-						<br/>
-						<% unless e.comment.blank? -%>
-							<span class="comment">
-								<%= h e.comment -%>
-							</span>
-							<br/>
-						<% end -%>
-						<span class="user">
-							<%= user_and_created_at_bit(e) -%>
-						</span>
+						<table>
+							<tr>
+								<td style="width: 26px;">
+									<%= icon(e.contributable_type.to_s, nil, 'Internal item', nil, nil) -%>
+								</td>
+								<td style="text-align: left;">
+									<p>
+										<% if mine?(pack) -%>
+											<%= remove_item_button(pack.id, "contributable", e.id) -%>
+										<% end -%>
+										<b><%= visible_name(e.contributable_type) -%>:</b>
+										<% unless e.contributable_version.blank? -%>
+											<% # HACK: only workflows are versioned at the moment -%>
+											<%= versioned_workflow_link e.contributable_id, e.contributable_version, false -%>
+											<span style="color: #666666;">(version <%= e.contributable_version -%>)</span>
+										<% else -%>
+											<%= contributable(e.contributable_id, e.contributable_type) %>
+										<% end -%>
+									</p>
+									<div class="inner">
+										<p class="user">
+											<%= user_and_created_at_bit(e) -%>
+										</p>
+										<% unless e.comment.blank? -%>
+											<p class="comment">
+												<%= h e.comment -%>
+											</p>
+										<% end -%>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</li>
 				<% end -%>
 			<% end -%>
 			
 			<% pack.remote_entries.each do |e| %>
 				<li>
-					<% if mine?(pack) -%>
-						<%= remove_item_button(pack.id, "external", e.id) -%>
-					<% end -%>
-					<b><%= icon('external', nil, nil, nil, "External") %>:</b>
-					<%= link_to h(e.title), h(e.uri), :popup => true %>
-					<% unless e.alternate_uri.blank? -%>
-						<span style="margin-left: 1em;"><small>(<%= link_to("Alternate link", h(e.alternate_uri), :popup => true) -%>)</small></span>
-					<% end -%>
-					<br/>
-					<% unless e.comment.blank? -%>
-						<span class="comment">
-							<%= h e.comment -%>
-						</span>
-						<br/>
-					<% end -%>
-					<span class="user">
-						<%= user_and_created_at_bit(e) -%>
-					</span>
+					<table>
+						<tr>
+							<td style="width: 26px;">
+								<%= icon('remote', nil, 'External item', nil, nil) -%>
+							</td>
+							<td style="text-align: left;">
+								<p>
+									<% if mine?(pack) -%>
+										<%= remove_item_button(pack.id, "external", e.id) -%>
+									<% end -%>
+									<b>Remote:</b>
+									<%= link_to h(e.title), h(e.uri), :popup => true %>
+									<% unless e.alternate_uri.blank? -%>
+										<span style="margin-left: 1em;"><small>(<%= link_to("Alternate link", h(e.alternate_uri), :popup => true) -%>)</small></span>
+									<% end -%>
+								</p>
+								<div class="inner">
+									<p class="user">
+										<%= user_and_created_at_bit(e) -%>
+									</p>
+									<% unless e.comment.blank? -%>
+										<p class="comment">
+											<%= h e.comment -%>
+										</p>
+									<% end -%>
+								</div>
+							</td>
+						</tr>
+					</table>
 				</li>
 			<% end -%>
 		</ul>

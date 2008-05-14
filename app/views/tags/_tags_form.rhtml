@@ -57,7 +57,7 @@ document.onkeypress = handleEnter;
 		  	</p>
 	    </div>
 
-	    <div class="box_simple" style="font-size: 93%; text-align: left; margin-top: 1em;">
+	    <div class="box_simple" style="font-size: 93%; text-align: left; margin-top: 1em; line-height: 1.4em;">
 	      <p>Add from your existing tags in myExperiment (click on tag to add):</p>                            
 	      <div style="padding: 0 1em;">
 		    <% unless (tags = current_user.tags.sort {|a,b| a.name <=> b.name }).empty? %>

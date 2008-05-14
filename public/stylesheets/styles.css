@@ -1725,7 +1725,6 @@ table.simple td {
 #packItems ul {
 	margin: 0;
 	list-style: none;
-	font-size: 93%;
 	border-top: 1px solid #CCCCCC;
 }
 
@@ -1733,18 +1732,36 @@ table.simple td {
 	list-style-type: none;
 	margin: 0;
 	line-height: 1.4;
-	padding: 0.4em 0.5em 0.4em 0.5em;
+	padding: 0 0.5em;
 	border-bottom: 1px solid #CCCCCC;
 	background-color: #FFFFFF;
 }
 
+#packItems table {
+	margin: 0;
+	width: 100%;
+}
+
+#packItems p {
+	padding: 0;
+}
+
+#packItems td {
+	vertical-align: top;
+}
+
+#packItems .inner {
+	font-size: 93%;
+}
+
 #packItems .comment {
-	padding-left: 22px;
 	color: #666666;
 	font-style: italic;
+	margin: 0.4em 0 0 0;
+	background-color: #F7F7F7;
+	padding: 0.3em 0.5em;
 }
 
 #packItems .user {
 	color: #333333;
-	padding-left: 22px;
 }

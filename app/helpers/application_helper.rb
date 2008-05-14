@@ -689,7 +689,7 @@ module ApplicationHelper
       return "famfamfam_silk/script_add.png"
     when "timeline"
       return "famfamfam_silk/timeline_marker.png"
-    when "external"
+    when "remote"
       return "famfamfam_silk/world_link.png"
     else
       return nil

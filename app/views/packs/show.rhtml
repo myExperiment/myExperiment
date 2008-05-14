@@ -65,11 +65,11 @@
 			
 			<br/>
 			
+			<% if @authorised_to_edit %>
 			<ul class="sectionIcons">
-				<% if @authorised_to_edit %>
-					<li><%= icon('new', new_item_pack_path(@pack), nil, nil, 'Add New Item') %></li>
-				<% end %>
+				<li><%= icon('new', new_item_pack_path(@pack), nil, nil, 'Add New Item') %></li>
 			</ul>
+			<% end %>
 		</div>
 	</div>
 

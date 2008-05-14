@@ -8,18 +8,24 @@
 		<%= image_tag 'manhattan_studio/folder-closed_24.png', :style => "vertical-align: middle;" -%>
 		<span style="font-size: 108%; font-weight: bold; margin-left: 10px; vertical-align: middle;">
 			What are Packs?
+			<%= link_to_function expand_image("0.3em"), visual_effect(:toggle_blind, "packs_info_more", :duration => 0.3) %>
 		</span>
 	</p>
-	<div style="margin-left: 38px; font-size: 93%; color: #333333;">
+	<div id="packs_info_more" style="margin-left: 38px; font-size: 93%; color: #333333; display: none;">
 		<p>
-			Packs allow you to <b>collect</b> different items together like a "wish list" or "shopping basket". 
-			You can add existing workflows, files and even other packs, as well as link to things outside of myExperiment.
+			Packs allow you to <font style="color: black; font-weight: bolder;">collect different items</font> together like a "wish list" or "shopping basket". 
+			You can point to existing workflows, files and even other packs, as well as link to things outside of myExperiment.
 		</p>
 		<p>
 			Your packs can then be shared, tagged, discovered and discussed easily on myExperiment.
 		</p>
+		<center><%= image_tag 'packs.png' -%></center>
 	</div>
 </div>
+
+<center>
+	
+</center>
 
 <% cache(:controller => 'packs', :action => 'all_tags') do -%>
 	<%= render :partial => "packs/all_tags" %>
