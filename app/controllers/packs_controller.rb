@@ -188,7 +188,7 @@ class PacksController < ApplicationController
         case @type
           when 'contributable'
             e = PackContributableEntry.new
-            e.contributable_type = params[:contributable][:type]
+            e.contributable_type = params[:contributable][:type]  # This assumes that the contributable_type returned is in internal format (eg: 'Blobs' for files).
             e.contributable_id = params[:contributable][:id]
             e.contributable_version = params[:contributable][:version]
           when 'remote'

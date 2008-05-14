@@ -1,6 +1,6 @@
 <li><%= link_to 'Packs', packs_path %></li>
 
-<% if ["show", "new", "edit", "all"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit", "all", "new_item", "edit_item"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
@@ -11,6 +11,14 @@
 		<li><%= link_to "#{contributable_name(@pack.id, 'Pack')}", pack_path(@pack) %></li>
 		<li><b>&#187;</b></li>
     <li><%= link_to "Manage", edit_pack_path(@pack) %>
+	<% when "new_item" %>
+		<li><%= link_to "#{contributable_name(@pack.id, 'Pack')}", pack_path(@pack) %></li>
+		<li><b>&#187;</b></li>
+    <li><%= link_to "Add New Item", new_item_pack_path(@pack) %>
+	<% when "edit_item" %>
+		<li><%= link_to "#{contributable_name(@pack.id, 'Pack')}", pack_path(@pack) %></li>
+		<li><b>&#187;</b></li>
+    <li><%= link_to "Edit Item", edit_item_pack_path(@pack) %>
   <% when "all" %>
     <li><%= link_to "All Packs", all_packs_path %>
   <% else %>
