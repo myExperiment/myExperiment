@@ -1732,7 +1732,8 @@ table.simple td {
 	list-style-type: none;
 	margin: 0;
 	line-height: 1.4;
-	padding: 0 0.5em;
+	padding: 0.2em 0.5em;
+	*padding: 0 0.5em;
 	border-bottom: 1px solid #CCCCCC;
 	background-color: #FFFFFF;
 }
@@ -1743,25 +1744,30 @@ table.simple td {
 }
 
 #packItems p {
-	padding: 0;
+	padding: 0.1em 0;
 }
 
 #packItems td {
 	vertical-align: top;
+	text-align: left;
+}
+
+#packItems td.icon {
+	width: 22px;
+	text-align: center;
 }
 
 #packItems .inner {
 	font-size: 93%;
+	color: #333333;
 }
 
 #packItems .comment {
-	color: #666666;
 	font-style: italic;
-	margin: 0.4em 0 0 0;
+	margin: 0.1em 0 0.1em 0;
 	background-color: #F7F7F7;
 	padding: 0.3em 0.5em;
 }
 
 #packItems .user {
-	color: #333333;
 }

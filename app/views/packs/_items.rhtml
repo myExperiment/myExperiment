@@ -10,10 +10,10 @@
 					<li>
 						<table>
 							<tr>
-								<td style="width: 26px;">
+								<td class="icon">
 									<%= icon(e.contributable_type.to_s, nil, 'Internal item', nil, nil) -%>
 								</td>
-								<td style="text-align: left;">
+								<td>
 									<p>
 										<% if mine?(pack) -%>
 											<%= remove_item_button(pack.id, "contributable", e.id) -%>
@@ -22,20 +22,21 @@
 										<% unless e.contributable_version.blank? -%>
 											<% # HACK: only workflows are versioned at the moment -%>
 											<%= versioned_workflow_link e.contributable_id, e.contributable_version, false -%>
-											<span style="color: #666666;">(version <%= e.contributable_version -%>)</span>
+											<% if false %><span style="color: #666666;">(version <%= e.contributable_version -%>)</span><% end %>
 										<% else -%>
 											<%= contributable(e.contributable_id, e.contributable_type) %>
 										<% end -%>
+										<small>(<%= contributor e.contributable.contributor_id, e.contributable.contributor_type -%>)</small>
 									</p>
 									<div class="inner">
-										<p class="user">
-											<%= user_and_created_at_bit(e) -%>
-										</p>
 										<% unless e.comment.blank? -%>
 											<p class="comment">
 												<%= h e.comment -%>
 											</p>
 										<% end -%>
+										<p class="user">
+											<%= user_and_created_at_bit(e) -%>
+										</p>
 									</div>
 								</td>
 							</tr>
@@ -48,10 +49,10 @@
 				<li>
 					<table>
 						<tr>
-							<td style="width: 26px;">
+							<td class="icon">
 								<%= icon('remote', nil, 'External item', nil, nil) -%>
 							</td>
-							<td style="text-align: left;">
+							<td>
 								<p>
 									<% if mine?(pack) -%>
 										<%= remove_item_button(pack.id, "external", e.id) -%>
@@ -63,14 +64,14 @@
 									<% end -%>
 								</p>
 								<div class="inner">
-									<p class="user">
-										<%= user_and_created_at_bit(e) -%>
-									</p>
 									<% unless e.comment.blank? -%>
 										<p class="comment">
 											<%= h e.comment -%>
 										</p>
 									<% end -%>
+									<p class="user">
+										<%= user_and_created_at_bit(e) -%>
+									</p>
 								</div>
 							</td>
 						</tr>
