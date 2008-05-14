@@ -6,7 +6,7 @@
 		
 		<ul id="packItemsList">
 			<% pack.contributable_entries.each do |e| %>
-				<% if thing_authorized?('show', e.contributable) %>
+				<% if thing_authorized?('show', e.contributable) and e.contributable -%>
 					<li>
 						<table>
 							<tr>
