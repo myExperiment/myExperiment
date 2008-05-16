@@ -428,7 +428,7 @@ def tag_cloud(rules, query)
   doc.root.add_attributes( { 'type' => query['type'] ? query['type'] : 'all' } )
 
   tags.each do |tag|
-    doc.root.add_element(rest_reference(tag, query)).add_attribute('count', tag.taggings_count)
+    doc.root.add_element(rest_reference(tag, query)).add_attribute('count', tag.taggings_count.to_s)
   end
 
   doc
