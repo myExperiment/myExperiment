@@ -34,7 +34,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :mashup
   
   # search
-  map.resource :search
+  map.resource :search,
+    :member => { :live_search => :get }
 
   # tags and bookmarks
   map.resources :tags, :bookmarks

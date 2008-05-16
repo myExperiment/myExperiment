@@ -1,8 +1,7 @@
 <h1>Add a New Item to Pack: <%= link_to h(@pack.title), pack_path(@pack) -%></h1>
 
 <center>
-	<%= error_messages_for :pack_contributable_entry %>
-	<%= error_messages_for :pack_remote_entry %>
+	<%= error_messages_for :item_entry %>
 </center>
 
 <center>
@@ -18,7 +17,7 @@
 					</td>
 					<td>
 						<%= radio_button_tag "entry_type", 'remote', @type == 'remote', :onclick => "javascript:packs_update_new_entry_type(this.value);", :style => "margin-bottom: 0" -%>
-						From somewhere else
+						An external link
 					</td>
 				</tr>
 			</table>

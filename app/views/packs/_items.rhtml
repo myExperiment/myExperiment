@@ -18,6 +18,9 @@
 										<% if mine?(pack) -%>
 											<%= remove_item_button(pack.id, "contributable", e.id) -%>
 										<% end -%>
+										<% if authorised_to_edit -%>
+											<%= edit_item_button(pack.id, "contributable", e.id) -%>
+										<% end -%>
 										<b><%= visible_name(e.contributable_type) -%>:</b>
 										<% unless e.contributable_version.blank? -%>
 											<% # HACK: only workflows are versioned at the moment -%>
@@ -55,8 +58,11 @@
 							<td>
 								<p>
 									<% if mine?(pack) -%>
-										<%= remove_item_button(pack.id, "external", e.id) -%>
+										<%= remove_item_button(pack.id, "remote", e.id) -%>
 									<% end -%>
+									<% if authorised_to_edit -%>
+											<%= edit_item_button(pack.id, "remote", e.id) -%>
+										<% end -%>
 									<b>Remote:</b>
 									<%= link_to h(e.title), h(e.uri), :popup => true %>
 									<% unless e.alternate_uri.blank? -%>

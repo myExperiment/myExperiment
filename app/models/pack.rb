@@ -8,12 +8,12 @@ require 'acts_as_contributable'
 class Pack < ActiveRecord::Base
   acts_as_contributable
   
+  validates_presence_of :title
+  
   format_attribute :description
   
-  # TODO:
-  #acts_as_solr(:fields => [ :title, :description, :contributor_name ],
-  #             :include => [ :comments ]) if SOLR_ENABLE
-  
+  acts_as_solr(:fields => [ :title, :description, :contributor_name, :tag_list ],
+               :include => [ :comments ]) if SOLR_ENABLE
   
   has_many :contributable_entries,
            :class_name => "PackContributableEntry",

@@ -5,10 +5,24 @@
 
 class PackContributableEntry < ActiveRecord::Base
   belongs_to :pack
+  validates_presence_of :pack
   
   belongs_to :contributable, :polymorphic => true
+  validates_presence_of :contributable
   
   belongs_to :user
+  validates_presence_of :user
+  
+  before_create :check_unique
+  
+  def check_unique
+    if PackContributableEntry.find(:first, :conditions => ["pack_id = ? AND contributable_type = ? AND contributable_id = ? AND contributable_version = ?", self.pack_id, self.contributable_type, self.contributable_id, self.contributable_version])
+      errors.add_to_base("This item already exists in the pack")
+      return false
+    else
+      return true
+    end
+  end
   
   # This method gets the specific version referred to (if 'contributable_version' is set).
   # Returns nil if cannot find the specified version.

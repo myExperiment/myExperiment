@@ -48,6 +48,15 @@
 	  	</div>
 	  </div>
 	<% end %>
+	
+	<% unless @packs.empty? %>
+	  <div class="tabContainer">
+	  	<div class="tabTitle">Packs (<%= @packs.length -%>)</div>
+	  	<div class="tabContent">
+		    <%= render :partial => "packs/table", :locals => { :collection => @packs, :query => @query } %>
+	  	</div>
+	  </div>
+	<% end %>
 
 <% end %>
 

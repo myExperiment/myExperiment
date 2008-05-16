@@ -191,11 +191,13 @@ class PacksController < ApplicationController
             e.contributable_type = params[:contributable][:type]  # This assumes that the contributable_type returned is in internal format (eg: 'Blobs' for files).
             e.contributable_id = params[:contributable][:id]
             e.contributable_version = params[:contributable][:version]
+            @pack_contributable_entry = e
           when 'remote'
             e = PackRemoteEntry.new
             e.title = params[:remote][:title]
             e.uri = params[:remote][:uri]
             e.alternate_uri = params[:remote][:alternate_uri]
+            @pack_remote_entry = e
         end
         
         e.pack = @pack
@@ -209,6 +211,8 @@ class PacksController < ApplicationController
           # Hack for multi level params to be treated as non null in the view
           params[:contributable] = { } if params[:contributable].nil?
           params[:remote] = { } if params[:remote].nil?
+          
+          @item_entry = e
           
           flash[:error] = 'Failed to add item to pack.'
           format.html { render :action => "new_item" }
@@ -232,14 +236,16 @@ class PacksController < ApplicationController
         when 'contributable' 
           i = PackContributableEntry.find(:first, :conditions => ["id = ?", params[:item_id]])
           i.destroy if i
-        when 'external'
+        when 'remote'
           i = PackRemoteEntry.find(:first, :conditions => ["id = ?", params[:item_id]])
           i.destroy if i
       end
     end
     
     respond_to do |format|
-      format.html { render :partial => "packs/items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } }
+      #format.html { render :partial => "packs/items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } }
+      flash[:notice] = "Successfully deleted item entry"
+      format.html { redirect_to pack_url(@pack) }
     end
   end
   
@@ -256,7 +262,7 @@ class PacksController < ApplicationController
     begin
       pack = Pack.find(params[:id])
       
-      if pack.authorized?(action_name, (logged_in? ? current_user : nil))
+      if pack.authorized?(action_name, current_user)
         @pack = pack
         
         @authorised_to_edit = @pack.authorized?("edit", current_user)
@@ -281,8 +287,8 @@ class PacksController < ApplicationController
   private
   
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
-     (err = Pack.new.errors).add(attr, message)
+    flash[:error] = notice
+    (err = Pack.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to packs_url }

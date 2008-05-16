@@ -5,16 +5,22 @@
 
 module PacksHelper
   def remove_item_button(pack_id, item_type, item_id)
-    return link_to_remote delete_image("float: right; margin-left: 0.4em;", "Remove item from pack"),
-                         :update => "packItems",
-                         :url => { :controller => "Packs", :id => pack_id, :action => "destroy_item", :item_type => item_type, :item_id => item_id },
-                         :method => :delete,
-                         :complete => "Element.hide('refresh_indicator1'); new Effect.Highlight('packItems', { duration: 1.5 });",
-                         :confirm => "Are you sure you want to remove this item from this pack?",
-                         :loading => "Element.show('refresh_indicator1')"   
+    # return link_to_remote(delete_image("float: right; margin-left: 0.5em;", "Remove item from pack"),
+    #                       :update => "packItems",
+    #                       :url => { :controller => "Packs", :id => pack_id, :action => "destroy_item", :item_type => item_type, :item_id => item_id },
+    #                       :method => :delete,
+    #                       :complete => "Element.hide('refresh_indicator1'); new Effect.Highlight('packItems', { duration: 1.5 });",
+    #                       :confirm => "Are you sure you want to remove this item from this pack?",
+    #                       :loading => "Element.show('refresh_indicator1')")
+
+    return link_to(delete_image("float: right; margin-left: 0.8em;", "Remove item from pack"),
+                   { :controller => "Packs", :id => pack_id, :action => "destroy_item", :item_type => item_type, :item_id => item_id },
+                   :confirm => "Are you sure you want to remove this item from this pack?")
   end
   
   def edit_item_button(pack_id, item_type, item_id)
+    return link_to(edit_image("float: right; margin-left: 0.4em;", "Edit this item"),
+                   { :controller => "Packs", :id => pack_id, :action => "edit_item", :item_type => item_type, :item_id => item_id })
   end
 
   def user_and_created_at_bit(entry)
