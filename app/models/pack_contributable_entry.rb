@@ -25,9 +25,9 @@ class PackContributableEntry < ActiveRecord::Base
   end
   
   # This method gets the specific version referred to (if 'contributable_version' is set).
-  # Returns nil if cannot find the specified version.
-  # Returns the contributable version object if specified version is found (BUT NOTE this object is not a 'contributable' itself and thus cannot be treated as such).
-  # Returns the contributable object if no contributable_version is set.
+  # - Returns nil if cannot find the specified version.
+  # - Returns the contributable version object if specified version is found (BUT NOTE this object is not a 'contributable' itself and thus cannot be treated as such).
+  # - Returns the contributable object if no contributable_version is set.
   def get_contributable_version
     if self.contributable_version.blank?
       return self.contributable

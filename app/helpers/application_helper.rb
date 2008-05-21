@@ -593,8 +593,7 @@ module ApplicationHelper
     when "manage"
       return "famfamfam_silk/wrench.png"
     when "destroy"
-      return "redmond_studio/delete_16.png"
-      #return "manhattan_studio/delete_24.png"
+      return "famfamfam_silk/cross.png"
     when "tag"
       return "famfamfam_silk/tag_blue.png"
     when "bookmark"
@@ -691,6 +690,8 @@ module ApplicationHelper
       return "famfamfam_silk/timeline_marker.png"
     when "remote"
       return "famfamfam_silk/world_link.png"
+    when "denied"
+      return "famfamfam_silk/exclamation.png"
     else
       return nil
     end
@@ -1165,7 +1166,7 @@ module ApplicationHelper
   end
   
   def delete_image(style=nil, tooltip="Delete")
-    return image_tag("redmond_studio/delete_16.png",
+    return image_tag("famfamfam_silk/cross.png",
               :title => "header=[] body=[#{tooltip}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
               :style => style)
   end

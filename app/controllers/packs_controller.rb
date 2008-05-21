@@ -191,6 +191,14 @@ class PacksController < ApplicationController
             e.contributable_type = params[:contributable][:type]  # This assumes that the contributable_type returned is in internal format (eg: 'Blobs' for files).
             e.contributable_id = params[:contributable][:id]
             e.contributable_version = params[:contributable][:version]
+            
+            # Check that user is authorised to view this contributable atleast
+            if e.contributable
+              if e.contributable.authorized?('show', current_user)
+                
+              end
+            end
+            
             @pack_contributable_entry = e
           when 'remote'
             e = PackRemoteEntry.new
@@ -234,18 +242,42 @@ class PacksController < ApplicationController
     if params[:item_type] and params[:item_id]
       case params[:item_type].downcase
         when 'contributable' 
-          i = PackContributableEntry.find(:first, :conditions => ["id = ?", params[:item_id]])
-          i.destroy if i
+          entry = PackContributableEntry.find(:first, :conditions => ["id = ?", params[:item_id]])
         when 'remote'
-          i = PackRemoteEntry.find(:first, :conditions => ["id = ?", params[:item_id]])
-          i.destroy if i
+          entry = PackRemoteEntry.find(:first, :conditions => ["id = ?", params[:item_id]])
       end
     end
     
     respond_to do |format|
-      #format.html { render :partial => "packs/items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } }
-      flash[:notice] = "Successfully deleted item entry"
-      format.html { redirect_to pack_url(@pack) }
+      if entry
+        entry.destroy
+        flash[:notice] = "Successfully deleted item entry"
+        format.html { redirect_to pack_url(@pack) }
+      else
+        flash[:error] = "Failed to delete item entry"
+        format.html { redirect_to pack_url(@pack) }
+      end
+    end
+  end
+  
+  def quick_add
+    respond_to do |format|
+      if params[:uri].blank?
+        flash[:error] = 'Failed to add item. See error(s) below.'
+        @error_message = "Please enter a link"
+        format.html { render :action => "show" }
+      else
+        errors = @pack.quick_add(params[:uri], request.host, request.port.to_s, current_user)
+        
+        if errors.empty?
+          flash[:notice] = 'Item succesfully added to pack.'
+          format.html { redirect_to pack_url(@pack) }
+        else
+          flash[:error] = 'Failed to add item. See error(s) below.'
+          @error_message = errors.full_messages.to_sentence(:connector => '')
+          format.html { render :action => "show" }
+        end
+      end
     end
   end
   

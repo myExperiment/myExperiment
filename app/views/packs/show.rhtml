@@ -3,7 +3,7 @@
 <% if @authorised_to_edit %>
 	<ul class="sectionIcons">
 		<% if mine?(@pack) -%>
-			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack')%></li>
+			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
 		<% end -%>
 		<% if @pack.authorized?("destroy", current_user) %>
 			<li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments. Are you sure?', :method => :delete }, 'Delete Pack') %></li>
@@ -57,19 +57,30 @@
 		<div class="contribution_version_inner_box">
 			<h4>
 				<%= image_tag "spinner.gif", :id => "refresh_indicator1", :style => "display: none; float: right; vertical-align: top;" -%>
-				<%= info_icon_with_tooltip("This section shows all the items that make up this Pack. #{view_privileges_text}") %>
+				<%= info_icon_with_tooltip("This section shows all the items that are pointed to in this pack. This can be a combination of internal and external items.") -%>
 				Items <span class="count_text">(<%= @pack.items_count -%>)</span>
 			</h4>
+			
+			<% if @authorised_to_edit -%>
+				<%= render :partial => "quick_add", :locals => { :pack => @pack } -%>
+				<br/>
+			<% end -%>
 			
 			<%= render :partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } -%>
 			
 			<br/>
 			
-			<% if @authorised_to_edit %>
-			<ul class="sectionIcons">
-				<li><%= icon('new', new_item_pack_path(@pack), nil, nil, 'Add New Item') %></li>
-			</ul>
-			<% end %>
+			<% if @authorised_to_edit -%>
+				<% if false %>
+				<p style="text-align: center; font-weight: bold; font-size: 123.1%; margin-top: 0.5em;">
+					OR
+				</p>
+				<% end %>
+				
+				<ul class="sectionIcons">
+					<li style="margin-left: 0;"><%= icon('new', new_item_pack_path(@pack), nil, nil, 'Add New Item') %></li>
+				</ul>
+			<% end -%>
 		</div>
 	</div>
 

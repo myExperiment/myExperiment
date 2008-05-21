@@ -81,6 +81,7 @@ table {
 th,td {
 	text-align: center;
 	border: none;
+	/*border: 1px solid #CCCCCC;*/
 }
 
 pre {
@@ -1476,6 +1477,11 @@ div.auto_complete ul strong.highlight {
 	color: #666666;
 }
 
+.error_text {
+	color: red;
+	font-weight: bold;
+}
+
 .rest_table TABLE {
   border: 1px solid black;
   margin: 1px;
@@ -1732,7 +1738,7 @@ table.simple td {
 	list-style-type: none;
 	margin: 0;
 	line-height: 1.4;
-	padding: 0 0.5em;
+	padding: 0.2em 0.5em;
 	border-bottom: 1px solid #CCCCCC;
 	background-color: #FFFFFF;
 	font-size: 93%;
@@ -1751,23 +1757,25 @@ table.simple td {
 #packItems td {
 	vertical-align: top;
 	text-align: left;
+	padding: 0.4em 0.6em;
 }
 
 #packItems td.icon {
-	width: 20px;
+	width: 16px;
 	text-align: center;
 }
 
 #packItems .inner {
 	color: #333333;
+	margin: 0.3em 0 0 0.3em;
+	padding: 0.2em 0 0.3em 0.7em;
+	border-left: 3px solid #EEEEEE; 
 }
 
 #packItems .comment {
 	font-style: italic;
-	margin: 0.2em 0 0.1em 0;
 	background-color: #F7F7F7;
-	padding: 0.3em 0.4em;
-	color: #666666;
+	padding: 0.4em 0.6em;
 }
 
 #packItems .user {

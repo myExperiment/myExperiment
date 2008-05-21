@@ -13,17 +13,17 @@ module PacksHelper
     #                       :confirm => "Are you sure you want to remove this item from this pack?",
     #                       :loading => "Element.show('refresh_indicator1')")
 
-    return link_to(delete_image("float: right; margin-left: 0.8em;", "Remove item from pack"),
+    return link_to(delete_image("float: right; margin-left: 0.8em;", "Remove entry from pack"),
                    { :controller => "Packs", :id => pack_id, :action => "destroy_item", :item_type => item_type, :item_id => item_id },
                    :confirm => "Are you sure you want to remove this item from this pack?")
   end
   
   def edit_item_button(pack_id, item_type, item_id)
-    return link_to(edit_image("float: right; margin-left: 0.4em;", "Edit this item"),
+    return link_to(edit_image("float: right; margin-left: 0.4em;", "Edit this entry"),
                    { :controller => "Packs", :id => pack_id, :action => "edit_item", :item_type => item_type, :item_id => item_id })
   end
 
   def user_and_created_at_bit(entry)
-    return "<small>Added by <b>#{contributor(entry.user_id, 'User')}</b> on #{datetime entry.created_at, false}</small>"
+    return "<small>Added by <b>#{contributor(entry.user_id, 'User')}</b> ... #{timeago_fuzzy entry.created_at} (#{datetime entry.created_at, false})</small>"
   end
 end
