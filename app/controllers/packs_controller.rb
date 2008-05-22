@@ -230,31 +230,77 @@ class PacksController < ApplicationController
   end
   
   def edit_item
+    if params[:entry_type].blank? or params[:entry_id].blank?
+      error("Invalid item entry specified for editing", "")
+    else
+      @type = params[:entry_type].downcase
+      
+      case @type
+        when 'contributable'
+          @type_ui = 'internal'
+        when 'remote'
+          @type_ui = 'external'
+        else
+          @type_ui = 'UNKNOWN'
+      end
+      
+      @item_entry = find_entry(@pack.id, params[:entry_type], params[:entry_id])
+    end
     
+    # Will render packs/new_item.rhtml
   end
   
   def update_item
+    # Attempt to retrieve the entry that needs updating
+    if !params[:entry_type].blank? and !params[:entry_id].blank?
+      entry = find_entry(@pack.id, params[:entry_type], params[:entry_id])
+    end
     
+    respond_to do |format|
+      if entry
+        case params[:entry_type].downcase
+          when 'contributable'
+            # Nothing to update specifically here
+          when 'remote'
+            entry.title = params[:title]
+            entry.alternate_uri = params[:alternate_uri]
+        end
+        
+        entry.comment = params[:comment]
+        
+        if entry.save
+          flash[:notice] = 'Successfully updated item entry.'
+          format.html { redirect_to pack_url(@pack) }
+        else
+          @item_entry = entry
+          
+          # TODO: set up the other variables needed in page
+          
+          flash[:error] = 'Failed to update item entry.'
+          format.html { render :action => "edit_item" }
+        end
+      else
+        flash[:error] = "Failed to update item entry."
+        format.html { redirect_to pack_url(@pack) }
+      end
+    end
   end
   
   def destroy_item
     # Note: at this point, we are assuming that authorisation for deleting of items has been given by a before_filter method
-    if params[:item_type] and params[:item_id]
-      case params[:item_type].downcase
-        when 'contributable' 
-          entry = PackContributableEntry.find(:first, :conditions => ["id = ?", params[:item_id]])
-        when 'remote'
-          entry = PackRemoteEntry.find(:first, :conditions => ["id = ?", params[:item_id]])
-      end
+    
+    # Attempt to retrieve the entry that needs deleting
+    if !params[:entry_type].blank? and !params[:entry_id].blank?
+      entry = find_entry(@pack.id, params[:entry_type], params[:entry_id])
     end
     
     respond_to do |format|
       if entry
         entry.destroy
-        flash[:notice] = "Successfully deleted item entry"
+        flash[:notice] = "Successfully deleted item entry."
         format.html { redirect_to pack_url(@pack) }
       else
-        flash[:error] = "Failed to delete item entry"
+        flash[:error] = "Failed to delete item entry."
         format.html { redirect_to pack_url(@pack) }
       end
     end
@@ -324,6 +370,18 @@ class PacksController < ApplicationController
     
     respond_to do |format|
       format.html { redirect_to packs_url }
+    end
+  end
+  
+  # This finds the specified entry within the specified pack (otherwise returns nil).
+  def find_entry(pack_id, entry_type, entry_id)
+    case entry_type.downcase
+      when 'contributable' 
+        return PackContributableEntry.find(:first, :conditions => ["id = ? AND pack_id = ?", entry_id, pack_id])
+      when 'remote'
+        return PackRemoteEntry.find(:first, :conditions => ["id = ? AND pack_id = ?", entry_id, pack_id])
+      else
+        return nil
     end
   end
 end

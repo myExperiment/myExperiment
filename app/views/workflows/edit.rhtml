@@ -9,11 +9,11 @@
 <div>Updating mode = <%= @updating_mode %></div>
 <% end %>
 
-<%= error_messages_for :workflow %>
-
-<p style="font-size: 93%; color: #333333; margin-bottom: 1.2em; text-align: left;">
+<p style="font-size: 93%; color: #333333; margin-bottom: 1.2em; text-align: center;">
 	<%= link_to "Click here", url_for(:controller => "workflows", :action => "edit_version", :id => @workflow.id, :version => @workflow.current_version) %> if you wanted to edit the title/description of the latest version 
 </p>
+
+<%= error_messages_for :workflow %>
 
 <% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
   <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @workflow } %>

@@ -81,11 +81,6 @@ class Pack < ActiveRecord::Base
                 expr2 = /version=(\d+)/
                 if uri.query =~ expr2
                   entry.contributable_version = uri.query.scan(expr2)[0][0] 
-                  
-                  # Check this version actually exists
-                  if not contributable.respond_to?(:find_version) or not contributable.find_version(entry.contributable_version)
-                    errors_here.add_to_base('The item version specified in the link could not be found.')
-                  end
                 end
               end
             else

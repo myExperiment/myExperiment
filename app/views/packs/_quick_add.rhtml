@@ -11,7 +11,7 @@
 					<span style="vertical-align: middle;">Quick Add: </span>
 				</td>
 				<td style="vertical-align: middle; padding-bottom: 0;">
-					<%= text_field_tag "uri", params[:uri] || "http://", :size => 50 -%>
+					<%= text_field_tag "uri", params[:uri], :size => 50 -%>
 				</td>
 				<td style="text-align: left; vertical-align: middle; width: 4em; padding-bottom: 0;">
 					<%= submit_tag "Add", :disable_with => "..." -%>

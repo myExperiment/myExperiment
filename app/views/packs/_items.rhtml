@@ -44,14 +44,16 @@
 										<small>(<%= contributor e.contributable.contributor_id, e.contributable.contributor_type -%>)</small>
 										
 									<% else -%>
-									
-										<font class="none_text">
-											<% if not available -%>
+										
+										<% if not available -%>
+											<font class="none_text">
 												The item this entry points to is not available. It may have been deleted.
-											<% else -%>
+											</font>
+										<% else -%>
+											<font class="denied_text">
 												You are not authorised to view the item this entry points to.
-											<% end -%>
-										</font>
+											</font>
+										<% end -%>
 										
 									<% end -%>
 								</p>

@@ -39,7 +39,8 @@
 					<%= text_field_tag "contributable[id]", params[:contributable][:id], :size => 8, :style => "margin-bottom: 0" -%>
 				</p>
 				<p>
-					<b>Item Version: </b> (optional) <%= info_icon_with_tooltip("You can choose a specific version to point to, or leave this blank to always point to the latest version.") -%>
+					<%= info_icon_with_tooltip("You can choose a specific version to point to, or leave this blank to always point to the latest version.") -%>
+					<b>Item Version: </b> (optional)
 					<%= text_field_tag "contributable[version]", params[:contributable][:version], :size => 8, :style => "margin-bottom: 0" -%>
 				</p>
 			</div>
@@ -51,13 +52,19 @@
 				<p><b>URI (the link to the external item)</b></p>
 				<%= text_field_tag "remote[uri]", params[:remote][:uri], :size => 83 -%>
 				
-				<p><b>Alternate URI</b> (optional) <%= info_icon_with_tooltip("An alternative link to the item, in case the first link doesn't work.") -%></p>
+				<p>
+					<%= info_icon_with_tooltip("An alternative link to the item, in case the first link doesn't work.") -%>
+					<b>Alternate URI</b> (optional) 
+				</p>
 				<%= text_field_tag "remote[alternate_uri]", params[:remote][:alternate_uri], :size => 83 -%>
 			</div>
 			
 			<br/>
 			
-			<p class="step"><b>3. Add a comment (optional)...</b> <%= info_icon_with_tooltip("You can add a comment to say why you have added this item to this pack, or to say anything else.") -%></p></p>
+			<p class="step">
+				<%= info_icon_with_tooltip("You can add a comment to say why you have added this item to this pack, or to say anything else.") -%>
+				<b>3. Add a comment (optional)...</b> 
+			</p>
 			<%= text_area_tag "comment", params[:comment], :size => "66x4" -%>
 							
 			<br/><br/>
