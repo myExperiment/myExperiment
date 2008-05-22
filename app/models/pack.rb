@@ -32,9 +32,9 @@ class Pack < ActiveRecord::Base
     return contributable_entries_count + remote_entries_count
   end
   
-  # Resolves the link provided and creates the appropriate entry object...
-  # - if the link points to something internally on this site it will attempt to find that item and then add a pack_contributable_entry for it (in the event that it doesn't find the item it will treat the URI as an external one and add a pack_remote_entry).
-  # - if the URI is clearly not referring to this site, it will add it as a pack_remote_entry.
+  # Resolves the link provided... identifies what internal entry type it corresponds to and creates the appropriate entry object (BUT DOES NOT SAVE IT)...
+  # - if the link points to something internally on this site it will attempt to find that item and then create a new pack_contributable_entry for it (in the event that it doesn't find the item it will treat the URI as an external one and create a pack_remote_entry).
+  # - if the URI is clearly not referring to this site, it will create a pack_remote_entry.
   #
   # Input parameters:
   # - link: a string based uri beginning with the protocol (eg: "http://...").
@@ -42,10 +42,16 @@ class Pack < ActiveRecord::Base
   # - host_port: the host port that this site runs on (must be a string; e.g: "80" or nil).
   # - current_user: the currently logged on user.
   #
-  # Returns an errors collection, which if empty means that the entry was added successfully.
-  def quick_add(link, host_name, host_port, current_user)
+  # Returns an array - [errors, type, entry] where:
+  # - errors: an ActiveRecord::Errors object; the high level errors that have occurred in processing the link. If this contains errors than it means no entry was created and no type was determined.
+  # - type: a String; the canonical type the link was able to be resolved to (currently 'contributable' or 'remote').
+  # - entry: a NEW and UNSAVED pack entry object that link would be saved as.
+  def resolve_link(link, host_name, host_port, current_user)
     errors_here = Pack.new.errors
-    store_as_remote = false
+    type = nil
+    entry = nil
+    
+    is_remote = false
     
     begin
       
@@ -76,6 +82,8 @@ class Pack < ActiveRecord::Base
               entry = PackContributableEntry.new
               entry.contributable = contributable
               
+              type = 'contributable'
+              
               # Check if version was specified in the uri
               unless uri.query.blank?
                 expr2 = /version=(\d+)/
@@ -87,35 +95,33 @@ class Pack < ActiveRecord::Base
               errors_here.add_to_base('The item the link points to does not exist.')
             end
           else
-            store_as_remote = true
+            # Treat as a remote entry
+            is_remote = true
           end
           
         else
           # Treat as a remote entry
-          store_as_remote = true
+          is_remote = true
         end
       else
         errors_here.add_to_base('Please provide a valid link.')  
       end
       
-      if store_as_remote
+      if is_remote
         entry = PackRemoteEntry.new(:title => link, :uri => link)
+        type = 'remote'
       end
       
-      # By this point, we either have errors, or have an entry that needs saving.
-      if errors_here.empty?
+      if entry
         entry.pack = self
         entry.user = current_user
-        unless entry.save
-          transfer_errors(entry.errors, errors_here)
-        end
       end
       
     rescue URI::InvalidURIError
       errors_here.add_to_base('Really struggled to parse this link. Please could you check if it is valid.')
     end
     
-    return errors_here
+    return [errors_here, type, entry]
   end
   
   protected
@@ -126,10 +132,4 @@ class Pack < ActiveRecord::Base
     return ((uri.scheme == "http") && (uri.host == host_name) && (uri.port.to_s == host_port)) 
   end
   
-  # Utility method to transfer error messages between two ActiveRecord::Errors collections.
-  def transfer_errors(source_errs, final_errs)
-    source_errs.each_full do |msg|
-      final_errs.add_to_base(msg)
-    end
-  end
 end

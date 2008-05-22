@@ -1400,10 +1400,6 @@ div.auto_complete ul strong.highlight {
 	margin-bottom: 1em;
 }
 
-.box_form .step {
-	color: #660000;
-}
-
 .box_standout {
 	padding: 0.5em 0.8em; 
 	border: 1px dotted #999999;
@@ -1485,6 +1481,12 @@ div.auto_complete ul strong.highlight {
 .error_text {
 	color: red;
 	font-weight: bold;
+}
+
+.step_text {
+	color: #660000;
+	font-weight: bold;
+	margin-bottom: 0.5em;
 }
 
 .rest_table TABLE {

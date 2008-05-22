@@ -9,7 +9,7 @@ class PacksController < ApplicationController
   before_filter :find_packs, :only => [:all]
   before_filter :find_pack_auth, :except => [:index, :new, :create, :all]
   
-  before_filter :invalidate_listing_cache, :only => [:show, :update, :comment, :comment_delete, :tag, :destroy]
+  before_filter :invalidate_listing_cache, :only => [:show, :update, :comment, :comment_delete, :tag, :destroy, :create_item, :update_item, :delete_item]
 
   # GET /packs
   def index
@@ -159,72 +159,40 @@ class PacksController < ApplicationController
   end
   
   def new_item
-    # Hack for multi level params to be treated as non null in the view
-    params[:contributable] = { } if params[:contributable].nil?
-    params[:remote] = { } if params[:remote].nil?
-    
-    # Set any initial data if provided in the url as query strings
-    if params[:contributable_type]
-      params[:contributable][:type] = params[:contributable_type].capitalize
-      @type = 'contributable'
-    end
-    if params[:contributable_id]
-      params[:contributable][:id] = params[:contributable_id]
-      @type = 'contributable'
-    end
-    if params[:contributable_version]
-      params[:contributable][:version] = params[:contributable_version]
-      @type = 'contributable'
+    # If a uri has been provided lets resolve it now
+    if params[:uri]
+      errors, @type, @item_entry = @pack.resolve_link(params[:uri], request.host, request.port.to_s, current_user)
+      unless errors.empty?
+        @error_message = errors.full_messages.to_sentence(:connector => '')
+      end
     end
     
     # Will render packs/new_item.rhtml
   end
   
   def create_item
-    if params[:entry_type]
-      @type = params[:entry_type]
-      
-      respond_to do |format|
-        case @type
-          when 'contributable'
-            e = PackContributableEntry.new
-            e.contributable_type = params[:contributable][:type]  # This assumes that the contributable_type returned is in internal format (eg: 'Blobs' for files).
-            e.contributable_id = params[:contributable][:id]
-            e.contributable_version = params[:contributable][:version]
-            
-            # Check that user is authorised to view this contributable atleast
-            if e.contributable
-              if e.contributable.authorized?('show', current_user)
-                
-              end
-            end
-            
-            @pack_contributable_entry = e
-          when 'remote'
-            e = PackRemoteEntry.new
-            e.title = params[:remote][:title]
-            e.uri = params[:remote][:uri]
-            e.alternate_uri = params[:remote][:alternate_uri]
-            @pack_remote_entry = e
-        end
-        
-        e.pack = @pack
-        e.user = current_user
-        e.comment = params[:comment]
-        
-        if e.save
-          flash[:notice] = 'Item succesfully added to pack.'
-          format.html { redirect_to pack_url(@pack) }
+    respond_to do |format|
+      if !params[:uri].blank?
+        errors, @type, @item_entry = @pack.resolve_link(params[:uri], request.host, request.port.to_s, current_user)
+       
+        # By this point, we either have errors, or have an entry that needs saving.
+        if errors.empty?
+          @item_entry.comment = params[:comment]
+          if @item_entry.save
+            flash[:notice] = "Item succesfully added to pack. You can now add edit it and add more metadata here (or click 'cancel')"
+            format.html { redirect_to url_for({ :controller => "packs", :id => @pack.id, :action => "edit_item", :entry_type => @type, :entry_id => @item_entry.id }) }
+          else
+            flash[:error] = 'Failed to add item to pack. See errors below.'
+            format.html { render :action => "new_item" }
+          end
         else
-          # Hack for multi level params to be treated as non null in the view
-          params[:contributable] = { } if params[:contributable].nil?
-          params[:remote] = { } if params[:remote].nil?
-          
-          @item_entry = e
-          
-          flash[:error] = 'Failed to add item to pack.'
+          @error_message = errors.full_messages.to_sentence(:connector => '')
+          flash[:error] = 'Failed to add item to pack. See errors below.'
           format.html { render :action => "new_item" }
         end
+      else
+        flash[:error] = "Failed to add item to pack. You may need to first 'check' the link before adding it, or provide a valid link."
+        format.html { render :action => "new_item" }
       end
     end
   end
@@ -234,16 +202,6 @@ class PacksController < ApplicationController
       error("Invalid item entry specified for editing", "")
     else
       @type = params[:entry_type].downcase
-      
-      case @type
-        when 'contributable'
-          @type_ui = 'internal'
-        when 'remote'
-          @type_ui = 'external'
-        else
-          @type_ui = 'UNKNOWN'
-      end
-      
       @item_entry = find_entry(@pack.id, params[:entry_type], params[:entry_id])
     end
     
@@ -313,7 +271,14 @@ class PacksController < ApplicationController
         @error_message = "Please enter a link"
         format.html { render :action => "show" }
       else
-        errors = @pack.quick_add(params[:uri], request.host, request.port.to_s, current_user)
+        errors, type, entry = @pack.resolve_link(params[:uri], request.host, request.port.to_s, current_user)
+        
+        # By this point, we either have errors, or have an entry that needs saving.
+        if errors.empty?
+          unless entry.save
+            copy_errors(entry.errors, errors)
+          end
+        end
         
         if errors.empty?
           flash[:notice] = 'Item succesfully added to pack.'
@@ -324,6 +289,22 @@ class PacksController < ApplicationController
           format.html { render :action => "show" }
         end
       end
+    end
+  end
+  
+  # POST /packs/resolve_link
+  def resolve_link
+    respond_to do |format|
+      if params[:uri].blank?
+        @error_message = "Please enter a link"
+      else
+        errors, @type, @item_entry = @pack.resolve_link(params[:uri], request.host, request.port.to_s, current_user)
+        unless errors.empty?
+          @error_message = errors.full_messages.to_sentence(:connector => '')
+        end
+      end
+      
+      format.html { render :partial => "after_resolve", :locals => { :error_message => @error_message, :type => @type, :item_entry => @item_entry } }
     end
   end
   
@@ -382,6 +363,13 @@ class PacksController < ApplicationController
         return PackRemoteEntry.find(:first, :conditions => ["id = ? AND pack_id = ?", entry_id, pack_id])
       else
         return nil
+    end
+  end
+  
+  # Utility method to copy error messages from one ActiveRecord::Errors object to another.
+  def copy_errors(source_errs, final_errs)
+    source_errs.each_full do |msg|
+      final_errs.add_to_base(msg)
     end
   end
 end

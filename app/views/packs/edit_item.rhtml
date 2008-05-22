@@ -6,39 +6,10 @@
 
 <div>
 	<p style="text-align: center;">
-		This entry points to the following <b><%= @type_ui -%></b> resource:
+		This entry points to the following <b><%= type_to_UI_text @type -%></b> resource:
 	</p>
 	
-	<% if @type == 'contributable' -%>
-		<% if @item_entry.contributable -%>
-			<% if @item_entry.contributable.authorized?('show', current_user) -%>
-				<p style="text-align: center;">
-					<b>
-						<%= visible_name(@item_entry.contributable_type) -%>:
-						<%= link_to_function contributable_name(@item_entry.contributable_id, @item_entry.contributable_type) + expand_image, visual_effect(:toggle_blind, "contributable_listing", :duration => 0.3) %>
-					</b>
-					<% unless @item_entry.contributable_version.blank? %>
-						<b>Version:</b>
-						<%= @item_entry.contributable_version %>
-					<% end -%>
-				</p>
-				<div id="contributable_listing" style="display: none;">
-					<br/>
-					<%= render :partial => "#{@item_entry.contributable_type.pluralize.downcase}/table", :locals => { :collection => [ @item_entry.contributable ] } %>
-				</div>
-			<% else -%>
-				<p class="denied_text" style="text-align: center;">
-					You are not authorised to view the item this entry points to.
-				</p>
-			<% end -%>
-		<% else -%>
-			<p class="none_text" style="text-align: center;">This item may not exist anymore</p>
-		<% end -%>
-	<% elsif @type == 'remote' -%>
-		<p style="text-align: center;">
-			<b><%= link_to h(@item_entry.title), h(@item_entry.uri), :popup => true %></b>
-		</p>
-	<% end -%>
+	<%= render :partial => "entry_item", :locals => { :type => @type, :item_entry => @item_entry } -%>
 </div>
 
 <br/>
@@ -71,7 +42,11 @@
 			<%= text_area_tag "comment", params[:comment] || @item_entry.comment, :size => "66x4" -%>
 		
 			<br/><br/>
-			<center><%= submit_tag "Update", :disable_with => "Updating..." -%></center>
+			<center>
+				<%= submit_tag "Update", :disable_with => "Updating..." -%>
+				<br/>
+				or <b><%= link_to "Cancel", pack_url(@pack) -%></b>
+			</center>
 		
 		<% end -%>
 	</div>

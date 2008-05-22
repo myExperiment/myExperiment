@@ -91,21 +91,3 @@ var ReplyForm = {
 //Event.addBehavior({
 //  '#search,#monitor_submit': function() { this.hide(); }
 //})
-
-function packs_update_new_entry_type(type) {
-	if (type == 'contributable')
-	{
-	  $('new_contributable_entry_box').style.display = 'block';
-	  $('new_remote_entry_box').style.display = 'none';
-	}
-	else if (type == 'remote')
-	{
-		$('new_contributable_entry_box').style.display = 'none';
-	  $('new_remote_entry_box').style.display = 'block';
-	}
-	else
-	{
-		$('new_contributable_entry_box').style.display = 'none';
-    $('new_remote_entry_box').style.display = 'none';
-	}
-}
