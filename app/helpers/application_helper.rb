@@ -1177,6 +1177,11 @@ module ApplicationHelper
               :style => style)
   end
   
+  def new_flash_image(style=nil)
+   return image_tag("famfamfam_silk/new.png", 
+                    :style => style)
+  end
+  
 protected
 
   def contributor_news(contributor, before, after, depth, restrict_contributor)
