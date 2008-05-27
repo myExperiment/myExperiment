@@ -1182,6 +1182,42 @@ module ApplicationHelper
                     :style => style)
   end
   
+  def update_perms_info_text(contributable)
+    return nil if type.blank?
+    
+    resource = c_resource_string(contributable)
+    visible_type = visible_name(contributable)
+    
+    text = "<p>By giving update permission for this #{visible_type}, you allow other users to do the following:</p>"
+    
+    case contributable.class.to_s
+      when 'Workflow'
+        text += "<ul>
+                  <li>Upload new versions of the #{visible_type} as part of this #{visible_type} entry.</li> 
+                  <li>Edit the titles and descriptions of the different #{visible_type} versions.</li>
+                </ul>"
+      when 'Blob'
+        text+= "<ul>
+                  <li>NO additional update priviledges are available for #{visible_type.pluralize}.</li>
+                </ul>" 
+      when 'Pack'
+        text += "<ul>
+                  <li>Add new items to the #{visible_type}.</li>
+                  <li>Edit metadata of existing items.</li>
+                </ul>"
+      else
+        text += "<ul><li>ERROR: the contributable type does not have any update permissions info text set for it.</li></ul>"
+    end
+    
+    text += "<p>
+              Note that updating privileges only affect how other users can update this
+              #{visible_type} entry on myExperiment. If the user downloads the #{resource},
+              they can still edit it away from myExperiment and possible upload it back as a new entry.
+            </p>"
+            
+    return text
+  end
+  
 protected
 
   def contributor_news(contributor, before, after, depth, restrict_contributor)
