@@ -95,13 +95,15 @@
 		</p>
 	</div>
 	
-	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @pack } %>
-	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @pack, 
 																											 :owner_id => ((@pack.contributor_type == 'User') ? @pack.contributor_id : nil), 
 																											 :add_path => tag_pack_path(@pack), 
 																											 :edit_path => edit_pack_path(@pack),
 																											 :allow_edit => @pack.authorized?("edit", current_user) } %>
+	
+	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @pack } %>
+	
+	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @pack } %>
 	
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @pack } %>
 	

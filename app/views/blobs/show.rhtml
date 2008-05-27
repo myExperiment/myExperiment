@@ -83,13 +83,15 @@
 	
 	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @blob, :edit_path => edit_file_path(@blob) } %>
 	
-	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @blob } %>
-	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @blob, 
 																											 :owner_id => ((@blob.contributor_type == 'User') ? @blob.contributor_id : nil), 
 																											 :add_path => tag_file_path(@blob), 
 																											 :edit_path => edit_file_path(@blob),
 																											 :allow_edit => @blob.authorized?("edit", logged_in? ? current_user : nil ) } %>
+																											 
+  <%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @blob } %>
+	
+	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @blob } %>
 	
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @blob } %>
 	

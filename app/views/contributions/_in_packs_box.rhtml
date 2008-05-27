@@ -1,0 +1,23 @@
+<% packs = contributable.in_packs -%>
+<div class="contribution_section_box">
+	<p class="heading">
+		<%= info_icon_with_tooltip("All the Packs that this item (or versions of this item) is referred to in") %>
+		Features In Packs 
+	</p>
+	<% unless packs.empty? %>
+		<div style="font-size: 85%;">
+			<p>
+				<ul>
+					<% packs.each do |p| %>
+						<li>
+							<%= icon('pack', nil, nil, nil, '') %>
+							<%= contributable(p.id, 'Pack') %>
+						</li>
+					<% end %>
+				</ul>
+			</p>
+		</div>
+	<% else %>
+		<p class="none_text">None</p>
+	<% end %>
+</div>
