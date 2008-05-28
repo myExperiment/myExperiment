@@ -91,13 +91,13 @@
 																											 
   <%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @blob } %>
 	
-	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @blob } %>
+	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @blob, :contributable_url => @blob_entry_url } %>
 	
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @blob } %>
 	
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @blob } %>
 	
-	<% if false %><%= render :partial => "layouts/bookmark_with", :locals => { :title => contributable_name(@blob.id, 'Blob'), :url => @blob_url } %><% end %>
+	<% if false %><%= render :partial => "layouts/bookmark_with", :locals => { :title => contributable_name(@blob.id, 'Blob'), :url => @blob_entry_url } %><% end %>
 	
 </div>	
 

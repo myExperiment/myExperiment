@@ -10,6 +10,7 @@ class PacksController < ApplicationController
   before_filter :find_pack_auth, :except => [:index, :new, :create, :all]
   
   before_filter :invalidate_listing_cache, :only => [:show, :update, :comment, :comment_delete, :tag, :destroy, :create_item, :update_item, :delete_item]
+  before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
 
   # GET /packs
   def index
@@ -149,9 +150,6 @@ class PacksController < ApplicationController
     @pack.tags_user_id = current_user # acts_as_taggable_redux
     @pack.tag_list = "#{@pack.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @pack.update_tags # hack to get around acts_as_versioned
-    
-    expire_fragment(:controller => 'packs', :action => 'all_tags')
-    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
     
     respond_to do |format|
       format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @pack, :owner_id => @pack.contributor_id } }
@@ -326,7 +324,7 @@ class PacksController < ApplicationController
         
         @authorised_to_edit = @pack.authorized?("edit", current_user)
         
-        @pack_url = url_for :only_path => false,
+        @pack_entry_url = url_for :only_path => false,
                             :host => base_host,
                             :id => @pack.id
       else
@@ -341,6 +339,11 @@ class PacksController < ApplicationController
     if @pack
       expire_fragment(:controller => 'packs_cache', :action => 'listing', :id => @pack.id)
     end
+  end
+  
+  def invalidate_tags_cache
+    expire_fragment(:controller => 'packs', :action => 'all_tags')
+    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
   end
   
   private

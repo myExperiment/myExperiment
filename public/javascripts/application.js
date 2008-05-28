@@ -91,3 +91,8 @@ var ReplyForm = {
 //Event.addBehavior({
 //  '#search,#monitor_submit': function() { this.hide(); }
 //})
+
+function redirectToAddToPack() {
+  var url = $("add_to_pack_selection").value;
+  location.href = url;
+}

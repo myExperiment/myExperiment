@@ -1489,6 +1489,18 @@ div.auto_complete ul strong.highlight {
 	margin-bottom: 0.5em;
 }
 
+.note_text {
+	font-size: 93%;
+	font-weight: bold;
+	color: #900000;
+}
+
+.sub-heading {
+	text-align: center; 
+	font-size: 108%; 
+	margin-bottom: 0.5em;
+}
+
 .rest_table TABLE {
   border: 1px solid black;
   margin: 1px;
@@ -1515,18 +1527,6 @@ div.auto_complete ul strong.highlight {
 .try_it_out_box TEXTAREA {
   font-family: monospace;
   font-size: 10pt;
-}
-
-.note_text {
-	font-size: 93%;
-	font-weight: bold;
-	color: #900000;
-}
-
-.sub-heading {
-	text-align: center; 
-	font-size: 108%; 
-	margin-bottom: 0.5em;
 }
 
 .inputs_list {

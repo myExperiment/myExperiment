@@ -275,7 +275,7 @@
 																											 
 	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @workflow } %>
 	
-	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @workflow } %>
+	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @workflow, :contributable_url => @workflow_entry_url } %>
 	
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @workflow } %>
 	

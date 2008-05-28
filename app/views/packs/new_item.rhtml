@@ -17,20 +17,18 @@
 			<p style="text-align: center;">
 				<%= image_tag "spinner.gif", :id => "spinner", :style => "display: none; float: right; vertical-align: top;" -%>
 				<%= text_field_tag "uri", params[:uri], :size => 65, :style => "margin-bottom: 0;" -%>
-				<%= submit_tag "Check", :style => "margin-bottom: 0;" %>
+				<%= submit_tag "Check", :style => "margin-bottom: 0;" -%>
 			</p>
 		</div>
 	</center>
 
 <% end -%>
 
-<div id="resolved_entry">
+<div id="resolved_entry" style="border: 1px solid #CCCCCC; margin: 1.5em 0; padding: 0.4em; background-color: #F5F5F5;">
 	<% if @item_entry -%>
 		<%= render :partial => "after_resolve", :locals => { :error_message => @error_message, :type => @type, :item_entry => @item_entry } -%>
 	<% end -%>
 </div>
-
-<br/>
 
 <% form_tag create_item_pack_url(@pack) do -%>
 	<input id="uri2" type="hidden" name="uri" value="<%= params[:uri] || '' -%>"/>

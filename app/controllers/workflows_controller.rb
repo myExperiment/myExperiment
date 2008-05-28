@@ -13,6 +13,7 @@ class WorkflowsController < ApplicationController
   before_filter :check_is_owner, :only => [:edit, :update]
   
   before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :update_version, :comment, :comment_delete, :rate, :tag, :destroy, :destroy_version]
+  before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
   
   # These are provided by the Taverna gem
   require 'scufl/model'
@@ -110,10 +111,6 @@ class WorkflowsController < ApplicationController
     @workflow.tag_list = "#{@workflow.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @workflow.update_tags # hack to get around acts_as_versioned
 
-    
-    expire_fragment(:controller => 'workflows', :action => 'all_tags')
-    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
-    
     respond_to do |format|
       format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @workflow, :owner_id => @workflow.contributor_id } }
     end
@@ -485,6 +482,11 @@ protected
     if @workflow
       expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => @workflow.id)
     end
+  end
+  
+  def invalidate_tags_cache
+    expire_fragment(:controller => 'workflows', :action => 'all_tags')
+    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
   end
   
   def determine_title_and_unique(scufl_model)

@@ -12,6 +12,7 @@ class BlobsController < ApplicationController
   before_filter :check_is_owner, :only => [:edit, :update]
   
   before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :comment, :comment_delete, :rate, :tag, :destroy]
+  before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
   
   # GET /blobs;search
   def search
@@ -217,9 +218,6 @@ class BlobsController < ApplicationController
     @blob.tag_list = "#{@blob.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @blob.update_tags # hack to get around acts_as_versioned
     
-    expire_fragment(:controller => 'files', :action => 'all_tags')
-    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
-    
     respond_to do |format|
       format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @blob, :owner_id => @blob.contributor_id } }
     end
@@ -251,7 +249,7 @@ class BlobsController < ApplicationController
       if blob.authorized?(action_name, (logged_in? ? current_user : nil))
         @blob = blob
         
-        @blob_url = url_for :only_path => false,
+        @blob_entry_url = url_for :only_path => false,
                             :host => base_host,
                             :id => @blob.id
 
@@ -282,6 +280,11 @@ class BlobsController < ApplicationController
     if @blob
       expire_fragment(:controller => 'files_cache', :action => 'listing', :id => @blob.id)
     end
+  end
+  
+  def invalidate_tags_cache
+    expire_fragment(:controller => 'files', :action => 'all_tags')
+    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
   end
   
   private

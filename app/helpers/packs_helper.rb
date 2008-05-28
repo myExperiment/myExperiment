@@ -18,9 +18,13 @@ module PacksHelper
                    :confirm => "Are you sure you want to remove this item from this pack?")
   end
   
+  def edit_item_link(pack_id, entry_type, item_id)
+    return url_for(:controller => "packs", :id => pack_id, :action => "edit_item", :entry_type => entry_type, :entry_id => item_id)
+  end
+  
   def edit_item_button(pack_id, entry_type, item_id)
     return link_to(edit_image("float: right; margin-left: 0.4em;", "Edit this entry"),
-                   { :controller => "packs", :id => pack_id, :action => "edit_item", :entry_type => entry_type, :entry_id => item_id })
+                   edit_item_link(pack_id, entry_type, item_id))
   end
 
   def user_and_created_at_bit(entry)

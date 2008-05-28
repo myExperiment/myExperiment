@@ -65,6 +65,10 @@
 												<%= h e.comment -%>
 											</p>
 										<% end -%>
+									<% else -%>
+										<% if authorised_to_edit -%>
+											<p><small>[ <%= link_to "Add a comment here", edit_item_link(pack.id, "contributable", e.id) -%> ]</small></p>
+										<% end -%>
 									<% end -%>
 									<p class="user">
 										<%= user_and_created_at_bit(e) -%>
@@ -103,6 +107,10 @@
 											<%= icon('comment', nil, nil, nil, nil) -%>
 											<%= h e.comment -%>
 										</p>
+									<% else -%>
+										<% if authorised_to_edit -%>
+											<p><small>[ <%= link_to "Add a comment here", edit_item_link(pack.id, "remote", e.id) -%> ]</small></p>
+										<% end -%>
 									<% end -%>
 									<p class="user">
 										<%= user_and_created_at_bit(e) -%>

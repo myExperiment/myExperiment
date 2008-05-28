@@ -12,6 +12,6 @@
 		<% end %>
 	<% else %>
 		<p style="margin-top: 0.2em; font-size: 85%; font-weight: bold;">Current: <%= number_with_precision(contributable.rating, 2) %>/5 (<%= pluralize contributable.ratings.count, 'rating' %>)</p>
-		<p><strong><%= link_to "Log in", new_session_url %> to rate and see breakdown of ratings</strong></p>
+		<p><small><b><%= link_to "Log in", new_session_url -%></b> to rate and see breakdown of ratings</small></p>
 	<% end %>
 </center>

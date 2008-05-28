@@ -219,6 +219,7 @@ class User < ActiveRecord::Base
   has_many :blogs, :as => :contributor
   has_many :forums, :as => :contributor
   has_many :workflows, :as => :contributor
+  has_many :packs, :as => :contributor
   
   acts_as_creditor
 
@@ -480,7 +481,6 @@ class User < ActiveRecord::Base
   def email_confirmed?
     not self.email_confirmed_at.blank? and not self.email.blank?
   end
-  
   
   def activated?
     self.activated_at != nil
