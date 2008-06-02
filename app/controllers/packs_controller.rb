@@ -4,13 +4,23 @@
 # See license.txt for details.
 
 class PacksController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :all]
+  before_filter :login_required, :except => [:index, :show, :all, :search]
   
   before_filter :find_packs, :only => [:all]
-  before_filter :find_pack_auth, :except => [:index, :new, :create, :all]
+  before_filter :find_pack_auth, :except => [:index, :new, :create, :all, :search]
   
   before_filter :invalidate_listing_cache, :only => [:show, :update, :comment, :comment_delete, :tag, :destroy, :create_item, :update_item, :delete_item]
   before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
+
+  def search
+    @query = params[:query]
+    
+    @packs = SOLR_ENABLE ? Pack.find_by_solr(@query, :limit => 100).results : []
+    
+    respond_to do |format|
+      format.html # search.rhtml
+    end
+  end
 
   # GET /packs
   def index

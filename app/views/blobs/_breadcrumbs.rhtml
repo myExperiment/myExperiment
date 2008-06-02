@@ -1,16 +1,20 @@
-<li><%= link_to 'Files', files_path %></li>
+<li><%= link_to 'Files', files_path -%></li>
 
-<% if ["show", "new", "edit", "all"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit", "all", "search"].include? controller.action_name.to_s -%>
   <li><b>&#187;</b></li>
   
-  <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "View: #{contributable_name(@blob.id, 'Blob')}", file_path(@blob) %></li>
+  <% case controller.action_name.to_s; when "show" -%>
+    <li><%= contributable_name(@blob.id, 'Blob') -%></li>
   <% when "new" %>
-    <li><%= link_to "Upload File", new_file_path %></li>
+    <li>Upload File</li>
   <% when "edit" %>
-    <li><%= link_to "Manage: #{contributable_name(@blob.id, 'Blob')}", edit_file_path(@blob) %>
+		<li><%= link_to "#{contributable_name(@blob.id, 'Blob')}", file_path(@blob) -%></li>
+		<li><b>&#187;</b></li>
+    <li>Manage</li>
   <% when "all" %>
-    <li><%= link_to "All Files", all_files_path %>
+    <li>All Files</li>
+	<% when "search" %>  
+    <li>Search Results</li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

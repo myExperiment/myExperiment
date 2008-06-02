@@ -1,26 +1,32 @@
 <li><%= link_to 'Workflows', workflows_path %></li>
 
-<% if ["show", "new", "edit", "search", "all", "new_version", "comments_timeline"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit", "search", "all", "new_version", "edit_version", "comments_timeline"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "View: #{h(@workflow.title)}", workflow_path(@workflow) %></li>
+    <li><%= h(@workflow.title) %></li>
   <% when "new" %>
-    <li><%= link_to "Upload Workflow", new_workflow_path %></li>
+    <li>Upload Workflow</li>
   <% when "edit" %>
-    <li><%= link_to "Manage: #{h(@workflow.title)}", edit_workflow_path(@workflow) %>
+		<li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
+    <li><b>&#187;</b></li>
+    <li>Manage</li>
   <% when "search" %>  
-    <li><%= link_to "Search Results", search_workflows_path(:query => @query) %></li>
+    <li>Search Results</li>
   <% when "all" %>
-    <li><%= link_to "All Workflows", all_workflows_path %>
+    <li>All Workflows</li>
 	<% when "new_version" %>
     <li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
 		<li><b>&#187;</b></li>
-		<li><%= link_to "New Version", new_version_workflow_url(@workflow) %>
+		<li>New Version</li>
+	<% when "edit_version" %>
+    <li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
+		<li><b>&#187;</b></li>
+		<li>Edit Version</li>
 	<% when "comments_timeline" %>
 		<li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
 		<li><b>&#187;</b></li>
-    <li><%= link_to "Comments Timeline", comments_timeline_workflow_path(@workflow) %>
+    <li>Comments Timeline</li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

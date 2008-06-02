@@ -1,22 +1,24 @@
-<li><%= link_to 'Workflows', workflows_path %></li>
+<li><%= link_to 'Workflows', workflows_path -%></li>
 
 <li><b>&#187;</b></li>
 
-<li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
+<li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) -%></li>
 
 <li><b>&#187;</b></li>
 
-<li><%= link_to 'Citations', citations_path(@workflow) %></li>
+<li><%= link_to 'Citations', citations_path(@workflow) -%></li>
 
-<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "View: #{h(@citation.title)}", citation_path(@workflow, @citation) %></li>
+    <li><%= h(@citation.title) -%></li>
   <% when "new" %>
-    <li><%= link_to "New Citation", new_citation_path(@citation.workflow) %></li>
+    <li>New Citation</li>
   <% when "edit" %>
-    <li><%= link_to "Edit: #{h(@citation.title)}", edit_citation_path(@workflow, @citation) %>
+		<li><%= link_to "#{h(@citation.title)}", citation_path(@workflow, @citation) %></li>
+		<li><b>&#187;</b></li>
+    <li>Edit</li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

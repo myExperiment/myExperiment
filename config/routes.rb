@@ -48,7 +48,7 @@ ActionController::Routing::Routes.draw do |map|
   
   # packs
   map.resources :packs, 
-    :collection => { :all => :get }, 
+    :collection => { :all => :get, :search => :get }, 
     :member => { :comment => :post, 
                  :comment_delete => :delete,
                  :tag => :post,
