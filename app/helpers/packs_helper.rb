@@ -15,6 +15,7 @@ module PacksHelper
 
     return link_to(delete_image("float: right; margin-left: 0.8em;", "Remove entry from pack"),
                    { :controller => "packs", :id => pack_id, :action => "destroy_item", :entry_type => entry_type, :entry_id => item_id },
+                   :method => :delete,
                    :confirm => "Are you sure you want to remove this item from this pack?")
   end
   
