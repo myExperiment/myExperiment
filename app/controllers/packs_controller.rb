@@ -239,9 +239,6 @@ class PacksController < ApplicationController
           format.html { redirect_to pack_url(@pack) }
         else
           @item_entry = entry
-          
-          # TODO: set up the other variables needed in page
-          
           flash[:error] = 'Failed to update item entry.'
           format.html { render :action => "edit_item" }
         end
@@ -332,7 +329,7 @@ class PacksController < ApplicationController
       if pack.authorized?(action_name, current_user)
         @pack = pack
         
-        @authorised_to_edit = @pack.authorized?("edit", current_user)
+        @authorised_to_edit = logged_in? && @pack.authorized?("edit", current_user)
         
         @pack_entry_url = url_for :only_path => false,
                             :host => base_host,

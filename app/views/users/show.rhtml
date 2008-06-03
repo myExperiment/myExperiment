@@ -348,6 +348,13 @@
 		<br/>
     <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Blob' end).map do |c| c.contributable end  %>
     <%= render :partial => "blobs/table", :locals => { :collection => contributables } %>
+		
+	<% when "Packs" %>
+		
+		<%= view_privileges_notice %>
+		<br/>
+    <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Pack' end).map do |c| c.contributable end  %>
+    <%= render :partial => "packs/table", :locals => { :collection => contributables } %>
 
   <% when "Forums" %>
     

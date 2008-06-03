@@ -436,7 +436,7 @@ protected
         end
         
         @authorised_to_download = @workflow.authorized?("download", (logged_in? ? current_user : nil))
-        @authorised_to_edit = @workflow.authorized?("edit", (logged_in? ? current_user : nil))
+        @authorised_to_edit = logged_in? && @workflow.authorized?("edit", (logged_in? ? current_user : nil))
         
         # remove scufl from workflow if the user is not authorized for download
         @viewing_version.scufl = nil unless @authorised_to_download
