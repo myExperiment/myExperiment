@@ -1079,13 +1079,12 @@ table.contributable:hover {
 	margin-bottom: 0.6em;
 }
 
-.contribution_section_box ul {
-	margin: 0;
-	margin-left: 0.8em;
+.contribution_section_box ul.items {
+	margin: 0 0 0.8em 1em;
 	text-align: left;
 }
 
-.contribution_section_box li {
+.contribution_section_box ul.items li {
 	list-style-type: none;
 	margin: 1em 0;
 	padding-left: 0.8em;

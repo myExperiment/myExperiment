@@ -6,20 +6,18 @@
 	</p>
 	<% unless packs.empty? %>
 		<div style="font-size: 85%;">
-			<p>
-				<ul>
-					<% packs.each do |p| %>
-						<li>
-							<% if thing_authorized?('show', p) -%>
-								<%= icon('pack', nil, nil, nil, '') %>
-								<%= contributable(p.id, 'Pack') %>
-							<% else -%>
-								<span class="none_text">Private pack</span>
-							<% end -%>
-						</li>
-					<% end %>
-				</ul>
-			</p>
+			<ul class="items">
+				<% packs.each do |p| %>
+					<li>
+						<% if thing_authorized?('show', p) -%>
+							<%= icon('pack', nil, nil, nil, '') %>
+							<%= contributable(p.id, 'Pack') %>
+						<% else -%>
+							<span class="none_text">Private pack</span>
+						<% end -%>
+					</li>
+				<% end %>
+			</ul>
 		</div>
 	<% else %>
 		<p class="none_text">None</p>

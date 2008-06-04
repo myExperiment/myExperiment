@@ -7,20 +7,18 @@
 	<span style="font-size: 85%; color: #666666; display: block; padding: 0.3em 0.5em 0 0.5em; margin: 0; line-height: 1em;">(People/Groups)</span>
 	<% unless creditors.empty? %>
 		<div style="font-size: 85%;">
-			<p>
-				<ul>
-					<% creditors.each do |c| %>
-						<li>
-							<% if c.creditor_type == 'User' %>
-								<%= icon('user', nil, nil, nil, '') %> 
-							<% elsif c.creditor_type == 'Network' %>
-								<%= icon('network-member', nil, nil, nil, '') %>
-							<% end %>
-							<%= contributor(c.creditor_id, c.creditor_type) %>
-						</li>
-					<% end %>
-				</ul>
-			</p>
+			<ul class="items">
+				<% creditors.each do |c| %>
+					<li>
+						<% if c.creditor_type == 'User' %>
+							<%= icon('user', nil, nil, nil, '') %> 
+						<% elsif c.creditor_type == 'Network' %>
+							<%= icon('network-member', nil, nil, nil, '') %>
+						<% end %>
+						<%= contributor(c.creditor_id, c.creditor_type) %>
+					</li>
+				<% end %>
+			</ul>
 		</div>
 	<% else %>
 		<p class="none_text">None</p>
@@ -35,7 +33,7 @@
 	<% unless attributors.empty? %>
 		<div style="font-size: 85%;">
 			<p>
-				<ul>
+				<ul class="items">
 					<% attributors.each do |a| %>
 						<li>
 							<% if thing_authorized?('show', a.attributor) -%>
