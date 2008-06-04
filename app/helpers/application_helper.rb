@@ -753,7 +753,8 @@ module ApplicationHelper
   end
   
   def all_workflows
-    Workflow.find(:all, :order => "title ASC")
+    workflows = Workflow.find(:all, :order => "title ASC")
+    workflows = workflows.select {|w| w.authorized?('show', w) }
   end
   
   def all_blobs
@@ -763,6 +764,7 @@ module ApplicationHelper
       y_title = (y.title and y.title.length > 0) ? y.title : y.local_name
       x_title.downcase <=> y_title.downcase
     }
+    blobs = blobs.select {|b| b.authorized?('show', b) }
   end
   
   def all_networks

@@ -1080,14 +1080,17 @@ table.contributable:hover {
 }
 
 .contribution_section_box ul {
-	margin-top: 0;
-	margin-left: 0.6em;
+	margin: 0;
+	margin-left: 0.8em;
+	text-align: left;
 }
 
 .contribution_section_box li {
 	list-style-type: none;
-	margin-bottom: 0;
-	line-height: 1.0;
+	margin: 1em 0;
+	padding-left: 0.8em;
+	line-height: 1.1;
+	border-left: 3px solid #DDDDBB;
 }
 
 .contribution_section_box p {

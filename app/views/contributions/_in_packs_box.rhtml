@@ -2,7 +2,7 @@
 <div class="contribution_section_box">
 	<p class="heading">
 		<%= info_icon_with_tooltip("All the Packs that this item (or versions of this item) is referred to in") %>
-		Features In Packs 
+		Features In Packs  <span class="count_text">(<%= packs.length -%>)</span>
 	</p>
 	<% unless packs.empty? %>
 		<div style="font-size: 85%;">
@@ -10,8 +10,12 @@
 				<ul>
 					<% packs.each do |p| %>
 						<li>
-							<%= icon('pack', nil, nil, nil, '') %>
-							<%= contributable(p.id, 'Pack') %>
+							<% if thing_authorized?('show', p) -%>
+								<%= icon('pack', nil, nil, nil, '') %>
+								<%= contributable(p.id, 'Pack') %>
+							<% else -%>
+								<span class="none_text">Private pack</span>
+							<% end -%>
 						</li>
 					<% end %>
 				</ul>
