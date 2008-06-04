@@ -1,5 +1,5 @@
 <div class="contribution_section_box">
-	<p class="heading">
+	<p class="heading" style="margin-bottom: 0.3em;">
 		Statistics
 	</p>
 	
@@ -11,35 +11,35 @@
 		
 		<% if allow_credits_and_attributions? type -%>
 			<p>
-				<b><%= pluralize contributable.creditors.length, "credit" %></b> 
+				<%= pluralize contributable.creditors.length, "credit" %> 
 			</p>
 			
 			<p>
-				<b><%= pluralize contributable.attributors.length, "attribution" %></b> 
+				<%= pluralize contributable.attributors.length, "attribution" %> 
 			</p>
 		<% end -%>
 		
 		<% if taggable? type -%>
 			<p>
-	      <b><%= pluralize contributable.taggings.length, "tag" %></b>
+	      <%= pluralize contributable.taggings.length, "tag" %>
 	    </p>
 		<% end -%>
 		
 		<% if rateable? type -%>
 			<p>
-	      <b><%= pluralize contributable.ratings.length, "rating" %></b>
+	      <%= pluralize contributable.ratings.length, "rating" %>
 	    </p>
 		<% end -%>
 		
 		<% if commentable? type -%>
 	    <p>
-	    	<b><%= pluralize contributable.comments.length, "comment" %></b>
+	    	<%= pluralize contributable.comments.length, "comment" %>
 	    </p>
 		<% end -%>
 		
 		<% if reviewable? type %>
 			<p>
-	      <b><%= pluralize contributable.reviews.length, "review" %></b>
+	      <%= pluralize contributable.reviews.length, "review" %>
 	    </p>
 		<% end %>
 	
