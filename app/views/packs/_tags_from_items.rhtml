@@ -5,5 +5,9 @@
 		Tags from Items <span class="count_text">(<%= tags_collection.length -%>)</span>
 	</p>
 	
-	<%= tag_cloud_from_collection(tags_collection) %>
+	<% unless tags_collection.empty? -%>
+		<%= tag_cloud_from_collection(tags_collection) %>
+	<% else -%>
+		<p class="none_text">None</p>
+	<% end -%>
 </div>
