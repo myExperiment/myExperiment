@@ -139,7 +139,10 @@
 		</ul>
 	<% else -%>
 		<p class="none_text">
-			None
+			No items in this pack
+			<% if authorised_to_edit -%>
+				Feel free to add some!
+			<% end -%>
 		</p>
 	<% end -%>
 

@@ -334,6 +334,8 @@ class PacksController < ApplicationController
         @pack_entry_url = url_for :only_path => false,
                             :host => base_host,
                             :id => @pack.id
+                            
+        @base_host = base_host
       else
         error("You are not authorised to perform this action", "is not authorized")
       end

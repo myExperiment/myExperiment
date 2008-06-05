@@ -61,25 +61,15 @@
 				Items <span class="count_text">(<%= @pack.items_count -%>)</span>
 			</h4>
 			
-			<% if @authorised_to_edit -%>
-				<%= render :partial => "quick_add", :locals => { :pack => @pack } -%>
-				<br/>
-			<% end -%>
-			
 			<%= render :partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } -%>
 			
 			<br/>
+			<br/>
+			
+			<h3>Add an Item</h3>
 			
 			<% if @authorised_to_edit -%>
-				<% if false %>
-				<p style="text-align: center; font-weight: bold; font-size: 123.1%; margin-top: 0.5em;">
-					OR
-				</p>
-				<% end %>
-				
-				<ul class="sectionIcons">
-					<li style="margin-left: 0;"><%= icon('new', new_item_pack_path(@pack), nil, nil, 'Add New Item') %></li>
-				</ul>
+				<%= render :partial => "add_item", :locals => { :pack => @pack } -%>
 			<% end -%>
 		</div>
 	</div>

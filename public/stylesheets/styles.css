@@ -1799,3 +1799,34 @@ table.simple td {
 
 #packItems .user {
 }
+
+table.quick_add {
+	border-collapse: collapse; 
+	width: 99%;
+	color: #333333;
+}
+
+table.quick_add td {
+	vertical-align: middle;
+}
+
+table.quick_add td * {
+	vertical-align: middle;
+}
+
+table.quick_add td.label {
+	text-align: left;
+	line-height: 1.0;
+	width: 10em;
+}
+
+table.quick_add td.label .inner {
+	font-size: 77%;
+	text-align: center;
+}
+	
+
+table.quick_add td.submit {
+	text-align: left; 
+	width: 4em;
+}

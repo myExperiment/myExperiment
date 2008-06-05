@@ -371,7 +371,7 @@ module ApplicationHelper
       end
     when "Pack"
       if p = Pack.find(:first, :conditions => ["id = ?", contributableid])
-        return link ? link_to(p.title, pack_url(p)) : p.title
+        return link ? link_to(p.title, pack_url(p)) : h(p.title)
       else
         return nil
       end
@@ -422,8 +422,18 @@ module ApplicationHelper
     return truncate ? truncate(str, truncate) : str
   end
   
-  def contributable_url(contributableid, contributabletype)
-    return url_for(:controller => contributabletype.downcase.pluralize, :action => "show", :id => contributableid)
+  def contributable_url(contributableid, contributabletype, base_host=nil)
+    if base_host.blank?
+      return url_for(:controller => contributabletype.downcase.pluralize, 
+                     :action => "show", 
+                     :id => contributableid)
+    else
+      return url_for(:only_path => false,
+                     :host => @base_url,
+                     :controller => contributabletype.downcase.pluralize, 
+                     :action => "show", 
+                     :id => contributableid)
+    end
   end
   
   def policy_link(policyid, managedby=true)
