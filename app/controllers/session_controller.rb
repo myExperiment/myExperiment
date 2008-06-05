@@ -130,11 +130,17 @@ class SessionController < ApplicationController
     def successful_login(user)
       # update "last seen" attribute
       user.update_attribute(:last_seen_at, Time.now)
+      invalidate_user_listing_cache(user.id)
       respond_to do |format|
         flash[:notice] = "Logged in successfully. Welcome to myExperiment!"
         home_url = url_for(:controller => 'home')
         format.html { URI.parse(session[:return_to]).path == '/' ? redirect_to(home_url) : redirect_back_or_default(home_url) }
       end
+    end
+
+    # copied from invalidate_listing_cache in users_controller
+    def invalidate_user_listing_cache(id)
+      expire_fragment(:controller => 'users_cache', :action => 'listing', :id => id)
     end
 
     def failed_login(message)
