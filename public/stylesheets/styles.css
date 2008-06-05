@@ -1305,36 +1305,30 @@ table.comment td.content p {
 
 /* End Reviews styles */
 
-a.tagsSelectorOff {
+a.tagsSelectorOff,
+a.tagsSelectorOn {
 	margin: 0 0.2em;
-	padding: 0.3em 0.4em;
+	padding: 0.1em 0.4em;
 	border: 1px solid #BBBBBB;
-	background-color: #EEF2FF;
-	color: #000099;
 	font-weight: bold;
 	font-size: 85%;
+}
+
+a.tagsSelectorOff {
+	background-color: #EEF2FF;
+	color: #000099;
 }
 
 a.tagsSelectorOff:hover,
 a.tagsSelectorOn:hover {
-	margin: 0 0.2em;
-	padding: 0.3em 0.4em;
-	border: 1px solid #BBBBBB;
 	color: #F5F5F5;
 	background-color: #0099FF;
-	font-weight: bold;
-	font-size: 85%;
 	text-decoration: none;
 }
 
 a.tagsSelectorOn {
-	margin: 0 0.2em;
-	padding: 0.3em 0.4em;
-	border: 1px solid #BBBBBB;
 	color: #F5F5F5;
 	background-color: #0099FF;
-	font-weight: bold;
-	font-size: 85%;
 }
 
 .message_box {
