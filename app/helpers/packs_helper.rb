@@ -60,4 +60,22 @@ module PacksHelper
     
     return desc
   end
+  
+  def unique_tags_from_items(items)
+    tags = [ ]
+    
+    items.each do |i|
+      if (c = i.contributable) 
+        if taggable?(c.class.to_s)
+          c.tags.each do |t|
+            unless tags.include?(t)
+              tags << t
+            end
+          end
+        end
+      end
+    end
+    
+    return tags
+  end
 end
