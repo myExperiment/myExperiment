@@ -8,6 +8,8 @@
 		<% end -%>
 		
 		<ul id="packItemsList">
+			
+			<!-- Contributable Item Entries -->
 			<% pack.contributable_entries.each do |e| %>
 				<% available = (e.contributable != nil) -%>
 				<% show = available ? thing_authorized?('show', e.contributable) : false -%>
@@ -74,12 +76,25 @@
 										<%= user_and_created_at_bit(e) -%>
 									</p>
 								</div>
+								<% if show -%>
+									<p style="margin-top: 0; text-align: right;">
+										<%= link_to_function image_tag('famfamfam_silk/page_white_text.png', :alt => '', :style => "padding-right: 0.3em;") + expand_image("0"), 
+																				 visual_effect(:toggle_blind, "contributable_entry_#{e.id}", :duration => 0.2),
+																				 :title => tooltip_title_attrib("Click to show/hide additional metadata that has been found for this item"),
+																				 :class => "button" -%>
+									</p>
+									<div id="contributable_entry_<%= e.id -%>" class="box_standout" style="display: none; margin-top: 0.3em;">
+										<p><b>Description:</b></p>
+										<%= contributable_entry_description(e) -%>
+									</div>
+								<% end -%>								
 							</td>
 						</tr>
 					</table>
 				</li>
 			<% end -%>
 			
+			<!-- Remote Item Entries -->
 			<% pack.remote_entries.each do |e| %>
 				<li>
 					<table>

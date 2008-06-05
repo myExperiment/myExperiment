@@ -996,20 +996,32 @@ table.contributable:hover {
 	line-height: 1.0;
 	text-decoration: none;
 	border: 1px solid #BBBBBB;
-	/*border-width: 1px 2px 2px 1px;*/
-	/*background-image: url('/images/button-bg.png');
-	background-position: center;
-	background-repeat: repeat-x;*/
 	background-color: #EEF2FF;
 }
 
 .sectionIcons li a:hover {
-	background-image: none;
 	background-color: #0099FF;
 	color: #F5F5F5;
 }
 
 .sectionIcons li a * {
+	vertical-align: middle;
+}
+
+a.button {
+	padding: 0.2em 0.4em;
+	line-height: 1.0;
+	text-decoration: none;
+	border: 1px solid #BBBBBB;
+	background-color: #EEF2FF;
+}
+
+a.button:hover {
+	background-color: #0099FF;
+	color: #F5F5F5;
+}
+
+a.button * {
 	vertical-align: middle;
 }
 
@@ -1296,31 +1308,33 @@ table.comment td.content p {
 a.tagsSelectorOff {
 	margin: 0 0.2em;
 	padding: 0.3em 0.4em;
-	border: 1px solid #999999;
+	border: 1px solid #BBBBBB;
 	background-color: #EEF2FF;
 	color: #000099;
 	font-weight: bold;
-	font-size: 85%
+	font-size: 85%;
 }
 
-a.tagsSelectorOff:hover {
+a.tagsSelectorOff:hover,
+a.tagsSelectorOn:hover {
 	margin: 0 0.2em;
 	padding: 0.3em 0.4em;
-	border: 1px solid #999999;
+	border: 1px solid #BBBBBB;
 	color: #F5F5F5;
 	background-color: #0099FF;
 	font-weight: bold;
-	font-size: 85%
+	font-size: 85%;
+	text-decoration: none;
 }
 
 a.tagsSelectorOn {
 	margin: 0 0.2em;
 	padding: 0.3em 0.4em;
-	border: 1px solid #999999;
+	border: 1px solid #BBBBBB;
 	color: #F5F5F5;
 	background-color: #0099FF;
 	font-weight: bold;
-	font-size: 85%
+	font-size: 85%;
 }
 
 .message_box {

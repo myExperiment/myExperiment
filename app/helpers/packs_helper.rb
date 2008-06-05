@@ -43,4 +43,21 @@ module PacksHelper
         return 'UNKNOWN'
     end
   end
+  
+  def contributable_entry_description(entry)
+    desc = ""
+    c = entry.get_contributable_version
+    
+    if c and c.respond_to?(:body)
+      if c.body.blank?
+        desc = '<p class="none_text">No description available</p>'
+      else
+        desc = white_list c.body_html
+      end
+    else
+      desc = "ERROR: failed to retrieve description data."
+    end
+    
+    return desc
+  end
 end
