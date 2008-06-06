@@ -63,12 +63,9 @@
 			
 			<%= render :partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } -%>
 			
-			<br/>
-			<br/>
-			
-			<h3>Add an Item</h3>
-			
 			<% if @authorised_to_edit -%>
+				<br/><br/>
+				<h3>Add an Item</h3>
 				<%= render :partial => "add_item", :locals => { :pack => @pack } -%>
 			<% end -%>
 		</div>
