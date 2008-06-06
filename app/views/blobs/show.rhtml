@@ -96,9 +96,6 @@
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @blob } %>
 	
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @blob } %>
-	
-	<% if false %><%= render :partial => "layouts/bookmark_with", :locals => { :title => contributable_name(@blob.id, 'Blob'), :url => @blob_entry_url } %><% end %>
-	
 </div>	
 
 <div class="clearer">&nbsp;</div>
