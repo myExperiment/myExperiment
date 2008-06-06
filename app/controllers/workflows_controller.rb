@@ -37,6 +37,7 @@ class WorkflowsController < ApplicationController
     @workflow.bookmarks << Bookmark.create(:user => current_user) unless @workflow.bookmarked_by_user?(current_user)
     
     respond_to do |format|
+      flash[:notice] = "You have successfully added this item to your favourites."
       format.html { redirect_to workflow_url(@workflow) }
     end
   end
@@ -50,6 +51,7 @@ class WorkflowsController < ApplicationController
     end
     
     respond_to do |format|
+      flash[:notice] = "You have successfully removed this item from your favourites."
       format.html { redirect_to workflow_url(@workflow) }
     end
   end

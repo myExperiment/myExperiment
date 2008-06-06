@@ -95,6 +95,10 @@
 	
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @blob } %>
 	
+	<%= render :partial => "contributions/favourited_box", :locals => { :contributable => @blob,
+																																			:add_to_favourites_path => favourite_file_url(@blob),
+																																			:remove_from_favourites_path => favourite_delete_file_url(@blob) } %>
+	
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @blob } %>
 </div>	
 

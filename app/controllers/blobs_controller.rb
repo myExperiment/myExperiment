@@ -14,7 +14,7 @@ class BlobsController < ApplicationController
   before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :comment, :comment_delete, :rate, :tag, :destroy]
   before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
   
-  # GET /blobs;search
+  # GET /files;search
   def search
 
     @query = params[:query] == nil ? "" : params[:query]
@@ -26,7 +26,7 @@ class BlobsController < ApplicationController
     end
   end
   
-  # GET /blobs/1;download
+  # GET /files/1;download
   def download
     @download = Download.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
     
@@ -35,7 +35,7 @@ class BlobsController < ApplicationController
     #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type)
   end
 
-  # GET /blobs/:id/download/:name
+  # GET /files/:id/download/:name
   def named_download
 
     # check that we got the right filename for this workflow
@@ -46,21 +46,21 @@ class BlobsController < ApplicationController
     end
   end
 
-  # GET /blobs
+  # GET /files
   def index
     respond_to do |format|
       format.html # index.rhtml
     end
   end
   
-  # GET /blobs/all
+  # GET /files/all
   def all
     respond_to do |format|
       format.html # all.rhtml
     end
   end
   
-  # GET /blobs/1
+  # GET /files/1
   def show
     @viewing = Viewing.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
     
@@ -72,7 +72,7 @@ class BlobsController < ApplicationController
     end
   end
   
-  # GET /blobs/new
+  # GET /files/new
   def new
     @blob = Blob.new
     
@@ -80,7 +80,7 @@ class BlobsController < ApplicationController
     @updating_mode = 6
   end
   
-  # GET /blobs/1;edit
+  # GET /files/1;edit
   def edit
     
     @sharing_mode  = determine_sharing_mode(@blob)
@@ -120,7 +120,7 @@ class BlobsController < ApplicationController
     end
   end
   
-  # PUT /blobs/1
+  # PUT /files/1
   def update
     # hack for select contributor form
     if params[:contributor_pair]
@@ -153,7 +153,7 @@ class BlobsController < ApplicationController
     end
   end
   
-  # DELETE /blobs/1
+  # DELETE /files/1
   def destroy
     success = @blob.destroy
 
@@ -168,7 +168,7 @@ class BlobsController < ApplicationController
     end
   end
   
-  # POST /blobs/1;comment
+  # POST /files/1;comment
   def comment 
     text = params[:comment][:comment]
     
@@ -182,7 +182,7 @@ class BlobsController < ApplicationController
     end
   end
   
-  # DELETE /blobs/1;comment_delete
+  # DELETE /files/1;comment_delete
   def comment_delete
     if params[:comment_id]
       comment = Comment.find(params[:comment_id].to_i)
@@ -197,7 +197,7 @@ class BlobsController < ApplicationController
     end
   end
   
-  # POST /blobs/1;rate
+  # POST /files/1;rate
   def rate
     Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @blob.class.to_s, @blob.id, current_user.id])
     
@@ -212,14 +212,38 @@ class BlobsController < ApplicationController
     end
   end
   
-  # POST /blobs/1;tag
+  # POST /files/1;tag
   def tag
-    @blob.tags_user_id = current_user # acts_as_taggable_redux
+    files.tags_user_id = current_user # acts_as_taggable_redux
     @blob.tag_list = "#{@blob.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @blob.update_tags # hack to get around acts_as_versioned
     
     respond_to do |format|
       format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @blob, :owner_id => @blob.contributor_id } }
+    end
+  end
+  
+  # POST /files/1;favourite
+  def favourite
+    @blob.bookmarks << Bookmark.create(:user => current_user) unless @blob.bookmarked_by_user?(current_user)
+    
+    respond_to do |format|
+      flash[:notice] = "You have successfully added this item to your favourites."
+      format.html { redirect_to file_url(@blob) }
+    end
+  end
+  
+  # DELETE /files/1;favourite_delete
+  def favourite_delete
+    @blob.bookmarks.each do |b|
+      if b.user_id == current_user.id
+        b.destroy
+      end
+    end
+    
+    respond_to do |format|
+      flash[:notice] = "You have successfully removed this item from your favourites."
+      format.html { redirect_to file_url(@blob) }
     end
   end
   

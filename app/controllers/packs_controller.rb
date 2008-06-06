@@ -126,6 +126,30 @@ class PacksController < ApplicationController
     end
   end
   
+  # POST /packs/1;favourite
+  def favourite
+    @pack.bookmarks << Bookmark.create(:user => current_user) unless @pack.bookmarked_by_user?(current_user)
+    
+    respond_to do |format|
+      flash[:notice] = "You have successfully added this item to your favourites."
+      format.html { redirect_to pack_url(@pack) }
+    end
+  end
+  
+  # DELETE /packs/1;favourite_delete
+  def favourite_delete
+    @pack.bookmarks.each do |b|
+      if b.user_id == current_user.id
+        b.destroy
+      end
+    end
+    
+    respond_to do |format|
+      flash[:notice] = "You have successfully removed this item from your favourites."
+      format.html { redirect_to pack_url(@pack) }
+    end
+  end
+  
   # POST /packs/1;comment
   def comment 
     text = params[:comment][:comment]

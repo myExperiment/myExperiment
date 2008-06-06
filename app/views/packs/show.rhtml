@@ -97,6 +97,10 @@
 	
 	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @pack, :contributable_url => @pack_entry_url } %>
 	
+	<%= render :partial => "contributions/favourited_box", :locals => { :contributable => @pack,
+																																			:add_to_favourites_path => favourite_pack_url(@pack),
+																																			:remove_from_favourites_path => favourite_delete_pack_url(@pack) } %>
+	
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @pack } %>
 </div>
 
