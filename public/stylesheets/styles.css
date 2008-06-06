@@ -1840,6 +1840,8 @@ table.quick_add td.label {
 table.quick_add td.label .inner {
 	font-size: 77%;
 	text-align: center;
+	color: #990000;
+	font-weight: bold;
 }
 	
 
