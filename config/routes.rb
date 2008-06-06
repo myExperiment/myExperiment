@@ -37,8 +37,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :search,
     :member => { :live_search => :get }
 
-  # tags and bookmarks
-  map.resources :tags, :bookmarks
+  # tags
+  map.resources :tags
 
   # sessions and RESTful authentication
   map.resource :session
@@ -51,6 +51,8 @@ ActionController::Routing::Routes.draw do |map|
     :collection => { :all => :get, :search => :get }, 
     :member => { :comment => :post, 
                  :comment_delete => :delete,
+                 :favourite => :post,
+                 :favourite_delete => :delete,
                  :tag => :post,
                  :new_item => :get,
                  :create_item => :post, 
@@ -68,7 +70,8 @@ ActionController::Routing::Routes.draw do |map|
     :collection => { :all => :get, :search => :get }, 
     :member => { :new_version => :get, 
                  :download => :get, 
-                 :bookmark => :post, 
+                 :favourite => :post, 
+                 :favourite_delete => :delete, 
                  :comment => :post, 
                  :comment_delete => :delete, 
                  :rate => :post, 
@@ -89,6 +92,8 @@ ActionController::Routing::Routes.draw do |map|
     :controller => :blobs, 
     :collection => { :all => :get, :search => :get }, 
     :member => { :download => :get, 
+                 :favourite => :post,
+                 :favourite_delete => :delete,
                  :comment => :post, 
                  :comment_delete => :delete, 
                  :rate => :post, 

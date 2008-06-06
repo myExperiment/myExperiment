@@ -606,8 +606,8 @@ module ApplicationHelper
       return "famfamfam_silk/cross.png"
     when "tag"
       return "famfamfam_silk/tag_blue.png"
-    when "bookmark"
-      return "famfamfam_silk/book_open.png"
+    when "favourite"
+      return "famfamfam_silk/star.png"
     when "comment"
       return "famfamfam_silk/comment.png"
     when "comments"
@@ -1155,8 +1155,24 @@ module ApplicationHelper
     end
   end
   
+  def favouritable?(type)
+    if ['workflow', 'blob', 'pack'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
   def allow_credits_and_attributions?(type)
     if ['workflow', 'blob'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def allow_citations?(type)
+    if ['workflow'].include? type.downcase
       return true
     else
       return false

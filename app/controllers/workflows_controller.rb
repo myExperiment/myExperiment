@@ -32,12 +32,25 @@ class WorkflowsController < ApplicationController
     end
   end
   
-  # POST /workflows/1;bookmark
-  def bookmark
-    @workflow.bookmarks << Bookmark.create(:user => current_user, :title => @workflow.title) unless @workflow.bookmarked_by_user?(current_user)
+  # POST /workflows/1;favourite
+  def favourite
+    @workflow.bookmarks << Bookmark.create(:user => current_user) unless @workflow.bookmarked_by_user?(current_user)
     
     respond_to do |format|
-      format.html { render :inline => "<%=h @workflow.bookmarks.collect {|b| b.user.name}.join(', ') %>" }
+      format.html { redirect_to workflow_url(@workflow) }
+    end
+  end
+  
+  # DELETE /workflows/1;favourite_delete
+  def favourite_delete
+    @workflow.bookmarks.each do |b|
+      if b.user_id == current_user.id
+        b.destroy
+      end
+    end
+    
+    respond_to do |format|
+      format.html { redirect_to workflow_url(@workflow) }
     end
   end
   

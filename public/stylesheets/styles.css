@@ -996,7 +996,7 @@ table.contributable:hover {
 	line-height: 1.0;
 	text-decoration: none;
 	border: 1px solid #BBBBBB;
-	background-color: #EEF2FF;
+	background-color: #EEF6FF;
 }
 
 .sectionIcons li a:hover {
@@ -1008,20 +1008,25 @@ table.contributable:hover {
 	vertical-align: middle;
 }
 
-a.button {
-	padding: 0.2em 0.4em;
-	line-height: 1.0;
+a.button_slim {
+	padding: 0.2em 0.4em 0.3em 0.4em;
+	line-height: 1;
 	text-decoration: none;
 	border: 1px solid #BBBBBB;
-	background-color: #EEF2FF;
+	background-color: #EEF6FF;
+	vertical-align: middle;
 }
 
-a.button:hover {
+a.button_slim:hover {
 	background-color: #0099FF;
 	color: #F5F5F5;
 }
 
-a.button * {
+a.button_slim * {
+	vertical-align: middle;
+}
+
+.icon {
 	vertical-align: middle;
 }
 
@@ -1099,10 +1104,14 @@ a.button * {
 
 .contribution_section_box ul.items li {
 	list-style-type: none;
-	margin: 1em 0;
+	margin: 0.6em 0;
 	padding-left: 0.8em;
 	line-height: 1.1;
 	border-left: 3px solid #DDDDBB;
+}
+
+.contribution_section_box ul.items li * {
+	vertical-align: middle;
 }
 
 .contribution_section_box p {
@@ -1142,6 +1151,14 @@ a.button * {
 	font-size: 85%;
 }
 
+.contribution_section_box .foldTitle {
+	background-image: none;
+	background-color: #EEF6FF;
+	color: #333333;
+	border: 1px solid #BBBBBB;
+	border-bottom: 2px solid #CCCCCC;
+}
+
 .contribution_section_box .foldText {
 	padding: 0.4em; *
 	padding: 0.2em;
@@ -1149,9 +1166,9 @@ a.button * {
 
 .contribution_section_box .foldContent {
 	padding: 0.2em;
-	background-color: #ffffff;
-	/*border: 1px solid #cccccc;
-	border-top: 1px solid transparent;*/
+	background-color: #F5F5F5;
+	border: 1px solid #BBBBBB;
+	border-top: 1px solid transparent;
 }
 
 .contribution_section_box .foldContent ul {
@@ -1315,7 +1332,7 @@ a.tagsSelectorOn {
 }
 
 a.tagsSelectorOff {
-	background-color: #EEF2FF;
+	background-color: #EEF6FF;
 	color: #000099;
 }
 
@@ -1594,7 +1611,7 @@ table.job_report th {
 	margin-left: 1px;
 	border: 1px solid #999999;
 	text-decoration: none;
-	background-color: #EEF2FF;
+	background-color: #EEF6FF;
 	color: #000099;
 }
 
@@ -1678,7 +1695,7 @@ table.outputs_viewer .nav a {
 
 table.outputs_viewer .nav a:hover,
 table.outputs_viewer .nav a.selected {
-	background-color: #EEF2FF;
+	background-color: #EEF6FF;
 }
 
 /* End outputs table styles */

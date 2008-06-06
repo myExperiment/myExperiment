@@ -1,7 +1,7 @@
 <% packs = contributable.in_packs -%>
 <div class="contribution_section_box">
 	<p class="heading">
-		<%= info_icon_with_tooltip("All the Packs that this item (or versions of this item) is referred to in") %>
+		<%= info_icon_with_tooltip("All the Packs that this item (or versions of this item) is referred to in") -%>
 		Features In Packs  <span class="count_text">(<%= packs.length -%>)</span>
 	</p>
 	<% unless packs.empty? %>
@@ -28,7 +28,7 @@
 		<% unless user_packs.empty? -%>
 			<div class="fold">
 				<div class="foldTitle">Add to your Pack</div>
-				<div class="foldContent" style="display: none; background-color: #EEEEEE;">
+				<div class="foldContent" style="display: none;">
 					<form onsubmit="redirectToAddToPack(); return false;" style="text-align: center;">
 						<p>
 				    	<select id="add_to_pack_selection" style="width: 99%;">

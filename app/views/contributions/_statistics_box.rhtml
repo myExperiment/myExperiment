@@ -21,25 +21,37 @@
 		
 		<% if taggable? type -%>
 			<p>
-	      <%= pluralize contributable.taggings.length, "tag" %>
+	      <%= pluralize contributable.taggings_count, "tag" %>
+	    </p>
+		<% end -%>
+		
+		<% if favouritable? type -%>
+			<p>
+	      <%= pluralize contributable.bookmarks_count, "favourite" %>
 	    </p>
 		<% end -%>
 		
 		<% if rateable? type -%>
 			<p>
-	      <%= pluralize contributable.ratings.length, "rating" %>
+	      <%= pluralize contributable.ratings_count, "rating" %>
 	    </p>
 		<% end -%>
 		
 		<% if commentable? type -%>
 	    <p>
-	    	<%= pluralize contributable.comments.length, "comment" %>
+	    	<%= pluralize contributable.comments_count, "comment" %>
 	    </p>
 		<% end -%>
 		
 		<% if reviewable? type %>
 			<p>
-	      <%= pluralize contributable.reviews.length, "review" %>
+	      <%= pluralize contributable.reviews_count, "review" %>
+	    </p>
+		<% end %>
+		
+		<% if allow_citations? type %>
+			<p>
+	      <%= pluralize contributable.citations_count, "citation" %>
 	    </p>
 		<% end %>
 	

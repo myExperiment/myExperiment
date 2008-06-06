@@ -89,7 +89,7 @@
 																											 :owner_id => ((@pack.contributor_type == 'User') ? @pack.contributor_id : nil), 
 																											 :add_path => tag_pack_path(@pack), 
 																											 :edit_path => edit_pack_path(@pack),
-																											 :allow_edit => @pack.authorized?("edit", current_user) } %>
+																											 :allow_edit => @authorised_to_edit } %>
 	
 	<%= render :partial => "tags_from_items", :locals => { :items => @pack.contributable_entries } %>
 	
