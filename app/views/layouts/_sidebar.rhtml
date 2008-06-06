@@ -3,6 +3,7 @@
 <% if logged_in? %>
 	<%= render :partial => "gadgets/user_monitor" %>
 	<%= render :partial => "gadgets/asset_manager" %>
+	<%= render :partial => "gadgets/user_favourites" %>
 	<%= render :partial => "gadgets/user_tags" %>
 <% else %>
 	<% unless (controller.controller_name.to_s == "session") %>
