@@ -3,8 +3,7 @@
 <% unless collection.empty? -%>
 	<table class="alt_table">
 		<% for network in collection -%>
-			<% cache(:controller => 'groups_cache', :action => 'listing', :id => network.id) do -%>
-				<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 					<td style="width: 120px;">
 						<p style="margin-top:0; padding-top:0; text-align: center;"><b>Administrator:</b></p>
 						<center><%= contributor(network.user_id, "User", true, 80) %></center>
@@ -18,6 +17,7 @@
 							<% end %>
 							<%=link_to(query ? highlight_all(h(network.title), query) : h(network.title), group_path(network)) %>
 						</p>
+				<% cache(:controller => 'groups_cache', :action => 'listing', :id => network.id) do -%>
 						<p style="font-size: 85%;">
 							<% if network.unique_name and network.unique_name.length > 0 %>
 								<b>Unique name: </b><%=h network.unique_name -%>
@@ -52,14 +52,14 @@
 							<p style="font-size: 85%;"><i>This Group has not been tagged yet!</i></p>
 					  <% end -%>
 					</td>
+				<% end -%>
 					<td class="actions">
 						<%= icon "show", group_path(network), nil, nil, "View" %> 
 						<% if mine? network -%>
 							<%= icon "manage", edit_group_path(network) %>
 						<% end -%>
 					</td>
-				</tr>
-			<% end -%>
+			</tr>
 		<% end -%>
 	</table>
 	<br/>

@@ -11,8 +11,8 @@
 			<% show = blob.authorized?("show", current_user) -%>
 		<% end -%>
 	  <% if show -%>
-			<% cache(:controller => 'files_cache', :action => 'listing', :id => blob.id) do -%>
-				<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+				<% cache(:controller => 'files_cache', :action => 'listing', :id => blob.id) do -%>
 					<td style="width: 100px;">
 						<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
 						<center><%= contributor(blob.contribution.contributor_id, blob.contribution.contributor_type, true, 60) %></center>
@@ -85,14 +85,14 @@
 							<p style="font-size: 85%;"><i>This File has no tags!</i></p>
 						<% end %>	
 					</td>
+				<% end %>
 					
 					<td class="actions" style="width: 80px;">
 				    <%= icon "show", file_path(blob), nil, nil, "View" %>
 					  <% if blob.authorized?("download", current_user) %><%= icon "download", download_file_path(blob) %><% end %>
 				    <% if mine?(blob) %><%= icon "manage", edit_file_path(blob), nil, nil, "Manage" %><% end %>
 				  </td>
-				</tr>
-			<% end %>
+			</tr>
 		<% end %>
 	<% end %>
 </table>

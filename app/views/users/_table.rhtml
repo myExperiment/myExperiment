@@ -6,8 +6,8 @@
 		<% odd_row = false -%> 
 		<% for user in collection %>
 			<% if user.activated? %>
-				<% cache(:controller => 'users_cache', :action => 'listing', :id => user.id) do -%>
 			  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+				<% cache(:controller => 'users_cache', :action => 'listing', :id => user.id) do -%>
 				    <td width="100px"><%= avatar user, 60 %></td>
 				    <td class="mid" style="text-align: left;">
 				    	<p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
@@ -70,6 +70,7 @@
 						
 						<% end %>
 					</td>
+				<% end %>
 				    <td class="actions"  style="width: 130px;">
 			      		<%= icon "show", user_path(user.id), nil, nil, "View Profile" %>
 			      		<% if mine? user %>
@@ -82,7 +83,6 @@
 			      		<% end %>
 			    	</td>
 			  	</tr>
-				<% end %>
 			<% end %>
 		<% end %>
 	</table>

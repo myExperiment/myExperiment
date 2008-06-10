@@ -12,8 +12,8 @@
 			<% show = workflow.authorized?("show", current_user) -%>
 		<% end -%>
 	  <% if show -%>
+		<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 			<% cache(:controller => 'workflows_cache', :action => 'listing', :id => workflow.id) do -%>
-			  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 			    <td style="width: 100px;">
 			    	<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
 						<center><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %></center>
@@ -106,13 +106,13 @@
 							<p style="font-size: 85%;"><i>This Workflow has no tags!</i></p>
 					  <% end %>	
 			    </td>
+			<% end -%>
 			    <td class="actions" style="width: 85px;">
 			      <%= icon "show", workflow_path(workflow), nil, nil, "View" %>
 				  	<% if workflow.authorized?("download", current_user) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
 			      <% if mine?(workflow) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
 			    </td>
-			  </tr>
-			<% end -%>
+		</tr>
   	<% end -%>
 	<% end -%>
 
