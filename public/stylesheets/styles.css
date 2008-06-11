@@ -1591,14 +1591,15 @@ table.job_report th {
 .tabnav2 {
 	border-bottom: 1px solid #999999;
 	font-size: 100%;
-	padding-left: 10px;
+	padding-left: 0px;
 	font-weight: bold;
 	z-index: 1;
 }
 
 .tabnav2 ul {
 	margin: 0;
-	padding: 3px 0;
+	padding: 2px 0;
+	*padding: 3px 0;
 }
 
 .tabnav2 li {
@@ -1609,7 +1610,6 @@ table.job_report th {
 
 .tabnav2 li a {
 	padding: 3px 6px 4px 6px;
-	margin-left: 1px;
 	border: 1px solid #999999;
 	text-decoration: none;
 	background-color: #EEF6FF;
