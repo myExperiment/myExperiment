@@ -6,7 +6,7 @@
 class BlobsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :search, :all]
   
-  before_filter :find_blobs, :only => [:index, :all]
+  before_filter :find_blobs, :only => [:all]
   before_filter :find_blob_auth, :except => [:search, :index, :new, :create, :all]
   
   before_filter :check_is_owner, :only => [:edit, :update]
@@ -250,20 +250,16 @@ class BlobsController < ApplicationController
   protected
   
   def find_blobs
-    # Only get all if REST API XML request has been made or 'all' action has been called.
-    # TODO: Don needs to check this for compliance.
-    if action_name == 'all' or (params[:format] and params[:format].downcase == 'xml')
-      found = Blob.find(:all, 
-                         :order => "content_type ASC, local_name ASC, created_at DESC",
-                         :page => { :size => 20, 
-                         :current => params[:page] })
-      
-      found.each do |blob|
-        blob.data = nil unless blob.authorized?("download", (logged_in? ? current_user : nil))
-      end
-      
-      @blobs = found
+    found = Blob.find(:all, 
+                       :order => "content_type ASC, local_name ASC, created_at DESC",
+                       :page => { :size => 20, 
+                       :current => params[:page] })
+    
+    found.each do |blob|
+      blob.data = nil unless blob.authorized?("download", (logged_in? ? current_user : nil))
     end
+    
+    @blobs = found
   end
   
   def find_blob_auth

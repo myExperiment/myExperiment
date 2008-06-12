@@ -6,7 +6,7 @@
 class NetworksController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :search, :all]
   
-  before_filter :find_networks, :only => [:index, :all]
+  before_filter :find_networks, :only => [:all]
   before_filter :find_network, :only => [:membership_request, :show, :comment, :comment_delete, :tag]
   before_filter :find_network_auth, :only => [:membership_invite, :edit, :update, :destroy]
   
@@ -183,14 +183,11 @@ class NetworksController < ApplicationController
 protected
 
   def find_networks
-    # Only get all if the 'all' action
-    if action_name == 'all'
-      @networks = Network.find(:all, 
-                               :order => "title ASC",
-                               :page => { :size => 20, 
-                                          :current => params[:page] },
-                               :include => [ :owner ])
-    end
+    @networks = Network.find(:all, 
+                             :order => "title ASC",
+                             :page => { :size => 20, 
+                                        :current => params[:page] },
+                             :include => [ :owner ])
   end
 
   def find_network

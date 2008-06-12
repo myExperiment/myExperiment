@@ -6,7 +6,7 @@
 class WorkflowsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :search, :all]
   
-  before_filter :find_workflows, :only => [:index, :all]
+  before_filter :find_workflows, :only => [:all]
   before_filter :find_workflows_rss, :only => [:index]
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all]
   
@@ -393,21 +393,16 @@ class WorkflowsController < ApplicationController
 protected
 
   def find_workflows
-    login_required if login_available?
+    found = Workflow.find(:all, 
+                          construct_options.merge({:page => { :size => 20, :current => params[:page] },
+                          :include => [ { :contribution => :policy }, :tags, :ratings ],
+                          :order => "workflows.updated_at DESC" }))
     
-    # Only get all if the 'all' action has been called.
-    if action_name == 'all'
-      found = Workflow.find(:all, 
-                            construct_options.merge({:page => { :size => 20, :current => params[:page] },
-                            :include => [ { :contribution => :policy }, :tags, :ratings ],
-                            :order => "workflows.updated_at DESC" }))
-      
-      found.each do |workflow|
-        workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
-      end
-      
-      @workflows = found
+    found.each do |workflow|
+      workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
     end
+    
+    @workflows = found
   end
   
   def find_workflows_rss
