@@ -292,7 +292,9 @@ a.letmein_button {
 	width: 240px;
 	height: 35px;
 	display: block;
-	background: url('/images/letmein-button.png') 0 0 no-repeat
+	background: url('/images/letmein-button.png') 0 0 no-repeat;
+	margin-top: 1em;
+	margin-bottom: 1.5em;
 }
 
 a:hover.letmein_button {
@@ -323,6 +325,7 @@ a.register_button {
 	height: 35px;
 	display: block;
 	background: url('/images/register-button.png') 0 0 no-repeat;
+	margin-top: 1em;
 }
 
 a:hover.register_button {
