@@ -967,10 +967,10 @@ module ApplicationHelper
     str.gsub(/<(\/|\s)*[^(#{preserve_arr})][^>]*>/,'')
   end
   
-  def feed_icon_tag(title, url)
+  def feed_icon_tag(title, url, style='')
     (@feed_icons ||= []) << { :url => url, :title => title }
-    alt_text = "Subscribe to #{title}"
-    link_to image_tag('feed-icon.png', :alt => alt_text, :title => tooltip_title_attrib(alt_text), :style => "vertical-align: middle; padding: 0;"), url
+    alt_text = "Subscribe to #{title} feed"
+    link_to image_tag('feed-icon.png', :alt => alt_text, :title => tooltip_title_attrib(alt_text), :style => "vertical-align: middle; padding: 0;" + style), url
   end
   
   # NOTE: the timeago methods below are used instead of the built in Rails DateHelper methods

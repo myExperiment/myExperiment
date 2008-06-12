@@ -7,8 +7,4 @@
 	<%= render :partial => "workflows/all_tags" %>
 <% end -%>
 
-<span style="float: right;">
-	<%= feed_icon_tag "Latest Workflows", formatted_workflows_path(:rss) %>
-</span>
-
 <%= render :partial => "contributions/most_tabs", :locals => { :type => "Workflow" } %>
