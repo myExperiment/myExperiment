@@ -106,4 +106,9 @@ class Workflow < ActiveRecord::Base
   end
 
   # End SCUFL specific methods
+
+  def named_download_url
+    "#{BASE_URI}/workflows/#{id}/download/#{unique_name}.xml"
+  end
+
 end

@@ -1,3 +1,6 @@
+
+BASE_URI = "http://www.example.com"
+
 # Mailer configuration
 
 ActionMailer::Base.smtp_settings = {
