@@ -21,7 +21,7 @@
 							</span>
 							<div class="box_standout" style="font-size: 85%; margin: 0.4em 2em; padding: 0.2em 0.5em;">
 								<%= truncate(strip_html(white_list(c.comment)), 150) %>
-								<p style="text-align: right;">[ <%= link_to "More", (c.commentable_type == 'Network' ? group_url(c.commentable) : contributable_url(c.commentable_id, c.commentable_type)) %> ]</p>
+								<p style="text-align: right;">[ <%= link_to "More", (c.commentable_type == 'Network' ? group_url(c.commentable) + "#comment_#{c.id}" : contributable_url(c.commentable_id, c.commentable_type) + "#comment_#{c.id}") %> ]</p>
 							</div>
 							<br/>
 						</li>
