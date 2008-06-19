@@ -214,16 +214,16 @@ class PacksController < ApplicationController
             flash[:notice] = "Item succesfully added to pack. You can now add edit it and add more metadata here (or click 'cancel')"
             format.html { redirect_to url_for({ :controller => "packs", :id => @pack.id, :action => "edit_item", :entry_type => @type, :entry_id => @item_entry.id }) }
           else
-            flash[:error] = "Failed to add item to pack. See any errors below. You may also need to first 'check' the link before adding it, or provide a valid link."
+            flash.now[:error] = "Failed to add item to pack. See any errors below. You may also need to first 'check' the link before adding it, or provide a valid link."
             format.html { render :action => "new_item" }
           end
         else
           @error_message = errors.full_messages.to_sentence(:connector => '')
-          flash[:error] = 'Failed to add item to pack. See errors below.'
+          flash.now[:error] = 'Failed to add item to pack. See errors below.'
           format.html { render :action => "new_item" }
         end
       else
-        flash[:error] = "Failed to add item to pack. You may need to first 'check' the link before adding it, or provide a valid link."
+        flash.now[:error] = "Failed to add item to pack. You may need to first 'check' the link before adding it, or provide a valid link."
         format.html { render :action => "new_item" }
       end
     end
@@ -263,7 +263,7 @@ class PacksController < ApplicationController
           format.html { redirect_to pack_url(@pack) }
         else
           @item_entry = entry
-          flash[:error] = 'Failed to update item entry.'
+          flash.now[:error] = 'Failed to update item entry.'
           format.html { render :action => "edit_item" }
         end
       else
@@ -296,7 +296,7 @@ class PacksController < ApplicationController
   def quick_add
     respond_to do |format|
       if params[:uri].blank?
-        flash[:error] = 'Failed to add item. See error(s) below.'
+        flash.now[:error] = 'Failed to add item. See error(s) below.'
         @error_message = "Please enter a link"
         format.html { render :action => "show" }
       else
@@ -313,7 +313,7 @@ class PacksController < ApplicationController
           flash[:notice] = 'Item succesfully added to pack.'
           format.html { redirect_to pack_url(@pack) }
         else
-          flash[:error] = 'Failed to add item. See error(s) below.'
+          flash.now[:error] = 'Failed to add item. See error(s) below.'
           @error_message = errors.full_messages.to_sentence(:connector => '')
           format.html { render :action => "show" }
         end
