@@ -393,3 +393,9 @@
 <% if logged_in? and !mine?(@user) and !current_user.networks_owned.empty? %>
   <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
 <% end %>
+
+<% unless @tab.blank? -%>
+	<script>
+		$('user_tabnav').scrollTo();
+	</script>
+<% end -%>
