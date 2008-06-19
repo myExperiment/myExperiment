@@ -13,8 +13,6 @@
   <% when "new" -%>
     <li>Register</li>
   <% when "edit" -%>
-		<li><%= link_to "#{h(@user.name)}", user_path(@user) -%></li>
-		<li><b>&#187;</b></li>
     <li>Manage Account</li>
   <% when "search" -%>  
     <li>Search Results</li>
