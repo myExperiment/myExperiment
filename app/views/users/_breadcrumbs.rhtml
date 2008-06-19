@@ -3,14 +3,15 @@
 <% if ["edit"].include? controller.action_name.to_s -%>
 	<li><b>&#187;</b></li>
 	<li><%= link_to h(@user.name), user_path(@user) -%></li>
-<% end %>
+<% elsif @user -%>
+	<li><b>&#187;</b></li>
+	<li><%= h(@user.name) -%></li>
+<% end -%>
 
-<% if ["show", "new", "edit", "search", "all", "forgot_password"].include? controller.action_name.to_s -%>
+<% if ["new", "edit", "search", "all", "forgot_password"].include? controller.action_name.to_s -%>
   <li><b>&#187;</b></li>
   
-  <% case controller.action_name.to_s; when "show" -%>
-    <li><%= h(@user.name) -%></li>
-  <% when "new" -%>
+  <% case controller.action_name.to_s; when "new" -%>
     <li>Register</li>
   <% when "edit" -%>
     <li>Manage Account</li>
