@@ -112,7 +112,7 @@
 <% if logged_in? and @pack.owner? current_user %>
   
 	<div class="tabContainer">
-    <div class="tabTitle">Permissions</div>
+    <div class="tabTitle">Sharing</div>
     <div class="tabContent">
 
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @pack } %>

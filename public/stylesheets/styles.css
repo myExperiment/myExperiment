@@ -1835,7 +1835,7 @@ table.quick_add td * {
 table.quick_add td.label {
 	text-align: left;
 	line-height: 1.0;
-	width: 10em;
+	width: 11em;
 }
 
 table.quick_add td.label .inner {

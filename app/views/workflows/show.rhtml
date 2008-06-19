@@ -306,7 +306,7 @@
 <% if logged_in? and @workflow.owner?(current_user) %>
   
 	<div class="tabContainer">
-    <div class="tabTitle">Permissions</div>
+    <div class="tabTitle">Sharing</div>
     <div class="tabContent">
 
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @workflow } %>
