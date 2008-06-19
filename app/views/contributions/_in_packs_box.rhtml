@@ -33,9 +33,12 @@
 						<p>
 				    	<select id="add_to_pack_selection" style="width: 99%;">
 					  		<% user_packs.each do |p| -%>
-					    		<option value="<%= url_for(:controller => 'packs', :action => 'new_item', :id => p.id, :uri => contributable_url) -%>">
-					      		<%= h(p.title) -%>
-					    		</option>
+									<% show = (contributable.class.to_s == 'Pack' ? (p.id != contributable.id) : true) -%>
+									<% if show -%>
+						    		<option value="<%= url_for(:controller => 'packs', :action => 'new_item', :id => p.id, :uri => contributable_url) -%>">
+						      		<%= h(p.title) -%>
+						    		</option>
+									<% end -%>
 					  		<% end -%>
 							</select>
 						</p>
