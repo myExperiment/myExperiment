@@ -711,7 +711,7 @@ module ApplicationHelper
     image_tag "refresh.gif", :style => "vertical-align: middle;"
   end
   
-  def expand_image(margin_left="0.5em")
+  def expand_image(margin_left="0.3em")
     image_tag "folds/unfold.png", :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Expand'
   end
   
