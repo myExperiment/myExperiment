@@ -35,9 +35,9 @@
       <%= submit_tag "Confirm", :disable_with => "Sending request..." %>
 	</center>
   </p>
+<% end %>
   <p>
   	<center>
-  	  <%= (params[:network_id] ? button_to("Cancel", :controller => 'networks', :action => 'show', :id => @network.id) : button_to("Cancel", :controller => 'networks', :action => 'index')) %>
+  	  <%= (params[:network_id] ? button_to("Cancel", {:controller => 'networks', :action => 'show', :id => @network.id}, :method => :get) : button_to("Cancel", {:controller => 'networks', :action => 'index'}, :method => :get)) %>
 	</center>
   </p>
-<% end %>
