@@ -3,6 +3,7 @@
 <%= error_messages_for :user %>
 <h2>Display Name</h2>
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+<%= hidden_field_tag(:update_type, "upd_t_displname") -%>
 <p style="margin-left: 0.1cm">
     <b>Display Name:</b>
     <br/>
@@ -26,6 +27,7 @@
         <td style="width: 50%;">
             <h2 style="width: 275px">myExperiment username / password</h2>
             <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+						<%= hidden_field_tag(:update_type, "upd_t_up") -%>
             <center>
 						<div style="width: 72%">
                 <p style="text-align: left;">
@@ -44,7 +46,7 @@
                     <%= f.password_field :password_confirmation, :size => 30 %>
                 </p>
                 <p style="text-align: center;">
-                    <%= submit_tag "Save", :name => "save_password", :disable_with => 'Saving...' %>
+                    <%= submit_tag "Save", :disable_with => 'Saving...' %>
                 </p>
             </div>
 						</center>
@@ -120,9 +122,11 @@
 <p style="font-size: 85%; color: #333333;">
     Before submitting, please check that you have spelt it correctly. 
 </p>
-<p class="box_infotext" style="margin-left: 0;">
+<p class="box_infotext" style="margin: 1em 0;">
     When you click 'Submit' below, an email will be sent to you with a confirmation link. 
     Your new email address will only be registered once this confirmation link has been followed.
+	  <br/>Old email address will be used as a primary one until the new address is confirmed;
+	  your old email address will then be erased from the system.
 </p>
 <p>
     <%= submit_tag "Submit", :disable_with => 'Submitting...' %>
@@ -132,6 +136,7 @@
 <br/>
 <h2>Notifications</h2>
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+<%= hidden_field_tag(:update_type, "upd_t_notify") -%>
 <p>
     Note that in order to receive email notifications, you need to have an email address registered on your account.
 </p>

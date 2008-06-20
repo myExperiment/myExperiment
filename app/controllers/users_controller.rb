@@ -179,8 +179,14 @@ class UsersController < ApplicationController
           if params[:user][:unconfirmed_email]
             Mailer.deliver_update_email_address(@user, confirmation_hash(@user.unconfirmed_email), base_host)
             flash.now[:notice] = "We have sent an email to #{@user.unconfirmed_email} with instructions on how to confirm this new email address"
+          elsif params[:update_type]
+            case params[:update_type]
+              when "upd_t_up"; flash.now[:notice] = 'You have successfully updated your password'
+              when "upd_t_displname"; flash.now[:notice] = 'You have successfully updated your display name'
+              when "upd_t_notify"; flash.now[:notice] = 'You have successfully updated notification options'
+            end
           else
-            flash.now[:notice] = 'You have succesfully updated your account'
+              flash.now[:notice] = 'You have successfully updated your account' # general message to be displayed when hidden field 'update_type' was not created for a certain form on the page
           end
         end
         

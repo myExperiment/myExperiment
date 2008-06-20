@@ -1,6 +1,6 @@
 <p>
   <b>Current OpenID:</b><br />
-  <p title="<%= tooltip_title_attrib(current_user.openid_url) %>" ><%= truncate(h(current_user.openid_url), 30) || "Non-attached yet" %></P>
+  <p title="<%= tooltip_title_attrib(current_user.openid_url) %>" ><%= current_user.openid_url.blank? ? "<span class='none_text'>Not registered yet</span>" : truncate(h(current_user.openid_url), 30) %></P>
 	
 </p>
 
