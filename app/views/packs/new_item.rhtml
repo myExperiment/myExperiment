@@ -1,75 +1,57 @@
 <h1>Add a New Item to Pack: <%= link_to h(@pack.title), pack_path(@pack) -%></h1>
 
 <center>
-	<%= error_messages_for :pack_contributable_entry %>
-	<%= error_messages_for :pack_remote_entry %>
+	<%= error_messages_for :item_entry %>
 </center>
 
-<center>
-	<div class="box_form" style="width: 550px; margin: 1em 0; text-align: left;">
-		<% form_tag create_item_pack_url(@pack) do -%>
-			
-			<p class="step"><b>1. Select the type of item you want to add to this Pack...</b></p>
-			<table style="font-size: 93%; font-weight: bold;">
-				<tr>
-					<td>
-						<%= radio_button_tag "entry_type", 'contributable', (@type.nil? or @type == 'contributable'), :onclick => "javascript:packs_update_new_entry_type(this.value);", :style => "margin-bottom: 0" -%>
-						From myExperiment
-					</td>
-					<td>
-						<%= radio_button_tag "entry_type", 'remote', @type == 'remote', :onclick => "javascript:packs_update_new_entry_type(this.value);", :style => "margin-bottom: 0" -%>
-						From somewhere else
-					</td>
-				</tr>
-			</table>
-			
-			<br/>
-			
-			<p class="step"><b>2. Enter information to point to the item...</b></p>
-			
-			<div id="new_contributable_entry_box" class="box_simple" style="display: <%= (@type.nil? or @type == 'contributable') ? 'block' : 'none' -%>">
-				<p>
-					<b>Type of item on myExperiment: </b>
-					<%= select_tag "contributable[type]", 
-													options_for_select({"Workflow" => "Workflow", "File" => "Blob", "Pack" => "Pack"}, params[:contributable][:type]),
-													:style => "margin-bottom: 0" -%>
-			 	</p>
-												 
-				<p>
-					<b>Item ID (on myExperiment): </b>
-					<%= text_field_tag "contributable[id]", params[:contributable][:id], :size => 8, :style => "margin-bottom: 0" -%>
-				</p>
-				<p>
-					<b>Item Version: </b> (optional) <%= info_icon_with_tooltip("You can choose a specific version to point to, or leave this blank to always point to the latest version.") -%>
-					<%= text_field_tag "contributable[version]", params[:contributable][:version], :size => 8, :style => "margin-bottom: 0" -%>
-				</p>
-			</div>
-			
-			<div id="new_remote_entry_box" class="box_simple" style="display: <%= @type == 'remote' ? 'block' : 'none' -%>">
-				<p><b>Title</b></p>
-				<%= text_field_tag "remote[title]", params[:remote][:title], :size => 83 -%>
-				
-				<p><b>URI (the link to the external item)</b></p>
-				<%= text_field_tag "remote[uri]", params[:remote][:uri], :size => 83 -%>
-				
-				<p><b>Alternate URI</b> (optional) <%= info_icon_with_tooltip("An alternative link to the item, in case the first link doesn't work.") -%></p>
-				<%= text_field_tag "remote[alternate_uri]", params[:remote][:alternate_uri], :size => 83 -%>
-			</div>
-			
-			<br/>
-			
-			<p class="step"><b>3. Add a comment (optional)...</b> <%= info_icon_with_tooltip("You can add a comment to say why you have added this item to this pack, or to say anything else.") -%></p></p>
-			<%= text_area_tag "comment", params[:comment], :size => "66x4" -%>
-							
-			<br/><br/>
-			<center><%= submit_tag "Create", :disable_with => "Creating..." -%></center>
-				
-		<% end -%>
-	</div>
-</center>
+<% form_remote_tag(:url => resolve_link_pack_path(@pack), 
+								   :update => 'resolved_entry', 
+							 		 :success => "new Effect.Highlight('resolved_entry', { duration: 1.5 });",
+							     :loading => "Element.show('spinner')",
+                   :complete => "Element.hide('spinner'); $('uri2').value = $('uri').value") do -%>
 
-<% if @type -%>
-	<script>
-		packs_update_new_entry_type('<%= @type -%>')
-	</script>
+	<p class="step_text" style="text-align: center;">1. Type or paste in a link to something (on myExperiment or elswhere) and check it...</p>
+	
+	<center>
+		<div class="box_form" style="width: 550px; text-align: center;">
+			<p style="text-align: center;">
+				<%= image_tag "spinner.gif", :id => "spinner", :style => "display: none; float: right; vertical-align: top;" -%>
+				<%= text_field_tag "uri", params[:uri], :size => 65, :style => "margin-bottom: 0;" -%>
+				<%= submit_tag "Check", :style => "margin-bottom: 0;" -%>
+			</p>
+		</div>
+	</center>
+
+<% end -%>
+
+<div id="resolved_entry" style="border: 1px solid #CCCCCC; margin: 1.5em 0; padding: 0.4em; background-color: #F5F5F5;">
+	<% if @item_entry -%>
+		<%= render :partial => "after_resolve", :locals => { :error_message => @error_message, :type => @type, :item_entry => @item_entry } -%>
+	<% end -%>
+</div>
+
+<% form_tag create_item_pack_url(@pack) do -%>
+	<input id="uri2" type="hidden" name="uri" value="<%= params[:uri] || '' -%>"/>
+	
+	<p class="step_text" style="text-align: center;">
+		<b>2. Add a comment (optional)...</b> 
+		<%= info_icon_with_tooltip("You can add a comment to say why you have added this item to this pack, or to say anything else.") -%>
+	</p>
+
+	<center>
+		<div class="box_form" style="width: 550px; text-align: center;">
+			<%= text_area_tag "comment", params[:comment], :size => "66x4", :style => "margin-bottom: 0;" -%>
+		</div>
+	</center>
+	
+	<br/>
+	
+	<p class="step_text" style="text-align: center;">
+		3. Now add the item...
+		<br/>
+		<small>(if successful you will be taken to an edit page where you may be able to add more metadata).</small>
+	</p>
+	
+	<center><%= submit_tag "Add", :disable_with => "Adding..." -%></center>
+
 <% end -%>

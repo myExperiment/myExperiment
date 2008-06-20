@@ -6,20 +6,22 @@
 <div class="box_standout" style="margin: 1.5em 3em; padding: 0.7em 1.5em;">
 	<p>
 		<%= image_tag 'manhattan_studio/folder-closed_24.png', :style => "vertical-align: middle;" -%>
-		<span style="font-size: 108%; font-weight: bold; margin-left: 10px; vertical-align: middle;">
-			What are Packs?
-			<%= link_to_function expand_image("0.3em"), visual_effect(:toggle_blind, "packs_info_more", :duration => 0.3) %>
+		<span style="font-size: 108%; font-weight: bold; margin-left: 8px; vertical-align: middle;">
+			<%= link_to_function "What are Packs?" + expand_image("0.3em"), visual_effect(:toggle_blind, "packs_info_more", :duration => 0.4) %>
 		</span>
 	</p>
-	<div id="packs_info_more" style="margin-left: 38px; font-size: 93%; color: #333333; display: none;">
+	<div id="packs_info_more" style="margin-left: 36px; font-size: 93%; color: #333333; display: block;">
 		<p>
-			Packs allow you to <font style="color: black; font-weight: bolder;">collect different items</font> together like a "wish list" or "shopping basket". 
-			You can point to existing workflows, files and even other packs, as well as link to things outside of myExperiment.
+			Packs allow you to <font style="color: black; font-weight: bolder;">collect different items</font> together, 
+			like you might with a "wish list" or "shopping basket".
+			You do this by <font style="color: black; font-weight: bolder;">linking</font> to different things.
+		</p>
+		<p>
+			You can link to internal things (such as workflows, files and even other packs) as well as link to things outside of myExperiment.
 		</p>
 		<p>
 			Your packs can then be shared, tagged, discovered and discussed easily on myExperiment.
 		</p>
-		<br/>
 		<center><%= image_tag 'packs.png' -%></center>
 	</div>
 </div>

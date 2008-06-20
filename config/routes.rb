@@ -34,10 +34,11 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :mashup
   
   # search
-  map.resource :search
+  map.resource :search,
+    :member => { :live_search => :get }
 
-  # tags and bookmarks
-  map.resources :tags, :bookmarks
+  # tags
+  map.resources :tags
 
   # sessions and RESTful authentication
   map.resource :session
@@ -47,15 +48,19 @@ ActionController::Routing::Routes.draw do |map|
   
   # packs
   map.resources :packs, 
-    :collection => { :all => :get }, 
+    :collection => { :all => :get, :search => :get }, 
     :member => { :comment => :post, 
                  :comment_delete => :delete,
+                 :favourite => :post,
+                 :favourite_delete => :delete,
                  :tag => :post,
                  :new_item => :get,
                  :create_item => :post, 
                  :edit_item => :get,
                  :update_item => :put,
-                 :destroy_item => :delete } do |pack|
+                 :destroy_item => :delete,
+                 :quick_add => :post,
+                 :resolve_link => :post } do |pack|
     # No nested resources yet
   end
     
@@ -65,7 +70,8 @@ ActionController::Routing::Routes.draw do |map|
     :collection => { :all => :get, :search => :get }, 
     :member => { :new_version => :get, 
                  :download => :get, 
-                 :bookmark => :post, 
+                 :favourite => :post, 
+                 :favourite_delete => :delete, 
                  :comment => :post, 
                  :comment_delete => :delete, 
                  :rate => :post, 
@@ -86,6 +92,8 @@ ActionController::Routing::Routes.draw do |map|
     :controller => :blobs, 
     :collection => { :all => :get, :search => :get }, 
     :member => { :download => :get, 
+                 :favourite => :post,
+                 :favourite_delete => :delete,
                  :comment => :post, 
                  :comment_delete => :delete, 
                  :rate => :post, 
@@ -137,7 +145,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'users/forgot_password', :controller => "users", :action => "forgot_password"
   map.connect 'users/reset_password/:reset_code', :controller => "users", :action => "reset_password"
   
-  [ 'news', 'friends', 'groups', 'workflows', 'files', 'packs', 'forums', 'blogs', 'credits', 'tags' ].each do |tab|
+  [ 'news', 'friends', 'groups', 'workflows', 'files', 'packs', 'forums', 'blogs', 'credits', 'tags', 'favourites' ].each do |tab|
     map.connect "users/:id/#{tab}", :controller => 'users', :action => tab
   end
   

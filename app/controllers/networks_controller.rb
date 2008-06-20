@@ -6,11 +6,12 @@
 class NetworksController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :search, :all]
   
-  before_filter :find_networks, :only => [:index, :all]
+  before_filter :find_networks, :only => [:all]
   before_filter :find_network, :only => [:membership_request, :show, :comment, :comment_delete, :tag]
   before_filter :find_network_auth, :only => [:membership_invite, :edit, :update, :destroy]
   
   before_filter :invalidate_listing_cache, :only => [:update, :comment, :comment_delete, :tag, :destroy]
+  before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
   
   # GET /networks;search
   def search
@@ -174,9 +175,6 @@ class NetworksController < ApplicationController
     @network.tag_list = "#{@network.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @network.update_tags # hack to get around acts_as_versioned
     
-    expire_fragment(:controller => 'groups', :action => 'all_tags')
-    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
-    
     respond_to do |format|
       format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @network, :owner_id => @network.user_id } }
     end
@@ -185,14 +183,11 @@ class NetworksController < ApplicationController
 protected
 
   def find_networks
-    # Only get all if the 'all' action
-    if action_name == 'all'
-      @networks = Network.find(:all, 
-                               :order => "title ASC",
-                               :page => { :size => 20, 
-                                          :current => params[:page] },
-                               :include => [ :owner ])
-    end
+    @networks = Network.find(:all, 
+                             :order => "title ASC",
+                             :page => { :size => 20, 
+                                        :current => params[:page] },
+                             :include => [ :owner ])
   end
 
   def find_network
@@ -218,6 +213,11 @@ protected
     if @network
       expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => @network.id)
     end
+  end
+  
+  def invalidate_tags_cache
+    expire_fragment(:controller => 'groups', :action => 'all_tags')
+    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
   end
   
 private

@@ -67,6 +67,12 @@ render_tabnav :user,
     t.named 'User\'s Tags'
     t.titled 'User\'s Tags'
     t.links_to :action => 'tags', :id => @user.id
+  end
+
+	add_tab do |t|
+    t.named 'Favourites'
+    t.titled 'Favourites'
+    t.links_to :action => 'favourites', :id => @user.id
   end 
 
   #add_tab do |t|

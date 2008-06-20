@@ -202,7 +202,7 @@
 /* begin css Asset Manager Gadget styles */
 
 #myexp_assetmanager_gadget_contents {
-	height: 150px;
+	max-height: 150px;
 	overflow: auto;
 	line-height: 1.1;
 	text-align: left;

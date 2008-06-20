@@ -1,23 +1,40 @@
 <div id="packItems">
 	
 	<% if pack.items_count > 0 -%>
+		
+		<% if false -%>
 		<%= view_privileges_notice -%>
 		<br/>
+		<% end -%>
 		
 		<ul id="packItemsList">
+			
+			<!-- Contributable Item Entries -->
 			<% pack.contributable_entries.each do |e| %>
-				<% if thing_authorized?('show', e.contributable) and e.contributable -%>
-					<li>
-						<table>
-							<tr>
-								<td class="icon">
+				<% available = (e.contributable != nil) -%>
+				<% show = available ? thing_authorized?('show', e.contributable) : false -%>
+				<li>
+					<table>
+						<tr>
+							<td class="icon">
+								<% if show -%>
 									<%= icon(e.contributable_type.to_s, nil, 'Internal item', nil, nil) -%>
-								</td>
-								<td>
-									<p>
-										<% if mine?(pack) -%>
-											<%= remove_item_button(pack.id, "contributable", e.id) -%>
-										<% end -%>
+								<% else -%>
+									<%= icon('denied', nil, 'Item unavailable to view', nil, nil) -%>
+								<% end -%>
+							</td>
+							<td>
+								<p>
+									<% if mine?(pack) -%>
+										<%= remove_item_button(pack.id, "contributable", e.id) -%>
+									<% end -%>
+									
+									<% if show and authorised_to_edit -%>
+										<%= edit_item_button(pack.id, "contributable", e.id) -%>
+									<% end -%>
+									
+									<% if show -%>
+									
 										<b><%= visible_name(e.contributable_type) -%>:</b>
 										<% unless e.contributable_version.blank? -%>
 											<% # HACK: only workflows are versioned at the moment -%>
@@ -27,24 +44,56 @@
 											<%= contributable(e.contributable_id, e.contributable_type) %>
 										<% end -%>
 										<small>(<%= contributor e.contributable.contributor_id, e.contributable.contributor_type -%>)</small>
-									</p>
-									<div class="inner">
-										<% unless e.comment.blank? -%>
+										
+									<% else -%>
+										
+										<% if not available -%>
+											<font class="none_text">
+												The item this entry points to is not available. It may have been deleted.
+											</font>
+										<% else -%>
+											<font class="denied_text">
+												You are not authorised to view the item this entry points to.
+											</font>
+										<% end -%>
+										
+									<% end -%>
+								</p>
+								<div class="inner">
+									<% unless e.comment.blank? -%> 
+										<% if show or not available -%>
 											<p class="comment">
+												<%= icon('comment', nil, nil, nil, nil) -%>
 												<%= h e.comment -%>
 											</p>
 										<% end -%>
-										<p class="user">
-											<%= user_and_created_at_bit(e) -%>
-										</p>
+									<% else -%>
+										<% if authorised_to_edit -%>
+											<p><small>[ <%= link_to "Add a comment here", edit_item_link(pack.id, "contributable", e.id) -%> ]</small></p>
+										<% end -%>
+									<% end -%>
+									<p class="user">
+										<%= user_and_created_at_bit(e) -%>
+									</p>
+								</div>
+								<% if show -%>
+									<p style="margin-top: 0; text-align: right;">
+										<%= link_to_function "<span style='padding-right: 0.3em;'>more</span>" + expand_image("0"), 
+																				 visual_effect(:toggle_blind, "contributable_entry_#{e.id}", :duration => 0.2),
+																				 :title => tooltip_title_attrib("Click to show/hide additional metadata that has been found for this item") -%>
+									</p>
+									<div id="contributable_entry_<%= e.id -%>" class="box_standout" style="display: none; margin-top: 0.3em;">
+										<p><b>Description:</b></p>
+										<%= contributable_entry_description(e) -%>
 									</div>
-								</td>
-							</tr>
-						</table>
-					</li>
-				<% end -%>
+								<% end -%>								
+							</td>
+						</tr>
+					</table>
+				</li>
 			<% end -%>
 			
+			<!-- Remote Item Entries -->
 			<% pack.remote_entries.each do |e| %>
 				<li>
 					<table>
@@ -55,19 +104,27 @@
 							<td>
 								<p>
 									<% if mine?(pack) -%>
-										<%= remove_item_button(pack.id, "external", e.id) -%>
+										<%= remove_item_button(pack.id, "remote", e.id) -%>
 									<% end -%>
-									<b>Remote:</b>
+									<% if authorised_to_edit -%>
+											<%= edit_item_button(pack.id, "remote", e.id) -%>
+										<% end -%>
+									<b>External:</b>
 									<%= link_to h(e.title), h(e.uri), :popup => true %>
-									<% unless e.alternate_uri.blank? -%>
-										<span style="margin-left: 1em;"><small>(<%= link_to("Alternate link", h(e.alternate_uri), :popup => true) -%>)</small></span>
-									<% end -%>
 								</p>
 								<div class="inner">
+									<% unless e.alternate_uri.blank? -%>
+										<p style="margin-bottom: 0.3em;"><small><%= link_to("Alternate link", h(e.alternate_uri), :popup => true) -%></small></p>
+									<% end -%>
 									<% unless e.comment.blank? -%>
 										<p class="comment">
+											<%= icon('comment', nil, nil, nil, nil) -%>
 											<%= h e.comment -%>
 										</p>
+									<% else -%>
+										<% if authorised_to_edit -%>
+											<p><small>[ <%= link_to "Add a comment here", edit_item_link(pack.id, "remote", e.id) -%> ]</small></p>
+										<% end -%>
 									<% end -%>
 									<p class="user">
 										<%= user_and_created_at_bit(e) -%>
@@ -81,7 +138,10 @@
 		</ul>
 	<% else -%>
 		<p class="none_text">
-			None
+			No items in this pack
+			<% if authorised_to_edit -%>
+				Feel free to add some!
+			<% end -%>
 		</p>
 	<% end -%>
 

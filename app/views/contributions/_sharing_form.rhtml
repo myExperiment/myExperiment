@@ -4,8 +4,6 @@
 
 <% c_type = visible_name contributable %>
 
-<% resource = c_resource_string contributable %>
-
 <% perms = [] %>
 <% perms = contributable.contribution.policy.permissions if edit %>
 
@@ -36,12 +34,7 @@
 					<%= link_to_function "Click here" + expand_image, visual_effect(:toggle_blind, "update_perms_info", :duration => 0.3) %> for more information.
 				</p>
 				<div id="update_perms_info" class="box_simple" style="display: none; margin: 0.5em 0;">
-					By giving update permission to someone, you allow them to edit certain things (such as titles and descriptions) 
-					and upload new versions (where possible) of the <%= c_type %>.
-			    <br/><br/>
-			    Note that updating privileges only affect how other users can update this
-			    <%= c_type %> entry on myExperiment. If the user downloads the <%= resource %>,
-			    they can still edit it away from myExperiment and possible upload it back as a new entry.
+					<%= update_perms_info_text(contributable) -%>
 				</div>
 			<% end -%>
 			

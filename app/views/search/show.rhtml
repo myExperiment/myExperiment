@@ -1,5 +1,12 @@
 <% t "Results" -%>
 
+<div id="extra_search" class="box_standout" style="color: #333333; font-weight: bold; margin-bottom: 1.5em; line-height: 1.4;">
+	<%= link_to_function image_tag("close.gif", :style => "float: right;"), visual_effect(:toggle_slide, "extra_search", :duration => 0.3) %>
+	Didn't find what you need?
+	<%= link_to "Click here", "http://www.google.com/coop/cse?cx=006491099109873764573:iockywifnao", :popup => true -%>
+	to search external workflow repositories.
+</div>
+
 <h1>Search Results</h1>
 
 <% if @results.empty? %>
@@ -45,6 +52,15 @@
 	  	<div class="tabTitle">Files (<%= @blobs.length -%>)</div>
 	  	<div class="tabContent">
 		    <%= render :partial => "blobs/table", :locals => { :collection => @blobs, :query => @query } %>
+	  	</div>
+	  </div>
+	<% end %>
+	
+	<% unless @packs.empty? %>
+	  <div class="tabContainer">
+	  	<div class="tabTitle">Packs (<%= @packs.length -%>)</div>
+	  	<div class="tabContent">
+		    <%= render :partial => "packs/table", :locals => { :collection => @packs, :query => @query } %>
 	  	</div>
 	  </div>
 	<% end %>

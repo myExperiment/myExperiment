@@ -52,12 +52,14 @@
 					  	<p style="font-size:85%;">
 							<b>Attributions:</b>
 							<% attributors.each do |a| %>
-								<% if a.attributor_type == 'Workflow' %>
-									<%= icon('workflow', nil, nil, nil, '') %> 
-								<% elsif a.attributor_type == 'Blob' %>
-									<%= icon('blob', nil, nil, nil, '') %>
+								<% if thing_authorized?('show', a.attributor) -%>
+									<% if a.attributor_type == 'Workflow' %>
+										<%= icon('workflow', nil, nil, nil, '') %> 
+									<% elsif a.attributor_type == 'Blob' %>
+										<%= icon('blob', nil, nil, nil, '') %>
+									<% end %>
+									<%= contributable(a.attributor_id, a.attributor_type) %>
 								<% end %>
-								<%= contributable(a.attributor_id, a.attributor_type) %>
 							<% end %>
 					  	</p>
 					  <% end %>

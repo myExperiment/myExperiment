@@ -1,12 +1,12 @@
-<li><%= link_to 'Messages', messages_path %></li>
+<li><%= link_to 'Messages', messages_path -%></li>
 
-<% if ["show", "new"].include? controller.action_name.to_s %>
+<% if ["show", "new"].include? controller.action_name.to_s -%>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "View: #{h(@message.subject)}", message_path(@message) %></li>
+    <li><%= h(@message.subject) -%></li>
   <% when "new" %>
-    <li><%= link_to "New Message", new_message_path %></li>
+    <li>New Message</li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

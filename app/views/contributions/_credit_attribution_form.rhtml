@@ -171,25 +171,27 @@
 <% if edit %>
   <script>
     // Credits
-	credit_me = false;
-	<% contributable.creditors.each do |c| %>
-      <% if c.creditor_type == 'User' and c.creditor_id == current_user.id %>
+		credit_me = false;
+		<% contributable.creditors.each do |c| %>
+	    <% if c.creditor_type == 'User' and c.creditor_id == current_user.id %>
 	  	credit_me = true;
 	  <% elsif c.creditor_type == 'User' %>
 	  	credit_users[<%= c.creditor_id %>] = '<%= escape_javascript contributor_name(c.creditor_id, 'User') %>';
 	  <% elsif c.creditor_type == 'Network' %>
 	  	credit_groups[<%= c.creditor_id %>] = '<%= escape_javascript contributor_name(c.creditor_id, 'Network') %>';
 	  <% end %>
-    <% end %>
-    updateAuthorList();
-	
-	// Attributions
-	<% contributable.attributors.each do |a| %>
-	  <% if a.attributor_type == 'Workflow' %>
-	  	attributions_workflows[<%= a.attributor_id %>] = '<%= escape_javascript contributable_name(a.attributor_id, 'Workflow') %>';
-	  <% elsif a.attributor_type == 'Blob' %>
-	    attributions_files[<%= a.attributor_id %>] = '<%= escape_javascript contributable_name(a.attributor_id, 'Blob') %>';
 	  <% end %>
+	  updateAuthorList();
+	
+		// Attributions
+		<% contributable.attributors.each do |a| %>
+			<% if thing_authorized?('show', a.attributor) -%>
+			  <% if a.attributor_type == 'Workflow' %>
+			  	attributions_workflows[<%= a.attributor_id %>] = '<%= escape_javascript contributable_name(a.attributor_id, 'Workflow') %>';
+			  <% elsif a.attributor_type == 'Blob' %>
+			    attributions_files[<%= a.attributor_id %>] = '<%= escape_javascript contributable_name(a.attributor_id, 'Blob') %>';
+			  <% end %>
+			<% end %>
     <% end %>
     updateAttributionsList();
   </script>

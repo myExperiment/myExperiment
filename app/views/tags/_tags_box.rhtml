@@ -1,7 +1,7 @@
 <div class="contribution_section_box">
 	<p class="heading">
-		<%= info_icon_with_tooltip("The tags for this #{visible_name taggable} entry (applies to all #{visible_name taggable} versions in this entry). Note: the size of the tags show how popular they are on myExperiment.") %>
-		Tags <span class="count_text">(<%= taggable.taggings.length -%>)</span>
+		<%= info_icon_with_tooltip("The tags for this #{visible_name taggable} entry.<br/>Note(1): if this #{visible_name taggable} has many versions, the tags apply to ALL versions in this entry.<br/>Note(2): the size of the tags show how popular they are on myExperiment.") %>
+		Tags <span class="count_text">(<%= taggable.taggings_count -%>)</span>
 	</p>
 
 	<%= render :partial => "tags/tags_box_inner", :locals => { :taggable => taggable, :owner_id => owner_id } %>
@@ -13,7 +13,7 @@
 	<% if logged_in? %>
 		<div class="fold">
 			<div class="foldTitle">Add Tags</div>
-			<div class="foldContent" style="display: none; background-color: #EEEEEE;">
+			<div class="foldContent" style="display: none;">
 				<% form_remote_tag(:url => add_path, 
 								   :update => 'tags', 
 							 		   :success => "$('tag_list').value=''; new Effect.Highlight('tags', { duration: 1.5 });",
@@ -35,6 +35,6 @@
 			</div>
 		</div>
 	<% else %>
-		<p><strong><%= link_to "Log in", new_session_url %> to add Tags</strong></p>
+		<p><small><b><%= link_to "Log in", new_session_url -%></b> to add Tags</small></p>
 	<% end %>
 </div>

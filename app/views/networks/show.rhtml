@@ -73,8 +73,6 @@
 																											 :add_path => tag_group_path(@network), 
 																											 :edit_path => edit_group_path(@network),
 																											 :allow_edit => logged_in? ? @network.user_id == current_user.id : false } %>
-																								 
-	<% if false %><%= render :partial => "layouts/bookmark_with", :locals => { :title => @network.title, :url => @network_url } %><% end %>
 	
 </div>
 

@@ -92,20 +92,7 @@ var ReplyForm = {
 //  '#search,#monitor_submit': function() { this.hide(); }
 //})
 
-function packs_update_new_entry_type(type) {
-	if (type == 'contributable')
-	{
-	  $('new_contributable_entry_box').style.display = 'block';
-	  $('new_remote_entry_box').style.display = 'none';
-	}
-	else if (type == 'remote')
-	{
-		$('new_contributable_entry_box').style.display = 'none';
-	  $('new_remote_entry_box').style.display = 'block';
-	}
-	else
-	{
-		$('new_contributable_entry_box').style.display = 'none';
-    $('new_remote_entry_box').style.display = 'none';
-	}
+function redirectToAddToPack() {
+  var url = $("add_to_pack_selection").value;
+  location.href = url;
 }

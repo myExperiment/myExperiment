@@ -219,10 +219,11 @@ class User < ActiveRecord::Base
   has_many :blogs, :as => :contributor
   has_many :forums, :as => :contributor
   has_many :workflows, :as => :contributor
+  has_many :packs, :as => :contributor
   
   acts_as_creditor
 
-  acts_as_solr(:fields => [ :openid_url, :name, :username, :tag_list ]) if SOLR_ENABLE
+  acts_as_solr(:fields => [ :name, :tag_list ], :include => [ :profile ]) if SOLR_ENABLE
 
   # protected? asks the question "is other protected by me?"
   def protected?(other)
@@ -480,7 +481,6 @@ class User < ActiveRecord::Base
   def email_confirmed?
     not self.email_confirmed_at.blank? and not self.email.blank?
   end
-  
   
   def activated?
     self.activated_at != nil

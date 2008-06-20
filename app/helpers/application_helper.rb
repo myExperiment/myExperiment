@@ -371,7 +371,7 @@ module ApplicationHelper
       end
     when "Pack"
       if p = Pack.find(:first, :conditions => ["id = ?", contributableid])
-        return link ? link_to(p.title, pack_url(p)) : p.title
+        return link ? link_to(p.title, pack_url(p)) : h(p.title)
       else
         return nil
       end
@@ -422,8 +422,18 @@ module ApplicationHelper
     return truncate ? truncate(str, truncate) : str
   end
   
-  def contributable_url(contributableid, contributabletype)
-    return url_for(:controller => contributabletype.downcase.pluralize, :action => "show", :id => contributableid)
+  def contributable_url(contributableid, contributabletype, base_host=nil)
+    if base_host.blank?
+      return url_for(:controller => contributabletype.downcase.pluralize, 
+                     :action => "show", 
+                     :id => contributableid)
+    else
+      return url_for(:only_path => false,
+                     :host => @base_url,
+                     :controller => contributabletype.downcase.pluralize, 
+                     :action => "show", 
+                     :id => contributableid)
+    end
   end
   
   def policy_link(policyid, managedby=true)
@@ -593,12 +603,11 @@ module ApplicationHelper
     when "manage"
       return "famfamfam_silk/wrench.png"
     when "destroy"
-      return "redmond_studio/delete_16.png"
-      #return "manhattan_studio/delete_24.png"
+      return "famfamfam_silk/cross.png"
     when "tag"
       return "famfamfam_silk/tag_blue.png"
-    when "bookmark"
-      return "famfamfam_silk/book_open.png"
+    when "favourite"
+      return "famfamfam_silk/star.png"
     when "comment"
       return "famfamfam_silk/comment.png"
     when "comments"
@@ -691,6 +700,8 @@ module ApplicationHelper
       return "famfamfam_silk/timeline_marker.png"
     when "remote"
       return "famfamfam_silk/world_link.png"
+    when "denied"
+      return "famfamfam_silk/exclamation.png"
     else
       return nil
     end
@@ -700,7 +711,7 @@ module ApplicationHelper
     image_tag "refresh.gif", :style => "vertical-align: middle;"
   end
   
-  def expand_image(margin_left="0.5em")
+  def expand_image(margin_left="0.3em")
     image_tag "folds/unfold.png", :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Expand'
   end
   
@@ -752,7 +763,8 @@ module ApplicationHelper
   end
   
   def all_workflows
-    Workflow.find(:all, :order => "title ASC")
+    workflows = Workflow.find(:all, :order => "title ASC")
+    workflows = workflows.select {|w| w.authorized?('show', w) }
   end
   
   def all_blobs
@@ -762,6 +774,7 @@ module ApplicationHelper
       y_title = (y.title and y.title.length > 0) ? y.title : y.local_name
       x_title.downcase <=> y_title.downcase
     }
+    blobs = blobs.select {|b| b.authorized?('show', b) }
   end
   
   def all_networks
@@ -1142,8 +1155,24 @@ module ApplicationHelper
     end
   end
   
+  def favouritable?(type)
+    if ['workflow', 'blob', 'pack'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
   def allow_credits_and_attributions?(type)
     if ['workflow', 'blob'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def allow_citations?(type)
+    if ['workflow'].include? type.downcase
       return true
     else
       return false
@@ -1165,7 +1194,7 @@ module ApplicationHelper
   end
   
   def delete_image(style=nil, tooltip="Delete")
-    return image_tag("redmond_studio/delete_16.png",
+    return image_tag("famfamfam_silk/cross.png",
               :title => "header=[] body=[#{tooltip}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
               :style => style)
   end
@@ -1174,6 +1203,47 @@ module ApplicationHelper
     return image_tag("famfamfam_silk/pencil.png",
               :title => "header=[] body=[#{tooltip}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
               :style => style)
+  end
+  
+  def new_flash_image(style=nil)
+   return image_tag("famfamfam_silk/new.png", 
+                    :style => style)
+  end
+  
+  def update_perms_info_text(contributable)
+    return nil if type.blank?
+    
+    resource = c_resource_string(contributable)
+    visible_type = visible_name(contributable)
+    
+    text = "<p>By giving update permission for this #{visible_type}, you allow other users to do the following:</p>"
+    
+    case contributable.class.to_s
+      when 'Workflow'
+        text += "<ul>
+                  <li>Upload new versions of the #{visible_type} as part of this #{visible_type} entry.</li> 
+                  <li>Edit the titles and descriptions of the different #{visible_type} versions.</li>
+                </ul>"
+      when 'Blob'
+        text+= "<ul>
+                  <li>NO additional update priviledges are available for #{visible_type.pluralize}.</li>
+                </ul>" 
+      when 'Pack'
+        text += "<ul>
+                  <li>Add new items to the #{visible_type}.</li>
+                  <li>Edit metadata of existing items.</li>
+                </ul>"
+      else
+        text += "<ul><li>ERROR: the contributable type does not have any update permissions info text set for it.</li></ul>"
+    end
+    
+    text += "<p>
+              Note that updating privileges only affect how other users can update this
+              #{visible_type} entry on myExperiment. If the user downloads the #{resource},
+              they can still edit it away from myExperiment and possible upload it back as a new entry.
+            </p>"
+            
+    return text
   end
   
 protected

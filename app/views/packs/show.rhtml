@@ -3,10 +3,10 @@
 <% if @authorised_to_edit %>
 	<ul class="sectionIcons">
 		<% if mine?(@pack) -%>
-			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack')%></li>
+			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
 		<% end -%>
 		<% if @pack.authorized?("destroy", current_user) %>
-			<li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments. Are you sure?', :method => :delete }, 'Delete Pack') %></li>
+			<li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments, BUT does not delete the actual items pointed to in the Pack. Are you sure you would like to delete this Pack?', :method => :delete }, 'Delete Pack') %></li>
 		<% end %>
 	</ul>
 <% end %>
@@ -53,23 +53,21 @@
 		</div>
 	</div>
 	
-	<div class="contribution_version_box" style="background-color: #EFEFEF;">
+	<div class="contribution_version_box" style="background-color: #EEEEEE;">
 		<div class="contribution_version_inner_box">
 			<h4>
 				<%= image_tag "spinner.gif", :id => "refresh_indicator1", :style => "display: none; float: right; vertical-align: top;" -%>
-				<%= info_icon_with_tooltip("This section shows all the items that make up this Pack. #{view_privileges_text}") %>
+				<%= info_icon_with_tooltip("This section shows all the items that are pointed to in this pack. This can be a combination of internal and external items.") -%>
 				Items <span class="count_text">(<%= @pack.items_count -%>)</span>
 			</h4>
 			
 			<%= render :partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } -%>
 			
-			<br/>
-			
-			<% if @authorised_to_edit %>
-			<ul class="sectionIcons">
-				<li><%= icon('new', new_item_pack_path(@pack), nil, nil, 'Add New Item') %></li>
-			</ul>
-			<% end %>
+			<% if @authorised_to_edit -%>
+				<br/><br/>
+				<h3>Add an Item</h3>
+				<%= render :partial => "add_item", :locals => { :pack => @pack } -%>
+			<% end -%>
 		</div>
 	</div>
 
@@ -84,18 +82,23 @@
 		</p>
 	</div>
 	
-	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @pack } %>
-	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @pack, 
 																											 :owner_id => ((@pack.contributor_type == 'User') ? @pack.contributor_id : nil), 
 																											 :add_path => tag_pack_path(@pack), 
 																											 :edit_path => edit_pack_path(@pack),
-																											 :allow_edit => @pack.authorized?("edit", current_user) } %>
+																											 :allow_edit => @authorised_to_edit } %>
+	
+	<%= render :partial => "tags_from_items", :locals => { :items => @pack.contributable_entries } %>
+	
+	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @pack } %>
+	
+	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @pack, :contributable_url => @pack_entry_url } %>
+	
+	<%= render :partial => "contributions/favourited_box", :locals => { :contributable => @pack,
+																																			:add_to_favourites_path => favourite_pack_url(@pack),
+																																			:remove_from_favourites_path => favourite_delete_pack_url(@pack) } %>
 	
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @pack } %>
-	
-	<% if false %><%= render :partial => "layouts/bookmark_with", :locals => { :title => contributable_name(@pack.id, 'pack'), :url => @pack_url } %><% end %>
-	
 </div>
 
 <div class="clearer">&nbsp;</div>
@@ -109,7 +112,7 @@
 <% if logged_in? and @pack.owner? current_user %>
   
 	<div class="tabContainer">
-    <div class="tabTitle">Permissions</div>
+    <div class="tabTitle">Sharing</div>
     <div class="tabContent">
 
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @pack } %>

@@ -1,0 +1,116 @@
+<% if logged_in? -%>
+
+	<% if @error_message -%>
+		<p class="error_text" style="padding: 0 0.8em;"><%= @error_message -%></p>
+		<br/>
+	<% end -%>
+	
+	<!-- Quick add (a link) -->
+	<div class="box_currentuser_specific" style="margin-bottom: 0.5em; padding: 0.1em 0;">
+		<% form_tag quick_add_pack_url(@pack) do -%>
+			<table class="quick_add">
+				<tr>
+					<td class="label" style="vertical-align: top; padding-bottom: 0;" rowspan=2>
+						<%= info_icon_with_tooltip("Type or paste in a link to something (either in myExperiment or elsewhere). The link will then be resolved appropriately.") -%>
+						<b>Quick add:</b>
+						<p class="inner">(a link)</p>
+					</td>
+					<td style="padding-bottom: 0;">
+						<%= text_field_tag "uri", params[:uri], :size => 47 -%>
+					</td>
+					<td class="submit" style="padding-bottom: 0;">
+						<%= submit_tag "Add", :disable_with => "..." -%>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding-top: 0;">
+						<p style="text-align: center; color: #333333; font-size: 77%; padding: 0;">
+							eg: "http://www.myexperiment.org/workflows/1" or "http://www.example.com/something-nice"
+						</p>
+					</td>
+					<td style="padding-top: 0;">&nbsp;</td>
+				</tr>
+			</table>
+		<% end -%>
+	</div>
+	
+	<!-- Quick add (from your stuff) -->
+	<% unless (contributions = current_user.contributions).empty? -%>
+		<div class="box_currentuser_specific" style="margin-bottom: 0.5em; padding: 0.1em 0;">
+			<% form_tag quick_add_pack_url(@pack) do -%>
+				<table class="quick_add">
+					<tr>
+						<td class="label">
+							<%= info_icon_with_tooltip("Quickly add something from your collections of items.") -%>
+							<b>Quick add:</b>
+							<p class="inner">(from your stuff)</p>
+						</td>
+						<td>
+							<select id="uri2" name="uri" style="width: 320px;">
+					  		<% contributions.each do |c| -%>
+									<% if ["workflow", "blob", "pack"].include? c.contributable_type.downcase -%>
+						    		<option value="<%= contributable_url(c.contributable_id, c.contributable_type, @base_host) -%>">
+						      		<%= "#{visible_name c.contributable_type}: #{contributable_name(c.contributable_id, c.contributable_type)}" -%>
+						    		</option>
+									<% end -%>
+					  		<% end -%>
+							</select>
+						</td>
+						<td class="submit">
+							<%= submit_tag "Add", :disable_with => "..." -%>
+						</td>
+					</tr>
+				</table>
+			<% end -%>
+		</div>
+	<% end -%>
+	
+	<!-- Quick add (from your stuff) -->
+	<% unless (bookmarks = current_user.bookmarks).empty? -%>
+		<div class="box_currentuser_specific" style="margin-bottom: 0.5em; padding: 0.1em 0;">
+			<% form_tag quick_add_pack_url(@pack) do -%>
+				<table class="quick_add">
+					<tr>
+						<td class="label">
+							<%= info_icon_with_tooltip("Quickly add something from your list of favourite items.") -%>
+							<b>Quick add:</b>
+							<p class="inner">(from favourites)</p>
+						</td>
+						<td>
+							<select id="uri2" name="uri" style="width: 320px;">
+					  		<% bookmarks.each do |b| -%>
+									<% if ["workflow", "blob", "pack"].include? b.bookmarkable_type.downcase -%>
+						    		<option value="<%= contributable_url(b.bookmarkable_id, b.bookmarkable_type, @base_host) -%>">
+						      		<%= "#{visible_name b.bookmarkable_type}: #{contributable_name(b.bookmarkable_id, b.bookmarkable_type)}" -%>
+						    		</option>
+									<% end -%>
+					  		<% end -%>
+							</select>
+						</td>
+						<td class="submit">
+							<%= submit_tag "Add", :disable_with => "..." -%>
+						</td>
+					</tr>
+				</table>
+			<% end -%>
+		</div>
+	<% end -%>
+	
+	<!-- Advanced add -->
+	<div class="box_currentuser_specific" style="margin-bottom: 0.5em; padding: 0.1em 0;">
+		<table class="quick_add">
+			<tr>
+				<td class="label" style="width: 11em;">
+					<%= info_icon_with_tooltip("Provides advanced options for adding an item to this pack.") -%>
+					<b>Advanced add:</b>
+				</td>
+				<td style="text-align: left;">
+					<ul class="sectionIcons" style="margin: 0; vertical-align: middle;">
+						<li style="margin: 0;"><%= icon('new', new_item_pack_path(pack), nil, nil, 'Click here') %></li>
+					</ul>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<% end -%>

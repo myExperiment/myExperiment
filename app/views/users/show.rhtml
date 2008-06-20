@@ -190,13 +190,13 @@
 					
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.networks_owned.length, "Group") + " (admin)", url_for(:action => 'groups')) -%>
+			      	<%= link_to(pluralize(@user.networks_owned_count, "Group") + " (admin)", url_for(:action => 'groups')) -%>
 						</b> 
 			    </p>
 					
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.networks.length, "Group") + " (member)", url_for(:action => 'groups')) -%>
+			      	<%= link_to(pluralize(@user.networks_count, "Group") + " (member)", url_for(:action => 'groups')) -%>
 						</b> 
 			    </p>
 					
@@ -207,6 +207,12 @@
 							</b>
 				    </p>
 					<% end %>
+					
+					<p>
+			      <b>
+			      	<%= link_to(pluralize(@user.bookmarks_count, "Favourite"), url_for(:action => 'favourites')) -%>
+						</b> 
+			    </p>
 				</div>	
 			</div>
 			
@@ -348,6 +354,13 @@
 		<br/>
     <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Blob' end).map do |c| c.contributable end  %>
     <%= render :partial => "blobs/table", :locals => { :collection => contributables } %>
+		
+	<% when "Packs" %>
+		
+		<%= view_privileges_notice %>
+		<br/>
+    <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Pack' end).map do |c| c.contributable end  %>
+    <%= render :partial => "packs/table", :locals => { :collection => contributables } %>
 
   <% when "Forums" %>
     
@@ -384,6 +397,19 @@
       </div>
     <% else %>
       <p class="none_text">No tags made yet</p>
+    <% end %>
+		
+	<% when "Favourites" %>
+
+    <% unless (bookmarks = @user.bookmarks).empty? %>
+      <%= view_privileges_notice %>
+			<% bookmarks.each do |b| %>
+				<% if b.bookmarkable %>
+        	<%= render :partial => "contributions/table", :locals => { :collection => [b.bookmarkable.contribution] } %>
+				<% end %>
+      <% end %>
+    <% else %>
+      <p class="none_text">No favourites</p>
     <% end %>
 
   <% end %>

@@ -6,13 +6,14 @@
 class WorkflowsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :search, :all]
   
-  before_filter :find_workflows, :only => [:index, :all]
+  before_filter :find_workflows, :only => [:all]
   before_filter :find_workflows_rss, :only => [:index]
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all]
   
   before_filter :check_is_owner, :only => [:edit, :update]
   
   before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :update_version, :comment, :comment_delete, :rate, :tag, :destroy, :destroy_version]
+  before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
   
   # These are provided by the Taverna gem
   require 'scufl/model'
@@ -31,12 +32,27 @@ class WorkflowsController < ApplicationController
     end
   end
   
-  # POST /workflows/1;bookmark
-  def bookmark
-    @workflow.bookmarks << Bookmark.create(:user => current_user, :title => @workflow.title) unless @workflow.bookmarked_by_user?(current_user)
+  # POST /workflows/1;favourite
+  def favourite
+    @workflow.bookmarks << Bookmark.create(:user => current_user) unless @workflow.bookmarked_by_user?(current_user)
     
     respond_to do |format|
-      format.html { render :inline => "<%=h @workflow.bookmarks.collect {|b| b.user.name}.join(', ') %>" }
+      flash[:notice] = "You have successfully added this item to your favourites."
+      format.html { redirect_to workflow_url(@workflow) }
+    end
+  end
+  
+  # DELETE /workflows/1;favourite_delete
+  def favourite_delete
+    @workflow.bookmarks.each do |b|
+      if b.user_id == current_user.id
+        b.destroy
+      end
+    end
+    
+    respond_to do |format|
+      flash[:notice] = "You have successfully removed this item from your favourites."
+      format.html { redirect_to workflow_url(@workflow) }
     end
   end
   
@@ -110,10 +126,6 @@ class WorkflowsController < ApplicationController
     @workflow.tag_list = "#{@workflow.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @workflow.update_tags # hack to get around acts_as_versioned
 
-    
-    expire_fragment(:controller => 'workflows', :action => 'all_tags')
-    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
-    
     respond_to do |format|
       format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @workflow, :owner_id => @workflow.contributor_id } }
     end
@@ -381,21 +393,16 @@ class WorkflowsController < ApplicationController
 protected
 
   def find_workflows
-    login_required if login_available?
+    found = Workflow.find(:all, 
+                          construct_options.merge({:page => { :size => 20, :current => params[:page] },
+                          :include => [ { :contribution => :policy }, :tags, :ratings ],
+                          :order => "workflows.updated_at DESC" }))
     
-    # Only get all if the 'all' action has been called.
-    if action_name == 'all'
-      found = Workflow.find(:all, 
-                            construct_options.merge({:page => { :size => 20, :current => params[:page] },
-                            :include => [ { :contribution => :policy }, :tags, :ratings ],
-                            :order => "workflows.updated_at DESC" }))
-      
-      found.each do |workflow|
-        workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
-      end
-      
-      @workflows = found
+    found.each do |workflow|
+      workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
     end
+    
+    @workflows = found
   end
   
   def find_workflows_rss
@@ -439,7 +446,7 @@ protected
         end
         
         @authorised_to_download = @workflow.authorized?("download", (logged_in? ? current_user : nil))
-        @authorised_to_edit = @workflow.authorized?("edit", (logged_in? ? current_user : nil))
+        @authorised_to_edit = logged_in? && @workflow.authorized?("edit", (logged_in? ? current_user : nil))
         
         # remove scufl from workflow if the user is not authorized for download
         @viewing_version.scufl = nil unless @authorised_to_download
@@ -485,6 +492,11 @@ protected
     if @workflow
       expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => @workflow.id)
     end
+  end
+  
+  def invalidate_tags_cache
+    expire_fragment(:controller => 'workflows', :action => 'all_tags')
+    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
   end
   
   def determine_title_and_unique(scufl_model)

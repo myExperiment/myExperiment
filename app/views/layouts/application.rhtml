@@ -55,16 +55,38 @@
 				</div>
 				<div>
 					<ul class="tabnav">
-						<li <%= (["home"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Home", home_url -%></li>
+						<!-- Home tab -->
+						<li <%= (["home"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
+							<%= link_to "Home", home_url -%>
+						</li>
+						<!-- Users tab -->
 					  <li <%= (["users", "profiles", "userhistory", "friendships", "memberships", "pictures"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') -%>>
-						<%= link_to "Users", users_path %>
+							<%= link_to "Users", users_path %>
 					  </li>
-					  <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Groups", groups_path -%></li>
-					  <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Workflows", workflows_path -%></li>
-					  <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Files", files_path -%></li>
-						<% if false -%><li <%= (["packs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Packs", packs_path -%></li><% end -%>
-					  <li <%= (["blogs", "blog_posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Blogs", blogs_path -%></li>
-					  <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>><%= link_to "Forums", forums_path -%></li>
+						<!-- Groups tab -->
+					  <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
+					  	<%= link_to "Groups", groups_path -%>
+						</li>
+						<!-- Workflows tab -->
+					  <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
+					  	<%= link_to "Workflows", workflows_path -%>
+						</li>
+						<!-- Files tab -->
+					  <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
+					  	<%= link_to "Files", files_path -%>
+						</li>
+						<!-- Packs tab -->
+						<li <%= (["packs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
+							<%= link_to("Packs " + new_flash_image("position: relative; z-index: 1000;"), packs_path, :style => "padding-right: 3px; *padding-top: 0;") -%>
+						</li>
+						<!-- Blogs tab -->
+					  <li <%= (["blogs", "blog_posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
+					  	<%= link_to "Blogs", blogs_path -%>
+						</li>
+						<!-- Forums tab -->
+					  <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
+					  	<%= link_to "Forums", forums_path -%>
+						</li>
 					</ul>
 				</div>
 	  			<div id="myexp_searchbar"><%= render :partial => "layouts/search" %></div>

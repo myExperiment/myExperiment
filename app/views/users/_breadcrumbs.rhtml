@@ -1,26 +1,27 @@
-<li><%= link_to 'Users', users_path %></li>
+<li><%= link_to 'Users', users_path -%></li>
 
-<% if ["edit"].include? controller.action_name.to_s %>
+<% if ["edit"].include? controller.action_name.to_s -%>
 	<li><b>&#187;</b></li>
-	<li><%= link_to h(@user.name), user_path(@user) %></li>
-<% end %>
+	<li><%= link_to h(@user.name), user_path(@user) -%></li>
+<% elsif @user -%>
+	<li><b>&#187;</b></li>
+	<li><%= h(@user.name) -%></li>
+<% end -%>
 
-<% if ["show", "new", "edit", "search", "all", "forgot_password"].include? controller.action_name.to_s %>
+<% if ["new", "edit", "search", "all", "forgot_password"].include? controller.action_name.to_s -%>
   <li><b>&#187;</b></li>
   
-  <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "View: #{h(@user.name)}", user_path(@user) %></li>
-  <% when "new" %>
-    <li><%= link_to "New User", new_user_path %></li>
-  <% when "edit" %>
-    <li><%= link_to "Manage Account", edit_user_path(@user) %>
-  <% when "search" %>  
-    <li><%= link_to "Search Results", search_users_path(:query => @query) %></li>
-  <% when "all" %>
-    <li><%= link_to "All Users", all_users_path %>
+  <% case controller.action_name.to_s; when "new" -%>
+    <li>Register</li>
+  <% when "edit" -%>
+    <li>Manage Account</li>
+  <% when "search" -%>  
+    <li>Search Results</li>
+  <% when "all" -%>
+    <li>All Users</li>
 	<% when "forgot_password" %>
-    <li><%= link_to "Forgot Password", "users/forgot_password" %>
-  <% else %>
+    <li>Forgot Password</li>
+  <% else -%>
     <!-- no breadcrumb -->
-  <% end %>
-<% end %>
+  <% end -%>
+<% end -%>

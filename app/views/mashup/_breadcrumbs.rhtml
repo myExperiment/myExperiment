@@ -4,9 +4,9 @@
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "Resources", :action => 'show' %></li>
+    <li>Resources</li>
   <% when "api" %>
-    <li><%= link_to "REST API", :action => 'api' %></li>
+    <li>RESTful API</li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

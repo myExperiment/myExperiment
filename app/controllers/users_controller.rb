@@ -6,11 +6,11 @@
 class UsersController < ApplicationController
 
   contributable_actions = [:workflows, :files, :packs, :blogs, :forums]
-  show_actions = [:show, :news, :friends, :groups, :credits, :tags] + contributable_actions
+  show_actions = [:show, :news, :friends, :groups, :credits, :tags, :favourites] + contributable_actions
 
   before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password] + show_actions
   
-  before_filter :find_users, :only => [:index, :all]
+  before_filter :find_users, :only => [:all]
   before_filter :find_user, :only => show_actions
   before_filter :find_user_auth, :only => [:edit, :update, :destroy]
   
@@ -105,6 +105,11 @@ class UsersController < ApplicationController
 
   def tags
     @tab = "Tags"
+    render :action => 'show'
+  end
+  
+  def favourites
+    @tab = "Favourites"
     render :action => 'show'
   end
 
@@ -332,19 +337,16 @@ class UsersController < ApplicationController
 protected
 
   def find_users
-    # Only get all if the 'all' action has been called.
-    if action_name == 'all'
-      @users = User.find(:all, 
-                         :order => "users.name ASC",
-                         :page => { :size => 20, 
-                                    :current => params[:page] },
-                         :conditions => "users.activated_at IS NOT NULL",
-                         :include => :profile)
-                         
-      @users.each do |user|
-        user.salt = nil
-        user.crypted_password = nil
-      end
+    @users = User.find(:all, 
+                       :order => "users.name ASC",
+                       :page => { :size => 20, 
+                                  :current => params[:page] },
+                       :conditions => "users.activated_at IS NOT NULL",
+                       :include => :profile)
+                       
+    @users.each do |user|
+      user.salt = nil
+      user.crypted_password = nil
     end
   end
 

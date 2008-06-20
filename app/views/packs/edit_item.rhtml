@@ -1,0 +1,54 @@
+<h1>Edit Item Entry</h1>
+
+<center>
+	<%= error_messages_for :item_entry %>
+</center>
+
+<div>
+	<p style="text-align: center;">
+		This entry points to the following <b><%= type_to_UI_text @type -%></b> resource:
+	</p>
+	
+	<%= render :partial => "entry_item", :locals => { :type => @type, :item_entry => @item_entry } -%>
+</div>
+
+<br/>
+<br/>
+<br/>
+
+<center>
+	<div class="box_form" style="width: 550px; margin: 1em 0; text-align: left;">
+		<% form_tag({ :controller => "Packs", :id => @pack.id, :action => "update_item", :entry_type => @type, :entry_id => @item_entry.id }, :method => :put) do -%>
+		
+			<% if @type == 'contributable' -%>
+			
+			<% elsif @type == 'remote' -%>
+				<p><b>Title</b></p>
+				<%= text_field_tag "title", params[:title] || @item_entry.title, :size => 83 -%>
+				
+				<p>
+					<%= info_icon_with_tooltip("An alternative link to the item, in case the first link doesn't work.") -%>
+					<b>Alternate link</b> (optional) 
+				</p>
+				<%= text_field_tag "alternate_uri", params[:alternate_uri] || @item_entry.alternate_uri, :size => 83 -%>
+				
+				<br/>
+			<% end -%>
+			
+			<p>
+				<%= info_icon_with_tooltip("You can add a comment to say why this item is in this pack, or to say anything else.") -%>
+				<b>Comment</b>
+			</p>
+			<%= text_area_tag "comment", params[:comment] || @item_entry.comment, :size => "66x4" -%>
+		
+			<br/><br/>
+			<center>
+				<%= submit_tag "Update", :disable_with => "Updating..." -%>
+				<br/>
+				or <b><%= link_to "Return to Pack", pack_url(@pack) -%></b>
+			</center>
+		
+		<% end -%>
+	</div>
+</center>
+

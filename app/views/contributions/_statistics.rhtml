@@ -1,9 +1,9 @@
 <p>
-  <b><%= pluralize statistics.viewings_count, "viewing" %></b> 
+  <%= pluralize statistics.viewings_count, "viewing" %> 
 </p>
 
 <% if downloadable? type -%>
 	<p>
-	  <b><%= pluralize statistics.downloads_count, "download" %></b>  
+	  <%= pluralize statistics.downloads_count, "download" %>  
 	</p>
 <% end -%>

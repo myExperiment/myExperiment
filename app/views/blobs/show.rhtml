@@ -83,20 +83,23 @@
 	
 	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @blob, :edit_path => edit_file_path(@blob) } %>
 	
-	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @blob } %>
-	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @blob, 
 																											 :owner_id => ((@blob.contributor_type == 'User') ? @blob.contributor_id : nil), 
 																											 :add_path => tag_file_path(@blob), 
 																											 :edit_path => edit_file_path(@blob),
 																											 :allow_edit => @blob.authorized?("edit", logged_in? ? current_user : nil ) } %>
+																											 
+  <%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @blob } %>
+	
+	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @blob, :contributable_url => @blob_entry_url } %>
 	
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @blob } %>
 	
+	<%= render :partial => "contributions/favourited_box", :locals => { :contributable => @blob,
+																																			:add_to_favourites_path => favourite_file_url(@blob),
+																																			:remove_from_favourites_path => favourite_delete_file_url(@blob) } %>
+	
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @blob } %>
-	
-	<% if false %><%= render :partial => "layouts/bookmark_with", :locals => { :title => contributable_name(@blob.id, 'Blob'), :url => @blob_url } %><% end %>
-	
 </div>	
 
 <div class="clearer">&nbsp;</div>
@@ -110,7 +113,7 @@
 <% if logged_in? and @blob.owner? current_user %>
   
 	<div class="tabContainer">
-    <div class="tabTitle">Permissions</div>
+    <div class="tabTitle">Sharing</div>
     <div class="tabContent">
 
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @blob } %>

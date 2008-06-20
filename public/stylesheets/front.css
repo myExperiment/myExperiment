@@ -21,14 +21,14 @@ li img {
 
 .frontpage_header .text {
 	float: right;
-	width: 520px;
+	width: 28em;
 	text-align: center;
 	font-size: 131%;
 	color: #333333;
 	line-height: 1.5;
-	background-image: url('/images/box-bg1.png');
+	/*background-image: url('/images/box-bg1.png');
 	background-position: top;
-	background-repeat: repeat-x;
+	background-repeat: repeat-x;*/
 	background-color: #FFFFCC;
 	padding: 0.6em 1em;
 	border: 1px solid #EED799;
@@ -245,10 +245,10 @@ li img {
 }
 
 #frontpage_body .login p {
-	line-height: 1.2;
+	line-height: 1.1;
 	color: #333333;
 	margin: 0;
-	padding: 0.4em;
+	padding: 0.2em 0;
 	text-align: center;
 }
 
@@ -256,8 +256,12 @@ li img {
 	border: none;
 	height: 26px;
 	width: 115px;
-	background: url('/images/login-button.png') no-repeat left top;
+	background: url('/images/login-button.png') 0 0 no-repeat;
 	cursor: pointer;
+}
+
+#frontpage_body .login .submit:hover {
+	background: url('/images/login-button.png') -115px 0 no-repeat;
 }
 
 #frontpage_body .login * {
@@ -270,12 +274,60 @@ li img {
 	list-style: none;
 	margin-left: 0.1em;
 	overflow: hidden;
+	font-size: 93%;
 }
 
 #frontpage_body ul#announcements li {
 	list-style: none;
 	text-align: left;
-	margin: 0 0 1em 1.5em;
-	text-indent: -1em;
+	margin: 0 0 1em 0;
 }
 
+* a:hover
+{
+	visibility: visible;
+}
+
+a.letmein_button {
+	width: 240px;
+	height: 35px;
+	display: block;
+	background: url('/images/letmein-button.png') 0 0 no-repeat;
+	margin-top: 1em;
+	margin-bottom: 1.5em;
+}
+
+a:hover.letmein_button {
+	background-position: -240px 0;
+}
+
+.letmein_button:hover img {
+	visibility: hidden;
+}
+
+a.findworkflows_button {
+	width: 240px;
+	height: 150px;
+	display: block;
+	background: url('/images/findworkflows-button.png') 0 0 no-repeat;
+}
+
+a:hover.findworkflows_button {
+	background-position: -241px 0;
+}
+
+.findworkflows_button:hover img {
+	visibility: hidden;
+}
+
+a.register_button {
+	width: 200px;
+	height: 35px;
+	display: block;
+	background: url('/images/register-button.png') 0 0 no-repeat;
+	margin-top: 1em;
+}
+
+a:hover.register_button {
+	background-position: -200px 0;
+}

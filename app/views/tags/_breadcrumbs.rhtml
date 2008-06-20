@@ -1,21 +1,21 @@
-<li><%= link_to "Tags", tags_path %></li>
+<li><%= link_to "Tags", tags_path -%></li>
 
-<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
   <li><b>&#187;</b></li>
   
-  <% case controller.action_name.to_s; when "show" %>
+  <% case controller.action_name.to_s; when "show" -%>
     <li>
-			<% if @internal_type %>
-				<%= link_to "#{h(@tag.name)} (#{visible_name(@internal_type).pluralize} only)", tag_path(@tag) + "?type=#{params[:type]}" %>
-			<% else %>
-				<%= link_to "#{h(@tag.name)}", tag_path(@tag) %>
-			<% end %>
+			<% if @internal_type -%>
+				<%= "#{h(@tag.name)} (#{visible_name(@internal_type).pluralize} only)" -%>
+			<% else -%>
+				<%= h(@tag.name)}" -%>
+			<% end -%>
 		</li>
-  <% when "new" %>
+  <% when "new" -%>
     <!-- no breadcrumb -->
-  <% when "edit" %>
+  <% when "edit" -%>
     <!-- no breadcrumb -->
-  <% else %>
+  <% else -%>
     <!-- no breadcrumb -->
-  <% end %>
-<% end %>
+  <% end -%>
+<% end -%>

@@ -1,0 +1,33 @@
+<% gadget_characters_limit ||= 20 -%>
+<% bookmarks = current_user.bookmarks %>
+
+<div class="myexperiment_gadget">
+  <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+
+  <div class="header">
+    <p>
+      <b>My Favourites</b><br />
+      <small><%= pluralize(bookmarks.length, "favourite") %></small>
+    </p>
+  </div>
+    
+  <div id="myexp_assetmanager_gadget_contents" class="contents">
+    <div class="content">
+      <ul class="gadget_list">
+        <% bookmarks.each do |b| %>
+          <li>
+          	<%= icon b.bookmarkable_type.downcase, nil, nil, nil, "" %> 
+						<% # NOTE: this assumes that only contributables are bookmarkable -%>
+						<% contrib_name = contributable_name(b.bookmarkable_id, b.bookmarkable_type) -%>
+						<%= link_to truncate(contrib_name, gadget_characters_limit), 
+												contributable_url(b.bookmarkable_id, b.bookmarkable_type), 
+												:alt => contrib_name, 
+												:title => tooltip_title_attrib(contrib_name) %>
+					</li>
+        <% end %>
+      </ul>
+    </div>
+	</div>
+  
+  <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+</div>

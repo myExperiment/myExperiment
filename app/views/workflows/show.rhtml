@@ -267,20 +267,23 @@
 	
 	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @workflow, :edit_path => edit_workflow_path(@workflow) } %>
 	
-	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @workflow } %>
-	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @workflow,
 																											 :owner_id => ((@workflow.contributor_type == 'User') ? @workflow.contributor_id : nil),  
 																											 :add_path => tag_workflow_path(@workflow), 
 																											 :edit_path => edit_workflow_path(@workflow),
-																											 :allow_edit => @workflow.authorized?("edit", logged_in? ? current_user : nil ) } %>
+																											 :allow_edit => @authorised_to_edit } %>
+																											 
+	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @workflow } %>
+	
+	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @workflow, :contributable_url => @workflow_entry_url } %>
 	
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @workflow } %>
 	
+	<%= render :partial => "contributions/favourited_box", :locals => { :contributable => @workflow,
+																																			:add_to_favourites_path => favourite_workflow_url(@workflow),
+																																			:remove_from_favourites_path => favourite_delete_workflow_url(@workflow) } %>
+	
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @workflow } %>
-	
-	<% if false %><%= render :partial => "layouts/bookmark_with", :locals => { :title => @workflow.title, :url => @workflow_entry_url } %><% end %>
-	
 </div>
 
 <div class="clearer">&nbsp;</div>
@@ -303,7 +306,7 @@
 <% if logged_in? and @workflow.owner?(current_user) %>
   
 	<div class="tabContainer">
-    <div class="tabTitle">Permissions</div>
+    <div class="tabTitle">Sharing</div>
     <div class="tabContent">
 
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @workflow } %>

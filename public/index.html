@@ -8,6 +8,8 @@
     <link href="stylesheets/base-min.css" media="screen" rel="Stylesheet" type="text/css"/>
     <link href="stylesheets/styles.css" media="screen" rel="Stylesheet" type="text/css"/>
     <link href="stylesheets/front.css" media="screen" rel="Stylesheet" type="text/css"/>
+		
+		<link href="/announcements.rss" rel="alternate" type="application/rss+xml" title="myExperiment.org - Site Announcements" />
   </head>
   <body>
 		<div id="doc2">
@@ -15,7 +17,7 @@
         <img alt="Logo" src="images/logo.png" class="logo"/>
         <div class="text">
           myExperiment makes it really easy to <b>find</b>, <b>use</b> and <b>share</b> <b>scientific workflows</b> and
-          other <b>research objects</b>, and to build <b>communities</b>.
+          other <b>files</b>, and to build <b>communities</b>.
         </div>
 				<div class="clearer">&nbsp;</div>
       </div>
@@ -40,7 +42,7 @@
 					<!-- Quick Start -->
 					<div class="box" style="margin-right: 20px; width: 320px;">
 						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 31.5em;">
+						<div class="content" style="height: 30em;">
 							<div class="links">
 								<p class="heading" style="margin-left: 1em; margin-bottom: 1em; text-align: left;">
 									Use myExperiment to...
@@ -58,12 +60,10 @@
 										<img src="images/redmond_studio/add_16.png" alt="Share Your Workflows and Files"/>
 										<b>Share Your <a href="/workflows/new">Workflows</a> and <a href="/files/new">Files</a></b>
 									</li>
-									<!-- 
 									<li>
 										<img src="images/manhattan_studio/folder-closed_16.png" alt="Create and Find Packs of Items"/>
 										<b><a href="/packs/new">Create</a> and Find <a href="/packs">Packs</a> of Items</b>
 									</li>
-									-->
 									<li>
 										<img src="images/famfamfam_silk/group.png" alt="Create and Join Groups"/>
 										<b><a href="/groups/new">Create</a> and Join <a href="/groups">Groups</a></b>
@@ -101,27 +101,26 @@
 					<!-- Quick Links -->
 					<div class="box" style="margin-right: 20px; width: 280px;">
 						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 31.5em; text-align: center;">
-							<div class="links">
-								<p style="margin-bottom: 1.5em;">
-									<a href="/home">
-										<img src="images/letmein-button.png" alt="Explore button"/>
-									</a>
-								</p>
-								<p style="margin-bottom: 1.5em;">
-									<a href="/workflows">
-										<img src="images/findworkflows-button.png" alt="Find Workflows button"/>
-									</a>
-								</p>
-								
-								<p class="heading2">
-									Project Links
-								</p>
+						<div class="content" style="height: 30em; text-align: center;">
+							
+							<center>
+								<a href="/home" alt="Explore button" title="Explore myExperiment" class="letmein_button">
+								</a>
+							</center>
+							<center>
+								<a href="/workflows" alt="Find Workflows button" title="Find Workflows on myExperiment" class="findworkflows_button">
+								</a>
+							</center>
+							
+							<p class="heading2">
+								Project Links
+							</p>
+							<div class="links" style="font-size: 93%;">
 								<p style="margin-top: 1em;"><a href="http://wiki.myexperiment.org/" target="_blank">myExperiment Wiki</a></p>
 								<p><a href="http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss" target="_blank">Mailing List</a></p>
 								<p><a href="/feedback">Give us Feedback</a></p>
 								<p><a href="http://www.mygrid.org.uk" target="_blank">myGrid</a></p>
-								<p><a href="http://taverna.sourceforge.net/k" target="_blank">Taverna Workflow Workbench</a></p>
+								<p><a href="http://taverna.sourceforge.net/" target="_blank">Taverna Workflow Workbench</a></p>
 								<p><a href="http://www.semanticgrid.org/myexperiment/" target="_blank">myExperiment Publications</a></p>
 							</div>
 						</div>
@@ -131,48 +130,56 @@
 					<!-- Register / Login -->
 					<div class="box" style="width: 230px;">
 						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 31.5em;">
-							<div class="links">
-								<p>
-									<a href="/users/new">
-										<img src="images/register-button.png" alt="Register / Sign Up button"/>
+						<div class="content" style="height: 30em;">
+								<center>
+									<a href="/users/new" alt="Register button" title="Register for an account on myExperiment" class="register_button">
 									</a>
+								</center>
+								<p style="font-size: 108%; margin: 0.8em 0 0.2em 0; text-align: center;">
+									<b>or Login:</b>
 								</p>
-								<p><b>or Login:</b></p>
-							</div>
 							<div id="login">
                 <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
                 <div class="login">
                   <form action="/session" method="post">
 										<p>
-                      <label for="username">
+                      <label for="session[username]">
                           Username or Email:
                       </label>
-											<br/>
+										</p>
+										<p>
                       <input id="session[username]" name="session[username]" type="text"/>
-											<br/>
-											<label for="password">
+										</p>
+										<p>
+											<label for="session[password]">
                           Password:
                       </label>
-											<br/>
+										</p>
+										<p>
                       <input id="session[password]" name="session[password]" type="password"/>
-                      <label for="remember_me">
+										</p>
+										<p>
+                      <label for="session[remember_me]">
                           Remember me:
                       </label>
                       <input id="session[remember_me]" name="session[remember_me]" value="1" type="checkbox"/>
                     </p>
-                    <p style="margin: 0.4em 0; border: 0px dotted #999999; border-width: 1px 0;">
-                      <label for="openid_url">
-                          Or use OpenID:
-                      </label>
-                      <input id="openid_url" name="openid_url" type="text" style="width: 150px;"/>
-											<br/>
-											<span style="font-size: 77%; color: #333333;">(eg: name.myopenid.com)</span>
+                    <div style="margin-top: 0.8em; border: 0px dotted #999999; border-width: 1px 0; padding: 0.2em 0;">
+	                    <p>  
+												<label for="openid_url">
+	                          Or use OpenID:
+	                      </label>
+											</p>
+											<p>
+	                      <input id="openid_url" name="openid_url" type="text" style="width: 150px;"/>
+												<br/>
+												<span style="font-size: 77%; color: #333333;">(eg: name.myopenid.com)</span>
+	                    </p>
+										</div>
+                    <p style="margin-top: 0.8em;">
+                      <input name="commit" value="" type="submit" class="submit" title="Log in to myExperiment"/>
                     </p>
-                    <p>
-                      <input name="commit" value="" type="submit" class="submit"/>
-                    </p>
-										<p style="font-size: 85%;">
+										<p style="font-size: 85%; margin-top: 1em;">
 											<b><a href="/users/forgot_password">Forgot Password?</a></b>
 										</p>
                   </form>
@@ -186,7 +193,7 @@
 					<br class="clearer">&nbsp;</br>
 					
 					<div class="stats">
-						myExperiment has over 800 users, 150 workflows and 75 groups
+						myExperiment has over 850 users, 200 workflows and 80 groups
 					</div>
 					
 					<!-- About -->
@@ -238,7 +245,7 @@
               </p>
 							<p>
 								myExperiment is part of the <a href="http://www.mygrid.org.uk" target="_blank">myGrid</a> consortium, 
-								which develops the <a href="http://www.mygrid.org.uk/index.php?module=pagemaster&PAGE_user_op=view_page&PAGE_id=44" target="_blank">Taverna Workflow Workbench</a> 
+								which develops the <a href="http://taverna.sourceforge.net/" target="_blank">Taverna Workflow Workbench</a> 
 								for creating and executing scientific workflows, 
 								and also builds on <a href="http://www.combechem.org/" target="_blank">CombeChem</a> - two of the original UK e-Science Pilot Projects. 
 								The related WHIP (<a href="http://www.trianacode.org/" target="_blank">Triana</a> enactment) 
@@ -251,8 +258,11 @@
 					<!-- Latest Announcements -->
 					<div class="box" style="width: 190px;">
 						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 27em; padding: 0.3em 0.8em;">
+						<div class="content" style="height: 27em; padding: 0.4em 0.8em;">
 							<p class="heading">
+								<a href="/announcements.rss" style="margin-right: 0.3em;">
+									<img src="/images/feed-icon.png" alt="Subscribe to site announcements icon" title="Subscribe to site announcements RSS feed" />
+								</a>
 								Announcements
 							</p>
 							<ul id="announcements">

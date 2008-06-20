@@ -17,7 +17,7 @@ class Blob < ActiveRecord::Base
   acts_as_attributor
   acts_as_attributable
   
-  acts_as_solr(:fields => [:title, :local_name, :body, :content_type, :uploader],
+  acts_as_solr(:fields => [:title, :local_name, :body, :content_type, :uploader, :tag_list],
                :include => [ :comments ]) if SOLR_ENABLE
 
   validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]

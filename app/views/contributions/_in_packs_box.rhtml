@@ -1,0 +1,53 @@
+<% packs = contributable.in_packs -%>
+<div class="contribution_section_box">
+	<p class="heading">
+		<%= info_icon_with_tooltip("All the Packs that this item (or versions of this item [if available]) is referred to in") -%>
+		Featured In Packs  <span class="count_text">(<%= packs.length -%>)</span>
+	</p>
+	<% unless packs.empty? %>
+		<div style="font-size: 85%;">
+			<ul class="items">
+				<% packs.each do |p| %>
+					<li>
+						<% if thing_authorized?('show', p) -%>
+							<%= icon('pack', nil, nil, nil, '') %>
+							<%= contributable(p.id, 'Pack') %>
+						<% else -%>
+							<span class="none_text">Private pack</span>
+						<% end -%>
+					</li>
+				<% end %>
+			</ul>
+		</div>
+	<% else %>
+		<p class="none_text">None</p>
+	<% end %>
+	
+	<% if logged_in? -%>
+		<% user_packs = current_user.packs -%>
+		<% unless user_packs.empty? -%>
+			<div class="fold">
+				<div class="foldTitle">Add to your Pack</div>
+				<div class="foldContent" style="display: none;">
+					<form onsubmit="redirectToAddToPack(); return false;" style="text-align: center;">
+						<p>
+				    	<select id="add_to_pack_selection" style="width: 99%;">
+					  		<% user_packs.each do |p| -%>
+									<% show = (contributable.class.to_s == 'Pack' ? (p.id != contributable.id) : true) -%>
+									<% if show -%>
+						    		<option value="<%= url_for(:controller => 'packs', :action => 'new_item', :id => p.id, :uri => contributable_url) -%>">
+						      		<%= h(p.title) -%>
+						    		</option>
+									<% end -%>
+					  		<% end -%>
+							</select>
+						</p>
+						<%= submit_tag "Next" -%>
+					</form>
+				</div>
+			</div>
+		<% end -%>
+	<% else -%>
+		<p><small><b><%= link_to "Log in", new_session_url -%></b> to add to one of your Packs</small></p>
+	<% end -%>
+</div>

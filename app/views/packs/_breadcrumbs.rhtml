@@ -1,26 +1,28 @@
 <li><%= link_to 'Packs', packs_path %></li>
 
-<% if ["show", "new", "edit", "all", "new_item", "edit_item"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit", "all", "new_item", "edit_item", "search"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
     <li><%= link_to "#{contributable_name(@pack.id, 'Pack')}", pack_path(@pack) %></li>
   <% when "new" %>
-    <li><%= link_to "New Pack", new_pack_path %></li>
+    <li>New Pack</li>
   <% when "edit" %>
 		<li><%= link_to "#{contributable_name(@pack.id, 'Pack')}", pack_path(@pack) %></li>
 		<li><b>&#187;</b></li>
-    <li><%= link_to "Manage", edit_pack_path(@pack) %>
+    <li>Manage</li>
 	<% when "new_item" %>
 		<li><%= link_to "#{contributable_name(@pack.id, 'Pack')}", pack_path(@pack) %></li>
 		<li><b>&#187;</b></li>
-    <li><%= link_to "Add New Item", new_item_pack_path(@pack) %>
+    <li>Add New Item</li>
 	<% when "edit_item" %>
 		<li><%= link_to "#{contributable_name(@pack.id, 'Pack')}", pack_path(@pack) %></li>
 		<li><b>&#187;</b></li>
-    <li><%= link_to "Edit Item", edit_item_pack_path(@pack) %>
+    <li>Edit Item Entry</li>
   <% when "all" %>
-    <li><%= link_to "All Packs", all_packs_path %>
+    <li>All Packs</li>
+	<% when "search" %>  
+    <li>Search Results</li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>
