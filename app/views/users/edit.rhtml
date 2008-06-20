@@ -1,132 +1,153 @@
 <% t "Manage Account" -%>
-
 <h1>Manage Account</h1>
-
 <%= error_messages_for :user %>
-
-<h2>Name</h2>
-
+<h2>Display Name</h2>
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
-	<p>
-    <b>Name:</b><br />
+<p style="margin-left: 0.1cm">
+    <b>Display Name:</b>
+    <br/>
     <%= f.text_field :name %>
-  </p>
-  
-  <p>
+</p>
+<p style="margin-left: 0.1cm">
     <%= submit_tag "Save", :disable_with => 'Saving...' %>
-  </p>
+</p>
 <% end %>
-
 <br/>
 <br/>
-
-<h2>Username & Password</h2>
-
-<p>As well as your OpenID, you can also set a username and password if you want.</p>
-
-<% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
-	<p>
-    <b>Username:</b><br />
-    <%= f.text_field :username %>
-  </p>
-	
-	<p>
-    <b>New Password:</b><br />
-    <%= f.password_field :password %>
-  </p>
-    
-  <p>
-    <b>Confirm New Password:</b><br />
-    <%= f.password_field :password_confirmation %>
-  </p>
-
-  <p>
-    <%= submit_tag "Save", :disable_with => 'Saving...' %>
-  </p>
-<% end %>
-
-<br/>
-<br/>
-
+<h2>User Authentication</h2>
+<p style="text-align: center; line-height: 1.5;">
+    You have two options to log in: using a myExperiment username and password <b>OR</b> OpenID login details.
+    <br/>
+    <i>Your account can have either of these or even both registered, as below.</i>
+</p>
+<center>
+<table>
+    <tr style="vertical-align: top;">
+        <td style="width: 50%;">
+            <h2 style="width: 275px">myExperiment username / password</h2>
+            <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+            <center>
+						<div style="width: 72%">
+                <p style="text-align: left;">
+                    <b>Username:</b>
+                    <br/>
+                    <%= f.text_field :username, :size => 30 %>
+                </p>
+                <p style="text-align: left;">
+                    <b>New Password:</b>
+                    <br/>
+                    <%= f.password_field :password, :size => 30 %>
+                </p>
+                <p style="text-align: left;">
+                    <b>Confirm New Password:</b>
+                    <br/>
+                    <%= f.password_field :password_confirmation, :size => 30 %>
+                </p>
+                <p style="text-align: center;">
+                    <%= submit_tag "Save", :name => "save_password", :disable_with => 'Saving...' %>
+                </p>
+            </div>
+						</center>
+            <% end %>
+        </td>
+        <td style="width: 50%;">
+            <h2 style="width: 275px">OpenID account</h2>
+						<center>
+						<div style="width: 77%">
+            <%= render "openid/new" %>
+						</div>
+						</center>
+        </td>
+    </tr>
+</table>
+</center>
 <h2>Email</h2>
-
 <p style="font-size: 85%;">
-	<%= link_to_function "Why should I provide an email address?" + expand_image, visual_effect(:toggle_blind, "email_why", :duration => 0.3) %>
+    <%= link_to_function "Why should I provide an email address?" + expand_image, visual_effect(:toggle_blind, "email_why", :duration => 0.3) %>
 </p>
 <div id="email_why" class="box_standout" style="display: none;">
-	<ul style="margin-top: 0.1em;">
-		<li>So you can receive email notifications for friendship requests, group invitations and so on [optional].</li>
-		<li>So you can reset your password in case you have forgotten it (only for accounts with a username/password).</li>
-	</ul>
-	<p>Note that:</p>
-	<ul style="margin-top: 0.1em;">
-		<li>This email address is a different setting to the public email address in your Profile.</li> 
-		<li>We require confirmation of any new email address set here (through a confirmation email). Once confirmed, the new email address will replace the old one.</li>
-		<lI>You can log on with this email address and your password, if you have a username and password set.</lI>
-	</ul>
+    <ul style="margin-top: 0.1em;">
+        <li>
+            So you can receive email notifications for friendship requests, group invitations and so on [optional].
+        </li>
+        <li>
+            So you can reset your password in case you have forgotten it (only for accounts with a username/password).
+        </li>
+    </ul>
+    <p>
+        Note that:
+    </p>
+    <ul style="margin-top: 0.1em;">
+        <li>
+            This email address is a different setting to the public email address in your Profile.
+        </li>
+        <li>
+            We require confirmation of any new email address set here (through a confirmation email). Once confirmed, the new email address will replace the old one.
+        </li>
+        <lI>
+            You can log on with this email address and your password, if you have a username and password set.
+        </lI>
+    </ul>
 </div>
-
 <br/>
-
 <% if @user.errors.count == 0 # Note: this means that this section will not show when validation fails in another part of the page (yuck). %>
-	<p><b>Current Email:</b></p>
-	<% if @user.email.blank? and @user.unconfirmed_email.blank? %>
-		<p>You do not have an email address registered (or awaiting confirmation).</p>
-	<% else %>
-		<% unless @user.email.blank? %>
-			<p>Your registered email address is: <%= h @user.email %></p>
-		<% end %>
-		<% unless @user.unconfirmed_email.blank? %>
-			<p>We are awaiting confirmation for a new email address: <%= h @user.unconfirmed_email %></p>
-		<% end %>
-	<% end %>
+<p>
+    <b>Current Email:</b>
+</p>
+<% if @user.email.blank? and @user.unconfirmed_email.blank? %>
+<p>
+    You do not have an email address registered (or awaiting confirmation).
+</p>
+<% else %>
+<% unless @user.email.blank? %>
+<p>
+    Your registered email address is: <%= h @user.email %>
+</p>
 <% end %>
-
+<% unless @user.unconfirmed_email.blank? %>
+<p>
+    We are awaiting confirmation for a new email address: <%= h @user.unconfirmed_email %>
+</p>
+<% end %>
+<% end %>
+<% end %>
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
-	<p>
-	  <b>New Email:</b>
-		<br/>
-		<%= f.text_field :unconfirmed_email %>
-	</p>
-	<p style="font-size: 85%; color: #333333;">
-		Before submitting, please check that you have spelt it correctly. 
-	</p>
-	
-	<p class="box_infotext" style="margin-left: 0;">
-		When you click 'Submit' below, an email will be sent to you with a confirmation link. 
-		Your new email address will only be registered once this confirmation link has been followed.
-	</p>
-	
-	<p>
+<p>
+    <b>New Email:</b>
+    <br/>
+    <%= f.text_field :unconfirmed_email %>
+</p>
+<p style="font-size: 85%; color: #333333;">
+    Before submitting, please check that you have spelt it correctly. 
+</p>
+<p class="box_infotext" style="margin-left: 0;">
+    When you click 'Submit' below, an email will be sent to you with a confirmation link. 
+    Your new email address will only be registered once this confirmation link has been followed.
+</p>
+<p>
     <%= submit_tag "Submit", :disable_with => 'Submitting...' %>
-  </p>
+</p>
 <% end %>
-
 <br/>
 <br/>
-
 <h2>Notifications</h2>
-
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
-	<p>
-		Note that in order to receive email notifications, you need to have an email address registered on your account.
-	</p>
-
-	<table style="border-spacing: 0; margin: 0;">
-		<tr>
-			<td style="text-align: left; vertical-align: top; padding-left: 0;"><%= f.check_box :receive_notifications %></td>
-			<td style="text-align: left;">I would like to receive email notifications for events that relate to me</td>
-		</tr>
-	</table>
-	
-	<p>
+<p>
+    Note that in order to receive email notifications, you need to have an email address registered on your account.
+</p>
+<table style="border-spacing: 0; margin: 0;">
+    <tr>
+        <td style="text-align: left; vertical-align: top; padding-left: 0;">
+            <%= f.check_box :receive_notifications %>
+        </td>
+        <td style="text-align: left;">
+            I would like to receive email notifications for events that relate to me
+        </td>
+    </tr>
+</table>
+<p>
     <%= submit_tag "Save", :disable_with => 'Saving...' %>
-  </p>
+</p>
 <% end %>
-
 <br/>
 <br/>
-
-<h2>OpenID</h2>
-
-<%= render "openid/new" %>

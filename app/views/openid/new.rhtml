@@ -1,6 +1,7 @@
 <p>
   <b>Current OpenID:</b><br />
-  <%= current_user.openid_url || "Not created yet" %>
+  <p title="<%= tooltip_title_attrib(current_user.openid_url) %>" ><%= truncate(h(current_user.openid_url), 30) || "Non-attached yet" %></P>
+	
 </p>
 
 <div id="myexp_login">
@@ -8,7 +9,7 @@
   
     <p>
       <b>New OpenID:</b><br />
-      <%= text_field_tag 'openid_url', nil, :size => '40' %> 
+      <%= text_field_tag 'openid_url', nil, :size => '30' %> 
     </p>
     
     <%= submit_tag 'Validate', :disable_with => "Validating..." %>
