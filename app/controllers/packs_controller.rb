@@ -253,8 +253,11 @@ class PacksController < ApplicationController
             # Nothing to update specifically here
           when 'remote'
             entry.title = params[:title]
-            entry.uri = params[:uri]
-            entry.alternate_uri = params[:alternate_uri]
+            
+            # check that a protocol is specified in the URI; prepend HTTP:// otherwise
+            # \A[a-z]+:// - Matches '<protocol>://<address>'
+            entry.uri = params[:uri].match(/\A[a-z]+:\/\//) ? params[:uri] : ("http://" + params[:uri])
+            entry.alternate_uri = params[:alternate_uri].match(/\A[a-z]+:\/\//) ? params[:alternate_uri] : ("http://" + params[:alternate_uri])   
         end
         
         entry.comment = params[:comment]
