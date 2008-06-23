@@ -1,0 +1,12 @@
+xml.instruct!
+
+xml.rss "version" => "2.0", 'xmlns:opensearch' => "http://a9.com/-/spec/opensearch/1.1/", 'xmlns:atom' => "http://www.w3.org/2005/Atom" do
+  xml.channel do
+    xml.title "myExperiment.org - Pack: #{h @pack.title} - Items"
+    xml.link pack_url(@pack)
+    xml.language "en-us"
+    xml.ttl "60"
+    xml.description "RSS feed listing all the items in the pack: #{h @pack.title}."
+    render(:partial => "layouts/pack_items", :locals => { :pack => @pack, :xm => xml })
+  end
+end

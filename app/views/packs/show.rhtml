@@ -56,7 +56,7 @@
 	<div class="contribution_version_box" style="background-color: #EEEEEE;">
 		<div class="contribution_version_inner_box">
 			<h4>
-				<%= image_tag "spinner.gif", :id => "refresh_indicator1", :style => "display: none; float: right; vertical-align: top;" -%>
+				<%= feed_icon_tag "RSS feed for items in this pack", formatted_items_pack_path(@pack, :rss), "float: right;" %>
 				<%= info_icon_with_tooltip("This section shows all the items that are pointed to in this pack. This can be a combination of internal and external items.") -%>
 				Items <span class="count_text">(<%= @pack.items_count -%>)</span>
 			</h4>

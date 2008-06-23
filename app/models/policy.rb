@@ -116,7 +116,8 @@ private
                                   "tag", 
                                   "view", 
                                   "comments_timeline", 
-                                  "comments"],
+                                  "comments",
+                                  "items"],
                    "owner" =>    ["destroy",
                                   "destroy_item"] } # you don't need a boolean column for this but you do need to categorize 'owner only' actions!
   

@@ -4,7 +4,7 @@
 # See license.txt for details.
 
 class PacksController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :all, :search]
+  before_filter :login_required, :except => [:index, :show, :all, :search, :items]
   
   before_filter :find_packs, :only => [:all]
   before_filter :find_pack_auth, :except => [:index, :new, :create, :all, :search]
@@ -322,7 +322,6 @@ class PacksController < ApplicationController
     end
   end
   
-  # POST /packs/resolve_link
   def resolve_link
     respond_to do |format|
       if params[:uri].blank?
@@ -335,6 +334,12 @@ class PacksController < ApplicationController
       end
       
       format.html { render :partial => "after_resolve", :locals => { :error_message => @error_message, :type => @type, :item_entry => @item_entry } }
+    end
+  end
+  
+  def items
+    respond_to do |format|
+      format.rss { render :action => 'items.rxml', :layout => false }
     end
   end
   

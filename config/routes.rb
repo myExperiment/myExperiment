@@ -60,7 +60,8 @@ ActionController::Routing::Routes.draw do |map|
                  :update_item => :put,
                  :destroy_item => :delete,
                  :quick_add => :post,
-                 :resolve_link => :post } do |pack|
+                 :resolve_link => :post,
+                 :items => :get } do |pack|
     # No nested resources yet
   end
     
