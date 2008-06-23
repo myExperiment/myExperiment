@@ -32,7 +32,8 @@
 
   <p>
     <center>
-    	<%= submit_tag "Update",:disable_with => "Updating..." %> 
+    	<%= submit_tag "Update",:disable_with => "Updating..." %>
+			or <%= link_to("Cancel", :controller => 'packs', :action => 'show', :id => @pack.id ) %>
 		</center>
   </p>
 <% end %>
