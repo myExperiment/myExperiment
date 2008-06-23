@@ -253,6 +253,7 @@ class PacksController < ApplicationController
             # Nothing to update specifically here
           when 'remote'
             entry.title = params[:title]
+            entry.uri = params[:uri]
             entry.alternate_uri = params[:alternate_uri]
         end
         

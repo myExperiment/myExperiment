@@ -26,6 +26,9 @@
 				<p><b>Title</b></p>
 				<%= text_field_tag "title", params[:title] || @item_entry.title, :size => 83 -%>
 				
+				<p><b>Link</b></p>
+				<%= text_field_tag "uri", params[:uri] || @item_entry.uri, :size => 83 -%>
+				
 				<p>
 					<%= info_icon_with_tooltip("An alternative link to the item, in case the first link doesn't work.") -%>
 					<b>Alternate link</b> (optional) 
@@ -44,7 +47,7 @@
 			<br/><br/>
 			<center>
 				<%= submit_tag "Update", :disable_with => "Updating..." -%>
-				<br/>
+				<br>
 				or <b><%= link_to "Return to Pack", pack_url(@pack) -%></b>
 			</center>
 		
