@@ -108,7 +108,7 @@ class Pack < ActiveRecord::Base
       end
       
       if is_remote
-        entry = PackRemoteEntry.new(:title => link, :uri => link)
+        entry = PackRemoteEntry.new(:title => "Link: (#{link})", :uri => link)
         type = 'remote'
       end
       
