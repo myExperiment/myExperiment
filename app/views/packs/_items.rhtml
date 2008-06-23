@@ -111,7 +111,7 @@
 											<%= edit_item_button(pack.id, "remote", e.id) -%>
 										<% end -%>
 									<b>External:</b>
-									<%= link_to h(e.title), h(e.uri), :popup => true, :title => tooltip_title_attrib("URL - #{h(e.uri)}<br>Click to open the link in a new window" ) %>
+									<%= "#{h(e.title)} - (" %><%= link_to h(e.uri), h(e.uri), :popup => true %><%= ")" %>
 								</p>
 								<div class="inner">
 									<% unless e.alternate_uri.blank? -%>

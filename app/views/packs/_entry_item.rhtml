@@ -27,7 +27,7 @@
 		<% end -%>
 	<% elsif type == 'remote' -%>
 		<p style="text-align: center;">
-			<b><%= link_to h(item_entry.title), h(item_entry.uri), :popup => true %></b>
+			<%= link_to h(item_entry.uri), h(item_entry.uri), :popup => true %>
 		</p>
 	<% end -%>
 <% end -%>
