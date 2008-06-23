@@ -37,7 +37,7 @@ root> apt-get install make ruby libzlib-ruby rdoc irb rubygems
 root> gem install rails --version=1.2.6
 
 * Then install the following Debian packages: 
-root> apt-get install libapache2-mod-fcgid libfcgi-ruby1.8 libmysql-ruby
+root> apt-get install libapache2-mod-fcgid libfcgi-ruby1.8 libmysql-ruby ruby1.8-dev build-essential
 
 * MyExperiment requires the RMagick GEM. This can cause some problems on Debian.
   
@@ -48,14 +48,13 @@ root> apt-get install libapache2-mod-fcgid libfcgi-ruby1.8 libmysql-ruby
   root> apt-get install graphicsmagick imagemagick librmagick-ruby1.8 libmagick9-dev
 
 * Now all the GEMs required by MyExperiment can be installed: 
-root> gem install builder cgi_multipart_eof_fix daemons dsl_accessor fastthread gem_plugin hoe json mime-types mongrel mongrel_cluster  
-    needle net-sftp net-ssh openid_login_generator RedCloth rmagick ruby-openid ruby-yadis solr-ruby xml-simple
+root> gem install cgi_multipart_eof_fix daemons dsl_accessor fastthread gem_plugin hoe json mime-types mongrel mongrel_cluster  
+    needle net-sftp net-ssh openid_login_generator RedCloth rmagick ruby-openid ruby-yadis solr-ruby xml-simple --include-dependencies
+    * During this process you may be requested to select one of a set of versions to install, choose the latest version suffixed with "(ruby)"
+    * If you have problems install these gems all in one go, try installing them in smaller subsets or one at a time if needs be.
 
-* If you get some errors during the gem install procedure, you might want to add 2 extra packages and retry the step above:
-root >apt-get install build-essential ruby1.8-dev
-
-* Unfortunately, the Taverna GEM cannot be installed from a remote source, therefore it is included in the codebase. The gem can then be installed by using the following command from /vendor/gems/taverna/ directory: 
-root> gem install taverna-0.5.0.gem
+* Unfortunately, the Taverna GEM cannot be installed from a remote source, therefore it is included in the code-base which now needs to be downloaded.  The myExperiment code-base is stored within an SVN, so first SVN needs to be installed.
+root> apt-get install subversion 
 
 * Now the system environment is ready for the MyExperimemt code base but first SVN needs to be installed so that the codebase can be downloaded. 
 root> apt-get install subversion
@@ -67,6 +66,9 @@ root> svn checkout svn://rubyforge.org/var/svn/myexperiment
 
 * To ensure that the downloaded file have the correct ownership run the following chown command over the downloaded SVN. (Where username is your username): 
 root> chown -R username:www-data /var/rails/
+
+* Now the Taverna GEM can be installed by using the following command from /trunk/vendor/gems/taverna/ directory:
+root> gem install taverna-0.5.0.gem
 
 * Now load up a mysql shell and create three databases as follows: 
 mysql> create database m2_development;
