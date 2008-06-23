@@ -62,4 +62,8 @@ class PackContributableEntry < ActiveRecord::Base
       end
     end
   end
+  
+  def available?
+    return (self.contributable != nil)
+  end
 end

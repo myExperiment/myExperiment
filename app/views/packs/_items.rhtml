@@ -11,8 +11,7 @@
 			
 			<!-- Contributable Item Entries -->
 			<% pack.contributable_entries.each do |e| %>
-				<% available = (e.contributable != nil) -%>
-				<% show = available ? thing_authorized?('show', e.contributable) : false -%>
+				<% show = e.available? ? thing_authorized?('show', e.contributable) : false -%>
 				<li>
 					<table>
 						<tr>
@@ -24,6 +23,7 @@
 								<% end -%>
 							</td>
 							<td>
+								<a name='<%= "item_contributable_#{e.id}" -%>'></a>
 								<p>
 									<% if mine?(pack) -%>
 										<%= remove_item_button(pack.id, "contributable", e.id) -%>
@@ -47,7 +47,7 @@
 										
 									<% else -%>
 										
-										<% if not available -%>
+										<% if not e.available? -%>
 											<font class="none_text">
 												The item this entry points to is not available. It may have been deleted.
 											</font>
@@ -61,7 +61,7 @@
 								</p>
 								<div class="inner">
 									<% unless e.comment.blank? -%> 
-										<% if show or not available -%>
+										<% if show or not e.available? -%>
 											<p class="comment">
 												<%= icon('comment', nil, nil, nil, nil) -%>
 												<%= h e.comment -%>
@@ -102,6 +102,7 @@
 								<%= icon('remote', nil, 'External item', nil, nil) -%>
 							</td>
 							<td>
+								<a name='<%= "item_remote_#{e.id}" -%>'></a>
 								<p>
 									<% if mine?(pack) -%>
 										<%= remove_item_button(pack.id, "remote", e.id) -%>
