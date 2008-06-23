@@ -211,10 +211,10 @@ class PacksController < ApplicationController
         if errors.empty?
           @item_entry.comment = params[:comment]
           if @item_entry.save
-            flash[:notice] = "Item succesfully added to pack. You can now add edit it and add more metadata here (or click 'cancel')"
+            flash[:notice] = "Item succesfully added to pack. You can now edit it and add more metadata here (or click 'Return to Pack')"
             format.html { redirect_to url_for({ :controller => "packs", :id => @pack.id, :action => "edit_item", :entry_type => @type, :entry_id => @item_entry.id }) }
           else
-            flash.now[:error] = "Failed to add item to pack. See any errors below. You may also need to first 'check' the link before adding it, or provide a valid link."
+            flash.now[:error] = "Failed to add item to pack. See any errors below."
             format.html { render :action => "new_item" }
           end
         else
@@ -223,7 +223,7 @@ class PacksController < ApplicationController
           format.html { render :action => "new_item" }
         end
       else
-        flash.now[:error] = "Failed to add item to pack. You may need to first 'check' the link before adding it, or provide a valid link."
+        flash.now[:error] = "Failed to add item to pack."
         format.html { render :action => "new_item" }
       end
     end

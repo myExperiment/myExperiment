@@ -10,7 +10,7 @@
 							     :loading => "Element.show('spinner')",
                    :complete => "Element.hide('spinner'); $('uri2').value = $('uri').value") do -%>
 
-	<p class="step_text" style="text-align: center;">1. Type or paste in a link to something (on myExperiment or elswhere) and check it...</p>
+	<p class="step_text" style="text-align: center;">1. Type or paste in a link to something (on myExperiment or elsewhere) and (optionally) check it...</p>
 	
 	<center>
 		<div class="box_form" style="width: 550px; text-align: center;">
@@ -25,8 +25,8 @@
 <% end -%>
 
 <div id="resolved_entry" style="border: 1px solid #CCCCCC; margin: 1.5em 0; padding: 0.4em; background-color: #F5F5F5;">
-	<% if @item_entry -%>
-		<%= render :partial => "after_resolve", :locals => { :error_message => @error_message, :type => @type, :item_entry => @item_entry } -%>
+	<% if params[:uri] -%>
+	  <%= render :partial => "after_resolve", :locals => { :error_message => @error_message, :type => @type, :item_entry => @item_entry } -%>
 	<% end -%>
 </div>
 
@@ -52,6 +52,9 @@
 		<small>(if successful you will be taken to an edit page where you may be able to add more metadata).</small>
 	</p>
 	
-	<center><%= submit_tag "Add", :disable_with => "Adding..." -%></center>
+	<center>
+		<!-- <input name="commit" onclick="this.disabled=true;this.value='Adding...';this.form.submit();" type="submit" value="Add" /> -->
+		<input name="commit" onclick="$('uri2').value = $('uri').value;" type="submit" value="Add" />
+  </center>
 
 <% end -%>
