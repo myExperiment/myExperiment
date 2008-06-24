@@ -45,40 +45,40 @@ protected
   end
   
   def find_tag_and_tagged_with
-    begin
-      @tag = Tag.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      error("Tag not found", "is invalid")
-    end
+    @tag = Tag.find(:first, :conditions => ["id = ?", params[:id]])
     
-    @tagged_with = []
-    taggings = []
-    @internal_type = parse_to_internal_type(params[:type])
-    
-    if @internal_type
-      # Filter by the type
-      taggings = Tagging.find(:all, 
-                               :conditions => [ "tag_id = ? AND taggable_type = ?", @tag.id, @internal_type],
-                               :order => "taggable_type DESC") 
-    else
-      # Get all taggings
-      taggings = @tag.taggings
-    end
-    
-    # Authorise entries now
-    taggings.each do |t|
-      if t.taggable.respond_to?(:contribution)
-        @tagged_with << t.taggable if t.taggable.contribution.authorized?("show", current_user)
+    if @tag
+      @tagged_with = []
+      taggings = []
+      @internal_type = parse_to_internal_type(params[:type])
+      
+      if @internal_type
+        # Filter by the type
+        taggings = Tagging.find(:all, 
+                                 :conditions => [ "tag_id = ? AND taggable_type = ?", @tag.id, @internal_type],
+                                 :order => "taggable_type DESC") 
       else
-        @tagged_with << t.taggable
+        # Get all taggings
+        taggings = @tag.taggings
       end
+      
+      # Authorise entries now
+      taggings.each do |t|
+        if t.taggable.respond_to?(:contribution)
+          @tagged_with << t.taggable if t.taggable.contribution.authorized?("show", current_user)
+        else
+          @tagged_with << t.taggable
+        end
+      end
+    else
+      error("Tag not found", "is invalid")
     end
   end
   
 private
 
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Tag.new.errors).add(attr, message)
     
     respond_to do |format|
