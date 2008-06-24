@@ -1,6 +1,9 @@
 <% t "Manage Account" -%>
 <h1>Manage Account</h1>
 <%= error_messages_for :user %>
+<% unless @user.errors.empty? -%>
+	<%= link_to "Reset the form to the last saved correct state", edit_user_path(@user) -%>
+<% end -%>
 <h2>Display Name</h2>
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
 <%= hidden_field_tag(:update_type, "upd_t_displname") -%>

@@ -4,8 +4,16 @@
 	Note: information you enter on this page will be visible to everyone (ie: will be public), but all fields are optional.
 </p>
 
-<h2>Your display picture</h2>
-
+<h2>Your profile pictures</h2>
+<ul class="sectionIcons">
+  <li><%= icon("pictures", pictures_path(@user), nil, nil, "Manage Profile Pictures") %></li>
+	<li><%= icon('avatar', new_picture_path(@user) + "?return_to=" + edit_profile_path(current_user.id), nil, nil, 'Upload New Profile Pic')%></li>
+</ul>
+	
+<p class="box_standout" style="text-align: center; padding: 0.3em 0.5em; margin: 0.3em 0;">
+	Choose your default display picture using a radio button below a picture and clicking 'Update' at the bottom of the page.
+</p>
+	
 <p>
   <div id="hlist">
     <ul>

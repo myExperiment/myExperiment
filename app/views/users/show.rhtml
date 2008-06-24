@@ -36,8 +36,9 @@
 		    <% unless @user.profile.nil? %>
 					<li><%= icon('edit', edit_profile_path(@user), nil, nil, 'Edit Profile') %></li>
 				<% end %>
-			  <li><%= icon("pictures", pictures_path(@user), nil, nil, "Profile Pictures") %></li>
-		    <li><%= icon('avatar', new_picture_path(@user), nil, nil, 'Upload New Profile Pic')%></li>
+				<!-- next two lines removed, as the functionality was moved inside the 'Edit User Profile' page -->
+			  <!-- <li><%= icon("pictures", pictures_path(@user), nil, nil, "Profile Pictures") %></li> -->
+		    <!-- <li><%= icon('avatar', new_picture_path(@user), nil, nil, 'Upload New Profile Pic')%></li> -->
 			  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
 	    <% end %>
 	</ul>
@@ -74,6 +75,10 @@
 	    <td style="vertical-align: top;">
 				<% if mine? @user -%>
 	      	<%= avatar @user, 160, pictures_path(@user) -%>
+					<br/>
+					<span style="text-align: center; margin-top: 0.5em; font-size: 85%; color: #666666;">
+						[ <%= link_to "Edit Profile Picture", edit_profile_path(@user) %> ]
+					</span>
 				<% else -%>
 					<%= avatar @user, 160 -%>
 				<% end -%>

@@ -86,7 +86,11 @@ class PicturesController < ApplicationController
     respond_to do |format|
       if @picture.save
         flash[:notice] = 'Picture was successfully uploaded.'
-        format.html { redirect_to pictures_url(@picture.user_id) }
+        
+        #format.html { redirect_to pictures_url(@picture.user_id) }
+        # updated to take account of possibly various locations from where this method can be called,
+        # so multiple redirect options are possible -> now return link is passed as a parameter
+        format.html { redirect_to params[:redirect_to] }
       else
         format.html { render :action => "new" }
       end

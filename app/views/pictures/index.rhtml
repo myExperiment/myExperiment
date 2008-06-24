@@ -5,6 +5,7 @@
 <% if my_page? params[:user_id] %>
   <ul class="sectionIcons">
     <li><%= icon('avatar', new_picture_path(current_user), nil, nil, 'Upload New Picture')%></li>
+		<li><%= icon('profile', user_path(current_user), nil, nil, 'Return to Profile')%></li>
   </ul>
 <% end %>
 
