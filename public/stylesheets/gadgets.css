@@ -22,6 +22,10 @@
 	font-size: 93%;
 }
 
+.myexperiment_gadget ul.gadget_list li * {
+	vertical-align: middle;
+}
+
 .myexperiment_gadget .header {
 	border: #CCCCCC 0px solid;
 	border-width: 0 1px 1px 1px;

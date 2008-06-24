@@ -11,7 +11,12 @@
   
   <div id="myexp_usermonitor_gadget_contents" class="contents">
 	<ul class="gadget_list">
-	  <li><%= icon "profile", user_url(current_user), nil, nil, " My Profile" %></li>
+	  <li>
+	  	<%= icon "profile", user_url(current_user), nil, nil, " My Profile" %>
+			<span style="color: #666666; margin-left: 0.5em;">
+				<small>[ <%= link_to "edit", edit_profile_path(current_user) -%> ]</small>
+			</span>
+		</li>
     <li><%= messages_link(current_user, "My Inbox") %></li>
     <li><%= memberships_link(current_user, "My Memberships") %></li>
 	  <li><%= icon "history", userhistory_url(current_user), nil, nil, "My History" %></li>
