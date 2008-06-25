@@ -310,7 +310,7 @@ class BlobsController < ApplicationController
   private
   
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
+    flash[:error] = notice
      (err = Blob.new.errors).add(attr, message)
     
     respond_to do |format|

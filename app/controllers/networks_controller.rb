@@ -197,7 +197,7 @@ protected
                              :host => base_host,
                              :id => @network.id
     rescue ActiveRecord::RecordNotFound
-      error("Network not found", "is invalid (not owner)")
+      error("Group not found", "is invalid (not owner)")
     end 
   end
 
@@ -205,7 +205,7 @@ protected
     begin
       @network = Network.find(params[:id], :conditions => ["networks.user_id = ?", current_user.id], :include => [ :owner, :memberships ])
     rescue ActiveRecord::RecordNotFound
-      error("Network not found (id not authorized)", "is invalid (not owner)")
+      error("Group not found (id not authorized)", "is invalid (not owner)")
     end
   end
   
@@ -223,7 +223,7 @@ protected
 private
 
   def error(notice, message)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Network.new.errors).add(:id, message)
     
     respond_to do |format|

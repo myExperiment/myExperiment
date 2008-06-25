@@ -10,8 +10,11 @@ class SearchController < ApplicationController
     if params[:type].to_s == 'files'
       params[:type] = 'blobs'
     end
-
-    error(params[:type]) unless @@valid_types.include? params[:type]
+    
+    unless @@valid_types.include? params[:type]
+      error(params[:type])
+      return false
+    end
     
     if params[:type] == "all"
       search_all
@@ -25,11 +28,10 @@ private
   @@valid_types = ["all", "workflows", "users", "networks", "blobs", "packs"]
 
   def error(type)
-    flash[:notice] = "#{type} is an invalid search type"
-    (err = BlogPost.new.errors).add(:type, "is an invalid type")
+    flash[:error] = "'#{type}' is an invalid search type"
     
     respond_to do |format|
-      format.html { redirect_to url_for(:controller => type) }
+      format.html { redirect_to url_for(:controller => "home") }
     end
   end
 

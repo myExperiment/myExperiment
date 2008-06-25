@@ -174,7 +174,7 @@ protected
 private
   
   def error(notice, message)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Friendship.new.errors).add(:id, message)
     
     respond_to do |format|
