@@ -52,7 +52,8 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "You have successfully removed this item from your favourites."
-      format.html { redirect_to workflow_url(@workflow) }
+      redirect_url = params[:return_to] ? params[:return_to] : workflow_url(@workflow)
+      format.html { redirect_to redirect_url }
     end
   end
   

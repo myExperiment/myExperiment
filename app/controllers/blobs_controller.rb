@@ -243,7 +243,8 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "You have successfully removed this item from your favourites."
-      format.html { redirect_to file_url(@blob) }
+      redirect_url = params[:return_to] ? params[:return_to] : file_url(@blob)
+      format.html { redirect_to redirect_url }
     end
   end
   

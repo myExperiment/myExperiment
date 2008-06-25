@@ -411,6 +411,15 @@
 			<% bookmarks.each do |b| %>
 				<% if b.bookmarkable %>
         	<%= render :partial => "contributions/table", :locals => { :collection => [b.bookmarkable.contribution] } %>
+					<p style="text-align: right; margin: 0.3em 0 1.5em 0;">
+					  <% if !(remove_bookmarkable_url_value = remove_bookmarkable_url(b.bookmarkable_type, b.bookmarkable_id)).blank? %>
+						  [ <%= link_to(delete_image("vertical-align: middle", "Remove from your favourites") + " Remove from favourites",
+                    				remove_bookmarkable_url_value + "?return_to=" + url_for(:action => 'favourites'),
+                    				:method => :delete,
+                   	  			:confirm => "Are you sure you want to remove this item from your favourites?") -%> 
+							]
+						<% end %>
+					</p>
 				<% end %>
       <% end %>
     <% else %>

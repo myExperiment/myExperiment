@@ -146,7 +146,8 @@ class PacksController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "You have successfully removed this item from your favourites."
-      format.html { redirect_to pack_url(@pack) }
+      redirect_url = params[:return_to] ? params[:return_to] : pack_url(@pack)
+      format.html { redirect_to redirect_url }
     end
   end
   
