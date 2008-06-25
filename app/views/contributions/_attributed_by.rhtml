@@ -1,0 +1,34 @@
+<div class="contribution_section_box">
+	<%  attributions = contributable.attributions -%>
+	<p class="heading" style="margin-bottom: 0; padding-bottom: 0;">
+		<%= info_icon_with_tooltip("Shows files and workflows that have attributed this #{visible_name contributable}.") %>
+		Attributed By <span class="count_text">(<%= attributions.length -%>)</span>
+	</p>
+	<span style="font-size: 85%; color: #666666; display: block; padding: 0.3em 0.5em 0 0.5em; margin: 0; line-height: 1em;">(Workflows/Files)</span>
+	
+		<% unless attributions.empty? %>
+		<div style="font-size: 85%;">
+			<p>
+				<ul class="items">
+					<% attributions.each do |a| %>
+						<li>
+							<% if thing_authorized?('show', a.attributable) -%>
+								<% if a.attributable_type == 'Workflow' %>
+									<%= icon('workflow', nil, nil, nil, '') %> 
+								<% elsif a.attributable_type == 'Blob' %>
+									<%= icon('blob', nil, nil, nil, '') %>
+								<% end %> 
+								<%= contributable(a.attributable_id, a.attributable_type) %>
+							<% else -%>
+								<font class="none_text">Private item</font>
+							<% end -%>
+						</li>
+					<% end %>
+				</ul>
+			</p>
+		</div>
+	<% else %>
+		<p class="none_text">None</p>
+	<% end %>
+	
+</div>

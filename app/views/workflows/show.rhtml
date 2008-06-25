@@ -279,6 +279,8 @@
 	
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @workflow } %>
 	
+	<%= render :partial => "contributions/attributed_by", :locals => { :contributable => @workflow } %>
+	
 	<%= render :partial => "contributions/favourited_box", :locals => { :contributable => @workflow,
 																																			:add_to_favourites_path => favourite_workflow_url(@workflow),
 																																			:remove_from_favourites_path => favourite_delete_workflow_url(@workflow) } %>
