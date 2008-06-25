@@ -68,6 +68,17 @@
 <div class="contribution_right_box">
 	<%= render :partial => "owner_box", :locals => { :network => @network } %>
 	<%= render :partial => "statistics_box", :locals => { :network => @network, :items => @shared_items } %>
+	
+  <div class="contribution_section_box"> <!-- style="width: 130px; padding: 0.4em 0.8em; font-size: 93%;" -->
+		<p>
+			<b>
+				This group has been credited
+				<%= pluralize(@network.creditations.length, "time") -%>
+				<br/>(see tab below)
+	  	</b>
+		</p>
+  </div>	
+	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @network,
 																											 :owner_id => (@network.user_id),  
 																											 :add_path => tag_group_path(@network), 
@@ -99,6 +110,24 @@
 			<p class="none_text">No items have been shared with this Group yet.</p>
 		<% end %>
 	</div>
+</div>
+
+<div class="tabContainer">
+  <div class="tabTitle">Credits (<%= @network.creditations.length -%>)</div>
+  <div class="tabContent">  
+    
+    <% unless (creditations = @network.creditations).empty? %>
+			<%= view_privileges_notice %>
+      <% creditations.each do |c| %>
+				<% if c.creditable %>
+        	<%= render :partial => "contributions/table", :locals => { :collection => [c.creditable.contribution] } %>
+				<% end %>
+      <% end %>
+    <% else %>
+      <p class="none_text">No credits yet</p>
+    <% end %>
+
+  </div>
 </div>
 
 <% if mine? @network %>
