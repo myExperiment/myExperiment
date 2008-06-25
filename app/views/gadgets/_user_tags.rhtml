@@ -6,7 +6,9 @@
   <div class="header">
     <p>
       <b>My Tags</b><br />
-      <small><%= pluralize(tags.length, "tag") %></small>
+      <small>
+				<%= link_to(pluralize(current_user.tags.length, "tag"), currentusers_things_url('tags')) %>
+			</small>
     </p>
   </div>
   

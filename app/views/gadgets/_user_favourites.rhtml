@@ -7,7 +7,9 @@
   <div class="header">
     <p>
       <b>My Favourites</b><br />
-      <small><%= pluralize(bookmarks.length, "favourite") %></small>
+      <small>
+      	<%= link_to(pluralize(current_user.bookmarks.length, "favourite"), currentusers_things_url('favourites')) %>
+			</small>
     </p>
   </div>
     
