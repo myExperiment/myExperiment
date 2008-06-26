@@ -24,6 +24,4 @@ class Blob < ActiveRecord::Base
   validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
   
   format_attribute :body
-  
-  validates_presence_of :data
 end
