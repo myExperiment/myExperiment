@@ -2,6 +2,7 @@
 	myExperiment currently has
 	<%= link_to pluralize(User.count(:conditions => "users.activated_at IS NOT NULL"), "user"), users_url -%>,
 	<%= link_to pluralize(Network.count, "group"), groups_url -%>,
-	<%= link_to pluralize(Workflow.count, "workflow"), workflows_url -%> and
-	<%= link_to pluralize(Blob.count, "file"), files_url -%>.
+	<%= link_to pluralize(Workflow.count, "workflow"), workflows_url -%>,
+	<%= link_to pluralize(Blob.count, "file"), files_url -%> and
+	<%= link_to pluralize(Pack.count, "pack"), packs_url -%>
 </div>
