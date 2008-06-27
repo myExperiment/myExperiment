@@ -10,6 +10,7 @@ class Pack < ActiveRecord::Base
   acts_as_contributable
   
   validates_presence_of :title
+  validates_presence_of :uri
   
   format_attribute :description
   
