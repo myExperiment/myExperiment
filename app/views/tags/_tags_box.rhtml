@@ -19,7 +19,7 @@
 							 		   :success => "$('tag_list').value=''; new Effect.Highlight('tags', { duration: 1.5 });",
 							       :loading => "Element.show('addtag_indicator')",
                     	   	       :complete => "Element.hide('addtag_indicator')") do %>
-					<p><small>(use commas to seperate different tags)</small></p>
+					<p><small>(use commas to separate different tags)</small></p>
 					<p>
 						<%= text_field_tag :tag_list %>
 						<div class="auto_complete" id="tags_auto_complete" ></div>
