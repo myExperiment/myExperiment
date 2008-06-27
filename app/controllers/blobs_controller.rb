@@ -30,7 +30,7 @@ class BlobsController < ApplicationController
   def download
     @download = Download.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
     
-    send_data(@blob.data, :filename => @blob.local_name, :type => @blob.content_type)
+    send_data(@blob.content_blob.data, :filename => @blob.local_name, :type => @blob.content_type)
     
     #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type)
   end
@@ -90,13 +90,16 @@ class BlobsController < ApplicationController
   # POST /blobs
   def create
     
-    params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
+    data = params[:blob][:data].read
     params[:blob][:local_name] = params[:blob][:data].original_filename
     params[:blob][:content_type] = params[:blob][:data].content_type
-    params[:blob][:data] = params[:blob][:data].read
-    
+    params[:blob].delete('data')
+
+    params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
+   
     @blob = Blob.new(params[:blob])
-    
+    @blob.content_blob = ContentBlob.new(:data => data)
+
     respond_to do |format|
       if @blob.save
         if params[:blob][:tag_list]
@@ -257,7 +260,7 @@ class BlobsController < ApplicationController
                        :current => params[:page] })
     
     found.each do |blob|
-      blob.data = nil unless blob.authorized?("download", (logged_in? ? current_user : nil))
+      blob.content_blob.data = nil unless blob.authorized?("download", (logged_in? ? current_user : nil))
     end
     
     @blobs = found
