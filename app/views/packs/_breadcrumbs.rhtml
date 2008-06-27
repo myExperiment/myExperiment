@@ -4,19 +4,19 @@
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "#{contributable_name(@pack.id, 'Pack')}", pack_path(@pack) %></li>
+    <li><%= h(@pack.title) %></li>
   <% when "new" %>
     <li>New Pack</li>
   <% when "edit" %>
-		<li><%= link_to "#{contributable_name(@pack.id, 'Pack')}", pack_path(@pack) %></li>
+		<li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
 		<li><b>&#187;</b></li>
     <li>Manage</li>
 	<% when "new_item" %>
-		<li><%= link_to "#{contributable_name(@pack.id, 'Pack')}", pack_path(@pack) %></li>
+		<li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
 		<li><b>&#187;</b></li>
     <li>Add New Item</li>
 	<% when "edit_item" %>
-		<li><%= link_to "#{contributable_name(@pack.id, 'Pack')}", pack_path(@pack) %></li>
+		<li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
 		<li><b>&#187;</b></li>
     <li>Edit Item Entry</li>
   <% when "all" %>

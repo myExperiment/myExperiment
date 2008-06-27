@@ -16,7 +16,7 @@
   <% case controller.action_name.to_s; when "show" %>
   	<li><%= link_to "#{@picture.id}", picture_path(@picture.owner, @picture) %></li>
   <% when "new" %>
-    <li>Upload Picture</li>
+    <li>Upload New Picture</li>
   <% when "edit" %>
 		<li><%= link_to "#{@picture.id}", picture_path(@picture.owner, @picture) %></li>
 		<li><b>&#187;</b></li>
