@@ -91,11 +91,11 @@ class BlobsController < ApplicationController
   def create
     
     data = params[:blob][:data].read
+    params[:blob][:local_name] = params[:blob][:data].original_filename
+    params[:blob][:content_type] = params[:blob][:data].content_type
     params[:blob].delete('data')
 
     params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
-    params[:blob][:local_name] = params[:blob][:data].original_filename
-    params[:blob][:content_type] = params[:blob][:data].content_type
    
     @blob = Blob.new(params[:blob])
     @blob.content_blob = ContentBlob.new(:data => data)
