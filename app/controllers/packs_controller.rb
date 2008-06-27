@@ -193,8 +193,9 @@ class PacksController < ApplicationController
   
   def new_item
     # If a uri has been provided lets resolve it now
-    if params[:uri]
-      errors, @type, @item_entry = @pack.resolve_link(params[:uri], request.host, request.port.to_s, current_user)
+    uri = preprocess_uri(params[:uri])
+    if uri
+      errors, @type, @item_entry = @pack.resolve_link(uri, request.host, request.port.to_s, current_user)
       unless errors.empty?
         @error_message = errors.full_messages.to_sentence(:connector => '')
       end
@@ -205,8 +206,9 @@ class PacksController < ApplicationController
   
   def create_item
     respond_to do |format|
-      if !params[:uri].blank?
-        errors, @type, @item_entry = @pack.resolve_link(params[:uri], request.host, request.port.to_s, current_user)
+      uri = preprocess_uri(params[:uri])
+      if !uri.blank?
+        errors, @type, @item_entry = @pack.resolve_link(uri, request.host, request.port.to_s, current_user)
        
         # By this point, we either have errors, or have an entry that needs saving.
         if errors.empty?
@@ -244,6 +246,7 @@ class PacksController < ApplicationController
   def update_item
     # Attempt to retrieve the entry that needs updating
     if !params[:entry_type].blank? and !params[:entry_id].blank?
+      @type = params[:entry_type].downcase
       entry = find_entry(@pack.id, params[:entry_type], params[:entry_id])
     end
     
@@ -257,8 +260,11 @@ class PacksController < ApplicationController
             
             # check that a protocol is specified in the URI; prepend HTTP:// otherwise
             # \A[a-z]+:// - Matches '<protocol>://<address>'
-            entry.uri = params[:uri].match(/\A[a-z]+:\/\//) ? params[:uri] : ("http://" + params[:uri])
-            entry.alternate_uri = params[:alternate_uri].match(/\A[a-z]+:\/\//) ? params[:alternate_uri] : ("http://" + params[:alternate_uri])   
+            uri = preprocess_uri(params[:uri])
+            entry.uri = uri
+            
+            alternate_uri = preprocess_uri(params[:alternate_uri])
+            entry.alternate_uri = alternate_uri
         end
         
         entry.comment = params[:comment]
@@ -300,12 +306,13 @@ class PacksController < ApplicationController
   
   def quick_add
     respond_to do |format|
-      if params[:uri].blank?
+      uri = preprocess_uri(params[:uri])
+      if uri.blank?
         flash.now[:error] = 'Failed to add item. See error(s) below.'
         @error_message = "Please enter a link"
         format.html { render :action => "show" }
       else
-        errors, type, entry = @pack.resolve_link(params[:uri], request.host, request.port.to_s, current_user)
+        errors, type, entry = @pack.resolve_link(uri, request.host, request.port.to_s, current_user)
         
         # By this point, we either have errors, or have an entry that needs saving.
         if errors.empty?
@@ -328,10 +335,11 @@ class PacksController < ApplicationController
   
   def resolve_link
     respond_to do |format|
-      if params[:uri].blank?
+      uri = preprocess_uri(params[:uri])
+      if uri.blank?
         @error_message = "Please enter a link"
       else
-        errors, @type, @item_entry = @pack.resolve_link(params[:uri], request.host, request.port.to_s, current_user)
+        errors, @type, @item_entry = @pack.resolve_link(uri, request.host, request.port.to_s, current_user)
         unless errors.empty?
           @error_message = errors.full_messages.to_sentence(:connector => '')
         end
@@ -348,6 +356,16 @@ class PacksController < ApplicationController
   end
   
   protected
+  
+  # Check that a protocol is specified in the URI; prepend HTTP:// otherwise
+  def preprocess_uri(uri)
+    expr = /\A[a-z]+:\/\//    # aka \A[a-z]+:// - Matches '<protocol>://<address>'  
+    if !uri.blank? && !uri.match(expr)
+      return uri = "http://" + uri;
+    else
+      return uri
+    end
+  end
   
   def find_packs
     @packs = Pack.find(:all, 

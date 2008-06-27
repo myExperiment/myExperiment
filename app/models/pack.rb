@@ -10,7 +10,6 @@ class Pack < ActiveRecord::Base
   acts_as_contributable
   
   validates_presence_of :title
-  validates_presence_of :uri
   
   format_attribute :description
   
@@ -38,7 +37,7 @@ class Pack < ActiveRecord::Base
   # - if the URI is clearly not referring to this site, it will create a pack_remote_entry.
   #
   # Input parameters:
-  # - link: a string based uri beginning with the protocol (eg: "http://..."). NB! if the protocol is not specified, 'http' protocol is assumed by default.
+  # - link: a string based uri beginning with the protocol (eg: "http://...").
   # - host_name: the host name that this site uses (e.g: "www.myexperiment.org").
   # - host_port: the host port that this site runs on (must be a string; e.g: "80" or nil).
   # - current_user: the currently logged on user.
@@ -53,12 +52,6 @@ class Pack < ActiveRecord::Base
     entry = nil
     
     is_remote = false
-    
-    # check that a protocol is specified in the URI; prepend HTTP:// otherwise
-    expr = /\A[a-z]+:\/\//    # aka \A[a-z]+:// - Matches '<protocol>://<address>'  
-    if !link.match(expr)
-      link = "http://" + link;
-    end
     
     begin
       
