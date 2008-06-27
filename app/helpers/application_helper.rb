@@ -589,6 +589,12 @@ module ApplicationHelper
 
   def method_to_icon_filename(method)
     case (method.to_s)
+    when "refresh"
+      return "famfamfam_silk/arrow_refresh.png"
+    when "arrow_up"
+      return "famfamfam_silk/arrow_up.png"
+    when "arrow_down"
+      return "famfamfam_silk/arrow_down.png"
     when "new"
       return "redmond_studio/add_16.png"
     when "download"
@@ -634,8 +640,12 @@ module ApplicationHelper
       return "famfamfam_silk/save.png"
     when "message"
       return "famfamfam_silk/email.png"
+    when "message_read"
+      return "famfamfam_silk/email_open.png"
     when "reply"
       return "famfamfam_silk/email_go.png"
+    when "message_delete"
+      return "famfamfam_silk/email_delete.png"  
     when "blob"
       return "redmond_studio/documents_16.png"
     when "pack"

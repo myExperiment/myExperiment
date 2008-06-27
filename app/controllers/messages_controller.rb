@@ -12,10 +12,43 @@ class MessagesController < ApplicationController
   
   # GET /messages
   def index
+    # get required field for sorting by it from parameters;
+    # sort by 'created_at' date in the case of unknown parameter
+    case params[:sort_by]
+      when "date";    ordering = "created_at"
+      when "status";  ordering = "read_at"
+      when "subject"; ordering = "subject"
+      else;           ordering = "created_at"
+    end
+    
+    # check if the default value needed
+    if params[:sort_by].blank?
+      ordering = "created_at"
+    end
+    
+    # get required sorting order from parameters;
+    # ascending order will be used in case of unknown value of a parameter
+    case params[:order]
+      when "ascending";  ordering += " ASC"
+      when "descending"; ordering += " DESC"
+    end
+    
+    # check if the default value needed;
+    # therefore, in the case of both parameters missing - we get sort by date descending;
+    # if the sort_by parameter is present, but ordering missing - go ascending
+    if params[:order].blank?
+      if params[:sort_by].blank?
+        ordering += " DESC"
+      else
+        ordering += " ASC"
+      end
+    end
+      
+    
     #@messages = current_user.messages_inbox
     @messages = Message.find(:all, 
                              :conditions => ["`to` = ?", current_user.id],
-                             :order => "created_at DESC",
+                             :order => ordering,
                              :page => { :size => 20, 
                                         :current => params[:page] })
     
@@ -99,6 +132,24 @@ class MessagesController < ApplicationController
     @message.destroy
 
     respond_to do |format|
+      format.html { redirect_to messages_url }
+    end
+  end
+  
+  # DELETE /messages/delete_all_selected
+  def delete_all_selected
+    ids = params[:msg_ids].delete("a-z_").to_s
+    ids_arr = ids.split(";")
+    counter = 0
+    
+    ids_arr.each { |msg_id|
+      @message = Message.find(msg_id)
+      @message.destroy
+      counter += 1
+    }
+    
+    respond_to do |format|
+      flash[:notice] = "Successfully deleted #{counter} message(s)" # + pluralize (counter, "message")
       format.html { redirect_to messages_url }
     end
   end

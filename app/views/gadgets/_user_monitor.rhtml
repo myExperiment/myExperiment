@@ -17,7 +17,7 @@
 				<small>[ <%= link_to "edit", edit_profile_path(current_user) -%> ]</small>
 			</span>
 		</li>
-    <li><%= messages_link(current_user, "My Inbox") %></li>
+    <li><%= messages_link(current_user, "My Messages") %></li>
     <li><%= memberships_link(current_user, "My Memberships") %></li>
 	  <li><%= icon "history", userhistory_url(current_user), nil, nil, "My History" %></li>
 	  <li><%= icon "news", home_url, nil, nil, "My News" %></li>

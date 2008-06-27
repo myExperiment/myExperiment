@@ -1010,7 +1010,8 @@ table.contributable:hover {
 }
 
 a.button_slim {
-	padding: 0.2em 0.4em 0.3em 0.4em;
+	padding: 0.2em 0.4em 0.5em 0.4em;
+	*padding: 0.2em 0.4em;
 	line-height: 1;
 	text-decoration: none;
 	border: 1px solid #BBBBBB;
