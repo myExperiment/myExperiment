@@ -47,6 +47,9 @@ root> apt-get install libapache2-mod-fcgid libfcgi-ruby1.8 libmysql-ruby ruby1.8
   *  Then install the following Debian packages: 
   root> apt-get install graphicsmagick imagemagick librmagick-ruby1.8 libmagick9-dev
 
+* MyExperiment also requires Graphviz because it has dot, whcih is required to draw workflow images:
+root> apt-get install graphviz
+
 * Now all the GEMs required by MyExperiment can be installed: 
 root> gem install builder cgi_multipart_eof_fix daemons dsl_accessor fastthread gem_plugin hoe json mime-types mongrel mongrel_cluster  
     needle net-sftp net-ssh openid_login_generator RedCloth rmagick ruby-openid ruby-yadis solr-ruby xml-simple --include-dependencies
