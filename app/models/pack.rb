@@ -64,10 +64,10 @@ class Pack < ActiveRecord::Base
           expr = /^\/(workflows|files|packs)\/(\d+)$/   # e.g: "\workflows\45"
           if uri.path =~ expr
             arr = uri.path.scan(expr)
-            type, id = arr[0][0], arr[0][1]
+            c_type, id = arr[0][0], arr[0][1]
             
             # Try to find the contributable item being pointed at
-            case type.downcase
+            case c_type.downcase
             when 'workflows'
               contributable = Workflow.find(:first, :conditions => ["id = ?", id])
             when 'files'
@@ -83,6 +83,12 @@ class Pack < ActiveRecord::Base
               entry.contributable = contributable
               
               type = 'contributable'
+              
+              # check if the 'contributable' is a pack, then that it's not the same pack,
+              # to which we are trying to add something at the moment
+              if c_type.downcase == 'packs' && contributable.id == self.id
+                errors_here.add_to_base('Cannot add the pack to itself')
+              end
               
               # Check if version was specified in the uri
               unless uri.query.blank?
