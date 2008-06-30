@@ -1,4 +1,5 @@
 <% size ||= 100 -%>
+<% you_string ||= "" -%>
 <% if user.kind_of? Fixnum then user = User.find(user) end -%>
 <div style="text-align:center; width: <%= size+6 %>px; line-height: 1.2em; padding: 0.2em 0;">
 	<%= avatar(user, size) %>
@@ -15,7 +16,7 @@
 			<%= name user %>
 		<% end %>
 		
-		<% if you_string && !you_string.blank? %>
+		<% unless you_string.blank? %>
 		  <%= you_string -%>
 		<% end %>
 		
