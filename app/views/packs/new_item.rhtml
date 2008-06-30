@@ -49,12 +49,13 @@
 	<p class="step_text" style="text-align: center;">
 		3. Now add the item...
 		<br/>
-		<small>(if successful you will be taken to an edit page where you may be able to add more metadata).</small>
 	</p>
 	
 	<center>
 		<!-- <input name="commit" onclick="this.disabled=true;this.value='Adding...';this.form.submit();" type="submit" value="Add" /> -->
-		<input name="commit" onclick="$('uri2').value = $('uri').value;" type="submit" value="Add" />
+		<input id="return_to" type="hidden" name="return_to" value="" />
+		<input name="commit" id="commit_return" onclick="this.disabled=true;this.value='Adding...';$('commit_edit').disabled=true;$('uri2').value = $('uri').value;$('return_to').value = '<%= url_for(:controller => 'packs', :action => 'show', :id => @pack.id) -%>';this.form.submit();" type="submit" value="Add the item and return to pack" />
+		<input name="commit" id="commit_edit" onclick="this.disabled=true;this.value='Adding...';$('commit_return').disabled=true;$('uri2').value = $('uri').value;this.form.submit();" type="submit" value="Add the item then add more metadata" />
   </center>
 
 <% end -%>
