@@ -7,12 +7,11 @@ class PackRemoteEntry < ActiveRecord::Base
   belongs_to :pack
   validates_presence_of :pack
   
-  validates_presence_of :uri
+  validates_presence_of :title, :message => " cannot be blank (see 'Title' field to fix this)"
+  validates_presence_of :uri, :message => " cannot be blank (see 'Link' field to fix this)"
   
   belongs_to :user
-  validates_presence_of :user
-  
-  validates_presence_of :title
+  validates_presence_of :user  
   
   before_create :check_unique
 
