@@ -15,7 +15,7 @@
 			<%= name user %>
 		<% end %>
 		
-		<% unless you_string.blank? %>
+		<% if you_string && !you_string.blank? %>
 		  <%= you_string -%>
 		<% end %>
 		
