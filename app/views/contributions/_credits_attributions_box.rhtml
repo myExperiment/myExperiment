@@ -15,7 +15,7 @@
 						<% elsif c.creditor_type == 'Network' %>
 							<%= icon('network-member', nil, nil, nil, '') %>
 						<% end %>
-						<%= contributor(c.creditor_id, c.creditor_type) %>
+						<%= contributor(c.creditor_id, c.creditor_type, false, 100, true) -%>
 					</li>
 				<% end %>
 			</ul>
