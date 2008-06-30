@@ -11,7 +11,7 @@
 				<% bookmarks.each do |b| %>
 					<li>
 						<%= icon('user', nil, nil, nil, '') -%>
-						<%= contributor(b.user_id, 'User') -%>
+						<%= contributor(b.user_id, 'User', false, 100, true) -%>
 						<% if logged_in? and b.user_id == current_user.id -%>
 							<%= link_to(delete_image("margin-left: 0.5em;", "Remove from your favourites"),
                    				remove_from_favourites_path,
