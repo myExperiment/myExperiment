@@ -216,7 +216,6 @@ class User < ActiveRecord::Base
   acts_as_contributor
   
   has_many :blobs, :as => :contributor
-  has_many :blogs, :as => :contributor
   has_many :workflows, :as => :contributor
   has_many :packs, :as => :contributor
   

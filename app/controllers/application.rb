@@ -462,7 +462,7 @@ protected
     if logged_in?
       
       # Updated Items box
-      if ["workflows", "blobs", "blogs"].include?(controller_name) and
+      if ["workflows", "blobs"].include?(controller_name) and
         ["create", "update", "destroy", "destroy_version", "update_version"].include?(action_name)
         expire_timeout_fragment(:controller => 'home_cache', :action => 'updated_items', :id => current_user.id)
       end

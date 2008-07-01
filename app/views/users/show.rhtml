@@ -367,13 +367,6 @@
     <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Pack' end).map do |c| c.contributable end  %>
     <%= render :partial => "packs/table", :locals => { :collection => contributables } %>
 
-  <% when "Blogs" %>
-		
-		<%= view_privileges_notice %>
-		<br/>
-    <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Blog' end).map do |c| c.contributable end  %>
-    <%= render :partial => "blogs/table", :locals => { :collection => contributables } %>
-
   <% when "Credits" %>
 
     <% unless (creditations = @user.creditations).empty? %>

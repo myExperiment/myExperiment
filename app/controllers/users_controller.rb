@@ -5,7 +5,7 @@
 
 class UsersController < ApplicationController
 
-  contributable_actions = [:workflows, :files, :packs, :blogs]
+  contributable_actions = [:workflows, :files, :packs]
   show_actions = [:show, :news, :friends, :groups, :credits, :tags, :favourites] + contributable_actions
 
   before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password] + show_actions
@@ -85,11 +85,6 @@ class UsersController < ApplicationController
   
   def packs
     @tab = "Packs"
-    render :action => 'show'
-  end
-
-  def blogs
-    @tab = "Blogs"
     render :action => 'show'
   end
 

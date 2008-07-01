@@ -6,6 +6,11 @@
 class RemoveSavageBeast < ActiveRecord::Migration
 
   def self.up
+
+    Contribution.find(:all).each do |c|
+      c.destroy if c.contributable_type == 'Forum'
+    end
+      
     remove_column :users, :posts_count
 
     drop_table :forums

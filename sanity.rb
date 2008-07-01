@@ -48,12 +48,10 @@ end
 def test
   users         = User.find(:all)
   workflows     = Workflow.find(:all)
-  blogs         = Blog.find(:all)
   blobs         = Blob.find(:all)
-  forums        = Forum.find(:all)
   contributions = Contribution.find(:all)
 
-  known_contributables = workflows + blobs + blogs + forums
+  known_contributables = workflows + blobs
 
   should_be_empty("All users must have a name",
       users.select do |u| u.name == nil or u.name.length == 0 end)
@@ -68,12 +66,6 @@ def test
 
   should_be_empty("All files must have a contribution record",
       blobs.select do |b| b.contribution.nil? end)
-
-  should_be_empty("All blogs must have a contribution record",
-      blogs.select do |b| b.contribution.nil? end)
-
-  should_be_empty("All forums must have a contribution record",
-      forums.select do |f| f.contribution.nil? end)
 
   should_be_true("All contributables should have distinct contribution records",
       list_items_are_distinct(known_contributables.map do |c| c.contribution end))

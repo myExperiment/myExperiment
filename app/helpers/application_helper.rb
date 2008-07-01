@@ -380,14 +380,6 @@ module ApplicationHelper
       else
         return nil
       end
-    when "Blog"
-      if b = Blog.find(:first, :conditions => ["id = ?", contributableid])
-        name = h(b.title)
-        
-        return link ? link_to(name, blog_url(b)) : name
-      else
-        return nil
-      end
     when "Workflow"
       if w = Workflow.find(:first, :conditions => ["id = ?", contributableid])
         name = h(w.title)
@@ -649,8 +641,6 @@ module ApplicationHelper
       return "manhattan_studio/folder-closed_16.png"
     when "remote-resource"
       return "famfamfam_silk/page_world.png"
-    when "blog"
-      return "famfamfam_silk/note.png"
     when "workflow"
       return "redmond_studio/applications_16.png"
     when "policy"
@@ -1258,7 +1248,7 @@ protected
     
     return rtn unless depth.to_i < 2
     
-    collections = [[contributor], contributor.contributions, contributor.workflows, contributor.blogs]
+    collections = [[contributor], contributor.contributions, contributor.workflows]
     recursions = []
     
     case contributor.class.to_s
@@ -1376,19 +1366,6 @@ protected
         end
         
         rtn << [item.created_at, "#{editor} created the #{link} #{item.contributable_type.downcase == "blob" ? "File" : item.contributable_type.downcase} for #{owner_string}."]
-      end
-    when "Blog"
-      if restrict_contributor
-        return rtn unless (restrict_contributor.class.to_s == item.contributor_type.to_s and restrict_contributor.id.to_i == item.contributor_id.to_i)
-      end
-      
-      owner = contributor(item.contributor_id, item.contributor_type)
-    
-      item.posts.each do |blog_post|
-        next if before and blog_post.created_at > before
-        next if after and blog_post.created_at < after
-        
-        rtn << [blog_post.created_at, "#{owner} has created a new post on #{contributable(item.id, "Blog")}."]
       end
     when "Workflow"
       item.versions.each do |workflow|

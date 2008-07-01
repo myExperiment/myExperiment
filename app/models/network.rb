@@ -14,7 +14,6 @@ class Network < ActiveRecord::Base
   acts_as_taggable
   
   has_many :blobs, :as => :contributor
-  has_many :blogs, :as => :contributor
   has_many :workflows, :as => :contributor
   
   acts_as_solr(:fields => [ :title, :unique_name, :owner_name, :description, :tag_list ],

@@ -103,12 +103,6 @@ ActionController::Routing::Routes.draw do |map|
     #file.resources :reviews
   end
 
-  # blogs
-  map.resources :blogs do |blog|
-    # blogs have nested posts
-    blog.resources :blog_posts
-  end
-  
   # all downloads and viewings
   map.resources :downloads, :viewings
 
@@ -144,7 +138,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'users/forgot_password', :controller => "users", :action => "forgot_password"
   map.connect 'users/reset_password/:reset_code', :controller => "users", :action => "reset_password"
   
-  [ 'news', 'friends', 'groups', 'workflows', 'files', 'packs', 'forums', 'blogs', 'credits', 'tags', 'favourites' ].each do |tab|
+  [ 'news', 'friends', 'groups', 'workflows', 'files', 'packs', 'forums', 'credits', 'tags', 'favourites' ].each do |tab|
     map.connect "users/:id/#{tab}", :controller => 'users', :action => tab
   end
   

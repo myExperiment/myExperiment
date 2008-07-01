@@ -262,8 +262,6 @@ def rest_resource_uri(ob)
     when 'User';         return user_url(ob)
     when 'Review';       return review_url(ob.reviewable, ob)
     when 'Comment';      return "#{rest_resource_uri(ob.commentable)}/comments/#{ob.id}"
-    when 'Blog';         return blog_url(ob)
-    when 'BlogPost';     return blog_post_url(ob.blog, ob)
     when 'Rating';       return "#{rest_resource_uri(ob.rateable)}/ratings/#{ob.id}"
     when 'Tag';          return tag_url(ob)
     when 'Picture';      return picture_url(ob.owner, ob)
@@ -286,8 +284,6 @@ def rest_access_uri(ob)
     when 'User';         return "#{base}/user.xml?id=#{ob.id}"
     when 'Review';       return "#{base}/review.xml?id=#{ob.id}"
     when 'Comment';      return "#{base}/comment.xml?id=#{ob.id}"
-    when 'Blog';         return "#{base}/blog.xml?id=#{ob.id}"
-    when 'BlogPost';     return "#{base}/blog-post.xml?id=#{ob.id}"
     when 'Rating';       return "#{base}/rating.xml?id=#{ob.id}"
     when 'Tag';          return "#{base}/tag.xml?id=#{ob.id}"
     when 'Picture';      return "#{base}/picture.xml?id=#{ob.id}"
