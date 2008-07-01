@@ -1,8 +1,6 @@
 require 'lib/rest'
 
 ActionController::Routing::Routes.draw do |map|
-  # forums
-  map.from_plugin :savage_beast
   
   # rest routes
   rest_routes(map)

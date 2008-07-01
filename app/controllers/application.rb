@@ -15,8 +15,6 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   before_filter :login_from_cookie
   
-  helper ForumsHelper
-
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_m2_session_id'
   
@@ -464,7 +462,7 @@ protected
     if logged_in?
       
       # Updated Items box
-      if ["workflows", "blobs", "blogs", "forums"].include?(controller_name) and
+      if ["workflows", "blobs", "blogs"].include?(controller_name) and
         ["create", "update", "destroy", "destroy_version", "update_version"].include?(action_name)
         expire_timeout_fragment(:controller => 'home_cache', :action => 'updated_items', :id => current_user.id)
       end

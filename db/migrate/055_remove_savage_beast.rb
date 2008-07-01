@@ -1,14 +1,33 @@
-class CreateInitialSchema < ActiveRecord::Migration
+# myExperiment: db/migrate/055_remove_savage_beast.rb
+#
+# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
+class RemoveSavageBeast < ActiveRecord::Migration
+
   def self.up
+    remove_column :users, :posts_count
+
+    drop_table :forums
+    drop_table :moderatorships
+    drop_table :monitorships
+    drop_table :posts
+    drop_table :topics
+  end
+
+  def self.down
+    add_column :users, :posts_count, :integer, :default => 0
+
     create_table "forums", :force => true do |t|
       t.column "name",             :string
-      t.column "contributor_id", :integer
+      t.column "contributor_id",   :integer
       t.column "contributor_type", :string
       t.column "description",      :string
-      t.column "topics_count",     :integer, :default => 0
-      t.column "posts_count",      :integer, :default => 0
+      t.column "topics_count",     :integer,  :default => 0
+      t.column "posts_count",      :integer,  :default => 0
       t.column "position",         :integer
       t.column "description_html", :text
+      t.column "updated_at",       :datetime
     end
 
     create_table "moderatorships", :force => true do |t|
@@ -54,14 +73,6 @@ class CreateInitialSchema < ActiveRecord::Migration
 
     add_index "topics", ["forum_id"], :name => "index_topics_on_forum_id"
     add_index "topics", ["forum_id", "sticky", "replied_at"], :name => "index_topics_on_sticky_and_replied_at"
-    add_index "topics", ["forum_id", "replied_at"], :name => "index_topics_on_forum_id_and_replied_at"    
-  end
-
-  def self.down
-    drop_table :topics
-    drop_table :posts
-    drop_table :monitorships
-    drop_table :moderatorships
-    drop_table :forums    
+    add_index "topics", ["forum_id", "replied_at"], :name => "index_topics_on_forum_id_and_replied_at"
   end
 end
