@@ -19,7 +19,7 @@ class PackContributableEntry < ActiveRecord::Base
   
   def check_unique
     if self.contributable_version.blank?
-      i = PackContributableEntry.find(:first, :conditions => ["pack_id = ? AND contributable_type = ? AND contributable_id = ?", self.pack_id, self.contributable_type, self.contributable_id]) 
+      i = PackContributableEntry.find(:first, :conditions => ["pack_id = ? AND contributable_type = ? AND contributable_id = ? AND contributable_version IS NULL", self.pack_id, self.contributable_type, self.contributable_id]) 
     else
       i = PackContributableEntry.find(:first, :conditions => ["pack_id = ? AND contributable_type = ? AND contributable_id = ? AND contributable_version = ?", self.pack_id, self.contributable_type, self.contributable_id, self.contributable_version])
     end
