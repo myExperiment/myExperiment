@@ -79,14 +79,6 @@
 						<li <%= (["packs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
 							<%= link_to("Packs " + new_flash_image("position: relative; z-index: 1000;"), packs_path, :style => "padding-right: 3px; *padding-top: 0;") -%>
 						</li>
-						<!-- Blogs tab -->
-					  <li <%= (["blogs", "blog_posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
-					  	<%= link_to "Blogs", blogs_path -%>
-						</li>
-						<!-- Forums tab -->
-					  <li <%= (["forums", "topics", "posts"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
-					  	<%= link_to "Forums", forums_path -%>
-						</li>
 					</ul>
 				</div>
 	  			<div id="myexp_searchbar"><%= render :partial => "layouts/search" %></div>
