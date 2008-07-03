@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: FleskPlugins::Captcha::Helpers</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">FleskPlugins::Captcha::Helpers</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../files/lib/add_captcha_to_action_view_rb.html">
+                lib/add_captcha_to_action_view.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+Captcha helper methods. See README for an introduction.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000009">captcha_hidden_field</a>&nbsp;&nbsp;
+      <a href="#M000006">captcha_image_tag</a>&nbsp;&nbsp;
+      <a href="#M000011">captcha_label</a>&nbsp;&nbsp;
+      <a href="#M000007">captcha_question</a>&nbsp;&nbsp;
+      <a href="#M000008">captcha_question_as_label</a>&nbsp;&nbsp;
+      <a href="#M000010">captcha_text_field</a>&nbsp;&nbsp;
+      <a href="#M000005">prepare_captcha</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000009" class="method-detail">
+        <a name="M000009"></a>
+
+        <div class="method-heading">
+          <a href="#M000009" class="method-signature">
+          <span class="method-name">captcha_hidden_field</span><span class="method-args">(challenge, object, options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Creates a hidden input field called <tt>object[captcha_id]</tt>, with
+<tt>challenge</tt>&#8217;s id as value. The <tt>options</tt> hash is passed
+on to the <tt>hidden_field</tt> helper.
+</p>
+<p>
+This field must be present for the form to validate.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000009-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000009-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/add_captcha_to_action_view.rb, line 81</span>
+81:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">captcha_hidden_field</span>(<span class="ruby-identifier">challenge</span>, <span class="ruby-identifier">object</span>, <span class="ruby-identifier">options</span> = {})
+82:         <span class="ruby-identifier">options</span> = {
+83:           <span class="ruby-identifier">:value</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">challenge</span>.<span class="ruby-identifier">id</span>
+84:         }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)
+85:         
+86:         <span class="ruby-identifier">hidden_field</span>(<span class="ruby-identifier">object</span>, <span class="ruby-value str">'captcha_id'</span>, <span class="ruby-identifier">options</span>)
+87:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000006" class="method-detail">
+        <a name="M000006"></a>
+
+        <div class="method-heading">
+          <a href="#M000006" class="method-signature">
+          <span class="method-name">captcha_image_tag</span><span class="method-args">(challenge, options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns an <tt>image</tt> tag with the image generated in the
+<tt>challenge</tt> object.
+</p>
+<p>
+The <tt>options</tt> parameter is passed on to both <a
+href="../CaptchaImageChallenge.html#M000018">CaptchaImageChallenge#generate</a>
+and Rails&#8217; image_tag method, so you can control how the image and tag
+are generated.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000006-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000006-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/add_captcha_to_action_view.rb, line 44</span>
+44:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">captcha_image_tag</span>(<span class="ruby-identifier">challenge</span>, <span class="ruby-identifier">options</span> = {})
+45:         <span class="ruby-identifier">challenge</span>.<span class="ruby-identifier">generate</span>(<span class="ruby-identifier">options</span>)
+46:         <span class="ruby-identifier">challenge</span>.<span class="ruby-identifier">write</span>
+47:         [<span class="ruby-identifier">:fontsize</span>, <span class="ruby-identifier">:padding</span>, <span class="ruby-identifier">:color</span>, <span class="ruby-identifier">:background</span>, <span class="ruby-identifier">:fontweight</span>, <span class="ruby-identifier">:rotate</span>, <span class="ruby-identifier">:font</span>].<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">k</span>) }
+48: 
+49:         <span class="ruby-identifier">image_tag</span>(
+50:           <span class="ruby-identifier">challenge</span>.<span class="ruby-identifier">file_path</span>,
+51:           {
+52:             <span class="ruby-identifier">:size</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;#{challenge.image.columns}x#{challenge.image.rows}&quot;</span>,
+53:             <span class="ruby-identifier">:alt</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'CAPTCHA image'</span>
+54:           }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)
+55:         )
+56:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000011" class="method-detail">
+        <a name="M000011"></a>
+
+        <div class="method-heading">
+          <a href="#M000011" class="method-signature">
+          <span class="method-name">captcha_label</span><span class="method-args">(object, name = 'CAPTCHA validation', options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Creates a <tt>label</tt> tag with the <tt>for</tt> attribute set to
+<tt>object_captcha_validation</tt>.
+</p>
+<p>
+The <tt>options</tt> hash is passed on to the <tt>content_tag</tt> helper.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000011-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000011-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/add_captcha_to_action_view.rb, line 109</span>
+109:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">captcha_label</span>(<span class="ruby-identifier">object</span>, <span class="ruby-identifier">name</span> = <span class="ruby-value str">'CAPTCHA validation'</span>, <span class="ruby-identifier">options</span> = {})
+110:         <span class="ruby-identifier">options</span> = {
+111:           <span class="ruby-identifier">:for</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;#{object}_captcha_validation&quot;</span>
+112:         }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)
+113:         
+114:         <span class="ruby-identifier">content_tag</span>(<span class="ruby-value str">'label'</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">options</span>)
+115:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000007" class="method-detail">
+        <a name="M000007"></a>
+
+        <div class="method-heading">
+          <a href="#M000007" class="method-signature">
+          <span class="method-name">captcha_question</span><span class="method-args">(challenge, options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the question for a <a
+href="../CaptchaQuestionChallenge.html">CaptchaQuestionChallenge</a>
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000007-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000007-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/add_captcha_to_action_view.rb, line 60</span>
+60:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">captcha_question</span>(<span class="ruby-identifier">challenge</span>, <span class="ruby-identifier">options</span> = {})
+61:         <span class="ruby-identifier">challenge</span>.<span class="ruby-identifier">question</span>
+62:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000008" class="method-detail">
+        <a name="M000008"></a>
+
+        <div class="method-heading">
+          <a href="#M000008" class="method-signature">
+          <span class="method-name">captcha_question_as_label</span><span class="method-args">(challenge, object, options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns a label tag for the input field containing the question from a <a
+href="../CaptchaQuestionChallenge.html">CaptchaQuestionChallenge</a>.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000008-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000008-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/add_captcha_to_action_view.rb, line 67</span>
+67:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">captcha_question_as_label</span>(<span class="ruby-identifier">challenge</span>, <span class="ruby-identifier">object</span>, <span class="ruby-identifier">options</span> = {})
+68:         <span class="ruby-identifier">options</span> = {
+69:           <span class="ruby-identifier">:for</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;#{object}_captcha_validation&quot;</span>
+70:         }.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">options</span>)
+71:         
+72:         <span class="ruby-identifier">content_tag</span>(<span class="ruby-value str">'label'</span>, <span class="ruby-node">&quot;#{options[:before]}#{challenge.question}#{options[:after]}&quot;</span>, <span class="ruby-identifier">options</span>)
+73:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000010" class="method-detail">
+        <a name="M000010"></a>
+
+        <div class="method-heading">
+          <a href="#M000010" class="method-signature">
+          <span class="method-name">captcha_text_field</span><span class="method-args">(object, options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Creates a text field for the user to type the solution to the challenge
+(i.e. the text from the image or the answer to the question) into.
+</p>
+<p>
+The <tt>options</tt> hash is passed on to the <tt>text_field</tt> helper.
+</p>
+<p>
+Must be present for form/model object to validate.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000010-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000010-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/add_captcha_to_action_view.rb, line 99</span>
+ 99:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">captcha_text_field</span>(<span class="ruby-identifier">object</span>, <span class="ruby-identifier">options</span> = {})
+100:         <span class="ruby-identifier">text_field</span>(<span class="ruby-identifier">object</span>, <span class="ruby-value str">'captcha_validation'</span>, <span class="ruby-identifier">options</span>)
+101:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
+
+        <div class="method-heading">
+          <a href="#M000005" class="method-signature">
+          <span class="method-name">prepare_captcha</span><span class="method-args">(options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Prepares a CAPTCHA challenge for use in a form. This method must be called
+before using any of the other helper methods, as it returns the object
+these methods need to work.
+</p>
+<p>
+Use like this (in your view):
+</p>
+<p>
+&lt;% c = generate_captcha() -%&gt;
+</p>
+<p>
+You can supply an optional hash which can contain the following options:
+</p>
+<ul>
+<li>:type - The type of challenge. This can be either +:image+ or
+<tt>question</tt>. If not specified, +:image+ will be assumed.
+
+</li>
+</ul>
+<p>
+All the options are passed on to the challenge constructor methods. Look in
+CaptchaImageChallenge#initialize and CaptchaQuestionChallenge#initialize to
+see what options each type takes.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000005-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000005-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/add_captcha_to_action_view.rb, line 32</span>
+32:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">prepare_captcha</span>(<span class="ruby-identifier">options</span> = {})
+33:         <span class="ruby-comment cmt">#Default to :image for backwards compability</span>
+34:         <span class="ruby-constant">CaptchaChallenge</span>.<span class="ruby-identifier">get</span>(<span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">:type</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">:image</span>).<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>)
+35:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

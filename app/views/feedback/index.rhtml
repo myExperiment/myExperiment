@@ -37,17 +37,26 @@
 	<div class="box_form" style="width: 410px; margin: 2em 0; text-align: left;">
 		<% form_tag ({:action => :create}) do %>
 			<p><b>From</b></p>
-		  <%= text_field_tag :from, logged_in? ? current_user.name : '', :size => 30 %>
+		  <%= text_field_tag :from, logged_in? ? current_user.name : params[:from], :size => 30 %>
 			
 			<p><b>Email (optional)</b></p>
-    	<%= text_field_tag :email, (logged_in? && current_user.email) ? current_user.email : '', :size => 30 %>
+    	<%= text_field_tag :email, (logged_in? && current_user.email) ? current_user.email : params[:email], :size => 30 %>
 			
 			<p><b>Subject</b></p>
     	<%= text_field_tag :subject, params[:subject], :size => 60 %>
 			
 			<p><b>Message</b></p>
-			<textarea id="feedback_content" name="content" rows="8" style="width: 400px;"></textarea><br/>
-			
+			<textarea id="feedback_content" name="content" rows="8" style="width: 400px;"><%= params[:content] %></textarea><br/>
+		<% if !logged_in? %>
+		<% c = prepare_captcha :type => :image -%>	
+		     <br/>
+	         <p style="text-align: center;">
+	            <%= captcha_hidden_field c, 'feedback' %>
+                <%= captcha_image_tag c %><br/>
+             </p>
+             <p style="text-align: center;"><%= captcha_label 'feedback', 'Type in the text from the image above' %></p>
+             <p style="text-align: center;"><%= captcha_text_field 'feedback' %></p>
+         <% end %>
 		  <br/><br>
 		
     	<center><%= submit_tag "Submit Feedback", :disable_with => "Submitting&hellip;" %></center>

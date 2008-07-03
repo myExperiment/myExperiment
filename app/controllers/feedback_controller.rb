@@ -11,12 +11,27 @@ class FeedbackController < ApplicationController
 
   # POST /feedback
   def create
-    from_user = params[:from] + ' (' + (params[:email] ? params[:email] : 'no email') + ')';
-    Mailer.deliver_feedback(from_user, params[:subject], params[:content])
+    if logged_in?
+      respond_to do |format|
+        flash[:notice] = 'Your feedback has been submitted. Thank you very much.'
+        format.html { redirect_to "/feedback" }
+      end
+    else
+      if captcha_valid?(params[:feedback][:captcha_id], params[:feedback][:captcha_validation])
     
-    respond_to do |format|
-      flash[:notice] = 'Your feedback has been submitted. Thank you very much.'
-      format.html { redirect_to "/feedback" }
+        from_user = params[:from] + ' (' + (params[:email] ? params[:email] : 'no email') + ')';
+        Mailer.deliver_feedback(from_user, params[:subject], params[:content])
+    
+        respond_to do |format|
+          flash[:notice] = 'Your feedback has been submitted. Thank you very much.'
+          format.html { redirect_to "/feedback" }
+        end
+      else
+        respond_to do |format|
+          flash[:error] = 'Your feedback has not been submitted. CAPTCHA was not entered correctly.'
+          format.html { redirect_to "/feedback?from="+params[:from]+"&email="+params[:email]+"&subject="+params[:subject]+"&content="+params[:content] }
+        end
+      end
     end
   end
   
