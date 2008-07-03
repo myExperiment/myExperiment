@@ -43,6 +43,8 @@ class BlogsController < ApplicationController
   # POST /blogs
   def create
 
+    return error('Creating new blog content is disabled', 'is disabled')
+
     params[:blog][:contributor_type] = "User"
     params[:blog][:contributor_id]   = current_user.id
     

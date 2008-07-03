@@ -41,6 +41,8 @@ class ForumsController < ApplicationController
   
   def create
 
+    return error('Creating new forum content is disabled', 'is disabled')
+
     params[:forum][:contributor_type] = "User"
     params[:forum][:contributor_id]   = current_user.id
     
@@ -126,7 +128,7 @@ protected
 private
 
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Forum.new.errors).add(attr, message)
     
     respond_to do |format|

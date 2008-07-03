@@ -36,6 +36,9 @@ class BlogPostsController < ApplicationController
 
   # POST /blog_posts
   def create
+
+    return error('Creating new blog content is disabled', 'is disabled')
+    
     @blog_post = BlogPost.new(params[:blog_post])
 
     respond_to do |format|

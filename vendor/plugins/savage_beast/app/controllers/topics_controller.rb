@@ -44,6 +44,9 @@ class TopicsController < ApplicationController
   end
   
   def create
+
+    return error('Creating new forum content is disabled', 'is disabled')
+
     # this is icky - move the topic/first post workings into the topic model?
     Topic.transaction do
       @topic  = @forum.topics.build(params[:topic])
@@ -141,7 +144,7 @@ protected
 private
 
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Topic.new.errors).add(attr, message)
     
     respond_to do |format|
