@@ -1,12 +1,21 @@
 class StatusController < ApplicationController
 
+  # sanity test methods are in /lib/sanity_test.rb
+  require 'sanity_test'
+
   def index
-    @render_string = "Time: " + Time.now.to_s + "\n"
+    @render_string = "Current time: " + Time.now.to_s + "\n\n"
     @render_string += "Item: Count: Time taken (seconds)\n"
     @render_string += "Users: " + count_users.to_s + ": " + @time_taken.to_s + "\n"
     @render_string += "Groups: " + count_groups.to_s + ": " + @time_taken.to_s + "\n"
     @render_string += "Workflows: " + count_workflows.to_s + ": " + @time_taken.to_s + "\n"
     @render_string += "Files: " + count_files.to_s + ": " + @time_taken.to_s + "\n"
+    render(:text => @render_string)
+  end
+
+  def sanity
+    @render_string = "Current time: " + Time.now.to_s + "\n\n"
+    @render_string += sanity_tests
     render(:text => @render_string)
   end
 
