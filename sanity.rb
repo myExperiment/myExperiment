@@ -5,12 +5,6 @@ require File.dirname(__FILE__) + '/lib/sanity_test'
 
 # Sanity checks
 
-# include SanityTest
+# run 'sanity_tests' and output the returned results string
 puts sanity_tests
-
-#puts ""
-#puts "Total tests:      #{@results.length}"
-#puts "Successful tests: #{@results.select do |r| r == true end.length}"
-#puts "Failed tests:     #{@results.select do |r| r == false end.length}"
-#puts ""
 
