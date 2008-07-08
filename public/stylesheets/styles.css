@@ -1063,6 +1063,7 @@ a.button_slim * {
 	font-size: 85%; 
 	text-align: center; 
 	margin-bottom: 1em;
+	line-height: 1.5;
 }
 
 .contribution_left_box {

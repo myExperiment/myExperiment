@@ -18,7 +18,24 @@
 </div>
 
 <div class="contribution_mini_nav">
-	| <%= link_to "Comments (#{@pack.comments.length})", "#comments" %> |
+	|
+	<% if @authorised_to_edit %>
+	  <%= link_to "Add an Item", "#add_item" %>
+		|
+	<% end %>
+	<% if logged_in? and @pack.owner? current_user %>
+	  <!-- NB! Index of the 'sharing' tab might change! -->
+	  <a href="#sharing" onclick="selectTab($('tabsContainer'),0)">Sharing</a>
+		|
+	<% end %>
+	<%= link_to "Tags (#{@pack.tags.length})", "#tags" %>
+	|
+	<%= link_to "Featured in Packs (#{@pack.in_packs.length})", "#featured_in_packs" %>
+	|
+	<%= link_to "Favourited By (#{@pack.bookmarks.length})", "#favourited_by" %>
+	| 
+	<%= link_to "Comments (#{@pack.comments.length})", "#comments" %>
+	|
 </div>
 
 <div class="contribution_left_box">
@@ -66,6 +83,7 @@
 			<% if @authorised_to_edit -%>
 				<br/><br/>
 				<h3>Add an Item</h3>
+				<a name="add_item"></a>
 				<%= render :partial => "add_item", :locals => { :pack => @pack } -%>
 			<% end -%>
 		</div>
@@ -111,6 +129,7 @@
 	
 <% if logged_in? and @pack.owner? current_user %>
   
+	<a name="sharing"></a>
 	<div class="tabContainer">
     <div class="tabTitle">Sharing</div>
     <div class="tabContent">

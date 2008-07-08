@@ -11,49 +11,51 @@
 		
 		<% if allow_credits_and_attributions? type -%>
 			<p>
-				<%= pluralize contributable.creditors.length, "credit" %> 
+				<a href="#credits"><%= pluralize contributable.creditors.length, "credit" -%></a> <!-- won't work for type=='group'; needs anchor called '#group_creditations' -->
 			</p>
 			
 			<p>
-				<%= pluralize contributable.attributors.length, "attribution" %> 
+				<a href="#attributions"><%= pluralize contributable.attributors.length, "attribution" -%></a>
 			</p>
 		<% end -%>
 		
 		<% if taggable? type -%>
 			<p>
-	      <%= pluralize contributable.taggings_count, "tag" %>
+	      <a href="#tags"><%= pluralize contributable.taggings_count, "tag" -%></a>
 	    </p>
 		<% end -%>
 		
 		<% if favouritable? type -%>
 			<p>
-	      <%= pluralize contributable.bookmarks_count, "favourite" %>
+	      <a href="#favourited_by"><%= pluralize contributable.bookmarks_count, "favourite" -%></a>
 	    </p>
 		<% end -%>
 		
 		<% if rateable? type -%>
 			<p>
-	      <%= pluralize contributable.ratings_count, "rating" %>
+	      <a href="#ratings"><%= pluralize contributable.ratings_count, "rating" -%></a>
 	    </p>
 		<% end -%>
-		
-		<% if commentable? type -%>
-	    <p>
-	    	<%= pluralize contributable.comments_count, "comment" %>
-	    </p>
-		<% end -%>
-		
-		<% if reviewable? type %>
-			<p>
-	      <%= pluralize contributable.reviews_count, "review" %>
-	    </p>
-		<% end %>
 		
 		<% if allow_citations? type %>
 			<p>
-	      <%= pluralize contributable.citations_count, "citation" %>
+	      <!-- for this to work properly, view for every resource that supports citations will need to have -->
+				<!-- tab system with 'tabsContainer' element + anchor called 'citations' -->
+				<a href="#citations" onclick="selectTab($('tabsContainer'),0)"><%= pluralize contributable.citations_count, "citation" %></a>
 	    </p>
 		<% end %>
-	
+		
+		<% if reviewable? type %>
+			<p>
+	      <a href="#reviews"><%= pluralize contributable.reviews_count, "review" -%></a>
+	    </p>
+		<% end %>
+		
+		<% if commentable? type -%>
+	    <p>
+	    	<a href="#comments"><%= pluralize contributable.comments_count, "comment" -%></a>
+	    </p>
+		<% end -%>
+			
 	</div>
 </div>

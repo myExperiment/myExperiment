@@ -16,7 +16,32 @@
 <h1>Group: <%=h @network.title %></h1>
 
 <div style="color: #999999; font-size: 85%; text-align: center; margin-bottom: 0.8em;">
-	| <%= link_to "Comments (#{@network.comments.length})", "#comments" %> |
+	|
+	<%= link_to "Members (#{@network.members.length})", "#group_members" %>
+	|
+	<!-- NB! IDs of tabs for selectTab() might easily change! -->
+	<a href="#news" onclick="selectTab($('tabsContainer'),0)">News</a>
+	|
+	<a href="#shared_items" onclick="selectTab($('tabsContainer'),1)">Shared Items (<%= @shared_items.length -%>)</a>
+	|
+	<a href="#creditations" onclick="selectTab($('tabsContainer'),2)">Creditations (<%= @network.creditations.length -%>)</a>
+	|
+	<% if mine? @network %>
+	  <a href="#manage_memberships" onclick="selectTab($('tabsContainer'),3)">Manage Memberships</a>
+		|
+		<a href="#requests_pending" onclick="selectTab($('tabsContainer'),4)">Requests Pending</a>
+		|
+		<a href="#invites_pending" onclick="selectTab($('tabsContainer'),5)">Invites Pending</a>
+		|
+		<a href="#invite_users" onclick="selectTab($('tabsContainer'),6)">Invite Users</a>
+		|
+		<br/>
+		|
+	<% end %>
+	<%= link_to "Tags (#{@network.tags.length})", "#tags" %>
+	|
+	<%= link_to "Comments (#{@network.comments.length})", "#comments" %>
+	|
 </div>
 
 <div class="contribution_left_box">
@@ -57,6 +82,7 @@
 	<div class="contribution_section_box">
 		<p class="heading">
 			Members
+			<a name="group_members"></a>
 		</p>
 		<div>
 			<%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
@@ -73,8 +99,8 @@
 		<p>
 			<b>
 				This group has been credited
-				<%= pluralize(@network.creditations.length, "time") -%>
-				<br/>(see tab below)
+				<a href="#creditations" onclick="selectTab($('tabsContainer'),2)"><%= pluralize(@network.creditations.length, "time") -%></a>
+				<a name="group_creditations"></a>
 	  	</b>
 		</p>
   </div>	
@@ -93,6 +119,7 @@
 
 <div id="tabsContainer" class="tabsContainer"></div>
 
+<a name="news"></a>
 <div class="tabContainer">
   <div class="tabTitle">News</div>
   <div class="tabContent">  
@@ -100,6 +127,7 @@
   </div>
 </div>
 
+<a name="shared_items"></a>
 <div class="tabContainer">
   <div class="tabTitle">Shared Items (<%= @shared_items.length -%>)</div>
   <div class="tabContent">
@@ -112,8 +140,9 @@
 	</div>
 </div>
 
+<a name="creditations"></a>
 <div class="tabContainer">
-  <div class="tabTitle">Credits (<%= @network.creditations.length -%>)</div>
+  <div class="tabTitle">Creditations (<%= @network.creditations.length -%>)</div>
   <div class="tabContent">  
     
     <% unless (creditations = @network.creditations).empty? %>
@@ -133,7 +162,8 @@
 <% if mine? @network %>
   
   <% memberships = @network.memberships_accepted %>
-  <div class="tabContainer">
+  <a name="manage_memberships"></a>
+	<div class="tabContainer">
     <div class="tabTitle">Manage Memberships</div>
     <div class="tabContent">
     	<% unless memberships.empty? %>
@@ -145,6 +175,7 @@
   </div>
   
 	<% requests = @network.memberships_requested %>
+  <a name="requests_pending"></a>
   <div class="tabContainer">
     <div class="tabTitle">Requests Pending</div>
     <div class="tabContent">
@@ -158,7 +189,8 @@
   </div>
 	
 	<% invited = @network.memberships_invited %>
-  <div class="tabContainer">
+  <a name="invites_pending"></a>
+	<div class="tabContainer">
     <div class="tabTitle">Invites Pending</div>
     <div class="tabContent">
     	<% unless invited.empty? %>
@@ -170,6 +202,7 @@
     </div>
   </div>
 	
+	<a name="invite_users"></a>
 	<div class="tabContainer">
     <div class="tabTitle">Invite Users</div>
     <div class="tabContent">

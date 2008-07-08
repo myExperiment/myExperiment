@@ -3,6 +3,7 @@
 	<p class="heading">
 		<%= info_icon_with_tooltip("The users who have added this #{visible_name contributable} to their favourites") -%>
 		Favourited By <font class="count_text">(<%= bookmarks.length -%>)</font>
+		<a name="favourited_by"></a>
 	</p>
 	
 	<% unless bookmarks.empty? %>

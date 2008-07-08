@@ -16,7 +16,32 @@
 </div>
 
 <div class="contribution_mini_nav">
-	| <%= link_to "Comments (#{@blob.comments.length})", "#comments" %> |
+	|
+	<%= link_to "License", "#license" %>
+	|
+	<%= link_to "Credits (#{@blob.creditations.length})", "#credits" %>
+	|
+	<%= link_to "Attributions (#{@blob.attributors.length})", "#attributions" %>
+	|
+	<%= link_to "Tags (#{@blob.tags.length})", "#tags" %>
+	|
+	<%= link_to "Featured in Packs (#{@blob.in_packs.length})", "#featured_in_packs" %>
+	|
+	<%= link_to "Ratings (#{@blob.ratings.length})", "#ratings" %>
+	|
+	<%= link_to "Attributed By (#{@blob.attributions.length})", "#attributed_by" %>
+	|
+	<%= link_to "Favourited By (#{@blob.bookmarks.length})", "#favourited_by" %>
+	| 
+	<% if logged_in? and @blob.owner?(current_user) %>
+	  <br/>
+	  |
+		<!-- NB! Index of the 'sharing' tab might change! -->
+	  <a href="#sharing" onclick="selectTab($('tabsContainer'),0)">Sharing</a>
+	  |
+	<% end %>
+	<%= link_to "Comments (#{@blob.comments.length})", "#comments" %> 
+	|
 </div>
 
 <div class="contribution_left_box">
@@ -114,6 +139,7 @@
 	
 <% if logged_in? and @blob.owner? current_user %>
   
+	<a name="sharing"></a>
 	<div class="tabContainer">
     <div class="tabTitle">Sharing</div>
     <div class="tabContent">
