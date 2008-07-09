@@ -73,6 +73,7 @@
 							<%= info_icon_with_tooltip("This box shows version #{@viewing_version_number.to_s} of the Workflow file for this Workflow entry") -%>
 							<span><%= "Version #{@viewing_version_number.to_s} #{@workflow.describe_version(@viewing_version_number)}" -%></span>
 							<span class="count_text">(of <%= @workflow.versions.length -%>)</span>
+						  <a name="versions"></a>
 						</td>
 						<td>
 							<% if @latest_version_number > 1 %>

@@ -45,12 +45,12 @@
 						</p>
 						
 						<p style="font-size: 85%;">
-							<b>Comments: </b><%= pack.comments_count %> |
+							<a href="<%= pack_path(pack) + '#comments' -%>"><b>Comments: </b><%= pack.comments_count %></a> |
 							<b>Viewed:</b> <%=pluralize pack.contribution.viewings_count, "time" %> |
 						</p>
 						
 						<% unless (tags = pack.tags).empty? %>
-							<p style="font-size: 85%;"><b>Tags:</b></p>
+							<a href="<%= pack_path(pack) + '#tags' -%>"><p style="font-size: 85%;"><b>Tags:</b></p></a>
 							<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
 						<% else %>
 							<p style="font-size: 85%;"><i>This Pack has no tags!</i></p>

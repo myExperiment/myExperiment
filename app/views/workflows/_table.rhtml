@@ -89,11 +89,11 @@
 						</table>
 					  
 					  <p style="font-size: 85%;">
-							<b>Rating: </b><%= number_with_precision(workflow.rating, 2) %>/5 (<%= pluralize workflow.ratings_count, 'rating' %>) |
-							<b>Versions: </b><%= workflow.versions_count %> |
-							<b>Reviews: </b><%= workflow.reviews_count %> |
-							<b>Comments: </b><%= workflow.comments_count %> |
-							<b>Citations: </b><%= workflow.citations_count %>
+							<a href="<%= workflow_path(workflow) + '#ratings' -%>"><b>Rating: </b><%= number_with_precision(workflow.rating, 2) %>/5 (<%= pluralize workflow.ratings_count, 'rating' %>)</a> |
+							<a href="<%= workflow_path(workflow) + '#versions' -%>"><b>Versions: </b><%= workflow.versions_count %></a> |
+							<a href="<%= workflow_path(workflow) + '#reviews' -%>"><b>Reviews: </b><%= workflow.reviews_count %></a> |
+							<a href="<%= workflow_path(workflow) + '#comments' -%>"><b>Comments: </b><%= workflow.comments_count %></a> |
+							<a href="<%= workflow_path(workflow) + '#citations' -%>"><b>Citations: </b><%= workflow.citations_count %></a>
 					  </p>
 						
 						<p style="font-size: 85%;">
@@ -102,7 +102,7 @@
 						</p>
 					  
 					  <% unless (tags = workflow.tags).empty? %>
-							<p style="font-size: 85%;"><b>Tags</b> (<%=tags.count-%>):</p>
+							<a href="<%= workflow_path(workflow) + '#tags' -%>"><p style="font-size: 85%;"><b>Tags</b> (<%=tags.count-%>):</p></a>
 							<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
 					  <% else %>
 							<p style="font-size: 85%;"><i>This Workflow has no tags!</i></p>

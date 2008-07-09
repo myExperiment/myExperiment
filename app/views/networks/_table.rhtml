@@ -46,7 +46,7 @@
 						<% end -%>
 						
 						<% unless (tags = network.tags).empty? -%>
-							<p style="font-size: 85%;"><b>Tags:</b></p>
+							<a href="<%= group_path(network) + '#tags' -%>"><p style="font-size: 85%;"><b>Tags:</b></p></a>
 							<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
 					  <% else -%>
 							<p style="font-size: 85%;"><i>This Group has not been tagged yet!</i></p>
