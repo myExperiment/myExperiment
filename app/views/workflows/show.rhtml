@@ -21,9 +21,7 @@
 
 <h1 class="contribution_title">Workflow Entry: <%=h @workflow.title %> (Taverna Workflow)</h1>
 
-<div class="contribution_aftertitle">
-	<b>Last updated: </b><%= datetime @workflow.updated_at %>
-</div>
+<%= render :partial => "contributions/datetime_info", :locals => { :contributable => @workflow } -%>
 
 <!-- the code for 'selectTab()' should be refactored at some point to get -->
 <!-- tab name as a string, not it's ID; for now IDs are used -->

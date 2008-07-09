@@ -13,9 +13,7 @@
 
 <h1 class="contribution_title">Pack: <%= contributable_name(@pack.id, 'Pack') %></h1>
 
-<div class="contribution_aftertitle">
-	<b>Last updated: </b><%= datetime @pack.updated_at %>
-</div>
+<%= render :partial => "contributions/datetime_info", :locals => { :contributable => @pack } -%>
 
 <div class="contribution_mini_nav">
 	|

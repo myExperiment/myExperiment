@@ -11,9 +11,7 @@
 
 <h1 class="contribution_title">File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
 
-<div class="contribution_aftertitle">
-	<b>Last updated: </b><%= datetime @blob.updated_at %>
-</div>
+<%= render :partial => "contributions/datetime_info", :locals => { :contributable => @blob } -%>
 
 <div class="contribution_mini_nav">
 	|
