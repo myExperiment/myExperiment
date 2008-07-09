@@ -352,7 +352,7 @@ def search(rules, query)
   results = []
 
   if SOLR_ENABLE and not search_query.nil? and search_query != ""
-    results = User.multi_solr_search(search_query, :limit => 100,
+    results = models[0].multi_solr_search(search_query, :limit => 100,
         :models => models).results
   end
 

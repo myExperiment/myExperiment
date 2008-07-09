@@ -49,9 +49,12 @@
 							<select id="uri2" name="uri" style="width: 320px;">
 					  		<% contributions.each do |c| -%>
 									<% if ["workflow", "blob", "pack"].include? c.contributable_type.downcase -%>
-						    		<option value="<%= contributable_url(c.contributable_id, c.contributable_type, @base_host) -%>">
-						      		<%= "#{visible_name c.contributable_type}: #{contributable_name(c.contributable_id, c.contributable_type)}" -%>
-						    		</option>
+						    	  <% show = (c.contributable.class.to_s == 'Pack' ? (@pack.id != c.contributable.id) : true) -%> <!-- prevents from displaying current pack in the list of things that are enabled to be added to the current pack -->
+									  <% if show -%>
+										  <option value="<%= contributable_url(c.contributable_id, c.contributable_type, @base_host) -%>">
+						      	  	<%= "#{visible_name c.contributable_type}: #{contributable_name(c.contributable_id, c.contributable_type)}" -%>
+						    		  </option>
+										<% end %>
 									<% end -%>
 					  		<% end -%>
 							</select>
@@ -65,7 +68,7 @@
 		</div>
 	<% end -%>
 	
-	<!-- Quick add (from your stuff) -->
+	<!-- Quick add (from your favourites) -->
 	<% unless (bookmarks = current_user.bookmarks).empty? -%>
 		<div class="box_currentuser_specific" style="margin-bottom: 0.5em; padding: 0.1em 0;">
 			<% form_tag quick_add_pack_url(@pack) do -%>
@@ -80,9 +83,12 @@
 							<select id="uri2" name="uri" style="width: 320px;">
 					  		<% bookmarks.each do |b| -%>
 									<% if ["workflow", "blob", "pack"].include? b.bookmarkable_type.downcase -%>
-						    		<option value="<%= contributable_url(b.bookmarkable_id, b.bookmarkable_type, @base_host) -%>">
-						      		<%= "#{visible_name b.bookmarkable_type}: #{contributable_name(b.bookmarkable_id, b.bookmarkable_type)}" -%>
-						    		</option>
+						    		<% show = (b.bookmarkable_type == 'Pack' ? (@pack.id != b.bookmarkable_id) : true) -%> <!-- prevents from displaying current pack in the list of things that are enabled to be added to the current pack -->
+									  <% if show -%>
+											<option value="<%= contributable_url(b.bookmarkable_id, b.bookmarkable_type, @base_host) -%>">
+						      		  <%= "#{visible_name b.bookmarkable_type}: #{contributable_name(b.bookmarkable_id, b.bookmarkable_type)}" -%>
+						    		  </option>
+										<% end %>
 									<% end -%>
 					  		<% end -%>
 							</select>

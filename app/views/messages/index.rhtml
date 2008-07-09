@@ -1,10 +1,11 @@
 <h1>My Messages</h1>
 
 <ul class="sectionIcons">
+	<li><%= icon('refresh', messages_path, nil, nil, 'Check for New Messages') %></li>
   <li><%= icon('new', new_message_path, nil, nil, 'Write New Message') %></li>
 </ul>
 
-<h2>Inbox</h2>
+<h2>Inbox (<%= @messages.size -%>)</h2>
 
 <%= render :partial => "layouts/paginate", :locals => { :collection => @messages } %>
 

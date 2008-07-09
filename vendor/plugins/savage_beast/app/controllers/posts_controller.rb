@@ -38,6 +38,9 @@ class PostsController < ApplicationController
   end
 
   def create
+
+    return error('Creating new forum content is disabled', 'is disabled')
+
     @topic = Topic.find_by_id_and_forum_id(params[:topic_id],params[:forum_id], :include => :forum)
     if @topic.locked?
       respond_to do |format|
@@ -184,7 +187,7 @@ protected
 private
 
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Post.new.errors).add(attr, message)
     
     respond_to do |format|

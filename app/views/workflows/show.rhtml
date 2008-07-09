@@ -25,13 +25,42 @@
 	<b>Last updated: </b><%= datetime @workflow.updated_at %>
 </div>
 
+<!-- the code for 'selectTab()' should be refactored at some point to get -->
+<!-- tab name as a string, not it's ID; for now IDs are used -->
 <div class="contribution_mini_nav">
+	|
+	<%= link_to "License", "#license" %>
+	|
+	<%= link_to "Credits (#{@workflow.creditations.length})", "#credits" %>
+	|
+	<%= link_to "Attributions (#{@workflow.attributors.length})", "#attributions" %>
+	|
+	<%= link_to "Tags (#{@workflow.tags.length})", "#tags" %>
+	|
+	<%= link_to "Featured in Packs (#{@workflow.in_packs.length})", "#featured_in_packs" %>
+	|
+	<%= link_to "Ratings (#{@workflow.ratings.length})", "#ratings" %>
+	|
+	<%= link_to "Attributed By (#{@workflow.attributions.length})", "#attributed_by" %>
+	|
+	<%= link_to "Favourited By (#{@workflow.bookmarks.length})", "#favourited_by" %>
+	|
+	<br/>
+	|
+	<a href="#citations" onclick="selectTab($('tabsContainer'),0)">Citations (<%= @workflow.citations.length -%>)</a>
+	|
+	<a href="#versions_history" onclick="selectTab($('tabsContainer'),1)">Versions History</a>
+	|
+	<% if logged_in? and @workflow.owner?(current_user) %>
+	  <a href="#sharing" onclick="selectTab($('tabsContainer'),2)">Sharing</a>
+	  |
+	<% end %>
+	<%= link_to "Reviews (#{@workflow.reviews.length})", "#reviews" %>
 	|
 	<%= link_to "Comments (#{@workflow.comments.length})", "#comments" %>
 	|
-	<%= link_to "Reviews (#{@workflow.reviews.length})", "#reviews" %>
-	|
 </div>
+
 
 <div class="contribution_left_box">
 	
@@ -296,8 +325,10 @@
 
 <div id="tabsContainer" class="tabsContainer"></div>
 
+<a name="citations"></a>
 <%= render :partial => "contributions/citations_tab", :locals => { :item => @workflow } %>
 
+<a name="versions_history"></a>
 <div class="tabContainer">
   <div class="tabTitle">Versions History</div>
   <div class="tabContent">
@@ -307,6 +338,7 @@
 
 <% if logged_in? and @workflow.owner?(current_user) %>
   
+	<a name="sharing"></a>
 	<div class="tabContainer">
     <div class="tabTitle">Sharing</div>
     <div class="tabContent">
@@ -324,7 +356,7 @@
   </div>
 	
 	<% if false %>
-  <div class="tabContainer">
+	<div class="tabContainer">
     <div class="tabTitle">Viewing History</div>
     <div class="tabContent">
       <%= render :partial => "contributions/history", :object => @workflow.contribution %>

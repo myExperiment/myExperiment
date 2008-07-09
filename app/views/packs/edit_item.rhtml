@@ -4,6 +4,7 @@
 	<%= error_messages_for :item_entry %>
 </center>
 
+<% if @item_entry.errors.empty? -%>
 <div>
 	<p style="text-align: center;">
 		This entry points to the following <b><%= type_to_UI_text @type -%></b> resource:
@@ -15,6 +16,11 @@
 <br/>
 <br/>
 <br/>
+<% else %>
+<p style="text-align: center">
+  <%= link_to "Reset the form to the last saved correct state", :controller => "Packs", :id => @pack.id, :action => "edit_item", :entry_type => @type, :entry_id => @item_entry.id -%>
+</p>
+<% end %>
 
 <center>
 	<div class="box_form" style="width: 550px; margin: 1em 0; text-align: left;">

@@ -37,7 +37,7 @@ class Pack < ActiveRecord::Base
   # - if the URI is clearly not referring to this site, it will create a pack_remote_entry.
   #
   # Input parameters:
-  # - link: a string based uri beginning with the protocol (eg: "http://..."). NB! if the protocol is not specified, 'http' protocol is assumed by default.
+  # - link: a string based uri beginning with the protocol (eg: "http://...").
   # - host_name: the host name that this site uses (e.g: "www.myexperiment.org").
   # - host_port: the host port that this site runs on (must be a string; e.g: "80" or nil).
   # - current_user: the currently logged on user.
@@ -53,12 +53,6 @@ class Pack < ActiveRecord::Base
     
     is_remote = false
     
-    # check that a protocol is specified in the URI; prepend HTTP:// otherwise
-    expr = /\A[a-z]+:\/\//    # aka \A[a-z]+:// - Matches '<protocol>://<address>'  
-    if !link.match(expr)
-      link = "http://" + link;
-    end
-    
     begin
       
       uri = URI.parse(link)
@@ -70,10 +64,10 @@ class Pack < ActiveRecord::Base
           expr = /^\/(workflows|files|packs)\/(\d+)$/   # e.g: "\workflows\45"
           if uri.path =~ expr
             arr = uri.path.scan(expr)
-            type, id = arr[0][0], arr[0][1]
+            c_type, id = arr[0][0], arr[0][1]
             
             # Try to find the contributable item being pointed at
-            case type.downcase
+            case c_type.downcase
             when 'workflows'
               contributable = Workflow.find(:first, :conditions => ["id = ?", id])
             when 'files'
@@ -89,6 +83,12 @@ class Pack < ActiveRecord::Base
               entry.contributable = contributable
               
               type = 'contributable'
+              
+              # check if the 'contributable' is a pack, then that it's not the same pack,
+              # to which we are trying to add something at the moment
+              if c_type.downcase == 'packs' && contributable.id == self.id
+                errors_here.add_to_base('Cannot add the pack to itself')
+              end
               
               # Check if version was specified in the uri
               unless uri.query.blank?

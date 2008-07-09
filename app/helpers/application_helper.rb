@@ -317,14 +317,19 @@ module ApplicationHelper
     return rtn
   end
   
-  def contributor(contributorid, contributortype, avatar=false, size=100)
+  def contributor(contributorid, contributortype, avatar=false, size=100, you_text=false)
     if contributortype.to_s == "User"
       user = User.find(:first, :select => "id, name", :conditions => ["id = ?", contributorid])
       return nil unless user
       
-      return name(user) unless avatar
-      #return avatar(user, size) + "<br/>" + name(user)
-      return render(:partial => "users/avatar", :locals => { :user => user, :size => size })
+      # this string will output " (you) " for current user next to the display name, when invoked with 'you_text == true'
+      you_string = (you_text && logged_in? && user.id == current_user.id) ? "<small style='vertical-align: middle; color: #666666; margin-left: 0.5em;'>(you)</small>" : ""
+      
+      if avatar
+        return render(:partial => "users/avatar", :locals => { :user => user, :size => size, :you_string => you_string })
+      else
+        return (name(user) + you_string)
+      end
     elsif contributortype.to_s == "Network"
       network = Network.find(:first, :select => "id, title", :conditions => ["id = ?", contributorid])
       return nil unless network
@@ -589,6 +594,12 @@ module ApplicationHelper
 
   def method_to_icon_filename(method)
     case (method.to_s)
+    when "refresh"
+      return "famfamfam_silk/arrow_refresh.png"
+    when "arrow_up"
+      return "famfamfam_silk/arrow_up.png"
+    when "arrow_down"
+      return "famfamfam_silk/arrow_down.png"
     when "new"
       return "redmond_studio/add_16.png"
     when "download"
@@ -634,8 +645,12 @@ module ApplicationHelper
       return "famfamfam_silk/save.png"
     when "message"
       return "famfamfam_silk/email.png"
+    when "message_read"
+      return "famfamfam_silk/email_open.png"
     when "reply"
       return "famfamfam_silk/email_go.png"
+    when "message_delete"
+      return "famfamfam_silk/email_delete.png"  
     when "blob"
       return "redmond_studio/documents_16.png"
     when "pack"
