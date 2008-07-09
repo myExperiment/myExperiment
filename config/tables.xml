@@ -17,10 +17,10 @@
   <AllowPNG/>
  </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-  <WindowHeight>7035</WindowHeight>
-  <WindowWidth>8865</WindowWidth>
-  <WindowTopX>495</WindowTopX>
-  <WindowTopY>1560</WindowTopY>
+  <WindowHeight>9735</WindowHeight>
+  <WindowWidth>11730</WindowWidth>
+  <WindowTopX>450</WindowTopX>
+  <WindowTopY>1875</WindowTopY>
   <ActiveSheet>1</ActiveSheet>
   <ProtectStructure>False</ProtectStructure>
   <ProtectWindows>False</ProtectWindows>
@@ -558,7 +558,7 @@
   </WorksheetOptions>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="18" ss:ExpandedRowCount="178" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="18" ss:ExpandedRowCount="179" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="86.25"/>
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="90.75"/>
@@ -1501,7 +1501,19 @@
     <Cell ss:Index="16"><Data ss:Type="String">member</Data></Cell>
     <Cell><Data ss:Type="String">name</Data></Cell>
    </Row>
-   <Row ss:Index="92" ss:AutoFitHeight="0">
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">group</Data></Cell>
+    <Cell><Data ss:Type="String">shared-items</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Network</Data></Cell>
+    <Cell><Data ss:Type="String">shared_contributables</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">list</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:Index="93" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">picture</Data></Cell>
     <Cell><Data ss:Type="String">data</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Picture</Data></Cell>
@@ -1527,7 +1539,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="18"><Data ss:Type="Number">38</Data></Cell>
    </Row>
-   <Row ss:Index="95" ss:AutoFitHeight="0">
+   <Row ss:Index="96" ss:AutoFitHeight="0">
     <Cell ss:Index="4"><Data ss:Type="String">Policy</Data></Cell>
     <Cell><Data ss:Type="String">contributor_id</Data></Cell>
    </Row>
@@ -1583,7 +1595,7 @@
     <Cell ss:Index="4"><Data ss:Type="String">Policy</Data></Cell>
     <Cell><Data ss:Type="String">view_public</Data></Cell>
    </Row>
-   <Row ss:Index="110" ss:AutoFitHeight="0">
+   <Row ss:Index="111" ss:AutoFitHeight="0">
     <Cell ss:Index="4"><Data ss:Type="String">Relationship</Data></Cell>
     <Cell><Data ss:Type="String">accepted_at</Data></Cell>
    </Row>
@@ -1599,7 +1611,7 @@
     <Cell ss:Index="4"><Data ss:Type="String">Relationship</Data></Cell>
     <Cell><Data ss:Type="String">relation_id</Data></Cell>
    </Row>
-   <Row ss:Index="115" ss:AutoFitHeight="0">
+   <Row ss:Index="116" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">tag</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Tag</Data></Cell>
@@ -1652,7 +1664,7 @@
     <Cell ss:Index="16"><Data ss:Type="String">tagging</Data></Cell>
     <Cell><Data ss:Type="String">taggable</Data></Cell>
    </Row>
-   <Row ss:Index="120" ss:AutoFitHeight="0">
+   <Row ss:Index="121" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">user</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">User</Data></Cell>
@@ -1824,7 +1836,7 @@
     <Cell ss:Index="16"><Data ss:Type="String">workflow</Data></Cell>
     <Cell><Data ss:Type="String">title</Data></Cell>
    </Row>
-   <Row ss:Index="134" ss:AutoFitHeight="0">
+   <Row ss:Index="135" ss:AutoFitHeight="0">
     <Cell ss:Index="4"><Data ss:Type="String">Viewing</Data></Cell>
     <Cell><Data ss:Type="String">contribution_id</Data></Cell>
    </Row>
@@ -1840,7 +1852,7 @@
     <Cell ss:Index="4"><Data ss:Type="String">Viewing</Data></Cell>
     <Cell><Data ss:Type="String">user_id</Data></Cell>
    </Row>
-   <Row ss:Index="139" ss:AutoFitHeight="0">
+   <Row ss:Index="140" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Workflow</Data></Cell>
@@ -2125,7 +2137,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="18" ss:StyleID="s74"/>
    </Row>
-   <Row ss:Index="162" ss:AutoFitHeight="0">
+   <Row ss:Index="163" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">comment</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Comment</Data></Cell>
@@ -2191,7 +2203,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="18"><Data ss:Type="String">Wed Oct 03 18:35:47 +0100 2007</Data></Cell>
    </Row>
-   <Row ss:Index="168" ss:AutoFitHeight="0">
+   <Row ss:Index="169" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">rating</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Rating</Data></Cell>
@@ -2244,7 +2256,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="18"><Data ss:Type="String">Wed Oct 03 18:35:47 +0100 2007</Data></Cell>
    </Row>
-   <Row ss:Index="173" ss:AutoFitHeight="0">
+   <Row ss:Index="174" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">review</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Review</Data></Cell>
@@ -2342,9 +2354,9 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>1</TopRowBottomPane>
+   <TopRowBottomPane>66</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
-   <LeftColumnRightPane>2</LeftColumnRightPane>
+   <LeftColumnRightPane>4</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
    <Panes>
     <Pane>
@@ -2352,14 +2364,16 @@
     </Pane>
     <Pane>
      <Number>1</Number>
+     <ActiveCol>2</ActiveCol>
     </Pane>
     <Pane>
      <Number>2</Number>
+     <ActiveRow>1</ActiveRow>
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>14</ActiveRow>
-     <ActiveCol>4</ActiveCol>
+     <ActiveRow>90</ActiveRow>
+     <ActiveCol>16</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

@@ -106,6 +106,11 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
 
         collection = eval("ob.#{model_data['Accessor'][i]}")
 
+        # filter out things that the user cannot see
+        collection = collection.select do |c|
+          not c.respond_to?('contribution') or c.authorized?('view', current_user)
+        end
+
         collection.each do |item|
 
           item_attrs = { }

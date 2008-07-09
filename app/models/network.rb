@@ -240,6 +240,11 @@ class Network < ActiveRecord::Base
     list
   end
   
+  # Finds all the contributables that have been explicitly shared via Permissions
+  def shared_contributables
+    shared_contributions.map do |c| c.contributable end
+  end
+
 protected
 
   def member_r?(userid, depth=0)
