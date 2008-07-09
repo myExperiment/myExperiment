@@ -17,10 +17,10 @@
   <AllowPNG/>
  </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-  <WindowHeight>9735</WindowHeight>
-  <WindowWidth>11730</WindowWidth>
+  <WindowHeight>11550</WindowHeight>
+  <WindowWidth>16365</WindowWidth>
   <WindowTopX>450</WindowTopX>
-  <WindowTopY>1875</WindowTopY>
+  <WindowTopY>60</WindowTopY>
   <ActiveSheet>1</ActiveSheet>
   <ProtectStructure>False</ProtectStructure>
   <ProtectWindows>False</ProtectWindows>
@@ -558,7 +558,7 @@
   </WorksheetOptions>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="18" ss:ExpandedRowCount="179" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="18" ss:ExpandedRowCount="180" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="86.25"/>
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="90.75"/>
@@ -1957,6 +1957,18 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
+    <Cell><Data ss:Type="String">thumbnail-big</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Workflow</Data></Cell>
+    <Cell><Data ss:Type="String">image/medium</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">file-column</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">workflow</Data></Cell>
     <Cell><Data ss:Type="String">svg</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Workflow</Data></Cell>
     <Cell><Data ss:Type="String">svg</Data></Cell>
@@ -2137,7 +2149,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="18" ss:StyleID="s74"/>
    </Row>
-   <Row ss:Index="163" ss:AutoFitHeight="0">
+   <Row ss:Index="164" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">comment</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Comment</Data></Cell>
@@ -2203,7 +2215,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="18"><Data ss:Type="String">Wed Oct 03 18:35:47 +0100 2007</Data></Cell>
    </Row>
-   <Row ss:Index="169" ss:AutoFitHeight="0">
+   <Row ss:Index="170" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">rating</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Rating</Data></Cell>
@@ -2256,7 +2268,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="18"><Data ss:Type="String">Wed Oct 03 18:35:47 +0100 2007</Data></Cell>
    </Row>
-   <Row ss:Index="174" ss:AutoFitHeight="0">
+   <Row ss:Index="175" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">review</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Review</Data></Cell>
@@ -2354,9 +2366,9 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>66</TopRowBottomPane>
+   <TopRowBottomPane>134</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
-   <LeftColumnRightPane>4</LeftColumnRightPane>
+   <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
    <Panes>
     <Pane>
@@ -2364,7 +2376,6 @@
     </Pane>
     <Pane>
      <Number>1</Number>
-     <ActiveCol>2</ActiveCol>
     </Pane>
     <Pane>
      <Number>2</Number>
@@ -2372,8 +2383,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>90</ActiveRow>
-     <ActiveCol>16</ActiveCol>
+     <ActiveRow>147</ActiveRow>
+     <ActiveCol>11</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
