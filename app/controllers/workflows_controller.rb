@@ -150,6 +150,36 @@ class WorkflowsController < ApplicationController
     end
   end
 
+  # GET /workflows/:id/launch.whip
+  def launch
+
+    wwf = Whip::WhipWorkflow.new()
+
+    wwf.title       = @viewing_version.title
+    wwf.datatype    = Whip::Taverna1DataType
+    wwf.author      = @workflow.contributor_name
+    wwf.name        = "#{@viewing_version.unique_name}_#{@viewing_version.version}.xml"
+    wwf.summary     = @viewing_version.body
+    wwf.version     = @viewing_version.version.to_s
+    wwf.workflow_id = @workflow.id.to_s
+    wwf.updated     = @viewing_version.updated_at
+    wwf.data        = @viewing_version.scufl
+
+    dir = 'tmp/bundles'
+
+    FileUtils.mkdir(dir) if not File.exists?(dir)
+    file_path = Whip::filePath(wwf, dir)
+
+    Whip::bundle(wwf, dir)
+
+    respond_to do |format|
+      format.whip { 
+        send_data(File.read(file_path), :filename => "#{@viewing_version.unique_name}_#{@viewing_version.version}.whip",
+            :type => "application/whip-archive")
+      }
+    end
+  end
+
   # GET /workflows
   def index
     respond_to do |format|
@@ -431,7 +461,10 @@ protected
         workflow = Workflow.find(params[:id])
       end
       
-      if workflow.authorized?(action_name, (logged_in? ? current_user : nil))
+      permission = action_name
+      permission = 'show' if action_name == 'launch'
+
+      if workflow.authorized?(permission, (logged_in? ? current_user : nil))
         @latest_version_number = workflow.current_version
         @workflow = workflow
         if params[:version]
