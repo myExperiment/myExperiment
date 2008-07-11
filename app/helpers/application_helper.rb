@@ -717,6 +717,8 @@ module ApplicationHelper
       return "famfamfam_silk/world_link.png"
     when "denied"
       return "famfamfam_silk/exclamation.png"
+    when "launch"
+      return "famfamfam_silk/computer_go.png"
     else
       return nil
     end
