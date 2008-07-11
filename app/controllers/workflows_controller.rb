@@ -498,6 +498,8 @@ protected
                                       :id => @workflow.id, 
                                       :version => @viewing_version_number.to_s,
                                       :name => "#{@viewing_version.unique_name}.xml"
+                                      
+        @launch_url = "/workflows/#{@workflow.id}/launch.whip?version=#{@viewing_version_number.to_s}"
 
         puts "@latest_version_number = #{@latest_version_number}"
         puts "@viewing_version_number = #{@viewing_version_number}"
