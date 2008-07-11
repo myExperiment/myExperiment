@@ -4,7 +4,7 @@
 # See license.txt for details.
 
 class WorkflowsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :search, :all]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :launch, :search, :all]
   
   before_filter :find_workflows, :only => [:all]
   before_filter :find_workflows_rss, :only => [:index]
@@ -12,7 +12,7 @@ class WorkflowsController < ApplicationController
   
   before_filter :check_is_owner, :only => [:edit, :update]
   
-  before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :update_version, :comment, :comment_delete, :rate, :tag, :destroy, :destroy_version]
+  before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :launch, :update, :update_version, :comment, :comment_delete, :rate, :tag, :destroy, :destroy_version]
   before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
   
   # These are provided by the Taverna gem
