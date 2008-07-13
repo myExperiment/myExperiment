@@ -8,7 +8,7 @@
 	<strong>By registering, you are indicating that you have read and agree that:</strong> 
 	You are responsible for any content that you upload. You may remove your content at any time. 
 	We may make copies for operational purposes. This service is governed by the 
-	<%= link_to "JANET Acceptable Use Policy", "http://www.ja.net/services/publications/policy/aup.html" -%>. 
+	<%= link_to "JANET Acceptable Use Policy", "http://www.ja.net/services/publications/policy/aup.html", :popup => true -%>. 
 	Takedown requests will be reviewed by the myExperiment Management Committee. 
 	We will take every care to preserve data but we will not be liable for loss or damage to data while it is stored within myExperiment. 
 	We receive and store certain types of information whenever you interact with us which we will 
@@ -122,6 +122,8 @@
 					When you click register, an email will be sent to you with a confirmation link. Your account will only be activated once you follow this link.
 					We reserve the right to remove <b>unactivated</b> accounts after 30 days.
 				</p>
+				
+				<br/>
 				
 				<p style="text-align: center;">
 				  <%= submit_tag "Register", :disable_with => "Registering&hellip;" %>
