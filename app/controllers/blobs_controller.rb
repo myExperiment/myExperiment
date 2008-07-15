@@ -90,35 +90,41 @@ class BlobsController < ApplicationController
   # POST /blobs
   def create
     
-    data = params[:blob][:data].read
-    params[:blob][:local_name] = params[:blob][:data].original_filename
-    params[:blob][:content_type] = params[:blob][:data].content_type
-    params[:blob].delete('data')
+    # don't create new blob if no file has been selected
+    if params[:blob][:data].size == 0
+      flash[:error] = "Please select a file to upload."
+      redirect_to :action => :new
+    else
+      data = params[:blob][:data].read
+      params[:blob][:local_name] = params[:blob][:data].original_filename
+      params[:blob][:content_type] = params[:blob][:data].content_type
+      params[:blob].delete('data')
 
-    params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
+      params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
    
-    @blob = Blob.new(params[:blob])
-    @blob.content_blob = ContentBlob.new(:data => data)
+      @blob = Blob.new(params[:blob])
+      @blob.content_blob = ContentBlob.new(:data => data)
 
-    respond_to do |format|
-      if @blob.save
-        if params[:blob][:tag_list]
-          @blob.tags_user_id = current_user
-          @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
-          @blob.update_tags
+      respond_to do |format|
+        if @blob.save
+          if params[:blob][:tag_list]
+            @blob.tags_user_id = current_user
+            @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
+            @blob.update_tags
+          end
+          # update policy
+          @blob.contribution.update_attributes(params[:contribution])
+        
+          update_policy(@blob, params)
+        
+          update_credits(@blob, params)
+          update_attributions(@blob, params)
+        
+          flash[:notice] = 'File was successfully created.'
+          format.html { redirect_to file_url(@blob) }
+        else
+          format.html { render :action => "new" }
         end
-        # update policy
-        @blob.contribution.update_attributes(params[:contribution])
-        
-        update_policy(@blob, params)
-        
-        update_credits(@blob, params)
-        update_attributions(@blob, params)
-        
-        flash[:notice] = 'File was successfully created.'
-        format.html { redirect_to file_url(@blob) }
-      else
-        format.html { render :action => "new" }
       end
     end
   end
