@@ -548,8 +548,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>54</ActiveRow>
-     <ActiveCol>10</ActiveCol>
+     <ActiveRow>48</ActiveRow>
+     <ActiveCol>6</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
@@ -558,7 +558,7 @@
   </WorksheetOptions>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="18" ss:ExpandedRowCount="180" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="18" ss:ExpandedRowCount="182" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="86.25"/>
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="90.75"/>
@@ -1783,6 +1783,30 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">city</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">User</Data></Cell>
+    <Cell><Data ss:Type="String">profile.location_city</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">country</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">User</Data></Cell>
+    <Cell><Data ss:Type="String">profile.location_country</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">user</Data></Cell>
     <Cell><Data ss:Type="String">website</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">User</Data></Cell>
     <Cell><Data ss:Type="String">profile.website</Data></Cell>
@@ -1836,7 +1860,7 @@
     <Cell ss:Index="16"><Data ss:Type="String">workflow</Data></Cell>
     <Cell><Data ss:Type="String">title</Data></Cell>
    </Row>
-   <Row ss:Index="135" ss:AutoFitHeight="0">
+   <Row ss:Index="137" ss:AutoFitHeight="0">
     <Cell ss:Index="4"><Data ss:Type="String">Viewing</Data></Cell>
     <Cell><Data ss:Type="String">contribution_id</Data></Cell>
    </Row>
@@ -1852,7 +1876,7 @@
     <Cell ss:Index="4"><Data ss:Type="String">Viewing</Data></Cell>
     <Cell><Data ss:Type="String">user_id</Data></Cell>
    </Row>
-   <Row ss:Index="140" ss:AutoFitHeight="0">
+   <Row ss:Index="142" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Workflow</Data></Cell>
@@ -2149,7 +2173,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="18" ss:StyleID="s74"/>
    </Row>
-   <Row ss:Index="164" ss:AutoFitHeight="0">
+   <Row ss:Index="166" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">comment</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Comment</Data></Cell>
@@ -2215,7 +2239,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="18"><Data ss:Type="String">Wed Oct 03 18:35:47 +0100 2007</Data></Cell>
    </Row>
-   <Row ss:Index="170" ss:AutoFitHeight="0">
+   <Row ss:Index="172" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">rating</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Rating</Data></Cell>
@@ -2268,7 +2292,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="18"><Data ss:Type="String">Wed Oct 03 18:35:47 +0100 2007</Data></Cell>
    </Row>
-   <Row ss:Index="175" ss:AutoFitHeight="0">
+   <Row ss:Index="177" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">review</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Review</Data></Cell>
@@ -2366,7 +2390,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>134</TopRowBottomPane>
+   <TopRowBottomPane>105</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -2383,8 +2407,9 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>147</ActiveRow>
-     <ActiveCol>11</ActiveCol>
+     <ActiveRow>129</ActiveRow>
+     <ActiveCol>0</ActiveCol>
+     <RangeSelection>R130:R131</RangeSelection>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
