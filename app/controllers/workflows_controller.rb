@@ -241,28 +241,37 @@ class WorkflowsController < ApplicationController
       redirect_to :action => :new
     else
       params[:workflow][:contributor_type], params[:workflow][:contributor_id] = "User", current_user.id
+
+      scufl_first_k = params[:workflow][:scufl].read(1024)
+      params[:workflow][:scufl].rewind
+
+      # if first Kb of uploaded scufl contains a '<scufl>' tag then it is probably an XML workflow and can be processed
+      if scufl_first_k !~ %r{<[^<>]*scufl[^<>]*>}
+        flash[:error] = "File must be a Taverna workflow. Please select a workflow file."
+        redirect_to :action => :new
+      else
+        # create workflow using helper methods
+        @workflow = create_workflow(params[:workflow])
     
-      # create workflow using helper methods
-      @workflow = create_workflow(params[:workflow])
-    
-      respond_to do |format|
-        if @workflow.save
-          if params[:workflow][:tag_list]
-            @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
-          end
+        respond_to do |format|
+          if @workflow.save
+            if params[:workflow][:tag_list]
+              @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
+            end
                 
-          @workflow.contribution.update_attributes(params[:contribution])
+            @workflow.contribution.update_attributes(params[:contribution])
 
-          update_policy(@workflow, params)
+            update_policy(@workflow, params)
         
-          # Credits and Attributions:
-          update_credits(@workflow, params)
-          update_attributions(@workflow, params)
+            # Credits and Attributions:
+            update_credits(@workflow, params)
+            update_attributions(@workflow, params)
 
-          flash[:notice] = 'Workflow was successfully created.'
-          format.html { redirect_to workflow_url(@workflow) }
-        else
-          format.html { render :action => "new" }
+            flash[:notice] = 'Workflow was successfully created.'
+            format.html { redirect_to workflow_url(@workflow) }
+          else
+            format.html { render :action => "new" }
+          end
         end
       end
     end
@@ -292,31 +301,40 @@ class WorkflowsController < ApplicationController
       respond_to do |format|
         scufl = params[:workflow][:scufl]
 
-        # process scufl if it's there
-        unless scufl.nil?
+        scufl_first_k = scufl.read(1024)
+        scufl.rewind
 
-          # create new scufl model
-          scufl_model = Scufl::Parser.new.parse(scufl.read)
-          scufl.rewind
-        
-          @workflow.title, @workflow.unique_name = determine_title_and_unique(scufl_model)
-          @workflow.body = scufl_model.description.description
-
-          # create new diagrams and append new version number to filename
-          create_workflow_diagrams(@workflow, scufl_model, "#{@workflow.unique_name}_#{@workflow.current_version.to_i + 1}")
-          
-          @workflow.scufl = scufl.read
-          @workflow.content_type = "application/vnd.taverna.scufl+xml"
-        end
-    
-        success = @workflow.save_as_new_version(ae_some_html(params[:comments]))
-      
-        if success
-          flash[:notice] = 'Workflow version successfully created.'
-          format.html { redirect_to workflow_url(@workflow) }
+        # if first Kb of uploaded scufl contains a '<scufl>' tag then it is probably an XML workflow and can be processed
+        if scufl_first_k !~ %r{<[^<>]*scufl[^<>]*>}
+          flash[:error] = "File must be a Taverna workflow. Please select a workflow file."
+          format.html { redirect_to :action => :new_version }
         else
-          flash[:error] = 'Failed to upload new version. Please report this error.'       
-          format.html { render :action => :new_version }  
+          # process scufl if it's there
+          unless scufl.nil?
+
+            # create new scufl model
+            scufl_model = Scufl::Parser.new.parse(scufl.read)
+            scufl.rewind
+        
+            @workflow.title, @workflow.unique_name = determine_title_and_unique(scufl_model)
+            @workflow.body = scufl_model.description.description
+
+            # create new diagrams and append new version number to filename
+            create_workflow_diagrams(@workflow, scufl_model, "#{@workflow.unique_name}_#{@workflow.current_version.to_i + 1}")
+          
+            @workflow.scufl = scufl.read
+            @workflow.content_type = "application/vnd.taverna.scufl+xml"
+          end
+    
+          success = @workflow.save_as_new_version(ae_some_html(params[:comments]))
+      
+          if success
+            flash[:notice] = 'Workflow version successfully created.'
+            format.html { redirect_to workflow_url(@workflow) }
+          else
+            flash[:error] = 'Failed to upload new version. Please report this error.'       
+            format.html { render :action => :new_version }
+          end
         end
       end
     end
