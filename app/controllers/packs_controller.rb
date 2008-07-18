@@ -52,7 +52,7 @@ class PacksController < ApplicationController
   def new
     @pack = Pack.new
     
-    @sharing_mode  = 1
+    @sharing_mode  = 0
     @updating_mode = 6
   end
   

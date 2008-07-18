@@ -214,7 +214,7 @@ class WorkflowsController < ApplicationController
   def new
     @workflow = Workflow.new
 
-    @sharing_mode  = 1
+    @sharing_mode  = 0
     @updating_mode = 6
   end
 

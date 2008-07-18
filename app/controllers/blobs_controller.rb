@@ -76,7 +76,7 @@ class BlobsController < ApplicationController
   def new
     @blob = Blob.new
     
-    @sharing_mode  = 1
+    @sharing_mode  = 0
     @updating_mode = 6
   end
   
