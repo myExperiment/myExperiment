@@ -14,7 +14,7 @@ class FeedbackController < ApplicationController
     if logged_in?
       from_user = params[:from].blank? ? current_user.name : params[:from]
       from_user += ' (' + (!params[:email].blank? ? params[:email] : 'no email') + ')'
-      Mailer.deliver_feedback(from_user, params[:subject], params[:content], current_user)
+      Mailer.deliver_feedback(from_user, params[:subject], params[:content]) #, current_user)
       
       respond_to do |format|
         flash[:notice] = 'Your feedback has been submitted. Thank you very much.'
