@@ -9,9 +9,9 @@ def parse_excel_2003_xml(xml_text, args)
 
   sheets = {}
 
-  REXML::Document.new(xml_text).root.each_element('Worksheet') do |worksheet|
+  XML::Parser.string(xml_text).parse.root.find('ss:Worksheet').each do |worksheet|
 
-    name = worksheet.attributes['ss:Name']
+    name = worksheet['Name']
     opts = args[name]
 
     cells = {}
@@ -25,15 +25,15 @@ def parse_excel_2003_xml(xml_text, args)
     max_x = nil
     max_y = nil
 
-    worksheet.elements['Table'].each_element('Row') do |row|
-
+    worksheet.find('ss:Table/ss:Row').each do |row|
+      
       x = 1
-      y = row.attributes['ss:Index'].to_i if row.attributes['ss:Index']
+      y = row['Index'].to_i if row['Index']
 
       reset_registers = true
 
-      row.each_element('Cell') do |cell|
-        if cell.elements['Data']
+      row.find('ss:Cell').each do |cell|
+        if not cell.find_first('ss:Data').nil?
           reset_registers = false
           break
         end
@@ -49,25 +49,25 @@ def parse_excel_2003_xml(xml_text, args)
         end
       end
       
-      row.each_element('Cell') do |cell|
+      row.find('ss:Cell').each do |cell| 
 
-        x = cell.attributes['ss:Index'].to_i if cell.attributes['ss:Index']
+        x = cell['Index'].to_i if cell['Index']
 
-          cell_data = cell.elements['Data']
+          cell_data = cell.find_first('ss:Data')
 
           unless cell_data.nil?
 
             # store cell data
 
-            cells[[x,y]] = { :data => cell_data.text,
-                             :type => cell_data.attributes['ss:Type'] }
+            cells[[x,y]] = { :data => cell_data.child.to_s,
+                             :type => cell_data['Type'] }
 
             # update the current register
 
             heading = cells[[x,1]]
 
             unless heading.nil? or y == 1
-              registers[heading[:data].gsub(/[\n\r\t]/, ' ')] = cell_data.text
+              registers[heading[:data].gsub(/[\n\r\t]/, ' ')] = cell_data.child.to_s
             end
           end
 
