@@ -1,5 +1,5 @@
 <% gadget_characters_limit ||= 20 -%>
-<% bookmarks = current_user.bookmarks %>
+<% bookmarkables = current_user.bookmarks.collect {|b| b.bookmarkable} %>
 
 <div class="myexperiment_gadget">
   <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
@@ -15,19 +15,28 @@
     
   <div id="myexp_assetmanager_gadget_contents" class="contents">
     <div class="content">
-      <ul class="gadget_list">
-        <% bookmarks.each do |b| %>
-          <li>
-          	<%= icon b.bookmarkable_type.downcase, nil, nil, nil, "" %> 
-						<% # NOTE: this assumes that only contributables are bookmarkable -%>
-						<% contrib_name = contributable_name(b.bookmarkable_id, b.bookmarkable_type) -%>
-						<%= link_to truncate(contrib_name, gadget_characters_limit), 
-												contributable_url(b.bookmarkable_id, b.bookmarkable_type), 
-												:alt => contrib_name, 
-												:title => tooltip_title_attrib(contrib_name) %>
-					</li>
-        <% end %>
-      </ul>
+			<% # NOTE: this assumes that only contributables are bookmarkable -%>
+			<% aggregate_contributables(bookmarkables).each do |klass, array| %>
+        <div>
+          <div class="title">
+          	<%= link_to visible_name(klass.humanize).pluralize, 
+												currentusers_things_url('favourites') %>
+		  		</div>
+          <div class="content">
+            <ul class="gadget_list">
+              <% array.each do |instance| %>
+                <li>
+                  <%= icon klass.downcase, nil, nil, nil, "" %>
+									<%= link_to contributable_name(instance.id, klass, gadget_characters_limit), 
+															contributable_url(instance.id, klass), 
+															:alt => contributable_name(instance.id, klass), 
+															:title => tooltip_title_attrib(contributable_name(instance.id, klass)) %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
     </div>
 	</div>
   

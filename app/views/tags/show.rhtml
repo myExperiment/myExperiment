@@ -20,7 +20,7 @@
 		<%= render :partial => "#{@internal_type.downcase.pluralize}/table", :locals => { :collection => @tagged_with } %>
 <% else -%>
 	<div id="tabsContainer" class="tabsContainer"></div>
-	<% aggregate_taggables(@tagged_with).each do |type, taggables| %>
+	<% aggregate_contributables(@tagged_with).each do |type, taggables| %>
 		<div class="tabContainer">
 	  	<div class="tabTitle"><%= visible_name(type).pluralize -%> (<%= taggables.length -%>)</div>
 	  	<div class="tabContent">

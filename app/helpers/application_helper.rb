@@ -317,6 +317,20 @@ module ApplicationHelper
     return rtn
   end
   
+  def aggregate_contributables(contributables)
+    rtn = {}
+    
+    contributables.each do |t|
+      if (arr = rtn[(klass = t.class.to_s)])
+        arr << t
+      else
+        rtn[klass] = [t]
+      end
+    end
+    
+    return rtn
+  end
+  
   def contributor(contributorid, contributortype, avatar=false, size=100, you_text=false)
     if contributortype.to_s == "User"
       user = User.find(:first, :select => "id, name", :conditions => ["id = ?", contributorid])
@@ -1194,20 +1208,6 @@ module ApplicationHelper
     else
       return false
     end
-  end
-  
-  def aggregate_taggables(taggables)
-    rtn = {}
-    
-    taggables.each do |t|
-      if (arr = rtn[(klass = t.class.to_s)])
-        arr << t
-      else
-        rtn[klass] = [t]
-      end
-    end
-    
-    return rtn
   end
   
   def delete_image(style=nil, tooltip="Delete")
