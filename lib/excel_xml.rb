@@ -9,7 +9,7 @@ def parse_excel_2003_xml(xml_text, args)
 
   sheets = {}
 
-  XML::Parser.string(xml_text).parse.root.find('ss:Worksheet').each do |worksheet|
+  LibXML::XML::Parser.string(xml_text).parse.root.find('ss:Worksheet').each do |worksheet|
 
     name = worksheet['Name']
     opts = args[name]
