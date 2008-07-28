@@ -3,7 +3,7 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'rexml/document'
+require 'xml/libxml'
 
 def parse_excel_2003_xml(xml_text, args)
 
