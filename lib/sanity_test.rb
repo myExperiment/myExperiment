@@ -52,9 +52,10 @@ def sanity_tests
   blogs         = Blog.find(:all)
   blobs         = Blob.find(:all)
   forums        = Forum.find(:all)
+  packs         = Pack.find(:all)
   contributions = Contribution.find(:all)
 
-  known_contributables = workflows + blobs + blogs + forums
+  known_contributables = workflows + blobs + blogs + forums + packs
 
   should_be_empty("All users must have a name",
       users.select do |u| u.name == nil or u.name.length == 0 end)
@@ -75,6 +76,9 @@ def sanity_tests
 
   should_be_empty("All forums must have a contribution record",
       forums.select do |f| f.contribution.nil? end)
+
+  should_be_empty("All packs must have a contribution record",
+      packs.select do |f| f.contribution.nil? end)
 
   should_be_true("All contributables should have distinct contribution records",
       list_items_are_distinct(known_contributables.map do |c| c.contribution end))
