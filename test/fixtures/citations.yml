@@ -4,7 +4,7 @@ one:
   user_id: 1
   workflow_id: 1
   workflow_version: 1
-  author: MyString
+  authors: MyString
   title: MyString
   publication: MyString
   published_at: 2007-09-29 22:23:01
@@ -18,7 +18,7 @@ two:
   user_id: 1
   workflow_id: 1
   workflow_version: 1
-  author: MyString
+  authors: MyString
   title: MyString
   publication: MyString
   published_at: 2007-09-29 22:23:01

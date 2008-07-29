@@ -3,7 +3,7 @@ one:
   id: 1
   openid_url: MyString
   name: MyString
-  unique: MyString
+  username: MyString
   last_seen_at: 2007-07-30 13:55:48
   created_at: 2007-07-30 13:55:48
   updated_at: 2007-07-30 13:55:48
@@ -11,7 +11,7 @@ two:
   id: 2
   openid_url: MyString
   name: MyString
-  unique: MyString
+  username: MyString
   last_seen_at: 2007-07-30 13:55:48
   created_at: 2007-07-30 13:55:48
   updated_at: 2007-07-30 13:55:48

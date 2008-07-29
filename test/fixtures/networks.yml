@@ -3,13 +3,13 @@ one:
   id: 1
   user_id: 1
   title: MyString
-  unique: MyString
+  unique_name: MyString
   created_at: 2007-07-30 14:09:54
   updated_at: 2007-07-30 14:09:54
 two:
   id: 2
   user_id: 1
   title: MyString
-  unique: MyString
+  unique_name: MyString
   created_at: 2007-07-30 14:09:54
   updated_at: 2007-07-30 14:09:54

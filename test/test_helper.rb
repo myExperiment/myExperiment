@@ -1,5 +1,13 @@
-ENV["RAILS_ENV"] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+# Setting RAILS_ENV to 'test' causes a crash.
+# ENV["RAILS_ENV"] = "test"
+
+begin
+  require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+rescue Exception => e
+  puts "Exception: #{e.class}: #{e.message}\n\t#{e.backtrace.join("\n\t")}"
+  exit 1
+end
+
 require 'test_help'
 
 class Test::Unit::TestCase
