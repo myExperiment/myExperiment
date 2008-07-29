@@ -208,6 +208,7 @@ ActionController::Routing::Routes.draw do |map|
   # Explicit redirections
   map.connect 'exercise', :controller => 'redirects', :action => 'exercise'
   map.connect 'google', :controller => 'redirects', :action => 'google'
+  map.connect 'benchmarks', :controller => 'redirects', :action => 'benchmarks'
 
   # alternate download link to work around lack of browser redirects when downloading
   map.connect ':controller/:id/download/:name', :action => 'named_download', :requirements => { :name => /.*/ }
