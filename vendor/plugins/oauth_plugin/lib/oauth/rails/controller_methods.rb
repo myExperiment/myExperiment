@@ -38,8 +38,9 @@ module OAuth
           end
         else
           logger.info "failed oauthenticate"
-          
-          invalid_oauth_response
+	  # Return true instead, so public api calls still work
+	  return true          
+          #invalid_oauth_response
         end
       end
       
