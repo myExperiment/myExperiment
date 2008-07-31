@@ -111,4 +111,32 @@ class Workflow < ActiveRecord::Base
     "#{BASE_URI}/workflows/#{id}/download/#{unique_name}.xml"
   end
 
+  def create_workflow_diagrams(scufl_model, extension)
+
+    salt = rand 32768
+
+    self.title = scufl_model.description.title.blank? ? "untitled" : scufl_model.description.title
+    self.unique_name = "#{self.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"
+
+    unless RUBY_PLATFORM =~ /mswin32/
+      i = Tempfile.new("image")
+      Scufl::Dot.new.write_dot(i, scufl_model)
+      i.close(false)
+      img = StringIO.new(`dot -Tpng #{i.path}`)
+      svg = StringIO.new(`dot -Tsvg #{i.path}`)
+      img.extend FileUpload
+      img.original_filename = "#{self.unique_name}_#{extension}.png"
+      img.content_type = "image/png"
+      svg.extend FileUpload
+      svg.original_filename = "#{self.unique_name}_#{extension}.svg"
+      svg.content_type = "image/svg+xml"
+      self.image = img
+      self.svg = svg
+    end
+  end
+
+end
+
+module FileUpload
+  attr_accessor :original_filename, :content_type
 end
