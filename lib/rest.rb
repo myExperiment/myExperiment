@@ -310,6 +310,7 @@ def rest_resource_uri(ob)
     when 'Message';        return message_url(ob)
     when 'Citation';       return citation_url(ob.workflow, ob)
     when 'Announcement';   return announcement_url(ob)
+    when 'Pack';           return pack_url(ob)
     when 'Experiment';     return experiment_url(ob)
     when 'TavernaEnactor'; return runner_url(ob)
     when 'Job';            return experiment_job_url(ob.experiment, ob)
@@ -337,6 +338,7 @@ def rest_access_uri(ob)
     when 'Message';        return "#{base}/message.xml?id=#{ob.id}"
     when 'Citation';       return "#{base}/citation.xml?id=#{ob.id}"
     when 'Announcement';   return "#{base}/announcement.xml?id=#{ob.id}"
+    when 'Pack';           return "#{base}/pack.xml?id=#{ob.id}"
     when 'Experiment';     return "#{base}/experiment.xml?id=#{ob.id}"
     when 'TavernaEnactor'; return "#{base}/runner.xml?id=#{ob.id}"
     when 'Job';            return "#{base}/job.xml?id=#{ob.id}"
@@ -360,6 +362,7 @@ def rest_reference(ob, query)
     when 'Citation';     tag = 'citation';     text = ob.title
     when 'Announcement'; tag = 'announcement'; text = ob.title
     when 'Tag';          tag = 'tag';          text = ob.name
+    when 'Pack';         tag = 'pack';         text = ob.title
     when 'Experiment';   tag = 'experiment';   text = ob.title
 
     when 'Workflow::Version'; tag = 'workflow'; text = ob.title
@@ -393,6 +396,7 @@ def parse_resource_uri(str)
   return ["Message", $1, is_local]       if uri.path =~ /^\/messages\/([\d]+)$/
   return ["Citation", $1, is_local]      if uri.path =~ /^\/[^\/]+\/[\d]+\/citations\/([\d]+)$/
   return ["Announcement", $1, is_local]  if uri.path =~ /^\/announcements\/([\d]+)$/
+  return ["Pack", $1, is_local]          if uri.path =~ /^\/packs\/([\d]+)$/
   return ["Experiment", $1, is_local]    if uri.path =~ /^\/experiments\/([\d]+)$/
   return ["Runner", $1, is_local]        if uri.path =~ /^\/runners\/([\d]+)$/
   return ["Job", $1, is_local]           if uri.path =~ /^\/jobs\/([\d]+)$/
