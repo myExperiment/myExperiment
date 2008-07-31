@@ -140,7 +140,7 @@
   <h4>Example curl request:</h4>
   <p><tt>curl <%= "#{url_for(:controller => '/', :only_path => false)}#{route[0]}.xml" %></tt></p>
 
-  <pre><%=h rest_index_example(route[0]) %></pre>
+  <pre style="overflow: hidden"><%=h rest_index_example(route[0]) %></pre>
 
 <% end %>
 
@@ -180,7 +180,7 @@
   <h4>Example curl request:</h4>
   <p><tt>curl <%= "#{url_for(:controller => '/', :only_path => false)}#{route[0]}.xml?id=#{get_example_id(attrs)}" %></tt></p>
 
-  <pre><%=h rest_example(route[1], route[2]['REST Entity'], route[2]['Model Entity'], get_example_id(attrs).to_i, false) %></pre>
+  <pre style="overflow: hidden"><%=h rest_example(route[1], route[2]['REST Entity'], route[2]['Model Entity'], get_example_id(attrs).to_i, false) %></pre>
 
 <% end %>
 

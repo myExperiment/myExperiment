@@ -35,7 +35,7 @@ begin
     end
   end
   
-  # And use XML::Node for our XML generation
+  # And use LibXML::XML::Node for our XML generation
   Solr::XML::Element = LibXML::XML::Node
   
 rescue LoadError => e # If we can't load either rubygems or libxml-ruby

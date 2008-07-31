@@ -4,6 +4,8 @@
 # See license.txt for details.
 
 require 'lib/excel_xml'
+require 'xml/libxml'
+require 'uri'
 
 API_VERSION = "0.1"
 
@@ -50,21 +52,23 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
 
   elements = query['elements'] ? query['elements'].split(',') : nil
 
-  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{entity_name}/>")
+  doc  = XML::Document.new()
+  root = XML::Node.new(entity_name)
+  doc.root = root
 
-  doc.root.add_attribute('uri', rest_access_uri(ob))
-  doc.root.add_attribute('resource', uri)
-  doc.root.add_attribute('api-version', API_VERSION) if query['api_version'] == 'yes'
+  root['uri'        ] = rest_access_uri(ob)
+  root['resource'   ] = uri
+  root['api-version'] = API_VERSION if query['api_version'] == 'yes'
 
   if ob.respond_to?('versions')
     if query['version']
-      doc.root.add_attribute('version', query['version'])
+      root['version'] = query['version']
     else
-      doc.root.add_attribute('version', ob.versions.last.version.to_s)
+      root['version'] = ob.versions.last.version.to_s
     end
   end
 
-  data = TABLES['REST'][:data][req_uri][request.method.to_s.upcase]
+  data = TABLES['REST'][:data][req_uri]['GET']
 
   rest_entity = data['REST Entity']
 
@@ -102,7 +106,13 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
       end
 
       if model_data['Encoding'][i] == 'list'
-        list_element = doc.root.add_element(model_data['REST Attribute'][i], attrs)
+        list_element = XML::Node.new(model_data['REST Attribute'][i])
+
+        attrs.each do |key,value|
+          list_element[key] = value
+        end
+
+        root << list_element
 
         collection = eval("ob.#{model_data['Accessor'][i]}")
 
@@ -123,10 +133,17 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
           list_element_text     = list_element_accessor ? eval("item.#{model_data['List Element Accessor'][i]}") : item
 
           if list_element_text.instance_of?(String)
-            el = list_element.add_element(model_data['List Element Name'][i], item_attrs)
-            el.add_text(list_element_text.to_s) if list_element_text
+            el = XML::Node.new(model_data['List Element Name'][i])
+
+            item_attrs.each do |key,value|
+              el[key] = value
+            end
+
+            el << list_element_text.to_s if list_element_text
+
+            list_element << el
           else
-            list_element.add_element(rest_reference(list_element_text, query))
+            list_element << rest_reference(list_element_text, query)
           end
         end
 
@@ -137,7 +154,16 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
           attrs['uri'] = eval("rest_access_uri(ob.#{model_data['Foreign Accessor'][i]})")
         end
 
-        doc.root.add_element(model_data['REST Attribute'][i], attrs).add_text(text)
+#        puts "ATTRIBUTE = #{model_data['REST Attribute'][i]}, ATTRS = #{attrs.inspect}, text = #{text.inspect}"
+
+        el = XML::Node.new(model_data['REST Attribute'][i])
+
+        attrs.each do |key,value|
+          el[key] = value
+        end
+
+        el << text
+        root << el
       end
     end
   end
@@ -146,10 +172,15 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
 end
 
 def rest_error_response(code, message)
-  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><error/>")
-  doc.root.add_attribute("code", code.to_s)
-  doc.root.add_attribute("message", message)
-  return doc
+
+  error = XML::Node.new('error')
+  error["code"   ] = code.to_s
+  error["message"] = message
+
+  doc = XML::Document.new
+  doc.root = error
+
+  doc
 end
 
 def rest_crud_request(rules)
@@ -235,13 +266,17 @@ def rest_index_request(rules, query)
 end
 
 def produce_rest_list(rules, query, obs, tag)
-  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{tag}/>")
 
-  doc.root.add_attribute('api-version', API_VERSION) if query['api_version'] == 'yes'
+  root = XML::Node.new(tag)
+
+  root['api-version'] = API_VERSION if query['api_version'] == 'yes'
 
   obs.map do |ob|
-    doc.root.add_element(rest_reference(ob, query))
+    root << rest_reference(ob, query)
   end
+
+  doc = XML::Document.new
+  doc.root = root
 
   doc
 end
@@ -261,20 +296,23 @@ end
 def rest_resource_uri(ob)
 
   case ob.class.to_s
-    when 'Workflow';     return workflow_url(ob)
-    when 'Blob';         return file_url(ob)
-    when 'Network';      return group_url(ob)
-    when 'User';         return user_url(ob)
-    when 'Review';       return review_url(ob.reviewable, ob)
-    when 'Comment';      return "#{rest_resource_uri(ob.commentable)}/comments/#{ob.id}"
-    when 'Blog';         return blog_url(ob)
-    when 'BlogPost';     return blog_post_url(ob.blog, ob)
-    when 'Rating';       return "#{rest_resource_uri(ob.rateable)}/ratings/#{ob.id}"
-    when 'Tag';          return tag_url(ob)
-    when 'Picture';      return picture_url(ob.owner, ob)
-    when 'Message';      return message_url(ob)
-    when 'Citation';     return citation_url(ob.workflow, ob)
-    when 'Announcement'; return announcement_url(ob)
+    when 'Workflow';       return workflow_url(ob)
+    when 'Blob';           return file_url(ob)
+    when 'Network';        return group_url(ob)
+    when 'User';           return user_url(ob)
+    when 'Review';         return review_url(ob.reviewable, ob)
+    when 'Comment';        return "#{rest_resource_uri(ob.commentable)}/comments/#{ob.id}"
+    when 'Blog';           return blog_url(ob)
+    when 'BlogPost';       return blog_post_url(ob.blog, ob)
+    when 'Rating';         return "#{rest_resource_uri(ob.rateable)}/ratings/#{ob.id}"
+    when 'Tag';            return tag_url(ob)
+    when 'Picture';        return picture_url(ob.owner, ob)
+    when 'Message';        return message_url(ob)
+    when 'Citation';       return citation_url(ob.workflow, ob)
+    when 'Announcement';   return announcement_url(ob)
+    when 'Experiment';     return experiment_url(ob)
+    when 'TavernaEnactor'; return runner_url(ob)
+    when 'Job';            return experiment_job_url(ob.experiment, ob)
 
     when 'Workflow::Version'; "#{rest_resource_uri(ob.workflow)}?version=#{ob.version}"
   end
@@ -285,20 +323,23 @@ def rest_access_uri(ob)
   base = "#{request.protocol}#{request.host_with_port}"
 
   case ob.class.to_s
-    when 'Workflow';     return "#{base}/workflow.xml?id=#{ob.id}"
-    when 'Blob';         return "#{base}/file.xml?id=#{ob.id}"
-    when 'Network';      return "#{base}/group.xml?id=#{ob.id}"
-    when 'User';         return "#{base}/user.xml?id=#{ob.id}"
-    when 'Review';       return "#{base}/review.xml?id=#{ob.id}"
-    when 'Comment';      return "#{base}/comment.xml?id=#{ob.id}"
-    when 'Blog';         return "#{base}/blog.xml?id=#{ob.id}"
-    when 'BlogPost';     return "#{base}/blog-post.xml?id=#{ob.id}"
-    when 'Rating';       return "#{base}/rating.xml?id=#{ob.id}"
-    when 'Tag';          return "#{base}/tag.xml?id=#{ob.id}"
-    when 'Picture';      return "#{base}/picture.xml?id=#{ob.id}"
-    when 'Message';      return "#{base}/message.xml?id=#{ob.id}"
-    when 'Citation';     return "#{base}/citation.xml?id=#{ob.id}"
-    when 'Announcement'; return "#{base}/announcement.xml?id=#{ob.id}"
+    when 'Workflow';       return "#{base}/workflow.xml?id=#{ob.id}"
+    when 'Blob';           return "#{base}/file.xml?id=#{ob.id}"
+    when 'Network';        return "#{base}/group.xml?id=#{ob.id}"
+    when 'User';           return "#{base}/user.xml?id=#{ob.id}"
+    when 'Review';         return "#{base}/review.xml?id=#{ob.id}"
+    when 'Comment';        return "#{base}/comment.xml?id=#{ob.id}"
+    when 'Blog';           return "#{base}/blog.xml?id=#{ob.id}"
+    when 'BlogPost';       return "#{base}/blog-post.xml?id=#{ob.id}"
+    when 'Rating';         return "#{base}/rating.xml?id=#{ob.id}"
+    when 'Tag';            return "#{base}/tag.xml?id=#{ob.id}"
+    when 'Picture';        return "#{base}/picture.xml?id=#{ob.id}"
+    when 'Message';        return "#{base}/message.xml?id=#{ob.id}"
+    when 'Citation';       return "#{base}/citation.xml?id=#{ob.id}"
+    when 'Announcement';   return "#{base}/announcement.xml?id=#{ob.id}"
+    when 'Experiment';     return "#{base}/experiment.xml?id=#{ob.id}"
+    when 'TavernaEnactor'; return "#{base}/runner.xml?id=#{ob.id}"
+    when 'Job';            return "#{base}/job.xml?id=#{ob.id}"
 
     when 'Workflow::Version'; return "#{base}/workflow.xml?id=#{ob.workflow.id}&version=#{ob.version}"
   end
@@ -319,17 +360,45 @@ def rest_reference(ob, query)
     when 'Citation';     tag = 'citation';     text = ob.title
     when 'Announcement'; tag = 'announcement'; text = ob.title
     when 'Tag';          tag = 'tag';          text = ob.name
+    when 'Experiment';   tag = 'experiment';   text = ob.title
 
     when 'Workflow::Version'; tag = 'workflow'; text = ob.title
   end
 
-  el = REXML::Element.new(tag)
-  el.add_attribute('resource', rest_resource_uri(ob))
-  el.add_attribute('uri', rest_access_uri(ob))
-  el.add_attribute('version', ob.version.to_s) if ob.respond_to?('version')
-  el.add_text(text)
+  el = XML::Node.new(tag)
+  el['resource'] = rest_resource_uri(ob)
+  el['uri'     ] = rest_access_uri(ob)
+  el['version' ] = ob.version.to_s if ob.respond_to?('version')
+  el << text
 
   el
+end
+
+def parse_resource_uri(str)
+
+  base_uri = URI.parse("#{request.protocol}#{request.host_with_port}/")
+  uri      = base_uri.merge(str)
+  is_local = base_uri.host == uri.host and base_uri.port == uri.port
+
+  return ["Workflow", $1, is_local]      if uri.path =~ /^\/workflows\/([\d]+)$/
+  return ["Blob", $1, is_local]          if uri.path =~ /^\/files\/([\d]+)$/
+  return ["Network", $1, is_local]       if uri.path =~ /^\/groups\/([\d]+)$/
+  return ["User", $1, is_local]          if uri.path =~ /^\/users\/([\d]+)$/
+  return ["Review", $1, is_local]        if uri.path =~ /^\/[^\/]+\/[\d]+\/reviews\/([\d]+)$/
+  return ["Comment", $1, is_local]       if uri.path =~ /^\/[^\/]+\/[\d]+\/comments\/([\d]+)$/
+  return ["Blog", $1, is_local]          if uri.path =~ /^\/blogs\/([\d]+)$/
+  return ["BlogPost", $1, is_local]      if uri.path =~ /^\/blogs\/[\d]+\/blog_posts\/([\d]+)$/
+  return ["Tag", $1, is_local]           if uri.path =~ /^\/tags\/([\d]+)$/
+  return ["Picture", $1, is_local]       if uri.path =~ /^\/users\/[\d]+\/pictures\/([\d]+)$/
+  return ["Message", $1, is_local]       if uri.path =~ /^\/messages\/([\d]+)$/
+  return ["Citation", $1, is_local]      if uri.path =~ /^\/[^\/]+\/[\d]+\/citations\/([\d]+)$/
+  return ["Announcement", $1, is_local]  if uri.path =~ /^\/announcements\/([\d]+)$/
+  return ["Experiment", $1, is_local]    if uri.path =~ /^\/experiments\/([\d]+)$/
+  return ["Runner", $1, is_local]        if uri.path =~ /^\/runners\/([\d]+)$/
+  return ["Job", $1, is_local]           if uri.path =~ /^\/jobs\/([\d]+)$/
+
+  nil
+
 end
 
 def get_rest_uri(rules, query)
@@ -339,6 +408,65 @@ def get_rest_uri(rules, query)
   obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", (logged_in? ? current_user : nil)) end)
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><rest-uri/>")
   "bing"
+end
+
+def create_default_policy
+  Policy.new(:name => 'auto', :update_mode => 6, :share_mode => 0,
+      :view_public     => true,  :view_protected     => false,
+      :download_public => true,  :download_protected => false,
+      :edit_public     => false, :edit_protected     => false,
+      :contributor => current_user)
+end
+
+def post_workflow(rules, query)
+
+  return rest_error_response(400, 'Bad Request') if current_user == 0
+
+  title        = params["workflow"]["title"]
+  description  = params["workflow"]["description"]
+  license_type = params["workflow"]["license_type"]
+  content_type = params["workflow"]["content_type"]
+  content      = params["workflow"]["content"]
+
+  return rest_error_response(400, 'Bad Request') if title.nil?
+  return rest_error_response(400, 'Bad Request') if description.nil?
+  return rest_error_response(400, 'Bad Request') if license_type.nil?
+  return rest_error_response(400, 'Bad Request') if content_type.nil?
+  return rest_error_response(400, 'Bad Request') if content.nil?
+  
+  content = Base64.decode64(content)
+
+  contibution = Contribution.new(
+      :policy           => create_default_policy,
+      :contributor_type => 'User',
+      :contributor_id   => current_user.id)
+
+  workflow = Workflow.new(
+      :title            => title,
+      :body             => description,
+      :license          => license_type,
+      :content_type     => content_type,
+      :scufl            => content,
+      :contributor_type => 'User',
+      :contributor_id   => current_user.id,
+      :contribution     => contibution)
+
+  scufl_model = Scufl::Parser.new.parse(content)
+
+  workflow.create_workflow_diagrams(scufl_model, "1")
+
+  if not workflow.save
+    return rest_error_response(400, 'Bad Request') if description.nil?
+  end
+
+  workflow.contribution.update_attributes( {
+      :contributor_type => 'User', :contributor_id => current_user.id } )
+
+  workflow.contribution.policy = create_default_policy
+  workflow.contribution.save
+
+  rest_get_request(workflow, "workflow",
+      rest_resource_uri(workflow), "workflow", { "id" => workflow.id.to_s })
 end
 
 def search(rules, query)
@@ -361,14 +489,16 @@ def search(rules, query)
         :models => models).results
   end
 
-  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><search/>")
-  doc.root.add_attributes( { 'query' => search_query } )
-  doc.root.add_attributes( { 'type' => query['type'] } ) if query['type']
+  root = XML::Node.new('search')
+  root['query'] = search_query
+  root['type' ] = query['type'] if query['type']
 
   results.each do |result|
-    doc.root.add_element(rest_reference(result, query))
+    root << rest_reference(result, query)
   end
 
+  doc = XML::Document.new
+  doc.root = root
   doc
 end
 
@@ -376,8 +506,11 @@ def user_count(rules, query)
   
   users = User.find(:all).select do |user| user.activated? end
 
-  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><user-count/>")
-  doc.root.add_text(users.length.to_s)
+  root = XML::Node.new('user-count')
+  root << users.length.to_s
+
+  doc = XML::Document.new
+  doc.root = root
 
   doc
 end
@@ -386,9 +519,11 @@ def group_count(rules, query)
   
   groups = Network.find(:all)
 
-  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><group-count/>")
-  doc.root.add_text(groups.length.to_s)
+  root = XML::Node.new('group-count')
+  root << groups.length.to_s
 
+  doc = XML::Document.new
+  doc.root = root
   doc
 end
 
@@ -428,15 +563,44 @@ def tag_cloud(rules, query)
 
   tags = Tag.find_by_tag_count(num, type)
 
-  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><tag-cloud/>")
+  doc = XML::Document.new()
 
-  doc.root.add_attributes( { 'type' => query['type'] ? query['type'] : 'all' } )
+  root = XML::Node.new('tag-cloud')
+  doc.root = root
+
+  root['type'] = query['type'] ? query['type'] : 'all'
 
   tags.each do |tag|
-    doc.root.add_element(rest_reference(tag, query)).add_attribute('count', tag.taggings_count.to_s)
+    tag_node = rest_reference(tag, query)
+    tag_node['count'] = tag.taggings_count.to_s
+    root << tag_node
   end
 
   doc
+end
+
+def post_comment(rules, query)
+
+  title    = params[:comment][:title]
+  text     = params[:comment][:comment]
+  resource = params[:comment][:resource]
+
+  title = '' if title.nil?
+
+  resource_bits = parse_resource_uri(params["comment"]["resource"])
+
+  return rest_error_response(400, 'Bad Request') if current_user == 0
+  return rest_error_response(400, 'Bad Request') if text.nil? or text.length.zero?
+  return rest_error_response(400, 'Bad Request') if resource_bits.nil?
+
+  return rest_error_response(400, 'Bad Request') unless ['Blob', 'Network', 'Pack', 'Workflow'].include?(resource_bits[0])
+
+  resource = eval(resource_bits[0]).find_by_id(resource_bits[1].to_i)
+
+  comment = Comment.create(:user => current_user, :comment => text)
+  resource.comments << comment
+
+  rest_get_request(comment, "comment", rest_resource_uri(comment), "comment", { "id" => comment.id.to_s })
 end
 
 def rest_call_request(rules, query)
