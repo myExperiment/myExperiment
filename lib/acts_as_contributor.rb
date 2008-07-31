@@ -107,6 +107,11 @@ module Mib
           return rtn.string
         end
         
+        def contributor_label
+          return name  if self.respond_to?('name')
+          return title if self.respond_to?('title')
+        end
+
 protected
         
         def collection_contribution_tags!(collection)

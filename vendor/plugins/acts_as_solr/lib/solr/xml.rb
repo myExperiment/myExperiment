@@ -19,8 +19,8 @@ begin
   require 'rubygems'
   require 'xml/libxml'
   
-  # then make a few modifications to XML::Node so it can stand in for REXML::Element
-  class XML::Node
+  # then make a few modifications to LibXML::XML::Node so it can stand in for REXML::Element
+  class LibXML::XML::Node
     # element.add_element(another_element) should work
     alias_method :add_element, :<<
 
@@ -35,8 +35,8 @@ begin
     end
   end
   
-  # And use XML::Node for our XML generation
-  Solr::XML::Element = XML::Node
+  # And use LibXML::XML::Node for our XML generation
+  Solr::XML::Element = LibXML::XML::Node
   
 rescue LoadError => e # If we can't load either rubygems or libxml-ruby
   

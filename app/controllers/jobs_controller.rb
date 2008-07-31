@@ -57,7 +57,7 @@ class JobsController < ApplicationController
     end
   end
 
-  def create
+  def self.create_job(params, user)
     success = true
     
     # Hard code certain values, for now.
@@ -65,12 +65,12 @@ class JobsController < ApplicationController
     params[:job][:runner_type] = 'TavernaEnactor'
     
     @job = Job.new(params[:job])
-    @job.user = current_user
+    @job.user = user
     
     # Check runnable is a valid and authorized one
     # (for now we can assume it's a Workflow)
     runnable = Workflow.find(:first, :conditions => ["id = ?", params[:job][:runnable_id]])
-    if !runnable or !runnable.authorized?('download', current_user)
+    if !runnable or !runnable.authorized?('download', user)
       success = false
       @job.errors.add(:runnable_id, "not valid or not authorized")
     else
@@ -84,13 +84,20 @@ class JobsController < ApplicationController
     # Check runner is a valid and authorized one
     # (for now we can assume it's a TavernaEnactor)
     runner = TavernaEnactor.find(:first, :conditions => ["id = ?", params[:job][:runner_id]])
-    if !runner or !runner.authorized?('execute', current_user)
+    if !runner or !runner.authorized?('execute', user)
       success = false
       @job.errors.add(:runner_id, "not valid or not authorized")
     end
     
-    success = update_parent_experiment(@job)
+    success = update_parent_experiment(params, @job, user)
     
+    return @job, success
+  end
+
+  def create
+
+    @job, success = JobsController.create_job(params, current_user)
+
     respond_to do |format|
       if success and @job.save
         flash[:notice] = "Job successfully created."
@@ -270,13 +277,13 @@ class JobsController < ApplicationController
   
 protected
 
-  def update_parent_experiment(job)
+  def self.update_parent_experiment(params, job, user)
     if params[:change_experiment]
       if params[:change_experiment] == 'new'
-        job.experiment = Experiment.new(:title => Experiment.default_title(current_user), :contributor => current_user)
+        job.experiment = Experiment.new(:title => Experiment.default_title(user), :contributor => user)
       elsif params[:change_experiment] == 'existing'
         experiment = Experiment.find(params[:change_experiment_id])
-        if experiment and experiment.authorized?('edit', current_user)
+        if experiment and experiment.authorized?('edit', user)
           job.experiment = experiment
         else
           flash[:error] = "Job could not be created because could not assign the parent Experiment."

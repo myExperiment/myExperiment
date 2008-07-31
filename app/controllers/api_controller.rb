@@ -30,10 +30,9 @@ class ApiController < ApplicationController
       else;         bad_rest_request
     end
 
-    sw = StringIO.new; doc.write(sw, 0); text = sw.string
     current_user = nil
     current_token = nil
-    render :xml => text
+    render :xml => doc.to_s
   end
 end
 

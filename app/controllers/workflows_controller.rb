@@ -316,11 +316,10 @@ class WorkflowsController < ApplicationController
             scufl_model = Scufl::Parser.new.parse(scufl.read)
             scufl.rewind
         
-            @workflow.title, @workflow.unique_name = determine_title_and_unique(scufl_model)
             @workflow.body = scufl_model.description.description
 
             # create new diagrams and append new version number to filename
-            create_workflow_diagrams(@workflow, scufl_model, "#{@workflow.unique_name}_#{@workflow.current_version.to_i + 1}")
+            @workflow.create_workflow_diagrams(scufl_model, "#{@workflow.current_version.to_i + 1}")
           
             @workflow.scufl = scufl.read
             @workflow.content_type = "application/vnd.taverna.scufl+xml"
@@ -565,51 +564,22 @@ protected
     expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
   end
   
-  def determine_title_and_unique(scufl_model)
-    salt = rand 32768
-    return scufl_model.description.title.blank? ? ["untitled", "untitled_#{salt}"] : [scufl_model.description.title,  "#{scufl_model.description.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"]
-  end
-
   def create_workflow(wf)
     scufl_model = Scufl::Parser.new.parse(wf[:scufl].read)
     wf[:scufl].rewind
 
-    title, unique_name = determine_title_and_unique(scufl_model)
-    
     rtn = Workflow.new(:scufl => wf[:scufl].read, 
                        :content_type => "application/vnd.taverna.scufl+xml",
                        :contributor_id => wf[:contributor_id], 
                        :contributor_type => wf[:contributor_type],
-                       :title => title,
-                       :unique_name => unique_name,
                        :body => scufl_model.description.description,
                        :license => wf[:license])
                        
-    create_workflow_diagrams(rtn, scufl_model, "#{unique_name}_1")
+    rtn.create_workflow_diagrams(scufl_model, "1")
     
     return rtn
   end
   
-  def create_workflow_diagrams(workflow, scufl_model, unique_name)
-    unless RUBY_PLATFORM =~ /mswin32/
-      i = Tempfile.new("image")
-      Scufl::Dot.new.write_dot(i, scufl_model)
-      i.close(false)
-      img = StringIO.new(`dot -Tpng #{i.path}`)
-      svg = StringIO.new(`dot -Tsvg #{i.path}`)
-      i.unlink
-      img.extend FileUpload
-      img.original_filename = "#{unique_name}.png"
-      img.content_type = "image/png"
-      svg.extend FileUpload
-      svg.original_filename = "#{unique_name}.svg"
-      svg.content_type = "image/svg+xml"
-      
-      workflow.image = img
-      workflow.svg = svg
-    end
-  end
-
 private
 
   def error(notice, message, attr=:id)
@@ -650,6 +620,3 @@ private
 
 end
 
-module FileUpload
-  attr_accessor :original_filename, :content_type
-end

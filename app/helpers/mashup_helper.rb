@@ -32,6 +32,10 @@ module MashupHelper
 
   def trim_and_wrap(doc)
 
+    if (doc.instance_of?(XML::Document))
+      return doc.to_s
+    end
+
     doc.root.elements.each do |element|
       unless element.text.nil?
 
