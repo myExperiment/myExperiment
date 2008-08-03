@@ -1,4 +1,11 @@
+<ul class="sectionIcons">
+  <li><%= icon('manage', {:controller=>'oauth', :action=>'edit', :id=>@client_application.id}, nil, nil, 'Update Client Application')%></li>
+  <li><%= icon('destroy', {:controller=>'oauth', :action=>'destroy'}, nil, { :confirm => 'Are you you wish to remove this client application?', :method => :revoke }, 'Remove Client Application') %></li>
+</ul>
 <h1>OAuth details for <%=@client_application.name%></h1>
+<p>
+	<b>Key Type:</b> <%=@client_application.key_type%>
+</p>
 <p>
 	<b>Consumer Key:</b> <%=@client_application.key%>
 </p>
@@ -18,3 +25,10 @@
 <p>
 	We support hmac-sha1 (recommended) as well as plain text in ssl mode.
 </p>
+
+ <h2>Permissions</h2>
+ <% for @key_permission in @key_permissions %>
+     <p><%= @key_permission.for %></p>
+ <% end %>
+
+ <!--<p><%= TABLES['REST'][:data].inspect %></p> -->

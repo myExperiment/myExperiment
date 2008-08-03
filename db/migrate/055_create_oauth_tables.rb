@@ -8,6 +8,7 @@ class CreateOauthTables < ActiveRecord::Migration
       t.column :key, :string, :limit=>50
       t.column :secret, :string, :limit=>50
       t.column :user_id, :integer
+      t.column :key_type, :string
 
       t.column :created_at,  :datetime
       t.column :updated_at,  :datetime

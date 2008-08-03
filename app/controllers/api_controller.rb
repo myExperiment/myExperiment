@@ -18,7 +18,7 @@ class ApiController < ApplicationController
    # logger.info "query: #{query}"
    # logger.info "method: #{method}"
    # logger.info "uri: #{uri}"
-    return bad_rest_request if TABLES['REST'][:data][uri].nil?
+    return bad_rest_request if TABLES['REST'][:data][uri].nil? 
     return bad_rest_request if TABLES['REST'][:data][uri][method].nil?
 
     rules = TABLES['REST'][:data][uri][method]

@@ -1,0 +1,12 @@
+<h2>Permissions</h2>
+
+ <% for key,permission in @permissions %>
+   <% for type,data in permission %>
+     <%  key_type = "#{type} #{key}" %>
+     <% if (@permissions_for.include?(key_type)) %>
+       <p><%=check_box_tag "key_permissions[#{type} #{key}]", 1,  true %> <%= type %> <%= key %></p>
+     <% else %>
+       <p><%=check_box_tag "key_permissions[#{type} #{key}]" %> <%= type %> <%= key %></p>
+     <% end %>
+   <% end %>
+ <% end %>

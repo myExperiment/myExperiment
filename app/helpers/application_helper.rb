@@ -733,6 +733,8 @@ module ApplicationHelper
       return "famfamfam_silk/exclamation.png"
     when "launch"
       return "famfamfam_silk/computer_go.png"
+    when "register_application"
+      return "famfamfam_silk/application_edit.png"
     else
       return nil
     end

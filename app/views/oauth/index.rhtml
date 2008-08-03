@@ -18,7 +18,7 @@
 	
 </table>
 <%end%>
-<h3>Application Developers</h3>
+<h3>Your Registered Client Applications</h3>
 <%if @client_applications.empty?%>
 	<p>
 		Do you have an application you would like to register for use with us using the <a href="http://oauth.net">OAuth</a> standard?
@@ -27,11 +27,11 @@
 		You must register your web application before it can make OAuth requests to this service
 	</p>
 <%else%>
-	<p>
-		You have the following client applications registered:
-	</p>
 	<%@client_applications.each do |client|%>
 		<div><%=link_to client.name,:action=>:show,:id=>client.id%></div>
 	<%end%>
 <%end%>
-<h3><%=link_to "Register your application",:action=>:new%></h3>
+
+<ul class="sectionIcons">
+	<li><%= icon "register_application", {:controller =>'oauth',:action=>'new'}, nil, nil, "Register Client Application" %></li>
+</ul>
