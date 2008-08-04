@@ -25,6 +25,8 @@ This guide is designed to assist developers in getting myExperiment up and runni
 * Debian Lenny (Linux Kernel 2.6.22-3-686 #1 SMP)
 * Apache 2.2.8
 * MySQL Version 14.12, Distribution 5.0.51a 
+* Java version 1.5.0
+  * gij (GNU libgcj) version 4.3.1 20080309 (prerelease) 
 
 2.2 Installation Instructions
 -----------------------------
@@ -52,12 +54,21 @@ root> apt-get install graphviz
 
 * Now all the GEMs required by MyExperiment can be installed: 
 root> gem install builder cgi_multipart_eof_fix daemons dsl_accessor fastthread gem_plugin hoe json mime-types mongrel mongrel_cluster  
-    needle net-sftp net-ssh openid_login_generator RedCloth rmagick ruby-openid ruby-yadis solr-ruby xml-simple rubyzip libxml-ruby --include-dependencies
+    needle net-sftp net-ssh openid_login_generator RedCloth rmagick ruby-openid ruby-yadis solr-ruby xml-simple rubyzip libxml-ruby oauth ruby-hmac --include-dependencies
     * During this process you may be requested to select one of a set of versions to install, choose the latest version suffixed with "(ruby)"
     * If you have problems install these gems all in one go, try installing them in smaller subsets or one at a time if needs be.
 
+* OAuth was originally designed for Rails 2 and therefore some of the code in the GEM will not work in Rails 1.2.6.  To fixed this go to GEM_LIBRARY/oauth-0.2.4/lib/oauth/request_proxy/action_controller_request.rb and replace the contents of def request_params with:
+    unless @request_parameters
+      @request_parameters = request.request_parameters.dup
+      request.symbolized_path_parameters.keys.each do |k|
+        @request_parameters.delete k.to_s
+      end if request.respond_to? :symbolized_path_parameters
+    end
+    @request_parameters
+
 * Unfortunately, the Taverna GEM cannot be installed from a remote source, therefore it is included in the code-base which now needs to be downloaded.  The myExperiment code-base is stored within an SVN, so first SVN needs to be installed.
-root> apt-get install subversion 
+root> apt-get install subversion
 
 * Now the system environment is ready for the MyExperimemt code base but first SVN needs to be installed so that the codebase can be downloaded. 
 root> apt-get install subversion
@@ -84,10 +95,17 @@ mysql> create database m2_test;
   * Copy environment_private.rb.pre to environment_private.rb
   * Edit environment_private.rb. In particular to set the correct details for SMTP to allow emails to be sent by MyExperiment. Also make sure SOLR_ENABLE is set to true so that data in your MyExperiment can be indexed and searched over by users. 
 
-* Change directory back to /var/rails/myexperiment/trunk and execute the following commands: 
+* Change directory back to /var/rails/myexperiment/trunk and run the following command as root:
+
 root> apt-get install rake
+
+* Now execute the following commands just as a user:
 user> rake db:migrate
 user> rake solr:start
+user> ./resolr.sh
+
+* '''./resolr.sh'''  may take some time to run (i.e. in the 5 minutes range) as it indexes the database to make searching quicker.  After this has run the webserver can be started with the following command:
+
 user> ruby script/server
 
-* This should start a mongrel webserver running on port 3000 of the installation system To see if this has worked load up a web browser and go to http://localhost:3000
+* This should start a mongrel webserver running on port 3000 of the installation system. To see if this has worked load up a web browser and go to http://localhost:3000
