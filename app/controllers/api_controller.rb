@@ -13,7 +13,7 @@ class ApiController < ApplicationController
     query  = CGIMethods.parse_query_parameters(request.query_string)
     method = request.method.to_s.upcase
     uri    = params[:uri]
-   # logger.info "current user: #{current_token.inspect}"
+    logger.info "current token: #{current_token.inspect}"
    # logger.info "current user: #{current_user.id}"
    # logger.info "query: #{query}"
    # logger.info "method: #{method}"

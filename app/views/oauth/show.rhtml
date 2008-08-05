@@ -4,7 +4,18 @@
 </ul>
 <h1>OAuth details for <%=@client_application.name%></h1>
 <p>
+        <b>Main Application URL:</b> <%=@client_application.url%>
+</p>
+<% if current_user.admin? %>
+<p>
 	<b>Key Type:</b> <%=@client_application.key_type%>
+</p>
+<% end %>
+<p>
+        <b>Callback URL:</b> <%=@client_application.callback_url%>
+</p>
+<p>
+        <b>Support URL:</b> <%=@client_application.support_url%>
 </p>
 <p>
 	<b>Consumer Key:</b> <%=@client_application.key%>
