@@ -5,7 +5,11 @@
 <div class="field">
         <% if current_user.admin? %>
           <label for="client_application_key_type">Type*</label><br/>
-	  <%= select_tag "client_application[key_type]", options_for_select([ "User", "System"], @client_application.key_type) %>
+	  <% if @client_application.nil? %>  
+	    <%= select_tag "client_application[key_type]", options_for_select([ "User", "System"]) "User" %>
+	  <% else %>
+	    <%= select_tag "client_application[key_type]", options_for_select([ "User", "System"], @client_application.key_type) %>
+	  <% end %>
 	<% else %>
 	  <%= f.hidden_field :key_type, :value => "User" %>
 	<% end %>
