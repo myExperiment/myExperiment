@@ -1,11 +1,12 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+select_picture_1:
   id: 1
   user_id: 1
   picture_id: 1
-  created_at: 
-two:
+  created_at: 2008-04-26 11:12:57
+
+select_picture_2:
   id: 2
-  user_id: 1
-  picture_id: 1
-  created_at: 
+  user_id: 2
+  picture_id: 2
+  created_at: 2008-01-03 15:12:04

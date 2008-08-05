@@ -1,5 +1,20 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+experiment_1:
   id: 1
-two:
+  title: experiment1
+  description: my first experiment
+  description_html: <p>my first experiment</p>
+  contributor_id: 1
+  contributor_type: User
+  created_at: 2007-11-15 09:10:45
+  updated_at: 2007-11-15 09:10:45
+
+experiment_2:
   id: 2
+  title: another experiment
+  description:
+  description_html:
+  contributor_id: 2
+  contributor_type: User
+  created_at: 2008-02-02 02:24:50
+  updated_at: 2008-02-02 02:24:50

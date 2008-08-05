@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<s:scufl xmlns:s="http://org.embl.ebi.escience/xscufl/0.1alpha" version="0.2" log="0">
+  <s:workflowdescription lsid="urn:lsid:www.mygrid.org.uk:operation:VI9FMF5HBQ3" author="Tom Oinn" title="Fetch today's Dilbert comic">Use the local java plugins and some filtering operations to fetch the comic strip image from http://www.dilbert.com</s:workflowdescription>
+  <s:processor name="dilbertURL">
+    <s:stringconstant>http://www.dilbert.com/</s:stringconstant>
+  </s:processor>
+  <s:processor name="getPage">
+    <s:local>org.embl.ebi.escience.scuflworkers.java.WebPageFetcher</s:local>
+  </s:processor>
+  <s:processor name="getComicStrip">
+    <s:local>org.embl.ebi.escience.scuflworkers.java.WebImageFetcher</s:local>
+  </s:processor>
+  <s:processor name="comicURLRegex">
+    <s:stringconstant>.*/archive/images/dilbert.*</s:stringconstant>
+  </s:processor>
+  <s:processor name="findComicURL">
+    <s:local>org.embl.ebi.escience.scuflworkers.java.FilterStringList</s:local>
+  </s:processor>
+  <s:processor name="getImageLinks">
+    <s:local>org.embl.ebi.escience.scuflworkers.java.ExtractImageLinks</s:local>
+  </s:processor>
+  <s:link source="dilbertURL:value" sink="getPage:url" />
+  <s:link source="getPage:contents" sink="getImageLinks:document" />
+  <s:link source="getImageLinks:imagelinks" sink="findComicURL:stringlist" />
+  <s:link source="comicURLRegex:value" sink="findComicURL:regex" />
+  <s:link source="dilbertURL:value" sink="getComicStrip:base" />
+  <s:link source="findComicURL:filteredlist" sink="getComicStrip:url" />
+  <s:link source="getComicStrip:image" sink="todaysDilbert" />
+  <s:sink name="todaysDilbert">
+    <s:metadata>
+      <s:mimeTypes>
+        <s:mimeType>image/*</s:mimeType>
+      </s:mimeTypes>
+    </s:metadata>
+  </s:sink>
+</s:scufl>
+
+

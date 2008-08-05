@@ -1,5 +1,22 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+pack_contributable_entry_1:
   id: 1
-two:
+  pack_id: 1
+  contributable_id: 1
+  contributable_version: 1
+  contributable_type: Workflow
+  comment:
+  user_id: 1
+  created_at: 2008-03-04 05:06:07
+  updated_at: 2008-03-04 05:06:07
+
+pack_contributable_entry_2:
   id: 2
+  pack_id: 2
+  contributable_id: 2
+  contributable_version: 1
+  contributable_type: Workflow
+  comment:
+  user_id: 2
+  created_at: 2008-04-05 06:07:08
+  updated_at: 2008-04-05 06:07:08
