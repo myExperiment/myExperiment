@@ -6,7 +6,7 @@
         <% if current_user.admin? %>
           <label for="client_application_key_type">Type*</label><br/>
 	  <% if @client_application.nil? %>  
-	    <%= select_tag "client_application[key_type]", options_for_select([ "User", "System"]) "User" %>
+	    <%= select_tag "client_application[key_type]", options_for_select([ "User", "System"], "User") %>
 	  <% else %>
 	    <%= select_tag "client_application[key_type]", options_for_select([ "User", "System"], @client_application.key_type) %>
 	  <% end %>
