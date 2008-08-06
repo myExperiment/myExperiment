@@ -1,5 +1,7 @@
 class MoveScuflDataToContentBlobs < ActiveRecord::Migration
   def self.up
+    ActiveRecord::Base.record_timestamps = false
+
     Workflow.find(:all).each do |w|
 
       w.versions.each do |wv|
@@ -16,9 +18,12 @@ class MoveScuflDataToContentBlobs < ActiveRecord::Migration
     remove_column :workflows, :scufl
     remove_column :workflow_versions, :scufl
 
+    ActiveRecord::Base.record_timestamps = true
   end
 
   def self.down
+    ActiveRecord::Base.record_timestamps = false
+
     add_column :workflows, :scufl, :binary, :limit => 1073741824
     add_column :workflow_versions, :scufl, :binary, :limit => 1073741824
 
@@ -30,5 +35,7 @@ class MoveScuflDataToContentBlobs < ActiveRecord::Migration
         wv.content_blob.destroy
       end
     end
+
+    ActiveRecord::Base.record_timestamps = true
   end
 end
