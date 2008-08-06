@@ -1,0 +1,8 @@
+<h1>Edit OAuth details for <%=@client_application.name%></h1>
+
+<% form_for :client_application, :url => { :action => :update } do |f| %>
+       <%= f.hidden_field :id %>
+       <%= render :partial => "form", :locals => { :f => f } %>
+       <%= render :partial => "permissions", :locals => { :f => f } %>
+  <%= submit_tag "Update" %>
+<% end %>

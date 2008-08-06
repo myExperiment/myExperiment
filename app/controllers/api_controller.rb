@@ -15,7 +15,13 @@ class ApiController < ApplicationController
     method = request.method.to_s.upcase
     uri    = params[:uri]
 
-    return bad_rest_request if TABLES['REST'][:data][uri].nil?
+   # logger.info "current token: #{current_token.inspect}"
+   # logger.info "current user: #{current_user.id}"
+   # logger.info "query: #{query}"
+   # logger.info "method: #{method}"
+   # logger.info "uri: #{uri}"
+
+    return bad_rest_request if TABLES['REST'][:data][uri].nil? 
     return bad_rest_request if TABLES['REST'][:data][uri][method].nil?
 
     rules = TABLES['REST'][:data][uri][method]

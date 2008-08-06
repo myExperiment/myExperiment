@@ -1,0 +1,45 @@
+<ul class="sectionIcons">
+  <li><%= icon('manage', {:controller=>'oauth', :action=>'edit', :id=>@client_application.id}, nil, nil, 'Update Client Application')%></li>
+  <li><%= icon('destroy', {:controller=>'oauth', :action=>'destroy', :id=>@client_application.id}, nil, { :confirm => 'Are you you wish to remove this client application?', :method => :revoke }, 'Remove Client Application') %></li>
+</ul>
+<h1>OAuth details for <%=@client_application.name%></h1>
+<p>
+        <b>Main Application URL:</b> <%=@client_application.url%>
+</p>
+<% if current_user.admin? %>
+<p>
+	<b>Key Type:</b> <%=@client_application.key_type%>
+</p>
+<% end %>
+<p>
+        <b>Callback URL:</b> <%=@client_application.callback_url%>
+</p>
+<p>
+        <b>Support URL:</b> <%=@client_application.support_url%>
+</p>
+<p>
+	<b>Consumer Key:</b> <%=@client_application.key%>
+</p>
+<p>
+	<b>Consumer Secret:</b> <%=@client_application.secret%>
+</p>
+<p>
+	<b>Request Token URL</b> http<%='s' if request.ssl?%>://<%=request.host_with_port%><%=@client_application.oauth_server.request_token_path%>
+</p>
+<p>
+	<b>Access Token URL</b> http<%='s' if request.ssl?%>://<%=request.host_with_port%><%=@client_application.oauth_server.access_token_path%>
+</p>
+<p>
+	<b>Authorize URL</b> http<%='s' if request.ssl?%>://<%=request.host_with_port%><%=@client_application.oauth_server.authorize_path%>
+</p>
+
+<p>
+	We support hmac-sha1 (recommended) as well as plain text in ssl mode.
+</p>
+
+ <h2>Permissions</h2>
+ <% for @key_permission in @key_permissions %>
+     <p><%= @key_permission.for %></p>
+ <% end %>
+
+ <!--<p><%= TABLES['REST'][:data].inspect %></p> -->
