@@ -78,7 +78,7 @@ class OauthController < ApplicationController
         @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
         @key_permission.save
       end
-      flash[:notice]="Registered the information successfully"
+      flash[:notice]="Client Application successfully registred!"
       redirect_to :action=>"show",:id=>@client_application.id
     else
       render :action=>"new"
@@ -105,7 +105,7 @@ class OauthController < ApplicationController
        @key_permission.save
     end
     if @client_application.update_attributes(params[:client_application])
-      flash[:notice]="Updated the client information successfully"
+      flash[:notice]="Client Application '#{@client_application.name}' successfully updated!"
       redirect_to :action=>"show",:id=>@client_application.id
     else
       render :action=>"edit"
@@ -114,8 +114,9 @@ class OauthController < ApplicationController
 
   def destroy
     @client_application=current_user.client_applications.find(params[:id])
+    client_application_name=@client_application.name
     @client_application.destroy
-    flash[:notice]="Destroyed the client application registration"
+    flash[:notice]="Registration for Client Application '#{client_application_name}' has been removed!"
     redirect_to :action=>"index"
   end
   
