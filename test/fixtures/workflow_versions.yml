@@ -1,6 +1,8 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-workflow_dilbert:
+workflow_dilbert_version1:
   id: 1
+  workflow_id: 1
+  version: 1
   contributor_id: 1
   contributor_type: User
   image: 
@@ -11,12 +13,14 @@ workflow_dilbert:
   created_at: 2008-02-14 20:19:18
   updated_at: 2008-02-14 20:19:18
   license: by-sa
-  current_version: 1
+  revision_comments: 
   content_type: application/vnd.taverna.scufl+xml
   content_blob_id: 3
 
-workflow_branch_choice:
+workflow_branch_choice_version1:
   id: 2
+  workflow_id: 2
+  version: 1
   contributor_id: 2
   contributor_type: User
   image: 
@@ -27,6 +31,6 @@ workflow_branch_choice:
   created_at: 2008-04-11 22:19:33
   updated_at: 2008-05-14 06:45:08
   license: by-sa
-  current_version: 1
+  revision_comments: 
   content_type: application/vnd.taverna.scufl+xml
   content_blob_id: 4

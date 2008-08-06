@@ -136,7 +136,7 @@ class WorkflowsController < ApplicationController
   def download
     @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
     
-    send_data(@viewing_version.scufl, :filename => @viewing_version.unique_name + ".xml", :type => "application/vnd.taverna.scufl+xml")
+    send_data(@viewing_version.content_blob.data, :filename => @viewing_version.unique_name + ".xml", :type => "application/vnd.taverna.scufl+xml")
   end
   
   # GET /workflows/:id/download/:name
@@ -320,8 +320,10 @@ class WorkflowsController < ApplicationController
 
             # create new diagrams and append new version number to filename
             @workflow.create_workflow_diagrams(scufl_model, "#{@workflow.current_version.to_i + 1}")
-          
-            @workflow.scufl = scufl.read
+        
+            cb = ContentBlob.new(:data => scufl.read)
+            cb.save
+            @workflow.content_blob_id = cb.id
             @workflow.content_type = "application/vnd.taverna.scufl+xml"
           end
     
@@ -459,7 +461,7 @@ protected
                           :order => "workflows.updated_at DESC" }))
     
     found.each do |workflow|
-      workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
+      workflow.content_blob.data = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
     end
     
     @workflows = found
@@ -512,8 +514,8 @@ protected
         @authorised_to_edit = logged_in? && @workflow.authorized?("edit", (logged_in? ? current_user : nil))
         
         # remove scufl from workflow if the user is not authorized for download
-        @viewing_version.scufl = nil unless @authorised_to_download
-        @workflow.scufl = nil unless @authorised_to_download
+        @viewing_version.content_blob.data = nil unless @authorised_to_download
+        @workflow.content_blob.data = nil unless @authorised_to_download
           
         @workflow_entry_url = url_for :only_path => false,
                                 :host => base_host,
@@ -568,7 +570,7 @@ protected
     scufl_model = Scufl::Parser.new.parse(wf[:scufl].read)
     wf[:scufl].rewind
 
-    rtn = Workflow.new(:scufl => wf[:scufl].read, 
+    rtn = Workflow.new(:content_blob => ContentBlob.new(:data => wf[:scufl].read),
                        :content_type => "application/vnd.taverna.scufl+xml",
                        :contributor_id => wf[:contributor_id], 
                        :contributor_type => wf[:contributor_type],

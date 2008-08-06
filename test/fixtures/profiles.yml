@@ -1,19 +1,20 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+john_profile:
   id: 1
   user_id: 1
   picture_id: 1
-  email: MyString
-  website: MyString
-  description: MyText
+  email: john@example.com
+  website: http://www.example.com
+  body: Hi its john here
   created_at: 2007-07-30 13:57:24
   updated_at: 2007-07-30 13:57:24
-two:
+
+jane_profile:
   id: 2
-  user_id: 1
-  picture_id: 1
-  email: MyString
-  website: MyString
-  description: MyText
-  created_at: 2007-07-30 13:57:24
-  updated_at: 2007-07-30 13:57:24
+  user_id: 2
+  picture_id: 2
+  email: jane@example.com
+  website: http://www.example.com/jane
+  body: something something something
+  created_at: 2007-08-30 13:57:24
+  updated_at: 2007-08-30 13:57:24

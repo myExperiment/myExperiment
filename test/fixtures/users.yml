@@ -1,17 +1,27 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+
+<% SALT = "NaCl" unless defined?(SALT) %>
+
+john:
   id: 1
-  openid_url: MyString
-  name: MyString
-  unique: MyString
-  last_seen_at: 2007-07-30 13:55:48
+  openid_url:
+  name: John Smith
+  username: john
+  salt: <%= SALT %>
+  crypted_password: <%= User.encrypt('password', SALT) %>
+  email: john@example.com
+  email_confirmed_at: 2007-07-30 13:57:48
+  activated_at: 2007-07-30 13:57:48
+  last_seen_at: 2007-07-30 14:55:48
   created_at: 2007-07-30 13:55:48
-  updated_at: 2007-07-30 13:55:48
-two:
+  updated_at: 2007-07-30 14:55:48
+
+jane:
   id: 2
-  openid_url: MyString
-  name: MyString
-  unique: MyString
-  last_seen_at: 2007-07-30 13:55:48
-  created_at: 2007-07-30 13:55:48
-  updated_at: 2007-07-30 13:55:48
+  openid_url: http://jane.example.com
+  name: Jane Smith
+  username: jane
+  activated_at: 2007-07-14 13:55:48
+  last_seen_at: 2007-09-30 13:55:48
+  created_at: 2007-07-14 13:55:48
+  updated_at: 2007-09-30 13:55:48

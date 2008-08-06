@@ -1,5 +1,8 @@
+# Setting RAILS_ENV to 'test' causes a crash.
 ENV["RAILS_ENV"] = "test"
+
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
 require 'test_help'
 
 class Test::Unit::TestCase
