@@ -16,7 +16,7 @@ TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
                                'Create', 'Read', 'Update', 'Read by default',
                                'Foreign Accessor',
                                'List Element Name', 'List Element Accessor',
-                               'Example', 'Versioned' ] },
+                               'Example', 'Versioned', 'Key type' ] },
                 
     'REST'  => { :indices => [ 'URI', 'Method' ] }
   } )
@@ -57,7 +57,7 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
   doc.root = root
 
   root['uri'        ] = rest_access_uri(ob)
-  root['resource'   ] = uri
+  root['resource'   ] = uri if uri
   root['api-version'] = API_VERSION if query['api_version'] == 'yes'
 
   if ob.respond_to?('versions')
@@ -150,7 +150,8 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
       else
 
         if model_data['Foreign Accessor'][i]
-          attrs['resource'] = eval("rest_resource_uri(ob.#{model_data['Foreign Accessor'][i]})")
+          resource_uri = eval("rest_resource_uri(ob.#{model_data['Foreign Accessor'][i]})")
+          attrs['resource'] = resource_uri if resource_uri
           attrs['uri'] = eval("rest_access_uri(ob.#{model_data['Foreign Accessor'][i]})")
         end
 
@@ -342,6 +343,7 @@ def rest_access_uri(ob)
     when 'Experiment';     return "#{base}/experiment.xml?id=#{ob.id}"
     when 'TavernaEnactor'; return "#{base}/runner.xml?id=#{ob.id}"
     when 'Job';            return "#{base}/job.xml?id=#{ob.id}"
+    when 'Download';       return "#{base}/download.xml?id=#{ob.id}"
 
     when 'Workflow::Version'; return "#{base}/workflow.xml?id=#{ob.workflow.id}&version=#{ob.version}"
   end
@@ -364,12 +366,16 @@ def rest_reference(ob, query)
     when 'Tag';          tag = 'tag';          text = ob.name
     when 'Pack';         tag = 'pack';         text = ob.title
     when 'Experiment';   tag = 'experiment';   text = ob.title
+    when 'Download';     tag = 'download';     text = ''
 
     when 'Workflow::Version'; tag = 'workflow'; text = ob.title
   end
 
   el = XML::Node.new(tag)
-  el['resource'] = rest_resource_uri(ob)
+
+  resource_uri = rest_resource_uri(ob)
+
+  el['resource'] = resource_uri if resource_uri
   el['uri'     ] = rest_access_uri(ob)
   el['version' ] = ob.version.to_s if ob.respond_to?('version')
   el << text
@@ -400,6 +406,7 @@ def parse_resource_uri(str)
   return ["Experiment", $1, is_local]    if uri.path =~ /^\/experiments\/([\d]+)$/
   return ["Runner", $1, is_local]        if uri.path =~ /^\/runners\/([\d]+)$/
   return ["Job", $1, is_local]           if uri.path =~ /^\/jobs\/([\d]+)$/
+  return ["Download", $1, is_local]      if uri.path =~ /^\/downloads\/([\d]+)$/
 
   nil
 
@@ -424,7 +431,14 @@ end
 
 def post_workflow(rules, query)
 
-  return rest_error_response(400, 'Bad Request') if current_user == 0
+  # determine user
+
+  user_id = nil
+
+  # puts "Current token = #{current_token.inspect}"
+  user_id = current_user.id if current_user != 0
+
+  return rest_error_response(400, 'Bad Request') if user_id.nil?
 
   title        = params["workflow"]["title"]
   description  = params["workflow"]["description"]
@@ -443,7 +457,7 @@ def post_workflow(rules, query)
   contibution = Contribution.new(
       :policy           => create_default_policy,
       :contributor_type => 'User',
-      :contributor_id   => current_user.id)
+      :contributor_id   => user_id)
 
   workflow = Workflow.new(
       :title            => title,
@@ -452,7 +466,7 @@ def post_workflow(rules, query)
       :content_type     => content_type,
       :scufl            => content,
       :contributor_type => 'User',
-      :contributor_id   => current_user.id,
+      :contributor_id   => user_id,
       :contribution     => contibution)
 
   scufl_model = Scufl::Parser.new.parse(content)
@@ -464,7 +478,7 @@ def post_workflow(rules, query)
   end
 
   workflow.contribution.update_attributes( {
-      :contributor_type => 'User', :contributor_id => current_user.id } )
+      :contributor_type => 'User', :contributor_id => user_id } )
 
   workflow.contribution.policy = create_default_policy
   workflow.contribution.save
