@@ -1263,6 +1263,16 @@ module ApplicationHelper
     return text
   end
   
+  # From: http://ajax.howtosetup.info/ruby/finding-mean-median-and-mode-2/
+  def mean(array)
+    if array.length == 0 
+      return 0
+    else
+      return array.inject(0) { |sum, x| sum += x } / array.size.to_f  
+    end
+  end
+
+  
 protected
 
   def contributor_news(contributor, before, after, depth, restrict_contributor)

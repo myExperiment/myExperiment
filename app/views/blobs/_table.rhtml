@@ -74,7 +74,7 @@
 						<p style="font-size:85%;"><b>File type: </b><%= h blob.content_type %></p>
 						
 						<p style="font-size: 85%;">
-							<a href="<%= file_path(blob) + '#ratings' -%>"><b>Rating: </b><%= number_with_precision(blob.rating, 2) %>/5 (<%= pluralize blob.ratings_count, 'rating' %>)</a> |
+							<a href="<%= file_path(blob) + '#ratings' -%>"><b>Rating: </b><%= number_with_precision(blob.rating, 1) %> / 5 (<%= pluralize blob.ratings_count, 'rating' %>)</a> |
 							<a href="<%= file_path(blob) + '#comments' -%>"><b>Comments: </b><%= blob.comments_count %></a> |
 							<b>Viewed:</b> <%=pluralize blob.contribution.viewings_count, "time" %> |
 							<b>Downloaded:</b> <%=pluralize blob.contribution.downloads_count, "time" %>

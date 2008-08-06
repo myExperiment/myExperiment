@@ -502,6 +502,18 @@ class User < ActiveRecord::Base
     activated? and email_confirmed? and self.receive_notifications
   end
   
+  def ratings_for_contributions
+    ratings = [ ]
+    
+    self.contributions.each do |c|
+      c.contributable.ratings.each do |r|
+        ratings << r
+      end
+    end
+    
+    return ratings
+  end
+  
 protected
 
   # clean up emails and username before validation
