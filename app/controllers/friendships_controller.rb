@@ -4,15 +4,35 @@
 # See license.txt for details.
 
 class FriendshipsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show]
+  before_filter :login_required
+  
+  before_filter :check_user_present # only allow actions on friendships as on nested resources
   
   before_filter :find_friendships, :only => [:index]
-  before_filter :find_friendship, :only => [:show]
-  before_filter :find_friendship_auth, :only => [:accept, :edit, :update, :destroy]
+  before_filter :find_friendship_auth, :only => [:show, :accept, :edit, :update, :destroy]
   
-  # GET /users/1/friendships/1/accept
-  # GET /friendships/1/accept
+  # POST /users/1/friendships/1/accept
+  # POST /friendships/1/accept
   def accept
+    friend = User.find(@friendship.friend_id)
+    
+    # a notification message will be delivered to the the requestor anyway;
+    # it may contain a personal note, if any was supplied
+    from_id = friend.id
+    to_id = @friendship.user_id
+    subject = friend.name + " is now your friend!" 
+    body = "<strong><i>Personal message from #{friend.name}:</i></strong><hr/>"
+    
+    if params[:accept_msg] && !params[:accept_msg].blank?
+      body += ae_some_html(params[:accept_msg])
+    else
+      body += "NONE"
+    end
+    body += "<hr/>"
+
+    message = Message.new( :from => from_id, :to => to_id, :subject => subject, :body => body, :reply_id => nil, :read_at => nil )
+    message.save
+    
     respond_to do |format|
       if @friendship.accept!
         flash[:notice] = 'Friendship was successfully accepted.'
@@ -64,23 +84,29 @@ class FriendshipsController < ApplicationController
   # POST /users/1/friendships
   # POST /friendships
   def create
-    if (@friendship = Friendship.new(params[:friendship]) unless Friendship.find_by_user_id_and_friend_id(params[:friendship][:user_id], params[:friendship][:friend_id]))
+    friendship_already_exists = Friendship.find_by_user_id_and_friend_id(params[:friendship][:user_id], params[:friendship][:friend_id]) || Friendship.find_by_user_id_and_friend_id(params[:friendship][:friend_id], params[:friendship][:user_id])
+    if (@friendship = Friendship.new(params[:friendship]) unless friendship_already_exists )
       # set initial datetime
       @friendship.accepted_at = nil
+      if @friendship.message.blank?
+        @friendship.message = nil
+      end
 
       respond_to do |format|
         if @friendship.save
           
           begin
             friend = @friendship.friend
-            Notifier.deliver_friendship_request(friend, @friendship.user.name, base_host) if friend.send_notifications?
-          rescue
+            Notifier.deliver_friendship_request(friend, @friendship.user.name, @friendship, base_host) if friend.send_notifications?
+          rescue Exception => e
             puts "ERROR: failed to send Friendship Request email notification. Friendship ID: #{@friendship.id}"
+            puts "EXCEPTION:" + e
             logger.error("ERROR: failed to send Friendship Request email notification. Friendship ID: #{@friendship.id}")
+            logger.error("EXCEPTION:" + e)
           end
           
           flash[:notice] = 'Friendship was successfully requested.'
-          format.html { redirect_to friendship_url(@friendship.friend_id, @friendship) }
+          format.html { redirect_to friendship_url(current_user.id, @friendship) }
         else
           format.html { render :action => "new" }
         end
@@ -109,19 +135,59 @@ class FriendshipsController < ApplicationController
   # DELETE users/1/friendships/1
   # DELETE /friendships/1
   def destroy
-    friend_id = @friendship.friend_id
+    friend_id = current_user.id # as it's the current user who's deleting the friendship
+    friend = User.find(friend_id)
+    
+    # a notification message will be delivered to the the requestor anyway;
+    # it may contain a personal note, if any was supplied
+    from_id = friend_id
+    to_id = (@friendship.friend_id == friend_id ? @friendship.user_id : @friendship.friend_id) 
+    rejection = (@friendship.accepted_at.nil?) ? true : false
+    
+    # the same method ('destroy') works when friendship is rejected
+    # or removed after being accepted previously
+    if rejection
+      subject = friend.name + " has rejected your friendship request" 
+      body = "<strong><i>Personal message from #{friend.name}:</i></strong><hr/>"
+    
+      if params[:reject_msg] && !params[:reject_msg].blank?
+        body += ae_some_html(params[:reject_msg])
+      else
+        body += "NONE"
+      end
+      body += "<hr/>"
+    else
+      subject = User.find(from_id).name + " has removed you from their friends list"
+      body = "User: <a href='#{user_url(from_id)}'>#{friend.name}</a>" +
+             "<br/><br/>If you want to contact this user directly, just reply to this message."
+    end
+    
+
+    message = Message.new( :from => from_id, :to => to_id, :subject => subject, :body => body, :reply_id => nil, :read_at => nil )
+    message.save
     
     @friendship.destroy
 
     respond_to do |format|
-      format.html { redirect_to friendships_url(friend_id) }
+      flash[:notice] = "Friendship was successfully deleted"
+      format.html { redirect_to (params[:return_to] ? params[:return_to] : friendships_url(friend_id)) }
     end
   end
   
 protected
 
+  # checks that the url contains an id of the user,
+  # so enforcing the use of nested links
+  def check_user_present
+    if params[:user_id].blank?
+      flash.now[:error] = "Invalid URL"
+      redirect_to friendships_url(current_user.id)
+      return false
+    end
+  end
+
   def find_friendships
-    if params[:user_id]
+    if params[:user_id].to_i == current_user.id.to_i
       begin
         @user = User.find(params[:user_id])
     
@@ -130,10 +196,7 @@ protected
         error("User not found", "is invalid", :user_id)
       end
     else
-      @friendships = Friendship.find(:all, 
-                                     :order => "created_at DESC",
-                                     :page => { :size => 20, 
-                                                :current => params[:page] })
+      error("You are not authorised to view other users' friendships", "")
     end
   end
 
@@ -161,13 +224,37 @@ protected
   
   def find_friendship_auth
     begin
-      if action_name.to_s == "show"
-        @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ? or user_id = ?", current_user.id, current_user.id])
-      else
-        @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ?", current_user.id])
+      begin
+        # find the friendship first
+        @friendship = Friendship.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        raise ActiveRecord::RecordNotFound, "Friendship not found"
       end
-    rescue ActiveRecord::RecordNotFound
-      error("Friendship not found (id not authorized)", "is invalid (not named)")
+      
+      # now go through different actions and check which links (including user_id in the link) are allowed
+      not_auth = false
+      case action_name.to_s.downcase
+        when "show" # link - just the current user id, but can be "friend" or "user" in the friendship
+          unless params[:user_id].to_i == current_user.id.to_i && ([@friendship.user_id, @friendship.friend_id].include? current_user.id)
+            not_auth = true
+          end
+        when "destroy" # link - just the friend id, but current user can be "friend" or "user" in the friendship
+          unless params[:user_id].to_i == @friendship.friend_id.to_i && ([@friendship.user_id, @friendship.friend_id].include? current_user.id)
+            not_auth = true
+          end
+        else # link - just the current user id, and it should be "friend" in the friendship ("accept" for example)
+          unless params[:user_id].to_i == current_user.id.to_i && current_user.id == @friendship.friend_id
+            not_auth = true
+          end
+      end
+      
+      # check if we had any errors
+      if not_auth
+        raise ActiveRecord::RecordNotFound, "You are not authorised to view other users' friendships"
+      end
+      
+    rescue ActiveRecord::RecordNotFound => exc
+      error(exc.message, "")
     end
   end
   

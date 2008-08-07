@@ -57,6 +57,17 @@
 						<%= icon "show", group_path(network), nil, nil, "View" %> 
 						<% if mine? network -%>
 							<%= icon "manage", edit_group_path(network) %>
+						<% elsif logged_in? %> <!-- admins can't leave the group or request membership! -->
+						  <% if network.member? (current_user.id) %>
+							  <!-- user is not an admin, but a member already -->
+								<% cur_membership = Membership.find(:first, :conditions => ["network_id = ? AND user_id = ?", network.id, current_user.id] ) %>
+			          <% if cur_membership %>
+			            <%= icon('network-leave', membership_path(cur_membership.user_id, cur_membership) + "?return_to=" + groups_path, nil, { :confirm => "Are you sure want to leave this group?", :method => :delete }, 'Leave Group') %>
+			          <% end %>
+							<% elsif !current_user.membership_pending?(network.id) %>
+							  <!-- not an admin, not a member yet and hasn't got pending request -->
+								<%= request_membership_link(current_user.id, network.id) %>
+							<% end %>
 						<% end -%>
 					</td>
 			</tr>

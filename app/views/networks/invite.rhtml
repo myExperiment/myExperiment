@@ -1,0 +1,92 @@
+<h1>Invite people to group: <%= link_to @network.title, group_path(@network) -%></h1>
+
+<p>
+  Here you can invite users to this group. The options are:<br/>
+</p>
+
+<% # choose, which of the DIVs will be shown & which radio button ticked -%>
+<% # on first load, has default value -%>
+<% if params[:radio_choice].nil?
+     invite_existing_selected = true
+   else
+     invite_existing_selected = params[:radio_choice] == "existing" ? true : false  
+   end
+-%>
+<label for="radio_invite_existing"><%= radio_button_tag ("radio_invite", "existing", invite_existing_selected, :onclick => "$('radio_invite_new').checked=false;$('div_invite_existing').show();$('div_invite_new').hide();return true;" ) -%>Invite an existing myExperiment user to your group</label><br/>
+<label for="radio_invite_new" style="margin-top: 0.3em;"><%= radio_button_tag ("radio_invite", "new", !invite_existing_selected, :onclick => "$('radio_invite_existing').checked=false;$('div_invite_existing').hide();$('div_invite_new').show();return true;" ) -%>Invite someone to join myExperiment and your group</label>
+
+<% # just one from the two of following DIVs will be shown at any one time; -%>
+<% # this represents one of two options - either to invite existing or new users to the group -%>
+
+<div id="div_invite_existing" class="box_editing" style="<%= !invite_existing_selected ? "display: none;" : "" -%>margin: 1em 0em 1em 0em;">
+  <fieldset>
+  	<legend>Invite an existing myExperiment user to your group</legend>
+	  <p class="box_infotext" style="margin: 0.4em 0em 0.7em 0em" >
+      Select a name from the list, type in a message to the user and click "Invite".
+    </p>
+
+    <% form_tag(membership_invite_group_path(@network), :method => :post) do %>
+      <table cellpadding="0" cellspacing="0">
+			<tr>
+				<td>&nbsp;</td>
+				<td style="text-align: left;">User:</td>
+			  <td style="text-align: left;"><%= select_tag :user_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name), :style => "width: 400px;" -%></td>
+			</tr>
+			<tr style="vertical-align: top;">
+				<td><%= info_icon_with_tooltip("This message is optional: if you leave it blank, your invitation will be sent without it") -%></td>
+				<td style="text-align: left;">Message:</td>
+				<td style="text-align: left;"><%= text_area_tag "membership[message]", "", :rows => 4, :style => "width: 400px" -%></td>
+      </tr>
+			<tr>
+				<td colspan="3" style="text-align: center;"><%= submit_tag "Send Invitation", :disable_with => 'Sending Invitation...' %></td>
+			</tr>
+			</table>		  		
+		<% end %>
+	</fieldset>
+</div>
+
+<div id="div_invite_new" class="box_editing" style="<%= invite_existing_selected ? "display: none;" : "" -%>margin: 1em 0em 1em 0em;">
+	<fieldset>
+  	<legend>Invite someone to join myExperiment and your group</legend>
+	  <p class="box_infotext" style="margin: 0.4em 0em 1em 0em" >
+      Type in email addresses you want to send invitations to, personal message to new users and click "Invite".
+    </p>
+		
+		<% form_tag (membership_invite_external_group_path(@network), :method => :post) do %>
+		  <%= hidden_field_tag "radio_choice", "" -%>
+			<table>
+		  	<tr>
+		  		<td style="text-align: left;">
+			      <%= info_icon_with_tooltip("To include several email addresses, use commas or semicolons to separate them.<br/>Please note that just #{INVITATION_EMAIL_LIMIT} first unique, valid, non-blank addresses will be processed.") %>
+            Email address(es) to send invitations to:<br/>
+            <% email_addresses_val = ((params[:invitations].nil? || params[:invitations][:address_list].nil?) ? "" : params[:invitations][:address_list]) %>
+            <%= text_field_tag "invitations[address_list]", email_addresses_val, :style => "width: 500px; margin-bottom: 0.8em;" -%><br/>
+            
+            <%= info_icon_with_tooltip("This message is optional: if you leave it blank, default one will be sent") %>
+            Personal message to include with the invitation(s):<br/>
+            <% msg_text_val = ((params[:invitations].nil? || params[:invitations][:msg_text].nil?) ? "" : params[:invitations][:msg_text]) %>
+            <%= text_area_tag "invitations[msg_text]", msg_text_val, :rows => 4, :style => "width: 500px" -%><br/>
+          
+					  <table style="margin-top: 1.5em;">
+							<tr>
+								<td>
+						      <% c = prepare_captcha :type => :image -%>
+									<%= captcha_image_tag c -%>
+								</td>
+								<td style="vertical-align: middle;">
+								  <%= captcha_hidden_field c, 'invitations' -%>
+									<%= captcha_label 'invitations', 'Type in the text from the image on the right:' -%><br/>
+					        <%= captcha_text_field 'invitations', :size => 40 -%>
+								</td>
+							</tr>
+						</table>
+					</td>
+			  </tr>
+			  <tr>
+			  	<td style="text-align: center;"><%= submit_tag "Send Invitations", :id => "send_button", :onclick => "if($('invitations[address_list]').value=='') { alert('Please enter email address(es) that you want to send user invitations to.');$('invitations[address_list]').focus();return(false); } else { $('radio_choice').value=($('radio_invite_existing').checked ? 'existing' : 'new');this.disabled=true;this.value='Sending...';this.form.submit(); }" -%></td>
+				</tr>
+			</table>
+		<% end %>
+		
+		</fieldset>
+</div>

@@ -2,18 +2,31 @@
 
 <% if logged_in? %>
   <ul class="sectionIcons">
-    <% unless @network.member? current_user.id %>
-      <li class="with_sep_bottom"><%= request_membership_link(current_user.id, @network.id) %></li>
-    <% end %>
+    <% unless mine? @network %>
+		  <% if @network.member? current_user.id  %>
+			  <% cur_membership = Membership.find(:first, :conditions => ["network_id = ? AND user_id = ?", @network.id, current_user.id] ) %>
+			  <% if cur_membership %>
+			    <li><%= icon('network-leave', membership_path(cur_membership.user_id, cur_membership), nil, { :confirm => "Are you sure want to leave this group?", :method => :delete }, 'Leave Group') %></li>
+			  <% end %>
+			<% elsif !current_user.membership_pending?(@network.id) %>
+			  <li class="with_sep_bottom"><%= request_membership_link(current_user.id, @network.id) %></li>  
+			<% end %>
+		<% end %>
 
     <% if mine? @network %>
-      <li><%= icon('edit', edit_group_path(@network), nil, nil, 'Edit Group') %></li>
-      <li><%= icon('destroy', group_path(@network), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
+      <li><%= icon('network-invite', invite_group_path(@network), 'Invite People', nil, 'Invite People') -%></li>
+			<li><%= icon('edit', edit_group_path(@network), 'Edit', nil, 'Edit Group') %></li>
+      <li><%= icon('destroy', group_path(@network), 'Delete Group', { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
     <% end %>
   </ul>
 <% end %>
 
-<h1>Group: <%=h @network.title %></h1>
+<h1>
+	Group: <%=h @network.title %>
+	<% if logged_in? && current_user.membership_pending?(@network.id) %>
+		<p class="note_text" style="text-align: center;"><small>You have sent membership request to join this group. Awaiting admin confirmation.</small></p>
+	<% end %>
+</h1>
 
 <div class="contribution_mini_nav">
 	|
@@ -29,11 +42,11 @@
 	<% if mine? @network %>
 	  <a href="#manage_memberships" onclick="selectTab($('tabsContainer'),3)">Manage Memberships</a>
 		|
-		<a href="#requests_pending" onclick="selectTab($('tabsContainer'),4)">Requests Pending</a>
+		<% cnt = @network.memberships_requested.length %>
+		<a href="#requests_pending" onclick="selectTab($('tabsContainer'),4)"><% unless cnt == 0 %><b><% end %>Requests Pending (<%= cnt -%>)<% unless cnt == 0 %></b><% end %></a>
 		|
-		<a href="#invites_pending" onclick="selectTab($('tabsContainer'),5)">Invites Pending</a>
-		|
-		<a href="#invite_users" onclick="selectTab($('tabsContainer'),6)">Invite Users</a>
+		<% cnt = @network.memberships_invited.length %>
+		<a href="#invites_pending" onclick="selectTab($('tabsContainer'),5)"><% unless cnt == 0 %><b><% end %>Invites Pending (<%= cnt -%>)<% unless cnt == 0 %></b><% end %></a>
 		|
 		<br/>
 		|
@@ -177,7 +190,7 @@
 	<% requests = @network.memberships_requested %>
   <a name="requests_pending"></a>
   <div class="tabContainer">
-    <div class="tabTitle">Requests Pending</div>
+    <div class="tabTitle">Requests Pending (<%= @network.memberships_requested.length -%>)</div>
     <div class="tabContent">
     	<% unless requests.empty? %>
 				<p></p>
@@ -191,7 +204,7 @@
 	<% invited = @network.memberships_invited %>
   <a name="invites_pending"></a>
 	<div class="tabContainer">
-    <div class="tabTitle">Invites Pending</div>
+    <div class="tabTitle">Invites Pending (<%= @network.memberships_invited.length -%>)</div>
     <div class="tabContent">
     	<% unless invited.empty? %>
 				<p></p>
@@ -199,24 +212,6 @@
 			<% else %>
 				<p><i>No invites are pending for this Group</i></p>
 			<% end %>
-    </div>
-  </div>
-	
-	<a name="invite_users"></a>
-	<div class="tabContainer">
-    <div class="tabTitle">Invite Users</div>
-    <div class="tabContent">
-  
-      <p>
-        Here you can invite Users to this Group. <br/>
-        Select a name from the list and click "Invite".
-      </p>
-  
-      <% form_tag(membership_invite_group_path(@network), :method => :get) do %>
-        <label for="user_id">User:</label> <%= select_tag :user_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name) %> <%= submit_tag "Invite", :disable_with => 'Inviting...' %>
-      <% end %>
-  
-      <%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
     </div>
   </div>
 

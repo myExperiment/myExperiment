@@ -47,7 +47,7 @@
 	|
 	<a href="#citations" onclick="selectTab($('tabsContainer'),0)">Citations (<%= @workflow.citations.length -%>)</a>
 	|
-	<a href="#versions_history" onclick="selectTab($('tabsContainer'),1)">Versions History</a>
+	<a href="#version_history" onclick="selectTab($('tabsContainer'),1)">Version History</a>
 	|
 	<% if logged_in? and @workflow.owner?(current_user) %>
 	  <a href="#sharing" onclick="selectTab($('tabsContainer'),2)">Sharing</a>
@@ -357,9 +357,9 @@
 <a name="citations"></a>
 <%= render :partial => "contributions/citations_tab", :locals => { :item => @workflow } %>
 
-<a name="versions_history"></a>
+<a name="version_history"></a>
 <div class="tabContainer">
-  <div class="tabTitle">Versions History</div>
+  <div class="tabTitle">Version History</div>
   <div class="tabContent">
       <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
   </div>

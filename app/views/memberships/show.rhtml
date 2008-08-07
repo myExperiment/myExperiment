@@ -6,60 +6,135 @@
 	<h1>Membership <%= @membership.is_invite? ? "Invite" : "Request" %></h1>
 <% end %>
 
-<p>
-  <center style="color: #666666; font-size: 93%;">
-	  <b><%= @membership.is_invite? ? "Invited" : "Requested" %> at:</b><br/>
-	  <%=datetime @membership.created_at %>
-  </center>
-</p>
+<center>
+	<div class="box_standout" style="width: 500px;">
+		<table style="width: 500px;">
+			<tr>
+				<% # UNDER DEVELOPMENT - SOON GROUP AVATARS WILL BE ADDED AND THERE WOULD BE NO NEED FOR THIS IF_ELSE_END BIT ALLTOGETHER %>
+				<% # THE CODE INSIDE THE BLOCK HAS DUPLICATED CHECK, BUT THAT WOULD BECOME THE ONLY ONE, ONCE THE OUTER IF IS REMOVED %>
+				<% if (@membership.is_invite? && !allow_approval) || (!@membership.is_invite? && allow_approval) %>
+				  <td style="width: 15%; vertical-align: top;">
+				  	<% if (@membership.is_invite? && !allow_approval) || (!@membership.is_invite? && allow_approval) %>
+						  <%= render :partial => "users/avatar", :locals => { :user => @membership.user, :size => 80 } %>
+							<br/>
+							<% # = link_to_function h(@membership.user.name) + expand_image, 
+															 visual_effect(:toggle_blind, "user_box", :duration => 0.3) -%>
+						<% elsif (@membership.is_invite? && allow_approval) || (!@membership.is_invite? && !allow_approval) %>
+						  <% #= avatar @membership.network, 80 # will start to work once the group avatars are introduced %>
+				    <% end %>
+					</td>
+				  <td style="line-height: 1.6; width: 85%;">
+				<% else %>
+				  <td style="line-height: 1.6;">
+				<% end %>
+				<% # END OF BLOCK UNDER DEVELOPMENT %>
+					<b>
+						<% if @membership.accepted? %>
+						  <% if current_user.id.to_i == @membership.user_id.to_i %>
+							  You are a member of:
+							<% else %>
+							  <%= link_to_function h(@membership.user.name) + expand_image, 
+															 visual_effect(:toggle_blind, "user_box", :duration => 0.3) -%>
+								is a member of:
+							<% end %>
+						<% else %>
+						  <%= membership_invite_request_action_message(allow_approval, @membership.is_invite?, link_to_function (h(@membership.user.name) + expand_image, visual_effect(:toggle_blind, "user_box", :duration => 0.3)) ) -%>
+						<% end %>
+					</b>
+					<br/>
+					<%= link_to_function h(@membership.network.title) + expand_image, 
+															 visual_effect(:toggle_blind, 'group_box', :duration => 0.3) -%>
+					<br/>
+					
+					<p style="margin-top: 1.5em; color: #666666; font-size: 93%; text-align: center;">        
+		        <b><%= @membership.is_invite? ? "Invited" : "Requested" %> at:</b><br/>
+		        <%=datetime @membership.created_at %>
+		      </p>
+					 
+		      <% if @membership.accepted? %>
+		        <p style="margin-top: 0.5em; color: #666666; font-size: 93%; text-align: center;">
+		          <b>Accepted at:</b>
+		          <br/>
+		          <%=datetime @membership.accepted_at %>
+		        </p>
+		      <% else %>
+		        <% if allow_approval && @membership.message %>
+						  <p style="margin-top: 1.5em; font-size: 93%; text-align: center;">
+							  <b>Message from <%= @membership.is_invite? ? "group admin" : "user" %>:</b><br/>
+							</p>
+							
+							<div style="padding: 0.3em 1em; border: 1px dotted #999999; background-color: #FFFFFF;">
+								<p style="font-size: 93%; text-align: center;">
+								  <%= simple_format(sanitize(@membership.message)) -%>
+			          </p>
+							</div>
+						<% end %>
+					<% end %>
+					
+				</td>
+			</tr>
+		</table>
+	</div>
+</center>
 
+
+
+<% unless @membership.accepted? %>
 <br/>
-
-<% if @membership.accepted? %>
-
-  <p>
-    <center style="color: #666666; font-size: 93%;">
-			<b>Accepted at:</b><br />
-	    <%=datetime @membership.accepted_at %>
-		</center>
-  </p>
-
-<% else %>
-
-	<p>
-    <center style="font-size: 108%; color: #990000;">
-	    <b><i>Pending approval (<%= allow_approval ? "from you" : "from group admin" %>)</i></b>
-		</center>
-  </p>
-
-	<% if allow_approval %>
-		<br/>
-	 	<ul class="sectionIcons">
-			<li><%= icon "confirm", accept_membership_path(@membership.user_id, @membership), "Accept", nil, "Accept" %></li> 
-		  <li><%= icon "reject", membership_path(@membership.user_id, @membership), nil, :confirm => "Are you sure?", :method => :delete %></li>
-	  </ul>
-	<% end %>
-
+<center>
+  <div class="box_currentuser_specific" style="width: 500px;">
+	  <% if allow_approval %>
+			<p style="text-align: center; color: #990000; font-size: 108%;">
+				<b><i><%= pending_approval_message(allow_approval, @membership.is_invite?) -%></i></b>
+			</p>	  
+		  
+			<center>  
+      <table>
+				<tr>
+					<td style="text-align: left;">
+						<%= info_icon_with_tooltip("Optional note to be sent to " + (@membership.is_invite? ? "group admin" : "user") + " along with your decision.<br/>(Delivered via internal messaging system.)<br/>Leave the field blank if you don't want to include any personal note in the message.") -%>
+						Response to <%= @membership.is_invite? ? "group admin" : "user" -%>:
+						<br/>
+						<%= text_area_tag "msg", "", :rows => 4, :style => "width: 480px; margin-top: 0.4em" -%>
+		     </td>
+				</tr>      
+			</table>
+			</center>
+    
+		
+		  <!-- These forms serve as 'data senders' for Accept/Reject buttons -->
+		
+		  <% form_tag (accept_membership_path(current_user.id, @membership)) do %>				  
+				<%= hidden_field_tag "accept_msg", "" %>
+		  <% end %>
+			
+			<% form_tag (membership_path(@membership.user_id, @membership) + "?return_to=" + currentusers_things_url('groups'), :method => :delete) do %>				  
+				<%= hidden_field_tag "reject_msg", "" %>
+		  <% end %>
+			
+			<!-- /forms -->
+		
+			<ul class="sectionIcons" style="margin-top: 1.5em;">
+				<li><%= icon "confirm", "", "Accept", {:onclick => "$('accept_msg').value=$('msg').value; $('accept_msg').form.submit();return(false);"}, "Accept" %></li>
+        <li><%= icon "reject", "", "Reject", {:onclick => "if(confirm('Are you sure?')) { $('reject_msg').value=$('msg').value; $('reject_msg').form.submit(); } return(false);"}, "Reject" %></li>
+      </ul>
+		<% else %>
+			<p style="color: #990000; font-size: 108%; text-align: center;">
+        <b><i><%= pending_approval_message(allow_approval, @membership.is_invite?) -%></i></b>
+			</p>
+		<% end %>
+  </div>
+</center>
 <% end %>
 
-<br/>
 
-<p>
-	<center>
-		<b>User:</b><br/>
-	  <%= render :partial => "users/avatar", :locals => { :user => @membership.user } %>
-	</center>
-</p>
+<div id="group_box" style="display: none; margin-top: 3em;">
+  <br/>
+	<%= render :partial => "networks/table", :locals => { :collection => [ @membership.network ] } %>
+	<a name="group_box"></a>
+</div>
 
-<br/>
-
-<p>
-  <center>
-	  <b>Group:</b>
-	</center>
-</p>
-<p>
-  <center>
-	  <%= render :partial => "networks/table", :locals => { :collection => [ @membership.network ] } %>
-  </center>
-</p>
+<div id="user_box" style="display: none; margin-top: 3em;">
+	<%= render :partial => "users/table", :locals => { :collection => [ @membership.user ] } %>
+	<a name="user_box"></a>
+</div>

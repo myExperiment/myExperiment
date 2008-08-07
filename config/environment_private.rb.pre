@@ -65,3 +65,7 @@ ADDTHIS_WIDGET_USERNAME = "addthis.com username"
 
 # The number of seconds for the cache timeout
 CACHE_TIMEOUT_SECS = 120
+
+# The maximum number of invitation emails to send out
+# (if set to '-1' - unlimited)
+INVITATION_EMAIL_LIMIT = 10 

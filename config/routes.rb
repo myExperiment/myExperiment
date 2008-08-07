@@ -153,13 +153,15 @@ ActionController::Routing::Routes.draw do |map|
   
   # all users
   map.resources :users, 
-    :collection => { :all => :get, :search => :get } do |user|
+    :collection => { :all => :get, 
+                     :search => :get, 
+                     :invite => :get } do |user|
 
     # friendships 'owned by' user (user --> friendship --> friend)
-    user.resources :friendships, :member => { :accept => :get }
+    user.resources :friendships, :member => { :accept => :post }
 
     # memberships 'owned by' user (user --> membership --> network)
-    user.resources :memberships, :member => { :accept => :get }
+    user.resources :memberships, :member => { :accept => :post }
 
     # user profile
     user.resource :profile, :controller => :profiles
@@ -174,7 +176,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :groups, 
     :controller => :networks, 
     :collection => { :all => :get, :search => :get }, 
-    :member => { :membership_invite => :get, 
+    :member => { :invite => :get,
+                 :membership_invite => :post,
+                 :membership_invite_external => :post,
                  :membership_request => :get, 
                  :comment => :post, 
                  :comment_delete => :delete, 

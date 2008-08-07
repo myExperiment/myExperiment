@@ -50,7 +50,9 @@
 								</div>
 								
 								<p>
-									<%= f.text_field :unconfirmed_email, :size => '50' %>
+									<%= hidden_field_tag "invitation_token", ( params[:token] ? params[:token] : "" ) -%>
+									<% email_val = params[:token] ? ( PendingInvitation.find(:first, :conditions => ["token = ?", params[:token]]).email ) : "" %>
+									<%= f.text_field :unconfirmed_email, :value => email_val, :size => '50' %>
 								</p>
 								<p style="font-size: 85%; color: #333333;">
 									Before submitting, please check that you have spelt it correctly. 
@@ -72,7 +74,14 @@
 								<table>
 									<tr>
 										<td style="text-align: left; vertical-align: top; padding-left: 0;"><%= f.check_box :receive_notifications %></td>
-										<td style="text-align: left;">I would like to receive email notifications for events that relate to me</td>
+										<td style="text-align: left;">
+										  I would like to receive email notifications for events that relate to me
+									    <%= link_to_function help_icon_with_tooltip("By ticking this box you will receive email notifications every time<br/>when you get messages, receive membership requests for the<br/>groups that you own and for friendships requests from other users."),
+																			 visual_effect(:toggle_blind, "notifications_help", :duration => 0.3) %>
+											<div id="notifications_help" class="box_dynamic_help" style="display: none;">
+										    By ticking this box you will receive email notifications every time when you get messages, receive membership requests for the groups that you own and for friendships requests from other users.
+									    </div>
+										</td>
 									</tr>
 								</table>
 								

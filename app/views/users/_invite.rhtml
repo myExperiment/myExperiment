@@ -1,0 +1,43 @@
+<h1 style="margin-top: 2em;">Invite other people to myExperiment</h1>
+
+<div class="box_infotext" style="margin: 1.5em 1.5em; text-align: center;">
+   Send invitations to people who are not already on myExperiment. You can include a message to intoduce yourself if you like.
+</div>
+
+<% form_tag (:controller => 'users', :action => 'process_invitations') do %>
+  <p style="line-heght: 1.5; margin-left: 1.5em">
+  	<%= hidden_field_tag :invitations_user_id, current.id -%>
+  	
+		<%= info_icon_with_tooltip("To include several email addresses, use commas or semicolons to separate them.<br/>Please note that just #{INVITATION_EMAIL_LIMIT} first unique, valid, non-blank addresses will be processed.") %>
+		Email addresses to send invitations to:<br/>
+		<% email_addresses_val = ((params[:invitations].nil? || params[:invitations][:addr_to].nil?) ? "" : params[:invitations][:addr_to]) %>
+  	<%= text_field_tag "invitations[addr_to]", email_addresses_val, :style => "width: 500px; margin-bottom: 0.5em;" -%><br/>
+  	
+		<%= info_icon_with_tooltip("This message is optional: if you leave it blank, default one will be sent.") %>
+		Personal message to include with the invitations:<br/>
+  	<% msg_text_val = ((params[:invitations].nil? || params[:invitations][:msg_text].nil?) ? "" : params[:invitations][:msg_text]) %>
+		<%= text_area_tag "invitations[msg_text]", msg_text_val, :rows => 4, :style => "width: 500px; margin-bottom: 0.5em;" -%><br/>
+	  
+		<% as_friendship_checked = (!params[:invitations].nil? && !params[:invitations][:as_friendship].nil? ? true : false) %>
+		<label for="invitations[as_friendship]" title="<%= tooltip_title_attrib('Tick the checkbox to request friendship of new users after they join myExperiment<br/>or leave the checkbox blank to send plain invitation emails.') -%>"><%= check_box_tag "invitations[as_friendship]", "true", as_friendship_checked -%>Request friendships as well</label><br/>
+		
+		
+		<table style="margin-top: 2em;">
+			<tr>
+				<td>
+		      <% c = prepare_captcha :type => :image -%>
+					<%= captcha_image_tag c -%>
+				</td>
+				<td style="vertical-align: top;">
+				  <%= captcha_hidden_field c, 'invitations' -%>
+					<%= captcha_label 'invitations', 'Type in the text from the image on the right:' -%><br/>
+	        <%= captcha_text_field 'invitations', :size => 40 -%>
+				</td>
+			</tr>
+		</table>
+		
+		<%= submit_tag "Send Invitations", :id => "send_button", :onclick => "if($('invitations[addr_to]').value=='') { alert('Please enter email address(es) that you want to send user invitations to.');$('invitations[addr_to]').focus();return(false); } else { $('cancel_button').disabled=true;this.disabled=true;this.value='Sending...';this.form.submit(); }", :style => "margin-top: 1.5em" -%>
+		<input type="submit" id="cancel_button" value="Return to your Profile" onclick="$('send_button').disabled=true;this.disabled=true;this.value='Cancelling...';window.location='<%= user_path(current_user) -%>';return false;" />
+	  
+	</p>
+<% end %>
