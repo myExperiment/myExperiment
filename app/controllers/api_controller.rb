@@ -9,12 +9,12 @@ require 'lib/rest'
 
 class ApiController < ApplicationController
 
+  before_filter :oauth_required
   def process_request
 
     query  = CGIMethods.parse_query_parameters(request.query_string)
     method = request.method.to_s.upcase
     uri    = params[:uri]
-
    # logger.info "current token: #{current_token.inspect}"
    # logger.info "current user: #{current_user.id}"
    # logger.info "query: #{query}"
@@ -33,6 +33,8 @@ class ApiController < ApplicationController
       else;         bad_rest_request
     end
 
+    current_user = nil
+    current_token = nil
     render :xml => doc.to_s
   end
 end

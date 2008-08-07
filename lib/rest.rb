@@ -487,6 +487,48 @@ def post_workflow(rules, query)
       rest_resource_uri(workflow), "workflow", { "id" => workflow.id.to_s })
 end
 
+# def post_job(rules, query)
+#
+#   title       = params["job"]["title"]
+#   description = params["job"]["description"]
+#
+#   experiment_bits = parse_resource_uri(params["job"]["experiment"])
+#   runner_bits     = parse_resource_uri(params["job"]["runner"])
+#   runnable_bits   = parse_resource_uri(params["job"]["runnable"])
+#
+#   return rest_error_response(400, 'Bad Request') if title.nil?
+#   return rest_error_response(400, 'Bad Request') if description.nil?
+#
+#   return rest_error_response(400, 'Bad Request') if experiment_bits.nil? or experiment_bits[0] != 'Experiment'
+#   return rest_error_response(400, 'Bad Request') if runner_bits.nil?     or runner_bits[0]     != 'Runner'
+#   return rest_error_response(400, 'Bad Request') if runnable_bits.nil?   or runnable_bits[0]   != 'Workflow'
+#
+#   experiment = Experiment.find_by_id(experiment_bits[1].to_i)
+#   runner     = TavernaEnactor.find_by_id(runner_bits[1].to_i)
+#   runnable   = Workflow.find_by_id(runnable_bits[1].to_i)
+#
+#   return rest_error_response(400, 'Bad Request') if experiment.nil? or not experiment.authorized?("edit", current_user)
+#   return rest_error_response(400, 'Bad Request') if runner.nil?     or not runner.authorized?("download", current_user)
+#   return rest_error_response(400, 'Bad Request') if runnable.nil?   or not runnable.authorized?("view", current_user)
+#
+#   puts "#{params[:job]}"
+#
+#   job = Job.new(:title => title, :description => description, :runnable => runnable, 
+#       :experiment => experiment, :runner => runner, :user => current_user,
+#       :runnable_version => runnable.versions.last.version)
+#
+#   inputs = { "Tags" => "aa,bb,aa,cc,aa" }
+#
+#   job.inputs_data = inputs
+#
+#   success = job.submit_and_run!
+#
+#   return rest_error_response(200, 'Failed to submit job') if not success
+#
+#   return "<yes/>"
+#
+# end
+
 def search(rules, query)
 
   search_query = query['query']
@@ -620,6 +662,23 @@ def post_comment(rules, query)
 
   rest_get_request(comment, "comment", rest_resource_uri(comment), "comment", { "id" => comment.id.to_s })
 end
+
+# def put_comment(rules, query)
+# end
+#
+# def delete_comment(rules, query)
+#
+#   return rest_error_response(400, 'Bad Request') if query['id'].nil?
+#
+#   resource = Comment.find_by_id(query['id'])
+#
+#   return rest_error_response(404, 'Resource Not Found') if resource.nil?
+#
+#   if resource.respond_to?('authorized?')
+#     return rest_error_response(403, 'Not Authorized') if not resource.authorized?('edit', current_user)
+#   end
+#
+# end
 
 def rest_call_request(rules, query)
   eval("#{rules['Function']}(rules, query)")

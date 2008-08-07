@@ -136,6 +136,13 @@ ActionController::Routing::Routes.draw do |map|
   # all ***ship's
   map.resources :relationships, :memberships, :friendships
 
+  # all oauth
+  map.oauth '/oauth',:controller=>'oauth',:action=>'index'
+  map.authorize '/oauth/authorize',:controller=>'oauth',:action=>'authorize'
+  map.request_token '/oauth/request_token',:controller=>'oauth',:action=>'request_token'
+  map.access_token '/oauth/access_token',:controller=>'oauth',:action=>'access_token'
+  map.test_request '/oauth/test_request',:controller=>'oauth',:action=>'test_request'
+
   # User timeline
   map.connect 'users/timeline', :controller => 'users', :action => 'timeline'
   map.connect 'users/users_for_timeline', :controller => 'users', :action => 'users_for_timeline'

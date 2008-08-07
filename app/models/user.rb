@@ -71,6 +71,10 @@ class User < ActiveRecord::Base
   has_many :reviews,
            :order => "updated_at DESC",
            :dependent => :destroy
+ 
+  has_many :client_applications
+  
+  has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
            
   acts_as_simile_timeline_event(
     :fields => {
