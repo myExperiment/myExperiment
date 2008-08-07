@@ -657,6 +657,8 @@ module ApplicationHelper
       return "famfamfam_silk/group_add.png"
     when "user"
       return "famfamfam_silk/user.png"
+    when "user-invite"
+      return "famfamfam_silk/user_add.png"
     when "friend_delete"
       return "famfamfam_silk/user_delete.png"  
     when "avatar"

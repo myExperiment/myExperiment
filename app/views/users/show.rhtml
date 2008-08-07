@@ -45,6 +45,7 @@
 					<li><%= icon('edit', edit_profile_path(@user), nil, nil, 'Edit Profile') %></li>
 				<% end %>
 			  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
+				<li><%= icon('user-invite', invite_users_path, nil, nil, 'Invite People') %></li>
 	    <% end %>
 	</ul>
 <% end %>
@@ -459,13 +460,6 @@
 
   <% end %>
 
-<% end %>
-
-
-<% if logged_in? && mine?(@user) %>
-  <br/>
-	<p><strong><%= link_to 'Invite other people to myExperiment', invite_users_path -%></strong></p>
-	<br/>
 <% end %>
 
 <% if logged_in? and !mine?(@user) and !current_user.networks_owned.empty? %>
