@@ -1,5 +1,7 @@
 <% t "Search" -%>
 
+<%= render :partial => 'search/extra_search_help' %>
+
 <h1>Search Results</h1>
 
 <h2><%= pluralize(@workflows.length, "workflow") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
