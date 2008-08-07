@@ -66,7 +66,11 @@ class NetworksController < ApplicationController
         end
       end
     else
-      flash[:error] = "Membership invite not created (already exists)"
+      if params[:user_id].to_i == current_user.id
+        flash[:error] = "You can't invite yourself to groups"
+      else
+        flash[:error] = "User invited is already a member of the group"
+      end
       respond_to do |format|
         format.html { redirect_to invite_group_url(@network) }
       end
