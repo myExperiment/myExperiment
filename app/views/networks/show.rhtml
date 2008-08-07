@@ -1,6 +1,18 @@
 <% t "#{h @network.title}" -%>
 
 <% if logged_in? %>
+		<% if current_user.membership_request_pending?(@network.id) %>
+		  <div class="box_standout">
+			  <span style="text-align: left;"><b>You have already sent a membership request to join this group. Awaiting admin confirmation.</b></span>
+			</div>
+	  <% elsif current_user.membership_invite_pending?(@network.id) %>
+		  <div class="box_standout">  
+				<span style="text-align: left;"><b>You have been invited to join this group. Awaiting your <%= link_to "confirmation", membership_path(current_user, Membership.find(:first, :conditions => ['network_id = ? AND user_id = ?', @network, current_user])) -%>.</b></span>
+			</div>
+		<% end %>
+	<% end %>
+
+<% if logged_in? %>
   <ul class="sectionIcons">
     <% unless mine? @network %>
 		  <% if @network.member? current_user.id  %>
@@ -23,9 +35,6 @@
 
 <h1>
 	Group: <%=h @network.title %>
-	<% if logged_in? && current_user.membership_pending?(@network.id) %>
-		<p class="note_text" style="text-align: center;"><small>You have sent membership request to join this group. Awaiting admin confirmation.</small></p>
-	<% end %>
 </h1>
 
 <div class="contribution_mini_nav">

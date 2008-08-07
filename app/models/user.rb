@@ -452,16 +452,25 @@ class User < ActiveRecord::Base
   end
   
   def membership_pending?(network_id)
+    return( membership_request_pending?(network_id) || membership_invite_pending?(network_id) )
+  end
+  
+  def membership_request_pending?(network_id)
     memberships_requested.each do |f|
       return true if f.network_id.to_i == network_id.to_i  
     end
     
+    return false
+  end
+  
+  def membership_invite_pending?(network_id)
     memberships_invited.each do |f|
       return true if f.network_id.to_i == network_id.to_i
     end
     
     return false
   end
+  
   
   def all_networks
     self.networks + self.networks_owned

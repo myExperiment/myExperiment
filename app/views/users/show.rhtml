@@ -1,5 +1,17 @@
 <% t "#{h @user.name}" -%>
 
+<% if logged_in? && current_user.friendship_pending?(@user.id) %>
+	<% friend_id, friendship_obj = current_user.friendship_from_self_id_and_friends_id(@user.id) %>
+	<div class="box_standout" style="margin-bottom: 1.5em;"><b>
+		<% if friend_id == @user.id %>
+		  You have already sent a friendship request to this person. Awaiting their confirmation.
+		<% else %>
+		  This person has sent you a friendship request. Awaiting your <%= link_to "confirmation", friendship_path(current_user, friendship_obj) -%>.
+		<% end %>
+	</b></div>
+<% end %>
+
+
 <% none_text = '<font class="none_text">Not specified</font>' -%>
 
 <% if mine? @user and @user.unconfirmed_email.blank? and @user.email.blank? %>
@@ -62,16 +74,6 @@
 			User Profile: <%=h @user.name %>
 			<%= friend_badge(@user) %>
 			<%= admin_badge(@user) %>
-			<% if current_user.friendship_pending?(@user.id) %>
-				<% friend_id, friendship_obj = current_user.friendship_from_self_id_and_friends_id(@user.id) %>
-				<p class="note_text" style="text-align: center;"><small>
-					<% if friend_id == @user.id %>
-					  You have already sent a friendship request to this person. Awaiting their confirmation.
-					<% else %>
-					  This person has sent you a friendship request. Awaiting your confirmation.
-					<% end %>
-				</small></p>
-		  <% end %>			
 		</h1>
 		
 	<% end %>
