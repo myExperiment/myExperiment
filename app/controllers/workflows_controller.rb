@@ -102,16 +102,20 @@ class WorkflowsController < ApplicationController
   
   # POST /workflows/1;rate
   def rate
-    Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @workflow.class.to_s, @workflow.id, current_user.id])
-    
-    @workflow.ratings << Rating.create(:user => current_user, :rating => params[:rating])
-    
-    respond_to do |format|
-      format.html { 
-        render :update do |page|
-          page.replace_html "ratings_inner", :partial => "contributions/ratings_box_inner", :locals => { :contributable => @workflow, :controller_name => controller.controller_name }
-          page.replace_html "ratings_breakdown", :partial => "contributions/ratings_box_breakdown", :locals => { :contributable => @workflow }
-        end }
+    if @workflow.contributor_type == 'User' and @workflow.contributor_id == current_user.id
+      error("You cannot rate your own workflow!", "")
+    else
+      Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @workflow.class.to_s, @workflow.id, current_user.id])
+      
+      @workflow.ratings << Rating.create(:user => current_user, :rating => params[:rating])
+      
+      respond_to do |format|
+        format.html { 
+          render :update do |page|
+            page.replace_html "ratings_inner", :partial => "contributions/ratings_box_inner", :locals => { :contributable => @workflow, :controller_name => controller.controller_name }
+            page.replace_html "ratings_breakdown", :partial => "contributions/ratings_box_breakdown", :locals => { :contributable => @workflow }
+          end }
+      end
     end
   end
   

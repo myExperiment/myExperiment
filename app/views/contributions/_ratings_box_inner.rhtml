@@ -8,7 +8,11 @@
 		<% if (rating = contributable.user_rating(current_user)) %>
 			<p style="font-size: 85%; font-weight: bold;">You rated it: <%= rating.rating %>/5</p>
 		<% else %>
-			<p style="font-size: 85%; font-weight: bold;"><i>You haven't rated yet</i></p>
+			<% if mine? contributable %>
+				<p style="font-size: 85%; font-weight: bold;"><i>You cannot rate this item</i></p>
+			<% else %>
+				<p style="font-size: 85%; font-weight: bold;"><i>You haven't rated yet</i></p>
+			<% end %>
 		<% end %>
 	<% else %>
 		<%= render :partial => 'ratings/current', :locals => { :rateable => contributable } %>
