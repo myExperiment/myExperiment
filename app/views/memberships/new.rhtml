@@ -52,18 +52,9 @@
 	</center>
 	
 	<% if params[:network_id] -%>
-		<div id="group_box" style="display: none; margin-top: 2em;">
-			<p>
-			  <center>
-				  <b>Group:</b>
-				</center>
-			</p>
-			<p>
-			  <center>
-				  <%= render :partial => "networks/table", :locals => { :collection => [ @network ] } %>
-			  </center>
-			</p>
+		<div id="group_box" style="display: none; margin-top: 3em;">
+		  <%= render :partial => "networks/table", :locals => { :collection => [ @network ] } %>
 		</div>
 	<% end %>
-<% end %>
 
+<% end %>
