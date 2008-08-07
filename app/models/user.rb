@@ -169,16 +169,20 @@ class User < ActiveRecord::Base
     invitations.each do |invite|
       case invite.request_type
         when "membership"
-          membership = Membership.new (:user_id => self.id, :network_id => invite.request_for, :created_at => invite.created_at, :network_established_at => invite.created_at, :user_established_at => nil, :message => invite.message)
-          membership.save
+          unless Membership.find_by_user_id_and_network_id(self.id, invite.request_for)
+            membership = Membership.new (:user_id => self.id, :network_id => invite.request_for, :created_at => invite.created_at, :network_established_at => invite.created_at, :user_established_at => nil, :message => invite.message)
+            membership.save
+          end
           invite.destroy
         when "friendship"
           # 'request_for' is used as id of the user, who sent the invitation - this is because
           # for friendships 'request_for' and 'requested_by' are meant to be the same;
           # still 'request_for' captures the idea of the request being directed to a particular user,
           # and we don't really care who sent the actual invitation
-          friendship = Friendship.new (:user_id => invite.request_for, :friend_id => self.id, :created_at => invite.created_at, :accepted_at => nil, :message => invite.message)
-          friendship.save
+          unless Friendship.find_by_user_id_and_friend_id(invite.request_for, self.id)
+            friendship = Friendship.new (:user_id => invite.request_for, :friend_id => self.id, :created_at => invite.created_at, :accepted_at => nil, :message => invite.message)
+            friendship.save
+          end
           invite.destroy
       end
     end
