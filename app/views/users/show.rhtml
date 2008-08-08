@@ -121,10 +121,12 @@
 		    <%=datetime @user.created_at %>
 		  </p>
 			
-		  <p>
+		  <% if @user.last_seen_at -%>
+			<p>
 		    <b>Last seen:</b>
 		    <%=datetime @user.last_seen_at %>
 		  </p>
+			<% end -%>
 		  
 			<% if false %>
 			  <% unless @user.profile.nil? %>

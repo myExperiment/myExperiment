@@ -50,9 +50,8 @@
 								</div>
 								
 								<p>
-									<%= hidden_field_tag "invitation_token", ( params[:token] ? params[:token] : "" ) -%>
-									<% email_val = params[:token] ? ( PendingInvitation.find(:first, :conditions => ["token = ?", params[:token]]).email ) : "" %>
-									<%= f.text_field :unconfirmed_email, :value => email_val, :size => '50' %>
+									<%= hidden_field_tag "invitation_token", @token -%>
+									<%= f.text_field :unconfirmed_email, :value => @email_value, :size => '50' %>
 								</p>
 								<p style="font-size: 85%; color: #333333;">
 									Before submitting, please check that you have spelt it correctly. 

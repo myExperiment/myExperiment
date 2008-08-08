@@ -117,6 +117,27 @@ class UsersController < ApplicationController
   # GET /users/new
   def new
     @user = User.new
+    
+    # default values in case not supplied, or contain an error
+    @email_value = ""
+    @token = ""
+    
+    # check if the registration token was set
+    if params[:token]
+      # the token was set, so search 'pending_invitations' table for an entry
+      pending_invite = PendingInvitation.find(:first, :conditions => ["token = ?", params[:token]])
+      
+      if pending_invite
+        # if the entry's there, use the address from it as a default for the registration
+        @email_value = pending_invite.email
+        @token = params[:token]
+      else
+        # the entry is not there, so we've got a bad token - redirect & notify the user
+        flash[:error] = "Registration token provided in URL is invalid, but you may still register without it"
+        redirect_to(:controller => 'users', :action => 'new')
+      end
+    end
+    
   end
 
   # GET /users/1;edit
