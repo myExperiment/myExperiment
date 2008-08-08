@@ -89,7 +89,7 @@ protected
         @workflow = workflow
         
         # remove scufl from workflow if the user is not authorized for download
-        @workflow.scufl = nil unless @workflow.authorized?("download", (logged_in? ? current_user : nil))
+        @workflow.content_blob.data = nil unless @workflow.authorized?("download", (logged_in? ? current_user : nil))
       else
         if logged_in?
           error("Workflow not found (id not authorized)", "is invalid (not authorized)", :workflow_id)
