@@ -17,7 +17,7 @@
 		<small>Current: <%= sharing_mode_text contributable, @sharing_mode %>; <% if update_perms -%><%= updating_mode_text contributable, @updating_mode %>; <% end %>and shared with <%= pluralize contributable.contribution.shared_with_networks.length, "Group" %>.</small>
 	<% else %>
 	    <hr />
-	    <small>Defaults: anyone can view, but only Friends can download; <% if update_perms -%>no one is allowed to update; <% end -%> and not shared with any Groups.</small>
+	    <small>Defaults: anyone can view and download; <% if update_perms -%>no one is allowed to update; <% end -%> and not shared with any Groups.</small>
 	<% end %>
   </div>
 
