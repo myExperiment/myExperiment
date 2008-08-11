@@ -115,7 +115,7 @@ protected
       
       if workflow.authorized?("show", (logged_in? ? current_user : nil))
         # remove scufl from workflow if the user is not authorized for download
-        workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
+        workflow.content_blob.data = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
         @reviewable = workflow
       else
         if logged_in?
