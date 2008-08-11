@@ -464,7 +464,7 @@ def post_workflow(rules, query)
       :body             => description,
       :license          => license_type,
       :content_type     => content_type,
-      :scufl            => content,
+      :content_blob     => ContentBlob.new(:data => content),
       :contributor_type => 'User',
       :contributor_id   => user_id,
       :contribution     => contibution)
