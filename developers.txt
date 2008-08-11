@@ -94,6 +94,8 @@ mysql> create database m2_test;
   * Edit database.yml adding the appropriate passwords and usernames for the three databases.
   * Copy environment_private.rb.pre to environment_private.rb
   * Edit environment_private.rb. In particular to set the correct details for SMTP to allow emails to be sent by MyExperiment. Also make sure SOLR_ENABLE is set to true so that data in your MyExperiment can be indexed and searched over by users. 
+  * Copy captcha.yml.pre to captcha.yml.
+  * Edit captcha.yml to set it to the words you want to use in your captchas.
 
 * Change directory back to /var/rails/myexperiment/trunk and run the following command as root:
 

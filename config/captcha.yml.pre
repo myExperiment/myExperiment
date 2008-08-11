@@ -40,20 +40,12 @@ font: null
 
 #Words to use when generating images. Case doesn't matter when matching.
 words: 
-  - wallace
-  - carlin
-  - encapsulated
-  - bioinformatics
-  - workflow
-  - Taverna
-  - myGrid
-  - e-science
-  - SCUFL
-  - avatar
-  - BLAST
-  - Kepler
-  - Triana
-
+  - These
+  - words
+  - need
+  - to
+  - be 
+  - set
 
 
 #Question challenge specific options
