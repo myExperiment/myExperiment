@@ -30,7 +30,7 @@ module Juixe
         
         # Helper class method to lookup ratings for
         # the mixin rateable type written by a given user.  
-        # This method is NOT equivalent to Rating.find_ratings_for_user
+        # This method is NOT equivalent to Rating.find_ratings_by_user
         def find_ratings_by_user(user) 
           rateable = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
           

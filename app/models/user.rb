@@ -158,6 +158,41 @@ class User < ActiveRecord::Base
     end
   end
   
+  
+  # method is called only once for each user - right after email address is confirmed;
+  # 
+  # it queries 'pending_invitations' table and moves all requests to relevant tables
+  # (i.e. to 'memberships' and 'friendships' - as appropriate);
+  # invitations are matched by registered user's email address.
+  #
+  # NB! This is done by email not token, because the email was updated on registration -
+  # to contain the address that was registered, rather than one that was used for invitation!
+  def process_pending_invitations!
+    invitations = PendingInvitation.find (:all, :conditions => ["email = ?", self.email])
+    
+    invitations.each do |invite|
+      case invite.request_type
+        when "membership"
+          unless Membership.find_by_user_id_and_network_id(self.id, invite.request_for)
+            membership = Membership.new (:user_id => self.id, :network_id => invite.request_for, :created_at => invite.created_at, :network_established_at => invite.created_at, :user_established_at => nil, :message => invite.message)
+            membership.save
+          end
+          invite.destroy
+        when "friendship"
+          # 'request_for' is used as id of the user, who sent the invitation - this is because
+          # for friendships 'request_for' and 'requested_by' are meant to be the same;
+          # still 'request_for' captures the idea of the request being directed to a particular user,
+          # and we don't really care who sent the actual invitation
+          unless Friendship.find_by_user_id_and_friend_id(invite.request_for, self.id)
+            friendship = Friendship.new (:user_id => invite.request_for, :friend_id => self.id, :created_at => invite.created_at, :accepted_at => nil, :message => invite.message)
+            friendship.save
+          end
+          invite.destroy
+      end
+    end
+  end
+  
+  
   # Authenticates a user by their login name OR email and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
     return nil if login.blank? or password.blank?
@@ -424,6 +459,27 @@ class User < ActiveRecord::Base
     return rtn
   end
   
+  def membership_pending?(network_id)
+    return( membership_request_pending?(network_id) || membership_invite_pending?(network_id) )
+  end
+  
+  def membership_request_pending?(network_id)
+    memberships_requested.each do |f|
+      return true if f.network_id.to_i == network_id.to_i  
+    end
+    
+    return false
+  end
+  
+  def membership_invite_pending?(network_id)
+    memberships_invited.each do |f|
+      return true if f.network_id.to_i == network_id.to_i
+    end
+    
+    return false
+  end
+  
+  
   def all_networks
     self.networks + self.networks_owned
   end
@@ -465,7 +521,42 @@ class User < ActiveRecord::Base
     end
     
     return false
-  end 
+  end
+  
+  def friendship_pending?(user_id)
+    friendships_requested.each do |f|
+      return true if f.friend_id.to_i == user_id.to_i  
+    end
+    
+    friendships_pending.each do |f|
+      return true if f.user_id.to_i == user_id.to_i
+    end
+    
+    return false
+  end
+  
+  # as it does matter to which of the two users the actual 'friendship'
+  # belongs (i.e. /user/X/friendships/<id> will work, but /user/Y/friendships/<id> will not),
+  # need a method which would return params for obtaining a link for the friendship, which works without
+  # having any relevance in which the IDs of the friends are supplied as params
+  #
+  # Returns: an array of 2 elements:
+  # 1) the ID of a user (of 2 involved in the 'friendship') who is a 'friend', not an owner of the friendship;
+  # 2) the 'friendship' object itself
+  def friendship_from_self_id_and_friends_id(friend_id)
+    friendship = Friendship.find(:first, :conditions => [ "user_id = ? AND friend_id = ?", id, friend_id ] )
+    
+    if friendship
+      return [friend_id, friendship]
+    elsif
+      friendship = Friendship.find(:first, :conditions => [ "user_id = ? AND friend_id = ?", friend_id, id ] )
+      if friendship
+        return [id, friendship]
+      else
+        return [nil, nil] # an error state
+      end
+    end
+  end
   
   def friend_recursive?(user_id)
     friend_r? user_id
@@ -504,6 +595,18 @@ class User < ActiveRecord::Base
   
   def send_notifications?
     activated? and email_confirmed? and self.receive_notifications
+  end
+  
+  def ratings_for_contributions
+    ratings = [ ]
+    
+    self.contributions.each do |c|
+      c.contributable.ratings.each do |r|
+        ratings << r
+      end
+    end
+    
+    return ratings
   end
   
 protected

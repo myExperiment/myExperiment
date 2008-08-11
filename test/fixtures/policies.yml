@@ -1,21 +1,28 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+john_policy:
   id: 1
   contributor_id: 1
-  contributor_type: MyString
+  contributor_type: User
+  name: Johns policy
   download_public: false
   edit_public: false
-  view_public: false
+  view_public: true
   download_protected: false
   edit_protected: false
-  view_protected: false
-two:
+  view_protected: true
+  created_at: 2008-02-02 22:02:54
+  updated_at: 2008-02-02 22:02:54
+
+jane_policy:
   id: 2
-  contributor_id: 1
-  contributor_type: MyString
-  download_public: false
-  edit_public: false
-  view_public: false
-  download_protected: false
-  edit_protected: false
-  view_protected: false
+  contributor_id: 2
+  contributor_type: User
+  name: Janes policy
+  download_public: true
+  edit_public: true
+  view_public: true
+  download_protected: true
+  edit_protected: true
+  view_protected: true
+  created_at: 2007-10-22 18:54:22
+  updated_at: 2008-01-09 12:12:12

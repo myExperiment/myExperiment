@@ -1,15 +1,16 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+dilbert_appreciation_network:
   id: 1
   user_id: 1
-  title: MyString
-  unique: MyString
+  title: Dilbert appreciation network
+  unique_name: dilbert_appreciation_network
   created_at: 2007-07-30 14:09:54
   updated_at: 2007-07-30 14:09:54
-two:
+
+another_network:
   id: 2
-  user_id: 1
-  title: MyString
-  unique: MyString
-  created_at: 2007-07-30 14:09:54
-  updated_at: 2007-07-30 14:09:54
+  user_id: 2
+  title: A network
+  unique_name: a_network
+  created_at: 2007-09-30 14:09:54
+  updated_at: 2007-09-30 17:09:54

@@ -6,6 +6,9 @@ class ClientApplication < ActiveRecord::Base
            :class_name => "KeyPermission",
            :order => "key_permissions.for",
            :dependent => :destroy
+  belongs_to :creator,
+             :class_name => "User",
+	     :foreign_key => "creator_id"
   validates_presence_of :name,:url,:key,:secret
   validates_uniqueness_of :key
   before_validation_on_create :generate_keys

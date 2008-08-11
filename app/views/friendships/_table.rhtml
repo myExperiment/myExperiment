@@ -22,7 +22,7 @@
     <td class="actions">
       <% if mine? friendship %>
         <%= icon "show", friendship_path(friendship.friend_id, friendship), nil, nil, "View" %>
-        <% unless friendship.accepted? %> <%= icon "confirm", accept_friendship_path(friendship.friend_id, friendship) %><% end %>
+        <% unless friendship.accepted? %> <%= icon "confirm", accept_friendship_path(friendship.friend_id, friendship), nil, :method => :post %><% end %>
          <%= icon (friendship.accepted? ? "destroy" : "reject"), friendship_path(friendship.friend_id, friendship), nil, :confirm => "Are you sure?", :method => :delete %>
       <% end %>
     </td>

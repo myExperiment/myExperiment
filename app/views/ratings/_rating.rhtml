@@ -28,6 +28,5 @@
             :class => 'five-stars', :name => '5 stars out of 5') %>
     </li>
 </ul>
-<p style="margin-top: 0.2em; font-size: 85%; font-weight: bold;">
-  Current: <%= number_with_precision(rateable.rating, 2) %>/5 (<%= pluralize rateable.ratings.count, 'rating' %>)
-</p>
+	
+<%= render :partial => 'ratings/current', :locals => { :rateable => rateable } %>

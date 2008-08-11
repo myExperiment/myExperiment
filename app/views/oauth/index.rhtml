@@ -31,7 +31,16 @@
 		<div><%=link_to client.name,:action=>:show,:id=>client.id%></div>
 	<%end%>
 <%end%>
-
+<% if current_user.admin? %>
+<h3>Client Applications You Have Created For Other Users</h3>
+<% if @admin_client_applications.empty? %>
+	<p>You do not currently have any client applications that you have created or other users.</p>
+<%else%>
+	<%@admin_client_applications.each do |client|%>
+                <div><%=link_to client.name,:action=>:show,:id=>client.id%></div>
+        <%end%>
+<% end %>
+<% end %>
 <ul class="sectionIcons">
 	<li><%= icon "register_application", {:controller =>'oauth',:action=>'new'}, nil, nil, "Register Client Application" %></li>
 </ul>

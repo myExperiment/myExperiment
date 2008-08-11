@@ -1,5 +1,17 @@
 <% t "#{h @user.name}" -%>
 
+<% if logged_in? && current_user.friendship_pending?(@user.id) %>
+	<% friend_id, friendship_obj = current_user.friendship_from_self_id_and_friends_id(@user.id) %>
+	<div class="box_standout" style="margin-bottom: 1.5em;"><b>
+		<% if friend_id == @user.id %>
+		  You have already sent a friendship request to this person. Awaiting their confirmation.
+		<% else %>
+		  This person has sent you a friendship request. Awaiting your <%= link_to "confirmation", friendship_path(current_user, friendship_obj) -%>.
+		<% end %>
+	</b></div>
+<% end %>
+
+
 <% none_text = '<font class="none_text">Not specified</font>' -%>
 
 <% if mine? @user and @user.unconfirmed_email.blank? and @user.email.blank? %>
@@ -25,20 +37,25 @@
 
 <% if logged_in? %>
 	<ul class="sectionIcons">
-	    <% unless @user.friend? current_user.id %>
+	    <!-- check if the profile that we are viewing now is a friend of current user -> stored for better performance -->
+			<% this_user_is_friend_of_current_user = @user.friend? current_user.id %>
+			<% unless this_user_is_friend_of_current_user || current_user.friendship_pending?(@user.id) %>
 	    	<li><%= icon('friendship', new_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
 	  	<% end %>
-	  	<% unless mine? @user %>
+	  	
+			<% unless mine? @user %>
 				<li><%= icon("message", new_message_path(:user_id => @user.id), nil, nil, "Send Message") %></li>
+				<% if this_user_is_friend_of_current_user %>
+			    <% master_id, friendship_obj = current_user.friendship_from_self_id_and_friends_id(@user.id) %>
+					<li><%= icon "friend_delete", friendship_path(master_id, friendship_obj) + "?return_to=" + user_path(@user), nil, {:confirm => "Are you sure you want to remove this user from your friend list?", :method => :delete}, "Cancel Friendship" %></li>
+			  <% end %>
 			<% end %>
-	    <% if mine? @user %>
+			
+			<% if mine? @user %>
 	    	<li><%= icon('manage', edit_user_path(@user), nil, nil, 'Manage Account') %></li>
 		    <% unless @user.profile.nil? %>
 					<li><%= icon('edit', edit_profile_path(@user), nil, nil, 'Edit Profile') %></li>
 				<% end %>
-				<!-- next two lines removed, as the functionality was moved inside the 'Edit User Profile' page -->
-			  <!-- <li><%= icon("pictures", pictures_path(@user), nil, nil, "Profile Pictures") %></li> -->
-		    <!-- <li><%= icon('avatar', new_picture_path(@user), nil, nil, 'Upload New Profile Pic')%></li> -->
 			  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
 	    <% end %>
 	</ul>
@@ -58,6 +75,7 @@
 			<%= friend_badge(@user) %>
 			<%= admin_badge(@user) %>
 		</h1>
+		
 	<% end %>
 <% else %>
 	<h1>
@@ -103,10 +121,12 @@
 		    <%=datetime @user.created_at %>
 		  </p>
 			
-		  <p>
+		  <% if @user.last_seen_at -%>
+			<p>
 		    <b>Last seen:</b>
 		    <%=datetime @user.last_seen_at %>
 		  </p>
+			<% end -%>
 		  
 			<% if false %>
 			  <% unless @user.profile.nil? %>
@@ -222,9 +242,25 @@
 			<div class="contribution_section_box" style="width: 130px; padding: 0.4em 0.8em; font-size: 93%;">
 				<p>
 					<b>
-						<%= @user.name -%> has been credited
+						<%= h @user.name -%> has been credited
 						<%= link_to(pluralize(@user.creditations.length, "time"), url_for(:action => 'credits')) -%>
 					</b>
+				</p>
+			</div>
+			
+			<% ratings = @user.ratings_for_contributions %>
+			<div class="contribution_section_box" style="width: 130px; padding: 0.4em 0.8em;">
+				<p style="font-size: 93%; font-weight: bold;">
+					<b><%= h @user.name -%> has an average rating of:</b>
+				</p>
+				<p style="font-size: 123.1%; font-weight: bold; padding-bottom: 0.2em; line-height: 1;">
+					<%= number_with_precision(mean(ratings.collect {|r| r.rating}).to_f, 1) -%> / 5
+				</p>
+				<p style="font-size: 77%; padding-top: 0.2em; line-height: 1;">
+					(<%= pluralize ratings.length, "rating" -%> in total)
+				</p>
+				<p style="font-size: 93%; font-weight: bold;">
+					<b>for their items</b>
 				</p>
 			</div>
 			

@@ -208,16 +208,20 @@ class BlobsController < ApplicationController
   
   # POST /files/1;rate
   def rate
-    Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @blob.class.to_s, @blob.id, current_user.id])
-    
-    @blob.ratings << Rating.create(:user => current_user, :rating => params[:rating])
-    
-    respond_to do |format|
-      format.html { 
-        render :update do |page|
-          page.replace_html "ratings_inner", :partial => "contributions/ratings_box_inner", :locals => { :contributable => @blob, :controller_name => controller.controller_name }
-          page.replace_html "ratings_breakdown", :partial => "contributions/ratings_box_breakdown", :locals => { :contributable => @blob }
-        end }
+    if @blob.contributor_type == 'User' and @blob.contributor_id == current_user.id
+      error("You cannot rate your own file!", "")
+    else
+      Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @blob.class.to_s, @blob.id, current_user.id])
+      
+      @blob.ratings << Rating.create(:user => current_user, :rating => params[:rating])
+      
+      respond_to do |format|
+        format.html { 
+          render :update do |page|
+            page.replace_html "ratings_inner", :partial => "contributions/ratings_box_inner", :locals => { :contributable => @blob, :controller_name => controller.controller_name }
+            page.replace_html "ratings_breakdown", :partial => "contributions/ratings_box_breakdown", :locals => { :contributable => @blob }
+          end }
+      end
     end
   end
   

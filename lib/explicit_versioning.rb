@@ -193,10 +193,10 @@ module Jits
                 self.file_columns.each do |key|
                   if orig_model.has_attribute?(key)
                     if eval("orig_model.#{key}.nil?")
-                      puts "file column is nil"
+                      puts "DEBUG: file column is nil"
                       new_model.send("#{key}=", nil)
                     else
-                      puts "file column is not nil"
+                      puts "DEBUG: file column is not nil"
                       new_model.send("#{key}=", File.open(eval("orig_model.#{key}")))
                       FileUtils.cp(eval("orig_model.#{key}"), eval("new_model.#{key}"))
                     end

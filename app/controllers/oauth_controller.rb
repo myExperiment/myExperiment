@@ -29,21 +29,26 @@ class OauthController < ApplicationController
   end
   
   def authorize
+    @client_applications=current_user.client_applications
     @token=RequestToken.find_by_token params[:oauth_token]
-    unless @token.invalidated?    
-      if request.post? 
-        if params[:authorize]=='1'
-          @token.authorize!(current_user)
-          redirect_url=params[:oauth_callback]||@token.client_application.callback_url
-          if redirect_url
-            redirect_to redirect_url+"?oauth_token=#{@token.token}"
-          else
-            render :action=>"authorize_success"
+    if @client_applications.include?(@token.client_application)
+      unless @token.invalidated?    
+        if request.post? 
+          if params[:authorize]=='1'
+            @token.authorize!(current_user)
+            redirect_url=params[:oauth_callback]||@token.client_application.callback_url
+            if redirect_url
+              redirect_to redirect_url+"?oauth_token=#{@token.token}"
+            else
+              render :action=>"authorize_success"
+            end
+          elsif params[:authorize]=="0"
+            @token.invalidate!
+            render :action=>"authorize_failure"
           end
-        elsif params[:authorize]=="0"
-          @token.invalidate!
-          render :action=>"authorize_failure"
         end
+      else
+        render :action=>"authorize_failure"
       end
     else
       render :action=>"authorize_failure"
@@ -61,6 +66,7 @@ class OauthController < ApplicationController
   
   def index
     @client_applications=current_user.client_applications
+    @admin_client_applications=ClientApplication.find(:all, :conditions => ["user_id != ? and creator_id = ?", current_user.id, current_user.id])
     @tokens=current_user.tokens.find :all, :conditions=>'oauth_tokens.invalidated_at is null and oauth_tokens.authorized_at is not null'
   end
 
@@ -86,19 +92,28 @@ class OauthController < ApplicationController
   end
   
   def show
-    @client_application=current_user.client_applications.find(params[:id])
+    @client_application=ClientApplication.find(params[:id])
+    if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
+    	@client_application = nil
+    end
     @key_permissions=@client_application.permissions
   end
 
   def edit
     @permissions = TABLES['REST'][:data]
     @permissions=@permissions.sort
-    @client_application=current_user.client_applications.find(params[:id])
+    @client_application=ClientApplication.find(params[:id])
+    if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
+        @client_application = nil
+    end
     @permissions_for=@client_application.permissions_for
   end
   
   def update
-    @client_application=current_user.client_applications.find(params[:client_application][:id])
+    @client_application=ClientApplication.find(params[:client_application][:id])
+    if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
+        @client_application = nil
+    end 
     @client_application.permissions.delete_all
     for key_permission in params[:key_permissions] do
        @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])

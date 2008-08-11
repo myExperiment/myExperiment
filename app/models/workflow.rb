@@ -20,7 +20,14 @@ class Workflow < ActiveRecord::Base
   has_many :citations, 
            :order => "created_at DESC",
            :dependent => :destroy
-  
+
+  belongs_to :content_blob 
+
+  # need to destroy the content_blobs belonging to the workflow versions to avoid orphaned records
+  before_destroy { |w| w.versions.each do |wv|
+                        wv.content_blob.destroy
+                      end }
+
   acts_as_contributable
   
   acts_as_creditable
@@ -30,7 +37,8 @@ class Workflow < ActiveRecord::Base
   
   acts_as_reviewable
 
-  explicit_versioning(:version_column => "current_version", :file_columns => ["image", "svg"], :white_list_columns => ["body"]) do
+  explicit_versioning(:version_column => "current_version", :file_columns => ["image", "svg"], :white_list_columns => ["body"]#, :other_columns => ["content_blob_id"]
+  ) do
     file_column :image, :magick => {
       :versions => {
         :thumb    => { :size => "100x100!" }, 
@@ -42,6 +50,11 @@ class Workflow < ActiveRecord::Base
     file_column :svg
     
     format_attribute :body
+    
+    belongs_to :content_blob
+    # :dependent => :destroy is not supported in belongs_to in rails 1.2.6
+    after_destroy { |wv| wv.content_blob.destroy }
+     
   end
   
   #non_versioned_fields.push("image", "svg", "license", "tag_list") # acts_as_versioned and file_column don't get on
@@ -54,7 +67,7 @@ class Workflow < ActiveRecord::Base
 
   acts_as_runnable
   
-  validates_presence_of :title, :scufl
+  validates_presence_of :title
   
   format_attribute :body
   
@@ -92,7 +105,7 @@ class Workflow < ActiveRecord::Base
   def get_input_ports(version)
     return nil unless (workflow_version = self.find_version(version))
     parser = Scufl::Parser.new
-    model  = parser.parse(workflow_version.scufl)
+    model  = parser.parse(workflow_version.content_blob.data)
     
     return model.sources
   end
@@ -100,7 +113,7 @@ class Workflow < ActiveRecord::Base
   def get_sculf_model(version)
     return nil unless (workflow_version = self.find_version(version))
     parser = Scufl::Parser.new
-    model  = parser.parse(workflow_version.scufl)
+    model  = parser.parse(workflow_version.content_blob.data)
     
     return model
   end

@@ -1,19 +1,20 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+john_to_jane:
   id: 1
   from: 1
-  to: 1
-  subject: MyString
-  body: MyText
+  to: 2
+  subject: My First Message
+  body: Blah blah blah blah blah blah blah
   reply_id: 1
   created_at: 2007-07-31 11:06:30
-  read_at: 2007-07-31 11:06:30
-two:
+  read_at: 2007-07-31 11:12:30
+
+jane_to_john:
   id: 2
-  from: 1
+  from: 2
   to: 1
-  subject: MyString
-  body: MyText
-  reply_id: 1
-  created_at: 2007-07-31 11:06:30
-  read_at: 2007-07-31 11:06:30
+  subject: 'Re: My First Message'
+  body: Stop wasting my time, John!
+  reply_id: 2
+  created_at: 2007-07-31 11:36:30
+  read_at: 2007-07-31 11:46:30

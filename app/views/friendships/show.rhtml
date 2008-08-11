@@ -1,57 +1,105 @@
 <h1>Friendship</h1>
 
-<% unless my_page? @friendship.user_id %>
-  <p>
-    <center>
-		<b>User:</b><br/>
-	    <%= render :partial => "users/avatar", :locals => { :user => @friendship.user } %>
-	</center>
-  </p>
-<% end %>
+<% display_user = !my_page? (@friendship.user_id) %>
+<% display_user_instance = display_user ? @friendship.user : @friendship.friend %>
 
-<% unless my_page? @friendship.friend_id %>
-  <p>
-    <center>
-		<b>Friend:</b><br/>
-	    <%= render :partial => "users/avatar", :locals => { :user => @friendship.friend } %>
-	</center>
-  </p>
-<% end %>
 
-<p>
-  <center>
-	  <b>Requested at:</b><br/>
-	  <%=datetime @friendship.created_at %>
-  </center>
-</p>
+<center>
+	<div class="box_standout" style="width: 500px;">
+		<table style="width: 500px;">
+			<tr>
+				<td style="width: 15%; vertical-align: top;">
+					<%= avatar display_user_instance, 80 %>
+				</td>
+				<td style="width: 85%; line-height: 1.6;">
+					<b>
+						<% if @friendship.accepted? %>
+						  You are friends with:
+						<% else %>
+						  You have <%= display_user ? "received" : "sent" -%> a request to become a friend of:
+						<% end %>
+					</b>
+					<br/>
+					<%= link_to_function h(display_user_instance.name) + expand_image, 
+															 visual_effect(:toggle_blind, "user_box", :duration => 0.3) -%>
+					
+					<p style="color: #666666; font-size: 93%; text-align: center; margin-top: 1.5em;">
+					  <b>Requested at:</b><br/>
+			      <%= datetime @friendship.created_at -%>
+					</p>
+					
+					<% if @friendship.accepted? %>
+		        <p style="color: #666666; font-size: 93%; text-align: center; margin-top: 0.5em;">
+				      <b>Accepted at:</b><br/>
+			        <%=datetime @friendship.accepted_at %>
+		        </p>
+		      <% elsif my_page? @friendship.friend_id %>
+		        <% if @friendship.message %>
+						  <p style="margin-top: 1.5em; font-size: 93%; text-align: center;">
+							  <b>Message from user:</b><br/>
+							</p>
+						  <div style="padding: 0.3em 1em; border: 1px dotted #999999; background-color: #FFFFFF;">
+								<p style="font-size: 93%; text-align: center;">
+								  <%= simple_format(sanitize(@friendship.message)) -%>
+			          </p>
+							</div>
+						<% end %>
+		      <% end %>
+				</td>
+			</tr>
+		</table>
+	</div>
+</center>
 
-<% if @friendship.accepted? %>
+<% unless @friendship.accepted? %>
+<br/>
+<center>
+  <div class="box_currentuser_specific" style="width: 500px; padding-bottom: 0;">
+    <% if my_page? @friendship.friend_id %>
+			<p style="color: #990000; font-size: 108%; text-align: center; padding-top: 0.5em;">
+			  <b><i>Your confirmation needed</i></b><br/>
+			</p>
+			
+			<center>  
+      <table>
+			  <tr>
+				  <td style="text-align: left;">
+					   <%= info_icon_with_tooltip("Optional note to be sent to user along with your decision.<br/>(Delivered via internal messaging system.)<br/>Leave the field blank if you don't want to include any personal note in the message.") -%>
+					   <b>Response to user:</b>
+						 <br/>
+					   <%= text_area_tag "msg", "", :rows => 4, :style => "width: 480px; margin-top: 0.4em" -%>
+			    </td>
+				</tr>
+			</table>
+			</center>
+			
+			
+			<!-- These forms serve as 'data senders' for Accept/Reject buttons -->
+	    
+	    <% form_tag (accept_friendship_path(@friendship.friend_id, @friendship)) do %>				  
+		  	<%= hidden_field_tag "accept_msg", "" %>
+	    <% end %>
+		  
+  		<% form_tag (friendship_path(@friendship.friend_id, @friendship) + "?return_to=" + currentusers_things_url('friends'), :method => :delete) do %>				  
+  			<%= hidden_field_tag "reject_msg", "" %>
+  	  <% end %>
+		  
+	  	<!-- /forms -->
+			
+			
+			<ul class="sectionIcons" style="margin-top: 1.5em;">
+        <li><%= icon "confirm", "", "Accept", {:onclick => "$('accept_msg').value=$('msg').value; $('accept_msg').form.submit();return(false);"}, "Accept" %></li>
+        <li><%= icon "reject", "", "Reject", {:onclick => "if(confirm('Are you sure?')) { $('reject_msg').value=$('msg').value; $('reject_msg').form.submit(); } return(false);"}, "Reject" %></li>
+			</ul>	
+    <% else %>
+	    <p style="color: #990000; font-size: 108%; text-align: center; padding-top: 0.5em; margin-bottom: 0.8em;">  
+				<b><i>Waiting for confirmation</i></b>
+      </p>
+  	<% end %>
+  </div>
+</center>
+<% end %>	
 
-  <p>
-    <center>
-		<b>Accepted at:</b><br/>
-	    <%=datetime @friendship.accepted_at %>
-	</center>
-  </p>
-
-<% elsif my_page? @friendship.friend_id %>
-
-  <br/>
-  
-  <p>
-    <center>
-		<%= icon "confirm", accept_friendship_path(@friendship.friend_id, @friendship), "Accept", nil, "Accept" %> 
-	    <%= icon "reject", friendship_path(@friendship.friend_id, @friendship), nil, :confirm => "Are you sure?", :method => :delete %>
-	</center>
-  </p>
-
-<% else %>
-
-  <p>
-    <center>
-		<b>Accepted at:</b><br/>
-	    Pending
-	</center>
-  </p>
-
-<% end %>
+<div id="user_box" style="display: none; margin-top: 3em;">
+	<%= render :partial => "users/table", :locals => { :collection => [ display_user_instance ] } %>
+</div>

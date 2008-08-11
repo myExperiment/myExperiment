@@ -1,22 +1,17 @@
 class SearchController < ApplicationController
   def show
+    @type = params[:type].to_s.downcase
     
     # Hacks for 'Groups' --> 'Networks' and 'Files' --> 'Blobs' renames
+    @type = 'networks' if @type == 'groups'
+    @type = 'blobs' if @type == 'files'
     
-    if params[:type].to_s == 'groups'
-      params[:type] = 'networks'
-    end
-    
-    if params[:type].to_s == 'files'
-      params[:type] = 'blobs'
-    end
-    
-    unless @@valid_types.include? params[:type]
-      error(params[:type])
+    unless @@valid_types.include? @type
+      error(@type)
       return false
     end
     
-    if params[:type] == "all"
+    if @type == "all"
       search_all
     else
       redirect_to :controller => params[:type], :action => "search", :query => params[:query]

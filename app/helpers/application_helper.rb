@@ -651,8 +651,16 @@ module ApplicationHelper
       return "famfamfam_silk/group.png"
     when "network-owned"
       return "famfamfam_silk/group_key.png"
+    when "network-leave"
+      return "famfamfam_silk/group_delete.png"
+    when "network-invite"
+      return "famfamfam_silk/group_add.png"
     when "user"
       return "famfamfam_silk/user.png"
+    when "user-invite"
+      return "famfamfam_silk/user_add.png"
+    when "friend_delete"
+      return "famfamfam_silk/user_delete.png"  
     when "avatar"
       return "famfamfam_silk/picture.png"
     when "save"
@@ -819,6 +827,13 @@ module ApplicationHelper
     users.sort! { |x,y|
       x.name.downcase <=> y.name.downcase
     } 
+  end
+
+  def all_users
+    users = User.find(:all)
+    users.sort! { |x,y|
+      x.name.downcase <=> y.name.downcase
+    }
   end
   
   def license_link(license_type)
@@ -1264,6 +1279,16 @@ module ApplicationHelper
             
     return text
   end
+  
+  # From: http://ajax.howtosetup.info/ruby/finding-mean-median-and-mode-2/
+  def mean(array)
+    if array.length == 0 
+      return 0
+    else
+      return array.inject(0) { |sum, x| sum += x } / array.size.to_f  
+    end
+  end
+
   
 protected
 

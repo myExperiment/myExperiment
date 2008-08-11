@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<s:scufl xmlns:s="http://org.embl.ebi.escience/xscufl/0.1alpha" version="0.2" log="0">
+  <s:workflowdescription lsid="urn:lsid:www.mygrid.org.uk:operation:W0TIAJ5S3K0" author="Tom Oinn" title="Example of a conditional execution workflow">If the input is true then the string 'foo' is emited, if false then 'bar'. Just a simple example to show how the monster works, so to speak.</s:workflowdescription>
+  <s:processor name="Fail_if_false">
+    <s:local>org.embl.ebi.escience.scuflworkers.java.FailIfFalse</s:local>
+  </s:processor>
+  <s:processor name="Fail_if_true">
+    <s:local>org.embl.ebi.escience.scuflworkers.java.FailIfTrue</s:local>
+  </s:processor>
+  <s:processor name="foo">
+    <s:stringconstant>Foo</s:stringconstant>
+  </s:processor>
+  <s:processor name="bar">
+    <s:stringconstant>Bar</s:stringconstant>
+  </s:processor>
+  <s:processor name="Echo_list">
+    <s:local>org.embl.ebi.escience.scuflworkers.java.EchoList</s:local>
+  </s:processor>
+  <s:link source="condition" sink="Fail_if_true:test" />
+  <s:link source="condition" sink="Fail_if_false:test" />
+  <s:link source="foo:value" sink="Echo_list:inputlist" />
+  <s:link source="bar:value" sink="Echo_list:inputlist" />
+  <s:link source="Echo_list:outputlist" sink="result" />
+  <s:source name="condition">
+    <s:metadata>
+      <s:description>Enter the string 'true' or 'false' here to show the conditional branching</s:description>
+    </s:metadata>
+  </s:source>
+  <s:sink name="result" />
+  <s:coordination name="bar_BLOCKON_Fail_if_true">
+    <s:condition>
+      <s:state>Completed</s:state>
+      <s:target>Fail_if_true</s:target>
+    </s:condition>
+    <s:action>
+      <s:target>bar</s:target>
+      <s:statechange>
+        <s:from>Scheduled</s:from>
+        <s:to>Running</s:to>
+      </s:statechange>
+    </s:action>
+  </s:coordination>
+  <s:coordination name="foo_BLOCKON_Fail_if_false">
+    <s:condition>
+      <s:state>Completed</s:state>
+      <s:target>Fail_if_false</s:target>
+    </s:condition>
+    <s:action>
+      <s:target>foo</s:target>
+      <s:statechange>
+        <s:from>Scheduled</s:from>
+        <s:to>Running</s:to>
+      </s:statechange>
+    </s:action>
+  </s:coordination>
+</s:scufl>
+
+
