@@ -10,9 +10,30 @@
 	  <% else %>
 	    <%= select_tag "client_application[key_type]", options_for_select([ "User", "System"], @client_application.key_type) %>
 	  <% end %>
+</div>
+<div class="field">
+	  <label for="client_application_user_id">For User*</label><br/>
+          <% if @client_application.nil? %>
+            <select id="client_application[user_id]" name="client_application[user_id]" %>
+              <% all_users().each do |u| %>
+	        <option <%= 'selected="selected"' if u.id==current_user.id %> value="<%= u.id %>"><%= h(u.name) %></option><% end %>
+            </select>
+          <% else %>
+            <select id="client_application[user_id]" name="client_application[user_id]">
+              <% all_users().each do |u| %>
+	         <option <%= 'selected="selected"' if u.id==@client_application.user_id %> value="<%= u.id %>"><%= h(u.name) %></option><% end %>
+            </select>
+	  <% end %>
 	<% else %>
+          <%= f.hidden_field :user_id, :value => current_user.id %>
 	  <%= f.hidden_field :key_type, :value => "User" %>
 	<% end %>
+	<% if @client_application.nil? %>
+	  <%= f.hidden_field :creator_id, :value => current_user.id %>
+	<% else %>
+	  <%= f.hidden_field :creator_id, :value => @client_application.creator_id %>
+	<% end %>
+
 </div>
 <div class="field">
 	<label for="client_application_url">Main Application URL*</label><br/>

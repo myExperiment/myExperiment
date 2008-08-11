@@ -6,9 +6,12 @@
 <p>
         <b>Main Application URL:</b> <%=@client_application.url%>
 </p>
-<% if current_user.admin? %>
 <p>
 	<b>Key Type:</b> <%=@client_application.key_type%>
+</p>
+<% if current_user.admin? %>
+<p>
+	<b>For User:</b> <a href="<%= user_path(@client_application.user.id) %>"><%=@client_application.user.name%></a>
 </p>
 <% end %>
 <p>

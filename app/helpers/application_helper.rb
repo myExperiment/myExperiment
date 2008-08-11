@@ -828,6 +828,13 @@ module ApplicationHelper
       x.name.downcase <=> y.name.downcase
     } 
   end
+
+  def all_users
+    users = User.find(:all)
+    users.sort! { |x,y|
+      x.name.downcase <=> y.name.downcase
+    }
+  end
   
   def license_link(license_type)
     case license_type.downcase
