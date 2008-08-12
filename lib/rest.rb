@@ -21,6 +21,14 @@ TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
     'REST'  => { :indices => [ 'URI', 'Method' ] }
   } )
 
+# Temporary removals
+
+TABLES["REST"][:data]["comment"].delete("PUT")
+TABLES["REST"][:data]["comment"].delete("DELETE")
+TABLES["REST"][:data]["workflow"].delete("PUT")
+TABLES["REST"][:data]["job"].delete("POST")
+TABLES["REST"][:data]["pack"].delete("GET")
+
 def rest_routes(map)
   TABLES['REST'][:data].keys.each do |uri|
     TABLES['REST'][:data][uri].keys.each do |method|
