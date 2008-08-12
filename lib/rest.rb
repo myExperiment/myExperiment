@@ -429,12 +429,12 @@ def get_rest_uri(rules, query)
   "bing"
 end
 
-def create_default_policy
+def create_default_policy(user)
   Policy.new(:name => 'auto', :update_mode => 6, :share_mode => 0,
       :view_public     => true,  :view_protected     => false,
       :download_public => true,  :download_protected => false,
       :edit_public     => false, :edit_protected     => false,
-      :contributor => current_user)
+      :contributor => user)
 end
 
 def post_workflow(rules, query)
@@ -455,8 +455,7 @@ def post_workflow(rules, query)
   
   content = Base64.decode64(content)
 
-  contibution = Contribution.new(
-      :policy           => create_default_policy,
+  contribution = Contribution.new(
       :contributor_type => 'User',
       :contributor_id   => current_user.id)
 
@@ -468,20 +467,17 @@ def post_workflow(rules, query)
       :content_blob     => ContentBlob.new(:data => content),
       :contributor_type => 'User',
       :contributor_id   => current_user.id,
-      :contribution     => contibution)
+      :contribution     => contribution)
 
   scufl_model = Scufl::Parser.new.parse(content)
 
   workflow.create_workflow_diagrams(scufl_model, "1")
 
   if not workflow.save
-    return rest_error_response(400, 'Bad Request') if description.nil?
+    return rest_error_response(400, 'Bad Request')
   end
 
-  workflow.contribution.update_attributes( {
-      :contributor_type => 'User', :contributor_id => current_user.id } )
-
-  workflow.contribution.policy = create_default_policy
+  workflow.contribution.policy = create_default_policy(current_user)
   workflow.contribution.save
 
   rest_get_request(workflow, "workflow",
