@@ -1,0 +1,60 @@
+<% if params[:radio_main_metadata].nil?
+     main_metadata_infer_selected = true
+   else
+     main_metadata_infer_selected = params[:radio_main_metadata] == "infer" ? true : false  
+   end
+-%>
+
+<center>
+	<div class="box_form" style="width: 550px; margin: 1em 0; text-align: left;">
+	
+		<p>
+			<label for="radio_main_metadata_infer">
+				<%= radio_button_tag ("radio_main_metadata", 
+															"infer", 
+															main_metadata_infer_selected, 
+															:onclick => "$('radio_main_metadata_custom').checked=false;$('div_main_metadata_custom').hide();return true;") -%>
+				Infer metadata from the workflow file/script
+				<%= info_icon_with_tooltip("<b>Note:</b> we are only able to do this for Taverna 1.x workflows at the moment.") -%> 
+			</label>
+		</p>
+		<p style="margin-top: 0.1em;">
+			<label for="radio_main_metadata_custom">
+				<%= radio_button_tag ("radio_main_metadata", 
+															"custom", 
+															!main_metadata_infer_selected, 
+															:onclick => "$('radio_main_metadata_infer').checked=false;$('div_main_metadata_custom').show();return true;") -%>
+				Enter custom metadata
+			</label>
+		</p>
+		
+		<div id="div_main_metadata_custom" class="box_editing" style="margin: 1em 0em 1em 1.5em; padding-left: 1.5em; background: transparent; <%= main_metadata_infer_selected ? "display: none;" : "" -%>">
+			
+				<!-- Type -->
+				<p style="margin-top: 0;"><b>Workflow Type</b></p>
+				<%= select_tag "workflow[type]", 
+											 options_for_select({ 
+																						"Taverna 1.x (SCUFL)" => "taverna1",
+																						"Taverna 2.x" => "taverna2",
+																						"Trident" => "trident",
+																						"Other" => "other" }, (params[:workflow].nil? ? nil : params[:workflow][:type])),
+											 :onchange => "(this.value == 'other') ? $('workflow[type_other]').show() : $('workflow[type_other]').hide();",
+											 :style => "vertical-align: middle;" -%>
+				<%= text_field_tag "workflow[type_other]", (params[:workflow].nil? ? '' : params[:workflow][:type_other]), :size => 25, :style => 'display: none; vertical-align: middle;' %> 
+				
+				<!-- Title -->
+				<p><b>Title</b></p>
+				<%= text_field_tag "workflow[title]", (params[:workflow].nil? ? '' : params[:workflow][:title]), :size => 50 %>
+				
+				<!-- Preview Image -->
+				<p><b>Preview Image</b></p>
+				<input id="workflow_preview" name="workflow[preview]" size="50" type="file" />
+				
+				<!-- Description -->
+				<p><b>Description</b></p>
+				<%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '500px', :height => '300px') %>
+		
+		</div>
+	
+	</div>
+</center>
