@@ -1,0 +1,12 @@
+ <h2>Permissions</h2>
+ <% permissions_categorised=permissions_show_categorised(@show_permissions) %>
+ <% for category,permissions in permissions_categorised %>
+   <% if permissions.length > 0 %>
+     <h3><%= category.capitalize %></h3>
+     <p>
+     <% for permission in permissions -%>
+       <%= permission %><br/>
+     <% end -%>
+     </p>
+   <% end -%>
+<% end %>

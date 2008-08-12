@@ -40,9 +40,6 @@
 	We support hmac-sha1 (recommended) as well as plain text in ssl mode.
 </p>
 
- <h2>Permissions</h2>
- <% for @key_permission in @key_permissions %>
-     <p><%= @key_permission.for %></p>
- <% end %>
+<%= render :partial => "show_permissions" %>
 
  <!--<p><%= TABLES['REST'][:data].inspect %></p> -->

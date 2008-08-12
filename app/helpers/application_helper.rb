@@ -1459,4 +1459,43 @@ protected
     return rtn
   end
 
+  def permissions_categorised(permissions)
+    permissions_categorised={'announcement'=>[],'citation'=>[],'comment'=>[],'download'=>[],'experiment'=>[],'file'=>[],'group'=>[],'job'=>[],'message'=>[],'pack'=>[],'picture'=>[],'review'=>[],'runner'=>[],'tag'=>[],'user'=>[],'workflow'=>[],'miscellaneous'=>[]};
+    categories=permissions_categorised.keys
+    for key,permission in permissions
+      category_found=false
+      for category in categories
+        if key.include?(category)
+          permissions_categorised[category].push(permission)
+          category_found=true
+        end
+      end
+      unless category_found
+        permissions_categorised['miscellaneous'].push(permission)
+      end
+    end
+    permissions_categorised=permissions_categorised.sort
+    return permissions_categorised
+  end
+
+  def permissions_show_categorised(permissions)
+    permissions_categorised={'announcement'=>[],'citation'=>[],'comment'=>[],'download'=>[],'experiment'=>[],'file'=>[],'group'=>[],'job'=>[],'message'=>[],'pack'=>[],'picture'=>[],'review'=>[],'runner'=>[],'tag'=>[],'user'=>[],'workflow'=>[],'miscellaneous'=>[]};
+    categories=permissions_categorised.keys
+    for permission in permissions
+      category_found=false
+      for category in categories
+        if permission.for.include?(category)
+          permissions_categorised[category].push(permission.for)
+          category_found=true
+        end
+      end
+      unless category_found
+        permissions_categorised['miscellaneous'].push(permission.for)
+      end
+    end
+    permissions_categorised=permissions_categorised.sort
+    return permissions_categorised
+  end
+
+ 
 end

@@ -35,6 +35,10 @@ As Root user:
 * Use Debian's package installer (i.e. apt-get install) to install the following packages: 
 root> apt-get install make ruby libzlib-ruby rdoc irb rubygems
 
+* Check to see which version of ruby has installed:
+root> ruby --version
+   * If this is < v1.86 you will need to compile from source using http://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p286.tar.gz.
+
 * Install Rails GEM version 1.2.6 
 root> gem install rails --version=1.2.6
 

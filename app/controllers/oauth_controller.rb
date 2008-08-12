@@ -96,7 +96,7 @@ class OauthController < ApplicationController
     if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
     	@client_application = nil
     end
-    @key_permissions=@client_application.permissions
+    @show_permissions=@client_application.permissions
   end
 
   def edit
@@ -107,17 +107,22 @@ class OauthController < ApplicationController
         @client_application = nil
     end
     @permissions_for=@client_application.permissions_for
+    unless @client_application.nil?
+    	@show_permissions=@client_application.permissions
+    end
   end
   
   def update
     @client_application=ClientApplication.find(params[:client_application][:id])
     if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
         @client_application = nil
-    end 
-    @client_application.permissions.delete_all
-    for key_permission in params[:key_permissions] do
-       @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
-       @key_permission.save
+    end
+    if (current_user.admin? or @client_application.key_type=="User")
+      @client_application.permissions.delete_all
+      for key_permission in params[:key_permissions] do
+        @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
+         @key_permission.save
+      end
     end
     if @client_application.update_attributes(params[:client_application])
       flash[:notice]="Client Application '#{@client_application.name}' successfully updated!"
