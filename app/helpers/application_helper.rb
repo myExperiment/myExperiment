@@ -1245,7 +1245,7 @@ module ApplicationHelper
   end
   
   def update_perms_info_text(contributable)
-    return nil if type.blank?
+    return nil if contributable.nil?
     
     resource = c_resource_string(contributable)
     visible_type = visible_name(contributable)
