@@ -439,14 +439,7 @@ end
 
 def post_workflow(rules, query)
 
-  # determine user
-
-  user_id = nil
-
-  # puts "Current token = #{current_token.inspect}"
-  user_id = current_user.id if current_user != 0
-
-  return rest_error_response(400, 'Bad Request') if user_id.nil?
+  return rest_error_response(400, 'Bad Request') if current_user.nil?
 
   title        = params["workflow"]["title"]
   description  = params["workflow"]["description"]
@@ -465,7 +458,7 @@ def post_workflow(rules, query)
   contibution = Contribution.new(
       :policy           => create_default_policy,
       :contributor_type => 'User',
-      :contributor_id   => user_id)
+      :contributor_id   => current_user.id)
 
   workflow = Workflow.new(
       :title            => title,
@@ -474,7 +467,7 @@ def post_workflow(rules, query)
       :content_type     => content_type,
       :content_blob     => ContentBlob.new(:data => content),
       :contributor_type => 'User',
-      :contributor_id   => user_id,
+      :contributor_id   => current_user.id,
       :contribution     => contibution)
 
   scufl_model = Scufl::Parser.new.parse(content)
@@ -486,7 +479,7 @@ def post_workflow(rules, query)
   end
 
   workflow.contribution.update_attributes( {
-      :contributor_type => 'User', :contributor_id => user_id } )
+      :contributor_type => 'User', :contributor_id => current_user.id } )
 
   workflow.contribution.policy = create_default_policy
   workflow.contribution.save
