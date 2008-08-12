@@ -6,12 +6,8 @@
 
 <% # choose, which of the DIVs will be shown & which radio button ticked -%>
 <% # on first load, has default value -%>
-<% if params[:radio_choice].nil?
-     invite_existing_selected = true
-   else
-     invite_existing_selected = params[:radio_choice] == "existing" ? true : false  
-   end
--%>
+<% invite_existing_selected = invite_existing_selected?(params[:radio_choice]) -%>
+
 <label for="radio_invite_existing"><%= radio_button_tag ("radio_invite", "existing", invite_existing_selected, :onclick => "$('radio_invite_new').checked=false;$('div_invite_existing').show();$('div_invite_new').hide();return true;" ) -%>Invite an existing myExperiment user to your group</label><br/>
 <label for="radio_invite_new" style="margin-top: 0.3em;"><%= radio_button_tag ("radio_invite", "new", !invite_existing_selected, :onclick => "$('radio_invite_existing').checked=false;$('div_invite_existing').hide();$('div_invite_new').show();return true;" ) -%>Invite someone to join myExperiment and your group</label>
 
