@@ -6,7 +6,7 @@
         License/Rights
 		<% if edit %>
 			<hr />
-			<small>Current: <%= license_link license %></small>
+			<small>Current: <%= license_link(license) %></small>
 		<% else %>
 			<hr />
 			<small>Default: people are allowed to build on this Workflow, but must give author(s) credit and give attribution to this Workflow. They must also share under the same conditions. (<%= license_link license %>)</small>

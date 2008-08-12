@@ -99,7 +99,7 @@ module Mib
                    FROM pack_contributable_entries
                    WHERE contributable_id = ? AND contributable_type = ? )"
       
-          return Pack.find_by_sql [ sql, self.id, self.class.to_s ]
+          return Pack.find_by_sql([ sql, self.id, self.class.to_s ])
         end
       end
     end

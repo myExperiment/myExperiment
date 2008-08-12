@@ -168,13 +168,13 @@ class User < ActiveRecord::Base
   # NB! This is done by email not token, because the email was updated on registration -
   # to contain the address that was registered, rather than one that was used for invitation!
   def process_pending_invitations!
-    invitations = PendingInvitation.find (:all, :conditions => ["email = ?", self.email])
+    invitations = PendingInvitation.find(:all, :conditions => ["email = ?", self.email])
     
     invitations.each do |invite|
       case invite.request_type
         when "membership"
           unless Membership.find_by_user_id_and_network_id(self.id, invite.request_for)
-            membership = Membership.new (:user_id => self.id, :network_id => invite.request_for, :created_at => invite.created_at, :network_established_at => invite.created_at, :user_established_at => nil, :message => invite.message)
+            membership = Membership.new(:user_id => self.id, :network_id => invite.request_for, :created_at => invite.created_at, :network_established_at => invite.created_at, :user_established_at => nil, :message => invite.message)
             membership.save
           end
           invite.destroy
@@ -184,7 +184,7 @@ class User < ActiveRecord::Base
           # still 'request_for' captures the idea of the request being directed to a particular user,
           # and we don't really care who sent the actual invitation
           unless Friendship.find_by_user_id_and_friend_id(invite.request_for, self.id)
-            friendship = Friendship.new (:user_id => invite.request_for, :friend_id => self.id, :created_at => invite.created_at, :accepted_at => nil, :message => invite.message)
+            friendship = Friendship.new(:user_id => invite.request_for, :friend_id => self.id, :created_at => invite.created_at, :accepted_at => nil, :message => invite.message)
             friendship.save
           end
           invite.destroy
