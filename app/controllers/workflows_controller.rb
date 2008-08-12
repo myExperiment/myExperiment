@@ -167,7 +167,7 @@ class WorkflowsController < ApplicationController
     wwf.version     = @viewing_version.version.to_s
     wwf.workflow_id = @workflow.id.to_s
     wwf.updated     = @viewing_version.updated_at
-    wwf.data        = @viewing_version.scufl
+    wwf.data        = @viewing_version.content_blob.data
 
     dir = 'tmp/bundles'
 
