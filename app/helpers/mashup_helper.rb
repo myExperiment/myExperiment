@@ -32,40 +32,28 @@ module MashupHelper
 
   def trim_and_wrap(doc)
 
-    if (doc.instance_of?(XML::Document))
-      return doc.to_s
-    end
+    # Clean up the base64 sections
 
-    doc.root.elements.each do |element|
-      unless element.text.nil?
+    doc.root.children.each do |node|
+      if node["encoding"] == "base64"
 
-        lines = element.text.strip.split("\n")
+        text = node.child.to_s
 
-        lines = lines[0..4] + ['...'] if lines.length > 5
-
+        lines = text.strip.split("\n")
+        lines = lines[0..9] + ['...'] if lines.length > 10
         lines = lines.map do |line|
           "    #{line.strip}"
         end
 
         text = lines.join("\n").strip
+        text = "\n    #{text}\n  "
 
-        text = "\n    #{text}\n  " if element.attributes['encoding'] == 'base64'
-
-        element.text = text
+        node.children[0].remove!
+        node << text
       end
     end
 
-    sw = StringIO.new; doc.write(sw, 0); text = sw.string
-
-    line_limit = 100
-
-    lines = text.split("\n")
-
-    lines = lines.map do |line|
-      line.length > line_limit ? line[0..line_limit - 2] + '...' : line
-    end
-
-    lines.join("\n")
+    doc.to_s
   end
   
   def rest_example(method, rest_name, model_name, id, show_version)
