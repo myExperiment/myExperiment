@@ -16,8 +16,8 @@
 		<div class="box_form" style="width: 550px; text-align: center;">
 			<p style="text-align: center;">
 				<%= image_tag "spinner.gif", :id => "spinner", :style => "display: none; float: right; vertical-align: top;" -%>
-				<%= text_field_tag "uri", params[:uri], :size => 65, :style => "margin-bottom: 0;" -%>
-				<%= submit_tag "Check", :style => "margin-bottom: 0;" -%>
+				<%= text_field_tag "uri", params[:uri], :size => 65, :style => "vertical-align: middle;" -%>
+				<%= submit_tag "Check", :style => "vertical-align: middle;" -%>
 			</p>
 		</div>
 	</center>
@@ -40,7 +40,7 @@
 
 	<center>
 		<div class="box_form" style="width: 550px; text-align: center;">
-			<%= text_area_tag "comment", params[:comment], :size => "66x4", :style => "margin-bottom: 0;" -%>
+			<%= text_area_tag "comment", params[:comment], :size => "66x4" -%>
 		</div>
 	</center>
 	

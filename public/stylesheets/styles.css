@@ -1437,8 +1437,8 @@ div.auto_complete ul strong.highlight {
 	padding: 0.8em 1.4em;
 }
 
-.box_form input {
-	margin-bottom: 1em;
+.box_form p {
+	margin-top: 0.4em;
 }
 
 .box_standout {
