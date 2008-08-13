@@ -496,10 +496,7 @@ protected
         workflow = Workflow.find(params[:id])
       end
       
-      permission = action_name
-      permission = 'show' if action_name == 'launch'
-
-      if workflow.authorized?(permission, (logged_in? ? current_user : nil))
+      if workflow.authorized?(action_name, (logged_in? ? current_user : nil))
         @latest_version_number = workflow.current_version
         @workflow = workflow
         if params[:version]

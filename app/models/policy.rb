@@ -89,7 +89,8 @@ private
   # column in ++permissions+)
   @@categories = { "download" => ["download", 
                                   "named_download", 
-                                  "submit_job"], 
+                                  "submit_job",
+                                  "launch"], 
                    "edit" =>     ["new", 
                                   "create", 
                                   "edit", 
