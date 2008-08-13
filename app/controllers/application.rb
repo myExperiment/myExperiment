@@ -107,39 +107,39 @@ class ApplicationController < ActionController::Base
     # Check allowed updating_class values
     return unless [ "0", "1", "5", "6" ].include? updating_class
     
-    view_protected     = false
-    view_public        = false
-    download_protected = false
-    download_public    = false
-    edit_protected     = false
-    edit_public        = false
+    view_protected     = 0
+    view_public        = 0
+    download_protected = 0
+    download_public    = 0
+    edit_protected     = 0
+    edit_public        = 0
     
     # BEGIN initialisation and validation
 
     case sharing_class
       when "0"
-        view_public        = "1"
-        download_public    = "1"
-        view_protected     = "1"
-        download_protected = "1"
+        view_public        = 1
+        download_public    = 1
+        view_protected     = 1
+        download_protected = 1
       when "1"
-        view_public        = "1"
-        view_protected     = "1"
-        download_protected = "1"
+        view_public        = 1
+        view_protected     = 1
+        download_protected = 1
       when "2"
-        view_public        = "1"
-        view_protected     = "1"
+        view_public        = 1
+        view_protected     = 1
       when "3"
-        view_protected     = "1"
-        download_protected = "1"          
+        view_protected     = 1
+        download_protected = 1          
       when "4"
-        view_protected     = "1"
+        view_protected     = 1
     end
 
     case updating_class
       when "0"
-        edit_protected = true if view_protected == "1" and download_protected == "1"
-        edit_public    = true if view_public    == "1" and download_public    == "1"
+        edit_protected = true if view_protected == true and download_protected == true
+        edit_public    = true if view_public    == true and download_public    == true
       when "1"
         edit_protected = true
     end
@@ -159,13 +159,13 @@ class ApplicationController < ActionController::Base
       contributable.contribution.save
     else
        policy = contributable.contribution.policy
-       policy.view_protected = view_protected,
-       policy.view_public = view_public,
-       policy.download_protected = download_protected,
-       policy.download_public = download_public,
-       policy.edit_protected = edit_protected,
-       policy.edit_public = edit_public,
-       policy.share_mode = sharing_class,
+       policy.view_protected = view_protected
+       policy.view_public = view_public
+       policy.download_protected = download_protected
+       policy.download_public = download_public
+       policy.edit_protected = edit_protected
+       policy.edit_public = edit_public
+       policy.share_mode = sharing_class
        policy.update_mode = updating_class
        policy.save
     end

@@ -68,14 +68,16 @@ class Policy < ActiveRecord::Base
   # THIS IS THE DEFAULT POLICY (see /app/views/policies/_list_form.rhtml)
   # IT IS CALLED IN contribution.rb::authorized?
   def self._default(c_utor, c_ution=nil)
-    rtn = Policy.new(:name => "Friends can download and view",
+    rtn = Policy.new(:name => "A default policy",
                      :contributor => c_utor,
                      :view_public => false,        # anonymous can't view
                      :download_public => false,    # anonymous can't download
                      :edit_public => false,        # anonymous can't edit
                      :view_protected => true,      # friends can view
                      :download_protected => true,  # friends can download
-                     :edit_protected => false)     # friends can't edit
+                     :edit_protected => false,
+                     :share_mode => 3,
+                     :update_mode => 6)     # friends can't edit
                      
     c_ution.policy = rtn unless c_ution.nil?
     
