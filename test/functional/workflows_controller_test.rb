@@ -10,7 +10,7 @@ require 'workflows_controller'
 class WorkflowsController; def rescue_action(e) raise e end; end
 
 class WorkflowsControllerTest < Test::Unit::TestCase
-  fixtures :workflows
+  fixtures :workflows, :users, :contributions, :workflow_versions, :content_blobs, :blobs, :packs, :policies, :permissions, :networks
 
   def setup
     @controller = WorkflowsController.new
@@ -21,20 +21,29 @@ class WorkflowsControllerTest < Test::Unit::TestCase
   def test_should_get_index
     get :index
     assert_response :success
-    assert assigns(:workflows)
+    assert_template 'index'
   end
 
   def test_should_get_new
+    login_as(:john)
     get :new
+
     assert_response :success
   end
 
   def test_should_create_workflow
     old_count = Workflow.count
-    post :create, :workflow => { }
-    assert_equal old_count+1, Workflow.count
+
+    login_as(:john)
+    post :create, :workflow => { :scufl => fixture_file_upload('files/workflow_dilbert.xml'), :license => 'by-sa' },
+                  :credits_me => 'false',
+                  :credits_users => '',
+                  :credits_groups => '',
+                  :attributions_workflows => '',
+                  :attributions_files => ''
 
     assert_redirected_to workflow_path(assigns(:workflow))
+    assert_equal old_count+1, Workflow.count
   end
 
   def test_should_show_workflow
@@ -43,20 +52,31 @@ class WorkflowsControllerTest < Test::Unit::TestCase
   end
 
   def test_should_get_edit
+    login_as(:john)
     get :edit, :id => 1
+
     assert_response :success
   end
 
   def test_should_update_workflow
-    put :update, :id => 1, :workflow => { }
+    login_as(:john)
+    put :update, :id => 1, :workflow => { },
+                           :credits_me => 'false',
+                           :credits_users => '',
+                           :credits_groups => '',
+                           :attributions_workflows => '',
+                           :attributions_files => ''
+
     assert_redirected_to workflow_path(assigns(:workflow))
   end
 
   def test_should_destroy_workflow
     old_count = Workflow.count
-    delete :destroy, :id => 1
-    assert_equal old_count-1, Workflow.count
 
+    login_as(:john)
+    delete :destroy, :id => 1
+
+    assert_equal old_count-1, Workflow.count
     assert_redirected_to workflows_path
   end
 end

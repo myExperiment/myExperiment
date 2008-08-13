@@ -10,7 +10,7 @@ require 'friendships_controller'
 class FriendshipsController; def rescue_action(e) raise e end; end
 
 class FriendshipsControllerTest < Test::Unit::TestCase
-  fixtures :friendships
+  fixtures :friendships, :users
 
   def setup
     @controller = FriendshipsController.new
@@ -25,16 +25,19 @@ class FriendshipsControllerTest < Test::Unit::TestCase
   end
 
   def test_should_get_new
-    get :new
+    login_as(:john)
+    get :new, :user_id => '3'
     assert_response :success
   end
   
   def test_should_create_friendship
     old_count = Friendship.count
-    post :create, :friendship => { }
-    assert_equal old_count+1, Friendship.count
-    
-    assert_redirected_to friendship_path(assigns(:friendship))
+
+    login_as(:john)
+    post :create, :friendship => { :user_id => '1', :friend_id => '3' }
+
+    assert_equal old_count+1, Friendship.count    
+    assert_redirected_to friendship_path('3', assigns(:friendship))
   end
 
   def test_should_show_friendship
@@ -43,20 +46,26 @@ class FriendshipsControllerTest < Test::Unit::TestCase
   end
 
   def test_should_get_edit
+    login_as(:jane)
     get :edit, :id => 1
     assert_response :success
   end
-  
+ 
+  # can't actually update a friendship, so this test isn't needed 
   def test_should_update_friendship
+    login_as(:jane)
     put :update, :id => 1, :friendship => { }
-    assert_redirected_to friendship_path(assigns(:friendship))
+
+    assert_response :success
   end
   
   def test_should_destroy_friendship
     old_count = Friendship.count
+
+    login_as(:jane)
     delete :destroy, :id => 1
-    assert_equal old_count-1, Friendship.count
-    
-    assert_redirected_to friendships_path
+
+    assert_equal old_count-1, Friendship.count 
+    assert_response :redirect
   end
 end
