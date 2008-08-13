@@ -256,6 +256,8 @@ class ApplicationController < ActionController::Base
   end
 
   def determine_sharing_mode(contributable)
+    
+    # TODO: like the determine_updating_mode(..) method below, this method needs to be refactored into the Policy class. 
 
     policy = contributable.contribution.policy
 
@@ -301,100 +303,11 @@ class ApplicationController < ActionController::Base
   end
 
   def determine_updating_mode(contributable)
-
-    policy = contributable.contribution.policy
-
-    return policy.update_mode if !policy.update_mode.nil?
-
-    v_pub  = policy.view_public;
-    v_prot = policy.view_protected;
-    d_pub  = policy.download_public;
-    d_prot = policy.download_protected;
-    e_pub  = policy.edit_public;
-    e_prot = policy.edit_protected;
-
-    perms  = policy.permissions.select do |p| p.edit end
-
-    if (perms.empty?)
-
-      # mode 1? only friends and network members can edit
-   
-      if (e_pub == false and e_prot == true)
-        return 1
-      end
-   
-      # mode 6? noone else
-   
-      if (e_pub == false and e_prot == false)
-        return 6
-      end
-
+    if (policy = contributable.contribution.policy)
+      return policy.determine_update_mode(contributable.contribution)
     else
-
-      # mode 0? same as those that can view or download
-
-      if (e_pub == v_pub or d_pub)
-        if (e_prot == v_prot or d_prot)
-          if (perms.collect do |p| p.edit != p.view or p.download end).empty?
-            return 0;
-          end
-        end
-      end
-
-      contributor = User.find(contributable.contributor_id)
-
-      contributors_friends  = contributor.friends.map do |f| f.id end
-      contributors_networks = (contributor.networks + contributor.networks_owned).map do |n| n.id end
-
-      my_networks    = []
-      other_networks = []
-      my_friends     = []
-      other_users    = []
-
-      puts "contributors_networks = #{contributors_networks.map do |n| n.id end}"
-
-      perms.each do |p|
-        puts "contributor_id = #{p.contributor_id}"
-        case
-          when 'Network'
-
-            if contributors_networks.index(p.contributor_id).nil?
-              other_networks.push p
-            else
-              my_networks.push p
-            end
-
-          when 'User'
-
-            if contributors_friends.index(p.contributor_id).nil?
-              other_users.push p
-            else
-              friends.push p
-            end
-
-        end
-      end
-
-      puts "my_networks    = #{my_networks.length}"
-      puts "other_networks = #{other_networks.length}"
-      puts "my_friends     = #{my_friends.length}"
-      puts "other_users    = #{other_users.length}"
-
-      if (other_networks.empty? and other_users.empty?)
-
-        # mode 5? some of my friends?
-
-        if (my_networks.empty? and !my_friends.empty?)
-          return 5
-        end
-
-      end
+      return 7
     end
-
-    # custom
-
-    return 7
-
   end
 
   def update_credits(creditable, params)
