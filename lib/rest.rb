@@ -16,7 +16,8 @@ TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
                                'Create', 'Read', 'Update', 'Read by default',
                                'Foreign Accessor',
                                'List Element Name', 'List Element Accessor',
-                               'Example', 'Versioned', 'Key type' ] },
+                               'Example', 'Versioned', 'Key type',
+                               'Limited to user' ] },
                 
     'REST'  => { :indices => [ 'URI', 'Method' ] }
   } )
@@ -83,6 +84,20 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
   model_data = TABLES['Model'][:data][rest_entity]
 
   (0...model_data['REST Attribute'].length).each do |i|
+
+    # is this attributed limited to a particular user?
+
+    limited_to_user = model_data['Limited to user'][i]
+
+    if not limited_to_user.nil?
+      if limited_to_user == 'self'
+        limited_ob = ob
+      else
+        limited_ob = eval("ob.#{limited_to_user}")
+      end
+
+      next if limited_ob != current_user
+    end
 
     unless query['all_elements'] == 'yes'
       next if elements and not elements.index(model_data['REST Attribute'][i])
