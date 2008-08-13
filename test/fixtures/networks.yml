@@ -14,3 +14,11 @@ another_network:
   unique_name: a_network
   created_at: 2007-09-30 14:09:54
   updated_at: 2007-09-30 17:09:54
+
+spare_network:
+  id: 3
+  user_id: 3
+  title: spare network belonging to admin
+  unique_name: network
+  created_at: 2007-12-05 15:45:59
+  updated_at: 2007-12-05 15:45:59

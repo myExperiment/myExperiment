@@ -5,7 +5,7 @@ dilbert_network_johns_policy:
   contributor_type: Network
   policy_id: 1
   download: true
-  edit: false
+  edit: true
   view: true
   created_at: 2008-07-04 16:30:45
   updated_at: 2008-07-04 16:30:45

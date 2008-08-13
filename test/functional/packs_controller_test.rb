@@ -5,32 +5,24 @@ require 'packs_controller'
 class PacksController; def rescue_action(e) raise e end; end
 
 class PacksControllerTest < Test::Unit::TestCase
-  fixtures :packs
-
+  fixtures :packs, :users, :contributions, :workflows, :blobs, :content_blobs, :policies, :permissions, :networks
+  
   def setup
     @controller = PacksController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
 
-    @first_id = packs(:first).id
+    @first_id = packs(:pack_1).id
   end
 
   def test_index
     get :index
     assert_response :success
-    assert_template 'list'
-  end
-
-  def test_list
-    get :list
-
-    assert_response :success
-    assert_template 'list'
-
-    assert_not_nil assigns(:packs)
+    assert_template 'index'
   end
 
   def test_show
+    login_as(:john)
     get :show, :id => @first_id
 
     assert_response :success
@@ -41,6 +33,7 @@ class PacksControllerTest < Test::Unit::TestCase
   end
 
   def test_new
+    login_as(:john)
     get :new
 
     assert_response :success
@@ -52,15 +45,17 @@ class PacksControllerTest < Test::Unit::TestCase
   def test_create
     num_packs = Pack.count
 
-    post :create, :pack => {}
+    login_as(:john)
+    post :create, :pack => { :title => 'my new pack', :description => 'a new pack lalalala' }
 
     assert_response :redirect
-    assert_redirected_to :action => 'list'
+    assert_redirected_to pack_url assigns(:pack)
 
     assert_equal num_packs + 1, Pack.count
   end
 
   def test_edit
+    login_as(:john)
     get :edit, :id => @first_id
 
     assert_response :success
@@ -71,7 +66,9 @@ class PacksControllerTest < Test::Unit::TestCase
   end
 
   def test_update
-    post :update, :id => @first_id
+    login_as(:john)
+    post :update, :id => @first_id, :pack => { :title => 'edited pack', :description => 'a new pack' }
+
     assert_response :redirect
     assert_redirected_to :action => 'show', :id => @first_id
   end
@@ -81,9 +78,10 @@ class PacksControllerTest < Test::Unit::TestCase
       Pack.find(@first_id)
     }
 
+    login_as(:john)
     post :destroy, :id => @first_id
     assert_response :redirect
-    assert_redirected_to :action => 'list'
+    assert_redirected_to :action => 'index'
 
     assert_raise(ActiveRecord::RecordNotFound) {
       Pack.find(@first_id)
