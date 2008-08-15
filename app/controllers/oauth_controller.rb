@@ -42,9 +42,11 @@ class OauthController < ApplicationController
             else
               render :action=>"authorize_success"
             end
-          elsif params[:authorize]=="0"
+          elsif params[:commit]=="Save Changes"
             @token.invalidate!
             render :action=>"authorize_failure"
+	  else 
+             flash[:notice]="Client Application was not Authorized!"
           end
         end
       else
@@ -84,7 +86,7 @@ class OauthController < ApplicationController
         @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
         @key_permission.save
       end
-      flash[:notice]="Client Application successfully registred!"
+      flash[:notice]="Client Application successfully registered!"
       redirect_to :action=>"show",:id=>@client_application.id
     else
       render :action=>"new"
