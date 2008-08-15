@@ -31,12 +31,12 @@ class OauthController < ApplicationController
   def authorize
     @client_applications=current_user.client_applications
     @token=RequestToken.find_by_token params[:oauth_token]
+    redirect_url=params[:oauth_callback]||@token.client_application.callback_url
     if @client_applications.include?(@token.client_application)
       unless @token.invalidated?    
         if request.post? 
           if params[:authorize]=='1'
             @token.authorize!(current_user)
-            redirect_url=params[:oauth_callback]||@token.client_application.callback_url
             if redirect_url
               redirect_to redirect_url+"?oauth_token=#{@token.token}"
             else
@@ -44,16 +44,26 @@ class OauthController < ApplicationController
             end
           elsif params[:commit]=="Save Changes"
             @token.invalidate!
-            render :action=>"authorize_failure"
-	  else 
-             flash[:notice]="Client Application was not Authorized!"
+	    if redirect_url
+	      redirect_to redirect_url+"?oauth_failure=1"
+	    else 
+              render :action=>"authorize_failure"
+	    end
           end
         end
       else
-        render :action=>"authorize_failure"
+       if redirect_url
+         redirect_to redirect_url+"?oauth_failure=1"
+       else
+         render :action=>"authorize_failure"
+       end
       end
     else
-      render :action=>"authorize_failure"
+       if redirect_url
+         redirect_to redirect_url+"?oauth_failure=1"
+       else
+         render :action=>"authorize_failure"
+       end
     end
   end
   
