@@ -42,15 +42,15 @@
         <br />
 
 				<p>
-            <input id="author_option_1" name="add_author_option" checked="checked"
+            <label for="author_option_1"><input id="author_option_1" name="add_author_option" checked="checked"
                 value="1" type="radio" onclick="javascript:update_author(this.id);" />
-            - Me (<%= name current_user %>)
+            - Me</label> (<%= name current_user %>)
         </p>
 
         <p>
-            <input id="author_option_2" name="add_author_option"
+            <label for="author_option_2"><input id="author_option_2" name="add_author_option"
                 value="2" type="radio" onclick="javascript:update_author(this.id);" />
-            - One of my Friends
+            - One of my Friends</label>
         </p>
         <div id="author_friends_box" style="display: none; padding-left: 2em;">
             <p>
@@ -63,9 +63,9 @@
         </div>
         
 				<p>
-            <input id="author_option_3" name="add_author_option"
+            <label for="author_option_3"><input id="author_option_3" name="add_author_option"
                 value="3" type="radio" onclick="javascript:update_author(this.id);" />
-            - A user on myExperiment who is not a Friend.
+            - A user on myExperiment who is not a Friend.</label>
         </p>
         <div id="author_otheruser_box" style="display: none; padding-left: 2em;">
             <p>
@@ -78,9 +78,9 @@
         </div>
 
 				<p>
-            <input id="author_option_4" name="add_author_option"
+            <label for="author_option_4"><input id="author_option_4" name="add_author_option"
                 value="4" type="radio" onclick="javascript:update_author(this.id);" />
-            - A myExperiment Group
+            - A myExperiment Group</label>
         </p>
         <div id="author_networks_box" style="display: none; padding-left: 2em;">
             <p>
@@ -95,9 +95,9 @@
 				<% if false %>
 
 					<p>
-              <input id="author_option_5" name="add_author_option"
+              <label for="author_option_5"><input id="author_option_5" name="add_author_option"
                   value="5" type="radio" onclick="javascript:update_author(this.id);" />
-              - Someone else
+              - Someone else</label>
           </p>
           <div id="author_someoneelse_box" style="display: none; padding-left: 2em;">
               <p>
@@ -109,9 +109,9 @@
           </div>
 	
           <p>
-              <input id="author_option_6" name="add_author_option"
+              <label for="author_option_6"><input id="author_option_6" name="add_author_option"
                   value="6" type="radio" onclick="javascript:update_author(this.id);" />
-              - An organisation
+              - An organisation</label>
           </p>
           <div id="author_organisation_box" style="display: none; padding-left: 2em;">
               <p>

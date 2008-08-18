@@ -50,29 +50,41 @@
 
 		<div class="box_editing" style="padding-left: 1em; font-size: 93%;">
 
-      <p><input <%= 'checked="checked"' if @sharing_mode == 0 %> id="sharing_option_1" name="sharing[class_id]"
+      <p><label for="sharing_option_1">
+      	<input <%= 'checked="checked"' if @sharing_mode == 0 %> id="sharing_option_1" name="sharing[class_id]"
               value="0" type="radio" onclick="javascript:update_sharing(0);" />
-          - Anyone can view and download.</p>
+          - Anyone can view and download.
+			</label></p>
 
-      <p><input <%= 'checked="checked"' if @sharing_mode == 1 %> id="sharing_option_2" name="sharing[class_id]"
+      <p><label for="sharing_option_2">
+      	<input <%= 'checked="checked"' if @sharing_mode == 1 %> id="sharing_option_2" name="sharing[class_id]"
               value="1" type="radio" onclick="javascript:update_sharing(1);" />
-          - Anyone can view, but only my Friends are allowed to download.</p>
+          - Anyone can view, but only my Friends are allowed to download.
+			</label></p>
 
-      <p><input <%= 'checked="checked"' if @sharing_mode == 2 %> id="sharing_option_9" name="sharing[class_id]"
+      <p><label for="sharing_option_9">
+      	<input <%= 'checked="checked"' if @sharing_mode == 2 %> id="sharing_option_9" name="sharing[class_id]"
               value="2" type="radio" onclick="javascript:update_sharing(2);" />
-          - Anyone can view, but no one can download.</p>
+          - Anyone can view, but no one can download.
+			</label></p>
 
-      <p><input <%= 'checked="checked"' if @sharing_mode == 3 %> id="sharing_option_3" name="sharing[class_id]"
+      <p><label for="sharing_option_3">
+      	<input <%= 'checked="checked"' if @sharing_mode == 3 %> id="sharing_option_3" name="sharing[class_id]"
               value="3" type="radio" onclick="javascript:update_sharing(3);" />
-          - Only my Friends can view and download.</p>
+          - Only my Friends can view and download.
+			</label></p>
 
-      <p><input <%= 'checked="checked"' if @sharing_mode == 4 %> id="sharing_option_4" name="sharing[class_id]"
+      <p><label for="sharing_option_4">
+      	<input <%= 'checked="checked"' if @sharing_mode == 4 %> id="sharing_option_4" name="sharing[class_id]"
               value="4" type="radio" onclick="javascript:update_sharing(4);" />
-          - Only my Friends can view, but no one can download.</p>
+          - Only my Friends can view, but no one can download.
+			</label></p>
 
-      <p><input <%= 'checked="checked"' if @sharing_mode == 7 %> id="sharing_option_7" name="sharing[class_id]"
+      <p><label for="sharing_option_7">
+      	<input <%= 'checked="checked"' if @sharing_mode == 7 %> id="sharing_option_7" name="sharing[class_id]"
               value="7" type="radio" onclick="javascript:update_sharing(7);" />
-          - This is a private <%= c_type %> - only I can view and download (and any Groups I explicitly share with).</p>
+          - This is a private <%= c_type %> - only I can view and download (and any Groups I explicitly share with).
+			</label></p>
 
     </div>
 		
@@ -90,31 +102,39 @@
 			    get to view and download as well.
 				</p>
 	
-	      <p><input <%= 'checked="checked"' if @updating_mode == 0 %> id="updating_option_7" name="updating[class_id]"
+	      <p><label for="updating_option_7">
+	      	<input <%= 'checked="checked"' if @updating_mode == 0 %> id="updating_option_7" name="updating[class_id]"
 	      value="0" type="radio" onclick="javascript:update_updating(0);" />
 	      - All those who can view AND download (from your View/Download permissions
-	          above).</p>
+	          above).
+				</label></p>
 	      
-	      <p><input <%= 'checked="checked"' if @updating_mode == 1 %> id="updating_option_1" name="updating[class_id]"
+	      <p><label for="updating_option_1">
+	      	<input <%= 'checked="checked"' if @updating_mode == 1 %> id="updating_option_1" name="updating[class_id]"
 	      value="1" type="radio" onclick="javascript:update_updating(1);" />
-	      - All my Friends.</p>
+	      - All my Friends.
+			 </label></p>
 	
-	      <p><input <%= 'checked="checked"' if @updating_mode == 5 %> id="updating_option_5" name="updating[class_id]"
+	      <p><label for="updating_option_5">
+	      	<input <%= 'checked="checked"' if @updating_mode == 5 %> id="updating_option_5" name="updating[class_id]"
 	      value="5" type="radio" onclick="javascript:update_updating(5);" />
-	      - Some of my Friends</p>
+	      - Some of my Friends
+				</label></p>
 	
 	      <div id="updating_somefriends_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em;">
 	        <p>
 	        <% for f in current_user.friends %>
-	          <input <%= 'checked' if (perms.select do |p| (p.contributor_type == 'User' and p.contributor_id == f.id) && @updating_mode == 5 end).length > 0 %>
-	          value="<%= f.id %>" type="checkbox" name="updating_somefriends[<%= f.id %>]"/><%= h(f.name) %><br />
+	          <label for="cb_updating_somefriends_<%= f.id %>"><input <%= 'checked' if (perms.select do |p| (p.contributor_type == 'User' and p.contributor_id == f.id) && @updating_mode == 5 end).length > 0 %>
+	          value="<%= f.id %>" type="checkbox" name="updating_somefriends[<%= f.id %>]" id="cb_updating_somefriends_<%= f.id %>"/><%= h(f.name) %></label><br />
 	        <% end %>
 	        </p>
 	      </div>
 	
-	      <p><input <%= 'checked="checked"' if @updating_mode == 6 %> id="updating_option_6" name="updating[class_id]"
+	      <p><label for="updating_option_6">
+	      	<input <%= 'checked="checked"' if @updating_mode == 6 %> id="updating_option_6" name="updating[class_id]"
 	      value="6" type="radio" onclick="javascript:update_updating(6);" />
-	      - No one else (except for me and any Groups explicitly given update permissions).</p>
+	      - No one else (except for me and any Groups explicitly given update permissions).
+				</label></p>
 			</div>
 		
 		<% end %>
@@ -128,9 +148,11 @@
       <% for n in (current_user.networks + current_user.networks_owned) %>
           <p>
           	<% perm = find_permission_for_contributor(perms, "Network", n.id) if edit -%>
-						<input <%= 'checked' if perm %> style="margin-right: 0.3em;"
-          		value="<%= n.id %>" type="checkbox" name="group_sharing[<%= n.id %>][id]"/>
-						<%= h(n.title) %>
+						<label for="cb_group_sharing_<%= n.id %>">
+							<input <%= 'checked' if perm %> style="margin-right: 0.3em;"
+          		value="<%= n.id %>" type="checkbox" name="group_sharing[<%= n.id %>][id]" id="cb_group_sharing_<%= n.id %>" />
+						  <%= h(n.title) %>
+						</label>
 						<select name="group_sharing[<%= n.id %>][level]" style="font-size: 85%; margin: 0 0.5em;">
 							<option value="0" <%= 'selected="selected"' if perm and perm.level == 0 %>>View only</option>
 							<option value="1" <%= 'selected="selected"' if !edit or !perm or (perm and perm.level == 1) %>>View and Download only</option>
