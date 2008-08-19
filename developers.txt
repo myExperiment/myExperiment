@@ -39,6 +39,10 @@ root> apt-get install make ruby libzlib-ruby rdoc irb rubygems
 root> ruby --version
    * If this is < v1.86 you will need to compile from source using http://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p286.tar.gz.
 
+* Check to see which version of rubygems has installed:
+root> gem -v
+   * This needs to be version 0.9.4 or earlier or ruby-openid gem may not work and you will not be able to log into myExperiment on your server using OpenID.  The myExperiment team is currently working on a fix so that ruby-openid works on myExperiment with later versions of rubygems.
+
 * Install Rails GEM version 1.2.6 
 root> gem install rails --version=1.2.6
 
@@ -46,21 +50,24 @@ root> gem install rails --version=1.2.6
 root> apt-get install libapache2-mod-fcgid libfcgi-ruby1.8 libmysql-ruby ruby1.8-dev build-essential
 
 * MyExperiment requires the RMagick GEM. This can cause some problems on Debian.
-  
-  *  To resolve this first make sure the following Debian packages are uninstalled: 
-  root> apt-get remove --purge librmagick-ruby-doc librmagick-ruby1.8
+   * To resolve this first make sure the following Debian packages are uninstalled: 
+   root> apt-get remove --purge librmagick-ruby-doc librmagick-ruby1.8
+   * Then install the following Debian packages: 
+   root> apt-get install graphicsmagick imagemagick librmagick-ruby1.8 libmagick9-dev
+ 
 
-  *  Then install the following Debian packages: 
-  root> apt-get install graphicsmagick imagemagick librmagick-ruby1.8 libmagick9-dev
-
-* MyExperiment also requires Graphviz because it has dot, whcih is required to draw workflow images:
+* myExperiment also requires Graphviz because it has dot, which is required to draw workflow images:
 root> apt-get install graphviz
 
-* Now all the GEMs required by MyExperiment can be installed: 
+* Now the rest of the GEMs required by MyExperiment can be installed: 
 root> gem install builder cgi_multipart_eof_fix daemons dsl_accessor fastthread gem_plugin hoe json mime-types mongrel mongrel_cluster  
-    needle net-sftp net-ssh openid_login_generator RedCloth rmagick ruby-openid ruby-yadis solr-ruby xml-simple rubyzip libxml-ruby oauth ruby-hmac --include-dependencies
+    needle net-sftp net-ssh openid_login_generator RedCloth ruby-yadis solr-ruby xml-simple rubyzip libxml-ruby oauth ruby-hmac --include-dependencies
     * During this process you may be requested to select one of a set of versions to install, choose the latest version suffixed with "(ruby)"
     * If you have problems install these gems all in one go, try installing them in smaller subsets or one at a time if needs be.
+    * ruby-openid needs version 1.1.4 to work properly so that needs to be installed separately with the following command:
+    root> gem install ruby-openid --version=1.1.4
+    * rmagick needs version 1.15.7 to work properly so also needs to be installed separately with the following command:
+    root> gem install rmagick --version=1.15.7
 
 * OAuth was originally designed for Rails 2 and therefore some of the code in the GEM will not work in Rails 1.2.6.  To fixed this go to GEM_LIBRARY/oauth-0.2.4/lib/oauth/request_proxy/action_controller_request.rb and replace the contents of def request_params with:
     unless @request_parameters
