@@ -35,13 +35,15 @@ As Root user:
 * Use Debian's package installer (i.e. apt-get install) to install the following packages: 
 root> apt-get install make ruby libzlib-ruby rdoc irb rubygems
 
-* Check to see which version of ruby has installed:
-root> ruby --version
-   * If this is < v1.86 you will need to compile from source using http://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p286.tar.gz.
-
 * Check to see which version of rubygems has installed:
 root> gem -v
    * This needs to be version 0.9.4 or earlier or ruby-openid gem may not work and you will not be able to log into myExperiment on your server using OpenID.  The myExperiment team is currently working on a fix so that ruby-openid works on myExperiment with later versions of rubygems.
+   * To install an earlier version than you package manager will install first remove rubygems:
+   root> apt-get remove rubygems
+   * Then you need to get the tgz file from http://rubyforge.org/frs/?group_id=126 and untar it somewhere.  Inside the rubygems directory run the following comamnds:
+   root> ruby setup.rb
+   root> update_rubygems
+   * This should hopefully install the version of rubygems you require. If it does not this may be because you have a rubygems-update gem installed use gem uninstall to remove this and try the above two commands again.
 
 * Install Rails GEM version 1.2.6 
 root> gem install rails --version=1.2.6
@@ -64,10 +66,11 @@ root> gem install builder cgi_multipart_eof_fix daemons dsl_accessor fastthread 
     needle net-sftp net-ssh openid_login_generator RedCloth ruby-yadis solr-ruby xml-simple rubyzip libxml-ruby oauth ruby-hmac --include-dependencies
     * During this process you may be requested to select one of a set of versions to install, choose the latest version suffixed with "(ruby)"
     * If you have problems install these gems all in one go, try installing them in smaller subsets or one at a time if needs be.
-    * ruby-openid needs version 1.1.4 to work properly so that needs to be installed separately with the following command:
+    * ruby-openid needs version 1.1.4 to work properly so that needs to be installed separately with the following command (You may need to gem uninstall version 2.1.2 first):
+    root> gem uninstall ruby-openid --version=2.1.2
     root> gem install ruby-openid --version=1.1.4
-    * rmagick needs version 1.15.7 to work properly so also needs to be installed separately with the following command:
-    root> gem install rmagick --version=1.15.7
+    * rmagick needs version 1.15.14 to work properly so also needs to be installed separately with the following command:
+    root> gem install rmagick --version=1.15.14
 
 * OAuth was originally designed for Rails 2 and therefore some of the code in the GEM will not work in Rails 1.2.6.  To fixed this go to GEM_LIBRARY/oauth-0.2.4/lib/oauth/request_proxy/action_controller_request.rb and replace the contents of def request_params with:
     unless @request_parameters
@@ -94,6 +97,10 @@ root> chown -R username:www-data /var/rails/
 
 * Now the Taverna GEM can be installed by using the following command from /trunk/vendor/gems/taverna/ directory:
 root> gem install taverna-0.5.0.gem
+
+* Before going any further, check to see which version of ruby has been installed:
+root> ruby --version
+   * If this is < v1.86 you will need to compile from source using http://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p286.tar.gz.
 
 * Now load up a mysql shell and create three databases as follows: 
 mysql> create database m2_development;
