@@ -115,13 +115,18 @@ class BlobsController < ApplicationController
           # update policy
           @blob.contribution.update_attributes(params[:contribution])
         
-          update_policy(@blob, params)
+          policy_err_msg = update_policy(@blob, params)
         
           update_credits(@blob, params)
           update_attributions(@blob, params)
         
-          flash[:notice] = 'File was successfully created.'
-          format.html { redirect_to file_url(@blob) }
+          if policy_err_msg.blank?
+            flash[:notice] = 'File was successfully created.'
+            format.html { redirect_to file_url(@blob) }
+          else
+            flash[:notice] = "File was successfully created. However some problems occurred, please see these below.</br></br><span style='color: red;'>" + policy_err_msg + "</span>"
+            format.html { redirect_to :controller => 'blobs', :id => @blob, :action => "edit" }
+          end
         else
           format.html { render :action => "new" }
         end
@@ -150,12 +155,18 @@ class BlobsController < ApplicationController
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
         @blob.refresh_tags(convert_tags_to_gem_format(params[:blob][:tag_list]), current_user) if params[:blob][:tag_list]
-        update_policy(@blob, params)
+        
+        policy_err_msg = update_policy(@blob, params)
         update_credits(@blob, params)
         update_attributions(@blob, params)
         
-        flash[:notice] = 'File was successfully updated.'
-        format.html { redirect_to file_url(@blob) }
+        if policy_err_msg.blank?
+          flash[:notice] = 'File was successfully updated.'
+          format.html { redirect_to file_url(@blob) }
+        else
+          flash[:error] = policy_err_msg
+          format.html { redirect_to :controller => 'blobs', :id => @blob, :action => "edit" }
+        end
       else
         format.html { render :action => "edit" }
       end

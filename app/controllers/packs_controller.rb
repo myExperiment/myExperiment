@@ -78,10 +78,15 @@ class PacksController < ApplicationController
         end
         
         # update policy
-        update_policy(@pack, params)
+        policy_err_msg = update_policy(@pack, params)
         
-        flash[:notice] = 'Pack was successfully created.'
-        format.html { redirect_to pack_url(@pack) }
+        if policy_err_msg.blank?
+          flash[:notice] = 'Pack was successfully created.'
+          format.html { redirect_to pack_url(@pack) }
+        else
+          flash[:notice] = "Pack was successfully created. However some problems occurred, please see these below.</br></br><span style='color: red;'>" + policy_err_msg + "</span>"
+          format.html { redirect_to :controller => 'packs', :id => @pack, :action => "edit" }
+        end
       else
         format.html { render :action => "new" }
       end
@@ -101,10 +106,15 @@ class PacksController < ApplicationController
     respond_to do |format|
       if @pack.update_attributes(params[:pack])
         @pack.refresh_tags(convert_tags_to_gem_format(params[:pack][:tag_list]), current_user) if params[:pack][:tag_list]
-        update_policy(@pack, params)
+        policy_err_msg = update_policy(@pack, params)
         
-        flash[:notice] = 'Pack was successfully updated.'
-        format.html { redirect_to pack_url(@pack) }
+        if policy_err_msg.blank?
+          flash[:notice] = 'Pack was successfully updated.'
+          format.html { redirect_to pack_url(@pack) }
+        else
+          flash[:error] = policy_err_msg
+          format.html { redirect_to :controller => 'packs', :id => @pack, :action => "edit" }
+        end
       else
         format.html { render :action => "edit" }
       end

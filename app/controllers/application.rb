@@ -94,6 +94,10 @@ class ApplicationController < ActionController::Base
 
   def update_policy(contributable, params)
 
+    # this method will return an error message is something goes wrong (empty string in case of success)
+    error_msg = ""
+    
+
     # BEGIN validation and initialisation
     
     return if params[:sharing].nil? or params[:sharing][:class_id].blank?
@@ -138,10 +142,11 @@ class ApplicationController < ActionController::Base
 
     case updating_class
       when "0"
-        edit_protected = true if view_protected == true and download_protected == true
-        edit_public    = true if view_public    == true and download_public    == true
+        edit_protected = true if (view_protected == true && download_protected == true)
+        edit_public    = true if (view_public    == true && download_public    == true)
       when "1"
-        edit_protected = true
+        edit_protected = true      
+      # when "5","6" -> no need for these cases, because both edit flags are false (default values) for these modes
     end
 
     unless contributable.contribution.policy
@@ -181,10 +186,14 @@ class ApplicationController < ActionController::Base
     
     # Now create new User permissions, if required
     if updating_class == "5"
-      params[:updating_somefriends].each do |f|
-        Permission.new(:policy => policy,
-            :contributor => (User.find f[1].to_i),
-            :view => 1, :download => 1, :edit => 1).save
+      if params[:updating_somefriends]
+        params[:updating_somefriends].each do |f|
+          Permission.new(:policy => policy,
+              :contributor => (User.find f[1].to_i),
+              :view => 1, :download => 1, :edit => 1).save
+        end
+      else # none of the 'some of my friends' were selected, error
+        error_msg += "You have selected to set 'update' permissions for 'Some of your Friends', but didn't select any from the list.</br>Update was unsuccessful, please try again."
       end
     end
     
@@ -253,6 +262,8 @@ class ApplicationController < ActionController::Base
     puts "group_sharing  = #{params[:group_sharing]}"
     puts "-------------------------------------------------------------------"
 
+    # returns some message in case of errors (or empty string in case of success)
+    return error_msg
   end
 
   def determine_sharing_mode(contributable)
