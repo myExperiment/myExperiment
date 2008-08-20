@@ -1,6 +1,11 @@
 class RemoveSitealizer < ActiveRecord::Migration
+  def self.table_exists?(name)
+    ActiveRecord::Base.connection.tables.include?(name)
+  
+  end
+
   def self.up
-    drop_table :sitealizer
+    drop_table :sitealizer if self.table_exists?("sitealizer")
   end
 
   def self.down
