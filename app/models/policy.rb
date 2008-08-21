@@ -364,22 +364,47 @@ class Policy < ActiveRecord::Base
   end
   
   # THIS IS THE DEFAULT POLICY (see /app/views/policies/_list_form.rhtml)
-  # IT IS CALLED IN contribution.rb::authorized?
+  # IT IS CALLED IN contribution.rb::authorized? ; application.rb::update_policy()
   def self._default(c_utor, c_ution=nil)
-    rtn = Policy.new(:name => "A default policy",
+    rtn = Policy.new(:name => "A default policy",  # "anyone can view and download and no one else can edit"
                      :contributor => c_utor,
-                     :view_public => false,        # anonymous can't view
-                     :download_public => false,    # anonymous can't download
+                     :view_public => true,         # anonymous can view
+                     :download_public => true,     # anonymous can download
                      :edit_public => false,        # anonymous can't edit
                      :view_protected => true,      # friends can view
                      :download_protected => true,  # friends can download
-                     :edit_protected => false,
-                     :share_mode => 3,
-                     :update_mode => 6)     # friends can't edit
+                     :edit_protected => false,     # friends can't edit
+                     :share_mode => 0,
+                     :update_mode => 6)     
                      
     c_ution.policy = rtn unless c_ution.nil?
     
     return rtn
+  end
+  
+  
+  # Copies all the values from 'other' to self
+  def copy_values_from(other)
+    self.name = other.name
+    self.contributor = other.contributor
+    self.view_public = other.view_public
+    self.download_public = other.download_public
+    self.edit_public = other.edit_public
+    self.view_protected = other.view_protected
+    self.download_protected = other.download_protected
+    self.edit_protected = other.edit_protected
+    self.share_mode = other.share_mode
+    self.update_mode = other.update_mode
+  end
+  
+  
+  # Deletes all User permissions - used in application.rb::update_policy()
+  def delete_all_user_permissions
+    self.permissions.each do |p|
+      if p.contributor_type == 'User'
+        p.destroy
+      end
+    end
   end
   
 private
