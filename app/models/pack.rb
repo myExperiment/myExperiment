@@ -107,18 +107,32 @@ class Pack < ActiveRecord::Base
         
         case item_entry.contributable_type.downcase
           when "workflow"
-            # TODO : find a workflow with the RIGHT VERSION; now gets latest version, but displays
-            # 'version' attribute from contributable_entries table; latest is NULL
+            # if 'contributable_version' in pack entry says 'NULL' - means the latest version that is available;
+            # otherwise choose a version specified by 'contributable_version'
             item = Workflow.find(item_entry.contributable_id)
-            zipfile.get_output_stream( item.unique_name + ".xml" ) { |stream| stream.write(item.content_blob.data)}
-            zip_filenames << item.unique_name + ".xml" 
+            wf_version = (item_entry.contributable_version ? item_entry.contributable_version : item.current_version)
+            
+            # if the required version of workflow is not the latest, then need to update 'item' object to
+            # point to the correct version of this workflow
+            if wf_version != item.versions.length
+              item = item.find_version(wf_version)
+            end
+            
+            # 'item' now points to the right version of workflow -> add its data to ZIP;
+            # (just checking that that version was really found)
+            if item
+              zipfile.get_output_stream( item.unique_name + ".xml" ) { |stream| stream.write(item.content_blob.data)}
+              zip_filenames << item.unique_name + ".xml" 
+            end
 
+            # TODO: to add a check if the right version was actually found - and display smth if not
+            
             pack_items_internal += "+ Workflow: #{item.title} (#{item.unique_name + ".xml"})\n"
-            pack_items_internal += "  Version: #{item_entry.contributable_version ? item_entry.contributable_version : item.current_version} (created on: #{item.created_at.strftime("%d/%m/%Y")}, last updated on: #{item.updated_at.strftime("%d/%m/%Y")})\n"
+            pack_items_internal += "  Version: #{wf_version} (created on: #{item.created_at.strftime("%d/%m/%Y")}, last updated on: #{item.updated_at.strftime("%d/%m/%Y")})\n"
             
             html_items_internal += cgi.li{ 
               "<b>Workflow: </b>" + cgi.a("./" + item.unique_name + ".xml"){item.title} + "<br/>" +
-              "Version: #{item_entry.contributable_version ? item_entry.contributable_version : item.current_version} (created on: #{item.created_at.strftime("%d/%m/%Y")}, last updated on: #{item.updated_at.strftime("%d/%m/%Y")})<br/>" +
+              "Version: #{wf_version} (created on: #{item.created_at.strftime("%d/%m/%Y")}, last updated on: #{item.updated_at.strftime("%d/%m/%Y")})<br/>" +
               created_by_string(item.contributor_type, item.contributor_id) + "<br/>" +
               item_comment_string(item_entry, true) + "<br/><br/>"
             }
