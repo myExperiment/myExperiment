@@ -72,15 +72,39 @@
 		<div class="contribution_version_inner_box">
 			<h4>
 				<%= feed_icon_tag "RSS feed for items in this pack", formatted_items_pack_path(@pack, :rss), "float: right;" %>
+				<% if @authorised_to_download %>
+				  <%= download_icon_tag "Download all items in the pack as a single .zip archive", download_pack_path(@pack), "float: right; margin-right: 0.5em;" -%>
+				<% end %>
+				
 				<%= info_icon_with_tooltip("This section shows all the items that are pointed to in this pack. This can be a combination of internal and external items.") -%>
 				Items <span class="count_text">(<%= @pack.items_count -%>)</span>
 			</h4>
 			
 			<%= render :partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } -%>
 			
+			<br/><br/>
+			<h3>
+				<%= info_icon_with_tooltip("This section provides a link to download all items in this pack as a single .zip archive") %>
+				Download
+			</h3>
+			
+			<% if @authorised_to_download %>
+				<ul class="sectionIcons">
+					<li style="margin-left: 0;"><%= icon('pack', download_pack_path(@pack), "Download Pack Items as Single ZIP Archive", nil, "Download Pack Items (ZIP archive)") %></li>
+				</ul>
+			<% else %>
+				<p class="none_text">
+					You do not have permissions to download
+				</p>
+			<% end %>
+			
+  			<br/>
+			
 			<% if @authorised_to_edit -%>
-				<br/><br/>
-				<h3>Add an Item</h3>
+				<h3>
+					<%= info_icon_with_tooltip("This section provides various ways of adding items to this pack") %>
+					Add an Item
+				</h3>
 				<a name="add_item"></a>
 				<%= render :partial => "add_item", :locals => { :pack => @pack } -%>
 			<% end -%>
