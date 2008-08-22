@@ -39,3 +39,32 @@ admin:
   last_seen_at: 2007-05-01 06:56:26
   created_at: 2007-05-01 06:56:26
   updated_at: 2007-05-01 06:56:26
+
+spare_user:
+  id: 4
+  openid_url:
+  name: S P User
+  username: spare_user
+  salt: <%= SALT %>
+  crypted_password: <%= User.encrypt('secret', SALT) %>
+  email: user@example.com
+  email_confirmed_at: 2007-05-01 06:56:26
+  activated_at: 2007-05-01 06:56:26
+  last_seen_at: 2007-05-01 06:56:26
+  created_at: 2007-05-01 06:56:26
+  updated_at: 2007-05-01 06:56:26
+
+johns_friend:
+  id: 5
+  openid_url:
+  name: F Reind
+  username: friend
+  salt: <%= SALT %>
+  crypted_password: <%= User.encrypt('secret', SALT) %>
+  email: user@example.com
+  email_confirmed_at: 2007-05-01 06:56:26
+  activated_at: 2007-05-01 06:56:26
+  last_seen_at: 2007-05-01 06:56:26
+  created_at: 2007-05-01 06:56:26
+  updated_at: 2007-05-01 06:56:26
+

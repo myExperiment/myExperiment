@@ -70,3 +70,52 @@ contribution_pack_2:
   updated_at: 2008-08-12 23:53:46
   downloads_count: 0
   viewings_count: 0
+
+contribution_test_true_policy:
+  id: 7
+  contributor_id: 1
+  contributor_type: User
+  contributable_id: 3
+  contributable_type: Blob
+  policy_id: 3
+  created_at: 2007-08-07 23:53:46
+  updated_at: 2007-08-07 23:53:46
+  downloads_count: 1
+  viewings_count: 1
+
+contribution_test_false_policy:
+  id: 8
+  contributor_id: 1
+  contributor_type: User
+  contributable_id: 4
+  contributable_type: Blob
+  policy_id: 4
+  created_at: 2007-08-07 23:53:46
+  updated_at: 2007-08-07 23:53:46
+  downloads_count: 1
+  viewings_count: 1
+
+contribution_test_protected_policy:
+  id: 9
+  contributor_id: 1
+  contributor_type: User
+  contributable_id: 5
+  contributable_type: Blob
+  policy_id: 5
+  created_at: 2007-08-07 23:53:46
+  updated_at: 2007-08-07 23:53:46
+  downloads_count: 1
+  viewings_count: 1
+
+contribution_test_public_policy:
+  id: 10
+  contributor_id: 1
+  contributor_type: User
+  contributable_id: 6
+  contributable_type: Blob
+  policy_id: 6
+  created_at: 2007-08-07 23:53:46
+  updated_at: 2007-08-07 23:53:46
+  downloads_count: 1
+  viewings_count: 1
+

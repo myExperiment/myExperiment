@@ -14,3 +14,12 @@ john_another_network:
   created_at: 2008-03-30 17:28:56
   user_established_at: 2008-03-30 17:28:56
   network_established_at: 2008-03-30 17:28:56
+
+spare_user_dilbert_network:
+  id: 3
+  user_id: 4
+  network_id: 1
+  created_at: 2008-03-30 14:08:56
+  user_established_at: 2008-03-30 14:08:56
+  network_established_at: 2008-03-30 14:08:56
+
