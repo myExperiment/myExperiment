@@ -258,9 +258,15 @@ li {
 #hlist li {
 	list-style: none;
 	margin: 0.2em;
-	display: inline;
-	float: left;
+	display: -moz-inline-box; /* firefox pre v3 */
+	display: inline-block;
+	vertical-align: top;
 	margin-left: 0.5em;
+}
+
+#hlist li {
+	#display: inline; /* ie7 */
+	_display: inline; /* ie4 ie5 ie6 */
 }
 
 .framed {
