@@ -10,7 +10,7 @@
 							     :loading => "Element.show('spinner')",
                    :complete => "Element.hide('spinner'); $('uri2').value = $('uri').value") do -%>
 
-	<p class="step_text" style="text-align: center;">1. Type or paste in a link to something (on myExperiment or elsewhere) and (optionally) check it...</p>
+	<p class="step_text">1. Type or paste in a link to something (on myExperiment or elsewhere) and (optionally) check it...</p>
 	
 	<center>
 		<div class="box_form" style="width: 550px; text-align: center;">
@@ -33,7 +33,7 @@
 <% form_tag create_item_pack_url(@pack) do -%>
 	<input id="uri2" type="hidden" name="uri" value="<%= params[:uri] || '' -%>"/>
 	
-	<p class="step_text" style="text-align: center;">
+	<p class="step_text">
 		<b>2. Add a comment (optional)...</b> 
 		<%= info_icon_with_tooltip("You can add a comment to say why you have added this item to this pack, or to say anything else.") -%>
 	</p>
@@ -46,9 +46,8 @@
 	
 	<br/>
 	
-	<p class="step_text" style="text-align: center;">
+	<p class="step_text">
 		3. Now add the item...
-		<br/>
 	</p>
 	
 	<center>

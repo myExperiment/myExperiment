@@ -224,6 +224,7 @@ class WorkflowsController < ApplicationController
 
   # GET /workflows/1;new_version
   def new_version
+    @new_workflow = Workflow.new
   end
 
   # GET /workflows/1;edit

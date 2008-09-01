@@ -1,39 +1,54 @@
 <% t "Upload New Version" -%>
 
+<%= javascript_include_tag :fckeditor %>
+
 <h1>Upload New Version of Workflow: <%= contributable @workflow.id, "Workflow" %></h1>
 
 <%= error_messages_for :workflow %>
 
-<br/>
+<% form_tag(create_version_workflow_url(@workflow), :multipart => true, :method => :post) do %>
 
-<% form_tag("/workflows/#{@workflow.id};create_version", :multipart => true, :method => :post) do %>
+	<!-- Workflow File -->
+	
+	<p class="step_text">1. Workflow file/script</p>
 
-  <div>
-    <p>
-      <center>
-				<strong>New Workflow File:</strong>
-	      <input id="workflow_scufl" name="workflow[scufl]" size="45" type="file"/>
-			</center>
-    </p>
-		
-		<br/>
-		
-		<p>
-			<center>
-				<b>Revision comments: </b><br/>
-			</center>
-		</p>
-		<%= allowed_html_text('center') %>
-		<p>
-			<center>
-				<textarea id="workflow_revision_comments" name="comments" rows="10" cols="60"></textarea>
-			</center>
-		</p>
-  </div>
-
+	<center>
+	  <div class="box_form" style="width: 450px; text-align: center;">
+			<p style="text-align: center;">
+	  		<input id="workflow_scufl" name="workflow[scufl]" size="50" type="file"/>
+			</p>
+	  </div>
+	</center>
+  
   <br />
+	
+	<!-- Main metadata -->
+	
+	<p class="step_text">2. Main metadata</p>
+  
+	<%= render :partial => "main_metadata_form" -%>
+	
+	<br/>
+	
+	<!-- Revision comments -->
+	
+	<p class="step_text">3. Revision comments</p>
+	
+	<center>
+	  <div class="box_form" style="width: 450px; text-align: center;">
+			<%= fckeditor_textarea(:new_workflow, "comments", :toolbarSet => 'Basic', :width => '430px', :height => '300px') %>
+		</div>
+	</center>
+	
+	<br/>
 
-  <center><%= submit_tag "Upload", :disable_with => "Uploading..." %></center>
+  <!-- Upload and save -->
+	
+	<p class="step_text">5. Upload and save</p>
+
+  <p style="text-align: center;">
+    <%= submit_tag "Upload and Save", :disable_with => "Uploading and saving..." %>
+  </p>
 
 <% end %>
 
