@@ -30,12 +30,12 @@ module IsAuthorized
 
     # check if current user owns contributable
     if user_id != 0
-      is_authorized = is_owner? contributable_id, contributable_type, user_id
+      is_authorized = is_owner?(contributable_id, contributable_type, user_id)
     end
 
     # if current user is not owner then check policy to determine if user is authorized
     if !is_authorized
-      is_authorized = check_policy 'view', contributable_id, contributable_type, user_id
+      is_authorized = check_policy('view', contributable_id, contributable_type, user_id)
     end
 
     is_authorized
@@ -53,12 +53,12 @@ module IsAuthorized
 
     # check if current user owns contributable
     if user_id != 0
-      is_authorized = is_owner? contributable_id, contributable_type, user_id
+      is_authorized = is_owner?(contributable_id, contributable_type, user_id)
     end
 
     # if current user is not owner then check policy to determine if user is authorized
     if !is_authorized
-      is_authorized = check_policy 'edit', contributable_id, contributable_type, user_id
+      is_authorized = check_policy('edit', contributable_id, contributable_type, user_id)
     end
 
     is_authorized
@@ -76,12 +76,12 @@ module IsAuthorized
 
     # check if current user owns contributable
     if user_id != 0
-      is_authorized = is_owner? contributable_id, contributable_type, user_id
+      is_authorized = is_owner?(contributable_id, contributable_type, user_id)
     end
 
     # if current user is not owner then check policy to determine if user is authorized
     if !is_authorized
-      is_authorized = check_policy 'download', contributable_id, contributable_type, user_id
+      is_authorized = check_policy('download', contributable_id, contributable_type, user_id)
     end
     
     is_authorized
@@ -93,11 +93,13 @@ module IsAuthorized
 
     # current user can destroy contribution if they own it
     if !user.nil? && user.kind_of?(User)
-      is_authorized = is_owner? contributable_id, contributable_type, user.id
+      is_authorized = is_owner?(contributable_id, contributable_type, user.id)
     end
 
     is_authorized
   end
+
+  private
 
   # check if current user is owner of contribution
   def is_owner?(contributable_id, contributable_type, user_id)
@@ -117,38 +119,54 @@ module IsAuthorized
   # check whether current user is authorized for 'action' on 'contributable_*'
   def check_policy(action, contributable_id, contributable_type, user_id)
     is_authorized = false
-    select_string = 'policies.id,policies.contributor_id,policies.contributor_type'
-    # set strings based on which fields we are interested in
-    public_string = action + '_public'
-    #friends_string = action + '_friends'
-    friends_string = action + '_protected'
-    #groups_string = action + '_groups'
-    groups_string = action + '_protected'
-
     # get relevant part of policy from database
-    select_string = select_string + ",policies.#{public_string},policies.#{friends_string},policies.#{groups_string}"
-    get_policy select_string, contributable_id, contributable_type
-      
-    # if 'view/edit/download_public' then everyone is authorized
-    if @policy_details[0]["#{public_string}"]
-      is_authorized = true
+    select_string = 'policies.id,policies.contributor_id,policies.contributor_type,policies.share_mode,policies.update_mode'
+    policy_details = get_policy(select_string, contributable_id, contributable_type)
+    
+    # if there is no policy, only true if user owns contributable
+    if policy_details.length == 0
+      return is_owner?(contributable_id, contributable_type, user_id)
     end
 
-    # if 'view/edit/download_friends' and user is looged in, then determine whether current user is a friend
-    if !is_authorized && @policy_details[0]["#{friends_string}"] && user_id != 0
-      is_authorized = is_friend? @policy_details[0]['contributor_id'], user_id # are all contributions owned by users?
+    ####################################################################################
+    #
+    # For details on what each sharing mode means, see there wiki here:
+    # http://wiki.myexperiment.org/index.php/Developer:Ownership_Sharing_and_Permissions
+    #
+    ####################################################################################
+    share_mode = policy_details[0]['share_mode'].to_i
+    update_mode = policy_details[0]['update_mode'].to_i
+
+    case action
+    when 'view'
+      # if share mode is 0,1,2, anyone can view
+      if share_mode == 0 || share_mode == 1 || share_mode == 2
+        is_authorized = true
+      # if share mode is 3,4, friends can view, or if update mode is 1, friends can view (due to cascading permissions)
+      elsif !is_authorized && user_id != 0 && (share_mode == 3 || share_mode == 4 || update_mode == 1)
+        is_authorized = is_friend?(policy_details[0]['contributor_id'], user_id)
+      end
+    when 'download'
+      # if share mode is 0, anyone can download
+      if share_mode == 0
+        is_authorized = true
+      # if share mode is 1,3, friends can download, or if update mode is 1, friends can download (due to cascading permissions)
+      elsif !is_authorized && user_id != 0 && (share_mode == 1 || share_mode == 3 || update_mode == 1)
+        is_authorized = is_friend?(policy_details[0]['contributor_id'], user_id)
+      end
+    when 'edit'
+      # if update mode is 0, anyone with view & download permissions can edit (sharing mode 0 for anonymous)
+      if update_mode == 0 && share_mode == 0
+        is_authorized == true
+      # if update mode is 1, friends can edit, or if update mode is 0 and friends have view & download permissions, they can edit
+      elsif update_mode == 1 || (update_mode == 0 && (share_mode == 0 || share_mode == 1 || share_mode == 3))
+        is_authorized = is_friend?(policy_details[0]['contributor_id'], user_id)
+      end
     end
 
-    # if 'view/edit/download_groups' and user is logged in, determine whether owner and current_user share a group
-    # possible won't be used if group access done through permissions
-    if !is_authorized && @policy_details[0]["#{groups_string}"] && user_id != 0
-      is_authorized = is_member_of_same_group? @policy_details[0]['contributor_id'], user_id # are all contributions owned by users?
-    end
-
-    # if none of the above but user is logged in, check permissions for the policy to determine if current_user has special permisssions
-    # of if a group current_user belongs to has special permissions
+    # if user not yet authorized, check permissions belonging to the policy
     if !is_authorized && user_id != 0
-      is_authorized = check_permissions @policy_details[0]['id'], action, user_id
+      is_authorized = check_permissions(policy_details[0]['id'], action, user_id)
     end
 
     # return is_authorized
@@ -156,17 +174,17 @@ module IsAuthorized
   end
 
   def check_permissions(policy_id, action, user_id)
-    get_permissions policy_id
+    permissions_details = get_permissions(policy_id)
 
     # check permissions records for matching policy_id and current_user.id and decide if authorized
-    @permissions_details.each do |permission|
+    permissions_details.each do |permission|
       if permission['contributor_id'] == user_id && permission['contributor_type'] == 'User' && permission["#{action}"]
         return true
       end
     end
 
     # or check for matching policy_id and a group.id then check if current_user is member of group.id
-    @permissions_details.each do |permission|
+    permissions_details.each do |permission|
       if permission['contributor_type'] == 'Network' && permission["#{action}"]
         if is_member_of_group? user_id, permission['contributor_id']
           return true
@@ -185,31 +203,6 @@ module IsAuthorized
     else
       return false
     end
-  end
-
-  def is_member_of_same_group?(contributor_id, user_id)
-    # determine if owner and current_user share a group
-    # unless not all groups get access and it is done through permissions instead
-
-    # check all groups that contributor_id is a member of
-    contributor_memberships = Membership.find_by_sql "SELECT network_id FROM memberships WHERE user_id=#{contributor_id}"
-
-    contributor_memberships.each do |network|
-      if is_member_of_group? user_id, network['network_id']
-        return true
-      end
-    end
-
-    # check all groups that contributor_id owns
-    contributor_networks = Network.find_by_sql "SELECT id FROM networks WHERE user_id=#{contributor_id}"
-
-    contributor_networks.each do |network|
-      if is_member_of_group? user_id, network['id']
-        return true
-      end
-    end
-
-    false
   end
 
   def is_member_of_group?(user_id, network_id)
@@ -231,13 +224,13 @@ module IsAuthorized
 
   # query database for relevant fields in policies table
   def get_policy(select_string, contributable_id, contributable_type)
-    @policy_details = Policy.find_by_sql "SELECT #{select_string} FROM contributions,policies WHERE contributions.policy_id=policies.id AND contributions.contributable_id=#{contributable_id} AND contributions.contributable_type=\'#{contributable_type}\'"
+    Policy.find_by_sql "SELECT #{select_string} FROM contributions,policies WHERE contributions.policy_id=policies.id AND contributions.contributable_id=#{contributable_id} AND contributions.contributable_type=\'#{contributable_type}\'"
   end
 
   # get all permissions related to policy
   def get_permissions(policy_id)
     select_string = 'contributor_id,contributor_type,download,edit,view'
-    @permissions_details = Permission.find_by_sql "SELECT #{select_string} FROM permissions WHERE policy_id=#{policy_id}"
+    Permission.find_by_sql "SELECT #{select_string} FROM permissions WHERE policy_id=#{policy_id}"
   end
 
 end
