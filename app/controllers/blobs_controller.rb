@@ -238,7 +238,7 @@ class BlobsController < ApplicationController
   
   # POST /files/1;tag
   def tag
-    files.tags_user_id = current_user # acts_as_taggable_redux
+    @blob.tags_user_id = current_user # acts_as_taggable_redux
     @blob.tag_list = "#{@blob.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @blob.update_tags # hack to get around acts_as_versioned
     
