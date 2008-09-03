@@ -88,7 +88,7 @@ protected
       if workflow.authorized?((["index", "show"].include?(action_name) ? "show" : "edit"), (logged_in? ? current_user : nil))
         @workflow = workflow
         
-        # remove scufl from workflow if the user is not authorized for download
+        # remove workflow data from workflow if the user is not authorized for download
         @workflow.content_blob.data = nil unless @workflow.authorized?("download", (logged_in? ? current_user : nil))
       else
         if logged_in?

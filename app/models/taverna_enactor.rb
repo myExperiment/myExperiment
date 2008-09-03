@@ -80,17 +80,17 @@ class TavernaEnactor < ActiveRecord::Base
         workflow = Workflow.find_version(runnable_id, runnable_version)
         
         if workflow
-          r.workflow_uri = service_client.upload_workflow(workflow.scufl)
+          r.workflow_uri = service_client.upload_workflow(workflow.content_blob.data)
           r.save
         else
           return nil
         end
       end
     else
-      workflow = workflow = Workflow.find_version(runnable_id, runnable_version)
+      workflow = Workflow.find_version(runnable_id, runnable_version)
       
       if workflow
-        workflow_uri = service_client.upload_workflow(workflow.scufl)
+        workflow_uri = service_client.upload_workflow(workflow.content_blob.data)
         r = RemoteWorkflow.create(:workflow_id => runnable_id,
                                   :workflow_version => runnable_version,
                                   :taverna_enactor_id => self.id,
