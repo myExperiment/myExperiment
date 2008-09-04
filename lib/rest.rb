@@ -183,7 +183,7 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
         el = XML::Node.new(model_data['REST Attribute'][i])
 
         attrs.each do |key,value|
-          el[key] = value
+          el[key] = value if value
         end
 
         el << text
