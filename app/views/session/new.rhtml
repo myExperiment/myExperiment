@@ -10,6 +10,15 @@
 			<%= render :partial => "gadgets/sign_in" %>
 		</div>
 	</center>
-        <script language="javascript">document.getElementById('session[username]').focus();
+        <script language="javascript">
+          function focusUsername() {
+            document.getElementById('session[username]').focus();
+          }
+
+          if (window.addEventListener){
+            window.addEventListener('load', focusUsername, false); 
+          } else if (window.attachEvent){
+            window.attachEvent('onload', focusUsername);
+          }
         </script>
 <% end %>
