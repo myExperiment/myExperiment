@@ -11,7 +11,7 @@
 		
 		<link href="/announcements.rss" rel="alternate" type="application/rss+xml" title="myExperiment.org - Site Announcements" />
   </head>
-  <body>
+  <body onload="init()">
 		<div id="doc2">
       <div id="hd" class="frontpage_header">
         <img alt="Logo" src="images/logo.png" class="logo"/>
@@ -290,11 +290,12 @@
 				</p>
       </div>
 			
-      <script language="javascript">document.getElementById('session[username]').focus();
-      </script>
+		</div>
 
       <script language="javascript">
 
+function loadAnnoucements()
+{
         div = document.getElementById('announcements')
         div.updated = false;
         div.innerHTML = '<li>Loading announcements...</li>';
@@ -326,9 +327,13 @@
         }
 
         xhr.send(null);
+}
 
+function init()
+{
+	document.getElementById('session[username]').focus();
+	loadAnnoucements();
+}
       </script>
-
-		</div>
 	</body>
 </html>
