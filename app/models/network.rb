@@ -242,7 +242,10 @@ class Network < ActiveRecord::Base
   
   # Finds all the contributables that have been explicitly shared via Permissions
   def shared_contributables
-    shared_contributions.map do |c| c.contributable end
+    c = shared_contributions.map do |c| c.contributable end
+
+    # filter out forums and blogs until they've gone completely
+    c.select do |x| x.class != Blog and x.class != Forum end
   end
 
 protected
