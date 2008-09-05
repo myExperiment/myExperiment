@@ -79,12 +79,12 @@ class Policy < ActiveRecord::Base
     end
 
     # DEBUG
-    puts "counts of permissions for:"
-    puts "all permissions= #{perms_exist ? perms.length : 'nil'}"
-    puts "my_networks    = #{my_networks.length}"
-    puts "other_networks = #{other_networks.length}"
-    puts "my_friends     = #{my_friends.length}"
-    puts "other_users    = #{other_users.length}"
+    # puts "counts of permissions for:"
+    # puts "all permissions= #{perms_exist ? perms.length : 'nil'}"
+    # puts "my_networks    = #{my_networks.length}"
+    # puts "other_networks = #{other_networks.length}"
+    # puts "my_friends     = #{my_friends.length}"
+    # puts "other_users    = #{other_users.length}"
     # END OF DEBUG
 
     
@@ -169,156 +169,6 @@ class Policy < ActiveRecord::Base
       # return false unless correct policy for contribution
       return false unless c_ution.policy.id.to_i == id.to_i
     end
-    
-    # ====== Pre validation and self fixing code for Policy object ======
-    #    
-    # IMPORTANT NOTE: If changes are made to the Ownership, Sharing and Permissions (OSP) model then 
-    # this bit of code should either be updated or disabled. Or alternatively transferred to a script 
-    # that goes through all 
-    #
-    # Due to many changes throughout the lifetime of the OSP model, 
-    # some data inconsistency has been introduced (and has the potential to occur in future).
-    # 
-    # More specifically, due to the use of the bit fields:
-    # - view_public
-    # - view_protected
-    # - download_public
-    # - download_protected
-    # - edit_public
-    # - edit_protected
-    # ... AND the use of the (newer) 'share_mode' and 'update_mode' fields. 
-    #
-    # The latter were introduced to carry out the mapping between the pre canned options in the UI,
-    # and the underlying model.
-    #
-    # Therefore there are essentially 2 parts of the model that need to be in sync for OSP to work properly!
-    #
-    # So the following code attempts to validate the two models and fix them if any inconsistency is detected...
-
-    # For each of the two main areas of OSP - sharing and updating (corresponding to the two 'mode' fields), do the following: 
-    # - Check that the newer 'mode' field is present. If not, set it according to the values present in the bit fields.
-    # - If the 'mode' field is present then check that the bit fields all match up. If not, set them accordingly.
-    
-    # NOTE(1): see \app\helpers\application_helper.rb > sharing_mode_text(..) method for the exact mapping.
-
-    # NOTE(2): it was decided to make this code more 'live' than putting it in a script, so that it can continually attempt to fix 
-    # issues in current data AND in any new data. Although, the potential risk that this causes is quite high. 
-
-    # Sharing:
-    
-    if (self.share_mode.nil?)
-      # Note: some of the checks here do not take into account all the view and download bit fields because a dependency chain is assumed 
-      # (ie: if public can download then friends MUST be able to download, even if the relevant bit field is set to false. 
-      # In which case the bit fields will be in an inconsistent state, but should be fixed in the next run of this validation and self fix code).
-      if (self.view_public && self.download_public)
-        self.share_mode = 0
-      elsif (self.view_public && !self.download_public && self.download_protected)
-        self.share_mode = 1
-      elsif (self.view_public && !self.download_public && !self.download_protected)
-        self.share_mode = 2
-      elsif (!self.view_public && !self.download_public && self.view_protected && self.download_protected)
-        self.share_mode = 3
-      elsif (!self.view_public && !self.download_public && self.view_protected && !self.download_protected)
-        self.share_mode = 4
-      else
-        self.share_mode = 7
-      end
-      
-      self.save
-    else
-      # Check if an inconsistency exists
-      has_inconsistency = false
-      case self.share_mode
-        when 0
-          has_inconsistency = true unless (self.view_public && self.download_public && self.view_protected && self.download_protected)
-        when 1
-          has_inconsistency = true unless (self.view_public && !self.download_public && self.view_protected && self.download_protected)
-        when 2
-          has_inconsistency = true unless (self.view_public && !self.download_public && self.view_protected && !self.download_protected)
-        when 3
-          has_inconsistency = true unless (!self.view_public && !self.download_public && self.view_protected && self.download_protected)
-        when 4
-          has_inconsistency = true unless (!self.view_public && !self.download_public && self.view_protected && !self.download_protected)
-        when 5, 6, 7
-          has_inconsistency = true unless (!self.view_public && !self.download_public && !self.view_protected && !self.download_protected)
-      end
-      
-      if has_inconsistency
-        # Fix!
-        case self.share_mode
-          when 0
-            self.view_public = true
-            self.download_public = true
-            self.view_protected = true 
-            self.download_protected = true
-          when 1
-            self.view_public = true
-            self.download_public = false
-            self.view_protected = true 
-            self.download_protected = true
-          when 2
-            self.view_public = true
-            self.download_public = false
-            self.view_protected = true 
-            self.download_protected = false
-          when 3
-            self.view_public = false
-            self.download_public = false
-            self.view_protected = true 
-            self.download_protected = true
-          when 4
-            self.view_public = false
-            self.download_public = false
-            self.view_protected = true 
-            self.download_protected = false
-          when 5, 6, 7
-            self.view_public = false
-            self.download_public = false
-            self.view_protected = false 
-            self.download_protected = false
-        end
-        
-        self.save
-      end
-    end
-    
-    # Updating:
-
-    if (self.update_mode.nil?)
-      self.update_mode = self.determine_update_mode(c_ution)
-      self.save if self.update_mode
-    else
-      # Check if an inconsistency exists
-      has_inconsistency = false
-      case self.update_mode
-        when 0
-          has_inconsistency = true if (self.edit_public != (self.view_public && self.download_public))
-          has_inconsistency = true if (self.edit_protected != (self.view_protected && self.download_protected))
-        when 1
-          has_inconsistency = true if (self.edit_public || !self.edit_protected)
-        when 2, 3, 4, 5, 6, 7
-          has_inconsistency = true unless (!self.edit_public && !self.edit_protected)
-      end
-      
-      if has_inconsistency
-        # Fix!
-        case self.update_mode
-          when 0
-            self.edit_protected = (self.view_protected && self.download_protected)
-            self.edit_public    = (self.view_public    && self.download_public)
-          when 1
-            self.edit_protected = true
-            self.edit_public = false
-          when 2, 3, 4, 5, 6, 7
-            self.edit_protected = false
-            self.edit_public    = false
-        end
-        
-        self.save
-      end
-    end
-    
-    # =======
     
     # ======= Authorization logic continues... ======
     

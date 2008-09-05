@@ -146,10 +146,10 @@ class ApplicationController < ActionController::Base
 
     case updating_class
       when "0"
-        edit_protected = true if (view_protected == true && download_protected == true)
-        edit_public    = true if (view_public    == true && download_public    == true)
+        edit_protected = 1 if (view_protected == 1 && download_protected == 1)
+        edit_public    = 1 if (view_public    == 1 && download_public    == 1)
       when "1"
-        edit_protected = true      
+        edit_protected = 1      
       # when "5","6" -> no need for these cases, because both edit flags are false (default values) for these modes
     end
 
