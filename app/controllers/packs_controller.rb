@@ -55,7 +55,7 @@ class PacksController < ApplicationController
     # so ultimately there's just one copy of a zip archive per pack
     # (this also makes sure that changes to the pack are reflected in the
     # zip, because it is generated on the fly every time) 
-    @pack.create_zip
+    @pack.create_zip(current_user)
     
     send_file @pack.archive_file_path, :disposition => 'attachment'
   end

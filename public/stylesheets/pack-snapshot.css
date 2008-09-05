@@ -1,0 +1,67 @@
+/* CUSTOM STYLE CLASSES */
+
+.provider_info {
+	
+}
+
+/* "pack_metadata" includes "pack_details" & "pack_description" */
+.pack_metadata {
+	
+}
+
+.pack_details {
+	
+}
+
+.pack_description {
+	
+}
+
+/* "pack_items" include "pack_items_internal" & "pack_items_external" */
+.pack_items {
+	
+}
+
+/* "pack_items_internal" consist of "workflow_item", "file_item", "pack_item" subsections */
+.pack_items_internal {
+	
+}
+
+.workflow_item {
+	
+}
+
+.file_item {
+	
+}
+
+.pack_item {
+	
+}
+
+/* "pack_items_external" contain just "external_item" elements */
+.pack_items_external {
+	
+}
+
+.external_item {
+	
+}
+
+
+/* "item_data" and "item_metadata" apply to all of the following: workflows, files, packs & external items */
+.item_data {
+	
+}
+
+.item_metadata {
+	border-left: 3px solid #CCCCCC;
+	padding-left: 0.6em;
+	margin: 0.3em 0;
+}
+
+
+/* CUSTOM STYLE SETTINGS FOR HTML ELEMENTS */
+li {
+	margin-bottom: 1.5em;
+}
