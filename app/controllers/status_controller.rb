@@ -15,6 +15,7 @@ class StatusController < ApplicationController
     @render_string += "Groups: " + count_groups.to_s + ": " + @time_taken.to_s + "\n"
     @render_string += "Workflows: " + count_workflows.to_s + ": " + @time_taken.to_s + "\n"
     @render_string += "Files: " + count_files.to_s + ": " + @time_taken.to_s + "\n"
+    @render_string += "Packs: " + count_packs.to_s + ": " + @time_taken.to_s + "\n"
     render(:text => @render_string)
   end
 
@@ -50,6 +51,13 @@ class StatusController < ApplicationController
   def count_files
     @start_time = Time.now.to_f
     @count = Blob.count
+    @time_taken = "%5.5f" % (Time.now.to_f - @start_time)
+    @count
+  end
+
+  def count_packs
+    @start_time = Time.now.to_f
+    @count = Pack.count
     @time_taken = "%5.5f" % (Time.now.to_f - @start_time)
     @count
   end
