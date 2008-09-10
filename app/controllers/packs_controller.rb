@@ -4,7 +4,7 @@
 # See license.txt for details.
 
 class PacksController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :all, :search, :items]
+  before_filter :login_required, :except => [:index, :show, :all, :search, :items, :download]
   
   before_filter :find_packs, :only => [:all]
   before_filter :find_pack_auth, :except => [:index, :new, :create, :all, :search]

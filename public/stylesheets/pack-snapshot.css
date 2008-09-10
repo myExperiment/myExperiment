@@ -1,8 +1,11 @@
-/* CUSTOM STYLE CLASSES */
+/* CUSTOM PACK SNAPSHOT SECTION CLASSES */
 
+/* section describing where and when the snapshot was downloaded */
 .provider_info {
 	
 }
+
+
 
 /* "pack_metadata" includes "pack_details" & "pack_description" */
 .pack_metadata {
@@ -17,16 +20,49 @@
 	
 }
 
-/* "pack_items" include "pack_items_internal" & "pack_items_external" */
+
+
+/* listing of various types of items that are contained within the pack */
+.pack_items_summary {
+	
+}
+
+
+
+/* "pack_items" is split into "pack_downloaded_items" & "pack_not_downloaded_items" */
 .pack_items {
 	
 }
 
-/* "pack_items_internal" consist of "workflow_item", "file_item", "pack_item" subsections */
-.pack_items_internal {
+.pack_downloaded_items {
 	
 }
 
+.pack_not_downloaded_items {
+	
+}
+
+
+/* "pack_not_downloaded_items" has 4 subsections "pack_viewing_only_items", "pack_pack_items", "pack_external_items", "pack_hidden_items" */
+.pack_viewing_only_items{
+	
+}
+
+.pack_pack_items{
+	
+}
+
+.pack_external_items{
+	
+}
+
+.pack_hidden_items {
+	
+}
+
+
+
+/* "pack_downloaded_items" & "pack_viewing_only_items" consist of "workflow_item" & "file_item" subsections */
 .workflow_item {
 	
 }
@@ -35,21 +71,29 @@
 	
 }
 
+
+/* "pack_pack_items" contains only "pack_item" elements */
 .pack_item {
 	
 }
 
-/* "pack_items_external" contain just "external_item" elements */
-.pack_items_external {
-	
-}
 
+/* "pack_external_items" contain only "external_item" elements */
 .external_item {
 	
 }
 
 
-/* "item_data" and "item_metadata" apply to all of the following: workflows, files, packs & external items */
+/* "pack_hidden_items" contains only "hidden_item" elements */
+.hidden_item {
+	
+}
+
+
+
+/* CUSTOM TEXT PRESENTATION CLASSES */
+
+/* "item_data" & "item_metadata" are only subsections of all of the following: "workflow_item", "file_item", "pack_item", "external_item", "hidden_item" */
 .item_data {
 	
 }
@@ -61,7 +105,31 @@
 }
 
 
+
+/* any missing or not available information; info messages in any sections with no items */
+.none_text {
+	font-style: italic;
+	color: #666666;
+}
+
+
+/* comments for all items */
+.comment_text {
+	font-style: italic;
+}
+
+
+
 /* CUSTOM STYLE SETTINGS FOR HTML ELEMENTS */
+
 li {
 	margin-bottom: 1.5em;
+}
+
+table {
+  margin-top: 0.3em;	
+}
+
+td li{
+	margin: 0;
 }
