@@ -1,3 +1,8 @@
+# myExperiment: app/models/pack_sweeper.rb
+# 
+# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
 class PackSweeper < ActionController::Caching::Sweeper
 
   observe Pack

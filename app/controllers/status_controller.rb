@@ -1,3 +1,8 @@
+# myExperiment: app/controllers/status_controller.rb
+# 
+# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
 class StatusController < ApplicationController
 
   # sanity test methods are in /lib/sanity_test.rb

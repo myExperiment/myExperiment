@@ -1,3 +1,8 @@
+# myExperiment: app/models/tag_sweeper.rb
+# 
+# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
 class TagSweeper < ActionController::Caching::Sweeper
 
   # observes both Tag and Tagging but currently only changes to Taggings are used to expire the 

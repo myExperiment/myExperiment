@@ -1,3 +1,8 @@
+# myExperiment: app/models/network_sweeper.rb
+# 
+# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
 class NetworkSweeper < ActionController::Caching::Sweeper
 
   observe Network
