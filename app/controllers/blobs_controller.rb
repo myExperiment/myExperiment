@@ -13,6 +13,11 @@ class BlobsController < ApplicationController
   
   before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :comment, :comment_delete, :rate, :tag, :destroy]
   before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
+
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :blob_sweeper, :only => [ :create, :destroy ]
+  cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
+  cache_sweeper :tag_sweeper, :only => [ :tag, :destroy ]
   
   # GET /files;search
   def search

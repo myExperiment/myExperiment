@@ -10,6 +10,9 @@ class FriendshipsController < ApplicationController
   
   before_filter :find_friendships, :only => [:index]
   before_filter :find_friendship_auth, :only => [:show, :accept, :edit, :update, :destroy]
+
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :friendship_sweeper, :only => [ :create, :accept, :update, :destroy ]
   
   # POST /users/1/friendships/1/accept
   # POST /friendships/1/accept

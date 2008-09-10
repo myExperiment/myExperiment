@@ -9,6 +9,9 @@ class MessagesController < ApplicationController
   before_filter :find_message_by_to_or_from, :only => [:show]
   before_filter :find_message_by_to, :only => [:destroy]
   before_filter :find_reply_by_to, :only => [:new]
+
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :message_sweeper, :only => [ :create, :show, :destroy, :delete_all_selected ]
   
   # GET /messages
   def index

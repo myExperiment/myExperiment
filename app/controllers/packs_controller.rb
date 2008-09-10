@@ -12,6 +12,11 @@ class PacksController < ApplicationController
   before_filter :invalidate_listing_cache, :only => [:show, :update, :comment, :comment_delete, :tag, :destroy, :create_item, :update_item, :delete_item]
   before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
 
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :pack_sweeper, :only => [ :create, :destroy ]
+  cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
+  cache_sweeper :tag_sweeper, :only => [ :tag, :destroy ]
+
   def search
     @query = params[:query]
     

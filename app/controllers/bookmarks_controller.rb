@@ -8,6 +8,9 @@ class BookmarksController < ApplicationController
   
   before_filter :find_bookmarks_auth, :only => [:index]
   before_filter :find_bookmark_auth, :only => [:show, :edit, :update, :destroy]
+
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :bookmark_sweeper, :only => [ :destroy ]
   
   # GET /bookmarks
   def index

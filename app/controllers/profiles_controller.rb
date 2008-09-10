@@ -11,6 +11,9 @@ class ProfilesController < ApplicationController
   before_filter :find_profile_auth, :only => [:edit, :update, :destroy]
   
   before_filter :invalidate_listing_cache, :only => [:update, :destroy]
+
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :profile_sweeper, :only => [ :create, :update, :destroy ]
   
   # GET /profiles
   def index

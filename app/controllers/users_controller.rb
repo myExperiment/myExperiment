@@ -16,6 +16,9 @@ class UsersController < ApplicationController
   before_filter :find_user_auth, :only => [:edit, :update, :destroy]
   
   before_filter :invalidate_listing_cache, :only => [:update, :destroy]
+
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :user_sweeper, :only => [ :create, :update, :destroy ]
   
   # GET /users;search
   def search
@@ -229,9 +232,9 @@ class UsersController < ApplicationController
         end
         
         #format.html { redirect_to user_url(@user) }
-        format.html { render :action => "edit" }
+        format.html { redirect_to :action => "edit" }
       else
-        format.html { render :action => "edit" }
+        format.html { redirect_to :action => "edit" }
       end
     end
   end

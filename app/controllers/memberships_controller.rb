@@ -12,6 +12,9 @@ class MembershipsController < ApplicationController
   before_filter :find_membership_auth, :only => [:show, :accept, :edit, :update, :destroy]
   
   before_filter :invalidate_listing_cache, :only => [:accept, :update, :destroy]
+
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :membership_sweeper, :only => [ :create, :accept, :update, :destroy ]
   
   # POST /users/1/memberships/1;accept
   # POST /memberships/1;accept

@@ -12,6 +12,11 @@ class NetworksController < ApplicationController
   
   before_filter :invalidate_listing_cache, :only => [:update, :comment, :comment_delete, :tag, :destroy]
   before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
+
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :network_sweeper, :only => [ :create, :update, :destroy, :membership_request, :membership_invite, :membership_invite_external ]
+  cache_sweeper :membership_sweeper, :only => [ :destroy, :membership_request, :membership_invite, :membership_invite_external ]
+  cache_sweeper :tag_sweeper, :only => [ :tag, :destroy ]
   
   # GET /networks;search
   def search

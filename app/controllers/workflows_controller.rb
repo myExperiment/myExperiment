@@ -14,6 +14,11 @@ class WorkflowsController < ApplicationController
   
   before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :launch, :update, :update_version, :comment, :comment_delete, :rate, :tag, :destroy, :destroy_version]
   before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
+
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :workflow_sweeper, :only => [ :create, :destroy ]
+  cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
+  cache_sweeper :tag_sweeper, :only => [ :tag, :destroy ]
   
   # These are provided by the Taverna gem
   require 'scufl/model'
