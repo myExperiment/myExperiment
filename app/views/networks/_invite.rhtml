@@ -1,43 +1,52 @@
 <script type="text/javascript">
   function inviteAndDisable() {
-    $("my_networks_button").disabled = true;
-    
+	  var invites_in_progress = 0;
+	
     <% current.networks_owned.each do |n| %>
-      if ($("my_network_<%= n.id %>").checked) {
-        // do nothing!!
-      } else {
-        $("my_network_<%= n.id %>").disabled = true;
-        var font = $("my_network_font_<%= n.id %>")
-        
-        if (font == null) {
-          // do nothing!! (already grey)
-        } else {
-          font.color = "grey";
-        }
-      }
-    <% end %>
-  
-    <% current.networks_owned.each do |n| %>
-      <% unless n.member?(user.id) %>
-        if ($("my_network_<%= n.id %>").checked) {
-          var xmlhttp_<%= n.id %> =  new XMLHttpRequest();
+      <% unless n.member?(user.id) || user.membership_pending?(n.id) %>
+        if ($("my_network_<%= n.id %>").checked && !$("my_network_<%= n.id %>").disabled) {
+					invites_in_progress++;
+          var xmlhttp_<%= n.id %> = new XMLHttpRequest();
+					var xmlhttp_<%= n.id %>_params = "&user_id=<%= user.id %>&membership[message]=";
+					
+          xmlhttp_<%= n.id %>.open('POST', '<%= membership_invite_group_path(n) %>', true);
           
-          xmlhttp_<%= n.id %>.open('GET', '<%= membership_invite_group_path(n) %>?user_id=<%= user.id %>', true);
-          
-          $("my_networks_button").value = "Inviting (<%= h(n.title) %>)";
+					// Send the proper header information along with the request
+					xmlhttp_<%= n.id %>.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					xmlhttp_<%= n.id %>.setRequestHeader("Content-length", xmlhttp_<%= n.id %>_params.length);
+					xmlhttp_<%= n.id %>.setRequestHeader("Connection", "close");
+
           xmlhttp_<%= n.id %>.onreadystatechange = function() {
             $("my_network_<%= n.id %>").disabled = true;
           
-            if (xmlhttp_<%= n.id %>.readyState == 4) {
-              $("my_network_font_<%= n.id %>").color = "green";
+					  // DEBUG
+						// alert("ready state : " + xmlhttp_<%= n.id %>.readyState + "\nstatus: " + xmlhttp_<%= n.id %>.status + "\nresponse: " + xmlhttp_<%= n.id %>.responseText);
+						// END OF DEBUG
+            
+						if (xmlhttp_<%= n.id %>.readyState == 4 && xmlhttp_<%= n.id %>.status == 200)
+						{
+              invites_in_progress--;
+							$("my_networks_button").value = "Inviting (" + invites_in_progress + ((invites_in_progress % 10) == 1 ? " request" : " requests") + " in progress)";
+							
+							$("my_network_font_<%= n.id %>").color = "green";
+							$("my_network_<%= n.id %>_status").show();
               
-              $("my_networks_button").value = "Invited (<%= h(n.title) %>)";
-            } else {
-              $("my_network_font_<%= n.id %>").color = "red";
+              if (invites_in_progress == 0)
+							{
+						  	$("my_networks_button").value = "Invite";
+						  	$("my_networks_button").disabled = false;
+						  }
+            }
+						else
+						{
+							$("my_network_font_<%= n.id %>").color = "red";
+							$("my_networks_button").disabled = true;
+							// $("my_networks_button").value = "Inviting (<%= h(n.title) %>)";
+							$("my_networks_button").value = "Inviting (" + invites_in_progress + ((invites_in_progress % 10) == 1 ? " request" : " requests") + " in progress)";
             }
           }
           
-          xmlhttp_<%= n.id %>.send(null);
+          xmlhttp_<%= n.id %>.send(xmlhttp_<%= n.id %>_params);
         }
       <% end %>
     <% end %>
@@ -57,9 +66,11 @@
   <% networks_owned.each_index do |index| %>
     <% n = networks_owned[index] -%>
     <% if n.member?(user.id) %>
-      <input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>" disabled=true/> - <font color="grey"><%= h(n.title) %></font>
-    <% else %>
-      <input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>"/> - <font id="my_network_font_<%= n.id %>"><%= h(n.title) %></font>
+      <input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>" disabled=true CHECKED /> - <font color="green"><%= h(n.title) %></font> (already a member)
+    <% elsif user.membership_pending?(n.id) %>
+		  <input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>" disabled=true CHECKED /> - <font color="green"><%= h(n.title) %></font> (waiting for the user to confirm)
+		<% else %>
+      <label for="my_network_<%= n.id %>"><input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>"/> - <font id="my_network_font_<%= n.id %>"><%= h(n.title) %></font></label><span style="display: none;" id="my_network_<%= n.id %>_status"> (invitation was sent successfully)</span>
     <% end %>
         
     <%= "<br />" unless (index.to_i == (networks_owned.length.to_i - 1)) %>
