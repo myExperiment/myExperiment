@@ -47,8 +47,8 @@
 			  <th><%= link_to "Status" + current_ordering_icon("status"), messages_path + "?sort_by=status&order=" + next_ordering("status"), :title => tooltip_title_attrib(tooltip_message("status", opposite_ordering(next_ordering("status")))) -%></th>
 			<% end -%>
 			<th>From</th>
-	    <th><%= link_to "Subject" + current_ordering_icon("subject"), messages_path + "?sort_by=subject&order=" + next_ordering("subject"), :title => tooltip_title_attrib(tooltip_message("subject", opposite_ordering(next_ordering("subject")))) -%></th>
-	    <th><%= link_to (inbox_mode ? "Received at" : "Sent at") + current_ordering_icon("date"), messages_path + "?sort_by=date&order=" + next_ordering("date"), :title => tooltip_title_attrib(tooltip_message("date", opposite_ordering(next_ordering("date")))) -%></th>
+	    <th><%= link_to "Subject" + current_ordering_icon("subject"), (inbox_mode ? messages_path : sent_messages_path) + "?sort_by=subject&order=" + next_ordering("subject"), :title => tooltip_title_attrib(tooltip_message("subject", opposite_ordering(next_ordering("subject")))) -%></th>
+	    <th><%= link_to (inbox_mode ? "Received at" : "Sent at") + current_ordering_icon("date"), (inbox_mode ? messages_path : sent_messages_path) + "?sort_by=date&order=" + next_ordering("date"), :title => tooltip_title_attrib(tooltip_message("date", opposite_ordering(next_ordering("date")))) -%></th>
 	    <th> </th>
 	  </tr>
 	  
