@@ -1,9 +1,21 @@
+<% # determine which mode this partial currently works in: inbox or outbox; -%>
+<% # certain feature will only be visible in the inbox -%>
+<% opened_from_inbox = (@message_folder == "inbox") -%>
+
+
 <h1>View Message: <%=h @message.subject %></h1>
 
 <ul class="sectionIcons">
-  <li><%= icon('message', messages_path, nil, nil, 'Return to My Messages') -%></li>
-	<li><%= icon('reply', url_for(:controller => :messages, :action => :new, :reply_id => @message.id), nil, nil, 'Reply to this Message') %></li>
-	<li><%= icon('message_delete', message_path(@message), nil, {:method => :delete, :confirm => "Are you sure you want to delete this message?"}, 'Delete this Message') -%></li>
+	<% if opened_from_inbox -%>
+	  <li><%= icon('message', messages_path, "Return to Inbox", nil, 'Return to Inbox') -%></li>
+  	<li><%= icon('reply', url_for(:controller => :messages, :action => :new, :reply_id => @message.id), nil, nil, 'Reply to this Message') %></li>
+  <% else -%>
+	  <li><%= icon('messages_outbox_no_arrow', sent_messages_path, "Return to Sent Messages", nil, 'Return to Sent Messages') -%></li>
+  <% end -%>
+	<li>
+	  <% complex_delete_url = "<a href=\"#{message_path(@message)}\" onclick=\"if (confirm('Are you sure you want to delete this message?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);var n = document.createElement('input'); n.setAttribute('type', 'hidden'); n.setAttribute('name', 'deleted_from'); n.setAttribute('value', '#{@message_folder}'); f.appendChild(n); f.submit(); };return false;\">" -%>
+		<%= icon_no_link_processing('message_delete', complex_delete_url, nil, 'Delete this Message') %>
+	</li>
 </ul>
 
 <% if @message.reply? %>

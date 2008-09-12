@@ -509,7 +509,7 @@ class User < ActiveRecord::Base
   has_many :messages_unread,
            :class_name => "Message",
            :foreign_key => :to,
-           :conditions => "read_at IS NULL",
+           :conditions => "read_at IS NULL AND deleted_by_recipient IS FALSE",
            :order => "created_at DESC",
            :dependent => :destroy
            

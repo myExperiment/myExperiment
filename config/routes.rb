@@ -131,7 +131,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # messages
-  map.resources :messages, :collection => { :delete_all_selected => :delete }
+  map.resources :messages, :collection => { :sent => :get, :delete_all_selected => :delete }
 
   # all ***ship's
   map.resources :relationships, :memberships, :friendships

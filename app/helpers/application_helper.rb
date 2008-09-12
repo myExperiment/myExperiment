@@ -605,6 +605,35 @@ module ApplicationHelper
 
     return '<span class="icon">' + inner + '</span>';
   end
+  
+  
+  # is exactly the same as icon, apart from that the front part of the url was already completely
+  # generated before and is passed in as a parameter (this helps to get links with complex javascript in
+  # 'onclick' field) - so need to add closing </a> tag in the relevant place
+  def icon_no_link_processing(method, url=nil, alt=nil, label=method.humanize)
+
+    if (label == 'Destroy')
+      label = 'Delete';
+    end
+
+    return nil unless (filename = method_to_icon_filename(method.downcase))
+    
+    # if method.to_s == "info"
+    # make into cool javascript div thing!
+    
+    image_options = alt ? { :alt => alt } : { :alt => method.humanize }
+    img_tag = image_tag(filename, image_options)
+    
+    inner = img_tag;
+    inner = "#{img_tag} #{label}" unless label == nil
+
+    if (url)
+      inner = url + inner + "</a>"
+    end
+
+    return '<span class="icon">' + inner + '</span>';
+  end
+
 
   def method_to_icon_filename(method)
     case (method.to_s)
@@ -673,6 +702,10 @@ module ApplicationHelper
       return "famfamfam_silk/email_go.png"
     when "message_delete"
       return "famfamfam_silk/email_delete.png"  
+    when "messages_outbox"
+      return "famfamfam_silk/email_go.png"
+    when "messages_outbox_no_arrow" # used only in 'show' page for a message, opened from outbox: this is for the icon for 'return to outbox' to differ from 'reply' icon
+      return "famfamfam_silk/email.png"
     when "blob"
       return "redmond_studio/documents_16.png"
     when "pack"
