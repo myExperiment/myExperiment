@@ -306,38 +306,34 @@ class WorkflowsController < ApplicationController
             params[:metadata_choice] = 'custom'
             format.html { render :action => "new" }
           end
+          return
         end
         
       # Custom metadata provided.
       elsif params[:metadata_choice] == 'custom'
-        # First check that the preview file uploaded is an image
-        if !params[:workflow][:preview].content_type.chomp =~ /^image/
-          respond_to do |format|
-            flash[:error] = "The preview file specified is not a valid image file."
-            format.html { render :action => "new" }
-          end
+        @workflow.title = params[:workflow][:title]
+        @workflow.body = params[:workflow][:body]
+        
+        # Workflow content type is either one supported by a workflow processor, or a previously set type in the db, or a custom one. 
+        
+        wf_type = params[:workflow][:type]
+        
+        if wf_type.downcase == 'other'
+          wf_type = params[:workflow][:type_other]
         else
-          @workflow.title = params[:workflow][:title]
-          @workflow.body = params[:workflow][:body]
-          
-          # Workflow content type is either one supported by a workflow processor, or a previously set type in the db, or a custom one. 
-          
-          wf_type = params[:workflow][:type]
-          
-          if wf_type.downcase == 'other'
-            wf_type = params[:workflow][:type_other]
-          else
-            wf_type = WorkflowTypesHandler.content_type_for_type_display_name(wf_type)
-          end
-          
-          @workflow.content_type = wf_type
-          
-          # Preview image
-          @workflow.image = params[:workflow][:preview]
-          
-          # Set the internal unique name for this workflow entry 
-          @workflow.set_unique_name
+          wf_type = WorkflowTypesHandler.content_type_for_type_display_name(wf_type)
         end
+        
+        @workflow.content_type = wf_type
+        
+        # Preview image
+        # TODO: kept getting permission denied errors from the file_column and rmagick code, so disable for windows, for now.
+        unless RUBY_PLATFORM =~ /mswin32/
+          @workflow.image = params[:workflow][:preview]
+        end
+        
+        # Set the internal unique name for this workflow entry 
+        @workflow.set_unique_name
       end
       
       respond_to do |format|
@@ -351,6 +347,9 @@ class WorkflowsController < ApplicationController
           # Credits and Attributions:
           update_credits(@workflow, params)
           update_attributions(@workflow, params)
+          
+          # Refresh the types handler list of types if a new type was supplied this time.
+          WorkflowTypesHandler.refresh_types! if params[:workflow][:type] == 'other'
 
           flash[:notice] = 'Workflow was successfully created.'
           format.html { redirect_to workflow_url(@workflow) }

@@ -1,6 +1,6 @@
 <% cache(:controller => 'workflows_cache', :action => 'internals', :id => workflow.id, :version => version) do -%>
 
-	<% if (model = workflow.get_sculf_model(version)) -%>
+	<% if (model = workflow.get_workflow_model_object(version)) -%>
 		
 		<!-- Sources -->
 		<% sources = model.sources -%>

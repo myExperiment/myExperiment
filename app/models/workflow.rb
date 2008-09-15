@@ -69,22 +69,20 @@ class Workflow < ActiveRecord::Base
   
   validates_presence_of :title
   
-  before_create :set_unique_name
-  
   format_attribute :body
   
+  validates_presence_of :unique_name
   validates_uniqueness_of :unique_name
   
   validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
+  
+  validates_presence_of :content_type
 
   file_column :image, :magick => {
     :versions => {
       :thumb    => { :size => "100x100!" }, 
       :medium   => { :size => "500x500>" },
       :full     => { },
-      :padlock => { :transformation => Proc.new { |image| image.resize(100, 100).blur_image.composite(Magick::ImageList.new("#{RAILS_ROOT}/public/images/padlock.gif"), 
-                                                                                                      Magick::SouthEastGravity, 
-                                                                                                      Magick::OverCompositeOp) } }
     }
   }
   
@@ -109,9 +107,9 @@ class Workflow < ActiveRecord::Base
       salt = rand 1000000
       salt2 = rand 100
       if self.title.blank?
-        self.unique_name = "#{self.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"
+        self.unique_name = "#{salt2}_#{salt}"        
       else
-        self.unique_name = "#{salt2}_#{salt}"
+        self.unique_name = "#{self.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"
       end
     end
   end
@@ -126,7 +124,7 @@ class Workflow < ActiveRecord::Base
     return model.sources
   end
   
-  def get_sculf_model(version)
+  def get_workflow_model_object(version)
     return nil unless (workflow_version = self.find_version(version))
     parser = Scufl::Parser.new
     model  = parser.parse(workflow_version.content_blob.data)

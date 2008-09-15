@@ -4,7 +4,9 @@
 
 <h1>Upload New Version of Workflow: <%= contributable @workflow.id, "Workflow" %></h1>
 
-<%= error_messages_for :workflow %>
+<center>
+	<%= error_messages_for :workflow %>
+</center>
 
 <% form_tag(create_version_workflow_url(@workflow), :multipart => true, :method => :post) do %>
 

@@ -13,10 +13,12 @@ module WorkflowProcessors
     # - provide information about the processor's capabilites, and
     # - provide any general functionality.
     
+    # MUST be unique across all processors
     def self.display_name 
       "Trident (Package)"
     end
     
+    # MUST be unique across all processors
     def self.content_type
       "trident_opc"
     end

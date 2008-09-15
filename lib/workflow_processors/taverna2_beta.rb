@@ -13,10 +13,12 @@ module WorkflowProcessors
     # - provide information about the processor's capabilites, and
     # - provide any general functionality.
     
+    # MUST be unique across all processors
     def self.display_name 
       "Taverna 2.x beta"
     end
     
+    # MUST be unique across all processors
     def self.content_type
       "taverna2beta"
     end
