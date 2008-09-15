@@ -103,7 +103,7 @@ class Pack < ActiveRecord::Base
     pack_data_txt += "\nCreated by: " + uploader_string(self.contributor_type, self.contributor_id, false, false)
     pack_data_txt += "\nCreated at: " + self.created_at.strftime("%H:%M:%S on %A, %d %B %Y")
     pack_data_txt += "\nLast updated at: " + self.updated_at.strftime("%H:%M:%S on %A, %d %B %Y")
-    pack_data_txt += "\n\nDescription: " + (self.description.nil? || self.description.empty? ? "none" : "\n\n" + strip_html(self.description) )
+    pack_data_txt += "\n\nDescription: " + (self.description.nil? || self.description.empty? ? "none" : "\n\n" + prepare_description(self.description) )
     #
     # HTML
     cgi = CGI.new("html4")
@@ -151,7 +151,7 @@ class Pack < ActiveRecord::Base
       self.contributable_entries.each { |item_entry|
         # the first thing to do with each item is to check if download is allowed
         item_contribution = Contribution.find(:first, :conditions => ["contributable_type = ? AND contributable_id = ?", item_entry.contributable_type, item_entry.contributable_id])
-        download_allowed = item_contribution.authorized? ("download", user)
+        download_allowed = item_contribution.authorized?("download", user)
         viewing_allowed = download_allowed ? true : item_contribution.authorized?("view", user)
         
         
@@ -536,7 +536,6 @@ class Pack < ActiveRecord::Base
   end
   
   
-  protected
   
   # Checks if the uri provided points to something internally to the host site. 
   # Note: assumes that the host site runs on HTTP.
@@ -545,13 +544,21 @@ class Pack < ActiveRecord::Base
   end
   
   
-  # strips off html tags from a string and returns the 'clean' result
-  # (used for textual - non-HTML - representation of descriptions, etc)
-  def strip_html( str )
-    # TODO: don't strip <br> tags -> instead replace them with "\n"
-    return str.gsub(/<\/?[^>]*>/,  "")
+  # strips out all unnecessary html, preserving special characters and new lines
+  def prepare_description(description)
+    # replace all the new line equivalents in html with \n's
+    desc = description.gsub(/<br\/?>/, "\n")
+    desc = desc.gsub("<p></p>", "\n")
+    
+    # strip out all the rest of html tags
+    desc = desc.gsub(/<\/?[^>]*>/,  "")
+    desc = desc.gsub("&nbsp;", "")
+    
+    # decode all special character symbols back into text
+    return CGI::unescapeHTML(desc)
   end
   
+  protected
   
   # produces html string containing the required messaged, enclosed within left-padded P tag, belonging to 'none_text' class
   # (with a vertical spacing below the message as well) 
@@ -672,7 +679,7 @@ class Pack < ActiveRecord::Base
           cgi.div("class" => "workflow_item") do
             cgi.div("class" => "item_data") do
               "<b>Workflow: </b>" + cgi.a(location_string(item_entry.contributable_type, item.id, wf_version)){required_item_version.title} + 
-              (download_allowed ? ("&nbsp;&nbsp;&nbsp;[ " + cgi.a("./" + required_item_version.unique_name + ".xml"){"open local copy"} + " ]") : "") + "<br/>" +
+              (download_allowed ? ("&nbsp;&nbsp;&nbsp;[ " + cgi.a("./workflows/" + required_item_version.unique_name + ".xml"){"open local copy"} + " ]") : "") + "<br/>" +
               "Version: #{wf_version} (created on: #{required_item_version.created_at.strftime("%d/%m/%Y")}, last updated on: #{required_item_version.updated_at.strftime("%d/%m/%Y")})<br/>" +
               uploader_string(required_item_version.contributor_type, required_item_version.contributor_id, true) + "<br/>"
             end +
@@ -683,7 +690,7 @@ class Pack < ActiveRecord::Base
       when "text"
         workflow_data += "+ Workflow: #{item.title}"
         if download_allowed
-          workflow_data += " (local copy: #{item.unique_name + ".xml"})"
+          workflow_data += " (local copy: workflows/#{item.unique_name + ".xml"})"
         end
         workflow_data += "\n  Location: " + location_string(item_entry.contributable_type, item.id, wf_version)
         workflow_data += "\n  Version: #{wf_version} (created on: #{required_item_version.created_at.strftime("%d/%m/%Y")}, last updated on: #{required_item_version.updated_at.strftime("%d/%m/%Y")})"
@@ -708,7 +715,7 @@ class Pack < ActiveRecord::Base
           cgi.div("class" => "file_item") do
             cgi.div("class" => "item_data") do
               "<b>File: </b>" + cgi.a(location_string(item_entry.contributable_type, item.id)){item.title} + 
-              (download_allowed ? ("&nbsp;&nbsp;&nbsp;[ " + cgi.a("./" + item.local_name){"open local copy"} + " ]") : "") + "<br/>" +
+              (download_allowed ? ("&nbsp;&nbsp;&nbsp;[ " + cgi.a("./files/" + item.local_name){"open local copy"} + " ]") : "") + "<br/>" +
               uploader_string(item.contributor_type, item.contributor_id, true) + "<br/>"
             end +
             file_metadata
@@ -718,7 +725,7 @@ class Pack < ActiveRecord::Base
       when "text"
         file_data += "+ File: #{item.title}"
         if download_allowed
-          file_data += " (#{item.local_name})"
+          file_data += " (local copy: files/#{item.local_name})"
         end
         file_data += "\n  Location: " + location_string(item_entry.contributable_type, item.id)
         file_data += "\n  " + uploader_string(item.contributor_type, item.contributor_id, false) + "\n"
