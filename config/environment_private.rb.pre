@@ -69,3 +69,6 @@ CACHE_TIMEOUT_SECS = 120
 # The maximum number of invitation emails to send out
 # (if set to '-1' - unlimited)
 INVITATION_EMAIL_LIMIT = 10 
+
+# The maximum file size allowed for workflows
+WORKFLOW_UPLOAD_MAX_BYTES = 20971520

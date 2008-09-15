@@ -15,11 +15,6 @@ class WorkflowsController < ApplicationController
   before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :launch, :update, :update_version, :comment, :comment_delete, :rate, :tag, :destroy, :destroy_version]
   before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
   
-  # These are provided by the Taverna gem
-  require 'scufl/model'
-  require 'scufl/parser'
-  require 'scufl/dot'
-  
   # GET /workflows;search
   def search
 
@@ -239,44 +234,128 @@ class WorkflowsController < ApplicationController
 
   # POST /workflows
   def create
-
-    # don't create new workflow if no file has been selected
-    if params[:workflow][:scufl].size == 0
-      flash[:error] = "Please select a workflow file to upload."
-      redirect_to :action => :new
+    # Check that a valid file has been selected 
+    if params[:workflow][:file].size == 0
+      respond_to do |format|
+        flash[:error] = "Please select a valid workflow file to upload. If you have selected a file, it might be empty."
+        format.html { render :action => "new" }
+      end
+    # Check that the size of the workflow file doesn't exceed the max size
+    elsif params[:workflow][:file].size > WORKFLOW_UPLOAD_MAX_BYTES
+      respond_to do |format|
+        flash[:error] = "The workflow file/script uploaded is too big. The maximum upload size for workflows is #{number_to_human_size(WORKFLOW_UPLOAD_MAX_BYTES)}."
+        format.html { render :action => "new" }
+      end
+    # Proceed with workflow creation
     else
-      params[:workflow][:contributor_type], params[:workflow][:contributor_id] = "User", current_user.id
-
-      scufl_first_k = params[:workflow][:scufl].read(1024)
-      params[:workflow][:scufl].rewind
-
-      # if first Kb of uploaded scufl contains a '<scufl>' tag then it is probably an XML workflow and can be processed
-      if scufl_first_k !~ %r{<[^<>]*scufl[^<>]*>}
-        flash[:error] = "File must be a Taverna workflow. Please select a workflow file."
-        redirect_to :action => :new
-      else
-        # create workflow using helper methods
-        @workflow = create_workflow(params[:workflow])
-    
-        respond_to do |format|
-          if @workflow.save
-            if params[:workflow][:tag_list]
-              @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
-            end
-                
-            @workflow.contribution.update_attributes(params[:contribution])
-
-            update_policy(@workflow, params)
+      file = params[:workflow][:file]
+      
+      @workflow = Workflow.new
+      @workflow.contributor = current_user
+      @workflow.license = params[:workflow][:license]
+      @workflow.content_blob = ContentBlob.new(:data => file.read)
+      
+      file.rewind
+      
+      # Check whether user has selected to infer metadata or provided custom metadata...
+      
+      # Infer metadata.
+      if params[:metadata_choice] == 'infer'
+        # Check that the file uploaded is recognised and can be parsed...
         
-            # Credits and Attributions:
-            update_credits(@workflow, params)
-            update_attributions(@workflow, params)
-
-            flash[:notice] = 'Workflow was successfully created.'
-            format.html { redirect_to workflow_url(@workflow) }
+        # Try and get a processor that can be used to process this type of workflow
+        processor_class = WorkflowTypesHandler.processor_class_for_file(file)
+        
+        # Rewind the file, just in case
+        file.rewind
+        
+        # Declare a check variable
+        cannot_infer = false
+        
+        if processor_class.nil?
+          cannot_infer = true
+        else
+          # Check that the processor can do inferring of metadata
+          if processor_class.can_infer_metadata?
+            begin
+              processor_instance = processor_class.new(file.read)
+              
+              @workflow.title = processor_instance.get_title
+              @workflow.body = processor_instance.get_description
+              
+              @workflow.content_type = processor_class.content_type
+              
+              # Set the internal unique name for this workflow entry 
+              @workflow.set_unique_name
+              
+              @workflow.image, @workflow.svg = processor_instance.get_preview_images if processor_class.can_generate_preview?
+            rescue Exception => ex
+              cannot_infer = true
+              logger.error("ERROR: some processing failed in workflow processor '#{processor_class.to_s}'.")
+              logger.error("EXCEPTION: " + ex)
+            end
           else
+            # We cannot infer metadata
+            cannot_infer = true
+          end
+        end
+        
+        if cannot_infer
+          respond_to do |format|
+            flash[:error] = "We were unable to infer metadata from the workflow file/script selected. Please enter custom metadata for this workflow."
+            params[:metadata_choice] = 'custom'
             format.html { render :action => "new" }
           end
+        end
+        
+      # Custom metadata provided.
+      elsif params[:metadata_choice] == 'custom'
+        # First check that the preview file uploaded is an image
+        if !params[:workflow][:preview].content_type.chomp =~ /^image/
+          respond_to do |format|
+            flash[:error] = "The preview file specified is not a valid image file."
+            format.html { render :action => "new" }
+          end
+        else
+          @workflow.title = params[:workflow][:title]
+          @workflow.body = params[:workflow][:body]
+          
+          # Workflow content type is either one supported by a workflow processor, or a previously set type in the db, or a custom one. 
+          
+          wf_type = params[:workflow][:type]
+          
+          if wf_type.downcase == 'other'
+            wf_type = params[:workflow][:type_other]
+          else
+            wf_type = WorkflowTypesHandler.content_type_for_type_display_name(wf_type)
+          end
+          
+          @workflow.content_type = wf_type
+          
+          # Preview image
+          @workflow.image = params[:workflow][:preview]
+          
+          # Set the internal unique name for this workflow entry 
+          @workflow.set_unique_name
+        end
+      end
+      
+      respond_to do |format|
+        if @workflow.save
+          if params[:workflow][:tag_list]
+            @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
+          end
+          
+          update_policy(@workflow, params)
+      
+          # Credits and Attributions:
+          update_credits(@workflow, params)
+          update_attributions(@workflow, params)
+
+          flash[:notice] = 'Workflow was successfully created.'
+          format.html { redirect_to workflow_url(@workflow) }
+        else
+          format.html { render :action => "new" }
         end
       end
     end
@@ -569,22 +648,6 @@ protected
   def invalidate_tags_cache
     expire_fragment(:controller => 'workflows', :action => 'all_tags')
     expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
-  end
-  
-  def create_workflow(wf)
-    scufl_model = Scufl::Parser.new.parse(wf[:scufl].read)
-    wf[:scufl].rewind
-
-    rtn = Workflow.new(:content_blob => ContentBlob.new(:data => wf[:scufl].read),
-                       :content_type => "application/vnd.taverna.scufl+xml",
-                       :contributor_id => wf[:contributor_id], 
-                       :contributor_type => wf[:contributor_type],
-                       :body => scufl_model.description.description,
-                       :license => wf[:license])
-                       
-    rtn.create_workflow_diagrams(scufl_model, "1")
-    
-    return rtn
   end
   
 private

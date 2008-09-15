@@ -4,4 +4,11 @@
 # See license.txt for details.
 
 module WorkflowsHelper
+  
+  def workflow_types
+    types = WorkflowTypesHandler.types_list
+    types.sort! {|x,y| x <=> y}
+    types << "Other"
+  end
+  
 end

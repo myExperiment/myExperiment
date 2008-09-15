@@ -14,15 +14,15 @@ require 'acts_as_runnable'
 
 require 'scufl/model'
 require 'scufl/parser'
-require 'scufl/dot'
 
 class Workflow < ActiveRecord::Base
+  
   has_many :citations, 
            :order => "created_at DESC",
            :dependent => :destroy
 
-  belongs_to :content_blob 
-
+  belongs_to :content_blob
+  
   # need to destroy the content_blobs belonging to the workflow versions to avoid orphaned records
   before_destroy { |w| w.versions.each do |wv|
                         wv.content_blob.destroy
@@ -69,6 +69,8 @@ class Workflow < ActiveRecord::Base
   
   validates_presence_of :title
   
+  before_create :set_unique_name
+  
   format_attribute :body
   
   validates_uniqueness_of :unique_name
@@ -100,6 +102,20 @@ class Workflow < ActiveRecord::Base
     return list
   end
   
+  # Sets an internal unique name for this workflow entry.
+  # Note: only sets unique_name if not already set before
+  def set_unique_name
+    if self.unique_name.blank?
+      salt = rand 1000000
+      salt2 = rand 100
+      if self.title.blank?
+        self.unique_name = "#{self.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"
+      else
+        self.unique_name = "#{salt2}_#{salt}"
+      end
+    end
+  end
+  
   # Begin SCUFL specific methods
 
   def get_input_ports(version)
@@ -124,32 +140,4 @@ class Workflow < ActiveRecord::Base
     "#{BASE_URI}/workflows/#{id}/download/#{unique_name}.xml"
   end
 
-  def create_workflow_diagrams(scufl_model, extension)
-
-    salt = rand 32768
-
-    self.title = scufl_model.description.title.blank? ? "untitled" : scufl_model.description.title
-    self.unique_name = "#{self.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"
-
-    unless RUBY_PLATFORM =~ /mswin32/
-      i = Tempfile.new("image")
-      Scufl::Dot.new.write_dot(i, scufl_model)
-      i.close(false)
-      img = StringIO.new(`dot -Tpng #{i.path}`)
-      svg = StringIO.new(`dot -Tsvg #{i.path}`)
-      img.extend FileUpload
-      img.original_filename = "#{self.unique_name}_#{extension}.png"
-      img.content_type = "image/png"
-      svg.extend FileUpload
-      svg.original_filename = "#{self.unique_name}_#{extension}.svg"
-      svg.content_type = "image/svg+xml"
-      self.image = img
-      self.svg = svg
-    end
-  end
-
-end
-
-module FileUpload
-  attr_accessor :original_filename, :content_type
 end

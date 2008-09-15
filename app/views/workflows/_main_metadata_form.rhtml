@@ -1,7 +1,7 @@
-<% if params[:radio_main_metadata].nil?
+<% if params[:metadata_choice].nil?
      main_metadata_infer_selected = true
    else
-     main_metadata_infer_selected = params[:radio_main_metadata] == "infer" ? true : false  
+     main_metadata_infer_selected = (params[:metadata_choice] == "infer" ? true : false)  
    end
 -%>
 
@@ -9,21 +9,21 @@
 	<div class="box_form" style="width: 550px; margin: 0; text-align: left;">
 	
 		<p>
-			<label for="radio_main_metadata_infer">
-				<%= radio_button_tag ("radio_main_metadata", 
+			<label for="metadata_choice_infer">
+				<%= radio_button_tag ("metadata_choice", 
 															"infer", 
 															main_metadata_infer_selected, 
-															:onclick => "$('radio_main_metadata_custom').checked=false;$('div_main_metadata_custom').hide();return true;") -%>
+															:onclick => "$('metadata_choice_custom').checked=false;$('div_main_metadata_custom').hide();return true;") -%>
 				Infer metadata from the workflow file/script
 				<%= info_icon_with_tooltip("<b>Note:</b> we are only able to do this for Taverna 1.x workflows at the moment.") -%> 
 			</label>
 		</p>
 		<p style="margin-top: 0.1em;">
-			<label for="radio_main_metadata_custom">
-				<%= radio_button_tag ("radio_main_metadata", 
+			<label for="metadata_choice_custom">
+				<%= radio_button_tag ("metadata_choice", 
 															"custom", 
 															!main_metadata_infer_selected, 
-															:onclick => "$('radio_main_metadata_infer').checked=false;$('div_main_metadata_custom').show();return true;") -%>
+															:onclick => "$('metadata_choice_infer').checked=false;$('div_main_metadata_custom').show();return true;") -%>
 				Enter custom metadata
 			</label>
 		</p>
@@ -33,11 +33,7 @@
 				<!-- Type -->
 				<p style="margin-top: 0;"><b>Workflow Type</b></p>
 				<%= select_tag "workflow[type]", 
-											 options_for_select({ 
-																						"Taverna 1.x (SCUFL)" => "taverna1",
-																						"Taverna 2.x" => "taverna2",
-																						"Trident" => "trident",
-																						"Other" => "other" }, (params[:workflow].nil? ? nil : params[:workflow][:type])),
+											 options_for_select(workflow_types, (params[:workflow].nil? ? nil : params[:workflow][:type])),
 											 :onchange => "(this.value == 'other') ? $('workflow[type_other]').show() : $('workflow[type_other]').hide();",
 											 :style => "vertical-align: middle;" -%>
 				<%= text_field_tag "workflow[type_other]", (params[:workflow].nil? ? '' : params[:workflow][:type_other]), :size => 25, :style => 'display: none; vertical-align: middle;' %> 
