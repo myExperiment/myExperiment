@@ -39,18 +39,20 @@ class Pack < ActiveRecord::Base
   
   def self.archive_folder
     # single declaration point of where the zip archives for downloadable packs would live
-    #return "tmp/packs/" # -> TODO: grant write permission into this folder
-    return "" # root is used for now
+    return "tmp/packs"
   end
   
-  def archive_file
+  def archive_file(no_timestamp=false)
     # the name of the zip file, where contents of current pack will be placed
-    "pack_#{id}.zip"
+    filename =  "[PACK] #{self.title.gsub(/[^\w\.\-]/,'_').downcase}"
+    filename += (no_timestamp ? "*" :  " - #{Time.now.strftime('%Y-%m-%d @ %H%M')}")
+    filename += ".zip"
+    return filename
   end
   
-  def archive_file_path
+  def archive_file_path(no_timestamp=false)
     # "#{BASE_URI}/packs/#{id}/download/pack_#{id}.zip"
-    return( Pack.archive_folder + archive_file )
+    return(Pack.archive_folder + "/" + archive_file(no_timestamp))
   end
   
   
@@ -69,9 +71,6 @@ class Pack < ActiveRecord::Base
     self_internal_items_cnt = self.contributable_entries.length 
     self_external_items_cnt = self.remote_entries.length
     self_total_items_cnt = self_internal_items_cnt + self_external_items_cnt
-    
-    # the actual name of the zip file, into which the files will be put
-    archive_filename = self.archive_file
     
     # pack description containers
     pack_data_html = ""
@@ -107,7 +106,7 @@ class Pack < ActiveRecord::Base
     pack_data_txt += "\n\nDescription: " + (self.description.nil? || self.description.empty? ? "none" : "\n\n" + strip_html(self.description) )
     #
     # HTML
-    cgi = CGI.new("html3")
+    cgi = CGI.new("html4")
     pack_details_html = cgi.div("class" => "pack_metadata") do
       cgi.div("class" => "pack_details") do
         cgi.h2 {"Pack Details"} +
@@ -129,10 +128,12 @@ class Pack < ActiveRecord::Base
     # ========= CREATE THE ZIP FILE & WRITE ALL PACK ENTRIES INTO IT ===========
     # (also collect metadata about all the entries in plain text and HTML formats)
     
+    # check if the temp folder for storing packs exists
+    FileUtils.mkdir(Pack.archive_folder) if not File.exists?(Pack.archive_folder)
+    
     # check to see if the file exists already, and if it does, delete it
-    if File.file?(archive_filename)
-      File.delete(archive_filename)
-    end 
+    # (regular expression needed to take care of timestamps)
+    FileUtils.rm Dir.glob(archive_file_path(true).gsub(/[\[\]]/, "?")), :force => true
 
     # create the zip file
     zipfile = Zip::ZipFile.open(archive_file_path, Zip::ZipFile::CREATE)
@@ -141,13 +142,17 @@ class Pack < ActiveRecord::Base
     
       # will keep a list of all filenames that are put into the archive (to delete temp files later)
       zip_filenames = []
+      
+      # will help to save filesystem calls on checking whether the folder for workflows/files was already created
+      workflows_folder_created = false
+      files_folder_created = false
            
       # start with internal items
       self.contributable_entries.each { |item_entry|
         # the first thing to do with each item is to check if download is allowed
-        item_contribution = Contribution.find( :first, :conditions => ["contributable_type = ? AND contributable_id = ?", item_entry.contributable_type, item_entry.contributable_id])
+        item_contribution = Contribution.find(:first, :conditions => ["contributable_type = ? AND contributable_id = ?", item_entry.contributable_type, item_entry.contributable_id])
         download_allowed = item_contribution.authorized? ("download", user)
-        viewing_allowed = download_allowed ? true : item_contribution.authorized? ("view", user)
+        viewing_allowed = download_allowed ? true : item_contribution.authorized?("view", user)
         
         
         case item_entry.contributable_type.downcase
@@ -174,9 +179,14 @@ class Pack < ActiveRecord::Base
               if download_allowed
                 self_downloaded_items_cnt += 1
                 self_downloaded_workflow_cnt += 1
-                zipfile.get_output_stream( required_item_version.unique_name + ".xml" ) { |stream| stream.write(required_item_version.content_blob.data)}
                 zip_filenames << required_item_version.unique_name + ".xml"
-              
+                
+                unless workflows_folder_created
+                  zipfile.mkdir("workflows")
+                  workflows_folder_created = true
+                end
+                zipfile.get_output_stream( "workflows/" + required_item_version.unique_name + ".xml") { |stream| stream.write(required_item_version.content_blob.data)}
+                
                 internal_items_downloaded_html += generate_workflow_data("html", cgi, item_entry, item, required_item_version, wf_version, true)
                 internal_items_downloaded_txt  += generate_workflow_data("text", nil, item_entry, item, required_item_version, wf_version, true)
               elsif viewing_allowed
@@ -222,8 +232,13 @@ class Pack < ActiveRecord::Base
             if download_allowed
               self_downloaded_items_cnt += 1
               self_downloaded_file_cnt += 1
-              zipfile.get_output_stream( item.local_name ) { |stream| stream.write(ContentBlob.find(item.content_blob_id).data) }
               zip_filenames << item.local_name
+              
+              unless files_folder_created
+                zipfile.mkdir("files")
+                files_folder_created = true
+              end
+              zipfile.get_output_stream("files/" + item.local_name) { |stream| stream.write(ContentBlob.find(item.content_blob_id).data) }
               
               internal_items_downloaded_html += generate_file_data("html", cgi, item_entry, item, true)
               internal_items_downloaded_txt  += generate_file_data("text", nil, item_entry, item, true)
@@ -280,19 +295,19 @@ class Pack < ActiveRecord::Base
       pack_data_txt += "     |-  Workflows: #{self_downloaded_workflow_cnt}\n"
       pack_data_txt += "     |-  Files    : #{self_downloaded_file_cnt}\n\n"
       pack_data_txt += "Not downloaded items: #{self_total_items_cnt - self_downloaded_items_cnt}\n"
-      pack_data_txt += "     |- Internal items: #{self_view_only_workflow_cnt + self_view_only_file_cnt} (view-only permissions)\n"
-      pack_data_txt += "         |- Workflows : #{self_view_only_workflow_cnt}\n"
-      pack_data_txt += "         |- Files     : #{self_view_only_file_cnt}\n"
       pack_data_txt += "     |- Packs         : #{self_pack_cnt} (download of nested packs is not supported)\n"
       pack_data_txt += "     |- External items: #{self_external_items_cnt}\n"
-      pack_data_txt += "     |- Hidden items  : #{self_hidden_items_cnt}\n"
+      pack_data_txt += "     |- Items that can be viewed, but not downloaded: #{self_view_only_workflow_cnt + self_view_only_file_cnt} (view-only permissions)\n"
+      pack_data_txt += "         |- Workflows : #{self_view_only_workflow_cnt}\n"
+      pack_data_txt += "         |- Files     : #{self_view_only_file_cnt}\n"
+      pack_data_txt += "     |- Items that cannot be viewed : #{self_hidden_items_cnt}\n"
       
       pack_data_txt += "\n\n\n========== Downloaded Items (#{self_downloaded_items_cnt}) ==========\n\n" + (self_downloaded_items_cnt == 0 ? "    // No items were downloaded //\n\n" : internal_items_downloaded_txt)
       pack_data_txt += "\n\n========== Not Downloaded Items (#{self_total_items_cnt - self_downloaded_items_cnt}) ==========\n"
-      pack_data_txt += "\n\n=== Items with no download permissions (#{self_view_only_workflow_cnt + self_view_only_file_cnt}) ===\n\n" + (internal_items_viewing_only_txt.blank? ? "    // There are no items in this pack that can be viewed, but cannot be downloaded //\n\n" : internal_items_viewing_only_txt)
-      pack_data_txt += "\n\n=== Packs (#{self_pack_cnt}) ===\n\n" + (self_pack_cnt == 0 ? "    // No packs within this pack //\n\n" : internal_items_packs_txt)
-      pack_data_txt += "\n\n=== External items (#{self_external_items_cnt}) ===\n\n" + (self_external_items_cnt == 0 ? "    // No external items in this pack //\n\n" : external_items_txt)
-      pack_data_txt += "\n\n=== Items with no viewing permissions (#{self_hidden_items_cnt}) ===\n\n" + (self_hidden_items_cnt == 0 ? "    // No hidden items in this pack //\n\n" : internal_items_hidden_txt)
+      pack_data_txt += "\n\n=== Packs within this pack (#{self_pack_cnt}) ===\n\n" + (self_pack_cnt == 0 ? "    // None //\n\n" : internal_items_packs_txt)
+      pack_data_txt += "\n\n=== External items (#{self_external_items_cnt}) ===\n\n" + (self_external_items_cnt == 0 ? "    // None //\n\n" : external_items_txt)
+      pack_data_txt += "\n\n=== Items that can be viewed, but not downloaded (#{self_view_only_workflow_cnt + self_view_only_file_cnt}) ===\n\n" + (internal_items_viewing_only_txt.blank? ? "    // None //\n\n" : internal_items_viewing_only_txt)
+      pack_data_txt += "\n\n=== Items that cannot be viewed (#{self_hidden_items_cnt}) ===\n\n" + (self_hidden_items_cnt == 0 ? "    // None //\n\n" : internal_items_hidden_txt)
       #
       # HTML
       pack_data_html = cgi.html{
@@ -302,9 +317,9 @@ class Pack < ActiveRecord::Base
         } +
         cgi.body{
           cgi.div("class" => "provider_info") do
-            cgi.h1{"Snapshot of the Pack: #{self.title}"} +
+            cgi.h1{"Snapshot of the Pack: #{cgi.a(location_string("pack", self.id)){self.title}}"} +
             cgi.p{
-              cgi.i{"Downloaded from #{cgi.a(BASE_URI){'myExperiment.org'}} website<br/>" +
+              cgi.i{"Downloaded from #{cgi.a(BASE_URI){'myExperiment.org'}} website<br/><br/>" +
               "Snapshot generated at " + Time.now.strftime("%H:%M:%S on %A, %d %B %Y")} 
             }
           end +
@@ -316,16 +331,16 @@ class Pack < ActiveRecord::Base
             cgi.ul {
               cgi.li{cgi.a("#downloaded_items"){"Downloaded items:"} + " #{self_downloaded_items_cnt}" +
                 cgi.table{
-                  cgi.tr{ cgi.td{cgi.li("type" => "circle"){}} + cgi.td{"Workflows:"} + cgi.td{self_downloaded_workflow_cnt} } +
-                  cgi.tr{ cgi.td{cgi.li("type" => "circle"){}} + cgi.td{"Files:"} + cgi.td{self_downloaded_file_cnt} }
+                  cgi.tr{ cgi.td{"Workflows:"} + cgi.td{self_downloaded_workflow_cnt} } +
+                  cgi.tr{ cgi.td{"Files:"} + cgi.td{self_downloaded_file_cnt} }
                 }
               } +
               cgi.li{cgi.a("#not_downloaded_items"){"Not downloaded items:"} + " #{self_total_items_cnt - self_downloaded_items_cnt}" +
                 cgi.table{
-                  cgi.tr{ cgi.td{cgi.li("type" => "circle"){}} + cgi.td{cgi.a("#viewing_only_items"){"Items with no download permissions:"}} + cgi.td{"#{self_view_only_workflow_cnt + self_view_only_file_cnt}; ( #{self_view_only_workflow_cnt} workflows, #{self_view_only_file_cnt} files )"} } +
-                  cgi.tr{ cgi.td{cgi.li("type" => "circle"){}} + cgi.td{cgi.a("#packs"){"Packs:"}} + cgi.td{self_pack_cnt} } +
-                  cgi.tr{ cgi.td{cgi.li("type" => "circle"){}} + cgi.td{cgi.a("#external_items"){"External items:"}} + cgi.td{self_external_items_cnt} } +
-                  cgi.tr{ cgi.td{cgi.li("type" => "circle"){}} + cgi.td{cgi.a("#hidden_items"){"Items with no viewing permissions:"}} + cgi.td{self_hidden_items_cnt} }
+                  cgi.tr{ cgi.td{cgi.a("#packs"){"Packs within this pack:"}} + cgi.td{self_pack_cnt} } +
+                  cgi.tr{ cgi.td{cgi.a("#external_items"){"External items:"}} + cgi.td{self_external_items_cnt} } +
+                  cgi.tr{ cgi.td{cgi.a("#viewing_only_items"){"Items that can be viewed, but not downloaded:"}} + cgi.td{"#{self_view_only_workflow_cnt + self_view_only_file_cnt}; ( #{self_view_only_workflow_cnt} workflows, #{self_view_only_file_cnt} files )"} } +
+                  cgi.tr{ cgi.td{cgi.a("#hidden_items"){"Items that cannot be viewed:"}} + cgi.td{self_hidden_items_cnt} }
                 }
               }
             }
@@ -347,38 +362,38 @@ class Pack < ActiveRecord::Base
               cgi.a("name" => "#not_downloaded_items") +
               cgi.h2{"Not Downloaded Items (#{self_total_items_cnt - self_downloaded_items_cnt})"} +
               
-              cgi.div("class" => "pack_viewing_only_items") do
-                cgi.a("name" => "#viewing_only_items") +
-                cgi.h3{"Items with no download permissions (#{self_view_only_workflow_cnt + self_view_only_file_cnt})"} +
-                (internal_items_viewing_only_html.blank? ?
-                 none_text_html_message("There are no items in this pack that can be viewed, but cannot be downloaded") : 
-                 cgi.ul{ internal_items_viewing_only_html }
-                )
-              end +
-              
               cgi.div("class" => "pack_pack_items") do
                 cgi.a("name" => "#packs") +
-                cgi.h3{"Packs (#{self_pack_cnt})"} +
+                cgi.h3{"Packs within this pack (#{self_pack_cnt})"} +
                 (internal_items_packs_html.blank? ?
-                 none_text_html_message("No packs within this pack") :
+                 none_text_html_message("None") :
                  cgi.ul{ internal_items_packs_html }
                 )
               end +
-                
+              
               cgi.div("class" => "pack_external_items") do
                 cgi.a("name" => "#external_items") +
                 cgi.h3{"External items (#{self_external_items_cnt})"} +
                 (external_items_html.blank? ?
-                 none_text_html_message("No external items in this pack") :
+                 none_text_html_message("None") :
                  cgi.ul { external_items_html }
+                )
+              end +
+              
+              cgi.div("class" => "pack_viewing_only_items") do
+                cgi.a("name" => "#viewing_only_items") +
+                cgi.h3{"Items that can be viewed, but not downloaded (#{self_view_only_workflow_cnt + self_view_only_file_cnt})"} +
+                (internal_items_viewing_only_html.blank? ?
+                 none_text_html_message("None") : 
+                 cgi.ul{ internal_items_viewing_only_html }
                 )
               end +
               
               cgi.div("class" => "pack_hidden_items") do
                 cgi.a("name" => "#hidden_items") +
-                cgi.h3{"Items with no viewing permissions (#{self_hidden_items_cnt})"} +
+                cgi.h3{"Items that cannot be viewed (#{self_hidden_items_cnt})"} +
                 (internal_items_hidden_html.blank? ?
-                 none_text_html_message("No hidden items in this pack") :
+                 none_text_html_message("None") :
                  cgi.ul { internal_items_hidden_html }
                 )
               end
@@ -395,26 +410,27 @@ class Pack < ActiveRecord::Base
       info = Tempfile.new("pack_#{self.id}.tmp")
       info.write(pack_data_txt)
       info.close()
-      zipfile.add( "_Pack Info.txt", info.path )
+      zipfile.add("_Pack Info.txt", info.path)
       #
       # HTML
       index = Tempfile.new("index.html.tmp")
-      index.write( CGI::pretty(pack_data_html) )
+      index.write(CGI::pretty(pack_data_html))
       index.close()
-      zipfile.add( "index.html", index.path )
+      zipfile.add("index.html", index.path)
       #
       # CSS
-      zipfile.add( "index.css", "./public/stylesheets/pack-snapshot.css")
+      zipfile.add("index.css", "./public/stylesheets/pack-snapshot.css")
    
    # finalize the archive file
    zipfile.close()
 
    # set read permissions on the zip file
-   File.chmod(0644, archive_filename)
+   File.chmod(0644, archive_file_path)
    
    # remove any temporary files that were created while creating the zip file
+   # (these are created in the same place, where the zip file is stored)
    zip_filenames.each do |temp_file|
-     FileUtils.rm Dir.glob("#{temp_file}.*"), :force => true # 'force' option makes sure that exceptions are never raised
+     FileUtils.rm Dir.glob(Pack.archive_folder + "/" + "#{temp_file}.*"), :force => true # 'force' option makes sure that exceptions are never raised
    end
    
     
@@ -598,7 +614,7 @@ class Pack < ActiveRecord::Base
     if item.comment.nil? || item.comment.blank?
       return "Comment: " + (html_required ? "<span class='none_text'>none</span>" : "none")
     else
-      return "Comment: " + (html_required ? "<span class='comment_text'>" : "") + item.comment + (html_required ? '</span>' : '')
+      return "Comment: " + (html_required ? "<div class='comment_text'>#{simple_format(sanitize(item.comment))}</div>" : ("\n  |   " + item.comment.gsub(/\n/, "\n  |   ")))
     end
   end
   

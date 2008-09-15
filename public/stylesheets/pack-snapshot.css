@@ -99,23 +99,27 @@
 }
 
 .item_metadata {
-	border-left: 3px solid #CCCCCC;
-	padding-left: 0.6em;
-	margin: 0.3em 0;
+  border-left: 3px solid #CCCCCC;
+  padding-left: 0.6em;
+  margin: 0.3em 0;
 }
 
 
 
 /* any missing or not available information; info messages in any sections with no items */
 .none_text {
-	font-style: italic;
-	color: #666666;
+  font-style: italic;
+  color: #666666;
 }
 
 
 /* comments for all items */
-.comment_text {
-	font-style: italic;
+.comment_text p {
+  width: 500px;
+  margin: 0;
+  padding: 0.6em 1em;
+  background-color: #F7F7F7;
+  font-style: italic;
 }
 
 
@@ -123,13 +127,11 @@
 /* CUSTOM STYLE SETTINGS FOR HTML ELEMENTS */
 
 li {
-	margin-bottom: 1.5em;
+  margin-bottom: 1.5em;
 }
 
 table {
-  margin-top: 0.3em;	
+  margin-top: 0.3em;
+  margin-left: 1.5em;	
 }
 
-td li{
-	margin: 0;
-}
