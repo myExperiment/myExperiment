@@ -114,6 +114,19 @@ class Workflow < ActiveRecord::Base
     end
   end
   
+  def processor_class
+    @processor_class ||= WorkflowTypesHandler.processor_class_for_content_type(self.content_type)
+  end
+  
+  def display_data_format
+    klass = self.processor_class
+    @display_data_format = (klass.nil? ? "" : klass.display_data_format)
+  end
+  
+  def type_display_name
+    WorkflowTypesHandler.type_display_name_for_content_type(self.content_type)  
+  end
+  
   # Begin SCUFL specific methods
 
   def get_input_ports(version)

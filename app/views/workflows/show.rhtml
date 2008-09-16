@@ -1,4 +1,4 @@
-<% t "#{h @workflow.title} (#{h @workflow.contributor_name}) (#{get_type_display_name(@workflow)} Workflow)" -%>
+<% t "#{h @workflow.title} (#{h @workflow.contributor_name}) [#{h(@workflow.type_display_name)} Workflow]" -%>
 
 <script type="text/javascript">
   function showWorkflowVersion(form) {
@@ -19,7 +19,10 @@
 	<% end %>
 </ul>
 
-<h1 class="contribution_title">Workflow Entry: <%=h @workflow.title %> (<%= get_type_display_name(@workflow) -%> Workflow)</h1>
+<h1 class="contribution_title">
+	Workflow Entry: <%=h @workflow.title %>
+	<font style="color: #666666;">(<%= h(@workflow.type_display_name) -%> Workflow)</font>
+</h1>
 
 <%= render :partial => "contributions/datetime_info", :locals => { :contributable => @workflow } -%>
 
@@ -136,7 +139,7 @@
 			
 			<p>
 				<b>Type:</b>
-				<%= get_type_display_name(@workflow) %>
+				<%= h(@workflow.type_display_name) %>
 			</p>
 			
 			<br/>
@@ -198,7 +201,7 @@
 			
 			<% if @authorised_to_download %>
 				<ul class="sectionIcons">
-					<li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package #{h(get_main_download_data_format(@workflow))}") %></li>
+					<li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package #{get_parenthesised_data_format(@workflow)}") -%></li>
 				</ul>
 			<% else %>
 				<p class="none_text">
