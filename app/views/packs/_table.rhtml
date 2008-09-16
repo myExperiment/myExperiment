@@ -59,6 +59,7 @@
 					
 					<td class="actions" style="width: 80px;">
 				    <%= icon "show", pack_path(pack), nil, nil, "View" %>
+						<% if pack.authorized?('download', current_user) -%><%= icon('download', download_pack_path(pack), nil, nil, 'Download') -%><% end -%>
 				    <% if mine?(pack) %><%= icon "manage", edit_pack_path(pack), nil, nil, "Manage" %><% end %>
 						<% if pack.authorized?('edit', current_user) -%><%= icon('new', new_item_pack_path(pack), nil, nil, 'Add New Item') -%><% end -%>
 				  </td>
