@@ -127,25 +127,19 @@ class Workflow < ActiveRecord::Base
     WorkflowTypesHandler.type_display_name_for_content_type(self.content_type)  
   end
   
-  # Begin SCUFL specific methods
-
-  def get_input_ports(version)
-    return nil unless (workflow_version = self.find_version(version))
-    parser = Scufl::Parser.new
-    model  = parser.parse(workflow_version.content_blob.data)
-    
-    return model.sources
-  end
-  
   def get_workflow_model_object(version)
     return nil unless (workflow_version = self.find_version(version))
-    parser = Scufl::Parser.new
-    model  = parser.parse(workflow_version.content_blob.data)
-    
-    return model
+    return (self.processor_class.nil? ? nil : self.processor_class.new(workflow_version.content_blob.data).get_workflow_model_object)
   end
-
-  # End SCUFL specific methods
+  
+  # Begin acts_as_runnable overridden methods
+ 
+  def get_input_ports(version)
+    return nil unless (workflow_version = self.find_version(version))
+    return (self.processor_class.nil? ? nil : self.processor_class.new(workflow_version.content_blob.data).get_workflow_model_input_ports)
+  end
+  
+  # End acts_as_runnable overridden methods
 
   def named_download_url
     "#{BASE_URI}/workflows/#{id}/download/#{unique_name}.xml"

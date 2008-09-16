@@ -72,6 +72,14 @@ module WorkflowProcessors
       nil
     end
     
+    def get_workflow_model_object
+      nil
+    end
+    
+    def get_workflow_model_input_ports
+      
+    end
+    
     # End Instance Methods
     
   end

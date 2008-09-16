@@ -66,7 +66,7 @@ module WorkflowProcessors
 
     def initialize(workflow_definition)
       super(workflow_definition)
-      @scufl_model = Scufl::Parser.new.parse(@workflow_definition)
+      @scufl_model = Scufl::Parser.new.parse(workflow_definition)
     end
 
     # End Object Initializer
@@ -108,6 +108,14 @@ module WorkflowProcessors
         svg.content_type = "image/svg+xml"
         return [img, svg]
       end
+    end
+    
+    def get_workflow_model_object
+      @scufl_model
+    end
+    
+    def get_workflow_model_input_ports
+      return (@scufl_model.nil? ? nil : @scufl_model.sources)
     end
     
     # End Instance Methods
