@@ -1067,6 +1067,11 @@ module ApplicationHelper
     link_to image_tag('feed-icon.png', :alt => alt_text, :title => tooltip_title_attrib(alt_text), :style => "vertical-align: middle; padding: 0;" + style), url
   end
   
+  def download_icon_tag(title, url, style='')
+    filename = method_to_icon_filename("download")
+    link_to image_tag(filename, :alt => "Download", :title => tooltip_title_attrib(title), :style => "vertical-align: middle; padding: 0;" + style), url
+  end
+  
   # NOTE: the timeago methods below are used instead of the built in Rails DateHelper methods
   # because they don't seem to be working.
 

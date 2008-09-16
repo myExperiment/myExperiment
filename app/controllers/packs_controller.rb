@@ -4,7 +4,7 @@
 # See license.txt for details.
 
 class PacksController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :all, :search, :items]
+  before_filter :login_required, :except => [:index, :show, :all, :search, :items, :download]
   
   before_filter :find_packs, :only => [:all]
   before_filter :find_pack_auth, :except => [:index, :new, :create, :all, :search]
@@ -51,6 +51,18 @@ class PacksController < ApplicationController
     respond_to do |format|
       format.html # show.rhtml
     end
+  end
+  
+  # GET /packs/1;download
+  def download
+    # this is done every time the donwload is requested;
+    # however all versions of the archive are replacing each other,
+    # so ultimately there's just one copy of a zip archive per pack
+    # (this also makes sure that changes to the pack are reflected in the
+    # zip, because it is generated on the fly every time) 
+    @pack.create_zip(current_user)
+    
+    send_file @pack.archive_file_path, :disposition => 'attachment'
   end
   
   # GET /packs/new
@@ -402,6 +414,7 @@ class PacksController < ApplicationController
         @pack = pack
         
         @authorised_to_edit = logged_in? && @pack.authorized?("edit", current_user)
+        @authorised_to_download = @pack.authorized?("download", (logged_in? ? current_user : nil))
         
         @pack_entry_url = url_for :only_path => false,
                             :host => base_host,

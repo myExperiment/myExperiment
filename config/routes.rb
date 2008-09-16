@@ -59,6 +59,7 @@ ActionController::Routing::Routes.draw do |map|
                  :edit_item => :get,
                  :update_item => :put,
                  :destroy_item => :delete,
+                 :download => :get,
                  :quick_add => :post,
                  :resolve_link => :post,
                  :items => :get } do |pack|
