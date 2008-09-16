@@ -118,13 +118,13 @@ class Workflow < ActiveRecord::Base
     @processor_class ||= WorkflowTypesHandler.processor_class_for_content_type(self.content_type)
   end
   
-  def display_data_format
-    klass = self.processor_class
-    @display_data_format = (klass.nil? ? "" : klass.display_data_format)
-  end
-  
   def type_display_name
     WorkflowTypesHandler.type_display_name_for_content_type(self.content_type)  
+  end
+  
+  def display_data_format
+    klass = self.processor_class
+    @display_data_format = (klass.nil? ? self.file_ext : klass.display_data_format)
   end
   
   def get_workflow_model_object(version)
@@ -141,8 +141,12 @@ class Workflow < ActiveRecord::Base
   
   # End acts_as_runnable overridden methods
 
+  def filename
+    "#{unique_name}.#{file_ext}"
+  end
+  
   def named_download_url
-    "#{BASE_URI}/workflows/#{id}/download/#{unique_name}.xml"
+    "#{BASE_URI}/workflows/#{id}/download/#{filename}"
   end
 
 end

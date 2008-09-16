@@ -15,7 +15,7 @@ module WorkflowProcessors
     
     # MUST be unique across all processors
     def self.display_name 
-      "Taverna 2.x beta"
+      "Taverna 2 beta"
     end
     
     # MUST be unique across all processors
@@ -27,8 +27,10 @@ module WorkflowProcessors
       "T2FLOW"
     end
     
-    def self.file_ext
-      "t2flow"
+    # All the file extensions supported by this workflow processor.
+    # Must be all in lowercase.
+    def self.file_extensions_supported
+      [ "t2flow" ]
     end
     
     def self.can_infer_metadata?

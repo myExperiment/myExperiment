@@ -201,7 +201,7 @@
 			
 			<% if @authorised_to_download %>
 				<ul class="sectionIcons">
-					<li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package #{get_parenthesised_data_format(@workflow)}") -%></li>
+					<li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package (#{@workflow.display_data_format})") -%></li>
 				</ul>
 			<% else %>
 				<p class="none_text">

@@ -16,7 +16,4 @@ module WorkflowsHelper
     return (klass.nil? ? "other" : h(klass.to_s.demodulize.underscore))
   end
   
-  def get_parenthesised_data_format(workflow)
-    return (workflow.display_data_format.blank? ? "" : "(#{h(workflow.display_data_format)})")
-  end
 end

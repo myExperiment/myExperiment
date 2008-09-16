@@ -135,14 +135,14 @@ class WorkflowsController < ApplicationController
   def download
     @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
     
-    send_data(@viewing_version.content_blob.data, :filename => @viewing_version.unique_name + ".xml", :type => "application/vnd.taverna.scufl+xml")
+    send_data(@viewing_version.content_blob.data, :filename => @workflow.filename, :type => @workflow.content_type)
   end
   
   # GET /workflows/:id/download/:name
   def named_download
 
     # check that we got the right filename for this workflow
-    if params[:name] == "#{@viewing_version.unique_name}.xml"
+    if params[:name] == @workflow.filename
       download
     else
       render :nothing => true, :status => "404 Not Found"
@@ -254,6 +254,7 @@ class WorkflowsController < ApplicationController
       @workflow.contributor = current_user
       @workflow.license = params[:workflow][:license]
       @workflow.content_blob = ContentBlob.new(:data => file.read)
+      @workflow.file_ext = file.original_filename.split(".").last.downcase
       
       file.rewind
       

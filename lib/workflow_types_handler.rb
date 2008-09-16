@@ -64,9 +64,10 @@ class WorkflowTypesHandler
   # Attempts to find a matching processor class that can be used for the given workflow file/script.
   # Returns nil if no corresponding processor is found.
   def self.processor_class_for_file(file)
+    file_ext = file.original_filename.split(".").last.downcase
     proc_class = nil
     @@processor_classes.each do |c|
-      proc_class = c if c.recognised?(file)
+      proc_class = c if c.file_extensions_supported.include?(file_ext) && c.recognised?(file)
     end
     return proc_class
   end

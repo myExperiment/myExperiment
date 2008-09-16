@@ -27,7 +27,7 @@ module WorkflowProcessors
   
     # MUST be unique across all processors
     def self.display_name 
-      "Taverna 1.x (SCUFL)"
+      "Taverna 1"
     end
     
     # MUST be unique across all processors
@@ -39,8 +39,10 @@ module WorkflowProcessors
       "SCUFL"
     end
     
-    def self.file_ext
-      "xml"
+    # All the file extensions supported by this workflow processor.
+    # Must be all in lowercase.
+    def self.file_extensions_supported
+      [ "xml" ]
     end
     
     def self.recognised?(file)
