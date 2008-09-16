@@ -15,7 +15,7 @@ class FriendshipSweeper < ActionController::Caching::Sweeper
     expire_sidebar_user_monitor(friendship.friend_id)
   end
 
-  def after_destroy(friendship)
+  def after_update(friendship)
     expire_sidebar_assets(friendship.user_id)
     expire_sidebar_assets(friendship.friend_id)
 
@@ -23,7 +23,7 @@ class FriendshipSweeper < ActionController::Caching::Sweeper
     expire_sidebar_user_monitor(friendship.friend_id)
   end
 
-  def after_update(friendship)
+  def after_destroy(friendship)
     expire_sidebar_assets(friendship.user_id)
     expire_sidebar_assets(friendship.friend_id)
 

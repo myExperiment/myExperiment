@@ -18,7 +18,8 @@ class ReviewsController < ApplicationController
   before_filter :find_review, :only => [ :show ]
   before_filter :find_review_auth, :only => [ :edit, :update, :destroy ]
   
-  before_filter :invalidate_listing_cache, :only => [ :create, :update, :destroy ]
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :review_sweeper, :only => [ :create, :update, :delete ]
   
   def index
     respond_to do |format|
@@ -149,12 +150,6 @@ protected
     end
   end
   
-  def invalidate_listing_cache
-    if @reviewable
-      expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => @reviewable.id)
-    end
-  end
-
 private
 
   def error(notice, message, attr=:id)

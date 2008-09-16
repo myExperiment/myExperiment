@@ -15,8 +15,6 @@ class UsersController < ApplicationController
   before_filter :find_user, :only => show_actions
   before_filter :find_user_auth, :only => [:edit, :update, :destroy]
   
-  before_filter :invalidate_listing_cache, :only => [:update, :destroy]
-
   # declare sweepers and which actions should invoke them
   cache_sweeper :user_sweeper, :only => [ :create, :update, :destroy ]
   
@@ -557,12 +555,6 @@ protected
     unless @user.activated?
       error("User not activated (id not authorized)", "is invalid (not owner)")
       return false
-    end
-  end
-  
-  def invalidate_listing_cache
-    if params[:id]
-      expire_fragment(:controller => 'users_cache', :action => 'listing', :id => params[:id])
     end
   end
   

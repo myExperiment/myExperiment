@@ -12,13 +12,14 @@ class WorkflowsController < ApplicationController
   
   before_filter :check_is_owner, :only => [:edit, :update]
   
-  before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :launch, :update, :update_version, :comment, :comment_delete, :rate, :tag, :destroy, :destroy_version]
-  before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
-
   # declare sweepers and which actions should invoke them
-  cache_sweeper :workflow_sweeper, :only => [ :create, :destroy ]
+  cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy_version, :destroy ]
+  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :launch ]
+  cache_sweeper :permission_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
-  cache_sweeper :tag_sweeper, :only => [ :tag, :destroy ]
+  cache_sweeper :tag_sweeper, :only => [ :create, :update, :tag, :destroy ]
+  cache_sweeper :comment_sweeper, :only => [ :comment, :comment_delete ]
+  cache_sweeper :rating_sweeper, :only => [ :rate ]
   
   # These are provided by the Taverna gem
   require 'scufl/model'
@@ -569,17 +570,6 @@ protected
     if @workflow
       error("You are not authorised to manage this Workflow", "") unless @workflow.owner?(current_user)
     end
-  end
-  
-  def invalidate_listing_cache
-    if @workflow
-      expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => @workflow.id)
-    end
-  end
-  
-  def invalidate_tags_cache
-    expire_fragment(:controller => 'workflows', :action => 'all_tags')
-    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
   end
   
   def create_workflow(wf)

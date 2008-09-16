@@ -9,13 +9,14 @@ class PacksController < ApplicationController
   before_filter :find_packs, :only => [:all]
   before_filter :find_pack_auth, :except => [:index, :new, :create, :all, :search]
   
-  before_filter :invalidate_listing_cache, :only => [:show, :update, :comment, :comment_delete, :tag, :destroy, :create_item, :update_item, :delete_item]
-  before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
-
   # declare sweepers and which actions should invoke them
-  cache_sweeper :pack_sweeper, :only => [ :create, :destroy ]
+  cache_sweeper :pack_sweeper, :only => [ :create, :update, :destroy ]
+  cache_sweeper :pack_entry_sweeper, :only => [ :create_item, :quick_add, :update_item, :destroy_item ]
+  cache_sweeper :permission_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
-  cache_sweeper :tag_sweeper, :only => [ :tag, :destroy ]
+  cache_sweeper :tag_sweeper, :only => [ :create, :update, :tag, :destroy ]
+  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download ]
+  cache_sweeper :comment_sweeper, :only => [ :comment, :comment_delete ]
 
   def search
     @query = params[:query]
@@ -427,17 +428,6 @@ class PacksController < ApplicationController
     rescue ActiveRecord::RecordNotFound
       error("Pack not found", "is invalid")
     end
-  end
-  
-  def invalidate_listing_cache
-    if @pack
-      expire_fragment(:controller => 'packs_cache', :action => 'listing', :id => @pack.id)
-    end
-  end
-  
-  def invalidate_tags_cache
-    expire_fragment(:controller => 'packs', :action => 'all_tags')
-    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
   end
   
   private

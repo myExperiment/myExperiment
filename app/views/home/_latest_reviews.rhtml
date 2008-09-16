@@ -1,6 +1,5 @@
 <!-- Latest Reviews -->
-<% cache_timeout({:controller => 'home_cache', :action => 'latest_reviews', :id => (logged_in? ? current_user.id : 0)}, 
-								 CACHE_TIMEOUT_SECS.seconds.from_now) do -%>
+<% cache(:controller => 'home_cache', :action => 'latest_reviews', :id => (logged_in? ? current_user.id : 0)) do -%> 
 	<div class="box">
 		<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 		<div class="title">

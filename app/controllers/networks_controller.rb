@@ -10,13 +10,11 @@ class NetworksController < ApplicationController
   before_filter :find_network, :only => [:membership_request, :show, :comment, :comment_delete, :tag]
   before_filter :find_network_auth, :only => [:invite, :membership_invite, :membership_invite_external, :edit, :update, :destroy]
   
-  before_filter :invalidate_listing_cache, :only => [:update, :comment, :comment_delete, :tag, :destroy]
-  before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
-
   # declare sweepers and which actions should invoke them
   cache_sweeper :network_sweeper, :only => [ :create, :update, :destroy, :membership_request, :membership_invite, :membership_invite_external ]
   cache_sweeper :membership_sweeper, :only => [ :destroy, :membership_request, :membership_invite, :membership_invite_external ]
-  cache_sweeper :tag_sweeper, :only => [ :tag, :destroy ]
+  cache_sweeper :tag_sweeper, :only => [ :create, :update, :tag, :destroy ]
+  cache_sweeper :comment_sweeper, :only => [ :comment, :comment_delete ]
   
   # GET /networks;search
   def search
@@ -343,17 +341,6 @@ protected
     rescue ActiveRecord::RecordNotFound
       error("Group not found (id not authorized)", "is invalid (not owner)")
     end
-  end
-  
-  def invalidate_listing_cache
-    if @network
-      expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => @network.id)
-    end
-  end
-  
-  def invalidate_tags_cache
-    expire_fragment(:controller => 'groups', :action => 'all_tags')
-    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
   end
   
 private

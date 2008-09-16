@@ -11,13 +11,14 @@ class BlobsController < ApplicationController
   
   before_filter :check_is_owner, :only => [:edit, :update]
   
-  before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :comment, :comment_delete, :rate, :tag, :destroy]
-  before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
-
   # declare sweepers and which actions should invoke them
-  cache_sweeper :blob_sweeper, :only => [ :create, :destroy ]
+  cache_sweeper :blob_sweeper, :only => [ :create, :update, :destroy ]
+  cache_sweeper :permission_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
-  cache_sweeper :tag_sweeper, :only => [ :tag, :destroy ]
+  cache_sweeper :tag_sweeper, :only => [ :create, :update, :tag, :destroy ]
+  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download ]
+  cache_sweeper :comment_sweeper, :only => [ :comment, :comment_delete ]
+  cache_sweeper :rating_sweeper, :only => [ :rate ]
   
   # GET /files;search
   def search
@@ -324,17 +325,6 @@ class BlobsController < ApplicationController
     if @blob
       error("You are not authorised to manage this File", "") unless @blob.owner?(current_user)
     end
-  end
-  
-  def invalidate_listing_cache
-    if @blob
-      expire_fragment(:controller => 'files_cache', :action => 'listing', :id => @blob.id)
-    end
-  end
-  
-  def invalidate_tags_cache
-    expire_fragment(:controller => 'files', :action => 'all_tags')
-    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
   end
   
   private

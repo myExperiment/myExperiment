@@ -11,8 +11,6 @@ class MembershipsController < ApplicationController
   before_filter :find_memberships, :only => [:index]
   before_filter :find_membership_auth, :only => [:show, :accept, :edit, :update, :destroy]
   
-  before_filter :invalidate_listing_cache, :only => [:accept, :update, :destroy]
-
   # declare sweepers and which actions should invoke them
   cache_sweeper :membership_sweeper, :only => [ :create, :accept, :update, :destroy ]
   
@@ -314,12 +312,6 @@ protected
       error(exc.message, "")
     end
     
-  end
-  
-  def invalidate_listing_cache
-    if @membership
-      expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => @membership.network_id)
-    end
   end
   
 private
