@@ -304,9 +304,9 @@ class BlobsController < ApplicationController
                             :host => base_host,
                             :id => @blob.id
 
-        @named_download_url = url_for :action => 'named_download',
+        @named_download_url = url_for :controller => 'files',
+                                      :action => 'named_download',
                                       :id => @blob.id, 
-                                      :version => 1, # blobs aren't versioned (yet)
                                       :name => @blob.local_name
 
       else

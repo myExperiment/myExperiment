@@ -225,6 +225,8 @@ ActionController::Routing::Routes.draw do |map|
   # alternate download link to work around lack of browser redirects when downloading
   map.connect ':controller/:id/download/:name', :action => 'named_download', :requirements => { :name => /.*/ }
   
+  map.connect 'files/:id/download/:name', :controller => 'blobs', :action => 'named_download', :requirements => { :name => /.*/ }
+  
   # simple_pages plugin
   map.from_plugin :simple_pages
 
