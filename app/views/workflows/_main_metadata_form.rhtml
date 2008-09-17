@@ -15,7 +15,7 @@
 															main_metadata_infer_selected, 
 															:onclick => "$('metadata_choice_custom').checked=false;$('div_main_metadata_custom').hide();return true;") -%>
 				Infer metadata from the workflow file/script
-				<%= info_icon_with_tooltip("<b>Note:</b> we are only able to do this for Taverna 1.x workflows at the moment.") -%> 
+				<%= info_icon_with_tooltip("<b>Note:</b> we are only able to do this for Taverna 1 workflows at the moment.") -%> 
 			</label>
 		</p>
 		<p style="margin-top: 0.1em;">
@@ -36,7 +36,10 @@
 											 options_for_select(workflow_types, (params[:workflow].nil? ? nil : params[:workflow][:type])),
 											 :onchange => "if (this.value == 'Other') { $('workflow[type_other]').show(); $('workflow[type_other]').focus(); } else { $('workflow[type_other]').hide(); }",
 											 :style => "vertical-align: middle;" -%>
-				<%= text_field_tag "workflow[type_other]", (params[:workflow].nil? ? '' : params[:workflow][:type_other]), :size => 30, :style => 'display: none; vertical-align: middle;' %> 
+				<%= text_field_tag "workflow[type_other]",
+													 (params[:workflow].nil? ? '' : params[:workflow][:type_other]),
+													 :size => 30, 
+													 :style => "display: #{params[:workflow].nil? ? 'none' : (params[:workflow][:type] == 'Other' ? 'inline' : 'none')}; vertical-align: middle;" %> 
 				
 				<!-- Title -->
 				<p><b>Title</b></p>

@@ -429,7 +429,7 @@ class WorkflowsController < ApplicationController
   def update
     # remove protected columns
     if params[:workflow]
-      [:contribution, :contributor_id, :contributor_type, :image, :created_at, :updated_at, :version].each do |column_name|
+      [:contribution, :contributor_id, :contributor_type, :image, :svg, :created_at, :updated_at, :current_version, :content_type, :file_ext, :content_blob_id].each do |column_name|
         params[:workflow].delete(column_name)
       end
     end
@@ -440,9 +440,6 @@ class WorkflowsController < ApplicationController
         params[:workflow].delete(column_name)
       end
     end
-    
-    # Remove sculf in case (since scufl can never be updated, only new versions can be uploaded (see seperate actions for that)
-    params[:workflow].delete('scufl') if params[:workflow][:scufl]
     
     respond_to do |format|
       if @workflow.update_attributes(params[:workflow])
@@ -470,7 +467,7 @@ class WorkflowsController < ApplicationController
     if params[:version]
       success = @workflow.update_version(params[:version], :title => params[:workflow][:title], :body => params[:workflow][:body])
     else
-      success = false;
+      success = false
     end
     
     respond_to do |format|
@@ -609,10 +606,7 @@ protected
                                 :id => @workflow.id, 
                                 :version => @viewing_version_number.to_s
         
-        @named_download_url = url_for :action => 'named_download',
-                                      :id => @workflow.id, 
-                                      :version => @viewing_version_number.to_s,
-                                      :name => "#{@viewing_version.unique_name}.xml"
+        @named_download_url = url_for @workflow.named_download_url + "?version=#{@viewing_version_number.to_s}" 
                                       
         @launch_url = "/workflows/#{@workflow.id}/launch.whip?version=#{@viewing_version_number.to_s}"
 
