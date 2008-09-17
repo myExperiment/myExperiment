@@ -16,11 +16,7 @@
 	<p class="step_text">1. Workflow file/script</p>
 
 	<center>
-	  <div class="box_form" style="width: 450px; text-align: center;">
-			<p style="text-align: center;">
-	  		<input id="workflow_file" name="workflow[file]" size="50" type="file"/>
-			</p>
-	  </div>
+	  <%= render :partial => 'workflow_file_selection_form' %>
 	</center>
   
   <br />
@@ -29,7 +25,7 @@
 	
 	<p class="step_text">2. Main metadata</p>
   
-	<%= render :partial => "main_metadata_form" -%>
+	<%= render :partial => "main_metadata_form", :locals => { :new_version => false } -%>
 	
 	<br/>
 	
@@ -54,13 +50,7 @@
 	
 	<p class="step_text">4. Terms and conditions</p>
 	
-  <p style="text-align: center; margin: 0 3em; padding: 0.6em; border-top: 1px dotted #999999; border-bottom: 1px dotted #999999; color: #333333;">
-    <strong>Note:</strong> You are responsible for any content that you upload. 
-		You may remove your content at any time. We may make copies for operational purposes. 
-		This service is governed by the <%= link_to "JANET Acceptable Use Policy", "http://www.ja.net/services/publications/policy/aup.html", :target => "_blank" %>. 
-		Takedown requests will be reviewed by the myExperiment Management Committee. 
-		The sharing functionality is under beta test. Please contact us for further information about Terms and Conditions.
-  </p>
+  <%= render :partial => 'contributions/terms_and_conditions' %>
 	
 	<br/>
 

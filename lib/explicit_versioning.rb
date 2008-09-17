@@ -76,7 +76,9 @@ module Jits
           versions.find(:all, options)
         end
         
+        # Saves the object as a new version and leaves the original object unsaved.
         def save_as_new_version(revision_comment=nil)
+          return false unless self.valid?
           without_update_callbacks do 
             set_new_version
             save_version_on_create(revision_comment)

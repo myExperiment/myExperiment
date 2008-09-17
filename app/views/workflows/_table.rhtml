@@ -15,6 +15,9 @@
 		<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 			<% cache(:controller => 'workflows_cache', :action => 'listing', :id => workflow.id) do -%>
 			    <td style="width: 100px;">
+						<div class="workflow_type_box" style="width: auto; margin-bottom: 2em;">
+							<%= workflow.type_display_name -%>
+						</div>
 			    	<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
 						<center><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %></center>
 					</td>
@@ -28,10 +31,6 @@
 								(v<%= workflow.current_version %>)
 							</span>
 					  </p>
-						
-						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
-							<b>Type:</b> <%= workflow.type_display_name -%>
-						</p>
 					
 						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
 							<b>Created:</b> <%=datetime workflow.created_at, false -%>
@@ -113,10 +112,12 @@
 					  <% end %>	
 			    </td>
 			<% end -%>
-			    <td class="actions" style="width: 85px;">
+			    <td class="actions" style="width: 120px;">
 			      <%= icon "show", workflow_path(workflow), nil, nil, "View" %>
 				  	<% if workflow.authorized?("download", current_user) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
 			      <% if mine?(workflow) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
+						<br/><br/>
+						
 			    </td>
 		</tr>
   	<% end -%>

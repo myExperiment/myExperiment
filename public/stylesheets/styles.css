@@ -1245,6 +1245,16 @@ a.button_slim * {
 	border: 1px solid #CCCCCC;
 }
 
+.contribution_version_meta_info_box {
+	padding: 0.3em 0.6em; 
+	border: 1px dotted #999999;
+	background-color: #FFFFCC;
+	color: #333333;
+	line-height: 1.2;
+	font-size: 85%;
+	margin-left: 2.5em;  
+}
+
 .contribution_currentlicense {
 	padding: 0 0 0.5em 0;
 }
@@ -1861,4 +1871,20 @@ table.quick_add td.label .inner {
 table.quick_add td.submit {
 	text-align: left; 
 	width: 4em;
+}
+
+.required {
+	color: red;
+	font-weight: bold;
+}
+
+.workflow_type_box {
+	border: 1px solid #DDDDDD; 
+	background-color: #FFFFCC; 
+	margin: 0; 
+	padding: 0.4em 0.5em; 
+	font-size: 77%; 
+	color: #990000; 
+	font-weight: bold; 
+	text-align: center;
 }

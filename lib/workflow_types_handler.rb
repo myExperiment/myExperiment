@@ -11,15 +11,18 @@ class WorkflowTypesHandler
   # Note: for performance reasons this is a "load once" method and thus requires a server restart if new processor classes are added.
   def self.processor_classes
     if @@processor_classes.nil?
-      @@processor_classes               = [ ]
-      @@processor_display_names         = { }
-      @@processor_content_types         = { }
-      @@type_display_name_content_types = { }
-      @@content_type_type_display_names = { }
+      @@processor_classes                       = [ ]
+      @@workflow_types_that_can_infer_metadata  = [ ]
+      @@processor_display_names                 = { }
+      @@processor_content_types                 = { }
+      @@type_display_name_content_types         = { }
+      @@content_type_type_display_names         = { }
       
       ObjectSpace.each_object(Class) do |c|
         if c < WorkflowProcessors::Interface
           @@processor_classes << c
+          
+          @@type_display_names_that_can_infer_metadata << c.display_name if c.can_infer_metadata?
           
           # Also populate the lookup tables for ease of use later.
           @@processor_display_names[c.display_name] = c
@@ -35,7 +38,7 @@ class WorkflowTypesHandler
   
   # Refreshes the list of all known workflow types in the system.
   # Note: this includes types that don't have corresponding processors (ie: custom types set in the db).
-  def self.refresh_types!
+  def self.refresh_all_known_types!
     @@types = { }
     
     # First get the types defined by the processors found
@@ -114,10 +117,18 @@ class WorkflowTypesHandler
     end
   end
   
+  # Gets the list of workflow types (denoted by type display name) that support parsing and inferring metadata.
+  def self.ones_that_can_infer_metadata
+    @@type_display_names_that_can_infer_metadata
+  end
+  
 protected
 
-  # A catalogue of all the processor classes available.
+  # List of all the processor classes available.
   @@processor_classes = nil
+  
+  # List of workflow types (denoted by type display name) that support parsing and inferring metadata.
+  @@type_display_names_that_can_infer_metadata = [ ]
   
   # The following should map the unique key values (which are based on what the variable name is) with the corresponding processor class.
   # These act as quick lookup tables.
@@ -150,4 +161,4 @@ end
 puts "Workflow type processors found: " + WorkflowTypesHandler.processor_classes.to_sentence
 
 # Refresh the list of workflow types in the system
-WorkflowTypesHandler.refresh_types!
+WorkflowTypesHandler.refresh_all_known_types!

@@ -14,8 +14,8 @@
 															"infer", 
 															main_metadata_infer_selected, 
 															:onclick => "$('metadata_choice_custom').checked=false;$('div_main_metadata_custom').hide();return true;") -%>
-				Infer metadata from the workflow file/script
-				<%= info_icon_with_tooltip("<b>Note:</b> we are only able to do this for Taverna 1 workflows at the moment.") -%> 
+				Attempt to infer metadata from the workflow file/script
+				<%= info_icon_with_tooltip("<b>Note:</b> we are only able to do this for #{WorkflowTypesHandler.ones_that_can_infer_metadata.to_sentence} workflows at the moment. If this fails you will have the opportunity to set some custom metadata instead.") -%> 
 			</label>
 		</p>
 		<p style="margin-top: 0.1em;">
@@ -29,20 +29,25 @@
 		</p>
 		
 		<div id="div_main_metadata_custom" class="box_editing" style="margin: 1em 0em 1em 1.5em; padding-left: 1.5em; background: transparent; <%= main_metadata_infer_selected ? "display: none;" : "" -%>">
-			
-				<!-- Type -->
-				<p style="margin-top: 0;"><b>Workflow Type</b></p>
-				<%= select_tag "workflow[type]", 
-											 options_for_select(workflow_types, (params[:workflow].nil? ? nil : params[:workflow][:type])),
-											 :onchange => "if (this.value == 'Other') { $('workflow[type_other]').show(); $('workflow[type_other]').focus(); } else { $('workflow[type_other]').hide(); }",
-											 :style => "vertical-align: middle;" -%>
-				<%= text_field_tag "workflow[type_other]",
-													 (params[:workflow].nil? ? '' : params[:workflow][:type_other]),
-													 :size => 30, 
-													 :style => "display: #{params[:workflow].nil? ? 'none' : (params[:workflow][:type] == 'Other' ? 'inline' : 'none')}; vertical-align: middle;" %> 
+				
+				<% unless new_version -%>		
+					<!-- Type -->
+					<p style="margin-top: 0;"><b>Workflow Type</b></p>
+					<%= select_tag "workflow[type]", 
+												 options_for_select(workflow_types, (params[:workflow].nil? ? nil : params[:workflow][:type])),
+												 :onchange => "if (this.value == 'Other') { $('workflow[type_other]').show(); $('workflow[type_other]').focus(); } else { $('workflow[type_other]').hide(); }",
+												 :style => "vertical-align: middle;" -%>
+					<%= text_field_tag "workflow[type_other]",
+														 (params[:workflow].nil? ? '' : params[:workflow][:type_other]),
+														 :size => 30, 
+														 :style => "display: #{params[:workflow].nil? ? 'none' : (params[:workflow][:type] == 'Other' ? 'inline' : 'none')}; vertical-align: middle;" %>
+			  <% end -%> 
 				
 				<!-- Title -->
-				<p><b>Title</b></p>
+				<p>
+					<b>Title</b>
+					<span class="required">*</span>
+				</p>
 				<%= text_field_tag "workflow[title]", (params[:workflow].nil? ? '' : params[:workflow][:title]), :size => 50 %>
 				
 				<!-- Preview Image -->
@@ -51,7 +56,7 @@
 				
 				<!-- Description -->
 				<p><b>Description</b></p>
-				<%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '500px', :height => '300px') %>
+				<%= fckeditor_textarea(:new_workflow, :body, :toolbarSet => 'Simple', :width => '500px', :height => '300px') %>
 		
 		</div>
 	

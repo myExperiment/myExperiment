@@ -4,6 +4,11 @@
 
 <h1>Upload New Version of Workflow: <%= contributable @workflow.id, "Workflow" %></h1>
 
+<p class="box_infotext" style="text-align: center; margin-bottom: 1.2em;">
+	<b>Note:</b> this new workflow must be of the same type as the original one (so it must be a '<%= h(@workflow.type_display_name) -%>' workflow).
+	If you would like to upload a different type of workflow then click <%= link_to "here", new_workflow_path -%> to upload it as a new workflow entry in myExperiment.
+</p>
+
 <center>
 	<%= error_messages_for :workflow %>
 </center>
@@ -15,11 +20,7 @@
 	<p class="step_text">1. Workflow file/script</p>
 
 	<center>
-	  <div class="box_form" style="width: 450px; text-align: center;">
-			<p style="text-align: center;">
-	  		<input id="workflow_file" name="workflow[file]" size="50" type="file"/>
-			</p>
-	  </div>
+	  <%= render :partial => 'workflow_file_selection_form' %>
 	</center>
   
   <br />
@@ -28,19 +29,30 @@
 	
 	<p class="step_text">2. Main metadata</p>
   
-	<%= render :partial => "main_metadata_form" -%>
+	<%= render :partial => "main_metadata_form", :locals => { :new_version => true } -%>
 	
 	<br/>
 	
 	<!-- Revision comments -->
 	
-	<p class="step_text">3. Revision comments</p>
+	<p class="step_text">
+		3. Revision comments
+		<%= info_icon_with_tooltip("Use this to explain what is different about this new version.") -%> 
+	</p>
 	
 	<center>
 	  <div class="box_form" style="width: 450px; text-align: center;">
 			<%= fckeditor_textarea(:new_workflow, "comments", :toolbarSet => 'Basic', :width => '430px', :height => '300px') %>
 		</div>
 	</center>
+	
+	<br/>
+	
+	<!-- Terms and conditions -->
+	
+	<p class="step_text">4. Terms and conditions</p>
+	
+  <%= render :partial => 'contributions/terms_and_conditions' %>
 	
 	<br/>
 

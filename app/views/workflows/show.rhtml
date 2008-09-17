@@ -9,19 +9,21 @@
 </script>
 
 <ul class="sectionIcons">
+	<% if @authorised_to_edit -%>
+		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
+	<% end -%>	
 	<% if mine?(@workflow) -%>
 		<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow Entry')%></li>
 	<% end -%>
-	<% if @workflow.authorized?("destroy", current_user) %>
+	<% if @workflow.authorized?("destroy", current_user) -%>
 		<li>
 			<%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow Entry') %>
 		</li>
-	<% end %>
+	<% end -%>
 </ul>
 
 <h1 class="contribution_title">
 	Workflow Entry: <%=h @workflow.title %>
-	<font style="color: #666666;">(<%= h(@workflow.type_display_name) -%> Workflow)</font>
 </h1>
 
 <%= render :partial => "contributions/datetime_info", :locals => { :contributable => @workflow } -%>
@@ -97,29 +99,15 @@
 			<p style="color: #999999; font-size: 85%; text-align: left; padding-left: 0.5em; padding-top: 0.1em; margin: 0.4em 0;">
 				[ <%= link_to_function "Version meta info" + expand_image, visual_effect(:toggle_blind, "version_info_box", :duration => 0.5) %> ]
 			</p>		
-			<div id="version_info_box" class="box_standout" style="display: none; font-size: 85%; padding: 0.2em 0.4em; margin: 0.2em 0 1em 0; line-height: 1.1em; color: #333333;">
-				<p>
-					<b>Version created on:</b>
-					<%= datetime @viewing_version.updated_at %>
-				</p>
-				<p>
-					<b>Revision comments:</b>
-				</p>
-				<% unless @viewing_version.revision_comments.nil? or @viewing_version.revision_comments.empty? %>
-					<div>
-						<%= @viewing_version.revision_comments %>
-					</div>
-				<% else %>
-					<p><i>None</i></p>
-				<% end %>
+			<div id="version_info_box" class="contribution_version_meta_info_box" style="display: none; margin: 0.2em 0 1em 0;">
+				<%= render :partial => "version_meta", :locals => { :version => @viewing_version } %>
 			</div>
 		</div>
 		
 		<% if @authorised_to_edit %>
 			<div style="margin-top: 1em;">
 				<ul class="sectionIcons" style="margin-top: 0.7em; margin-bottom: 0.6em;">
-					<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
-					<li><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit This Version") %></li>
+					<li style="margin-left: 0;"><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit This Version") %></li>
 	        <% if false %>
 					<% if @latest_version_number > 1 %>
 						<% if @workflow.authorized?("destroy", current_user) %>
@@ -245,6 +233,10 @@
 </div>
 
 <div class="contribution_right_box">
+	<div class="contribution_section_box" style= "font-size: 100%; color: #CC0000; padding: 0.7em 0.9em; font-weight: bold;">
+		<%= @workflow.type_display_name -%> workflow
+	</div>
+	
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @workflow } %>
 	
 	<%= render :partial => "contributions/license_box", :locals => { :contributable => @workflow } %>
