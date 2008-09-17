@@ -5,6 +5,7 @@
 
 class AnnouncementSweeper < ActionController::Caching::Sweeper
 
+  include CachingHelper
   observe Announcement
 
   def after_create(announcement)

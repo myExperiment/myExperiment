@@ -5,6 +5,7 @@
 
 class NetworkSweeper < ActionController::Caching::Sweeper
 
+  include CachingHelper
   observe Network
 
   def after_create(network)
@@ -14,29 +15,21 @@ class NetworkSweeper < ActionController::Caching::Sweeper
 
   def after_update(network)
     expire_sidebar_assets(network.user_id)
-    expire_listing(network.id)
+    expire_listing(network.id, 'Network')
     expire_home_cache
   end
 
   def after_destroy(network)
     expire_sidebar_assets(network.user_id)
-    expire_listing(network.id)
+    expire_listing(network.id, 'Network')
     expire_home_cache
   end
 
   private
 
-  def expire_sidebar_assets(user_id)
-    expire_fragment(:controller => 'sidebar_cache', :action => 'asset_manager', :id => user_id)
-  end
-
-  def expire_listing(network_id)
-    expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => network_id)
-  end
-
   def expire_home_cache
-    expire_fragment(%r{home_cache/latest_comments/[0-9]+})
-    expire_fragment(%r{home_cache/latest_tags/[0-9]+})
-    expire_fragment(%r{home_cache/latest_groups/[0-9]+})
+    expire_home_cache_latest_comments
+    expire_home_cache_latest_tags
+    expire_home_cache_latest_groups
   end
 end

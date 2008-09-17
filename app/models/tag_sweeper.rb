@@ -5,6 +5,8 @@
 
 class TagSweeper < ActionController::Caching::Sweeper
 
+  include CachingHelper
+
   # observes both Tag and Tagging but currently only changes to Taggings are used to expire the 
   # cache as changes to one implies changes in the other => only one needs to be monitored
   observe Tag, Tagging
@@ -60,48 +62,7 @@ class TagSweeper < ActionController::Caching::Sweeper
     Tagging.find(:all, :conditions => ["tag_id = ?", tag_id])
   end
 
-  # get the 'controller' name for where the cache is stored
-  def get_controller_string(taggable_type)
-    case taggable_type
-    when 'Workflow'
-      controller = 'workflows'
-    when 'Blob'
-      controller = 'files'
-    when 'Pack'
-      controller = 'packs'
-    when 'Network'
-      controller = 'groups'
-    else
-      controller = ''
-    end
-
-    controller
-  end
-
-  def expire_sidebar_user_tags(user_id)
-    expire_fragment(:controller => 'sidebar_cache', :action => 'user_tags', :id => user_id)
-  end
-
-  def expire_sidebar_popular_tags
-    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
-  end
-
-  # expires the 'all_tags' cache for the relevant taggable_type
-  def expire_class_tags(taggable_type)
-    controller = get_controller_string(taggable_type)
-
-    expire_fragment(:controller => controller, :action => 'all_tags')
-  end
-
-  # expires the cache in /controller/listing/id.cache
-  def expire_listing(taggable_id, taggable_type)
-    controller = get_controller_string(taggable_type)
-    controller += '_cache'
-
-    expire_fragment(:controller => controller, :action => 'listing', :id => taggable_id)
-  end
-
   def expire_home_cache
-    expire_fragment(%r{home_cache/latest_tags/[0-9]+})
+    expire_home_cache_latest_tags
   end
 end

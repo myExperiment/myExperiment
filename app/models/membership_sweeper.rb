@@ -5,10 +5,11 @@
 
 class MembershipSweeper < ActionController::Caching::Sweeper
 
+  include CachingHelper
   observe Membership
 
   def after_create(membership)
-    expire_listing(membership.network_id)
+    expire_listing(membership.network_id, 'Network')
     expire_sidebar_assets(membership.user_id)
     expire_sidebar_user_monitor(membership.user_id)
 
@@ -18,7 +19,7 @@ class MembershipSweeper < ActionController::Caching::Sweeper
   end
 
   def after_update(membership)
-    expire_listing(membership.network_id)
+    expire_listing(membership.network_id, 'Network')
     expire_sidebar_assets(membership.user_id)
     expire_sidebar_user_monitor(membership.user_id)
 
@@ -27,7 +28,7 @@ class MembershipSweeper < ActionController::Caching::Sweeper
   end
 
   def after_destroy(membership)
-    expire_listing(membership.network_id)
+    expire_listing(membership.network_id, 'Network')
     expire_sidebar_assets(membership.user_id)
     expire_sidebar_user_monitor(membership.user_id)
 
@@ -39,17 +40,5 @@ class MembershipSweeper < ActionController::Caching::Sweeper
 
   def get_network(network_id)
     Network.find(:first, :conditions => ["id = ?", network_id])
-  end
-
-  def expire_listing(network_id)
-    expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => network_id)
-  end
-
-  def expire_sidebar_assets(user_id)
-    expire_fragment(:controller => 'sidebar_cache', :action => 'asset_manager', :id => user_id)
-  end
-
-  def expire_sidebar_user_monitor(user_id)
-    expire_fragment(:controller => 'sidebar_cache', :action => 'user_monitor', :id => user_id)
   end
 end

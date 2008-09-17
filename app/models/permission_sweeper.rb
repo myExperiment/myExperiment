@@ -5,23 +5,18 @@
 
 class PermissionSweeper < ActionController::Caching::Sweeper
 
+  include CachingHelper
   observe Permission
 
   def after_create(permission)
-    expire_listing(permission.contributor_id) if permission.contributor_type == 'Network'
+    expire_listing(permission.contributor_id, permission.contributor_type) if permission.contributor_type == 'Network'
   end
 
   def after_update(permission)
-    expire_listing(permission.contributor_id) if permission.contributor_type == 'Network'
+    expire_listing(permission.contributor_id, permission.contributor_type) if permission.contributor_type == 'Network'
   end
 
   def after_destroy(permission)
-    expire_listing(permission.contributor_id) if permission.contributor_type == 'Network'
-  end
-
-  private
-
-  def expire_listing(network_id)
-    expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => network_id)
+    expire_listing(permission.contributor_id, permission.contributor_type) if permission.contributor_type == 'Network'
   end
 end

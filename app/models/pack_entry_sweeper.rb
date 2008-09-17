@@ -5,24 +5,18 @@
 
 class PackEntrySweeper < ActionController::Caching::Sweeper
 
+  include CachingHelper
   observe PackContributableEntry, PackRemoteEntry
 
   def after_create(model)
-    expire_listing(model.pack_id)
+    expire_listing(model.pack_id, 'Pack')
   end
 
   def after_update(model)
-    expire_listing(model.pack_id)
+    expire_listing(model.pack_id, 'Pack')
   end
 
   def after_destroy(model)
-    expire_listing(model.pack_id)
-  end
-
-  private
-
-  # expires the cache in /controller/listing/id.cache
-  def expire_listing(pack_id)
-    expire_fragment(:controller => 'packs_cache', :action => 'listing', :id => pack_id)
+    expire_listing(model.pack_id, 'Pack')
   end
 end

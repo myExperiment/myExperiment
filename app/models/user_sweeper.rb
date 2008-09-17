@@ -5,30 +5,21 @@
 
 class UserSweeper < ActionController::Caching::Sweeper
 
+  include CachingHelper
   observe User
 
   def after_create(user)
-    expire_listing(user.id)
+    expire_listing(user.id, 'User')
     expire_sidebar_user_monitor(user.id)
   end
 
   def after_update(user)
-    expire_listing(user.id)
+    expire_listing(user.id, 'User')
     expire_sidebar_user_monitor(user.id)
   end
 
   def after_destroy(user)
-    expire_listing(user.id)
+    expire_listing(user.id, 'User')
     expire_sidebar_user_monitor(user.id)
-  end
-
-  private
-
-  def expire_listing(user_id)
-    expire_fragment(:controller => 'users_cache', :action => 'listing', :id => user_id)
-  end
-
-  def expire_sidebar_user_monitor(user_id)
-    expire_fragment(:controller => 'sidebar_cache', :action => 'user_monitor', :id => user_id)
   end
 end

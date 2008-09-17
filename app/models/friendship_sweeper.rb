@@ -5,6 +5,7 @@
 
 class FriendshipSweeper < ActionController::Caching::Sweeper
 
+  include CachingHelper
   observe Friendship
 
   def after_create(friendship)
@@ -29,15 +30,5 @@ class FriendshipSweeper < ActionController::Caching::Sweeper
 
     expire_sidebar_user_monitor(friendship.user_id)
     expire_sidebar_user_monitor(friendship.friend_id)
-  end
-
-  private
-
-  def expire_sidebar_assets(user_id)
-    expire_fragment(:controller => 'sidebar_cache', :action => 'asset_manager', :id => user_id)
-  end
-
-  def expire_sidebar_user_monitor(user_id)
-    expire_fragment(:controller => 'sidebar_cache', :action => 'user_monitor', :id => user_id)
   end
 end
