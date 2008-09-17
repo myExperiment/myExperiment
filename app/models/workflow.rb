@@ -23,9 +23,10 @@ class Workflow < ActiveRecord::Base
 
   belongs_to :content_blob
   
-  # need to destroy the content_blobs belonging to the workflow versions to avoid orphaned records
+  # need to destroy the workflow versions and their content blobs to avoid orphaned records
   before_destroy { |w| w.versions.each do |wv|
-                        wv.content_blob.destroy
+                        wv.content_blob.destroy if wv.content_blob
+                        wv.destroy
                       end }
 
   acts_as_contributable
@@ -141,8 +142,13 @@ class Workflow < ActiveRecord::Base
   
   # End acts_as_runnable overridden methods
 
-  def filename
-    "#{unique_name}.#{file_ext}"
+  def filename(version=nil)
+    if version.blank?
+      return "#{title}.#{file_ext}"
+    else
+      return nil unless (workflow_version = self.find_version(version))
+      return "#{workflow_version.title}.#{file_ext}"
+    end
   end
   
   def named_download_url
