@@ -4,7 +4,9 @@
 
 <h1>Edit Version <%= @viewing_version_number.to_s %> of Workflow: <%= contributable @workflow.id, "Workflow" %></h1>
 
-<%= error_messages_for :workflow %>
+<center>
+	<%= error_messages_for :workflow %>
+</center>
 
 <br/>
 
@@ -13,7 +15,7 @@
   <div>
     <p>
       <center>
-				<strong>Title:</strong>
+				<b>Title:</b>
 	      <%= text_field_tag 'workflow[title]', @viewing_version.title, :size => '45' %>
 			</center>
     </p>
@@ -22,7 +24,20 @@
 		
 		<p>
 			<center>
-				<b>Description: </b><br/>
+				<b>New Preview Image:</b>
+				<input id="workflow_preview" name="workflow[preview]" size="50" type="file" />
+			</center>
+		</p>
+		<p style="font-size: 77%; color: #666666; font-style: italic; text-align: center; padding-top: 0;">
+				Leave this blank to keep the existing preview image
+		</p>
+			
+		<br/>
+		<br/>
+		
+		<p>
+			<center>
+				<b>Description: </b>
 			</center>
 		</p>
 		<center>

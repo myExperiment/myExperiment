@@ -436,8 +436,10 @@ class WorkflowsController < ApplicationController
     
     # remove owner only columns
     unless @workflow.contribution.owner?(current_user)
-      [:unique_name, :license].each do |column_name|
-        params[:workflow].delete(column_name)
+      if params[:workflow]
+        [:unique_name, :license].each do |column_name|
+          params[:workflow].delete(column_name)
+        end
       end
     end
     
@@ -465,19 +467,32 @@ class WorkflowsController < ApplicationController
     workflow_title = @workflow.title
     
     if params[:version]
-      success = @workflow.update_version(params[:version], :title => params[:workflow][:title], :body => params[:workflow][:body])
+      # Update differently based on whether a new preview image has been specified or not:
+      # (But only set image if platform is not windows).
+      if params[:workflow][:preview].size == 0
+        success = @workflow.update_version(params[:version], :title => params[:workflow][:title], :body => params[:workflow][:body]) 
+      else
+        if RUBY_PLATFORM =~ /mswin32/
+          success = false
+        else
+          success = @workflow.update_version(params[:version], 
+                                             :title => params[:workflow][:title], 
+                                             :body => params[:workflow][:body], 
+                                             :image => params[:workflow][:preview])
+        end
+      end
     else
       success = false
     end
     
     respond_to do |format|
       if success
-        flash[:notice] = "Workflow version #{params[:version]}: \"#{workflow_title}\" has been updated"
+        flash[:notice] = "Workflow version #{params[:version]}: \"#{workflow_title}\" has been updated."
         format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
       else
-        flash[:error] = "Failed to update Workflow version. Please report this."
+        flash[:error] = "Failed to update Workflow version."
         if params[:version]
-          format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
+          format.html { render :action => :edit_version }
         else
           format.html { redirect_to workflow_url(@workflow) }
         end
