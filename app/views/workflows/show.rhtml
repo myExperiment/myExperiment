@@ -165,6 +165,7 @@
 					</center>
 				</div>
 				<% if @authorised_to_edit %>
+					<br/>
 					<p style="text-align: right; color: #666666;">[ <%= link_to "change preview image", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
 				<% end %>
 			<% else %>
