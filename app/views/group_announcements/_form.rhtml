@@ -1,0 +1,21 @@
+<%= javascript_include_tag :fckeditor %>
+
+<%= error_messages_for 'announcement' %>
+
+<!--[form:group_announcement]-->
+<p>
+	<label for="announcement_title"><b>Title</b></label><br/>
+  <center><%= form.text_field :title, :style => "width: 535px" %></center>
+</p>
+
+<p>
+	<label for="announcement_<%= @announcement.nil? ? "" : @announcement.id -%>_body_editor"><b>Body</b></label><br/>
+  <center><%= fckeditor_textarea(:announcement, :body, :toolbarSet => 'Simple', :width => '535px', :height => '300px') %></center>
+	<br/>
+	<label for="announcement_public">
+		<%= check_box "announcement", "public" -%>Make this announcement public
+		<%= info_icon_with_tooltip("Tick this box to make this announcement visible to all users;<br/>otherwise it will be private to members of this group.") %>
+	</label>
+</p>
+<!--[eoform:group_announcement]-->
+

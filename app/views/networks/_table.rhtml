@@ -36,6 +36,9 @@
 						
 						<p class="standout" style="margin-top: 0.4em;">
 							<%= pluralize network.shared_contributions.length, "shared item" -%>
+							&nbsp;&nbsp;|&nbsp;&nbsp;
+							<% # both private & public announcements -%>
+							<%= pluralize network.announcements.length, "announcements" -%>
 						</p>
 						
 						<% unless network.members.empty? -%>
@@ -43,6 +46,15 @@
 								<p style="font-size: 85%;"><b>Members (<%= network.members.length %>):</b></p>
 								<div style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40 } %></div>
 							</div>
+						<% end -%>
+						
+						<% latest_announcement = network.announcements_for_user(current_user).first -%>
+						<% unless latest_announcement.nil? -%>
+						  <p style="font-size: 85%; margin-top: 0.7em;">
+							  <b>Latest announcement:</b>:
+								<%= link_to latest_announcement.title, group_announcement_path(network, latest_announcement) -%>
+							</p>
+							
 						<% end -%>
 						
 						<% unless (tags = network.tags).empty? -%>

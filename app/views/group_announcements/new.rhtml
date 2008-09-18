@@ -1,0 +1,18 @@
+<h1>
+	New Announcement
+	<br/>
+	<span style="font-size: 77%;">for group: <%= link_to_function h(@group.title) + expand_image, visual_effect(:toggle_blind, "group_box", :duration => 0.3) -%></span>
+</h1>
+
+<div id="group_box" style="display: none; margin: 3em 0;">
+	<%= render :partial => "networks/table", :locals => { :collection => [ @group ] } %>
+</div>
+
+<center>
+  <div class="box_form" style="text-align: left; margin: 0; width: 540px;">
+		<% form_for :announcement, :url => group_announcements_path(@group) do |form| -%>
+		  <%= render :partial => 'form', :object => form, :locals => { :announcement => @announcement } %>
+		  <%= submit_tag "Create", :disable_with => "Creating..." %>
+		<% end -%>
+  </div>
+</center>	

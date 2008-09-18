@@ -132,7 +132,36 @@ class Network < ActiveRecord::Base
     
 #    return rtn
 #  end
-                          
+
+  # announcements belonging to the group;
+  #
+  # "announcements_public" are just the public announcements;
+  # and there is no reason for filtering "private" ones, as
+  # those who can see private announcements can see all, including public ones
+  has_many :announcements, # all - public and private
+           :class_name => "GroupAnnouncement",
+           :order => "created_at DESC",
+           :dependent => :destroy
+  
+  has_many :announcements_public,
+           :class_name => "GroupAnnouncement",
+           :conditions => "public IS TRUE",
+           :order => "created_at DESC",
+           :dependent => :destroy
+  
+  def announcements_for_user(user)
+    if self.member?(user.id)
+      return self.announcements
+    else
+      return self.announcements_public
+    end
+  end
+  
+  def announcements_in_public_mode_for_user(user)
+    return !self.member?(user.id)
+  end
+  
+  # memberships
   has_many :memberships, #all
            :order => "created_at DESC",
            :dependent => :destroy

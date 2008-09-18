@@ -1867,3 +1867,28 @@ table.quick_add td.submit {
 	text-align: left; 
 	width: 4em;
 }
+
+
+.group_announcements {
+	margin-top: 0.8em;
+	padding: 0 0.5em;
+}
+
+.group_announcements ul {
+	margin: 0;
+}
+
+.group_announcements li {
+	list-style-type: none;
+	margin: 0 0 0.9em 0;
+}
+
+.group_announcements .announcement_box {
+	border: 1px dotted #999999;
+	margin: 0.1em 0;
+	padding: 0.2em 0.5em; 
+	background-color: #F9F9F9;
+	font-size: 85%;
+	font-weight: bold;
+	text-align: left;
+}

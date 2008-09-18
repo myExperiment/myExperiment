@@ -1,0 +1,40 @@
+<!-- Group Announcements -->
+<% announcements = group.announcements_for_user(current_user).first(count) -%>
+<% public_mode = group.announcements_in_public_mode_for_user(current_user) -%>
+
+<div class="contribution_section_box">
+	
+	<p class="heading" style="margin: 0;">
+		<span style="position: relative; z-index: 1000; float: left;">
+			<%= feed_icon_tag "#{group.title} Group Announcements", formatted_group_announcements_path(group, :rss) -%>
+		</span>
+		<a name="group_announcements"></a>
+		<%= link_to "Announcements", group_announcements_url(group) -%>
+	</p>
+	<span style="text-align: center; margin: 0; font-size: 77%; font-weight: bold; color: #333333;">
+	  (<%= (public_mode ? "public only" : "private & public") -%>)
+	</span>
+	<div class="group_announcements">
+		<% # make sure that only public announcements are shown to anyone, who is not member of a group -%>
+		<% unless announcements.empty? %>
+			<ul>
+				<% announcements.each do |a| %>
+					<li>
+						<p class="announcement_box">
+							<%= link_to h(a.title), group_announcement_url(group, a) %>
+						</p>
+						<p style="font-size: 77%; text-align: center;"><b><%= timeago_fuzzy a.created_at %></b> by <b><%= name a.user %></b></p>
+					</li>
+				<% end %>
+			</ul>
+		<% else %>
+			<p class="none_text">None</p>
+		<% end %>
+		<p style="font-size: 77%; text-align: center;">
+			<% if group.owner?(current_user.id) %>
+				[ <%= link_to "New", new_group_announcement_url(group) %> ]
+			<% end %>
+			[ <%= link_to "See All", group_announcements_url(group) %> ]
+		</p>
+	</div>
+</div>

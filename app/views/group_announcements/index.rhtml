@@ -1,0 +1,18 @@
+<% if @group.owner?(current_user.id) %>
+	<ul class="sectionIcons">
+	  <li><%= icon('announcement', new_group_announcement_path, nil, nil, 'New Announcement') %></li>
+	</ul>
+<% end %>
+
+<h1>
+	<%= feed_icon_tag "Group #{@group.title} Announcements", formatted_group_announcements_path(@group, :rss) %>
+	Group Announcements (<%= @announcements.length %>)
+	<br/>
+	<span style="font-size: 77%;">for group: <%= link_to_function h(@group.title) + expand_image, visual_effect(:toggle_blind, "group_box", :duration => 0.3) -%></span>
+</h1>
+
+<div id="group_box" style="display: none; margin: 3em 0;">
+	<%= render :partial => "networks/table", :locals => { :collection => [ @group ] } %>
+</div>
+
+<%= render :partial => "group_announcements/table", :locals => { :collection => @announcements, :group => @group } %>

@@ -1,6 +1,6 @@
 <li><%= link_to 'Groups', groups_path -%></li>
 
-<% if ["show", "new", "edit", "search", "all"].include? controller.action_name.to_s -%>
+<% if ["show", "new", "edit", "search", "all", "invite"].include? controller.action_name.to_s -%>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
@@ -15,6 +15,10 @@
     <li>Search Results</li>
   <% when "all" %>
     <li>All Groups</li>
+	<% when "invite" %>
+	  <li><%= link_to "#{h(@network.title)}", group_path(@network) %></li>
+		<li><b>&#187;</b></li>
+		<li>Invite people to group</li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

@@ -1,0 +1,48 @@
+<ul class="sectionIcons">
+  <li><%= icon('announcement', group_announcements_path(@group), "Return to All Announcements", nil, 'Return to All Announcements') %></li>
+	<% if @group.owner?(current_user.id) %>
+	  <li><%= icon('edit', edit_group_announcement_path(@group, @announcement), nil, nil, 'Edit') %></li>
+		<li>
+			<%= icon('destroy', group_announcement_path(@group, @announcement), 'Delete', { :confirm => 'Are you sure you want to delete this announcement?', :method => :delete }, 'Delete') %>
+		</li>
+  <% end %>
+</ul>
+
+
+<% t "#{h @announcement.title}" -%>
+
+<h1>
+	Group Announcement: <%= h @announcement.title %>
+	<br/>
+	<span style="font-size: 77%;">for group: <%= link_to_function h(@group.title) + expand_image, visual_effect(:toggle_blind, "group_box", :duration => 0.3) -%></span> 
+</h1>
+
+<div id="group_box" style="display: none; margin: 3em 0;">
+	<%= render :partial => "networks/table", :locals => { :collection => [ @group ] } %>
+</div>
+
+
+<div class="message_box">
+	<p style="text-align: right; font-size: 85%; font-weight: bold; color: #333333;"><%= (@announcement.public ? "Public" : "Private")+ " announcement" -%></p>
+	
+	<div style="float: left;">
+		<p style="text-align: center;"><b>By</b></p>
+		<%= render :partial => "users/avatar", :locals => { :user => @announcement.user, :size => 60 } %>
+	</div>
+	
+	<div style="float: left; margin-left: 3em; width: 550px;">
+		<p><b>Title</b></p>
+		<p class="subject">
+			<%=h @announcement.title %>
+		</p>
+		<p><b>Created: </b><%=datetime @announcement.created_at %></p>
+	</div>
+	
+	<div class="clearer">&nbsp;</div>
+	
+	<br/>
+	
+	<div class="message">
+		<%=white_list @announcement.body_html %>
+	</div>
+</div>

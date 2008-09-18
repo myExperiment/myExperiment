@@ -24,9 +24,6 @@ ActionController::Routing::Routes.draw do |map|
                    :render_output => :get }
   end
   
-  # announcements
-  map.resources :announcements
-  
   # policy wizard
   map.resource :policy_wizard
   
@@ -194,6 +191,7 @@ ActionController::Routing::Routes.draw do |map|
                  :tag => :post } do |group|
     # relationships 'accepted by' group (relation --> relationship --> group)
     group.resources :relationships, :member => { :accept => :get }
+    group.resources :announcements, :controller => :group_announcements
   end
   
   # The priority is based upon order of creation: first created -> highest priority.
@@ -229,6 +227,11 @@ ActionController::Routing::Routes.draw do |map|
   
   # simple_pages plugin
   map.from_plugin :simple_pages
+  
+  # (general) announcements
+  # NB! this is moved to the bottom of the file for it to be discovered
+  # before 'announcements' resource within 'groups'
+  map.resources :announcements
 
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'
