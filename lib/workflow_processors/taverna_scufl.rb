@@ -46,11 +46,13 @@ module WorkflowProcessors
     end
     
     def self.recognised?(file)
-      # Check that the first KB of the file contains the <scufl> tag.  
-      scufl_first_k = file.read(1024)
-      file.rewind
-      
-      return scufl_first_k =~ %r{<[^<>]*scufl[^<>]*>}
+      begin
+        scufl_model = Scufl::Parser.new.parse(file.read)
+        file.rewind
+        return !scufl_model.nil?
+      rescue
+        return false
+      end
     end
     
     def self.can_infer_metadata?

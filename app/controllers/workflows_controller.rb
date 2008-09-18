@@ -167,7 +167,7 @@ class WorkflowsController < ApplicationController
     wwf.version     = @viewing_version.version.to_s
     wwf.workflow_id = @workflow.id.to_s
     wwf.updated     = @viewing_version.updated_at
-    wwf.data        = @viewing_version.scufl
+    wwf.data        = @viewing_version.content_blob.data
 
     dir = 'tmp/bundles'
 
@@ -256,7 +256,7 @@ class WorkflowsController < ApplicationController
       
       worked = infer_metadata(@workflow, file)
       
-      if worked
+      unless worked
         respond_to do |format|
           flash[:error] = "We were unable to infer metadata from the workflow file/script selected. Please enter custom metadata for this workflow."
           params[:metadata_choice] = 'custom'
@@ -701,6 +701,9 @@ private
   
   # Method used in the create and create_version methods.
   def infer_metadata(workflow_to_set, file)
+    # Rewind the file, just in case
+    file.rewind
+    
     # Try and get a processor that can be used to process this type of workflow
     processor_class = WorkflowTypesHandler.processor_class_for_file(file)
     
@@ -712,11 +715,15 @@ private
     
     if processor_class.nil?
       worked = false
+      puts "A workflow processor for the file uploaded could not be found!"
     else
       # Check that the processor can do inferring of metadata
       if processor_class.can_infer_metadata?
         begin
           processor_instance = processor_class.new(file.read)
+          
+          # Rewind the file, just in case
+          file.rewind
           
           workflow_to_set.title = processor_instance.get_title
           workflow_to_set.body = processor_instance.get_description
@@ -729,12 +736,14 @@ private
           workflow_to_set.image, workflow_to_set.svg = processor_instance.get_preview_images if processor_class.can_generate_preview?
         rescue Exception => ex
           worked = false
-          logger.error("ERROR: some processing failed in workflow processor '#{processor_class.to_s}'.")
-          logger.error("EXCEPTION: " + ex)
+          err_msg = "ERROR: some processing failed in workflow processor '#{processor_class.to_s}'.\nEXCEPTION: #{ex}"
+          puts err_msg
+          logger.error err_msg
         end
       else
         # We cannot infer metadata
         worked = false
+        puts "Workflow processor found but it cannot infer metadata!"
       end
     end
     
