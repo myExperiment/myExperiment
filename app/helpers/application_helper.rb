@@ -314,6 +314,13 @@ module ApplicationHelper
       end
     end
     
+    # Sort alphabetically
+    rtn.each do |k, v|
+      v.sort! { |a, b|
+        a.title.downcase <=> b.title.downcase
+      }
+    end
+    
     return rtn
   end
   

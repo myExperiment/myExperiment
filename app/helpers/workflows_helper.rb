@@ -7,7 +7,7 @@ module WorkflowsHelper
   
   def workflow_types
     types = WorkflowTypesHandler.types_list
-    types.sort! {|x,y| x <=> y}
+    types.sort! {|x,y| x.downcase <=> y.downcase}
     types << "Other"
   end
   
