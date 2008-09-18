@@ -164,10 +164,16 @@
 						<%= link_to image_tag(url_for_file_column(@viewing_version, "image", "medium")), url_for_file_column(@viewing_version, "image"), :popup => true %>
 					</center>
 				</div>
+				<% if @authorised_to_edit %>
+					<p style="text-align: right; color: #666666;">[ <%= link_to "change preview image", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
+				<% end %>
 			<% else %>
 				<p class="none_text">
 					Not available
 				</p>
+				<% if @authorised_to_edit %>
+					<p style="text-align: right; color: #666666;">[ <%= link_to "add a preview image", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
+				<% end %>
 			<% end %>
 			
 			<br/>
