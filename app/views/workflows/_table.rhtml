@@ -33,9 +33,9 @@
 					  </p>
 					
 						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
-							<b>Created:</b> <%=datetime workflow.created_at, false -%>
+							<b>Created:</b> <%=datetime workflow.contribution.created_at, false -%>
 							|
-							<b>Updated:</b> <%=datetime workflow.updated_at, false -%>
+							<b>Updated:</b> <%=datetime workflow.contribution.updated_at, false -%>
 						</p>
 						
 					  <% unless (creditors = workflow.creditors).empty? %>

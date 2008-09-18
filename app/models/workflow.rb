@@ -38,8 +38,10 @@ class Workflow < ActiveRecord::Base
   
   acts_as_reviewable
 
-  explicit_versioning(:version_column => "current_version", :file_columns => ["image", "svg"], :white_list_columns => ["body"]#, :other_columns => ["content_blob_id"]
-  ) do
+  explicit_versioning(:version_column => "current_version", 
+                      :file_columns => ["image", "svg"], 
+                      :white_list_columns => ["body"]) do
+    
     file_column :image, :magick => {
       :versions => {
         :thumb    => { :size => "100x100!" }, 
@@ -53,9 +55,14 @@ class Workflow < ActiveRecord::Base
     format_attribute :body
     
     belongs_to :content_blob
+    
     # :dependent => :destroy is not supported in belongs_to in rails 1.2.6
-    after_destroy { |wv| wv.content_blob.destroy }
-     
+    after_destroy { |wv| wv.content_blob.destroy if wv.content_blob }
+    
+    # Update the parent contribution model buy only if this isn't the current version (because the workflow model will take care of that).
+    # This is required to keep the contribution's updated_at field accurate.
+    after_save { |wv| wv.workflow.contribution.save if wv.workflow.contribution && wv.version != wv.workflow.current_version }
+    
   end
   
   #non_versioned_fields.push("image", "svg", "license", "tag_list") # acts_as_versioned and file_column don't get on
@@ -101,17 +108,14 @@ class Workflow < ActiveRecord::Base
     return list
   end
   
-  # Sets an internal unique name for this workflow entry.
-  # Note: only sets unique_name if not already set before
+  # Sets an internal unique name for this workflow.
   def set_unique_name
-    if self.unique_name.blank?
-      salt = rand 1000000
-      salt2 = rand 100
-      if self.title.blank?
-        self.unique_name = "#{salt2}_#{salt}"        
-      else
-        self.unique_name = "#{self.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"
-      end
+    salt = rand 1000000
+    salt2 = rand 100
+    if self.title.blank?
+      self.unique_name = "#{salt}_#{salt2}"        
+    else
+      self.unique_name = "#{self.title.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"
     end
   end
   
@@ -144,10 +148,10 @@ class Workflow < ActiveRecord::Base
 
   def filename(version=nil)
     if version.blank?
-      return "#{title}.#{file_ext}"
+      return "#{unique_name}.#{file_ext}"
     else
       return nil unless (workflow_version = self.find_version(version))
-      return "#{workflow_version.title}.#{file_ext}"
+      return "#{workflow_version.unique_name}.#{file_ext}"
     end
   end
   

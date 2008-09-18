@@ -304,8 +304,8 @@ class WorkflowsController < ApplicationController
     original_type_display_name = @workflow.type_display_name
     original_file_ext = @workflow.file_ext
     
-    @workflow.contributor = current_user
-    @workflow.content_blob = ContentBlob.new(:data => file.read)
+    @workflow.contributor_id = current_user.id
+    @workflow.contributor_type = "User"
     @workflow.file_ext = file.original_filename.split(".").last.downcase
     
     file.rewind
@@ -335,17 +335,32 @@ class WorkflowsController < ApplicationController
     # Check workflow type and file extension of new workflow is same as original
     if (original_type_display_name != @workflow.type_display_name) || (original_file_ext != @workflow.file_ext)
       respond_to do |format|
-        flash[:error] = "The workflow you have provided is not of the same content type as the original. Please upload a workflow of type '#{original_content_type}'"
+        flash[:error] = "The workflow you have provided is not of the same content type as the original. Please upload a workflow of type '#{original_type_display_name}'"
         format.html { render :action => :new_version }
       end
       return
     end
     
-    respond_to do |format|
-      if @workflow.valid? && @workflow.save_as_new_version(params[:new_workflow][:comments])
-        flash[:notice] = 'New workflow version successfully created.'
-        format.html { redirect_to workflow_url(@workflow) }
+    fail = false
+    
+    if @workflow.valid?
+      # Save content blob first now and set it on the workflow.
+      # TODO: wrap this in a transaction!
+      @workflow.content_blob_id = ContentBlob.create(:data => file.read).id
+      if @workflow.save_as_new_version(params[:new_workflow][:rev_comments])
+        respond_to do |format|
+          flash[:notice] = 'New workflow version successfully created.'
+          format.html { redirect_to workflow_url(@workflow) }
+        end
       else
+        fail = true
+      end
+    else
+      fail = true
+    end
+    
+    if fail
+      respond_to do |format|
         flash[:error] = 'Failed to upload and save new version. Check that you have provided the required data.'       
         format.html { render :action => :new_version }
       end
@@ -372,6 +387,10 @@ class WorkflowsController < ApplicationController
     end
     
     respond_to do |format|
+      # Here we assume that no actual workflow metadata is being updated that affects workflow versions,
+      # so we need to prevent the timestamping update of workflow version objects.
+      Workflow.versioned_class.record_timestamps = false
+      
       if @workflow.update_attributes(params[:workflow])
 
         if params[:workflow][:tag_list]
@@ -387,6 +406,8 @@ class WorkflowsController < ApplicationController
       else
         format.html { render :action => "edit" }
       end
+      
+      Workflow.versioned_class.record_timestamps = true
     end
   end
   
@@ -571,8 +592,17 @@ protected
   end
   
   def initiliase_empty_objects_for_new_pages
-    # HACK: required for the FCKEditor description box, which is used in both new and new_version actions.
+    # HACK: required for the FCKEditor description and revision comments boxes, 
+    # (the former is used in both new and new_version actions).
     @new_workflow = Workflow.new
+    @new_workflow.body = params[:new_workflow][:body] if params[:new_workflow] && params[:new_workflow][:body]
+    
+    # Add a 'rev_comments' field to just this instance so that the FCKEditor box can pick it up.
+    @new_workflow.extend Module.new { attr_accessor :rev_comments }
+      
+    if params[:new_workflow] && params[:new_workflow][:rev_comments]
+      @new_workflow.rev_comments = params[:new_workflow][:rev_comments]
+    end
   end
   
   def check_file_size
@@ -693,9 +723,7 @@ private
           
           workflow_to_set.content_type = processor_class.content_type
           
-          # Set the internal unique name for this workflow entry.
-          # For the create_version action this will not do anything 
-          # as the set_unique_name method should only set the unique name once.
+          # Set the internal unique name for this particular workflow (or workflow_version).
           workflow_to_set.set_unique_name
           
           workflow_to_set.image, workflow_to_set.svg = processor_instance.get_preview_images if processor_class.can_generate_preview?
@@ -739,9 +767,7 @@ private
       workflow_to_set.image = params[:workflow][:preview]
     end
     
-    # Set the internal unique name for this workflow entry.
-    # For the create_version action this will not do anything 
-    # as the set_unique_name method should only set the unique name once. 
+    # Set the internal unique name for this particular workflow (or workflow_version).
     workflow_to_set.set_unique_name
   end
 
