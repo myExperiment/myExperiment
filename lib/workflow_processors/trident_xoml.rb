@@ -20,7 +20,7 @@ module WorkflowProcessors
     
     # MUST be unique across all processors
     def self.content_type
-      "trident_xoml"
+      "application/xaml+xml"
     end
     
     def self.display_data_format
