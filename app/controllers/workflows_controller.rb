@@ -773,7 +773,7 @@ private
     # Preview image
     # TODO: kept getting permission denied errors from the file_column and rmagick code, so disable for windows, for now.
     unless RUBY_PLATFORM =~ /mswin32/
-      workflow_to_set.image = params[:workflow][:preview]
+      workflow_to_set.image = params[:workflow][:preview] unless params[:workflow][:preview].blank?
     end
     
     # Set the internal unique name for this particular workflow (or workflow_version).
