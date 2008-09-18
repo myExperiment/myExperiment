@@ -18,7 +18,7 @@
 
 <br/>
 
-<% form_tag({ :action => "update_version", :version => @viewing_version_number }, :method => :put) do %>
+<% form_tag({ :action => "update_version", :version => @viewing_version_number }, :multipart => true, :method => :put) do %>
 
 	<center>
 		<div class="box_form" style="width: 500px; margin: 0; text-align: left;">

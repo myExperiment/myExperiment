@@ -418,9 +418,10 @@ class WorkflowsController < ApplicationController
     if params[:version]
       # Update differently based on whether a new preview image has been specified or not:
       # (But only set image if platform is not windows).
-      if params[:workflow][:preview].size == 0
+      if !params[:workflow][:preview] or params[:workflow][:preview].size == 0
         success = @workflow.update_version(params[:version], :title => params[:workflow][:title], :body => params[:workflow][:body]) 
       else
+        # Disable updating image on windows due to issues to do with file locking, that prevent file_column from working sometimes.
         if RUBY_PLATFORM =~ /mswin32/
           success = false
         else
@@ -773,7 +774,7 @@ private
     # Preview image
     # TODO: kept getting permission denied errors from the file_column and rmagick code, so disable for windows, for now.
     unless RUBY_PLATFORM =~ /mswin32/
-      workflow_to_set.image = params[:workflow][:preview] unless params[:workflow][:preview].blank?
+      workflow_to_set.image = params[:workflow][:preview]
     end
     
     # Set the internal unique name for this particular workflow (or workflow_version).
