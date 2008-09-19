@@ -74,7 +74,16 @@ document.onkeypress = handleEnter;
   </div>
 </div>
 
-<% if edit %>
+<% type_sym = taggable.class.to_s.downcase.to_sym %>
+<% if params[type_sym] && !params[type_sym][:tag_list].blank? %>
+	<% curr_tags = params[type_sym][:tag_list].split(',') %>
+	<script>
+    <% curr_tags.sort{|a,b| a.downcase <=> b.downcase}.each do |t| %>
+      tags.push(<%= "\"#{t}\"" %>);
+    <% end %>
+    updateTagList();
+  </script>
+<% elsif edit %>
   <script>
     <% taggable.tags.sort{|a,b| a.name.downcase <=> b.name.downcase}.each do |t| %>
       tags.push(<%= "\"#{t.to_s.gsub(/\"/, '\\\"')}\"" %>);
@@ -82,4 +91,6 @@ document.onkeypress = handleEnter;
     updateTagList();
   </script>
 <% end %>
+
+
 
