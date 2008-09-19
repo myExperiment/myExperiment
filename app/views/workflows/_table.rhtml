@@ -73,7 +73,7 @@
 							<tbody>
 								<tr>
 									<% unless workflow.image.nil? -%>
-										<td style="margin: 0; padding: 0.2em 0; border: 0; padding-right: 0.8em;">
+										<td style="margin: 0; padding: 0.2em 0; border: 0; padding-right: 0.8em; width: 101px;">
 							      	<%= link_to image_tag(url_for_file_column(workflow, "image", "thumb"), :class => 'framed_nospace'), workflow_path(workflow) %>
 										</td>
 									<% end -%>
