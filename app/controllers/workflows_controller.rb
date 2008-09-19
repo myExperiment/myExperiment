@@ -263,7 +263,15 @@ class WorkflowsController < ApplicationController
       
     # Custom metadata provided.
     elsif params[:metadata_choice] == 'custom'
-      set_custom_metadata(@workflow)
+      worked = set_custom_metadata(@workflow, file)
+      
+      unless worked
+        respond_to do |format|
+          flash.now[:error] = "The file provided isn't a workflow of the type specified. Please select a different file or set an appropriate content type."
+          format.html { render :action => "new" }
+        end
+        return
+      end
     end
     
     respond_to do |format|
@@ -297,9 +305,6 @@ class WorkflowsController < ApplicationController
     # we use the existing workflow object to set the data,
     # but then save it as a new version.
     
-    original_type_display_name = @workflow.type_display_name
-    original_file_ext = @workflow.file_ext
-    
     @workflow.contributor_id = current_user.id
     @workflow.contributor_type = "User"
     @workflow.last_edited_by = current_user.id
@@ -326,16 +331,15 @@ class WorkflowsController < ApplicationController
       
     # Custom metadata provided.
     elsif params[:metadata_choice] == 'custom'
-      set_custom_metadata(@workflow)
-    end
-    
-    # Check workflow type and file extension of new workflow is same as original
-    if (original_type_display_name != @workflow.type_display_name) || (original_file_ext != @workflow.file_ext)
-      respond_to do |format|
-        flash.now[:error] = "The workflow you have provided is not of the same content type as the original. Please upload a workflow of type '#{original_type_display_name}'"
-        format.html { render :action => :new_version }
+      worked = set_custom_metadata(@workflow, file)
+      
+      unless worked
+        respond_to do |format|
+          flash.now[:error] = "The workflow you have provided is not of the same content type as the original. Please upload a workflow of type '#{original_type_display_name}'"
+          format.html { render :action => :new_version }
+        end
+        return
       end
-      return
     end
     
     fail = false
@@ -784,7 +788,9 @@ private
   end
   
   # Method used in the create and create_version methods.
-  def set_custom_metadata(workflow_to_set)
+  def set_custom_metadata(workflow_to_set, file)
+    worked = true
+    
     workflow_to_set.title = params[:workflow][:title]
     workflow_to_set.body = params[:new_workflow][:body]
     
@@ -803,6 +809,15 @@ private
       workflow_to_set.content_type = wf_type
     end
     
+    # Now check if the content_type specified has a processor available, 
+    # in which case check that it matches a processor returned for the file.
+    # This is to ensure that the correct content type is being assigned to the workflow uploaded.
+    if (proc_class = WorkflowTypesHandler.processor_class_for_content_type(workflow_to_set.content_type))
+      unless proc_class == WorkflowTypesHandler.processor_class_for_file(file)
+        worked = false
+      end
+    end
+    
     # Preview image
     # TODO: kept getting permission denied errors from the file_column and rmagick code, so disable for windows, for now.
     unless RUBY_PLATFORM =~ /mswin32/
@@ -811,6 +826,8 @@ private
     
     # Set the internal unique name for this particular workflow (or workflow_version).
     workflow_to_set.set_unique_name
+    
+    return worked
   end
 
 end
