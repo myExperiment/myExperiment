@@ -10,6 +10,7 @@ class BlobsController < ApplicationController
   before_filter :find_blob_auth, :except => [:search, :index, :new, :create, :all]
   
   before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create]
+  before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
   
   before_filter :check_is_owner, :only => [:edit, :update]
   
@@ -66,9 +67,6 @@ class BlobsController < ApplicationController
   def show
     @viewing = Viewing.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
     
-    @sharing_mode  = determine_sharing_mode(@blob)
-    @updating_mode = determine_updating_mode(@blob)
-    
     respond_to do |format|
       format.html # show.rhtml
     end
@@ -80,9 +78,6 @@ class BlobsController < ApplicationController
   
   # GET /files/1;edit
   def edit
-    
-    @sharing_mode  = determine_sharing_mode(@blob)
-    @updating_mode = determine_updating_mode(@blob)
   end
   
   # POST /blobs
@@ -307,8 +302,20 @@ class BlobsController < ApplicationController
   def initiliase_empty_objects_for_new_pages
     if ["new", "create"].include?(action_name)
       @blob = Blob.new
-      @sharing_mode  = 0
-      @updating_mode = 6
+    end
+  end
+  
+  def set_sharing_mode_variables
+    case action_name
+      when "new"
+        @sharing_mode  = 0
+        @updating_mode = 6
+      when "create", "update"
+        @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
+        @updating_mode = params[:updating][:class_id].to_i if params[:updating]
+      when "show", "edit"
+        @sharing_mode  = determine_sharing_mode(@blob)
+        @updating_mode = determine_updating_mode(@blob)
     end
   end
   

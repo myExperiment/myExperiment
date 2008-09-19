@@ -11,6 +11,7 @@ class WorkflowsController < ApplicationController
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all]
   
   before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create, :new_version, :create_version]
+  before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
   
   before_filter :check_file_size, :only => [:create, :create_version]
   before_filter :check_custom_workflow_type => [:create, :create_version]
@@ -224,8 +225,6 @@ class WorkflowsController < ApplicationController
 
   # GET /workflows/1/edit
   def edit
-    @sharing_mode  = determine_sharing_mode(@workflow)
-    @updating_mode = determine_updating_mode(@workflow)
   end
   
   # GET /workflows/1/edit_version
@@ -591,8 +590,6 @@ protected
   def initiliase_empty_objects_for_new_pages
     if ["new", "create"].include?(action_name)
       @workflow = Workflow.new
-      @sharing_mode  = 0
-      @updating_mode = 6
     end
     
     # HACK: required for the FCKEditor description and revision comments boxes, 
@@ -605,6 +602,20 @@ protected
       
     if params[:new_workflow] && params[:new_workflow][:rev_comments]
       @new_workflow.rev_comments = params[:new_workflow][:rev_comments]
+    end
+  end
+  
+  def set_sharing_mode_variables
+    case action_name
+      when "new"
+        @sharing_mode  = 0
+        @updating_mode = 6
+      when "create", "update"
+        @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
+        @updating_mode = params[:updating][:class_id].to_i if params[:updating]
+      when "show", "edit"
+        @sharing_mode  = determine_sharing_mode(@workflow)
+        @updating_mode = determine_updating_mode(@workflow)
     end
   end
   

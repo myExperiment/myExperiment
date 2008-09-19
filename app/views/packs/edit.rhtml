@@ -9,7 +9,9 @@
 	<%= link_to "Click here", new_item_pack_path(@pack) %> if you wanted to add an item to this pack. 
 </p>
 
-<%= error_messages_for :pack %>
+<center>
+	<%= error_messages_for :pack %>
+</center>
 
 <% form_for(:pack, :url => pack_path(@pack), :html => { :method => :put }) do |f| %>
 	<center>
