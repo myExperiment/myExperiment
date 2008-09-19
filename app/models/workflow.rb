@@ -44,7 +44,7 @@ class Workflow < ActiveRecord::Base
     
     file_column :image, :magick => {
       :versions => {
-        :thumb    => { :size => "100x100!" }, 
+        :thumb    => { :size => "100x100" }, 
         :medium   => { :size => "500x500>" },
         :full     => { }
       }
@@ -88,7 +88,7 @@ class Workflow < ActiveRecord::Base
 
   file_column :image, :magick => {
     :versions => {
-      :thumb    => { :size => "100x100!" }, 
+      :thumb    => { :size => "100x100>" }, 
       :medium   => { :size => "500x500>" },
       :full     => { },
     }
