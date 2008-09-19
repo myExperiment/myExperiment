@@ -86,7 +86,8 @@ class GroupAnnouncementsController < ApplicationController
     begin
       @group = Network.find(params[:group_id])
     rescue ActiveRecord::RecordNotFound
-      error("Group in the request couldn't be found")
+      error("Group couldn't be found")
+      return false
     end
   end
 
@@ -94,6 +95,7 @@ class GroupAnnouncementsController < ApplicationController
   def check_admin
     unless @group.owner?(current_user.id)
       error("Only group administrators are allowed to create new announcements")
+      return false
     end
   end
 
@@ -155,9 +157,10 @@ class GroupAnnouncementsController < ApplicationController
 
   def error(message)
     flash[:error] = message
+    return_to_path = @group.nil? ? groups_path : group_announcements_path(@group)
     
     respond_to do |format|
-      format.html { redirect_to group_announcements_path() }
+      format.html { redirect_to return_to_path }
     end
   end
 

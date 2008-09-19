@@ -6,7 +6,7 @@
 
 <h1>
 	<%= feed_icon_tag "Group #{@group.title} Announcements", formatted_group_announcements_path(@group, :rss) %>
-	Group Announcements (<%= @announcements.length %>)
+	<%= @group.announcements_in_public_mode_for_user(current_user) ? "Public " : "All " -%> Group Announcements (<%= @announcements.length %>)
 	<br/>
 	<span style="font-size: 77%;">for group: <%= link_to_function h(@group.title) + expand_image, visual_effect(:toggle_blind, "group_box", :duration => 0.3) -%></span>
 </h1>
