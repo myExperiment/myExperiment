@@ -1888,3 +1888,13 @@ table.quick_add td.submit {
 	font-weight: bold; 
 	text-align: center;
 }
+
+#version_info_box p {
+	line-height: 1.2;
+	padding: 0.3em 0;
+	margin: 0;
+}
+
+#version_info_box p * {
+	vertical-align: middle;
+}

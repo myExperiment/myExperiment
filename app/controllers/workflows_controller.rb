@@ -237,6 +237,7 @@ class WorkflowsController < ApplicationController
     
     @workflow = Workflow.new
     @workflow.contributor = current_user
+    @workflow.last_edited_by = current_user.id
     @workflow.license = params[:workflow][:license]
     @workflow.content_blob = ContentBlob.new(:data => file.read)
     @workflow.file_ext = file.original_filename.split(".").last.downcase
@@ -301,6 +302,7 @@ class WorkflowsController < ApplicationController
     
     @workflow.contributor_id = current_user.id
     @workflow.contributor_type = "User"
+    @workflow.last_edited_by = current_user.id
     @workflow.file_ext = file.original_filename.split(".").last.downcase
     
     file.rewind
@@ -414,7 +416,10 @@ class WorkflowsController < ApplicationController
       # Update differently based on whether a new preview image has been specified or not:
       # (But only set image if platform is not windows).
       if !params[:workflow][:preview] or params[:workflow][:preview].size == 0
-        success = @workflow.update_version(params[:version], :title => params[:workflow][:title], :body => params[:workflow][:body]) 
+        success = @workflow.update_version(params[:version], 
+                                           :title => params[:workflow][:title], 
+                                           :body => params[:workflow][:body],
+                                           :last_edited_by => current_user.id) 
       else
         # Disable updating image on windows due to issues to do with file locking, that prevent file_column from working sometimes.
         if RUBY_PLATFORM =~ /mswin32/
@@ -423,7 +428,8 @@ class WorkflowsController < ApplicationController
           success = @workflow.update_version(params[:version], 
                                              :title => params[:workflow][:title], 
                                              :body => params[:workflow][:body], 
-                                             :image => params[:workflow][:preview])
+                                             :image => params[:workflow][:preview],
+                                             :last_edited_by => current_user.id)
         end
       end
     else
