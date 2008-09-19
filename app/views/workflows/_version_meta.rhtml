@@ -1,16 +1,16 @@
 <p>
-	<b>Version created on:</b>
+	<b>Created on:</b>
 	<%= datetime version.created_at %>
-</p>
-
-<p>
-	<b>Version updated on:</b>
-	<%= datetime version.updated_at %>
 </p>
 
 <p>
 	<b>Created by:</b>
 	<%= contributor version.contributor_id, version.contributor_type %>
+</p>
+
+<p>
+	<b>Last edited on:</b>
+	<%= datetime version.updated_at %>
 </p>
 
 <p>
