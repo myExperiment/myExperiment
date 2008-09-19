@@ -32,7 +32,10 @@
 				
 				<% unless new_version -%>		
 					<!-- Type -->
-					<p style="margin-top: 0;"><b>Workflow Type</b></p>
+					<p>
+						<b>Workflow Type</b>
+						<span class="required">*</span>
+					</p>
 					<%= select_tag "workflow[type]", 
 												 options_for_select(workflow_types, (params[:workflow].nil? ? nil : params[:workflow][:type])),
 												 :onchange => "if (this.value == 'Other') { $('workflow[type_other]').show(); $('workflow[type_other]').focus(); } else { $('workflow[type_other]').hide(); }",
