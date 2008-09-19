@@ -123,6 +123,12 @@ class Workflow < ActiveRecord::Base
     @processor_class ||= WorkflowTypesHandler.processor_class_for_content_type(self.content_type)
   end
   
+  def can_infer_metadata_for_this_type?
+    proc_class = self.processor_class
+    return false if proc_class.nil?
+    return proc_class.can_infer_metadata?
+  end
+  
   def type_display_name
     WorkflowTypesHandler.type_display_name_for_content_type(self.content_type)  
   end

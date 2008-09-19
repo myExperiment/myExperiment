@@ -14,10 +14,17 @@
 
 
 <center>
-	<p class="box_infotext" style="text-align: center; margin-bottom: 1.2em; width: 450px;">
-		<b>Note:</b> this new workflow version must be of the same type as the original one (so it must be a '<%= h(@workflow.type_display_name) -%>' workflow).
-		If you would like to upload a different type of workflow then click <%= link_to "here", new_workflow_path -%> to upload it as a new workflow entry in myExperiment.
-	</p>
+	<div class="box_infotext" style="text-align: center; margin-bottom: 1.2em; width: 450px;">
+		<p>
+			<b>Note:</b> this new workflow version must be of the same type as the original one (so it must be a '<%= h(@workflow.type_display_name) -%>' workflow and have a .<%= @workflow.file_ext -%> file extension).
+		</p>
+		<p>
+			If you would like to upload a different type of workflow then <b><%= link_to "click here", new_workflow_path -%></b> to upload it as a new workflow entry in myExperiment.
+		</p>
+		<p>
+			Also, sharing and other settings are inherited from the parent workflow entry.
+		</p>
+	</div>
 </center>
 
 <center>

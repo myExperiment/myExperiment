@@ -601,6 +601,17 @@ protected
     # HACK: required for the FCKEditor description and revision comments boxes, 
     # (the former is used in both new and new_version actions).
     @new_workflow = Workflow.new
+    
+    if ["new_version", "create_version"].include?(action_name)
+      # Set the fields to the metadata from the previous version,
+      # to aid user in setting the metadata.
+      @new_workflow.body = @workflow.body
+      params[:workflow] = { } unless params[:workflow]
+      params[:workflow][:title] = @workflow.title
+      # Determine which main metadata option to pre select based on whether metadata inference is supported for the workflow type.
+      @workflow.can_infer_metadata_for_this_type? ? params[:metadata_choice] = "infer" : params[:metadata_choice] = "custom"
+    end
+    
     @new_workflow.body = params[:new_workflow][:body] if params[:new_workflow] && params[:new_workflow][:body]
     
     # Add a 'rev_comments' field to just this instance so that the FCKEditor box can pick it up.
