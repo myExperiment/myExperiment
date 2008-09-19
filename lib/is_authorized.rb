@@ -162,7 +162,7 @@ module IsAuthorized
     when 'edit'
       # if update mode is 0, anyone with view & download permissions can edit (sharing mode 0 for anonymous)
       if update_mode == 0 && share_mode == 0
-        is_authorized == true
+        is_authorized = true
       # if update mode is 1, friends can edit, or if update mode is 0 and friends have view & download permissions, they can edit
       elsif update_mode == 1 || (update_mode == 0 && (share_mode == 0 || share_mode == 1 || share_mode == 3))
         is_authorized = is_friend?(policy_details[0]['contributor_id'], user_id)

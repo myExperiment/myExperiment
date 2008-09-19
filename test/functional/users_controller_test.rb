@@ -54,8 +54,9 @@ class UsersControllerTest < Test::Unit::TestCase
     login_as(:john)
     put :update, :id => 1, :user => { :name => 'John Smith the third' }
 
-    assert_response :success
-    #assert_redirected_to edit_user_path(assigns(:user))
+    #assert_response :success
+    assigns(:user)
+    assert_redirected_to :action => :edit
     #assert_equal "You have successfully updated your display name", flash[:notice]
   end
   

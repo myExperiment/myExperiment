@@ -42,15 +42,6 @@ class AuthorizationTest < Test::Unit::TestCase
     assert !is_member_of_group?(users(:admin).id, networks(:dilbert_appreciation_network).id)
   end
 
-  def test_is_member_of_same_group
-    assert is_member_of_same_group?(users(:john).id, users(:jane).id)
-  end
-
-  def test_is_not_member_of_same_group
-    assert !is_member_of_same_group?(users(:john).id, users(:admin).id)
-    assert !is_member_of_same_group?(users(:admin).id, users(:jane).id)
-  end
- 
   def test_is_owner_authorized_to_view
     assert is_authorized_to_view?(blobs(:for_true_policy).id, 'Blob', users(:john))
     assert is_authorized_to_view?(blobs(:for_false_policy).id, 'Blob', users(:john))
@@ -122,21 +113,21 @@ class AuthorizationTest < Test::Unit::TestCase
   def test_is_group_authorized_to_view
     assert is_authorized_to_view?(blobs(:for_true_policy).id, 'Blob', users(:spare_user))
     assert !is_authorized_to_view?(blobs(:for_false_policy).id, 'Blob', users(:spare_user))
-    assert is_authorized_to_view?(blobs(:for_protected_policy).id, 'Blob', users(:spare_user))
+    assert !is_authorized_to_view?(blobs(:for_protected_policy).id, 'Blob', users(:spare_user))
     assert is_authorized_to_view?(blobs(:for_public_policy).id, 'Blob', users(:spare_user))
   end
 
   def test_is_group_authorized_to_edit
     assert is_authorized_to_edit?(blobs(:for_true_policy).id, 'Blob', users(:spare_user))
     assert !is_authorized_to_edit?(blobs(:for_false_policy).id, 'Blob', users(:spare_user))
-    assert is_authorized_to_edit?(blobs(:for_protected_policy).id, 'Blob', users(:spare_user))
+    assert !is_authorized_to_edit?(blobs(:for_protected_policy).id, 'Blob', users(:spare_user))
     assert is_authorized_to_edit?(blobs(:for_public_policy).id, 'Blob', users(:spare_user))
   end
 
   def test_is_group_authorized_to_download
     assert is_authorized_to_download?(blobs(:for_true_policy).id, 'Blob', users(:spare_user))
     assert !is_authorized_to_download?(blobs(:for_false_policy).id, 'Blob', users(:spare_user))
-    assert is_authorized_to_download?(blobs(:for_protected_policy).id, 'Blob', users(:spare_user))
+    assert !is_authorized_to_download?(blobs(:for_protected_policy).id, 'Blob', users(:spare_user))
     assert is_authorized_to_download?(blobs(:for_public_policy).id, 'Blob', users(:spare_user))
   end
 
