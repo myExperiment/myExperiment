@@ -8,15 +8,19 @@
 	<%= contributor version.contributor_id, version.contributor_type %>
 </p>
 
-<p>
-	<b>Last edited on:</b>
-	<%= datetime version.updated_at %>
-</p>
+<% unless version.created_at == version.updated_at %>
 
-<p>
-	<b>Last edited by:</b>
-	<%= contributor version.last_edited_by, "User" %>
-</p>
+	<p>
+		<b>Last edited on:</b>
+		<%= datetime version.updated_at %>
+	</p>
+	
+	<p>
+		<b>Last edited by:</b>
+		<%= contributor version.last_edited_by, "User" %>
+	</p>
+
+<% end %>
 
 <p>
 	<b>Revision comments:</b>

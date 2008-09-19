@@ -26,9 +26,10 @@
 						</p>
 						
 						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
-							<b>Created:</b> <%=datetime blob.created_at, false %>
-							|
-							<b>Updated:</b> <%=datetime blob.updated_at, false %>
+							<b>Created:</b> <%=datetime blob.contribution.created_at, false %>
+							<% unless blob.contribution.created_at == blob.contribution.updated_at %>
+								|	<b>Last updated:</b> <%=datetime blob.contribution.updated_at, false %>
+							<% end %>
 						</p>
 						
 						<% unless (creditors = blob.creditors).empty? %>

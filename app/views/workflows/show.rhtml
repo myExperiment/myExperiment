@@ -106,12 +106,14 @@
 					<span><%= link_to_function "Revision comments " + expand_image, visual_effect(:toggle_blind, "version_info_box_comments", :duration => 0.3) %></span>
 				</p>
 				
-				<p style="text-align: center;">
-					<b>Last edited on:</b>
-					<span><%= datetime @viewing_version.updated_at, false %></span>
-					<b>by:</b>
-					<span><%= contributor @viewing_version.last_edited_by, "User" %></span>
-				</p>
+				<% unless @viewing_version.created_at == @viewing_version.updated_at %>
+					<p style="text-align: center;">
+						<b>Last edited on:</b>
+						<span><%= datetime @viewing_version.updated_at, false %></span>
+						<b>by:</b>
+						<span><%= contributor @viewing_version.last_edited_by, "User" %></span>
+					</p>
+				<% end %>
 			</div>
 			
 			<div id="version_info_box_comments" style="display: none; border: 1px dotted #CCCCCC; padding: 0.3em 0.5em;">
