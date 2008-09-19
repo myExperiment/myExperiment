@@ -415,12 +415,14 @@ class WorkflowsController < ApplicationController
     if params[:version]
       # Update differently based on whether a new preview image has been specified or not:
       # (But only set image if platform is not windows).
-      if !params[:workflow][:preview] or params[:workflow][:preview].size == 0
+      if params[:workflow][:preview].blank? || params[:workflow][:preview].size == 0
         success = @workflow.update_version(params[:version], 
                                            :title => params[:workflow][:title], 
                                            :body => params[:workflow][:body],
                                            :last_edited_by => current_user.id) 
       else
+        puts "Preview image provided. Attempting to set the version's preview image."
+        
         # Disable updating image on windows due to issues to do with file locking, that prevent file_column from working sometimes.
         if RUBY_PLATFORM =~ /mswin32/
           success = false
