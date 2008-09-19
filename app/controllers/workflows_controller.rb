@@ -254,7 +254,7 @@ class WorkflowsController < ApplicationController
       
       unless worked
         respond_to do |format|
-          flash[:error] = "We were unable to infer metadata from the workflow file/script selected. Please enter custom metadata for this workflow."
+          flash.now[:error] = "We were unable to infer metadata from the workflow file/script selected. Please enter custom metadata for this workflow."
           params[:metadata_choice] = 'custom'
           format.html { render :action => "new" }
         end
@@ -316,7 +316,7 @@ class WorkflowsController < ApplicationController
       
       unless worked
         respond_to do |format|
-          flash[:error] = "We were unable to infer metadata from the workflow file/script selected. Please enter custom metadata for this workflow."
+          flash.now[:error] = "We were unable to infer metadata from the workflow file/script selected. Please enter custom metadata for this workflow."
           params[:metadata_choice] = 'custom'
           format.html { render :action => :new_version }
         end
@@ -331,7 +331,7 @@ class WorkflowsController < ApplicationController
     # Check workflow type and file extension of new workflow is same as original
     if (original_type_display_name != @workflow.type_display_name) || (original_file_ext != @workflow.file_ext)
       respond_to do |format|
-        flash[:error] = "The workflow you have provided is not of the same content type as the original. Please upload a workflow of type '#{original_type_display_name}'"
+        flash.now[:error] = "The workflow you have provided is not of the same content type as the original. Please upload a workflow of type '#{original_type_display_name}'"
         format.html { render :action => :new_version }
       end
       return
@@ -357,7 +357,7 @@ class WorkflowsController < ApplicationController
     
     if fail
       respond_to do |format|
-        flash[:error] = 'Failed to upload and save new version. Check that you have provided the required data.'       
+        flash.now[:error] = 'Failed to upload and save new version. Check that you have provided the required data.'       
         format.html { render :action => :new_version }
       end
     end
@@ -617,14 +617,14 @@ protected
     # Check that a file has been selected 
     if params[:workflow][:file].size == 0
       respond_to do |format|
-        flash[:error] = "Please select a valid workflow file to upload. If you have selected a file, it might be empty."
+        flash.now[:error] = "Please select a valid workflow file to upload. If you have selected a file, it might be empty."
         format.html { render :action => view_to_render_on_fail }
       end
       return false
     # Check that the size of the workflow file doesn't exceed the max size
     elsif params[:workflow][:file].size > WORKFLOW_UPLOAD_MAX_BYTES
       respond_to do |format|
-        flash[:error] = "The workflow file/script uploaded is too big. The maximum upload size for workflows is #{number_to_human_size(WORKFLOW_UPLOAD_MAX_BYTES)}."
+        flash.now[:error] = "The workflow file/script uploaded is too big. The maximum upload size for workflows is #{number_to_human_size(WORKFLOW_UPLOAD_MAX_BYTES)}."
         format.html { render :action => view_to_render_on_fail }
       end
       return false
@@ -640,7 +640,7 @@ protected
     # If a custom workflow type has been specified, check that it is not "Other" or "other" as this can cause havoc in the UI.
     if params[:metadata_choice] == 'custom' && params[:workflow][:type].downcase == 'other' && params[:workflow][:type_other].downcase == 'other'
       respond_to do |format|
-        flash[:error] = "Naughty naughty! You cannot specify a new workflow type of \"#{custom_type_specified}\""
+        flash.now[:error] = "Naughty naughty! You cannot specify a new workflow type of \"#{custom_type_specified}\""
         format.html { render :action => view_to_render_on_fail }
       end
       return false

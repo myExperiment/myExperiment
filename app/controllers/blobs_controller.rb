@@ -9,6 +9,8 @@ class BlobsController < ApplicationController
   before_filter :find_blobs, :only => [:all]
   before_filter :find_blob_auth, :except => [:search, :index, :new, :create, :all]
   
+  before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create]
+  
   before_filter :check_is_owner, :only => [:edit, :update]
   
   before_filter :invalidate_listing_cache, :only => [:show, :download, :named_download, :update, :comment, :comment_delete, :rate, :tag, :destroy]
@@ -74,10 +76,6 @@ class BlobsController < ApplicationController
   
   # GET /files/new
   def new
-    @blob = Blob.new
-    
-    @sharing_mode  = 0
-    @updating_mode = 6
   end
   
   # GET /files/1;edit
@@ -92,8 +90,10 @@ class BlobsController < ApplicationController
     
     # don't create new blob if no file has been selected
     if params[:blob][:data].size == 0
-      flash[:error] = "Please select a file to upload."
-      redirect_to :action => :new
+      respond_to do |format|
+        flash.now[:error] = "Please select a file to upload."
+        format.html { render :action => "new" }
+      end
     else
       data = params[:blob][:data].read
       params[:blob][:local_name] = params[:blob][:data].original_filename
@@ -301,6 +301,14 @@ class BlobsController < ApplicationController
       end
       rescue ActiveRecord::RecordNotFound
       error("File not found", "is invalid")
+    end
+  end
+  
+  def initiliase_empty_objects_for_new_pages
+    if ["new", "create"].include?(action_name)
+      @blob = Blob.new
+      @sharing_mode  = 0
+      @updating_mode = 6
     end
   end
   

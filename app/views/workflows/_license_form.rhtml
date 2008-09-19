@@ -1,7 +1,7 @@
-<% if edit %>
-	<% license = @workflow.license %>
-<% elsif params[:workflow] && !params[:workflow][:license].blank? %>
+<% if params[:workflow] && !params[:workflow][:license].blank? %>
 	<% license = params[:workflow][:license] %>
+<% elsif edit %>
+	<% license = @workflow.license %>
 <% else %>
  	<% license = 'by-sa' %> 
 <% end %>
