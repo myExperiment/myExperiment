@@ -89,17 +89,17 @@ module Jits
           end
         end
         
-        def update_version(version_number, attributes)
-          return false if version_number.nil? or version_number.to_i < 1
+        def update_version(version_number_to_update, attributes)
+          return false if version_number_to_update.nil? or version_number_to_update.to_i < 1
           return false if attributes.nil? or attributes.empty?
-          return false unless (ver = find_version(version_number))
+          return false unless (ver = find_version(version_number_to_update))
           
           rtn = ver.update_attributes(attributes)
           
           if rtn
             # if the latest version has been updated then update the main table as well
-            if version_number.to_i == eval("#{self.class.version_column}")
-              return update_main_to_version(version_number, false)
+            if version_number_to_update.to_i == eval("#{self.class.version_column}")
+              return update_main_to_version(version_number_to_update, true)
             else
               return true
             end
