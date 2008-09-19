@@ -42,7 +42,7 @@ module WorkflowProcessors
     # All the file extensions supported by this workflow processor.
     # Must be all in lowercase.
     def self.file_extensions_supported
-      [ "xml" ]
+      [ "xml", "scufl" ]
     end
     
     def self.recognised?(file)
