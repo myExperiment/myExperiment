@@ -216,10 +216,6 @@ class WorkflowsController < ApplicationController
 
   # GET /workflows/new
   def new
-    @workflow = Workflow.new
-    
-    @sharing_mode  = 0
-    @updating_mode = 6
   end
 
   # GET /workflows/1/new_version
@@ -593,6 +589,12 @@ protected
   end
   
   def initiliase_empty_objects_for_new_pages
+    if ["new", "create"].include?(action_name)
+      @workflow = Workflow.new
+      @sharing_mode  = 0
+      @updating_mode = 6
+    end
+    
     # HACK: required for the FCKEditor description and revision comments boxes, 
     # (the former is used in both new and new_version actions).
     @new_workflow = Workflow.new
