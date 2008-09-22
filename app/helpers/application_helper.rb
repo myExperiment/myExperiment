@@ -54,7 +54,7 @@ module ApplicationHelper
     
     case thing.class.to_s
     when "Workflow"
-      return "Uploader"
+      return "Original Uploader"
     when "Blob"
       return "Uploader"
     when "Pack"

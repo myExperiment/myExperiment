@@ -18,7 +18,7 @@
 						<div class="workflow_type_box" style="width: auto; margin-bottom: 2em;">
 							<%= workflow.type_display_name -%>
 						</div>
-			    	<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
+			    	<p style="margin-top:0; padding-top:0; text-align: center;"><b><%= owner_text workflow -%></b></p>
 						<center><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %></center>
 					</td>
 			    <td style="text-align: left;">
