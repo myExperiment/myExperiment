@@ -14,6 +14,8 @@ class JobsController < ApplicationController
   before_filter :find_jobs, :only => [:index]
   before_filter :find_job_auth, :except => [:index, :new, :create]
   
+  before_filter :check_runnable_supported, :only => [:new, :create]
+  
   def index
     respond_to do |format|
       format.html # index.rhtml
@@ -52,6 +54,21 @@ class JobsController < ApplicationController
     @job.runnable_id = params[:runnable_id] if params[:runnable_id]
     @job.runnable_version = params[:runnable_version] if params[:runnable_version]
     
+    # Check that the runnable object is allowed.
+    # At the moment: only Taverna 1 workflows are allowed.
+    if params[:runnable_id] 
+      runnable = Workflow.find(:first, :conditions => ["id = ?", params[:runnable_id]])
+      if runnable 
+        if runnable.content_type != WorkflowProcessors::TavernaScufl.content_type
+          flash[:error] = "Note that the workflow specified to run in this job is currently not supported and will prevent the job from being created. Specify a Taverna 1 workflow instead."
+        end
+        
+        # TODO: check that the specified version of the workflow exists so that a warning can be given.
+      else
+        flash[:error] = "Note that the workflow specified to run in this job does not exist. Specify a different workflow."
+      end
+    end
+    
     respond_to do |format|
       format.html # new.rhtml
     end
@@ -59,6 +76,7 @@ class JobsController < ApplicationController
 
   def self.create_job(params, user)
     success = true
+    err_msg = nil
     
     # Hard code certain values, for now.
     params[:job][:runnable_type] = 'Workflow'
@@ -70,6 +88,16 @@ class JobsController < ApplicationController
     # Check runnable is a valid and authorized one
     # (for now we can assume it's a Workflow)
     runnable = Workflow.find(:first, :conditions => ["id = ?", params[:job][:runnable_id]])
+    
+    # Check that the runnable object is allowed to be run.
+    # At the moment: only Taverna 1 workflows are allowed.
+    if runnable 
+      if runnable.content_type != WorkflowProcessors::TavernaScufl.content_type
+        success = false
+        err_msg = "The workflow specified to run in this job not supported. Please specify a Taverna 1 workflow instead."
+      end
+    end
+    
     if !runnable or !runnable.authorized?('download', user)
       success = false
       @job.errors.add(:runnable_id, "not valid or not authorized")
@@ -91,18 +119,19 @@ class JobsController < ApplicationController
     
     success = update_parent_experiment(params, @job, user)
     
-    return @job, success
+    return @job, success, err_msg
   end
 
   def create
 
-    @job, success = JobsController.create_job(params, current_user)
+    @job, success, err_msg = JobsController.create_job(params, current_user)
 
     respond_to do |format|
       if success and @job.save
         flash[:notice] = "Job successfully created."
         format.html { redirect_to job_url(@job.experiment, @job) }
       else
+        flash[:error] = err_msg if err_msg
         format.html { render :action => "new" }
       end
     end
@@ -331,6 +360,10 @@ protected
     else
       error("Job not found or action not authorized", "is invalid (not authorized)")
     end
+  end
+  
+  def check_runnable_supported
+    # TODO: move all checks for the runnable object here!
   end
   
 private
