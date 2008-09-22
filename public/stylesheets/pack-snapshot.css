@@ -123,6 +123,11 @@
 }
 
 
+/* version types of workflows */
+.workflow_type {
+	color: #990000;
+	font-weight: bold;
+}
 
 /* CUSTOM STYLE SETTINGS FOR HTML ELEMENTS */
 

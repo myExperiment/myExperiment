@@ -68,7 +68,7 @@ class PacksController < ApplicationController
     image_hash["workflow"] = "./public/images/" + method_to_icon_filename("workflow")
     image_hash["file"] = "./public/images/" + method_to_icon_filename("blob")
     image_hash["pack"] = "./public/images/" + method_to_icon_filename("pack")
-    image_hash["link"] = "./public/images/" + method_to_icon_filename("remote-resource")
+    image_hash["link"] = "./public/images/" + method_to_icon_filename("remote")
     image_hash["denied"] = "./public/images/" + method_to_icon_filename("denied")
     
     @pack.create_zip(current_user, image_hash)

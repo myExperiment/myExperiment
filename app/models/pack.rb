@@ -188,13 +188,13 @@ class Pack < ActiveRecord::Base
               if download_allowed
                 self_downloaded_items_cnt += 1
                 self_downloaded_workflow_cnt += 1
-                zip_filenames << required_item_version.unique_name + ".xml"
+                zip_filenames << item.filename(wf_version)
                 
                 unless workflows_folder_created
                   zipfile.mkdir("workflows")
                   workflows_folder_created = true
                 end
-                zipfile.get_output_stream( "workflows/" + required_item_version.unique_name + ".xml") { |stream| stream.write(required_item_version.content_blob.data)}
+                zipfile.get_output_stream( "workflows/" + item.filename(wf_version)) { |stream| stream.write(required_item_version.content_blob.data)}
                 
                 internal_items_downloaded_html += generate_workflow_data("html", cgi, item_entry, item, required_item_version, wf_version, true)
                 internal_items_downloaded_txt  += generate_workflow_data("text", nil, item_entry, item, required_item_version, wf_version, true)
@@ -215,14 +215,14 @@ class Pack < ActiveRecord::Base
               if viewing_allowed
                 # only viewing is allowed, but can't download - some metadata still displayed, subject to availability (the WF version is missing!!) 
                 self_view_only_workflow_cnt += 1
-                internal_items_viewing_only_txt += "+ Workflow: #{item.title} ( !! VERSION NOT FOUND !!)\n"
+                internal_items_viewing_only_txt += "+ Workflow: #{item.title} ( !! a specific version of this workflow that the pack entry points to was not found !! )\n"
                 internal_items_viewing_only_txt += "  Version: #{wf_version}\n"
                 internal_items_viewing_only_txt += "  #{item_comment_string(item_entry, false)}\n\n"
                 
                 internal_items_viewing_only_html += cgi.li("class" => "denied"){ 
                   cgi.div("class" => "workflow_item") do
                     cgi.div("class" => "item_data") do
-                      "<b>Workflow: </b>" + item.title + " (<font style='color: red;'> !! VERSION NOT FOUND !! </font>)<br/>" +
+                      "<b>Workflow: </b>" + item.title + " (<font style='color: red;'> a specific version of the workflow that the pack enty point to was not found </font>)<br/>" +
                       "Version: #{wf_version}"
                     end
                   end
@@ -697,9 +697,11 @@ class Pack < ActiveRecord::Base
           cgi.div("class" => "workflow_item") do
             cgi.div("class" => "item_data") do
               "<b>Workflow: </b>" + cgi.a(location_string(item_entry.contributable_type, item.id, wf_version)){required_item_version.title} + 
-              (download_allowed ? ("&nbsp;&nbsp;&nbsp;[ " + cgi.a("./workflows/" + required_item_version.unique_name + ".xml"){"open local copy"} + " ]") : "") + "<br/>" +
-              "Version: #{wf_version} (created on: #{required_item_version.created_at.strftime("%d/%m/%Y")}, last updated on: #{required_item_version.updated_at.strftime("%d/%m/%Y")})<br/>" +
-              uploader_string(required_item_version.contributor_type, required_item_version.contributor_id, true) + "<br/>"
+              (download_allowed ? ("&nbsp;&nbsp;&nbsp;[ " + cgi.a("./workflows/" + item.filename(wf_version)){"open local copy"} + " ]") : "") + "<br/>" +
+              "Type: <span class='workflow_type'>" + item.type_display_name() + "</span><br/>" +
+              "Originally uploaded by: " + uploader_string(item.contribution.contributor_type, item.contribution.contributor_id, true, false) + "<br/>" +
+              "Version: #{wf_version} (created on: #{required_item_version.created_at.strftime("%d/%m/%Y")}, last edited on: #{required_item_version.updated_at.strftime("%d/%m/%Y")})<br/>" +
+              "Version uploaded by: " + uploader_string(required_item_version.contributor_type, required_item_version.contributor_id, true, false) + "<br/>"
             end +
             workflow_metadata 
           end
@@ -708,11 +710,13 @@ class Pack < ActiveRecord::Base
       when "text"
         workflow_data += "+ Workflow: #{item.title}"
         if download_allowed
-          workflow_data += " (local copy: workflows/#{item.unique_name + ".xml"})"
+          workflow_data += " (local copy: workflows/#{item.filename(wf_version)})"
         end
+        workflow_data += "\n  Type: " + item.type_display_name()
         workflow_data += "\n  Location: " + location_string(item_entry.contributable_type, item.id, wf_version)
-        workflow_data += "\n  Version: #{wf_version} (created on: #{required_item_version.created_at.strftime("%d/%m/%Y")}, last updated on: #{required_item_version.updated_at.strftime("%d/%m/%Y")})"
-        workflow_data += "\n  " + uploader_string(required_item_version.contributor_type, required_item_version.contributor_id, false) + "\n"
+        workflow_data += "\n  Originally uploaded by: " + uploader_string(item.contribution.contributor_type, item.contribution.contributor_id, false, false)
+        workflow_data += "\n  Version: #{wf_version} (created on: #{required_item_version.created_at.strftime("%d/%m/%Y")}, last edited on: #{required_item_version.updated_at.strftime("%d/%m/%Y")})"
+        workflow_data += "\n  Version uploaded by: " + uploader_string(required_item_version.contributor_type, required_item_version.contributor_id, false, false) + "\n"
         workflow_data += workflow_metadata
       else
         return "ERROR"
@@ -844,7 +848,7 @@ class Pack < ActiveRecord::Base
         
       when "text"
         item_data += (item_doesnt_exist ? 
-                      "The item this entry points to is not available. It may have been deleted.\n" :
+                      "- The item this entry points to is not available. It may have been deleted.\n" :
                       "- You don't have permissions to view this item\n"
                      )
         item_data += "  | Added to pack by: " + uploader_string("user", item_entry.user_id, false, false) + "; added on (#{item_entry.created_at.strftime('%d/%m/%Y @ %H:%M:%S')})"
