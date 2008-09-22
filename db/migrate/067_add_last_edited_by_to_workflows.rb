@@ -8,7 +8,7 @@ class AddLastEditedByToWorkflows < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :workflows, :last_edited_by, :string
-    add_column :workflow_versions, :last_edited_by, :string
+    remove_column :workflows, :last_edited_by
+    remove_column :workflow_versions, :last_edited_by
   end
 end
