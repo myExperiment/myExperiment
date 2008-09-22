@@ -11,12 +11,16 @@
 			<ul class="items">
 				<% creditors.each do |c| %>
 					<li>
-						<% if c.creditor_type == 'User' %>
-							<%= icon('user', nil, nil, nil, '') %> 
-						<% elsif c.creditor_type == 'Network' %>
-							<%= icon('network-member', nil, nil, nil, '') %>
-						<% end %>
-						<%= contributor(c.creditor_id, c.creditor_type, false, 100, true) -%>
+						<% if c.creditor.nil? -%>
+						  <span class="none_text">Person or group doesn't exist anymore</span>
+						<% else -%>
+							<% if c.creditor_type == 'User' %>
+								<%= icon('user', nil, nil, nil, '') %> 
+							<% elsif c.creditor_type == 'Network' %>
+								<%= icon('network-member', nil, nil, nil, '') %>
+							<% end %>
+							<%= contributor(c.creditor_id, c.creditor_type, false, 100, true) -%>
+						<% end -%>
 					</li>
 				<% end %>
 			</ul>
@@ -38,16 +42,20 @@
 				<ul class="items">
 					<% attributors.each do |a| %>
 						<li>
-							<% if thing_authorized?('show', a.attributor) -%>
-								<% if a.attributor_type == 'Workflow' %>
-									<%= icon('workflow', nil, nil, nil, '') %> 
-								<% elsif a.attributor_type == 'Blob' %>
-									<%= icon('blob', nil, nil, nil, '') %>
-								<% end %> 
-								<%= contributable(a.attributor_id, a.attributor_type) %>
+							<% if a.attributor.nil? -%>
+							  <span class="none_text">Item doesn't exist anymore</span>
 							<% else -%>
-								<font class="none_text">Private item</font>
-							<% end -%>
+								<% if thing_authorized?('show', a.attributor) -%>
+									<% if a.attributor_type == 'Workflow' %>
+										<%= icon('workflow', nil, nil, nil, '') %> 
+									<% elsif a.attributor_type == 'Blob' %>
+										<%= icon('blob', nil, nil, nil, '') %>
+									<% end %> 
+									<%= contributable(a.attributor_id, a.attributor_type) %>
+								<% else -%>
+									<font class="none_text">Private item</font>
+								<% end -%>
+						  <% end -%>
 						</li>
 					<% end %>
 				</ul>
