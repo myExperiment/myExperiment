@@ -4,6 +4,8 @@
 # See license.txt for details.
 
 class PacksController < ApplicationController
+  include ApplicationHelper
+  
   before_filter :login_required, :except => [:index, :show, :all, :search, :items, :download]
   
   before_filter :find_packs, :only => [:all]
@@ -60,7 +62,16 @@ class PacksController < ApplicationController
     # so ultimately there's just one copy of a zip archive per pack
     # (this also makes sure that changes to the pack are reflected in the
     # zip, because it is generated on the fly every time) 
-    @pack.create_zip(current_user)
+    
+    # this hash contains all the paths to the images to be used as bullet icons in the pack item listing
+    image_hash = {} 
+    image_hash["workflow"] = "./public/images/" + method_to_icon_filename("workflow")
+    image_hash["file"] = "./public/images/" + method_to_icon_filename("blob")
+    image_hash["pack"] = "./public/images/" + method_to_icon_filename("pack")
+    image_hash["link"] = "./public/images/" + method_to_icon_filename("remote-resource")
+    image_hash["denied"] = "./public/images/" + method_to_icon_filename("denied")
+    
+    @pack.create_zip(current_user, image_hash)
     
     send_file @pack.archive_file_path, :disposition => 'attachment'
   end

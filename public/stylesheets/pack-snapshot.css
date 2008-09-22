@@ -126,9 +126,51 @@
 
 /* CUSTOM STYLE SETTINGS FOR HTML ELEMENTS */
 
-li {
-  margin-bottom: 1.5em;
+li
+{
+	margin-bottom: 1.5em;
 }
+
+li.workflow
+{
+  background-image: url(_images/workflow.png);
+	list-style: none;
+	background-repeat: no-repeat;
+  padding-left: 25px;
+}
+
+li.file
+{
+	background-image: url(_images/file.png);
+	list-style: none;
+	background-repeat: no-repeat;
+  padding-left: 25px;
+}
+
+li.pack
+{
+	background-image: url(_images/pack.png);
+	list-style: none;
+	background-repeat: no-repeat;
+  padding-left: 25px;
+}
+
+li.link
+{
+	background-image: url(_images/link.png);
+	list-style: none;
+	background-repeat: no-repeat;
+  padding-left: 25px;
+}
+
+li.denied
+{
+	background-image: url(_images/denied.png);
+	list-style: none;
+	background-repeat: no-repeat;
+  padding-left: 25px;
+}
+
 
 table {
   margin-top: 0.3em;

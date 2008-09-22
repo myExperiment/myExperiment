@@ -56,7 +56,7 @@ class Pack < ActiveRecord::Base
   end
   
   
-  def create_zip(user)
+  def create_zip(user, list_images_hash)
     
     # VARIABLE DECLARATIONS
     
@@ -151,6 +151,15 @@ class Pack < ActiveRecord::Base
       self.contributable_entries.each { |item_entry|
         # the first thing to do with each item is to check if download is allowed
         item_contribution = Contribution.find(:first, :conditions => ["contributable_type = ? AND contributable_id = ?", item_entry.contributable_type, item_entry.contributable_id])
+        
+        # check if the item to which this entry points to still exists
+        if item_contribution.nil?
+          self_hidden_items_cnt += 1
+          internal_items_hidden_html += generate_hidden_item_data("html", cgi, item_entry, true)
+          internal_items_hidden_txt  += generate_hidden_item_data("text", nil, item_entry, true)
+          next # skips all further processing and moves on to the next item
+        end
+        
         download_allowed = item_contribution.authorized?("download", user)
         viewing_allowed = download_allowed ? true : item_contribution.authorized?("view", user)
         
@@ -210,7 +219,7 @@ class Pack < ActiveRecord::Base
                 internal_items_viewing_only_txt += "  Version: #{wf_version}\n"
                 internal_items_viewing_only_txt += "  #{item_comment_string(item_entry, false)}\n\n"
                 
-                internal_items_viewing_only_html += cgi.li{ 
+                internal_items_viewing_only_html += cgi.li("class" => "denied"){ 
                   cgi.div("class" => "workflow_item") do
                     cgi.div("class" => "item_data") do
                       "<b>Workflow: </b>" + item.title + " (<font style='color: red;'> !! VERSION NOT FOUND !! </font>)<br/>" +
@@ -420,6 +429,15 @@ class Pack < ActiveRecord::Base
       #
       # CSS
       zipfile.add("index.css", "./public/stylesheets/pack-snapshot.css")
+      #
+      # LIST BULLET IMAGES
+      zipfile.mkdir("_images")
+      zipfile.add("_images/workflow.png", list_images_hash["workflow"])
+      zipfile.add("_images/file.png", list_images_hash["file"])
+      zipfile.add("_images/pack.png", list_images_hash["pack"])
+      zipfile.add("_images/link.png", list_images_hash["link"])
+      zipfile.add("_images/denied.png", list_images_hash["denied"])
+      
    
    # finalize the archive file
    zipfile.close()
@@ -675,7 +693,7 @@ class Pack < ActiveRecord::Base
     
     case format.downcase
       when "html"
-        workflow_data += cgi.li{
+        workflow_data += cgi.li("class" => "workflow"){
           cgi.div("class" => "workflow_item") do
             cgi.div("class" => "item_data") do
               "<b>Workflow: </b>" + cgi.a(location_string(item_entry.contributable_type, item.id, wf_version)){required_item_version.title} + 
@@ -711,7 +729,7 @@ class Pack < ActiveRecord::Base
     
     case format.downcase
       when "html"
-        file_data += cgi.li{ 
+        file_data += cgi.li("class" => "file"){ 
           cgi.div("class" => "file_item") do
             cgi.div("class" => "item_data") do
               "<b>File: </b>" + cgi.a(location_string(item_entry.contributable_type, item.id)){item.title} + 
@@ -746,7 +764,7 @@ class Pack < ActiveRecord::Base
     
     case format.downcase
       when "html"
-        pack_data += cgi.li {
+        pack_data += cgi.li("class" => "pack"){
           cgi.div("class" => "pack_item") do
             cgi.div("class" => "item_data") do
               "<b>Pack: </b>" + cgi.a(location_string(item_entry.contributable_type, item.id)){item.title} + 
@@ -781,7 +799,7 @@ class Pack < ActiveRecord::Base
     
     case format.downcase
       when "html"
-        item_data += cgi.li {
+        item_data += cgi.li("class" => "link"){
           cgi.div("class" => "external_item") do
             cgi.div("class" => "item_data") do
               "#{item_entry.title} - " + cgi.a(item_entry.uri){item_entry.uri} +
@@ -805,15 +823,18 @@ class Pack < ActiveRecord::Base
   
   
   # for pack items that don't have neither download, nor view permissions
-  def generate_hidden_item_data(format, cgi, item_entry)
+  def generate_hidden_item_data(format, cgi, item_entry, item_doesnt_exist=false)
     item_data = ""
     
     case format.downcase
       when "html"
-        item_data += cgi.li{
+        item_data += cgi.li("class" => "denied"){
           cgi.div("class" => "hidden_item") do
             cgi.div("class" => "item_data") do
-              "<b>You don't have permissions to view this item</b><br/>"
+              (item_doesnt_exist ?
+               "<b>The item this entry points to is not available. It may have been deleted.</b>" :
+               "<b>You don't have permissions to view this item</b><br/>"
+              )
             end +
             cgi.div("class" => "item_metadata") do
               "Added to pack by: " + uploader_string("user", item_entry.user_id, true, false) + " (#{item_entry.created_at.strftime('%d/%m/%Y @ %H:%M:%S')})<br/>"
@@ -822,7 +843,10 @@ class Pack < ActiveRecord::Base
         }
         
       when "text"
-        item_data += "- You don't have permissions to view this item\n"
+        item_data += (item_doesnt_exist ? 
+                      "The item this entry points to is not available. It may have been deleted.\n" :
+                      "- You don't have permissions to view this item\n"
+                     )
         item_data += "  | Added to pack by: " + uploader_string("user", item_entry.user_id, false, false) + "; added on (#{item_entry.created_at.strftime('%d/%m/%Y @ %H:%M:%S')})"
       
       else
