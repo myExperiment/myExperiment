@@ -78,6 +78,10 @@ module CachingHelper
       controller = 'groups'
     when 'User'
       controller = 'users'
+    when 'Announcement'
+      controller = 'announcements'
+    when 'GroupAnnouncement'
+      controller = 'group_announcements'
     else
       controller = ''
     end

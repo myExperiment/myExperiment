@@ -12,6 +12,8 @@ class GroupAnnouncementsController < ApplicationController
   before_filter :find_announcements_auth, :only => [ :index ]
   before_filter :find_announcement_auth, :only => [ :show, :edit, :update, :destroy ]
   
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :group_announcement_sweeper, :only => [ :create, :update, :destroy ]
   
   # GET /group_announcements
   def index
