@@ -33,6 +33,14 @@ module WorkflowProcessors
       [ "xoml" ]
     end
     
+    def self.can_determine_type_from_file?
+      false
+    end
+    
+    def self.recognised?(file)
+      false
+    end
+    
     def self.can_infer_metadata?
       false
     end

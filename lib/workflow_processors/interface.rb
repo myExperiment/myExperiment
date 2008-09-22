@@ -34,6 +34,10 @@ module WorkflowProcessors
       []
     end
     
+    def self.can_determine_type_from_file?
+      false
+    end
+    
     def self.recognised?(file)
       false
     end

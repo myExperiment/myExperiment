@@ -168,31 +168,33 @@ class WorkflowsController < ApplicationController
 
   # GET /workflows/:id/launch.whip
   def launch
-
-    wwf = Whip::WhipWorkflow.new()
-
-    wwf.title       = @viewing_version.title
-    wwf.datatype    = Whip::Taverna1DataType
-    wwf.author      = @workflow.contributor_name
-    wwf.name        = @workflow.filename(@viewing_version_number)
-    wwf.summary     = @viewing_version.body
-    wwf.version     = @viewing_version.version.to_s
-    wwf.workflow_id = @workflow.id.to_s
-    wwf.updated     = @viewing_version.updated_at
-    wwf.data        = @viewing_version.content_blob.data
-
-    dir = 'tmp/bundles'
-
-    FileUtils.mkdir(dir) if not File.exists?(dir)
-    file_path = Whip::filePath(wwf, dir)
-
-    Whip::bundle(wwf, dir)
-
-    respond_to do |format|
-      format.whip { 
-        send_data(File.read(file_path), :filename => "#{@viewing_version.unique_name}_#{@viewing_version.version}.whip",
-            :type => "application/whip-archive")
-      }
+    # Only allow for Taverna 1 workflows.
+    if @workflow.content_type == WorkflowProcessors::TavernaScufl.content_type
+      wwf = Whip::WhipWorkflow.new()
+  
+      wwf.title       = @viewing_version.title
+      wwf.datatype    = Whip::Taverna1DataType
+      wwf.author      = @workflow.contributor_name
+      wwf.name        = @workflow.filename(@viewing_version_number)
+      wwf.summary     = @viewing_version.body
+      wwf.version     = @viewing_version.version.to_s
+      wwf.workflow_id = @workflow.id.to_s
+      wwf.updated     = @viewing_version.updated_at
+      wwf.data        = @viewing_version.content_blob.data
+  
+      dir = 'tmp/bundles'
+  
+      FileUtils.mkdir(dir) if not File.exists?(dir)
+      file_path = Whip::filePath(wwf, dir)
+  
+      Whip::bundle(wwf, dir)
+  
+      respond_to do |format|
+        format.whip { 
+          send_data(File.read(file_path), :filename => "#{@viewing_version.unique_name}_#{@viewing_version.version}.whip",
+              :type => "application/whip-archive")
+        }
+      end
     end
   end
 
@@ -815,8 +817,10 @@ private
     # in which case check that it matches a processor returned for the file.
     # This is to ensure that the correct content type is being assigned to the workflow uploaded.
     if (proc_class = WorkflowTypesHandler.processor_class_for_content_type(workflow_to_set.content_type))
-      unless proc_class == WorkflowTypesHandler.processor_class_for_file(file)
-        worked = false
+      if proc_class.can_determine_type_from_file?
+        if proc_class != WorkflowTypesHandler.processor_class_for_file(file)
+          worked = false
+        end
       end
     end
     

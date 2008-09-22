@@ -45,6 +45,10 @@ module WorkflowProcessors
       [ "xml", "scufl" ]
     end
     
+    def self.can_determine_type_from_file?
+      true
+    end
+    
     def self.recognised?(file)
       begin
         scufl_model = Scufl::Parser.new.parse(file.read)

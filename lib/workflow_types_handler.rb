@@ -70,7 +70,9 @@ class WorkflowTypesHandler
     file_ext = file.original_filename.split(".").last.downcase
     proc_class = nil
     @@processor_classes.each do |c|
-      proc_class = c if c.file_extensions_supported.include?(file_ext) && c.recognised?(file)
+      proc_class = c if c.can_determine_type_from_file? && 
+                        c.file_extensions_supported.include?(file_ext) && 
+                        c.recognised?(file)
     end
     return proc_class
   end
