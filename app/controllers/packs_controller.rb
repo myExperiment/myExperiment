@@ -9,6 +9,8 @@ class PacksController < ApplicationController
   before_filter :find_packs, :only => [:all]
   before_filter :find_pack_auth, :except => [:index, :new, :create, :all, :search]
   
+  before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
+  
   # declare sweepers and which actions should invoke them
   cache_sweeper :pack_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :pack_entry_sweeper, :only => [ :create_item, :quick_add, :update_item, :destroy_item ]
@@ -46,9 +48,6 @@ class PacksController < ApplicationController
   def show
     @viewing = Viewing.create(:contribution => @pack.contribution, :user => (logged_in? ? current_user : nil))
     
-    @sharing_mode  = determine_sharing_mode(@pack)
-    @updating_mode = determine_updating_mode(@pack)
-    
     respond_to do |format|
       format.html # show.rhtml
     end
@@ -69,15 +68,10 @@ class PacksController < ApplicationController
   # GET /packs/new
   def new
     @pack = Pack.new
-    
-    @sharing_mode  = 0
-    @updating_mode = 6
   end
   
   # GET /packs/1;edit
   def edit
-    @sharing_mode  = determine_sharing_mode(@pack)
-    @updating_mode = determine_updating_mode(@pack)
   end
   
   # POST /packs
@@ -427,6 +421,20 @@ class PacksController < ApplicationController
       end
     rescue ActiveRecord::RecordNotFound
       error("Pack not found", "is invalid")
+    end
+  end
+  
+  def set_sharing_mode_variables
+    case action_name
+      when "new"
+        @sharing_mode  = 0
+        @updating_mode = 6
+      when "create", "update"
+        @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
+        @updating_mode = params[:updating][:class_id].to_i if params[:updating]
+      when "show", "edit"
+        @sharing_mode  = determine_sharing_mode(@pack)
+        @updating_mode = determine_updating_mode(@pack)
     end
   end
   

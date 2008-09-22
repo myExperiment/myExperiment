@@ -15,6 +15,9 @@
 		<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 			<% cache(:controller => 'workflows_cache', :action => 'listing', :id => workflow.id) do -%>
 			    <td style="width: 100px;">
+						<div class="workflow_type_box" style="width: auto; margin-bottom: 2em;">
+							<%= workflow.type_display_name -%>
+						</div>
 			    	<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
 						<center><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %></center>
 					</td>
@@ -22,7 +25,7 @@
 			      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
 			      <p class="title">
 					  	<%= icon "workflow", nil, nil, nil, '' %>
-							<% title = contributable_name(workflow.id, 'Workflow')%>
+							<% title = contributable_name(workflow.id, 'Workflow') %>
 							<%=link_to(query ? highlight_all(title, query) : title, workflow_path(workflow)) %>
 							<span style="font-weight:normal;">
 								(v<%= workflow.current_version %>)
@@ -30,9 +33,10 @@
 					  </p>
 					
 						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
-							<b>Created:</b> <%=datetime workflow.created_at, false %>
-							|
-							<b>Updated:</b> <%=datetime workflow.updated_at, false %>
+							<b>Created:</b> <%=datetime workflow.contribution.created_at, false -%>
+							<% unless workflow.contribution.created_at == workflow.contribution.updated_at %>
+								|	<b>Last updated:</b> <%=datetime workflow.contribution.updated_at, false -%>
+							<% end %>
 						</p>
 						
 					  <% unless (creditors = workflow.creditors).empty? %>
@@ -66,11 +70,11 @@
 						
 						<p style="font-size:85%;"><b>License: </b><%= license_link workflow.license.to_s %></p>
 					  
-						<table>
+						<table style="width: 99%;">
 							<tbody>
 								<tr>
 									<% unless workflow.image.nil? -%>
-										<td style="margin: 0; padding: 0.2em 0; border: 0; padding-right: 0.8em;">
+										<td style="margin: 0; padding: 0.2em 0; border: 0; padding-right: 0.8em; width: 101px;">
 							      	<%= link_to image_tag(url_for_file_column(workflow, "image", "thumb"), :class => 'framed_nospace'), workflow_path(workflow) %>
 										</td>
 									<% end -%>
@@ -109,10 +113,12 @@
 					  <% end %>	
 			    </td>
 			<% end -%>
-			    <td class="actions" style="width: 85px;">
+			    <td class="actions" style="width: 120px;">
 			      <%= icon "show", workflow_path(workflow), nil, nil, "View" %>
 				  	<% if workflow.authorized?("download", current_user) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
 			      <% if mine?(workflow) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
+						<br/><br/>
+						
 			    </td>
 		</tr>
   	<% end -%>

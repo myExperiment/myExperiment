@@ -301,7 +301,7 @@ module ApplicationHelper
     return url
   end
   
-  def filter_contributables(contributions)
+  def filter_contributables(contributions, sort=false)
     rtn = {}
     
     contributions.each do |c|
@@ -311,6 +311,15 @@ module ApplicationHelper
         arr << contributable
       else
         rtn[klass] = [contributable]
+      end
+    end
+    
+    # Sort alphabetically if required
+    if sort
+      rtn.each do |k, v|
+        v.sort! { |a, b|
+          a.title.downcase <=> b.title.downcase
+        }
       end
     end
     

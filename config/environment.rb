@@ -60,11 +60,6 @@ end
 # Mime::Type.register "text/richtext", :rtf
 # Mime::Type.register "application/x-mobile", :mobile
 
-# Register Taverna MIME Types
-Mime::Type.register "application/vnd.taverna.rest+xml", :taverna_rest
-Mime::Type.register "application/vnd.taverna.scufl+xml", :taverna_scufl
-Mime::Type.register "application/vnd.taverna.baclava+xml", :taverna_baclava
-Mime::Type.register "application/vnd.taverna.report+xml", :taverna_report
 Mime::Type.register "application/whip-archive", :whip
 
 # Include your application configuration below

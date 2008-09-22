@@ -1,44 +1,62 @@
 <% t "New" -%>
 
+<%= javascript_include_tag :fckeditor %>
 <%= javascript_include_tag "osp.js" %>
 
 <h1>Upload Workflow</h1>
 
-<%= error_messages_for :workflow %>
+<center>
+	<%= error_messages_for :workflow %>
+</center>
 
 <% form_tag({:action => :create}, :multipart => true) do %>
 
   <!-- Workflow File -->
+	
+	<p class="step_text">1. Workflow file/script</p>
 
-  <div>
-    <p>
-      <strong>Workflow File:</strong>
-      <input id="workflow_scufl" name="workflow[scufl]" size="50" type="file"/>
-    </p>
-  </div>
+	<center>
+	  <%= render :partial => 'workflow_file_selection_form' %>
+	</center>
   
   <br />
-  <br />
-                
-  <!-- Tags -->
-  <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @workflow } %>
+	
+	<!-- Main metadata -->
+	
+	<p class="step_text">2. Main metadata</p>
+  
+	<%= render :partial => "main_metadata_form", :locals => { :new_version => false } -%>
+	
+	<br/>
+	
+	<!-- Other metadata and settings -->
+	
+	<p class="step_text" style="text-align: center;">3. Other metadata and settings</p>
+	
+	<!-- Tags -->
+  <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @workflow } -%>
                 
   <!-- Credit and Attribution -->
-  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => false, :contributable => @workflow } %>
+  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => false, :contributable => @workflow } -%>
                 
   <!-- Sharing -->              
-  <%= render :partial => "contributions/sharing_form", :locals => { :edit => false, :contributable => @workflow, :update_perms => true } %>
+  <%= render :partial => "contributions/sharing_form", :locals => { :edit => false, :contributable => @workflow, :update_perms => true } -%>
                 
   <!-- License/Rights -->
-  <%= render :partial => "workflows/license_form", :locals => { :edit => false } %>
+  <%= render :partial => "workflows/license_form", :locals => { :edit => false } -%>
   
-  <p style="text-align: center; margin: 2em 3em; padding: 0.6em; border-top: 1px dotted #999999; border-bottom: 1px dotted #999999; color: #660000;">
-    <strong>Note:</strong> You are responsible for any content that you upload. 
-	You may remove your content at any time. We may make copies for operational purposes. 
-	This service is governed by the <%= link_to "JANET Acceptable Use Policy", "http://www.ja.net/services/publications/policy/aup.html", :target => "_blank" %>. 
-	Takedown requests will be reviewed by the myExperiment Management Committee. 
-	The sharing functionality is under beta test. Please contact us for further information about Terms and Conditions.
-  </p>
+	
+	<!-- Terms and conditions -->
+	
+	<p class="step_text">4. Terms and conditions</p>
+	
+  <%= render :partial => 'contributions/terms_and_conditions' %>
+	
+	<br/>
+
+	<!-- Upload and save -->
+	
+	<p class="step_text">5. Upload and save</p>
 
   <p style="text-align: center;">
     <%= submit_tag "Upload and Save", :disable_with => "Uploading and saving..." %>

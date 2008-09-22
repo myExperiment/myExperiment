@@ -1,0 +1,67 @@
+<% if params[:metadata_choice].nil?
+     main_metadata_infer_selected = true
+   else
+     main_metadata_infer_selected = (params[:metadata_choice] == "infer" ? true : false)  
+   end
+-%>
+
+<center>
+	<div class="box_form" style="width: 600px; margin: 0; text-align: left;">
+	
+		<p>
+			<label for="metadata_choice_infer">
+				<%= radio_button_tag ("metadata_choice", 
+															"infer", 
+															main_metadata_infer_selected, 
+															:onclick => "$('metadata_choice_custom').checked=false;$('div_main_metadata_custom').hide();return true;") -%>
+				Attempt to infer metadata (and possibly generate preview images) from the workflow file/script
+				<%= info_icon_with_tooltip("<b>Note:</b> we are only able to do this for #{WorkflowTypesHandler.ones_that_can_infer_metadata.to_sentence} workflows at the moment. If this fails you will have the opportunity to set some custom metadata instead.") -%> 
+			</label>
+		</p>
+		<p style="margin-top: 0.1em;">
+			<label for="metadata_choice_custom">
+				<%= radio_button_tag ("metadata_choice", 
+															"custom", 
+															!main_metadata_infer_selected, 
+															:onclick => "$('metadata_choice_infer').checked=false;$('div_main_metadata_custom').show();return true;") -%>
+				Enter custom metadata
+			</label>
+		</p>
+		
+		<div id="div_main_metadata_custom" class="box_editing" style="margin: 1em 0em 1em 1.5em; padding-left: 1.5em; background: transparent; <%= main_metadata_infer_selected ? "display: none;" : "" -%>">
+				
+				<% unless new_version -%>		
+					<!-- Type -->
+					<p>
+						<b>Workflow Type</b>
+						<span class="required">*</span>
+					</p>
+					<%= select_tag "workflow[type]", 
+												 options_for_select(workflow_types, (params[:workflow].nil? ? nil : params[:workflow][:type])),
+												 :onchange => "if (this.value == 'Other') { $('workflow[type_other]').show(); $('workflow[type_other]').focus(); } else { $('workflow[type_other]').hide(); }",
+												 :style => "vertical-align: middle;" -%>
+					<%= text_field_tag "workflow[type_other]",
+														 (params[:workflow].nil? ? '' : params[:workflow][:type_other]),
+														 :size => 30, 
+														 :style => "display: #{params[:workflow].nil? ? 'none' : (params[:workflow][:type] == 'Other' ? 'inline' : 'none')}; vertical-align: middle;" %>
+			  <% end -%> 
+				
+				<!-- Title -->
+				<p>
+					<b>Title</b>
+					<span class="required">*</span>
+				</p>
+				<%= text_field_tag "workflow[title]", (params[:workflow].nil? ? '' : params[:workflow][:title]), :size => 50 %>
+				
+				<!-- Preview Image -->
+				<p><b>Preview Image</b></p>
+				<input id="workflow_preview" name="workflow[preview]" size="50" type="file" />
+				
+				<!-- Description -->
+				<p><b>Description</b></p>
+				<%= fckeditor_textarea(:new_workflow, :body, :toolbarSet => 'Simple', :width => '500px', :height => '300px') %>
+		
+		</div>
+	
+	</div>
+</center>

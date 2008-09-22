@@ -26,9 +26,10 @@
 						</p>
 						
 						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
-							<b>Created:</b> <%=datetime pack.created_at, false %>
-							|
-							<b>Updated:</b> <%=datetime pack.updated_at, false %>
+							<b>Created:</b> <%=datetime pack.contribution.created_at, false %>
+							<% unless pack.contribution.created_at == pack.contribution.updated_at %>
+								|	<b>Last updated:</b> <%=datetime pack.contribution.updated_at, false %>
+							<% end %>
 						</p>
 						
 						<div class="desc" style="font-size: 85%;">

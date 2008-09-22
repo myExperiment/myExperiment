@@ -1061,7 +1061,7 @@ a.button_slim * {
 	color: #666666; 
 	font-size: 85%; 
 	text-align: center; 
-	margin-bottom: 0.5em;
+	margin-bottom: 0.6em;
 }
 
 .contribution_mini_nav {
@@ -1249,6 +1249,16 @@ a.button_slim * {
 .contribution_version_inner_box .option_box {
 	padding: 0.2em 0.6em; 
 	border: 1px solid #CCCCCC;
+}
+
+.contribution_version_meta_info_box {
+	padding: 0.3em 0.6em; 
+	border: 1px dotted #999999;
+	background-color: #FFFFCC;
+	color: #333333;
+	line-height: 1.2;
+	font-size: 85%;
+	margin-left: 2.5em;  
 }
 
 .contribution_currentlicense {
@@ -1443,8 +1453,8 @@ div.auto_complete ul strong.highlight {
 	padding: 0.8em 1.4em;
 }
 
-.box_form input {
-	margin-bottom: 1em;
+.box_form p {
+	margin-top: 0.4em;
 }
 
 .box_standout {
@@ -1533,7 +1543,8 @@ div.auto_complete ul strong.highlight {
 .step_text {
 	color: #660000;
 	font-weight: bold;
-	margin-bottom: 0.5em;
+	margin: 0.5em 0 0.6em 0;
+	text-align: center;
 }
 
 .note_text {
@@ -1829,7 +1840,7 @@ table.simple td {
 #packItems .comment {
 	font-style: italic;
 	background-color: #F7F7F7;
-	padding: 0.2em 0.4em;
+	padding: 0.4em 0.6em;
 }
 
 #packItems .user {
@@ -1868,7 +1879,6 @@ table.quick_add td.submit {
 	width: 4em;
 }
 
-
 .group_announcements {
 	margin-top: 0.8em;
 	padding: 0 0.5em;
@@ -1891,4 +1901,30 @@ table.quick_add td.submit {
 	font-size: 85%;
 	font-weight: bold;
 	text-align: left;
+}
+
+.required {
+	color: red;
+	font-weight: bold;
+}
+
+.workflow_type_box {
+	border: 1px solid #DDDDDD; 
+	background-color: #FFFFCC; 
+	margin: 0; 
+	padding: 0.4em 0.5em; 
+	font-size: 77%; 
+	color: #990000; 
+	font-weight: bold; 
+	text-align: center;
+}
+
+#version_info_box p {
+	line-height: 1.2;
+	padding: 0.3em 0;
+	margin: 0;
+}
+
+#version_info_box p * {
+	vertical-align: middle;
 }

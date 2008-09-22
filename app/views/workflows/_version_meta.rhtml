@@ -1,18 +1,34 @@
-<div class="box_standout" style="font-size: 85%; padding: 0.4em; margin-bottom: 0.6em; margin-left: 2.5em; line-height: 1.2em; color: #333333;">
+<p>
+	<b>Created on:</b>
+	<%= datetime version.created_at %>
+</p>
+
+<p>
+	<b>Created by:</b>
+	<%= contributor version.contributor_id, version.contributor_type %>
+</p>
+
+<% unless version.created_at == version.updated_at %>
+
 	<p>
-		<b>Version created on:</b>
+		<b>Last edited on:</b>
 		<%= datetime version.updated_at %>
 	</p>
 	
 	<p>
-		<b>Revision comments:</b>
+		<b>Last edited by:</b>
+		<%= contributor version.last_edited_by, "User" %>
 	</p>
-	<% unless version.revision_comments.nil? or version.revision_comments.empty? %>
-		<div>
-			<%= version.revision_comments %>
-		</div>
-	<% else %>
-		<p><i>None</i></p>
-	<% end %>
-	
-</div>
+
+<% end %>
+
+<p>
+	<b>Revision comments:</b>
+</p>
+<% unless version.revision_comments.blank? -%>
+	<div>
+		<%= white_list version.revision_comments %>
+	</div>
+<% else %>
+	<p><i>None</i></p>
+<% end %>

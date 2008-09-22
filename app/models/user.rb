@@ -390,7 +390,7 @@ class User < ActiveRecord::Base
   
   def friends
     (friends_of_mine + friends_with_me).uniq.sort { |a, b|
-      a.name <=> b.name
+      a.name.downcase <=> b.name.downcase
     }
   end
   

@@ -27,10 +27,10 @@
 				</p>
 				
 				<p>
-					<%= check_box_tag 'assign_to_group', "1", (@experiment.contributor_type == 'Network'), :style => "margin-bottom: 0" -%> Assign to Group:
+					<%= check_box_tag 'assign_to_group', "1", (@experiment.contributor_type == 'Network'), :style => "vertical-align: middle;" -%> Assign to Group:
 					<%= select_tag "assign_to_group_id", 
 												 options_from_collection_for_select(current_user.all_networks, "id", "title", (@experiment.contributor_type == 'Network' ? @experiment.contributor_id : nil)), 
-												 :style => "margin-bottom: 0" -%>
+												 :style => "vertical-align: middle;" -%>
 			 	</p> 
 			</fieldset>
 			

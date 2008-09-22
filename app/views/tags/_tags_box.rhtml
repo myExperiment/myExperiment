@@ -16,8 +16,8 @@
 			<div class="foldTitle">Add Tags</div>
 			<div class="foldContent" style="display: none;">
 				<% form_remote_tag(:url => add_path, 
-								   :update => 'tags', 
-							 		   :success => "$('tag_list').value=''; new Effect.Highlight('tags', { duration: 1.5 });",
+								   :update => 'tags_inner_box', 
+							 		   :success => "$('tag_list').value=''; new Effect.Highlight('tags_inner_box', { duration: 1.5 });",
 							       :loading => "Element.show('addtag_indicator')",
                     	   	       :complete => "Element.hide('addtag_indicator')") do %>
 					<p><small>(use commas to separate different tags)</small></p>

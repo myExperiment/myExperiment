@@ -10,6 +10,12 @@ class WorkflowsController < ApplicationController
   before_filter :find_workflows_rss, :only => [:index]
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all]
   
+  before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create, :new_version, :create_version]
+  before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
+  
+  before_filter :check_file_size, :only => [:create, :create_version]
+  before_filter :check_custom_workflow_type => [:create, :create_version]
+  
   before_filter :check_is_owner, :only => [:edit, :update]
   
   # declare sweepers and which actions should invoke them
@@ -146,14 +152,14 @@ class WorkflowsController < ApplicationController
   def download
     @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
     
-    send_data(@viewing_version.content_blob.data, :filename => @viewing_version.unique_name + ".xml", :type => "application/vnd.taverna.scufl+xml")
+    send_data(@viewing_version.content_blob.data, :filename => @workflow.filename(@viewing_version_number), :type => @workflow.content_type)
   end
   
   # GET /workflows/:id/download/:name
   def named_download
 
     # check that we got the right filename for this workflow
-    if params[:name] == "#{@viewing_version.unique_name}.xml"
+    if params[:name] == @workflow.filename
       download
     else
       render :nothing => true, :status => "404 Not Found"
@@ -168,7 +174,7 @@ class WorkflowsController < ApplicationController
     wwf.title       = @viewing_version.title
     wwf.datatype    = Whip::Taverna1DataType
     wwf.author      = @workflow.contributor_name
-    wwf.name        = "#{@viewing_version.unique_name}_#{@viewing_version.version}.xml"
+    wwf.name        = @workflow.filename(@viewing_version_number)
     wwf.summary     = @viewing_version.body
     wwf.version     = @viewing_version.version.to_s
     wwf.workflow_id = @workflow.id.to_s
@@ -212,9 +218,6 @@ class WorkflowsController < ApplicationController
   def show
     @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
 
-    @sharing_mode  = determine_sharing_mode(@workflow)
-    @updating_mode = determine_updating_mode(@workflow)
-    
     respond_to do |format|
       format.html # show.rhtml
     end
@@ -222,180 +225,203 @@ class WorkflowsController < ApplicationController
 
   # GET /workflows/new
   def new
-    @workflow = Workflow.new
-
-    @sharing_mode  = 0
-    @updating_mode = 6
   end
 
-  # GET /workflows/1;new_version
+  # GET /workflows/1/new_version
   def new_version
   end
 
-  # GET /workflows/1;edit
+  # GET /workflows/1/edit
   def edit
-    @sharing_mode  = determine_sharing_mode(@workflow)
-    @updating_mode = determine_updating_mode(@workflow)
   end
   
-  # GET /workflows/1;edit_version
+  # GET /workflows/1/edit_version
   def edit_version
   end
 
   # POST /workflows
   def create
-
-    # don't create new workflow if no file has been selected
-    if params[:workflow][:scufl].size == 0
-      flash[:error] = "Please select a workflow file to upload."
-      redirect_to :action => :new
-    else
-      params[:workflow][:contributor_type], params[:workflow][:contributor_id] = "User", current_user.id
-
-      scufl_first_k = params[:workflow][:scufl].read(1024)
-      params[:workflow][:scufl].rewind
-
-      # if first Kb of uploaded scufl contains a '<scufl>' tag then it is probably an XML workflow and can be processed
-      if scufl_first_k !~ %r{<[^<>]*scufl[^<>]*>}
-        flash[:error] = "File must be a Taverna workflow. Please select a workflow file."
-        redirect_to :action => :new
-      else
-        # create workflow using helper methods
-        @workflow = create_workflow(params[:workflow])
+    file = params[:workflow][:file]
     
+    @workflow = Workflow.new
+    @workflow.contributor = current_user
+    @workflow.last_edited_by = current_user.id
+    @workflow.license = params[:workflow][:license]
+    @workflow.content_blob = ContentBlob.new(:data => file.read)
+    @workflow.file_ext = file.original_filename.split(".").last.downcase
+    
+    file.rewind
+    
+    # Check whether user has selected to infer metadata or provided custom metadata...
+    
+    # Infer metadata.
+    if params[:metadata_choice] == 'infer'
+      # Check that the file uploaded is recognised and can be parsed...
+      
+      worked = infer_metadata(@workflow, file)
+      
+      unless worked
         respond_to do |format|
-          if @workflow.save
-            if params[:workflow][:tag_list]
-              @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
-            end
-                
-            @workflow.contribution.update_attributes(params[:contribution])
-
-            policy_err_msg = update_policy(@workflow, params)
-        
-            # Credits and Attributions:
-            update_credits(@workflow, params)
-            update_attributions(@workflow, params)
-
-            if policy_err_msg.blank?
-              flash[:notice] = 'Workflow was successfully created.'
-              format.html { redirect_to workflow_url(@workflow) }
-            else
-              flash[:notice] = "Workflow was successfully created. However some problems occurred, please see these below.</br></br><span style='color: red;'>" + policy_err_msg + "</span>"
-              format.html { redirect_to :controller => 'workflows', :id => @workflow, :action => "edit" }
-            end
-          else
-            format.html { render :action => "new" }
-          end
+          flash.now[:error] = "We were unable to infer metadata from the workflow file/script selected. Please enter custom metadata for this workflow."
+          params[:metadata_choice] = 'custom'
+          format.html { render :action => "new" }
         end
+        return
+      end
+      
+    # Custom metadata provided.
+    elsif params[:metadata_choice] == 'custom'
+      worked = set_custom_metadata(@workflow, file)
+      
+      unless worked
+        respond_to do |format|
+          flash.now[:error] = "The file provided isn't a workflow of the type specified. Please select a different file or set an appropriate content type."
+          format.html { render :action => "new" }
+        end
+        return
+      end
+    end
+    
+    respond_to do |format|
+      if @workflow.save
+        if params[:workflow][:tag_list]
+          @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
+        end
+        
+        policy_err_msg = update_policy(@workflow, params)
+    
+        # Credits and Attributions:
+        update_credits(@workflow, params)
+        update_attributions(@workflow, params)
+        
+        # Refresh the types handler list of types if a new type was supplied this time.
+        WorkflowTypesHandler.refresh_all_known_types! if params[:workflow][:type] == 'other'
+
+        if policy_err_msg.blank?
+        	flash[:notice] = 'Workflow was successfully created.'
+          format.html { redirect_to workflow_url(@workflow) }
+        else
+        	flash[:notice] = "Workflow was successfully created. However some problems occurred, please see these below.</br></br><span style='color: red;'>" + policy_err_msg + "</span>"
+          format.html { redirect_to :controller => 'workflows', :id => @workflow, :action => "edit" }
+        end
+      else
+        format.html { render :action => "new" }
       end
     end
   end
   
-  # POST /workflows/1;create_version
+  # POST /workflows/1/create_version
   def create_version
-    # remove protected columns
-    if params[:workflow]
-      [:contribution, :contributor_id, :contributor_type, :image, :created_at, :updated_at, :version].each do |column_name|
-        params[:workflow].delete(column_name)
-      end
-    end
+    file = params[:workflow][:file]
     
-    # remove owner only columns
-    unless @workflow.contribution.owner?(current_user)
-      [:unique_name, :license].each do |column_name|
-        params[:workflow].delete(column_name)
-      end
-    end
-
-    # don't create new workflow version if no file has been selected
-    if params[:workflow][:scufl].size == 0
-      flash[:error] = "Please select a workflow file to upload."
-      redirect_to :action => :new_version
-    else
-      respond_to do |format|
-        scufl = params[:workflow][:scufl]
-
-        scufl_first_k = scufl.read(1024)
-        scufl.rewind
-
-        # if first Kb of uploaded scufl contains a '<scufl>' tag then it is probably an XML workflow and can be processed
-        if scufl_first_k !~ %r{<[^<>]*scufl[^<>]*>}
-          flash[:error] = "File must be a Taverna workflow. Please select a workflow file."
-          format.html { redirect_to :action => :new_version }
-        else
-          # process scufl if it's there
-          unless scufl.nil?
-
-            # create new scufl model
-            scufl_model = Scufl::Parser.new.parse(scufl.read)
-            scufl.rewind
-        
-            @workflow.body = scufl_model.description.description
-
-            # create new diagrams and append new version number to filename
-            @workflow.create_workflow_diagrams(scufl_model, "#{@workflow.current_version.to_i + 1}")
-        
-            cb = ContentBlob.new(:data => scufl.read)
-            cb.save
-            @workflow.content_blob_id = cb.id
-            @workflow.content_type = "application/vnd.taverna.scufl+xml"
-          end
+    # Because this is a new version of an existing workflow
+    # we use the existing workflow object to set the data,
+    # but then save it as a new version.
     
-          success = @workflow.save_as_new_version(ae_some_html(params[:comments]))
+    @workflow.contributor_id = current_user.id
+    @workflow.contributor_type = "User"
+    @workflow.last_edited_by = current_user.id
+    @workflow.file_ext = file.original_filename.split(".").last.downcase
+    
+    file.rewind
+    
+    # Check whether user has selected to infer metadata or provided custom metadata...
+    
+    # Infer metadata.
+    if params[:metadata_choice] == 'infer'
+      # Check that the file uploaded is recognised and can be parsed...
       
-          if success
-            flash[:notice] = 'Workflow version successfully created.'
-            format.html { redirect_to workflow_url(@workflow) }
-          else
-            flash[:error] = 'Failed to upload new version. Please report this error.'       
-            format.html { render :action => :new_version }
-          end
+      worked = infer_metadata(@workflow, file)
+      
+      unless worked
+        respond_to do |format|
+          flash.now[:error] = "We were unable to infer metadata from the workflow file/script selected. Please enter custom metadata for this workflow."
+          params[:metadata_choice] = 'custom'
+          format.html { render :action => :new_version }
         end
+        return
+      end
+      
+    # Custom metadata provided.
+    elsif params[:metadata_choice] == 'custom'
+      worked = set_custom_metadata(@workflow, file)
+      
+      unless worked
+        respond_to do |format|
+          flash.now[:error] = "The workflow you have provided is not of the same content type as the original. Please upload a workflow of type '#{original_type_display_name}'"
+          format.html { render :action => :new_version }
+        end
+        return
       end
     end
+    
+    fail = false
+    
+    if @workflow.valid?
+      # Save content blob first now and set it on the workflow.
+      # TODO: wrap this in a transaction!
+      @workflow.content_blob_id = ContentBlob.create(:data => file.read).id
+      if @workflow.save_as_new_version(params[:new_workflow][:rev_comments])
+        respond_to do |format|
+          flash[:notice] = 'New workflow version successfully created.'
+          format.html { redirect_to workflow_url(@workflow) }
+        end
+      else
+        fail = true
+      end
+    else
+      fail = true
+    end
+    
+    if fail
+      respond_to do |format|
+        flash.now[:error] = 'Failed to upload and save new version. Check that you have provided the required data.'       
+        format.html { render :action => :new_version }
+      end
+    end
+   	
   end
 
   # PUT /workflows/1
   def update
     # remove protected columns
     if params[:workflow]
-      [:contribution, :contributor_id, :contributor_type, :image, :created_at, :updated_at, :version].each do |column_name|
+      [:contribution, :contributor_id, :contributor_type, :image, :svg, :created_at, :updated_at, :current_version, :content_type, :file_ext, :content_blob_id].each do |column_name|
         params[:workflow].delete(column_name)
       end
     end
     
     # remove owner only columns
     unless @workflow.contribution.owner?(current_user)
-      [:unique_name, :license].each do |column_name|
-        params[:workflow].delete(column_name)
+      if params[:workflow]
+        [:unique_name, :license].each do |column_name|
+          params[:workflow].delete(column_name)
+        end
       end
     end
     
-    # Remove sculf in case (since scufl can never be updated, only new versions can be uploaded (see seperate actions for that)
-    params[:workflow].delete('scufl') if params[:workflow][:scufl]
-    
     respond_to do |format|
+      # Here we assume that no actual workflow metadata is being updated that affects workflow versions,
+      # so we need to prevent the timestamping update of workflow version objects.
+      Workflow.versioned_class.record_timestamps = false
+      
       if @workflow.update_attributes(params[:workflow])
 
         if params[:workflow][:tag_list]
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
         end
 
-        policy_err_msg = update_policy(@workflow, params)
+        update_policy(@workflow, params)
         update_credits(@workflow, params)
         update_attributions(@workflow, params)
 
-        if policy_err_msg.blank?
-          flash[:notice] = 'Workflow was successfully updated.'
-          format.html { redirect_to workflow_url(@workflow) }
-        else
-          flash[:error] = policy_err_msg
-          format.html { redirect_to :controller => 'workflows', :id => @workflow, :action => "edit" }
-        end
+        flash[:notice] = 'Workflow was successfully updated.'
+        format.html { redirect_to workflow_url(@workflow) }
       else
         format.html { render :action => "edit" }
       end
+      
+      Workflow.versioned_class.record_timestamps = true
     end
   end
   
@@ -404,19 +430,39 @@ class WorkflowsController < ApplicationController
     workflow_title = @workflow.title
     
     if params[:version]
-      success = @workflow.update_version(params[:version], :title => params[:workflow][:title], :body => params[:workflow][:body])
+      # Update differently based on whether a new preview image has been specified or not:
+      # (But only set image if platform is not windows).
+      if params[:workflow][:preview].blank? || params[:workflow][:preview].size == 0
+        success = @workflow.update_version(params[:version], 
+                                           :title => params[:workflow][:title], 
+                                           :body => params[:workflow][:body],
+                                           :last_edited_by => current_user.id) 
+      else
+        puts "Preview image provided. Attempting to set the version's preview image."
+        
+        # Disable updating image on windows due to issues to do with file locking, that prevent file_column from working sometimes.
+        if RUBY_PLATFORM =~ /mswin32/
+          success = false
+        else
+          success = @workflow.update_version(params[:version], 
+                                             :title => params[:workflow][:title], 
+                                             :body => params[:workflow][:body], 
+                                             :image => params[:workflow][:preview],
+                                             :last_edited_by => current_user.id)
+        end
+      end
     else
-      success = false;
+      success = false
     end
     
     respond_to do |format|
       if success
-        flash[:notice] = "Workflow version #{params[:version]}: \"#{workflow_title}\" has been updated"
+        flash[:notice] = "Workflow version #{params[:version]}: \"#{workflow_title}\" has been updated."
         format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
       else
-        flash[:error] = "Failed to update Workflow version. Please report this."
+        flash[:error] = "Failed to update Workflow version."
         if params[:version]
-          format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
+          format.html { render :action => :edit_version }
         else
           format.html { redirect_to workflow_url(@workflow) }
         end
@@ -512,7 +558,10 @@ protected
         workflow = Workflow.find(params[:id])
       end
       
-      if workflow.authorized?(action_name, (logged_in? ? current_user : nil))
+      permission = action_name
+      permission = 'show' if action_name == 'launch'
+
+      if workflow.authorized?(permission, (logged_in? ? current_user : nil))
         @latest_version_number = workflow.current_version
         @workflow = workflow
         if params[:version]
@@ -542,10 +591,7 @@ protected
                                 :id => @workflow.id, 
                                 :version => @viewing_version_number.to_s
         
-        @named_download_url = url_for :action => 'named_download',
-                                      :id => @workflow.id, 
-                                      :version => @viewing_version_number.to_s,
-                                      :name => "#{@viewing_version.unique_name}.xml"
+        @named_download_url = url_for @workflow.named_download_url + "?version=#{@viewing_version_number.to_s}" 
                                       
         @launch_url = "/workflows/#{@workflow.id}/launch.whip?version=#{@viewing_version_number.to_s}"
 
@@ -566,26 +612,92 @@ protected
     end
   end
   
+  def initiliase_empty_objects_for_new_pages
+    if ["new", "create"].include?(action_name)
+      @workflow = Workflow.new
+    end
+    
+    # HACK: required for the FCKEditor description and revision comments boxes, 
+    # (the former is used in both new and new_version actions).
+    @new_workflow = Workflow.new
+    
+    if ["new_version", "create_version"].include?(action_name)
+      # Set the fields to the metadata from the previous version,
+      # to aid user in setting the metadata.
+      @new_workflow.body = @workflow.body
+      params[:workflow] = { } unless params[:workflow]
+      params[:workflow][:title] = @workflow.title
+      # Determine which main metadata option to pre select based on whether metadata inference is supported for the workflow type.
+      @workflow.can_infer_metadata_for_this_type? ? params[:metadata_choice] = "infer" : params[:metadata_choice] = "custom"
+    end
+    
+    @new_workflow.body = params[:new_workflow][:body] if params[:new_workflow] && params[:new_workflow][:body]
+    
+    # Add a 'rev_comments' field to just this instance so that the FCKEditor box can pick it up.
+    @new_workflow.extend Module.new { attr_accessor :rev_comments }
+      
+    if params[:new_workflow] && params[:new_workflow][:rev_comments]
+      @new_workflow.rev_comments = params[:new_workflow][:rev_comments]
+    end
+  end
+  
+  def set_sharing_mode_variables
+    case action_name
+      when "new"
+        @sharing_mode  = 0
+        @updating_mode = 6
+      when "create", "update"
+        @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
+        @updating_mode = params[:updating][:class_id].to_i if params[:updating]
+      when "show", "edit"
+        @sharing_mode  = determine_sharing_mode(@workflow)
+        @updating_mode = determine_updating_mode(@workflow)
+    end
+  end
+  
+  def check_file_size
+    case action_name
+      when "create"           then view_to_render_on_fail = "new"
+      when "create_version"   then view_to_render_on_fail = "new_version"
+    end
+    
+    # Check that a file has been selected 
+    if params[:workflow][:file].size == 0
+      respond_to do |format|
+        flash.now[:error] = "Please select a valid workflow file to upload. If you have selected a file, it might be empty."
+        format.html { render :action => view_to_render_on_fail }
+      end
+      return false
+    # Check that the size of the workflow file doesn't exceed the max size
+    elsif params[:workflow][:file].size > WORKFLOW_UPLOAD_MAX_BYTES
+      respond_to do |format|
+        flash.now[:error] = "The workflow file/script uploaded is too big. The maximum upload size for workflows is #{number_to_human_size(WORKFLOW_UPLOAD_MAX_BYTES)}."
+        format.html { render :action => view_to_render_on_fail }
+      end
+      return false
+    end
+  end
+  
+  def check_custom_workflow_type
+    case action_name
+      when "create"           then view_to_render_on_fail = "new"
+      when "create_version"   then view_to_render_on_fail = "new_version"
+    end
+    
+    # If a custom workflow type has been specified, check that it is not "Other" or "other" as this can cause havoc in the UI.
+    if params[:metadata_choice] == 'custom' && params[:workflow][:type].downcase == 'other' && params[:workflow][:type_other].downcase == 'other'
+      respond_to do |format|
+        flash.now[:error] = "Naughty naughty! You cannot specify a new workflow type of \"#{custom_type_specified}\""
+        format.html { render :action => view_to_render_on_fail }
+      end
+      return false
+    end
+  end
+  
   def check_is_owner
     if @workflow
       error("You are not authorised to manage this Workflow", "") unless @workflow.owner?(current_user)
     end
-  end
-  
-  def create_workflow(wf)
-    scufl_model = Scufl::Parser.new.parse(wf[:scufl].read)
-    wf[:scufl].rewind
-
-    rtn = Workflow.new(:content_blob => ContentBlob.new(:data => wf[:scufl].read),
-                       :content_type => "application/vnd.taverna.scufl+xml",
-                       :contributor_id => wf[:contributor_id], 
-                       :contributor_type => wf[:contributor_type],
-                       :body => scufl_model.description.description,
-                       :license => wf[:license])
-                       
-    rtn.create_workflow_diagrams(scufl_model, "1")
-    
-    return rtn
   end
   
 private
@@ -624,6 +736,100 @@ private
     options = options.merge({:conditions => [cond_sql] + cond_params}) unless cond_sql.empty?
     
     options
+  end
+  
+  # Method used in the create and create_version methods.
+  def infer_metadata(workflow_to_set, file)
+    # Rewind the file, just in case
+    file.rewind
+    
+    # Try and get a processor that can be used to process this type of workflow
+    processor_class = WorkflowTypesHandler.processor_class_for_file(file)
+    
+    # Rewind the file, just in case
+    file.rewind
+    
+    # Status check variable
+    worked = true
+    
+    if processor_class.nil?
+      worked = false
+      puts "A workflow processor for the file uploaded could not be found!"
+    else
+      # Check that the processor can do inferring of metadata
+      if processor_class.can_infer_metadata?
+        begin
+          processor_instance = processor_class.new(file.read)
+          
+          # Rewind the file, just in case
+          file.rewind
+          
+          workflow_to_set.title = processor_instance.get_title
+          workflow_to_set.body = processor_instance.get_description
+          
+          workflow_to_set.content_type = processor_class.content_type
+          
+          # Set the internal unique name for this particular workflow (or workflow_version).
+          workflow_to_set.set_unique_name
+          
+          workflow_to_set.image, workflow_to_set.svg = processor_instance.get_preview_images if processor_class.can_generate_preview?
+        rescue Exception => ex
+          worked = false
+          err_msg = "ERROR: some processing failed in workflow processor '#{processor_class.to_s}'.\nEXCEPTION: #{ex}"
+          puts err_msg
+          logger.error err_msg
+        end
+      else
+        # We cannot infer metadata
+        worked = false
+        puts "Workflow processor found but it cannot infer metadata!"
+      end
+    end
+    
+    return worked
+  end
+  
+  # Method used in the create and create_version methods.
+  def set_custom_metadata(workflow_to_set, file)
+    worked = true
+    
+    workflow_to_set.title = params[:workflow][:title]
+    workflow_to_set.body = params[:new_workflow][:body]
+    
+    # Only set content_type if not already set in the workflow object
+    if workflow_to_set.content_type.blank?
+      # Workflow content type is either one supported by a workflow processor, or a previously set type in the db, or a custom one.
+    
+      wf_type = params[:workflow][:type]
+    
+      if wf_type.downcase == 'other'
+        wf_type = params[:workflow][:type_other]
+      else
+        wf_type = WorkflowTypesHandler.content_type_for_type_display_name(wf_type)
+      end
+      
+      workflow_to_set.content_type = wf_type
+    end
+    
+    # Now check if the content_type specified has a processor available, 
+    # in which case check that it matches a processor returned for the file.
+    # This is to ensure that the correct content type is being assigned to the workflow uploaded.
+    if (proc_class = WorkflowTypesHandler.processor_class_for_content_type(workflow_to_set.content_type))
+      unless proc_class == WorkflowTypesHandler.processor_class_for_file(file)
+        worked = false
+      end
+    end
+    
+    # Preview image
+    # TODO: kept getting permission denied errors from the file_column and rmagick code, so disable for windows, for now.
+    unless RUBY_PLATFORM =~ /mswin32/
+      workflow_to_set.image = params[:workflow][:preview]
+    end
+    
+    # Set the internal unique name for this particular workflow (or workflow_version).
+    workflow_to_set.set_unique_name
+    
+    return worked
   end
 
 end

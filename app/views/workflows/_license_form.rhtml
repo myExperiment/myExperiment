@@ -1,4 +1,10 @@
-<% if edit then license = @workflow.license else license = 'by-sa' end %>
+<% if params[:workflow] && !params[:workflow][:license].blank? %>
+	<% license = params[:workflow][:license] %>
+<% elsif edit %>
+	<% license = @workflow.license %>
+<% else %>
+ 	<% license = 'by-sa' %> 
+<% end %>
 
 <div class="fold">
     <div class="foldTitle">

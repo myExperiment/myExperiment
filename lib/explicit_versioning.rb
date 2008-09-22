@@ -16,7 +16,7 @@ module Jits
           
           cattr_accessor :versioned_class_name, :versioned_foreign_key, :versioned_table_name, :versioned_inheritance_column, 
             :version_column, :version_sequence_name, :non_versioned_columns, :file_columns, :white_list_columns, :revision_comments_column, 
-            :version_association_options
+            :version_association_options, :timestamp_columns, :sync_ignore_columns
             
           self.versioned_class_name         = options[:class_name]  || "Version"
           self.versioned_foreign_key        = options[:foreign_key] || self.to_s.foreign_key
@@ -31,8 +31,10 @@ module Jits
                                                 :class_name  => "#{self.to_s}::#{versioned_class_name}",
                                                 :foreign_key => "#{versioned_foreign_key}",
                                                 :order       => 'version',
-                                                :dependent   => :delete_all
+                                                :dependent   => :destroy
                                               }.merge(options[:association_options] || {})
+          self.timestamp_columns            = options[:timestamp_columns]  || [ "created_at", "updated_at" ]
+          self.sync_ignore_columns          = options[:sync_ignore_columns]  || []
                                                       
           class_eval do
             has_many :versions, version_association_options
@@ -76,7 +78,10 @@ module Jits
           versions.find(:all, options)
         end
         
+        # Saves the object as a new version and also saves the original object as the new version.
+        # Make sure to create (and thus save) any inner associations beforehand as these won't be saved here.
         def save_as_new_version(revision_comment=nil)
+          return false unless self.valid?
           without_update_callbacks do 
             set_new_version
             save_version_on_create(revision_comment)
@@ -84,17 +89,17 @@ module Jits
           end
         end
         
-        def update_version(version_number, attributes)
-          return false if version_number.nil? or version_number.to_i < 1
+        def update_version(version_number_to_update, attributes)
+          return false if version_number_to_update.nil? or version_number_to_update.to_i < 1
           return false if attributes.nil? or attributes.empty?
-          return false unless (ver = find_version(version_number))
+          return false unless (ver = find_version(version_number_to_update))
           
           rtn = ver.update_attributes(attributes)
           
           if rtn
             # if the latest version has been updated then update the main table as well
-            if version_number.to_i == eval("#{self.class.version_column}")
-              return update_main_to_version(version_number, false)
+            if version_number_to_update.to_i == eval("#{self.class.version_column}")
+              return update_main_to_version(version_number_to_update, true)
             else
               return true
             end
@@ -147,14 +152,40 @@ module Jits
             self.send("#{self.class.version_column}=", self.next_version)
           end
           
-          # Saves a version of the model in the versioned table.  This is called in the after_create callback by default
+          # Saves a version of the model in the versioned table. This is called in the after_create callback by default
           def save_version_on_create(revision_comment=nil)
             rev = self.class.versioned_class.new
             self.clone_versioned_model(self, rev)
             rev.version = send(self.class.version_column)
             rev.send("#{self.class.revision_comments_column}=", revision_comment)
             rev.send("#{self.class.versioned_foreign_key}=", self.id)
-            rev.save
+            saved = rev.save
+            
+            if saved
+              # Now update timestamp columns on main model. 
+              # Note: main model doesnt get saved yet.
+              update_timestamps(rev, self)
+            end
+            
+            return saved
+          end
+          
+          def update_timestamps(from, to)
+            begin  
+              self.timestamp_columns.each do |key|
+                if to.has_attribute?(key)
+                  logger.debug("explicit_versioning - update_timestamps method - setting timestamp_column '#{key}'")
+                  if eval("from.#{key}.nil?")
+                    to.send("#{key}=", nil)
+                  else
+                    to.send("#{key}=", eval("from.#{key}"))
+                  end
+                end
+              end
+            rescue => err
+              logger.error("ERROR: An error occurred in the explicit_versioning plugin during the update_timestamps method (setting timestamp columns).")
+              logger.error("ERROR DETAILS: #{err}")
+            end
           end
           
           # This method updates the latest version entry in the versioned table with the data 
@@ -167,11 +198,15 @@ module Jits
           
           # This method updates the entry in the main table with the data from the version specified,
           # and also updates the corresponding version column in the main table to reflect this.
-          # Note: this should not be used to revert to previous versions as it doesn't actualy delete any versions.
+          # Note: this method on its own should not be used to revert to previous versions as it doesn't actualy delete any versions.
           def update_main_to_version(version_number, process_file_columns=true)
             if (ver = find_version(version_number))
               clone_versioned_model(ver, self, process_file_columns)
               self.send("#{self.class.version_column}=", version_number)
+              
+              # Now update timestamp columns on main model. 
+              update_timestamps(ver, self)
+                
               return self.save
             else
               return false
@@ -181,9 +216,12 @@ module Jits
           # Clones a model.
           def clone_versioned_model(orig_model, new_model, process_file_columns=true)
             self.versioned_attributes.each do |key|
-              # Make sure to ignore file columns and white list columns as well
-              unless self.file_columns.include?(key) || self.white_list_columns.include?(key)
-                new_model.send("#{key}=", orig_model.attributes[key]) if orig_model.has_attribute?(key)
+              # Make sure to ignore file columns, white list columns, timestamp columns and any other ignore columns
+              unless self.file_columns.include?(key) || 
+                     self.white_list_columns.include?(key) || 
+                     self.timestamp_columns.include?(key) ||
+                     self.sync_ignore_columns.include?(key)
+                new_model.send("#{key}=", eval("orig_model.#{key}")) if orig_model.respond_to?(key)
               end
             end
             
@@ -203,8 +241,8 @@ module Jits
                   end
                 end
               rescue => err
-                logger.error("An error occurred in the explicit_versioning plugin during the clone_versioned_model method (copying file columns).")
-                logger.error(err)
+                logger.error("ERROR: An error occurred in the explicit_versioning plugin during the clone_versioned_model method (copying file columns).")
+                logger.error("ERROR DETAILS: #{err}")
               end
             end
             
@@ -220,10 +258,11 @@ module Jits
                 end
               end
             rescue => err
-              logger.error("An error occurred in the explicit_versioning plugin during the clone_versioned_model method (setting white list columns).")
-              logger.error(err)
+              logger.error("ERROR: An error occurred in the explicit_versioning plugin during the clone_versioned_model method (setting white list columns).")
+              logger.error("ERROR DETAILS: #{err}")
             end
-          
+            
+            # Set version column accordingly.
             if orig_model.is_a?(self.class.versioned_class)
               new_model[new_model.class.inheritance_column] = orig_model[self.class.versioned_inheritance_column]
             elsif new_model.is_a?(self.class.versioned_class)

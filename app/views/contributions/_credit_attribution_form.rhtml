@@ -168,7 +168,36 @@
   </div>
 </div>
 
-<% if edit %>
+<% if params.has_key?('credits_me') %>
+	<script>
+		// Credits
+		credit_me = <%= params[:credits_me] -%>
+		<% unless params[:credits_users].blank? %>
+			<% params[:credits_users].split(',').each do |id| %>
+				credit_users[<%= id %>] = '<%= escape_javascript contributor_name(id, 'User') %>';
+			<% end %>
+		<% end %>
+		<% unless params[:credits_groups].blank? %>
+			<% params[:credits_groups].split(',').each do |id| %>
+				credit_groups[<%= id %>] = '<%= escape_javascript contributor_name(id, 'Network') %>';
+			<% end %>
+		<% end %>
+		updateAuthorList();
+		
+		// Attributions
+		<% unless params[:attributions_workflows].blank? %>
+			<% params[:attributions_workflows].split(',').each do |id| %>
+				attributions_workflows[<%= id %>] = '<%= escape_javascript contributable_name(id, 'Workflow') %>';
+			<% end %>
+		<% end %>
+		<% unless params[:attributions_files].blank? %>
+			<% params[:attributions_files].split(',').each do |id| %>
+				attributions_files[<%= id %>] = '<%= escape_javascript contributable_name(id, 'Blob') %>';
+			<% end %>
+		<% end %>
+		updateAttributionsList();
+	</script>
+<% elsif edit %>
   <script>
     // Credits
 		credit_me = false;

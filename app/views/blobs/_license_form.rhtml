@@ -1,16 +1,22 @@
-<% if edit then license = @blob.license else license = 'by-sa' end %>
+<% if params[:blob] && !params[:blob][:license].blank? %>
+	<% license = params[:blob][:license] %>
+<% elsif edit %>
+	<% license = @blob.license %>
+<% else %>
+ 	<% license = 'by-sa' %> 
+<% end %>
 
 <div class="fold">
     <div class="foldTitle">
-        <%= info_icon_with_tooltip("This section allows you to specify the <strong>rights</strong> that people have when they download and use this File, by setting the license. <br/><br/>By default, the license specifies that people are allowed to build on this File as long as they give the original author credit and share their resulting work under the same conditions.") %>
-        License/Rights
-		<% if edit %>
-			<hr />
-			<small>Current: <%= license_link(license) %></small>
-		<% else %>
-			<hr />
-			<small>Default: people are allowed to build on this File, but must give author(s) credit and give attribution to this File. They must also share under the same conditions. (<%= license_link license %>)</small>
-		<% end %>
+      <%= info_icon_with_tooltip("This section allows you to specify the <strong>rights</strong> that people have when they download and use this File, by setting the license. <br/><br/>By default, the license specifies that people are allowed to build on this File as long as they give the original author credit and share their resulting work under the same conditions.") %>
+      License/Rights
+			<% if edit %>
+				<hr />
+				<small>Current: <%= license_link(license) %></small>
+			<% else %>
+				<hr />
+				<small>Default: people are allowed to build on this File, but must give author(s) credit and give attribution to this File. They must also share under the same conditions. (<%= license_link license %>)</small>
+			<% end %>
     </div>
     <div class="foldContent" style="display: none;">
         <p class="box_infotext">

@@ -1,39 +1,86 @@
 <% t "Upload New Version" -%>
 
-<h1>Upload New Version of Workflow: <%= contributable @workflow.id, "Workflow" %></h1>
+<%= javascript_include_tag :fckeditor %>
 
-<%= error_messages_for :workflow %>
+<h1>
+	Upload New Version
+	<br/>
+	<span style="font-size: 77%;">of workflow: <%= link_to_function (h(@workflow.title) + expand_image), visual_effect(:toggle_blind, "workflow_box", :duration => 0.3) -%></span>
+</h1>
 
-<br/>
+<div id="workflow_box" style="display: none; margin: 1em 0 2.5em 0;">
+ <%= render :partial => "workflows/table", :locals => { :collection => [ @workflow ] } %>
+</div>
 
-<% form_tag("/workflows/#{@workflow.id};create_version", :multipart => true, :method => :post) do %>
 
-  <div>
-    <p>
-      <center>
-				<strong>New Workflow File:</strong>
-	      <input id="workflow_scufl" name="workflow[scufl]" size="45" type="file"/>
-			</center>
-    </p>
-		
-		<br/>
-		
+<center>
+	<div class="box_infotext" style="text-align: center; margin-bottom: 1.2em; width: 450px;">
 		<p>
-			<center>
-				<b>Revision comments: </b><br/>
-			</center>
+			<b>Note:</b> this new workflow version must be of the same type as the original one (so it must be a '<%= h(@workflow.type_display_name) -%>' workflow and have a .<%= @workflow.file_ext -%> file extension).
 		</p>
-		<%= allowed_html_text('center') %>
 		<p>
-			<center>
-				<textarea id="workflow_revision_comments" name="comments" rows="10" cols="60"></textarea>
-			</center>
+			If you would like to upload a different type of workflow then <b><%= link_to "click here", new_workflow_path -%></b> to upload it as a new workflow entry in myExperiment.
 		</p>
-  </div>
+		<p>
+			Also, sharing and other settings are inherited from the parent workflow entry.
+		</p>
+	</div>
+</center>
 
+<center>
+	<%= error_messages_for :workflow %>
+</center>
+
+<% form_tag(create_version_workflow_url(@workflow), :multipart => true, :method => :post) do %>
+
+	<!-- Workflow File -->
+	
+	<p class="step_text">1. Workflow file/script</p>
+
+	<center>
+	  <%= render :partial => 'workflow_file_selection_form' %>
+	</center>
+  
   <br />
+	
+	<!-- Main metadata -->
+	
+	<p class="step_text">2. Main metadata</p>
+  
+	<%= render :partial => "main_metadata_form", :locals => { :new_version => true } -%>
+	
+	<br/>
+	
+	<!-- Revision comments -->
+	
+	<p class="step_text">
+		3. Revision comments
+		<%= info_icon_with_tooltip("Use this to explain what is different about this new version.") -%> 
+	</p>
+	
+	<center>
+	  <div class="box_form" style="width: 450px; text-align: center;">
+			<%= fckeditor_textarea(:new_workflow, "rev_comments", :toolbarSet => 'Basic', :width => '430px', :height => '300px') %>
+		</div>
+	</center>
+	
+	<br/>
+	
+	<!-- Terms and conditions -->
+	
+	<p class="step_text">4. Terms and conditions</p>
+	
+  <%= render :partial => 'contributions/terms_and_conditions' %>
+	
+	<br/>
 
-  <center><%= submit_tag "Upload", :disable_with => "Uploading..." %></center>
+  <!-- Upload and save -->
+	
+	<p class="step_text">5. Upload and save</p>
+
+  <p style="text-align: center;">
+    <%= submit_tag "Upload and Save", :disable_with => "Uploading and saving..." %>
+  </p>
 
 <% end %>
 

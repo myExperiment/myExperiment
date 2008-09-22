@@ -60,7 +60,7 @@ document.onkeypress = handleEnter;
 	    <div class="box_simple" style="font-size: 93%; text-align: left; margin-top: 1em; line-height: 1.4em;">
 	      <p>Add from your existing tags in myExperiment (click on tag to add):</p>                            
 	      <div style="padding: 0 1em;">
-		    <% unless (tags = current_user.tags.sort {|a,b| a.name <=> b.name }).empty? %>
+		    <% unless (tags = current_user.tags.sort {|a,b| a.name.downcase <=> b.name.downcase }).empty? %>
 					<% tags.each do |t| %>
 			  			<a href="" onclick="javascript:addTag('<%= t.name %>'); return false;"><%= t.name %></a><span style="color: #999999;"> | </span> 
 					<% end %>
@@ -74,12 +74,23 @@ document.onkeypress = handleEnter;
   </div>
 </div>
 
-<% if edit %>
+<% type_sym = taggable.class.to_s.downcase.to_sym %>
+<% if params[type_sym] && !params[type_sym][:tag_list].blank? %>
+	<% curr_tags = params[type_sym][:tag_list].split(',') %>
+	<script>
+    <% curr_tags.sort{|a,b| a.downcase <=> b.downcase}.each do |t| %>
+      tags.push(<%= "\"#{t}\"" %>);
+    <% end %>
+    updateTagList();
+  </script>
+<% elsif edit %>
   <script>
-    <% taggable.tags.sort{|a,b| a.name <=> b.name}.each do |t| %>
+    <% taggable.tags.sort{|a,b| a.name.downcase <=> b.name.downcase}.each do |t| %>
       tags.push(<%= "\"#{t.to_s.gsub(/\"/, '\\\"')}\"" %>);
     <% end %>
     updateTagList();
   </script>
 <% end %>
+
+
 
