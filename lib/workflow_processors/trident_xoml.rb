@@ -30,7 +30,7 @@ module WorkflowProcessors
     # All the file extensions supported by this workflow processor.
     # Must be all in lowercase.
     def self.file_extensions_supported
-      [ "xoml" ]
+      [ "xoml", "xaml" ]
     end
     
     def self.can_determine_type_from_file?
