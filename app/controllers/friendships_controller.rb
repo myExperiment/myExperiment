@@ -33,7 +33,9 @@ class FriendshipsController < ApplicationController
     end
     body += "<hr/>"
 
-    message = Message.new( :from => from_id, :to => to_id, :subject => subject, :body => body, :reply_id => nil, :read_at => nil )
+    # the message will appear as 'deleted-by-sender', because the owner of the account effectively didn't send it,
+    # so there is no reason for showing this message in their 'sent messages' folder
+    message = Message.new( :from => from_id, :to => to_id, :subject => subject, :body => body, :reply_id => nil, :read_at => nil, :deleted_by_sender => true )
     message.save
     
     respond_to do |format|
@@ -165,8 +167,9 @@ class FriendshipsController < ApplicationController
              "<br/><br/>If you want to contact this user directly, just reply to this message."
     end
     
-
-    message = Message.new( :from => from_id, :to => to_id, :subject => subject, :body => body, :reply_id => nil, :read_at => nil )
+    # the message will appear as 'deleted-by-sender', because the owner of the account effectively didn't send it,
+    # so there is no reason for showing this message in their 'sent messages' folder
+    message = Message.new( :from => from_id, :to => to_id, :subject => subject, :body => body, :reply_id => nil, :read_at => nil, :deleted_by_sender => true )
     message.save
     
     @friendship.destroy
