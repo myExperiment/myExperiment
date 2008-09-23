@@ -314,7 +314,10 @@ class WorkflowsController < ApplicationController
   
   # POST /workflows/1/create_version
   def create_version
+    wrong_type_err_msg = "The workflow you have provided is not of the same type as the original workflow. Please upload a valid #{@workflow.type_display_name} workflow (check that a valid file extension has been used and that the file doesn't contain any errors)."
+    
     file = params[:workflow][:file]
+    file_ext = file.original_filename.split(".").last.downcase
     
     # Because this is a new version of an existing workflow
     # we use the existing workflow object to set the data,
@@ -323,9 +326,29 @@ class WorkflowsController < ApplicationController
     @workflow.contributor_id = current_user.id
     @workflow.contributor_type = "User"
     @workflow.last_edited_by = current_user.id
-    @workflow.file_ext = file.original_filename.split(".").last.downcase
     
     file.rewind
+    
+    # First and foremost check that the file uploaded is valid for the original workflow's content type.
+    # This involves 2 different checks based on whether it is supported by a processor or not...
+    
+    wrong_type_err = false
+    
+    if WorkflowTypesHandler.processor_class_for_content_type(@workflow.content_type).nil?
+      # Just need to check file extension matches
+      wrong_type_err = true unless file_ext == @workflow.file_ext 
+    else
+      wrong_type_err = true unless workflow_file_matches_content_type_if_supported?(file, @workflow.content_type)
+    end
+    
+    if wrong_type_err
+      respond_to do |format|
+        flash.now[:error] = wrong_type_err_msg
+        format.html { render :action => :new_version }
+      end
+      return
+    end
+    
     
     # Check whether user has selected to infer metadata or provided custom metadata...
     
@@ -350,7 +373,7 @@ class WorkflowsController < ApplicationController
       
       unless worked
         respond_to do |format|
-          flash.now[:error] = "The workflow you have provided is not of the same content type as the original. Please upload a workflow of type '#{original_type_display_name}'"
+          flash.now[:error] = wrong_type_err_msg
           format.html { render :action => :new_version }
         end
         return
@@ -813,16 +836,9 @@ private
       workflow_to_set.content_type = wf_type
     end
     
-    # Now check if the content_type specified has a processor available, 
-    # in which case check that it matches a processor returned for the file.
-    # This is to ensure that the correct content type is being assigned to the workflow uploaded.
-    if (proc_class = WorkflowTypesHandler.processor_class_for_content_type(workflow_to_set.content_type))
-      if proc_class.can_determine_type_from_file?
-        if proc_class != WorkflowTypesHandler.processor_class_for_file(file)
-          worked = false
-        end
-      end
-    end
+    # Check that the file uploaded is valid for the content type chosen (if supported by a workflow processor).
+    # This is to ensure that the correct content type is being assigned to the workflow file uploaded.
+    return false unless workflow_file_matches_content_type_if_supported?(file, workflow_to_set.content_type)
     
     # Preview image
     # TODO: kept getting permission denied errors from the file_column and rmagick code, so disable for windows, for now.
@@ -834,6 +850,34 @@ private
     workflow_to_set.set_unique_name
     
     return worked
+  end
+  
+  # This method checks to to see if the file specified is a valid one for the workflow content_type specified,
+  # but only if the workflow content_type specified has a supporting processor.
+  # If no supporting processor is found then validity cannot be determined so we assume the file is valid for the content type.
+  #
+  # Note: this will check whether the file extension is supported and, if the processor allows for it, 
+  # checks if the file is "recognised" by the processor as a valid workflow of that type.
+  def workflow_file_matches_content_type_if_supported?(file, content_type)
+    ok = true
+    
+    proc_class = WorkflowTypesHandler.processor_class_for_content_type(content_type)
+      
+    if proc_class
+      # Check that the file extension of the file specified is supported by the processor.
+      file_ext = file.original_filename.split(".").last.downcase
+      ok = false unless proc_class.file_extensions_supported.include?(file_ext)
+      
+      # Now check that the file can be "recognised", if the processor allows for this.
+      # We do this by checking that the processor class, obtained from the types handler, for the specified file matches 
+      # the processor class obtained before, for the content type specified.
+      if proc_class.can_determine_type_from_file?
+        if proc_class != WorkflowTypesHandler.processor_class_for_file(file)
+          ok = false
+        end
+      end
+    end
+    return ok
   end
 
 end
