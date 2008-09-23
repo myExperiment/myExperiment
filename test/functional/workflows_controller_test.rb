@@ -35,7 +35,8 @@ class WorkflowsControllerTest < Test::Unit::TestCase
     old_count = Workflow.count
 
     login_as(:john)
-    post :create, :workflow => { :scufl => fixture_file_upload('files/workflow_dilbert.xml'), :license => 'by-sa' },
+    post :create, :workflow => { :file => fixture_file_upload('files/workflow_dilbert.xml'), :license => 'by-sa' },
+                  :metadata_choice => 'infer',
                   :credits_me => 'false',
                   :credits_users => '',
                   :credits_groups => '',
