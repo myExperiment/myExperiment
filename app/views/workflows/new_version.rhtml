@@ -12,17 +12,17 @@
  <%= render :partial => "workflows/table", :locals => { :collection => [ @workflow ] } %>
 </div>
 
-
+<% file_exts_allowed = ((proc_class_temp = @workflow.processor_class).nil? ? ".#{@workflow.file_ext}" : (proc_class_temp.file_extensions_supported.map{|x| ".#{x}"}.to_sentence(:connector => "or"))) %>
 <center>
 	<div class="box_infotext" style="text-align: center; margin-bottom: 1.2em; width: 450px;">
 		<p>
-			<b>Note:</b> this new workflow version must be of the same type as the original one (so it must be a '<%= h(@workflow.type_display_name) -%>' workflow and have a .<%= @workflow.file_ext -%> file extension).
+			<b>Note:</b> this new workflow version must be of the same type as the original one (so it must be a '<%= h(@workflow.type_display_name) -%>' workflow and have a <%= file_exts_allowed -%> file extension).
 		</p>
 		<p>
 			If you would like to upload a different type of workflow then <b><%= link_to "click here", new_workflow_path -%></b> to upload it as a new workflow entry in myExperiment.
 		</p>
 		<p>
-			Also, sharing and other settings are inherited from the parent workflow entry.
+			Sharing, license and other settings are inherited from the parent workflow entry.
 		</p>
 	</div>
 </center>
@@ -47,7 +47,7 @@
 	
 	<p class="step_text">2. Main metadata</p>
   
-	<%= render :partial => "main_metadata_form", :locals => { :new_version => true } -%>
+	<%= render :partial => "main_metadata_form", :locals => { :workflow => @workflow, :new_version => true } -%>
 	
 	<br/>
 	
