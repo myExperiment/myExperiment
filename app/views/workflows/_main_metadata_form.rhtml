@@ -1,23 +1,35 @@
-<% if params[:metadata_choice].nil?
-     main_metadata_infer_selected = true
-   else
-     main_metadata_infer_selected = (params[:metadata_choice] == "infer" ? true : false)  
-   end
+<% 
+	if params[:metadata_choice].nil?
+    main_metadata_infer_selected = true
+  else
+    main_metadata_infer_selected = (params[:metadata_choice] == "infer" ? true : false)  
+  end
 -%>
+
+<%
+	if new_version
+		show_infer_option = workflow.can_infer_metadata_for_this_type?
+	else
+		show_infer_option = true
+	end  
+%>
 
 <center>
 	<div class="box_form" style="width: 600px; margin: 0; text-align: left;">
-	
-		<p>
-			<label for="metadata_choice_infer">
-				<%= radio_button_tag ("metadata_choice", 
-															"infer", 
-															main_metadata_infer_selected, 
-															:onclick => "$('metadata_choice_custom').checked=false;$('div_main_metadata_custom').hide();return true;") -%>
-				Attempt to infer metadata (and possibly generate preview images) from the workflow file/script
-				<%= info_icon_with_tooltip("<b>Note:</b> we are only able to do this for #{WorkflowTypesHandler.ones_that_can_infer_metadata.to_sentence} workflows at the moment. If this fails you will have the opportunity to set some custom metadata instead.") -%> 
-			</label>
-		</p>
+		
+		<% if show_infer_option %>
+			<p>
+				<label for="metadata_choice_infer">
+					<%= radio_button_tag ("metadata_choice", 
+																"infer", 
+																main_metadata_infer_selected, 
+																:onclick => "$('metadata_choice_custom').checked=false;$('div_main_metadata_custom').hide();return true;") -%>
+					Attempt to infer metadata (and possibly generate preview images) from the workflow file/script
+					<%= info_icon_with_tooltip("<b>Note:</b> we are only able to do this for #{WorkflowTypesHandler.ones_that_can_infer_metadata.to_sentence} workflows at the moment. If this fails you will have the opportunity to set some custom metadata instead.") -%> 
+				</label>
+			</p>
+		<% end %>
+		
 		<p style="margin-top: 0.1em;">
 			<label for="metadata_choice_custom">
 				<%= radio_button_tag ("metadata_choice", 
