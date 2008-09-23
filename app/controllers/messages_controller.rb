@@ -17,7 +17,7 @@ class MessagesController < ApplicationController
     # inbox
     @message_folder = "inbox"
     @messages = Message.find(:all, 
-                             :conditions => ["`to` = ? AND `deleted_by_recipient` = FALSE", current_user.id],
+                             :conditions => ["`to` = ? AND `deleted_by_recipient` = ?", current_user.id, false],
                              :order => produce_sql_ordering_string(params[:sort_by], params[:order]),
                              :page => { :size => 20, 
                                         :current => params[:page] })
@@ -32,7 +32,7 @@ class MessagesController < ApplicationController
     # outbox
     @message_folder = "outbox"
     @messages = Message.find(:all, 
-                             :conditions => ["`from` = ? AND `deleted_by_sender` = FALSE", current_user.id],
+                             :conditions => ["`from` = ? AND `deleted_by_sender` = ?", current_user.id, false],
                              :order => produce_sql_ordering_string(params[:sort_by], params[:order]),
                              :page => { :size => 20, 
                                         :current => params[:page] })
