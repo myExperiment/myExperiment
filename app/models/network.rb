@@ -145,7 +145,7 @@ class Network < ActiveRecord::Base
   
   has_many :announcements_public,
            :class_name => "GroupAnnouncement",
-           :conditions => "public IS TRUE",
+           :conditions => ["public = ?", true],
            :order => "created_at DESC",
            :dependent => :destroy
   
