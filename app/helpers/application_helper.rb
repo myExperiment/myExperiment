@@ -31,7 +31,7 @@ module ApplicationHelper
     
     case thing.class.to_s
     when "Workflow"
-      return (c_id == thing.contributor_id.to_i and thing.contributor_type == "User")
+      return (c_id == thing.contribution.contributor_id.to_i and thing.contribution.contributor_type == "User")
     when "Blob"
       return (c_id == thing.contributor_id.to_i and thing.contributor_type == "User")
     when "Pack"

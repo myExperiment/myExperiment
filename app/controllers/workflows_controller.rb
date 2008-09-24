@@ -114,7 +114,7 @@ class WorkflowsController < ApplicationController
   
   # POST /workflows/1;rate
   def rate
-    if @workflow.contributor_type == 'User' and @workflow.contributor_id == current_user.id
+    if @workflow.contributor_type == 'User' and @workflow.contribution.contributor_id == current_user.id
       error("You cannot rate your own workflow!", "")
     else
       Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @workflow.class.to_s, @workflow.id, current_user.id])
