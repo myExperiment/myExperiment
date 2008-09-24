@@ -15,6 +15,8 @@ class BlobSweeper < ActionController::Caching::Sweeper
   end
 
   def after_update(blob)
+    expire_sidebar_assets(blob.contributor_id) if blob.contributor_type == 'User'
+    expire_multiple_sidebar_favourites(blob.id, 'Blob')
     expire_listing(blob.id, 'Blob')
     expire_home_cache
   end

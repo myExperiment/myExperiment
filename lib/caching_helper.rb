@@ -36,9 +36,27 @@ module CachingHelper
   def expire_sidebar_assets(user_id)
     expire_fragment(:controller => 'sidebar_cache', :action => 'asset_manager', :id => user_id)
   end
+
+  # expire the asset manager for all members (excluding admin) of a group
+  def expire_all_network_members_sidebar_assets(network_id)
+    members = Membership.find(:all, :conditions => ["network_id = ?", network_id])
+
+    members.each do |m|
+      expire_sidebar_assets(m.user_id)
+    end
+  end
   
   def expire_sidebar_favourites(user_id)
     expire_fragment(:controller => 'sidebar_cache', :action => 'user_favourites', :id => user_id)
+  end
+
+  # expires the sidebar favourites for all users who have bookmarked the given object
+  def expire_multiple_sidebar_favourites(bookmarkable_id, bookmarkable_type)
+    bookmarks = Bookmark.find(:all, :conditions => ["bookmarkable_id = ? and bookmarkable_type = ?", bookmarkable_id, bookmarkable_type])
+
+    bookmarks.each do |b|
+      expire_sidebar_favourites(b.user_id)
+    end
   end
   
   def expire_sidebar_user_tags(user_id)

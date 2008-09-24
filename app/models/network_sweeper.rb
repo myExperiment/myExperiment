@@ -15,6 +15,7 @@ class NetworkSweeper < ActionController::Caching::Sweeper
 
   def after_update(network)
     expire_sidebar_assets(network.user_id)
+    expire_all_network_members_sidebar_assets(network.id)
     expire_listing(network.id, 'Network')
     expire_home_cache
   end

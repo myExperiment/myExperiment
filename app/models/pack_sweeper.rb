@@ -15,6 +15,8 @@ class PackSweeper < ActionController::Caching::Sweeper
   end
 
   def after_update(pack)
+    expire_sidebar_assets(pack.contributor_id) if pack.contributor_type == 'User'
+    expire_multiple_sidebar_favourites(pack.id, 'Pack')
     expire_listing(pack.id, 'Pack')
     expire_home_cache
   end
