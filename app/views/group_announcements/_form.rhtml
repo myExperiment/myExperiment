@@ -13,7 +13,7 @@
   <center><%= fckeditor_textarea(:announcement, :body, :toolbarSet => 'Simple', :width => '535px', :height => '300px') %></center>
 	<br/>
 	<label for="announcement_public">
-		<%= check_box "announcement", "public" -%>Make this announcement public
+		<%= check_box "announcement", "public", :style => "margin-right: 0.3em;" -%>Make this announcement public
 		<%= info_icon_with_tooltip("Tick this box to make this announcement visible to all users;<br/>otherwise it will be private to members of this group.") %>
 	</label>
 </p>
