@@ -272,7 +272,7 @@
 	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @workflow, :edit_path => edit_workflow_path(@workflow) } %>
 	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @workflow,
-																											 :owner_id => ((@workflow.contributor_type == 'User') ? @workflow.contributor_id : nil),  
+																											 :owner_id => ((@workflow.contribution.contributor_type == 'User') ? @workflow.contribution.contributor_id : nil),  
 																											 :add_path => tag_workflow_path(@workflow), 
 																											 :edit_path => edit_workflow_path(@workflow),
 																											 :allow_edit => @authorised_to_edit } %>

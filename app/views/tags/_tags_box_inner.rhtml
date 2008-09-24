@@ -1,40 +1,30 @@
 <script type="text/javascript">
   function showAllTags() {
-  	Element.show('all_tags'); 
-	Element.hide('user_tags'); 
-	$('tagsSelectAllLink').className = "tagsSelectorOn"; 
-	$('tagsSelectUserLink').className = "tagsSelectorOff";
-	new Effect.Highlight('all_tags', { duration: 1.5 });
-	return false;
+    Element.show('all_tags');
+	  Element.hide('user_tags');
+	  return false;
   }
   
   function showUsersTags() {
-  	Element.hide('all_tags'); 
-	Element.show('user_tags'); 
-	$('tagsSelectAllLink').className = "tagsSelectorOff"; 
-	$('tagsSelectUserLink').className = "tagsSelectorOn";
-	new Effect.Highlight('user_tags', { duration: 1.5 });
-	return false;
+  	Element.hide('all_tags');
+	  Element.show('user_tags');
+	  return false;
   }
+	
+	function flip_tags_mode()
+	{
+		if( $('toggle_tags_mode').checked )
+		  showUsersTags();
+	  else
+		  showAllTags();
+	}
 </script>
 
 <div id="tags_inner_box">
 	<% unless (tags = taggable.tags).empty? %>
-		<p style="text-align: center; margin: 0.5em 0 0.8em 0; padding-bottom: 0;">
-			<a id="tagsSelectAllLink" 
-			   class="tagsSelectorOn" 
-			   href="" 
-			   onclick="showAllTags(); return false;">
-			   All Tags
-			 </a>
-
-			<a id="tagsSelectUserLink" 
-			   class="tagsSelectorOff" 
-			   href="" 
-			   onclick="showUsersTags(); return false;">
-			   <%= if (logged_in? and mine?(taggable)) then "My" else owner_text(taggable) end %> Tags
-			 </a>
-		</p>
+		<div class="box_currentuser_specific" style="padding: 0; margin: 0.6em 0.4em;">
+		  <label for="toggle_tags_mode" style="font-size: 85%; font-weight: bold;"><%= check_box_tag "toggle_tags_mode", "1", false, :onclick => "flip_tags_mode();", :style => "margin-right: 0.3em;" -%><%= owner_text(taggable) -%> tags</label>
+		</div>
 		<div id="all_tags">
 			<% unless (tags = taggable.tags).empty? %>
 				<%= tag_cloud_from_collection(tags) %>
