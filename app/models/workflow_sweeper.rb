@@ -9,8 +9,8 @@ class WorkflowSweeper < ActionController::Caching::Sweeper
   observe Workflow
 
   def after_create(workflow)
-    expire_sidebar_assets(workflow.contributor_id) if workflow.contributor_type == 'User'
-    expire_listing(workflow.contributor_id, workflow.contributor_type) if workflow.contributor_type == 'Network'
+    expire_sidebar_assets(workflow.contribution.contributor_id) if workflow.contribution.contributor_type == 'User'
+    expire_listing(workflow.contribution.contributor_id, workflow.contribution.contributor_type) if workflow.contribution.contributor_type == 'Network'
     expire_home_cache
   end
 
@@ -20,8 +20,8 @@ class WorkflowSweeper < ActionController::Caching::Sweeper
   end
 
   def after_destroy(workflow)
-    expire_sidebar_assets(workflow.contributor_id) if workflow.contributor_type == 'User'
-    expire_listing(workflow.contributor_id, workflow.contributor_type) if workflow.contributor_type == 'Network'
+    expire_sidebar_assets(workflow.contribution.contributor_id) if workflow.contribution.contributor_type == 'User'
+    expire_listing(workflow.contribution.contributor_id, workflow.contribution.contributor_type) if workflow.contribution.contributor_type == 'Network'
     expire_listing(workflow.id, 'Workflow')
     expire_home_cache
   end

@@ -43,7 +43,7 @@
 										<% else -%>
 											<%= contributable(e.contributable_id, e.contributable_type) %>
 										<% end -%>
-										<small>(<%= contributor e.contributable.contributor_id, e.contributable.contributor_type -%>)</small>
+										<small>(<%= contributor e.contributable.contribution.contributor_id, e.contributable.contribution.contributor_type -%>)</small>
 										
 									<% else -%>
 										

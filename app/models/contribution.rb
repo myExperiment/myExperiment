@@ -94,7 +94,7 @@ class Contribution < ActiveRecord::Base
     #false
   end
   
-  # is c_utor the uploader of this contribution
+  # is c_utor the original uploader of this contribution
   def uploader?(c_utor)
     #contributable.contributor_id.to_i == c_utor.id.to_i and contributable.contributor_type.to_s == c_utor.class.to_s
     contributable.uploader?(c_utor)

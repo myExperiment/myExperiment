@@ -140,7 +140,7 @@
           <br />
           <select id="existingworkflows_dropdown" style="width: 280px;">
             <% all_workflows.each do |w| %>
-            	<option value="<%= w.id %>"><%= h(w.title) -%> (<%= contributor_name(w.contributor_id, w.contributor_type) -%>)</option>
+            	<option value="<%= w.id %>"><%= h(w.title) -%> (<%= contributor_name(w.contribution.contributor_id, w.contribution.contributor_type) -%>)</option>
             <% end %>
           </select>
           <br />
