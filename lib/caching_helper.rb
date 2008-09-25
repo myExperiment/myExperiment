@@ -45,6 +45,16 @@ module CachingHelper
       expire_sidebar_assets(m.user_id)
     end
   end
+
+  # expire the asset manager of all friends of the given user
+  def expire_all_friends_sidebar_assets(user_id)
+    friends = Friendship.find(:all, :conditions => ["user_id = ? OR friend_id = ?", user_id, user_id])
+
+    friends.each do |friend|
+      expire_sidebar_assets(friend.user_id) if friend.user_id != user_id
+      expire_sidebar_assets(friend.friend_id) if friend.friend_id != user_id
+    end
+  end
   
   def expire_sidebar_favourites(user_id)
     expire_fragment(:controller => 'sidebar_cache', :action => 'user_favourites', :id => user_id)

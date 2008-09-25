@@ -16,6 +16,7 @@ class UserSweeper < ActionController::Caching::Sweeper
   def after_update(user)
     expire_listing(user.id, 'User')
     expire_sidebar_user_monitor(user.id)
+    expire_all_friends_sidebar_assets(user.id)
   end
 
   def after_destroy(user)
