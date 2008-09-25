@@ -22,7 +22,7 @@
 
 <div id="tags_inner_box">
 	<% unless (tags = taggable.tags).empty? %>
-		<div class="box_currentuser_specific" style="padding: 0; margin: 0.6em 0.4em;">
+		<div class="box_currentuser_specific" style="padding: 0.3em 0.2em; margin: 0.6em 0.4em;">
 		  <label for="toggle_tags_mode" style="font-size: 85%; font-weight: bold;"><%= check_box_tag "toggle_tags_mode", "1", false, :onclick => "flip_tags_mode();", :style => "margin-right: 0.3em;" -%><%= owner_text(taggable) -%> tags</label>
 		</div>
 		<div id="all_tags">
