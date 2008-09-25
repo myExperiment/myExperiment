@@ -1,6 +1,6 @@
 <% t "#{h @experiment.title}" -%>
 
-<% if @experiment.authorized?('edit', current_user) -%>
+<% if is_authorized?('edit', @experiment.id, 'Experiment',  (logged_in? ? current_user : nil)) -%>
 	<ul class="sectionIcons">
 	  <li><%= icon('edit', edit_experiment_path(@experiment), nil, nil, 'Edit Experiment') %></li>
 	</ul>

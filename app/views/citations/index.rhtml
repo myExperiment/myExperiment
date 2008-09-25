@@ -1,6 +1,6 @@
 <h1>Citations for Workflow: <%= contributable(@workflow.id, 'Workflow') -%></h1>
 
-<% if @workflow.authorized?("edit", (logged_in? ? current_user : nil)) %>
+<% if is_authorized?("edit", @workflow.id, 'Workflow', (logged_in? ? current_user.id : nil)) %>
   <ul class="sectionIcons">
     <li><%= icon('new', new_citation_path(@workflow), nil, nil, 'New Citation', nil) %></li>
 	</ul>

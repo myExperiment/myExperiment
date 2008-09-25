@@ -62,10 +62,6 @@ module Mib
       end
       
       module InstanceMethods
-        def authorized?(action_name, contributor=nil)
-          contribution.authorized?(action_name, contributor)
-        end
-        
         # the owner of the contribution record for this contributable
         def owner?(c_utor)
           contribution.owner?(c_utor)

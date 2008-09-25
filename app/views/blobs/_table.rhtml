@@ -6,9 +6,9 @@
 	<% for blob in collection %>
 		<% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
 		<% if collection.size == 1 -%>
-			<% show ||= blob.authorized?("show", current_user) -%>
+			<% show ||= is_authorized?("show", blob.id, 'Blob', (logged_in? ? current_user.id : nil)) -%>
 		<% else -%>
-			<% show = blob.authorized?("show", current_user) -%>
+			<% show = is_authorized?("show", blob.id, 'Blob', (logged_in? ? current_user.id : nil)) -%>
 		<% end -%>
 	  <% if show -%>
 			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
@@ -92,7 +92,7 @@
 					
 					<td class="actions" style="width: 80px;">
 				    <%= icon "show", file_path(blob), nil, nil, "View" %>
-					  <% if blob.authorized?("download", current_user) %><%= icon "download", download_file_path(blob) %><% end %>
+					  <% if is_authorized?("download", blob.id, 'Blob', (logged_in? ? current_user.id : nil)) %><%= icon "download", download_file_path(blob) %><% end %>
 				    <% if mine?(blob) %><%= icon "manage", edit_file_path(blob), nil, nil, "Manage" %><% end %>
 				  </td>
 			</tr>

@@ -282,7 +282,7 @@ class BlobsController < ApplicationController
                        :current => params[:page] })
     
     found.each do |blob|
-      blob.content_blob.data = nil unless blob.authorized?("download", (logged_in? ? current_user : nil))
+      blob.content_blob.data = nil unless is_authorized?("download", blob.id, 'Blob', (logged_in? ? current_user.id : nil))
     end
     
     @blobs = found
@@ -292,7 +292,7 @@ class BlobsController < ApplicationController
     begin
       blob = Blob.find(params[:id])
       
-      if blob.authorized?(action_name, (logged_in? ? current_user : nil))
+      if is_authorized?(action_name, blob.id, 'Blob', (logged_in? ? current_user.id : nil))
         @blob = blob
         
         @blob_entry_url = url_for :only_path => false,

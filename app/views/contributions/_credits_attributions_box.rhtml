@@ -65,7 +65,7 @@
 		<p class="none_text">None</p>
 	<% end %>
 	
-	<% if contributable.authorized?("edit", current_user) %>
+	<% if is_authorized?("edit", contributable.id, contributable.class, (logged_in? ? current_user.id : nil)) %>
 		<p style="text-align: right;"><small>[ <%= link_to "edit", edit_path %> ]</small></p>
 	<% end %>
 	

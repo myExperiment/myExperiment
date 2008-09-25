@@ -65,7 +65,7 @@ protected
       # Authorise entries now
       taggings.each do |t|
         if t.taggable.respond_to?(:contribution)
-          @tagged_with << t.taggable if t.taggable.contribution.authorized?("show", current_user)
+          @tagged_with << t.taggable if is_authorized?("show", t.taggable_id, t.taggable_type, (logged_in? ? current_user.id : nil))
         else
           @tagged_with << t.taggable
         end

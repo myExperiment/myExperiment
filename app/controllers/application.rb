@@ -11,6 +11,8 @@ class ApplicationController < ActionController::Base
   WhiteListHelper.tags.merge %w(table tr td th div span)
   
   include AuthenticatedSystem
+  include IsAuthorized
+
   before_filter :login_from_cookie
   
   helper ForumsHelper

@@ -33,7 +33,7 @@
 					</td>
 			    <td class="actions"  style="width: 80px;">
 		      	<%= icon "show", experiment_path(experiment), nil, nil, "View" %>
-						<% if experiment.authorized?("edit", logged_in? ? current_user : nil) %>
+						<% if is_authorized?("edit", experiment.id, 'Experiment', logged_in? ? current_user.id : nil) %>
 							<%= icon('edit', edit_experiment_path(experiment), nil, nil, 'Edit') %>
 						<% end %>
 						<%= icon "job", new_job_path(experiment), nil, nil, "New Job" %>

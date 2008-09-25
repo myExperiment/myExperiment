@@ -3,6 +3,7 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+include IsAuthorized
 require 'lib/excel_xml'
 require 'xml/libxml'
 require 'uri'
@@ -141,7 +142,7 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
 
         # filter out things that the user cannot see
         collection = collection.select do |c|
-          not c.respond_to?('contribution') or c.authorized?('view', current_user)
+          not c.respond_to?('contribution') or is_authorized?('view', c.id, c.class, (logged_in? ? current_user.id : nil))
         end
 
         collection.each do |item|
@@ -224,7 +225,7 @@ def rest_crud_request(rules)
 
   case rules['Permission']
     when 'public'; # do nothing
-    when 'view'; return rest_error_response(403, 'Not authorized') if not perm_ob.authorized?("show", (logged_in? ? current_user : nil))
+    when 'view'; return rest_error_response(403, 'Not authorized') if not is_authorized?("show", perm_ob.id, perm_ob.class, (logged_in? ? current_user.id : nil))
     when 'owner'; return rest_error_response(403, 'Not authorized') if logged_in?.nil? or object_owner(perm_ob) != current_user
   end
 
@@ -284,7 +285,7 @@ def rest_index_request(rules, query)
   end
 
   # filter out ones they are not allowed to get
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", (logged_in? ? current_user : nil)) end)
+  obs = (obs.select do |c| c.respond_to?('contribution') == false or is_authorized?("index", c.id, c.class, (logged_in? ? current_user.id : nil)) end)
 
   produce_rest_list(rules, query, obs, rest_name.pluralize)
 end
@@ -439,7 +440,7 @@ def get_rest_uri(rules, query)
 
   return bad_rest_request if query['resource'].nil?
 
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", (logged_in? ? current_user : nil)) end)
+  obs = (obs.select do |c| c.respond_to?('contribution') == false or is_authorized?("index", c.id, c.class, (logged_in? ? current_user.id : nil)) end)
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><rest-uri/>")
   "bing"
 end
@@ -608,7 +609,7 @@ def get_tagged(rules, query)
   obs = tag ? tag.tagged : []
 
   # filter out ones they are not allowed to get
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?('index', (logged_in? ? current_user : nil)) end)
+  obs = (obs.select do |c| c.respond_to?('contribution') == false or is_authorized?('index', c.id, c.class, (logged_in? ? current_user.id : nil)) end)
 
   produce_rest_list(rules, query, obs, 'tagged')
 end

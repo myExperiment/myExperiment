@@ -114,9 +114,9 @@ protected
     
       workflow = Workflow.find(params[:workflow_id])
       
-      if workflow.authorized?("show", (logged_in? ? current_user : nil))
+      if is_authorized?("show", workflow.id, 'Workflow', (logged_in? ? current_user.id : nil))
         # remove workflow data from workflow if the user is not authorized for download
-        workflow.content_blob.data = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
+        workflow.content_blob.data = nil unless is_authorized?("download", workflow.id, 'Workflow', (logged_in? ? current_user.id : nil))
         @reviewable = workflow
       else
         if logged_in?

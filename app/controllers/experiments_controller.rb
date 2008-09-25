@@ -102,7 +102,7 @@ protected
   def find_experiment_auth
     experiment = Experiment.find(:first, :conditions => ["id = ?", params[:id]])
     
-    if experiment and experiment.authorized?(action_name, current_user)
+    if experiment and is_authorized?(action_name, experiment.id, 'Experiment', (logged_in? ? current_user.id : nil))
       @experiment = experiment
     else
       error("Experiment not found or action not authorized", "is invalid (not authorized)")

@@ -111,7 +111,7 @@ protected
     begin
       contribution = Contribution.find(params[:id])
       
-      if contribution.authorized?(action_name, (logged_in? ? current_user : nil))
+      if is_authorized?(action_name, contribution.contributable_id, contribution.contributable_type, (logged_in? ? current_user.id : nil))
         @contribution = contribution
       else
         error("Contribution not found (id not authorized)", "is invalid (not authorized)")

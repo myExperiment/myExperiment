@@ -11,6 +11,7 @@ require 'cgi'
 
 
 class Pack < ActiveRecord::Base
+  include IsAuthorized
   acts_as_contributable
   
   validates_presence_of :title
@@ -160,8 +161,8 @@ class Pack < ActiveRecord::Base
           next # skips all further processing and moves on to the next item
         end
         
-        download_allowed = item_contribution.authorized?("download", user)
-        viewing_allowed = download_allowed ? true : item_contribution.authorized?("view", user)
+        download_allowed = is_authorized?("download", item_contribution.contributable_id, item_contribution.contributable_type, (user.kind_of?(User) ? user.id : nil))
+        viewing_allowed = download_allowed ? true : is_authorized?("view", item_contribution.contributable_id, item_contribution.contributable_type, (user.kind_of?(User) ? user.id : nil))
         
         
         case item_entry.contributable_type.downcase

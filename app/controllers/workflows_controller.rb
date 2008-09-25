@@ -529,7 +529,7 @@ protected
                           :order => "workflows.updated_at DESC" }))
     
     found.each do |workflow|
-      workflow.content_blob.data = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
+      workflow.content_blob.data = nil unless is_authorized?("download", workflow.id, 'Workflow', (logged_in? ? current_user.id : nil))
     end
     
     @workflows = found
@@ -543,7 +543,7 @@ protected
       @rss_workflows = [ ]
       
       found.each do |workflow|
-        @rss_workflows << workflow if workflow.authorized?("show", (logged_in? ? current_user : nil))
+        @rss_workflows << workflow if is_authorized?("show", workflow.id, 'Workflow', (logged_in? ? current_user.id : nil))
       end
     end
   end
@@ -563,7 +563,7 @@ protected
       permission = action_name
       permission = 'show' if action_name == 'launch'
 
-      if workflow.authorized?(permission, (logged_in? ? current_user : nil))
+      if is_authorized?(permission, workflow.id, 'Workflow', (logged_in? ? current_user.id : nil))
         @latest_version_number = workflow.current_version
         @workflow = workflow
         if params[:version]
@@ -578,8 +578,8 @@ protected
           @viewing_version = @workflow.find_version(@latest_version_number)
         end
         
-        @authorised_to_download = @workflow.authorized?("download", (logged_in? ? current_user : nil))
-        @authorised_to_edit = logged_in? && @workflow.authorized?("edit", (logged_in? ? current_user : nil))
+        @authorised_to_download = is_authorized?("download", @workflow.id, 'Workflow', (logged_in? ? current_user.id : nil))
+        @authorised_to_edit = logged_in? && is_authorized?("edit", @workflow.id, 'Workflow', (logged_in? ? current_user.id : nil))
         
         # remove scufl from workflow if the user is not authorized for download
         @viewing_version.content_blob.data = nil unless @authorised_to_download
