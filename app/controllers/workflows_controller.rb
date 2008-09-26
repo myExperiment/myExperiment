@@ -573,9 +573,6 @@ protected
   
   def find_workflow_auth
     begin
-      # attempt to authenticate the user before you return the workflow
-      login_required if login_available?
-    
       # Use eager loading only for 'show' action
       if action_name == 'show'
         workflow = Workflow.find(params[:id], :include => [ { :contribution => :policy }, :citations, :tags, :ratings, :versions, :reviews, :comments ])
@@ -624,12 +621,8 @@ protected
         puts "@viewing_version_number = #{@viewing_version_number}"
         puts "@workflow.image != nil = #{@workflow.image != nil}"
       else
-        if logged_in?
-          error("Workflow not found (id not authorized)", "is invalid (not authorized)")
-          return false
-        else
-          find_workflow_auth if login_required
-        end
+        error("Workflow not found (id not authorized)", "is invalid (not authorized)")
+        return false
       end
     rescue ActiveRecord::RecordNotFound
       error("Workflow not found", "is invalid")
