@@ -307,12 +307,14 @@ class BlobsController < ApplicationController
       else
         if logged_in? 
           error("File not found (id not authorized)", "is invalid (not authorized)")
+          return false
         else
           find_blob_auth if login_required
         end
       end
-      rescue ActiveRecord::RecordNotFound
+    rescue ActiveRecord::RecordNotFound
       error("File not found", "is invalid")
+      return false
     end
   end
   
