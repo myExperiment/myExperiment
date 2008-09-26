@@ -429,9 +429,11 @@ class PacksController < ApplicationController
         @base_host = base_host
       else
         error("You are not authorised to perform this action", "is not authorized")
+        return false
       end
     rescue ActiveRecord::RecordNotFound
       error("Pack not found", "is invalid")
+      return false
     end
   end
   

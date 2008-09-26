@@ -181,7 +181,14 @@ class Policy < ActiveRecord::Base
     # Bit of hack for update permissions - 'view' and 'download' is authorized if 'edit' is authorized
     return true if ['download', 'view'].include?(category) and authorized?('edit', c_ution, c_utor) 
       
+    
+    authorized_by_user_permissions = false
+    authorized_by_policy = false 
+    authorized_by_group_permissions = false
+    
     unless c_utor.nil?
+      # being owner of the contribution / admin of the policy is the most important -
+      # if this is the case, no further checks are required: access is authorized
       if c_ution
         # true if owner of contribution or administrator of contribution.policy
         return true if (c_ution.owner?(c_utor) or c_ution.admin?(c_utor))
@@ -189,20 +196,62 @@ class Policy < ActiveRecord::Base
         # true if administrator of self
         return true if admin?(c_utor)
       end
-        
-      # true if permission and permission[category]
-      private = private?(category, c_utor)
-      return private unless private.nil?
-        
+      
+      
+      # c_utor is not the owner of the item, to which policy is attached;
+      # next thing - obtain all the permissions that are relevant to
+      # c_utor: either through individual or through group permissions
+      user_permissions, group_permissions = all_permissions_for_contributor(c_utor)
+      
+      # DEBUG
+      #logger.error "==================================================="
+      #logger.error "user_permissions -> " + user_permissions.length.to_s
+      #logger.error user_permissions.to_sentence
+      #logger.error "group_permissions -> " + group_permissions.length.to_s
+      #logger.error group_permissions.to_sentence
+      #logger.error "==================================================="
+      # END OF DEBUG
+      
+      
+      # individual ('user') permissions override any other settings
+      # (if several are found, which shouldn't be the case, all are collapsed into
+      #  one with the highest access rights)
+      unless user_permissions.empty?
+        user_permissions.each do |p|
+          authorized_by_user_permissions = true if p.attributes["#{category}"]
+        end
+        return authorized_by_user_permissions
+      end
+      
+      
+      # no user permissions found, need to check what is allowed by policy
+      # (check 'protected' settings first)
       if c_ution
         # true if contribution.contributor and contributor are related and policy[category_protected]
-        return true if (c_ution.contributor.protected? c_utor and protected?(category))
+        authorized_by_policy = true if (c_ution.contributor.protected? c_utor and protected?(category))
       else
         # true if policy.contributor and contributor are related and policy[category_protected]
-        return true if (self.contributor.protected? c_utor and protected?(category))
+        authorized_by_policy = true if (self.contributor.protected? c_utor and protected?(category))
+      end
+      return authorized_by_policy if authorized_by_policy
+      
+      
+      # not authorized by protected settings; check public policy settings
+      authorized_by_policy = public?(category)
+      return authorized_by_policy if authorized_by_policy
+      
+      
+      # not authorized by policy at all, check the group permissions
+      # (for the groups, where c_utor is a member or admin of)
+      unless group_permissions.empty?
+        group_permissions.each do |p|
+          authorized_by_group_permissions = true if p.attributes["#{category}"]
+        end
+        return authorized_by_group_permissions if authorized_by_group_permissions
       end
     end
-      
+    
+    # no other cases matched OR c_utor is unknown - apply public policy settings
     # true if policy[category_public]
     return public?(category)
   end
@@ -315,65 +364,54 @@ private
     attributes["#{category}_protected"] == true
   end
   
-  def private?(category, contrib)
-    found = []
-    
+  def all_permissions_for_contributor(contrib)
     # call recursive method
-    private!(category, contrib, found)
+    found = []
+    find_all_permissions!(contrib, found)
     
-    unless found.empty?
-      rtn = nil
-      
-      found.each do |f|
-        id, type, result = f[0], f[1], f[2]
-        
-        case type.to_s
-        when "User"
-          return result
-        when "Network"
-          if rtn.nil?
-            rtn = result
-          else
-            rtn = result if result == true
-          end
-        else
-          # do nothing!
-        end
+    # split all permissions into individual and group permissions
+    individual_perms = []
+    group_perms = []
+    found.each do |p|
+      if p.contributor_type == "User"
+        individual_perms << p
+      elsif p.contributor_type == "Network"
+        group_perms << p
       end
-      
-      return rtn
-    else
-      return nil
     end
+    
+    return [individual_perms, group_perms]
   end
   
-  def private!(category, contrib, found)
-    result = permission?(category, contrib)
-    found << [contrib.id, contrib.class.to_s, result] unless result.nil?
+  def find_all_permissions!(contrib, found)
+    perm = permission?(contrib)
+    found << perm unless perm.nil?
     
     case contrib.class.to_s
     when "User"
-      contrib.networks.each do |n| # test networks that user is a member of 
-        private!(category, n, found)
+      # test networks that user is a member of
+      contrib.networks.each do |n| 
+        find_all_permissions!(n, found)
       end
       
-      contrib.networks_owned.each do |n| # test networks owned by user
-        private!(category, n, found)
+      # test networks owned by user
+      contrib.networks_owned.each do |n|
+        find_all_permissions!(n, found)
       end
     when "Network"
       # network related tests
+      # (no more specific permissions can be found when contributor is of "Network" type)
     else
       # do nothing!
     end
   end
   
-  def permission?(category, contrib)
-    if (p = Permission.find(:first, 
+  def permission?(contrib)
+    p = Permission.find(:first, 
                             :conditions => ["policy_id = ? AND contributor_id = ? AND contributor_type = ?", 
-                                            self.id, contrib.id, contrib.class.to_s]))
-      return p.attributes["#{category}"]
-    else
-      return nil
-    end
+                                            self.id, contrib.id, contrib.class.to_s])
+    
+    # will return a permission object or 'nil' if nothing found
+    return p
   end
 end
