@@ -436,12 +436,17 @@ class WorkflowsController < ApplicationController
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
         end
 
-        update_policy(@workflow, params)
+        policy_err_msg = update_policy(@workflow, params)
         update_credits(@workflow, params)
         update_attributions(@workflow, params)
 
-        flash[:notice] = 'Workflow was successfully updated.'
-        format.html { redirect_to workflow_url(@workflow) }
+        if policy_err_msg.blank?
+          flash[:notice] = 'Workflow was successfully updated.'
+          format.html { redirect_to workflow_url(@workflow) }
+        else
+          flash[:notice] = "<span style='color: red;'>" + policy_err_msg + "</span>"
+          format.html { redirect_to :controller => 'workflows', :id => @workflow, :action => "edit" }
+        end
       else
         format.html { render :action => "edit" }
       end
