@@ -22,6 +22,16 @@ module ActsAsTaggableHelper
       a.name.downcase <=> b.name.downcase
     }
     
+    # tags array might contain duplicates (however this is ok, because
+    # it is planned to display the tag cloud in a way that most frequent
+    # tags for current contributable are of larger size with no
+    # respect to how frequent they are on the website in general);
+    #
+    # for now, we just filter out duplicates, so that each tag is display
+    # only once in the tag cloud
+    tags = tags.uniq
+    
+    
     # TODO: add option to specify which classes you want and overide this if you want?
     classes = %w(popular v-popular vv-popular vvv-popular vvvv-popular)
     
