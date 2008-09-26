@@ -21,7 +21,7 @@
 		
 		<% if taggable? type -%>
 			<p>
-	      <a href="#tags"><%= pluralize contributable.taggings_count, "tag" -%></a>
+	      <a href="#tags"><%= pluralize contributable.tags.uniq.length, "tag" -%></a>
 	    </p>
 		<% end -%>
 		

@@ -26,7 +26,7 @@
 	  <a href="#sharing" onclick="selectTab($('tabsContainer'),0)">Sharing</a>
 		|
 	<% end %>
-	<%= link_to "Tags (#{@pack.tags.length})", "#tags" %>
+	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@pack.tags.length})</span>", "#tags" %>
 	|
 	<%= link_to "Featured in Packs (#{@pack.in_packs.length})", "#featured_in_packs" %>
 	|

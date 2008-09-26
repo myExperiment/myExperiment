@@ -38,7 +38,7 @@
 	|
 	<%= link_to "Attributions (#{@workflow.attributors.length})", "#attributions" %>
 	|
-	<%= link_to "Tags (#{@workflow.tags.length})", "#tags" %>
+	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@workflow.tags.uniq.length})</span>", "#tags" %>
 	|
 	<%= link_to "Featured in Packs (#{@workflow.in_packs.length})", "#featured_in_packs" %>
 	|

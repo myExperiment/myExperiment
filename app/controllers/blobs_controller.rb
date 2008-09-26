@@ -244,7 +244,14 @@ class BlobsController < ApplicationController
     @blob.update_tags # hack to get around acts_as_versioned
     
     respond_to do |format|
-      format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @blob, :owner_id => @blob.contributor_id } }
+      format.html { 
+        render :update do |page|
+          unique_tag_count = @blob.tags.uniq.length
+          page.replace_html "mini_nav_tag_link", "(#{unique_tag_count})"
+          page.replace_html "tags_box_header_tag_count_span", "(#{unique_tag_count})"
+          page.replace_html "tags_inner_box", :partial => "tags/tags_box_inner", :locals => { :taggable => @blob, :owner_id => @blob.contributor_id } 
+        end
+      }
     end
   end
   
