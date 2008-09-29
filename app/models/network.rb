@@ -150,7 +150,7 @@ class Network < ActiveRecord::Base
            :dependent => :destroy
   
   def announcements_for_user(user)
-    if self.member?(user.id)
+    if user.is_a?(User) && self.member?(user.id)
       return self.announcements
     else
       return self.announcements_public
@@ -158,7 +158,7 @@ class Network < ActiveRecord::Base
   end
   
   def announcements_in_public_mode_for_user(user)
-    return !self.member?(user.id)
+    return (!user.is_a?(User) || !self.member?(user.id))
   end
   
   # memberships
