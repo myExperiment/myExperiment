@@ -80,8 +80,13 @@ module ActiveRecord
 
           return unless tag = Tag.find_by_name(name)
 
+          # having the following:
+          # taggable_type == self.contribution.contributable_type
+          # taggable_id   == self.contribution.contributable_id
+          # => the system was crashing, as networks don't have "contributions";
+          # => updated to get hold of this data in a more universal way:  
           return unless tagging = Tagging.find_by_tag_id_and_taggable_type_and_taggable_id(tag.id,
-              self.contribution.contributable_type, self.contribution.contributable_id)
+              self.class.to_s, self.id)
 
           tagging.destroy
           tag = Tag.find_by_name(name)
