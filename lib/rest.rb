@@ -484,9 +484,11 @@ def post_workflow(rules, query)
       :contributor_id   => current_user.id,
       :contribution     => contribution)
 
-  scufl_model = Scufl::Parser.new.parse(content)
+#  scufl_model = Scufl::Parser.new.parse(content)
 
-  workflow.create_workflow_diagrams(scufl_model, "1")
+# workflow.create_workflow_diagrams(scufl_model, "1")
+
+  workflow.set_unique_name
 
   if not workflow.save
     return rest_error_response(400, 'Bad Request')
