@@ -10,9 +10,12 @@ class AddUpdatedAtToForums < ActiveRecord::Migration
 
     ActiveRecord::Base.record_timestamps = false
 
-    Forum.find_all.each do |forum|
-      forum.updated_at = forum.contribution.updated_at
-      forum.save
+    begin
+      Forum.find_all.each do |forum|
+        forum.updated_at = forum.contribution.updated_at
+        forum.save
+      end
+      rescue
     end
 
     Contribution.find_all.each do |c|

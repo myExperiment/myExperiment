@@ -5,7 +5,7 @@
 
 class UsersController < ApplicationController
 
-  contributable_actions = [:workflows, :files, :packs, :blogs, :forums]
+  contributable_actions = [:workflows, :files, :packs, :blogs]
   show_actions = [:show, :news, :friends, :groups, :credits, :tags, :favourites] + contributable_actions
 
   # add ', :invite' to allow displaying of invitation screen without logging in
@@ -87,11 +87,6 @@ class UsersController < ApplicationController
   
   def packs
     @tab = "Packs"
-    render :action => 'show'
-  end
-
-  def forums
-    @tab = "Forums"
     render :action => 'show'
   end
 

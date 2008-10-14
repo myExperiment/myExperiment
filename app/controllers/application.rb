@@ -13,8 +13,6 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   before_filter :login_from_cookie
   
-  helper ForumsHelper
-  
   include ActionView::Helpers::NumberHelper
 
   # Pick a unique cookie name to distinguish our session data from others'

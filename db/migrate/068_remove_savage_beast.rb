@@ -1,8 +1,30 @@
-class CreateInitialSchema < ActiveRecord::Migration
+# myExperiment: db/migrate/068_remove_savage_beast.rb
+#
+# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
+class RemoveSavageBeast < ActiveRecord::Migration
+
   def self.up
+
+    Contribution.find(:all).select do |c| c.contributable_type == 'Forum' end.each do |c|
+      c.destroy
+    end
+
+    drop_table :forums
+    drop_table :moderatorships
+    drop_table :monitorships
+    drop_table :posts
+    drop_table :topics
+    
+    remove_column :users, :posts_count
+  end
+
+  def self.down
+
     create_table "forums", :force => true do |t|
       t.column "name",             :string
-      t.column "contributor_id", :integer
+      t.column "contributor_id",   :integer
       t.column "contributor_type", :string
       t.column "description",      :string
       t.column "topics_count",     :integer, :default => 0
@@ -36,7 +58,7 @@ class CreateInitialSchema < ActiveRecord::Migration
 
     add_index "posts", ["forum_id", "created_at"], :name => "index_posts_on_forum_id"
     add_index "posts", ["user_id", "created_at"], :name => "index_posts_on_user_id"
-
+    
     create_table "topics", :force => true do |t|
       t.column "forum_id",     :integer
       t.column "user_id",      :integer
@@ -54,14 +76,9 @@ class CreateInitialSchema < ActiveRecord::Migration
 
     add_index "topics", ["forum_id"], :name => "index_topics_on_forum_id"
     add_index "topics", ["forum_id", "sticky", "replied_at"], :name => "index_topics_on_sticky_and_replied_at"
-    add_index "topics", ["forum_id", "replied_at"], :name => "index_topics_on_forum_id_and_replied_at"    
-  end
+    add_index "topics", ["forum_id", "replied_at"], :name => "index_topics_on_forum_id_and_replied_at"
 
-  def self.down
-    drop_table :topics
-    drop_table :posts
-    drop_table :monitorships
-    drop_table :moderatorships
-    drop_table :forums    
+    add_column :users, :posts_count, :integer, :default => 0
   end
 end
+

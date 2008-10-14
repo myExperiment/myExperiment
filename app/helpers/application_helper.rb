@@ -411,14 +411,6 @@ module ApplicationHelper
       else
         return nil
       end
-    when "Forum"
-      if f = Forum.find(:first, :conditions => ["id = ?", contributableid])
-        name = h(f.name)
-        
-        return link ? link_to(name, forum_url(f)) : name
-      else
-        return nil
-      end
     when "Workflow"
       if w = Workflow.find(:first, :conditions => ["id = ?", contributableid])
         name = h(w.title)
@@ -723,8 +715,6 @@ module ApplicationHelper
       return "famfamfam_silk/page_world.png"
     when "blog"
       return "famfamfam_silk/note.png"
-    when "forum"
-      return "famfamfam_silk/group.png"
     when "workflow"
       return "redmond_studio/applications_16.png"
     when "policy"

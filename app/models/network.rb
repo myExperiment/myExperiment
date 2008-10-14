@@ -15,7 +15,6 @@ class Network < ActiveRecord::Base
   
   has_many :blobs, :as => :contributor
   has_many :blogs, :as => :contributor
-  has_many :forums, :as => :contributor, :dependent => :destroy
   has_many :workflows, :as => :contributor
   
   acts_as_solr(:fields => [ :title, :unique_name, :owner_name, :description, :tag_list ],
@@ -273,8 +272,8 @@ class Network < ActiveRecord::Base
   def shared_contributables
     c = shared_contributions.map do |c| c.contributable end
 
-    # filter out forums and blogs until they've gone completely
-    c.select do |x| x.class != Blog and x.class != Forum end
+    # filter out blogs until they've gone completely
+    c.select do |x| x.class != Blog end
   end
 
 protected

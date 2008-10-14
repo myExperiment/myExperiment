@@ -264,7 +264,6 @@ class User < ActiveRecord::Base
   
   has_many :blobs, :as => :contributor
   has_many :blogs, :as => :contributor
-  has_many :forums, :as => :contributor
   has_many :workflows, :as => :contributor
   has_many :packs, :as => :contributor
   
@@ -303,15 +302,6 @@ class User < ActiveRecord::Base
     self.profile and !(self.profile.picture_id.nil? or self.profile.picture_id.zero?)
   end
            
-  # BEGIN SavageBeast #
-  include SavageBeast::UserInit
-  
-  def display_name
-    "#{name}"
-  end
-  
-  # END SavageBeast #
-  
   # SELF --> friendship --> Friend
   has_many :friendships_completed, # accepted (by others)
            :class_name => "Friendship",
