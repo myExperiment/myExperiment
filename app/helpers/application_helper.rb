@@ -318,7 +318,7 @@ module ApplicationHelper
     if sort
       rtn.each do |k, v|
         v.sort! { |a, b|
-          a.title.downcase <=> b.title.downcase
+          at=a.title||""; bt=b.title||""; at.downcase <=> bt.downcase
         }
       end
     end
