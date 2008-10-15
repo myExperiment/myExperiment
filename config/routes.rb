@@ -1,7 +1,7 @@
 require 'lib/rest'
 
 ActionController::Routing::Routes.draw do |map|
-  
+
   # rest routes
   rest_routes(map)
 
