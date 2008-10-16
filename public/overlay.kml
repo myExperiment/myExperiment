@@ -1,0 +1,2775 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.2">
+<Document>
+	<name>Google Analytics, World, January 1, 2008 - October 16, 2008</name>
+	<Style id="sn_pink-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/pink-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sn_ltblu-blank">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/ltblu-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/ltblu-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="sn_wht-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/wht-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sn_blue-pushpin_copy0">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sn_blu-blank">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/blu-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/blu-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="sh_grn-blank">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/grn-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/grn-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="sh_wht-blank">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="sn_ltblu-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ltblu-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<StyleMap id="msn_grn-blank">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_grn-blank</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_grn-blank</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_pink-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_pink-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_pink-pushpin</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_grn-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/grn-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sn_red-diamond">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/red-diamond.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/red-diamond-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="sh_pink-pushpin">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/pink-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<StyleMap id="msn_ylw-diamond">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-diamond</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-diamond</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_ylw-pushpin_copy5">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin_copy5</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin_copy5</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_purple-diamond">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/purple-diamond.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/purple-diamond-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<StyleMap id="msn_red-diamond">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_red-diamond</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_red-diamond</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_red-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sh_red-diamond">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/red-diamond.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/red-diamond-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<StyleMap id="msn_pink-blank">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_pink-blank</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_pink-blank</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_grn-pushpin">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/grn-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sh_ltblu-blank">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/ltblu-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/ltblu-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="sh_wht-pushpin">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/wht-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sn_ylw-pushpin_copy5">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sn_pink-blank">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/pink-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/pink-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<StyleMap id="msn_blue-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_blue-pushpin_copy0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_blue-pushpin_copy0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_ltblu-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ltblu-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ltblu-pushpin</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_ltblu-blank">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ltblu-blank</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ltblu-blank</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_wht-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_wht-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_wht-pushpin</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_grn-blank">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/grn-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/grn-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<StyleMap id="msn_purple-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_purple-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_purple-pushpin</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_purple-pushpin">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/purple-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sh_pink-blank">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/pink-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/pink-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="sh_ylw-pushpin_copy5">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sh_blu-blank">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/blu-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/blu-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<StyleMap id="msn_red-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_red-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_red-pushpin</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_wht-blank">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_wht-blank</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_wht-blank</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_ylw-diamond">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/ylw-diamond.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/ylw-diamond-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="sn_wht-blank">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="sh_ylw-diamond">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/ylw-diamond.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/ylw-diamond-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<StyleMap id="msn_blu-blank">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_blu-blank</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_blu-blank</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_grn-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_grn-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_grn-pushpin</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_purple-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/purple-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<StyleMap id="msn_purple-diamond">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_purple-diamond</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_purple-diamond</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_purple-diamond">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/purple-diamond.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/purple-diamond-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="sh_blue-pushpin_copy0">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sh_red-pushpin">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sh_ltblu-pushpin">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ltblu-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Folder>
+		<name>myExperiment</name>
+		<open>1</open>
+	<Placemark>
+<name>United Kingdom</name>
+<description>
+<![CDATA[Visits: 6108]]>
+</description>
+<LookAt>
+<longitude>-2</longitude>
+<latitude>54</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_grn-blank</styleUrl>
+<Point>
+<coordinates>-2,54,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>United States</name>
+<description>
+<![CDATA[Visits: 4084]]>
+</description>
+<LookAt>
+<longitude>-97</longitude>
+<latitude>38</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_grn-blank</styleUrl>
+<Point>
+<coordinates>-97,38,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Germany</name>
+<description>
+<![CDATA[Visits: 1480]]>
+</description>
+<LookAt>
+<longitude>9</longitude>
+<latitude>51</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-diamond</styleUrl>
+<Point>
+<coordinates>9,51,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Netherlands</name>
+<description>
+<![CDATA[Visits: 1021]]>
+</description>
+<LookAt>
+<longitude>5.75</longitude>
+<latitude>52.5</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-diamond</styleUrl>
+<Point>
+<coordinates>5.75,52.5,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Spain</name>
+<description>
+<![CDATA[Visits: 587]]>
+</description>
+<LookAt>
+<longitude>-4</longitude>
+<latitude>40</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_red-pushpin</styleUrl>
+<Point>
+<coordinates>-4,40,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>France</name>
+<description>
+<![CDATA[Visits: 566]]>
+</description>
+<LookAt>
+<longitude>2</longitude>
+<latitude>46</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_red-pushpin</styleUrl>
+<Point>
+<coordinates>2,46,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Italy</name>
+<description>
+<![CDATA[Visits: 525]]>
+</description>
+<LookAt>
+<longitude>12.83</longitude>
+<latitude>42.83</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_red-pushpin</styleUrl>
+<Point>
+<coordinates>12.83,42.83,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Canada</name>
+<description>
+<![CDATA[Visits: 499]]>
+</description>
+<LookAt>
+<longitude>-95</longitude>
+<latitude>60</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_purple-pushpin</styleUrl>
+<Point>
+<coordinates>-95,60,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>China</name>
+<description>
+<![CDATA[Visits: 479]]>
+</description>
+<LookAt>
+<longitude>105</longitude>
+<latitude>35</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_purple-pushpin</styleUrl>
+<Point>
+<coordinates>105,35,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Australia</name>
+<description>
+<![CDATA[Visits: 386]]>
+</description>
+<LookAt>
+<longitude>133</longitude>
+<latitude>-27</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_pink-pushpin</styleUrl>
+<Point>
+<coordinates>133,-27,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>India</name>
+<description>
+<![CDATA[Visits: 371]]>
+</description>
+<LookAt>
+<longitude>77</longitude>
+<latitude>20</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_pink-pushpin</styleUrl>
+<Point>
+<coordinates>77,20,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Belgium</name>
+<description>
+<![CDATA[Visits: 276]]>
+</description>
+<LookAt>
+<longitude>4</longitude>
+<latitude>50.83</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ltblu-pushpin</styleUrl>
+<Point>
+<coordinates>4,50.83,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Brazil</name>
+<description>
+<![CDATA[Visits: 231]]>
+</description>
+<LookAt>
+<longitude>-55</longitude>
+<latitude>-10</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ltblu-pushpin</styleUrl>
+<Point>
+<coordinates>-55,-10,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Switzerland</name>
+<description>
+<![CDATA[Visits: 197]]>
+</description>
+<LookAt>
+<longitude>8</longitude>
+<latitude>47</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_grn-pushpin</styleUrl>
+<Point>
+<coordinates>8,47,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Ireland</name>
+<description>
+<![CDATA[Visits: 189]]>
+</description>
+<LookAt>
+<longitude>-8</longitude>
+<latitude>53</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_grn-pushpin</styleUrl>
+<Point>
+<coordinates>-8,53,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Poland</name>
+<description>
+<![CDATA[Visits: 184]]>
+</description>
+<LookAt>
+<longitude>20</longitude>
+<latitude>52</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_grn-pushpin</styleUrl>
+<Point>
+<coordinates>20,52,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Japan</name>
+<description>
+<![CDATA[Visits: 177]]>
+</description>
+<LookAt>
+<longitude>138</longitude>
+<latitude>36</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_grn-pushpin</styleUrl>
+<Point>
+<coordinates>138,36,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Austria</name>
+<description>
+<![CDATA[Visits: 170]]>
+</description>
+<LookAt>
+<longitude>13.33</longitude>
+<latitude>47.33</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_grn-pushpin</styleUrl>
+<Point>
+<coordinates>13.33,47.33,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>South Korea</name>
+<description>
+<![CDATA[Visits: 160]]>
+</description>
+<LookAt>
+<longitude>0</longitude>
+<latitude>0</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_grn-pushpin</styleUrl>
+<Point>
+<coordinates>0,0,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Sweden</name>
+<description>
+<![CDATA[Visits: 133]]>
+</description>
+<LookAt>
+<longitude>15</longitude>
+<latitude>62</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_grn-pushpin</styleUrl>
+<Point>
+<coordinates>15,62,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Norway</name>
+<description>
+<![CDATA[Visits: 117]]>
+</description>
+<LookAt>
+<longitude>10</longitude>
+<latitude>62</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_grn-pushpin</styleUrl>
+<Point>
+<coordinates>10,62,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Thailand</name>
+<description>
+<![CDATA[Visits: 95]]>
+</description>
+<LookAt>
+<longitude>100</longitude>
+<latitude>15</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>100,15,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>New Zealand</name>
+<description>
+<![CDATA[Visits: 89]]>
+</description>
+<LookAt>
+<longitude>174</longitude>
+<latitude>-41</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>174,-41,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Greece</name>
+<description>
+<![CDATA[Visits: 84]]>
+</description>
+<LookAt>
+<longitude>22</longitude>
+<latitude>39</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>22,39,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Hungary</name>
+<description>
+<![CDATA[Visits: 83]]>
+</description>
+<LookAt>
+<longitude>20</longitude>
+<latitude>47</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>20,47,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Russia</name>
+<description>
+<![CDATA[Visits: 82]]>
+</description>
+<LookAt>
+<longitude>100</longitude>
+<latitude>60</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>100,60,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Denmark</name>
+<description>
+<![CDATA[Visits: 76]]>
+</description>
+<LookAt>
+<longitude>10</longitude>
+<latitude>56</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>10,56,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Portugal</name>
+<description>
+<![CDATA[Visits: 70]]>
+</description>
+<LookAt>
+<longitude>-8</longitude>
+<latitude>39.5</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>-8,39.5,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Taiwan</name>
+<description>
+<![CDATA[Visits: 65]]>
+</description>
+<LookAt>
+<longitude>121</longitude>
+<latitude>23.5</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>121,23.5,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Czech Republic</name>
+<description>
+<![CDATA[Visits: 63]]>
+</description>
+<LookAt>
+<longitude>15.5</longitude>
+<latitude>49.75</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>15.5,49.75,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Argentina</name>
+<description>
+<![CDATA[Visits: 59]]>
+</description>
+<LookAt>
+<longitude>-64</longitude>
+<latitude>-34</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>-64,-34,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Finland</name>
+<description>
+<![CDATA[Visits: 58]]>
+</description>
+<LookAt>
+<longitude>26</longitude>
+<latitude>64</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>26,64,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Romania</name>
+<description>
+<![CDATA[Visits: 58]]>
+</description>
+<LookAt>
+<longitude>25</longitude>
+<latitude>46</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>25,46,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Hong Kong</name>
+<description>
+<![CDATA[Visits: 57]]>
+</description>
+<LookAt>
+<longitude>114.17</longitude>
+<latitude>22.25</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>114.17,22.25,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Mexico</name>
+<description>
+<![CDATA[Visits: 57]]>
+</description>
+<LookAt>
+<longitude>-102</longitude>
+<latitude>23</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>-102,23,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Israel</name>
+<description>
+<![CDATA[Visits: 54]]>
+</description>
+<LookAt>
+<longitude>34.75</longitude>
+<latitude>31.5</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_blue-pushpin</styleUrl>
+<Point>
+<coordinates>34.75,31.5,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Singapore</name>
+<description>
+<![CDATA[Visits: 50]]>
+</description>
+<LookAt>
+<longitude>103.8</longitude>
+<latitude>1.37</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>103.8,1.37,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>South Africa</name>
+<description>
+<![CDATA[Visits: 47]]>
+</description>
+<LookAt>
+<longitude>24</longitude>
+<latitude>-29</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>24,-29,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Turkey</name>
+<description>
+<![CDATA[Visits: 47]]>
+</description>
+<LookAt>
+<longitude>35</longitude>
+<latitude>39</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>35,39,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Chile</name>
+<description>
+<![CDATA[Visits: 38]]>
+</description>
+<LookAt>
+<longitude>-71</longitude>
+<latitude>-30</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-71,-30,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Malaysia</name>
+<description>
+<![CDATA[Visits: 37]]>
+</description>
+<LookAt>
+<longitude>112.5</longitude>
+<latitude>2.5</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>112.5,2.5,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Colombia</name>
+<description>
+<![CDATA[Visits: 32]]>
+</description>
+<LookAt>
+<longitude>-72</longitude>
+<latitude>4</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-72,4,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Philippines</name>
+<description>
+<![CDATA[Visits: 30]]>
+</description>
+<LookAt>
+<longitude>122</longitude>
+<latitude>13</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>122,13,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Indonesia</name>
+<description>
+<![CDATA[Visits: 28]]>
+</description>
+<LookAt>
+<longitude>120</longitude>
+<latitude>-5</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>120,-5,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Ukraine</name>
+<description>
+<![CDATA[Visits: 27]]>
+</description>
+<LookAt>
+<longitude>32</longitude>
+<latitude>49</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>32,49,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Iran</name>
+<description>
+<![CDATA[Visits: 25]]>
+</description>
+<LookAt>
+<longitude>53</longitude>
+<latitude>32</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>53,32,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Pakistan</name>
+<description>
+<![CDATA[Visits: 24]]>
+</description>
+<LookAt>
+<longitude>70</longitude>
+<latitude>30</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>70,30,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Slovenia</name>
+<description>
+<![CDATA[Visits: 23]]>
+</description>
+<LookAt>
+<longitude>15</longitude>
+<latitude>46</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>15,46,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Bulgaria</name>
+<description>
+<![CDATA[Visits: 20]]>
+</description>
+<LookAt>
+<longitude>25</longitude>
+<latitude>43</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>25,43,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Egypt</name>
+<description>
+<![CDATA[Visits: 19]]>
+</description>
+<LookAt>
+<longitude>30</longitude>
+<latitude>27</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>30,27,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Bangladesh</name>
+<description>
+<![CDATA[Visits: 19]]>
+</description>
+<LookAt>
+<longitude>90</longitude>
+<latitude>24</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>90,24,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Venezuela</name>
+<description>
+<![CDATA[Visits: 19]]>
+</description>
+<LookAt>
+<longitude>-66</longitude>
+<latitude>8</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-66,8,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Slovakia</name>
+<description>
+<![CDATA[Visits: 18]]>
+</description>
+<LookAt>
+<longitude>19.5</longitude>
+<latitude>48.67</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>19.5,48.67,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Vietnam</name>
+<description>
+<![CDATA[Visits: 17]]>
+</description>
+<LookAt>
+<longitude>106</longitude>
+<latitude>16</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>106,16,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Croatia</name>
+<description>
+<![CDATA[Visits: 16]]>
+</description>
+<LookAt>
+<longitude>15.5</longitude>
+<latitude>45.17</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>15.5,45.17,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Latvia</name>
+<description>
+<![CDATA[Visits: 16]]>
+</description>
+<LookAt>
+<longitude>25</longitude>
+<latitude>57</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>25,57,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Peru</name>
+<description>
+<![CDATA[Visits: 15]]>
+</description>
+<LookAt>
+<longitude>-76</longitude>
+<latitude>-10</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-76,-10,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Lithuania</name>
+<description>
+<![CDATA[Visits: 15]]>
+</description>
+<LookAt>
+<longitude>24</longitude>
+<latitude>56</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>24,56,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Sri Lanka</name>
+<description>
+<![CDATA[Visits: 15]]>
+</description>
+<LookAt>
+<longitude>81</longitude>
+<latitude>7</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>81,7,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>United Arab Emirates</name>
+<description>
+<![CDATA[Visits: 14]]>
+</description>
+<LookAt>
+<longitude>54</longitude>
+<latitude>24</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>54,24,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Tunisia</name>
+<description>
+<![CDATA[Visits: 12]]>
+</description>
+<LookAt>
+<longitude>9</longitude>
+<latitude>34</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>9,34,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Estonia</name>
+<description>
+<![CDATA[Visits: 11]]>
+</description>
+<LookAt>
+<longitude>26</longitude>
+<latitude>59</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>26,59,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Saudi Arabia</name>
+<description>
+<![CDATA[Visits: 11]]>
+</description>
+<LookAt>
+<longitude>45</longitude>
+<latitude>25</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>45,25,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Serbia and Montenegro</name>
+<description>
+<![CDATA[Visits: 10]]>
+</description>
+<LookAt>
+<longitude>0</longitude>
+<latitude>0</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>0,0,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Ivory Coast</name>
+<description>
+<![CDATA[Visits: 9]]>
+</description>
+<LookAt>
+<longitude>0</longitude>
+<latitude>0</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>0,0,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Luxembourg</name>
+<description>
+<![CDATA[Visits: 9]]>
+</description>
+<LookAt>
+<longitude>6.17</longitude>
+<latitude>49.75</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>6.17,49.75,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>(not set)</name>
+<description>
+<![CDATA[Visits: 9]]>
+</description>
+<LookAt>
+<longitude>0</longitude>
+<latitude>0</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>0,0,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Puerto Rico</name>
+<description>
+<![CDATA[Visits: 8]]>
+</description>
+<LookAt>
+<longitude>-66.5</longitude>
+<latitude>18.25</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-66.5,18.25,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Uruguay</name>
+<description>
+<![CDATA[Visits: 8]]>
+</description>
+<LookAt>
+<longitude>-56</longitude>
+<latitude>-33</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-56,-33,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Algeria</name>
+<description>
+<![CDATA[Visits: 8]]>
+</description>
+<LookAt>
+<longitude>3</longitude>
+<latitude>28</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>3,28,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Serbia</name>
+<description>
+<![CDATA[Visits: 6]]>
+</description>
+<LookAt>
+<longitude>21</longitude>
+<latitude>44</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>21,44,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Dominican Republic</name>
+<description>
+<![CDATA[Visits: 6]]>
+</description>
+<LookAt>
+<longitude>-70.67</longitude>
+<latitude>19</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-70.67,19,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Morocco</name>
+<description>
+<![CDATA[Visits: 6]]>
+</description>
+<LookAt>
+<longitude>-5</longitude>
+<latitude>32</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-5,32,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>El Salvador</name>
+<description>
+<![CDATA[Visits: 5]]>
+</description>
+<LookAt>
+<longitude>-88.92</longitude>
+<latitude>13.83</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-88.92,13.83,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Moldova</name>
+<description>
+<![CDATA[Visits: 4]]>
+</description>
+<LookAt>
+<longitude>29</longitude>
+<latitude>47</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>29,47,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Kuwait</name>
+<description>
+<![CDATA[Visits: 4]]>
+</description>
+<LookAt>
+<longitude>47.66</longitude>
+<latitude>29.34</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>47.66,29.34,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Jordan</name>
+<description>
+<![CDATA[Visits: 4]]>
+</description>
+<LookAt>
+<longitude>36</longitude>
+<latitude>31</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>36,31,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Bolivia</name>
+<description>
+<![CDATA[Visits: 4]]>
+</description>
+<LookAt>
+<longitude>-65</longitude>
+<latitude>-17</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-65,-17,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Ecuador</name>
+<description>
+<![CDATA[Visits: 4]]>
+</description>
+<LookAt>
+<longitude>-77.5</longitude>
+<latitude>-2</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-77.5,-2,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Nigeria</name>
+<description>
+<![CDATA[Visits: 4]]>
+</description>
+<LookAt>
+<longitude>8</longitude>
+<latitude>10</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>8,10,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Cuba</name>
+<description>
+<![CDATA[Visits: 3]]>
+</description>
+<LookAt>
+<longitude>-80</longitude>
+<latitude>21.5</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-80,21.5,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Costa Rica</name>
+<description>
+<![CDATA[Visits: 3]]>
+</description>
+<LookAt>
+<longitude>-84</longitude>
+<latitude>10</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-84,10,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Iceland</name>
+<description>
+<![CDATA[Visits: 3]]>
+</description>
+<LookAt>
+<longitude>-18</longitude>
+<latitude>65</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-18,65,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Senegal</name>
+<description>
+<![CDATA[Visits: 3]]>
+</description>
+<LookAt>
+<longitude>-14</longitude>
+<latitude>14</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-14,14,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Oman</name>
+<description>
+<![CDATA[Visits: 2]]>
+</description>
+<LookAt>
+<longitude>57</longitude>
+<latitude>21</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>57,21,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Georgia</name>
+<description>
+<![CDATA[Visits: 2]]>
+</description>
+<LookAt>
+<longitude>43.5</longitude>
+<latitude>42</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>43.5,42,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Qatar</name>
+<description>
+<![CDATA[Visits: 2]]>
+</description>
+<LookAt>
+<longitude>51.25</longitude>
+<latitude>25.5</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>51.25,25.5,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Liechtenstein</name>
+<description>
+<![CDATA[Visits: 2]]>
+</description>
+<LookAt>
+<longitude>9.53</longitude>
+<latitude>47.17</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>9.53,47.17,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Guatemala</name>
+<description>
+<![CDATA[Visits: 2]]>
+</description>
+<LookAt>
+<longitude>-90.25</longitude>
+<latitude>15.5</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-90.25,15.5,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Kazakhstan</name>
+<description>
+<![CDATA[Visits: 2]]>
+</description>
+<LookAt>
+<longitude>68</longitude>
+<latitude>48</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>68,48,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Jamaica</name>
+<description>
+<![CDATA[Visits: 2]]>
+</description>
+<LookAt>
+<longitude>-77.5</longitude>
+<latitude>18.25</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-77.5,18.25,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Honduras</name>
+<description>
+<![CDATA[Visits: 2]]>
+</description>
+<LookAt>
+<longitude>-86.5</longitude>
+<latitude>15</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-86.5,15,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Trinidad and Tobago</name>
+<description>
+<![CDATA[Visits: 2]]>
+</description>
+<LookAt>
+<longitude>-61</longitude>
+<latitude>11</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-61,11,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Azerbaijan</name>
+<description>
+<![CDATA[Visits: 2]]>
+</description>
+<LookAt>
+<longitude>47.5</longitude>
+<latitude>40.5</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>47.5,40.5,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Andorra</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>1.5</longitude>
+<latitude>42.5</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>1.5,42.5,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Ghana</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>-2</longitude>
+<latitude>8</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-2,8,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Saint Vincent and the Grenadines</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>-61.2</longitude>
+<latitude>13.25</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-61.2,13.25,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Belarus</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>28</longitude>
+<latitude>53</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>28,53,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Rwanda</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>30</longitude>
+<latitude>-2</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>30,-2,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Syria</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>38</longitude>
+<latitude>35</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>38,35,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Albania</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>20</longitude>
+<latitude>41</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>20,41,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Myanmar</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>98</longitude>
+<latitude>22</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>98,22,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Mongolia</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>105</longitude>
+<latitude>46</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>105,46,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Nicaragua</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>-85</longitude>
+<latitude>13</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-85,13,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Gibraltar</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>-5.37</longitude>
+<latitude>36.18</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-5.37,36.18,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Libya</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>17</longitude>
+<latitude>25</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>17,25,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Zambia</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>30</longitude>
+<latitude>-15</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>30,-15,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Iraq</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>44</longitude>
+<latitude>33</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>44,33,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Montenegro</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>19</longitude>
+<latitude>42</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>19,42,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Bosnia and Herzegovina</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>18</longitude>
+<latitude>44</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>18,44,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Benin</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>2.25</longitude>
+<latitude>9.5</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>2.25,9.5,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Kenya</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>38</longitude>
+<latitude>1</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>38,1,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Palestinian Territory</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>35.25</longitude>
+<latitude>32</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>35.25,32,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Yemen</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>48</longitude>
+<latitude>15</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>48,15,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Seychelles</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>55.67</longitude>
+<latitude>-4.58</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>55.67,-4.58,0</coordinates>
+</Point>
+</Placemark>
+<Placemark>
+<name>Mauritius</name>
+<description>
+<![CDATA[Visits: 1]]>
+</description>
+<LookAt>
+<longitude>57.55</longitude>
+<latitude>-20.28</latitude>
+<altitude>300000</altitude>
+<range></range>
+<tilt>0</tilt>
+<heading></heading>
+<altitudeMode>relativeToGround</altitudeMode>
+</LookAt>
+<styleUrl>#msn_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>57.55,-20.28,0</coordinates>
+</Point>
+</Placemark>
+
+	</Folder>
+</Document>
+</kml>
