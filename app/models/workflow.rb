@@ -70,7 +70,7 @@ class Workflow < ActiveRecord::Base
   
 # acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, { :rating => :integer } ],
 
-  acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name ],
+  acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :type_display_name ],
                :include => [ :comments ]) if SOLR_ENABLE
 
   acts_as_runnable
