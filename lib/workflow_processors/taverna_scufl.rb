@@ -126,6 +126,37 @@ module WorkflowProcessors
       return (@scufl_model.nil? ? nil : @scufl_model.sources)
     end
     
+    def get_search_terms
+
+      def get_scufl_metadata(model)
+
+        words = StringIO.new
+
+        model.sources.each do |source|
+          words << " #{source.name}"        if source.name
+          words << " #{source.description}" if source.description
+        end
+
+        model.sinks.each do |sink|
+          words << " #{sink.name}"        if sink.name
+          words << " #{sink.description}" if sink.description
+        end
+
+        model.processors.each do |processor|
+          words << " #{processor.name}"                if processor.name
+          words << " #{processor.description}"         if processor.description
+          words << get_scufl_metadata(processor.model) if processor.model
+        end
+
+        words.rewind
+        words.read
+      end
+
+      return "" if @scufl_model.nil?
+
+      return get_scufl_metadata(@scufl_model)
+    end
+
     # End Instance Methods
   end
 end

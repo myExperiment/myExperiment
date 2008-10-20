@@ -70,7 +70,7 @@ class Workflow < ActiveRecord::Base
   
 # acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, { :rating => :integer } ],
 
-  acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :type_display_name ],
+  acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :type_display_name, :get_all_search_terms ],
                :include => [ :comments ]) if SOLR_ENABLE
 
   acts_as_runnable
@@ -143,6 +143,11 @@ class Workflow < ActiveRecord::Base
     return (self.processor_class.nil? ? nil : self.processor_class.new(workflow_version.content_blob.data).get_workflow_model_object)
   end
   
+  def get_search_terms(version)
+    return nil unless (workflow_version = self.find_version(version))
+    return (self.processor_class.nil? ? nil : self.processor_class.new(workflow_version.content_blob.data).get_search_terms)
+  end
+
   # Begin acts_as_runnable overridden methods
  
   def get_input_ports(version)
@@ -163,6 +168,18 @@ class Workflow < ActiveRecord::Base
   
   def named_download_url
     "#{BASE_URI}/workflows/#{id}/download/#{filename}"
+  end
+
+  def get_all_search_terms
+
+    words = StringIO.new
+
+    versions.each do |version|
+      words << get_search_terms(version.version)
+    end
+
+    words.rewind
+    words.read
   end
 
 end

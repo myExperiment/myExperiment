@@ -86,6 +86,10 @@ module WorkflowProcessors
       
     end
     
+    def get_search_terms
+      ""
+    end
+
     # End Instance Methods
     
   end
