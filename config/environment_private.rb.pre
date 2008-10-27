@@ -81,4 +81,4 @@ WORKFLOW_UPLOAD_MAX_BYTES = 20971520
 #
 # It is essential to put patterns into the ignore list in a single quotes - this will enable the
 # patterns to be treated as regular expressions, not just strings
-BOT_IGNORE_LIST = ['Googlebot', 'Slurp', 'msnbot', 'crawler', 'bot', 'heritrix']
+BOT_IGNORE_LIST = ['Googlebot', 'Slurp', 'msnbot', 'crawler', 'bot', 'heritrix', 'spider', 'Nutch']
