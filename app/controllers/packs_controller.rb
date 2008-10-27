@@ -48,7 +48,9 @@ class PacksController < ApplicationController
   
   # GET /packs/1
   def show
-    @viewing = Viewing.create(:contribution => @pack.contribution, :user => (logged_in? ? current_user : nil))
+    if allow_statistics_logging
+      @viewing = Viewing.create(:contribution => @pack.contribution, :user => (logged_in? ? current_user : nil))
+    end
     
     respond_to do |format|
       format.html # show.rhtml
@@ -72,6 +74,10 @@ class PacksController < ApplicationController
     image_hash["denied"] = "./public/images/" + method_to_icon_filename("denied")
     
     @pack.create_zip(current_user, image_hash)
+    
+    if allow_statistics_logging
+      @download = Download.create(:contribution => @pack.contribution, :user => (logged_in? ? current_user : nil))
+    end
     
     send_file @pack.archive_file_path, :disposition => 'attachment'
   end

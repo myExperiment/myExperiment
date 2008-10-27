@@ -37,7 +37,9 @@ class BlobsController < ApplicationController
   
   # GET /files/1;download
   def download
-    @download = Download.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
+    if allow_statistics_logging
+      @download = Download.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
+    end
     
     send_data(@blob.content_blob.data, :filename => @blob.local_name, :type => @blob.content_type)
     
@@ -71,7 +73,9 @@ class BlobsController < ApplicationController
   
   # GET /files/1
   def show
-    @viewing = Viewing.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
+    if allow_statistics_logging
+      @viewing = Viewing.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil))
+    end
     
     respond_to do |format|
       format.html # show.rhtml

@@ -22,6 +22,22 @@ class ApplicationController < ActionController::Base
     request.host_with_port
   end
   
+  
+  def allow_statistics_logging
+    # check if the current viewing/download is to be logged
+    # (i.e. request is sent not by a bot and is legitimate)
+    allow_logging = true
+    BOT_IGNORE_LIST.each do |pattern|
+      if request.env['HTTP_USER_AGENT'].match(pattern)
+        allow_logging = false
+        break
+      end
+    end
+    
+    return allow_logging
+  end
+  
+  
   def can_manage_pages?
     return admin?  # from authenticated_system
   end

@@ -72,3 +72,13 @@ INVITATION_EMAIL_LIMIT = 10
 
 # The maximum file size allowed for workflows
 WORKFLOW_UPLOAD_MAX_BYTES = 20971520
+
+
+# =========== Settings for Download and Viewing Logging ===========
+
+# Patterns in this list will be used to be checked against "user-agent" in http request headers
+# to filter out bots from usage statistics.
+#
+# It is essential to put patterns into the ignore list in a single quotes - this will enable the
+# patterns to be treated as regular expressions, not just strings
+BOT_IGNORE_LIST = ['Googlebot', 'Slurp', 'msnbot', 'crawler', 'bot', 'heritrix']

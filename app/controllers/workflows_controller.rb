@@ -157,7 +157,9 @@ class WorkflowsController < ApplicationController
   
   # GET /workflows/1;download
   def download
-    @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
+    if allow_statistics_logging
+      @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
+    end
     
     send_data(@viewing_version.content_blob.data, :filename => @workflow.filename(@viewing_version_number), :type => @workflow.content_type)
   end
@@ -225,7 +227,9 @@ class WorkflowsController < ApplicationController
 
   # GET /workflows/1
   def show
-    @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
+    if allow_statistics_logging
+      @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil))
+    end
 
     respond_to do |format|
       format.html # show.rhtml
