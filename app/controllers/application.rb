@@ -31,6 +31,17 @@ class ApplicationController < ActionController::Base
   # NB! The input parameter is the actual contributable OR
   # the version of it (currently only workflows are versioned)
   def allow_statistics_logging(contributable_or_version)
+    
+    # ************************************************************************
+    # NB! THIS METHOD IS SUSPENDED UNTIL THE STATS ARE RECALCULATED FROM LOGS
+    # REMOVE THIS COMMENT AND THE LINE BELOW WHEN EVERYTHING'S DONE;
+    #
+    # FOR NOW THE NEXT LINE ENSURES THAT OVERALL BEHAVIOUR IS IDENTICAL TO
+    # WHAT HAPPENED BEFORE THIS METHOD WAS ADDED
+    return true
+    # END OF END OF WARNING
+    # ************************************************************************
+    
     # check if the current viewing/download is to be logged
     # (i.e. request is sent not by a bot and is legitimate)
     allow_logging = true
