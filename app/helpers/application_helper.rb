@@ -1201,7 +1201,7 @@ module ApplicationHelper
   end
   
   def downloadable?(type)
-    if ['workflow', 'blob'].include? type.downcase
+    if ['workflow', 'blob', 'pack'].include? type.downcase
       return true
     else
       return false
