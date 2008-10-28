@@ -157,7 +157,7 @@ class WorkflowsController < ApplicationController
   
   # GET /workflows/1;download
   def download
-    if allow_statistics_logging
+    if allow_statistics_logging(@viewing_version)
       @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'])
     end
     
@@ -227,7 +227,7 @@ class WorkflowsController < ApplicationController
 
   # GET /workflows/1
   def show
-    if allow_statistics_logging
+    if allow_statistics_logging(@viewing_version)
       @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'])
     end
 

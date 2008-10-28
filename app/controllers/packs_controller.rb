@@ -48,7 +48,7 @@ class PacksController < ApplicationController
   
   # GET /packs/1
   def show
-    if allow_statistics_logging
+    if allow_statistics_logging(@pack)
       @viewing = Viewing.create(:contribution => @pack.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'])
     end
     
@@ -75,7 +75,7 @@ class PacksController < ApplicationController
     
     @pack.create_zip(current_user, image_hash)
     
-    if allow_statistics_logging
+    if allow_statistics_logging(@pack)
       @download = Download.create(:contribution => @pack.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'])
     end
     

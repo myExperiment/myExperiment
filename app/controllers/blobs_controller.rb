@@ -37,7 +37,7 @@ class BlobsController < ApplicationController
   
   # GET /files/1;download
   def download
-    if allow_statistics_logging
+    if allow_statistics_logging(@blob)
       @download = Download.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'])
     end
     
@@ -73,7 +73,7 @@ class BlobsController < ApplicationController
   
   # GET /files/1
   def show
-    if allow_statistics_logging
+    if allow_statistics_logging(@blob)
       @viewing = Viewing.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'])
     end
     

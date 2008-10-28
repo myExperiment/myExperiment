@@ -23,7 +23,14 @@ class ApplicationController < ActionController::Base
   end
   
   
-  def allow_statistics_logging
+  # this method is only intended to check if entry
+  # in "viewings" or "downloads" table needs to be
+  # created for current access - and this is *only*
+  # supposed to be working for *contributables*
+  #
+  # NB! The input parameter is the actual contributable OR
+  # the version of it (currently only workflows are versioned)
+  def allow_statistics_logging(contributable_or_version)
     # check if the current viewing/download is to be logged
     # (i.e. request is sent not by a bot and is legitimate)
     allow_logging = true
@@ -32,6 +39,15 @@ class ApplicationController < ActionController::Base
         allow_logging = false
         break
       end
+    end
+    
+    # disallow logging of events referring to contributables / versions of them
+    # that have been uploaded by current user; 
+    #
+    # however, if there are newer versions of contributable (uploaded not by the original uploader),
+    # we do want to record viewings/downloads of this newer version by the original uploader  
+    if allow_logging 
+      allow_logging = false if (contributable_or_version.contributor_type == "User" && contributable_or_version.contributor_id == current_user.id)
     end
     
     return allow_logging
