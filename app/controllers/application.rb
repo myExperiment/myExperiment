@@ -23,6 +23,22 @@ class ApplicationController < ActionController::Base
   end
   
   
+  # if "referer" in the HTTP header contains "myexperiment", we know
+  # that current action was accessed from myExperiment website; if
+  # referer is not set OR doesn't contain the search string, access
+  # was initiated from other location 
+  def accessed_from_website?
+    res = false
+    
+    referer = request.env['HTTP_REFERER']
+    unless referer.nil?
+      res = referer.include?("myexperiment")
+    end
+    
+    return res
+  end
+  
+  
   # this method is only intended to check if entry
   # in "viewings" or "downloads" table needs to be
   # created for current access - and this is *only*

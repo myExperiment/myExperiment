@@ -38,7 +38,7 @@ class BlobsController < ApplicationController
   # GET /files/1;download
   def download
     if allow_statistics_logging(@blob)
-      @download = Download.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'])
+      @download = Download.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
     
     send_data(@blob.content_blob.data, :filename => @blob.local_name, :type => @blob.content_type)
@@ -74,7 +74,7 @@ class BlobsController < ApplicationController
   # GET /files/1
   def show
     if allow_statistics_logging(@blob)
-      @viewing = Viewing.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'])
+      @viewing = Viewing.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
     
     respond_to do |format|
