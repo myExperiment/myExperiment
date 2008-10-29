@@ -1,0 +1,73 @@
+<% c_ution = contributable.contribution -%>
+<% contributable_display_type = controller_visible_name(contributable.class.to_s.pluralize).singularize %>
+
+<% total_viewings = c_ution.viewings_count -%>
+<% internal_member_viewings = Viewing.member_site_viewings_count_for_contribution(c_ution.id) -%>
+<% internal_anonymous_viewings = Viewing.anonymous_site_viewings_count_for_contribution(c_ution.id) -%>
+<% site_viewings = internal_member_viewings + internal_anonymous_viewings -%>
+
+<% total_downloads = c_ution.downloads_count -%>
+<% internal_member_downloads = Download.member_site_downloads_count_for_contribution(c_ution.id) -%>
+<% internal_anonymous_downloads = Download.anonymous_site_downloads_count_for_contribution(c_ution.id) -%>
+<% site_downloads = internal_member_downloads + internal_anonymous_downloads -%>
+
+
+<ul class="sectionIcons">
+	<li><%= icon(contributable.class.to_s.downcase, eval("#{contributable_display_type.downcase}_path(#{contributable.id})"), nil, nil, "Back to the #{contributable_display_type}") %></li>
+</ul>
+
+<% # this will be changed to display the correct thing after event logging branch is merged into trunk %>
+<h1 class="contribution_title">
+	<%= contributable_display_type -%> Statistics: <%= link_to_function (h(contributable.title) + expand_image), visual_effect(:toggle_blind, "contributable_box", :duration => 0.3) -%>
+</h1>
+
+<div id="contributable_box" style="display: none; margin: 1em 0 1em 0;">
+ <%= render :partial => "#{contributable.class.to_s.pluralize}/table", :locals => { :collection => [ contributable ] } %>
+</div>
+
+<center>
+	<div class="box_standout" style="width: 400px; text-align: center; margin-top: 2em;">
+		<table>
+			<tr>
+				<th>Viewings (<%= total_viewings -%>)</th>
+				<th style="padding-left: 3em;">Downloads (<%= total_downloads -%>)</th>
+			</tr>
+			<tr>
+				<td style="text-align: left; vertical-align: top;">
+					From myExperiment (<%= site_viewings -%>)
+					<%= info_icon_with_tooltip("Viewings made by following links to this #{contributable_display_type} from myExperiment website.") -%>
+					<ul style="margin-top: 0.3em; margin-bottom: 0em;">
+						<li>
+							Members: <%= internal_member_viewings -%>
+						</li>
+						<li>
+							Anonymous: <%= internal_anonymous_viewings -%>
+						</li>
+					</ul>
+				</td>
+				<td style="text-align: left; vertical-align: top; padding-left: 3em;">
+					From myExperiment (<%= site_downloads -%>)
+					<%= info_icon_with_tooltip("Downloads made by following links to this #{contributable_display_type} from myExperiment website.") -%>
+					<ul style="margin-top: 0.3em; margin-bottom: 0em;">
+						<li>
+							Members: <%= internal_member_downloads -%>
+						</li>
+						<li>
+							Anonymous: <%= internal_anonymous_downloads -%>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align: left; vertical-align: top;">
+					External accesses (<%= total_viewings - site_viewings -%>)
+					<%= info_icon_with_tooltip("Viewings made by accessing this #{contributable_display_type} via direct links and API.") -%>
+				</td>
+				<td style="text-align: left; vertical-align: top; padding-left: 3em;">
+					External accesses (<%= total_downloads - site_downloads -%>)
+					<%= info_icon_with_tooltip("Downloads made by accessing this #{contributable_display_type} via direct links and API.") -%>
+				</td>
+			</tr>
+		</table>
+	</div>
+</center>

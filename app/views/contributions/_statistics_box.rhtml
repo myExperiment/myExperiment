@@ -56,6 +56,9 @@
 	    	<a href="#comments"><%= pluralize contributable.comments_count, "comment" -%></a>
 	    </p>
 		<% end -%>
-			
+		
+		<p style="text-align: right; margin-top: 0.3em;">
+		  <small>[ <%= link_to "view more", eval("statistics_#{controller_visible_name(type.to_s.pluralize).singularize.downcase}_path(#{contributable.id})") -%> ]</small>
+		</p>	
 	</div>
 </div>

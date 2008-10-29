@@ -4,7 +4,7 @@
 # See license.txt for details.
 
 class BlobsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :search, :all]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :search, :all]
   
   before_filter :find_blobs, :only => [:all]
   before_filter :find_blob_auth, :except => [:search, :index, :new, :create, :all]

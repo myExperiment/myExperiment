@@ -4,7 +4,7 @@
 # See license.txt for details.
 
 class WorkflowsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :launch, :search, :all]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search, :all]
   
   before_filter :find_workflows, :only => [:all]
   before_filter :find_workflows_rss, :only => [:index]

@@ -39,4 +39,16 @@ class Viewing < ActiveRecord::Base
               :order => "count DESC",
               :limit => limit)
   end
+  
+  # returns the number of member viewings from myExperiment website 
+  # for the contribution given by ID - i.e. viewings from myExperiment
+  # website done by logged in users
+  def self.member_site_viewings_count_for_contribution(contribution_id)
+    self.count(:all, :conditions => ["contribution_id = ? AND accessed_from_site = ? AND user_id IS NOT NULL", contribution_id, true])
+  end
+  
+  # returns the number of anonymous viewings from the website for the contribution
+  def self.anonymous_site_viewings_count_for_contribution(contribution_id)
+    self.count(:all, :conditions => ["contribution_id = ? AND accessed_from_site = ? AND user_ID IS NULL", contribution_id, true])
+  end
 end

@@ -6,7 +6,7 @@
 class PacksController < ApplicationController
   include ApplicationHelper
   
-  before_filter :login_required, :except => [:index, :show, :all, :search, :items, :download]
+  before_filter :login_required, :except => [:index, :show, :all, :search, :items, :download, :statistics]
   
   before_filter :find_packs, :only => [:all]
   before_filter :find_pack_auth, :except => [:index, :new, :create, :all, :search]
