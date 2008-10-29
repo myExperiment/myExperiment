@@ -1,9 +1,13 @@
 <p>
-  <%= pluralize statistics.viewings_count, "viewing" %> 
+	<span style="float: right;"><small>[ <%= link_to "details", eval("statistics_#{controller_visible_name(type.to_s.pluralize).singularize.downcase}_path(#{contributable.id})") -%> ]</small></span>
+  <span style="float: right;"><%= pluralize statistics.viewings_count, "viewing" %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+	<br/>
 </p>
 
 <% if downloadable? type -%>
 	<p>
-	  <%= pluralize statistics.downloads_count, "download" %>  
+		<span style="float: right;"><small>[ <%= link_to "details", eval("statistics_#{controller_visible_name(type.to_s.pluralize).singularize.downcase}_path(#{contributable.id})") -%> ]</small></span>
+	  <span style="float: right;"><%= pluralize statistics.downloads_count, "download" %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+		<br/>
 	</p>
 <% end -%>

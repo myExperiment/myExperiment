@@ -7,7 +7,7 @@
 	
 		<% type = contributable.class.to_s -%>
 		
-		<%= render :partial => "contributions/statistics", :object => contributable.contribution, :locals => { :type => type } %>
+		<%= render :partial => "contributions/statistics", :object => contributable.contribution, :locals => { :contributable => contributable, :type => type } %>
 		
 		<% if allow_credits_and_attributions? type -%>
 			<p>
@@ -57,8 +57,5 @@
 	    </p>
 		<% end -%>
 		
-		<p style="text-align: right; margin-top: 0.3em;">
-		  <small>[ <%= link_to "view more", eval("statistics_#{controller_visible_name(type.to_s.pluralize).singularize.downcase}_path(#{contributable.id})") -%> ]</small>
-		</p>	
 	</div>
 </div>

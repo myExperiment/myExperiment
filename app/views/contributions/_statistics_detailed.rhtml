@@ -29,43 +29,51 @@
 	<div class="box_standout" style="width: 400px; text-align: center; margin-top: 2em;">
 		<table>
 			<tr>
-				<th>Viewings (<%= total_viewings -%>)</th>
-				<th style="padding-left: 3em;">Downloads (<%= total_downloads -%>)</th>
+				<th>Viewings</th>
+				<th style="padding-left: 3em;">Downloads</th>
 			</tr>
 			<tr>
 				<td style="text-align: left; vertical-align: top;">
-					From myExperiment (<%= site_viewings -%>)
+					Total: <b><%= total_viewings -%></b>
+				</td>
+				<td style="text-align: left; vertical-align: top; padding-left: 3em;">
+					Total: <b><%= total_downloads -%></b>
+				</td>
+	    </tr>
+			<tr>
+				<td style="text-align: left; vertical-align: top;">
+					From myExperiment: <b><%= site_viewings -%></b>
 					<%= info_icon_with_tooltip("Viewings made by following links to this #{contributable_display_type} from myExperiment website.") -%>
 					<ul style="margin-top: 0.3em; margin-bottom: 0em;">
 						<li>
-							Members: <%= internal_member_viewings -%>
+							Members: <b><%= internal_member_viewings -%></b>
 						</li>
 						<li>
-							Anonymous: <%= internal_anonymous_viewings -%>
+							Anonymous: <b><%= internal_anonymous_viewings -%></b>
 						</li>
 					</ul>
 				</td>
 				<td style="text-align: left; vertical-align: top; padding-left: 3em;">
-					From myExperiment (<%= site_downloads -%>)
+					From myExperiment: <b><%= site_downloads -%></b>
 					<%= info_icon_with_tooltip("Downloads made by following links to this #{contributable_display_type} from myExperiment website.") -%>
 					<ul style="margin-top: 0.3em; margin-bottom: 0em;">
 						<li>
-							Members: <%= internal_member_downloads -%>
+							Members: <b><%= internal_member_downloads -%></b>
 						</li>
 						<li>
-							Anonymous: <%= internal_anonymous_downloads -%>
+							Anonymous: <b><%= internal_anonymous_downloads -%></b>
 						</li>
 					</ul>
 				</td>
 			</tr>
 			<tr>
 				<td style="text-align: left; vertical-align: top;">
-					External accesses (<%= total_viewings - site_viewings -%>)
+					External accesses: <b><%= total_viewings - site_viewings -%></b>
 					<%= info_icon_with_tooltip("Viewings made by accessing this #{contributable_display_type} via direct links and API.") -%>
 				</td>
 				<td style="text-align: left; vertical-align: top; padding-left: 3em;">
-					External accesses (<%= total_downloads - site_downloads -%>)
-					<%= info_icon_with_tooltip("Downloads made by accessing this #{contributable_display_type} via direct links and API.") -%>
+					External accesses: <b><%= total_downloads - site_downloads -%></b>
+					<%= info_icon_with_tooltip("Downloads made by accessing this #{contributable_display_type} via external applications (like Taverna), direct links and API.") -%>
 				</td>
 			</tr>
 		</table>
