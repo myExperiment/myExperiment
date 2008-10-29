@@ -22,7 +22,7 @@
 </h1>
 
 <div id="contributable_box" style="display: none; margin: 1em 0 1em 0;">
- <%= render :partial => "#{contributable.class.to_s.pluralize}/table", :locals => { :collection => [ contributable ] } %>
+ <%= render :partial => "#{contributable.class.to_s.downcase.pluralize}/table", :locals => { :collection => [ contributable ] } %>
 </div>
 
 <center>
