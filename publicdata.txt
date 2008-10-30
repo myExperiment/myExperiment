@@ -28,5 +28,5 @@ Where <fullpath> is where the PHP executable is located.
 same as the one that you set in (1).
 
 (4) Once the script has finished it should have created a file entitled
-myexp_public.sql in the directory as the script.  Import this into your
-copy of mysql and there you go.
+myexp_public.sql in the directory as the script.  Import this into an blank
+database (i.e. no data or tables) in your own copy of mysql.
