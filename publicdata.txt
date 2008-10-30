@@ -1,0 +1,32 @@
+Generating A Public Data Version of the myExperiment Database
+-------------------------------------------------------------
+
+There is a PHP script in lib/maintenance called GeneratePublicData.php.
+This is designed to produce a version of the myexperiment database that 
+can be distributed to 3rd party developers so that they can develop 
+their own apps.  This script is currently in development and therefore
+may not yet remove all private data.  Below is a set of instructions on 
+how to use the script.
+
+(1) Open lib/maintenance/GeneratePublicData.php in a editor and set the
+user, password, database, server and salt variables.  Also ensure that the path
+of php is set correctly, this path is in the first line of the file.
+
+(2) If you are running the script of Linux ensure user execute privileges 
+are set and then use the following command:
+
+   ./GeneratePublicData.php
+
+If you are running this script on an non-linux based system you may need
+the following command:
+
+  <fullpath>/php GeneratePublicData.php
+
+Where <fullpath> is where the PHP executable is located.
+
+(3) When the script runs it will prompt you for a password.  This is the
+same as the one that you set in (1).
+
+(4) Once the script has finished it should have created a file entitled
+myexp_public.sql in the directory as the script.  Import this into your
+copy of mysql and there you go.
