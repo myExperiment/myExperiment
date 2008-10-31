@@ -34,10 +34,10 @@ class WorkflowsController < ApplicationController
   
   # GET /workflows;search
   def search
-
-    @query = params[:query]
+    @query = params[:query] || ''
+    @query.strip!
     
-    @workflows = SOLR_ENABLE ? Workflow.find_by_solr(@query, :limit => 100).results : []
+    @workflows = (SOLR_ENABLE && !@query.blank?) ? Workflow.find_by_solr(@query, :limit => 100).results : []
     
     respond_to do |format|
       format.html # search.rhtml

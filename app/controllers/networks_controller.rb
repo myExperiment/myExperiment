@@ -18,10 +18,10 @@ class NetworksController < ApplicationController
   
   # GET /networks;search
   def search
-
-    @query = params[:query]
+    @query = params[:query] || ''
+    @query.strip!
     
-    @networks = SOLR_ENABLE ? Network.find_by_solr(@query, :limit => 100).results : []
+    @networks = (SOLR_ENABLE && !@query.blank?) ? Network.find_by_solr(@query, :limit => 100).results : []
     
     respond_to do |format|
       format.html # search.rhtml

@@ -23,9 +23,10 @@ class PacksController < ApplicationController
   cache_sweeper :comment_sweeper, :only => [ :comment, :comment_delete ]
 
   def search
-    @query = params[:query]
+    @query = params[:query] || ''
+    @query.strip!
     
-    @packs = SOLR_ENABLE ? Pack.find_by_solr(@query, :limit => 100).results : []
+    @packs = (SOLR_ENABLE && !@query.blank?) ? Pack.find_by_solr(@query, :limit => 100).results : []
     
     respond_to do |format|
       format.html # search.rhtml

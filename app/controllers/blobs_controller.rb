@@ -25,10 +25,10 @@ class BlobsController < ApplicationController
   
   # GET /files;search
   def search
-
-    @query = params[:query] == nil ? "" : params[:query]
+    @query = params[:query] || ''
+    @query.strip!
     
-    @blobs = SOLR_ENABLE ? Blob.find_by_solr(@query, :limit => 100).results : []
+    @blobs = (SOLR_ENABLE && !@query.blank?) ? Blob.find_by_solr(@query, :limit => 100).results : []
     
     respond_to do |format|
       format.html # search.rhtml

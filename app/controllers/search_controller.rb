@@ -31,12 +31,12 @@ private
   end
 
   def search_all
-    
-    @query = params[:query]
+    @query = params[:query] || ''
+    @query.strip!
 
     @results = []
 
-    if SOLR_ENABLE and not @query.nil? and @query != ""
+    if SOLR_ENABLE && !@query.blank?
       @results = User.multi_solr_search(@query, :limit => 100,
           :models => [User, Workflow, Blob, Network, Pack]).results
     end

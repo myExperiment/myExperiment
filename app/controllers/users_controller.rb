@@ -20,10 +20,10 @@ class UsersController < ApplicationController
   
   # GET /users;search
   def search
-
-    @query = params[:query]
+    @query = params[:query] || ''
+    @query.strip!
     
-    results = SOLR_ENABLE ? User.find_by_solr(@query, :limit => 100).results : []
+    results = (SOLR_ENABLE && !@query.blank?) ? User.find_by_solr(@query, :limit => 100).results : []
     
     # Only show activated users!
     @users = results.select { |u| u.activated? }
