@@ -1,5 +1,12 @@
 class SearchController < ApplicationController
   def show
+
+    if params[:query].nil? or params[:query] == ''
+      flash[:error] = 'Missing search query';
+      redirect_to url_for(:controller => "home")
+      return
+    end
+
     @type = params[:type].to_s.downcase
     
     # Hacks for 'Groups' --> 'Networks' and 'Files' --> 'Blobs' renames
