@@ -47,7 +47,8 @@
 						
 						<p style="font-size: 85%;">
 							<a href="<%= pack_path(pack) + '#comments' -%>"><b>Comments: </b><%= pack.comments_count %></a> |
-							<b>Viewed:</b> <%=pluralize pack.contribution.viewings_count, "time" %> |
+							<b>Viewed internally:</b> <%= pluralize Viewing.total_site_viewings_count_for_contribution(pack.contribution.id), "time" %> |
+							<b>Downloaded internally:</b> <%= pluralize Download.total_site_downloads_count_for_contribution(pack.contribution.id), "time" %>
 						</p>
 						
 						<% unless (tags = pack.tags).empty? %>

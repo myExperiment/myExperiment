@@ -48,4 +48,9 @@ class Download < ActiveRecord::Base
   def self.anonymous_site_downloads_count_for_contribution(contribution_id)
     self.count(:all, :conditions => ["contribution_id = ? AND accessed_from_site = ? AND user_ID IS NULL", contribution_id, true])
   end
+  
+  # returns total number of downloads for the contribution from the website
+  def self.total_site_downloads_count_for_contribution(contribution_id)
+    self.count(:all, :conditions => ["contribution_id = ? AND accessed_from_site = ?", contribution_id, true])
+  end
 end

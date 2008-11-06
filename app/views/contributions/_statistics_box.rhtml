@@ -1,61 +1,69 @@
+<% type = contributable.class.to_s -%>
+
 <div class="contribution_section_box">
 	<p class="heading" style="margin-bottom: 0.3em;">
+		<%= info_icon_with_tooltip("Viewing #{(downloadable?(type) ? '/ download' : '')} counts are grand totals for this #{ visible_name(contributable) }.<br/>Click 'see breakdown' to view details.") -%>
 		Statistics
 	</p>
 	
 	<div class="stats_box"> 
-	
-		<% type = contributable.class.to_s -%>
-		
 		<%= render :partial => "contributions/statistics", :object => contributable.contribution, :locals => { :contributable => contributable, :type => type } %>
 		
-		<% if allow_credits_and_attributions? type -%>
-			<p>
-				<a href="#credits"><%= pluralize contributable.creditors.length, "credit" -%></a> <!-- won't work for type=='group'; needs anchor called '#group_creditations' -->
-			</p>
-			
-			<p>
-				<a href="#attributions"><%= pluralize contributable.attributors.length, "attribution" -%></a>
-			</p>
-		<% end -%>
+		<div class="fold" style="padding-top: 0.6em;">
+			<div class="foldTitle">More</div>
+			<div class="foldContent" style="display: none; text-align: left;">
+				<% if allow_credits_and_attributions? type -%>
+					<p>
+						<a href="#credits"><%= pluralize contributable.creditors.length, "credit" -%></a> <!-- won't work for type=='group'; needs anchor called '#group_creditations' -->
+					</p>
+					
+					<p>
+						<a href="#attributions"><%= pluralize contributable.attributors.length, "attribution" -%></a>
+					</p>
+				<% end -%>
+				
+				<% if taggable? type -%>
+					<p>
+			      <a href="#tags"><%= pluralize contributable.tags.uniq.length, "tag" -%></a>
+			    </p>
+				<% end -%>
+				
+				<% if favouritable? type -%>
+					<p>
+			      <a href="#favourited_by"><%= pluralize contributable.bookmarks_count, "favourite" -%></a>
+			    </p>
+				<% end -%>
+				
+				<% if rateable? type -%>
+					<p>
+			      <a href="#ratings"><%= pluralize contributable.ratings_count, "rating" -%></a>
+			    </p>
+				<% end -%>
+				
+				<% if allow_citations? type %>
+					<p>
+			      <!-- for this to work properly, view for every resource that supports citations will need to have -->
+						<!-- tab system with 'tabsContainer' element + anchor called 'citations' -->
+						<a href="#citations" onclick="selectTab($('tabsContainer'),0)"><%= pluralize contributable.citations_count, "citation" %></a>
+			    </p>
+				<% end %>
+				
+				<% if reviewable? type %>
+					<p>
+			      <a href="#reviews"><%= pluralize contributable.reviews_count, "review" -%></a>
+			    </p>
+				<% end %>
+				
+				<% if commentable? type -%>
+			    <p>
+			    	<a href="#comments"><%= pluralize contributable.comments_count, "comment" -%></a>
+			    </p>
+				<% end -%>
+			</div>
+		</div>
 		
-		<% if taggable? type -%>
-			<p>
-	      <a href="#tags"><%= pluralize contributable.tags.uniq.length, "tag" -%></a>
-	    </p>
-		<% end -%>
 		
-		<% if favouritable? type -%>
-			<p>
-	      <a href="#favourited_by"><%= pluralize contributable.bookmarks_count, "favourite" -%></a>
-	    </p>
-		<% end -%>
 		
-		<% if rateable? type -%>
-			<p>
-	      <a href="#ratings"><%= pluralize contributable.ratings_count, "rating" -%></a>
-	    </p>
-		<% end -%>
-		
-		<% if allow_citations? type %>
-			<p>
-	      <!-- for this to work properly, view for every resource that supports citations will need to have -->
-				<!-- tab system with 'tabsContainer' element + anchor called 'citations' -->
-				<a href="#citations" onclick="selectTab($('tabsContainer'),0)"><%= pluralize contributable.citations_count, "citation" %></a>
-	    </p>
-		<% end %>
-		
-		<% if reviewable? type %>
-			<p>
-	      <a href="#reviews"><%= pluralize contributable.reviews_count, "review" -%></a>
-	    </p>
-		<% end %>
-		
-		<% if commentable? type -%>
-	    <p>
-	    	<a href="#comments"><%= pluralize contributable.comments_count, "comment" -%></a>
-	    </p>
-		<% end -%>
 		
 	</div>
 </div>
