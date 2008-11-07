@@ -46,6 +46,18 @@ class User < ActiveRecord::Base
             
   end
   
+  # returns packs that have largest number of friends
+  # the maximum number of results is set by #limit#
+  def self.most_friends(limit=10)
+    self.find_by_sql("SELECT u.* FROM users u JOIN friendships f ON (u.id = f.user_id OR u.id = f.friend_id) AND f.accepted_at IS NOT NULL GROUP BY u.id ORDER BY COUNT(u.id) DESC, u.name LIMIT #{limit}")
+  end
+  
+  # returns packs that have largest number of friends
+  # the maximum number of results is set by #limit#
+  def self.highest_rated(limit=10)
+    self.find_by_sql("SELECT u.* FROM ratings r JOIN contributions c ON r.rateable_type = c.contributable_type AND r.rateable_id = c.contributable_id JOIN users u ON c.contributor_type = 'User' AND c.contributor_id = u.id GROUP BY u.id ORDER BY AVG(r.rating) DESC, u.name LIMIT #{limit}")
+  end
+  
   acts_as_tagger
   
   has_many :ratings,
@@ -597,6 +609,13 @@ class User < ActiveRecord::Base
     end
     
     return ratings
+  end
+  
+  # user's average rating for all contributions
+  def average_rating_and_count
+    result_set = User.find_by_sql("SELECT AVG(r.rating) AS avg_rating, COUNT(r.rating) as rating_count FROM ratings r JOIN contributions c ON r.rateable_type = c.contributable_type AND r.rateable_id = c.contributable_id JOIN users u ON c.contributor_type = 'User' AND c.contributor_id = u.id WHERE u.id = #{self.id.to_s} GROUP BY u.id")
+    return [0,0] if result_set.empty?
+    return [result_set[0]["avg_rating"], result_set[0]["rating_count"]]
   end
   
 protected

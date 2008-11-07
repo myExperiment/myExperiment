@@ -35,3 +35,12 @@
 <% end -%>
 
 <%= render :partial => "contributions/most_tabs", :locals => { :type => "Pack" } %>
+
+<% unless (largest = Pack.most_items).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most items</div>
+  	<div class="tabContent">
+	    <%= render :partial => "packs/table", :locals => { :collection => largest } %>
+  	</div>
+  </div>
+<% end %>

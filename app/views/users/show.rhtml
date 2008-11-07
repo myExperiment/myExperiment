@@ -248,21 +248,23 @@
 				</p>
 			</div>
 			
-			<% ratings = @user.ratings_for_contributions %>
-			<div class="contribution_section_box" style="width: 130px; padding: 0.4em 0.8em;">
-				<p style="font-size: 93%; font-weight: bold;">
-					<b><%= h @user.name -%> has an average rating of:</b>
-				</p>
-				<p style="font-size: 123.1%; font-weight: bold; padding-bottom: 0.2em; line-height: 1;">
-					<%= number_with_precision(mean(ratings.collect {|r| r.rating}).to_f, 1) -%> / 5
-				</p>
-				<p style="font-size: 77%; padding-top: 0.2em; line-height: 1;">
-					(<%= pluralize ratings.length, "rating" -%> in total)
-				</p>
-				<p style="font-size: 93%; font-weight: bold;">
-					<b>for their items</b>
-				</p>
-			</div>
+			<% benchmark "user rating box" do %>
+				<% avg_rating, rating_count = @user.average_rating_and_count %>
+				<div class="contribution_section_box" style="width: 130px; padding: 0.4em 0.8em;">
+					<p style="font-size: 93%; font-weight: bold;">
+						<b><%= h @user.name -%> has an average rating of:</b>
+					</p>
+					<p style="font-size: 123.1%; font-weight: bold; padding-bottom: 0.2em; line-height: 1;">
+						<%= number_with_precision(avg_rating, 1) -%> / 5
+					</p>
+					<p style="font-size: 77%; padding-top: 0.2em; line-height: 1;">
+						(<%= pluralize rating_count, "rating" -%> in total)
+					</p>
+					<p style="font-size: 93%; font-weight: bold;">
+						<b>for their items</b>
+					</p>
+				</div>
+			<% end %>
 			
 		</td>
 	</tr>

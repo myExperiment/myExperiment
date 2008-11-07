@@ -26,6 +26,18 @@ class Network < ActiveRecord::Base
     self.find(:all, :order => "created_at DESC", :limit => limit)
   end
   
+  # returns groups with most members
+  # the maximum number of results is set by #limit#
+  def self.most_members(limit=10)
+    self.find_by_sql("SELECT n.* FROM networks n JOIN memberships m ON n.id = m.network_id WHERE m.user_established_at IS NOT NULL AND m.network_established_at IS NOT NULL GROUP BY m.network_id ORDER BY COUNT(m.network_id) DESC, n.title LIMIT #{limit}")
+  end
+  
+  # returns groups with most shared items
+  # the maximum number of results is set by #limit#
+  def self.most_shared_items(limit=10)
+    self.find_by_sql("SELECT n.* FROM networks n JOIN permissions perm ON n.id = perm.contributor_id AND perm.contributor_type = 'Network' JOIN policies p ON perm.policy_id = p.id JOIN contributions c ON p.id = c.policy_id GROUP BY perm.contributor_id ORDER BY COUNT(perm.contributor_id) DESC, n.title LIMIT #{limit}")
+  end
+  
   # protected? asks the question "is other protected by me?"
   def protected?(other)
     if other.kind_of? User        # if other is a User...
@@ -262,7 +274,7 @@ class Network < ActiveRecord::Base
     list = []
     self.permissions.each do |p|
       p.policy.contributions.each do |c|
-        list << c
+        list << c unless c.nil? || c.contributable.nil?
       end
     end
     list

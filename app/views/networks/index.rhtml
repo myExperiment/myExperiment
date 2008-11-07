@@ -28,3 +28,30 @@
   	</div>
   </div>
 <% end %>
+
+<% unless (largest = Network.most_members).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Members</div>
+  	<div class="tabContent">
+	    <%= render :partial => "networks/table", :locals => { :collection => largest } %>
+  	</div>
+  </div>
+<% end %>
+
+<% unless (rich = Network.most_shared_items).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Shared Items</div>
+  	<div class="tabContent">
+	    <%= render :partial => "networks/table", :locals => { :collection => rich } %>
+  	</div>
+  </div>
+<% end %>
+
+<% unless (credited = Network.most_credited).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Credited</div>
+  	<div class="tabContent">
+	    <%= render :partial => "networks/table", :locals => { :collection => credited } %>
+  	</div>
+  </div>
+<% end %>

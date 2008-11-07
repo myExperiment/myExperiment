@@ -42,3 +42,12 @@
 	  </div> 
 	<% end %>
 <% end -%>
+
+<% unless (most_f = Contribution.most_favourited(10, type)).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Favourited</div>
+  	<div class="tabContent">
+	    <%= render :partial => "contributions/list", :locals => { :collection => most_f, :table => true } %>
+  	</div>
+  </div> 
+<% end %>

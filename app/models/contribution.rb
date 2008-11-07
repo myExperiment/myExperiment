@@ -64,6 +64,18 @@ class Contribution < ActiveRecord::Base
               :include => [ { :policy => :permissions } ])
   end
   
+  # returns the 'most favourited' Contributions
+  # the maximum number of results is set by #limit#
+  def self.most_favourited(limit=10, klass=nil)
+    if klass
+      type_condition = "WHERE c.contributable_type = '#{klass}'"
+    else
+      type_condition = ""
+    end
+    
+    self.find_by_sql("SELECT c.*, COUNT(b.bookmarkable_id) AS cnt FROM contributions c JOIN bookmarks b ON c.contributable_type = b.bookmarkable_type AND c.contributable_id = b.bookmarkable_id #{type_condition} GROUP BY b.bookmarkable_id ORDER BY cnt DESC LIMIT #{limit}")
+  end
+  
   # is c_utor authorized to edit the policy for this contribution
   def admin?(c_utor)
     #policy.contributor_id.to_i == c_utor.id.to_i and policy.contributor_type.to_s == c_utor.class.to_s

@@ -36,6 +36,12 @@ class Pack < ActiveRecord::Base
     return contributable_entries_count + remote_entries_count
   end
   
+  # returns packs that have largest total number of items
+  # the maximum number of results is set by #limit#
+  def self.most_items(limit=10)
+    self.find_by_sql("SELECT * FROM ((SELECT p.*, contrib.pack_id FROM packs p JOIN pack_contributable_entries contrib ON contrib.pack_id = p.id) UNION ALL (SELECT p.*, remote.pack_id FROM packs p JOIN pack_remote_entries remote ON remote.pack_id = p.id)) AS pack_items GROUP BY pack_id ORDER BY COUNT(pack_id) DESC, title LIMIT #{limit}")
+  end
+  
   
   def self.archive_folder
     # single declaration point of where the zip archives for downloadable packs would live
