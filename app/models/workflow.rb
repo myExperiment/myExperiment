@@ -182,4 +182,23 @@ class Workflow < ActiveRecord::Base
     words.read
   end
 
+  def get_tag_suggestions()
+
+    ignore = [ "and", "the", "or", "a", "an" ]
+    
+    text = "#{title} #{body} #{get_search_terms(current_version)}"
+
+    words = text.split(/[^a-zA-Z0-9]+/).uniq
+
+    all_tags = Tag.find(:all).select do |t| t.taggings_count > 0 end.map do |t| t.name end
+
+    candidates = words - (words - all_tags)
+
+    candidates = candidates - ignore
+
+    existing = tags.map do |t| t.name end
+
+    (candidates - existing).sort
+  end
+
 end

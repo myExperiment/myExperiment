@@ -340,6 +340,7 @@ private
                                   "comment_delete", 
                                   "rate", 
                                   "tag", 
+                                  "tag_suggestions",
                                   "view", 
                                   "comments_timeline", 
                                   "comments",

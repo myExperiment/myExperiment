@@ -559,6 +559,10 @@ class WorkflowsController < ApplicationController
     end
   end
   
+  def tag_suggestions
+    @suggestions = @workflow.get_tag_suggestions
+  end
+
 protected
 
   def find_workflows
