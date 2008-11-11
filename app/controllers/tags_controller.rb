@@ -70,6 +70,8 @@ protected
           @tagged_with << t.taggable
         end
       end
+      
+      @tagged_with = @tagged_with.uniq
     else
       error("Tag not found", "is invalid")
     end
