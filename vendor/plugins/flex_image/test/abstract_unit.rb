@@ -5,7 +5,7 @@ begin
   require 'active_record'
 rescue LoadError
   require 'rubygems'
-  require_gem 'activerecord'
+  gem 'activerecord'
 end
 
 require 'active_record/fixtures'
