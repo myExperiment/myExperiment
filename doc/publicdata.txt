@@ -9,7 +9,7 @@ may not yet remove all private data.  Below is a set of instructions on
 how to use the script.
 
 (1) Open lib/maintenance/GeneratePublicData.php in a editor and set the
-user, password, database, server and salt variables.  Also ensure that the path
+user, password, database, server and salt* variables.  Also ensure that the path
 of php is set correctly, this path is in the first line of the file.
 
 (2) If you are running the script of Linux ensure user execute privileges 
@@ -30,3 +30,8 @@ same as the one that you set in (1).
 (4) Once the script has finished it should have created a file entitled
 myexp_public.sql in the directory as the script.  Import this into an blank
 database (i.e. no data or tables) in your own copy of mysql.
+
+*salt is required to hash a user's ID in way which prevents someone from
+being able to work which hash corresponds to which user through a brute force 
+attack.  Salts should be treated like passwords, i.e. you don't tell anyone 
+else what salt you used and you choose something that is hard to guess.
