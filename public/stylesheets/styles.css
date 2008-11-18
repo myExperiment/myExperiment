@@ -768,7 +768,7 @@ ul.breadcrumb_list a:hover {
 #errorExplanation {
 	width: 400px;
 	border: 2px solid #c00;
-	padding: 0.5empx;
+	padding: 0.5em;
 	margin-bottom: 1.5em;
 	background-color: #F5F5F5;
 }
