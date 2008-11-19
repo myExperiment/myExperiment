@@ -4,6 +4,7 @@
 # See license.txt for details.
 
 require 'uri'
+require 'openid'
 
 class SessionController < ApplicationController
 
