@@ -5,6 +5,7 @@
 
 require 'uri'
 require 'openid'
+require 'openid/store/filesystem'
 
 class SessionController < ApplicationController
 
@@ -37,48 +38,42 @@ class SessionController < ApplicationController
   
   # handle the openid server response
   def complete
-    response = consumer.complete(params)
+
+    current_url = url_for(:action => 'complete', :only_path => false)
+    parameters = params.reject{|k,v|request.path_parameters[k]}
+
+    response = consumer.complete(parameters, current_url)
     
-    case response.status
-    when OpenID::SUCCESS
-      redirect_to_edit_user = false
-      
-      # create user object if one does not exist
-      unless @user = User.find(:first, :conditions => ["openid_url = ?", response.identity_url], :include => [ :contributions, :tags ])
-        @user = User.new(:openid_url => response.identity_url, :name => response.identity_url, :activated_at => Time.now, :last_seen_at => Time.now)
-        redirect_to_edit_user = @user.save
-      end
+    if response.class == OpenID::Consumer::FailureResponse
 
-      # storing both the openid_url and user id in the session for for quick
-      # access to both bits of information.  Change as needed.
-      self.current_user = @user
-
-      flash[:notice] = "Logged in as #{@user.name}"
-       
-      if redirect_to_edit_user == true
-        redirect_to url_for(:controller => 'users', :action => 'edit', :id => self.current_user)
-      else
-        successful_login(self.current_user)
-      end
-      
-      return
-
-    when OpenID::FAILURE
       if response.identity_url
-        flash[:notice] = "Verification of #{CGI::escape(response.identity_url)} failed."
-
+        failed_login("Verification of \"#{response.identity_url}\" failed.")
       else
-        flash[:notice] = 'Verification failed.'
+        failed_login("Verification failed.")
       end
 
-    when OpenID::CANCEL
-      flash[:notice] = 'Verification cancelled.'
-
-    else
-      flash[:notice] = 'Unknown response from OpenID server.'
+      return
     end
-  
-    failed_login(flash[:notice])
+
+    redirect_to_edit_user = false
+    
+    # create user object if one does not exist
+    unless @user = User.find(:first, :conditions => ["openid_url = ?", response.identity_url], :include => [ :contributions, :tags ])
+      @user = User.new(:openid_url => response.identity_url, :name => response.identity_url, :activated_at => Time.now, :last_seen_at => Time.now)
+      redirect_to_edit_user = @user.save
+    end
+
+    # storing both the openid_url and user id in the session for for quick
+    # access to both bits of information.  Change as needed.
+    self.current_user = @user
+
+    flash[:notice] = "Logged in as #{@user.name}"
+     
+    if redirect_to_edit_user == true
+      redirect_to url_for(:controller => 'users', :action => 'edit', :id => self.current_user)
+    else
+      successful_login(self.current_user)
+    end
   end
 
   protected
@@ -104,23 +99,16 @@ class SessionController < ApplicationController
       begin
         if request.post?
           request = consumer.begin(openid_url)
+
+          return_to = url_for(:action=> 'complete')
+          trust_root = url_for(:controller=>'')
           
-          case request.status
-          when OpenID::SUCCESS
-            return_to = url_for(:action=> 'complete')
-            trust_root = url_for(:controller=>'')
-            
-            url = request.redirect_url(trust_root, return_to)
-            redirect_to(url)
-            return
-            
-          when OpenID::FAILURE
-            escaped_url = CGI::escape(openid_url)
-            failed_login("Could not find OpenID server for #{escaped_url}")
-          else
-            failed_login("An unknown error occured. Please check your OpenID url.")
-          end
+          url = request.redirect_url(trust_root, return_to)
+          redirect_to(url)
+          return
         end
+      rescue OpenID::DiscoveryFailure
+        failed_login("Couldn't locate the OpenID server.  Please check your OpenID URL.")
       rescue RuntimeError, Timeout::Error => e
         if e.class == Timeout::Error
           failed_login("Could not contact your OpenID server.")
@@ -154,7 +142,7 @@ class SessionController < ApplicationController
     # create the OpenID store for storing associations and nonces,
     # putting it in your app's db directory
     store_dir = Pathname.new(RAILS_ROOT).join('db').join('openid-store')
-    store = OpenID::FilesystemStore.new(store_dir)
+    store = OpenID::Store::Filesystem.new(store_dir)
 
     return OpenID::Consumer.new(session, store)
   end
