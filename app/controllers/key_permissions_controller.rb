@@ -1,0 +1,2 @@
+class KeyPermissionsController < ApplicationController
+end

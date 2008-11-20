@@ -152,7 +152,8 @@ function initialiseTabs() {
 
   for (var i = 0; i < anchors.length; i++) {
 
-    if ((anchors[i].hash != undefined) &&
+    if ((anchors[i].href) &&
+        (anchors[i].hash != undefined) &&
         (anchors[i].protocol == loc.protocol) &&
         (anchors[i].hostname == loc.hostname) &&
         (anchors[i].search == loc.search) &&

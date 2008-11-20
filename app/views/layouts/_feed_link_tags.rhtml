@@ -5,3 +5,7 @@
 <% if controller.controller_name.to_s == "home" or (controller.controller_name.to_s == "announcements" and controller.action_name.to_s == "index") -%>
 	<link href="<%= announcements_url %>.rss" rel="alternate" type="application/rss+xml" title="myExperiment.org - Site Announcements" />
 <% end -%>
+
+<% if controller.controller_name.to_s == "packs" and controller.action_name.to_s == "show" -%>
+	<link href="<%= formatted_items_pack_path(@pack, :rss) -%>" rel="alternate" type="application/rss+xml" title="myExperiment.org - Pack items feed" />
+<% end -%>

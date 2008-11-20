@@ -1,17 +1,45 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+dilbert_network_johns_policy:
   id: 1
   contributor_id: 1
-  contributor_type: MyString
+  contributor_type: Network
   policy_id: 1
-  download: false
-  edit: false
-  view: false
-two:
+  download: true
+  edit: true
+  view: true
+  created_at: 2008-07-04 16:30:45
+  updated_at: 2008-07-04 16:30:45
+
+another_network_janes_policy:
   id: 2
-  contributor_id: 1
-  contributor_type: MyString
-  policy_id: 1
+  contributor_id: 2
+  contributor_type: Network
+  policy_id: 2
   download: false
   edit: false
   view: false
+  created_at: 2008-04-06 14:13:12
+  updated_at: 2008-04-06 14:13:12
+
+permission_for_admin_on_false_policy:
+  id: 3
+  contributor_id: 3
+  contributor_type: User
+  policy_id: 4
+  download: true
+  edit: false
+  view: true
+  created_at: 2008-04-06 14:13:12
+  updated_at: 2008-04-06 14:13:12
+
+permission_for_another_network_on_false_policy:
+  id: 4
+  contributor_id: 2
+  contributor_type: Network
+  policy_id: 4
+  download: false
+  edit: true
+  view: true
+  created_at: 2008-04-06 14:13:12
+  updated_at: 2008-04-06 14:13:12
+

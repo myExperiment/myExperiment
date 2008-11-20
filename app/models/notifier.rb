@@ -2,38 +2,38 @@ class Notifier < ActionMailer::Base
   
   NOTIFICATIONS_EMAIL = "notification@mail.myexperiment.com"
 
-  def friendship_request(user, friend_name, base_url)
+  def friendship_request(user, friend_name, friendship, base_url)
     recipients user.email
     from NOTIFICATIONS_EMAIL
     subject "myExperiment - #{friend_name} has requested to be your friend"
     
-    body :name => user.name,
-         :username => user.username,
+    body :user => user,
          :friend_name => friend_name,
+         :friendship => friendship,
          :base_url => base_url
   end
   
-  def membership_invite(user, network, base_url)
+  def membership_invite(user, network, membership, base_url)
     recipients user.email
     from NOTIFICATIONS_EMAIL
     subject "myExperiment - you have been invited to join the #{network.title} Group"
     
-    body :name => user.name,
-         :username => user.username,
+    body :user => user,
          :network => network,
+         :membership => membership,
          :base_url => base_url
   end
   
-  def membership_request(requestor, network, base_url)
+  def membership_request(requestor, network, membership, base_url)
     recipients network.owner.email
     from NOTIFICATIONS_EMAIL
     subject "myExperiment - #{requestor.name} would like to join the #{network.title} Group"
     
-    body :name => network.owner.name,
-         :username => network.owner.username,
+    body :user => network.owner,
          :network => network,
          :base_url => base_url,
-         :requestor_name => requestor.name
+         :membership => membership,
+         :requestor => requestor
   end
   
   def auto_join_group(member, network, base_url)
@@ -57,7 +57,8 @@ class Notifier < ActionMailer::Base
          :username => message.u_to.username,
          :from_name => message.u_from.name,
          :base_url => base_url,
-         :subject => message.subject
+         :subject => message.subject,
+         :message_id => message.id
   end
 
 end

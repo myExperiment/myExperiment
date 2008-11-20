@@ -1,0 +1,54 @@
+<div class="field">
+	<label for="client_application_name">Name*</label><br/>
+	<%=f.text_field :name %>
+</div>
+<div class="field">
+        <% if current_user.admin? %>
+          <label for="client_application_key_type">Type*</label><br/>
+	  <% unless @client_application.id %>  
+	    <%= select_tag "client_application[key_type]", options_for_select([ "User", "System"], "User") %>
+	  <% else %>
+	    <%= select_tag "client_application[key_type]", options_for_select([ "User", "System"], @client_application.key_type) %>
+	  <% end %>
+</div>
+<div class="field">
+	  <label for="client_application_user_id">For User*</label><br/>
+          <% unless @client_application.id %>
+            <select id="client_application[user_id]" name="client_application[user_id]" %>
+              <% all_users().each do |u| %>
+	        <option <%= 'selected="selected"' if u.id==current_user.id %> value="<%= u.id %>"><%= h(u.name) %></option><% end %>
+            </select>
+          <% else %>
+            <select id="client_application[user_id]" name="client_application[user_id]">
+              <% all_users().each do |u| %>
+	         <option <%= 'selected="selected"' if u.id==@client_application.user_id %> value="<%= u.id %>"><%= h(u.name) %></option><% end %>
+            </select>
+	  <% end %>
+	<% else %>
+          <%= f.hidden_field :user_id, :value => current_user.id %>
+	  <% unless @client_application.id %>
+	    <%= f.hidden_field :key_type, :value => "User" %>
+	  <% else %>
+	     <%= f.hidden_field :key_type, :value => @client_application.key_type %>
+	  <% end %>
+	<% end %>
+	<% unless @client_application.id %>
+	  <%= f.hidden_field :creator_id, :value => current_user.id %>
+	<% else %>
+	  <%= f.hidden_field :creator_id, :value => @client_application.creator_id %>
+	<% end %>
+
+</div>
+<div class="field">
+	<label for="client_application_url">Main Application URL*</label><br/>
+	<%=f.text_field :url%>
+</div>
+<div class="field">
+	<label for="client_application_callback_url">Callback URL*</label><br/>
+	<%=f.text_field :callback_url%>
+</div>
+<div class="field">
+	<label for="client_application_support_url">Support URL</label><br/>
+	<%=f.text_field :support_url%>
+</div>
+

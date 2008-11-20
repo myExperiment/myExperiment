@@ -1,22 +1,45 @@
-<% t "#{contributable_name(@blob.id, 'Blob')} (#{h @blob.uploader})" -%>
+<% t "#{contributable_name(@blob.id, 'Blob')} (#{h @blob.contributor_name})" -%>
 
-<% if @blob.authorized?("edit", (logged_in? ? current_user : nil)) %>
-	<ul class="sectionIcons">
+<ul class="sectionIcons">
+	<% if mine?(@blob) -%>
 		<li><%= icon('manage', edit_file_path(@blob), nil, nil, 'Manage File Entry')%></li>
-		<% if @blob.authorized?("destroy", current_user) %>
-			<li><%= icon('destroy', file_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and ratings. Are you sure?', :method => :delete }, 'Delete File Entry') %></li>
-		<% end %>
-	</ul>
-<% end %>
+	<% end -%>
+	<% if @blob.authorized?("destroy", current_user) %>
+		<li><%= icon('destroy', file_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and ratings. Are you sure?', :method => :delete }, 'Delete File Entry') %></li>
+	<% end %>
+</ul>
 
 <h1 class="contribution_title">File Entry: <%= contributable_name(@blob.id, 'Blob') %></h1>
 
-<div class="contribution_aftertitle">
-	<b>Last updated: </b><%= datetime @blob.updated_at %>
-</div>
+<%= render :partial => "contributions/datetime_info", :locals => { :contributable => @blob } -%>
 
 <div class="contribution_mini_nav">
-	| <%= link_to "Comments (#{@blob.comments.length})", "#comments" %> |
+	|
+	<%= link_to "License", "#license" %>
+	|
+	<%= link_to "Credits (#{@blob.creditations.length})", "#credits" %>
+	|
+	<%= link_to "Attributions (#{@blob.attributors.length})", "#attributions" %>
+	|
+	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@blob.tags.length})</span>", "#tags" %>
+	|
+	<%= link_to "Featured in Packs (#{@blob.in_packs.length})", "#featured_in_packs" %>
+	|
+	<%= link_to "Ratings (#{@blob.ratings.length})", "#ratings" %>
+	|
+	<%= link_to "Attributed By (#{@blob.attributions.length})", "#attributed_by" %>
+	|
+	<%= link_to "Favourited By (#{@blob.bookmarks.length})", "#favourited_by" %>
+	| 
+	<% if logged_in? and @blob.owner?(current_user) %>
+	  <br/>
+	  |
+		<!-- NB! Index of the 'sharing' tab might change! -->
+	  <a href="#sharing" onclick="selectTab($('tabsContainer'),0)">Sharing</a>
+	  |
+	<% end %>
+	<%= link_to "Comments (#{@blob.comments.length})", "#comments" %> 
+	|
 </div>
 
 <div class="contribution_left_box">
@@ -83,20 +106,25 @@
 	
 	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @blob, :edit_path => edit_file_path(@blob) } %>
 	
-	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @blob } %>
-	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @blob, 
 																											 :owner_id => ((@blob.contributor_type == 'User') ? @blob.contributor_id : nil), 
 																											 :add_path => tag_file_path(@blob), 
 																											 :edit_path => edit_file_path(@blob),
 																											 :allow_edit => @blob.authorized?("edit", logged_in? ? current_user : nil ) } %>
+																											 
+  <%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @blob } %>
+	
+	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @blob, :contributable_url => @blob_entry_url } %>
 	
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @blob } %>
 	
+	<%= render :partial => "contributions/attributed_by", :locals => { :contributable => @blob } %>
+	
+	<%= render :partial => "contributions/favourited_box", :locals => { :contributable => @blob,
+																																			:add_to_favourites_path => favourite_file_url(@blob),
+																																			:remove_from_favourites_path => favourite_delete_file_url(@blob) } %>
+	
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @blob } %>
-	
-	<% if false %><%= render :partial => "layouts/bookmark_with", :locals => { :title => contributable_name(@blob.id, 'Blob'), :url => @blob_url } %><% end %>
-	
 </div>	
 
 <div class="clearer">&nbsp;</div>
@@ -104,14 +132,14 @@
 <!-- BEGIN tabs -->
 	
 <br/>
-<br/>
 
 <div id="tabsContainer" class="tabsContainer"></div>
 	
 <% if logged_in? and @blob.owner? current_user %>
   
+	<a name="sharing"></a>
 	<div class="tabContainer">
-    <div class="tabTitle">Permissions</div>
+    <div class="tabTitle">Sharing</div>
     <div class="tabContent">
 
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @blob } %>
@@ -125,17 +153,20 @@
     </div>
   </div>
 	
+	<% if false %>
   <div class="tabContainer">
     <div class="tabTitle">Viewing History</div>
     <div class="tabContent">
       <%= render :partial => "contributions/history", :object => @blob.contribution %>
     </div>
   </div>
+	<% end %>
 	
 <% end %>
 
 <!-- END tabs -->
 
+<br/>
 <br/>
 
 <div id="commentsBox">

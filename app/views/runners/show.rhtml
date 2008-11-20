@@ -16,7 +16,7 @@
 	<% end %>
 </div>
 
-<p><b>Owner:</b> <%= contributor(@runner.contributor_id, @runner.contributor_type) -%> (<%= visible_name @runner.contributor -%>)</p>
+<p><b>Owner:</b> <%= contributor(@runner.contributor_id, @runner.contributor_type) -%> (<%= visible_name @runner.contributor_type -%>)</p>
 
 <p><b>Type:</b> <%= @runner.class.to_s -%></p>
 <p><b>URL (to Service):</b> <%= h @runner.url -%></p>

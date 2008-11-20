@@ -10,23 +10,21 @@ class ProfilesController < ApplicationController
   before_filter :find_profile, :only => [:show]
   before_filter :find_profile_auth, :only => [:edit, :update, :destroy]
   
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :profile_sweeper, :only => [ :create, :update, :destroy ]
+  
   # GET /profiles
-  # GET /profiles.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @profiles.to_xml }
     end
   end
 
   # GET /users/1/profile
-  # GET /users/1/profile.xml
   # GET /profiles/1
-  # GET /profiles/1.xml
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @profile.to_xml }
     end
   end
 
@@ -48,7 +46,6 @@ class ProfilesController < ApplicationController
   end
 
   # POST /profiles
-  # POST /profiles.xml
   def create
     if (@profile = Profile.new(params[:profile]) unless current_user.profile)
       # set legal value for "null avatar"
@@ -58,10 +55,8 @@ class ProfilesController < ApplicationController
         if @profile.save
           flash[:notice] = 'Profile was successfully created.'
           format.html { redirect_to profile_url(@profile) }
-          format.xml  { head :created, :location => profile_url(@profile) }
         else
           format.html { render :action => "new" }
-          format.xml  { render :xml => @profile.errors.to_xml }
         end
       end
     else
@@ -71,9 +66,7 @@ class ProfilesController < ApplicationController
   end
 
   # PUT /users/1/profile
-  # PUT /users/1/profile.xml
   # PUT /profiles/1
-  # PUT /profiles/1.xml
   def update
     # maintain legal value for "null avatar"
     (params[:profile][:picture_id] = nil) if (params[:profile][:picture_id].to_i == 0)
@@ -83,24 +76,19 @@ class ProfilesController < ApplicationController
         flash[:notice] = 'Profile was successfully updated.'
         #format.html { redirect_to profile_url(@profile) }
         format.html { redirect_to user_path(@profile.owner) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @profile.errors.to_xml }
       end
     end
   end
 
   # DELETE /users/1/profile
-  # DELETE /users/1/profile.xml
   # DELETE /profiles/1
-  # DELETE /profiles/1.xml
   def destroy
     @profile.destroy
   
     respond_to do |format|
       format.html { redirect_to profiles_url }
-      format.xml  { head :ok }
     end
   end
   
@@ -153,12 +141,11 @@ protected
 private
 
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Profile.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to profile_url(profile.id) }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

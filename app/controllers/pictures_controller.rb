@@ -7,13 +7,11 @@ class PicturesController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_pictures, :only => [:index]
-  before_filter :find_picture, :only => [:show]
+# before_filter :find_picture, :only => [:show]
   before_filter :find_picture_auth, :only => [:select, :edit, :update, :destroy]
   
   # GET /users/1/pictures/1/select
-  # GET /users/1/pictures/1/select.xml
   # GET /pictures/1/select
-  # GET /pictures/1/select.xml
   def select
     if @picture.select!
       # create and save picture selection record
@@ -22,7 +20,6 @@ class PicturesController < ApplicationController
       respond_to do |format|
         flash[:notice] = 'Picture was successfully selected as profile picture.'
         format.html { redirect_to pictures_url(@picture.owner) }
-        format.xml  { head :ok }
       end
     else
       error("Picture already selected", "already selected")
@@ -30,13 +27,10 @@ class PicturesController < ApplicationController
   end
   
   # GET /users/1/pictures
-  # GET /users/1/pictures.xml
   # GET /pictures
-  # GET /pictures.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @pictures.to_xml }
     end
   end
 
@@ -46,10 +40,15 @@ class PicturesController < ApplicationController
     size = params[:size] || "200x200"
     size = size[0..-($1.length.to_i + 2)] if size =~ /[0-9]+x[0-9]+\.([a-z0-9]+)/ # trim file extension
     
-    if cache_exists?(@picture, size) # look in file system cache before attempting db access
-      send_file(full_cache_path(@picture, size), :type => 'image/jpeg', :disposition => 'inline')
+    id = params[:id].to_i
+
+    if cache_exists?(id, size) # look in file system cache before attempting db access
+      send_file(full_cache_path(id, size), :type => 'image/jpeg', :disposition => 'inline')
     else
-      # resize and encode the picture
+
+      find_picture
+
+      # resize and encomde the picture
       @picture.resize!(:size => size)
       @picture.to_jpg!
       
@@ -80,45 +79,39 @@ class PicturesController < ApplicationController
   end
 
   # POST /users/1/pictures
-  # POST /users/1/pictures.xml
   # POST /pictures
-  # POST /pictures.xml
   def create
     @picture = Picture.create(:data => params[:picture][:data], :user_id => current_user.id)
 
     respond_to do |format|
       if @picture.save
         flash[:notice] = 'Picture was successfully uploaded.'
-        format.html { redirect_to pictures_url(@picture.user_id) }
-        format.xml  { head :created, :location => picture_url(@picture.user_id, @picture) }
+        
+        #format.html { redirect_to pictures_url(@picture.user_id) }
+        # updated to take account of possibly various locations from where this method can be called,
+        # so multiple redirect options are possible -> now return link is passed as a parameter
+        format.html { redirect_to params[:redirect_to] }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @picture.errors.to_xml }
       end
     end
   end
 
   # PUT /users/1/pictures/1
-  # PUT /users/1/pictures/1.xml
   # PUT /pictures/1
-  # PUT /pictures/1.xml
   def update
     respond_to do |format|
       if @picture.update_attributes(params[:picture])
         flash[:notice] = 'Picture was successfully updated.'
         format.html { redirect_to pictures_url(@picture.user_id) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @picture.errors.to_xml }
       end
     end
   end
 
   # DELETE /users/1/pictures/1
-  # DELETE /users/1/pictures/1.xml
   # DELETE /pictures/1
-  # DELETE /pictures/1.xml
   def destroy
     user_id = @picture.user_id
     
@@ -126,7 +119,6 @@ class PicturesController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to pictures_url(user_id) }
-      format.xml  { head :ok }
     end
   end
   
@@ -169,12 +161,11 @@ protected
 private
   
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Picture.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to logged_in? ? pictures_url(current_user) : '' }
-      format.xml { render :xml => err.to_xml }
     end
   end
   
@@ -190,9 +181,11 @@ private
   end
   
   def cache_path(picture, size=nil, include_local_name=false)
+
+    id = picture.kind_of?(Integer) ? picture : picture.id
     rtn = "#{RAILS_ROOT}/public/pictures/show"
     rtn = "#{rtn}/#{size}" if size
-    rtn = "#{rtn}/#{picture.id}.jpg" if include_local_name
+    rtn = "#{rtn}/#{id}.jpg" if include_local_name
     
     return rtn
   end

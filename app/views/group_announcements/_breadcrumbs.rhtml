@@ -1,0 +1,21 @@
+<li><%= link_to 'Groups', groups_path -%></li>
+<li><b>&#187;</b></li>
+<li><b><%= link_to h(@group.title), group_path(@group) -%></b></li>
+<li><b>&#187;</b></li>
+<li><b><%= link_to "Group Announcements", group_announcements_path(@group) -%></b>
+
+<% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" -%>
+    <li><%= truncate(h(@announcement.title),50) -%></li>
+  <% when "new" -%>
+    <li>New Announcement</li>
+  <% when "edit" -%>
+		<li><%= link_to "#{truncate(h(@announcement.title),50)}", group_announcement_path(@group, @announcement) -%></li>
+		<li><b>&#187;</b></li>
+    <li>Edit</li>
+  <% else -%>
+    <!-- no specific breadcrumb for other actions -->
+  <% end -%>
+<% end -%>

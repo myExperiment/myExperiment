@@ -16,6 +16,14 @@ class User < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
   
+  has_many :jobs
+
+  has_many :taverna_enactors, :as => :contributor,
+              :conditions => ["contributor_type = ?", "User"]
+
+  has_many :experiments, :as => :contributor,
+              :conditions => ["contributor_type = ?", "User"]
+
   def self.most_recent(limit=5)
     self.find(:all,
               :order => "users.created_at DESC",
@@ -27,6 +35,27 @@ class User < ActiveRecord::Base
   
   def self.last_updated(limit=5)
     self.find_by_sql ["SELECT u.*, p.* FROM users u, profiles p WHERE u.id = p.user_id and activated_at IS NOT NULL ORDER BY GREATEST(u.updated_at, p.updated_at) DESC LIMIT ?", limit]
+  end
+  
+  def self.last_active(limit=5)
+    self.find(:all,
+              :order => "users.last_seen_at DESC",
+              :limit => limit,
+              :conditions => "users.activated_at IS NOT NULL",
+              :include => :profile)
+            
+  end
+  
+  # returns packs that have largest number of friends
+  # the maximum number of results is set by #limit#
+  def self.most_friends(limit=10)
+    self.find_by_sql("SELECT u.* FROM users u JOIN friendships f ON (u.id = f.user_id OR u.id = f.friend_id) AND f.accepted_at IS NOT NULL GROUP BY u.id ORDER BY COUNT(u.id) DESC, u.name LIMIT #{limit}")
+  end
+  
+  # returns packs that have largest number of friends
+  # the maximum number of results is set by #limit#
+  def self.highest_rated(limit=10)
+    self.find_by_sql("SELECT u.* FROM ratings r JOIN contributions c ON r.rateable_type = c.contributable_type AND r.rateable_id = c.contributable_id JOIN users u ON c.contributor_type = 'User' AND c.contributor_id = u.id GROUP BY u.id ORDER BY AVG(r.rating) DESC, u.name LIMIT #{limit}")
   end
   
   acts_as_tagger
@@ -54,6 +83,30 @@ class User < ActiveRecord::Base
   has_many :reviews,
            :order => "updated_at DESC",
            :dependent => :destroy
+ 
+  has_many :client_applications
+  
+  has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
+           
+  acts_as_simile_timeline_event(
+    :fields => {
+      :start       => :created_at,
+      :title       => :simile_title,
+      :description => :simile_description,
+    }
+  )
+  
+  def simile_title
+    "#{self.name}"
+  end
+  
+  def simile_description
+    if profile and !profile.body.blank?
+      "#{profile.body}"
+    else
+      ''
+    end
+  end
   
   # BEGIN RESTful Authentication #
   attr_accessor :password
@@ -116,6 +169,41 @@ class User < ActiveRecord::Base
       return false
     end
   end
+  
+  
+  # method is called only once for each user - right after email address is confirmed;
+  # 
+  # it queries 'pending_invitations' table and moves all requests to relevant tables
+  # (i.e. to 'memberships' and 'friendships' - as appropriate);
+  # invitations are matched by registered user's email address.
+  #
+  # NB! This is done by email not token, because the email was updated on registration -
+  # to contain the address that was registered, rather than one that was used for invitation!
+  def process_pending_invitations!
+    invitations = PendingInvitation.find(:all, :conditions => ["email = ?", self.email])
+    
+    invitations.each do |invite|
+      case invite.request_type
+        when "membership"
+          unless Membership.find_by_user_id_and_network_id(self.id, invite.request_for)
+            membership = Membership.new(:user_id => self.id, :network_id => invite.request_for, :created_at => invite.created_at, :network_established_at => invite.created_at, :user_established_at => nil, :message => invite.message)
+            membership.save
+          end
+          invite.destroy
+        when "friendship"
+          # 'request_for' is used as id of the user, who sent the invitation - this is because
+          # for friendships 'request_for' and 'requested_by' are meant to be the same;
+          # still 'request_for' captures the idea of the request being directed to a particular user,
+          # and we don't really care who sent the actual invitation
+          unless Friendship.find_by_user_id_and_friend_id(invite.request_for, self.id)
+            friendship = Friendship.new(:user_id => invite.request_for, :friend_id => self.id, :created_at => invite.created_at, :accepted_at => nil, :message => invite.message)
+            friendship.save
+          end
+          invite.destroy
+      end
+    end
+  end
+  
   
   # Authenticates a user by their login name OR email and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
@@ -188,12 +276,12 @@ class User < ActiveRecord::Base
   
   has_many :blobs, :as => :contributor
   has_many :blogs, :as => :contributor
-  has_many :forums, :as => :contributor
   has_many :workflows, :as => :contributor
+  has_many :packs, :as => :contributor
   
   acts_as_creditor
 
-  acts_as_solr(:fields => [ :openid_url, :name, :username, :tag_list ]) if SOLR_ENABLE
+  acts_as_solr(:fields => [ :name, :tag_list ], :include => [ :profile ]) if SOLR_ENABLE
 
   # protected? asks the question "is other protected by me?"
   def protected?(other)
@@ -226,15 +314,6 @@ class User < ActiveRecord::Base
     self.profile and !(self.profile.picture_id.nil? or self.profile.picture_id.zero?)
   end
            
-  # BEGIN SavageBeast #
-  include SavageBeast::UserInit
-  
-  def display_name
-    "#{name}"
-  end
-  
-  # END SavageBeast #
-  
   # SELF --> friendship --> Friend
   has_many :friendships_completed, # accepted (by others)
            :class_name => "Friendship",
@@ -313,7 +392,7 @@ class User < ActiveRecord::Base
   
   def friends
     (friends_of_mine + friends_with_me).uniq.sort { |a, b|
-      a.name <=> b.name
+      a.name.downcase <=> b.name.downcase
     }
   end
   
@@ -382,6 +461,27 @@ class User < ActiveRecord::Base
     return rtn
   end
   
+  def membership_pending?(network_id)
+    return( membership_request_pending?(network_id) || membership_invite_pending?(network_id) )
+  end
+  
+  def membership_request_pending?(network_id)
+    memberships_requested.each do |f|
+      return true if f.network_id.to_i == network_id.to_i  
+    end
+    
+    return false
+  end
+  
+  def membership_invite_pending?(network_id)
+    memberships_invited.each do |f|
+      return true if f.network_id.to_i == network_id.to_i
+    end
+    
+    return false
+  end
+  
+  
   def all_networks
     self.networks + self.networks_owned
   end
@@ -411,7 +511,7 @@ class User < ActiveRecord::Base
   has_many :messages_unread,
            :class_name => "Message",
            :foreign_key => :to,
-           :conditions => "read_at IS NULL",
+           :conditions => ["read_at IS NULL AND deleted_by_recipient = ?", false],
            :order => "created_at DESC",
            :dependent => :destroy
            
@@ -423,7 +523,42 @@ class User < ActiveRecord::Base
     end
     
     return false
-  end 
+  end
+  
+  def friendship_pending?(user_id)
+    friendships_requested.each do |f|
+      return true if f.friend_id.to_i == user_id.to_i  
+    end
+    
+    friendships_pending.each do |f|
+      return true if f.user_id.to_i == user_id.to_i
+    end
+    
+    return false
+  end
+  
+  # as it does matter to which of the two users the actual 'friendship'
+  # belongs (i.e. /user/X/friendships/<id> will work, but /user/Y/friendships/<id> will not),
+  # need a method which would return params for obtaining a link for the friendship, which works without
+  # having any relevance in which the IDs of the friends are supplied as params
+  #
+  # Returns: an array of 2 elements:
+  # 1) the ID of a user (of 2 involved in the 'friendship') who is a 'friend', not an owner of the friendship;
+  # 2) the 'friendship' object itself
+  def friendship_from_self_id_and_friends_id(friend_id)
+    friendship = Friendship.find(:first, :conditions => [ "user_id = ? AND friend_id = ?", id, friend_id ] )
+    
+    if friendship
+      return [friend_id, friendship]
+    elsif
+      friendship = Friendship.find(:first, :conditions => [ "user_id = ? AND friend_id = ?", friend_id, id ] )
+      if friendship
+        return [id, friendship]
+      else
+        return [nil, nil] # an error state
+      end
+    end
+  end
   
   def friend_recursive?(user_id)
     friend_r? user_id
@@ -452,7 +587,6 @@ class User < ActiveRecord::Base
     not self.email_confirmed_at.blank? and not self.email.blank?
   end
   
-  
   def activated?
     self.activated_at != nil
   end
@@ -463,6 +597,25 @@ class User < ActiveRecord::Base
   
   def send_notifications?
     activated? and email_confirmed? and self.receive_notifications
+  end
+  
+  def ratings_for_contributions
+    ratings = [ ]
+    
+    self.contributions.each do |c|
+      c.contributable.ratings.each do |r|
+        ratings << r
+      end
+    end
+    
+    return ratings
+  end
+  
+  # user's average rating for all contributions
+  def average_rating_and_count
+    result_set = User.find_by_sql("SELECT AVG(r.rating) AS avg_rating, COUNT(r.rating) as rating_count FROM ratings r JOIN contributions c ON r.rateable_type = c.contributable_type AND r.rateable_id = c.contributable_id JOIN users u ON c.contributor_type = 'User' AND c.contributor_id = u.id WHERE u.id = #{self.id.to_s} GROUP BY u.id")
+    return [0,0] if result_set.empty?
+    return [result_set[0]["avg_rating"], result_set[0]["rating_count"]]
   end
   
 protected

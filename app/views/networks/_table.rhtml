@@ -1,64 +1,87 @@
 <% query ||= false -%>
 <% odd_row = false -%>
-<% unless collection.empty? %>
+<% unless collection.empty? -%>
 	<table class="alt_table">
-		<% for network in collection %>
+		<% for network in collection -%>
 			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-				<td style="width: 120px;">
-					<p style="margin-top:0; padding-top:0; text-align: center;"><b>Administrator:</b></p>
-					<center><%= contributor(network.user_id, "User", true, 80) %></center>
-				</td>
-				<td style="text-align: left;">
-					<p class="title">
-						<% if network.user_id == current_user.id %>
-							<%= icon "network-owner", nil, nil, nil, '' %>
-						<% else %>
-							<%= icon "network-member", nil, nil, nil, '' %>
-						<% end %>
-						<%=link_to(query ? highlight_all(h(network.title), query) : h(network.title), group_path(network)) %>
-					</p>
-					<p style="font-size: 85%;">
-						<% if network.unique_name and network.unique_name.length > 0 %>
-							<b>Unique name: </b><%=h network.unique_name %> | 
-						<% end %>
-						<b>Created: </b><%=datetime network.created_at, true %>
-					</p>
-					
-					<div class="desc" style="font-size: 85%;">
-						<% if network.description and network.description.length > 0 %>
-							<% desc = truncate(strip_html(network.description), 400) %>
-							<%= query ? highlight_all(desc, query) : desc %>
-						<% else -%>
-							<span class="none_text">No description</span>
-						<% end %>
-					</div>
-					
-					<p class="box_standout" style="margin-top: 0.4em;">
-						<b><%= pluralize network.shared_contributions.length, "shared item" -%></b>
-					</p>
-					
-					<% unless network.members.empty? %>
-						<div class="desc" style="margin-top: 0.4em;">
-							<p style="font-size: 85%;"><b>Members (<%= network.members.length %>):</b></p>
-							<div style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40 } %></div>
+					<td style="width: 120px;">
+						<p style="margin-top:0; padding-top:0; text-align: center;"><b>Administrator:</b></p>
+						<center><%= contributor(network.user_id, "User", true, 80) %></center>
+					</td>
+					<td style="text-align: left;">
+						<p class="title">
+							<% if network.user_id == current_user.id %>
+								<%= icon "network-owned", nil, nil, nil, '' %>
+							<% else %>
+								<%= icon "network-member", nil, nil, nil, '' %>
+							<% end %>
+							<%=link_to(query ? highlight_all(h(network.title), query) : h(network.title), group_path(network)) %>
+						</p>
+				<% cache(:controller => 'groups_cache', :action => 'listing', :id => network.id) do -%>
+						<p style="font-size: 85%;">
+							<% if network.unique_name and network.unique_name.length > 0 %>
+								<b>Unique name: </b><%=h network.unique_name -%>
+							<% end %>
+							<b>Created: </b><%=datetime network.created_at, true -%>
+						</p>
+						
+						<div class="desc" style="font-size: 85%;">
+							<% if network.description and network.description.length > 0 -%>
+								<% desc = truncate(strip_html(network.description), 400) -%>
+								<%= query ? highlight_all(desc, query) : desc -%>
+							<% else -%>
+								<span class="none_text">No description</span>
+							<% end -%>
 						</div>
-					<% end %>
-					
-					<% unless (tags = network.tags).empty? %>
-						<p style="font-size: 85%;"><b>Tags:</b></p>
-						<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
-				  <% else %>
-						<p style="font-size: 85%;"><i>This Group has not been tagged yet!</i></p>
-				  <% end %>
-				</td>
-				<td class="actions">
-					<%= icon "show", group_path(network), nil, nil, "View" %> 
-					<% if mine? network %>
-						<%= icon "manage", edit_group_path(network) %>
-					<% end %>
-				</td>
+						
+						<p class="standout" style="margin-top: 0.4em;">
+							<%= pluralize network.shared_contributions.length, "shared item" -%>
+							&nbsp;&nbsp;|&nbsp;&nbsp;
+							<% # both private & public announcements -%>
+							<%= pluralize network.announcements.length, "announcements" -%>
+						</p>
+						
+						<% unless network.members.empty? -%>
+							<div class="desc" style="margin-top: 0.4em;">
+								<p style="font-size: 85%;"><b>Members (<%= network.members.length %>):</b></p>
+								<div style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40 } %></div>
+							</div>
+						<% end -%>
+						
+						<% unless (tags = network.tags).empty? -%>
+							<a href="<%= group_path(network) + '#tags' -%>"><p style="font-size: 85%;"><b>Tags:</b></p></a>
+							<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
+					  <% else -%>
+							<p style="font-size: 85%;"><i>This Group has not been tagged yet!</i></p>
+					  <% end -%>
+				<% end -%>
+						<% latest_announcement = network.announcements_for_user(current_user).first -%>
+						<% unless latest_announcement.nil? -%>
+						  <p style="font-size: 85%; margin-top: 0.7em;">
+							  <b>Latest announcement:</b>:
+								<%= link_to latest_announcement.title, group_announcement_path(network, latest_announcement) -%>
+							</p>
+						<% end -%>
+					</td>
+					<td class="actions">
+						<%= icon "show", group_path(network), nil, nil, "View" %> 
+						<% if mine? network -%>
+							<%= icon "manage", edit_group_path(network) %>
+						<% elsif logged_in? %> <!-- admins can't leave the group or request membership! -->
+						  <% if network.member? (current_user.id) %>
+							  <!-- user is not an admin, but a member already -->
+								<% cur_membership = Membership.find(:first, :conditions => ["network_id = ? AND user_id = ?", network.id, current_user.id] ) %>
+			          <% if cur_membership %>
+			            <%= icon('network-leave', membership_path(cur_membership.user_id, cur_membership) + "?return_to=" + groups_path, nil, { :confirm => "Are you sure want to leave this group?", :method => :delete }, 'Leave Group') %>
+			          <% end %>
+							<% elsif !current_user.membership_pending?(network.id) %>
+							  <!-- not an admin, not a member yet and hasn't got pending request -->
+								<%= request_membership_link(current_user.id, network.id) %>
+							<% end %>
+						<% end -%>
+					</td>
 			</tr>
-		<% end %>
+		<% end -%>
 	</table>
 	<br/>
-<% end %>
+<% end -%>

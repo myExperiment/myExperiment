@@ -1,0 +1,11 @@
+<div style="margin: 0.2em 0;">
+	<p style="font-size: 85%; font-weight: bold;">
+	  Current:
+	</p>
+	<p style="font-size: 123.1%; font-weight: bold; padding-bottom: 0.2em; line-height: 1;">
+		<%= number_with_precision(rateable.rating, 1) %> / 5
+	</p>
+	<p style="font-size: 85%; padding-top: 0.2em; line-height: 1;">
+		(<%= pluralize rateable.ratings.count, 'rating' %>)
+	</p>
+</div>

@@ -1,11 +1,9 @@
 <%= javascript_include_tag :fckeditor %>
 
 <h2>
-	<p>
-		<%= icon "review", nil, nil, nil, "" -%>
-		<%= link_to "Reviews", reviews_path(reviewable) %>
-		<font class="count_text">(<%= reviewable.reviews.length %>)</font>
-	</p>
+	<%= icon "review", nil, "Reviews", { :style => "vertical-align: middle;" }, "" -%>
+	<span style="vertical-align: middle;"><%= link_to "Reviews", reviews_path(reviewable) %></span>
+	<span class="count_text" style="vertical-align: middle;">(<%= reviewable.reviews.length %>)</span>
 </h2>
 
 <div class="reviewsBox">

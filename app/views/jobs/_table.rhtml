@@ -32,7 +32,7 @@
 						
 						<p style="font-size: 85%;">
 							<b>Runnable item:</b> 
-							<b><%= c_type = visible_name(job.runnable); icon(job.runnable_type, nil, nil, c_type, c_type) %> -</b>
+							<b><%= c_type = visible_name(job.runnable_type); icon(job.runnable_type, nil, nil, c_type, c_type) %> -</b>
 							<%= contributable(job.runnable_id, job.runnable_type) %>
 							| <b>Version:</b> <%= job.runnable_version %>
 						</p>

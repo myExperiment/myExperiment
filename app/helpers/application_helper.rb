@@ -31,9 +31,11 @@ module ApplicationHelper
     
     case thing.class.to_s
     when "Workflow"
-      return c_id == thing.contributor_id.to_i
+      return (c_id == thing.contribution.contributor_id.to_i and thing.contribution.contributor_type == "User")
     when "Blob"
-      return c_id == thing.contributor_id.to_i
+      return (c_id == thing.contributor_id.to_i and thing.contributor_type == "User")
+    when "Pack"
+      return (c_id == thing.contributor_id.to_i and thing.contributor_type == "User")
     when "Network"
       return c_id == thing.user_id.to_i
     when "Friendship"
@@ -52,9 +54,11 @@ module ApplicationHelper
     
     case thing.class.to_s
     when "Workflow"
-      return "Uploader"
+      return "Original Uploader"
     when "Blob"
       return "Uploader"
+    when "Pack"
+      return "Creator"
     when "Network"
       return "Admin"
     when "Profile"
@@ -126,7 +130,7 @@ module ApplicationHelper
     return link_to(h(title), group_url(network))
   end
   
-  def avatar(user_id, size=200)
+  def avatar(user_id, size=200, url=nil)
     if user_id.kind_of? Fixnum
       user = User.find(:first, :select => "id, name", :conditions => ["id = ?", user_id]) 
       return nil unless user
@@ -142,7 +146,11 @@ module ApplicationHelper
       img = null_avatar(size, h(user.name))
     end
     
-    return link_to(img, user_url(user))
+    unless url
+      url = user_url(user)
+    end
+    
+    return link_to(img, url)
   end
   
   def avatar_url(picture_id, size=200)
@@ -293,7 +301,7 @@ module ApplicationHelper
     return url
   end
   
-  def filter_contributables(contributions)
+  def filter_contributables(contributions, sort=false)
     rtn = {}
     
     contributions.each do |c|
@@ -306,17 +314,45 @@ module ApplicationHelper
       end
     end
     
+    # Sort alphabetically if required
+    if sort
+      rtn.each do |k, v|
+        v.sort! { |a, b|
+          at=a.title||""; bt=b.title||""; at.downcase <=> bt.downcase
+        }
+      end
+    end
+    
     return rtn
   end
   
-  def contributor(contributorid, contributortype, avatar=false, size=100)
+  def aggregate_contributables(contributables)
+    rtn = {}
+    
+    contributables.each do |t|
+      if (arr = rtn[(klass = t.class.to_s)])
+        arr << t
+      else
+        rtn[klass] = [t]
+      end
+    end
+    
+    return rtn
+  end
+  
+  def contributor(contributorid, contributortype, avatar=false, size=100, you_text=false)
     if contributortype.to_s == "User"
       user = User.find(:first, :select => "id, name", :conditions => ["id = ?", contributorid])
       return nil unless user
       
-      return name(user) unless avatar
-      #return avatar(user, size) + "<br/>" + name(user)
-      return render(:partial => "users/avatar", :locals => { :user => user, :size => size })
+      # this string will output " (you) " for current user next to the display name, when invoked with 'you_text == true'
+      you_string = (you_text && logged_in? && user.id == current_user.id) ? "<small style='vertical-align: middle; color: #666666; margin-left: 0.5em;'>(you)</small>" : ""
+      
+      if avatar
+        return render(:partial => "users/avatar", :locals => { :user => user, :size => size, :you_string => you_string })
+      else
+        return (name(user) + you_string)
+      end
     elsif contributortype.to_s == "Network"
       network = Network.find(:first, :select => "id, title", :conditions => ["id = ?", contributorid])
       return nil unless network
@@ -361,19 +397,17 @@ module ApplicationHelper
       else
         return nil
       end
+    when "Pack"
+      if p = Pack.find(:first, :conditions => ["id = ?", contributableid])
+        return link ? link_to(p.title, pack_url(p)) : h(p.title)
+      else
+        return nil
+      end
     when "Blog"
       if b = Blog.find(:first, :conditions => ["id = ?", contributableid])
         name = h(b.title)
         
         return link ? link_to(name, blog_url(b)) : name
-      else
-        return nil
-      end
-    when "Forum"
-      if f = Forum.find(:first, :conditions => ["id = ?", contributableid])
-        name = h(f.name)
-        
-        return link ? link_to(name, forum_url(f)) : name
       else
         return nil
       end
@@ -416,8 +450,18 @@ module ApplicationHelper
     return truncate ? truncate(str, truncate) : str
   end
   
-  def contributable_url(contributableid, contributabletype)
-    return url_for(:controller => contributabletype.downcase.pluralize, :action => "show", :id => contributableid)
+  def contributable_url(contributableid, contributabletype, base_host=nil)
+    if base_host.blank?
+      return url_for(:controller => contributabletype.downcase.pluralize, 
+                     :action => "show", 
+                     :id => contributableid)
+    else
+      return url_for(:only_path => false,
+                     :host => @base_url,
+                     :controller => contributabletype.downcase.pluralize, 
+                     :action => "show", 
+                     :id => contributableid)
+    end
   end
   
   def policy_link(policyid, managedby=true)
@@ -570,9 +614,44 @@ module ApplicationHelper
 
     return '<span class="icon">' + inner + '</span>';
   end
+  
+  
+  # is exactly the same as icon, apart from that the front part of the url was already completely
+  # generated before and is passed in as a parameter (this helps to get links with complex javascript in
+  # 'onclick' field) - so need to add closing </a> tag in the relevant place
+  def icon_no_link_processing(method, url=nil, alt=nil, label=method.humanize)
+
+    if (label == 'Destroy')
+      label = 'Delete';
+    end
+
+    return nil unless (filename = method_to_icon_filename(method.downcase))
+    
+    # if method.to_s == "info"
+    # make into cool javascript div thing!
+    
+    image_options = alt ? { :alt => alt } : { :alt => method.humanize }
+    img_tag = image_tag(filename, image_options)
+    
+    inner = img_tag;
+    inner = "#{img_tag} #{label}" unless label == nil
+
+    if (url)
+      inner = url + inner + "</a>"
+    end
+
+    return '<span class="icon">' + inner + '</span>';
+  end
+
 
   def method_to_icon_filename(method)
     case (method.to_s)
+    when "refresh"
+      return "famfamfam_silk/arrow_refresh.png"
+    when "arrow_up"
+      return "famfamfam_silk/arrow_up.png"
+    when "arrow_down"
+      return "famfamfam_silk/arrow_down.png"
     when "new"
       return "redmond_studio/add_16.png"
     when "download"
@@ -587,12 +666,11 @@ module ApplicationHelper
     when "manage"
       return "famfamfam_silk/wrench.png"
     when "destroy"
-      return "redmond_studio/delete_16.png"
-      #return "manhattan_studio/delete_24.png"
+      return "famfamfam_silk/cross.png"
     when "tag"
       return "famfamfam_silk/tag_blue.png"
-    when "bookmark"
-      return "famfamfam_silk/book_open.png"
+    when "favourite"
+      return "famfamfam_silk/star.png"
     when "comment"
       return "famfamfam_silk/comment.png"
     when "comments"
@@ -611,22 +689,40 @@ module ApplicationHelper
       return "famfamfam_silk/group.png"
     when "network-owned"
       return "famfamfam_silk/group_key.png"
+    when "network-leave"
+      return "famfamfam_silk/group_delete.png"
+    when "network-invite"
+      return "famfamfam_silk/group_add.png"
     when "user"
       return "famfamfam_silk/user.png"
+    when "user-invite"
+      return "famfamfam_silk/user_add.png"
+    when "friend_delete"
+      return "famfamfam_silk/user_delete.png"  
     when "avatar"
       return "famfamfam_silk/picture.png"
     when "save"
       return "famfamfam_silk/save.png"
     when "message"
       return "famfamfam_silk/email.png"
+    when "message_read"
+      return "famfamfam_silk/email_open.png"
     when "reply"
       return "famfamfam_silk/email_go.png"
+    when "message_delete"
+      return "famfamfam_silk/email_delete.png"  
+    when "messages_outbox"
+      return "famfamfam_silk/email_go.png"
+    when "messages_outbox_no_arrow" # used only in 'show' page for a message, opened from outbox: this is for the icon for 'return to outbox' to differ from 'reply' icon
+      return "famfamfam_silk/email.png"
     when "blob"
       return "redmond_studio/documents_16.png"
+    when "pack"
+      return "manhattan_studio/folder-closed_16.png"
+    when "remote-resource"
+      return "famfamfam_silk/page_world.png"
     when "blog"
       return "famfamfam_silk/note.png"
-    when "forum"
-      return "famfamfam_silk/group.png"
     when "workflow"
       return "redmond_studio/applications_16.png"
     when "question"
@@ -679,6 +775,16 @@ module ApplicationHelper
       return "famfamfam_silk/script_link.png"
     when "run-now"
       return "famfamfam_silk/script_add.png"
+    when "timeline"
+      return "famfamfam_silk/timeline_marker.png"
+    when "remote"
+      return "famfamfam_silk/world_link.png"
+    when "denied"
+      return "famfamfam_silk/exclamation.png"
+    when "launch"
+      return "famfamfam_silk/computer_go.png"
+    when "register_application"
+      return "famfamfam_silk/application_edit.png"
     else
       return nil
     end
@@ -688,7 +794,7 @@ module ApplicationHelper
     image_tag "refresh.gif", :style => "vertical-align: middle;"
   end
   
-  def expand_image(margin_left="0.5em")
+  def expand_image(margin_left="0.3em")
     image_tag "folds/unfold.png", :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Expand'
   end
   
@@ -708,29 +814,15 @@ module ApplicationHelper
   end
   
   def tags_for_type(type, limit=-1)
-    tag_types = ["workflow", "blob", "network"]
-    if QUESTIONS_ENABLE == true
-      tag_types.push("questions")
-    end
-    return [] unless tag_types.include?(type.downcase)
-    
-    taggings = Tagging.find(:all, :conditions => ["taggable_type = ?", type])
-    tags = []
-    
-    taggings.each do |tagging|
-      tag = tagging.tag
-      unless tags.include? tag
-        tags += [tagging.tag]
-      end
-    end
-    
-    unless limit == -1
-      tags = tags.sort! { |x,y| 
-        y.taggings_count <=> x.taggings_count
-      }
-      tags = tags.first(limit)
-    end
-    
+    # Use a custom handcrafted sql query instead of the Tagging plugin functions (for perf reasons):
+    sql="SELECT DISTINCT tags.* FROM tags INNER JOIN taggings ON tags.id=taggings.tag_id WHERE ( taggings.taggable_type = ? )  ORDER BY tags.taggings_count DESC"
+
+    unless limit < 0
+      sql+=" LIMIT #{limit}"
+    end 
+
+    tags=Tag.find_by_sql [ sql, type.capitalize ]
+
     return tags
   end
 
@@ -754,7 +846,8 @@ module ApplicationHelper
   end
   
   def all_workflows
-    Workflow.find(:all, :order => "title ASC")
+    workflows = Workflow.find(:all, :order => "title ASC")
+    workflows = workflows.select {|w| w.authorized?('show', w) }
   end
   
   def all_blobs
@@ -764,6 +857,7 @@ module ApplicationHelper
       y_title = (y.title and y.title.length > 0) ? y.title : y.local_name
       x_title.downcase <=> y_title.downcase
     }
+    blobs = blobs.select {|b| b.authorized?('show', b) }
   end
   
   def all_networks
@@ -775,6 +869,13 @@ module ApplicationHelper
     users.sort! { |x,y|
       x.name.downcase <=> y.name.downcase
     } 
+  end
+
+  def all_users
+    users = User.find(:all)
+    users.sort! { |x,y|
+      x.name.downcase <=> y.name.downcase
+    }
   end
   
   def license_link(license_type)
@@ -789,13 +890,14 @@ module ApplicationHelper
   end
   
   def visible_name(entity)
-    case entity.class.to_s
-    when "Blob"
-      return "File"
-    when "Network"
-      return "Group"
-    else
-      return entity.class.to_s
+    type = ( entity.instance_of?(String) ) ? entity : entity.class.to_s
+    case type
+      when "Blob"
+        return "File"
+      when "Network"
+        return "Group"
+      else
+        return type
     end
   end
   
@@ -968,10 +1070,15 @@ module ApplicationHelper
     str.gsub(/<(\/|\s)*[^(#{preserve_arr})][^>]*>/,'')
   end
   
-  def feed_icon_tag(title, url)
+  def feed_icon_tag(title, url, style='')
     (@feed_icons ||= []) << { :url => url, :title => title }
-    alt_text = "Subscribe to #{title}"
-    link_to image_tag('feed-icon.png', :alt => alt_text, :title => tooltip_title_attrib(alt_text), :style => "vertical-align: middle; padding: 0;"), url
+    alt_text = "Subscribe to #{title} feed"
+    link_to image_tag('feed-icon.png', :alt => alt_text, :title => tooltip_title_attrib(alt_text), :style => "vertical-align: middle; padding: 0;" + style), url
+  end
+  
+  def download_icon_tag(title, url, style='')
+    filename = method_to_icon_filename("download")
+    link_to image_tag(filename, :alt => "Download", :title => tooltip_title_attrib(title), :style => "vertical-align: middle; padding: 0;" + style), url
   end
   
   # NOTE: the timeago methods below are used instead of the built in Rails DateHelper methods
@@ -1091,6 +1198,144 @@ module ApplicationHelper
                    :id => current_user.id,
                    :action => thing)
   end
+  
+  def view_privileges_notice
+    content_tag(:p, 
+                view_privileges_text,
+                :class => "box_currentuser_specific",
+                :style => "font-size: 93%; font-weight: bold; color: #333333; padding: 0.3em 0.5em;")
+  end
+  
+  def view_privileges_text
+    return "Note: some items may not be visible to you, due to viewing permissions."
+  end
+  
+  def downloadable?(type)
+    if ['workflow', 'blob', 'pack'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def reviewable?(type)
+    if ['workflow'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def commentable?(type)
+    if ['workflow', 'network', 'blob', 'pack'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def taggable?(type)
+    if ['workflow', 'network', 'blob', 'pack'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def rateable?(type)
+    if ['workflow', 'blob'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def favouritable?(type)
+    if ['workflow', 'blob', 'pack'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def allow_credits_and_attributions?(type)
+    if ['workflow', 'blob'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def allow_citations?(type)
+    if ['workflow'].include? type.downcase
+      return true
+    else
+      return false
+    end
+  end
+  
+  def delete_image(style=nil, tooltip="Delete")
+    return image_tag("famfamfam_silk/cross.png",
+              :title => "header=[] body=[#{tooltip}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
+              :style => style)
+  end
+  
+  def edit_image(style=nil, tooltip="Edit") 
+    return image_tag("famfamfam_silk/pencil.png",
+              :title => "header=[] body=[#{tooltip}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
+              :style => style)
+  end
+  
+  def new_flash_image(style=nil)
+   return image_tag("famfamfam_silk/new.png", 
+                    :style => style)
+  end
+  
+  def update_perms_info_text(contributable)
+    return nil if contributable.nil?
+    
+    resource = c_resource_string(contributable)
+    visible_type = visible_name(contributable)
+    
+    text = "<p>By giving update permission for this #{visible_type}, you allow other users to do the following:</p>"
+    
+    case contributable.class.to_s
+      when 'Workflow'
+        text += "<ul>
+                  <li>Upload new versions of the #{visible_type} as part of this #{visible_type} entry.</li> 
+                  <li>Edit the titles and descriptions of the different #{visible_type} versions.</li>
+                </ul>"
+      when 'Blob'
+        text+= "<ul>
+                  <li>NO additional update priviledges are available for #{visible_type.pluralize}.</li>
+                </ul>" 
+      when 'Pack'
+        text += "<ul>
+                  <li>Add new items to the #{visible_type}.</li>
+                  <li>Edit metadata of existing items.</li>
+                </ul>"
+      else
+        text += "<ul><li>ERROR: the contributable type does not have any update permissions info text set for it.</li></ul>"
+    end
+    
+    text += "<p>
+              Note that updating privileges only affect how other users can update this
+              #{visible_type} entry on myExperiment. If the user downloads the #{resource},
+              they can still edit it away from myExperiment and possible upload it back as a new entry.
+            </p>"
+            
+    return text
+  end
+  
+  # From: http://ajax.howtosetup.info/ruby/finding-mean-median-and-mode-2/
+  def mean(array)
+    if array.length == 0 
+      return 0
+    else
+      return array.inject(0) { |sum, x| sum += x } / array.size.to_f  
+    end
+  end
+
   
 protected
 
@@ -1261,4 +1506,43 @@ protected
     return rtn
   end
 
+  def permissions_categorised(permissions)
+    permissions_categorised={'announcement'=>[],'citation'=>[],'comment'=>[],'download'=>[],'experiment'=>[],'file'=>[],'group'=>[],'job'=>[],'message'=>[],'pack'=>[],'picture'=>[],'review'=>[],'runner'=>[],'tag'=>[],'user'=>[],'workflow'=>[],'miscellaneous'=>[]};
+    categories=permissions_categorised.keys
+    for key,permission in permissions
+      category_found=false
+      for category in categories
+        if key.include?(category)
+          permissions_categorised[category].push(permission)
+          category_found=true
+        end
+      end
+      unless category_found
+        permissions_categorised['miscellaneous'].push(permission)
+      end
+    end
+    permissions_categorised=permissions_categorised.sort
+    return permissions_categorised
+  end
+
+  def permissions_show_categorised(permissions)
+    permissions_categorised={'announcement'=>[],'citation'=>[],'comment'=>[],'download'=>[],'experiment'=>[],'file'=>[],'group'=>[],'job'=>[],'message'=>[],'pack'=>[],'picture'=>[],'review'=>[],'runner'=>[],'tag'=>[],'user'=>[],'workflow'=>[],'miscellaneous'=>[]};
+    categories=permissions_categorised.keys
+    for permission in permissions
+      category_found=false
+      for category in categories
+        if permission.for.include?(category)
+          permissions_categorised[category].push(permission.for)
+          category_found=true
+        end
+      end
+      unless category_found
+        permissions_categorised['miscellaneous'].push(permission.for)
+      end
+    end
+    permissions_categorised=permissions_categorised.sort
+    return permissions_categorised
+  end
+
+ 
 end

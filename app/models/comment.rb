@@ -15,6 +15,22 @@ class Comment < ActiveRecord::Base
   
   acts_as_solr :fields => [ :comment ] if SOLR_ENABLE
   
+  acts_as_simile_timeline_event(
+    :fields => {
+      :start       => :created_at,
+      :title       => :simile_title,
+      :description => :simile_description,
+    }
+  )
+  
+  def simile_title
+    "Comment by: #{self.user.name}"
+  end
+  
+  def simile_description
+    "#{self.comment}"
+  end
+  
   # returns the 'last created' Comments
   # the maximum number of results is set by #limit#
   def self.latest(limit=10)

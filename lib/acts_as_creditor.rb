@@ -14,8 +14,7 @@ module Dgc
         def acts_as_creditor
           has_many :creditations,
                    :as => :creditor,
-                   :order => "creditable_type ASC, created_at DESC",
-                   :dependent => :destroy
+                   :order => "creditable_type ASC, created_at DESC"
 
           class_eval do
             extend Dgc::Acts::Creditor::SingletonMethods

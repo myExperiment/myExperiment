@@ -91,3 +91,23 @@ var ReplyForm = {
 //Event.addBehavior({
 //  '#search,#monitor_submit': function() { this.hide(); }
 //})
+
+function redirectToAddToPack() {
+  var url = $("add_to_pack_selection").value;
+  location.href = url;
+}
+
+function checkAll(checkboxes){
+  for (var i=0; i<checkboxes.length; i++){
+    checkbox = document.getElementById(checkboxes[i]);
+    checkbox.checked="checked";
+  }
+}
+
+function uncheckAll(checkboxes){
+  for (var i=0; i<checkboxes.length; i++){
+    checkbox = document.getElementById(checkboxes[i]);
+    checkbox.checked="";
+  }
+}
+

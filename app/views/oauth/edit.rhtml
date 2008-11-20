@@ -1,0 +1,17 @@
+<h1>Edit OAuth details for <%=@client_application.name%></h1>
+
+<% form_for :client_application, :url => { :action => :update } do |f| %>
+       <%= f.hidden_field :id %>
+       <%= render :partial => "form", :locals => { :f => f } %>
+       <% if (@client_application.nil? or current_user.admin?) %>
+         <%= render :partial => "permissions", :locals => { :f => f } %>
+       <% else %>
+         <% if (@client_application.key_type=="User") %>
+	   <%= render :partial => "permissions", :locals => { :f => f } %>
+         <% else %>
+	   <%= render :partial => "show_permissions"  %>
+         <% end %>
+       <% end %>
+ <br/><br/>        
+ <p style="text-align: center; font-weight: bold;"><%= submit_tag "Update" %></p>
+<% end %>

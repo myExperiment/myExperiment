@@ -15,15 +15,27 @@ class Network < ActiveRecord::Base
   
   has_many :blobs, :as => :contributor
   has_many :blogs, :as => :contributor
-  has_many :forums, :as => :contributor
   has_many :workflows, :as => :contributor
   
-  acts_as_solr(:fields => [ :title, :unique_name, :owner_name, :description, :tag_list ]) if SOLR_ENABLE
+  acts_as_solr(:fields => [ :title, :unique_name, :owner_name, :description, :tag_list ],
+               :include => [ :comments ]) if SOLR_ENABLE
 
   format_attribute :description
   
   def self.recently_created(limit=5)
     self.find(:all, :order => "created_at DESC", :limit => limit)
+  end
+  
+  # returns groups with most members
+  # the maximum number of results is set by #limit#
+  def self.most_members(limit=10)
+    self.find_by_sql("SELECT n.* FROM networks n JOIN memberships m ON n.id = m.network_id WHERE m.user_established_at IS NOT NULL AND m.network_established_at IS NOT NULL GROUP BY m.network_id ORDER BY COUNT(m.network_id) DESC, n.title LIMIT #{limit}")
+  end
+  
+  # returns groups with most shared items
+  # the maximum number of results is set by #limit#
+  def self.most_shared_items(limit=10)
+    self.find_by_sql("SELECT n.* FROM networks n JOIN permissions perm ON n.id = perm.contributor_id AND perm.contributor_type = 'Network' JOIN policies p ON perm.policy_id = p.id JOIN contributions c ON p.id = c.policy_id GROUP BY perm.contributor_id ORDER BY COUNT(perm.contributor_id) DESC, n.title LIMIT #{limit}")
   end
   
   # protected? asks the question "is other protected by me?"
@@ -131,7 +143,36 @@ class Network < ActiveRecord::Base
     
 #    return rtn
 #  end
-                          
+
+  # announcements belonging to the group;
+  #
+  # "announcements_public" are just the public announcements;
+  # and there is no reason for filtering "private" ones, as
+  # those who can see private announcements can see all, including public ones
+  has_many :announcements, # all - public and private
+           :class_name => "GroupAnnouncement",
+           :order => "created_at DESC",
+           :dependent => :destroy
+  
+  has_many :announcements_public,
+           :class_name => "GroupAnnouncement",
+           :conditions => ["public = ?", true],
+           :order => "created_at DESC",
+           :dependent => :destroy
+  
+  def announcements_for_user(user)
+    if user.is_a?(User) && self.member?(user.id)
+      return self.announcements
+    else
+      return self.announcements_public
+    end
+  end
+  
+  def announcements_in_public_mode_for_user(user)
+    return (!user.is_a?(User) || !self.member?(user.id))
+  end
+  
+  # memberships
   has_many :memberships, #all
            :order => "created_at DESC",
            :dependent => :destroy
@@ -233,12 +274,20 @@ class Network < ActiveRecord::Base
     list = []
     self.permissions.each do |p|
       p.policy.contributions.each do |c|
-        list << c
+        list << c unless c.nil? || c.contributable.nil?
       end
     end
     list
   end
   
+  # Finds all the contributables that have been explicitly shared via Permissions
+  def shared_contributables
+    c = shared_contributions.map do |c| c.contributable end
+
+    # filter out blogs until they've gone completely
+    c.select do |x| x.class != Blog end
+  end
+
 protected
 
   def member_r?(userid, depth=0)

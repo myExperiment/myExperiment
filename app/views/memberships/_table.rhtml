@@ -33,7 +33,7 @@
       <% end %>
       <% if allow_approval %>
         <% unless membership.accepted? %>
-					<%= icon "confirm", accept_membership_path(membership.user_id, membership) %>
+					<%= icon "confirm", accept_membership_path(current_user.id, membership), nil, :method => :post %>
          	<%= icon "reject", membership_path(membership.user_id, membership), nil, :confirm => "Are you sure?", :method => :delete %>
 				<% end %>
       <% end %>

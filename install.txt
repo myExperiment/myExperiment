@@ -1,12 +1,10 @@
-
 Quick notes for installation from the repository:
 
   (1) copy config/database.yml.pre to config/database.yml
 
   (2) copy config/environment_private.rb.pre to config/environment_private.rb
 
-  (3) copy vendor/plugins/sitealizer/lib/config.yml.pre to
-      vendor/plugins/sitealizer/lib/config.yml
+These files contain passwords for MySQL and SMTP respectively.
 
-These files contain passwords for MySQL, SMTP and Site statistics respectively.
+For a more detailed guide of how to install MyExperiment, including all the Ruby-on-Rails support, please see developers.txt.
 

@@ -1,0 +1,26 @@
+# for info on 'load_blob_data' see: http://techpolesen.blogspot.com/2007/04/rails-fixture-tips.html
+# or http://www.realityforge.org/articles/2006/04/06/loading-binary-data-into-rails-fixtures
+<%
+  def load_blob_data(name)
+    filename = "#{RAILS_ROOT}/test/fixtures/files/#{name}"
+    data = File.open(filename,'rb').read
+    "!binary | #{[data].pack('m').gsub(/\n/,"\n    ")}\n"
+  end
+%>
+
+file_picture:
+  id: 1
+  data: <%= load_blob_data('file_picture.png') %>
+
+file_text:
+  id: 2
+  data: <%= load_blob_data('file_text.txt') %>
+
+workflow_dilbert:
+  id: 3
+  data: <%= load_blob_data('workflow_dilbert.xml') %>
+
+workflow_branch_choice:
+  id: 4
+  data: <%= load_blob_data('workflow_branch_choice.xml') %>
+

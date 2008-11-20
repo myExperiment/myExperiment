@@ -10,13 +10,10 @@ class ApplicationController < ActionController::Base
   
   WhiteListHelper.tags.merge %w(table tr td th div span)
   
-  include Sitealizer
-  before_filter :use_sitealizer
-
   include AuthenticatedSystem
   before_filter :login_from_cookie
   
-  helper ForumsHelper
+  include ActionView::Helpers::NumberHelper
 
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_m2_session_id'
@@ -24,6 +21,65 @@ class ApplicationController < ActionController::Base
   def base_host
     request.host_with_port
   end
+  
+  
+  # if "referer" in the HTTP header contains "myexperiment", we know
+  # that current action was accessed from myExperiment website; if
+  # referer is not set OR doesn't contain the search string, access
+  # was initiated from other location 
+  def accessed_from_website?
+    res = false
+    
+    referer = request.env['HTTP_REFERER']
+    unless referer.nil? || referer.match("^#{BASE_URI}").nil?
+      res = true
+    end
+    
+    return res
+  end
+  
+  
+  # this method is only intended to check if entry
+  # in "viewings" or "downloads" table needs to be
+  # created for current access - and this is *only*
+  # supposed to be working for *contributables*
+  #
+  # NB! The input parameter is the actual contributable OR
+  # the version of it (currently only workflows are versioned)
+  def allow_statistics_logging(contributable_or_version)
+    
+    # ************************************************************************
+    # NB! THIS METHOD IS SUSPENDED UNTIL THE STATS ARE RECALCULATED FROM LOGS
+    # REMOVE THIS COMMENT AND THE LINE BELOW WHEN EVERYTHING'S DONE;
+    #
+    # FOR NOW THE NEXT LINE ENSURES THAT OVERALL BEHAVIOUR IS IDENTICAL TO
+    # WHAT HAPPENED BEFORE THIS METHOD WAS ADDED
+    return true
+    # END OF END OF WARNING
+    # ************************************************************************
+    
+    # check if the current viewing/download is to be logged
+    # (i.e. request is sent not by a bot and is legitimate)
+    allow_logging = true
+    BOT_IGNORE_LIST.each do |pattern|
+      if request.env['HTTP_USER_AGENT'].match(pattern)
+        allow_logging = false
+        break
+      end
+    end
+    
+    # disallow logging of events referring to contributables / versions of them
+    # that have been uploaded by current user; 
+    #
+    # however, if there are newer versions of contributable (uploaded not by the original uploader),
+    # we do want to record viewings/downloads of this newer version by the original uploader  
+    if allow_logging 
+      allow_logging = false if (contributable_or_version.contributor_type == "User" && contributable_or_version.contributor_id == current_user.id)
+    end
+    
+    return allow_logging
+  end
+  
   
   def can_manage_pages?
     return admin?  # from authenticated_system
@@ -95,7 +151,15 @@ class ApplicationController < ActionController::Base
 
   def update_policy(contributable, params)
 
+    # this method will return an error message is something goes wrong (empty string in case of success)
+    error_msg = ""
+    
+
     # BEGIN validation and initialisation
+    
+    # This variable will hold current settings of the policy in case something
+    # goes wrong and a revert would be needed at some point
+    last_saved_policy = nil
     
     return if params[:sharing].nil? or params[:sharing][:class_id].blank?
     
@@ -108,44 +172,47 @@ class ApplicationController < ActionController::Base
     # Check allowed updating_class values
     return unless [ "0", "1", "5", "6" ].include? updating_class
     
-    view_protected     = false
-    view_public        = false
-    download_protected = false
-    download_public    = false
-    edit_protected     = false
-    edit_public        = false
+    view_protected     = 0
+    view_public        = 0
+    download_protected = 0
+    download_public    = 0
+    edit_protected     = 0
+    edit_public        = 0
     
     # BEGIN initialisation and validation
 
     case sharing_class
       when "0"
-        view_public        = "1"
-        download_public    = "1"
-        view_protected     = "1"
-        download_protected = "1"
+        view_public        = 1
+        download_public    = 1
+        view_protected     = 1
+        download_protected = 1
       when "1"
-        view_public        = "1"
-        view_protected     = "1"
-        download_protected = "1"
+        view_public        = 1
+        view_protected     = 1
+        download_protected = 1
       when "2"
-        view_public        = "1"
-        view_protected     = "1"
+        view_public        = 1
+        view_protected     = 1
       when "3"
-        view_protected     = "1"
-        download_protected = "1"          
+        view_protected     = 1
+        download_protected = 1          
       when "4"
-        view_protected     = "1"
+        view_protected     = 1
     end
 
     case updating_class
       when "0"
-        edit_protected = true if view_protected == "1" and download_protected == "1"
-        edit_public    = true if view_public    == "1" and download_public    == "1"
+        edit_protected = 1 if (view_protected == 1 && download_protected == 1)
+        edit_public    = 1 if (view_public    == 1 && download_public    == 1)
       when "1"
-        edit_protected = true
+        edit_protected = 1      
+      # when "5","6" -> no need for these cases, because both edit flags are false (default values) for these modes
     end
 
     unless contributable.contribution.policy
+      last_saved_policy = Policy._default(current_user, nil) # second parameter ensures that this policy is not applied anywhere
+      
       policy = Policy.new(:name => 'auto',
           :contributor_type => 'User', :contributor_id => current_user.id,
           :view_protected     => view_protected,
@@ -156,38 +223,50 @@ class ApplicationController < ActionController::Base
           :edit_public        => edit_public,
           :share_mode         => sharing_class,
           :update_mode        => updating_class)
-      contributable.contribution.policy = policy
+      contributable.contribution.policy = policy  # by doing this the new policy object is saved implicitly too
       contributable.contribution.save
     else
        policy = contributable.contribution.policy
-       policy.view_protected = view_protected,
-       policy.view_public = view_public,
-       policy.download_protected = download_protected,
-       policy.download_public = download_public,
-       policy.edit_protected = edit_protected,
-       policy.edit_public = edit_public,
-       policy.share_mode = sharing_class,
+       last_saved_policy = policy.clone # clone required, not 'dup' (which still works through reference, so the values in both get changed anyway - which is not what's needed here)
+       
+       policy.view_protected = view_protected
+       policy.view_public = view_public
+       policy.download_protected = download_protected
+       policy.download_public = download_public
+       policy.edit_protected = edit_protected
+       policy.edit_public = edit_public
+       policy.share_mode = sharing_class
        policy.update_mode = updating_class
        policy.save
     end
 
+
     # Process 'update' permissions for "Some of my Friends"
 
-    # Delete old User permissions
-    policy.permissions.each do |p|
-      if p.contributor_type == 'User'
-        p.destroy
+    if updating_class == "5"
+      if params[:updating_somefriends]
+        # Delete old User permissions
+        policy.delete_all_user_permissions
+        
+        # Now create new User permissions, if required
+        params[:updating_somefriends].each do |f|
+          Permission.new(:policy => policy,
+              :contributor => (User.find f[1].to_i),
+              :view => 1, :download => 1, :edit => 1).save
+        end
+      else # none of the 'some of my friends' were selected, error
+        # revert changes made to policy (however any permissions updated will preserve the state)
+        policy.copy_values_from( last_saved_policy )
+        policy.save
+        error_msg += "You have selected to set 'update' permissions for 'Some of your Friends', but didn't select any from the list.</br>Previous (if any) or default sharing permissions have been set."
+        return error_msg
       end
+    else
+      # Delete all User permissions - as this isn't mode 5 (i.e. the mode has changed),
+      # where some explicit permissions to friends are set
+      policy.delete_all_user_permissions
     end
     
-    # Now create new User permissions, if required
-    if updating_class == "5"
-      params[:updating_somefriends].each do |f|
-        Permission.new(:policy => policy,
-            :contributor => (User.find f[1].to_i),
-            :view => 1, :download => 1, :edit => 1).save
-      end
-    end
     
     # Process explicit Group permissions now
     if params[:group_sharing]
@@ -195,6 +274,7 @@ class ApplicationController < ActionController::Base
       # First delete any Permission objects that don't have a checked entry in the form
       policy.permissions.each do |p|
         params[:group_sharing].each do |n|
+          # If a hash value with key 'id' wasn't returned then that means the checkbox was unchecked.
           unless n[1][:id]
             if p.contributor_type == 'Network' and p.contributor_id == n[0].to_i
               p.destroy
@@ -207,6 +287,7 @@ class ApplicationController < ActionController::Base
       params[:group_sharing].each do |n|
         
         # Note: n[1] is used because n is an array and n[1] returns it's value (which in turn is a hash)
+        # In this hash, is a value with key 'id' is present then the checkbox for that group was checked.
         if n[1][:id]
           
           n_id = n[1][:id].to_i
@@ -223,7 +304,7 @@ class ApplicationController < ActionController::Base
           
         else
           
-          n_id = n[1][:id].to_i
+          n_id = n[0].to_i
           
           # Delete permission if it exists (because this one is unchecked)
           if (perm = Permission.find(:first, :conditions => ["policy_id = ? AND contributor_type = ? AND contributor_id = ?", policy.id, 'Network', n_id]))
@@ -243,9 +324,13 @@ class ApplicationController < ActionController::Base
     puts "group_sharing  = #{params[:group_sharing]}"
     puts "-------------------------------------------------------------------"
 
+    # returns some message in case of errors (or empty string in case of success)
+    return error_msg
   end
 
   def determine_sharing_mode(contributable)
+    
+    # TODO: like the determine_updating_mode(..) method below, this method needs to be refactored into the Policy class. 
 
     policy = contributable.contribution.policy
 
@@ -291,100 +376,11 @@ class ApplicationController < ActionController::Base
   end
 
   def determine_updating_mode(contributable)
-
-    policy = contributable.contribution.policy
-
-    return policy.update_mode if !policy.update_mode.nil?
-
-    v_pub  = policy.view_public;
-    v_prot = policy.view_protected;
-    d_pub  = policy.download_public;
-    d_prot = policy.download_protected;
-    e_pub  = policy.edit_public;
-    e_prot = policy.edit_protected;
-
-    perms  = policy.permissions.select do |p| p.edit end
-
-    if (perms.empty?)
-
-      # mode 1? only friends and network members can edit
-   
-      if (e_pub == false and e_prot == true)
-        return 1
-      end
-   
-      # mode 6? noone else
-   
-      if (e_pub == false and e_prot == false)
-        return 6
-      end
-
+    if (policy = contributable.contribution.policy)
+      return policy.determine_update_mode(contributable.contribution)
     else
-
-      # mode 0? same as those that can view or download
-
-      if (e_pub == v_pub or d_pub)
-        if (e_prot == v_prot or d_prot)
-          if (perms.collect do |p| p.edit != p.view or p.download end).empty?
-            return 0;
-          end
-        end
-      end
-
-      contributor = User.find(contributable.contributor_id)
-
-      contributors_friends  = contributor.friends.map do |f| f.id end
-      contributors_networks = (contributor.networks + contributor.networks_owned).map do |n| n.id end
-
-      my_networks    = []
-      other_networks = []
-      my_friends     = []
-      other_users    = []
-
-      puts "contributors_networks = #{contributors_networks.map do |n| n.id end}"
-
-      perms.each do |p|
-        puts "contributor_id = #{p.contributor_id}"
-        case
-          when 'Network'
-
-            if contributors_networks.index(p.contributor_id).nil?
-              other_networks.push p
-            else
-              my_networks.push p
-            end
-
-          when 'User'
-
-            if contributors_friends.index(p.contributor_id).nil?
-              other_users.push p
-            else
-              friends.push p
-            end
-
-        end
-      end
-
-      puts "my_networks    = #{my_networks.length}"
-      puts "other_networks = #{other_networks.length}"
-      puts "my_friends     = #{my_friends.length}"
-      puts "other_users    = #{other_users.length}"
-
-      if (other_networks.empty? and other_users.empty?)
-
-        # mode 5? some of my friends?
-
-        if (my_networks.empty? and !my_friends.empty?)
-          return 5
-        end
-
-      end
+      return 7
     end
-
-    # custom
-
-    return 7
-
   end
 
   def update_credits(creditable, params)
@@ -444,4 +440,5 @@ class ApplicationController < ActionController::Base
     end
     
   end
+  
 end

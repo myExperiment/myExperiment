@@ -4,7 +4,7 @@
 <% arr << "<i>#{h(citation.publication)}</i>" if citation.publication and !citation.publication.empty? -%>
 <% arr << "#{date(citation.published_at)}" if citation.published_at -%>
 <% arr << link_to(h(citation.url), citation.url) if citation.url and !citation.url.empty? -%>
-<% arr << "Accessed at: #{date(citation.published_at)}" if citation.accessed_at -%>
+<% arr << "Accessed at: #{date(citation.accessed_at)}" if citation.accessed_at -%>
 <% arr << "ISBN #{formatted_isbn(citation.isbn)}" if citation.isbn and !citation.isbn.empty? -%>
 <% arr << "ISSN #{formatted_issn(citation.issn)}" if citation.issn and !citation.issn.empty? -%>
 

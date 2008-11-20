@@ -24,12 +24,14 @@
   <li><a href="#search">General search</a></li>
   <li><a href="#elements">Element selection</a></li>
   <li><a href="#versions">Versions</a></li>
+  <li><a href="#sorting">Sorting</a></li>
   <li><a href="#pagination">Pagination</a></li>
   <li><a href="#tags">Index filtered by tag</a></li>
 <!--
   <li><a href="#rest-uris">REST URIs</a></li>
 -->
   <li><a href="#api-version">API version</a></li>
+  <li><a href="#errors">Error responses</a></li>
 </ul>
 
 <h2 id="try-it-out">Try it out</h2>
@@ -138,7 +140,7 @@
   <h4>Example curl request:</h4>
   <p><tt>curl <%= "#{url_for(:controller => '/', :only_path => false)}#{route[0]}.xml" %></tt></p>
 
-  <pre><%=h rest_index_example(route[0]) %></pre>
+  <pre style="overflow: hidden"><%=h rest_index_example(route[0]) %></pre>
 
 <% end %>
 
@@ -171,12 +173,14 @@
         <% end %>
       </tbody>
     </table>
+    <p><small>Note: You can specify which elements to get by using the 
+  <a href="#elements">elements</a> query option.</small></p>
   </div>
 
   <h4>Example curl request:</h4>
   <p><tt>curl <%= "#{url_for(:controller => '/', :only_path => false)}#{route[0]}.xml?id=#{get_example_id(attrs)}" %></tt></p>
 
-  <pre><%=h rest_example(route[1], route[2]['REST Entity'], route[2]['Model Entity'], 1, false) %></pre>
+  <pre style="overflow: hidden"><%=h rest_example(route[1], route[2]['REST Entity'], route[2]['Model Entity'], get_example_id(attrs).to_i, false) %></pre>
 
 <% end %>
 
@@ -188,7 +192,7 @@
 
 <p>Particular types can be specified by the <tt>type</tt> query option:</p>
 
-<pre>  <%= try_it_now_link('GET', '/search.xml?query=bioaid&type=workflows') %></pre>
+<pre>  <%= try_it_now_link('GET', '/search.xml?query=bioaid&type=workflow') %></pre>
 
 <h2 id="elements">Element selection</h2>
 
@@ -208,6 +212,18 @@ specific version to be worked on by including <tt>version</tt> in the URI
 query.  For example:</p>
 
 <pre>  <%= try_it_now_link('GET', '/workflow.xml?id=20&version=1') %></pre>
+
+<h2 id="sorting">Sorting</h2>
+
+<p>Index and search requests can be sorted.  By default, these results are
+sorted by ascending creation order but sorting by creation time
+(<tt>created</tt>), update time (<tt>updated</tt>), title (<tt>title</tt>) and
+name (<tt>name</tt>) is also possible.  In addition, the results can be
+returned in reverse order.</p>
+
+<pre>  <%= try_it_now_link('GET', '/workflows.xml?sort=title') %></pre>
+
+<pre>  <%= try_it_now_link('GET', '/files.xml?sort=title&order=reverse') %></pre>
 
 <h2 id="pagination">Pagination</h2>
 
@@ -241,5 +257,39 @@ these, "REST URIs" can be requested within each API response by including
 including <tt>api_version</tt> in the query.</p>
 
 <pre>  <%= try_it_now_link('GET', '/workflows.xml?api_version=yes') %></pre>
+
+<h2 id="errors">Error responses</h2>
+
+<p>The general format of an error response from the REST API is an XML document
+with an <tt>error</tt> element.  The <tt>code</tt> attribute contains a number
+that determines the class of error.  The <tt>message</tt> attribute of the
+error element contains a human readable message describing the error.</p>
+
+<h3>Example error response</h3>
+
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt; 
+&lt;error message="Resource not found" code="404"/&gt; 
+</pre>
+
+<h3>Error messages</h3>
+
+<div class="rest_table" summary="">
+  <table>
+    <thead>
+      <tr>
+        <td>Message</td>
+        <td>Code</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Resource not found</td><td>404</td></tr>
+      <tr><td>Not authorized</td><td>403</td></tr>
+      <tr><td>Resource not versioned</td><td>400</td></tr>
+      <tr><td>Resource version not found</td><td>404</td></tr>
+      <tr><td>Service unavailable</td><td>503</td></tr>
+    </tbody>
+  </table>
+</div>
 
 

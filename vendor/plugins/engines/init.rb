@@ -28,7 +28,8 @@ Engines.init(config, self)
 end
 
 # Load the testing extensions, if we are in the test environment.
-require "engines/testing" if RAILS_ENV == "test"
+# engines/testing.rb is non-existent, so commenting line out allows tests to run
+# require "engines/testing" if RAILS_ENV == "test"
 
 # Load the Rails::Info module so that plugins can insert information into it.
 begin

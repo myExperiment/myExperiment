@@ -1,0 +1,41 @@
+<% t "Manage" -%>
+
+<%= javascript_include_tag :fckeditor %>
+<%= javascript_include_tag "osp.js" %>
+
+<h1>Manage Pack: <%= contributable_name(@pack.id, 'Pack') %></h1>
+
+<p style="font-size: 93%; color: #333333; margin-bottom: 1.2em; text-align: center;">
+	<%= link_to "Click here", new_item_pack_path(@pack) %> if you wanted to add an item to this pack. 
+</p>
+
+<center>
+	<%= error_messages_for :pack %>
+</center>
+
+<% form_for(:pack, :url => pack_path(@pack), :html => { :method => :put }) do |f| %>
+	<center>
+		<div class="box_form" style="width: 550px; margin: 1em 0; text-align: left;">
+			<p><b>Title: </b></p>
+			<%= f.text_field :title, :size => 86 %>
+			
+		  <p><b>Description: </b></p>
+			<%= fckeditor_textarea(:pack, :description, :toolbarSet => 'Simple', :width => '550px', :height => '300px') %>
+		</div>
+	</center>
+  
+  <br/>
+
+  <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @pack } %>
+  
+  <% if @pack.owner?(current_user) %>
+  	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @pack, :update_perms => true } %>
+  <% end %>
+
+  <p>
+    <center>
+    	<%= submit_tag "Update",:disable_with => "Updating..." %>
+			or <%= link_to("Cancel", :controller => 'packs', :action => 'show', :id => @pack.id ) %>
+		</center>
+  </p>
+<% end %>

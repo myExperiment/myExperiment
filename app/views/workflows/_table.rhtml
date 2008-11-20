@@ -5,19 +5,27 @@
 
 <table class="alt_table">	
 	<% for workflow in collection %>
-		<% show = workflow.authorized?("show", (logged_in? ? current_user : nil)) -%>
+		<% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
+		<% if collection.size == 1 -%>
+			<% show ||= workflow.authorized?("show", current_user) -%>
+		<% else -%>
+			<% show = workflow.authorized?("show", current_user) -%>
+		<% end -%>
 	  <% if show -%>
+		<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 			<% cache(:controller => 'workflows_cache', :action => 'listing', :id => workflow.id) do -%>
-			  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
 			    <td style="width: 100px;">
-			    	<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
+						<div class="workflow_type_box" style="width: auto; margin-bottom: 2em;">
+							<%= workflow.type_display_name -%>
+						</div>
+			    	<p style="margin-top:0; padding-top:0; text-align: center;"><b><%= owner_text workflow -%></b></p>
 						<center><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %></center>
 					</td>
 			    <td style="text-align: left;">
 			      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
 			      <p class="title">
 					  	<%= icon "workflow", nil, nil, nil, '' %>
-							<% title = contributable_name(workflow.id, 'Workflow')%>
+							<% title = contributable_name(workflow.id, 'Workflow') %>
 							<%=link_to(query ? highlight_all(title, query) : title, workflow_path(workflow)) %>
 							<span style="font-weight:normal;">
 								(v<%= workflow.current_version %>)
@@ -25,9 +33,10 @@
 					  </p>
 					
 						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
-							<b>Created:</b> <%=datetime workflow.created_at, false %>
-							|
-							<b>Updated:</b> <%=datetime workflow.updated_at, false %>
+							<b>Created:</b> <%=datetime workflow.contribution.created_at, false -%>
+							<% unless workflow.contribution.created_at == workflow.contribution.updated_at %>
+								|	<b>Last updated:</b> <%=datetime workflow.contribution.updated_at, false -%>
+							<% end %>
 						</p>
 						
 					  <% unless (creditors = workflow.creditors).empty? %>
@@ -47,23 +56,25 @@
 					  	<p style="font-size:85%;">
 							<b>Attributions:</b>
 							<% attributors.each do |a| %>
-								<% if a.attributor_type == 'Workflow' %>
-									<%= icon('workflow', nil, nil, nil, '') %> 
-								<% elsif a.attributor_type == 'Blob' %>
-									<%= icon('blob', nil, nil, nil, '') %>
+								<% if thing_authorized?('show', a.attributor) -%>
+									<% if a.attributor_type == 'Workflow' %>
+										<%= icon('workflow', nil, nil, nil, '') %> 
+									<% elsif a.attributor_type == 'Blob' %>
+										<%= icon('blob', nil, nil, nil, '') %>
+									<% end %>
+									<%= contributable(a.attributor_id, a.attributor_type) %>
 								<% end %>
-								<%= contributable(a.attributor_id, a.attributor_type) %>
 							<% end %>
 					  	</p>
 					  <% end %>
 						
 						<p style="font-size:85%;"><b>License: </b><%= license_link workflow.license.to_s %></p>
 					  
-						<table>
+						<table style="width: 99%;">
 							<tbody>
 								<tr>
 									<% unless workflow.image.nil? -%>
-										<td style="margin: 0; padding: 0.2em 0; border: 0; padding-right: 0.8em;">
+										<td style="margin: 0; padding: 0.2em 0; border: 0; padding-right: 0.8em; width: 101px;">
 							      	<%= link_to image_tag(url_for_file_column(workflow, "image", "thumb"), :class => 'framed_nospace'), workflow_path(workflow) %>
 										</td>
 									<% end -%>
@@ -82,32 +93,34 @@
 						</table>
 					  
 					  <p style="font-size: 85%;">
-							<b>Rating: </b><%= number_with_precision(workflow.rating, 2) %>/5 (<%= pluralize workflow.ratings_count, 'rating' %>) |
-							<b>Versions: </b><%= workflow.versions_count %> |
-							<b>Reviews: </b><%= workflow.reviews_count %> |
-							<b>Comments: </b><%= workflow.comments_count %> |
-							<b>Citations: </b><%= workflow.citations_count %>
+							<a href="<%= workflow_path(workflow) + '#ratings' -%>"><b>Rating: </b><%= number_with_precision(workflow.rating, 1) %> / 5 (<%= pluralize workflow.ratings_count, 'rating' %>)</a> |
+							<a href="<%= workflow_path(workflow) + '#versions' -%>"><b>Versions: </b><%= workflow.versions_count %></a> |
+							<a href="<%= workflow_path(workflow) + '#reviews' -%>"><b>Reviews: </b><%= workflow.reviews_count %></a> |
+							<a href="<%= workflow_path(workflow) + '#comments' -%>"><b>Comments: </b><%= workflow.comments_count %></a> |
+							<a href="<%= workflow_path(workflow) + '#citations' -%>"><b>Citations: </b><%= workflow.citations_count %></a>
 					  </p>
 						
 						<p style="font-size: 85%;">
-							<b>Viewed:</b> <%=pluralize workflow.contribution.viewings_count, "time" %> |
-				      <b>Downloaded:</b> <%=pluralize workflow.contribution.downloads_count, "time" %>
+							<b>Viewed internally:</b> <%=pluralize Viewing.total_site_viewings_count_for_contribution(workflow.contribution.id), "time" %> |
+				      <b>Downloaded internally:</b> <%=pluralize Download.total_site_downloads_count_for_contribution(workflow.contribution.id), "time" %>
 						</p>
 					  
 					  <% unless (tags = workflow.tags).empty? %>
-							<p style="font-size: 85%;"><b>Tags</b> (<%=tags.count-%>):</p>
+							<a href="<%= workflow_path(workflow) + '#tags' -%>"><p style="font-size: 85%;"><b>Tags</b> (<%=tags.count-%>):</p></a>
 							<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
 					  <% else %>
 							<p style="font-size: 85%;"><i>This Workflow has no tags!</i></p>
 					  <% end %>	
 			    </td>
-			    <td class="actions" style="width: 85px;">
-			      <% if show %><%= icon "show", workflow_path(workflow), nil, nil, "View" %><% end %>
-				  	<% if workflow.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
-			      <% if logged_in? and workflow.authorized?("edit", current_user) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
-			    </td>
-			  </tr>
 			<% end -%>
+			    <td class="actions" style="width: 120px;">
+			      <%= icon "show", workflow_path(workflow), nil, nil, "View" %>
+				  	<% if workflow.authorized?("download", current_user) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
+			      <% if mine?(workflow) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
+						<br/><br/>
+						
+			    </td>
+		</tr>
   	<% end -%>
 	<% end -%>
 

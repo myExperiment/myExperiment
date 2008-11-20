@@ -1,0 +1,33 @@
+<% t "New" -%>
+
+<%= javascript_include_tag :fckeditor %>
+<%= javascript_include_tag "osp.js" %>
+
+<h1>New Pack</h1>
+
+<center>
+	<%= error_messages_for :pack %>
+</center>
+
+<% form_tag :action => :create do %>
+  <center>
+		<div class="box_form" style="width: 550px; margin: 1em 0; text-align: left;">
+			<p><b>Title: </b></p>
+			<%= text_field_tag "pack[title]", nil, :size => 86 %>
+			
+		  <p><b>Description: </b></p>
+			<%= fckeditor_textarea(:pack, :description, :toolbarSet => 'Simple', :width => '550px', :height => '300px') %>
+		</div>
+	</center>
+
+  <br />
+
+  <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @pack } %>
+  
+  <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @pack, :update_perms => true } %>
+  
+  <p style="text-align: center;">
+    <%= submit_tag "Create", :disable_with => "Creating..." %>
+  </p>
+<% end %>
+	

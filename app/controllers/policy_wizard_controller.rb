@@ -64,12 +64,11 @@ protected
 private
 
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Policy.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to policies_url }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

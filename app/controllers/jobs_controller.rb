@@ -7,10 +7,14 @@ class JobsController < ApplicationController
   
   before_filter :login_required
   
+  before_filter :check_runner_available, :only => [:new, :update]
+  
   before_filter :find_experiment_auth
   
   before_filter :find_jobs, :only => [:index]
   before_filter :find_job_auth, :except => [:index, :new, :create]
+  
+  before_filter :check_runnable_supported, :only => [:new, :create]
   
   def index
     respond_to do |format|
@@ -50,25 +54,51 @@ class JobsController < ApplicationController
     @job.runnable_id = params[:runnable_id] if params[:runnable_id]
     @job.runnable_version = params[:runnable_version] if params[:runnable_version]
     
+    # Check that the runnable object is allowed.
+    # At the moment: only Taverna 1 workflows are allowed.
+    if params[:runnable_id] 
+      runnable = Workflow.find(:first, :conditions => ["id = ?", params[:runnable_id]])
+      if runnable 
+        if runnable.content_type != WorkflowProcessors::TavernaScufl.content_type
+          flash[:error] = "Note that the workflow specified to run in this job is currently not supported and will prevent the job from being created. Specify a Taverna 1 workflow instead."
+        end
+        
+        # TODO: check that the specified version of the workflow exists so that a warning can be given.
+      else
+        flash[:error] = "Note that the workflow specified to run in this job does not exist. Specify a different workflow."
+      end
+    end
+    
     respond_to do |format|
       format.html # new.rhtml
     end
   end
 
-  def create
+  def self.create_job(params, user)
     success = true
+    err_msg = nil
     
     # Hard code certain values, for now.
     params[:job][:runnable_type] = 'Workflow'
     params[:job][:runner_type] = 'TavernaEnactor'
     
     @job = Job.new(params[:job])
-    @job.user = current_user
+    @job.user = user
     
     # Check runnable is a valid and authorized one
     # (for now we can assume it's a Workflow)
     runnable = Workflow.find(:first, :conditions => ["id = ?", params[:job][:runnable_id]])
-    if !runnable or !runnable.authorized?('download', current_user)
+    
+    # Check that the runnable object is allowed to be run.
+    # At the moment: only Taverna 1 workflows are allowed.
+    if runnable 
+      if runnable.content_type != WorkflowProcessors::TavernaScufl.content_type
+        success = false
+        err_msg = "The workflow specified to run in this job not supported. Please specify a Taverna 1 workflow instead."
+      end
+    end
+    
+    if !runnable or !runnable.authorized?('download', user)
       success = false
       @job.errors.add(:runnable_id, "not valid or not authorized")
     else
@@ -82,18 +112,26 @@ class JobsController < ApplicationController
     # Check runner is a valid and authorized one
     # (for now we can assume it's a TavernaEnactor)
     runner = TavernaEnactor.find(:first, :conditions => ["id = ?", params[:job][:runner_id]])
-    if !runner or !runner.authorized?('execute', current_user)
+    if !runner or !runner.authorized?('execute', user)
       success = false
       @job.errors.add(:runner_id, "not valid or not authorized")
     end
     
-    success = update_parent_experiment(@job)
+    success = update_parent_experiment(params, @job, user)
     
+    return @job, success, err_msg
+  end
+
+  def create
+
+    @job, success, err_msg = JobsController.create_job(params, current_user)
+
     respond_to do |format|
       if success and @job.save
         flash[:notice] = "Job successfully created."
         format.html { redirect_to job_url(@job.experiment, @job) }
       else
+        flash[:error] = err_msg if err_msg
         format.html { render :action => "new" }
       end
     end
@@ -268,13 +306,13 @@ class JobsController < ApplicationController
   
 protected
 
-  def update_parent_experiment(job)
+  def self.update_parent_experiment(params, job, user)
     if params[:change_experiment]
       if params[:change_experiment] == 'new'
-        job.experiment = Experiment.new(:title => Experiment.default_title(current_user), :contributor => current_user)
+        job.experiment = Experiment.new(:title => Experiment.default_title(user), :contributor => user)
       elsif params[:change_experiment] == 'existing'
         experiment = Experiment.find(params[:change_experiment_id])
-        if experiment and experiment.authorized?('edit', current_user)
+        if experiment and experiment.authorized?('edit', user)
           job.experiment = experiment
         else
           flash[:error] = "Job could not be created because could not assign the parent Experiment."
@@ -286,6 +324,15 @@ protected
     end
     
     return true
+  end
+  
+  def check_runner_available
+    if TavernaEnactor.for_user(current_user).empty?
+      flash[:error] = "You cannot create a job until you have access to an enactment service registered as a runner here."
+      respond_to do |format|
+        format.html { redirect_to new_runner_url }
+      end
+    end
   end
 
   def find_experiment_auth
@@ -315,6 +362,10 @@ protected
     end
   end
   
+  def check_runnable_supported
+    # TODO: move all checks for the runnable object here!
+  end
+  
 private
 
   def error(notice, message, attr=:id)
@@ -323,7 +374,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to jobs_url(params[:experiment_id]) }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

@@ -1,6 +1,6 @@
 <ul class="sectionIcons">
 	<li><%= icon "blob", new_file_path, nil, nil, "Upload New File" %></li>
-	<li><%= icon "view-all", url_for(:action => 'all'), nil, nil, "View All Files" %></li>
+	<li><%= icon "view-all", all_files_path, nil, nil, "View All Files" %></li>
 </ul>
 
 <% cache(:controller => 'files', :action => 'all_tags') do -%>

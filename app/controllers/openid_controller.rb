@@ -1,4 +1,4 @@
-require_gem 'ruby-openid'
+gem 'ruby-openid'
 
 # http://www.danwebb.net/2007/2/27/the-no-shit-guide-to-supporting-openid-in-your-applications
 class OpenidController < ApplicationController

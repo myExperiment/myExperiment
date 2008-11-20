@@ -5,32 +5,35 @@ require 'experiments_controller'
 class ExperimentsController; def rescue_action(e) raise e end; end
 
 class ExperimentsControllerTest < Test::Unit::TestCase
-  fixtures :experiments
+  fixtures :experiments, :users
 
   def setup
     @controller = ExperimentsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
 
-    @first_id = experiments(:first).id
+    @first_id = experiments(:experiment_1).id
   end
 
   def test_index
+    login_as(:john)
     get :index
-    assert_response :success
-    assert_template 'list'
-  end
-
-  def test_list
-    get :list
 
     assert_response :success
-    assert_template 'list'
-
-    assert_not_nil assigns(:experiments)
+    assert_template 'index'
   end
+
+#  def test_list
+#    get :list
+#
+#    assert_response :success
+#    assert_template 'list'
+#
+#    assert_not_nil assigns(:experiments)
+#  end
 
   def test_show
+    login_as(:john)
     get :show, :id => @first_id
 
     assert_response :success
@@ -41,6 +44,7 @@ class ExperimentsControllerTest < Test::Unit::TestCase
   end
 
   def test_new
+    login_as(:john)
     get :new
 
     assert_response :success
@@ -50,17 +54,18 @@ class ExperimentsControllerTest < Test::Unit::TestCase
   end
 
   def test_create
+    login_as(:john)
     num_experiments = Experiment.count
 
-    post :create, :experiment => {}
+    post :create, :experiment => { :title => 'myExperiment', :description => 'just a test' }
 
-    assert_response :redirect
-    assert_redirected_to :action => 'list'
+    assert_redirected_to experiment_url(assigns(:experiment))
 
     assert_equal num_experiments + 1, Experiment.count
   end
 
   def test_edit
+    login_as(:john)
     get :edit, :id => @first_id
 
     assert_response :success
@@ -71,7 +76,9 @@ class ExperimentsControllerTest < Test::Unit::TestCase
   end
 
   def test_update
-    post :update, :id => @first_id
+    login_as(:john)
+    post :update, :id => @first_id, :experiment => { :title => 'myExperiment updated' }
+
     assert_response :redirect
     assert_redirected_to :action => 'show', :id => @first_id
   end
@@ -81,9 +88,10 @@ class ExperimentsControllerTest < Test::Unit::TestCase
       Experiment.find(@first_id)
     }
 
+    login_as(:john)
     post :destroy, :id => @first_id
-    assert_response :redirect
-    assert_redirected_to :action => 'list'
+
+    assert_redirected_to experiments_url
 
     assert_raise(ActiveRecord::RecordNotFound) {
       Experiment.find(@first_id)

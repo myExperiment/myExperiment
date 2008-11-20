@@ -1,0 +1,12 @@
+xml.rss "version" => "2.0", 'xmlns:opensearch' => "http://a9.com/-/spec/opensearch/1.1/", 'xmlns:atom' => "http://www.w3.org/2005/Atom" do
+  xml.channel do
+    xml.title "myExperiment.org - Public Group Announcements for #{@group.title} Group"
+    xml.link group_announcements_url(@group)
+    xml.language "en-us"
+    xml.ttl "60"
+    xml.tag! "atom:link", :rel => 'search', :type => 'application/opensearchdescription+xml', :href => "http://#{request.host_with_port}/open_search.xml"
+    xml.description "RSS feed listing the Group Announcements for #{@group.title} Group on myExperiment.org"
+    # for the feeds always display only the public announcements
+    render(:partial => "layouts/group_announcement", :collection => @group.announcements_public, :locals => { :xm => xml, :group => @group })
+  end
+end

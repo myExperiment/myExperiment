@@ -1,0 +1,93 @@
+MyExperiment Developers' Guide
+------------------------------
+
+Contents
+--------
+1. Introduction
+2. Installing on Debian/Ubuntu
+2.1 Installation System Specification
+2.2 Installation Instructions
+
+
+1. Introduction
+---------------
+This guide is designed to assist developers in getting myExperiment up and running on their own server, including all the Ruby-on-Rails infrastructure.  Below is comprehensive instructions on how to install MyExperiment on a Debian/Ubuntu system.  It is mostly applicable to all Linux systems.  In the future we hope to add similar instructions for Windows systems.
+
+
+2. Installing on Debian/Ubuntu
+------------------------------
+
+2.1 Installation System Specification
+-------------------------------------
+* Pentium D 2.8GHz
+* 1GB RAM
+* 250GB Hard Disk
+* Debian Lenny (Linux Kernel 2.6.22-3-686 #1 SMP)
+* Apache 2.2.8
+* MySQL Version 14.12, Distribution 5.0.51a 
+
+2.2 Installation Instructions
+-----------------------------
+As Root user:
+
+* Use Debian's package installer (i.e. apt-get install) to install the following packages: 
+root> apt-get install make ruby libzlib-ruby rdoc irb rubygems
+
+* Install Rails GEM version 1.2.6 
+root> gem install rails --version=1.2.6
+
+* Then install the following Debian packages: 
+root> apt-get install libapache2-mod-fcgid libfcgi-ruby1.8 libmysql-ruby ruby1.8-dev build-essential
+
+* MyExperiment requires the RMagick GEM. This can cause some problems on Debian.
+  
+  *  To resolve this first make sure the following Debian packages are uninstalled: 
+  root> apt-get remove --purge librmagick-ruby-doc librmagick-ruby1.8
+
+  *  Then install the following Debian packages: 
+  root> apt-get install graphicsmagick imagemagick librmagick-ruby1.8 libmagick9-dev
+
+* MyExperiment also requires Graphviz because it has dot, whcih is required to draw workflow images:
+root> apt-get install graphviz
+
+* Now all the GEMs required by MyExperiment can be installed: 
+root> gem install builder cgi_multipart_eof_fix daemons dsl_accessor fastthread gem_plugin hoe json mime-types mongrel mongrel_cluster  
+    needle net-sftp net-ssh openid_login_generator RedCloth rmagick ruby-openid ruby-yadis solr-ruby xml-simple rubyzip libxml-ruby --include-dependencies
+    * During this process you may be requested to select one of a set of versions to install, choose the latest version suffixed with "(ruby)"
+    * If you have problems install these gems all in one go, try installing them in smaller subsets or one at a time if needs be.
+
+* Unfortunately, the Taverna GEM cannot be installed from a remote source, therefore it is included in the code-base which now needs to be downloaded.  The myExperiment code-base is stored within an SVN, so first SVN needs to be installed.
+root> apt-get install subversion 
+
+* Now the system environment is ready for the MyExperimemt code base but first SVN needs to be installed so that the codebase can be downloaded. 
+root> apt-get install subversion
+
+* Before downloading the code base make sure that the terminal is in the correct directory. for this example the directory /var/rails/ will be used. 
+
+* Now use the SVN to checkout the code base 
+root> svn checkout svn://rubyforge.org/var/svn/myexperiment
+
+* To ensure that the downloaded file have the correct ownership run the following chown command over the downloaded SVN. (Where username is your username): 
+root> chown -R username:www-data /var/rails/
+
+* Now the Taverna GEM can be installed by using the following command from /trunk/vendor/gems/taverna/ directory:
+root> gem install taverna-0.5.0.gem
+
+* Now load up a mysql shell and create three databases as follows: 
+mysql> create database m2_development;
+mysql> create database m2_production;
+mysql> create database m2_test;
+
+* After exiting mysql switch user back to your username and change directory to /var/rails/myexperiment/trunk/config/ In the directory:
+  * Copy database.yml.pre to database.yml.
+  * Edit database.yml adding the appropriate passwords and usernames for the three databases.
+  * Copy environment_private.rb.pre to environment_private.rb
+  * Edit environment_private.rb. In particular to set the correct details for SMTP to allow emails to be sent by MyExperiment. Also make sure SOLR_ENABLE is set to true so that data in your MyExperiment can be indexed and searched over by users. 
+
+* Change directory back to /var/rails/myexperiment/trunk and execute the following commands: 
+root> apt-get install rake
+user> rake db:migrate
+user> rake solr:start
+user> ruby script/server
+
+* This should start a mongrel webserver running on port 3000 of the installation system To see if this has worked load up a web browser and go to http://localhost:3000

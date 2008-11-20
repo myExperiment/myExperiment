@@ -1,15 +1,15 @@
-Hi <%= @name %>,
+Hi <%= @user.name %>,
  
-You have been sent a Membership Request from <%= @requestor_name %> to join the following Group on myExperiment, which you administrate:
+You have been sent a Membership Request from <%= @requestor.name %> to join the following Group on myExperiment, which you administrate:
 
 Name: <%= @network.title %>
 Administrator: <%= @network.owner.name %>
 
-Please go to <%= url_for :only_path => false, :host => @base_url, :controller => '' %> and log in to confirm/reject this request.
+Please go to <%= "http://" + @base_url + membership_path(@requestor, @membership) %> to confirm/reject this request.
 
-Your username is: <%= @username %>
+Your username is: <%= @user.username %>
 
 Thanks,
  
 - The myExperiment Team
-http://www.myexperiment.org
+<%= BASE_URI -%>

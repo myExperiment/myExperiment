@@ -49,6 +49,29 @@ class Tag < ActiveRecord::Base
   def to_s
     name
   end
-  
+
+  # returns a list of taggings sorted by popularity of the tag
+  def self.find_by_tag_count(limit = 25, type = nil)
+
+    sql  = 'SELECT popular_tags.* FROM (SELECT tags.id, tags.name, COUNT(*) AS taggings_count FROM taggings INNER JOIN tags ON taggings.tag_id = tags.id'
+    args = []
+
+    if type
+      sql  += ' WHERE (taggings.taggable_type = ?)'
+      args += [type]
+    end
+
+    sql += ' GROUP BY name ORDER BY taggings_count DESC'
+
+    unless limit.nil?
+      sql  += ' LIMIT ?'
+      args += [limit]
+    end
+
+    sql += ') AS popular_tags ORDER BY name ASC'
+
+    Tag.find_by_sql([sql] + args)
+  end
+
   validates_presence_of :name
 end

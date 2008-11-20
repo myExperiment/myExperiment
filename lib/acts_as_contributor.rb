@@ -39,6 +39,14 @@ module Mib
           end
           include Mib::Acts::Contributor::InstanceMethods
         end
+        
+        # returns groups that are most credited
+        # the maximum number of results is set by #limit#
+        def most_credited(limit=10)
+          type = self.to_s
+          title_or_name = (type.downcase == "user" ? "name" : "title")
+          self.find_by_sql("SELECT n.* FROM #{type.downcase.pluralize} n JOIN creditations c ON c.creditor_id = n.id AND c.creditor_type = '#{type}' GROUP BY n.id ORDER BY COUNT(n.id) DESC, n.#{title_or_name} LIMIT #{limit}")
+        end
       end
 
       module SingletonMethods
@@ -107,6 +115,11 @@ module Mib
           return rtn.string
         end
         
+        def contributor_label
+          return name  if self.respond_to?('name')
+          return title if self.respond_to?('title')
+        end
+
 protected
         
         def collection_contribution_tags!(collection)

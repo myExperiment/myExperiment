@@ -1,0 +1,48 @@
+pack.contributable_entries.each do |e|
+  show = e.available? ? thing_authorized?('show', e.contributable) : false
+  xm.item do
+    if show
+      xm.title "#{visible_name(e.contributable_type)}: #{contributable_name(e.contributable_id, e.contributable_type)}"
+      
+      # Description
+      desc = ''
+      desc += "<b>Comment:</b> #{h(e.comment)}" unless e.comment.blank?
+      xm.description desc
+    else
+      if not e.available?
+        xm.title "{The item this entry points to is not available. It may have been deleted.}"
+      else
+        xm.title "{You are not authorised to view the item this entry points to.}"
+      end
+    end
+    
+    xm.pubDate e.updated_at.rfc822
+    xm.guid [request.host_with_port, "pack", pack.id.to_s, "item", "contributable", e.id.to_s].join(":"), "isPermaLink" => "false"
+    xm.author contributor_name(e.user_id, 'User')
+    xm.link pack_url(pack) + "#item_contributable_#{e.id.to_s}"
+  end
+end
+
+pack.remote_entries.each do |e|
+  xm.item do
+    xm.title "External: #{e.title}"
+    
+    # Description
+    desc = ''
+    desc += "<b>Link:</b> #{link_to h(e.uri), h(e.uri)}"
+    unless e.alternate_uri.blank?
+      desc += "<br/>"
+      desc += "<b>Alternate link:</b> #{link_to h(e.alternate_uri), h(e.alternate_uri)}"
+    end
+    unless e.comment.blank?
+      desc += "<br/>"
+      desc += "<b>Comment:</b> #{h(e.comment)}"
+    end
+    xm.description desc
+      
+    xm.pubDate e.updated_at.rfc822
+    xm.guid [request.host_with_port, "pack", pack.id.to_s, "item", "remote", e.id.to_s].join(":"), "isPermaLink" => "false"
+    xm.author contributor_name(e.user_id, 'User')
+    xm.link pack_url(pack) + "#item_remote_#{e.id.to_s}"
+  end
+end

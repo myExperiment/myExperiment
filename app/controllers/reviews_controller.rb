@@ -18,19 +18,18 @@ class ReviewsController < ApplicationController
   before_filter :find_review, :only => [ :show ]
   before_filter :find_review_auth, :only => [ :edit, :update, :destroy ]
   
-  before_filter :invalidate_listing_cache, :only => [ :create, :update, :destroy ]
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :review_sweeper, :only => [ :create, :update, :delete ]
   
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @reviews.to_xml }
     end
   end
 
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @review.to_xml }
     end
   end
 
@@ -53,10 +52,8 @@ class ReviewsController < ApplicationController
         update_rating(@review, params[:rating])
         flash[:notice] = 'Thank you for your review!'
         format.html { redirect_to review_url(@reviewable, @review) }
-        format.xml  { head :created, :location => review_url(@reviewable, @review) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @review.errors.to_xml }
       end
     end
   end
@@ -73,10 +70,8 @@ class ReviewsController < ApplicationController
         update_rating(@review, params[:rating])
         flash[:notice] = 'Review was successfully updated.'
         format.html { redirect_to review_url(@reviewable, @review) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @review.errors.to_xml }
       end
     end
   end
@@ -87,7 +82,6 @@ class ReviewsController < ApplicationController
     respond_to do |format|
       flash[:notice] = 'Review was successfully deleted.'
       format.html { redirect_to reviews_url(@reviewable) }
-      format.xml  { head :ok }
     end
   end
   
@@ -121,8 +115,8 @@ protected
       workflow = Workflow.find(params[:workflow_id])
       
       if workflow.authorized?("show", (logged_in? ? current_user : nil))
-        # remove scufl from workflow if the user is not authorized for download
-        workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
+        # remove workflow data from workflow if the user is not authorized for download
+        workflow.content_blob.data = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
         @reviewable = workflow
       else
         if logged_in?
@@ -156,12 +150,6 @@ protected
     end
   end
   
-  def invalidate_listing_cache
-    if params[:workflow_id]
-      expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => params[:workflow_id])
-    end
-  end
-
 private
 
   def error(notice, message, attr=:id)
@@ -170,7 +158,6 @@ private
     
     respond_to do |format|
       format.html { redirect_to reviews_url(params[:workflow_id]) }
-      format.xml { render :xml => err.to_xml }
     end
   end
 end

@@ -1,3 +1,6 @@
+
+BASE_URI = "http://www.example.com"
+
 # Mailer configuration
 
 ActionMailer::Base.smtp_settings = {
@@ -60,3 +63,22 @@ ADDTHIS_WIDGET_USERNAME = "addthis.com username"
 # END addthis.com bookmarking widget settings
 # ---
 
+# The number of seconds for the cache timeout
+CACHE_TIMEOUT_SECS = 120
+
+# The maximum number of invitation emails to send out
+# (if set to '-1' - unlimited)
+INVITATION_EMAIL_LIMIT = 10 
+
+# The maximum file size allowed for workflows
+WORKFLOW_UPLOAD_MAX_BYTES = 20971520
+
+
+# =========== Settings for Download and Viewing Logging ===========
+
+# Patterns in this list will be used to be checked against "user-agent" in http request headers
+# to filter out bots from usage statistics.
+#
+# It is essential to put patterns into the ignore list in a single quotes - this will enable the
+# patterns to be treated as regular expressions, not just strings
+BOT_IGNORE_LIST = ['Googlebot', 'Slurp', 'msnbot', 'crawler', 'bot', 'heritrix', 'spider', 'Nutch']

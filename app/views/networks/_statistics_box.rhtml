@@ -4,7 +4,12 @@
 	</p>
 	
 	<p style="font-size: 108%;">
-	 	<b><%= pluralize network.shared_contributions.length, "shared item" %></b>
+	 	<b><%= pluralize items.length, "shared item" %></b>
+	</p>
+	
+	<p style="font-size: 108%;">
+	  <% # all announcements, private and public -%>
+	 	<b><%= pluralize network.announcements.length, "announcements" %></b>
 	</p>
 	
 	<% if mine? network %>

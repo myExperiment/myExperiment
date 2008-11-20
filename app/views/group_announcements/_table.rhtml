@@ -1,0 +1,42 @@
+<% unless collection.empty? %>
+
+	<table class="alt_table">
+		<% odd_row = false -%> 
+		<% for announcement in collection %>
+		  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+			    <td width="100px">
+						<%= contributor(announcement.user_id, 'User', true, 60) %>
+					</td>
+			    <td class="mid" style="text-align: left;">
+						<p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
+							<%= icon "announcement", nil, nil, nil, '' %>
+							<%= link_to h(announcement.title), group_announcement_url(group, announcement) %>
+						</p>
+						
+						<p style="font-size: 85%;">
+							<b><%= datetime announcement.created_at %></b>
+						</p>
+						
+						<% if announcement.body and announcement.body.length > 0 %>
+							<div class="desc" style="font-size: 85%;">
+								<%= truncate(strip_html(announcement.body), 180) %>
+							</div>
+						<% end %>
+						
+						<p style="text-align: right; margin-left: 0.3em; margin-top: 1em; font-size: 85%; font-weight: bold; color: #333333;">
+						  <%= (announcement.public ? "Public" : "Private")+ " announcement" -%>
+						</p>
+						
+					</td>
+			    <td class="actions"  style="width: 80px;">
+		      	<%= icon "show", group_announcement_path(group, announcement), nil, nil, "View" %>
+						<% if group.owner?(current_user.id) %>
+							<%= icon('edit', edit_group_announcement_path(group, announcement), nil, nil, 'Edit') %>
+							<%= icon("destroy", group_announcement_path(group, announcement), "Delete", :confirm => "Are you sure you want to delete this announcement?", :method => :delete) %>
+						<% end %>
+		    	</td>
+		  	</tr>
+		<% end %>
+	</table>
+
+<% end %>

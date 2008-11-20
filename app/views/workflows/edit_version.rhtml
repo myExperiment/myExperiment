@@ -2,51 +2,54 @@
 
 <%= javascript_include_tag :fckeditor %>
 
-<h1>Edit Version <%= @viewing_version_number.to_s %> of Workflow: <%= contributable @workflow.id, "Workflow" %></h1>
+<h1>
+	Edit Version <%= @viewing_version_number.to_s %>
+	<br/>
+	<span style="font-size: 77%;">of workflow: <%= link_to_function (h(@workflow.title) + expand_image), visual_effect(:toggle_blind, "workflow_box", :duration => 0.3) -%></span>
+</h1>
 
-<%= error_messages_for :workflow %>
+<div id="workflow_box" style="display: none; margin: 1em 0 2.5em 0;">
+ <%= render :partial => "workflows/table", :locals => { :collection => [ @workflow ] } %>
+</div>
+
+<center>
+	<%= error_messages_for :workflow %>
+</center>
 
 <br/>
 
-<% form_tag("/workflows/#{@workflow.id};update_version?version=#{@viewing_version_number}", :method => :put) do %>
+<% form_tag({ :action => "update_version", :version => @viewing_version_number }, :multipart => true, :method => :put) do %>
 
-  <div>
-    <p>
-      <center>
-				<strong>Title:</strong>
-	      <%= text_field_tag 'workflow[title]', @viewing_version.title, :size => '45' %>
-			</center>
-    </p>
-		
-		<br/>
-		
-		<p>
-			<center>
-				<b>Description: </b><br/>
-			</center>
-		</p>
-		<center>
-			<%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '600px', :height => '500px') %>
-		</center>
-		
-		<% if false %>
-		<p>
-			<center>
-				<b>Description: </b><br/>
-			</center>
-		</p>
-		<%= allowed_html_text('center') %>
-		<p>
-			<center>
-				<%= text_area_tag "body", @viewing_version.body, :size => "60x10" %>
-			</center>
-		</p>
-		<% end %>
-		
-  </div>
-
-  <br />
-
-  <center><%= submit_tag "Update", :disable_with => "Updating..." %></center>
+	<center>
+		<div class="box_form" style="width: 500px; margin: 0; text-align: left;">
+	    <!-- Title -->
+			<p>
+				<b>Title</b>
+				<span class="required">*</span>
+			</p>
+		  <%= text_field_tag 'workflow[title]', @viewing_version.title, :size => '60' %>
+			
+			<br/>
+			
+			<!-- Preview Image -->
+			<p><b>Preview Image</b></p>
+			<input id="workflow_preview" name="workflow[preview]" size="50" type="file" />
+			<p style="font-size: 77%; color: #666666; font-style: italic; padding-top: 0;">
+					Leave this blank to keep the existing preview image
+			</p>
+				
+			<br/>
+			
+			<!-- Description -->
+			<p><b>Description</b></p>
+			<%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '500px', :height => '500px') %>
+	
+	  	<br />
+			<br />
+	
+	  	<center><%= submit_tag "Update", :disable_with => "Updating..." %></center>
+	
+		</div>
+	</center>
 
 <% end %>

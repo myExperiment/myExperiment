@@ -12,23 +12,20 @@ class CitationsController < ApplicationController
   before_filter :find_citation, :only => :show
   before_filter :find_citation_auth, :only => [ :edit, :update, :destroy ]
   
-  before_filter :invalidate_listing_cache, :only => [ :create, :update, :destroy ]
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :citation_sweeper, :only => [ :create, :update, :destroy ]
   
   # GET /citations
-  # GET /citations.xml
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @citations.to_xml }
     end
   end
 
   # GET /citations/1
-  # GET /citations/1.xml
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @citation.to_xml }
     end
   end
 
@@ -43,7 +40,6 @@ class CitationsController < ApplicationController
   end
 
   # POST /citations
-  # POST /citations.xml
   def create
     params[:user_id], params[:workflow_id], params[:workflow_version] = current_user.id, @workflow.id, @workflow.versions.length
     
@@ -53,38 +49,31 @@ class CitationsController < ApplicationController
       if @citation.save
         flash[:notice] = 'Citation was successfully created.'
         format.html { redirect_to citation_url(@workflow, @citation) }
-        format.xml  { head :created, :location => citation_url(@workflow, @citation) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @citation.errors.to_xml }
       end
     end
   end
 
   # PUT /citations/1
-  # PUT /citations/1.xml
   def update
     respond_to do |format|
       if @citation.update_attributes(params[:citation])
         flash[:notice] = 'Citation was successfully updated.'
         format.html { redirect_to citation_url(@workflow, @citation) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @citation.errors.to_xml }
       end
     end
   end
 
   # DELETE /citations/1
-  # DELETE /citations/1.xml
   def destroy
     @citation.destroy
 
     respond_to do |format|
       flash[:notice] = 'Citation was successfully deleted.'
       format.html { redirect_to citations_url(@workflow) }
-      format.xml  { head :ok }
     end
   end
   
@@ -100,8 +89,8 @@ protected
       if workflow.authorized?((["index", "show"].include?(action_name) ? "show" : "edit"), (logged_in? ? current_user : nil))
         @workflow = workflow
         
-        # remove scufl from workflow if the user is not authorized for download
-        @workflow.scufl = nil unless @workflow.authorized?("download", (logged_in? ? current_user : nil))
+        # remove workflow data from workflow if the user is not authorized for download
+        @workflow.content_blob.data = nil unless @workflow.authorized?("download", (logged_in? ? current_user : nil))
       else
         if logged_in?
           error("Workflow not found (id not authorized)", "is invalid (not authorized)", :workflow_id)
@@ -134,21 +123,14 @@ protected
     end
   end
   
-  def invalidate_listing_cache
-    if params[:workflow_id]
-      expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => params[:workflow_id])
-    end
-  end
-
 private
 
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Citation.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to citations_url(params[:workflow_id]) }
-      format.xml { render :xml => err.to_xml }
     end
   end
   

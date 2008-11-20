@@ -13,14 +13,15 @@
 	      <%= f.hidden_field :to %>
 	    <% else %>
 			<p><b>To</b></p>
-	      <%= select(:message, :to, User.find(:all, :order => "name ASC").collect {|u| [ u.name, u.id ] }, { :include_blank => false }) %>
+			  <% # sending message to the user themself is not allowed -> exclude current user from the 'to' list -%>
+	      <%= select(:message, :to, User.find(:all, :conditions => ["id <> ?", current_user.id], :order => "name ASC").collect {|u| [ u.name, u.id ] }, { :include_blank => false }, :style => "width: 390px;") %>
 	    <% end %>
 		
 		  <p><b>Subject</b></p>
-		  <%= f.text_field :subject, :size => 55 %>
+		  <%= f.text_field :subject, :style => "width: 390px;" %>
 		
 		  <p><b>Message</b></p>
-		  <%= f.text_area :body, :size => "47x12" %>
+		  <%= f.text_area :body, :rows => 12, :style => "width: 390px;" %>
 			
 			<br/><br>
 		

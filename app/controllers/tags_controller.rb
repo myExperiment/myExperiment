@@ -12,14 +12,12 @@ class TagsController < ApplicationController
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @tags.to_xml }
     end
   end
   
   def show
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @tag.to_xml }
     end
   end
   
@@ -47,15 +45,34 @@ protected
   end
   
   def find_tag_and_tagged_with
-    begin
-      @tag = Tag.find(params[:id])
-      
+    @tag = Tag.find(:first, :conditions => ["id = ?", params[:id]])
+    
+    if @tag
       @tagged_with = []
-      @tag.taggings.each do |t|
-        i = t.taggable
-        @tagged_with << i if (["network"].include?(t.taggable_type.downcase) ? true : i.contribution.authorized?("show", (logged_in? ? current_user : nil)))
+      taggings = []
+      @internal_type = parse_to_internal_type(params[:type])
+      
+      if @internal_type
+        # Filter by the type
+        taggings = Tagging.find(:all, 
+                                 :conditions => [ "tag_id = ? AND taggable_type = ?", @tag.id, @internal_type],
+                                 :order => "taggable_type DESC") 
+      else
+        # Get all taggings
+        taggings = @tag.taggings
       end
-    rescue ActiveRecord::RecordNotFound
+      
+      # Authorise entries now
+      taggings.each do |t|
+        if t.taggable.respond_to?(:contribution)
+          @tagged_with << t.taggable if t.taggable.contribution.authorized?("show", current_user)
+        else
+          @tagged_with << t.taggable
+        end
+      end
+      
+      @tagged_with = @tagged_with.uniq
+    else
       error("Tag not found", "is invalid")
     end
   end
@@ -63,12 +80,23 @@ protected
 private
 
   def error(notice, message, attr=:id)
-    flash[:notice] = notice
+    flash[:error] = notice
     (err = Tag.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to tags_url }
-      format.xml { render :xml => err.to_xml }
+    end
+  end
+  
+  # This needs to be refactored into a library somewhere!
+  # (eg: a myExperiment system library)
+  def parse_to_internal_type(type)
+    return nil if type.blank? or type.downcase == "all"
+    
+    case type.downcase.singularize
+      when 'workflow'; return 'Workflow'
+      when 'file';     return 'Blob'
+      when 'group';    return 'Network'
     end
   end
 end

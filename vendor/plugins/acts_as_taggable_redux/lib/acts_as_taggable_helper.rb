@@ -17,10 +17,20 @@ module ActsAsTaggableHelper
     return tag_cloud_from_collection(tags, true)
   end
     
-  def tag_cloud_from_collection(tags, original=false)
+  def tag_cloud_from_collection(tags, original=false, link_to_type=nil)
     tags = tags.sort { |a, b|
       a.name.downcase <=> b.name.downcase
     }
+    
+    # tags array might contain duplicates (however this is ok, because
+    # it is planned to display the tag cloud in a way that most frequent
+    # tags for current contributable are of larger size with no
+    # respect to how frequent they are on the website in general);
+    #
+    # for now, we just filter out duplicates, so that each tag is display
+    # only once in the tag cloud
+    tags = tags.uniq
+    
     
     # TODO: add option to specify which classes you want and overide this if you want?
     classes = %w(popular v-popular vv-popular vvv-popular vvvv-popular)
@@ -41,9 +51,17 @@ module ActsAsTaggableHelper
       html << %(    <li>)
       
       if original
-        html << link_to(tag.name, tag_url(tag), :class => classes[(tag.taggings_count - min) / divisor]) 
+        unless link_to_type.blank?
+          html << link_to(tag.name, tag_url(tag) + "?type=#{link_to_type}", :class => classes[(tag.taggings_count - min) / divisor])
+        else
+          html << link_to(tag.name, tag_url(tag), :class => classes[(tag.taggings_count - min) / divisor])
+        end
       else
-        html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{tag.name}</a>"
+        unless link_to_type.blank?
+          html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}?type=#{link_to_type}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{tag.name}</a>"
+        else
+          html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{tag.name}</a>"
+        end
       end
       
       html << %(</li>\n)

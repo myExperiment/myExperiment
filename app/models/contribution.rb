@@ -17,16 +17,16 @@ class Contribution < ActiveRecord::Base
            :dependent => :destroy
            
   # returns the 'most downloaded' Contributions
+  # (only takes into account donwloads on myExperiment, that is internal usage)
   # the maximum number of results is set by #limit#
   def self.most_downloaded(limit=10, klass=nil)
-    conditions = "downloads_count != 0"
-    conditions = ["#{conditions} AND contributable_type = ?", klass] if klass
+    if klass
+      type_condition = "c.contributable_type = '#{klass}' AND"
+    else
+      type_condition = ""
+    end
     
-    self.find(:all, 
-              :conditions => conditions, 
-              :order => "contributions.downloads_count DESC", 
-              :limit => limit,
-              :include => [ { :policy => :permissions } ])
+    self.find_by_sql("SELECT c.* FROM contributions c LEFT JOIN downloads d ON c.id = d.contribution_id WHERE #{type_condition} d.accessed_from_site = 1 GROUP BY d.contribution_id ORDER BY COUNT(d.contribution_id) DESC LIMIT #{limit}")
   end
   
   # returns the 'highest rated' Contributions
@@ -37,16 +37,16 @@ class Contribution < ActiveRecord::Base
   end
   
   # returns the 'most viewed' Contributions
+  # (only takes into account viewings on myExperiment, that is internal usage)
   # the maximum number of results is set by #limit#
   def self.most_viewed(limit=10, klass=nil)
-    conditions = "viewings_count != 0"
-    conditions = ["#{conditions} AND contributable_type = ?", klass] if klass
+    if klass
+      type_condition = "c.contributable_type = '#{klass}' AND"
+    else
+      type_condition = ""
+    end
     
-    self.find(:all, 
-              :conditions => conditions,
-              :order => "contributions.viewings_count DESC", 
-              :limit => limit,
-              :include => [ { :policy => :permissions } ])
+    self.find_by_sql("SELECT c.* FROM contributions c LEFT JOIN viewings v ON c.id = v.contribution_id WHERE #{type_condition} v.accessed_from_site = 1 GROUP BY v.contribution_id ORDER BY COUNT(v.contribution_id) DESC LIMIT #{limit}")
   end
   
   # returns the 'most recent' Contributions
@@ -69,6 +69,18 @@ class Contribution < ActiveRecord::Base
               :order => "contributions.updated_at DESC",
               :limit => limit,
               :include => [ { :policy => :permissions } ])
+  end
+  
+  # returns the 'most favourited' Contributions
+  # the maximum number of results is set by #limit#
+  def self.most_favourited(limit=10, klass=nil)
+    if klass
+      type_condition = "WHERE c.contributable_type = '#{klass}'"
+    else
+      type_condition = ""
+    end
+    
+    self.find_by_sql("SELECT c.*, COUNT(b.bookmarkable_id) AS cnt FROM contributions c JOIN bookmarks b ON c.contributable_type = b.bookmarkable_type AND c.contributable_id = b.bookmarkable_id #{type_condition} GROUP BY b.bookmarkable_id ORDER BY cnt DESC LIMIT #{limit}")
   end
   
   # is c_utor authorized to edit the policy for this contribution
@@ -101,7 +113,7 @@ class Contribution < ActiveRecord::Base
     #false
   end
   
-  # is c_utor the uploader of this contribution
+  # is c_utor the original uploader of this contribution
   def uploader?(c_utor)
     #contributable.contributor_id.to_i == c_utor.id.to_i and contributable.contributor_type.to_s == c_utor.class.to_s
     contributable.uploader?(c_utor)

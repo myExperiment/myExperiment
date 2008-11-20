@@ -9,7 +9,7 @@ module Juixe
 
       module ClassMethods
         def acts_as_bookmarkable
-          has_many :bookmarks, :as => :bookmarkable, :dependent => true
+          has_many :bookmarks, :as => :bookmarkable, :dependent => :destroy
           include Juixe::Acts::Bookmarkable::InstanceMethods
           extend Juixe::Acts::Bookmarkable::SingletonMethods
         end

@@ -1,4 +1,10 @@
-<% if edit then license = @workflow.license else license = 'by-sa' end %>
+<% if params[:workflow] && !params[:workflow][:license].blank? %>
+	<% license = params[:workflow][:license] %>
+<% elsif edit %>
+	<% license = @workflow.license %>
+<% else %>
+ 	<% license = 'by-sa' %> 
+<% end %>
 
 <div class="fold">
     <div class="foldTitle">
@@ -6,7 +12,7 @@
         License/Rights
 		<% if edit %>
 			<hr />
-			<small>Current: <%= license_link license %></small>
+			<small>Current: <%= license_link(license) %></small>
 		<% else %>
 			<hr />
 			<small>Default: people are allowed to build on this Workflow, but must give author(s) credit and give attribution to this Workflow. They must also share under the same conditions. (<%= license_link license %>)</small>
@@ -42,8 +48,8 @@
 						</td>
 						<td style="vertical-align: top; text-align: left;">
 			                <p style="padding: 0; margin: 0;">
-			                	Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this Workflow</strong>. 
-								They must also <strong>share</strong> the resulting work <strong>under the same conditions</strong>.
+			                	<label for="workflow_license_bysa">Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this Workflow</strong>. 
+								They must also <strong>share</strong> the resulting work <strong>under the same conditions</strong>.</label>
 								<br/>
 								- <%= license_link "by-sa" %>
 							</p>
@@ -54,8 +60,9 @@
                 			<input id="workflow_license_by" <%= 'checked="checked"' if (license == 'by') %> name="workflow[license]" type="radio" value="by"/>
 						</td>
 						<td style="vertical-align: top; text-align: left;">	
-            				<p style="padding: 0; margin: 0;">
+            				<p style="padding: 0; margin: 0;"><label for="workflow_license_by">
             					Yes, as long as they <strong>give the author(s) credit</strong> and <strong>give attribution to this Workflow</strong>.
+										</label>
 								<br/>
 								- <%= license_link "by" %>
 							</p>
@@ -66,8 +73,9 @@
                 			<input id="workflow_license_bynd" <%= 'checked="checked"' if (license == 'by-nd') %> name="workflow[license]" type="radio" value="by-nd"/>
 						</td>
 						<td style="vertical-align: top; text-align: left;">
-            				<p style="padding: 0; margin: 0;">
+            				<p style="padding: 0; margin: 0;"><label for="workflow_license_bynd">
 								No. They may only use the Workflow for reference.
+								    </label>
 								<br/>
 								- <%= license_link "by-nd" %>
 							</p>

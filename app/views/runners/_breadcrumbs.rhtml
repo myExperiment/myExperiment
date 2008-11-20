@@ -1,15 +1,17 @@
-<li><%= link_to 'Runners', runners_path %></li>
+<li><%= link_to 'Runners', runners_path -%></li>
 
-<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
   <li><b>&#187;</b></li>
   
-  <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "View: #{h(@runner.title)}", runner_path(@runner) %></li>
-  <% when "new" %>
-    <li><%= link_to "New Runner", new_runner_path %></li>
-  <% when "edit" %>
-    <li><%= link_to "Edit Runner", edit_runner_path(@runner) %>
+  <% case controller.action_name.to_s; when "show" -%>
+    <li><%= h(@runner.title) -%></li>
+  <% when "new" -%>
+    <li>New Runner</li>
+  <% when "edit" -%>
+		<li><%= link_to "#{h(@runner.title)}", runner_path(@runner) -%></li>
+    <li><b>&#187;</b></li>
+    <li>Edit</li>
   <% else %>
     <!-- no breadcrumb -->
-  <% end %>
-<% end %>
+  <% end -%>
+<% end -%>

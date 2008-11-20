@@ -84,7 +84,22 @@ module Mib
         # This is so that the updated_at time on the record tallies up with the
         # contributable
         def save_contributable_record
-          contribution.save
+          if contribution
+            contribution.save
+          end
+        end
+        
+        # Returns all the Packs that this contributable is referred to in
+        def in_packs
+          # Use a custom handcrafted sql query (for perf reasons):
+          sql = "SELECT packs.*
+                 FROM packs
+                 WHERE packs.id IN (
+                   SELECT pack_id
+                   FROM pack_contributable_entries
+                   WHERE contributable_id = ? AND contributable_type = ? )"
+      
+          return Pack.find_by_sql([ sql, self.id, self.class.to_s ])
         end
       end
     end

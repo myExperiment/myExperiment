@@ -1,23 +1,62 @@
-<h1>New Friend</h1>
+<h1>New Friendship Request</h1>
 
 <%= error_messages_for :friendship %>
 
 <% form_for(:friendship, :url => friendships_path) do |f| %>
   <%= f.hidden_field :user_id, :value => current_user.id %>
-  <p style="text-align:center;">
-    Send friend request to user?
-  </p>
-  <p>
-    <center>
-	    <% unless params[:user_id] %>
-	      <%= f.text_field :friend_id, :value => params[:user_id] %>
-	    <% else %>
-	      <%= f.hidden_field :friend_id, :value => params[:user_id] %>
-	      <%= render :partial => "users/avatar", :locals => { :user => User.find(params[:user_id]) } %>
-	    <% end %>
+  <%= f.hidden_field :friend_id, :value => params[:user_id] %>
+	<% friend = User.find(params[:user_id]) %>
+	
+	<center>
+		<div class="box_standout" style="width: 400px;">
+			<table>
+				<tr>
+					<td style="width: 20%;">
+						<%= avatar friend, 60 %>
+					</td>
+					<td style="width: 80%; line-height: 1.6;">
+						<b>Send a request to become a friend of:</b>
+						<br/>
+						<%= link_to_function h(friend.name) + expand_image, 
+																 visual_effect(:toggle_blind, "friend_box", :duration => 0.3) -%>
+					</td>
+				</tr>
+			</table>
+		</div>
 	</center>
-  </p>
+	
+	<br/>
+	
+	<center>
+		<div class="box_currentuser_specific" style="text-align: center; width: 400px; font-size: 93%; padding-bottom: 1em;">
+			<center>
+				<table>
+					<tr>
+						<td style="line-height: 2; text-align: left;">
+							<%= info_icon_with_tooltip("This message is optional: if you leave it blank, your request will be sent without it") %>
+	            <b>Message to introduce yourself:</b><br/>
+			    	  <% msg_val = ((params[:friendship].nil? || params[:friendship][:message].nil?) ? "" : params[:friendship][:message]) %>
+						  <%= f.text_area :message, :value => msg_val, :rows => 4, :style => "width: 370px; margin-bottom: 0.5em;" -%>
+						</td>
+					</tr>
+				</table>
+			</center>
+		</div>
+	</center>
 
-  <p style="text-align:center;"><%= submit_tag "Yes", :style => 'width:60px' %></p> 
-  <p style="text-align:center;"><center><%= button_to "Cancel", :controller => 'users', :action => 'show', :id => params[:user_id] %></center></p>
+  <br/>
+	<center>
+    <%= submit_tag "Send friendship request", :id => "send", :style => "width: 180px;", :onclick => "$('cancel').disabled=true;this.disabled=true;this.value='Sending your request...';this.form.submit();" %>
+		
+		<% cancel_links_to = url_for(:controller => 'users', :action => 'show', :id => params[:user_id]) %>
+		<input type="submit" id="cancel" value="Return to user's profile" style="width: 180px" onclick="$('send').disabled=true;this.disabled=true;this.value='Returning...';window.location='<%= cancel_links_to -%>';return false;" />
+	</center>
+
+
+  <% if params[:user_id] -%>
+	  <div id="friend_box" style="display: none; margin-top: 3em;">
+			<%= render :partial => "users/table", :locals => { :collection => [User.find(params[:user_id])] } %>
+		</div>
+	<% end %>
+	
 <% end %>

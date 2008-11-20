@@ -8,10 +8,12 @@ class AnnouncementsController < ApplicationController
   
   before_filter :find_announcements, :only => [:index]
   
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :announcement_sweeper, :only => [ :create, :update, :destroy ]
+  
   def index
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @announcements.to_xml }
       format.rss do
         render :action => 'index.rxml', :layout => false
       end
@@ -68,4 +70,5 @@ protected
   def find_announcements
     @announcements = Announcement.find(:all, :order => "created_at DESC")
   end
+  
 end

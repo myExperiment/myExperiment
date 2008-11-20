@@ -19,14 +19,12 @@ class Blob < ActiveRecord::Base
   
   acts_as_solr(:fields => [:title, :local_name, :body, :content_type, :uploader],
                :include => [ :comments ]) if SOLR_ENABLE
+  belongs_to :content_blob
+
+  # :dependent => :destroy is not supported in belongs_to in rails 1.2.6
+  after_destroy { |b| b.content_blob.destroy }
 
   validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
   
   format_attribute :body
-  
-  validates_presence_of :data
-
-  def uploader
-    return contribution.contributor.name
-  end
 end

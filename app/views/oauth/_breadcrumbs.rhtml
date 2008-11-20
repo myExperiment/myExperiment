@@ -1,0 +1,17 @@
+<li><%= link_to 'OAuth', oauth_path %></li>
+
+<% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" -%>
+    <li><%= @client_application.name -%></li>
+  <% when "new" %>
+    <li>Regsiter Client Application</li>
+  <% when "edit" %>
+		<li><%= link_to @client_application.name,  {:controller=>'oauth', :action=>'show'} -%></li>
+		<li><b>&#187;</b></li>
+    <li>Update</li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

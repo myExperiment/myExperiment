@@ -11,7 +11,7 @@
 					<% tags.each do |t| %>
 						<li>
 							<%= datetime t.created_at, false %> - <%= link_to_tag t.tag %>
-							for <%= visible_name t.taggable %>: 
+							for <%= visible_name t.taggable_type %>: 
 							<%= t.taggable_type == 'Network' ? title(t.taggable_id) : contributable(t.taggable_id, t.taggable_type) %>
 							<br/><br/>
 						</li>
@@ -31,7 +31,7 @@
 				<ul>
 					<% comments.each do |c| %>
 						<li>
-							<%= datetime c.created_at, false %> - for <%= visible_name c.commentable %>: 
+							<%= datetime c.created_at, false %> - for <%= visible_name c.commentable_type %>: 
 							<%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %>
 							<div class="box_standout" style="margin: 0.5em 0;">
 								<%= truncate(white_list(c.comment), 300) %>
@@ -53,7 +53,7 @@
 			<% unless ratings.empty? %>
 				<ul>
 					<% ratings.each do |r| %>
-						<li><%= datetime r.created_at, false %> - <%= r.rating.to_s %>/5 for <%= visible_name r.rateable %>: <%= contributable(r.rateable_id, r.rateable_type) %><br/><br/></li>
+						<li><%= datetime r.created_at, false %> - <%= r.rating.to_s %>/5 for <%= visible_name r.rateable_type %>: <%= contributable(r.rateable_id, r.rateable_type) %><br/><br/></li>
 					<% end %>
 				</ul>
 			<% else %>

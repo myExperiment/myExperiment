@@ -1,0 +1,39 @@
+<h1>Timeline of Users joining myExperiment</h1>
+
+<%
+  timeline = ::Simile::Timeline::Timeline.new(
+    :name        => "Users_Timeline",
+    :event_source => url_for(:action => 'users_for_timeline'),
+    :event_band   => :days,
+    :bands       => {
+      :months => {
+        :trackGap       => '0.1',
+        :showEventText  => 'false',
+        :width          => '"25%"',
+        :intervalUnit   => 'Timeline.DateTime.MONTH',
+        :intervalPixels => '200'
+      },
+      :days => {
+        :trackGap       => '0.1',
+        :showEventText  => 'false',
+        :width          => '"25%"',
+        :intervalUnit   => 'Timeline.DateTime.DAY',
+        :intervalPixels => '100'
+      },
+      :hours => {
+        :width          => '"50%"',
+        :intervalUnit   => 'Timeline.DateTime.HOUR',
+        :intervalPixels => '20'
+      }
+    },
+    :bands_order => [ :months, :days, :hours ],
+    :synchronize => {
+      :months => :hours,
+      :days   => :hours
+    },
+    :highlight => [ :months, :days ]
+  )
+
+%>
+
+<%= simile_timeline(timeline, { :class => 'default_timeline' } ) %>
