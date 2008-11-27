@@ -21,10 +21,12 @@ class CreateActivityLimits < ActiveRecord::Migration
       t.column :limit_frequency, :integer
       
       # number of times the action has already been executed since the last reset (governed by "limit_frequency")
-      t.column :current_count, :integer
+      # (can't be NULL - doesn't make sense to have NULL value for the counter)
+      t.column :current_count, :integer, :null => false
       
       # date/time after which "current_count" is to be reset to "limit_max" (for periodic limits - such as daily message limit)
       # (NULL to indicate that reset should never happen and the limit is absolute, i.e. non-periodic)
+      # (the code will assume that if either --or both-- of "limit_frequency" and "reset_after" are NULLs, the limit is non-periodic)
       t.column :reset_after, :datetime
       
       # date/time after which promotion to the next level (with, probably, higher "limit_max" should happen)
