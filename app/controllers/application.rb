@@ -39,6 +39,73 @@ class ApplicationController < ActionController::Base
   end
   
   
+  # 
+  def check_activity_limit(contributor, limit_feature, update_counter=true)
+    if (limit = ActivityLimit.find(:first, :conditions => ["contributor_type = ? AND contributor_id = ? AND limit_feature = ?", contributor.class.name, contributor.id, limit_feature]))
+      # limit exists - check its validity
+      if (limit.limit_frequency && limit.reset_after && Time.now > limit.reset_after)
+        # "reset_after" / "limit_frequency" are not NULL - so the limit is periodic; now it's the time to
+        # reset the counter to zero - no matter what its value of was before
+        #
+        # before this check if the contributor also needs to be "promoted" to the next level -
+        # e.g. in the first month of membership on myExperiment one can send 10 messages daily,
+        # but after that can send 15 (because the user becomes more "trusted")
+        if (limit.promote_after && Time.now > limit.promote_after)
+          # TODO: do the user promotion to the next level
+        end
+        limit.current_count = 0
+        limit.reset_after = Time.now + limit.limit_frequency.hours
+      end
+    else
+      # limit doesn't exist yet - create it, then proceed to validation and saving
+      time_now = Time.now
+      limit = ActivityLimit.new(:contributor_type => contributor.class.name, :contributor_id => contributor.id,
+                                :limit_feature => limit_feature, 
+                                :limit_max => eval("#{limit_feature.upcase}_LIMIT"),
+                                :limit_frequency => eval("#{limit_feature.upcase}_LIMIT_FREQUENCY"),
+                                :reset_after => time_now + eval("#{limit_feature.upcase}_LIMIT_FREQUENCY").hours,
+                                :promote_after => time_now + eval("#{limit_feature.upcase}_LIMIT_PROMOTE_EVERY").days,
+                                :current_count => 0)
+    end
+    
+    
+    # the action takes place - increment the counter and carry out
+    # the actual check on the current counter value
+    current_count_before_update = limit.current_count 
+    limit.current_count += 1 if update_counter
+    limit.save
+    
+    if limit.limit_max
+      # allow the action if the "current_count" has not exceeded the "limit_max" value
+      return [(current_count_before_update < limit.limit_max), (limit.reset_after - Time.now)]
+    else
+      # NULL in "limit_max" means unlimited allowance
+      return [true, (limit.reset_after - Time.now)]
+    end
+  end
+  
+  
+  def formatted_timespan(time_period)
+    # Takes a period of time in seconds and returns it in human-readable form (down to minutes)
+    # from (http://www.postal-code.com/binarycode/category/devruby/)
+    out_str = ""
+        
+    interval_array = [ [:weeks, 604800], [:days, 86400], [:hours, 3600], [:minutes, 60] ]
+    interval_array.each do |sub|
+      if time_period >= sub[1]
+        time_val, time_period = time_period.divmod(sub[1])
+            
+        time_val == 1 ? name = sub[0].to_s.singularize : name = sub[0].to_s
+              
+        ( sub[0] != :minutes ? out_str += ", " : out_str += " and " ) if out_str != ''
+        out_str += time_val.to_s + " #{name}"
+      end
+    end
+   
+    return out_str  
+  end
+  
+  
   # this method is only intended to check if entry
   # in "viewings" or "downloads" table needs to be
   # created for current access - and this is *only*
