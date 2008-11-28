@@ -43,6 +43,7 @@ class ApplicationController < ActionController::Base
   # limited allowance of usage (e.g. 5 messages a day, etc)
   def check_activity_limit(contributor, limit_feature, update_counter=true)
     time_now = Time.now
+    limit_save_required = false
     
     if (limit = ActivityLimit.find(:first, :conditions => ["contributor_type = ? AND contributor_id = ? AND limit_feature = ?", contributor.class.name, contributor.id, limit_feature]))
       # limit exists - check its validity
@@ -51,7 +52,8 @@ class ApplicationController < ActionController::Base
         # now it's the time to reset the counter to zero - no matter what its value was before
         # (this will never be executed for non-periodic counters)
         limit.current_count = 0
-        limit.reset_after = time_now + limit.limit_frequency.hours        
+        limit.reset_after = time_now + limit.limit_frequency.hours
+        limit_save_required = true
 
         # also check if the contributor needs to be "promoted" to the next level --
         # e.g. in the first month of membership on myExperiment one can send 10 messages daily,
@@ -105,6 +107,8 @@ class ApplicationController < ActionController::Base
                                 :reset_after => (limit_frequency ? (time_now + limit_frequency.hours) : nil),
                                 :promote_after => (promote_every ? (time_now + promote_every.days) : nil),
                                 :current_count => 0)
+                                
+      limit_save_required = true
     end
     
     
@@ -119,8 +123,9 @@ class ApplicationController < ActionController::Base
     # update counter for the "current" action
     if action_allowed && update_counter
       limit.current_count += 1
+      limit_save_required = true
     end
-    limit.save # saves all changes (including counter resets, etc)
+    limit.save if limit_save_required # saves all changes (including counter resets, etc) if any were made
     
     # return if action is allowed / denied and when the next reset is going to be (nil for non-periodic counters) 
     return [action_allowed, (limit.reset_after ? (limit.reset_after - time_now) : nil)]
