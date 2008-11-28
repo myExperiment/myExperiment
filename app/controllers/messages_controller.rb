@@ -161,6 +161,9 @@ class MessagesController < ApplicationController
         format.html { redirect_to messages_url }
       elsif !sending_allowed
         # when redirecting, the check will be carried out again, and full error message displayed to the user
+        # (this is an unlikely event - can only happen when the user opens several "new message" pages one
+        #  after another and then posts messages from each of them, rather than opening a new one for each
+        #  message - therefore, it will not have significant performance effect on running the allowance check again)
         format.html { redirect_to new_message_url }
       else
         format.html { render :action => "new" }
