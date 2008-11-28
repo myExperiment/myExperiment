@@ -116,14 +116,14 @@ class ApplicationController < ActionController::Base
       action_allowed = false if (limit.current_count >= limit.limit_max)
     end
     
-    # update counted for the "current" action
+    # update counter for the "current" action
     if action_allowed && update_counter
       limit.current_count += 1
     end
     limit.save # saves all changes (including counter resets, etc)
     
-    
-    return [action_allowed, (limit.reset_after - time_now)]
+    # return if action is allowed / denied and when the next reset is going to be (nil for non-periodic counters) 
+    return [action_allowed, (limit.reset_after ? (limit.reset_after - time_now) : nil)]
   end
   
   

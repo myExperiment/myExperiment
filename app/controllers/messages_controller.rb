@@ -97,8 +97,10 @@ class MessagesController < ApplicationController
     else
       # no more messages can be sent because of the activity limit
       respond_to do |format|
-        error_msg = "You have reached the message limit, "
-        if allowed_plus_timespan[1] <= 60
+        error_msg = "You can't send messages - your limit is reached, "
+        if allowed_plus_timespan[1].nil?
+          error_msg += "it will not be reset. Please contact myExperiment administration for details."
+        elsif allowed_plus_timespan[1] <= 60
           error_msg += "please try again within a couple of minutes"
         else
           error_msg += "it will be reset in " + formatted_timespan(allowed_plus_timespan[1])
