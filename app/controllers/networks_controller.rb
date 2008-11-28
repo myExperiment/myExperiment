@@ -173,7 +173,7 @@ class NetworksController < ApplicationController
           end
           
           unless overflow_addresses.empty?
-            error_msg += "<br/><br/>You can only send invitations to #{INVITATION_EMAIL_LIMIT} unique, valid, non-blank email addresses.<br/>The following addresses were not processed because of maximum allowed amount was exceeded:<br/>" + overflow_addresses.join("<br/>")
+            error_msg += "<br/><br/>You can only send invitations to X unique, valid, non-blank email addresses.<br/>The following addresses were not processed because of maximum allowed amount was exceeded:<br/>" + overflow_addresses.join("<br/>")
           end
           
           error_msg += "</span>"
