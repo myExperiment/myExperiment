@@ -81,7 +81,7 @@ class MessagesController < ApplicationController
         flash[:error] = "You cannot send a message to yourself"
         format.html { redirect_to new_message_url }
       end
-    elsif (allowed_plus_timespan = check_activity_limit(current_user, "internal_message", false))[0]
+    elsif (allowed_plus_timespan = ActivityLimit.check_limit(current_user, "internal_message", false))[0]
       # the user is allowed to send messages - limit not yet reached; show the new message screen 
       # (but the counter is not updated just yet - the user might not send the message after all,
       #  so this is a mere validation - which saves user from typing the message in and learning that
@@ -115,7 +115,7 @@ class MessagesController < ApplicationController
   # POST /messages
   def create
     # check if sending is allowed and increment the message counter
-    sending_allowed = check_activity_limit(current_user, "internal_message")[0]
+    sending_allowed = ActivityLimit.check_limit(current_user, "internal_message")[0]
     
     if sending_allowed
       @message = Message.new(params[:message])
