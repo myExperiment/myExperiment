@@ -474,10 +474,10 @@ class UsersController < ApplicationController
       # in future, potentially there's going to be a way to get results of sending;
       # now display message based on number of valid / invalid addresses..
       respond_to do |format|
-        if validated_addr_count == 0 && existing_invitation_emails.empty? && db_user_addresses.empty?
+        if validated_addr_count == 0 && existing_invitation_emails.empty? && db_user_addresses.empty? && overflow_addresses.empty?
           flash.now[:notice] = "None of the supplied address(es) could be validated, no emails were sent.<br/>Please check your input!"
           format.html { render :action => 'invite' }
-        elsif (addr_count == validated_addr_count) && (!err_addresses || err_addresses.empty?)
+        elsif (addr_count == validated_addr_count) && (!err_addresses || err_addresses.empty?) && (!overflow_addresses || overflow_addresses.empty?)
           flash[:notice] = validated_addr_count.to_s + " Invitation email(s) sent successfully"
           format.html { redirect_to :action => 'show', :id => params[:invitations_user_id] }
         else

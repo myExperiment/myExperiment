@@ -163,9 +163,9 @@ class NetworksController < ApplicationController
       # now display message based on number of valid / invalid addresses..
       error_occurred = true # a flag to select where to redirect from this action
       respond_to do |format|
-        if validated_addr_count == 0 && existing_invitation_emails.empty? && db_user_addresses.empty?
+        if validated_addr_count == 0 && existing_invitation_emails.empty? && db_user_addresses.empty? && overflow_addresses.empty?
           error_msg = "None of the supplied address(es) could be validated, no emails were sent. Please try again!<br/>You have supplied the following address list:<br/>\"#{params[:invitations][:address_list]}\""
-        elsif (addr_count == validated_addr_count) && (!err_addresses || err_addresses.empty?)
+        elsif (addr_count == validated_addr_count) && (!err_addresses || err_addresses.empty?) && (!overflow_addresses || overflow_addresses.empty?)
           error_msg = validated_addr_count.to_s + " Invitation email(s) sent successfully"
           error_occurred = false
         else 
