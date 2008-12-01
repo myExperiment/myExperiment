@@ -38,6 +38,27 @@ class ApplicationController < ActionController::Base
     return res
   end
   
+
+  def formatted_timespan(time_period)
+    # Takes a period of time in seconds and returns it in human-readable form (down to minutes)
+    # from (http://www.postal-code.com/binarycode/category/devruby/)
+    out_str = ""
+        
+    interval_array = [ [:weeks, 604800], [:days, 86400], [:hours, 3600], [:minutes, 60] ]
+    interval_array.each do |sub|
+      if time_period >= sub[1]
+        time_val, time_period = time_period.divmod(sub[1])
+            
+        time_val == 1 ? name = sub[0].to_s.singularize : name = sub[0].to_s
+              
+        ( sub[0] != :minutes ? out_str += ", " : out_str += " and " ) if out_str != ''
+        out_str += time_val.to_s + " #{name}"
+      end
+    end
+   
+    return out_str  
+  end
+  
   
   # this method is only intended to check if entry
   # in "viewings" or "downloads" table needs to be

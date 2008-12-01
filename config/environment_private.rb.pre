@@ -66,10 +66,6 @@ ADDTHIS_WIDGET_USERNAME = "addthis.com username"
 # The number of seconds for the cache timeout
 CACHE_TIMEOUT_SECS = 120
 
-# The maximum number of invitation emails to send out
-# (if set to '-1' - unlimited)
-INVITATION_EMAIL_LIMIT = 10 
-
 # The maximum file size allowed for workflows
 WORKFLOW_UPLOAD_MAX_BYTES = 20971520
 
@@ -82,3 +78,39 @@ WORKFLOW_UPLOAD_MAX_BYTES = 20971520
 # It is essential to put patterns into the ignore list in a single quotes - this will enable the
 # patterns to be treated as regular expressions, not just strings
 BOT_IGNORE_LIST = ['Googlebot', 'Slurp', 'msnbot', 'crawler', 'bot', 'heritrix', 'spider', 'Nutch']
+
+
+# =========== Settings for Activity Limits ===========
+
+# Each limited feature will require a set of 5 settings; meanings of each described below.
+# First part of every setting is the name of the feature being limited.
+# <feature_name>_LIMIT_START_VALUE - the initial maximum allowance for the feature (used when the new limit is created)  
+# <feature_name>_LIMIT_MAX_VALUE - absolute maximum allowance for the feature (this can't be exceeded after any promotions);
+#                                  NULL for always increasing allowance
+# <feature_name>_LIMIT_FREQUENCY -- in hours -- the time period over which the allowance is given; for example 5 messages (allowance) for 24 hours (frequency)
+#                                               NULL for non-periodic limits (i.e. limits which won't have their counters reset every <frequency> hours)
+# <feature_name>_LIMIT_PROMOTE_EVERY -- in days -- every <X> days the user will be promoted to the new level, 
+#                                                  where the allowance per frequency period will be adjusted by <feature_name>_LIMIT_PROMOTE_INCREMENT;
+#                                                  NULL to indicate that promotion should never happen
+# <feature_name>_LIMIT_PROMOTE_INCREMENT - should be positive; 
+#                                          0 to indicate that promotion shouldn't expand the allowance (why would this be useful?)
+#                                          NULL to perform a one-time promotion by setting the limit to whatever the value of <feature_name>_LIMIT_MAX_VALUE is;
+#                                          NULL when the <feature_name>_LIMIT_MAX_VALUE is also NULL makes the feature unlimited.
+
+INTERNAL_MESSAGE_LIMIT_START_VALUE = 10
+INTERNAL_MESSAGE_LIMIT_MAX_VALUE = 200
+INTERNAL_MESSAGE_LIMIT_FREQUENCY = 24 # hours
+INTERNAL_MESSAGE_LIMIT_PROMOTE_EVERY = 10 # days
+INTERNAL_MESSAGE_LIMIT_PROMOTE_INCREMENT = 10
+
+USER_INVITE_LIMIT_START_VALUE = 20
+USER_INVITE_LIMIT_MAX_VALUE = nil
+USER_INVITE_LIMIT_FREQUENCY = 24 # hours
+USER_INVITE_LIMIT_PROMOTE_EVERY = nil # days
+USER_INVITE_LIMIT_PROMOTE_INCREMENT = nil
+
+GROUP_INVITE_LIMIT_START_VALUE = 10
+GROUP_INVITE_LIMIT_MAX_VALUE = 100
+GROUP_INVITE_LIMIT_FREQUENCY = 24 # hours
+GROUP_INVITE_LIMIT_PROMOTE_EVERY = 20 # days
+GROUP_INVITE_LIMIT_PROMOTE_INCREMENT = 10

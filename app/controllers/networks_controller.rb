@@ -30,7 +30,22 @@ class NetworksController < ApplicationController
   
   # GET /networks/1;invite
   def invite
+    error_msg = ""
+    sending_allowed_with_reset_timestamp = ActivityLimit.check_limit(current_user, "group_invite", false)
+    unless sending_allowed_with_reset_timestamp[0]
+      # limit of invitation for this user is already exceeded
+      error_msg = "Please note that you can't send email invitations - your limit is reached, "
+      if sending_allowed_with_reset_timestamp[1].nil?
+        error_msg += "it will not be reset. Please contact myExperiment administration for details."
+      elsif sending_allowed_with_reset_timestamp[1] <= 60
+        error_msg += "please try again within a couple of minutes"
+      else
+        error_msg += "it will be reset in " + formatted_timespan(sending_allowed_with_reset_timestamp[1])
+      end
+    end
+    
     respond_to do |format|
+      flash.now[:error] = error_msg unless error_msg.blank?
       format.html # invite.rhtml
     end
   end
@@ -91,9 +106,10 @@ class NetworksController < ApplicationController
     else
       # captcha verified correctly, can proceed
     
-      addr_count, validated_addr_count, valid_addresses, db_user_addresses, err_addresses, overflow_addresses = Invitation.validate_address_list(params[:invitations][:address_list])
+      addr_count, validated_addr_count, valid_addresses, db_user_addresses, err_addresses = Invitation.validate_address_list(params[:invitations][:address_list], current_user)
       existing_invitation_emails = []
       valid_addresses_tokens = {} # a hash for pairs of 'email' => 'token'
+      overflow_addresses = []
       
       if validated_addr_count > 0
         emails_counter = 0; counter = 0
@@ -103,10 +119,14 @@ class NetworksController < ApplicationController
           if PendingInvitation.find_by_email_and_request_type_and_request_for(email_addr, "membership", params[:id])
             existing_invitation_emails << email_addr
           else 
-            token_code = Digest::SHA1.hexdigest( email_addr.reverse + SECRET_WORD )
-            valid_addresses_tokens[email_addr] = token_code
-            invitation = PendingInvitation.new(:email => email_addr, :request_type => "membership", :requested_by => current_user.id, :request_for => params[:id], :message => params[:invitations][:msg_text], :token => token_code)
-            invitation.save
+            if ActivityLimit.check_limit(current_user, "group_invite")[0]
+              token_code = Digest::SHA1.hexdigest( email_addr.reverse + SECRET_WORD )
+              valid_addresses_tokens[email_addr] = token_code
+              invitation = PendingInvitation.new(:email => email_addr, :request_type => "membership", :requested_by => current_user.id, :request_for => params[:id], :message => params[:invitations][:msg_text], :token => token_code)
+              invitation.save
+            else
+              overflow_addresses << email_addr
+            end
           end        
         end
           
@@ -143,9 +163,9 @@ class NetworksController < ApplicationController
       # now display message based on number of valid / invalid addresses..
       error_occurred = true # a flag to select where to redirect from this action
       respond_to do |format|
-        if validated_addr_count == 0 && existing_invitation_emails.empty? && db_user_addresses.empty?
+        if validated_addr_count == 0 && existing_invitation_emails.empty? && db_user_addresses.empty? && overflow_addresses.empty?
           error_msg = "None of the supplied address(es) could be validated, no emails were sent. Please try again!<br/>You have supplied the following address list:<br/>\"#{params[:invitations][:address_list]}\""
-        elsif (addr_count == validated_addr_count) && (!err_addresses || err_addresses.empty?)
+        elsif (addr_count == validated_addr_count) && (!err_addresses || err_addresses.empty?) && (!overflow_addresses || overflow_addresses.empty?)
           error_msg = validated_addr_count.to_s + " Invitation email(s) sent successfully"
           error_occurred = false
         else 
@@ -173,7 +193,17 @@ class NetworksController < ApplicationController
           end
           
           unless overflow_addresses.empty?
-            error_msg += "<br/><br/>You can only send invitations to #{INVITATION_EMAIL_LIMIT} unique, valid, non-blank email addresses.<br/>The following addresses were not processed because of maximum allowed amount was exceeded:<br/>" + overflow_addresses.join("<br/>")
+            error_msg += "<br/><br/>You have ran out of quota for sending invitations, "
+            reset_quota_after = ActivityLimit.check_limit(current_user, "group_invite", false)[1]
+            if reset_quota_after.nil?
+              error_msg += "it will not be reset. Please contact myExperiment administration for details."
+            elsif reset_quota_after <= 60
+              error_msg += "please try again within a couple of minutes."
+            else
+              error_msg += "it will be reset in " + formatted_timespan(reset_quota_after) + "."
+            end
+            
+            error_msg += "<br/>The following addresses were not processed because maximum allowed amount of invitations was exceeded:<br/>" + overflow_addresses.join("<br/>")
           end
           
           error_msg += "</span>"

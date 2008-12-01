@@ -8,7 +8,8 @@
   <p style="line-heght: 1.5; margin-left: 1.5em">
   	<%= hidden_field_tag :invitations_user_id, current.id -%>
   	
-		<%= info_icon_with_tooltip("To include several email addresses, use commas or semicolons to separate them.<br/>Please note that just #{INVITATION_EMAIL_LIMIT} first unique, valid, non-blank addresses will be processed.") %>
+		<% remaining_allowance, allowance_finishes = ActivityLimit.remaining_allowance(current_user, "user_invite") -%>
+    <%= info_icon_with_tooltip("To include several email addresses, use commas or semicolons to separate them.<br/>#{remaining_allowance ? "Please note that your current allowance is to send invitations to #{remaining_allowance} unique, valid, non-blank address(es) in the list; the allowance #{allowance_finishes ? "will be renewed after #{allowance_finishes.strftime("%H:%M on %d/%m/%Y")}" : "will not be reset"}." : "Please note that limitations on the number of invitations to be sent may apply."}") %>
 		Email addresses to send invitations to:<br/>
 		<% email_addresses_val = ((params[:invitations].nil? || params[:invitations][:addr_to].nil?) ? "" : params[:invitations][:addr_to]) %>
   	<%= text_field_tag "invitations[addr_to]", email_addresses_val, :style => "width: 500px; margin-bottom: 0.5em;" -%><br/>

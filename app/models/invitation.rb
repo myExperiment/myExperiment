@@ -12,17 +12,12 @@ class Invitation
   # 3) array of valid addresses
   # 4) hash of pairs ("existing_db_address" -> user_id)
   # 5) array of erroneous addresses
-  # 6) array of addresses that didn't fit into the EMAIL_LIMIT boundary
-  def self.validate_address_list (emails_csv_string)
-    
-    # check if need to set a limit on the number of emails to be processed
-    restrict_email_count = (INVITATION_EMAIL_LIMIT == -1 ? false : true)
+  def self.validate_address_list (emails_csv_string, current_user)
     
     # calling code relies on the 'err_addresses' variable being initialized to [] at the beginning
     err_addresses = []
     valid_addresses = []
     db_user_addresses = {}
-    overflow_addresses = []
     
     addr_cnt = 0
     validated_addr_cnt = 0
@@ -44,22 +39,13 @@ class Invitation
         if email_addr.downcase.match(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)
           # email_addr is validated if we are here;          
 
-          # check if we didn't exceed the INVITATION_EMAIL_LIMIT boundary yet 
-          if restrict_email_count && addr_cnt <= INVITATION_EMAIL_LIMIT
-            # if we didn't,
-            # check if it is also present in the DB as registered address of some user -
-            # if so, it needs to be treated differentrly
-            if( u = User.find(:first, :conditions => ["email = ? OR unconfirmed_email = ?", email_addr, email_addr]) )
-              db_user_addresses[email_addr] = u.id    
-            else
-              validated_addr_cnt += 1
-              valid_addresses << email_addr  
-            end
+          # check if it is also present in the DB as registered address of some user -
+          # if so, it needs to be treated differentrly
+          if( u = User.find(:first, :conditions => ["email = ? OR unconfirmed_email = ?", email_addr, email_addr]) )
+            db_user_addresses[email_addr] = u.id    
           else
-            # we did exceed the limit, but the goal is to
-            # only allow sending of not more than INVITATION_EMAIL_LIMIT emails / invitations;
-            # the ones that are after the INVITATION_EMAIL_LIMIT boundary will not be processed at all
-            overflow_addresses << email_addr 
+            validated_addr_cnt += 1
+            valid_addresses << email_addr  
           end
         else
           err_addresses << email_addr
@@ -69,7 +55,7 @@ class Invitation
     }
     
     
-    return [addr_cnt, validated_addr_cnt, valid_addresses, db_user_addresses, err_addresses, overflow_addresses]
+    return [addr_cnt, validated_addr_cnt, valid_addresses, db_user_addresses, err_addresses]
   end
   
   

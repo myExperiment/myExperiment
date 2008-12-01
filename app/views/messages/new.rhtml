@@ -1,5 +1,14 @@
 <% @message.to = params[:user_id] if params[:user_id] -%>
 
+<% remaining_allowance, allowance_finishes = ActivityLimit.remaining_allowance(current_user, "internal_message") -%>
+<% if remaining_allowance == 1 -%>
+	<p class="box_currentuser_specific" style="font-weight: bold; text-align: center;">
+		Please note that you can only send one more internal message 
+		<%= allowance_finishes ? "until #{allowance_finishes.strftime("%H:%M on %d/%m/%Y")}" : "; your allowance will not be reset" -%>. 
+	</p>
+<% end -%>
+
+
 <h1><%= params[:reply_id] ? h("Reply to Message") : h("New Message") %></h1>
 
 <%= error_messages_for :message %>

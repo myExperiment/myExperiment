@@ -81,7 +81,11 @@ class MessagesController < ApplicationController
         flash[:error] = "You cannot send a message to yourself"
         format.html { redirect_to new_message_url }
       end
-    else
+    elsif (allowed_plus_timespan = ActivityLimit.check_limit(current_user, "internal_message", false))[0]
+      # the user is allowed to send messages - limit not yet reached; show the new message screen 
+      # (but the counter is not updated just yet - the user might not send the message after all,
+      #  so this is a mere validation - which saves user from typing the message in and learning that
+      #  it can't be set because of the limit, which is expired)
       if params[:reply_id]
         @message = Message.new(:to => @reply.from,
                                :reply_id => @reply.id,
@@ -90,41 +94,61 @@ class MessagesController < ApplicationController
       else
         @message = Message.new
       end
+    else
+      # no more messages can be sent because of the activity limit
+      respond_to do |format|
+        error_msg = "You can't send messages - your limit is reached, "
+        if allowed_plus_timespan[1].nil?
+          error_msg += "it will not be reset. Please contact myExperiment administration for details."
+        elsif allowed_plus_timespan[1] <= 60
+          error_msg += "please try again within a couple of minutes"
+        else
+          error_msg += "it will be reset in " + formatted_timespan(allowed_plus_timespan[1])
+        end
+        
+        flash[:error] = error_msg 
+        format.html { redirect_to messages_path }
+      end
     end
   end
 
   # POST /messages
   def create
-    @message = Message.new(params[:message])
-    @message.from ||= current_user.id
+    # check if sending is allowed and increment the message counter
+    sending_allowed = ActivityLimit.check_limit(current_user, "internal_message")[0]
     
-    # set initial datetimes
-    @message.read_at = nil
-    
-    # test for spoofing of "from" field
-    unless @message.from.to_i == current_user.id.to_i
-      errors = true
-      @message.errors.add :from, "must be logged on"
-    end
-    
-    # test for existance of reply_id
-    if @message.reply_id
-      begin
-        reply = Message.find(@message.reply_id) 
+    if sending_allowed
+      @message = Message.new(params[:message])
+      @message.from ||= current_user.id
       
-        # test that user is replying to a message that was actually received by them
-        unless reply.to.to_i == current_user.id.to_i
-          errors = true
-          @message.errors.add :reply_id, "not addressed to sender"
-        end
-      rescue ActiveRecord::RecordNotFound
+      # set initial datetimes
+      @message.read_at = nil
+      
+      # test for spoofing of "from" field
+      unless @message.from.to_i == current_user.id.to_i
         errors = true
-        @message.errors.add :reply_id, "not found"
+        @message.errors.add :from, "must be logged on"
+      end
+      
+      # test for existance of reply_id
+      if @message.reply_id
+        begin
+          reply = Message.find(@message.reply_id) 
+        
+          # test that user is replying to a message that was actually received by them
+          unless reply.to.to_i == current_user.id.to_i
+            errors = true
+            @message.errors.add :reply_id, "not addressed to sender"
+          end
+        rescue ActiveRecord::RecordNotFound
+          errors = true
+          @message.errors.add :reply_id, "not found"
+        end
       end
     end
     
     respond_to do |format|
-      if !errors and @message.save
+      if sending_allowed && !errors && @message.save
         
         begin
           Notifier.deliver_new_message(@message, base_host) if @message.u_to.send_notifications?
@@ -137,6 +161,12 @@ class MessagesController < ApplicationController
         
         flash[:notice] = 'Message was successfully sent.'
         format.html { redirect_to messages_url }
+      elsif !sending_allowed
+        # when redirecting, the check will be carried out again, and full error message displayed to the user
+        # (this is an unlikely event - can only happen when the user opens several "new message" pages one
+        #  after another and then posts messages from each of them, rather than opening a new one for each
+        #  message - therefore, it will not have significant performance effect on running the allowance check again)
+        format.html { redirect_to new_message_url }
       else
         format.html { render :action => "new" }
       end
