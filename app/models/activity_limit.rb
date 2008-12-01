@@ -51,6 +51,13 @@ class ActivityLimit < ActiveRecord::Base
             # (if the absolute max value is set - set limit to it; if not - the feature becomes unlimited)
             limit.limit_max = absolute_max_limit_value
             limit.promote_after = nil
+            
+            if limit.limit_max.nil?
+              # the feature has become unlimited; no need to reset the counter anymore - 
+              # just keep it running to see usage of the feature by the user
+              limit.limit_frequency = nil
+              limit.reset_after = nil
+            end
           end   
         end # END of PROMOTION code
         
