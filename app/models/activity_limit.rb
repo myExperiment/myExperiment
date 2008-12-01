@@ -93,11 +93,12 @@ class ActivityLimit < ActiveRecord::Base
   end
   
   
-  # returns the remaining allowance for the limited feature; NIL if unlimited or limit doesn't exist 
+  # returns the remaining allowance (and the date/time when it finishes) for the limited feature;
+  # [NIL, NIL] if unlimited or limit doesn't exist 
   def self.remaining_allowance(contributor, limit_feature)
     limit = ActivityLimit.find(:first, :conditions => ["contributor_type = ? AND contributor_id = ? AND limit_feature = ?", contributor.class.name, contributor.id, limit_feature])
-    return nil unless limit
-    return (limit.limit_max ? (limit.limit_max - limit.current_count) : nil)
+    return [nil, nil] unless limit
+    return [(limit.limit_max ? (limit.limit_max - limit.current_count) : nil), limit.reset_after]
   end
   
 end
