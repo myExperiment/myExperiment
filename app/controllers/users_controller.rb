@@ -27,6 +27,7 @@ class UsersController < ApplicationController
     
     # Only show activated users!
     @users = results.select { |u| u.activated? }
+    @users_found_total_count = (SOLR_ENABLE && !@query.blank?) ? User.count_by_solr(@query) : 0
     
     respond_to do |format|
       format.html # search.rhtml

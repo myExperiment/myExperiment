@@ -46,6 +46,12 @@ private
     if SOLR_ENABLE && !@query.blank?
       @results = User.multi_solr_search(@query, :limit => 100,
           :models => [User, Workflow, Blob, Network, Pack]).results
+      
+      @users_found_total_count = User.count_by_solr(@query)
+      @workflows_found_total_count = Workflow.count_by_solr(@query)
+      @blobs_found_total_count = Blob.count_by_solr(@query)
+      @networks_found_total_count = Network.count_by_solr(@query)
+      @packs_found_total_count = Pack.count_by_solr(@query)
     end
 
     @users     = @results.select do |r| r.instance_of?(User)     end

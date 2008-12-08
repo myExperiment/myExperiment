@@ -29,6 +29,7 @@ class BlobsController < ApplicationController
     @query.strip!
     
     @blobs = (SOLR_ENABLE && !@query.blank?) ? Blob.find_by_solr(@query, :limit => 100).results : []
+    @blobs_found_total_count = (SOLR_ENABLE && !@query.blank?) ? Blob.count_by_solr(@query) : 0
     
     respond_to do |format|
       format.html # search.rhtml

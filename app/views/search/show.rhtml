@@ -22,7 +22,7 @@
 	
 	<% unless @users.empty? %>
 	  <div class="tabContainer">
-	  	<div class="tabTitle">Users (<%= @users.length -%>)</div>
+	  	<div class="tabTitle">Users (<%= @users.length -%> of <%= @users_found_total_count -%>)</div>
 	  	<div class="tabContent">
 		    <%= render :partial => "users/table", :locals => { :collection => @users, :query => @query } %>
 	  	</div>
@@ -31,7 +31,7 @@
 	
 	<% unless @networks.empty? %>
 	  <div class="tabContainer">
-	  	<div class="tabTitle">Groups (<%= @networks.length -%>)</div>
+	  	<div class="tabTitle">Groups (<%= @networks.length -%> of <%= @networks_found_total_count -%>)</div>
 	  	<div class="tabContent">
 		    <%= render :partial => "networks/table", :locals => { :collection => @networks, :query => @query } %>
 	  	</div>
@@ -49,7 +49,7 @@
 	
 	<% unless @blobs.empty? %>
 	  <div class="tabContainer">
-	  	<div class="tabTitle">Files (<%= @blobs.length -%>)</div>
+	  	<div class="tabTitle">Files (<%= @blobs.length -%> of <%= @blobs_found_total_count -%>)</div>
 	  	<div class="tabContent">
 		    <%= render :partial => "blobs/table", :locals => { :collection => @blobs, :query => @query } %>
 	  	</div>
@@ -58,7 +58,7 @@
 	
 	<% unless @packs.empty? %>
 	  <div class="tabContainer">
-	  	<div class="tabTitle">Packs (<%= @packs.length -%>)</div>
+	  	<div class="tabTitle">Packs (<%= @packs.length -%> of <%= @packs_found_total_count -%>)</div>
 	  	<div class="tabContent">
 		    <%= render :partial => "packs/table", :locals => { :collection => @packs, :query => @query } %>
 	  	</div>

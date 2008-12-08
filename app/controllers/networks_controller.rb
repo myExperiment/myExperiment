@@ -22,6 +22,7 @@ class NetworksController < ApplicationController
     @query.strip!
     
     @networks = (SOLR_ENABLE && !@query.blank?) ? Network.find_by_solr(@query, :limit => 100).results : []
+    @networks_found_total_count = (SOLR_ENABLE && !@query.blank?) ? Network.count_by_solr(@query) : 0
     
     respond_to do |format|
       format.html # search.rhtml
