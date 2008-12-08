@@ -4,7 +4,7 @@
 
 <h1>Search Results</h1>
 
-<h2><%= pluralize(@workflows.length, "workflow") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
+<h2>Showing <%= pluralize(@workflows.length, "workflow") %> of <%= @workflows_found_total_count -%> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
 
 <%= view_privileges_notice %>
 <br/>

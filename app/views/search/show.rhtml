@@ -40,7 +40,7 @@
 
 	<% unless @workflows.empty? %>
 	  <div class="tabContainer">
-	  	<div class="tabTitle">Workflows (<%= @workflows.length -%>)</div>
+	  	<div class="tabTitle">Workflows (<%= @workflows.length -%> of <%= @workflows_found_total_count -%>)</div>
 	  	<div class="tabContent">
     		<%= render :partial => "workflows/table", :locals => { :collection => @workflows, :query => @query } %>
 	  	</div>
