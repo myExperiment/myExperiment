@@ -1,7 +1,7 @@
 require 'lib/rest'
 
 # SET QUESTIONS_ENABLE to enable questions
-QUESTIONS_ENABLE = false
+QUESTIONS_ENABLE = true
 
 
 ActionController::Routing::Routes.draw do |map|
@@ -118,7 +118,7 @@ ActionController::Routing::Routes.draw do |map|
   # all downloads and viewings
   map.resources :downloads, :viewings
   
-  # questions
+#  questions
   if QUESTIONS_ENABLE == true
     map.connect 'questions/all', :controller => 'questions', :action => 'all'  # all questions
     map.resources :questions, :collection => { :search => :get }, :member => { :bookmark => :post, :comment => :post, :comment_delete => :delete, :rate => :post, :tag => :post, } do |question|

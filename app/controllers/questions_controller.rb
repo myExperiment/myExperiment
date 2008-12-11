@@ -237,19 +237,22 @@ class QuestionsController < ApplicationController
   
   def find_questions
     login_required if login_available?
+    require 'open-uri'
+    puts open('http://rdf.myexperiment.org/Questions', 'User-Agent' => 'Ruby-Wget').read
+
     
-    found = Question.find(:all, 
-                          construct_options.merge({:page => { :size => 20, :current => params[:page] }}))
+#    found = Question.find(:all, 
+                          #construct_options.merge({:page => { :size => 20, :current => params[:page] }}))
     
-    @questions = found
+ #   @questions = found
     
-    found2 = Question.find(:all, :order => "created_at DESC", :limit => 30)
+  #  found2 = Question.find(:all, :order => "created_at DESC", :limit => 30)
     
-    @rss_questions = [ ]
+  #  @rss_questions = [ ]
     
-    found2.each do |question|
-      @rss_questions << question if question.authorized?("show", (logged_in? ? current_user : nil))
-    end
+ #   found2.each do |question|
+  #    @rss_questions << question if question.authorized?("show", (logged_in? ? current_user : nil))
+  #  end
   end
   
   def find_question_auth

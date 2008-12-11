@@ -5,7 +5,7 @@
 
 require 'uri'
 require 'openid'
-require 'openid/store/filesystem'
+#require 'openid/store/filesystem'
 
 class SessionController < ApplicationController
 
