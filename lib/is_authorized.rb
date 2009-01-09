@@ -6,99 +6,60 @@
 module IsAuthorized
 
   # check the relevant permissions based on 'action' string
-  def is_authorized?(action, contributable_id, contributable_type, user=nil)
-    is_authorized = false
+  def is_authorized?(action_name, thing_id, thing_type, user_id=nil)
 
-    case action
+    case action_name
     when 'show', 'index', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'rate', 'tag', 'view', 'comments_timeline', 'comments', 'items'
-      is_authorized = is_authorized_to_view?(contributable_id, contributable_type, user)
+      action = 'view'
     when 'edit', 'new', 'create', 'update', 'new_version', 'create_version', 'destroy_version', 'edit_version', 'update_version', 'new_item', 'create_item', 'edit_item', 'update_item', 'quick_add', 'resolve_link'
-      is_authorized = is_authorized_to_edit?(contributable_id, contributable_type, user)
+      action = 'edit'
     when 'download', 'named_download', 'submit_job', 'launch'
-      is_authorized = is_authorized_to_download?(contributable_id, contributable_type, user)
+      action = 'download'
     when 'destroy', 'destroy_item'
-      is_authorized = is_authorized_to_destroy?(contributable_id, contributable_type, user)
+      action = 'destroy'
+    else
+      return false
     end
 
-    is_authorized
-  end
-
-  # check if current user is authorized to view contribution
-  def is_authorized_to_view?(contributable_id, contributable_type, user=nil)
-    is_authorized = false
-    
-    if !user.nil? && user.kind_of?(User)
-      user_id = user.id
-    else
+    if user_id.nil?
       user_id = 0
     end
 
-    # check if current user owns contributable
-    if user_id != 0
-      is_authorized = is_owner?(contributable_id, contributable_type, user_id)
-    end
-
-    # if current user is not owner then check policy to determine if user is authorized
-    if !is_authorized
-      is_authorized = check_policy('view', contributable_id, contributable_type, user_id)
-    end
-
-    is_authorized
-  end
-
-  # check if current user is authorized to edit contribution
-  def is_authorized_to_edit?(contributable_id, contributable_type, user=nil)
     is_authorized = false
 
-    if !user.nil? && user.kind_of?(User)
-      user_id = user.id
+    # authorization rules for non-contributable classes
+    if thing_type == 'Network'
+      is_authorized = true
+    elsif thing_type == 'Experiment'
+      # call Experiment.authorized?
+      experiment = Experiment.find(:first, :conditions => ["id = ?", thing_id])
+      user = get_user(user_id)
+      is_authorized = experiment.authorized?(action_name, user)
+    elsif thing_type == 'Job'
+      # use Job.authorized?
+      job = Job.find(:first, :conditions => ["id = ?", thing_id])
+      user = get_user(user_id)
+      is_authorized = job.authorized?(action_name, user)
+    elsif thing_type == 'TavernaEnactor' || thing_type == 'Runner'
+      # use TavernaEnactor.authorized?
+      enactor = TavernaEnactor.find(:first, :conditions => ["id = ?", thing_id])
+      user = get_user(user_id)
+      is_authorized = enactor.authorized?(action_name, user)
+    # only workflow, blobs and packs use policy-based auth
+    elsif thing_type == 'Workflow' || thing_type == 'Blob' || thing_type == 'Pack'
+      # check if current user owns contributable
+      if user_id != 0
+        is_authorized = is_owner?(thing_id, thing_type, user_id)
+      end
+
+      # if current user isn't the owner and the action isn't destroy then check the policy
+      # (only the owner can destroy something)
+      if !is_authorized && action != 'destroy'
+        is_authorized = check_policy(action, thing_id, thing_type, user_id)
+      end
+    # if thing does not match anything above, default to true
     else
-      user_id = 0
-    end
-
-    # check if current user owns contributable
-    if user_id != 0
-      is_authorized = is_owner?(contributable_id, contributable_type, user_id)
-    end
-
-    # if current user is not owner then check policy to determine if user is authorized
-    if !is_authorized
-      is_authorized = check_policy('edit', contributable_id, contributable_type, user_id)
-    end
-
-    is_authorized
-  end
-
-  # check if current user is authorized to download the contribution
-  def is_authorized_to_download?(contributable_id, contributable_type, user=nil)
-    is_authorized = false
-
-    if !user.nil? && user.kind_of?(User)
-      user_id = user.id
-    else
-      user_id = 0
-    end
-
-    # check if current user owns contributable
-    if user_id != 0
-      is_authorized = is_owner?(contributable_id, contributable_type, user_id)
-    end
-
-    # if current user is not owner then check policy to determine if user is authorized
-    if !is_authorized
-      is_authorized = check_policy('download', contributable_id, contributable_type, user_id)
-    end
-    
-    is_authorized
-  end
-
-  # check if current user is authorized to destroy the contribution
-  def is_authorized_to_destroy?(contributable_id, contributable_type, user=nil)
-    is_authorized = false
-
-    # current user can destroy contribution if they own it
-    if !user.nil? && user.kind_of?(User)
-      is_authorized = is_owner?(contributable_id, contributable_type, user.id)
+      is_authorized = true
     end
 
     is_authorized
@@ -116,6 +77,8 @@ module IsAuthorized
     # if owner of contribution is the current user then the current user is authorized
     if contribution[0]['contributor_type'] == 'User' && contribution[0]['contributor_id'] == user_id
       is_authorized = true
+    elsif contribution[0]['contributor_type'] == 'Network'
+      is_authorized = is_network_admin?(user_id, contribution[0]['contributor_id'])
     end
 
     is_authorized
@@ -128,9 +91,10 @@ module IsAuthorized
     select_string = 'policies.id,policies.contributor_id,policies.contributor_type,policies.share_mode,policies.update_mode'
     policy_details = get_policy(select_string, contributable_id, contributable_type)
     
-    # if there is no policy, only true if user owns contributable
-    if policy_details.length == 0
-      return is_owner?(contributable_id, contributable_type, user_id)
+    # if there is no policy, or policy is owned by a network assume private
+    # (contributions owned by networks is currently not supported)
+    if policy_details.length == 0 || policy_details[0]['contributor_type'] == 'Network'
+      return false
     end
 
     ####################################################################################
@@ -191,7 +155,7 @@ module IsAuthorized
     # or check for matching policy_id and a group.id then check if current_user is member of group.id
     permissions_details.each do |permission|
       if permission['contributor_type'] == 'Network' && permission["#{action}"]
-        if is_member_of_group? user_id, permission['contributor_id']
+        if is_network_member?(user_id, permission['contributor_id'])
           return true
         end
       end
@@ -201,7 +165,7 @@ module IsAuthorized
   end
 
   def is_friend?(contributor_id, user_id)
-    friendship = Friendship.find_by_sql "SELECT id FROM friendships WHERE (user_id=#{contributor_id} AND friend_id=#{user_id}) OR (user_id=#{user_id} AND friend_id=#{contributor_id})"
+    friendship = Friendship.find_by_sql "SELECT id FROM friendships WHERE (user_id=#{contributor_id} AND friend_id=#{user_id}) OR (user_id=#{user_id} AND friend_id=#{contributor_id}) AND accepted_at IS NOT NULL"
 
     if friendship.length > 0
       return true
@@ -210,21 +174,40 @@ module IsAuthorized
     end
   end
 
-  def is_member_of_group?(user_id, network_id)
-    membership = Membership.find_by_sql "SELECT id FROM memberships WHERE user_id=#{user_id} AND network_id=#{network_id}"
+  def is_network_member?(user_id, network_id)
+    membership = Membership.find_by_sql "SELECT id FROM memberships WHERE user_id=#{user_id} AND network_id=#{network_id} AND user_established_at IS NOT NULL AND network_established_at IS NOT NULL"
 
     # check if there is a membership record for user_id and network_id
     if membership.length > 0
       return true
     else
       # if there is no membership record check whether user_id is the owner of network_id
-      network = Network.find_by_sql "SELECT user_id FROM networks WHERE user_id=#{user_id} AND id=#{network_id}"
-      if network.length > 0
-        return true
-      else
-        return false
-      end
+      return is_network_admin?(user_id, network_id)
     end
+  end
+  
+  def is_network_admin?(user_id, network_id)
+    network = Network.find_by_sql "SELECT user_id FROM networks WHERE user_id=#{user_id} AND id=#{network_id}"
+    
+    if network.length > 0
+      is_admin = true
+    else
+      is_admin = false
+    end
+    
+    is_admin
+  end
+
+  # gets the user object from the user_id
+  # used by is_authorized when calling model.authorized? method for classes that don't use policy-based auth
+  def get_user(user_id)
+    if user_id == 0
+      user = nil
+    else
+      user = User.find(:first, :conditions => ["id = ?", user_id])
+    end
+
+    user
   end
 
   # query database for relevant fields in policies table
