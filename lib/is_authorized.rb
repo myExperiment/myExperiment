@@ -6,26 +6,152 @@
 module IsAuthorized
 
   # check the relevant permissions based on 'action' string
-  def is_authorized?(action_name, thing_id, thing_type, user_id=nil)
+  
+  # 1) action_name - name of the action that is about to happen with the "thing"
+  # 2) thing_type - class name of the thing that needs to be authorized
+  # 3) thing - this is supposed to be an instance of the thing to be authorized, but
+  #            can also accept an ID (since we have the type, too - "thing_type")
+  # 4) user - can be either user instance or the ID (NIL or 0 to indicate anonymous/not logged in user)
+  #
+  # Note: there is no method overloading in Ruby and it's a good idea to have a default "nil" value for "user";
+  #       this leaves no other choice as to have (sometimes) redundant "thing_type" parameter.
+  def is_authorized?(action_name, thing_type, thing, user=nil)
+    thing_instance = nil
+    user_instance = nil
 
-    case action_name
-    when 'show', 'index', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'rate', 'tag', 'view', 'comments_timeline', 'comments', 'items'
-      action = 'view'
-    when 'edit', 'new', 'create', 'update', 'new_version', 'create_version', 'destroy_version', 'edit_version', 'update_version', 'new_item', 'create_item', 'edit_item', 'update_item', 'quick_add', 'resolve_link'
-      action = 'edit'
-    when 'download', 'named_download', 'submit_job', 'launch'
-      action = 'download'
-    when 'destroy', 'destroy_item'
-      action = 'destroy'
+
+    # check first if the action that is being executed is known - not authorized otherwise
+    action = categorize_action(action_name)
+    return false unless action
+    
+    # if thing_type or thing itself are unknown - don't authorise the action
+    return false if (thing_type.blank? || thing.blank?)
+    
+    # some value for "thing" supplied - assume that the object exists; check if it is an instance or the ID
+    if thing.kind_of?(Fixnum)
+      thing_id = thing
     else
-      return false
+      thing_instance = thing
+      thing_id = thing.id
     end
-
-    if user_id.nil?
-      user_id = 0
+    
+    if user.kind_of?(User)
+      user_instance = user
+      user_id = user.id
+    elsif user == 0
+      # "Authenticated System" sets current_user to 0 if not logged in (i.e. anonymous user)
+      user_id = nil
+    elsif user.nil? || user.kind_of?(Fixnum)
+      # anonymous user OR only id of the user, not an instance was provided;
+      user_id = user
     end
+    
 
+    # ***************************************
+    #      Actual Authorization Begins 
+    # ***************************************
+
+    # initially not authorized, so if all tests fail -
+    # safe result of being not authorized will get returned 
     is_authorized = false
+    policy_id = nil
+    
+    case thing_type
+      when "Workflow", "Blob", "Pack"
+        # TODO: solve this
+        
+        # !!# Bit of hack for update permissions - 'view' and 'download' is authorized if 'edit' is authorized
+        # !! return true if ['download', 'view'].include?(category) and authorized?('edit', c_ution, c_utor)
+
+        authorized_by_policy = false 
+        authorized_by_user_permissions = false
+        authorized_by_group_permissions = false
+        
+        unless user_id.nil?
+          # access is authorized and no further checks required in two cases:
+          # * user is the owner of the "thing"
+          # * user is admin of the policy associated with the "thing"
+          #   (this means that the user might not have uploaded the "thing", but
+          #    is the one managing the access permissions for it)
+  # vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+          contribution_found, user_is_owner, policy_id = is_owner?(user_id, thing_type, thing_id)
+          return true if (user_is_owner || admin?(c_utor))
+          
+          
+          # c_utor is not the owner of the item, to which policy is attached;
+          # next thing - obtain all the permissions that are relevant to
+          # c_utor: either through individual or through group permissions
+          user_permissions, group_permissions = all_permissions_for_contributor(c_utor)
+          
+          # DEBUG
+          #logger.error "==================================================="
+          #logger.error "user_permissions -> " + user_permissions.length.to_s
+          #logger.error user_permissions.to_sentence
+          #logger.error "group_permissions -> " + group_permissions.length.to_s
+          #logger.error group_permissions.to_sentence
+          #logger.error "==================================================="
+          # END OF DEBUG
+          
+          
+          # individual ('user') permissions override any other settings
+          # (if several are found, which shouldn't be the case, all are collapsed into
+          #  one with the highest access rights)
+          unless user_permissions.empty?
+            user_permissions.each do |p|
+              authorized_by_user_permissions = true if p.attributes["#{category}"]
+            end
+            return authorized_by_user_permissions
+          end
+          
+          
+          # no user permissions found, need to check what is allowed by policy
+          # (check 'protected' settings first)
+          if c_ution
+            # true if contribution.contributor and contributor are related and policy[category_protected]
+            authorized_by_policy = true if (c_ution.contributor.protected? c_utor and protected?(category))
+          else
+            # true if policy.contributor and contributor are related and policy[category_protected]
+            authorized_by_policy = true if (self.contributor.protected? c_utor and protected?(category))
+          end
+          return authorized_by_policy if authorized_by_policy
+          
+          
+          # not authorized by protected settings; check public policy settings
+          authorized_by_policy = public?(category)
+          return authorized_by_policy if authorized_by_policy
+          
+          
+          # not authorized by policy at all, check the group permissions
+          # (for the groups, where c_utor is a member or admin of)
+          unless group_permissions.empty?
+            group_permissions.each do |p|
+              authorized_by_group_permissions = true if p.attributes["#{category}"]
+            end
+            return authorized_by_group_permissions if authorized_by_group_permissions
+          end
+        end
+        
+        # no other cases matched OR c_utor is unknown - apply public policy settings
+        # true if policy[category_public]
+        return public?(category)
+   # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        
+      when "Network"
+        
+      when "Experiment", "Job", "TavernaEnactor", "Runner"
+      
+      else
+        # don't recognise the kind of thing that is being authorized, so
+        # we don't specifically know that it needs to be blocked;
+        # therefore, allow any actions on it
+        is_authorized = true
+    end
+    
+    return is_authorized
+    
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
 
     # authorization rules for non-contributable classes
     if thing_type == 'Network'
@@ -65,24 +191,48 @@ module IsAuthorized
     is_authorized
   end
 
+# vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
   private
 
-  # check if current user is owner of contribution
-  def is_owner?(contributable_id, contributable_type, user_id)
+  def categorize_action(action_name)
+    case action_name
+      when 'show', 'index', 'view', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'comments', 'comments_timeline', 'rate', 'tag',  'items', 'statistics', 'tag_suggestions'
+        action = 'view'
+      when 'new', 'create', 'update', 'edit', 'new_version', 'create_version', 'destroy_version', 'edit_version', 'update_version', 'new_item', 'create_item', 'edit_item', 'update_item', 'quick_add', 'resolve_link'
+        action = 'edit'
+      when 'download', 'named_download', 'launch', 'submit_job'
+        action = 'download'
+      when 'destroy', 'destroy_item'
+        action = 'destroy'
+      else
+        # unknown action
+        action = nil
+    end
+    
+    return action
+  end
+
+
+  # check if "user" is owner of the "thing"
+  def is_owner?(user_id, thing_type, thing_id)
     is_authorized = false
 
-    # get owner of contribution from database
-    contribution = Contribution.find_by_sql "SELECT contributor_id,contributor_type FROM contributions WHERE contributable_id=\'#{contributable_id}\' AND contributable_type=\'#{contributable_type}\'"
+    # get owner of the "thing" from database
+    contribution = Contribution.find_by_sql "SELECT contributor_id, contributor_type, policy_id FROM contributions WHERE contributable_id='#{thing_id}' AND contributable_type='#{thing_type}'"
 
-    # if owner of contribution is the current user then the current user is authorized
+    # if nothing found, return 
+
+    # if owner of the "thing" is the "user" then the "user" is authorized
     if contribution[0]['contributor_type'] == 'User' && contribution[0]['contributor_id'] == user_id
       is_authorized = true
     elsif contribution[0]['contributor_type'] == 'Network'
       is_authorized = is_network_admin?(user_id, contribution[0]['contributor_id'])
     end
 
-    is_authorized
+    return [is_authorized, contribution[0]['policy_id']]
   end
+
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
   # check whether current user is authorized for 'action' on 'contributable_*'
   def check_policy(action, contributable_id, contributable_type, user_id)
@@ -196,18 +346,6 @@ module IsAuthorized
     end
     
     is_admin
-  end
-
-  # gets the user object from the user_id
-  # used by is_authorized when calling model.authorized? method for classes that don't use policy-based auth
-  def get_user(user_id)
-    if user_id == 0
-      user = nil
-    else
-      user = User.find(:first, :conditions => ["id = ?", user_id])
-    end
-
-    user
   end
 
   # query database for relevant fields in policies table
