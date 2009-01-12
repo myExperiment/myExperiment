@@ -18,7 +18,11 @@ module IsAuthorized
   def is_authorized?(action_name, thing_type, thing, user=nil)
     thing_instance = nil
     user_instance = nil
+    user_id = nil # if this value will not get updated by input parameters - user will be treated as anonymous
 
+    # ***************************************
+    #      Pre-checks on the Parameters
+    # ***************************************
 
     # check first if the action that is being executed is known - not authorized otherwise
     action = categorize_action(action_name)
@@ -26,6 +30,8 @@ module IsAuthorized
     
     # if thing_type or thing itself are unknown - don't authorise the action
     return false if (thing_type.blank? || thing.blank?)
+    
+    
     
     # some value for "thing" supplied - assume that the object exists; check if it is an instance or the ID
     if thing.kind_of?(Fixnum)
@@ -51,97 +57,133 @@ module IsAuthorized
     #      Actual Authorization Begins 
     # ***************************************
 
+    # if (thing_type, ID) pair was supplied instead of a "thing" instance,
+    # need to find the object that needs to be authorized first;
+    # (only do this for object types that are known to require authorization)
+    #
+    # this is required to get "policy_id" for policy-based aurhorized objects (like workflows / blobs / packs)
+    # and to get objects themself for other object types (networks, experiments, jobs, tavernaenactors, runners)
+    if thing_instance.nil? && ["Workflow", "Blob", "Pack", "Network", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type)
+      thing_instance = find_thing(thing_type, thing_id)
+      
+      unless thing_instance
+        # search didn't yield any results - the "thing" wasn't found; can't authorize unknown objects
+        logger.error("UNEXPECTED ERROR - Couldn't find object to be authorized:(#{thing_type}, #{thing_id}); action: #{action_name}; user: #{user_id}")
+        return false
+      end
+    end
+    
+
     # initially not authorized, so if all tests fail -
     # safe result of being not authorized will get returned 
     is_authorized = false
-    policy_id = nil
     
     case thing_type
       when "Workflow", "Blob", "Pack"
-        # TODO: solve this
-        
-        # !!# Bit of hack for update permissions - 'view' and 'download' is authorized if 'edit' is authorized
-        # !! return true if ['download', 'view'].include?(category) and authorized?('edit', c_ution, c_utor)
-
-        authorized_by_policy = false 
-        authorized_by_user_permissions = false
-        authorized_by_group_permissions = false
-        
         unless user_id.nil?
           # access is authorized and no further checks required in two cases:
-          # * user is the owner of the "thing"
-          # * user is admin of the policy associated with the "thing"
-          #   (this means that the user might not have uploaded the "thing", but
-          #    is the one managing the access permissions for it)
-  # vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-          contribution_found, user_is_owner, policy_id = is_owner?(user_id, thing_type, thing_id)
-          return true if (user_is_owner || admin?(c_utor))
+          # ** user is the owner of the "thing"
+          return true if is_owner?(user_id, thing_instance)
+          
+          # ** user is admin of the policy associated with the "thing"
+          #    (this means that the user might not have uploaded the "thing", but
+          #     is the one managing the access permissions for it)
+          #
+          #    it's fine if policy will not be found at this step - default one will get
+          #    used further when required
+          policy_id = thing_instance.policy_id
+          policy = get_policy(policy_id)
+          return false unless policy # if policy wasn't found (and default one couldn't be applied) - error; not authorized
+          return true if is_policy_admin?(policy, user_id)
           
           
-          # c_utor is not the owner of the item, to which policy is attached;
-          # next thing - obtain all the permissions that are relevant to
-          # c_utor: either through individual or through group permissions
-          user_permissions, group_permissions = all_permissions_for_contributor(c_utor)
-          
-          # DEBUG
-          #logger.error "==================================================="
-          #logger.error "user_permissions -> " + user_permissions.length.to_s
-          #logger.error user_permissions.to_sentence
-          #logger.error "group_permissions -> " + group_permissions.length.to_s
-          #logger.error group_permissions.to_sentence
-          #logger.error "==================================================="
-          # END OF DEBUG
+          # only owners / policy admins are allowed to perform actions categorized as "destroy";
+          # hence "destroy" actions are not authorized below this point
+          return false if action == "destroy"
           
           
-          # individual ('user') permissions override any other settings
-          # (if several are found, which shouldn't be the case, all are collapsed into
-          #  one with the highest access rights)
+          # user is not the owner/admin of the object; action is not of "destroy" class;
+          # next thing - obtain all the permissions that are relevant to the user
+          # (start with individual user permissions; group permissions will only
+          #  be considered if that is required further on)
+          user_permissions = get_user_permissions(user_id, policy_id)
+          
+          # individual user permissions override any other settings;
+          # if several of these are found (which shouldn't be the case),
+          # all are considered, but the one with "highest" access right is
+          # used to make final decision -- that is if at least one of the
+          # user permissions allows to make the action, it will be allowed;
+          # likewise, if none of the permissions allow the action it will
+          # not be allowed
           unless user_permissions.empty?
+            authorized_by_user_permissions = false
             user_permissions.each do |p|
-              authorized_by_user_permissions = true if p.attributes["#{category}"]
+              authorized_by_user_permissions = true if p.attributes["#{action}"]
             end
             return authorized_by_user_permissions
           end
           
           
           # no user permissions found, need to check what is allowed by policy
-          # (check 'protected' settings first)
-          if c_ution
-            # true if contribution.contributor and contributor are related and policy[category_protected]
-            authorized_by_policy = true if (c_ution.contributor.protected? c_utor and protected?(category))
-          else
-            # true if policy.contributor and contributor are related and policy[category_protected]
-            authorized_by_policy = true if (self.contributor.protected? c_utor and protected?(category))
-          end
-          return authorized_by_policy if authorized_by_policy
+          # (if no policy was found, default policy is in use instead)
+          authorized_by_policy = false
+          authorized_by_policy = authorized_by_policy?(policy, thing_instance, action, user_id)
+          return true if authorized_by_policy
           
+
+          # not authorized by policy, check the group permissions -- the ones
+          # attached to "thing's" policy and belonging to the groups, where
+          # "user" is a member or admin of;
+          #
+          # these cannot limit what is allowed by policy settings, only give more access rights 
+          authorized_by_group_permissions = false
+          group_permissions = get_group_permissions(policy_id)
           
-          # not authorized by protected settings; check public policy settings
-          authorized_by_policy = public?(category)
-          return authorized_by_policy if authorized_by_policy
-          
-          
-          # not authorized by policy at all, check the group permissions
-          # (for the groups, where c_utor is a member or admin of)
           unless group_permissions.empty?
             group_permissions.each do |p|
-              authorized_by_group_permissions = true if p.attributes["#{category}"]
+              # check if this permission is applicable to the "user"
+              if p.attributes["#{action}"] && (is_network_member?(user_id, p.contributor_id) || is_network_admin?(user_id, p.contributor_id))
+                authorized_by_group_permissions = true
+                break
+              end
             end
             return authorized_by_group_permissions if authorized_by_group_permissions
           end
+          
+          # user permissions, policy settings and group permissions didn't give the
+          # positive result - decline the action request
+          return false
+        
+        else
+          # this is for cases where trying to authorize anonymous users;
+          # the only possible check - on public policy settings:
+          policy_id = thing_instance.policy_id
+          policy = get_policy(policy_id)
+          return false unless policy # if policy wasn't found (and default one couldn't be applied) - error; not authorized
+          
+          return authorized_by_policy?(policy, thing_instance, action, nil)
         end
         
-        # no other cases matched OR c_utor is unknown - apply public policy settings
-        # true if policy[category_public]
-        return public?(category)
-   # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        
       when "Network"
+        # TODO
+        # add checks to allow only admin to edit / delete / accept memberships / etc
+        is_authorized = true
         
       when "Experiment", "Job", "TavernaEnactor", "Runner"
+        # user instance is absolutely required for this - so find it, if not yet available
+        unless user_instance
+          user_instance = get_user(user_id)
+        end
+        
+        # "thing_instance" was already found previously;
+        # neither of these "thing" types uses policy-based authorization, hence use
+        # the existing <thing>.authorized?() method
+        #
+        # "action_name" used to work with original action name, rather than classification made inside the module
+        is_authorized = thing_instance.authorized?(action_name, user)
       
       else
-        # don't recognise the kind of thing that is being authorized, so
+        # don't recognise the kind of "thing" that is being authorized, so
         # we don't specifically know that it needs to be blocked;
         # therefore, allow any actions on it
         is_authorized = true
@@ -149,49 +191,9 @@ module IsAuthorized
     
     return is_authorized
     
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-
-    # authorization rules for non-contributable classes
-    if thing_type == 'Network'
-      is_authorized = true
-    elsif thing_type == 'Experiment'
-      # call Experiment.authorized?
-      experiment = Experiment.find(:first, :conditions => ["id = ?", thing_id])
-      user = get_user(user_id)
-      is_authorized = experiment.authorized?(action_name, user)
-    elsif thing_type == 'Job'
-      # use Job.authorized?
-      job = Job.find(:first, :conditions => ["id = ?", thing_id])
-      user = get_user(user_id)
-      is_authorized = job.authorized?(action_name, user)
-    elsif thing_type == 'TavernaEnactor' || thing_type == 'Runner'
-      # use TavernaEnactor.authorized?
-      enactor = TavernaEnactor.find(:first, :conditions => ["id = ?", thing_id])
-      user = get_user(user_id)
-      is_authorized = enactor.authorized?(action_name, user)
-    # only workflow, blobs and packs use policy-based auth
-    elsif thing_type == 'Workflow' || thing_type == 'Blob' || thing_type == 'Pack'
-      # check if current user owns contributable
-      if user_id != 0
-        is_authorized = is_owner?(thing_id, thing_type, user_id)
-      end
-
-      # if current user isn't the owner and the action isn't destroy then check the policy
-      # (only the owner can destroy something)
-      if !is_authorized && action != 'destroy'
-        is_authorized = check_policy(action, thing_id, thing_type, user_id)
-      end
-    # if thing does not match anything above, default to true
-    else
-      is_authorized = true
-    end
-
-    is_authorized
   end
 
-# vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
   private
 
   def categorize_action(action_name)
@@ -212,151 +214,192 @@ module IsAuthorized
     return action
   end
 
+  # check if the DB holds entry for the "thing" to be authorized 
+  def find_thing(thing_type, thing_id)
+    found_instance = nil
+    
+    begin
+      case thing_type
+        when "Workflow", "Blob", "Pack"
+          # "find_by_sql" works faster itself PLUS only a subset of all fields is selected;
+          # this is the most frequent query to be executed, hence needs to be optimised
+          found_instance = Contribution.find_by_sql "SELECT contributor_id, contributor_type, policy_id FROM contributions WHERE contributable_id=#{thing_id} AND contributable_type='#{thing_type}'"
+          found_instance = nil if found_instance.empty? # if nothing was found
+        when "Network"
+          found_instance = Network.find(thing_id)
+        when "Experiment"
+          found_instance = Experiment.find(thing_id)
+        when "Job"
+          found_instance = Job.find(thing_id)
+        when "TavernaEnactor"
+          found_instance = TavernaEnactor.find(thing_id)
+        when "Runner"
+          # the line below doesn't have a typo - "runners" should really be searched in "TavernaEnactor" model
+          found_instance = TavernaEnactor.find(thing_id)
+      end
+    rescue ActiveRecord::RecordNotFound
+      # do nothing; makes sure that app won't crash when the required object is not found;
+      # the method will return "nil" anyway, so no need to take any further actions here
+    end
+    
+    return found_instance
+  end
 
-  # check if "user" is owner of the "thing"
-  def is_owner?(user_id, thing_type, thing_id)
+
+  # checks if "user" is owner of the "thing"
+  def is_owner?(user_id, thing_instance)
     is_authorized = false
-
-    # get owner of the "thing" from database
-    contribution = Contribution.find_by_sql "SELECT contributor_id, contributor_type, policy_id FROM contributions WHERE contributable_id='#{thing_id}' AND contributable_type='#{thing_type}'"
-
-    # if nothing found, return 
 
     # if owner of the "thing" is the "user" then the "user" is authorized
-    if contribution[0]['contributor_type'] == 'User' && contribution[0]['contributor_id'] == user_id
+    if thing_instance.contributor_type == 'User' && thing_instance.contributor_id == user_id
       is_authorized = true
-    elsif contribution[0]['contributor_type'] == 'Network'
-      is_authorized = is_network_admin?(user_id, contribution[0]['contributor_id'])
+    elsif thing_instance.contributor_type == 'Network'
+      is_authorized = is_network_admin?(user_id, thing_instance.contributor_id)
     end
 
-    return [is_authorized, contribution[0]['policy_id']]
+    return is_authorized
   end
-
-#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-  # check whether current user is authorized for 'action' on 'contributable_*'
-  def check_policy(action, contributable_id, contributable_type, user_id)
-    is_authorized = false
-    # get relevant part of policy from database
-    select_string = 'policies.id,policies.contributor_id,policies.contributor_type,policies.share_mode,policies.update_mode'
-    policy_details = get_policy(select_string, contributable_id, contributable_type)
+  
+  # checks if "user" is admin of the policy associated with the "thing"
+  def is_policy_admin(policy, user_id)
+    # if anonymous user or no policy provided - definitely not policy admin
+    return false unless (policy && user_id)
     
-    # if there is no policy, or policy is owned by a network assume private
-    # (contributions owned by networks is currently not supported)
-    if policy_details.length == 0 || policy_details[0]['contributor_type'] == 'Network'
-      return false
-    end
-
-    ####################################################################################
-    #
-    # For details on what each sharing mode means, see there wiki here:
-    # http://wiki.myexperiment.org/index.php/Developer:Ownership_Sharing_and_Permissions
-    #
-    ####################################################################################
-    share_mode = policy_details[0]['share_mode'].to_i
-    update_mode = policy_details[0]['update_mode'].to_i
-
-    case action
-    when 'view'
-      # if share mode is 0,1,2, anyone can view
-      if share_mode == 0 || share_mode == 1 || share_mode == 2
-        is_authorized = true
-      # if share mode is 3,4, friends can view, or if update mode is 1, friends can view (due to cascading permissions)
-      elsif !is_authorized && user_id != 0 && (share_mode == 3 || share_mode == 4 || update_mode == 1)
-        is_authorized = is_friend?(policy_details[0]['contributor_id'], user_id)
-      end
-    when 'download'
-      # if share mode is 0, anyone can download
-      if share_mode == 0
-        is_authorized = true
-      # if share mode is 1,3, friends can download, or if update mode is 1, friends can download (due to cascading permissions)
-      elsif !is_authorized && user_id != 0 && (share_mode == 1 || share_mode == 3 || update_mode == 1)
-        is_authorized = is_friend?(policy_details[0]['contributor_id'], user_id)
-      end
-    when 'edit'
-      # if update mode is 0, anyone with view & download permissions can edit (sharing mode 0 for anonymous)
-      if update_mode == 0 && share_mode == 0
-        is_authorized = true
-      # if update mode is 1, friends can edit, or if update mode is 0 and friends have view & download permissions, they can edit
-      elsif update_mode == 1 || (update_mode == 0 && (share_mode == 0 || share_mode == 1 || share_mode == 3))
-        is_authorized = is_friend?(policy_details[0]['contributor_id'], user_id)
-      end
-    end
-
-    # if user not yet authorized, check permissions belonging to the policy
-    if !is_authorized && user_id != 0
-      is_authorized = check_permissions(policy_details[0]['id'], action, user_id)
-    end
-
-    # return is_authorized
-    is_authorized
+    return(policy.contributor_type == 'User' && policy.contributor_id == user_id)
   end
-
-  def check_permissions(policy_id, action, user_id)
-    permissions_details = get_permissions(policy_id)
-
-    # check permissions records for matching policy_id and current_user.id and decide if authorized
-    permissions_details.each do |permission|
-      if permission['contributor_id'] == user_id && permission['contributor_type'] == 'User' && permission["#{action}"]
-        return true
-      end
-    end
-
-    # or check for matching policy_id and a group.id then check if current_user is member of group.id
-    permissions_details.each do |permission|
-      if permission['contributor_type'] == 'Network' && permission["#{action}"]
-        if is_network_member?(user_id, permission['contributor_id'])
-          return true
-        end
-      end
-    end
-
-    false
+  
+  
+  def is_network_admin?(user_id, network_id)
+    # checks if there is a network with ID(network_id) which has admin with ID(user_id) -
+    # if found, user with ID(user_id) is an admin of that network 
+    network = Network.find_by_sql "SELECT user_id FROM networks WHERE id=#{network_id} AND user_id=#{user_id}"
+    return(!network.blank?)
   end
-
+  
+  
+  def is_network_member?(user_id, network_id)
+    # checks if user with ID(user_id) is a member of the group ID(network_id)
+    membership = Membership.find_by_sql "SELECT id FROM memberships WHERE user_id=#{user_id} AND network_id=#{network_id} AND user_established_at IS NOT NULL AND network_established_at IS NOT NULL"
+    return(!membership.blank?)
+  end
+  
+  
+  # checks if two users are friends
   def is_friend?(contributor_id, user_id)
     friendship = Friendship.find_by_sql "SELECT id FROM friendships WHERE (user_id=#{contributor_id} AND friend_id=#{user_id}) OR (user_id=#{user_id} AND friend_id=#{contributor_id}) AND accepted_at IS NOT NULL"
-
-    if friendship.length > 0
-      return true
-    else
-      return false
-    end
+    return(!friendship.blank?)
   end
-
-  def is_network_member?(user_id, network_id)
-    membership = Membership.find_by_sql "SELECT id FROM memberships WHERE user_id=#{user_id} AND network_id=#{network_id} AND user_established_at IS NOT NULL AND network_established_at IS NOT NULL"
-
-    # check if there is a membership record for user_id and network_id
-    if membership.length > 0
-      return true
-    else
-      # if there is no membership record check whether user_id is the owner of network_id
-      return is_network_admin?(user_id, network_id)
+  
+  
+  # gets the user object from the user_id;
+  # used by is_authorized when calling model.authorized? method for classes that don't use policy-based authorization
+  def get_user(user_id)
+    return nil if user_id == 0
+    
+    begin
+      user = User.find(:first, :conditions => ["id = ?", user_id])
+      return user
+    rescue ActiveRecord::RecordNotFound
+      # user not found, "nil" for anonymous user will be returned
+      return nil
     end
   end
   
-  def is_network_admin?(user_id, network_id)
-    network = Network.find_by_sql "SELECT user_id FROM networks WHERE user_id=#{user_id} AND id=#{network_id}"
+  
+  # query database for relevant fields in policies table
+  def get_policy(policy_id)
+    select_string = 'id, contributor_id, contributor_type, share_mode, update_mode'
+    policy_array = Policy.find_by_sql "SELECT #{select_string} FROM policies WHERE policies.id=#{policy_id}"
     
-    if network.length > 0
-      is_admin = true
+    if policy_array.blank?
+      # an unlikely event that contribution doesn't have a policy - need to use
+      # default one; "owner" of the contribution will be treated as policy admin
+      #
+      # the following is slow, but given the very rare execution can be kept
+      begin
+        # thing_instance is Contribution, so thing_instance.contributor is the original uploader == owner of the item
+        contributor = eval("#{thing_instance.contributor_type}.find(#{thing_instance.contributor_id})")
+        policy = Policy._default(contributor) 
+      rescue ActiveRecord::RecordNotFound => e
+        # original contributor not found, but the Contribution entry still exists -
+        # this is an error in associations then, because all dependent items
+        # should have been deleted along with the contributor entry; log the error
+        logger.error("UNEXPECTED ERROR - Contributor object missing for an existing contribution: (#{thing_instance.class.name}, #{thing_instance.id})")
+        logger.error("EXCEPTION:" + e)
+        return nil
+      end
     else
-      is_admin = false
+      policy = policy_array[0]
     end
     
-    is_admin
+    # if no policy is found (even no default one) --> nil will be returned
+    return policy
   end
-
-  # query database for relevant fields in policies table
-  def get_policy(select_string, contributable_id, contributable_type)
-    Policy.find_by_sql "SELECT #{select_string} FROM contributions,policies WHERE contributions.policy_id=policies.id AND contributions.contributable_id=#{contributable_id} AND contributions.contributable_type=\'#{contributable_type}\'"
+  
+  
+  # get all user permissions related to policy for the "thing" for "user"
+  def get_user_permissions(user_id, policy_id)
+    select_string = 'contributor_id, download, edit, view'
+    Permission.find_by_sql "SELECT #{select_string} FROM permissions WHERE policy_id=#{policy_id} AND contributor_type='User' AND contributor_id=#{user_id}"
   end
+  
+  
+  # get all group permissions related to policy for the "thing"
+  def get_group_permissions(policy_id)
+    select_string = 'contributor_id, download, edit, view'
+    Permission.find_by_sql "SELECT #{select_string} FROM permissions WHERE policy_id=#{policy_id} AND contributor_type='Network'"
+  end
+  
 
-  # get all permissions related to policy
-  def get_permissions(policy_id)
-    select_string = 'contributor_id,contributor_type,download,edit,view'
-    Permission.find_by_sql "SELECT #{select_string} FROM permissions WHERE policy_id=#{policy_id}"
+  # checks whether "user" is authorized for "action" on "thing"
+  def authorized_by_policy?(policy, thing_instance, action, user_id)
+    is_authorized = false
+    
+    # NB! currently myExperiment won't support objects owned by entities other than users
+    # (especially, policy checks are not agreed for these cases - however, owner tests and
+    #  permission tests are possible and will be carried out)
+    unless thing_instance.contributor_type == "User"
+      return false
+    end
+    
+    ####################################################################################
+    #
+    # For details on what each sharing / updating mode means, see the wiki:
+    # http://wiki.myexperiment.org/index.php/Developer:Ownership_Sharing_and_Permissions
+    #
+    ####################################################################################
+    share_mode = policy.share_mode
+    update_mode = policy.update_mode
+
+    case action
+      when 'view'
+        if (share_mode == 0 || share_mode == 1 || share_mode == 2)
+          # if share mode is 0,1,2, anyone can view
+          is_authorized = true
+        elsif !user_id.nil? && (share_mode == 3 || share_mode == 4 || update_mode == 1)
+          # if share mode is 3,4, friends can view; AND friends can also view if update mode is 1 -- due to cascading permissions
+          is_authorized = is_friend?(thing_instance.contributor_id, user_id)
+        end
+        
+      when 'download'
+        if (share_mode == 0)
+          # if share mode is 0, anyone can download
+          is_authorized = true
+        elsif !user_id.nil? && (share_mode == 1 || share_mode == 3 || update_mode == 1)
+          # if share mode is 1,3, friends can download; AND if update mode is 1, friends can download too -- due to cascading permissions
+          is_authorized = is_friend?(thing_instance.contributor_id, user_id)
+        end
+      when 'edit'
+        if (update_mode == 0 && share_mode == 0)
+          # if update mode is 0, anyone with view & download permissions can edit (sharing mode 0 for anonymous)
+          is_authorized = true
+        elsif !user_id.nil? && (update_mode == 1 || (update_mode == 0 && (share_mode == 1 || share_mode == 3)))
+          # if update mode is 1, friends can edit; AND if update mode is 0 and friends have view & download permissions, they can edit
+          is_authorized = is_friend?(thing_instance.contributor_id, user_id)
+        end
+    end
+
+    return is_authorized
   end
 
 end
