@@ -313,7 +313,7 @@ class WorkflowsController < ApplicationController
 
         if policy_err_msg.blank?
         	flash[:notice] = 'Workflow was successfully created.'
-          format.html { redirect_to workflow_url(@workflow) }
+          format.html { redirect_to tag_suggestions_workflow_url(@workflow) }
         else
         	flash[:notice] = "Workflow was successfully created. However some problems occurred, please see these below.</br></br><span style='color: red;'>" + policy_err_msg + "</span>"
           format.html { redirect_to :controller => 'workflows', :id => @workflow, :action => "edit" }
@@ -562,6 +562,15 @@ class WorkflowsController < ApplicationController
   
   def tag_suggestions
     @suggestions = @workflow.get_tag_suggestions
+  end
+
+  def process_tag_suggestions
+
+    params[:tag_list].split(',').each do |tag|
+      @workflow.add_tag(tag, current_user)
+    end
+
+    redirect_to(workflow_url(@workflow))
   end
 
 protected

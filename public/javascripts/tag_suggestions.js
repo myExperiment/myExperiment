@@ -71,6 +71,7 @@ function updateTagViews() {
   // selected tags
 
   markup = "";
+  form_value = "";
 
   if (tagsToAdd.length == 0) {
 
@@ -85,9 +86,16 @@ function updateTagViews() {
 
       if (i != (tagsToAdd.length - 1))
         markup += separator;
+
+      if (i > 0)
+        form_value = form_value + ",";
+
+      form_value = form_value + tagsToAdd[i];
     }
   }
 
   document.getElementById("to-add").innerHTML = markup;
+
+  document.getElementById("tag_list").value = form_value;
 }
 
