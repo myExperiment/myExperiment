@@ -17,6 +17,7 @@ module Authorization
   #       this leaves no other choice as to have (sometimes) redundant "thing_type" parameter.
   def Authorization.is_authorized?(action_name, thing_type, thing, user=nil)
     thing_instance = nil
+    thing_contribution = nil
     user_instance = nil
     user_id = nil # if this value will not get updated by input parameters - user will be treated as anonymous
 
@@ -29,15 +30,24 @@ module Authorization
     return false unless action
     
     # if thing_type or thing itself are unknown - don't authorise the action
-    return false if (thing_type.blank? || thing.blank?)
+    # (this would allow supplying no type, but giving the object instance as "thing" instead)
+    return false if thing.blank? || (thing_type.blank? && thing.kind_of?(Fixnum))
     
     
     
     # some value for "thing" supplied - assume that the object exists; check if it is an instance or the ID
     if thing.kind_of?(Fixnum)
+      # just an ID was provided - "thing_type" is assumed to have a type then
       thing_id = thing
+    elsif thing.kind_of?(Contribution)
+      thing_contribution = thing
+      thing_type = thing.class.name
+      thing_id = thing.id
     else
+      # must be an instance of "contributable" class then;
+      # (will still have to "find" the Contribution instance for this contributable aftewards)
       thing_instance = thing
+      thing_type = thing.class.name
       thing_id = thing.id
     end
     
@@ -63,10 +73,10 @@ module Authorization
     #
     # this is required to get "policy_id" for policy-based aurhorized objects (like workflows / blobs / packs)
     # and to get objects themself for other object types (networks, experiments, jobs, tavernaenactors, runners)
-    if thing_instance.nil? && ["Workflow", "Blob", "Pack", "Network", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type)
-      thing_instance = find_thing(thing_type, thing_id)
+    if thing_contribution.nil? && ["Workflow", "Blob", "Pack", "Network", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type)
+      thing_contribution = find_thing_contribution(thing_type, thing_id)
       
-      unless thing_instance
+      unless thing_contribution
         # search didn't yield any results - the "thing" wasn't found; can't authorize unknown objects
         logger.error("UNEXPECTED ERROR - Couldn't find object to be authorized:(#{thing_type}, #{thing_id}); action: #{action_name}; user: #{user_id}")
         return false
@@ -83,7 +93,7 @@ module Authorization
         unless user_id.nil?
           # access is authorized and no further checks required in two cases:
           # ** user is the owner of the "thing"
-          return true if is_owner?(user_id, thing_instance)
+          return true if is_owner?(user_id, thing_contribution)
           
           # ** user is admin of the policy associated with the "thing"
           #    (this means that the user might not have uploaded the "thing", but
@@ -91,7 +101,7 @@ module Authorization
           #
           #    it's fine if policy will not be found at this step - default one will get
           #    used further when required
-          policy_id = thing_instance.policy_id
+          policy_id = thing_contribution.policy_id
           policy = get_policy(policy_id)
           return false unless policy # if policy wasn't found (and default one couldn't be applied) - error; not authorized
           return true if is_policy_admin?(policy, user_id)
@@ -127,7 +137,7 @@ module Authorization
           # no user permissions found, need to check what is allowed by policy
           # (if no policy was found, default policy is in use instead)
           authorized_by_policy = false
-          authorized_by_policy = authorized_by_policy?(policy, thing_instance, action, user_id)
+          authorized_by_policy = authorized_by_policy?(policy, thing_contribution, action, user_id)
           return true if authorized_by_policy
           
 
@@ -157,11 +167,11 @@ module Authorization
         else
           # this is for cases where trying to authorize anonymous users;
           # the only possible check - on public policy settings:
-          policy_id = thing_instance.policy_id
+          policy_id = thing_contribution.policy_id
           policy = get_policy(policy_id)
           return false unless policy # if policy wasn't found (and default one couldn't be applied) - error; not authorized
           
-          return authorized_by_policy?(policy, thing_instance, action, nil)
+          return authorized_by_policy?(policy, thing_contribution, action, nil)
         end
         
       when "Network"
@@ -175,12 +185,12 @@ module Authorization
           user_instance = get_user(user_id)
         end
         
-        # "thing_instance" was already found previously;
+        # "thing_contribution" was already found previously;
         # neither of these "thing" types uses policy-based authorization, hence use
         # the existing <thing>.authorized?() method
         #
         # "action_name" used to work with original action name, rather than classification made inside the module
-        is_authorized = thing_instance.authorized?(action_name, user)
+        is_authorized = thing_contribution.authorized?(action_name, user)
       
       else
         # don't recognise the kind of "thing" that is being authorized, so
@@ -215,7 +225,7 @@ module Authorization
   end
 
   # check if the DB holds entry for the "thing" to be authorized 
-  def Authorization.find_thing(thing_type, thing_id)
+  def Authorization.find_thing_contribution(thing_type, thing_id)
     found_instance = nil
     
     begin
@@ -224,7 +234,7 @@ module Authorization
           # "find_by_sql" works faster itself PLUS only a subset of all fields is selected;
           # this is the most frequent query to be executed, hence needs to be optimised
           found_instance = Contribution.find_by_sql "SELECT contributor_id, contributor_type, policy_id FROM contributions WHERE contributable_id=#{thing_id} AND contributable_type='#{thing_type}'"
-          found_instance = nil if found_instance.empty? # if nothing was found
+          found_instance = (found_instance.empty? ? nil : found_instance[0]) # if nothing was found - nil; otherwise - first match
         when "Network"
           found_instance = Network.find(thing_id)
         when "Experiment"
@@ -247,21 +257,21 @@ module Authorization
 
 
   # checks if "user" is owner of the "thing"
-  def Authorization.is_owner?(user_id, thing_instance)
+  def Authorization.is_owner?(user_id, thing_contribution)
     is_authorized = false
 
     # if owner of the "thing" is the "user" then the "user" is authorized
-    if thing_instance.contributor_type == 'User' && thing_instance.contributor_id == user_id
+    if thing_contribution.contributor_type == 'User' && thing_contribution.contributor_id == user_id
       is_authorized = true
-    elsif thing_instance.contributor_type == 'Network'
-      is_authorized = is_network_admin?(user_id, thing_instance.contributor_id)
+    elsif thing_contribution.contributor_type == 'Network'
+      is_authorized = is_network_admin?(user_id, thing_contribution.contributor_id)
     end
 
     return is_authorized
   end
   
   # checks if "user" is admin of the policy associated with the "thing"
-  def Authorization.is_policy_admin(policy, user_id)
+  def Authorization.is_policy_admin?(policy, user_id)
     # if anonymous user or no policy provided - definitely not policy admin
     return false unless (policy && user_id)
     
@@ -317,14 +327,14 @@ module Authorization
       #
       # the following is slow, but given the very rare execution can be kept
       begin
-        # thing_instance is Contribution, so thing_instance.contributor is the original uploader == owner of the item
-        contributor = eval("#{thing_instance.contributor_type}.find(#{thing_instance.contributor_id})")
+        # thing_contribution is Contribution, so thing_contribution.contributor is the original uploader == owner of the item
+        contributor = eval("#{thing_contribution.contributor_type}.find(#{thing_contribution.contributor_id})")
         policy = Policy._default(contributor) 
       rescue ActiveRecord::RecordNotFound => e
         # original contributor not found, but the Contribution entry still exists -
         # this is an error in associations then, because all dependent items
         # should have been deleted along with the contributor entry; log the error
-        logger.error("UNEXPECTED ERROR - Contributor object missing for an existing contribution: (#{thing_instance.class.name}, #{thing_instance.id})")
+        logger.error("UNEXPECTED ERROR - Contributor object missing for an existing contribution: (#{thing_contribution.class.name}, #{thing_contribution.id})")
         logger.error("EXCEPTION:" + e)
         return nil
       end
@@ -352,13 +362,13 @@ module Authorization
   
 
   # checks whether "user" is authorized for "action" on "thing"
-  def Authorization.authorized_by_policy?(policy, thing_instance, action, user_id)
+  def Authorization.authorized_by_policy?(policy, thing_contribution, action, user_id)
     is_authorized = false
     
     # NB! currently myExperiment won't support objects owned by entities other than users
     # (especially, policy checks are not agreed for these cases - however, owner tests and
     #  permission tests are possible and will be carried out)
-    unless thing_instance.contributor_type == "User"
+    unless thing_contribution.contributor_type == "User"
       return false
     end
     
@@ -378,7 +388,7 @@ module Authorization
           is_authorized = true
         elsif !user_id.nil? && (share_mode == 3 || share_mode == 4 || update_mode == 1)
           # if share mode is 3,4, friends can view; AND friends can also view if update mode is 1 -- due to cascading permissions
-          is_authorized = is_friend?(thing_instance.contributor_id, user_id)
+          is_authorized = is_friend?(thing_contribution.contributor_id, user_id)
         end
         
       when 'download'
@@ -387,7 +397,7 @@ module Authorization
           is_authorized = true
         elsif !user_id.nil? && (share_mode == 1 || share_mode == 3 || update_mode == 1)
           # if share mode is 1,3, friends can download; AND if update mode is 1, friends can download too -- due to cascading permissions
-          is_authorized = is_friend?(thing_instance.contributor_id, user_id)
+          is_authorized = is_friend?(thing_contribution.contributor_id, user_id)
         end
       when 'edit'
         if (update_mode == 0 && share_mode == 0)
@@ -395,7 +405,7 @@ module Authorization
           is_authorized = true
         elsif !user_id.nil? && (update_mode == 1 || (update_mode == 0 && (share_mode == 1 || share_mode == 3)))
           # if update mode is 1, friends can edit; AND if update mode is 0 and friends have view & download permissions, they can edit
-          is_authorized = is_friend?(thing_instance.contributor_id, user_id)
+          is_authorized = is_friend?(thing_contribution.contributor_id, user_id)
         end
     end
 
