@@ -67,7 +67,7 @@ Mime::Type.register "application/whip-archive", :whip
 # SMTP configuration
 
 require 'smtp_tls'
-require 'is_authorized'
+require 'authorization'
 
 load 'config/environment_private.rb' if FileTest.exist?('config/environment_private.rb')
 

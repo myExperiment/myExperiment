@@ -3,7 +3,7 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-module IsAuthorized
+module Authorization
 
   # check the relevant permissions based on 'action' string
   
@@ -15,7 +15,7 @@ module IsAuthorized
   #
   # Note: there is no method overloading in Ruby and it's a good idea to have a default "nil" value for "user";
   #       this leaves no other choice as to have (sometimes) redundant "thing_type" parameter.
-  def is_authorized?(action_name, thing_type, thing, user=nil)
+  def Authorization.is_authorized?(action_name, thing_type, thing, user=nil)
     thing_instance = nil
     user_instance = nil
     user_id = nil # if this value will not get updated by input parameters - user will be treated as anonymous
@@ -196,7 +196,7 @@ module IsAuthorized
 
   private
 
-  def categorize_action(action_name)
+  def Authorization.categorize_action(action_name)
     case action_name
       when 'show', 'index', 'view', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'comments', 'comments_timeline', 'rate', 'tag',  'items', 'statistics', 'tag_suggestions'
         action = 'view'
@@ -215,7 +215,7 @@ module IsAuthorized
   end
 
   # check if the DB holds entry for the "thing" to be authorized 
-  def find_thing(thing_type, thing_id)
+  def Authorization.find_thing(thing_type, thing_id)
     found_instance = nil
     
     begin
@@ -247,7 +247,7 @@ module IsAuthorized
 
 
   # checks if "user" is owner of the "thing"
-  def is_owner?(user_id, thing_instance)
+  def Authorization.is_owner?(user_id, thing_instance)
     is_authorized = false
 
     # if owner of the "thing" is the "user" then the "user" is authorized
@@ -261,7 +261,7 @@ module IsAuthorized
   end
   
   # checks if "user" is admin of the policy associated with the "thing"
-  def is_policy_admin(policy, user_id)
+  def Authorization.is_policy_admin(policy, user_id)
     # if anonymous user or no policy provided - definitely not policy admin
     return false unless (policy && user_id)
     
@@ -269,7 +269,7 @@ module IsAuthorized
   end
   
   
-  def is_network_admin?(user_id, network_id)
+  def Authorization.is_network_admin?(user_id, network_id)
     # checks if there is a network with ID(network_id) which has admin with ID(user_id) -
     # if found, user with ID(user_id) is an admin of that network 
     network = Network.find_by_sql "SELECT user_id FROM networks WHERE id=#{network_id} AND user_id=#{user_id}"
@@ -277,7 +277,7 @@ module IsAuthorized
   end
   
   
-  def is_network_member?(user_id, network_id)
+  def Authorization.is_network_member?(user_id, network_id)
     # checks if user with ID(user_id) is a member of the group ID(network_id)
     membership = Membership.find_by_sql "SELECT id FROM memberships WHERE user_id=#{user_id} AND network_id=#{network_id} AND user_established_at IS NOT NULL AND network_established_at IS NOT NULL"
     return(!membership.blank?)
@@ -285,7 +285,7 @@ module IsAuthorized
   
   
   # checks if two users are friends
-  def is_friend?(contributor_id, user_id)
+  def Authorization.is_friend?(contributor_id, user_id)
     friendship = Friendship.find_by_sql "SELECT id FROM friendships WHERE (user_id=#{contributor_id} AND friend_id=#{user_id}) OR (user_id=#{user_id} AND friend_id=#{contributor_id}) AND accepted_at IS NOT NULL"
     return(!friendship.blank?)
   end
@@ -293,7 +293,7 @@ module IsAuthorized
   
   # gets the user object from the user_id;
   # used by is_authorized when calling model.authorized? method for classes that don't use policy-based authorization
-  def get_user(user_id)
+  def Authorization.get_user(user_id)
     return nil if user_id == 0
     
     begin
@@ -307,7 +307,7 @@ module IsAuthorized
   
   
   # query database for relevant fields in policies table
-  def get_policy(policy_id)
+  def Authorization.get_policy(policy_id)
     select_string = 'id, contributor_id, contributor_type, share_mode, update_mode'
     policy_array = Policy.find_by_sql "SELECT #{select_string} FROM policies WHERE policies.id=#{policy_id}"
     
@@ -338,21 +338,21 @@ module IsAuthorized
   
   
   # get all user permissions related to policy for the "thing" for "user"
-  def get_user_permissions(user_id, policy_id)
+  def Authorization.get_user_permissions(user_id, policy_id)
     select_string = 'contributor_id, download, edit, view'
     Permission.find_by_sql "SELECT #{select_string} FROM permissions WHERE policy_id=#{policy_id} AND contributor_type='User' AND contributor_id=#{user_id}"
   end
   
   
   # get all group permissions related to policy for the "thing"
-  def get_group_permissions(policy_id)
+  def Authorization.get_group_permissions(policy_id)
     select_string = 'contributor_id, download, edit, view'
     Permission.find_by_sql "SELECT #{select_string} FROM permissions WHERE policy_id=#{policy_id} AND contributor_type='Network'"
   end
   
 
   # checks whether "user" is authorized for "action" on "thing"
-  def authorized_by_policy?(policy, thing_instance, action, user_id)
+  def Authorization.authorized_by_policy?(policy, thing_instance, action, user_id)
     is_authorized = false
     
     # NB! currently myExperiment won't support objects owned by entities other than users
