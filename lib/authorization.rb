@@ -102,7 +102,7 @@ module Authorization
           #    it's fine if policy will not be found at this step - default one will get
           #    used further when required
           policy_id = thing_contribution.policy_id
-          policy = get_policy(policy_id)
+          policy = get_policy(policy_id, thing_contribution)
           return false unless policy # if policy wasn't found (and default one couldn't be applied) - error; not authorized
           return true if is_policy_admin?(policy, user_id)
           
@@ -168,7 +168,7 @@ module Authorization
           # this is for cases where trying to authorize anonymous users;
           # the only possible check - on public policy settings:
           policy_id = thing_contribution.policy_id
-          policy = get_policy(policy_id)
+          policy = get_policy(policy_id, thing_contribution)
           return false unless policy # if policy wasn't found (and default one couldn't be applied) - error; not authorized
           
           return authorized_by_policy?(policy, thing_contribution, action, nil)
@@ -317,47 +317,69 @@ module Authorization
   
   
   # query database for relevant fields in policies table
-  def Authorization.get_policy(policy_id)
-    select_string = 'id, contributor_id, contributor_type, share_mode, update_mode'
-    policy_array = Policy.find_by_sql "SELECT #{select_string} FROM policies WHERE policies.id=#{policy_id}"
-    
-    if policy_array.blank?
-      # an unlikely event that contribution doesn't have a policy - need to use
-      # default one; "owner" of the contribution will be treated as policy admin
-      #
-      # the following is slow, but given the very rare execution can be kept
-      begin
-        # thing_contribution is Contribution, so thing_contribution.contributor is the original uploader == owner of the item
-        contributor = eval("#{thing_contribution.contributor_type}.find(#{thing_contribution.contributor_id})")
-        policy = Policy._default(contributor) 
-      rescue ActiveRecord::RecordNotFound => e
-        # original contributor not found, but the Contribution entry still exists -
-        # this is an error in associations then, because all dependent items
-        # should have been deleted along with the contributor entry; log the error
-        logger.error("UNEXPECTED ERROR - Contributor object missing for an existing contribution: (#{thing_contribution.class.name}, #{thing_contribution.id})")
-        logger.error("EXCEPTION:" + e)
-        return nil
-      end
+  #
+  # Parameters:
+  # 1) policy_id - ID of the policy to find in the DB;
+  # 2) thing_contribution - Contribution object for the "thing" that is being authorized;
+  def Authorization.get_policy(policy_id, thing_contribution)
+    unless policy_id.blank?
+      select_string = 'id, contributor_id, contributor_type, share_mode, update_mode'
+      policy_array = Policy.find_by_sql "SELECT #{select_string} FROM policies WHERE policies.id=#{policy_id}"
+      
+      # if nothing's found, use the default policy
+      policy = (policy_array.blank? ? get_default_policy(thing_contribution) : policy_array[0])
     else
-      policy = policy_array[0]
+      # if the "policy_id" turns out unknown, use default policy
+      policy = get_default_policy(thing_contribution)
     end
     
-    # if no policy is found (even no default one) --> nil will be returned
     return policy
+  end
+  
+  
+  # if a policy instance not found to be associated with the Contribution of a "thing", use a default one
+  def Authorization.get_default_policy(thing_contribution)
+    # an unlikely event that contribution doesn't have a policy - need to use
+    # default one; "owner" of the contribution will be treated as policy admin
+    #
+    # the following is slow, but given the very rare execution can be kept
+    begin
+      # thing_contribution is Contribution, so thing_contribution.contributor is the original uploader == owner of the item
+      contributor = eval("#{thing_contribution.contributor_type}.find(#{thing_contribution.contributor_id})")
+      policy = Policy._default(contributor)
+      return policy
+    rescue ActiveRecord::RecordNotFound => e
+      # original contributor not found, but the Contribution entry still exists -
+      # this is an error in associations then, because all dependent items
+      # should have been deleted along with the contributor entry; log the error
+      logger.error("UNEXPECTED ERROR - Contributor object missing for an existing contribution: (#{thing_contribution.class.name}, #{thing_contribution.id})")
+      logger.error("EXCEPTION:" + e)
+      return nil
+    end
   end
   
   
   # get all user permissions related to policy for the "thing" for "user"
   def Authorization.get_user_permissions(user_id, policy_id)
-    select_string = 'contributor_id, download, edit, view'
-    Permission.find_by_sql "SELECT #{select_string} FROM permissions WHERE policy_id=#{policy_id} AND contributor_type='User' AND contributor_id=#{user_id}"
+    unless user_id.blank? || policy_id.blank?
+      select_string = 'contributor_id, download, edit, view'
+      Permission.find_by_sql "SELECT #{select_string} FROM permissions WHERE policy_id=#{policy_id} AND contributor_type='User' AND contributor_id=#{user_id}"
+    else
+      # an empty array to be returned has the same effect as if no permissions were found anyway
+      return []
+    end
   end
   
   
   # get all group permissions related to policy for the "thing"
   def Authorization.get_group_permissions(policy_id)
-    select_string = 'contributor_id, download, edit, view'
-    Permission.find_by_sql "SELECT #{select_string} FROM permissions WHERE policy_id=#{policy_id} AND contributor_type='Network'"
+    unless policy_id.blank?
+      select_string = 'contributor_id, download, edit, view'
+      Permission.find_by_sql "SELECT #{select_string} FROM permissions WHERE policy_id=#{policy_id} AND contributor_type='Network'"
+    else
+      # an empty array to be returned has the same effect as if no permissions were found anyway
+      return []
+    end
   end
   
 
