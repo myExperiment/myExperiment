@@ -190,9 +190,13 @@ module Authorization
         end
         
       when "Network"
-        # TODO
-        # add checks to allow only admin to edit / delete / accept memberships / etc
-        is_authorized = true
+        case action
+          when "edit", "destroy"
+            # check to allow only admin to edit / delete the group
+            is_authorized = is_network_admin?(user_id, thing_id)
+          else
+            is_authorized = true
+        end
         
       when "Experiment", "Job", "TavernaEnactor", "Runner"
         # user instance is absolutely required for this - so find it, if not yet available
