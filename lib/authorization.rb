@@ -210,12 +210,16 @@ module Authorization
     case action_name
       when 'show', 'index', 'view', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'comments', 'comments_timeline', 'rate', 'tag',  'items', 'statistics', 'tag_suggestions'
         action = 'view'
-      when 'new', 'create', 'update', 'edit', 'new_version', 'create_version', 'destroy_version', 'edit_version', 'update_version', 'new_item', 'create_item', 'edit_item', 'update_item', 'quick_add', 'resolve_link'
+      when 'edit', 'new', 'create', 'update', 'new_version', 'create_version', 'destroy_version', 'edit_version', 'update_version', 'new_item', 'create_item', 'edit_item', 'update_item', 'quick_add', 'resolve_link'
         action = 'edit'
       when 'download', 'named_download', 'launch', 'submit_job'
         action = 'download'
       when 'destroy', 'destroy_item'
         action = 'destroy'
+      when 'execute'
+        # action is available only(?) for runners at the moment;
+        # possibly, "launch" action for workflows should be moved into this category, too
+        action = 'execute'
       else
         # unknown action
         action = nil
