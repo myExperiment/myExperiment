@@ -1050,7 +1050,6 @@ module ApplicationHelper
   end
   
   def thing_authorized?(action, thing)
-    return true unless thing.respond_to?(:authorized?)
     return Authorization.is_authorized?(action, nil, thing, current_user)
   end
   
