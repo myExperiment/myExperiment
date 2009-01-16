@@ -78,7 +78,7 @@ protected
     begin
       blog = Blog.find(params[:blog_id])
       
-      if blog.authorized?(action_name, (logged_in? ? current_user : nil))
+      if Authorization.is_authorized?(action_name, nil, blog, current_user)
         @blog = blog
       else
         error("Blog not found (id not authorized)", "is invalid (not authorized)")

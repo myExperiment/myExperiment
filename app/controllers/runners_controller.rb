@@ -112,6 +112,7 @@ protected
   def find_runner_auth
     runner = TavernaEnactor.find(:first, :conditions => ["id = ?", params[:id]])
     
+    # runners / runnables don't use policy-based authorization, hence original authorization method can be left unchanged
     if runner and runner.authorized?(action_name, current_user)
       @runner = runner
     else

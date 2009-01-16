@@ -431,11 +431,11 @@ class PacksController < ApplicationController
     begin
       pack = Pack.find(params[:id])
       
-      if pack.authorized?(action_name, current_user)
+      if Authorization.is_authorized?(action_name, pack.class.name, pack, current_user)
         @pack = pack
         
-        @authorised_to_edit = logged_in? && @pack.authorized?("edit", current_user)
-        @authorised_to_download = @pack.authorized?("download", (logged_in? ? current_user : nil))
+        @authorised_to_edit = Authorization.is_authorized?("edit", nil, @pack, current_user)
+        @authorised_to_download = Authorization.is_authorized?("download", nil, @pack, current_user)
         
         @pack_entry_url = url_for :only_path => false,
                             :host => base_host,

@@ -102,6 +102,7 @@ protected
   def find_experiment_auth
     experiment = Experiment.find(:first, :conditions => ["id = ?", params[:id]])
     
+    # experiments don't use policy-based authorization, hence original authorization mechanism can be left unchanged
     if experiment and experiment.authorized?(action_name, current_user)
       @experiment = experiment
     else

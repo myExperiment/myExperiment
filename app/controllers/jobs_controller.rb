@@ -23,6 +23,7 @@ class JobsController < ApplicationController
   end
 
   def show
+    # runners / runnables don't use policy-based authorization, hence original authorization method can be left unchanged
     unless @job.runnable.authorized?(action_name, current_user)
       flash[:error] = "<p>You will not be able to submit this Job, but you can still see the details of it."
       flash[:error] = "<p>The runnable item (#{@job.runnable_type}) is not authorized - you need download priviledges to run it.</p>"
@@ -30,6 +31,7 @@ class JobsController < ApplicationController
     
     # TODO: check that runnable version still exists
     
+    # runners / runnables don't use policy-based authorization, hence original authorization method can be left unchanged
     unless @job.runner.authorized?(action_name, current_user)
       flash[:error] = "You will not be able to submit this Job, but you can still see the details of it." unless flash[:error]
       flash[:error] += "<p>The runner is not authorized - you need to either own it or be part of a Group that owns it.</p>"
@@ -98,6 +100,7 @@ class JobsController < ApplicationController
       end
     end
     
+    # runners / runnables don't use policy-based authorization, hence original authorization method can be left unchanged
     if !runnable or !runnable.authorized?('download', user)
       success = false
       @job.errors.add(:runnable_id, "not valid or not authorized")
@@ -112,6 +115,7 @@ class JobsController < ApplicationController
     # Check runner is a valid and authorized one
     # (for now we can assume it's a TavernaEnactor)
     runner = TavernaEnactor.find(:first, :conditions => ["id = ?", params[:job][:runner_id]])
+    # runners / runnables don't use policy-based authorization, hence original authorization method can be left unchanged
     if !runner or !runner.authorized?('execute', user)
       success = false
       @job.errors.add(:runner_id, "not valid or not authorized")
@@ -213,12 +217,13 @@ class JobsController < ApplicationController
     errors_text = ''
     
     # Authorize the runnable and runner
-    
+    # runners / runnables don't use policy-based authorization, hence original authorization method can be left unchanged
     unless @job.runnable.authorized?(action_name, current_user) 
       success = false;
       errors_text += "<p>The runnable item (#{@job.runnable_type}) is not authorized - you need download priviledges to run it.</p>"
     end
     
+    # runners / runnables don't use policy-based authorization, hence original authorization method can be left unchanged
     unless @job.runner.authorized?(action_name, current_user) 
       success = false;
       errors_text += "<p>The runner is not authorized - you need to either own it or be part of a Group that owns it.</p>"
@@ -312,6 +317,7 @@ protected
         job.experiment = Experiment.new(:title => Experiment.default_title(user), :contributor => user)
       elsif params[:change_experiment] == 'existing'
         experiment = Experiment.find(params[:change_experiment_id])
+        # experiments don't use policy-based authorization, hence original authorization method can be left unchanged
         if experiment and experiment.authorized?('edit', user)
           job.experiment = experiment
         else
@@ -338,6 +344,7 @@ protected
   def find_experiment_auth
     experiment = Experiment.find(:first, :conditions => ["id = ?", params[:experiment_id]])
     
+    # experiments don't use policy-based authorization, hence original authorization method can be left unchanged
     if experiment and experiment.authorized?(action_name, current_user)
       @experiment = experiment
     else
@@ -355,6 +362,7 @@ protected
   def find_job_auth
     job = Job.find(:first, :conditions => ["id = ?", params[:id]])
       
+    # jobs don't use policy-based authorization, hence original authorization method can be left unchanged
     if job and job.experiment.id == @experiment.id and job.authorized?(action_name, current_user) 
       @job = job
     else
