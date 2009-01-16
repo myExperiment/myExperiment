@@ -5,10 +5,9 @@
 
 module Authorization
 
-  # check the relevant permissions based on 'action' string
-  
   # 1) action_name - name of the action that is about to happen with the "thing"
-  # 2) thing_type - class name of the thing that needs to be authorized
+  # 2) thing_type - class name of the thing that needs to be authorized;
+  #                 use NIL as a value of this parameter if an instance of the object to be authorized is supplied as "thing";
   # 3) thing - this is supposed to be an instance of the thing to be authorized, but
   #            can also accept an ID (since we have the type, too - "thing_type")
   # 4) user - can be either user instance or the ID (NIL or 0 to indicate anonymous/not logged in user)
@@ -18,6 +17,7 @@ module Authorization
   def Authorization.is_authorized?(action_name, thing_type, thing, user=nil)
     thing_instance = nil
     thing_contribution = nil
+    thing_id = nil
     user_instance = nil
     user_id = nil # if this value will not get updated by input parameters - user will be treated as anonymous
 
@@ -29,8 +29,8 @@ module Authorization
     action = categorize_action(action_name)
     return false unless action
     
-    # if thing_type or thing itself are unknown - don't authorise the action
-    # (this would allow supplying no type, but giving the object instance as "thing" instead)
+    # if "thing" is unknown, or "thing" expresses ID of the object to be authorized, but "thing_type" is unknown - don't authorise the action
+    # (this would allow, however, supplying no type, but giving the object instance as "thing" instead)
     return false if thing.blank? || (thing_type.blank? && thing.kind_of?(Fixnum))
     
     
@@ -44,12 +44,18 @@ module Authorization
       thing_type = thing.class.name
       thing_id = thing.id
     else
-      # must be an instance of "contributable" class then;
-      # (will still have to "find" the Contribution instance for this contributable aftewards)
+      # "thing" isn't an ID of the object; it's not a Contribution, 
+      # so it must be an instance of the object to be authorized -- this can be:
+      # -- "contributable" (workflow / file / pack) : (will still have to "find" the Contribution instance for this contributable aftewards)
+      # OR
+      # -- Network instance
+      # -- Experiment / Job / Runner / TavernaEnactor instance
+      # -- or any other object instance, for which we'll use the object itself to run .authorized?() on it
       thing_instance = thing
       thing_type = thing.class.name
       thing_id = thing.id
     end
+    
     
     if user.kind_of?(User)
       user_instance = user
@@ -73,13 +79,22 @@ module Authorization
     #
     # this is required to get "policy_id" for policy-based aurhorized objects (like workflows / blobs / packs)
     # and to get objects themself for other object types (networks, experiments, jobs, tavernaenactors, runners)
-    if thing_contribution.nil? && ["Workflow", "Blob", "Pack", "Network", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type)
-      thing_contribution = find_thing_contribution(thing_type, thing_id)
+    if (thing_contribution.nil? && ["Workflow", "Blob", "Pack"].include?(thing_type)) || 
+       (thing_instance.nil? && ["Network", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type))
       
-      unless thing_contribution
+      found_thing = find_thing(thing_type, thing_id)
+      
+      unless found_thing
         # search didn't yield any results - the "thing" wasn't found; can't authorize unknown objects
         logger.error("UNEXPECTED ERROR - Couldn't find object to be authorized:(#{thing_type}, #{thing_id}); action: #{action_name}; user: #{user_id}")
         return false
+      else
+        if ["Workflow", "Blob", "Pack"].include?(thing_type)
+          # "contribution" are only found for these three types of object, for all the rest - use instances
+          thing_contribution = found_thing
+        else
+          thing_instance = found_thing
+        end
       end
     end
     
@@ -185,12 +200,12 @@ module Authorization
           user_instance = get_user(user_id)
         end
         
-        # "thing_contribution" was already found previously;
+        # "thing_instance" was already found previously;
         # neither of these "thing" types uses policy-based authorization, hence use
         # the existing <thing>.authorized?() method
         #
         # "action_name" used to work with original action name, rather than classification made inside the module
-        is_authorized = thing_contribution.authorized?(action_name, user)
+        is_authorized = thing_instance.authorized?(action_name, user)
       
       else
         # don't recognise the kind of "thing" that is being authorized, so
@@ -229,7 +244,7 @@ module Authorization
   end
 
   # check if the DB holds entry for the "thing" to be authorized 
-  def Authorization.find_thing_contribution(thing_type, thing_id)
+  def Authorization.find_thing(thing_type, thing_id)
     found_instance = nil
     
     begin
