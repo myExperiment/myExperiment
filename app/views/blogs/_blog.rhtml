@@ -23,9 +23,9 @@
 	  <tr>
 	    <td colspan="2">
 	      <center>
-	        <% if blog.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", blog_path(blog), nil, nil, "View" %> <% end %>
-	        <% if logged_in? and blog.authorized?("edit", current_user) %><%= icon "edit", edit_blog_path(blog) %> <% end %>
-	        <% if logged_in? and blog.authorized?("destroy", current_user) %><%= icon "destroy", blog_path(blog), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
+	        <% if Authorization.is_authorized?("show", nil, blog, current_user) %><%= icon "show", blog_path(blog), nil, nil, "View" %> <% end %>
+	        <% if logged_in? && Authorization.is_authorized?("edit", nil, blog, current_user) %><%= icon "edit", edit_blog_path(blog) %> <% end %>
+	        <% if logged_in? && Authorization.is_authorized?("destroy", nil, blog, current_user) %><%= icon "destroy", blog_path(blog), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
 	      </center>
 	    </td>
 	  </tr>

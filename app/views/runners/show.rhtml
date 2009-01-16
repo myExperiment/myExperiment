@@ -1,5 +1,6 @@
 <% t "#{@runner.class.to_s} - #{h @runner.title}" -%>
 
+<% # runners don't use policy-based authorization, so it's better to keep the runner-specific authorization -%>
 <% if @runner.authorized?('edit', current_user) -%>
 	<ul class="sectionIcons">
 	  <li><%= icon('edit', edit_runner_path(@runner), nil, nil, 'Edit Runner') %></li>

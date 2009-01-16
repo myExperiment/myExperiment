@@ -45,6 +45,7 @@
 			    <td class="actions"  style="width: 80px;">
 		      	<%= icon "show", job_url(job.experiment, job), nil, nil, "View" %>
 						<% if false -%>
+						<% # jobs don't use policy-based authorization mechanism, so it's better to keep job-specific authorization -%>
 						<% if job.authorized?("edit", logged_in? ? current_user : nil) -%>
 							<%= icon('edit', edit_job_path(job.experiment, job), nil, nil, 'Edit') %>
 						<% end -%>

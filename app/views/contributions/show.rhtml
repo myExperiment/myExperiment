@@ -34,7 +34,7 @@
 <% end %>
 
 
-<% if logged_in? and @contribution.authorized?("destroy", current_user) %>
+<% if logged_in? && Authorization.is_authorized?("destroy", nil, @contribution, current_user) %>
   <div class="tabContainer">
     <div class="tabTitle">Policy</div>
     <div class="tabContent">
@@ -53,7 +53,7 @@
   </div>
 </div>
 
-<% if logged_in? and @contribution.authorized?("destroy", current_user) %>
+<% if logged_in? && Authorization.is_authorized?("destroy", nil, @contribution, current_user) %>
   <div class="tabContainer">
     <div class="tabTitle">History</div>
     <div class="tabContent">

@@ -1,7 +1,7 @@
 <% unless collection.empty? %>
 	
 	<% for contribution in collection %>
-		<% if (show = contribution.authorized?("show", current_user)) %>
+		<% if (show = Authorization.is_authorized?("show", nil, contribution, current_user)) %>
 	    <% unless params[:contributable_type] %>
 				<p style="margin-top: 0.5em;"><b><%= visible_name(contribution.contributable_type) %></b></p>
 			<% end %>

@@ -4,7 +4,7 @@
 	<% if mine?(@blob) -%>
 		<li><%= icon('manage', edit_file_path(@blob), nil, nil, 'Manage File Entry')%></li>
 	<% end -%>
-	<% if @blob.authorized?("destroy", current_user) %>
+	<% if Authorization.is_authorized?('destroy', nil, @blob, current_user) %>
 		<li><%= icon('destroy', file_path(@blob), nil, { :confirm => 'This deletes the File and all metadata such as tags, comments and ratings. Are you sure?', :method => :delete }, 'Delete File Entry') %></li>
 	<% end %>
 </ul>
@@ -84,7 +84,7 @@
 				Download
 			</h3>
 			
-			<% if @blob.authorized?("download", (logged_in? ? current_user : nil)) %>
+			<% if Authorization.is_authorized?('download', nil, @blob, current_user) %>
 				<ul class="sectionIcons">
 					<li><%= icon('blob', @named_download_url, "Download File", nil, "Download File") %></li>
 				</ul>
@@ -110,7 +110,7 @@
 																											 :owner_id => ((@blob.contributor_type == 'User') ? @blob.contributor_id : nil), 
 																											 :add_path => tag_file_path(@blob), 
 																											 :edit_path => edit_file_path(@blob),
-																											 :allow_edit => @blob.authorized?("edit", logged_in? ? current_user : nil ) } %>
+																											 :allow_edit => Authorization.is_authorized?('edit', nil, @blob, current_user) } %>
 																											 
   <%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @blob } %>
 	
@@ -145,7 +145,7 @@
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @blob } %>
       <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @blob } %>
 	  
-      <% if @blob.authorized?("edit", current_user) %>
+      <% if Authorization.is_authorized?('edit', nil, @blob, current_user) %>
         <ul class="sectionIcons">
           <li><%= icon('edit', edit_file_path(@blob), nil, nil, 'Edit')%></li>
         </ul>
