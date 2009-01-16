@@ -141,7 +141,7 @@ def rest_get_request(ob, req_uri, uri, entity_name, query)
 
         # filter out things that the user cannot see
         collection = collection.select do |c|
-          not c.respond_to?('contribution') or c.authorized?('view', current_user)
+          not c.respond_to?('contribution') || Authorized.is_authorized?("view", nil, c, current_user)
         end
 
         collection.each do |item|
@@ -224,7 +224,7 @@ def rest_crud_request(rules)
 
   case rules['Permission']
     when 'public'; # do nothing
-    when 'view'; return rest_error_response(403, 'Not authorized') if not perm_ob.authorized?("show", (logged_in? ? current_user : nil))
+    when 'view'; return rest_error_response(403, 'Not authorized') if !Authorization.is_authorized?("show", nil, perm_ob, current_user)
     when 'owner'; return rest_error_response(403, 'Not authorized') if logged_in?.nil? or object_owner(perm_ob) != current_user
   end
 
@@ -284,7 +284,7 @@ def rest_index_request(rules, query)
   end
 
   # filter out ones they are not allowed to get
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", (logged_in? ? current_user : nil)) end)
+  obs = (obs.select do |c| c.respond_to?('contribution') == false || Authorized.is_authorized?("index", nil, c, current_user) end)
 
   produce_rest_list(rules, query, obs, rest_name.pluralize)
 end
@@ -439,7 +439,7 @@ def get_rest_uri(rules, query)
 
   return bad_rest_request if query['resource'].nil?
 
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", (logged_in? ? current_user : nil)) end)
+  obs = (obs.select do |c| c.respond_to?('contribution') == false || Authorization.is_authorized?("index", nil, c, current_user) end)
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><rest-uri/>")
   "bing"
 end
@@ -521,6 +521,7 @@ end
 #   runner     = TavernaEnactor.find_by_id(runner_bits[1].to_i)
 #   runnable   = Workflow.find_by_id(runnable_bits[1].to_i)
 #
+#   NB! if this method get's worked on later, .authorized? for experiments / runners / runnables is a better choice than Authorized.is_authorized?() call
 #   return rest_error_response(400, 'Bad Request') if experiment.nil? or not experiment.authorized?("edit", current_user)
 #   return rest_error_response(400, 'Bad Request') if runner.nil?     or not runner.authorized?("download", current_user)
 #   return rest_error_response(400, 'Bad Request') if runnable.nil?   or not runnable.authorized?("view", current_user)
@@ -610,7 +611,7 @@ def get_tagged(rules, query)
   obs = tag ? tag.tagged : []
 
   # filter out ones they are not allowed to get
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?('index', (logged_in? ? current_user : nil)) end)
+  obs = (obs.select do |c| c.respond_to?('contribution') == false || Authorized.is_authorized?("index", nil, c, current_user) end)
 
   produce_rest_list(rules, query, obs, 'tagged')
 end
@@ -688,6 +689,7 @@ end
 #
 #   return rest_error_response(404, 'Resource Not Found') if resource.nil?
 #
+#   # this will have to be replaced with Authorization.is_authorized?() if it comes into use at some point
 #   if resource.respond_to?('authorized?')
 #     return rest_error_response(403, 'Not Authorized') if not resource.authorized?('edit', current_user)
 #   end
