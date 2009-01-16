@@ -40,9 +40,10 @@ module Authorization
       # just an ID was provided - "thing_type" is assumed to have a type then
       thing_id = thing
     elsif thing.kind_of?(Contribution)
+      # thing_type/_id should be properties of the actual "thing", not it's contribution
       thing_contribution = thing
-      thing_type = thing.class.name
-      thing_id = thing.id
+      thing_type = thing_contribution.contributable_type
+      thing_id = thing_contribution.contributable_id
     else
       # "thing" isn't an ID of the object; it's not a Contribution, 
       # so it must be an instance of the object to be authorized -- this can be:
@@ -77,9 +78,9 @@ module Authorization
     # need to find the object that needs to be authorized first;
     # (only do this for object types that are known to require authorization)
     #
-    # this is required to get "policy_id" for policy-based aurhorized objects (like workflows / blobs / packs)
+    # this is required to get "policy_id" for policy-based aurhorized objects (like workflows / blobs / packs / contributions)
     # and to get objects themself for other object types (networks, experiments, jobs, tavernaenactors, runners)
-    if (thing_contribution.nil? && ["Workflow", "Blob", "Pack"].include?(thing_type)) || 
+    if (thing_contribution.nil? && ["Workflow", "Blob", "Pack", "Contribution"].include?(thing_type)) || 
        (thing_instance.nil? && ["Network", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type))
       
       found_thing = find_thing(thing_type, thing_id)
@@ -89,8 +90,9 @@ module Authorization
         logger.error("UNEXPECTED ERROR - Couldn't find object to be authorized:(#{thing_type}, #{thing_id}); action: #{action_name}; user: #{user_id}")
         return false
       else
-        if ["Workflow", "Blob", "Pack"].include?(thing_type)
-          # "contribution" are only found for these three types of object, for all the rest - use instances
+        if ["Workflow", "Blob", "Pack", "Contribution"].include?(thing_type)
+          # "contribution" are only found for these three types of object (and the contributions themself),
+          # for all the rest - use instances
           thing_contribution = found_thing
         else
           thing_instance = found_thing
@@ -104,7 +106,7 @@ module Authorization
     is_authorized = false
     
     case thing_type
-      when "Workflow", "Blob", "Pack"
+      when "Workflow", "Blob", "Pack", "Contribution"
         unless user_id.nil?
           # access is authorized and no further checks required in two cases:
           # ** user is the owner of the "thing"
@@ -258,6 +260,9 @@ module Authorization
           # this is the most frequent query to be executed, hence needs to be optimised
           found_instance = Contribution.find_by_sql "SELECT contributor_id, contributor_type, policy_id FROM contributions WHERE contributable_id=#{thing_id} AND contributable_type='#{thing_type}'"
           found_instance = (found_instance.empty? ? nil : found_instance[0]) # if nothing was found - nil; otherwise - first match
+        when "Contribution"
+          # fairly possible that it's going to be a contribution itself, not a contributable
+          found_instance = Contribution.find(thing_id)
         when "Network"
           found_instance = Network.find(thing_id)
         when "Experiment"
