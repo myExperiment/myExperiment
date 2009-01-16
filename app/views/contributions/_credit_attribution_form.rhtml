@@ -214,7 +214,7 @@
 	
 		// Attributions
 		<% contributable.attributors.each do |a| %>
-			<% if thing_authorized?('show', a.attributor) -%>
+			<% if Authorization.is_authorized?("show", nil, a.attributor, current_user) -%>
 			  <% if a.attributor_type == 'Workflow' %>
 			  	attributions_workflows[<%= a.attributor_id %>] = '<%= escape_javascript contributable_name(a.attributor_id, 'Workflow') %>';
 			  <% elsif a.attributor_type == 'Blob' %>

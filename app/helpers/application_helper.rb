@@ -1050,6 +1050,8 @@ module ApplicationHelper
   end
   
   def thing_authorized?(action, thing)
+    # method preserved only in case some code absolutely requires it in the future;
+    # for now (Jan 2009) all occurrences of it's usage were replaced with Authorization.is_authorized?()
     return Authorization.is_authorized?(action, nil, thing, current_user)
   end
   

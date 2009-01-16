@@ -9,7 +9,7 @@
 			<% unless (reviews = Review.latest).empty? %>
 				<ul class="list">
 					<% reviews.each do |r| %>
-						<% if thing_authorized?('show', r.reviewable) %>
+						<% if Authorization.is_authorized?("show", nil, r.reviewable, current_user) %>
 							<li>
 								<b><%= r_type = visible_name(r.reviewable_type); icon(r.reviewable_type.to_s, nil, nil, r_type, r_type) %>:</b>
 								<span><%= contributable(r.reviewable_id, r.reviewable_type) %></span>

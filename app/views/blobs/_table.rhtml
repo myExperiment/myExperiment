@@ -49,7 +49,7 @@
 							<p style="font-size:85%;">
 							<b>Attributions:</b>
 							<% attributors.each do |a| %>
-								<% if thing_authorized?('show', a.attributor) -%>
+								<% if Authorization.is_authorized?("show", nil, a.attributor, current_user) -%>
 									<% if a.attributor_type == 'Workflow' %>
 										<%= icon('workflow', nil, nil, nil, '') %> 
 									<% elsif a.attributor_type == 'Blob' %>
