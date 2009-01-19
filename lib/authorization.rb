@@ -145,7 +145,7 @@ module Authorization
           unless user_permissions.empty?
             authorized_by_user_permissions = false
             user_permissions.each do |p|
-              authorized_by_user_permissions = true if p.attributes["#{action}"]
+              authorized_by_user_permissions = true if permission_allows_action?(action, p)
             end
             return authorized_by_user_permissions
           end
@@ -169,7 +169,7 @@ module Authorization
           unless group_permissions.empty?
             group_permissions.each do |p|
               # check if this permission is applicable to the "user"
-              if p.attributes["#{action}"] && (is_network_member?(user_id, p.contributor_id) || is_network_admin?(user_id, p.contributor_id))
+              if permission_allows_action?(action, p) && (is_network_member?(user_id, p.contributor_id) || is_network_admin?(user_id, p.contributor_id))
                 authorized_by_group_permissions = true
                 break
               end
@@ -460,6 +460,28 @@ module Authorization
     end
 
     return is_authorized
+  end
+  
+  
+  # checks if a permission instance allows certain action taking into account cascading permissions
+  #
+  # NB! caller of this method *assumes* that the permission belongs to the user, for which
+  #     authorization is performed  
+  def Authorization.permission_allows_action?(action, permission)
+    # check that a permission instance was supplied
+    return false unless permission
+    
+    case action
+      when "view"
+        return (permission.attributes["view"] || permission.attributes["download"] || permission.attributes["edit"])
+      when "download"
+        return (permission.attributes["download"] || permission.attributes["edit"])
+      when "edit"
+        return permission.attributes["edit"]
+      else
+        # any other type of action is not allowed by permissions
+        return false
+    end
   end
 
 end
