@@ -20,7 +20,7 @@
 		<% if show_infer_option %>
 			<p>
 				<label for="metadata_choice_infer">
-					<%= radio_button_tag ("metadata_choice", 
+					<%= radio_button_tag("metadata_choice", 
 																"infer", 
 																main_metadata_infer_selected, 
 																:onclick => "$('metadata_choice_custom').checked=false;$('div_main_metadata_custom').hide();return true;") -%>
@@ -32,7 +32,7 @@
 		
 		<p style="margin-top: 0.1em;">
 			<label for="metadata_choice_custom">
-				<%= radio_button_tag ("metadata_choice", 
+				<%= radio_button_tag("metadata_choice", 
 															"custom", 
 															!main_metadata_infer_selected, 
 															:onclick => "$('metadata_choice_infer').checked=false;$('div_main_metadata_custom').show();return true;") -%>

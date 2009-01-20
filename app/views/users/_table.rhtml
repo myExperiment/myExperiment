@@ -77,14 +77,14 @@
 				       	<%= icon "edit", edit_user_path(user), nil, nil, "Edit" %>
 						  <% else %>
 							  <!-- check if the profile that we are viewing now is a friend of current user -> stored for better performance -->
-			          <% this_user_is_friend_of_current_user = user.friend? current_user.id %>
+			          <% this_user_is_friend_of_current_user = user.friend?(current_user.id) %>
 								<% unless !logged_in? || this_user_is_friend_of_current_user || current_user.friendship_pending?(user.id) %>
-							  	<%= icon "friendship", new_friendship_url(:user_id => user.id), nil, nil, "Request Friendship" %>
+							  	<%= icon "friendship", new_user_friendship_url(:user_id => user.id), nil, nil, "Request Friendship" %>
 							  <% end %>
 							  <%= icon "message", new_message_path(:user_id => user.id), nil, nil, "Send Message" %>
 								<% if logged_in? && this_user_is_friend_of_current_user %>
 								  <% master_id, friendship_obj = current_user.friendship_from_self_id_and_friends_id(user.id) %>
-									<%= icon "friend_delete", friendship_path(master_id, friendship_obj) + "?return_to=" + currentusers_things_url('friends'), nil, {:confirm => "Are you sure you want to remove this user from your friend list?", :method => :delete}, "Cancel Friendship" %>
+									<%= icon "friend_delete", user_friendship_path(master_id, friendship_obj) + "?return_to=" + currentusers_things_url('friends'), nil, {:confirm => "Are you sure you want to remove this user from your friend list?", :method => :delete}, "Cancel Friendship" %>
 								<% end %>
 			      	<% end %>
 			    	</td>

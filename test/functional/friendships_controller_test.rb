@@ -39,7 +39,7 @@ class FriendshipsControllerTest < Test::Unit::TestCase
     post :create, :user_id => users(:admin).id, :friendship => { :user_id => users(:john).id, :friend_id => users(:admin).id }
 
     assert_equal old_count+1, Friendship.count    
-    assert_redirected_to friendship_path(users(:john).id, assigns(:friendship))
+    assert_redirected_to user_friendship_path(users(:john).id, assigns(:friendship))
   end
 
   def test_should_show_friendship

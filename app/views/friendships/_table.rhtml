@@ -21,9 +21,9 @@
     <td><%= "<b>" unless friendship.accepted? %><%=datetime(friendship.accepted_at, false) || "Pending" %><%= "</b>" unless friendship.accepted? %></td>
     <td class="actions">
       <% if mine? friendship %>
-        <%= icon "show", friendship_path(friendship.friend_id, friendship), nil, nil, "View" %>
+        <%= icon "show", user_friendship_path(friendship.friend_id, friendship), nil, nil, "View" %>
         <% unless friendship.accepted? %> <%= icon "confirm", accept_friendship_path(friendship.friend_id, friendship), nil, :method => :post %><% end %>
-         <%= icon (friendship.accepted? ? "destroy" : "reject"), friendship_path(friendship.friend_id, friendship), nil, :confirm => "Are you sure?", :method => :delete %>
+         <%= icon (friendship.accepted? ? "destroy" : "reject"), user_friendship_path(friendship.friend_id, friendship), nil, :confirm => "Are you sure?", :method => :delete %>
       <% end %>
     </td>
   </tr>

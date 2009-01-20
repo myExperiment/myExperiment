@@ -2,7 +2,7 @@
 
 <%= error_messages_for :membership %>
 
-<% form_for(:membership, :url => memberships_path(params[:user_id]), :html => {:id => 'memb_request_form'}) do |f| %>
+<% form_for(:membership, :url => user_memberships_path(params[:user_id]), :html => {:id => 'memb_request_form'}) do |f| %>
   <%= f.hidden_field :user_id, :value => current_user.id %>
 	
 	<center>

@@ -2,7 +2,7 @@ Hi <%= @user.name %>,
  
 <%= @friend_name %> wants to be your friend.
 
-Please go to <%= "http://" + @base_url + friendship_path(@user, @friendship) %> to confirm/reject this request.
+Please go to <%= "http://" + @base_url + user_friendship_path(@user, @friendship) %> to confirm/reject this request.
 
 Your username is: <%= @user.username %>
 

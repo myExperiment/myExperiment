@@ -111,7 +111,7 @@ class FriendshipsController < ApplicationController
           end
           
           flash[:notice] = 'Friendship was successfully requested.'
-          format.html { redirect_to friendship_url(current_user.id, @friendship) }
+          format.html { redirect_to user_friendship_url(current_user.id, @friendship) }
         else
           format.html { render :action => "new" }
         end
@@ -176,7 +176,7 @@ class FriendshipsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = "Friendship was successfully deleted"
-      format.html { redirect_to (params[:return_to] ? params[:return_to] : friendships_url(friend_id)) }
+      format.html { redirect_to(params[:return_to] ? params[:return_to] : user_friendships_url(friend_id)) }
     end
   end
   

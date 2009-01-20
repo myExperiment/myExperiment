@@ -2,7 +2,7 @@
 
 <%= error_messages_for :citation %>
 
-<% form_for(:citation, :url => citation_path(@workflow, @citation), :html => { :method => :put }) do |f| %>
+<% form_for(:citation, :url => workflow_citation_path(@workflow, @citation), :html => { :method => :put }) do |f| %>
   <%= render :partial => "citations/form", :object => f %>
 
   <p>

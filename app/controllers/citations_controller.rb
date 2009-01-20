@@ -48,7 +48,7 @@ class CitationsController < ApplicationController
     respond_to do |format|
       if @citation.save
         flash[:notice] = 'Citation was successfully created.'
-        format.html { redirect_to citation_url(@workflow, @citation) }
+        format.html { redirect_to workflow_citation_url(@workflow, @citation) }
       else
         format.html { render :action => "new" }
       end
@@ -73,7 +73,7 @@ class CitationsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Citation was successfully deleted.'
-      format.html { redirect_to citations_url(@workflow) }
+      format.html { redirect_to workflow_citations_url(@workflow) }
     end
   end
   

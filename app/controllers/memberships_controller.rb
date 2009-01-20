@@ -133,7 +133,7 @@ class MembershipsController < ApplicationController
             flash[:notice] = 'Membership was successfully requested.'
           end
 
-          format.html { redirect_to membership_url(current_user.id, @membership) }
+          format.html { redirect_to user_membership_url(current_user.id, @membership) }
         else
           format.html { render :action => "new" }
         end
@@ -219,7 +219,7 @@ class MembershipsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = "Membership successfully deleted"
-      format.html { redirect_to (params[:return_to] ? params[:return_to] : group_path(network_id)) }
+      format.html { redirect_to(params[:return_to] ? params[:return_to] : group_path(network_id)) }
     end
   end
   
@@ -230,7 +230,7 @@ protected
   def check_user_present
     if params[:user_id].blank?
       flash.now[:error] = "Invalid URL"
-      redirect_to memberships_url(current_user.id)
+      redirect_to user_memberships_url(current_user.id)
       return false
     end
   end

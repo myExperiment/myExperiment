@@ -14,12 +14,12 @@
 	  <li>
 	  	<%= icon "profile", user_url(current_user), nil, nil, " My Profile" %>
 			<span style="color: #666666; margin-left: 0.5em;">
-				<small>[ <%= link_to "edit", edit_profile_path(current_user) -%> ]</small>
+				<small>[ <%= link_to "edit", edit_user_profile_path(current_user) -%> ]</small>
 			</span>
 		</li>
     <li><%= messages_link(current_user, "My Messages") %></li>
     <li><%= memberships_link(current_user, "My Memberships") %></li>
-	  <li><%= icon "history", userhistory_url(current_user), nil, nil, "My History" %></li>
+	  <li><%= icon "history", user_userhistory_url(current_user), nil, nil, "My History" %></li>
 	  <li><%= icon "news", home_url, nil, nil, "My News" %></li>
   </ul>
 	
@@ -59,8 +59,8 @@
           <ul class="gadget_list">
             <% current_user.friendships_pending.each do |friendship| %>
               <li>
-              	<%= icon "user", friendship_path(current_user, friendship), nil, nil, "" %>
-								<b><%= link_to truncate(h(friendship.user.name), trunc_length), friendship_path(current_user, friendship), :title => tooltip_title_attrib(h(friendship.user.name)) -%></b>
+              	<%= icon "user", user_friendship_path(current_user, friendship), nil, nil, "" %>
+								<b><%= link_to truncate(h(friendship.user.name), trunc_length), user_friendship_path(current_user, friendship), :title => tooltip_title_attrib(h(friendship.user.name)) -%></b>
 							</li>
             <% end %>
           </ul>

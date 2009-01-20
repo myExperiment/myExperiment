@@ -6,8 +6,8 @@
 
 <h2>Your profile pictures</h2>
 <ul class="sectionIcons">
-  <li><%= icon("pictures", pictures_path(@user), nil, nil, "Manage Profile Pictures") %></li>
-	<li><%= icon('avatar', new_picture_path(@user) + "?return_to=" + edit_profile_path(current_user.id), nil, nil, 'Upload New Profile Pic')%></li>
+  <li><%= icon("pictures", user_pictures_path(@user), nil, nil, "Manage Profile Pictures") %></li>
+	<li><%= icon('avatar', new_user_picture_path(@user) + "?return_to=" + edit_user_profile_path(current_user.id), nil, nil, 'Upload New Profile Pic')%></li>
 </ul>
 	
 <p class="box_standout" style="text-align: center; padding: 0.3em 0.5em; margin: 0.3em 0;">
@@ -23,7 +23,7 @@
     <% pictures.each do |p| %>
       <li>
         <center>
-        	<%= image_tag url_for :controller => 'pictures', :action  => 'show', :id => p.id, :size => '60x60' %>
+        	<%= image_tag(url_for(:controller => 'pictures', :action  => 'show', :id => p.id, :size => '60x60')) %>
 					<br/>
 					<%= form.radio_button :picture_id, p.id %>
 				</center>

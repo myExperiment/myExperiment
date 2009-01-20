@@ -38,7 +38,7 @@
 								is a member of:
 							<% end %>
 						<% else %>
-						  <%= membership_invite_request_action_message(allow_approval, @membership.is_invite?, link_to_function (h(@membership.user.name) + expand_image, visual_effect(:toggle_blind, "user_box", :duration => 0.3)) ) -%>
+						  <%= membership_invite_request_action_message(allow_approval, @membership.is_invite?, link_to_function(h(@membership.user.name) + expand_image, visual_effect(:toggle_blind, "user_box", :duration => 0.3)) ) -%>
 						<% end %>
 					</b>
 					<br/>
@@ -104,11 +104,11 @@
 		
 		  <!-- These forms serve as 'data senders' for Accept/Reject buttons -->
 		
-		  <% form_tag (accept_membership_path(current_user.id, @membership)) do %>				  
+		  <% form_tag(accept_membership_path(current_user.id, @membership)) do %>				  
 				<%= hidden_field_tag "accept_msg", "" %>
 		  <% end %>
 			
-			<% form_tag (membership_path(@membership.user_id, @membership) + "?return_to=" + currentusers_things_url('groups'), :method => :delete) do %>				  
+			<% form_tag(user_membership_path(@membership.user_id, @membership) + "?return_to=" + currentusers_things_url('groups'), :method => :delete) do %>				  
 				<%= hidden_field_tag "reject_msg", "" %>
 		  <% end %>
 			
