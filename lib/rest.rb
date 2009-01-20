@@ -484,9 +484,28 @@ def post_workflow(rules, query)
       :contributor_id   => current_user.id,
       :contribution     => contribution)
 
-#  scufl_model = Scufl::Parser.new.parse(content)
+  # Handle the preview and svg images.  If there's a preview supplied, use it.
+  # Otherwise auto-generate one if we can.
 
-# workflow.create_workflow_diagrams(scufl_model, "1")
+  if params["workflow"]["preview"]
+
+    image = Tempfile.new('image')
+    image.write(Base64.decode64(params["workflow"]["preview"]))
+    image.rewind
+
+    image.extend FileUpload
+    image.original_filename = 'preview'
+    
+    workflow.image = image
+
+    image.close
+
+  elsif workflow.processor_class.can_generate_preview?
+
+    processor = workflow.processor_class.new(content)
+    workflow.image, workflow.svg = processor.get_preview_images
+
+  end
 
   workflow.set_unique_name
 
