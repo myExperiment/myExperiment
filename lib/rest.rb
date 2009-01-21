@@ -586,6 +586,9 @@ def search(rules, user, query)
   root['query'] = search_query
   root['type' ] = query['type'] if query['type']
 
+  # filter out ones they are not allowed to get
+  results = results.select do |r| r.respond_to?('contribution') == false or r.authorized?('index', user) end
+
   results.each do |result|
     root << rest_reference(result, query)
   end
