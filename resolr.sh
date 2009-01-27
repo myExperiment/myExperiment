@@ -2,9 +2,9 @@
 
 export RAILS_ENV=production
 
-echo 'Workflow.find_all.map do |w| w.solr_save end' | ruby script/console
-echo 'Blob.find_all.map do |b| b.solr_save end'     | ruby script/console
-echo 'User.find_all.map do |u| u.solr_save end'     | ruby script/console
-echo 'Network.find_all.map do |n| n.solr_save end'  | ruby script/console
-echo 'Pack.find_all.map do |p| p.solr_save end'  	| ruby script/console
+echo 'Workflow.rebuild_solr_index' | ruby script/console
+echo 'Blob.rebuild_solr_index'     | ruby script/console
+echo 'User.rebuild_solr_index'     | ruby script/console
+echo 'Network.rebuild_solr_index'  | ruby script/console
+echo 'Pack.rebuild_solr_index'     | ruby script/console
 

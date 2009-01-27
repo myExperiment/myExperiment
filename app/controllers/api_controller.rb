@@ -13,6 +13,19 @@ class ApiController < ApplicationController
 
   def process_request
 
+    auth = request.env["HTTP_AUTHORIZATION"]
+
+    if auth and auth.starts_with?("Basic ")
+      credentials = Base64.decode64(auth.sub(/^Basic /, '')).split(':')
+      current_user = User.authenticate(credentials[0], credentials[1])
+
+      if current_user.nil?
+        render :xml => rest_error_response(401, 'Not authorized').to_s
+        return
+      end
+
+    end
+
     query  = CGIMethods.parse_query_parameters(request.query_string)
     method = request.method.to_s.upcase
     uri    = params[:uri]
@@ -46,9 +59,9 @@ class ApiController < ApplicationController
     end  
 
     case rules['Type']
-      when 'index'; doc = rest_index_request(rules, query)
-      when 'crud';  doc = rest_crud_request(rules)
-      when 'call';  doc = rest_call_request(rules, query)
+      when 'index'; doc = rest_index_request(rules, current_user, query)
+      when 'crud';  doc = rest_crud_request(rules, current_user)
+      when 'call';  doc = rest_call_request(rules, current_user, query)
       else;         bad_rest_request
     end
 

@@ -43,7 +43,7 @@ class WorkflowsControllerTest < Test::Unit::TestCase
                   :attributions_workflows => '',
                   :attributions_files => ''
 
-    assert_redirected_to workflow_path(assigns(:workflow))
+    assert_redirected_to tag_suggestions_workflow_path(assigns(:workflow))
     assert_equal old_count+1, Workflow.count
   end
 

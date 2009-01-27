@@ -6,7 +6,7 @@
 
 <li><b>&#187;</b></li>
 
-<li><%= link_to 'Downloads', downloads_path(@contribution) %>
+<li><%= link_to 'Downloads', contribution_downloads_path(@contribution) %>
 
 <% if ["show"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>

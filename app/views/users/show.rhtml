@@ -6,7 +6,7 @@
 		<% if friend_id == @user.id %>
 		  You have already sent a friendship request to this person. Awaiting their confirmation.
 		<% else %>
-		  This person has sent you a friendship request. Awaiting your <%= link_to "confirmation", friendship_path(current_user, friendship_obj) -%>.
+		  This person has sent you a friendship request. Awaiting your <%= link_to "confirmation", user_friendship_path(current_user, friendship_obj) -%>.
 		<% end %>
 	</b></div>
 <% end %>
@@ -47,7 +47,7 @@
 				<li><%= icon("message", new_message_path(:user_id => @user.id), nil, nil, "Send Message") %></li>
 				<% if this_user_is_friend_of_current_user %>
 			    <% master_id, friendship_obj = current_user.friendship_from_self_id_and_friends_id(@user.id) %>
-					<li><%= icon "friend_delete", friendship_path(master_id, friendship_obj) + "?return_to=" + user_path(@user), nil, {:confirm => "Are you sure you want to remove this user from your friend list?", :method => :delete}, "Cancel Friendship" %></li>
+					<li><%= icon "friend_delete", user_friendship_path(master_id, friendship_obj) + "?return_to=" + user_path(@user), nil, {:confirm => "Are you sure you want to remove this user from your friend list?", :method => :delete}, "Cancel Friendship" %></li>
 			  <% end %>
 			<% end %>
 			
@@ -378,7 +378,7 @@
 	  <% end %>
   
       <% if mine? @user %>
-        <p style="color: #666666;">[ <%= link_to 'View all Memberships in detail', memberships_path(@user) %> ]</p>
+        <p style="color: #666666;">[ <%= link_to 'View all Memberships in detail', user_memberships_path(@user) %> ]</p>
       <% end %>
 
   <% when "Workflows" %>

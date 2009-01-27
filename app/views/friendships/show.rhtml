@@ -1,6 +1,6 @@
 <h1>Friendship</h1>
 
-<% display_user = !my_page? (@friendship.user_id) %>
+<% display_user = !my_page?(@friendship.user_id) %>
 <% display_user_instance = display_user ? @friendship.user : @friendship.friend %>
 
 
@@ -80,7 +80,7 @@
 		  	<%= hidden_field_tag "accept_msg", "" %>
 	    <% end %>
 		  
-  		<% form_tag (friendship_path(@friendship.friend_id, @friendship) + "?return_to=" + currentusers_things_url('friends'), :method => :delete) do %>				  
+  		<% form_tag(user_friendship_path(@friendship.friend_id, @friendship) + "?return_to=" + currentusers_things_url('friends'), :method => :delete) do %>				  
   			<%= hidden_field_tag "reject_msg", "" %>
   	  <% end %>
 		  

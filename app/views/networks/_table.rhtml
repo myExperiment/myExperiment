@@ -68,7 +68,7 @@
 						<% if mine? network -%>
 							<%= icon "manage", edit_group_path(network) %>
 						<% elsif logged_in? %> <!-- admins can't leave the group or request membership! -->
-						  <% if network.member? (current_user.id) %>
+						  <% if network.member?(current_user.id) %>
 							  <!-- user is not an admin, but a member already -->
 								<% cur_membership = Membership.find(:first, :conditions => ["network_id = ? AND user_id = ?", network.id, current_user.id] ) %>
 			          <% if cur_membership %>

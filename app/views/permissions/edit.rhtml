@@ -2,7 +2,7 @@
 
 <%= error_messages_for :permission %>
 
-<% form_for(:permission, :url => permission_path(@permission.policy, @permission), :html => { :method => :put }) do |f| %>
+<% form_for(:permission, :url => policy_permission_path(@permission.policy, @permission), :html => { :method => :put }) do |f| %>
   <p>
     <b>Contributor</b><br />
     <%= f.text_field :contributor_id %>

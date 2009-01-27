@@ -212,7 +212,7 @@ module ApplicationHelper
       text = "<b>" + text + " (#{length})</b>"
     end
     
-    mships = icon('membership', memberships_path(user), nil, nil, text)
+    mships = icon('membership', user_memberships_path(user), nil, nil, text)
     
     return mships
       

@@ -4,7 +4,7 @@
 <li><%= link_to "#{h(@reviewable.title)}", workflow_path(@reviewable) -%></li>
 <li><b>&#187;</b></li>
 
-<li><%= link_to 'Reviews', reviews_path(@reviewable) -%></li>
+<li><%= link_to 'Reviews', workflow_reviews_path(@reviewable) -%></li>
 
 <% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
   <li><b>&#187;</b></li>
@@ -14,7 +14,7 @@
   <% when "new" -%>
     <li>New Review</li>
   <% when "edit" -%>
-		<li><%= link_to "#{h(@review.title)}", review_path(@reviewable, @review) -%></li>
+		<li><%= link_to "#{h(@review.title)}", workflow_review_path(@reviewable, @review) -%></li>
 		<li><b>&#187;</b></li>
     <li>Edit</li>
   <% else -%>

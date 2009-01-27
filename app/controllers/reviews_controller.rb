@@ -51,7 +51,7 @@ class ReviewsController < ApplicationController
       if @review.save
         update_rating(@review, params[:rating])
         flash[:notice] = 'Thank you for your review!'
-        format.html { redirect_to review_url(@reviewable, @review) }
+        format.html { redirect_to workflow_review_url(@reviewable, @review) }
       else
         format.html { render :action => "new" }
       end
@@ -69,7 +69,7 @@ class ReviewsController < ApplicationController
       if @review.update_attributes(params[:review])
         update_rating(@review, params[:rating])
         flash[:notice] = 'Review was successfully updated.'
-        format.html { redirect_to review_url(@reviewable, @review) }
+        format.html { redirect_to workflow_review_url(@reviewable, @review) }
       else
         format.html { render :action => "edit" }
       end
@@ -81,7 +81,7 @@ class ReviewsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Review was successfully deleted.'
-      format.html { redirect_to reviews_url(@reviewable) }
+      format.html { redirect_to workflow_reviews_url(@reviewable) }
     end
   end
   

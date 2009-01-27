@@ -68,7 +68,7 @@ module WhiteListHelper
               if !attrs.include?(attr_name) || (protocol_attributes.include?(attr_name) && contains_bad_protocols?(value))
                 node.attributes.delete(attr_name)
               else
-                node.attributes[attr_name] = CGI::escapeHTML(value)
+                node.attributes[attr_name] = value
               end
             end if node.attributes
             if tags.include?(node.name)

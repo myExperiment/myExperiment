@@ -20,6 +20,6 @@ ActiveRecord::Base.class_eval do
     
     def body_html_with_formatting
       body_html = auto_link body { |text| truncate(text, 50) }
-      white_list(RedCloth.new(body_html).to_html)
+      white_list(body_html)
     end
 end

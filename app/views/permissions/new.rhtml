@@ -2,7 +2,7 @@
 
 <%= error_messages_for :permission %>
 
-<% form_for(:permission, :url => permissions_path(params[:policy_id])) do |f| %>
+<% form_for(:permission, :url => policy_permissions_path(params[:policy_id])) do |f| %>
   <% if params[:policy_id] %>
     <p>
       <b>Policy</b><br/>

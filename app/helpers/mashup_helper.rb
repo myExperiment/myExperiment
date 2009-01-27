@@ -66,13 +66,13 @@ module MashupHelper
 
     return "" if ob.nil?
 
-    doc = rest_get_request(ob, rest_name, rest_resource_uri(ob), rest_name, query)
+    doc = rest_get_request(ob, rest_name, nil, rest_resource_uri(ob), rest_name, query)
 
     trim_and_wrap(doc)
   end
 
   def rest_index_example(thing)
-    doc = rest_index_request(TABLES['REST'][:data][thing]['GET'], {} )
+    doc = rest_index_request(TABLES['REST'][:data][thing]['GET'], nil, {} )
 
     trim_and_wrap(doc)
   end

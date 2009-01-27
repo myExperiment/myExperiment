@@ -6,7 +6,7 @@
 
 <li><b>&#187;</b></li>
 
-<li><%= link_to 'Citations', citations_path(@workflow) -%></li>
+<li><%= link_to 'Citations', workflow_citations_path(@workflow) -%></li>
 
 <% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
   <li><b>&#187;</b></li>
@@ -16,7 +16,7 @@
   <% when "new" %>
     <li>New Citation</li>
   <% when "edit" %>
-		<li><%= link_to "#{h(@citation.title)}", citation_path(@workflow, @citation) %></li>
+		<li><%= link_to "#{h(@citation.title)}", workflow_citation_path(@workflow, @citation) %></li>
 		<li><b>&#187;</b></li>
     <li>Edit</li>
   <% else %>

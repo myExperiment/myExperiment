@@ -118,7 +118,7 @@ class PicturesController < ApplicationController
     @picture.destroy
 
     respond_to do |format|
-      format.html { redirect_to pictures_url(user_id) }
+      format.html { redirect_to user_pictures_url(user_id) }
     end
   end
   

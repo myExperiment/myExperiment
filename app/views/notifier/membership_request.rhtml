@@ -5,7 +5,7 @@ You have been sent a Membership Request from <%= @requestor.name %> to join the 
 Name: <%= @network.title %>
 Administrator: <%= @network.owner.name %>
 
-Please go to <%= "http://" + @base_url + membership_path(@requestor, @membership) %> to confirm/reject this request.
+Please go to <%= "http://" + @base_url + user_membership_path(@requestor, @membership) %> to confirm/reject this request.
 
 Your username is: <%= @user.username %>
 

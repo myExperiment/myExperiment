@@ -49,7 +49,7 @@ class PacksControllerTest < Test::Unit::TestCase
     post :create, :pack => { :title => 'my new pack', :description => 'a new pack lalalala' }
 
     assert_response :redirect
-    assert_redirected_to pack_url assigns(:pack)
+    assert_redirected_to(pack_url(assigns(:pack)))
 
     assert_equal num_packs + 1, Pack.count
   end

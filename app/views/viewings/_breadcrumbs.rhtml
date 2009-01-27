@@ -6,13 +6,13 @@
 
 <li><b>&#187;</b></li>
 
-<li><%= link_to 'Viewings', viewings_path(@contribution) %>
+<li><%= link_to 'Viewings', contribution_viewings_path(@contribution) %>
 
 <% if ["show"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to datetime(@viewing.created_at, false), viewing_path(@contribution, @viewing) %></li>
+    <li><%= link_to datetime(@viewing.created_at, false), contribution_viewing_path(@contribution, @viewing) %></li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

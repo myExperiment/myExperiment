@@ -41,7 +41,7 @@ class MembershipsControllerTest < Test::Unit::TestCase
                   :membership => { :user_id => users(:john).id, :network_id => networks(:spare_network).id } #, :message => "Can I Join Please?" }
 
     assert_equal old_count+1, Membership.count
-    assert_redirected_to membership_path(users(:john).id, assigns(:membership))
+    assert_redirected_to user_membership_path(users(:john).id, assigns(:membership))
   end
 
   # not convinced that this test is working

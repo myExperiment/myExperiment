@@ -7,7 +7,7 @@
     
   <li><b>&#187;</b></li>
     
-  <li><%= link_to 'Memberships', memberships_path(@user) %></li>
+  <li><%= link_to 'Memberships', user_memberships_path(@user) %></li>
 <% else %>
   <li><%= link_to 'Memberships', url_for(:controller => :memberships) %>
 <% end %>
@@ -15,5 +15,5 @@
 <% if ["show"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
-  <li><%= link_to "View: #{h(@membership.network.title)}", membership_path(@membership.user, @membership) %></li>
+  <li><%= link_to "View: #{h(@membership.network.title)}", user_membership_path(@membership.user, @membership) %></li>
 <% end %>

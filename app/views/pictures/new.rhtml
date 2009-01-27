@@ -2,7 +2,7 @@
 
 <%= error_messages_for :picture %>
 
-<% form_tag ({:action => :create}, :multipart => true) do %>
+<% form_tag({:action => :create}, :multipart => true) do %>
 <%= hidden_field_tag(:redirect_to, params[:return_to] ? params[:return_to] : user_pictures_path(current_user.id) ) -%>
   <br/>
 	
