@@ -7,9 +7,9 @@
     <p>My Stuff</p>
 		<p>
     	<small>
-      	<%= link_to(pluralize(current_user.friends.length, "friend"), currentusers_things_url('friends')) %>
+      	<%= link_to(pluralize(current_user.friends.length, "Friend"), currentusers_things_url('friends')) %>
 				<span style="color:#999999;"> | </span>
-				<%= link_to(pluralize(current_user.networks_owned.length + current_user.networks.length, "group"), currentusers_things_url('groups')) %>
+				<%= link_to(pluralize(current_user.networks_owned.length + current_user.networks.length, "Group"), currentusers_things_url('groups')) %>
 				<% filter_contributables(current_user.contributions).each do |klass,contributables| %>
 					<span style="color:#999999;">|</span> 
 					<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize)), currentusers_things_url(controller_visible_name(klass.humanize.pluralize).downcase)) %>
