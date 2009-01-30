@@ -228,6 +228,7 @@ class WorkflowsController < ApplicationController
 
   # GET /workflows/1
   def show
+    logger.debug("DEBUG DEBUG DEBUG")
     if allow_statistics_logging(@viewing_version)
       @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
@@ -480,7 +481,7 @@ class WorkflowsController < ApplicationController
                                            :body => params[:workflow][:body],
                                            :last_edited_by => current_user.id) 
       else
-        puts "Preview image provided. Attempting to set the version's preview image."
+        logger.debug("Preview image provided. Attempting to set the version's preview image.")
         
         # Disable updating image on windows due to issues to do with file locking, that prevent file_column from working sometimes.
         if RUBY_PLATFORM =~ /mswin32/
@@ -647,9 +648,9 @@ protected
                                       
         @launch_url = "/workflows/#{@workflow.id}/launch.whip?version=#{@viewing_version_number.to_s}"
 
-        puts "@latest_version_number = #{@latest_version_number}"
-        puts "@viewing_version_number = #{@viewing_version_number}"
-        puts "@workflow.image != nil = #{@workflow.image != nil}"
+        logger.debug("@latest_version_number = #{@latest_version_number}")
+        logger.debug("@viewing_version_number = #{@viewing_version_number}")
+        logger.debug("@workflow.image != nil = #{@workflow.image != nil}")
       else
         error("Workflow not found (id not authorized)", "is invalid (not authorized)")
         return false
@@ -802,7 +803,7 @@ private
     
     if processor_class.nil?
       worked = false
-      puts "A workflow processor for the file uploaded could not be found!"
+      logger.debug("A workflow processor for the file uploaded could not be found!")
     else
       # Check that the processor can do inferring of metadata
       if processor_class.can_infer_metadata?
@@ -824,13 +825,12 @@ private
         rescue Exception => ex
           worked = false
           err_msg = "ERROR: some processing failed in workflow processor '#{processor_class.to_s}'.\nEXCEPTION: #{ex}"
-          puts err_msg
           logger.error err_msg
         end
       else
         # We cannot infer metadata
         worked = false
-        puts "Workflow processor found but it cannot infer metadata!"
+        logger.debug("Workflow processor found but it cannot infer metadata!")
       end
     end
     

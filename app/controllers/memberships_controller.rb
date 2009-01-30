@@ -111,7 +111,6 @@ class MembershipsController < ApplicationController
               network = @membership.network
               Notifier.deliver_auto_join_group(user, network, base_host) if network.owner.send_notifications?
             rescue
-              puts "ERROR: failed to send email notification for auto join group. Membership ID: #{@membership.id}"
               logger.error("ERROR: failed to send email notification for auto join group. Membership ID: #{@membership.id}")
             end
             
@@ -124,8 +123,6 @@ class MembershipsController < ApplicationController
               network = @membership.network
               Notifier.deliver_membership_request(user, network, @membership, base_host) if network.owner.send_notifications?
             rescue Exception => e
-              puts "ERROR: failed to send Membership Request email notification. Membership ID: #{@membership.id}"
-              puts "EXCEPTION:" + e
               logger.error("ERROR: failed to send Membership Request email notification. Membership ID: #{@membership.id}")
               logger.error("EXCEPTION:" + e)
             end

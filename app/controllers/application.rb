@@ -327,13 +327,13 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    puts "------ Workflow create summary ------------------------------------"
-    puts "current_user   = #{current_user.id}"
-    puts "updating_class = #{updating_class}"
-    puts "sharing_class  = #{sharing_class}"
-    puts "policy         = #{policy}"
-    puts "group_sharing  = #{params[:group_sharing]}"
-    puts "-------------------------------------------------------------------"
+    logger.debug("------ Workflow create summary ------------------------------------")
+    logger.debug("current_user   = #{current_user.id}")
+    logger.debug("updating_class = #{updating_class}")
+    logger.debug("sharing_class  = #{sharing_class}")
+    logger.debug("policy         = #{policy}")
+    logger.debug("group_sharing  = #{params[:group_sharing]}")
+    logger.debug("-------------------------------------------------------------------")
 
     # returns some message in case of errors (or empty string in case of success)
     return error_msg

@@ -55,10 +55,10 @@ class Policy < ActiveRecord::Base
       contributors_friends  = contributor.friends.map do |f| f.id end
       contributors_networks = (contributor.networks + contributor.networks_owned).map do |n| n.id end
 
-      puts "contributors_networks = #{(contributors_networks.map do |n| n.id end).join(";")}"
+      logger.debug("contributors_networks = #{(contributors_networks.map do |n| n.id end).join(";")}")
 
       perms.each do |p|
-        puts "contributor_id = #{p.contributor_id}; contributor_type = #{p.contributor_type}"
+        logger.debug("contributor_id = #{p.contributor_id}; contributor_type = #{p.contributor_type}")
         case p.contributor_type
           when 'Network'
             if contributors_networks.index(p.contributor_id).nil?
@@ -79,12 +79,12 @@ class Policy < ActiveRecord::Base
     end
 
     # DEBUG
-    # puts "counts of permissions for:"
-    # puts "all permissions= #{perms_exist ? perms.length : 'nil'}"
-    # puts "my_networks    = #{my_networks.length}"
-    # puts "other_networks = #{other_networks.length}"
-    # puts "my_friends     = #{my_friends.length}"
-    # puts "other_users    = #{other_users.length}"
+    # logger.debug("counts of permissions for:")
+    # logger.debug("all permissions= #{perms_exist ? perms.length : 'nil'}")
+    # logger.debug("my_networks    = #{my_networks.length}")
+    # logger.debug("other_networks = #{other_networks.length}")
+    # logger.debug("my_friends     = #{my_friends.length}")
+    # logger.debug("other_users    = #{other_users.length}")
     # END OF DEBUG
 
     

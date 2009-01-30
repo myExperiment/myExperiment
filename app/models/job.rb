@@ -96,8 +96,8 @@ class Job < ActiveRecord::Base
         
       rescue Exception => ex
         run_errors << "An exception has occurred whilst submitting and running this job: #{ex}"
-        puts ex
-        puts ex.backtrace
+        logger.error(ex)
+        logger.error(ex.backtrace)
         success = false
       end
       
@@ -135,8 +135,8 @@ class Job < ActiveRecord::Base
         self.save
       end 
     rescue Exception => ex
-      puts "ERROR occurred whilst refreshing status for job #{self.job_uri}. Exception: #{ex}"
-      puts ex.backtrace
+      logger.error("ERROR occurred whilst refreshing status for job #{self.job_uri}. Exception: #{ex}")
+      logger.error(ex.backtrace)
       return false
     end
   end
@@ -173,8 +173,8 @@ class Job < ActiveRecord::Base
         return nil
       end
     rescue Exception => ex
-      puts "ERROR occurred whilst fetching report for job #{self.job_uri}. Exception: #{ex}"
-      puts ex.backtrace
+      logger.error("ERROR occurred whilst fetching report for job #{self.job_uri}. Exception: #{ex}")
+      logger.error(ex.backtrace)
       return nil
     end
   end
@@ -196,8 +196,8 @@ class Job < ActiveRecord::Base
         return nil
       end
     rescue Exception => ex
-      puts "ERROR occurred whilst fetching outputs for job #{self.job_uri}. Exception: #{ex}"
-      puts ex.backtrace
+      logger.error("ERROR occurred whilst fetching outputs for job #{self.job_uri}. Exception: #{ex}")
+      logger.error(ex.backtrace)
       return nil
     end
   end
@@ -210,8 +210,8 @@ class Job < ActiveRecord::Base
         return 'Error: could not retrieve outputs XML document.'
       end
     rescue Exception => ex
-      puts "ERROR occurred whilst fetching outputs XML for job #{self.job_uri}. Exception: #{ex}"
-      puts ex.backtrace
+      logger.error("ERROR occurred whilst fetching outputs XML for job #{self.job_uri}. Exception: #{ex}")
+      logger.error(ex.backtrace)
       return nil
     end
   end
@@ -225,8 +225,8 @@ class Job < ActiveRecord::Base
         return nil
       end
     rescue Exception => ex
-      puts "ERROR occurred whilst getting outputs size for job #{self.job_uri}. Exception: #{ex}"
-      puts ex.backtrace
+      logger.error("ERROR occurred whilst getting outputs size for job #{self.job_uri}. Exception: #{ex}")
+      logger.error(ex.backtrace)
       return nil
     end
   end

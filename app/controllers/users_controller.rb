@@ -268,8 +268,8 @@ class UsersController < ApplicationController
         if confirmation_hash(user.unconfirmed_email) == params[:hash]
           confirmed = user.confirm_email!
           # BEGIN DEBUG
-          puts "ERRORS!" unless user.errors.empty?
-          user.errors.full_messages.each { |e| puts e } 
+          logger.error("ERRORS!") unless user.errors.empty?
+          user.errors.full_messages.each { |e| logger.error(e) } 
           #END DEBUG
           if confirmed
             self.current_user = user

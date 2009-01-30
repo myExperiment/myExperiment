@@ -600,7 +600,7 @@ end
 
 def user_count(rules, user, query)
   
-  puts "user = #{user}"
+  logger.debug("user = #{user}")
   users = User.find(:all).select do |user| user.activated? end
 
   root = XML::Node.new('user-count')

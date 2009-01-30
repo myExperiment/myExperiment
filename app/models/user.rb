@@ -151,9 +151,9 @@ class User < ActiveRecord::Base
     unless self.unconfirmed_email.blank?
       
       # BEGIN DEBUG
-      puts "Username: #{self.username}"
-      puts "Unconfirmed email: #{self.unconfirmed_email}"
-      puts "Confirmed email: #{self.email}"
+      logger.debug("Username: #{self.username}")
+      logger.debug("Unconfirmed email: #{self.unconfirmed_email}")
+      logger.debug("Confirmed email: #{self.email}")
       # END DEBUG
       
       # Note: need to bypass the explicitly defined setter for 'email'
@@ -623,20 +623,20 @@ protected
   # clean up emails and username before validation
   def cleanup_input
     # BEGIN DEBUG
-    puts 'BEGIN cleanup_input'
+    logger.debug('BEGIN cleanup_input')
     # END DEBUG
     
     self.unconfirmed_email = User.clean_string(self.unconfirmed_email) unless self.unconfirmed_email.blank?
     self.username = User.clean_string(self.username) unless self.username.blank?
     
     # BEGIN DEBUG
-    puts 'END cleanup_input'
+    logger.debug('END cleanup_input')
     # END DEBUG
   end
   
   def check_email_uniqueness
     # BEGIN DEBUG
-    puts 'BEGIN check_email_uniqueness'
+    logger.debug('BEGIN check_email_uniqueness')
     # END DEBUG
     
     unique = true
@@ -667,7 +667,7 @@ protected
     end
     
     # BEGIN DEBUG
-    puts 'END check_email_uniqueness'
+    logger.debug('END check_email_uniqueness')
     # END DEBUG
     
     return unique
@@ -675,7 +675,7 @@ protected
   
   def check_email_non_openid_conditions
     # BEGIN DEBUG
-    puts 'BEGIN check_email_non_openid_conditions'
+    logger.debug('BEGIN check_email_non_openid_conditions')
     # END DEBUG
     
     ok = true
@@ -689,7 +689,7 @@ protected
     end
     
     # BEGIN DEBUG
-    puts 'END check_email_non_openid_conditions'
+    logger.debug('END check_email_non_openid_conditions')
     # END DEBUG
     
     return ok
@@ -713,8 +713,8 @@ protected
       self.profile = Profile.new(:user_id => self.id) 
       
       # BEGIN DEBUG
-      #puts "ERRORS!" unless self.profile.errors.empty?
-      #self.profile.errors.full_messages.each { |e| puts e }
+      #logger.error("ERRORS!") unless self.profile.errors.empty?
+      #self.profile.errors.full_messages.each { |e| logger.error(e) }
       # END DEBUG
     end
   end

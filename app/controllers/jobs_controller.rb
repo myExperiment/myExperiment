@@ -248,7 +248,7 @@ class JobsController < ApplicationController
   def refresh_status
     @job.refresh_status!
     @stop_timer = (@job.allow_run? or @job.completed?)
-    puts "Stop timer? - #{@stop_timer}"
+    logger.debug("Stop timer? - #{@stop_timer}")
     respond_to do |format|
       format.html { render :partial => "status_info", :locals => { :job => @job, :experiment => @experiment } }
     end
