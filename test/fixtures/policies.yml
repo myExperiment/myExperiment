@@ -4,12 +4,6 @@ john_policy:
   contributor_id: 1
   contributor_type: User
   name: Johns policy
-  download_public: true
-  edit_public: true
-  view_public: true
-  download_protected: true
-  edit_protected: true
-  view_protected: true
   share_mode: 0
   update_mode: 0
   created_at: 2008-02-02 22:02:54
@@ -20,12 +14,6 @@ jane_policy:
   contributor_id: 2
   contributor_type: User
   name: Janes policy
-  download_public: true
-  edit_public: true
-  view_public: true
-  download_protected: true
-  edit_protected: true
-  view_protected: true
   share_mode: 0
   update_mode: 0
   created_at: 2007-10-22 18:54:22
@@ -36,12 +24,6 @@ true_policy:
   contributor_id: 1
   contributor_type: User
   name: All true
-  download_public: true
-  edit_public: true
-  view_public: true
-  download_protected: true
-  edit_protected: true
-  view_protected: true
   share_mode: 0
   update_mode: 0
   created_at: 2007-10-22 18:54:22
@@ -52,12 +34,6 @@ false_policy:
   contributor_id: 1
   contributor_type: User
   name: All false
-  download_public: false
-  edit_public: false
-  view_public: false
-  download_protected: false
-  edit_protected: false
-  view_protected: false
   share_mode: 5
   update_mode: 2
   created_at: 2007-10-22 18:54:22
@@ -68,12 +44,6 @@ protected_policy:
   contributor_id: 1
   contributor_type: User
   name: Public false, protected true
-  download_public: false
-  edit_public: false
-  view_public: false
-  download_protected: true
-  edit_protected: true
-  view_protected: true
   share_mode: 3
   update_mode: 1
   created_at: 2007-10-22 18:54:22
@@ -84,12 +54,6 @@ public_policy:
   contributor_id: 1
   contributor_type: User
   name: Public true, protected false (should act as all true)
-  download_public: true
-  edit_public: true
-  view_public: true
-  download_protected: false
-  edit_protected: false
-  view_protected: false
   share_mode: 0
   update_mode: 0
   created_at: 2007-10-22 18:54:22

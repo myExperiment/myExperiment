@@ -18,151 +18,6 @@ class Policy < ActiveRecord::Base
   
   validates_presence_of :contributor, :name
   
-  
-  def determine_update_mode(c_ution)
-    
-    # return nil unless correct policy for contribution
-    return nil if c_ution.nil? || !(c_ution.policy.id.to_i == id.to_i)
-    
-    return self.update_mode unless self.update_mode.nil?
-
-    v_pub  = self.view_public;
-    v_prot = self.view_protected;
-    d_pub  = self.download_public;
-    d_prot = self.download_protected;
-    e_pub  = self.edit_public;
-    e_prot = self.edit_protected;
-    
-    
-    # check if permissions would allow editing for anyone at all: it happens, when permissions array 
-    # isn't empty AND there are some permissions with 'edit' field set to true
-    perms = self.permissions
-    perms_exist = !perms.empty?
-
-
-    # initializing; ..used for validation below
-    my_networks    = []
-    other_networks = []
-    my_friends     = []
-    other_users    = []
-    
-    # group permissions are separate from the modes, so first of all;
-    # so the best thing to do is to split all permissions into different groups
-    # (do this just if there are any permissions at all):
-    if perms_exist #, then do the splitting
-      contributor = User.find(c_ution.contributor_id)
-
-      contributors_friends  = contributor.friends.map do |f| f.id end
-      contributors_networks = (contributor.networks + contributor.networks_owned).map do |n| n.id end
-
-      puts "contributors_networks = #{(contributors_networks.map do |n| n.id end).join(";")}"
-
-      perms.each do |p|
-        puts "contributor_id = #{p.contributor_id}; contributor_type = #{p.contributor_type}"
-        case p.contributor_type
-          when 'Network'
-            if contributors_networks.index(p.contributor_id).nil?
-              other_networks.push p
-            else
-              my_networks.push p
-            end
-
-          when 'User'
-            if contributors_friends.index(p.contributor_id).nil?
-              other_users.push p
-            else
-              my_friends.push p
-            end
-        end
-      end
-
-    end
-
-    # DEBUG
-    # puts "counts of permissions for:"
-    # puts "all permissions= #{perms_exist ? perms.length : 'nil'}"
-    # puts "my_networks    = #{my_networks.length}"
-    # puts "other_networks = #{other_networks.length}"
-    # puts "my_friends     = #{my_friends.length}"
-    # puts "other_users    = #{other_users.length}"
-    # END OF DEBUG
-
-    
-    # some pre-processing - check if other_users and other_networks don't have edit permissions; check if friends can't edit
-    other_users_and_networks_cant_edit = ((other_networks + other_users).select do |p| p.edit end).empty?
-    my_friends_cant_edit = (my_friends.select do |p| p.edit end).empty?
-
-
-    # (modes 5 & 6 give the least permissions, which is the safest - so these get checked first; then mode 1; then mode 0)
-    # (this is the order from most 'narrow' update permissions to the 'widest' ones) 
-
-
-    # MODE 5? some of my friends (and noone else, apart from the owner & any of 'my groups' can edit)
-    #
-    # Conditions:
-    # 1) no permissions should exist at all
-    #   OR
-    # 2) don't care about any permissions for 'my_groups';
-    # 3) no edit permissions should exist for 'other_networks', 'other_users'
-    # 4) some edit permissions should exist for 'my_friends'
-         
-    #  === AND === (mode 5 & mode 6 go together, as the checks are very similar)
-
-    # MODE 6? noone else (apart from the owner & any of 'my groups' can edit)
-    #
-    # Conditions:
-    # 1) no permissions should exist at all
-    #   OR
-    # 2) don't care about any permissions for 'my_groups';
-    # 3) no edit permissions should exist for 'other_networks', 'other_users', 'my_friends'
-    if (e_pub == false && e_prot == false)
-      if !perms_exist || other_users_and_networks_cant_edit
-        if my_friends_cant_edit
-          return 6
-        else
-          return 5
-        end
-      end
-    end
-
-
-    # MODE 1? only "all friends" and "network members of my groups" can edit
-    #
-    # Conditions:
-    # 1) no permissions should exist at all
-    #   OR
-    # 2) no edit permissions for 'other_networks' or 'other_users' should exist at all;
-    # 3) all permissions for 'my_friends' should allow editing (if any denies, it's not this mode);
-    # 4) don't care about any permissions for 'my_networks' at all. 
-    if (e_pub == false && e_prot == true)
-      if !perms_exist || (other_users_and_networks_cant_edit && (my_friends.select do |p| !p.edit end).empty?)
-        return 1
-      end
-    end
-
-
-    # MODE 0? same as those that can view AND download
-    #
-    # Conditions:
-    # for all of the three types of access (public, protected and permission-based),
-    # everyone who can 'view' AND 'download' should be able to 'edit' for this type of policy
-    # to classify as belonging to this mode.
-    # (for permission-based access, don't take into account any of 'my group' permissions) 
-    if (e_pub == (v_pub && d_pub))
-      if (e_prot == (v_prot && d_prot))
-        # select only those elements from the arrays of permissions, for which ('view' && 'download') != 'edit'
-        if ((my_friends + other_users + other_networks).select do |p| p.edit != (p.view && p.download) end).empty?
-          return 0;
-        end
-      end
-    end
-
-    
-    # MODE 7: couldn't determine the mode, so should have CUSTOM update mode
-    return 7
-  end
-  
-  
   def authorized?(action_name, c_ution=nil, c_utor=nil)
     
     if c_ution
@@ -267,12 +122,6 @@ class Policy < ActiveRecord::Base
   def self._default(c_utor, c_ution=nil)
     rtn = Policy.new(:name => "A default policy",  # "anyone can view and download and no one else can edit"
                      :contributor => c_utor,
-                     :view_public => true,         # anonymous can view
-                     :download_public => true,     # anonymous can download
-                     :edit_public => false,        # anonymous can't edit
-                     :view_protected => true,      # friends can view
-                     :download_protected => true,  # friends can download
-                     :edit_protected => false,     # friends can't edit
                      :share_mode => 0,
                      :update_mode => 6)     
                      
@@ -286,12 +135,6 @@ class Policy < ActiveRecord::Base
   def copy_values_from(other)
     self.name = other.name
     self.contributor = other.contributor
-    self.view_public = other.view_public
-    self.download_public = other.download_public
-    self.edit_public = other.edit_public
-    self.view_protected = other.view_protected
-    self.download_protected = other.download_protected
-    self.edit_protected = other.edit_protected
     self.share_mode = other.share_mode
     self.update_mode = other.update_mode
   end

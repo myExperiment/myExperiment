@@ -461,8 +461,8 @@ class PacksController < ApplicationController
         @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
         @updating_mode = params[:updating][:class_id].to_i if params[:updating]
       when "show", "edit"
-        @sharing_mode  = determine_sharing_mode(@pack)
-        @updating_mode = determine_updating_mode(@pack)
+        @sharing_mode  = @pack.contribution.policy.share_mode
+        @updating_mode = @pack.contribution.policy.update_mode
     end
   end
   

@@ -38,12 +38,7 @@ class PoliciesControllerTest < Test::Unit::TestCase
     post :create, :policy => { :contributor_id => users(:john).id,
                                :contributor_type => 'User',
                                :name => 'test policy',
-                               :view_public => true,
-                               :download_public => true,
-                               :edit_public => true,
-                               :view_protected => true,
-                               :download_protected => true,
-                               :edit_protected => true }
+                               :share_mode => 0 }
 
     assert_equal old_count+1, Policy.count    
     assert_redirected_to policy_path(assigns(:policy))
@@ -63,7 +58,7 @@ class PoliciesControllerTest < Test::Unit::TestCase
   
   def test_should_update_policy
     login_as(:john)
-    put :update, :id => 1, :policy => { :download_public => false, :edit_public => false }
+    put :update, :id => 1, :policy => { :share_mode => 1 }
     assert_redirected_to policy_path(assigns(:policy))
   end
   

@@ -700,8 +700,8 @@ protected
         @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
         @updating_mode = params[:updating][:class_id].to_i if params[:updating]
       when "show", "edit"
-        @sharing_mode  = determine_sharing_mode(@workflow)
-        @updating_mode = determine_updating_mode(@workflow)
+        @sharing_mode  = @workflow.contribution.policy.share_mode
+        @updating_mode = @workflow.contribution.policy.update_mode
     end
   end
   

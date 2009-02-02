@@ -345,8 +345,8 @@ class BlobsController < ApplicationController
         @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
         @updating_mode = params[:updating][:class_id].to_i if params[:updating]
       when "show", "edit"
-        @sharing_mode  = determine_sharing_mode(@blob)
-        @updating_mode = determine_updating_mode(@blob)
+        @sharing_mode  = @blob.contribution.policy.share_mode
+        @updating_mode = @blob.contribution.policy.update_mode
     end
   end
   

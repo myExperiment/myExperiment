@@ -13,9 +13,6 @@
       <%= null_avatar 60 %><br />
       Anonymous
     </td>
-    <td><%= check_box_tag "view_public", 1, checked = policy.view_public, :disabled => true %></td>
-    <td><%= check_box_tag "download_public", 1, checked = policy.download_public, :disabled => true %></td>
-    <td><%= check_box_tag "edit_public", 1, checked = policy.edit_public, :disabled => true %></td>
   </tr>
   
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
