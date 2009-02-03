@@ -23,7 +23,7 @@ class JobsController < ApplicationController
   end
 
   def show
-    unless Authorization.is_authorized?(action_name, nil, @job, current_user)
+    unless Authorization.is_authorized?(action_name, nil, @job.runnable, current_user)
       flash[:error] = "<p>You will not be able to submit this Job, but you can still see the details of it."
       flash[:error] = "<p>The runnable item (#{@job.runnable_type}) is not authorized - you need download priviledges to run it.</p>"
     end
