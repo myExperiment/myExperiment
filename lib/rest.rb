@@ -540,9 +540,9 @@ end
 #   runner     = TavernaEnactor.find_by_id(runner_bits[1].to_i)
 #   runnable   = Workflow.find_by_id(runnable_bits[1].to_i)
 #
-#   return rest_error_response(400, 'Bad Request') if experiment.nil? or not experiment.authorized?("edit", user)
-#   return rest_error_response(400, 'Bad Request') if runner.nil?     or not runner.authorized?("download", user)
-#   return rest_error_response(400, 'Bad Request') if runnable.nil?   or not runnable.authorized?("view", user)
+#   return rest_error_response(400, 'Bad Request') if experiment.nil? or not Authorization.is_authorized?('edit', nil, experiment, user)
+#   return rest_error_response(400, 'Bad Request') if runner.nil?     or not Authorization.is_authorized?('download', nil, runner, user)
+#   return rest_error_response(400, 'Bad Request') if runnable.nil?   or not Authorization.is_authorized?('view', nil, runnable, user)
 #
 #   puts "#{params[:job]}"
 #
@@ -587,7 +587,7 @@ def search(rules, user, query)
   root['type' ] = query['type'] if query['type']
 
   # filter out ones they are not allowed to get
-  results = results.select do |r| r.respond_to?('contribution') == false or r.authorized?('index', user) end
+  results = results.select do |r| r.respond_to?('contribution') == false or Authorization.is_authorized?('index', nil, r, user) end
 
   results.each do |result|
     root << rest_reference(result, query)
@@ -711,9 +711,10 @@ end
 #
 #   return rest_error_response(404, 'Resource Not Found') if resource.nil?
 #
-#   # this will have to be replaced with Authorization.is_authorized?() if it comes into use at some point
+#   FIXME: The following respond_to? would not work anymore
+#
 #   if resource.respond_to?('authorized?')
-#     return rest_error_response(403, 'Not Authorized') if not resource.authorized?('edit', user)
+#     return rest_error_response(403, 'Not Authorized') if not Authorization.is_authorized?('edit', nil, resource, user)
 #   end
 #
 # end

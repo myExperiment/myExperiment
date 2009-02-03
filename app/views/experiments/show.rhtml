@@ -1,7 +1,6 @@
 <% t "#{h @experiment.title}" -%>
 
-<% # experiments don't use policy-based authorization mechanism, so it's better to keep the experiment-specific authorization -%>
-<% if @experiment.authorized?('edit', current_user) -%>
+<% if Authorization.is_authorized?('edit', nil, @experiment, current_user) -%>
 	<ul class="sectionIcons">
 	  <li><%= icon('edit', edit_experiment_path(@experiment), nil, nil, 'Edit Experiment') %></li>
 	</ul>

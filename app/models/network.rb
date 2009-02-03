@@ -68,10 +68,6 @@ class Network < ActiveRecord::Base
     owner.name
   end
   
-  def authorized?(action_name, contributor=nil)
-    return true
-  end
-  
 #  has_many :relationships_completed, #accepted (by others)
 #           :class_name => "Relationship",
 #           :foreign_key => :network_id,

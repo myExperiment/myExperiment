@@ -5,6 +5,47 @@
 
 module Authorization
 
+  # Authorization logic collected from enactment code
+
+  # Note: at the moment (Feb 2008), Experiments (and associated Jobs) are
+  # private to the owner, if a User owns it, OR accessible by all members of a
+  # Group, if a Group owns it. 
+
+  def Authorization.experiment_authorized?(experiment, action_name, user)
+    return false if user.nil?
+    
+    case experiment.contributor_type.to_s
+    when "User"
+      return experiment.contributor_id.to_i == user.id.to_i
+    when "Network"
+      return experiment.contributor.member?(user.id)
+    else
+      return false
+    end 
+  end
+
+  def Authorization.job_authorized?(job, action_name, user)
+    # Use authorization logic from parent Experiment
+    return Authorization.experiment_authorized?(job.experiment, action_name, user)
+  end
+
+  def Authorization.runner_authorized?(runner, action_name, user)
+    return false if user.nil?
+    
+    case runner.contributor_type.to_s
+    when "User"
+      return runner.contributor_id.to_i == user.id.to_i
+    when "Network"
+      if ['edit','update','delete'].include?(action_name.downcase)
+        return runner.contributor.owner?(user.id)
+      else
+        return runner.contributor.member?(user.id)
+      end
+    else
+      return false
+    end
+  end
+
   # 1) action_name - name of the action that is about to happen with the "thing"
   # 2) thing_type - class name of the thing that needs to be authorized;
   #                 use NIL as a value of this parameter if an instance of the object to be authorized is supplied as "thing";
@@ -200,18 +241,26 @@ module Authorization
             is_authorized = true
         end
         
-      when "Experiment", "Job", "TavernaEnactor", "Runner"
-        # user instance is absolutely required for this - so find it, if not yet available
-        unless user_instance
-          user_instance = get_user(user_id)
-        end
-        
-        # "thing_instance" was already found previously;
-        # neither of these "thing" types uses policy-based authorization, hence use
-        # the existing <thing>.authorized?() method
-        #
+      when "Experiment"
+
+        user_instance = get_user(user_id) unless user_instance
+
         # "action_name" used to work with original action name, rather than classification made inside the module
-        is_authorized = thing_instance.authorized?(action_name, user)
+        is_authorized = Authorization.experiment_authorized?(thing_instance, action_name, user)
+
+      when "TavernaEnactor", "Runner"
+
+        user_instance = get_user(user_id) unless user_instance
+
+        # "action_name" used to work with original action name, rather than classification made inside the module
+        is_authorized = Authorization.runner_authorized?(thing_instance, action_name, user)
+
+      when "Job"
+
+        user_instance = get_user(user_id) unless user_instance
+        
+        # "action_name" used to work with original action name, rather than classification made inside the module
+        is_authorized = Authorization.job_authorized?(thing_instance, action_name, user)
       
       else
         # don't recognise the kind of "thing" that is being authorized, so

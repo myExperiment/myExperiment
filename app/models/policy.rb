@@ -18,99 +18,6 @@ class Policy < ActiveRecord::Base
   
   validates_presence_of :contributor, :name
   
-  def authorized?(action_name, c_ution=nil, c_utor=nil)
-    
-    if c_ution
-      # return false unless correct policy for contribution
-      return false unless c_ution.policy.id.to_i == id.to_i
-    end
-    
-    # ======= Authorization logic continues... ======
-    
-    # Authenticated system sets current_user to 0 if not logged in
-    c_utor = nil if c_utor == 0
-      
-    # false unless action can be categorized
-    return false unless category = categorize(action_name)
-    
-    # Bit of hack for update permissions - 'view' and 'download' is authorized if 'edit' is authorized
-    return true if ['download', 'view'].include?(category) and authorized?('edit', c_ution, c_utor) 
-      
-    
-    authorized_by_user_permissions = false
-    authorized_by_policy = false 
-    authorized_by_group_permissions = false
-    
-    unless c_utor.nil?
-      # being owner of the contribution / admin of the policy is the most important -
-      # if this is the case, no further checks are required: access is authorized
-      if c_ution
-        # true if owner of contribution or administrator of contribution.policy
-        return true if (c_ution.owner?(c_utor) or c_ution.admin?(c_utor))
-      else
-        # true if administrator of self
-        return true if admin?(c_utor)
-      end
-      
-      
-      # c_utor is not the owner of the item, to which policy is attached;
-      # next thing - obtain all the permissions that are relevant to
-      # c_utor: either through individual or through group permissions
-      user_permissions, group_permissions = all_permissions_for_contributor(c_utor)
-      
-      # DEBUG
-      #logger.error "==================================================="
-      #logger.error "user_permissions -> " + user_permissions.length.to_s
-      #logger.error user_permissions.to_sentence
-      #logger.error "group_permissions -> " + group_permissions.length.to_s
-      #logger.error group_permissions.to_sentence
-      #logger.error "==================================================="
-      # END OF DEBUG
-      
-      
-      # individual ('user') permissions override any other settings
-      # (if several are found, which shouldn't be the case, all are collapsed into
-      #  one with the highest access rights)
-      unless user_permissions.empty?
-        user_permissions.each do |p|
-          authorized_by_user_permissions = true if p.attributes["#{category}"]
-        end
-        return authorized_by_user_permissions
-      end
-      
-      
-      # no user permissions found, need to check what is allowed by policy
-      # (check 'protected' settings first)
-      if c_ution
-        # true if contribution.contributor and contributor are related and policy[category_protected]
-        authorized_by_policy = true if (c_ution.contributor.protected? c_utor and protected?(category))
-      else
-        # true if policy.contributor and contributor are related and policy[category_protected]
-        authorized_by_policy = true if (self.contributor.protected? c_utor and protected?(category))
-      end
-      return authorized_by_policy if authorized_by_policy
-      
-      
-      # not authorized by protected settings; check public policy settings
-      authorized_by_policy = public?(category)
-      return authorized_by_policy if authorized_by_policy
-      
-      
-      # not authorized by policy at all, check the group permissions
-      # (for the groups, where c_utor is a member or admin of)
-      unless group_permissions.empty?
-        group_permissions.each do |p|
-          authorized_by_group_permissions = true if p.attributes["#{category}"]
-        end
-        return authorized_by_group_permissions if authorized_by_group_permissions
-      end
-    end
-    
-    # no other cases matched OR c_utor is unknown - apply public policy settings
-    # true if policy[category_public]
-    return public?(category)
-  end
-  
   def admin?(c_utor)
     return false unless c_utor
     
@@ -118,7 +25,6 @@ class Policy < ActiveRecord::Base
   end
   
   # THIS IS THE DEFAULT POLICY (see /app/views/policies/_list_form.rhtml)
-  # IT IS CALLED IN contribution.rb::authorized? ; application.rb::update_policy()
   def self._default(c_utor, c_ution=nil)
     rtn = Policy.new(:name => "A default policy",  # "anyone can view and download and no one else can edit"
                      :contributor => c_utor,
