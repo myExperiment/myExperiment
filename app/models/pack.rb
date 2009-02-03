@@ -582,6 +582,10 @@ class Pack < ActiveRecord::Base
     return CGI::unescapeHTML(desc)
   end
   
+  def contributables
+    contributable_entries.map do |e| e.contributable end
+  end
+
   protected
   
   # produces html string containing the required messaged, enclosed within left-padded P tag, belonging to 'none_text' class
