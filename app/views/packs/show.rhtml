@@ -5,7 +5,7 @@
 		<% if mine?(@pack) -%>
 			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
 		<% end -%>
-		<% if @pack.authorized?("destroy", current_user) %>
+		<% if Authorization.is_authorized?("destroy", nil, @pack, current_user) %>
 			<li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments, BUT does not delete the actual items pointed to in the Pack. Are you sure you would like to delete this Pack?', :method => :delete }, 'Delete Pack') %></li>
 		<% end %>
 	</ul>

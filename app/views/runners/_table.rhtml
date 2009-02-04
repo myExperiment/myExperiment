@@ -35,7 +35,7 @@
 					</td>
 			    <td class="actions"  style="width: 80px;">
 		      	<%= icon "show", runner_path(runner), nil, nil, "View" %>
-						<% if runner.authorized?("edit", logged_in? ? current_user : nil) %>
+						<% if Authorization.is_authorized?('edit', nil, runner, current_user) %>
 							<%= icon('edit', edit_runner_path(runner), nil, nil, 'Edit') %>
 						<% end %>
 		    	</td>

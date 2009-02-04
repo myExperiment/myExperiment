@@ -1,6 +1,6 @@
 <% t "#{@runner.class.to_s} - #{h @runner.title}" -%>
 
-<% if @runner.authorized?('edit', current_user) -%>
+<% if Authorization.is_authorized?('edit', nil, @runner, current_user) -%>
 	<ul class="sectionIcons">
 	  <li><%= icon('edit', edit_runner_path(@runner), nil, nil, 'Edit Runner') %></li>
 	</ul>

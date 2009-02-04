@@ -7,7 +7,7 @@
         <% collection.each_index do |i| %>
           <% workflow = collection[i] %>
         
-          <% if workflow.authorized?("show", current_user) %>
+          <% if Authorization.is_authorized?("show", nil, workflow, current_user) %>
             <a href="#<%= h(workflow.title).gsub(/ /, "_") %>"><%= num %>. <%= h(workflow.title) %></a><br/>
             <% num = num + 1 %>
           <% end %>

@@ -86,11 +86,11 @@ protected
     
       workflow = Workflow.find(params[:workflow_id])
       
-      if workflow.authorized?((["index", "show"].include?(action_name) ? "show" : "edit"), (logged_in? ? current_user : nil))
+      if Authorization.is_authorized?((["index", "show"].include?(action_name) ? "show" : "edit"), nil, workflow, current_user)
         @workflow = workflow
         
         # remove workflow data from workflow if the user is not authorized for download
-        @workflow.content_blob.data = nil unless @workflow.authorized?("download", (logged_in? ? current_user : nil))
+        @workflow.content_blob.data = nil unless Authorization.is_authorized?("download", nil, @workflow, current_user)
       else
         if logged_in?
           error("Workflow not found (id not authorized)", "is invalid (not authorized)", :workflow_id)

@@ -34,11 +34,6 @@ class Job < ActiveRecord::Base
     return s
   end
   
-  def authorized?(action_name, c_utor=nil)
-    # Use authorization logic from parent Experiment
-    return self.experiment.authorized?(action_name, c_utor)
-  end
-  
   def last_status
     if self[:last_status].nil?
       return "not yet submitted"

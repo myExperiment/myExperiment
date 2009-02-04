@@ -22,9 +22,6 @@ ActionController::Routing::Routes.draw do |map|
                    :render_output => :get }
   end
   
-  # policy wizard
-  map.resource :policy_wizard
-  
   # mashup
   map.resource :mashup
   
@@ -123,12 +120,6 @@ ActionController::Routing::Routes.draw do |map|
 
     # viewing history
     contribution.resources :viewings
-  end
-
-  # all policies for all contributables
-  map.resources :policies, :member => { :test => :post } do |policy|
-    # policies have nested permissions that name contributors
-    policy.resources :permissions
   end
 
   # messages

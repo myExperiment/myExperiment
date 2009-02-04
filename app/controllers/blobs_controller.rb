@@ -294,7 +294,7 @@ class BlobsController < ApplicationController
                        :current => params[:page] })
     
     found.each do |blob|
-      blob.content_blob.data = nil unless blob.authorized?("download", (logged_in? ? current_user : nil))
+      blob.content_blob.data = nil unless Authorization.is_authorized?("download", nil, blob, current_user)
     end
     
     @blobs = found
@@ -304,7 +304,7 @@ class BlobsController < ApplicationController
     begin
       blob = Blob.find(params[:id])
       
-      if blob.authorized?(action_name, (logged_in? ? current_user : nil))
+      if Authorization.is_authorized?(action_name, nil, blob, current_user)
         @blob = blob
         
         @blob_entry_url = url_for :only_path => false,
@@ -345,8 +345,8 @@ class BlobsController < ApplicationController
         @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
         @updating_mode = params[:updating][:class_id].to_i if params[:updating]
       when "show", "edit"
-        @sharing_mode  = determine_sharing_mode(@blob)
-        @updating_mode = determine_updating_mode(@blob)
+        @sharing_mode  = @blob.contribution.policy.share_mode
+        @updating_mode = @blob.contribution.policy.update_mode
     end
   end
   

@@ -112,7 +112,7 @@ protected
   def find_runner_auth
     runner = TavernaEnactor.find(:first, :conditions => ["id = ?", params[:id]])
     
-    if runner and runner.authorized?(action_name, current_user)
+    if runner and Authorization.is_authorized?(action_name, nil, runner, current_user)
       @runner = runner
     else
       error("Runner not found or action not authorized", "is invalid (not authorized)")

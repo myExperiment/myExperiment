@@ -11,7 +11,7 @@
 			
 			<!-- Contributable Item Entries -->
 			<% pack.contributable_entries.each do |e| %>
-				<% show = e.available? ? thing_authorized?('show', e.contributable) : false -%>
+				<% show = e.available? ? Authorization.is_authorized?("show", nil, e.contributable, current_user) : false -%>
 				<li>
 					<table>
 						<tr>

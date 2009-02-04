@@ -45,29 +45,6 @@ class TavernaEnactor < ActiveRecord::Base
     return runners + TavernaEnactor.find_by_groups(user)
   end
   
-  # Note: at the moment (Feb 2008), updates and deletes are only allowed by the creator of the TavernaEnactor 
-  # OR the administrator of the Group that owns the TavernaEnactor.
-  # For all other actions, only creator OR members of the Group that owns the TavernaEnactor are authorized.
-  def authorized?(action_name, c_utor=nil)
-    return false if c_utor.nil?
-    
-    # Cannot ask authorization for a 'Network' contributor
-    return false if c_utor.class.to_s == 'Network'
-    
-    case self.contributor_type.to_s
-    when "User"
-      return self.contributor_id.to_i == c_utor.id.to_i
-    when "Network"
-      if ['edit','update','delete'].include?(action_name.downcase)
-        return self.contributor.owner?(c_utor.id)
-      else
-        return self.contributor.member?(c_utor.id)
-      end
-    else
-      return false
-    end
-  end
-  
   def service_valid?
     service_client.service_valid?
   end

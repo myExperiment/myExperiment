@@ -6,9 +6,9 @@
 	<% for pack in collection %>
 		<% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
 		<% if collection.size == 1 -%>
-			<% show ||= pack.authorized?("show", current_user) -%>
+			<% show ||= Authorization.is_authorized?("show", nil, pack, current_user) -%>
 		<% else -%>
-			<% show = pack.authorized?("show", current_user) -%>
+			<% show = Authorization.is_authorized?("show", nil, pack, current_user) -%>
 		<% end -%>
 	  <% if show -%>
 			<% cache(:controller => 'packs_cache', :action => 'listing', :id => pack.id) do -%>
@@ -61,9 +61,9 @@
 					
 					<td class="actions" style="width: 80px;">
 				    <%= icon "show", pack_path(pack), nil, nil, "View" %>
-						<% if pack.authorized?('download', current_user) -%><%= icon('download', download_pack_path(pack), nil, nil, 'Download') -%><% end -%>
+						<% if Authorization.is_authorized?("download", nil, pack, current_user) -%><%= icon('download', download_pack_path(pack), nil, nil, 'Download') -%><% end -%>
 				    <% if mine?(pack) %><%= icon "manage", edit_pack_path(pack), nil, nil, "Manage" %><% end %>
-						<% if pack.authorized?('edit', current_user) -%><%= icon('new', new_item_pack_path(pack), nil, nil, 'Add New Item') -%><% end -%>
+						<% if Authorization.is_authorized?("edit", nil, pack, current_user) -%><%= icon('new', new_item_pack_path(pack), nil, nil, 'Add New Item') -%><% end -%>
 				  </td>
 				</tr>
 			<% end %>

@@ -15,8 +15,6 @@
     <%= f.text_field :contributable_type %>
   </p>
 
-  <%= render :partial => "policies/listform", :locals => { :contribution => @contribution, :user => current_user } %>
-
   <p>
     <%= submit_tag "Create" %>
   </p>

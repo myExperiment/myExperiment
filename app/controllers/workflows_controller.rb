@@ -583,7 +583,7 @@ protected
                           :order => "workflows.updated_at DESC" }))
     
     found.each do |workflow|
-      workflow.content_blob.data = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
+      workflow.content_blob.data = nil unless Authorization.is_authorized?('download', nil, workflow, current_user)
     end
     
     @workflows = found
@@ -597,7 +597,7 @@ protected
       @rss_workflows = [ ]
       
       found.each do |workflow|
-        @rss_workflows << workflow if workflow.authorized?("show", (logged_in? ? current_user : nil))
+        @rss_workflows << workflow if Authorization.is_authorized?('show', nil, workflow, current_user)
       end
     end
   end
@@ -611,10 +611,7 @@ protected
         workflow = Workflow.find(params[:id])
       end
       
-      permission = action_name
-      permission = 'show' if action_name == 'launch'
-
-      if workflow.authorized?(permission, (logged_in? ? current_user : nil))
+      if Authorization.is_authorized?(action_name, nil, workflow, current_user)
         @latest_version_number = workflow.current_version
         @workflow = workflow
         if params[:version]
@@ -629,8 +626,13 @@ protected
           @viewing_version = @workflow.find_version(@latest_version_number)
         end
         
-        @authorised_to_download = @workflow.authorized?("download", (logged_in? ? current_user : nil))
-        @authorised_to_edit = logged_in? && @workflow.authorized?("edit", (logged_in? ? current_user : nil))
+        @authorised_to_edit = logged_in? && Authorization.is_authorized?('edit', nil, @workflow, current_user)
+        if @authorised_to_edit
+          # can save a call to .is_authorized? if "edit" was already found to be allowed - due to cascading permissions
+          @authorised_to_download = true
+        else
+          @authorised_to_download = Authorization.is_authorized?('download', nil, @workflow, current_user)
+        end
         
         # remove scufl from workflow if the user is not authorized for download
         @viewing_version.content_blob.data = nil unless @authorised_to_download
@@ -699,8 +701,8 @@ protected
         @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
         @updating_mode = params[:updating][:class_id].to_i if params[:updating]
       when "show", "edit"
-        @sharing_mode  = determine_sharing_mode(@workflow)
-        @updating_mode = determine_updating_mode(@workflow)
+        @sharing_mode  = @workflow.contribution.policy.share_mode
+        @updating_mode = @workflow.contribution.policy.update_mode
     end
   end
   

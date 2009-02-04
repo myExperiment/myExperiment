@@ -10,7 +10,7 @@
 			<ul class="items">
 				<% packs.each do |p| %>
 					<li>
-						<% if thing_authorized?('show', p) -%>
+						<% if Authorization.is_authorized?("show", nil, p, current_user) -%>
 							<%= icon('pack', nil, nil, nil, '') %>
 							<%= contributable(p.id, 'Pack') %>
 						<% else -%>

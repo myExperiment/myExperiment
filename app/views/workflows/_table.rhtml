@@ -7,9 +7,9 @@
 	<% for workflow in collection %>
 		<% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
 		<% if collection.size == 1 -%>
-			<% show ||= workflow.authorized?("show", current_user) -%>
+			<% show ||= Authorization.is_authorized?("show", nil, workflow, current_user) -%>
 		<% else -%>
-			<% show = workflow.authorized?("show", current_user) -%>
+			<% show = Authorization.is_authorized?("show", nil, workflow, current_user) -%>
 		<% end -%>
 	  <% if show -%>
 		<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
@@ -56,7 +56,7 @@
 					  	<p style="font-size:85%;">
 							<b>Attributions:</b>
 							<% attributors.each do |a| %>
-								<% if thing_authorized?('show', a.attributor) -%>
+								<% if Authorization.is_authorized?("show", nil, a.attributor, current_user) -%>
 									<% if a.attributor_type == 'Workflow' %>
 										<%= icon('workflow', nil, nil, nil, '') %> 
 									<% elsif a.attributor_type == 'Blob' %>
@@ -115,7 +115,7 @@
 			<% end -%>
 			    <td class="actions" style="width: 120px;">
 			      <%= icon "show", workflow_path(workflow), nil, nil, "View" %>
-				  	<% if workflow.authorized?("download", current_user) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
+				  	<% if Authorization.is_authorized?("download", nil, workflow, current_user) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
 			      <% if mine?(workflow) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
 						<br/><br/>
 						

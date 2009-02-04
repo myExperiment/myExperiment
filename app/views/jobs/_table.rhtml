@@ -45,7 +45,7 @@
 			    <td class="actions"  style="width: 80px;">
 		      	<%= icon "show", job_url(job.experiment, job), nil, nil, "View" %>
 						<% if false -%>
-						<% if job.authorized?("edit", logged_in? ? current_user : nil) -%>
+						<% if Authorization.is_authorized?('edit', nil, job, current_user) -%>
 							<%= icon('edit', edit_job_path(job.experiment, job), nil, nil, 'Edit') %>
 						<% end -%>
 						<% end -%>

@@ -82,11 +82,6 @@ class Contribution < ActiveRecord::Base
     policy.admin?(c_utor)
   end
   
-  # is c_utor authorized to perform action_name (using the policy)
-  def authorized?(action_name, c_utor=nil)
-    policy.nil? ? Policy._default(self.contributor, self).authorized?(action_name, self, c_utor) : policy.authorized?(action_name, self, c_utor)
-  end
-  
   # is c_utor the owner of this contribution
   def owner?(c_utor)
     #contributor_id.to_i == c_utor.id.to_i and contributor_type.to_s == c_utor.class.to_s

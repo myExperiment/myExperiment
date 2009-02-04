@@ -9,7 +9,7 @@
 			<% unless (taggings = Tagging.latest(20)).empty? %>
 				<ul class="list" style="font-size: 85%;">
 					<% taggings.each do |t| %>
-						<% if thing_authorized?('show', t.taggable) %>
+						<% if Authorization.is_authorized?("show", nil, t.taggable, current_user) %>
 							<li>
 								<span class="box_standout" style="padding: 0.1em 0.4em;">
 									<b><%= link_to_tag(t.tag) %></b>

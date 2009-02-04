@@ -192,46 +192,11 @@ class ApplicationController < ActionController::Base
     
     # BEGIN initialisation and validation
 
-    case sharing_class
-      when "0"
-        view_public        = 1
-        download_public    = 1
-        view_protected     = 1
-        download_protected = 1
-      when "1"
-        view_public        = 1
-        view_protected     = 1
-        download_protected = 1
-      when "2"
-        view_public        = 1
-        view_protected     = 1
-      when "3"
-        view_protected     = 1
-        download_protected = 1          
-      when "4"
-        view_protected     = 1
-    end
-
-    case updating_class
-      when "0"
-        edit_protected = 1 if (view_protected == 1 && download_protected == 1)
-        edit_public    = 1 if (view_public    == 1 && download_public    == 1)
-      when "1"
-        edit_protected = 1      
-      # when "5","6" -> no need for these cases, because both edit flags are false (default values) for these modes
-    end
-
     unless contributable.contribution.policy
       last_saved_policy = Policy._default(current_user, nil) # second parameter ensures that this policy is not applied anywhere
       
       policy = Policy.new(:name => 'auto',
           :contributor_type => 'User', :contributor_id => current_user.id,
-          :view_protected     => view_protected,
-          :view_public        => view_public,
-          :download_protected => download_protected,
-          :download_public    => download_public,
-          :edit_protected     => edit_protected,
-          :edit_public        => edit_public,
           :share_mode         => sharing_class,
           :update_mode        => updating_class)
       contributable.contribution.policy = policy  # by doing this the new policy object is saved implicitly too
@@ -240,12 +205,6 @@ class ApplicationController < ActionController::Base
        policy = contributable.contribution.policy
        last_saved_policy = policy.clone # clone required, not 'dup' (which still works through reference, so the values in both get changed anyway - which is not what's needed here)
        
-       policy.view_protected = view_protected
-       policy.view_public = view_public
-       policy.download_protected = download_protected
-       policy.download_public = download_public
-       policy.edit_protected = edit_protected
-       policy.edit_public = edit_public
        policy.share_mode = sharing_class
        policy.update_mode = updating_class
        policy.save
@@ -337,61 +296,6 @@ class ApplicationController < ActionController::Base
 
     # returns some message in case of errors (or empty string in case of success)
     return error_msg
-  end
-
-  def determine_sharing_mode(contributable)
-    
-    # TODO: like the determine_updating_mode(..) method below, this method needs to be refactored into the Policy class. 
-
-    policy = contributable.contribution.policy
-
-    return policy.share_mode if !policy.share_mode.nil?
-
-    v_pub  = policy.view_public;
-    v_prot = policy.view_protected;
-    d_pub  = policy.download_public;
-    d_prot = policy.download_protected;
-    e_pub  = policy.edit_public;
-    e_prot = policy.edit_protected;
-
-    if (policy.permissions.length == 0)
-
-      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == true ) && (d_prot == false))
-        return 0
-      end
-
-      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == false) && (d_prot == true ))
-        return 1;
-      end
-
-      if ((v_pub  == true ) && (v_prot == false) && (d_pub  == false) && (d_prot == false))
-        return 2;
-      end
-
-      if ((v_pub  == false) && (v_prot == true ) && (d_pub  == false) && (d_prot == true ))
-        return 3;
-      end
-
-      if ((v_pub  == false) && (v_prot == true ) && (d_pub  == false) && (d_prot == false))
-        return 4;
-      end
-
-      if ((v_pub  == false) && (v_prot == false) && (d_pub  == false) && (d_prot == false))
-        return 7;
-      end
-
-    end
-
-    return 8
-
-  end
-
-  def determine_updating_mode(contributable)
-    if (policy = contributable.contribution.policy)
-      return policy.determine_update_mode(contributable.contribution)
-    else
-      return 7
-    end
   end
 
   def update_credits(creditable, params)

@@ -417,7 +417,7 @@ module ApplicationHelper
         
         if thumb
           unless w.image.nil?
-            if w.authorized?("show", (logged_in? ? current_user : nil))
+            if Authorization.is_authorized?('show', nil, w, current_user)
               dot = image_tag url_for_file_column(w, "image", "thumb")
             else
               dot = image_tag url_for_file_column(w, "image", "padlock")
@@ -837,7 +837,7 @@ module ApplicationHelper
   
   def all_workflows
     workflows = Workflow.find(:all, :order => "title ASC")
-    workflows = workflows.select {|w| w.authorized?('show', w) }
+    workflows = workflows.select {|w| Authorization.is_authorized?('show', nil, w, current_user) }
   end
   
   def all_blobs
@@ -847,7 +847,7 @@ module ApplicationHelper
       y_title = (y.title and y.title.length > 0) ? y.title : y.local_name
       x_title.downcase <=> y_title.downcase
     }
-    blobs = blobs.select {|b| b.authorized?('show', b) }
+    blobs = blobs.select {|b| Authorization.is_authorized?('show', nil, b, current_user) }
   end
   
   def all_networks
@@ -1050,8 +1050,9 @@ module ApplicationHelper
   end
   
   def thing_authorized?(action, thing)
-    return true unless thing.respond_to?(:authorized?)
-    return thing.authorized?(action, (logged_in? ? current_user : nil))
+    # method preserved only in case some code absolutely requires it in the future;
+    # for now (Jan 2009) all occurrences of it's usage were replaced with Authorization.is_authorized?()
+    return Authorization.is_authorized?(action, nil, thing, current_user)
   end
   
   def strip_html(str, preserve_tags=[])

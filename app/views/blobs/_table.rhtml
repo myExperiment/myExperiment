@@ -6,9 +6,9 @@
 	<% for blob in collection %>
 		<% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
 		<% if collection.size == 1 -%>
-			<% show ||= blob.authorized?("show", current_user) -%>
+			<% show ||= Authorization.is_authorized?('show', nil, blob, current_user) -%>
 		<% else -%>
-			<% show = blob.authorized?("show", current_user) -%>
+			<% show = Authorization.is_authorized?('show', nil, blob, current_user) -%>
 		<% end -%>
 	  <% if show -%>
 			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
@@ -49,7 +49,7 @@
 							<p style="font-size:85%;">
 							<b>Attributions:</b>
 							<% attributors.each do |a| %>
-								<% if thing_authorized?('show', a.attributor) -%>
+								<% if Authorization.is_authorized?("show", nil, a.attributor, current_user) -%>
 									<% if a.attributor_type == 'Workflow' %>
 										<%= icon('workflow', nil, nil, nil, '') %> 
 									<% elsif a.attributor_type == 'Blob' %>
@@ -92,7 +92,7 @@
 					
 					<td class="actions" style="width: 80px;">
 				    <%= icon "show", file_path(blob), nil, nil, "View" %>
-					  <% if blob.authorized?("download", current_user) %><%= icon "download", download_file_path(blob) %><% end %>
+					  <% if Authorization.is_authorized?("download", nil, blob, current_user) %><%= icon "download", download_file_path(blob) %><% end %>
 				    <% if mine?(blob) %><%= icon "manage", edit_file_path(blob), nil, nil, "Manage" %><% end %>
 				  </td>
 			</tr>

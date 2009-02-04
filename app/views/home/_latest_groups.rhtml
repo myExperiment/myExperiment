@@ -9,7 +9,7 @@
 			<% unless (groups = Network.recently_created).empty? %>
 				<ul class="list" style="font-size: 85%;">
 					<% groups.each do |g| %>
-						<% if thing_authorized?('show', g) %>
+						<% if Authorization.is_authorized?("show", nil, g, current_user) %>
 							<li>
 								<%= icon('network', nil, nil, 'group icon', '') %>
 								<b><%= link_to g.title, group_path(g) %></b> 

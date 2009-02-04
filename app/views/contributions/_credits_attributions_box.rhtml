@@ -45,7 +45,7 @@
 							<% if a.attributor.nil? -%>
 							  <span class="none_text">Item doesn't exist anymore</span>
 							<% else -%>
-								<% if thing_authorized?('show', a.attributor) -%>
+								<% if Authorization.is_authorized?("show", nil, a.attributor, current_user) -%>
 									<% if a.attributor_type == 'Workflow' %>
 										<%= icon('workflow', nil, nil, nil, '') %> 
 									<% elsif a.attributor_type == 'Blob' %>
@@ -65,7 +65,7 @@
 		<p class="none_text">None</p>
 	<% end %>
 	
-	<% if contributable.authorized?("edit", current_user) %>
+	<% if Authorization.is_authorized?("edit", nil, contributable, current_user) %>
 		<p style="text-align: right;"><small>[ <%= link_to "edit", edit_path %> ]</small></p>
 	<% end %>
 	

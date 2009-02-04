@@ -16,7 +16,7 @@
 							<% if a.attributable.nil? -%>
 							  <span class="none_text">Item doesn't exist anymore</span>
 							<% else -%>
-								<% if thing_authorized?('show', a.attributable) -%>
+								<% if Authorization.is_authorized?("show", nil, a.attributable, current_user) -%>
 									<% if a.attributable_type == 'Workflow' %>
 										<%= icon('workflow', nil, nil, nil, '') %> 
 									<% elsif a.attributable_type == 'Blob' %>

@@ -140,7 +140,7 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
 
         # filter out things that the user cannot see
         collection = collection.select do |c|
-          not c.respond_to?('contribution') or c.authorized?('view', user)
+          not c.respond_to?('contribution') or Authorization.is_authorized?("view", nil, c, user)
         end
 
         collection.each do |item|
@@ -223,7 +223,7 @@ def rest_crud_request(rules, user)
 
   case rules['Permission']
     when 'public'; # do nothing
-    when 'view'; return rest_error_response(403, 'Not authorized') if not perm_ob.authorized?("show", (logged_in? ? user : nil))
+    when 'view'; return rest_error_response(403, 'Not authorized') if not Authorization.is_authorized?("show", nil, perm_ob, user)
     when 'owner'; return rest_error_response(403, 'Not authorized') if logged_in?.nil? or object_owner(perm_ob) != user
   end
 
@@ -283,7 +283,7 @@ def rest_index_request(rules, user, query)
   end
 
   # filter out ones they are not allowed to get
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", user) end)
+  obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("index", nil, c, user) end)
 
   produce_rest_list(rules, query, obs, rest_name.pluralize)
 end
@@ -445,7 +445,7 @@ def get_rest_uri(rules, user, query)
 
   return bad_rest_request if query['resource'].nil?
 
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?("index", user) end)
+  obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("index", nil, c, user) end)
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><rest-uri/>")
   "bing"
 end
@@ -546,9 +546,9 @@ end
 #   runner     = TavernaEnactor.find_by_id(runner_bits[1].to_i)
 #   runnable   = Workflow.find_by_id(runnable_bits[1].to_i)
 #
-#   return rest_error_response(400, 'Bad Request') if experiment.nil? or not experiment.authorized?("edit", user)
-#   return rest_error_response(400, 'Bad Request') if runner.nil?     or not runner.authorized?("download", user)
-#   return rest_error_response(400, 'Bad Request') if runnable.nil?   or not runnable.authorized?("view", user)
+#   return rest_error_response(400, 'Bad Request') if experiment.nil? or not Authorization.is_authorized?('edit', nil, experiment, user)
+#   return rest_error_response(400, 'Bad Request') if runner.nil?     or not Authorization.is_authorized?('download', nil, runner, user)
+#   return rest_error_response(400, 'Bad Request') if runnable.nil?   or not Authorization.is_authorized?('view', nil, runnable, user)
 #
 #   puts "#{params[:job]}"
 #
@@ -593,7 +593,9 @@ def search(rules, user, query)
   root['type' ] = query['type'] if query['type']
 
   # filter out ones they are not allowed to get
-  results = results.select do |r| r.respond_to?('contribution') == false or r.authorized?('index', user) end
+  results = results.select do |r|
+    r.respond_to?('contribution') == false or Authorization.is_authorized?('index', nil, r, user)
+  end
 
   results.each do |result|
     root << rest_reference(result, query)
@@ -639,7 +641,7 @@ def get_tagged(rules, user, query)
   obs = tag ? tag.tagged : []
 
   # filter out ones they are not allowed to get
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or c.authorized?('index', user) end)
+  obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("index", nil, c, user) end)
 
   produce_rest_list(rules, query, obs, 'tagged')
 end
@@ -717,8 +719,10 @@ end
 #
 #   return rest_error_response(404, 'Resource Not Found') if resource.nil?
 #
+#   FIXME: The following respond_to? would not work anymore
+#
 #   if resource.respond_to?('authorized?')
-#     return rest_error_response(403, 'Not Authorized') if not resource.authorized?('edit', user)
+#     return rest_error_response(403, 'Not Authorized') if not Authorization.is_authorized?('edit', nil, resource, user)
 #   end
 #
 # end

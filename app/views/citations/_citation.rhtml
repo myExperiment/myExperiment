@@ -12,7 +12,7 @@
   <%= arr[i] %><%= "," unless i.to_i == arr.length.to_i - 1 %>
 <% end %>
 
-<% if actions and item.authorized?("edit", (logged_in? ? current_user : nil)) %>
+<% if actions and Authorization.is_authorized?("edit", nil, item, current_user) %>
 	&nbsp;&nbsp;<small>[<%= link_to "view", citation_path(item, citation) %>]</small>
 	&nbsp;<small>[<%= link_to "edit", edit_citation_path(item, citation) %>]</small>
 <% end %>
