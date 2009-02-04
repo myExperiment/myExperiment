@@ -608,7 +608,6 @@ end
 
 def user_count(rules, user, query)
   
-  logger.debug("user = #{user}")
   users = User.find(:all).select do |user| user.activated? end
 
   root = XML::Node.new('user-count')
@@ -622,10 +621,22 @@ end
 
 def group_count(rules, user, query)
   
-  groups = Network.find(:all)
-
   root = XML::Node.new('group-count')
-  root << groups.length.to_s
+  root << Network.count.to_s
+
+  doc = XML::Document.new
+  doc.root = root
+  doc
+end
+
+def pack_count(rules, user, query)
+  
+  packs = Pack.find(:all).select do |p|
+    Authorization.is_authorized?('view', nil, p, user)
+  end
+
+  root = XML::Node.new('pack-count')
+  root << packs.length.to_s
 
   doc = XML::Document.new
   doc.root = root
