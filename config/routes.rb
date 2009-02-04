@@ -113,15 +113,6 @@ ActionController::Routing::Routes.draw do |map|
   # all downloads and viewings
   map.resources :downloads, :viewings
 
-  # contributions (all types)
-  map.resources :contributions do |contribution|
-    # download history
-    contribution.resources :downloads
-
-    # viewing history
-    contribution.resources :viewings
-  end
-
   # messages
   map.resources :messages, :collection => { :sent => :get, :delete_all_selected => :delete }
 
