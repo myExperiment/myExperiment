@@ -339,6 +339,9 @@ def rest_resource_uri(ob)
     when 'Job';             return experiment_job_url(ob.experiment, ob)
     when 'PackRemoteEntry'; return ob.uri
 
+    when 'Creditation';     return nil
+    when 'Attribution';     return nil
+
     when 'Workflow::Version'; return "#{rest_resource_uri(ob.workflow)}?version=#{ob.version}"
   end
 
@@ -370,6 +373,9 @@ def rest_access_uri(ob)
     when 'Job';             return "#{base}/job.xml?id=#{ob.id}"
     when 'Download';        return "#{base}/download.xml?id=#{ob.id}"
     when 'PackRemoteEntry'; return "#{base}/external.xml?id=#{ob.id}"
+
+    when 'Creditation';     return nil
+    when 'Attribution';     return nil
 
     when 'Workflow::Version'; return "#{base}/workflow.xml?id=#{ob.workflow.id}&version=#{ob.version}"
   end
