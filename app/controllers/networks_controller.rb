@@ -71,8 +71,6 @@ class NetworksController < ApplicationController
             user = @membership.user
             Notifier.deliver_membership_invite(user, @membership.network, @membership, base_host) if user.send_notifications?
           rescue Exception => e
-            puts "ERROR: failed to send Membership Invite email notification. Membership ID: #{@membership.id}"
-            puts "EXCEPTION:" + e
             logger.error("ERROR: failed to send Membership Invite email notification. Membership ID: #{@membership.id}")
             logger.error("EXCEPTION:" + e)
           end

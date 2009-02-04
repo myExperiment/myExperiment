@@ -45,7 +45,7 @@ module Whip
 	#
 	def Whip.bundle(whip_workflow, target_dir)
 		if !verifyWorkflow(whip_workflow)
-			puts "workflow does not contain enough attributes to be processed"
+			logger.debug("workflow does not contain enough attributes to be processed")
 			return nil
 		end
 		entry = createMetadata(whip_workflow)

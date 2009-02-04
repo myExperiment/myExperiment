@@ -160,7 +160,7 @@ Dir.chdir(File.join(RAILS_ROOT, "lib/workflow_processors")) do
 end
 
 # Load up the processor classes at startup
-puts "Workflow type processors found: " + WorkflowTypesHandler.processor_classes.to_sentence
+logger.debug("Workflow type processors found: " + WorkflowTypesHandler.processor_classes.to_sentence)
 
 # Refresh the list of workflow types in the system
 WorkflowTypesHandler.refresh_all_known_types!

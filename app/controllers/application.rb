@@ -69,21 +69,11 @@ class ApplicationController < ActionController::Base
   # the version of it (currently only workflows are versioned)
   def allow_statistics_logging(contributable_or_version)
     
-    # ************************************************************************
-    # NB! THIS METHOD IS SUSPENDED UNTIL THE STATS ARE RECALCULATED FROM LOGS
-    # REMOVE THIS COMMENT AND THE LINE BELOW WHEN EVERYTHING'S DONE;
-    #
-    # FOR NOW THE NEXT LINE ENSURES THAT OVERALL BEHAVIOUR IS IDENTICAL TO
-    # WHAT HAPPENED BEFORE THIS METHOD WAS ADDED
-    return true
-    # END OF END OF WARNING
-    # ************************************************************************
-    
     # check if the current viewing/download is to be logged
     # (i.e. request is sent not by a bot and is legitimate)
     allow_logging = true
     BOT_IGNORE_LIST.each do |pattern|
-      if request.env['HTTP_USER_AGENT'].match(pattern)
+      if request.env['HTTP_USER_AGENT'] and request.env['HTTP_USER_AGENT'].match(pattern)
         allow_logging = false
         break
       end
@@ -296,13 +286,13 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    puts "------ Workflow create summary ------------------------------------"
-    puts "current_user   = #{current_user.id}"
-    puts "updating_class = #{updating_class}"
-    puts "sharing_class  = #{sharing_class}"
-    puts "policy         = #{policy}"
-    puts "group_sharing  = #{params[:group_sharing]}"
-    puts "-------------------------------------------------------------------"
+    logger.debug("------ Workflow create summary ------------------------------------")
+    logger.debug("current_user   = #{current_user.id}")
+    logger.debug("updating_class = #{updating_class}")
+    logger.debug("sharing_class  = #{sharing_class}")
+    logger.debug("policy         = #{policy}")
+    logger.debug("group_sharing  = #{params[:group_sharing]}")
+    logger.debug("-------------------------------------------------------------------")
 
     # returns some message in case of errors (or empty string in case of success)
     return error_msg

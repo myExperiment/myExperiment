@@ -153,8 +153,6 @@ class MessagesController < ApplicationController
         begin
           Notifier.deliver_new_message(@message, base_host) if @message.u_to.send_notifications?
         rescue Exception => e
-          puts "ERROR: failed to send New Message email notification. Message ID: #{@message.id}"
-          puts "EXCEPTION: " + e
           logger.error("ERROR: failed to send New Message email notification. Message ID: #{@message.id}")
           logger.error("EXCEPTION: " + e)
         end
