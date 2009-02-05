@@ -90,6 +90,10 @@ module WorkflowProcessors
       ""
     end
 
+    def get_components
+      XML::Node.new("components")
+    end
+
     # End Instance Methods
     
   end

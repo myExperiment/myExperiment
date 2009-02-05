@@ -108,12 +108,27 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
 
       text = ''
 
-      unless accessor.nil? or model_data['Encoding'][i] == 'file-column'
-        if query['version'] and model_data['Versioned'][i] == 'yes'
-          text = eval("ob.versions[#{(query['version'].to_i - 1).to_s}].#{accessor}").to_s
-        else
-          text = eval("ob.#{accessor}").to_s
-        end
+      case model_data['Encoding'][i]
+
+        when 'file-column'
+
+          # Do nothing
+
+        when 'xml'
+
+          if query['version'] and model_data['Versioned'][i] == 'yes'
+            text = eval("ob.versions[#{(query['version'].to_i - 1).to_s}].#{accessor}")
+          else
+            text = eval("ob.#{accessor}")
+          end
+
+        else 
+
+          if query['version'] and model_data['Versioned'][i] == 'yes'
+            text = eval("ob.versions[#{(query['version'].to_i - 1).to_s}].#{accessor}").to_s
+          else
+            text = eval("ob.#{accessor}").to_s
+          end
       end
 
       attrs = {}
@@ -121,13 +136,19 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
       case model_data['Encoding'][i]
 
         when 'base64'
+
           text = Base64.encode64(text)
           attrs = { 'type' => 'binary', 'encoding' => 'base64' }
+
         when 'file-column';
+
           text = file_column_url(ob, model_data['Accessor'][i])
       end
 
-      if model_data['Encoding'][i] == 'list'
+      case model_data['Encoding'][i]
+
+        when 'list'
+
         list_element = XML::Node.new(model_data['REST Attribute'][i])
 
         attrs.each do |key,value|
@@ -168,6 +189,10 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
             list_element << rest_reference(list_element_text, query)
           end
         end
+
+      when 'xml'
+
+        root << text
 
       else
 

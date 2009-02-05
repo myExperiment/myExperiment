@@ -157,6 +157,74 @@ module WorkflowProcessors
       return get_scufl_metadata(@scufl_model)
     end
 
+    def get_components
+
+      model = @scufl_model
+
+      components = XML::Node.new('components')
+
+      sources    = XML::Node.new('sources')
+      sinks      = XML::Node.new('sinks')
+      processors = XML::Node.new('processors')
+      links      = XML::Node.new('links')
+
+      model.sources.each do |source|
+        el = XML::Node.new('source')
+
+        el << (XML::Node.new('name')        << source.name)        if source.name
+        el << (XML::Node.new('description') << source.description) if source.description
+
+        sources << el
+      end
+
+      model.sinks.each do |sink|
+        el = XML::Node.new('sink')
+
+        el << (XML::Node.new('name')        << sink.name)        if sink.name
+        el << (XML::Node.new('description') << sink.description) if sink.description
+
+        sinks << el
+      end
+
+      model.processors.each do |processor|
+        el = XML::Node.new('processor')
+
+        el << (XML::Node.new('name')        << processor.name)        if processor.name
+        el << (XML::Node.new('description') << processor.description) if processor.description
+        el << (XML::Node.new('type')        << processor.type)        if processor.type
+
+        processors << el
+      end
+
+      model.links.each do |link|
+        el = XML::Node.new('link')
+
+        sink_bits   = link.sink.split(':')
+        source_bits = link.source.split(':')
+
+        sink   = XML::Node.new('sink')
+        source = XML::Node.new('source')
+
+        sink << (XML::Node.new('node') << sink_bits[0]) if sink_bits[0]
+        sink << (XML::Node.new('port') << sink_bits[1]) if sink_bits[1]
+
+        source << (XML::Node.new('node') << source_bits[0]) if source_bits[0]
+        source << (XML::Node.new('port') << source_bits[1]) if source_bits[1]
+
+        el << sink
+        el << source
+
+        links << el
+      end
+
+      components << sources
+      components << sinks
+      components << processors
+      components << links
+
+      components
+    end
+
     # End Instance Methods
   end
 end

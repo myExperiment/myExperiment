@@ -201,4 +201,8 @@ class Workflow < ActiveRecord::Base
     (candidates - existing).sort
   end
 
+  def components
+    processor_class.new(content_blob.data).get_components
+  end
+
 end
