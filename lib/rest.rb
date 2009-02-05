@@ -104,15 +104,56 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
     end
 
     if (model_data['Read'][i] == 'yes')
+
       accessor = model_data['Accessor'][i]
 
-      text = ''
+      text  = ''
+      attrs = {}
 
       case model_data['Encoding'][i]
 
-        when 'file-column'
+        when 'list'
 
-          # Do nothing
+          list_element = XML::Node.new(model_data['REST Attribute'][i])
+
+          attrs.each do |key,value|
+            list_element[key] = value
+          end
+
+          root << list_element
+
+          collection = eval("ob.#{model_data['Accessor'][i]}")
+
+          # filter out things that the user cannot see
+          collection = collection.select do |c|
+            not c.respond_to?('contribution') or Authorization.is_authorized?("view", nil, c, user)
+          end
+
+          collection.each do |item|
+
+            item_attrs = { }
+
+            item_uri = rest_resource_uri(item)
+            item_attrs['resource'] = item_uri if item_uri
+            item_attrs['uri'] = rest_access_uri(item)
+
+            list_element_accessor = model_data['List Element Accessor'][i]
+            list_element_text     = list_element_accessor ? eval("item.#{model_data['List Element Accessor'][i]}") : item
+
+            if list_element_text.instance_of?(String)
+              el = XML::Node.new(model_data['List Element Name'][i])
+
+              item_attrs.each do |key,value|
+                el[key] = value
+              end
+
+              el << list_element_text.to_s if list_element_text
+
+              list_element << el
+            else
+              list_element << rest_reference(list_element_text, query)
+            end
+          end
 
         when 'xml'
 
@@ -122,96 +163,44 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
             text = eval("ob.#{accessor}")
           end
 
+          root << text
+
         else 
 
-          if query['version'] and model_data['Versioned'][i] == 'yes'
-            text = eval("ob.versions[#{(query['version'].to_i - 1).to_s}].#{accessor}").to_s
+          if model_data['Encoding'][i] == 'file-column'
+
+            text = file_column_url(ob, model_data['Accessor'][i])
+
           else
-            text = eval("ob.#{accessor}").to_s
-          end
-      end
 
-      attrs = {}
-
-      case model_data['Encoding'][i]
-
-        when 'base64'
-
-          text = Base64.encode64(text)
-          attrs = { 'type' => 'binary', 'encoding' => 'base64' }
-
-        when 'file-column';
-
-          text = file_column_url(ob, model_data['Accessor'][i])
-      end
-
-      case model_data['Encoding'][i]
-
-        when 'list'
-
-        list_element = XML::Node.new(model_data['REST Attribute'][i])
-
-        attrs.each do |key,value|
-          list_element[key] = value
-        end
-
-        root << list_element
-
-        collection = eval("ob.#{model_data['Accessor'][i]}")
-
-        # filter out things that the user cannot see
-        collection = collection.select do |c|
-          not c.respond_to?('contribution') or Authorization.is_authorized?("view", nil, c, user)
-        end
-
-        collection.each do |item|
-
-          item_attrs = { }
-
-          item_uri = rest_resource_uri(item)
-          item_attrs['resource'] = item_uri if item_uri
-          item_attrs['uri'] = rest_access_uri(item)
-
-          list_element_accessor = model_data['List Element Accessor'][i]
-          list_element_text     = list_element_accessor ? eval("item.#{model_data['List Element Accessor'][i]}") : item
-
-          if list_element_text.instance_of?(String)
-            el = XML::Node.new(model_data['List Element Name'][i])
-
-            item_attrs.each do |key,value|
-              el[key] = value
+            if query['version'] and model_data['Versioned'][i] == 'yes'
+              text = eval("ob.versions[#{(query['version'].to_i - 1).to_s}].#{accessor}").to_s
+            else
+              text = eval("ob.#{accessor}").to_s
             end
 
-            el << list_element_text.to_s if list_element_text
+            if (model_data['Encoding'][i] == 'base64')
+              text = Base64.encode64(text)
+              attrs = { 'type' => 'binary', 'encoding' => 'base64' }
+            end
 
-            list_element << el
-          else
-            list_element << rest_reference(list_element_text, query)
+            if model_data['Foreign Accessor'][i]
+              resource_uri = eval("rest_resource_uri(ob.#{model_data['Foreign Accessor'][i]})")
+              attrs['resource'] = resource_uri if resource_uri
+              attrs['uri'] = eval("rest_access_uri(ob.#{model_data['Foreign Accessor'][i]})")
+            end
           end
-        end
 
-      when 'xml'
+  #        puts "ATTRIBUTE = #{model_data['REST Attribute'][i]}, ATTRS = #{attrs.inspect}, text = #{text.inspect}"
 
-        root << text
+          el = XML::Node.new(model_data['REST Attribute'][i])
 
-      else
+          attrs.each do |key,value|
+            el[key] = value if value
+          end
 
-        if model_data['Foreign Accessor'][i]
-          resource_uri = eval("rest_resource_uri(ob.#{model_data['Foreign Accessor'][i]})")
-          attrs['resource'] = resource_uri if resource_uri
-          attrs['uri'] = eval("rest_access_uri(ob.#{model_data['Foreign Accessor'][i]})")
-        end
-
-#        puts "ATTRIBUTE = #{model_data['REST Attribute'][i]}, ATTRS = #{attrs.inspect}, text = #{text.inspect}"
-
-        el = XML::Node.new(model_data['REST Attribute'][i])
-
-        attrs.each do |key,value|
-          el[key] = value if value
-        end
-
-        el << text
-        root << el
+          el << text
+          root << el
       end
     end
   end
