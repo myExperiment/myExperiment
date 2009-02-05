@@ -173,10 +173,12 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
 
           else
 
-            if query['version'] and model_data['Versioned'][i] == 'yes'
-              text = eval("ob.versions[#{(query['version'].to_i - 1).to_s}].#{accessor}").to_s
-            else
-              text = eval("ob.#{accessor}").to_s
+            if accessor
+              if query['version'] and model_data['Versioned'][i] == 'yes'
+                text = eval("ob.versions[#{(query['version'].to_i - 1).to_s}].#{accessor}").to_s
+              else
+                text = eval("ob.#{accessor}").to_s
+              end
             end
 
             if (model_data['Encoding'][i] == 'base64')
