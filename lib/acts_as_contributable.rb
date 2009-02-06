@@ -78,6 +78,11 @@ module Mib
           return contribution.contributor.title if contribution.contributor.respond_to?('title')
         end
         
+        def label
+          return name  if respond_to?('name')
+          return title if respond_to?('title')
+        end
+
         # This is so that the updated_at time on the record tallies up with the
         # contributable
         def save_contributable_record

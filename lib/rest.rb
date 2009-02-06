@@ -335,25 +335,26 @@ end
 def rest_resource_uri(ob)
 
   case ob.class.to_s
-    when 'Workflow';        return workflow_url(ob)
-    when 'Blob';            return file_url(ob)
-    when 'Network';         return group_url(ob)
-    when 'User';            return user_url(ob)
-    when 'Review';          return review_url(ob.reviewable, ob)
-    when 'Comment';         return "#{rest_resource_uri(ob.commentable)}/comments/#{ob.id}"
-    when 'Blog';            return blog_url(ob)
-    when 'BlogPost';        return blog_post_url(ob.blog, ob)
-    when 'Rating';          return "#{rest_resource_uri(ob.rateable)}/ratings/#{ob.id}"
-    when 'Tag';             return tag_url(ob)
-    when 'Picture';         return picture_url(ob.owner, ob)
-    when 'Message';         return message_url(ob)
-    when 'Citation';        return citation_url(ob.workflow, ob)
-    when 'Announcement';    return announcement_url(ob)
-    when 'Pack';            return pack_url(ob)
-    when 'Experiment';      return experiment_url(ob)
-    when 'TavernaEnactor';  return runner_url(ob)
-    when 'Job';             return experiment_job_url(ob.experiment, ob)
-    when 'PackRemoteEntry'; return ob.uri
+    when 'Workflow';               return workflow_url(ob)
+    when 'Blob';                   return file_url(ob)
+    when 'Network';                return group_url(ob)
+    when 'User';                   return user_url(ob)
+    when 'Review';                 return review_url(ob.reviewable, ob)
+    when 'Comment';                return "#{rest_resource_uri(ob.commentable)}/comments/#{ob.id}"
+    when 'Blog';                   return blog_url(ob)
+    when 'BlogPost';               return blog_post_url(ob.blog, ob)
+    when 'Rating';                 return "#{rest_resource_uri(ob.rateable)}/ratings/#{ob.id}"
+    when 'Tag';                    return tag_url(ob)
+    when 'Picture';                return picture_url(ob.owner, ob)
+    when 'Message';                return message_url(ob)
+    when 'Citation';               return citation_url(ob.workflow, ob)
+    when 'Announcement';           return announcement_url(ob)
+    when 'Pack';                   return pack_url(ob)
+    when 'Experiment';             return experiment_url(ob)
+    when 'TavernaEnactor';         return runner_url(ob)
+    when 'Job';                    return experiment_job_url(ob.experiment, ob)
+    when 'PackContributableEntry'; return rest_resource_uri(ob.contributable)
+    when 'PackRemoteEntry';        return ob.uri
 
     when 'Creditation';     return nil
     when 'Attribution';     return nil
@@ -369,26 +370,27 @@ def rest_access_uri(ob)
   base = "#{request.protocol}#{request.host_with_port}"
 
   case ob.class.to_s
-    when 'Workflow';        return "#{base}/workflow.xml?id=#{ob.id}"
-    when 'Blob';            return "#{base}/file.xml?id=#{ob.id}"
-    when 'Network';         return "#{base}/group.xml?id=#{ob.id}"
-    when 'User';            return "#{base}/user.xml?id=#{ob.id}"
-    when 'Review';          return "#{base}/review.xml?id=#{ob.id}"
-    when 'Comment';         return "#{base}/comment.xml?id=#{ob.id}"
-    when 'Blog';            return "#{base}/blog.xml?id=#{ob.id}"
-    when 'BlogPost';        return "#{base}/blog-post.xml?id=#{ob.id}"
-    when 'Rating';          return "#{base}/rating.xml?id=#{ob.id}"
-    when 'Tag';             return "#{base}/tag.xml?id=#{ob.id}"
-    when 'Picture';         return "#{base}/picture.xml?id=#{ob.id}"
-    when 'Message';         return "#{base}/message.xml?id=#{ob.id}"
-    when 'Citation';        return "#{base}/citation.xml?id=#{ob.id}"
-    when 'Announcement';    return "#{base}/announcement.xml?id=#{ob.id}"
-    when 'Pack';            return "#{base}/pack.xml?id=#{ob.id}"
-    when 'Experiment';      return "#{base}/experiment.xml?id=#{ob.id}"
-    when 'TavernaEnactor';  return "#{base}/runner.xml?id=#{ob.id}"
-    when 'Job';             return "#{base}/job.xml?id=#{ob.id}"
-    when 'Download';        return "#{base}/download.xml?id=#{ob.id}"
-    when 'PackRemoteEntry'; return "#{base}/external.xml?id=#{ob.id}"
+    when 'Workflow';               return "#{base}/workflow.xml?id=#{ob.id}"
+    when 'Blob';                   return "#{base}/file.xml?id=#{ob.id}"
+    when 'Network';                return "#{base}/group.xml?id=#{ob.id}"
+    when 'User';                   return "#{base}/user.xml?id=#{ob.id}"
+    when 'Review';                 return "#{base}/review.xml?id=#{ob.id}"
+    when 'Comment';                return "#{base}/comment.xml?id=#{ob.id}"
+    when 'Blog';                   return "#{base}/blog.xml?id=#{ob.id}"
+    when 'BlogPost';               return "#{base}/blog-post.xml?id=#{ob.id}"
+    when 'Rating';                 return "#{base}/rating.xml?id=#{ob.id}"
+    when 'Tag';                    return "#{base}/tag.xml?id=#{ob.id}"
+    when 'Picture';                return "#{base}/picture.xml?id=#{ob.id}"
+    when 'Message';                return "#{base}/message.xml?id=#{ob.id}"
+    when 'Citation';               return "#{base}/citation.xml?id=#{ob.id}"
+    when 'Announcement';           return "#{base}/announcement.xml?id=#{ob.id}"
+    when 'Pack';                   return "#{base}/pack.xml?id=#{ob.id}"
+    when 'Experiment';             return "#{base}/experiment.xml?id=#{ob.id}"
+    when 'TavernaEnactor';         return "#{base}/runner.xml?id=#{ob.id}"
+    when 'Job';                    return "#{base}/job.xml?id=#{ob.id}"
+    when 'Download';               return "#{base}/download.xml?id=#{ob.id}"
+    when 'PackContributableEntry'; return "#{base}/internal-pack-item.xml?id=#{ob.id}"
+    when 'PackRemoteEntry';        return "#{base}/external-pack-item.xml?id=#{ob.id}"
 
     when 'Creditation';     return nil
     when 'Attribution';     return nil
@@ -399,28 +401,56 @@ def rest_access_uri(ob)
   raise "Class not processed in rest_access_uri: #{ob.class.to_s}"
 end
 
-def rest_reference(ob, query)
-
-  tag  = 'object'
-  text = ''
+def rest_object_tag_text(ob)
 
   case ob.class.to_s
-    when 'User';            tag = 'user';         text = ob.name
-    when 'Workflow';        tag = 'workflow';     text = ob.title
-    when 'Blob';            tag = 'file';         text = ob.title
-    when 'Network';         tag = 'group';        text = ob.title
-    when 'Rating';          tag = 'rating';       text = ob.rating.to_s
-    when 'Creditation';     tag = 'creditation';  text = ''
-    when 'Citation';        tag = 'citation';     text = ob.title
-    when 'Announcement';    tag = 'announcement'; text = ob.title
-    when 'Tag';             tag = 'tag';          text = ob.name
-    when 'Pack';            tag = 'pack';         text = ob.title
-    when 'Experiment';      tag = 'experiment';   text = ob.title
-    when 'Download';        tag = 'download';     text = ''
-    when 'PackRemoteEntry'; tag = 'external';     text = ob.title     
-
-    when 'Workflow::Version'; tag = 'workflow'; text = ob.title
+    when 'User';                   return 'user'
+    when 'Workflow';               return 'workflow'
+    when 'Blob';                   return 'file'
+    when 'Network';                return 'group'
+    when 'Rating';                 return 'rating'
+    when 'Creditation';            return 'creditation'
+    when 'Citation';               return 'citation'
+    when 'Announcement';           return 'announcement'
+    when 'Tag';                    return 'tag'
+    when 'Pack';                   return 'pack'
+    when 'Experiment';             return 'experiment'
+    when 'Download';               return 'download'
+    when 'PackContributableEntry'; return rest_object_tag_text(ob.contributable)
+    when 'PackRemoteEntry';        return 'external'
+    when 'Workflow::Version';      return 'workflow'
   end
+
+  return 'object'
+end
+
+def rest_object_label_text(ob)
+
+  case ob.class.to_s
+    when 'User';                   return ob.name
+    when 'Workflow';               return ob.title
+    when 'Blob';                   return ob.title
+    when 'Network';                return ob.title
+    when 'Rating';                 return ob.rating.to_s
+    when 'Creditation';            return ''
+    when 'Citation';               return ob.title
+    when 'Announcement';           return ob.title
+    when 'Tag';                    return ob.name
+    when 'Pack';                   return ob.title
+    when 'Experiment';             return ob.title
+    when 'Download';               return ''
+    when 'PackContributableEntry'; return rest_object_label_text(ob.contributable)
+    when 'PackRemoteEntry';        return ob.title     
+    when 'Workflow::Version';      return ob.title
+  end
+
+  return ''
+end
+
+def rest_reference(ob, query)
+
+  tag  = rest_object_tag_text(ob)
+  text = rest_object_label_text(ob)
 
   el = XML::Node.new(tag)
 

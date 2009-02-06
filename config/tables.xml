@@ -10,7 +10,7 @@
   <LastAuthor>Don Cruickshank</LastAuthor>
   <LastPrinted>2008-01-22T13:52:43Z</LastPrinted>
   <Created>2007-11-17T10:53:37Z</Created>
-  <LastSaved>2008-08-06T14:30:02Z</LastSaved>
+  <LastSaved>2009-02-06T17:16:03Z</LastSaved>
   <Version>12.00</Version>
  </DocumentProperties>
  <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
@@ -81,7 +81,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="REST">
-  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="77" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="79" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="42"/>
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="99.75"/>
@@ -91,8 +91,8 @@
    <Column ss:AutoFitWidth="0" ss:Width="93"/>
    <Column ss:StyleID="s63" ss:AutoFitWidth="0" ss:Width="15.75"/>
    <Column ss:StyleID="s63" ss:AutoFitWidth="0" ss:Width="57"/>
-   <Column ss:StyleID="s64" ss:AutoFitWidth="0" ss:Width="86.25"/>
-   <Column ss:AutoFitWidth="0" ss:Width="86.25"/>
+   <Column ss:StyleID="s64" ss:AutoFitWidth="0" ss:Width="96.75"/>
+   <Column ss:AutoFitWidth="0" ss:Width="129.75"/>
    <Column ss:AutoFitWidth="0" ss:Width="83.25"/>
    <Column ss:AutoFitWidth="0" ss:Width="86.25"/>
    <Row ss:AutoFitHeight="0" ss:Height="30" ss:StyleID="s65">
@@ -517,12 +517,31 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
-    <Cell><Data ss:Type="String">external</Data></Cell>
+    <Cell><Data ss:Type="String">internal-pack-item</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s69"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">view</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">pack</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="String">crud</Data></Cell>
-    <Cell ss:StyleID="s70"><Data ss:Type="String">external</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">internal-pack-item</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">pack_contributable_entry</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="4" ss:StyleID="s69"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="9" ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s69"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">view</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">pack</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">crud</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">external-pack-item</Data></Cell>
     <Cell ss:StyleID="s70"><Data ss:Type="String">pack_remote_entry</Data></Cell>
     <Cell ss:StyleID="s70"/>
    </Row>
@@ -672,7 +691,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">user_count</Data></Cell>
    </Row>
-   <Row ss:Index="67" ss:AutoFitHeight="0">
+   <Row ss:Index="69" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">group-count</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -680,7 +699,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">group_count</Data></Cell>
    </Row>
-   <Row ss:Index="69" ss:AutoFitHeight="0">
+   <Row ss:Index="71" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">pack-count</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -688,7 +707,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">pack_count</Data></Cell>
    </Row>
-   <Row ss:Index="71" ss:AutoFitHeight="0">
+   <Row ss:Index="73" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">tagged</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -696,7 +715,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">get_tagged</Data></Cell>
    </Row>
-   <Row ss:Index="73" ss:AutoFitHeight="0">
+   <Row ss:Index="75" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">tag-cloud</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -704,7 +723,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">tag_cloud</Data></Cell>
    </Row>
-   <Row ss:Index="75" ss:AutoFitHeight="0">
+   <Row ss:Index="77" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">POST</Data></Cell>
     <Cell><Data ss:Type="String">job</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -712,7 +731,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">post_job</Data></Cell>
    </Row>
-   <Row ss:Index="77" ss:AutoFitHeight="0">
+   <Row ss:Index="79" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">download</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">system</Data></Cell>
@@ -738,7 +757,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>49</TopRowBottomPane>
+   <TopRowBottomPane>43</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -755,8 +774,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>68</ActiveRow>
-     <ActiveCol>11</ActiveCol>
+     <ActiveRow>48</ActiveRow>
+     <ActiveCol>8</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
@@ -765,12 +784,12 @@
   </WorksheetOptions>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="23" ss:ExpandedRowCount="236" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="23" ss:ExpandedRowCount="244" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15">
-   <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="86.25"/>
+   <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="111.75"/>
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="116.25"/>
    <Column ss:AutoFitWidth="0" ss:Width="9.75"/>
-   <Column ss:AutoFitWidth="0" ss:Width="96.75"/>
+   <Column ss:AutoFitWidth="0" ss:Width="127.5"/>
    <Column ss:AutoFitWidth="0" ss:Width="156"/>
    <Column ss:AutoFitWidth="0" ss:Width="59.25"/>
    <Column ss:AutoFitWidth="0" ss:Width="68.25"/>
@@ -2778,9 +2797,9 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">pack</Data></Cell>
-    <Cell><Data ss:Type="String">items</Data></Cell>
+    <Cell><Data ss:Type="String">internal-pack-items</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Pack</Data></Cell>
-    <Cell><Data ss:Type="String">contributables</Data></Cell>
+    <Cell><Data ss:Type="String">contributable_entries</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell><Data ss:Type="String">list</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
@@ -2791,7 +2810,7 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">pack</Data></Cell>
-    <Cell><Data ss:Type="String">externals</Data></Cell>
+    <Cell><Data ss:Type="String">external-pack-items</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Pack</Data></Cell>
     <Cell><Data ss:Type="String">remote_entries</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
@@ -3278,7 +3297,92 @@
     <Cell ss:Index="16"><Data ss:Type="String">user</Data></Cell>
    </Row>
    <Row ss:Index="228" ss:AutoFitHeight="0">
-    <Cell><Data ss:Type="String">external</Data></Cell>
+    <Cell><Data ss:Type="String">internal-pack-item</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">PackContributableEntry</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">internal-pack-item</Data></Cell>
+    <Cell><Data ss:Type="String">owner</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">PackContributableEntry</Data></Cell>
+    <Cell ss:Index="6"><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">internal-pack-item</Data></Cell>
+    <Cell><Data ss:Type="String">pack</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">PackContributableEntry</Data></Cell>
+    <Cell ss:Index="6"><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">pack</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">internal-pack-item</Data></Cell>
+    <Cell><Data ss:Type="String">item</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">PackContributableEntry</Data></Cell>
+    <Cell><Data ss:Type="String">item_as_list</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">list</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">contributable</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">internal-pack-item</Data></Cell>
+    <Cell><Data ss:Type="String">comment</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">PackContributableEntry</Data></Cell>
+    <Cell><Data ss:Type="String">comment</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">internal-pack-item</Data></Cell>
+    <Cell><Data ss:Type="String">created-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">PackContributableEntry</Data></Cell>
+    <Cell><Data ss:Type="String">created_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">internal-pack-item</Data></Cell>
+    <Cell><Data ss:Type="String">updated-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">PackContributableEntry</Data></Cell>
+    <Cell><Data ss:Type="String">updated_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:Index="236" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackRemoteEntry</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
@@ -3292,7 +3396,7 @@
     <Cell ss:Index="23"><Data ss:Type="Number">4</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell><Data ss:Type="String">external</Data></Cell>
+    <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">owner</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackRemoteEntry</Data></Cell>
     <Cell><Data ss:Type="String">user.name</Data></Cell>
@@ -3306,7 +3410,7 @@
     <Cell ss:Index="16"><Data ss:Type="String">user</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell><Data ss:Type="String">external</Data></Cell>
+    <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">pack</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackRemoteEntry</Data></Cell>
     <Cell><Data ss:Type="String">pack.title</Data></Cell>
@@ -3317,9 +3421,10 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">pack</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell><Data ss:Type="String">external</Data></Cell>
+    <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">title</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackRemoteEntry</Data></Cell>
     <Cell><Data ss:Type="String">title</Data></Cell>
@@ -3332,7 +3437,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell><Data ss:Type="String">external</Data></Cell>
+    <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">uri</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackRemoteEntry</Data></Cell>
     <Cell><Data ss:Type="String">uri</Data></Cell>
@@ -3345,7 +3450,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell><Data ss:Type="String">external</Data></Cell>
+    <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">alternate-uri</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackRemoteEntry</Data></Cell>
     <Cell><Data ss:Type="String">alternate_uri</Data></Cell>
@@ -3358,7 +3463,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell><Data ss:Type="String">external</Data></Cell>
+    <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">comment</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackRemoteEntry</Data></Cell>
     <Cell><Data ss:Type="String">comment</Data></Cell>
@@ -3371,7 +3476,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell><Data ss:Type="String">external</Data></Cell>
+    <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">created-at</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackRemoteEntry</Data></Cell>
     <Cell><Data ss:Type="String">created_at</Data></Cell>
@@ -3384,7 +3489,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell><Data ss:Type="String">external</Data></Cell>
+    <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">updated-at</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackRemoteEntry</Data></Cell>
     <Cell><Data ss:Type="String">updated_at</Data></Cell>
@@ -3415,7 +3520,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>101</TopRowBottomPane>
+   <TopRowBottomPane>210</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -3432,7 +3537,7 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>116</ActiveRow>
+     <ActiveRow>231</ActiveRow>
      <ActiveCol>4</ActiveCol>
     </Pane>
    </Panes>
