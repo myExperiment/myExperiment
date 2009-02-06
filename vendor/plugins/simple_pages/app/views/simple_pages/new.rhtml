@@ -1,9 +1,0 @@
-<%= link_to 'back to all pages', simple_pages_path %>
-
-  <h1>You are creating <%= @simple_page.filename ? "'#{@simple_page.filename}'" : ' a new page' %></h1>
-
-  <%= form_tag simple_pages_path %>
-  
-  <%= render :partial => 'fields' %>
-  
-  </form>

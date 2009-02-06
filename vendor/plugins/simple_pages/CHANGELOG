@@ -1,5 +1,0 @@
-2007-05-03
-* page contents are now processed by ERB before being displayed.  Hey now - embedded stuff - that's nifty
-
-2007-04-29
-* added confirmation for page deletion
