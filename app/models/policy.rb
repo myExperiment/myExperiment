@@ -57,9 +57,7 @@ class Policy < ActiveRecord::Base
   
 private
 
-  # categorize action names here (make sure you include each one as an 
-  # xxx_public and xxx_protected column in ++policies++ and an xxx 
-  # column in ++permissions+)
+  # categorize action names here 
   @@categories = { "download" => ["download", 
                                   "named_download", 
                                   "submit_job",
@@ -106,14 +104,6 @@ private
     end
       
     return nil
-  end
-  
-  def public?(category)
-    attributes["#{category}_public"] == true
-  end
-  
-  def protected?(category)
-    attributes["#{category}_protected"] == true
   end
   
   def all_permissions_for_contributor(contrib)

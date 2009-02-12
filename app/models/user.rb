@@ -283,17 +283,6 @@ class User < ActiveRecord::Base
 
   acts_as_solr(:fields => [ :name, :tag_list ], :include => [ :profile ]) if SOLR_ENABLE
 
-  # protected? asks the question "is other protected by me?"
-  def protected?(other)
-    if other.kind_of? User               # if other is a User...
-      return friend?(other.id)   #       ...is other a friend of mine?
-    elsif other.kind_of? Network         # if other is a Network...
-      return other.member?(id)           #       ...am I a member of other?
-    else                                 # otherwise...
-      return false                       #       ...no
-    end
-  end
-  
   validates_presence_of :name
   
   has_one :profile,

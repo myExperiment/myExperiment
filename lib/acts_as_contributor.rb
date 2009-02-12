@@ -63,12 +63,6 @@ module Mib
 
           return rtn
         end
-
-        # this method is called by the Policy instance when authorizing protected attributes.
-        def protected?(other)
-          # extend in instance class
-          false
-        end
         
         def contribution_tags
           tags = contribution_tags!

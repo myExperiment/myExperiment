@@ -38,17 +38,6 @@ class Network < ActiveRecord::Base
     self.find_by_sql("SELECT n.* FROM networks n JOIN permissions perm ON n.id = perm.contributor_id AND perm.contributor_type = 'Network' JOIN policies p ON perm.policy_id = p.id JOIN contributions c ON p.id = c.policy_id GROUP BY perm.contributor_id ORDER BY COUNT(perm.contributor_id) DESC, n.title LIMIT #{limit}")
   end
   
-  # protected? asks the question "is other protected by me?"
-  def protected?(other)
-    if other.kind_of? User        # if other is a User...
-      return member?(other.id)    #       ...is other a member of me?
-    elsif other.kind_of? Network  # if other is a Network...
-      return relation?(other.id)  #       ...is other a child of mine?
-    else                          # otherwise...
-      return false                #       ...no
-    end
-  end
-  
   validates_associated :owner
   
   validates_presence_of :user_id, :title
