@@ -117,7 +117,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :messages, :collection => { :sent => :get, :delete_all_selected => :delete }
 
   # all ***ship's
-  map.resources :relationships, :memberships, :friendships
+  map.resources :memberships, :friendships
 
   # all oauth
   map.oauth '/oauth',:controller=>'oauth',:action=>'index'
@@ -174,8 +174,6 @@ ActionController::Routing::Routes.draw do |map|
                  :comment_delete => :delete, 
                  :rate => :post, 
                  :tag => :post } do |group|
-    # relationships 'accepted by' group (relation --> relationship --> group)
-    group.resources :relationships, :member => { :accept => :get }
     group.resources :announcements, :controller => :group_announcements
   end
   
