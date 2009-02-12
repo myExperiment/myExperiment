@@ -27,7 +27,7 @@ ActionController::Routing::Routes.draw do |map|
   
   # search
   map.resource :search,
-    :member => { :live_search => :get }
+    :member => { :live_search => :get, :open_search_beta => :get }
 
   # tags
   map.resources :tags

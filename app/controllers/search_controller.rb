@@ -25,6 +25,99 @@ class SearchController < ApplicationController
     end
   end
   
+  def open_search_beta
+
+    def time_string(time)
+      time.strftime("%a, %d %b %Y %I:%H:%S %Z")
+    end
+
+    def file_column_url(ob, field)
+
+      fields = (field.split('/').map do |f| "'#{f}'" end).join(', ')
+
+      path = eval("ActionView::Base.new.url_for_file_column(ob, #{fields})")
+
+      "#{request.protocol}#{request.host_with_port}#{path}"
+    end
+
+    def render_user(u)
+
+      markup = ""
+
+      markup += "<item>";
+      markup += "<title>" + u.name + "</title>";
+      markup += "<link>" + user_url(u) + "</link>";
+      markup += "<description>" + sanitize(u.profile.body_html) + "</description>";
+      markup += "<pubDate>" + time_string(u.created_at) + "</pubDate>";
+      markup += "<media:thumbnail url=\"" + user_picture_url(u, u.profile.picture.id) + "\"/>";
+#markup += "height=\"120\" width=\"160\"/>";
+
+      markup += "</item>";
+
+      markup
+    end
+
+    def sanitize(str)
+      str = str.gsub('<[^>]*>', '')
+      str = str.gsub('&', '')
+      str
+    end
+
+    def render_workflow(w)
+
+      markup = ""
+
+      markup += "<item>";
+      markup += "<title>" + w.title + "</title>";
+      markup += "<link>" + workflow_url(w) + "</link>";
+      markup += "<description>" + sanitize(w.body_html) + "</description>";
+      markup += "<pubDate>" + time_string(w.created_at) + "</pubDate>";
+      markup += "<media:content url=\"" + w.named_download_url + "\"";
+      markup += " fileSize=\"" + w.content_blob.data.length.to_s + "\"" +
+                " type=\"" + w.content_type + "\"/>";
+      markup += "<media:thumbnail url=\"" + file_column_url(w, "image/thumb") +
+          "\"/>";
+#markup += "height=\"120\" width=\"160\"/>";
+
+      w.tags.each do |t|
+        markup += "<category>#{t.name}</category>"
+      end
+
+      markup += "<author>#{w.contributor.name}</author>"
+
+      markup += "</item>";
+
+      markup
+    end
+
+    markup = ""
+
+    markup += "<rss version=\"2.0\" xmlns:media=\"http://search.yahoo.com/mrss/\" ";
+    markup += "xmlns:example=\"http://example.com/namespace\">";
+    markup += "<channel>";
+    markup += "<title>Search Results</title>";
+
+    if (params["q"] != "*")
+      workflows = Workflow.find_by_solr(params["q"])
+      users     = User.find_by_solr(params["q"])
+
+      workflows.results.each do |w|
+        markup += render_workflow(w)
+      end
+
+      users.results.each do |u|
+        markup += render_user(u)
+      end
+    end
+
+    markup += "</channel>";
+    markup += "</rss>";
+
+    response.content_type = "application/rss+xml"
+
+    render :text => markup
+  end
+
 private
 
   @@valid_types = ["all", "workflows", "users", "networks", "blobs", "packs"]
