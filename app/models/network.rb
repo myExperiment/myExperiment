@@ -56,79 +56,7 @@ class Network < ActiveRecord::Base
   def owner_name
     owner.name
   end
-  
-#  has_many :relationships_completed, #accepted (by others)
-#           :class_name => "Relationship",
-#           :foreign_key => :network_id,
-#           :conditions => ["accepted_at < ?", Time.now],
-#           :order => "created_at DESC",
-#           :dependent => :destroy
-#           
-#  has_many :relationships_requested, #unaccepted (by others)
-#           :class_name => "Relationship",
-#           :foreign_key => :network_id,
-#           :conditions => "accepted_at IS NULL",
-#           :order => "created_at DESC",
-#           :dependent => :destroy
-#           
-#  has_many :relationships_accepted, #accepted (by me)
-#           :class_name => "Relationship",
-#           :foreign_key => :relation_id,
-#           :conditions => ["accepted_at < ?", Time.now],
-#           :order => "accepted_at DESC",
-#           :dependent => :destroy
-#           
-#  has_many :relationships_pending, #unaccepted (by me)
-#           :class_name => "Relationship",
-#           :foreign_key => :relation_id,
-#           :conditions => "accepted_at IS NULL",
-#           :order => "created_at DESC",
-#           :dependent => :destroy
-#
-#  def relationships
-#    (relationships_completed + relationships_requested + relationships_accepted + relationships_pending).sort do |a, b|
-#      b.created_at <=> a.created_at
-#    end
-#  end
-  
-  has_and_belongs_to_many :relations,
-                          :class_name => "Network",
-                          :join_table => :relationships,
-                          :foreign_key => :network_id,
-                          :association_foreign_key => :relation_id,
-                          :conditions => "accepted_at IS NOT NULL",
-                          :order => "accepted_at DESC"
                           
-  alias_method :original_relations, :relations
-  def relations
-    rtn = []
-    
-    original_relations.each do |r|
-      rtn << Network.find(r.relation_id)
-    end
-    
-    return rtn
-  end
-  
-#  has_and_belongs_to_many :parents,
-#                          :class_name => "Network",
-#                          :join_table => :relationships,
-#                          :foreign_key => :relation_id,
-#                          :association_foreign_key => :network_id,
-#                          :conditions => ["accepted_at < ?", Time.now],
-#                          :order => "accepted_at DESC"
-#                          
-#  alias_method :original_parents, :parents
-#  def parents
-#    rtn = []
-#    
-#    original_parents.each do |r|
-#      rtn << Network.find(r.network_id)
-#    end
-    
-#    return rtn
-#  end
-
   # announcements belonging to the group;
   #
   # "announcements_public" are just the public announcements;
@@ -210,50 +138,6 @@ class Network < ActiveRecord::Base
     return false
   end
   
-  def member_recursive?(userid)
-    member_r? userid
-  end
-  
-  # alias for member_recursive?
-  def member!(userid)
-    member_r? userid
-  end
-  
-  def relation?(network_id)
-    relations.each do |r|
-      return true if r.id.to_i == network_id.to_i
-    end
-    
-    false
-  end
-  
-  def relation_recursive?(network_id)
-    relation_r? network_id
-  end
-  
-  # alias for relation_recursive?
-  def relation!(userid)
-    relation_r? userid
-  end
-  
-  def members_recursive
-    members_r
-  end
-  
-  # alias for members_recursive
-  def members!
-    members_r
-  end
-  
-  def relations_recursive
-    relations_r
-  end
-  
-  # alias for relations_recursive
-  def relations!
-    relations_r
-  end
-  
   # Finds all the contributions that have been explicitly shared via Permissions
   def shared_contributions
     list = []
@@ -272,62 +156,4 @@ class Network < ActiveRecord::Base
     # filter out blogs until they've gone completely
     c.select do |x| x.class != Blog end
   end
-
-protected
-
-  def member_r?(userid, depth=0)
-    unless depth > @@maxdepth
-      return true if member? userid
-    
-      relations.each do |r|
-        return true if r.member_r? userid, depth+1
-      end
-    end
-    
-    false
-  end
-  
-  def relation_r?(network_id, depth=0)
-    unless depth > @@maxdepth
-      return true if relation? network_id
-    
-      relations.each do |r|
-        return true if r.relation_r? network_id, depth+1
-      end
-    end
-    
-    false
-  end
-  
-  def members_r(depth=0)
-    unless depth > @@maxdepth
-      rtn = members
-    
-      relations.each do |r|
-         rtn = (rtn + r.members_r(depth+1))
-      end
-    
-      return rtn.uniq
-    end
-    
-    []
-  end
-  
-  def relations_r(depth=0)
-    unless depth > @@maxdepth
-      rtn = relations
-    
-      relations.each do |r|
-        rtn = (rtn + r.relations_r(depth+1))
-      end
-    
-      return rtn # no need for uniq (there shouldn't be any loops)
-    end
-    
-    []
-  end
-  
-private
-  
-  @@maxdepth = 7 # maximum level of recursion for depth first search
 end

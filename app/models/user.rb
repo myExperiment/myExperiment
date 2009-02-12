@@ -475,16 +475,6 @@ class User < ActiveRecord::Base
     self.networks + self.networks_owned
   end
   
-  def relationships_pending
-    rtn = []
-    
-    networks_owned.each do |n|
-      rtn.concat n.relations_pending
-    end
-    
-    return rtn
-  end
-           
   has_many :messages_sent,
            :class_name => "Message",
            :foreign_key => :from,
