@@ -77,7 +77,7 @@
 				       	<%= icon "edit", edit_user_path(user), nil, nil, "Edit" %>
 						  <% else %>
 							  <!-- check if the profile that we are viewing now is a friend of current user -> stored for better performance -->
-			          <% this_user_is_friend_of_current_user = user.friend?(current_user.id) %>
+			          <% this_user_is_friend_of_current_user = (current_user != 0) && user.friend?(current_user.id) %>
 								<% unless !logged_in? || this_user_is_friend_of_current_user || current_user.friendship_pending?(user.id) %>
 							  	<%= icon "friendship", new_user_friendship_url(:user_id => user.id), nil, nil, "Request Friendship" %>
 							  <% end %>

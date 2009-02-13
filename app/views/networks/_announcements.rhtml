@@ -31,7 +31,7 @@
 			<p class="none_text">None</p>
 		<% end %>
 		<p style="font-size: 77%; text-align: center;">
-			<% if group.owner?(current_user.id) %>
+			<% if (current_user != 0) && group.owner?(current_user.id) %>
 				[ <%= link_to "New", new_group_announcement_url(group) %> ]
 			<% end %>
 			[ <%= link_to "See All", group_announcements_url(group) %> ]

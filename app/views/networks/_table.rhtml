@@ -10,7 +10,7 @@
 					</td>
 					<td style="text-align: left;">
 						<p class="title">
-							<% if network.user_id == current_user.id %>
+							<% if (current_user != 0) && (network.user_id == current_user.id) %>
 								<%= icon "network-owned", nil, nil, nil, '' %>
 							<% else %>
 								<%= icon "network-member", nil, nil, nil, '' %>

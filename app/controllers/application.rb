@@ -84,7 +84,7 @@ class ApplicationController < ActionController::Base
     #
     # however, if there are newer versions of contributable (uploaded not by the original uploader),
     # we do want to record viewings/downloads of this newer version by the original uploader  
-    if allow_logging 
+    if allow_logging && current_user != 0
       allow_logging = false if (contributable_or_version.contributor_type == "User" && contributable_or_version.contributor_id == current_user.id)
     end
     

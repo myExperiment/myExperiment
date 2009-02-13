@@ -154,10 +154,14 @@ module ApplicationHelper
   end
   
   def avatar_url(picture_id, size=200)
-    url_for(:controller => 'pictures',
+    url = url_for(:controller => 'pictures',
             :action => 'show',
             :id => picture_id,
             :size => "#{size}x#{size}")
+
+    # icky url fix - the Rails 1 automatic extension adding code doesn't take
+    # URL queries into account
+    url.sub('?', '.jpg?')
   end
   
   def null_avatar(size=200, alt="Anonymous")

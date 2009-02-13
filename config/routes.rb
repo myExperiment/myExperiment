@@ -191,13 +191,6 @@ ActionController::Routing::Routes.draw do |map|
   # -- just remember to delete public/index.html.
 #  map.connect '', :controller => 'users'
 
-  # Allow downloading Web Service WSDL as a file with an extension
-  # instead of a file named 'wsdl'
-  map.connect ':controller/service.wsdl', :action => 'wsdl'
-  
-  # Sitealizer
-  map.connect '/sitealizer/:action', :controller => 'sitealizer'
-
   # Explicit redirections
   map.connect 'exercise', :controller => 'redirects', :action => 'exercise'
   map.connect 'google', :controller => 'redirects', :action => 'google'

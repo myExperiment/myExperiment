@@ -23,7 +23,7 @@
     <% pictures.each do |p| %>
       <li>
         <center>
-        	<%= image_tag(url_for(:controller => 'pictures', :action  => 'show', :id => p.id, :size => '60x60')) %>
+        	<%= image_tag(avatar_url(p.id, 60)) %>
 					<br/>
 					<%= form.radio_button :picture_id, p.id %>
 				</center>

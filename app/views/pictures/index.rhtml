@@ -33,11 +33,7 @@
       <% if false %>
         <%= image_tag(url_for_file_column(picture, "data", "large")) %>
       <% end %>
-      <%= image_tag (url_for :controller => 'pictures',
-                             :action     => 'show',
-                             :id         => picture.id,
-                             :size       => '100x100' ),
-										:class => 'framed' %>
+      <%= image_tag avatar_url(picture.id, 100), :class => 'framed' %>
     </td>
     <td class="actions">
       <% if my_page? picture.user_id %>
