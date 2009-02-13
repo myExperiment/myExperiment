@@ -78,7 +78,7 @@
 						</li>
 						<!-- Packs tab -->
 						<li <%= (["packs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
-							<%= link_to("Packs " + new_flash_image("position: relative; z-index: 1000;"), packs_path, :style => "padding-right: 3px; *padding-top: 0;") -%>
+							<%= link_to("Packs", packs_path) -%>
 						</li>
 					</ul>
 				</div>
