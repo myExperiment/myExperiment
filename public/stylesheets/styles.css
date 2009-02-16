@@ -1937,7 +1937,7 @@ table.quick_add td.submit {
 
 .unselected_tag_suggestion:hover {
   border: 1px SOLID #d0d0f0;
-  background-color: #d0d0f0;
+  background-color: white;
   padding-left: 4px;
   padding-right: 4px;
   color: #000099;
