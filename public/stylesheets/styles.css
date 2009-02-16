@@ -1928,3 +1928,35 @@ table.quick_add td.submit {
 #version_info_box p * {
 	vertical-align: middle;
 }
+
+.unselected_tag_suggestion {
+  border: 1px SOLID white;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.unselected_tag_suggestion:hover {
+  border: 1px SOLID #d0d0f0;
+  background-color: #d0d0f0;
+  padding-left: 4px;
+  padding-right: 4px;
+  color: #000099;
+  text-decoration: none;
+}
+
+.selected_tag_suggestion {
+  border: 1px SOLID #a0a0c0;
+  background-color: #d0d0f0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.selected_tag_suggestion:hover {
+  border: 1px SOLID #a0a0c0;
+  background-color: #d0d0f0;
+  padding-left: 4px;
+  padding-right: 4px;
+  color: #000099;
+  text-decoration: none;
+}
+

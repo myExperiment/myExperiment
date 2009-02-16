@@ -1,36 +1,29 @@
 <%= javascript_include_tag "tag_suggestions.js" %>
 
-<h1>Tag suggestions</h1>
+<h1>Tags</h1>
 
-<p>Based on the content of your workflow, here are some tags which you may wish to add:</p>
+<h2>Automatic tag suggestions</h2>
 
-<h2>Selected tags to add</h2>
+<p>The following tag suggestions are based on the content of your workflow.
+Click on each tag that you wish to use.<p>
 
-<% if false %>
-
-  <form action="<%= "/workflows/#{@workflow.id}/tag" %>" method="post" onsubmit="new Ajax.Request(<%= "'/workflows/#{@workflow.id}/tag'" %>, { asynchronous:true, evalScripts:true, onComplete:function(request){addTag(<%= "'#{suggestion}'" %>)}, onLoading:function(request){addingTag(<%= "'#{suggestion}'" %>)}, onSuccess:function(request){tagSuccess(<%= "'#{suggestion}'" %>)}, parameters:Form.serialize(this)}); return false;">
-
-    <span><%= suggestion %></span>
-    <input id="tag_list" name="tag_list" type="hidden" value="<%= suggestion %>"/>
-    <input name="commit" type="submit" value="Add" />
-
-  </form>
-  <% end %>
-
-<p>Click on tags below to add them.  Once you have chosen all the tags you want, press submit.</p>
-
-<div class="box_simple" style="font-size: 93%; text-align: left; margin-top: 1em;">
-  <div id="to-add"></div>
-</div>
-
-<h2>Tag suggestions</h2>
-
-<p>These are the tags that have been suggested for your upload, based on the content.  The tags
-shown here are already used by other content.</p>
-
-<div class="box_simple" style="font-size: 93%; text-align: left; margin-top: 1em;">
+<div class="box_simple" style="font-size: 93%; text-align: left; margin: 2em;">
   <div id="suggestions"></div>
 </div>
+
+<p><em>Note: Tag suggestions are given by matching words in your workflow with other
+tags already used in myExperiment.</em></p>
+
+<h2>Summary</h2>
+
+<div id="summary-text"></div>
+
+<form action="<%= "/workflows/#{@workflow.id}/process_tag_suggestions" %>" method="post">
+  <p style="text-align: center">
+    <input id="submit-button" type="submit" value="Continue" />
+    <input type="hidden" name="tag_list" id="tag_list" />
+  </p>
+</form>
 
 <script type="text/ecmascript">
   <% @suggestions.each do |suggestion| %>
@@ -39,11 +32,4 @@ shown here are already used by other content.</p>
 
   updateTagViews();
 </script>
-
-<form action="<%= "/workflows/#{@workflow.id}/process_tag_suggestions" %>" method="post">
-  <p style="text-align: center">
-    <input type="submit" value="Continue" />
-    <input type="hidden" name="tag_list" id="tag_list" />
-  </p>
-</form>
 

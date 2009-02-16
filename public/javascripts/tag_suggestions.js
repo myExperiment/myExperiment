@@ -3,7 +3,25 @@
 var suggestions = new Array();
 var tagsToAdd   = new Array();
 
-function updateAddBox() {
+function commaList(list) {
+
+  result = "";
+
+  for (i = 0; i < list.length; i++) {
+    result += "<em>" + list[i] + "</em>";
+
+    if (i < (list.length - 2)) {
+      result += ", ";
+    } else if (i < (list.length - 1)) {
+      result += " and ";
+    }
+  }
+
+  return result;
+}
+
+function defineTag(name) {
+  suggestions.push(name);
 }
 
 function addTag(name) {
@@ -21,81 +39,49 @@ function removeTag(name) {
   updateTagViews();
 }
 
-function addingTag(name) {
-  alert("Adding tag: " + name);
-}
-
-function tagSuccess(name) {
-  document.getElementById("tag_" + name).innerHTML = "Tag \""+ name + "\" added.";
-  alert("Tag success: " + name);
-}
-
-function defineTag(name) {
-  suggestions.push(name);
-}
-
 function updateTagViews() {
 
-  visibleSuggestions = new Array();
+  separator  = ' <span style="color: #999999;">|</span> ';
+  markup     = "";
+  submitText = "";
+  summary    = "";
 
-  for (var i = 0; i < suggestions.length; i++) {
-    s = suggestions[i];
-    if (tagsToAdd.indexOf(s) == -1) {
-      visibleSuggestions.push(s);
-    }
-  }
+  if (suggestions.length == 0) {
 
-  var separator = ' <span style="color: #999999;">|</span> ';
+    markup = "There are no tag suggestions!";
 
-  // visible suggestions
-
-  var markup = "";
-
-  if (visibleSuggestions.length == 0) {
-
-    markup = "There are no remaining tag suggestions!";
   } else {
 
-    for (var i = 0; i < visibleSuggestions.length; i++) {
+    for (i = 0; i < suggestions.length; i++) {
 
-      markup += '<a href="" onclick="javascript:addTag(\'' + visibleSuggestions[i] +
-        '\'); return false;">' + visibleSuggestions[i] + '</a>';
+      tag = suggestions[i];
+      cl  = 'unselected_tag_suggestion';
+      fun = 'addTag';
 
-      if (i != (visibleSuggestions.length - 1))
+      if (tagsToAdd.indexOf(tag) != -1) {
+        cl  = 'selected_tag_suggestion';
+        fun = 'removeTag';
+      }
+      
+      markup += '<a class="' + cl + '" href="" onclick="javascript:' + fun +
+        '(\'' + tag + '\'); return false;">' + tag + '</a>';
+
+      if (i != (suggestions.length - 1))
         markup += separator;
     }
   }
-
-  document.getElementById("suggestions").innerHTML = markup;
-
-  // selected tags
-
-  markup = "";
-  form_value = "";
 
   if (tagsToAdd.length == 0) {
-
-    markup = "You have not selected any tag suggestions (click on tags below to add).";
-
+    submitText = 'Skip this step';
+    summary = "<p>You have no tags to add to this workflow.</p>";
   } else {
-
-    for (var i = 0; i < tagsToAdd.length; i++) {
-
-      markup += '<a href="" onclick="javascript:removeTag(\'' + tagsToAdd[i] +
-        '\'); return false;">' + tagsToAdd[i] + '</a>';
-
-      if (i != (tagsToAdd.length - 1))
-        markup += separator;
-
-      if (i > 0)
-        form_value = form_value + ",";
-
-      form_value = form_value + tagsToAdd[i];
-    }
+    submitText = 'Tag';
+    summary = "<p>You are about tag this workflow with: " + commaList(tagsToAdd.sort()) + ".";
   }
 
-  document.getElementById("to-add").innerHTML = markup;
-
-  document.getElementById("tag_list").value = form_value;
+  document.getElementById("suggestions").innerHTML  = markup;
+  document.getElementById("tag_list").value         = tagsToAdd.join(", ");
+  document.getElementById("submit-button").value    = submitText;
+  document.getElementById("summary-text").innerHTML = summary;
 }
 
