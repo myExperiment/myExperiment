@@ -197,7 +197,7 @@
 			
 			<% unless @viewing_version.body.blank? %>
 				<div class="contribution_description">
-					<%= white_list @viewing_version.body_html %>
+					<%= @viewing_version.body_html %>
 				</div>
 				<% if @authorised_to_edit %>
 					<p style="text-align: right; color: #666666;">[ <%= link_to "edit", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>

@@ -24,7 +24,7 @@
 			<td style="vertical-align: top;">
 				<div class="box_standout" style="padding: 0em 0.5em; margin-bottom: 0.5em;">
 					<% unless @experiment.description.blank? -%>
-						<%= white_list @experiment.description_html -%>
+						<%= @experiment.description_html -%>
 					<% else -%>
 						<p class="none_text">No description</p>
 					<% end -%>

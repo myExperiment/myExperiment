@@ -53,7 +53,7 @@
 			
 			<% unless @pack.description.blank? %>
 				<div class="contribution_description">
-					<%= white_list @pack.description_html %>
+					<%= @pack.description_html %>
 				</div>
 				<% if mine?(@pack) %>
 					<br/>

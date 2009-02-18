@@ -69,7 +69,7 @@
 			
 			<% unless @blob.body.blank? %>
 				<div class="contribution_description">
-					<%= white_list @blob.body_html %>
+					<%= @blob.body_html %>
 				</div>
 			<% else %>
 				<p class="none_text">
