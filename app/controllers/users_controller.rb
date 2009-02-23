@@ -252,7 +252,6 @@ class UsersController < ApplicationController
   end
   
   # GET /users/confirm_email/:hash
-  # TODO: NOTE: this action is not "API safe" yet (ie: it doesnt cater for a request with an XML response)
   def confirm_email
     # NOTE: this action is used for both:
     # - new users who sign up with username/password and need to confirm their email address
@@ -295,7 +294,6 @@ class UsersController < ApplicationController
   
   # GET /users/forgot_password
   # POST /users/forgot_password
-  # TODO: NOTE: this action is not "API safe" yet (ie: it doesnt cater for a request with an XML response)
   def forgot_password
     
     if request.get?
@@ -321,7 +319,6 @@ class UsersController < ApplicationController
   end
   
   # GET /users/reset_password
-  # TODO: NOTE: this action is not "API safe" yet (ie: it doesnt cater for a request with an XML response)
   def reset_password
     user = User.find_by_reset_password_code(params[:reset_code])
     

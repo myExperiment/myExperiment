@@ -14,6 +14,4 @@ class HomeController < ApplicationController
     end
   end
   
-protected
-  
 end
