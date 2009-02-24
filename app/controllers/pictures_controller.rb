@@ -7,7 +7,6 @@ class PicturesController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
   before_filter :find_pictures, :only => [:index]
-# before_filter :find_picture, :only => [:show]
   before_filter :find_picture_auth, :only => [:select, :edit, :update, :destroy]
   
   # GET /users/1/pictures/1/select
@@ -42,30 +41,20 @@ class PicturesController < ApplicationController
     
     id = params[:id].to_i
 
-    if cache_exists?(id, size) # look in file system cache before attempting db access
-      send_file(full_cache_path(id, size), :type => 'image/jpeg', :disposition => 'inline')
-    else
+    send_cached_data("public/pictures/show/#{size}/#{id}.jpg",
+        :type => 'image/jpeg', :disposition => 'inline') {
 
       find_picture
 
-      # resize and encomde the picture
+      # resize and encode the picture
       @picture.resize!(:size => size)
       @picture.to_jpg!
-      
-      # cache data
-      cache_data!(@picture, size)
-      
-      send_data(@picture.data, :type => 'image/jpeg', :disposition => 'inline')
-    end
+
+      @picture.data
+    }
+
   end
   
-  #flex_image :action => :show, 
-  #           :class => Picture, 
-  #           :padding => true
-  
-  # adding this line 'should' cache the show method within Mongrel/WebBrick
-  # caches_page :show
-
   # GET /users/1/pictures/new
   # GET /pictures/new
   def new
@@ -168,29 +157,17 @@ private
       format.html { redirect_to logged_in? ? pictures_url(current_user) : '' }
     end
   end
-  
-  # returns true if /pictures/show/:id?size=#{size}x#{size} is cached in file system
-  def cache_exists?(picture, size=nil)
-    File.exists?(full_cache_path(picture, size))
-  end
-  
-  # caches data (where size = #{size}x#{size})
-  def cache_data!(picture, size=nil)
-    FileUtils.mkdir_p(cache_path(picture, size))
-    File.open(full_cache_path(picture, size), "wb+") { |f| f.write(picture.data) }
-  end
-  
-  def cache_path(picture, size=nil, include_local_name=false)
 
-    id = picture.kind_of?(Integer) ? picture : picture.id
-    rtn = "#{RAILS_ROOT}/public/pictures/show"
-    rtn = "#{rtn}/#{size}" if size
-    rtn = "#{rtn}/#{id}.jpg" if include_local_name
-    
-    return rtn
-  end
-  
-  def full_cache_path(picture, size=nil) 
-    cache_path(picture, size, true) 
+  # file system cache
+
+  def send_cached_data(file_name, *opts)
+
+    if !File.exists?(file_name)
+      FileUtils.mkdir_p(File.dirname(file_name))
+      File.open(file_name, "wb+") { |f| f.write(yield) }
+    end
+
+    send_file(file_name, *opts)
   end
 end
+
