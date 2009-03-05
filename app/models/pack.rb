@@ -13,6 +13,11 @@ require 'cgi'
 class Pack < ActiveRecord::Base
   acts_as_contributable
   
+  acts_as_bookmarkable
+  acts_as_commentable
+  acts_as_rateable
+  acts_as_taggable
+
   validates_presence_of :title
   
   format_attribute :description
@@ -42,6 +47,18 @@ class Pack < ActiveRecord::Base
     self.find_by_sql("SELECT * FROM ((SELECT p.*, contrib.pack_id FROM packs p JOIN pack_contributable_entries contrib ON contrib.pack_id = p.id) UNION ALL (SELECT p.*, remote.pack_id FROM packs p JOIN pack_remote_entries remote ON remote.pack_id = p.id)) AS pack_items GROUP BY pack_id ORDER BY COUNT(pack_id) DESC, title LIMIT #{limit}")
   end
   
+  # Returns all the Packs that a contributable is referred to in
+  def self.packs_with_contributable(contributable)
+    # Use a custom handcrafted sql query (for perf reasons):
+    sql = "SELECT packs.*
+           FROM packs
+           WHERE packs.id IN (
+             SELECT pack_id
+             FROM pack_contributable_entries
+             WHERE contributable_id = ? AND contributable_type = ? )"
+  
+    return Pack.find_by_sql([ sql, contributable.id, contributable.class.to_s ])
+  end
   
   def self.archive_folder
     # single declaration point of where the zip archives for downloadable packs would live

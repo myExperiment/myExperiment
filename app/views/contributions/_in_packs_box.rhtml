@@ -1,4 +1,4 @@
-<% packs = contributable.in_packs -%>
+<% packs = Pack.packs_with_contributable(contributable) -%>
 <div class="contribution_section_box">
 	<p class="heading">
 		<%= info_icon_with_tooltip("All the Packs that this item (or versions of this item [if available]) is referred to in") -%>

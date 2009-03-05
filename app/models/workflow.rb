@@ -31,6 +31,11 @@ class Workflow < ActiveRecord::Base
 
   acts_as_contributable
   
+  acts_as_bookmarkable
+  acts_as_commentable
+  acts_as_rateable
+  acts_as_taggable
+
   acts_as_creditable
 
   acts_as_attributor

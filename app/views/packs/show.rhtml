@@ -28,7 +28,7 @@
 	<% end %>
 	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@pack.tags.length})</span>", "#tags" %>
 	|
-	<%= link_to "Featured in Packs (#{@pack.in_packs.length})", "#featured_in_packs" %>
+	<%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@pack).length})", "#featured_in_packs" %>
 	|
 	<%= link_to "Favourited By (#{@pack.bookmarks.length})", "#favourited_by" %>
 	| 

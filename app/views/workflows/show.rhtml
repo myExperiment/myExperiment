@@ -40,7 +40,7 @@
 	|
 	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@workflow.tags.uniq.length})</span>", "#tags" %>
 	|
-	<%= link_to "Featured in Packs (#{@workflow.in_packs.length})", "#featured_in_packs" %>
+	<%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@workflow).length})", "#featured_in_packs" %>
 	|
 	<%= link_to "Ratings (#{@workflow.ratings.length})", "#ratings" %>
 	|
