@@ -13,13 +13,15 @@ class ApiController < ApplicationController
 
   def process_request
 
+    user = current_user
+
     auth = request.env["HTTP_AUTHORIZATION"]
 
     if auth and auth.starts_with?("Basic ")
       credentials = Base64.decode64(auth.sub(/^Basic /, '')).split(':')
-      current_user = User.authenticate(credentials[0], credentials[1])
+      user = User.authenticate(credentials[0], credentials[1])
 
-      if current_user.nil?
+      if user.nil?
         render :xml => rest_error_response(401, 'Not authorized').to_s
         return
       end
@@ -31,7 +33,7 @@ class ApiController < ApplicationController
     uri    = params[:uri]
 
    # logger.info "current token: #{current_token.inspect}"
-   # logger.info "current user: #{current_user.id}"
+   # logger.info "current user: #{user.id}"
    # logger.info "query: #{query}"
    # logger.info "method: #{method}"
    # logger.info "uri: #{uri}"
@@ -59,13 +61,12 @@ class ApiController < ApplicationController
     end  
 
     case rules['Type']
-      when 'index'; doc = rest_index_request(rules, current_user, query)
-      when 'crud';  doc = rest_crud_request(rules, current_user)
-      when 'call';  doc = rest_call_request(rules, current_user, query)
+      when 'index'; doc = rest_index_request(rules, user, query)
+      when 'crud';  doc = rest_crud_request(rules, user)
+      when 'call';  doc = rest_call_request(rules, user, query)
       else;         bad_rest_request
     end
 
-    current_user = nil
     current_token = nil
     render :xml => doc.to_s
   end

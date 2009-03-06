@@ -210,7 +210,7 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
   doc
 end
 
-def rest_error_response(code, message)
+def rest_error_response(code, message, error_ob = nil)
 
   error = XML::Node.new('error')
   error["code"   ] = code.to_s
@@ -218,6 +218,14 @@ def rest_error_response(code, message)
 
   doc = XML::Document.new
   doc.root = error
+
+  if error_ob
+    error_ob.errors.full_messages.each do |message|
+      reason = XML::Node.new('reason')
+      reason << message
+      doc.root << reason
+    end
+  end
 
   doc
 end
@@ -503,44 +511,26 @@ def get_rest_uri(rules, user, query)
 end
 
 def create_default_policy(user)
-  Policy.new(:name => 'auto', :update_mode => 6, :share_mode => 0,
-      :view_public     => true,  :view_protected     => false,
-      :download_public => true,  :download_protected => false,
-      :edit_public     => false, :edit_protected     => false,
-      :contributor => user)
+  Policy.new(:contributor => user, :name => 'auto', :update_mode => 6, :share_mode => 0)
 end
 
 def post_workflow(rules, user, query)
 
   return rest_error_response(400, 'Bad Request') if user.nil?
+  return rest_error_response(400, 'Bad Request') if params["workflow"].nil?
 
-  title        = params["workflow"]["title"]
-  description  = params["workflow"]["description"]
-  license_type = params["workflow"]["license_type"]
-  content_type = params["workflow"]["content_type"]
-  content      = params["workflow"]["content"]
+  elements = params["workflow"]
 
-  return rest_error_response(400, 'Bad Request') if title.nil?
-  return rest_error_response(400, 'Bad Request') if description.nil?
-  return rest_error_response(400, 'Bad Request') if license_type.nil?
-  return rest_error_response(400, 'Bad Request') if content_type.nil?
-  return rest_error_response(400, 'Bad Request') if content.nil?
-  
-  content = Base64.decode64(content)
+  # build the contributable
 
-  contribution = Contribution.new(
-      :contributor_type => 'User',
-      :contributor_id   => user.id)
+  workflow = Workflow.new(:contributor => user)
 
-  workflow = Workflow.new(
-      :title            => title,
-      :body             => description,
-      :license          => license_type,
-      :content_type     => content_type,
-      :content_blob     => ContentBlob.new(:data => content),
-      :contributor_type => 'User',
-      :contributor_id   => user.id,
-      :contribution     => contribution)
+  workflow.title        = elements["title"]        if elements["title"]
+  workflow.body         = elements["description"]  if elements["description"]
+  workflow.license      = elements["license_type"] if elements["license_type"]
+  workflow.content_type = elements["content_type"] if elements["content_type"]
+
+  workflow.content_blob = ContentBlob.new(:data => Base64.decode64(elements["content"])) if elements["content"]
 
   # Handle the preview and svg images.  If there's a preview supplied, use it.
   # Otherwise auto-generate one if we can.
@@ -558,7 +548,7 @@ def post_workflow(rules, user, query)
 
     image.close
 
-  elsif workflow.processor_class.can_generate_preview?
+  elsif workflow.processor_class and workflow.processor_class.can_generate_preview?
 
     processor = workflow.processor_class.new(content)
     workflow.image, workflow.svg = processor.get_preview_images
@@ -568,7 +558,7 @@ def post_workflow(rules, user, query)
   workflow.set_unique_name
 
   if not workflow.save
-    return rest_error_response(400, 'Bad Request')
+    return rest_error_response(400, 'Bad Request', workflow)
   end
 
   workflow.contribution.policy = create_default_policy(user)
