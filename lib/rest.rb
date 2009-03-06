@@ -525,12 +525,14 @@ def post_workflow(rules, user, query)
 
   workflow = Workflow.new(:contributor => user)
 
+  content = Base64.decode64(elements["content"]) if elements["content"]
+
   workflow.title        = elements["title"]        if elements["title"]
   workflow.body         = elements["description"]  if elements["description"]
   workflow.license      = elements["license_type"] if elements["license_type"]
   workflow.content_type = elements["content_type"] if elements["content_type"]
 
-  workflow.content_blob = ContentBlob.new(:data => Base64.decode64(elements["content"])) if elements["content"]
+  workflow.content_blob = ContentBlob.new(:data => content) if content
 
   # Handle the preview and svg images.  If there's a preview supplied, use it.
   # Otherwise auto-generate one if we can.
@@ -548,7 +550,7 @@ def post_workflow(rules, user, query)
 
     image.close
 
-  elsif workflow.processor_class and workflow.processor_class.can_generate_preview?
+  elsif content and workflow.processor_class and workflow.processor_class.can_generate_preview?
 
     processor = workflow.processor_class.new(content)
     workflow.image, workflow.svg = processor.get_preview_images

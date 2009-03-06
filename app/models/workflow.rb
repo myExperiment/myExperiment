@@ -89,6 +89,7 @@ class Workflow < ActiveRecord::Base
   
   validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
   
+  validates_presence_of :content_blob
   validates_presence_of :content_type
 
   file_column :image, :magick => {
