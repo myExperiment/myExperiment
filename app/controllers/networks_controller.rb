@@ -37,7 +37,7 @@ class NetworksController < ApplicationController
       # limit of invitation for this user is already exceeded
       error_msg = "Please note that you can't send email invitations - your limit is reached, "
       if sending_allowed_with_reset_timestamp[1].nil?
-        error_msg += "it will not be reset. Please contact myExperiment administration for details."
+        error_msg += "it will not be reset. Please contact #{Conf.sitename} administration for details."
       elsif sending_allowed_with_reset_timestamp[1] <= 60
         error_msg += "please try again within a couple of minutes"
       else
@@ -195,7 +195,7 @@ class NetworksController < ApplicationController
             error_msg += "<br/><br/>You have ran out of quota for sending invitations, "
             reset_quota_after = ActivityLimit.check_limit(current_user, "group_invite", false)[1]
             if reset_quota_after.nil?
-              error_msg += "it will not be reset. Please contact myExperiment administration for details."
+              error_msg += "it will not be reset. Please contact #{Conf.sitename} administration for details."
             elsif reset_quota_after <= 60
               error_msg += "please try again within a couple of minutes."
             else

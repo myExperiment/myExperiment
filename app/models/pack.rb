@@ -74,7 +74,7 @@ class Pack < ActiveRecord::Base
   end
   
   def archive_file_path(no_timestamp=false)
-    # "#{BASE_URI}/packs/#{id}/download/pack_#{id}.zip"
+    # "#{Conf.base_uri}/packs/#{id}/download/pack_#{id}.zip"
     return(Pack.archive_folder + "/" + archive_file(no_timestamp))
   end
   
@@ -117,7 +117,7 @@ class Pack < ActiveRecord::Base
     # plain-TEXT
     # generate pack description data (which will be put into a text file in the archive)
     pack_data_txt = "********** Snapshot of the Pack: #{self.title} **********\n\n"
-    pack_data_txt += "Downloaded from myExperiment.org\n"
+    pack_data_txt += "Downloaded from #{Conf.sitename}\n"
     pack_data_txt += "Snapshot generated at " + Time.now.strftime("%H:%M:%S on %A, %d %B %Y") + "\n\n\n\n"
     pack_data_txt += "========== Pack Details ==========\n\n"
     pack_data_txt += "Title: #{self.title}"
@@ -344,14 +344,14 @@ class Pack < ActiveRecord::Base
       # HTML
       pack_data_html = cgi.html{
         cgi.head{ 
-          cgi.title{"Snapshot of the Pack: #{self.title} (from myExperiment.org)"} +
+          cgi.title{"Snapshot of the Pack: #{self.title} (from #{Conf.sitename})"} +
           cgi.link("href" => "index.css", "media" => "screen", "rel" => "Stylesheet", "type" => "text/css")
         } +
         cgi.body{
           cgi.div("class" => "provider_info") do
             cgi.h1{"Snapshot of the Pack: #{cgi.a(location_string("pack", self.id)){self.title}}"} +
             cgi.p{
-              cgi.i{"Downloaded from #{cgi.a(BASE_URI){'myExperiment.org'}} website<br/><br/>" +
+              cgi.i{"Downloaded from #{cgi.a(Conf.base_uri){Conf.sitename}} website<br/><br/>" +
               "Snapshot generated at " + Time.now.strftime("%H:%M:%S on %A, %d %B %Y")} 
             }
           end +
@@ -622,16 +622,16 @@ class Pack < ActiveRecord::Base
       when "user"
         user = User.find(contributor_id)
         if html_required
-          res += "<a href=#{BASE_URI}/users/#{contributor_id}>#{user.name}</a>"
+          res += "<a href=#{Conf.base_uri}/users/#{contributor_id}>#{user.name}</a>"
         else
-          res += user.name + " (profile: #{BASE_URI}/users/#{contributor_id})"
+          res += user.name + " (profile: #{Conf.base_uri}/users/#{contributor_id})"
         end
       when "network"
         group = Network.find(contributor_id)
         if html_required
-          res += "<a href=#{BASE_URI}/groups/#{contributor_id}>\"#{group.title}\" group</a>"
+          res += "<a href=#{Conf.base_uri}/groups/#{contributor_id}>\"#{group.title}\" group</a>"
         else
-          res += group.title + " (profile: #{BASE_URI}/groups/#{contributor_id})"
+          res += group.title + " (profile: #{Conf.base_uri}/groups/#{contributor_id})"
         end
       else
         res += "unknown (contributor_type: #{contributor_type}; contributor_id: #{contributor_id})"
@@ -644,7 +644,7 @@ class Pack < ActiveRecord::Base
   # a helper to return the link to a resource based on type, id & version 
   # (version is NIL by default - means no version, or the latest one)
   def location_string(type, id, version=nil)
-    link = BASE_URI
+    link = Conf.base_uri
     case type.downcase
       when "workflow"; link += "/workflows/"
       when "blob";     link += "/files/"

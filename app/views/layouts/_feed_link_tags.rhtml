@@ -1,11 +1,11 @@
 <% if controller.controller_name.to_s == "workflows" and (controller.action_name.to_s == "all" or controller.action_name.to_s == "index") -%>
-	<link href="<%= workflows_url %>.rss" rel="alternate" type="application/rss+xml" title="myExperiment.org - Latest Workflows" />
+	<link href="<%= workflows_url %>.rss" rel="alternate" type="application/rss+xml" title="<%= Conf.sitename %> - Latest Workflows" />
 <% end -%>
 
 <% if controller.controller_name.to_s == "home" or (controller.controller_name.to_s == "announcements" and controller.action_name.to_s == "index") -%>
-	<link href="<%= announcements_url %>.rss" rel="alternate" type="application/rss+xml" title="myExperiment.org - Site Announcements" />
+	<link href="<%= announcements_url %>.rss" rel="alternate" type="application/rss+xml" title="<%= Conf.sitename %> - Site Announcements" />
 <% end -%>
 
 <% if controller.controller_name.to_s == "packs" and controller.action_name.to_s == "show" -%>
-	<link href="<%= formatted_items_pack_path(@pack, :rss) -%>" rel="alternate" type="application/rss+xml" title="myExperiment.org - Pack items feed" />
+	<link href="<%= formatted_items_pack_path(@pack, :rss) -%>" rel="alternate" type="application/rss+xml" title="<%= Conf.sitename %> - Pack items feed" />
 <% end -%>

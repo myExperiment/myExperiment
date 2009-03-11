@@ -1,6 +1,6 @@
 Hi <%= @user.name %>,
  
-You have been invited to join the following Group on myExperiment:
+You have been invited to join the following Group on <%= Conf.sitename %>:
 
 Name: <%= @network.title %>
 Administrator: <%= @network.owner.name %>
@@ -11,5 +11,5 @@ Your username is: <%= @user.username %>
 
 Thanks,
  
-- The myExperiment Team
-<%= BASE_URI -%>
+- The <%= Conf.sitename %> Team
+<%= Conf.base_uri -%>

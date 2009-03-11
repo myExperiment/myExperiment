@@ -269,7 +269,7 @@ class User < ActiveRecord::Base
   
   def admin?
     return false if self.username.blank?
-    return ADMINS.include?(self.username.downcase)
+    return Conf.admins.include?(self.username.downcase)
   end
   
   acts_as_contributor

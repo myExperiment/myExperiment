@@ -17,7 +17,7 @@ class Contribution < ActiveRecord::Base
            :dependent => :destroy
            
   # returns the 'most downloaded' Contributions
-  # (only takes into account donwloads on myExperiment, that is internal usage)
+  # (only takes into account downloads, that is internal usage)
   # the maximum number of results is set by #limit#
   def self.most_downloaded(limit=10, klass=nil)
     if klass
@@ -30,7 +30,7 @@ class Contribution < ActiveRecord::Base
   end
   
   # returns the 'most viewed' Contributions
-  # (only takes into account viewings on myExperiment, that is internal usage)
+  # (only takes into account viewings, that is internal usage)
   # the maximum number of results is set by #limit#
   def self.most_viewed(limit=10, klass=nil)
     if klass

@@ -1,0 +1,120 @@
+# myExperiment: config/settings.yml.pre
+#
+# Copyright (c) 2009 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
+# ------------------------------------------------------------------------------
+#   myExperiment server configuration
+# ------------------------------------------------------------------------------
+#
+# site_name - Set "site_name" to the name of this myExperiment installation.
+#             This is used by the myExperiment codebase to refer to service by
+#             name.
+#
+#             Example:
+#
+#               site_name: mySite
+
+site_name: mySite
+
+# site_logo - set "site_logo" to the name of the logo used at the top left of
+#             the web pages.
+#
+#             Example:
+#
+#               site_logo: logo.png
+
+site_logo: logo.png
+
+# base_uri - Set "base_uri" to the main entry point to this installation of
+#            myExperiment.  If you use a load balancing solution to proxy
+#            incoming requests to a cluster, then this is the external address.
+#
+#            Examples:
+#
+#              base_uri: http://www.example.com
+#
+#            or
+#
+#              base_uri: http://www.example.com:3000
+#
+#            NOTE: No trailing slash.
+
+base_uri: http://www.example.com
+
+# admins - Set "admins" to the list of usernames of people that are
+#          administrators of this installation.  This is "Username" that is set
+#          when you manage your account, not the "Display Name".
+#
+#          Example:
+#
+#            admins: [dgc, jits, dtm]
+
+admins: []
+
+# main_tabs - These are the main tabs of the website.  Each entry requires at
+#             least a label and a link.  If you specify a controller in a tab,
+#             then the tab is shown as selected when the page has been served by
+#             a controller that matches.
+#
+#             The controller entry is a regular expression, so you can make a tab
+#             show as selected in multiple controllers.
+#
+#             Example:
+#
+#               main_tabs:
+#
+#                 - label:      Home
+#                   link:       /home
+#                   controller: home
+#
+#                 - label:      Users
+#                   link:       /users
+#                   controller: (users|profiles|userhistory|friendships|memberships|pictures)
+#
+#                 - label:      Groups
+#                   link:       /groups
+#                   controller: networks
+#
+#                 - label:      Wiki
+#                   link:       http://wiki.example.com/
+
+main_tabs:
+
+  - label:      Home
+    link:       /home
+    controller: home
+
+  - label:      Users
+    link:       /users
+    controller: (users|profiles|userhistory|friendships|memberships|pictures)
+
+  - label:      Groups
+    link:       /groups
+    controller: networks
+
+  - label:      Workflows
+    link:       /workflows
+    controller: workflows
+
+  - label:      Files
+    link:       /files
+    controller: blobs
+
+  - label:      Packs
+    link:       /packs
+    controller: packs
+
+# email - These are the email addresses used for sending notifications and the
+#         email address to send feedback entered from the web site.
+#
+#         Example:
+#
+#           notifications_email_address: notification@www.example.com
+#
+#           feedback_email_address: feedback@www.example.com
+
+notifications_email_address: notifications@www.example.com
+
+feedback_email_address: feedback@www.example.com
+

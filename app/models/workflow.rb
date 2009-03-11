@@ -173,7 +173,7 @@ class Workflow < ActiveRecord::Base
   end
   
   def named_download_url
-    "#{BASE_URI}/workflows/#{id}/download/#{filename}"
+    "#{Conf.base_uri}/workflows/#{id}/download/#{filename}"
   end
 
   def get_all_search_terms

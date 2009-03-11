@@ -1,6 +1,6 @@
 <div class="contribution_section_box">
 	<p class="heading">
-		<%= info_icon_with_tooltip("The tags for this #{visible_name taggable} entry.<br/>Note(1): if this #{visible_name taggable} has many versions, the tags apply to ALL versions in this entry.<br/>Note(2): the size of the tags show how popular they are on myExperiment.") %>
+		<%= info_icon_with_tooltip("The tags for this #{visible_name taggable} entry.<br/>Note(1): if this #{visible_name taggable} has many versions, the tags apply to ALL versions in this entry.<br/>Note(2): the size of the tags show how popular they are on #{Conf.sitename}.") %>
 		Tags <span id="tags_box_header_tag_count_span" class="count_text">(<%= taggable.tags.uniq.length -%>)</span>
 		<a name="tags"></a>
 	</p>

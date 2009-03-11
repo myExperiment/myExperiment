@@ -1,7 +1,7 @@
-<h1 style="margin-top: 2em;">Invite other people to myExperiment</h1>
+<h1 style="margin-top: 2em;">Invite other people to <%= Conf.sitename %></h1>
 
 <div class="box_infotext" style="margin: 1.5em 1.5em; text-align: center;">
-   Send invitations to people who are not already on myExperiment. You can include a message to intoduce yourself if you like.
+   Send invitations to people who are not already on <%= Conf.sitename %>. You can include a message to intoduce yourself if you like.
 </div>
 
 <% form_tag (:controller => 'users', :action => 'process_invitations') do %>
@@ -20,7 +20,7 @@
 		<%= text_area_tag "invitations[msg_text]", msg_text_val, :rows => 4, :style => "width: 500px; margin-bottom: 0.5em;" -%><br/>
 	  
 		<% as_friendship_checked = (!params[:invitations].nil? && !params[:invitations][:as_friendship].nil? ? true : false) %>
-		<label for="invitations[as_friendship]" title="<%= tooltip_title_attrib('Tick the checkbox to request friendship of new users after they join myExperiment<br/>or leave the checkbox blank to send plain invitation emails.') -%>"><%= check_box_tag "invitations[as_friendship]", "true", as_friendship_checked -%>Request friendships as well</label><br/>
+		<label for="invitations[as_friendship]" title="<%= tooltip_title_attrib("Tick the checkbox to request friendship of new users after they join #{Conf.sitename}<br/>or leave the checkbox blank to send plain invitation emails.") -%>"><%= check_box_tag "invitations[as_friendship]", "true", as_friendship_checked -%>Request friendships as well</label><br/>
 		
 		
 		<table style="margin-top: 2em;">

@@ -1,6 +1,6 @@
 <% t "Register / Sign up" -%>
 
-<h1 style="margin-bottom: 1.3em;">Register for myExperiment</h1>
+<h1 style="margin-bottom: 1.3em;">Register for <%= Conf.sitename %></h1>
 
 <%= error_messages_for :user %>
 
@@ -9,14 +9,14 @@
 	You are responsible for any content that you upload. You may remove your content at any time. 
 	We may make copies for operational purposes. This service is governed by the 
 	<%= link_to "JANET Acceptable Use Policy", "http://www.ja.net/services/publications/policy/aup.html", :popup => true -%>. 
-	Takedown requests will be reviewed by the myExperiment Management Committee. 
-	We will take every care to preserve data but we will not be liable for loss or damage to data while it is stored within myExperiment. 
+	Takedown requests will be reviewed by the <%= Conf.sitename %> Management Committee. 
+	We will take every care to preserve data but we will not be liable for loss or damage to data while it is stored within <%= Conf.sitename %>. 
 	We receive and store certain types of information whenever you interact with us which we will 
-	use only for operational purposes and to support academic research into the use of myExperiment. 
+	use only for operational purposes and to support academic research into the use of <%= Conf.sitename %>. 
 	We will not make personally identifiable data available to third parties without consent. 
 	Please contact us if you have any queries about our terms or our privacy policy.
 	<br/><br/>
-	<strong>Please note: all user profiles are public on myExperiment.org</strong> and 
+	<strong>Please note: all user profiles are public on <%= Conf.sitename %></strong> and 
 	therefore can be viewed by anyone and be indexed by search engines such as Google.
 	However, usernames and registered email addresses (different to profile email addresses) are not exposed.
 </div> 
@@ -156,7 +156,7 @@
     </div>
     <div class="foldContent" style="display: block;">
 			<p class="box_infotext">
-				OpenID is a distributed identity system which gives you single sign-on anywhere that OpenID is supported. If you already have an OpenID you can enter it here and your myExperiment account will automatically be created (note that if you have an AOL or AIM account, or a LiveJournal or Wordpress blog, then you already have an OpenID).
+				OpenID is a distributed identity system which gives you single sign-on anywhere that OpenID is supported. If you already have an OpenID you can enter it here and your <%= Conf.sitename %> account will automatically be created (note that if you have an AOL or AIM account, or a LiveJournal or Wordpress blog, then you already have an OpenID).
 			</p>
 			
 			<p><b>Don't have an OpenID? Get one FREE from <%= link_to 'myOpenID', "https://www.myopenid.com/" %> or <%= link_to 'other providers', "http://openiddirectory.com/openid-providers-c-1.html" %>.</b></p>

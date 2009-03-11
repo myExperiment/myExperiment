@@ -42,8 +42,8 @@
 	    </tr>
 			<tr>
 				<td style="text-align: left; vertical-align: top;">
-					From myExperiment: <b><%= site_viewings -%></b>
-					<%= info_icon_with_tooltip("Viewings made by following links to this #{contributable_display_type} from myExperiment website.") -%>
+					From <%= Conf.sitename %>: <b><%= site_viewings -%></b>
+					<%= info_icon_with_tooltip("Viewings made by following links to this #{contributable_display_type} from the #{Conf.sitename} website.") -%>
 					<ul style="margin-top: 0.3em; margin-bottom: 0em;">
 						<li>
 							Members: <b><%= internal_member_viewings -%></b>
@@ -54,8 +54,8 @@
 					</ul>
 				</td>
 				<td style="text-align: left; vertical-align: top; padding-left: 3em;">
-					From myExperiment: <b><%= site_downloads -%></b>
-					<%= info_icon_with_tooltip("Downloads made by following links to this #{contributable_display_type} from myExperiment website.") -%>
+					From <%= Conf.sitename %>: <b><%= site_downloads -%></b>
+					<%= info_icon_with_tooltip("Downloads made by following links to this #{contributable_display_type} from the #{Conf.sitename} website.") -%>
 					<ul style="margin-top: 0.3em; margin-bottom: 0em;">
 						<li>
 							Members: <b><%= internal_member_downloads -%></b>

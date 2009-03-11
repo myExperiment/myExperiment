@@ -2,7 +2,7 @@
 
 <p style="text-align: center;">
 	Fill in the form below and submit, or alternatively you can email:
-	<b><%= mail_to "bugs@myexperiment.org", nil, { :subject => "myExperiment Feedback", :encode => "hex" } %></b>
+	<b><%= mail_to "#{Conf.feedback_email_address}", nil, { :subject => "#{Conf.sitename} Feedback", :encode => "hex" } %></b>
 </p>
 
 <p style="text-align: center;">
@@ -10,7 +10,7 @@
 </p>
 
 <div id="feedback_help" class="box_standout" style="display: none; font-size: 93%;">
-	<p>We would really appreciate feedback on your experiences with myExperiment, especially in the following areas:</p>
+	<p>We would really appreciate feedback on your experiences with <%= Conf.sitename %>, especially in the following areas:</p>
 	<ul>
 	  <li><b>User Interface:</b>  
 	    <ul>
@@ -26,7 +26,7 @@
 	  </li>
 	  <li><b>Feature Requests:</b>
 	    <ul>
-	      <li>Are there any new features that you would like to see on myExperiment? Tell us about them and we will see if we can implement them for you.</li>
+	      <li>Are there any new features that you would like to see on <%= Conf.sitename %>? Tell us about them and we will see if we can implement them for you.</li>
 	    </ul>
 	  </li>
 	</ul>

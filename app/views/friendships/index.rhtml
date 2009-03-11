@@ -10,7 +10,7 @@
         You have <%=pluralize @user.friendships_pending.length, "friendship request" %> to review!
       </p>
     
-      <p>Messages sent by myExperiment users to request friendship with you are listed here.</p>
+      <p>Messages sent by <%= Conf.sitename %> users to request friendship with you are listed here.</p>
     
       <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_pending, :friend => false } %>
     <% end %>

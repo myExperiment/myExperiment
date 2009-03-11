@@ -10,7 +10,7 @@
 <div class="fold">
 
   <div class="foldTitle">
-    <%= info_icon_with_tooltip("Here you can specify who can <b>view</b> and <b>download</b> this #{c_type} on myExperiment. <br/><br/>You can also set <b>update</b> permissions for this #{c_type}. <br/><br/>You can also explicitly share this #{c_type} with your Groups.<br/><br/>By default, anyone can view, but only Friends can download; #{if update_perms then 'no one is allowed to update; ' end}and not shared with any Groups.") %>
+    <%= info_icon_with_tooltip("Here you can specify who can <b>view</b> and <b>download</b> this #{c_type} on #{Conf.sitename}. <br/><br/>You can also set <b>update</b> permissions for this #{c_type}. <br/><br/>You can also explicitly share this #{c_type} with your Groups.<br/><br/>By default, anyone can view, but only Friends can download; #{if update_perms then 'no one is allowed to update; ' end}and not shared with any Groups.") %>
     Sharing
 	<% if edit %>
 		<hr/>
@@ -25,7 +25,7 @@
 
     <div class="box_infotext">
     	<p>
-    		Here you can specify who can <b>view</b> and <b>download</b> this <%= c_type %> on myExperiment.
+    		Here you can specify who can <b>view</b> and <b>download</b> this <%= c_type %> on <%= Conf.sitename %>.
 			</p>
 			
 			<% if update_perms -%>
@@ -46,7 +46,7 @@
 		<br/>
 		
 		<!-- View/Download Permissions -->
-    <p><strong>Who can view and download this <%= c_type %> on myExperiment?</strong></p>
+    <p><strong>Who can view and download this <%= c_type %> on <%= Conf.sitename %>?</strong></p>
 
 		<div class="box_editing" style="padding-left: 1em; font-size: 93%;">
 
@@ -93,7 +93,7 @@
 			<br/>
 			
 			<!-- Update Permissions -->
-			<p><strong>Who can update this <%= c_type %> on myExperiment?</strong></p>
+			<p><strong>Who can update this <%= c_type %> on <%= Conf.sitename %>?</strong></p>
 	
 			<div class="box_editing" style="padding-left: 1em; font-size: 93%;">
 				<p style="color: #666666;">

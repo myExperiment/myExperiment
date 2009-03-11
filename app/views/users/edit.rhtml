@@ -20,7 +20,7 @@
 <br/>
 <h2>User Authentication</h2>
 <p style="text-align: center; line-height: 1.5;">
-    You have two options to log in: using a myExperiment username and password <b>OR</b> OpenID login details.
+    You have two options to log in: using a <%= Conf.sitename %> username and password <b>OR</b> OpenID login details.
     <br/>
     <i>Your account can have either of these or even both registered, as below.</i>
 </p>
@@ -28,7 +28,7 @@
 <table>
     <tr style="vertical-align: top;">
         <td style="width: 50%;">
-            <h2 style="width: 275px">myExperiment username / password</h2>
+            <h2 style="width: 275px"><%= Conf.sitename %> username / password</h2>
             <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
 						<%= hidden_field_tag(:update_type, "upd_t_up") -%>
             <center>
@@ -162,6 +162,6 @@
 <br/>
 <h2>Unregister</h2>
 <p>
-  If you would like to unregister from myExperiment, send us a message through the
-	<%= link_to "feedback form", :controller => "feedback", :action => "index", :subject => "Unregister from myExperiment" -%>.	
+  If you would like to unregister from <%= Conf.sitename %>, send us a message through the
+	<%= link_to "feedback form", :controller => "feedback", :action => "index", :subject => "Unregister from #{Conf.sitename}" -%>.	
 </p>

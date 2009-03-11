@@ -8,7 +8,6 @@ class UsersController < ApplicationController
   contributable_actions = [:workflows, :files, :packs, :blogs]
   show_actions = [:show, :news, :friends, :groups, :credits, :tags, :favourites] + contributable_actions
 
-  # add ', :invite' to allow displaying of invitation screen without logging in
   before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password] + show_actions
   
   before_filter :find_users, :only => [:all]
@@ -283,7 +282,7 @@ class UsersController < ApplicationController
     
     respond_to do |format|
       if confirmed
-        flash[:notice] = "Thank you for confirming your email. Your account is now active (if it wasn't before), and the new email address registered on your account. We hope you enjoy using myExperiment!"
+        flash[:notice] = "Thank you for confirming your email. Your account is now active (if it wasn't before), and the new email address registered on your account. We hope you enjoy using #{Conf.sitename}!"
         format.html { redirect_to user_url(@user) }
       else
         flash[:error] = "Invalid confirmation URL"
@@ -373,7 +372,7 @@ class UsersController < ApplicationController
         # limit of invitation for this user is already exceeded
         error_msg = "You can't send invitations - your limit is reached, "
         if sending_allowed_with_reset_timestamp[1].nil?
-          error_msg += "it will not be reset. Please contact myExperiment administration for details."
+          error_msg += "it will not be reset. Please contact #{Conf.sitename} administration for details."
         elsif sending_allowed_with_reset_timestamp[1] <= 60
           error_msg += "please try again within a couple of minutes"
         else
@@ -515,7 +514,7 @@ class UsersController < ApplicationController
             error_msg += "<br/><br/>You have ran out of quota for sending invitations, "
             reset_quota_after = ActivityLimit.check_limit(current_user, "user_invite", false)[1]
             if reset_quota_after.nil?
-              error_msg += "it will not be reset. Please contact myExperiment administration for details."
+              error_msg += "it will not be reset. Please contact #{Conf.sitename} administration for details."
             elsif reset_quota_after <= 60
               error_msg += "please try again within a couple of minutes."
             else

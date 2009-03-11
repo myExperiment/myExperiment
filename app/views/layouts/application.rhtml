@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-		<%= t :site => "myExperiment.org &#45; #{controller_visible_name(controller.controller_name.humanize)}", :separator => "&#45;" %>
+		<%= t :site => "#{Conf.sitename} &#45; #{controller_visible_name(controller.controller_name.humanize)}", :separator => "&#45;" %>
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
 		<%= stylesheet_link_tag 'reset-fonts-grids' %>
 		<%= stylesheet_link_tag 'base-min' %>
@@ -27,7 +27,7 @@
 			<div id="hd">
 	  			<div id="myexp_header">
 	  				<div class="logo">
-						<%= link_to image_tag("logo.png"), "/" %>
+						<%= link_to image_tag(Conf.site_logo), "/" %>
 					</div>
 					<div class="links">
 						<div style="text-align: left; float: left; width: 34%; padding-top: 6px;">
@@ -56,30 +56,11 @@
 				</div>
 				<div>
 					<ul class="tabnav">
-						<!-- Home tab -->
-						<li <%= (["home"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
-							<%= link_to "Home", home_url -%>
-						</li>
-						<!-- Users tab -->
-					  <li <%= (["users", "profiles", "userhistory", "friendships", "memberships", "pictures"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') -%>>
-							<%= link_to "Users", users_path %>
-					  </li>
-						<!-- Groups tab -->
-					  <li <%= (["networks"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
-					  	<%= link_to "Groups", groups_path -%>
-						</li>
-						<!-- Workflows tab -->
-					  <li <%= (["workflows"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
-					  	<%= link_to "Workflows", workflows_path -%>
-						</li>
-						<!-- Files tab -->
-					  <li <%= (["blobs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
-					  	<%= link_to "Files", files_path -%>
-						</li>
-						<!-- Packs tab -->
-						<li <%= (["packs"].include?(controller.controller_name.to_s) ? ' id="selected_tabnav"' : '') %>>
-							<%= link_to("Packs", packs_path) -%>
-						</li>
+                                          <% Conf.main_tabs.each do |tab| %>
+                                            <li <%= (tab['controller'] && controller.controller_name.match(tab['controller'])) ? 'id="selected_tabnav"' : '' %>>
+                                              <%= link_to(tab['label'], tab['link']) -%>
+                                            </li>
+                                          <% end %>
 					</ul>
 				</div>
 	  			<div id="myexp_searchbar"><%= render :partial => "layouts/search" %></div>

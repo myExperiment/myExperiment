@@ -32,7 +32,7 @@ class SessionController < ApplicationController
     self.current_user.forget_me if logged_in?
     cookies.delete :auth_token
     reset_session # clears session[:return_to]
-    #flash[:notice] = "You have been logged out. Thank you for using myExperiment!"
+    #flash[:notice] = "You have been logged out. Thank you for using #{Conf.sitename}!"
     redirect_to ''
   end
   
@@ -124,7 +124,7 @@ class SessionController < ApplicationController
       # update "last seen" attribute
       user.update_attribute(:last_seen_at, Time.now)
       respond_to do |format|
-        flash[:notice] = "Logged in successfully. Welcome to myExperiment!"
+        flash[:notice] = "Logged in successfully. Welcome to #{Conf.sitename}!"
         home_url = url_for(:controller => 'home')
         format.html { session[:return_to] and URI.parse(session[:return_to]).path == '/' ? redirect_to(home_url) : redirect_back_or_default(home_url) }
       end

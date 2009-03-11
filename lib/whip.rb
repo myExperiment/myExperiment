@@ -16,11 +16,11 @@ module Whip
 	SchemeDataType = "http://org.whipplugin/data/description/datatype"
 	SchemeEntryPoint = "http://org.whipplugin/data/description/entrypoint"
 	TermInstaller = "urn:org.whipplugin:data:description:installer"
-	SchemeWorkflowID = "http://www.myexperiment.org/workflows/workflowid"
-	SchemeVersion = "http://www.myexperiment.org/workflows/version"
+	SchemeWorkflowID = "#{Conf.base_uri}/workflows/workflowid"
+	SchemeVersion = "#{Conf.base_uri}/workflows/version"
 	# datatype used to identify Taverna 1.7 compatible scufl
 	Taverna1DataType = "http://org.embl.ebi.escience/xscufl/0.1alpha"
-	EntryIDPrefix = "http://www.myexperiment.org/workflows/"
+	EntryIDPrefix = "#{Conf.base_uri}/workflows/"
 	AtomDateFormat = "%Y-%m-%dT%H:%M:%SZ"
 	
 	# 

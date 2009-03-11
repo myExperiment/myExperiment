@@ -1,6 +1,6 @@
 Hi <%= @name %>,
  
-You have requested to update your email address on myExperiment to: <%= @email %>
+You have requested to update your email address on <%= Conf.sitename %> to: <%= @email %>
 
 Username: <%= @username %>
 
@@ -12,5 +12,5 @@ Please confirm this by following the link below (you might need to copy/paste it
 						:action => 'confirm_email',
 						:hash => @hash %>
  
-- The myExperiment Team
-<%= BASE_URI -%>
+- The <%= Conf.sitename %> Team
+<%= Conf.base_uri -%>

@@ -2,6 +2,8 @@
 
 <% SALT = "NaCl" unless defined?(SALT) %>
 
+<% Conf.admins = ['adam'] %>
+
 john:
   id: 1
   openid_url:
@@ -30,7 +32,7 @@ admin:
   id: 3
   openid_url:
   name: Adam Ministrator
-  username: <%= ADMINS[0] %>
+  username: adam
   salt: <%= SALT %>
   crypted_password: <%= User.encrypt('secret', SALT) %>
   email: admin@myexperiment.org

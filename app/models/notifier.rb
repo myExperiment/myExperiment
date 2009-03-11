@@ -1,11 +1,9 @@
 class Notifier < ActionMailer::Base
-  
-  NOTIFICATIONS_EMAIL = "notification@mail.myexperiment.com"
 
   def friendship_request(user, friend_name, friendship, base_url)
     recipients user.email
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment - #{friend_name} has requested to be your friend"
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} - #{friend_name} has requested to be your friend"
     
     body :user => user,
          :friend_name => friend_name,
@@ -15,8 +13,8 @@ class Notifier < ActionMailer::Base
   
   def membership_invite(user, network, membership, base_url)
     recipients user.email
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment - you have been invited to join the #{network.title} Group"
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} - you have been invited to join the #{network.title} Group"
     
     body :user => user,
          :network => network,
@@ -26,8 +24,8 @@ class Notifier < ActionMailer::Base
   
   def membership_request(requestor, network, membership, base_url)
     recipients network.owner.email
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment - #{requestor.name} would like to join the #{network.title} Group"
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} - #{requestor.name} would like to join the #{network.title} Group"
     
     body :user => network.owner,
          :network => network,
@@ -38,8 +36,8 @@ class Notifier < ActionMailer::Base
   
   def auto_join_group(member, network, base_url)
     recipients network.owner.email
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment - #{member.name} has joined the #{network.title} Group"
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} - #{member.name} has joined the #{network.title} Group"
     
     body :name => network.owner.name,
          :username => network.owner.username,
@@ -50,8 +48,8 @@ class Notifier < ActionMailer::Base
   
   def new_message(message, base_url)
     recipients message.u_to.email
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment - #{message.u_from.name} has sent you a message"
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} - #{message.u_from.name} has sent you a message"
     
     body :name => message.u_to.name,
          :username => message.u_to.username,

@@ -19,7 +19,7 @@
 			<b>Note:</b> this new workflow version must be of the same type as the original one (so it must be a '<%= h(@workflow.type_display_name) -%>' workflow and have a <%= file_exts_allowed -%> file extension).
 		</p>
 		<p>
-			If you would like to upload a different type of workflow then <b><%= link_to "click here", new_workflow_path -%></b> to upload it as a new workflow entry in myExperiment.
+			If you would like to upload a different type of workflow then <b><%= link_to "click here", new_workflow_path -%></b> to upload it as a new workflow entry in <%= Conf.sitename %>.
 		</p>
 		<p>
 			Sharing, license and other settings are inherited from the parent workflow entry.

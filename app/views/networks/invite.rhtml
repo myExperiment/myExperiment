@@ -8,15 +8,15 @@
 <% # on first load, has default value -%>
 <% invite_existing_selected = invite_existing_selected?(params[:radio_choice]) -%>
 
-<label for="radio_invite_existing"><%= radio_button_tag ("radio_invite", "existing", invite_existing_selected, :onclick => "$('radio_invite_new').checked=false;$('div_invite_existing').show();$('div_invite_new').hide();return true;" ) -%>Invite an existing myExperiment user to your group</label><br/>
-<label for="radio_invite_new" style="margin-top: 0.3em;"><%= radio_button_tag ("radio_invite", "new", !invite_existing_selected, :onclick => "$('radio_invite_existing').checked=false;$('div_invite_existing').hide();$('div_invite_new').show();return true;" ) -%>Invite someone to join myExperiment and your group</label>
+<label for="radio_invite_existing"><%= radio_button_tag ("radio_invite", "existing", invite_existing_selected, :onclick => "$('radio_invite_new').checked=false;$('div_invite_existing').show();$('div_invite_new').hide();return true;" ) -%>Invite an existing <%= Conf.sitename %> user to your group</label><br/>
+<label for="radio_invite_new" style="margin-top: 0.3em;"><%= radio_button_tag ("radio_invite", "new", !invite_existing_selected, :onclick => "$('radio_invite_existing').checked=false;$('div_invite_existing').hide();$('div_invite_new').show();return true;" ) -%>Invite someone to join <%= Conf.sitename %> and your group</label>
 
 <% # just one from the two of following DIVs will be shown at any one time; -%>
 <% # this represents one of two options - either to invite existing or new users to the group -%>
 
 <div id="div_invite_existing" class="box_editing" style="<%= !invite_existing_selected ? "display: none;" : "" -%>margin: 1em 0em 1em 0em;">
   <fieldset>
-  	<legend>Invite an existing myExperiment user to your group</legend>
+  	<legend>Invite an existing <%= Conf.sitename %> user to your group</legend>
 	  <p class="box_infotext" style="margin: 0.4em 0em 0.7em 0em" >
       Select a name from the list, type in a message to the user and click "Invite".
     </p>
@@ -43,7 +43,7 @@
 
 <div id="div_invite_new" class="box_editing" style="<%= invite_existing_selected ? "display: none;" : "" -%>margin: 1em 0em 1em 0em;">
 	<fieldset>
-  	<legend>Invite someone to join myExperiment and your group</legend>
+  	<legend>Invite someone to join <%= Conf.sitename %> and your group</legend>
 	  <p class="box_infotext" style="margin: 0.4em 0em 1em 0em" >
       Type in email addresses you want to send invitations to, personal message to new users and click "Invite".
     </p>

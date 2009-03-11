@@ -1311,8 +1311,8 @@ module ApplicationHelper
     
     text += "<p>
               Note that updating privileges only affect how other users can update this
-              #{visible_type} entry on myExperiment. If the user downloads the #{resource},
-              they can still edit it away from myExperiment and possible upload it back as a new entry.
+              #{visible_type} entry on #{Conf.sitename}. If the user downloads the #{resource},
+              they can still edit it away from #{Conf.sitename} and possible upload it back as a new entry.
             </p>"
             
     return text
@@ -1417,7 +1417,7 @@ protected
         return rtn unless (restrict_contributor.class.to_s == "User" and item.id.to_i == restrict_contributor.id.to_i)
       end
       
-      rtn << [item.created_at, "#{name(item)} joined #{link_to "myExperiment", "/"}."]
+      rtn << [item.created_at, "#{name(item)} joined #{link_to Conf.sitename, "/"}."]
     when "Contribution"
       return rtn if before and item.created_at > before
       return rtn if after and item.created_at < after

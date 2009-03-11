@@ -1,6 +1,6 @@
 Hi <%= @name %>,
  
-<%= @from_name %> has sent you a message on myExperiment.
+<%= @from_name %> has sent you a message on <%= Conf.sitename %>.
 
 Subject: <%= @subject %>
 
@@ -11,5 +11,5 @@ Your username is: <%= @username %>
 
 Thanks,
  
-- The myExperiment Team
-<%= BASE_URI -%>
+- The <%= Conf.sitename %> Team
+<%= Conf.base_uri -%>

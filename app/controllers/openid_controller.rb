@@ -34,7 +34,7 @@ class OpenidController < ApplicationController
         if current_user.save
           redirect_to user_path(current_user)
         else
-          flash[:error] = 'OpenID already registered to another myExperiment account'
+          flash[:error] = "OpenID already registered to another #{Conf.sitename} account"
           redirect_to new_openid_url
         end
         

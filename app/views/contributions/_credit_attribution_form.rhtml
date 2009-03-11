@@ -65,7 +65,7 @@
 				<p>
             <label for="author_option_3"><input id="author_option_3" name="add_author_option"
                 value="3" type="radio" onclick="javascript:update_author(this.id);" />
-            - A user on myExperiment who is not a Friend.</label>
+            - A user on <%= Conf.sitename %> who is not a Friend.</label>
         </p>
         <div id="author_otheruser_box" style="display: none; padding-left: 2em;">
             <p>
@@ -80,7 +80,7 @@
 				<p>
             <label for="author_option_4"><input id="author_option_4" name="add_author_option"
                 value="4" type="radio" onclick="javascript:update_author(this.id);" />
-            - A myExperiment Group</label>
+            - A <%= Conf.sitename %> Group</label>
         </p>
         <div id="author_networks_box" style="display: none; padding-left: 2em;">
             <p>
@@ -135,7 +135,7 @@
       </p>
       <div style="font-size: 93%; margin-top: 1em;">
         <div class="box_simple" style="float: left; text-align: left; width: 300px;">
-          Existing Workflows on myExperiment:
+          Existing Workflows on <%= Conf.sitename %>:
           <br />
           <br />
           <select id="existingworkflows_dropdown" style="width: 280px;">
@@ -149,7 +149,7 @@
         </div>
 	
         <div class="box_simple" style="float: left; margin-left: 1em; text-align: left; width: 300px;">
-          Existing Files on myExperiment:
+          Existing Files on <%= Conf.sitename %>:
           <br />
           <br />
           <select id="existingfiles_dropdown" style="width: 280px;">

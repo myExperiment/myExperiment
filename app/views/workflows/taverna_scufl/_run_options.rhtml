@@ -42,7 +42,7 @@
 			<p style="text-align: center; margin-top: 0.5em; font-size: 85%;">
 				If you are having problems downloading it in Taverna, you may need to provide your username and password in the URL so that Taverna can access the Workflow: <br/>
 				<% if logged_in? and current_user.username.nil? %>
-					First you need to <%= link_to 'register a username and password', edit_user_path(current_user) %> on your myExperiment account.
+					First you need to <%= link_to 'register a username and password', edit_user_path(current_user) %> on your <%= Conf.sitename %> account.
 				<% else %>
 					<b>Replace <font color="#990000">http://</font> in the link above with <font color="#990000">http://<%=(logged_in? and !current_user.username.nil?) ? h(current_user.username) : "yourusername" %>:yourpassword@</font></b>
 				<% end %>
@@ -58,12 +58,12 @@
 		</p>
 		
 		<h4>
-			<b>Run this Workflow through myExperiment</b>
+			<b>Run this Workflow through <%= Conf.sitename %></b>
 		</h4>
 		<div class="option_box">
 			<p style="font-size: 93%; text-align: center;">
 				<font style="color: #990000; font-weight: bold">Note:</font> 
-				you need to have access to a remote Taverna Execution Service in order to run Workflows through myExperiment. 
+				you need to have access to a remote Taverna Execution Service in order to run Workflows through <%= Conf.sitename %>. 
 				If you do, <%= link_to "register it as a 'Runner' here", new_runner_url -%>, then you can use it in Jobs to carry out the enactment. 
 				For more information, <%= link_to "contact us", "/feedback" -%>.
 			</p>

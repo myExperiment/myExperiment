@@ -99,7 +99,7 @@ class MessagesController < ApplicationController
       respond_to do |format|
         error_msg = "You can't send messages - your limit is reached, "
         if allowed_plus_timespan[1].nil?
-          error_msg += "it will not be reset. Please contact myExperiment administration for details."
+          error_msg += "it will not be reset. Please contact #{Conf.sitename} administration for details."
         elsif allowed_plus_timespan[1] <= 60
           error_msg += "please try again within a couple of minutes"
         else

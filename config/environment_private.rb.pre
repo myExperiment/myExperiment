@@ -1,6 +1,4 @@
 
-BASE_URI = "http://www.example.com"
-
 # Mailer configuration
 
 ActionMailer::Base.smtp_settings = {
@@ -32,9 +30,6 @@ SECRET_WORD = "our_secret_word_that_no_one_knows"
 # Set SOLR_ENABLE to true to enable the search facility - this requires a solr
 # server
 SOLR_ENABLE = false
-
-# Comma-seperated list of usernames (must be lowercase) of the users who are regarded as Admins.
-ADMINS = ["list", "of", "usernames"]
 
 
 # ---

@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
     res = false
     
     referer = request.env['HTTP_REFERER']
-    unless referer.nil? || referer.match("^#{BASE_URI}").nil?
+    unless referer.nil? || referer.match("^#{Conf.base_uri}").nil?
       res = true
     end
     
