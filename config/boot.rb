@@ -1,7 +1,5 @@
 # Don't change this file. Configuration is done in config/environment.rb and config/environments/*.rb
 
-require 'lib/conf'
-
 RAILS_ROOT = "#{File.dirname(__FILE__)}/.." unless defined?(RAILS_ROOT)
 
 unless defined?(Rails::Initializer)

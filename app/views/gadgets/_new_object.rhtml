@@ -1,26 +1,10 @@
 <script type="text/javascript">
   function redirectToNew() {
     var klass = $("new_object_type").value;
-    
-    if (klass == "Blob") {
-      location.href = "<%= new_file_path -%>";
-		} else if (klass == "Pack") {
-      location.href = "<%= new_pack_path -%>";
-    } else if (klass == "Workflow") {
-      location.href = "<%= new_workflow_path -%>";
-    } else if (klass == "Group") {
-      location.href = "<%= new_group_path -%>";
-    } else if (klass == "Message") {
-      location.href = "<%= new_message_path -%>";
-    } else if (klass == "Experiment") {
-      location.href = "<%= new_experiment_path -%>";
-		} else if (klass == "Job") {
-      location.href = "<%= url_for :controller => 'jobs', :action => 'new' -%>";
-		} else if (klass == "Runner") {
-      location.href = "<%= new_runner_path -%>";
-		} else {
-      // do nothing!!
-    }
+<% Conf.new_menu.each do |item| %>
+    if (klass == "<%= item['label'] %>")
+      location.href = "<%= item['link'] %>";
+<% end %>
   }
 </script>
 
@@ -38,18 +22,10 @@
       <form onsubmit="redirectToNew(); return false;">
         <p>
           <select id="new_object_type">
-            <option value="Workflow" <%= "selected" if ["workflows"].include? controller.controller_name.to_s %>>Workflow</option>
-						<option value="Blob" <%= "selected" if ["blobs"].include? controller.controller_name.to_s %>>File</option>
-						<option value="Pack" <%= "selected" if ["packs"].include? controller.controller_name.to_s %>>Pack</option>
-						<option value="Group" <%= "selected" if ["networks"].include? controller.controller_name.to_s %>>Group</option>
-						<% if logged_in? -%>
-							<option value="Message" <%= "selected" if ["messages"].include? controller.controller_name.to_s %>>Message</option>
-							<option value="Runner" <%= "selected" if ["runners"].include? controller.controller_name.to_s %>>Runner</option>
-							<% unless TavernaEnactor.for_user(current_user).empty? -%>
-								<option value="Experiment" <%= "selected" if ["experiments"].include? controller.controller_name.to_s %>>Experiment</option>
-								<option value="Job" <%= "selected" if ["jobs"].include? controller.controller_name.to_s %>>Job</option>
-							<% end -%>
-						<% end -%>
+            <% Conf.new_menu.each do |item| %>
+              <% next if item['condition'] and !eval(item['condition']) %>
+              <option value="<%= item['label'] %>" <%= "selected" if item['controller'] && controller.controller_name.match(item['controller']) %>><%= item['label'] %></option>
+            <% end %>
           </select>
           <%= submit_tag "GO" %>
         </p>

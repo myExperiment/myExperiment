@@ -39,6 +39,10 @@ class Conf
     @vars['main_tabs']
   end
 
+  def self.new_menu
+    @vars['new_menu']
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)

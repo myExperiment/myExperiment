@@ -64,6 +64,8 @@ Mime::Type.register "application/whip-archive", :whip
 
 # Include your application configuration below
 
+require 'lib/conf'
+
 # SMTP configuration
 
 require 'smtp_tls'
