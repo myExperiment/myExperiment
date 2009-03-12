@@ -105,6 +105,73 @@ main_tabs:
     link:       /packs
     controller: packs
 
+# new_menu - Set "new_menu" with the details of each kind of thing to appear in
+#            the New/Upload gadget.
+#
+#            Each entry must have at least a label and link.  You may specify
+#            controller, in which case it is intepreted as a pattern against
+#            that is matched with the current controller in use.  If it
+#            matches, it becomes the pre selected option in the new/upload
+#            combo box.
+#
+#            You may also specify a condition which is eval'd to determine if
+#            the item should be included.
+#
+#            Example:
+#
+#              new_menu:
+#
+#                - label:      Workflow
+#                  link:       /workflows/new
+#                  controller: workflows
+#
+#                - label:      File
+#                  link:       /files/new
+#                  controller: blobs
+#
+#                - label:      Message
+#                  link:       /messages/new
+#                  controller: messages
+#                  condition:  logged_in?
+
+new_menu:
+
+  - label:      Workflow
+    link:       /workflows/new
+    controller: workflows
+
+  - label:      File
+    link:       /files/new
+    controller: blobs
+
+  - label:      Pack
+    link:       /packs/new
+    controller: packs
+  
+  - label:      Group
+    link:       /groups/new
+    controller: networks
+
+  - label:      Message
+    link:       /messages/new
+    controller: messages
+    condition:  logged_in?
+
+  - label:      Runner
+    link:       /runners/new
+    controller: runners
+    condition:  logged_in? && !TavernaEnactor.for_user(current_user).empty?
+
+  - label:      Experiment
+    link:       /experiments/new
+    controller: experiments
+    condition:  logged_in? && !TavernaEnactor.for_user(current_user).empty?
+
+  - label:      Job
+    link:       /jobs/new
+    controller: jobs
+    condition:  logged_in? && !TavernaEnactor.for_user(current_user).empty?
+
 # email - These are the email addresses used for sending notifications and the
 #         email address to send feedback entered from the web site.
 #
