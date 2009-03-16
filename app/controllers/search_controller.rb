@@ -9,7 +9,7 @@ class SearchController < ApplicationController
 
     @type = params[:type].to_s.downcase
     
-    if !Conf.search_categories.include(@type)
+    if !Conf.search_categories.include?(@type)
       error(@type)
       return false
     end
