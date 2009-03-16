@@ -172,6 +172,11 @@ new_menu:
     controller: jobs
     condition:  logged_in? && !TavernaEnactor.for_user(current_user).empty?
 
+# search_categories - These are the search categories shown in the search bar
+#                     just under the main tabs.
+
+search_categories: [all, users, groups, workflows, files, packs]
+
 # email - These are the email addresses used for sending notifications and the
 #         email address to send feedback entered from the web site.
 #
