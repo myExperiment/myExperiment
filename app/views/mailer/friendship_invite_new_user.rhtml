@@ -18,7 +18,7 @@ You can find out more about me (<%= @name -%>) from my profile page: <%= url_for
 
 To become my friend you will have to follow these simple steps:
 
-1. Register for a <%= Conf.sitename %> account at: <%= url_for :only_path => false, :host => @base_url, :controller => 'users', :action => 'new', :token => @token %>
+1. Register for <%= indefinite_article(Conf.sitename) %> <%= Conf.sitename %> account at: <%= url_for :only_path => false, :host => @base_url, :controller => 'users', :action => 'new', :token => @token %>
 2. Confirm your email address as instructed during the registration process.
 3. Accept my friendship request that you will receive directly to your account once the registration is complete.
 

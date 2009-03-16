@@ -43,6 +43,10 @@ class Conf
     @vars['new_menu']
   end
 
+  def self.search_categories
+    @vars['search_categories']
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)

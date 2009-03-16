@@ -1535,5 +1535,8 @@ protected
     return permissions_categorised
   end
 
+  def indefinite_article(text)
+    text.match(/^[aeiou]/i) ? "an" : "a"
+  end
  
 end

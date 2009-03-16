@@ -9,14 +9,14 @@ class SearchController < ApplicationController
 
     @type = params[:type].to_s.downcase
     
-    # Hacks for 'Groups' --> 'Networks' and 'Files' --> 'Blobs' renames
-    @type = 'networks' if @type == 'groups'
-    @type = 'blobs' if @type == 'files'
-    
-    unless @@valid_types.include? @type
+    if !Conf.search_categories.include(@type)
       error(@type)
       return false
     end
+
+    # Hacks for 'Groups' --> 'Networks' and 'Files' --> 'Blobs' renames
+    @type = 'networks' if @type == 'groups'
+    @type = 'blobs' if @type == 'files'
     
     if @type == "all"
       search_all
@@ -119,8 +119,6 @@ class SearchController < ApplicationController
   end
 
 private
-
-  @@valid_types = ["all", "workflows", "users", "networks", "blobs", "packs"]
 
   def error(type)
     flash[:error] = "'#{type}' is an invalid search type"
