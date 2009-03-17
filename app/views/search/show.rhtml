@@ -5,67 +5,30 @@
 <h1>Search Results</h1>
 
 <p class="box_standout" style="font-size: 108%; margin-bottom: 1em;">
-	<b>Search keywords: </b>
-	<%= h @query -%>
+  <b>Search keywords: </b>
+  <%= h @query -%>
 </p>
 
-<% if @results.empty? %>
+<% if @total_count == 0 %>
 
   <p class="none_text">No search results.</p>
   
 <% else %>
 
-	<%= view_privileges_notice %>
-	<br/>
-	
-	<div id="tabsContainer" class="tabsContainer"></div>
-	
-	<% unless @users.empty? %>
-	  <div class="tabContainer">
-	  	<div class="tabTitle">Users (<%= @users.length -%><% if @users.length < @users_found_total_count %> of <%= @users_found_total_count -%><% end %>)</div>
-	  	<div class="tabContent">
-		    <%= render :partial => "users/table", :locals => { :collection => @users, :query => @query } %>
-	  	</div>
-	  </div>
-	<% end %>
-	
-	<% unless @networks.empty? %>
-	  <div class="tabContainer">
-	  	<div class="tabTitle">Groups (<%= @networks.length -%><% if @networks.length < @networks_found_total_count %> of <%= @networks_found_total_count -%><% end %>)</div>
-	  	<div class="tabContent">
-		    <%= render :partial => "networks/table", :locals => { :collection => @networks, :query => @query } %>
-	  	</div>
-	  </div>
-	<% end %>
+  <%= view_privileges_notice %>
+  <br/>
 
-	<% unless @workflows.empty? %>
-	  <div class="tabContainer">
-	  	<div class="tabTitle">Workflows (<%= @workflows.length -%><% if @workflows.length < @workflows_found_total_count %> of <%= @workflows_found_total_count -%><% end %>)</div>
-	  	<div class="tabContent">
-    		<%= render :partial => "workflows/table", :locals => { :collection => @workflows, :query => @query } %>
-	  	</div>
-	  </div>
-	<% end %>
-	
-	<% unless @blobs.empty? %>
-	  <div class="tabContainer">
-	  	<div class="tabTitle">Files (<%= @blobs.length -%><% if @blobs.length < @blobs_found_total_count %> of <%= @blobs_found_total_count -%><% end %>)</div>
-	  	<div class="tabContent">
-		    <%= render :partial => "blobs/table", :locals => { :collection => @blobs, :query => @query } %>
-	  	</div>
-	  </div>
-	<% end %>
-	
-	<% unless @packs.empty? %>
-	  <div class="tabContainer">
-	  	<div class="tabTitle">Packs (<%= @packs.length -%><% if @packs.length < @packs_found_total_count %> of <%= @packs_found_total_count -%><% end %>)</div>
-	  	<div class="tabContent">
-		    <%= render :partial => "packs/table", :locals => { :collection => @packs, :query => @query } %>
-	  	</div>
-	  </div>
-	<% end %>
+  <div id="tabsContainer" class="tabsContainer"></div>
+
+  <% @infos.each do |info| %>
+    <div class="tabContainer">
+      <div class="tabTitle"><%= visible_name(info[:model]).pluralize %> (<%= info[:results].length -%><% if info[:results].length < info[:total_count] %> of <%= info[:total_count ] -%><% end %>)</div>
+      <div class="tabContent">
+          <%= render :partial => "#{info[:model].to_s.underscore.pluralize}/table", :locals => { :collection => info[:results], :query => @query } %>
+      </div>
+    </div>
+  <% end %>
 
 <% end %>
 
 <br />
-

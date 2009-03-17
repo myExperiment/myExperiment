@@ -135,9 +135,34 @@ private
     @results = []
 
     if SOLR_ENABLE && !@query.blank?
-      @results = User.multi_solr_search(@query, :limit => 100,
-          :models => [User, Workflow, Blob, Network, Pack]).results
+
+      categories = Conf.search_categories - ['all']
+
+      # Hack for renamed models
+      index = categories.index("groups"); categories[index] = "networks" unless index.nil?
+      index = categories.index("files");  categories[index] = "blobs"    unless index.nil?
+
+      models = categories.map do |category| eval(category.singularize.camelize) end
+
+      @results = User.multi_solr_search(@query, :limit => 100, :models => models).results
       
+      @total_count = @results.length
+
+      @infos = []
+
+      models.each do |model|
+
+        model_results = @results.select do |r| r.instance_of?(model) end
+
+        if (model_results.length > 0)
+          @infos.push({
+            :model       => model,
+            :results     => model_results,
+            :total_count => model.count_by_solr(@query)
+          })
+        end
+      end
+
       @users_found_total_count = User.count_by_solr(@query)
       @workflows_found_total_count = Workflow.count_by_solr(@query)
       @blobs_found_total_count = Blob.count_by_solr(@query)

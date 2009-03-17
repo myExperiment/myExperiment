@@ -880,7 +880,14 @@ module ApplicationHelper
   end
   
   def visible_name(entity)
-    type = ( entity.instance_of?(String) ) ? entity : entity.class.to_s
+    if (entity.instance_of?(String))
+      type = entity
+    elsif (entity.class == Class)
+      type = entity.to_s
+    else
+      type = entity.class.to_s
+    end
+
     case type
       when "Blob"
         return "File"
