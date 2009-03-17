@@ -50,7 +50,7 @@ def file_column_url(ob, field)
   "#{request.protocol}#{request.host_with_port}#{path}"
 end
 
-def rest_get_element(ob, user, rest_entity, rest_attribute, query)
+def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
   model_data = TABLES['Model'][:data][rest_entity]
 
@@ -210,7 +210,7 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
   rest_entity = data['REST Entity']
 
   TABLES['Model'][:data][rest_entity]['REST Attribute'].each do |rest_attribute|
-    data = rest_get_element(ob, user, rest_entity, rest_attribute, query)
+    data = rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
     root << data unless data.nil?
   end
 
