@@ -880,37 +880,46 @@ module ApplicationHelper
   end
   
   def visible_name(entity)
+
+    # Accept a string, the class object of a model or an instance of a model
+
     if (entity.instance_of?(String))
-      type = entity
+      name = entity
     elsif (entity.class == Class)
-      type = entity.to_s
+      name = entity.to_s
     else
-      type = entity.class.to_s
+      name = entity.class.to_s
     end
 
-    case type
-      when "Blob"
-        return "File"
-      when "Network"
-        return "Group"
-      else
-        return type
+    # special case for a Session object, though I'm not convinced that it's
+    # still used anywhere (Don)
+
+    exit if name == "Session"
+
+    # substitute model alias in singular form
+
+    if Conf.model_aliases.value?(name)
+      Conf.model_aliases.each do |al, model|
+        name = al if name == model
+      end
     end
+        
+    name
   end
   
   def controller_visible_name(humanized_controller_for)
-    case humanized_controller_for
-    when "Blobs"
-      return "Files"
-    when "Networks"
-      return "Groups"
-    when "Simple pages"
-      return "Info"
-    when "Session"
-      return "Log in"
-    else
-      return humanized_controller_for
+
+    # special case for Session, though I don't think it's needed any more (Don)
+
+    return "Log in" if humanized_controller_for == "Session"
+
+    # substitute model alias in plural form
+
+    Conf.model_aliases.each do |al, model|
+      humanized_controller_for = al.pluralize if humanized_controller_for == model.pluralize
     end
+
+    humanized_controller_for
   end
 
   def sharing_mode_text(contributable, mode)

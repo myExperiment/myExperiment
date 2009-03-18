@@ -47,6 +47,10 @@ class Conf
     @vars['search_categories']
   end
 
+  def self.model_aliases
+    @vars['model_aliases']
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)
