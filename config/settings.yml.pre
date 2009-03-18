@@ -190,3 +190,11 @@ notifications_email_address: notifications@www.example.com
 
 feedback_email_address: feedback@www.example.com
 
+# model_aliases - These are visible names for models where the desired visible
+#                 name might conflict with existing classes (e.g. "File" or
+#                 "Application")
+model_aliases:
+
+  File:  Blob
+  Group: Network
+
