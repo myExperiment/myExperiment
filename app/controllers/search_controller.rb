@@ -136,11 +136,13 @@ private
 
     if SOLR_ENABLE && !@query.blank?
 
-      categories = Conf.search_categories - ['all']
+      categories = (Conf.search_categories - ['all']).map do |category|
+        if Conf.model_aliases.key?(category.camelize.singularize)
+          category = Conf.model_aliases[category.camelize.singularize].pluralize.underscore
+        end
 
-      # Hack for renamed models
-      index = categories.index("groups"); categories[index] = "networks" unless index.nil?
-      index = categories.index("files");  categories[index] = "blobs"    unless index.nil?
+        category
+      end
 
       models = categories.map do |category| eval(category.singularize.camelize) end
 
@@ -162,19 +164,7 @@ private
           })
         end
       end
-
-      @users_found_total_count = User.count_by_solr(@query)
-      @workflows_found_total_count = Workflow.count_by_solr(@query)
-      @blobs_found_total_count = Blob.count_by_solr(@query)
-      @networks_found_total_count = Network.count_by_solr(@query)
-      @packs_found_total_count = Pack.count_by_solr(@query)
     end
-
-    @users     = @results.select do |r| r.instance_of?(User)     end
-    @workflows = @results.select do |r| r.instance_of?(Workflow) end
-    @blobs     = @results.select do |r| r.instance_of?(Blob)     end
-    @networks  = @results.select do |r| r.instance_of?(Network)  end
-    @packs     = @results.select do |r| r.instance_of?(Pack)     end
 
     respond_to do |format|
       format.html # search.rhtml
