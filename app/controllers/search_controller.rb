@@ -14,10 +14,10 @@ class SearchController < ApplicationController
       return false
     end
 
-    # Hacks for 'Groups' --> 'Networks' and 'Files' --> 'Blobs' renames
-    @type = 'networks' if @type == 'groups'
-    @type = 'blobs' if @type == 'files'
-    
+    if Conf.model_aliases.key?(@type.camelize.singularize)
+      @type = Conf.model_aliases[@type.camelize.singularize].pluralize.underscore
+    end
+
     if @type == "all"
       search_all
     else
