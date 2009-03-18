@@ -1,0 +1,44 @@
+<% t "Manage" -%>
+
+<%= javascript_include_tag :fckeditor %>
+<%= javascript_include_tag "osp.js" %>
+
+<h1>Manage Algorithm: <%= contributable_name(@algorithm.id, 'Algorithm') %></h1>
+
+<%= error_messages_for :algorithm %>
+
+<% form_for(:algorithm, :url => algorithm_path(@algorithm), :html => { :method => :put }) do |f| %>
+
+  <p style="text-align: center;">
+  	<strong>Title: </strong>
+	<br/>
+	<%= f.text_field :title, :size => 60 %>
+  </p>
+	
+	<br/>
+  
+  <p style="text-align: center;">
+  	<strong>Description: </strong>
+	</p>
+	<center>
+		<%= fckeditor_textarea(:algorithm, :description, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
+	</center>
+  
+  <br/>
+
+  <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @algorithm } %>
+  
+  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => true, :contributable => @algorithm } %>
+
+  <% if Authorization.is_authorized?("edit", nil, @algorithm, current_user) %>
+  	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @algorithm, :update_perms => true } %>
+	<%= render :partial => "algorithms/license_form", :locals => { :edit => true } %>
+  <% end %>
+
+  <p>
+    <center>
+    	<%= submit_tag "Update",:disable_with => "Updating..." %> 
+		or <%= link_to "Cancel", algorithm_path(@algorithm) %>
+	</center>
+  </p>
+<% end %>

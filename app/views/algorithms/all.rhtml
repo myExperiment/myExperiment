@@ -1,0 +1,9 @@
+<% t "All" -%>
+
+<h2>All Files</h2>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @algorithms } %>
+
+<%= render :partial => "algorithms/table", :locals => { :collection => @algorithms } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @algorithms } %>

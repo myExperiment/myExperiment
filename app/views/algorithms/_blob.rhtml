@@ -1,0 +1,33 @@
+<center>
+	<table width="320" class="contributable">
+	  <tr>
+	    <td>
+	      <p>
+	        <strong>File name:</strong><br/> 
+	        <%=h algorithm.local_name %>
+	      </p>
+	      
+	      <p>
+	        <strong>File type:</strong><br />
+	        <%=h algorithm.content_type %>
+	      </p>
+	      
+	      <p>
+	        <strong>Downloaded:</strong> <%=pluralize algorithm.contribution.downloads_count, "time" %>
+	      </p>
+	    </td>
+	    <td>
+	      <strong>Uploader:</strong><br/>
+	      <%= contributor(algorithm.contribution.contributor_id, algorithm.contribution.contributor_type, true, 60) %>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td colspan="2">
+	      <% if Authorization.is_authorized?('download', nil, algorithm, current_user) %><%= icon "download", download_file_path(algorithm) %> <% end %>
+	      <% if Authorization.is_authorized?('show', nil, algorithm, current_user) %><%= icon "show", file_path(algorithm), nil, nil, "View" %> <% end %>
+	      <% if logged_in? and Authorization.is_authorized?('edit', nil, algorithm, current_user) %><%= icon "edit", edit_file_path(algorithm) %> <% end %>
+	      <% if logged_in? and algorithm.owner?(current_user) %><%= icon "destroy", file_path(algorithm), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
+	    </td>
+	  </tr>
+	</table>
+</center>

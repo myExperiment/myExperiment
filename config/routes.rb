@@ -86,6 +86,19 @@ ActionController::Routing::Routes.draw do |map|
     workflow.resources :reviews
   end
 
+  # algorithms
+  map.resources :algorithms, 
+    :collection => { :all => :get, :search => :get }, 
+    :member => { :download => :get,
+                 :statistics => :get,
+                 :favourite => :post,
+                 :favourite_delete => :delete,
+                 :comment => :post, 
+                 :comment_delete => :delete, 
+                 :rate => :post, 
+                 :tag => :post } do |algorithm|
+  end
+
   # files (downloadable)
   map.resources :files, 
     :controller => :blobs, 

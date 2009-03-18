@@ -1,0 +1,21 @@
+<li><%= link_to 'Algorithms', algorithms_path -%></li>
+
+<% if ["show", "new", "edit", "all", "search"].include? controller.action_name.to_s -%>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" -%>
+    <li><%= contributable_name(@algorithm.id, 'Algorithm') -%></li>
+  <% when "new" %>
+    <li>New Algorithm</li>
+  <% when "edit" %>
+		<li><%= link_to "#{contributable_name(@algorithm.id, 'Algorithm')}", algorithm_path(@algorithm) -%></li>
+		<li><b>&#187;</b></li>
+    <li>Manage</li>
+  <% when "all" %>
+    <li>All Algorithms</li>
+	<% when "search" %>  
+    <li>Search Results</li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

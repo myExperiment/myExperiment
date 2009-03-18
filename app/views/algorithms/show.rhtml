@@ -1,0 +1,145 @@
+<% t "#{contributable_name(@algorithm.id, 'Algorithm')} (#{h @algorithm.contributor_name})" -%>
+
+<ul class="sectionIcons">
+	<% if Authorization.is_authorized?('edit', nil, @algorithm, current_user) -%>
+		<li><%= icon('manage', edit_algorithm_path(@algorithm), nil, nil, 'Manage Algorithm Entry')%></li>
+	<% end -%>
+	<% if Authorization.is_authorized?('destroy', nil, @algorithm, current_user) %>
+		<li><%= icon('destroy', algorithm_path(@algorithm), nil, { :confirm => 'This deletes the Algorithm and all metadata such as tags, comments and ratings. Are you sure?', :method => :delete }, 'Delete Algorithm Entry') %></li>
+	<% end %>
+</ul>
+
+<h1 class="contribution_title">Algorithm Entry: <%= contributable_name(@algorithm.id, 'Algorithm') %></h1>
+
+<%= render :partial => "contributions/datetime_info", :locals => { :contributable => @algorithm } -%>
+
+<div class="contribution_mini_nav">
+	|
+	<%= link_to "License", "#license" %>
+	|
+	<%= link_to "Credits (#{@algorithm.creditations.length})", "#credits" %>
+	|
+	<%= link_to "Attributions (#{@algorithm.attributors.length})", "#attributions" %>
+	|
+	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@algorithm.tags.length})</span>", "#tags" %>
+	|
+	<%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@algorithm).length})", "#featured_in_packs" %>
+	|
+	<%= link_to "Ratings (#{@algorithm.ratings.length})", "#ratings" %>
+	|
+	<%= link_to "Attributed By (#{@algorithm.attributions.length})", "#attributed_by" %>
+	|
+	<%= link_to "Favourited By (#{@algorithm.bookmarks.length})", "#favourited_by" %>
+	| 
+	<% if logged_in? and @algorithm.owner?(current_user) %>
+	  <br/>
+	  |
+		<!-- NB! Index of the 'sharing' tab might change! -->
+	  <a href="#sharing" onclick="selectTab($('tabsContainer'),0)">Sharing</a>
+	  |
+	<% end %>
+	<%= link_to "Comments (#{@algorithm.comments.length})", "#comments" %> 
+	|
+</div>
+
+<div class="contribution_left_box">
+	<div class="contribution_version_box">
+		<div class="contribution_version_inner_box">
+			<p>
+			    <b>Title:</b>
+			    <span class="title"><%=h @algorithm.title %></span>
+			</p>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section shows the overall description for this Algorithm") %>
+				Description
+			</h3>
+			
+			<% unless @algorithm.description.blank? %>
+				<div class="contribution_description">
+					<%= @algorithm.description_html %>
+				</div>
+			<% else %>
+				<p class="none_text">
+					Not set
+				</p>
+			<% end %>
+		</div>
+	
+	</div>
+
+</div>
+
+<div class="contribution_right_box">
+	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @algorithm } %>
+	
+	<%= render :partial => "contributions/license_box", :locals => { :contributable => @algorithm } %>
+	
+	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @algorithm, :edit_path => edit_algorithm_path(@algorithm) } %>
+	
+	<%= render :partial => "tags/tags_box", :locals => { :taggable => @algorithm, 
+																											 :owner_id => ((@algorithm.contributor_type == 'User') ? @algorithm.contributor_id : nil), 
+																											 :add_path => tag_algorithm_path(@algorithm), 
+																											 :edit_path => edit_algorithm_path(@algorithm),
+																											 :allow_edit => Authorization.is_authorized?('edit', nil, @algorithm, current_user) } %>
+																											 
+  <%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @algorithm } %>
+	
+	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @algorithm, :contributable_url => @algorithm_entry_url } %>
+	
+	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @algorithm } %>
+	
+	<%= render :partial => "contributions/attributed_by", :locals => { :contributable => @algorithm } %>
+	
+	<%= render :partial => "contributions/favourited_box", :locals => { :contributable => @algorithm,
+																																			:add_to_favourites_path => favourite_file_url(@algorithm),
+																																			:remove_from_favourites_path => favourite_delete_file_url(@algorithm) } %>
+	
+	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @algorithm } %>
+</div>	
+
+<div class="clearer">&nbsp;</div>
+
+<!-- BEGIN tabs -->
+	
+<br/>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+	
+<% if logged_in? and @algorithm.owner? current_user %>
+  
+	<a name="sharing"></a>
+	<div class="tabContainer">
+    <div class="tabTitle">Sharing</div>
+    <div class="tabContent">
+
+      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @algorithm } %>
+      <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @algorithm } %>
+	  
+      <% if Authorization.is_authorized?('edit', nil, @algorithm, current_user) %>
+        <ul class="sectionIcons">
+          <li><%= icon('edit', edit_algorithm_path(@algorithm), nil, nil, 'Edit')%></li>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+	
+	<% if false %>
+  <div class="tabContainer">
+    <div class="tabTitle">Viewing History</div>
+    <div class="tabContent">
+      <%= render :partial => "contributions/history", :object => @algorithm.contribution %>
+    </div>
+  </div>
+	<% end %>
+	
+<% end %>
+
+<!-- END tabs -->
+
+<br/>
+<br/>
+
+<div id="commentsBox">
+	<%= render :partial => "comments/comments", :locals => { :commentable => @algorithm } %>
+</div>

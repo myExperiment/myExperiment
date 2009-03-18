@@ -1,0 +1,10 @@
+<ul class="sectionIcons">
+	<li><%= icon "algorithm", new_algorithm_path, nil, nil, "Register new Algorithm" %></li>
+	<li><%= icon "view-all", all_algorithms_path, nil, nil, "View all Algorithms" %></li>
+</ul>
+
+<% cache(:controller => 'algorithms', :action => 'all_tags') do -%>
+	<%= render :partial => "algorithms/all_tags" %>
+<% end -%>
+
+<%= render :partial => "contributions/most_tabs", :locals => { :type => "Algorithm" } %>
