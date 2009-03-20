@@ -13,6 +13,9 @@ class ApiController < ApplicationController
 
   def process_request
 
+    # all responses from the API are in XML
+    response.content_type = "application/xml"
+
     user = current_user
 
     auth = request.env["HTTP_AUTHORIZATION"]
@@ -21,10 +24,7 @@ class ApiController < ApplicationController
       credentials = Base64.decode64(auth.sub(/^Basic /, '')).split(':')
       user = User.authenticate(credentials[0], credentials[1])
 
-      if user.nil?
-        render :xml => rest_error_response(401, 'Not authorized').to_s
-        return
-      end
+      return rest_error(401) if user.nil?
 
     end
 
@@ -32,14 +32,14 @@ class ApiController < ApplicationController
     method = request.method.to_s.upcase
     uri    = params[:uri]
 
-   # logger.info "current token: #{current_token.inspect}"
-   # logger.info "current user: #{user.id}"
-   # logger.info "query: #{query}"
-   # logger.info "method: #{method}"
-   # logger.info "uri: #{uri}"
+    # logger.info "current token: #{current_token.inspect}"
+    # logger.info "current user: #{user.id}"
+    # logger.info "query: #{query}"
+    # logger.info "method: #{method}"
+    # logger.info "uri: #{uri}"
 
-    return bad_rest_request if TABLES['REST'][:data][uri].nil? 
-    return bad_rest_request if TABLES['REST'][:data][uri][method].nil?
+    return rest_error(400) if TABLES['REST'][:data][uri].nil? 
+    return rest_error(400) if TABLES['REST'][:data][uri][method].nil?
 
     rules = TABLES['REST'][:data][uri][method]
 
@@ -54,21 +54,15 @@ class ApiController < ApplicationController
         permission_found = true if permission.for == requested_permission
       end
 
-      if permission_found == false
-        render :xml => rest_error_response(403, 'Not authorized').to_s
-        return
-      end
+      return rest_error(403) if permission_found == false
     end  
 
     case rules['Type']
       when 'index'; doc = rest_index_request(rules, user, query)
       when 'crud';  doc = rest_crud_request(rules, user)
       when 'call';  doc = rest_call_request(rules, user, query)
-      else;         bad_rest_request
+      else;         return rest_error(400)
     end
-
-    current_token = nil
-    render :xml => doc.to_s
   end
 end
 

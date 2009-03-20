@@ -37,8 +37,38 @@ def rest_routes(map)
   end
 end
 
-def bad_rest_request
-  render(:text => '400 Bad Request', :status => '400 Bad Request')
+def rest_error(code, error_ob = nil)
+
+  if code == 401
+    response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename} REST API\""
+  end
+
+  message = "Unknown Error"
+
+  case code
+    when 400: message = "Bad Request"
+    when 401: message = "Unauthorized"
+    when 403: message = "Forbidden"
+    when 404: message = "Not Found"
+    when 500: message = "Internal Server Error"
+  end
+
+  error = XML::Node.new('error')
+  error["code"   ] = code.to_s
+  error["message"] = message
+
+  doc = XML::Document.new
+  doc.root = error
+
+  if error_ob
+    error_ob.errors.full_messages.each do |message|
+      reason = XML::Node.new('reason')
+      reason << message
+      doc.root << reason
+    end
+  end
+
+  render(:xml => doc.to_s, :status => "#{code} #{message}")
 end
 
 def file_column_url(ob, field)
@@ -182,9 +212,9 @@ end
 def rest_get_request(ob, req_uri, user, uri, entity_name, query)
 
   if query['version']
-    return rest_error_response(400, 'Resource not versioned') unless ob.respond_to?('versions')
-    return rest_error_response(404, 'Resource version not found') if query['version'].to_i < 1
-    return rest_error_response(404, 'Resource version not found') if ob.versions[query['version'].to_i - 1].nil?
+    return rest_error(400) unless ob.respond_to?('versions')
+    return rest_error(404) if query['version'].to_i < 1
+    return rest_error(404) if ob.versions[query['version'].to_i - 1].nil?
   end
 
   elements = query['elements'] ? query['elements'].split(',') : nil
@@ -214,27 +244,7 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
     root << data unless data.nil?
   end
 
-  doc
-end
-
-def rest_error_response(code, message, error_ob = nil)
-
-  error = XML::Node.new('error')
-  error["code"   ] = code.to_s
-  error["message"] = message
-
-  doc = XML::Document.new
-  doc.root = error
-
-  if error_ob
-    error_ob.errors.full_messages.each do |message|
-      reason = XML::Node.new('reason')
-      reason << message
-      doc.root << reason
-    end
-  end
-
-  doc
+  render(:xml => doc.to_s)
 end
 
 def rest_crud_request(rules, user)
@@ -246,7 +256,7 @@ def rest_crud_request(rules, user)
 
   ob = eval(model_name.camelize).find_by_id(params[:id].to_i)
 
-  return rest_error_response(404, 'Resource not found') if ob.nil?
+  return rest_error(404) if ob.nil?
 
   perm_ob = ob
 
@@ -254,11 +264,10 @@ def rest_crud_request(rules, user)
 
   case rules['Permission']
     when 'public'; # do nothing
-    when 'view'; return rest_error_response(403, 'Not authorized') if not Authorization.is_authorized?("show", nil, perm_ob, user)
-    when 'owner'; return rest_error_response(403, 'Not authorized') if logged_in?.nil? or object_owner(perm_ob) != user
+    when 'view';  return rest_error(401) if not Authorization.is_authorized?("show", nil, perm_ob, user)
+    when 'owner'; return rest_error(401) if logged_in?.nil? or object_owner(perm_ob) != user
   end
 
-  response.content_type = "application/xml"
   rest_get_request(ob, params[:uri], user, eval("rest_resource_uri(ob)"), rest_name, query)
 end
 
@@ -332,7 +341,7 @@ def produce_rest_list(rules, query, obs, tag)
   doc = XML::Document.new
   doc.root = root
 
-  doc
+  render(:xml => doc.to_s)
 end
 
 def object_owner(ob)
@@ -510,10 +519,11 @@ end
 
 def get_rest_uri(rules, user, query)
 
-  return bad_rest_request if query['resource'].nil?
+  return rest_error(400) if query['resource'].nil?
 
   obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("index", nil, c, user) end)
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><rest-uri/>")
+
   "bing"
 end
 
@@ -523,8 +533,8 @@ end
 
 def post_workflow(rules, user, query)
 
-  return rest_error_response(400, 'Bad Request') if user.nil?
-  return rest_error_response(400, 'Bad Request') if params["workflow"].nil?
+  return rest_error(400) if user.nil?
+  return rest_error(400) if params["workflow"].nil?
 
   elements = params["workflow"]
 
@@ -567,7 +577,7 @@ def post_workflow(rules, user, query)
   workflow.set_unique_name
 
   if not workflow.save
-    return rest_error_response(400, 'Bad Request', workflow)
+    return rest_error(400, workflow)
   end
 
   workflow.contribution.policy = create_default_policy(user)
@@ -586,20 +596,20 @@ end
 #   runner_bits     = parse_resource_uri(params["job"]["runner"])
 #   runnable_bits   = parse_resource_uri(params["job"]["runnable"])
 #
-#   return rest_error_response(400, 'Bad Request') if title.nil?
-#   return rest_error_response(400, 'Bad Request') if description.nil?
+#   return rest_error(400) if title.nil?
+#   return rest_error(400) if description.nil?
 #
-#   return rest_error_response(400, 'Bad Request') if experiment_bits.nil? or experiment_bits[0] != 'Experiment'
-#   return rest_error_response(400, 'Bad Request') if runner_bits.nil?     or runner_bits[0]     != 'Runner'
-#   return rest_error_response(400, 'Bad Request') if runnable_bits.nil?   or runnable_bits[0]   != 'Workflow'
+#   return rest_error(400) if experiment_bits.nil? or experiment_bits[0] != 'Experiment'
+#   return rest_error(400) if runner_bits.nil?     or runner_bits[0]     != 'Runner'
+#   return rest_error(400) if runnable_bits.nil?   or runnable_bits[0]   != 'Workflow'
 #
 #   experiment = Experiment.find_by_id(experiment_bits[1].to_i)
 #   runner     = TavernaEnactor.find_by_id(runner_bits[1].to_i)
 #   runnable   = Workflow.find_by_id(runnable_bits[1].to_i)
 #
-#   return rest_error_response(400, 'Bad Request') if experiment.nil? or not Authorization.is_authorized?('edit', nil, experiment, user)
-#   return rest_error_response(400, 'Bad Request') if runner.nil?     or not Authorization.is_authorized?('download', nil, runner, user)
-#   return rest_error_response(400, 'Bad Request') if runnable.nil?   or not Authorization.is_authorized?('view', nil, runnable, user)
+#   return rest_error(400) if experiment.nil? or not Authorization.is_authorized?('edit', nil, experiment, user)
+#   return rest_error(400) if runner.nil?     or not Authorization.is_authorized?('download', nil, runner, user)
+#   return rest_error(400) if runnable.nil?   or not Authorization.is_authorized?('view', nil, runnable, user)
 #
 #   puts "#{params[:job]}"
 #
@@ -613,7 +623,7 @@ end
 #
 #   success = job.submit_and_run!
 #
-#   return rest_error_response(200, 'Failed to submit job') if not success
+#   return rest_error(500) if not success
 #
 #   return "<yes/>"
 #
@@ -654,7 +664,8 @@ def search(rules, user, query)
 
   doc = XML::Document.new
   doc.root = root
-  doc
+
+  render(:xml => doc.to_s)
 end
 
 def user_count(rules, user, query)
@@ -667,7 +678,7 @@ def user_count(rules, user, query)
   doc = XML::Document.new
   doc.root = root
 
-  doc
+  render(:xml => doc.to_s)
 end
 
 def group_count(rules, user, query)
@@ -677,7 +688,8 @@ def group_count(rules, user, query)
 
   doc = XML::Document.new
   doc.root = root
-  doc
+
+  render(:xml => doc.to_s)
 end
 
 def pack_count(rules, user, query)
@@ -691,12 +703,13 @@ def pack_count(rules, user, query)
 
   doc = XML::Document.new
   doc.root = root
-  doc
+
+  render(:xml => doc.to_s)
 end
 
 def get_tagged(rules, user, query)
 
-  return rest_error_response(400, 'Bad Request') if query['tag'].nil?
+  return rest_error(400) if query['tag'].nil?
 
   tag = Tag.find_by_name(query['tag'])
 
@@ -743,7 +756,7 @@ def tag_cloud(rules, user, query)
     root << tag_node
   end
 
-  doc
+  render(:xml => doc.to_s)
 end
 
 def post_comment(rules, user, query)
@@ -756,11 +769,11 @@ def post_comment(rules, user, query)
 
   resource_bits = parse_resource_uri(params["comment"]["resource"])
 
-  return rest_error_response(400, 'Bad Request') if user.nil?
-  return rest_error_response(400, 'Bad Request') if text.nil? or text.length.zero?
-  return rest_error_response(400, 'Bad Request') if resource_bits.nil?
+  return rest_error(400) if user.nil?
+  return rest_error(400) if text.nil? or text.length.zero?
+  return rest_error(400) if resource_bits.nil?
 
-  return rest_error_response(400, 'Bad Request') unless ['Blob', 'Network', 'Pack', 'Workflow'].include?(resource_bits[0])
+  return rest_error(400) unless ['Blob', 'Network', 'Pack', 'Workflow'].include?(resource_bits[0])
 
   resource = eval(resource_bits[0]).find_by_id(resource_bits[1].to_i)
 
@@ -775,16 +788,16 @@ end
 #
 # def delete_comment(rules, user, query)
 #
-#   return rest_error_response(400, 'Bad Request') if query['id'].nil?
+#   return rest_error(400) if query['id'].nil?
 #
 #   resource = Comment.find_by_id(query['id'])
 #
-#   return rest_error_response(404, 'Resource Not Found') if resource.nil?
+#   return rest_error(404) if resource.nil?
 #
 #   FIXME: The following respond_to? would not work anymore
 #
 #   if resource.respond_to?('authorized?')
-#     return rest_error_response(403, 'Not Authorized') if not Authorization.is_authorized?('edit', nil, resource, user)
+#     return rest_error(401) if not Authorization.is_authorized?('edit', nil, resource, user)
 #   end
 #
 # end
