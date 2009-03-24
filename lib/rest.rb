@@ -18,7 +18,7 @@ TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
                                'Foreign Accessor',
                                'List Element Name', 'List Element Accessor',
                                'Example', 'Versioned', 'Key type',
-                               'Limited to user' ] },
+                               'Limited to user', 'Permission' ] },
                 
     'REST'  => { :indices => [ 'URI', 'Method' ] }
   } )
@@ -94,7 +94,7 @@ end
 
 def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
-  puts "rest_get_element: #{rest_entity} / #{rest_attribute}"
+  # puts "rest_get_element: #{rest_entity} / #{rest_attribute}"
 
   model_data = TABLES['Model'][:data][rest_entity]
 
@@ -112,6 +112,12 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
     end
 
     return nil if limited_ob != user
+  end
+
+  permission = model_data['Permission'][i]
+
+  if permission
+    return nil if !Authorization.is_authorized?(permission, nil, ob, user)
   end
 
   unless query['all_elements'] == 'yes'
