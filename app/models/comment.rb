@@ -23,6 +23,10 @@ class Comment < ActiveRecord::Base
     }
   )
   
+  validates_presence_of :comment
+  validates_presence_of :commentable_type
+  validates_presence_of :commentable_id
+
   def simile_title
     "Comment by: #{self.user.name}"
   end

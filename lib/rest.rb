@@ -3,6 +3,7 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'lib/conf'
 require 'lib/excel_xml'
 require 'xml/libxml'
 require 'uri'
@@ -24,8 +25,6 @@ TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
 
 # Temporary removals
 
-TABLES["REST"][:data]["comment"].delete("PUT")
-TABLES["REST"][:data]["comment"].delete("DELETE")
 TABLES["REST"][:data]["workflow"].delete("PUT")
 TABLES["REST"][:data]["job"].delete("POST")
 
@@ -37,15 +36,21 @@ def rest_routes(map)
   end
 end
 
-def rest_error(code, error_ob = nil)
+def rest_response(code, args = {})
 
   if code == 401
     response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename} REST API\""
   end
 
+  if code == 307
+    response.headers['Location'] = args[:location]
+  end
+
   message = "Unknown Error"
 
   case code
+    when 200: message = "OK"
+    when 307: message = "Temporary Redirect"
     when 400: message = "Bad Request"
     when 401: message = "Unauthorized"
     when 403: message = "Forbidden"
@@ -53,18 +58,25 @@ def rest_error(code, error_ob = nil)
     when 500: message = "Internal Server Error"
   end
 
-  error = XML::Node.new('error')
-  error["code"   ] = code.to_s
-  error["message"] = message
+  if (code >= 300) && (code < 400)
 
-  doc = XML::Document.new
-  doc.root = error
+    doc = ""
 
-  if error_ob
-    error_ob.errors.full_messages.each do |message|
-      reason = XML::Node.new('reason')
-      reason << message
-      doc.root << reason
+  else 
+
+    error = XML::Node.new('error')
+    error["code"   ] = code.to_s
+    error["message"] = message
+
+    doc = XML::Document.new
+    doc.root = error
+
+    if args[:object]
+      args[:object].errors.full_messages.each do |message|
+        reason = XML::Node.new('reason')
+        reason << message
+        doc.root << reason
+      end
     end
   end
 
@@ -81,6 +93,8 @@ def file_column_url(ob, field)
 end
 
 def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
+
+  puts "rest_get_element: #{rest_entity} / #{rest_attribute}"
 
   model_data = TABLES['Model'][:data][rest_entity]
 
@@ -189,9 +203,12 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
           end
 
           if model_data['Foreign Accessor'][i]
-            resource_uri = eval("rest_resource_uri(ob.#{model_data['Foreign Accessor'][i]})")
-            attrs['resource'] = resource_uri if resource_uri
-            attrs['uri'] = eval("rest_access_uri(ob.#{model_data['Foreign Accessor'][i]})")
+            foreign_ob = eval("ob.#{model_data['Foreign Accessor'][i]}")
+            if foreign_ob != nil
+              resource_uri = rest_resource_uri(foreign_ob)
+              attrs['resource'] = resource_uri if resource_uri
+              attrs['uri'] = rest_access_uri(foreign_ob)
+            end
           end
         end
 
@@ -212,9 +229,9 @@ end
 def rest_get_request(ob, req_uri, user, uri, entity_name, query)
 
   if query['version']
-    return rest_error(400) unless ob.respond_to?('versions')
-    return rest_error(404) if query['version'].to_i < 1
-    return rest_error(404) if ob.versions[query['version'].to_i - 1].nil?
+    return rest_response(400) unless ob.respond_to?('versions')
+    return rest_response(404) if query['version'].to_i < 1
+    return rest_response(404) if ob.versions[query['version'].to_i - 1].nil?
   end
 
   elements = query['elements'] ? query['elements'].split(',') : nil
@@ -247,16 +264,14 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
   render(:xml => doc.to_s)
 end
 
-def rest_crud_request(rules, user)
-
-  query = CGIMethods.parse_query_parameters(request.query_string)
+def rest_crud_request(req_uri, rules, user, query)
 
   rest_name  = rules['REST Entity']
   model_name = rules['Model Entity']
 
   ob = eval(model_name.camelize).find_by_id(params[:id].to_i)
 
-  return rest_error(404) if ob.nil?
+  return rest_response(404) if ob.nil?
 
   perm_ob = ob
 
@@ -264,14 +279,14 @@ def rest_crud_request(rules, user)
 
   case rules['Permission']
     when 'public'; # do nothing
-    when 'view';  return rest_error(401) if not Authorization.is_authorized?("show", nil, perm_ob, user)
-    when 'owner'; return rest_error(401) if logged_in?.nil? or object_owner(perm_ob) != user
+    when 'view';  return rest_response(401) if not Authorization.is_authorized?("show", nil, perm_ob, user)
+    when 'owner'; return rest_response(401) if logged_in?.nil? or object_owner(perm_ob) != user
   end
 
   rest_get_request(ob, params[:uri], user, eval("rest_resource_uri(ob)"), rest_name, query)
 end
 
-def rest_index_request(rules, user, query)
+def rest_index_request(req_uri, rules, user, query)
 
   rest_name  = rules['REST Entity']
   model_name = rules['Model Entity']
@@ -322,20 +337,32 @@ def rest_index_request(rules, user, query)
     obs = eval(model_name.camelize).find(:all, find_args)
   end
 
-  # filter out ones they are not allowed to get
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("index", nil, c, user) end)
-
-  produce_rest_list(rules, query, obs, rest_name.pluralize)
+  produce_rest_list(req_uri, rules, query, obs, rest_name.pluralize, user)
 end
 
-def produce_rest_list(rules, query, obs, tag)
+def produce_rest_list(req_uri, rules, query, obs, tag, user)
 
   root = XML::Node.new(tag)
 
   root['api-version'] = API_VERSION if query['api_version'] == 'yes'
 
-  obs.map do |ob|
-    root << rest_reference(ob, query)
+  elements = query['elements'] ? query['elements'].split(',') : nil
+
+  rest_entity = TABLES['REST'][:data][req_uri]['GET']['REST Entity']
+
+  obs.each do |ob|
+    next if !Authorization.is_authorized?('index', nil, ob, user)
+
+    el = rest_reference(ob, query, !elements.nil?)
+
+    if elements
+      TABLES['Model'][:data][rest_entity]['REST Attribute'].each do |rest_attribute|
+        data = rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
+        el << data unless data.nil?
+      end
+    end
+
+    root << el
   end
 
   doc = XML::Document.new
@@ -471,26 +498,24 @@ def rest_object_label_text(ob)
   return ''
 end
 
-def rest_reference(ob, query)
+def rest_reference(ob, query, skip_text = false)
 
-  tag  = rest_object_tag_text(ob)
-  text = rest_object_label_text(ob)
-
-  el = XML::Node.new(tag)
+  el = XML::Node.new(rest_object_tag_text(ob))
 
   resource_uri = rest_resource_uri(ob)
 
   el['resource'] = resource_uri if resource_uri
   el['uri'     ] = rest_access_uri(ob)
   el['version' ] = ob.version.to_s if ob.respond_to?('version')
-  el << text
+
+  el << rest_object_label_text(ob) if !skip_text
 
   el
 end
 
 def parse_resource_uri(str)
 
-  base_uri = URI.parse("#{request.protocol}#{request.host_with_port}/")
+  base_uri = URI.parse("#{Conf.base_uri}/")
   uri      = base_uri.merge(str)
   is_local = base_uri.host == uri.host and base_uri.port == uri.port
 
@@ -517,9 +542,53 @@ def parse_resource_uri(str)
 
 end
 
-def get_rest_uri(rules, user, query)
+def resolve_resource_node(resource_node, user = nil, permission = nil)
 
-  return rest_error(400) if query['resource'].nil?
+  return nil if resource_node.nil?
+
+  attr = resource_node.find_first('@resource')
+
+  return nil if attr.nil?
+
+  resource_uri = attr.value
+
+  resource_bits = parse_resource_uri(resource_uri)
+
+  return nil if resource_bits.nil?
+  
+  resource = eval(resource_bits[0]).find_by_id(resource_bits[1].to_i)
+
+  return nil if resource.nil?
+
+  if permission
+    return nil if !Authorization.is_authorized?(permission, nil, resource, user)
+  end
+
+  resource
+end
+
+def obtain_rest_resource(type, id, user, permission = nil)
+
+  resource = eval(type).find_by_id(id)
+
+  if resource.nil?
+    rest_response(404)
+    return nil
+  end
+
+  if permission
+    if !Authorization.is_authorized?(permission, nil, resource, user)
+      rest_response(401)
+      return nil
+    end
+  end
+
+  resource
+end
+
+def get_rest_uri(req_uri, rules, user, query)
+
+  return rest_response(400) if query['resource'].nil?
 
   obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("index", nil, c, user) end)
   doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><rest-uri/>")
@@ -531,33 +600,37 @@ def create_default_policy(user)
   Policy.new(:contributor => user, :name => 'auto', :update_mode => 6, :share_mode => 0)
 end
 
-def post_workflow(rules, user, query)
+def post_workflow(req_uri, rules, user, query)
 
-  return rest_error(400) if user.nil?
-  return rest_error(400) if params["workflow"].nil?
+  return rest_response(400) if user.nil?
 
-  elements = params["workflow"]
+  data = LibXML::XML::Parser.string(request.raw_post).parse
+
+  title        = parse_element(data, :text,   '/workflow/title')
+  description  = parse_element(data, :text,   '/workflow/description')
+  license_type = parse_element(data, :text,   '/workflow/license-type')
+  content_type = parse_element(data, :text,   '/workflow/content-type')
+  content      = parse_element(data, :binary, '/workflow/content')
+  preview      = parse_element(data, :binary, '/workflow/preview')
 
   # build the contributable
 
   workflow = Workflow.new(:contributor => user)
 
-  content = Base64.decode64(elements["content"]) if elements["content"]
-
-  workflow.title        = elements["title"]        if elements["title"]
-  workflow.body         = elements["description"]  if elements["description"]
-  workflow.license      = elements["license_type"] if elements["license_type"]
-  workflow.content_type = elements["content_type"] if elements["content_type"]
+  workflow.title        = title        if title
+  workflow.body         = description  if description
+  workflow.license      = license_type if license_type
+  workflow.content_type = content_type if content_type
 
   workflow.content_blob = ContentBlob.new(:data => content) if content
 
   # Handle the preview and svg images.  If there's a preview supplied, use it.
   # Otherwise auto-generate one if we can.
 
-  if params["workflow"]["preview"]
+  if preview
 
     image = Tempfile.new('image')
-    image.write(Base64.decode64(params["workflow"]["preview"]))
+    image.write(preview)
     image.rewind
 
     image.extend FileUpload
@@ -577,7 +650,7 @@ def post_workflow(rules, user, query)
   workflow.set_unique_name
 
   if not workflow.save
-    return rest_error(400, workflow)
+    return rest_response(400, :object => workflow)
   end
 
   workflow.contribution.policy = create_default_policy(user)
@@ -587,7 +660,7 @@ def post_workflow(rules, user, query)
       rest_resource_uri(workflow), "workflow", { "id" => workflow.id.to_s })
 end
 
-# def post_job(rules, user, query)
+# def post_job(req_uri, rules, user, query)
 #
 #   title       = params["job"]["title"]
 #   description = params["job"]["description"]
@@ -596,20 +669,20 @@ end
 #   runner_bits     = parse_resource_uri(params["job"]["runner"])
 #   runnable_bits   = parse_resource_uri(params["job"]["runnable"])
 #
-#   return rest_error(400) if title.nil?
-#   return rest_error(400) if description.nil?
+#   return rest_response(400) if title.nil?
+#   return rest_response(400) if description.nil?
 #
-#   return rest_error(400) if experiment_bits.nil? or experiment_bits[0] != 'Experiment'
-#   return rest_error(400) if runner_bits.nil?     or runner_bits[0]     != 'Runner'
-#   return rest_error(400) if runnable_bits.nil?   or runnable_bits[0]   != 'Workflow'
+#   return rest_response(400) if experiment_bits.nil? or experiment_bits[0] != 'Experiment'
+#   return rest_response(400) if runner_bits.nil?     or runner_bits[0]     != 'Runner'
+#   return rest_response(400) if runnable_bits.nil?   or runnable_bits[0]   != 'Workflow'
 #
 #   experiment = Experiment.find_by_id(experiment_bits[1].to_i)
 #   runner     = TavernaEnactor.find_by_id(runner_bits[1].to_i)
 #   runnable   = Workflow.find_by_id(runnable_bits[1].to_i)
 #
-#   return rest_error(400) if experiment.nil? or not Authorization.is_authorized?('edit', nil, experiment, user)
-#   return rest_error(400) if runner.nil?     or not Authorization.is_authorized?('download', nil, runner, user)
-#   return rest_error(400) if runnable.nil?   or not Authorization.is_authorized?('view', nil, runnable, user)
+#   return rest_response(400) if experiment.nil? or not Authorization.is_authorized?('edit', nil, experiment, user)
+#   return rest_response(400) if runner.nil?     or not Authorization.is_authorized?('download', nil, runner, user)
+#   return rest_response(400) if runnable.nil?   or not Authorization.is_authorized?('view', nil, runnable, user)
 #
 #   puts "#{params[:job]}"
 #
@@ -623,13 +696,13 @@ end
 #
 #   success = job.submit_and_run!
 #
-#   return rest_error(500) if not success
+#   return rest_response(500) if not success
 #
 #   return "<yes/>"
 #
 # end
 
-def search(rules, user, query)
+def search(req_uri, rules, user, query)
 
   search_query = query['query']
 
@@ -668,7 +741,7 @@ def search(rules, user, query)
   render(:xml => doc.to_s)
 end
 
-def user_count(rules, user, query)
+def user_count(req_uri, rules, user, query)
   
   users = User.find(:all).select do |user| user.activated? end
 
@@ -681,7 +754,7 @@ def user_count(rules, user, query)
   render(:xml => doc.to_s)
 end
 
-def group_count(rules, user, query)
+def group_count(req_uri, rules, user, query)
   
   root = XML::Node.new('group-count')
   root << Network.count.to_s
@@ -692,7 +765,22 @@ def group_count(rules, user, query)
   render(:xml => doc.to_s)
 end
 
-def pack_count(rules, user, query)
+def workflow_count(req_uri, rules, user, query)
+  
+  workflows = Workflow.find(:all).select do |w|
+    Authorization.is_authorized?('view', nil, w, user)
+  end
+
+  root = XML::Node.new('workflow-count')
+  root << workflows.length.to_s
+
+  doc = XML::Document.new
+  doc.root = root
+
+  render(:xml => doc.to_s)
+end
+
+def pack_count(req_uri, rules, user, query)
   
   packs = Pack.find(:all).select do |p|
     Authorization.is_authorized?('view', nil, p, user)
@@ -707,9 +795,9 @@ def pack_count(rules, user, query)
   render(:xml => doc.to_s)
 end
 
-def get_tagged(rules, user, query)
+def get_tagged(req_uri, rules, user, query)
 
-  return rest_error(400) if query['tag'].nil?
+  return rest_response(400) if query['tag'].nil?
 
   tag = Tag.find_by_name(query['tag'])
 
@@ -718,10 +806,10 @@ def get_tagged(rules, user, query)
   # filter out ones they are not allowed to get
   obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("index", nil, c, user) end)
 
-  produce_rest_list(rules, query, obs, 'tagged')
+  produce_rest_list("tagged", rules, query, obs, 'tagged', user)
 end
 
-def tag_cloud(rules, user, query)
+def tag_cloud(req_uri, rules, user, query)
 
   num  = 25
   type = nil
@@ -759,50 +847,69 @@ def tag_cloud(rules, user, query)
   render(:xml => doc.to_s)
 end
 
-def post_comment(rules, user, query)
-
-  title    = params[:comment][:title]
-  text     = params[:comment][:comment]
-  resource = params[:comment][:resource]
-
-  title = '' if title.nil?
-
-  resource_bits = parse_resource_uri(params["comment"]["resource"])
-
-  return rest_error(400) if user.nil?
-  return rest_error(400) if text.nil? or text.length.zero?
-  return rest_error(400) if resource_bits.nil?
-
-  return rest_error(400) unless ['Blob', 'Network', 'Pack', 'Workflow'].include?(resource_bits[0])
-
-  resource = eval(resource_bits[0]).find_by_id(resource_bits[1].to_i)
-
-  comment = Comment.create(:user => user, :comment => text)
-  resource.comments << comment
-
-  rest_get_request(comment, "comment", user, rest_resource_uri(comment), "comment", { "id" => comment.id.to_s })
+def whoami(req_uri, rules, user, query)
+  if user.class == User
+    rest_response(307, :location => rest_access_uri(user))
+  else
+    rest_response(401)
+  end
 end
 
-# def put_comment(rules, user, query)
-# end
-#
-# def delete_comment(rules, user, query)
-#
-#   return rest_error(400) if query['id'].nil?
-#
-#   resource = Comment.find_by_id(query['id'])
-#
-#   return rest_error(404) if resource.nil?
-#
-#   FIXME: The following respond_to? would not work anymore
-#
-#   if resource.respond_to?('authorized?')
-#     return rest_error(401) if not Authorization.is_authorized?('edit', nil, resource, user)
-#   end
-#
-# end
+def parse_element(doc, kind, query)
+  case kind
+    when :text
+      el = doc.find_first("#{query}/text()")
+      return el.to_s if el
+    when :binary
+      el = doc.find_first("#{query}/text()")
+      return Base64::decode64(el.to_s) if el
+    when :resource
+      return resolve_resource_node(doc.find_first(query))
+  end
+end
 
-def rest_call_request(rules, user, query)
-  eval("#{rules['Function']}(rules, user, query)")
+# Comments
+
+def update_comment(ob, req_uri, rules, user, query)
+
+  data = LibXML::XML::Parser.string(request.raw_post).parse
+
+  comment = parse_element(data, :text,     '/comment/comment')
+  subject = parse_element(data, :resource, '/comment/subject')
+
+  ob.comment = comment if comment
+
+  if subject
+    return rest_response(400) unless [Blob, Network, Pack, Workflow].include?(subject.class)
+    ob.commentable = subject
+  end
+
+  return rest_response(400, :object => ob) unless ob.save
+
+  rest_get_request(ob, "comment", user, rest_resource_uri(ob), "comment", { "id" => ob.id.to_s })
+end
+
+def post_comment(req_uri, rules, user, query)
+  return rest_response(401) if !Authorization.is_authorized?('create', 'Comment', nil, user)
+  update_comment(Comment.new(:user => user), req_uri, rules, user, query)
+end
+
+def put_comment(req_uri, rules, user, query)
+  ob = obtain_rest_resource('Comment', query['id'], user, 'edit')
+  return if ob.nil?
+  update_comment(ob, req_uri, rules, user, query)
+end
+
+def delete_comment(req_uri, rules, user, query)
+  ob = obtain_rest_resource('Comment', query['id'], user, 'delete')
+  return if ob.nil?
+  ob.destroy
+  rest_get_request(ob, "comment", user, rest_resource_uri(ob), "comment", { "id" => ob.id.to_s })
+end
+
+# Call dispatcher
+
+def rest_call_request(req_uri, rules, user, query)
+  eval("#{rules['Function']}(req_uri, rules, user, query)")
 end
 

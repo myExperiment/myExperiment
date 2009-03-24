@@ -24,22 +24,20 @@ class ApiController < ApplicationController
       credentials = Base64.decode64(auth.sub(/^Basic /, '')).split(':')
       user = User.authenticate(credentials[0], credentials[1])
 
-      return rest_error(401) if user.nil?
+      return rest_response(401) if user.nil?
 
     end
 
-    query  = CGIMethods.parse_query_parameters(request.query_string)
     method = request.method.to_s.upcase
     uri    = params[:uri]
 
     # logger.info "current token: #{current_token.inspect}"
     # logger.info "current user: #{user.id}"
-    # logger.info "query: #{query}"
     # logger.info "method: #{method}"
     # logger.info "uri: #{uri}"
 
-    return rest_error(400) if TABLES['REST'][:data][uri].nil? 
-    return rest_error(400) if TABLES['REST'][:data][uri][method].nil?
+    return rest_response(400) if TABLES['REST'][:data][uri].nil? 
+    return rest_response(400) if TABLES['REST'][:data][uri][method].nil?
 
     rules = TABLES['REST'][:data][uri][method]
 
@@ -54,14 +52,14 @@ class ApiController < ApplicationController
         permission_found = true if permission.for == requested_permission
       end
 
-      return rest_error(403) if permission_found == false
+      return rest_response(403) if permission_found == false
     end  
 
     case rules['Type']
-      when 'index'; doc = rest_index_request(rules, user, query)
-      when 'crud';  doc = rest_crud_request(rules, user)
-      when 'call';  doc = rest_call_request(rules, user, query)
-      else;         return rest_error(400)
+      when 'index'; doc = rest_index_request(params[:uri], rules, user, request.query_parameters)
+      when 'crud';  doc = rest_crud_request(params[:uri], rules, user, request.query_parameters)
+      when 'call';  doc = rest_call_request(params[:uri], rules, user, request.query_parameters)
+      else;         return rest_response(400)
     end
   end
 end

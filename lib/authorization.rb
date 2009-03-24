@@ -56,6 +56,24 @@ module Authorization
   # Note: there is no method overloading in Ruby and it's a good idea to have a default "nil" value for "user";
   #       this leaves no other choice as to have (sometimes) redundant "thing_type" parameter.
   def Authorization.is_authorized?(action_name, thing_type, thing, user=nil)
+
+    # Comment permissions
+
+    if ((thing.class == Comment) || (thing_type == 'Comment'))
+
+      comment = thing if thing.class == Comment
+      comment = Comment.find_by_id(thing) if thing_type == 'Comment' && thing
+
+      case action_name
+        when 'create': return user != 0
+        when 'view':   return comment && is_authorized?('view', comment.commentable_type, comment.commentable_id, user)
+        when 'edit':   return false
+        when 'delete': return false
+      end
+
+      raise "Invalid action (#{action_name} for Comment authorisation"
+    end
+
     thing_instance = nil
     thing_contribution = nil
     thing_id = nil

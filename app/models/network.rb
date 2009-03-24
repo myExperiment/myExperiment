@@ -49,6 +49,8 @@ class Network < ActiveRecord::Base
              :class_name => "User",
              :foreign_key => :user_id
              
+  alias_method :contributor, :owner
+
   def owner?(userid)
     user_id.to_i == userid.to_i
   end
