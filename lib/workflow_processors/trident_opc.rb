@@ -45,7 +45,11 @@ module WorkflowProcessors
       false
     end
     
-    def self.can_generate_preview?
+    def self.can_generate_preview_image?
+      false
+    end
+    
+    def self.can_generate_preview_svg?
       false
     end
     

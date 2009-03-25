@@ -29,6 +29,9 @@ class Workflow < ActiveRecord::Base
                         wv.destroy
                       end }
 
+  before_validation :check_unique_name
+  before_validation :extract_metadata
+
   acts_as_contributable
   
   acts_as_bookmarkable
@@ -114,6 +117,10 @@ class Workflow < ActiveRecord::Base
     return list
   end
   
+  def check_unique_name
+    set_unique_name if unique_name.nil?
+  end
+
   # Sets an internal unique name for this workflow.
   def set_unique_name
     salt = rand 1000000
@@ -125,6 +132,29 @@ class Workflow < ActiveRecord::Base
     end
   end
   
+  # This method is called before save and attempts to pull out metadata if it
+  # hasn't been set
+  def extract_metadata
+
+    if !content_blob.nil? && processor_class
+
+      do_image = true if image.nil? && processor_class.can_generate_preview_image?
+      do_svg   = true if svg.nil?   && processor_class.can_generate_preview_svg?
+      do_title = true if title.nil?
+      do_desc  = true if body.nil?
+      
+      if do_image || do_svg || do_title || do_desc
+
+        processor = processor_class.new(content_blob.data)
+
+        self.image = processor.get_preview_image if do_image
+        self.svg   = processor.get_preview_svg   if do_svg
+        self.title = processor.get_title         if do_title
+        self.body  = processor.get_description   if do_desc
+      end
+    end
+  end
+
   def processor_class
     @processor_class ||= WorkflowTypesHandler.processor_class_for_content_type(self.content_type)
   end

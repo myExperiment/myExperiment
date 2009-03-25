@@ -415,6 +415,7 @@ def rest_resource_uri(ob)
 
     when 'Creditation';     return nil
     when 'Attribution';     return nil
+    when 'Tagging';         return nil
 
     when 'Workflow::Version'; return "#{rest_resource_uri(ob.workflow)}?version=#{ob.version}"
   end
@@ -448,6 +449,7 @@ def rest_access_uri(ob)
     when 'Download';               return "#{base}/download.xml?id=#{ob.id}"
     when 'PackContributableEntry'; return "#{base}/internal-pack-item.xml?id=#{ob.id}"
     when 'PackRemoteEntry';        return "#{base}/external-pack-item.xml?id=#{ob.id}"
+    when 'Tagging';                return "#{base}/tagging.xml?id=#{ob.id}"
 
     when 'Creditation';     return nil
     when 'Attribution';     return nil
@@ -470,6 +472,7 @@ def rest_object_tag_text(ob)
     when 'Citation';               return 'citation'
     when 'Announcement';           return 'announcement'
     when 'Tag';                    return 'tag'
+    when 'Tagging';                return 'tagging'
     when 'Pack';                   return 'pack'
     when 'Experiment';             return 'experiment'
     when 'Download';               return 'download'
@@ -493,6 +496,7 @@ def rest_object_label_text(ob)
     when 'Citation';               return ob.title
     when 'Announcement';           return ob.title
     when 'Tag';                    return ob.name
+    when 'Tagging';                return ob.tag.name
     when 'Pack';                   return ob.title
     when 'Experiment';             return ob.title
     when 'Download';               return ''
@@ -592,14 +596,21 @@ def obtain_rest_resource(type, id, user, permission = nil)
   resource
 end
 
-def get_rest_uri(req_uri, rules, user, query)
+def rest_access_redirect(req_uri, rules, user, query)
 
   return rest_response(400) if query['resource'].nil?
 
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("index", nil, c, user) end)
-  doc = REXML::Document.new("<?xml version=\"1.0\" encoding=\"UTF-8\"?><rest-uri/>")
+  bits = parse_resource_uri(query['resource'])
 
-  "bing"
+  return rest_response(404) if bits.nil?
+
+  ob = eval(bits[0]).find_by_id(bits[1])
+
+  return rest_response(404) if ob.nil?
+
+  return rest_response(401) if !Authorization.is_authorized?('view', nil, ob, user)
+
+  rest_response(307, :location => rest_access_uri(ob))
 end
 
 def create_default_policy(user)
@@ -645,15 +656,7 @@ def post_workflow(req_uri, rules, user, query)
     workflow.image = image
 
     image.close
-
-  elsif content and workflow.processor_class and workflow.processor_class.can_generate_preview?
-
-    processor = workflow.processor_class.new(content)
-    workflow.image, workflow.svg = processor.get_preview_images
-
   end
-
-  workflow.set_unique_name
 
   if not workflow.save
     return rest_response(400, :object => workflow)
@@ -853,7 +856,7 @@ def tag_cloud(req_uri, rules, user, query)
   render(:xml => doc.to_s)
 end
 
-def whoami(req_uri, rules, user, query)
+def whoami_redirect(req_uri, rules, user, query)
   if user.class == User
     rest_response(307, :location => rest_access_uri(user))
   else

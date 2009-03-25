@@ -51,6 +51,10 @@ class Network < ActiveRecord::Base
              
   alias_method :contributor, :owner
 
+  def label
+    return title
+  end
+
   def owner?(userid)
     user_id.to_i == userid.to_i
   end

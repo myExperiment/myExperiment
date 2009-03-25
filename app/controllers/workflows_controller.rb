@@ -829,7 +829,8 @@ private
           # Set the internal unique name for this particular workflow (or workflow_version).
           workflow_to_set.set_unique_name
           
-          workflow_to_set.image, workflow_to_set.svg = processor_instance.get_preview_images if processor_class.can_generate_preview?
+          workflow_to_set.image = processor_instance.get_preview_image if processor_class.can_generate_preview_image?
+          workflow_to_set.svg   = processor_instance.get_preview_svg   if processor_class.can_generate_preview_svg?
         rescue Exception => ex
           worked = false
           err_msg = "ERROR: some processing failed in workflow processor '#{processor_class.to_s}'.\nEXCEPTION: #{ex}"

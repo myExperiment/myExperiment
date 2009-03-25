@@ -24,6 +24,10 @@ class User < ActiveRecord::Base
   has_many :experiments, :as => :contributor,
               :conditions => ["contributor_type = ?", "User"]
 
+  def label
+    return name
+  end
+
   def self.most_recent(limit=5)
     self.find(:all,
               :order => "users.created_at DESC",

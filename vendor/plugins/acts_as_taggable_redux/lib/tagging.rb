@@ -10,4 +10,8 @@ class Tagging < ActiveRecord::Base
               :order => "created_at DESC",
               :limit => limit)
   end
+
+  def label
+    return tag.name if tag
+  end
 end

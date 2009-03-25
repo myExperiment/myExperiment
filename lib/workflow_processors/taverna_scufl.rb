@@ -63,7 +63,11 @@ module WorkflowProcessors
       true
     end
     
-    def self.can_generate_preview?
+    def self.can_generate_preview_image?
+      true
+    end
+    
+    def self.can_generate_preview_svg?
       true
     end
     
@@ -94,30 +98,42 @@ module WorkflowProcessors
       return @scufl_model.description.description
     end
     
-    def get_preview_images
-      return nil if @scufl_model.nil?
+    def get_preview_image
+      return nil if @scufl_model.nil? || RUBY_PLATFORM =~ /mswin32/
+
+      title = @scufl_model.description.title.blank? ? "untitled" : @scufl_model.description.title
+      filename = title.gsub(/[^\w\.\-]/,'_').downcase
       
-      if RUBY_PLATFORM =~ /mswin32/
-        return nil
-      else
-        title = @scufl_model.description.title.blank? ? "untitled" : @scufl_model.description.title
-        filename = title.gsub(/[^\w\.\-]/,'_').downcase
-        
-        i = Tempfile.new("image")
-        Scufl::Dot.new.write_dot(i, @scufl_model)
-        i.close(false)
-        img = StringIO.new(`dot -Tpng #{i.path}`)
-        svg = StringIO.new(`dot -Tsvg #{i.path}`)
-        img.extend FileUpload
-        img.original_filename = "#{filename}.png"
-        img.content_type = "image/png"
-        svg.extend FileUpload
-        svg.original_filename = "#{filename}.svg"
-        svg.content_type = "image/svg+xml"
-        return [img, svg]
-      end
+      i = Tempfile.new("image")
+      Scufl::Dot.new.write_dot(i, @scufl_model)
+      i.close(false)
+
+      img = StringIO.new(`dot -Tpng #{i.path}`)
+      img.extend FileUpload
+      img.original_filename = "#{filename}.png"
+      img.content_type = "image/png"
+
+      img
     end
-    
+
+    def get_preview_svg
+      return nil if @scufl_model.nil? || RUBY_PLATFORM =~ /mswin32/
+
+      title = @scufl_model.description.title.blank? ? "untitled" : @scufl_model.description.title
+      filename = title.gsub(/[^\w\.\-]/,'_').downcase
+      
+      i = Tempfile.new("image")
+      Scufl::Dot.new.write_dot(i, @scufl_model)
+      i.close(false)
+
+      svg = StringIO.new(`dot -Tsvg #{i.path}`)
+      svg.extend FileUpload
+      svg.original_filename = "#{filename}.svg"
+      svg.content_type = "image/svg+xml"
+
+      svg
+    end
+
     def get_workflow_model_object
       @scufl_model
     end
