@@ -123,7 +123,7 @@ private
 
   def error(notice, message, attr=:id)
     flash[:error] = notice
-    (err = Runner.new.errors).add(attr, message)
+    (err = TavernaEnactor.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to runners_url }
