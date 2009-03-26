@@ -18,7 +18,8 @@
 	</li>
 </ul>
 
-<% if @message.reply? %>
+<% # this makes sure that the message is a reply to something, and that the original message still exists -%>
+<% if @message.reply? && @message.reply_to && !@message.reply_to.deleted_by_sender %>
   <br/>
   <p class="box_infotext">
     <b>This message is a reply to:</b> <%= link_to h(@message.reply_to.subject), message_path(@message.reply_to) %>
