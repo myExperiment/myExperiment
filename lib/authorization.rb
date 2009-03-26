@@ -56,24 +56,6 @@ module Authorization
   # Note: there is no method overloading in Ruby and it's a good idea to have a default "nil" value for "user";
   #       this leaves no other choice as to have (sometimes) redundant "thing_type" parameter.
   def Authorization.is_authorized?(action_name, thing_type, thing, user=nil)
-
-    # Comment permissions
-
-    if ((thing.class == Comment) || (thing_type == 'Comment'))
-
-      comment = thing if thing.class == Comment
-      comment = Comment.find_by_id(thing) if thing_type == 'Comment' && thing
-
-      case action_name
-        when 'create': return user != 0
-        when 'view':   return comment && is_authorized?('view', comment.commentable_type, comment.commentable_id, user)
-        when 'edit':   return false
-        when 'delete': return false
-      end
-
-      raise "Invalid action (#{action_name} for Comment authorisation"
-    end
-
     thing_instance = nil
     thing_contribution = nil
     thing_id = nil
@@ -110,6 +92,7 @@ module Authorization
       # OR
       # -- Network instance
       # -- Experiment / Job / Runner / TavernaEnactor instance
+      # -- Comment
       # -- or any other object instance, for which we'll use the object itself to run .authorized?() on it
       thing_instance = thing
       thing_type = thing.class.name
@@ -140,7 +123,7 @@ module Authorization
     # this is required to get "policy_id" for policy-based aurhorized objects (like workflows / blobs / packs / contributions)
     # and to get objects themself for other object types (networks, experiments, jobs, tavernaenactors, runners)
     if (thing_contribution.nil? && ["Workflow", "Blob", "Pack", "Contribution"].include?(thing_type)) || 
-       (thing_instance.nil? && ["Network", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type))
+       (thing_instance.nil? && ["Network", "Comment", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type))
       
       found_thing = find_thing(thing_type, thing_id)
       
@@ -258,7 +241,20 @@ module Authorization
           else
             is_authorized = true
         end
-        
+      
+      when "Comment"
+        case action
+          when "destroy"
+            # only the user who posted the comment can delete it
+            is_authorized = Authorization.is_owner?(user_id, thing_instance)
+          when "view"
+            # user can view comment if they can view the item that this comment references 
+            is_authorized = Authorization.is_authorized?('view', thing_instance.commentable_type, thing_instance.commentable_id, user)
+          else
+            # 'edit' or any other actions are not allowed on comments
+            is_authorized = false
+        end
+      
       when "Experiment"
 
         user_instance = get_user(user_id) unless user_instance
@@ -302,7 +298,7 @@ module Authorization
         action = 'edit'
       when 'download', 'named_download', 'launch', 'submit_job'
         action = 'download'
-      when 'destroy', 'destroy_item'
+      when 'destroy', 'delete', 'destroy_item'
         action = 'destroy'
       when 'execute'
         # action is available only(?) for runners at the moment;
@@ -332,6 +328,8 @@ module Authorization
           found_instance = Contribution.find(thing_id)
         when "Network"
           found_instance = Network.find(thing_id)
+        when "Comment"
+          found_instance = Comment.find(thing_id)
         when "Experiment"
           found_instance = Experiment.find(thing_id)
         when "Job"
@@ -352,14 +350,21 @@ module Authorization
 
 
   # checks if "user" is owner of the "thing"
-  def Authorization.is_owner?(user_id, thing_contribution)
+  def Authorization.is_owner?(user_id, thing)
     is_authorized = false
 
-    # if owner of the "thing" is the "user" then the "user" is authorized
-    if thing_contribution.contributor_type == 'User' && thing_contribution.contributor_id == user_id
-      is_authorized = true
-    elsif thing_contribution.contributor_type == 'Network'
-      is_authorized = is_network_admin?(user_id, thing_contribution.contributor_id)
+    case thing.class.name
+      when "Contribution"
+        # if owner of the "thing" is the "user" then the "user" is authorized
+        if thing.contributor_type == 'User' && thing.contributor_id == user_id
+          is_authorized = true
+        elsif thing.contributor_type == 'Network'
+          is_authorized = is_network_admin?(user_id, thing.contributor_id)
+        end
+      when "Comment"
+        is_authorized = (thing.user_id == user_id)
+      #else
+        # do nothing -- unknown "thing" types are not authorized by default 
     end
 
     return is_authorized
