@@ -46,6 +46,42 @@ module Authorization
     end
   end
 
+  def Authorization.is_authorized_for_type?(action, object_type, user, context)
+
+    # This method deals with cases where there is no instantiated object to
+    # authorize.  This is usually when thing area created.  The other normal
+    # CRUD actions (read, update and destroy) are handled by is_authorized?
+    # since there's an instantiatable object to authorize on.
+ 
+    # normalise user to nil if this is for an unauthenticated user
+    user = nil if user == 0
+
+    raise "object_type missing in is_authorized_for_type?" if object_type.nil?
+
+    # Workflow permissions
+    
+    if (object_type == 'Workflow') && (action == 'create')
+
+      # Workflows can only be created by authenticated users
+      return !user.nil?
+    end
+    
+    # Comment permissions
+    
+    if (object_type == 'Comment') && (action == 'create')
+
+      # Comments can only be created by authenticated users
+      return false if user.nil?
+
+      # Comments can only be added to things that a user can view
+      return Authorization.is_authorized?('view', nil, context, user) if context
+
+      return true
+    end
+    
+    return false
+  end
+
   # 1) action_name - name of the action that is about to happen with the "thing"
   # 2) thing_type - class name of the thing that needs to be authorized;
   #                 use NIL as a value of this parameter if an instance of the object to be authorized is supplied as "thing";

@@ -25,8 +25,8 @@ TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
 
 # Temporary removals
 
-TABLES["REST"][:data]["workflow"].delete("PUT")
 TABLES["REST"][:data]["job"].delete("POST")
+TABLES["REST"][:data]["messages"].delete("GET")
 
 def rest_routes(map)
   TABLES['REST'][:data].keys.each do |uri|
@@ -292,6 +292,54 @@ def rest_crud_request(req_uri, rules, user, query)
   rest_get_request(ob, params[:uri], user, eval("rest_resource_uri(ob)"), rest_name, query)
 end
 
+def find_all_paginated_auth(model, find_args, num, page, user)
+
+  def aux(model, find_args, num, page, user)
+
+    find_args = find_args.clone
+    find_args[:page] = { :size => num, :current => page }
+
+    results = eval(model).find(:all, find_args)
+
+    return nil if results.page > results.page_count
+
+    results.select do |result|
+      Authorization.is_authorized?('view', nil, result, user)
+    end
+  end
+
+  # 'upto' is the number of results needed to fulfil the request
+
+  upto = num * page
+
+  results = []
+  current_page = 1
+
+  # if this isn't the first page, do a single request to fetch all the pages
+  # up to possibly fulfil the request
+
+  if (page > 1)
+    results = aux(model, find_args, upto, 1, user)
+    current_page = page + 1
+  end
+
+  while (results.length < upto)
+
+    results_page = aux(model, find_args, num, current_page, user)
+
+    if results_page.nil?
+      break
+    else
+      results += results_page
+      current_page += 1
+    end
+  end
+
+  range = results[num * (page - 1)..(num * page) - 1]
+  range = [] if range.nil?
+  range
+end
+
 def rest_index_request(req_uri, rules, user, query)
 
   rest_name  = rules['REST Entity']
@@ -310,8 +358,6 @@ def rest_index_request(req_uri, rules, user, query)
   limit = max_limit if limit > max_limit
 
   page = 1 if page < 1
-  
-  part = { :size => limit, :current => page }
 
   if query['tag']
     tag = Tag.find_by_name(query['tag'])
@@ -336,11 +382,11 @@ def rest_index_request(req_uri, rules, user, query)
 
     order = 'DESC' if query['order'] == 'reverse'
 
-    find_args = { :page => part, :order => "#{sort} #{order}" }
+    find_args = { :order => "#{sort} #{order}" }
 
     find_args[:conditions] = conditions if conditions
 
-    obs = eval(model_name.camelize).find(:all, find_args)
+    obs = find_all_paginated_auth(model_name.camelize, find_args, limit, page, user)
   end
 
   produce_rest_list(req_uri, rules, query, obs, rest_name.pluralize, user)
@@ -357,7 +403,6 @@ def produce_rest_list(req_uri, rules, query, obs, tag, user)
   rest_entity = TABLES['REST'][:data][req_uri]['GET']['REST Entity']
 
   obs.each do |ob|
-    next if !Authorization.is_authorized?('index', nil, ob, user)
 
     el = rest_reference(ob, query, !elements.nil?)
 
@@ -617,56 +662,87 @@ def create_default_policy(user)
   Policy.new(:contributor => user, :name => 'auto', :update_mode => 6, :share_mode => 0)
 end
 
+def workflow_aux(action, req_uri, rules, user, query)
+
+  # Obtain object
+
+  case action
+    when 'create':
+      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Workflow', user, nil)
+      ob = Workflow.new(:contributor => user)
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Workflow', query['id'], user, action)
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    title        = parse_element(data, :text,   '/workflow/title')
+    description  = parse_element(data, :text,   '/workflow/description')
+    license_type = parse_element(data, :text,   '/workflow/license-type')
+    content_type = parse_element(data, :text,   '/workflow/content-type')
+    content      = parse_element(data, :binary, '/workflow/content')
+    preview      = parse_element(data, :binary, '/workflow/preview')
+
+    # build the contributable
+
+    ob.title        = title        if title
+    ob.body         = description  if description
+    ob.license      = license_type if license_type
+    ob.content_type = content_type if content_type
+
+    ob.content_blob = ContentBlob.new(:data => content) if content
+
+    # Handle the preview and svg images.  If there's a preview supplied, use
+    # it.  Otherwise auto-generate one if we can.
+
+    if preview
+
+      image = Tempfile.new('image')
+      image.write(preview)
+      image.rewind
+
+      image.extend FileUpload
+      image.original_filename = 'preview'
+      
+      ob.image = image
+
+      image.close
+    end
+
+    if not ob.save
+      return rest_response(400, :object => ob)
+    end
+
+    if ob.contribution.policy.nil?
+      ob.contribution.policy = create_default_policy(user)
+      ob.contribution.save
+    end
+  end
+
+  rest_get_request(ob, "workflow", user,
+      rest_resource_uri(ob), "workflow", { "id" => ob.id.to_s })
+end
+
 def post_workflow(req_uri, rules, user, query)
+  workflow_aux('create', req_uri, rules, user, query)
+end
 
-  return rest_response(400) if user.nil?
+def put_workflow(req_uri, rules, user, query)
+  workflow_aux('update', req_uri, rules, user, query)
+end
 
-  data = LibXML::XML::Parser.string(request.raw_post).parse
-
-  title        = parse_element(data, :text,   '/workflow/title')
-  description  = parse_element(data, :text,   '/workflow/description')
-  license_type = parse_element(data, :text,   '/workflow/license-type')
-  content_type = parse_element(data, :text,   '/workflow/content-type')
-  content      = parse_element(data, :binary, '/workflow/content')
-  preview      = parse_element(data, :binary, '/workflow/preview')
-
-  # build the contributable
-
-  workflow = Workflow.new(:contributor => user)
-
-  workflow.title        = title        if title
-  workflow.body         = description  if description
-  workflow.license      = license_type if license_type
-  workflow.content_type = content_type if content_type
-
-  workflow.content_blob = ContentBlob.new(:data => content) if content
-
-  # Handle the preview and svg images.  If there's a preview supplied, use it.
-  # Otherwise auto-generate one if we can.
-
-  if preview
-
-    image = Tempfile.new('image')
-    image.write(preview)
-    image.rewind
-
-    image.extend FileUpload
-    image.original_filename = 'preview'
-    
-    workflow.image = image
-
-    image.close
-  end
-
-  if not workflow.save
-    return rest_response(400, :object => workflow)
-  end
-
-  workflow.contribution.policy = create_default_policy(user)
-  workflow.contribution.save
-
-  rest_get_request(workflow, "workflow", user,
-      rest_resource_uri(workflow), "workflow", { "id" => workflow.id.to_s })
+def delete_workflow(req_uri, rules, user, query)
+  workflow_aux('destroy', req_uri, rules, user, query)
 end
 
 # def post_job(req_uri, rules, user, query)
@@ -879,41 +955,58 @@ end
 
 # Comments
 
-def update_comment(ob, req_uri, rules, user, query)
+def comment_aux(action, req_uri, rules, user, query)
 
-  data = LibXML::XML::Parser.string(request.raw_post).parse
+  # Obtain object
 
-  comment = parse_element(data, :text,     '/comment/comment')
-  subject = parse_element(data, :resource, '/comment/subject')
+  case action
+    when 'create':
+      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Comment', user, nil)
 
-  ob.comment = comment if comment
-
-  if subject
-    return rest_response(400) unless [Blob, Network, Pack, Workflow].include?(subject.class)
-    ob.commentable = subject
+      ob = Comment.new(:user => user)
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Comment', query['id'], user, action)
+    else
+      raise "Invalid action '#{action}'"
   end
 
-  return rest_response(400, :object => ob) unless ob.save
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    comment = parse_element(data, :text,     '/comment/comment')
+    subject = parse_element(data, :resource, '/comment/subject')
+
+    ob.comment = comment if comment
+
+    if subject
+      return rest_response(400) unless [Blob, Network, Pack, Workflow].include?(subject.class)
+      return rest_response(401) unless Authorization.is_authorized_for_type?(action, 'Comment', user, subject)
+      ob.commentable = subject
+    end
+
+    return rest_response(400, :object => ob) unless ob.save
+  end
 
   rest_get_request(ob, "comment", user, rest_resource_uri(ob), "comment", { "id" => ob.id.to_s })
 end
 
 def post_comment(req_uri, rules, user, query)
-  return rest_response(401) if !Authorization.is_authorized?('create', 'Comment', nil, user)
-  update_comment(Comment.new(:user => user), req_uri, rules, user, query)
+  comment_aux('create', req_uri, rules, user, query)
 end
 
 def put_comment(req_uri, rules, user, query)
-  ob = obtain_rest_resource('Comment', query['id'], user, 'edit')
-  return if ob.nil?
-  update_comment(ob, req_uri, rules, user, query)
+  comment_aux('update', req_uri, rules, user, query)
 end
 
 def delete_comment(req_uri, rules, user, query)
-  ob = obtain_rest_resource('Comment', query['id'], user, 'delete')
-  return if ob.nil?
-  ob.destroy
-  rest_get_request(ob, "comment", user, rest_resource_uri(ob), "comment", { "id" => ob.id.to_s })
+  comment_aux('destroy', req_uri, rules, user, query)
 end
 
 # Call dispatcher
