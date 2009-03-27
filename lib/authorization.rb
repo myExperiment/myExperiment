@@ -296,7 +296,7 @@ module Authorization
         action = 'view'
       when 'edit', 'new', 'create', 'update', 'new_version', 'create_version', 'destroy_version', 'edit_version', 'update_version', 'new_item', 'create_item', 'edit_item', 'update_item', 'quick_add', 'resolve_link', 'process_tag_suggestions'
         action = 'edit'
-      when 'download', 'named_download', 'launch', 'submit_job'
+      when 'download', 'named_download', 'launch', 'submit_job', 'save_inputs', 'refresh_status', 'rerun', 'refresh_outputs'
         action = 'download'
       when 'destroy', 'delete', 'destroy_item'
         action = 'destroy'
