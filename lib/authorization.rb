@@ -46,6 +46,42 @@ module Authorization
     end
   end
 
+  def Authorization.is_authorized_for_type?(action, object_type, user, context)
+
+    # This method deals with cases where there is no instantiated object to
+    # authorize.  This is usually when thing area created.  The other normal
+    # CRUD actions (read, update and destroy) are handled by is_authorized?
+    # since there's an instantiatable object to authorize on.
+ 
+    # normalise user to nil if this is for an unauthenticated user
+    user = nil if user == 0
+
+    raise "object_type missing in is_authorized_for_type?" if object_type.nil?
+
+    # Workflow permissions
+    
+    if (object_type == 'Workflow') && (action == 'create')
+
+      # Workflows can only be created by authenticated users
+      return !user.nil?
+    end
+    
+    # Comment permissions
+    
+    if (object_type == 'Comment') && (action == 'create')
+
+      # Comments can only be created by authenticated users
+      return false if user.nil?
+
+      # Comments can only be added to things that a user can view
+      return Authorization.is_authorized?('view', nil, context, user) if context
+
+      return true
+    end
+    
+    return false
+  end
+
   # 1) action_name - name of the action that is about to happen with the "thing"
   # 2) thing_type - class name of the thing that needs to be authorized;
   #                 use NIL as a value of this parameter if an instance of the object to be authorized is supplied as "thing";
@@ -92,6 +128,7 @@ module Authorization
       # OR
       # -- Network instance
       # -- Experiment / Job / Runner / TavernaEnactor instance
+      # -- Comment
       # -- or any other object instance, for which we'll use the object itself to run .authorized?() on it
       thing_instance = thing
       thing_type = thing.class.name
@@ -122,7 +159,7 @@ module Authorization
     # this is required to get "policy_id" for policy-based aurhorized objects (like workflows / blobs / packs / contributions)
     # and to get objects themself for other object types (networks, experiments, jobs, tavernaenactors, runners)
     if (thing_contribution.nil? && ["Workflow", "Blob", "Pack", "Contribution"].include?(thing_type)) || 
-       (thing_instance.nil? && ["Network", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type))
+       (thing_instance.nil? && ["Network", "Comment", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type))
       
       found_thing = find_thing(thing_type, thing_id)
       
@@ -240,7 +277,20 @@ module Authorization
           else
             is_authorized = true
         end
-        
+      
+      when "Comment"
+        case action
+          when "destroy"
+            # only the user who posted the comment can delete it
+            is_authorized = Authorization.is_owner?(user_id, thing_instance)
+          when "view"
+            # user can view comment if they can view the item that this comment references 
+            is_authorized = Authorization.is_authorized?('view', thing_instance.commentable_type, thing_instance.commentable_id, user)
+          else
+            # 'edit' or any other actions are not allowed on comments
+            is_authorized = false
+        end
+      
       when "Experiment"
 
         user_instance = get_user(user_id) unless user_instance
@@ -278,13 +328,13 @@ module Authorization
 
   def Authorization.categorize_action(action_name)
     case action_name
-      when 'show', 'index', 'view', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'comments', 'comments_timeline', 'rate', 'tag',  'items', 'statistics', 'tag_suggestions'
+      when 'show', 'index', 'view', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'comments', 'comments_timeline', 'rate', 'tag',  'items', 'statistics', 'tag_suggestions', 'read', 'verify'
         action = 'view'
       when 'edit', 'new', 'create', 'update', 'new_version', 'create_version', 'destroy_version', 'edit_version', 'update_version', 'new_item', 'create_item', 'edit_item', 'update_item', 'quick_add', 'resolve_link', 'process_tag_suggestions'
         action = 'edit'
-      when 'download', 'named_download', 'launch', 'submit_job'
+      when 'download', 'named_download', 'launch', 'submit_job', 'save_inputs', 'refresh_status', 'rerun', 'refresh_outputs', 'render_output', 'outputs_xml', 'outputs_package'
         action = 'download'
-      when 'destroy', 'destroy_item'
+      when 'destroy', 'delete', 'destroy_item'
         action = 'destroy'
       when 'execute'
         # action is available only(?) for runners at the moment;
@@ -314,6 +364,8 @@ module Authorization
           found_instance = Contribution.find(thing_id)
         when "Network"
           found_instance = Network.find(thing_id)
+        when "Comment"
+          found_instance = Comment.find(thing_id)
         when "Experiment"
           found_instance = Experiment.find(thing_id)
         when "Job"
@@ -334,14 +386,21 @@ module Authorization
 
 
   # checks if "user" is owner of the "thing"
-  def Authorization.is_owner?(user_id, thing_contribution)
+  def Authorization.is_owner?(user_id, thing)
     is_authorized = false
 
-    # if owner of the "thing" is the "user" then the "user" is authorized
-    if thing_contribution.contributor_type == 'User' && thing_contribution.contributor_id == user_id
-      is_authorized = true
-    elsif thing_contribution.contributor_type == 'Network'
-      is_authorized = is_network_admin?(user_id, thing_contribution.contributor_id)
+    case thing.class.name
+      when "Contribution"
+        # if owner of the "thing" is the "user" then the "user" is authorized
+        if thing.contributor_type == 'User' && thing.contributor_id == user_id
+          is_authorized = true
+        elsif thing.contributor_type == 'Network'
+          is_authorized = is_network_admin?(user_id, thing.contributor_id)
+        end
+      when "Comment"
+        is_authorized = (thing.user_id == user_id)
+      #else
+        # do nothing -- unknown "thing" types are not authorized by default 
     end
 
     return is_authorized

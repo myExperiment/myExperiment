@@ -5,6 +5,7 @@
 
 require 'digest/sha1'
 
+require 'acts_as_site_entity'
 require 'acts_as_contributor'
 require 'acts_as_creditor'
 
@@ -272,6 +273,8 @@ class User < ActiveRecord::Base
     return Conf.admins.include?(self.username.downcase)
   end
   
+  acts_as_site_entity
+
   acts_as_contributor
   
   has_many :blobs, :as => :contributor
