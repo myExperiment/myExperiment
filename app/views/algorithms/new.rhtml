@@ -5,14 +5,14 @@
 
 <h1>New Algorithm</h1>
 
-<%= error_messages_for :algorithm %>
+<%= error_messages_for :contributable %>
 
 <% form_tag({ :action => :create }, :multipart => true) do %>
 
   <p style="text-align: center;">
     <strong>Title: </strong>
     <br/>
-    <%= text_field_tag "algorithm[title]", nil, :size => 60 %>
+    <%= text_field_tag "contributable[title]", @contributable.title, :size => 60 %>
   </p>
 
   <br/>
@@ -22,16 +22,24 @@
   </p>
 
   <center>
-    <%= fckeditor_textarea(:algorithm, :description, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
+    <%= fckeditor_textarea(:contributable, :description, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
   </center>
 
   <br />
 
-  <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @algorithm } %>
+  <p style="text-align: center;">
+    <strong>URL: </strong>
+    <br/>
+    <%= text_field_tag "contributable[url]", @contributable.url, :size => 60 %>
+  </p>
 
-  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => false, :contributable => @algorithm } %>
+  <br />
 
-  <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @algorithm, :update_perms => true } %>
+  <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @contributable } %>
+
+  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => false, :contributable => @contributable } %>
+
+  <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @contributable, :update_perms => true } %>
 
   <%= render :partial => "algorithms/license_form", :locals => { :edit => false } %>
 

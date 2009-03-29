@@ -1,4 +1,4 @@
-# myExperiment: app/controllers/blobs_controller.rb
+# myExperiment: app/controllers/algorithms_controller.rb
 #
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
@@ -16,7 +16,6 @@ class AlgorithmsController < ApplicationController
   cache_sweeper :permission_sweeper,       :only => [ :create, :update, :destroy ]
   cache_sweeper :bookmark_sweeper,         :only => [ :destroy, :favourite, :favourite_delete ]
   cache_sweeper :tag_sweeper,              :only => [ :create, :update, :tag, :destroy ]
-  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download ]
   cache_sweeper :comment_sweeper,          :only => [ :comment, :comment_delete ]
   cache_sweeper :rating_sweeper,           :only => [ :rate ]
   
@@ -25,44 +24,22 @@ class AlgorithmsController < ApplicationController
     @query = params[:query] || ''
     @query.strip!
     
-    @algorithms = (SOLR_ENABLE && !@query.blank?) ? Algorithm.find_by_solr(@query, :limit => 100).results : []
-    @algorithms_found_total_count = (SOLR_ENABLE && !@query.blank?) ? Algorithm.count_by_solr(@query) : 0
+    @contributables = (SOLR_ENABLE && !@query.blank?) ? Algorithm.find_by_solr(@query, :limit => 100).results : []
+    @total_count = (SOLR_ENABLE && !@query.blank?) ? Algorithm.count_by_solr(@query) : 0
     
     respond_to do |format|
       format.html # search.rhtml
     end
   end
   
-  # GET /files/1;download
-  def download
-    if allow_statistics_logging(@blob)
-      @download = Download.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
-    end
-    
-    send_data(@blob.content_blob.data, :filename => @blob.local_name, :type => @blob.content_type)
-    
-    #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type)
-  end
-
-  # GET /files/:id/download/:name
-  def named_download
-
-    # check that we got the right filename for this workflow
-    if params[:name] == @blob.local_name
-      download
-    else
-      render :nothing => true, :status => "404 Not Found"
-    end
-  end
-
-  # GET /files
+  # GET /algorithms
   def index
     respond_to do |format|
       format.html # index.rhtml
     end
   end
   
-  # GET /files/all
+  # GET /algorithms/all
   def all
     respond_to do |format|
       format.html # all.rhtml
@@ -71,8 +48,8 @@ class AlgorithmsController < ApplicationController
   
   # GET /algorithms/1
   def show
-    if allow_statistics_logging(@algorithm)
-      @viewing = Viewing.create(:contribution => @algorithm.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
+    if allow_statistics_logging(@contributable)
+      @viewing = Viewing.create(:contribution => @contributable.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
   end
   
@@ -87,37 +64,38 @@ class AlgorithmsController < ApplicationController
   # POST /algorithms
   def create
   
-    @algorithm = Algorithm.new(
+    @contributable = Algorithm.new(
         :contributor => current_user,
-        :title       => params[:algorithm][:title],
-        :description => params[:algorithm][:description],
-        :license     => params[:algorithm][:license])
+        :title       => params[:contributable][:title],
+        :description => params[:contributable][:description],
+        :url         => params[:contributable][:title],
+        :license     => params[:contributable][:license])
 
-    if @algorithm.save == false
+    if @contributable.save == false
       render :action => "new"
       return
     end
 
-    if params[:algorithm][:tag_list]
-      @algorithm.tags_user_id = current_user
-      @algorithm.tag_list = convert_tags_to_gem_format params[:algorithm][:tag_list]
-      @algorithm.update_tags
+    if params[:contributable][:tag_list]
+      @contributable.tags_user_id = current_user
+      @contributable.tag_list = convert_tags_to_gem_format params[:contributable][:tag_list]
+      @contributable.update_tags
     end
 
     # update policy
-    @algorithm.contribution.update_attributes(params[:contribution])
+    @contributable.contribution.update_attributes(params[:contribution])
   
-    policy_err_msg = update_policy(@algorithm, params)
+    policy_err_msg = update_policy(@contributable, params)
   
-    update_credits(@algorithm, params)
-    update_attributions(@algorithm, params)
+    update_credits(@contributable, params)
+    update_attributions(@contributable, params)
   
     if policy_err_msg.blank?
       flash[:notice] = 'Algorithm was successfully created.'
-      redirect_to algorithm_url(@algorithm)
+      redirect_to algorithm_url(@contributable)
     else
       flash[:notice] = "Algorithm was successfully created. However some problems occurred, please see these below.</br></br><span style='color: red;'>" + policy_err_msg + "</span>"
-      redirect_to :controller => 'algorithms', :id => @algorithm, :action => "edit"
+      redirect_to :controller => 'algorithms', :id => @contributable, :action => "edit"
     end
   end
   
@@ -130,26 +108,26 @@ class AlgorithmsController < ApplicationController
     end
     
     # remove protected columns
-    if params[:algorithm]
+    if params[:contributable]
       [:contributor_id, :contributor_type, :content_type, :local_name, :created_at, :updated_at].each do |column_name|
-        params[:algorithm].delete(column_name)
+        params[:contributable].delete(column_name)
       end
     end
     
     respond_to do |format|
-      if @algorithm.update_attributes(params[:algorithm])
-        @algorithm.refresh_tags(convert_tags_to_gem_format(params[:algorithm][:tag_list]), current_user) if params[:algorithm][:tag_list]
+      if @contributable.update_attributes(params[:contributable])
+        @contributable.refresh_tags(convert_tags_to_gem_format(params[:contributable][:tag_list]), current_user) if params[:contributable][:tag_list]
         
-        policy_err_msg = update_policy(@algorithm, params)
-        update_credits(@algorithm, params)
-        update_attributions(@algorithm, params)
+        policy_err_msg = update_policy(@contributable, params)
+        update_credits(@contributable, params)
+        update_attributions(@contributable, params)
         
         if policy_err_msg.blank?
           flash[:notice] = 'Algorithm was successfully updated.'
-          format.html { redirect_to algorithm_url(@algorithm) }
+          format.html { redirect_to algorithm_url(@contributable) }
         else
           flash[:error] = policy_err_msg
-          format.html { redirect_to :controller => 'algorithms', :id => @algorithm, :action => "edit" }
+          format.html { redirect_to :controller => 'algorithms', :id => @contributable, :action => "edit" }
         end
       else
         format.html { render :action => "edit" }
@@ -157,100 +135,100 @@ class AlgorithmsController < ApplicationController
     end
   end
   
-  # DELETE /files/1
+  # DELETE /algorithms/1
   def destroy
-    success = @blob.destroy
+    success = @contributable.destroy
 
     respond_to do |format|
       if success
-        flash[:notice] = "File has been deleted."
-        format.html { redirect_to files_url }
+        flash[:notice] = "Algorithm has been deleted."
+        format.html { redirect_to algorithms_url }
       else
-        flash[:error] = "Failed to delete File. Please contact your administrator."
-        format.html { redirect_to file_url(@blob) }
+        flash[:error] = "Failed to delete Algorithm. Please contact your administrator."
+        format.html { redirect_to algorithm_url(@contributable) }
       end
     end
   end
   
-  # POST /files/1;comment
+  # POST /algorithms/1;comment
   def comment 
     text = params[:comment][:comment]
     
     if text and text.length > 0
       comment = Comment.create(:user => current_user, :comment => text)
-      @blob.comments << comment
+      @contributable.comments << comment
     end
     
     respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @blob } }
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @contributable } }
     end
   end
   
-  # DELETE /files/1;comment_delete
+  # DELETE /algorithms/1;comment_delete
   def comment_delete
     if params[:comment_id]
       comment = Comment.find(params[:comment_id].to_i)
       # security checks:
-      if comment.user_id == current_user.id and comment.commentable_type.downcase == 'blob' and comment.commentable_id == @blob.id
+      if comment.user_id == current_user.id and comment.commentable_type == 'Algorithm' and comment.commentable_id == @contributable.id
         comment.destroy
       end
     end
     
     respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @blob } }
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @contributable } }
     end
   end
   
-  # POST /files/1;rate
+  # POST /algorithms/1;rate
   def rate
-    if @blob.contributor_type == 'User' and @blob.contributor_id == current_user.id
-      error("You cannot rate your own file!", "")
+    if @contributable.contributor_type == 'User' and @contributable.contributor_id == current_user.id
+      error("You cannot rate your own content!", "")
     else
-      Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @blob.class.to_s, @blob.id, current_user.id])
+      Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @contributable.class.to_s, @contributable.id, current_user.id])
       
-      @blob.ratings << Rating.create(:user => current_user, :rating => params[:rating])
+      @contributable.ratings << Rating.create(:user => current_user, :rating => params[:rating])
       
       respond_to do |format|
         format.html { 
           render :update do |page|
-            page.replace_html "ratings_inner", :partial => "contributions/ratings_box_inner", :locals => { :contributable => @blob, :controller_name => controller.controller_name }
-            page.replace_html "ratings_breakdown", :partial => "contributions/ratings_box_breakdown", :locals => { :contributable => @blob }
+            page.replace_html "ratings_inner", :partial => "contributions/ratings_box_inner", :locals => { :contributable => @contributable, :controller_name => controller.controller_name }
+            page.replace_html "ratings_breakdown", :partial => "contributions/ratings_box_breakdown", :locals => { :contributable => @contributable }
           end }
       end
     end
   end
   
-  # POST /files/1;tag
+  # POST /algorithms/1;tag
   def tag
-    @blob.tags_user_id = current_user # acts_as_taggable_redux
-    @blob.tag_list = "#{@blob.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
-    @blob.update_tags # hack to get around acts_as_versioned
+    @contributable.tags_user_id = current_user # acts_as_taggable_redux
+    @contributable.tag_list = "#{@contributable.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
+    @contributable.update_tags # hack to get around acts_as_versioned
     
     respond_to do |format|
       format.html { 
         render :update do |page|
-          unique_tag_count = @blob.tags.uniq.length
+          unique_tag_count = @contributable.tags.uniq.length
           page.replace_html "mini_nav_tag_link", "(#{unique_tag_count})"
           page.replace_html "tags_box_header_tag_count_span", "(#{unique_tag_count})"
-          page.replace_html "tags_inner_box", :partial => "tags/tags_box_inner", :locals => { :taggable => @blob, :owner_id => @blob.contributor_id } 
+          page.replace_html "tags_inner_box", :partial => "tags/tags_box_inner", :locals => { :taggable => @contributable, :owner_id => @contributable.contributor_id } 
         end
       }
     end
   end
   
-  # POST /files/1;favourite
+  # POST /algorithms/1;favourite
   def favourite
-    @blob.bookmarks << Bookmark.create(:user => current_user) unless @blob.bookmarked_by_user?(current_user)
+    @contributable.bookmarks << Bookmark.create(:user => current_user) unless @contributable.bookmarked_by_user?(current_user)
     
     respond_to do |format|
       flash[:notice] = "You have successfully added this item to your favourites."
-      format.html { redirect_to file_url(@blob) }
+      format.html { redirect_to algorithm_url(@contributable) }
     end
   end
   
-  # DELETE /files/1;favourite_delete
+  # DELETE /algorithms/1;favourite_delete
   def favourite_delete
-    @blob.bookmarks.each do |b|
+    @contributable.bookmarks.each do |b|
       if b.user_id == current_user.id
         b.destroy
       end
@@ -258,7 +236,7 @@ class AlgorithmsController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "You have successfully removed this item from your favourites."
-      redirect_url = params[:return_to] ? params[:return_to] : file_url(@blob)
+      redirect_url = params[:return_to] ? params[:return_to] : algorithm_url(@contributable)
       format.html { redirect_to redirect_url }
     end
   end
@@ -266,16 +244,10 @@ class AlgorithmsController < ApplicationController
   protected
   
   def find_algorithms
-    found = Blob.find(:all, 
-                       :order => "content_type ASC, local_name ASC, created_at DESC",
+    @contributables = Algorithm.find(:all, 
+                       :order => "created_at DESC",
                        :page => { :size => 20, 
                        :current => params[:page] })
-    
-    found.each do |blob|
-      blob.content_blob.data = nil unless Authorization.is_authorized?("download", nil, blob, current_user)
-    end
-    
-    @blobs = found
   end
   
   def find_algorithm_aux
@@ -283,11 +255,11 @@ class AlgorithmsController < ApplicationController
       algorithm = Algorithm.find(params[:id])
       
       if Authorization.is_authorized?(action_name, nil, algorithm, current_user)
-        @algorithm = algorithm
+        @contributable = algorithm
         
-        @algorithm_entry_url = url_for :only_path => false,
+        @contributable_entry_url = url_for :only_path => false,
                             :host => base_host,
-                            :id => @algorithm.id
+                            :id => @contributable.id
 
       else
         if logged_in? 
@@ -304,7 +276,7 @@ class AlgorithmsController < ApplicationController
   end
   
   def create_empty_object
-    @algorithm = Algorithm.new
+    @contributable = Algorithm.new
   end
   
   def set_sharing_mode_variables
@@ -316,13 +288,13 @@ class AlgorithmsController < ApplicationController
         @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
         @updating_mode = params[:updating][:class_id].to_i if params[:updating]
       when "show", "edit"
-        @sharing_mode  = @algorithm.contribution.policy.share_mode
-        @updating_mode = @algorithm.contribution.policy.update_mode
+        @sharing_mode  = @contributable.contribution.policy.share_mode
+        @updating_mode = @contributable.contribution.policy.update_mode
     end
   end
 
   def check_can_edit
-    if @algorithm && !Authorization.is_authorized?('edit', nil, @algorithm, current_user)
+    if @contributable && !Authorization.is_authorized?('edit', nil, @contributable, current_user)
       error("You are not authorised to manage this Algorithm", "")
     end
   end

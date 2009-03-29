@@ -4,11 +4,11 @@
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" -%>
-    <li><%= contributable_name(@algorithm.id, 'Algorithm') -%></li>
+    <li><%= contributable_name(@contributable.id, 'Algorithm') -%></li>
   <% when "new" %>
     <li>New Algorithm</li>
   <% when "edit" %>
-		<li><%= link_to "#{contributable_name(@algorithm.id, 'Algorithm')}", algorithm_path(@algorithm) -%></li>
+		<li><%= link_to "#{contributable_name(@contributable.id, 'Algorithm')}", algorithm_path(@contributable) -%></li>
 		<li><b>&#187;</b></li>
     <li>Manage</li>
   <% when "all" %>

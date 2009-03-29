@@ -2,11 +2,11 @@
 
 <h1>Search Results</h1>
 
-<h2>Showing <%= pluralize(@algorithms.length, "file") %> of <%= @algorithms_found_total_count -%> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
+<h2>Showing <%= pluralize(@contributables.length, "algorithm") %> of <%= @total_count -%> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
 
 <%= view_privileges_notice %>
 <br/>
 
-<%= render :partial => "algorithms/table", :locals => { :collection => @algorithms } %>
+<%= render :partial => "algorithms/table", :locals => { :collection => @contributables } %>
 
 <br />
