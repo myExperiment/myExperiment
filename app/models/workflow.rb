@@ -3,7 +3,7 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'acts_as_contributable'
+require 'acts_as_site_entity'
 require 'acts_as_contributable'
 require 'acts_as_creditable'
 require 'acts_as_attributor'
@@ -31,6 +31,8 @@ class Workflow < ActiveRecord::Base
 
   before_validation :check_unique_name
   before_validation :extract_metadata
+
+  acts_as_site_entity :owner_text => 'Original Uploader'
 
   acts_as_contributable
   

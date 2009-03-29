@@ -5,11 +5,14 @@
 
 require 'acts_as_contributor'
 require 'acts_as_creditor'
+require 'acts_as_site_entity'
 
 class Network < ActiveRecord::Base
   acts_as_contributor
   acts_as_creditor
   
+  acts_as_site_entity :owner_text => 'Admin'
+
   acts_as_commentable
   acts_as_taggable
   
@@ -50,10 +53,6 @@ class Network < ActiveRecord::Base
              :foreign_key => :user_id
              
   alias_method :contributor, :owner
-
-  def label
-    return title
-  end
 
   def owner?(userid)
     user_id.to_i == userid.to_i

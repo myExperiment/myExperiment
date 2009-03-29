@@ -3,6 +3,8 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'acts_as_site_entity'
+
 class Profile < ActiveRecord::Base
   
   belongs_to :owner,
@@ -34,6 +36,8 @@ class Profile < ActiveRecord::Base
   belongs_to :picture
   
   validates_email_veracity_of :email
+
+  acts_as_site_entity :owner_text => 'User'
   
   acts_as_solr :fields => [ :email,
                             :website,

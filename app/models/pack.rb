@@ -4,6 +4,7 @@
 # See license.txt for details.
 
 require 'acts_as_contributable'
+require 'acts_as_site_entity'
 require 'uri'
 require 'zip/zip'
 require 'tempfile'
@@ -11,6 +12,9 @@ require 'cgi'
 
 
 class Pack < ActiveRecord::Base
+
+  acts_as_site_entity :owner_text => 'Creator'
+
   acts_as_contributable
   
   acts_as_bookmarkable

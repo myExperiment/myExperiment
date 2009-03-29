@@ -51,21 +51,12 @@ module ApplicationHelper
   
   def owner_text(thing)
     return '' if thing.nil?
-    
-    case thing.class.to_s
-    when "Workflow"
-      return "Original Uploader"
-    when "Blob"
-      return "Uploader"
-    when "Pack"
-      return "Creator"
-    when "Network"
-      return "Admin"
-    when "Profile"
-      return "User"
-    else
-      return ''
-    end
+
+    text = thing.class.owner_text if thing.class.respond_to?('owner_text')
+
+    return '' if text.nil?
+
+    text
   end
   
   def datetime(old_dt, long=true)

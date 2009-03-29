@@ -4,11 +4,15 @@
 # See license.txt for details.
 
 require 'acts_as_contributable'
+require 'acts_as_site_entity'
 require 'acts_as_creditable'
 require 'acts_as_attributor'
 require 'acts_as_attributable'
 
 class Blob < ActiveRecord::Base
+
+  acts_as_site_entity :owner_text => 'Uploader'
+
   acts_as_contributable
 
   acts_as_bookmarkable
