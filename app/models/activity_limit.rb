@@ -20,9 +20,9 @@ class ActivityLimit < ActiveRecord::Base
         # e.g. in the first month of membership on myExperiment one can send 10 messages daily,
         # but after that can send 15 (because the user becomes more "trusted")
         if (limit.promote_after && time_now > limit.promote_after)
-          absolute_max_limit_value = eval("#{limit_feature.upcase}_LIMIT_MAX_VALUE")
-          limit_increment_value = eval("#{limit_feature.upcase}_LIMIT_PROMOTE_INCREMENT")
-          promote_every = eval("#{limit_feature.upcase}_LIMIT_PROMOTE_EVERY")
+          absolute_max_limit_value = Conf.activity_limits[limit_feature]["max_value"]
+          limit_increment_value = Conf.activity_limits[limit_feature]["promote_increment"]
+          promote_every = Conf.activity_limits[limit_feature]["promote_every"]
           
           if limit_increment_value
             if absolute_max_limit_value
@@ -65,12 +65,12 @@ class ActivityLimit < ActiveRecord::Base
       
     else
       # limit doesn't exist yet - create it, then proceed to validation and saving
-      limit_frequency = eval("#{limit_feature.upcase}_LIMIT_FREQUENCY")
-      promote_every = eval("#{limit_feature.upcase}_LIMIT_PROMOTE_EVERY")
+      limit_frequency = Conf.activity_limits[limit_feature]["frequency"]
+      promote_every = Conf.activity_limits[limit_feature]["promote_every"]
       
       limit = ActivityLimit.new(:contributor_type => contributor.class.name, :contributor_id => contributor.id,
                                 :limit_feature => limit_feature, 
-                                :limit_max => eval("#{limit_feature.upcase}_LIMIT_START_VALUE"),
+                                :limit_max => Conf.activity_limits[limit_feature]["start_value"],
                                 :limit_frequency => limit_frequency,
                                 :reset_after => (limit_frequency ? (time_now + limit_frequency.hours) : nil),
                                 :promote_after => (promote_every ? (time_now + promote_every.days) : nil),

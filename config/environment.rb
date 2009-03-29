@@ -71,5 +71,7 @@ require 'lib/conf'
 require 'smtp_tls'
 require 'authorization'
 
+ActionMailer::Base.smtp_settings = Conf.smtp
+
 load 'config/environment_private.rb' if FileTest.exist?('config/environment_private.rb')
 

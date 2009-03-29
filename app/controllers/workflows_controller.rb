@@ -37,8 +37,8 @@ class WorkflowsController < ApplicationController
     @query = params[:query] || ''
     @query.strip!
     
-    @workflows = (SOLR_ENABLE && !@query.blank?) ? Workflow.find_by_solr(@query, :limit => 100).results : []
-    @workflows_found_total_count = (SOLR_ENABLE && !@query.blank?) ? Workflow.count_by_solr(@query) : 0
+    @workflows = (Conf.solr_enable && !@query.blank?) ? Workflow.find_by_solr(@query, :limit => 100).results : []
+    @workflows_found_total_count = (Conf.solr_enable && !@query.blank?) ? Workflow.count_by_solr(@query) : 0
     
     respond_to do |format|
       format.html # search.rhtml
@@ -726,9 +726,9 @@ protected
       end
       return false
     # Check that the size of the workflow file doesn't exceed the max size
-    elsif params[:workflow][:file].size > WORKFLOW_UPLOAD_MAX_BYTES
+    elsif params[:workflow][:file].size > Conf.max_upload_size
       respond_to do |format|
-        flash.now[:error] = "The workflow file/script uploaded is too big. The maximum upload size for workflows is #{number_to_human_size(WORKFLOW_UPLOAD_MAX_BYTES)}."
+        flash.now[:error] = "The workflow file/script uploaded is too big. The maximum upload size for workflows is #{number_to_human_size(Conf.max_upload_size)}."
         format.html { render :action => view_to_render_on_fail }
       end
       return false

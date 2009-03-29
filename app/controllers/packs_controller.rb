@@ -26,8 +26,8 @@ class PacksController < ApplicationController
     @query = params[:query] || ''
     @query.strip!
     
-    @packs = (SOLR_ENABLE && !@query.blank?) ? Pack.find_by_solr(@query, :limit => 100).results : []
-    @packs_found_total_count = (SOLR_ENABLE && !@query.blank?) ? Pack.count_by_solr(@query) : 0
+    @packs = (Conf.solr_enable && !@query.blank?) ? Pack.find_by_solr(@query, :limit => 100).results : []
+    @packs_found_total_count = (Conf.solr_enable && !@query.blank?) ? Pack.count_by_solr(@query) : 0
     
     respond_to do |format|
       format.html # search.rhtml

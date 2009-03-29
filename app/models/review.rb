@@ -12,7 +12,7 @@ class Review < ActiveRecord::Base
   
   before_create :check_multiple
   
-  acts_as_solr :fields => [ :title, :review ] if SOLR_ENABLE
+  acts_as_solr :fields => [ :title, :review ] if Conf.solr_enable
   
   # returns the 'last created' Reviews
   # the maximum number of results is set by #limit#

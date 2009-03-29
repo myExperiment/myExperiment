@@ -21,7 +21,7 @@ class Network < ActiveRecord::Base
   has_many :workflows, :as => :contributor
   
   acts_as_solr(:fields => [ :title, :unique_name, :owner_name, :description, :tag_list ],
-               :include => [ :comments ]) if SOLR_ENABLE
+               :include => [ :comments ]) if Conf.solr_enable
 
   format_attribute :description
   

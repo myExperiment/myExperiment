@@ -104,12 +104,12 @@
 				</div>
 			<% end -%>
 			
-			<%= render :partial => "layouts/debug" if SHOW_DEBUG %> 
+			<%= render :partial => "layouts/debug" if Conf.show_debug %> 
 		</div>
 		
 		<%= javascript_include_tag "tabs.js" %>
 		<%= javascript_include_tag "folds.js" %>
 		
-		<%= render :partial => "layouts/web_analytics" if USE_WEBANALYTICS %>
+		<%= render :partial => "layouts/web_analytics" if Conf.google_web_analytics["enable"] %>
 	</body>
 </html>
