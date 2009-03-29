@@ -3,12 +3,16 @@
 # Copyright (c) 2009 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'acts_as_site_entity'
 require 'acts_as_contributable'
 require 'acts_as_creditable'
 require 'acts_as_attributor'
 require 'acts_as_attributable'
 
 class App < ActiveRecord::Base
+
+  acts_as_site_entity :owner_text => 'Creator'
+
   acts_as_contributable
 
   acts_as_bookmarkable
