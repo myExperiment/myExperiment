@@ -1,4 +1,4 @@
-<% case (algorithm.license.to_s); when "by-nd" %>
+<% case (contributable.license.to_s); when "by-nd" %>
 
 <!--
 
@@ -6,14 +6,14 @@
     xmlns:dc="http://purl.org/dc/elements/1.1/"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <Work rdf:about="">
-   <dc:title><%= algorithm.title %></dc:title>
-   <dc:date><%= algorithm.created_at %></dc:date>
-   <dc:description><%= algorithm.description_html %></dc:description>
+   <dc:title><%= contributable.title %></dc:title>
+   <dc:date><%= contributable.created_at %></dc:date>
+   <dc:description><%= contributable.description_html %></dc:description>
    <dc:creator><Agent>
-      <dc:title><%= contributor(algorithm.contribution.contributor_id, algorithm.contribution.contributor_type, link=false) %></dc:title>
+      <dc:title><%= contributor(contributable.contribution.contributor_id, contributable.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:creator>
    <dc:rights><Agent>
-      <dc:title><%= contributor(algorithm.contribution.contributor_id, algorithm.contribution.contributor_type, link=false) %></dc:title>
+      <dc:title><%= contributor(contributable.contribution.contributor_id, contributable.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:rights>
    <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
    <dc:source rdf:resource="http://www.myexperiment.org<%= request.request_uri %>"/>
@@ -40,14 +40,14 @@
     xmlns:dc="http://purl.org/dc/elements/1.1/"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <Work rdf:about="">
-   <dc:title><%= algorithm.title %></dc:title>
-   <dc:date><%= algorithm.created_at %></dc:date>
-   <dc:description><%= algorithm.description_html %></dc:description>
+   <dc:title><%= contributable.title %></dc:title>
+   <dc:date><%= contributable.created_at %></dc:date>
+   <dc:description><%= contributable.description_html %></dc:description>
    <dc:creator><Agent>
-      <dc:title><%= contributor(algorithm.contribution.contributor_id, algorithm.contribution.contributor_type, link=false) %></dc:title>
+      <dc:title><%= contributor(contributable.contribution.contributor_id, contributable.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:creator>
    <dc:rights><Agent>
-      <dc:title><%= contributor(algorithm.contribution.contributor_id, algorithm.contribution.contributor_type, link=false) %></dc:title>
+      <dc:title><%= contributor(contributable.contribution.contributor_id, contributable.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:rights>
    <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
    <dc:source rdf:resource="http://www.myexperiment.org<%= request.request_uri %>"/>
@@ -75,14 +75,14 @@
     xmlns:dc="http://purl.org/dc/elements/1.1/"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <Work rdf:about="">
-   <dc:title><%= algorithm.title %></dc:title>
-   <dc:date><%= algorithm.created_at %></dc:date>
-   <dc:description><%= algorithm.description_html %></dc:description>
+   <dc:title><%= contributable.title %></dc:title>
+   <dc:date><%= contributable.created_at %></dc:date>
+   <dc:description><%= contributable.description_html %></dc:description>
    <dc:creator><Agent>
-      <dc:title><%= contributor(algorithm.contribution.contributor_id, algorithm.contribution.contributor_type, link=false) %></dc:title>
+      <dc:title><%= contributor(contributable.contribution.contributor_id, contributable.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:creator>
    <dc:rights><Agent>
-      <dc:title><%= contributor(algorithm.contribution.contributor_id, algorithm.contribution.contributor_type, link=false) %></dc:title>
+      <dc:title><%= contributor(contributable.contribution.contributor_id, contributable.contribution.contributor_type, link=false) %></dc:title>
    </Agent></dc:rights>
    <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
    <dc:source rdf:resource="http://www.myexperiment.org<%= request.request_uri %>"/>
@@ -104,5 +104,5 @@
 <% end %>
 
 <p>
-  All versions of this File are licensed under the <%= license_link algorithm.license.to_s %>.
+  This Algorithm is licensed under the <%= license_link contributable.license.to_s %>.
 </p>

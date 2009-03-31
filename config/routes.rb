@@ -98,6 +98,18 @@ ActionController::Routing::Routes.draw do |map|
                  :tag => :post } do |algorithm|
   end
 
+  # applications
+  map.resources :applications, 
+    :collection => { :all => :get, :search => :get }, 
+    :member => { :statistics => :get,
+                 :favourite => :post,
+                 :favourite_delete => :delete,
+                 :comment => :post, 
+                 :comment_delete => :delete, 
+                 :rate => :post, 
+                 :tag => :post } do |application|
+  end
+
   # files (downloadable)
   map.resources :files, 
     :controller => :blobs, 
