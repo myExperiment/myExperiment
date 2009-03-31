@@ -26,7 +26,7 @@ class Blob < ActiveRecord::Base
   acts_as_attributable
   
   acts_as_solr(:fields => [:title, :local_name, :body, :content_type, :uploader],
-               :include => [ :comments ]) if SOLR_ENABLE
+               :include => [ :comments ]) if Conf.solr_enable
   belongs_to :content_blob
 
   # :dependent => :destroy is not supported in belongs_to in rails 1.2.6

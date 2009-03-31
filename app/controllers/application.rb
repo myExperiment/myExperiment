@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
     # check if the current viewing/download is to be logged
     # (i.e. request is sent not by a bot and is legitimate)
     allow_logging = true
-    BOT_IGNORE_LIST.each do |pattern|
+    Conf.bot_ignore_list.each do |pattern|
       if request.env['HTTP_USER_AGENT'] and request.env['HTTP_USER_AGENT'].match(pattern)
         allow_logging = false
         break

@@ -21,8 +21,8 @@ class NetworksController < ApplicationController
     @query = params[:query] || ''
     @query.strip!
     
-    @networks = (SOLR_ENABLE && !@query.blank?) ? Network.find_by_solr(@query, :limit => 100).results : []
-    @networks_found_total_count = (SOLR_ENABLE && !@query.blank?) ? Network.count_by_solr(@query) : 0
+    @networks = (Conf.solr_enable && !@query.blank?) ? Network.find_by_solr(@query, :limit => 100).results : []
+    @networks_found_total_count = (Conf.solr_enable && !@query.blank?) ? Network.count_by_solr(@query) : 0
     
     respond_to do |format|
       format.html # search.rhtml
@@ -119,7 +119,7 @@ class NetworksController < ApplicationController
             existing_invitation_emails << email_addr
           else 
             if ActivityLimit.check_limit(current_user, "group_invite")[0]
-              token_code = Digest::SHA1.hexdigest( email_addr.reverse + SECRET_WORD )
+              token_code = Digest::SHA1.hexdigest( email_addr.reverse + Conf.secret_word )
               valid_addresses_tokens[email_addr] = token_code
               invitation = PendingInvitation.new(:email => email_addr, :request_type => "membership", :requested_by => current_user.id, :request_for => params[:id], :message => params[:invitations][:msg_text], :token => token_code)
               invitation.save

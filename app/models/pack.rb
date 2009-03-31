@@ -27,7 +27,7 @@ class Pack < ActiveRecord::Base
   format_attribute :description
   
   acts_as_solr(:fields => [ :title, :description, :contributor_name, :tag_list ],
-               :include => [ :comments ]) if SOLR_ENABLE
+               :include => [ :comments ]) if Conf.solr_enable
   
   has_many :contributable_entries,
            :class_name => "PackContributableEntry",

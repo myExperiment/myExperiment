@@ -134,7 +134,7 @@ private
 
     @results = []
 
-    if SOLR_ENABLE && !@query.blank?
+    if Conf.solr_enable && !@query.blank?
 
       categories = (Conf.search_categories - ['all']).map do |category|
         if Conf.model_aliases.key?(category.camelize.singularize)

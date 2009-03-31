@@ -22,11 +22,11 @@ class UsersController < ApplicationController
     @query = params[:query] || ''
     @query.strip!
     
-    results = (SOLR_ENABLE && !@query.blank?) ? User.find_by_solr(@query, :limit => 100).results : []
+    results = (Conf.solr_enable && !@query.blank?) ? User.find_by_solr(@query, :limit => 100).results : []
     
     # Only show activated users!
     @users = results.select { |u| u.activated? }
-    @users_found_total_count = (SOLR_ENABLE && !@query.blank?) ? User.count_by_solr(@query) : 0
+    @users_found_total_count = (Conf.solr_enable && !@query.blank?) ? User.count_by_solr(@query) : 0
     
     respond_to do |format|
       format.html # search.rhtml
@@ -420,7 +420,7 @@ class UsersController < ApplicationController
               existing_invitation_emails << email_addr
             else 
               if ActivityLimit.check_limit(current_user, "user_invite")[0]
-                token_code = Digest::SHA1.hexdigest( email_addr.reverse + SECRET_WORD )
+                token_code = Digest::SHA1.hexdigest( email_addr.reverse + Conf.secret_word )
                 valid_addresses_tokens[email_addr] = token_code
                 invitation = PendingInvitation.new(:email => email_addr, :request_type => "friendship", :requested_by => params[:invitations_user_id], :request_for => params[:invitations_user_id], :message => params[:invitations][:msg_text], :token => token_code)
                 invitation.save
@@ -599,7 +599,7 @@ private
   end
   
   def confirmation_hash(string)
-    Digest::SHA1.hexdigest(string + SECRET_WORD)
+    Digest::SHA1.hexdigest(string + Conf.secret_word)
   end
   
 end

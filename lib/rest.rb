@@ -802,7 +802,7 @@ def search(req_uri, rules, user, query)
 
   results = []
 
-  if SOLR_ENABLE and not search_query.nil? and search_query != ""
+  if Conf.solr_enable and not search_query.nil? and search_query != ""
     results = models[0].multi_solr_search(search_query, :limit => 100,
         :models => models).results
   end

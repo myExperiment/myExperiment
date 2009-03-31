@@ -48,7 +48,7 @@ class Profile < ActiveRecord::Base
                             :location_city,
                             :location_country,
                             :interests,
-                            :contact_details ] if SOLR_ENABLE
+                            :contact_details ] if Conf.solr_enable
   
   def avatar?
     not (picture_id.nil? or picture_id.zero?)

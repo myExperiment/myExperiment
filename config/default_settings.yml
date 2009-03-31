@@ -4,9 +4,16 @@
 # See license.txt for details.
 
 # ------------------------------------------------------------------------------
-#   myExperiment server configuration
+# |  myExperiment server configuration                                         |
 # ------------------------------------------------------------------------------
-#
+# |                                                                            |
+# | NOTE: Don't make changes to this file.  Instead, copy it to                |
+# |       config/settings.yml and change that copy instead.  Both the          |
+# |       default_settings.yml and settings.yml configuration files are        |
+# |       loaded and configuration entries in settings.yml take precedence.    |
+# |                                                                            |
+# ------------------------------------------------------------------------------
+
 # site_name - Set "site_name" to the name of this myExperiment installation.
 #             This is used by the myExperiment codebase to refer to service by
 #             name.
@@ -198,4 +205,126 @@ model_aliases:
 
   File:  Blob
   Group: Network
+
+# bot_ignore_list - Patterns in this list will be used to be checked against
+#                   "user-agent" in HTTP request headers to filter out bots
+#                   from usage statistics.
+
+bot_ignore_list:
+
+  - Googlebot
+  - Slurp
+  - msnbot
+  - crawler
+  - bot
+  - heritrix
+  - spider
+  - Nutch
+
+# max_upload_size - The maximum file size allowed for workflows, etc.
+
+max_upload_size: 20971520
+
+# solr_enable - Set solr_enable to true to enable the search facility - this
+#               requires a running solr server.
+
+solr_enable: false
+
+# smtp - Email configuration.  These details are used to connect to a SMTP
+#        server instead of sendmail.
+
+smtp:
+
+  :address:        "smtp.example.com"
+  :port:           25,
+  :domain:         ""
+  :authentication: :login
+  :user_name:      "username"
+  :password:       "password"
+
+# show_debug - Shows query statistics in the footer: "Queries in Controller",
+#              "Queries in View" and "Query Time".
+
+show_debug: false
+
+# sym_encryption_key - This is the encyption key used to encrypt the passwords
+#                      for the workflow runners.
+
+sym_encryption_key: your_symmetric_encryption_key
+
+# secret_word - This word is used as salt for email confirmation hashes.
+
+secret_word: our_secret_word_that_no_one_knows
+
+# google_web_analytics - Enable this to enable Google web analytics.
+
+google_web_analytics:
+
+  enable:       false
+  tracker_code: "enter_tracker_code_here"
+
+# bookmark_widget - Enable this to show the bookmark widget
+
+bookmark_widget:
+
+  enable:           false
+  addthis_username: "addthis.com username"
+
+# =========== Settings for Activity Limits ===========
+
+# Each limited feature will require a set of 5 settings; meanings of each
+# described below.  First part of every setting is the name of the feature
+# being limited.
+#
+# start_value - The initial maximum allowance for the feature (used when the
+#               new limit is created)  
+#
+# max_value - Absolute maximum allowance for the feature (this can't be
+#             exceeded after any promotions); 'nil' for always increasing
+#             allowance
+#
+# frequency (in hours) - The time period over which the allowance is given; for
+#                        example 5 messages (allowance) for 24 hours
+#                        (frequency) 'nil' for non-periodic limits (i.e. limits
+#                        which won't have their counters reset every
+#                        <frequency> hours)
+#
+# promote_every (in days) -  Every <X> days the user will be promoted to the
+#                            new level, where the allowance per frequency
+#                            period will be adjusted by promote_increment;
+#                            'nil' to indicate that promotion should never
+#                            happen
+#
+# promote_increment - Should be positive; 0 to indicate that promotion
+#                     shouldn't expand the allowance (why would this be
+#                     useful?) 'nil' to perform a one-time promotion by setting
+#                     the limit to whatever the value of max_value is; 'nil'
+#                     when the max_value is also 'nil' makes the feature
+#                     unlimited.
+
+activity_limits:
+
+  internal_message:
+  
+    start_value:       10
+    max_value:         200
+    frequency:         24 # hours
+    promote_every:     10 # days
+    promote_increment: 10
+
+  user_invite:
+
+    start_value:       20
+    max_value:         nil
+    frequency:         24 # hours
+    promote_every:     nil # days
+    promote_increment: nil
+
+  group_invite:
+
+    start_value:       10
+    max_value:         100
+    frequency:         24 # hours
+    promote_every:     20 # days
+    promote_increment: 10
 
