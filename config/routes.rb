@@ -100,6 +100,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # applications
   map.resources :applications, 
+    :controller => :apps,
     :collection => { :all => :get, :search => :get }, 
     :member => { :statistics => :get,
                  :favourite => :post,

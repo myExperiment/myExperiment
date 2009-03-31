@@ -20,7 +20,7 @@
 					<td style="text-align: left;">
 						<p class="title">
 							<%= icon "algorithm", nil, nil, nil, '' %>
-							<% title = contributable_name(contributable.id, 'Blob') %>
+							<% title = contributable_name(contributable.id, 'Algorithm') %>
 							<%=link_to(query ? highlight_all(title, query) : title, algorithm_path(contributable)) %>
 						</p>
 						
@@ -51,7 +51,7 @@
 								<% if Authorization.is_authorized?("show", nil, a.attributor, current_user) -%>
 									<% if a.attributor_type == 'Workflow' %>
 										<%= icon('workflow', nil, nil, nil, '') %> 
-									<% elsif a.attributor_type == 'Blob' %>
+									<% elsif a.attributor_type == 'Algorithm' %>
 										<%= icon('algorithm', nil, nil, nil, '') %>
 									<% end %>
 									<%= contributable(a.attributor_id, a.attributor_type) %>

@@ -424,6 +424,14 @@ module ApplicationHelper
       else
         return nil
       end
+    else
+      if c = eval(contributabletype).find_by_id(contributableid)
+        name = h(c.label)
+        
+        return link ? link_to(name, contributable_url(c)) : name
+      else
+        return nil
+      end
     end
   end
   
