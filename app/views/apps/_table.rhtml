@@ -1,0 +1,98 @@
+<% query ||= false -%>
+<% odd_row = false -%>
+<% unless collection.empty? %>
+
+<table class="alt_table">
+	<% for contributable in collection %>
+		<% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
+		<% if collection.size == 1 -%>
+			<% show ||= Authorization.is_authorized?('show', nil, contributable, current_user) -%>
+		<% else -%>
+			<% show = Authorization.is_authorized?('show', nil, contributable, current_user) -%>
+		<% end -%>
+	  <% if show -%>
+			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+				<% cache(:controller => 'files_cache', :action => 'listing', :id => contributable.id) do -%>
+					<td style="width: 100px;">
+						<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
+						<center><%= contributor(contributable.contribution.contributor_id, contributable.contribution.contributor_type, true, 60) %></center>
+					</td>
+					<td style="text-align: left;">
+						<p class="title">
+							<%= icon "app", nil, nil, nil, '' %>
+							<% title = contributable_name(contributable.id, 'App') %>
+							<%=link_to(query ? highlight_all(title, query) : title, application_path(contributable)) %>
+						</p>
+						
+						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
+							<b>Created:</b> <%=datetime contributable.contribution.created_at, false %>
+							<% unless contributable.contribution.created_at == contributable.contribution.updated_at %>
+								|	<b>Last updated:</b> <%=datetime contributable.contribution.updated_at, false %>
+							<% end %>
+						</p>
+						
+						<% unless (creditors = contributable.creditors).empty? %>
+							<p style="font-size:85%;">
+							<b>Credits:</b>
+							<% creditors.each do |c| %>
+								<% if c.creditor_type == 'User' %>
+									<%= icon('user', nil, nil, nil, '') %> 
+								<% elsif c.creditor_type == 'Network' %>
+									<%= icon('network-member', nil, nil, nil, '') %>
+								<% end %>
+								<%= contributor(c.creditor_id, c.creditor_type) %>
+							<% end %>
+							</p>
+						<% end %>
+						<% unless (attributors = contributable.attributors).empty? %>
+							<p style="font-size:85%;">
+							<b>Attributions:</b>
+							<% attributors.each do |a| %>
+								<% if Authorization.is_authorized?("show", nil, a.attributor, current_user) -%>
+									<% if a.attributor_type == 'Workflow' %>
+										<%= icon('workflow', nil, nil, nil, '') %> 
+									<% elsif a.attributor_type == 'App' %>
+										<%= icon('app', nil, nil, nil, '') %>
+									<% end %>
+									<%= contributable(a.attributor_id, a.attributor_type) %>
+								<% end -%>
+							<% end %>
+							</p>
+						<% end %>
+						
+						<p style="font-size:85%;"><b>License: </b><%= license_link contributable.license.to_s %></p>
+						
+						<div class="desc" style="font-size: 85%;">
+							<% if contributable.description and contributable.description.length > 0 %>
+					  		<% desc = truncate(strip_html(contributable.description), 500) %>
+					    	<%= query ? highlight_all(desc, query) : desc %>
+						  <% else -%>
+								<span class="none_text">No description</span>	
+							<% end %>
+						</div>
+						
+						<p style="font-size: 85%;">
+							<a href="<%= application_path(contributable) + '#ratings' -%>"><b>Rating: </b><%= number_with_precision(contributable.rating, 1) %> / 5 (<%= pluralize contributable.ratings_count, 'rating' %>)</a> |
+							<a href="<%= application_path(contributable) + '#comments' -%>"><b>Comments: </b><%= contributable.comments_count %></a> |
+							<b>Viewed internally:</b> <%= pluralize Viewing.total_site_viewings_count_for_contribution(contributable.contribution.id), "time" %>
+						</p>
+						
+						<% unless (tags = contributable.tags).empty? %>
+							<a href="<%= application_path(contributable) + '#tags' -%>"><p style="font-size: 85%;"><b>Tags:</b></p></a>
+							<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
+						<% else %>
+							<p style="font-size: 85%;"><i>This File has no tags!</i></p>
+						<% end %>	
+					</td>
+				<% end %>
+					
+					<td class="actions" style="width: 80px;">
+				    <%= icon "show", application_path(contributable), nil, nil, "View" %>
+				    <% if mine?(contributable) %><%= icon "manage", edit_file_path(contributable), nil, nil, "Manage" %><% end %>
+				  </td>
+			</tr>
+		<% end %>
+	<% end %>
+</table>
+
+<% end %>

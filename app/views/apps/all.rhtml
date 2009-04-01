@@ -1,0 +1,9 @@
+<% t "All" -%>
+
+<h2>All Applications</h2>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributables } %>
+
+<%= render :partial => "apps/table", :locals => { :collection => @contributables } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributables } %>

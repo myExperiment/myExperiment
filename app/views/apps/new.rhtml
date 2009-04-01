@@ -1,0 +1,47 @@
+<% t "New" -%>
+
+<%= javascript_include_tag :fckeditor %>
+<%= javascript_include_tag "osp.js" %>
+
+<h1>New Application</h1>
+
+<%= error_messages_for :contributable %>
+
+<% form_tag({ :action => :create }, :multipart => true) do %>
+
+  <p style="text-align: center;">
+    <strong>Title: </strong>
+    <br/>
+    <%= text_field_tag "contributable[title]", @contributable.title, :size => 60 %>
+  </p>
+
+  <br/>
+
+  <p style="text-align: center;">
+    <strong>Description:</strong>
+  </p>
+
+  <center>
+    <%= fckeditor_textarea(:contributable, :description, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
+  </center>
+
+  <br />
+
+  <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @contributable } %>
+
+  <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => false, :contributable => @contributable } %>
+
+  <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @contributable, :update_perms => true } %>
+
+  <%= render :partial => "apps/license_form", :locals => { :edit => false } %>
+
+  <%= render :partial => 'contributions/terms_and_conditions' %>
+
+  <br/>
+  
+  <p style="text-align: center;">
+    <%= submit_tag "Save", :disable_with => "Saving..." %>
+  </p>
+
+<% end %>
+

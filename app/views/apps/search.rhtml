@@ -1,0 +1,12 @@
+<% t "Search" -%>
+
+<h1>Search Results</h1>
+
+<h2>Showing <%= pluralize(@contributables.length, "application") %> of <%= @total_count -%> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
+
+<%= view_privileges_notice %>
+<br/>
+
+<%= render :partial => "apps/table", :locals => { :collection => @contributables } %>
+
+<br />

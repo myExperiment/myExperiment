@@ -1,0 +1,10 @@
+<ul class="sectionIcons">
+	<li><%= icon "app", new_application_path, nil, nil, "Register new Applications" %></li>
+	<li><%= icon "view-all", all_applications_path, nil, nil, "View all Applications" %></li>
+</ul>
+
+<% cache(:controller => 'apps', :action => 'all_tags') do -%>
+	<%= render :partial => "apps/all_tags" %>
+<% end -%>
+
+<%= render :partial => "contributions/most_tabs", :locals => { :type => "App" } %>

@@ -1,0 +1,21 @@
+<li><%= link_to 'Applications', applications_path -%></li>
+
+<% if ["show", "new", "edit", "all", "search"].include? controller.action_name.to_s -%>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" -%>
+    <li><%= contributable_name(@contributable.id, 'App') -%></li>
+  <% when "new" %>
+    <li>New Application</li>
+  <% when "edit" %>
+		<li><%= link_to "#{contributable_name(@contributable.id, 'App')}", application_path(@contributable) -%></li>
+		<li><b>&#187;</b></li>
+    <li>Manage</li>
+  <% when "all" %>
+    <li>All Applications</li>
+	<% when "search" %>  
+    <li>Search Results</li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>
