@@ -6,7 +6,7 @@
 class AlgorithmsController < ApplicationController
   before_filter :login_required,             :except => [:index, :show, :statistics, :search, :all]
   before_filter :find_algorithms,            :only   => [:all]
-  before_filter :find_algorithm_aux,         :except => [:search, :index, :new, :create, :all]
+  before_filter :find_algorithm_auth,        :except => [:search, :index, :new, :create, :all, :auto_complete]
   before_filter :create_empty_object,        :only   => [:new, :create]
   before_filter :set_sharing_mode_variables, :only   => [:show, :new, :create, :edit, :update]
   before_filter :check_can_edit,             :only   => [:edit, :update]
@@ -51,6 +51,8 @@ class AlgorithmsController < ApplicationController
     if allow_statistics_logging(@contributable)
       @viewing = Viewing.create(:contribution => @contributable.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
+
+    @apps = @contributable.apps.uniq
   end
   
   # GET /algorithms/new
@@ -241,6 +243,21 @@ class AlgorithmsController < ApplicationController
     end
   end
   
+  def auto_complete
+
+    @algorithms = Algorithm.find(:all, 
+                     :conditions => ["LOWER(title) LIKE ?", params["algorithm_input"].downcase + '%'], 
+                     :order => 'title ASC', 
+                     :limit => 20, 
+                     :select => 'DISTINCT *')
+
+    @algorithms = @algorithms.select do |algorithm|
+      Authorization.is_authorized?('view', nil, algorithm, current_user)
+    end
+
+    render :inline => "<%= auto_complete_result @algorithms, 'title' %>"
+  end
+  
   protected
   
   def find_algorithms
@@ -250,7 +267,7 @@ class AlgorithmsController < ApplicationController
                        :current => params[:page] })
   end
   
-  def find_algorithm_aux
+  def find_algorithm_auth
     begin
       algorithm = Algorithm.find(params[:id])
       
@@ -261,12 +278,20 @@ class AlgorithmsController < ApplicationController
                             :host => base_host,
                             :id => @contributable.id
 
+        @contributable_label                = @contributable.label
+        @contributable_path                 = algorithm_path(@contributable)
+        @edit_contributable_path            = edit_algorithm_path(@contributable)
+        @tag_contributable_path             = tag_algorithm_path(@contributable)
+        @favourite_contributable_url        = favourite_algorithm_url(@contributable)
+        @favourite_delete_contributable_url = favourite_delete_algorithm_url(@contributable)
+
+
       else
         if logged_in? 
           error("Algorithm not found (id not authorized)", "is invalid (not authorized)")
           return false
         else
-          find_algorithm_aux if login_required
+          find_algorithm_auth if login_required
         end
       end
     rescue ActiveRecord::RecordNotFound

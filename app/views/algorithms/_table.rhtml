@@ -12,16 +12,16 @@
 		<% end -%>
 	  <% if show -%>
 			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-				<% cache(:controller => 'files_cache', :action => 'listing', :id => contributable.id) do -%>
+				<% cache(:controller => 'algorithms_cache', :action => 'listing', :id => contributable.id) do -%>
 					<td style="width: 100px;">
 						<p style="margin-top:0; padding-top:0; text-align: center;"><b>Uploader:</b></p>
 						<center><%= contributor(contributable.contribution.contributor_id, contributable.contribution.contributor_type, true, 60) %></center>
 					</td>
 					<td style="text-align: left;">
 						<p class="title">
-							<%= icon "algorithm", nil, nil, nil, '' %>
-							<% title = contributable_name(contributable.id, 'Algorithm') %>
-							<%=link_to(query ? highlight_all(title, query) : title, algorithm_path(contributable)) %>
+							<%= icon contributable.class.to_s.underscore, nil, nil, nil, '' %>
+							<% title = contributable.label %>
+							<%= link_to(query ? highlight_all(title, query) : title, algorithm_path(contributable)) %>
 						</p>
 						
 						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
@@ -81,14 +81,14 @@
 							<a href="<%= algorithm_path(contributable) + '#tags' -%>"><p style="font-size: 85%;"><b>Tags:</b></p></a>
 							<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
 						<% else %>
-							<p style="font-size: 85%;"><i>This File has no tags!</i></p>
+							<p style="font-size: 85%;"><i>This Algorithm has no tags!</i></p>
 						<% end %>	
 					</td>
 				<% end %>
 					
 					<td class="actions" style="width: 80px;">
 				    <%= icon "show", algorithm_path(contributable), nil, nil, "View" %>
-				    <% if mine?(contributable) %><%= icon "manage", edit_file_path(contributable), nil, nil, "Manage" %><% end %>
+				    <% if mine?(contributable) %><%= icon "manage", edit_algorithm_path(contributable), nil, nil, "Manage" %><% end %>
 				  </td>
 			</tr>
 		<% end %>

@@ -3,33 +3,34 @@
 <%= javascript_include_tag :fckeditor %>
 <%= javascript_include_tag "osp.js" %>
 
-<h1>Manage Algorithm: <%= contributable_name(@contributable.id, 'Algorithm') %></h1>
+<h1>Manage <%= visible_name(@contributable.class) -%>: <%= @contributable.label %></h1>
 
 <%= error_messages_for :contributable %>
 
 <% form_for(:contributable, :url => algorithm_path(@contributable), :html => { :method => :put }) do |f| %>
 
   <p style="text-align: center;">
-  	<strong>Title: </strong>
-	<br/>
-	<%= f.text_field :title, :size => 60 %>
+    <strong>Title: </strong>
+    <br />
+    <%= f.text_field :title, :size => 60 %>
   </p>
-	
-	<br/>
+
+  <br />
   
   <p style="text-align: center;">
-  	<strong>Description: </strong>
-	</p>
-	<center>
-		<%= fckeditor_textarea(:contributable, :description, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
-	</center>
-  
-  <br/>
+    <strong>Description: </strong>
+  </p>
+
+  <center>
+    <%= fckeditor_textarea(:contributable, :description, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
+  </center>
+
+  <br />
 
   <p style="text-align: center;">
-  	<strong>URL: </strong>
-	<br/>
-	<%= f.text_field :url, :size => 60 %>
+    <strong>URL: </strong>
+    <br />
+    <%= f.text_field :url, :size => 60 %>
   </p>
 	
   <br />
@@ -38,15 +39,12 @@
   
   <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => true, :contributable => @contributable } %>
 
-  <% if Authorization.is_authorized?("edit", nil, @contributable, current_user) %>
-  	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @contributable, :update_perms => true } %>
-	<%= render :partial => "algorithms/license_form", :locals => { :edit => true } %>
-  <% end %>
+  <%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @contributable, :update_perms => true } %>
 
-  <p>
-    <center>
-    	<%= submit_tag "Update",:disable_with => "Updating..." %> 
-		or <%= link_to "Cancel", algorithm_path(@contributable) %>
-	</center>
-  </p>
+  <%= render :partial => "license_form", :locals => { :edit => true } %>
+
+  <center>
+    <%= submit_tag "Update",:disable_with => "Updating..." %> or <%= link_to "Cancel", algorithm_path(@contributable) %>
+  </center>
+
 <% end %>

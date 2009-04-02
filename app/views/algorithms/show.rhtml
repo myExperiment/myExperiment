@@ -1,138 +1,139 @@
-<% t "#{contributable_name(@contributable.id, 'Algorithm')} (#{h @contributable.contributor_name})" -%>
+<% @contributable_class_label = visible_name(@contributable.class) %>
+
+<% t "#{@contributable_label} (#{h @contributable.contributor_name})" -%>
 
 <ul class="sectionIcons">
-	<% if Authorization.is_authorized?('edit', nil, @contributable, current_user) -%>
-		<li><%= icon('manage', edit_algorithm_path(@contributable), nil, nil, 'Manage Algorithm Entry')%></li>
-	<% end -%>
-	<% if Authorization.is_authorized?('destroy', nil, @contributable, current_user) %>
-		<li><%= icon('destroy', algorithm_path(@contributable), nil, { :confirm => 'This deletes the Algorithm and all metadata such as tags, comments and ratings. Are you sure?', :method => :delete }, 'Delete Algorithm Entry') %></li>
-	<% end %>
+  <% if Authorization.is_authorized?('edit', nil, @contributable, current_user) -%>
+    <li><%= icon('manage', @edit_contributable_path, nil, nil, "Manage #{@contributable_class_label} Entry")%></li>
+  <% end -%>
+  <% if Authorization.is_authorized?('destroy', nil, @contributable, current_user) %>
+    <li><%= icon('destroy', @contributable_path, nil, { :confirm => "This deletes the #{@contributable_class_label} and all metadata such as tags, comments and ratings. Are you sure?", :method => :delete }, "Delete #{@contributable_class_label} Entry") %></li>
+  <% end %>
 </ul>
 
-<h1 class="contribution_title">Algorithm Entry: <%= contributable_name(@contributable.id, 'Algorithm') %></h1>
+<h1 class="contribution_title"><%= @contributable_class_label -%> Entry: <%= @contributable.label %></h1>
 
 <%= render :partial => "contributions/datetime_info", :locals => { :contributable => @contributable } -%>
 
 <div class="contribution_mini_nav">
-	|
-	<%= link_to "License", "#license" %>
-	|
-	<%= link_to "Credits (#{@contributable.creditations.length})", "#credits" %>
-	|
-	<%= link_to "Attributions (#{@contributable.attributors.length})", "#attributions" %>
-	|
-	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@contributable.tags.length})</span>", "#tags" %>
-	|
-	<%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@contributable).length})", "#featured_in_packs" %>
-	|
-	<%= link_to "Ratings (#{@contributable.ratings.length})", "#ratings" %>
-	|
-	<%= link_to "Attributed By (#{@contributable.attributions.length})", "#attributed_by" %>
-	|
-	<%= link_to "Favourited By (#{@contributable.bookmarks.length})", "#favourited_by" %>
-	| 
-	<% if logged_in? and @contributable.owner?(current_user) %>
-	  <br/>
-	  |
-		<!-- NB! Index of the 'sharing' tab might change! -->
-	  <a href="#sharing" onclick="selectTab($('tabsContainer'),0)">Sharing</a>
-	  |
-	<% end %>
-	<%= link_to "Comments (#{@contributable.comments.length})", "#comments" %> 
-	|
+  |
+  <%= link_to "License", "#license" %>
+  |
+  <%= link_to "Credits (#{@contributable.creditations.length})", "#credits" %>
+  |
+  <%= link_to "Attributions (#{@contributable.attributors.length})", "#attributions" %>
+  |
+  <%= link_to "Tags <span id='mini_nav_tag_link'>(#{@contributable.tags.length})</span>", "#tags" %>
+  |
+  <%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@contributable).length})", "#featured_in_packs" %>
+  |
+  <%= link_to "Ratings (#{@contributable.ratings.length})", "#ratings" %>
+  |
+  <%= link_to "Attributed By (#{@contributable.attributions.length})", "#attributed_by" %>
+  |
+  <%= link_to "Favourited By (#{@contributable.bookmarks.length})", "#favourited_by" %>
+  | 
+  <% if logged_in? and @contributable.owner?(current_user) %>
+    <br/>
+    |
+    <!-- NB! Index of the 'sharing' tab might change! -->
+    <a href="#sharing" onclick="selectTab($('tabsContainer'),0)">Sharing</a>
+    |
+  <% end %>
+  <%= link_to "Comments (#{@contributable.comments.length})", "#comments" %> 
+  |
 </div>
 
 <div class="contribution_left_box">
-	<div class="contribution_version_box">
-		<div class="contribution_version_inner_box">
-			<p>
-			    <b>Title:</b>
-			    <span class="title"><%=h @contributable.title %></span>
-			</p>
-			
-			<h3>
-				<%= info_icon_with_tooltip("This section shows the overall description for this Algorithm") %>
-				Description
-			</h3>
-			
-			<% unless @contributable.description.blank? %>
-				<div class="contribution_description">
-					<%= @contributable.description_html %>
-				</div>
-			<% else %>
-				<p class="none_text">
-					Not set
-				</p>
-			<% end %>
-		</div>
-	
-	</div>
+  <div class="contribution_version_box">
+    <div class="contribution_version_inner_box">
+      <p>
+          <b>Title:</b>
+          <span class="title"><%=h @contributable.title %></span>
+      </p>
+      
+      <h3>
+        <%= info_icon_with_tooltip("This section shows the overall description for this #{@contributable_class_label}") %>
+        Description
+      </h3>
+      
+      <% unless @contributable.description.blank? %>
+        <div class="contribution_description">
+          <%= @contributable.description_html %>
+        </div>
+      <% else %>
+        <p class="none_text">
+          Not set
+        </p>
+      <% end %>
+    </div>
+  
+  </div>
+
+  <div class="contribution_version_box">
+    <div class="contribution_version_inner_box">
+      <h3>Applications that use '<%=h @contributable.label -%>'</h3>
+        <%= render :partial => "apps/table", :locals => { :collection => @apps } %>
+    </div>
+  </div>
+
 
 </div>
 
 <div class="contribution_right_box">
-	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @contributable } %>
-	
-	<%= render :partial => "contributions/license_box", :locals => { :contributable => @contributable } %>
-	
-	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @contributable, :edit_path => edit_algorithm_path(@contributable) } %>
-	
-	<%= render :partial => "tags/tags_box", :locals => { :taggable => @contributable, 
-																											 :owner_id => ((@contributable.contributor_type == 'User') ? @contributable.contributor_id : nil), 
-																											 :add_path => tag_algorithm_path(@contributable), 
-																											 :edit_path => edit_algorithm_path(@contributable),
-																											 :allow_edit => Authorization.is_authorized?('edit', nil, @contributable, current_user) } %>
-																											 
+  <%= render :partial => "contributions/uploader_box", :locals => { :contributable => @contributable } %>
+  
+  <%= render :partial => "contributions/license_box", :locals => { :contributable => @contributable } %>
+  
+  <%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @contributable, :edit_path => @edit_contributable_path } %>
+  
+  <%= render :partial => "tags/tags_box", :locals => { :taggable => @contributable, 
+          :owner_id => ((@contributable.contributor_type == 'User') ? @contributable.contributor_id : nil), 
+          :add_path => @tag_contributable_path, 
+          :edit_path => @edit_contributable_path,
+                                                       :allow_edit => Authorization.is_authorized?('edit', nil, @contributable, current_user) } %>
+                                                       
   <%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @contributable } %>
-	
-	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @contributable, :contributable_url => @contributable_entry_url } %>
-	
-	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @contributable } %>
-	
-	<%= render :partial => "contributions/attributed_by", :locals => { :contributable => @contributable } %>
-	
-	<%= render :partial => "contributions/favourited_box", :locals => { :contributable => @contributable,
-																																			:add_to_favourites_path => favourite_algorithm_url(@contributable),
-																																			:remove_from_favourites_path => favourite_delete_algorithm_url(@contributable) } %>
-	
-	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @contributable } %>
-</div>	
+  
+  <%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @contributable, :contributable_url => @contributable_entry_url } %>
+  
+  <%= render :partial => "contributions/ratings_box", :locals => { :contributable => @contributable } %>
+  
+  <%= render :partial => "contributions/attributed_by", :locals => { :contributable => @contributable } %>
+  
+  <%= render :partial => "contributions/favourited_box", :locals => { :contributable => @contributable,
+    :add_to_favourites_path => @favourite_contribution_url,
+    :remove_from_favourites_path => @favourite_delete_contribution_url } %>
+  
+  <%= render :partial => "contributions/statistics_box", :locals => { :contributable => @contributable } %>
+</div>  
 
 <div class="clearer">&nbsp;</div>
 
 <!-- BEGIN tabs -->
-	
+  
 <br/>
 
 <div id="tabsContainer" class="tabsContainer"></div>
-	
+  
 <% if logged_in? and @contributable.owner? current_user %>
   
-	<a name="sharing"></a>
-	<div class="tabContainer">
+  <a name="sharing"></a>
+  <div class="tabContainer">
     <div class="tabTitle">Sharing</div>
     <div class="tabContent">
 
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @contributable } %>
       <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @contributable } %>
-	  
+    
       <% if Authorization.is_authorized?('edit', nil, @contributable, current_user) %>
         <ul class="sectionIcons">
-          <li><%= icon('edit', edit_algorithm_path(@contributable), nil, nil, 'Edit')%></li>
+          <li><%= icon('edit', @edit_contributable_path, nil, nil, 'Edit')%></li>
         </ul>
       <% end %>
     </div>
   </div>
-	
-	<% if false %>
-  <div class="tabContainer">
-    <div class="tabTitle">Viewing History</div>
-    <div class="tabContent">
-      <%= render :partial => "contributions/history", :object => @contributable.contribution %>
-    </div>
-  </div>
-	<% end %>
-	
+  
 <% end %>
 
 <!-- END tabs -->
@@ -141,5 +142,5 @@
 <br/>
 
 <div id="commentsBox">
-	<%= render :partial => "comments/comments", :locals => { :commentable => @contributable } %>
+  <%= render :partial => "comments/comments", :locals => { :commentable => @contributable } %>
 </div>

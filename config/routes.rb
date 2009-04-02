@@ -88,7 +88,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # algorithms
   map.resources :algorithms, 
-    :collection => { :all => :get, :search => :get }, 
+    :collection => { :all => :get, :search => :get, :auto_complete => :get }, 
     :member => { :statistics => :get,
                  :favourite => :post,
                  :favourite_delete => :delete,
@@ -103,8 +103,11 @@ ActionController::Routing::Routes.draw do |map|
     :controller => :apps,
     :collection => { :all => :get, :search => :get }, 
     :member => { :statistics => :get,
+                 :edit_content => :get,
                  :favourite => :post,
                  :favourite_delete => :delete,
+                 :algorithm_create => :post,
+                 :algorithm_destroy => :delete,
                  :comment => :post, 
                  :comment_delete => :delete, 
                  :rate => :post, 

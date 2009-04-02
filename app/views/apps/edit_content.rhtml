@@ -1,0 +1,34 @@
+<% @contributable_class_label = visible_name(@contributable.class) %>
+
+<% t "Edit #{@contributable_label} (#{h @contributable.contributor_name})" -%>
+
+<h3>Algorithms:</h3>
+
+<div id="algorithm_list">
+  <%= render :partial => "algorithm_list" %>
+</div>
+
+<h3>Add an Algorithm to this Application</h3>
+
+<% remote_form_for(:algorithm_instance,
+    :url => algorithm_create_application_path(@contributable),
+    :html => { :method => :post },
+    :complete => "new Effect.Highlight('algorithm_list', { duration: 1.5 }); $('algorithm_input').value = '';",
+    :update => "algorithm_list") do |f| %>
+
+  <input id="algorithm_input" type="text" style="width: 500px;" name="algorithm_input" autocomplete="off"/>
+
+  <div class="auto_complete" id="algorithm_auto_complete" ></div>
+
+  <%= auto_complete_field "algorithm_input",
+            :update => "algorithm_auto_complete",
+            :url => {:controller => 'algorithms', :action => 'auto_complete'},
+            :tokens => ',',
+            :indicator => "algorithm_auto_complete_indicator" -%>
+
+  <img id="algorithm_auto_complete_indicator" style="margin-top: 0.2em; display: none;" src="/images/spinner.gif" />
+
+  <%= submit_tag "Add" %>
+
+<% end %>
+

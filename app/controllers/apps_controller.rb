@@ -6,10 +6,11 @@
 class AppsController < ApplicationController
   before_filter :login_required,             :except => [:index, :show, :statistics, :search, :all]
   before_filter :find_apps,                  :only   => [:all]
-  before_filter :find_app_aux,               :except => [:search, :index, :new, :create, :all]
+  before_filter :find_app_auth,              :except => [:search, :index, :new, :create, :all]
   before_filter :create_empty_object,        :only   => [:new, :create]
   before_filter :set_sharing_mode_variables, :only   => [:show, :new, :create, :edit, :update]
-  before_filter :check_can_edit,             :only   => [:edit, :update]
+  before_filter :check_can_edit,             :only   => [:edit, :update, :edit_content, :algorithm_create,
+                                                         :algorithm_destroy]
   
   # declare sweepers and which actions should invoke them
   cache_sweeper :blob_sweeper,             :only => [ :create, :update, :destroy ]
@@ -51,6 +52,8 @@ class AppsController < ApplicationController
     if allow_statistics_logging(@contributable)
       @viewing = Viewing.create(:contribution => @contributable.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
+
+    @algorithms = @contributable.algorithms.uniq
   end
   
   # GET /applications/new
@@ -240,6 +243,37 @@ class AppsController < ApplicationController
     end
   end
   
+  # GET /applications/1/edit_content
+  def edit_content
+  end
+
+  def algorithm_create
+    algorithm = Algorithm.find_by_title(params["algorithm_input"])
+
+    if algorithm.nil?
+      flash[:error] = "Algorithm Instance not found"
+    else
+      @contributable.algorithms << algorithm
+    end
+
+    render :partial => "algorithm_list"
+  end
+
+  def algorithm_destroy
+
+    ai = AlgorithmInstance.find_by_id(params["algorithm_instance_id"])
+
+    if ai.nil? || (ai.app != @contributable)
+      flash[:error] = "Algorithm Instance not found"
+      redirect_to(application_url(@contributables))
+      return
+    end
+
+    ai.destroy
+
+    render :partial => "algorithm_list"
+  end
+
   protected
   
   def find_apps
@@ -249,29 +283,42 @@ class AppsController < ApplicationController
                        :current => params[:page] })
   end
   
-  def find_app_aux
-    begin
-      app = App.find(params[:id])
-      
-      if Authorization.is_authorized?(action_name, nil, app, current_user)
-        @contributable = app
-        
-        @contributable_entry_url = url_for :only_path => false,
-                            :host => base_host,
-                            :id => @contributable.id
+  def find_app_auth
 
-      else
-        if logged_in? 
-          error("Application not found (id not authorized)", "is invalid (not authorized)")
-          return false
-        else
-          find_app_aux if login_required
-        end
-      end
-    rescue ActiveRecord::RecordNotFound
+    contributable = App.find_by_id(params[:id])
+  
+    if contributable.nil?
       error("Application not found", "is invalid")
       return false
     end
+      
+    # controller specific actions
+
+    action = case action_name
+      when 'show'
+        'view'
+      when 'edit', 'edit_content', 'update', 'destroy', 'algorithm_create', 'algorithm_destroy'
+        'edit'
+      else
+        action_name
+    end
+
+    if !Authorization.is_authorized?(action, nil, contributable, current_user)
+      error("Application not found (id not authorized)", "is invalid (not authorized)")
+      return false
+    end
+
+    @contributable = contributable
+        
+    @contributable_entry_url = url_for(:only_path => false, :host => base_host, :id => @contributable.id)
+                            
+    @contributable_label                = @contributable.label
+    @contributable_path                 = application_path(@contributable)
+    @edit_contributable_path            = edit_application_path(@contributable)
+    @tag_contributable_path             = tag_application_path(@contributable)
+    @favourite_contributable_url        = favourite_application_url(@contributable)
+    @favourite_delete_contributable_url = favourite_delete_application_url(@contributable)
+    @edit_content_contributable_path    = edit_content_application_path(@contributable)
   end
   
   def create_empty_object

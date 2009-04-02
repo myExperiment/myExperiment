@@ -1,0 +1,17 @@
+<ul>
+  <% @contributable.algorithm_instances.each do |algorithm_instance| %>
+    <% algorithm = algorithm_instance.algorithm %>
+    <li><%= algorithm.label -%>
+      <small>
+        [
+        <%= link_to_remote( "remove",
+            :update => "algorithm_list", 
+            :url => algorithm_destroy_application_path(:id => @contributable.id, :algorithm_instance_id => algorithm_instance.id),
+            :method => :delete,
+            :complete => "new Effect.Highlight('algorithm_list', { duration: 1.5 }); $('comment').value = '';",
+            :confirm => "Are you sure you want to remove '#{algorithm.title}' from this Application?" ) %>
+        ]
+      </small>
+    </li>
+  <% end %>
+</ul>
