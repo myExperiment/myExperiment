@@ -97,6 +97,10 @@ class Conf
     self.fetch_entry('activity_limits')
   end
 
+  def self.home_page_stats
+    self.fetch_entry('home_page_stats')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)
