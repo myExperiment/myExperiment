@@ -2,22 +2,22 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="content-type" content="text/html"/>
-    <title>myExperiment</title>
+    <title>APACE</title>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
     <link href="stylesheets/reset-fonts-grids.css" media="screen" rel="Stylesheet" type="text/css"/>
     <link href="stylesheets/base-min.css" media="screen" rel="Stylesheet" type="text/css"/>
     <link href="stylesheets/styles.css" media="screen" rel="Stylesheet" type="text/css"/>
     <link href="stylesheets/front.css" media="screen" rel="Stylesheet" type="text/css"/>
 		
-		<link href="/announcements.rss" rel="alternate" type="application/rss+xml" title="myExperiment.org - Site Announcements" />
+		<link href="/announcements.rss" rel="alternate" type="application/rss+xml" title="APACE - Site Announcements" />
   </head>
   <body onload="init()">
 		<div id="doc2">
       <div id="hd" class="frontpage_header">
-        <img alt="Logo" src="images/logo.png" class="logo"/>
+        <img alt="Logo" src="images/logo.jpg" class="logo"/>
         <div class="text">
-          myExperiment makes it really easy to <b>find</b>, <b>use</b> and <b>share</b> <b>scientific workflows</b> and
-          other <b>files</b>, and to build <b>communities</b>.
+          APACE makes it really easy to <b>find</b>, <b>use</b> and <b>share</b> HPC <b>algorithms</b> and
+          <b>applictions</b>, and to build <b>communities</b>.
         </div>
 				<div class="clearer">&nbsp;</div>
       </div>
@@ -32,9 +32,8 @@
 								<option value="all" selected>All</option>
 								<option value="users">Users</option>
 								<option value="groups">Groups</option>
-								<option value="workflows">Workflows</option>
-								<option value="files">Files</option>
-								<option value="packs">Packs</option>
+								<option value="workflows">Applications</option>
+								<option value="files">Algorithms</option>
 							</select> 
 							<input type="submit" value="Search" name="commit" onclick="this.disabled=true; this.value='Searching...'; this.form.submit();" />
 						</form>
@@ -46,24 +45,20 @@
 						<div class="content" style="height: 31.5em;">
 							<div class="links">
 								<p class="heading" style="margin-left: 1em; margin-bottom: 1em; text-align: left;">
-									Use myExperiment to...
+									Use APACE to...
 								</p>
 								<ul class="use">
 									<li>
-										<img src="images/redmond_studio/applications_16.png" alt="Find Workflows"/>
-										<b>Find <a href="/workflows">Workflows</a></b>
+										<img src="images/redmond_studio/applications_16.png" alt="Find Applications"/>
+										<b>Find <a href="/applications">Applications</a></b>
 									</li>
 									<li>
-										<img src="images/redmond_studio/documents_16.png" alt="Find Files"/>
-										<b>Find <a href="/files">Files</a></b>
+										<img src="images/redmond_studio/documents_16.png" alt="Find Algorithms"/>
+										<b>Find <a href="/algorithms">Algorithms</a></b>
 									</li>
 									<li>
-										<img src="images/redmond_studio/add_16.png" alt="Share Your Workflows and Files"/>
+										<img src="images/redmond_studio/add_16.png" alt="Share Your Applications and Agorithms"/>
 										<b>Share Your <a href="/workflows/new">Workflows</a> and <a href="/files/new">Files</a></b>
-									</li>
-									<li>
-										<img src="images/manhattan_studio/folder-closed_16.png" alt="Create and Find Packs of Items"/>
-										<b><a href="/packs/new">Create</a> and Find <a href="/packs">Packs</a> of Items</b>
 									</li>
 									<li>
 										<img src="images/famfamfam_silk/group.png" alt="Create and Join Groups"/>
@@ -108,20 +103,19 @@
 								<a href="/home" alt="Explore button" title="Explore myExperiment" class="letmein_button">
 								</a>
 							</center>
+<!--
 							<center>
-								<a href="/workflows" alt="Find Workflows button" title="Find Workflows on myExperiment" class="findworkflows_button">
+								<a href="/Algorithms" alt="Find Algorithms button" title="Find Algorithms on APACE" class="findworkflows_button">
 								</a>
 							</center>
+-->
 							
 							<div class="links" style="font-size: 93%; border-top: 1px dotted #999999; margin-top: 1em;">
-								<p style="margin-top: 1em;"><a href="http://wiki.myexperiment.org/" target="_blank" style="font-weight: bolder;">About myExperiment</a></p>
-								<p><a href="http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss" target="_blank">Join the Mailing List</a></p>
+								<p style="margin-top: 1em;"><a
+href="" target="_blank" style="font-weight: bolder;">About APACE</a></p>
+								<p>Join the Mailing List</p>
 								<p><a href="/feedback">Give us Feedback</a></p>
-								<p><a href="http://wiki.myexperiment.org/index.php/Developer:Contents" target="_blank">For Developers</a></p>
-								<p><a href="http://www.mygrid.org.uk" target="_blank">The myGrid Project</a></p>
-								<p><a href="http://www.taverna.org.uk/" target="_blank">Taverna Workflow Workbench</a></p>
-								<p><a href="http://www.biocatalogue.org" target="_blank">The BioCatalogue Project</a></p>
-								<p><a href="http://www.semanticgrid.org/myexperiment/" target="_blank">myExperiment Publications</a></p>
+								<p><a href="http://www.oerc.ox.ac.uk/research/hpc-na" target="_blank">HPC/NA Roadmap</a></p>
 							</div>
 						</div>
 						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
@@ -177,7 +171,7 @@
 	                    </p>
 										</div>
                     <p style="margin-top: 0.8em;">
-                      <input name="commit" value="" type="submit" class="submit" title="Log in to myExperiment"/>
+                      <input name="commit" value="" type="submit" class="submit" title="Log in to APACE"/>
                     </p>
 										<p style="font-size: 85%; margin-top: 1em;">
 											<b><a href="/users/forgot_password">Forgot Password?</a></b>
@@ -193,7 +187,6 @@
 					<br class="clearer">&nbsp;</br>
 					
 					<div class="stats">
-						myExperiment has over 1500 users, 130 groups, 560 workflows, 150 files and 40 packs
 					</div>
 					
 					<!-- About -->
@@ -204,26 +197,17 @@
 								About
 							</p>
 							<p>
-                The myExperiment Virtual Research Environment enables you and your colleagues to
-                share digital items associated with your research &mdash; in particular it enables
-                you to share and execute scientific workflows.
+                Apace enables you and your colleagues to ...
               </p>
               <p>
-                You can use myexperiment.org to <a href="/workflows"><b>find</b></a>
-                publicly shared workflows. If you want further access, and 
-                the ability to upload and share workflows, you will need to <a href="/users/new"><b>sign up</b></a>.
+                You can use APACE to ...
+<!--
+                ... you will need to <a href="/users/new"><b>sign up</b></a>.
+-->
               </p>
               <p>
-                The software that powers myexperiment.org is downloadable so that you can run your
-                own myExperiment instance. For more information visit our 
-                <a href="http://wiki.myexperiment.org/index.php/Developer:Contents" target="_blank">developer pages</a>. 
-                The <a href="http://rubyforge.org/projects/myexperiment" target="_blank">source code</a>  is maintained on 
-                RubyForge and is available under the <b>BSD licence</b>.
               </p>
               <p>
-                See the <a href="http://wiki.myexperiment.org/"><b>myExperiment Wiki</b></a>
-                for
-                further information about myExperiment and how to join the user and developer communities.
               </p>
 						</div>
 						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
@@ -237,22 +221,8 @@
 								Who?
 							</p>
 							<p>
-                myExperiment is brought to you by a joint team from the universities of 
-								<a href="http://www.soton.ac.uk/" target="_blank">Southampton</a> and 
-								<a href="http://www.manchester.ac.uk/" target="_blank">Manchester</a> in the UK, 
-								led by <a href="http://users.ecs.soton.ac.uk/dder" target="_blank">David De Roure</a> 
-								and <a href="http://www.cs.man.ac.uk/~carole/" target="_blank">Carole Goble</a>, and is funded by 
-								<a href="http://www.jisc.ac.uk/" target="_blank">JISC</a> under the 
-								Virtual Research Environments <a href="http://www.jisc.org.uk/whatwedo/programmes/vre2.aspx" target="_blank">programme</a> 
-								and by Microsoft's <a href="http://www.microsoft.com/mscorp/tc/" target="_blank">Technical Computing Initiative</a>.
               </p>
 							<p>
-								myExperiment is part of the <a href="http://www.mygrid.org.uk" target="_blank">myGrid</a> consortium, 
-								which develops the <a href="http://www.taverna.org.uk/" target="_blank">Taverna Workflow Workbench</a> 
-								for creating and executing scientific workflows, 
-								and also builds on <a href="http://www.combechem.org/" target="_blank">CombeChem</a> - two of the original UK e-Science Pilot Projects. 
-								The related WHIP (<a href="http://www.trianacode.org/" target="_blank">Triana</a> enactment) 
-								activity in Cardiff is supported by the <a href="http://www.omii.ac.uk/" target="_blank">OMII-UK</a> Commissioned Software Programme.
 							</p>
 						</div>
 						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
@@ -287,10 +257,8 @@
       </div>
 			<div id="ft">
         <p class="copyright">
-					Copyright (c) 2007 - 2008
-					<a href="http://www.manchester.ac.uk/" target="_blank">The University of Manchester</a>
-					and
-					<a href="http://www.soton.ac.uk/" target="_blank">University of Southampton</a>
+					Copyright (c) 2009 
+					<a href="http://www.oxford.ac.uk/" target="_blank">University of Oxford</a>
 				</p>
       </div>
 			
