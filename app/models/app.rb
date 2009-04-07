@@ -28,7 +28,7 @@ class App < ActiveRecord::Base
   has_many :algorithm_instances
   has_many :algorithms, :through => :algorithm_instances
 
-  acts_as_solr(:fields => [:title, :description]) if SOLR_ENABLE
+  acts_as_solr(:fields => [:title, :description]) if Conf.solr_enable
 
   validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
   

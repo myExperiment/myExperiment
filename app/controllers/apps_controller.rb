@@ -25,8 +25,8 @@ class AppsController < ApplicationController
     @query = params[:query] || ''
     @query.strip!
     
-    @contributables = (SOLR_ENABLE && !@query.blank?) ? App.find_by_solr(@query, :limit => 100).results : []
-    @total_count = (SOLR_ENABLE && !@query.blank?) ? App.count_by_solr(@query) : 0
+    @contributables = (Conf.solr_enable && !@query.blank?) ? App.find_by_solr(@query, :limit => 100).results : []
+    @total_count = (Conf.solr_enable && !@query.blank?) ? App.count_by_solr(@query) : 0
     
     respond_to do |format|
       format.html # search.rhtml
