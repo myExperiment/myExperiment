@@ -18,7 +18,7 @@ TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
                                'Foreign Accessor',
                                'List Element Name', 'List Element Accessor',
                                'Example', 'Versioned', 'Key type',
-                               'Limited to user', 'Permission' ] },
+                               'Limited to user', 'Permission', 'Index filter' ] },
                 
     'REST'  => { :indices => [ 'URI', 'Method' ] }
   } )
@@ -134,7 +134,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
     case model_data['Encoding'][i]
 
-      when 'list'
+      when 'list', 'item as list'
 
         list_element = XML::Node.new(model_data['REST Attribute'][i])
 
@@ -143,6 +143,8 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
         end
 
         collection = eval("ob.#{model_data['Accessor'][i]}")
+
+        collection = [collection] if model_data['Encoding'][i] == 'item as list'
 
         # filter out things that the user cannot see
         collection = collection.select do |c|
@@ -292,9 +294,9 @@ def rest_crud_request(req_uri, rules, user, query)
   rest_get_request(ob, params[:uri], user, eval("rest_resource_uri(ob)"), rest_name, query)
 end
 
-def find_all_paginated_auth(model, find_args, num, page, user)
+def find_all_paginated_auth(model, find_args, num, page, filters, user)
 
-  def aux(model, find_args, num, page, user)
+  def aux(model, find_args, num, page, filters, user)
 
     find_args = find_args.clone
     find_args[:page] = { :size => num, :current => page }
@@ -304,7 +306,15 @@ def find_all_paginated_auth(model, find_args, num, page, user)
     return nil if results.page > results.page_count
 
     results.select do |result|
-      Authorization.is_authorized?('view', nil, result, user)
+      selected = Authorization.is_authorized?('view', nil, result, user)
+
+      if selected
+        filters.each do |attribute,value|
+          selected = false unless result.send(attribute).downcase == value.downcase
+        end
+      end
+
+      selected
     end
   end
 
@@ -319,13 +329,13 @@ def find_all_paginated_auth(model, find_args, num, page, user)
   # up to possibly fulfil the request
 
   if (page > 1)
-    results = aux(model, find_args, upto, 1, user)
+    results = aux(model, find_args, upto, 1, filters, user)
     current_page = page + 1
   end
 
   while (results.length < upto)
 
-    results_page = aux(model, find_args, num, current_page, user)
+    results_page = aux(model, find_args, num, current_page, filters, user)
 
     if results_page.nil?
       break
@@ -359,6 +369,20 @@ def rest_index_request(req_uri, rules, user, query)
 
   page = 1 if page < 1
 
+  model = TABLES["Model"][:data][TABLES["REST"][:data][req_uri]["GET"]["REST Entity"]]
+
+  # detect filters
+
+  filters = {}
+
+  (0..model["REST Attribute"].length - 1).each do |i|
+    filter_name = model["Index filter"][i]
+
+    if !filter_name.nil? && !query[filter_name].nil?
+      filters[filter_name] = query[filter_name]
+    end
+  end
+
   if query['tag']
     tag = Tag.find_by_name(query['tag'])
 
@@ -386,7 +410,7 @@ def rest_index_request(req_uri, rules, user, query)
 
     find_args[:conditions] = conditions if conditions
 
-    obs = find_all_paginated_auth(model_name.camelize, find_args, limit, page, user)
+    obs = find_all_paginated_auth(model_name.camelize, find_args, limit, page, filters, user)
   end
 
   produce_rest_list(req_uri, rules, query, obs, rest_name.pluralize, user)
@@ -443,6 +467,7 @@ def rest_resource_uri(ob)
     when 'User';                   return user_url(ob)
     when 'Review';                 return workflow_review_url(ob.reviewable, ob)
     when 'Comment';                return "#{rest_resource_uri(ob.commentable)}/comments/#{ob.id}"
+    when 'Bookmark';               return nil
     when 'Blog';                   return blog_url(ob)
     when 'BlogPost';               return blog_post_url(ob.blog, ob)
     when 'Rating';                 return "#{rest_resource_uri(ob.rateable)}/ratings/#{ob.id}"
@@ -479,6 +504,7 @@ def rest_access_uri(ob)
     when 'User';                   return "#{base}/user.xml?id=#{ob.id}"
     when 'Review';                 return "#{base}/review.xml?id=#{ob.id}"
     when 'Comment';                return "#{base}/comment.xml?id=#{ob.id}"
+    when 'Bookmark';               return "#{base}/favourite.xml?id=#{ob.id}"
     when 'Blog';                   return "#{base}/blog.xml?id=#{ob.id}"
     when 'BlogPost';               return "#{base}/blog-post.xml?id=#{ob.id}"
     when 'Rating';                 return "#{base}/rating.xml?id=#{ob.id}"
@@ -524,6 +550,8 @@ def rest_object_tag_text(ob)
     when 'PackContributableEntry'; return rest_object_tag_text(ob.contributable)
     when 'PackRemoteEntry';        return 'external'
     when 'Workflow::Version';      return 'workflow'
+    when 'Comment';                return 'comment'
+    when 'Bookmark';               return 'favourite'
   end
 
   return 'object'

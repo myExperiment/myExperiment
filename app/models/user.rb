@@ -528,17 +528,12 @@ class User < ActiveRecord::Base
   # 1) the ID of a user (of 2 involved in the 'friendship') who is a 'friend', not an owner of the friendship;
   # 2) the 'friendship' object itself
   def friendship_from_self_id_and_friends_id(friend_id)
-    friendship = Friendship.find(:first, :conditions => [ "user_id = ? AND friend_id = ?", id, friend_id ] )
+    friendship = Friendship.find(:first, :conditions => [ "( (user_id = ? AND friend_id = ?) OR ( user_id = ? AND friend_id = ? ) )", id, friend_id, friend_id, id ] )
     
     if friendship
       return [friend_id, friendship]
-    elsif
-      friendship = Friendship.find(:first, :conditions => [ "user_id = ? AND friend_id = ?", friend_id, id ] )
-      if friendship
-        return [id, friendship]
-      else
-        return [nil, nil] # an error state
-      end
+    else
+      return [nil, nil] # an error state
     end
   end
   

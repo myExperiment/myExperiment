@@ -1,8 +1,9 @@
-<div class="stats">
-	<%= Conf.sitename %> currently has
-	<%= link_to pluralize(User.count(:conditions => "users.activated_at IS NOT NULL"), "user"), users_url -%>,
-	<%= link_to pluralize(Network.count, "group"), groups_url -%>,
-	<%= link_to pluralize(Workflow.count, "workflow"), workflows_url -%>,
-	<%= link_to pluralize(Blob.count, "file"), files_url -%> and
-	<%= link_to pluralize(Pack.count, "pack"), packs_url -%>
-</div>
+<% if !Conf.home_page_stats.empty? %>
+  <div class="stats">
+    <%= Conf.sitename %> currently has
+    <%= comma_list(Conf.home_page_stats.map do |stat| 
+          link_to(pluralize(eval(stat["model"]).count(stat["conditions"] ?
+                { :conditions => stat["conditions"] } : { }), stat["label"]), stat["link"])
+        end) %>
+  </div>
+<% end %>
