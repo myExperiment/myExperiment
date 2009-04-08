@@ -158,7 +158,7 @@ module Authorization
     #
     # this is required to get "policy_id" for policy-based aurhorized objects (like workflows / blobs / packs / contributions)
     # and to get objects themself for other object types (networks, experiments, jobs, tavernaenactors, runners)
-    if (thing_contribution.nil? && ["Workflow", "Blob", "Pack", "Contribution"].include?(thing_type)) || 
+    if (thing_contribution.nil? && ["Workflow", "Blog", "Blob", "Pack", "Contribution"].include?(thing_type)) || 
        (thing_instance.nil? && ["Network", "Comment", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type))
       
       found_thing = find_thing(thing_type, thing_id)
@@ -168,7 +168,7 @@ module Authorization
         logger.error("UNEXPECTED ERROR - Couldn't find object to be authorized:(#{thing_type}, #{thing_id}); action: #{action_name}; user: #{user_id}")
         return false
       else
-        if ["Workflow", "Blob", "Pack", "Contribution"].include?(thing_type)
+        if ["Workflow", "Blog", "Blob", "Pack", "Contribution"].include?(thing_type)
           # "contribution" are only found for these three types of object (and the contributions themself),
           # for all the rest - use instances
           thing_contribution = found_thing
@@ -184,7 +184,7 @@ module Authorization
     is_authorized = false
     
     case thing_type
-      when "Workflow", "Blob", "Pack", "Contribution"
+      when "Workflow", "Blog", "Blob", "Pack", "Contribution"
         unless user_id.nil?
           # access is authorized and no further checks required in two cases:
           # ** user is the owner of the "thing"
@@ -354,7 +354,7 @@ module Authorization
     
     begin
       case thing_type
-        when "Workflow", "Blob", "Pack"
+        when "Workflow", "Blog", "Blob", "Pack"
           # "find_by_sql" works faster itself PLUS only a subset of all fields is selected;
           # this is the most frequent query to be executed, hence needs to be optimised
           found_instance = Contribution.find_by_sql "SELECT contributor_id, contributor_type, policy_id FROM contributions WHERE contributable_id=#{thing_id} AND contributable_type='#{thing_type}'"
@@ -432,7 +432,7 @@ module Authorization
   
   # checks if two users are friends
   def Authorization.is_friend?(contributor_id, user_id)
-    friendship = Friendship.find_by_sql "SELECT id FROM friendships WHERE (user_id=#{contributor_id} AND friend_id=#{user_id}) OR (user_id=#{user_id} AND friend_id=#{contributor_id}) AND accepted_at IS NOT NULL"
+    friendship = Friendship.find_by_sql "SELECT id FROM friendships WHERE ((user_id=#{contributor_id} AND friend_id=#{user_id}) OR (user_id=#{user_id} AND friend_id=#{contributor_id})) AND accepted_at IS NOT NULL"
     return(!friendship.blank?)
   end
   
