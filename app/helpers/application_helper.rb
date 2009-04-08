@@ -767,7 +767,7 @@ module ApplicationHelper
     when "register_application"
       return "famfamfam_silk/application_edit.png"
     else
-      return nil
+      return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end
   end
   

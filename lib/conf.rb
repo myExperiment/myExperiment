@@ -101,6 +101,10 @@ class Conf
     self.fetch_entry('home_page_stats')
   end
 
+  def self.label_icons
+    self.fetch_entry('label_icons', {})
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)
@@ -109,9 +113,10 @@ class Conf
 
 private
 
-  def self.fetch_entry(key)
+  def self.fetch_entry(key, default = nil)
     return @settings[key] if @settings[key]
     return @defaults[key] if @defaults[key]
+    default
   end
 
 end

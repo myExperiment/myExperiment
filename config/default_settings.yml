@@ -354,3 +354,15 @@ home_page_stats:
     label: pack
     link:  /packs
 
+# label_icons - This is a list of icon types to icons.
+#
+#               Example:
+#
+#                 label_icons:
+#
+#                   workflow: redmond_studio/applications_16.png
+#                   blob:     redmond_studio/documents_16.png
+#                   pack:     manhattan_studio/folder-closed_16.png
+
+label_icons:
+
