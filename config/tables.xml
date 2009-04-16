@@ -81,7 +81,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="REST">
-  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="91" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="95" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="42"/>
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="99.75"/>
@@ -316,6 +316,38 @@
     <Cell ss:Index="8"><Data ss:Type="String">crud</Data></Cell>
     <Cell><Data ss:Type="String">picture</Data></Cell>
     <Cell ss:StyleID="s70"><Data ss:Type="String">picture</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="4" ss:StyleID="s69"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="10" ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">favourites</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s69"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="8"><Data ss:Type="String">index</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">favourite</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">bookmark</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="4" ss:StyleID="s69"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="10" ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">favourite</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s69"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="8"><Data ss:Type="String">crud</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">favourite</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">bookmark</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:Index="4" ss:StyleID="s69"/>
@@ -784,7 +816,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">user_count</Data></Cell>
    </Row>
-   <Row ss:Index="79" ss:AutoFitHeight="0">
+   <Row ss:Index="83" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">group-count</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -792,7 +824,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">group_count</Data></Cell>
    </Row>
-   <Row ss:Index="81" ss:AutoFitHeight="0">
+   <Row ss:Index="85" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">pack-count</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -800,7 +832,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">pack_count</Data></Cell>
    </Row>
-   <Row ss:Index="83" ss:AutoFitHeight="0">
+   <Row ss:Index="87" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">tagged</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -808,7 +840,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">get_tagged</Data></Cell>
    </Row>
-   <Row ss:Index="85" ss:AutoFitHeight="0">
+   <Row ss:Index="89" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">tag-cloud</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -816,7 +848,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">tag_cloud</Data></Cell>
    </Row>
-   <Row ss:Index="87" ss:AutoFitHeight="0">
+   <Row ss:Index="91" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">POST</Data></Cell>
     <Cell><Data ss:Type="String">job</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -824,7 +856,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">post_job</Data></Cell>
    </Row>
-   <Row ss:Index="89" ss:AutoFitHeight="0">
+   <Row ss:Index="93" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">whoami</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -832,7 +864,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">whoami_redirect</Data></Cell>
    </Row>
-   <Row ss:Index="91" ss:AutoFitHeight="0">
+   <Row ss:Index="95" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">download</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">system</Data></Cell>
@@ -858,7 +890,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>1</TopRowBottomPane>
+   <TopRowBottomPane>12</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -871,12 +903,12 @@
     </Pane>
     <Pane>
      <Number>2</Number>
+     <ActiveRow>1</ActiveRow>
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>26</ActiveRow>
-     <ActiveCol>0</ActiveCol>
-     <RangeSelection>R27:R30</RangeSelection>
+     <ActiveRow>31</ActiveRow>
+     <ActiveCol>8</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
@@ -885,7 +917,7 @@
   </WorksheetOptions>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="263" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="264" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="111.75"/>
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="116.25"/>
@@ -3166,7 +3198,20 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="203" ss:AutoFitHeight="0">
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">pack</Data></Cell>
+    <Cell><Data ss:Type="String">download-url</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Pack</Data></Cell>
+    <Cell><Data ss:Type="String">download_pack_url</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">url</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:Index="204" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">experiment</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Experiment</Data></Cell>
@@ -3262,7 +3307,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="211" ss:AutoFitHeight="0">
+   <Row ss:Index="212" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">runner</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">TavernaEnactor</Data></Cell>
@@ -3381,7 +3426,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="221" ss:AutoFitHeight="0">
+   <Row ss:Index="222" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">job</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Job</Data></Cell>
@@ -3600,7 +3645,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="27" ss:StyleID="Default"/>
    </Row>
-   <Row ss:Index="238" ss:AutoFitHeight="0">
+   <Row ss:Index="239" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">download</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Download</Data></Cell>
@@ -3641,7 +3686,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">system</Data></Cell>
     <Cell ss:Index="18"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="242" ss:AutoFitHeight="0">
+   <Row ss:Index="243" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">internal-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackContributableEntry</Data></Cell>
@@ -3726,7 +3771,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
    </Row>
-   <Row ss:Index="250" ss:AutoFitHeight="0">
+   <Row ss:Index="251" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackRemoteEntry</Data></Cell>
@@ -3846,7 +3891,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="260" ss:AutoFitHeight="0">
+   <Row ss:Index="261" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">favourite</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Bookmark</Data></Cell>
@@ -3878,12 +3923,13 @@
     <Cell ss:Index="4"><Data ss:Type="String">Bookmark</Data></Cell>
     <Cell><Data ss:Type="String">bookmarkable</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
-    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">item as list</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="18"><Data ss:Type="String">bookmarkable</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">favourite</Data></Cell>
@@ -3917,7 +3963,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>157</TopRowBottomPane>
+   <TopRowBottomPane>183</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -3934,7 +3980,7 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>187</ActiveRow>
+     <ActiveRow>202</ActiveRow>
      <ActiveCol>4</ActiveCol>
     </Pane>
    </Panes>

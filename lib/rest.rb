@@ -189,6 +189,14 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         text
 
+      when 'url'
+
+        element = XML::Node.new(model_data['REST Attribute'][i])
+
+        element << eval("#{model_data['Accessor'][i]}(ob)")
+
+        element
+
       else 
 
         if model_data['Encoding'][i] == 'file-column'
