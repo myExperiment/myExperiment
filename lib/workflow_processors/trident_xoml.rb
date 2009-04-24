@@ -18,11 +18,6 @@ module WorkflowProcessors
       "Trident (XOML)"
     end
     
-    # MUST be unique across all processors
-    def self.content_type
-      "application/xaml+xml"
-    end
-    
     def self.display_data_format
       "XOML"
     end

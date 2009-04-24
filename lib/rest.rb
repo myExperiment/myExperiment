@@ -530,7 +530,7 @@ def rest_access_uri(ob)
     when 'PackRemoteEntry';        return "#{base}/external-pack-item.xml?id=#{ob.id}"
     when 'Tagging';                return "#{base}/tagging.xml?id=#{ob.id}"
 
-    when 'Creditation';     return nil
+    when 'Creditation';     return "#{base}/credit.xml?id=#{ob.id}"
     when 'Attribution';     return nil
 
     when 'Workflow::Version'; return "#{base}/workflow.xml?id=#{ob.workflow.id}&version=#{ob.version}"
@@ -547,7 +547,7 @@ def rest_object_tag_text(ob)
     when 'Blob';                   return 'file'
     when 'Network';                return 'group'
     when 'Rating';                 return 'rating'
-    when 'Creditation';            return 'creditation'
+    when 'Creditation';            return 'credit'
     when 'Citation';               return 'citation'
     when 'Announcement';           return 'announcement'
     when 'Tag';                    return 'tag'
@@ -725,6 +725,7 @@ def workflow_aux(action, req_uri, rules, user, query)
     title        = parse_element(data, :text,   '/workflow/title')
     description  = parse_element(data, :text,   '/workflow/description')
     license_type = parse_element(data, :text,   '/workflow/license-type')
+    type         = parse_element(data, :text,   '/workflow/type')
     content_type = parse_element(data, :text,   '/workflow/content-type')
     content      = parse_element(data, :binary, '/workflow/content')
     preview      = parse_element(data, :binary, '/workflow/preview')
@@ -734,7 +735,34 @@ def workflow_aux(action, req_uri, rules, user, query)
     ob.title        = title        if title
     ob.body         = description  if description
     ob.license      = license_type if license_type
-    ob.content_type = content_type if content_type
+
+    # handle workflow type
+
+    if type
+
+      ob.content_type = ContentType.find_by_title(type)
+
+      if ob.content_type.nil?
+        ob.errors.add("Type")
+        return rest_response(400, :object => ob)
+      end
+
+    elsif content_type
+
+      content_types = ContentType.find_all_by_mime_type(content_type)
+  
+      if content_types.length == 1
+        ob.content_type = content_types.first
+      else
+        if content_types.empty?
+          ob.errors.add("Content type")
+        else
+          ob.errors.add("Content type", "matches more than one registered content type")
+        end
+
+        return rest_response(400, :object => ob)
+      end
+    end
 
     ob.content_blob = ContentBlob.new(:data => content) if content
 

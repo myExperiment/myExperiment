@@ -18,11 +18,6 @@ module WorkflowProcessors
       "Taverna 2 beta"
     end
     
-    # MUST be unique across all processors
-    def self.content_type
-      "taverna2beta"
-    end
-    
     def self.display_data_format
       "T2FLOW"
     end

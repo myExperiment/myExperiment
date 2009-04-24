@@ -30,11 +30,6 @@ module WorkflowProcessors
       "Taverna 1"
     end
     
-    # MUST be unique across all processors
-    def self.content_type
-      "application/vnd.taverna.scufl+xml"
-    end
-    
     def self.display_data_format
       "SCUFL"
     end

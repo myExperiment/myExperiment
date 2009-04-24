@@ -74,7 +74,7 @@ class SearchController < ApplicationController
       markup += "<pubDate>" + time_string(w.created_at) + "</pubDate>";
       markup += "<media:content url=\"" + w.named_download_url + "\"";
       markup += " fileSize=\"" + w.content_blob.data.length.to_s + "\"" +
-                " type=\"" + w.content_type + "\"/>";
+                " type=\"" + w.content_type.title + "\"/>";
       markup += "<media:thumbnail url=\"" + file_column_url(w, "image/thumb") +
           "\"/>";
 #markup += "height=\"120\" width=\"160\"/>";

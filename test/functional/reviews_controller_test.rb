@@ -5,7 +5,7 @@ require 'reviews_controller'
 class ReviewsController; def rescue_action(e) raise e end; end
 
 class ReviewsControllerTest < Test::Unit::TestCase
-  fixtures :reviews, :users, :workflows, :workflow_versions, :contributions, :blobs, :packs, :policies, :permissions
+  fixtures :reviews, :users, :workflows, :workflow_versions, :contributions, :blobs, :packs, :policies, :permissions, :content_types
 
   def setup
     @controller = ReviewsController.new

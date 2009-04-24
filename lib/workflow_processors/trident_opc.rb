@@ -18,11 +18,6 @@ module WorkflowProcessors
       "Trident (Package)"
     end
     
-    # MUST be unique across all processors
-    def self.content_type
-      "trident_opc"
-    end
-    
     def self.display_data_format
       "Package"
     end

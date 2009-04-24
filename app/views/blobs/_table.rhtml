@@ -72,7 +72,7 @@
 							<% end %>
 						</div>
 						
-						<p style="font-size:85%;"><b>File type: </b><%= h blob.content_type %></p>
+						<p style="font-size:85%;"><b>File type: </b><%= h blob.content_type.title %></p>
 						
 						<p style="font-size: 85%;">
 							<a href="<%= file_path(blob) + '#ratings' -%>"><b>Rating: </b><%= number_with_precision(blob.rating, 1) %> / 5 (<%= pluralize blob.ratings_count, 'rating' %>)</a> |

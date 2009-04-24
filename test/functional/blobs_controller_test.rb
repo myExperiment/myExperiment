@@ -10,7 +10,7 @@ require 'blobs_controller'
 class BlobsController; def rescue_action(e) raise e end; end
 
 class BlobsControllerTest < Test::Unit::TestCase
-  fixtures :blobs, :users, :contributions, :content_blobs, :workflows, :packs, :policies, :permissions, :networks
+  fixtures :blobs, :users, :contributions, :content_blobs, :workflows, :packs, :policies, :permissions, :networks, :content_types
 
   def setup
     @controller = BlobsController.new

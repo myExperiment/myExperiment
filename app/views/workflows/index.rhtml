@@ -1,6 +1,6 @@
 <div class="box_standout" style="text-align: center; margin-bottom: 1em; font-weight: bold; line-height: 1.5em;">
-	<% Workflow.count(:all, :group => 'content_type').sort{|x,y| y[1] <=> x[1]}.each do |arr| %>
-		| <%= pluralize(arr[1], (h(WorkflowTypesHandler.type_display_name_for_content_type(arr[0]) + " workflow"))) %>
+	<% Workflow.count(:all, :group => 'content_type_id').sort{|x,y| y[1] <=> x[1]}.each do |arr| %>
+		| <%= pluralize(arr[1], (h(ContentType.find_by_id(arr[0]).title + " workflow"))) %>
 	<% end %>
 	|
 </div>

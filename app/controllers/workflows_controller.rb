@@ -162,7 +162,7 @@ class WorkflowsController < ApplicationController
       @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
     
-    send_data(@viewing_version.content_blob.data, :filename => @workflow.filename(@viewing_version_number), :type => @workflow.content_type)
+    send_data(@viewing_version.content_blob.data, :filename => @workflow.filename(@viewing_version_number), :type => @workflow.content_type.mime_type)
   end
   
   # GET /workflows/:id/download/:name
@@ -179,7 +179,7 @@ class WorkflowsController < ApplicationController
   # GET /workflows/:id/launch.whip
   def launch
     # Only allow for Taverna 1 workflows.
-    if @workflow.content_type == WorkflowProcessors::TavernaScufl.content_type
+    if @workflow.processor_class == WorkflowProcessors::TavernaScufl
       wwf = Whip::WhipWorkflow.new()
   
       wwf.title       = @viewing_version.title
@@ -353,11 +353,11 @@ class WorkflowsController < ApplicationController
     
     wrong_type_err = false
     
-    if WorkflowTypesHandler.processor_class_for_content_type(@workflow.content_type).nil?
+    if @workflow.processor_class.nil?
       # Just need to check file extension matches
       wrong_type_err = true unless file_ext == @workflow.file_ext 
     else
-      wrong_type_err = true unless workflow_file_matches_content_type_if_supported?(file, @workflow.content_type)
+      wrong_type_err = true unless workflow_file_matches_content_type_if_supported?(file, @workflow)
     end
     
     if wrong_type_err
@@ -430,7 +430,7 @@ class WorkflowsController < ApplicationController
   def update
     # remove protected columns
     if params[:workflow]
-      [:contribution, :contributor_id, :contributor_type, :image, :svg, :created_at, :updated_at, :current_version, :content_type, :file_ext, :content_blob_id].each do |column_name|
+      [:contribution, :contributor_id, :contributor_type, :image, :svg, :created_at, :updated_at, :current_version, :content_type, :content_type_id, :file_ext, :content_blob_id].each do |column_name|
         params[:workflow].delete(column_name)
       end
     end
@@ -824,7 +824,7 @@ private
           workflow_to_set.title = processor_instance.get_title
           workflow_to_set.body = processor_instance.get_description
           
-          workflow_to_set.content_type = processor_class.content_type
+          workflow_to_set.content_type = ContentType.find_by_title(processor_class.display_name)
           
           # Set the internal unique name for this particular workflow (or workflow_version).
           workflow_to_set.set_unique_name
@@ -860,17 +860,16 @@ private
       wf_type = params[:workflow][:type]
     
       if wf_type.downcase == 'other'
-        wf_type = params[:workflow][:type_other]
+        workflow_to_set.content_type = ContentType.create(:user_id => current_user.id,
+            :mime_type => file.content_type, :title => params[:workflow][:type_other])
       else
-        wf_type = WorkflowTypesHandler.content_type_for_type_display_name(wf_type)
+        workflow_to_set.content_type = ContentType.find_by_title(wf_type)
       end
-      
-      workflow_to_set.content_type = wf_type
     end
     
     # Check that the file uploaded is valid for the content type chosen (if supported by a workflow processor).
     # This is to ensure that the correct content type is being assigned to the workflow file uploaded.
-    return false unless workflow_file_matches_content_type_if_supported?(file, workflow_to_set.content_type)
+    return false unless workflow_file_matches_content_type_if_supported?(file, workflow_to_set)
     
     # Preview image
     # TODO: kept getting permission denied errors from the file_column and rmagick code, so disable for windows, for now.
@@ -884,16 +883,16 @@ private
     return worked
   end
   
-  # This method checks to to see if the file specified is a valid one for the workflow content_type specified,
-  # but only if the workflow content_type specified has a supporting processor.
+  # This method checks to to see if the file specified is a valid one for the existing workflow specified,
+  # but only if the existing workflow specified has a supporting processor.
   # If no supporting processor is found then validity cannot be determined so we assume the file is valid for the content type.
   #
   # Note: this will check whether the file extension is supported and, if the processor allows for it, 
   # checks if the file is "recognised" by the processor as a valid workflow of that type.
-  def workflow_file_matches_content_type_if_supported?(file, content_type)
+  def workflow_file_matches_content_type_if_supported?(file, existing_workflow)
     ok = true
     
-    proc_class = WorkflowTypesHandler.processor_class_for_content_type(content_type)
+    proc_class = existing_workflow.processor_class
       
     if proc_class
       # Check that the file extension of the file specified is supported by the processor.

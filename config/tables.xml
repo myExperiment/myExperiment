@@ -10,7 +10,7 @@
   <LastAuthor>Don Cruickshank</LastAuthor>
   <LastPrinted>2008-01-22T13:52:43Z</LastPrinted>
   <Created>2007-11-17T10:53:37Z</Created>
-  <LastSaved>2009-04-06T15:24:54Z</LastSaved>
+  <LastSaved>2009-04-16T15:05:39Z</LastSaved>
   <Version>12.00</Version>
  </DocumentProperties>
  <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
@@ -81,7 +81,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="REST">
-  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="95" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="99" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="42"/>
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="99.75"/>
@@ -746,6 +746,42 @@
     <Cell ss:Index="9" ss:StyleID="s70"/>
     <Cell ss:StyleID="s70"/>
     <Cell ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">credits</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">view</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">creditable</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">index</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">credit</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">creditation</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="5" ss:StyleID="s63"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="9" ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">credit</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">view</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">creditable</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">crud</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">credit</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">creditation</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="5" ss:StyleID="s63"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="9" ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
     <Cell ss:StyleID="s70"/>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -816,7 +852,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">user_count</Data></Cell>
    </Row>
-   <Row ss:Index="83" ss:AutoFitHeight="0">
+   <Row ss:Index="87" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">group-count</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -824,7 +860,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">group_count</Data></Cell>
    </Row>
-   <Row ss:Index="85" ss:AutoFitHeight="0">
+   <Row ss:Index="89" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">pack-count</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -832,7 +868,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">pack_count</Data></Cell>
    </Row>
-   <Row ss:Index="87" ss:AutoFitHeight="0">
+   <Row ss:Index="91" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">tagged</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -840,7 +876,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">get_tagged</Data></Cell>
    </Row>
-   <Row ss:Index="89" ss:AutoFitHeight="0">
+   <Row ss:Index="93" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">tag-cloud</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -848,7 +884,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">tag_cloud</Data></Cell>
    </Row>
-   <Row ss:Index="91" ss:AutoFitHeight="0">
+   <Row ss:Index="95" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">POST</Data></Cell>
     <Cell><Data ss:Type="String">job</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -856,7 +892,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">post_job</Data></Cell>
    </Row>
-   <Row ss:Index="93" ss:AutoFitHeight="0">
+   <Row ss:Index="97" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">whoami</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -864,7 +900,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">whoami_redirect</Data></Cell>
    </Row>
-   <Row ss:Index="95" ss:AutoFitHeight="0">
+   <Row ss:Index="99" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">download</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">system</Data></Cell>
@@ -890,7 +926,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>12</TopRowBottomPane>
+   <TopRowBottomPane>22</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -907,8 +943,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>31</ActiveRow>
-     <ActiveCol>8</ActiveCol>
+     <ActiveRow>76</ActiveRow>
+     <ActiveCol>9</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
@@ -917,7 +953,7 @@
   </WorksheetOptions>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="264" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="272" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="111.75"/>
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="116.25"/>
@@ -1112,6 +1148,20 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">file</Data></Cell>
+    <Cell><Data ss:Type="String">type</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Blob</Data></Cell>
+    <Cell><Data ss:Type="String">content_type.title</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14" ss:StyleID="s69"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="27" ss:StyleID="s75"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">file</Data></Cell>
     <Cell><Data ss:Type="String">uploader</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Blob</Data></Cell>
     <Cell><Data ss:Type="String">contributor_name</Data></Cell>
@@ -1129,7 +1179,7 @@
     <Cell><Data ss:Type="String">file</Data></Cell>
     <Cell><Data ss:Type="String">content-type</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Blob</Data></Cell>
-    <Cell><Data ss:Type="String">content_type</Data></Cell>
+    <Cell><Data ss:Type="String">content_type.mime_type</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell><Data ss:Type="String">text</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
@@ -1254,7 +1304,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="24" ss:AutoFitHeight="0">
+   <Row ss:Index="25" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">citation</Data></Cell>
     <Cell><Data ss:Type="String">accessed-at</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Citation</Data></Cell>
@@ -1435,7 +1485,7 @@
     <Cell ss:Index="14" ss:StyleID="s69"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="18"><Data ss:Type="String">workflow</Data></Cell>
    </Row>
-   <Row ss:Index="38" ss:AutoFitHeight="0">
+   <Row ss:Index="39" ss:AutoFitHeight="0">
     <Cell ss:Index="4"><Data ss:Type="String">Contribution</Data></Cell>
     <Cell><Data ss:Type="String">contributable_id</Data></Cell>
    </Row>
@@ -1475,7 +1525,7 @@
     <Cell ss:Index="4"><Data ss:Type="String">Contribution</Data></Cell>
     <Cell><Data ss:Type="String">viewings_count</Data></Cell>
    </Row>
-   <Row ss:Index="49" ss:AutoFitHeight="0">
+   <Row ss:Index="50" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">friendship</Data></Cell>
     <Cell><Data ss:Type="String">accepted-at</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Friendship</Data></Cell>
@@ -1547,7 +1597,7 @@
     <Cell ss:Index="18"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="27"><Data ss:Type="Number">16</Data></Cell>
    </Row>
-   <Row ss:Index="55" ss:AutoFitHeight="0">
+   <Row ss:Index="56" ss:AutoFitHeight="0">
     <Cell ss:Index="4"><Data ss:Type="String">Membership</Data></Cell>
     <Cell><Data ss:Type="String">created_at</Data></Cell>
    </Row>
@@ -1571,7 +1621,7 @@
     <Cell ss:Index="4"><Data ss:Type="String">Membership</Data></Cell>
     <Cell><Data ss:Type="String">user_id</Data></Cell>
    </Row>
-   <Row ss:Index="62" ss:AutoFitHeight="0">
+   <Row ss:Index="63" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">message</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Message</Data></Cell>
@@ -1684,7 +1734,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="27" ss:StyleID="s74"><Data ss:Type="String">Remember remember</Data></Cell>
    </Row>
-   <Row ss:Index="71" ss:AutoFitHeight="0">
+   <Row ss:Index="72" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">group</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Network</Data></Cell>
@@ -1870,7 +1920,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="85" ss:AutoFitHeight="0">
+   <Row ss:Index="86" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">picture</Data></Cell>
     <Cell><Data ss:Type="String">data</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Picture</Data></Cell>
@@ -1898,7 +1948,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="27"><Data ss:Type="Number">38</Data></Cell>
    </Row>
-   <Row ss:Index="88" ss:AutoFitHeight="0">
+   <Row ss:Index="89" ss:AutoFitHeight="0">
     <Cell ss:Index="4"><Data ss:Type="String">Policy</Data></Cell>
     <Cell><Data ss:Type="String">contributor_id</Data></Cell>
    </Row>
@@ -1954,7 +2004,7 @@
     <Cell ss:Index="4"><Data ss:Type="String">Policy</Data></Cell>
     <Cell><Data ss:Type="String">view_public</Data></Cell>
    </Row>
-   <Row ss:Index="103" ss:AutoFitHeight="0">
+   <Row ss:Index="104" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">tag</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Tag</Data></Cell>
@@ -2025,7 +2075,7 @@
     <Cell ss:Index="20"><Data ss:Type="String">tagging</Data></Cell>
     <Cell><Data ss:Type="String">taggable</Data></Cell>
    </Row>
-   <Row ss:Index="109" ss:AutoFitHeight="0">
+   <Row ss:Index="110" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">tagging</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Tagging</Data></Cell>
@@ -2093,7 +2143,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="115" ss:AutoFitHeight="0">
+   <Row ss:Index="116" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">user</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">User</Data></Cell>
@@ -2486,7 +2536,7 @@
     <Cell ss:Index="20"><Data ss:Type="String">runner</Data></Cell>
     <Cell><Data ss:Type="String">title</Data></Cell>
    </Row>
-   <Row ss:Index="143" ss:AutoFitHeight="0">
+   <Row ss:Index="144" ss:AutoFitHeight="0">
     <Cell ss:Index="4"><Data ss:Type="String">Viewing</Data></Cell>
     <Cell><Data ss:Type="String">contribution_id</Data></Cell>
    </Row>
@@ -2502,7 +2552,7 @@
     <Cell ss:Index="4"><Data ss:Type="String">Viewing</Data></Cell>
     <Cell><Data ss:Type="String">user_id</Data></Cell>
    </Row>
-   <Row ss:Index="148" ss:AutoFitHeight="0">
+   <Row ss:Index="149" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Workflow</Data></Cell>
@@ -2543,6 +2593,19 @@
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="27"><Data ss:Type="String">Part of a workflow by Hannah Tipney, adapted by Duncan Hull using GenScan, RepeatMasker and BLAST. http://dx.doi.org/10.1093/nar/gkl320</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">workflow</Data></Cell>
+    <Cell><Data ss:Type="String">type</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Workflow</Data></Cell>
+    <Cell><Data ss:Type="String">content_type.title</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
@@ -2671,7 +2734,7 @@
     <Cell><Data ss:Type="String">workflow</Data></Cell>
     <Cell><Data ss:Type="String">content-type</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Workflow</Data></Cell>
-    <Cell><Data ss:Type="String">content_type</Data></Cell>
+    <Cell><Data ss:Type="String">content_type.mime_type</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell><Data ss:Type="String">text</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
@@ -2851,7 +2914,7 @@
     <Cell ss:Index="25"><Data ss:Type="String">download</Data></Cell>
     <Cell ss:Index="27" ss:StyleID="s74"/>
    </Row>
-   <Row ss:Index="174" ss:AutoFitHeight="0">
+   <Row ss:Index="176" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">comment</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Comment</Data></Cell>
@@ -2922,7 +2985,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="27"><Data ss:Type="String">Wed Oct 03 18:35:47 +0100 2007</Data></Cell>
    </Row>
-   <Row ss:Index="180" ss:AutoFitHeight="0">
+   <Row ss:Index="182" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">rating</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Rating</Data></Cell>
@@ -2979,7 +3042,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="27"><Data ss:Type="String">Wed Oct 03 18:35:47 +0100 2007</Data></Cell>
    </Row>
-   <Row ss:Index="185" ss:AutoFitHeight="0">
+   <Row ss:Index="187" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">review</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Review</Data></Cell>
@@ -3064,7 +3127,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="27"><Data ss:Type="String">Wed Oct 03 18:35:47 +0100 2007</Data></Cell>
    </Row>
-   <Row ss:Index="192" ss:AutoFitHeight="0">
+   <Row ss:Index="194" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">pack</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Pack</Data></Cell>
@@ -3211,7 +3274,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="204" ss:AutoFitHeight="0">
+   <Row ss:Index="206" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">experiment</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Experiment</Data></Cell>
@@ -3307,7 +3370,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="212" ss:AutoFitHeight="0">
+   <Row ss:Index="214" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">runner</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">TavernaEnactor</Data></Cell>
@@ -3426,7 +3489,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="222" ss:AutoFitHeight="0">
+   <Row ss:Index="224" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">job</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Job</Data></Cell>
@@ -3645,7 +3708,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="27" ss:StyleID="Default"/>
    </Row>
-   <Row ss:Index="239" ss:AutoFitHeight="0">
+   <Row ss:Index="241" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">download</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Download</Data></Cell>
@@ -3686,7 +3749,7 @@
     <Cell ss:Index="14"><Data ss:Type="String">system</Data></Cell>
     <Cell ss:Index="18"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="243" ss:AutoFitHeight="0">
+   <Row ss:Index="245" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">internal-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackContributableEntry</Data></Cell>
@@ -3771,7 +3834,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
    </Row>
-   <Row ss:Index="251" ss:AutoFitHeight="0">
+   <Row ss:Index="253" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">PackRemoteEntry</Data></Cell>
@@ -3891,7 +3954,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
-   <Row ss:Index="261" ss:AutoFitHeight="0">
+   <Row ss:Index="263" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">favourite</Data></Cell>
     <Cell><Data ss:Type="String">id</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Bookmark</Data></Cell>
@@ -3944,6 +4007,71 @@
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
+   <Row ss:Index="268" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">credit</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Creditation</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">credit</Data></Cell>
+    <Cell><Data ss:Type="String">creditor</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Creditation</Data></Cell>
+    <Cell ss:Index="6"><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="18"><Data ss:Type="String">creditor</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">credit</Data></Cell>
+    <Cell><Data ss:Type="String">object</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Creditation</Data></Cell>
+    <Cell><Data ss:Type="String">creditable</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">item as list</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">credit</Data></Cell>
+    <Cell><Data ss:Type="String">created-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Creditation</Data></Cell>
+    <Cell><Data ss:Type="String">created_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">credit</Data></Cell>
+    <Cell><Data ss:Type="String">updated-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Creditation</Data></Cell>
+    <Cell><Data ss:Type="String">updated_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <PageSetup>
@@ -3963,7 +4091,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>183</TopRowBottomPane>
+   <TopRowBottomPane>1</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -3976,11 +4104,10 @@
     </Pane>
     <Pane>
      <Number>2</Number>
-     <ActiveRow>1</ActiveRow>
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>202</ActiveRow>
+     <ActiveRow>15</ActiveRow>
      <ActiveCol>4</ActiveCol>
     </Pane>
    </Panes>

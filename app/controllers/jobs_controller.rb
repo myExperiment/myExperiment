@@ -59,7 +59,7 @@ class JobsController < ApplicationController
     if params[:runnable_id] 
       runnable = Workflow.find(:first, :conditions => ["id = ?", params[:runnable_id]])
       if runnable 
-        if runnable.content_type != WorkflowProcessors::TavernaScufl.content_type
+        if runnable.processor_class != WorkflowProcessors::TavernaScufl
           flash[:error] = "Note that the workflow specified to run in this job is currently not supported and will prevent the job from being created. Specify a Taverna 1 workflow instead."
         end
         
@@ -92,7 +92,7 @@ class JobsController < ApplicationController
     # Check that the runnable object is allowed to be run.
     # At the moment: only Taverna 1 workflows are allowed.
     if runnable 
-      if runnable.content_type != WorkflowProcessors::TavernaScufl.content_type
+      if runnable.processor_class != WorkflowProcessors::TavernaScufl
         success = false
         err_msg = "The workflow specified to run in this job not supported. Please specify a Taverna 1 workflow instead."
       end
