@@ -866,8 +866,17 @@ def search(req_uri, rules, user, query)
 
   results = []
 
+  num = 25
+
+  if query['num']
+    num = query['num'].to_i
+  end
+
+  num = 25  if num < 0
+  num = 100 if num > 100
+
   if Conf.solr_enable and not search_query.nil? and search_query != ""
-    results = models[0].multi_solr_search(search_query, :limit => 100,
+    results = models[0].multi_solr_search(search_query, :limit => num,
         :models => models).results
   end
 
