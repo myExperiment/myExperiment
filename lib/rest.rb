@@ -78,6 +78,12 @@ def rest_response(code, args = {})
         doc.root << reason
       end
     end
+
+    if args[:reason]
+      reason = XML::Node.new('reason')
+      reason << args[:reason]
+      doc.root << reason
+    end
   end
 
   render(:xml => doc.to_s, :status => "#{code} #{message}")
@@ -302,16 +308,13 @@ def rest_crud_request(req_uri, rules, user, query)
   rest_get_request(ob, params[:uri], user, eval("rest_resource_uri(ob)"), rest_name, query)
 end
 
-def find_all_paginated_auth(model, find_args, num, page, filters, user)
+def find_paginated_auth(args, num, page, filters, user, &blk)
 
-  def aux(model, find_args, num, page, filters, user)
+  def aux(args, num, page, filters, user)
 
-    find_args = find_args.clone
-    find_args[:page] = { :size => num, :current => page }
+    results = yield(args, num, page)
 
-    results = eval(model).find(:all, find_args)
-
-    return nil if results.page > results.page_count
+    return nil if results.nil?
 
     results.select do |result|
       selected = Authorization.is_authorized?('view', nil, result, user)
@@ -337,13 +340,13 @@ def find_all_paginated_auth(model, find_args, num, page, filters, user)
   # up to possibly fulfil the request
 
   if (page > 1)
-    results = aux(model, find_args, upto, 1, filters, user)
+    results = aux(args, upto, 1, filters, user, &blk)
     current_page = page + 1
   end
 
   while (results.length < upto)
 
-    results_page = aux(model, find_args, num, current_page, filters, user)
+    results_page = aux(args, num, current_page, filters, user, &blk)
 
     if results_page.nil?
       break
@@ -418,17 +421,32 @@ def rest_index_request(req_uri, rules, user, query)
 
     find_args[:conditions] = conditions if conditions
 
-    obs = find_all_paginated_auth(model_name.camelize, find_args, limit, page, filters, user)
+    obs = find_paginated_auth( { :model => model_name.camelize, :find_args => find_args }, limit, page, filters, user) { |args, size, page|
+
+      find_args = args[:find_args].clone
+      find_args[:page] = { :size => size, :current => page }
+
+      results = eval(args[:model]).find(:all, find_args)
+
+      return nil if results.page > results.page_count
+
+      results
+    }
   end
 
-  produce_rest_list(req_uri, rules, query, obs, rest_name.pluralize, user)
+  produce_rest_list(req_uri, rules, query, obs, rest_name.pluralize, [], user)
 end
 
-def produce_rest_list(req_uri, rules, query, obs, tag, user)
+def produce_rest_list(req_uri, rules, query, obs, tag, attributes, user)
 
   root = XML::Node.new(tag)
 
   root['api-version'] = API_VERSION if query['api_version'] == 'yes'
+
+  attributes.each do |k,v|
+    root[k] = v
+    puts "Setting #{k} to #{v}"
+  end
 
   elements = query['elements'] ? query['elements'].split(',') : nil
 
@@ -855,16 +873,26 @@ def search(req_uri, rules, user, query)
 
   search_query = query['query']
 
-  models = [User, Workflow, Blob, Network]
+  models = [User, Workflow, Blob, Network, Pack]
 
-  case query['type']
-    when 'user';     models = [User]
-    when 'workflow'; models = [Workflow]
-    when 'file';     models = [Blob]
-    when 'group';    models = [Network]
+  # parse type option
+
+  if query['type']
+
+    models = []
+
+    query['type'].split(',').each do |type|
+      case type
+        when 'user';     models.push(User)
+        when 'workflow'; models.push(Workflow)
+        when 'file';     models.push(Blob)
+        when 'group';    models.push(Network)
+        when 'pack';     models.push(Pack)
+
+        else return rest_response(400, :reason => "Unknown search type '#{type}'")
+      end
+    end
   end
-
-  results = []
 
   num = 25
 
@@ -875,28 +903,29 @@ def search(req_uri, rules, user, query)
   num = 25  if num < 0
   num = 100 if num > 100
 
-  if Conf.solr_enable and not search_query.nil? and search_query != ""
-    results = models[0].multi_solr_search(search_query, :limit => num,
-        :models => models).results
+  page  = query['page'] ? query['page'].to_i : 1
+
+  page = 1 if page < 1
+
+  attributes = {}
+  attributes['query'] = search_query
+  attributes['type'] = query['type'] if models.length == 1
+
+  obs = []
+
+  if Conf.solr_enable and not query.nil? and query != ""
+
+    obs = find_paginated_auth( { :query => search_query, :models => models }, num, page, [], user) { |args, size, page|
+
+      query  = args[:query]
+      models = args[:models]
+
+      search_result = models[0].multi_solr_search(query, :limit => size, :offset => size * (page - 1), :models => models)
+      search_result.results if search_result.total >= (size * (page - 1))
+    }
   end
 
-  root = XML::Node.new('search')
-  root['query'] = search_query
-  root['type' ] = query['type'] if query['type']
-
-  # filter out ones they are not allowed to get
-  results = results.select do |r|
-    r.respond_to?('contribution') == false or Authorization.is_authorized?('index', nil, r, user)
-  end
-
-  results.each do |result|
-    root << rest_reference(result, query)
-  end
-
-  doc = XML::Document.new
-  doc.root = root
-
-  render(:xml => doc.to_s)
+  produce_rest_list(req_uri, rules, query, obs, 'search', attributes, user)
 end
 
 def user_count(req_uri, rules, user, query)
@@ -964,7 +993,7 @@ def get_tagged(req_uri, rules, user, query)
   # filter out ones they are not allowed to get
   obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("index", nil, c, user) end)
 
-  produce_rest_list("tagged", rules, query, obs, 'tagged', user)
+  produce_rest_list("tagged", rules, query, obs, 'tagged', [], user)
 end
 
 def tag_cloud(req_uri, rules, user, query)
