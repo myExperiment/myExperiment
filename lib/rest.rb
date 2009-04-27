@@ -508,6 +508,7 @@ def rest_resource_uri(ob)
     when 'Job';                    return experiment_job_url(ob.experiment, ob)
     when 'PackContributableEntry'; return rest_resource_uri(ob.contributable)
     when 'PackRemoteEntry';        return ob.uri
+    when 'ContentType';            return nil
 
     when 'Creditation';     return nil
     when 'Attribution';     return nil
@@ -547,6 +548,7 @@ def rest_access_uri(ob)
     when 'PackContributableEntry'; return "#{base}/internal-pack-item.xml?id=#{ob.id}"
     when 'PackRemoteEntry';        return "#{base}/external-pack-item.xml?id=#{ob.id}"
     when 'Tagging';                return "#{base}/tagging.xml?id=#{ob.id}"
+    when 'ContentType';            return "#{base}/content-type.xml?id=#{ob.id}"
 
     when 'Creditation';     return "#{base}/credit.xml?id=#{ob.id}"
     when 'Attribution';     return nil
@@ -578,6 +580,7 @@ def rest_object_tag_text(ob)
     when 'Workflow::Version';      return 'workflow'
     when 'Comment';                return 'comment'
     when 'Bookmark';               return 'favourite'
+    when 'ContentType';            return 'content-type'
   end
 
   return 'object'
@@ -602,6 +605,7 @@ def rest_object_label_text(ob)
     when 'PackContributableEntry'; return rest_object_label_text(ob.contributable)
     when 'PackRemoteEntry';        return ob.title     
     when 'Workflow::Version';      return ob.title
+    when 'ContentType';            return ob.title
   end
 
   return ''

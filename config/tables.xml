@@ -81,7 +81,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="REST">
-  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="99" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="103" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="42"/>
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="99.75"/>
@@ -909,6 +909,25 @@
     <Cell ss:StyleID="s70"><Data ss:Type="String">download</Data></Cell>
     <Cell ss:StyleID="s70"><Data ss:Type="String">download</Data></Cell>
    </Row>
+   <Row ss:Index="101" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">content-types</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">index</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">content-type</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">content_type</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">title</Data></Cell>
+   </Row>
+   <Row ss:Index="103" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">content-type</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">crud</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">content-type</Data></Cell>
+    <Cell ss:StyleID="s70"><Data ss:Type="String">content_type</Data></Cell>
+   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <PageSetup>
@@ -926,7 +945,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>22</TopRowBottomPane>
+   <TopRowBottomPane>1</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -939,12 +958,11 @@
     </Pane>
     <Pane>
      <Number>2</Number>
-     <ActiveRow>1</ActiveRow>
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>76</ActiveRow>
-     <ActiveCol>9</ActiveCol>
+     <ActiveRow>102</ActiveRow>
+     <ActiveCol>11</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
@@ -953,7 +971,7 @@
   </WorksheetOptions>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="272" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="279" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="111.75"/>
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="116.25"/>
@@ -4072,6 +4090,78 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
+   <Row ss:Index="274" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">content-type</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">ContentType</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">content-type</Data></Cell>
+    <Cell><Data ss:Type="String">title</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">ContentType</Data></Cell>
+    <Cell><Data ss:Type="String">title</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">content-type</Data></Cell>
+    <Cell><Data ss:Type="String">description</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">ContentType</Data></Cell>
+    <Cell><Data ss:Type="String">description</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">content-type</Data></Cell>
+    <Cell><Data ss:Type="String">mime-type</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">ContentType</Data></Cell>
+    <Cell><Data ss:Type="String">mime_type</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">content-type</Data></Cell>
+    <Cell><Data ss:Type="String">created-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">ContentType</Data></Cell>
+    <Cell><Data ss:Type="String">created_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">content-type</Data></Cell>
+    <Cell><Data ss:Type="String">updated-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">ContentType</Data></Cell>
+    <Cell><Data ss:Type="String">updated_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <PageSetup>
@@ -4091,7 +4181,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>1</TopRowBottomPane>
+   <TopRowBottomPane>241</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -4104,11 +4194,12 @@
     </Pane>
     <Pane>
      <Number>2</Number>
+     <ActiveRow>1</ActiveRow>
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>15</ActiveRow>
-     <ActiveCol>4</ActiveCol>
+     <ActiveRow>275</ActiveRow>
+     <ActiveCol>13</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
