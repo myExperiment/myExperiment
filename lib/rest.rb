@@ -321,7 +321,13 @@ def find_paginated_auth(args, num, page, filters, user, &blk)
 
       if selected
         filters.each do |attribute,value|
-          selected = false unless result.send(attribute).downcase == value.downcase
+          lhs = result.send(attribute)
+          rhs = value
+
+          lhs = lhs.downcase if lhs.class == String
+          rhs = rhs.downcase if rhs.class == String
+
+          selected = false unless lhs == rhs
         end
       end
 
@@ -428,9 +434,7 @@ def rest_index_request(req_uri, rules, user, query)
 
       results = eval(args[:model]).find(:all, find_args)
 
-      return nil if results.page > results.page_count
-
-      results
+      results unless results.page > results.page_count
     }
   end
 
@@ -445,7 +449,6 @@ def produce_rest_list(req_uri, rules, query, obs, tag, attributes, user)
 
   attributes.each do |k,v|
     root[k] = v
-    puts "Setting #{k} to #{v}"
   end
 
   elements = query['elements'] ? query['elements'].split(',') : nil
@@ -548,7 +551,7 @@ def rest_access_uri(ob)
     when 'PackContributableEntry'; return "#{base}/internal-pack-item.xml?id=#{ob.id}"
     when 'PackRemoteEntry';        return "#{base}/external-pack-item.xml?id=#{ob.id}"
     when 'Tagging';                return "#{base}/tagging.xml?id=#{ob.id}"
-    when 'ContentType';            return "#{base}/content-type.xml?id=#{ob.id}"
+    when 'ContentType';            return "#{base}/type.xml?id=#{ob.id}"
 
     when 'Creditation';     return "#{base}/credit.xml?id=#{ob.id}"
     when 'Attribution';     return nil
@@ -580,7 +583,7 @@ def rest_object_tag_text(ob)
     when 'Workflow::Version';      return 'workflow'
     when 'Comment';                return 'comment'
     when 'Bookmark';               return 'favourite'
-    when 'ContentType';            return 'content-type'
+    when 'ContentType';            return 'type'
   end
 
   return 'object'
@@ -925,7 +928,7 @@ def search(req_uri, rules, user, query)
       models = args[:models]
 
       search_result = models[0].multi_solr_search(query, :limit => size, :offset => size * (page - 1), :models => models)
-      search_result.results if search_result.total >= (size * (page - 1))
+      search_result.results unless search_result.total < (size * (page - 1))
     }
   end
 
@@ -979,6 +982,17 @@ def pack_count(req_uri, rules, user, query)
 
   root = XML::Node.new('pack-count')
   root << packs.length.to_s
+
+  doc = XML::Document.new
+  doc.root = root
+
+  render(:xml => doc.to_s)
+end
+
+def content_type_count(req_uri, rules, user, query)
+
+  root = XML::Node.new('type-count')
+  root << ContentType.count.to_s
 
   doc = XML::Document.new
   doc.root = root
