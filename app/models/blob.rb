@@ -39,6 +39,8 @@ class Blob < ActiveRecord::Base
   validates_presence_of :content_blob
   validates_presence_of :content_type
 
+  validates_presence_of :title
+
   format_attribute :body
 
   def type
