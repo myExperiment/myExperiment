@@ -817,39 +817,31 @@ module ApplicationHelper
     return rtn
   end
   
-  
-  def effective_policy(contribution)
-    if contribution.policy == nil
-      return Policy._default(contribution.contributor)
-    else 
-      return contribution.policy
-    end
+  def workflows_for_attribution_form
+    workflows = Workflow.find(:all, :select => 'workflows.id, workflows.title, users.name',
+        :joins => 'LEFT OUTER JOIN users ON workflows.contributor_type = "User" AND workflows.contributor_id = users.id',
+        :order => 'workflows.title ASC')
+
+    workflows.select { |w| Authorization.is_authorized?('show', 'Workflow', w.id, current_user) }
   end
   
-  def all_workflows
-    workflows = Workflow.find(:all, :order => "title ASC")
-    workflows = workflows.select {|w| Authorization.is_authorized?('show', nil, w, current_user) }
+  def blobs_for_attribution_form
+    blobs = Blob.find(:all, :select => 'blobs.id, blobs.title, users.name',
+        :joins => 'LEFT OUTER JOIN users ON blobs.contributor_type = "User" AND blobs.contributor_id = users.id',
+        :order => 'blobs.title ASC')
+
+    blobs.select { |b| Authorization.is_authorized?('show', 'Blob', b.id, current_user) }
   end
   
-  def all_blobs
-    blobs = Blob.find(:all)
-    blobs.sort! { |x,y|
-      x_title = (x.title and x.title.length > 0) ? x.title : x.local_name
-      y_title = (y.title and y.title.length > 0) ? y.title : y.local_name
-      x_title.downcase <=> y_title.downcase
-    }
-    blobs = blobs.select {|b| Authorization.is_authorized?('show', nil, b, current_user) }
+  def networks_for_credits_form
+    Network.find(:all, :select => 'id, title',
+                       :order => "title ASC")
   end
   
-  def all_networks
-    Network.find(:all, :order => "title ASC")
-  end
-  
-  def all_nonfriends(user)
-    users = User.find(:all) - user.friends - [ user ]
-    users.sort! { |x,y|
-      x.name.downcase <=> y.name.downcase
-    } 
+  def nonfriends_for_credits_form(user)
+    User.find(:all, :select => 'id, name',
+                    :order => 'LOWER(name)',
+                    :conditions => ["id != ?", user.id]) - user.friends
   end
 
   def all_users
