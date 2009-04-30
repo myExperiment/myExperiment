@@ -3931,7 +3931,6 @@
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="18"><Data ss:Type="String">title</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
@@ -3945,7 +3944,6 @@
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="18"><Data ss:Type="String">uri</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
@@ -3959,7 +3957,6 @@
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="18"><Data ss:Type="String">alternate-uri</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">external-pack-item</Data></Cell>
@@ -4211,9 +4208,9 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>1</TopRowBottomPane>
+   <TopRowBottomPane>238</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
-   <LeftColumnRightPane>2</LeftColumnRightPane>
+   <LeftColumnRightPane>4</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
    <Panes>
     <Pane>
@@ -4221,14 +4218,16 @@
     </Pane>
     <Pane>
      <Number>1</Number>
+     <ActiveCol>2</ActiveCol>
     </Pane>
     <Pane>
      <Number>2</Number>
+     <ActiveRow>1</ActiveRow>
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>11</ActiveRow>
-     <ActiveCol>15</ActiveCol>
+     <ActiveRow>258</ActiveRow>
+     <ActiveCol>17</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
