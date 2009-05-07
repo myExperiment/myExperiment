@@ -23,10 +23,10 @@ class CreateContentTypes < ActiveRecord::Migration
 
     u = User.find_by_username(Conf.admins.first)
 
-    taverna_1 = ContentType.create(:title => 'Taverna 1',         :mime_type => 'application/vnd.taverna.scufl+xml', :user => u)
-    taverna_2 = ContentType.create(:title => 'Taverna 2 beta',    :mime_type => 'application/octet-stream',          :user => u)
-    trident_x = ContentType.create(:title => 'Trident (XOML)',    :mime_type => 'application/xaml+xml',              :user => u)
-    trident_p = ContentType.create(:title => 'Trident (Package)', :mime_type => 'application/octet-stream',          :user => u)
+    taverna_1 = ContentType.create(:title => 'Taverna 1',         :mime_type => 'application/vnd.taverna.scufl+xml',  :user => u)
+    taverna_2 = ContentType.create(:title => 'Taverna 2 beta',    :mime_type => 'application/vnd.taverna.t2flow+xml', :user => u)
+    trident_x = ContentType.create(:title => 'Trident (XOML)',    :mime_type => 'application/xaml+xml',               :user => u)
+    trident_p = ContentType.create(:title => 'Trident (Package)', :mime_type => 'application/octet-stream',           :user => u)
 
     # Create ContentType entries for the existing workflows
 
