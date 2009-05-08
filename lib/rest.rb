@@ -203,6 +203,10 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         element
 
+      when 'call'
+
+        eval("#{model_data['Accessor'][i]}(ob, user, query)")
+
       else 
 
         if model_data['Encoding'][i] == 'file-column'
@@ -1071,6 +1075,24 @@ def parse_element(doc, kind, query)
     when :resource
       return resolve_resource_node(doc.find_first(query))
   end
+end
+
+# Privileges
+
+def effective_privileges(ob, user, query)
+
+  privileges = XML::Node.new('privileges')
+
+  ['view', 'download', 'edit'].each do |type|
+    if Authorization.is_authorized?(type, nil, ob, user) 
+      privilege = XML::Node.new('privilege')
+      privilege['type'] = type
+
+      privileges << privilege
+    end
+  end
+
+  privileges
 end
 
 # Comments
