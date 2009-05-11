@@ -60,6 +60,7 @@ class User < ActiveRecord::Base
   end
   
   acts_as_tagger
+  acts_as_bookmarker
   
   has_many :ratings,
            :order => "created_at DESC",
@@ -74,10 +75,6 @@ class User < ActiveRecord::Base
            :dependent => :destroy
   
   has_many :viewings, 
-           :order => "created_at DESC",
-           :dependent => :destroy
-  
-  has_many :bookmarks, 
            :order => "created_at DESC",
            :dependent => :destroy
   
