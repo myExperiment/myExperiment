@@ -7,6 +7,8 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+
+  filter_parameter_logging :password
   
   WhiteListHelper.tags.merge %w(table tr td th div span)
   
