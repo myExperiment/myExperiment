@@ -207,14 +207,12 @@ class User < ActiveRecord::Base
   def self.authenticate(login, password)
     return nil if login.blank? or password.blank?
     
-    eager_include = [ :contributions, :tags ]
-    
     # Either, check for a User with username matching 'login'
-    u = find(:first, :conditions => ["username = ?", login], :include => eager_include)
+    u = find(:first, :conditions => ["username = ?", login])
     
     # Or, check for a User with email address matching 'login'
     unless u
-      u = find(:first, :conditions => ["email = ?", login], :include => eager_include) 
+      u = find(:first, :conditions => ["email = ?", login]) 
     end
     
     u && u.activated? && u.authenticated?(password) ? u : nil
