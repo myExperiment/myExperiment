@@ -2,7 +2,7 @@
 
 var tabImagesRoot = '/images/tabs/';
 
-function parent(el) {
+function parent_el(el) {
 
   if (el.parentElement != undefined)
     return el.parentElement;
@@ -51,7 +51,7 @@ function selectTab(tabsDiv, t) {
       html += '<td class="tabUnselIMG"><img src="' + tabImagesRoot;
       html += '/unselected_tab_start.png"></td>';
       html += '<td class="tabUnselected"><span onmousedown="';
-      html += 'javascript:selectTab(parent(parent(parent(parent(parent(this))))), ' + i +
+      html += 'javascript:selectTab(parent_el(parent_el(parent_el(parent_el(parent_el(this))))), ' + i +
           '); return false;">';
       html += tabsDiv.titles[i];
       html += '</span></td>';
@@ -74,7 +74,7 @@ function showFragment(fragment, scroll) {
 
   if (el != undefined) {
 
-    for (; el.tagName != root; el = parent(el)) {
+    for (; el.tagName != root; el = parent_el(el)) {
       if (el.className == 'tabContainer') {
         selectTab(el.tabsDiv, el.tabsIndex);
       }
