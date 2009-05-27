@@ -79,6 +79,19 @@ module Authorization
       return true
     end
     
+    # Bookmark permissions
+
+    if (object_type == 'Bookmark') && (action == 'create')
+
+      # Bookmarks can only be created by authenticated users
+      return false if user.nil?
+
+      # Bookmarks can only be added to things that a user can view
+      return Authorization.is_authorized?('view', nil, context, user) if context
+
+      return true
+    end
+
     return false
   end
 

@@ -1151,6 +1151,59 @@ def delete_comment(req_uri, rules, user, query)
   comment_aux('destroy', req_uri, rules, user, query)
 end
 
+# Favourites
+
+def favourite_aux(action, req_uri, rules, user, query)
+
+  # Obtain object
+
+  case action
+    when 'create':
+      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Bookmark', user, nil)
+
+      ob = Bookmark.new(:user => user)
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Bookmark', query['id'], user, action)
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    target = parse_element(data, :resource, '/favourite/object')
+
+    if target
+      return rest_response(400) unless [Blob, Pack, Workflow].include?(target.class)
+      return rest_response(401) unless Authorization.is_authorized_for_type?(action, 'Bookmark', user, target)
+      ob.bookmarkable = target
+    end
+
+    return rest_response(400, :object => ob) unless ob.save
+  end
+
+  rest_get_request(ob, "favourite", user, rest_resource_uri(ob), "favourite", { "id" => ob.id.to_s })
+end
+
+def post_favourite(req_uri, rules, user, query)
+  favourite_aux('create', req_uri, rules, user, query)
+end
+
+def put_favourite(req_uri, rules, user, query)
+  favourite_aux('update', req_uri, rules, user, query)
+end
+
+def delete_favourite(req_uri, rules, user, query)
+  favourite_aux('destroy', req_uri, rules, user, query)
+end
+
 # Call dispatcher
 
 def rest_call_request(req_uri, rules, user, query)

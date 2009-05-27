@@ -21,7 +21,6 @@
   <WindowWidth>15795</WindowWidth>
   <WindowTopX>525</WindowTopX>
   <WindowTopY>-45</WindowTopY>
-  <ActiveSheet>1</ActiveSheet>
   <ProtectStructure>False</ProtectStructure>
   <ProtectWindows>False</ProtectWindows>
  </ExcelWorkbook>
@@ -81,7 +80,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="REST">
-  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="105" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="111" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="65.25" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="42"/>
    <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="99.75"/>
@@ -348,6 +347,60 @@
     <Cell ss:Index="8"><Data ss:Type="String">crud</Data></Cell>
     <Cell ss:StyleID="s70"><Data ss:Type="String">favourite</Data></Cell>
     <Cell ss:StyleID="s70"><Data ss:Type="String">bookmark</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="4" ss:StyleID="s69"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="9" ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">POST</Data></Cell>
+    <Cell><Data ss:Type="String">favourite</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s69"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:Index="12"><Data ss:Type="String">post_favourite</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="4" ss:StyleID="s69"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="9" ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">PUT</Data></Cell>
+    <Cell><Data ss:Type="String">favourite</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s69"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:Index="12"><Data ss:Type="String">put_favourite</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="4" ss:StyleID="s69"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="9" ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">DELETE</Data></Cell>
+    <Cell><Data ss:Type="String">favourite</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s69"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:StyleID="s63"/>
+    <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:StyleID="s70"/>
+    <Cell ss:Index="12"><Data ss:Type="String">delete_favourite</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:Index="4" ss:StyleID="s69"/>
@@ -852,7 +905,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">user_count</Data></Cell>
    </Row>
-   <Row ss:Index="87" ss:AutoFitHeight="0">
+   <Row ss:Index="93" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">group-count</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -860,7 +913,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">group_count</Data></Cell>
    </Row>
-   <Row ss:Index="89" ss:AutoFitHeight="0">
+   <Row ss:Index="95" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">pack-count</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -868,7 +921,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">pack_count</Data></Cell>
    </Row>
-   <Row ss:Index="91" ss:AutoFitHeight="0">
+   <Row ss:Index="97" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">tagged</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -876,7 +929,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">get_tagged</Data></Cell>
    </Row>
-   <Row ss:Index="93" ss:AutoFitHeight="0">
+   <Row ss:Index="99" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">tag-cloud</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -884,7 +937,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">tag_cloud</Data></Cell>
    </Row>
-   <Row ss:Index="95" ss:AutoFitHeight="0">
+   <Row ss:Index="101" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">POST</Data></Cell>
     <Cell><Data ss:Type="String">job</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -892,7 +945,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">post_job</Data></Cell>
    </Row>
-   <Row ss:Index="97" ss:AutoFitHeight="0">
+   <Row ss:Index="103" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">whoami</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -900,7 +953,7 @@
     <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">whoami_redirect</Data></Cell>
    </Row>
-   <Row ss:Index="99" ss:AutoFitHeight="0">
+   <Row ss:Index="105" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">download</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">system</Data></Cell>
@@ -909,7 +962,7 @@
     <Cell ss:StyleID="s70"><Data ss:Type="String">download</Data></Cell>
     <Cell ss:StyleID="s70"><Data ss:Type="String">download</Data></Cell>
    </Row>
-   <Row ss:Index="101" ss:AutoFitHeight="0">
+   <Row ss:Index="107" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">types</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -919,7 +972,7 @@
     <Cell ss:StyleID="s70"><Data ss:Type="String">content_type</Data></Cell>
     <Cell ss:StyleID="s70"><Data ss:Type="String">title</Data></Cell>
    </Row>
-   <Row ss:Index="103" ss:AutoFitHeight="0">
+   <Row ss:Index="109" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">type</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -928,7 +981,7 @@
     <Cell ss:StyleID="s70"><Data ss:Type="String">type</Data></Cell>
     <Cell ss:StyleID="s70"><Data ss:Type="String">content_type</Data></Cell>
    </Row>
-   <Row ss:Index="105" ss:AutoFitHeight="0">
+   <Row ss:Index="111" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">type-count</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -950,10 +1003,11 @@
     <HorizontalResolution>600</HorizontalResolution>
     <VerticalResolution>600</VerticalResolution>
    </Print>
+   <Selected/>
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>84</TopRowBottomPane>
+   <TopRowBottomPane>26</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -970,7 +1024,7 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>104</ActiveRow>
+     <ActiveRow>34</ActiveRow>
      <ActiveCol>11</ActiveCol>
     </Pane>
    </Panes>
@@ -4305,11 +4359,10 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Zoom>80</Zoom>
-   <Selected/>
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>238</TopRowBottomPane>
+   <TopRowBottomPane>13</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>

@@ -13,6 +13,9 @@ class Bookmark < ActiveRecord::Base
   # NOTE: Comments belong to a user
   belongs_to :user
   
+  validates_presence_of :bookmarkable
+  validates_presence_of :user
+
   # Helper class method to lookup all comments assigned
   # to all commentable types for a given user.
   def self.find_bookmarks_by_user(user)
