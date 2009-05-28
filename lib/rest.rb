@@ -98,6 +98,14 @@ def file_column_url(ob, field)
   "#{request.protocol}#{request.host_with_port}#{path}"
 end
 
+def model_entity_to_rest_entity(model_entity)
+  TABLES['Model'][:data].each do |k,v|
+    return k if v['Model Entity'] == model_entity
+  end
+
+  nil
+end
+
 def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
   # puts "rest_get_element: #{rest_entity} / #{rest_attribute}"
@@ -457,13 +465,14 @@ def produce_rest_list(req_uri, rules, query, obs, tag, attributes, user)
 
   elements = query['elements'] ? query['elements'].split(',') : nil
 
-  rest_entity = TABLES['REST'][:data][req_uri]['GET']['REST Entity']
-
   obs.each do |ob|
 
     el = rest_reference(ob, query, !elements.nil?)
 
     if elements
+
+      rest_entity = model_entity_to_rest_entity(ob.class.name)
+
       TABLES['Model'][:data][rest_entity]['REST Attribute'].each do |rest_attribute|
         data = rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
         el << data unless data.nil?
@@ -928,10 +937,10 @@ def search(req_uri, rules, user, query)
 
     obs = find_paginated_auth( { :query => search_query, :models => models }, num, page, [], user) { |args, size, page|
 
-      query  = args[:query]
+      q      = args[:query]
       models = args[:models]
 
-      search_result = models[0].multi_solr_search(query, :limit => size, :offset => size * (page - 1), :models => models)
+      search_result = models[0].multi_solr_search(q, :limit => size, :offset => size * (page - 1), :models => models)
       search_result.results unless search_result.total < (size * (page - 1))
     }
   end
