@@ -8,6 +8,8 @@ require 'lib/excel_xml'
 require 'xml/libxml'
 require 'uri'
 
+include LibXML
+
 API_VERSION = "0.1"
 
 TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
