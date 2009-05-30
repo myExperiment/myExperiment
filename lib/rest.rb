@@ -735,7 +735,48 @@ def rest_access_redirect(req_uri, rules, user, query)
 end
 
 def create_default_policy(user)
-  Policy.new(:contributor => user, :name => 'auto', :update_mode => 6, :share_mode => 0)
+  Policy.new(:contributor => user, :name => 'auto', :share_mode => 7, :update_mode => 6)
+end
+
+def update_permissions(ob, permissions)
+
+  share_mode  = 7
+  update_mode = 6
+
+  # clear out any permission records for this contributable
+
+  ob.contribution.policy.permissions.each do |p|
+    p.destroy
+  end
+
+  # process permission elements
+
+  if permissions
+    permissions.find('permission').each do |permission|
+
+      # handle public privileges
+
+      if permission.find_first('category/text()').to_s == 'public'
+
+        privileges = {}
+
+        permission.find('privilege').each do |el|
+          privileges[el['type']] = true
+        end
+
+        if privileges["view"] && privileges["download"]
+          share_mode = 0
+        elsif privileges["view"]
+          share_mode = 2
+        else
+          share_mode = 7
+        end
+      end
+    end
+  end
+
+  ob.contribution.policy.update_attributes(:share_mode => share_mode,
+      :update_mode => update_mode)
 end
 
 def workflow_aux(action, req_uri, rules, user, query)
@@ -769,6 +810,8 @@ def workflow_aux(action, req_uri, rules, user, query)
     content_type = parse_element(data, :text,   '/workflow/content-type')
     content      = parse_element(data, :binary, '/workflow/content')
     preview      = parse_element(data, :binary, '/workflow/preview')
+
+    permissions  = data.find_first('/workflow/permissions')
 
     # build the contributable
 
@@ -831,6 +874,8 @@ def workflow_aux(action, req_uri, rules, user, query)
       ob.contribution.policy = create_default_policy(user)
       ob.contribution.save
     end
+
+    update_permissions(ob, permissions)
   end
 
   rest_get_request(ob, "workflow", user,
