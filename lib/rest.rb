@@ -217,6 +217,21 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         eval("#{model_data['Accessor'][i]}(ob, user, query)")
 
+      when 'item'
+
+        el = XML::Node.new(model_data['REST Attribute'][i])
+
+        item = eval("ob.#{model_data['Accessor'][i]}")
+
+        if item != nil
+          resource_uri = rest_resource_uri(item)
+          el['resource'] = resource_uri if resource_uri
+          el['uri'] = rest_access_uri(item)
+          el << item.label if item.label
+        end
+
+        el
+
       else 
 
         if model_data['Encoding'][i] == 'file-column'
@@ -233,7 +248,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
             end
           end
 
-          if (model_data['Encoding'][i] == 'base64')
+          if model_data['Encoding'][i] == 'base64'
             text = Base64.encode64(text)
             attrs = { 'type' => 'binary', 'encoding' => 'base64' }
           end
@@ -330,13 +345,17 @@ def find_paginated_auth(args, num, page, filters, user, &blk)
 
     return nil if results.nil?
 
+    failures = 0
+
     results.select do |result|
+
       selected = Authorization.is_authorized?('view', nil, result, user)
 
       if selected
-        filters.each do |attribute,value|
-          lhs = result.send(attribute)
-          rhs = value
+        filters.each do |attribute, bits|
+
+          lhs = result.send(bits[:accessor])
+          rhs = bits[:value]
 
           lhs = lhs.downcase if lhs.class == String
           rhs = rhs.downcase if rhs.class == String
@@ -407,10 +426,24 @@ def rest_index_request(req_uri, rules, user, query)
   filters = {}
 
   (0..model["REST Attribute"].length - 1).each do |i|
-    filter_name = model["Index filter"][i]
 
-    if !filter_name.nil? && !query[filter_name].nil?
-      filters[filter_name] = query[filter_name]
+    if model["Index filter"][i]
+
+      attribute   = model["REST Attribute"][i]
+      filter_name = attribute.gsub("-", "_")
+
+      if query[filter_name]
+
+        filter = { :accessor => model["Accessor"][i] }
+
+        if model["Encoding"][i] == 'item' || model["Encoding"][i] == 'item as list'
+          filter[:value] = get_resource_from_uri(query[filter_name], user)
+        else
+          filter[:value] = query[filter_name]
+        end
+
+        filters[attribute] = filter
+      end
     end
   end
 
@@ -650,27 +683,40 @@ def parse_resource_uri(str)
   uri      = base_uri.merge(str)
   is_local = base_uri.host == uri.host and base_uri.port == uri.port
 
-  return ["Workflow", $1, is_local]      if uri.path =~ /^\/workflows\/([\d]+)$/
-  return ["Blob", $1, is_local]          if uri.path =~ /^\/files\/([\d]+)$/
-  return ["Network", $1, is_local]       if uri.path =~ /^\/groups\/([\d]+)$/
-  return ["User", $1, is_local]          if uri.path =~ /^\/users\/([\d]+)$/
-  return ["Review", $1, is_local]        if uri.path =~ /^\/[^\/]+\/[\d]+\/reviews\/([\d]+)$/
-  return ["Comment", $1, is_local]       if uri.path =~ /^\/[^\/]+\/[\d]+\/comments\/([\d]+)$/
-  return ["Blog", $1, is_local]          if uri.path =~ /^\/blogs\/([\d]+)$/
-  return ["BlogPost", $1, is_local]      if uri.path =~ /^\/blogs\/[\d]+\/blog_posts\/([\d]+)$/
-  return ["Tag", $1, is_local]           if uri.path =~ /^\/tags\/([\d]+)$/
-  return ["Picture", $1, is_local]       if uri.path =~ /^\/users\/[\d]+\/pictures\/([\d]+)$/
-  return ["Message", $1, is_local]       if uri.path =~ /^\/messages\/([\d]+)$/
-  return ["Citation", $1, is_local]      if uri.path =~ /^\/[^\/]+\/[\d]+\/citations\/([\d]+)$/
-  return ["Announcement", $1, is_local]  if uri.path =~ /^\/announcements\/([\d]+)$/
-  return ["Pack", $1, is_local]          if uri.path =~ /^\/packs\/([\d]+)$/
-  return ["Experiment", $1, is_local]    if uri.path =~ /^\/experiments\/([\d]+)$/
-  return ["Runner", $1, is_local]        if uri.path =~ /^\/runners\/([\d]+)$/
-  return ["Job", $1, is_local]           if uri.path =~ /^\/jobs\/([\d]+)$/
-  return ["Download", $1, is_local]      if uri.path =~ /^\/downloads\/([\d]+)$/
+  return [Workflow, $1, is_local]       if uri.path =~ /^\/workflows\/([\d]+)$/
+  return [Blob, $1, is_local]           if uri.path =~ /^\/files\/([\d]+)$/
+  return [Network, $1, is_local]        if uri.path =~ /^\/groups\/([\d]+)$/
+  return [User, $1, is_local]           if uri.path =~ /^\/users\/([\d]+)$/
+  return [Review, $1, is_local]         if uri.path =~ /^\/[^\/]+\/[\d]+\/reviews\/([\d]+)$/
+  return [Comment, $1, is_local]        if uri.path =~ /^\/[^\/]+\/[\d]+\/comments\/([\d]+)$/
+  return [Blog, $1, is_local]           if uri.path =~ /^\/blogs\/([\d]+)$/
+  return [BlogPost, $1, is_local]       if uri.path =~ /^\/blogs\/[\d]+\/blog_posts\/([\d]+)$/
+  return [Tag, $1, is_local]            if uri.path =~ /^\/tags\/([\d]+)$/
+  return [Picture, $1, is_local]        if uri.path =~ /^\/users\/[\d]+\/pictures\/([\d]+)$/
+  return [Message, $1, is_local]        if uri.path =~ /^\/messages\/([\d]+)$/
+  return [Citation, $1, is_local]       if uri.path =~ /^\/[^\/]+\/[\d]+\/citations\/([\d]+)$/
+  return [Announcement, $1, is_local]   if uri.path =~ /^\/announcements\/([\d]+)$/
+  return [Pack, $1, is_local]           if uri.path =~ /^\/packs\/([\d]+)$/
+  return [Experiment, $1, is_local]     if uri.path =~ /^\/experiments\/([\d]+)$/
+  return [TavernaEnactor, $1, is_local] if uri.path =~ /^\/runners\/([\d]+)$/
+  return [Job, $1, is_local]            if uri.path =~ /^\/jobs\/([\d]+)$/
+  return [Download, $1, is_local]       if uri.path =~ /^\/downloads\/([\d]+)$/
 
   nil
 
+end
+
+def get_resource_from_uri(uri, user)
+
+  cl, id, local = parse_resource_uri(uri)
+
+  return nil if cl.nil? || local == false
+
+  resource = cl.find_by_id(id)
+
+  return nil if !Authorization.is_authorized?('view', nil, resource, user)
+
+  resource
 end
 
 def resolve_resource_node(resource_node, user = nil, permission = nil)
@@ -687,7 +733,7 @@ def resolve_resource_node(resource_node, user = nil, permission = nil)
 
   return nil if resource_bits.nil?
   
-  resource = eval(resource_bits[0]).find_by_id(resource_bits[1].to_i)
+  resource = resource_bits[0].find_by_id(resource_bits[1].to_i)
 
   return nil if resource.nil?
 
@@ -725,7 +771,7 @@ def rest_access_redirect(req_uri, rules, user, query)
 
   return rest_response(404) if bits.nil?
 
-  ob = eval(bits[0]).find_by_id(bits[1])
+  ob = bits[0].find_by_id(bits[1])
 
   return rest_response(404) if ob.nil?
 
@@ -907,7 +953,7 @@ end
 #   return rest_response(400) if description.nil?
 #
 #   return rest_response(400) if experiment_bits.nil? or experiment_bits[0] != 'Experiment'
-#   return rest_response(400) if runner_bits.nil?     or runner_bits[0]     != 'Runner'
+#   return rest_response(400) if runner_bits.nil?     or runner_bits[0]     != 'TavernaEnactor'
 #   return rest_response(400) if runnable_bits.nil?   or runnable_bits[0]   != 'Workflow'
 #
 #   experiment = Experiment.find_by_id(experiment_bits[1].to_i)
