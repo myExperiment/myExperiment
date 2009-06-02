@@ -299,7 +299,7 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
     if query['version']
       root['version'] = query['version']
     else
-      root['version'] = ob.versions.last.version.to_s
+      root['version'] = ob.current_version.to_s
     end
   end
 
@@ -670,7 +670,7 @@ def rest_reference(ob, query, skip_text = false)
 
   el['resource'] = resource_uri if resource_uri
   el['uri'     ] = rest_access_uri(ob)
-  el['version' ] = ob.version.to_s if ob.respond_to?('version')
+  el['version' ] = ob.current_version.to_s if ob.respond_to?('current_version')
 
   el << rest_object_label_text(ob) if !skip_text
 
@@ -968,7 +968,7 @@ end
 #
 #   job = Job.new(:title => title, :description => description, :runnable => runnable, 
 #       :experiment => experiment, :runner => runner, :user => user,
-#       :runnable_version => runnable.versions.last.version)
+#       :runnable_version => runnable.current_version)
 #
 #   inputs = { "Tags" => "aa,bb,aa,cc,aa" }
 #
