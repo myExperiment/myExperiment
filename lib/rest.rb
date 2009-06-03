@@ -354,7 +354,7 @@ def find_paginated_auth(args, num, page, filters, user, &blk)
       if selected
         filters.each do |attribute, bits|
 
-          lhs = result.send(bits[:accessor])
+          lhs = eval("result.#{bits[:accessor]}")
           rhs = bits[:value]
 
           lhs = lhs.downcase if lhs.class == String
