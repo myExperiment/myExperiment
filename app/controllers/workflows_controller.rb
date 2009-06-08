@@ -47,7 +47,7 @@ class WorkflowsController < ApplicationController
   
   # POST /workflows/1;favourite
   def favourite
-    @workflow.bookmarks << Bookmark.create(:user => current_user) unless @workflow.bookmarked_by_user?(current_user)
+    Bookmark.create(:user => current_user, :bookmarkable => @workflow) unless @workflow.bookmarked_by_user?(current_user)
     
     respond_to do |format|
       flash[:notice] = "You have successfully added this item to your favourites."
@@ -202,7 +202,7 @@ class WorkflowsController < ApplicationController
       respond_to do |format|
         format.whip { 
           send_data(File.read(file_path), :filename => "#{@viewing_version.unique_name}_#{@viewing_version.version}.whip",
-              :type => "application/whip-archive")
+              :type => "application/whip-archive", :disposition => 'inline')
         }
       end
     end
