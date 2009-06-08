@@ -1,8 +1,8 @@
 <div class="box_standout" style="text-align: center; margin-bottom: 1em; font-weight: bold; line-height: 1.5em;">
 	<% Workflow.count(:all, :group => 'content_type_id').sort{|x,y| y[1] <=> x[1]}.each do |arr| %>
-		| <%= pluralize(arr[1], (h(ContentType.find_by_id(arr[0]).title + " workflow"))) %>
+		  <span class="nowrap"><%= link_to((h(ContentType.find_by_id(arr[0]).title)),
+        search_workflows_path + "?query=kind:(#{ContentType.find_by_id(arr[0]).title})") %> (<%= arr[1] %>)</span>
 	<% end %>
-	|
 </div>
 
 <ul class="sectionIcons">

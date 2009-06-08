@@ -1960,3 +1960,7 @@ table.quick_add td.submit {
   text-decoration: none;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+

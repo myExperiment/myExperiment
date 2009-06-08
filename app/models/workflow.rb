@@ -84,9 +84,7 @@ class Workflow < ActiveRecord::Base
   #non_versioned_fields.push("image", "svg", "license", "tag_list") # acts_as_versioned and file_column don't get on
   non_versioned_columns.push("license", "tag_list", "body_html")
   
-# acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, { :rating => :integer } ],
-
-  acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :type, :get_all_search_terms ],
+  acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
                :include => [ :comments ]) if Conf.solr_enable
 
   acts_as_runnable
@@ -258,4 +256,6 @@ class Workflow < ActiveRecord::Base
   def type
     content_type.title
   end
+
+  alias_method :kind, :type
 end
