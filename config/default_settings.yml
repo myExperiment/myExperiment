@@ -59,6 +59,12 @@ base_uri: http://www.example.com
 
 admins: []
 
+# curators - Set "curators" to the list of usernames of people that are able to
+#            curate contributions.  Like admins, these are usernames, not the
+#            display names of each user.
+
+curators: []
+
 # main_tabs - These are the main tabs of the website.  Each entry requires at
 #             least a label and a link.  If you specify a controller in a tab,
 #             then the tab is shown as selected when the page has been served by
@@ -280,26 +286,26 @@ bookmark_widget:
 #               new limit is created)  
 #
 # max_value - Absolute maximum allowance for the feature (this can't be
-#             exceeded after any promotions); 'nil' for always increasing
+#             exceeded after any promotions); 'null' for always increasing
 #             allowance
 #
 # frequency (in hours) - The time period over which the allowance is given; for
 #                        example 5 messages (allowance) for 24 hours
-#                        (frequency) 'nil' for non-periodic limits (i.e. limits
+#                        (frequency) 'null' for non-periodic limits (i.e. limits
 #                        which won't have their counters reset every
 #                        <frequency> hours)
 #
 # promote_every (in days) -  Every <X> days the user will be promoted to the
 #                            new level, where the allowance per frequency
 #                            period will be adjusted by promote_increment;
-#                            'nil' to indicate that promotion should never
+#                            'null' to indicate that promotion should never
 #                            happen
 #
 # promote_increment - Should be positive; 0 to indicate that promotion
 #                     shouldn't expand the allowance (why would this be
-#                     useful?) 'nil' to perform a one-time promotion by setting
-#                     the limit to whatever the value of max_value is; 'nil'
-#                     when the max_value is also 'nil' makes the feature
+#                     useful?) 'null' to perform a one-time promotion by setting
+#                     the limit to whatever the value of max_value is; 'null'
+#                     when the max_value is also 'null' makes the feature
 #                     unlimited.
 
 activity_limits:
@@ -315,10 +321,10 @@ activity_limits:
   user_invite:
 
     start_value:       20
-    max_value:         nil
-    frequency:         24 # hours
-    promote_every:     nil # days
-    promote_increment: nil
+    max_value:         null
+    frequency:         24   # hours
+    promote_every:     null # days
+    promote_increment: null
 
   group_invite:
 
@@ -365,4 +371,14 @@ home_page_stats:
 #                   pack:     manhattan_studio/folder-closed_16.png
 
 label_icons:
+
+# default_search_size - The default number of items shown in each search result
+#                       page.
+
+default_search_size: 10
+
+# max_search_size - The maximum number of items shown in each search result
+#                   page.
+
+max_search_size: 100
 
