@@ -14,7 +14,7 @@ class WorkflowsController < ApplicationController
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
   
   before_filter :check_file_size, :only => [:create, :create_version]
-  before_filter :check_custom_workflow_type => [:create, :create_version]
+  before_filter :check_custom_workflow_type, :only => [:create, :create_version]
   
   before_filter :check_is_owner, :only => [:edit, :update]
   
@@ -742,12 +742,26 @@ protected
     end
     
     # If a custom workflow type has been specified, check that it is not "Other" or "other" as this can cause havoc in the UI.
-    if params[:metadata_choice] == 'custom' && params[:workflow][:type].downcase == 'other' && params[:workflow][:type_other].downcase == 'other'
-      respond_to do |format|
-        flash.now[:error] = "Naughty naughty! You cannot specify a new workflow type of \"#{custom_type_specified}\""
-        format.html { render :action => view_to_render_on_fail }
+    if params[:metadata_choice] == 'custom' && params[:workflow][:type].downcase == 'other'
+
+      custom_type_specified = params[:workflow][:type_other]
+
+      if custom_type_specified.downcase == 'other'
+        respond_to do |format|
+          flash.now[:error] = "You cannot specify a new workflow type of \"#{custom_type_specified}\""
+          format.html { render :action => view_to_render_on_fail }
+        end
+        return false
       end
-      return false
+
+      # check that they actually filled in the "Other" field.
+      if custom_type_specified == ''
+        respond_to do |format|
+          flash.now[:error] = "You chose 'Other' as the Workflow Type but didn't enter a value for it"
+          format.html { render :action => view_to_render_on_fail }
+        end
+        return false
+      end
     end
   end
   
@@ -860,8 +874,17 @@ private
       wf_type = params[:workflow][:type]
     
       if wf_type.downcase == 'other'
-        workflow_to_set.content_type = ContentType.create(:user_id => current_user.id,
+
+        # Reuse an existing ContentType record if it exists already but the UI didn't have it.
+     
+        ct = ContentType.find_by_title(params[:workflow][:type_other])
+
+        if ct.nil?
+          ct = ContentType.create(:user_id => current_user.id,
             :mime_type => file.content_type, :title => params[:workflow][:type_other])
+        end
+
+        workflow_to_set.content_type = ct
       else
         workflow_to_set.content_type = ContentType.find_by_title(wf_type)
       end
