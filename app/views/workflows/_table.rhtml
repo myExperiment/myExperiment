@@ -101,8 +101,8 @@
 					  </p>
 						
 						<p style="font-size: 85%;">
-							<b>Viewed internally:</b> <%=pluralize Viewing.total_site_viewings_count_for_contribution(workflow.contribution.id), "time" %> |
-				      <b>Downloaded internally:</b> <%=pluralize Download.total_site_downloads_count_for_contribution(workflow.contribution.id), "time" %>
+							<b>Viewed:</b> <%=pluralize Viewing.total_site_viewings_count_for_contribution(workflow.contribution.id), "time" %> |
+				      <b>Downloaded:</b> <%=pluralize Download.total_site_downloads_count_for_contribution(workflow.contribution.id), "time" %>
 						</p>
 					  
 					  <% unless (tags = workflow.tags).empty? %>

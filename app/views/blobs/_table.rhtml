@@ -77,8 +77,8 @@
 						<p style="font-size: 85%;">
 							<a href="<%= file_path(blob) + '#ratings' -%>"><b>Rating: </b><%= number_with_precision(blob.rating, 1) %> / 5 (<%= pluralize blob.ratings_count, 'rating' %>)</a> |
 							<a href="<%= file_path(blob) + '#comments' -%>"><b>Comments: </b><%= blob.comments_count %></a> |
-							<b>Viewed internally:</b> <%= pluralize Viewing.total_site_viewings_count_for_contribution(blob.contribution.id), "time" %> |
-							<b>Downloaded internally:</b> <%= pluralize Download.total_site_downloads_count_for_contribution(blob.contribution.id), "time" %>
+							<b>Viewed:</b> <%= pluralize Viewing.total_site_viewings_count_for_contribution(blob.contribution.id), "time" %> |
+							<b>Downloaded:</b> <%= pluralize Download.total_site_downloads_count_for_contribution(blob.contribution.id), "time" %>
 						</p>
 						
 						<% unless (tags = blob.tags).empty? %>
