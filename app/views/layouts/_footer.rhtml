@@ -11,25 +11,29 @@
 			<td class="left">
 				<p><%= link_to "Front Page", "/" %></p>
 				<p><%= link_to "Home", "/home" %></p>
-				<p><%= link_to "About Us", "http://wiki.myexperiment.org/", :target => '_blank' %></p>
-				<p><%= link_to "Mailing List", "http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss", :target => '_blank' %></p>
-				<p><%= link_to "Contact Us", "/feedback", :target => '_blank' %></p>
-				<p><%= link_to "API", "/mashup/api" %></p>
-				<p><%= link_to "Publications", "http://www.semanticgrid.org/myexperiment/", :target => '_blank' %></p>
-			</td>
-			<td class="middle">
-				<p><%= link_to "Taverna Workflow Workbench", "http://www.taverna.org.uk/", :target => '_blank' %></p>
-				<p><%= link_to "Google Coop Search", "/google", :target => '_blank' %></p>
-				<br/>
 				<p><%= link_to "Invite people to #{Conf.sitename}", invite_users_path %></p>
 			</td>
 			<td class="middle">
+				<p><%= link_to "About Us", "http://wiki.myexperiment.org/", :target => '_blank' %></p>
+				<p><%= link_to "News and Events", "http://wiki.myexperiment.org/index.php/Main_Page", :target => '_blank' %></p>
+				<p><%= link_to "Mailing List", "http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss", :target => '_blank' %></p>
+				<p><%= link_to "Contact Us", "/feedback", :target => '_blank' %></p>
+				<p><%= link_to "Developers", "/mashup/api" %></p>
+				<p><%= link_to "Publications", "http://www.semanticgrid.org/myexperiment/", :target => '_blank' %></p>
+				<br/>
+			</td>
+			<td class="middle">
+				<p><%= link_to "Taverna Workflow Workbench", "http://www.taverna.org.uk/", :target => '_blank' %></p>
 				<p><%= link_to "myGrid", "http://www.mygrid.org.uk", :target => '_blank' %></p>
 				<p><%= link_to "BioCatalogue", "http://www.biocatalogue.org", :target => '_blank' %></p>
-				<p><%= link_to "JISC", "http://jisc.ac.uk/", :target => '_blank' %></p>
-				<p><%= link_to "Microsoft", "http://www.microsoft.com", :target => '_blank' %></p>
+				<p><%= link_to "Trident", "http://www.microsoft.com/mscorp/tc/trident.mspx", :target => '_blank' %></p>
+				<p><%= link_to "Google Coop Search", "/google", :target => '_blank' %></p>
 			</td>
 			<td class="right">
+				<p><%= link_to "EPSRC", "http://www.epsrc.ac.uk/", :target => '_blank' %></p>
+				<p><%= link_to "JISC", "http://jisc.ac.uk/", :target => '_blank' %></p>
+				<p><%= link_to "Microsoft", "http://www.microsoft.com", :target => '_blank' %></p>
+<p style="height=0; border-bottom: 1px dotted #999999"/>
 				<p>Powered by:</p>
 				<%= link_to image_tag('rails.png'), "http://www.rubyonrails.com", :target => '_blank' %>
 				
