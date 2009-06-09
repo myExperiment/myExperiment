@@ -107,7 +107,9 @@ module ActsAsSolr #:nodoc:
     end
     
     def validate_boost(boost)
-      if boost.class != Float || boost < 0
+      if boost.class == String
+        return eval(boost)
+      elsif boost.class != Float || boost < 0
         logger.warn "The boost value has to be a float and posisive, but got #{boost}. Using default boost value."
         return solr_configuration[:default_boost]
       end

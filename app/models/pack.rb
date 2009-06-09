@@ -27,6 +27,7 @@ class Pack < ActiveRecord::Base
   format_attribute :description
   
   acts_as_solr(:fields => [ :title, :description, :contributor_name, :tag_list ],
+               :boost => "search_boost",
                :include => [ :comments ]) if Conf.solr_enable
   
   has_many :contributable_entries,
@@ -892,5 +893,14 @@ class Pack < ActiveRecord::Base
     return item_data
   end
   
-  
+  def search_boost
+
+    # initial boost depends on viewings count
+    boost = contribution.viewings_count
+
+    # penalty for no description
+    boost = 0 if description.nil? || description.empty?
+    
+    boost
+  end
 end
