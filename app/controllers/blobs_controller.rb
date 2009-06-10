@@ -25,15 +25,7 @@ class BlobsController < ApplicationController
   
   # GET /files;search
   def search
-    @query = params[:query] || ''
-    @query.strip!
-    
-    @blobs = (Conf.solr_enable && !@query.blank?) ? Blob.find_by_solr(@query, :limit => 100).results : []
-    @blobs_found_total_count = (Conf.solr_enable && !@query.blank?) ? Blob.count_by_solr(@query) : 0
-    
-    respond_to do |format|
-      format.html # search.rhtml
-    end
+    redirect_to(search_path + "?type=files&query=" + params[:query])
   end
   
   # GET /files/1;download
