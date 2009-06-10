@@ -179,11 +179,15 @@ private
 
   def search_model
 
+    model_name = params[:type].singularize.camelize
+    model_name = Conf.model_aliases[model_name] if Conf.model_aliases[model_name]
+
+    model = eval(model_name)
+
     @collection_label = params[:type].singularize
-    @controller_name  = Conf.model_aliases[params[:type].camelize.singularize].underscore.pluralize
+    @controller_name  = model_name.underscore.pluralize
     @visible_name     = params[:type].capitalize
     @query_type       = params[:type]
-    model             = eval(Conf.model_aliases[params[:type].singularize.camelize])
 
     @query = params[:query] || ''
     @query.strip!

@@ -190,6 +190,16 @@ new_menu:
 
 search_categories: [all, users, groups, workflows, files, packs]
 
+# default_search_size - The default number of items shown in each search result
+#                       page.
+
+default_search_size: 10
+
+# max_search_size - The maximum number of items shown in each search result
+#                   page.
+
+max_search_size: 100
+
 # email - These are the email addresses used for sending notifications and the
 #         email address to send feedback entered from the web site.
 #
@@ -371,14 +381,4 @@ home_page_stats:
 #                   pack:     manhattan_studio/folder-closed_16.png
 
 label_icons:
-
-# default_search_size - The default number of items shown in each search result
-#                       page.
-
-default_search_size: 10
-
-# max_search_size - The maximum number of items shown in each search result
-#                   page.
-
-max_search_size: 100
 
