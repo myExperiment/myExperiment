@@ -982,6 +982,20 @@ end
 #
 # end
 
+def paginated_search_index(query, models, num, page, user)
+
+  return [] if not Conf.solr_enable or query.nil? or query == ""
+
+  find_paginated_auth( { :query => query, :models => models }, num, page, [], user) { |args, size, page|
+
+    q      = args[:query]
+    models = args[:models]
+
+    search_result = models[0].multi_solr_search(q, :limit => size, :offset => size * (page - 1), :models => models)
+    search_result.results unless search_result.total < (size * (page - 1))
+  }
+end
+
 def search(req_uri, rules, user, query)
 
   search_query = query['query']
@@ -1024,19 +1038,7 @@ def search(req_uri, rules, user, query)
   attributes['query'] = search_query
   attributes['type'] = query['type'] if models.length == 1
 
-  obs = []
-
-  if Conf.solr_enable and not query.nil? and query != ""
-
-    obs = find_paginated_auth( { :query => search_query, :models => models }, num, page, [], user) { |args, size, page|
-
-      q      = args[:query]
-      models = args[:models]
-
-      search_result = models[0].multi_solr_search(q, :limit => size, :offset => size * (page - 1), :models => models)
-      search_result.results unless search_result.total < (size * (page - 1))
-    }
-  end
+  obs = paginated_search_index(search_query, models, num, page, user)
 
   produce_rest_list(req_uri, rules, query, obs, 'search', attributes, user)
 end

@@ -1,3 +1,8 @@
+# myExperiment: app/controllers/search_controller.rb
+#
+# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
 class SearchController < ApplicationController
   def show
 
@@ -21,7 +26,8 @@ class SearchController < ApplicationController
     if @type == "all"
       search_all
     else
-      redirect_to :controller => params[:type], :action => "search", :query => params[:query]
+      search_model
+#redirect_to :controller => params[:type], :action => "search", :query => params[:query]
     end
   end
   
@@ -169,5 +175,36 @@ private
     respond_to do |format|
       format.html # search.rhtml
     end
+  end
+
+  def search_model
+
+    @collection_label = params[:type].singularize
+    @controller_name  = Conf.model_aliases[params[:type].camelize.singularize].underscore.pluralize
+    @visible_name     = params[:type].capitalize
+    @query_type       = params[:type]
+    model             = eval(Conf.model_aliases[params[:type].singularize.camelize])
+
+    @query = params[:query] || ''
+    @query.strip!
+
+    limit = params[:num] ? params[:num] : Conf.default_search_size
+
+    limit = 1                    if limit < 1
+    limit = Conf.max_search_size if limit > Conf.max_search_size
+
+    offset = params[:page] ? limit * (params[:page].to_i - 1) : 0
+
+    if Conf.solr_enable && !@query.blank?
+      solr_results = model.find_by_solr(@query, :offset => offset, :limit => limit)
+      @total_count = solr_results.total
+      @collection  = PaginatedArray.new(solr_results.results,
+          :offset => offset, :limit => limit, :total => @total_count)
+    else
+      @total_count = 0
+      @collection  = PaginatedArray.new([], :offset => offset, :limit => limit, :total => 0)
+    end
+
+    render("search/model")
   end
 end

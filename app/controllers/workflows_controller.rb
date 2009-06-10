@@ -34,15 +34,7 @@ class WorkflowsController < ApplicationController
   
   # GET /workflows;search
   def search
-    @query = params[:query] || ''
-    @query.strip!
-    
-    @workflows = (Conf.solr_enable && !@query.blank?) ? Workflow.find_by_solr(@query, :limit => 100).results : []
-    @workflows_found_total_count = (Conf.solr_enable && !@query.blank?) ? Workflow.count_by_solr(@query) : 0
-    
-    respond_to do |format|
-      format.html # search.rhtml
-    end
+    redirect_to(search_path + "?type=workflows&query=" + params[:query])
   end
   
   # POST /workflows/1;favourite
