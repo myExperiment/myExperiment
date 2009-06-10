@@ -1,0 +1,18 @@
+<% t "Search" -%>
+
+<%= render :partial => 'search/extra_search_help' %>
+
+<h1>Search Results</h1>
+
+<h2><%= "#{pluralize(@total_count, @visible_name)} found for \"#{@query}\"." %></h2>
+
+<%= view_privileges_notice %>
+<br />
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @collection } %>
+
+<%= render :partial => "#{@controller_name}/table", :locals => { :collection => @collection, :query => @query } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @collection } %>
+
+<br />
