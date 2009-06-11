@@ -2,12 +2,7 @@
 
 <%= render :partial => 'extra_search_help' %>
 
-<h1>Search Results</h1>
-
-<p class="box_standout" style="font-size: 108%; margin-bottom: 1em;">
-  <b>Search keywords: </b>
-  <%= h @query -%>
-</p>
+<h1>Search results for "<%= h @query -%>"</h1>
 
 <% if @total_count == 0 %>
 
@@ -21,10 +16,22 @@
   <div id="tabsContainer" class="tabsContainer"></div>
 
   <% @infos.each do |info| %>
+
+    <% name  = visible_name(info[:model]).pluralize
+       count = info[:results].length
+       total = info[:total_count] -%>
+
     <div class="tabContainer">
-      <div class="tabTitle"><%= visible_name(info[:model]).pluralize %> (<%= info[:results].length -%><% if info[:results].length < info[:total_count] %> of <%= info[:total_count ] -%><% end %>)</div>
+      <div class="tabTitle"><%= name %> (<%= count -%><% if count < total %> of <%= total -%><% end %>)</div>
       <div class="tabContent">
-          <%= render :partial => "#{info[:model].to_s.underscore.pluralize}/table", :locals => { :collection => info[:results], :query => @query } %>
+
+        <% if count < total %>
+          <p class="box_standout" style="font-size: 108%; margin-bottom: 1em; margin-top: 0.6em;"><b>
+            There are more results than shown here.  <a href="<%= search_path + "?type=#{info[:search_type]}&query=" + params[:query] -%>">See all <%= name %> results</a> for this query.
+          </b></p>
+        <% end %>
+
+        <%= render :partial => "#{info[:model].to_s.underscore.pluralize}/table", :locals => { :collection => info[:results], :query => @query } %>
       </div>
     </div>
   <% end %>

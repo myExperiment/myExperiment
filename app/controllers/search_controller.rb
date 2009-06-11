@@ -152,23 +152,31 @@ private
 
       models = categories.map do |category| eval(category.singularize.camelize) end
 
-      @results = User.multi_solr_search(@query, :limit => 100, :models => models).results
-      
-      @total_count = @results.length
+      @total_count = 0
 
       @infos = []
 
       models.each do |model|
 
-        model_results = @results.select do |r| r.instance_of?(model) end
+        model_results = model.find_by_solr(@query, :limit => 10)
+        model_count   = model_results.total
 
-        if (model_results.length > 0)
+        search_type = model.name.downcase.pluralize
+
+        Conf.model_aliases.each do |k,v|
+          search_type = k.downcase.pluralize if model.name == v
+        end
+
+        if (model_results.results.length > 0)
           @infos.push({
+            :search_type => search_type,
             :model       => model,
-            :results     => model_results,
-            :total_count => model.count_by_solr(@query)
+            :results     => model_results.results,
+            :total_count => model_count
           })
         end
+
+        @total_count += model_count
       end
     end
 
