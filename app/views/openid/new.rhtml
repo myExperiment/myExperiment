@@ -13,5 +13,6 @@
     </p>
     
     <%= submit_tag 'Validate', :disable_with => "Validating..." %>
+    <input type="submit" id="cancel_button" value="Return to your Profile" onclick="window.location='<%= user_path(current_user) -%>';return false;"/>
   <% end %>
 </div>
