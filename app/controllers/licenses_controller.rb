@@ -1,5 +1,5 @@
 class LicensesController < ApplicationController
-  before_filter :check_admin, :except => [:show, :index]
+  before_filter :check_admin, :except => [:show, :index, :update_license_info]
   
   before_filter :find_licenses, :only => [:index]
   
