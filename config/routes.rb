@@ -206,6 +206,9 @@ ActionController::Routing::Routes.draw do |map|
   # before 'announcements' resource within 'groups'
   map.resources :announcements
 
+  map.resources :licenses
+  map.resources :license_attributes
+
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'
 end

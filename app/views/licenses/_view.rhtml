@@ -1,0 +1,15 @@
+                <p style="text-align: center;">
+                  <b><big><%= license_icon_link(license) %></big></b>
+                  <br/>
+                  <%= link_to h(license.url), license.url %>
+                </p>
+                <% license_attribs = license.license_attributes %>
+                <% if license_attribs.size > 0 %>
+                <p><b>Attributes:&nbsp;</b>
+                  <% license_attribs.each do | attrib | %>
+				    <%= attrib.title %><% if attrib != license_attribs.last %>,<% else %>.<% end %>
+				  <% end %>
+				</p>
+				<% end %>
+		        <br/>
+				<small><%= license.description %></small>

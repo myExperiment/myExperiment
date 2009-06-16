@@ -766,6 +766,8 @@ module ApplicationHelper
       return "famfamfam_silk/computer_go.png"
     when "register_application"
       return "famfamfam_silk/application_edit.png"
+    when "license"
+      return "famfamfam_silk/text_signature.png"
     else
       return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end
@@ -851,14 +853,12 @@ module ApplicationHelper
     }
   end
   
-  def license_link(license_type)
-    case license_type.downcase
-    when "by-nd"
-      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by-nd/3.0/" target="_blank">Creative Commons Attribution-NoDerivs 3.0 License</a>'
-    when "by"
-      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by/3.0/" target="_blank">Creative Commons Attribution 3.0 License</a>'
-    when "by-sa"
-      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons Attribution-Share Alike 3.0 License</a>'
+  def license_icon_link(license)
+    case license.unique_name
+    when "by-nd", "by-sa", "by", "by-nc-nd", "by-nc", "by-nc-sa", "GPL", "LGPL"
+      return "<a rel=\"Copyright\" href=\"#{license_url(license)}\" title=\"#{license.title}\"><img src=\"/images/#{license.unique_name}.png\" /></a>"
+    else
+      return "<a rel=\"Copyright\" href=\"#{license_url(license)}\">#{license.title}</a>"
     end
   end
   

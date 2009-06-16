@@ -253,7 +253,7 @@ class WorkflowsController < ApplicationController
     @workflow = Workflow.new
     @workflow.contributor = current_user
     @workflow.last_edited_by = current_user.id
-    @workflow.license = params[:workflow][:license]
+    @workflow.license_id = params[:workflow][:license_id]
     @workflow.content_blob = ContentBlob.new(:data => file.read)
     @workflow.file_ext = file.original_filename.split(".").last.downcase
     
@@ -430,7 +430,7 @@ class WorkflowsController < ApplicationController
     # remove owner only columns
     unless @workflow.contribution.owner?(current_user)
       if params[:workflow]
-        [:unique_name, :license].each do |column_name|
+        [:unique_name, :license_id].each do |column_name|
           params[:workflow].delete(column_name)
         end
       end

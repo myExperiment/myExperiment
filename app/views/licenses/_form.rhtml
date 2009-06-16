@@ -1,0 +1,21 @@
+<%= javascript_include_tag :fckeditor %>
+<%= javascript_include_tag 'license_attributes' %>
+
+<!--[form:license]-->
+<p><label for="license_unique_name">Unique Name</label><br/>
+<%= form.text_field :unique_name, :size => 20 %></p>
+
+<p><label for="license_title">Title</label><br/>
+<%= form.text_field :title, :size => 70 %></p>
+
+<p><label for="license_url">URL</label><br/>
+<%= form.text_field :url, :size => 70 %></p>
+
+<br/>
+<%= render :partial => "license_attributes/attributes_form", :locals => { :edit => true, :license => @license } %>
+
+<h2><label for="license_description">Description</label></h2>
+<%= fckeditor_textarea(:license, :description, :toolbarSet => 'Simple', :width => '700px', :height => '300px') %></p>
+<br/><br/>
+
+<!--[eoform:license]-->

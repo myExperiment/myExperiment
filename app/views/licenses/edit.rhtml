@@ -1,0 +1,8 @@
+<h1>Editing License</h1>
+
+<%= error_messages_for :license %>
+
+<%  form_for(:license, :url => license_path(@license), :html => { :method => :put }) do |form| %>
+  <%= render :partial => 'form', :object => form %>
+  <%= submit_tag 'Update', :disable_with => "Updating..." %>
+<% end %>

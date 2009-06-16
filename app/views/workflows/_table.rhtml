@@ -68,7 +68,7 @@
 					  	</p>
 					  <% end %>
 						
-						<p style="font-size:85%;"><b>License: </b><%= license_link workflow.license.to_s %></p>
+						<p style="font-size:85%;"><b>License: </b><% @license = License.find(workflow.license_id) %><%= link_to h(@license.url), license_path(@license) %></p>
 					  
 						<table style="width: 99%;">
 							<tbody>

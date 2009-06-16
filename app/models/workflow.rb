@@ -23,8 +23,8 @@ class Workflow < ActiveRecord::Base
 
   belongs_to :content_blob
   belongs_to :content_type
-
-  
+  belongs_to :license
+    
   # need to destroy the workflow versions and their content blobs to avoid orphaned records
   before_destroy { |w| w.versions.each do |wv|
                         wv.content_blob.destroy if wv.content_blob
@@ -82,7 +82,7 @@ class Workflow < ActiveRecord::Base
   end
   
   #non_versioned_fields.push("image", "svg", "license", "tag_list") # acts_as_versioned and file_column don't get on
-  non_versioned_columns.push("license", "tag_list", "body_html")
+  non_versioned_columns.push("license_id", "tag_list", "body_html")
   
   acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
                :boost => "search_boost",
@@ -97,8 +97,7 @@ class Workflow < ActiveRecord::Base
   validates_presence_of :unique_name
   validates_uniqueness_of :unique_name
   
-  validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
-  
+  validates_presence_of :license_id
   validates_presence_of :content_blob
   validates_presence_of :content_type
 

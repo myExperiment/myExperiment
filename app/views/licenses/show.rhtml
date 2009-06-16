@@ -1,0 +1,38 @@
+<% t "#{h @license.title}" -%>
+
+<h1>License: <%= h @license.title %></h1>
+
+<% if admin? %>
+	<ul class="sectionIcons">
+	  <li><%= icon('edit', edit_license_path(@license), nil, nil, 'Edit') %></li>
+		<li>
+			<%= icon('destroy', license_path(@license), nil, { :confirm => 'Are you sure you want to delete this license?', :method => :delete }, 'Delete') %>
+		</li>
+	</ul>
+<% end %>
+
+<div class="message_box">
+	<div style="float: left;">
+		<p style="text-align: center;"><b>By</b></p>
+		<%= render :partial => "users/avatar", :locals => { :user => @license.user, :size => 60 } %>
+	</div>
+	
+	<div style="float: left; margin-left: 3em; width: 550px;">
+		<p><b>Title</b></p>
+		<p class="subject">
+			<%=h @license.title %>
+		</p>
+		<p><b>URL: </b><%= link_to h(@license.url), @license.url %></p>
+		<p><b>Created: </b><%=datetime @license.created_at %></p>
+		<p><b>Updated: </b><%=datetime @license.updated_at %></p>
+	</div>
+    <div class="clearer">&nbsp;</div>
+    <h2>Attributes</h2>
+	<% unless @license.attributes.empty? %>
+      <ul><%= render :partial => "license_attributes/attribute", :collection => LicenseAttribute.find(:all, :conditions => ["license_id = ?", @license.id], :order => "license_option_id") %></ul>
+    <% end %> 
+	<h2>Description</h2>
+	<div class="message">
+		<%= @license.description_html %>
+	</div>
+</div>

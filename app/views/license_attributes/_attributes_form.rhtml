@@ -1,0 +1,25 @@
+
+<div class="fold">
+  <div class="foldTitle">
+  	<%= info_icon_with_tooltip("Here you can add attributes to <strong>describe</strong> this license.") %>
+		<span>Attributes</span>
+		<% if edit %>
+			<hr />
+			<small>Current: <%= license.license_attributes.count %> attributes</small>
+		<% end %>
+  </div>
+  
+  <div class="foldContent">
+  <p><strong>Choose the attributes you want for this license:</strong></p>
+     <div id="license_options_box" class="box_editing" style="padding-left: 1em; font-size: 93%;">
+     <% License.find_license_options_set(@license).each do |a| %>
+       <p>
+	     <label for="license_attributea_<%= a.id %>">
+		   <input <%= 'checked' if a.isset %> style="margin-right: 0.3em;" value="<%= a.id %>" type="checkbox" name="license_attributes[<%= a.id %>][id]" id="license_attributes_<%= a.id %> " />
+	       <%= h(a.title) %>
+	     </label>
+	   </p>
+     <% end %>
+    </div>
+  </div>
+</div>
