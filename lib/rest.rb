@@ -560,6 +560,7 @@ def rest_resource_uri(ob)
     when 'PackContributableEntry'; return rest_resource_uri(ob.contributable)
     when 'PackRemoteEntry';        return ob.uri
     when 'ContentType';            return nil
+    when 'License';                return license_url(ob)
 
     when 'Creditation';     return nil
     when 'Attribution';     return nil
@@ -600,6 +601,7 @@ def rest_access_uri(ob)
     when 'PackRemoteEntry';        return "#{base}/external-pack-item.xml?id=#{ob.id}"
     when 'Tagging';                return "#{base}/tagging.xml?id=#{ob.id}"
     when 'ContentType';            return "#{base}/type.xml?id=#{ob.id}"
+    when 'License';                return "#{base}/license.xml?id=#{ob.id}"
 
     when 'Creditation';     return "#{base}/credit.xml?id=#{ob.id}"
     when 'Attribution';     return nil
@@ -632,6 +634,7 @@ def rest_object_tag_text(ob)
     when 'Comment';                return 'comment'
     when 'Bookmark';               return 'favourite'
     when 'ContentType';            return 'type'
+    when 'License';                return 'license'
   end
 
   return 'object'
@@ -657,6 +660,7 @@ def rest_object_label_text(ob)
     when 'PackRemoteEntry';        return ob.title     
     when 'Workflow::Version';      return ob.title
     when 'ContentType';            return ob.title
+    when 'License';                return ob.title
   end
 
   return ''
@@ -863,8 +867,16 @@ def workflow_aux(action, req_uri, rules, user, query)
 
     ob.title        = title        if title
     ob.body         = description  if description
-    ob.license      = license_type if license_type
+    #ob.license_id   = License.find_by_unique_name(license_type) if license_type
 
+    if license_type
+      ob.license = License.find_by_unique_name(license_type)
+      if ob.license.nil?
+        ob.errors.add("License type")
+        return rest_response(400, :object => ob)
+      end
+    end
+   
     # handle workflow type
 
     if type
