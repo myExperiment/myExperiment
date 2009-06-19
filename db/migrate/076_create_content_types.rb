@@ -22,11 +22,16 @@ class CreateContentTypes < ActiveRecord::Migration
     # Create ContentType records for workflows with processors
 
     u = User.find_by_username(Conf.admins.first)
+    if (u.blank?)
+    	uid = 1
+    else
+    	uid = u.id
+    end
 
-    taverna_1 = ContentType.create(:title => 'Taverna 1',         :mime_type => 'application/vnd.taverna.scufl+xml',  :user => u)
-    taverna_2 = ContentType.create(:title => 'Taverna 2 beta',    :mime_type => 'application/vnd.taverna.t2flow+xml', :user => u)
-    trident_x = ContentType.create(:title => 'Trident (XOML)',    :mime_type => 'application/xaml+xml',               :user => u)
-    trident_p = ContentType.create(:title => 'Trident (Package)', :mime_type => 'application/octet-stream',           :user => u)
+    taverna_1 = ContentType.create(:title => 'Taverna 1',         :mime_type => 'application/vnd.taverna.scufl+xml',  :user_id => uid)
+    taverna_2 = ContentType.create(:title => 'Taverna 2 beta',    :mime_type => 'application/vnd.taverna.t2flow+xml', :user_id => uid)
+    trident_x = ContentType.create(:title => 'Trident (XOML)',    :mime_type => 'application/xaml+xml',               :user_id => uid)
+    trident_p = ContentType.create(:title => 'Trident (Package)', :mime_type => 'application/octet-stream',           :user_id => uid)
 
     # Create ContentType entries for the existing workflows
 
@@ -57,7 +62,7 @@ class CreateContentTypes < ActiveRecord::Migration
         next
       end
 
-      ft = ContentType.create(:user_id => u.id, :title => entry, :mime_type => 'application/octet-stream')
+      ft = ContentType.create(:user_id => uid, :title => entry, :mime_type => 'application/octet-stream')
 
       workflow_type_to_content_type_id[entry] = ft.id
     end
@@ -69,7 +74,7 @@ class CreateContentTypes < ActiveRecord::Migration
     Blob.find(:all).map do |b|
       b.attributes["content_type"].strip end.uniq.each do |entry|
       if !blob_type_to_content_type_id[entry]
-        ft = ContentType.create(:user_id => u.id, :mime_type => entry, :title => entry)
+        ft = ContentType.create(:user_id => uid, :mime_type => entry, :title => entry)
 
         blob_type_to_content_type_id[entry] = ft.id
       end

@@ -10,10 +10,15 @@ class CreateLicenses < ActiveRecord::Migration
       t.column :created_at, :datetime
       t.column :updated_at, :datetime
     end
-  u = User.find_by_username(Conf.admins.first)
+    u = User.find_by_username(Conf.admins.first)
+    if (u.blank?)
+        uid = 1
+    else
+        uid=u.id
+    end
   
   #by-nd
-  License.create(:user => u, :unique_name => 'by-nd', :title => 'Creative Commons Attribution-No Derivative Works 3.0 Unported License', :description => "<h4>You are free:</h4>
+  License.create(:user_id => uid, :unique_name => 'by-nd', :title => 'Creative Commons Attribution-No Derivative Works 3.0 Unported License', :description => "<h4>You are free:</h4>
 <ul>
   <li>to Share &mdash; to copy, distribute and transmit the work</li>
 </ul>
@@ -36,7 +41,7 @@ class CreateLicenses < ActiveRecord::Migration
 </ul>", :url => 'http://creativecommons.org/licenses/by-nd/3.0/')
  
  #by-sa
- License.create(:user => u, :unique_name => 'by-sa', :title => 'Creative Commons Attribution-Share Alike 3.0 Unported License', :description => "<h4>You are free:</h4>
+ License.create(:user_id => uid, :unique_name => 'by-sa', :title => 'Creative Commons Attribution-Share Alike 3.0 Unported License', :description => "<h4>You are free:</h4>
 <ul>
   <li>to Share &mdash; to copy, distribute and transmit the work</li>
   <li>to Remix &mdash; to adapt the work</li>
@@ -61,7 +66,7 @@ class CreateLicenses < ActiveRecord::Migration
 </ul>", :url => 'http://creativecommons.org/licenses/by-sa/3.0/')
 
 #by
- License.create(:user => u, :unique_name => 'by', :title => 'Creative Commons Attribution 3.0 Unported License', :description => "<h4>You are free:</h4>
+ License.create(:user_id => uid, :unique_name => 'by', :title => 'Creative Commons Attribution 3.0 Unported License', :description => "<h4>You are free:</h4>
 <ul>
   <li>to Share &mdash; to copy, distribute and transmit the work</li>
   <li>to Remix &mdash; to adapt the work</li>
@@ -85,7 +90,7 @@ class CreateLicenses < ActiveRecord::Migration
 
 
 #by-nc-nd
- License.create(:user => u, :unique_name => 'by-nc-nd', :title => 'Creative Commons Attribution-Noncommercial-No Derivative Works 3.0 Unported License', :description => "<h4>You are free:</h4>
+ License.create(:user_id => uid, :unique_name => 'by-nc-nd', :title => 'Creative Commons Attribution-Noncommercial-No Derivative Works 3.0 Unported License', :description => "<h4>You are free:</h4>
 <ul>
   <li>to Share &mdash; to copy, distribute and transmit the work</li>
 </ul>
@@ -109,7 +114,7 @@ class CreateLicenses < ActiveRecord::Migration
 </ul>", :url => 'http://creativecommons.org/licenses/by-nc-nd/3.0/')
 
 #by-nc
- License.create(:user => u, :unique_name => 'by-nc', :title => 'Creative Commons Attribution-Noncommercial 3.0 Unported License', :description => "<h4>You are free:</h4>
+ License.create(:user_id => uid, :unique_name => 'by-nc', :title => 'Creative Commons Attribution-Noncommercial 3.0 Unported License', :description => "<h4>You are free:</h4>
 <ul>
   <li>to Share &mdash; to copy, distribute and transmit the work</li>
   <li>to Remix &mdash; to adapt the work</li>
@@ -133,7 +138,7 @@ class CreateLicenses < ActiveRecord::Migration
 </ul>", :url => 'http://creativecommons.org/licenses/by-nc/3.0/')
 
 #by-nc-sa
-License.create(:user => u, :unique_name => 'by-nc-sa', :title => 'Creative Commons Attribution-Noncommercial-Share Alike 3.0 Unported License', :description => "<h4>You are free:</h4>
+License.create(:user_id => uid, :unique_name => 'by-nc-sa', :title => 'Creative Commons Attribution-Noncommercial-Share Alike 3.0 Unported License', :description => "<h4>You are free:</h4>
 <ul>
   <li>to Share &mdash; to copy, distribute and transmit the work</li>
   <li>to Remix &mdash; to adapt the work</li>
@@ -158,7 +163,7 @@ License.create(:user => u, :unique_name => 'by-nc-sa', :title => 'Creative Commo
 </ul>", :url => 'http://creativecommons.org/licenses/by-nc-sa/3.0/')
 
 #MIT
-License.create(:user => u, :unique_name => 'MIT', :title => 'MIT License', :description => "<h4>You are free:</h4>
+License.create(:user_id => uid, :unique_name => 'MIT', :title => 'MIT License', :description => "<h4>You are free:</h4>
 <ul>
   <li>to Share &mdash; to copy, distribute and transmit the work</li>
   <li>to Remix &mdash; to adapt the work</li>
@@ -170,7 +175,7 @@ License.create(:user => u, :unique_name => 'MIT', :title => 'MIT License', :desc
 </ul>", :url => 'http://creativecommons.org/licenses/MIT/')
 
 #BSD
-License.create(:user => u, :unique_name => 'BSD', :title => 'BSD License', :description => "<h4>You are free:</h4>
+License.create(:user_id => uid, :unique_name => 'BSD', :title => 'BSD License', :description => "<h4>You are free:</h4>
 <ul>
   <li>to Share &mdash; to copy, distribute and transmit the work</li>
   <li>to Remix &mdash; to adapt the work</li>
@@ -183,7 +188,7 @@ License.create(:user => u, :unique_name => 'BSD', :title => 'BSD License', :desc
 </ul>", :url => 'http://creativecommons.org/licenses/BSD/')
 
 #GPL
-License.create(:user => u, :unique_name => 'GPL', :title => 'GNU General Public License (GPL) 2.0', :description => "<p>The GNU General Public License is a Free Software license. Like any Free Software license, it grants to you the four following freedoms:</p>
+License.create(:user_id => uid, :unique_name => 'GPL', :title => 'GNU General Public License (GPL) 2.0', :description => "<p>The GNU General Public License is a Free Software license. Like any Free Software license, it grants to you the four following freedoms:</p>
 <ol>
   <li>The freedom to run the program for any purpose.</li>
   <li>The freedom to study how the program works and adapt it to your needs.</li>
@@ -199,7 +204,7 @@ License.create(:user => u, :unique_name => 'GPL', :title => 'GNU General Public 
 <p>Any of the above conditions can be waived if you get permission from the copyright holder.</p>", :url => 'http://creativecommons.org/licenses/GPL/2.0/')
 
 #LGPL
-License.create(:user => u, :unique_name => 'LGPL', :title => 'GNU Lesser General Public License (LGPL) 2.1', :description => "<p>The GNU Lesser General Public License is a Free Software license. Like any Free Software license, it grants to you the four following freedoms:</p>
+License.create(:user_id => uid, :unique_name => 'LGPL', :title => 'GNU Lesser General Public License (LGPL) 2.1', :description => "<p>The GNU Lesser General Public License is a Free Software license. Like any Free Software license, it grants to you the four following freedoms:</p>
 <ol>
   <li>The freedom to run the program for any purpose.</li>
   <li>The freedom to study how the program works and adapt it to your needs.</li>
@@ -215,7 +220,7 @@ License.create(:user => u, :unique_name => 'LGPL', :title => 'GNU Lesser General
 <p>Any of the above conditions can be waived if you get permission from the copyright holder.</p>", :url => 'http://creativecommons.org/licenses/LGPL/2.1/')
   
  #Apache
- License.create(:user => u, :unique_name => 'Apache', :title => 'Apache License v2.0', :description => "<p>See <a href='http://www.apache.org/licenses/LICENSE-2.0'>http://www.apache.org/licenses/LICENSE-2.0</a></p>", :url => "http://www.apache.org/licenses/LICENSE-2.0")
+ License.create(:user_id => uid, :unique_name => 'Apache', :title => 'Apache License v2.0', :description => "<p>See <a href='http://www.apache.org/licenses/LICENSE-2.0'>http://www.apache.org/licenses/LICENSE-2.0</a></p>", :url => "http://www.apache.org/licenses/LICENSE-2.0")
  end
  
  def self.down

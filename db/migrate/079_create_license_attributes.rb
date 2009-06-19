@@ -31,7 +31,7 @@ class CreateLicenseAttributes < ActiveRecord::Migration
     LicenseAttribute.create(:license => lic, :license_option => derivs )
     LicenseAttribute.create(:license => lic, :license_option => sharealike )
     lic.save
-    
+
     #by
     lic = License.find(:first,:conditions=>['unique_name = ?','by'])
     LicenseAttribute.create(:license => lic, :license_option => reproduction )
@@ -49,7 +49,7 @@ class CreateLicenseAttributes < ActiveRecord::Migration
     LicenseAttribute.create(:license => lic, :license_option => attribution )
     LicenseAttribute.create(:license => lic, :license_option => commercial )
     lic.save
-    
+
     #by-nc
     lic = License.find(:first,:conditions=>['unique_name = ?','by-nc'])
     LicenseAttribute.create(:license => lic, :license_option => reproduction )
@@ -79,7 +79,7 @@ class CreateLicenseAttributes < ActiveRecord::Migration
     LicenseAttribute.create(:license => lic, :license_option => sourcecode )
     LicenseAttribute.create(:license => lic, :license_option => derivs )
     lic.save
-    
+
     #BSD
     lic = License.find(:first,:conditions=>['unique_name = ?','BSD'])
     LicenseAttribute.create(:license => lic, :license_option => reproduction )
