@@ -734,7 +734,7 @@ protected
     end
     
     # If a custom workflow type has been specified, check that it is not "Other" or "other" as this can cause havoc in the UI.
-    if params[:metadata_choice] == 'custom' && params[:workflow][:type].downcase == 'other'
+    if params[:metadata_choice] == 'custom' && params[:workflow][:type] && params[:workflow][:type].downcase == 'other'
 
       custom_type_specified = params[:workflow][:type_other]
 
