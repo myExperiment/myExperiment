@@ -1960,6 +1960,18 @@ table.quick_add td.submit {
   text-decoration: none;
 }
 
+.quote_level_0 {
+}
+
+.quote_level_1 {
+  color: gray;
+}
+
+.quoted_section {
+  border-left: 2px solid gray;
+  padding-left: 8px;
+}
+
 .nowrap {
   white-space: nowrap;
 }
