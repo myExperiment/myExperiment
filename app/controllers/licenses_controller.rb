@@ -38,13 +38,12 @@ class LicensesController < ApplicationController
 
   def update
     @license = License.find(params[:id])
-    @license_attributes = @license.license_attributes
-    for @attrib in @license_attributes do
-      @attrib.destroy
-    end
-    params[:license_attributes].each do |attrib,aval|
-      @license_attribute = LicenseAttribute.new(:license => @license, :license_option_id => attrib)
-      @license_attribute.save
+    LicenseAttribute.destroy_all("license_id = #{params[:id]}")
+    if params[:license_attributes]
+      params[:license_attributes].each do |attrib,aval|
+        @license_attribute = LicenseAttribute.new(:license => @license, :license_option_id => attrib)
+        @license_attribute.save
+      end
     end
     if @license.update_attributes(params[:license])
       flash[:notice] = 'License was successfully updated.'
@@ -56,7 +55,7 @@ class LicensesController < ApplicationController
 
   def destroy
     if (Workflow.find_all_by_license_id(params[:id]).empty? and Blob.find_all_by_license_id(params[:id]).empty? ) 
-     # License.find(params[:id]).destroy
+      License.find(params[:id]).destroy
       flash[:notice] = 'License was successfully deleted.'
     else
       flash[:error] = 'License could not be deleted because it is in use.'

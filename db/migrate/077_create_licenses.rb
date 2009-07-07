@@ -221,8 +221,16 @@ License.create(:user_id => uid, :unique_name => 'LGPL', :title => 'GNU Lesser Ge
   
  #Apache
  License.create(:user_id => uid, :unique_name => 'Apache', :title => 'Apache License v2.0', :description => "<p>See <a href='http://www.apache.org/licenses/LICENSE-2.0'>http://www.apache.org/licenses/LICENSE-2.0</a></p>", :url => "http://www.apache.org/licenses/LICENSE-2.0")
+
+ #Public Domain
+ License.create(:user_id => uid, :unique_name => 'CC0', :title => 'CC0 1.0 Universal (Public Domain License)', :description => "<p>The person who associated a work with this document has dedicated this work to the Commons by waiving all of his or her rights to the work under copyright law and all related or neighboring legal rights he or she had in the work, to the extent allowable by law.</p>
+<p><b>Other Rights</b> &mdash; In no way are any of the following rights affected by CC0:</p>
+<ul>
+  <li>Patent or trademark rights held by the person who associated this document with a work.</li>
+  <li>Rights other persons may have either in the work itself or in how the work is used, such as publicity or privacy rights.</li>
+</ul>", :url => "http://creativecommons.org/publicdomain/zero/1.0/")
  end
- 
+
  def self.down
     drop_table :licenses
   end

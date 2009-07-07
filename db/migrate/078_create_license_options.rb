@@ -28,7 +28,7 @@ class CreateLicenseOptions < ActiveRecord::Migration
     LicenseOption.create(:user_id => uid, :title => 'Requires Source Code', :description => 'Requires source code (the preferred form for making modifications) must be provided when exercising some rights granted by the license.', :uri => 'http://creativecommons.org/ns#SourceCode', :predicate => 'requires')
     LicenseOption.create(:user_id => uid, :title => 'Requires Copyleft', :description => 'Requires derivative and combined works must be licensed under specified terms, similar to those on the original work', :uri => 'http://creativecommons.org/ns#Copyleft', :predicate => 'requires')
     LicenseOption.create(:user_id => uid, :title => 'Requires Lesser Copyleft', :description => 'Requires derivative works must be licensed under specified terms, with at least the same conditions as the original work; combinations with the work may be licensed under different terms', :uri => 'http://creativecommons.org/ns#LesserCopyleft', :predicate => 'requires')
-    LicenseOption.create(:user_id => uid, :title => 'Prohibits Commercial User', :description => 'Prohibits exercising rights for commercial purposes', :uri => 'http://creativecommons.org/ns#CommercialUse', :predicate => 'prohibits')
+    LicenseOption.create(:user_id => uid, :title => 'Prohibits Commercial Use', :description => 'Prohibits exercising rights for commercial purposes', :uri => 'http://creativecommons.org/ns#CommercialUse', :predicate => 'prohibits')
   end
 
   def self.down
