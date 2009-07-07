@@ -87,9 +87,13 @@ class MessagesController < ApplicationController
       #  so this is a mere validation - which saves user from typing the message in and learning that
       #  it can't be set because of the limit, which is expired)
       if params[:reply_id]
+
+        subject = @reply.subject
+        subject = "RE: #{subject}" unless subject.starts_with?("RE: ")
+
         @message = Message.new(:to => @reply.from,
                                :reply_id => @reply.id,
-                               :subject => "RE: " + @reply.subject,
+                               :subject => subject,
                                :body => @reply.body.split(/\n/).collect {|line| ">> #{line}"}.join) # there has to be a 'ruby-er' way of doing this?
       else
         @message = Message.new
