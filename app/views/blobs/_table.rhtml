@@ -61,7 +61,7 @@
 							</p>
 						<% end %>
 						
-						<p style="font-size:85%;"><b>License: </b><% @license = License.find(blob.license_id) %><%= link_to h(@license.url), license_path(@license) %></p>
+						<p style="font-size:85%;"><b>License: </b><% @license = License.find(blob.license_id) %><%= link_to h(@license.title), license_path(@license) %></p>
 						
 						<div class="desc" style="font-size: 85%;">
 							<% if blob.body and blob.body.length > 0 %>

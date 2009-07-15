@@ -30,6 +30,7 @@
         
         <%= collection_select(:workflow, :license_id, License.find(:all), :id, :title, {}, 
               {:onChange => remote_function(:update => 'license_info',
+	       :selected => @license.id,
                :url => {:controller => 'licenses', :action=> 'update_license_info' },
                :with => "'license_id=' + escape(value)")}) %>
         </div>
