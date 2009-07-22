@@ -168,7 +168,9 @@ function hashClicked(evt) {
 
   var el = evt.target ? evt.target : event.srcElement;
 
-  showFragment(el.hash.substring(1), true);
+  if (el.hash != undefined)
+    showFragment(el.hash.substring(1), true);
+
   return false;
 }
 
