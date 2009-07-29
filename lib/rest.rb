@@ -952,6 +952,112 @@ def delete_workflow(req_uri, rules, user, query)
   workflow_aux('destroy', req_uri, rules, user, query)
 end
 
+# file handling
+
+def file_aux(action, req_uri, rules, user, query)
+
+  # Obtain object
+
+  case action
+    when 'create':
+      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Blob', user, nil)
+      ob = Blob.new(:contributor => user)
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Blob', query['id'], user, action)
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    title        = parse_element(data, :text,   '/file/title')
+    description  = parse_element(data, :text,   '/file/description')
+    license_type = parse_element(data, :text,   '/file/license-type')
+    type         = parse_element(data, :text,   '/file/type')
+    content_type = parse_element(data, :text,   '/file/content-type')
+    content      = parse_element(data, :binary, '/file/content')
+
+    permissions  = data.find_first('/file/permissions')
+
+    # build the contributable
+
+    ob.title        = title        if title
+    ob.body         = description  if description
+
+    if license_type
+      ob.license = License.find_by_unique_name(license_type)
+      if ob.license.nil?
+        ob.errors.add("License type")
+        return rest_response(400, :object => ob)
+      end
+    end
+   
+    # handle type
+
+    if type
+
+      ob.content_type = ContentType.find_by_title(type)
+
+      if ob.content_type.nil?
+        ob.errors.add("Type")
+        return rest_response(400, :object => ob)
+      end
+
+    elsif content_type
+
+      content_types = ContentType.find_all_by_mime_type(content_type)
+  
+      if content_types.length == 1
+        ob.content_type = content_types.first
+      else
+        if content_types.empty?
+          ob.errors.add("Content type")
+        else
+          ob.errors.add("Content type", "matches more than one registered content type")
+        end
+
+        return rest_response(400, :object => ob)
+      end
+    end
+
+    ob.content_blob = ContentBlob.new(:data => content) if content
+
+    if not ob.save
+      return rest_response(400, :object => ob)
+    end
+
+    if ob.contribution.policy.nil?
+      ob.contribution.policy = create_default_policy(user)
+      ob.contribution.save
+    end
+
+    update_permissions(ob, permissions)
+  end
+
+  rest_get_request(ob, "file", user,
+      rest_resource_uri(ob), "file", { "id" => ob.id.to_s })
+end
+
+def post_file(req_uri, rules, user, query)
+  file_aux('create', req_uri, rules, user, query)
+end
+
+def put_file(req_uri, rules, user, query)
+  file_aux('update', req_uri, rules, user, query)
+end
+
+def delete_file(req_uri, rules, user, query)
+  file_aux('destroy', req_uri, rules, user, query)
+end
+
 # def post_job(req_uri, rules, user, query)
 #
 #   title       = params["job"]["title"]

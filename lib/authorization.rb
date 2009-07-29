@@ -66,6 +66,14 @@ module Authorization
       return !user.nil?
     end
     
+    # Blob permissions
+    
+    if (object_type == 'Blob') && (action == 'create')
+
+      # Files can only be created by authenticated users
+      return !user.nil?
+    end
+    
     # Comment permissions
     
     if (object_type == 'Comment') && (action == 'create')
