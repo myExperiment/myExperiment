@@ -10,7 +10,7 @@ require 'workflows_controller'
 class WorkflowsController; def rescue_action(e) raise e end; end
 
 class AuthorizationTest < Test::Unit::TestCase
-  fixtures :workflows, :users, :contributions, :workflow_versions, :content_blobs, :blobs, :packs, :policies, :permissions, :networks, :friendships, :memberships
+  fixtures :workflows, :users, :contributions, :workflow_versions, :content_blobs, :blobs, :packs, :policies, :permissions, :networks, :friendships, :memberships, :licenses
 
   def test_truth
     assert true

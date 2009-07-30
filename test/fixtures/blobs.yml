@@ -8,7 +8,7 @@ picture:
   title: Picture
   body: some text
   created_at: 2008-04-22 15:32:01
-  license: by-sa
+  license_id: 1
   content_type_id: 1
   content_blob_id: 1
 
@@ -20,6 +20,7 @@ text:
   title: developers.txt
   body: myExperiment instructions
   created_at: 2007-01-01 00:00:03
+  license_id: 1
   content_type_id: 2
   content_blob_id: 2
 
@@ -31,7 +32,7 @@ for_true_policy:
   title: for true policy
   body: some text
   created_at: 2008-04-22 15:32:01
-  license: by-sa
+  license_id: 1
   content_type_id: 1
   content_blob_id: 1
 
@@ -43,7 +44,7 @@ for_false_policy:
   title: for false policy
   body: some text
   created_at: 2008-04-22 15:32:01
-  license: by-sa
+  license_id: 1
   content_type_id: 1
   content_blob_id: 1
 
@@ -55,7 +56,7 @@ for_protected_policy:
   title: for protected policy
   body: some text
   created_at: 2008-04-22 15:32:01
-  license: by-sa
+  license_id: 2
   content_type_id: 1
   content_blob_id: 1
 
@@ -67,7 +68,7 @@ for_public_policy:
   title: for public policy
   body: some text
   created_at: 2008-04-22 15:32:01
-  license: by-sa
+  license_id: 2
   content_type_id: 1
   content_blob_id: 1
 

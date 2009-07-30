@@ -1,12 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'license_controller'
+require 'licenses_controller'
 
 # Re-raise errors caught by the controller.
-class LicenseController; def rescue_action(e) raise e end; end
+class LicensesController; def rescue_action(e) raise e end; end
 
-class LicenseControllerTest < Test::Unit::TestCase
+class LicensesControllerTest < Test::Unit::TestCase
   def setup
-    @controller = LicenseController.new
+    @controller = LicensesController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
   end

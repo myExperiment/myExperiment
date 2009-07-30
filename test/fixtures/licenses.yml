@@ -1,5 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+
+license_1:
   id: 1
-two:
+  title: License 1
+  description: This is the first license.
+
+license_2:
   id: 2
+  title: License 2
+  description: This is the second license.
