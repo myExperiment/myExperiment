@@ -16,12 +16,12 @@ li img {
 	float: left;	
 	vertical-align: middle;
 	display: block;
-	margin-top: 0.8em;
 }
 
 .frontpage_header .text {
 	float: right;
 	width: 28em;
+	height: 58px;
 	text-align: center;
 	font-size: 131%;
 	color: #333333;
