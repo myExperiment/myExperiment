@@ -14,9 +14,9 @@ module OAuth
       end
       
       def oauthenticate
-        logger.info "entering oauthenticate"
+#       logger.info "entering oauthenticate"
         verified=verify_oauth_signature 
-        logger.info "verified=#{verified.to_s}"
+#       logger.info "verified=#{verified.to_s}"
         return verified && current_token.is_a?(::AccessToken)
       end
       
@@ -26,18 +26,18 @@ module OAuth
       
       # use in a before_filter
       def oauth_required
-        logger.info "Current_token=#{@current_token.inspect}"
+#       logger.info "Current_token=#{@current_token.inspect}"
         if oauthenticate
-          logger.info "passed oauthenticate"
+#         logger.info "passed oauthenticate"
           if authorized?
-            logger.info "passed authorized"
+#           logger.info "passed authorized"
             return true
           else
-            logger.info "failed authorized"
+#           logger.info "failed authorized"
             invalid_oauth_response
           end
         else
-          logger.info "failed oauthenticate"
+#         logger.info "failed oauthenticate"
 	  # Return true instead, so public api calls still work
 	  return true          
           #invalid_oauth_response
@@ -100,8 +100,8 @@ module OAuth
         begin
           valid = ClientApplication.verify_request(request) do |token|
             self.current_token = ClientApplication.find_token(token)
-            logger.info "self=#{self.class.to_s}"
-            logger.info "token=#{self.current_token}"
+#           logger.info "self=#{self.class.to_s}"
+#           logger.info "token=#{self.current_token}"
             # return the token secret and the consumer secret
             [(current_token.nil? ? nil : current_token.secret), (current_client_application.nil? ? nil : current_client_application.secret)]
           end
