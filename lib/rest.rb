@@ -66,23 +66,23 @@ def rest_response(code, args = {})
 
   else 
 
-    error = XML::Node.new('error')
+    error = LibXML::XML::Node.new('error')
     error["code"   ] = code.to_s
     error["message"] = message
 
-    doc = XML::Document.new
+    doc = LibXML::XML::Document.new
     doc.root = error
 
     if args[:object]
       args[:object].errors.full_messages.each do |message|
-        reason = XML::Node.new('reason')
+        reason = LibXML::XML::Node.new('reason')
         reason << message
         doc.root << reason
       end
     end
 
     if args[:reason]
-      reason = XML::Node.new('reason')
+      reason = LibXML::XML::Node.new('reason')
       reason << args[:reason]
       doc.root << reason
     end
@@ -152,7 +152,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
       when 'list', 'item as list'
 
-        list_element = XML::Node.new(model_data['REST Attribute'][i])
+        list_element = LibXML::XML::Node.new(model_data['REST Attribute'][i])
 
         attrs.each do |key,value|
           list_element[key] = value
@@ -179,7 +179,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
           list_element_text     = list_element_accessor ? eval("item.#{model_data['List Element Accessor'][i]}") : item
 
           if list_element_text.instance_of?(String)
-            el = XML::Node.new(model_data['List Element Name'][i])
+            el = LibXML::XML::Node.new(model_data['List Element Name'][i])
 
             item_attrs.each do |key,value|
               el[key] = value
@@ -207,7 +207,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
       when 'url'
 
-        element = XML::Node.new(model_data['REST Attribute'][i])
+        element = LibXML::XML::Node.new(model_data['REST Attribute'][i])
 
         element << eval("#{model_data['Accessor'][i]}(ob)")
 
@@ -219,7 +219,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
       when 'item'
 
-        el = XML::Node.new(model_data['REST Attribute'][i])
+        el = LibXML::XML::Node.new(model_data['REST Attribute'][i])
 
         item = eval("ob.#{model_data['Accessor'][i]}")
 
@@ -265,7 +265,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         # puts "ATTRIBUTE = #{model_data['REST Attribute'][i]}, ATTRS = #{attrs.inspect}, text = #{text.inspect}"
 
-        el = XML::Node.new(model_data['REST Attribute'][i])
+        el = LibXML::XML::Node.new(model_data['REST Attribute'][i])
 
         attrs.each do |key,value|
           el[key] = value if value
@@ -287,8 +287,8 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
 
   elements = query['elements'] ? query['elements'].split(',') : nil
 
-  doc  = XML::Document.new()
-  root = XML::Node.new(entity_name)
+  doc  = LibXML::XML::Document.new()
+  root = LibXML::XML::Node.new(entity_name)
   doc.root = root
 
   root['uri'        ] = rest_access_uri(ob)
@@ -490,7 +490,7 @@ end
 
 def produce_rest_list(req_uri, rules, query, obs, tag, attributes, user)
 
-  root = XML::Node.new(tag)
+  root = LibXML::XML::Node.new(tag)
 
   root['api-version'] = API_VERSION if query['api_version'] == 'yes'
 
@@ -517,7 +517,7 @@ def produce_rest_list(req_uri, rules, query, obs, tag, attributes, user)
     root << el
   end
 
-  doc = XML::Document.new
+  doc = LibXML::XML::Document.new
   doc.root = root
 
   render(:xml => doc.to_s)
@@ -668,7 +668,7 @@ end
 
 def rest_reference(ob, query, skip_text = false)
 
-  el = XML::Node.new(rest_object_tag_text(ob))
+  el = LibXML::XML::Node.new(rest_object_tag_text(ob))
 
   resource_uri = rest_resource_uri(ob)
 
@@ -1165,10 +1165,10 @@ def user_count(req_uri, rules, user, query)
   
   users = User.find(:all).select do |user| user.activated? end
 
-  root = XML::Node.new('user-count')
+  root = LibXML::XML::Node.new('user-count')
   root << users.length.to_s
 
-  doc = XML::Document.new
+  doc = LibXML::XML::Document.new
   doc.root = root
 
   render(:xml => doc.to_s)
@@ -1176,10 +1176,10 @@ end
 
 def group_count(req_uri, rules, user, query)
   
-  root = XML::Node.new('group-count')
+  root = LibXML::XML::Node.new('group-count')
   root << Network.count.to_s
 
-  doc = XML::Document.new
+  doc = LibXML::XML::Document.new
   doc.root = root
 
   render(:xml => doc.to_s)
@@ -1191,10 +1191,10 @@ def workflow_count(req_uri, rules, user, query)
     Authorization.is_authorized?('view', nil, w, user)
   end
 
-  root = XML::Node.new('workflow-count')
+  root = LibXML::XML::Node.new('workflow-count')
   root << workflows.length.to_s
 
-  doc = XML::Document.new
+  doc = LibXML::XML::Document.new
   doc.root = root
 
   render(:xml => doc.to_s)
@@ -1206,10 +1206,10 @@ def pack_count(req_uri, rules, user, query)
     Authorization.is_authorized?('view', nil, p, user)
   end
 
-  root = XML::Node.new('pack-count')
+  root = LibXML::XML::Node.new('pack-count')
   root << packs.length.to_s
 
-  doc = XML::Document.new
+  doc = LibXML::XML::Document.new
   doc.root = root
 
   render(:xml => doc.to_s)
@@ -1217,10 +1217,10 @@ end
 
 def content_type_count(req_uri, rules, user, query)
 
-  root = XML::Node.new('type-count')
+  root = LibXML::XML::Node.new('type-count')
   root << ContentType.count.to_s
 
-  doc = XML::Document.new
+  doc = LibXML::XML::Document.new
   doc.root = root
 
   render(:xml => doc.to_s)
@@ -1262,9 +1262,9 @@ def tag_cloud(req_uri, rules, user, query)
 
   tags = Tag.find_by_tag_count(num, type)
 
-  doc = XML::Document.new()
+  doc = LibXML::XML::Document.new()
 
-  root = XML::Node.new('tag-cloud')
+  root = LibXML::XML::Node.new('tag-cloud')
   doc.root = root
 
   root['type'] = query['type'] ? query['type'] : 'all'
@@ -1303,11 +1303,11 @@ end
 
 def effective_privileges(ob, user, query)
 
-  privileges = XML::Node.new('privileges')
+  privileges = LibXML::XML::Node.new('privileges')
 
   ['view', 'download', 'edit'].each do |type|
     if Authorization.is_authorized?(type, nil, ob, user) 
-      privilege = XML::Node.new('privilege')
+      privilege = LibXML::XML::Node.new('privilege')
       privilege['type'] = type
 
       privileges << privilege
