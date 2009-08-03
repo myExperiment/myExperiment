@@ -10,7 +10,7 @@ require 'blobs_controller'
 class BlobsController; def rescue_action(e) raise e end; end
 
 class BlobsControllerTest < Test::Unit::TestCase
-  fixtures :blobs, :users, :contributions, :content_blobs, :workflows, :packs, :policies, :permissions, :networks
+  fixtures :blobs, :users, :contributions, :content_blobs, :workflows, :packs, :policies, :permissions, :networks, :content_types
 
   def setup
     @controller = BlobsController.new
@@ -34,7 +34,7 @@ class BlobsControllerTest < Test::Unit::TestCase
     old_count = Blob.count
 
     login_as(:john)
-    post :create, :blob => { :title => 'Test blob', :body => 'test test test', :data => fixture_file_upload('files/picture_1.png', 'image/png') }, 
+    post :create, :blob => { :title => 'Test blob', :body => 'test test test', :license_id => 1, :data => fixture_file_upload('files/picture_1.png', 'image/png') }, 
                   :credits_me => 'false',
                   :credits_users => '',
                   :credits_groups => '',

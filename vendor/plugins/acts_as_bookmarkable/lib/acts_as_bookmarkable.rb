@@ -10,13 +10,18 @@ module Juixe
       module ClassMethods
         def acts_as_bookmarkable
           has_many :bookmarks, :as => :bookmarkable, :dependent => :destroy
-          include Juixe::Acts::Bookmarkable::InstanceMethods
-          extend Juixe::Acts::Bookmarkable::SingletonMethods
+          include Juixe::Acts::Bookmarkable::BookmarkableInstanceMethods
+          extend Juixe::Acts::Bookmarkable::BookmarkableSingletonMethods
+        end
+
+        def acts_as_bookmarker
+          has_many :bookmarks, :order => "created_at DESC", :dependent => :destroy
+          include Juixe::Acts::Bookmarkable::BookmarkerInstanceMethods
         end
       end
       
-      # This module contains class methods
-      module SingletonMethods
+      # This module contains class methods for bookmarkables
+      module BookmarkableSingletonMethods
         # Helper class method to lookup comments for
         # the mixin commentable type written by a given user.  
         # This method is NOT equivalent to Bookmark.find_bookmarks_for_user
@@ -30,8 +35,8 @@ module Juixe
         end
       end
       
-      # This module contains instance methods
-      module InstanceMethods
+      # This module contains instance methods for bookmarkables
+      module BookmarkableInstanceMethods
         # Check to see if a user already bookmaked this bookmarkable
         def bookmarked_by_user?(user)
           rtn = false
@@ -44,6 +49,15 @@ module Juixe
         end
       end
       
+      # This module contains instance methods for bookmarkers
+      module BookmarkerInstanceMethods
+        # Get all the bookmarked items for this user
+        def bookmarked_items
+          Bookmark.find(:all, :conditions => ["user_id = ?", self.id]).map do |b|
+            b.bookmarkable
+          end
+        end
+      end
     end
   end
 end

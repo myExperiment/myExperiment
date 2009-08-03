@@ -22,7 +22,9 @@ class Workflow < ActiveRecord::Base
            :dependent => :destroy
 
   belongs_to :content_blob
-  
+  belongs_to :content_type
+  belongs_to :license
+    
   # need to destroy the workflow versions and their content blobs to avoid orphaned records
   before_destroy { |w| w.versions.each do |wv|
                         wv.content_blob.destroy if wv.content_blob
@@ -65,6 +67,10 @@ class Workflow < ActiveRecord::Base
     format_attribute :body
     
     belongs_to :content_blob
+    belongs_to :content_type
+
+    validates_presence_of :content_blob
+    validates_presence_of :content_type
     
     # :dependent => :destroy is not supported in belongs_to in rails 1.2.6
     after_destroy { |wv| wv.content_blob.destroy if wv.content_blob }
@@ -76,11 +82,10 @@ class Workflow < ActiveRecord::Base
   end
   
   #non_versioned_fields.push("image", "svg", "license", "tag_list") # acts_as_versioned and file_column don't get on
-  non_versioned_columns.push("license", "tag_list", "body_html")
+  non_versioned_columns.push("license_id", "tag_list", "body_html")
   
-# acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, { :rating => :integer } ],
-
-  acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :type_display_name, :get_all_search_terms ],
+  acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
+               :boost => "search_boost",
                :include => [ :comments ]) if Conf.solr_enable
 
   acts_as_runnable
@@ -92,8 +97,7 @@ class Workflow < ActiveRecord::Base
   validates_presence_of :unique_name
   validates_uniqueness_of :unique_name
   
-  validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
-  
+  validates_presence_of :license_id
   validates_presence_of :content_blob
   validates_presence_of :content_type
 
@@ -158,7 +162,9 @@ class Workflow < ActiveRecord::Base
   end
 
   def processor_class
-    @processor_class ||= WorkflowTypesHandler.processor_class_for_content_type(self.content_type)
+    if self.content_type
+        @processor_class ||= WorkflowTypesHandler.processor_class_for_type_display_name(self.content_type.title)
+    end
   end
   
   def can_infer_metadata_for_this_type?
@@ -168,7 +174,7 @@ class Workflow < ActiveRecord::Base
   end
   
   def type_display_name
-    WorkflowTypesHandler.type_display_name_for_content_type(self.content_type)  
+    content_type.title
   end
   
   def display_data_format
@@ -240,7 +246,27 @@ class Workflow < ActiveRecord::Base
   end
 
   def components
-    processor_class.new(content_blob.data).get_components
+    if processor_class
+      processor_class.new(content_blob.data).get_components
+    else
+      XML::Node.new('components')
+    end
   end
 
+  def type
+    content_type.title
+  end
+
+  alias_method :kind, :type
+
+  def search_boost
+
+    # initial boost depends on viewings count
+    boost = contribution.viewings_count
+
+    # penalty for no description
+    boost = 0 if body.nil? || body.empty?
+    
+    boost
+  end
 end

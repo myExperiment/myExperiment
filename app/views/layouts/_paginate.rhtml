@@ -3,7 +3,7 @@
   <ul>
   <% if collection.previous_page? -%>
          <li class="nextpage">
-	    	    <%= link_to '&#171; previous', { :page => collection.previous_page } %>
+	    	    <%= link_to '&#171; previous', { :query => @query, :type => @query_type, :page => collection.previous_page } %>
 	    	 </li>
 	  <% else -%>
          <li class="disabledpage">&#171; previous</li>
@@ -15,7 +15,7 @@
             <li class="currentpage"><%= n %></li>
        <% else -%>
 	          <li><%= "..." if last_page+1 < n %>
-	           <%= link_to n, :id => params[:id], :page => n %>
+	           <%= link_to n, :query => @query, :type => @query_type, :id => params[:id], :page => n %>
 	          </li>
 	       <% end -%>
 	      <% last_page = n -%>
@@ -23,7 +23,7 @@
  
     <% if collection.next_page? -%>
      <li class="nextpage">
-        <%=  link_to 'next &#187;', { :page => collection.next_page } %>
+        <%=  link_to 'next &#187;', { :query => @query, :type => @query_type, :page => collection.next_page } %>
      </li>
     <% else -%>
       <li class="disabledpage">next &#187;</li>

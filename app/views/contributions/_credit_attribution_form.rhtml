@@ -70,7 +70,7 @@
         <div id="author_otheruser_box" style="display: none; padding-left: 2em;">
             <p>
                 <select id="author_otheruser_dropdown">
-                    <% (all_nonfriends(current_user)).each do |f| %>
+                    <% (nonfriends_for_credits_form(current_user)).each do |f| %>
                     	<option value="<%= f.id %>"><%= h(f.name) %></option>
                     <% end %>
                 </select>
@@ -85,7 +85,7 @@
         <div id="author_networks_box" style="display: none; padding-left: 2em;">
             <p>
                 <select id="author_networks_dropdown">
-                    <% all_networks.each do |n| %>
+                    <% networks_for_credits_form.each do |n| %>
                     	<option value="<%= n.id %>"><%= h(n.title) %></option>
                     <% end %>
                 </select>
@@ -139,8 +139,8 @@
           <br />
           <br />
           <select id="existingworkflows_dropdown" style="width: 280px;">
-            <% all_workflows.each do |w| %>
-            	<option value="<%= w.id %>"><%= h(w.title) -%> (<%= contributor_name(w.contribution.contributor_id, w.contribution.contributor_type) -%>)</option>
+            <% workflows_for_attribution_form.each do |w| %>
+            	<option value="<%= w.id %>"><%= h(w.title) -%> (<%= h(w.name) -%>)</option>
             <% end %>
           </select>
           <br />
@@ -153,8 +153,8 @@
           <br />
           <br />
           <select id="existingfiles_dropdown" style="width: 280px;">
-            <% all_blobs.each do |b| %>
-            	<option value="<%= b.id %>"><%= contributable_name(b.id, 'Blob') -%> (<%= contributor_name(b.contributor_id, b.contributor_type) -%>)</option>
+            <% blobs_for_attribution_form.each do |b| %>
+            	<option value="<%= b.id %>"><%= h(b.title) -%> (<%= h(b.name) -%>)</option>
             <% end %>
           </select>
           <br />

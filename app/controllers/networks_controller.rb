@@ -18,15 +18,7 @@ class NetworksController < ApplicationController
   
   # GET /networks;search
   def search
-    @query = params[:query] || ''
-    @query.strip!
-    
-    @networks = (Conf.solr_enable && !@query.blank?) ? Network.find_by_solr(@query, :limit => 100).results : []
-    @networks_found_total_count = (Conf.solr_enable && !@query.blank?) ? Network.count_by_solr(@query) : 0
-    
-    respond_to do |format|
-      format.html # search.rhtml
-    end
+    redirect_to(search_path + "?type=groups&query=" + params[:query])
   end
   
   # GET /networks/1;invite

@@ -210,20 +210,20 @@ li {
 }
 
 #ft .left {
-	width: 150px; 
+	width: 251px; 
 	text-align: left;
 	font-size: 93%;
 }
 
 #ft .middle {
-	width: 325px; 
+	width: 251px; 
 	text-align: left;
 	font-size: 93%;
 	border-left: 1px dotted #999999;
 }
 
 #ft .right {
-	width: 150px; 
+	width: 194px; 
 	text-align: center;
 	font-size: 77%; 
 	border-left: 1px dotted #999999;
@@ -1958,5 +1958,21 @@ table.quick_add td.submit {
   padding-right: 4px;
   color: #000099;
   text-decoration: none;
+}
+
+.quote_level_0 {
+}
+
+.quote_level_1 {
+  color: gray;
+}
+
+.quoted_section {
+  border-left: 2px solid gray;
+  padding-left: 8px;
+}
+
+.nowrap {
+  white-space: nowrap;
 }
 

@@ -1,5 +1,6 @@
 class Tag < ActiveRecord::Base
   has_many :taggings
+  belongs_to :vocabulary
 
   # Parse a text string into an array of tokens for use as tags
   def self.parse(list)

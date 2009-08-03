@@ -1,0 +1,33 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+png:
+  id: 1
+  user_id: 1
+  title: Portable Network Graphics
+  description: A graphics file format.
+  description_html: "<p>A graphics file format.</p>"
+  mime_type: image/png
+  created_at: 2008-04-22 15:32:01
+  updated_at: 2008-04-22 15:32:01
+
+
+text:
+  id: 2
+  user_id: 1
+  title: Plain text
+  description: This is a file containing plain text.
+  description_html: "<p>This is a file containing plain text.</p>"
+  mime_type: text/plain
+  created_at: 2008-04-22 15:32:01
+  updated_at: 2008-04-22 15:32:01
+
+taverna:
+  id: 3
+  user_id: 1
+  title: Taverna 1
+  description: The Taverna 1 workflow file format.
+  description_html: "<p>The Taverna 1 workflow file format.</p>"
+  mime_type: application/vnd.taverna.scufl+xml
+  created_at: 2008-04-22 15:32:01
+  updated_at: 2008-04-22 15:32:01
+

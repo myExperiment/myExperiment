@@ -90,7 +90,7 @@ def sanity_tests
   # workflows
 
   should_be_empty("All workflows must have a content type",
-      workflows.select do |w| w.content_type.length.zero? end)
+      workflows.select do |w| !w.content_type.nil? end)
 
   @results_string += "\nTotal tests:      #{@results.length}\n"
   @results_string += "Successful tests: #{@results.select do |r| r == true end.length}\n"

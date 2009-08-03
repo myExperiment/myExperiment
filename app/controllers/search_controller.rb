@@ -1,3 +1,8 @@
+# myExperiment: app/controllers/search_controller.rb
+#
+# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
 class SearchController < ApplicationController
   def show
 
@@ -21,7 +26,8 @@ class SearchController < ApplicationController
     if @type == "all"
       search_all
     else
-      redirect_to :controller => params[:type], :action => "search", :query => params[:query]
+      search_model
+#redirect_to :controller => params[:type], :action => "search", :query => params[:query]
     end
   end
   
@@ -74,7 +80,7 @@ class SearchController < ApplicationController
       markup += "<pubDate>" + time_string(w.created_at) + "</pubDate>";
       markup += "<media:content url=\"" + w.named_download_url + "\"";
       markup += " fileSize=\"" + w.content_blob.data.length.to_s + "\"" +
-                " type=\"" + w.content_type + "\"/>";
+                " type=\"" + w.content_type.title + "\"/>";
       markup += "<media:thumbnail url=\"" + file_column_url(w, "image/thumb") +
           "\"/>";
 #markup += "height=\"120\" width=\"160\"/>";
@@ -146,28 +152,71 @@ private
 
       models = categories.map do |category| eval(category.singularize.camelize) end
 
-      @results = User.multi_solr_search(@query, :limit => 100, :models => models).results
-      
-      @total_count = @results.length
+      @total_count = 0
 
       @infos = []
 
       models.each do |model|
 
-        model_results = @results.select do |r| r.instance_of?(model) end
+        model_results = model.find_by_solr(@query, :limit => 10)
+        model_count   = model_results.total
 
-        if (model_results.length > 0)
+        search_type = model.name.downcase.pluralize
+
+        Conf.model_aliases.each do |k,v|
+          search_type = k.downcase.pluralize if model.name == v
+        end
+
+        if (model_results.results.length > 0)
           @infos.push({
+            :search_type => search_type,
             :model       => model,
-            :results     => model_results,
-            :total_count => model.count_by_solr(@query)
+            :results     => model_results.results,
+            :total_count => model_count
           })
         end
+
+        @total_count += model_count
       end
     end
 
     respond_to do |format|
       format.html # search.rhtml
     end
+  end
+
+  def search_model
+
+    model_name = params[:type].singularize.camelize
+    model_name = Conf.model_aliases[model_name] if Conf.model_aliases[model_name]
+
+    model = eval(model_name)
+
+    @collection_label = params[:type].singularize
+    @controller_name  = model_name.underscore.pluralize
+    @visible_name     = params[:type].capitalize
+    @query_type       = params[:type]
+
+    @query = params[:query] || ''
+    @query.strip!
+
+    limit = params[:num] ? params[:num] : Conf.default_search_size
+
+    limit = 1                    if limit < 1
+    limit = Conf.max_search_size if limit > Conf.max_search_size
+
+    offset = params[:page] ? limit * (params[:page].to_i - 1) : 0
+
+    if Conf.solr_enable && !@query.blank?
+      solr_results = model.find_by_solr(@query, :offset => offset, :limit => limit)
+      @total_count = solr_results.total
+      @collection  = PaginatedArray.new(solr_results.results,
+          :offset => offset, :limit => limit, :total => @total_count)
+    else
+      @total_count = 0
+      @collection  = PaginatedArray.new([], :offset => offset, :limit => limit, :total => 0)
+    end
+
+    render("search/model")
   end
 end

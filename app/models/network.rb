@@ -123,13 +123,13 @@ class Network < ActiveRecord::Base
                           
   alias_method :original_members, :members
   def members(incl_owner=true)
-    rtn = incl_owner ? [User.find(owner.id)] : []
-    
-    original_members(force_reload = true).each do |m|
-      rtn << User.find(m.user_id)
-    end
-    
-    return rtn
+    explicit_members = User.find(:all,
+                                 :select     => "users.*",
+                                 :joins      => "JOIN memberships m on (users.id = m.user_id)",
+                                 :conditions => [ "m.network_id=? AND m.user_established_at IS NOT NULL AND m.network_established_at IS NOT NULL", id ],
+                                 :order      => "GREATEST(m.user_established_at, m.network_established_at) DESC"
+                                )
+    return incl_owner ? ( [owner] + explicit_members ) : explicit_members
   end
                           
   def member?(userid)

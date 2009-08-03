@@ -1,5 +1,5 @@
 <% form_tag search_path, :method => :get do %>
-  <%= text_field_tag :query, nil, :style => "padding: 0.1em;" %> 
-  <%= select_tag :type, options_for_select(Conf.search_categories.collect { |t| [t.capitalize, t] }, 'all') %>
+  <%= text_field_tag :query, @query, :style => "padding: 0.1em;" %> 
+  <%= select_tag :type, options_for_select(Conf.search_categories.collect { |t| [t.capitalize, t] }, @query_type) %>
   <%= submit_tag "Search", :disable_with => "Searching..." %>
 <% end %>

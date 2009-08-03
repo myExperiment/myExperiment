@@ -19,18 +19,7 @@ class UsersController < ApplicationController
   
   # GET /users;search
   def search
-    @query = params[:query] || ''
-    @query.strip!
-    
-    results = (Conf.solr_enable && !@query.blank?) ? User.find_by_solr(@query, :limit => 100).results : []
-    
-    # Only show activated users!
-    @users = results.select { |u| u.activated? }
-    @users_found_total_count = (Conf.solr_enable && !@query.blank?) ? User.count_by_solr(@query) : 0
-    
-    respond_to do |format|
-      format.html # search.rhtml
-    end
+    redirect_to(search_path + "?type=users&query=" + params[:query])
   end
   
   # GET /users

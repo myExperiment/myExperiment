@@ -10,7 +10,7 @@ require 'networks_controller'
 class NetworksController; def rescue_action(e) raise e end; end
 
 class NetworksControllerTest < Test::Unit::TestCase
-  fixtures :networks, :users
+  fixtures :networks, :users, :content_types
 
   def setup
     @controller = NetworksController.new

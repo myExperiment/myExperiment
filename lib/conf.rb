@@ -41,6 +41,10 @@ class Conf
     self.fetch_entry('admins')
   end
 
+  def self.curators
+    self.fetch_entry('curators')
+  end
+
   def self.main_tabs
     self.fetch_entry('main_tabs')
   end
@@ -103,6 +107,14 @@ class Conf
 
   def self.label_icons
     self.fetch_entry('label_icons', {})
+  end
+  
+  def self.default_search_size
+    self.fetch_entry('default_search_size')
+  end
+
+  def self.max_search_size
+    self.fetch_entry('max_search_size')
   end
 
   # This method is required to create an administrator in the test fixtures

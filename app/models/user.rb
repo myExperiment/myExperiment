@@ -60,6 +60,7 @@ class User < ActiveRecord::Base
   end
   
   acts_as_tagger
+  acts_as_bookmarker
   
   has_many :ratings,
            :order => "created_at DESC",
@@ -74,10 +75,6 @@ class User < ActiveRecord::Base
            :dependent => :destroy
   
   has_many :viewings, 
-           :order => "created_at DESC",
-           :dependent => :destroy
-  
-  has_many :bookmarks, 
            :order => "created_at DESC",
            :dependent => :destroy
   
@@ -210,14 +207,12 @@ class User < ActiveRecord::Base
   def self.authenticate(login, password)
     return nil if login.blank? or password.blank?
     
-    eager_include = [ :contributions, :tags ]
-    
     # Either, check for a User with username matching 'login'
-    u = find(:first, :conditions => ["username = ?", login], :include => eager_include)
+    u = find(:first, :conditions => ["username = ?", login])
     
     # Or, check for a User with email address matching 'login'
     unless u
-      u = find(:first, :conditions => ["email = ?", login], :include => eager_include) 
+      u = find(:first, :conditions => ["email = ?", login]) 
     end
     
     u && u.activated? && u.authenticated?(password) ? u : nil
@@ -383,9 +378,11 @@ class User < ActiveRecord::Base
   end
   
   def friends
-    (friends_of_mine + friends_with_me).uniq.sort { |a, b|
-      a.name.downcase <=> b.name.downcase
-    }
+    User.find(:all,
+              :select => "users.*",
+              :joins => "JOIN friendships f ON (users.id = f.friend_id OR users.id = f.user_id)",
+              :conditions => ["(f.user_id = ? OR f.friend_id = ?) AND (f.accepted_at IS NOT NULL) AND (users.id <> ?)", id, id, id],
+              :order => "lower(users.name)" )
   end
   
   has_and_belongs_to_many :networks,
@@ -395,13 +392,11 @@ class User < ActiveRecord::Base
                           
   alias_method :original_networks, :networks
   def networks
-    rtn = []
-    
-    original_networks(force_reload = true).each do |n|
-      rtn << Network.find(n.network_id)
-    end
-    
-    return rtn
+    Network.find(:all,
+                 :select => "networks.*",
+                 :joins => "JOIN memberships m ON (networks.id = m.network_id)",
+                 :conditions => ["m.user_id=? AND m.user_established_at is NOT NULL AND m.network_established_at IS NOT NULL", id],
+                 :order => "GREATEST(m.user_established_at, m.network_established_at) DESC" )
   end
                           
   has_many :networks_owned,

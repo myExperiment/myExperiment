@@ -9,116 +9,41 @@
 
 
 <% dc_title = contributable.title %>
-<% dc_description = contributable.respond_to?('description_html') ? contributable.description_html : contributable.body_html %>
+<% dc_description = h(contributable.respond_to?('description_html') ? contributable.description_html : contributable.body_html) %>
 <% dc_date = contributable.created_at %>
 <% dc_creator = contributor(contributable.contribution.contributor_id, contributable.contribution.contributor_type, link=false)  %>
 <% dc_source = Conf.base_uri + request.request_uri %>
 
 
-<% case (contributable.license.to_s); when "by-nd" %>
+<% @license = License.find(contributable.license_id) %>
 
-<!--
+<%=  "<!--
 
-<rdf:RDF xmlns="http://web.resource.org/cc/"
-    xmlns:dc="http://purl.org/dc/elements/1.1/"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<Work rdf:about="">
-   <dc:title><%= dc_title %></dc:title>
-   <dc:date><%= dc_date %></dc:date>
-   <dc:description><%= dc_description %></dc:description>
+<rdf:RDF xmlns=\"http://creativecommons.org/ns#\"
+    xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
+    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">
+<Work rdf:about=\"\">
+   <dc:title>#{dc_title}</dc:title>
+   <dc:date>#{dc_date}</dc:date>
+   <dc:description>#{dc_description}</dc:description>
    <dc:creator><Agent>
-      <dc:title><%= dc_creator %></dc:title>
+      <dc:title>#{dc_creator}</dc:title>
    </Agent></dc:creator>
    <dc:rights><Agent>
-      <dc:title><%= dc_creator %></dc:title>
+      <dc:title>#{dc_creator}</dc:title>
    </Agent></dc:rights>
-   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
-   <dc:source rdf:resource="<%= dc_source -%>"/>
-   <license rdf:resource="http://creativecommons.org/licenses/by-nd/3.0/" />
+   <dc:type rdf:resource=\"http://purl.org/dc/dcmitype/Data\" />
+   <dc:source rdf:resource=\"#{dc_source}\"/>
+   <license rdf:resource=\"#{@license.url}\" />
 </Work>
 
-<License rdf:about="http://creativecommons.org/licenses/by-nd/3.0/">
-   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
-   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
-   <requires rdf:resource="http://web.resource.org/cc/Notice" />
-   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
-   <prohibits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+<License rdf:about=\"#{@license.url}\">"%>
+<% @license.license_attributes.each do |attrib| %><%= "  <#{attrib.predicate} rdf:resource=\"#{attrib.uri}\" />" %><% end %>
 </License>
 
 </rdf:RDF>
 
 -->
-
-<% when "by-sa" %>
-
-<!--
-
-<rdf:RDF xmlns="http://web.resource.org/cc/"
-    xmlns:dc="http://purl.org/dc/elements/1.1/"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<Work rdf:about="">
-   <dc:title><%= dc_title %></dc:title>
-   <dc:date><%= dc_date %></dc:date>
-   <dc:description><%= dc_description %></dc:description>
-   <dc:creator><Agent>
-      <dc:title><%= dc_creator %></dc:title>
-   </Agent></dc:creator>
-   <dc:rights><Agent>
-      <dc:title><%= dc_creator %></dc:title>
-   </Agent></dc:rights>
-   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
-   <dc:source rdf:resource="<%= dc_source -%>"/>
-   <license rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
-</Work>
-
-<License rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
-   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
-   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
-   <requires rdf:resource="http://web.resource.org/cc/Notice" />
-   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
-   <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
-   <requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
-</License>
-
-</rdf:RDF>
-
--->
-
-<% when "by" %>
-
-<!--
-
-<rdf:RDF xmlns="http://web.resource.org/cc/"
-    xmlns:dc="http://purl.org/dc/elements/1.1/"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<Work rdf:about="">
-   <dc:title><%= dc_title %></dc:title>
-   <dc:date><%= dc_date %></dc:date>
-   <dc:description><%= dc_description %></dc:description>
-   <dc:creator><Agent>
-      <dc:title><%= dc_creator %></dc:title>
-   </Agent></dc:creator>
-   <dc:rights><Agent>
-      <dc:title><%= dc_creator %></dc:title>
-   </Agent></dc:rights>
-   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Data" />
-   <dc:source rdf:resource="<%= dc_source -%>"/>
-   <license rdf:resource="http://creativecommons.org/licenses/by/3.0/" />
-</Work>
-
-<License rdf:about="http://creativecommons.org/licenses/by/3.0/">
-   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
-   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
-   <requires rdf:resource="http://web.resource.org/cc/Notice" />
-   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
-   <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
-</License>
-
-</rdf:RDF>
-
--->
-
-<% end %>
 
   <div class="contribution_currentlicense">
     <p>
@@ -127,7 +52,7 @@
       <% else %>
         This <%= visible_name(contributable) -%> is
       <% end %>
-      licensed under the <%= license_link contributable.license.to_s %>.
+      licensed under: <br/><br/><%= license_icon_link(@license) %>
     </p>
   </div>
 	

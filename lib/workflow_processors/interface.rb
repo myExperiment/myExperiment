@@ -19,11 +19,6 @@ module WorkflowProcessors
       ""
     end
     
-    # MUST be unique across all processors
-    def self.content_type
-      ""
-    end
-    
     def self.display_data_format
       ""
     end

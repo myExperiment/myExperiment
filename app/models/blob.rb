@@ -25,14 +25,40 @@ class Blob < ActiveRecord::Base
   acts_as_attributor
   acts_as_attributable
   
-  acts_as_solr(:fields => [:title, :local_name, :body, :content_type, :uploader],
+  acts_as_solr(:fields => [:title, :local_name, :body, :kind, :uploader],
+               :boost => "search_boost",
                :include => [ :comments ]) if Conf.solr_enable
+
   belongs_to :content_blob
+  belongs_to :content_type
+  belongs_to :license
+ 
 
   # :dependent => :destroy is not supported in belongs_to in rails 1.2.6
   after_destroy { |b| b.content_blob.destroy }
 
-  validates_inclusion_of :license, :in => [ "by-nd", "by-sa", "by" ]
-  
+  validates_presence_of :license_id
+  validates_presence_of :content_blob
+  validates_presence_of :content_type
+
+  validates_presence_of :title
+
   format_attribute :body
+
+  def type
+    content_type.title
+  end
+
+  alias_method :kind, :type
+
+  def search_boost
+
+    # initial boost depends on viewings count
+    boost = contribution.viewings_count
+
+    # penalty for no description
+    boost = 0 if body.nil? || body.empty?
+    
+    boost
+  end
 end

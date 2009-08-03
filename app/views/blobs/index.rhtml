@@ -1,3 +1,10 @@
+<div class="box_standout" style="text-align: center; margin-bottom: 1em; font-weight: bold; line-height: 1.5em;">
+	<% Blob.count(:all, :group => 'content_type_id').sort{|x,y| y[1] <=> x[1]}.each do |arr| %>
+		  <span class="nowrap"><%= link_to((h(ContentType.find_by_id(arr[0]).title)),
+        search_files_path + "?query=kind:(#{ContentType.find_by_id(arr[0]).title})") %> (<%= arr[1] %>)</span>
+	<% end %>
+</div>
+
 <ul class="sectionIcons">
 	<li><%= icon "blob", new_file_path, nil, nil, "Upload New File" %></li>
 	<li><%= icon "view-all", all_files_path, nil, nil, "View All Files" %></li>

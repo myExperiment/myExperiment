@@ -14,9 +14,6 @@ class WorkflowTypesHandler
       @@processor_classes                       = [ ]
       @@workflow_types_that_can_infer_metadata  = [ ]
       @@processor_display_names                 = { }
-      @@processor_content_types                 = { }
-      @@type_display_name_content_types         = { }
-      @@content_type_type_display_names         = { }
       
       ObjectSpace.each_object(Class) do |c|
         if c < WorkflowProcessors::Interface
@@ -26,9 +23,6 @@ class WorkflowTypesHandler
           
           # Also populate the lookup tables for ease of use later.
           @@processor_display_names[c.display_name] = c
-          @@processor_content_types[c.content_type] = c
-          @@type_display_name_content_types[c.display_name] = c.content_type
-          @@content_type_type_display_names[c.content_type] = c.display_name
         end
       end
     end
@@ -49,13 +43,11 @@ class WorkflowTypesHandler
     
     # Then get the types stored in the database (removing duplicates)
     
-    proc_c_types = @@processor_content_types.keys
-    
-    types_in_db = Workflow.find_by_sql("SELECT content_type FROM workflows GROUP BY content_type")
+    types_in_db = ContentType.find_by_sql("SELECT content_types.title FROM content_types, workflows WHERE content_types.id = workflows.content_type_id GROUP BY content_types.id")
     
     types_in_db.each do |t|
-      c_type = t[:content_type]
-      @@types[c_type] = nil unless proc_c_types.include?(c_type) or @@types.has_key?(c_type)
+      c_type = t.title
+      @@types[c_type] = nil unless @@types.has_key?(c_type)
     end
   end
   
@@ -87,38 +79,6 @@ class WorkflowTypesHandler
     end
   end
   
-  # Gets the processor class for the given workflow content type.
-  # Returns nil if no corresponding processor is found.
-  def self.processor_class_for_content_type(content_type)
-    if @@processor_content_types.has_key?(content_type)
-      return @@processor_content_types[content_type]
-    else
-      return nil
-    end
-  end
-  
-  # Gets the corresponding content type for the workflow type's display name provided.
-  # This tries to find a corresponding processor for the type display name,
-  # or the same type display name provided is returned as the content type.
-  def self.content_type_for_type_display_name(type_display_name)
-    if @@type_display_name_content_types.has_key?(type_display_name)
-      return @@type_display_name_content_types[type_display_name]
-    else
-      return type_display_name
-    end
-  end
-  
-  # Gets the corresponding workflow type display name for the content type provided.
-  # This tries to find a corresponding processor for the content type,
-  # or the same content type is returned as the type display name.
-  def self.type_display_name_for_content_type(content_type)
-    if @@content_type_type_display_names.has_key?(content_type)
-      return @@content_type_type_display_names[content_type]
-    else
-      return content_type
-    end
-  end
-  
   # Gets the list of workflow types (denoted by type display name) that support parsing and inferring metadata.
   def self.ones_that_can_infer_metadata
     @@type_display_names_that_can_infer_metadata
@@ -135,11 +95,6 @@ protected
   # The following should map the unique key values (which are based on what the variable name is) with the corresponding processor class.
   # These act as quick lookup tables.
   @@processor_display_names = { }
-  @@processor_content_types = { }
-  
-  # Map processor supported types (denoted by type display name) with corresponding content types, and vice versa.
-  @@type_display_name_content_types = { }
-  @@content_type_type_display_names = { }
   
   # Maps workflow types (denoted by type display name) with their corresponding processor classes 
   # (or nil if no processor exists for that type).

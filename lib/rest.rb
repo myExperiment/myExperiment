@@ -8,6 +8,8 @@ require 'lib/excel_xml'
 require 'xml/libxml'
 require 'uri'
 
+include LibXML
+
 API_VERSION = "0.1"
 
 TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
@@ -64,19 +66,25 @@ def rest_response(code, args = {})
 
   else 
 
-    error = XML::Node.new('error')
+    error = LibXML::XML::Node.new('error')
     error["code"   ] = code.to_s
     error["message"] = message
 
-    doc = XML::Document.new
+    doc = LibXML::XML::Document.new
     doc.root = error
 
     if args[:object]
       args[:object].errors.full_messages.each do |message|
-        reason = XML::Node.new('reason')
+        reason = LibXML::XML::Node.new('reason')
         reason << message
         doc.root << reason
       end
+    end
+
+    if args[:reason]
+      reason = LibXML::XML::Node.new('reason')
+      reason << args[:reason]
+      doc.root << reason
     end
   end
 
@@ -90,6 +98,14 @@ def file_column_url(ob, field)
   path = eval("ActionView::Base.new.url_for_file_column(ob, #{fields})")
 
   "#{request.protocol}#{request.host_with_port}#{path}"
+end
+
+def model_entity_to_rest_entity(model_entity)
+  TABLES['Model'][:data].each do |k,v|
+    return k if v['Model Entity'] == model_entity
+  end
+
+  nil
 end
 
 def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
@@ -136,7 +152,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
       when 'list', 'item as list'
 
-        list_element = XML::Node.new(model_data['REST Attribute'][i])
+        list_element = LibXML::XML::Node.new(model_data['REST Attribute'][i])
 
         attrs.each do |key,value|
           list_element[key] = value
@@ -163,7 +179,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
           list_element_text     = list_element_accessor ? eval("item.#{model_data['List Element Accessor'][i]}") : item
 
           if list_element_text.instance_of?(String)
-            el = XML::Node.new(model_data['List Element Name'][i])
+            el = LibXML::XML::Node.new(model_data['List Element Name'][i])
 
             item_attrs.each do |key,value|
               el[key] = value
@@ -189,6 +205,33 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         text
 
+      when 'url'
+
+        element = LibXML::XML::Node.new(model_data['REST Attribute'][i])
+
+        element << eval("#{model_data['Accessor'][i]}(ob)")
+
+        element
+
+      when 'call'
+
+        eval("#{model_data['Accessor'][i]}(ob, user, query)")
+
+      when 'item'
+
+        el = LibXML::XML::Node.new(model_data['REST Attribute'][i])
+
+        item = eval("ob.#{model_data['Accessor'][i]}")
+
+        if item != nil
+          resource_uri = rest_resource_uri(item)
+          el['resource'] = resource_uri if resource_uri
+          el['uri'] = rest_access_uri(item)
+          el << item.label if item.label
+        end
+
+        el
+
       else 
 
         if model_data['Encoding'][i] == 'file-column'
@@ -205,7 +248,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
             end
           end
 
-          if (model_data['Encoding'][i] == 'base64')
+          if model_data['Encoding'][i] == 'base64'
             text = Base64.encode64(text)
             attrs = { 'type' => 'binary', 'encoding' => 'base64' }
           end
@@ -222,7 +265,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         # puts "ATTRIBUTE = #{model_data['REST Attribute'][i]}, ATTRS = #{attrs.inspect}, text = #{text.inspect}"
 
-        el = XML::Node.new(model_data['REST Attribute'][i])
+        el = LibXML::XML::Node.new(model_data['REST Attribute'][i])
 
         attrs.each do |key,value|
           el[key] = value if value
@@ -244,8 +287,8 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
 
   elements = query['elements'] ? query['elements'].split(',') : nil
 
-  doc  = XML::Document.new()
-  root = XML::Node.new(entity_name)
+  doc  = LibXML::XML::Document.new()
+  root = LibXML::XML::Node.new(entity_name)
   doc.root = root
 
   root['uri'        ] = rest_access_uri(ob)
@@ -256,7 +299,7 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
     if query['version']
       root['version'] = query['version']
     else
-      root['version'] = ob.versions.last.version.to_s
+      root['version'] = ob.current_version.to_s
     end
   end
 
@@ -294,23 +337,30 @@ def rest_crud_request(req_uri, rules, user, query)
   rest_get_request(ob, params[:uri], user, eval("rest_resource_uri(ob)"), rest_name, query)
 end
 
-def find_all_paginated_auth(model, find_args, num, page, filters, user)
+def find_paginated_auth(args, num, page, filters, user, &blk)
 
-  def aux(model, find_args, num, page, filters, user)
+  def aux(args, num, page, filters, user)
 
-    find_args = find_args.clone
-    find_args[:page] = { :size => num, :current => page }
+    results = yield(args, num, page)
 
-    results = eval(model).find(:all, find_args)
+    return nil if results.nil?
 
-    return nil if results.page > results.page_count
+    failures = 0
 
     results.select do |result|
+
       selected = Authorization.is_authorized?('view', nil, result, user)
 
       if selected
-        filters.each do |attribute,value|
-          selected = false unless result.send(attribute).downcase == value.downcase
+        filters.each do |attribute, bits|
+
+          lhs = eval("result.#{bits[:accessor]}")
+          rhs = bits[:value]
+
+          lhs = lhs.downcase if lhs.class == String
+          rhs = rhs.downcase if rhs.class == String
+
+          selected = false unless lhs == rhs
         end
       end
 
@@ -329,13 +379,13 @@ def find_all_paginated_auth(model, find_args, num, page, filters, user)
   # up to possibly fulfil the request
 
   if (page > 1)
-    results = aux(model, find_args, upto, 1, filters, user)
+    results = aux(args, upto, 1, filters, user, &blk)
     current_page = page + 1
   end
 
   while (results.length < upto)
 
-    results_page = aux(model, find_args, num, current_page, filters, user)
+    results_page = aux(args, num, current_page, filters, user, &blk)
 
     if results_page.nil?
       break
@@ -376,10 +426,24 @@ def rest_index_request(req_uri, rules, user, query)
   filters = {}
 
   (0..model["REST Attribute"].length - 1).each do |i|
-    filter_name = model["Index filter"][i]
 
-    if !filter_name.nil? && !query[filter_name].nil?
-      filters[filter_name] = query[filter_name]
+    if model["Index filter"][i]
+
+      attribute   = model["REST Attribute"][i]
+      filter_name = attribute.gsub("-", "_")
+
+      if query[filter_name]
+
+        filter = { :accessor => model["Accessor"][i] }
+
+        if model["Encoding"][i] == 'item' || model["Encoding"][i] == 'item as list'
+          filter[:value] = get_resource_from_uri(query[filter_name], user)
+        else
+          filter[:value] = query[filter_name]
+        end
+
+        filters[attribute] = filter
+      end
     end
   end
 
@@ -410,27 +474,40 @@ def rest_index_request(req_uri, rules, user, query)
 
     find_args[:conditions] = conditions if conditions
 
-    obs = find_all_paginated_auth(model_name.camelize, find_args, limit, page, filters, user)
+    obs = find_paginated_auth( { :model => model_name.camelize, :find_args => find_args }, limit, page, filters, user) { |args, size, page|
+
+      find_args = args[:find_args].clone
+      find_args[:page] = { :size => size, :current => page }
+
+      results = eval(args[:model]).find(:all, find_args)
+
+      results unless results.page > results.page_count
+    }
   end
 
-  produce_rest_list(req_uri, rules, query, obs, rest_name.pluralize, user)
+  produce_rest_list(req_uri, rules, query, obs, rest_name.pluralize, [], user)
 end
 
-def produce_rest_list(req_uri, rules, query, obs, tag, user)
+def produce_rest_list(req_uri, rules, query, obs, tag, attributes, user)
 
-  root = XML::Node.new(tag)
+  root = LibXML::XML::Node.new(tag)
 
   root['api-version'] = API_VERSION if query['api_version'] == 'yes'
 
-  elements = query['elements'] ? query['elements'].split(',') : nil
+  attributes.each do |k,v|
+    root[k] = v
+  end
 
-  rest_entity = TABLES['REST'][:data][req_uri]['GET']['REST Entity']
+  elements = query['elements'] ? query['elements'].split(',') : nil
 
   obs.each do |ob|
 
     el = rest_reference(ob, query, !elements.nil?)
 
     if elements
+
+      rest_entity = model_entity_to_rest_entity(ob.class.name)
+
       TABLES['Model'][:data][rest_entity]['REST Attribute'].each do |rest_attribute|
         data = rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
         el << data unless data.nil?
@@ -440,7 +517,7 @@ def produce_rest_list(req_uri, rules, query, obs, tag, user)
     root << el
   end
 
-  doc = XML::Document.new
+  doc = LibXML::XML::Document.new
   doc.root = root
 
   render(:xml => doc.to_s)
@@ -482,6 +559,8 @@ def rest_resource_uri(ob)
     when 'Job';                    return experiment_job_url(ob.experiment, ob)
     when 'PackContributableEntry'; return rest_resource_uri(ob.contributable)
     when 'PackRemoteEntry';        return ob.uri
+    when 'ContentType';            return nil
+    when 'License';                return license_url(ob)
 
     when 'Creditation';     return nil
     when 'Attribution';     return nil
@@ -521,8 +600,10 @@ def rest_access_uri(ob)
     when 'PackContributableEntry'; return "#{base}/internal-pack-item.xml?id=#{ob.id}"
     when 'PackRemoteEntry';        return "#{base}/external-pack-item.xml?id=#{ob.id}"
     when 'Tagging';                return "#{base}/tagging.xml?id=#{ob.id}"
+    when 'ContentType';            return "#{base}/type.xml?id=#{ob.id}"
+    when 'License';                return "#{base}/license.xml?id=#{ob.id}"
 
-    when 'Creditation';     return nil
+    when 'Creditation';     return "#{base}/credit.xml?id=#{ob.id}"
     when 'Attribution';     return nil
 
     when 'Workflow::Version'; return "#{base}/workflow.xml?id=#{ob.workflow.id}&version=#{ob.version}"
@@ -539,7 +620,7 @@ def rest_object_tag_text(ob)
     when 'Blob';                   return 'file'
     when 'Network';                return 'group'
     when 'Rating';                 return 'rating'
-    when 'Creditation';            return 'creditation'
+    when 'Creditation';            return 'credit'
     when 'Citation';               return 'citation'
     when 'Announcement';           return 'announcement'
     when 'Tag';                    return 'tag'
@@ -552,6 +633,8 @@ def rest_object_tag_text(ob)
     when 'Workflow::Version';      return 'workflow'
     when 'Comment';                return 'comment'
     when 'Bookmark';               return 'favourite'
+    when 'ContentType';            return 'type'
+    when 'License';                return 'license'
   end
 
   return 'object'
@@ -576,6 +659,8 @@ def rest_object_label_text(ob)
     when 'PackContributableEntry'; return rest_object_label_text(ob.contributable)
     when 'PackRemoteEntry';        return ob.title     
     when 'Workflow::Version';      return ob.title
+    when 'ContentType';            return ob.title
+    when 'License';                return ob.title
   end
 
   return ''
@@ -583,13 +668,13 @@ end
 
 def rest_reference(ob, query, skip_text = false)
 
-  el = XML::Node.new(rest_object_tag_text(ob))
+  el = LibXML::XML::Node.new(rest_object_tag_text(ob))
 
   resource_uri = rest_resource_uri(ob)
 
   el['resource'] = resource_uri if resource_uri
   el['uri'     ] = rest_access_uri(ob)
-  el['version' ] = ob.version.to_s if ob.respond_to?('version')
+  el['version' ] = ob.current_version.to_s if ob.respond_to?('current_version')
 
   el << rest_object_label_text(ob) if !skip_text
 
@@ -602,27 +687,40 @@ def parse_resource_uri(str)
   uri      = base_uri.merge(str)
   is_local = base_uri.host == uri.host and base_uri.port == uri.port
 
-  return ["Workflow", $1, is_local]      if uri.path =~ /^\/workflows\/([\d]+)$/
-  return ["Blob", $1, is_local]          if uri.path =~ /^\/files\/([\d]+)$/
-  return ["Network", $1, is_local]       if uri.path =~ /^\/groups\/([\d]+)$/
-  return ["User", $1, is_local]          if uri.path =~ /^\/users\/([\d]+)$/
-  return ["Review", $1, is_local]        if uri.path =~ /^\/[^\/]+\/[\d]+\/reviews\/([\d]+)$/
-  return ["Comment", $1, is_local]       if uri.path =~ /^\/[^\/]+\/[\d]+\/comments\/([\d]+)$/
-  return ["Blog", $1, is_local]          if uri.path =~ /^\/blogs\/([\d]+)$/
-  return ["BlogPost", $1, is_local]      if uri.path =~ /^\/blogs\/[\d]+\/blog_posts\/([\d]+)$/
-  return ["Tag", $1, is_local]           if uri.path =~ /^\/tags\/([\d]+)$/
-  return ["Picture", $1, is_local]       if uri.path =~ /^\/users\/[\d]+\/pictures\/([\d]+)$/
-  return ["Message", $1, is_local]       if uri.path =~ /^\/messages\/([\d]+)$/
-  return ["Citation", $1, is_local]      if uri.path =~ /^\/[^\/]+\/[\d]+\/citations\/([\d]+)$/
-  return ["Announcement", $1, is_local]  if uri.path =~ /^\/announcements\/([\d]+)$/
-  return ["Pack", $1, is_local]          if uri.path =~ /^\/packs\/([\d]+)$/
-  return ["Experiment", $1, is_local]    if uri.path =~ /^\/experiments\/([\d]+)$/
-  return ["Runner", $1, is_local]        if uri.path =~ /^\/runners\/([\d]+)$/
-  return ["Job", $1, is_local]           if uri.path =~ /^\/jobs\/([\d]+)$/
-  return ["Download", $1, is_local]      if uri.path =~ /^\/downloads\/([\d]+)$/
+  return [Workflow, $1, is_local]       if uri.path =~ /^\/workflows\/([\d]+)$/
+  return [Blob, $1, is_local]           if uri.path =~ /^\/files\/([\d]+)$/
+  return [Network, $1, is_local]        if uri.path =~ /^\/groups\/([\d]+)$/
+  return [User, $1, is_local]           if uri.path =~ /^\/users\/([\d]+)$/
+  return [Review, $1, is_local]         if uri.path =~ /^\/[^\/]+\/[\d]+\/reviews\/([\d]+)$/
+  return [Comment, $1, is_local]        if uri.path =~ /^\/[^\/]+\/[\d]+\/comments\/([\d]+)$/
+  return [Blog, $1, is_local]           if uri.path =~ /^\/blogs\/([\d]+)$/
+  return [BlogPost, $1, is_local]       if uri.path =~ /^\/blogs\/[\d]+\/blog_posts\/([\d]+)$/
+  return [Tag, $1, is_local]            if uri.path =~ /^\/tags\/([\d]+)$/
+  return [Picture, $1, is_local]        if uri.path =~ /^\/users\/[\d]+\/pictures\/([\d]+)$/
+  return [Message, $1, is_local]        if uri.path =~ /^\/messages\/([\d]+)$/
+  return [Citation, $1, is_local]       if uri.path =~ /^\/[^\/]+\/[\d]+\/citations\/([\d]+)$/
+  return [Announcement, $1, is_local]   if uri.path =~ /^\/announcements\/([\d]+)$/
+  return [Pack, $1, is_local]           if uri.path =~ /^\/packs\/([\d]+)$/
+  return [Experiment, $1, is_local]     if uri.path =~ /^\/experiments\/([\d]+)$/
+  return [TavernaEnactor, $1, is_local] if uri.path =~ /^\/runners\/([\d]+)$/
+  return [Job, $1, is_local]            if uri.path =~ /^\/jobs\/([\d]+)$/
+  return [Download, $1, is_local]       if uri.path =~ /^\/downloads\/([\d]+)$/
 
   nil
 
+end
+
+def get_resource_from_uri(uri, user)
+
+  cl, id, local = parse_resource_uri(uri)
+
+  return nil if cl.nil? || local == false
+
+  resource = cl.find_by_id(id)
+
+  return nil if !Authorization.is_authorized?('view', nil, resource, user)
+
+  resource
 end
 
 def resolve_resource_node(resource_node, user = nil, permission = nil)
@@ -639,7 +737,7 @@ def resolve_resource_node(resource_node, user = nil, permission = nil)
 
   return nil if resource_bits.nil?
   
-  resource = eval(resource_bits[0]).find_by_id(resource_bits[1].to_i)
+  resource = resource_bits[0].find_by_id(resource_bits[1].to_i)
 
   return nil if resource.nil?
 
@@ -677,7 +775,7 @@ def rest_access_redirect(req_uri, rules, user, query)
 
   return rest_response(404) if bits.nil?
 
-  ob = eval(bits[0]).find_by_id(bits[1])
+  ob = bits[0].find_by_id(bits[1])
 
   return rest_response(404) if ob.nil?
 
@@ -687,7 +785,48 @@ def rest_access_redirect(req_uri, rules, user, query)
 end
 
 def create_default_policy(user)
-  Policy.new(:contributor => user, :name => 'auto', :update_mode => 6, :share_mode => 0)
+  Policy.new(:contributor => user, :name => 'auto', :share_mode => 7, :update_mode => 6)
+end
+
+def update_permissions(ob, permissions)
+
+  share_mode  = 7
+  update_mode = 6
+
+  # clear out any permission records for this contributable
+
+  ob.contribution.policy.permissions.each do |p|
+    p.destroy
+  end
+
+  # process permission elements
+
+  if permissions
+    permissions.find('permission').each do |permission|
+
+      # handle public privileges
+
+      if permission.find_first('category/text()').to_s == 'public'
+
+        privileges = {}
+
+        permission.find('privilege').each do |el|
+          privileges[el['type']] = true
+        end
+
+        if privileges["view"] && privileges["download"]
+          share_mode = 0
+        elsif privileges["view"]
+          share_mode = 2
+        else
+          share_mode = 7
+        end
+      end
+    end
+  end
+
+  ob.contribution.policy.update_attributes(:share_mode => share_mode,
+      :update_mode => update_mode)
 end
 
 def workflow_aux(action, req_uri, rules, user, query)
@@ -717,16 +856,54 @@ def workflow_aux(action, req_uri, rules, user, query)
     title        = parse_element(data, :text,   '/workflow/title')
     description  = parse_element(data, :text,   '/workflow/description')
     license_type = parse_element(data, :text,   '/workflow/license-type')
+    type         = parse_element(data, :text,   '/workflow/type')
     content_type = parse_element(data, :text,   '/workflow/content-type')
     content      = parse_element(data, :binary, '/workflow/content')
     preview      = parse_element(data, :binary, '/workflow/preview')
+
+    permissions  = data.find_first('/workflow/permissions')
 
     # build the contributable
 
     ob.title        = title        if title
     ob.body         = description  if description
-    ob.license      = license_type if license_type
-    ob.content_type = content_type if content_type
+    #ob.license_id   = License.find_by_unique_name(license_type) if license_type
+
+    if license_type
+      ob.license = License.find_by_unique_name(license_type)
+      if ob.license.nil?
+        ob.errors.add("License type")
+        return rest_response(400, :object => ob)
+      end
+    end
+   
+    # handle workflow type
+
+    if type
+
+      ob.content_type = ContentType.find_by_title(type)
+
+      if ob.content_type.nil?
+        ob.errors.add("Type")
+        return rest_response(400, :object => ob)
+      end
+
+    elsif content_type
+
+      content_types = ContentType.find_all_by_mime_type(content_type)
+  
+      if content_types.length == 1
+        ob.content_type = content_types.first
+      else
+        if content_types.empty?
+          ob.errors.add("Content type")
+        else
+          ob.errors.add("Content type", "matches more than one registered content type")
+        end
+
+        return rest_response(400, :object => ob)
+      end
+    end
 
     ob.content_blob = ContentBlob.new(:data => content) if content
 
@@ -755,6 +932,8 @@ def workflow_aux(action, req_uri, rules, user, query)
       ob.contribution.policy = create_default_policy(user)
       ob.contribution.save
     end
+
+    update_permissions(ob, permissions)
   end
 
   rest_get_request(ob, "workflow", user,
@@ -773,6 +952,112 @@ def delete_workflow(req_uri, rules, user, query)
   workflow_aux('destroy', req_uri, rules, user, query)
 end
 
+# file handling
+
+def file_aux(action, req_uri, rules, user, query)
+
+  # Obtain object
+
+  case action
+    when 'create':
+      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Blob', user, nil)
+      ob = Blob.new(:contributor => user)
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Blob', query['id'], user, action)
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    title        = parse_element(data, :text,   '/file/title')
+    description  = parse_element(data, :text,   '/file/description')
+    license_type = parse_element(data, :text,   '/file/license-type')
+    type         = parse_element(data, :text,   '/file/type')
+    content_type = parse_element(data, :text,   '/file/content-type')
+    content      = parse_element(data, :binary, '/file/content')
+
+    permissions  = data.find_first('/file/permissions')
+
+    # build the contributable
+
+    ob.title        = title        if title
+    ob.body         = description  if description
+
+    if license_type
+      ob.license = License.find_by_unique_name(license_type)
+      if ob.license.nil?
+        ob.errors.add("License type")
+        return rest_response(400, :object => ob)
+      end
+    end
+   
+    # handle type
+
+    if type
+
+      ob.content_type = ContentType.find_by_title(type)
+
+      if ob.content_type.nil?
+        ob.errors.add("Type")
+        return rest_response(400, :object => ob)
+      end
+
+    elsif content_type
+
+      content_types = ContentType.find_all_by_mime_type(content_type)
+  
+      if content_types.length == 1
+        ob.content_type = content_types.first
+      else
+        if content_types.empty?
+          ob.errors.add("Content type")
+        else
+          ob.errors.add("Content type", "matches more than one registered content type")
+        end
+
+        return rest_response(400, :object => ob)
+      end
+    end
+
+    ob.content_blob = ContentBlob.new(:data => content) if content
+
+    if not ob.save
+      return rest_response(400, :object => ob)
+    end
+
+    if ob.contribution.policy.nil?
+      ob.contribution.policy = create_default_policy(user)
+      ob.contribution.save
+    end
+
+    update_permissions(ob, permissions)
+  end
+
+  rest_get_request(ob, "file", user,
+      rest_resource_uri(ob), "file", { "id" => ob.id.to_s })
+end
+
+def post_file(req_uri, rules, user, query)
+  file_aux('create', req_uri, rules, user, query)
+end
+
+def put_file(req_uri, rules, user, query)
+  file_aux('update', req_uri, rules, user, query)
+end
+
+def delete_file(req_uri, rules, user, query)
+  file_aux('destroy', req_uri, rules, user, query)
+end
+
 # def post_job(req_uri, rules, user, query)
 #
 #   title       = params["job"]["title"]
@@ -786,7 +1071,7 @@ end
 #   return rest_response(400) if description.nil?
 #
 #   return rest_response(400) if experiment_bits.nil? or experiment_bits[0] != 'Experiment'
-#   return rest_response(400) if runner_bits.nil?     or runner_bits[0]     != 'Runner'
+#   return rest_response(400) if runner_bits.nil?     or runner_bits[0]     != 'TavernaEnactor'
 #   return rest_response(400) if runnable_bits.nil?   or runnable_bits[0]   != 'Workflow'
 #
 #   experiment = Experiment.find_by_id(experiment_bits[1].to_i)
@@ -801,7 +1086,7 @@ end
 #
 #   job = Job.new(:title => title, :description => description, :runnable => runnable, 
 #       :experiment => experiment, :runner => runner, :user => user,
-#       :runnable_version => runnable.versions.last.version)
+#       :runnable_version => runnable.current_version)
 #
 #   inputs = { "Tags" => "aa,bb,aa,cc,aa" }
 #
@@ -815,53 +1100,75 @@ end
 #
 # end
 
+def paginated_search_index(query, models, num, page, user)
+
+  return [] if not Conf.solr_enable or query.nil? or query == ""
+
+  find_paginated_auth( { :query => query, :models => models }, num, page, [], user) { |args, size, page|
+
+    q      = args[:query]
+    models = args[:models]
+
+    search_result = models[0].multi_solr_search(q, :limit => size, :offset => size * (page - 1), :models => models)
+    search_result.results unless search_result.total < (size * (page - 1))
+  }
+end
+
 def search(req_uri, rules, user, query)
 
   search_query = query['query']
 
-  models = [User, Workflow, Blob, Network]
+  models = [User, Workflow, Blob, Network, Pack]
 
-  case query['type']
-    when 'user';     models = [User]
-    when 'workflow'; models = [Workflow]
-    when 'file';     models = [Blob]
-    when 'group';    models = [Network]
+  # parse type option
+
+  if query['type']
+
+    models = []
+
+    query['type'].split(',').each do |type|
+      case type
+        when 'user';     models.push(User)
+        when 'workflow'; models.push(Workflow)
+        when 'file';     models.push(Blob)
+        when 'group';    models.push(Network)
+        when 'pack';     models.push(Pack)
+
+        else return rest_response(400, :reason => "Unknown search type '#{type}'")
+      end
+    end
   end
 
-  results = []
+  num = 25
 
-  if Conf.solr_enable and not search_query.nil? and search_query != ""
-    results = models[0].multi_solr_search(search_query, :limit => 100,
-        :models => models).results
+  if query['num']
+    num = query['num'].to_i
   end
 
-  root = XML::Node.new('search')
-  root['query'] = search_query
-  root['type' ] = query['type'] if query['type']
+  num = 25  if num < 0
+  num = 100 if num > 100
 
-  # filter out ones they are not allowed to get
-  results = results.select do |r|
-    r.respond_to?('contribution') == false or Authorization.is_authorized?('index', nil, r, user)
-  end
+  page  = query['page'] ? query['page'].to_i : 1
 
-  results.each do |result|
-    root << rest_reference(result, query)
-  end
+  page = 1 if page < 1
 
-  doc = XML::Document.new
-  doc.root = root
+  attributes = {}
+  attributes['query'] = search_query
+  attributes['type'] = query['type'] if models.length == 1
 
-  render(:xml => doc.to_s)
+  obs = paginated_search_index(search_query, models, num, page, user)
+
+  produce_rest_list(req_uri, rules, query, obs, 'search', attributes, user)
 end
 
 def user_count(req_uri, rules, user, query)
   
   users = User.find(:all).select do |user| user.activated? end
 
-  root = XML::Node.new('user-count')
+  root = LibXML::XML::Node.new('user-count')
   root << users.length.to_s
 
-  doc = XML::Document.new
+  doc = LibXML::XML::Document.new
   doc.root = root
 
   render(:xml => doc.to_s)
@@ -869,10 +1176,10 @@ end
 
 def group_count(req_uri, rules, user, query)
   
-  root = XML::Node.new('group-count')
+  root = LibXML::XML::Node.new('group-count')
   root << Network.count.to_s
 
-  doc = XML::Document.new
+  doc = LibXML::XML::Document.new
   doc.root = root
 
   render(:xml => doc.to_s)
@@ -884,10 +1191,10 @@ def workflow_count(req_uri, rules, user, query)
     Authorization.is_authorized?('view', nil, w, user)
   end
 
-  root = XML::Node.new('workflow-count')
+  root = LibXML::XML::Node.new('workflow-count')
   root << workflows.length.to_s
 
-  doc = XML::Document.new
+  doc = LibXML::XML::Document.new
   doc.root = root
 
   render(:xml => doc.to_s)
@@ -899,10 +1206,21 @@ def pack_count(req_uri, rules, user, query)
     Authorization.is_authorized?('view', nil, p, user)
   end
 
-  root = XML::Node.new('pack-count')
+  root = LibXML::XML::Node.new('pack-count')
   root << packs.length.to_s
 
-  doc = XML::Document.new
+  doc = LibXML::XML::Document.new
+  doc.root = root
+
+  render(:xml => doc.to_s)
+end
+
+def content_type_count(req_uri, rules, user, query)
+
+  root = LibXML::XML::Node.new('type-count')
+  root << ContentType.count.to_s
+
+  doc = LibXML::XML::Document.new
   doc.root = root
 
   render(:xml => doc.to_s)
@@ -919,7 +1237,7 @@ def get_tagged(req_uri, rules, user, query)
   # filter out ones they are not allowed to get
   obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("index", nil, c, user) end)
 
-  produce_rest_list("tagged", rules, query, obs, 'tagged', user)
+  produce_rest_list("tagged", rules, query, obs, 'tagged', [], user)
 end
 
 def tag_cloud(req_uri, rules, user, query)
@@ -944,9 +1262,9 @@ def tag_cloud(req_uri, rules, user, query)
 
   tags = Tag.find_by_tag_count(num, type)
 
-  doc = XML::Document.new()
+  doc = LibXML::XML::Document.new()
 
-  root = XML::Node.new('tag-cloud')
+  root = LibXML::XML::Node.new('tag-cloud')
   doc.root = root
 
   root['type'] = query['type'] ? query['type'] : 'all'
@@ -979,6 +1297,24 @@ def parse_element(doc, kind, query)
     when :resource
       return resolve_resource_node(doc.find_first(query))
   end
+end
+
+# Privileges
+
+def effective_privileges(ob, user, query)
+
+  privileges = LibXML::XML::Node.new('privileges')
+
+  ['view', 'download', 'edit'].each do |type|
+    if Authorization.is_authorized?(type, nil, ob, user) 
+      privilege = LibXML::XML::Node.new('privilege')
+      privilege['type'] = type
+
+      privileges << privilege
+    end
+  end
+
+  privileges
 end
 
 # Comments
@@ -1035,6 +1371,59 @@ end
 
 def delete_comment(req_uri, rules, user, query)
   comment_aux('destroy', req_uri, rules, user, query)
+end
+
+# Favourites
+
+def favourite_aux(action, req_uri, rules, user, query)
+
+  # Obtain object
+
+  case action
+    when 'create':
+      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Bookmark', user, nil)
+
+      ob = Bookmark.new(:user => user)
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Bookmark', query['id'], user, action)
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    target = parse_element(data, :resource, '/favourite/object')
+
+    if target
+      return rest_response(400) unless [Blob, Pack, Workflow].include?(target.class)
+      return rest_response(401) unless Authorization.is_authorized_for_type?(action, 'Bookmark', user, target)
+      ob.bookmarkable = target
+    end
+
+    return rest_response(400, :object => ob) unless ob.save
+  end
+
+  rest_get_request(ob, "favourite", user, rest_resource_uri(ob), "favourite", { "id" => ob.id.to_s })
+end
+
+def post_favourite(req_uri, rules, user, query)
+  favourite_aux('create', req_uri, rules, user, query)
+end
+
+def put_favourite(req_uri, rules, user, query)
+  favourite_aux('update', req_uri, rules, user, query)
+end
+
+def delete_favourite(req_uri, rules, user, query)
+  favourite_aux('destroy', req_uri, rules, user, query)
 end
 
 # Call dispatcher

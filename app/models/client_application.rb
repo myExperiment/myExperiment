@@ -32,7 +32,7 @@ class ClientApplication < ActiveRecord::Base
       logger.info "Signature verification returned: #{value.to_s}"
       value
     rescue OAuth::Signature::UnknownSignatureMethod=>e
-      logger.info "ERROR"+e.to_s
+      #logger.info "ERROR"+e.to_s
      false
     end
   end

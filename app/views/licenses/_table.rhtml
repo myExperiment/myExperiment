@@ -1,0 +1,42 @@
+<% unless collection.empty? %>
+
+	<table class="alt_table">
+		<% odd_row = false -%> 
+		<% for license in collection %>
+		  	<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+			    <td width="100px">
+						<%= contributor(license.user_id, 'User', true, 60) %>
+					</td>
+			    <td class="mid" style="text-align: left;">
+			    	<p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
+							<%= icon "license", nil, nil, nil, '' %>
+							<%= link_to h(license.title), license_url(license) %>
+						</p>
+						
+						<p style="font-size: 85%;">
+							<b><%= datetime license.created_at %></b>
+						</p>
+						
+						<p style="font-size: 85%;">
+							<b><%= link_to h(license.url), license.url %></b>
+						</p>
+						
+						<% if license.description_html and license.description_html.length > 0 %>
+							<div class="desc" style="font-size: 85%;">
+								<%= truncate(strip_html(license.description_html), 180) %>
+							</div>
+						<% end %>
+						
+					</td>
+			    <td class="actions"  style="width: 80px;">
+		      	<%= icon "show", license_path(license), nil, nil, "View" %>
+						<% if admin? %>
+							<%= icon('edit', edit_license_path(license), nil, nil, 'Edit') %>
+							<%= icon('destroy', license_path(license), nil, { :confirm => 'Are you sure you want to delete this license?', :method => :delete }, 'Delete') %>
+						<% end %>
+		    	</td>
+		  	</tr>
+		<% end %>
+	</table>
+
+<% end %>

@@ -10,7 +10,7 @@ require 'workflows_controller'
 class WorkflowsController; def rescue_action(e) raise e end; end
 
 class WorkflowsControllerTest < Test::Unit::TestCase
-  fixtures :workflows, :users, :contributions, :workflow_versions, :content_blobs, :blobs, :packs, :policies, :permissions, :networks
+  fixtures :workflows, :users, :contributions, :workflow_versions, :content_blobs, :blobs, :packs, :policies, :permissions, :networks, :content_types
 
   def setup
     @controller = WorkflowsController.new
@@ -35,7 +35,7 @@ class WorkflowsControllerTest < Test::Unit::TestCase
     old_count = Workflow.count
 
     login_as(:john)
-    post :create, :workflow => { :file => fixture_file_upload('files/workflow_dilbert.xml'), :license => 'by-sa' },
+    post :create, :workflow => { :file => fixture_file_upload('files/workflow_dilbert.xml'), :license_id => '1' },
                   :metadata_choice => 'infer',
                   :credits_me => 'false',
                   :credits_users => '',

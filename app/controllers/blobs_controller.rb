@@ -25,15 +25,7 @@ class BlobsController < ApplicationController
   
   # GET /files;search
   def search
-    @query = params[:query] || ''
-    @query.strip!
-    
-    @blobs = (Conf.solr_enable && !@query.blank?) ? Blob.find_by_solr(@query, :limit => 100).results : []
-    @blobs_found_total_count = (Conf.solr_enable && !@query.blank?) ? Blob.count_by_solr(@query) : 0
-    
-    respond_to do |format|
-      format.html # search.rhtml
-    end
+    redirect_to(search_path + "?type=files&query=" + params[:query])
   end
   
   # GET /files/1;download
@@ -42,9 +34,9 @@ class BlobsController < ApplicationController
       @download = Download.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
     
-    send_data(@blob.content_blob.data, :filename => @blob.local_name, :type => @blob.content_type)
+    send_data(@blob.content_blob.data, :filename => @blob.local_name, :type => @blob.content_type.mime_type)
     
-    #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type)
+    #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type.mime_type)
   end
 
   # GET /files/:id/download/:name
@@ -103,13 +95,19 @@ class BlobsController < ApplicationController
     else
       data = params[:blob][:data].read
       params[:blob][:local_name] = params[:blob][:data].original_filename
-      params[:blob][:content_type] = params[:blob][:data].content_type
+      content_type = params[:blob][:data].content_type
       params[:blob].delete('data')
 
       params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
    
       @blob = Blob.new(params[:blob])
       @blob.content_blob = ContentBlob.new(:data => data)
+
+      @blob.content_type = ContentType.find_by_mime_type(content_type)
+
+      if @blob.content_type.nil?
+        @blob.content_type = ContentType.create(:user_id => current_user.id, :mime_type => content_type, :title => content_type)
+      end
 
       respond_to do |format|
         if @blob.save
@@ -150,7 +148,7 @@ class BlobsController < ApplicationController
     
     # remove protected columns
     if params[:blob]
-      [:contributor_id, :contributor_type, :content_type, :local_name, :created_at, :updated_at].each do |column_name|
+      [:contributor_id, :contributor_type, :content_type, :content_type_id, :local_name, :created_at, :updated_at].each do |column_name|
         params[:blob].delete(column_name)
       end
     end
@@ -289,7 +287,7 @@ class BlobsController < ApplicationController
   
   def find_blobs
     found = Blob.find(:all, 
-                       :order => "content_type ASC, local_name ASC, created_at DESC",
+                       :order => "updated_at DESC, created_at DESC",
                        :page => { :size => 20, 
                        :current => params[:page] })
     

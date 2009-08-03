@@ -1,0 +1,11 @@
+<h1>
+	Licenses (<%= @licenses.length %>)
+</h1>
+
+<% if admin? %>
+	<ul class="sectionIcons">
+	  <li><%= icon('license', new_license_path, nil, nil, 'New License') %></li>
+	</ul>
+<% end %>
+
+<%= render :partial => "licenses/table", :locals => { :collection => @licenses } %>

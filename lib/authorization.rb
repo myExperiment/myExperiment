@@ -66,6 +66,14 @@ module Authorization
       return !user.nil?
     end
     
+    # Blob permissions
+    
+    if (object_type == 'Blob') && (action == 'create')
+
+      # Files can only be created by authenticated users
+      return !user.nil?
+    end
+    
     # Comment permissions
     
     if (object_type == 'Comment') && (action == 'create')
@@ -79,6 +87,19 @@ module Authorization
       return true
     end
     
+    # Bookmark permissions
+
+    if (object_type == 'Bookmark') && (action == 'create')
+
+      # Bookmarks can only be created by authenticated users
+      return false if user.nil?
+
+      # Bookmarks can only be added to things that a user can view
+      return Authorization.is_authorized?('view', nil, context, user) if context
+
+      return true
+    end
+
     return false
   end
 
@@ -128,7 +149,7 @@ module Authorization
       # OR
       # -- Network instance
       # -- Experiment / Job / Runner / TavernaEnactor instance
-      # -- Comment
+      # -- Comment / Bookmark
       # -- or any other object instance, for which we'll use the object itself to run .authorized?() on it
       thing_instance = thing
       thing_type = thing.class.name
@@ -159,7 +180,7 @@ module Authorization
     # this is required to get "policy_id" for policy-based aurhorized objects (like workflows / blobs / packs / contributions)
     # and to get objects themself for other object types (networks, experiments, jobs, tavernaenactors, runners)
     if (thing_contribution.nil? && ["Workflow", "Blog", "Blob", "Pack", "Contribution"].include?(thing_type)) || 
-       (thing_instance.nil? && ["Network", "Comment", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type))
+       (thing_instance.nil? && ["Network", "Comment", "Bookmark", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type))
       
       found_thing = find_thing(thing_type, thing_id)
       
@@ -291,6 +312,20 @@ module Authorization
             is_authorized = false
         end
       
+      when "Bookmark"
+        case action
+          when "destroy"
+            # only the user who created the bookmark can delete it
+            is_authorized = Authorization.is_owner?(user_id, thing_instance)
+          when "view"
+            # everyone can view bookmarks
+            is_authorized = true
+
+          else
+            # 'edit' or any other actions are not allowed on comments
+            is_authorized = false
+        end
+      
       when "Experiment"
 
         user_instance = get_user(user_id) unless user_instance
@@ -366,6 +401,8 @@ module Authorization
           found_instance = Network.find(thing_id)
         when "Comment"
           found_instance = Comment.find(thing_id)
+        when "Bookmark"
+          found_instance = Bookmark.find(thing_id)
         when "Experiment"
           found_instance = Experiment.find(thing_id)
         when "Job"
@@ -398,6 +435,8 @@ module Authorization
           is_authorized = is_network_admin?(user_id, thing.contributor_id)
         end
       when "Comment"
+        is_authorized = (thing.user_id == user_id)
+      when "Bookmark"
         is_authorized = (thing.user_id == user_id)
       #else
         # do nothing -- unknown "thing" types are not authorized by default 

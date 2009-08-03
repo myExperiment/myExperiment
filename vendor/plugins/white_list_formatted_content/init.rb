@@ -14,51 +14,106 @@ ActiveRecord::Base.class_eval do
 
   protected
 
+  # auxilary function to count quote levels in PMs
+
+  def strip_quote_markers(line)
+
+    marker = ">> "
+    count  = 0
+
+    loop do
+      break unless line.starts_with?(marker)
+
+      line = line.sub(marker, '')
+      count = count + 1
+    end
+
+    [line, count]
+  end
+
   def render_plain_text_to_html(text)
 
-    # separate paragraphs that end with a colon
+    sections = []
 
-    text.gsub!(/:\n/, ":\n\n")
-    
-    # fold indented parts of bulleted lines
+    text.split("\n").each do |line|
+      line, level = strip_quote_markers(line)
 
-    text.gsub!(/^\* .*\n(  .*\n)+/) { |b|
-      b.gsub(/\n/, " ") + "\n"
-    }
+      if sections.empty? or sections.last[:level] != level
+        sections.push( { :level => level, :text => "#{line}\n" } )
+      else
+        sections.last[:text] = "#{sections.last[:text]}#{line}\n"
+      end
+    end
 
-    # fold indented parts of numbered lines
+    result    = ""
+    max_level = 1
 
-    text.gsub!(/^[0-9]+\. .*\n(   .*\n)+/) { |b|
-      b.gsub(/\n/, " ") + "\n"
-    }
+    sections.each do |section|
 
-    # convert each adjacent set of bulleted lines into HTML
+      level = section[:level]
+      text  = section[:text]
 
-    text.gsub!(/^\* .*\n(\* .*\n|\s*\n)*/) { |b|
-      b.gsub!(/^\s*\n/, "")
-      "\n<ul>\n" + b.gsub(/^\* (.*)/, '<li>\1</li>') + "</ul>\n\n"
-    }
+      # separate paragraphs that end with a colon
 
-    # convert each adjacent set of numbered lines into HTML
+      text.gsub!(/:\n/, ":\n\n")
+      
+      # fold indented parts of bulleted lines
 
-    text.gsub!(/^[0-9]+\. .*\n(([0-9]+\. .*\n)|\s*\n)*/) { |b|
-      b.gsub!(/^\s*\n/, "")
-      "\n<ol>\n" + b.gsub(/^([0-9]+)\. (.*)/, '<li value="\1">\2</li>') + "</ol>\n\n"
-    }
+      text.gsub!(/^\* .*\n(  .*\n)+/) { |b|
+        b.gsub(/\n/, " ") + "\n"
+      }
 
-    # make sure the last line is terminated
+      # fold indented parts of numbered lines
 
-    text = "#{text}\n"
+      text.gsub!(/^[0-9]+\. .*\n(   .*\n)+/) { |b|
+        b.gsub(/\n/, " ") + "\n"
+      }
 
-    # fold multiple adjacent blank lines
+      # convert each adjacent set of bulleted lines into HTML
 
-    text.gsub!(/^\s*\n(\s*\n)*/, "\n")
+      text.gsub!(/^\* .*\n(\* .*\n|\s*\n)*/) { |b|
+        b.gsub!(/^\s*\n/, "")
+        "\n<ul>\n" + b.gsub(/^\* (.*)/, '<li>\1</li>') + "</ul>\n\n"
+      }
 
-    # place each section in an HTML paragraph
+      # convert each adjacent set of numbered lines into HTML
 
-    text.gsub!(/((^.*\S+.*\n)+)/, "<p>\n\\1</p>\n")
+      text.gsub!(/^[0-9]+\. .*\n(([0-9]+\. .*\n)|\s*\n)*/) { |b|
+        b.gsub!(/^\s*\n/, "")
+        "\n<ol>\n" + b.gsub(/^([0-9]+)\. (.*)/, '<li value="\1">\2</li>') + "</ol>\n\n"
+      }
 
-    text
+      # make sure the last line is terminated
+
+      text = "#{text}\n"
+
+      # fold multiple adjacent blank lines
+
+      text.gsub!(/^\s*\n(\s*\n)*/, "\n")
+
+      # place each section in an HTML paragraph
+
+      text.gsub!(/((^.*\S+.*\n)+)/, "<p>\n\\1</p>\n")
+
+      (1..level).each do
+        result = result + "<div class=\"quoted_section\">"
+      end
+
+      if level > 0
+        capped_level = level
+        capped_level = max_level if capped_level > max_level
+
+        result = result + "<div class=\"quote_level_#{capped_level}\">#{text}</div>"
+      else
+        result = result + text
+      end
+
+      (1..level).each do
+        result = result + "</div>"
+      end
+    end
+
+    result
   end
 
 
