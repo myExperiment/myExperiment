@@ -335,16 +335,18 @@ class BlobsController < ApplicationController
   end
   
   def set_sharing_mode_variables
-    case action_name
-      when "new"
-        @sharing_mode  = 0
-        @updating_mode = 6
-      when "create", "update"
-        @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
-        @updating_mode = params[:updating][:class_id].to_i if params[:updating]
-      when "show", "edit"
-        @sharing_mode  = @blob.contribution.policy.share_mode
-        @updating_mode = @blob.contribution.policy.update_mode
+    if @blob
+      case action_name
+        when "new"
+          @sharing_mode  = 0
+          @updating_mode = 6
+        when "create", "update"
+          @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
+          @updating_mode = params[:updating][:class_id].to_i if params[:updating]
+        when "show", "edit"
+          @sharing_mode  = @blob.contribution.policy.share_mode
+          @updating_mode = @blob.contribution.policy.update_mode
+      end
     end
   end
   
