@@ -105,9 +105,9 @@
 							<td class="icon">
 								<%= icon('remote', nil, 'External item', nil, nil) -%>
 							</td>
-							<td>
+							<td class="remote">
 								<a name='<%= "item_remote_#{e.id}" -%>'></a>
-								<p>
+								<p class="longurl">
 									<% if mine?(pack) -%>
 										<%= remove_item_button(pack.id, "remote", e.id) -%>
 									<% end -%>

@@ -1830,6 +1830,15 @@ table.simple td {
 	text-align: center;
 }
 
+#packItems td.remote {
+	width: 470px;
+	max-width: 470px;
+}
+
+#packItems td.remote p.longurl {
+	word-wrap: break-word;
+}
+
 #packItems .inner {
 	color: #333333;
 	margin: 0.3em 0 0 0.3em;
