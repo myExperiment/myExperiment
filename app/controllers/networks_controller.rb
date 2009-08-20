@@ -298,6 +298,12 @@ class NetworksController < ApplicationController
   # POST /networks/1;comment
   def comment
     text = params[:comment][:comment]
+    ajaxy = true
+    
+    if text.nil? or (text.length == 0)
+      text = params[:comment_0_comment_editor]
+      ajaxy = false
+    end
     
     if text and text.length > 0
       comment = Comment.create(:user => current_user, :comment => text)
@@ -305,7 +311,11 @@ class NetworksController < ApplicationController
     end
     
     respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @network } }
+      if ajaxy
+        format.html { render :partial => "comments/comments", :locals => { :commentable => @network } }
+      else
+        format.html { redirect_to group_url(@network) }
+      end
     end
   end
   

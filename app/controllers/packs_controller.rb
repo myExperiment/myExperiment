@@ -187,14 +187,24 @@ class PacksController < ApplicationController
   # POST /packs/1;comment
   def comment 
     text = params[:comment][:comment]
+    ajaxy = true
     
+    if text.nil? or (text.length == 0)
+      text = params[:comment_0_comment_editor]
+      ajaxy = false
+    end
+
     if text and text.length > 0
       comment = Comment.create(:user => current_user, :comment => text)
       @pack.comments << comment
     end
     
     respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @pack } }
+      if ajaxy
+        format.html { render :partial => "comments/comments", :locals => { :commentable => @pack } }
+      else
+        format.html { redirect_to pack_url(@pack) }
+      end
     end
   end
   
