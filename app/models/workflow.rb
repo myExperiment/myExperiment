@@ -81,8 +81,7 @@ class Workflow < ActiveRecord::Base
     
   end
   
-  #non_versioned_fields.push("image", "svg", "license", "tag_list") # acts_as_versioned and file_column don't get on
-  non_versioned_columns.push("license_id", "tag_list", "body_html")
+  non_versioned_columns.push("license_id", "tag_list")
   
   acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
                :boost => "search_boost",
