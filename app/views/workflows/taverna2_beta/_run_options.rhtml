@@ -1,1 +1,34 @@
-<p class="none_text">Not available</p>
+<div style="margin: 0 0.5em;">
+	<h4>
+		Run this Workflow in the Taverna Workbench...
+	</h4>
+	
+	<div class="option_box">
+		
+		<p style="text-align: center;">
+			<b>Option 1:</b>
+		</p>
+		
+		<p style="font-size: 93%; text-align: center;">
+			Copy and paste this link into File > 'Open workflow location...'<br/>
+			<%= link_to @download_url, @download_url %><br/>
+			<small>[ <%= link_to_function "More Info" + expand_image, visual_effect(:toggle_blind, "run_taverna_more_box", :duration => 0.3) -%> ]</small>
+		</p>
+		
+		<div id="run_taverna_more_box" style="display: none;">
+			<p style="font-size: 85%; margin-top: 0.5em; text-align: center;">
+				Taverna is available from <%= link_to "http://taverna.sourceforge.net/", "http://taverna.sourceforge.net/", :popup => true %>
+			</p>
+			
+			<p style="text-align: center; margin-top: 0.5em; font-size: 85%;">
+				If you are having problems downloading it in Taverna, you may need to provide your username and password in the URL so that Taverna can access the Workflow: <br/>
+				<% if logged_in? and current_user.username.nil? %>
+					First you need to <%= link_to 'register a username and password', edit_user_path(current_user) %> on your <%= Conf.sitename %> account.
+				<% else %>
+					<b>Replace <font color="#990000">http://</font> in the link above with <font color="#990000">http://<%=(logged_in? and !current_user.username.nil?) ? h(current_user.username) : "yourusername" %>:yourpassword@</font></b>
+				<% end %>
+			</p>
+		</div>
+	
+	</div>
+</div>

@@ -58,7 +58,52 @@
 			</div>
 		</div>
 		
-		<!-- Sinks -->
+		<!-- Beanshells -->
+    <% beanshells = model.beanshells -%>
+    <div class="fold">
+      <div class="foldTitle">
+        Beanshells (<%= beanshells.length -%>)
+      </div>
+      <div class="foldContent" style="display: none;">
+        <% unless beanshells.blank? -%>
+          <table class="simple">
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Inputs</th>
+              <th>Outputs</th>
+            </tr>
+          
+            <% beanshells.each do |b| -%>
+              <tr>
+                <td><b><%= h b.name -%></b></td>
+                <td><%= h b.description -%></td>
+                <td>
+                  <% if b.inputs %>
+                    <% b.inputs.each do |x| %>
+                      <%=h x -%>
+                      <%= "<hr />" unless x==b.inputs.last %>
+                    <% end %>
+                  <% end %>
+                </td>
+                <td>
+                  <% if b.outputs %>
+                    <% b.outputs.each do |x| %>
+                      <%=h x -%>
+                      <%= "<hr />" unless x==b.outputs.last %>
+                    <% end %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <p class="none_text">None</p>
+        <% end %>
+      </div>
+    </div>
+    
+    <!-- Sinks -->
 		<% sinks = model.sinks -%>
 		<div class="fold">
 			<div class="foldTitle">
