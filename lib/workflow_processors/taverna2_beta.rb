@@ -183,13 +183,23 @@ module WorkflowProcessors
     def get_search_terms
       def get_scufl_metadata(model)
         words = StringIO.new
-
+        
+        model.annotations.descriptions.each { |desc|
+          words << " #{desc}"
+        } if model.annotations.descriptions
+        
         model.sources.each do |source|
           words << " #{source.name}" if source.name
+          source.descriptions.each { |desc|
+            words << " #{desc}"
+          } if source.descriptions
         end
 
         model.sinks.each do |sink|
           words << " #{sink.name}" if sink.name
+          sink.descriptions.each { |desc|
+            words << " #{desc}"
+          } if sink.descriptions
         end
 
         model.processors.each do |processor|

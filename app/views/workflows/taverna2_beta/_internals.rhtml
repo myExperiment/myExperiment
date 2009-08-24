@@ -1,7 +1,72 @@
 <% cache(:controller => 'workflows_cache', :action => 'internals', :id => workflow.id, :version => version) do -%>
 
 	<% if (model = workflow.get_workflow_model_object(version)) -%>
-		    
+    <!-- Authors -->
+    <% authors = model.annotations.authors -%>
+    <div class="fold">
+      <div class="foldTitle">
+        <%= info_icon_with_tooltip "This is the author information extracted from the workflow version" %>
+        Authors (<%= authors.nil? ? 0 : authors.length -%>)
+      </div>
+      <div class="foldContent" style="display: none;">
+        <% unless authors.blank? -%>
+          <table class="simple">
+            <% authors.each do |a| -%>
+              <tr>
+                <td><%= h a -%></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <p class="none_text">None</p>
+        <% end %>
+      </div>
+    </div>
+    
+    <!-- Titles -->
+    <% titles = model.annotations.titles -%>
+    <div class="fold">
+      <div class="foldTitle">
+        <%= info_icon_with_tooltip "These are the descriptive titles embedded within the workflow version" %>
+        Titles (<%= titles.nil? ? 0 : titles.length -%>)
+      </div>
+      <div class="foldContent" style="display: none;">
+        <% unless titles.blank? -%>
+          <table class="simple">
+            <% titles.each do |t| -%>
+              <tr>
+                <td><%= h t -%></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <p class="none_text">None</p>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Descriptions -->
+    <% descriptions = model.annotations.descriptions -%>
+    <div class="fold">
+      <div class="foldTitle">
+        <%= info_icon_with_tooltip "These are the descriptions embedded within the workflow version" %>
+        Descriptions (<%= descriptions.nil? ? 0 : descriptions.length -%>)
+      </div>
+      <div class="foldContent" style="display: none;">
+        <% unless descriptions.blank? -%>
+          <table class="simple">
+            <% descriptions.each do |desc| -%>
+              <tr>
+                <td><%= h desc -%></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <p class="none_text">None</p>
+        <% end %>
+      </div>
+    </div>
+        
     <!-- Sources -->
     <% sources = model.sources -%>
     <div class="fold">
