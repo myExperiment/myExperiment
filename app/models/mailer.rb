@@ -1,5 +1,7 @@
 class Mailer < ActionMailer::Base
 
+  helper :application
+
   def feedback(name, subject, content)
     recipients Conf.feedback_email_address
     from Conf.notifications_email_address
