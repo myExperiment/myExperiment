@@ -743,6 +743,16 @@ protected
       when "create_version"   then view_to_render_on_fail = "new_version"
     end
     
+    # Check that they selected a Workflow Type.
+
+    if params[:metadata_choice] == 'custom' && params[:workflow][:type] == 'Select...'
+      respond_to do |format|
+        flash.now[:error] = "You selected custom metadata but did not specify a workflow type"
+        format.html { render :action => view_to_render_on_fail }
+      end
+      return false
+    end
+
     # If a custom workflow type has been specified, check that it is not "Other" or "other" as this can cause havoc in the UI.
     if params[:metadata_choice] == 'custom' && params[:workflow][:type] && params[:workflow][:type].downcase == 'other'
 

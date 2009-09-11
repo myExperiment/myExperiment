@@ -49,7 +49,7 @@
 						<span class="required">*</span>
 					</p>
 					<%= select_tag "workflow[type]", 
-												 options_for_select(workflow_types, (params[:workflow].nil? ? nil : params[:workflow][:type])),
+												 options_for_select(['Select...'] + workflow_types, (params[:workflow].nil? ? nil : params[:workflow][:type])),
 												 :onchange => "if (this.value == 'Other') { $('workflow[type_other]').show(); $('workflow[type_other]').focus(); } else { $('workflow[type_other]').hide(); }",
 												 :style => "vertical-align: middle;" -%>
 					<%= text_field_tag "workflow[type_other]",
