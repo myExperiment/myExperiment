@@ -1,0 +1,57 @@
+<% t "Bulk upload" -%>
+
+<center><%= error_messages_for :workflow -%></center>
+
+<h1>Bulk upload summary</h1>
+
+<div class="clearer">&nbsp;</div>
+
+<center>
+  <table class="simple">
+    <tr><th>Entry</th><th>Status</th></tr>
+    <% @results.each do |result| %>
+      <tr>
+        <td><%= result[0] %></td>
+        <% if result[1] %>
+          <td><img src="/images/famfamfam_silk/tick.png" /></td>
+        <% else %>
+          <td><img src="/images/famfamfam_silk/cross.png" /></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+</center>
+
+<div class="clearer">&nbsp;</div>
+<div class="clearer">&nbsp;</div>
+
+<% if @overall_success %>
+  <center>
+    <ul class="sectionIcons">
+      <li style="margin-left: 0;">
+        <%= icon 'new',
+          "/workflows/bulk_upload",
+          "Bulk upload",
+          nil,
+          "Upload more" -%>
+      </li>
+      <li style="margin-left: 0;">
+        <%= icon 'home',
+          "/home",
+          "Return to the home page",
+          nil,
+          "Finished" -%>
+      </li>
+    </ul>
+  </center>
+
+<% else %>
+  <div class="box_infotext">
+    <p>
+      Nothing was uploaded to <%= Conf.sitename %>.  To try the bulk upload
+      again, use your browser's back button to return to the bulk upload page
+      and select to new Zip file.
+    </p>
+  </div>
+<% end %>
+

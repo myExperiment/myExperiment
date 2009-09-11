@@ -768,6 +768,8 @@ module ApplicationHelper
       return "famfamfam_silk/application_edit.png"
     when "license"
       return "famfamfam_silk/text_signature.png"
+    when "home"
+      return "famfamfam_silk/application_home.png"
     else
       return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end

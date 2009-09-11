@@ -7,6 +7,8 @@ class Vocabulary < ActiveRecord::Base
 
   belongs_to :user
 
+  has_many :tags, :dependent => :destroy
+
   validates_presence_of :title
 
   format_attribute :description

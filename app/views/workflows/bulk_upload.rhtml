@@ -1,45 +1,38 @@
-<% t "New" -%>
+<% t "Bulk upload" -%>
 
 <%= javascript_include_tag :fckeditor %>
 <%= javascript_include_tag "osp.js" %>
 
-<div class="box_standout" style="margin: 1.5em 3em; padding: 0.7em 1.5em;">
-	<p>
-    Do you have many Workflows to upload?  Use the <a
-    href="/workflows/bulk_upload">bulk upload</a> page to upload multiple
-    Workflows at the same time.
-  </p>
-</div>
-
-<h1>Upload Workflow</h1>
+<h1>Bulk upload</h1>
 
 <center>
 	<%= error_messages_for :workflow %>
 </center>
 
-<% form_tag({:action => :create}, :multipart => true) do %>
+<% form_tag({:action => :bulk_create}, :multipart => true) do %>
 
   <!-- Workflow File -->
 	
-	<p class="step_text">1. Workflow file/script</p>
+	<p class="step_text">1. Zip file containing Workflow files/scripts</p>
 
-	<center>
-	  <%= render :partial => 'workflow_file_selection_form' %>
-	</center>
-  
+  <div class="box_infotext">
+    <p>Select a Zip file containing multiple Workflow files.  Note that
+    <%= Conf.sitename %> must be able to automatically recognise and extract
+    metadata from your Workflows to use this feature.</p>
+  </div>
+
   <br />
-	
-	<!-- Main metadata -->
-	
-	<p class="step_text">2. Main metadata</p>
-  
-	<%= render :partial => "main_metadata_form", :locals => { :new_version => false } -%>
-	
-	<br/>
+  <br />
+
+  <center>
+    <%= render :partial => 'workflow_file_selection_form' %>
+  </center>
+
+  <br />
 	
 	<!-- Other metadata and settings -->
 	
-	<p class="step_text" style="text-align: center;">3. Other metadata and settings</p>
+	<p class="step_text" style="text-align: center;">2. Other metadata and settings</p>
 	
 	<!-- Tags -->
   <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @workflow } -%>
@@ -56,7 +49,7 @@
 	
 	<!-- Terms and conditions -->
 	
-	<p class="step_text">4. Terms and conditions</p>
+	<p class="step_text">3. Terms and conditions</p>
 	
   <%= render :partial => 'contributions/terms_and_conditions' %>
 	
@@ -64,11 +57,12 @@
 
 	<!-- Upload and save -->
 	
-	<p class="step_text">5. Upload and save</p>
+	<p class="step_text">4. Upload and save</p>
 
   <p style="text-align: center;">
     <%= submit_tag "Upload and Save", :disable_with => "Uploading and saving..." %>
   </p>
   
 <% end %>
+
 
