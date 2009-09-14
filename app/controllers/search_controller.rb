@@ -104,15 +104,19 @@ class SearchController < ApplicationController
     markup += "<title>Search Results</title>";
 
     if (params["q"] != "*")
-      workflows = Workflow.find_by_solr(params["q"])
-      users     = User.find_by_solr(params["q"])
+      begin
+        workflows = Workflow.find_by_solr(params["q"])
+        users     = User.find_by_solr(params["q"])
 
-      workflows.results.each do |w|
-        markup += render_workflow(w)
-      end
+        workflows.results.each do |w|
+          markup += render_workflow(w)
+        end
 
-      users.results.each do |u|
-        markup += render_user(u)
+        users.results.each do |u|
+          markup += render_user(u)
+        end
+      rescue
+        # most likely here because of an invalid search query
       end
     end
 
@@ -158,8 +162,17 @@ private
 
       models.each do |model|
 
-        model_results = model.find_by_solr(@query, :limit => 10)
-        model_count   = model_results.total
+        begin
+          model_results = model.find_by_solr(@query, :limit => 10)
+
+          results = model_results.results
+          count   = model_results.total
+        rescue
+          flash.now[:error] = "There was a problem with your search query."
+
+          results = []
+          count   = 0
+        end
 
         search_type = model.name.downcase.pluralize
 
@@ -167,16 +180,16 @@ private
           search_type = k.downcase.pluralize if model.name == v
         end
 
-        if (model_results.results.length > 0)
+        if (results.length > 0)
           @infos.push({
             :search_type => search_type,
             :model       => model,
-            :results     => model_results.results,
-            :total_count => model_count
+            :results     => results,
+            :total_count => count
           })
         end
 
-        @total_count += model_count
+        @total_count += count
       end
     end
 
@@ -208,10 +221,16 @@ private
     offset = params[:page] ? limit * (params[:page].to_i - 1) : 0
 
     if Conf.solr_enable && !@query.blank?
-      solr_results = model.find_by_solr(@query, :offset => offset, :limit => limit)
-      @total_count = solr_results.total
-      @collection  = PaginatedArray.new(solr_results.results,
-          :offset => offset, :limit => limit, :total => @total_count)
+      begin
+        solr_results = model.find_by_solr(@query, :offset => offset, :limit => limit)
+        @total_count = solr_results.total
+        @collection  = PaginatedArray.new(solr_results.results,
+            :offset => offset, :limit => limit, :total => @total_count)
+      rescue
+        flash.now[:error] = "There was a problem with your search query."
+        @total_count = 0
+        @collection  = PaginatedArray.new([], :offset => offset, :limit => limit, :total => 0)
+      end
     else
       @total_count = 0
       @collection  = PaginatedArray.new([], :offset => offset, :limit => limit, :total => 0)
