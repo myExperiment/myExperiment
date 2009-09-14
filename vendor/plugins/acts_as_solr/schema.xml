@@ -31,11 +31,7 @@
 
 <schema name="acts_as_solr" version="0.9">
   <types>
-    <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="false">
-      <analyzer>
-        <filter class="solr.LowerCaseFilterFactory"/>
-      </analyzer>
-    </fieldType>
+    <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="false"/>
     <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="false"/>
     <fieldType name="integer" class="solr.IntField" omitNorms="false"/>
     <fieldType name="long" class="solr.LongField" omitNorms="false"/>
