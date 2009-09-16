@@ -105,8 +105,8 @@ class SearchController < ApplicationController
 
     if (params["q"] != "*")
       begin
-        workflows = Workflow.find_by_solr(params["q"])
-        users     = User.find_by_solr(params["q"])
+        workflows = Workflow.find_by_solr(params["q"].downcase)
+        users     = User.find_by_solr(params["q"].downcase)
 
         workflows.results.each do |w|
           markup += render_workflow(w)
@@ -163,7 +163,7 @@ private
       models.each do |model|
 
         begin
-          model_results = model.find_by_solr(@query, :limit => 10)
+          model_results = model.find_by_solr(@query.downcase, :limit => 10)
 
           results = model_results.results
           count   = model_results.total
@@ -222,7 +222,7 @@ private
 
     if Conf.solr_enable && !@query.blank?
       begin
-        solr_results = model.find_by_solr(@query, :offset => offset, :limit => limit)
+        solr_results = model.find_by_solr(@query.downcase, :offset => offset, :limit => limit)
         @total_count = solr_results.total
         @collection  = PaginatedArray.new(solr_results.results,
             :offset => offset, :limit => limit, :total => @total_count)
