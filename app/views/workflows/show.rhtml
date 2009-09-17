@@ -80,7 +80,7 @@
 						</td>
 						<td>
 							<% if @latest_version_number > 1 %>
-	             	<form onsubmit="showWorkflowVersion(this)"; return false;" style="text-align: right;">
+	             	<form onsubmit="showWorkflowVersion(this); return false;" style="text-align: right;">
 						    	<b>View version: </b>
 						    	<select id="workflow_versions" onchange="showWorkflowVersion(this.form)">
 							  		<% @workflow.versions.reverse.each do |w| %>
