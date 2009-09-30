@@ -2,7 +2,7 @@ Hi <%= @name %>,
  
 You have requested to update your email address on <%= Conf.sitename %> to: <%= @email %>
 
-Username: <%= @username %>
+  <%= login_identity_reminder(@user) %>
 
 Please confirm this by following the link below (you might need to copy/paste it into your browser). Your old email address will be active until you have done this.
  

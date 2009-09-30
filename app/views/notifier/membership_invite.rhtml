@@ -7,7 +7,7 @@ Administrator: <%= @network.owner.name %>
 
 Please go to <%= "http://" + @base_url + membership_path(@user, @membership) %> to confirm/reject this invite.
 
-Your username is: <%= @user.username %>
+  <%= login_identity_reminder(@target) %>
 
 Thanks,
  

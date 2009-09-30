@@ -1548,4 +1548,9 @@ protected
     strings[0..-2].join(", ") + " and " + strings[-1]
   end
 
+  def login_identity_reminder(user)
+    return "Your username is: #{user.username}"     if user.username
+    return "Your OpenID URL is: #{user.openid_url}" if user.openid_url
+  end
+
 end

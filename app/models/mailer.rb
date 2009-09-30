@@ -18,7 +18,7 @@ class Mailer < ActionMailer::Base
     subject "Welcome to #{Conf.sitename}. Please activate your account."
 
     body :name => user.name, 
-         :username => user.username, 
+         :user => user,
          :hash => hash, 
          :base_url => base_url
   end
@@ -29,7 +29,7 @@ class Mailer < ActionMailer::Base
     subject "#{Conf.sitename} - Reset Password Request"
 
     body :name => user.name, 
-         :username => user.username, 
+         :user => user,
          :reset_code => user.reset_password_code, 
          :base_url => base_url
          
@@ -41,7 +41,7 @@ class Mailer < ActionMailer::Base
     subject "#{Conf.sitename} - Update Email Address on Account"
 
     body :name => user.name, 
-         :username => user.username, 
+         :user => user,
          :hash => hash, 
          :base_url => base_url,
          :email => user.unconfirmed_email

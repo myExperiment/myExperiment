@@ -1,5 +1,7 @@
 class Notifier < ActionMailer::Base
 
+  helper :application
+
   def friendship_request(user, friend_name, friendship, base_url)
     recipients user.email
     from Conf.notifications_email_address
@@ -8,7 +10,8 @@ class Notifier < ActionMailer::Base
     body :user => user,
          :friend_name => friend_name,
          :friendship => friendship,
-         :base_url => base_url
+         :base_url => base_url,
+         :target => user
   end
   
   def membership_invite(user, network, membership, base_url)
@@ -19,7 +22,8 @@ class Notifier < ActionMailer::Base
     body :user => user,
          :network => network,
          :membership => membership,
-         :base_url => base_url
+         :base_url => base_url,
+         :target => user
   end
   
   def membership_request(requestor, network, membership, base_url)
@@ -31,7 +35,8 @@ class Notifier < ActionMailer::Base
          :network => network,
          :base_url => base_url,
          :membership => membership,
-         :requestor => requestor
+         :requestor => requestor,
+         :target => network.owner
   end
   
   def auto_join_group(member, network, base_url)
@@ -40,10 +45,10 @@ class Notifier < ActionMailer::Base
     subject "#{Conf.sitename} - #{member.name} has joined the #{network.title} Group"
     
     body :name => network.owner.name,
-         :username => network.owner.username,
          :network => network,
          :base_url => base_url,
-         :member_name => member.name
+         :member_name => member.name,
+         :target => network.owner
   end
   
   def new_message(message, base_url)
@@ -56,7 +61,8 @@ class Notifier < ActionMailer::Base
          :from_name => message.u_from.name,
          :base_url => base_url,
          :subject => message.subject,
-         :message_id => message.id
+         :message_id => message.id,
+         :target => message.u_to
   end
 
 end

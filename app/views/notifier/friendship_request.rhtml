@@ -4,7 +4,7 @@ Hi <%= @user.name %>,
 
 Please go to <%= "http://" + @base_url + user_friendship_path(@user, @friendship) %> to confirm/reject this request.
 
-Your username is: <%= @user.username %>
+  <%= login_identity_reminder(@target) %>
 
 Thanks,
  
