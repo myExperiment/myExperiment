@@ -1299,6 +1299,23 @@ def parse_element(doc, kind, query)
   end
 end
 
+# Avatar handling (to show default avatar when none present)
+
+def effective_avatar(ob, user, query)
+
+  picture = ob.profile.picture
+
+  if picture
+    result = rest_reference(picture, query, true)
+    result.name = "avatar"
+    result
+  else
+    result = LibXML::XML::Node.new('avatar')
+    result['resource'] = Conf.base_uri + '/images/avatar.png'
+    result
+  end
+end
+
 # Privileges
 
 def effective_privileges(ob, user, query)
