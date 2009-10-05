@@ -55,8 +55,12 @@ class SearchController < ApplicationController
       markup += "<link>" + user_url(u) + "</link>";
       markup += "<description>" + sanitize(u.profile.body_html) + "</description>";
       markup += "<pubDate>" + time_string(u.created_at) + "</pubDate>";
-      markup += "<media:thumbnail url=\"" + user_picture_url(u, u.profile.picture.id) + "\"/>";
-#markup += "height=\"120\" width=\"160\"/>";
+
+      if u.profile.picture
+        markup += "<media:thumbnail url=\"" + user_picture_url(u, u.profile.picture.id) + "\"/>";
+      else
+        markup += "<media:thumbnail url=\"" + Conf.base_uri + "/images/avatar.png\"/>";
+      end
 
       markup += "</item>";
 
