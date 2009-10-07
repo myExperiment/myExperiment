@@ -22,7 +22,7 @@
   <p>
   	<b>Other contact details:</b>
 	</p>
-  <%= simple_format(sanitize(profile.contact_details)) %>
+  <%= white_list(simple_format(profile.contact_details)) %>
 <% end %>
 
 <% unless profile.location.nil? or profile.location.empty? %>
@@ -50,13 +50,13 @@
   <p>
   	<b>Organisation(s):</b>
 	</p>
-  <%= simple_format(sanitize(profile.organisations)) %>
+  <%= white_list(simple_format(profile.organisations)) %>
 <% end %>
 
 <% unless profile.interests.nil? or profile.interests.empty? %>
   <p>
   	<b>Interests:</b>
 	</p>
-  <%= simple_format(sanitize(profile.interests)) %>
+  <%= white_list(simple_format(profile.interests)) %>
 <% end %>
 

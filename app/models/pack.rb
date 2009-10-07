@@ -671,7 +671,7 @@ class Pack < ActiveRecord::Base
     if item.comment.nil? || item.comment.blank?
       return "Comment: " + (html_required ? "<span class='none_text'>none</span>" : "none")
     else
-      return "Comment: " + (html_required ? "<div class='comment_text'>#{simple_format(sanitize(item.comment))}</div>" : ("\n  |   " + item.comment.gsub(/\n/, "\n  |   ")))
+      return "Comment: " + (html_required ? "<div class='comment_text'>#{white_list(simple_format(item.comment))}</div>" : ("\n  |   " + item.comment.gsub(/\n/, "\n  |   ")))
     end
   end
   

@@ -40,7 +40,7 @@
 							</p>
 						  <div style="padding: 0.3em 1em; border: 1px dotted #999999; background-color: #FFFFFF;">
 								<p style="font-size: 93%; text-align: center;">
-								  <%= simple_format(sanitize(@friendship.message)) -%>
+								  <%= white_list(simple_format(@friendship.message)) -%>
 			          </p>
 							</div>
 						<% end %>

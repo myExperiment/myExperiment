@@ -65,7 +65,7 @@
 							
 							<div style="padding: 0.3em 1em; border: 1px dotted #999999; background-color: #FFFFFF;">
 								<p style="font-size: 93%; text-align: center;">
-								  <%= simple_format(sanitize(@membership.message)) -%>
+								  <%= white_list(simple_format(@membership.message)) -%>
 			          </p>
 							</div>
 						<% end %>

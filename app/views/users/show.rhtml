@@ -291,7 +291,7 @@
 		  	<b>Other contact details:</b>
 			</p>
 			<% unless @user.profile.contact_details.nil? or @user.profile.contact_details.empty? %>  
-			  <%= simple_format(sanitize(@user.profile.contact_details)) %>
+			  <%= white_list(simple_format(@user.profile.contact_details)) %>
 			<% else %>
 				<%= none_text %>
 			<% end %>
@@ -300,7 +300,7 @@
 		  	<b>Interests:</b>
 			</p>
 			<% unless @user.profile.interests.nil? or @user.profile.interests.empty? %>
-			  <%= simple_format(sanitize(@user.profile.interests)) %>
+			  <%= white_list(simple_format(@user.profile.interests)) %>
 			<% else %>
 				<%= none_text %>
 			<% end %>
@@ -331,7 +331,7 @@
 		  	<b>Organisation(s):</b>
 			</p>
 			<% unless @user.profile.organisations.nil? or @user.profile.organisations.empty? %>
-			  <%= simple_format(sanitize(@user.profile.organisations)) %>
+			  <%= white_list(simple_format(@user.profile.organisations)) %>
 			<% else %>
 				<%= none_text %>
 			<% end %>
