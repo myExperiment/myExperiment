@@ -132,6 +132,15 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
+
+    # check that captcha was entered correctly
+
+    if !captcha_valid?(params[:validation][:captcha_id], params[:validation][:captcha_validation])
+      flash.now[:error] = 'Verification text was not entered correctly - please try again.'
+      render :action => 'new'
+      return
+    end
+
     if params[:user][:username] && params[:user][:password] && params[:user][:password_confirmation]
       params[:user].delete("openid_url") if params[:user][:openid_url] # strip params[:user] of it's openid_url if username and password is provided
     end

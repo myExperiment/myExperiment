@@ -21,9 +21,31 @@
 	However, usernames and registered email addresses (different to profile email addresses) are not exposed.
 </div> 
 
-<br/>
+<br />
+<br />
 
 <% form_for(:user, :url => users_path) do |f| %>
+
+  <center>
+    <h2>Anti-spam verification</h2>
+    <table style="margin-top: 2em;">
+      <tr>
+        <td>
+          <% c = prepare_captcha :type => :image -%>
+          <%= captcha_image_tag c -%>
+        </td>
+        <td style="vertical-align: top;">
+          <%= captcha_hidden_field c, 'validation' -%>
+          <%= captcha_label 'validation', 'Type in the text from the image on the left:' -%><br/>
+          <%= captcha_text_field 'validation', :size => 40 -%>
+        </td>
+      </tr>
+    </table>
+  </center>
+      
+  <br />
+  <br />
+
   	<div class="fold">
   		<div class="foldTitle">
       	Register with a Username and Password
