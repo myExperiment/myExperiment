@@ -61,4 +61,8 @@ class Blob < ActiveRecord::Base
     
     boost
   end
+
+  def named_download_url
+    "#{Conf.base_uri}/files/#{id}/download/#{local_name}"
+  end
 end

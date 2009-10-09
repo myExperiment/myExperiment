@@ -84,7 +84,7 @@ class SearchController < ApplicationController
       markup += "<pubDate>" + time_string(w.created_at) + "</pubDate>";
       markup += "<media:content url=\"" + w.named_download_url + "\"";
       markup += " fileSize=\"" + w.content_blob.data.length.to_s + "\"" +
-                " type=\"" + w.content_type.title + "\"/>";
+                " type=\"" + w.content_type.mime_type + "\"/>";
       markup += "<media:thumbnail url=\"" + file_column_url(w, "image/thumb") +
           "\"/>";
 #markup += "height=\"120\" width=\"160\"/>";
@@ -100,24 +100,49 @@ class SearchController < ApplicationController
       markup
     end
 
+    def render_file(f)
+
+      markup = ""
+
+      markup += "<item>";
+      markup += "<title>" + f.title + "</title>";
+      markup += "<link>" + file_url(f) + "</link>";
+      markup += "<description>" + sanitize(f.body_html) + "</description>";
+      markup += "<pubDate>" + time_string(f.created_at) + "</pubDate>";
+      markup += "<media:content url=\"" + f.named_download_url + "\"";
+      markup += " fileSize=\"" + f.content_blob.data.length.to_s + "\"" +
+                " type=\"" + f.content_type.mime_type + "\"/>";
+
+      f.tags.each do |t|
+        markup += "<category>#{t.name}</category>"
+      end
+
+      markup += "<author>#{f.contributor.name}</author>"
+
+      markup += "</item>";
+
+      markup
+    end
+
     markup = ""
 
-    markup += "<rss version=\"2.0\" xmlns:media=\"http://search.yahoo.com/mrss/\" ";
-    markup += "xmlns:example=\"http://example.com/namespace\">";
+    markup += "<rss version=\"2.0\" xmlns:media=\"http://search.yahoo.com/mrss/\" "
+    markup += "xmlns:example=\"http://example.com/namespace\">"
     markup += "<channel>";
     markup += "<title>Search Results</title>";
 
     if (params["q"] != "*")
       begin
-        workflows = Workflow.find_by_solr(params["q"].downcase)
-        users     = User.find_by_solr(params["q"].downcase)
+        query = params["q"].downcase
 
-        workflows.results.each do |w|
-          markup += render_workflow(w)
-        end
+        results = User.multi_solr_search(query, :models => [Workflow, Blob, User], :limit => 25).results
 
-        users.results.each do |u|
-          markup += render_user(u)
+        results.each do |result|
+          case result.class.name
+            when "Workflow"; markup += render_workflow(result)
+            when "Blob";     markup += render_file(result)
+            when "User";     markup += render_user(result)
+          end
         end
       rescue
         # most likely here because of an invalid search query
