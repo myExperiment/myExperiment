@@ -71,6 +71,7 @@ module WhiteListHelper
                 node.attributes[attr_name] = value
               end
             end if node.attributes
+            node.attributes['rel'] = 'nofollow' if node.name == 'a' and node.attributes != nil
             if tags.include?(node.name)
               bad = nil
               node
