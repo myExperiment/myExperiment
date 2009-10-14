@@ -356,3 +356,8 @@
 <div id="commentsBox">
 	<%= render :partial => "comments/comments", :locals => { :commentable => @workflow, :url_to_timeline => comments_timeline_workflow_path(@workflow) } %>
 </div>
+
+<!-- OpenURL context object -->
+
+<span class="Z3988" title="<%= workflow_context_object(@workflow) -%>"></span>
+
