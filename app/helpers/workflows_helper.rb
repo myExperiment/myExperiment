@@ -27,7 +27,9 @@ module WorkflowsHelper
     co.referent.set_metadata('au', workflow.contributor.name)
     co.referent.set_metadata('genre', 'unknown')
 
-    co.kev
+    co.referent.set_format("dc")
+
+    html_escape(co.kev)
   end
 
 end
