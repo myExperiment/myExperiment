@@ -25,6 +25,7 @@ module WorkflowsHelper
     co.referent.set_metadata('title', workflow.title)
     co.referent.set_metadata('date', workflow.created_at.strftime("%Y-%m-%d"))
     co.referent.set_metadata('au', workflow.contributor.name)
+    co.referent.set_metadata('genre', 'unknown')
 
     co.kev
   end
