@@ -350,7 +350,7 @@ activity_limits:
 home_page_stats:
 
   - model: User
-    label: user
+    label: member
     link:  /users
     conditions: "users.activated_at IS NOT NULL"
 
