@@ -748,9 +748,16 @@ def resolve_resource_node(resource_node, user = nil, permission = nil)
   resource
 end
 
-def obtain_rest_resource(type, id, user, permission = nil)
+def obtain_rest_resource(type, id, version, user, permission = nil)
 
   resource = eval(type).find_by_id(id)
+
+  if resource.nil?
+    rest_response(404)
+    return nil
+  end
+
+  resource = resource.find_version(version) if version
 
   if resource.nil?
     rest_response(404)
@@ -838,7 +845,7 @@ def workflow_aux(action, req_uri, rules, user, query)
       return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Workflow', user, nil)
       ob = Workflow.new(:contributor => user)
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Workflow', query['id'], user, action)
+      ob = obtain_rest_resource('Workflow', query['id'], query['version'], user, action)
     else
       raise "Invalid action '#{action}'"
   end
@@ -847,19 +854,22 @@ def workflow_aux(action, req_uri, rules, user, query)
 
   if action == "destroy"
 
+    return rest_response(400, :reason => "Cannot delete individual versions") if query['version']
+      
     ob.destroy
 
   else
 
     data = LibXML::XML::Parser.string(request.raw_post).parse
 
-    title        = parse_element(data, :text,   '/workflow/title')
-    description  = parse_element(data, :text,   '/workflow/description')
-    license_type = parse_element(data, :text,   '/workflow/license-type')
-    type         = parse_element(data, :text,   '/workflow/type')
-    content_type = parse_element(data, :text,   '/workflow/content-type')
-    content      = parse_element(data, :binary, '/workflow/content')
-    preview      = parse_element(data, :binary, '/workflow/preview')
+    title            = parse_element(data, :text,   '/workflow/title')
+    description      = parse_element(data, :text,   '/workflow/description')
+    license_type     = parse_element(data, :text,   '/workflow/license-type')
+    type             = parse_element(data, :text,   '/workflow/type')
+    content_type     = parse_element(data, :text,   '/workflow/content-type')
+    content          = parse_element(data, :binary, '/workflow/content')
+    preview          = parse_element(data, :binary, '/workflow/preview')
+    revision_comment = parse_element(data, :text,   '/workflow/revision-comment')
 
     permissions  = data.find_first('/workflow/permissions')
 
@@ -867,16 +877,8 @@ def workflow_aux(action, req_uri, rules, user, query)
 
     ob.title        = title        if title
     ob.body         = description  if description
-    #ob.license_id   = License.find_by_unique_name(license_type) if license_type
+    ob.license      = License.find_by_unique_name(license_type) if license_type
 
-    if license_type
-      ob.license = License.find_by_unique_name(license_type)
-      if ob.license.nil?
-        ob.errors.add("License type")
-        return rest_response(400, :object => ob)
-      end
-    end
-   
     # handle workflow type
 
     if type
@@ -924,16 +926,29 @@ def workflow_aux(action, req_uri, rules, user, query)
       image.close
     end
 
-    if not ob.save
-      return rest_response(400, :object => ob)
+    success = if content
+      ob.save_as_new_version(revision_comment)
+    else
+      ob.save
     end
 
-    if ob.contribution.policy.nil?
-      ob.contribution.policy = create_default_policy(user)
-      ob.contribution.save
-    end
+    return rest_response(400, :object => ob) unless success
 
-    update_permissions(ob, permissions)
+    # Elements to update if we're not dealing with a workflow version
+
+    if query['version'].nil?
+
+      if ob.contribution.policy.nil?
+        ob.contribution.policy = create_default_policy(user)
+        ob.contribution.save
+      end
+
+      update_permissions(ob, permissions)
+    end
+  end
+
+  if query['version']
+    ob = ob.versioned_resource
   end
 
   rest_get_request(ob, "workflow", user,
@@ -963,7 +978,7 @@ def file_aux(action, req_uri, rules, user, query)
       return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Blob', user, nil)
       ob = Blob.new(:contributor => user)
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Blob', query['id'], user, action)
+      ob = obtain_rest_resource('Blob', query['id'], query['version'], user, action)
     else
       raise "Invalid action '#{action}'"
   end
@@ -1346,7 +1361,7 @@ def comment_aux(action, req_uri, rules, user, query)
 
       ob = Comment.new(:user => user)
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Comment', query['id'], user, action)
+      ob = obtain_rest_resource('Comment', query['id'], query['version'], user, action)
     else
       raise "Invalid action '#{action}'"
   end
@@ -1402,7 +1417,7 @@ def favourite_aux(action, req_uri, rules, user, query)
 
       ob = Bookmark.new(:user => user)
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Bookmark', query['id'], user, action)
+      ob = obtain_rest_resource('Bookmark', query['id'], query['version'], user, action)
     else
       raise "Invalid action '#{action}'"
   end

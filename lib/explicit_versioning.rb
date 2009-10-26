@@ -49,11 +49,15 @@ module Jits
             def self.reloadable? ; false ; end
           end
           
+          versioned_resource = self.to_s.demodulize.underscore.to_sym
+
           versioned_class.set_table_name versioned_table_name
-          versioned_class.belongs_to self.to_s.demodulize.underscore.to_sym, 
+          versioned_class.belongs_to versioned_resource, 
             :class_name  => "::#{self.to_s}", 
             :foreign_key => versioned_foreign_key
-          
+
+          versioned_class.class_eval("alias_method :versioned_resource, :#{versioned_resource}")
+
           if block_given?
             versioned_class.class_eval(&extension)
           end
