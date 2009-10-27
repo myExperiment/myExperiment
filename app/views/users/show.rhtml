@@ -148,7 +148,7 @@
 				<p>
 			    <b>Website:</b>
 					<% unless @user.profile.website.nil? or @user.profile.website.empty? %>
-				    <%=link_to h(@user.profile.website), @user.profile.website %>
+				    <%=link_to(h(@user.profile.website), @user.profile.website, :rel => "nofollow") %>
 				  <% else %>
 						<%= none_text %>
 					<% end %>
