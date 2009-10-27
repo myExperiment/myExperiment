@@ -41,6 +41,22 @@ class ApiController < ApplicationController
 
     rules = TABLES['REST'][:data][uri][method]
 
+    # validate id and version query options
+
+    case rules['Allow id']
+      when 'required'
+        return rest_response(400, :reason => "Must specify an id") if query['id'].nil?
+      when 'no'
+        return rest_response(400, :reason => "Cannot specify an id") if query['id']
+    end
+
+    case rules['Allow version']
+      when 'required'
+        return rest_response(400, :reason => "Must specify a version") if query['version'].nil?
+      when 'no'
+        return rest_response(400, :reason => "Cannot specify a version") if query['version']
+    end
+
     # key check - if an oauth access token is in use, this means that we must
     # only allow requests where explicit permission has been given
 

@@ -843,7 +843,11 @@ def workflow_aux(action, req_uri, rules, user, query)
   case action
     when 'create':
       return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Workflow', user, nil)
-      ob = Workflow.new(:contributor => user)
+      if query['id']
+        ob = obtain_rest_resource('Workflow', query['id'], query['version'], user, action)
+      else
+        ob = Workflow.new(:contributor => user)
+      end
     when 'read', 'update', 'destroy':
       ob = obtain_rest_resource('Workflow', query['id'], query['version'], user, action)
     else
