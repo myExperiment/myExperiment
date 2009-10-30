@@ -90,8 +90,18 @@ def sanity_tests
   # workflows
 
   should_be_empty("All workflows must have a content type",
-      workflows.select do |w| !w.content_type.nil? end)
+      workflows.select do |w| w.content_type.nil? end)
 
+  should_be_empty("All workflows must have a license",
+      workflows.select do |w| w.license.nil? end)
+
+  # versioning
+
+  should_be_empty("All workflows versions should be contiguous",
+      workflows.select do |w|
+      w.versions.map do |v| v.version end != (1..w.versions.length).to_a
+      end)
+      
   @results_string += "\nTotal tests:      #{@results.length}\n"
   @results_string += "Successful tests: #{@results.select do |r| r == true end.length}\n"
   @results_string += "Failed tests:     #{@results.select do |r| r == false end.length}\n\n"
