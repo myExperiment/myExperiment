@@ -32,7 +32,7 @@ class Workflow < ActiveRecord::Base
                       end }
 
   before_validation :check_unique_name
-  before_validation :extract_metadata
+  before_validation :apply_extracted_metadata
 
   acts_as_site_entity :owner_text => 'Original Uploader'
 
@@ -137,27 +137,52 @@ class Workflow < ActiveRecord::Base
     end
   end
   
-  # This method is called before save and attempts to pull out metadata if it
-  # hasn't been set
-  def extract_metadata
+  def self.extract_metadata(opts = {})
 
-    if !content_blob.nil? && processor_class
+    if opts[:type]
+      content_type = ContentType.find_by_title(opts[:type])
+    elsif opts[:mime_type]
+      content_type = ContentType.find_by_mime_type(opts[:mime_type])
+    end
 
-      do_image = true if image.nil? && processor_class.can_generate_preview_image?
-      do_svg   = true if svg.nil?   && processor_class.can_generate_preview_svg?
-      do_title = true if title.nil?
-      do_desc  = true if body.nil?
-      
-      if do_image || do_svg || do_title || do_desc
+    if content_type
+      proc_class = WorkflowTypesHandler.processor_class_for_type_display_name(content_type.title)
+    end
 
-        processor = processor_class.new(content_blob.data)
+    metadata = {}
 
-        self.image = processor.get_preview_image if do_image
-        self.svg   = processor.get_preview_svg   if do_svg
-        self.title = processor.get_title         if do_title
-        self.body  = processor.get_description   if do_desc
+    if proc_class
+
+      processor = proc_class.new(opts[:data])
+
+      metadata["title"]       = processor.get_title
+      metadata["description"] = processor.get_description
+
+      if proc_class.can_generate_preview_image?
+        metadata["image"] = processor.get_preview_image
+      end
+
+      if proc_class.can_generate_preview_svg?
+        metadata["svg"] = processor.get_preview_svg
       end
     end
+
+    metadata
+  end
+
+  # This method is called before save and attempts to pull out metadata if it
+  # hasn't been set
+
+  def apply_extracted_metadata
+
+    return if content_blob.nil? or content_type.nil?
+
+    metadata = Workflow.extract_metadata(:type => content_type.title, :data => content_blob.data)
+
+    self.title = metadata["title"]       if metadata["title"]       and title.nil?
+    self.body  = metadata["description"] if metadata["description"] and body.nil?
+    self.image = metadata["image"]       if metadata["image"]       and image.nil?
+    self.svg   = metadata["svg"]         if metadata["svg"]         and svg.nil?
   end
 
   def processor_class

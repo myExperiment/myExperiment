@@ -45,16 +45,16 @@ class ApiController < ApplicationController
 
     case rules['Allow id']
       when 'required'
-        return rest_response(400, :reason => "Must specify an id") if query['id'].nil?
+        return rest_response(400, :reason => "Must specify an id") if request.query_parameters['id'].nil?
       when 'no'
-        return rest_response(400, :reason => "Cannot specify an id") if query['id']
+        return rest_response(400, :reason => "Cannot specify an id") if request.query_parameters['id']
     end
 
     case rules['Allow version']
       when 'required'
-        return rest_response(400, :reason => "Must specify a version") if query['version'].nil?
+        return rest_response(400, :reason => "Must specify a version") if request.query_parameters['version'].nil?
       when 'no'
-        return rest_response(400, :reason => "Cannot specify a version") if query['version']
+        return rest_response(400, :reason => "Cannot specify a version") if request.query_parameters['version']
     end
 
     # key check - if an oauth access token is in use, this means that we must

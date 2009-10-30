@@ -911,10 +911,15 @@ def workflow_aux(action, req_uri, rules, user, query)
       end
     end
 
-    ob.content_blob = ContentBlob.new(:data => content) if content
+    ob.content_blob_id = ContentBlob.create(:data => content).id if content
 
     # Handle the preview and svg images.  If there's a preview supplied, use
     # it.  Otherwise auto-generate one if we can.
+
+    if preview.nil? and content
+      metadata = Workflow.extract_metadata(:type => ob.content_type.title, :data => content)
+      preview = metadata["image"].read if metadata["image"]
+    end
 
     if preview
 
