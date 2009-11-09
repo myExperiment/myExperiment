@@ -935,7 +935,7 @@ def workflow_aux(action, req_uri, rules, user, query)
       image.close
     end
 
-    success = if content
+    success = if (action == 'create' and query['id'])
       ob.save_as_new_version(revision_comment)
     else
       ob.save
