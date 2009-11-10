@@ -155,6 +155,16 @@
 			
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the preview of this version of the Workflow (click on the image to expand)") %>
+				Classification
+			</h3>
+			
+      <p>
+        <span class="classification">Sequence Analysis</span>
+        <span class="classification">Gene Prediction</span>
+      </p>
+
+			<h3>
+				<%= info_icon_with_tooltip("This section shows the preview of this version of the Workflow (click on the image to expand)") %>
 				Preview
 			</h3>
 			
@@ -210,6 +220,168 @@
 			
 			<br/>
 			
+
+			<h3>
+				<%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
+				Inputs
+			</h3>
+			
+      <h4 style="text-align: left">Input 1: chromosome_name</h4>
+
+      <table class="simple">
+        <tr>
+          <td>Name</td>
+          <td>chromosome_name</td>
+        </tr>
+        <tr>
+          <td>Type</td>
+          <td>Text</td>
+        </tr>
+        <tr>
+          <td>Description</td>
+          <td>A chromosome name or number.</td>
+        </tr>
+        <tr>
+          <td>Example 1</td>
+          <td>17</td>
+        </tr>
+      </table>
+      <br />
+      <br />
+
+      <h4 style="text-align: left">Input 2: qtl_start_position</h4>
+
+      <table class="simple">
+        <tr>
+          <td>Name</td>
+          <td>qtl_start_position</td>
+        </tr>
+        <tr>
+          <td>Type</td>
+          <td>Text</td>
+        </tr>
+        <tr>
+          <td>Description</td>
+          <td>QTL start base pair position</td>
+        </tr>
+        <tr>
+          <td>Example 1</td>
+          <td>28500000</td>
+        </tr>
+      </table>
+      <br />
+      <br />
+
+      <h4 style="text-align: left">Input 3: qtl_end_position</h4>
+
+      <table class="simple">
+        <tr>
+          <td>Name</td>
+          <td>qtl_end_position</td>
+        </tr>
+        <tr>
+          <td>Type</td>
+          <td>Text</td>
+        </tr>
+        <tr>
+          <td>Description</td>
+          <td>QTL end base pair position</td>
+        </tr>
+        <tr>
+          <td>Example 1</td>
+          <td>29500000</td>
+        </tr>
+      </table>
+      <br />
+      <br />
+
+			<h3>
+				<%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
+				Outputs
+			</h3>
+			
+      <h4 style="text-align: left">Output 1: chromosome_name</h4>
+
+      <table class="simple">
+        <tr>
+          <td>Name</td>
+          <td>merged_pathways</td>
+        </tr>
+        <tr>
+          <td>Type</td>
+          <td><a href="">KEGG record</a></td>
+        </tr>
+        <tr>
+          <td>Description</td>
+          <td>The merged pathways</td>
+        </tr>
+        <tr>
+          <td>Example 1</td>
+          <td>17</td>
+        </tr>
+      </table>
+      <br />
+      <br />
+
+
+			<h3><%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %> Complete examples</h3>
+			
+      <h4 style="text-align: left">Complete example 1: Example given from the original description</h4>
+
+      <table class="simple">
+        <tr>
+          <th>Input</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>chromosome_name</td>
+          <td>17</td>
+        </tr>
+        <tr>
+          <td>qtl_start_position</td>
+          <td>28500000</td>
+        </tr>
+        <tr>
+          <td>qtl_end_position</td>
+          <td>29500000</td>
+        </tr>
+      </table>
+      <br />
+      <br />
+
+      <table class="simple">
+        <tr>
+          <th>Output</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>merged_pathways</td>
+          <td>Example output value.</td>
+        </tr>
+      </table>
+      <br />
+      <br />
+
+
+			<h3><%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %> Dependencies</h3>
+			
+      <div class="dependencies">
+        <p>This workflow depends on the following:
+          <br />
+
+          <ul>
+            <li>
+              <%= icon('blob', nil, nil, nil, '') %>
+              <a href="http://www.myexperiment.org/files/306">KEGG Compounds to Inchi strings</a>
+            </li>
+            <li>
+              <span class="icon"><img src="/images/famfamfam_silk/link.png" /></span>
+              <a href="http://www.mathworks.com/products/matlab">Matlab</a>
+            </li>
+          </ul>
+        </p>
+      </div>
+
 			<h3>
 				<%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
 				Download
@@ -271,6 +443,23 @@
 	
 	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @workflow, :edit_path => edit_workflow_path(@workflow) } %>
 	
+<div class="contribution_section_box">
+	<p class="heading" style="margin-bottom: 0; padding-bottom: 0;">
+		<%= info_icon_with_tooltip("Which people/groups get the credit for this?") %>
+		Scope and Quality
+	</p>
+  <div style="font-size: 85%;">
+  <p>The scope and quality of this Workflow has been classified by our curators as:</p>
+  </div>
+  <br />
+  <div class="quality"><a href="">Example</a></div>
+  <div class="quality"><a href="">Component</a></div>
+  <br />
+  <div style="font-size: 85%;">
+    <a href="">See breakdown</a>
+  </div>
+</div>
+
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @workflow,
 																											 :owner_id => ((@workflow.contribution.contributor_type == 'User') ? @workflow.contribution.contributor_id : nil),  
 																											 :add_path => tag_workflow_path(@workflow), 

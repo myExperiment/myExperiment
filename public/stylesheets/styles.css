@@ -1985,3 +1985,23 @@ table.quick_add td.submit {
   white-space: nowrap;
 }
 
+.classification {
+  border: 1px SOLID gray;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+  background: #ffffd0;
+}
+
+.quality {
+  width: 90%;
+  background: #EEA;
+  border: 1px solid #CCCCAA;
+  margin: 4px;
+  padding: 4px;
+}
+
+.dependencies UL LI {
+	list-style-type: none;
+}
+

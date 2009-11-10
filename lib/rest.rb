@@ -757,7 +757,11 @@ def obtain_rest_resource(type, id, version, user, permission = nil)
     return nil
   end
 
-  resource = resource.find_version(version) if version
+  if version
+    if resource.versions.last.version != version.to_i
+      resource = resource.find_version(version)
+    end
+  end
 
   if resource.nil?
     rest_response(404)
@@ -956,9 +960,7 @@ def workflow_aux(action, req_uri, rules, user, query)
     end
   end
 
-  if query['version']
-    ob = ob.versioned_resource
-  end
+  ob = ob.versioned_resource if ob.respond_to?("versioned_resource")
 
   rest_get_request(ob, "workflow", user,
       rest_resource_uri(ob), "workflow", { "id" => ob.id.to_s })
