@@ -47,12 +47,6 @@ module Jits
           # create the dynamic versioned model
           const_set(versioned_class_name, Class.new(ActiveRecord::Base)).class_eval do
             def self.reloadable? ; false ; end
-
-            after_update :sync_main_record
-
-            def sync_main_record
-              # If this is the current version, update the main record with it
-            end
           end
           
           versioned_resource = self.to_s.demodulize.underscore.to_sym

@@ -5,7 +5,6 @@
 
 require File.dirname(__FILE__) + '/../test_helper'
 require 'workflows_controller'
-require 'xml/libxml'
 
 # Re-raise errors caught by the controller.
 class WorkflowsController; def rescue_action(e) raise e end; end
@@ -80,28 +79,5 @@ class WorkflowsControllerTest < Test::Unit::TestCase
 
     assert_equal old_count-1, Workflow.count
     assert_redirected_to workflows_path
-  end
-
-  def test_workflow_api
-    login_as(:john)
-
-    content = LibXML::XML::Node.new("content") <<
-      Base64.encode64(File.read('test/fixtures/files/workflow_dilbert.xml'))
-
-    content["encoding"] = "base64"
-
-    doc = LibXML::XML::Document.new
-    doc.root = LibXML::XML::Node.new("workflow")
-
-    {
-      "title"        => "Test title",
-      "description"  => "Test description.",
-      "license-type" => "by-sa",
-      "content-type" => "application/vnd.taverna.scufl+xml",
-      "content"      => content
-    }.each do |k, v|
-      doc.root << (LibXML::XML::Node.new(k) << v)
-    end
-
   end
 end
