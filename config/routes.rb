@@ -62,11 +62,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # workflows (downloadable)
   map.resources :workflows, 
-    :collection => { :all => :get,
-                     :search => :get,
-                     :bulk_upload => :get,
-                     :bulk_create => :post,
-                     :bulk_summary => :get }, 
+    :collection => { :all => :get, :search => :get }, 
     :member => { :new_version => :get, 
                  :download => :get, 
                  :launch => :get,

@@ -3,17 +3,15 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'zip/zip'
-
 class WorkflowsController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search, :all]
   
   before_filter :find_workflows, :only => [:all]
   before_filter :find_workflows_rss, :only => [:index]
-  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all, :bulk_upload, :bulk_create, :bulk_summary]
+  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all]
   
-  before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create, :new_version, :create_version, :bulk_upload]
-  before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update, :bulk_upload]
+  before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create, :new_version, :create_version]
+  before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
   
   before_filter :check_file_size, :only => [:create, :create_version]
   before_filter :check_custom_workflow_type, :only => [:create, :create_version]
@@ -21,11 +19,11 @@ class WorkflowsController < ApplicationController
   before_filter :check_is_owner, :only => [:edit, :update]
   
   # declare sweepers and which actions should invoke them
-  cache_sweeper :workflow_sweeper, :only => [ :create, :bulk_create, :create_version, :launch, :update, :update_version, :destroy_version, :destroy ]
+  cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy_version, :destroy ]
   cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :launch ]
-  cache_sweeper :permission_sweeper, :only => [ :create, :bulk_create, :update, :destroy ]
+  cache_sweeper :permission_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
-  cache_sweeper :tag_sweeper, :only => [ :create, :bulk_create, :update, :tag, :destroy ]
+  cache_sweeper :tag_sweeper, :only => [ :create, :update, :tag, :destroy ]
   cache_sweeper :comment_sweeper, :only => [ :comment, :comment_delete ]
   cache_sweeper :rating_sweeper, :only => [ :rate ]
   
@@ -246,14 +244,6 @@ class WorkflowsController < ApplicationController
   def new
   end
 
-  # GET /workflows/bulk_upload
-  def bulk_upload
-  end
-
-  # GET /workflows/bulk_summary
-  def bulk_summary
-  end
-
   # GET /workflows/1/new_version
   def new_version
   end
@@ -436,93 +426,6 @@ class WorkflowsController < ApplicationController
       end
     end
    	
-  end
-
-  # POST /workflows/bulk_create
-
-  def bulk_create
-
-    def aux(file)
-      
-      @workflow = Workflow.new
-      @workflow.contributor = current_user
-      @workflow.last_edited_by = current_user.id
-      @workflow.license_id = params[:workflow][:license_id]
-      @workflow.content_blob = ContentBlob.new(:data => file.read)
-      @workflow.file_ext = file.original_filename.split(".").last.downcase
-      
-      # Check that the file uploaded is recognised and can be parsed...
-      
-      if infer_metadata(@workflow, file) == false
-        flash.now[:error] = "Couldn't recognise a workflow during bulk"
-          " upload.  Currently, only workflows that can be automatically"
-          " recognised can be bulk uploaded."
-        return false
-      end
-        
-      return false unless @workflow.save
-
-      if params[:workflow][:tag_list]
-        @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
-      end
-      
-      update_policy(@workflow, params)
-      update_credits(@workflow, params)
-      update_attributions(@workflow, params)
-
-      @titles.push(@workflow.title)
-      
-      return true
-    end
-
-    # Unpack multiple workflows from the zip file
-
-    @results         = []
-    @titles          = []
-    @failures        = []
-    @overall_success = true
-
-    file = params[:workflow][:file]
-
-    Tempfile.open("bulk", "tmp") { |zip_file|
-
-      zip_file.write(file.read)
-      zip_file.open
-
-      begin
-        Workflow.transaction do
-
-          Zip::ZipFile.foreach(zip_file.path) { |entry|
-            if entry.file?
-              stream = entry.get_input_stream
-              stream.extend FileUpload
-              stream.original_filename = entry.name
-
-              if aux(stream) == false
-                @overall_success = false
-                @results.push([entry.name, false])
-              else
-                @results.push([entry.name, true])
-              end
-
-            end
-          }
-
-         raise BulkUploadError unless @overall_success
-
-        end
-      rescue BulkUploadError
-        # Here so that the transaction will rollback upon failure
-      end
-    }
-
-    if @overall_success
-      flash[:notice] = "Bulk upload successful."
-    else
-      flash[:error] = "Failed to process all entries."
-    end
-
-    render(:action => :bulk_summary)
   end
 
   # PUT /workflows/1
@@ -769,7 +672,7 @@ protected
   end
   
   def initiliase_empty_objects_for_new_pages
-    if ["new", "create", "bulk_upload"].include?(action_name)
+    if ["new", "create"].include?(action_name)
       @workflow = Workflow.new
     end
     
@@ -799,7 +702,7 @@ protected
   
   def set_sharing_mode_variables
     case action_name
-      when "new", "bulk_upload"
+      when "new"
         @sharing_mode  = 0
         @updating_mode = 6
       when "create", "update"
