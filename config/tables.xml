@@ -40,6 +40,7 @@
   <WindowWidth>13860</WindowWidth>
   <WindowTopX>240</WindowTopX>
   <WindowTopY>75</WindowTopY>
+  <ActiveSheet>1</ActiveSheet>
   <ProtectStructure>False</ProtectStructure>
   <ProtectWindows>False</ProtectWindows>
  </ExcelWorkbook>
@@ -95,6 +96,14 @@
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
    <Font ss:FontName="Calibri" ss:Size="11" ss:Color="#000000"/>
    <NumberFormat/>
+  </Style>
+  <Style ss:ID="s79" ss:Parent="s63">
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="11"/>
+   <Interior/>
+  </Style>
+  <Style ss:ID="s80" ss:Parent="s63">
+   <Alignment ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="11" ss:Color="#000000"/>
   </Style>
  </Styles>
  <Worksheet ss:Name="REST">
@@ -1291,7 +1300,6 @@
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
    <Zoom>80</Zoom>
-   <Selected/>
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
@@ -3098,7 +3106,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="27"><Data ss:Type="Number">173</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -3113,7 +3121,7 @@
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="27"><Data ss:Type="String">Genome annotation pipeline demonstrator workflow for Nucleic Acids Research</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -3128,7 +3136,7 @@
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="27"><Data ss:Type="String">Part of a workflow by Hannah Tipney, adapted by Duncan Hull using GenScan, RepeatMasker and BLAST. http://dx.doi.org/10.1093/nar/gkl320</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -3143,7 +3151,7 @@
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="18"><Data ss:Type="String">content_type</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -3158,7 +3166,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="16" ss:StyleID="s79"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="27" ss:StyleID="s73"><Data ss:Type="String">Duncan Hull</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -3173,7 +3181,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="27"><Data ss:Type="String">Wed Oct 03 18:35:47 +0100 2007</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -3188,7 +3196,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="27"><Data ss:Type="String">Wed Oct 03 18:35:47 +0100 2007</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -3203,7 +3211,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
@@ -3217,7 +3225,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
@@ -3231,7 +3239,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
@@ -3245,7 +3253,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
@@ -3259,7 +3267,7 @@
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="18"><Data ss:Type="String">license</Data></Cell>
     <Cell ss:Index="27" ss:StyleID="s73"><Data ss:Type="String">by-nd</Data></Cell>
    </Row>
@@ -3275,7 +3283,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="27" ss:StyleID="s73"/>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -3290,7 +3298,7 @@
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="27" ss:StyleID="s73"><Data ss:Type="String">scufl</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -3305,7 +3313,7 @@
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="25"><Data ss:Type="String">download</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -3320,7 +3328,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
@@ -3334,7 +3342,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="20"><Data ss:Type="String">tag</Data></Cell>
     <Cell><Data ss:Type="String">name</Data></Cell>
    </Row>
@@ -3350,7 +3358,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
@@ -3363,8 +3371,8 @@
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
-    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="14" ss:StyleID="s80"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
@@ -3378,7 +3386,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="20"><Data ss:Type="String">review</Data></Cell>
     <Cell><Data ss:Type="String">title</Data></Cell>
    </Row>
@@ -3394,7 +3402,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="20"><Data ss:Type="String">comment</Data></Cell>
     <Cell><Data ss:Type="String">comment</Data></Cell>
    </Row>
@@ -3410,7 +3418,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">workflow</Data></Cell>
@@ -3424,7 +3432,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="21"><Data ss:Type="String">creditor</Data></Cell>
     <Cell ss:Index="27" ss:StyleID="s73"/>
    </Row>
@@ -3440,7 +3448,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="21"><Data ss:Type="String">attributor</Data></Cell>
     <Cell ss:Index="27" ss:StyleID="s73"/>
    </Row>
@@ -3456,7 +3464,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="27" ss:StyleID="s73"/>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -3471,7 +3479,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="25"><Data ss:Type="String">download</Data></Cell>
     <Cell ss:Index="27" ss:StyleID="s73"/>
    </Row>
@@ -3487,7 +3495,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="16" ss:StyleID="s79"/>
     <Cell ss:Index="27" ss:StyleID="s73"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.3125"/>
@@ -4953,11 +4961,18 @@
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
+   <Print>
+    <ValidPrinterInfo/>
+    <PaperSizeIndex>9</PaperSizeIndex>
+    <HorizontalResolution>600</HorizontalResolution>
+    <VerticalResolution>600</VerticalResolution>
+   </Print>
    <Zoom>80</Zoom>
+   <Selected/>
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>133</TopRowBottomPane>
+   <TopRowBottomPane>137</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -4974,8 +4989,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>110</ActiveRow>
-     <ActiveCol>4</ActiveCol>
+     <ActiveRow>155</ActiveRow>
+     <ActiveCol>15</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

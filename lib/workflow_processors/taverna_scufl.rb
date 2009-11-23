@@ -170,70 +170,109 @@ module WorkflowProcessors
 
     def get_components
 
-      model = @scufl_model
-
-      components = XML::Node.new('components')
-
-      sources    = XML::Node.new('sources')
-      sinks      = XML::Node.new('sinks')
-      processors = XML::Node.new('processors')
-      links      = XML::Node.new('links')
-
-      model.sources.each do |source|
-        el = XML::Node.new('source')
-
-        el << (XML::Node.new('name')        << source.name)        if source.name
-        el << (XML::Node.new('description') << source.description) if source.description
-
-        sources << el
+      def build(name, text = nil, &blk)
+        node = XML::Node.new(name)
+        node << text if text
+        yield(node) if blk
+        node
       end
 
-      model.sinks.each do |sink|
-        el = XML::Node.new('sink')
+      def aux(model, tag)
 
-        el << (XML::Node.new('name')        << sink.name)        if sink.name
-        el << (XML::Node.new('description') << sink.description) if sink.description
+        build(tag) do |element|
 
-        sinks << el
+          element << build('sources') do |sources_element|
+            model.sources.each do |source|
+              sources_element << build('source') do |source_element|
+                source_element << build('name',        source.name)        if source.name
+                source_element << build('description', source.description) if source.description
+              end
+            end
+          end
+
+          element << build('sinks') do |sinks_element|
+            model.sinks.each do |sink|
+              sinks_element << build('sink') do |sink_element|
+                sink_element << build('name',        sink.name)        if sink.name
+                sink_element << build('description', sink.description) if sink.description
+              end
+            end
+          end
+
+          element << build('processors') do |processors_element|
+
+            model.processors.each do |processor|
+
+              processors_element << build('processor') do |processor_element|
+
+                processor_element << build('name',                   processor.name)                   if processor.name
+                processor_element << build('description',            processor.description)            if processor.description
+                processor_element << build('type',                   processor.type)                   if processor.type
+                processor_element << build('script',                 processor.script)                 if processor.script
+                processor_element << build('wsdl',                   processor.wsdl)                   if processor.wsdl
+                processor_element << build('wsdl-operation',         processor.wsdl_operation)         if processor.wsdl_operation
+                processor_element << build('endpoint',               processor.endpoint)               if processor.endpoint
+                processor_element << build('biomoby-authority-name', processor.biomoby_authority_name) if processor.biomoby_authority_name
+                processor_element << build('biomoby-service-name',   processor.biomoby_service_name)   if processor.biomoby_service_name
+                processor_element << build('biomoby-category',       processor.biomoby_category)       if processor.biomoby_category
+
+                if processor.inputs
+                  processor_element << build('inputs') do |inputs_element|
+                    processor.inputs.each do |input|
+                      inputs_element << build('input', input)
+                    end
+                  end
+                end
+
+                if processor.outputs
+                  processor_element << build('outputs') do |outputs_element|
+                    processor.outputs.each do |output|
+                      outputs_element << build('output', output)
+                    end
+                  end
+                end
+
+                if processor.model
+                  processor_element << aux(processor.model, 'model')
+                end
+              end
+            end
+          end
+
+          element << build('links') do |links_element|
+
+            model.links.each do |link|
+
+              links_element << build('link') do |link_element|
+
+                sink_bits   = link.sink.split(':')
+                source_bits = link.source.split(':')
+
+                link_element << build('sink') do |sink_element|
+                  sink_element << build('node', sink_bits[0]) if sink_bits[0]
+                  sink_element << build('port', sink_bits[1]) if sink_bits[1]
+                end
+
+                link_element << build('source') do |source_element|
+                  source_element << build('node', source_bits[0]) if source_bits[0]
+                  source_element << build('port', source_bits[1]) if source_bits[1]
+                end
+              end
+            end
+          end
+
+          element << build('coordinations') do |coordinations_element|
+            model.coordinations.each do |coordination|
+              coordinations_element << build('coordination') do |coordination_element|
+                coordination_element << build('controller', coordination.controller) if coordination.controller
+                coordination_element << build('target',     coordination.target)     if coordination.target
+              end
+            end
+          end
+        end
       end
 
-      model.processors.each do |processor|
-        el = XML::Node.new('processor')
-
-        el << (XML::Node.new('name')        << processor.name)        if processor.name
-        el << (XML::Node.new('description') << processor.description) if processor.description
-        el << (XML::Node.new('type')        << processor.type)        if processor.type
-
-        processors << el
-      end
-
-      model.links.each do |link|
-        el = XML::Node.new('link')
-
-        sink_bits   = link.sink.split(':')
-        source_bits = link.source.split(':')
-
-        sink   = XML::Node.new('sink')
-        source = XML::Node.new('source')
-
-        sink << (XML::Node.new('node') << sink_bits[0]) if sink_bits[0]
-        sink << (XML::Node.new('port') << sink_bits[1]) if sink_bits[1]
-
-        source << (XML::Node.new('node') << source_bits[0]) if source_bits[0]
-        source << (XML::Node.new('port') << source_bits[1]) if source_bits[1]
-
-        el << sink
-        el << source
-
-        links << el
-      end
-
-      components << sources
-      components << sinks
-      components << processors
-      components << links
-
-      components
+      aux(@scufl_model, 'components')
     end
 
     # End Instance Methods

@@ -216,74 +216,143 @@ module WorkflowProcessors
     end
     
     def get_components
-      model = @t2flow_model
 
-      components = LibXML::XML::Node.new('components')
+      def aux(base_model, model, tag)
 
-      sources = LibXML::XML::Node.new('sources')
-      sinks = LibXML::XML::Node.new('sinks')
-      processors = LibXML::XML::Node.new('processors')
-      datalinks = LibXML::XML::Node.new('datalinks')
+        def build(name, text = nil, &blk)
+          node = XML::Node.new(name)
+          node << text if text
+          yield(node) if blk
+          node
+        end
 
-      model.sources.each do |source|
-        el = LibXML::XML::Node.new('source')
-        el << (LibXML::XML::Node.new('name') << source.name) if source.name
-        source.descriptions.each { |desc| 
-          el << (XML::Node.new('description') << desc) 
-        } if source.descriptions
-        source.example_values.each { |ex| 
-          el << (XML::Node.new('example') << ex) 
-        } if source.example_values
-        sources << el
+        build(tag) do |components|
+
+          components << build('dataflows') do |dataflows_element|
+
+            model.dataflows.each do |dataflow|
+
+              dataflows_element << build('dataflow') do |dataflow_element|
+
+                dataflow_element['id']   = dataflow.dataflow_id
+                dataflow_element['role'] = dataflow.role
+
+                dataflow_element << build('sources') do |sources_element|
+
+                  model.sources.each do |source|
+
+                    sources_element << build('source') do |source_element|
+
+                      source_element << build('name', source.name) if source.name
+
+                      source_element << build('descriptions') do |source_descriptions_element|
+
+                        if source.descriptions
+                          source.descriptions.each do |source_description|
+
+                            source_descriptions_element << build('description', source_description)
+                          end
+                        end
+                      end
+
+                      source_element << build('examples') do |source_examples_element|
+
+                        if source.example_values
+                          source.example_values.each do |source_example_value|
+                           
+                            source_examples_element << build('example', source_example_value)
+                          end
+                        end
+                      end
+                    end
+                  end
+                end
+
+                dataflow_element << build('sinks') do |sinks_element|
+
+                  model.sinks.each do |sink|
+
+                    sinks_element << build('sink') do |sink_element|
+
+                      sink_element << build('name', sink.name) if sink.name
+
+                      sink_element << build('descriptions') do |sink_descriptions_element|
+
+                        if sink.descriptions
+                          sink.descriptions.each do |sink_description|
+
+                            sink_descriptions_element << build('description', sink_description)
+                          end
+                        end
+                      end
+
+                      sink_element << build('examples') do |sink_examples_element|
+
+                        if sink.example_values
+                          sink.example_values.each do |sink_example_value|
+                           
+                            sink_examples_element << build('example', sink_example_value)
+                          end
+                        end
+                      end
+                    end
+                  end
+                end
+
+                dataflow_element << build('processors') do |processors_element|
+
+                  model.processors.each do |processor|
+
+                    processors_element << build('processor') do |processor_element|
+
+                      processor_element << build('name',                   processor.name)                   if processor.name
+                      processor_element << build('description',            processor.description)            if processor.description
+                      processor_element << build('type',                   processor.type)                   if processor.type
+                      processor_element << build('dataflow-id',            processor.dataflow_id)            if processor.dataflow_id
+
+                      processor_element << build('script',                 processor.script)                 if processor.script
+                      processor_element << build('wsdl',                   processor.wsdl)                   if processor.wsdl
+                      processor_element << build('wsdl-operation',         processor.wsdl_operation)         if processor.wsdl_operation
+                      processor_element << build('endpoint',               processor.endpoint)               if processor.endpoint
+                      processor_element << build('biomoby-authority-name', processor.biomoby_authority_name) if processor.biomoby_authority_name
+                      processor_element << build('biomoby-service-name',   processor.biomoby_service_name)   if processor.biomoby_service_name
+                      processor_element << build('biomoby-category',       processor.biomoby_category)       if processor.biomoby_category
+
+                      if processor.dataflow_id
+                        nested_dataflow = base_model.dataflow(processor.dataflow_id)
+                      end
+                    end
+                  end
+                end
+
+                dataflow_element << build('datalinks') do |links_element|
+
+                  model.datalinks.each do |datalink|
+
+                    sink_bits   = datalink.sink.split(':')
+                    source_bits = datalink.source.split(':')
+
+                    links_element << build('datalink') do |datalink_element|
+
+                      datalink_element << build('sink') do |sink_element|
+                        sink_element << build('node', sink_bits[0]) if sink_bits[0]
+                        sink_element << build('port', sink_bits[1]) if sink_bits[1]
+                      end
+
+                      datalink_element << build('source') do |source_element|
+                        source_element << build('node', source_bits[0]) if source_bits[0]
+                        source_element << build('port', source_bits[1]) if source_bits[1]
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
       end
 
-      model.sinks.each do |sink|
-        el = LibXML::XML::Node.new('sink')
-        el << (LibXML::XML::Node.new('name') << sink.name) if sink.name
-        sink.descriptions.each { |desc| 
-          el << (XML::Node.new('description') << desc) 
-        } if sink.descriptions
-        sink.example_values.each { |ex| 
-          el << (XML::Node.new('example') << ex) 
-        } if sink.example_values
-        sinks << el
-      end
-
-      model.processors.each do |processor|
-        el = LibXML::XML::Node.new('processor')
-        el << (LibXML::XML::Node.new('name') << processor.name) if processor.name
-        el << (LibXML::XML::Node.new('description') << processor.description) if processor.description
-        el << (LibXML::XML::Node.new('type') << processor.type) if processor.type
-        processors << el
-      end
-
-      model.datalinks.each do |datalink|
-        el = LibXML::XML::Node.new('datalink')
-
-        sink_bits   = datalink.sink.split(':')
-        source_bits = datalink.source.split(':')
-
-        sink   = LibXML::XML::Node.new('sink')
-        source = LibXML::XML::Node.new('source')
-
-        sink << (LibXML::XML::Node.new('node') << sink_bits[0]) if sink_bits[0]
-        sink << (LibXML::XML::Node.new('port') << sink_bits[1]) if sink_bits[1]
-
-        source << (LibXML::XML::Node.new('node') << source_bits[0]) if source_bits[0]
-        source << (LibXML::XML::Node.new('port') << source_bits[1]) if source_bits[1]
-
-        el << sink
-        el << source
-
-        datalinks << el
-      end
-
-      components << sources
-      components << sinks
-      components << processors
-      components << datalinks
-
-      components
+      aux(@t2flow_model, @t2flow_model, 'components')
     end
     
     # End Instance Methods
