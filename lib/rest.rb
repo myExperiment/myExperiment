@@ -1084,6 +1084,213 @@ def delete_file(req_uri, rules, user, query)
   file_aux('destroy', req_uri, rules, user, query)
 end
 
+# pack handling
+
+def pack_aux(action, req_uri, rules, user, query)
+
+  # Obtain object
+
+  case action
+    when 'create':
+      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Pack', user, nil)
+      ob = Pack.new(:contributor => user)
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Pack', query['id'], query['version'], user, action)
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    title        = parse_element(data, :text,   '/pack/title')
+    description  = parse_element(data, :text,   '/pack/description')
+
+    permissions  = data.find_first('/pack/permissions')
+
+    # build the contributable
+
+    ob.title       = title        if title
+    ob.description = description  if description
+
+    if not ob.save
+      return rest_response(400, :object => ob)
+    end
+
+    if ob.contribution.policy.nil?
+      ob.contribution.policy = create_default_policy(user)
+      ob.contribution.save
+    end
+
+    update_permissions(ob, permissions)
+  end
+
+  rest_get_request(ob, "pack", user,
+      rest_resource_uri(ob), "pack", { "id" => ob.id.to_s })
+end
+
+def post_pack(req_uri, rules, user, query)
+  pack_aux('create', req_uri, rules, user, query)
+end
+
+def put_pack(req_uri, rules, user, query)
+  pack_aux('update', req_uri, rules, user, query)
+end
+
+def delete_pack(req_uri, rules, user, query)
+  pack_aux('destroy', req_uri, rules, user, query)
+end
+
+def external_pack_item_aux(action, req_uri, rules, user, query)
+
+  unless action == 'destroy'
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    pack          = parse_element(data, :resource, '/external-pack-item/pack')
+    title         = parse_element(data, :text,     '/external-pack-item/title')
+    uri           = parse_element(data, :text,     '/external-pack-item/uri')
+    alternate_uri = parse_element(data, :text,     '/external-pack-item/alternate-uri')
+    comment       = parse_element(data, :text,     '/external-pack-item/comment')
+  end
+
+  # Obtain object
+
+  case action
+    when 'create':
+
+      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'PackRemoteEntry', user, pack)
+      return rest_response(400, :reason => "Pack not found") if pack.nil?
+      return rest_response(401) unless Authorization.is_authorized?('edit', nil, pack, user)
+
+      ob = PackRemoteEntry.new(:user => user,
+          :pack          => pack,
+          :title         => title,
+          :uri           => uri,
+          :alternate_uri => alternate_uri,
+          :comment       => comment)
+
+    when 'read', 'update', 'destroy':
+
+      ob = obtain_rest_resource('PackRemoteEntry', query['id'], query['version'], user, action)
+
+      if ob
+        return rest_response(401) unless Authorization.is_authorized?('edit', nil, ob.pack, user)
+      end
+
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    ob.title         = title         if title
+    ob.uri           = uri           if uri
+    ob.alternate_uri = alternate_uri if alternate_uri
+    ob.comment       = comment       if comment
+
+    if not ob.save
+      return rest_response(400, :object => ob)
+    end
+  end
+
+  rest_get_request(ob, "external-pack-item", user,
+      rest_resource_uri(ob), "external-pack-item", { "id" => ob.id.to_s })
+end
+
+def post_external_pack_item(req_uri, rules, user, query)
+  external_pack_item_aux('create', req_uri, rules, user, query)
+end
+
+def put_external_pack_item(req_uri, rules, user, query)
+  external_pack_item_aux('update', req_uri, rules, user, query)
+end
+
+def delete_external_pack_item(req_uri, rules, user, query)
+  external_pack_item_aux('destroy', req_uri, rules, user, query)
+end
+
+def internal_pack_item_aux(action, req_uri, rules, user, query)
+
+  unless action == 'destroy'
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    pack          = parse_element(data, :resource, '/internal-pack-item/pack')
+    item          = parse_element(data, :resource, '/internal-pack-item/item')
+    comment       = parse_element(data, :text,     '/internal-pack-item/comment')
+  end
+
+  # Obtain object
+
+  case action
+    when 'create':
+
+      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'PackContributableEntry', user, pack)
+      return rest_response(400, :reason => "Pack not found") if pack.nil?
+      return rest_response(401) unless Authorization.is_authorized?('edit', nil, pack, user)
+
+      ob = PackContributableEntry.new(:user => user,
+          :pack          => pack,
+          :contributable => item,
+          :comment       => comment)
+
+    when 'read', 'update', 'destroy':
+
+      ob = obtain_rest_resource('PackContributableEntry', query['id'], query['version'], user, action)
+
+      if ob
+        return rest_response(401) unless Authorization.is_authorized?('edit', nil, ob.pack, user)
+      end
+
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    ob.comment = comment if comment
+
+    if not ob.save
+      return rest_response(400, :object => ob)
+    end
+  end
+
+  rest_get_request(ob, "internal-pack-item", user,
+      rest_resource_uri(ob), "internal-pack-item", { "id" => ob.id.to_s })
+end
+
+def post_internal_pack_item(req_uri, rules, user, query)
+  internal_pack_item_aux('create', req_uri, rules, user, query)
+end
+
+def put_internal_pack_item(req_uri, rules, user, query)
+  internal_pack_item_aux('update', req_uri, rules, user, query)
+end
+
+def delete_internal_pack_item(req_uri, rules, user, query)
+  internal_pack_item_aux('destroy', req_uri, rules, user, query)
+end
+
 # def post_job(req_uri, rules, user, query)
 #
 #   title       = params["job"]["title"]

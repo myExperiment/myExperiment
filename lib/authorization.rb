@@ -74,6 +74,26 @@ module Authorization
       return !user.nil?
     end
     
+    # Pack permissions
+
+    if (object_type == 'Pack') && (action == 'create')
+
+      # Packs can only be created by authenticated users
+      return !user.nil?
+    end
+
+    if (object_type == 'PackRemoteEntry') && (action == 'create')
+
+      # Remote pack items can only be added by users that can edit a pack
+      return Authorization.is_authorized?('edit', nil, context, user)
+    end
+
+    if (object_type == 'PackContributableEntry') && (action == 'create')
+
+      # Contributable pack items can only be added by users that can edit a pack
+      return Authorization.is_authorized?('edit', nil, context, user)
+    end
+
     # Comment permissions
     
     if (object_type == 'Comment') && (action == 'create')
