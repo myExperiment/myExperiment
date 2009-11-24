@@ -239,7 +239,7 @@ module WorkflowProcessors
 
                 dataflow_element << build('sources') do |sources_element|
 
-                  model.sources.each do |source|
+                  dataflow.sources.each do |source|
 
                     sources_element << build('source') do |source_element|
 
@@ -270,7 +270,7 @@ module WorkflowProcessors
 
                 dataflow_element << build('sinks') do |sinks_element|
 
-                  model.sinks.each do |sink|
+                  dataflow.sinks.each do |sink|
 
                     sinks_element << build('sink') do |sink_element|
 
@@ -301,10 +301,11 @@ module WorkflowProcessors
 
                 dataflow_element << build('processors') do |processors_element|
 
-                  model.processors.each do |processor|
+                  dataflow.processors.each do |processor|
 
                     processors_element << build('processor') do |processor_element|
 
+puts "PROCESSOR NAME = #{processor.name}"
                       processor_element << build('name',                   processor.name)                   if processor.name
                       processor_element << build('description',            processor.description)            if processor.description
                       processor_element << build('type',                   processor.type)                   if processor.type
@@ -327,7 +328,7 @@ module WorkflowProcessors
 
                 dataflow_element << build('datalinks') do |links_element|
 
-                  model.datalinks.each do |datalink|
+                  dataflow.datalinks.each do |datalink|
 
                     sink_bits   = datalink.sink.split(':')
                     source_bits = datalink.source.split(':')
