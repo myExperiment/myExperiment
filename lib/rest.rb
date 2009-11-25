@@ -877,6 +877,7 @@ def workflow_aux(action, req_uri, rules, user, query)
     content_type     = parse_element(data, :text,   '/workflow/content-type')
     content          = parse_element(data, :binary, '/workflow/content')
     preview          = parse_element(data, :binary, '/workflow/preview')
+    svg              = parse_element(data, :text,   '/workflow/svg')
     revision_comment = parse_element(data, :text,   '/workflow/revision-comment')
 
     permissions  = data.find_first('/workflow/permissions')
@@ -937,6 +938,25 @@ def workflow_aux(action, req_uri, rules, user, query)
       ob.image = image
 
       image.close
+    end
+
+    if svg.nil? and content
+      metadata = Workflow.extract_metadata(:type => ob.content_type.title, :data => content)
+      svg = metadata["image"].read if metadata["image"]
+    end
+
+    if svg
+
+      svg_file = Tempfile.new('image')
+      svg_file.write(svg)
+      svg_file.rewind
+
+      svg_file.extend FileUpload
+      svg_file.original_filename = 'svg'
+      
+      ob.svg = svg_file
+
+      svg_file.close
     end
 
     success = if (action == 'create' and query['id'])
@@ -1522,8 +1542,19 @@ end
 def parse_element(doc, kind, query)
   case kind
     when :text
-      el = doc.find_first("#{query}/text()")
-      return el.to_s if el
+      if doc.find_first(query)
+
+        enc = doc.find_first(query)['encoding']
+        el  = doc.find_first("#{query}/text()")
+
+        if el
+          if enc == 'base64'
+            return Base64::decode64(el.to_s)
+          else
+            return el.to_s
+          end
+        end
+      end
     when :binary
       el = doc.find_first("#{query}/text()")
       return Base64::decode64(el.to_s) if el
