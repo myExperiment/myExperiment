@@ -90,10 +90,7 @@ class WorkflowsController < ApplicationController
   def comment_delete
     if params[:comment_id]
       comment = Comment.find(params[:comment_id].to_i)
-      # security checks:
-      if comment.user_id == current_user.id and comment.commentable_type.downcase == 'workflow' and comment.commentable_id == @workflow.id
-        comment.destroy
-      end
+      comment.destroy if Authorization.check(:action => 'destroy', :object => comment, :user => current_user)
     end
     
     respond_to do |format|

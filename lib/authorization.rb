@@ -46,6 +46,77 @@ module Authorization
     end
   end
 
+  def self.user_is_administrator?(user)
+
+    return false if user.nil?
+
+    if user.instance_of?(User)
+      Conf.admins.include?(user.username)
+    else
+      Conf.admins.include?(User.find(user).username)
+    end
+  end
+
+  def self.user_is_curator?(user)
+
+    return false if user.nil?
+
+    if user.instance_of?(User)
+      Conf.curators.include?(user.username)
+    else
+      Conf.curators.include?(User.find(user).username)
+    end
+  end
+
+  # Single entry point to authorisation checks for instances of objects and
+  # also classes of objects.
+  #
+  # Options:
+  #
+  # :action      - This string describes the action to be performed, e.g.
+  #                'create', 'read', 'update' or 'destroy'.
+  #
+  # :object      - This is the object being acted upon, e.g. an instance of a
+  #                Comment or an instance of a Workflow.
+  #
+  # :object_type - As an alternative to an instance of an object, you can
+  # :object_id     specify the type and id instead and this might not cause
+  #                the object to be loaded into memory.
+  #
+  # :model       - If the action is performed on a class of objects, such as
+  #                creating a Workflow, then specify the class of the object
+  #                to be acted upon instead of an instance.  This is a class
+  #                object, e.g. Workflow.
+  #
+  # :user        - The user that the check is with respect to.  Typically,
+  #                this would be current_user.
+  #
+  # :context     - This is the context in which the object or object to be
+  #                created is made.  For example, pack entries can only be
+  #                created by those that can edit the pack that the entry will
+  #                be made in, so the context here would be an instance of the
+  #                pack in question.  This is only usually required for
+  #                'create' actions.
+
+  def self.check(opts = {})
+
+    raise "Missing action in authorisation check" if opts[:action].nil?
+
+    if opts[:model].nil? && opts[:object].nil? && (opts[:object_type].nil? || opts[:object_id])
+      raise "Missing object / model in authorisation check"
+    end
+
+    if opts[:model]
+      Authorization.is_authorized_for_type?(opts[:action], opts[:model], opts[:user], opts[:context])
+    else
+      if opts[:object]
+        Authorization.is_authorized?(opts[:action], nil, opts[:object], opts[:user])
+      else
+        Authorization.is_authorized_for_type?(opts[:action], opts[:object_type], opts[:object_id], opts[:user])
+      end
+    end
+  end
+
   def Authorization.is_authorized_for_type?(action, object_type, user, context)
 
     # This method deals with cases where there is no instantiated object to
@@ -322,8 +393,14 @@ module Authorization
       when "Comment"
         case action
           when "destroy"
-            # only the user who posted the comment can delete it
-            is_authorized = Authorization.is_owner?(user_id, thing_instance)
+            # the user who posted the comment can delete it, also anyone that
+            # can edit the object the comment relates to.  adminstrators and
+            # curators can also delete comments.
+  
+            is_authorized = Authorization.is_owner?(user_id, thing_instance) ||
+              Authorization.check(:action => 'edit', :object => thing_instance.commentable, :user => user_id) ||
+              user_is_administrator?(user_id) || user_is_curator?(user_id)
+
           when "view"
             # user can view comment if they can view the item that this comment references 
             is_authorized = Authorization.is_authorized?('view', thing_instance.commentable_type, thing_instance.commentable_id, user)
