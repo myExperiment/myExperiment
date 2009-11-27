@@ -29,7 +29,7 @@
 						<form action="/search" method="get">
 							<input id="query" name="query" style="width: 250px; padding: 0.1em;" />
 							<select id="type" name="type">
-								<option value="all" selected>All</option>
+								<option value="all" selected="selected">All</option>
 								<option value="users">Users</option>
 								<option value="groups">Groups</option>
 								<option value="workflows">Workflows</option>
@@ -118,7 +118,7 @@
 						<div class="content" style="height: 34em; text-align: center;">
 							
 							<center>
-								<a href="/home" alt="Explore button" title="Explore myExperiment" class="letmein_button">
+								<a href="/home" "Explore button" title="Explore myExperiment" class="letmein_button">
 								</a>
 							</center>
 							<center>
@@ -127,7 +127,7 @@
 							</center>
 							
 							<div class="links" style="font-size: 93%; border-top: 1px dotted #999999; margin-top: 1em;">
-								<p style="margin-top: 1em;"><a href="http://wiki.myexperiment.org/" target="_blank" style="font-weight: bolder;">About myExperiment</a></p>
+								<p style="margin-top: 1em; font-size:150%"><a href="http://wiki.myexperiment.org/" target="_blank" style="font-weight: bolder;">About myExperiment</a></p>
 								<p><a href="http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss" target="_blank">Join the Mailing List</a></p>
 								<p><a href="/feedback">Give us Feedback</a></p>
 								<p><a href="http://wiki.myexperiment.org/index.php/Developer:Contents" target="_blank">For Developers</a></p>
@@ -203,10 +203,10 @@
 						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 					</div>
 					
-					<br class="clearer">&nbsp;</br>
+					<br class="clearer"/>&nbsp;<br/>
 					
 					<div class="stats">
-						myExperiment has over 2300 users, 160 groups, 750 workflows, 200 files and 70 packs
+						myExperiment has over 2700 users, 160 groups, 850 workflows, 200 files and 70 packs
 					</div>
 					
 					<!-- About -->
@@ -288,7 +288,7 @@
 						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 					</div>
 					
-					<br class="clearer">&nbsp;</br>
+					<br class="clearer"/>&nbsp;<br/>
 					
 					<p style="color: #666666; font-size: 116%; text-align: center;">
 						<a href="/users/invite">Invite People</a>
@@ -309,7 +309,8 @@
 			
 		</div>
 
-      <script language="javascript">
+      <script language="javascript" type="text/javascript">
+//<![CDATA[
 
 function loadAnnoucements()
 {
@@ -351,6 +352,7 @@ function init()
 	document.getElementById('session[username]').focus();
 	loadAnnoucements();
 }
+// ]]>
       </script>
 	</body>
 </html>
