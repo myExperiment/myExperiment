@@ -552,6 +552,9 @@ module Authorization
   
   
   def Authorization.is_network_admin?(user_id, network_id)
+
+    return false unless user_id
+
     # checks if there is a network with ID(network_id) which has admin with ID(user_id) -
     # if found, user with ID(user_id) is an admin of that network 
     network = Network.find_by_sql "SELECT user_id FROM networks WHERE id=#{network_id} AND user_id=#{user_id}"
@@ -560,6 +563,9 @@ module Authorization
   
   
   def Authorization.is_network_member?(user_id, network_id)
+
+    return false unless user_id
+
     # checks if user with ID(user_id) is a member of the group ID(network_id)
     membership = Membership.find_by_sql "SELECT id FROM memberships WHERE user_id=#{user_id} AND network_id=#{network_id} AND user_established_at IS NOT NULL AND network_established_at IS NOT NULL"
     return(!membership.blank?)
