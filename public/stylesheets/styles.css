@@ -684,6 +684,10 @@ ul.breadcrumb_list a:hover {
 	vertical-align: middle;
 }
 
+.tabSeparator {
+  width: 1px;
+}
+
 .tabSelected {
 	border-top: 1px solid #909090;
 	border-bottom: 1px solid white;
@@ -712,10 +716,12 @@ ul.breadcrumb_list a:hover {
 
 .tabSelIMG {
 	border-bottom: 1px solid white;
+  width: 6px;
 }
 
 .tabUnselIMG {
 	border-bottom: 1px solid #909090;
+  width: 6px;
 }
 
 .tabTitle {

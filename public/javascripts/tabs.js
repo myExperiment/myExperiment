@@ -27,7 +27,7 @@ function selectTab(tabsDiv, t) {
   var html = '<table cellspacing=0 cellpadding=0><tr>';
 
   if (tabsDiv.titles.length > 0)
-    html += '<td><img src="' + tabImagesRoot + '/tab_separator.png"></td>';
+    html += '<td><img class="tabSeparator" src="' + tabImagesRoot + '/tab_separator.png"></td>';
 
   for (var i = 0; i < tabsDiv.titles.length; i++) {
 
@@ -59,7 +59,7 @@ function selectTab(tabsDiv, t) {
       html += '/unselected_tab_end.png"></td>';
     }
 
-    html += '<td><img src="' + tabImagesRoot + '/tab_separator.png"></td>';
+    html += '<td><img class="tabSeparator" src="' + tabImagesRoot + '/tab_separator.png"></td>';
   }
 
   html += '</td></tr></table>';
