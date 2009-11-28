@@ -272,10 +272,10 @@ class User < ActiveRecord::Base
 
   acts_as_contributor
   
-  has_many :blobs, :as => :contributor
-  has_many :blogs, :as => :contributor
-  has_many :workflows, :as => :contributor
-  has_many :packs, :as => :contributor
+  has_many :blobs, :as => :contributor, :dependent => :destroy
+  has_many :blogs, :as => :contributor, :dependent => :destroy
+  has_many :workflows, :as => :contributor, :dependent => :destroy
+  has_many :packs, :as => :contributor, :dependent => :destroy
   
   acts_as_creditor
 
