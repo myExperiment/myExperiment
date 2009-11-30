@@ -393,12 +393,10 @@ module Authorization
       when "Comment"
         case action
           when "destroy"
-            # the user who posted the comment can delete it, also anyone that
-            # can edit the object the comment relates to.  adminstrators and
-            # curators can also delete comments.
+            # Users can delete their own comments.  Curators and
+            # administrators can delete any comment.
   
             is_authorized = Authorization.is_owner?(user_id, thing_instance) ||
-              Authorization.check(:action => 'edit', :object => thing_instance.commentable, :user => user_id) ||
               user_is_administrator?(user_id) || user_is_curator?(user_id)
 
           when "view"
