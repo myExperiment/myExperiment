@@ -215,6 +215,7 @@ module WorkflowProcessors
                 processor_element << build('biomoby-authority-name', processor.biomoby_authority_name) if processor.biomoby_authority_name
                 processor_element << build('biomoby-service-name',   processor.biomoby_service_name)   if processor.biomoby_service_name
                 processor_element << build('biomoby-category',       processor.biomoby_category)       if processor.biomoby_category
+                processor_element << build('value',                  processor.value)                  if processor.value
 
                 if processor.inputs
                   processor_element << build('inputs') do |inputs_element|
