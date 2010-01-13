@@ -46,6 +46,7 @@ module WorkflowProcessors
     
     def self.recognised?(file)
       begin
+        file.rewind
         scufl_model = Scufl::Parser.new.parse(file.read)
         file.rewind
         return !scufl_model.nil?

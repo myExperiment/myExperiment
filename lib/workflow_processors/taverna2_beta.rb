@@ -44,6 +44,7 @@ module WorkflowProcessors
     
     def self.recognised?(file)
       begin
+        file.rewind
         t2flow_model = T2Flow::Parser.new.parse(file.read)
         file.rewind
         return !t2flow_model.nil?
