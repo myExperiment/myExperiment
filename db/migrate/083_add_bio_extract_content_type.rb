@@ -7,7 +7,7 @@ class AddBioExtractContentType < ActiveRecord::Migration
 
   def self.up
     if ContentType.find_by_title("BioExtract Server").nil?
-      ContentType.create(:title => 'BioExtract Server', mime_type => 'application/xml')
+      ContentType.create(:title => 'BioExtract Server', :mime_type => 'application/xml')
     end
   end
 
