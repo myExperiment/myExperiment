@@ -117,6 +117,10 @@ class Conf
     self.fetch_entry('max_search_size')
   end
 
+  def self.curation_types
+    self.fetch_entry('curation_types')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)

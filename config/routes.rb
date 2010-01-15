@@ -86,6 +86,15 @@ ActionController::Routing::Routes.draw do |map|
     workflow.resources :reviews
   end
 
+  # curation
+  ['workflows', 'files', 'packs'].each do |contributable_type|
+    map.curation "#{contributable_type}/:contributable_id/curation",
+      :contributable_type => contributable_type,
+      :controller         => 'contributions',
+      :action             => 'curation',
+      :conditions         => { :method => :get }
+  end
+
   # files (downloadable)
   map.resources :files, 
     :controller => :blobs, 

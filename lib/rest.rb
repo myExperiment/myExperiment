@@ -1636,6 +1636,60 @@ def comment_aux(action, req_uri, rules, user, query)
       ob.commentable = subject
     end
 
+    # Start of curation hack
+
+    if user && subject && Conf.curators.include?(user.username)
+
+      lines  = comment.split("\n")
+      events = []
+      failed = false
+
+      if lines[0] && lines[0].downcase == 'c:'
+        lines[1..-1].each do |line|
+
+          line.strip!
+
+          bits = line.split(" - ")
+
+          if bits.length > 1
+            details = bits[1..-1].join(" - ")
+          else
+            details = nil
+          end
+
+          if bits.length > 0
+            bits[0].split(",").each do |bit|
+
+              bit.downcase!
+              bit.strip!
+
+              if Conf.curation_types.include?(bit)
+                events.push(CurationEvent.new(:category => bit,
+                      :object => subject, :user => user, :details => details))
+              else
+                failed = true
+              end
+            end
+          end
+        end
+
+        if failed
+          return rest_response(400, :reason => 'Unrecognised curation term')
+        end
+
+        events.each do |event|
+          event.save
+        end
+
+        subject.solr_save
+
+        return rest_get_request(ob, "comment", user, rest_resource_uri(ob),
+          "comment", { "id" => ob.id.to_s })
+      end
+    end
+
+    # End of curation hack
+
     return rest_response(400, :object => ob) unless ob.save
   end
 

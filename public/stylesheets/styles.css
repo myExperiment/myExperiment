@@ -1991,3 +1991,29 @@ table.quick_add td.submit {
   white-space: nowrap;
 }
 
+.classification {
+  border: 1px SOLID gray;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+  background: #ffffd0;
+}
+
+.quality {
+  width: 157px;
+  background: #EEA;
+  border: 1px solid #CCCCAA;
+  margin: 4px;
+  padding: 4px;
+  text-align: center;
+}
+
+.dependencies UL LI {
+	list-style: none;
+}
+
+.curation_events UL LI {
+  list-style: none;
+  padding-top: 1em;
+}
+

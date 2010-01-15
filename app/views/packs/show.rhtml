@@ -122,6 +122,8 @@
 		</p>
 	</div>
 	
+  <%= render :partial => "contributions/curation_box", :locals => { :contributable => @pack } %>
+
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @pack, 
 																											 :owner_id => ((@pack.contributor_type == 'User') ? @pack.contributor_id : nil), 
 																											 :add_path => tag_pack_path(@pack), 

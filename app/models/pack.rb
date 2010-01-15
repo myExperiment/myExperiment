@@ -896,11 +896,15 @@ class Pack < ActiveRecord::Base
   def search_boost
 
     # initial boost depends on viewings count
-    boost = contribution.viewings_count
+    boost = contribution.viewings_count / 100
 
-    # penalty for no description
-    boost = 0 if description.nil? || description.empty?
+    # Take curation events into account
+    boost += CurationEvent.curation_score(CurationEvent.find_all_by_object_type_and_object_id('Pack', id))
     
+    # penalty for no description
+    boost -= 20 if description.nil? || description.empty?
+    
+    puts "id = #{id}, score = #{boost}"
     boost
   end
 end

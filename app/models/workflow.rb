@@ -286,10 +286,13 @@ class Workflow < ActiveRecord::Base
   def search_boost
 
     # initial boost depends on viewings count
-    boost = contribution.viewings_count
+    boost = contribution.viewings_count / 100
 
+    # Take curation events into account
+    boost += CurationEvent.curation_score(CurationEvent.find_all_by_object_type_and_object_id('Workflow', id))
+    
     # penalty for no description
-    boost = 0 if body.nil? || body.empty?
+    boost -= 20 if body.nil? || body.empty?
     
     boost
   end

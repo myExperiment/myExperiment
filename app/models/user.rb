@@ -25,6 +25,8 @@ class User < ActiveRecord::Base
   has_many :experiments, :as => :contributor,
               :conditions => ["contributor_type = ?", "User"]
 
+  has_many :curation_events, :dependent => :destroy
+
   def self.most_recent(limit=5)
     self.find(:all,
               :order => "users.created_at DESC",
