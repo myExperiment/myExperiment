@@ -248,7 +248,13 @@
 			</h3>
 			
 			<% if @authorised_to_download %>
-				<%= render :partial => "workflows/#{get_type_dir(@workflow)}/internals", :locals => { :workflow => @workflow, :version => @viewing_version_number } -%>
+        <% begin %>
+          <%= render :partial => "workflows/#{get_type_dir(@workflow)}/internals", :locals => { :workflow => @workflow, :version => @viewing_version_number } -%>
+        <% rescue %>
+          <p class="none_text">
+            There was a problem in extracting the internals of this workflow.
+          </p>
+        <% end %>
 			<% else %>
 				<p class="none_text">
 					You do not have permission to see the internals of this workflow
