@@ -121,17 +121,55 @@ class Conf
     self.fetch_entry('curation_types')
   end
 
+  def self.page_template
+    self.fetch_entry('page_template')
+  end
+
+  def self.stylesheet
+    self.fetch_entry('stylesheet')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)
     @settings['admins'] = value
   end
 
+  def self.set_configuration(request, session)
+
+    @config = nil
+
+    if @settings['virtual_hosts']
+      @settings['virtual_hosts'].each do |name, settings|
+
+        if settings['entry_point'] && request.referer && settings['entry_point']
+          if request.referer == settings['entry_point']
+            session["portal"] = name
+          end
+        end
+
+        if settings['host'] && request.host == settings['host']
+          @config = name
+        end
+      end
+    end
+
+    @config = session["portal"] if session["portal"]
+  end
+
 private
 
   def self.fetch_entry(key, default = nil)
+
+    if @config != nil
+      if @settings['virtual_hosts'][@config][key]
+        return @settings['virtual_hosts'][@config][key]
+      end
+    end
+
     return @settings[key] if @settings[key]
     return @defaults[key] if @defaults[key]
+
     default
   end
 

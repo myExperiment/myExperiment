@@ -33,6 +33,24 @@ site_name: mySite
 
 site_logo: logo.png
 
+# page_template - This is the page template for all the pages except for
+#                 the front page of the web site.
+#
+#                 Example:
+#
+#                   page_layout: layouts/myexperiment
+
+page_template: layouts/myexperiment
+
+# stylesheet - This is the main stylesheet used for all pages except for the
+#              front page of the web site.
+#
+#              Example:
+#
+#                stylesheet: styles
+
+stylesheet: styles
+
 # base_uri - Set "base_uri" to the main entry point to this installation of
 #            myExperiment.  If you use a load balancing solution to proxy
 #            incoming requests to a cluster, then this is the external address.

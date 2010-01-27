@@ -12,6 +12,8 @@ class ApplicationController < ActionController::Base
   
   WhiteListHelper.tags.merge %w(table tr td th div span)
   
+  before_filter :set_configuration
+
   include AuthenticatedSystem
   before_filter :login_from_cookie
   
@@ -39,7 +41,10 @@ class ApplicationController < ActionController::Base
     
     return res
   end
-  
+
+  def set_configuration
+    Conf.set_configuration(request, session)
+  end
 
   def formatted_timespan(time_period)
     # Takes a period of time in seconds and returns it in human-readable form (down to minutes)
