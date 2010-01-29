@@ -139,17 +139,19 @@ class Conf
 
     @config = nil
 
-    if @settings['virtual_hosts']
-      @settings['virtual_hosts'].each do |name, settings|
+    if request.class != ActionController::TestRequest
+      if @settings['virtual_hosts']
+        @settings['virtual_hosts'].each do |name, settings|
 
-        if settings['entry_point'] && request.referer && settings['entry_point']
-          if request.referer == settings['entry_point']
-            session["portal"] = name
+          if settings['entry_point'] && request.referer && settings['entry_point']
+            if request.referer == settings['entry_point']
+              session["portal"] = name
+            end
           end
-        end
 
-        if settings['host'] && request.host == settings['host']
-          @config = name
+          if settings['host'] && request.host == settings['host']
+            @config = name
+          end
         end
       end
     end
