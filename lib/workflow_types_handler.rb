@@ -84,6 +84,26 @@ class WorkflowTypesHandler
     @@type_display_names_that_can_infer_metadata
   end
   
+  # Iterates through the workflow processors and creates/updates the ContentType records to match.
+  def self.sync_content_types
+
+    ContentType.transaction do
+      processor_classes.each do |processor_class|
+
+        title     = processor_class.display_name
+        mime_type = processor_class.mime_type
+
+        ct = ContentType.find_by_title(title)
+        ct = ContentType.create(:title => title, :mime_type => mime_type) if ct.nil?
+
+        if ct.mime_type != mime_type
+          ct.mime_type = mime_type
+          ct.save
+        end
+      end
+    end
+  end
+
 protected
 
   # List of all the processor classes available.
@@ -119,3 +139,7 @@ logger.debug("Workflow type processors found: " + WorkflowTypesHandler.processor
 
 # Refresh the list of workflow types in the system
 WorkflowTypesHandler.refresh_all_known_types!
+
+# Ensure that ContentType records exist and up to date for the workflow processors installed
+WorkflowTypesHandler.sync_content_types
+

@@ -23,6 +23,9 @@ module WorkflowProcessors
       ""
     end
     
+    def self.mime_type
+    end
+
     # All the file extensions supported by this workflow processor.
     # Must be all in lowercase.
     def self.file_extensions_supported
