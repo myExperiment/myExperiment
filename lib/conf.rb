@@ -6,6 +6,7 @@
 # Configuration module
 
 require 'yaml'
+require 'action_controller/test_process'
 
 class Conf
 
