@@ -24,6 +24,7 @@ module WorkflowProcessors
     end
     
     def self.mime_type
+      "application/octet-stream"
     end
 
     # All the file extensions supported by this workflow processor.
