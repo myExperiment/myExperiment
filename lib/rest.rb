@@ -1664,6 +1664,16 @@ def comment_aux(action, req_uri, rules, user, query)
 
     # Start of curation hack
 
+    def match_tag_name(name)
+      matches = []
+
+      Conf.curation_types.each do |type|
+        matches.push type if type.starts_with?(name)
+      end
+
+      return matches[0] if matches.length == 1
+    end
+
     if comment[0..1].downcase == 'c:' && user && subject &&
         Conf.curators.include?(user.username)
 
@@ -1691,8 +1701,10 @@ def comment_aux(action, req_uri, rules, user, query)
             bit.downcase!
             bit.strip!
 
-            if Conf.curation_types.include?(bit)
-              events.push(CurationEvent.new(:category => bit,
+            curation_type = match_tag_name(bit)
+
+            if curation_type
+              events.push(CurationEvent.new(:category => curation_type,
                     :object => subject, :user => user, :details => details))
             else
               failed = true
