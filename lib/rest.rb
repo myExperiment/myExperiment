@@ -1371,6 +1371,32 @@ def search(req_uri, rules, user, query)
 
   search_query = query['query']
 
+  # Start of curation hack
+
+  if search_query[0..1].downcase == 'c:' && user &&
+      Conf.curators.include?(user.username)
+
+    bits = search_query.match("^c:([a-z]*) ([0-9]+)-([0-9]+)$")
+
+    if bits.length == 4
+
+      case bits[1]
+        when 'workflows': model = Workflow
+        when 'files': model = Blob
+        when 'packs': model = Pack
+        else return rest_response(400, :reason => "Unknown category '#{bits[1]}'")
+      end
+
+      obs = model.find(:all, :conditions => ['id >= ? AND id <= ?', bits[2], bits[3]])
+
+      obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("view", nil, c, user) end)
+
+      return produce_rest_list(req_uri, rules, query, obs, 'search', {}, user)
+    end
+  end
+
+  # End of curation hack
+
   models = [User, Workflow, Blob, Network, Pack]
 
   # parse type option
