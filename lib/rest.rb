@@ -1677,10 +1677,10 @@ def comment_aux(action, req_uri, rules, user, query)
 
         line.strip!
 
-        bits = line.split(" - ")
+        bits = line.split(";")
 
         if bits.length > 1
-          details = bits[1..-1].join(" - ")
+          details = bits[1..-1].join(";")
         else
           details = nil
         end
