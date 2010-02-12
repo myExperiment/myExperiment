@@ -1665,6 +1665,9 @@ def comment_aux(action, req_uri, rules, user, query)
     # Start of curation hack
 
     def match_tag_name(name)
+
+      name.sub!(/^c:/, '')
+
       matches = []
 
       Conf.curation_types.each do |type|
