@@ -245,6 +245,13 @@ notifications_email_address: notifications@www.example.com
 
 feedback_email_address: feedback@www.example.com
 
+# validate_email_veracity - This enables some checks on the validity of email
+#                           addresses that are provided by users.  It is
+#                           configurable since it requires network activity to
+#                           operate.
+
+validate_email_veracity: false
+
 # model_aliases - These are visible names for models where the desired visible
 #                 name might conflict with existing classes (e.g. "File" or
 #                 "Application")

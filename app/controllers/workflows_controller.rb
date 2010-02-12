@@ -155,7 +155,7 @@ class WorkflowsController < ApplicationController
     end
 
     @workflow.reload
-    @workflow.solr_save
+    @workflow.solr_save if Conf.solr_enable
   end
   
   # GET /workflows/1;download
@@ -304,7 +304,7 @@ class WorkflowsController < ApplicationController
         if params[:workflow][:tag_list]
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
           @workflow.reload
-          @workflow.solr_save
+          @workflow.solr_save if Conf.solr_enable
         end
         
         policy_err_msg = update_policy(@workflow, params)
@@ -458,7 +458,7 @@ class WorkflowsController < ApplicationController
         if params[:workflow][:tag_list]
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
           @workflow.reload
-          @workflow.solr_save
+          @workflow.solr_save if Conf.solr_enable
         end
 
         policy_err_msg = update_policy(@workflow, params)

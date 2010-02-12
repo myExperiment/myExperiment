@@ -132,8 +132,10 @@ class User < ActiveRecord::Base
   validates_presence_of     :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
   validates_uniqueness_of   :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
   
-  validates_email_veracity_of :email
-  validates_email_veracity_of :unconfirmed_email
+  if Conf.validate_email_veracity
+    validates_email_veracity_of :email
+    validates_email_veracity_of :unconfirmed_email
+  end
   
   before_validation :cleanup_input
   before_save :check_email_uniqueness

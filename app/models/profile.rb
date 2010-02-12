@@ -35,7 +35,7 @@ class Profile < ActiveRecord::Base
   
   belongs_to :picture
   
-  validates_email_veracity_of :email
+  validates_email_veracity_of :email if Conf.validate_email_veracity
 
   acts_as_site_entity :owner_text => 'User'
   

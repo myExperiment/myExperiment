@@ -130,6 +130,10 @@ class Conf
     self.fetch_entry('stylesheet')
   end
 
+  def self.validate_email_veracity
+    self.fetch_entry('validate_email_veracity')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)
