@@ -1626,7 +1626,6 @@ table.job_report th {
 	border-bottom: 1px solid #999999;
 	font-size: 100%;
 	padding-left: 0px;
-	font-weight: bold;
 	z-index: 1;
 }
 
@@ -1640,36 +1639,39 @@ table.job_report th {
 	display: inline;
 	list-style-type: none;
 	overflow: hidden;
+  color: black;
+  position: relative;
+  top: -1px;
 }
 
 .tabnav2 li a {
 	padding: 3px 6px 4px 6px;
 	border: 1px solid #999999;
 	text-decoration: none;
-	background-color: #EEF6FF;
-	color: #000099;
+	background-color: #D8D8D8;
+	color: #404040;
+
+  -moz-border-radius: 6px 6px 0px 0px;
+  -webkit-border-top-left-radius: 6px;
+  -webkit-border-top-right-radius: 6px;
 }
 
-.tabnav2 li a:link {
-	color: #000099;
+.tabnav2 li a:hover {
+	background-color: #E8E8E8;
 }
 
-.tabnav2 li a:visited {
-	color: #000099;
-}
-
-.tabnav2 li a:hover,
 .tabnav2 li.active a {
+  color: black;
 	border-bottom: 1px solid #FFFFFF;
 	background-color: #FFFFFF;
-	color: #000000;
 }
 
 .tabnav2_content {
-	border: 0px solid #BBBBBB;
+	border: 0px solid #999999;
 	border-width: 0 1px 1px 1px;
 	padding: 0.5em;
 	z-index: 2;
+    background: white;
 }
 
 /* End new tabs styles */

@@ -69,6 +69,8 @@ module Widgets
     def render_tabnav_tabs
       out tag('ul', {} , true)
     
+      offset = 0
+
       @_tabnav.tabs.each do |tab|      
         li_options = {}
         li_options[:id] = "#{tab.html[:id]}_container" if tab.html[:id] 
@@ -80,6 +82,9 @@ module Widgets
           li_options[:class] = "active" 
         end
                 
+        li_options[:style] = "position: relative; left: #{offset}px"
+        offset -= 1
+
         out tag('li', li_options, true)
         if tab.disabled? || (tab.link.empty? && tab.remote_link.nil?)
           out content_tag('span', tab.name, tab.html) 
@@ -100,7 +105,7 @@ module Widgets
         else
           raise "WHAT THE HELL?"
         end 
-        out "</li> \n"
+        out "</li>"
       end 
       out '</ul>'
     end  
