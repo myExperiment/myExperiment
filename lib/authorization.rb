@@ -732,4 +732,173 @@ module Authorization
     end
   end
 
+  def self.authorised_index(args = {})
+
+    def self.get_friend_ids(user)
+      user.friendships_accepted.map  do |fs| fs.user_id   end +
+      user.friendships_completed.map do |fs| fs.friend_id end
+    end
+
+    def self.get_network_ids(user)
+      (user.networks_owned + user.networks).map do |n| n.id end
+    end
+
+    def self.view_part(user_id = nil, friends = nil)
+
+      return "share_mode = 0 OR share_mode = 1 OR share_mode = 2" if user_id.nil?
+
+      "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
+        (share_mode = 0 OR share_mode = 1 OR share_mode = 2) OR
+        ((share_mode = 3 OR share_mode = 4 OR update_mode = 1) AND
+         (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
+    end
+
+    def self.download_part(user_id = nil, friends = nil)
+
+      return "share_mode = 0" if user_id.nil?
+
+      "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
+        (share_mode = 0) OR
+        ((share_mode = 1 OR share_mode = 3 OR update_mode = 1) AND
+         (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
+    end
+
+    def self.edit_part(user_id = nil, friends = nil)
+
+      return "share_mode = 0 AND update_mode = 0" if user_id.nil?
+
+      "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
+        (share_mode = 0 AND update_mode = 0) OR
+        ((update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
+         (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
+    end
+
+    def self.permission_part(permission, user_id, networks)
+      "(permissions.id IS NOT NULL AND permissions.#{permission} = true AND
+        ((permissions.contributor_type = 'User'    AND permissions.contributor_id = #{user_id}) OR
+         (permissions.contributor_type = 'Network' AND permissions.contributor_id IN #{networks})))"
+    end
+
+    user = args[:user]
+
+    # pagination
+
+    if args[:limit]
+      if args[:offset]
+        limit_part = "LIMIT #{args[:offset]}, #{args[:limit]}"
+      else
+        limit_part = "LIMIT #{args[:limit]}"
+      end
+    else
+      limit_part = ""
+    end
+
+    # ordering
+
+    if args[:order]
+      order_part = "ORDER BY #{args[:order]}"
+    else
+      order_part = ''
+    end
+
+    # filtering
+
+    if args[:type]
+      where_part = "WHERE contributions.contributable_type = '#{args[:type].name}'"
+    else
+      where_part = ""
+    end
+
+    # result type
+
+    if !args[:type] || args[:contribution_records] 
+      contributable_type = nil
+      inner_select_part  = "contributions.*"
+      result_model       = Contribution
+      from_part          = "FROM contributions"
+    else
+      contributable_type = args[:type].name.underscore.pluralize
+      inner_select_part  = "#{contributable_type}.*"
+      result_model       = args[:type]
+      from_part          = "FROM #{contributable_type} INNER JOIN contributions ON contributions.contributable_id = #{contributable_type}.id"
+    end
+
+    # selection
+
+    if args[:select]
+      select_part = args[:select]
+    else
+      select_part = "*"
+    end
+
+    if (user != 0) && (user != nil)
+
+      # This is the version used for a member
+
+      user_id = user.id
+
+      friend_ids  = get_friend_ids(user)
+      network_ids = get_network_ids(user)
+
+      friends  = friend_ids.empty?  ? "(-1)" : "(#{friend_ids.join(",")})"
+      networks = network_ids.empty? ? "(-1)" : "(#{network_ids.join(",")})"
+
+      query = "
+
+        SELECT #{select_part},
+          (view OR download OR edit) AS cascaded_view,
+          (download OR edit)         AS cascaded_download,
+          edit                       AS cascaded_edit FROM
+          
+          (SELECT #{inner_select_part},
+
+            BIT_OR(#{view_part(user_id, friends)}     OR #{permission_part('view',     user_id, networks)}) AS view,
+            BIT_OR(#{download_part(user_id, friends)} OR #{permission_part('download', user_id, networks)}) AS download,
+            BIT_OR(#{edit_part(user_id, friends)}     OR #{permission_part('edit',     user_id, networks)}) AS edit
+
+            #{from_part}
+            #{args[:joins]}
+            INNER JOIN policies ON contributions.policy_id = policies.id
+            LEFT OUTER JOIN permissions ON policies.id = permissions.policy_id
+            #{where_part}
+            GROUP BY contributable_type, contributable_id) AS foo
+          
+          WHERE (view OR download OR edit) = true
+          #{order_part}
+          #{limit_part}"
+
+      result_model.find_by_sql(query)
+
+    else 
+
+      # This is the version used for non-members
+
+      query = "
+
+        SELECT #{select_part},
+          (view OR download OR edit) AS cascaded_view,
+          (download OR edit)         AS cascaded_download,
+          edit                       AS cascaded_edit FROM
+          
+          (SELECT #{inner_select_part},
+
+            BIT_OR(#{view_part})     AS view,
+            BIT_OR(#{download_part}) AS download,
+            BIT_OR(#{edit_part})     AS edit
+
+            #{from_part}
+            #{args[:joins]}
+            INNER JOIN policies ON contributions.policy_id = policies.id
+            #{where_part}
+            GROUP BY contributable_type, contributable_id) AS foo
+          
+          WHERE (view OR download OR edit) = true
+          #{order_part}
+          #{limit_part}"
+
+      result_model.find_by_sql(query)
+
+    end
+  end
 end
+
