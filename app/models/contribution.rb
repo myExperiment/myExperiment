@@ -45,23 +45,13 @@ class Contribution < ActiveRecord::Base
   # returns the 'most recent' Contributions
   # the maximum number of results is set by #limit#
   def self.most_recent(limit=10, klass=nil)
-    conditions = ["contributable_type = ?", klass] if klass
-    self.find(:all,
-              :conditions => conditions,
-              :order => "contributions.created_at DESC",
-              :limit => limit,
-              :include => [ { :policy => :permissions } ])
+    Authorization.authorised_index(:type => Object.const_get(klass), :contribution_records => true, :limit => limit, :order => 'created_at DESC')
   end
   
   # returns the 'last updated' Contributions
   # the maximum number of results is set by #limit#
   def self.last_updated(limit=10, klass=nil)
-    conditions = ["contributable_type = ?", klass] if klass
-    self.find(:all,
-              :conditions => conditions,
-              :order => "contributions.updated_at DESC",
-              :limit => limit,
-              :include => [ { :policy => :permissions } ])
+    Authorization.authorised_index(:type => Object.const_get(klass), :contribution_records => true, :limit => limit, :order => 'updated_at DESC')
   end
   
   # returns the 'most favourited' Contributions
