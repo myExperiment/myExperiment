@@ -61,6 +61,7 @@ end
 # Mime::Type.register "application/x-mobile", :mobile
 
 Mime::Type.register "application/whip-archive", :whip
+Mime::Type.register "application/rdf+xml", :rdf
 
 # Include your application configuration below
 
