@@ -1,4 +1,4 @@
-# myExperiment: lib/workflow_processors/taverna2_beta.rb
+# myExperiment: lib/workflow_processors/taverna2.rb
 #
 # Copyright (c) 2008 University of Manchester and the University of Southampton.
 # See license.txt for details.
@@ -12,7 +12,7 @@ module WorkflowProcessors
   
   require 'file_upload'
 
-  class Taverna2Beta < Interface
+  class Taverna2 < Interface
     # Register Taverna 2 MIME Types
     Mime::Type.register "application/vnd.taverna.t2flow+xml", :t2flow
 
@@ -25,7 +25,7 @@ module WorkflowProcessors
     
     # MUST be unique across all processors
     def self.display_name 
-      "Taverna 2 beta"
+      "Taverna 2"
     end
     
     def self.display_data_format
