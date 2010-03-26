@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<s:scufl xmlns:s="http://org.embl.ebi.escience/xscufl/0.1alpha" version="0.2" log="0">
+  <s:workflowdescription lsid="urn:lsid:net.sf.taverna:wfDefinition:6ebc9ec6-1045-459d-a26c-74e4efe2d6f8" author="" title="animal" />
+  <s:processor name="AnimalFactory" boring="true">
+    <s:stringconstant>frog</s:stringconstant>
+  </s:processor>
+  <s:link source="AnimalFactory:value" sink="animal" />
+  <s:sink name="animal" />
+</s:scufl>
+
