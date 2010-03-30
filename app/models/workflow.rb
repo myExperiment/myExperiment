@@ -296,4 +296,18 @@ class Workflow < ActiveRecord::Base
     
     boost
   end
+
+  def delete_metadata
+    if processor_class
+      WorkflowProcessor.destroy_all(["workflow_id = ?", id])
+    end
+  end
+
+  def extract_metadata
+    if processor_class
+      delete_metadata
+      processor_class.new(content_blob.data).extract_metadata(id)
+    end
+  end
+
 end
