@@ -118,6 +118,9 @@ ActionController::Routing::Routes.draw do |map|
     # blogs have nested posts
     blog.resources :blog_posts
   end
+
+  # services
+  map.resources :services, :collection => { :all => :get, :search => :get }
   
   # all downloads and viewings
   map.resources :downloads, :viewings

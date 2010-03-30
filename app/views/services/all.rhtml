@@ -1,0 +1,8 @@
+<h2>All Services</h2>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributables } %>
+
+<%= render :partial => "services/table", :locals => { :collection => @contributables } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributables } %>
+
