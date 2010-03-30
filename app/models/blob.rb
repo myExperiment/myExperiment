@@ -25,7 +25,7 @@ class Blob < ActiveRecord::Base
   acts_as_attributor
   acts_as_attributable
   
-  acts_as_solr(:fields => [:title, :local_name, :body, :kind, :uploader],
+  acts_as_solr(:fields => [:title, :local_name, :body, :kind, :uploader, :tag_list],
                :boost => "search_boost",
                :include => [ :comments ]) if Conf.solr_enable
 
