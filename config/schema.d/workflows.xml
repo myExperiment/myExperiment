@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<schema>
+
+  <table name="workflow_processors">
+
+    <column type="integer"    name="workflow_id"/>
+
+    <column type="string"     name="dataflow_id"/>
+    <column type="string"     name="name"/>
+    <column type="string"     name="description"/>
+    <column type="string"     name="type"/>
+    <column type="string"     name="model"/>
+    <column type="string"     name="script"/>
+    <column type="string"     name="inputs"/>
+    <column type="string"     name="outputs"/>
+    <column type="string"     name="wsdl"/>
+    <column type="string"     name="wsdl_operation"/>
+    <column type="string"     name="endpoint"/>
+    <column type="string"     name="biomoby_authority_name"/>
+    <column type="string"     name="biomoby_service_name"/>
+    <column type="string"     name="biomoby_category"/>
+    <column type="string"     name="value"/>
+
+    <belongs-to target="workflows"/>
+
+  </table>
+
+</schema>
+
