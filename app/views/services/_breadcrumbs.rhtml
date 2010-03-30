@@ -1,0 +1,19 @@
+<% unless controller.action_name.to_s == "index" %>
+  <li><%= link_to 'services', services_path %></li>
+<% end %>
+
+<% case controller.action_name.to_s; when "show" %>
+  <li><b>&#187;</b></li>
+  <li><%= h(@contributable.label) %></li>
+<% when "search" %>  
+  <li><b>&#187;</b></li>
+  <li>Search Results</li>
+<% when "all" %>
+  <li><b>&#187;</b></li>
+  <li>All services</li>
+<% when "index" %>
+  <li>Services</li>
+<% else %>
+  <!-- no breadcrumb -->
+<% end %>
+
