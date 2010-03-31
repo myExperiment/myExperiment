@@ -284,25 +284,8 @@ module WorkflowProcessors
     def extract_metadata(workflow_id)
 
       @scufl_model.all_processors.each do |processor|
-
-      WorkflowProcessor.create(
-
-          :workflow_id            => workflow_id,
-
-          :name                   => processor.name,
-          :description            => processor.description,
-          :type                   => processor.type,
-          :model                  => processor.model,
-          :script                 => processor.script,
-          :inputs                 => processor.inputs,
-          :outputs                => processor.outputs,
-          :wsdl                   => processor.wsdl,
-          :wsdl_operation         => processor.wsdl_operation,
-          :endpoint               => processor.endpoint,
-          :biomoby_authority_name => processor.biomoby_authority_name,
-          :biomoby_service_name   => processor.biomoby_service_name,
-          :biomoby_category       => processor.biomoby_category,
-          :value                  => processor.value)
+        WorkflowProcessor.create(:workflow_id => workflow_id,
+            :name => processor.name, :wsdl => processor.wsdl)
       end
     end
 
