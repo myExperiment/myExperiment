@@ -26,3 +26,10 @@ task "myexp:refresh:workflows" do
     w.extract_metadata
   end
 end
+
+desc 'Import data from BioCatalogue'
+task "myexp:import:biocat" do
+  require File.dirname(__FILE__) + '/config/environment'
+  BioCatalogueImport.import_biocatalogue
+end
+
