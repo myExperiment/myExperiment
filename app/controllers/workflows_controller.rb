@@ -307,6 +307,11 @@ class WorkflowsController < ApplicationController
           @workflow.solr_save if Conf.solr_enable
         end
         
+        begin
+          @workflow.extract_metadata
+        rescue
+        end
+
         policy_err_msg = update_policy(@workflow, params)
     
         # Credits and Attributions:
@@ -410,6 +415,16 @@ class WorkflowsController < ApplicationController
       # TODO: wrap this in a transaction!
       @workflow.content_blob_id = ContentBlob.create(:data => file.read).id
       if @workflow.save_as_new_version(params[:new_workflow][:rev_comments])
+
+        # Extract workflow metadata using a Workflow object that includes the
+        # newly created version.
+
+        begin
+          @workflow.reload
+          @workflow.extract_metadata
+        rescue
+        end
+
         respond_to do |format|
           flash[:notice] = 'New workflow version successfully created.'
           format.html { redirect_to workflow_url(@workflow) }
