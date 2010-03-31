@@ -15,13 +15,14 @@ class AutoMigrate
 
   def self.schema
 
-    tables = {}
-    assocs = []
+    tables  = {}
+    assocs  = []
+    indexes = {}
 
     # load the base schema
 
     if File.exists?(SCHEMA)
-      tables, assocs = merge_schema(File.read(SCHEMA), tables, assocs) 
+      tables, assocs, indexes = merge_schema(File.read(SCHEMA), tables, assocs, indexes) 
     end
 
     # merge files from the schema directory
@@ -30,12 +31,12 @@ class AutoMigrate
 
       Dir.new(SCHEMA_D).each do |entry|
         if entry.ends_with?(".xml")
-          tables, assocs = merge_schema(File.read("#{SCHEMA_D}/#{entry}"), tables, assocs)
+          tables, assocs, indexes = merge_schema(File.read("#{SCHEMA_D}/#{entry}"), tables, assocs, indexes)
         end
       end
     end
 
-    [tables, assocs]
+    [tables, assocs, indexes]
   end
 
   def self.migrate
@@ -57,7 +58,7 @@ class AutoMigrate
        
     # get the schema
 
-    new_tables, assocs = schema
+    new_tables, assocs, indexes = schema
 
     # create and drop tables as appropriate
 
@@ -72,6 +73,7 @@ class AutoMigrate
     end
 
     # adjust the columns in each table
+
     new_tables.keys.each do |table_name|
 
       # get the list of existing columns
@@ -93,9 +95,36 @@ class AutoMigrate
       (new_columns - old_columns).each do |column_name|
         conn.add_column(table_name, column_name, new_tables[table_name][column_name]["type"].to_sym)
       end
+
+      # get the list of existing indexes
+
+      old_indexes = conn.indexes(table_name).map do |index| [index.columns] end
+
+      # determine the required indexes
+
+      new_indexes = indexes[table_name]
+
+      # remove indexes
+
+      (old_indexes - new_indexes).each do |to_remove|
+        conn.indexes(table_name).select do |index| to_remove == [index.columns] end.each do |index|
+          conn.remove_index(table_name, index.columns)
+        end
+      end
+
+      # add indexes
+
+      (new_indexes - old_indexes).each do |index|
+        conn.add_index(table_name, index[0])
+      end
     end
 
-    # Now that the schema has changed, update all the models
+    # adjust the indexes in each table
+
+    new_tables.keys.each do |table_name|
+    end
+
+    # now that the schema has changed, load the models
 
     load_models(new_tables.keys)
   end
@@ -114,7 +143,7 @@ class AutoMigrate
 
 private
 
-  def self.merge_schema(schema, tables = {}, assocs = [])
+  def self.merge_schema(schema, tables = {}, assocs = [], indexes =  {})
 
     root = LibXML::XML::Parser.string(schema).parse.root
 
@@ -148,7 +177,16 @@ private
       end
     end
 
-    [tables, assocs]
+    root.find('/schema/table').each do |table|
+
+      indexes[table['name']] ||= []
+
+      table.find('index').each do |index|
+        indexes[table['name']].push([index.find('column').map do |column| column['name'] end])
+      end
+    end
+
+    [tables, assocs, indexes]
   end
 
   def self.load_models(tables)
