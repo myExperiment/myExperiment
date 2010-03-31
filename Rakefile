@@ -17,6 +17,7 @@ task "myexp:refresh:solr" do
   User.rebuild_solr_index
   Network.rebuild_solr_index
   Pack.rebuild_solr_index
+  Service.rebuild_solr_index
 end
 
 desc 'Refresh workflow metadata'
