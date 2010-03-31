@@ -83,7 +83,7 @@ class BioCatalogueImport
     service = BioCatService.create(
         :retrieved_at       => uri_retrieved_at(service_uri),
 
-        :contributor        => User.find(22),
+        :contributor        => @federation_source,
 
         :uri                => get_link(service_element, '/bc:service/@xlink:href'),
         :name               => get_text(service_element, '/bc:service/bc:name/text()'),
@@ -108,7 +108,7 @@ class BioCatalogueImport
         :monitor_small_symbol_url => get_link(summary_element, '/bc:service/bc:latestMonitoringStatus/bc:smallSymbol/@xlink:href'),
         :monitor_last_checked     => get_text(summary_element, '/bc:service/bc:latestMonitoringStatus/bc:lastChecked/text()'))
 
-    service.contribution.policy = create_default_policy(User.find(22))
+    service.contribution.policy = create_default_policy(@federation_source)
     service.contribution.policy.share_mode = 0 # Make public
     service.contribution.policy.save
     service.contribution.save
@@ -203,6 +203,13 @@ class BioCatalogueImport
   end
 
   def self.import_biocatalogue
+
+    if FederationSource.find_by_name("BioCatalogue").nil?
+      FederationSource.create(:name => "BioCatalogue")
+    end
+
+    @federation_source = FederationSource.find_by_name("BioCatalogue")
+
     import_biocatalogue_services("http://www.biocatalogue.org/services")
   end
 end
