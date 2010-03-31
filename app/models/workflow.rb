@@ -310,4 +310,30 @@ class Workflow < ActiveRecord::Base
     end
   end
 
+  def workflows_with_similar_services
+
+    # Get the WSDL URIs that this workflow uses
+
+    workflow_wps = WorkflowProcessor.find(:all,
+        :select     => 'DISTINCT workflow_id, wsdl',
+        :conditions => ['workflow_id = ? AND wsdl IS NOT NULL', id])
+
+    return [] if workflow_wps.empty?
+
+    wsdls = workflow_wps.map do |wp| wp.wsdl end
+
+    # Get all the related workflows
+
+    related_wps = WorkflowProcessor.find(:all,
+        :select => 'DISTINCT workflow_id, wsdl',
+        :conditions => ['workflow_id != ? AND (' + ((1..wsdls.length).map do "wsdl = ?" end).join(" OR ") + ')', id] + wsdls)
+
+    related_workflows = related_wps.group_by do |wp| wp.workflow end
+
+    # Sort results based on the number of matching services with the original workflow
+
+    related_workflows = related_workflows.sort do |a, b| b[1].length <=> a[1].length end
+
+    related_workflows.map do |result| result[0] end
+  end
 end

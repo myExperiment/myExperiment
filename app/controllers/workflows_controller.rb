@@ -235,6 +235,14 @@ class WorkflowsController < ApplicationController
       @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
 
+    @contributions_with_similar_services = @workflow.workflows_with_similar_services.select do |w|
+      Authorization.is_authorized?('view', nil, w, current_user)
+    end.map do |w|
+      w.contribution
+    end
+
+    @similar_services_limit = 10
+
     respond_to do |format|
       format.html # show.rhtml
     end
