@@ -366,7 +366,9 @@ puts "PROCESSOR NAME = #{processor.name}"
 
       @t2flow_model.all_processors.each do |processor|
         WorkflowProcessor.create(:workflow_id => workflow_id,
-            :name => processor.name, :wsdl => processor.wsdl)
+            :name           => processor.name,
+            :wsdl           => processor.wsdl,
+            :wsdl_operation => processor.wsdl)
       end
     end
 
