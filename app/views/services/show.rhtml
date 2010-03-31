@@ -123,7 +123,7 @@
 
 <h2>Service categories</h2>
 
-<% @contributable.bio_cat_service_categories.each do |category| %>
+<% @contributable.service_categories.each do |category| %>
 
   <table class="simple">
 
@@ -158,7 +158,7 @@
 
 <h2>Service types</h2>
 
-<% @contributable.bio_cat_service_types.each do |type| %>
+<% @contributable.service_types.each do |type| %>
 
   <table class="simple">
 
@@ -188,7 +188,7 @@
 
 <h2>Service tags</h2>
 
-<% @contributable.bio_cat_service_tags.each do |tag| %>
+<% @contributable.service_tags.each do |tag| %>
 
   <table class="simple">
 
@@ -223,7 +223,7 @@
 
 <h2>Service deployments</h2>
 
-<% @contributable.bio_cat_service_deployments.each do |deployment| %>
+<% @contributable.service_deployments.each do |deployment| %>
 
   <table class="simple">
 
@@ -289,37 +289,37 @@
 
     <tr>
       <td>Provider created_at</td>
-      <td><%=h deployment.bio_cat_service_provider.created_at -%></td>
+      <td><%=h deployment.service_provider.created_at -%></td>
     </tr>
 
     <tr>
       <td>Provider updated_at</td>
-      <td><%=h deployment.bio_cat_service_provider.updated_at -%></td>
+      <td><%=h deployment.service_provider.updated_at -%></td>
     </tr>
 
     <tr>
       <td>Provider retrieved_at</td>
-      <td><%=h deployment.bio_cat_service_provider.retrieved_at -%></td>
+      <td><%=h deployment.service_provider.retrieved_at -%></td>
     </tr>
 
     <tr>
       <td>Provider uri</td>
-      <td><%=h deployment.bio_cat_service_provider.uri -%></td>
+      <td><%=h deployment.service_provider.uri -%></td>
     </tr>
 
     <tr>
       <td>Provider name</td>
-      <td><%=h deployment.bio_cat_service_provider.name -%></td>
+      <td><%=h deployment.service_provider.name -%></td>
     </tr>
 
     <tr>
       <td>Provider description</td>
-      <td><%=h deployment.bio_cat_service_provider.description -%></td>
+      <td><%=h deployment.service_provider.description -%></td>
     </tr>
 
     <tr>
       <td>Provider created</td>
-      <td><%=h deployment.bio_cat_service_provider.created -%></td>
+      <td><%=h deployment.service_provider.created -%></td>
     </tr>
 
   </table>

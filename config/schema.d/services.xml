@@ -3,7 +3,7 @@
 
   <!-- BioCatalogue services -->
 
-  <table name="bio_cat_services">
+  <table name="services">
 
     <column type="integer"  name="contributor_id"/>
     <column type="string"   name="contributor_type"/>
@@ -41,63 +41,63 @@
     <column type="string"   name="monitor_small_symbol_url"/>
     <column type="datetime" name="monitor_last_checked"/>
 
-    <has-many target="bio_cat_service_categories"/>
-    <has-many target="bio_cat_service_types"/>
-    <has-many target="bio_cat_service_tags"/>
-    <has-many target="bio_cat_service_deployments"/>
+    <has-many target="service_categories"/>
+    <has-many target="service_types"/>
+    <has-many target="service_tags"/>
+    <has-many target="service_deployments"/>
 
   </table>
 
   <!-- BioCatalogue service categories -->
 
-  <table name="bio_cat_service_categories">
+  <table name="service_categories">
 
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
     <column type="datetime" name="retrieved_at"/>
 
-    <column type="integer"  name="bio_cat_service_id"/>
+    <column type="integer"  name="service_id"/>
     <column type="string"   name="uri"/>
     <column type="string"   name="label"/>
 
-    <belongs-to target="bio_cat_service"/>
+    <belongs-to target="service"/>
 
   </table>
     
   <!-- BioCatalogue service types -->
 
-  <table name="bio_cat_service_types">
+  <table name="service_types">
 
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
     <column type="datetime" name="retrieved_at"/>
 
-    <column type="integer"  name="bio_cat_service_id"/>
+    <column type="integer"  name="service_id"/>
     <column type="string"   name="label"/>
 
-    <belongs-to target="bio_cat_service"/>
+    <belongs-to target="service"/>
 
   </table>
 
   <!-- BioCatalogue service tags -->
 
-  <table name="bio_cat_service_tags">
+  <table name="service_tags">
 
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
     <column type="datetime" name="retrieved_at"/>
 
-    <column type="integer"  name="bio_cat_service_id"/>
+    <column type="integer"  name="service_id"/>
     <column type="string"   name="uri"/>
     <column type="string"   name="label"/>
 
-    <belongs-to target="bio_cat_service"/>
+    <belongs-to target="service"/>
 
   </table>
 
   <!-- BioCatalogue service deployments -->
 
-  <table name="bio_cat_service_deployments">
+  <table name="service_deployments">
 
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
@@ -116,17 +116,17 @@
 
     <column type="datetime" name="created"/>
 
-    <column type="integer"  name="bio_cat_service_id"/>
-    <column type="integer"  name="bio_cat_service_provider_id"/>
+    <column type="integer"  name="service_id"/>
+    <column type="integer"  name="service_provider_id"/>
 
-    <belongs-to target="bio_cat_service_provider"/>
-    <belongs-to target="bio_cat_service"/>
+    <belongs-to target="service_provider"/>
+    <belongs-to target="service"/>
 
   </table>
 
   <!-- BioCatalogue service providers -->
 
-  <table name="bio_cat_service_providers">
+  <table name="service_providers">
 
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
@@ -138,7 +138,7 @@
 
     <column type="datetime" name="created"/>
 
-    <has-many target="bio_cat_service_deployments" foreign_key="bio_cat_service_provider_id"/>
+    <has-many target="service_deployments" foreign_key="service_provider_id"/>
 
   </table>
 

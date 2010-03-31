@@ -22,6 +22,11 @@ end
 desc 'Refresh workflow metadata'
 task "myexp:refresh:workflows" do
   require File.dirname(__FILE__) + '/config/environment'
+
+  conn = ActiveRecord::Base.connection
+
+  conn.execute('TRUNCATE workflow_processors')
+
   Workflow.find(:all).each do |w|
     w.extract_metadata
   end
@@ -30,6 +35,18 @@ end
 desc 'Import data from BioCatalogue'
 task "myexp:import:biocat" do
   require File.dirname(__FILE__) + '/config/environment'
+
+  Contribution.delete_all("contributable_type = 'Service'")
+
+  conn = ActiveRecord::Base.connection
+
+  conn.execute('TRUNCATE service_categories')
+  conn.execute('TRUNCATE service_deployments')
+  conn.execute('TRUNCATE service_providers')
+  conn.execute('TRUNCATE service_tags')
+  conn.execute('TRUNCATE service_types')
+  conn.execute('TRUNCATE services')
+
   BioCatalogueImport.import_biocatalogue
 end
 

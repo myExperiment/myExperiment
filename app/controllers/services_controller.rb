@@ -42,7 +42,7 @@ class ServicesController < ApplicationController
   protected
   
   def find_services
-    @contributables = BioCatService.find(:all, 
+    @contributables = Service.find(:all, 
                        :order => "created_at DESC",
                        :page => { :size => 20, 
                        :current => params[:page] })
@@ -50,7 +50,7 @@ class ServicesController < ApplicationController
   
   def find_service
     begin
-      service = BioCatService.find(params[:id])
+      service = Service.find(params[:id])
       
       @contributable = service
       
@@ -71,7 +71,7 @@ class ServicesController < ApplicationController
   
   def error(notice, message, attr=:id)
     flash[:error] = notice
-     (err = BioCatService.new.errors).add(attr, message)
+     (err = Service.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to services_url }

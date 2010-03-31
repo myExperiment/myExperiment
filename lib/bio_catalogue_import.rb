@@ -80,7 +80,7 @@ class BioCatalogueImport
     annotations_element = LibXML::XML::Parser.string(fetch_uri(annotations_uri)).parse.root
     monitoring_element  = LibXML::XML::Parser.string(fetch_uri(monitoring_uri)).parse.root
 
-    service = BioCatService.create(
+    service = Service.create(
         :retrieved_at       => uri_retrieved_at(service_uri),
 
         :contributor        => @federation_source,
@@ -114,26 +114,26 @@ class BioCatalogueImport
     service.contribution.save
 
     summary_element.find('/bc:service/bc:summary/bc:category', @@biocat_ns).each do |category_element|
-      BioCatServiceCategory.create(
-          :bio_cat_service => service,
-          :retrieved_at    => uri_retrieved_at(summary_uri),
-          :uri             => get_link(category_element, '@xlink:href'),
-          :label           => get_text(category_element, 'text()'))
+      ServiceCategory.create(
+          :service       => service,
+          :retrieved_at  => uri_retrieved_at(summary_uri),
+          :uri           => get_link(category_element, '@xlink:href'),
+          :label         => get_text(category_element, 'text()'))
     end
 
     summary_element.find('/bc:service/bc:summary/bc:serviceType', @@biocat_ns).each do |category_element|
-      BioCatServiceType.create(
-          :bio_cat_service => service,
-          :retrieved_at    => uri_retrieved_at(summary_uri),
-          :label           => get_text(category_element, 'text()'))
+      ServiceType.create(
+          :service      => service,
+          :retrieved_at => uri_retrieved_at(summary_uri),
+          :label        => get_text(category_element, 'text()'))
     end
 
     summary_element.find('/bc:service/bc:summary/bc:tag', @@biocat_ns).each do |tag_element|
-      BioCatServiceTag.create(
-          :bio_cat_service => service,
-          :retrieved_at    => uri_retrieved_at(summary_uri),
-          :uri             => get_link(tag_element, '@xlink:href'),
-          :label           => get_text(tag_element, 'text()'))
+      ServiceTag.create(
+          :service      => service,
+          :retrieved_at => uri_retrieved_at(summary_uri),
+          :uri          => get_link(tag_element, '@xlink:href'),
+          :label        => get_text(tag_element, 'text()'))
     end
 
     # deployments and providers
@@ -143,10 +143,10 @@ class BioCatalogueImport
       deployment_uri = get_link(deployment_element, '@xlink:href')
       provider_uri   = get_link(deployment_element, 'bc:serviceProvider/@xlink:href')
 
-      next if BioCatServiceDeployment.find_by_uri(deployment_uri)
+      next if ServiceDeployment.find_by_uri(deployment_uri)
 
-      if BioCatServiceProvider.find_by_uri(provider_uri).nil?
-        BioCatServiceProvider.create(
+      if ServiceProvider.find_by_uri(provider_uri).nil?
+        ServiceProvider.create(
             :uri          => provider_uri,
             :retrieved_at => uri_retrieved_at(service_uri),
             :name         => get_text(deployment_element, 'bc:serviceProvider/bc:name/text()'),
@@ -154,34 +154,26 @@ class BioCatalogueImport
             :created      => get_text(deployment_element, 'bc:serviceProvider/dcterms:created/text()'))
       end
 
-      provider = BioCatServiceProvider.find_by_uri(provider_uri)
+      provider = ServiceProvider.find_by_uri(provider_uri)
 
-      deployment = BioCatServiceDeployment.create(
-          :bio_cat_service          => service,
-          :bio_cat_service_provider => provider,
-          :retrieved_at             => uri_retrieved_at(service_uri),
-          :uri                      => get_link(deployment_element, '@xlink:href'),
-          :endpoint                 => get_text(deployment_element, 'bc:endpoint/text()'),
-          :city                     => get_text(deployment_element, 'bc:location/bc:city/text()'),
-          :country                  => get_text(deployment_element, 'bc:location/bc:country/text()'),
-          :iso3166_country_code     => get_text(deployment_element, 'bc:location/bc:iso3166CountryCode/text()'),
-          :flag_url                 => get_link(deployment_element, 'bc:location/bc:flag/@xlink:href'),
-          :submitter_label          => get_attr(deployment_element, 'bc:submitter/@resourceName'),
-          :submitter_uri            => get_attr(deployment_element, 'bc:submitter/@xlink:href'),
-          :created                  => get_text(deployment_element, 'dcterms:created/text()'))
+      deployment = ServiceDeployment.create(
+          :service              => service,
+          :service_provider     => provider,
+          :retrieved_at         => uri_retrieved_at(service_uri),
+          :uri                  => get_link(deployment_element, '@xlink:href'),
+          :endpoint             => get_text(deployment_element, 'bc:endpoint/text()'),
+          :city                 => get_text(deployment_element, 'bc:location/bc:city/text()'),
+          :country              => get_text(deployment_element, 'bc:location/bc:country/text()'),
+          :iso3166_country_code => get_text(deployment_element, 'bc:location/bc:iso3166CountryCode/text()'),
+          :flag_url             => get_link(deployment_element, 'bc:location/bc:flag/@xlink:href'),
+          :submitter_label      => get_attr(deployment_element, 'bc:submitter/@resourceName'),
+          :submitter_uri        => get_attr(deployment_element, 'bc:submitter/@xlink:href'),
+          :created              => get_text(deployment_element, 'dcterms:created/text()'))
 
     end
   end
 
   def self.import_biocatalogue_services(uri)
-
-    Contribution.delete_all("contributable_type = 'BioCatService'")
-    BioCatService.delete_all
-    BioCatServiceCategory.delete_all
-    BioCatServiceType.delete_all
-    BioCatServiceTag.delete_all
-    BioCatServiceDeployment.delete_all
-    BioCatServiceProvider.delete_all
 
     while true
 
