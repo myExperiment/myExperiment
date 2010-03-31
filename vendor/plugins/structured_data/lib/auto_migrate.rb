@@ -97,7 +97,7 @@ class AutoMigrate
 
     # Now that the schema has changed, update all the models
 
-    reload_models(new_tables.keys)
+    load_models(new_tables.keys)
   end
 
   def self.destroy_auto_tables
@@ -151,28 +151,22 @@ private
     [tables, assocs]
   end
 
-  def self.reload_models(tables)
+  def self.load_models(tables)
     tables.each do |table|
 
-      file_name  = "app/models/#{table.singularize}.rb"
       class_name = table.singularize.camelize
 
-      if File.exists?(file_name)
+      begin
+        Object.const_get(class_name)
+      rescue NameError
 
-        # force reload the model
-        Kernel::load(file_name)
+        # model object not defined.  create it
 
-      else
-
-        # Create a class for it
         c = Class.new(ActiveRecord::Base)
         c.class_eval("acts_as_structured_data(:class_name => '#{class_name}')")
 
         Object.const_set(class_name.to_sym, c)
       end
-
-      # reload the model schema from the database
-      eval(class_name).reset_column_information
     end
   end
 end
