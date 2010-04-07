@@ -306,7 +306,10 @@ class Workflow < ActiveRecord::Base
   def extract_metadata
     if processor_class
       delete_metadata
-      processor_class.new(content_blob.data).extract_metadata(id)
+      begin
+        processor_class.new(content_blob.data).extract_metadata(id)
+      rescue
+      end
     end
   end
 
