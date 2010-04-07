@@ -140,14 +140,14 @@
 				<% unless links.blank? -%>
 					<table class="simple">
 					  <tr>
-					    <th>Sink</th>
 					    <th>Source</th>
+					    <th>Sink</th>
 					  </tr>
 					
 						<% links.each do |l| -%>
 						  <tr>
-						    <td><%= h l.sink -%></td>
 						    <td><%= h l.source -%></td>
+						    <td><%= h l.sink -%></td>
 						  </tr>
 						<% end %>
 					</table>

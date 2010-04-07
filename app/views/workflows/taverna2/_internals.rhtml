@@ -219,14 +219,14 @@
         <% unless datalinks.blank? -%>
           <table class="simple">
             <tr>
-              <th>Sink</th>
               <th>Source</th>
+              <th>Sink</th>
             </tr>
           
             <% datalinks.each do |dl| -%>
               <tr>
-                <td><%= h dl.sink -%></td>
                 <td><%= h dl.source -%></td>
+                <td><%= h dl.sink -%></td>
               </tr>
             <% end %>
           </table>
