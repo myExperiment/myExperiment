@@ -824,7 +824,7 @@ module ApplicationHelper
   def workflows_for_attribution_form
     workflows = Workflow.find(:all, :select => 'workflows.id, workflows.title, users.name',
         :joins => 'LEFT OUTER JOIN users ON workflows.contributor_type = "User" AND workflows.contributor_id = users.id',
-        :order => 'workflows.title ASC')
+        :order => 'workflows.id ASC')
 
     workflows.select { |w| Authorization.is_authorized?('show', 'Workflow', w.id, current_user) }
   end
@@ -832,7 +832,7 @@ module ApplicationHelper
   def blobs_for_attribution_form
     blobs = Blob.find(:all, :select => 'blobs.id, blobs.title, users.name',
         :joins => 'LEFT OUTER JOIN users ON blobs.contributor_type = "User" AND blobs.contributor_id = users.id',
-        :order => 'blobs.title ASC')
+        :order => 'blobs.id ASC')
 
     blobs.select { |b| Authorization.is_authorized?('show', 'Blob', b.id, current_user) }
   end

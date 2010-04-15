@@ -140,7 +140,7 @@
           <br />
           <select id="existingworkflows_dropdown" style="width: 280px;">
             <% workflows_for_attribution_form.each do |w| %>
-            	<option value="<%= w.id %>"><%= h(w.title) -%> (<%= h(w.name) -%>)</option>
+            	<option value="<%= w.id %>"><%=h "#{w.id}: #{w.title} (#{w.name})" -%></option>
             <% end %>
           </select>
           <br />
@@ -154,7 +154,7 @@
           <br />
           <select id="existingfiles_dropdown" style="width: 280px;">
             <% blobs_for_attribution_form.each do |b| %>
-            	<option value="<%= b.id %>"><%= h(b.title) -%> (<%= h(b.name) -%>)</option>
+            	<option value="<%= b.id %>"><%=h "#{b.id}: #{b.title} (#{b.name})" -%></option>
             <% end %>
           </select>
           <br />
