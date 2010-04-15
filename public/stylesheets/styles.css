@@ -1946,6 +1946,15 @@ table.quick_add td.submit {
 	vertical-align: middle;
 }
 
+.tag_suggestion_box {
+	padding: 0.5em 0.8em;
+	border: 1px dotted #999999;
+  font-size: 93%;
+  text-align: left;
+  margin: 2em;
+  line-height: 20px;
+}
+
 .unselected_tag_suggestion {
   border: 1px SOLID white;
   padding-left: 4px;
