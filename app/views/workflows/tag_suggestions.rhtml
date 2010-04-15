@@ -1,28 +1,52 @@
+<%= javascript_include_tag :fckeditor %>
 <%= javascript_include_tag "tag_suggestions.js" %>
 
-<h1>Tags</h1>
-
-<h2>Automatic tag suggestions</h2>
-
-<p>The following tag suggestions are based on the content of your workflow.
-Click on each tag that you wish to use.<p>
-
-<div class="tag_suggestion_box">
-  <div id="suggestions"></div>
-</div>
-
-<p><em>Note: Tag suggestions are given by matching words in your workflow with other
-tags already used in <%= Conf.sitename %>.</em></p>
-
-<h2>Summary</h2>
-
-<div id="summary-text"></div>
+<h1>Extra workflow metadata</h1>
 
 <form action="<%= "/workflows/#{@workflow.id}/process_tag_suggestions" %>" method="post">
+
+  <% if @workflow.body.nil? || @workflow.body == "" %>
+
+    <h2>Workflow description</h2>
+
+    <p><em>The workflow you have uploaded has no description!  By entering a
+    description here, you will increase the chances of others finding your
+    workflow and help understand its purpose.</em></p>
+
+      <!-- Description -->
+      <p><b>Description</b></p>
+
+    <%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '500px', :height => '300px') %>
+
+  <% end %>
+
+  <h2>Tags</h2>
+
+  <h3>Automatic tag suggestions</h3>
+
+  <p>The following tag suggestions are based on the content of your workflow.
+  Click on each tag that you wish to use.<p>
+
+  <div class="tag_suggestion_box">
+    <div id="suggestions"></div>
+  </div>
+
+  <p><em>Note: Tag suggestions are given by matching words in your workflow
+  with other tags already used in <%= Conf.sitename %>.</em></p>
+
+  <p><b>Summary</b></p>
+
+  <div id="summary-text"></div>
+
+  <h2>Finish</h2>
+
+  <p>Complete the upload process.</p>
+
   <p style="text-align: center">
-    <input id="submit-button" type="submit" value="Continue" />
+    <input id="submit-button" type="submit" value="Finish" />
     <input type="hidden" name="tag_list" id="tag_list" />
   </p>
+
 </form>
 
 <script type="text/ecmascript">

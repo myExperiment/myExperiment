@@ -319,7 +319,7 @@ class WorkflowsController < ApplicationController
         if policy_err_msg.blank?
         	flash[:notice] = 'Workflow was successfully created.'
           format.html {
-            if @workflow.get_tag_suggestions.length > 0
+            if (@workflow.get_tag_suggestions.length > 0 || (@workflow.body.nil? || @workflow.body == ''))
               redirect_to tag_suggestions_workflow_url(@workflow)
             else
               redirect_to workflow_url(@workflow)
@@ -412,7 +412,16 @@ class WorkflowsController < ApplicationController
       if @workflow.save_as_new_version(params[:new_workflow][:rev_comments])
         respond_to do |format|
           flash[:notice] = 'New workflow version successfully created.'
-          format.html { redirect_to workflow_url(@workflow) }
+          format.html {
+
+            @workflow.reload
+
+            if (@workflow.get_tag_suggestions.length > 0 || (@workflow.body.nil? || @workflow.body == ''))
+              redirect_to tag_suggestions_workflow_url(@workflow)
+            else
+              redirect_to workflow_url(@workflow)
+            end
+          }
         end
       else
         fail = true
@@ -578,6 +587,11 @@ class WorkflowsController < ApplicationController
   end
 
   def process_tag_suggestions
+
+    if params[:workflow] && params[:workflow][:body]
+      @workflow.body = params[:workflow][:body]
+      @workflow.save
+    end
 
     params[:tag_list].split(',').each do |tag|
       @workflow.add_tag(tag, current_user)
