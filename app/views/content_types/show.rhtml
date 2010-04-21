@@ -1,0 +1,84 @@
+<% t "#{h @content_type.title}" -%>
+
+<ul class="sectionIcons">
+  <li><%= icon('workflow', content_types_path, nil, nil, 'All Content Types')%></li>
+</ul>
+
+<h1>Content Type: <%= h @content_type.title %></h1>
+
+<div class="contribution_left_box">
+	
+	<div class="box_simple" style="margin: 0 0 0.4em 0;">
+		<% unless @content_type.description.nil? or @content_type.description.empty? %>
+			<%= @content_type.description_html %>
+		<% else %>
+			<p><i>No description</i></p>
+		<% end %>
+	</div>
+	
+	<p>
+	  <b>Created at:</b>
+	  <%=datetime @content_type.created_at %>
+	</p>
+	
+  <% if @content_type.updated_at && @content_type.updated_at != @content_type.created_at %>
+    <p>
+      <b>Updated at:</b>
+      <%=datetime @content_type.updated_at %>
+    </p>
+  <% end %>
+	
+</div>
+
+<div class="contribution_right_box">
+
+  <div class="contribution_section_box">
+    <p class="heading">
+      <%= info_icon_with_tooltip("The maintainer is the person that manages this entry.  This person is not necessarily affiliated with any referenced tools, products or organisations.") %>
+      Maintainer
+    </p>
+    <% if @content_type.user.nil? %>
+      <p><small>This content type entry does not have a specific maintainer.  Please
+      contact the adminstrators of <%= Conf.sitename %> for assistance in providing
+      corrections or alterations to this entry.</small></p>
+    <% else %>
+      <p>
+        <center>
+          <%= render :partial => "users/avatar", :locals => { :user => @content_type.user, :size => 60 } %>
+        </center>
+      </p>
+      <p><small>
+        Please note that <%=h @content_type.user.name -%> does not necessarily
+        represent any tools, products or organisations described in this page.
+      </small></p>
+    <% end %>
+  </div>
+
+  <div class="contribution_section_box">
+    <p class="heading">
+      <%= info_icon_with_tooltip("General statistics about this Content Type.") %>
+      Statistics
+    </p>
+    <p style="font-size: 108%;">
+      <center>
+
+        <% if @total_count.zero? %>
+          <p><small>There are no contributables in <%= Conf.sitename %> of this Content Type.</small></p>
+        <% else %>
+          <ul>
+            <% if @workflow_count > 0 %>
+              <li><%= @workflow_count -%> workflow<%= @workflow_count == 1 ? "" : "s" -%></li>
+            <% end %>
+            <% if @blob_count > 0 %>
+              <li><%= @blob_count -%> file<%= @blob_count == 1 ? "" : "s" -%></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </center>
+    </p>
+  </div>
+
+</div>
+
+<div class="clearer">&nbsp;</div>
+
