@@ -29,8 +29,11 @@ module StructuredData
           self.class_eval(line)
 
         when 'belongs_to'
+          bits = [":#{association[:target].singularize}"]
 
-          line = "belongs_to :#{association[:target].singularize}"
+          bits.push(":polymorphic => #{association[:polymorphic]}") if association[:polymorphic]
+
+          line = "belongs_to #{bits.join(', ')}"
           self.class_eval(line)
         end
       end

@@ -1,4 +1,4 @@
-# myExperiment: vendor/plugins/structured_data/lib/auto_migrate.rb
+# myExperiment: vendor/plugins/structured_data/lib/auto_migrate.rb)
 #
 # Copyright (c) 2009 University of Manchester and the University of Southampton.
 # See license.txt for details.
@@ -7,11 +7,12 @@ require 'xml/libxml'
 
 class AutoMigrate
 
-  AUTO_TABLE_NAME     = "auto_tables"
-  SCHEMA              = "config/base_schema.xml"
-  SCHEMA_D            = "config/schema.d"
-  COLUMN_ATTRIBUTES   = ['name', 'type']
-  HAS_MANY_ATTRIBUTES = ['target', 'through', 'foreign_key']
+  AUTO_TABLE_NAME       = "auto_tables"
+  SCHEMA                = "config/base_schema.xml"
+  SCHEMA_D              = "config/schema.d"
+  COLUMN_ATTRIBUTES     = ['name', 'type']
+  BELONGS_TO_ATTRIBUTES = ['polymorphic']
+  HAS_MANY_ATTRIBUTES   = ['target', 'through', 'foreign_key']
 
   def self.schema
 
@@ -68,7 +69,9 @@ class AutoMigrate
     end 
 
     (new_tables.keys - old_tables).each do |name|
-      conn.create_table(name) do |table| end
+      unless tables.include?(name)
+        conn.create_table(name) do |table| end
+      end
       AutoTable.create(:name => name)
     end
 
@@ -82,7 +85,7 @@ class AutoMigrate
 
       # determine the required columns
 
-      new_columns = new_tables[table_name].map do |column, definition| column end
+      new_columns = new_tables[table_name][:columns].map do |column, definition| column end
 
       # remove columns
 
@@ -93,7 +96,7 @@ class AutoMigrate
       # add columns
 
       (new_columns - old_columns).each do |column_name|
-        conn.add_column(table_name, column_name, new_tables[table_name][column_name]["type"].to_sym)
+        conn.add_column(table_name, column_name, new_tables[table_name][:columns][column_name]["type"].to_sym)
       end
 
       # get the list of existing indexes
@@ -119,14 +122,9 @@ class AutoMigrate
       end
     end
 
-    # adjust the indexes in each table
-
-    new_tables.keys.each do |table_name|
-    end
-
     # now that the schema has changed, load the models
 
-    load_models(new_tables.keys)
+    load_models(new_tables)
   end
 
   def self.destroy_auto_tables
@@ -148,22 +146,31 @@ private
     root = LibXML::XML::Parser.string(schema).parse.root
 
     root.find('/schema/table').each do |table|
-      tables[table['name']] ||= {}
+
+      tables[table['name']] ||= { :columns => {} }
+
+      if table['class_name']
+        tables[table['name']][:class_name] = table['class_name']
+      end
 
       table.find('column').each do |column|
-        tables[table['name']][column['name']] ||= {}
+        tables[table['name']][:columns][column['name']] ||= {}
 
         COLUMN_ATTRIBUTES.each do |attribute|
           if column[attribute] and attribute != 'name'
-            tables[table['name']][column['name']][attribute] = column[attribute]
+            tables[table['name']][:columns][column['name']][attribute] = column[attribute]
           end
         end
       end
-    end
 
-    root.find('/schema/table').each do |table|
       table.find('belongs-to').each do |belongs_to|
-        assocs.push(:table => table['name'], :type => 'belongs_to', :target => belongs_to['target'])
+        attributes = {:table => table['name'], :type => 'belongs_to', :target => belongs_to['target']}
+
+        BELONGS_TO_ATTRIBUTES.each do |attribute|
+          attributes[attribute.to_sym] = belongs_to[attribute] if belongs_to[attribute]
+        end
+
+        assocs.push(attributes)
       end
 
       table.find('has-many').each do |has_many|
@@ -175,9 +182,6 @@ private
 
         assocs.push(attributes)
       end
-    end
-
-    root.find('/schema/table').each do |table|
 
       indexes[table['name']] ||= []
 
@@ -189,21 +193,48 @@ private
     [tables, assocs, indexes]
   end
 
+  def self.get_model(name)
+
+    c = Object
+
+    name.split("::").each do |bit|
+      c = c.const_get(bit)
+    end
+
+    c
+  end
+
+  def self.set_model(name, c)
+
+    container = Object
+    bits = name.split("::")
+    
+    bits[0..-2].each do |bit|
+      container = container.const_get(bit)
+    end
+
+    container.const_set(bits[-1].to_sym, c)
+  end
+
   def self.load_models(tables)
-    tables.each do |table|
+    tables.each do |table, options|
 
       class_name = table.singularize.camelize
 
+      class_name = options[:class_name] if options[:class_name]
+
       begin
-        Object.const_get(class_name)
+        get_model(class_name)
       rescue NameError
+
+        logger.info("Structured data: instantiating #{class_name}")
 
         # model object not defined.  create it
 
         c = Class.new(ActiveRecord::Base)
         c.class_eval("acts_as_structured_data(:class_name => '#{class_name}')")
 
-        Object.const_set(class_name.to_sym, c)
+        set_model(class_name, c)
       end
     end
   end
