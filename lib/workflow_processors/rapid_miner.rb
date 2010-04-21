@@ -314,6 +314,24 @@ module WorkflowProcessors
         components << input_els
         components << output_els
       end
+
+      def all_operators
+        
+        def aux(process, result)
+          process.operators.each do |operator|
+
+            result << operator
+
+            operator.processes.each do |sub_process|
+              aux(sub_process, result)
+            end
+          end
+
+          result
+        end
+
+        aux(process, [])
+      end
     end
   end
 end
