@@ -43,7 +43,6 @@ function updateTagViews() {
 
   separator  = ' <span style="color: #999999;">|</span> ';
   markup     = "";
-  submitText = "";
   summary    = "";
 
   if (suggestions.length == 0) {
@@ -72,16 +71,13 @@ function updateTagViews() {
   }
 
   if (tagsToAdd.length == 0) {
-    submitText = 'Skip this step';
     summary = "<p>You have no tags to add to this workflow.</p>";
   } else {
-    submitText = 'Tag';
     summary = "<p>You are about tag this workflow with: " + commaList(tagsToAdd.sort()) + ".";
   }
 
   document.getElementById("suggestions").innerHTML  = markup;
   document.getElementById("tag_list").value         = tagsToAdd.join(", ");
-  document.getElementById("submit-button").value    = submitText;
   document.getElementById("summary-text").innerHTML = summary;
 }
 

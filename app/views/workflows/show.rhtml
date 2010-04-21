@@ -148,7 +148,7 @@
 			
 			<p>
 				<b>Type:</b>
-				<%= h(@workflow.type_display_name) %>
+				<%= link_to(h(@workflow.content_type.title), content_type_path(@workflow.content_type)) %>
 			</p>
 			
 			<br/>
@@ -273,8 +273,9 @@
 </div>
 
 <div class="contribution_right_box">
-	<div class="contribution_section_box" style= "font-size: 100%; color: #CC0000; padding: 0.7em 0.9em; font-weight: bold;">
-		<%= @workflow.type_display_name -%> workflow
+	<div class="contribution_section_box" style= "font-size: 100%; padding: 0.7em 0.9em; font-weight: bold;">
+		<p><%= info_icon_with_tooltip("The type of workflow system that this Workflow is designed for.") %> Workflow Type</p>
+    <p><%= link_to(h(@workflow.content_type.title), content_type_path(@workflow.content_type)) %></p>
 	</div>
 	
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @workflow } %>

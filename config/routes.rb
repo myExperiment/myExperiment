@@ -119,6 +119,9 @@ ActionController::Routing::Routes.draw do |map|
     blog.resources :blog_posts
   end
   
+  # content_types
+  map.resources :content_types
+
   # all downloads and viewings
   map.resources :downloads, :viewings
 
