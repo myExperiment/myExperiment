@@ -34,7 +34,7 @@
 
   <div class="contribution_section_box">
     <p class="heading">
-      <%= info_icon_with_tooltip("The maintainer is the person that manages this entry.  This person is not necessarily affiliated with any referenced tools, products or organisations.") %>
+      <%= info_icon_with_tooltip("The maintainer is the person that manages this entry.  Please note that this person is not necessarily affiliated with any tools, products or organisations described on this page.") %>
       Maintainer
     </p>
     <% if @content_type.user.nil? %>
@@ -47,10 +47,6 @@
           <%= render :partial => "users/avatar", :locals => { :user => @content_type.user, :size => 60 } %>
         </center>
       </p>
-      <p><small>
-        Please note that <%=h @content_type.user.name -%> does not necessarily
-        represent any tools, products or organisations described in this page.
-      </small></p>
     <% end %>
   </div>
 
