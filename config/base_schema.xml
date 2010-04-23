@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<schema>
+
+  <table name="content_types">
+
+    <column type="integer"  name="user_id"/>
+    <column type="string"   name="title"/>
+    <column type="text"     name="description"/>
+    <column type="text"     name="description_html"/>
+    <column type="string"   name="category"/>
+    <column type="string"   name="mime_type"/>
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+
+  </table>
+  
+</schema>
+

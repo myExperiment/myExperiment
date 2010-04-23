@@ -1,10 +1,10 @@
 <% t "#{h @content_type.title}" -%>
 
 <ul class="sectionIcons">
-  <li><%= icon('workflow', content_types_path, nil, nil, 'All Content Types')%></li>
+  <li><%= icon('workflow', content_types_path, nil, nil, 'All Types')%></li>
 </ul>
 
-<h1>Content Type: <%= h @content_type.title %></h1>
+<h1><%= visible_name(@content_type.category) -%> Type: <%= h @content_type.title %></h1>
 
 <div class="contribution_left_box">
 	
@@ -56,14 +56,14 @@
 
   <div class="contribution_section_box">
     <p class="heading">
-      <%= info_icon_with_tooltip("General statistics about this Content Type.") %>
+      <%= info_icon_with_tooltip("General statistics about this #{visible_name(@content_type.category)} Type.") %>
       Statistics
     </p>
     <p style="font-size: 108%;">
       <center>
 
         <% if @total_count.zero? %>
-          <p><small>There are no contributables in <%= Conf.sitename %> of this Content Type.</small></p>
+          <p><small>There are no contributables in <%= Conf.sitename %> of this <%= visible_name(@content_type.category) -%> Type.</small></p>
         <% else %>
           <ul>
             <% if @workflow_count > 0 %>
