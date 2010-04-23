@@ -12,7 +12,7 @@ class ContentTypesController < ApplicationController
 
     params[:num] = 25 unless params[:num]
 
-    @content_types = ContentType.find(:all,
+    @content_types = ContentType.find(:all, :order => 'title ASC',
         :page => { :size => params[:num], :current => params[:page] })
   end
 

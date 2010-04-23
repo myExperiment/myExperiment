@@ -10,10 +10,25 @@
 
   <%= render :partial => "layouts/paginate", :locals => { :collection => @content_types } %>
 
+  <center>
+    <table class="simple">
+      <thead>
+        <tr>
+          <td>Title</td>
+          <td>Category</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% @content_types.each do |ct| %>
+          <tr>
+            <td><%= link_to(h(ct.title), content_type_path(ct)) %></td>
+            <td><%= visible_name(ct.category) %></td>
+        <% end %>
+      </tbody>
+    </table>
+  </center>
+          
   <ul>
-    <% @content_types.each do |ct| %>
-      <li><%= link_to(h(ct.title), content_type_path(ct)) %></li>
-    <% end %>
   </ul>
 
   <%= render :partial => "layouts/paginate", :locals => { :collection => @content_types } %>
