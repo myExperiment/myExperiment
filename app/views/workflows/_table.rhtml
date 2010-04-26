@@ -16,7 +16,7 @@
 			<% cache(:controller => 'workflows_cache', :action => 'listing', :id => workflow.id) do -%>
 			    <td style="width: 100px;">
 						<div class="workflow_type_box" style="width: auto; margin-bottom: 2em;">
-							<%= workflow.type_display_name -%>
+              <%= link_to(h(workflow.content_type.title), content_type_path(workflow.content_type)) %>
 						</div>
 			    	<p style="margin-top:0; padding-top:0; text-align: center;"><b><%= owner_text workflow -%></b></p>
 						<center><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %></center>
