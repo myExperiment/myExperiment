@@ -6,7 +6,7 @@
 	
 	<p class="heading" style="margin: 0;">
 		<span style="position: relative; z-index: 1000; float: left;">
-			<%= feed_icon_tag "#{group.title} Group Announcements", formatted_group_announcements_path(group, :rss) -%>
+			<%= feed_icon_tag "#{h(group.title)} Group Announcements", formatted_group_announcements_path(group, :rss) -%>
 		</span>
 		<a name="group_announcements"></a>
 		<%= link_to "Announcements", group_announcements_url(group) -%>

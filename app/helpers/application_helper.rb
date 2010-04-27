@@ -390,7 +390,7 @@ module ApplicationHelper
       end
     when "Pack"
       if p = Pack.find(:first, :conditions => ["id = ?", contributableid])
-        return link ? link_to(p.title, pack_url(p)) : h(p.title)
+        return link ? link_to(h(p.title), pack_url(p)) : h(p.title)
       else
         return nil
       end
@@ -990,7 +990,7 @@ module ApplicationHelper
   end
   
   def tooltip_title_attrib(text, delay=200)
-    return "header=[] body=[#{text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[#{delay}]"
+    return "header=[] body=[#{h(text)}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[#{delay}]"
   end
   
   # This method checks to see if the current user is allowed to approve a membership that is still pending approval
