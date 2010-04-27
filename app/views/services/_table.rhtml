@@ -43,6 +43,26 @@
 						<% end %>
           </p>
 					
+					<% unless (categories = service.service_categories).empty? %>
+            <p style="font-size: 85%;">
+              <b>Categories</b> (<%=categories.length-%>):
+            </p>
+            <div style="display:inline;" class="tags_onesize" style="font-size: 85%;">
+              <div class="hTagcloud">
+                <ul class="popularity">
+                  <% categories.each do |category| %>
+                    <li>
+                      <%= link_to h(category.label), category.uri, :title => tooltip_title_attrib("Click to see category on BioCatalogue") -%>
+                      <%= "<li>|</li>" unless category == categories[categories.length-1] -%>
+                    </li>
+                  <% end %>                 
+                </ul>
+              </div>
+            </div>
+          <% else %>
+            <p style="font-size: 85%;"><i>This Service has no categories!</i></p>
+          <% end %>
+					
 					<p style="font-size: 85%;">
 					 <b>Provider:</b> <%= link_to h(service.provider_label), service.provider_uri -%> 
 					</p>
