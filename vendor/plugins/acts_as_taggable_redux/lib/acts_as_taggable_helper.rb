@@ -1,7 +1,7 @@
 module ActsAsTaggableHelper
   # Create a link to the tag using restful routes and the rel-tag microformat
   def link_to_tag(tag)
-    link_to(tag.name, tag_url(tag), :rel => 'tag')
+    link_to(h(tag.name), tag_url(tag), :rel => 'tag')
   end
   
   # Generate a tag cloud of the top 100 tags by usage, uses the proposed hTagcloud microformat.
@@ -52,15 +52,15 @@ module ActsAsTaggableHelper
       
       if original
         unless link_to_type.blank?
-          html << link_to(tag.name, tag_url(tag) + "?type=#{link_to_type}", :class => classes[(tag.taggings_count - min) / divisor])
+          html << link_to(h(tag.name), tag_url(tag) + "?type=#{link_to_type}", :class => classes[(tag.taggings_count - min) / divisor])
         else
-          html << link_to(tag.name, tag_url(tag), :class => classes[(tag.taggings_count - min) / divisor])
+          html << link_to(h(tag.name), tag_url(tag), :class => classes[(tag.taggings_count - min) / divisor])
         end
       else
         unless link_to_type.blank?
-          html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}?type=#{link_to_type}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{tag.name}</a>"
+          html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}?type=#{link_to_type}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{h(tag.name)}</a>"
         else
-          html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{tag.name}</a>"
+          html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{h(tag.name)}</a>"
         end
       end
       
