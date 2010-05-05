@@ -3,115 +3,115 @@
 <% trunc_length = 22 -%>
 
 <div class="myexperiment_gadget">
-  <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+	<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 
-  <div class="header">
-      <center><%= render :partial => "users/avatar", :locals => { :user => current_user, :size => 60 } %></center>
-  </div>
-  
-  <div id="myexp_usermonitor_gadget_contents" class="contents">
-	<ul class="gadget_list">
-	  <li>
-	  	<%= icon "profile", user_url(current_user), nil, nil, " My Profile" %>
-			<span style="color: #666666; margin-left: 0.5em;">
-				<small>[ <%= link_to "edit", edit_user_profile_path(current_user) -%> ]</small>
-			</span>
-		</li>
-    <li><%= messages_link(current_user, "My Messages") %></li>
-    <li><%= memberships_link(current_user, "My Memberships") %></li>
-	  <li><%= icon "history", user_userhistory_url(current_user), nil, nil, "My History" %></li>
-	  <li><%= icon "news", home_url, nil, nil, "My News" %></li>
-  </ul>
-	
-	<% if admin? %>
-		<hr/>	
+	<div class="header">
+		<center><%= render :partial => "users/avatar", :locals => { :user => current_user, :size => 60 } %></center>
+	</div>
+
+	<div id="myexp_usermonitor_gadget_contents" class="contents">
 		<ul class="gadget_list">
-			<li><%= icon "announcement", announcements_url, nil, nil, "Manage Announcements" %></li>
+			<li>
+			<%= icon "profile", user_url(current_user), nil, nil, " My Profile" %>
+				<span style="color: #666666; margin-left: 0.5em;">
+					<small>[ <%= link_to "edit", edit_user_profile_path(current_user) -%> ]</small>
+				</span>
+			</li>
+			<li><%= messages_link(current_user, "My Messages") %></li>
+			<li><%= memberships_link(current_user, "My Memberships") %></li>
+			<li><%= icon "history", user_userhistory_url(current_user), nil, nil, "My History" %></li>
+			<li><%= icon "news", home_url, nil, nil, "My News" %></li>
 		</ul>
-	<% end %>
-	
-    <% unless current_user.messages_unread.empty? %>
-	  <hr/>
-      <div>
-        <div class="title">
-        	<%= pluralize(current_user.messages_unread.length, "new message") %>
+
+		<% if admin? %>
+			<hr/>
+			<ul class="gadget_list">
+				<li><%= icon "announcement", announcements_url, nil, nil, "Manage Announcements" %></li>
+			</ul>
+		<% end %>
+
+		<% unless current_user.messages_unread.empty? %>
+			<hr/>
+			<div>
+				<div class="title">
+					<%= pluralize(current_user.messages_unread.length, "new message") %>
 				</div>
-        <div class="content">
-          <ul class="gadget_list">
-            <% current_user.messages_unread.each do |message| %>
-              <li>
-             		<%= icon "message", message_path(message), nil, nil, "" %>
+				<div class="content">
+					<ul class="gadget_list">
+						<% current_user.messages_unread.each do |message| %>
+							<li>
+								<%= icon "message", message_path(message), nil, nil, "" %>
 								<b><%= link_to truncate(h(message.subject), trunc_length), message_path(message), :title => tooltip_title_attrib(h(message.subject)) -%></b>
 							</li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
-    <% end %>
-    
-    <% unless current_user.friendships_pending.empty? %>
-    <hr/>
-	  <div>
-        <div class="title">
-        	<%= pluralize(current_user.friendships_pending.length, "new friendship request") %>
+						<% end %>
+					</ul>
 				</div>
-        <div class="content">
-          <ul class="gadget_list">
-            <% current_user.friendships_pending.each do |friendship| %>
-              <li>
-              	<%= icon "user", user_friendship_path(current_user, friendship), nil, nil, "" %>
-								<b><%= link_to truncate(h(friendship.user.name), trunc_length), user_friendship_path(current_user, friendship), :title => tooltip_title_attrib(h(friendship.user.name)) -%></b>
-							</li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
-    <% end %>
-	
+			</div>
+		<% end %>
+
+		<% unless current_user.friendships_pending.empty? %>
+			<hr/>
+			<div>
+				<div class="title">
+					<%= pluralize(current_user.friendships_pending.length, "new friendship request") %>
+						</div>
+							<div class="content">
+								<ul class="gadget_list">
+									<% current_user.friendships_pending.each do |friendship| %>
+										<li>
+											<%= icon "user", user_friendship_path(current_user, friendship), nil, nil, "" %>
+											<b><%= link_to truncate(h(friendship.user.name), trunc_length), user_friendship_path(current_user, friendship), :title => tooltip_title_attrib(h(friendship.user.name)) -%></b>
+										</li>
+									<% end %>
+								</ul>
+							</div>
+						</div>
+					<% end %>
+
 		<% unless (membership_invites = current_user.memberships_invited).empty? %>
-    <hr/>
-	  <div>
-        <div class="title">
-        	<%= info_icon_with_tooltip("You have been invited to join groups") %>
-        	<%= pluralize(membership_invites.length, "new group invite") %>
+			<hr/>
+			<div>
+				<div class="title">
+					<%= info_icon_with_tooltip("You have been invited to join groups") %>
+					<%= pluralize(membership_invites.length, "new group invite") %>
 				</div>
-        <div class="content">
-          <ul class="gadget_list">
-            <% membership_invites.each do |membership| %>
-              <li>
-              	<%= icon "membership", membership_path(membership.user, membership), nil, nil, "" -%>
+				<div class="content">
+					<ul class="gadget_list">
+						<% membership_invites.each do |membership| %>
+							<li>
+								<%= icon "membership", membership_path(membership.user, membership), nil, nil, "" -%>
 								<b><%= link_to truncate("From #{h(membership.network.owner.name)}", trunc_length), membership_path(membership.user, membership), :title => tooltip_title_attrib("From #{h(membership.network.owner.name)}") -%></b>
 								<span style="margin-left: 20px; display: block;"><small>(for Group: <%= title membership.network_id %>)</small></span>
-						  </li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
-    <% end %>
-	
-		<% unless (membership_requests = current_user.networks_membership_requests_pending).empty? %>
-    <hr/>
-	  <div>
-        <div class="title">
-        	<%= info_icon_with_tooltip("Users are requesting to join your groups") %>
-        	<%= pluralize(membership_requests.length, "new group request") %>
+							</li>
+						<% end %>
+					</ul>
 				</div>
-        <div class="content">
-          <ul class="gadget_list">
-            <% membership_requests.each do |membership| %>
-              <li>
-              	<%= icon "membership", membership_path(membership.user, membership), nil, nil, "" -%>
+			</div>
+		<% end %>
+
+		<% unless (membership_requests = current_user.networks_membership_requests_pending).empty? %>
+			<hr/>
+			<div>
+				<div class="title">
+					<%= info_icon_with_tooltip("Users are requesting to join your groups") %>
+					<%= pluralize(membership_requests.length, "new group request") %>
+				</div>
+				<div class="content">
+					<ul class="gadget_list">
+						<% membership_requests.each do |membership| %>
+							<li>
+								<%= icon "membership", membership_path(membership.user, membership), nil, nil, "" -%>
 								<b><%= link_to truncate("From #{h(membership.user.name)}", trunc_length), membership_path(membership.user, membership), :title => tooltip_title_attrib("From #{h(membership.user.name)}") -%></b>
 								<span style="margin-left: 20px; display: block;"><small>(for Group: <%= title membership.network_id %>)</small></span>
-			  			</li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
-    <% end %>
-  </div>
-  
-  <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+							</li>
+						<% end %>
+					</ul>
+				</div>
+			</div>
+		<% end %>
+	</div>
+
+	<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 </div>
 
 <% end %>
