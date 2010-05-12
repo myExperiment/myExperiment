@@ -237,7 +237,51 @@ class NetworksController < ApplicationController
 
   # GET /networks/1
   def show
+
+    @item_sort_options = [
+      ["most_recent",   "Most recent"],
+      ["title",         "Title"],
+      ["uploader",      "Uploader"],
+      ["last_updated",  "Last updated"],
+      ["rating",        "Rating"],
+      ["license",       "License"],
+      ["workflow_type", "Workflow Type"]
+    ]
+
     @shared_items = @network.shared_contributions
+
+    case params[:item_sort]
+
+      when "title"; @shared_items.sort! do |a, b|
+        a.contributable.label <=> b.contributable.label
+      end
+
+      when "most_recent"; @shared_items.sort! do |a, b|
+        a.contributable.created_at <=> b.contributable.created_at
+      end
+
+      when "uploader"; @shared_items.sort! do |a, b|
+        a.contributor.label <=> b.contributor.label
+      end
+
+      when "last_updated"; @shared_items.sort! do |a, b|
+        a.contributable.updated_at <=> b.contributable.updated_at
+      end
+
+      when "rating"; @shared_items.sort! do |a, b|
+        b.contributable.rating <=> a.contributable.rating
+      end
+
+      when "license"; @shared_items.sort! do |a, b|
+        a.contributable.license.title <=> b.contributable.license.title
+      end
+
+      when "workflow_type"; @shared_items.sort! do |a, b|
+        a.contributable.content_type.title <=> b.contributable.content_type.title
+      end
+
+    end
+
     respond_to do |format|
       format.html # show.rhtml
     end

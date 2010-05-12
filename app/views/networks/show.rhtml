@@ -156,9 +156,19 @@
 <a name="shared_items"></a>
 <div class="tabContainer">
   <div class="tabTitle">Shared Items (<%= @shared_items.length -%>)</div>
-  <div class="tabContent">
+  <div class="tabContent" id="shared_items">
 		<% unless @shared_items.empty? %>
   		<%= view_privileges_notice %>
+
+      <div style="float: right; margin: 0.5em;">
+        Sort:
+        <select onchange="javascript:location = this.options[this.selectedIndex].value;">
+          <% @item_sort_options.each do |option, label| %>
+            <option value="?item_sort=<%= option -%>#shared_items" <% if params[:item_sort] == option -%> selected="selected"<% end -%>><%= label -%></option>
+          <% end %>
+        </select>
+      </div>
+
 			<%= render :partial => "contributions/table", :locals => { :collection => @shared_items } %>
 		<% else %>
 			<p class="none_text">No items have been shared with this Group yet.</p>
