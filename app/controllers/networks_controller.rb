@@ -239,11 +239,12 @@ class NetworksController < ApplicationController
   def show
 
     @item_sort_options = [
+      ["rank",          "Rank"],
       ["most_recent",   "Most recent"],
       ["title",         "Title"],
       ["uploader",      "Uploader"],
       ["last_updated",  "Last updated"],
-      ["rating",        "Rating"],
+      ["rating",        "User rating"],
       ["license",       "License"],
       ["workflow_type", "Workflow Type"]
     ]
@@ -251,6 +252,10 @@ class NetworksController < ApplicationController
     @shared_items = @network.shared_contributions
 
     case params[:item_sort]
+
+      when "rank"; @shared_items.sort! do |a, b|
+        a.rank <=> b.rank
+      end
 
       when "title"; @shared_items.sort! do |a, b|
         a.contributable.label <=> b.contributable.label
@@ -269,7 +274,7 @@ class NetworksController < ApplicationController
       end
 
       when "rating"; @shared_items.sort! do |a, b|
-        b.contributable.rating <=> a.contributable.rating
+        b.rating <=> a.rating
       end
 
       when "license"; @shared_items.sort! do |a, b|
