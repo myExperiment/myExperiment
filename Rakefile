@@ -19,3 +19,12 @@ task "myexp:refresh:solr" do
   Pack.rebuild_solr_index
 end
 
+desc 'Refresh contribution caches'
+task "myexp:refresh:contributions" do
+  require File.dirname(__FILE__) + '/config/environment'
+  Contribution.find(:all).each do |c|
+    c.contributable.update_contribution_rank
+    c.contributable.update_contribution_rating
+  end
+end
+

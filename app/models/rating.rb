@@ -25,7 +25,7 @@ class Rating < ActiveRecord::Base
 
   def update_contribution_rating
     if rateable.contribution
-      rateable.contribution.update_attribute(:rating, rateable.rating)
+      rateable.update_contribution_rating
     end
   end
 end

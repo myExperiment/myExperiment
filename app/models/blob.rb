@@ -26,7 +26,7 @@ class Blob < ActiveRecord::Base
   acts_as_attributable
   
   acts_as_solr(:fields => [:title, :local_name, :body, :kind, :uploader, :tag_list],
-               :boost => "search_boost",
+               :boost => "rank",
                :include => [ :comments ]) if Conf.solr_enable
 
   belongs_to :content_blob
@@ -51,7 +51,7 @@ class Blob < ActiveRecord::Base
 
   alias_method :kind, :type
 
-  def search_boost
+  def rank
 
     # initial boost depends on viewings count
     boost = contribution.viewings_count / 100

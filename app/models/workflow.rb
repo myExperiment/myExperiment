@@ -84,7 +84,7 @@ class Workflow < ActiveRecord::Base
   non_versioned_columns.push("license_id", "tag_list")
   
   acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
-               :boost => "search_boost",
+               :boost => "rank",
                :include => [ :comments ]) if Conf.solr_enable
 
   acts_as_runnable
@@ -283,7 +283,7 @@ class Workflow < ActiveRecord::Base
 
   alias_method :kind, :type
 
-  def search_boost
+  def rank
 
     # initial boost depends on viewings count
     boost = contribution.viewings_count / 100

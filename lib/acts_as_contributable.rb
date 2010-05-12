@@ -19,6 +19,8 @@ module Mib
                   :dependent => :destroy
                   
           after_save :save_contributable_record
+          after_save :update_contribution_rank
+          after_save :update_contribution_rating
 
           class_eval do
             extend Mib::Acts::Contributable::SingletonMethods
@@ -74,6 +76,32 @@ module Mib
         def save_contributable_record
           if contribution
             contribution.save
+          end
+        end
+
+        def update_contribution_rank
+          if contribution
+
+            if respond_to?(:rank)
+              value = rank
+            else
+              value = 0.0
+            end
+
+            contribution.update_attribute(:rank, value)
+          end
+        end
+
+        def update_contribution_rating
+          if contribution
+
+            if respond_to?(:rating)
+              value = rating
+            else
+              value = 0.0
+            end
+
+            contribution.update_attribute(:rating, value)
           end
         end
       end

@@ -13,6 +13,7 @@
     <column type="integer"  name="downloads_count"/>
     <column type="integer"  name="viewings_count"/>
     <column type="float"    name="rating"/>
+    <column type="float"    name="rank"/>
 
   </table>
 
