@@ -6,6 +6,9 @@
 class Rating < ActiveRecord::Base
   belongs_to :rateable, :polymorphic => true
   
+  after_save    :update_contribution_rating
+  after_destroy :update_contribution_rating
+      
   # NOTE: Comments belong to a user
   belongs_to :user
   
@@ -17,4 +20,13 @@ class Rating < ActiveRecord::Base
       :order => "created_at DESC"
     )
   end
+
+  private
+
+  def update_contribution_rating
+    if rateable.contribution
+      rateable.contribution.update_attribute(:rating, rateable.rating)
+    end
+  end
 end
+

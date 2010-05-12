@@ -1,6 +1,21 @@
 <?xml version="1.0"?>
 <schema>
 
+  <table name="contributions">
+
+    <column type="integer"  name="contributor_id"/>
+    <column type="string"   name="contributor_type"/>
+    <column type="integer"  name="contributable_id"/>
+    <column type="string"   name="contributable_type"/>
+    <column type="integer"  name="policy_id"/>
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+    <column type="integer"  name="downloads_count"/>
+    <column type="integer"  name="viewings_count"/>
+    <column type="float"    name="rating"/>
+
+  </table>
+
   <table name="content_types">
 
     <column type="integer"  name="user_id"/>
