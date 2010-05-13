@@ -10,7 +10,7 @@ class AutoMigrate
   AUTO_TABLE_NAME       = "auto_tables"
   SCHEMA                = "config/base_schema.xml"
   SCHEMA_D              = "config/schema.d"
-  COLUMN_ATTRIBUTES     = ['name', 'type']
+  COLUMN_ATTRIBUTES     = ['name', 'type', 'default']
   BELONGS_TO_ATTRIBUTES = ['polymorphic']
   HAS_MANY_ATTRIBUTES   = ['target', 'through', 'foreign_key']
 
@@ -83,6 +83,14 @@ class AutoMigrate
 
       old_columns = conn.columns(table_name).map do |column| column.name end - ["id"]
 
+      # and get detailed information about the existing columns
+
+      old_column_info = {}
+      
+      conn.columns(table_name).each do |c|
+        old_column_info[c.name] = c
+      end
+
       # determine the required columns
 
       new_columns = new_tables[table_name][:columns].map do |column, definition| column end
@@ -97,6 +105,24 @@ class AutoMigrate
 
       (new_columns - old_columns).each do |column_name|
         conn.add_column(table_name, column_name, new_tables[table_name][:columns][column_name]["type"].to_sym)
+      end
+
+      # modify existing columns
+
+      (old_columns & new_columns).each do |column_name|
+
+        old_default = old_column_info[column_name].default
+        new_default = new_tables[table_name][:columns][column_name]['default']
+
+        old_default = old_default.to_s unless old_default.nil?
+        new_default = new_default.to_s unless new_default.nil?
+
+        old_type    = old_column_info[column_name].type
+        new_type    = new_tables[table_name][:columns][column_name]['type'].to_sym
+
+        if (old_default != new_default) || (old_type != new_type)
+          conn.change_column(table_name.to_sym, column_name.to_sym, new_type, :default => new_default)
+        end
       end
 
       # get the list of existing indexes

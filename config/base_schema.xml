@@ -10,8 +10,8 @@
     <column type="integer"  name="policy_id"/>
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
-    <column type="integer"  name="downloads_count"/>
-    <column type="integer"  name="viewings_count"/>
+    <column type="integer"  name="downloads_count" default="0"/>
+    <column type="integer"  name="viewings_count"  default="0"/>
     <column type="float"    name="rating"/>
     <column type="float"    name="rank"/>
 
