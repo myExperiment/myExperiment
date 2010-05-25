@@ -245,7 +245,7 @@ class NetworksController < ApplicationController
       ["uploader",      "Uploader"],
       ["last_updated",  "Last updated"],
       ["rating",        "User rating"],
-      ["license",       "License"],
+      ["licence",       "Licence"],
       ["workflow_type", "Workflow Type"]
     ]
 
@@ -266,7 +266,11 @@ class NetworksController < ApplicationController
       end
 
       when "uploader"; @shared_items.sort! do |a, b|
-        a.contributor.label <=> b.contributor.label
+        if a.contributor.label == b.contributor.label
+          a.rank <=> b.rank
+        else
+          a.contributor.label <=> b.contributor.label
+        end
       end
 
       when "last_updated"; @shared_items.sort! do |a, b|
@@ -274,15 +278,43 @@ class NetworksController < ApplicationController
       end
 
       when "rating"; @shared_items.sort! do |a, b|
-        b.rating <=> a.rating
+
+        a_rating = a.rating
+        b_rating = b.rating
+
+        if a_rating == b_rating
+          a.rank <=> b.rank
+        else
+          b.rating <=> a.rating
+        end
       end
 
-      when "license"; @shared_items.sort! do |a, b|
-        a.contributable.license.title <=> b.contributable.license.title
+      when "licence"; @shared_items.sort! do |a, b|
+
+        a_has_licence = a.contributable.respond_to?('license')
+        b_has_licence = b.contributable.respond_to?('license')
+
+        if (a_has_licence && b_has_licence)
+          if a.contributable.license == b.contributable.license
+            a.rank <=> b.rank
+          else
+            a.contributable.license.title <=> b.contributable.license.title
+          end
+        elsif (a_has_licence && !b_has_licence)
+          -1
+        elsif (!a_has_licence && b_has_licence)
+          1
+        else
+          a.rank <=> b.rank
+        end
       end
 
       when "workflow_type"; @shared_items.sort! do |a, b|
-        a.contributable.content_type.title <=> b.contributable.content_type.title
+        if a.contributable.content_type == b.contributable.content_type
+          a.rank <=> b.rank
+        else
+          a.contributable.content_type.title <=> b.contributable.content_type.title
+        end
       end
 
     end
