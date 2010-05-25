@@ -246,7 +246,7 @@ class NetworksController < ApplicationController
       ["last_updated",  "Last updated"],
       ["rating",        "User rating"],
       ["licence",       "Licence"],
-      ["workflow_type", "Workflow Type"]
+      ["content_type",  "Content Type"]
     ]
 
     @shared_items = @network.shared_contributions
@@ -309,14 +309,25 @@ class NetworksController < ApplicationController
         end
       end
 
-      when "workflow_type"; @shared_items.sort! do |a, b|
-        if a.contributable.content_type == b.contributable.content_type
-          a.rank <=> b.rank
+      when "content_type"; @shared_items.sort! do |a, b|
+
+        a_has_content_type = a.contributable.respond_to?('content_type')
+        b_has_content_type = b.contributable.respond_to?('content_type')
+
+        if (a_has_content_type && b_has_content_type)
+          if a.contributable.content_type == b.contributable.content_type
+            a.rank <=> b.rank
+          else
+            a.contributable.content_type.title <=> b.contributable.content_type.title
+          end
+        elsif (a_has_content_type && !b_has_content_type)
+          -1
+        elsif (!a_has_content_type && b_has_content_type)
+          1
         else
-          a.contributable.content_type.title <=> b.contributable.content_type.title
+          a.rank <=> b.rank
         end
       end
-
     end
 
     respond_to do |format|
