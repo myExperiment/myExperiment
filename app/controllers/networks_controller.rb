@@ -254,7 +254,7 @@ class NetworksController < ApplicationController
     case params[:item_sort]
 
       when "rank"; @shared_items.sort! do |a, b|
-        a.rank <=> b.rank
+        b.rank <=> a.rank
       end
 
       when "title"; @shared_items.sort! do |a, b|
@@ -262,19 +262,19 @@ class NetworksController < ApplicationController
       end
 
       when "most_recent"; @shared_items.sort! do |a, b|
-        a.contributable.created_at <=> b.contributable.created_at
+        b.contributable.created_at <=> a.contributable.created_at
       end
 
       when "uploader"; @shared_items.sort! do |a, b|
         if a.contributor.label == b.contributor.label
-          a.rank <=> b.rank
+          b.rank <=> a.rank
         else
           a.contributor.label <=> b.contributor.label
         end
       end
 
       when "last_updated"; @shared_items.sort! do |a, b|
-        a.contributable.updated_at <=> b.contributable.updated_at
+        b.contributable.updated_at <=> a.contributable.updated_at
       end
 
       when "rating"; @shared_items.sort! do |a, b|
@@ -283,7 +283,7 @@ class NetworksController < ApplicationController
         b_rating = b.rating
 
         if a_rating == b_rating
-          a.rank <=> b.rank
+          b.rank <=> a.rank
         else
           b.rating <=> a.rating
         end
@@ -296,7 +296,7 @@ class NetworksController < ApplicationController
 
         if (a_has_licence && b_has_licence)
           if a.contributable.license == b.contributable.license
-            a.rank <=> b.rank
+            b.rank <=> a.rank
           else
             a.contributable.license.title <=> b.contributable.license.title
           end
@@ -305,7 +305,7 @@ class NetworksController < ApplicationController
         elsif (!a_has_licence && b_has_licence)
           1
         else
-          a.rank <=> b.rank
+          b.rank <=> a.rank
         end
       end
 
@@ -316,7 +316,7 @@ class NetworksController < ApplicationController
 
         if (a_has_content_type && b_has_content_type)
           if a.contributable.content_type == b.contributable.content_type
-            a.rank <=> b.rank
+            b.rank <=> a.rank
           else
             a.contributable.content_type.title <=> b.contributable.content_type.title
           end
@@ -325,7 +325,7 @@ class NetworksController < ApplicationController
         elsif (!a_has_content_type && b_has_content_type)
           1
         else
-          a.rank <=> b.rank
+          b.rank <=> a.rank
         end
       end
     end
