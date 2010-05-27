@@ -15,6 +15,16 @@
     <column type="float"    name="rating"/>
     <column type="float"    name="rank"/>
 
+    <index>
+      <column name="contributable_id"/>
+      <column name="contributable_type"/>
+    </index>
+
+    <index>
+      <column name="contributor_id"/>
+      <column name="contributor_type"/>
+    </index>
+
   </table>
 
   <table name="content_types">
