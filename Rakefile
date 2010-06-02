@@ -26,9 +26,11 @@ task "myexp:refresh:contributions" do
   Contribution.find(:all).each do |c|
     c.contributable.update_contribution_rank
     c.contributable.update_contribution_rating
+    c.contributable.update_contribution_cache
 
     ActiveRecord::Base.record_timestamps = false
 
+    c.reload
     c.update_attribute(:created_at, c.contributable.created_at)
     c.update_attribute(:updated_at, c.contributable.updated_at)
 

@@ -14,6 +14,9 @@
     <column type="integer"  name="viewings_count"  default="0"/>
     <column type="float"    name="rating"/>
     <column type="float"    name="rank"/>
+    <column type="string"   name="label"/>
+    <column type="integer"  name="content_type_id"/>
+    <column type="integer"  name="license_id"/>
 
     <index>
       <column name="contributable_id"/>

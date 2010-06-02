@@ -21,6 +21,7 @@ module Mib
           after_save :save_contributable_record
           after_save :update_contribution_rank
           after_save :update_contribution_rating
+          after_save :update_contribution_cache
 
           class_eval do
             extend Mib::Acts::Contributable::SingletonMethods
@@ -88,7 +89,9 @@ module Mib
               value = 0.0
             end
 
+            ActiveRecord::Base.record_timestamps = false
             contribution.update_attribute(:rank, value)
+            ActiveRecord::Base.record_timestamps = true
           end
         end
 
@@ -101,7 +104,19 @@ module Mib
               value = 0.0
             end
 
+            ActiveRecord::Base.record_timestamps = false
             contribution.update_attribute(:rating, value)
+            ActiveRecord::Base.record_timestamps = true
+          end
+        end
+
+        def update_contribution_cache
+          if contribution
+            ActiveRecord::Base.record_timestamps = false
+            contribution.update_attribute(:label,           respond_to?(:label)           ? label           : nil)
+            contribution.update_attribute(:content_type_id, respond_to?(:content_type_id) ? content_type_id : nil)
+            contribution.update_attribute(:license_id,      respond_to?(:license_id)      ? license_id      : nil)
+            ActiveRecord::Base.record_timestamps = true
           end
         end
       end
