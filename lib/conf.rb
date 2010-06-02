@@ -134,6 +134,10 @@ class Conf
     self.fetch_entry('validate_email_veracity')
   end
 
+  def self.contribution_order_options
+    self.fetch_entry('contribution_order_options')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)

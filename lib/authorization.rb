@@ -458,9 +458,9 @@ module Authorization
 
   def Authorization.categorize_action(action_name)
     case action_name
-      when 'show', 'index', 'view', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'comments', 'comments_timeline', 'rate', 'tag',  'items', 'statistics', 'curation', 'tag_suggestions', 'read', 'verify'
+      when 'show', 'index', 'view', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'comments', 'comments_timeline', 'rate', 'tag',  'items', 'statistics', 'curation', 'tag_suggestions', 'extra_metadata', 'read', 'verify'
         action = 'view'
-      when 'edit', 'new', 'create', 'update', 'new_version', 'create_version', 'destroy_version', 'edit_version', 'update_version', 'new_item', 'create_item', 'edit_item', 'update_item', 'quick_add', 'resolve_link', 'process_tag_suggestions'
+      when 'edit', 'new', 'create', 'update', 'new_version', 'create_version', 'destroy_version', 'edit_version', 'update_version', 'new_item', 'create_item', 'edit_item', 'update_item', 'quick_add', 'resolve_link', 'process_tag_suggestions', 'process_extra_metadata'
         action = 'edit'
       when 'download', 'named_download', 'launch', 'submit_job', 'save_inputs', 'refresh_status', 'rerun', 'refresh_outputs', 'render_output', 'outputs_xml', 'outputs_package'
         action = 'download'
@@ -749,7 +749,7 @@ module Authorization
 
       "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
         (share_mode = 0 OR share_mode = 1 OR share_mode = 2) OR
-        ((share_mode = 3 OR share_mode = 4 OR update_mode = 1) AND
+        ((share_mode = 1 OR share_mode = 3 OR share_mode = 4 OR update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
          (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
     end
 
@@ -759,7 +759,7 @@ module Authorization
 
       "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
         (share_mode = 0) OR
-        ((share_mode = 1 OR share_mode = 3 OR update_mode = 1) AND
+        ((share_mode = 1 OR share_mode = 3 OR update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
          (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
     end
 
@@ -773,13 +773,27 @@ module Authorization
          (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
     end
 
-    def self.permission_part(permission, user_id, networks)
-      "(permissions.id IS NOT NULL AND permissions.#{permission} = true AND
+    def self.permission_part(permissions, user_id, networks)
+
+      permission_test = permissions.map do |p| "permissions.#{p} = true" end.join(" OR ")
+
+      "(permissions.id IS NOT NULL AND (#{permission_test}) AND
         ((permissions.contributor_type = 'User'    AND permissions.contributor_id = #{user_id}) OR
          (permissions.contributor_type = 'Network' AND permissions.contributor_id IN #{networks})))"
     end
 
     user = args[:user]
+
+    if (user != 0) && (user != nil)
+
+      user_id = user.id
+
+      friend_ids  = get_friend_ids(user)
+      network_ids = get_network_ids(user)
+
+      friends  = friend_ids.empty?  ? "(-1)" : "(#{friend_ids.join(",")})"
+      networks = network_ids.empty? ? "(-1)" : "(#{network_ids.join(",")})"
+    end
 
     # pagination
 
@@ -803,22 +817,26 @@ module Authorization
 
     # filtering
 
-    if args[:type]
-      where_part = "WHERE contributions.contributable_type = '#{args[:type].name}'"
+    if user_id
+      where_bits = ["#{view_part(user_id, friends)} OR #{permission_part(['view', 'download', 'edit'], user_id, networks)}"]
     else
-      where_part = ""
+      where_bits = [view_part]
     end
+
+    if args[:type]
+      where_bits.push("contributions.contributable_type = '#{args[:type].name}'")
+    end
+
+    where_part = where_bits.map do |b| "(#{b})" end.join(" AND ")
 
     # result type
 
     if !args[:type] || args[:contribution_records] 
       contributable_type = nil
-      inner_select_part  = "contributions.*"
       result_model       = Contribution
       from_part          = "FROM contributions"
     else
       contributable_type = args[:type].name.underscore.pluralize
-      inner_select_part  = "#{contributable_type}.*"
       result_model       = args[:type]
       from_part          = "FROM #{contributable_type} INNER JOIN contributions ON contributions.contributable_id = #{contributable_type}.id"
     end
@@ -827,45 +845,34 @@ module Authorization
 
     if args[:select]
       select_part = args[:select]
-    else
-      select_part = "*"
+    elsif contributable_type
+      select_part = "#{args[:type].name.underscore.pluralize}.*"
+    else 
+      select_part = "contributions.*"
     end
 
-    if (user != 0) && (user != nil)
+    # do the query
+
+    if user_id
 
       # This is the version used for a member
-
-      user_id = user.id
-
-      friend_ids  = get_friend_ids(user)
-      network_ids = get_network_ids(user)
-
-      friends  = friend_ids.empty?  ? "(-1)" : "(#{friend_ids.join(",")})"
-      networks = network_ids.empty? ? "(-1)" : "(#{network_ids.join(",")})"
 
       query = "
 
         SELECT #{select_part},
-          (view OR download OR edit) AS cascaded_view,
-          (download OR edit)         AS cascaded_download,
-          edit                       AS cascaded_edit FROM
-          
-          (SELECT #{inner_select_part},
 
-            BIT_OR(#{view_part(user_id, friends)}     OR #{permission_part('view',     user_id, networks)}) AS view,
-            BIT_OR(#{download_part(user_id, friends)} OR #{permission_part('download', user_id, networks)}) AS download,
-            BIT_OR(#{edit_part(user_id, friends)}     OR #{permission_part('edit',     user_id, networks)}) AS edit
+          BIT_OR(#{view_part(user_id, friends)}     OR #{permission_part(['view', 'download', 'edit'], user_id, networks)}) AS view,
+          BIT_OR(#{download_part(user_id, friends)} OR #{permission_part(['view', 'download'],         user_id, networks)}) AS download,
+          BIT_OR(#{edit_part(user_id, friends)}     OR #{permission_part(['view'],                     user_id, networks)}) AS edit
 
-            #{from_part}
-            #{args[:joins]}
-            INNER JOIN policies ON contributions.policy_id = policies.id
-            LEFT OUTER JOIN permissions ON policies.id = permissions.policy_id
-            #{where_part}
-            GROUP BY contributable_type, contributable_id) AS foo
-          
-          WHERE (view OR download OR edit) = true
-          #{order_part}
-          #{limit_part}"
+        #{from_part}
+        #{args[:joins]}
+        INNER JOIN policies ON contributions.policy_id = policies.id
+        LEFT OUTER JOIN permissions ON policies.id = permissions.policy_id
+        WHERE #{where_part}
+        GROUP BY contributable_type, contributable_id
+        #{order_part}
+        #{limit_part}"
 
       result_model.find_by_sql(query)
 
@@ -876,23 +883,16 @@ module Authorization
       query = "
 
         SELECT #{select_part},
-          (view OR download OR edit) AS cascaded_view,
-          (download OR edit)         AS cascaded_download,
-          edit                       AS cascaded_edit FROM
-          
-          (SELECT #{inner_select_part},
 
             BIT_OR(#{view_part})     AS view,
             BIT_OR(#{download_part}) AS download,
             BIT_OR(#{edit_part})     AS edit
 
-            #{from_part}
-            #{args[:joins]}
-            INNER JOIN policies ON contributions.policy_id = policies.id
-            #{where_part}
-            GROUP BY contributable_type, contributable_id) AS foo
-          
-          WHERE (view OR download OR edit) = true
+          #{from_part}
+          #{args[:joins]}
+          INNER JOIN policies ON contributions.policy_id = policies.id
+          WHERE #{where_part}
+          GROUP BY contributable_type, contributable_id
           #{order_part}
           #{limit_part}"
 

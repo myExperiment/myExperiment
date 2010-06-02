@@ -4,11 +4,10 @@
 # See license.txt for details.
 
 class WorkflowsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search, :all]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search]
   
-  before_filter :find_workflows, :only => [:all]
   before_filter :find_workflows_rss, :only => [:index]
-  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all]
+  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create]
   
   before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create, :new_version, :create_version]
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
@@ -17,7 +16,7 @@ class WorkflowsController < ApplicationController
   before_filter :check_custom_workflow_type, :only => [:create, :create_version]
   
   before_filter :check_is_owner, :only => [:edit, :update]
-  
+
   # declare sweepers and which actions should invoke them
   cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy_version, :destroy ]
   cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :launch ]
@@ -213,7 +212,10 @@ class WorkflowsController < ApplicationController
   # GET /workflows
   def index
     respond_to do |format|
-      format.html # index.rhtml
+      format.html do
+        @contributions = Contribution.contributions_list(Workflow, params)
+        # index.rhtml
+      end
       format.rss do
         #@workflows = Workflow.find(:all, :order => "updated_at DESC") # list all (if required)
         render :action => 'index.rxml', :layout => false
@@ -221,16 +223,8 @@ class WorkflowsController < ApplicationController
     end
   end
   
-  # GET /workflows/all
-  def all
-    respond_to do |format|
-      format.html # all.rhtml
-    end
-  end
-
   # GET /workflows/1
   def show
-    logger.debug("DEBUG DEBUG DEBUG")
     if allow_statistics_logging(@viewing_version)
       @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
@@ -602,19 +596,6 @@ class WorkflowsController < ApplicationController
 
 protected
 
-  def find_workflows
-    found = Workflow.find(:all, 
-                          construct_options.merge({:page => { :size => 20, :current => params[:page] },
-                          :include => [ { :contribution => :policy }, :tags, :ratings ],
-                          :order => "workflows.updated_at DESC" }))
-    
-    found.each do |workflow|
-      workflow.content_blob.data = nil unless Authorization.is_authorized?('download', nil, workflow, current_user)
-    end
-    
-    @workflows = found
-  end
-  
   def find_workflows_rss
     # Only carry out if request is for RSS
     if params[:format] and params[:format].downcase == 'rss'

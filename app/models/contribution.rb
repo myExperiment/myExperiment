@@ -15,7 +15,40 @@ class Contribution < ActiveRecord::Base
   has_many :viewings,
            :order => "created_at DESC",
            :dependent => :destroy
-           
+
+  def self.contributions_list(klass = nil, params = nil, user = nil)
+
+    sort_options = Conf.contribution_order_options
+
+    args = sort_options.first
+
+    sort_options.each do |sort_option|
+      args = sort_option if params["order"] == sort_option["option"]
+    end
+    
+    num    = 10
+    offset = 0
+
+    if params["page"]
+      offset = (params["page"].to_i - 1) * num
+    end
+
+    # This uses the proprietary MySQL feature "SQL_CALC_FOUND_ROWS" to
+    # determine the total number of rows if it weren't for the LIMIT clause
+
+    results = Authorization.authorised_index(:type => klass,
+        :select => 'SQL_CALC_FOUND_ROWS contributions.*',
+        :user => user,
+        :contribution_records => true,
+        :limit => "#{offset}, #{num}",
+        :joins => args["joins"],
+        :order => args["order"])
+
+    total = ActiveRecord::Base.connection.execute("SELECT FOUND_ROWS()").fetch_row.first.to_i
+
+    PaginatedArray.new(results, :total => total, :limit => num, :offset => offset)
+  end
+
   # returns the 'most downloaded' Contributions
   # (only takes into account downloads, that is internal usage)
   # the maximum number of results is set by #limit#

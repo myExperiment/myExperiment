@@ -4,10 +4,9 @@
 # See license.txt for details.
 
 class BlobsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :search, :all]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :search]
   
-  before_filter :find_blobs, :only => [:all]
-  before_filter :find_blob_auth, :except => [:search, :index, :new, :create, :all]
+  before_filter :find_blob_auth, :except => [:search, :index, :new, :create]
   
   before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create]
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
@@ -52,15 +51,9 @@ class BlobsController < ApplicationController
 
   # GET /files
   def index
+    @contributions = Contribution.contributions_list(Blob, params)
     respond_to do |format|
       format.html # index.rhtml
-    end
-  end
-  
-  # GET /files/all
-  def all
-    respond_to do |format|
-      format.html # all.rhtml
     end
   end
   
@@ -294,19 +287,6 @@ class BlobsController < ApplicationController
   end
   
   protected
-  
-  def find_blobs
-    found = Blob.find(:all, 
-                       :order => "updated_at DESC, created_at DESC",
-                       :page => { :size => 20, 
-                       :current => params[:page] })
-    
-    found.each do |blob|
-      blob.content_blob.data = nil unless Authorization.is_authorized?("download", nil, blob, current_user)
-    end
-    
-    @blobs = found
-  end
   
   def find_blob_auth
     begin

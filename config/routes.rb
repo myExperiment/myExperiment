@@ -40,7 +40,7 @@ ActionController::Routing::Routes.draw do |map|
   
   # packs
   map.resources :packs, 
-    :collection => { :all => :get, :search => :get }, 
+    :collection => { :search => :get }, 
     :member => { :comment => :post, 
                  :comment_delete => :delete,
                  :statistics => :get,
@@ -62,7 +62,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # workflows (downloadable)
   map.resources :workflows, 
-    :collection => { :all => :get, :search => :get }, 
+    :collection => { :search => :get }, 
     :member => { :new_version => :get, 
                  :download => :get, 
                  :launch => :get,
@@ -102,7 +102,7 @@ ActionController::Routing::Routes.draw do |map|
   # files (downloadable)
   map.resources :files, 
     :controller => :blobs, 
-    :collection => { :all => :get, :search => :get }, 
+    :collection => { :search => :get }, 
     :member => { :download => :get,
                  :statistics => :get,
                  :favourite => :post,

@@ -34,13 +34,20 @@
 	<%= render :partial => "packs/all_tags" %>
 <% end -%>
 
-<%= render :partial => "contributions/most_tabs", :locals => { :type => "Pack" } %>
+<div style="float: right; margin: 0.5em;">
+  Sort by:
+  <select onchange="javascript:location = this.options[this.selectedIndex].value;">
+    <% Conf.contribution_order_options.each do |args| %>
+      <option value="?order=<%= args["option"] -%>" <% if params[:order] == args["option"] -%> selected="selected"<% end -%>><%= args["label"] -%></option>
+    <% end %>
+  </select>
+</div>
 
-<% unless (largest = Pack.most_items).empty? %>
-  <div class="tabContainer">
-  	<div class="tabTitle">Most items</div>
-  	<div class="tabContent">
-	    <%= render :partial => "packs/table", :locals => { :collection => largest } %>
-  	</div>
-  </div>
-<% end %>
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
+
+<div style="clear: right"></div>
+
+<%= render :partial => "contributions/list", :locals => { :collection => @contributions, :table => true } %>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
+

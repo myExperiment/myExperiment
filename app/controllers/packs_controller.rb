@@ -6,10 +6,9 @@
 class PacksController < ApplicationController
   include ApplicationHelper
   
-  before_filter :login_required, :except => [:index, :show, :all, :search, :items, :download, :statistics]
+  before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
   
-  before_filter :find_packs, :only => [:all]
-  before_filter :find_pack_auth, :except => [:index, :new, :create, :all, :search]
+  before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
   
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
   
@@ -28,15 +27,9 @@ class PacksController < ApplicationController
 
   # GET /packs
   def index
+    @contributions = Contribution.contributions_list(Pack, params)
     respond_to do |format|
       format.html # index.rhtml
-    end
-  end
-  
-  # GET /packs/all
-  def all
-    respond_to do |format|
-      format.html # all.rhtml
     end
   end
   
@@ -420,13 +413,6 @@ class PacksController < ApplicationController
     else
       return uri
     end
-  end
-  
-  def find_packs
-    @packs = Pack.find(:all, 
-                       :order => "title ASC",
-                       :page => { :size => 20, 
-                       :current => params[:page] })
   end
   
   def find_pack_auth

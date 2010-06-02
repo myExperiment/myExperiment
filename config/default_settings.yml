@@ -421,3 +421,43 @@ home_page_stats:
 
 label_icons:
 
+contribution_order_options:
+
+  - option: rank
+    label:  Rank
+    order:  rank DESC
+
+  - option: title
+    label:  Title
+    order:  label, rank DESC
+    
+  - option: latest
+    label:  Latest
+    order:  created_at DESC, rank DESC
+    
+  - option: last_updated
+    label:  Last updated
+    order:  updated_at DESC, rank DESC
+    
+  - option: rating
+    label:  Community rating
+    order:  rating DESC, rank DESC
+    
+  - option: viewings
+    label:  Most viewed
+    order:  viewings_count DESC, rank DESC
+    
+  - option: downloads
+    label:  Most downloaded
+    order:  downloads_count DESC, rank DESC
+
+  - option: type
+    label:  Type
+    joins:  LEFT OUTER JOIN content_types ON contributions.content_type_id = content_types.id
+    order:  content_types.title, rank DESC
+
+  - option: licence
+    label:  Licence
+    joins:  LEFT OUTER JOIN licenses ON contributions.license_id = licenses.id
+    order:  licenses.title, rank DESC
+
