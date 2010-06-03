@@ -24,9 +24,9 @@
   </select>
 </div>
 
-<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
-
 <div style="clear: right"></div>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
 
 <%= render :partial => "contributions/list", :locals => { :collection => @contributions, :table => true } %>
 
