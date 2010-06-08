@@ -33,18 +33,7 @@
 	<%= render :partial => "packs/all_tags" %>
 <% end -%>
 
-<div style="float: right; margin: 0.5em;">
-  Sort by:
-  <select onchange="javascript:location = this.options[this.selectedIndex].value;">
-    <% Conf.contribution_order_options.each do |args| %>
-      <option value="?order=<%= args["option"] -%>" <% if params[:order] == args["option"] -%> selected="selected"<% end -%>><%= args["label"] -%></option>
-    <% end %>
-  </select>
-</div>
-
-<div style="clear: right"></div>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions, :sort_by => Conf.contribution_order_options } %>
 
 <%= render :partial => "contributions/list", :locals => { :collection => @contributions, :table => true } %>
 
