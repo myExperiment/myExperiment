@@ -36,9 +36,10 @@ class Contribution < ActiveRecord::Base
     # This uses the proprietary MySQL feature "SQL_CALC_FOUND_ROWS" to
     # determine the total number of rows if it weren't for the LIMIT clause
 
-    results = Authorization.authorised_index(:type => klass,
+    results = Authorization.authorised_index(klass,
+        :all,
         :select => 'SQL_CALC_FOUND_ROWS contributions.*',
-        :user => user,
+        :authorised_user => user,
         :contribution_records => true,
         :limit => "#{offset}, #{num}",
         :joins => args["joins"],
@@ -77,14 +78,14 @@ class Contribution < ActiveRecord::Base
   
   # returns the 'most recent' Contributions
   # the maximum number of results is set by #limit#
-  def self.most_recent(limit=10, klass=nil)
-    Authorization.authorised_index(:type => klass ? Object.const_get(klass) : nil, :contribution_records => true, :limit => limit, :order => 'created_at DESC')
+  def self.most_recent(limit = 10, klass = 'Contribution')
+    Authorization.authorised_index(Object.const_get(klass), :all, :contribution_records => true, :limit => limit, :order => 'created_at DESC')
   end
   
   # returns the 'last updated' Contributions
   # the maximum number of results is set by #limit#
-  def self.last_updated(limit=10, klass=nil)
-    Authorization.authorised_index(:type => klass ? Object.const_get(klass) : nil, :contribution_records => true, :limit => limit, :order => 'updated_at DESC')
+  def self.last_updated(limit = 10, klass = 'Contribution')
+    Authorization.authorised_index(Object.const_get(klass), :all, :contribution_records => true, :limit => limit, :order => 'updated_at DESC')
   end
   
   # returns the 'most favourited' Contributions

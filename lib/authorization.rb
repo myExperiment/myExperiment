@@ -732,45 +732,45 @@ module Authorization
     end
   end
 
-  def self.authorised_index(args = {})
+  def self.authorised_index(model, *args)
 
-    def self.get_friend_ids(user)
-      user.friendships_accepted.map  do |fs| fs.user_id   end +
-      user.friendships_completed.map do |fs| fs.friend_id end
+    def self.view_conditions(user_id = nil, friends = nil, networks = nil)
+
+      return "(share_mode = 0 OR share_mode = 1 OR share_mode = 2)" if user_id.nil?
+
+      policy_part =
+        "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
+          (share_mode = 0 OR share_mode = 1 OR share_mode = 2) OR
+          ((share_mode = 1 OR share_mode = 3 OR share_mode = 4 OR update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
+           (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
+
+      "(#{policy_part} OR #{permission_part(['view', 'download', 'edit'], user_id, networks)})"
     end
 
-    def self.get_network_ids(user)
-      (user.networks_owned + user.networks).map do |n| n.id end
+    def self.download_conditions(user_id = nil, friends = nil, networks = nil)
+
+      return "(share_mode = 0)" if user_id.nil?
+
+      policy_part = 
+        "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
+          (share_mode = 0) OR
+          ((share_mode = 1 OR share_mode = 3 OR update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
+           (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
+
+      "(#{policy_part} OR #{permission_part(['download', 'edit'], user_id, networks)})"
     end
 
-    def self.view_part(user_id = nil, friends = nil)
+    def self.edit_conditions(user_id = nil, friends = nil, networks = nil)
 
-      return "share_mode = 0 OR share_mode = 1 OR share_mode = 2" if user_id.nil?
+      return "(share_mode = 0 AND update_mode = 0)" if user_id.nil?
 
-      "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
-        (share_mode = 0 OR share_mode = 1 OR share_mode = 2) OR
-        ((share_mode = 1 OR share_mode = 3 OR share_mode = 4 OR update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
-         (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
-    end
+      policy_part =
+        "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
+          (share_mode = 0 AND update_mode = 0) OR
+          ((update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
+           (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
 
-    def self.download_part(user_id = nil, friends = nil)
-
-      return "share_mode = 0" if user_id.nil?
-
-      "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
-        (share_mode = 0) OR
-        ((share_mode = 1 OR share_mode = 3 OR update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
-         (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
-    end
-
-    def self.edit_part(user_id = nil, friends = nil)
-
-      return "share_mode = 0 AND update_mode = 0" if user_id.nil?
-
-      "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
-        (share_mode = 0 AND update_mode = 0) OR
-        ((update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
-         (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
+      "(#{policy_part} OR #{permission_part(['edit'], user_id, networks)})"
     end
 
     def self.permission_part(permissions, user_id, networks)
@@ -782,123 +782,90 @@ module Authorization
          (permissions.contributor_type = 'Network' AND permissions.contributor_id IN #{networks})))"
     end
 
-    user = args[:user]
+    # extract the opts hash
+
+    opts = args.last.class == Hash ? args.pop.clone : {}
+
+    user = opts.delete(:authorised_user)
+
+    joins      = []
+    conditions = []
 
     if (user != 0) && (user != nil)
 
       user_id = user.id
 
-      friend_ids  = get_friend_ids(user)
-      network_ids = get_network_ids(user)
+      friend_ids = user.friendships_accepted.map  do |fs| fs.user_id   end +
+                   user.friendships_completed.map do |fs| fs.friend_id end
+
+      network_ids = (user.networks_owned + user.networks).map do |n| n.id end
 
       friends  = friend_ids.empty?  ? "(-1)" : "(#{friend_ids.join(",")})"
       networks = network_ids.empty? ? "(-1)" : "(#{network_ids.join(",")})"
     end
 
-    # pagination
-
-    if args[:limit]
-      if args[:offset]
-        limit_part = "LIMIT #{args[:offset]}, #{args[:limit]}"
-      else
-        limit_part = "LIMIT #{args[:limit]}"
-      end
-    else
-      limit_part = ""
-    end
-
-    # ordering
-
-    if args[:order]
-      order_part = "ORDER BY #{args[:order]}"
-    else
-      order_part = ''
-    end
-
     # filtering
 
-    if user_id
-      where_bits = ["#{view_part(user_id, friends)} OR #{permission_part(['view', 'download', 'edit'], user_id, networks)}"]
-    else
-      where_bits = [view_part]
+    conditions.push(view_conditions(user_id, friends, networks))
+    conditions.push("contributions.contributable_type = '#{model.name}'") if model != Contribution
+
+    # result model
+
+    if opts.delete(:contribution_records)
+      model = Contribution
     end
 
-    if args[:type]
-      where_bits.push("contributions.contributable_type = '#{args[:type].name}'")
-    end
-
-    where_part = where_bits.map do |b| "(#{b})" end.join(" AND ")
-
-    # result type
-
-    if !args[:type] || args[:contribution_records] 
-      contributable_type = nil
-      result_model       = Contribution
-      from_part          = "FROM contributions"
-    else
-      contributable_type = args[:type].name.underscore.pluralize
-      result_model       = args[:type]
-      from_part          = "FROM #{contributable_type} INNER JOIN contributions ON contributions.contributable_id = #{contributable_type}.id"
+    if model != Contribution
+      joins.push("INNER JOIN contributions ON contributions.contributable_id = #{model.table_name}.id AND contributions.contributable_type = '#{model.name}'")
     end
 
     # selection
 
-    if args[:select]
-      select_part = args[:select]
-    elsif contributable_type
-      select_part = "#{args[:type].name.underscore.pluralize}.*"
-    else 
-      select_part = "contributions.*"
+    opts[:select] = "#{model.table_name}.*" unless opts[:select]
+
+    # add in the extra joins needed for the authorisation checks
+
+    joins.push("INNER JOIN policies ON contributions.policy_id = policies.id")
+    joins.push("LEFT OUTER JOIN permissions ON policies.id = permissions.policy_id") if user_id
+
+    # include the effective permissions in the result?
+
+    if opts.delete(:include_permissions)
+
+      opts[:select] << ", BIT_OR(#{view_conditions(user_id, friends, networks)})     AS view_permission"
+      opts[:select] << ", BIT_OR(#{download_conditions(user_id, friends, networks)}) AS download_permission"
+      opts[:select] << ", BIT_OR(#{edit_conditions(user_id, friends, networks)})           AS edit_permission"
     end
 
-    # do the query
+    # merge the joins
 
-    if user_id
-
-      # This is the version used for a member
-
-      query = "
-
-        SELECT #{select_part},
-
-          BIT_OR(#{view_part(user_id, friends)}     OR #{permission_part(['view', 'download', 'edit'], user_id, networks)}) AS view,
-          BIT_OR(#{download_part(user_id, friends)} OR #{permission_part(['view', 'download'],         user_id, networks)}) AS download,
-          BIT_OR(#{edit_part(user_id, friends)}     OR #{permission_part(['view'],                     user_id, networks)}) AS edit
-
-        #{from_part}
-        #{args[:joins]}
-        INNER JOIN policies ON contributions.policy_id = policies.id
-        LEFT OUTER JOIN permissions ON policies.id = permissions.policy_id
-        WHERE #{where_part}
-        GROUP BY contributable_type, contributable_id
-        #{order_part}
-        #{limit_part}"
-
-      result_model.find_by_sql(query)
-
-    else 
-
-      # This is the version used for non-members
-
-      query = "
-
-        SELECT #{select_part},
-
-            BIT_OR(#{view_part})     AS view,
-            BIT_OR(#{download_part}) AS download,
-            BIT_OR(#{edit_part})     AS edit
-
-          #{from_part}
-          #{args[:joins]}
-          INNER JOIN policies ON contributions.policy_id = policies.id
-          WHERE #{where_part}
-          GROUP BY contributable_type, contributable_id
-          #{order_part}
-          #{limit_part}"
-
-      result_model.find_by_sql(query)
-
+    if joins.length > 0
+      opts[:joins] = [] unless opts[:joins]
+      opts[:joins] = [opts[:joins]] unless opts[:joins].class == Array
+      opts[:joins] = opts[:joins] + joins
+      opts[:joins] = opts[:joins].join(" ") # Rails 1 does not support arrays here
     end
+
+    # merge the conditions
+
+    if conditions.length > 0
+
+      conditions = conditions.map do |c| "(#{c})" end
+
+      case opts[:conditions].class.name
+        when "Array";  opts[:conditions][0] = "(#{([opts[:conditions][0]] + conditions).join(') AND (')})"
+        when "String"; opts[:conditions]    = "(#{([opts[:conditions]] + conditions).join(') AND (')})"
+        else;          opts[:conditions]    = "(#{conditions.join(') AND (')})"
+      end
+    end
+
+    # enforce grouping by contributable type and id
+
+    opts[:group] = 'contributable_type, contributable_id'
+
+    # do it
+
+    model.find(*args + [opts])
   end
 end
 
