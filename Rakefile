@@ -23,6 +23,9 @@ desc 'Refresh contribution caches'
 task "myexp:refresh:contributions" do
   require File.dirname(__FILE__) + '/config/environment'
 
+  all_viewings = Viewing.find(:all, :conditions => "accessed_from_site = 1").group_by do |v| v.contribution_id end
+  all_downloads = Download.find(:all, :conditions => "accessed_from_site = 1").group_by do |v| v.contribution_id end
+
   Contribution.find(:all).each do |c|
     c.contributable.update_contribution_rank
     c.contributable.update_contribution_rating
@@ -33,6 +36,9 @@ task "myexp:refresh:contributions" do
     c.reload
     c.update_attribute(:created_at, c.contributable.created_at)
     c.update_attribute(:updated_at, c.contributable.updated_at)
+
+    c.update_attribute(:site_viewings_count,  all_viewings[c.id]  ? all_viewings[c.id].length  : 0)
+    c.update_attribute(:site_downloads_count, all_downloads[c.id] ? all_downloads[c.id].length : 0)
 
     ActiveRecord::Base.record_timestamps = true
   end

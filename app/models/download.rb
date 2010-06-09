@@ -1,12 +1,17 @@
 class Download < ActiveRecord::Base
-  belongs_to :contribution,
-             :counter_cache => true
-             
-  belongs_to :user,
-             :counter_cache => true
+
+  belongs_to :contribution
+  belongs_to :user
              
   validates_presence_of :contribution
   
+  after_save { |download|
+    Contribution.increment_counter(:downloads_count,      download.contribution.id)
+    Contribution.increment_counter(:site_downloads_count, download.contribution.id) if download.accessed_from_site
+
+    User.increment_counter(:downloads_count, download.user.id) if download.user
+  }
+
   # returns the 'most recent' Downloads #after# a given time
   # the maximum number of results is set by #limit#
   def self.most_recent(after=(Time.now - 3.hours), limit=10)
