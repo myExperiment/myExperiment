@@ -49,13 +49,13 @@ class Contribution < ActiveRecord::Base
       },
 
       {
-        "order"  => "viewings_count DESC, rank DESC",
+        "order"  => "site_viewings_count DESC, rank DESC",
         "option" => "viewings",
         "label"  => "Most viewed"
       },
 
       {
-        "order"  => "downloads_count DESC, rank DESC",
+        "order"  => "site_downloads_count DESC, rank DESC",
         "option" => "downloads",
         "label"  => "Most downloaded"
       },
