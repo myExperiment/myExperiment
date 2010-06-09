@@ -15,7 +15,7 @@
 	<%= render :partial => "workflows/all_tags" %>
 <% end -%>
 
-<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions, :sort_by => Conf.contribution_order_options } %>
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions, :sort_by => Contribution.order_options } %>
 
 <%= render :partial => "contributions/list", :locals => { :collection => @contributions, :table => true } %>
 

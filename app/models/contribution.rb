@@ -16,38 +16,79 @@ class Contribution < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
 
+  def self.order_options
+    [
+      {
+        "order"  => "rank DESC",
+        "option" => "rank",
+        "label"  => "Rank"
+      },
+      
+      {
+        "order"  => "label, rank DESC",
+        "option" => "title",
+        "label"  => "Title"
+      },
+
+      {
+        "order"  => "created_at DESC, rank DESC",
+        "option" => "latest",
+        "label"  => "Latest"
+      },
+
+      {
+        "order"  => "updated_at DESC, rank DESC",
+        "option" => "last_updated",
+        "label"  => "Last updated"
+      },
+
+      {
+        "order"  => "rating DESC, rank DESC",
+        "option" => "rating",
+        "label"  => "Community rating"
+      },
+
+      {
+        "order"  => "viewings_count DESC, rank DESC",
+        "option" => "viewings",
+        "label"  => "Most viewed"
+      },
+
+      {
+        "order"  => "downloads_count DESC, rank DESC",
+        "option" => "downloads",
+        "label"  => "Most downloaded"
+      },
+
+      {
+        "joins"  => "LEFT OUTER JOIN content_types ON contributions.content_type_id = content_types.id",
+        "order"  => "content_types.title, rank DESC",
+        "option" => "type",
+        "label"  => "Type"
+      },
+
+      {
+        "joins"  => "LEFT OUTER JOIN licenses ON contributions.license_id = licenses.id",
+        "order"  => "licenses.title, rank DESC",
+        "option" => "licence",
+        "label"  => "Licence"
+      }
+    ]
+  end
+
   def self.contributions_list(klass = nil, params = nil, user = nil)
 
-    sort_options = Conf.contribution_order_options
+    sort_options = Contribution.order_options.find do |x| x["option"] == params["order"] end
 
-    args = sort_options.first
-
-    sort_options.each do |sort_option|
-      args = sort_option if params["order"] == sort_option["option"]
-    end
-    
-    num    = 10
-    offset = 0
-
-    if params["page"]
-      offset = (params["page"].to_i - 1) * num
-    end
-
-    # This uses the proprietary MySQL feature "SQL_CALC_FOUND_ROWS" to
-    # determine the total number of rows if it weren't for the LIMIT clause
+    sort_options ||= Contribution.order_options.first
 
     results = Authorization.authorised_index(klass,
         :all,
-        :select => 'SQL_CALC_FOUND_ROWS contributions.*',
         :authorised_user => user,
         :contribution_records => true,
-        :limit => "#{offset}, #{num}",
-        :joins => args["joins"],
-        :order => args["order"])
-
-    total = ActiveRecord::Base.connection.execute("SELECT FOUND_ROWS()").fetch_row.first.to_i
-
-    PaginatedArray.new(results, :total => total, :limit => num, :offset => offset)
+        :page => { :size => 10, :current => params["page"] },
+        :joins => sort_options["joins"],
+        :order => sort_options["order"])
   end
 
   # returns the 'most downloaded' Contributions
