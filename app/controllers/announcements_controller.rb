@@ -22,6 +22,16 @@ class AnnouncementsController < ApplicationController
 
   def show
     @announcement = Announcement.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.rhtml
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} announcements #{@announcement.id}`
+        }
+      end
+    end
   end
 
   def new

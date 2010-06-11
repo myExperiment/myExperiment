@@ -18,6 +18,12 @@ class TagsController < ApplicationController
   def show
     respond_to do |format|
       format.html # show.rhtml
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} tags #{@tag.id}`
+        }
+      end
     end
   end
   

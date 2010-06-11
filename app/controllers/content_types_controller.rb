@@ -22,6 +22,16 @@ class ContentTypesController < ApplicationController
     @blob_count = Blob.count(:conditions => ['content_type_id = ?', @content_type.id])
 
     @total_count = @workflow_count + @blob_count
+
+    respond_to do |format|
+      format.html # show.rhtml
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} content_types #{@content_type.id}`
+        }
+      end
+    end
   end
 
   private

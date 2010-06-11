@@ -67,6 +67,12 @@ class MessagesController < ApplicationController
       @message_folder = message_folder
       respond_to do |format|
         format.html # show.rhtml
+
+        if Conf.rdfgen_enable
+          format.rdf {
+            render :inline => `#{Conf.rdfgen_tool} messages #{@message.id}`
+          }
+        end
       end  
     end
     

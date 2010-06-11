@@ -61,6 +61,12 @@ class MembershipsController < ApplicationController
   def show
     respond_to do |format|
       format.html # show.rhtml
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} memberships #{@membership.id}`
+        }
+      end
     end
   end
 

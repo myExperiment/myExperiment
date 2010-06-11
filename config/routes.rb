@@ -5,6 +5,42 @@ ActionController::Routing::Routes.draw do |map|
   # rest routes
   rest_routes(map)
 
+  # LoD routes
+  if Conf.rdfgen_enable
+
+    map.connect '/:contributable_type/:contributable_id/attributions/:attribution_id.:format',
+      :controller => 'linked_data', :action => 'attributions'
+
+    map.connect '/:contributable_type/:contributable_id/citations/:citation_id.:format',
+      :controller => 'linked_data', :action => 'citations'
+
+    map.connect '/:contributable_type/:contributable_id/comments/:comment_id.:format',
+      :controller => 'linked_data', :action => 'comments'
+
+    map.connect '/:contributable_type/:contributable_id/credits/:credit_id.:format',
+      :controller => 'linked_data', :action => 'credits'
+
+    map.connect '/users/:user_id/favourites/:favourite_id.:format',
+      :controller => 'linked_data', :action => 'favourites'
+
+    map.connect '/packs/:contributable_id/local_pack_entries/:local_pack_entry_id.:format',
+      :controller => 'linked_data', :action => 'local_pack_entries',
+      :contributable_type => 'packs'
+
+    map.connect '/packs/:contributable_id/remote_pack_entries/:remote_pack_entry_id.:format',
+      :controller => 'linked_data', :action => 'remote_pack_entries',
+      :contributable_type => 'packs'
+
+    map.connect '/:contributable_type/:contributable_id/policies/:policy_id.:format',
+      :controller => 'linked_data', :action => 'policies'
+
+    map.connect '/:contributable_type/:contributable_id/ratings/:rating_id.:format',
+      :controller => 'linked_data', :action => 'ratings'
+
+    map.connect '/tags/:tag_id/taggings/:tagging_id.:format',
+      :controller => 'linked_data', :action => 'taggings'
+  end
+
   # Runners
   map.resources :runners, :member => { :verify => :get }
   

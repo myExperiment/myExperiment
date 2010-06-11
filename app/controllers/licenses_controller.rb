@@ -11,6 +11,16 @@ class LicensesController < ApplicationController
 
   def show
     @license = License.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.rhtml
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} licenses #{@license.id}`
+        }
+      end
+    end
   end
 
   def new

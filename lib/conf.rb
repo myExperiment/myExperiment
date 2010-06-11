@@ -134,6 +134,14 @@ class Conf
     self.fetch_entry('validate_email_veracity')
   end
 
+  def self.rdfgen_enable
+    self.fetch_entry('rdfgen_enable')
+  end
+
+  def self.rdfgen_tool
+    self.fetch_entry('rdfgen_tool')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)

@@ -19,6 +19,12 @@ class ExperimentsController < ApplicationController
   def show
     respond_to do |format|
       format.html # show.rhtml
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} experiments #{@experiment.id}`
+        }
+      end
     end
   end
 

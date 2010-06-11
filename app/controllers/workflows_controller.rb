@@ -231,6 +231,16 @@ class WorkflowsController < ApplicationController
 
     respond_to do |format|
       format.html # show.rhtml
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          if params[:version]
+            render :inline => `#{Conf.rdfgen_tool} workflows #{@workflow.id} versions/#{@viewing_version.version}`
+          else
+            render :inline => `#{Conf.rdfgen_tool} workflows #{@workflow.id}`
+          end
+        }
+      end
     end
   end
 

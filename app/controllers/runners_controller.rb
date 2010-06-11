@@ -21,6 +21,12 @@ class RunnersController < ApplicationController
   def show
     respond_to do |format|
       format.html # show.rhtml
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} runners #{@runner.id}`
+        }
+      end
     end
   end
 

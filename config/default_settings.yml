@@ -421,3 +421,8 @@ home_page_stats:
 
 label_icons:
 
+# rdfgen_enable
+
+rdfgen_enable: false
+
+rdfgen_tool:
