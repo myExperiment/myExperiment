@@ -33,3 +33,10 @@
 		<%= @announcement.body_html %>
 	</div>
 </div>
+
+<%= render :partial => "contributions/alternative_formats", :locals => {
+  :nir  => announcement_url(@announcement),
+  :html => formatted_announcement_url(:id => @announcement.id, :format => 'html'),
+  :rdf  => formatted_announcement_url(:id => @announcement.id, :format => 'rdf'),
+  :xml  => formatted_announcement_url(:id => @announcement.id, :format => 'xml') } %>
+

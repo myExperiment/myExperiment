@@ -36,3 +36,10 @@
 		<%= @license.description_html %>
 	</div>
 </div>
+
+<%= render :partial => "contributions/alternative_formats", :locals => {
+  :nir  => license_url(@license),
+  :html => formatted_license_url(:id => @license.id, :format => 'html'),
+  :rdf  => formatted_license_url(:id => @license.id, :format => 'rdf'),
+  :xml  => formatted_license_url(:id => @license.id, :format => 'xml') } %>
+

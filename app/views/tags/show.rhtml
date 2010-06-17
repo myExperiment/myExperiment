@@ -30,6 +30,11 @@
 	<% end %>
 <% end -%>
 
+<%= render :partial => "contributions/alternative_formats", :locals => {
+  :nir  => tag_url(@tag),
+  :html => formatted_tag_url(:id => @tag.id, :format => 'html'),
+  :rdf  => formatted_tag_url(:id => @tag.id, :format => 'rdf'),
+  :xml  => formatted_tag_url(:id => @tag.id, :format => 'xml') } %>
 
 <% if false # legacy... %>
 <% if @internal_type -%>

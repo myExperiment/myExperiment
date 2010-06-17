@@ -67,3 +67,10 @@
 		<% end -%>
 	</div>
 </div>
+
+<%= render :partial => "contributions/alternative_formats", :locals => {
+  :nir  => experiment_url(@experiment),
+  :html => formatted_experiment_url(:id => @experiment.id, :format => 'html'),
+  :rdf  => formatted_experiment_url(:id => @experiment.id, :format => 'rdf'),
+  :xml  => formatted_experiment_url(:id => @experiment.id, :format => 'xml') } %>
+
