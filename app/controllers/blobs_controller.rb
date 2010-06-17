@@ -51,7 +51,7 @@ class BlobsController < ApplicationController
 
   # GET /files
   def index
-    @contributions = Contribution.contributions_list(Blob, params)
+    @contributions = Contribution.contributions_list(Blob, params, current_user)
     respond_to do |format|
       format.html # index.rhtml
     end

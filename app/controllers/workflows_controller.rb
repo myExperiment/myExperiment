@@ -213,7 +213,7 @@ class WorkflowsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @contributions = Contribution.contributions_list(Workflow, params)
+        @contributions = Contribution.contributions_list(Workflow, params, current_user)
         # index.rhtml
       end
       format.rss do

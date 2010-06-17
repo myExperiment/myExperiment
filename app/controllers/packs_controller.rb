@@ -27,7 +27,7 @@ class PacksController < ApplicationController
 
   # GET /packs
   def index
-    @contributions = Contribution.contributions_list(Pack, params)
+    @contributions = Contribution.contributions_list(Pack, params, current_user)
     respond_to do |format|
       format.html # index.rhtml
     end
