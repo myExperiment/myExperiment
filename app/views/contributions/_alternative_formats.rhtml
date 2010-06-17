@@ -5,9 +5,9 @@
   <p><b>Non-Information Resource URI:</b> <%= link_to(nir, h(nir)) -%></p>
   <br>
   <p style="font-size: 110%; font-weight: bold">Alternative Formats</p>
-  <div style="width: 33%; float: left; text-align: center"><a href="<%= html -%>"><img src="http://eprints.ecs.soton.ac.uk/style/images/fileicons/text_html.png" alt="HTML" /></a></div>
-  <div style="width: 33%; float: left; text-align: center"><a href="<%= rdf -%>"><img src="http://eprints.ecs.soton.ac.uk/style/images/fileicons/application_rdf+xml.png" alt="RDF" /></a></div>
-  <div style="width: 33%; float: left; text-align: center"><a href="<%= xml -%>"><img src="http://eprints.ecs.soton.ac.uk/style/images/fileicons/text_xml.png" alt="XML" /></a></div>
+  <div style="width: 33%; float: left; text-align: center"><a href="<%= html -%>"><img src="<%= image_path("html_icon.png") -%>" alt="HTML" /></a></div>
+  <div style="width: 33%; float: left; text-align: center"><a href="<%= rdf -%>"><img src="<%= image_path("rdf_icon.png") -%>" alt="RDF" /></a></div>
+  <div style="width: 33%; float: left; text-align: center"><a href="<%= xml -%>"><img src="<%= image_path("xml_icon.png") -%>" alt="XML" /></a></div>
   <div style="clear: both"></div>
 </div>
 
