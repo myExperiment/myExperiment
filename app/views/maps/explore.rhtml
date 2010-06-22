@@ -1,4 +1,3 @@
-<body onunload="GUnload()">
 
 <script type="text/javascript">      
 			  var surveyMap;
@@ -51,11 +50,4 @@ function getOverlay(tileService, descriptor) {
  
  <script type="text/javascript">var tileService = 'http://tilefish.casa.ucl.ac.uk/TileRequestHandler.ashx?u={0}&t={1}'; var descriptor = '<%= @map.map_descriptor -%>'; surveyMap.addOverlay(getOverlay(tileService, descriptor));</script>
  <script type="text/javascript">surveyMap.setCenter(new GLatLng(<%= @map.latitude -%>, <%= @map.longitude -%>), <%= @map.zoom -%>);</script>
-         
-</body>
-
-
-
-
-
 
