@@ -240,7 +240,7 @@ class MapsController < ApplicationController
   def explore
     respond_to do |format|
       format.html {
-        @extra_head_content = "<script src=\"http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=#{h @map.api_key}\" type=\"text/javascript\"></script>"
+        @extra_head_content = "<script src=\"http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=#{@map.api_key}\" type=\"text/javascript\"></script>"
         # explore.rhtml
       }
     end
@@ -250,8 +250,7 @@ class MapsController < ApplicationController
   
   def find_map_auth
     begin
-      map = Map.find(params[:id])
-      
+      map = Map.find(params[:id]) 
       if Authorization.is_authorized?(action_name, nil, map, current_user)
         @map = map
         
