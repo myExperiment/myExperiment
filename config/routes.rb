@@ -122,7 +122,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/workflows/:id/versions/:version.:format', :controller => 'workflows', :action => 'show'
 
   # curation
-  ['workflows', 'files', 'packs'].each do |contributable_type|
+  ['workflows', 'files', 'packs', 'maps'].each do |contributable_type|
     map.curation "#{contributable_type}/:contributable_id/curation",
       :contributable_type => contributable_type,
       :controller         => 'contributions',
@@ -145,6 +145,19 @@ ActionController::Routing::Routes.draw do |map|
     # ie: we cannot have polymorphic nested resources.
     #file.resources :reviews
     file.resources :comments, :collection => { :timeline => :get }
+  end
+
+  # maps
+  map.resources(:maps, 
+    :collection => { :search => :get }, 
+    :member => { :download => :get,
+                 :statistics => :get,
+                 :favourite => :post,
+                 :favourite_delete => :delete,
+                 :rate => :post, 
+                 :explore => :get,
+                 :tag => :post }) do |m|
+    m.resources :comments, :collection => { :timeline => :get }
   end
 
   # blogs
@@ -183,7 +196,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'users/forgot_password', :controller => "users", :action => "forgot_password"
   map.connect 'users/reset_password/:reset_code', :controller => "users", :action => "reset_password"
   
-  [ 'news', 'friends', 'groups', 'workflows', 'files', 'packs', 'forums', 'blogs', 'credits', 'tags', 'favourites' ].each do |tab|
+  [ 'news', 'friends', 'groups', 'workflows', 'files', 'packs', 'maps', 'forums', 'blogs', 'credits', 'tags', 'favourites' ].each do |tab|
     map.connect "users/:id/#{tab}", :controller => 'users', :action => tab
   end
   

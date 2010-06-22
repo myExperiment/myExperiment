@@ -1,0 +1,23 @@
+<center>
+	<table width="320" class="contributable">
+	  <tr>
+	    <td>
+	      
+	      <p>
+	        <strong>Downloaded:</strong> <%=pluralize map.contribution.downloads_count, "time" %>
+	      </p>
+	    </td>
+	    <td>
+	      <strong>Uploader:</strong><br/>
+	      <%= contributor(map.contribution.contributor_id, map.contribution.contributor_type, true, 60) %>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td colspan="2">
+	      <% if Authorization.is_authorized?('show', nil, map, current_user) %><%= icon "show", map_path(map), nil, nil, "View" %> <% end %>
+	      <% if logged_in? and Authorization.is_authorized?('edit', nil, map, current_user) %><%= icon "edit", edit_map_path(map) %> <% end %>
+	      <% if logged_in? and map.owner?(current_user) %><%= icon "destroy", map_path(map), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
+	    </td>
+	  </tr>
+	</table>
+</center>

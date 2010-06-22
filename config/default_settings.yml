@@ -156,6 +156,10 @@ main_tabs:
     link:       /files
     controller: blobs
 
+  - label:      Maps
+    link:       /maps
+    controller: maps
+
   - label:      Packs
     link:       /packs
     controller: packs
@@ -198,6 +202,10 @@ new_menu:
   - label:      File
     link:       /files/new
     controller: blobs
+
+  - label:      Map
+    link:       /maps/new
+    controller: maps
 
   - label:      Pack
     link:       /packs/new
@@ -430,6 +438,8 @@ home_page_stats:
 #                   pack:     manhattan_studio/folder-closed_16.png
 
 label_icons:
+
+  map: famfamfam_silk/map.png
 
 # rdfgen_enable
 

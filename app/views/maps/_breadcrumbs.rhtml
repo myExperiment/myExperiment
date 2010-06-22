@@ -1,0 +1,21 @@
+<li><%= link_to 'Maps', maps_path -%></li>
+
+<% if ["show", "new", "edit", "all", "search"].include? controller.action_name.to_s -%>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" -%>
+    <li><%= contributable_name(@map.id, 'Map') -%></li>
+  <% when "new" %>
+    <li>Create Map</li>
+  <% when "edit" %>
+		<li><%= link_to "#{contributable_name(@map.id, 'Map')}", map_path(@map) -%></li>
+		<li><b>&#187;</b></li>
+    <li>Manage</li>
+  <% when "all" %>
+    <li>All Maps</li>
+	<% when "search" %>  
+    <li>Search Results</li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

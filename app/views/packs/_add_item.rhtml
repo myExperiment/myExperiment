@@ -48,7 +48,7 @@
 						<td>
 							<select id="uri2" name="uri" style="width: 320px;">
 					  		<% contributions.each do |c| -%>
-									<% if ["workflow", "blob", "pack"].include? c.contributable_type.downcase -%>
+									<% if ["workflow", "blob", "map", "pack"].include? c.contributable_type.downcase -%>
 						    	  <% show = (c.contributable.class.to_s == 'Pack' ? (@pack.id != c.contributable.id) : true) -%> <!-- prevents from displaying current pack in the list of things that are enabled to be added to the current pack -->
 									  <% if show -%>
 										  <option value="<%= contributable_url(c.contributable_id, c.contributable_type, @base_host) -%>">
@@ -82,7 +82,7 @@
 						<td>
 							<select id="uri2" name="uri" style="width: 320px;">
 					  		<% bookmarks.each do |b| -%>
-									<% if ["workflow", "blob", "pack"].include? b.bookmarkable_type.downcase -%>
+									<% if ["workflow", "blob", "map", "pack"].include? b.bookmarkable_type.downcase -%>
 						    		<% show = (b.bookmarkable_type == 'Pack' ? (@pack.id != b.bookmarkable_id) : true) -%> <!-- prevents from displaying current pack in the list of things that are enabled to be added to the current pack -->
 									  <% if show -%>
 											<option value="<%= contributable_url(b.bookmarkable_id, b.bookmarkable_type, @base_host) -%>">

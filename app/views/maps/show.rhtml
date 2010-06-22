@@ -1,0 +1,166 @@
+<% t "#{contributable_name(@map.id, 'Map')} (#{h @map.contributor_name})" -%>
+
+<ul class="sectionIcons">
+  <li><%= icon('map', explore_map_path(@map), nil, nil, 'Interactive Map')%></li>
+	<% if Authorization.is_authorized?('edit', nil, @map, current_user) %>
+		<li><%= icon('manage', edit_map_path(@map), nil, nil, 'Manage Map Entry')%></li>
+	<% end -%>
+	<% if Authorization.is_authorized?('destroy', nil, @map, current_user) %>
+		<li><%= icon('destroy', map_path(@map), nil, { :confirm => 'This deletes the Map and all metadata such as tags, comments and ratings. Are you sure?', :method => :delete }, 'Delete Map Entry') %></li>
+	<% end %>
+</ul>
+
+<h1 class="contribution_title">Map Entry: <%= contributable_name(@map.id, 'Map') %></h1>
+
+<%= render :partial => "contributions/datetime_info", :locals => { :contributable => @map } -%>
+
+<div class="contribution_mini_nav">
+	|
+	<%= link_to "License", "#license" %>
+	|
+	<%= link_to "Credits (#{@map.creditations.length})", "#credits" %>
+	|
+	<%= link_to "Attributions (#{@map.attributors.length})", "#attributions" %>
+	|
+	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@map.tags.length})</span>", "#tags" %>
+	|
+	<%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@map).length})", "#featured_in_packs" %>
+	|
+	<%= link_to "Ratings (#{@map.ratings.length})", "#ratings" %>
+	|
+	<%= link_to "Attributed By (#{@map.attributions.length})", "#attributed_by" %>
+	|
+	<%= link_to "Favourited By (#{@map.bookmarks.length})", "#favourited_by" %>
+	| 
+	<% if logged_in? and @map.owner?(current_user) %>
+	  <br/>
+	  |
+		<!-- NB! Index of the 'sharing' tab might change! -->
+	  <a href="#sharing" onclick="selectTab($('tabsContainer'),0)">Sharing</a>
+	  |
+	<% end %>
+	<%= link_to "Comments (#{@map.comments.length})", "#comments" %> 
+	|
+</div>
+
+<div class="contribution_left_box">
+	<div class="contribution_version_box">
+		<div class="contribution_version_inner_box">
+			<p>
+			    <b>Title:</b>
+			    <span class="title"><%=h @map.title %></span>
+			</p>
+			
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section shows the overall description for this Map") %>
+				Description
+			</h3>
+			
+			<% unless @map.description.blank? %>
+				<div class="contribution_description">
+					<%= @map.description_html %>
+				</div>
+			<% else %>
+				<p class="none_text">
+					Not set
+				</p>
+			<% end %>
+			
+			<br/>
+			
+			<p>
+			    <b>URL:</b>
+			    <span class="title"><%=h @map.url %></span>
+			</p>
+
+		</div>
+	
+	</div>
+
+</div>
+
+<div class="contribution_right_box">
+	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @map } %>
+	
+	<%= render :partial => "contributions/license_box", :locals => { :contributable => @map } %>
+	
+	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @map, :edit_path => edit_map_path(@map) } %>
+	
+  <%= render :partial => "contributions/curation_box", :locals => { :contributable => @map } %>
+
+	<%= render :partial => "tags/tags_box", :locals => { :taggable => @map, 
+																											 :owner_id => ((@map.contributor_type == 'User') ? @map.contributor_id : nil), 
+																											 :add_path => tag_map_path(@map), 
+																											 :edit_path => edit_map_path(@map),
+																											 :allow_edit => Authorization.is_authorized?('edit', nil, @map, current_user) } %>
+																											 
+  <%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @map } %>
+	
+	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @map, :contributable_url => @map_entry_url } %>
+	
+	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @map } %>
+	
+	<%= render :partial => "contributions/attributed_by", :locals => { :contributable => @map } %>
+	
+	<%= render :partial => "contributions/favourited_box", :locals => { :contributable => @map,
+																																			:add_to_favourites_path => favourite_map_url(@map),
+																																			:remove_from_favourites_path => favourite_delete_map_url(@map) } %>
+	
+	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @map } %>
+</div>	
+
+<div class="clearer">&nbsp;</div>
+
+<!-- BEGIN tabs -->
+	
+<br/>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+	
+<% if logged_in? and @map.owner? current_user %>
+  
+	<a name="sharing"></a>
+	<div class="tabContainer">
+    <div class="tabTitle">Sharing</div>
+    <div class="tabContent">
+
+      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @map } %>
+      <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @map } %>
+	  
+      <% if Authorization.is_authorized?('edit', nil, @map, current_user) %>
+        <ul class="sectionIcons">
+          <li><%= icon('edit', edit_map_path(@map), nil, nil, 'Edit')%></li>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+	
+	<% if false %>
+  <div class="tabContainer">
+    <div class="tabTitle">Viewing History</div>
+    <div class="tabContent">
+      <%= render :partial => "contributions/history", :object => @map.contribution %>
+    </div>
+  </div>
+	<% end %>
+	
+<% end %>
+
+<!-- END tabs -->
+
+<br/>
+<br/>
+
+<div id="commentsBox">
+	<%= render :partial => "comments/comments", :locals => { :commentable => @map } %>
+</div>
+
+<% if false %>
+<%= render :partial => "contributions/alternative_formats", :locals => {
+  :nir  => map_url(@map),
+  :html => formatted_map_url(:id => @map.id, :format => 'html'),
+  :rdf  => formatted_map_url(:id => @map.id, :format => 'rdf'),
+  :xml  => formatted_map_url(:id => @map.id, :format => 'xml') } %>
+<% end %>

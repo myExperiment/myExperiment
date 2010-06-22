@@ -388,6 +388,13 @@ module ApplicationHelper
       else
         return nil
       end
+    when "Map"
+      if m = Map.find(:first, :conditions => ["id = ?", contributableid])
+        name = h(m.title)
+        return link ? link_to(name, map_url(m)) : name
+      else
+        return nil
+      end
     when "Pack"
       if p = Pack.find(:first, :conditions => ["id = ?", contributableid])
         return link ? link_to(h(p.title), pack_url(p)) : h(p.title)

@@ -540,6 +540,7 @@ def rest_resource_uri(ob)
   case ob.class.to_s
     when 'Workflow';               return workflow_url(ob)
     when 'Blob';                   return file_url(ob)
+    when 'Map';                    return map_url(ob)
     when 'Network';                return group_url(ob)
     when 'User';                   return user_url(ob)
     when 'Review';                 return workflow_review_url(ob.reviewable, ob)

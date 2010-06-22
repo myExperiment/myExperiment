@@ -144,6 +144,14 @@ module Authorization
       # Files can only be created by authenticated users
       return !user.nil?
     end
+
+    # Map permissions
+    
+    if (object_type == 'Map') && (action == 'create')
+
+      # Maps can only be created by authenticated users
+      return !user.nil?
+    end
     
     # Pack permissions
 
@@ -270,7 +278,7 @@ module Authorization
     #
     # this is required to get "policy_id" for policy-based aurhorized objects (like workflows / blobs / packs / contributions)
     # and to get objects themself for other object types (networks, experiments, jobs, tavernaenactors, runners)
-    if (thing_contribution.nil? && ["Workflow", "Blog", "Blob", "Pack", "Contribution"].include?(thing_type)) || 
+    if (thing_contribution.nil? && ["Workflow", "Blog", "Blob", "Map", "Pack", "Contribution"].include?(thing_type)) || 
        (thing_instance.nil? && ["Network", "Comment", "Bookmark", "Experiment", "Job", "TavernaEnactor", "Runner"].include?(thing_type))
       
       found_thing = find_thing(thing_type, thing_id)
@@ -280,7 +288,7 @@ module Authorization
         logger.error("UNEXPECTED ERROR - Couldn't find object to be authorized:(#{thing_type}, #{thing_id}); action: #{action_name}; user: #{user_id}")
         return false
       else
-        if ["Workflow", "Blog", "Blob", "Pack", "Contribution"].include?(thing_type)
+        if ["Workflow", "Blog", "Blob", "Map", "Pack", "Contribution"].include?(thing_type)
           # "contribution" are only found for these three types of object (and the contributions themself),
           # for all the rest - use instances
           thing_contribution = found_thing
@@ -296,7 +304,7 @@ module Authorization
     is_authorized = false
     
     case thing_type
-      when "Workflow", "Blog", "Blob", "Pack", "Contribution"
+      when "Workflow", "Blog", "Blob", "Map", "Pack", "Contribution"
         unless user_id.nil?
           # access is authorized and no further checks required in two cases:
           # ** user is the owner of the "thing"
@@ -458,7 +466,7 @@ module Authorization
 
   def Authorization.categorize_action(action_name)
     case action_name
-      when 'show', 'index', 'view', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'comments', 'comments_timeline', 'rate', 'tag',  'items', 'statistics', 'curation', 'tag_suggestions', 'extra_metadata', 'read', 'verify'
+      when 'show', 'index', 'view', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'comments', 'comments_timeline', 'rate', 'tag',  'items', 'statistics', 'curation', 'tag_suggestions', 'extra_metadata', 'read', 'verify', 'explore'
         action = 'view'
       when 'edit', 'new', 'create', 'update', 'new_version', 'create_version', 'destroy_version', 'edit_version', 'update_version', 'new_item', 'create_item', 'edit_item', 'update_item', 'quick_add', 'resolve_link', 'process_tag_suggestions', 'process_extra_metadata'
         action = 'edit'
@@ -484,7 +492,7 @@ module Authorization
     
     begin
       case thing_type
-        when "Workflow", "Blog", "Blob", "Pack"
+        when "Workflow", "Blog", "Blob", "Map", "Pack"
           # "find_by_sql" works faster itself PLUS only a subset of all fields is selected;
           # this is the most frequent query to be executed, hence needs to be optimised
           found_instance = Contribution.find_by_sql "SELECT contributor_id, contributor_type, policy_id FROM contributions WHERE contributable_id=#{thing_id} AND contributable_type='#{thing_type}'"
