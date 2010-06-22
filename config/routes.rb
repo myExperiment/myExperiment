@@ -77,9 +77,7 @@ ActionController::Routing::Routes.draw do |map|
   # packs
   map.resources :packs, 
     :collection => { :search => :get }, 
-    :member => { :comment => :post, 
-                 :comment_delete => :delete,
-                 :statistics => :get,
+    :member => { :statistics => :get,
                  :favourite => :post,
                  :favourite_delete => :delete,
                  :tag => :post,
@@ -92,7 +90,7 @@ ActionController::Routing::Routes.draw do |map|
                  :quick_add => :post,
                  :resolve_link => :post,
                  :items => :get } do |pack|
-    # No nested resources yet
+    pack.resources :comments, :collection => { :timeline => :get }
   end
     
 
@@ -105,21 +103,18 @@ ActionController::Routing::Routes.draw do |map|
                  :statistics => :get,
                  :favourite => :post, 
                  :favourite_delete => :delete, 
-                 :comment => :post, 
-                 :comment_delete => :delete, 
                  :rate => :post, 
                  :tag => :post, 
                  :create_version => :post, 
                  :destroy_version => :delete, 
                  :edit_version => :get, 
                  :update_version => :put, 
-                 :comments_timeline => :get, 
-                 :comments => :get,
                  :process_tag_suggestions => :post,
                  :tag_suggestions => :get } do |workflow|
     # workflows have nested citations
     workflow.resources :citations
     workflow.resources :reviews
+    workflow.resources :comments, :collection => { :timeline => :get }
   end
 
   # workflow redirect for linked data model
@@ -143,14 +138,13 @@ ActionController::Routing::Routes.draw do |map|
                  :statistics => :get,
                  :favourite => :post,
                  :favourite_delete => :delete,
-                 :comment => :post, 
-                 :comment_delete => :delete, 
                  :rate => :post, 
                  :tag => :post } do |file|
     # Due to restrictions in the version of Rails used (v1.2.3), 
     # we cannot have reviews as nested resources in more than one top level resource.
     # ie: we cannot have polymorphic nested resources.
     #file.resources :reviews
+    file.resources :comments, :collection => { :timeline => :get }
   end
 
   # blogs
@@ -222,11 +216,10 @@ ActionController::Routing::Routes.draw do |map|
                  :membership_invite => :post,
                  :membership_invite_external => :post,
                  :membership_request => :get, 
-                 :comment => :post, 
-                 :comment_delete => :delete, 
                  :rate => :post, 
                  :tag => :post } do |group|
     group.resources :announcements, :controller => :group_announcements
+    group.resources :comments, :collection => { :timeline => :get }
   end
   
   # The priority is based upon order of creation: first created -> highest priority.

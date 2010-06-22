@@ -13,7 +13,7 @@
 		<%= stylesheet_link_tag Conf.stylesheet %>
 		<%= stylesheet_link_tag 'gadgets' %>
 		
-		<% if ["workflows", "users"].include?(controller.controller_name.downcase) and ["comments_timeline", "timeline"].include?(controller.action_name.downcase) -%>
+		<% if controller.action_name.downcase == "timeline" %>
 			<script src="http://simile.mit.edu/timeline/api/timeline-api.js" type="text/javascript"></script>
 		<% end -%>
 		

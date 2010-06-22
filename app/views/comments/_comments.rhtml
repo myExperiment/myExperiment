@@ -8,11 +8,9 @@
 	<span class="count_text" style="vertical-align: middle;">(<%= commentable.comments.length %>)</span>
 </h2>
 
-<% if url_to_timeline -%>
-	<ul class="sectionIcons">
-		<li><%= icon('timeline', url_to_timeline, nil, nil, 'View Timeline')%></li>
-	</ul>
-<% end -%>
+<ul class="sectionIcons">
+  <li><%= icon('timeline', rest_resource_uri(commentable) + "/comments/timeline", nil, nil, 'View Timeline')%></li>
+</ul>
 
 <div class="commentsBox">
 	
@@ -45,7 +43,7 @@
 			<% # Hack for FCKEditor: -%>
 			<% @comment = Comment.new; @comment.id = 0 -%>
 			
-			<% form_remote_tag(:url => { :controller => controller.controller_name.to_s, :action => "comment" },
+			<% form_remote_tag(:url => rest_resource_uri(commentable) + "/comments",
 								 :before => fckeditor_before_js("comment", "comment"),
 							   :update => 'commentsBox', 
 							   :loading => "Element.show('addcomment_indicator')",

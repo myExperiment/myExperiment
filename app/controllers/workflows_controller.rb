@@ -61,56 +61,6 @@ class WorkflowsController < ApplicationController
     end
   end
   
-  # POST /workflows/1;comment
-  def comment
-    text = params[:comment][:comment]
-    ajaxy = true
-
-    if text.nil? or (text.length == 0)
-      text = params[:comment_0_comment_editor]
-      ajaxy = false
-    end
-    
-    if text and text.length > 0
-      comment = Comment.create(:user => current_user, :comment => text)
-      @workflow.comments << comment
-    end
-  
-    respond_to do |format|
-      if ajaxy
-        format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow } }
-      else
-        format.html { redirect_to workflow_url(@workflow) }
-      end
-    end
-  end
-  
-  # DELETE /workflows/1;comment_delete
-  def comment_delete
-    if params[:comment_id]
-      comment = Comment.find(params[:comment_id].to_i)
-      comment.destroy if Authorization.check(:action => 'destroy', :object => comment, :user => current_user)
-    end
-    
-    respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow } }
-    end
-  end
-  
-  def comments_timeline
-    respond_to do |format|
-      format.html # comments_timeline.rhtml
-    end
-  end
-  
-  # For simile timeline
-  def comments
-    @comments = Comment.find(:all, :conditions => [ "commentable_id = ? AND commentable_type = ? AND created_at > ? AND created_at < ?", @workflow.id, 'Workflow', params[:start].to_time, params[:end].to_time ] )
-    respond_to do |format|
-      format.json { render :partial => 'comments/timeline_json', :layout => false }
-    end
-  end
-  
   # POST /workflows/1;rate
   def rate
     if @workflow.contribution.contributor_type == 'User' and @workflow.contribution.contributor_id == current_user.id

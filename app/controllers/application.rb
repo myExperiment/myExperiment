@@ -358,5 +358,15 @@ class ApplicationController < ActionController::Base
     end
     
   end
-  
+ 
+  # helper function to determine the context of a polymorphic nested resource
+
+  def extract_resource_context(params)
+    (Conf.contributor_models + Conf.contributable_models).each do |model_name|
+      id_param = "#{Conf.to_visible(model_name.underscore)}_id"
+      return Object.const_get(model_name).find_by_id(params[id_param]) if params[id_param]
+    end
+
+    nil
+  end 
 end

@@ -7,7 +7,7 @@ class NetworksController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :search, :all]
   
   before_filter :find_networks, :only => [:all]
-  before_filter :find_network, :only => [:membership_request, :show, :comment, :comment_delete, :tag]
+  before_filter :find_network, :only => [:membership_request, :show, :tag]
   before_filter :find_network_auth, :only => [:invite, :membership_invite, :membership_invite_external, :edit, :update, :destroy]
   
   # declare sweepers and which actions should invoke them
@@ -392,46 +392,7 @@ class NetworksController < ApplicationController
       format.html { redirect_to groups_url }
     end
   end
-  
-  # POST /networks/1;comment
-  def comment
-    text = params[:comment][:comment]
-    ajaxy = true
-    
-    if text.nil? or (text.length == 0)
-      text = params[:comment_0_comment_editor]
-      ajaxy = false
-    end
-    
-    if text and text.length > 0
-      comment = Comment.create(:user => current_user, :comment => text)
-      @network.comments << comment
-    end
-    
-    respond_to do |format|
-      if ajaxy
-        format.html { render :partial => "comments/comments", :locals => { :commentable => @network } }
-      else
-        format.html { redirect_to group_url(@network) }
-      end
-    end
-  end
-  
-  # DELETE /networks/1;comment_delete
-  def comment_delete
-    if params[:comment_id]
-      comment = Comment.find(params[:comment_id].to_i)
-      # security checks:
-      if comment.user_id == current_user.id and comment.commentable_type.downcase == 'network' and comment.commentable_id == @network.id
-        comment.destroy
-      end
-    end
-    
-    respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @network } }
-    end
-  end
-  
+ 
   # POST /networks/1;tag
   def tag
     @network.tags_user_id = current_user

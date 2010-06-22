@@ -33,6 +33,16 @@ site_name: mySite
 
 site_logo: logo.png
 
+# contributor_models - These are the models for things that can contribute to
+#                      myExperiment.
+
+contributor_models: [User, Network]
+
+# contributable_models - These are the models for the things that myExperiment
+#                        contributors can contribute.
+
+contributable_models: [Workflow, Blob, Pack, Blog]
+
 # page_template - This is the page template for all the pages except for
 #                 the front page of the web site.
 #

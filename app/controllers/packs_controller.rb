@@ -183,45 +183,6 @@ class PacksController < ApplicationController
     end
   end
   
-  # POST /packs/1;comment
-  def comment 
-    text = params[:comment][:comment]
-    ajaxy = true
-    
-    if text.nil? or (text.length == 0)
-      text = params[:comment_0_comment_editor]
-      ajaxy = false
-    end
-
-    if text and text.length > 0
-      comment = Comment.create(:user => current_user, :comment => text)
-      @pack.comments << comment
-    end
-    
-    respond_to do |format|
-      if ajaxy
-        format.html { render :partial => "comments/comments", :locals => { :commentable => @pack } }
-      else
-        format.html { redirect_to pack_url(@pack) }
-      end
-    end
-  end
-  
-  # DELETE /packs/1;comment_delete
-  def comment_delete
-    if params[:comment_id]
-      comment = Comment.find(params[:comment_id].to_i)
-      # security checks:
-      if comment.user_id == current_user.id and comment.commentable_type == 'Pack' and comment.commentable_id == @pack.id
-        comment.destroy
-      end
-    end
-    
-    respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @pack } }
-    end
-  end
-  
   # POST /packs/1;tag
   def tag
     @pack.tags_user_id = current_user # acts_as_taggable_redux

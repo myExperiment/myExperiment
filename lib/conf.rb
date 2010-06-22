@@ -26,6 +26,14 @@ class Conf
     self.fetch_entry('site_logo')
   end
 
+  def self.contributor_models
+    self.fetch_entry('contributor_models')
+  end
+
+  def self.contributable_models
+    self.fetch_entry('contributable_models')
+  end
+
   def self.notifications_email_address
     self.fetch_entry('notifications_email_address')
   end
@@ -172,7 +180,28 @@ class Conf
     @config = session["portal"] if session["portal"]
   end
 
+  # helper function to convert model aliases
+
+  def self.to_model(str)
+    self.model_alias_convert(self.model_aliases, str)
+  end
+
+  def self.to_visible(str)
+    self.model_alias_convert(self.model_aliases.invert, str)
+  end
+
 private
+
+  def self.model_alias_convert(map, str)
+    map.each do |k, v|
+      return v                      if str == k
+      return v.underscore           if str == k.underscore
+      return v.pluralize            if str == k.pluralize
+      return v.underscore.pluralize if str == k.underscore.pluralize
+    end
+
+    str
+  end
 
   def self.fetch_entry(key, default = nil)
 

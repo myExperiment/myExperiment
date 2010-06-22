@@ -21,7 +21,7 @@
 					[
 					<%= link_to_remote( "delete",
 							:update => "commentsBox", 
-							:url => { :controller => controller.controller_name.to_s, :action => "comment_delete", :comment_id => comment.id },
+							:url => rest_resource_uri(comment.commentable) + "/comments/#{comment.id}",
 							:method => :delete,
 							:complete => "new Effect.Highlight('commentsBox', { duration: 1.5 }); $('comment').value = '';",
 							:confirm => "Are you sure you want to delete this comment?" ) %>
