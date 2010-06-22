@@ -6,9 +6,17 @@
     <column type="integer"  name="contributor_id"/>
     <column type="string"   name="contributor_type"/>
     <column type="string"   name="title"/>
-    <column type="string"   name="description"/>
-    <column type="string"   name="description_html"/>
+    <column type="text"     name="description"/>
+    <column type="text"     name="description_html"/>
     <column type="string"   name="url"/>
+    <column type="string"   name="api_key"/>
+    <column type="text"     name="copyright_statement"/>
+    <column type="string"   name="copyright_url"/>
+    <column type="text"     name="copyright_text"/>
+    <column type="string"   name="map_descriptor"/>
+    <column type="float"    name="latitude"/>
+    <column type="float"    name="longitude"/>
+    <column type="integer"  name="zoom"/>
     <column type="integer"  name="license_id"/>
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
@@ -16,5 +24,4 @@
   </table>
   
 </schema>
-
 

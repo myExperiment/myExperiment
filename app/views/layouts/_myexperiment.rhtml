@@ -21,6 +21,11 @@
 		<%= javascript_include_tag "boxover.js" %>
 		
 		<%= render :partial => "layouts/feed_link_tags" %>
+
+    <% if @extra_head_content %>
+      <%= @extra_head_content -%>
+    <% end %>
+
 	</head>
 	<body>
 		<div id="doc2" class="yui-t4">

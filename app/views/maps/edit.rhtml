@@ -26,6 +26,28 @@
   
   <br/>
 
+  <p style="text-align: center;"><strong>Map descriptor: </strong><br /> <%= f.text_field :map_descriptor, :size => 60 %></p>
+
+  <br />
+
+  <p style="text-align: center;"><strong>API key: </strong><br /> <%= f.text_field :api_key, :size => 60 %></p>
+
+  <br />
+
+  <p style="text-align: center;"><strong>Copyright statement: </strong><br /> <%= f.text_field :copyright_statement, :size => 60 %></p>
+  <p style="text-align: center;"><strong>Copyright URL        </strong><br /> <%= f.text_field :copyright_url, :size => 60 %></p>
+  <p style="text-align: center;"><strong>Copyright text:      </strong><br />
+    <textarea cols="60" id="map_copyright_text" name="map[copyright_text]"><%= html_escape(@map.copyright_text) -%></textarea>
+  </p>
+
+  <br />
+
+  <p style="text-align: center;"><strong>Latitude:   </strong><br /> <%= f.text_field :latitude, :size => 60 %></p>
+  <p style="text-align: center;"><strong>Longitude:  </strong><br /> <%= f.text_field :longitude, :size => 60 %></p>
+  <p style="text-align: center;"><strong>Zoom level: </strong><br /> <%= f.text_field :zoom, :size => 60 %></p>
+
+	<br/>
+
   <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @map } %>
   
   <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => true, :contributable => @map } %>

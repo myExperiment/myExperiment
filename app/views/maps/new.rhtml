@@ -26,13 +26,26 @@
 
   <br />
 
-  <p style="text-align: center;">
-  	<strong>URL: </strong>
-		<br/>
-		<%= text_field_tag "map[url]", nil, :size => 60 %>
-  </p>
-	
+  <p style="text-align: center;"><strong>Map descriptor: </strong><br /> <%= text_field_tag "map[map_descriptor]", nil, :size => 60 %></p>
+
+  <br />
+
+  <p style="text-align: center;"><strong>API key: </strong><br /> <%= text_field_tag "map[api_key]", nil, :size => 60 %></p>
+
+  <br />
+
+  <p style="text-align: center;"><strong>Copyright statement: </strong><br /> <%= text_field_tag "map[copyright_statement]", nil, :size => 60 %></p>
+  <p style="text-align: center;"><strong>Copyright URL        </strong><br /> <%= text_field_tag "map[copyright_url]",       nil, :size => 60 %></p>
+  <p style="text-align: center;"><strong>Copyright text:      </strong><br /> <textarea id="map[copyright_text]" name="map[copyright_text]" rows="10" style="width: 99%;"></textarea> </p>
+
+  <br />
+
+  <p style="text-align: center;"><strong>Latitude:   </strong><br /> <%= text_field_tag "map[latitude]",  nil, :size => 60 %></p>
+  <p style="text-align: center;"><strong>Longitude:  </strong><br /> <%= text_field_tag "map[longitude]", nil, :size => 60 %></p>
+  <p style="text-align: center;"><strong>Zoom level: </strong><br /> <%= text_field_tag "map[zoom]",      nil, :size => 60 %></p>
+
 	<br/>
+
   <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @map } %>
   
   <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => false, :contributable => @map } %>

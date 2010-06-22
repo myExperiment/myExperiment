@@ -239,7 +239,10 @@ class MapsController < ApplicationController
   # GET /maps/1/explore
   def explore
     respond_to do |format|
-      format.html # explore.rhtml
+      format.html {
+        @extra_head_content = "<script src=\"http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=#{h @map.api_key}\" type=\"text/javascript\"></script>"
+        # explore.rhtml
+      }
     end
   end
 
