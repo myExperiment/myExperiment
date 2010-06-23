@@ -5,6 +5,8 @@
 
 class Vocabulary < ActiveRecord::Base
 
+  acts_as_structured_data
+
   belongs_to :user
 
   has_many :tags, :dependent => :destroy

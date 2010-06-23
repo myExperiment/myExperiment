@@ -4,7 +4,7 @@
 # See license.txt for details.
 
 class MapsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :statistics, :search]
+  before_filter :login_required, :except => [:index, :show, :explore, :statistics, :search]
   
   before_filter :find_map_auth, :except => [:search, :index, :new, :create]
   
