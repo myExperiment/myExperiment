@@ -36,9 +36,7 @@
 
   <p style="text-align: center;"><strong>Copyright statement: </strong><br /> <%= f.text_field :copyright_statement, :size => 60 %></p>
   <p style="text-align: center;"><strong>Copyright URL        </strong><br /> <%= f.text_field :copyright_url, :size => 60 %></p>
-  <p style="text-align: center;"><strong>Copyright text:      </strong><br />
-    <textarea cols="60" id="map_copyright_text" name="map[copyright_text]"><%= html_escape(@map.copyright_text) -%></textarea>
-  </p>
+  <p style="text-align: center;"><strong>Copyright text:      </strong><br /> <%= f.text_field :copyright_text, :size => 60 %></p>
 
   <br />
 
