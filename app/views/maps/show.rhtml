@@ -16,8 +16,6 @@
 
 <div class="contribution_mini_nav">
 	|
-	<%= link_to "License", "#license" %>
-	|
 	<%= link_to "Credits (#{@map.creditations.length})", "#credits" %>
 	|
 	<%= link_to "Attributions (#{@map.attributors.length})", "#attributions" %>
@@ -124,8 +122,6 @@
 
 <div class="contribution_right_box">
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @map } %>
-	
-	<%= render :partial => "contributions/license_box", :locals => { :contributable => @map } %>
 	
 	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @map, :edit_path => edit_map_path(@map) } %>
 	

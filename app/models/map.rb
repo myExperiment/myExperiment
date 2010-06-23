@@ -29,8 +29,6 @@ class Map < ActiveRecord::Base
                :boost => "rank",
                :include => [ :comments ]) if Conf.solr_enable
 
-  belongs_to :license
-  validates_presence_of :license_id
   validates_presence_of :title
 
   format_attribute :description

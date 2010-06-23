@@ -1835,8 +1835,6 @@ def map_aux(action, req_uri, rules, user, query)
 
     data = LibXML::XML::Parser.string(request.raw_post).parse
 
-    license_type           = parse_element(data, :text, '/map/license-type')
-
     ob.title               = parse_element(data, :text, '/map/title')     
     ob.description         = parse_element(data, :text, '/map/description')           
     ob.api_key             = parse_element(data, :text, '/map/api_key')       
@@ -1847,7 +1845,6 @@ def map_aux(action, req_uri, rules, user, query)
     ob.latitude            = parse_element(data, :text, '/map/latitude')        
     ob.longitude           = parse_element(data, :text, '/map/longitude')         
     ob.zoom                = parse_element(data, :text, '/map/zoom')    
-    ob.license             = License.find_by_unique_name(license_type) if license_type
 
     return rest_response(400, :object => ob) unless ob.save
   end

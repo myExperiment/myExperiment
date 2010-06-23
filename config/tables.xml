@@ -1497,7 +1497,7 @@
   <x:WorksheetOptions/>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="301" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="300" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s62" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s66" ss:Width="111.75"/>
    <Column ss:StyleID="s66" ss:Width="116.25"/>
@@ -5276,21 +5276,6 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">map</Data></Cell>
-    <Cell><Data ss:Type="String">license-type</Data></Cell>
-    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
-    <Cell><Data ss:Type="String">license.unique_name</Data></Cell>
-    <Cell><Data ss:Type="String">no</Data></Cell>
-    <Cell><Data ss:Type="String">text</Data></Cell>
-    <Cell><Data ss:Type="String">yes</Data></Cell>
-    <Cell><Data ss:Type="String">yes</Data></Cell>
-    <Cell><Data ss:Type="String">yes</Data></Cell>
-    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
-    <Cell ss:Index="16" ss:StyleID="s77"><Data ss:Type="String">yes</Data></Cell>
-    <Cell ss:Index="18"><Data ss:Type="String">license</Data></Cell>
-    <Cell ss:Index="27" ss:StyleID="s73"><Data ss:Type="String">by-nd</Data></Cell>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell><Data ss:Type="String">map</Data></Cell>
     <Cell><Data ss:Type="String">created-at</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
     <Cell><Data ss:Type="String">created_at</Data></Cell>
@@ -5344,8 +5329,9 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>287</ActiveRow>
-     <ActiveCol>6</ActiveCol>
+     <ActiveRow>298</ActiveRow>
+     <ActiveCol>0</ActiveCol>
+     <RangeSelection>R299</RangeSelection>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

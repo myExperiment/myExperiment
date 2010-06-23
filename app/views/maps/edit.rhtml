@@ -52,7 +52,6 @@
 
   <% if @map.owner?(current_user) %>
   	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @map, :update_perms => true } %>
-	<%= render :partial => "maps/license_form", :locals => { :edit => true } %>
   <% end %>
 
   <p>

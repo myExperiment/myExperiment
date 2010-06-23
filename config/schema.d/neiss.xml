@@ -16,7 +16,6 @@
     <column type="float"    name="latitude"/>
     <column type="float"    name="longitude"/>
     <column type="integer"  name="zoom"/>
-    <column type="integer"  name="license_id"/>
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
 

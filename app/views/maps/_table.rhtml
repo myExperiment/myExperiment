@@ -60,8 +60,6 @@
 							</p>
 						<% end %>
 						
-						<p style="font-size:85%;"><b>License: </b><% @license = License.find(map.license_id) %><%= link_to h(@license.title), license_path(@license) %></p>
-						
 						<div class="desc" style="font-size: 85%;">
 							<% if map.description and map.description.length > 0 %>
 					  		<% desc = truncate(strip_html(map.description), 500) %>
