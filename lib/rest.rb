@@ -580,6 +580,7 @@ def rest_access_uri(ob)
   case ob.class.to_s
     when 'Workflow';               return "#{base}/workflow.xml?id=#{ob.id}"
     when 'Blob';                   return "#{base}/file.xml?id=#{ob.id}"
+    when 'Map';                    return "#{base}/map.xml?id=#{ob.id}"
     when 'Network';                return "#{base}/group.xml?id=#{ob.id}"
     when 'User';                   return "#{base}/user.xml?id=#{ob.id}"
     when 'Review';                 return "#{base}/review.xml?id=#{ob.id}"
@@ -619,6 +620,7 @@ def rest_object_tag_text(ob)
     when 'User';                   return 'user'
     when 'Workflow';               return 'workflow'
     when 'Blob';                   return 'file'
+    when 'Map';                    return 'map'
     when 'Network';                return 'group'
     when 'Rating';                 return 'rating'
     when 'Creditation';            return 'credit'
@@ -647,6 +649,7 @@ def rest_object_label_text(ob)
     when 'User';                   return ob.name
     when 'Workflow';               return ob.title
     when 'Blob';                   return ob.title
+    when 'Map';                    return ob.title
     when 'Network';                return ob.title
     when 'Rating';                 return ob.rating.to_s
     when 'Creditation';            return ''
@@ -690,6 +693,7 @@ def parse_resource_uri(str)
 
   return [Workflow, $1, is_local]       if uri.path =~ /^\/workflows\/([\d]+)$/
   return [Blob, $1, is_local]           if uri.path =~ /^\/files\/([\d]+)$/
+  return [Map, $1, is_local]            if uri.path =~ /^\/maps\/([\d]+)$/
   return [Network, $1, is_local]        if uri.path =~ /^\/groups\/([\d]+)$/
   return [User, $1, is_local]           if uri.path =~ /^\/users\/([\d]+)$/
   return [Review, $1, is_local]         if uri.path =~ /^\/[^\/]+\/[\d]+\/reviews\/([\d]+)$/
@@ -1802,6 +1806,65 @@ end
 
 def delete_favourite(req_uri, rules, user, query)
   favourite_aux('destroy', req_uri, rules, user, query)
+end
+
+# Maps
+
+def map_aux(action, req_uri, rules, user, query)
+
+  # Obtain object
+
+  case action
+    when 'create':
+      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Map', user, nil)
+
+      ob = Map.new(:contributor => user)
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Map', query['id'], query['version'], user, action)
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    license_type           = parse_element(data, :text, '/map/license-type')
+
+    ob.title               = parse_element(data, :text, '/map/title')     
+    ob.description         = parse_element(data, :text, '/map/description')           
+    ob.api_key             = parse_element(data, :text, '/map/api_key')       
+    ob.copyright_statement = parse_element(data, :text, '/map/copyright_statement')                   
+    ob.copyright_url       = parse_element(data, :text, '/map/copyright_url')             
+    ob.copyright_text      = parse_element(data, :text, '/map/copyright_text')              
+    ob.map_descriptor      = parse_element(data, :text, '/map/map_descriptor')              
+    ob.latitude            = parse_element(data, :text, '/map/latitude')        
+    ob.longitude           = parse_element(data, :text, '/map/longitude')         
+    ob.zoom                = parse_element(data, :text, '/map/zoom')    
+    ob.license             = License.find_by_unique_name(license_type) if license_type
+
+    return rest_response(400, :object => ob) unless ob.save
+  end
+
+  rest_get_request(ob, "map", user, rest_resource_uri(ob), "map", { "id" => ob.id.to_s })
+end
+
+def post_map(req_uri, rules, user, query)
+  map_aux('create', req_uri, rules, user, query)
+end
+
+def put_map(req_uri, rules, user, query)
+  map_aux('update', req_uri, rules, user, query)
+end
+
+def delete_map(req_uri, rules, user, query)
+  map_aux('destroy', req_uri, rules, user, query)
 end
 
 # Call dispatcher

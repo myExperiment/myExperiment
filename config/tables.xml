@@ -9,6 +9,8 @@
  xmlns:x2="http://schemas.microsoft.com/office/excel/2003/xml"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <LastAuthor>dgc</LastAuthor>
+  <LastSaved>2010-06-23T08:41:19Z</LastSaved>
   <Version>14.00</Version>
  </DocumentProperties>
  <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
@@ -36,10 +38,11 @@
   </Colors>
  </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-  <WindowHeight>9000</WindowHeight>
+  <WindowHeight>8550</WindowHeight>
   <WindowWidth>13860</WindowWidth>
   <WindowTopX>240</WindowTopX>
   <WindowTopY>75</WindowTopY>
+  <ActiveSheet>1</ActiveSheet>
   <ProtectStructure>False</ProtectStructure>
   <ProtectWindows>False</ProtectWindows>
  </ExcelWorkbook>
@@ -106,7 +109,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="REST">
-  <Table ss:ExpandedColumnCount="17" ss:ExpandedRowCount="142" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="17" ss:ExpandedRowCount="149" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s62" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s66" ss:Width="42"/>
    <Column ss:StyleID="s66" ss:AutoFitWidth="0" ss:Width="109.5"/>
@@ -1429,43 +1432,72 @@
     <Cell ss:Index="12"><Data ss:Type="String">required</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
    </Row>
-   <Row ss:AutoFitHeight="0" ss:Height="13.3125" ss:Span="2"/>
+   <Row ss:AutoFitHeight="0" ss:Height="13.3125"/>
+   <Row ss:AutoFitHeight="0" ss:Height="13.3125">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">maps</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">index</Data></Cell>
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">title</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.3125"/>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">view</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">crud</Data></Cell>
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">required</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:Index="145" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">POST</Data></Cell>
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">post_map</Data></Cell>
+   </Row>
+   <Row ss:Index="147" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">PUT</Data></Cell>
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">required</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">put_map</Data></Cell>
+   </Row>
+   <Row ss:Index="149" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">DELETE</Data></Cell>
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">call</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">required</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">delete_map</Data></Cell>
+   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
    <Zoom>80</Zoom>
-   <Selected/>
-   <FreezePanes/>
-   <FrozenNoSplit/>
-   <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>67</TopRowBottomPane>
-   <SplitVertical>2</SplitVertical>
-   <LeftColumnRightPane>2</LeftColumnRightPane>
-   <ActivePane>0</ActivePane>
-   <Panes>
-    <Pane>
-     <Number>3</Number>
-    </Pane>
-    <Pane>
-     <Number>1</Number>
-    </Pane>
-    <Pane>
-     <Number>2</Number>
-     <ActiveRow>1</ActiveRow>
-    </Pane>
-    <Pane>
-     <Number>0</Number>
-     <ActiveRow>86</ActiveRow>
-     <ActiveCol>13</ActiveCol>
-    </Pane>
-   </Panes>
    <ProtectObjects>False</ProtectObjects>
    <ProtectScenarios>False</ProtectScenarios>
   </WorksheetOptions>
   <x:WorksheetOptions/>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="287" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="301" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s62" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s66" ss:Width="111.75"/>
    <Column ss:StyleID="s66" ss:Width="116.25"/>
@@ -5093,7 +5125,194 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
    </Row>
-   <Row ss:AutoFitHeight="0" ss:Height="13.3125" ss:Span="1"/>
+   <Row ss:AutoFitHeight="0" ss:Height="13.3125"/>
+   <Row ss:AutoFitHeight="0" ss:Height="13.3125">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.3125">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">owner</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">contributor</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">item</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">title</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">title</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">description</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">description</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">api_key</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">api_key</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">copyright_statement</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">copyright_statement</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">copyright_url</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">copyright_url</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">copyright_text</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">copyright_text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">map_descriptor</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">map_descriptor</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">latitude</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">latitude</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">longitude</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">longitude</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">zoom</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">zoom</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">license-type</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">license.unique_name</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="16" ss:StyleID="s77"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="18"><Data ss:Type="String">license</Data></Cell>
+    <Cell ss:Index="27" ss:StyleID="s73"><Data ss:Type="String">by-nd</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">created-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">created_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">map</Data></Cell>
+    <Cell><Data ss:Type="String">updated-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Map</Data></Cell>
+    <Cell><Data ss:Type="String">updated_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
@@ -5104,10 +5323,11 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Zoom>80</Zoom>
+   <Selected/>
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>137</TopRowBottomPane>
+   <TopRowBottomPane>268</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -5124,8 +5344,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>155</ActiveRow>
-     <ActiveCol>15</ActiveCol>
+     <ActiveRow>287</ActiveRow>
+     <ActiveCol>6</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
