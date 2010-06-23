@@ -1,5 +1,8 @@
+<% t "#{contributable_name(@map.id, 'Map')} (#{h @map.contributor_name})" -%>
 
- <div id="map_canvas" style="width: 740px; height: 600px;"></div>
+<h1 class="contribution_title">Map Entry: <%= contributable_name(@map.id, 'Map') %></h1>
+
+<div id="map_canvas" style="width: 740px; height: 600px;"></div>
 
 <script type="text/javascript">      
 			  var surveyMap;
