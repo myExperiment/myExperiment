@@ -1,4 +1,6 @@
 
+ <div id="map_canvas" style="width: 740px; height: 600px;"></div>
+
 <script type="text/javascript">      
 			  var surveyMap;
               surveyMap = new GMap2(document.getElementById("map_canvas"));
@@ -35,19 +37,16 @@ function getOverlay(tileService, descriptor) {
                 else { f += "s"; d -= c; e -= c }
             }
         }
-        return this.tileRequestPattern.replace("\x7B1\x7D", f); //{1} in hex escape characters
+        return tileLayer.tileRequestPattern.replace("\x7B1\x7D", f); //{1} in hex escape characters
     };
     tileLayer.isPng = function() { return true; };
     return new GTileLayerOverlay(tileLayer);
 }
 
+var tileService = 'http://tilefish.casa.ucl.ac.uk/TileRequestHandler.ashx?u={0}&t={1}';
+var descriptor = '<%= @map.map_descriptor -%>';
 
-
-			  
-</script>       
-
- <div id="map_canvas" style="width: 500px; height: 500px;"></div>
- 
- <script type="text/javascript">var tileService = 'http://tilefish.casa.ucl.ac.uk/TileRequestHandler.ashx?u={0}&t={1}'; var descriptor = '<%= @map.map_descriptor -%>'; surveyMap.addOverlay(getOverlay(tileService, descriptor));</script>
- <script type="text/javascript">surveyMap.setCenter(new GLatLng(<%= @map.latitude -%>, <%= @map.longitude -%>), <%= @map.zoom -%>);</script>
+surveyMap.setCenter(new GLatLng(<%= @map.latitude -%>, <%= @map.longitude -%>), <%= @map.zoom -%>);
+surveyMap.addOverlay(getOverlay(tileService, descriptor));
+</script>
 
