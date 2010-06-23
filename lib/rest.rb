@@ -1837,7 +1837,6 @@ def map_aux(action, req_uri, rules, user, query)
 
     title               = parse_element(data, :text, '/map/title')     
     description         = parse_element(data, :text, '/map/description')           
-    api_key             = parse_element(data, :text, '/map/api_key')       
     copyright_statement = parse_element(data, :text, '/map/copyright_statement')                   
     copyright_url       = parse_element(data, :text, '/map/copyright_url')             
     copyright_text      = parse_element(data, :text, '/map/copyright_text')              
@@ -1850,7 +1849,6 @@ def map_aux(action, req_uri, rules, user, query)
 
     ob.title               = title               if title                
     ob.description         = description         if description          
-    ob.api_key             = api_key             if api_key              
     ob.copyright_statement = copyright_statement if copyright_statement  
     ob.copyright_url       = copyright_url       if copyright_url        
     ob.copyright_text      = copyright_text      if copyright_text       

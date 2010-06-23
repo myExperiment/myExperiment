@@ -150,6 +150,10 @@ class Conf
     self.fetch_entry('rdfgen_tool')
   end
 
+  def self.google_maps_api_key
+    self.fetch_entry('google_maps_api_key')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)

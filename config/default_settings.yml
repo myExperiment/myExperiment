@@ -446,3 +446,9 @@ label_icons:
 rdfgen_enable: false
 
 rdfgen_tool:
+
+# google_maps_api_key - This is the google maps API key for this website for
+#                       the Map contributable type.
+
+google_maps_api_key: GoogleMapAPIKeyGoesHere
+

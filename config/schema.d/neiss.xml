@@ -8,7 +8,6 @@
     <column type="string"   name="title"/>
     <column type="text"     name="description"/>
     <column type="text"     name="description_html"/>
-    <column type="string"   name="api_key"/>
     <column type="text"     name="copyright_statement"/>
     <column type="string"   name="copyright_url"/>
     <column type="text"     name="copyright_text"/>
