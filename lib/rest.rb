@@ -1835,18 +1835,40 @@ def map_aux(action, req_uri, rules, user, query)
 
     data = LibXML::XML::Parser.string(request.raw_post).parse
 
-    ob.title               = parse_element(data, :text, '/map/title')     
-    ob.description         = parse_element(data, :text, '/map/description')           
-    ob.api_key             = parse_element(data, :text, '/map/api_key')       
-    ob.copyright_statement = parse_element(data, :text, '/map/copyright_statement')                   
-    ob.copyright_url       = parse_element(data, :text, '/map/copyright_url')             
-    ob.copyright_text      = parse_element(data, :text, '/map/copyright_text')              
-    ob.map_descriptor      = parse_element(data, :text, '/map/map_descriptor')              
-    ob.latitude            = parse_element(data, :text, '/map/latitude')        
-    ob.longitude           = parse_element(data, :text, '/map/longitude')         
-    ob.zoom                = parse_element(data, :text, '/map/zoom')    
+    title               = parse_element(data, :text, '/map/title')     
+    description         = parse_element(data, :text, '/map/description')           
+    api_key             = parse_element(data, :text, '/map/api_key')       
+    copyright_statement = parse_element(data, :text, '/map/copyright_statement')                   
+    copyright_url       = parse_element(data, :text, '/map/copyright_url')             
+    copyright_text      = parse_element(data, :text, '/map/copyright_text')              
+    map_descriptor      = parse_element(data, :text, '/map/map_descriptor')              
+    latitude            = parse_element(data, :text, '/map/latitude')        
+    longitude           = parse_element(data, :text, '/map/longitude')         
+    zoom                = parse_element(data, :text, '/map/zoom')    
 
-    return rest_response(400, :object => ob) unless ob.save
+    permissions         = data.find_first('/map/permissions')
+
+    ob.title               = title               if title                
+    ob.description         = description         if description          
+    ob.api_key             = api_key             if api_key              
+    ob.copyright_statement = copyright_statement if copyright_statement  
+    ob.copyright_url       = copyright_url       if copyright_url        
+    ob.copyright_text      = copyright_text      if copyright_text       
+    ob.map_descriptor      = map_descriptor      if map_descriptor       
+    ob.latitude            = latitude            if latitude             
+    ob.longitude           = longitude           if longitude            
+    ob.zoom                = zoom                if zoom                 
+
+    if not ob.save
+      return rest_response(400, :object => ob)
+    end
+
+    if ob.contribution.policy.nil?
+      ob.contribution.policy = create_default_policy(user)
+      ob.contribution.save
+    end
+
+    update_permissions(ob, permissions)
   end
 
   rest_get_request(ob, "map", user, rest_resource_uri(ob), "map", { "id" => ob.id.to_s })
