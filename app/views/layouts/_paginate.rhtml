@@ -1,16 +1,16 @@
+<% if local_assigns[:sort_by] %>
+  <div style="float: right; margin: 1em;">
+    Sort by:
+    <select onchange="javascript:location = this.options[this.selectedIndex].value;">
+      <% sort_by.each do |args| %>
+        <option value="?order=<%= args["option"] -%>" <% if params[:order] == args["option"] -%> selected="selected"<% end -%>><%= args["label"] -%></option>
+      <% end %>
+    </select>
+  </div>
+<% end %>
+
 <% if collection.page_count != collection.first_page -%>
 <div class="pagination">
-
-  <% if local_assigns[:sort_by] %>
-    <div style="float: right; margin: 1em;">
-      Sort by:
-      <select onchange="javascript:location = this.options[this.selectedIndex].value;">
-        <% sort_by.each do |args| %>
-          <option value="?order=<%= args["option"] -%>" <% if params[:order] == args["option"] -%> selected="selected"<% end -%>><%= args["label"] -%></option>
-        <% end %>
-      </select>
-    </div>
-  <% end %>
 
   <ul>
   <% if collection.previous_page? -%>
