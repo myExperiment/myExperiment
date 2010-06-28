@@ -104,7 +104,9 @@ class AutoMigrate
       # add columns
 
       (new_columns - old_columns).each do |column_name|
-        conn.add_column(table_name, column_name, new_tables[table_name][:columns][column_name]["type"].to_sym)
+        default = new_tables[table_name][:columns][column_name]['default']
+        default = default.to_s unless default.nil?
+        conn.add_column(table_name, column_name, new_tables[table_name][:columns][column_name]["type"].to_sym, :default => default)
       end
 
       # modify existing columns
