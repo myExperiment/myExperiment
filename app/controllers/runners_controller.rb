@@ -20,7 +20,15 @@ class RunnersController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = runner_url(@runner)
+        @lod_html = formatted_runner_url(:id => @runner.id, :format => 'html')
+        @lod_rdf  = formatted_runner_url(:id => @runner.id, :format => 'rdf')
+        @lod_xml  = formatted_runner_url(:id => @runner.id, :format => 'xml')
+
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {

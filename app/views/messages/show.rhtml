@@ -61,9 +61,5 @@
 	</div>
 </div>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => message_url(@message),
-  :html => formatted_message_url(:id => @message.id, :format => 'html'),
-  :rdf  => formatted_message_url(:id => @message.id, :format => 'rdf'),
-  :xml  => formatted_message_url(:id => @message.id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 

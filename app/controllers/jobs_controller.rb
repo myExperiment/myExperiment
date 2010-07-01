@@ -38,7 +38,15 @@ class JobsController < ApplicationController
     @job.refresh_status!
 
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+        
+        @lod_nir  = experiment_job_url(:id => @job.id, :experiment_id => @experiment.id)
+        @lod_html = formatted_experiment_job_url(:id => @job.id, :experiment_id => @experiment.id, :format => 'html')
+        @lod_rdf  = formatted_experiment_job_url(:id => @job.id, :experiment_id => @experiment.id, :format => 'rdf')
+        @lod_xml  = formatted_experiment_job_url(:id => @job.id, :experiment_id => @experiment.id, :format => 'xml')
+        
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {

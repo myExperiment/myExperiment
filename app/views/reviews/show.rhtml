@@ -54,9 +54,5 @@
 	</div>
 </div>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => review_url(:id => @review.id, :workflow_id => @reviewable.id),
-  :html => formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'html'),
-  :rdf  => formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'rdf'),
-  :xml  => formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 

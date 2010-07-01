@@ -118,8 +118,8 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # workflow redirect for linked data model
-  map.connect '/workflows/:id/versions/:version',         :controller => 'workflows', :action => 'show'
-  map.connect '/workflows/:id/versions/:version.:format', :controller => 'workflows', :action => 'show'
+  map.workflow_version           '/workflows/:id/versions/:version',         :conditions => { :method => :get }, :controller => 'workflows', :action => 'show'
+  map.formatted_workflow_version '/workflows/:id/versions/:version.:format', :conditions => { :method => :get }, :controller => 'workflows', :action => 'show'
 
   # curation
   ['workflows', 'files', 'packs'].each do |contributable_type|

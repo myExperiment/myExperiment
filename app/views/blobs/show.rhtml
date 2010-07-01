@@ -175,9 +175,5 @@
 	<%= render :partial => "comments/comments", :locals => { :commentable => @blob } %>
 </div>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => file_url(@blob),
-  :html => formatted_file_url(:id => @blob.id, :format => 'html'),
-  :rdf  => formatted_file_url(:id => @blob.id, :format => 'rdf'),
-  :xml  => formatted_file_url(:id => @blob.id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 

@@ -253,9 +253,5 @@
 	<%= render :partial => "comments/comments", :locals => { :commentable => @network } %>
 </div>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => group_url(@network),
-  :html => formatted_group_url(:id => @network.id, :format => 'html'),
-  :rdf  => formatted_group_url(:id => @network.id, :format => 'rdf'),
-  :xml  => formatted_group_url(:id => @network.id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 

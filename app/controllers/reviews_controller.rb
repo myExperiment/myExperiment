@@ -29,7 +29,15 @@ class ReviewsController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+        
+        @lod_nir  = review_url(:id => @review.id, :workflow_id => @reviewable.id)
+        @lod_html = formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'html')
+        @lod_rdf  = formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'rdf')
+        @lod_xml  = formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'xml')
+        
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {

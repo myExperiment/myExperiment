@@ -372,11 +372,7 @@
 	<%= render :partial => "comments/comments", :locals => { :commentable => @workflow } %>
 </div>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => workflow_url(@workflow),
-  :html => formatted_workflow_url(:id => @workflow.id, :format => 'html'),
-  :rdf  => formatted_workflow_url(:id => @workflow.id, :format => 'rdf'),
-  :xml  => formatted_workflow_url(:id => @workflow.id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 
 <!-- OpenURL context object -->
 

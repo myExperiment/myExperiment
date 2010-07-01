@@ -28,7 +28,15 @@ class GroupAnnouncementsController < ApplicationController
   # GET /group_announcements/1
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id)
+        @lod_html = formatted_group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'html')
+        @lod_rdf  = formatted_group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'rdf')
+        @lod_xml  = formatted_group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'xml')
+
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {

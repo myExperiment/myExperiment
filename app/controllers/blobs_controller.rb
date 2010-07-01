@@ -64,7 +64,15 @@ class BlobsController < ApplicationController
     end
     
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = file_url(@blob)
+        @lod_html = formatted_file_url(:id => @blob.id, :format => 'html')
+        @lod_rdf  = formatted_file_url(:id => @blob.id, :format => 'rdf')
+        @lod_xml  = formatted_file_url(:id => @blob.id, :format => 'xml')
+
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {

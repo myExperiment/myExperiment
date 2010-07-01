@@ -40,7 +40,15 @@ class PacksController < ApplicationController
     end
     
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+        
+        @lod_nir  = pack_url(@pack)
+        @lod_html = formatted_pack_url(:id => @pack.id, :format => 'html')
+        @lod_rdf  = formatted_pack_url(:id => @pack.id, :format => 'rdf')
+        @lod_xml  = formatted_pack_url(:id => @pack.id, :format => 'xml')
+        
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {

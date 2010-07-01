@@ -39,6 +39,11 @@ class UsersController < ApplicationController
   # GET /users/1
   def show
 
+    @lod_nir  = user_url(@user)
+    @lod_html = formatted_user_url(:id => @user.id, :format => 'html')
+    @lod_rdf  = formatted_user_url(:id => @user.id, :format => 'rdf')
+    @lod_xml  = formatted_user_url(:id => @user.id, :format => 'xml')
+
     @tab = "News" if @tab.nil?
 
     @user.salt = nil

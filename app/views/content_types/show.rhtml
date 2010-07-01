@@ -78,9 +78,5 @@
 
 <div class="clearer">&nbsp;</div>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => content_type_url(@content_type),
-  :html => formatted_content_type_url(:id => @content_type.id, :format => 'html'),
-  :rdf  => formatted_content_type_url(:id => @content_type.id, :format => 'rdf'),
-  :xml  => formatted_content_type_url(:id => @content_type.id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 

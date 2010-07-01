@@ -24,7 +24,15 @@ class AnnouncementsController < ApplicationController
     @announcement = Announcement.find(params[:id])
 
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = announcement_url(@announcement)
+        @lod_html = formatted_announcement_url(:id => @announcement.id, :format => 'html')
+        @lod_rdf  = formatted_announcement_url(:id => @announcement.id, :format => 'rdf')
+        @lod_xml  = formatted_announcement_url(:id => @announcement.id, :format => 'xml')
+        #
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {

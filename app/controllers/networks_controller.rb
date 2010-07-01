@@ -331,7 +331,15 @@ class NetworksController < ApplicationController
     end
 
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+         
+        @lod_nir  = group_url(@network)
+        @lod_html = formatted_group_url(:id => @network.id, :format => 'html')
+        @lod_rdf  = formatted_group_url(:id => @network.id, :format => 'rdf')
+        @lod_xml  = formatted_group_url(:id => @network.id, :format => 'xml')
+         
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {

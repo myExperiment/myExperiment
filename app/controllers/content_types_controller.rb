@@ -24,7 +24,16 @@ class ContentTypesController < ApplicationController
     @total_count = @workflow_count + @blob_count
 
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = content_type_url(@content_type)
+        @lod_html = formatted_content_type_url(:id => @content_type.id, :format => 'html')
+        @lod_rdf  = formatted_content_type_url(:id => @content_type.id, :format => 'rdf')
+        @lod_xml  = formatted_content_type_url(:id => @content_type.id, :format => 'xml')
+
+        # show.rhtml
+      }
+
 
       if Conf.rdfgen_enable
         format.rdf {

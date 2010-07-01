@@ -60,7 +60,15 @@ class MembershipsController < ApplicationController
   # GET /memberships/1
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = user_membership_url(:id => @membership, :user_id => @membership.user_id)
+        @lod_html = formatted_user_membership_url(:id => @membership.id, :user_id => @membership.user_id, :format => 'html')
+        @lod_rdf  = formatted_user_membership_url(:id => @membership.id, :user_id => @membership.user_id, :format => 'rdf')
+        @lod_xml  = formatted_user_membership_url(:id => @membership.id, :user_id => @membership.user_id, :format => 'xml')
+
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {

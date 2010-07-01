@@ -66,7 +66,15 @@ class MessagesController < ApplicationController
         
       @message_folder = message_folder
       respond_to do |format|
-        format.html # show.rhtml
+        format.html {
+          
+        @lod_nir  = message_url(@message)
+        @lod_html = formatted_message_url(:id => @message.id, :format => 'html')
+        @lod_rdf  = formatted_message_url(:id => @message.id, :format => 'rdf')
+        @lod_xml  = formatted_message_url(:id => @message.id, :format => 'xml')
+          
+          # show.rhtml
+        }
 
         if Conf.rdfgen_enable
           format.rdf {

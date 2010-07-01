@@ -46,9 +46,5 @@
 	<% render :partial => "status", :locals => { :service_valid => @runner.service_valid? } -%>
 </div>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => runner_url(@runner),
-  :html => formatted_runner_url(:id => @runner.id, :format => 'html'),
-  :rdf  => formatted_runner_url(:id => @runner.id, :format => 'rdf'),
-  :xml  => formatted_runner_url(:id => @runner.id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 

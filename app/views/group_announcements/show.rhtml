@@ -47,9 +47,5 @@
 	</div>
 </div>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id),
-  :html => formatted_group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'html'),
-  :rdf  => formatted_group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'rdf'),
-  :xml  => formatted_group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 
