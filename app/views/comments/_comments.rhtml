@@ -1,16 +1,10 @@
 <%= javascript_include_tag :fckeditor %>
 
-<% url_to_timeline ||= false -%>
-
 <h2>
 	<%= icon "comments", nil, nil, { :style => "vertical-align: middle;" }, "" -%>
 	<span style="vertical-align: middle;">Comments</span>
 	<span class="count_text" style="vertical-align: middle;">(<%= commentable.comments.length %>)</span>
 </h2>
-
-<ul class="sectionIcons">
-  <li><%= icon('timeline', rest_resource_uri(commentable) + "/comments/timeline", nil, nil, 'View Timeline')%></li>
-</ul>
 
 <div class="commentsBox">
 	
