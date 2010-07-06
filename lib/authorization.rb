@@ -829,7 +829,7 @@ module Authorization
     # add in the extra joins needed for the authorisation checks
 
     joins.push("INNER JOIN policies ON contributions.policy_id = policies.id")
-    joins.push("LEFT OUTER JOIN permissions ON policies.id = permissions.policy_id") if user_id
+    joins.push("LEFT OUTER JOIN permissions ON policies.id = permissions.policy_id") if user_id || opts[:include_permissions]
 
     # include the effective permissions in the result?
 
