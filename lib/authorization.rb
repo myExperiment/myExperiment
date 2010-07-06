@@ -806,8 +806,11 @@ module Authorization
 
     # filtering
 
+    auth_id   = opts.delete(:auth_id)   || "#{model.table_name}.id"
+    auth_type = opts.delete(:auth_type) || "'#{model.name}'"
+
     conditions.push(view_conditions(user_id, friends, networks))
-    conditions.push("contributions.contributable_type = '#{model.name}'") if model != Contribution
+    conditions.push("contributions.contributable_type = #{auth_type}") if model != Contribution
 
     # result model
 
@@ -816,7 +819,7 @@ module Authorization
     end
 
     if model != Contribution
-      joins.push("INNER JOIN contributions ON contributions.contributable_id = #{model.table_name}.id AND contributions.contributable_type = '#{model.name}'")
+      joins.push("INNER JOIN contributions ON contributions.contributable_id = #{auth_id} AND contributions.contributable_type = #{auth_type}")
     end
 
     # selection
@@ -842,7 +845,7 @@ module Authorization
     if joins.length > 0
       opts[:joins] = [] unless opts[:joins]
       opts[:joins] = [opts[:joins]] unless opts[:joins].class == Array
-      opts[:joins] = opts[:joins] + joins
+      opts[:joins] = joins + opts[:joins]
       opts[:joins] = opts[:joins].join(" ") # Rails 1 does not support arrays here
     end
 
@@ -859,9 +862,9 @@ module Authorization
       end
     end
 
-    # enforce grouping by contributable type and id
+    # default to grouping by contributable type and id
 
-    opts[:group] = 'contributable_type, contributable_id'
+    opts[:group] ||= 'contributions.contributable_type, contributions.contributable_id'
 
     # do it
 
