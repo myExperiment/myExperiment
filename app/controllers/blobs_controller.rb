@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class BlobsController < ApplicationController
+
+  include ApplicationHelper
+
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :search]
   
   before_filter :find_blob_auth, :except => [:search, :index, :new, :create]
@@ -51,7 +54,8 @@ class BlobsController < ApplicationController
 
   # GET /files
   def index
-    @contributions = Contribution.contributions_list(Blob, params, current_user)
+    @pivot_options = pivot_options
+    @contributions, @filters, @summary = contributions_list(Blob, params, current_user)
     respond_to do |format|
       format.html # index.rhtml
     end

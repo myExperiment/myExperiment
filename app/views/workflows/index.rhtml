@@ -1,23 +1,32 @@
-<div class="box_standout" style="text-align: center; margin-bottom: 1em; font-weight: bold; line-height: 1.5em;">
-	<% Workflow.count(:all, :group => 'content_type_id').sort{|x,y| y[1] <=> x[1]}.each do |arr| %>
-		  <span class="nowrap"><%= link_to((h(ContentType.find_by_id(arr[0]).title)),
-        search_workflows_path + "?query=kind:(#{ContentType.find_by_id(arr[0]).title})") %> (<%= arr[1] %>)</span>
-	<% end %>
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions, :sort_by => @pivot_options[:order] } %>
+
+<div style="clear: left"></div>
+
+<div>
+  <div class="pivot">
+    <% @filters.each do |filter| %>
+      <div class="filter">
+        <div class="category"><%= filter[:title] -%></div>
+
+        <div class="options">
+          <% filter[:objects].each do |object| %>
+            <div<%= object[:selected] ? ' class="selected"' : '' -%>>
+              <%= link_to(object[:label], object[:query]) -%>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%= render :partial => "contributions/list", :locals => { :collection => @contributions, :table => true } %>
+
 </div>
 
-<h1><%= feed_icon_tag "Latest Workflows", formatted_workflows_path(:rss), "margin-right: 0.3em;" -%> Workflows</h1>
+<div style="clear: left"></div>
 
-<ul class="sectionIcons">
-	<li><%= icon "workflow", new_workflow_path, nil, nil, "Upload New Workflow" %></li>
-</ul>
-
-<% cache(:controller => 'workflows', :action => 'all_tags') do -%>
-	<%= render :partial => "workflows/all_tags" %>
-<% end -%>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions, :sort_by => Contribution.order_options } %>
-
-<%= render :partial => "contributions/list", :locals => { :collection => @contributions, :table => true } %>
+<%= javascript_include_tag "ellipsis.js" %>
+<script>truncate_spans()</script>
 
 <%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
 

@@ -3,7 +3,9 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+
 class Contribution < ActiveRecord::Base
+
   belongs_to :contributor, :polymorphic => true
   belongs_to :contributable, :polymorphic => true
   belongs_to :policy
@@ -15,81 +17,6 @@ class Contribution < ActiveRecord::Base
   has_many :viewings,
            :order => "created_at DESC",
            :dependent => :destroy
-
-  def self.order_options
-    [
-      {
-        "order"  => "rank DESC",
-        "option" => "rank",
-        "label"  => "Rank"
-      },
-      
-      {
-        "order"  => "label, rank DESC",
-        "option" => "title",
-        "label"  => "Title"
-      },
-
-      {
-        "order"  => "created_at DESC, rank DESC",
-        "option" => "latest",
-        "label"  => "Latest"
-      },
-
-      {
-        "order"  => "updated_at DESC, rank DESC",
-        "option" => "last_updated",
-        "label"  => "Last updated"
-      },
-
-      {
-        "order"  => "rating DESC, rank DESC",
-        "option" => "rating",
-        "label"  => "Community rating"
-      },
-
-      {
-        "order"  => "site_viewings_count DESC, rank DESC",
-        "option" => "viewings",
-        "label"  => "Most viewed"
-      },
-
-      {
-        "order"  => "site_downloads_count DESC, rank DESC",
-        "option" => "downloads",
-        "label"  => "Most downloaded"
-      },
-
-      {
-        "joins"  => "LEFT OUTER JOIN content_types ON contributions.content_type_id = content_types.id",
-        "order"  => "content_types.title, rank DESC",
-        "option" => "type",
-        "label"  => "Type"
-      },
-
-      {
-        "joins"  => "LEFT OUTER JOIN licenses ON contributions.license_id = licenses.id",
-        "order"  => "licenses.title, rank DESC",
-        "option" => "licence",
-        "label"  => "Licence"
-      }
-    ]
-  end
-
-  def self.contributions_list(klass = nil, params = nil, user = nil)
-
-    sort_options = Contribution.order_options.find do |x| x["option"] == params["order"] end
-
-    sort_options ||= Contribution.order_options.first
-
-    results = Authorization.authorised_index(klass,
-        :all,
-        :authorised_user => user,
-        :contribution_records => true,
-        :page => { :size => 10, :current => params["page"] },
-        :joins => sort_options["joins"],
-        :order => sort_options["order"])
-  end
 
   # returns the 'most downloaded' Contributions
   # (only takes into account downloads, that is internal usage)

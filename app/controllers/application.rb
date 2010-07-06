@@ -369,4 +369,299 @@ class ApplicationController < ActionController::Base
 
     nil
   end 
+
+  # Pivot code
+  
+  def pivot_options
+    {
+      :order => 
+      [
+        {
+          :option => 'rank',
+          :label  => 'Rank',
+          :order  => 'rank DESC'
+        },
+        
+        {
+          :option => 'title',
+          :label  => 'Title',
+          :order  => 'label, rank DESC'
+        },
+
+        {
+          :option => 'latest',
+          :label  => 'Latest',
+          :order  => 'created_at DESC, rank DESC'
+        },
+
+        {
+          :option => 'last_updated',
+          :label  => 'Last updated',
+          :order  => 'updated_at DESC, rank DESC'
+        },
+
+        {
+          :option => 'rating',
+          :label  => 'Community rating',
+          :order  => 'rating DESC, rank DESC'
+        },
+
+        {
+          :option => 'viewings',
+          :label  => 'Most viewed',
+          :order  => 'site_viewings_count DESC, rank DESC'
+        },
+
+        {
+          :option => 'downloads',
+          :label  => 'Most downloaded',
+          :order  => 'site_downloads_count DESC, rank DESC'
+        },
+
+        {
+          :option => 'type',
+          :label  => 'Type',
+          :joins  => [ :content_types ],
+          :order  => 'content_types.title, rank DESC'
+        },
+
+        {
+          :option => 'licence',
+          :label  => 'Licence',
+          :joins  => [ :licences ],
+          :order  => 'licenses.title, rank DESC'
+        }
+      ],
+
+      :filters =>
+      [
+        {
+          :option    => "type",
+          :column    => "contributions.contributable_type",
+          :title     => 'Category',
+          :select    => 'contributions.contributable_type, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :group     => 'contributions.contributable_type',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
+          :label     => 'visible_name(x.contributable_type)',
+          :key       => 'type',
+          :value     => 'x.contributable_type'
+        },
+
+        {
+          :option    => "content_type",
+          :column    => "content_types.title",
+          :joins     => [ :content_types ],
+          :title     => 'Type',
+          :select    => 'content_types.title, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :condition => 'contributions.content_type_id IS NOT NULL',
+          :group     => 'content_types.title',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC LIMIT 10',
+          :label     => 'x.title',
+          :key       => 'content_type',
+          :value     => 'x.title'
+        },
+
+        {
+          :option    => "tag",
+          :column    => "tags.name",
+          :joins     => [ :taggings, :tags ],
+          :title     => 'Tag',
+          :select    => 'tags.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :group     => 'tags.id',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC, tags.name LIMIT 10',
+          :label     => 'x.name',
+          :key       => 'tag',
+          :value     => 'x.name'
+        },
+
+        {
+          :option    => "member",
+          :column    => "users.name",
+          :joins     => [ :users ],
+          :title     => 'User',
+          :select    => 'users.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :group     => 'users.name',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC LIMIT 10',
+          :label     => 'x.name',
+          :key       => 'member',
+          :value     => 'x.name'
+        },
+
+        {
+          :option    => "license",
+          :column    => "licenses.unique_name",
+          :joins     => [ :licences ],
+          :title     => 'Licence',
+          :select    => 'licenses.unique_name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :condition => 'contributions.license_id IS NOT NULL',
+          :group     => 'licenses.unique_name',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC LIMIT 10',
+          :label     => 'x.unique_name',
+          :key       => 'license',
+          :value     => 'x.unique_name'
+        },
+
+        {
+          :option    => "network",
+          :column    => "networks.title",
+          :joins     => [ :networks ],
+          :title     => "Group",
+          :select    => 'networks.title, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :group     => 'networks.id',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC LIMIT 10',
+          :label     => 'x.title',
+          :key       => 'network',
+          :value     => 'x.title'
+        },
+
+        {
+          :option    => "attribution",
+          :column    => "attribution_targets.label",
+          :joins     => [ :attributions, :attribution_targets ],
+          :title     => "Attribution",
+          :select    => 'attribution_targets.label, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :group     => 'attribution_targets.contributable_type, attribution_targets.contributable_id',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC LIMIT 10',
+          :label     => 'x.label',
+          :key       => 'attribution',
+          :value     => 'x.label'
+        },
+      ],
+
+      :joins =>
+      {
+        :content_types => "LEFT OUTER JOIN content_types ON contributions.content_type_id = content_types.id",
+        :licences      => "LEFT OUTER JOIN licenses ON contributions.license_id = licenses.id",
+        :users         => "INNER JOIN users ON contributions.contributor_type = 'User' AND contributions.contributor_id = users.id",
+        :taggings      => "LEFT OUTER JOIN taggings ON contributions.contributable_type = taggings.taggable_type AND contributions.contributable_id = taggings.taggable_id",
+        :tags          => "INNER JOIN tags ON taggings.tag_id = tags.id",
+        :networks      => "INNER JOIN networks ON permissions.contributor_type = 'Network' AND permissions.contributor_id = networks.id",
+        :attributions  => "INNER JOIN attributions ON attributor_type = contributions.contributable_type AND attributor_id = contributions.contributable_id",
+        :attribution_targets => "INNER JOIN contributions AS attribution_targets ON attributions.attributable_type = attribution_targets.contributable_type AND attributions.attributable_id = attribution_targets.contributable_id",
+        :credits       => "INNER JOIN creditations ON creditations.creditable_type = contributions.contributable_type AND creditations.creditable_id = contributions.contributable_id"
+      }
+    }
+  end
+
+  def contributions_list(klass = nil, params = nil, user = nil)
+
+    def escape_sql(str)
+      str.gsub(/\\/, '\&\&').gsub(/'/, "''")
+    end
+
+    def comparison(lhs, rhs)
+
+      bits = rhs.split(",")
+
+      if bits.length == 1
+        "#{lhs} = '#{escape_sql(rhs)}'"
+      else
+        "#{lhs} IN ('#{bits.map do |bit| escape_sql(bit) end.join("', '")}')"
+      end
+    end
+
+    # determine joins, conditions and order for the main results
+
+    joins      = []
+    conditions = []
+
+    pivot_options[:filters].each do |filter|
+      if columns = params[filter[:option]]
+        conditions << comparison(filter[:column], columns)
+        joins += filter[:joins] if filter[:joins]
+      end
+    end
+
+    order_options = pivot_options[:order].find do |x|
+      x[:option] == params[:order]
+    end
+
+    order_options ||= pivot_options[:order].first
+
+    joins += order_options[:joins] if order_options[:joins]
+
+    # perform the results query
+
+    results = Authorization.authorised_index(klass,
+        :all,
+        :authorised_user => user,
+        :include_permissions => true,
+        :contribution_records => true,
+        :page => { :size => 10, :current => params["page"] },
+        :joins => joins.length.zero? ? nil : joins.uniq.map do |j| pivot_options[:joins][j] end.join(" "),
+        :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
+        :order => order_options[:order])
+
+    # produce the filter list
+
+    filters = pivot_options[:filters].clone
+
+    filters.each do |filter|
+
+      # apply all the joins and conditions except for the current filter
+
+      joins      = []
+      conditions = []
+
+      pivot_options[:filters].each do |other_filter|
+        if columns = params[other_filter[:option]]
+          conditions << comparison(other_filter[:column], columns) unless other_filter == filter
+          joins += other_filter[:joins] if other_filter[:joins]
+        end
+      end
+
+      joins += filter[:joins] if filter[:joins]
+      conditions << filter[:condition] if filter[:condition]
+
+      filter[:current] = params[filter[:key]] ? params[filter[:key]].split(',') : []
+
+      filter[:objects] = Authorization.authorised_index(Contribution,
+          :all,
+          :include_permissions => true,
+          :select => filter[:select],
+          :joins => joins.length.zero? ? nil : joins.uniq.map do |j| pivot_options[:joins][j] end.join(" "),
+          :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
+          :group => filter[:group],
+          :order => filter[:order],
+          :authorised_user => user).map do |object|
+
+            x = object
+            value = eval(filter[:value])
+            selected = filter[:current].include?(value)
+
+            if selected
+              new_selection = (filter[:current] - [value]).uniq.join(',')
+            else
+              new_selection = (filter[:current] + [value]).uniq.join(',')
+            end
+
+            new_selection = nil if new_selection.empty?
+
+            target_query = request.query_parameters.merge(filter[:key] => new_selection, "page" => nil)
+
+            {
+              :object => object,
+              :value  => value,
+              :label  => "<div class='pivot-count'>" + eval("x.count") + "</div><div class='pivot-label'><span class='truncate'>" + eval(filter[:label]) + "</span></div>",
+              :query  => target_query,
+              :selected => selected
+            }
+          end
+    end
+
+    # remove filters that do not help in narrowing down the result set
+
+    filters = filters.select do |filter|
+      if filter[:objects].empty?
+        false
+#     elsif filter[:objects].length == 1 && filter[:objects][0][:selected] == false
+#       false
+      else
+        true
+      end
+    end
+
+    [results, filters, nil]
+  end
+
 end

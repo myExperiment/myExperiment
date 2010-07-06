@@ -27,7 +27,8 @@ class PacksController < ApplicationController
 
   # GET /packs
   def index
-    @contributions = Contribution.contributions_list(Pack, params, current_user)
+    @pivot_options = pivot_options
+    @contributions, @filters, @summary = contributions_list(Pack, params, current_user)
     respond_to do |format|
       format.html # index.rhtml
     end

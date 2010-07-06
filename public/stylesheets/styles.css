@@ -829,7 +829,6 @@ div.progressBar div.background {
 }
 
 table.alt_table {
-	width: 100%;
 	border-collapse: collapse;
 }
 
@@ -887,6 +886,8 @@ table.alt_table .desc {
 	text-align: left;
 	line-height: 1.3;
 	overflow: hidden;
+  word-wrap: break-word;
+  width: 360px;
 }
 
 table.alt_table .standout {
@@ -2030,5 +2031,64 @@ table.quick_add td.submit {
 .curation_events UL LI {
   list-style: none;
   padding-top: 1em;
+}
+
+/* pivot panel */
+
+DIV.pivot {
+  float: left;
+  width: 150px;
+  margin-right: 10px;
+}
+
+DIV.pivot DIV.filter {
+  margin-bottom: 1em;
+  padding: 2px;
+  background: #f0f0f0;
+  border-radius: 8px;
+}
+
+DIV.pivot DIV.category {
+  padding: 0.2em;
+  font-size: 120%;
+  background: #e0e0e0;
+  margin-bottom: 0.2em;
+  border-radius: 6px 6px 0 0;
+}
+
+DIV.pivot DIV.options > DIV {
+  border: 1px solid transparent;
+  padding: 0.2em;
+  font-size: 90%;
+  padding-left: 0.2em;
+}
+
+DIV.pivot DIV.options > DIV:last-child {
+  border-radius: 0 0 6px 6px;
+}
+
+DIV.pivot DIV.options > DIV:hover {
+  background: #d0d0f0;
+}
+
+DIV.pivot DIV.options > DIV.selected {
+  background: #ffe0c0;
+}
+ 
+DIV.pivot DIV.options > DIV.selected:hover {
+  background: #dfc0a0;
+}
+ 
+.pivot-label {
+  width: 110px;
+  overflow: hidden;
+}
+
+.pivot-count {
+  float: right;
+}
+
+.truncate {
+  white-space: nowrap;
 }
 

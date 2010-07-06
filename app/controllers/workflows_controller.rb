@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class WorkflowsController < ApplicationController
+
+  include ApplicationHelper
+
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search]
   
   before_filter :find_workflows_rss, :only => [:index]
@@ -163,7 +166,8 @@ class WorkflowsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @contributions = Contribution.contributions_list(Workflow, params, current_user)
+        @pivot_options = pivot_options
+        @contributions, @filters, @summary = contributions_list(Contribution, params, current_user)
         # index.rhtml
       end
       format.rss do

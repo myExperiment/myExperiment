@@ -3,7 +3,7 @@
     Sort by:
     <select onchange="javascript:location = this.options[this.selectedIndex].value;">
       <% sort_by.each do |args| %>
-        <option value="?order=<%= args["option"] -%>" <% if params[:order] == args["option"] -%> selected="selected"<% end -%>><%= args["label"] -%></option>
+        <option value="?order=<%= args[:option] -%>" <% if params[:order] == args[:option] -%> selected="selected"<% end -%>><%= args[:label] -%></option>
       <% end %>
     </select>
   </div>
