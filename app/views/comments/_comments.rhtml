@@ -6,6 +6,10 @@
 	<span class="count_text" style="vertical-align: middle;">(<%= commentable.comments.length %>)</span>
 </h2>
 
+<ul class="sectionIcons">
+  <li><%= icon('timeline', rest_resource_uri(commentable) + "/comments/timeline", nil, nil, 'View Timeline')%></li>
+</ul>
+
 <div class="commentsBox">
 	
 	<% unless commentable.comments.empty? %>
