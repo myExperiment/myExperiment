@@ -455,7 +455,7 @@ class ApplicationController < ActionController::Base
           :select    => 'content_types.title, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :condition => 'contributions.content_type_id IS NOT NULL',
           :group     => 'content_types.title',
-          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC LIMIT 10',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
           :label     => 'x.title',
           :key       => 'content_type',
           :value     => 'x.title'
@@ -468,7 +468,7 @@ class ApplicationController < ActionController::Base
           :title     => 'Tag',
           :select    => 'tags.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'tags.id',
-          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC, tags.name LIMIT 10',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC, tags.name',
           :label     => 'x.name',
           :key       => 'tag',
           :value     => 'x.name'
@@ -481,7 +481,7 @@ class ApplicationController < ActionController::Base
           :title     => 'User',
           :select    => 'users.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'users.name',
-          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC LIMIT 10',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
           :label     => 'x.name',
           :key       => 'member',
           :value     => 'x.name'
@@ -495,7 +495,7 @@ class ApplicationController < ActionController::Base
           :select    => 'licenses.unique_name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :condition => 'contributions.license_id IS NOT NULL',
           :group     => 'licenses.unique_name',
-          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC LIMIT 10',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
           :label     => 'x.unique_name',
           :key       => 'license',
           :value     => 'x.unique_name'
@@ -508,7 +508,7 @@ class ApplicationController < ActionController::Base
           :title     => "Group",
           :select    => 'networks.title, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'networks.id',
-          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC LIMIT 10',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
           :label     => 'x.title',
           :key       => 'network',
           :value     => 'x.title'
@@ -521,7 +521,7 @@ class ApplicationController < ActionController::Base
           :title     => "Attribution",
           :select    => 'attribution_targets.label, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'attribution_targets.contributable_type, attribution_targets.contributable_id',
-          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC LIMIT 10',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
           :label     => 'x.label',
           :key       => 'attribution',
           :value     => 'x.label'
@@ -592,6 +592,16 @@ class ApplicationController < ActionController::Base
         :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
         :order => order_options[:order])
 
+    # produce a query hash to match the current filters
+
+    query_hash = {}
+
+    pivot_options[:filters].each do |filter|
+      if params[filter[:option]]
+        query_hash[filter[:option]] = params[filter[:option]]
+      end
+    end
+
     # produce the filter list
 
     filters = pivot_options[:filters].clone
@@ -622,6 +632,7 @@ class ApplicationController < ActionController::Base
           :joins => joins.length.zero? ? nil : joins.uniq.map do |j| pivot_options[:joins][j] end.join(" "),
           :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
           :group => filter[:group],
+          :limit => 10,
           :order => filter[:order],
           :authorised_user => user).map do |object|
 
@@ -637,13 +648,13 @@ class ApplicationController < ActionController::Base
 
             new_selection = nil if new_selection.empty?
 
-            target_query = request.query_parameters.merge(filter[:key] => new_selection, "page" => nil)
+            target_uri = content_path(query_hash.merge(filter[:key] => new_selection, "page" => nil))
 
             {
               :object => object,
               :value  => value,
               :label  => "<div class='pivot-count'>" + eval("x.count") + "</div><div class='pivot-label'><span class='truncate'>" + eval(filter[:label]) + "</span></div>",
-              :query  => target_query,
+              :uri  => target_uri,
               :selected => selected
             }
           end

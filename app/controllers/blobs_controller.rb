@@ -54,10 +54,12 @@ class BlobsController < ApplicationController
 
   # GET /files
   def index
-    @pivot_options = pivot_options
-    @contributions, @filters, @summary = contributions_list(Blob, params, current_user)
     respond_to do |format|
-      format.html # index.rhtml
+      format.html {
+        @pivot_options = pivot_options
+        @contributions, @filters, @summary = contributions_list(Contribution, { "type" => "Blob" }, current_user)
+        render 'content/index'
+      }
     end
   end
   

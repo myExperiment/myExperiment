@@ -2050,7 +2050,7 @@ DIV.pivot DIV.filter {
 
 DIV.pivot DIV.category {
   padding: 0.2em;
-  font-size: 120%;
+  font-size: 110%;
   background: #e0e0e0;
   margin-bottom: 0.2em;
   border-radius: 6px 6px 0 0;
@@ -2079,6 +2079,12 @@ DIV.pivot DIV.options > DIV.selected:hover {
   background: #dfc0a0;
 }
  
+.pivot-title {
+  font-size: 120%;
+  text-align: center;
+  margin-bottom: 1.0em;
+}
+
 .pivot-label {
   width: 110px;
   overflow: hidden;

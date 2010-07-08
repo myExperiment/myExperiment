@@ -27,10 +27,12 @@ class PacksController < ApplicationController
 
   # GET /packs
   def index
-    @pivot_options = pivot_options
-    @contributions, @filters, @summary = contributions_list(Pack, params, current_user)
     respond_to do |format|
-      format.html # index.rhtml
+      format.html {
+        @pivot_options = pivot_options
+        @contributions, @filters, @summary = contributions_list(Contribution, { "type" => "Pack" }, current_user)
+        # index.rhtml
+      }
     end
   end
   

@@ -167,8 +167,8 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       format.html do
         @pivot_options = pivot_options
-        @contributions, @filters, @summary = contributions_list(Contribution, params, current_user)
-        # index.rhtml
+        @contributions, @filters, @summary = contributions_list(Contribution, { "type" => "Workflow" }, current_user)
+        render 'content/index'
       end
       format.rss do
         #@workflows = Workflow.find(:all, :order => "updated_at DESC") # list all (if required)
