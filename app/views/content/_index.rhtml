@@ -1,0 +1,36 @@
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions, :sort_by => @pivot_options[:order] } %>
+
+<div style="clear: left"></div>
+
+<div>
+  <div class="pivot">
+
+    <div class="pivot-title">Filters</div>
+
+    <% @filters.each do |filter| %>
+      <div class="filter">
+        <div class="category"><%= filter[:title] -%></div>
+
+        <div class="options">
+          <% filter[:objects].each do |object| %>
+            <div<%= object[:selected] ? ' class="selected"' : '' -%>>
+              <%= link_to(object[:label], object[:uri]) -%>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%= render :partial => "contributions/list", :locals => { :collection => @contributions, :table => true } %>
+
+</div>
+
+<div style="clear: left"></div>
+
+<%= javascript_include_tag "ellipsis.js" %>
+<script>truncate_spans()</script>
+
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
+
+
