@@ -10,7 +10,13 @@ class CommentsController < ApplicationController
 
   # GET /:context_type/:context_id/comments
   def index
-    @comments = Comment.find(:all, :conditions => [ "commentable_id = ? AND commentable_type = ? AND created_at > ? AND created_at < ?", @context.id, @context.class.name, params[:start].to_time, params[:end].to_time ] )
+    if params[:start] && params[:end]
+      begin
+        @comments = Comment.find(:all, :conditions => [ "commentable_id = ? AND commentable_type = ? AND created_at > ? AND created_at < ?", @context.id, @context.class.name, params[:start].to_time, params[:end].to_time ] )
+      rescue TypeError
+      end
+    end
+    @comments ||= []
     respond_to do |format|
       format.json { render :partial => 'comments/timeline_json', :layout => false }
     end
