@@ -2051,9 +2051,7 @@ DIV.pivot DIV.filter {
 DIV.pivot DIV.category {
   padding: 0.2em;
   font-size: 110%;
-  background: #e0e0e0;
   margin-bottom: 0.2em;
-  border-radius: 6px 6px 0 0;
 }
 
 DIV.pivot DIV.options > DIV {
@@ -2061,6 +2059,10 @@ DIV.pivot DIV.options > DIV {
   padding: 0.2em;
   font-size: 90%;
   padding-left: 0.2em;
+}
+
+DIV.pivot DIV.options > DIV:first-child {
+  border-radius: 6px 6px 0 0;
 }
 
 DIV.pivot DIV.options > DIV:last-child {

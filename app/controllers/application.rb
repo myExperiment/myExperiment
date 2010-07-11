@@ -433,12 +433,14 @@ class ApplicationController < ActionController::Base
         }
       ],
 
+      :num_options => ["10", "20", "25", "50", "100"],
+
       :filters =>
       [
         {
           :option    => "type",
           :column    => "contributions.contributable_type",
-          :title     => 'Category',
+          :title     => 'category',
           :select    => 'contributions.contributable_type, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'contributions.contributable_type',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
@@ -451,7 +453,7 @@ class ApplicationController < ActionController::Base
           :option    => "content_type",
           :column    => "content_types.title",
           :joins     => [ :content_types ],
-          :title     => 'Type',
+          :title     => 'type',
           :select    => 'content_types.title, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :condition => 'contributions.content_type_id IS NOT NULL',
           :group     => 'content_types.title',
@@ -465,7 +467,7 @@ class ApplicationController < ActionController::Base
           :option    => "tag",
           :column    => "tags.name",
           :joins     => [ :taggings, :tags ],
-          :title     => 'Tag',
+          :title     => 'tag',
           :select    => 'tags.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'tags.id',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC, tags.name',
@@ -478,7 +480,7 @@ class ApplicationController < ActionController::Base
           :option    => "member",
           :column    => "users.name",
           :joins     => [ :users ],
-          :title     => 'User',
+          :title     => 'user',
           :select    => 'users.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'users.name',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
@@ -491,7 +493,7 @@ class ApplicationController < ActionController::Base
           :option    => "license",
           :column    => "licenses.unique_name",
           :joins     => [ :licences ],
-          :title     => 'Licence',
+          :title     => 'licence',
           :select    => 'licenses.unique_name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :condition => 'contributions.license_id IS NOT NULL',
           :group     => 'licenses.unique_name',
@@ -505,7 +507,7 @@ class ApplicationController < ActionController::Base
           :option    => "network",
           :column    => "networks.title",
           :joins     => [ :networks ],
-          :title     => "Group",
+          :title     => "group",
           :select    => 'networks.title, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'networks.id',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
@@ -514,18 +516,18 @@ class ApplicationController < ActionController::Base
           :value     => 'x.title'
         },
 
-        {
-          :option    => "attribution",
-          :column    => "attribution_targets.label",
-          :joins     => [ :attributions, :attribution_targets ],
-          :title     => "Attribution",
-          :select    => 'attribution_targets.label, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
-          :group     => 'attribution_targets.contributable_type, attribution_targets.contributable_id',
-          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
-          :label     => 'x.label',
-          :key       => 'attribution',
-          :value     => 'x.label'
-        },
+#       {
+#         :option    => "attribution",
+#         :column    => "attribution_targets.label",
+#         :joins     => [ :attributions, :attribution_targets ],
+#         :title     => "attribution",
+#         :select    => 'attribution_targets.label, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+#         :group     => 'attribution_targets.contributable_type, attribution_targets.contributable_id',
+#         :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
+#         :label     => 'x.label',
+#         :key       => 'attribution',
+#         :value     => 'x.label'
+#       },
       ],
 
       :joins =>
@@ -587,7 +589,7 @@ class ApplicationController < ActionController::Base
         :authorised_user => user,
         :include_permissions => true,
         :contribution_records => true,
-        :page => { :size => 10, :current => params["page"] },
+        :page => { :size => params["num"] ? params["num"].to_i : nil, :current => params["page"] },
         :joins => joins.length.zero? ? nil : joins.uniq.map do |j| pivot_options[:joins][j] end.join(" "),
         :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
         :order => order_options[:order])

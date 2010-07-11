@@ -1,15 +1,13 @@
 <%= render :partial => "layouts/paginate", :locals => { :collection => @contributions, :sort_by => @pivot_options[:order] } %>
 
-<div style="clear: left"></div>
+<div style="clear: both"></div>
 
 <div>
   <div class="pivot">
-
-    <div class="pivot-title">Filters</div>
-
     <% @filters.each do |filter| %>
+      <div class="category">Filter by <%= filter[:title] -%></div>
+
       <div class="filter">
-        <div class="category"><%= filter[:title] -%></div>
 
         <div class="options">
           <% filter[:objects].each do |object| %>
@@ -31,6 +29,5 @@
 <%= javascript_include_tag "ellipsis.js" %>
 <script>truncate_spans()</script>
 
-<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
-
+<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions, :sort_by => @pivot_options[:order], :num_options => @pivot_options[:num_options] } %>
 
