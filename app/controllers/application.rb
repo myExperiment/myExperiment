@@ -451,69 +451,69 @@ class ApplicationController < ActionController::Base
 
         {
           :option    => "content_type",
-          :column    => "content_types.title",
+          :column    => "content_types.id",
           :joins     => [ :content_types ],
           :title     => 'type',
-          :select    => 'content_types.title, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :select    => 'content_types.id, content_types.title, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :condition => 'contributions.content_type_id IS NOT NULL',
-          :group     => 'content_types.title',
+          :group     => 'content_types.id',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
           :label     => 'x.title',
           :key       => 'content_type',
-          :value     => 'x.title'
+          :value     => 'x.id'
         },
 
         {
           :option    => "tag",
-          :column    => "tags.name",
+          :column    => "tags.id",
           :joins     => [ :taggings, :tags ],
           :title     => 'tag',
-          :select    => 'tags.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :select    => 'tags.id, tags.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'tags.id',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC, tags.name',
           :label     => 'x.name.capitalize',
           :key       => 'tag',
-          :value     => 'x.name'
+          :value     => 'x.id'
         },
 
         {
           :option    => "member",
-          :column    => "users.name",
+          :column    => "users.id",
           :joins     => [ :users ],
           :title     => 'user',
-          :select    => 'users.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :select    => 'users.id, users.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'users.name',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
           :label     => 'x.name',
           :key       => 'member',
-          :value     => 'x.name'
+          :value     => 'x.id'
         },
 
         {
           :option    => "license",
-          :column    => "licenses.unique_name",
+          :column    => "licenses.id",
           :joins     => [ :licences ],
           :title     => 'licence',
-          :select    => 'licenses.unique_name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :select    => 'licenses.id, licenses.unique_name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :condition => 'contributions.license_id IS NOT NULL',
-          :group     => 'licenses.unique_name',
+          :group     => 'licenses.id',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
           :label     => 'x.unique_name.capitalize',
           :key       => 'license',
-          :value     => 'x.unique_name'
+          :value     => 'x.id'
         },
 
         {
           :option    => "network",
-          :column    => "networks.title",
+          :column    => "networks.id",
           :joins     => [ :networks ],
           :title     => "group",
-          :select    => 'networks.title, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :select    => 'networks.id, networks.title, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'networks.id',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
           :label     => 'x.title',
           :key       => 'network',
-          :value     => 'x.title'
+          :value     => 'x.id'
         },
 
         {
@@ -582,8 +582,8 @@ class ApplicationController < ActionController::Base
     conditions = []
 
     pivot_options[:filters].each do |filter|
-      if columns = params[filter[:option]]
-        conditions << comparison(filter[:column], columns)
+      if filter_list = params[filter[:option]]
+        conditions << comparison(filter[:column], filter_list)
         joins += filter[:joins] if filter[:joins]
       end
     end
@@ -630,8 +630,8 @@ class ApplicationController < ActionController::Base
       conditions = []
 
       pivot_options[:filters].each do |other_filter|
-        if columns = params[other_filter[:option]]
-          conditions << comparison(other_filter[:column], columns) unless other_filter == filter
+        if filter_list = params[other_filter[:option]]
+          conditions << comparison(other_filter[:column], filter_list) unless other_filter == filter
           joins += other_filter[:joins] if other_filter[:joins]
         end
       end
@@ -653,7 +653,7 @@ class ApplicationController < ActionController::Base
           :authorised_user => user).map do |object|
 
             x = object
-            value = eval(filter[:value])
+            value = eval(filter[:value]).to_s
             selected = filter[:current].include?(value)
 
             if selected
