@@ -2045,7 +2045,7 @@ DIV.pivot DIV.filter {
   margin-bottom: 1em;
   padding: 2px;
   background: #f0f0f0;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 DIV.pivot DIV.category {
@@ -2062,11 +2062,13 @@ DIV.pivot DIV.options > DIV {
 }
 
 DIV.pivot DIV.options > DIV:first-child {
-  border-radius: 6px 6px 0 0;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
 }
 
 DIV.pivot DIV.options > DIV:last-child {
-  border-radius: 0 0 6px 6px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 
 DIV.pivot DIV.options > DIV:hover {

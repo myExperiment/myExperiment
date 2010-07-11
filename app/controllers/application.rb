@@ -471,7 +471,7 @@ class ApplicationController < ActionController::Base
           :select    => 'tags.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'tags.id',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC, tags.name',
-          :label     => 'x.name',
+          :label     => 'x.name.capitalize',
           :key       => 'tag',
           :value     => 'x.name'
         },
@@ -498,7 +498,7 @@ class ApplicationController < ActionController::Base
           :condition => 'contributions.license_id IS NOT NULL',
           :group     => 'licenses.unique_name',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
-          :label     => 'x.unique_name',
+          :label     => 'x.unique_name.capitalize',
           :key       => 'license',
           :value     => 'x.unique_name'
         },
@@ -514,6 +514,19 @@ class ApplicationController < ActionController::Base
           :label     => 'x.title',
           :key       => 'network',
           :value     => 'x.title'
+        },
+
+        {
+          :option    => "curation_event",
+          :column    => "curation_events.category",
+          :joins     => [ :curation_events ],
+          :title     => "curation",
+          :select    => 'curation_events.category, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
+          :group     => 'curation_events.category',
+          :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
+          :label     => 'x.category.capitalize',
+          :key       => 'curation_event',
+          :value     => 'x.category'
         },
 
 #       {
@@ -540,7 +553,8 @@ class ApplicationController < ActionController::Base
         :networks      => "INNER JOIN networks ON permissions.contributor_type = 'Network' AND permissions.contributor_id = networks.id",
         :attributions  => "INNER JOIN attributions ON attributor_type = contributions.contributable_type AND attributor_id = contributions.contributable_id",
         :attribution_targets => "INNER JOIN contributions AS attribution_targets ON attributions.attributable_type = attribution_targets.contributable_type AND attributions.attributable_id = attribution_targets.contributable_id",
-        :credits       => "INNER JOIN creditations ON creditations.creditable_type = contributions.contributable_type AND creditations.creditable_id = contributions.contributable_id"
+        :credits       => "INNER JOIN creditations ON creditations.creditable_type = contributions.contributable_type AND creditations.creditable_id = contributions.contributable_id",
+        :curation_events => "INNER JOIN curation_events ON curation_events.object_type = contributions.contributable_type AND curation_events.object_id = contributions.contributable_id"
       }
     }
   end
