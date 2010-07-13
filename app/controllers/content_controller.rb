@@ -11,7 +11,7 @@ class ContentController < ApplicationController
     respond_to do |format|
       format.html do
         @pivot_options = pivot_options
-        @contributions, @filters, @summary = contributions_list(Contribution, params, current_user)
+        @pivot = contributions_list(Contribution, params, current_user)
         # index.rhtml
       end
 #     format.rss do

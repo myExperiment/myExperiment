@@ -433,14 +433,15 @@ class ApplicationController < ActionController::Base
         }
       ],
 
-      :num_options => ["10", "20", "25", "50", "100"],
+      :num_options => ['10', '20', '25', '50', '100'],
 
       :filters =>
       [
         {
-          :option    => "type",
-          :column    => "contributions.contributable_type",
-          :title     => 'category',
+          :title        => 'category',
+          :query_option => 'type',
+          :id_column    => 'contributions.contributable_type',
+          :label_column => 'contributions.contributable_type',
           :select    => 'contributions.contributable_type, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'contributions.contributable_type',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
@@ -450,10 +451,11 @@ class ApplicationController < ActionController::Base
         },
 
         {
-          :option    => "content_type",
-          :column    => "content_types.id",
-          :joins     => [ :content_types ],
-          :title     => 'type',
+          :title        => 'type',
+          :query_option => 'content_type',
+          :id_column    => 'content_types.id',
+          :label_column => 'content_types.title',
+          :joins        => [ :content_types ],
           :select    => 'content_types.id, content_types.title, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :condition => 'contributions.content_type_id IS NOT NULL',
           :group     => 'content_types.id',
@@ -464,10 +466,11 @@ class ApplicationController < ActionController::Base
         },
 
         {
-          :option    => "tag",
-          :column    => "tags.id",
-          :joins     => [ :taggings, :tags ],
-          :title     => 'tag',
+          :title        => 'tag',
+          :query_option => 'tag',
+          :id_column    => 'tags.id',
+          :label_column => 'tags.name',
+          :joins        => [ :taggings, :tags ],
           :select    => 'tags.id, tags.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'tags.id',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC, tags.name',
@@ -477,10 +480,11 @@ class ApplicationController < ActionController::Base
         },
 
         {
-          :option    => "member",
-          :column    => "users.id",
-          :joins     => [ :users ],
-          :title     => 'user',
+          :title        => 'user',
+          :query_option => 'member',
+          :id_column    => 'users.id',
+          :label_column => 'users.name',
+          :joins        => [ :users ],
           :select    => 'users.id, users.name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'users.name',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
@@ -490,10 +494,11 @@ class ApplicationController < ActionController::Base
         },
 
         {
-          :option    => "license",
-          :column    => "licenses.id",
-          :joins     => [ :licences ],
-          :title     => 'licence',
+          :title        => 'licence',
+          :query_option => 'license',
+          :id_column    => 'licenses.id',
+          :label_column => 'licenses.unique_name',
+          :joins        => [ :licences ],
           :select    => 'licenses.id, licenses.unique_name, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :condition => 'contributions.license_id IS NOT NULL',
           :group     => 'licenses.id',
@@ -504,10 +509,11 @@ class ApplicationController < ActionController::Base
         },
 
         {
-          :option    => "network",
-          :column    => "networks.id",
-          :joins     => [ :networks ],
-          :title     => "group",
+          :title        => 'group',
+          :query_option => 'network',
+          :id_column    => 'networks.id',
+          :label_column => 'networks.title',
+          :joins        => [ :networks ],
           :select    => 'networks.id, networks.title, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'networks.id',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
@@ -517,10 +523,11 @@ class ApplicationController < ActionController::Base
         },
 
         {
-          :option    => "curation_event",
-          :column    => "curation_events.category",
-          :joins     => [ :curation_events ],
-          :title     => "curation",
+          :title        => 'curation',
+          :query_option => 'curation_event',
+          :id_column    => 'curation_events.category',
+          :label_column => 'curation_events.category',
+          :joins        => [ :curation_events ],
           :select    => 'curation_events.category, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
           :group     => 'curation_events.category',
           :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
@@ -528,19 +535,6 @@ class ApplicationController < ActionController::Base
           :key       => 'curation_event',
           :value     => 'x.category'
         },
-
-#       {
-#         :option    => "attribution",
-#         :column    => "attribution_targets.label",
-#         :joins     => [ :attributions, :attribution_targets ],
-#         :title     => "attribution",
-#         :select    => 'attribution_targets.label, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS count',
-#         :group     => 'attribution_targets.contributable_type, attribution_targets.contributable_id',
-#         :order     => 'COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC',
-#         :label     => 'x.label',
-#         :key       => 'attribution',
-#         :value     => 'x.label'
-#       },
       ],
 
       :joins =>
@@ -582,8 +576,8 @@ class ApplicationController < ActionController::Base
     conditions = []
 
     pivot_options[:filters].each do |filter|
-      if filter_list = params[filter[:option]]
-        conditions << comparison(filter[:column], filter_list)
+      if filter_list = params[filter[:query_option]]
+        conditions << comparison(filter[:id_column], filter_list)
         joins += filter[:joins] if filter[:joins]
       end
     end
@@ -610,17 +604,29 @@ class ApplicationController < ActionController::Base
 
     # produce a query hash to match the current filters
 
-    query_hash = {}
+    filter_params       = {}
+    filter_query_params = {}
+    order_params        = {}
 
     pivot_options[:filters].each do |filter|
-      if params[filter[:option]]
-        query_hash[filter[:option]] = params[filter[:option]]
+      if params[filter[:query_option]]
+        filter_params[filter[:query_option]] = params[filter[:query_option]]
       end
     end
+
+    order_params[:order] = params[:order] if params[:order]
+    
+    filter_query_params[:filter_query] = params[:filter_query] if params[:filter_query]
 
     # produce the filter list
 
     filters = pivot_options[:filters].clone
+    cancel_filter_query_url = nil
+    reset_filters_url = nil
+
+    if filter_params.length > 0
+      reset_filters_url = order_params
+    end
 
     filters.each do |filter|
 
@@ -630,14 +636,20 @@ class ApplicationController < ActionController::Base
       conditions = []
 
       pivot_options[:filters].each do |other_filter|
-        if filter_list = params[other_filter[:option]]
-          conditions << comparison(other_filter[:column], filter_list) unless other_filter == filter
+        if filter_list = params[other_filter[:query_option]]
+          conditions << comparison(other_filter[:id_column], filter_list) unless other_filter == filter
           joins += other_filter[:joins] if other_filter[:joins]
         end
       end
 
       joins += filter[:joins] if filter[:joins]
       conditions << filter[:condition] if filter[:condition]
+
+      if params[:filter_query]
+        conditions << "(#{filter[:label_column]} LIKE '%#{escape_sql(params[:filter_query])}%')"
+
+        cancel_filter_query_url = request.query_parameters.merge( { "filter_query" => nil } )
+      end
 
       filter[:current] = params[filter[:key]] ? params[filter[:key]].split(',') : []
 
@@ -664,7 +676,7 @@ class ApplicationController < ActionController::Base
 
             new_selection = nil if new_selection.empty?
 
-            target_uri = content_path(query_hash.merge(filter[:key] => new_selection, "page" => nil))
+            target_uri = content_path(filter_params.merge(order_params).merge(filter_query_params).merge(filter[:key] => new_selection, "page" => nil))
 
             {
               :object => object,
@@ -688,7 +700,27 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    [results, filters, nil]
-  end
+    # produce the summary
 
+    summary = ""
+
+    filters.select do |filter|
+      if params[filter[:query_option]]
+        summary << '<span class="filter-in-use"><a href="' +
+        url_for(filter_params.merge(filter_query_params).merge(order_params).merge( { filter[:query_option] => nil } )) +
+        '">' + filter[:title].capitalize + ": " + params[filter[:query_option]] +
+        " <img src='/images/famfamfam_silk/cross.png' /></a></span> "
+      end
+    end
+
+    {
+      :results                 => results,
+      :filters                 => filters,
+      :reset_filters_url       => reset_filters_url,
+      :cancel_filter_query_url => cancel_filter_query_url,
+      :filter_query_url        => filter_params,
+      :summary                 => summary
+    }
+  end
 end
+

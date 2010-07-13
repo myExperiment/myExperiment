@@ -2046,6 +2046,7 @@ DIV.pivot DIV.filter {
   padding: 2px;
   background: #f0f0f0;
   border-radius: 6px;
+  -moz-border-radius: 6px;
 }
 
 DIV.pivot DIV.category {
@@ -2064,11 +2065,15 @@ DIV.pivot DIV.options > DIV {
 DIV.pivot DIV.options > DIV:first-child {
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
+  -moz-border-radius-topleft: 6px;
+  -moz-border-radius-topright: 6px;
 }
 
 DIV.pivot DIV.options > DIV:last-child {
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  -moz-border-radius-bottomright: 6px;
 }
 
 DIV.pivot DIV.options > DIV:hover {
@@ -2083,6 +2088,14 @@ DIV.pivot DIV.options > DIV.selected:hover {
   background: #dfc0a0;
 }
  
+DIV.pivot-summary {
+  margin-left: 160px;
+  background: #f0f0f0;
+  border: 1px solid #d8d8d8;
+  margin-bottom: 0.5em;
+  padding: 0.2em;
+}
+
 .pivot-title {
   font-size: 120%;
   text-align: center;
@@ -2096,6 +2109,32 @@ DIV.pivot DIV.options > DIV.selected:hover {
 
 .pivot-count {
   float: right;
+}
+
+DIV.pivot-filters-in-use {
+  margin-top: 0.5em;
+  width: 577px;
+}
+
+SPAN.filter-in-use {
+  background: #e0e0e0;
+  border: 1px solid #d0d0d0;
+  padding: 2px;
+	line-height: 180%;
+}
+
+SPAN.filter-in-use A {
+  text-decoration: none; /* no underline */
+}
+
+SPAN.filter-in-use A IMG {
+  vertical-align: middle;
+}
+
+SPAN.filter-in-use:hover {
+  border: 1px solid #d0a0a0;
+  padding: 2px;
+  background: #f0d0d0;
 }
 
 .truncate {
