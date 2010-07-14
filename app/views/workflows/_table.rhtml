@@ -72,7 +72,6 @@
 					  
             <% desc_style = "font-size: 85%;" %>
 
-<% workflow.image = nil %>
             <% unless workflow.image.nil? -%>
               <p style="margin: 0; border: 0; width: 101px; float: left">
                 <%= link_to image_tag(url_for_file_column(workflow, "image", "thumb"), :class => 'framed_nospace'), workflow_path(workflow) %>

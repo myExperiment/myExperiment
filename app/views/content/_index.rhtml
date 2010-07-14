@@ -1,57 +1,68 @@
-<%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results], :sort_by => @pivot_options[:order] } %>
-
-<% if @pivot[:reset_filters_url] %>
-  <div style="float: left; padding: 1em"><%= link_to("Reset filters", @pivot[:reset_filters_url]) -%></div>
-<% end %>
-
-<div style="clear: both"></div>
-
-<div>
-
-  <form action="<%= url_for(request.query_parameters) -%>" method="GET">
-    <input name="filter_query" value="<%= params[:filter_query] -%>" style="width: 100px" />
-    <% @pivot[:filter_query_url].each do |key, value| %>
-      <input name="<%= key -%>" type="hidden" value="<%= value.sub('"', '\\"') -%>" />
+<div class="pivot">
+  <div class="left">
+    <% if @pivot[:reset_filters_url] %>
+      <div class="reset_filters"><%= link_to("Reset filters", @pivot[:reset_filters_url]) -%></div>
     <% end %>
-      
-  </form>
+    <div class="search_filters">
+      <form action="<%= url_for(request.query_parameters) -%>" method="GET">
+        <input name="filter_query" value="<%= params[:filter_query] -%>" style="width: 100px" />
+        <% @pivot[:filter_query_url].each do |key, value| %>
+          <input name="<%= key -%>" type="hidden" value="<%= value.sub('"', '\\"') -%>" />
+        <% end %>
+      </form>
 
-  <div>
-    <% if @pivot[:cancel_filter_query_url] %>
-      <%= link_to("Cancel filter query", @pivot[:cancel_filter_query_url]) -%>
-    <% end %>
-  </div>
-
-  <div class="pivot">
-    <% @pivot[:filters].each do |filter| %>
-      <div class="category">Filter by <%= filter[:title] -%></div>
-
-      <div class="filter">
-
-        <div class="options">
-          <% filter[:objects].each do |object| %>
-            <div<%= object[:selected] ? ' class="selected"' : '' -%>>
-              <%= link_to(object[:label], object[:uri]) -%>
-            </div>
-          <% end %>
-        </div>
+      <div>
+        <% if @pivot[:cancel_filter_query_url] %>
+          <%= link_to("Cancel filter query", @pivot[:cancel_filter_query_url]) -%>
+        <% end %>
       </div>
-    <% end %>
+    </div>
+    <div class="filters">
+      <% @pivot[:filters].each do |filter| %>
+        <div class="category">Filter by <%= filter[:title] -%></div>
+        <div class="filter">
+          <div class="options">
+            <% filter[:objects].each do |object| %>
+              <div<%= object[:selected] ? ' class="selected"' : '' -%>>
+                <%= link_to(object[:label], object[:uri]) -%>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
   </div>
-
-  <div class="pivot-summary">
-    <div>Showing <%= @pivot[:results].size -%> results</div>
-    <div class="pivot-filters-in-use"><%= @pivot[:summary] -%></div>
+  <div class="main">
+    <div class="sort">
+      Sort by:
+      <select onchange="javascript:location = this.options[this.selectedIndex].value;">
+        <% @pivot_options[:order].each do |args| %>
+          <option value="<%= url_for(request.query_parameters.merge("order" => args[:option])) -%>"
+          <% if params[:order] == args[:option] -%> selected="selected"<% end -%>><%= args[:label] -%></option>
+        <% end %>
+      </select>
+    </div>
+    <div>
+      <%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results] } %>
+    </div>
+    <div class="summary">
+      <div class="result-count">
+        Showing <%= pluralize(@pivot[:results].size, 'result') -%>.
+        <% if @pivot[:reset_filters_url] %>
+          The following filters are in effect:
+        <% end %>
+      </div>
+      <div class="crumbs"><%= @pivot[:summary] -%></div>
+    </div>
+    <div class="results">
+      <%= render :partial => "contributions/list", :locals => { :collection => @pivot[:results], :table => true } %>
+    </div>
+    <div>
+      <%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results], :sort_by => @pivot_options[:order], :num_options => @pivot_options[:num_options] } %>
+    </div>
   </div>
-
-  <%= render :partial => "contributions/list", :locals => { :collection => @pivot[:results], :table => true } %>
-
 </div>
-
-<div style="clear: left"></div>
 
 <%= javascript_include_tag "ellipsis.js" %>
 <script>truncate_spans()</script>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results], :sort_by => @pivot_options[:order], :num_options => @pivot_options[:num_options] } %>
 

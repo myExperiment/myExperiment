@@ -570,6 +570,67 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    def calculate_filter(params, filter, user, filter_params, order_params, filter_query_params, ids)
+
+      # apply all the joins and conditions except for the current filter
+
+      joins      = []
+      conditions = []
+
+      pivot_options[:filters].each do |other_filter|
+        if filter_list = params[other_filter[:query_option]]
+          conditions << comparison(other_filter[:id_column], filter_list) unless other_filter == filter
+          joins += other_filter[:joins] if other_filter[:joins]
+        end
+      end
+
+      joins += filter[:joins] if filter[:joins]
+      conditions << filter[:condition] if filter[:condition]
+
+      if params[:filter_query]
+        conditions << "(#{filter[:label_column]} LIKE '%#{escape_sql(params[:filter_query])}%')"
+
+      end
+
+      current = params[filter[:key]] ? params[filter[:key]].split(',') : []
+
+      objects = Authorization.authorised_index(Contribution,
+          :all,
+          :include_permissions => true,
+          :select => filter[:select],
+          :joins => joins.length.zero? ? nil : joins.uniq.map do |j| pivot_options[:joins][j] end.join(" "),
+          :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
+          :group => filter[:group],
+          :limit => 10,
+          :order => filter[:order],
+          :authorised_user => user).map do |object|
+
+            x = object
+            value = eval(filter[:value]).to_s
+            selected = current.include?(value)
+
+            if selected
+              new_selection = (current - [value]).uniq.join(',')
+            else
+              new_selection = (current + [value]).uniq.join(',')
+            end
+
+            new_selection = nil if new_selection.empty?
+
+            target_uri = content_path(filter_params.merge(order_params).merge(filter_query_params).merge(filter[:key] => new_selection, "page" => nil))
+
+            {
+              :object => object,
+              :value  => value,
+              :label  => "<div class='count'>" + eval("x.count") + "</div><div class='label'><span class='truncate'>" + eval(filter[:label]) + "</span></div>",
+              :uri  => target_uri,
+              :selected => selected
+            }
+          end
+
+      [current, objects]
+    end
+
     # determine joins, conditions and order for the main results
 
     joins      = []
@@ -629,75 +690,9 @@ class ApplicationController < ActionController::Base
     end
 
     filters.each do |filter|
-
-      # apply all the joins and conditions except for the current filter
-
-      joins      = []
-      conditions = []
-
-      pivot_options[:filters].each do |other_filter|
-        if filter_list = params[other_filter[:query_option]]
-          conditions << comparison(other_filter[:id_column], filter_list) unless other_filter == filter
-          joins += other_filter[:joins] if other_filter[:joins]
-        end
-      end
-
-      joins += filter[:joins] if filter[:joins]
-      conditions << filter[:condition] if filter[:condition]
-
-      if params[:filter_query]
-        conditions << "(#{filter[:label_column]} LIKE '%#{escape_sql(params[:filter_query])}%')"
-
-        cancel_filter_query_url = request.query_parameters.merge( { "filter_query" => nil } )
-      end
-
-      filter[:current] = params[filter[:key]] ? params[filter[:key]].split(',') : []
-
-      filter[:objects] = Authorization.authorised_index(Contribution,
-          :all,
-          :include_permissions => true,
-          :select => filter[:select],
-          :joins => joins.length.zero? ? nil : joins.uniq.map do |j| pivot_options[:joins][j] end.join(" "),
-          :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
-          :group => filter[:group],
-          :limit => 10,
-          :order => filter[:order],
-          :authorised_user => user).map do |object|
-
-            x = object
-            value = eval(filter[:value]).to_s
-            selected = filter[:current].include?(value)
-
-            if selected
-              new_selection = (filter[:current] - [value]).uniq.join(',')
-            else
-              new_selection = (filter[:current] + [value]).uniq.join(',')
-            end
-
-            new_selection = nil if new_selection.empty?
-
-            target_uri = content_path(filter_params.merge(order_params).merge(filter_query_params).merge(filter[:key] => new_selection, "page" => nil))
-
-            {
-              :object => object,
-              :value  => value,
-              :label  => "<div class='pivot-count'>" + eval("x.count") + "</div><div class='pivot-label'><span class='truncate'>" + eval(filter[:label]) + "</span></div>",
-              :uri  => target_uri,
-              :selected => selected
-            }
-          end
-    end
-
-    # remove filters that do not help in narrowing down the result set
-
-    filters = filters.select do |filter|
-      if filter[:objects].empty?
-        false
-#     elsif filter[:objects].length == 1 && filter[:objects][0][:selected] == false
-#       false
-      else
-        true
-      end
+      filter[:current], filter[:objects] = calculate_filter(params, filter, user, filter_params, order_params, filter_query_params, nil)
+      puts "current = #{filter[:current].inspect}"
+      puts "objects = #{filter[:objects].inspect}"
     end
 
     # produce the summary
@@ -713,6 +708,21 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    if params[:filter_query]
+      cancel_filter_query_url = request.query_parameters.merge( { "filter_query" => nil } )
+    end
+
+    # remove filters that do not help in narrowing down the result set
+
+    filters = filters.select do |filter|
+      if filter[:objects].empty?
+        false
+#     elsif filter[:objects].length == 1 && filter[:objects][0][:selected] == false
+#       false
+      else
+        true
+      end
+    end
     {
       :results                 => results,
       :filters                 => filters,
