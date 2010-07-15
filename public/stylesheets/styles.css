@@ -2125,6 +2125,10 @@ table.quick_add td.submit {
   float: right;
 }
 
+.pivot .crumbs {
+  margin-top: 0.5em;
+}
+
 .pivot .filter-in-use {
   background: #e0e0e0;
   border: 1px solid #d0d0d0;

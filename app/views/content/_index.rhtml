@@ -24,7 +24,7 @@
           <div class="options">
             <% filter[:objects].each do |object| %>
               <div<%= object[:selected] ? ' class="selected"' : '' -%>>
-                <%= link_to(object[:label], object[:uri]) -%>
+                <%= link_to("<div class='count'>#{object[:count]}</div><div class='label'><span class='truncate'>#{object[:label]}</span></div>", object[:uri]) -%>
               </div>
             <% end %>
           </div>
@@ -52,7 +52,9 @@
           The following filters are in effect:
         <% end %>
       </div>
-      <div class="crumbs"><%= @pivot[:summary] -%></div>
+      <% if @pivot[:summary] %>
+        <div class="crumbs"><%= @pivot[:summary] -%></div>
+      <% end %>
     </div>
     <div class="results">
       <%= render :partial => "contributions/list", :locals => { :collection => @pivot[:results], :table => true } %>
