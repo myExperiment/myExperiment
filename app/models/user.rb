@@ -432,16 +432,31 @@ class User < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
            
-  def networks_membership_requests_pending
+  def networks_membership_requests_pending(include_group_admin=false)
     rtn = []
     
-    networks_owned.each do |n|
+    networks_admined(include_group_admin).each do |n|
       rtn.concat n.memberships_requested
     end
     
     return rtn
   end
   
+  def networks_admined(include_group_admin=false)
+    rtn = []
+
+    rtn.concat(networks_owned)
+
+    if include_group_admin
+      rtn.concat Network.find(:all,
+                   :select => "networks.*",
+                   :joins => "JOIN memberships m ON (networks.id = m.network_id)",
+                   :conditions => ["m.user_id=? AND m.user_established_at is NOT NULL AND m.network_established_at IS NOT NULL AND m.administrator", id])
+    end
+
+    return rtn
+  end
+                          
   def networks_membership_invites_pending
     rtn = []
     

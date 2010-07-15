@@ -20,12 +20,12 @@
 <% for membership in collection %>
   <% allow_approval = allow_membership_pending_approval(membership) %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <% if user %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.user_id, "User", true, 60) %><%= "</b>" unless membership.accepted? %></td><% end %>
+    <% if user %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.user_id, "User", true, 60) %><%= "</b>" unless membership.accepted? %><%= '<div style="text-align: left"><b>Group Admin</b></div>' if membership.network.administrator?(membership.user_id) %></td><% end %>
     <% if network %><td width="100"><%= "<b>" unless membership.accepted? %><%= contributor(membership.network_id, "Network", true, 60) %><%= "</b>" unless membership.accepted? %></td><% end %>
     <td><%= "<b>" unless membership.accepted? %><%=datetime membership.created_at, false %><%= "</b>" unless membership.accepted? %></td>
     <td><%= "<b>" unless membership.accepted? %><%=datetime(membership.accepted_at, false) || "Pending" %><%= "</b>" unless membership.accepted? %></td>
     <td class="actions">
-      <% if my_page? membership.user.id or my_page? membership.network.owner.id %>
+      <% if my_page? membership.user.id or (logged_in? and membership.network.administrator?(current_user.id)) %>
         <%= icon "show", membership_path(membership.user_id, membership), nil, nil, "View" %>
 				<% if membership.accepted? %>
 					<%= icon "destroy", membership_path(membership.user_id, membership), nil, { :confirm => "Are you sure?", :method => :delete }, "Remove" %>
@@ -36,6 +36,14 @@
 					<%= icon "confirm", accept_membership_path(current_user.id, membership), nil, :method => :post %>
          	<%= icon "reject", membership_path(membership.user_id, membership), nil, :confirm => "Are you sure?", :method => :delete %>
 				<% end %>
+      <% end %>
+      <% if membership.accepted? %>
+        <% if membership.network.administrator?(membership.user_id) %>
+		<%= icon "remove_group_admin", membership_path(membership.user_id, membership)+'?membership[administrator]=0', nil, {:method => :put}, "Remove group admin status" %>
+	<% else %>
+		<%= icon "make_group_admin", membership_path(membership.user_id, membership)+'?membership[administrator]=1', nil, {:method => :put}, "Add
+group admin status" %>
+	<% end %>
       <% end %>
     </td>
   </tr>

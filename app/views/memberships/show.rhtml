@@ -21,6 +21,9 @@
 						<% elsif (@membership.is_invite? && allow_approval) || (!@membership.is_invite? && !allow_approval) %>
 							<% #= avatar @membership.network, 80 # will start to work once the group avatars are introduced %>
 						<% end %>
+						<% if (@membership.network.administrator?(@membership.user_id)) -%>
+							<div style="text-align: left"><b>Group Admin</b></div>
+						<% end -%>
 					</td>
 					<td style="line-height: 1.6; width: 85%;">
 				<% else %>

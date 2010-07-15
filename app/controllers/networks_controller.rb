@@ -8,7 +8,8 @@ class NetworksController < ApplicationController
   
   before_filter :find_networks, :only => [:all]
   before_filter :find_network, :only => [:membership_request, :show, :tag]
-  before_filter :find_network_auth, :only => [:invite, :membership_invite, :membership_invite_external, :edit, :update, :destroy]
+  before_filter :find_network_auth_admin, :only => [:invite, :membership_invite, :membership_invite_external]
+  before_filter :find_network_auth_owner, :only => [:edit, :update, :destroy]
   
   # declare sweepers and which actions should invoke them
   cache_sweeper :network_sweeper, :only => [ :create, :update, :destroy, :membership_request, :membership_invite, :membership_invite_external ]
@@ -440,14 +441,23 @@ protected
     end 
   end
 
-  def find_network_auth
+  def find_network_auth_owner
     begin
       @network = Network.find(params[:id], :conditions => ["networks.user_id = ?", current_user.id], :include => [ :owner, :memberships ])
+    rescue ActiveRecord::RecordNotFound
+      error("Group not found (id not authorized)", "is invalid (not group adminsitrator)")
+    end
+  end
+  
+  def find_network_auth_admin
+    begin
+      @network = Network.find(params[:id], :include => [ :owner, :memberships ])
+      raise unless @network.administrator?(current_user.id)
     rescue ActiveRecord::RecordNotFound
       error("Group not found (id not authorized)", "is invalid (not owner)")
     end
   end
-  
+
 private
 
   def error(notice, message)

@@ -4,7 +4,7 @@
 
 		<h1>My Memberships</h1>
 
-		<% memberships = @user.networks_membership_requests_pending %>
+		<% memberships = @user.networks_membership_requests_pending(true) %>
 		<div class="fold">
 			<div class="foldTitle">
 				<p>Pending requests sent by users who want to join your Groups <span style="color: red;">(<%= memberships.length %>)</span></p>

@@ -10,9 +10,9 @@ class Membership < ActiveRecord::Base
 
   validates_presence_of :user_id, :network_id
 
-  validates_each :user_id do |model, attr, value|
-    model.errors.add attr, "already member" if model.network.member? value
-  end
+#  validates_each :user_id do |model, attr, value|
+#    model.errors.add attr, "already member" if model.network.member? value
+#  end
 
   def user_establish!
     if self.user_established_at.nil?
