@@ -2130,23 +2130,24 @@ table.quick_add td.submit {
 }
 
 .pivot .filter-in-use {
-  background: #e0e0e0;
-  border: 1px solid #d0d0d0;
+  background: #d8d8d8;
   padding: 2px;
-	line-height: 180%;
+	line-height: 200%;
 }
 
 .pivot .filter-in-use A {
+  padding-left: 4px;
+  padding-right: 4px;
   text-decoration: none; /* no underline */
 }
 
 .pivot .filter-in-use A IMG {
   vertical-align: middle;
+  position: relative;
+  top: -2px;
 }
 
 .pivot .filter-in-use:hover {
-  border: 1px solid #d0a0a0;
-  padding: 2px;
   background: #f0d0d0;
 }
 

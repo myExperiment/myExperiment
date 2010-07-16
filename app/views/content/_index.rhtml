@@ -4,7 +4,17 @@
       <div class="reset_filters"><%= link_to("Reset filters", @pivot[:reset_filters_url]) -%></div>
     <% end %>
     <div class="search_filters">
+      <% if params[:advanced] %>
+        <div>
+          <%= link_to("Simple mode", request.query_parameters.merge( { "advanced" => nil } )) -%>
+        </div>
+      <% else %>
+        <div>
+          <%= link_to("Advanced mode", request.query_parameters.merge( { "advanced" => 1 } )) -%>
+        </div>
+      <% end %>
       <form action="<%= url_for(request.query_parameters) -%>" method="GET">
+        <div>Search filters:</div>
         <input name="filter_query" value="<%= params[:filter_query] -%>" style="width: 100px" />
         <% @pivot[:filter_query_url].each do |key, value| %>
           <input name="<%= key -%>" type="hidden" value="<%= value.sub('"', '\\"') -%>" />
