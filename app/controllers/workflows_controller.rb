@@ -167,7 +167,7 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       format.html do
         @pivot_options = pivot_options
-        @pivot = contributions_list(Contribution, params.merge({ "type" => "Workflow" }), current_user)
+        @pivot = contributions_list(Contribution, params, current_user, :lock_filter => { 'type' => 'Workflow' } )
       end
       format.rss do
         #@workflows = Workflow.find(:all, :order => "updated_at DESC") # list all (if required)

@@ -518,6 +518,33 @@ class ApplicationController < ActionController::Base
       str.gsub(/\\/, '\&\&').gsub(/'/, "''")
     end
 
+    def build_url(params, opts, parts, extra = {})
+
+      query = {}
+
+      if parts.include?(:filter)
+        pivot_options[:filters].each do |filter|
+          if params[filter[:query_option]]
+            query[filter[:query_option]] = params[filter[:query_option]]
+          end
+        end
+      end
+
+      query["order"]        = params[:order]        if parts.include?(:order)
+      query["filter_query"] = params[:filter_query] if parts.include?(:filter_query)
+      query["advanced"]     = params[:advanced]     if parts.include?(:advanced)
+
+      query.merge!(extra)
+
+      if opts[:lock_filter]
+        opts[:lock_filter].keys.each do |filter|
+          query.delete(filter)
+        end
+      end
+
+      query
+    end
+
     def comparison(lhs, rhs)
 
       bits = rhs.split(",")
@@ -529,7 +556,7 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    def calculate_filter(params, filter, user, filter_params, order_params, filter_query_params, advanced_params, opts = {})
+    def calculate_filter(params, filter, user, opts = {})
 
       # apply all the joins and conditions except for the current filter
 
@@ -583,7 +610,7 @@ class ApplicationController < ActionController::Base
 
             new_selection = nil if new_selection.empty?
 
-            target_uri = content_path(filter_params.merge(order_params).merge(filter_query_params).merge(advanced_params).merge(filter[:query_option] => new_selection, "page" => nil))
+            target_uri = build_url(params, opts, [:filter, :order, :filter_query, :advanced], filter[:query_option] => new_selection, "page" => nil)
 
             label = object.filter_label
             label = visible_name(label) if filter[:visible_name]
@@ -600,6 +627,14 @@ class ApplicationController < ActionController::Base
           end
 
       [current, objects]
+    end
+
+    # apply locked filters
+
+    if opts[:lock_filter]
+      opts[:lock_filter].each do |filter, value|
+        params[filter] = value
+      end
     end
 
     # determine joins, conditions and order for the main results
@@ -636,22 +671,22 @@ class ApplicationController < ActionController::Base
 
     # produce a query hash to match the current filters
 
-    filter_params       = {}
-    filter_query_params = {}
-    order_params        = {}
-    advanced_params     = {}
+    opts[:filter_params] = {}
 
     pivot_options[:filters].each do |filter|
       if params[filter[:query_option]]
-        filter_params[filter[:query_option]] = params[filter[:query_option]]
+        next if opts[:lock_filter] && opts[:lock_filter][filter[:query_option]]
+        opts[:filter_params][filter[:query_option]] = params[filter[:query_option]]
       end
     end
 
-    order_params[:order] = params[:order] if params[:order]
+    opts[:order_params]        = {}
+    opts[:advanced_params]     = {}
+    opts[:filter_query_params] = {}
 
-    advanced_params[:advanced] = params[:advanced] if params[:advanced]
-    
-    filter_query_params[:filter_query] = params[:filter_query] if params[:filter_query]
+    opts[:order_params][:order]               = params[:order]        if params[:order]
+    opts[:advanced_params][:advanced]         = params[:advanced]     if params[:advanced]
+    opts[:filter_query_params][:filter_query] = params[:filter_query] if params[:filter_query]
 
     # produce the filter list
 
@@ -659,15 +694,15 @@ class ApplicationController < ActionController::Base
     cancel_filter_query_url = nil
     reset_filters_url = nil
 
-    if filter_params.length > 0
-      reset_filters_url = order_params.merge(advanced_params)
+    if opts[:filter_params].length > 0
+      reset_filters_url = build_url(params, opts, [:order, :advanced])
     end
 
     filters.each do |filter|
 
       # calculate the top n items of the list
 
-      filter[:current], filter[:objects] = calculate_filter(params, filter, user, filter_params, order_params, filter_query_params, advanced_params)
+      filter[:current], filter[:objects] = calculate_filter(params, filter, user, opts)
 
       # calculate which active filters are missing (because they weren't in the
       # top part of the list or have a count of zero)
@@ -675,7 +710,7 @@ class ApplicationController < ActionController::Base
       missing_filter_ids = filter[:current] - filter[:objects].map do |ob| ob[:value] end
 
       if missing_filter_ids.length > 0
-        filter[:objects] += calculate_filter(params, filter, user, filter_params, order_params, filter_query_params, advanced_params, :ids => missing_filter_ids)[1]
+        filter[:objects] += calculate_filter(params, filter, user, opts.merge(:ids => missing_filter_ids))[1]
       end
 
       # calculate which active filters are still missing (because they have a
@@ -684,7 +719,7 @@ class ApplicationController < ActionController::Base
       missing_filter_ids = filter[:current] - filter[:objects].map do |ob| ob[:value] end
       
       if missing_filter_ids.length > 0
-        zero_list = calculate_filter(params, filter, user, filter_params, order_params, filter_query_params, advanced_params, :ids => missing_filter_ids, :inhibit_other_conditions => true)[1]
+        zero_list = calculate_filter(params, filter, user, opts.merge(:ids => missing_filter_ids, :inhibit_other_conditions => true))[1]
 
         zero_list.each do |x| x[:count] = 0 end
 
@@ -700,6 +735,8 @@ class ApplicationController < ActionController::Base
 
     filters.select do |filter|
 
+      next if opts[:lock_filter] && opts[:lock_filter][filter[:query_option]]
+
       selected = filter[:objects].select do |x| x[:selected] end
 
       if selected.length > 0
@@ -714,15 +751,16 @@ class ApplicationController < ActionController::Base
           end
 
           summary << '<span class="filter-in-use"><a href="' +
-          url_for(filter_params.merge(filter_query_params).merge(order_params).merge(advanced_params).merge( { filter[:query_option] => nil } )) +
-          '"><b>' + filter[:title].capitalize + "</b>: " + sentence +
-          " <img src='/images/famfamfam_silk/cross.png' /></a></span> "
+            url_for(build_url(params, opts, [:filter, :filter_query, :order, :advanced],
+                  { filter[:query_option] => nil } )) +
+            '"><b>' + filter[:title].capitalize + "</b>: " + sentence +
+            " <img src='/images/famfamfam_silk/cross.png' /></a></span> "
         end
       end
     end
 
     if params[:filter_query]
-      cancel_filter_query_url = request.query_parameters.merge(advanced_params).merge( { "filter_query" => nil } )
+      cancel_filter_query_url = build_url(params, opts, [:advanced])
     end
 
     # remove filters that do not help in narrowing down the result set
@@ -734,6 +772,8 @@ class ApplicationController < ActionController::Base
 #       false
       elsif params[:advanced].nil? && (params[filter[:query_option]] || filter[:objects].length < 2)
         false
+      elsif opts[:lock_filter] && opts[:lock_filter][filter[:query_option]]
+        false
       else
         true
       end
@@ -744,7 +784,7 @@ class ApplicationController < ActionController::Base
       :filters                 => filters,
       :reset_filters_url       => reset_filters_url,
       :cancel_filter_query_url => cancel_filter_query_url,
-      :filter_query_url        => filter_params,
+      :filter_query_url        => opts[:filter_params],
       :summary                 => summary
     }
   end

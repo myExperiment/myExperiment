@@ -33,9 +33,9 @@
       <% end %>
       <div class="advanced_switch">
         <% if params[:advanced] %>
-          <%= link_to("Switch to simple", request.query_parameters.merge( { "advanced" => nil } )) -%>
+          <%= link_to("Switch to simple mode", request.query_parameters.merge( { "advanced" => nil } )) -%>
         <% else %>
-          <%= link_to("Switch to advanced", request.query_parameters.merge( { "advanced" => 1 } )) -%>
+          <%= link_to("Switch to advanced mode", request.query_parameters.merge( { "advanced" => 1 } )) -%>
         <% end %>
       </div>
     </div>
