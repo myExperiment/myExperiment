@@ -575,8 +575,10 @@ class ApplicationController < ActionController::Base
       joins += filter[:joins] if filter[:joins]
       conditions << "#{filter[:id_column]} IS NOT NULL" if filter[:not_null]
 
-      if params[:filter_query]
-        conditions << "(#{filter[:label_column]} LIKE '%#{escape_sql(params[:filter_query])}%')"
+      unless opts[:inhibit_filter_query]
+        if params[:filter_query]
+          conditions << "(#{filter[:label_column]} LIKE '%#{escape_sql(params[:filter_query])}%')"
+        end
       end
 
       current = params[filter[:query_option]] ? params[filter[:query_option]].split(',') : []
@@ -627,6 +629,47 @@ class ApplicationController < ActionController::Base
           end
 
       [current, objects]
+    end
+
+    def calculate_filters(params, opts, user)
+
+      # produce the filter list
+
+      filters = pivot_options[:filters].clone
+      cancel_filter_query_url = nil
+
+      filters.each do |filter|
+
+        # calculate the top n items of the list
+
+        filter[:current], filter[:objects] = calculate_filter(params, filter, user, opts)
+
+        # calculate which active filters are missing (because they weren't in the
+        # top part of the list or have a count of zero)
+
+        missing_filter_ids = filter[:current] - filter[:objects].map do |ob| ob[:value] end
+
+        if missing_filter_ids.length > 0
+          filter[:objects] += calculate_filter(params, filter, user, opts.merge(:ids => missing_filter_ids))[1]
+        end
+
+        # calculate which active filters are still missing (because they have a
+        # count of zero)
+
+        missing_filter_ids = filter[:current] - filter[:objects].map do |ob| ob[:value] end
+        
+        if missing_filter_ids.length > 0
+          zero_list = calculate_filter(params, filter, user, opts.merge(:ids => missing_filter_ids, :inhibit_other_conditions => true))[1]
+
+          zero_list.each do |x| x[:count] = 0 end
+
+          zero_list.sort! do |a, b| a[:label] <=> b[:label] end
+
+          filter[:objects] += zero_list
+        end
+      end
+
+      [ filters, cancel_filter_query_url ]
     end
 
     # apply locked filters
@@ -680,60 +723,22 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    opts[:order_params]        = {}
-    opts[:advanced_params]     = {}
-    opts[:filter_query_params] = {}
-
-    opts[:order_params][:order]               = params[:order]        if params[:order]
-    opts[:advanced_params][:advanced]         = params[:advanced]     if params[:advanced]
-    opts[:filter_query_params][:filter_query] = params[:filter_query] if params[:filter_query]
-
     # produce the filter list
 
-    filters = pivot_options[:filters].clone
-    cancel_filter_query_url = nil
-    reset_filters_url = nil
+    filters, cancel_filter_query_url = calculate_filters(params, opts, user)
 
-    if opts[:filter_params].length > 0
-      reset_filters_url = build_url(params, opts, [:order, :advanced])
+    # produce the summary.  If a filter query is specified, then we need to
+    # recalculate the filters without the query to get all of them.
+
+    if params[:filter_query]
+      filters2 = calculate_filters(params, opts.merge( { :inhibit_filter_query => true } ), user)[0]
+    else
+      filters2 = filters
     end
-
-    filters.each do |filter|
-
-      # calculate the top n items of the list
-
-      filter[:current], filter[:objects] = calculate_filter(params, filter, user, opts)
-
-      # calculate which active filters are missing (because they weren't in the
-      # top part of the list or have a count of zero)
-
-      missing_filter_ids = filter[:current] - filter[:objects].map do |ob| ob[:value] end
-
-      if missing_filter_ids.length > 0
-        filter[:objects] += calculate_filter(params, filter, user, opts.merge(:ids => missing_filter_ids))[1]
-      end
-
-      # calculate which active filters are still missing (because they have a
-      # count of zero)
-
-      missing_filter_ids = filter[:current] - filter[:objects].map do |ob| ob[:value] end
-      
-      if missing_filter_ids.length > 0
-        zero_list = calculate_filter(params, filter, user, opts.merge(:ids => missing_filter_ids, :inhibit_other_conditions => true))[1]
-
-        zero_list.each do |x| x[:count] = 0 end
-
-        zero_list.sort! do |a, b| a[:label] <=> b[:label] end
-
-        filter[:objects] += zero_list
-      end
-    end
-
-    # produce the summary
 
     summary = ""
 
-    filters.select do |filter|
+    filters2.select do |filter|
 
       next if opts[:lock_filter] && opts[:lock_filter][filter[:query_option]]
 
@@ -760,7 +765,7 @@ class ApplicationController < ActionController::Base
     end
 
     if params[:filter_query]
-      cancel_filter_query_url = build_url(params, opts, [:advanced])
+      cancel_filter_query_url = build_url(params, opts, [:filter, :order, :advanced])
     end
 
     # remove filters that do not help in narrowing down the result set
@@ -770,7 +775,9 @@ class ApplicationController < ActionController::Base
         false
 #     elsif filter[:objects].length == 1 && filter[:objects][0][:selected] == false
 #       false
-      elsif params[:advanced].nil? && (params[filter[:query_option]] || filter[:objects].length < 2)
+      elsif params[:advanced].nil? && params[filter[:query_option]]
+        false
+      elsif params[:advanced].nil? && params[:filter_query].nil? && filter[:objects].length < 2
         false
       elsif opts[:lock_filter] && opts[:lock_filter][filter[:query_option]]
         false
@@ -782,9 +789,8 @@ class ApplicationController < ActionController::Base
     {
       :results                 => results,
       :filters                 => filters,
-      :reset_filters_url       => reset_filters_url,
       :cancel_filter_query_url => cancel_filter_query_url,
-      :filter_query_url        => opts[:filter_params],
+      :filter_query_url        => build_url(params, opts, [:filter]),
       :summary                 => summary
     }
   end

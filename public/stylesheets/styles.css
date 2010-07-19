@@ -2157,6 +2157,22 @@ table.quick_add td.submit {
 	text-align: left;
 }
 
+.pivot .filter_search_box {
+  border: 1px solid gray;
+}
+
+.pivot .filter_search_box INPUT {
+  width: 127px;
+  border: none;
+  outline: none;
+}
+
+.pivot .filter_search_box IMG {
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+
 .truncate {
   white-space: nowrap;
 }
