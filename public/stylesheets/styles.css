@@ -2161,10 +2161,16 @@ table.quick_add td.submit {
   border: 1px solid gray;
 }
 
-.pivot .filter_search_box INPUT {
+.pivot .filter_search_box INPUT.query {
   width: 127px;
   border: none;
   outline: none;
+}
+
+.pivot .filter_search_box INPUT.submit {
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
 }
 
 .pivot .filter_search_box IMG {

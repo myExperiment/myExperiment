@@ -618,6 +618,11 @@ class ApplicationController < ActionController::Base
             label = visible_name(label) if filter[:visible_name]
             label = label.capitalize    if filter[:capitalize]
 
+            if params[:filter_query]
+              label.sub!(Regexp.new("(#{params[:filter_query]})", Regexp::IGNORECASE), '<b>\1</b>')
+              puts "new label = #{label}"
+            end
+
             {
               :object   => object,
               :value    => value,
@@ -768,6 +773,10 @@ class ApplicationController < ActionController::Base
       cancel_filter_query_url = build_url(params, opts, [:filter, :order, :advanced])
     end
 
+    if opts[:filter_params].length > 0
+      reset_filters_url = build_url(params, opts, [:order, :advanced])
+    end
+
     # remove filters that do not help in narrowing down the result set
 
     filters = filters.select do |filter|
@@ -789,6 +798,7 @@ class ApplicationController < ActionController::Base
     {
       :results                 => results,
       :filters                 => filters,
+      :reset_filters_url       => reset_filters_url,
       :cancel_filter_query_url => cancel_filter_query_url,
       :filter_query_url        => build_url(params, opts, [:filter]),
       :summary                 => summary
