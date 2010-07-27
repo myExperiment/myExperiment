@@ -142,7 +142,7 @@ main_tabs:
     link:       /workflows
     controller: workflows
 
-  - label:      Services
+  - label:      Web Services
     link:       /services
     controller: services
 
