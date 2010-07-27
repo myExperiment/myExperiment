@@ -29,7 +29,7 @@
 					
             <%= icon "service", nil, nil, nil, '' %>
             <% title = h(service.name) %>
-            <%= link_to(query ? highlight_all(title, query) : title, service_path(service)) %>
+            <%= link_to(query ? highlight_all(title, query) : title, service.uri, :popup => true) %>
 						
 						<% unless service.flag_url.blank? %>
 						  <%= image_tag service.flag_url, :style => "margin-left: 0.5em;", :title => tooltip_title_attrib(h(service.country)), :alt => h(service.country) -%>
@@ -78,7 +78,7 @@
 					
 					<% unless service.wsdl.blank? %>
 					  <p style="font-size: 85%;">
-						  <b>WSDL Location:</b> <%= link_to h(service.wsdl), service.wsdl -%> |
+						  <b>WSDL Location:</b> <%= link_to h(service.wsdl), service.wsdl -%>
  					  </p>
 					<% end %>
 					
@@ -108,9 +108,6 @@
             <p style="font-size: 85%;"><i>This Service has no tags!</i></p>
           <% end %> 
 					
-					<p style="font-size: 85%; text-align: right;">
-						<%= link_to "BioCatalogue Link", service.uri -%>
-					</p>
         </td>
       <% end %>
         
