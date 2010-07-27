@@ -605,14 +605,27 @@ class ApplicationController < ActionController::Base
             selected = current.include?(value)
 
             if selected
-              new_selection = (current - [value]).uniq.join(',')
+              if current.length == 1
+                label_selection = ""
+              else
+                label_selection = value
+              end
             else
-              new_selection = (current + [value]).uniq.join(',')
+              label_selection = value
             end
 
-            new_selection = nil if new_selection.empty?
+            if selected
+              checkbox_selection = (current - [value]).uniq.join(',')
+            else
+              checkbox_selection = (current + [value]).uniq.join(',')
+            end
 
-            target_uri = build_url(params, opts, [:filter, :order, :filter_query, :advanced], filter[:query_option] => new_selection, "page" => nil)
+            label_selection    = nil if label_selection.empty?
+            checkbox_selection = nil if checkbox_selection.empty?
+
+            label_uri = build_url(params, opts, [:filter, :order, :filter_query, :advanced], filter[:query_option] => label_selection, "page" => nil)
+
+            checkbox_uri = build_url(params, opts, [:filter, :order, :filter_query, :advanced], filter[:query_option] => checkbox_selection, "page" => nil)
 
             label = object.filter_label
             label = visible_name(label) if filter[:visible_name]
@@ -624,12 +637,13 @@ class ApplicationController < ActionController::Base
             end
 
             {
-              :object   => object,
-              :value    => value,
-              :label    => label,
-              :count    => object.filter_count,
-              :uri      => target_uri,
-              :selected => selected
+              :object       => object,
+              :value        => value,
+              :label        => label,
+              :count        => object.filter_count,
+              :checkbox_uri => checkbox_uri,
+              :label_uri    => label_uri,
+              :selected     => selected
             }
           end
 

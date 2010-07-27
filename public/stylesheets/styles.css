@@ -2094,14 +2094,6 @@ table.quick_add td.submit {
   background: #d0d0f0;
 }
 
-.pivot .options > DIV.selected {
-  background: #ffe0c0;
-}
- 
-.pivot .options > DIV.selected:hover {
-  background: #dfc0a0;
-}
- 
 .pivot .options > DIV:first-child {
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
@@ -2116,9 +2108,16 @@ table.quick_add td.submit {
   -moz-border-radius-bottomright: 6px;
 }
 
+.pivot .checkbox {
+  display: inline;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 .pivot .label {
-  width: 110px;
+  width: 92px;
   overflow: hidden;
+  display: inline-block;
 }
 
 .pivot .count {
