@@ -2083,6 +2083,13 @@ table.quick_add td.submit {
   margin-bottom: 0.2em;
 }
 
+.pivot .toggle_filter_query {
+  float: right;
+  vertical-align: middle;
+  position: relative;
+  top: 2px;
+}
+
 .pivot .options > DIV {
   border: 1px solid transparent;
   padding: 0.2em;

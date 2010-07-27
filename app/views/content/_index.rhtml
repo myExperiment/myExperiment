@@ -3,6 +3,7 @@
     <% if @pivot[:reset_filters_url] %>
       <div class="reset_filters"><%= link_to("Reset filters", @pivot[:reset_filters_url]) -%></div>
     <% end %>
+    <% if false %>
     <div class="search_filters">
       <form action="<%= url_for(request.query_parameters) -%>" method="GET">
         <div>Search filters:</div>
@@ -20,8 +21,12 @@
         </div>
       </form>
     </div>
+    <% end %>
     <div class="filters">
       <% @pivot[:filters].each do |filter| %>
+        <div class="toggle_filter_query">
+          <img src="/images/famfamfam_silk/magnifier.png" />
+        </div>
         <div class="category">Filter by <%= filter[:title] -%></div>
         <div class="filter">
           <div class="options">
