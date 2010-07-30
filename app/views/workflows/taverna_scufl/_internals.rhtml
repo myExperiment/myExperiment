@@ -51,7 +51,7 @@
 						    <td><%= h p.description -%>
                 <% if p.wsdl %>
                   <% if service = Service.find_by_wsdl(p.wsdl) %>
-                    <br /><p>See the <%= link_to('Service entry', service_path(service)) %>
+                    <br /><p>See the <%= link_to('Service entry', service.uri) %>
                     for this web service.</p>
                   <% end %>
                 <% end %>
