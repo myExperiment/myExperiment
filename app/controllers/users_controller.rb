@@ -146,10 +146,12 @@ class UsersController < ApplicationController
 
     # check that captcha was entered correctly
 
-    if !captcha_valid?(params[:validation][:captcha_id], params[:validation][:captcha_validation])
-      flash.now[:error] = 'Verification text was not entered correctly - please try again.'
-      render :action => 'new'
-      return
+    unless RAILS_ENV == 'test'
+      if !captcha_valid?(params[:validation][:captcha_id], params[:validation][:captcha_validation])
+        flash.now[:error] = 'Verification text was not entered correctly - please try again.'
+        render :action => 'new'
+        return
+      end
     end
 
     if params[:user][:username] && params[:user][:password] && params[:user][:password_confirmation]
