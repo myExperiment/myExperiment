@@ -43,7 +43,11 @@ class Conf
   end
 
   def self.base_uri
-    self.fetch_entry('base_uri')
+    if RAILS_ENV == 'test'
+      "http://test.host"
+    else
+      self.fetch_entry('base_uri')
+    end
   end
 
   def self.admins
