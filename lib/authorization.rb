@@ -442,6 +442,23 @@ module Authorization
         # "action_name" used to work with original action name, rather than classification made inside the module
         is_authorized = Authorization.job_authorized?(thing_instance, action_name, user)
       
+      when "ContentType"
+
+        case action
+
+          when "view"
+            # anyone can view content types
+            is_authorized = true
+     
+          when "edit"
+            # the owner of the content type can edit
+            is_authorized = !user.nil? && thing_instance.user_id == user_id
+
+          when "destroy"
+            # noone can destroy them yet - they just fade away from view
+            is_authorized = false
+        end
+
       else
         # don't recognise the kind of "thing" that is being authorized, so
         # we don't specifically know that it needs to be blocked;
@@ -507,6 +524,8 @@ module Authorization
         when "Runner"
           # the line below doesn't have a typo - "runners" should really be searched in "TavernaEnactor" model
           found_instance = TavernaEnactor.find(thing_id)
+        when "ContentType"
+          found_instance = ContentType.find(thing_id)
       end
     rescue ActiveRecord::RecordNotFound
       # do nothing; makes sure that app won't crash when the required object is not found;
