@@ -68,7 +68,11 @@
 					  	</p>
 					  <% end %>
 						
-						<p style="font-size:85%;"><b>License: </b><% @license = License.find(workflow.license_id) %><%= link_to h(@license.title), license_path(@license) %></p>
+            <% if workflow.license_id.nil? %>
+              <p style="font-size:85%;"><b>License: </b>No license</p>
+            <% else %>
+              <p style="font-size:85%;"><b>License: </b><% @license = License.find(workflow.license_id) %><%= link_to h(@license.title), license_path(@license) %></p>
+            <% end %>
 					  
 						<table style="width: 99%;">
 							<tbody>

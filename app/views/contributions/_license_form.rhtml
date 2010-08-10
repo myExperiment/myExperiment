@@ -1,7 +1,7 @@
-<% if params[:workflow] && !params[:workflow][:license_id].blank? %>
-	<% @license = License.find(params[:workflow][:license_id]) %>
+<% if params[object] && !params[object][:license_id].blank? %>
+	<% @license = License.find(params[object][:license_id]) %>
 <% elsif edit %>
-	<% @license = License.find(@workflow.license_id) %>
+	<% @license = License.find_by_id(contributable.license_id) %>
 <% else %>
     <% @license = License.find(2) %>
 <% end %>
@@ -12,10 +12,18 @@
       License/Rights
 			<% if edit %>
 				<hr />
-				<small>Current: <%= @license.title %> (<%= link_to h(@license.url), @license.url %>) </small>
+        <% if @license %>
+          <small>Current: <%= @license.title %> (<%= link_to h(@license.url), @license.url %>) </small>
+        <% else %>
+          <small>Current: No license</small>
+        <% end %>
 			<% else %>
 				<hr />
-				<small>Default: <%= @license.title %> (<%= link_to h(@license.url), @license.url %>)</small>
+        <% if @license %>
+          <small>Default: <%= @license.title %> (<%= link_to h(@license.url), @license.url %>)</small>
+        <% else %>
+          <small>Default: No license</small>
+        <% end %>
 			<% end %>
     </div>
     <div class="foldContent" style="display: none;">
@@ -27,8 +35,8 @@
             <strong>What license do you want people to adhere to if they download and use this File?</strong>
         </p>
         <div style="padding-left: 1em;">
-          <%= select(:workflow, :license_id, License.find(:all).collect {|l| [l.title, l.id] },
-            { :selected => @license.id },
+          <%= select(object, :license_id, [["No license", 0]] + License.find(:all).collect {|l| [l.title, l.id] },
+            { :selected => @license ? @license.id : 0 },
             {  :onChange => remote_function(:update => 'license_info',
                  :url => {:controller => 'licenses', :action=> 'update_license_info' },
                  :with => "'license_id=' + escape(value)")}) %>
@@ -40,7 +48,4 @@
 		</div>
     </div>
 </div>
-                
 
-                
-                

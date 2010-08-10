@@ -87,7 +87,7 @@ class LicensesController < ApplicationController
   end
   
   def update_license_info
-      license = License.find(params[:license_id])
+      license = License.find_by_id(params[:license_id])
       render :partial => "licenses/view", :locals => { :license => license }
   end
   

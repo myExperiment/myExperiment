@@ -96,7 +96,6 @@ class Workflow < ActiveRecord::Base
   validates_presence_of :unique_name
   validates_uniqueness_of :unique_name
   
-  validates_presence_of :license_id
   validates_presence_of :content_blob
   validates_presence_of :content_type
 

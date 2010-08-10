@@ -232,7 +232,7 @@ class WorkflowsController < ApplicationController
     @workflow = Workflow.new
     @workflow.contributor = current_user
     @workflow.last_edited_by = current_user.id
-    @workflow.license_id = params[:workflow][:license_id]
+    @workflow.license_id = params[:workflow][:license_id] == "0" ? nil : params[:workflow][:license_id]
     @workflow.content_blob = ContentBlob.new(:data => file.read)
     @workflow.file_ext = file.original_filename.split(".").last.downcase
     
@@ -426,6 +426,8 @@ class WorkflowsController < ApplicationController
       end
     end
     
+    params[:workflow][:license_id] = nil if params[:workflow][:license_id] && params[:workflow][:license_id] == "0"
+
     respond_to do |format|
       # Here we assume that no actual workflow metadata is being updated that affects workflow versions,
       # so we need to prevent the timestamping update of workflow version objects.

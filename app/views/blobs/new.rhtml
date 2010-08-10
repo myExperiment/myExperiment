@@ -39,7 +39,7 @@
 
   <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @blob, :update_perms => true } %>
   
-  <%= render :partial => "blobs/license_form", :locals => { :edit => false } %>
+  <%= render :partial => "contributions/license_form", :locals => { :object => :blob, :contributable => @blob, :edit => false } %>
   
   <%= render :partial => 'contributions/terms_and_conditions' %>
 	
