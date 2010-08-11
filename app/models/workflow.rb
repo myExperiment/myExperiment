@@ -295,4 +295,12 @@ class Workflow < ActiveRecord::Base
     
     boost
   end
+
+  def show_download_section?
+    if processor_class
+      processor_class.show_download_section?
+    else
+      true
+    end
+  end
 end

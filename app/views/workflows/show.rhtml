@@ -210,23 +210,27 @@
 			
 			<br/>
 			
-			<h3>
-				<%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
-				Download
-			</h3>
-			
-			<% if @authorised_to_download %>
-				<ul class="sectionIcons">
-					<li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package (#{@workflow.display_data_format})") -%></li>
-				</ul>
-			<% else %>
-				<p class="none_text">
-					You do not have permission to download this workflow
-				</p>
-			<% end %>
-			
-			<br/>
-			
+      <% if @workflow.show_download_section? %>
+
+        <h3>
+          <%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
+          Download
+        </h3>
+        
+        <% if @authorised_to_download %>
+          <ul class="sectionIcons">
+            <li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package (#{@workflow.display_data_format})") -%></li>
+          </ul>
+        <% else %>
+          <p class="none_text">
+            You do not have permission to download this workflow
+          </p>
+        <% end %>
+        
+        <br/>
+        
+      <% end %>
+
 			<h3>
 				<%= info_icon_with_tooltip("This section provides options for running this version of the Workflow") %>
 				Run
