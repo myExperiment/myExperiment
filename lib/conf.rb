@@ -181,6 +181,10 @@ class Conf
       end
     end
 
+    if request.query_parameters['portal_url']
+      session['portal_url'] = request.query_parameters['portal_url']
+    end
+
     @config = session["portal"] if session["portal"]
   end
 
