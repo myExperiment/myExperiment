@@ -75,7 +75,25 @@ module WorkflowProcessors
     end
 
     def get_search_terms
-      # TODO 
+
+      return "" if @model.nil?
+
+      words = StringIO.new
+
+      @model.steps.each do |step|
+        words << " #{step.name} #{step.tool}"
+      end
+
+      @model.inputs.each do |input|
+        words << " #{input.name} #{input.description}"
+      end
+
+      @model.outputs.each do |output|
+        words << " #{output.name}"
+      end
+
+      words.rewind
+      words.read
     end
   end
 
