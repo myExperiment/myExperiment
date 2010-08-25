@@ -11,11 +11,11 @@ Personal message:
 ---------------------------------------------------------------------------
 <% end -%>
 
-Join us at: <%= url_for :only_path => false, :host => @base_url, :controller => 'users', :action => 'new' %>
+Join us at: <%= url_for :only_path => false, :controller => 'users', :action => 'new' %>
 
 You can find out more:
---> about myExperiement.org: <%= "http://" + @base_url %>
---> and about me: <%= url_for :only_path => false, :host => @base_url, :controller => 'users', :id => @user_id, :action => 'show' %>
+--> about <%= Conf.sitename -%>: <%= Conf.base_uri %>
+--> and about me: <%= url_for :only_path => false, :controller => 'users', :id => @user_id, :action => 'show' %>
 
 
 Best regards,

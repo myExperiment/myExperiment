@@ -585,7 +585,19 @@ class User < ActiveRecord::Base
     return [0,0] if result_set.empty?
     return [result_set[0]["avg_rating"], result_set[0]["rating_count"]]
   end
+
+  def send_email_confirmation_email
+    Mailer.deliver_account_confirmation(self, email_confirmation_hash)
+  end
   
+  def send_update_email_confirmation
+    Mailer.deliver_update_email_address(self, email_confirmation_hash)
+  end
+
+  def email_confirmation_hash
+    Digest::SHA1.hexdigest(unconfirmed_email + Conf.secret_word)
+  end
+
 protected
 
   # clean up emails and username before validation
@@ -693,4 +705,6 @@ private
   def self.clean_string(string)
     (string.downcase).gsub(" ","")
   end
+
 end
+

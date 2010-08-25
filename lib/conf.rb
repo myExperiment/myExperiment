@@ -6,7 +6,6 @@
 # Configuration module
 
 require 'yaml'
-require 'action_controller/test_process'
 
 class Conf
 
@@ -164,7 +163,7 @@ class Conf
 
     @config = nil
 
-    if request.class != ActionController::TestRequest
+    if request.class.name != "ActionController::TestRequest"
       if @settings['virtual_hosts']
         @settings['virtual_hosts'].each do |name, settings|
 

@@ -14,18 +14,18 @@ Personal message:
 <% end -%>
 
 You can find out more:
---> about this group : <%= "http://" + @base_url + group_path(@group_id) %> 
---> and about me (<%= @name -%>) from my profile page : <%= url_for :only_path => false, :host => @base_url, :controller => 'users', :id => @user_id, :action => 'show' %>
+--> about this group : <%= Conf.base_uri + group_path(@group_id) %> 
+--> and about me (<%= @name -%>) from my profile page : <%= url_for :only_path => false, :controller => 'users', :id => @user_id, :action => 'show' %>
 
 
 To join the group you will have to follow these simple steps:
 
-1. Register for <%= indefinite_article(Conf.sitename) %> <%= Conf.sitename %> account at: <%= url_for :only_path => false, :host => @base_url, :controller => 'users', :action => 'new', :token => @token %>
+1. Register for <%= indefinite_article(Conf.sitename) %> <%= Conf.sitename %> account at: <%= url_for :only_path => false, :controller => 'users', :action => 'new', :token => @token %>
 2. Confirm your email address as instructed during the registration process.
 3. Accept the group membership request that you will receive directly to your account once the registration is complete.
 
 
-For more information browse: <%= "http://" + @base_url %>
+For more information browse: <%= Conf.base_uri %>
 
 
 Best regards,
