@@ -8,6 +8,7 @@
 			  var surveyMap;
               surveyMap = new GMap2(document.getElementById("map_canvas"));
               surveyMap.setUIToDefault(); 
+              surveyMap.setMapType(G_PHYSICAL_MAP);
 
 function getOverlay(tileService, descriptor) {
     //return the GOverlay object (e.g. GTileLayerOverlay) to put this object onto a GMap2
