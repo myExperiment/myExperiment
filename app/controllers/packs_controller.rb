@@ -168,7 +168,7 @@ class PacksController < ApplicationController
   
   # POST /packs/1;favourite
   def favourite
-    @pack.bookmarks << Bookmark.create(:user => current_user) unless @pack.bookmarked_by_user?(current_user)
+    @pack.bookmarks << Bookmark.create(:user => current_user, :bookmarkable => @pack) unless @pack.bookmarked_by_user?(current_user)
     
     respond_to do |format|
       flash[:notice] = "You have successfully added this item to your favourites."
