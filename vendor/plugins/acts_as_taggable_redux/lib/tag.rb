@@ -41,6 +41,16 @@ class Tag < ActiveRecord::Base
     @tagged ||= taggings.collect(&:taggable)
   end
   
+  def tagged_auth(user)
+    tagged.select do |taggable|
+      Authorization.is_authorized?('view', nil, taggable, user)
+    end
+  end
+
+  def public?
+    tagged_auth(nil).length > 0
+  end
+
   # Compare tags by name
   def ==(comparison_object)
     super || name == comparison_object.to_s

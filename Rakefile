@@ -44,3 +44,15 @@ task "myexp:refresh:contributions" do
   end
 end
 
+desc 'Create a myExperiment data backup'
+task "myexp:backup:create" do
+  require File.dirname(__FILE__) + '/config/environment'
+  Maintenance::Backup.create
+end
+
+desc 'Restore from a myExperiment data backup'
+task "myexp:backup:restore" do
+  require File.dirname(__FILE__) + '/config/environment'
+  Maintenance::Backup.restore
+end
+
