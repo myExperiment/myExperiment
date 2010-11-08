@@ -459,8 +459,7 @@ class ApplicationController < ActionController::Base
           :query_option => 'tag',
           :id_column    => 'tags.id',
           :label_column => 'tags.name',
-          :joins        => [ :taggings, :tags ],
-          :capitalize   => true
+          :joins        => [ :taggings, :tags ]
         },
 
         {
