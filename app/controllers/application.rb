@@ -622,23 +622,25 @@ class ApplicationController < ActionController::Base
             label_selection    = nil if label_selection.empty?
             checkbox_selection = nil if checkbox_selection.empty?
 
-            label_uri = build_url(params, opts, [:filter, :order, :filter_query], filter[:query_option] => label_selection, "page" => nil)
+            label_uri = build_url(params, opts, [:filter, :order], filter[:query_option] => label_selection, "page" => nil)
 
-            checkbox_uri = build_url(params, opts, [:filter, :order, :filter_query], filter[:query_option] => checkbox_selection, "page" => nil)
+            checkbox_uri = build_url(params, opts, [:filter, :order], filter[:query_option] => checkbox_selection, "page" => nil)
 
-            label = object.filter_label
+            label = object.filter_label.clone
             label = visible_name(label) if filter[:visible_name]
             label = label.capitalize    if filter[:capitalize]
 
+            plain_label = object.filter_label
+
             if params[:filter_query]
               label.sub!(Regexp.new("(#{params[:filter_query]})", Regexp::IGNORECASE), '<b>\1</b>')
-              puts "new label = #{label}"
             end
 
             {
               :object       => object,
               :value        => value,
               :label        => label,
+              :plain_label  => plain_label,
               :count        => object.filter_count,
               :checkbox_uri => checkbox_uri,
               :label_uri    => label_uri,
@@ -687,7 +689,7 @@ class ApplicationController < ActionController::Base
         end
       end
 
-      [ filters, cancel_filter_query_url ]
+      [filters, cancel_filter_query_url]
     end
 
     # apply locked filters
@@ -760,24 +762,25 @@ class ApplicationController < ActionController::Base
 
       next if opts[:lock_filter] && opts[:lock_filter][filter[:query_option]]
 
+      current = params[filter[:query_option]] ? params[filter[:query_option]].split(',') : []
+
       selected = filter[:objects].select do |x| x[:selected] end
+      current  = selected.map do |x| x[:value] end
 
       if selected.length > 0
         if params[filter[:query_option]]
 
-          selected_labels = selected.map do |x| x[:label] end
+          selected_labels = selected.map do |x|
+            x[:plain_label] + ' <a href="' + url_for(build_url(params, opts,
+            [:filter, :filter_query, :order], {
+              filter[:query_option] => (current - [x[:value]]).join(",") } )) +
+              '">' + " <img src='/images/famfamfam_silk/cross.png' /></a>"
 
-          if selected_labels.length > 1
-            sentence = selected_labels[0..-2].join(", ") + " or " + selected_labels[-1]
-          else
-            sentence = selected_labels[0]
           end
 
-          summary << '<span class="filter-in-use"><a href="' +
-            url_for(build_url(params, opts, [:filter, :filter_query, :order],
-                  { filter[:query_option] => nil } )) +
-            '"><b>' + filter[:title].capitalize + "</b>: " + sentence +
-            " <img src='/images/famfamfam_silk/cross.png' /></a></span> "
+          bits = selected_labels.map do |label| label end.join(" <i>or</i> ")
+
+          summary << '<span class="filter-in-use"><b>' + filter[:title].capitalize + "</b>: " + bits + "</span> "
         end
       end
     end

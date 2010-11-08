@@ -2062,7 +2062,12 @@ table.quick_add td.submit {
   clear: right;
   background: #f0f0f0;
   border: 1px solid #d8d8d8;
-  padding: 4px;
+  padding: 8px;
+}
+
+.pivot .summary DIV {
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
 }
 
 .pivot .sort {
@@ -2099,6 +2104,14 @@ table.quick_add td.submit {
 
 .pivot .options > DIV:hover {
   background: #d0d0f0;
+}
+
+.pivot .options > DIV.selected {
+  background: #ffe0c0;
+}
+
+.pivot .options > DIV.selected:hover {
+  background: #dfc0a0;
 }
 
 .pivot .options > DIV:first-child {
@@ -2142,7 +2155,7 @@ table.quick_add td.submit {
 }
 
 .pivot .filter-in-use A {
-  padding-left: 4px;
+  padding-left: 0px;
   padding-right: 4px;
   text-decoration: none; /* no underline */
 }
@@ -2154,7 +2167,7 @@ table.quick_add td.submit {
 }
 
 .pivot .filter-in-use:hover {
-  background: #f0d0d0;
+/*  background: #f0d0d0; */
 }
 
 .pivot .pagination {
@@ -2185,7 +2198,21 @@ table.quick_add td.submit {
   top: -1px;
 }
 
+.result-count {
+}
+
 .truncate {
   white-space: nowrap;
+}
+
+.no-filter-query-results {
+  padding-top: 1em;
+	font-style: italic;
+}
+
+.pivot .no-results {
+  padding-top: 2em;
+  padding-bottom: 2em;
+	font-style: italic;
 }
 
