@@ -21,7 +21,7 @@
 
   <% if @workflow.owner?(current_user) %>
   	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @workflow, :update_perms => true } %>
-    <%= render :partial => "workflows/license_form", :locals => { :edit => true } %>
+    <%= render :partial => "contributions/license_form", :locals => { :object => :workflow, :contributable => @workflow, :edit => true } %>
   <% end %>
 
   <p>

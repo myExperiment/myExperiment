@@ -146,10 +146,12 @@ class UsersController < ApplicationController
 
     # check that captcha was entered correctly
 
-    if !captcha_valid?(params[:validation][:captcha_id], params[:validation][:captcha_validation])
-      flash.now[:error] = 'Verification text was not entered correctly - please try again.'
-      render :action => 'new'
-      return
+    unless RAILS_ENV == 'test'
+      if !captcha_valid?(params[:validation][:captcha_id], params[:validation][:captcha_validation])
+        flash.now[:error] = 'Verification text was not entered correctly - please try again.'
+        render :action => 'new'
+        return
+      end
     end
 
     if params[:user][:username] && params[:user][:password] && params[:user][:password_confirmation]
@@ -174,7 +176,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.save
         # DO NOT log in user yet, since account needs to be validated and activated first (through email).
-        Mailer.deliver_account_confirmation(@user, confirmation_hash(@user.unconfirmed_email), base_host)
+        @user.send_email_confirmation_email
         
         # If required, copy the email address to the Profile
         if params[:make_email_public]
@@ -220,7 +222,7 @@ class UsersController < ApplicationController
         else
           # If a new email address was set, then need to send out a confirmation email
           if params[:user][:unconfirmed_email]
-            Mailer.deliver_update_email_address(@user, confirmation_hash(@user.unconfirmed_email), base_host)
+            @user.send_update_email_confirmation
             flash.now[:notice] = "We have sent an email to #{@user.unconfirmed_email} with instructions on how to confirm this new email address"
           elsif params[:update_type]
             case params[:update_type]
@@ -272,7 +274,7 @@ class UsersController < ApplicationController
     for user in @users
       unless user.unconfirmed_email.blank?
         # Check if hash matches user, in which case confirm the user's email
-        if confirmation_hash(user.unconfirmed_email) == params[:hash]
+        if user.email_confirmation_hash == params[:hash]
           confirmed = user.confirm_email!
           # BEGIN DEBUG
           logger.error("ERRORS!") unless user.errors.empty?
@@ -314,7 +316,7 @@ class UsersController < ApplicationController
           user.reset_password_code_until = 1.day.from_now
           user.reset_password_code =  Digest::SHA1.hexdigest( "#{user.email}#{Time.now.to_s.split(//).sort_by {rand}.join}" )
           user.save!
-          Mailer.deliver_forgot_password(user, base_host)
+          Mailer.deliver_forgot_password(user)
           flash[:notice] = "Instructions on how to reset your password have been sent to #{user.email}"
           format.html { render :action => "forgot_password" }
         else
@@ -606,9 +608,5 @@ private
       format.html { redirect_to users_url }
     end
   end
-  
-  def confirmation_hash(string)
-    Digest::SHA1.hexdigest(string + Conf.secret_word)
-  end
-  
 end
+

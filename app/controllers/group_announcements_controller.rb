@@ -109,7 +109,7 @@ class GroupAnnouncementsController < ApplicationController
 
   
   def check_admin
-    unless @group.owner?(current_user.id)
+    unless @group.administrator?(current_user.id)
       error("Only group administrators are allowed to create new announcements")
       return false
     end
@@ -148,7 +148,7 @@ class GroupAnnouncementsController < ApplicationController
           end
         when "edit","update","destroy"
           # only owner of the group can destroy the announcement
-          unless @group.owner?(current_user.id)
+          unless ((@announcement.user == current_user) || (@group.owner?(current_user.id)))
             not_auth = true;
             raise ActiveRecord::RecordNotFound, "You don't have permissions to perform this action"
           end

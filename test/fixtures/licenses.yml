@@ -9,3 +9,10 @@ license_2:
   id: 2
   title: License 2
   description: This is the second license.
+
+license_3:
+  id: 3
+  title: by-sa
+  description: This is the by-sa license.
+  unique_name: by-sa
+

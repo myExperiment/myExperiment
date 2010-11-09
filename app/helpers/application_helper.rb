@@ -770,6 +770,10 @@ module ApplicationHelper
       return "famfamfam_silk/text_signature.png"
     when "home"
       return "famfamfam_silk/application_home.png"
+    when "make_group_admin"
+      return "famfamfam_silk/award_star_add.png"
+    when "remove_group_admin"
+      return "famfamfam_silk/award_star_delete.png"
     else
       return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end
@@ -999,7 +1003,7 @@ module ApplicationHelper
       if membership.user_established_at == nil
         return membership.user_id == current_user.id
       elsif membership.network_established_at == nil
-        return current_user.id == membership.network.owner.id
+        return membership.network.administrator?(current_user.id)
       end 
     else
       return false

@@ -240,11 +240,20 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         else
 
+          foreign_ob = nil
+          text       = ""
+
+          if model_data['Foreign Accessor'][i]
+            foreign_ob = eval("ob.#{model_data['Foreign Accessor'][i]}")
+          end
+
           if accessor
-            if query['version'] and model_data['Versioned'][i] == 'yes'
-              text = eval("ob.versions[#{(query['version'].to_i - 1).to_s}].#{accessor}").to_s
-            else
-              text = eval("ob.#{accessor}").to_s
+            if model_data['Foreign Accessor'][i].nil? || foreign_ob
+              if query['version'] and model_data['Versioned'][i] == 'yes'
+                text = eval("ob.versions[#{(query['version'].to_i - 1).to_s}].#{accessor}").to_s
+              else
+                text = eval("ob.#{accessor}").to_s
+              end
             end
           end
 
@@ -884,9 +893,21 @@ def workflow_aux(action, req_uri, rules, user, query)
 
     # build the contributable
 
-    ob.title        = title        if title
-    ob.body         = description  if description
-    ob.license      = License.find_by_unique_name(license_type) if license_type
+    ob.title   = title        if title
+    ob.body    = description  if description
+
+    if license_type 
+      if license_type == ""
+        ob.license = nil
+      else
+        ob.license = License.find_by_unique_name(license_type)
+
+        if ob.license.nil?
+          ob.errors.add("License type")
+          return rest_response(400, :object => ob)
+        end
+      end
+    end
 
     # handle workflow type
 
@@ -1038,11 +1059,16 @@ def file_aux(action, req_uri, rules, user, query)
     ob.title        = title        if title
     ob.body         = description  if description
 
-    if license_type
-      ob.license = License.find_by_unique_name(license_type)
-      if ob.license.nil?
-        ob.errors.add("License type")
-        return rest_response(400, :object => ob)
+    if license_type 
+      if license_type == ""
+        ob.license = nil
+      else
+        ob.license = License.find_by_unique_name(license_type)
+
+        if ob.license.nil?
+          ob.errors.add("License type")
+          return rest_response(400, :object => ob)
+        end
       end
     end
    
@@ -1570,20 +1596,22 @@ def parse_element(doc, kind, query)
     when :text
       if doc.find_first(query)
 
-        enc = doc.find_first(query)['encoding']
-        el  = doc.find_first("#{query}/text()")
+        enc  = doc.find_first(query)['encoding']
+        el   = doc.find_first("#{query}")
+        text = doc.find_first("#{query}/text()")
 
         if el
           if enc == 'base64'
-            return Base64::decode64(el.to_s)
+            return Base64::decode64(text.to_s)
           else
-            return el.to_s
+            return text.to_s
           end
         end
       end
     when :binary
-      el = doc.find_first("#{query}/text()")
-      return Base64::decode64(el.to_s) if el
+      el   = doc.find_first("#{query}")
+      text = doc.find_first("#{query}/text()")
+      return Base64::decode64(text.to_s) if el
     when :resource
       return resolve_resource_node(doc.find_first(query))
   end

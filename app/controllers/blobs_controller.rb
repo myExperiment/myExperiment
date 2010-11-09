@@ -59,6 +59,7 @@ class BlobsController < ApplicationController
         @pivot_options = pivot_options
         @pivot = contributions_list(Contribution, params, current_user,
             :lock_filter => { "type" => "Blob" } )
+        # index.rhtml
       }
     end
   end
@@ -98,7 +99,7 @@ class BlobsController < ApplicationController
   
   # POST /blobs
   def create
-    
+
     # don't create new blob if no file has been selected
     if params[:blob][:data].size == 0
       respond_to do |format|
@@ -112,6 +113,8 @@ class BlobsController < ApplicationController
       params[:blob].delete('data')
 
       params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
+
+      params[:blob][:license_id] = nil if params[:blob][:license_id] && params[:blob][:license_id] == "0"
    
       @blob = Blob.new(params[:blob])
       @blob.content_blob = ContentBlob.new(:data => data)
@@ -166,6 +169,8 @@ class BlobsController < ApplicationController
       end
     end
     
+    params[:blob][:license_id] = nil if params[:blob][:license_id] && params[:blob][:license_id] == "0"
+
     # 'Data' (ie: the actual file) cannot be updated!
     params[:blob].delete('data') if params[:blob][:data]
     

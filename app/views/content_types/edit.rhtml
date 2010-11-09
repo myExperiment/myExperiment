@@ -1,0 +1,35 @@
+<% t "Manage" -%>
+
+<%= javascript_include_tag :fckeditor %>
+
+
+<h1>Manage Content Type: <%= h @content_type.title %></h1>
+
+<%= error_messages_for :content_type %>
+
+<% form_for(:content_type, :url => content_type_path(@content_type), :html => { :method => :put }) do |f| %>
+
+  <p style="text-align: center;">
+  	<strong>Title: </strong>
+	<br/>
+	<%= f.text_field :title, :size => 60 %>
+  </p>
+	
+	<br/>
+  
+  <p style="text-align: center;">
+  	<strong>Description: </strong>
+	</p>
+	<center>
+		<%= fckeditor_textarea(:content_type, :description, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
+	</center>
+  
+  <br/>
+
+  <p>
+    <center>
+    	<%= submit_tag "Update",:disable_with => "Updating..." %> 
+		or <%= link_to "Cancel", content_type_path(@content_type) %>
+	</center>
+  </p>
+<% end %>

@@ -31,8 +31,8 @@
   <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => true, :contributable => @blob } %>
 
   <% if @blob.owner?(current_user) %>
-  	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @blob, :update_perms => true } %>
-	<%= render :partial => "blobs/license_form", :locals => { :edit => true } %>
+  	<%= render :partial => "contributions/sharing_form", :locals => { :edit => true, :contributable => @blob, :update_perms => true } %>
+    <%= render :partial => "contributions/license_form", :locals => { :object => :blob, :contributable => @blob, :edit => true } %>
   <% end %>
 
   <p>

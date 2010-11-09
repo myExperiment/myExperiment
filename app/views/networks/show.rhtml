@@ -25,9 +25,11 @@
 			<% end %>
 		<% end %>
 
-    <% if mine? @network %>
+    <% if @network.administrator?(current_user.id) %>
       <li><%= icon('announcement', new_group_announcement_path(@network), 'Make a new Group Announcement', nil, 'Make a Group Announcement') -%></li>
 			<li><%= icon('network-invite', invite_group_path(@network), 'Invite People', nil, 'Invite People') -%></li>
+    <% end %>
+    <% if mine? @network %>
 			<li><%= icon('edit', edit_group_path(@network), 'Edit', nil, 'Edit Group') %></li>
       <li><%= icon('destroy', group_path(@network), 'Delete Group', { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
     <% end %>
@@ -105,12 +107,21 @@
 	<br/>
 	
 	<div class="contribution_section_box">
+<% admins=@network.administrators(true) -%>
+<% others=@network.members() - admins -%>
+		<p class="heading">
+			Administrators
+			<a name="group_members"></a>
+		</p>
+		<div>
+			<%= render :partial => "networks/members", :locals => { :collection => admins, :size => 60 } %>
+		</div>
 		<p class="heading">
 			Members
 			<a name="group_members"></a>
 		</p>
 		<div>
-			<%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
+			<%= render :partial => "networks/members", :locals => { :collection => others, :size => 60 } %>
 		</div>
 	</div>
 	
@@ -198,7 +209,7 @@
   </div>
 </div>
 
-<% if mine? @network %>
+<% if @network.administrator?(current_user.id) %>
   
   <% memberships = @network.memberships_accepted %>
   <a name="manage_memberships"></a>

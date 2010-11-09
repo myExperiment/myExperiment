@@ -1,0 +1,90 @@
+<% cache(:controller => 'workflows_cache', :action => 'internals', :id => workflow.id, :version => version) do -%>
+
+	<% if (model = workflow.get_workflow_model_object(version)) -%>
+
+    <!-- Inputs -->
+    <% inputs = model.inputs -%>
+    <div class="fold">
+      <div class="foldTitle">
+        Inputs (<%= inputs.length -%>)
+      </div>
+      <div class="foldContent" style="display: none;">
+        <% unless inputs.blank? -%>
+          <table class="simple">
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+          
+            <% inputs.each do |i| -%>
+              <tr>
+                <td><b><%= h i.name -%></b></td>
+                <td><%= h i.description -%></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <p class="none_text">None</p>
+        <% end %>
+      </div>
+    </div>
+      
+    <!-- Steps -->
+    <% steps = model.steps -%>
+    <div class="fold">
+      <div class="foldTitle">
+        Steps (<%= steps.length -%>)
+      </div>
+      <div class="foldContent" style="display: none;">
+        <% unless steps.blank? -%>
+          <table class="simple">
+            <tr>
+              <th>Name</th>
+              <th>Tool</th>
+              <th>Description</th>
+            </tr>
+          
+            <% steps.each do |s| -%>
+              <tr>
+                <td><b><%= h s.name -%></b></td>
+                <td><%= h s.tool -%></td>
+                <td><%= h s.description -%></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <p class="none_text">None</p>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Outputs -->
+    <% outputs = model.outputs -%>
+    <div class="fold">
+      <div class="foldTitle">
+        Outputs (<%= outputs.length -%>)
+      </div>
+      <div class="foldContent" style="display: none;">
+        <% unless outputs.blank? -%>
+          <table class="simple">
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+            </tr>
+          
+            <% outputs.each do |o| -%>
+              <tr>
+                <td><b><%= h o.name -%></b></td>
+                <td><%= h o.type -%></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <p class="none_text">None</p>
+        <% end %>
+      </div>
+    </div>
+      
+  <% end %>
+<% end %>
+

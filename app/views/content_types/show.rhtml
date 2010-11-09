@@ -2,6 +2,9 @@
 
 <ul class="sectionIcons">
   <li><%= icon('workflow', content_types_path, nil, nil, 'All Types')%></li>
+  <% if Authorization.check(:action => 'edit', :object => @content_type, :user => current_user) %>
+		<li><%= icon('manage', edit_content_type_path(@content_type), nil, nil, 'Manage Content Type Entry')%></li>
+	<% end -%>
 </ul>
 
 <h1><%= visible_name(@content_type.category) -%> Type: <%= h @content_type.title %></h1>
