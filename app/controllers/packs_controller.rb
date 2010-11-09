@@ -30,7 +30,8 @@ class PacksController < ApplicationController
     respond_to do |format|
       format.html {
         @pivot_options = pivot_options
-        @contributions, @filters, @summary = contributions_list(Contribution, { "type" => "Pack" }, current_user)
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { "type" => "Pack" } )
         # index.rhtml
       }
     end

@@ -57,8 +57,8 @@ class BlobsController < ApplicationController
     respond_to do |format|
       format.html {
         @pivot_options = pivot_options
-        @contributions, @filters, @summary = contributions_list(Contribution, { "type" => "Blob" }, current_user)
-        render 'content/index'
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { "type" => "Blob" } )
       }
     end
   end
