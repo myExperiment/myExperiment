@@ -31,7 +31,7 @@
           <div class="options">
             <% filter[:objects].each do |object| %>
               <div<%= object[:selected] ? ' class="selected"' : '' -%>>
-                <input class='checkbox' type='checkbox' onclick='javascript:location = <%= url_for(object[:checkbox_uri]).to_json -%>' <% if object[:selected] %> checked='checked' <% end %> />
+                <input class='checkbox' type='checkbox' onclick='javascript:location = <%= url_for(object[:checkbox_uri]).to_json -%>; return false;' <% if object[:selected] %> checked='checked' <% end %> />
                 <%= link_to("<div class='count'>#{object[:count]}</div> <div class='label' title='#{h(object[:plain_label])}'><span class='truncate'>#{object[:label]}</span></div>", object[:label_uri]) -%>
               </div>
             <% end %>
