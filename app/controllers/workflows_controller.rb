@@ -565,7 +565,7 @@ class WorkflowsController < ApplicationController
     end
 
     params[:tag_list].split(',').each do |tag|
-      @workflow.add_tag(tag, current_user)
+      @workflow.add_tag(tag.strip, current_user)
     end
 
     redirect_to(workflow_url(@workflow))
