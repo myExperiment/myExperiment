@@ -72,9 +72,9 @@ class ApiController < ApplicationController
     end  
 
     case rules['Type']
-      when 'index'; doc = rest_index_request(params[:uri], rules, user, request.query_parameters)
-      when 'crud';  doc = rest_crud_request(params[:uri], rules, user, request.query_parameters)
-      when 'call';  doc = rest_call_request(params[:uri], rules, user, request.query_parameters)
+      when 'index'; doc = rest_index_request(params[:uri], params[:format], rules, user, request.query_parameters)
+      when 'crud';  doc = rest_crud_request(params[:uri], params[:format], rules, user, request.query_parameters)
+      when 'call';  doc = rest_call_request(params[:uri], params[:format], rules, user, request.query_parameters)
       else;         return rest_response(400)
     end
   end
