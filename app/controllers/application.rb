@@ -370,6 +370,21 @@ class ApplicationController < ActionController::Base
     nil
   end 
 
+  def deep_clone(ob)
+    case ob.class.name
+    when "Array"
+      ob.map do |x| deep_clone(x) end
+    when "Hash"
+      hash = {}
+      ob.each do |k, v| hash[deep_clone(k)] = deep_clone(v) end
+      hash
+    when "Symbol"
+      ob
+    else
+      ob.clone
+    end
+  end
+
   # Pivot code
   
   def pivot_options
@@ -439,7 +454,7 @@ class ApplicationController < ActionController::Base
       [
         {
           :title        => 'category',
-          :query_option => 'type',
+          :query_option => 'CATEGORY',
           :id_column    => 'contributions.contributable_type',
           :label_column => 'contributions.contributable_type',
           :visible_name => true
@@ -447,7 +462,7 @@ class ApplicationController < ActionController::Base
 
         {
           :title        => 'type',
-          :query_option => 'content_type',
+          :query_option => 'TYPE_ID',
           :id_column    => 'content_types.id',
           :label_column => 'content_types.title',
           :joins        => [ :content_types ],
@@ -456,7 +471,7 @@ class ApplicationController < ActionController::Base
 
         {
           :title        => 'tag',
-          :query_option => 'tag',
+          :query_option => 'TAG_ID',
           :id_column    => 'tags.id',
           :label_column => 'tags.name',
           :joins        => [ :taggings, :tags ]
@@ -464,7 +479,7 @@ class ApplicationController < ActionController::Base
 
         {
           :title        => 'user',
-          :query_option => 'member',
+          :query_option => 'USER_ID',
           :id_column    => 'users.id',
           :label_column => 'users.name',
           :joins        => [ :users ]
@@ -472,7 +487,7 @@ class ApplicationController < ActionController::Base
 
         {
           :title        => 'licence',
-          :query_option => 'license',
+          :query_option => 'LICENSE_ID',
           :id_column    => 'licenses.id',
           :label_column => 'licenses.unique_name',
           :joins        => [ :licences ],
@@ -481,7 +496,7 @@ class ApplicationController < ActionController::Base
 
         {
           :title        => 'group',
-          :query_option => 'network',
+          :query_option => 'GROUP_ID',
           :id_column    => 'networks.id',
           :label_column => 'networks.title',
           :joins        => [ :networks ]
@@ -489,7 +504,7 @@ class ApplicationController < ActionController::Base
 
         {
           :title        => 'curation',
-          :query_option => 'curation_event',
+          :query_option => 'CURATION_EVENT',
           :id_column    => 'curation_events.category',
           :label_column => 'curation_events.category',
           :joins        => [ :curation_events ],
@@ -511,21 +526,135 @@ class ApplicationController < ActionController::Base
     }
   end
 
+  TOKEN_UNKNOWN         = 0x0000
+  TOKEN_AND             = 0x0001
+  TOKEN_OR              = 0x0002
+  TOKEN_WORD            = 0x0003
+  TOKEN_OPEN            = 0x0004
+  TOKEN_CLOSE           = 0x0005
+  TOKEN_STRING          = 0x0006
+  TOKEN_EOS             = 0x00ff
+
+  NUM_TOKENS            = 6
+
+  STATE_INITIAL         = 0x0000
+  STATE_EXPECT_OPEN     = 0x0100
+  STATE_EXPECT_STR      = 0x0200
+  STATE_EXPECT_EXPR_END = 0x0300
+  STATE_EXPECT_END      = 0x0400
+  STATE_COMPLETE        = 0x0500
+
+  def parse_filter_expression(expr)
+
+    def unescape_string(str)
+      str.match(/^"(.*)"$/)[1].gsub(/\\"/, '"')
+    end
+
+    state  = STATE_INITIAL
+    data   = []
+
+    begin
+
+      tokens = expr.match(/^
+
+          \s* (\sAND\s)         | # AND operator
+          \s* (\sOR\s)          | # OR operator
+          \s* (\w+)             | # a non-keyword word
+          \s* (\()              | # an open paranthesis
+          \s* (\))              | # a close paranthesis
+          \s* ("(\\.|[^\\"])*")   # double quoted string with backslash escapes
+
+          /ix)
+
+      if tokens.nil?
+        token = TOKEN_UNKNOWN
+      else
+        (1..NUM_TOKENS).each do |i|
+          token = i if tokens[i]
+        end
+      end
+
+      if token == TOKEN_UNKNOWN
+        token = TOKEN_EOS if expr.strip.empty?
+      end
+
+      case state | token
+        when STATE_INITIAL         | TOKEN_WORD   : state = STATE_EXPECT_OPEN     ; data << { :name => tokens[0], :expr => [] }
+        when STATE_EXPECT_OPEN     | TOKEN_OPEN   : state = STATE_EXPECT_STR
+        when STATE_EXPECT_STR      | TOKEN_STRING : state = STATE_EXPECT_EXPR_END ; data.last[:expr] << tokens[0] 
+        when STATE_EXPECT_EXPR_END | TOKEN_AND    : state = STATE_EXPECT_STR      ; data.last[:expr] << :and 
+        when STATE_EXPECT_EXPR_END | TOKEN_OR     : state = STATE_EXPECT_STR      ; data.last[:expr] << :or 
+        when STATE_EXPECT_EXPR_END | TOKEN_CLOSE  : state = STATE_EXPECT_END
+        when STATE_EXPECT_END      | TOKEN_AND    : state = STATE_INITIAL         ; data << :and 
+        when STATE_EXPECT_END      | TOKEN_OR     : state = STATE_INITIAL         ; data << :or 
+        when STATE_EXPECT_END      | TOKEN_EOS    : state = STATE_COMPLETE
+
+        else raise "Error parsing query expression"
+      end
+
+      expr = tokens.post_match unless state == STATE_COMPLETE
+
+    end while state != STATE_COMPLETE
+
+    # validate and reduce expressions to current capabilities
+
+    valid_filters = pivot_options[:filters].map do |f| f[:query_option] end
+
+    data.each do |category|
+      case category
+      when :or
+        raise "Unsupported query expression"
+      when :and
+        # Fine
+      else
+        raise "Unknown filter category" unless valid_filters.include?(category[:name])
+
+        counts = { :and => 0, :or => 0 }
+
+        category[:expr].each do |bit|
+          counts[bit] = counts[bit] + 1 if bit.class == Symbol
+        end
+
+        raise "Unsupported query expression" if counts[:and] > 0 && counts[:or] > 0
+
+        if category[:expr].length == 1
+          category[:expr] = { :terms => [unescape_string(category[:expr].first)] }
+        else
+          category[:expr] = {
+            :operator => category[:expr][1],
+            :terms    => category[:expr].select do |t|
+              t.class == String
+            end.map do |t|
+              unescape_string(t)
+            end
+          }
+        end
+      end
+    end
+
+    data
+  end
+
   def contributions_list(klass = nil, params = nil, user = nil, opts = {})
 
     def escape_sql(str)
       str.gsub(/\\/, '\&\&').gsub(/'/, "''")
     end
 
-    def build_url(params, opts, parts, extra = {})
+    def build_url(params, opts, expr, parts, extra = {})
 
       query = {}
 
       if parts.include?(:filter)
+        bits = []
         pivot_options[:filters].each do |filter|
-          if params[filter[:query_option]]
-            query[filter[:query_option]] = params[filter[:query_option]]
+          if find_filter(expr, filter[:query_option])
+            bits << filter[:query_option] + "(\"" + find_filter(expr, filter[:query_option])[:expr][:terms].map do |t| t.gsub(/"/, '\"') end.join("\" OR \"") + "\")"
           end
+        end
+
+        if bits.length > 0
+          query["filter"] = bits.join(" AND ")
         end
       end
 
@@ -544,14 +673,28 @@ class ApplicationController < ActionController::Base
     end
 
     def comparison(lhs, rhs)
-
-      bits = rhs.split(",")
-
-      if bits.length == 1
-        "#{lhs} = '#{escape_sql(rhs)}'"
+      if rhs.length == 1
+        "#{lhs} = '#{escape_sql(rhs.first)}'"
       else
-        "#{lhs} IN ('#{bits.map do |bit| escape_sql(bit) end.join("', '")}')"
+        "#{lhs} IN ('#{rhs.map do |bit| escape_sql(bit) end.join("', '")}')"
       end
+    end
+  
+    def calculate_having_clause(filter, opts)
+
+      having_bits = []
+
+      pivot_options[:filters].each do |f|
+        if f != filter
+#         if opts[:filters][f[:query_option]] && opts[:filters]["and_#{f[:query_option]}"] == "yes"
+#           having_bits << "(GROUP_CONCAT(DISTINCT #{f[:id_column]} ORDER BY #{f[:id_column]}) = '#{escape_sql(opts[:filters][f[:query_option]])}')"
+#         end
+        end
+      end
+
+      return nil if having_bits.empty?
+
+      "HAVING " + having_bits.join(" OR ")
     end
 
     def calculate_filter(params, filter, user, opts = {})
@@ -562,9 +705,9 @@ class ApplicationController < ActionController::Base
       conditions = []
 
       pivot_options[:filters].each do |other_filter|
-        if filter_list = params[other_filter[:query_option]]
+        if filter_list = find_filter(opts[:filters], other_filter[:query_option])
           unless opts[:inhibit_other_conditions]
-            conditions << comparison(other_filter[:id_column], filter_list) unless other_filter == filter
+            conditions << comparison(other_filter[:id_column], filter_list[:expr][:terms]) unless other_filter == filter
           end
           joins += other_filter[:joins] if other_filter[:joins]
         end
@@ -579,7 +722,7 @@ class ApplicationController < ActionController::Base
         end
       end
 
-      current = params[filter[:query_option]] ? params[filter[:query_option]].split(',') : []
+      current = find_filter(opts[:filters], filter[:query_option]) ? find_filter(opts[:filters], filter[:query_option])[:expr][:terms] : []
 
       if opts[:ids].nil?
         limit = 10
@@ -588,13 +731,15 @@ class ApplicationController < ActionController::Base
         limit = nil
       end
 
+      conditions = conditions.length.zero? ? nil : conditions.join(" AND ")
+
       objects = Authorization.authorised_index(Contribution,
           :all,
           :include_permissions => true,
           :select => "#{filter[:id_column]} AS filter_id, #{filter[:label_column]} AS filter_label, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS filter_count",
           :joins => joins.length.zero? ? nil : joins.uniq.map do |j| pivot_options[:joins][j] end.join(" "),
-          :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
-          :group => filter[:id_column],
+          :conditions => conditions,
+          :group => "#{filter[:id_column]} #{calculate_having_clause(filter, opts)}",
           :limit => limit,
           :order => "COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC, #{filter[:label_column]}",
           :authorised_user => user).map do |object|
@@ -602,28 +747,32 @@ class ApplicationController < ActionController::Base
             value = object.filter_id.to_s
             selected = current.include?(value)
 
-            if selected
-              if current.length == 1
-                label_selection = ""
+            label_expr = deep_clone(opts[:filters])
+            label_expr -= [find_filter(label_expr, filter[:query_option])] if find_filter(label_expr, filter[:query_option])
+
+            unless selected && current.length == 1
+              label_expr << { :name => filter[:query_option], :expr => { :terms => [value] } }
+            end
+
+            checkbox_expr = deep_clone(opts[:filters])
+
+            if expr_filter = find_filter(checkbox_expr, filter[:query_option])
+
+              if selected
+                expr_filter[:expr][:terms] -= [value]
               else
-                label_selection = value
+                expr_filter[:expr][:terms] += [value]
               end
+
+              checkbox_expr -= [expr_filter] if expr_filter[:expr][:terms].empty?
+
             else
-              label_selection = value
+              checkbox_expr << { :name => filter[:query_option], :expr => { :terms => [value] } }
             end
 
-            if selected
-              checkbox_selection = (current - [value]).uniq.join(',')
-            else
-              checkbox_selection = (current + [value]).uniq.join(',')
-            end
+            label_uri = build_url(params, opts, label_expr, [:filter, :order], "page" => nil)
 
-            label_selection    = nil if label_selection.empty?
-            checkbox_selection = nil if checkbox_selection.empty?
-
-            label_uri = build_url(params, opts, [:filter, :order], filter[:query_option] => label_selection, "page" => nil)
-
-            checkbox_uri = build_url(params, opts, [:filter, :order], filter[:query_option] => checkbox_selection, "page" => nil)
+            checkbox_uri = build_url(params, opts, checkbox_expr, [:filter, :order], "page" => nil)
 
             label = object.filter_label.clone
             label = visible_name(label) if filter[:visible_name]
@@ -691,6 +840,27 @@ class ApplicationController < ActionController::Base
       [filters, cancel_filter_query_url]
     end
 
+    def find_filter(filters, name)
+      filters.find do |f|
+        f[:name] == name
+      end
+    end
+
+    # parse the filter expression if provided.  convert filter expression to
+    # the old format.  this will need to be replaced eventually
+
+    opts[:filters] = []
+    
+    if params["filter"]
+      opts[:filters] = parse_filter_expression(params["filter"])
+
+      # filter out top level logic operators for now
+
+      opts[:filters] = opts[:filters].select do |bit|
+        bit.class == Hash
+      end
+    end
+
     # apply locked filters
 
     if opts[:lock_filter]
@@ -705,8 +875,8 @@ class ApplicationController < ActionController::Base
     conditions = []
 
     pivot_options[:filters].each do |filter|
-      if filter_list = params[filter[:query_option]]
-        conditions << comparison(filter[:id_column], filter_list)
+      if filter_list = find_filter(opts[:filters], filter[:query_option])
+        conditions << comparison(filter[:id_column], filter_list[:expr][:terms])
         joins += filter[:joins] if filter[:joins]
       end
     end
@@ -719,6 +889,20 @@ class ApplicationController < ActionController::Base
 
     joins += order_options[:joins] if order_options[:joins]
 
+    having_bits = []
+
+#   pivot_options[:filters].each do |filter|
+#     if params["and_#{filter[:query_option]}"]
+#       having_bits << "GROUP_CONCAT(DISTINCT #{filter[:id_column]} ORDER BY #{filter[:id_column]}) = \"#{escape_sql(opts[:filters][filter[:query_option]])}\""
+#     end
+#   end
+
+    having_clause = ""
+
+    if having_bits.length > 0
+      having_clause = "HAVING #{having_bits.join(' AND ')}"
+    end
+
     # perform the results query
 
     results = Authorization.authorised_index(klass,
@@ -729,6 +913,7 @@ class ApplicationController < ActionController::Base
         :page => { :size => params["num"] ? params["num"].to_i : nil, :current => params["page"] },
         :joins => joins.length.zero? ? nil : joins.uniq.map do |j| pivot_options[:joins][j] end.join(" "),
         :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
+        :group => "contributions.contributable_type, contributions.contributable_id #{having_clause}",
         :order => order_options[:order])
 
     # produce a query hash to match the current filters
@@ -761,35 +946,37 @@ class ApplicationController < ActionController::Base
 
       next if opts[:lock_filter] && opts[:lock_filter][filter[:query_option]]
 
-      current = params[filter[:query_option]] ? params[filter[:query_option]].split(',') : []
-
       selected = filter[:objects].select do |x| x[:selected] end
       current  = selected.map do |x| x[:value] end
 
       if selected.length > 0
-        if params[filter[:query_option]]
+        selected_labels = selected.map do |x|
 
-          selected_labels = selected.map do |x|
-            x[:plain_label] + ' <a href="' + url_for(build_url(params, opts,
-            [:filter, :filter_query, :order], {
-              filter[:query_option] => (current - [x[:value]]).join(",") } )) +
-              '">' + " <img src='/images/famfamfam_silk/cross.png' /></a>"
+          expr = deep_clone(opts[:filters])
 
-          end
+          f = find_filter(expr, filter[:query_option])
+  
+          expr -= f[:expr][:terms] -= [x[:value]]
+          expr -= [f] if f[:expr][:terms].empty?
 
-          bits = selected_labels.map do |label| label end.join(" <i>or</i> ")
+          x[:plain_label] + ' <a href="' + url_for(build_url(params, opts, expr,
+          [:filter, :filter_query, :order])) +
+            '">' + " <img src='/images/famfamfam_silk/cross.png' /></a>"
 
-          summary << '<span class="filter-in-use"><b>' + filter[:title].capitalize + "</b>: " + bits + "</span> "
         end
+
+        bits = selected_labels.map do |label| label end.join(" <i>or</i> ")
+
+        summary << '<span class="filter-in-use"><b>' + filter[:title].capitalize + "</b>: " + bits + "</span> "
       end
     end
 
     if params[:filter_query]
-      cancel_filter_query_url = build_url(params, opts, [:filter, :order])
+      cancel_filter_query_url = build_url(params, opts, opts[:filters], [:filter, :order])
     end
 
-    if opts[:filter_params].length > 0
-      reset_filters_url = build_url(params, opts, [:order])
+    if opts[:filters].length > 0
+      reset_filters_url = build_url(params, opts, opts[:filters], [:order])
     end
 
     # remove filters that do not help in narrowing down the result set
@@ -797,8 +984,6 @@ class ApplicationController < ActionController::Base
     filters = filters.select do |filter|
       if filter[:objects].empty?
         false
-#     elsif filter[:objects].length == 1 && filter[:objects][0][:selected] == false
-#       false
       elsif opts[:lock_filter] && opts[:lock_filter][filter[:query_option]]
         false
       else
@@ -811,7 +996,7 @@ class ApplicationController < ActionController::Base
       :filters                 => filters,
       :reset_filters_url       => reset_filters_url,
       :cancel_filter_query_url => cancel_filter_query_url,
-      :filter_query_url        => build_url(params, opts, [:filter]),
+      :filter_query_url        => build_url(params, opts, opts[:filters], [:filter]),
       :summary                 => summary
     }
   end
