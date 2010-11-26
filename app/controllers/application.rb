@@ -850,6 +850,8 @@ class ApplicationController < ActionController::Base
 
     opts[:filters] ||= []
     
+    include_reset_url = opts[:filters].length > 0
+
     # filter out top level logic operators for now
 
     opts[:filters] = opts[:filters].select do |bit|
@@ -970,7 +972,7 @@ class ApplicationController < ActionController::Base
       cancel_filter_query_url = build_url(params, opts, opts[:filters], [:filter, :order])
     end
 
-    if opts[:filters].length > 0
+    if include_reset_url
       reset_filters_url = build_url(params, opts, opts[:filters], [:order])
     end
 
