@@ -18,7 +18,7 @@ module Maintenance::Backup
 
   def self.create(opts = {})
 
-    @backup_filename = DEFAULT_BACKUP_FILENAME
+    @backup_filename = ENV['FILE'] || DEFAULT_BACKUP_FILENAME
 
     def self.backup_database
 
@@ -227,7 +227,7 @@ module Maintenance::Backup
     @mysql_user     = db_config["username"]
     @mysql_password = db_config["password"]
 
-    @backup_filename = DEFAULT_BACKUP_FILENAME
+    @backup_filename = ENV['FILE'] || DEFAULT_BACKUP_FILENAME
 
     # Clear the file cache
 
