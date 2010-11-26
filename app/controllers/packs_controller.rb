@@ -30,8 +30,19 @@ class PacksController < ApplicationController
     respond_to do |format|
       format.html {
         @pivot_options = pivot_options
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
         @pivot = contributions_list(Contribution, params, current_user,
-            :lock_filter => { "type" => "Pack" } )
+            :lock_filter => { 'CATEGORY' => 'Pack' },
+            :filters     => expr)
+
         # index.rhtml
       }
     end

@@ -167,7 +167,19 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       format.html do
         @pivot_options = pivot_options
-        @pivot = contributions_list(Contribution, params, current_user, :lock_filter => { 'type' => 'Workflow' } )
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { 'CATEGORY' => 'Workflow' },
+            :filters     => expr)
+
       end
       format.rss do
         #@workflows = Workflow.find(:all, :order => "updated_at DESC") # list all (if required)

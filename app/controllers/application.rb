@@ -617,6 +617,9 @@ class ApplicationController < ActionController::Base
 
         raise "Unsupported query expression" if counts[:and] > 0 && counts[:or] > 0
 
+        # haven't implemented 'and' within a particular filter yet
+        raise "Unsupported query expression" if counts[:and] > 0
+
         if category[:expr].length == 1
           category[:expr] = { :terms => [unescape_string(category[:expr].first)] }
         else
@@ -648,8 +651,10 @@ class ApplicationController < ActionController::Base
       if parts.include?(:filter)
         bits = []
         pivot_options[:filters].each do |filter|
-          if find_filter(expr, filter[:query_option])
-            bits << filter[:query_option] + "(\"" + find_filter(expr, filter[:query_option])[:expr][:terms].map do |t| t.gsub(/"/, '\"') end.join("\" OR \"") + "\")"
+          if opts[:lock_filter][filter[:query_option]].nil?
+            if find_filter(expr, filter[:query_option])
+              bits << filter[:query_option] + "(\"" + find_filter(expr, filter[:query_option])[:expr][:terms].map do |t| t.gsub(/"/, '\"') end.join("\" OR \"") + "\")"
+            end
           end
         end
 
@@ -662,12 +667,6 @@ class ApplicationController < ActionController::Base
       query["filter_query"] = params[:filter_query] if parts.include?(:filter_query)
 
       query.merge!(extra)
-
-      if opts[:lock_filter]
-        opts[:lock_filter].keys.each do |filter|
-          query.delete(filter)
-        end
-      end
 
       query
     end
@@ -849,23 +848,19 @@ class ApplicationController < ActionController::Base
     # parse the filter expression if provided.  convert filter expression to
     # the old format.  this will need to be replaced eventually
 
-    opts[:filters] = []
+    opts[:filters] ||= []
     
-    if params["filter"]
-      opts[:filters] = parse_filter_expression(params["filter"])
+    # filter out top level logic operators for now
 
-      # filter out top level logic operators for now
-
-      opts[:filters] = opts[:filters].select do |bit|
-        bit.class == Hash
-      end
+    opts[:filters] = opts[:filters].select do |bit|
+      bit.class == Hash
     end
 
     # apply locked filters
 
     if opts[:lock_filter]
       opts[:lock_filter].each do |filter, value|
-        params[filter] = value
+        opts[:filters] << { :name => filter, :expr => { :terms => [value] } }
       end
     end
 
