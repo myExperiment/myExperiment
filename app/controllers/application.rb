@@ -502,14 +502,14 @@ class ApplicationController < ActionController::Base
           :joins        => [ :networks ]
         },
 
-        {
-          :title        => 'curation',
-          :query_option => 'CURATION_EVENT',
-          :id_column    => 'curation_events.category',
-          :label_column => 'curation_events.category',
-          :joins        => [ :curation_events ],
-          :capitalize   => true
-        },
+#       {
+#         :title        => 'curation',
+#         :query_option => 'CURATION_EVENT',
+#         :id_column    => 'curation_events.category',
+#         :label_column => 'curation_events.category',
+#         :joins        => [ :curation_events ],
+#         :capitalize   => true
+#       },
       ],
 
       :joins =>
