@@ -65,12 +65,12 @@ class ApiControllerTest < Test::Unit::TestCase
     # it's private default, so make sure that another user can't get the
     # workflow
 
-    setup;
+    setup
     login_as(:jane)
 
     rest_request(:get, 'workflow', nil, "id" => @workflow_id)
 
-    assert_response(401)
+    assert_response(:unauthorized)
      
     # update the workflow
 
@@ -103,6 +103,97 @@ class ApiControllerTest < Test::Unit::TestCase
     # try to get the deleted workflow
 
     rest_request(:get, 'workflow', nil, "id" => @workflow_id)
+
+    assert_response(:not_found)
+  end
+
+  def test_files
+
+    existing_files = Blob.find(:all)
+
+    login_as(:john)
+
+    title        = "Test file title"
+    title2       = "Updated test file title"
+    license_type = "by-sa"
+    content_type = "text/plain"
+    description  = "A description of the test file."
+
+    content = Base64.encode64("This is the content of this test file.")
+
+    # post a file
+
+    rest_request(:post, 'file', "<?xml version='1.0'?>
+      <file>
+        <title>#{title}</title>
+        <description>#{description}</description>
+        <license-type>#{license_type}</license-type>
+        <content-type>#{content_type}</content-type>
+        <content>#{content}</content>
+      </file>")
+
+    assert_response(:success)
+
+    extra_files = Blob.find(:all) - existing_files
+
+    assert_equal(extra_files.length, 1)
+
+    file = extra_files.first
+
+    # get the file
+
+    response = rest_request(:get, 'file', nil, "id" => file.id,
+        "elements" => "title,description,license-type,content-type,content")
+
+    assert_response(:success)
+
+    assert_equal(title,        response.find_first('/file/title').inner_xml)
+    assert_equal(description,  response.find_first('/file/description').inner_xml)
+    assert_equal(license_type, response.find_first('/file/license-type').inner_xml)
+    assert_equal(content_type, response.find_first('/file/content-type').inner_xml)
+    assert_equal(content,      response.find_first('/file/content').inner_xml)
+
+    # it's private default, so make sure that another user can't get the
+    # file
+
+    setup
+    login_as(:jane)
+
+    rest_request(:get, 'file', nil, "id" => file.id)
+
+    assert_response(:unauthorized)
+     
+    # update the file
+
+    setup
+    login_as(:john)
+
+    rest_request(:put, 'file', "<?xml version='1.0'?>
+      <file>
+        <title>#{title2}</title>
+      </file>", "id" => file.id)
+
+    assert_response(:success)
+
+    # get the updated file
+
+    response = rest_request(:get, 'file', nil, "id" => file.id,
+        "elements" => "title,description")
+
+    assert_response(:success)
+  
+    assert_equal(title2,      response.find_first('/file/title').inner_xml)
+    assert_equal(description, response.find_first('/file/description').inner_xml)
+
+    # delete the file
+
+    rest_request(:delete, 'file', nil, "id" => file.id)
+
+    assert_response(:success)
+
+    # try to get the deleted file
+
+    rest_request(:get, 'file', nil, "id" => file.id)
 
     assert_response(:not_found)
   end
@@ -322,6 +413,135 @@ class ApiControllerTest < Test::Unit::TestCase
     # try to get the deleted pack
 
     rest_request(:get, 'pack', nil, "id" => @pack_id)
+
+    assert_response(:not_found)
+  end
+
+  def test_comments
+
+    login_as(:john)
+
+    # post a workflow to test with
+
+    content = Base64.encode64(File.read('test/fixtures/files/workflow_dilbert.xml'))
+
+    existing_workflows = Workflow.find(:all)
+
+    rest_request(:post, 'workflow', "<?xml version='1.0'?>
+      <workflow>
+        <title>Unique tags</title>
+        <description>A workflow description.</description>
+        <license-type>by-sa</license-type>
+        <content-type>application/vnd.taverna.scufl+xml</content-type>
+        <content>#{content}</content>
+      </workflow>")
+
+    assert_response(:success)
+
+    extra_workflows = Workflow.find(:all) - existing_workflows
+
+    assert_equal(extra_workflows.length, 1)
+
+    workflow = extra_workflows.first
+    workflow_url = rest_resource_uri(workflow)
+
+    # post a comment
+
+    comment_text  = "a test comment"
+    comment_text2 = "an updated test comment"
+
+    existing_comments = Comment.find(:all)
+
+    rest_request(:post, 'comment', "<?xml version='1.0'?>
+      <comment>
+        <comment>#{comment_text}</comment>
+        <subject resource='#{workflow_url}'/>
+      </comment>")
+
+    assert_response(:success)
+
+    extra_comments = Comment.find(:all) - existing_comments 
+    
+    assert_equal(extra_comments.length, 1)
+
+    comment = extra_comments.first
+
+    # update the comment (which should fail)
+
+    rest_request(:put, 'comment', "<?xml version='1.0'?>
+      <comment>
+        <comment>#{comment_text2}</comment>
+      </comment>", "id" => comment.id)
+
+    assert_response(:unauthorized)
+    
+    # delete the comment
+
+    rest_request(:delete, 'comment', nil, "id" => comment.id)
+
+    assert_response(:success)
+
+    # try to get the deleted comment
+
+    rest_request(:get, 'comment', nil, "id" => comment.id)
+
+    assert_response(:not_found)
+  end
+
+  def test_favourites
+
+    login_as(:john)
+
+    # post a workflow to test with
+
+    content = Base64.encode64(File.read('test/fixtures/files/workflow_dilbert.xml'))
+
+    existing_workflows = Workflow.find(:all)
+
+    rest_request(:post, 'workflow', "<?xml version='1.0'?>
+      <workflow>
+        <title>Unique tags</title>
+        <description>A workflow description.</description>
+        <license-type>by-sa</license-type>
+        <content-type>application/vnd.taverna.scufl+xml</content-type>
+        <content>#{content}</content>
+      </workflow>")
+
+    assert_response(:success)
+
+    extra_workflows = Workflow.find(:all) - existing_workflows
+
+    assert_equal(extra_workflows.length, 1)
+
+    workflow = extra_workflows.first
+    workflow_url = rest_resource_uri(workflow)
+
+    # post a favourite
+
+    existing_favourites = Bookmark.find(:all)
+
+    rest_request(:post, 'favourite', "<?xml version='1.0'?>
+      <favourite>
+        <object resource='#{workflow_url}'/>
+      </favourite>")
+
+    assert_response(:success)
+
+    extra_favourites = Bookmark.find(:all) - existing_favourites 
+    
+    assert_equal(extra_favourites.length, 1)
+
+    favourite = extra_favourites.first
+
+    # delete the favourite
+
+    rest_request(:delete, 'favourite', nil, "id" => favourite.id)
+
+    assert_response(:success)
+
+    # try to get the deleted favourite
+
+    rest_request(:get, 'favourite', nil, "id" => favourite.id)
 
     assert_response(:not_found)
   end
