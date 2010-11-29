@@ -1,0 +1,96 @@
+<div class="pivot">
+  <div class="left">
+    <div class="category">Search filter terms</div>
+    <div class="search_filters">
+      <form action="<%= url_for(request.query_parameters) -%>" method="GET">
+        <div class="filter_search_box">
+          <input class="query" name="filter_query" value="<%= params[:filter_query] -%>" />
+          <% @pivot[:filter_query_url].each do |key, value| %>
+            <input name="<%= key -%>" type="hidden" value="<%= value.gsub('"', '&quot;') -%>" />
+          <% end %>
+          <% if @pivot[:cancel_filter_query_url] %>
+            <%= link_to('<img src="/images/famfamfam_silk/cross.png" />',
+                @pivot[:cancel_filter_query_url]) -%>
+          <% else %>
+            <input class="submit" type="image" src="/images/famfamfam_silk/magnifier.png" name="submit" />
+          <% end %>
+        </div>
+      </form>
+    </div>
+    <div class="filters">
+      <% @pivot[:filters].each do |filter| %>
+        <% query_name = "#{filter[:query_option]}_query" %>
+        <% if @pivot[:cancel_filter_query_url] %>
+          <div class="category"><%= filter[:title].capitalize -%> results</div>
+        <% else %>
+          <div class="category">Filter by <%= filter[:title] -%></div>
+        <% end %>
+        <div id="<%= query_name -%>" style="display: <%= @pivot[:cancel_filter_query_url] ? "block" : "none" -%>">
+        </div>
+        <div class="filter">
+          <div class="options">
+            <% filter[:objects].each do |object| %>
+              <div title='<%= h(object[:plain_label]) -%>'<%= object[:selected] ? ' class="selected"' : '' -%>>
+                <input class='checkbox' type='checkbox' onclick='javascript:location = <%= url_for(object[:checkbox_uri]).to_json -%>; return false;' <% if object[:selected] %> checked='checked' <% end %> />
+                <%= link_to("<div class='count'>#{object[:count]}</div> <div class='label'><span class='truncate'>#{object[:label]}</span></div>", object[:label_uri]) -%>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <% if @pivot[:cancel_filter_query_url] && @pivot[:filters].empty? %>
+      <div class="no-filter-query-results">
+        Your search did not match any filter terms.
+      </div>
+    <% end %>
+  </div>
+  <div class="main">
+    <div class="sort">
+      Sort by:
+      <select onchange="javascript:location = this.options[this.selectedIndex].value;">
+        <% @pivot_options[:order].each do |args| %>
+          <option value="<%= url_for(request.query_parameters.merge("order" => args[:option])) -%>"
+          <% if params[:order] == args[:option] -%> selected="selected"<% end -%>><%= args[:label] -%></option>
+        <% end %>
+      </select>
+    </div>
+    <div>
+      <%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results] } %>
+    </div>
+    <div class="summary">
+      <div class="result-count">
+        Showing <%= pluralize(@pivot[:results].size, 'result') -%>.
+        <% if @pivot[:summary].length > 0 %>
+          The following filters are in effect:
+        <% end %>
+      </div>
+      <% if @pivot[:summary].length > 0 %>
+        <div class="crumbs"><%= @pivot[:summary] -%></div>
+      <% end %>
+      <% if @pivot[:reset_filters_url] %>
+        <div class="reset_filters"><%= link_to("Remove all filters", @pivot[:reset_filters_url]) -%></div>
+      <% end %>
+    </div>
+    <% if @pivot[:results].empty? %>
+      <div class="no-results">
+        <% if @pivot[:summary].length > 0 %>
+          Your search did not produce any results.  Try broadening your search by removing filter terms.
+        <% else %>
+          There are no results to show in this category.
+        <% end %>
+      </div>
+    <% else %>
+      <div class="results">
+        <%= render :partial => "contributions/list", :locals => { :collection => @pivot[:results], :table => true } %>
+      </div>
+    <% end %>
+    <div>
+      <%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results], :sort_by => @pivot_options[:order], :num_options => @pivot_options[:num_options] } %>
+    </div>
+  </div>
+</div>
+
+<%= javascript_include_tag "ellipsis.js" %>
+<script>truncate_spans()</script>
+

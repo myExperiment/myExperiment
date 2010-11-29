@@ -829,7 +829,6 @@ div.progressBar div.background {
 }
 
 table.alt_table {
-	width: 100%;
 	border-collapse: collapse;
 }
 
@@ -887,6 +886,8 @@ table.alt_table .desc {
 	text-align: left;
 	line-height: 1.3;
 	overflow: hidden;
+  word-wrap: break-word;
+  width: 360px;
 }
 
 table.alt_table .standout {
@@ -2030,5 +2031,188 @@ table.quick_add td.submit {
 .curation_events UL LI {
   list-style: none;
   padding-top: 1em;
+}
+
+/* pivot */
+
+.pivot {
+  width: 737px;
+  margin: 0;
+}
+
+.pivot .left {
+  width: 150px;
+  float: left;
+  padding-right: 10px;
+}
+
+.pivot .left > DIV {
+  margin-bottom: 0.5em;
+}
+
+.pivot .main {
+  margin-left: 160px;
+}
+
+.pivot .main > DIV {
+  margin-bottom: 0.5em;
+}
+
+.pivot .summary {
+  clear: right;
+  background: #f0f0f0;
+  border: 1px solid #d8d8d8;
+  padding: 8px;
+}
+
+.pivot .summary DIV {
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+}
+
+.pivot .sort {
+  float: right;
+}
+
+.pivot .filter {
+  margin-bottom: 1em;
+  padding: 2px;
+  background: #f0f0f0;
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+}
+
+.pivot .category {
+  padding: 0.2em;
+  font-size: 110%;
+  margin-bottom: 0.2em;
+}
+
+.pivot .toggle_filter_query {
+  float: right;
+  vertical-align: middle;
+  position: relative;
+  top: 2px;
+}
+
+.pivot .options > DIV {
+  border: 1px solid transparent;
+  padding: 0.2em;
+  font-size: 90%;
+  padding-left: 0.2em;
+}
+
+.pivot .options > DIV:hover {
+  background: #d0d0f0;
+}
+
+.pivot .options > DIV.selected {
+  background: #ffe0c0;
+}
+
+.pivot .options > DIV.selected:hover {
+  background: #dfc0a0;
+}
+
+.pivot .options > DIV:first-child {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  -moz-border-radius-topleft: 6px;
+  -moz-border-radius-topright: 6px;
+}
+
+.pivot .options > DIV:last-child {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  -moz-border-radius-bottomright: 6px;
+}
+
+.pivot .checkbox {
+  display: inline;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.pivot .label {
+  width: 92px;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.pivot .count {
+  float: right;
+}
+
+.pivot .crumbs {
+  margin-top: 0.5em;
+}
+
+.pivot .filter-in-use {
+  background: #d8d8d8;
+  padding: 2px;
+	line-height: 200%;
+}
+
+.pivot .filter-in-use A {
+  padding-left: 0px;
+  padding-right: 4px;
+  text-decoration: none; /* no underline */
+}
+
+.pivot .filter-in-use A IMG {
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+}
+
+.pivot .filter-in-use:hover {
+/*  background: #f0d0d0; */
+}
+
+.pivot .pagination {
+	padding: 0px;
+	margin: 0px;
+	text-align: left;
+}
+
+.pivot .filter_search_box {
+  border: 1px solid gray;
+}
+
+.pivot .filter_search_box INPUT.query {
+  width: 127px;
+  border: none;
+  outline: none;
+}
+
+.pivot .filter_search_box INPUT.submit {
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+
+.pivot .filter_search_box IMG {
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+
+.result-count {
+}
+
+.truncate {
+  white-space: nowrap;
+}
+
+.no-filter-query-results {
+  padding-top: 1em;
+	font-style: italic;
+}
+
+.pivot .no-results {
+  padding-top: 2em;
+  padding-bottom: 2em;
+	font-style: italic;
 }
 

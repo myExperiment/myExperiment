@@ -3,9 +3,20 @@
     Sort by:
     <select onchange="javascript:location = this.options[this.selectedIndex].value;">
       <% sort_by.each do |args| %>
-        <option value="?order=<%= args["option"] -%>" <% if params[:order] == args["option"] -%> selected="selected"<% end -%>><%= args["label"] -%></option>
+        <option value="<%= url_for(request.query_parameters.merge("order" => args[:option])) -%>" <% if params[:order] == args[:option] -%> selected="selected"<% end -%>><%= args[:label] -%></option>
       <% end %>
     </select>
+
+    <% if local_assigns[:num_options] %>
+      <br />
+      <br />
+      Results per page:
+      <select onchange="javascript:location = this.options[this.selectedIndex].value;">
+        <% num_options.each do |num_option| %>
+          <option value="<%= url_for(request.query_parameters.merge("num" => num_option)) -%>" <% if params[:num] == num_option -%> selected="selected"<% end -%>><%= num_option -%></option>
+        <% end %>
+      </select>
+    <% end %>
   </div>
 <% end %>
 

@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class BlobsController < ApplicationController
+
+  include ApplicationHelper
+
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :search]
   
   before_filter :find_blob_auth, :except => [:search, :index, :new, :create]
@@ -51,9 +54,24 @@ class BlobsController < ApplicationController
 
   # GET /files
   def index
-    @contributions = Contribution.contributions_list(Blob, params, current_user)
     respond_to do |format|
-      format.html # index.rhtml
+      format.html {
+        @pivot_options = pivot_options
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { 'CATEGORY' => 'Blob' },
+            :filters     => expr)
+
+        # index.rhtml
+      }
     end
   end
   

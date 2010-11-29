@@ -1,23 +1,4 @@
-<div class="box_standout" style="text-align: center; margin-bottom: 1em; font-weight: bold; line-height: 1.5em;">
-	<% Workflow.count(:all, :group => 'content_type_id').sort{|x,y| y[1] <=> x[1]}.each do |arr| %>
-		  <span class="nowrap"><%= link_to((h(ContentType.find_by_id(arr[0]).title)),
-        search_workflows_path + "?query=kind:(#{ContentType.find_by_id(arr[0]).title})") %> (<%= arr[1] %>)</span>
-	<% end %>
-</div>
+<h1>Workflows</h1>
 
-<h1><%= feed_icon_tag "Latest Workflows", formatted_workflows_path(:rss), "margin-right: 0.3em;" -%> Workflows</h1>
-
-<ul class="sectionIcons">
-	<li><%= icon "workflow", new_workflow_path, nil, nil, "Upload New Workflow" %></li>
-</ul>
-
-<% cache(:controller => 'workflows', :action => 'all_tags') do -%>
-	<%= render :partial => "workflows/all_tags" %>
-<% end -%>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions, :sort_by => Contribution.order_options } %>
-
-<%= render :partial => "contributions/list", :locals => { :collection => @contributions, :table => true } %>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
+<%= render :partial => "content/index" -%>
 

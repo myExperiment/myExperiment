@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class WorkflowsController < ApplicationController
+
+  include ApplicationHelper
+
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search]
   
   before_filter :find_workflows_rss, :only => [:index]
@@ -163,8 +166,20 @@ class WorkflowsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @contributions = Contribution.contributions_list(Workflow, params, current_user)
-        # index.rhtml
+        @pivot_options = pivot_options
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { 'CATEGORY' => 'Workflow' },
+            :filters     => expr)
+
       end
       format.rss do
         #@workflows = Workflow.find(:all, :order => "updated_at DESC") # list all (if required)

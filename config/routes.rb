@@ -41,6 +41,9 @@ ActionController::Routing::Routes.draw do |map|
       :controller => 'linked_data', :action => 'taggings'
   end
 
+  map.content '/content', :controller => 'content', :action => 'index', :conditions => { :method => :get }
+  map.formatted_content '/content.:format', :controller => 'content', :action => 'index', :conditions => { :method => :get }
+
   # Runners
   map.resources :runners, :member => { :verify => :get }
   
