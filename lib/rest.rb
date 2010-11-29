@@ -1538,7 +1538,7 @@ def content_type_count(opts)
   render(:xml => doc.to_s)
 end
 
-def get_tagged(req_uri, user, query)
+def get_tagged(opts)
 
   return rest_response(400) if opts[:query]['tag'].nil?
 
