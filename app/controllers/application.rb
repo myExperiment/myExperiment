@@ -651,7 +651,7 @@ class ApplicationController < ActionController::Base
       if parts.include?(:filter)
         bits = []
         pivot_options[:filters].each do |filter|
-          if opts[:lock_filter] && opts[:lock_filter][filter[:query_option]].nil?
+          if !opts[:lock_filter] || opts[:lock_filter][filter[:query_option]].nil?
             if find_filter(expr, filter[:query_option])
               bits << filter[:query_option] + "(\"" + find_filter(expr, filter[:query_option])[:expr][:terms].map do |t| t.gsub(/"/, '\"') end.join("\" OR \"") + "\")"
             end
