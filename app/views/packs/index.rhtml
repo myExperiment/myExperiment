@@ -1,7 +1,3 @@
-<ul class="sectionIcons">
-	<li><%= icon "pack", new_pack_path, nil, nil, "Create New Pack" %></li>
-</ul>
-
 <div class="box_standout" style="margin: 1.5em 3em; padding: 0.7em 1.5em;">
 	<p>
 		<%= image_tag 'manhattan_studio/folder-closed_24.png', :style => "vertical-align: middle;" -%>
@@ -9,7 +5,7 @@
 			<%= link_to_function "What are Packs?" + expand_image("0.3em"), visual_effect(:toggle_blind, "packs_info_more", :duration => 0.4) %>
 		</span>
 	</p>
-	<div id="packs_info_more" style="margin-left: 36px; font-size: 93%; color: #333333; display: block;">
+	<div id="packs_info_more" style="margin-left: 36px; font-size: 93%; color: #333333; display: none;">
 		<p>
 			Packs allow you to <font style="color: black; font-weight: bolder;">collect different items</font> together, 
 			like you might with a "wish list" or "shopping basket".
@@ -25,17 +21,4 @@
 	</div>
 </div>
 
-<center>
-	
-</center>
-
-<% cache(:controller => 'packs', :action => 'all_tags') do -%>
-	<%= render :partial => "packs/all_tags" %>
-<% end -%>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions, :sort_by => Contribution.order_options } %>
-
-<%= render :partial => "contributions/list", :locals => { :collection => @contributions, :table => true } %>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
-
+<%= render :partial => "content/index" -%>

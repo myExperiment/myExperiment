@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class WorkflowsController < ApplicationController
+
+  include ApplicationHelper
+
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search]
   
   before_filter :find_workflows_rss, :only => [:index]
@@ -163,8 +166,20 @@ class WorkflowsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @contributions = Contribution.contributions_list(Workflow, params, current_user)
-        # index.rhtml
+        @pivot_options = pivot_options
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { 'CATEGORY' => 'Workflow' },
+            :filters     => expr)
+
       end
       format.rss do
         #@workflows = Workflow.find(:all, :order => "updated_at DESC") # list all (if required)
@@ -180,7 +195,22 @@ class WorkflowsController < ApplicationController
     end
 
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        if params[:version]
+          @lod_nir  = workflow_version_url(:id => @workflow.id, :version => @viewing_version_number)
+          @lod_html = formatted_workflow_version_url(:id => @workflow.id, :version => @viewing_version_number, :format => 'html')
+          @lod_rdf  = formatted_workflow_version_url(:id => @workflow.id, :version => @viewing_version_number, :format => 'rdf')
+          @lod_xml  = formatted_workflow_version_url(:id => @workflow.id, :version => @viewing_version_number, :format => 'xml')
+        else
+          @lod_nir  = workflow_url(@workflow)
+          @lod_html = formatted_workflow_url(:id => @workflow.id, :format => 'html')
+          @lod_rdf  = formatted_workflow_url(:id => @workflow.id, :format => 'rdf')
+          @lod_xml  = formatted_workflow_url(:id => @workflow.id, :format => 'xml')
+        end
+
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {
@@ -217,7 +247,7 @@ class WorkflowsController < ApplicationController
     @workflow = Workflow.new
     @workflow.contributor = current_user
     @workflow.last_edited_by = current_user.id
-    @workflow.license_id = params[:workflow][:license_id]
+    @workflow.license_id = params[:workflow][:license_id] == "0" ? nil : params[:workflow][:license_id]
     @workflow.content_blob = ContentBlob.new(:data => file.read)
     @workflow.file_ext = file.original_filename.split(".").last.downcase
     
@@ -411,6 +441,8 @@ class WorkflowsController < ApplicationController
       end
     end
     
+    params[:workflow][:license_id] = nil if params[:workflow][:license_id] && params[:workflow][:license_id] == "0"
+
     respond_to do |format|
       # Here we assume that no actual workflow metadata is being updated that affects workflow versions,
       # so we need to prevent the timestamping update of workflow version objects.
@@ -548,7 +580,7 @@ class WorkflowsController < ApplicationController
     end
 
     params[:tag_list].split(',').each do |tag|
-      @workflow.add_tag(tag, current_user)
+      @workflow.add_tag(tag.strip, current_user)
     end
 
     redirect_to(workflow_url(@workflow))

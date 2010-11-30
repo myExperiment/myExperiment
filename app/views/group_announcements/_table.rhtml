@@ -30,7 +30,7 @@
 					</td>
 			    <td class="actions"  style="width: 80px;">
 		      	<%= icon "show", group_announcement_path(group, announcement), nil, nil, "View" %>
-						<% if (current_user != 0) && (group.owner?(current_user.id)) %>
+						<% if (current_user != 0) && ((announcement.user==current_user) || (group.owner?(current_user.id))) %>
 							<%= icon('edit', edit_group_announcement_path(group, announcement), nil, nil, 'Edit') %>
 							<%= icon("destroy", group_announcement_path(group, announcement), "Delete", :confirm => "Are you sure you want to delete this announcement?", :method => :delete) %>
 						<% end %>

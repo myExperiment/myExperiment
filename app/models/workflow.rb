@@ -96,7 +96,6 @@ class Workflow < ActiveRecord::Base
   validates_presence_of :unique_name
   validates_uniqueness_of :unique_name
   
-  validates_presence_of :license_id
   validates_presence_of :content_blob
   validates_presence_of :content_type
 
@@ -295,5 +294,13 @@ class Workflow < ActiveRecord::Base
     boost -= 20 if body.nil? || body.empty?
     
     boost
+  end
+
+  def show_download_section?
+    if processor_class
+      processor_class.show_download_section?
+    else
+      true
+    end
   end
 end

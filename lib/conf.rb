@@ -6,7 +6,6 @@
 # Configuration module
 
 require 'yaml'
-require 'action_controller/test_process'
 
 class Conf
 
@@ -43,7 +42,11 @@ class Conf
   end
 
   def self.base_uri
-    self.fetch_entry('base_uri')
+    if RAILS_ENV == 'test'
+      "http://test.host"
+    else
+      self.fetch_entry('base_uri')
+    end
   end
 
   def self.admins
@@ -164,7 +167,7 @@ class Conf
 
     @config = nil
 
-    if request.class != ActionController::TestRequest
+    if request.class.name != "ActionController::TestRequest"
       if @settings['virtual_hosts']
         @settings['virtual_hosts'].each do |name, settings|
 
@@ -179,6 +182,10 @@ class Conf
           end
         end
       end
+    end
+
+    if request.query_parameters['portal_url']
+      session['portal_url'] = request.query_parameters['portal_url']
     end
 
     @config = session["portal"] if session["portal"]

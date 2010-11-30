@@ -2,12 +2,12 @@
   <p style="float: right"><a href="http://wiki.myexperiment.org/index.php/Linked_Data">What is this?</a></p>
   <p style="float: left; font-size: 120%; font-weight: bold">Linked Data</p>
   <div style="clear: both"></div>
-  <p><b>Non-Information Resource URI:</b> <%= link_to(nir, h(nir)) -%></p>
+  <p><b>Non-Information Resource URI:</b> <%= link_to(@lod_nir, h(@lod_nir)) -%></p>
   <br>
   <p style="font-size: 110%; font-weight: bold">Alternative Formats</p>
-  <div style="width: 33%; float: left; text-align: center"><a href="<%= html -%>"><img src="<%= image_path("html_icon.png") -%>" alt="HTML" /></a></div>
-  <div style="width: 33%; float: left; text-align: center"><a href="<%= rdf -%>"><img src="<%= image_path("rdf_icon.png") -%>" alt="RDF" /></a></div>
-  <div style="width: 33%; float: left; text-align: center"><a href="<%= xml -%>"><img src="<%= image_path("xml_icon.png") -%>" alt="XML" /></a></div>
+  <div style="width: 33%; float: left; text-align: center"><a href="<%= @lod_html -%>"><img src="<%= image_path("html_icon.png") -%>" alt="HTML" /></a></div>
+  <div style="width: 33%; float: left; text-align: center"><a href="<%= @lod_rdf -%>"><img src="<%= image_path("rdf_icon.png") -%>" alt="RDF" /></a></div>
+  <div style="width: 33%; float: left; text-align: center"><a href="<%= @lod_xml -%>"><img src="<%= image_path("xml_icon.png") -%>" alt="XML" /></a></div>
   <div style="clear: both"></div>
 </div>
 

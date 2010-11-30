@@ -21,6 +21,9 @@
 						<% elsif (@membership.is_invite? && allow_approval) || (!@membership.is_invite? && !allow_approval) %>
 							<% #= avatar @membership.network, 80 # will start to work once the group avatars are introduced %>
 						<% end %>
+						<% if (@membership.network.administrator?(@membership.user_id)) -%>
+							<div style="text-align: left"><b>Group Admin</b></div>
+						<% end -%>
 					</td>
 					<td style="line-height: 1.6; width: 85%;">
 				<% else %>
@@ -132,9 +135,5 @@
 	<a name="user_box"></a>
 </div>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => user_membership_url(:id => @membership, :user_id => @membership.user_id),
-  :html => formatted_user_membership_url(:id => @membership.id, :user_id => @membership.user_id, :format => 'html'),
-  :rdf  => formatted_user_membership_url(:id => @membership.id, :user_id => @membership.user_id, :format => 'rdf'),
-  :xml  => formatted_user_membership_url(:id => @membership.id, :user_id => @membership.user_id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 

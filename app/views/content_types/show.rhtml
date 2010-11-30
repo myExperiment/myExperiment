@@ -2,6 +2,9 @@
 
 <ul class="sectionIcons">
   <li><%= icon('workflow', content_types_path, nil, nil, 'All Types')%></li>
+  <% if Authorization.check(:action => 'edit', :object => @content_type, :user => current_user) %>
+		<li><%= icon('manage', edit_content_type_path(@content_type), nil, nil, 'Manage Content Type Entry')%></li>
+	<% end -%>
 </ul>
 
 <h1><%= visible_name(@content_type.category) -%> Type: <%= h @content_type.title %></h1>
@@ -78,9 +81,5 @@
 
 <div class="clearer">&nbsp;</div>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => content_type_url(@content_type),
-  :html => formatted_content_type_url(:id => @content_type.id, :format => 'html'),
-  :rdf  => formatted_content_type_url(:id => @content_type.id, :format => 'rdf'),
-  :xml  => formatted_content_type_url(:id => @content_type.id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 

@@ -27,9 +27,24 @@ class PacksController < ApplicationController
 
   # GET /packs
   def index
-    @contributions = Contribution.contributions_list(Pack, params, current_user)
     respond_to do |format|
-      format.html # index.rhtml
+      format.html {
+        @pivot_options = pivot_options
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { 'CATEGORY' => 'Pack' },
+            :filters     => expr)
+
+        # index.rhtml
+      }
     end
   end
   
@@ -40,7 +55,15 @@ class PacksController < ApplicationController
     end
     
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+        
+        @lod_nir  = pack_url(@pack)
+        @lod_html = formatted_pack_url(:id => @pack.id, :format => 'html')
+        @lod_rdf  = formatted_pack_url(:id => @pack.id, :format => 'rdf')
+        @lod_xml  = formatted_pack_url(:id => @pack.id, :format => 'xml')
+        
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {
@@ -160,7 +183,7 @@ class PacksController < ApplicationController
   
   # POST /packs/1;favourite
   def favourite
-    @pack.bookmarks << Bookmark.create(:user => current_user) unless @pack.bookmarked_by_user?(current_user)
+    @pack.bookmarks << Bookmark.create(:user => current_user, :bookmarkable => @pack) unless @pack.bookmarked_by_user?(current_user)
     
     respond_to do |format|
       flash[:notice] = "You have successfully added this item to your favourites."

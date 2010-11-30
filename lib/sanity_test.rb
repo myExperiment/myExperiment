@@ -92,9 +92,6 @@ def sanity_tests
   should_be_empty("All workflows must have a content type",
       workflows.select do |w| w.content_type.nil? end)
 
-  should_be_empty("All workflows must have a license",
-      workflows.select do |w| w.license.nil? end)
-
   # versioning
 
   should_be_empty("All workflows versions should be contiguous",

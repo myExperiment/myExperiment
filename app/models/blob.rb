@@ -37,7 +37,6 @@ class Blob < ActiveRecord::Base
   # :dependent => :destroy is not supported in belongs_to in rails 1.2.6
   after_destroy { |b| b.content_blob.destroy }
 
-  validates_presence_of :license_id
   validates_presence_of :content_blob
   validates_presence_of :content_type
 

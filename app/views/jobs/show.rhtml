@@ -349,9 +349,5 @@
 
 <br/>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => experiment_job_url(:id => @job.id, :experiment_id => @experiment.id),
-  :html => formatted_experiment_job_url(:id => @job.id, :experiment_id => @experiment.id, :format => 'html'),
-  :rdf  => formatted_experiment_job_url(:id => @job.id, :experiment_id => @experiment.id, :format => 'rdf'),
-  :xml  => formatted_experiment_job_url(:id => @job.id, :experiment_id => @experiment.id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 

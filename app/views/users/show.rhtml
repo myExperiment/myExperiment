@@ -464,11 +464,7 @@
   <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
 <% end %>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => user_url(@user),
-  :html => formatted_user_url(:id => @user.id, :format => 'html'),
-  :rdf  => formatted_user_url(:id => @user.id, :format => 'rdf'),
-  :xml  => formatted_user_url(:id => @user.id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 
 <% unless @tab.blank? -%>
 	<script>

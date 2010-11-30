@@ -450,6 +450,23 @@ module Authorization
         # "action_name" used to work with original action name, rather than classification made inside the module
         is_authorized = Authorization.job_authorized?(thing_instance, action_name, user)
       
+      when "ContentType"
+
+        case action
+
+          when "view"
+            # anyone can view content types
+            is_authorized = true
+     
+          when "edit"
+            # the owner of the content type can edit
+            is_authorized = !user.nil? && thing_instance.user_id == user_id
+
+          when "destroy"
+            # noone can destroy them yet - they just fade away from view
+            is_authorized = false
+        end
+
       else
         # don't recognise the kind of "thing" that is being authorized, so
         # we don't specifically know that it needs to be blocked;
@@ -515,6 +532,8 @@ module Authorization
         when "Runner"
           # the line below doesn't have a typo - "runners" should really be searched in "TavernaEnactor" model
           found_instance = TavernaEnactor.find(thing_id)
+        when "ContentType"
+          found_instance = ContentType.find(thing_id)
       end
     rescue ActiveRecord::RecordNotFound
       # do nothing; makes sure that app won't crash when the required object is not found;
@@ -814,8 +833,11 @@ module Authorization
 
     # filtering
 
+    auth_id   = opts.delete(:auth_id)   || "#{model.table_name}.id"
+    auth_type = opts.delete(:auth_type) || "'#{model.name}'"
+
     conditions.push(view_conditions(user_id, friends, networks))
-    conditions.push("contributions.contributable_type = '#{model.name}'") if model != Contribution
+    conditions.push("contributions.contributable_type = #{auth_type}") if model != Contribution
 
     # result model
 
@@ -824,7 +846,7 @@ module Authorization
     end
 
     if model != Contribution
-      joins.push("INNER JOIN contributions ON contributions.contributable_id = #{model.table_name}.id AND contributions.contributable_type = '#{model.name}'")
+      joins.push("INNER JOIN contributions ON contributions.contributable_id = #{auth_id} AND contributions.contributable_type = #{auth_type}")
     end
 
     # selection
@@ -834,7 +856,7 @@ module Authorization
     # add in the extra joins needed for the authorisation checks
 
     joins.push("INNER JOIN policies ON contributions.policy_id = policies.id")
-    joins.push("LEFT OUTER JOIN permissions ON policies.id = permissions.policy_id") if user_id
+    joins.push("LEFT OUTER JOIN permissions ON policies.id = permissions.policy_id") if user_id || opts[:include_permissions]
 
     # include the effective permissions in the result?
 
@@ -850,7 +872,7 @@ module Authorization
     if joins.length > 0
       opts[:joins] = [] unless opts[:joins]
       opts[:joins] = [opts[:joins]] unless opts[:joins].class == Array
-      opts[:joins] = opts[:joins] + joins
+      opts[:joins] = joins + opts[:joins]
       opts[:joins] = opts[:joins].join(" ") # Rails 1 does not support arrays here
     end
 
@@ -867,9 +889,9 @@ module Authorization
       end
     end
 
-    # enforce grouping by contributable type and id
+    # default to grouping by contributable type and id
 
-    opts[:group] = 'contributable_type, contributable_id'
+    opts[:group] ||= 'contributions.contributable_type, contributions.contributable_id'
 
     # do it
 

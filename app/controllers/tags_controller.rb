@@ -17,7 +17,15 @@ class TagsController < ApplicationController
   
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = tag_url(@tag)
+        @lod_html = formatted_tag_url(:id => @tag.id, :format => 'html')
+        @lod_rdf  = formatted_tag_url(:id => @tag.id, :format => 'rdf')
+        @lod_xml  = formatted_tag_url(:id => @tag.id, :format => 'xml')
+
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {

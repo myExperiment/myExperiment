@@ -5,7 +5,7 @@
 
 class ContentTypesController < ApplicationController
 
-  before_filter :find_content_type, :only => [ :show ]
+  before_filter :find_content_type, :only => [ :show, :edit, :update ]
 
   # GET /content_types
   def index
@@ -24,13 +24,46 @@ class ContentTypesController < ApplicationController
     @total_count = @workflow_count + @blob_count
 
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = content_type_url(@content_type)
+        @lod_html = formatted_content_type_url(:id => @content_type.id, :format => 'html')
+        @lod_rdf  = formatted_content_type_url(:id => @content_type.id, :format => 'rdf')
+        @lod_xml  = formatted_content_type_url(:id => @content_type.id, :format => 'xml')
+
+        # show.rhtml
+      }
+
 
       if Conf.rdfgen_enable
         format.rdf {
           render :inline => `#{Conf.rdfgen_tool} content_types #{@content_type.id}`
         }
       end
+    end
+  end
+
+  # GET /content_types/1
+  def edit
+  end
+
+  # PUT /content_types/1
+  def update
+
+    if !Authorization.check(:action => 'edit', :object => @content_type, :user => current_user)
+      error("You do not have the authorisation to edit.", "is unauthorised")
+      return
+    end
+
+    @content_type.title       = params[:content_type][:title]
+    @content_type.description = params[:content_type][:description]
+
+    if @content_type.valid?
+      @content_type.save
+      redirect_to :action => 'show'
+    else
+      flash[:error] = "Failed to update Content Type."
+      render :action => :edit
     end
   end
 

@@ -180,9 +180,5 @@
 	<%= render :partial => "comments/comments", :locals => { :commentable => @pack } %>
 </div>
 
-<%= render :partial => "contributions/alternative_formats", :locals => {
-  :nir  => pack_url(@pack),
-  :html => formatted_pack_url(:id => @pack.id, :format => 'html'),
-  :rdf  => formatted_pack_url(:id => @pack.id, :format => 'rdf'),
-  :xml  => formatted_pack_url(:id => @pack.id, :format => 'xml') } %>
+<%= render :partial => "contributions/alternative_formats" %>
 

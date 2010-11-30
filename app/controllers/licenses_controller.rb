@@ -13,7 +13,15 @@ class LicensesController < ApplicationController
     @license = License.find(params[:id])
 
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = license_url(@license)
+        @lod_html = formatted_license_url(:id => @license.id, :format => 'html')
+        @lod_rdf  = formatted_license_url(:id => @license.id, :format => 'rdf')
+        @lod_xml  = formatted_license_url(:id => @license.id, :format => 'xml')
+
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {
@@ -79,7 +87,7 @@ class LicensesController < ApplicationController
   end
   
   def update_license_info
-      license = License.find(params[:license_id])
+      license = License.find_by_id(params[:license_id])
       render :partial => "licenses/view", :locals => { :license => license }
   end
   

@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class BlobsController < ApplicationController
+
+  include ApplicationHelper
+
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :search]
   
   before_filter :find_blob_auth, :except => [:search, :index, :new, :create]
@@ -51,9 +54,24 @@ class BlobsController < ApplicationController
 
   # GET /files
   def index
-    @contributions = Contribution.contributions_list(Blob, params, current_user)
     respond_to do |format|
-      format.html # index.rhtml
+      format.html {
+        @pivot_options = pivot_options
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { 'CATEGORY' => 'Blob' },
+            :filters     => expr)
+
+        # index.rhtml
+      }
     end
   end
   
@@ -64,7 +82,15 @@ class BlobsController < ApplicationController
     end
     
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = file_url(@blob)
+        @lod_html = formatted_file_url(:id => @blob.id, :format => 'html')
+        @lod_rdf  = formatted_file_url(:id => @blob.id, :format => 'rdf')
+        @lod_xml  = formatted_file_url(:id => @blob.id, :format => 'xml')
+
+        # show.rhtml
+      }
 
       if Conf.rdfgen_enable
         format.rdf {
@@ -84,7 +110,7 @@ class BlobsController < ApplicationController
   
   # POST /blobs
   def create
-    
+
     # don't create new blob if no file has been selected
     if params[:blob][:data].size == 0
       respond_to do |format|
@@ -98,6 +124,8 @@ class BlobsController < ApplicationController
       params[:blob].delete('data')
 
       params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
+
+      params[:blob][:license_id] = nil if params[:blob][:license_id] && params[:blob][:license_id] == "0"
    
       @blob = Blob.new(params[:blob])
       @blob.content_blob = ContentBlob.new(:data => data)
@@ -152,6 +180,8 @@ class BlobsController < ApplicationController
       end
     end
     
+    params[:blob][:license_id] = nil if params[:blob][:license_id] && params[:blob][:license_id] == "0"
+
     # 'Data' (ie: the actual file) cannot be updated!
     params[:blob].delete('data') if params[:blob][:data]
     

@@ -88,7 +88,7 @@
 			</div>
 		<% end %>
 
-		<% unless (membership_requests = current_user.networks_membership_requests_pending).empty? %>
+		<% unless (membership_requests = current_user.networks_membership_requests_pending(true)).empty? %>
 			<hr/>
 			<div>
 				<div class="title">

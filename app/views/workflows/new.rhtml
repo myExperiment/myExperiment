@@ -43,7 +43,7 @@
   <%= render :partial => "contributions/sharing_form", :locals => { :edit => false, :contributable => @workflow, :update_perms => true } -%>
                 
   <!-- License/Rights -->
-  <%= render :partial => "workflows/license_form", :locals => { :edit => false } -%>
+  <%= render :partial => "contributions/license_form", :locals => { :object => :workflow, :contributable => @workflow, :edit => false } -%>
   
 	
 	<!-- Terms and conditions -->

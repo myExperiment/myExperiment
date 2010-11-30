@@ -24,8 +24,10 @@ module StructuredData
 
           bits.push(":through => :#{association[:through]}") if association[:through]
           bits.push(":foreign_key => :#{association[:foreign_key]}") if association[:foreign_key]
+          bits.push(":source => :#{association[:source]}") if association[:source]
 
           line = "has_many #{bits.join(', ')}"
+          puts "assoc: #{class_name} -> #{line}"
           self.class_eval(line)
 
         when 'belongs_to'
