@@ -11,7 +11,18 @@ class ContentController < ApplicationController
     respond_to do |format|
       format.html do
         @pivot_options = pivot_options
-        @pivot = contributions_list(Contribution, params, current_user)
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
+        @pivot = contributions_list(Contribution, params, current_user,
+            :filters => expr)
+
         # index.rhtml
       end
 #     format.rss do
