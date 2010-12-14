@@ -488,6 +488,82 @@ class ApiControllerTest < Test::Unit::TestCase
     assert_response(:not_found)
   end
 
+  def test_ratings
+
+    login_as(:john)
+
+    # post a workflow to test with
+
+    content = Base64.encode64(File.read('test/fixtures/files/workflow_dilbert.xml'))
+
+    existing_workflows = Workflow.find(:all)
+
+    rest_request(:post, 'workflow', "<?xml version='1.0'?>
+      <workflow>
+        <title>Unique tags</title>
+        <description>A workflow description.</description>
+        <license-type>by-sa</license-type>
+        <content-type>application/vnd.taverna.scufl+xml</content-type>
+        <content>#{content}</content>
+      </workflow>")
+
+    assert_response(:success)
+
+    extra_workflows = Workflow.find(:all) - existing_workflows
+
+    assert_equal(extra_workflows.length, 1)
+
+    workflow = extra_workflows.first
+    workflow_url = rest_resource_uri(workflow)
+
+    # post a rating
+
+    existing_ratings = Rating.find(:all)
+
+    rest_request(:post, 'rating', "<?xml version='1.0'?>
+      <rating>
+        <rating>4</rating>
+        <subject resource='#{workflow_url}'/>
+      </rating>")
+
+    assert_response(:success)
+
+    extra_ratings = Rating.find(:all) - existing_ratings 
+    
+    assert_equal(extra_ratings.length, 1)
+
+    rating = extra_ratings.first
+
+    assert_equal(rating.user, users(:john));
+    assert_equal(rating.rateable, workflow);
+    assert_equal(rating.rating, 4);
+
+    # update the rating (which should fail)
+
+    rest_request(:put, 'rating', "<?xml version='1.0'?>
+      <rating>
+        <rating>3</rating>
+      </rating>", "id" => rating.id)
+
+    assert_response(:success)
+    
+    rating.reload
+
+    assert_equal(rating.rating, 3);
+
+    # delete the rating
+
+    rest_request(:delete, 'rating', nil, "id" => rating.id)
+
+    assert_response(:success)
+
+    # try to get the deleted rating
+
+    rest_request(:get, 'rating', nil, "id" => rating.id)
+
+    assert_response(:not_found)
+  end
+
   def test_favourites
 
     login_as(:john)

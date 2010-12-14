@@ -1841,6 +1841,62 @@ def delete_favourite(opts)
   favourite_aux('destroy', opts)
 end
 
+# Ratings
+
+def rating_aux(action, opts)
+
+  # Obtain object
+
+  case action
+    when 'create':
+      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Rating', opts[:user], nil)
+
+      ob = Rating.new(:user => opts[:user])
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Rating', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    rating  = parse_element(data, :text,     '/rating/rating')
+    subject = parse_element(data, :resource, '/rating/subject')
+
+    ob.rating = rating if rating
+
+    if subject
+      return rest_response(400) unless [Blob, Network, Pack, Workflow].include?(subject.class)
+      return rest_response(401) unless Authorization.is_authorized_for_type?(action, 'Rating', opts[:user], subject)
+      ob.rateable = subject
+    end
+
+    return rest_response(400, :object => ob) unless ob.save
+  end
+
+  rest_get_request(ob, "rating", opts[:user], rest_resource_uri(ob), "rating", { "id" => ob.id.to_s })
+end
+
+def post_rating(opts)
+  rating_aux('create', opts)
+end
+
+def put_rating(opts)
+  rating_aux('update', opts)
+end
+
+def delete_rating(opts)
+  rating_aux('destroy', opts)
+end
+
 # Call dispatcher
 
 def rest_call_request(req_uri, format, rules, user, query)

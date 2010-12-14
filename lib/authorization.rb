@@ -178,6 +178,19 @@ module Authorization
       return true
     end
     
+    # Rating permissions
+
+    if (object_type == 'Rating') && (action == 'create')
+
+      # Ratings can only be created by authenticated users
+      return false if user.nil?
+
+      # Ratings can only be set on things that a user can view
+      return Authorization.is_authorized?('view', nil, context, user) if context
+
+      return true
+    end
+    
     # Bookmark permissions
 
     if (object_type == 'Bookmark') && (action == 'create')

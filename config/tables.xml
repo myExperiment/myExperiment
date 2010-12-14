@@ -40,6 +40,7 @@
   <WindowWidth>13860</WindowWidth>
   <WindowTopX>240</WindowTopX>
   <WindowTopY>75</WindowTopY>
+  <ActiveSheet>1</ActiveSheet>
   <ProtectStructure>False</ProtectStructure>
   <ProtectWindows>False</ProtectWindows>
  </ExcelWorkbook>
@@ -106,7 +107,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="REST">
-  <Table ss:ExpandedColumnCount="20" ss:ExpandedRowCount="142" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="20" ss:ExpandedRowCount="148" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s62" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s66" ss:Width="42"/>
    <Column ss:StyleID="s66" ss:AutoFitWidth="0" ss:Width="109.5"/>
@@ -907,6 +908,51 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:Index="4" ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">POST</Data></Cell>
+    <Cell><Data ss:Type="String">rating</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s70"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">view</Data></Cell>
+    <Cell><Data ss:Type="String">rateable</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">call</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">post_rating</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="4" ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">PUT</Data></Cell>
+    <Cell><Data ss:Type="String">rating</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s70"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">view</Data></Cell>
+    <Cell><Data ss:Type="String">rateable</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">call</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">required</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">put_rating</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="4" ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">DELETE</Data></Cell>
+    <Cell><Data ss:Type="String">rating</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s70"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">view</Data></Cell>
+    <Cell><Data ss:Type="String">rateable</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">call</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">required</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">delete_rating</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="4" ss:StyleID="s70"/>
     <Cell ss:Index="12" ss:StyleID="s62"/>
     <Cell ss:StyleID="s62"/>
     <Cell ss:StyleID="s62"/>
@@ -1514,11 +1560,10 @@
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
    <Zoom>80</Zoom>
-   <Selected/>
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>109</TopRowBottomPane>
+   <TopRowBottomPane>37</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -1535,8 +1580,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>126</ActiveRow>
-     <ActiveCol>8</ActiveCol>
+     <ActiveRow>76</ActiveRow>
+     <ActiveCol>16</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
@@ -1545,7 +1590,7 @@
   <x:WorksheetOptions/>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="287" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="288" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s62" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s66" ss:Width="111.75"/>
    <Column ss:StyleID="s66" ss:Width="116.25"/>
@@ -3825,6 +3870,20 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">rating</Data></Cell>
+    <Cell><Data ss:Type="String">subject</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Rating</Data></Cell>
+    <Cell><Data ss:Type="String">rateable</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">item as list</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16" ss:StyleID="s75"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">rating</Data></Cell>
     <Cell><Data ss:Type="String">rating</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Rating</Data></Cell>
     <Cell><Data ss:Type="String">rating</Data></Cell>
@@ -5184,6 +5243,7 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Zoom>80</Zoom>
+   <Selected/>
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
@@ -5204,8 +5264,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>155</ActiveRow>
-     <ActiveCol>15</ActiveCol>
+     <ActiveRow>178</ActiveRow>
+     <ActiveCol>22</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
