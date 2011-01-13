@@ -155,7 +155,6 @@ module Maintenance::Backup
       table(:model => Policy,                 :filter  => true)
       table(:model => Profile)
       table(:model => Rating,                 :filter  => true, :auth_object => "rateable")
-      table(:name  => "relationships",        :no_data => true)
       table(:model => RemoteWorkflow,         :no_data => true)
       table(:model => Review,                 :filter  => true, :auth_object => "reviewable")
       table(:name  => "schema_info")

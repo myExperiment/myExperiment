@@ -337,14 +337,6 @@ CREATE TABLE permissions (
   PRIMARY KEY  (id),
   KEY fk_ratings_user (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
-	$createtable['relationships']="CREATE TABLE relationships (
-  id int(11) NOT NULL auto_increment,
-  network_id int(11) default NULL,
-  relation_id int(11) default NULL,
-  created_at datetime default NULL,
-  accepted_at datetime default NULL,
-  PRIMARY KEY  (id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
 	$createtable['remote_workflows']="CREATE TABLE remote_workflows (
   id int(11) NOT NULL auto_increment,
   workflow_id int(11) default NULL,
@@ -496,7 +488,6 @@ CREATE TABLE permissions (
 	$publicsql['policies']="select * from policies where view_public=1";
 	$publicsql['profiles']="select * from profiles";
         $publicsql['ratings']="select ratings.* from ratings inner join contributions on ratings.rateable_id=contributions.contributable_id and ratings.rateable_type=contributions.contributable_type inner join policies on contributions.policy_id=policies.id where policies.view_public=1";
-        $publicsql['relationships']="select * from relationships";
 	$publicsql['remote_workflows']="select remote_workflows.* from remote_workflows inner join contributions on remote_workflows.workflow_id=contributions.contributable_id and contributions.contributable_type='Workflow' inner join policies on contributions.policy_id=policies.id where policies.view_public=1 and 1=0";
 
         $publicsql['reviews']="select reviews.* from reviews inner join contributions on reviews.reviewable_id=contributions.contributable_id and reviews.reviewable_type=contributions.contributable_type inner join policies on contributions.policy_id=policies.id where policies.view_public=1";

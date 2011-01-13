@@ -48,7 +48,6 @@ module AccountManagement
     :policies                   => { :owner => :contributor },
     :profiles                   => { :owner => :user_id, :skip_on_merge => true },
     :ratings                    => { :owner => :user_id },
-    :relationships              => { :ignore => :true },
     :remote_workflows           => { :owner => :unknown },
     :reviews                    => { :owner => :user_id },
     :schema_info                => { :ignore => :true },
