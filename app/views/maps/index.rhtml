@@ -3,13 +3,5 @@
 	<li><%= icon "map", new_map_path, nil, nil, "Create New Map" %></li>
 </ul>
 
-<% cache(:controller => 'maps', :action => 'all_tags') do -%>
-	<%= render :partial => "maps/all_tags" %>
-<% end -%>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions, :sort_by => Contribution.order_options } %>
-
-<%= render :partial => "contributions/list", :locals => { :collection => @contributions, :table => true } %>
-
-<%= render :partial => "layouts/paginate", :locals => { :collection => @contributions } %>
+<%= render :partial => "content/index" -%>
 
