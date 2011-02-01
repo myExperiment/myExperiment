@@ -9,6 +9,8 @@ require 'acts_as_creditable'
 require 'acts_as_attributor'
 require 'acts_as_attributable'
 
+require 'xml/libxml'
+
 class Map < ActiveRecord::Base
 
   acts_as_site_entity :owner_text => 'Creator'
@@ -25,6 +27,8 @@ class Map < ActiveRecord::Base
   acts_as_attributor
   acts_as_attributable
   
+  acts_as_structured_data
+
   acts_as_solr(:fields => [:title, :description, :uploader, :tag_list],
                :boost => "rank",
                :include => [ :comments ]) if Conf.solr_enable
@@ -45,6 +49,35 @@ class Map < ActiveRecord::Base
     boost -= 20 if description.nil? || description.empty?
     
     boost
+  end
+
+
+  def retrieve_maptube_colour_thresholds
+
+    def fetch_xml(url)
+      LibXML::XML::Parser.string(URI.parse(url).read).parse.root
+    end
+
+    descriptor = fetch_xml(map_descriptor)
+
+    settings_url = descriptor.find_first('/MapDataDescriptor/RenderStyleURL/text()').content
+
+    settings = fetch_xml(settings_url)
+
+    # erase existing colour thresholds
+
+    map_tube_colour_thresholds.each do |t|
+      t.destroy
+    end
+
+    # create colour thresholds
+
+    settings.find('/gmapcreator/colourscale/colourThresholds/colourThreshold').map do |threshold_el|
+      map_tube_colour_thresholds << MapTubeColourThreshold.create(
+        :colour      => threshold_el.find_first('colour/text()').content,
+        :description => threshold_el.find_first('description/text()').content,
+        :threshold   => threshold_el.find_first('threshold/text()').content)
+    end
   end
 end
 

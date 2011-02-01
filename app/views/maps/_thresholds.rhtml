@@ -1,0 +1,9 @@
+
+<h2>Thresholds</h2>
+
+<table>
+  <% @map.map_tube_colour_thresholds.each do |t| %>
+    <tr><td style="text-align: left; background: <%= threshold_colour(t) -%>"><%=h t.description %></td></tr>
+  <% end %>
+</table>
+

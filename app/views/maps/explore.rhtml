@@ -54,3 +54,5 @@ surveyMap.setCenter(new GLatLng(<%= @map.latitude -%>, <%= @map.longitude -%>), 
 surveyMap.addOverlay(getOverlay(tileService, descriptor));
 </script>
 
+<%= render :partial => "thresholds" -%>
+

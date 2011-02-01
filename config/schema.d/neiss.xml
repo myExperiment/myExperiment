@@ -18,7 +18,18 @@
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
 
+    <has-many target="map_tube_colour_thresholds"/>
+
   </table>
   
+  <table name="map_tube_colour_thresholds">
+
+    <column type="integer" name="map_id"/>
+    <column type="string"  name="threshold"/>
+    <column type="string"  name="description"/>
+    <column type="string"  name="colour"/>
+
+  </table>
+
 </schema>
 
