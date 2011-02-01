@@ -9,9 +9,10 @@ class Vocabulary < ActiveRecord::Base
 
   belongs_to :user
 
-  has_many :tags, :dependent => :destroy
-
   validates_presence_of :title
+  validates_presence_of :prefix
+
+  validates_uniqueness_of :prefix
 
   format_attribute :description
 end
