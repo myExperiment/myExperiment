@@ -78,4 +78,18 @@ module PacksHelper
     
     return tags
   end
+
+  def pack_entry_link(entry)
+
+    case entry.class.name
+    when "PackContributableEntry"
+      text = entry.contributable.label
+      href = url_for(entry.contributable)
+    when "PackRemoteEntry"
+      text = entry.title
+      href = entry.uri
+    end
+
+    link_to(text, href)
+  end
 end

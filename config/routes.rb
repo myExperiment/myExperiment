@@ -94,9 +94,9 @@ ActionController::Routing::Routes.draw do |map|
                  :resolve_link => :post,
                  :items => :get } do |pack|
     pack.resources :comments, :collection => { :timeline => :get }
+    pack.resources :relationships, :collection => { :edit_relationships => :get }
   end
     
-
   # workflows (downloadable)
   map.resources :workflows, 
     :collection => { :search => :get }, 
