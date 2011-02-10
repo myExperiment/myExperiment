@@ -7,6 +7,8 @@ class Concept < ActiveRecord::Base
 
   acts_as_structured_data
 
+  format_attribute :description
+
   def preferred_label
     preferred_labels.first
   end

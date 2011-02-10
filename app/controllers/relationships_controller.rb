@@ -44,7 +44,7 @@ class RelationshipsController < ApplicationController
 
     raise("Invalid form data") if subject.nil? || objekt.nil? || label.nil?
 
-    @relationship = Relationship.new(:pack => @context, :concept => label.concept)
+    @relationship = Relationship.new(:pack => @context, :concept => label.concept, :user => current_user)
 
     @relationship.subject = subject
     @relationship.objekt  = objekt

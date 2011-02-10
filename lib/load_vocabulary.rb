@@ -27,7 +27,9 @@ module LoadVocabulary
 
     data["concepts"].each do |concept|
       
-      c = Concept.create(:description => concept["description"])
+      c = Concept.create(
+          :title => concept["title"],
+          :description => concept["description"])
 
       c.labels << Label.create(
           :vocabulary => vocabulary,

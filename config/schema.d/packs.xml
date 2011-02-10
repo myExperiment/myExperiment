@@ -43,17 +43,20 @@
 
   <table name="relationships">
 
-    <column type="integer" name="pack_id"/>
-    <column type="integer" name="concept_id"/>
-    <column type="string"  name="subject_type"/>
-    <column type="integer" name="subject_id"/>
-    <column type="string"  name="objekt_type"/>
-    <column type="integer" name="objekt_id"/>
+    <column type="integer"  name="pack_id"/>
+    <column type="integer"  name="user_id"/>
+    <column type="integer"  name="concept_id"/>
+    <column type="string"   name="subject_type"/>
+    <column type="integer"  name="subject_id"/>
+    <column type="string"   name="objekt_type"/>
+    <column type="integer"  name="objekt_id"/>
+    <column type="datetime" name="created_at"/>
 
     <belongs-to target="subjects" polymorphic="true"/>
     <belongs-to target="objekts"  polymorphic="true"/>
 
     <belongs-to target="packs"/>
+    <belongs-to target="users"/>
     <belongs-to target="concepts"/>
 
   </table>
