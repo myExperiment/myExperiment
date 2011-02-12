@@ -81,8 +81,24 @@
 			</h4>
 			
 			<%= render :partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } -%>
-			
+
 			<br/><br/>
+			<h4>
+				<%= info_icon_with_tooltip("This section shows all the relationships between the items in this pack.") -%>
+				Relationships <span class="count_text">(<%= @pack.relationships.length -%>)</span>
+			</h4>
+
+			<%= render :partial => "relationships/relationships", :locals => { :relationships => @pack.relationships } -%>
+			
+      <% if @authorised_to_edit %>
+        <br />
+        <ul class="sectionIcons">
+          <li><%= icon('manage', edit_relationships_pack_relationships_path(@pack), nil, nil, 'Edit Relationships') -%></li>
+        </ul>
+      <% end %>
+
+			<br/><br/>
+
 			<h3>
 				<%= info_icon_with_tooltip("This section provides a link to download all items in this pack as a single .zip archive") %>
 				Download

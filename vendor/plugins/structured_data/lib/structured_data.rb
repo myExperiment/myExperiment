@@ -24,6 +24,10 @@ module StructuredData
 
           bits.push(":through => :#{association[:through]}") if association[:through]
           bits.push(":foreign_key => :#{association[:foreign_key]}") if association[:foreign_key]
+          bits.push(":source => :#{association[:source]}") if association[:source]
+          bits.push(":dependent => :#{association[:dependent]}") if association[:dependent]
+          bits.push(":conditions => \"#{association[:conditions]}\"") if association[:conditions]
+          bits.push(":class_name => \"#{association[:class_name]}\"") if association[:class_name]
 
           line = "has_many #{bits.join(', ')}"
           self.class_eval(line)
@@ -32,6 +36,8 @@ module StructuredData
           bits = [":#{association[:target].singularize}"]
 
           bits.push(":polymorphic => #{association[:polymorphic]}") if association[:polymorphic]
+          bits.push(":class_name => \"#{association[:class_name]}\"") if association[:class_name]
+          bits.push(":foreign_key => :#{association[:foreign_key]}") if association[:foreign_key]
 
           line = "belongs_to #{bits.join(', ')}"
           self.class_eval(line)

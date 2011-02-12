@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<schema>
+
+  <table name="packs">
+
+    <column type="integer"  name="contributor_id"/>
+    <column type="string"   name="contributor_type"/>
+    <column type="string"   name="title"/>
+    <column type="text"     name="description"/>
+    <column type="text"     name="description_html"/>
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+
+    <has-many target="relationships" dependent="destroy"/>
+
+  </table>
+
+  <table name="pack_contributable_entries">
+
+    <column type="integer"  name="pack_id"/>
+    <column type="integer"  name="contributable_id"/>
+    <column type="integer"  name="contributable_version"/>
+    <column type="string"   name="contributable_type"/>
+    <column type="text"     name="comment"/>
+    <column type="integer"  name="user_id"/>
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+
+  </table>
+
+  <table name="pack_remote_entries">
+
+    <column type="integer"  name="pack_id"/>
+    <column type="string"   name="title"/>
+    <column type="string"   name="uri"/>
+    <column type="string"   name="alternate_uri"/>
+    <column type="text"     name="comment"/>
+    <column type="integer"  name="user_id"/>
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+
+  </table>
+
+  <table name="relationships">
+
+    <column type="integer"  name="pack_id"/>
+    <column type="integer"  name="user_id"/>
+    <column type="integer"  name="concept_id"/>
+    <column type="string"   name="subject_type"/>
+    <column type="integer"  name="subject_id"/>
+    <column type="string"   name="objekt_type"/>
+    <column type="integer"  name="objekt_id"/>
+    <column type="datetime" name="created_at"/>
+
+    <belongs-to target="subjects" polymorphic="true"/>
+    <belongs-to target="objekts"  polymorphic="true"/>
+
+    <belongs-to target="packs"/>
+    <belongs-to target="users"/>
+    <belongs-to target="concepts"/>
+
+  </table>
+ 
+</schema>
+

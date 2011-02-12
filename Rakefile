@@ -56,3 +56,9 @@ task "myexp:backup:restore" do
   Maintenance::Backup.restore
 end
 
+desc 'Load a controlled vocabulary file'
+task "myexp:vocab:load" do
+  require File.dirname(__FILE__) + '/config/environment'
+  LoadVocabulary::load_vocabulary
+end
+

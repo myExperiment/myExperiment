@@ -11,8 +11,8 @@ class AutoMigrate
   SCHEMA                = "config/base_schema.xml"
   SCHEMA_D              = "config/schema.d"
   COLUMN_ATTRIBUTES     = ['name', 'type', 'default']
-  BELONGS_TO_ATTRIBUTES = ['polymorphic']
-  HAS_MANY_ATTRIBUTES   = ['target', 'through', 'foreign_key']
+  BELONGS_TO_ATTRIBUTES = ['polymorphic', 'class_name', 'foreign_key']
+  HAS_MANY_ATTRIBUTES   = ['target', 'through', 'foreign_key', 'source', 'dependent', 'conditions', 'class_name']
 
   def self.schema
 
@@ -255,7 +255,7 @@ private
         get_model(class_name)
       rescue NameError
 
-        logger.info("Structured data: instantiating #{class_name}")
+        # logger.info("Structured data: instantiating #{class_name}")
 
         # model object not defined.  create it
 

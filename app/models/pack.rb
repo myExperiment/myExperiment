@@ -22,6 +22,8 @@ class Pack < ActiveRecord::Base
   acts_as_rateable
   acts_as_taggable
 
+  acts_as_structured_data
+
   validates_presence_of :title
   
   format_attribute :description
@@ -608,6 +610,36 @@ class Pack < ActiveRecord::Base
     contributable_entries.map do |e| e.contributable end
   end
 
+  # This function takes a string, such as 'contributable:4' (which would return
+  # a PackContributableEntry with the id of 4) or 'remote:8' (which would
+  # return a PackRemoteEntry with an id of 8) and returns the appropriate pack
+  # item if this pack contains that item.
+
+  def find_pack_item(str)
+
+    thing_type, thing_id = str.split(":")
+
+    case thing_type
+      when 'contributable'
+        ob = PackContributableEntry.find(:first,
+            :conditions => ['id = ? AND pack_id = ?', thing_id, id])
+
+      when 'remote'
+        ob = PackRemoteEntry.find(:first,
+            :conditions => ['id = ? AND pack_id = ?', thing_id, id])
+    end
+  end
+
+  # This method determines which pack relationships refer to contributables
+  # that are not included as pack entries in this pack.  Such relationships
+  # might occur when deleting entries from a pack.
+
+  def dangling_relationships
+    relationships.select do |relationship|
+      relationship.subject.nil? || relationship.objekt.nil?
+    end
+  end
+ 
   protected
   
   # produces html string containing the required messaged, enclosed within left-padded P tag, belonging to 'none_text' class

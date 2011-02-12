@@ -1,0 +1,25 @@
+<% if relationships.empty? %>
+
+  <p><i>There are no relationships in this pack.</i></p>
+
+<% else %>
+
+  <ol>
+    <% relationships.each do |relationship| %>
+      <li>
+        <%= pack_entry_link(relationship.subject) -%>
+        <%=h relationship.concept.preferred_label.text.underscore.humanize.downcase -%>
+        <%= pack_entry_link(relationship.objekt) -%>
+
+        <%= link_to_remote( "delete_relationship",
+            :update => "relationshipsElement", 
+            :url => pack_relationship_path(relationship.pack, relationship.id),
+            :method => :delete,
+            :complete => "new Effect.Highlight('relationshipsElement', { duration: 1.5 });",
+            :confirm => "Are you sure you want to delete this relationship?" ) %>
+
+      </li>
+    <% end %>
+</ol>
+
+<% end %>

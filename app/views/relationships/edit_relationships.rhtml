@@ -1,0 +1,40 @@
+<% t "Edit relationships" %>
+
+<h1>Edit relationships for: "<%=h @context.title -%>".</h1>
+
+<center>
+	<%= error_messages_for :relationship %>
+</center>
+
+<h2>Add new relationship</h2>
+
+<% if @pack_entry_select_options.length < 2 %>
+
+  <p><i>There must be at least two entries in a pack before you can add relationships.</i></p>
+
+<% else %>
+
+  <div>
+
+    <% form_tag("#{rest_resource_uri(@context)}/relationships") do -%>
+
+      <%= select_tag("subject", options_for_select(@pack_entry_select_options)) -%>
+
+      <%= select_tag("predicate", options_for_select(@concepts.map do |c| "#{c.vocabulary.prefix}:#{c.preferred_labels.first.text}" end)) -%>
+
+      <%= select_tag("objekt", options_for_select(@pack_entry_select_options)) -%>
+     
+      <input type="submit" value="Add relationship"/>
+
+    <% end %>
+
+  </div>
+
+<% end %>
+
+<h2>Relationships</h2>
+
+<div id="relationshipsElement">
+  <%= render(:partial => "relationships", :locals => { :relationships => @relationships }) -%>
+</div>
+
