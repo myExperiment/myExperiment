@@ -362,6 +362,16 @@ puts "PROCESSOR NAME = #{processor.name}"
       aux(@t2flow_model, @t2flow_model, 'components')
     end
     
+    def extract_metadata(workflow_id)
+
+      @t2flow_model.all_processors.each do |processor|
+        WorkflowProcessor.create(:workflow_id => workflow_id,
+            :name           => processor.name,
+            :wsdl           => processor.wsdl,
+            :wsdl_operation => processor.wsdl)
+      end
+    end
+
     # End Instance Methods
   end
 end

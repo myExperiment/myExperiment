@@ -194,6 +194,14 @@ class WorkflowsController < ApplicationController
       @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
 
+    @contributions_with_similar_services = @workflow.workflows_with_similar_services.select do |w|
+      Authorization.is_authorized?('view', nil, w, current_user)
+    end.map do |w|
+      w.contribution
+    end
+
+    @similar_services_limit = 10
+
     respond_to do |format|
       format.html {
 
@@ -291,6 +299,11 @@ class WorkflowsController < ApplicationController
           @workflow.solr_save if Conf.solr_enable
         end
         
+        begin
+          @workflow.extract_metadata
+        rescue
+        end
+
         policy_err_msg = update_policy(@workflow, params)
     
         # Credits and Attributions:
@@ -394,6 +407,16 @@ class WorkflowsController < ApplicationController
       # TODO: wrap this in a transaction!
       @workflow.content_blob_id = ContentBlob.create(:data => file.read).id
       if @workflow.save_as_new_version(params[:new_workflow][:rev_comments])
+
+        # Extract workflow metadata using a Workflow object that includes the
+        # newly created version.
+
+        begin
+          @workflow.reload
+          @workflow.extract_metadata
+        rescue
+        end
+
         respond_to do |format|
           flash[:notice] = 'New workflow version successfully created.'
           format.html {

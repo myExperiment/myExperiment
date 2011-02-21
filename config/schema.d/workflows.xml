@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<schema>
+
+  <table name="workflow_processors">
+
+    <column type="integer"    name="workflow_id"/>
+
+    <column type="string"     name="name"/>
+    <column type="string"     name="wsdl"/>
+    <column type="string"     name="wsdl_operation"/>
+
+    <belongs-to target="workflows"/>
+
+  </table>
+
+</schema>
+

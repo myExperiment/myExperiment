@@ -62,3 +62,16 @@ task "myexp:vocab:load" do
   LoadVocabulary::load_vocabulary
 end
 
+desc 'Refresh workflow metadata'
+task "myexp:refresh:workflows" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  conn = ActiveRecord::Base.connection
+
+  conn.execute('TRUNCATE workflow_processors')
+
+  Workflow.find(:all).each do |w|
+    w.extract_metadata
+  end
+end
+

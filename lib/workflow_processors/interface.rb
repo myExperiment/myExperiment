@@ -105,6 +105,9 @@ module WorkflowProcessors
       XML::Node.new("components")
     end
 
+    def extract_metadata(workflow_id)
+    end
+
     # End Instance Methods
     
   end
