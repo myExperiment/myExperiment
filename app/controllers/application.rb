@@ -502,26 +502,36 @@ class ApplicationController < ActionController::Base
           :joins        => [ :networks ]
         },
 
-#       {
-#         :title        => 'curation',
-#         :query_option => 'CURATION_EVENT',
-#         :id_column    => 'curation_events.category',
-#         :label_column => 'curation_events.category',
-#         :joins        => [ :curation_events ],
-#         :capitalize   => true
-#       },
+        {
+          :title        => 'wsdl',
+          :query_option => 'WSDL_ENDPOINT',
+          :id_column    => 'workflow_processors.wsdl',
+          :label_column => 'workflow_processors.wsdl',
+          :joins        => [ :workflow_processors ],
+          :not_null     => true
+        },
+
+        {
+          :title        => 'curation',
+          :query_option => 'CURATION_EVENT',
+          :id_column    => 'curation_events.category',
+          :label_column => 'curation_events.category',
+          :joins        => [ :curation_events ],
+          :capitalize   => true
+        },
       ],
 
       :joins =>
       {
-        :content_types   => "LEFT OUTER JOIN content_types ON contributions.content_type_id = content_types.id",
-        :licences        => "LEFT OUTER JOIN licenses ON contributions.license_id = licenses.id",
-        :users           => "INNER JOIN users ON contributions.contributor_type = 'User' AND contributions.contributor_id = users.id",
-        :taggings        => "LEFT OUTER JOIN taggings ON contributions.contributable_type = taggings.taggable_type AND contributions.contributable_id = taggings.taggable_id",
-        :tags            => "INNER JOIN tags ON taggings.tag_id = tags.id",
-        :networks        => "INNER JOIN networks ON permissions.contributor_type = 'Network' AND permissions.contributor_id = networks.id",
-        :credits         => "INNER JOIN creditations ON creditations.creditable_type = contributions.contributable_type AND creditations.creditable_id = contributions.contributable_id",
-        :curation_events => "INNER JOIN curation_events ON curation_events.object_type = contributions.contributable_type AND curation_events.object_id = contributions.contributable_id"
+        :content_types       => "LEFT OUTER JOIN content_types ON contributions.content_type_id = content_types.id",
+        :licences            => "LEFT OUTER JOIN licenses ON contributions.license_id = licenses.id",
+        :users               => "INNER JOIN users ON contributions.contributor_type = 'User' AND contributions.contributor_id = users.id",
+        :taggings            => "LEFT OUTER JOIN taggings ON contributions.contributable_type = taggings.taggable_type AND contributions.contributable_id = taggings.taggable_id",
+        :tags                => "INNER JOIN tags ON taggings.tag_id = tags.id",
+        :networks            => "INNER JOIN networks ON permissions.contributor_type = 'Network' AND permissions.contributor_id = networks.id",
+        :credits             => "INNER JOIN creditations ON creditations.creditable_type = contributions.contributable_type AND creditations.creditable_id = contributions.contributable_id",
+        :curation_events     => "INNER JOIN curation_events ON curation_events.object_type = contributions.contributable_type AND curation_events.object_id = contributions.contributable_id",
+        :workflow_processors => "INNER JOIN workflow_processors ON contributions.contributable_type = 'Workflow' AND workflow_processors.workflow_id = contributions.contributable_id"
       }
     }
   end
