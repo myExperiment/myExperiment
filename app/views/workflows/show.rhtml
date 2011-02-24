@@ -218,9 +218,21 @@
         </h3>
         
         <% if @authorised_to_download %>
+
+          <br />
+
           <ul class="sectionIcons">
             <li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package (#{@workflow.display_data_format})") -%></li>
           </ul>
+
+          <% if @workflow.content_type.title == "Taverna 2" %>
+            <br />
+
+            <ul class="sectionIcons">
+              <li style="margin-left: 0;"><%= icon('workflow', galaxy_tool_path(:id => @workflow.id, :version => @viewing_version_number.to_s), "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow as a Galaxy tool") -%></li>
+            </ul>
+          <% end %>
+
         <% else %>
           <p class="none_text">
             You do not have permission to download this workflow

@@ -7,7 +7,7 @@ class WorkflowsController < ApplicationController
 
   include ApplicationHelper
 
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :statistics, :launch, :search]
   
   before_filter :find_workflows_rss, :only => [:index]
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create]
@@ -22,7 +22,7 @@ class WorkflowsController < ApplicationController
 
   # declare sweepers and which actions should invoke them
   cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy_version, :destroy ]
-  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :launch ]
+  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :launch ]
   cache_sweeper :permission_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
   cache_sweeper :tag_sweeper, :only => [ :create, :update, :tag, :destroy ]
@@ -160,6 +160,32 @@ class WorkflowsController < ApplicationController
         }
       end
     end
+  end
+
+  # GET /workflows/:id/versions/:version/galaxy_tool
+  def galaxy_tool
+  end
+
+  # GET /workflows/:id/versions/:version/galaxy_tool_download
+  def galaxy_tool_download
+
+    if params[:server].nil? || params[:server].empty?
+      flash.now[:error] = "You must provide a URL to a Taverna server."
+      render(:action => :galaxy_tool, :id => @workflow.id, :version => @viewing_version_number.to_s)
+      return
+    end
+
+    zip_file_name = "tmp/galaxy_tool.#{Process.pid}"
+
+    TavernaToGalaxy.generate(@workflow, @viewing_version_number, params[:server], zip_file_name)
+
+    zip_file = File.read(zip_file_name)
+    File.unlink(zip_file_name)
+
+    send_data(zip_file,
+        :filename => "#{@workflow.unique_name}_galaxy_tool.zip",
+        :type => 'application/zip',
+        :disposition => 'attachment')
   end
 
   # GET /workflows

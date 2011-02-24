@@ -1,0 +1,36 @@
+<% t "#{h @workflow.title} - Download as Galaxy tool" -%>
+
+<center>
+  <%= error_messages_for :workflow %>
+</center>
+
+<h1>Galaxy tool download</h1>
+
+<p>This download option provides you with a Galaxy tool that will execute a
+Taverna 2 workflow from Galaxy.  This requires access to a Taverna Server and
+you will need to provide a URL to that server so that Galaxy knows where to
+execute it.</p>
+
+<div style="margin: 2em; padding: 1em; border: solid 1px gray">
+
+  <% form_tag( { :action => :galaxy_tool_download } ) do %>
+
+    <p>
+      <b>Taverna server URL:</b><br />
+      <%= text_field_tag("server", "", :size => 100) %><br />
+      <small>E.g. http://www.example.com:8980/taverna-server</small>
+    </p>
+
+    <p style="text-align: center">
+      <%= submit_tag("Download Galaxy tool") %>
+    </p>
+
+  <% end %>
+</div>
+
+<p style="text-align: center; margin: 1em">
+  <% form_tag( { :action => "show" }, :method => :get) do %>
+    <%= submit_tag("Return to workflow") -%>
+  <% end %>
+</p>
+
