@@ -79,6 +79,13 @@ class Workflow < ActiveRecord::Base
     # This is required to keep the contribution's updated_at field accurate.
     after_save { |wv| wv.workflow.contribution.save if wv.workflow.contribution && wv.version != wv.workflow.current_version }
     
+    def components
+      if workflow.processor_class
+        workflow.processor_class.new(content_blob.data).get_components
+      else
+        XML::Node.new('components')
+      end
+    end
   end
   
   non_versioned_columns.push("license_id", "tag_list")
