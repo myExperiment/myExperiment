@@ -25,7 +25,7 @@ module TavernaToGalaxy
 
     w2g_workflow = W2GWorkflow.new(nil, wkf_title, wkf_descr, wkf_inputs, wkf_outputs)
 
-    w2g_rest_object = W2GRestObject.new("#{Conf.base_uri}/workflows/#{workflow.id}/versions/#{version}", w2g_workflow)
+    w2g_rest_object = W2GRestObject.new(workflow.named_download_url, w2g_workflow)
 
     # Set output files
     xml_file    = wv.unique_name + ".xml"
