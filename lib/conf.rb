@@ -176,6 +176,14 @@ class Conf
           if settings['host'] && request.host == settings['host']
             @config = name
           end
+
+          if settings['prefix'] && request.path.starts_with?(settings['prefix'])
+            remainder = request.path[settings['prefix'].length..-1]
+
+            if remainder.empty? || remainder.match(/^[.\/]/)
+              @config = name
+            end
+          end
         end
       end
     end
