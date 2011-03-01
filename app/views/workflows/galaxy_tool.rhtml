@@ -6,10 +6,24 @@
 
 <h1>Galaxy tool download</h1>
 
-<p>This download option provides you with a Galaxy tool that will execute a
-Taverna 2 workflow from Galaxy.  This requires access to a Taverna Server and
-you will need to provide a URL to that server so that Galaxy knows where to
-execute it.</p>
+<p>Galaxy is a web-based framework to aggregate bioinformatics tools in a
+uniform way and connect them in pipelines. This download option provides you
+with a Galaxy tool that will execute this Taverna 2 workflow from a Galaxy
+server. The zip archive contains the two files needed for a Galaxy tool and
+they have to be installed in the Galaxy server. (Administration privileges are
+required for installation.)</p>
+
+<p>Since the tool submits the workflow to a Taverna 2 server you will need to
+have access to one. It is straightforward to install a Taverna 2 server but for
+your convenience we provide a default test server to use. Please note that this
+server should only be used for testing the workflow!  <i>When using our Taverna
+2 test server, the only requirement is administration access to a Galaxy server
+to install the tool you are about to download.</i></p>
+
+<p>To avoid potential issues, we recommend that you test workflows first in
+Taverna 2 Workbench before you create a tool to run them through Galaxy.</p>
+
+<h2>Galaxy tool generator</h2>
 
 <div style="margin: 2em; padding: 1em; border: solid 1px gray">
 
@@ -17,7 +31,7 @@ execute it.</p>
 
     <p>
       <b>Taverna server URL:</b><br />
-      <%= text_field_tag("server", "", :size => 100) %><br />
+      <%= text_field_tag("server", "http://mybiobank.org:8080/taverna-server", :size => 100) %><br />
       <small>E.g. http://www.example.com:8980/taverna-server</small>
     </p>
 
@@ -27,6 +41,14 @@ execute it.</p>
 
   <% end %>
 </div>
+
+<h2>Further information</h2>
+
+<ul>
+<li><a href="https://bitbucket.org/galaxy/galaxy-central/wiki/AddToolTutorial">Install a tool in Galaxy</a></li>
+<li><a href="http://www.taverna.org.uk/download/server">Install a Taverna 2 server</a></li>
+<li><a href="http://www.taverna.org.uk/download/workbench">Install Taverna Workbench</a></li>
+</ul>
 
 <p style="text-align: center; margin: 1em">
   <% form_tag( { :action => "show" }, :method => :get) do %>
