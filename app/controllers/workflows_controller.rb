@@ -170,7 +170,7 @@ class WorkflowsController < ApplicationController
   def galaxy_tool_download
 
     if params[:server].nil? || params[:server].empty?
-      flash.now[:error] = "You must provide a URL to a Taverna server."
+      flash.now[:error] = "You must provide the URL to a Taverna server."
       render(:action => :galaxy_tool, :id => @workflow.id, :version => @viewing_version_number.to_s)
       return
     end
@@ -181,6 +181,12 @@ class WorkflowsController < ApplicationController
 
     zip_file = File.read(zip_file_name)
     File.unlink(zip_file_name)
+
+    Download.create(:contribution => @workflow.contribution,
+        :user               => (logged_in? ? current_user : nil),
+        :user_agent         => request.env['HTTP_USER_AGENT'],
+        :accessed_from_site => accessed_from_website?(),
+        :kind               => 'Galaxy tool')
 
     send_data(zip_file,
         :filename => "#{@workflow.unique_name}_galaxy_tool.zip",

@@ -32,6 +32,21 @@
 
   </table>
 
+  <table name="downloads">
+
+    <column type="integer"  name="contribution_id"/>
+    <column type="integer"  name="user_id"/>
+    <column type="datetime" name="created_at"/>
+    <column type="string"   name="user_agent"/>
+    <column type="boolean"  name="accessed_from_site" default="0"/>
+    <column type="string"   name="kind"/>
+
+    <index>
+      <column name="contribution_id"/>
+    </index>
+
+  </table>
+
   <table name="content_types">
 
     <column type="integer"  name="user_id"/>
