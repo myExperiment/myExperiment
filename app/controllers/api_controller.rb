@@ -24,7 +24,7 @@ class ApiController < ApplicationController
       credentials = Base64.decode64(auth.sub(/^Basic /, '')).split(':')
       user = User.authenticate(credentials[0], credentials[1])
 
-      return rest_response(401) if user.nil?
+      return rest_response(401, :reason => "Failed to authenticate") if user.nil?
 
     end
 
@@ -68,14 +68,14 @@ class ApiController < ApplicationController
         permission_found = true if permission.for == requested_permission
       end
 
-      return rest_response(403) if permission_found == false
+      return rest_response(403, :reason => "OAuth token does not grant sufficient permission for this action") if permission_found == false
     end  
 
     case rules['Type']
       when 'index'; doc = rest_index_request(params[:uri], params[:format], rules, user, request.query_parameters)
       when 'crud';  doc = rest_crud_request(params[:uri], params[:format], rules, user, request.query_parameters)
       when 'call';  doc = rest_call_request(params[:uri], params[:format], rules, user, request.query_parameters)
-      else;         return rest_response(400)
+      else;         return rest_response(500, :reason => "Unknown REST table type")
     end
   end
 end

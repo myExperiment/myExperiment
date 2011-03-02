@@ -205,7 +205,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
       when 'xml'
 
         if query['version'] and model_data['Versioned'][i] == 'yes'
-          text = eval("ob.versions[#{(query['version'].to_i - 1).to_s}].#{accessor}")
+          text = eval("ob.find_version(#{query['version']}).#{accessor}")
         else
           text = eval("ob.#{accessor}")
         end
@@ -257,7 +257,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
           if accessor
             if model_data['Foreign Accessor'][i].nil? || foreign_ob
               if query['version'] and model_data['Versioned'][i] == 'yes'
-                text = eval("ob.versions[#{(query['version'].to_i - 1).to_s}].#{accessor}").to_s
+                text = eval("ob.find_version(#{query['version']}).#{accessor}").to_s
               else
                 text = eval("ob.#{accessor}").to_s
               end
@@ -296,9 +296,8 @@ end
 def rest_get_request(ob, req_uri, user, uri, entity_name, query)
 
   if query['version']
-    return rest_response(400) unless ob.respond_to?('versions')
-    return rest_response(404) if query['version'].to_i < 1
-    return rest_response(404) if ob.versions[query['version'].to_i - 1].nil?
+    return rest_response(400, :reason => "Object does not support versioning") unless ob.respond_to?('versions')
+    return rest_response(404, :reason => "Specified version does not exist") if query['version'].to_i < 1
   end
 
   elements = query['elements'] ? query['elements'].split(',') : nil
@@ -338,7 +337,7 @@ def rest_crud_request(req_uri, format, rules, user, query)
 
   ob = eval(model_name.camelize).find_by_id(params[:id].to_i)
 
-  return rest_response(404) if ob.nil?
+  return rest_response(404, :reason => "Object not found") if ob.nil?
 
   perm_ob = ob
 
@@ -346,8 +345,8 @@ def rest_crud_request(req_uri, format, rules, user, query)
 
   case rules['Permission']
     when 'public'; # do nothing
-    when 'view';  return rest_response(401) if not Authorization.is_authorized?("show", nil, perm_ob, user)
-    when 'owner'; return rest_response(401) if logged_in?.nil? or object_owner(perm_ob) != user
+    when 'view';  return rest_response(401, :reason => "Not authorised") if not Authorization.is_authorized?("show", nil, perm_ob, user)
+    when 'owner'; return rest_response(401, :reason => "Not authorised") if logged_in?.nil? or object_owner(perm_ob) != user
   end
 
   rest_get_request(ob, params[:uri], user, eval("rest_resource_uri(ob)"), rest_name, query)
@@ -577,6 +576,7 @@ def rest_resource_uri(ob)
     when 'PackRemoteEntry';        return ob.uri
     when 'ContentType';            return nil
     when 'License';                return license_url(ob)
+    when 'CurationEvent';          return nil
 
     when 'Creditation';     return nil
     when 'Attribution';     return nil
@@ -618,6 +618,7 @@ def rest_access_uri(ob)
     when 'Tagging';                return "#{base}/tagging.xml?id=#{ob.id}"
     when 'ContentType';            return "#{base}/type.xml?id=#{ob.id}"
     when 'License';                return "#{base}/license.xml?id=#{ob.id}"
+    when 'CurationEvent';          return "#{base}/curation-event.xml?id=#{ob.id}"
 
     when 'Creditation';     return "#{base}/credit.xml?id=#{ob.id}"
     when 'Attribution';     return nil
@@ -651,6 +652,7 @@ def rest_object_tag_text(ob)
     when 'Bookmark';               return 'favourite'
     when 'ContentType';            return 'type'
     when 'License';                return 'license'
+    when 'CurationEvent';          return 'curation-event'
   end
 
   return 'object'
@@ -677,6 +679,7 @@ def rest_object_label_text(ob)
     when 'Workflow::Version';      return ob.title
     when 'ContentType';            return ob.title
     when 'License';                return ob.title
+    when 'CurationEvent';          return ob.category
   end
 
   return ''
@@ -769,7 +772,7 @@ def obtain_rest_resource(type, id, version, user, permission = nil)
   resource = eval(type).find_by_id(id)
 
   if resource.nil?
-    rest_response(404)
+    rest_response(404, :reason => "Couldn't find a #{type} with id #{id}")
     return nil
   end
 
@@ -780,13 +783,13 @@ def obtain_rest_resource(type, id, version, user, permission = nil)
   end
 
   if resource.nil?
-    rest_response(404)
+    rest_response(404, :reason => "#{type} #{id} does not have a version #{version}")
     return nil
   end
 
   if permission
     if !Authorization.is_authorized?(permission, nil, resource, user)
-      rest_response(401)
+      rest_response(401, :reason => "Not authorised for #{type} #{id}")
       return nil
     end
   end
@@ -796,17 +799,17 @@ end
 
 def rest_access_redirect(opts = {})
 
-  return rest_response(400) if opts[:query]['resource'].nil?
+  return rest_response(400, :reason => "Resource was not specified") if opts[:query]['resource'].nil?
 
   bits = parse_resource_uri(opts[:query]['resource'])
 
-  return rest_response(404) if bits.nil?
+  return rest_response(404, :reason => "Didn't understand the format of the specified resource") if bits.nil?
 
   ob = bits[0].find_by_id(bits[1])
 
-  return rest_response(404) if ob.nil?
+  return rest_response(404, :reason => "The specified resource does not exist") if ob.nil?
 
-  return rest_response(401) if !Authorization.is_authorized?('view', nil, ob, opts[:user])
+  return rest_response(401, :reason => "Not authorised for the specified resource") if !Authorization.is_authorized?('view', nil, ob, opts[:user])
 
   rest_response(307, :location => rest_access_uri(ob))
 end
@@ -862,7 +865,7 @@ def workflow_aux(action, opts = {})
 
   case action
     when 'create':
-      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Workflow', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a workflow") unless Authorization.is_authorized_for_type?('create', 'Workflow', opts[:user], nil)
       if opts[:query]['id']
         ob = obtain_rest_resource('Workflow', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
       else
@@ -1034,7 +1037,7 @@ def file_aux(action, opts = {})
 
   case action
     when 'create':
-      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Blob', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a file") unless Authorization.is_authorized_for_type?('create', 'Blob', opts[:user], nil)
       ob = Blob.new(:contributor => opts[:user])
     when 'read', 'update', 'destroy':
       ob = obtain_rest_resource('Blob', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
@@ -1145,7 +1148,7 @@ def pack_aux(action, opts = {})
 
   case action
     when 'create':
-      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Pack', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a pack") unless Authorization.is_authorized_for_type?('create', 'Pack', opts[:user], nil)
       ob = Pack.new(:contributor => opts[:user])
     when 'read', 'update', 'destroy':
       ob = obtain_rest_resource('Pack', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
@@ -1219,9 +1222,9 @@ def external_pack_item_aux(action, opts = {})
   case action
     when 'create':
 
-      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'PackRemoteEntry', opts[:user], pack)
+      return rest_response(401, :reason => "Not authorised to create an external pack item") unless Authorization.is_authorized_for_type?('create', 'PackRemoteEntry', opts[:user], pack)
       return rest_response(400, :reason => "Pack not found") if pack.nil?
-      return rest_response(401) unless Authorization.is_authorized?('edit', nil, pack, opts[:user])
+      return rest_response(401, :reason => "Not authorised to change the specified pack") unless Authorization.is_authorized?('edit', nil, pack, opts[:user])
 
       ob = PackRemoteEntry.new(:user => opts[:user],
           :pack          => pack,
@@ -1235,7 +1238,7 @@ def external_pack_item_aux(action, opts = {})
       ob = obtain_rest_resource('PackRemoteEntry', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
 
       if ob
-        return rest_response(401) unless Authorization.is_authorized?('edit', nil, ob.pack, opts[:user])
+        return rest_response(401, :reason => "Not authorised to change the specified pack") unless Authorization.is_authorized?('edit', nil, ob.pack, opts[:user])
       end
 
     else
@@ -1292,9 +1295,9 @@ def internal_pack_item_aux(action, opts = {})
   case action
     when 'create':
 
-      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'PackContributableEntry', opts[:user], pack)
+      return rest_response(401, :reason => "Not authorised to create an internal pack item") unless Authorization.is_authorized_for_type?('create', 'PackContributableEntry', opts[:user], pack)
       return rest_response(400, :reason => "Pack not found") if pack.nil?
-      return rest_response(401) unless Authorization.is_authorized?('edit', nil, pack, opts[:user])
+      return rest_response(401, :reason => "Not authorised to change the specified pack") unless Authorization.is_authorized?('edit', nil, pack, opts[:user])
 
       ob = PackContributableEntry.new(:user => opts[:user],
           :pack          => pack,
@@ -1306,7 +1309,7 @@ def internal_pack_item_aux(action, opts = {})
       ob = obtain_rest_resource('PackContributableEntry', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
 
       if ob
-        return rest_response(401) unless Authorization.is_authorized?('edit', nil, ob.pack, opts[:user])
+        return rest_response(401, :reason => "Not authorised to change the specified pack") unless Authorization.is_authorized?('edit', nil, ob.pack, opts[:user])
       end
 
     else
@@ -1540,7 +1543,7 @@ end
 
 def get_tagged(opts)
 
-  return rest_response(400) if opts[:query]['tag'].nil?
+  return rest_response(400, :reason => "Did not specify a tag") if opts[:query]['tag'].nil?
 
   tag = Tag.find_by_name(opts[:query]['tag'])
 
@@ -1597,7 +1600,7 @@ def whoami_redirect(opts)
       when "rdf": rest_response(307, :location => formatted_user_url(:id => opts[:user].id, :format => 'rdf'))
     end
   else
-    rest_response(401)
+    rest_response(401, :reason => "Not logged in")
   end
 end
 
@@ -1670,7 +1673,7 @@ def comment_aux(action, opts)
 
   case action
     when 'create':
-      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Comment', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a comment") unless Authorization.is_authorized_for_type?('create', 'Comment', opts[:user], nil)
 
       ob = Comment.new(:user => opts[:user])
     when 'read', 'update', 'destroy':
@@ -1695,8 +1698,8 @@ def comment_aux(action, opts)
     ob.comment = comment if comment
 
     if subject
-      return rest_response(400) unless [Blob, Network, Pack, Workflow].include?(subject.class)
-      return rest_response(401) unless Authorization.is_authorized_for_type?(action, 'Comment', opts[:user], subject)
+      return rest_response(400, :reason => "Specified resource does not support comments") unless [Blob, Network, Pack, Workflow].include?(subject.class)
+      return rest_response(401, :reason => "Not authorised to add a comment to the specified resource") unless Authorization.is_authorized_for_type?(action, 'Comment', opts[:user], subject)
       ob.commentable = subject
     end
 
@@ -1796,7 +1799,7 @@ def favourite_aux(action, opts)
 
   case action
     when 'create':
-      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Bookmark', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a favourite") unless Authorization.is_authorized_for_type?('create', 'Bookmark', opts[:user], nil)
 
       ob = Bookmark.new(:user => opts[:user])
     when 'read', 'update', 'destroy':
@@ -1818,8 +1821,8 @@ def favourite_aux(action, opts)
     target = parse_element(data, :resource, '/favourite/object')
 
     if target
-      return rest_response(400) unless [Blob, Pack, Workflow].include?(target.class)
-      return rest_response(401) unless Authorization.is_authorized_for_type?(action, 'Bookmark', opts[:user], target)
+      return rest_response(400, :reason => "Specified resource is not a valid favourite target") unless [Blob, Pack, Workflow].include?(target.class)
+      return rest_response(401, :reason => "Not authorised to create the favourite") unless Authorization.is_authorized_for_type?(action, 'Bookmark', opts[:user], target)
       ob.bookmarkable = target
     end
 
@@ -1849,7 +1852,7 @@ def rating_aux(action, opts)
 
   case action
     when 'create':
-      return rest_response(401) unless Authorization.is_authorized_for_type?('create', 'Rating', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a rating") unless Authorization.is_authorized_for_type?('create', 'Rating', opts[:user], nil)
 
       ob = Rating.new(:user => opts[:user])
     when 'read', 'update', 'destroy':
@@ -1874,8 +1877,8 @@ def rating_aux(action, opts)
     ob.rating = rating if rating
 
     if subject
-      return rest_response(400) unless [Blob, Network, Pack, Workflow].include?(subject.class)
-      return rest_response(401) unless Authorization.is_authorized_for_type?(action, 'Rating', opts[:user], subject)
+      return rest_response(400, :reason => "Specified resource does not support ratings") unless [Blob, Network, Pack, Workflow].include?(subject.class)
+      return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.is_authorized_for_type?(action, 'Rating', opts[:user], subject)
       ob.rateable = subject
     end
 
