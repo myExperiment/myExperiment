@@ -71,8 +71,13 @@
             <% if request.query_parameters["filter"] %>
               <input name="filter" type="hidden" value="<%= request.query_parameters["filter"].gsub('"', '&quot;') -%>" />
             <% end %>
-            <input class="submit" type="submit" name="submit" value="Search"></input>
+            <input class="submit" type="submit" value="Search"></input>
           </div>
+          <% if params[:query] %>
+            <div class="remove_search_query">
+              <%= link_to("Remove search query", url_for(request.query_parameters.merge({ "query", nil }))) -%>
+            </div>
+          <% end %>
         </form>
       </div>
       <% if @pivot[:summary].length > 0 %>
