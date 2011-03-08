@@ -71,7 +71,7 @@
             <% if request.query_parameters["filter"] %>
               <input name="filter" type="hidden" value="<%= request.query_parameters["filter"].gsub('"', '&quot;') -%>" />
             <% end %>
-            <input class="submit" type="button" name="submit" value="Search" />
+            <input class="submit" type="submit" name="submit" value="Search"></input>
           </div>
         </form>
       </div>
