@@ -61,12 +61,23 @@
     <div class="summary">
       <div class="result-count">
         Showing <%= pluralize(@pivot[:results].size, 'result') -%>.
-        <% if @pivot[:summary].length > 0 %>
-          The following filters are in effect:
-        <% end %>
+        <% if @pivot[:results].size > 1 %>Use the filters on the left and the
+        search box below to refine the results.<% end %>
+      </div>
+      <div>
+        <form action="<%= url_for(request.query_parameters) -%>" method="GET">
+          <div class="search_box">
+            <input class="query" name="query" value="<%= params[:query] -%>" />
+            <% if request.query_parameters["filter"] %>
+              <input name="filter" type="hidden" value="<%= request.query_parameters["filter"].gsub('"', '&quot;') -%>" />
+            <% end %>
+            <input class="submit" type="button" name="submit" value="Search" />
+          </div>
+        </form>
       </div>
       <% if @pivot[:summary].length > 0 %>
-        <div class="crumbs"><%= @pivot[:summary] -%></div>
+        <div class="crumbs">
+          <%= @pivot[:summary] -%></div>
       <% end %>
       <% if @pivot[:reset_filters_url] %>
         <div class="reset_filters"><%= link_to("Remove all filters", @pivot[:reset_filters_url]) -%></div>

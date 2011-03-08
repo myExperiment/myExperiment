@@ -531,7 +531,8 @@ class ApplicationController < ActionController::Base
         :networks            => "INNER JOIN networks ON permissions.contributor_type = 'Network' AND permissions.contributor_id = networks.id",
         :credits             => "INNER JOIN creditations ON creditations.creditable_type = contributions.contributable_type AND creditations.creditable_id = contributions.contributable_id",
         :curation_events     => "INNER JOIN curation_events ON curation_events.object_type = contributions.contributable_type AND curation_events.object_id = contributions.contributable_id",
-        :workflow_processors => "INNER JOIN workflow_processors ON contributions.contributable_type = 'Workflow' AND workflow_processors.workflow_id = contributions.contributable_id"
+        :workflow_processors => "INNER JOIN workflow_processors ON contributions.contributable_type = 'Workflow' AND workflow_processors.workflow_id = contributions.contributable_id",
+        :search              => "RIGHT OUTER JOIN search_results ON search_results.result_type = contributions.contributable_type AND search_results.result_id = contributions.contributable_id"
       }
     }
   end
@@ -673,6 +674,7 @@ class ApplicationController < ActionController::Base
         end
       end
 
+      query["query"]        = params[:query]        if params[:query]
       query["order"]        = params[:order]        if parts.include?(:order)
       query["filter_query"] = params[:filter_query] if parts.include?(:filter_query)
 
@@ -688,7 +690,38 @@ class ApplicationController < ActionController::Base
         "#{lhs} IN ('#{rhs.map do |bit| escape_sql(bit) end.join("', '")}')"
       end
     end
-  
+
+    def create_search_results_table(search_query, models)
+
+      solr_results = User.multi_solr_search(search_query,
+          :models         => models,
+          :results_format => :ids,
+          :limit          => Conf.max_search_size)
+
+      conn =  ActiveRecord::Base.connection
+
+      conn.execute("CREATE TEMPORARY TABLE search_results (result_type VARCHAR(255), result_id INT)")
+
+      # This next part converts the search results to SQL values
+      #
+      # from:  { "id" => "Workflow:4" }, { "id" => "Pack:6" }, ...
+      # to:    "('Workflow', '4'), ('Pack', '6'), ..."
+
+      if solr_results.results.length > 0
+        insert_part = solr_results.results.map do |result|
+          "(" + result["id"].split(":").map do |bit|
+            "'#{bit}'"
+          end.join(", ") + ")"
+        end.join(", ")
+
+        conn.execute("INSERT INTO search_results VALUES #{insert_part}")
+      end
+    end
+
+    def drop_search_results_table
+      ActiveRecord::Base.connection.execute("DROP TABLE IF EXISTS search_results")
+    end
+
     def calculate_having_clause(filter, opts)
 
       having_bits = []
@@ -730,6 +763,8 @@ class ApplicationController < ActionController::Base
           conditions << "(#{filter[:label_column]} LIKE '%#{escape_sql(params[:filter_query])}%')"
         end
       end
+
+      joins.push(:search) if params[:query]
 
       current = find_filter(opts[:filters], filter[:query_option]) ? find_filter(opts[:filters], filter[:query_option])[:expr][:terms] : []
 
@@ -895,6 +930,14 @@ class ApplicationController < ActionController::Base
     order_options ||= pivot_options[:order].first
 
     joins += order_options[:joins] if order_options[:joins]
+
+    # perform search if requested
+
+    if params["query"]
+      drop_search_results_table
+      create_search_results_table(params["query"], [Workflow, Blob, Pack])
+      joins.push(:search)
+    end
 
     having_bits = []
 

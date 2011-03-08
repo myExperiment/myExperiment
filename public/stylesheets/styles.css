@@ -2062,12 +2062,11 @@ table.quick_add td.submit {
   clear: right;
   background: #f0f0f0;
   border: 1px solid #d8d8d8;
-  padding: 8px;
+  padding: 6px;
 }
 
-.pivot .summary DIV {
-  padding-top: 0.2em;
-  padding-bottom: 0.2em;
+.pivot .summary DIV+DIV {
+  padding-top: 0.4em;
 }
 
 .pivot .sort {
@@ -2181,7 +2180,8 @@ table.quick_add td.submit {
 }
 
 .pivot .filter_search_box INPUT.query {
-  width: 127px;
+  width: 123px;
+  padding: 2px;
   border: none;
   outline: none;
 }
@@ -2198,9 +2198,6 @@ table.quick_add td.submit {
   top: -1px;
 }
 
-.result-count {
-}
-
 .truncate {
   white-space: nowrap;
 }
@@ -2214,5 +2211,10 @@ table.quick_add td.submit {
   padding-top: 2em;
   padding-bottom: 2em;
 	font-style: italic;
+}
+
+.pivot .search_box .query {
+  padding: 2px;
+  width: 450px;
 }
 

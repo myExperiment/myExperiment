@@ -851,7 +851,7 @@ module Authorization
     end
 
     if model != Contribution
-      joins.push("INNER JOIN contributions ON contributions.contributable_id = #{auth_id} AND contributions.contributable_type = #{auth_type}")
+      joins.push("LEFT OUTER JOIN contributions ON contributions.contributable_id = #{auth_id} AND contributions.contributable_type = #{auth_type}")
     end
 
     # selection
@@ -860,7 +860,7 @@ module Authorization
 
     # add in the extra joins needed for the authorisation checks
 
-    joins.push("INNER JOIN policies ON contributions.policy_id = policies.id")
+    joins.push("LEFT OUTER JOIN policies ON contributions.policy_id = policies.id")
     joins.push("LEFT OUTER JOIN permissions ON policies.id = permissions.policy_id") if user_id || opts[:include_permissions]
 
     # include the effective permissions in the result?
@@ -869,7 +869,7 @@ module Authorization
 
       opts[:select] << ", BIT_OR(#{view_conditions(user_id, friends, networks)})     AS view_permission"
       opts[:select] << ", BIT_OR(#{download_conditions(user_id, friends, networks)}) AS download_permission"
-      opts[:select] << ", BIT_OR(#{edit_conditions(user_id, friends, networks)})           AS edit_permission"
+      opts[:select] << ", BIT_OR(#{edit_conditions(user_id, friends, networks)})     AS edit_permission"
     end
 
     # merge the joins
