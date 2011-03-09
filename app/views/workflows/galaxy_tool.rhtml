@@ -6,12 +6,13 @@
 
 <h1>Galaxy tool download</h1>
 
-<p>Galaxy is a web-based framework to aggregate bioinformatics tools in a
-uniform way and connect them in pipelines. This download option provides you
-with a Galaxy tool that will execute this Taverna 2 workflow from a Galaxy
-server. The zip archive contains the two files needed for a Galaxy tool and
-they have to be installed in the Galaxy server. (Administration privileges are
-required for installation.)</p>
+<p><a href="http://galaxy.psu.edu/">Galaxy</a> is a web-based framework to
+aggregate bioinformatics tools in a uniform way and connect them in pipelines.
+This download option provides you with a Galaxy tool that will execute this <a
+href="http://www.taverna.org.uk/">Taverna 2</a> workflow from a Galaxy server.
+The zip archive contains the two files needed for a Galaxy tool and they have
+to be installed in the Galaxy server. (Administration privileges are required
+for installation.)</p>
 
 <p>To avoid potential issues, we recommend that you test workflows first in
 Taverna 2 Workbench before you create a tool to run them through Galaxy.</p>
@@ -34,6 +35,16 @@ Taverna 2 Workbench before you create a tool to run them through Galaxy.</p>
 
   <% end %>
 </div>
+
+<h2>Requirements</h2>
+
+<p>The tool is implemented in Ruby, so a Ruby environment needs to be
+available.  For Debian based systems, use these commands:</p>
+
+<pre>
+$ sudo apt-get install ruby rubygems
+$ sudo gem install t2-server rubyzip
+</pre>
 
 <h2>Taverna 2 server for testing purposes</h2>
 
