@@ -622,6 +622,78 @@ class ApiControllerTest < Test::Unit::TestCase
     assert_response(:not_found)
   end
 
+  def test_taggings
+
+    login_as(:john)
+
+    # post a workflow to test with
+
+    content = Base64.encode64(File.read('test/fixtures/files/workflow_dilbert.xml'))
+
+    existing_workflows = Workflow.find(:all)
+
+    rest_request(:post, 'workflow', "<?xml version='1.0'?>
+      <workflow>
+        <title>Unique tags</title>
+        <description>A workflow description.</description>
+        <license-type>by-sa</license-type>
+        <content-type>application/vnd.taverna.scufl+xml</content-type>
+        <content>#{content}</content>
+      </workflow>")
+
+    assert_response(:success)
+
+    extra_workflows = Workflow.find(:all) - existing_workflows
+
+    assert_equal(extra_workflows.length, 1)
+
+    workflow = extra_workflows.first
+    workflow_url = rest_resource_uri(workflow)
+
+    # post a tagging
+
+    existing_taggings = Tagging.find(:all)
+
+    rest_request(:post, 'tagging', "<?xml version='1.0'?>
+      <tagging>
+        <subject resource='#{workflow_url}'/>
+        <label>my test tag</label>
+      </tagging>")
+
+    assert_response(:success)
+
+    extra_taggings = Tagging.find(:all) - existing_taggings 
+    
+    assert_equal(extra_taggings.length, 1)
+
+    tagging = extra_taggings.first
+
+    assert_equal(tagging.user, users(:john));
+    assert_equal(tagging.taggable, workflow);
+    assert_equal(tagging.label, 'my test tag');
+
+    # update the tagging (which should fail)
+
+    rest_request(:put, 'tagging', "<?xml version='1.0'?>
+      <tagging>
+        <label>fail</label>
+      </tagging>", "id" => tagging.id)
+
+    assert_response(400)
+    
+    # delete the tagging
+
+    rest_request(:delete, 'tagging', nil, "id" => tagging.id)
+
+    assert_response(:success)
+
+    # try to get the deleted tagging
+
+    rest_request(:get, 'tagging', nil, "id" => tagging.id)
+
+    assert_response(:not_found)
+  end
+
   private
 
   def rest_request(method, uri, data = nil, query = {})

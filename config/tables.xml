@@ -9,6 +9,8 @@
  xmlns:x2="http://schemas.microsoft.com/office/excel/2003/xml"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <LastAuthor>Don Cruickshank</LastAuthor>
+  <LastSaved>2011-02-25T16:45:43Z</LastSaved>
   <Version>14.00</Version>
  </DocumentProperties>
  <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
@@ -40,7 +42,6 @@
   <WindowWidth>13860</WindowWidth>
   <WindowTopX>240</WindowTopX>
   <WindowTopY>75</WindowTopY>
-  <ActiveSheet>1</ActiveSheet>
   <ProtectStructure>False</ProtectStructure>
   <ProtectWindows>False</ProtectWindows>
  </ExcelWorkbook>
@@ -110,7 +111,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="REST">
-  <Table ss:ExpandedColumnCount="20" ss:ExpandedRowCount="150" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="20" ss:ExpandedRowCount="155" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s62" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s66" ss:Width="42"/>
    <Column ss:StyleID="s66" ss:AutoFitWidth="0" ss:Width="109.5"/>
@@ -626,12 +627,43 @@
     <Cell><Data ss:Type="String">tagging</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s70"><Data ss:Type="String">user</Data></Cell>
     <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell><Data ss:Type="String">taggable</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">crud</Data></Cell>
     <Cell><Data ss:Type="String">tagging</Data></Cell>
     <Cell><Data ss:Type="String">tagging</Data></Cell>
     <Cell ss:Index="15"><Data ss:Type="String">required</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="4" ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">POST</Data></Cell>
+    <Cell><Data ss:Type="String">tagging</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s70"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell><Data ss:Type="String">taggable</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">call</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">post_tagging</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="4" ss:StyleID="s70"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">DELETE</Data></Cell>
+    <Cell><Data ss:Type="String">tagging</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s70"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell><Data ss:Type="String">taggable</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">call</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">required</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">delete_tagging</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:Index="4" ss:StyleID="s70"/>
@@ -1573,15 +1605,42 @@
     <Cell ss:Index="15"><Data ss:Type="String">required</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
    </Row>
-   <Row ss:AutoFitHeight="0" ss:Height="13.3125" ss:Span="2"/>
+   <Row ss:AutoFitHeight="0" ss:Height="13.3125"/>
+   <Row ss:AutoFitHeight="0" ss:Height="13.3125">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">curation-events</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">index</Data></Cell>
+    <Cell><Data ss:Type="String">curation-event</Data></Cell>
+    <Cell><Data ss:Type="String">curation_event</Data></Cell>
+    <Cell><Data ss:Type="String">category</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.3125"/>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">curation-event</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">crud</Data></Cell>
+    <Cell><Data ss:Type="String">curation-event</Data></Cell>
+    <Cell><Data ss:Type="String">curation_event</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">required</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
    <Zoom>80</Zoom>
+   <Selected/>
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>37</TopRowBottomPane>
+   <TopRowBottomPane>10</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -1598,8 +1657,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>62</ActiveRow>
-     <ActiveCol>15</ActiveCol>
+     <ActiveRow>48</ActiveRow>
+     <ActiveCol>12</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
@@ -1608,7 +1667,7 @@
   <x:WorksheetOptions/>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="288" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="295" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s62" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s66" ss:Width="111.75"/>
    <Column ss:StyleID="s66" ss:Width="116.25"/>
@@ -2919,6 +2978,20 @@
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="16" ss:StyleID="s75"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">tagging</Data></Cell>
+    <Cell><Data ss:Type="String">label</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Tagging</Data></Cell>
+    <Cell><Data ss:Type="String">label</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16" ss:StyleID="s75"><Data ss:Type="String">yes</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.3125"/>
    <Row ss:AutoFitHeight="0">
@@ -5236,7 +5309,7 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
-    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.3125">
     <Cell><Data ss:Type="String">license</Data></Cell>
@@ -5250,7 +5323,102 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
    </Row>
-   <Row ss:AutoFitHeight="0" ss:Height="13.3125" ss:Span="1"/>
+   <Row ss:AutoFitHeight="0" ss:Height="13.3125"/>
+   <Row ss:AutoFitHeight="0" ss:Height="13.3125">
+    <Cell><Data ss:Type="String">curation-event</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">CurationEvent</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">curation-event</Data></Cell>
+    <Cell><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">CurationEvent</Data></Cell>
+    <Cell><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="18"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">curation-event</Data></Cell>
+    <Cell><Data ss:Type="String">object</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">CurationEvent</Data></Cell>
+    <Cell><Data ss:Type="String">object</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">item as list</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">curation-event</Data></Cell>
+    <Cell><Data ss:Type="String">category</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">CurationEvent</Data></Cell>
+    <Cell><Data ss:Type="String">category</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">curation-event</Data></Cell>
+    <Cell><Data ss:Type="String">details</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">CurationEvent</Data></Cell>
+    <Cell><Data ss:Type="String">details</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">curation-event</Data></Cell>
+    <Cell><Data ss:Type="String">created-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">CurationEvent</Data></Cell>
+    <Cell><Data ss:Type="String">created_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">curation-event</Data></Cell>
+    <Cell><Data ss:Type="String">updated-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">CurationEvent</Data></Cell>
+    <Cell><Data ss:Type="String">updated_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
@@ -5261,11 +5429,10 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Zoom>80</Zoom>
-   <Selected/>
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>147</TopRowBottomPane>
+   <TopRowBottomPane>81</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -5282,8 +5449,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>167</ActiveRow>
-     <ActiveCol>5</ActiveCol>
+     <ActiveRow>106</ActiveRow>
+     <ActiveCol>1</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

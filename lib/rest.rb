@@ -1900,6 +1900,59 @@ def delete_rating(opts)
   rating_aux('destroy', opts)
 end
 
+# Taggings
+
+def tagging_aux(action, opts)
+
+  # Obtain object
+
+  case action
+    when 'create':
+      return rest_response(401, :reason => "Not authorised to create a tagging") unless Authorization.is_authorized_for_type?('create', 'Tagging', opts[:user], nil)
+
+      ob = Tagging.new(:user => opts[:user])
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Tagging', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    subject = parse_element(data, :resource, '/tagging/subject')
+    label   = parse_element(data, :text,     '/tagging/label')
+    tag     = parse_element(data, :resource, '/tagging/tag')
+
+    ob.label    = label   if label
+    ob.tag      = tag     if tag
+
+    if subject
+      return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.is_authorized_for_type?(action, 'Rating', opts[:user], subject)
+      ob.taggable = subject
+    end
+
+    return rest_response(400, :object => ob) unless ob.save
+  end
+
+  rest_get_request(ob, "tagging", opts[:user], rest_resource_uri(ob), "tagging", { "id" => ob.id.to_s })
+end
+
+def post_tagging(opts)
+  tagging_aux('create', opts)
+end
+
+def delete_tagging(opts)
+  tagging_aux('destroy', opts)
+end
+
 # Call dispatcher
 
 def rest_call_request(req_uri, format, rules, user, query)
