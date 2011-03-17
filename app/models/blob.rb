@@ -67,4 +67,8 @@ class Blob < ActiveRecord::Base
   def named_download_url
     "#{Conf.base_uri}/files/#{id}/download/#{local_name}"
   end
+
+  def statistics_for_rest_api
+    APIStatistics.statistics(self)
+  end
 end

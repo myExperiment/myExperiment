@@ -639,6 +639,10 @@ class Pack < ActiveRecord::Base
       relationship.subject.nil? || relationship.objekt.nil?
     end
   end
+
+  def statistics_for_rest_api
+    APIStatistics.statistics(self)
+  end
  
   protected
   

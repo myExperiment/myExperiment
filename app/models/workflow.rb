@@ -353,4 +353,9 @@ class Workflow < ActiveRecord::Base
 
     related_workflows.map do |result| result[0] end
   end
+
+  def statistics_for_rest_api
+    APIStatistics.statistics(self)
+  end
+
 end
