@@ -6,6 +6,7 @@
 
 <div id="tabsContainer" class="tabsContainer" style="margin-top: 2.5em;"></div>
 
+<% if false %>
 <% unless (recent = User.most_recent(6)).empty? %>
   <div class="tabContainer">
   	<div class="tabTitle">Most Recent</div>
@@ -13,6 +14,7 @@
 	    <%= render :partial => "users/hlist", :locals => { :collection => recent } %>
   	</div>
   </div>
+<% end %>
 <% end %>
 
 <% if false -%>
