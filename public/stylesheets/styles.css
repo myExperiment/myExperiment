@@ -893,13 +893,14 @@ table.alt_table .desc {
 table.alt_table .standout {
 	border: 1px dotted #999999;
 	margin: 0.2em 0;
-	padding: 0.5em 0.6em;
+	padding: 0.4em 0.6em;
 	background-color: #FFFFCC;
 	text-align: left;
 	line-height: 1;
 	font-size: 93%;
 	font-weight: bold;
 	color: #333333;
+	width: 360px;
 }
 
 table.alt_table tr td.contributable {
