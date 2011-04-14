@@ -455,8 +455,8 @@ class ApplicationController < ActionController::Base
         {
           :title        => 'category',
           :query_option => 'CATEGORY',
-          :id_column    => 'contributions.contributable_type',
-          :label_column => 'contributions.contributable_type',
+          :id_column    => :auth_type,
+          :label_column => :auth_type,
           :visible_name => true
         },
 
@@ -693,27 +693,27 @@ class ApplicationController < ActionController::Base
 
     def create_search_results_table(search_query, models)
 
-      solr_results = User.multi_solr_search(search_query,
+      solr_results = models.first.multi_solr_search(search_query,
           :models         => models,
           :results_format => :ids,
           :limit          => Conf.max_search_size)
 
       conn =  ActiveRecord::Base.connection
 
-      conn.execute("CREATE TEMPORARY TABLE search_results (result_type VARCHAR(255), result_id INT)")
+      conn.execute("CREATE TEMPORARY TABLE search_results (id INT AUTO_INCREMENT UNIQUE KEY, result_type VARCHAR(255), result_id INT)")
 
       # This next part converts the search results to SQL values
       #
       # from:  { "id" => "Workflow:4" }, { "id" => "Pack:6" }, ...
-      # to:    "('Workflow', '4'), ('Pack', '6'), ..."
+      # to:    "(NULL, 'Workflow', '4'), (NULL, 'Pack', '6'), ..."
 
       if solr_results.results.length > 0
         insert_part = solr_results.results.map do |result|
-          "(" + result["id"].split(":").map do |bit|
+          "(NULL, " + result["id"].split(":").map do |bit|
             "'#{bit}'"
           end.join(", ") + ")"
         end.join(", ")
-
+ 
         conn.execute("INSERT INTO search_results VALUES #{insert_part}")
       end
     end
@@ -739,6 +739,18 @@ class ApplicationController < ActionController::Base
       "HAVING " + having_bits.join(" OR ")
     end
 
+    def column(column, opts)
+      if column == :auth_type
+        if opts[:auth_type]
+          opts[:auth_type]
+        else
+          "contributions.contributable_type"
+        end
+      else
+        column
+      end
+    end
+
     def calculate_filter(params, filter, user, opts = {})
 
       # apply all the joins and conditions except for the current filter
@@ -749,96 +761,112 @@ class ApplicationController < ActionController::Base
       pivot_options[:filters].each do |other_filter|
         if filter_list = find_filter(opts[:filters], other_filter[:query_option])
           unless opts[:inhibit_other_conditions]
-            conditions << comparison(other_filter[:id_column], filter_list[:expr][:terms]) unless other_filter == filter
+            conditions << comparison(column(other_filter[:id_column], opts), filter_list[:expr][:terms]) unless other_filter == filter
           end
           joins += other_filter[:joins] if other_filter[:joins]
         end
       end
 
+      filter_id_column    = column(filter[:id_column],    opts)
+      filter_label_column = column(filter[:label_column], opts)
+
       joins += filter[:joins] if filter[:joins]
-      conditions << "#{filter[:id_column]} IS NOT NULL" if filter[:not_null]
+      conditions << "#{filter_id_column} IS NOT NULL" if filter[:not_null]
 
       unless opts[:inhibit_filter_query]
         if params[:filter_query]
-          conditions << "(#{filter[:label_column]} LIKE '%#{escape_sql(params[:filter_query])}%')"
+          conditions << "(#{filter_label_column} LIKE '%#{escape_sql(params[:filter_query])}%')"
         end
       end
 
-      joins.push(:search) if params[:query]
+      joins.push(:search) if params[:query] && !opts[:arbitrary_models]
 
       current = find_filter(opts[:filters], filter[:query_option]) ? find_filter(opts[:filters], filter[:query_option])[:expr][:terms] : []
 
       if opts[:ids].nil?
         limit = 10
       else
-        conditions << "(#{filter[:id_column]} IN ('#{opts[:ids].map do |id| escape_sql(id) end.join("','")}'))"
+        conditions << "(#{filter_id_column} IN ('#{opts[:ids].map do |id| escape_sql(id) end.join("','")}'))"
         limit = nil
       end
 
       conditions = conditions.length.zero? ? nil : conditions.join(" AND ")
 
-      objects = Authorization.authorised_index(Contribution,
+      if opts[:auth_type] && opts[:auth_id]
+        count_expr = "COUNT(DISTINCT #{opts[:auth_type]}, #{opts[:auth_id]})"
+      else
+        count_expr = "COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id)"
+      end
+
+      objects = Authorization.authorised_index(params[:query] && opts[:arbitrary_models] ? SearchResult : Contribution,
           :all,
           :include_permissions => true,
-          :select => "#{filter[:id_column]} AS filter_id, #{filter[:label_column]} AS filter_label, COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) AS filter_count",
+          :select => "#{filter_id_column} AS filter_id, #{filter_label_column} AS filter_label, #{count_expr} AS filter_count",
+          :arbitrary_models => opts[:arbitrary_models],
+          :auth_type => opts[:auth_type],
+          :auth_id => opts[:auth_id],
           :joins => joins.length.zero? ? nil : joins.uniq.map do |j| pivot_options[:joins][j] end.join(" "),
           :conditions => conditions,
-          :group => "#{filter[:id_column]} #{calculate_having_clause(filter, opts)}",
+          :group => "#{filter_id_column} #{calculate_having_clause(filter, opts)}",
           :limit => limit,
-          :order => "COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id) DESC, #{filter[:label_column]}",
-          :authorised_user => user).map do |object|
+          :order => "#{count_expr} DESC, #{filter_label_column}",
+          :authorised_user => user)
+      
+      objects = objects.select do |x| !x[:filter_id].nil? end
 
-            value = object.filter_id.to_s
-            selected = current.include?(value)
+      objects = objects.map do |object|
 
-            label_expr = deep_clone(opts[:filters])
-            label_expr -= [find_filter(label_expr, filter[:query_option])] if find_filter(label_expr, filter[:query_option])
+        value = object.filter_id.to_s
+        selected = current.include?(value)
 
-            unless selected && current.length == 1
-              label_expr << { :name => filter[:query_option], :expr => { :terms => [value] } }
-            end
+        label_expr = deep_clone(opts[:filters])
+        label_expr -= [find_filter(label_expr, filter[:query_option])] if find_filter(label_expr, filter[:query_option])
 
-            checkbox_expr = deep_clone(opts[:filters])
+        unless selected && current.length == 1
+          label_expr << { :name => filter[:query_option], :expr => { :terms => [value] } }
+        end
 
-            if expr_filter = find_filter(checkbox_expr, filter[:query_option])
+        checkbox_expr = deep_clone(opts[:filters])
 
-              if selected
-                expr_filter[:expr][:terms] -= [value]
-              else
-                expr_filter[:expr][:terms] += [value]
-              end
+        if expr_filter = find_filter(checkbox_expr, filter[:query_option])
 
-              checkbox_expr -= [expr_filter] if expr_filter[:expr][:terms].empty?
-
-            else
-              checkbox_expr << { :name => filter[:query_option], :expr => { :terms => [value] } }
-            end
-
-            label_uri = build_url(params, opts, label_expr, [:filter, :order], "page" => nil)
-
-            checkbox_uri = build_url(params, opts, checkbox_expr, [:filter, :order], "page" => nil)
-
-            label = object.filter_label.clone
-            label = visible_name(label) if filter[:visible_name]
-            label = label.capitalize    if filter[:capitalize]
-
-            plain_label = object.filter_label
-
-            if params[:filter_query]
-              label.sub!(Regexp.new("(#{params[:filter_query]})", Regexp::IGNORECASE), '<b>\1</b>')
-            end
-
-            {
-              :object       => object,
-              :value        => value,
-              :label        => label,
-              :plain_label  => plain_label,
-              :count        => object.filter_count,
-              :checkbox_uri => checkbox_uri,
-              :label_uri    => label_uri,
-              :selected     => selected
-            }
+          if selected
+            expr_filter[:expr][:terms] -= [value]
+          else
+            expr_filter[:expr][:terms] += [value]
           end
+
+          checkbox_expr -= [expr_filter] if expr_filter[:expr][:terms].empty?
+
+        else
+          checkbox_expr << { :name => filter[:query_option], :expr => { :terms => [value] } }
+        end
+
+        label_uri = build_url(params, opts, label_expr, [:filter, :order], "page" => nil)
+
+        checkbox_uri = build_url(params, opts, checkbox_expr, [:filter, :order], "page" => nil)
+
+        label = object.filter_label.clone
+        label = visible_name(label) if filter[:visible_name]
+        label = label.capitalize    if filter[:capitalize]
+
+        plain_label = object.filter_label
+
+        if params[:filter_query]
+          label.sub!(Regexp.new("(#{params[:filter_query]})", Regexp::IGNORECASE), '<b>\1</b>')
+        end
+
+        {
+          :object       => object,
+          :value        => value,
+          :label        => label,
+          :plain_label  => plain_label,
+          :count        => object.filter_count,
+          :checkbox_uri => checkbox_uri,
+          :label_uri    => label_uri,
+          :selected     => selected
+        }
+      end
 
       [current, objects]
     end
@@ -890,6 +918,9 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    joins      = []
+    conditions = []
+
     # parse the filter expression if provided.  convert filter expression to
     # the old format.  this will need to be replaced eventually
 
@@ -911,14 +942,31 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    # determine joins, conditions and order for the main results
+    # perform search if requested
 
-    joins      = []
-    conditions = []
+    group_by = "contributions.contributable_type, contributions.contributable_id"
+
+    if params["query"]
+      drop_search_results_table
+      create_search_results_table(params["query"], [Workflow, Blob, Pack, User, Network])
+      joins.push(:search) unless opts[:arbitrary_models]
+    end
+
+    if opts[:arbitrary_models] && params[:query]
+      klass = SearchResult
+      contribution_records = false
+      auth_type = "search_results.result_type"
+      auth_id   = "search_results.result_id"
+      group_by  = "search_results.result_type, search_results.result_id"
+    else
+      contribution_records = true
+    end
+
+    # determine joins, conditions and order for the main results
 
     pivot_options[:filters].each do |filter|
       if filter_list = find_filter(opts[:filters], filter[:query_option])
-        conditions << comparison(filter[:id_column], filter_list[:expr][:terms])
+        conditions << comparison(column(filter[:id_column], opts.merge( { :auth_type => auth_type, :auth_id => auth_id } )), filter_list[:expr][:terms])
         joins += filter[:joins] if filter[:joins]
       end
     end
@@ -930,14 +978,6 @@ class ApplicationController < ActionController::Base
     order_options ||= pivot_options[:order].first
 
     joins += order_options[:joins] if order_options[:joins]
-
-    # perform search if requested
-
-    if params["query"]
-      drop_search_results_table
-      create_search_results_table(params["query"], [Workflow, Blob, Pack])
-      joins.push(:search)
-    end
 
     having_bits = []
 
@@ -959,11 +999,14 @@ class ApplicationController < ActionController::Base
         :all,
         :authorised_user => user,
         :include_permissions => true,
-        :contribution_records => true,
+        :contribution_records => contribution_records,
+        :arbitrary_models => opts[:arbitrary_models],
+        :auth_type => auth_type,
+        :auth_id => auth_id,
         :page => { :size => params["num"] ? params["num"].to_i : nil, :current => params["page"] },
         :joins => joins.length.zero? ? nil : joins.uniq.map do |j| pivot_options[:joins][j] end.join(" "),
         :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
-        :group => "contributions.contributable_type, contributions.contributable_id #{having_clause}",
+        :group => "#{group_by} #{having_clause}",
         :order => order_options[:order])
 
     # produce a query hash to match the current filters
@@ -979,13 +1022,16 @@ class ApplicationController < ActionController::Base
 
     # produce the filter list
 
-    filters, cancel_filter_query_url = calculate_filters(params, opts, user)
+    opts_for_filter_query = opts.merge( { :auth_type => auth_type,
+        :auth_id => auth_id, :group_by => group_by } )
+
+    filters, cancel_filter_query_url = calculate_filters(params, opts_for_filter_query, user)
 
     # produce the summary.  If a filter query is specified, then we need to
     # recalculate the filters without the query to get all of them.
 
     if params[:filter_query]
-      filters2 = calculate_filters(params, opts.merge( { :inhibit_filter_query => true } ), user)[0]
+      filters2 = calculate_filters(params, opts_for_filter_query.merge( { :inhibit_filter_query => true } ), user)[0]
     else
       filters2 = filters
     end

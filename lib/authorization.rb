@@ -781,7 +781,7 @@ module Authorization
 
     def self.view_conditions(user_id = nil, friends = nil, networks = nil)
 
-      return "(share_mode = 0 OR share_mode = 1 OR share_mode = 2)" if user_id.nil?
+      return "((contributions.id IS NULL) OR (share_mode = 0 OR share_mode = 1 OR share_mode = 2))" if user_id.nil?
 
       policy_part =
         "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
@@ -789,12 +789,12 @@ module Authorization
           ((share_mode = 1 OR share_mode = 3 OR share_mode = 4 OR update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
            (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
 
-      "(#{policy_part} OR #{permission_part(['view', 'download', 'edit'], user_id, networks)})"
+      "((contributions.id IS NULL) OR (#{policy_part} OR #{permission_part(['view', 'download', 'edit'], user_id, networks)}))"
     end
 
     def self.download_conditions(user_id = nil, friends = nil, networks = nil)
 
-      return "(share_mode = 0)" if user_id.nil?
+      return "((contributions.id IS NULL) OR (share_mode = 0))" if user_id.nil?
 
       policy_part = 
         "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
@@ -802,12 +802,12 @@ module Authorization
           ((share_mode = 1 OR share_mode = 3 OR update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
            (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
 
-      "(#{policy_part} OR #{permission_part(['download', 'edit'], user_id, networks)})"
+      "((contributions.id IS NULL) OR (#{policy_part} OR #{permission_part(['download', 'edit'], user_id, networks)}))"
     end
 
     def self.edit_conditions(user_id = nil, friends = nil, networks = nil)
 
-      return "(share_mode = 0 AND update_mode = 0)" if user_id.nil?
+      return "((contributions.id IS NULL) OR (share_mode = 0 AND update_mode = 0))" if user_id.nil?
 
       policy_part =
         "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
@@ -815,7 +815,7 @@ module Authorization
           ((update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
            (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
 
-      "(#{policy_part} OR #{permission_part(['edit'], user_id, networks)})"
+      "((contributions.id IS NULL) OR (#{policy_part} OR #{permission_part(['edit'], user_id, networks)}))"
     end
 
     def self.permission_part(permissions, user_id, networks)
@@ -855,7 +855,7 @@ module Authorization
     auth_type = opts.delete(:auth_type) || "'#{model.name}'"
 
     conditions.push(view_conditions(user_id, friends, networks))
-    conditions.push("contributions.contributable_type = #{auth_type}") if model != Contribution
+    conditions.push("contributions.contributable_type = #{auth_type}") if !opts.delete(:arbitrary_models) && model != Contribution
 
     # result model
 

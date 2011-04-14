@@ -855,7 +855,8 @@ table.alt_table hr {
 }
 
 table.alt_table .mid {
-	text-align: left :
+	text-align: left;
+  width: 390px;
 }
 
 table.alt_table tr td.actions { /*width: 135px;*/

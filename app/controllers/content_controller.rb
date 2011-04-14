@@ -21,7 +21,7 @@ class ContentController < ApplicationController
         end
 
         @pivot = contributions_list(Contribution, params, current_user,
-            :filters => expr)
+            :filters => expr, :arbitrary_models => true)
 
         # index.rhtml
       end

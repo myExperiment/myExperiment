@@ -1,0 +1,86 @@
+<% cache(:controller => 'users_cache', :action => 'listing', :id => user.id) do -%>
+  <td style="width: 100px"><div style="text-align: center; font-weight: bold">Member</div><br /><br /><center><%= contributor(user.id, 'User', true, 60) %></center></td>
+  <td class="mid" style="text-align: left;">
+
+    <p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
+      <%= icon "user", nil, nil, nil, '' %>
+      <%= name user %>
+      <%= friend_badge(user) %>
+      <%= admin_badge(user) %>
+    </p>
+          
+    <% unless user.created_at.blank? %>
+      <p style="font-size: 85%;">
+        <b>Joined:</b>
+        <%= datetime user.created_at %>
+      </p>
+    <% end %>
+          
+    <div class="desc" style="font-size: 85%;">
+      <% unless user.profile.body.blank? %>
+        <% desc = truncate(strip_html(user.profile.body), 180) %>
+        <%= query ? highlight_all(desc, query) : desc %>
+      <% else -%>
+        <span class="none_text">No description</span>  
+      <% end %>
+    </div>
+          
+    <% unless user.last_seen_at.blank? %>
+      <p style="font-size: 85%;">
+        <b>Last active:</b>
+        <%= datetime user.last_seen_at %>
+      </p>
+    <% end %>
+          
+    <% if user.profile %>
+          
+      <p style="font-size: 85%;">
+        <% unless user.profile.website.blank? %>
+          <b>Website:</b>
+          <%= link_to h(user.profile.website), h(user.profile.website), :popup => true %>
+          |
+        <% end %>
+              
+        <% unless user.profile.email.blank? %>
+          <b>Email (public):</b>
+          <%= mail_to user.profile.email, nil, {  :encode => "hex", :replace_at => " [at] " } %>
+        <% end %>
+      </p>
+              
+      <p style="font-size: 85%;">
+        <% unless user.profile.field_or_industry.blank? %>
+          <b>Field/Industry:</b>
+          <%= h user.profile.field_or_industry %>
+          |
+        <% end %>
+              
+        <% unless user.profile.occupation_or_roles.blank? %>
+          <b>Occupation/Role(s):</b>
+          <%= h user.profile.occupation_or_roles %>
+        <% end %>
+      </p>
+
+    <% end %>
+  </td>
+<% end %>
+
+<td class="actions"  style="width: 90px;">
+  <%= icon "show", user_path(user.id), nil, nil, "View" %>
+  <% if mine? user %>
+    <%= icon "edit", edit_user_path(user), nil, nil, "Edit" %>
+  <% else %>
+    <!-- check if the profile that we are viewing now is a friend of current user -> stored for better performance -->
+    <% this_user_is_friend_of_current_user = (current_user != 0) && current_user.friend?(user.id) %>
+    <% unless !logged_in? || this_user_is_friend_of_current_user || current_user.friendship_pending?(user.id) %>
+      <%= icon "friendship", new_user_friendship_url(:user_id => user.id), nil, nil, "Request Friendship" %>
+    <% end %>
+
+    <%= icon "message", new_message_path(:user_id => user.id), nil, nil, "Message" %>
+
+    <% if logged_in? && this_user_is_friend_of_current_user %>
+      <% master_id, friendship_obj = current_user.friendship_from_self_id_and_friends_id(user.id) %>
+      <%= icon "friend_delete", user_friendship_path(master_id, friendship_obj) + "?return_to=" + currentusers_things_url('friends'), nil, {:confirm => "Are you sure you want to remove this user from your friend list?", :method => :delete}, "Cancel Friendship" %>
+    <% end %>
+  </td>
+<% end %>
+
