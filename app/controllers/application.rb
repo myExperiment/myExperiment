@@ -394,57 +394,57 @@ class ApplicationController < ActionController::Base
         {
           :option => 'rank',
           :label  => 'Rank',
-          :order  => 'rank DESC'
+          :order  => 'contributions.rank DESC'
         },
         
         {
           :option => 'title',
           :label  => 'Title',
-          :order  => 'label, rank DESC'
+          :order  => 'contributions.label, contributions.rank DESC'
         },
 
         {
           :option => 'latest',
           :label  => 'Latest',
-          :order  => 'created_at DESC, rank DESC'
+          :order  => 'contributions.created_at DESC, contributions.rank DESC'
         },
 
         {
           :option => 'last_updated',
           :label  => 'Last updated',
-          :order  => 'updated_at DESC, rank DESC'
+          :order  => 'contributions.updated_at DESC, contributions.rank DESC'
         },
 
         {
           :option => 'rating',
           :label  => 'Community rating',
-          :order  => 'rating DESC, rank DESC'
+          :order  => 'contributions.rating DESC, contributions.rank DESC'
         },
 
         {
           :option => 'viewings',
           :label  => 'Most viewed',
-          :order  => 'site_viewings_count DESC, rank DESC'
+          :order  => 'contributions.site_viewings_count DESC, contributions.rank DESC'
         },
 
         {
           :option => 'downloads',
           :label  => 'Most downloaded',
-          :order  => 'site_downloads_count DESC, rank DESC'
+          :order  => 'contributions.site_downloads_count DESC, contributions.rank DESC'
         },
 
         {
           :option => 'type',
           :label  => 'Type',
           :joins  => [ :content_types ],
-          :order  => 'content_types.title, rank DESC'
+          :order  => 'content_types.title, contributions.rank DESC'
         },
 
         {
           :option => 'licence',
           :label  => 'Licence',
           :joins  => [ :licences ],
-          :order  => 'licenses.title, rank DESC'
+          :order  => 'licenses.title, contributions.rank DESC'
         }
       ],
 
