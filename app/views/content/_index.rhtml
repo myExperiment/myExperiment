@@ -73,7 +73,7 @@
             <% end %>
             <input class="submit" type="submit" value="Search"></input>
           </div>
-          <% if params[:query] %>
+          <% if params[:query] && controller.class != SearchController %>
             <div class="remove_search_query">
               <%= link_to("Remove search query", url_for(request.query_parameters.merge({ "query", nil }))) -%>
             </div>
