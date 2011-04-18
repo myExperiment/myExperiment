@@ -526,13 +526,13 @@ class ApplicationController < ActionController::Base
         :content_types       => "LEFT OUTER JOIN content_types ON contributions.content_type_id = content_types.id",
         :licences            => "LEFT OUTER JOIN licenses ON contributions.license_id = licenses.id",
         :users               => "INNER JOIN users ON contributions.contributor_type = 'User' AND contributions.contributor_id = users.id",
-        :taggings            => "LEFT OUTER JOIN taggings ON contributions.contributable_type = taggings.taggable_type AND contributions.contributable_id = taggings.taggable_id",
+        :taggings            => "LEFT OUTER JOIN taggings ON AUTH_TYPE = taggings.taggable_type AND AUTH_ID = taggings.taggable_id",
         :tags                => "INNER JOIN tags ON taggings.tag_id = tags.id",
         :networks            => "INNER JOIN networks ON permissions.contributor_type = 'Network' AND permissions.contributor_id = networks.id",
-        :credits             => "INNER JOIN creditations ON creditations.creditable_type = contributions.contributable_type AND creditations.creditable_id = contributions.contributable_id",
-        :curation_events     => "INNER JOIN curation_events ON curation_events.object_type = contributions.contributable_type AND curation_events.object_id = contributions.contributable_id",
-        :workflow_processors => "INNER JOIN workflow_processors ON contributions.contributable_type = 'Workflow' AND workflow_processors.workflow_id = contributions.contributable_id",
-        :search              => "RIGHT OUTER JOIN search_results ON search_results.result_type = contributions.contributable_type AND search_results.result_id = contributions.contributable_id"
+        :credits             => "INNER JOIN creditations ON creditations.creditable_type = AUTH_TYPE AND creditations.creditable_id = AUTH_ID",
+        :curation_events     => "INNER JOIN curation_events ON curation_events.object_type = AUTH_TYPE AND curation_events.object_id = AUTH_ID",
+        :workflow_processors => "INNER JOIN workflow_processors ON AUTH_TYPE = 'Workflow' AND workflow_processors.workflow_id = AUTH_ID",
+        :search              => "RIGHT OUTER JOIN search_results ON search_results.result_type = AUTH_TYPE AND search_results.result_id = AUTH_ID"
       }
     }
   end
@@ -805,7 +805,7 @@ class ApplicationController < ActionController::Base
           :arbitrary_models => opts[:arbitrary_models],
           :auth_type => opts[:auth_type],
           :auth_id => opts[:auth_id],
-          :joins => joins.length.zero? ? nil : joins.uniq.map do |j| pivot_options[:joins][j] end.join(" "),
+          :joins => merge_joins(joins, :auth_type => opts[:auth_type], :auth_id => opts[:auth_id]),
           :conditions => conditions,
           :group => "#{filter_id_column} #{calculate_having_clause(filter, opts)}",
           :limit => limit,
@@ -918,6 +918,24 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    def merge_joins(joins, opts = {})
+
+      opts[:auth_type] ||= 'contributions.contributable_type'
+      opts[:auth_id]   ||= 'contributions.contributable_id'
+
+      if joins.length.zero?
+        nil
+      else
+        joins.uniq.map do |j|
+          text = pivot_options[:joins][j]
+          text.gsub!(/AUTH_TYPE/, opts[:auth_type])
+          text.gsub!(/AUTH_ID/,   opts[:auth_id])
+          puts "join = #{j}, text = #{text}"
+          text
+        end.join(" ")
+      end
+    end
+
     joins      = []
     conditions = []
 
@@ -1004,7 +1022,7 @@ class ApplicationController < ActionController::Base
         :auth_type => auth_type,
         :auth_id => auth_id,
         :page => { :size => params["num"] ? params["num"].to_i : nil, :current => params["page"] },
-        :joins => joins.length.zero? ? nil : joins.uniq.map do |j| pivot_options[:joins][j] end.join(" "),
+        :joins => merge_joins(joins, :auth_type => auth_type, :auth_id => auth_id),
         :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
         :group => "#{group_by} #{having_clause}",
         :order => order_options[:order])
