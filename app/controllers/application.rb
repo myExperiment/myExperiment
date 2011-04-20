@@ -930,7 +930,6 @@ class ApplicationController < ActionController::Base
           text = pivot_options[:joins][j]
           text.gsub!(/AUTH_TYPE/, opts[:auth_type])
           text.gsub!(/AUTH_ID/,   opts[:auth_id])
-          puts "join = #{j}, text = #{text}"
           text
         end.join(" ")
       end
