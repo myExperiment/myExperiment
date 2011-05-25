@@ -485,6 +485,23 @@ module Authorization
             is_authorized = false
         end
 
+      when "User"
+
+        case action
+
+          when "view"
+            # everyone can view users
+            is_authorized = true
+
+          when "edit"
+            # the owner of a user record can edit
+            is_authorized = !user.nil? && user_id == thing_id
+
+          when "destroy"
+            # only adminstrators can delete accounts at present
+            is_authorized = user_is_administrator?(user)
+        end
+
       else
         # don't recognise the kind of "thing" that is being authorized, so
         # we don't specifically know that it needs to be blocked;

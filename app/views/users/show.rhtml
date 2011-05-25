@@ -58,6 +58,12 @@
 				<% end %>
 			  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
 	    <% end %>
+
+      <% if Authorization.check(:action => 'destroy', :object => @user, :user => current_user) %>
+					<li><%= icon "destroy", user_path(@user), nil, {
+            :confirm => "Are you sure you want to remove this user?", :method => :delete},
+            "Delete User" %></li>
+      <% end %>
 	</ul>
 <% end %>
 

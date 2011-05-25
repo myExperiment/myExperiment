@@ -11,8 +11,8 @@ class UsersController < ApplicationController
   before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password] + show_actions
   
   before_filter :find_users, :only => [:all]
-  before_filter :find_user, :only => show_actions
-  before_filter :find_user_auth, :only => [:edit, :update, :destroy]
+  before_filter :find_user, :only => [:destroy] + show_actions
+  before_filter :find_user_auth, :only => [:edit, :update]
   
   # declare sweepers and which actions should invoke them
   cache_sweeper :user_sweeper, :only => [ :create, :update, :destroy ]
@@ -245,20 +245,25 @@ class UsersController < ApplicationController
 
   # DELETE /users/1
   def destroy
-    flash[:notice] = 'Please contact the administrator to have your account removed.'
-    redirect_to :action => :index
+
+    unless Authorization.check(:action => 'destroy', :object => @user, :user => current_user)
+      flash[:notice] = 'You do not have permission to delete this user.'
+      redirect_to :action => :index
+      return
+    end
     
-    #@user.destroy
+    @user.destroy
     
-    # the user MUST be logged in to destroy their account
+    # If the destroyed account belongs to the current user, then
     # it is important to log them out afterwards or they'll 
     # receive a nasty error message..
-    #session[:user_id] = nil
+
+    session[:user_id] = nil if @user == current_user
     
-    #respond_to do |format|
-    #  flash[:notice] = 'User was successfully destroyed'
-    #  format.html { redirect_to users_url }
-    #end
+    respond_to do |format|
+      flash[:notice] = 'User account was successfully deleted'
+      format.html { redirect_to(params[:return_to] ? "#{Conf.base_uri}#{params[:return_to]}" : users_url) }
+    end
   end
   
   # GET /users/confirm_email/:hash

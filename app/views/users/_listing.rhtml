@@ -81,6 +81,13 @@
       <% master_id, friendship_obj = current_user.friendship_from_self_id_and_friends_id(user.id) %>
       <%= icon "friend_delete", user_friendship_path(master_id, friendship_obj) + "?return_to=" + currentusers_things_url('friends'), nil, {:confirm => "Are you sure you want to remove this user from your friend list?", :method => :delete}, "Cancel Friendship" %>
     <% end %>
-  </td>
-<% end %>
+  <% end %>
+
+  <% if Authorization.check(:action => 'destroy', :object => user, :user => current_user) %>
+    <%= icon "destroy", user_path(user) + "?return_to=" + CGI::escape(request.request_uri), nil, {
+      :confirm => "Are you sure you want to remove this user?", :method => :delete},
+      "Delete User" %>
+  <% end %>
+
+</td>
 
