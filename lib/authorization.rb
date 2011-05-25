@@ -102,6 +102,8 @@ module Authorization
 
     raise "Missing action in authorisation check" if opts[:action].nil?
 
+    opts[:user] = nil if opts[:user] == 0
+
     if opts[:model].nil? && opts[:object].nil? && (opts[:object_type].nil? || opts[:object_id])
       raise "Missing object / model in authorisation check"
     end
