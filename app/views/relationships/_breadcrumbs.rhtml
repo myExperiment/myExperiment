@@ -1,0 +1,14 @@
+<li><%= link_to 'Packs', packs_path %></li>
+
+<% if ["edit_relationships"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "edit_relationships" %>
+		<li><%= link_to "#{h(@context.title)}", pack_path(@context) %></li>
+    <li><b>&#187;</b></li>
+    <li>Edit Relationships</li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>
+

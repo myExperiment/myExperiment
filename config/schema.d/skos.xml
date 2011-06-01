@@ -19,7 +19,7 @@
   <table name="concepts">
 
     <column type="integer"  name="vocabulary_id"/>
-    <column type="string"   name="title"/>
+    <column type="string"   name="phrase"/>
     <column type="text"     name="description"/>
     <column type="text"     name="description_html"/>
     <column type="datetime" name="created_at"/>

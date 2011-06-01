@@ -2220,3 +2220,16 @@ table.quick_add td.submit {
   width: 450px;
 }
 
+.edit_relationships {
+  margin: 20px;
+}
+
+.edit_relationships > * {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.relationship_sentences * {
+  vertical-align: middle;
+}
+

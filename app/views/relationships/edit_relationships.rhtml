@@ -14,27 +14,32 @@
 
 <% else %>
 
-  <div>
+  <% form_tag("#{rest_resource_uri(@context)}/relationships") do -%>
 
-    <% form_tag("#{rest_resource_uri(@context)}/relationships") do -%>
-
+    <div class="edit_relationships">
       <%= select_tag("subject", options_for_select(@pack_entry_select_options)) -%>
 
-      <%= select_tag("predicate", options_for_select(@concepts.map do |c| "#{c.vocabulary.prefix}:#{c.preferred_labels.first.text}" end)) -%>
+      <%= select_tag("predicate", options_for_select(@concepts.map do |c| [c.phrase, "#{c.vocabulary.prefix}:#{c.preferred_labels.first.text}"] end)) -%>
 
       <%= select_tag("objekt", options_for_select(@pack_entry_select_options)) -%>
      
       <input type="submit" value="Add relationship"/>
 
-    <% end %>
+    </div>
 
-  </div>
+  <% end %>
 
 <% end %>
 
 <h2>Relationships</h2>
 
 <div id="relationshipsElement">
-  <%= render(:partial => "relationships", :locals => { :relationships => @relationships }) -%>
+  <%= render(:partial => "relationships", :locals => { :relationships => @relationships, :show_delete => true }) -%>
 </div>
+
+<p style="text-align: center">
+  <form action="<%= pack_path(@context) -%>" method="get">
+    <input type="submit" value="Back to pack" />
+  </form>
+</p>
 
