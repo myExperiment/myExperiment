@@ -34,7 +34,7 @@
 <h2>Relationships</h2>
 
 <div id="relationshipsElement">
-  <%= render(:partial => "relationships", :locals => { :relationships => @relationships, :show_delete => true }) -%>
+  <%= render(:partial => "relationships", :locals => { :pack => @context, :show_delete => true }) -%>
 </div>
 
 <p style="text-align: center">

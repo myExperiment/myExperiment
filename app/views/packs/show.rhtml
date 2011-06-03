@@ -88,7 +88,7 @@
 				Relationships <span class="count_text">(<%= @pack.relationships.length -%>)</span>
 			</h4>
 
-			<%= render :partial => "relationships/relationships", :locals => { :relationships => @pack.relationships, :show_delete => true } -%>
+			<%= render :partial => "relationships/relationships", :locals => { :pack => @pack, :show_delete => true } -%>
 			
       <% if @authorised_to_edit %>
         <br />

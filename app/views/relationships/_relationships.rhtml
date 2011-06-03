@@ -1,4 +1,5 @@
-<% can_edit = Authorization.check(:action => 'edit', :object => @pack, :user => current_user) %>
+<% can_edit = Authorization.check(:action => 'edit', :object => pack, :user => current_user) %>
+<% relationships = pack.relationships %>
 
 <% if relationships.empty? %>
 
