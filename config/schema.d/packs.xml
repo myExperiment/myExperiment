@@ -11,7 +11,7 @@
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
 
-    <has-many target="relationships" dependent="destroy"/>
+    <has-many target="relationships" as="context" dependent="destroy"/>
 
   </table>
 
@@ -43,21 +43,22 @@
 
   <table name="relationships">
 
-    <column type="integer"  name="pack_id"/>
+    <column type="integer"  name="context_id"/>
+    <column type="string"   name="context_type"/>
     <column type="integer"  name="user_id"/>
-    <column type="integer"  name="concept_id"/>
+    <column type="integer"  name="predicate_id"/>
     <column type="string"   name="subject_type"/>
     <column type="integer"  name="subject_id"/>
     <column type="string"   name="objekt_type"/>
     <column type="integer"  name="objekt_id"/>
     <column type="datetime" name="created_at"/>
 
-    <belongs-to target="subjects" polymorphic="true"/>
-    <belongs-to target="objekts"  polymorphic="true"/>
-
-    <belongs-to target="packs"/>
     <belongs-to target="users"/>
-    <belongs-to target="concepts"/>
+    <belongs-to target="contexts" polymorphic="true"/>
+
+    <belongs-to target="subjects" polymorphic="true"/>
+    <belongs-to target="predicates"/>
+    <belongs-to target="objekts"  polymorphic="true"/>
 
   </table>
  

@@ -7,7 +7,7 @@ class Relationship < ActiveRecord::Base
 
   acts_as_structured_data
 
-  validates_uniqueness_of :concept_id, :scope => [:subject_id, :objekt_id]
+  validates_uniqueness_of :predicate_id, :scope => [:subject_id, :objekt_id]
 
 end
 

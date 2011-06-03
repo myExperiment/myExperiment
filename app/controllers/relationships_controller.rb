@@ -13,13 +13,11 @@ class RelationshipsController < ApplicationController
   # GET /:context_type/:context_id/edit_relationships
   def edit_relationships
 
-    @relationships = Relationship.find(:all, :conditions => ['pack_id = ?', @context.id])
-
-    @concepts = Vocabulary.find(:all).map do |v| v.concepts end.flatten
+    @predicates = Ontology.find(:all).map do |o| o.predicates end.flatten
 
     @pack_entries = @context.contributable_entries + @context.remote_entries
 
-    @pack_entry_select_options = @pack_entries.map do |pe|
+    @select_options = @pack_entries.map do |pe|
       if pe.class == PackContributableEntry
         [pe.contributable.label, "contributable:#{pe.id}"]
       else
@@ -34,17 +32,15 @@ class RelationshipsController < ApplicationController
     subject = @context.find_pack_item(params[:subject])
     objekt  = @context.find_pack_item(params[:objekt])
 
-    prefix, term = params[:predicate].split(":")
+    prefix, title = params[:predicate].split(":")
 
-    label = Label.find(:first, :conditions =>
-        ['label_type = ? AND vocabulary_id = ? AND text = ?',
-           'preferred',
-           Vocabulary.find_by_prefix(prefix).id,
-           term])
+    predicate = Predicate.find(:first, :conditions =>
+        ['ontology_id = ? AND title = ?',
+           Ontology.find_by_prefix(prefix).id, title])
 
-    raise("Invalid form data") if subject.nil? || objekt.nil? || label.nil?
+    raise("Invalid form data") if subject.nil? || objekt.nil? || predicate.nil?
 
-    @relationship = Relationship.new(:pack => @context, :concept => label.concept, :user => current_user)
+    @relationship = Relationship.new(:context => @context, :predicate => predicate, :user => current_user)
 
     @relationship.subject = subject
     @relationship.objekt  = objekt
@@ -62,7 +58,7 @@ class RelationshipsController < ApplicationController
     end
     
     render :partial => "relationships/relationships",
-           :locals  => { :relationships => @context.relationships }
+           :locals  => { :context => @context, :show_delete => true }
   end
 
   private
@@ -72,7 +68,7 @@ class RelationshipsController < ApplicationController
     @context      = extract_resource_context(params)
     @relationship = Relationship.find_by_id(params[:id])
 
-    return false if @relationship.nil? || @context.nil? || @relationship.pack != @context
+    return false if @relationship.nil? || @context.nil? || @relationship.context != @context
     return false if Authorization.is_authorized?('view', nil, @context, current_user) == false
   end
 

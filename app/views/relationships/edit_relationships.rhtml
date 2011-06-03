@@ -8,20 +8,20 @@
 
 <h2>Add new relationship</h2>
 
-<% if @pack_entry_select_options.length < 2 %>
+<% if @select_options.length < 2 %>
 
-  <p><i>There must be at least two entries in a pack before you can add relationships.</i></p>
+  <p><i>There must be at least two entries before you can add relationships.</i></p>
 
 <% else %>
 
   <% form_tag("#{rest_resource_uri(@context)}/relationships") do -%>
 
     <div class="edit_relationships">
-      <%= select_tag("subject", options_for_select(@pack_entry_select_options)) -%>
+      <%= select_tag("subject", options_for_select(@select_options)) -%>
 
-      <%= select_tag("predicate", options_for_select(@concepts.map do |c| [c.phrase, "#{c.vocabulary.prefix}:#{c.preferred_labels.first.text}"] end)) -%>
+      <%= select_tag("predicate", options_for_select(@predicates.map do |p| [p.phrase, "#{p.ontology.prefix}:#{p.title}"] end)) -%>
 
-      <%= select_tag("objekt", options_for_select(@pack_entry_select_options)) -%>
+      <%= select_tag("objekt", options_for_select(@select_options)) -%>
      
       <input type="submit" value="Add relationship"/>
 
@@ -34,12 +34,12 @@
 <h2>Relationships</h2>
 
 <div id="relationshipsElement">
-  <%= render(:partial => "relationships", :locals => { :pack => @context, :show_delete => true }) -%>
+  <%= render(:partial => "relationships", :locals => { :context => @context, :show_delete => true }) -%>
 </div>
 
 <p style="text-align: center">
   <form action="<%= pack_path(@context) -%>" method="get">
-    <input type="submit" value="Back to pack" />
+    <input type="submit" value="Back" />
   </form>
 </p>
 
