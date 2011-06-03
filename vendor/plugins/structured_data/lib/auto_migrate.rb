@@ -10,9 +10,9 @@ class AutoMigrate
   AUTO_TABLE_NAME       = "auto_tables"
   SCHEMA                = "config/base_schema.xml"
   SCHEMA_D              = "config/schema.d"
-  COLUMN_ATTRIBUTES     = ['name', 'type', 'default']
+  COLUMN_ATTRIBUTES     = ['name', 'type', 'default', 'limit']
   BELONGS_TO_ATTRIBUTES = ['polymorphic', 'class_name', 'foreign_key']
-  HAS_MANY_ATTRIBUTES   = ['target', 'through', 'foreign_key', 'source', 'dependent', 'conditions', 'class_name']
+  HAS_MANY_ATTRIBUTES   = ['target', 'through', 'foreign_key', 'source', 'dependent', 'conditions', 'class_name', 'as']
 
   def self.schema
 
@@ -106,7 +106,7 @@ class AutoMigrate
       (new_columns - old_columns).each do |column_name|
         default = new_tables[table_name][:columns][column_name]['default']
         default = default.to_s unless default.nil?
-        conn.add_column(table_name, column_name, new_tables[table_name][:columns][column_name]["type"].to_sym, :default => default)
+        conn.add_column(table_name, column_name, new_tables[table_name][:columns][column_name]["type"].to_sym, :default => default, :limit => new_tables[table_name][:columns][column_name]['limit'])
       end
 
       # modify existing columns

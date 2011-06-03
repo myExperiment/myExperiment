@@ -28,6 +28,7 @@ module StructuredData
           bits.push(":dependent => :#{association[:dependent]}") if association[:dependent]
           bits.push(":conditions => \"#{association[:conditions]}\"") if association[:conditions]
           bits.push(":class_name => \"#{association[:class_name]}\"") if association[:class_name]
+          bits.push(":as => :#{association[:as]}") if association[:as]
 
           line = "has_many #{bits.join(', ')}"
           self.class_eval(line)
