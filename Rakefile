@@ -56,10 +56,32 @@ task "myexp:backup:restore" do
   Maintenance::Backup.restore
 end
 
-desc 'Load a controlled vocabulary file'
-task "myexp:vocab:load" do
+desc 'Load a SKOS concept schema'
+task "myexp:skos:load" do
   require File.dirname(__FILE__) + '/config/environment'
-  LoadVocabulary::load_vocabulary
+
+  file_name = ENV['FILE']
+
+  if file_name.nil?
+    puts "Missing file name."
+    return
+  end
+
+  LoadVocabulary::load_skos(YAML::load_file(file_name))
+end
+
+desc 'Load an OWL ontology'
+task "myexp:ontology:load" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  file_name = ENV['FILE']
+
+  if file_name.nil?
+    puts "Missing file name."
+    return
+  end
+
+  LoadVocabulary::load_ontology(YAML::load_file(file_name))
 end
 
 desc 'Refresh workflow metadata'

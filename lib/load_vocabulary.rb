@@ -5,16 +5,7 @@
 
 module LoadVocabulary
 
-  def self.load_vocabulary
-
-    file_name = ENV['FILE']
-
-    if file_name.nil?
-      puts "Missing file name."
-      return
-    end
-
-    data = YAML::load_file(file_name)
+  def self.load_skos(data)
 
     exising_vocabulary = Vocabulary.find_by_uri(data["uri"])
     exising_vocabulary.destroy if exising_vocabulary
@@ -64,5 +55,28 @@ module LoadVocabulary
     end
   end
 
+  def self.load_ontology(data)
+
+    existing_ontology = Ontology.find_by_uri(data["uri"])
+    existing_ontology.destroy if existing_ontology
+
+    ontology = Ontology.create(
+        :uri         => data["uri"],
+        :title       => data["title"],
+        :prefix      => data["prefix"],
+        :description => data["description"])
+
+    data["predicates"].each do |predicate|
+      
+      p = Predicate.create(
+          :title         => predicate["title"],
+          :phrase        => predicate["phrase"],
+          :description   => predicate["description"],
+          :equivalent_to => predicate["equivalent_to"])
+
+      ontology.predicates << p
+
+    end
+  end
 end
 

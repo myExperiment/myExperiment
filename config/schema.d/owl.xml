@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<schema>
+
+  <table name="ontologies">
+
+    <column type="integer"  name="user_id"/>
+    <column type="string"   name="uri"/>
+    <column type="string"   name="title"/>
+    <column type="string"   name="prefix"/>
+    <column type="text"     name="description"/>
+    <column type="text"     name="description_html"/>
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+
+    <has-many target="predicates" foreign_key="ontology_id"/>
+
+  </table>
+
+  <table name="predicates">
+
+    <column type="integer"  name="ontology_id"/>
+    <column type="string"   name="title"/>
+    <column type="string"   name="phrase"/>
+    <column type="text"     name="description"/>
+    <column type="text"     name="description_html"/>
+    <column type="text"     name="equivalent_to"/>
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+
+    <belongs-to target="ontology"/>
+
+  </table>
+
+</schema>
+
