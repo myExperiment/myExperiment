@@ -53,6 +53,10 @@ module WorkflowProcessors
       false
     end
     
+    def self.show_download_section?
+      true
+    end
+
     # End Class Methods
 
 

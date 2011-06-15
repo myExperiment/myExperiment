@@ -3,7 +3,9 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+
 class Contribution < ActiveRecord::Base
+
   belongs_to :contributor, :polymorphic => true
   belongs_to :contributable, :polymorphic => true
   belongs_to :policy
@@ -15,7 +17,7 @@ class Contribution < ActiveRecord::Base
   has_many :viewings,
            :order => "created_at DESC",
            :dependent => :destroy
-           
+
   # returns the 'most downloaded' Contributions
   # (only takes into account downloads, that is internal usage)
   # the maximum number of results is set by #limit#
@@ -44,14 +46,14 @@ class Contribution < ActiveRecord::Base
   
   # returns the 'most recent' Contributions
   # the maximum number of results is set by #limit#
-  def self.most_recent(limit=10, klass=nil)
-    Authorization.authorised_index(:type => klass ? Object.const_get(klass) : nil, :contribution_records => true, :limit => limit, :order => 'created_at DESC')
+  def self.most_recent(limit = 10, klass = 'Contribution')
+    Authorization.authorised_index(Object.const_get(klass), :all, :contribution_records => true, :limit => limit, :order => 'created_at DESC')
   end
   
   # returns the 'last updated' Contributions
   # the maximum number of results is set by #limit#
-  def self.last_updated(limit=10, klass=nil)
-    Authorization.authorised_index(:type => klass ? Object.const_get(klass) : nil, :contribution_records => true, :limit => limit, :order => 'updated_at DESC')
+  def self.last_updated(limit = 10, klass = 'Contribution')
+    Authorization.authorised_index(Object.const_get(klass), :all, :contribution_records => true, :limit => limit, :order => 'updated_at DESC')
   end
   
   # returns the 'most favourited' Contributions

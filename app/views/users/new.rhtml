@@ -28,6 +28,9 @@
 
   <center>
     <h2>Anti-spam verification</h2>
+  <% if true -%>
+    <%= recaptcha_tags -%> 
+  <% else -%>
     <table style="margin-top: 2em;">
       <tr>
         <td>
@@ -41,6 +44,7 @@
         </td>
       </tr>
     </table>
+  <% end -%>
   </center>
       
   <br />

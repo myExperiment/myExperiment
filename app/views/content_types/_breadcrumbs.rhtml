@@ -1,0 +1,11 @@
+<li><%= link_to 'Content Types', content_types_path %></li>
+
+<% if ["show"].include? controller.action_name.to_s %>
+
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><%= h(@content_type.title) %></li>
+  <% end %>
+<% end %>
+

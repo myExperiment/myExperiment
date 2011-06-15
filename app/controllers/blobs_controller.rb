@@ -4,10 +4,12 @@
 # See license.txt for details.
 
 class BlobsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :search, :all]
+
+  include ApplicationHelper
+
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :search]
   
-  before_filter :find_blobs, :only => [:all]
-  before_filter :find_blob_auth, :except => [:search, :index, :new, :create, :all]
+  before_filter :find_blob_auth, :except => [:search, :index, :new, :create]
   
   before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create]
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
@@ -53,14 +55,23 @@ class BlobsController < ApplicationController
   # GET /files
   def index
     respond_to do |format|
-      format.html # index.rhtml
-    end
-  end
-  
-  # GET /files/all
-  def all
-    respond_to do |format|
-      format.html # all.rhtml
+      format.html {
+        @pivot_options = pivot_options
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { 'CATEGORY' => 'Blob' },
+            :filters     => expr)
+
+        # index.rhtml
+      }
     end
   end
   
@@ -71,7 +82,21 @@ class BlobsController < ApplicationController
     end
     
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = file_url(@blob)
+        @lod_html = formatted_file_url(:id => @blob.id, :format => 'html')
+        @lod_rdf  = formatted_file_url(:id => @blob.id, :format => 'rdf')
+        @lod_xml  = formatted_file_url(:id => @blob.id, :format => 'xml')
+
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} files #{@blob.id}`
+        }
+      end
     end
   end
   
@@ -85,7 +110,7 @@ class BlobsController < ApplicationController
   
   # POST /blobs
   def create
-    
+
     # don't create new blob if no file has been selected
     if params[:blob][:data].size == 0
       respond_to do |format|
@@ -99,6 +124,8 @@ class BlobsController < ApplicationController
       params[:blob].delete('data')
 
       params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
+
+      params[:blob][:license_id] = nil if params[:blob][:license_id] && params[:blob][:license_id] == "0"
    
       @blob = Blob.new(params[:blob])
       @blob.content_blob = ContentBlob.new(:data => data)
@@ -153,6 +180,8 @@ class BlobsController < ApplicationController
       end
     end
     
+    params[:blob][:license_id] = nil if params[:blob][:license_id] && params[:blob][:license_id] == "0"
+
     # 'Data' (ie: the actual file) cannot be updated!
     params[:blob].delete('data') if params[:blob][:data]
     
@@ -192,45 +221,6 @@ class BlobsController < ApplicationController
     end
   end
   
-  # POST /files/1;comment
-  def comment 
-    text = params[:comment][:comment]
-    ajaxy = true
-    
-    if text.nil? or (text.length == 0)
-      text = params[:comment_0_comment_editor]
-      ajaxy = false
-    end
-
-    if text and text.length > 0
-      comment = Comment.create(:user => current_user, :comment => text)
-      @blob.comments << comment
-    end
-    
-    respond_to do |format|
-      if ajaxy
-        format.html { render :partial => "comments/comments", :locals => { :commentable => @blob } }
-      else
-        format.html { redirect_to file_url(@blob) }
-      end
-    end
-  end
-  
-  # DELETE /files/1;comment_delete
-  def comment_delete
-    if params[:comment_id]
-      comment = Comment.find(params[:comment_id].to_i)
-      # security checks:
-      if comment.user_id == current_user.id and comment.commentable_type.downcase == 'blob' and comment.commentable_id == @blob.id
-        comment.destroy
-      end
-    end
-    
-    respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @blob } }
-    end
-  end
-  
   # POST /files/1;rate
   def rate
     if @blob.contributor_type == 'User' and @blob.contributor_id == current_user.id
@@ -238,7 +228,7 @@ class BlobsController < ApplicationController
     else
       Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @blob.class.to_s, @blob.id, current_user.id])
       
-      @blob.ratings << Rating.create(:user => current_user, :rating => params[:rating])
+      Rating.create(:rateable => @blob, :user => current_user, :rating => params[:rating])
       
       respond_to do |format|
         format.html { 
@@ -294,19 +284,6 @@ class BlobsController < ApplicationController
   end
   
   protected
-  
-  def find_blobs
-    found = Blob.find(:all, 
-                       :order => "updated_at DESC, created_at DESC",
-                       :page => { :size => 20, 
-                       :current => params[:page] })
-    
-    found.each do |blob|
-      blob.content_blob.data = nil unless Authorization.is_authorized?("download", nil, blob, current_user)
-    end
-    
-    @blobs = found
-  end
   
   def find_blob_auth
     begin

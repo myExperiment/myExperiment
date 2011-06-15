@@ -1,12 +1,17 @@
 class Viewing < ActiveRecord::Base
-  belongs_to :contribution,
-             :counter_cache => true
-             
-  belongs_to :user,
-             :counter_cache => true
+
+  belongs_to :contribution
+  belongs_to :user
              
   validates_presence_of :contribution
   
+  after_save { |viewing|
+    Contribution.increment_counter(:viewings_count,      viewing.contribution.id)
+    Contribution.increment_counter(:site_viewings_count, viewing.contribution.id) if viewing.accessed_from_site
+
+    User.increment_counter(:viewings_count, viewing.user.id) if viewing.user
+  }
+
   # returns the 'most recent' Viewings #after# a given time
   # the maximum number of results is set by #limit#
   def self.most_recent(after=(Time.now - 3.hours), limit=10)

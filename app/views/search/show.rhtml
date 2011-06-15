@@ -1,41 +1,16 @@
 <% t "Results" -%>
 
-<%= render :partial => 'extra_search_help' %>
-
 <h1>Search results for "<%= h @query -%>"</h1>
 
 <% if @total_count == 0 %>
 
   <p class="none_text">No search results.</p>
   
+  <%= render :partial => 'extra_search_help' %>
+
 <% else %>
 
-  <%= view_privileges_notice %>
-  <br/>
-
-  <div id="tabsContainer" class="tabsContainer"></div>
-
-  <% @infos.each do |info| %>
-
-    <% name  = visible_name(info[:model]).pluralize
-       count = info[:results].length
-       total = info[:total_count] -%>
-
-    <div class="tabContainer">
-      <div class="tabTitle"><%= name %> (<%= count -%><% if count < total %> of <%= total -%><% end %>)</div>
-      <div class="tabContent">
-
-        <% if count < total %>
-          <p class="box_standout" style="font-size: 108%; margin-bottom: 1em; margin-top: 0.6em;"><b>
-            There are more results than shown here.  <a href="<%= search_path + "?type=#{info[:search_type]}&query=" + params[:query] -%>">See all <%= name %> results</a> for this query.
-          </b></p>
-        <% end %>
-
-        <%= render :partial => "#{info[:model].to_s.underscore.pluralize}/table", :locals => { :collection => info[:results], :query => @query } %>
-      </div>
-    </div>
-  <% end %>
+  <%= render :partial => "content/index" -%>
 
 <% end %>
 
-<br />

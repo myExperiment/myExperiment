@@ -7,8 +7,9 @@ class NetworksController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :search, :all]
   
   before_filter :find_networks, :only => [:all]
-  before_filter :find_network, :only => [:membership_request, :show, :comment, :comment_delete, :tag]
-  before_filter :find_network_auth, :only => [:invite, :membership_invite, :membership_invite_external, :edit, :update, :destroy]
+  before_filter :find_network, :only => [:membership_request, :show, :tag]
+  before_filter :find_network_auth_admin, :only => [:invite, :membership_invite, :membership_invite_external]
+  before_filter :find_network_auth_owner, :only => [:edit, :update, :destroy]
   
   # declare sweepers and which actions should invoke them
   cache_sweeper :network_sweeper, :only => [ :create, :update, :destroy, :membership_request, :membership_invite, :membership_invite_external ]
@@ -237,9 +238,115 @@ class NetworksController < ApplicationController
 
   # GET /networks/1
   def show
+
+    @item_sort_options = [
+      ["rank",          "Rank"],
+      ["most_recent",   "Most recent"],
+      ["title",         "Title"],
+      ["uploader",      "Uploader"],
+      ["last_updated",  "Last updated"],
+      ["rating",        "User rating"],
+      ["licence",       "Licence"],
+      ["content_type",  "Content Type"]
+    ]
+
     @shared_items = @network.shared_contributions
+
+    case params[:item_sort]
+
+      when "rank"; @shared_items.sort! do |a, b|
+        b.rank <=> a.rank
+      end
+
+      when "title"; @shared_items.sort! do |a, b|
+        a.contributable.label <=> b.contributable.label
+      end
+
+      when "most_recent"; @shared_items.sort! do |a, b|
+        b.contributable.created_at <=> a.contributable.created_at
+      end
+
+      when "uploader"; @shared_items.sort! do |a, b|
+        if a.contributor.label == b.contributor.label
+          b.rank <=> a.rank
+        else
+          a.contributor.label <=> b.contributor.label
+        end
+      end
+
+      when "last_updated"; @shared_items.sort! do |a, b|
+        b.contributable.updated_at <=> a.contributable.updated_at
+      end
+
+      when "rating"; @shared_items.sort! do |a, b|
+
+        a_rating = a.rating
+        b_rating = b.rating
+
+        if a_rating == b_rating
+          b.rank <=> a.rank
+        else
+          b.rating <=> a.rating
+        end
+      end
+
+      when "licence"; @shared_items.sort! do |a, b|
+
+        a_has_licence = a.contributable.respond_to?('license')
+        b_has_licence = b.contributable.respond_to?('license')
+
+        if (a_has_licence && b_has_licence)
+          if a.contributable.license == b.contributable.license
+            b.rank <=> a.rank
+          else
+            a.contributable.license.title <=> b.contributable.license.title
+          end
+        elsif (a_has_licence && !b_has_licence)
+          -1
+        elsif (!a_has_licence && b_has_licence)
+          1
+        else
+          b.rank <=> a.rank
+        end
+      end
+
+      when "content_type"; @shared_items.sort! do |a, b|
+
+        a_has_content_type = a.contributable.respond_to?('content_type')
+        b_has_content_type = b.contributable.respond_to?('content_type')
+
+        if (a_has_content_type && b_has_content_type)
+          if a.contributable.content_type == b.contributable.content_type
+            b.rank <=> a.rank
+          else
+            a.contributable.content_type.title <=> b.contributable.content_type.title
+          end
+        elsif (a_has_content_type && !b_has_content_type)
+          -1
+        elsif (!a_has_content_type && b_has_content_type)
+          1
+        else
+          b.rank <=> a.rank
+        end
+      end
+    end
+
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+         
+        @lod_nir  = group_url(@network)
+        @lod_html = formatted_group_url(:id => @network.id, :format => 'html')
+        @lod_rdf  = formatted_group_url(:id => @network.id, :format => 'rdf')
+        @lod_xml  = formatted_group_url(:id => @network.id, :format => 'xml')
+         
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} groups #{@network.id}`
+        }
+      end
     end
   end
 
@@ -294,46 +401,7 @@ class NetworksController < ApplicationController
       format.html { redirect_to groups_url }
     end
   end
-  
-  # POST /networks/1;comment
-  def comment
-    text = params[:comment][:comment]
-    ajaxy = true
-    
-    if text.nil? or (text.length == 0)
-      text = params[:comment_0_comment_editor]
-      ajaxy = false
-    end
-    
-    if text and text.length > 0
-      comment = Comment.create(:user => current_user, :comment => text)
-      @network.comments << comment
-    end
-    
-    respond_to do |format|
-      if ajaxy
-        format.html { render :partial => "comments/comments", :locals => { :commentable => @network } }
-      else
-        format.html { redirect_to group_url(@network) }
-      end
-    end
-  end
-  
-  # DELETE /networks/1;comment_delete
-  def comment_delete
-    if params[:comment_id]
-      comment = Comment.find(params[:comment_id].to_i)
-      # security checks:
-      if comment.user_id == current_user.id and comment.commentable_type.downcase == 'network' and comment.commentable_id == @network.id
-        comment.destroy
-      end
-    end
-    
-    respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @network } }
-    end
-  end
-  
+ 
   # POST /networks/1;tag
   def tag
     @network.tags_user_id = current_user
@@ -373,14 +441,23 @@ protected
     end 
   end
 
-  def find_network_auth
+  def find_network_auth_owner
     begin
       @network = Network.find(params[:id], :conditions => ["networks.user_id = ?", current_user.id], :include => [ :owner, :memberships ])
+    rescue ActiveRecord::RecordNotFound
+      error("Group not found (id not authorized)", "is invalid (not group adminsitrator)")
+    end
+  end
+  
+  def find_network_auth_admin
+    begin
+      @network = Network.find(params[:id], :include => [ :owner, :memberships ])
+      raise unless @network.administrator?(current_user.id)
     rescue ActiveRecord::RecordNotFound
       error("Group not found (id not authorized)", "is invalid (not owner)")
     end
   end
-  
+
 private
 
   def error(notice, message)

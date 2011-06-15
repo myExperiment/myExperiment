@@ -73,12 +73,12 @@ class Invitation
       # decide which action to make
       case type
         when "invite"
-          Mailer.deliver_invite_new_user(user, email_addr, msg_text, base_host)
+          Mailer.deliver_invite_new_user(user, email_addr, msg_text)
         when "group_invite"
           group = Network.find(id_of_group_to_join)
-          Mailer.deliver_group_invite_new_user(user, group, email_addr, msg_text, token, base_host)
+          Mailer.deliver_group_invite_new_user(user, group, email_addr, msg_text, token)
         when "friendship_invite"
-          Mailer.deliver_friendship_invite_new_user(user, email_addr, msg_text, token, base_host)
+          Mailer.deliver_friendship_invite_new_user(user, email_addr, msg_text, token)
       end
     }    
   end

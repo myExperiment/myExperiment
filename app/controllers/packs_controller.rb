@@ -6,10 +6,9 @@
 class PacksController < ApplicationController
   include ApplicationHelper
   
-  before_filter :login_required, :except => [:index, :show, :all, :search, :items, :download, :statistics]
+  before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
   
-  before_filter :find_packs, :only => [:all]
-  before_filter :find_pack_auth, :except => [:index, :new, :create, :all, :search]
+  before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
   
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
   
@@ -29,14 +28,23 @@ class PacksController < ApplicationController
   # GET /packs
   def index
     respond_to do |format|
-      format.html # index.rhtml
-    end
-  end
-  
-  # GET /packs/all
-  def all
-    respond_to do |format|
-      format.html # all.rhtml
+      format.html {
+        @pivot_options = pivot_options
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { 'CATEGORY' => 'Pack' },
+            :filters     => expr)
+
+        # index.rhtml
+      }
     end
   end
   
@@ -47,7 +55,21 @@ class PacksController < ApplicationController
     end
     
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+        
+        @lod_nir  = pack_url(@pack)
+        @lod_html = formatted_pack_url(:id => @pack.id, :format => 'html')
+        @lod_rdf  = formatted_pack_url(:id => @pack.id, :format => 'rdf')
+        @lod_xml  = formatted_pack_url(:id => @pack.id, :format => 'xml')
+        
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} packs #{@pack.id}`
+        }
+      end
     end
   end
   
@@ -161,7 +183,7 @@ class PacksController < ApplicationController
   
   # POST /packs/1;favourite
   def favourite
-    @pack.bookmarks << Bookmark.create(:user => current_user) unless @pack.bookmarked_by_user?(current_user)
+    @pack.bookmarks << Bookmark.create(:user => current_user, :bookmarkable => @pack) unless @pack.bookmarked_by_user?(current_user)
     
     respond_to do |format|
       flash[:notice] = "You have successfully added this item to your favourites."
@@ -181,45 +203,6 @@ class PacksController < ApplicationController
       flash[:notice] = "You have successfully removed this item from your favourites."
       redirect_url = params[:return_to] ? params[:return_to] : pack_url(@pack)
       format.html { redirect_to redirect_url }
-    end
-  end
-  
-  # POST /packs/1;comment
-  def comment 
-    text = params[:comment][:comment]
-    ajaxy = true
-    
-    if text.nil? or (text.length == 0)
-      text = params[:comment_0_comment_editor]
-      ajaxy = false
-    end
-
-    if text and text.length > 0
-      comment = Comment.create(:user => current_user, :comment => text)
-      @pack.comments << comment
-    end
-    
-    respond_to do |format|
-      if ajaxy
-        format.html { render :partial => "comments/comments", :locals => { :commentable => @pack } }
-      else
-        format.html { redirect_to pack_url(@pack) }
-      end
-    end
-  end
-  
-  # DELETE /packs/1;comment_delete
-  def comment_delete
-    if params[:comment_id]
-      comment = Comment.find(params[:comment_id].to_i)
-      # security checks:
-      if comment.user_id == current_user.id and comment.commentable_type == 'Pack' and comment.commentable_id == @pack.id
-        comment.destroy
-      end
-    end
-    
-    respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @pack } }
     end
   end
   
@@ -420,13 +403,6 @@ class PacksController < ApplicationController
     else
       return uri
     end
-  end
-  
-  def find_packs
-    @packs = Pack.find(:all, 
-                       :order => "title ASC",
-                       :page => { :size => 20, 
-                       :current => params[:page] })
   end
   
   def find_pack_auth

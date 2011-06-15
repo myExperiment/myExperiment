@@ -148,7 +148,7 @@
 			
 			<p>
 				<b>Type:</b>
-				<%= h(@workflow.type_display_name) %>
+				<%= link_to(h(@workflow.content_type.title), content_type_path(@workflow.content_type)) %>
 			</p>
 			
 			<br/>
@@ -210,23 +210,39 @@
 			
 			<br/>
 			
-			<h3>
-				<%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
-				Download
-			</h3>
-			
-			<% if @authorised_to_download %>
-				<ul class="sectionIcons">
-					<li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package (#{@workflow.display_data_format})") -%></li>
-				</ul>
-			<% else %>
-				<p class="none_text">
-					You do not have permission to download this workflow
-				</p>
-			<% end %>
-			
-			<br/>
-			
+      <% if @workflow.show_download_section? %>
+
+        <h3>
+          <%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
+          Download
+        </h3>
+        
+        <% if @authorised_to_download %>
+
+          <br />
+
+          <ul class="sectionIcons">
+            <li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package (#{@workflow.display_data_format})") -%></li>
+          </ul>
+
+          <% if @workflow.content_type.title == "Taverna 2" %>
+            <br />
+
+            <ul class="sectionIcons">
+              <li style="margin-left: 0;"><%= icon('workflow', galaxy_tool_path(:id => @workflow.id, :version => @viewing_version_number.to_s), "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow as a Galaxy tool") -%></li>
+            </ul>
+          <% end %>
+
+        <% else %>
+          <p class="none_text">
+            You do not have permission to download this workflow
+          </p>
+        <% end %>
+        
+        <br/>
+        
+      <% end %>
+
 			<h3>
 				<%= info_icon_with_tooltip("This section provides options for running this version of the Workflow") %>
 				Run
@@ -273,8 +289,9 @@
 </div>
 
 <div class="contribution_right_box">
-	<div class="contribution_section_box" style= "font-size: 100%; color: #CC0000; padding: 0.7em 0.9em; font-weight: bold;">
-		<%= @workflow.type_display_name -%> workflow
+	<div class="contribution_section_box" style= "font-size: 100%; padding: 0.7em 0.9em; font-weight: bold;">
+		<p><%= info_icon_with_tooltip("The type of workflow system that this Workflow is designed for.") %> Workflow Type</p>
+    <p><%= link_to(h(@workflow.content_type.title), content_type_path(@workflow.content_type)) %></p>
 	</div>
 	
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @workflow } %>
@@ -382,8 +399,10 @@
 <br/>
 
 <div id="commentsBox">
-	<%= render :partial => "comments/comments", :locals => { :commentable => @workflow, :url_to_timeline => comments_timeline_workflow_path(@workflow) } %>
+	<%= render :partial => "comments/comments", :locals => { :commentable => @workflow } %>
 </div>
+
+<%= render :partial => "contributions/alternative_formats" %>
 
 <!-- OpenURL context object -->
 

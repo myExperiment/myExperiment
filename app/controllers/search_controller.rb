@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class SearchController < ApplicationController
+
+  include ApplicationHelper
+
   def show
 
     if params[:query].nil? or params[:query] == ''
@@ -14,6 +17,8 @@ class SearchController < ApplicationController
 
     @type = params[:type].to_s.downcase
     
+    @type = "all" if @type.nil? or @type == ""
+
     if !Conf.search_categories.include?(@type)
       error(@type)
       return false
@@ -168,63 +173,22 @@ private
   end
 
   def search_all
-    @query = params[:query] || ''
-    @query.strip!
 
-    @results = []
+    @query = params[:query]
 
-    if Conf.solr_enable && !@query.blank?
+    @pivot_options = pivot_options
 
-      categories = (Conf.search_categories - ['all']).map do |category|
-        if Conf.model_aliases.key?(category.camelize.singularize)
-          category = Conf.model_aliases[category.camelize.singularize].pluralize.underscore
-        end
-
-        category
-      end
-
-      models = categories.map do |category| eval(category.singularize.camelize) end
-
-      @total_count = 0
-
-      @infos = []
-
-      models.each do |model|
-
-        begin
-          model_results = model.find_by_solr(@query.downcase, :limit => 10)
-
-          results = model_results.results
-          count   = model_results.total
-        rescue
-          flash.now[:error] = "There was a problem with your search query."
-
-          results = []
-          count   = 0
-        end
-
-        search_type = model.name.downcase.pluralize
-
-        Conf.model_aliases.each do |k,v|
-          search_type = k.downcase.pluralize if model.name == v
-        end
-
-        if (results.length > 0)
-          @infos.push({
-            :search_type => search_type,
-            :model       => model,
-            :results     => results,
-            :total_count => count
-          })
-        end
-
-        @total_count += count
-      end
+    begin
+      expr = parse_filter_expression(params["filter"]) if params["filter"]
+    rescue Exception => ex
+      puts "ex = #{ex.inspect}"
+      flash.now[:error] = "Problem with query expression: #{ex}"
+      expr = nil
     end
 
-    respond_to do |format|
-      format.html # search.rhtml
-    end
+    @pivot = contributions_list(Contribution, params, current_user,
+        :filters => expr, :arbitrary_models => true)
+
   end
 
   def search_model

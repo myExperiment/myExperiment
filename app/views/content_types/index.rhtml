@@ -1,0 +1,37 @@
+<% t "Content Types" -%>
+
+<h1>All Content Types</h1>
+
+<% if @content_types.empty? %>
+
+  <p>There are no Content Type entries to display.</p>
+
+<% else %>
+
+  <%= render :partial => "layouts/paginate", :locals => { :collection => @content_types } %>
+
+  <center>
+    <table class="simple">
+      <thead>
+        <tr>
+          <td>Title</td>
+          <td>Category</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% @content_types.each do |ct| %>
+          <tr>
+            <td><%= link_to(h(ct.title), content_type_path(ct)) %></td>
+            <td><%= visible_name(ct.category) %></td>
+        <% end %>
+      </tbody>
+    </table>
+  </center>
+          
+  <ul>
+  </ul>
+
+  <%= render :partial => "layouts/paginate", :locals => { :collection => @content_types } %>
+
+<% end %>
+

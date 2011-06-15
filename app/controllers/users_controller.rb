@@ -11,8 +11,8 @@ class UsersController < ApplicationController
   before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password] + show_actions
   
   before_filter :find_users, :only => [:all]
-  before_filter :find_user, :only => show_actions
-  before_filter :find_user_auth, :only => [:edit, :update, :destroy]
+  before_filter :find_user, :only => [:destroy] + show_actions
+  before_filter :find_user_auth, :only => [:edit, :update]
   
   # declare sweepers and which actions should invoke them
   cache_sweeper :user_sweeper, :only => [ :create, :update, :destroy ]
@@ -39,6 +39,11 @@ class UsersController < ApplicationController
   # GET /users/1
   def show
 
+    @lod_nir  = user_url(@user)
+    @lod_html = formatted_user_url(:id => @user.id, :format => 'html')
+    @lod_rdf  = formatted_user_url(:id => @user.id, :format => 'rdf')
+    @lod_xml  = formatted_user_url(:id => @user.id, :format => 'xml')
+
     @tab = "News" if @tab.nil?
 
     @user.salt = nil
@@ -46,6 +51,12 @@ class UsersController < ApplicationController
     
     respond_to do |format|
       format.html # show.rhtml
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} users #{@user.id}`
+        }
+      end
     end
   end
 
@@ -135,10 +146,20 @@ class UsersController < ApplicationController
 
     # check that captcha was entered correctly
 
-    if !captcha_valid?(params[:validation][:captcha_id], params[:validation][:captcha_validation])
-      flash.now[:error] = 'Verification text was not entered correctly - please try again.'
-      render :action => 'new'
-      return
+    unless RAILS_ENV == 'test'
+      if true
+        if !verify_recaptcha()
+          flash.now[:error] = 'Recaptcha text was not entered correctly - please try again.'
+          render :action => 'new'
+          return
+        end
+      else
+        if !captcha_valid?(params[:validation][:captcha_id], params[:validation][:captcha_validation])
+          flash.now[:error] = 'Verification text was not entered correctly - please try again.'
+          render :action => 'new'
+          return
+        end
+      end
     end
 
     if params[:user][:username] && params[:user][:password] && params[:user][:password_confirmation]
@@ -163,7 +184,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.save
         # DO NOT log in user yet, since account needs to be validated and activated first (through email).
-        Mailer.deliver_account_confirmation(@user, confirmation_hash(@user.unconfirmed_email), base_host)
+        @user.send_email_confirmation_email
         
         # If required, copy the email address to the Profile
         if params[:make_email_public]
@@ -209,7 +230,7 @@ class UsersController < ApplicationController
         else
           # If a new email address was set, then need to send out a confirmation email
           if params[:user][:unconfirmed_email]
-            Mailer.deliver_update_email_address(@user, confirmation_hash(@user.unconfirmed_email), base_host)
+            @user.send_update_email_confirmation
             flash.now[:notice] = "We have sent an email to #{@user.unconfirmed_email} with instructions on how to confirm this new email address"
           elsif params[:update_type]
             case params[:update_type]
@@ -232,20 +253,25 @@ class UsersController < ApplicationController
 
   # DELETE /users/1
   def destroy
-    flash[:notice] = 'Please contact the administrator to have your account removed.'
-    redirect_to :action => :index
+
+    unless Authorization.check(:action => 'destroy', :object => @user, :user => current_user)
+      flash[:notice] = 'You do not have permission to delete this user.'
+      redirect_to :action => :index
+      return
+    end
     
-    #@user.destroy
+    @user.destroy
     
-    # the user MUST be logged in to destroy their account
+    # If the destroyed account belongs to the current user, then
     # it is important to log them out afterwards or they'll 
     # receive a nasty error message..
-    #session[:user_id] = nil
+
+    session[:user_id] = nil if @user == current_user
     
-    #respond_to do |format|
-    #  flash[:notice] = 'User was successfully destroyed'
-    #  format.html { redirect_to users_url }
-    #end
+    respond_to do |format|
+      flash[:notice] = 'User account was successfully deleted'
+      format.html { redirect_to(params[:return_to] ? "#{Conf.base_uri}#{params[:return_to]}" : users_url) }
+    end
   end
   
   # GET /users/confirm_email/:hash
@@ -261,7 +287,7 @@ class UsersController < ApplicationController
     for user in @users
       unless user.unconfirmed_email.blank?
         # Check if hash matches user, in which case confirm the user's email
-        if confirmation_hash(user.unconfirmed_email) == params[:hash]
+        if user.email_confirmation_hash == params[:hash]
           confirmed = user.confirm_email!
           # BEGIN DEBUG
           logger.error("ERRORS!") unless user.errors.empty?
@@ -303,7 +329,7 @@ class UsersController < ApplicationController
           user.reset_password_code_until = 1.day.from_now
           user.reset_password_code =  Digest::SHA1.hexdigest( "#{user.email}#{Time.now.to_s.split(//).sort_by {rand}.join}" )
           user.save!
-          Mailer.deliver_forgot_password(user, base_host)
+          Mailer.deliver_forgot_password(user)
           flash[:notice] = "Instructions on how to reset your password have been sent to #{user.email}"
           format.html { render :action => "forgot_password" }
         else
@@ -595,9 +621,5 @@ private
       format.html { redirect_to users_url }
     end
   end
-  
-  def confirmation_hash(string)
-    Digest::SHA1.hexdigest(string + Conf.secret_word)
-  end
-  
 end
+

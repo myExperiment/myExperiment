@@ -29,7 +29,21 @@ class ReviewsController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+        
+        @lod_nir  = review_url(:id => @review.id, :workflow_id => @reviewable.id)
+        @lod_html = formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'html')
+        @lod_rdf  = formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'rdf')
+        @lod_xml  = formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'xml')
+        
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} reviews #{@review.id}`
+        }
+      end
     end
   end
 
@@ -120,13 +134,15 @@ protected
         @reviewable = workflow
       else
         if logged_in?
-          error("Workflow not found (id not authorized)", "is invalid (not authorized)", :workflow_id)
+          error("Workflow not found (id not authorized)", "is invalid (not authorized)")
+          return false
         else
           find_reviewable_auth if login_required
         end
       end
     rescue ActiveRecord::RecordNotFound
-      error("Workflow not found", "is invalid", :workflow_id)
+      error("Workflow not found", "is invalid")
+      return false
     end
   end
   
@@ -139,6 +155,7 @@ protected
       @review = review
     else
       error("Review not found", "is invalid")
+      return false
     end
   end
   
@@ -147,17 +164,29 @@ protected
       @review = review
     else
       error("Review not found or action not authorized", "is invalid (not authorized)")
+      return false
     end
   end
   
 private
 
-  def error(notice, message, attr=:id)
+  def error(notice, message, attr = nil)
     flash[:error] = notice
-    (err = Review.new.errors).add(attr, message)
+
+    workflow_id_attr = attr
+    workflow_id_attr = :id if workflow_id_attr.nil?
+
+    (err = Review.new.errors).add(workflow_id_attr, message)
     
     respond_to do |format|
-      format.html { redirect_to reviews_url(params[:workflow_id]) }
+      format.html {
+        if attr
+          redirect_to reviews_url(params[:workflow_id])
+        else
+          redirect_to workflows_url
+        end
+      }
     end
   end
 end
+

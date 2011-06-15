@@ -9,6 +9,8 @@ RAILS_GEM_VERSION = '1.2.6' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
+require 'lib/conf'
+require 'uri'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here
@@ -19,7 +21,7 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, by default all plugins in vendor/plugins are loaded
   # config.plugins = %W( exception_notification ssl_requirement )
 
-  config.plugins = ["engines", "encrypted_strings", "widgets", "white_list", "*"]
+  config.plugins = ["engines", "encrypted_strings", "widgets", "white_list", "white_list_formatted_content", "*"]
 
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
@@ -45,6 +47,13 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
   
   # See Rails::Configuration for more options
+
+  base_uri = URI.parse(Conf.base_uri)
+
+  config.action_mailer.default_url_options = {
+    :host => base_uri.host + (base_uri.port == 80 ? "" : ":#{base_uri.port.to_s}")
+  }
+
 end
 
 # Add new inflection rules using the following format 

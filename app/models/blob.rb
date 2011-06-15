@@ -25,8 +25,8 @@ class Blob < ActiveRecord::Base
   acts_as_attributor
   acts_as_attributable
   
-  acts_as_solr(:fields => [:title, :local_name, :body, :kind, :uploader],
-               :boost => "search_boost",
+  acts_as_solr(:fields => [:title, :local_name, :body, :kind, :uploader, :tag_list],
+               :boost => "rank",
                :include => [ :comments ]) if Conf.solr_enable
 
   belongs_to :content_blob
@@ -37,7 +37,6 @@ class Blob < ActiveRecord::Base
   # :dependent => :destroy is not supported in belongs_to in rails 1.2.6
   after_destroy { |b| b.content_blob.destroy }
 
-  validates_presence_of :license_id
   validates_presence_of :content_blob
   validates_presence_of :content_type
 
@@ -51,7 +50,7 @@ class Blob < ActiveRecord::Base
 
   alias_method :kind, :type
 
-  def search_boost
+  def rank
 
     # initial boost depends on viewings count
     boost = contribution.viewings_count / 100
@@ -67,5 +66,9 @@ class Blob < ActiveRecord::Base
 
   def named_download_url
     "#{Conf.base_uri}/files/#{id}/download/#{local_name}"
+  end
+
+  def statistics_for_rest_api
+    APIStatistics.statistics(self)
   end
 end

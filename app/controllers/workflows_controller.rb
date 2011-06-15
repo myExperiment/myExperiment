@@ -4,11 +4,13 @@
 # See license.txt for details.
 
 class WorkflowsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search, :all]
+
+  include ApplicationHelper
+
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :statistics, :launch, :search]
   
-  before_filter :find_workflows, :only => [:all]
   before_filter :find_workflows_rss, :only => [:index]
-  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :all]
+  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create]
   
   before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create, :new_version, :create_version]
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
@@ -17,10 +19,10 @@ class WorkflowsController < ApplicationController
   before_filter :check_custom_workflow_type, :only => [:create, :create_version]
   
   before_filter :check_is_owner, :only => [:edit, :update]
-  
+
   # declare sweepers and which actions should invoke them
   cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy_version, :destroy ]
-  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :launch ]
+  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :launch ]
   cache_sweeper :permission_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
   cache_sweeper :tag_sweeper, :only => [ :create, :update, :tag, :destroy ]
@@ -62,56 +64,6 @@ class WorkflowsController < ApplicationController
     end
   end
   
-  # POST /workflows/1;comment
-  def comment
-    text = params[:comment][:comment]
-    ajaxy = true
-
-    if text.nil? or (text.length == 0)
-      text = params[:comment_0_comment_editor]
-      ajaxy = false
-    end
-    
-    if text and text.length > 0
-      comment = Comment.create(:user => current_user, :comment => text)
-      @workflow.comments << comment
-    end
-  
-    respond_to do |format|
-      if ajaxy
-        format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow } }
-      else
-        format.html { redirect_to workflow_url(@workflow) }
-      end
-    end
-  end
-  
-  # DELETE /workflows/1;comment_delete
-  def comment_delete
-    if params[:comment_id]
-      comment = Comment.find(params[:comment_id].to_i)
-      comment.destroy if Authorization.check(:action => 'destroy', :object => comment, :user => current_user)
-    end
-    
-    respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @workflow } }
-    end
-  end
-  
-  def comments_timeline
-    respond_to do |format|
-      format.html # comments_timeline.rhtml
-    end
-  end
-  
-  # For simile timeline
-  def comments
-    @comments = Comment.find(:all, :conditions => [ "commentable_id = ? AND commentable_type = ? AND created_at > ? AND created_at < ?", @workflow.id, 'Workflow', params[:start].to_time, params[:end].to_time ] )
-    respond_to do |format|
-      format.json { render :partial => 'comments/timeline_json', :layout => false }
-    end
-  end
-  
   # POST /workflows/1;rate
   def rate
     if @workflow.contribution.contributor_type == 'User' and @workflow.contribution.contributor_id == current_user.id
@@ -119,7 +71,7 @@ class WorkflowsController < ApplicationController
     else
       Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @workflow.class.to_s, @workflow.id, current_user.id])
       
-      @workflow.ratings << Rating.create(:user => current_user, :rating => params[:rating])
+      Rating.create(:rateable => @workflow, :user => current_user, :rating => params[:rating])
       
       respond_to do |format|
         format.html { 
@@ -210,10 +162,57 @@ class WorkflowsController < ApplicationController
     end
   end
 
+  # GET /workflows/:id/versions/:version/galaxy_tool
+  def galaxy_tool
+  end
+
+  # GET /workflows/:id/versions/:version/galaxy_tool_download
+  def galaxy_tool_download
+
+    if params[:server].nil? || params[:server].empty?
+      flash.now[:error] = "You must provide the URL to a Taverna server."
+      render(:action => :galaxy_tool, :id => @workflow.id, :version => @viewing_version_number.to_s)
+      return
+    end
+
+    zip_file_name = "tmp/galaxy_tool.#{Process.pid}"
+
+    TavernaToGalaxy.generate(@workflow, @viewing_version_number, params[:server], zip_file_name)
+
+    zip_file = File.read(zip_file_name)
+    File.unlink(zip_file_name)
+
+    Download.create(:contribution => @workflow.contribution,
+        :user               => (logged_in? ? current_user : nil),
+        :user_agent         => request.env['HTTP_USER_AGENT'],
+        :accessed_from_site => accessed_from_website?(),
+        :kind               => 'Galaxy tool')
+
+    send_data(zip_file,
+        :filename => "#{@workflow.unique_name}_galaxy_tool.zip",
+        :type => 'application/zip',
+        :disposition => 'attachment')
+  end
+
   # GET /workflows
   def index
     respond_to do |format|
-      format.html # index.rhtml
+      format.html do
+        @pivot_options = pivot_options
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { 'CATEGORY' => 'Workflow' },
+            :filters     => expr)
+
+      end
       format.rss do
         #@workflows = Workflow.find(:all, :order => "updated_at DESC") # list all (if required)
         render :action => 'index.rxml', :layout => false
@@ -221,16 +220,8 @@ class WorkflowsController < ApplicationController
     end
   end
   
-  # GET /workflows/all
-  def all
-    respond_to do |format|
-      format.html # all.rhtml
-    end
-  end
-
   # GET /workflows/1
   def show
-    logger.debug("DEBUG DEBUG DEBUG")
     if allow_statistics_logging(@viewing_version)
       @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
@@ -244,7 +235,32 @@ class WorkflowsController < ApplicationController
     @similar_services_limit = 10
 
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        if params[:version]
+          @lod_nir  = workflow_version_url(:id => @workflow.id, :version => @viewing_version_number)
+          @lod_html = formatted_workflow_version_url(:id => @workflow.id, :version => @viewing_version_number, :format => 'html')
+          @lod_rdf  = formatted_workflow_version_url(:id => @workflow.id, :version => @viewing_version_number, :format => 'rdf')
+          @lod_xml  = formatted_workflow_version_url(:id => @workflow.id, :version => @viewing_version_number, :format => 'xml')
+        else
+          @lod_nir  = workflow_url(@workflow)
+          @lod_html = formatted_workflow_url(:id => @workflow.id, :format => 'html')
+          @lod_rdf  = formatted_workflow_url(:id => @workflow.id, :format => 'rdf')
+          @lod_xml  = formatted_workflow_url(:id => @workflow.id, :format => 'xml')
+        end
+
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          if params[:version]
+            render :inline => `#{Conf.rdfgen_tool} workflows #{@workflow.id} versions/#{@viewing_version.version}`
+          else
+            render :inline => `#{Conf.rdfgen_tool} workflows #{@workflow.id}`
+          end
+        }
+      end
     end
   end
 
@@ -271,7 +287,7 @@ class WorkflowsController < ApplicationController
     @workflow = Workflow.new
     @workflow.contributor = current_user
     @workflow.last_edited_by = current_user.id
-    @workflow.license_id = params[:workflow][:license_id]
+    @workflow.license_id = params[:workflow][:license_id] == "0" ? nil : params[:workflow][:license_id]
     @workflow.content_blob = ContentBlob.new(:data => file.read)
     @workflow.file_ext = file.original_filename.split(".").last.downcase
     
@@ -332,7 +348,7 @@ class WorkflowsController < ApplicationController
         if policy_err_msg.blank?
         	flash[:notice] = 'Workflow was successfully created.'
           format.html {
-            if @workflow.get_tag_suggestions.length > 0
+            if (@workflow.get_tag_suggestions.length > 0 || (@workflow.body.nil? || @workflow.body == ''))
               redirect_to tag_suggestions_workflow_url(@workflow)
             else
               redirect_to workflow_url(@workflow)
@@ -435,7 +451,16 @@ class WorkflowsController < ApplicationController
 
         respond_to do |format|
           flash[:notice] = 'New workflow version successfully created.'
-          format.html { redirect_to workflow_url(@workflow) }
+          format.html {
+
+            @workflow.reload
+
+            if (@workflow.get_tag_suggestions.length > 0 || (@workflow.body.nil? || @workflow.body == ''))
+              redirect_to tag_suggestions_workflow_url(@workflow)
+            else
+              redirect_to workflow_url(@workflow)
+            end
+          }
         end
       else
         fail = true
@@ -471,6 +496,8 @@ class WorkflowsController < ApplicationController
       end
     end
     
+    params[:workflow][:license_id] = nil if params[:workflow][:license_id] && params[:workflow][:license_id] == "0"
+
     respond_to do |format|
       # Here we assume that no actual workflow metadata is being updated that affects workflow versions,
       # so we need to prevent the timestamping update of workflow version objects.
@@ -602,8 +629,13 @@ class WorkflowsController < ApplicationController
 
   def process_tag_suggestions
 
+    if params[:workflow] && params[:workflow][:body]
+      @workflow.body = params[:workflow][:body]
+      @workflow.save
+    end
+
     params[:tag_list].split(',').each do |tag|
-      @workflow.add_tag(tag, current_user)
+      @workflow.add_tag(tag.strip, current_user)
     end
 
     redirect_to(workflow_url(@workflow))
@@ -611,23 +643,10 @@ class WorkflowsController < ApplicationController
 
 protected
 
-  def find_workflows
-    found = Workflow.find(:all, 
-                          construct_options.merge({:page => { :size => 20, :current => params[:page] },
-                          :include => [ { :contribution => :policy }, :tags, :ratings ],
-                          :order => "workflows.updated_at DESC" }))
-    
-    found.each do |workflow|
-      workflow.content_blob.data = nil unless Authorization.is_authorized?('download', nil, workflow, current_user)
-    end
-    
-    @workflows = found
-  end
-  
   def find_workflows_rss
     # Only carry out if request is for RSS
     if params[:format] and params[:format].downcase == 'rss'
-      @rss_workflows = Authorization.authorised_index(:type => Workflow, :limit => 30, :order => 'updated_at DESC', :user => current_user)
+      @rss_workflows = Authorization.authorised_index(Workflow, :all, :limit => 30, :order => 'updated_at DESC', :authorised_user => current_user)
     end
   end
   

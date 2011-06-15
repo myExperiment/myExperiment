@@ -143,6 +143,27 @@ class Network < ActiveRecord::Base
     return false
   end
   
+  def administrators(incl_owner=true)
+    explicit_administrators = User.find(:all,
+                                 :select     => "users.*",
+                                 :joins      => "JOIN memberships m on (users.id = m.user_id)",
+                                 :conditions => [ "m.network_id=? AND m.administrator AND m.user_established_at IS NOT NULL AND m.network_established_at IS NOT NULL", id ],
+                                 :order      => "GREATEST(m.user_established_at, m.network_established_at) DESC"
+                                )
+    return incl_owner ? ( [owner] + explicit_administrators ) : explicit_administrators
+  end
+
+  def administrator?(userid)
+    # the owner is automatically an adminsitrator of the network
+    return true if owner? userid
+    
+    administrators(false).each do |a|
+      return true if a.id.to_i == userid.to_i
+    end
+    
+    return false
+  end
+                          
   # Finds all the contributions that have been explicitly shared via Permissions
   def shared_contributions
     list = []

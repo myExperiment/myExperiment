@@ -3,28 +3,28 @@
 <%= error_messages_for :membership %>
 
 <% form_for(:membership, :url => user_memberships_path(params[:user_id]), :html => {:id => 'memb_request_form'}) do |f| %>
-  <%= f.hidden_field :user_id, :value => current_user.id %>
-	
+	<%= f.hidden_field :user_id, :value => current_user.id %>
+
 	<center>
-    <div class="box_standout" style="line-height: 1.6; width: 400px;">
+		<div class="box_standout" style="line-height: 1.6; width: 400px;">
 			<% if params[:network_id] -%>
-        <%= f.hidden_field :network_id, :value => @network.id %>
-				
+				<%= f.hidden_field :network_id, :value => @network.id %>
+
 				<b>Send a request to join the group:</b>
 				<br/>
 				<%= link_to_function h(@network.title) + expand_image, 
-														 visual_effect(:toggle_blind, "group_box", :duration => 0.3) -%>
-			  <br/>
-      	<small>(Administrator: <%= name @network.user_id -%>)</small>
-		  <% else -%>
-        <b>Select group:</b><br/>
-	  		<%= select_tag "membership[network_id]", options_from_collection_for_select(Network.find(:all, :order => "title ASC"), :id.to_i, :title), :style => "width: 360px; margin-top: 0.3em; margin-bottom: 0.5em" %>
-  		<% end -%>
+				                     visual_effect(:toggle_blind, "group_box", :duration => 0.3) -%>
+				 <br/>
+				<small>(Administrator: <%= name @network.user_id -%>)</small>
+			<% else -%>
+				<b>Select group:</b><br/>
+				<%= select_tag "membership[network_id]", options_from_collection_for_select(Network.find(:all, :order => "title ASC"), :id.to_i, :title), :style => "width: 360px; margin-top: 0.3em; margin-bottom: 0.5em" %>
+			<% end -%>
 		</div>
 	</center>
-	
+
 	<br/>
-	
+
 	<center>
 		<div class="box_currentuser_specific" style="text-align: center; width: 400px; font-size: 93%; padding-bottom: 1em;">
 			<center>
@@ -32,7 +32,7 @@
 					<tr>
 						<td style="line-height: 2; text-align: left;">
 							<%= info_icon_with_tooltip("This message is optional: if you leave it blank, your request will be sent without it") %>
-			      	<b>Message to group administrator:</b>
+							<b>Message to group administrator:</b>
 							<br/>
 							<%= text_area_tag "membership[message]", "", :rows => 4, :style => "width: 370px; font-size: 93%;" -%>
 						</td>
@@ -41,19 +41,19 @@
 			</center>
 		</div>
 	</center>
-	
+
 	<br/>
-	
+
 	<center>
 		<%= submit_tag "Send membership request", :id => "send", :style => 'width: 180px;', :onclick => "$('cancel').disabled=true;this.disabled=true;this.value='Sending your request...';this.form.submit();"  %>
-			
+
 		<% cancel_links_to = params[:network_id] ? url_for(:controller => 'networks', :action => 'show', :id => @network.id) : url_for(:controller => 'networks', :action => 'index') %>
 		<input type="submit" id="cancel" value="Return to Group" style="width: 180px" onclick="$('send').disabled=true;this.disabled=true;this.value='Returning...';window.location='<%= cancel_links_to -%>';return false;" />
 	</center>
-	
+
 	<% if params[:network_id] -%>
 		<div id="group_box" style="display: none; margin-top: 3em;">
-		  <%= render :partial => "networks/table", :locals => { :collection => [ @network ] } %>
+			<%= render :partial => "networks/table", :locals => { :collection => [ @network ] } %>
 		</div>
 	<% end %>
 

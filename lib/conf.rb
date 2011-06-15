@@ -6,7 +6,6 @@
 # Configuration module
 
 require 'yaml'
-require 'action_controller/test_process'
 
 class Conf
 
@@ -26,6 +25,14 @@ class Conf
     self.fetch_entry('site_logo')
   end
 
+  def self.contributor_models
+    self.fetch_entry('contributor_models')
+  end
+
+  def self.contributable_models
+    self.fetch_entry('contributable_models')
+  end
+
   def self.notifications_email_address
     self.fetch_entry('notifications_email_address')
   end
@@ -35,7 +42,11 @@ class Conf
   end
 
   def self.base_uri
-    self.fetch_entry('base_uri')
+    if RAILS_ENV == 'test'
+      "http://test.host"
+    else
+      self.fetch_entry('base_uri')
+    end
   end
 
   def self.admins
@@ -134,6 +145,14 @@ class Conf
     self.fetch_entry('validate_email_veracity')
   end
 
+  def self.rdfgen_enable
+    self.fetch_entry('rdfgen_enable')
+  end
+
+  def self.rdfgen_tool
+    self.fetch_entry('rdfgen_tool')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)
@@ -144,7 +163,7 @@ class Conf
 
     @config = nil
 
-    if request.class != ActionController::TestRequest
+    if request.class.name != "ActionController::TestRequest"
       if @settings['virtual_hosts']
         @settings['virtual_hosts'].each do |name, settings|
 
@@ -157,14 +176,47 @@ class Conf
           if settings['host'] && request.host == settings['host']
             @config = name
           end
+
+          if settings['prefix'] && request.path.starts_with?(settings['prefix'])
+            remainder = request.path[settings['prefix'].length..-1]
+
+            if remainder.empty? || remainder.match(/^[.\/]/)
+              @config = name
+            end
+          end
         end
       end
+    end
+
+    if request.query_parameters['portal_url']
+      session['portal_url'] = request.query_parameters['portal_url']
     end
 
     @config = session["portal"] if session["portal"]
   end
 
+  # helper function to convert model aliases
+
+  def self.to_model(str)
+    self.model_alias_convert(self.model_aliases, str)
+  end
+
+  def self.to_visible(str)
+    self.model_alias_convert(self.model_aliases.invert, str)
+  end
+
 private
+
+  def self.model_alias_convert(map, str)
+    map.each do |k, v|
+      return v                      if str == k
+      return v.underscore           if str == k.underscore
+      return v.pluralize            if str == k.pluralize
+      return v.underscore.pluralize if str == k.underscore.pluralize
+    end
+
+    str
+  end
 
   def self.fetch_entry(key, default = nil)
 

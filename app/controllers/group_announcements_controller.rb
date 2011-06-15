@@ -28,7 +28,21 @@ class GroupAnnouncementsController < ApplicationController
   # GET /group_announcements/1
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id)
+        @lod_html = formatted_group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'html')
+        @lod_rdf  = formatted_group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'rdf')
+        @lod_xml  = formatted_group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'xml')
+
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} group_announcements #{@announcement.id}`
+        }
+      end
     end
   end
 
@@ -95,7 +109,7 @@ class GroupAnnouncementsController < ApplicationController
 
   
   def check_admin
-    unless @group.owner?(current_user.id)
+    unless @group.administrator?(current_user.id)
       error("Only group administrators are allowed to create new announcements")
       return false
     end
@@ -134,7 +148,7 @@ class GroupAnnouncementsController < ApplicationController
           end
         when "edit","update","destroy"
           # only owner of the group can destroy the announcement
-          unless @group.owner?(current_user.id)
+          unless ((@announcement.user == current_user) || (@group.owner?(current_user.id)))
             not_auth = true;
             raise ActiveRecord::RecordNotFound, "You don't have permissions to perform this action"
           end

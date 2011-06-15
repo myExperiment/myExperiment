@@ -33,6 +33,16 @@ site_name: mySite
 
 site_logo: logo.png
 
+# contributor_models - These are the models for things that can contribute to
+#                      myExperiment.
+
+contributor_models: [User, Network]
+
+# contributable_models - These are the models for the things that myExperiment
+#                        contributors can contribute.
+
+contributable_models: [Workflow, Blob, Pack, Blog]
+
 # page_template - This is the page template for all the pages except for
 #                 the front page of the web site.
 #
@@ -234,7 +244,7 @@ default_search_size: 10
 # max_search_size - The maximum number of items shown in each search result
 #                   page.
 
-max_search_size: 100
+max_search_size: 5000
 
 # email - These are the email addresses used for sending notifications and the
 #         email address to send feedback entered from the web site.
@@ -425,3 +435,8 @@ home_page_stats:
 
 label_icons:
 
+# rdfgen_enable
+
+rdfgen_enable: false
+
+rdfgen_tool:

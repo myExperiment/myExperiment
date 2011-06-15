@@ -394,7 +394,7 @@ module ApplicationHelper
       end
     when "Pack"
       if p = Pack.find(:first, :conditions => ["id = ?", contributableid])
-        return link ? link_to(p.title, pack_url(p)) : h(p.title)
+        return link ? link_to(h(p.title), pack_url(p)) : h(p.title)
       else
         return nil
       end
@@ -781,6 +781,10 @@ module ApplicationHelper
       return "famfamfam_silk/text_signature.png"
     when "home"
       return "famfamfam_silk/application_home.png"
+    when "make_group_admin"
+      return "famfamfam_silk/award_star_add.png"
+    when "remove_group_admin"
+      return "famfamfam_silk/award_star_delete.png"
     when "service"
       return "biocat_icon.png"
     else
@@ -837,7 +841,7 @@ module ApplicationHelper
   def workflows_for_attribution_form
     workflows = Workflow.find(:all, :select => 'workflows.id, workflows.title, users.name',
         :joins => 'LEFT OUTER JOIN users ON workflows.contributor_type = "User" AND workflows.contributor_id = users.id',
-        :order => 'workflows.title ASC')
+        :order => 'workflows.id ASC')
 
     workflows.select { |w| Authorization.is_authorized?('show', 'Workflow', w.id, current_user) }
   end
@@ -845,7 +849,7 @@ module ApplicationHelper
   def blobs_for_attribution_form
     blobs = Blob.find(:all, :select => 'blobs.id, blobs.title, users.name',
         :joins => 'LEFT OUTER JOIN users ON blobs.contributor_type = "User" AND blobs.contributor_id = users.id',
-        :order => 'blobs.title ASC')
+        :order => 'blobs.id ASC')
 
     blobs.select { |b| Authorization.is_authorized?('show', 'Blob', b.id, current_user) }
   end
@@ -976,7 +980,7 @@ module ApplicationHelper
   
   def friend_badge(user)
     if user and logged_in? and user.id != current_user.id
-      return image_tag("friend_badge.png", :class => 'badge') if (user.friend? current_user.id)
+      return image_tag("friend_badge.png", :class => 'badge') if (current_user.friend? user.id)
     else 
       return ''
     end
@@ -1003,7 +1007,7 @@ module ApplicationHelper
   end
   
   def tooltip_title_attrib(text, delay=200)
-    return "header=[] body=[#{text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[#{delay}]"
+    return "header=[] body=[#{h(text)}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[#{delay}]"
   end
   
   # This method checks to see if the current user is allowed to approve a membership that is still pending approval
@@ -1012,7 +1016,7 @@ module ApplicationHelper
       if membership.user_established_at == nil
         return membership.user_id == current_user.id
       elsif membership.network_established_at == nil
-        return current_user.id == membership.network.owner.id
+        return membership.network.administrator?(current_user.id)
       end 
     else
       return false

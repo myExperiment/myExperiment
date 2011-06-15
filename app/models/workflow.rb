@@ -79,12 +79,19 @@ class Workflow < ActiveRecord::Base
     # This is required to keep the contribution's updated_at field accurate.
     after_save { |wv| wv.workflow.contribution.save if wv.workflow.contribution && wv.version != wv.workflow.current_version }
     
+    def components
+      if workflow.processor_class
+        workflow.processor_class.new(content_blob.data).get_components
+      else
+        XML::Node.new('components')
+      end
+    end
   end
   
   non_versioned_columns.push("license_id", "tag_list")
   
   acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
-               :boost => "search_boost",
+               :boost => "rank",
                :include => [ :comments ]) if Conf.solr_enable
 
   acts_as_runnable
@@ -96,7 +103,6 @@ class Workflow < ActiveRecord::Base
   validates_presence_of :unique_name
   validates_uniqueness_of :unique_name
   
-  validates_presence_of :license_id
   validates_presence_of :content_blob
   validates_presence_of :content_type
 
@@ -283,7 +289,7 @@ class Workflow < ActiveRecord::Base
 
   alias_method :kind, :type
 
-  def search_boost
+  def rank
 
     # initial boost depends on viewings count
     boost = contribution.viewings_count / 100
@@ -295,6 +301,14 @@ class Workflow < ActiveRecord::Base
     boost -= 20 if body.nil? || body.empty?
     
     boost
+  end
+
+  def show_download_section?
+    if processor_class
+      processor_class.show_download_section?
+    else
+      true
+    end
   end
 
   def delete_metadata
@@ -339,4 +353,9 @@ class Workflow < ActiveRecord::Base
 
     related_workflows.map do |result| result[0] end
   end
+
+  def statistics_for_rest_api
+    APIStatistics.statistics(self)
+  end
+
 end

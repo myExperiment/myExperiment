@@ -432,16 +432,31 @@ class User < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
            
-  def networks_membership_requests_pending
+  def networks_membership_requests_pending(include_group_admin=false)
     rtn = []
     
-    networks_owned.each do |n|
+    networks_admined(include_group_admin).each do |n|
       rtn.concat n.memberships_requested
     end
     
     return rtn
   end
   
+  def networks_admined(include_group_admin=false)
+    rtn = []
+
+    rtn.concat(networks_owned)
+
+    if include_group_admin
+      rtn.concat Network.find(:all,
+                   :select => "networks.*",
+                   :joins => "JOIN memberships m ON (networks.id = m.network_id)",
+                   :conditions => ["m.user_id=? AND m.user_established_at is NOT NULL AND m.network_established_at IS NOT NULL AND m.administrator", id])
+    end
+
+    return rtn
+  end
+                          
   def networks_membership_invites_pending
     rtn = []
     
@@ -570,7 +585,19 @@ class User < ActiveRecord::Base
     return [0,0] if result_set.empty?
     return [result_set[0]["avg_rating"], result_set[0]["rating_count"]]
   end
+
+  def send_email_confirmation_email
+    Mailer.deliver_account_confirmation(self, email_confirmation_hash)
+  end
   
+  def send_update_email_confirmation
+    Mailer.deliver_update_email_address(self, email_confirmation_hash)
+  end
+
+  def email_confirmation_hash
+    Digest::SHA1.hexdigest(unconfirmed_email + Conf.secret_word)
+  end
+
 protected
 
   # clean up emails and username before validation
@@ -678,4 +705,6 @@ private
   def self.clean_string(string)
     (string.downcase).gsub(" ","")
   end
+
 end
+

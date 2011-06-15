@@ -17,7 +17,7 @@ module WorkflowProcessors
     
     # MUST be unique across all processors
     def self.display_name
-      "Blog2 Template"
+      "LabTrove Template"
     end
     
     def self.display_data_format

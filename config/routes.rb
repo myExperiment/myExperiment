@@ -5,6 +5,45 @@ ActionController::Routing::Routes.draw do |map|
   # rest routes
   rest_routes(map)
 
+  # LoD routes
+  if Conf.rdfgen_enable
+
+    map.connect '/:contributable_type/:contributable_id/attributions/:attribution_id.:format',
+      :controller => 'linked_data', :action => 'attributions'
+
+    map.connect '/:contributable_type/:contributable_id/citations/:citation_id.:format',
+      :controller => 'linked_data', :action => 'citations'
+
+    map.connect '/:contributable_type/:contributable_id/comments/:comment_id.:format',
+      :controller => 'linked_data', :action => 'comments'
+
+    map.connect '/:contributable_type/:contributable_id/credits/:credit_id.:format',
+      :controller => 'linked_data', :action => 'credits'
+
+    map.connect '/users/:user_id/favourites/:favourite_id.:format',
+      :controller => 'linked_data', :action => 'favourites'
+
+    map.connect '/packs/:contributable_id/local_pack_entries/:local_pack_entry_id.:format',
+      :controller => 'linked_data', :action => 'local_pack_entries',
+      :contributable_type => 'packs'
+
+    map.connect '/packs/:contributable_id/remote_pack_entries/:remote_pack_entry_id.:format',
+      :controller => 'linked_data', :action => 'remote_pack_entries',
+      :contributable_type => 'packs'
+
+    map.connect '/:contributable_type/:contributable_id/policies/:policy_id.:format',
+      :controller => 'linked_data', :action => 'policies'
+
+    map.connect '/:contributable_type/:contributable_id/ratings/:rating_id.:format',
+      :controller => 'linked_data', :action => 'ratings'
+
+    map.connect '/tags/:tag_id/taggings/:tagging_id.:format',
+      :controller => 'linked_data', :action => 'taggings'
+  end
+
+  map.content '/content', :controller => 'content', :action => 'index', :conditions => { :method => :get }
+  map.formatted_content '/content.:format', :controller => 'content', :action => 'index', :conditions => { :method => :get }
+
   # Runners
   map.resources :runners, :member => { :verify => :get }
   
@@ -40,10 +79,8 @@ ActionController::Routing::Routes.draw do |map|
   
   # packs
   map.resources :packs, 
-    :collection => { :all => :get, :search => :get }, 
-    :member => { :comment => :post, 
-                 :comment_delete => :delete,
-                 :statistics => :get,
+    :collection => { :search => :get }, 
+    :member => { :statistics => :get,
                  :favourite => :post,
                  :favourite_delete => :delete,
                  :tag => :post,
@@ -56,35 +93,39 @@ ActionController::Routing::Routes.draw do |map|
                  :quick_add => :post,
                  :resolve_link => :post,
                  :items => :get } do |pack|
-    # No nested resources yet
+    pack.resources :comments, :collection => { :timeline => :get }
+    pack.resources :relationships, :collection => { :edit_relationships => :get }
   end
     
-
   # workflows (downloadable)
   map.resources :workflows, 
-    :collection => { :all => :get, :search => :get }, 
+    :collection => { :search => :get }, 
     :member => { :new_version => :get, 
                  :download => :get, 
                  :launch => :get,
                  :statistics => :get,
                  :favourite => :post, 
                  :favourite_delete => :delete, 
-                 :comment => :post, 
-                 :comment_delete => :delete, 
                  :rate => :post, 
                  :tag => :post, 
                  :create_version => :post, 
                  :destroy_version => :delete, 
                  :edit_version => :get, 
                  :update_version => :put, 
-                 :comments_timeline => :get, 
-                 :comments => :get,
                  :process_tag_suggestions => :post,
                  :tag_suggestions => :get } do |workflow|
     # workflows have nested citations
     workflow.resources :citations
     workflow.resources :reviews
+    workflow.resources :comments, :collection => { :timeline => :get }
   end
+
+  # workflow redirect for linked data model
+  map.workflow_version           '/workflows/:id/versions/:version',         :conditions => { :method => :get }, :controller => 'workflows', :action => 'show'
+  map.formatted_workflow_version '/workflows/:id/versions/:version.:format', :conditions => { :method => :get }, :controller => 'workflows', :action => 'show'
+
+  map.galaxy_tool 'workflows/:id/versions/:version/galaxy_tool', :controller => 'workflows', :action => 'galaxy_tool'
+  map.galaxy_tool_download 'workflows/:id/versions/:version/galaxy_tool_download', :controller => 'workflows', :action => 'galaxy_tool_download'
 
   # curation
   ['workflows', 'files', 'packs'].each do |contributable_type|
@@ -98,19 +139,18 @@ ActionController::Routing::Routes.draw do |map|
   # files (downloadable)
   map.resources :files, 
     :controller => :blobs, 
-    :collection => { :all => :get, :search => :get }, 
+    :collection => { :search => :get }, 
     :member => { :download => :get,
                  :statistics => :get,
                  :favourite => :post,
                  :favourite_delete => :delete,
-                 :comment => :post, 
-                 :comment_delete => :delete, 
                  :rate => :post, 
                  :tag => :post } do |file|
     # Due to restrictions in the version of Rails used (v1.2.3), 
     # we cannot have reviews as nested resources in more than one top level resource.
     # ie: we cannot have polymorphic nested resources.
     #file.resources :reviews
+    file.resources :comments, :collection => { :timeline => :get }
   end
 
   # blogs
@@ -122,6 +162,9 @@ ActionController::Routing::Routes.draw do |map|
   # services
   map.resources :services, :collection => { :all => :get, :search => :get }
   
+  # content_types
+  map.resources :content_types
+
   # all downloads and viewings
   map.resources :downloads, :viewings
 
@@ -182,11 +225,10 @@ ActionController::Routing::Routes.draw do |map|
                  :membership_invite => :post,
                  :membership_invite_external => :post,
                  :membership_request => :get, 
-                 :comment => :post, 
-                 :comment_delete => :delete, 
                  :rate => :post, 
                  :tag => :post } do |group|
     group.resources :announcements, :controller => :group_announcements
+    group.resources :comments, :collection => { :timeline => :get }
   end
   
   # The priority is based upon order of creation: first created -> highest priority.
@@ -212,7 +254,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:id/download/:name', :action => 'named_download', :requirements => { :name => /.*/ }
   
   map.connect 'files/:id/download/:name', :controller => 'blobs', :action => 'named_download', :requirements => { :name => /.*/ }
-  
+
   # (general) announcements
   # NB! this is moved to the bottom of the file for it to be discovered
   # before 'announcements' resource within 'groups'

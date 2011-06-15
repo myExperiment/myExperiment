@@ -1,3 +1,4 @@
+<% if license %>
                 <p style="text-align: center;">
                   <b><big><%= license_icon_link(license) %></big></b>
                   <br/>
@@ -13,3 +14,8 @@
 				<% end %>
 		        <br/>
 				<small><%= license.description %></small>
+<% else %>
+  <p style="text-align: center;">
+    No license details.
+  </p>
+<% end %>

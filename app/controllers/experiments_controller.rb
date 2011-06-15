@@ -18,7 +18,21 @@ class ExperimentsController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+        
+        @lod_nir  = experiment_url(@experiment)
+        @lod_html = formatted_experiment_url(:id => @experiment.id, :format => 'html')
+        @lod_rdf  = formatted_experiment_url(:id => @experiment.id, :format => 'rdf')
+        @lod_xml  = formatted_experiment_url(:id => @experiment.id, :format => 'xml')
+        
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} experiments #{@experiment.id}`
+        }
+      end
     end
   end
 

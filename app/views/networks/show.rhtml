@@ -25,9 +25,11 @@
 			<% end %>
 		<% end %>
 
-    <% if mine? @network %>
+    <% if @network.administrator?(current_user.id) %>
       <li><%= icon('announcement', new_group_announcement_path(@network), 'Make a new Group Announcement', nil, 'Make a Group Announcement') -%></li>
 			<li><%= icon('network-invite', invite_group_path(@network), 'Invite People', nil, 'Invite People') -%></li>
+    <% end %>
+    <% if mine? @network %>
 			<li><%= icon('edit', edit_group_path(@network), 'Edit', nil, 'Edit Group') %></li>
       <li><%= icon('destroy', group_path(@network), 'Delete Group', { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
     <% end %>
@@ -105,12 +107,21 @@
 	<br/>
 	
 	<div class="contribution_section_box">
+<% admins=@network.administrators(true) -%>
+<% others=@network.members() - admins -%>
+		<p class="heading">
+			Administrators
+			<a name="group_members"></a>
+		</p>
+		<div>
+			<%= render :partial => "networks/members", :locals => { :collection => admins, :size => 60 } %>
+		</div>
 		<p class="heading">
 			Members
 			<a name="group_members"></a>
 		</p>
 		<div>
-			<%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
+			<%= render :partial => "networks/members", :locals => { :collection => others, :size => 60 } %>
 		</div>
 	</div>
 	
@@ -156,10 +167,23 @@
 <a name="shared_items"></a>
 <div class="tabContainer">
   <div class="tabTitle">Shared Items (<%= @shared_items.length -%>)</div>
-  <div class="tabContent">
+  <div class="tabContent" id="shared_items">
 		<% unless @shared_items.empty? %>
   		<%= view_privileges_notice %>
+
+      <div style="float: right; margin: 0.5em;">
+        Sort:
+        <select onchange="javascript:location = this.options[this.selectedIndex].value;">
+          <% @item_sort_options.each do |option, label| %>
+            <option value="?item_sort=<%= option -%>#shared_items" <% if params[:item_sort] == option -%> selected="selected"<% end -%>><%= label -%></option>
+          <% end %>
+        </select>
+      </div>
+
 			<%= render :partial => "contributions/table", :locals => { :collection => @shared_items } %>
+
+      <div style="clear: both"></div>
+
 		<% else %>
 			<p class="none_text">No items have been shared with this Group yet.</p>
 		<% end %>
@@ -185,7 +209,7 @@
   </div>
 </div>
 
-<% if mine? @network %>
+<% if @network.administrator?(current_user.id) %>
   
   <% memberships = @network.memberships_accepted %>
   <a name="manage_memberships"></a>
@@ -239,3 +263,6 @@
 <div id="commentsBox">
 	<%= render :partial => "comments/comments", :locals => { :commentable => @network } %>
 </div>
+
+<%= render :partial => "contributions/alternative_formats" %>
+

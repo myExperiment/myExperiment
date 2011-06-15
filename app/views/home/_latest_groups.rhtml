@@ -12,7 +12,7 @@
 						<% if Authorization.is_authorized?("show", nil, g, current_user) %>
 							<li>
 								<%= icon('network', nil, nil, 'group icon', '') %>
-								<b><%= link_to g.title, group_path(g) %></b> 
+								<b><%= link_to h(g.title), group_path(g) %></b> 
 								by <b><%= contributor(g.user_id, 'User') %></b>
 								(<%= timeago_fuzzy g.created_at %>)
 							</li>

@@ -6,6 +6,7 @@
 class PicturesController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
+  before_filter :find_picture, :only => [:show]
   before_filter :find_pictures, :only => [:index]
   before_filter :find_picture_auth, :only => [:select, :edit, :update, :destroy]
   
@@ -36,21 +37,36 @@ class PicturesController < ApplicationController
   # GET /users/1/pictures/1
   # GET /pictures/1
   def show
-    size = params[:size] || "200x200"
-    size = size[0..-($1.length.to_i + 2)] if size =~ /[0-9]+x[0-9]+\.([a-z0-9]+)/ # trim file extension
-    
-    id = params[:id].to_i
 
-    send_cached_data("public/pictures/show/#{size}/#{id}.jpg",
+    matches = params[:size].match("([0-9]+)x([0-9]+).*") if params[:size]
+
+    default_size = 200
+    min_size     = 16
+    max_size     = 200
+
+    if matches
+
+      width  = matches[1].to_i
+      height = matches[2].to_i
+
+      if ((width < min_size) || (width > max_size) || (height < min_size) || (height > max_size))
+        width  = default_size
+        height = default_size
+      end
+
+    else
+      width  = 200
+      height = 200
+    end
+    
+    send_cached_data("public/pictures/show/#{width.to_i}x#{height.to_i}/#{params[:id].to_i}.jpg",
         :type => 'image/jpeg', :disposition => 'inline') {
 
-      find_picture
+      img = Magick::Image.from_blob(@picture.data).first
+      img = img.change_geometry("#{width}x#{height}>") do |c, r, i| i.resize(c, r) end
 
-      # resize and encode the picture
-      @picture.resize!(:size => size)
-      @picture.to_jpg!
-
-      @picture.data
+      img.format = "jpg"
+      img.to_blob
     }
 
   end
@@ -70,7 +86,7 @@ class PicturesController < ApplicationController
   # POST /users/1/pictures
   # POST /pictures
   def create
-    @picture = Picture.create(:data => params[:picture][:data], :user_id => current_user.id)
+    @picture = Picture.create(:data => params[:picture][:data].read, :user_id => current_user.id)
 
     respond_to do |format|
       if @picture.save

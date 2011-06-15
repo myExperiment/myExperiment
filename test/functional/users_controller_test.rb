@@ -65,6 +65,6 @@ class UsersControllerTest < Test::Unit::TestCase
     delete :destroy, :id => 1
 
     assert_redirected_to :action => :index
-    assert_equal "Please contact the administrator to have your account removed.", flash[:notice]
+    assert_equal "You do not have permission to delete this user.", flash[:notice]
   end
 end
