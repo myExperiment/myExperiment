@@ -42,6 +42,16 @@ class Blob < ActiveRecord::Base
 
   validates_presence_of :title
 
+  validates_each :content_blob do |record, attr, value|
+    if value.data.size == 0
+      record.errors.add(attr, 'must be specified.')
+    end
+
+    if value.data.size > Conf.max_upload_size
+      record.errors.add(:file, "is too big.  Maximum size is #{Conf.max_upload_size} bytes.")
+    end
+  end
+
   format_attribute :body
 
   def type
