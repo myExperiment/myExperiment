@@ -60,5 +60,16 @@
 
   </table>
   
+  <table name="previews">
+
+    <column type="integer"  name="image_blob_id"/>
+    <column type="integer"  name="svg_blob_id"/>
+    <column type="datetime" name="created_at"/>
+
+    <belongs-to target="image_blob" class_name="ContentBlob" foreign_key="image_blob_id"/>
+    <belongs-to target="svg_blob"   class_name="ContentBlob" foreign_key="svg_blob_id"/>
+
+  </table>
+
 </schema>
 

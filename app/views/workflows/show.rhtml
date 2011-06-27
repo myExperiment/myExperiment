@@ -164,7 +164,7 @@
 				</p>
 				<div class="contribution_preview" style="width: 100%;">
 					<center>
-						<%= link_to image_tag(url_for_file_column(@viewing_version, "image", "medium")), url_for_file_column(@viewing_version, "image"), :popup => true %>
+						<%= link_to image_tag(workflow_version_preview_path(@workflow, @viewing_version.version, 'medium')), workflow_version_preview_path(@workflow, @viewing_version.version, 'full'), :popup => true %>
 					</center>
 				</div>
 				<% if @authorised_to_edit %>
@@ -184,7 +184,7 @@
 			
 			<% unless @viewing_version.svg.nil? %>
 				<ul class="sectionIcons">
-					<li style="margin-left: 0;"><%= icon('picture', url_for_file_column(@viewing_version, "svg"), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
+					<li style="margin-left: 0;"><%= icon('picture', workflow_version_preview_path(@workflow, @viewing_version.version, 'svg'), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
 				</ul>
 			<% end %>
 			

@@ -3,8 +3,6 @@ workflow_dilbert:
   id: 1
   contributor_id: 1
   contributor_type: User
-  image: 
-  svg:
   title: Get Dilbert
   unique_name: get_dilbert
   body: Gets todays dilbert cartoon
@@ -19,8 +17,6 @@ workflow_branch_choice:
   id: 2
   contributor_id: 2
   contributor_type: User
-  image: 
-  svg:
   title: Conditional branch choice
   unique_name: branch_choice
   body: Does something, probably chooses a branch based on a condition...

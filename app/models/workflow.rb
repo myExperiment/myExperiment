@@ -11,6 +11,7 @@ require 'acts_as_attributable'
 require 'explicit_versioning'
 require 'acts_as_reviewable'
 require 'acts_as_runnable'
+require 'lib/previews'
 
 require 'scufl/model'
 require 'scufl/parser'
@@ -50,19 +51,13 @@ class Workflow < ActiveRecord::Base
   
   acts_as_reviewable
 
+  acts_as_structured_data
+
+  has_previews
+
   explicit_versioning(:version_column => "current_version", 
-                      :file_columns => ["image", "svg"], 
+                      :extra_attributes => ["image", "svg"],
                       :white_list_columns => ["body"]) do
-    
-    file_column :image, :magick => {
-      :versions => {
-        :thumb    => { :size => "100x100" }, 
-        :medium   => { :size => "500x500>" },
-        :full     => { }
-      }
-    }
-  
-    file_column :svg
     
     format_attribute :body
     
@@ -78,7 +73,9 @@ class Workflow < ActiveRecord::Base
     # Update the parent contribution model buy only if this isn't the current version (because the workflow model will take care of that).
     # This is required to keep the contribution's updated_at field accurate.
     after_save { |wv| wv.workflow.contribution.save if wv.workflow.contribution && wv.version != wv.workflow.current_version }
-    
+
+    has_previews
+
     def components
       if workflow.processor_class
         workflow.processor_class.new(content_blob.data).get_components
@@ -88,7 +85,7 @@ class Workflow < ActiveRecord::Base
     end
   end
   
-  non_versioned_columns.push("license_id", "tag_list")
+  non_versioned_columns.push("license_id", "tag_list", "preview_id")
   
   acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
                :boost => "rank",
@@ -106,16 +103,6 @@ class Workflow < ActiveRecord::Base
   validates_presence_of :content_blob
   validates_presence_of :content_type
 
-  file_column :image, :magick => {
-    :versions => {
-      :thumb    => { :size => "100x100>" }, 
-      :medium   => { :size => "500x500>" },
-      :full     => { },
-    }
-  }
-  
-  file_column :svg
-  
   def tag_list_comma
     list = ''
     tags.each do |t|

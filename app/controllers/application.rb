@@ -385,6 +385,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def send_cached_data(file_name, *opts)
+
+    if !File.exists?(file_name)
+      FileUtils.mkdir_p(File.dirname(file_name))
+      File.open(file_name, "wb+") { |f| f.write(yield) }
+    end
+
+    send_file(file_name, *opts)
+  end
+
   # Pivot code
   
   def pivot_options

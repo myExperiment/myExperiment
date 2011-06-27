@@ -546,13 +546,16 @@ class WorkflowsController < ApplicationController
         logger.debug("Preview image provided. Attempting to set the version's preview image.")
         
         # Disable updating image on windows due to issues to do with file locking, that prevent file_column from working sometimes.
+        #
+        # The dependency on file_column has been removed, but this code remains
+        # disabled on Windows until it is confirmed as working.
         if RUBY_PLATFORM =~ /mswin32/
           success = false
         else
           success = @workflow.update_version(params[:version], 
                                              :title => params[:workflow][:title], 
                                              :body => params[:workflow][:body], 
-                                             :image => params[:workflow][:preview],
+                                             :image => params[:workflow][:preview].read,
                                              :last_edited_by => current_user.id)
         end
       end
@@ -895,8 +898,8 @@ private
           # Set the internal unique name for this particular workflow (or workflow_version).
           workflow_to_set.set_unique_name
           
-          workflow_to_set.image = processor_instance.get_preview_image if processor_class.can_generate_preview_image?
-          workflow_to_set.svg   = processor_instance.get_preview_svg   if processor_class.can_generate_preview_svg?
+          workflow_to_set.image = processor_instance.get_preview_image.read if processor_class.can_generate_preview_image?
+          workflow_to_set.svg   = processor_instance.get_preview_svg.read   if processor_class.can_generate_preview_svg?
         rescue Exception => ex
           worked = false
           err_msg = "ERROR: some processing failed in workflow processor '#{processor_class.to_s}'.\nEXCEPTION: #{ex}"
@@ -948,8 +951,11 @@ private
     
     # Preview image
     # TODO: kept getting permission denied errors from the file_column and rmagick code, so disable for windows, for now.
+    #
+    # The dependency on file_column has been removed, but this code remains
+    # disabled on Windows until it is confirmed as working.
     unless RUBY_PLATFORM =~ /mswin32/
-      workflow_to_set.image = params[:workflow][:preview]
+      workflow_to_set.image = params[:workflow][:preview].read
     end
     
     # Set the internal unique name for this particular workflow (or workflow_version).

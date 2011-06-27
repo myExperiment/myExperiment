@@ -3568,9 +3568,9 @@
     <Cell><Data ss:Type="String">workflow</Data></Cell>
     <Cell><Data ss:Type="String">preview</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Workflow</Data></Cell>
-    <Cell><Data ss:Type="String">image</Data></Cell>
+    <Cell><Data ss:Type="String">full</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
-    <Cell><Data ss:Type="String">file-column</Data></Cell>
+    <Cell><Data ss:Type="String">preview</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
@@ -3582,9 +3582,9 @@
     <Cell><Data ss:Type="String">workflow</Data></Cell>
     <Cell><Data ss:Type="String">thumbnail</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Workflow</Data></Cell>
-    <Cell><Data ss:Type="String">image/thumb</Data></Cell>
+    <Cell><Data ss:Type="String">thumb</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
-    <Cell><Data ss:Type="String">file-column</Data></Cell>
+    <Cell><Data ss:Type="String">preview</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
@@ -3596,9 +3596,9 @@
     <Cell><Data ss:Type="String">workflow</Data></Cell>
     <Cell><Data ss:Type="String">thumbnail-big</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Workflow</Data></Cell>
-    <Cell><Data ss:Type="String">image/medium</Data></Cell>
+    <Cell><Data ss:Type="String">medium</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
-    <Cell><Data ss:Type="String">file-column</Data></Cell>
+    <Cell><Data ss:Type="String">preview</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
@@ -3612,7 +3612,7 @@
     <Cell ss:Index="4"><Data ss:Type="String">Workflow</Data></Cell>
     <Cell><Data ss:Type="String">svg</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
-    <Cell><Data ss:Type="String">file-column</Data></Cell>
+    <Cell><Data ss:Type="String">preview</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
