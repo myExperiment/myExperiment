@@ -14,6 +14,11 @@ class PreviewsController < ApplicationController
       return
     end
 
+    if Authorization.check(:action => 'view', :object => @context, :user => current_user) == false
+      render :nothing => true, :status => "401 Unauthorized"
+      return
+    end
+
     type = params[:id]
 
     case type
