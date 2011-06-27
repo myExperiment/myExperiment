@@ -83,5 +83,14 @@ require 'authorization'
 
 ActionMailer::Base.smtp_settings = Conf.smtp
 
+# don't require actual keys for recaptcha during tests
+
+if RAILS_ENV == 'test'
+  Recaptcha.configure do |config|
+    config.public_key  = ''
+    config.private_key = ''
+  end
+end
+
 load 'config/environment_private.rb' if FileTest.exist?('config/environment_private.rb')
 
