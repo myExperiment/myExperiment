@@ -15,7 +15,7 @@ module Jits
           send :include, Jits::Acts::ExplicitVersioning::ActMethods
           
           cattr_accessor :versioned_class_name, :versioned_foreign_key, :versioned_table_name, :versioned_inheritance_column, 
-            :version_column, :version_sequence_name, :non_versioned_columns, :file_columns, :white_list_columns, :revision_comments_column, 
+            :version_column, :version_sequence_name, :non_versioned_columns, :file_columns, :extra_attributes, :white_list_columns, :revision_comments_column, 
             :version_association_options, :timestamp_columns, :sync_ignore_columns
             
           self.versioned_class_name         = options[:class_name]  || "Version"
@@ -25,6 +25,7 @@ module Jits
           self.version_column               = options[:version_column]     || 'version'
           self.non_versioned_columns        = [self.primary_key, inheritance_column, 'version', 'lock_version', versioned_inheritance_column, version_column]
           self.file_columns                 = options[:file_columns] || []
+          self.extra_attributes             = options[:extra_attributes] || []
           self.white_list_columns           = options[:white_list_columns] || []
           self.revision_comments_column     = options[:revision_comments_column]  || "revision_comments"
           self.version_association_options  = {
@@ -159,10 +160,10 @@ module Jits
           # Saves a version of the model in the versioned table. This is called in the after_create callback by default
           def save_version_on_create(revision_comment=nil)
             rev = self.class.versioned_class.new
-            self.clone_versioned_model(self, rev)
             rev.version = send(self.class.version_column)
             rev.send("#{self.class.revision_comments_column}=", revision_comment)
             rev.send("#{self.class.versioned_foreign_key}=", self.id)
+            self.clone_versioned_model(self, rev)
             saved = rev.save
             
             if saved
@@ -282,7 +283,7 @@ module Jits
           
           # Returns an array of attribute keys that are versioned.  See non_versioned_columns
           def versioned_attributes
-            self.attributes.keys.select { |k| !self.class.non_versioned_columns.include?(k) }
+            self.attributes.keys.select { |k| !self.class.non_versioned_columns.include?(k) } + extra_attributes
           end
         
         module ClassMethods
