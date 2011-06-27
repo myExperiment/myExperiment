@@ -45,7 +45,7 @@ class Pack < ActiveRecord::Base
            :dependent => :destroy
   
   def items_count
-    return contributable_entries_count + remote_entries_count
+    return contributable_entries.count + remote_entries.count
   end
   
   # returns packs that have largest total number of items

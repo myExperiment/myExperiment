@@ -219,13 +219,13 @@
 					
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.networks_owned_count, "Group") + " (admin)", url_for(:action => 'groups')) -%>
+			      	<%= link_to(pluralize(@user.networks_owned.count, "Group") + " (admin)", url_for(:action => 'groups')) -%>
 						</b> 
 			    </p>
 					
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.networks_count, "Group") + " (member)", url_for(:action => 'groups')) -%>
+			      	<%= link_to(pluralize(@user.networks.length, "Group") + " (member)", url_for(:action => 'groups')) -%>
 						</b> 
 			    </p>
 					
@@ -239,7 +239,7 @@
 					
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.bookmarks_count, "Favourite"), url_for(:action => 'favourites')) -%>
+			      	<%= link_to(pluralize(@user.bookmarks.count, "Favourite"), url_for(:action => 'favourites')) -%>
 						</b> 
 			    </p>
 				</div>	
