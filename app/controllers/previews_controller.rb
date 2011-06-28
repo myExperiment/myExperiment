@@ -44,11 +44,15 @@ class PreviewsController < ApplicationController
       data = content_blob.data
 
       if size
+
         img = Magick::Image.from_blob(data).first
         img = img.change_geometry("#{size}x#{size}>") do |c, r, i| i.resize(c, r) end
 
-        img.format = "jpg"
-        data = img.to_blob
+        result = Magick::Image.new(size, size)
+        result = result.composite(img, 0, 0, Magick::OverCompositeOp)
+        result.format = "jpg"
+
+        data = result.to_blob
       end
 
       data
