@@ -39,7 +39,9 @@ class AdjustPictures < ActiveRecord::Migration
           workflow.svg = File.new("public/workflow/svg/#{workflow.id}/#{workflow_svg[workflow.id]}").read
         end
 
-        workflow.save
+        if workflow.save == false
+          puts "Error: workflow #{workflow.id} failed to save."
+        end
       end
     end
       
@@ -55,7 +57,9 @@ class AdjustPictures < ActiveRecord::Migration
           workflow_version.svg = File.new("public/workflow/version/svg/#{workflow_version.id}/#{workflow_version_svg[workflow_version.id]}").read
         end
 
-        workflow_version.save
+        if workflow_version.save == false
+          puts "Error: workflow #{workflow_version.workflow.id} version #{workflow_version.version} failed to save."
+        end
       end
     end
 
