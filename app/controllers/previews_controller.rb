@@ -48,7 +48,7 @@ class PreviewsController < ApplicationController
         img = Magick::Image.from_blob(data).first
         img = img.change_geometry("#{size}x#{size}>") do |c, r, i| i.resize(c, r) end
 
-        result = Magick::Image.new(size, size)
+        result = Magick::Image.new(img.columns, img.rows)
         result = result.composite(img, 0, 0, Magick::OverCompositeOp)
         result.format = "jpg"
 
