@@ -23,10 +23,10 @@ class PreviewsController < ApplicationController
 
     case type
 
-      when 'full';   name = 'full';   source = 'image'; size = nil
-      when 'medium'; name = 'medium'; source = 'image'; size = 500
-      when 'thumb';  name = 'thumb';  source = 'image'; size = 100 
-      when 'svg';    name = 'svg';    source = 'svg';   size = nil
+      when 'full';   name = 'full';   source = 'image'; size = nil; mime_type = 'image/jpeg'
+      when 'medium'; name = 'medium'; source = 'image'; size = 500; mime_type = 'image/jpeg'
+      when 'thumb';  name = 'thumb';  source = 'image'; size = 100; mime_type = 'image/jpeg'
+      when 'svg';    name = 'svg';    source = 'svg';   size = nil; mime_type = 'image/svg+xml'
       else
         render(:inline => 'Bad preview type', :status => "400 Bad Request")
         return
@@ -34,7 +34,7 @@ class PreviewsController < ApplicationController
 
     file_name = @context.preview.file_name(type)
 
-    send_cached_data(file_name, :type => 'image/jpeg', :disposition => 'inline') {
+    send_cached_data(file_name, :type => mime_type, :disposition => 'inline') {
 
       case source
         when 'image'; content_blob = @context.preview.image_blob
