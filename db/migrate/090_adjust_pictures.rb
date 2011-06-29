@@ -6,6 +6,8 @@
 class AdjustPictures < ActiveRecord::Migration
   def self.up
 
+    conn = ActiveRecord::Base.connection
+
     # collect all the file_column paths
 
     workflow_image         = {}
@@ -25,8 +27,6 @@ class AdjustPictures < ActiveRecord::Migration
 
     # save the previews into the database
 
-    ActiveRecord::Base.record_timestamps = false
-
     Workflow.find(:all).each do |workflow|
 
       if workflow_image[workflow.id] || workflow_svg[workflow.id]
@@ -39,9 +39,8 @@ class AdjustPictures < ActiveRecord::Migration
           workflow.svg = File.new("public/workflow/svg/#{workflow.id}/#{workflow_svg[workflow.id]}").read
         end
 
-        if workflow.save == false
-          puts "Error: workflow #{workflow.id} failed to save."
-        end
+        workflow.preview.save
+        conn.execute("UPDATE workflows SET preview_id = #{workflow.preview.id} WHERE id = #{workflow.id}")
       end
     end
       
@@ -57,13 +56,10 @@ class AdjustPictures < ActiveRecord::Migration
           workflow_version.svg = File.new("public/workflow/version/svg/#{workflow_version.id}/#{workflow_version_svg[workflow_version.id]}").read
         end
 
-        if workflow_version.save == false
-          puts "Error: workflow #{workflow_version.workflow.id} version #{workflow_version.version} failed to save."
-        end
+        workflow_version.preview.save
+        conn.execute("UPDATE workflow_versions SET preview_id = #{workflow_version.preview.id} WHERE id = #{workflow_version.id}")
       end
     end
-
-    ActiveRecord::Base.record_timestamps = true
   end
 
   def self.down
