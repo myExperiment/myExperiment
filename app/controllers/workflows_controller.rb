@@ -9,6 +9,7 @@ class WorkflowsController < ApplicationController
 
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :statistics, :launch, :search]
   
+  before_filter :store_callback, :only => [:index, :search]
   before_filter :find_workflows_rss, :only => [:index]
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create]
   
@@ -645,6 +646,26 @@ class WorkflowsController < ApplicationController
   end
 
 protected
+
+  def store_callback
+    if params[:callback]
+      session_object={ :url => URI.parse(params[:callback]), :label => 'Launch', :additional => 'externally', :format => 'xml' }
+      if params[:callback_contenttypes]
+        session_object[:types] =
+            params[:callback_contenttypes].split(',').map {|x| x.to_i }
+      end
+      if params[:callback_label]
+        session_object[:label] = params[:callback_label]
+      end 
+      if params[:callback_additional]
+        session_object[:additional] = params[:callback_additional]
+      end 
+      if params[:callback_format]
+        session_object[:format] = params[:callback_format]
+      end 
+      session[:callback]=session_object
+    end
+  end
 
   def find_workflows_rss
     # Only carry out if request is for RSS

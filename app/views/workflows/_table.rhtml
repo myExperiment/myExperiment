@@ -120,7 +120,12 @@
 			<% end -%>
 			    <td class="actions" style="width: 120px;">
 			      <%= icon "show", workflow_path(workflow), nil, nil, "View" %>
-				  	<% if Authorization.is_authorized?("download", nil, workflow, current_user) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
+				  	<% if Authorization.is_authorized?("download", nil, workflow, current_user) -%>
+						<%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %>
+						<% if ( session[:callback] && (session[:callback][:types].include?(workflow.content_type_id))) -%>
+							<%= icon "download", callback_url(workflow).to_s, nil, {:rel => 'nofollow'}, session[:callback][:label] -%>
+						<% end %>
+					<% end %>
 			      <% if mine?(workflow) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
 						<br/><br/>
 						

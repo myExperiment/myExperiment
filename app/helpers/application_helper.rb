@@ -1557,4 +1557,22 @@ protected
     return "Your OpenID URL is: #{user.openid_url}" if user.openid_url
   end
 
+  def callback_url(item)
+    item_url = nil
+    if session && session[:callback]:
+      case session[:callback][:format]
+      when 'uri'
+        item_url = rest_resource_uri(item)
+      when 'xml'
+        item_url = rest_access_uri(item)
+      else
+        return nil
+      end
+    end
+    if item_url
+      return session[:callback][:url].merge('?myexp_url='+URI.escape(item_url))
+    else
+      return nil
+    end
+  end
 end
