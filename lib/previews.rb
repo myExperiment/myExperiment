@@ -49,6 +49,8 @@ class ActiveRecord::Base
             sb.save
             ob.preview.clear_cache
           end
+          
+          p.save
         end
       }
     end
