@@ -1570,7 +1570,7 @@ protected
       end
     end
     if item_url
-      return session[:callback][:url].merge('?myexp_url='+URI.escape(item_url))
+      return session[:callback][:url]+URI.escape(item_url,'?!#&/')
     else
       return nil
     end

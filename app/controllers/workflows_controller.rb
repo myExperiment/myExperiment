@@ -649,7 +649,7 @@ protected
 
   def store_callback
     if params[:callback]
-      session_object={ :url => URI.parse(params[:callback]), :label => 'Launch', :additional => 'externally', :format => 'xml' }
+      session_object={ :url => params[:callback], :label => 'Launch', :additional => 'externally', :format => 'xml' }
       if params[:callback_contenttypes]
         session_object[:types] =
             params[:callback_contenttypes].split(',').map {|x| x.to_i }
