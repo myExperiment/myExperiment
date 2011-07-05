@@ -9,13 +9,34 @@ class PreviewsController < ApplicationController
 
   def show
 
+    auth = request.env["HTTP_AUTHORIZATION"]
+    user = current_user
+
+    if auth and auth.starts_with?("Basic ")
+      credentials = Base64.decode64(auth.sub(/^Basic /, '')).split(':')
+      user = User.authenticate(credentials[0], credentials[1])
+
+      if user.nil?
+        render :nothing => true, :status => "401 Unauthorized"
+        response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename} REST API\""
+        return
+      end
+    end
+
     if @context.preview.nil?
       render :nothing => true, :status => "404 Not Found"
       return
     end
 
-    if Authorization.check(:action => 'view', :object => @context, :user => current_user) == false
+    if @context.respond_to?("versioned_resource")
+      auth_object = @context.versioned_resource
+    else
+      auth_object = @context
+    end
+
+    if Authorization.check(:action => 'view', :object => auth_object, :user => user) == false
       render :nothing => true, :status => "401 Unauthorized"
+      response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename} REST API\""
       return
     end
 
