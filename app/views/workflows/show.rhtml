@@ -148,7 +148,7 @@
 			
 			<p>
 				<b>Type:</b>
-				<%= link_to(h(@workflow.content_type.title), content_type_path(@workflow.content_type)) %>
+				<%= link_to(h(@viewing_version.content_type.title), content_type_path(@viewing_version.content_type)) %>
 			</p>
 			
 			<br/>
@@ -222,7 +222,7 @@
           <br />
 
           <ul class="sectionIcons">
-            <li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package (#{@workflow.display_data_format})") -%></li>
+            <li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package (#{@viewing_version.display_data_format})") -%></li>
           </ul>
           <% if session[:callback] &&
                 session[:callback][:types].include?(@workflow.content_type_id) -%>
@@ -231,7 +231,7 @@
               <li style="margin-left: 0;"><%= icon('workflow', callback_url(@workflow).to_s, "#{session[:callback][:label]} Workflow file/package (for version #{@viewing_version_number.to_s})", {:rel => 'nofollow'}, "#{session[:callback][:label]} Workflow #{session[:callback][:additional]}") -%></li>
             </ul>
           <% end %>
-          <% if @workflow.content_type.title == "Taverna 2" %>
+          <% if @viewing_version.content_type.title == "Taverna 2" %>
             <br />
 
             <ul class="sectionIcons">
@@ -297,7 +297,7 @@
 <div class="contribution_right_box">
 	<div class="contribution_section_box" style= "font-size: 100%; padding: 0.7em 0.9em; font-weight: bold;">
 		<p><%= info_icon_with_tooltip("The type of workflow system that this Workflow is designed for.") %> Workflow Type</p>
-    <p><%= link_to(h(@workflow.content_type.title), content_type_path(@workflow.content_type)) %></p>
+    <p><%= link_to(h(@viewing_version.content_type.title), content_type_path(@viewing_version.content_type)) %></p>
 	</div>
 	
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @workflow } %>

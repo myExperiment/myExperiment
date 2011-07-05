@@ -83,6 +83,18 @@ class Workflow < ActiveRecord::Base
         XML::Node.new('components')
       end
     end
+
+    def processor_class
+      if self.content_type
+          @processor_class ||= WorkflowTypesHandler.processor_class_for_type_display_name(self.content_type.title)
+      end
+    end
+
+    def display_data_format
+      klass = self.processor_class
+      @display_data_format = (klass.nil? ? self.file_ext : klass.display_data_format)
+    end
+
   end
   
   non_versioned_columns.push("license_id", "tag_list", "preview_id")
@@ -163,7 +175,7 @@ class Workflow < ActiveRecord::Base
     metadata
   end
 
-  # This method is called before save and attempts to pull out metadata if it
+  # This method is called before validation and attempts to pull out metadata if it
   # hasn't been set
 
   def apply_extracted_metadata
@@ -223,12 +235,12 @@ class Workflow < ActiveRecord::Base
       return "#{unique_name}.#{file_ext}"
     else
       return nil unless (workflow_version = self.find_version(version))
-      return "#{workflow_version.unique_name}.#{file_ext}"
+      return "#{workflow_version.unique_name}.#{workflow_version.file_ext}"
     end
   end
   
-  def named_download_url
-    "#{Conf.base_uri}/workflows/#{id}/download/#{filename}"
+  def named_download_url(version = nil)
+    "#{Conf.base_uri}/workflows/#{id}/download/#{filename(version)}"
   end
 
   def get_all_search_terms

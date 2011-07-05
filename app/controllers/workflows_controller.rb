@@ -117,14 +117,14 @@ class WorkflowsController < ApplicationController
       @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
     
-    send_data(@viewing_version.content_blob.data, :filename => @workflow.filename(@viewing_version_number), :type => @workflow.content_type.mime_type)
+    send_data(@viewing_version.content_blob.data, :filename => @workflow.filename(@viewing_version_number), :type => @viewing_version.content_type.mime_type)
   end
   
   # GET /workflows/:id/download/:name
   def named_download
 
     # check that we got the right filename for this workflow
-    if params[:name] == @workflow.filename
+    if params[:name] == @workflow.filename(@viewing_version_number)
       download
     else
       render :nothing => true, :status => "404 Not Found"
@@ -718,7 +718,7 @@ protected
                                 :id => @workflow.id, 
                                 :version => @viewing_version_number.to_s
         
-        @named_download_url = url_for @workflow.named_download_url + "?version=#{@viewing_version_number.to_s}" 
+        @named_download_url = url_for @workflow.named_download_url(@viewing_version_number) + "?version=#{@viewing_version_number.to_s}" 
                                       
         @launch_url = "/workflows/#{@workflow.id}/launch.whip?version=#{@viewing_version_number.to_s}"
 
