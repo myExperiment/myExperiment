@@ -106,6 +106,7 @@ curation_types:
   - obsolete
   - incomplete
   - junk
+  - decommissioned services
 
 # main_tabs - These are the main tabs of the website.  Each entry requires at
 #             least a label and a link.  If you specify a controller in a tab,
