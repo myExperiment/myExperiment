@@ -44,8 +44,6 @@ class UsersController < ApplicationController
     @lod_rdf  = formatted_user_url(:id => @user.id, :format => 'rdf')
     @lod_xml  = formatted_user_url(:id => @user.id, :format => 'xml')
 
-    @tab = "News" if @tab.nil?
-
     @user.salt = nil
     @user.crypted_password = nil
     
