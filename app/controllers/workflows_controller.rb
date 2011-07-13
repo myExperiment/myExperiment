@@ -9,6 +9,7 @@ class WorkflowsController < ApplicationController
 
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :statistics, :launch, :search]
   
+  before_filter :store_callback, :only => [:index, :search]
   before_filter :find_workflows_rss, :only => [:index]
   before_filter :find_workflow_auth, :except => [:search, :index, :new, :create]
   
@@ -116,14 +117,14 @@ class WorkflowsController < ApplicationController
       @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
     
-    send_data(@viewing_version.content_blob.data, :filename => @workflow.filename(@viewing_version_number), :type => @workflow.content_type.mime_type)
+    send_data(@viewing_version.content_blob.data, :filename => @workflow.filename(@viewing_version_number), :type => @viewing_version.content_type.mime_type)
   end
   
   # GET /workflows/:id/download/:name
   def named_download
 
     # check that we got the right filename for this workflow
-    if params[:name] == @workflow.filename
+    if params[:name] == @workflow.filename(@viewing_version_number)
       download
     else
       render :nothing => true, :status => "404 Not Found"
@@ -546,13 +547,16 @@ class WorkflowsController < ApplicationController
         logger.debug("Preview image provided. Attempting to set the version's preview image.")
         
         # Disable updating image on windows due to issues to do with file locking, that prevent file_column from working sometimes.
+        #
+        # The dependency on file_column has been removed, but this code remains
+        # disabled on Windows until it is confirmed as working.
         if RUBY_PLATFORM =~ /mswin32/
           success = false
         else
           success = @workflow.update_version(params[:version], 
                                              :title => params[:workflow][:title], 
                                              :body => params[:workflow][:body], 
-                                             :image => params[:workflow][:preview],
+                                             :image => params[:workflow][:preview].read,
                                              :last_edited_by => current_user.id)
         end
       end
@@ -643,6 +647,26 @@ class WorkflowsController < ApplicationController
 
 protected
 
+  def store_callback
+    if params[:callback]
+      session_object={ :url => params[:callback], :label => 'Launch', :additional => 'externally', :format => 'xml' }
+      if params[:callback_contenttypes]
+        session_object[:types] =
+            params[:callback_contenttypes].split(',').map {|x| x.to_i }
+      end
+      if params[:callback_label]
+        session_object[:label] = params[:callback_label]
+      end 
+      if params[:callback_additional]
+        session_object[:additional] = params[:callback_additional]
+      end 
+      if params[:callback_format]
+        session_object[:format] = params[:callback_format]
+      end 
+      session[:callback]=session_object
+    end
+  end
+
   def find_workflows_rss
     # Only carry out if request is for RSS
     if params[:format] and params[:format].downcase == 'rss'
@@ -694,7 +718,7 @@ protected
                                 :id => @workflow.id, 
                                 :version => @viewing_version_number.to_s
         
-        @named_download_url = url_for @workflow.named_download_url + "?version=#{@viewing_version_number.to_s}" 
+        @named_download_url = url_for @workflow.named_download_url(@viewing_version_number) + "?version=#{@viewing_version_number.to_s}" 
                                       
         @launch_url = "/workflows/#{@workflow.id}/launch.whip?version=#{@viewing_version_number.to_s}"
 
@@ -895,8 +919,8 @@ private
           # Set the internal unique name for this particular workflow (or workflow_version).
           workflow_to_set.set_unique_name
           
-          workflow_to_set.image = processor_instance.get_preview_image if processor_class.can_generate_preview_image?
-          workflow_to_set.svg   = processor_instance.get_preview_svg   if processor_class.can_generate_preview_svg?
+          workflow_to_set.image = processor_instance.get_preview_image.read if processor_class.can_generate_preview_image?
+          workflow_to_set.svg   = processor_instance.get_preview_svg.read   if processor_class.can_generate_preview_svg?
         rescue Exception => ex
           worked = false
           err_msg = "ERROR: some processing failed in workflow processor '#{processor_class.to_s}'.\nEXCEPTION: #{ex}"
@@ -948,8 +972,11 @@ private
     
     # Preview image
     # TODO: kept getting permission denied errors from the file_column and rmagick code, so disable for windows, for now.
+    #
+    # The dependency on file_column has been removed, but this code remains
+    # disabled on Windows until it is confirmed as working.
     unless RUBY_PLATFORM =~ /mswin32/
-      workflow_to_set.image = params[:workflow][:preview]
+      workflow_to_set.image = params[:workflow][:preview] unless params[:workflow][:preview].empty?
     end
     
     # Set the internal unique name for this particular workflow (or workflow_version).

@@ -30,13 +30,13 @@
 				
 				<% if favouritable? type -%>
 					<p>
-			      <a href="#favourited_by"><%= pluralize contributable.bookmarks_count, "favourite" -%></a>
+			      <a href="#favourited_by"><%= pluralize contributable.bookmarks.count, "favourite" -%></a>
 			    </p>
 				<% end -%>
 				
 				<% if rateable? type -%>
 					<p>
-			      <a href="#ratings"><%= pluralize contributable.ratings_count, "rating" -%></a>
+			      <a href="#ratings"><%= pluralize contributable.ratings.count, "rating" -%></a>
 			    </p>
 				<% end -%>
 				
@@ -44,19 +44,19 @@
 					<p>
 			      <!-- for this to work properly, view for every resource that supports citations will need to have -->
 						<!-- tab system with 'tabsContainer' element + anchor called 'citations' -->
-						<a href="#citations" onclick="selectTab($('tabsContainer'),0)"><%= pluralize contributable.citations_count, "citation" %></a>
+						<a href="#citations" onclick="selectTab($('tabsContainer'),0)"><%= pluralize contributable.citations.count, "citation" %></a>
 			    </p>
 				<% end %>
 				
 				<% if reviewable? type %>
 					<p>
-			      <a href="#reviews"><%= pluralize contributable.reviews_count, "review" -%></a>
+			      <a href="#reviews"><%= pluralize contributable.reviews.count, "review" -%></a>
 			    </p>
 				<% end %>
 				
 				<% if commentable? type -%>
 			    <p>
-			    	<a href="#comments"><%= pluralize contributable.comments_count, "comment" -%></a>
+			    	<a href="#comments"><%= pluralize contributable.comments.count, "comment" -%></a>
 			    </p>
 				<% end -%>
 			</div>

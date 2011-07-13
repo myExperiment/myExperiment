@@ -78,7 +78,7 @@
 
             <% unless workflow.image.nil? -%>
               <p style="margin: 0; border: 0; width: 101px; float: left">
-                <%= link_to image_tag(url_for_file_column(workflow, "image", "thumb"), :class => 'framed_nospace'), workflow_path(workflow) %>
+                <%= link_to image_tag(workflow_preview_path(workflow, 'thumb'), :class => 'framed_nospace'), workflow_path(workflow) %>
               </p>
 
               <% desc_style << " margin-left: 110px; width: 250px;" %>
@@ -98,11 +98,11 @@
             <div style="clear: both"></div>
 
 					  <p style="font-size: 85%;">
-							<a href="<%= workflow_path(workflow) + '#ratings' -%>"><b>Rating: </b><%= number_with_precision(workflow.rating, 1) %> / 5 (<%= pluralize workflow.ratings_count, 'rating' %>)</a> |
-							<a href="<%= workflow_path(workflow) + '#versions' -%>"><b>Versions: </b><%= workflow.versions_count %></a> |
-							<a href="<%= workflow_path(workflow) + '#reviews' -%>"><b>Reviews: </b><%= workflow.reviews_count %></a> |
-							<a href="<%= workflow_path(workflow) + '#comments' -%>"><b>Comments: </b><%= workflow.comments_count %></a> |
-							<a href="<%= workflow_path(workflow) + '#citations' -%>"><b>Citations: </b><%= workflow.citations_count %></a>
+							<a href="<%= workflow_path(workflow) + '#ratings' -%>"><b>Rating: </b><%= number_with_precision(workflow.rating, 1) %> / 5 (<%= pluralize workflow.ratings.count, 'rating' %>)</a> |
+							<a href="<%= workflow_path(workflow) + '#versions' -%>"><b>Versions: </b><%= workflow.versions.count %></a> |
+							<a href="<%= workflow_path(workflow) + '#reviews' -%>"><b>Reviews: </b><%= workflow.reviews.count %></a> |
+							<a href="<%= workflow_path(workflow) + '#comments' -%>"><b>Comments: </b><%= workflow.comments.count %></a> |
+							<a href="<%= workflow_path(workflow) + '#citations' -%>"><b>Citations: </b><%= workflow.citations.count %></a>
 					  </p>
 						
 						<p style="font-size: 85%;">
@@ -120,7 +120,12 @@
 			<% end -%>
 			    <td class="actions" style="width: 120px;">
 			      <%= icon "show", workflow_path(workflow), nil, nil, "View" %>
-				  	<% if Authorization.is_authorized?("download", nil, workflow, current_user) %><%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %><% end %>
+				  	<% if Authorization.is_authorized?("download", nil, workflow, current_user) -%>
+						<%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %>
+						<% if ( session[:callback] && (session[:callback][:types].include?(workflow.content_type_id))) -%>
+							<%= icon "download", callback_url(workflow).to_s, nil, {:rel => 'nofollow'}, session[:callback][:label] -%>
+						<% end %>
+					<% end %>
 			      <% if mine?(workflow) %><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %><% end %>
 						<br/><br/>
 						

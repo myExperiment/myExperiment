@@ -98,13 +98,11 @@ def rest_response(code, args = {})
   render(:xml => doc.to_s, :status => "#{code} #{message}")
 end
 
-def file_column_url(ob, field)
-
-  fields = (field.split('/').map do |f| "'#{f}'" end).join(', ')
-
-  path = eval("ActionView::Base.new.url_for_file_column(ob, #{fields})")
-
-  "#{request.protocol}#{request.host_with_port}#{path}"
+def preview_url(ob, type)
+  url = URI.parse(rest_resource_uri(ob))
+  url.path << "/versions/#{ob.current_version}" if ob.respond_to?('current_version')
+  url.path << "/previews/#{type}"
+  url.to_s
 end
 
 def model_entity_to_rest_entity(model_entity)
@@ -241,9 +239,9 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
       else 
 
-        if model_data['Encoding'][i] == 'file-column'
+        if model_data['Encoding'][i] == 'preview'
 
-          text = file_column_url(ob, model_data['Accessor'][i])
+          text = preview_url(ob, model_data['Accessor'][i])
 
         else
 
@@ -958,17 +956,7 @@ def workflow_aux(action, opts = {})
     end
 
     if preview
-
-      image = Tempfile.new('image')
-      image.write(preview)
-      image.rewind
-
-      image.extend FileUpload
-      image.original_filename = 'preview'
-      
-      ob.image = image
-
-      image.close
+      ob.image = preview
     end
 
     if svg.nil? and content
@@ -977,17 +965,7 @@ def workflow_aux(action, opts = {})
     end
 
     if svg
-
-      svg_file = Tempfile.new('image')
-      svg_file.write(svg)
-      svg_file.rewind
-
-      svg_file.extend FileUpload
-      svg_file.original_filename = 'svg'
-      
-      ob.svg = svg_file
-
-      svg_file.close
+      ob.svg = svg
     end
 
     success = if (action == 'create' and opts[:query]['id'])

@@ -117,12 +117,23 @@ ActionController::Routing::Routes.draw do |map|
     # workflows have nested citations
     workflow.resources :citations
     workflow.resources :reviews
+    workflow.resources :previews
     workflow.resources :comments, :collection => { :timeline => :get }
   end
 
   # workflow redirect for linked data model
   map.workflow_version           '/workflows/:id/versions/:version',         :conditions => { :method => :get }, :controller => 'workflows', :action => 'show'
   map.formatted_workflow_version '/workflows/:id/versions/:version.:format', :conditions => { :method => :get }, :controller => 'workflows', :action => 'show'
+
+  # versioned preview images
+  ['workflow'].each do |x|
+
+    eval("map.#{x}_version_preview '/#{x.pluralize}/:#{x}_id/versions/:version/previews/:id'," +
+        " :conditions => { :method => :get}, :controller => 'previews', :action => 'show'")
+
+    eval("map.formatted_#{x}_version_preview '/#{x.pluralize}/:#{x}_id/versions/:version/previews/:id.:format'," +
+        " :conditions => { :method => :get}, :controller => 'previews', :action => 'show'")
+  end
 
   map.galaxy_tool 'workflows/:id/versions/:version/galaxy_tool', :controller => 'workflows', :action => 'galaxy_tool'
   map.galaxy_tool_download 'workflows/:id/versions/:version/galaxy_tool_download', :controller => 'workflows', :action => 'galaxy_tool_download'

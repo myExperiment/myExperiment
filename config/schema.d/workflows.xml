@@ -1,6 +1,56 @@
 <?xml version="1.0"?>
 <schema>
 
+  <table name="workflows">
+
+    <column type="integer"    name="contributor_id"/>
+    <column type="string"     name="contributor_type"/>
+    <column type="string"     name="title"/>
+    <column type="string"     name="unique_name"/>
+    <column type="text"       name="body"/>
+    <column type="text"       name="body_html"/>
+    <column type="datetime"   name="created_at"/>
+    <column type="datetime"   name="updated_at"/>
+    <column type="string"     name="image"/>
+    <column type="string"     name="svg"/>
+    <column type="integer"    name="current_version"/>
+    <column type="integer"    name="content_blob_id"/>
+    <column type="string"     name="file_ext"/>
+    <column type="string"     name="last_edited_by"/>
+    <column type="integer"    name="content_type_id"/>
+    <column type="integer"    name="license_id"/>
+    <column type="integer"    name="preview_id"/>
+
+  </table>
+
+  <table name="workflow_versions">
+
+    <column type="integer"    name="workflow_id"/>
+    <column type="integer"    name="version"/>
+    <column type="text"       name="revision_comments"/>
+    <column type="integer"    name="contributor_id"/>
+    <column type="string"     name="contributor_type"/>
+    <column type="string"     name="title"/>
+    <column type="string"     name="unique_name"/>
+    <column type="text"       name="body"/>
+    <column type="text"       name="body_html"/>
+    <column type="datetime"   name="created_at"/>
+    <column type="datetime"   name="updated_at"/>
+    <column type="string"     name="image"/>
+    <column type="string"     name="svg"/>
+    <column type="string"     name="license"/>
+    <column type="integer"    name="content_blob_id"/>
+    <column type="string"     name="file_ext"/>
+    <column type="string"     name="last_edited_by"/>
+    <column type="integer"    name="content_type_id"/>
+    <column type="integer"    name="preview_id"/>
+
+    <index>
+      <column name="workflow_id"/>
+    </index>
+
+  </table>
+
   <table name="workflow_processors">
 
     <column type="integer"    name="workflow_id"/>

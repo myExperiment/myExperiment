@@ -173,17 +173,5 @@ private
       format.html { redirect_to logged_in? ? pictures_url(current_user) : '' }
     end
   end
-
-  # file system cache
-
-  def send_cached_data(file_name, *opts)
-
-    if !File.exists?(file_name)
-      FileUtils.mkdir_p(File.dirname(file_name))
-      File.open(file_name, "wb+") { |f| f.write(yield) }
-    end
-
-    send_file(file_name, *opts)
-  end
 end
 
