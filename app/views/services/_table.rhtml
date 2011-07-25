@@ -88,6 +88,7 @@
             </p>
 					<% end %>
           
+<% if false %>
           <% unless (tags = service.service_tags).empty? %>
 					  <p style="font-size: 85%;">
               <a href="<%= service_path(service) + '#tags' -%>"><b>Tags</b> (<%=tags.length-%>):</a>
@@ -107,6 +108,7 @@
           <% else %>
             <p style="font-size: 85%;"><i>This Service has no tags!</i></p>
           <% end %> 
+<% end %>
 					
         </td>
       <% end %>
