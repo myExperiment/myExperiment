@@ -5,6 +5,8 @@
 
 class ServicesController < ApplicationController
 
+  include ApplicationHelper
+
 #  before_filter :find_service,  :only => [:show]
   before_filter :find_services, :only => [:all]
   
@@ -24,7 +26,23 @@ class ServicesController < ApplicationController
   # GET /services
   def index
     respond_to do |format|
-      format.html # index.rhtml
+      format.html {
+        @pivot_options = pivot_options
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { 'CATEGORY' => 'Service' },
+            :filters     => expr)
+
+        # index.rhtml
+      }
     end
   end
   

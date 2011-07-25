@@ -838,6 +838,7 @@ table.alt_table td {
 	margin-bottom: 0.5em;
 	padding: 1em 0.5em;
 	vertical-align: top;
+  width: 737px;
 }
 
 table.alt_table tr.odd_row td {

@@ -171,7 +171,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # services
-  map.resources :services, :collection => { :all => :get, :search => :get }
+  map.resources :services, :collection => { :search => :get }
   
   # content_types
   map.resources :content_types
