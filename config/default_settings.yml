@@ -153,10 +153,6 @@ main_tabs:
     link:       /workflows
     controller: workflows
 
-  - label:      Web Services
-    link:       /services
-    controller: services
-
   - label:      Files
     link:       /files
     controller: blobs
