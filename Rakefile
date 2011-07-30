@@ -106,13 +106,6 @@ task "myexp:import:biocat" do
 
   conn = ActiveRecord::Base.connection
 
-  conn.execute('TRUNCATE service_categories')
-  conn.execute('TRUNCATE service_deployments')
-  conn.execute('TRUNCATE service_providers')
-  conn.execute('TRUNCATE service_tags')
-  conn.execute('TRUNCATE service_types')
-  conn.execute('TRUNCATE services')
-
   BioCatalogueImport.import_biocatalogue
 end
 
