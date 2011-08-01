@@ -349,6 +349,8 @@ module ApplicationHelper
       return nil unless network
       
       return title(network)
+    elsif contributortype.to_s == "FederationSource"
+      link_to "The BioCatalogue", "http://www.biocatalogue.org"
     else
       return nil
     end
@@ -365,6 +367,8 @@ module ApplicationHelper
       return nil unless network
       
       return h(network.title)
+    elsif contributortype.to_s == "FederationSource"
+      "The BioCatalogue"
     else
       return nil
     end
@@ -421,6 +425,13 @@ module ApplicationHelper
         end
         
         return link ? link_to(name, workflow_url(w)) : name
+      else
+        return nil
+      end
+    when "Service"
+      if s = Service.find(:first, :conditions => ["id = ?", contributableid])
+        name = h(s.name)
+        return link ? link_to(name, service_url(s)) : name
       else
         return nil
       end
@@ -774,6 +785,8 @@ module ApplicationHelper
       return "famfamfam_silk/award_star_add.png"
     when "remove_group_admin"
       return "famfamfam_silk/award_star_delete.png"
+    when "service"
+      return "biocat_icon.png"
     else
       return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<schema>
+
+  <table name="federation_sources">
+
+    <column type="string"     name="name"/>
+
+  </table>
+
+</schema>
+

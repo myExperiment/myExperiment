@@ -331,6 +331,20 @@
 
 <div class="clearer">&nbsp;</div>
 
+<!-- Other workflows that use a service this workflow users -->
+
+<h2>Other workflows that use services that this workflow uses</h2>
+
+<% if @contributions_with_similar_services.length > @similar_services_limit %>
+  <p><i>Only the first <%= @similar_services_limit %> workflows that use similar services are shown.</i></p>
+<% end %>
+
+<% if @contributions_with_similar_services.length > 0 %>
+  <%= render :partial => "contributions/list", :locals => { :collection => @contributions_with_similar_services[0..@similar_services_limit - 1], :table => true } %>
+<% else %>
+  <p>There are no workflows in <%= Conf.sitename %> that use similar services to this Workflow.</p>
+<% end %>
+
 <!-- BEGIN tabs -->
 	
 <br/>

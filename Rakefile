@@ -17,6 +17,7 @@ task "myexp:refresh:solr" do
   User.rebuild_solr_index
   Network.rebuild_solr_index
   Pack.rebuild_solr_index
+  Service.rebuild_solr_index
 end
 
 desc 'Refresh contribution caches'
@@ -95,5 +96,16 @@ task "myexp:refresh:workflows" do
   Workflow.find(:all).each do |w|
     w.extract_metadata
   end
+end
+
+desc 'Import data from BioCatalogue'
+task "myexp:import:biocat" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  Contribution.delete_all("contributable_type = 'Service'")
+
+  conn = ActiveRecord::Base.connection
+
+  BioCatalogueImport.import_biocatalogue
 end
 

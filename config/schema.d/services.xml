@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<schema>
+
+  <!-- BioCatalogue services -->
+
+  <table name="services">
+
+    <column type="integer"  name="contributor_id"/>
+    <column type="string"   name="contributor_type"/>
+
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+    <column type="datetime" name="retrieved_at"/>
+
+    <!-- from the service index listing -->
+
+    <column type="string"   name="uri"/>
+    <column type="string"   name="submitter_label"/>
+    <column type="datetime" name="created"/>
+    <column type="string"   name="submitter_uri"/>
+
+    <!-- service summary -->
+
+    <column type="string"   name="name"/>
+    <column type="string"   name="provider_uri"/>
+    <column type="string"   name="provider_label"/>
+    <column type="string"   name="endpoint"/>
+    <column type="string"   name="wsdl"/>
+    <column type="string"   name="city"/>
+    <column type="string"   name="country"/>
+    <column type="string"   name="iso3166_country_code"/>
+    <column type="string"   name="flag_url"/>
+    <column type="string"   name="documentation_uri"/>
+    <column type="text"     name="description"/>
+
+    <!-- service monitoring -->
+
+    <column type="string"   name="monitor_label"/>
+    <column type="text"     name="monitor_message"/>
+    <column type="string"   name="monitor_symbol_url"/>
+    <column type="string"   name="monitor_small_symbol_url"/>
+    <column type="datetime" name="monitor_last_checked"/>
+
+    <has-many target="service_categories"/>
+    <has-many target="service_types"/>
+    <has-many target="service_tags"/>
+    <has-many target="service_deployments"/>
+
+  </table>
+
+  <!-- BioCatalogue service categories -->
+
+  <table name="service_categories">
+
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+    <column type="datetime" name="retrieved_at"/>
+
+    <column type="integer"  name="service_id"/>
+    <column type="string"   name="uri"/>
+    <column type="string"   name="label"/>
+
+    <belongs-to target="service"/>
+
+  </table>
+    
+  <!-- BioCatalogue service types -->
+
+  <table name="service_types">
+
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+    <column type="datetime" name="retrieved_at"/>
+
+    <column type="integer"  name="service_id"/>
+    <column type="string"   name="label"/>
+
+    <belongs-to target="service"/>
+
+  </table>
+
+  <!-- BioCatalogue service tags -->
+
+  <table name="service_tags">
+
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+    <column type="datetime" name="retrieved_at"/>
+
+    <column type="integer"  name="service_id"/>
+    <column type="string"   name="uri"/>
+    <column type="string"   name="label"/>
+
+    <belongs-to target="service"/>
+
+  </table>
+
+  <!-- BioCatalogue service deployments -->
+
+  <table name="service_deployments">
+
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+    <column type="datetime" name="retrieved_at"/>
+
+    <column type="string"   name="uri"/>
+    <column type="string"   name="endpoint"/>
+
+    <column type="string"   name="city"/>
+    <column type="string"   name="country"/>
+    <column type="string"   name="iso3166_country_code"/>
+    <column type="string"   name="flag_url"/>
+
+    <column type="string"   name="submitter_label"/>
+    <column type="string"   name="submitter_uri"/>
+
+    <column type="datetime" name="created"/>
+
+    <column type="integer"  name="service_id"/>
+    <column type="integer"  name="service_provider_id"/>
+
+    <belongs-to target="service_provider"/>
+    <belongs-to target="service"/>
+
+  </table>
+
+  <!-- BioCatalogue service providers -->
+
+  <table name="service_providers">
+
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+    <column type="datetime" name="retrieved_at"/>
+
+    <column type="string"   name="uri"/>
+    <column type="string"   name="name"/>
+    <column type="text"     name="description"/>
+
+    <column type="datetime" name="created"/>
+
+    <has-many target="service_deployments" foreign_key="service_provider_id"/>
+
+  </table>
+
+</schema>
+

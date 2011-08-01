@@ -231,7 +231,7 @@ new_menu:
 # search_categories - These are the search categories shown in the search bar
 #                     just under the main tabs.
 
-search_categories: [all, users, groups, workflows, files, packs]
+search_categories: [all, users, groups, workflows, services, files, packs]
 
 # default_search_size - The default number of items shown in each search result
 #                       page.

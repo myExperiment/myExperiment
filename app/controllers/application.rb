@@ -975,7 +975,7 @@ class ApplicationController < ActionController::Base
 
     if params["query"]
       drop_search_results_table
-      create_search_results_table(params["query"], [Workflow, Blob, Pack, User, Network])
+      create_search_results_table(params["query"], [Workflow, Blob, Pack, User, Network, Service])
       joins.push(:search) unless opts[:arbitrary_models]
     end
 

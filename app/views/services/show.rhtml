@@ -1,0 +1,328 @@
+<h1>Service: <%=h @contributable.name %></h1>
+
+<h2>Service</h2>
+
+<table class="simple">
+
+  <tr>
+    <td>created_at</td>
+    <td><%=h @contributable.created_at -%></td>
+  </tr>
+
+  <tr>
+    <td>updated_at</td>
+    <td><%=h @contributable.updated_at -%></td>
+  </tr>
+
+  <tr>
+    <td>retrieved_at</td>
+    <td><%=h @contributable.retrieved_at -%></td>
+  </tr>
+
+  <tr>
+    <td>uri</td>
+    <td><%=h @contributable.uri -%></td>
+  </tr>
+
+  <tr>
+    <td>submitter_label</td>
+    <td><%=h @contributable.submitter_label -%></td>
+  </tr>
+
+  <tr>
+    <td>created</td>
+    <td><%=h @contributable.created -%></td>
+  </tr>
+
+  <tr>
+    <td>submitter_uri</td>
+    <td><%=h @contributable.submitter_uri -%></td>
+  </tr>
+
+  <tr>
+    <td>name</td>
+    <td><%=h @contributable.name -%></td>
+  </tr>
+
+  <tr>
+    <td>provider_uri</td>
+    <td><%=h @contributable.provider_uri -%></td>
+  </tr>
+
+  <tr>
+    <td>provider_label</td>
+    <td><%=h @contributable.provider_label -%></td>
+  </tr>
+
+  <tr>
+    <td>endpoint</td>
+    <td><%=h @contributable.endpoint -%></td>
+  </tr>
+
+  <tr>
+    <td>wsdl</td>
+    <td><%=h @contributable.wsdl -%></td>
+  </tr>
+
+  <tr>
+    <td>country</td>
+    <td><%=h @contributable.country -%></td>
+  </tr>
+
+  <tr>
+    <td>city</td>
+    <td><%=h @contributable.city -%></td>
+  </tr>
+
+  <tr>
+    <td>iso3166_country_code</td>
+    <td><%=h @contributable.iso3166_country_code -%></td>
+  </tr>
+
+  <tr>
+    <td>flag_url</td>
+    <td><%=h @contributable.flag_url -%></td>
+  </tr>
+
+  <tr>
+    <td>documentation_uri</td>
+    <td><%=h @contributable.documentation_uri -%></td>
+  </tr>
+
+  <tr>
+    <td>description</td>
+    <td><%=h @contributable.description -%></td>
+  </tr>
+
+  <tr>
+    <td>monitor_label</td>
+    <td><%=h @contributable.monitor_label -%></td>
+  </tr>
+
+  <tr>
+    <td>monitor_message</td>
+    <td><%=h @contributable.monitor_message -%></td>
+  </tr>
+
+  <tr>
+    <td>monitor_symbol_url</td>
+    <td><%=h @contributable.monitor_symbol_url -%></td>
+  </tr>
+
+  <tr>
+    <td>monitor_small_symbol_url</td>
+    <td><%=h @contributable.monitor_small_symbol_url -%></td>
+  </tr>
+
+  <tr>
+    <td>monitor_last_checked</td>
+    <td><%=h @contributable.monitor_last_checked -%></td>
+  </tr>
+
+</table>
+
+<h2>Service categories</h2>
+
+<% @contributable.service_categories.each do |category| %>
+
+  <table class="simple">
+
+    <tr>
+      <td>created_at</td>
+      <td><%=h category.created_at -%></td>
+    </tr>
+
+    <tr>
+      <td>updated_at</td>
+      <td><%=h category.updated_at -%></td>
+    </tr>
+
+    <tr>
+      <td>retrieved_at</td>
+      <td><%=h category.retrieved_at -%></td>
+    </tr>
+
+    <tr>
+      <td>uri</td>
+      <td><%=h category.uri -%></td>
+    </tr>
+
+    <tr>
+      <td>label</td>
+      <td><%=h category.label -%></td>
+    </tr>
+
+  </table>
+
+<% end %>
+
+<h2>Service types</h2>
+
+<% @contributable.service_types.each do |type| %>
+
+  <table class="simple">
+
+    <tr>
+      <td>created_at</td>
+      <td><%=h type.created_at -%></td>
+    </tr>
+
+    <tr>
+      <td>updated_at</td>
+      <td><%=h type.updated_at -%></td>
+    </tr>
+
+    <tr>
+      <td>retrieved_at</td>
+      <td><%=h type.retrieved_at -%></td>
+    </tr>
+
+    <tr>
+      <td>label</td>
+      <td><%=h type.label -%></td>
+    </tr>
+
+  </table>
+
+<% end %>
+
+<h2>Service tags</h2>
+
+<% @contributable.service_tags.each do |tag| %>
+
+  <table class="simple">
+
+    <tr>
+      <td>created_at</td>
+      <td><%=h tag.created_at -%></td>
+    </tr>
+
+    <tr>
+      <td>updated_at</td>
+      <td><%=h tag.updated_at -%></td>
+    </tr>
+
+    <tr>
+      <td>retrieved_at</td>
+      <td><%=h tag.retrieved_at -%></td>
+    </tr>
+
+    <tr>
+      <td>uri</td>
+      <td><%=h tag.uri -%></td>
+    </tr>
+
+    <tr>
+      <td>label</td>
+      <td><%=h tag.label -%></td>
+    </tr>
+
+  </table>
+
+<% end %>
+
+<h2>Service deployments</h2>
+
+<% @contributable.service_deployments.each do |deployment| %>
+
+  <table class="simple">
+
+    <tr>
+      <td>created_at</td>
+      <td><%=h deployment.created_at -%></td>
+    </tr>
+
+    <tr>
+      <td>updated_at</td>
+      <td><%=h deployment.updated_at -%></td>
+    </tr>
+
+    <tr>
+      <td>retrieved_at</td>
+      <td><%=h deployment.retrieved_at -%></td>
+    </tr>
+
+    <tr>
+      <td>uri</td>
+      <td><%=h deployment.uri -%></td>
+    </tr>
+
+    <tr>
+      <td>endpoint</td>
+      <td><%=h deployment.endpoint -%></td>
+    </tr>
+
+    <tr>
+      <td>city</td>
+      <td><%=h deployment.city -%></td>
+    </tr>
+
+    <tr>
+      <td>country</td>
+      <td><%=h deployment.country -%></td>
+    </tr>
+
+    <tr>
+      <td>iso3166_country_code</td>
+      <td><%=h deployment.iso3166_country_code -%></td>
+    </tr>
+
+    <tr>
+      <td>flag_url</td>
+      <td><%=h deployment.flag_url -%></td>
+    </tr>
+
+    <tr>
+      <td>submitter_label</td>
+      <td><%=h deployment.submitter_label -%></td>
+    </tr>
+
+    <tr>
+      <td>submitter_uri</td>
+      <td><%=h deployment.submitter_uri -%></td>
+    </tr>
+
+    <tr>
+      <td>created</td>
+      <td><%=h deployment.created -%></td>
+    </tr>
+
+    <tr>
+      <td>Provider created_at</td>
+      <td><%=h deployment.service_provider.created_at -%></td>
+    </tr>
+
+    <tr>
+      <td>Provider updated_at</td>
+      <td><%=h deployment.service_provider.updated_at -%></td>
+    </tr>
+
+    <tr>
+      <td>Provider retrieved_at</td>
+      <td><%=h deployment.service_provider.retrieved_at -%></td>
+    </tr>
+
+    <tr>
+      <td>Provider uri</td>
+      <td><%=h deployment.service_provider.uri -%></td>
+    </tr>
+
+    <tr>
+      <td>Provider name</td>
+      <td><%=h deployment.service_provider.name -%></td>
+    </tr>
+
+    <tr>
+      <td>Provider description</td>
+      <td><%=h deployment.service_provider.description -%></td>
+    </tr>
+
+    <tr>
+      <td>Provider created</td>
+      <td><%=h deployment.service_provider.created -%></td>
+    </tr>
+
+  </table>
+
+<% end %>
+

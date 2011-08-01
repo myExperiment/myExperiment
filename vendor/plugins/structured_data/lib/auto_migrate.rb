@@ -1,4 +1,4 @@
-# myExperiment: vendor/plugins/structured_data/lib/auto_migrate.rb)
+# myExperiment: vendor/plugins/structured_data/lib/auto_migrate.rb
 #
 # Copyright (c) 2009 University of Manchester and the University of Southampton.
 # See license.txt for details.
@@ -7,9 +7,9 @@ require 'xml/libxml'
 
 class AutoMigrate
 
-  AUTO_TABLE_NAME       = "auto_tables"
-  SCHEMA                = "config/base_schema.xml"
-  SCHEMA_D              = "config/schema.d"
+  AUTO_TABLE_NAME     = "auto_tables"
+  SCHEMA              = "config/base_schema.xml"
+  SCHEMA_D            = "config/schema.d"
   COLUMN_ATTRIBUTES     = ['name', 'type', 'default', 'limit']
   BELONGS_TO_ATTRIBUTES = ['polymorphic', 'class_name', 'foreign_key']
   HAS_MANY_ATTRIBUTES   = ['target', 'through', 'foreign_key', 'source', 'dependent', 'conditions', 'class_name', 'as']

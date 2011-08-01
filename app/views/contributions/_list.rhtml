@@ -10,9 +10,9 @@
 <% end %>
 
 <% if table %>
-	<%= render :partial => "#{klass.pluralize.downcase}/table", :locals => { :collection => contributables } %>
+	<%= render :partial => "#{klass.pluralize.underscore}/table", :locals => { :collection => contributables } %>
 <% else %>
-	<%= render :partial => "#{klass.pluralize.downcase}/#{klass.downcase}", :collection => contributables, :spacer_template => "contributions/list_spacer" %>
+	<%= render :partial => "#{klass.pluralize.underscore}/#{klass.downcase}", :collection => contributables, :spacer_template => "contributions/list_spacer" %>
 <% end %>
 
 <% end %>

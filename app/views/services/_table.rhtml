@@ -1,0 +1,121 @@
+<% query ||= false -%>
+<% odd_row = false -%>
+
+<% unless collection.empty? %>
+
+<table class="alt_table">
+	<% for service in collection %>
+    <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+      <% cache(:controller => 'services_cache', :action => 'listing', :id => service.id) do -%>
+        <td style="width: 100px;">
+				  <% service.service_types.each do |t| %>
+					  <div class="workflow_type_box" style="width: auto; margin-bottom: 0.5em;">
+              <%= h(t.label) -%>
+						</div>
+					<% end %>
+					
+          <p style="margin-top:0; padding-top:0; text-align: center; margin-top: 1em;"><b>Submitter:</b></p>
+          <p style="text-align: center;"><%= link_to service.submitter_label, service.submitter_uri %></p>
+        </td>
+        <td style="text-align: left;">
+
+          <p class="title">
+          	<% unless service.monitor_small_symbol_url.blank? %>
+	            <span style="float: right; margin-left: 1em;">
+	              <% mon_text = "Latest Monitoring Status: <b>#{service.monitor_label}</b><br/>#{service.monitor_message}<br/> Last checked: #{timeago_fuzzy(service.monitor_last_checked)}" %>
+	              <%= image_tag service.monitor_small_symbol_url, :style => "margin-left: 0.5em;", :title => tooltip_title_attrib(mon_text), :alt => mon_text -%>
+	            </span>
+	          <% end %>
+					
+            <%= icon "service", nil, nil, nil, '' %>
+            <% title = h(service.name) %>
+            <%= link_to(query ? highlight_all(title, query) : title, service.uri, :popup => true) %>
+						
+						<% unless service.flag_url.blank? %>
+						  <%= image_tag service.flag_url, :style => "margin-left: 0.5em;", :title => tooltip_title_attrib(h(service.country)), :alt => h(service.country) -%>
+						<% end %>
+          </p>
+					
+          <p style="font-size: 85%; margin-top: 0; padding-top: 0;">
+            <b>Retrieved at:</b> <%= datetime(service.created_at, false) %>
+						<% unless service.created_at == service.updated_at %>
+						  <b>Last updated at:</b> <%= datetime(service.updated_at, false) -%>
+						<% end %>
+          </p>
+					
+					<% unless (categories = service.service_categories).empty? %>
+            <p style="font-size: 85%;">
+              <b>Categories</b> (<%=categories.length-%>):
+            </p>
+            <div style="display:inline;" class="tags_onesize" style="font-size: 85%;">
+              <div class="hTagcloud">
+                <ul class="popularity">
+                  <% categories.each do |category| %>
+                    <li>
+                      <%= link_to h(category.label), category.uri, :title => tooltip_title_attrib("Click to see category on BioCatalogue") -%>
+                      <%= "<li>|</li>" unless category == categories[categories.length-1] -%>
+                    </li>
+                  <% end %>                 
+                </ul>
+              </div>
+            </div>
+          <% else %>
+            <p style="font-size: 85%;"><i>This Service has no categories!</i></p>
+          <% end %>
+					
+					<p style="font-size: 85%;">
+					 <b>Provider:</b> <%= link_to h(service.provider_label), service.provider_uri -%> 
+					</p>
+					
+					<div class="desc" style="font-size: 85%;">
+            <% unless service.description.blank? -%>
+              <% desc = truncate(strip_html(service.description), 500) -%>
+              <%= query ? highlight_all(desc, query) : desc %>
+            <% else -%>
+              <span class="none_text">No description</span>                     
+            <% end -%>
+          </div>
+					
+					<% unless service.wsdl.blank? %>
+					  <p style="font-size: 85%;">
+						  <b>WSDL Location:</b> <%= link_to h(service.wsdl), service.wsdl -%>
+ 					  </p>
+					<% end %>
+					
+					<% unless service.endpoint.blank? %>
+            <p style="font-size: 85%;">
+					    <b>Service Enpoint: </b> <%= link_to h(service.endpoint), service.endpoint -%>
+            </p>
+					<% end %>
+          
+<% if false %>
+          <% unless (tags = service.service_tags).empty? %>
+					  <p style="font-size: 85%;">
+              <a href="<%= service_path(service) + '#tags' -%>"><b>Tags</b> (<%=tags.length-%>):</a>
+						</p>
+            <div style="display:inline;" class="tags_onesize" style="font-size: 85%;">
+						  <div class="hTagcloud">
+						  	<ul class="popularity">
+                  <% tags.each do |tag| %>
+		                <li>
+		                	<%= link_to h(tag.label), tag.uri, :title => tooltip_title_attrib("Click to see tag on BioCatalogue") -%>
+                      <%= "<li>|</li>" unless tag == tags[tags.length-1] -%>
+		                </li>
+		              <% end %>						  		
+						  	</ul>
+						  </div>
+						</div>
+          <% else %>
+            <p style="font-size: 85%;"><i>This Service has no tags!</i></p>
+          <% end %> 
+<% end %>
+					
+        </td>
+      <% end %>
+        
+    </tr>
+	<% end %>
+</table>
+
+<% end %>
+
