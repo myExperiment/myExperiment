@@ -42,6 +42,19 @@ class AutoMigrate
 
   def self.migrate
 
+    def self.column_default(column)
+      if column['default']
+        case column['type']
+        when 'boolean'
+          return false if column['default'] == 'false'
+          return true  if column['default'] == 'true'
+          raise "Default values for boolean types must be either 'true' or 'false'"
+        else
+          column['default'].to_s
+        end
+      end
+    end
+
     conn = ActiveRecord::Base.connection
 
     # ensure that the auto_tables table exists
@@ -104,8 +117,7 @@ class AutoMigrate
       # add columns
 
       (new_columns - old_columns).each do |column_name|
-        default = new_tables[table_name][:columns][column_name]['default']
-        default = default.to_s unless default.nil?
+        default = column_default(new_tables[table_name][:columns][column_name])
         conn.add_column(table_name, column_name, new_tables[table_name][:columns][column_name]["type"].to_sym, :default => default, :limit => new_tables[table_name][:columns][column_name]['limit'])
       end
 
@@ -114,7 +126,7 @@ class AutoMigrate
       (old_columns & new_columns).each do |column_name|
 
         old_default = old_column_info[column_name].default
-        new_default = new_tables[table_name][:columns][column_name]['default']
+        new_default = column_default(new_tables[table_name][:columns][column_name])
 
         old_default = old_default.to_s unless old_default.nil?
         new_default = new_default.to_s unless new_default.nil?
