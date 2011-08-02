@@ -331,20 +331,6 @@
 
 <div class="clearer">&nbsp;</div>
 
-<!-- Other workflows that use a service this workflow users -->
-
-<h2>Other workflows that use services that this workflow uses</h2>
-
-<% if @contributions_with_similar_services.length > @similar_services_limit %>
-  <p><i>Only the first <%= @similar_services_limit %> workflows that use similar services are shown.</i></p>
-<% end %>
-
-<% if @contributions_with_similar_services.length > 0 %>
-  <%= render :partial => "contributions/list", :locals => { :collection => @contributions_with_similar_services[0..@similar_services_limit - 1], :table => true } %>
-<% else %>
-  <p>There are no workflows in <%= Conf.sitename %> that use similar services to this Workflow.</p>
-<% end %>
-
 <!-- BEGIN tabs -->
 	
 <br/>
@@ -407,6 +393,29 @@
 <div id="commentsBox">
 	<%= render :partial => "comments/comments", :locals => { :commentable => @workflow } %>
 </div>
+
+<!-- Other workflows that use a service this workflow users -->
+
+<br />
+<br />
+
+<h2>
+	<%= icon "workflow", nil, nil, { :style => "vertical-align: middle;" }, "" -%>
+	<span style="vertical-align: middle;">Other workflows that use similar services</span>
+	<span class="count_text" style="vertical-align: middle;">(<%= @contributions_with_similar_services.length %>)</span>
+</h2>
+
+<% if @contributions_with_similar_services.length > @similar_services_limit %>
+  <p><i>Only the first <%= @similar_services_limit %> workflows that use similar services are shown</i>.   <a href="<%= workflows_path(@wsdls_filter) -%>">View all workflows that use these services</a>.</p>
+  <br />
+<% end %>
+
+<% if @contributions_with_similar_services.length > 0 %>
+  <%= render :partial => "contributions/list", :locals => { :collection => @contributions_with_similar_services[0..@similar_services_limit - 1], :table => true } %>
+<% else %>
+  <p>There are no workflows in <%= Conf.sitename %> that use similar services to this Workflow.</p>
+<% end %>
+
 
 <%= render :partial => "contributions/alternative_formats" %>
 

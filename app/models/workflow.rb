@@ -211,6 +211,11 @@ class Workflow < ActiveRecord::Base
     @display_data_format = (klass.nil? ? self.file_ext : klass.display_data_format)
   end
   
+  def get_workflow_processor(version = current_version)
+    return nil unless (workflow_version = self.find_version(version))
+    return (self.processor_class.nil? ? nil : self.processor_class.new(workflow_version.content_blob.data))
+  end
+
   def get_workflow_model_object(version)
     return nil unless (workflow_version = self.find_version(version))
     return (self.processor_class.nil? ? nil : self.processor_class.new(workflow_version.content_blob.data).get_workflow_model_object)
@@ -324,6 +329,10 @@ class Workflow < ActiveRecord::Base
       rescue
       end
     end
+  end
+  
+  def unique_wsdls
+    WorkflowProcessor.find(:all, :conditions => ['workflow_id = ? AND wsdl IS NOT NULL', 16]).map do |wp| wp.wsdl end.uniq
   end
 
   def workflows_with_similar_services

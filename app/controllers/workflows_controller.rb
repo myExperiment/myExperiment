@@ -233,7 +233,9 @@ class WorkflowsController < ApplicationController
       w.contribution
     end
 
-    @similar_services_limit = 10
+    @wsdls_filter = { :filter => 'WSDL_ENDPOINT=(' + @workflow.unique_wsdls.map do |wsdl| '"' + wsdl.gsub(/"/, '\"') + '"' end.join(" OR ") + ')' }
+
+    @similar_services_limit = 2
 
     respond_to do |format|
       format.html {
