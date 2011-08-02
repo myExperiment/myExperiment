@@ -59,6 +59,10 @@
 			<p class="none_text">No message body</p>
 		<% end %>
 	</div>
+
+  <div style="margin: 6px; text-align: right">
+    <%= render(:partial => 'contributions/user_report', :locals => { :subject => @message, :user => current_user }) -%>
+  </div>
 </div>
 
 <%= render :partial => "contributions/alternative_formats" %>

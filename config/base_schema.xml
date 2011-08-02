@@ -59,7 +59,21 @@
     <column type="datetime" name="updated_at"/>
 
   </table>
-  
+
+  <table name="user_reports">
+
+    <column type="integer"  name="user_id"/>
+    <column type="string"   name="subject_type"/>
+    <column type="integer"  name="subject_id"/>
+    <column type="text"     name="content"/>
+    <column type="text"     name="report"/>
+    <column type="datetime" name="created_at"/>
+
+    <belongs-to target="users"/>
+    <belongs-to target="subject" polymorphic="true"/>
+
+  </table>
+
   <table name="previews">
 
     <column type="integer"  name="image_blob_id"/>

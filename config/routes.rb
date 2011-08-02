@@ -227,6 +227,9 @@ ActionController::Routing::Routes.draw do |map|
     
     # user's history
     user.resource :userhistory, :controller => :userhistory
+
+    # user's reports of inappropriate content
+    user.resources :reports, :controller => :user_reports
   end
 
   map.resources :groups, 
