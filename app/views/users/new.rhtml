@@ -29,7 +29,7 @@
   <center>
     <h2>Anti-spam verification</h2>
   <% if true -%>
-    <%= recaptcha_tags -%> 
+    <%= recaptcha_tags(:public_key => Conf.recaptcha_public) if Conf.recaptcha_enable -%> 
   <% else -%>
     <table style="margin-top: 2em;">
       <tr>

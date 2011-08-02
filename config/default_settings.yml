@@ -437,3 +437,15 @@ label_icons:
 rdfgen_enable: false
 
 rdfgen_tool:
+
+# recaptcha_enable - This enables the ReCaptcha system.  Be sure to set
+#                    recaptcha_public and recaptcha_private to the public key
+#                    and private keys from the ReCaptcha website if this is
+#                    enabled.
+
+recaptcha_enable: false
+
+recaptcha_public:
+
+recaptcha_private:
+

@@ -153,6 +153,18 @@ class Conf
     self.fetch_entry('rdfgen_tool')
   end
 
+  def self.recaptcha_enable
+    self.fetch_entry('recaptcha_enable')
+  end
+
+  def self.recaptcha_public
+    self.fetch_entry('recaptcha_public')
+  end
+
+  def self.recaptcha_private
+    self.fetch_entry('recaptcha_private')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)
@@ -231,6 +243,5 @@ private
 
     default
   end
-
 end
 

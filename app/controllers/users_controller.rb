@@ -146,10 +146,12 @@ class UsersController < ApplicationController
 
     unless RAILS_ENV == 'test'
       if true
-        if !verify_recaptcha()
-          flash.now[:error] = 'Recaptcha text was not entered correctly - please try again.'
-          render :action => 'new'
-          return
+        if Conf.recaptcha_enable
+          if !verify_recaptcha(:private_key => Conf.recaptcha_private)
+            flash.now[:error] = 'Recaptcha text was not entered correctly - please try again.'
+            render :action => 'new'
+            return
+          end
         end
       else
         if !captcha_valid?(params[:validation][:captcha_id], params[:validation][:captcha_validation])
