@@ -1,0 +1,19 @@
+<% if user != 0 %>
+  <% div_name = "report#{subject.class.name}#{subject.id}" %>
+  <% if UserReport.find_by_user_id_and_subject_type_and_subject_id(user.id, subject.class.name, subject.id) %>
+    <small>
+      [ reported ]
+    </small>
+  <% else %>
+    <small id="<%= div_name -%>">
+      [
+      <%= link_to_remote('report',
+          :update => div_name, 
+          :url => "/users/#{user.id}/reports?subject_type=#{subject.class.name}&subject_id=#{subject.id}",
+          :method => :post,
+          :complete => "new Effect.Highlight('#{div_name}', { duration: 1.5 }); $('comment').value = '';",
+          :confirm => "Are you sure you want to report this?" ) %>
+      ]
+    </small>
+  <% end %>
+<% end %>
