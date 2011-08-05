@@ -458,7 +458,7 @@
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">picture</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s70"><Data ss:Type="String">user</Data></Cell>
-    <Cell><Data ss:Type="String">owner</Data></Cell>
+    <Cell><Data ss:Type="String">view</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">crud</Data></Cell>
     <Cell><Data ss:Type="String">picture</Data></Cell>

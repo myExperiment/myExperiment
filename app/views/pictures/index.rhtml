@@ -17,6 +17,7 @@
   
 <% odd_row = false -%>
 <% for picture in @pictures %>
+<% if Authorization.is_authorized?("view", nil, picture, current_user) %>
   <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
     <td width="150">
       <% if picture.selected? %> 
@@ -44,6 +45,7 @@
 			<% end %>
     </td>
   </tr>
+<% end %>
 <% end %>
 </table>
 
