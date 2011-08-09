@@ -109,3 +109,20 @@ task "myexp:import:biocat" do
   BioCatalogueImport.import_biocatalogue
 end
 
+desc 'Update OAI static repository file'
+task "myexp:oai:static" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  # Obtain all public workflows
+
+  workflows = Workflow.find(:all).select do |workflow|
+    Authorization.check(:action => 'read', :object => workflow, :user => nil)
+  end
+
+  # Generate OAI static repository file
+
+  File::open('public/oai/static.xml', 'wb') do |f|
+    f.write(OAIStaticRepository.generate(workflows))
+  end
+end
+
