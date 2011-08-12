@@ -4,8 +4,13 @@
    <% if permissions.length > 0 %>
      <h3><%= category.capitalize %></h3>
      <p>
-     <% for permission in permissions -%>
-       <%= permission %><br/>
+     <% by_resource={};
+        permissions.each { |el| (k,v)=el.split(" ");
+                           by_resource[v]=[] unless by_resource[v];
+                           by_resource[v].push(k) }
+     -%>
+     <% for resource in by_resource.keys.sort -%>
+       <%= resource %> - <%= by_resource[resource].join(", ")%><br/>
      <% end -%>
      </p>
    <% end -%>
