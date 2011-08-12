@@ -32,7 +32,7 @@ class OauthController < ApplicationController
     @client_applications=current_user.client_applications
     @token=RequestToken.find_by_token params[:oauth_token]
     redirect_url=params[:oauth_callback]||@token.client_application.callback_url
-    if @client_applications.include?(@token.client_application)
+    if (@token.client_application.key_type == 'System') || @client_applications.include?(@token.client_application)
       unless @token.invalidated?    
         if request.post? 
           if params[:authorize]=='1'
