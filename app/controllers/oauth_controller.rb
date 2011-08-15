@@ -93,9 +93,11 @@ class OauthController < ApplicationController
   def create
     @client_application=current_user.client_applications.build(params[:client_application])
     if @client_application.save
-      for key_permission in params[:key_permissions] do
-        @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
-        @key_permission.save
+      if params[:key_permissions] 
+        for key_permission in params[:key_permissions] do
+          @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
+          @key_permission.save
+        end
       end
       flash[:notice]="Client Application successfully registered!"
       redirect_to :action=>"show",:id=>@client_application.id
@@ -132,9 +134,11 @@ class OauthController < ApplicationController
     end
     if (current_user.admin? or @client_application.key_type=="User")
       @client_application.permissions.delete_all
-      for key_permission in params[:key_permissions] do
-        @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
-         @key_permission.save
+      if params[:key_permissions] 
+        for key_permission in params[:key_permissions] do
+          @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
+           @key_permission.save
+        end
       end
     end
     if @client_application.update_attributes(params[:client_application])
