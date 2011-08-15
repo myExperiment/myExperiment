@@ -160,6 +160,12 @@
 <% end %>
 <br/>
 <br/>
+<h2>Client Applications</h2>
+
+<%= link_to "Manage", :controller => "oauth", :action => "index" -%> other
+websites and applications that access <%= Conf.sitename %> on your behalf
+via the <a href="http://oauth.net">OAuth</a> standard.
+
 <h2>Unregister</h2>
 <p>
   If you would like to unregister from <%= Conf.sitename %>, send us a message through the
