@@ -1,5 +1,6 @@
 class OauthController < ApplicationController
   before_filter :login_required,:except=>[:request_token,:access_token,:test_request]
+  before_filter :find_client_application_auth, :only=>[:show, :edit, :update, :destroy]
   before_filter :login_or_oauth_required,:only=>[:test_request]
   before_filter :verify_oauth_consumer_signature, :only=>[:request_token]
   before_filter :verify_oauth_request_token, :only=>[:access_token]
@@ -107,7 +108,6 @@ class OauthController < ApplicationController
   end
   
   def show
-    @client_application=ClientApplication.find(params[:id])
     if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
     	@client_application = nil
     end
@@ -117,7 +117,6 @@ class OauthController < ApplicationController
   def edit
     @permissions = TABLES['REST'][:data]
     @permissions=@permissions.sort
-    @client_application=ClientApplication.find(params[:id])
     if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
         @client_application = nil
     end
@@ -128,10 +127,6 @@ class OauthController < ApplicationController
   end
   
   def update
-    @client_application=ClientApplication.find(params[:client_application][:id])
-    if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
-        @client_application = nil
-    end
     if (current_user.admin? or @client_application.key_type=="User")
       @client_application.permissions.delete_all
       if params[:key_permissions] 
@@ -150,11 +145,39 @@ class OauthController < ApplicationController
   end
 
   def destroy
-    @client_application=current_user.client_applications.find(params[:id])
     client_application_name=@client_application.name
     @client_application.destroy
     flash[:notice]="Registration for Client Application '#{client_application_name}' has been removed!"
     redirect_to :action=>"index"
   end
-  
+
+private
+
+  def find_client_application_auth
+    if action_name == 'update'
+      id = params[:client_application][:id]
+    else
+      id = params[:id]
+    end
+    begin
+      client_app=ClientApplication.find(id)
+      if Authorization.is_authorized?(action_name, nil, client_app, current_user)
+        @client_application = client_app
+      else
+        error("Client Application not found (id not authorized)", "is invalid (not authorized)")
+        return false
+      end
+    rescue ActiveRecord::RecordNotFound
+      error("Client Application not found", "is invalid")
+      return false
+    end
+  end
+
+  def error(notice, message, attr=:id)
+    flash[:error] = notice
+    
+    respond_to do |format|
+      format.html { redirect_to oauth_url }
+    end
+  end
 end

@@ -299,7 +299,7 @@ module Authorization
     # this is required to get "policy_id" for policy-based aurhorized objects (like workflows / blobs / packs / contributions)
     # and to get objects themself for other object types (networks, experiments, jobs, tavernaenactors, runners)
     if (thing_contribution.nil? && ["Workflow", "Blog", "Blob", "Pack", "Contribution"].include?(thing_type)) || 
-       (thing_instance.nil? && ["Network", "Comment", "Bookmark", "Experiment", "Job", "TavernaEnactor", "Runner", "Picture"].include?(thing_type))
+       (thing_instance.nil? && ["Network", "Comment", "Bookmark", "Experiment", "Job", "TavernaEnactor", "Runner", "Picture", "ClientApplication"].include?(thing_type))
       
       found_thing = find_thing(thing_type, thing_id)
       
@@ -520,6 +520,10 @@ module Authorization
             is_authorized = is_owner?(user_id, thing_instance)
         end
 
+      when "ClientApplication"
+
+          is_authorized = is_owner?(user_id, thing_instance)
+
       else
         # don't recognise the kind of "thing" that is being authorized, so
         # we don't specifically know that it needs to be blocked;
@@ -589,6 +593,8 @@ module Authorization
           found_instance = ContentType.find(thing_id)
         when "Picture"
           found_instance = Picture.find(thing_id)
+        when "ClientApplication"
+          found_instance = ClientApplication.find(thing_id)
       end
     rescue ActiveRecord::RecordNotFound
       # do nothing; makes sure that app won't crash when the required object is not found;
@@ -616,6 +622,8 @@ module Authorization
       when "Bookmark"
         is_authorized = (thing.user_id == user_id)
       when "Picture"
+        is_authorized = (thing.user_id == user_id)
+      when "ClientApplication"
         is_authorized = (thing.user_id == user_id)
       #else
         # do nothing -- unknown "thing" types are not authorized by default 
