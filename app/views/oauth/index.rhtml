@@ -4,7 +4,6 @@
 <table>
 	<tr><th>Application</th><th>Issued</th><th>&nbsp;</th></tr>
 	<%@tokens.each do |token|%>
-<% if token.client_application -%>
 		<tr>
 			<td><%=link_to token.client_application.name,token.client_application.url%></td>
 			<td><%=token.authorized_at%></td>
@@ -15,7 +14,6 @@
 				<%end%>
 			</td>
 		</tr>
-<%end%>
 	<%end%>
 	
 </table>
