@@ -32,6 +32,13 @@ class OauthController < ApplicationController
   def authorize
     @client_applications=current_user.client_applications
     @token=RequestToken.find_by_token params[:oauth_token]
+    if @token.client_application.nil?
+       if redirect_url
+         redirect_to redirect_url+"?oauth_failure=1"
+       else
+         render :action=>"authorize_failure"
+       end
+    end
     @show_permissions=@token.client_application.permissions
     redirect_url=params[:oauth_callback]||@token.client_application.callback_url
     if (@token.client_application.key_type == 'System') || @client_applications.include?(@token.client_application)
