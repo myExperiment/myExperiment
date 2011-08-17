@@ -14,8 +14,8 @@ class OauthController < ApplicationController
     else
       render :nothing => true, :status => 401
     end
-  end 
-  
+  end
+
   def access_token
     @token=current_token.exchange!
     if @token
@@ -28,7 +28,7 @@ class OauthController < ApplicationController
   def test_request
     render :text=>params.collect{|k,v|"#{k}=#{v}"}.join("&")
   end
-  
+
   def authorize
     @client_applications=current_user.client_applications
     @token=RequestToken.find_by_token params[:oauth_token]
@@ -42,8 +42,8 @@ class OauthController < ApplicationController
     @show_permissions=@token.client_application.permissions
     redirect_url=params[:oauth_callback]||@token.client_application.callback_url
     if (@token.client_application.key_type == 'System') || @client_applications.include?(@token.client_application)
-      unless @token.invalidated?    
-        if request.post? 
+      unless @token.invalidated?
+        if request.post?
           if params[:authorize]=='1'
             @token.authorize!(current_user)
             if redirect_url
@@ -53,11 +53,11 @@ class OauthController < ApplicationController
             end
           elsif params[:commit]=="Save Changes"
             @token.invalidate!
-	    if redirect_url
-	      redirect_to redirect_url+"?oauth_failure=1"
-	    else 
+            if redirect_url
+              redirect_to redirect_url+"?oauth_failure=1"
+            else
               render :action=>"authorize_failure"
-	    end
+            end
           end
         end
       else
@@ -75,7 +75,7 @@ class OauthController < ApplicationController
        end
     end
   end
-  
+
   def revoke
     @token=current_user.tokens.find_by_token params[:token]
     if @token
@@ -84,7 +84,7 @@ class OauthController < ApplicationController
     end
     redirect_to oauth_url
   end
-  
+
   def index
     @client_applications=current_user.client_applications
     @admin_client_applications=ClientApplication.find(:all, :conditions => ["user_id != ? and creator_id = ?", current_user.id, current_user.id])
@@ -113,10 +113,10 @@ class OauthController < ApplicationController
       render :action=>"new"
     end
   end
-  
+
   def show
     if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
-    	@client_application = nil
+      @client_application = nil
     end
     @show_permissions=@client_application.permissions
   end
@@ -129,10 +129,10 @@ class OauthController < ApplicationController
     end
     @permissions_for=@client_application.permissions_for
     unless @client_application.nil?
-    	@show_permissions=@client_application.permissions
+      @show_permissions=@client_application.permissions
     end
   end
-  
+
   def update
     if (current_user.admin? or @client_application.key_type=="User")
       @client_application.permissions.delete_all
@@ -182,7 +182,7 @@ private
 
   def error(notice, message, attr=:id)
     flash[:error] = notice
-    
+
     respond_to do |format|
       format.html { redirect_to oauth_url }
     end
