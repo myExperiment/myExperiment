@@ -572,7 +572,7 @@ def rest_resource_uri(ob)
     when 'Job';                    return experiment_job_url(ob.experiment, ob)
     when 'PackContributableEntry'; return rest_resource_uri(ob.contributable)
     when 'PackRemoteEntry';        return ob.uri
-    when 'ContentType';            return nil
+    when 'ContentType';            return content_type_url(ob)
     when 'License';                return license_url(ob)
     when 'CurationEvent';          return nil
 
