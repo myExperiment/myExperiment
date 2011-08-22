@@ -79,17 +79,21 @@ class SessionController < ApplicationController
   protected
   
     def password_authentication
-      login, password = params[:session][:username], params[:session][:password]
-      
-      self.current_user = User.authenticate(login, password)
-      if logged_in?
-        if params[:session][:remember_me] == "1"
-          self.current_user.remember_me
-          cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
+      if params[:session]
+        login, password = params[:session][:username], params[:session][:password]
+
+        self.current_user = User.authenticate(login, password)
+        if logged_in?
+          if params[:session][:remember_me] == "1"
+            self.current_user.remember_me
+            cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
+          end
+          successful_login(self.current_user)
+        else
+          failed_login('Invalid username or password')
         end
-        successful_login(self.current_user)
       else
-        failed_login('Invalid username or password')
+        failed_login('Invalid request')
       end
     end
 
