@@ -137,7 +137,7 @@ protected
           error("Workflow not found (id not authorized)", "is invalid (not authorized)")
           return false
         else
-          find_reviewable_auth if login_required
+          login_required
         end
       end
     rescue ActiveRecord::RecordNotFound
@@ -147,7 +147,11 @@ protected
   end
   
   def find_reviews
-    @reviews = @reviewable.reviews
+    if @reviewable
+      @reviews = @reviewable.reviews
+    else
+      @reviews = []
+    end
   end
   
   def find_review
