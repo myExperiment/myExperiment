@@ -161,6 +161,10 @@ main_tabs:
     link:       /packs
     controller: packs
 
+  - label:      Topics
+    link:       /topics
+    controller: topics
+	
 # new_menu - Set "new_menu" with the details of each kind of thing to appear in
 #            the New/Upload gadget.
 #

@@ -1,5 +1,6 @@
 class Tag < ActiveRecord::Base
   has_many :taggings
+  has_many :topic_tag_map
   belongs_to :vocabulary
 
   # Parse a text string into an array of tokens for use as tags

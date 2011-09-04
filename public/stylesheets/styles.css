@@ -2036,6 +2036,46 @@ table.quick_add td.submit {
   padding-top: 1em;
 }
 
+/* Styles Related to topics */
+
+table.topic {
+  border-collapse:collapse;
+  border: 1px solid black;
+  width: 40%;
+}
+
+table.topic th{
+  border: 1px solid black;
+  text-align:center;
+  width: 100%;
+  background-color: #FFFFCC; 
+}
+
+table.topic div.topic_feedback{
+  text-align:center;
+  margin-top:7px;
+}
+
+table.topic td.tag{
+  text-align:left;
+  width: 60%;
+}
+
+table.topic div.topic_feedback a:link{
+  text-decoration:underline;
+}
+
+table.topic td.tag_vote{
+  text-align:center;
+  width: 40%;
+}
+
+#topic_container .hTagcloud {
+/*  width: 225px; */
+}
+
+/* End syles related to topics */
+
 /* pivot */
 
 .pivot {

@@ -1,0 +1,18 @@
+<% unless tags.empty? %>
+	<!-- <h2>Top <%= tags.length %> tags for Topic <%= topicname %>&nbsp;&nbsp;&nbsp;</h2> -->
+	<% tag_cloud = tags.map { |gmap| item = gmap.tag; 
+		def item.probability
+			@probability
+		end;
+		def item.probability=(p)
+			@probability = p
+		end;
+		item.probability= gmap.probability;
+		def item.taggings_count
+			self.probability
+		end; 
+		item } %>
+	<br/>
+	<%= tag_cloud_from_collection(tag_cloud, false, "topics") %>
+	<br/>	
+ <% end %>

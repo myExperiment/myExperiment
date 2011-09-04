@@ -455,6 +455,13 @@ class ApplicationController < ActionController::Base
           :label  => 'Licence',
           :joins  => [ :licences ],
           :order  => 'licenses.title, contributions.rank DESC'
+        },
+
+        {
+          :option => 'topic',
+          :label  => 'Topic',
+          :joins  => [ :topic_workflow_map ],
+          :order  => 'topic_workflow_map.probability, rank DESC'
         }
       ],
 
@@ -542,7 +549,8 @@ class ApplicationController < ActionController::Base
         :credits             => "INNER JOIN creditations ON creditations.creditable_type = AUTH_TYPE AND creditations.creditable_id = AUTH_ID",
         :curation_events     => "INNER JOIN curation_events ON curation_events.object_type = AUTH_TYPE AND curation_events.object_id = AUTH_ID",
         :workflow_processors => "INNER JOIN workflow_processors ON AUTH_TYPE = 'Workflow' AND workflow_processors.workflow_id = AUTH_ID",
-        :search              => "RIGHT OUTER JOIN search_results ON search_results.result_type = AUTH_TYPE AND search_results.result_id = AUTH_ID"
+        :search              => "RIGHT OUTER JOIN search_results ON search_results.result_type = AUTH_TYPE AND search_results.result_id = AUTH_ID",
+        :topic_workflow_map  => "INNER JOIN topic_workflow_map ON contributions.id = topic_workflow_map.workflow_id"
       }
     }
   end

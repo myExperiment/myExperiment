@@ -1,0 +1,32 @@
+<h1>Topics</h1>
+
+<div id="topic_container">
+	<% @curr_run.topics.each do |topic| -%>
+           <% topicName = (if topic.name.blank? then "Topic #{topic.id}" else "#{topic.name}" end) -%>
+	   <h2>
+		<% if logged_in? %>
+
+			<%= "<div id=\"topic_feedback_#{topic.id}\" class=\"topic_feedback\">" %>
+				<!-- <%= "<a href=\"#{topic_path(topic)}\">#{topicName}</a>" %> -->
+				<%= "<a href=\"#{topic_path(topic)}\">Explore this topic</a>" %> 
+
+				<% if topic.topic_feedback.exists?( :user_id => current_user ) %>
+        				&nbsp;&nbsp;&nbsp;Thanks for your feedback!
+				<% else %>
+        				&nbsp;&nbsp;&nbsp;Please rate this topic&nbsp;&nbsp;
+        				<%= link_to_remote( "<img src=\"images/thumbsup.png\">", {:url => { :controller => "topics", :action => "topic_feedback", :topic_id => topic.id, :user_id => current_user.id, :score => 1 } } ) %>
+        				<%= link_to_remote( "<img src=\"images/thumbsdown.png\">", {:url => { :controller => "topics", :action => "topic_feedback", :topic_id => topic.id, :user_id => current_user.id, :score => -1 } } ) %>
+				<% end %>
+			</div>
+		<% else %>
+			<!-- <%= "<a href=\"#{topic_path(topic)}\">#{topicName}</a>" %> -->
+			<%= "<a href=\"#{topic_path(topic)}\">Explore this topic</a>" %>
+		<% end %>
+	   </h2>
+
+	   <%= "<div id=\"tag_cloud_container_#{topic.id}\">" %>
+ 			<%= render :partial => "topics/topic_tag_cloud", :locals => {:tags => topic.topic_tag_map, :topicname => topicName } %>
+     </div> 
+	<% end -%>
+</div>
+
