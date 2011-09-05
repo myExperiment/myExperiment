@@ -3075,11 +3075,12 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell><Data ss:Type="String">text</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
-    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="16" ss:StyleID="s75"/>
+    <Cell ss:Index="23"><Data ss:Type="String">self</Data></Cell>
     <Cell ss:Index="27" ss:StyleID="s73"><Data ss:Type="String">don.cruickshank.example.com</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
