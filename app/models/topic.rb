@@ -29,4 +29,14 @@ class Topic < ActiveRecord::Base
     self.attributes["name"]
   end
 		   
+  def update_title
+
+    # get tags and ensure they are sorted with the most probability first
+    tags = topic_tag_map.sort do |a, b| b.probability <=> a.probability end
+
+    # title is the first three (most probable) tags
+    title = tags[0..2].map do |ttm| ttm.tag.name end.join(" - ")
+
+    update_attribute(:name, title)
+  end
 end

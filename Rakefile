@@ -126,3 +126,12 @@ task "myexp:oai:static" do
   end
 end
 
+desc 'Update topic titles'
+task "myexp:topic:update_titles" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  Topic.find(:all).each do |topic|
+    topic.update_title
+  end
+end
+
