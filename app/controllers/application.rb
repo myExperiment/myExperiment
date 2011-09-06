@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
 
   include AuthenticatedSystem
   before_filter :login_from_cookie
+  before_filter :oauth_required
   
   include ActionView::Helpers::NumberHelper
 

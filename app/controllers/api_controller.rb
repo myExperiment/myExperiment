@@ -9,8 +9,6 @@ require 'lib/rest'
 
 class ApiController < ApplicationController
 
-  before_filter :oauth_required
-
   def process_request
 
     # all responses from the API are in XML
