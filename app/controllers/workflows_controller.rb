@@ -978,7 +978,7 @@ private
     # The dependency on file_column has been removed, but this code remains
     # disabled on Windows until it is confirmed as working.
     unless RUBY_PLATFORM =~ /mswin32/
-      workflow_to_set.image = params[:workflow][:preview] unless params[:workflow][:preview].empty?
+      workflow_to_set.image = params[:workflow][:preview].read unless params[:workflow][:preview].stat.size<1
     end
     
     # Set the internal unique name for this particular workflow (or workflow_version).
