@@ -2,9 +2,7 @@
 <!-- <%= "<h1>Workflows for #{topicName}</h1>" %> -->
 <%= "<h1>Workflows in this Topic</h1>" %> 
 
-<% cache(:controller => 'workflows', :action => 'all_tags') do -%>
-	<%= render :partial => "topics/topic_tag_cloud", :locals => {:tags => @currtopic.topic_tag_map, :topicname => topicName } %>
-<% end -%>
+<%= render :partial => "topics/topic_tag_cloud", :locals => {:tags => @currtopic.topic_tag_map, :topicname => topicName } %>
 
 <% workflow_collection = @currtopic.topic_workflow_map.map { |tmap| tmap.workflow } %>
 <%= render :partial => "workflows/table", :locals => {:collection => workflow_collection} %>
