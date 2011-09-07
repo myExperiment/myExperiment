@@ -111,7 +111,13 @@ class TopicsController < ApplicationController
 
             topicLink = "<a href=\"#{topic_path(this_topic)}\">#{topicName}</a>"
 
-            page.replace_html "topic_feedback_#{params[:topic_id]}", "#{topicLink} &nbsp;&nbsp;&nbsp;Thanks for your feedback!"
+            if feedback.score == 1
+              img_url = 'images/thumbsup_grey.png'
+            else
+              img_url = 'images/thumbsdown_grey.png'
+            end
+
+            page.replace_html "topic_feedback_#{params[:topic_id]}", "<img src='#{img_url}'>"
           end
         }
       end

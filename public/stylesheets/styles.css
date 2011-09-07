@@ -2051,7 +2051,8 @@ table.topic th{
   background-color: #FFFFCC; 
 }
 
-table.topic div.topic_feedback{
+.topic_feedback{
+  float: right;
   text-align:center;
   margin-top:7px;
 }
@@ -2073,6 +2074,10 @@ table.topic td.tag_vote{
 #topic_container .hTagcloud {
 /*  width: 225px; */
 }
+
+#topic_container LI {
+}
+
 
 /* End syles related to topics */
 

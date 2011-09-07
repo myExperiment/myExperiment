@@ -1588,4 +1588,21 @@ protected
       return nil
     end
   end
+
+  def group_items(items, num)
+
+    result = []
+
+    while !items.empty? do
+      group = []
+
+      num.times do
+        group << items.shift unless items.empty?
+      end
+
+      result << group
+    end
+
+    result
+  end
 end
