@@ -7,7 +7,7 @@ class ServicesController < ApplicationController
 
   include ApplicationHelper
 
-#  before_filter :find_service,  :only => [:show]
+  before_filter :find_service,  :only => [:show]
   before_filter :find_services, :only => [:all]
   
   # GET /algorithms;search
@@ -55,7 +55,7 @@ class ServicesController < ApplicationController
   
   # GET /service/1
   def show
-    raise ActionController::UnknownAction.new
+    redirect_to(@contributable.uri)
   end
   
   protected
@@ -68,22 +68,22 @@ class ServicesController < ApplicationController
   end
   
   def find_service
-#    begin
-#      service = Service.find(params[:id])
-#      
-#      @contributable = service
-#      
-#      @contributable_entry_url = url_for :only_path => false,
-#                          :host => base_host,
-#                          :id => @contributable.id
-#
-#      @contributable_label                = @contributable.name
-#      @contributable_path                 = service_path(@contributable)
-#
-#    rescue ActiveRecord::RecordNotFound
-#      error("Service not found", "is invalid")
-#      return false
-#    end
+    begin
+      service = Service.find(params[:id])
+      
+      @contributable = service
+      
+      @contributable_entry_url = url_for :only_path => false,
+                          :host => base_host,
+                          :id => @contributable.id
+
+      @contributable_label                = @contributable.name
+      @contributable_path                 = service_path(@contributable)
+
+    rescue ActiveRecord::RecordNotFound
+      error("Service not found", "is invalid")
+      return false
+    end
   end
   
   private
