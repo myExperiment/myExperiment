@@ -106,7 +106,7 @@ class BioCatalogueImport
 
     service.save if service.changed?
 
-    if service.contribution.nil?
+    if service.contribution.policy.nil?
       service.contribution = Contribution.create(:contributor => @federation_source)
       service.contribution.policy = create_default_policy(@federation_source)
       service.contribution.policy.share_mode = 0 # Make public
