@@ -176,7 +176,12 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
           item_attrs = { }
 
+          next if item.nil?
+
           item_uri = rest_resource_uri(item)
+          
+          next if item_uri.nil?
+
           item_attrs['resource'] = item_uri if item_uri
           item_attrs['uri'] = rest_access_uri(item)
 
@@ -570,7 +575,7 @@ def rest_resource_uri(ob)
     when 'Experiment';             return experiment_url(ob)
     when 'TavernaEnactor';         return runner_url(ob)
     when 'Job';                    return experiment_job_url(ob.experiment, ob)
-    when 'PackContributableEntry'; return rest_resource_uri(ob.contributable)
+    when 'PackContributableEntry'; return ob.contributable ? rest_resource_uri(ob.contributable) : nil
     when 'PackRemoteEntry';        return ob.uri
     when 'ContentType';            return content_type_url(ob)
     when 'License';                return license_url(ob)
