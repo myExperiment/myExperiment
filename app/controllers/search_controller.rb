@@ -31,8 +31,18 @@ class SearchController < ApplicationController
     if @type == "all"
       search_all
     else
-      search_model
-#redirect_to :controller => params[:type], :action => "search", :query => params[:query]
+      case params[:type]
+      when 'workflows'
+        redirect_to(workflows_path(:query => params[:query]))
+      when 'files'
+        redirect_to(files_path(:query => params[:query]))
+      when 'packs'
+        redirect_to(packs_path(:query => params[:query]))
+      when 'services'
+        redirect_to(services_path(:query => params[:query]))
+      else
+        search_model
+      end
     end
   end
   

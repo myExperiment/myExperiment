@@ -41,6 +41,9 @@ class ServicesController < ApplicationController
             :lock_filter => { 'CATEGORY' => 'Service' },
             :filters     => expr)
 
+        @query = params[:query]
+        @query_type = 'services'
+
         # index.rhtml
       }
     end

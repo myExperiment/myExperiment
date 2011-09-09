@@ -70,6 +70,9 @@ class BlobsController < ApplicationController
             :lock_filter => { 'CATEGORY' => 'Blob' },
             :filters     => expr)
 
+        @query = params[:query]
+        @query_type = 'files'
+
         # index.rhtml
       }
     end

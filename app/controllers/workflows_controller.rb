@@ -213,6 +213,9 @@ class WorkflowsController < ApplicationController
             :lock_filter => { 'CATEGORY' => 'Workflow' },
             :filters     => expr)
 
+        @query = params[:query]
+        @query_type = 'workflows'
+
       end
       format.rss do
         #@workflows = Workflow.find(:all, :order => "updated_at DESC") # list all (if required)

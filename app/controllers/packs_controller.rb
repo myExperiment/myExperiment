@@ -43,6 +43,9 @@ class PacksController < ApplicationController
             :lock_filter => { 'CATEGORY' => 'Pack' },
             :filters     => expr)
 
+        @query = params[:query]
+        @query_type = 'packs'
+
         # index.rhtml
       }
     end

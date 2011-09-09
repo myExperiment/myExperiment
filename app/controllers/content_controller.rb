@@ -23,6 +23,8 @@ class ContentController < ApplicationController
         @pivot = contributions_list(Contribution, params, current_user,
             :filters => expr, :arbitrary_models => true)
 
+        @query = params[:query]
+
         # index.rhtml
       end
 #     format.rss do
