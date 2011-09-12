@@ -38,10 +38,10 @@
   </Colors>
  </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-  <WindowHeight>9000</WindowHeight>
-  <WindowWidth>13860</WindowWidth>
-  <WindowTopX>240</WindowTopX>
-  <WindowTopY>75</WindowTopY>
+  <WindowHeight>6510</WindowHeight>
+  <WindowWidth>24300</WindowWidth>
+  <WindowTopX>510</WindowTopX>
+  <WindowTopY>135</WindowTopY>
   <ActiveSheet>1</ActiveSheet>
   <ProtectStructure>False</ProtectStructure>
   <ProtectWindows>False</ProtectWindows>
@@ -112,7 +112,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="REST">
-  <Table ss:ExpandedColumnCount="20" ss:ExpandedRowCount="155" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="20" ss:ExpandedRowCount="167" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s62" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s66" ss:Width="42"/>
    <Column ss:StyleID="s66" ss:AutoFitWidth="0" ss:Width="109.5"/>
@@ -1633,6 +1633,81 @@
     <Cell ss:Index="15"><Data ss:Type="String">required</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
    </Row>
+   <Row ss:Index="157" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">ontologies</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">index</Data></Cell>
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell><Data ss:Type="String">title</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:Index="159" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">crud</Data></Cell>
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:Index="161" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">predicates</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">index</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">title</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:Index="163" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">crud</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:Index="165" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">relationships</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">index</Data></Cell>
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+   </Row>
+   <Row ss:Index="167" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">GET</Data></Cell>
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">view</Data></Cell>
+    <Cell><Data ss:Type="String">context</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">crud</Data></Cell>
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
@@ -1640,7 +1715,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>103</TopRowBottomPane>
+   <TopRowBottomPane>124</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -1657,8 +1732,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>48</ActiveRow>
-     <ActiveCol>12</ActiveCol>
+     <ActiveRow>166</ActiveRow>
+     <ActiveCol>4</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
@@ -1667,7 +1742,7 @@
   <x:WorksheetOptions/>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="298" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="27" ss:ExpandedRowCount="325" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s62" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s66" ss:Width="111.75"/>
    <Column ss:StyleID="s66" ss:Width="116.25"/>
@@ -5461,6 +5536,330 @@
     <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
    </Row>
+   <Row ss:Index="300" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Ontology</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Ontology</Data></Cell>
+    <Cell><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="18"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell><Data ss:Type="String">title</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Ontology</Data></Cell>
+    <Cell><Data ss:Type="String">title</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell><Data ss:Type="String">uri</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Ontology</Data></Cell>
+    <Cell><Data ss:Type="String">uri</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell><Data ss:Type="String">prefix</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Ontology</Data></Cell>
+    <Cell><Data ss:Type="String">prefix</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell><Data ss:Type="String">description</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Ontology</Data></Cell>
+    <Cell><Data ss:Type="String">description</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell><Data ss:Type="String">created-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Ontology</Data></Cell>
+    <Cell><Data ss:Type="String">created_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell><Data ss:Type="String">updated-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Ontology</Data></Cell>
+    <Cell><Data ss:Type="String">updated_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:Index="309" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Predicate</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">ontology</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Predicate</Data></Cell>
+    <Cell><Data ss:Type="String">ontology.title</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="18"><Data ss:Type="String">ontology</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">title</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Predicate</Data></Cell>
+    <Cell><Data ss:Type="String">title</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">phrase</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Predicate</Data></Cell>
+    <Cell><Data ss:Type="String">phrase</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">description</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Predicate</Data></Cell>
+    <Cell><Data ss:Type="String">description</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">equivalent-to</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Predicate</Data></Cell>
+    <Cell><Data ss:Type="String">equivalent_to</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="16"><Data ss:Type="String">yes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">created-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Predicate</Data></Cell>
+    <Cell><Data ss:Type="String">created_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">updated-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Predicate</Data></Cell>
+    <Cell><Data ss:Type="String">updated_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:Index="318" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Relationship</Data></Cell>
+    <Cell><Data ss:Type="String">id</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Relationship</Data></Cell>
+    <Cell><Data ss:Type="String">user.name</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="18"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell><Data ss:Type="String">subject</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Relationship</Data></Cell>
+    <Cell><Data ss:Type="String">subject</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">item as list</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Relationship</Data></Cell>
+    <Cell><Data ss:Type="String">predicate.title</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="18"><Data ss:Type="String">predicate</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell><Data ss:Type="String">object</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Relationship</Data></Cell>
+    <Cell><Data ss:Type="String">objekt</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">item as list</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell><Data ss:Type="String">context</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Relationship</Data></Cell>
+    <Cell><Data ss:Type="String">context</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">item as list</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell><Data ss:Type="String">phrase</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Relationship</Data></Cell>
+    <Cell><Data ss:Type="String">predicate.phrase</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">relationship</Data></Cell>
+    <Cell><Data ss:Type="String">created-at</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">Relationship</Data></Cell>
+    <Cell><Data ss:Type="String">created_at</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">text</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
+   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
@@ -5475,7 +5874,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>181</TopRowBottomPane>
+   <TopRowBottomPane>313</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -5492,8 +5891,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>205</ActiveRow>
-     <ActiveCol>13</ActiveCol>
+     <ActiveRow>323</ActiveRow>
+     <ActiveCol>15</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

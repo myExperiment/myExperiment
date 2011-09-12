@@ -219,6 +219,30 @@ module Authorization
       return true
     end
 
+    # Ontology permissions
+    
+    if (object_type == 'Ontology') && (action == 'create')
+
+      # Ontologies can only be created by authenticated users
+      return !user.nil?
+    end
+    
+    # Predicate permissions
+
+    if (object_type == 'Predicate') && (action == 'create')
+
+      # Predicates can only be added by users that can edit its ontology
+      return Authorization.is_authorized?('edit', nil, context, user)
+    end
+
+    # Relationship permissions
+
+    if (object_type == 'Relationship') && (action == 'create')
+
+      # Relationships can only be added by users that can edit its context
+      return Authorization.is_authorized?('edit', nil, context, user)
+    end
+
     return false
   end
 
@@ -298,8 +322,8 @@ module Authorization
     #
     # this is required to get "policy_id" for policy-based aurhorized objects (like workflows / blobs / packs / contributions)
     # and to get objects themself for other object types (networks, experiments, jobs, tavernaenactors, runners)
-    if (thing_contribution.nil? && ["Workflow", "Blog", "Blob", "Pack", "Contribution"].include?(thing_type)) || 
-       (thing_instance.nil? && ["Network", "Comment", "Bookmark", "Experiment", "Job", "TavernaEnactor", "Runner", "Picture", "ClientApplication"].include?(thing_type))
+    if (thing_contribution.nil? && ["Workflow", "Blog", "Blob", "Pack", "Ontology", "Contribution"].include?(thing_type)) || 
+       (thing_instance.nil? && ["Network", "Comment", "Bookmark", "Experiment", "Job", "TavernaEnactor", "Runner", "Picture", "ClientApplication", "Predicate", "Relationship"].include?(thing_type))
       
       found_thing = find_thing(thing_type, thing_id)
       
@@ -524,6 +548,49 @@ module Authorization
 
           is_authorized = is_owner?(user_id, thing_instance)
 
+      when "Ontology"
+
+        case action
+
+          when "destroy"
+            # Users can delete their own ontologies
+            is_authorized = Authorization.is_owner?(user_id, thing_instance)
+
+          when "view"
+            # All users can view
+            is_authorized = true
+
+          when "edit"
+            # Users can edit their own ontologies
+            is_authorized = Authorization.is_owner?(user_id, thing_instance)
+        end
+
+      when "Predicate"
+
+        case action
+
+          when "view"
+            # All users can view predicates
+            is_authorized = true
+
+          else
+            # All other predicate permissions are inherited from the ontology
+            is_authorized = Authorization.is_authorized?('edit', nil, thing_instance.ontology, user_id)
+        end
+
+      when "Relationship"
+
+        case action
+
+          when "view"
+            # Users that can view the context can view the relationship
+            is_authorized = Authorization.is_authorized?('view', nil, thing_instance.context, user_id)
+
+          else
+            # All other relationship permissions depend on edit access to the context
+            is_authorized = Authorization.is_authorized?('edit', nil, thing_instance.context, user_id)
+        end
+
       else
         # don't recognise the kind of "thing" that is being authorized, so
         # we don't specifically know that it needs to be blocked;
@@ -531,8 +598,7 @@ module Authorization
         is_authorized = true
     end
     
-    return is_authorized
-    
+    is_authorized
   end
 
 
@@ -595,6 +661,12 @@ module Authorization
           found_instance = Picture.find(thing_id)
         when "ClientApplication"
           found_instance = ClientApplication.find(thing_id)
+        when "Ontology"
+          found_instance = Ontology.find(thing_id)
+        when "Predicate"
+          found_instance = Predicate.find(thing_id)
+        when "Relationship"
+          found_instance = Relationship.find(thing_id)
       end
     rescue ActiveRecord::RecordNotFound
       # do nothing; makes sure that app won't crash when the required object is not found;

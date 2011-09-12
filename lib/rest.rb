@@ -555,7 +555,7 @@ end
 
 def rest_resource_uri(ob)
 
-  case ob.class.to_s
+  case ob.class.name
     when 'Workflow';               return workflow_url(ob)
     when 'Blob';                   return file_url(ob)
     when 'Network';                return group_url(ob)
@@ -580,6 +580,9 @@ def rest_resource_uri(ob)
     when 'ContentType';            return content_type_url(ob)
     when 'License';                return license_url(ob)
     when 'CurationEvent';          return nil
+    when 'Ontology';               return nil
+    when 'Predicate';              return nil
+    when 'Relationship';           return nil
 
     when 'Creditation';     return nil
     when 'Attribution';     return nil
@@ -595,7 +598,7 @@ def rest_access_uri(ob)
 
   base = "#{request.protocol}#{request.host_with_port}"
 
-  case ob.class.to_s
+  case ob.class.name
     when 'Workflow';               return "#{base}/workflow.xml?id=#{ob.id}"
     when 'Blob';                   return "#{base}/file.xml?id=#{ob.id}"
     when 'Network';                return "#{base}/group.xml?id=#{ob.id}"
@@ -622,6 +625,9 @@ def rest_access_uri(ob)
     when 'ContentType';            return "#{base}/type.xml?id=#{ob.id}"
     when 'License';                return "#{base}/license.xml?id=#{ob.id}"
     when 'CurationEvent';          return "#{base}/curation-event.xml?id=#{ob.id}"
+    when 'Ontology';               return "#{base}/ontology.xml?id=#{ob.id}"
+    when 'Predicate';              return "#{base}/predicate.xml?id=#{ob.id}"
+    when 'Relationship';           return "#{base}/relationship.xml?id=#{ob.id}"
 
     when 'Creditation';     return "#{base}/credit.xml?id=#{ob.id}"
     when 'Attribution';     return nil
@@ -634,7 +640,7 @@ end
 
 def rest_object_tag_text(ob)
 
-  case ob.class.to_s
+  case ob.class.name
     when 'User';                   return 'user'
     when 'Workflow';               return 'workflow'
     when 'Blob';                   return 'file'
@@ -656,6 +662,9 @@ def rest_object_tag_text(ob)
     when 'ContentType';            return 'type'
     when 'License';                return 'license'
     when 'CurationEvent';          return 'curation-event'
+    when 'Ontology';               return 'ontology'
+    when 'Predicate';              return 'predicate'
+    when 'Relationship';           return 'relationship'
   end
 
   return 'object'
@@ -663,7 +672,7 @@ end
 
 def rest_object_label_text(ob)
 
-  case ob.class.to_s
+  case ob.class.name
     when 'User';                   return ob.name
     when 'Workflow';               return ob.title
     when 'Blob';                   return ob.title
@@ -683,6 +692,9 @@ def rest_object_label_text(ob)
     when 'ContentType';            return ob.title
     when 'License';                return ob.title
     when 'CurationEvent';          return ob.category
+    when 'Ontology';               return ob.title
+    when 'Predicate';              return ob.title
+    when 'Relationship';           return ''
   end
 
   return ''
