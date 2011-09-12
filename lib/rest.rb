@@ -179,8 +179,6 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
           next if item.nil?
 
           item_uri = rest_resource_uri(item)
-          
-          next if item_uri.nil?
 
           item_attrs['resource'] = item_uri if item_uri
           item_attrs['uri'] = rest_access_uri(item)
