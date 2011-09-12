@@ -161,6 +161,10 @@ main_tabs:
     link:       /packs
     controller: packs
 
+  - label:      Services
+    link:       /services
+    controller: services
+
   - label:      Topics
     link:       /topics
     controller: topics
