@@ -32,6 +32,20 @@
 
   </table>
 
+  <table name="policies">
+   
+    <column type="integer"  name="contributor_id"/>
+    <column type="string"   name="contributor_type"/>
+    <column type="string"   name="name"/>
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+    <column type="integer"  name="share_mode"/>
+    <column type="integer"  name="update_mode"/>
+    <column type="boolean"  name="public_view"     default="false"/>
+    <column type="boolean"  name="public_download" default="false"/>
+
+  </table>
+
   <table name="downloads">
 
     <column type="integer"  name="contribution_id"/>
