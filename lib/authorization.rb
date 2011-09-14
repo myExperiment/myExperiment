@@ -552,16 +552,12 @@ module Authorization
 
         case action
 
-          when "destroy"
-            # Users can delete their own ontologies
-            is_authorized = Authorization.is_owner?(user_id, thing_instance)
-
           when "view"
             # All users can view
             is_authorized = true
 
-          when "edit"
-            # Users can edit their own ontologies
+          when "edit", "destroy"
+            # Users can edit and destroy their own ontologies
             is_authorized = Authorization.is_owner?(user_id, thing_instance)
         end
 
@@ -696,6 +692,8 @@ module Authorization
       when "Picture"
         is_authorized = (thing.user_id == user_id)
       when "ClientApplication"
+        is_authorized = (thing.user_id == user_id)
+      when "Ontology"
         is_authorized = (thing.user_id == user_id)
       #else
         # do nothing -- unknown "thing" types are not authorized by default 

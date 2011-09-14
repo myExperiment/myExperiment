@@ -578,7 +578,7 @@ def rest_resource_uri(ob)
     when 'ContentType';            return content_type_url(ob)
     when 'License';                return license_url(ob)
     when 'CurationEvent';          return nil
-    when 'Ontology';               return nil
+    when 'Ontology';               return ontology_url(ob)
     when 'Predicate';              return nil
     when 'Relationship';           return nil
 
@@ -737,6 +737,7 @@ def parse_resource_uri(str)
   return [TavernaEnactor, $1, is_local] if uri.path =~ /^\/runners\/([\d]+)$/
   return [Job, $1, is_local]            if uri.path =~ /^\/jobs\/([\d]+)$/
   return [Download, $1, is_local]       if uri.path =~ /^\/downloads\/([\d]+)$/
+  return [Ontology, $1, is_local]       if uri.path =~ /^\/ontologies\/([\d]+)$/
 
   nil
 
@@ -1946,6 +1947,129 @@ def delete_tagging(opts)
   tagging_aux('destroy', opts)
 end
 
+# Ontologies
+
+def ontology_aux(action, opts)
+
+  # Obtain object
+
+  case action
+    when 'create':
+      return rest_response(401, :reason => "Not authorised to create an ontology") unless Authorization.is_authorized_for_type?('create', 'Ontology', opts[:user], nil)
+      ob = Ontology.new(:user => opts[:user])
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Ontology', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    title        = parse_element(data, :text, '/ontology/title')
+    description  = parse_element(data, :text, '/ontology/description')
+    uri          = parse_element(data, :text, '/ontology/uri')
+    prefix       = parse_element(data, :text, '/ontology/prefix')
+
+    # build the contributable
+
+    ob.title       = title       if title
+    ob.description = description if description
+    ob.uri         = uri         if uri
+    ob.prefix      = prefix      if prefix
+
+    if not ob.save
+      return rest_response(400, :object => ob)
+    end
+  end
+
+  rest_get_request(ob, "ontology", opts[:user],
+      rest_resource_uri(ob), "ontology", { "id" => ob.id.to_s })
+end
+
+def post_ontology(opts)
+  ontology_aux('create', opts)
+end
+
+def put_ontology(opts)
+  ontology_aux('update', opts)
+end
+
+def delete_ontology(opts)
+  ontology_aux('destroy', opts)
+end
+
+# Predicates
+
+def predicate_aux(action, opts)
+
+  if action != "destroy"
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    title         = parse_element(data, :text,     '/predicate/title')
+    ontology      = parse_element(data, :resource, '/predicate/ontology')
+    description   = parse_element(data, :text,     '/predicate/description')
+    phrase        = parse_element(data, :text,     '/predicate/phrase')
+    equivalent_to = parse_element(data, :text,     '/predicate/equivalent-to')
+
+  end
+
+  # Obtain object
+
+  case action
+    when 'create':
+      return rest_response(401, :reason => "Not authorised to create a predicate") unless Authorization.is_authorized_for_type?('create', 'Predicate', opts[:user], ontology)
+      ob = Predicate.new
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Predicate', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    # build it
+
+    ob.title         = title         if title
+    ob.description   = description   if description
+    ob.phrase        = phrase        if phrase
+    ob.equivalent_to = equivalent_to if equivalent_to
+    ob.ontology      = ontology      if ontology
+
+    if not ob.save
+      return rest_response(400, :object => ob)
+    end
+  end
+
+  rest_get_request(ob, "predicate", opts[:user],
+      rest_resource_uri(ob), "predicate", { "id" => ob.id.to_s })
+end
+
+def post_predicate(opts)
+  predicate_aux('create', opts)
+end
+
+def put_predicate(opts)
+  predicate_aux('update', opts)
+end
+
+def delete_predicate(opts)
+  predicate_aux('destroy', opts)
+end
 # Call dispatcher
 
 def rest_call_request(req_uri, format, rules, user, query)

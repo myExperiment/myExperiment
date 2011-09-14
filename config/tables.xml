@@ -111,7 +111,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="REST">
-  <Table ss:ExpandedColumnCount="20" ss:ExpandedRowCount="173" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="20" ss:ExpandedRowCount="179" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s62" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s66" ss:Width="42"/>
    <Column ss:StyleID="s66" ss:AutoFitWidth="0" ss:Width="109.5"/>
@@ -1722,6 +1722,45 @@
     <Cell><Data ss:Type="String">no</Data></Cell>
    </Row>
    <Row ss:Index="171" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">POST</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">call</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">post_predicate</Data></Cell>
+   </Row>
+   <Row ss:Index="173" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">PUT</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">call</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">put_predicate</Data></Cell>
+   </Row>
+   <Row ss:Index="175" ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">DELETE</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
+    <Cell><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">call</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell><Data ss:Type="String">predicate</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">delete_predicate</Data></Cell>
+   </Row>
+   <Row ss:Index="177" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">relationships</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -1733,7 +1772,7 @@
     <Cell ss:Index="15"><Data ss:Type="String">no</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
    </Row>
-   <Row ss:Index="173" ss:AutoFitHeight="0">
+   <Row ss:Index="179" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">GET</Data></Cell>
     <Cell><Data ss:Type="String">relationship</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">user</Data></Cell>
@@ -1754,7 +1793,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>144</TopRowBottomPane>
+   <TopRowBottomPane>153</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -1771,8 +1810,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>164</ActiveRow>
-     <ActiveCol>16</ActiveCol>
+     <ActiveRow>174</ActiveRow>
+     <ActiveCol>0</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

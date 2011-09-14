@@ -3,12 +3,15 @@ require 'api_controller'
 require 'xml/libxml'
 require 'lib/rest'
 
+include ActionView::Helpers::UrlHelper
+include ActionController::UrlWriter
+
 # Re-raise errors caught by the controller.
 class ApiController; def rescue_action(e) raise e end; end
 
 class ApiControllerTest < Test::Unit::TestCase
 
-  fixtures :workflows, :users, :content_types, :licenses
+  fixtures :workflows, :users, :content_types, :licenses, :ontologies
 
   def setup
     @controller = ApiController.new
@@ -690,6 +693,158 @@ class ApiControllerTest < Test::Unit::TestCase
     # try to get the deleted tagging
 
     rest_request(:get, 'tagging', nil, "id" => tagging.id)
+
+    assert_response(:not_found)
+  end
+
+  def test_ontologies
+
+    existing_ontologies = Ontology.find(:all)
+
+    login_as(:john)
+
+    title       = "Test ontology title"
+    title2      = "Updated test ontology title"
+    uri         = "http://example.com/ontology"
+    prefix      = "test prefix"
+    description = "A description of the ontology."
+
+    # post an ontology
+
+    rest_request(:post, 'ontology', "<?xml version='1.0'?>
+      <ontology>
+        <title>#{title}</title>
+        <description>#{description}</description>
+        <uri>#{uri}</uri>
+        <prefix>#{prefix}</prefix>
+      </ontology>")
+
+    assert_response(:success)
+
+    extra_ontologies = Ontology.find(:all) - existing_ontologies
+
+    assert_equal(extra_ontologies.length, 1)
+
+    ontology = extra_ontologies.first
+
+    # get the ontology
+
+    response = rest_request(:get, 'ontology', nil, "id" => ontology.id,
+        "elements" => "title,description,uri,prefix")
+
+    assert_response(:success)
+
+    assert_equal(title,       response.find_first('/ontology/title').inner_xml)
+    assert_equal(description, response.find_first('/ontology/description').inner_xml)
+    assert_equal(uri,         response.find_first('/ontology/uri').inner_xml)
+    assert_equal(prefix,      response.find_first('/ontology/prefix').inner_xml)
+
+    # update the ontology
+
+    rest_request(:put, 'ontology', "<?xml version='1.0'?>
+      <ontology>
+        <title>#{title2}</title>
+      </ontology>", "id" => ontology.id)
+
+    assert_response(:success)
+
+    # get the updated ontology
+
+    response = rest_request(:get, 'ontology', nil, "id" => ontology.id,
+        "elements" => "title,description")
+
+    assert_response(:success)
+  
+    assert_equal(title2,      response.find_first('/ontology/title').inner_xml)
+    assert_equal(description, response.find_first('/ontology/description').inner_xml)
+
+    # delete the ontology
+
+    rest_request(:delete, 'ontology', nil, "id" => ontology.id)
+
+    assert_response(:success)
+
+    # try to get the deleted ontology
+
+    rest_request(:get, 'ontology', nil, "id" => ontology.id)
+
+    assert_response(:not_found)
+  end
+
+  def test_predicates
+
+    existing_predicates = Predicate.find(:all)
+
+    login_as(:john)
+
+    title            = "Test predicate title"
+    title2           = "Updated test predicate title"
+    ontology         = ontologies(:test_ontology_1)
+    ontology_url     = rest_resource_uri(ontology)
+    phrase           = "test phrase"
+    description      = "A description of the predicate."
+    description_html = "<p>A description of the predicate.</p>"
+    equivalent_to    = "test equivalent_to"
+
+    # post a predicate
+
+    rest_request(:post, 'predicate', "<?xml version='1.0'?>
+      <predicate>
+        <title>#{title}</title>
+        <ontology resource='#{ontology_url}'/>
+        <phrase>#{phrase}</phrase>
+        <description>#{description}</description>
+        <equivalent-to>#{equivalent_to}</equivalent-to>
+      </predicate>")
+
+    assert_response(:success)
+
+    extra_predicates = Predicate.find(:all) - existing_predicates
+
+    assert_equal(extra_predicates.length, 1)
+
+    predicate = extra_predicates.first
+
+    # get the predicate
+
+    response = rest_request(:get, 'predicate', nil, "id" => predicate.id,
+        "elements" => "title,description,phrase,equivalent-to")
+
+    assert_response(:success)
+
+    assert_equal(title,         response.find_first('/predicate/title').inner_xml)
+    assert_equal(description,   response.find_first('/predicate/description').inner_xml)
+    assert_equal(phrase,        response.find_first('/predicate/phrase').inner_xml)
+    assert_equal(equivalent_to, response.find_first('/predicate/equivalent-to').inner_xml)
+
+    # update the predicate
+
+    rest_request(:put, 'predicate', "<?xml version='1.0'?>
+      <predicate>
+        <title>#{title2}</title>
+      </predicate>", "id" => predicate.id)
+
+    assert_response(:success)
+
+    # get the updated predicate
+
+    response = rest_request(:get, 'predicate', nil, "id" => predicate.id,
+        "elements" => "title,description")
+
+    assert_response(:success)
+  
+    assert_equal(title2,      response.find_first('/predicate/title').inner_xml)
+    assert_equal(description, response.find_first('/predicate/description').inner_xml)
+
+    # delete the predicate
+
+    rest_request(:delete, 'predicate', nil, "id" => predicate.id)
+
+    assert_response(:success)
+
+    # try to get the deleted predicate
+
+    rest_request(:get, 'predicate', nil, "id" => predicate.id)
 
     assert_response(:not_found)
   end

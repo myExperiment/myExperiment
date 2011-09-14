@@ -10,6 +10,7 @@ class Predicate < ActiveRecord::Base
   format_attribute(:description)
 
   validates_presence_of(:title)
+  validates_presence_of(:ontology)
 
 end
 
