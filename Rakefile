@@ -135,3 +135,24 @@ task "myexp:topic:update_titles" do
   end
 end
 
+desc 'Fix pack timestamps'
+task "myexp:pack:fix_timestamps" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  ActiveRecord::Base.record_timestamps = false
+
+  Pack.find(:all).each do |pack|
+
+    timestamps = [pack.updated_at] +
+                 pack.contributable_entries.map(&:updated_at) +
+                 pack.remote_entries.map(&:updated_at) +
+                 pack.relationships.map(&:created_at)
+
+    if pack.updated_at != timestamps.max
+      pack.update_attribute(:updated_at, timestamps.max)
+    end
+  end
+
+  ActiveRecord::Base.record_timestamps = true
+end
+
