@@ -13,7 +13,8 @@ class Relationship < ActiveRecord::Base
   after_destroy :touch_context
 
   def touch_context
-    context.touch if context.respond_to?(:touch)
+    # Rails 2 - use context.destroyed? instead of context.contribution.nil?
+    context.touch if !context.contribution.nil? && context.respond_to?(:touch)
   end
 end
 

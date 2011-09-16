@@ -92,5 +92,23 @@ if RAILS_ENV == 'test'
   end
 end
 
+class ActiveRecord::Base
+
+  def inhibit_timestamps(&blk)
+
+    initial_value = ActiveRecord::Base.record_timestamps
+
+    begin
+      ActiveRecord::Base.record_timestamps = false
+      yield
+    rescue Exception
+      ActiveRecord::Base.record_timestamps = initial_value
+      raise
+    end
+
+    ActiveRecord::Base.record_timestamps = initial_value
+  end
+end
+
 load 'config/environment_private.rb' if FileTest.exist?('config/environment_private.rb')
 

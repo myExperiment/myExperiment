@@ -76,7 +76,9 @@ module Mib
         # contributable
         def save_contributable_record
           if contribution
-            contribution.save
+            inhibit_timestamps do
+              contribution.update_attribute(:updated_at, contribution.contributable.updated_at)
+            end
           end
         end
 
@@ -89,9 +91,9 @@ module Mib
               value = 0.0
             end
 
-            ActiveRecord::Base.record_timestamps = false
-            contribution.update_attribute(:rank, value)
-            ActiveRecord::Base.record_timestamps = true
+            inhibit_timestamps do
+              contribution.update_attribute(:rank, value)
+            end
           end
         end
 
@@ -104,19 +106,19 @@ module Mib
               value = 0.0
             end
 
-            ActiveRecord::Base.record_timestamps = false
-            contribution.update_attribute(:rating, value)
-            ActiveRecord::Base.record_timestamps = true
+            inhibit_timestamps do
+              contribution.update_attribute(:rating, value)
+            end
           end
         end
 
         def update_contribution_cache
           if contribution
-            ActiveRecord::Base.record_timestamps = false
-            contribution.update_attribute(:label,           respond_to?(:label)           ? label           : nil)
-            contribution.update_attribute(:content_type_id, respond_to?(:content_type_id) ? content_type_id : nil)
-            contribution.update_attribute(:license_id,      respond_to?(:license_id)      ? license_id      : nil)
-            ActiveRecord::Base.record_timestamps = true
+            inhibit_timestamps do
+              contribution.update_attribute(:label,           respond_to?(:label)           ? label           : nil)
+              contribution.update_attribute(:content_type_id, respond_to?(:content_type_id) ? content_type_id : nil)
+              contribution.update_attribute(:license_id,      respond_to?(:license_id)      ? license_id      : nil)
+            end
           end
         end
       end
