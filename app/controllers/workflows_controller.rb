@@ -981,8 +981,15 @@ private
     # The dependency on file_column has been removed, but this code remains
     # disabled on Windows until it is confirmed as working.
     unless RUBY_PLATFORM =~ /mswin32/
-      if params[:workflow][:preview] and params[:workflow][:preview].kind_of?(File)
-        workflow_to_set.image = params[:workflow][:preview].read unless params[:workflow][:preview].stat.size<1
+      preview = params[:workflow][:preview]
+      if preview
+        preview_size = -1
+        if preview.kind_of?(File)
+          preview_size = preview.stat.size
+        elsif preview.kind_of?(StringIO) || preview.kind_of?(Tempfile)
+            preview_size = preview.size
+        end
+        workflow_to_set.image = preview.read if preview_size>0
       end
     end
     
