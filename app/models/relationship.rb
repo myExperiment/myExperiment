@@ -9,5 +9,11 @@ class Relationship < ActiveRecord::Base
 
   validates_uniqueness_of :predicate_id, :scope => [:subject_id, :objekt_id]
 
+  after_save :touch_context
+  after_destroy :touch_context
+
+  def touch_context
+    context.touch if context.respond_to?(:touch)
+  end
 end
 

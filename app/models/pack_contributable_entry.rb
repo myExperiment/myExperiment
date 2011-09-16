@@ -17,6 +17,9 @@ class PackContributableEntry < ActiveRecord::Base
   
   before_save :check_version
   
+  after_save :touch_pack
+  after_destroy :touch_pack
+
   def check_unique
     if self.contributable_version.blank?
       i = PackContributableEntry.find(:first, :conditions => ["pack_id = ? AND contributable_type = ? AND contributable_id = ? AND contributable_version IS NULL", self.pack_id, self.contributable_type, self.contributable_id]) 
@@ -69,5 +72,9 @@ class PackContributableEntry < ActiveRecord::Base
 
   def item_as_list
     return [contributable]
+  end
+
+  def touch_pack
+    pack.touch
   end
 end
