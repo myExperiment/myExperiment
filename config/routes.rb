@@ -64,6 +64,9 @@ ActionController::Routing::Routes.draw do |map|
   # Ontologies
   map.resources :ontologies
 
+  # Predicates
+  map.resources :predicates
+
   # mashup
   map.resource :mashup
   

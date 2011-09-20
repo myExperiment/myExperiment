@@ -11,7 +11,7 @@ class ApiController; def rescue_action(e) raise e end; end
 
 class ApiControllerTest < Test::Unit::TestCase
 
-  fixtures :workflows, :users, :content_types, :licenses, :ontologies
+  fixtures :workflows, :users, :content_types, :licenses, :ontologies, :predicates, :packs
 
   def setup
     @controller = ApiController.new
@@ -845,6 +845,60 @@ class ApiControllerTest < Test::Unit::TestCase
     # try to get the deleted predicate
 
     rest_request(:get, 'predicate', nil, "id" => predicate.id)
+
+    assert_response(:not_found)
+  end
+
+  def test_relationships
+
+    existing_relationships = Relationship.find(:all)
+
+    login_as(:john)
+
+    subject_url   = rest_resource_uri(workflows(:workflow_branch_choice))
+    predicate_url = rest_resource_uri(predicates(:test_predicate_1))
+    objekt_url    = rest_resource_uri(workflows(:workflow_dilbert))
+    context_url   = rest_resource_uri(packs(:pack_1))
+
+    # post a relationship
+
+    rest_request(:post, 'relationship', "<?xml version='1.0'?>
+      <relationship>
+        <subject resource='#{subject_url}'/>
+        <predicate resource='#{predicate_url}'/>
+        <object resource='#{objekt_url}'/>
+        <context resource='#{context_url}'/>
+      </relationship>")
+
+    assert_response(:success)
+
+    extra_relationships = Relationship.find(:all) - existing_relationships
+
+    assert_equal(extra_relationships.length, 1)
+
+    relationship = extra_relationships.first
+
+    # get the relationship
+
+    response = rest_request(:get, 'relationship', nil, "id" => relationship.id,
+        "elements" => "user,subject,predicate,object,context")
+
+    assert_response(:success)
+
+    assert_equal(subject_url,   response.find_first('/relationship/subject/*/@resource').value)
+    assert_equal(predicate_url, response.find_first('/relationship/predicate/@resource').value)
+    assert_equal(objekt_url,    response.find_first('/relationship/object/*/@resource').value)
+    assert_equal(context_url,   response.find_first('/relationship/context/*/@resource').value)
+
+    # delete the relationship
+
+    rest_request(:delete, 'relationship', nil, "id" => relationship.id)
+
+    assert_response(:success)
+
+    # try to get the deleted relationship
+
+    rest_request(:get, 'relationship', nil, "id" => relationship.id)
 
     assert_response(:not_found)
   end

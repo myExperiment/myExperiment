@@ -579,7 +579,7 @@ def rest_resource_uri(ob)
     when 'License';                return license_url(ob)
     when 'CurationEvent';          return nil
     when 'Ontology';               return ontology_url(ob)
-    when 'Predicate';              return nil
+    when 'Predicate';              return predicate_url(ob)
     when 'Relationship';           return nil
 
     when 'Creditation';     return nil
@@ -738,6 +738,7 @@ def parse_resource_uri(str)
   return [Job, $1, is_local]            if uri.path =~ /^\/jobs\/([\d]+)$/
   return [Download, $1, is_local]       if uri.path =~ /^\/downloads\/([\d]+)$/
   return [Ontology, $1, is_local]       if uri.path =~ /^\/ontologies\/([\d]+)$/
+  return [Predicate, $1, is_local]      if uri.path =~ /^\/predicates\/([\d]+)$/
 
   nil
 
@@ -2070,6 +2071,69 @@ end
 def delete_predicate(opts)
   predicate_aux('destroy', opts)
 end
+
+# Relationships
+
+def relationship_aux(action, opts)
+
+  if action != "destroy"
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    subject     = parse_element(data, :resource, '/relationship/subject')
+    predicate   = parse_element(data, :resource, '/relationship/predicate')
+    objekt      = parse_element(data, :resource, '/relationship/object')
+    context     = parse_element(data, :resource, '/relationship/context')
+  end
+
+  # Obtain object
+
+  case action
+    when 'create':
+      return rest_response(401, :reason => "Not authorised to create a relationship") unless Authorization.is_authorized_for_type?('create', 'Relationship', opts[:user], context)
+      ob = Relationship.new(:user => opts[:user])
+    when 'read', 'update', 'destroy':
+      ob = obtain_rest_resource('Relationship', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+    else
+      raise "Invalid action '#{action}'"
+  end
+
+  return if ob.nil? # appropriate rest response already given
+
+  if action == "destroy"
+
+    ob.destroy
+
+  else
+
+    # build it
+
+    ob.subject   = subject   if subject
+    ob.predicate = predicate if predicate
+    ob.objekt    = objekt    if objekt
+    ob.context   = context   if context
+
+    if not ob.save
+      return rest_response(400, :object => ob)
+    end
+  end
+
+  rest_get_request(ob, "relationship", opts[:user],
+      rest_resource_uri(ob), "relationship", { "id" => ob.id.to_s })
+end
+
+def post_relationship(opts)
+  relationship_aux('create', opts)
+end
+
+def put_relationship(opts)
+  relationship_aux('update', opts)
+end
+
+def delete_relationship(opts)
+  relationship_aux('destroy', opts)
+end
+
 # Call dispatcher
 
 def rest_call_request(req_uri, format, rules, user, query)
