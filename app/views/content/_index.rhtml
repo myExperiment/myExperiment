@@ -65,7 +65,7 @@
     <div class="summary">
       <div class="result-count">
         Showing <%= pluralize(@pivot[:results].size, 'result') -%>.
-        <% if @pivot[:results].size > 1 %>Use the filters on the left and the
+        <% if @pivot[:results].size > 1 %>Use the <%if @pivot[:filters].length > 0 %>filters on the left and the <% end %>
         search box below to refine the results.<% end %>
       </div>
       <div>
