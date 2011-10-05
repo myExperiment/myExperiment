@@ -1,4 +1,25 @@
 <h1>Topics</h1>
 
+<div class="box_standout" style="margin: 1.5em 3em; padding: 0.7em 1.5em;">
+	<p>
+		<span style="font-size: 108%; font-weight: bold; margin-left: 8px; vertical-align: middle;">
+			<%= link_to_function "What are Topics?" + expand_image("0.3em"), visual_effect(:toggle_blind, "topics_info_more", :duration => 0.4) %>
+		</span>
+	</p>
+	<div id="topics_info_more" style="margin-left: 36px; font-size: 93%; color: #333333; display:none">
+		<p>
+Topics explorer uses tags and tag co-occurrence to organize workflows into
+categories. We encourage logged in users to use Topics explorer, and to give
+feedback by clicking on the thumbs up / thumbs down icons inside each topic
+description. Your feedback will help evaluate the approach and ultimately
+improves your data exploration experience.
+		</p>
+		<p>
+Topics explorer was developed by Julia Stoyanovich, Paramveer Dhillon, Brian
+Lyons and Susan B. Davidson at the University of Pennsylvania. <a href="http://wiki.myexperiment.org/index.php/Topics">More about Topics</a>.
+		</p>
+	</div>
+</div>
+
 <%= render(:partial => 'topics/tiles', :locals => { :topics => @curr_run.topics }) -%>
 
