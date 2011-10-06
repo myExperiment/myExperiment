@@ -539,19 +539,19 @@ class ApplicationController < ActionController::Base
         },
 
         {
-          :title        => 'country',
-          :query_option => 'SERVICE_COUNTRY',
-          :id_column    => 'services.country',
-          :label_column => 'services.country',
-          :joins        => [ :services ]
-        },
-
-        {
           :title        => 'provider',
           :query_option => 'SERVICE_PROVIDER',
           :id_column    => 'service_providers.id',
           :label_column => 'service_providers.name',
           :joins        => [ :services, :service_providers ]
+        },
+
+        {
+          :title        => 'country',
+          :query_option => 'SERVICE_COUNTRY',
+          :id_column    => 'services.country',
+          :label_column => 'services.country',
+          :joins        => [ :services ]
         },
 
         {
