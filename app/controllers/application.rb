@@ -537,6 +537,32 @@ class ApplicationController < ActionController::Base
           :joins        => [ :curation_events ],
           :capitalize   => true
         },
+
+        {
+          :title        => 'country',
+          :query_option => 'SERVICE_COUNTRY',
+          :id_column    => 'services.country',
+          :label_column => 'services.country',
+          :joins        => [ :services ]
+        },
+
+        {
+          :title        => 'provider',
+          :query_option => 'SERVICE_PROVIDER',
+          :id_column    => 'service_providers.id',
+          :label_column => 'service_providers.name',
+          :joins        => [ :services, :service_providers ]
+        },
+
+        {
+          :title        => 'service status',
+          :query_option => 'SERVICE_STATUS',
+          :id_column    => 'services.monitor_label',
+          :label_column => 'services.monitor_label',
+          :joins        => [ :services ]
+        },
+
+
       ],
 
       :joins =>
@@ -551,7 +577,9 @@ class ApplicationController < ActionController::Base
         :curation_events     => "INNER JOIN curation_events ON curation_events.object_type = AUTH_TYPE AND curation_events.object_id = AUTH_ID",
         :workflow_processors => "INNER JOIN workflow_processors ON AUTH_TYPE = 'Workflow' AND workflow_processors.workflow_id = AUTH_ID",
         :search              => "RIGHT OUTER JOIN search_results ON search_results.result_type = AUTH_TYPE AND search_results.result_id = AUTH_ID",
-        :topic_workflow_map  => "INNER JOIN topic_workflow_map ON contributions.id = topic_workflow_map.workflow_id"
+        :topic_workflow_map  => "INNER JOIN topic_workflow_map ON contributions.id = topic_workflow_map.workflow_id",
+        :services            => "INNER JOIN services ON AUTH_TYPE = 'Service' AND AUTH_ID = services.id",
+        :service_providers   => "INNER JOIN service_providers ON AUTH_TYPE = 'Service' AND service_providers.uri = services.provider_uri",
       }
     }
   end
