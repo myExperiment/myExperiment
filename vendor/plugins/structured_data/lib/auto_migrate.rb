@@ -10,7 +10,7 @@ class AutoMigrate
   AUTO_TABLE_NAME     = "auto_tables"
   SCHEMA              = "config/base_schema.xml"
   SCHEMA_D            = "config/schema.d"
-  COLUMN_ATTRIBUTES     = ['name', 'type', 'default', 'limit']
+  COLUMN_ATTRIBUTES     = ['name', 'type', 'default', 'limit', 'null']
   BELONGS_TO_ATTRIBUTES = ['polymorphic', 'class_name', 'foreign_key']
   HAS_MANY_ATTRIBUTES   = ['target', 'through', 'foreign_key', 'source', 'dependent', 'conditions', 'class_name', 'as']
 
@@ -52,6 +52,14 @@ class AutoMigrate
         else
           column['default'].to_s
         end
+      end
+    end
+
+    def self.parse_null(column)
+      case column['null']
+        when 'false'; false
+        when 'true';  true
+        when nil;     true
       end
     end
 
@@ -117,25 +125,41 @@ class AutoMigrate
       # add columns
 
       (new_columns - old_columns).each do |column_name|
-        default = column_default(new_tables[table_name][:columns][column_name])
-        conn.add_column(table_name, column_name, new_tables[table_name][:columns][column_name]["type"].to_sym, :default => default, :limit => new_tables[table_name][:columns][column_name]['limit'])
+
+        column = new_tables[table_name][:columns][column_name]
+
+        default = column_default(column)
+        null    = parse_null(column)
+        conn.add_column(table_name, column_name, column["type"].to_sym, :default => default, :limit => column['limit'],
+        :null => null)
       end
 
       # modify existing columns
 
       (old_columns & new_columns).each do |column_name|
 
+        column = new_tables[table_name][:columns][column_name]
+
         old_default = old_column_info[column_name].default
-        new_default = column_default(new_tables[table_name][:columns][column_name])
+        new_default = column_default(column)
 
         old_default = old_default.to_s unless old_default.nil?
         new_default = new_default.to_s unless new_default.nil?
 
         old_type    = old_column_info[column_name].type
-        new_type    = new_tables[table_name][:columns][column_name]['type'].to_sym
+        new_type    = column['type'].to_sym
 
-        if (old_default != new_default) || (old_type != new_type)
-          conn.change_column(table_name.to_sym, column_name.to_sym, new_type, :default => new_default)
+        old_null    = old_column_info[column_name].null
+        new_null    = parse_null(column)
+
+        if (old_default != new_default) || (old_type != new_type) || (old_null != new_null)
+
+          if column['type'] == 'boolean'
+            new_default = 0 if new_default == "false"
+            new_default = 1 if new_default == "true"
+          end
+
+          conn.change_column(table_name.to_sym, column_name.to_sym, new_type, :default => new_default, :null => new_null)
         end
       end
 

@@ -21,8 +21,8 @@ class RenameIndexesToAutomaticNames < ActiveRecord::Migration
 
     add_index "bookmarks",         ["user_id"]
     add_index "comments",          ["user_id"]
-    add_index "contributions",     ["contributable_id", "contributable_type"]
-    add_index "contributions",     ["contributor_id", "contributor_type"]
+#   add_index "contributions",     ["contributable_id", "contributable_type"]
+#   add_index "contributions",     ["contributor_id", "contributor_type"]
     add_index "friendships",       ["friend_id"]
     add_index "friendships",       ["user_id"]
     add_index "memberships",       ["network_id"]
@@ -31,7 +31,7 @@ class RenameIndexesToAutomaticNames < ActiveRecord::Migration
     add_index "permissions",       ["policy_id"]
     add_index "ratings",           ["user_id"]
     add_index "reviews",           ["user_id"]
-    add_index "workflow_versions", ["workflow_id"]
+#   add_index "workflow_versions", ["workflow_id"]
   end
 
   def self.down

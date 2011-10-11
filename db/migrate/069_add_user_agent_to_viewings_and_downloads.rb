@@ -8,11 +8,11 @@ class AddUserAgentToViewingsAndDownloads < ActiveRecord::Migration
   
   def self.up
     add_column :viewings, :user_agent, :string, :default => nil
-    add_column :downloads, :user_agent, :string, :default => nil
+#   add_column :downloads, :user_agent, :string, :default => nil
   end
 
   def self.down
     remove_column :viewings, :user_agent
-    remove_column :downloads, :user_agent
+#   remove_column :downloads, :user_agent
   end
 end

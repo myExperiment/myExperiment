@@ -17,12 +17,12 @@
 
   <table name="pack_contributable_entries">
 
-    <column type="integer"  name="pack_id"/>
-    <column type="integer"  name="contributable_id"/>
+    <column type="integer"  name="pack_id"               null="false"/>
+    <column type="integer"  name="contributable_id"      null="false"/>
     <column type="integer"  name="contributable_version"/>
     <column type="string"   name="contributable_type"/>
     <column type="text"     name="comment"/>
-    <column type="integer"  name="user_id"/>
+    <column type="integer"  name="user_id"               null="false"/>
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
 
@@ -30,12 +30,12 @@
 
   <table name="pack_remote_entries">
 
-    <column type="integer"  name="pack_id"/>
+    <column type="integer"  name="pack_id"       null="false"/>
     <column type="string"   name="title"/>
     <column type="string"   name="uri"/>
     <column type="string"   name="alternate_uri"/>
     <column type="text"     name="comment"/>
-    <column type="integer"  name="user_id"/>
+    <column type="integer"  name="user_id"       null="false"/>
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
 

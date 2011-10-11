@@ -7,11 +7,11 @@ class AddAccessedFromSiteToViewingsAndDownloads < ActiveRecord::Migration
   
   def self.up
     add_column :viewings, :accessed_from_site, :boolean, :default => false
-    add_column :downloads, :accessed_from_site, :boolean, :default => false
+#   add_column :downloads, :accessed_from_site, :boolean, :default => false
   end
 
   def self.down
     remove_column :viewings, :accessed_from_site
-    remove_column :downloads, :accessed_from_site
+#   remove_column :downloads, :accessed_from_site
   end
 end

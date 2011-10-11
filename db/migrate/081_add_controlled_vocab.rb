@@ -5,14 +5,14 @@
 
 class AddControlledVocab < ActiveRecord::Migration
   def self.up
-    create_table :vocabularies do |t|
-      t.column :user_id,          :integer
-      t.column :title,            :string
-      t.column :description,      :text
-      t.column :description_html, :text
-      t.column :created_at,       :datetime
-      t.column :updated_at,       :datetime
-    end
+#   create_table :vocabularies do |t|
+#     t.column :user_id,          :integer
+#     t.column :title,            :string
+#     t.column :description,      :text
+#     t.column :description_html, :text
+#     t.column :created_at,       :datetime
+#     t.column :updated_at,       :datetime
+#   end
 
     add_column :tags, :vocabulary_id,    :integer
     add_column :tags, :description,      :text
@@ -22,7 +22,7 @@ class AddControlledVocab < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :vocabularies
+#   drop_table :vocabularies
 
     remove_column :tags, :vocabulary_id
     remove_column :tags, :description

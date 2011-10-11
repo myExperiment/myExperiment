@@ -1,6 +1,6 @@
 class UpdateForNewVersioning < ActiveRecord::Migration
   def self.up
-    rename_column :workflows, :version, :current_version
+#   rename_column :workflows, :version, :current_version
     
 #   add_column :workflow_versions, :image, :string
 #   add_column :workflow_versions, :svg, :string
@@ -8,7 +8,7 @@ class UpdateForNewVersioning < ActiveRecord::Migration
   end
 
   def self.down
-    rename_column :workflows, :current_version, :version
+#   rename_column :workflows, :current_version, :version
     
 #   remove_column :workflow_versions, :image
 #   remove_column :workflow_versions, :svg
