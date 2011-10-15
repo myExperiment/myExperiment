@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<schema>
+
+  <table name="blobs">
+
+    <column type="integer"  name="contributor_id"/>
+    <column type="string"   name="contributor_type"/>
+    <column type="string"   name="local_name"/>
+    <column type="datetime" name="created_at"/>
+    <column type="datetime" name="updated_at"/>
+    <column type="string"   name="title"/>
+    <column type="text"     name="body"/>
+    <column type="text"     name="body_html"/>
+    <column type="integer"  name="content_blob_id"/>
+    <column type="integer"  name="content_type_id"/>
+    <column type="integer"  name="license_id"/>
+
+  </table>
+
+</schema>
+
