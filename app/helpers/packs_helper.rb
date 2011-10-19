@@ -84,7 +84,7 @@ module PacksHelper
     case entry.class.name
     when "PackContributableEntry"
       text = entry.contributable.label
-      href = url_for(entry.contributable)
+      href = rest_resource_uri(entry.contributable)
     when "PackRemoteEntry"
       text = entry.title
       href = entry.uri
