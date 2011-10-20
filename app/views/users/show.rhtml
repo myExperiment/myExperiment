@@ -56,7 +56,7 @@
 		    <% unless @user.profile.nil? %>
 					<li><%= icon('edit', edit_user_profile_path(@user), nil, nil, 'Edit Profile') %></li>
 				<% end %>
-			  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
+			  <li><%= icon('history', user_userhistory_path(@user), nil, nil, 'View My History')%></li>
 	    <% end %>
 
       <% if Authorization.check(:action => 'destroy', :object => @user, :user => current_user) %>
