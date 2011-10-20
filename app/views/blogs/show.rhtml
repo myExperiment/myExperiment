@@ -7,7 +7,7 @@
 <% if logged_in? %>
   <ul class="sectionIcons">
     <% if Authorization.is_authorized?("edit", nil, @blog, current_user) %>
-      <li><%= icon('new', new_blog_post_path(@blog), nil, nil, "New post") %></li>
+      <li><%= icon('new', new_blog_blog_post_path(@blog), nil, nil, "New post") %></li>
       <li><%= icon('edit', edit_blog_path(@blog), nil, nil, 'Edit ' + truncate(@blog.title, 10)) %></li>
     <% end %>
     

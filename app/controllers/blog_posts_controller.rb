@@ -122,7 +122,7 @@ private
     (err = BlogPost.new.errors).add(attr, message)
     
     respond_to do |format|
-      format.html { redirect_to blog_posts_url(params[:blog_id]) }
+      format.html { redirect_to blog_blog_posts_url(params[:blog_id]) }
     end
   end
 end

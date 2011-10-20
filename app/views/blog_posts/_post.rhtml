@@ -2,8 +2,8 @@
   <b><%=h post.title %></b> (<%=datetime post.created_at, false %>)
   
   <% if my_page?(post.blog.contribution.contributor_id, post.blog.contribution.contributor_type) %>
-     <%= icon "edit", edit_blog_post_path(post.blog, post) %>
-     <%= icon "destroy", blog_post_path(post.blog, post), nil, :confirm => "Are you sure?", :method => "delete" %>
+     <%= icon "edit", edit_blog_blog_post_path(post.blog, post) %>
+     <%= icon "destroy", blog_blog_post_path(post.blog, post), nil, :confirm => "Are you sure?", :method => "delete" %>
   <% end %>
 </p>
 

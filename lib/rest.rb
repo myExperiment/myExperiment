@@ -562,7 +562,7 @@ def rest_resource_uri(ob)
     when 'Comment';                return "#{rest_resource_uri(ob.commentable)}/comments/#{ob.id}"
     when 'Bookmark';               return nil
     when 'Blog';                   return blog_url(ob)
-    when 'BlogPost';               return blog_post_url(ob.blog, ob)
+    when 'BlogPost';               return blog_blog_post_url(ob.blog, ob)
     when 'Rating';                 return "#{rest_resource_uri(ob.rateable)}/ratings/#{ob.id}"
     when 'Tag';                    return tag_url(ob)
     when 'Picture';                return user_picture_url(ob.owner, ob)
