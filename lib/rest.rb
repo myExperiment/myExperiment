@@ -98,7 +98,7 @@ def rest_response(code, args = {})
   render(:xml => doc.to_s, :status => "#{code} #{message}")
 end
 
-def preview_url(ob, type)
+def resource_preview_url(ob, type)
   url = URI.parse(rest_resource_uri(ob))
   url.path << "/versions/#{ob.current_version}" if ob.respond_to?('current_version')
   url.path << "/previews/#{type}"
@@ -244,7 +244,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         if model_data['Encoding'][i] == 'preview'
 
-          text = preview_url(ob, model_data['Accessor'][i])
+          text = resource_preview_url(ob, model_data['Accessor'][i])
 
         else
 
