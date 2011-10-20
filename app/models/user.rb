@@ -9,8 +9,6 @@ require 'acts_as_site_entity'
 require 'acts_as_contributor'
 require 'acts_as_creditor'
 
-require 'write_once_of'
-
 class User < ActiveRecord::Base
   
   has_many :citations, 
@@ -127,8 +125,6 @@ class User < ActiveRecord::Base
                             :message => "can only contain characters, numbers and _",
                             :if => Proc.new { |user| !user.username.nil? }
                             
-  validates_write_once_of   :username, :on => :update, :if => Proc.new { |user| !user.username.nil? }, :message => "cannot be changed"  
-                          
   validates_presence_of     :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
   validates_uniqueness_of   :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
   
