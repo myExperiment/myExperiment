@@ -5,7 +5,7 @@
 <% if my_page? params[:user_id] %>
   <ul class="sectionIcons">
 		<li><%= icon('profile', user_path(current_user), nil, nil, 'Return to Profile')%></li>
-    <li><%= icon('avatar', new_picture_path(current_user), nil, nil, 'Upload New Picture')%></li>
+    <li><%= icon('avatar', new_user_picture_path(current_user), nil, nil, 'Upload New Picture')%></li>
   </ul>
 <% end %>
 
@@ -39,9 +39,9 @@
     <td class="actions">
       <% if my_page? picture.user_id %>
 				<% unless picture.selected? %>
-					<%= icon "picture", select_picture_path(picture.user_id, picture), nil, nil, "Make Profile Pic" %>
+					<%= icon "picture", select_user_picture_path(picture.user_id, picture), nil, nil, "Make Profile Pic" %>
 				<% end %>
-				<%= icon "destroy", picture_path(picture.user_id, picture), nil, { :confirm => 'Are you sure?', :method => :delete }, "Delete"  %>
+				<%= icon "destroy", user_picture_path(picture.user_id, picture), nil, { :confirm => 'Are you sure?', :method => :delete }, "Delete"  %>
 			<% end %>
     </td>
   </tr>

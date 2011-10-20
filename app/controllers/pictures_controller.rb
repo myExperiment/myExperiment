@@ -19,7 +19,7 @@ class PicturesController < ApplicationController
       
       respond_to do |format|
         flash[:notice] = 'Picture was successfully selected as profile picture.'
-        format.html { redirect_to pictures_url(@picture.owner) }
+        format.html { redirect_to user_pictures_url(@picture.owner) }
       end
     else
       error("Picture already selected", "already selected")
@@ -92,7 +92,7 @@ class PicturesController < ApplicationController
       if @picture.save
         flash[:notice] = 'Picture was successfully uploaded.'
         
-        #format.html { redirect_to pictures_url(@picture.user_id) }
+        #format.html { redirect_to user_pictures_url(@picture.user_id) }
         # updated to take account of possibly various locations from where this method can be called,
         # so multiple redirect options are possible -> now return link is passed as a parameter
         format.html { redirect_to params[:redirect_to] }
@@ -108,7 +108,7 @@ class PicturesController < ApplicationController
     respond_to do |format|
       if @picture.update_attributes(params[:picture])
         flash[:notice] = 'Picture was successfully updated.'
-        format.html { redirect_to pictures_url(@picture.user_id) }
+        format.html { redirect_to user_pictures_url(@picture.user_id) }
       else
         format.html { render :action => "edit" }
       end
@@ -133,7 +133,7 @@ protected
     if params[:user_id]
       @pictures = Picture.find(:all, :conditions => ["user_id = ?", params[:user_id]])
     elsif logged_in?
-      redirect_to pictures_url(current_user)
+      redirect_to user_pictures_url(current_user)
     else
       error("Please supply a User ID", "not supplied", :user_id)
     end
@@ -170,7 +170,7 @@ private
     (err = Picture.new.errors).add(attr, message)
     
     respond_to do |format|
-      format.html { redirect_to logged_in? ? pictures_url(current_user) : '' }
+      format.html { redirect_to logged_in? ? user_pictures_url(current_user) : '' }
     end
   end
 end

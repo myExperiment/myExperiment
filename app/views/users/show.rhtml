@@ -98,7 +98,7 @@
 		<% if @user.profile -%>
 	    <td style="vertical-align: top;">
 				<% if mine? @user -%>
-	      	<%= avatar @user, 160, pictures_path(@user) -%>
+	      	<%= avatar @user, 160, user_pictures_path(@user) -%>
 					<br/>
 					<span style="text-align: center; margin-top: 0.5em; font-size: 85%; color: #666666;">
 						[ <%= link_to "Edit Profile Picture", edit_user_profile_path(@user) %> ]
