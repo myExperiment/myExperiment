@@ -54,7 +54,7 @@ class ProfilesController < ApplicationController
       respond_to do |format|
         if @profile.save
           flash[:notice] = 'Profile was successfully created.'
-          format.html { redirect_to profile_url(@profile) }
+          format.html { redirect_to user_profile_url(@profile) }
         else
           format.html { render :action => "new" }
         end

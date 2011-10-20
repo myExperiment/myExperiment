@@ -54,7 +54,7 @@
 			<% if mine? @user %>
 	    	<li><%= icon('manage', edit_user_path(@user), nil, nil, 'Manage Account') %></li>
 		    <% unless @user.profile.nil? %>
-					<li><%= icon('edit', edit_profile_path(@user), nil, nil, 'Edit Profile') %></li>
+					<li><%= icon('edit', edit_user_profile_path(@user), nil, nil, 'Edit Profile') %></li>
 				<% end %>
 			  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
 	    <% end %>
@@ -101,7 +101,7 @@
 	      	<%= avatar @user, 160, pictures_path(@user) -%>
 					<br/>
 					<span style="text-align: center; margin-top: 0.5em; font-size: 85%; color: #666666;">
-						[ <%= link_to "Edit Profile Picture", edit_profile_path(@user) %> ]
+						[ <%= link_to "Edit Profile Picture", edit_user_profile_path(@user) %> ]
 					</span>
 				<% else -%>
 					<%= avatar @user, 160 -%>
@@ -348,7 +348,7 @@
 		
 		<% if mine? @user %>
 			<p style="text-align: right; margin-top: 0.5em; color: #666666;">
-				[ <%= link_to "Edit Profile", edit_profile_path(@user) %> ]
+				[ <%= link_to "Edit Profile", edit_user_profile_path(@user) %> ]
 			</p>
 		<% end %>
 	
