@@ -60,7 +60,7 @@ class CitationsController < ApplicationController
     respond_to do |format|
       if @citation.update_attributes(params[:citation])
         flash[:notice] = 'Citation was successfully updated.'
-        format.html { redirect_to citation_url(@workflow, @citation) }
+        format.html { redirect_to workflow_citation_url(@workflow, @citation) }
       else
         format.html { render :action => "edit" }
       end
@@ -130,7 +130,7 @@ private
     (err = Citation.new.errors).add(attr, message)
     
     respond_to do |format|
-      format.html { redirect_to citations_url(params[:workflow_id]) }
+      format.html { redirect_to workflow_citations_url(params[:workflow_id]) }
     end
   end
   
