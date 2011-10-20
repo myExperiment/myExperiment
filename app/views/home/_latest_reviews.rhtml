@@ -21,7 +21,7 @@
 								</span>
 								<div class="box_standout" style="font-size: 85%; margin: 0.4em 2em; padding: 0.2em 0.5em;">
 									<p>
-										<b><%= link_to h(r.title), review_url(r.reviewable, r) -%></b>
+										<b><%= link_to h(r.title), workflow_review_url(r.reviewable, r) -%></b>
 										<br/>
 										<span style="color: #666666;">
 											<% if (rating = r.associated_rating) -%>
@@ -32,7 +32,7 @@
 										</span>
 									</p>
 									<%= truncate(strip_html(white_list(r.review)), 150) %>
-									<p style="text-align: right;">[ <%= link_to "More", review_url(r.reviewable, r) -%> ]</p>
+									<p style="text-align: right;">[ <%= link_to "More", workflow_review_url(r.reviewable, r) -%> ]</p>
 								</div>
 								<br/>
 							</li>

@@ -24,6 +24,7 @@
 	            <span style="float: right; margin-left: 1em;">
 	              <% mon_text = "Latest Monitoring Status: <b>#{service.monitor_label}</b><br/>#{service.monitor_message}<br/> Last checked: #{timeago_fuzzy(service.monitor_last_checked)}" %>
 	              <%= image_tag service.monitor_small_symbol_url, :style => "margin-left: 0.5em;", :title => tooltip_title_attrib(mon_text), :alt => mon_text -%>
+              <%= link_to('Workflows', workflows_path(:filter => "WSDL_ENDPOINT=(\"#{service.wsdl}\")")) -%>
 	            </span>
 	          <% end %>
 					

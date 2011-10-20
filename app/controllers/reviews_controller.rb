@@ -31,7 +31,7 @@ class ReviewsController < ApplicationController
     respond_to do |format|
       format.html {
         
-        @lod_nir  = review_url(:id => @review.id, :workflow_id => @reviewable.id)
+        @lod_nir  = workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id)
         @lod_html = formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'html')
         @lod_rdf  = formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'rdf')
         @lod_xml  = formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'xml')
@@ -185,7 +185,7 @@ private
     respond_to do |format|
       format.html {
         if attr
-          redirect_to reviews_url(params[:workflow_id])
+          redirect_to workflow_reviews_url(params[:workflow_id])
         else
           redirect_to workflows_url
         end
