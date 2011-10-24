@@ -93,25 +93,30 @@ protected
         @workflow.content_blob.data = nil unless Authorization.is_authorized?("download", nil, @workflow, current_user)
       else
         if logged_in?
-          error("Workflow not found (id not authorized)", "is invalid (not authorized)", :workflow_id)
+          error("Workflow not found (id not authorized)", "is invalid (not authorized)")
         else
           find_workflow_auth if login_required
         end
       end
     rescue ActiveRecord::RecordNotFound
-      error("Workflow not found", "is invalid", :workflow_id)
+      error("Workflow not found", "is invalid")
+      return false
     end
   end
   
   def find_citations
-    @citations = @workflow.citations
+    if @workflow
+      @citations = @workflow.citations
+    else
+      @citations = []
+    end
   end
   
   def find_citation
     if citation = @workflow.citations.find(:first, :conditions => ["id = ?", params[:id]])
       @citation = citation
     else
-      error("Citation not found", "is invalid")
+      error("Citation not found", "is invalid", params[:id])
     end
   end
   
@@ -119,18 +124,28 @@ protected
     if citation = @workflow.citations.find(:first, :conditions => ["id = ? AND user_id = ?", params[:id], current_user.id])
       @citation = citation
     else
-      error("Citation not found (id not authorized)", "is invalid (not authorized)")
+      error("Citation not found (id not authorized)", "is invalid (not authorized)", params[:id])
     end
   end
   
 private
 
-  def error(notice, message, attr=:id)
+  def error(notice, message, attr=nil)
     flash[:error] = notice
-    (err = Citation.new.errors).add(attr, message)
-    
+
+    workflow_id_attr = attr
+    workflow_id_attr = :id if workflow_id_attr.nil?
+
+    (err = Citation.new.errors).add(workflow_id_attr, message)
+
     respond_to do |format|
-      format.html { redirect_to workflow_citations_url(params[:workflow_id]) }
+      format.html {
+        if attr
+          redirect_to workflow_citations_url(params[:workflow_id])
+        else
+          redirect_to workflows_url
+        end
+      }
     end
   end
   
