@@ -34,27 +34,31 @@
           
     <% if user.profile %>
           
+     <% separator ="" %>
       <p style="font-size: 85%;">
         <% unless user.profile.website.blank? %>
           <b>Website:</b>
-          <%= link_to h(user.profile.website), h(user.profile.website), :popup => true %>
-          |
+          <%= link_to h(user.profile.website), h(user.profile.website), :rel => "nofollow", :popup => true %>
+          <% separator = "|" %>
         <% end %>
               
         <% unless user.profile.email.blank? %>
+          <%= separator %>
           <b>Email (public):</b>
           <%= mail_to user.profile.email, nil, {  :encode => "hex", :replace_at => " [at] " } %>
         <% end %>
       </p>
               
+     <% separator ="" %>
       <p style="font-size: 85%;">
         <% unless user.profile.field_or_industry.blank? %>
           <b>Field/Industry:</b>
           <%= h user.profile.field_or_industry %>
-          |
+          <% separator = "|" %>
         <% end %>
               
         <% unless user.profile.occupation_or_roles.blank? %>
+          <%= separator %>
           <b>Occupation/Role(s):</b>
           <%= h user.profile.occupation_or_roles %>
         <% end %>
