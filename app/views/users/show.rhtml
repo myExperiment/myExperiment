@@ -47,7 +47,7 @@
 				<li><%= icon("message", new_message_path(:user_id => @user.id), nil, nil, "Send Message") %></li>
 				<% if this_user_is_friend_of_current_user %>
 			    <% master_id, friendship_obj = current_user.friendship_from_self_id_and_friends_id(@user.id) %>
-					<li><%= icon "friend_delete", user_friendship_path(master_id, friendship_obj) + "?return_to=" + user_path(@user), nil, {:confirm => "Are you sure you want to remove this user from your friend list?", :method => :delete}, "Cancel Friendship" %></li>
+					<li><%= icon "friend_delete", user_friendship_path(current_user, friendship_obj) + "?return_to=" + user_path(@user), nil, {:confirm => "Are you sure you want to remove this user from your friend list?", :method => :delete}, "Cancel Friendship" %></li>
 			  <% end %>
 			<% end %>
 			
