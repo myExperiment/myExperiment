@@ -1393,8 +1393,12 @@ def paginated_search_index(query, models, num, page, user)
     q      = args[:query]
     models = args[:models]
 
-    search_result = models[0].multi_solr_search(q, :limit => size, :offset => size * (page - 1), :models => models)
-    search_result.results unless search_result.total < (size * (page - 1))
+    begin
+      search_result = models[0].multi_solr_search(q, :limit => size, :offset => size * (page - 1), :models => models)
+      search_result.results unless search_result.total < (size * (page - 1))
+    rescue
+      nil
+    end
   }
 end
 
