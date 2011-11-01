@@ -1393,12 +1393,8 @@ def paginated_search_index(query, models, num, page, user)
     q      = args[:query]
     models = args[:models]
 
-    begin
-      search_result = models[0].multi_solr_search(q, :limit => size, :offset => size * (page - 1), :models => models)
-      search_result.results unless search_result.total < (size * (page - 1))
-    rescue
-      nil
-    end
+    search_result = models[0].multi_solr_search(q, :limit => size, :offset => size * (page - 1), :models => models)
+    search_result.results unless search_result.total < (size * (page - 1))
   }
 end
 
@@ -1470,9 +1466,12 @@ def search(opts)
   attributes['query'] = search_query
   attributes['type'] = opts[:query]['type'] if models.length == 1
 
-  obs = paginated_search_index(search_query, models, num, page, opts[:user])
-
-  produce_rest_list(opts[:req_uri], opts[:rules], opts[:query], obs, 'search', attributes, opts[:user])
+  begin
+    obs = paginated_search_index(search_query, models, num, page, opts[:user])
+    produce_rest_list(opts[:req_uri], opts[:rules], opts[:query], obs, 'search', attributes, opts[:user])
+  rescue
+    rest_response(400, :reason => "Invalid search query")
+  end
 end
 
 def user_count(opts)
