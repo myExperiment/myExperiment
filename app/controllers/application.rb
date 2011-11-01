@@ -740,10 +740,14 @@ class ApplicationController < ActionController::Base
 
     def create_search_results_table(search_query, models)
 
-      solr_results = models.first.multi_solr_search(search_query,
-          :models         => models,
-          :results_format => :ids,
-          :limit          => Conf.max_search_size)
+      begin
+        solr_results = models.first.multi_solr_search(search_query,
+            :models         => models,
+            :results_format => :ids,
+            :limit          => Conf.max_search_size)
+      rescue
+        return false
+      end
 
       conn =  ActiveRecord::Base.connection
 
@@ -763,6 +767,8 @@ class ApplicationController < ActionController::Base
  
         conn.execute("INSERT INTO search_results VALUES #{insert_part}")
       end
+
+      true
     end
 
     def drop_search_results_table
@@ -1010,10 +1016,16 @@ class ApplicationController < ActionController::Base
 
     group_by = "contributions.contributable_type, contributions.contributable_id"
 
+    query_problem = false
+
     if params["query"]
       drop_search_results_table
-      create_search_results_table(params["query"], [Workflow, Blob, Pack, User, Network, Service])
-      joins.push(:search) unless opts[:arbitrary_models]
+      if create_search_results_table(params["query"], [Workflow, Blob, Pack, User, Network, Service])
+        joins.push(:search) unless opts[:arbitrary_models]
+      else
+        params["query"] = nil
+        query_problem = true
+      end
     end
 
     if opts[:arbitrary_models] && params[:query]
@@ -1157,7 +1169,8 @@ class ApplicationController < ActionController::Base
       :reset_filters_url       => reset_filters_url,
       :cancel_filter_query_url => cancel_filter_query_url,
       :filter_query_url        => build_url(params, opts, opts[:filters], [:filter]),
-      :summary                 => summary
+      :summary                 => summary,
+      :query_problem           => query_problem
     }
   end
 end

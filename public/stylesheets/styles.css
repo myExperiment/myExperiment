@@ -2246,6 +2246,11 @@ table.topic td.tag_vote{
   top: -1px;
 }
 
+.pivot .search_query_problem {
+  color: red;
+	font-style: italic;
+}
+
 .truncate {
   white-space: nowrap;
 }

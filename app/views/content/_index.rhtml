@@ -77,6 +77,11 @@
             <% end %>
             <input class="submit" type="submit" value="Search"></input>
           </div>
+          <% if @pivot[:query_problem] %>
+            <div class="search_query_problem">
+              There was a problem with your search query.
+            </div>
+          <% end %>
           <% if params[:query] && controller.class != SearchController %>
             <div class="remove_search_query">
               <%= link_to("Remove search query", url_for(request.query_parameters.merge({ "query", nil }))) -%>
