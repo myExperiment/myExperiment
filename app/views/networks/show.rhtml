@@ -10,9 +10,7 @@
 				<span style="text-align: left;"><b>You have been invited to join this group. Awaiting your <%= link_to "confirmation", membership_path(current_user, Membership.find(:first, :conditions => ['network_id = ? AND user_id = ?', @network, current_user])) -%>.</b></span>
 			</div>
 		<% end %>
-	<% end %>
 
-<% if logged_in? %>
   <ul class="sectionIcons">
     <% unless mine? @network %>
 		  <% if @network.member? current_user.id  %>
@@ -20,7 +18,7 @@
 			  <% if cur_membership %>
 			    <li><%= icon('network-leave', membership_path(cur_membership.user_id, cur_membership), nil, { :confirm => "Are you sure want to leave this group?", :method => :delete }, 'Leave Group') %></li>
 			  <% end %>
-			<% elsif !current_user.membership_pending?(@network.id) %>
+			<% elsif !current_user.membership_pending?(@network.id) && !@network.invitation_only? %>
 			  <li class="with_sep_bottom"><%= request_membership_link(current_user.id, @network.id) %></li>  
 			<% end %>
 		<% end %>
@@ -96,10 +94,12 @@
 	<% if mine? @network %>
 		<br/>
 		<div class="box_currentuser_specific">
-			<% if @network.auto_accept %>
-				You have set this Group to automatically accept all Membership Requests
-			<% else %>
-				You have set this Group to send you all Membership Requests for confirmation first
+			<% if @network.open? %>
+				You have set this Group to automatically accept all membership requests.
+			<% elsif @network.membership_by_request? %>
+				You have set this Group to require membership requests to be approved by a group administrator.
+      <% else %>
+        You have set this Group to be closed to membership requests unless invited by a group administrator.
 			<% end %>
 		</div>
 	<% end %>
@@ -118,7 +118,6 @@
 		</div>
 		<p class="heading">
 			Members
-			<a name="group_members"></a>
 		</p>
 		<div>
 			<%= render :partial => "networks/members", :locals => { :collection => others, :size => 60 } %>

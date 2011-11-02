@@ -74,4 +74,10 @@ class MembershipsControllerTest < Test::Unit::TestCase
     assert_redirected_to group_path(networks(:another_network).id )
     assert_equal old_count-1, Membership.count
   end
+
+  def test_cannot_join_invitation_only_group
+    assert_no_difference 'Membership.count' do
+      post :create, :user_id => users(:john).id, :network_id => networks(:exclusive_network).id
+    end
+  end
 end

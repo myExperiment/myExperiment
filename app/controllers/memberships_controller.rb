@@ -155,10 +155,10 @@ EOM
       end
       
       respond_to do |format|
+
         if @membership.save
-          
-          # Take into account network's "auto accept" setting
-          if (@membership.network.auto_accept)
+          # Take into account network's new member policy setting
+          if (@membership.network.open?)
             @membership.accept!
             
             begin
@@ -170,7 +170,7 @@ EOM
             end
             
             flash[:notice] = 'You have successfully joined the Group.'
-          else
+          elsif (@membership.network.membership_by_request?)
             @membership.user_establish!
             
             begin

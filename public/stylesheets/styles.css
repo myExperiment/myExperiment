@@ -781,6 +781,7 @@ ul.breadcrumb_list a:hover {
 	padding: 0.5em;
 	margin-bottom: 1.5em;
 	background-color: #F5F5F5;
+  margin: 0 auto 1.5em auto;
 }
 
 #errorExplanation h2 {

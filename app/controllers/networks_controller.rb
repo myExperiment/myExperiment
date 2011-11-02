@@ -46,9 +46,9 @@ class NetworksController < ApplicationController
   
   # POST /networks/1;membership_invite
   def membership_invite
-            
-    if (@membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id, :message => params[:membership][:message]) unless Membership.find_by_user_id_and_network_id(params[:user_id], @network.id) or Network.find(@network.id).owner? params[:user_id])
-      
+    @membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id, :message => params[:membership][:message], :invited_by => current_user)
+
+    unless !@membership || Membership.find_by_user_id_and_network_id(params[:user_id], @network.id) || Network.find(@network.id).owner?(params[:user_id])
       @membership.user_established_at = nil
       @membership.network_established_at = nil
       if @membership.message.blank?
@@ -450,10 +450,11 @@ protected
   end
   
   def find_network_auth_admin
-    begin
-      @network = Network.find(params[:id], :include => [ :owner, :memberships ])
-      raise unless @network.administrator?(current_user.id)
-    rescue ActiveRecord::RecordNotFound
+    if @network = Network.find_by_id(params[:id], :include => [ :owner, :memberships ])
+      unless @network.administrator?(current_user.id)
+        error("You must be a group administrator to invite people","")
+      end
+    else
       error("Group not found (id not authorized)", "is invalid (not owner)")
     end
   end

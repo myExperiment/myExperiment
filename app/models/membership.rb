@@ -8,7 +8,11 @@ class Membership < ActiveRecord::Base
 
   belongs_to :network
 
+  belongs_to :invited_by, :class_name => "User", :foreign_key => "inviter_id"
+
   validates_presence_of :user_id, :network_id
+
+  validate :membership_allowed
 
 #  validates_each :user_id do |model, attr, value|
 #    model.errors.add attr, "already member" if model.network.member? value
@@ -66,6 +70,15 @@ class Membership < ActiveRecord::Base
       return false
     else
       return user_established_at > network_established_at ? true : false
+    end
+  end
+
+  private
+
+  def membership_allowed
+    #Can only invite people in a closed group if you're an administrator
+    if self.network.invitation_only? && !self.network.administrators.include?(self.invited_by)
+      errors.add_to_base("This group is not open to membership requests.")
     end
   end
 

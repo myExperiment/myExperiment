@@ -29,13 +29,12 @@
   </fieldset>
 
   <fieldset>
-    <legend>Auto Accept Join Requests</legend>
+    <legend>New Membership Policy</legend>
     <p>
-    	You can configure this group to automatically accept requests from users to join.
+    	You can specify a policy on how new members can join this group.
 		</p>
     <p>
-      <%= form.check_box :auto_accept %>
-      <b>Auto Accept Join Requests</b><br />
+      <%= form.select :new_member_policy, Network::NEW_MEMBER_POLICY_OPTIONS.map {|o| [o[1],o[0]]} %>
     </p>
   </fieldset>
   

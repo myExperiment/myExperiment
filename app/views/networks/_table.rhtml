@@ -76,7 +76,7 @@
 			          <% if cur_membership %>
 			            <%= icon('network-leave', membership_path(cur_membership.user_id, cur_membership) + "?return_to=" + groups_path, nil, { :confirm => "Are you sure want to leave this group?", :method => :delete }, 'Leave Group') %>
 			          <% end %>
-							<% elsif !current_user.membership_pending?(network.id) %>
+							<% elsif !current_user.membership_pending?(network.id) && !network.invitation_only? %>
 							  <!-- not an admin, not a member yet and hasn't got pending request -->
 								<%= request_membership_link(current_user.id, network.id) %>
 							<% end %>

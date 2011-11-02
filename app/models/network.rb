@@ -182,4 +182,34 @@ class Network < ActiveRecord::Base
     # filter out blogs until they've gone completely
     c.select do |x| x.class != Blog end
   end
+
+  # New member policy
+  # Adapter from #3 of: http://zargony.com/2008/04/28/five-tips-for-developing-rails-applications
+  NEW_MEMBER_POLICY_OPTIONS = [
+                                [:open,"Open to anyone"],
+                                [:by_request,"Membership by request"],
+                                [:invitation_only,"Invitation only"]
+                              ]
+
+  validates_inclusion_of :new_member_policy, :in => NEW_MEMBER_POLICY_OPTIONS.map {|o| o[0]}
+
+  def new_member_policy
+    read_attribute(:new_member_policy).to_sym
+  end
+
+  def new_member_policy=(value)
+    write_attribute(:new_member_policy, value.to_s)
+  end
+
+  def open?
+    new_member_policy == :open
+  end
+
+  def membership_by_request?
+    new_member_policy == :by_request
+  end
+
+  def invitation_only?
+    new_member_policy == :invitation_only
+  end
 end
