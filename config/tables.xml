@@ -2759,9 +2759,9 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">group</Data></Cell>
-    <Cell><Data ss:Type="String">auto-accept</Data></Cell>
+    <Cell><Data ss:Type="String">new_member_policy</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Network</Data></Cell>
-    <Cell><Data ss:Type="String">auto_accept</Data></Cell>
+    <Cell><Data ss:Type="String">new_member_policy</Data></Cell>
     <Cell><Data ss:Type="String">no</Data></Cell>
     <Cell><Data ss:Type="String">text</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
@@ -2770,7 +2770,7 @@
     <Cell ss:Index="12"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="16" ss:StyleID="s75"/>
-    <Cell ss:Index="27" ss:StyleID="s76"><Data ss:Type="Boolean">0</Data></Cell>
+    <Cell ss:Index="27" ss:StyleID="s76"><Data ss:Type="String">by_request</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">group</Data></Cell>
@@ -5996,7 +5996,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>305</TopRowBottomPane>
+   <TopRowBottomPane>55</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -6013,9 +6013,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>324</ActiveRow>
+     <ActiveRow>65</ActiveRow>
      <ActiveCol>0</ActiveCol>
-     <RangeSelection>R325</RangeSelection>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
