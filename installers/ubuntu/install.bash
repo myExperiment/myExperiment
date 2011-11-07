@@ -33,7 +33,7 @@ if [ `echo $PATH | grep "/var/lib/gems/1.8/bin" | wc -l` -eq 0 ]; then
 	export PATH=$PATH:/var/lib/gems/1.8/bin
 fi
 sudo env PATH=$PATH rdoc-data --install ||  { echo "Could not install rdoc-data. Aborting ..."; exit 9; }
-if [ $nordoc -eq 0 ]; then
+if [ "$nordoc" -eq 0 ]; then
         sudo gem rdoc --all --overwrite || { echo "Could overwrite RDoc for existing Ruby Gems. Aborting ..."; exit 39; }
 fi
 sudo gem install $nordoc $nori cgi_multipart_eof_fix daemons dsl_accessor fastthread gem_plugin json mime-types mongrel mongrel_cluster needle net-sftp net-ssh openid_login_generator RedCloth ruby-yadis rubyzip solr-ruby xml-simple libxml-ruby oauth ruby-hmac openurl curb marc taverna-scufl taverna-t2flow || { echo "Failed to install all remaining generic Ruby Gems required by myExperiment. Aborting ..."; exit 8; }
