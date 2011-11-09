@@ -1,6 +1,6 @@
 <h1>Friendship</h1>
 
-<% display_user = !my_page?(@friendship.user_id) %>
+<% display_user = !my_page?(@friendship.user) %>
 <% display_user_instance = display_user ? @friendship.user : @friendship.friend %>
 
 
@@ -33,7 +33,7 @@
 				      <b>Accepted at:</b><br/>
 			        <%=datetime @friendship.accepted_at %>
 		        </p>
-		      <% elsif my_page? @friendship.friend_id %>
+		      <% elsif my_page? @friendship.friend %>
 		        <% if @friendship.message %>
 						  <p style="margin-top: 1.5em; font-size: 93%; text-align: center;">
 							  <b>Message from user:</b><br/>
@@ -55,7 +55,7 @@
 <br/>
 <center>
   <div class="box_currentuser_specific" style="width: 500px; padding-bottom: 0;">
-    <% if my_page? @friendship.friend_id %>
+    <% if my_page? @friendship.friend %>
 			<p style="color: #990000; font-size: 108%; text-align: center; padding-top: 0.5em;">
 			  <b><i>Your confirmation needed</i></b><br/>
 			</p>

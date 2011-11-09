@@ -1,6 +1,6 @@
 <% if @user %>
 
-  <% if my_page? @user.id %>
+  <% if my_page? @user %>
     
     <% unless @user.friendships_pending.empty? %>
       <h2>You need to respond to</h2>

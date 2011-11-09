@@ -5,7 +5,8 @@
 
 class PicturesController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
-  
+
+  before_filter :find_user
   before_filter :find_picture, :only => [:show]
   before_filter :find_pictures, :only => [:index]
   before_filter :find_picture_auth, :only => [:select, :edit, :update, :destroy]
@@ -16,13 +17,11 @@ class PicturesController < ApplicationController
     if @picture.select!
       # create and save picture selection record
       PictureSelection.create(:user => current_user, :picture => @picture)
-      
-      respond_to do |format|
-        flash[:notice] = 'Picture was successfully selected as profile picture.'
-        format.html { redirect_to user_pictures_url(@picture.owner) }
-      end
-    else
-      error("Picture already selected", "already selected")
+    end
+
+    respond_to do |format|
+      flash[:notice] = 'Picture was successfully selected as profile picture.'
+      format.html { redirect_to user_pictures_url(@picture.owner) }
     end
   end
   
@@ -77,12 +76,6 @@ class PicturesController < ApplicationController
     @picture = Picture.new
   end
 
-  # GET /users/1/pictures/1;edit
-  # GET /pictures/1;edit
-  def edit
-    
-  end
-
   # POST /users/1/pictures
   # POST /pictures
   def create
@@ -102,19 +95,6 @@ class PicturesController < ApplicationController
     end
   end
 
-  # PUT /users/1/pictures/1
-  # PUT /pictures/1
-  def update
-    respond_to do |format|
-      if @picture.update_attributes(params[:picture])
-        flash[:notice] = 'Picture was successfully updated.'
-        format.html { redirect_to user_pictures_url(@picture.user_id) }
-      else
-        format.html { render :action => "edit" }
-      end
-    end
-  end
-
   # DELETE /users/1/pictures/1
   # DELETE /pictures/1
   def destroy
@@ -130,37 +110,23 @@ class PicturesController < ApplicationController
 protected
 
   def find_pictures
-    if params[:user_id]
-      @pictures = Picture.find(:all, :conditions => ["user_id = ?", params[:user_id]])
+    if @user
+      @pictures = @user.pictures
     elsif logged_in?
       redirect_to user_pictures_url(current_user)
-    else
-      error("Please supply a User ID", "not supplied", :user_id)
     end
   end
   
   def find_picture
-    if params[:id]
-      if picture = Picture.find(:first, :conditions => ["id = ?", params[:id]])
-        @picture = picture
-      else
-        error("Picture not found (id not found)", "is invalid (not found)")
-      end
-    else
-      error("Please supply an ID", "not supplied")
-    end
+    @picture = Picture.find(params[:id])
   end
 
   def find_picture_auth
-    if params[:user_id]
-      begin
-        @picture = Picture.find(params[:id], :conditions => ["user_id = ?", params[:user_id]])
-      rescue ActiveRecord::RecordNotFound
-        error("Picture not found (id not authorized)", "is invalid (not owner)")
-      end
-    else
-      error("Please supply a User ID", "not supplied", :user_id)
-    end
+    @picture = Picture.find(params[:id], :conditions => ["user_id = ?", current_user.id])
+  end
+
+  def find_user
+    @user = User.find(params[:user_id])
   end
 
 private

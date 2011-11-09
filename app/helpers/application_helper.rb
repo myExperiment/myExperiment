@@ -7,20 +7,8 @@
 module ApplicationHelper
   require 'country_codes'
   
-  def my_page?(contributor_id, contributor_type="User")
-    #logged_in? and current_user.id.to_i == contributor_id.to_i and current_user.class.to_s == contributor_type.to_s
-
-    return false unless logged_in?
-    
-    case contributor_type.to_s
-    when "User"
-      return current_user.id.to_i == contributor_id.to_i
-    when "Network"
-      return false unless Network.find(:first, :conditions => ["id = ? AND user_id = ?", contributor_id, current_user.id])
-      return true
-    else
-      return false
-    end
+  def my_page?(contributor)
+    logged_in? && contributor == current_user
   end
   
   def mine?(thing)

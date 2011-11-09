@@ -1,58 +1,46 @@
-<% if params[:user_id] %>
-  <h1>Profile Pictures</h1>
-<% end %>
+<h1>Profile Pictures</h1>
 
-<% if my_page? params[:user_id] %>
+<% if my_page? @user %>
   <ul class="sectionIcons">
-		<li><%= icon('profile', user_path(current_user), nil, nil, 'Return to Profile')%></li>
+    <li><%= icon('profile', user_path(current_user), nil, nil, 'Return to Profile')%></li>
     <li><%= icon('avatar', new_user_picture_path(current_user), nil, nil, 'Upload New Picture')%></li>
   </ul>
 <% end %>
 
 <% unless @pictures.empty? %>
 
-<br/>
+  <br/>
 
-<table class="alt_table">
-  
-<% odd_row = false -%>
-<% for picture in @pictures %>
-<% if Authorization.is_authorized?("view", nil, picture, current_user) %>
-  <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-    <td width="150">
-      <% if picture.selected? %> 
-        <%= image_tag("people.png", :size => "60x60", :text => "current profile pic") %><br/>
-        Current
+  <table class="alt_table">
+
+    <% odd_row = false -%>
+    <% for picture in @pictures %>
+      <% if Authorization.is_authorized?("view", nil, picture, current_user) %>
+        <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+          <td width="150">
+            <% if picture.selected? %>
+              <%= image_tag("people.png", :size => "60x60", :text => "current profile pic") %><br/>
+              Current
+            <% end %>
+          </td>
+          <td>
+            <%= image_tag avatar_url(picture.id, 100), :class => 'framed' %>
+          </td>
+          <td class="actions">
+            <% if my_page? picture.user %>
+              <% unless picture.selected? %>
+                <%= icon "picture", select_user_picture_path(picture.user_id, picture), nil, nil, "Make Profile Pic" %>
+              <% end %>
+              <%= icon "destroy", user_picture_path(picture.user_id, picture), nil, { :confirm => 'Are you sure?', :method => :delete }, "Delete"  %>
+            <% end %>
+          </td>
+        </tr>
       <% end %>
-    </td>
-    <% unless params[:user_id] %>
-      <td width="150">
-        <font size="18"><%=h picture.user_id %></font>
-      </td>
     <% end %>
-    <td>
-      <% if false %>
-        <%= image_tag(url_for_file_column(picture, "data", "large")) %>
-      <% end %>
-      <%= image_tag avatar_url(picture.id, 100), :class => 'framed' %>
-    </td>
-    <td class="actions">
-      <% if my_page? picture.user_id %>
-				<% unless picture.selected? %>
-					<%= icon "picture", select_user_picture_path(picture.user_id, picture), nil, nil, "Make Profile Pic" %>
-				<% end %>
-				<%= icon "destroy", user_picture_path(picture.user_id, picture), nil, { :confirm => 'Are you sure?', :method => :delete }, "Delete"  %>
-			<% end %>
-    </td>
-  </tr>
-<% end %>
-<% end %>
-</table>
+  </table>
 
 <% else %>
 
-<p>No pictures yet!</p>
+  <p>No pictures yet!</p>
 
 <% end %>
-
-<br />
