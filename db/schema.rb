@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 93) do
+ActiveRecord::Schema.define(:version => 95) do
 
   create_table "activity_limits", :force => true do |t|
     t.column "contributor_type", :string,   :null => false
@@ -168,6 +168,7 @@ ActiveRecord::Schema.define(:version => 93) do
     t.column "downloads_count",      :integer,  :default => 0
     t.column "site_viewings_count",  :integer,  :default => 0
     t.column "contributable_id",     :integer
+    t.column "layout",               :string
   end
 
   add_index "contributions", ["contributable_id", "contributable_type"], :name => "index_contributions_on_contributable_id_and_contributable_type"
@@ -191,6 +192,12 @@ ActiveRecord::Schema.define(:version => 93) do
     t.column "details_html", :text
     t.column "created_at",   :datetime
     t.column "updated_at",   :datetime
+  end
+
+  create_table "data_sets", :force => true do |t|
+    t.column "workflow_id", :integer
+    t.column "title",       :string
+    t.column "description", :text
   end
 
   create_table "downloads", :force => true do |t|
@@ -747,6 +754,12 @@ ActiveRecord::Schema.define(:version => 93) do
     t.column "updated_at",       :datetime
     t.column "user_id",          :integer
     t.column "description",      :text
+  end
+
+  create_table "workflow_ports", :force => true do |t|
+    t.column "workflow_id", :integer
+    t.column "port_type",   :string
+    t.column "name",        :string
   end
 
   create_table "workflow_processors", :force => true do |t|
