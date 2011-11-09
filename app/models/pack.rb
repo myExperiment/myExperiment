@@ -150,7 +150,7 @@ class Pack < ActiveRecord::Base
       end +
       cgi.div("class" => "pack_description") do
         cgi.h3 {"Description"} +
-        cgi.p { (self.description.nil? || self.description.empty? ? "none" : self.description ) }
+        cgi.p { (self.description_html.nil? || self.description_html.empty? ? "none" : self.description_html ) }
       end
     end
     
