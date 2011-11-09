@@ -457,3 +457,21 @@ recaptcha_public:
 
 recaptcha_private:
 
+# Layouts - Gives a custom theme to a group and, when specified by the uploader, other contributions that are
+#           shared with that group
+#
+#     network_id: the ID of the group to be skinned
+#     stylesheets: a list of stylesheets to be used
+#     layout: a path to the page layout. Defines the overall structure of the page,
+#     environment: the environment for which this layout should apply (test/development/production). If not specified,
+#                  will be loaded in all environments. (OPTIONAL)
+#
+#
+#     Example:
+#
+#     example_layout:
+#       network_id: 123
+#       stylesheets:
+#         - styles
+#         - custom_stylesheet
+#       layout: layouts/myexperiment
