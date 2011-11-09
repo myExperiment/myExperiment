@@ -27,7 +27,7 @@
             <%= image_tag avatar_url(picture.id, 100), :class => 'framed' %>
           </td>
           <td class="actions">
-            <% if my_page? picture.user %>
+            <% if my_page? picture.owner %>
               <% unless picture.selected? %>
                 <%= icon "picture", select_user_picture_path(picture.user_id, picture), nil, nil, "Make Profile Pic" %>
               <% end %>
