@@ -165,6 +165,11 @@ class Conf
     self.fetch_entry('recaptcha_private')
   end
 
+  def self.layouts
+    #TODO: Perhaps implement code that can load different/extra settings files based on current environment
+    self.fetch_entry('layouts').delete_if {|k,v| v["environment"] && (v["environment"] != ENV["RAILS_ENV"])}
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)

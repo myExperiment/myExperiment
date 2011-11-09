@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   
   WhiteListHelper.tags.merge %w(table tr td th div span)
   
-  before_filter :set_configuration
+  #before_filter :set_configuration
 
   include AuthenticatedSystem
   before_filter :login_from_cookie
@@ -1173,5 +1173,22 @@ class ApplicationController < ActionController::Base
       :query_problem           => query_problem
     }
   end
-end
 
+  #Applies the layout for the Network with the given network_id to the object (contributable)
+  def update_layout(object,network_id)
+    if network_id.blank?
+      object.contribution.layout = nil
+      object.contribution.save
+    else
+      network = Network.find(network_id.to_i)
+      # Have to call .reload on permissions or the cached permissions from before "update_policy" was called are used
+      if network && find_permission_for_contributor(object.contribution.policy.permissions.reload, "Network", network_id.to_i)
+        object.contribution.layout = network.layout_name
+        object.contribution.save
+      else
+        object.errors.add_to_base("You may only choose layouts for groups that this #{object.class.name.downcase} is shared with.")
+      end
+    end
+
+  end
+end

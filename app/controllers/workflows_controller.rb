@@ -343,10 +343,12 @@ class WorkflowsController < ApplicationController
         end
 
         policy_err_msg = update_policy(@workflow, params)
-    
+
         # Credits and Attributions:
         update_credits(@workflow, params)
         update_attributions(@workflow, params)
+
+        update_layout(@workflow, params[:layout])
         
         # Refresh the types handler list of types if a new type was supplied this time.
         WorkflowTypesHandler.refresh_all_known_types! if params[:workflow][:type] == 'other'
@@ -501,7 +503,7 @@ class WorkflowsController < ApplicationController
         end
       end
     end
-    
+
     params[:workflow][:license_id] = nil if params[:workflow][:license_id] && params[:workflow][:license_id] == "0"
 
     respond_to do |format|
@@ -520,6 +522,8 @@ class WorkflowsController < ApplicationController
         policy_err_msg = update_policy(@workflow, params)
         update_credits(@workflow, params)
         update_attributions(@workflow, params)
+
+        update_layout(@workflow, params[:layout])
 
         if policy_err_msg.blank?
           flash[:notice] = 'Workflow was successfully updated.'
@@ -690,6 +694,7 @@ protected
       
       if Authorization.is_authorized?(action_name, nil, workflow, current_user)
         @latest_version_number = workflow.current_version
+
         @workflow = workflow
         if params[:version]
           if (viewing = @workflow.find_version(params[:version]))
@@ -853,6 +858,28 @@ protected
   end
   
 private
+
+
+  #Upon specifying a group to share with, prompts the user whether or not they want to apply the groups'
+  # custom skin
+
+  def check_sharing_with_branded_group(new_groups)
+    @groups_with_custom_layouts = nil
+    new_shared_with_groups = nil
+
+    # check if "shared with" groups has been changed in the update
+    if action == "create" && params[:group_sharing]
+      new_shared_with_groups = params[:group_sharing].keys
+    elsif action == "update" && (@shared_with_groups_pre_update != @workflow.shared_with_networks)
+      new_shared_with_groups = (@workflow.shared_with_networks - @shared_with_groups_pre_update).map { |n| n.ids }
+    end
+
+    if new_shared_with_groups && !params[:workflow][:skin]
+      # check whether an added/removed group had styling options available
+      group_ids = Conf.virtual_hosts.values.map {|v| v['group_id']} & new_shared_with_groups
+      @groups_with_custom_layouts = Network.find(group_ids)
+    end
+  end
 
   def error(notice, message, attr=:id)
     flash[:error] = notice

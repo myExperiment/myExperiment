@@ -112,7 +112,6 @@ end
 
 load 'config/environment_private.rb' if FileTest.exist?('config/environment_private.rb')
 
-# Fix for Ruby 1.8.7 when using Rails < 2.2
 module ActionView
   module Helpers
     module TextHelper

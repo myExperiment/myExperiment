@@ -55,12 +55,12 @@ class Workflow < ActiveRecord::Base
 
   has_previews
 
-  explicit_versioning(:version_column => "current_version", 
+  explicit_versioning(:version_column => "current_version",
                       :extra_attributes => ["image", "svg"],
                       :white_list_columns => ["body"]) do
     
     format_attribute :body
-    
+
     belongs_to :content_blob
     belongs_to :content_type
 

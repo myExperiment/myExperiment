@@ -1605,4 +1605,21 @@ protected
 
     result
   end
+
+  #Selects layout for contributables/groups or uses site's default
+  def configure_layout
+    contributable = (@workflow || @pack || @blog_post || @blob)
+    layout = nil
+
+    if params["layout_preview"]
+      layout = Conf.layouts[params["layout_preview"]]
+    elsif contributable && contributable.contribution
+      layout = Conf.layouts[contributable.contribution.layout]
+    elsif @network
+      layout = @network.layout
+    end
+
+    @layout = layout || {"layout" => Conf.page_template, "stylesheets" => [Conf.stylesheet]}
+  end
+
 end

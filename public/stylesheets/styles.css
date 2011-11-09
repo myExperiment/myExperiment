@@ -7,7 +7,7 @@
    http://developer.yahoo.com/yui/fonts/#fontsize
 */
 body {
-	background: #8e8e8e url('/images/body-bg.gif') repeat-y center;
+	background: #8e8e8e;
 	/* Only need to define one font here because the 
 	   YUI Fonts CSS provides a degradation path
 	   (see: http://developer.yahoo.com/yui/fonts/) */
@@ -127,22 +127,34 @@ li {
 
 #doc2 {
 	background-color: #FFFFFF;
+  padding: 0 1em;
 }
 
 #myexp_header {
-	margin: 1em 0.5em 0 0.5em;
+	margin: 0em 0.5em;
 }
 
-#myexp_header .logo {
+#hd
+{
+  padding-top: 1em;
+}
+
+.logo {
 	float: left;
 	width: 300px;
 }
 
-#myexp_header .links {
-	float: right;
-	width: 600px;
-	font-size: 93%;
+.links {
 	color: #999999;
+  font-weight: bold;
+}
+
+#site_info_links {
+  margin: 0.5em 0;
+}
+
+#user_links {
+  float: right;
 }
 
 #myexp_searchbar {
@@ -179,7 +191,7 @@ li {
 /* Begin Footer styles */
 
 #ft {
-	margin: 2em 0;
+	margin-top: 2em;
 	border: 0px dotted #999999;
 	border-width: 1px 0 1px 0;
 	color: #333333;
@@ -284,6 +296,8 @@ li {
 }
 
 /* begin css tabs nav */
+
+/* TODO: Remove me?
 .tabnav {
 	text-align: center;
 	font-weight: bolder;
@@ -330,6 +344,32 @@ li {
 	background-color: #317eff;
 	background-image: none;
 	color: #FFFFFF;
+}   */
+
+.tabnav
+{
+  text-align: center;
+  margin: 0;
+  padding:  0;
+}
+
+a.tab {
+  display: inline-block;
+	padding: 4px 12px;
+	margin-left: 3px;
+	border-style: solid;
+  border-color: #BBBBBB;
+  border-width: 1px 1px 0px 1px;
+	text-decoration: none;
+	background: url('/images/tab-bg.png') top repeat-x #EDEDED;
+  color: #333333;
+	font-weight: bolder;
+	font-size: 108%;
+}
+
+a.tab:hover, #selected_tabnav {
+	color: #FFFFFF;
+	background: #317eff;
 }
 
 /* end css tabs nav */ 
@@ -2285,3 +2325,16 @@ table.topic td.tag_vote{
   vertical-align: middle;
 }
 
+#error_flash {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 1.5em;
+  line-height: 1.4;
+}
+
+#notice_flash {
+  color: green;
+  font-weight: bold;
+  margin-bottom: 1.5em;
+  line-height: 1.4;
+}

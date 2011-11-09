@@ -1,0 +1,59 @@
+/* Stylesheet for the e-LICO layout. Requires main myExperiment stylesheet. */
+
+body  {
+	background: #cfd5dd;
+}
+
+#myexp_searchbar, #myexp_sidebar, a.tab:hover, #selected_tabnav, .pagination a  {
+  background: #4d597e;
+}
+
+#elico_header
+{
+  background: url("/images/elico_back1.png") repeat-x scroll center top #2C3966;
+}
+
+#elico_links_bar
+{
+  width: 73.074em;
+  height: 32px;
+  margin: 0 auto;
+  padding: 0 1em;
+}
+
+#elico_links_bar #inner
+{
+  border: 1px solid #7D89BE;
+  background: #4D597E;
+  margin: 0 -1em;
+  padding: 0 1em;
+}
+
+.logo {
+  width: 73.074em;
+  float: none;
+  text-align: left;
+  color: white;
+  margin: 0 auto;
+  padding-top: 0.5em;
+}
+
+.links {
+  height: 2em;
+  padding: 0.5em;
+}
+
+.links a {
+  color: white;
+}
+
+/* IE7 fixes */
+#doc2 {
+  *overflow: hidden;
+  *height: 0px;
+}
+
+#elico_links_bar #inner {
+  *height: 100%;
+}
+/* end of IE7 fixes */

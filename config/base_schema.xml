@@ -19,6 +19,7 @@
     <column type="string"   name="label"/>
     <column type="integer"  name="content_type_id"/>
     <column type="integer"  name="license_id"/>
+    <column type="string"   name="layout"/>
 
     <index>
       <column name="contributable_id"/>
