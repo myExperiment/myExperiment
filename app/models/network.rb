@@ -213,7 +213,7 @@ class Network < ActiveRecord::Base
     new_member_policy == :invitation_only
   end
 
-  #Returns the page_template defined for this network in settings.yml > layouts:
+  #Returns the layout defined for this network in settings.yml > layouts:
   def layout_name
     Conf.layouts.each do |k,v|
       if v["network_id"] == id

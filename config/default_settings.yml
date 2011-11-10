@@ -469,6 +469,8 @@ recaptcha_private:
 #
 #     Example:
 #
+#layouts:
+#
 #     example_layout:
 #       network_id: 123
 #       stylesheets:
