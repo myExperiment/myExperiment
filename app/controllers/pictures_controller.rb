@@ -6,8 +6,8 @@
 class PicturesController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
 
-  before_filter :find_user
-  before_filter :find_picture, :only => [:show]
+  before_filter :find_user, :except => [:show]
+
   before_filter :find_pictures, :only => [:index]
   before_filter :find_picture_auth, :only => [:select, :edit, :update, :destroy]
   
@@ -60,7 +60,7 @@ class PicturesController < ApplicationController
     
     send_cached_data("public/pictures/show/#{width.to_i}x#{height.to_i}/#{params[:id].to_i}.jpg",
         :type => 'image/jpeg', :disposition => 'inline') {
-
+      find_picture
       img = Magick::Image.from_blob(@picture.data).first
       img = img.change_geometry("#{width}x#{height}>") do |c, r, i| i.resize(c, r) end
 
