@@ -2140,6 +2140,10 @@ end
 # Call dispatcher
 
 def rest_call_request(req_uri, format, rules, user, query)
-  eval("#{rules['Function']}(:req_uri => req_uri, :format => format, :rules => rules, :user => user, :query => query)")
+  begin
+    eval("#{rules['Function']}(:req_uri => req_uri, :format => format, :rules => rules, :user => user, :query => query)")
+  rescue
+    return rest_response(500)
+  end
 end
 
