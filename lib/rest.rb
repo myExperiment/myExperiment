@@ -967,22 +967,27 @@ def workflow_aux(action, opts = {})
     # Handle the preview and svg images.  If there's a preview supplied, use
     # it.  Otherwise auto-generate one if we can.
 
-    if preview.nil? and content
-      metadata = Workflow.extract_metadata(:type => ob.content_type.title, :data => content)
-      preview = metadata["image"].read if metadata["image"]
-    end
+    begin
+      if preview.nil? and content
+        metadata = Workflow.extract_metadata(:type => ob.content_type.title, :data => content)
+        preview = metadata["image"].read if metadata["image"]
+      end
 
-    if preview
-      ob.image = preview
-    end
+      if preview
+        ob.image = preview
+      end
 
-    if svg.nil? and content
-      metadata = Workflow.extract_metadata(:type => ob.content_type.title, :data => content)
-      svg = metadata["image"].read if metadata["image"]
-    end
+      if svg.nil? and content
+        metadata = Workflow.extract_metadata(:type => ob.content_type.title, :data => content)
+        svg = metadata["image"].read if metadata["image"]
+      end
 
-    if svg
-      ob.svg = svg
+      if svg
+        ob.svg = svg
+      end
+
+    rescue
+      return rest_response(500, :reason => "Unable to extract metadata from workflow")
     end
 
     success = if (action == 'create' and opts[:query]['id'])
