@@ -987,7 +987,7 @@ def workflow_aux(action, opts = {})
       end
 
     rescue
-      return rest_response(500, :reason => "Unable to extract metadata from workflow")
+      return rest_response(500, :reason => "Unable to extract metadata")
     end
 
     success = if (action == 'create' and opts[:query]['id'])
