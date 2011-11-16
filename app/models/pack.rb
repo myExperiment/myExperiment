@@ -940,7 +940,6 @@ class Pack < ActiveRecord::Base
     # penalty for no description
     boost -= 20 if description.nil? || description.empty?
     
-    puts "id = #{id}, score = #{boost}"
     boost
   end
 
