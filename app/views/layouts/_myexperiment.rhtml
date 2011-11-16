@@ -35,18 +35,20 @@
           <% else %>
             <%= link_to image_tag(Conf.site_logo), "/" %>
           <% end %>
-          <div id="site_info_links" class="links">
+          </div>
+        <div id="myexp_links">
+          <div style="text-align: left; float: left; width: 34%; padding-top: 6px;" id="site_info_links" class="links">
             <% if @content_for_site_info_links %>
               <%= yield :site_info_links %>
             <% else %>
               <%= render :partial => 'layouts/site_info_links' %>
             <% end %>
           </div>
+          <div style="text-align: right; float: right; width: 64%;" id="user_links" class="links">
+            <%= render :partial => 'layouts/user_links' %>
+          </div>
         </div>
-        <div id="user_links" class="links">
-          <%= render :partial => 'layouts/user_links' %>
-        </div>
-        <br class="clearer"/>
+        <div class="clearer">&nbsp;</div>
       </div>
       <div id="myexp_tabs">
         <%= render :partial => 'layouts/tab_bar' %>

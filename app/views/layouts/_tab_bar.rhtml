@@ -1,5 +1,7 @@
-<div class="tabnav">
+<ul class="tabnav">
   <% Conf.main_tabs.each do |tab| %>
-    <%= link_to(tab['label'], tab['link'], :class => "tab", :id => (tab['controller'] && controller.controller_name.match(tab['controller'])) ? 'selected_tabnav' : '') -%>
+    <li <%= (tab['controller'] && controller.controller_name.match(tab['controller'])) ? 'id="selected_tabnav"' : '' %>>
+      <%= link_to(tab['label'], tab['link']) -%>
+    </li>
   <% end %>
-</div>
+</ul>

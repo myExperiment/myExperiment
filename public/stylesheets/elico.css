@@ -4,8 +4,12 @@ body  {
 	background: #cfd5dd;
 }
 
-#myexp_searchbar, #myexp_sidebar, a.tab:hover, #selected_tabnav, .pagination a  {
+#myexp_searchbar, #myexp_sidebar, .pagination a  {
   background: #4d597e;
+}
+
+.tabnav li a:hover, .tabnav li#selected_tabnav a {
+  background: none repeat scroll 0 0 #4d597e;
 }
 
 #elico_header
@@ -47,6 +51,10 @@ body  {
   color: white;
 }
 
+#doc2 {
+  padding: 0 1em;
+}
+
 /* IE7 fixes */
 #doc2 {
   *overflow: hidden;
@@ -55,5 +63,16 @@ body  {
 
 #elico_links_bar #inner {
   *height: 100%;
+  height: 100%;
 }
 /* end of IE7 fixes */
+
+#myexp_header {
+  margin: 0em 0.5em;
+}
+
+#hd
+{
+  padding-top: 1em;
+}
+
