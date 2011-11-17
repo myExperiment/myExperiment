@@ -143,7 +143,7 @@ class JobsController < ApplicationController
     respond_to do |format|
       if success and @job.save
         flash[:notice] = "Job successfully created."
-        format.html { redirect_to experiment_experiment_job_url(@job.experiment, @job) }
+        format.html { redirect_to experiment_job_url(@job.experiment, @job) }
       else
         flash[:error] = err_msg if err_msg
         format.html { render :action => "new" }
