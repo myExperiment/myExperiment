@@ -143,7 +143,7 @@ class JobsController < ApplicationController
     respond_to do |format|
       if success and @job.save
         flash[:notice] = "Job successfully created."
-        format.html { redirect_to job_url(@job.experiment, @job) }
+        format.html { redirect_to experiment_experiment_job_url(@job.experiment, @job) }
       else
         flash[:error] = err_msg if err_msg
         format.html { render :action => "new" }
@@ -161,7 +161,7 @@ class JobsController < ApplicationController
     respond_to do |format|
       if @job.update_attributes(params[:job])
         flash[:notice] = "Job was successfully updated."
-        format.html { redirect_to job_url(@experiment, @job) }
+        format.html { redirect_to experiment_job_url(@experiment, @job) }
       else
         format.html { render :action => "edit" }
       end
@@ -172,10 +172,10 @@ class JobsController < ApplicationController
     respond_to do |format|
       if @job.destroy
         flash[:notice] = "Job \"#{@job.title}\" has been deleted"
-        format.html { redirect_to jobs_url(@experiment) }
+        format.html { redirect_to experiment_jobs_url(@experiment) }
       else
         flash[:error] = "Failed to delete Job"
-        format.html { redirect_to job_url(@experiment, @job) }
+        format.html { redirect_to experiment_job_url(@experiment, @job) }
       end
     end
   end
@@ -218,7 +218,7 @@ class JobsController < ApplicationController
         flash[:error] = "An error has occurred whilst saving the inputs data"
       end
       
-      format.html { redirect_to job_url(@experiment, @job) }
+      format.html { redirect_to experiment_job_url(@experiment, @job) }
     end
   end
   
@@ -250,10 +250,10 @@ class JobsController < ApplicationController
     respond_to do |format|
       if success
         flash[:notice] = "Job has been successfully submitted. You can monitor progress in the 'Status' section."
-        format.html { redirect_to job_url(@experiment, @job) }
+        format.html { redirect_to experiment_job_url(@experiment, @job) }
       else
         flash[:error] = "Failed to submit job. Errors: " + errors_text
-        format.html { redirect_to job_url(@experiment, @job) }
+        format.html { redirect_to experiment_job_url(@experiment, @job) }
       end
     end
   end
@@ -279,7 +279,7 @@ class JobsController < ApplicationController
       else
         respond_to do |format|
           flash[:error] = "Outputs XML unavailable - Job not completed successfully yet."
-          format.html { redirect_to job_url(@experiment, @job) }
+          format.html { redirect_to experiment_job_url(@experiment, @job) }
         end
       end
   end
@@ -303,7 +303,7 @@ class JobsController < ApplicationController
     respond_to do |format|
       if child_job.save
         flash[:notice] = "Job successfully created, based on Job #{@job.title}'."
-        format.html { redirect_to job_url(@experiment, child_job) }
+        format.html { redirect_to experiment_job_url(@experiment, child_job) }
       else
         format.html { render :action => "new" }
       end
@@ -386,7 +386,7 @@ private
     (err = Job.new.errors).add(attr, message)
     
     respond_to do |format|
-      format.html { redirect_to jobs_url(params[:experiment_id]) }
+      format.html { redirect_to experiment_jobs_url(params[:experiment_id]) }
     end
   end
 end

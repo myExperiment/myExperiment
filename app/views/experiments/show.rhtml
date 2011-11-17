@@ -55,7 +55,7 @@
   <div class="tabTitle">Jobs</div>
   <div class="tabContent">
 		<ul class="sectionIcons">
-		  <li><%= icon('new', new_job_path(@experiment), nil, nil, 'New Job') %></li>
+		  <li><%= icon('new', new_experiment_job_path(@experiment), nil, nil, 'New Job') %></li>
 		</ul>
 		
 		<% unless @experiment.jobs.empty? -%>

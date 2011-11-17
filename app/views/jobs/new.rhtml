@@ -6,7 +6,7 @@
 	<%= error_messages_for :job %>
 </center>
 
-<% form_for :job, :url => (@job.experiment ? jobs_path(@job.experiment) : { :controller => 'jobs', :action => 'create' }) do |form| -%>
+<% form_for :job, :url => (@job.experiment ? experiment_jobs_path(@job.experiment) : { :controller => 'jobs', :action => 'create' }) do |form| -%>
 
 	<p class="sub-heading">
 		<% if @job.experiment -%>

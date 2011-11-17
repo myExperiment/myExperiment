@@ -3,7 +3,7 @@
 <% t "#{h @job.title}" -%>
 
 <ul class="sectionIcons">
-  <li><%= icon('rerun', rerun_job_path(@experiment, @job), nil, { :confirm => 'Note: this will create a new Job with the settings and input data copied from this Job. Continue?', :method => :post }, 'Rerun Job') %></li>
+  <li><%= icon('rerun', rerun_experiment_job_path(@experiment, @job), nil, { :confirm => 'Note: this will create a new Job with the settings and input data copied from this Job. Continue?', :method => :post }, 'Rerun Job') %></li>
 </ul>
 
 <h1>Job: <%= h @job.title %></h1>
@@ -118,7 +118,7 @@
 		<% unless @job.child_jobs.empty? -%>
 			<% @job.child_jobs.each do |j| -%>
 				<p>
-					<%= link_to h(j.title), job_url(j.experiment, j) -%>
+					<%= link_to h(j.title), experiment_job_url(j.experiment, j) -%>
 					<span style="color: #666666;">(<%= datetime j.created_at -%>)</span>
 				</p>
 			<% end -%>
@@ -147,7 +147,7 @@
 				
 				<br/>
 				
-				<% form_tag save_inputs_job_path(@experiment, @job), :multipart => true do -%>
+				<% form_tag save_inputs_experiment_job_path(@experiment, @job), :multipart => true do -%>
 					<% s_field_counter = 0 -%>
 					
 					<% inputs.each do |i| -%>
@@ -287,7 +287,7 @@
 		<ul class="sectionIcons" style="margin-top: 1.5em;">
 			<li style="margin-left: 0;">
 				<%= link_to_remote "#{refresh_image} Refresh",
-											 :url => refresh_status_job_url(@experiment, @job),
+											 :url => refresh_status_experiment_job_url(@experiment, @job),
 											 :method => :get,
 											 :update => 'status_box',
 											 :success => "new Effect.Highlight('status_box', { duration: 1.5 });",
@@ -303,7 +303,7 @@
 		<p id="refresh_timer_text" class="note_text" style="text-align: center;">
 			Note: this section will automatically refresh every 10 seconds until job completion.
 		</p>
-		<%= periodically_call_remote(:url => refresh_status_job_url(@experiment, @job), 
+		<%= periodically_call_remote(:url => refresh_status_experiment_job_url(@experiment, @job), 
 																 :frequency => '10', 
 																 :update => 'status_box', 
 																 :method => :get,
@@ -330,7 +330,7 @@
 		<ul class="sectionIcons" style="margin-top: 1.5em;">
 			<li style="margin-left: 0;">
 				<%= link_to_remote "#{refresh_image} Refresh",
-											 :url => refresh_outputs_job_url(@experiment, @job),
+											 :url => refresh_outputs_experiment_job_url(@experiment, @job),
 											 :method => :get,
 											 :update => 'outputs_box',
 											 :success => "new Effect.Highlight('outputs_box', { duration: 1.5 });",

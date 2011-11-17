@@ -36,7 +36,7 @@
 						<% if Authorization.is_authorized?('edit', nil, experiment, current_user) %>
 							<%= icon('edit', edit_experiment_path(experiment), nil, nil, 'Edit') %>
 						<% end %>
-						<%= icon "job", new_job_path(experiment), nil, nil, "New Job" %>
+						<%= icon "job", new_experiment_job_path(experiment), nil, nil, "New Job" %>
 		    	</td>
 		  	</tr>
 		<% end %>
