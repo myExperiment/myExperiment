@@ -186,18 +186,20 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
           list_element_accessor = model_data['List Element Accessor'][i]
           list_element_text     = list_element_accessor ? eval("item.#{model_data['List Element Accessor'][i]}") : item
 
-          if list_element_text.instance_of?(String)
-            el = LibXML::XML::Node.new(model_data['List Element Name'][i])
+          if list_element_text
+            if list_element_text.instance_of?(String)
+              el = LibXML::XML::Node.new(model_data['List Element Name'][i])
 
-            item_attrs.each do |key,value|
-              el[key] = value
+              item_attrs.each do |key,value|
+                el[key] = value
+              end
+
+              el << list_element_text.to_s if list_element_text
+
+              list_element << el
+            else
+              list_element << rest_reference(list_element_text, query)
             end
-
-            el << list_element_text.to_s if list_element_text
-
-            list_element << el
-          else
-            list_element << rest_reference(list_element_text, query)
           end
         end
 
