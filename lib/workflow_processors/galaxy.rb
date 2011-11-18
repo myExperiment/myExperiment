@@ -176,7 +176,7 @@ module WorkflowProcessors
 
           workflow
         rescue
-          puts $!
+          logger.info $!
           nil
         end
       end

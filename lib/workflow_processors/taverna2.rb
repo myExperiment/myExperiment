@@ -310,7 +310,6 @@ module WorkflowProcessors
 
                     processors_element << build('processor') do |processor_element|
 
-puts "PROCESSOR NAME = #{processor.name}"
                       processor_element << build('name',                   processor.name)                   if processor.name
                       processor_element << build('description',            processor.description)            if processor.description
                       processor_element << build('type',                   processor.type)                   if processor.type
