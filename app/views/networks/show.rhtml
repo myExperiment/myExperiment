@@ -208,7 +208,7 @@
   </div>
 </div>
 
-<% if @network.administrator?(current_user.id) %>
+<% if logged_in? && @network.administrator?(current_user.id) %>
   
   <% memberships = @network.memberships_accepted %>
   <a name="manage_memberships"></a>
