@@ -17,7 +17,7 @@ sudo su -c "echo mysql-server-5.1 mysql-server/root_password_again password `ech
 
 echo "Installing required APT packages"
 sudo apt-get update || { echo "Failed to update apt-get. Aborting ..."; exit 4; }
-sudo -n apt-get install -y build-essential exim4 ruby ruby1.8-dev libzlib-ruby rdoc irb rubygems rake libapache2-mod-fcgid libfcgi-ruby1.8 libmysql-ruby gcj-4.4-jre-headless subversion libopenssl-ruby1.8 libcurl3 libcurl3-gnutls libcurl4-openssl-dev mysql-server graphicsmagick imagemagick librmagick-ruby1.8 libmagick9-dev graphviz || { echo "Failed to installing required APT packages. Aborting ..."; exit 5; }
+sudo -n apt-get install -y build-essential exim4 ruby ruby1.8-dev libzlib-ruby rdoc irb rubygems rake libapache2-mod-fcgid libfcgi-ruby1.8 libmysql-ruby gcj-4.4-jre-headless subversion libopenssl-ruby1.8 libcurl3 libcurl3-gnutls libcurl4-openssl-dev mysql-server graphicsmagick imagemagick librmagick-ruby1.8 libmagick9-dev graphviz mlocate || { echo "Failed to installing required APT packages. Aborting ..."; exit 5; }
 
 echo "Installing Rake version $rake_version and Rails version $rails_version Ruby Gems"
 sudo gem install rake $nordoc $nori --version $rake_version || { echo "Could not install Rake Ruby Gem (version $rake_version). Aborting ..."; exit 6; }
@@ -33,7 +33,7 @@ if [ `echo $PATH | grep "/var/lib/gems/1.8/bin" | wc -l` -eq 0 ]; then
 	export PATH=$PATH:/var/lib/gems/1.8/bin
 fi
 sudo env PATH=$PATH rdoc-data --install ||  { echo "Could not install rdoc-data. Aborting ..."; exit 9; }
-if [ "$nordoc" -eq 0 ]; then
+if [ "$rdoc" -eq 1 ]; then
         sudo gem rdoc --all --overwrite || { echo "Could overwrite RDoc for existing Ruby Gems. Aborting ..."; exit 39; }
 fi
 sudo gem install $nordoc $nori cgi_multipart_eof_fix daemons dsl_accessor fastthread gem_plugin json mime-types mongrel mongrel_cluster needle net-sftp net-ssh openid_login_generator RedCloth ruby-yadis rubyzip solr-ruby xml-simple libxml-ruby oauth ruby-hmac openurl curb marc taverna-scufl taverna-t2flow || { echo "Failed to install all remaining generic Ruby Gems required by myExperiment. Aborting ..."; exit 8; }
