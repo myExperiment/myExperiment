@@ -18,7 +18,7 @@
         <small>(Administrator: <%= name @network.user_id -%>)</small>
       <% else -%>
         <b>Select group:</b><br/>
-        <%= select_tag "membership[network_id]", options_from_collection_for_select(Network.find(:all, :order => "title ASC", :conditions => ["new_member_policy != 'invitation_only'"]), :id.to_i, :title), :style => "width: 360px; margin-top: 0.3em; margin-bottom: 0.5em" %>
+        <%= select_tag "membership[network_id]", options_from_collection_for_select(Network.find(:all, :order => "title ASC", :conditions => ["new_member_policy != 'invitation_only'"]), 'id', 'title'), :style => "width: 360px; margin-top: 0.3em; margin-bottom: 0.5em" %>
       <% end -%>
     </div>
 
