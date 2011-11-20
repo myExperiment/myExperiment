@@ -113,7 +113,7 @@ end
 load 'config/environment_private.rb' if FileTest.exist?('config/environment_private.rb')
 
 # Fix for Ruby 1.8.7 when using Rails < 2.2
-if RUBY_VERSION == "1.8.7" && ((RAILS::VERSION::MAJOR == 1) || (RAILS::VERSION::MAJOR == 2 && RAILS::VERSION::MINOR < 2))
+if RUBY_VERSION == "1.8.7" && ((Rails::VERSION::MAJOR == 1) || (Rails::VERSION::MAJOR == 2 && Rails::VERSION::MINOR < 2))
   module ActionView
     module Helpers
       module TextHelper
