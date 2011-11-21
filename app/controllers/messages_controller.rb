@@ -135,34 +135,39 @@ class MessagesController < ApplicationController
     # check if sending is allowed and increment the message counter
     sending_allowed = ActivityLimit.check_limit(current_user, "internal_message")[0]
     
-    if sending_allowed
-      @message = Message.new(params[:message])
-      @message.from ||= current_user.id
-      
-      # set initial datetimes
-      @message.read_at = nil
-      
-      # test for spoofing of "from" field
-      unless @message.from.to_i == current_user.id.to_i
-        errors = true
-        @message.errors.add :from, "must be logged on"
-      end
-      
-      # test for existance of reply_id
-      if @message.reply_id
-        begin
-          reply = Message.find(@message.reply_id) 
+    if params[:message] && params[:message].kind_of?(Hash)
+      if sending_allowed
+        @message = Message.new(params[:message])
+        @message.from ||= current_user.id
         
-          # test that user is replying to a message that was actually received by them
-          unless reply.to.to_i == current_user.id.to_i
-            errors = true
-            @message.errors.add :reply_id, "not addressed to sender"
-          end
-        rescue ActiveRecord::RecordNotFound
+        # set initial datetimes
+        @message.read_at = nil
+        
+        # test for spoofing of "from" field
+        unless @message.from.to_i == current_user.id.to_i
           errors = true
-          @message.errors.add :reply_id, "not found"
+          @message.errors.add :from, "must be logged on"
+        end
+        
+        # test for existance of reply_id
+        if @message.reply_id
+          begin
+            reply = Message.find(@message.reply_id) 
+          
+            # test that user is replying to a message that was actually received by them
+            unless reply.to.to_i == current_user.id.to_i
+              errors = true
+              @message.errors.add :reply_id, "not addressed to sender"
+            end
+          rescue ActiveRecord::RecordNotFound
+            errors = true
+            @message.errors.add :reply_id, "not found"
+          end
         end
       end
+    else
+      @message = Message.new
+      errors = true
     end
     
     respond_to do |format|
