@@ -29,8 +29,7 @@ class User < ActiveRecord::Base
     self.find(:all,
               :order => "users.created_at DESC",
               :limit => limit,
-              :conditions => "users.activated_at IS NOT NULL",
-              :include => :profile)
+              :conditions => "users.activated_at IS NOT NULL")
             
   end
   
@@ -42,8 +41,7 @@ class User < ActiveRecord::Base
     self.find(:all,
               :order => "users.last_seen_at DESC",
               :limit => limit,
-              :conditions => "users.activated_at IS NOT NULL",
-              :include => :profile)
+              :conditions => "users.activated_at IS NOT NULL")
             
   end
   
