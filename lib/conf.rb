@@ -169,6 +169,14 @@ class Conf
     self.fetch_entry('recaptcha_private')
   end
 
+  def self.session_store_secret
+    self.fetch_entry('session_store_secret')
+  end
+
+  def self.cookie_verifier_secret
+    self.fetch_entry('cookie_verifier_secret')
+  end
+
   def self.layouts
     #TODO: Perhaps implement code that can load different/extra settings files based on current environment
     layouts = self.fetch_entry('layouts')

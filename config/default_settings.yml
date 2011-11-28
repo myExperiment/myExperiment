@@ -330,6 +330,19 @@ sym_encryption_key: your_symmetric_encryption_key
 
 secret_word: our_secret_word_that_no_one_knows
 
+# session store secret - This secret key is used for session store integrity.
+#
+#                        (see config/initializers/session_store.rb)
+
+session_store_secret: dc9f8b03a18fc2b7fa858bf660d9685f1637ed67c1ff0fd5c39978ec2f22ccca8201b32d89aeada76722b4ee5fa3df9df7400b37995636876a7140f0382231ef
+
+# cookie verifier secret - This secret key is used to verify cookie session
+#                          data integrity.
+#                          
+#                          (see config/initializers/cookie_verification_secret.rb)
+
+cookie_verifier_secret: 64a59b43e7aa93e55a5db119180a2973b584555f71e87388de5c27682407987446a0293dab64f5913cb19ead617893546b3646c98672905a38e6dfbfb5871034
+
 # google_web_analytics - Enable this to enable Google web analytics.
 
 google_web_analytics:
