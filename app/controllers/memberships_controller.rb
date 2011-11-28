@@ -104,9 +104,9 @@ EOM
       format.html {
 
         @lod_nir  = user_membership_url(:id => @membership, :user_id => @membership.user_id)
-        @lod_html = formatted_user_membership_url(:id => @membership.id, :user_id => @membership.user_id, :format => 'html')
-        @lod_rdf  = formatted_user_membership_url(:id => @membership.id, :user_id => @membership.user_id, :format => 'rdf')
-        @lod_xml  = formatted_user_membership_url(:id => @membership.id, :user_id => @membership.user_id, :format => 'xml')
+        @lod_html = user_membership_url(:id => @membership.id, :user_id => @membership.user_id, :format => 'html')
+        @lod_rdf  = user_membership_url(:id => @membership.id, :user_id => @membership.user_id, :format => 'rdf')
+        @lod_xml  = user_membership_url(:id => @membership.id, :user_id => @membership.user_id, :format => 'xml')
 
         # show.rhtml
       }
@@ -205,7 +205,7 @@ EOM
     respond_to do |format|
       if @membership.update_attributes(params[:membership])
         flash[:notice] = 'Membership was successfully updated.'
-        format.html { redirect_to membership_url(@membership.user_id, @membership) }
+        format.html { redirect_to user_membership_url(@membership.user_id, @membership) }
       else
         format.html { render :action => "edit" }
       end
@@ -336,7 +336,6 @@ protected
     if params[:user_id].blank?
       flash.now[:error] = "Invalid URL"
       redirect_to user_memberships_url(current_user.id)
-      return false
     end
   end
 
@@ -435,7 +434,7 @@ private
     (err = Membership.new.errors).add(attr, message)
     
     respond_to do |format|
-      format.html { redirect_to memberships_url(current_user.id) }
+      format.html { redirect_to user_memberships_url(current_user.id) }
     end
   end
   

@@ -7,7 +7,7 @@
 			</div>
 	  <% elsif current_user.membership_invite_pending?(@network.id) %>
 		  <div class="box_standout">  
-				<span style="text-align: left;"><b>You have been invited to join this group. Awaiting your <%= link_to "confirmation", membership_path(current_user, Membership.find(:first, :conditions => ['network_id = ? AND user_id = ?', @network, current_user])) -%>.</b></span>
+				<span style="text-align: left;"><b>You have been invited to join this group. Awaiting your <%= link_to "confirmation", user_membership_path(current_user, Membership.find(:first, :conditions => ['network_id = ? AND user_id = ?', @network, current_user])) -%>.</b></span>
 			</div>
 		<% end %>
 
@@ -16,7 +16,7 @@
 		  <% if @network.member? current_user.id  %>
 			  <% cur_membership = Membership.find(:first, :conditions => ["network_id = ? AND user_id = ?", @network.id, current_user.id] ) %>
 			  <% if cur_membership %>
-			    <li><%= icon('network-leave', membership_path(cur_membership.user_id, cur_membership), nil, { :confirm => "Are you sure want to leave this group?", :method => :delete }, 'Leave Group') %></li>
+			    <li><%= icon('network-leave', user_membership_path(cur_membership.user_id, cur_membership), nil, { :confirm => "Are you sure want to leave this group?", :method => :delete }, 'Leave Group') %></li>
 			  <% end %>
 			<% elsif !current_user.membership_pending?(@network.id) && !@network.invitation_only? %>
 			  <li class="with_sep_bottom"><%= request_membership_link(current_user.id, @network.id) %></li>  

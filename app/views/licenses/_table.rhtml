@@ -23,7 +23,7 @@
 						
 						<% if license.description_html and license.description_html.length > 0 %>
 							<div class="desc" style="font-size: 85%;">
-								<%= truncate(strip_html(license.description_html), 180) %>
+								<%= truncate(strip_html(license.description_html), :length => 180) %>
 							</div>
 						<% end %>
 						

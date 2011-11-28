@@ -5,6 +5,9 @@
 
 # Helper class to deal with Workflow types and processors.
 # Note that workflow types can exist that don't have corresponding processors.
+
+require 'lib/workflow_processors/interface'
+
 class WorkflowTypesHandler
   
   # Gets all the workflow processor classes that have been defined in the \lib\workflow_processors directory.
@@ -135,7 +138,7 @@ Dir.chdir(File.join(RAILS_ROOT, "lib/workflow_processors")) do
 end
 
 # Load up the processor classes at startup
-logger.debug("Workflow type processors found: " + WorkflowTypesHandler.processor_classes.to_sentence)
+Rails.logger.debug("Workflow type processors found: " + WorkflowTypesHandler.processor_classes.to_sentence)
 
 # Refresh the list of workflow types in the system
 WorkflowTypesHandler.refresh_all_known_types!

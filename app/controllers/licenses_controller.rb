@@ -16,9 +16,9 @@ class LicensesController < ApplicationController
       format.html {
 
         @lod_nir  = license_url(@license)
-        @lod_html = formatted_license_url(:id => @license.id, :format => 'html')
-        @lod_rdf  = formatted_license_url(:id => @license.id, :format => 'rdf')
-        @lod_xml  = formatted_license_url(:id => @license.id, :format => 'xml')
+        @lod_html = license_url(:id => @license.id, :format => 'html')
+        @lod_rdf  = license_url(:id => @license.id, :format => 'rdf')
+        @lod_xml  = license_url(:id => @license.id, :format => 'xml')
 
         # show.rhtml
       }

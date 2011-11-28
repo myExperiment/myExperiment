@@ -88,9 +88,9 @@ class BlobsController < ApplicationController
       format.html {
 
         @lod_nir  = file_url(@blob)
-        @lod_html = formatted_file_url(:id => @blob.id, :format => 'html')
-        @lod_rdf  = formatted_file_url(:id => @blob.id, :format => 'rdf')
-        @lod_xml  = formatted_file_url(:id => @blob.id, :format => 'xml')
+        @lod_html = file_url(:id => @blob.id, :format => 'html')
+        @lod_rdf  = file_url(:id => @blob.id, :format => 'rdf')
+        @lod_xml  = file_url(:id => @blob.id, :format => 'xml')
 
         # show.rhtml
       }
@@ -309,14 +309,12 @@ class BlobsController < ApplicationController
       else
         if logged_in? 
           error("File not found (id not authorized)", "is invalid (not authorized)")
-          return false
         else
           find_blob_auth if login_required
         end
       end
     rescue ActiveRecord::RecordNotFound
       error("File not found", "is invalid")
-      return false
     end
   end
   

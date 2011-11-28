@@ -37,7 +37,6 @@ class UserReportsController < ApplicationController
 
   def error
     render(:text => '400 Bad Request', :status => "400 Bad Request")
-    false
   end
 end
 

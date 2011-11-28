@@ -45,7 +45,7 @@ module WorkflowProcessors
         file.rewind
         return !rapid_miner_model.nil?
       rescue
-        logger.info $!
+        Rails.logger.info $!
         return false
       end
     end
@@ -291,7 +291,7 @@ module WorkflowProcessors
 
           package
         rescue
-          logger.info $!
+          Rails.logger.info $!
           nil
         end
       end

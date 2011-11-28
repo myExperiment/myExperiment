@@ -71,7 +71,7 @@
 	<div class="contribution_version_box" style="background-color: #EEEEEE;">
 		<div class="contribution_version_inner_box">
 			<h4>
-				<%= feed_icon_tag "RSS feed for items in this pack", formatted_items_pack_path(@pack, :rss), "float: right;" %>
+				<%= feed_icon_tag "RSS feed for items in this pack", items_pack_path(@pack, :format => :rss), "float: right;" %>
 				<% if @authorised_to_download %>
 				  <%= download_icon_tag "Download all items in the pack as a single .zip archive", download_pack_path(@pack), "float: right; margin-right: 0.5em;" -%>
 				<% end %>

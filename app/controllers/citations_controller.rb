@@ -100,7 +100,6 @@ protected
       end
     rescue ActiveRecord::RecordNotFound
       error("Workflow not found", "is invalid")
-      return false
     end
   end
   

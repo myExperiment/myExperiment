@@ -219,7 +219,7 @@ class WorkflowsController < ApplicationController
       end
       format.rss do
         #@workflows = Workflow.find(:all, :order => "updated_at DESC") # list all (if required)
-        render :action => 'index.rxml', :layout => false
+        render :action => 'feed.rxml', :layout => false
       end
     end
   end
@@ -245,14 +245,14 @@ class WorkflowsController < ApplicationController
 
         if params[:version]
           @lod_nir  = workflow_version_url(:id => @workflow.id, :version => @viewing_version_number)
-          @lod_html = formatted_workflow_version_url(:id => @workflow.id, :version => @viewing_version_number, :format => 'html')
-          @lod_rdf  = formatted_workflow_version_url(:id => @workflow.id, :version => @viewing_version_number, :format => 'rdf')
-          @lod_xml  = formatted_workflow_version_url(:id => @workflow.id, :version => @viewing_version_number, :format => 'xml')
+          @lod_html = workflow_version_url(:id => @workflow.id, :version => @viewing_version_number, :format => 'html')
+          @lod_rdf  = workflow_version_url(:id => @workflow.id, :version => @viewing_version_number, :format => 'rdf')
+          @lod_xml  = workflow_version_url(:id => @workflow.id, :version => @viewing_version_number, :format => 'xml')
         else
           @lod_nir  = workflow_url(@workflow)
-          @lod_html = formatted_workflow_url(:id => @workflow.id, :format => 'html')
-          @lod_rdf  = formatted_workflow_url(:id => @workflow.id, :format => 'rdf')
-          @lod_xml  = formatted_workflow_url(:id => @workflow.id, :format => 'xml')
+          @lod_html = workflow_url(:id => @workflow.id, :format => 'html')
+          @lod_rdf  = workflow_url(:id => @workflow.id, :format => 'rdf')
+          @lod_xml  = workflow_url(:id => @workflow.id, :format => 'xml')
         end
 
         # show.rhtml

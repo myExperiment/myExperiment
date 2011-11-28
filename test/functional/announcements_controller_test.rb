@@ -1,18 +1,11 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'announcements_controller'
 
-# Re-raise errors caught by the controller.
-class AnnouncementsController; def rescue_action(e) raise e end; end
-
-class AnnouncementsControllerTest < Test::Unit::TestCase
+class AnnouncementsControllerTest < ActionController::TestCase
   fixtures :announcements
   fixtures :users
 
   def setup
-    @controller = AnnouncementsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-
     @first_id = announcements(:first_announcement).id
   end
 
@@ -38,7 +31,7 @@ class AnnouncementsControllerTest < Test::Unit::TestCase
     assert_response :redirect
     assert_equal "Only administrators have access to create, update and delete announcements.", flash[:error]
 
-    follow_redirect
+    get :index
     assert_response :success
     assert_template 'index'
   end
@@ -50,7 +43,7 @@ class AnnouncementsControllerTest < Test::Unit::TestCase
     assert_response :redirect
     assert_equal "Only administrators have access to create, update and delete announcements.", flash[:error]
 
-    follow_redirect
+    get :index
     assert_response :success
     assert_template 'index'
   end

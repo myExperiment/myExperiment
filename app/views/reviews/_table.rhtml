@@ -31,7 +31,7 @@
 						
 						<div class="desc" style="font-size: 85%;">
 							<% unless (text = strip_html(review.review)).blank? %>
-								<%= truncate(text, 500) %>
+								<%= truncate(text, :length => 500) %>
 							<% else %>
 								<p class="none_text">No text</p>
 							<% end %>

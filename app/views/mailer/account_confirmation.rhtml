@@ -9,6 +9,7 @@ To confirm your email address and activate your account, please follow the link 
 <%= url_for :only_path => false,
 						:controller => 'users',
 						:action => 'confirm_email',
+            :host => Conf.hostname,
 						:hash => @hash %>
  
 - The <%= Conf.sitename %> Team

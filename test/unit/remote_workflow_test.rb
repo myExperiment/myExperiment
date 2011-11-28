@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class RemoteWorkflowTest < Test::Unit::TestCase
+class RemoteWorkflowTest < ActiveSupport::TestCase
   fixtures :remote_workflows
 
   # Replace this with your real tests.

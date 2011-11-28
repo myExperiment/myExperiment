@@ -26,22 +26,22 @@
     <td><%= "<b>" unless membership.accepted? %><%=datetime(membership.accepted_at, false) || "Pending" %><%= "</b>" unless membership.accepted? %></td>
     <td class="actions">
       <% if my_page? membership.user or (logged_in? and membership.network.administrator?(current_user.id)) %>
-        <%= icon "show", membership_path(membership.user_id, membership), nil, nil, "View" %>
+        <%= icon "show", user_membership_path(membership.user_id, membership), nil, nil, "View" %>
 				<% if membership.accepted? %>
-					<%= icon "destroy", membership_path(membership.user_id, membership), nil, { :confirm => "Are you sure?", :method => :delete }, "Remove" %>
+					<%= icon "destroy", user_membership_path(membership.user_id, membership), nil, { :confirm => "Are you sure?", :method => :delete }, "Remove" %>
 				<% end %>
       <% end %>
       <% if allow_approval %>
         <% unless membership.accepted? %>
-					<%= icon "confirm", accept_membership_path(current_user.id, membership), nil, :method => :post %>
-         	<%= icon "reject", membership_path(membership.user_id, membership), nil, :confirm => "Are you sure?", :method => :delete %>
+					<%= icon "confirm", accept_user_membership_path(current_user.id, membership), nil, :method => :post %>
+         	<%= icon "reject", user_membership_path(membership.user_id, membership), nil, :confirm => "Are you sure?", :method => :delete %>
 				<% end %>
       <% end %>
       <% if membership.accepted? %>
         <% if membership.network.administrator?(membership.user_id) %>
-		<%= icon "remove_group_admin", membership_path(membership.user_id, membership)+'?membership[administrator]=0', nil, {:method => :put}, "Remove group admin status" %>
+		<%= icon "remove_group_admin", user_membership_path(membership.user_id, membership)+'?membership[administrator]=0', nil, {:method => :put}, "Remove group admin status" %>
 	<% else %>
-		<%= icon "make_group_admin", membership_path(membership.user_id, membership)+'?membership[administrator]=1', nil, {:method => :put}, "Add
+		<%= icon "make_group_admin", user_membership_path(membership.user_id, membership)+'?membership[administrator]=1', nil, {:method => :put}, "Add
 group admin status" %>
 	<% end %>
       <% end %>

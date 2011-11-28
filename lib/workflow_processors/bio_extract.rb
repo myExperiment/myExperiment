@@ -42,7 +42,7 @@ module WorkflowProcessors
         file.rewind
         return !bioextract_model.nil?
       rescue
-        logger.info($!)
+        Rails.logger.info $!
         return false
       end
     end

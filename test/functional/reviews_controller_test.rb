@@ -1,17 +1,10 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'reviews_controller'
 
-# Re-raise errors caught by the controller.
-class ReviewsController; def rescue_action(e) raise e end; end
-
-class ReviewsControllerTest < Test::Unit::TestCase
+class ReviewsControllerTest < ActionController::TestCase
   fixtures :reviews, :users, :workflows, :workflow_versions, :contributions, :blobs, :packs, :policies, :permissions, :content_types
 
   def setup
-    @controller = ReviewsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-
     @first_id = reviews(:dilbert_review).id
   end
 
@@ -45,14 +38,17 @@ class ReviewsControllerTest < Test::Unit::TestCase
 
   def test_create
     num_reviews = Review.count
+    existing_reviews = Review.find(:all)
 
     login_as(:john)
     post :create, :review => { :title => 'my review', :review => 'very good, well done' }, :workflow_id => reviews(:dilbert_review).reviewable_id
 
-    assert_response :redirect
-    assert_redirected_to :action => 'show'
-
     assert_equal num_reviews + 1, Review.count
+
+    review = (Review.find(:all) - existing_reviews).first
+
+    assert_response :redirect
+    assert_redirected_to workflow_review_path(reviews(:dilbert_review).reviewable_id, review)
   end
 
   def test_edit

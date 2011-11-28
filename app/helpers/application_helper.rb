@@ -53,7 +53,7 @@ module ApplicationHelper
     if old_dt.is_a?(DateTime)
       rtn = old_dt
     else
-      rtn = Time.at(old_dt)
+      rtn = Time.at(old_dt.time)
     end
     
     return long ? rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)") : rtn.strftime("%d/%m/%y @ %H:%M:%S")
@@ -62,7 +62,7 @@ module ApplicationHelper
   def date(old_dt, long=true)
     return nil unless old_dt
     
-    rtn = Time.at(old_dt)
+    rtn = Time.at(old_dt.time)
     
     return long ? rtn.strftime("%d %B %Y") : rtn.strftime("%d/%m/%y")
   end
@@ -90,7 +90,7 @@ module ApplicationHelper
       return nil
     end
     
-    name = truncate_to ? truncate(user.name, truncate_to) : name = user.name
+    name = truncate_to ? truncate(user.name, :length => truncate_to) : name = user.name
     
     return link_to(h(name), user_url(user), :title => tooltip_title_attrib(h(user.name)))
   end
@@ -105,7 +105,7 @@ module ApplicationHelper
       return nil
     end
     
-    title = truncate_to ? truncate(network.title, truncate_to) : network.title
+    title = truncate_to ? truncate(network.title, :length => truncate_to) : network.title
     return link_to(h(title), group_url(network))
   end
   
@@ -215,7 +215,7 @@ module ApplicationHelper
       rtn = fships
     end
       
-    return link_to(rtn, friendships_path(user))
+    return link_to(rtn, user_friendships_path(user))
   end
   
   def request_membership_link(user_id, network_id)
@@ -227,7 +227,7 @@ module ApplicationHelper
   end
 
   def request_friendship_link(user_id)
-    link_to("Request Friendship", new_friendship_url(:user_id => user_id))
+    link_to("Request Friendship", new_user_friendship_url(:user_id => user_id))
   end
   
   def versioned_workflow_link(workflow_id, version_number, long_description=true)
@@ -429,7 +429,7 @@ module ApplicationHelper
   def contributable_name(contributableid, contributabletype, truncate=nil)
     str = contributable(contributableid, contributabletype, false)
     
-    return truncate ? truncate(str, truncate) : str
+    return truncate ? truncate(str, :length => truncate) : str
   end
   
   def contributable_url(contributableid, contributabletype, base_host=nil)
@@ -490,7 +490,7 @@ module ApplicationHelper
   end
   
   def trim_body_html(body, limit=nil)
-    truncate(body, limit)
+    truncate(body, :length => limit)
     white_list(body)
   end
   

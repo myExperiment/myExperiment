@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PendingInvitationTest < Test::Unit::TestCase
+class PendingInvitationTest < ActiveSupport::TestCase
   fixtures :pending_invitations
 
   # Replace this with your real tests.

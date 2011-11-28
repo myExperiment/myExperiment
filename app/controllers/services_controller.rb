@@ -85,7 +85,6 @@ class ServicesController < ApplicationController
 
     rescue ActiveRecord::RecordNotFound
       error("Service not found", "is invalid")
-      return false
     end
   end
   

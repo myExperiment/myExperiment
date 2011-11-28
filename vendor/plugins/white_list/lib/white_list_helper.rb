@@ -56,34 +56,37 @@ module WhiteListHelper
     attrs   = Set.new(options[:attributes]).merge(white_listed_attributes)
     tags    = Set.new(options[:tags]      ).merge(white_listed_tags)
     block ||= lambda { |node, bad| white_listed_bad_tags.include?(bad) ? nil : node.to_s.gsub(/</, '&lt;') }
-    returning [] do |new_text|
-      tokenizer = HTML::Tokenizer.new(html)
-      bad       = nil
-      while token = tokenizer.next
-        node = HTML::Node.parse(nil, 0, 0, token, false)
-        new_text << case node
-          when HTML::Tag
-            node.attributes.keys.each do |attr_name|
-              value = node.attributes[attr_name].to_s
-              if !attrs.include?(attr_name) || (protocol_attributes.include?(attr_name) && contains_bad_protocols?(value))
-                node.attributes.delete(attr_name)
-              else
-                node.attributes[attr_name] = value
-              end
-            end if node.attributes
-            node.attributes['rel'] = 'nofollow' if node.name == 'a' and node.attributes != nil
-            if tags.include?(node.name)
-              bad = nil
-              node
+
+    new_text = []
+
+    tokenizer = HTML::Tokenizer.new(html)
+    bad       = nil
+    while token = tokenizer.next
+      node = HTML::Node.parse(nil, 0, 0, token, false)
+      new_text << case node
+        when HTML::Tag
+          node.attributes.keys.each do |attr_name|
+            value = node.attributes[attr_name].to_s
+            if !attrs.include?(attr_name) || (protocol_attributes.include?(attr_name) && contains_bad_protocols?(value))
+              node.attributes.delete(attr_name)
             else
-              bad = node.name
-              block.call node, bad
+              node.attributes[attr_name] = value
             end
+          end if node.attributes
+          node.attributes['rel'] = 'nofollow' if node.name == 'a' and node.attributes != nil
+          if tags.include?(node.name)
+            bad = nil
+            node
           else
+            bad = node.name
             block.call node, bad
-        end
+          end
+        else
+          block.call node, bad
       end
-    end.join
+    end
+
+    new_text.join
   end
   
   protected

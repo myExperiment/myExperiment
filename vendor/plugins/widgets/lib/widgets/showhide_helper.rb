@@ -17,7 +17,7 @@ module Widgets
   
     # Crea un div di dettagli per un record 
     def detail_for record, &block
-      concat(render_default_css, block.binding) unless @_showhide_css_done 
+      concat(render_default_css) unless @_showhide_css_done 
       div_for(record, 'detail_for', :style => 'display: none;', :class => 'detail', &block)
       @_showhide_css_done = true # prevents to print the CSS multiple times
       nil

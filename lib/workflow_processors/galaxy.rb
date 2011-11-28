@@ -176,7 +176,7 @@ module WorkflowProcessors
 
           workflow
         rescue
-          logger.info $!
+          Rails.logger.info $!
           nil
         end
       end

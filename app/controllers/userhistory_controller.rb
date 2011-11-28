@@ -32,7 +32,6 @@ protected
     
       rescue ActiveRecord::RecordNotFound
         error("User not found", "is invalid", :user_id)
-        return false
       end
     else
       @user = User.find(params[:id])

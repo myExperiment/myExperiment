@@ -61,9 +61,9 @@ class PacksController < ApplicationController
       format.html {
         
         @lod_nir  = pack_url(@pack)
-        @lod_html = formatted_pack_url(:id => @pack.id, :format => 'html')
-        @lod_rdf  = formatted_pack_url(:id => @pack.id, :format => 'rdf')
-        @lod_xml  = formatted_pack_url(:id => @pack.id, :format => 'xml')
+        @lod_html = pack_url(:id => @pack.id, :format => 'html')
+        @lod_rdf  = pack_url(:id => @pack.id, :format => 'rdf')
+        @lod_xml  = pack_url(:id => @pack.id, :format => 'xml')
         
         # show.rhtml
       }
@@ -427,11 +427,9 @@ class PacksController < ApplicationController
         @base_host = base_host
       else
         error("You are not authorised to perform this action", "is not authorized")
-        return false
       end
     rescue ActiveRecord::RecordNotFound
       error("Pack not found", "is invalid")
-      return false
     end
   end
   

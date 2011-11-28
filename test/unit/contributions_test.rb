@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ContributionsTest < Test::Unit::TestCase
+class ContributionsTest < ActiveSupport::TestCase
   fixtures :contributions
 
   # Replace this with your real tests.

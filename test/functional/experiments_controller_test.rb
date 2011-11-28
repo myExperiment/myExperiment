@@ -1,17 +1,10 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'experiments_controller'
 
-# Re-raise errors caught by the controller.
-class ExperimentsController; def rescue_action(e) raise e end; end
-
-class ExperimentsControllerTest < Test::Unit::TestCase
+class ExperimentsControllerTest < ActionController::TestCase
   fixtures :experiments, :users
 
   def setup
-    @controller = ExperimentsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-
     @first_id = experiments(:experiment_1).id
   end
 

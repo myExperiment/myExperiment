@@ -15,7 +15,7 @@ class AnnouncementsController < ApplicationController
     respond_to do |format|
       format.html # index.rhtml
       format.rss do
-        render :action => 'index.rxml', :layout => false
+        render :action => 'feed.rxml', :layout => false
       end
     end
   end
@@ -27,9 +27,9 @@ class AnnouncementsController < ApplicationController
       format.html {
 
         @lod_nir  = announcement_url(@announcement)
-        @lod_html = formatted_announcement_url(:id => @announcement.id, :format => 'html')
-        @lod_rdf  = formatted_announcement_url(:id => @announcement.id, :format => 'rdf')
-        @lod_xml  = formatted_announcement_url(:id => @announcement.id, :format => 'xml')
+        @lod_html = announcement_url(:id => @announcement.id, :format => 'html')
+        @lod_rdf  = announcement_url(:id => @announcement.id, :format => 'rdf')
+        @lod_xml  = announcement_url(:id => @announcement.id, :format => 'xml')
         #
         # show.rhtml
       }

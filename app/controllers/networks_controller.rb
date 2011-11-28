@@ -335,9 +335,9 @@ class NetworksController < ApplicationController
       format.html {
          
         @lod_nir  = group_url(@network)
-        @lod_html = formatted_group_url(:id => @network.id, :format => 'html')
-        @lod_rdf  = formatted_group_url(:id => @network.id, :format => 'rdf')
-        @lod_xml  = formatted_group_url(:id => @network.id, :format => 'xml')
+        @lod_html = group_url(:id => @network.id, :format => 'html')
+        @lod_rdf  = group_url(:id => @network.id, :format => 'rdf')
+        @lod_xml  = group_url(:id => @network.id, :format => 'xml')
          
         # show.rhtml
       }

@@ -24,7 +24,7 @@
 						
 						<% unless runner.description.blank? %>
 							<div class="desc" style="font-size: 85%;">
-								<%= truncate(strip_html(runner.description), 180) %>
+								<%= truncate(strip_html(runner.description), :length => 180) %>
 							</div>
 						<% end %>
 						

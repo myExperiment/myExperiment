@@ -27,9 +27,9 @@ class ContentTypesController < ApplicationController
       format.html {
 
         @lod_nir  = content_type_url(@content_type)
-        @lod_html = formatted_content_type_url(:id => @content_type.id, :format => 'html')
-        @lod_rdf  = formatted_content_type_url(:id => @content_type.id, :format => 'rdf')
-        @lod_xml  = formatted_content_type_url(:id => @content_type.id, :format => 'xml')
+        @lod_html = content_type_url(:id => @content_type.id, :format => 'html')
+        @lod_rdf  = content_type_url(:id => @content_type.id, :format => 'rdf')
+        @lod_xml  = content_type_url(:id => @content_type.id, :format => 'xml')
 
         # show.rhtml
       }
@@ -74,7 +74,6 @@ class ContentTypesController < ApplicationController
 
     if @content_type.nil?
       error("Content type not found", "is invalid")
-      return false
     end
   end
 

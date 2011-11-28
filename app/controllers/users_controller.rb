@@ -40,9 +40,9 @@ class UsersController < ApplicationController
   def show
 
     @lod_nir  = user_url(@user)
-    @lod_html = formatted_user_url(:id => @user.id, :format => 'html')
-    @lod_rdf  = formatted_user_url(:id => @user.id, :format => 'rdf')
-    @lod_xml  = formatted_user_url(:id => @user.id, :format => 'xml')
+    @lod_html = user_url(:id => @user.id, :format => 'html')
+    @lod_rdf  = user_url(:id => @user.id, :format => 'rdf')
+    @lod_xml  = user_url(:id => @user.id, :format => 'xml')
 
     @user.salt = nil
     @user.crypted_password = nil
@@ -578,17 +578,17 @@ protected
       @user = User.find(params[:id], :include => [ :profile, :tags ])
     rescue ActiveRecord::RecordNotFound
       error("User not found", "is invalid (not owner)")
-      return false
+      return
     end
     
     unless @user
       error("User not found", "is invalid (not owner)")
-      return false
+      return
     end
     
     unless @user.activated?
       error("User not activated", "is invalid (not owner)")
-      return false
+      return
     end
   end
 
@@ -597,17 +597,17 @@ protected
       @user = User.find(params[:id], :conditions => ["id = ?", current_user.id])
     rescue ActiveRecord::RecordNotFound
       error("User not found (id not authorized)", "is invalid (not owner)")
-      return false
+      return
     end
     
     unless @user
       error("User not found (or not authorized)", "is invalid (not owner)")
-      return false
+      return
     end
     
     unless @user.activated?
       error("User not activated (id not authorized)", "is invalid (not owner)")
-      return false
+      return
     end
   end
   

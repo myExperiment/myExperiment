@@ -172,11 +172,9 @@ private
         @client_application = client_app
       else
         error("Client Application not found (id not authorized)", "is invalid (not authorized)")
-        return false
       end
     rescue ActiveRecord::RecordNotFound
       error("Client Application not found", "is invalid")
-      return false
     end
   end
 

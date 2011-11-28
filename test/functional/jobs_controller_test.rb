@@ -1,18 +1,11 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'jobs_controller'
 
-# Re-raise errors caught by the controller.
-class JobsController; def rescue_action(e) raise e end; end
-
 # tests should be uncommented and fixed when fixture data for jobs is available
-class JobsControllerTest < Test::Unit::TestCase
+class JobsControllerTest < ActionController::TestCase
   fixtures :jobs
 
   def setup
-    @controller = JobsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-
     # no fixtures for jobs currently
     #@first_id = jobs(:first).id
   end

@@ -1,11 +1,7 @@
-# Be sure to restart your web server when you modify this file.
-
-# Uncomment below to force Rails into production mode when 
-# you don't control web/app server and can't set it the proper way
-# ENV['RAILS_ENV'] ||= 'production'
+# Be sure to restart your server when you modify this file
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '1.2.6' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.14' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -13,57 +9,67 @@ require 'lib/conf'
 require 'uri'
 
 Rails::Initializer.run do |config|
-  # Settings in config/environments/* take precedence over those specified here
-  
-  # Skip frameworks you're not going to use (only works if using vendor/rails)
-  # config.frameworks -= [ :action_web_service, :action_mailer ]
-
-  # Only load the plugins named here, by default all plugins in vendor/plugins are loaded
-  # config.plugins = %W( exception_notification ssl_requirement )
-
-  config.plugins = ["engines", "encrypted_strings", "widgets", "white_list", "white_list_formatted_content", "*"]
+  # Settings in config/environments/* take precedence over those specified here.
+  # Application configuration should go into files in config/initializers
+  # -- all .rb files in that directory are automatically loaded.
 
   # Add additional load paths for your own custom dirs
-  # config.load_paths += %W( #{RAILS_ROOT}/extras )
+  # config.autoload_paths += %W( #{RAILS_ROOT}/extras )
 
-  # Force all environments to use the same logger level 
-  # (by default production uses :info, the others :debug)
-  # config.log_level = :debug
+  # Specify gems that this application depends on and have them installed with rake gems:install
+  # config.gem "bj"
+  # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
+  # config.gem "sqlite3-ruby", :lib => "sqlite3"
+  # config.gem "aws-s3", :lib => "aws/s3"
 
-  # Use the database for sessions instead of the file system
-  # (create the session table with 'rake db:sessions:create')
+  # Only load the plugins named here, in the order given (default is alphabetical).
+  # :all can be used as a placeholder for all plugins not explicitly named
+  # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
+  config.plugins = [
+    :encrypted_strings,
+    :widgets,
+    :country_select,
+    :white_list,
+    :white_list_formatted_content,
+    :acts_as_bookmarkable,
+    :acts_as_commentable,
+    :acts_as_rateable,
+    :acts_as_solr,
+    :acts_as_taggable_redux,
+    :acts_as_versioned,
+    :auto_complete,
+    :browser_filters,
+    :encrypted_attributes,
+    :exception_notification,
+    :fckeditor,
+    :headliner,
+    :oauth_plugin,
+    :open_id_authentication,
+    :paginating_find,
+    :qrcode,
+    :query_stats,
+    :recaptcha,
+    :simile_timeline,
+    :structured_data,
+    :validates_captcha,
+    :validates_email_veracity_of
+  ]
 
-  config.action_controller.session_store = :active_record_store
-
-  # Use SQL instead of Active Record's schema dumper when creating the test database.
-  # This is necessary if your schema can't be completely dumped by the schema dumper, 
-  # like if you have constraints or database-specific column types
-  # config.active_record.schema_format = :sql
+  # Skip frameworks you're not going to use. To use Rails without a database,
+  # you must remove the Active Record framework.
+  # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
 
   # Activate observers that should always be running
-  # config.active_record.observers = :cacher, :garbage_collector
+  # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 
-  # Make Active Record use UTC-base instead of local time
-  # config.active_record.default_timezone = :utc
-  
-  # See Rails::Configuration for more options
+  # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
+  # Run "rake -D time" for a list of tasks for finding time zone names.
+  config.time_zone = 'UTC'
 
-  base_uri = URI.parse(Conf.base_uri)
-
-  config.action_mailer.default_url_options = {
-    :host => base_uri.host + (base_uri.port == 80 ? "" : ":#{base_uri.port.to_s}")
-  }
-
+  # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
+  # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
+  # config.i18n.default_locale = :de
 end
-
-# Add new inflection rules using the following format 
-# (all these examples are active by default):
-# Inflector.inflections do |inflect|
-#   inflect.plural /^(ox)$/i, '\1en'
-#   inflect.singular /^(ox)en/i, '\1'
-#   inflect.irregular 'person', 'people'
-#   inflect.uncountable %w( fish sheep )
-# end
 
 # Add new mime types for use in respond_to blocks:
 # Mime::Type.register "text/richtext", :rtf
@@ -82,15 +88,6 @@ require 'smtp_tls'
 require 'authorization'
 
 ActionMailer::Base.smtp_settings = Conf.smtp
-
-# don't require actual keys for recaptcha during tests
-
-if RAILS_ENV == 'test'
-  Recaptcha.configure do |config|
-    config.public_key  = ''
-    config.private_key = ''
-  end
-end
 
 class ActiveRecord::Base
 

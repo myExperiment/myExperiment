@@ -84,11 +84,14 @@ class PreviewsController < ApplicationController
 
   def find_context
     @context = extract_resource_context(params)
-    return false unless @context
+    return error unless @context
 
     @context = @context.find_version(params[:version]) if params[:version]
-    return false unless @context
+    return error unless @context
   end
 
+  def error
+    render :text => 'Error.'
+  end
 end
 

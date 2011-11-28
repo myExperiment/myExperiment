@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class MailerTest < Test::Unit::TestCase
+class MailerTest < ActiveSupport::TestCase
   FIXTURES_PATH = File.dirname(__FILE__) + '/../fixtures'
   CHARSET = "utf-8"
 

@@ -6,10 +6,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'blog_posts_controller'
 
-# Re-raise errors caught by the controller.
-class BlogPostsController; def rescue_action(e) raise e end; end
-
-class BlogPostsControllerTest < Test::Unit::TestCase
+class BlogPostsControllerTest < ActionController::TestCase
 
   def test_true
     assert true

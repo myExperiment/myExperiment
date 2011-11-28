@@ -8,11 +8,11 @@
   <ul class="sectionIcons">
     <% if Authorization.is_authorized?("edit", nil, @blog, current_user) %>
       <li><%= icon('new', new_blog_blog_post_path(@blog), nil, nil, "New post") %></li>
-      <li><%= icon('edit', edit_blog_path(@blog), nil, nil, 'Edit ' + truncate(@blog.title, 10)) %></li>
+      <li><%= icon('edit', edit_blog_path(@blog), nil, nil, 'Edit ' + truncate(@blog.title, :length => 10)) %></li>
     <% end %>
     
     <% if Authorization.is_authorized?("destroy", nil, @blog, current_user) %>
-      <li><%= icon('destroy', blog_path(@blog), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove ' + truncate(@blog.title, 10)) %></li>
+      <li><%= icon('destroy', blog_path(@blog), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Remove ' + truncate(@blog.title, :length => 10)) %></li>
     <% end %>
   </ul>
 <% end %>

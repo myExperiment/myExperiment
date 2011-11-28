@@ -6,17 +6,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'friendships_controller'
 
-# Re-raise errors caught by the controller.
-class FriendshipsController; def rescue_action(e) raise e end; end
-
-class FriendshipsControllerTest < Test::Unit::TestCase
+class FriendshipsControllerTest < ActionController::TestCase
   fixtures :friendships, :users, :profiles
-
-  def setup
-    @controller = FriendshipsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
 
   def test_should_get_index
     login_as(:john)

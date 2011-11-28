@@ -40,7 +40,7 @@
 	    <!-- check if the profile that we are viewing now is a friend of current user -> stored for better performance -->
 			<% this_user_is_friend_of_current_user = @user.friend? current_user.id %>
 			<% unless this_user_is_friend_of_current_user || current_user.friendship_pending?(@user.id) %>
-	    	<li><%= icon('friendship', new_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
+	    	<li><%= icon('friendship', new_user_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
 	  	<% end %>
 	  	
 			<% unless mine? @user %>
@@ -261,7 +261,7 @@
 						<b><%= h @user.name -%> has an average rating of:</b>
 					</p>
 					<p style="font-size: 123.1%; font-weight: bold; padding-bottom: 0.2em; line-height: 1;">
-						<%= number_with_precision(avg_rating, 1) -%> / 5
+						<%= number_with_precision(avg_rating, :precision => 1) -%> / 5
 					</p>
 					<p style="font-size: 77%; padding-top: 0.2em; line-height: 1;">
 						(<%= pluralize rating_count, "rating" -%> in total)

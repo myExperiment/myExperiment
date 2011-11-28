@@ -31,7 +31,7 @@
 											<% end -%>
 										</span>
 									</p>
-									<%= truncate(strip_html(white_list(r.review)), 150) %>
+									<%= truncate(strip_html(white_list(r.review)), :length => 150) %>
 									<p style="text-align: right;">[ <%= link_to "More", workflow_review_url(r.reviewable, r) -%> ]</p>
 								</div>
 								<br/>

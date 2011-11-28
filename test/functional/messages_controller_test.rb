@@ -6,17 +6,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'messages_controller'
 
-# Re-raise errors caught by the controller.
-class MessagesController; def rescue_action(e) raise e end; end
-
-class MessagesControllerTest < Test::Unit::TestCase
+class MessagesControllerTest < ActionController::TestCase
   fixtures :messages, :users
-
-  def setup
-    @controller = MessagesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
 
   def test_should_get_index
     login_as(:john)

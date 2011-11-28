@@ -8,6 +8,7 @@ Please confirm this by following the link below (you might need to copy/paste it
  
 <%= url_for :only_path => false,
 						:controller => 'users',
+            :host => Conf.hostname,
 						:action => 'confirm_email',
 						:hash => @hash %>
  

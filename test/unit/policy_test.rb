@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PolicyTest < Test::Unit::TestCase
+class PolicyTest < ActiveSupport::TestCase
   fixtures :policies
 
   # Replace this with your real tests.

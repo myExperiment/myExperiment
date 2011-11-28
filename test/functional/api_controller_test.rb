@@ -6,18 +6,15 @@ require 'lib/rest'
 include ActionView::Helpers::UrlHelper
 include ActionController::UrlWriter
 
-# Re-raise errors caught by the controller.
-class ApiController; def rescue_action(e) raise e end; end
-
-class ApiControllerTest < Test::Unit::TestCase
-
-  fixtures :workflows, :users, :content_types, :licenses, :ontologies, :predicates, :packs
+class ApiControllerTest < ActionController::TestCase
 
   def setup
     @controller = ApiController.new
     @request    = TestRequestWithQuery.new
     @response   = ActionController::TestResponse.new
   end
+
+  fixtures :workflows, :users, :content_types, :licenses, :ontologies, :predicates, :packs
 
   def test_workflows
 

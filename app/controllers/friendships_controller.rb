@@ -41,7 +41,7 @@ class FriendshipsController < ApplicationController
     respond_to do |format|
       if @friendship.accept!
         flash[:notice] = 'Friendship was successfully accepted.'
-        format.html { redirect_to friendships_url(current_user.id) }
+        format.html { redirect_to user_friendships_url(current_user.id) }
       else
         error("Friendship already accepted", "already accepted")
       end
@@ -128,7 +128,7 @@ class FriendshipsController < ApplicationController
     respond_to do |format|
       if @friendship.update_attributes(params[:friendship])
         flash[:notice] = 'Friendship was successfully updated.'
-        format.html { redirect_to friendship_url(@friendship.user_id, @friendship) }
+        format.html { redirect_to user_friendship_url(@friendship.user_id, @friendship) }
       else
         format.html { render :action => "edit" }
       end
@@ -185,8 +185,7 @@ protected
   def check_user_present
     if params[:user_id].blank?
       flash.now[:error] = "Invalid URL"
-      redirect_to friendships_url(current_user.id)
-      return false
+      redirect_to user_friendships_url(current_user.id)
     end
   end
 
@@ -269,7 +268,7 @@ private
     (err = Friendship.new.errors).add(:id, message)
     
     respond_to do |format|
-      format.html { redirect_to friendships_url(current_user.id) }
+      format.html { redirect_to user_friendships_url(current_user.id) }
     end
   end
 end

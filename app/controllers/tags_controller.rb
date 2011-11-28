@@ -20,9 +20,9 @@ class TagsController < ApplicationController
       format.html {
 
         @lod_nir  = tag_url(@tag)
-        @lod_html = formatted_tag_url(:id => @tag.id, :format => 'html')
-        @lod_rdf  = formatted_tag_url(:id => @tag.id, :format => 'rdf')
-        @lod_xml  = formatted_tag_url(:id => @tag.id, :format => 'xml')
+        @lod_html = tag_url(:id => @tag.id, :format => 'html')
+        @lod_rdf  = tag_url(:id => @tag.id, :format => 'rdf')
+        @lod_xml  = tag_url(:id => @tag.id, :format => 'xml')
 
         # show.rhtml
       }

@@ -20,7 +20,7 @@ class GroupAnnouncementsController < ApplicationController
     respond_to do |format|
       format.html # index.rhtml
       format.rss do
-        render :action => 'index.rxml', :layout => false
+        render :action => 'feed.rxml', :layout => false
       end
     end
   end
@@ -31,9 +31,9 @@ class GroupAnnouncementsController < ApplicationController
       format.html {
 
         @lod_nir  = group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id)
-        @lod_html = formatted_group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'html')
-        @lod_rdf  = formatted_group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'rdf')
-        @lod_xml  = formatted_group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'xml')
+        @lod_html = group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'html')
+        @lod_rdf  = group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'rdf')
+        @lod_xml  = group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'xml')
 
         # show.rhtml
       }
@@ -103,7 +103,6 @@ class GroupAnnouncementsController < ApplicationController
       @group = Network.find(params[:group_id])
     rescue ActiveRecord::RecordNotFound
       error("Group couldn't be found")
-      return false
     end
   end
 
@@ -111,7 +110,6 @@ class GroupAnnouncementsController < ApplicationController
   def check_admin
     unless @group.administrator?(current_user.id)
       error("Only group administrators are allowed to create new announcements")
-      return false
     end
   end
 

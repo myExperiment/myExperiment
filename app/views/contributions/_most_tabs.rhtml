@@ -4,7 +4,7 @@
   <div class="tabContainer">
   	<div class="tabTitle">
   		<% if controller.controller_name.downcase == 'workflows' -%>
-				<%= feed_icon_tag "Latest Workflows", formatted_workflows_path(:rss), "margin-right: 0.2em;" %>
+				<%= feed_icon_tag "Latest Workflows", workflows_path(:format => :rss), "margin-right: 0.2em;" %>
 			<% end -%>
   		Latest
 		</div>

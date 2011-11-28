@@ -25,18 +25,20 @@ private
       @contributable = Object.const_get(klass_name).find_by_id(params[:contributable_id])
 
       # Abort if the contributable does not exist
-      return false if @contributable.nil?
+      return error if @contributable.nil?
 
       # Abort if we're not allowed to see this contributable
-      return false unless Authorization.check(:action => 'view', :object => @contributable, :user => current_user)
+      return error unless Authorization.check(:action => 'view', :object => @contributable, :user => current_user)
 
     rescue
 
       # In case the const_get doesn't find anything
-      return false
+      return error
     end
+  end
 
-    return true
+  def error
+    render :text => 'Error.'
   end
 end
 

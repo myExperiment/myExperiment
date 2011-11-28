@@ -6,10 +6,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'workflows_controller'
 
-# Re-raise errors caught by the controller.
-class WorkflowsController; def rescue_action(e) raise e end; end
-
-class AuthorizationTest < Test::Unit::TestCase
+class AuthorizationTest < ActionController::TestCase
   fixtures :workflows, :users, :contributions, :workflow_versions, :content_blobs, :blobs, :packs, :policies, :permissions, :networks, :friendships, :memberships, :licenses
 
   def test_truth

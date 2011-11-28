@@ -25,7 +25,7 @@
 						<div class="auto_complete" id="tags_auto_complete" ></div>
 						<%= auto_complete_field :tag_list,
 								:update => "tags_auto_complete",
-								:url => {:controller => 'tags', :action => 'auto_complete'},
+								:url => {:controller => 'tags', :action => 'auto_complete', :authenticity_token => form_authenticity_token},
 								:tokens => ',',
 								:indicator => "addtag_indicator" -%>
 					</p>

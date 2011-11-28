@@ -6,17 +6,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'pictures_controller'
 
-# Re-raise errors caught by the controller.
-class PicturesController; def rescue_action(e) raise e end; end
-
-class PicturesControllerTest < Test::Unit::TestCase
+class PicturesControllerTest < ActionController::TestCase
   fixtures :pictures, :users, :picture_selections, :profiles
-
-  def setup
-    @controller = PicturesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
 
   def test_should_get_index
     login_as(:john)

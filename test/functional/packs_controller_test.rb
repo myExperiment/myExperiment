@@ -1,17 +1,10 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'packs_controller'
 
-# Re-raise errors caught by the controller.
-class PacksController; def rescue_action(e) raise e end; end
-
-class PacksControllerTest < Test::Unit::TestCase
+class PacksControllerTest < ActionController::TestCase
   fixtures :packs, :users, :contributions, :workflows, :blobs, :content_blobs, :policies, :permissions, :networks
   
   def setup
-    @controller = PacksController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-
     @first_id = packs(:pack_1).id
   end
 

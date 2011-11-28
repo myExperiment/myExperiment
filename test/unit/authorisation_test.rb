@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class AuthorisationTest < Test::Unit::TestCase
+class AuthorisationTest < ActiveSupport::TestCase
   fixtures :workflows
   fixtures :blobs
   fixtures :contributions

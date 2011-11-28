@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ActivityLimitTest < Test::Unit::TestCase
+class ActivityLimitTest < ActiveSupport::TestCase
   fixtures :activity_limits
 
   # Replace this with your real tests.

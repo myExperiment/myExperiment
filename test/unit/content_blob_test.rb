@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ContentBlobTest < Test::Unit::TestCase
+class ContentBlobTest < ActiveSupport::TestCase
   fixtures :content_blobs
 
   # Replace this with your real tests.

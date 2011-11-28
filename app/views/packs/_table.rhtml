@@ -34,7 +34,7 @@
 						
 						<div class="desc" style="font-size: 85%;">
 							<% unless pack.description.blank? %>
-					  		<% desc = truncate(strip_html(pack.description), 500) %>
+					  		<% desc = truncate(strip_html(pack.description), :length => 500) %>
 					    	<%= query ? highlight_all(desc, query) : desc %>
 						  <% else -%>
 								<span class="none_text">No description</span>

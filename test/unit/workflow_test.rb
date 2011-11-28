@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class WorkflowTest < Test::Unit::TestCase
+class WorkflowTest < ActiveSupport::TestCase
   fixtures :workflows
 
   # Replace this with your real tests.

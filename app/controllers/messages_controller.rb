@@ -69,9 +69,9 @@ class MessagesController < ApplicationController
         format.html {
           
         @lod_nir  = message_url(@message)
-        @lod_html = formatted_message_url(:id => @message.id, :format => 'html')
-        @lod_rdf  = formatted_message_url(:id => @message.id, :format => 'rdf')
-        @lod_xml  = formatted_message_url(:id => @message.id, :format => 'xml')
+        @lod_html = message_url(:id => @message.id, :format => 'html')
+        @lod_rdf  = message_url(:id => @message.id, :format => 'rdf')
+        @lod_xml  = message_url(:id => @message.id, :format => 'xml')
           
           # show.rhtml
         }

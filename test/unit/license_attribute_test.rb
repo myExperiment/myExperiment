@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class LicenseAttributeTest < Test::Unit::TestCase
+class LicenseAttributeTest < ActiveSupport::TestCase
   fixtures :license_attributes
 
   # Replace this with your real tests.

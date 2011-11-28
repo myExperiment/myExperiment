@@ -101,7 +101,7 @@
 
 				<!-- These forms serve as 'data senders' for Accept/Reject buttons -->
 
-				<% form_tag(accept_membership_path(current_user.id, @membership)) do %>
+				<% form_tag(accept_user_membership_path(current_user.id, @membership)) do %>
 					<%= hidden_field_tag "accept_msg", "" %>
 				<% end %>
 

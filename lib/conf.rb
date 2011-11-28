@@ -49,6 +49,10 @@ class Conf
     end
   end
 
+  def self.hostname
+    self.base_uri.sub(/https?:\/\//, '')
+  end
+
   def self.admins
     self.fetch_entry('admins')
   end

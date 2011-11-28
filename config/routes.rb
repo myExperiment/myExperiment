@@ -72,6 +72,7 @@ ActionController::Routing::Routes.draw do |map|
   
   # search
   map.resource :search,
+    :controller => 'search',
     :member => { :live_search => :get, :open_search_beta => :get }
 
   # tags
@@ -187,9 +188,6 @@ ActionController::Routing::Routes.draw do |map|
 
   # messages
   map.resources :messages, :collection => { :sent => :get, :delete_all_selected => :delete }
-
-  # all ***ship's
-  map.resources :memberships, :friendships
 
   # all oauth
   map.oauth '/oauth',:controller=>'oauth',:action=>'index'

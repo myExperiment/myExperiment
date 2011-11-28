@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class DownloadTest < Test::Unit::TestCase
+class DownloadTest < ActiveSupport::TestCase
   fixtures :downloads
 
   # Replace this with your real tests.

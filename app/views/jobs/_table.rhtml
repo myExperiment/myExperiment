@@ -21,7 +21,7 @@
 						
 						<% unless job.description.blank? %>
 							<div class="desc" style="font-size: 85%; margin: 0.3em 0;">
-								<%= truncate(strip_html(job.description), 180) %>
+								<%= truncate(strip_html(job.description), :length => 180) %>
 							</div>
 						<% end %>
 						

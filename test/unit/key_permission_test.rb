@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class KeyPermissionTest < Test::Unit::TestCase
+class KeyPermissionTest < ActiveSupport::TestCase
   fixtures :key_permissions
 
   # Replace this with your real tests.

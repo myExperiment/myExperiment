@@ -329,7 +329,7 @@ module Authorization
       
       unless found_thing
         # search didn't yield any results - the "thing" wasn't found; can't authorize unknown objects
-        logger.error("UNEXPECTED ERROR - Couldn't find object to be authorized:(#{thing_type}, #{thing_id}); action: #{action_name}; user: #{user_id}")
+        Rails.logger.error("UNEXPECTED ERROR - Couldn't find object to be authorized:(#{thing_type}, #{thing_id}); action: #{action_name}; user: #{user_id}")
         return false
       else
         if ["Workflow", "Blog", "Blob", "Pack", "Contribution"].include?(thing_type)
@@ -790,8 +790,8 @@ module Authorization
       # original contributor not found, but the Contribution entry still exists -
       # this is an error in associations then, because all dependent items
       # should have been deleted along with the contributor entry; log the error
-      logger.error("UNEXPECTED ERROR - Contributor object missing for an existing contribution: (#{thing_contribution.class.name}, #{thing_contribution.id})")
-      logger.error("EXCEPTION:" + e)
+      Rails.logger.error("UNEXPECTED ERROR - Contributor object missing for an existing contribution: (#{thing_contribution.class.name}, #{thing_contribution.id})")
+      Rails.logger.error("EXCEPTION:" + e)
       return nil
     end
   end

@@ -68,8 +68,8 @@ class RelationshipsController < ApplicationController
     @context      = extract_resource_context(params)
     @relationship = Relationship.find_by_id(params[:id])
 
-    return false if @relationship.nil? || @context.nil? || @relationship.context != @context
-    return false if Authorization.is_authorized?('view', nil, @context, current_user) == false
+    return error if @relationship.nil? || @context.nil? || @relationship.context != @context
+    return error if Authorization.is_authorized?('view', nil, @context, current_user) == false
   end
 
   def find_resource_context
@@ -80,5 +80,8 @@ class RelationshipsController < ApplicationController
     return false if Authorization.is_authorized?('view', nil, @context, current_user) == false
   end
 
+  def error
+    render :text => 'Error.'
+  end
 end
 

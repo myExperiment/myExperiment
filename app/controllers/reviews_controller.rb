@@ -32,9 +32,9 @@ class ReviewsController < ApplicationController
       format.html {
         
         @lod_nir  = workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id)
-        @lod_html = formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'html')
-        @lod_rdf  = formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'rdf')
-        @lod_xml  = formatted_workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'xml')
+        @lod_html = workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'html')
+        @lod_rdf  = workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'rdf')
+        @lod_xml  = workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'xml')
         
         # show.rhtml
       }
@@ -135,14 +135,14 @@ protected
       else
         if logged_in?
           error("Workflow not found (id not authorized)", "is invalid (not authorized)")
-          return false
+          return
         else
           login_required
         end
       end
     rescue ActiveRecord::RecordNotFound
       error("Workflow not found", "is invalid")
-      return false
+      return
     end
   end
   
@@ -159,7 +159,7 @@ protected
       @review = review
     else
       error("Review not found", "is invalid")
-      return false
+      return
     end
   end
   
@@ -168,7 +168,7 @@ protected
       @review = review
     else
       error("Review not found or action not authorized", "is invalid (not authorized)")
-      return false
+      return
     end
   end
   

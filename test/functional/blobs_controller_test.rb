@@ -6,17 +6,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'blobs_controller'
 
-# Re-raise errors caught by the controller.
-class BlobsController; def rescue_action(e) raise e end; end
-
-class BlobsControllerTest < Test::Unit::TestCase
+class BlobsControllerTest < ActionController::TestCase
   fixtures :blobs, :users, :contributions, :content_blobs, :workflows, :packs, :policies, :permissions, :networks, :content_types
-
-  def setup
-    @controller = BlobsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
 
   def test_should_get_index
     get :index

@@ -21,7 +21,7 @@ class SearchController < ApplicationController
 
     if !Conf.search_categories.include?(@type)
       error(@type)
-      return false
+      return
     end
 
     if Conf.model_aliases.key?(@type.camelize.singularize)

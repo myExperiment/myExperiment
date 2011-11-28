@@ -1,17 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'citations_controller'
 
-# Re-raise errors caught by the controller.
-class CitationsController; def rescue_action(e) raise e end; end
-
-class CitationsControllerTest < Test::Unit::TestCase
+class CitationsControllerTest < ActionController::TestCase
   fixtures :citations, :workflows, :workflow_versions, :content_blobs, :users, :contributions, :blobs, :packs, :policies, :permissions
-
-  def setup
-    @controller = CitationsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
 
   def test_should_get_index
     login_as(:john)

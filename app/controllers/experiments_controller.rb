@@ -21,9 +21,9 @@ class ExperimentsController < ApplicationController
       format.html {
         
         @lod_nir  = experiment_url(@experiment)
-        @lod_html = formatted_experiment_url(:id => @experiment.id, :format => 'html')
-        @lod_rdf  = formatted_experiment_url(:id => @experiment.id, :format => 'rdf')
-        @lod_xml  = formatted_experiment_url(:id => @experiment.id, :format => 'xml')
+        @lod_html = experiment_url(:id => @experiment.id, :format => 'html')
+        @lod_rdf  = experiment_url(:id => @experiment.id, :format => 'rdf')
+        @lod_xml  = experiment_url(:id => @experiment.id, :format => 'xml')
         
         # show.rhtml
       }
