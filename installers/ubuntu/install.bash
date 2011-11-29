@@ -16,7 +16,7 @@ sudo su -c "echo mysql-server-5.1 mysql-server/root_password_again password `ech
 
 echo "Installing required APT packages"
 sudo apt-get update || { echo "Could not update apt-get. Aborting ..."; exit 4; }
-sudo -n apt-get install -y build-essential exim4 ruby ruby1.8-dev libzlib-ruby rdoc irb rubygems rake apache2 apache2-dev libapache2-mod-fcgid libfcgi-ruby1.8 libmysql-ruby gcj-4.4-jre-headless subversion libopenssl-ruby1.8 libcurl3 libcurl3-gnutls libcurl4-openssl-dev mysql-server graphicsmagick imagemagick librmagick-ruby1.8 libmagick9-dev graphviz mlocate || { echo "Could not install required APT packages. Aborting ..."; exit 5; }
+sudo -n apt-get install -y build-essential exim4 ruby ruby1.8-dev libzlib-ruby rdoc irb rubygems rake apache2 apache2-dev libapache2-mod-fcgid libfcgi-ruby1.8 libmysql-ruby gcj-4.4-jre-headless subversion libopenssl-ruby1.8 libcurl3 libcurl3-gnutls libcurl4-openssl-dev mysql-server graphicsmagick imagemagick librmagick-ruby1.8 libmagick9-dev graphviz mlocate wget || { echo "Could not install required APT packages. Aborting ..."; exit 5; }
 
 echo "Installing Rake version ${rake_version} and Rails version ${rails_version} Ruby Gems"
 sudo gem install rake ${nordoc} ${nori} --version ${rake_version} || { echo "Could not install Rake Ruby Gem (version ${rake_version}). Aborting ..."; exit 6; }
@@ -89,10 +89,12 @@ fi
 if [ -f "/etc/apache2/sites-enabled/000-default" ]; then
 	sudo rm /etc/apache2/sites-enabled/000-default  || { echo "Could not remove 000-default to sites-enabled. Aborting ..."; exit 37; }
 fi
-sudo apache2ctl restart || { echo "Could not restart Apache2. Aborting ..."; exit 38; }
+sudo apache2ctl stop || { echo "Could not stop Apache2. Aborting ..."; exit 38; }
+sleep 2
+sudo apache2ctl start || { echo "Could not start Apache2. Aborting ..."; exit 39; }
 
 echo "Removing temporary directory created for writing patch files to"
-sudo rm -rf ${tempdir} || { echo "Could not remove temporary directory used by patch files."; echo exit 38; }
+sudo rm -rf ${tempdir} || { echo "Could not remove temporary directory used by patch files."; exit 40; }
 
 echo ""
 echo "+-----------------------------------------------------------------------------------------+"
