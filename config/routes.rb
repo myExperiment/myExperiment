@@ -264,7 +264,6 @@ ActionController::Routing::Routes.draw do |map|
 #  map.connect '', :controller => 'users'
 
   # Explicit redirections
-  map.connect 'exercise', :controller => 'redirects', :action => 'exercise'
   map.connect 'google', :controller => 'redirects', :action => 'google'
   map.connect 'benchmarks', :controller => 'redirects', :action => 'benchmarks'
 
