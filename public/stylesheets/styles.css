@@ -1886,6 +1886,10 @@ table.simple td {
 #packItems .user {
 }
 
+.deletedPackItem {
+  color: gray;
+}
+
 table.quick_add {
 	border-collapse: collapse; 
 	width: 99%;

@@ -1,4 +1,4 @@
-# myExperiment: app/models/pack_remote_entry.rb
+#/ myExperiment: app/models/pack_remote_entry.rb
 #
 # Copyright (c) 2008 University of Manchester and the University of Southampton.
 # See license.txt for details.
@@ -30,5 +30,9 @@ class PackRemoteEntry < ActiveRecord::Base
   def touch_pack
     # Rails 2 - use pack.destroyed? instead of pack.contribution.nil?
     pack.touch unless pack.contribution.nil?
+  end
+
+  def available?
+    true
   end
 end

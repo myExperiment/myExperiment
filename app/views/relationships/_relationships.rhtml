@@ -10,7 +10,11 @@
   <ol class="relationship_sentences">
     <% relationships.each do |relationship| %>
       <li>
-        <%= pack_entry_link(relationship.subject) -%>
+        <% if relationship.subject.available? %>
+            <%= pack_entry_link(relationship.subject) -%>
+        <% else %>
+          <span class="deletedPackItem">deleted item</span>
+        <% end %>
 
         <% if relationship.predicate.phrase %>
           <%=h relationship.predicate.phrase -%>
@@ -18,7 +22,11 @@
           <%=h relationship.predicate.preferred_label.text.underscore.humanize.downcase -%>
         <% end %>
 
-        <%= pack_entry_link(relationship.objekt) -%>.
+        <% if relationship.objekt.available? %>
+          <%= pack_entry_link(relationship.objekt) -%>.
+        <% else %>
+          <span class="deletedPackItem">deleted item</span>
+        <% end %>
 
         <% if can_edit && defined?(show_delete) && show_delete %>
           <%= link_to_remote("<img src='/images/famfamfam_silk/cross.png' />",
