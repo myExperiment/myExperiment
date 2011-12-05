@@ -100,7 +100,7 @@ module ActsAsSolr #:nodoc:
         if options[:results_format] == :objects
           docs.each{|doc| k = doc.fetch('id').to_s.split(':'); result << k[0].constantize.find_by_id(k[1])}
         elsif options[:results_format] == :ids
-          docs.each{|doc| result << {"id"=>doc.values.pop.to_s}}
+          docs.each{|doc| result << {"id"=>doc['id'].pop}}
         end
         SearchResults.new :docs => result, :total => data.total
       end
