@@ -36,7 +36,13 @@ module OAuth::RequestProxy
     end
 
     def request_params
-      request.request_parameters
+      unless @request_parameters
+        @request_parameters = request.request_parameters.dup
+        request.symbolized_path_parameters.keys.each do |k|
+          @request_parameters.delete k.to_s
+        end if request.respond_to? :symbolized_path_parameters
+      end
+      @request_parameters
     end
 
   end
