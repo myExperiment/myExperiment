@@ -45,6 +45,7 @@ Rails::Initializer.run do |config|
     :headliner,
     :mannie_taverna_scufl,
     :mannie_taverna_t2flow,
+    :oauth,
     :oauth_plugin,
     :open_id_authentication,
     :paginating_find,
