@@ -7,8 +7,12 @@ require 'uri'
 
 module OAuth::RequestProxy
   class ActionControllerRequest < OAuth::RequestProxy::Base
-    proxies ActionController::AbstractRequest
-
+    if ActionController.const_defined?(:AbstractRequest)
+      proxies ActionController::AbstractRequest
+    else
+      proxies ActionController::Request
+    end
+	
     def method
       request.method.to_s.upcase
     end
