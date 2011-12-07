@@ -30,7 +30,7 @@ if [ `echo ${PATH} | grep "/var/lib/gems/1.8/bin" | wc -l` -eq 0 ]; then
 	DOLLAR='$'; echo -e "export PATH=${DOLLAR}PATH:/var/lib/gems/1.8/bin\nalias sudo='sudo env PATH=${DOLLAR}PATH'" >> /home/${USER}/.bashrc || { echo "Could not write to /home/${USER}/.bashrc.  Aborting ..."; exit 9;}
 	source /home/${USER}/.bashrc || { echo "Could not source /home/${USER}/.bashrc.  Aborting ..."; exit 10; }
 fi
-sudo gem install ${nordoc} ${nori} mongrel_cluster rubyzip oauth libxml-ruby rmagick dsl_accessor ruby-openid openurl curb marc || { echo "Could not install all remaining generic Ruby Gems required by myExperiment. Aborting ..."; exit 11; }
+sudo gem install ${nordoc} ${nori} mongrel_cluster rubyzip libxml-ruby rmagick dsl_accessor ruby-openid openurl curb marc || { echo "Could not install all remaining generic Ruby Gems required by myExperiment. Aborting ..."; exit 11; }
 
 echo "Making OAuth Ruby Gem compatible with Rails ${rails_version}"
 tempdir=$(mktemp -d /tmp/myexp_installer.XXXXXXXXXX) || { echo "Could not create temporary file for writing patches to. Aborting ..."; exit 12; }
