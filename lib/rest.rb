@@ -267,6 +267,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
                    text = val.time().to_s
                 else
                    text = val.to_s
+                end
               end
             end
           end
