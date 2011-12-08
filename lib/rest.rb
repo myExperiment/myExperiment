@@ -262,7 +262,11 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
               if query['version'] and model_data['Versioned'][i] == 'yes'
                 text = eval("ob.find_version(#{query['version']}).#{accessor}").to_s
               else
-                text = eval("ob.#{accessor}").to_s
+                val = eval("ob.#{accessor}")
+		if val.class == ActiveSupport::TimeWithZone
+                   text = val.time().to_s
+                else
+                   text = val.to_s
               end
             end
           end
