@@ -87,10 +87,10 @@ class BlobsController < ApplicationController
     respond_to do |format|
       format.html {
 
-        @lod_nir  = file_url(@blob)
-        @lod_html = file_url(:id => @blob.id, :format => 'html')
-        @lod_rdf  = file_url(:id => @blob.id, :format => 'rdf')
-        @lod_xml  = file_url(:id => @blob.id, :format => 'xml')
+        @lod_nir  = blob_url(@blob)
+        @lod_html = blob_url(:id => @blob.id, :format => 'html')
+        @lod_rdf  = blob_url(:id => @blob.id, :format => 'rdf')
+        @lod_xml  = blob_url(:id => @blob.id, :format => 'xml')
 
         # show.rhtml
       }
@@ -157,7 +157,7 @@ class BlobsController < ApplicationController
         
           if policy_err_msg.blank?
             flash[:notice] = 'File was successfully created.'
-            format.html { redirect_to file_url(@blob) }
+            format.html { redirect_to blob_url(@blob) }
           else
             flash[:notice] = "File was successfully created. However some problems occurred, please see these below.</br></br><span style='color: red;'>" + policy_err_msg + "</span>"
             format.html { redirect_to :controller => 'blobs', :id => @blob, :action => "edit" }
@@ -200,7 +200,7 @@ class BlobsController < ApplicationController
         
         if policy_err_msg.blank?
           flash[:notice] = 'File was successfully updated.'
-          format.html { redirect_to file_url(@blob) }
+          format.html { redirect_to blob_url(@blob) }
         else
           flash[:error] = policy_err_msg
           format.html { redirect_to :controller => 'blobs', :id => @blob, :action => "edit" }
@@ -218,10 +218,10 @@ class BlobsController < ApplicationController
     respond_to do |format|
       if success
         flash[:notice] = "File has been deleted."
-        format.html { redirect_to files_url }
+        format.html { redirect_to blobs_url }
       else
         flash[:error] = "Failed to delete File. Please contact your administrator."
-        format.html { redirect_to file_url(@blob) }
+        format.html { redirect_to blob_url(@blob) }
       end
     end
   end
@@ -265,11 +265,11 @@ class BlobsController < ApplicationController
   
   # POST /files/1;favourite
   def favourite
-    @blob.bookmarks << Bookmark.create(:user => current_user) unless @blob.bookmarked_by_user?(current_user)
+    @blob.bookmarks << Bookmark.create(:user => current_user, :bookmarkable => @blob) unless @blob.bookmarked_by_user?(current_user)
     
     respond_to do |format|
       flash[:notice] = "You have successfully added this item to your favourites."
-      format.html { redirect_to file_url(@blob) }
+      format.html { redirect_to blob_url(@blob) }
     end
   end
   
@@ -283,7 +283,7 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "You have successfully removed this item from your favourites."
-      redirect_url = params[:return_to] ? params[:return_to] : file_url(@blob)
+      redirect_url = params[:return_to] ? params[:return_to] : blob_url(@blob)
       format.html { redirect_to redirect_url }
     end
   end
@@ -353,7 +353,7 @@ class BlobsController < ApplicationController
      (err = Blob.new.errors).add(attr, message)
     
     respond_to do |format|
-      format.html { redirect_to files_url }
+      format.html { redirect_to blobs_url }
     end
   end
 end

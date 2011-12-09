@@ -33,7 +33,7 @@ class BlobsControllerTest < ActionController::TestCase
                   :attributions_files => ''
 
     assert_equal old_count+1, Blob.count
-    assert_redirected_to file_path(assigns(:blob))
+    assert_redirected_to blob_path(assigns(:blob))
   end
 
   def test_should_show_blob
@@ -56,7 +56,7 @@ class BlobsControllerTest < ActionController::TestCase
                            :attributions_workflows => '',
                            :attributions_files => ''
 
-    assert_redirected_to file_path(assigns(:blob))
+    assert_redirected_to blob_path(assigns(:blob))
   end
   
   def test_should_destroy_blob
@@ -66,6 +66,6 @@ class BlobsControllerTest < ActionController::TestCase
     delete :destroy, :id => 1
 
     assert_equal old_count-1, Blob.count   
-    assert_redirected_to files_path
+    assert_redirected_to blobs_path
   end
 end

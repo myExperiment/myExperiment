@@ -9,5 +9,5 @@
 <% end -%>
 
 <p style="margin-top: 0.2em;">
-	<small>[ <%= link_to "see breakdown", eval("statistics_#{controller_visible_name(type.to_s.pluralize).singularize.downcase}_path(#{contributable.id})") -%> ]</small>
+	<small>[ <%= link_to "see breakdown", polymorphic_url(contributable, :action => :statistics) -%> ]</small>
 </p>

@@ -62,7 +62,7 @@ class MembershipsControllerTest < ActionController::TestCase
     login_as(:john)
     delete :destroy, :id => networks(:another_network).id, :user_id => users(:john).id
 
-    assert_redirected_to group_path(networks(:another_network).id )
+    assert_redirected_to network_path(networks(:another_network).id )
     assert_equal old_count-1, Membership.count
   end
 

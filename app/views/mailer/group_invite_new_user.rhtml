@@ -14,7 +14,7 @@ Personal message:
 <% end -%>
 
 You can find out more:
---> about this group : <%= Conf.base_uri + group_path(@group_id) %> 
+--> about this group : <%= Conf.base_uri + network_path(@group_id) %>
 --> and about me (<%= @name -%>) from my profile page : <%= url_for :only_path => false, :controller => 'users', :host => Conf.hostname, :id => @user_id, :action => 'show' %>
 
 

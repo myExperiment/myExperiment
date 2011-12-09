@@ -9,7 +9,7 @@
           var xmlhttp_<%= n.id %> = new XMLHttpRequest();
 					var xmlhttp_<%= n.id %>_params = "&user_id=<%= user.id %>&membership[message]=";
 					
-          xmlhttp_<%= n.id %>.open('POST', '<%= membership_invite_group_path(n) %>', true);
+          xmlhttp_<%= n.id %>.open('POST', '<%= membership_invite_network_path(n) %>', true);
           
 					// Send the proper header information along with the request
 					xmlhttp_<%= n.id %>.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

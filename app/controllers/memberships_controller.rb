@@ -82,7 +82,7 @@ EOM
     respond_to do |format|
       if @membership.accept!
         flash[:notice] = 'Membership was successfully accepted.'
-        format.html { redirect_to group_url(@membership.network_id) }
+        format.html { redirect_to network_url(@membership.network_id) }
       else
         error("Membership already accepted", "already accepted")
       end
@@ -324,7 +324,7 @@ EOM
 
     respond_to do |format|
       flash[:notice] = "Membership successfully deleted"
-      format.html { redirect_to(params[:return_to] ? params[:return_to] : group_path(network_id)) }
+      format.html { redirect_to(params[:return_to] ? params[:return_to] : network_path(network_id)) }
     end
   end
   

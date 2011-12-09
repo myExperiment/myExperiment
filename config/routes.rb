@@ -155,20 +155,20 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # files (downloadable)
-  map.resources :files, 
-    :controller => :blobs, 
+  map.resources :blobs,
+    :as => :files,
     :collection => { :search => :get }, 
     :member => { :download => :get,
                  :statistics => :get,
                  :favourite => :post,
                  :favourite_delete => :delete,
                  :rate => :post, 
-                 :tag => :post } do |file|
+                 :tag => :post } do |blob|
     # Due to restrictions in the version of Rails used (v1.2.3), 
     # we cannot have reviews as nested resources in more than one top level resource.
     # ie: we cannot have polymorphic nested resources.
-    #file.resources :reviews
-    file.resources :comments, :collection => { :timeline => :get }
+    #blob.resources :reviews
+    blob.resources :comments, :collection => { :timeline => :get }
   end
 
   # blogs
@@ -236,17 +236,17 @@ ActionController::Routing::Routes.draw do |map|
     user.resources :reports, :controller => :user_reports
   end
 
-  map.resources :groups, 
-    :controller => :networks, 
+  map.resources :networks,
+    :as => :groups,
     :collection => { :all => :get, :search => :get }, 
     :member => { :invite => :get,
                  :membership_invite => :post,
                  :membership_invite_external => :post,
                  :membership_request => :get, 
                  :rate => :post, 
-                 :tag => :post } do |group|
-    group.resources :announcements, :controller => :group_announcements
-    group.resources :comments, :collection => { :timeline => :get }
+                 :tag => :post } do |network|
+    network.resources :group_announcements, :as => :announcements, :name_prefix => nil
+    network.resources :comments, :collection => { :timeline => :get }
   end
   
   # The priority is based upon order of creation: first created -> highest priority.

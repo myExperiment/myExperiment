@@ -140,48 +140,49 @@
 		<% end %>
 		
 		<br/>
-	
-		<!-- Explicit Group Permissions -->
-		<p><strong>Share with my Groups:</strong></p>
 
-    <div id="group_sharing_box" class="box_editing" style="padding-left: 1em; font-size: 93%;">
-      <% applicable_networks = (current_user.networks + current_user.networks_owned) %>
-      <% applicable_networks.each do |n| %>
-        <p>
-          <% perm = find_permission_for_contributor(perms, "Network", n.id) if edit -%>
-          <label for="cb_group_sharing_<%= n.id %>">
-            <input class="group_sharing" <%= 'checked' if perm %> style="margin-right: 0.3em;"
-                   value="<%= n.id %>" type="checkbox" name="group_sharing[<%= n.id %>][id]" id="cb_group_sharing_<%= n.id %>"
-                   onclick="toggle_layout_option(this.value, this.checked);"/>
-            <%= h(n.title) %>
-          </label>
-          <select name="group_sharing[<%= n.id %>][level]" style="font-size: 85%; margin: 0 0.5em;">
-            <option value="0" <%= 'selected="selected"' if perm and perm.level == 0 %>>View only</option>
-            <option value="1" <%= 'selected="selected"' if !edit or !perm or (perm and perm.level == 1) %>>View and Download only</option>
-            <option value="2" <%= 'selected="selected"' if perm and perm.level == 2 %>>View, Download and Update</option>
-          </select>
-        </p>
-      <% end %>
-      <br/>
-      <% if %w(Workflow Pack File).include?(c_type) %>
-        <div id="layout_options_box">
-          <strong>Layout:</strong>
-          <div class="box_infotext" style="margin: 1em 0">
-            <p>
-              One or more of the groups you have elected to share this <%= c_type -%> with have custom layouts specified.
-              To apply a group's custom layout to this <%= c_type -%>'s page, choose one from the list below or select
-              "Default" to keep the <%= Conf.sitename -%> default layout. This setting can be changed at any time by
-              visiting the 'edit' page.
-            </p>
+    <% unless (applicable_networks = (current_user.networks + current_user.networks_owned)).empty? %>
+      <!-- Explicit Group Permissions -->
+      <p><strong>Share with my Groups:</strong></p>
+
+      <div id="group_sharing_box" class="box_editing" style="padding-left: 1em; font-size: 93%;">
+        <% applicable_networks.each do |n| %>
+          <p>
+            <% perm = find_permission_for_contributor(perms, "Network", n.id) if edit -%>
+            <label for="cb_group_sharing_<%= n.id %>">
+              <input class="group_sharing" <%= 'checked' if perm %> style="margin-right: 0.3em;"
+                     value="<%= n.id %>" type="checkbox" name="group_sharing[<%= n.id %>][id]" id="cb_group_sharing_<%= n.id %>"
+                     onclick="toggle_layout_option(this.value, this.checked);"/>
+              <%= h(n.title) %>
+            </label>
+            <select name="group_sharing[<%= n.id %>][level]" style="font-size: 85%; margin: 0 0.5em;">
+              <option value="0" <%= 'selected="selected"' if perm and perm.level == 0 %>>View only</option>
+              <option value="1" <%= 'selected="selected"' if !edit or !perm or (perm and perm.level == 1) %>>View and Download only</option>
+              <option value="2" <%= 'selected="selected"' if perm and perm.level == 2 %>>View, Download and Update</option>
+            </select>
+          </p>
+        <% end %>
+        <br/>
+        <% if %w(Workflow Pack File).include?(c_type) %>
+          <div id="layout_options_box">
+            <strong>Layout:</strong>
+            <div class="box_infotext" style="margin: 1em 0">
+              <p>
+                One or more of the groups you have elected to share this <%= c_type -%> with have custom layouts specified.
+                To apply a group's custom layout to this <%= c_type -%>'s page, choose one from the list below or select
+                "Default" to keep the <%= Conf.sitename -%> default layout. This setting can be changed at any time by
+                visiting the 'edit' page.
+              </p>
+            </div>
+            <% selected_option = (Conf.layouts[contributable.contribution.layout]["network_id"] unless
+                contributable.contribution.nil? || contributable.contribution.layout.nil?) %>
+            <%= select_tag "layout", "<option value="">Default</option>" +
+                options_from_collection_for_select(applicable_networks.select {|n| n.layout_name}, 'id','title', selected_option) %>
+            <%# TODO: In Rails 2, have a link that allows a user to preview the selected layout using polymorphic_path %>
           </div>
-          <% selected_option = (Conf.layouts[contributable.contribution.layout]["network_id"] unless
-              contributable.contribution.nil? || contributable.contribution.layout.nil?) %>
-          <%= select_tag "layout", "<option value="">Default</option>" +
-              options_from_collection_for_select(applicable_networks.select {|n| n.layout_name}, 'id','title', selected_option) %>
-          <%# TODO: In Rails 2, have a link that allows a user to preview the selected layout using polymorphic_path %>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 </div>
 

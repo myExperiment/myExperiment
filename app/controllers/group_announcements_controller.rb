@@ -30,10 +30,10 @@ class GroupAnnouncementsController < ApplicationController
     respond_to do |format|
       format.html {
 
-        @lod_nir  = group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id)
-        @lod_html = group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'html')
-        @lod_rdf  = group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'rdf')
-        @lod_xml  = group_announcement_url(:id => @announcement.id, :group_id => @announcement.network_id, :format => 'xml')
+        @lod_nir  = group_announcement_url(:id => @announcement.id, :network_id => @announcement.network_id)
+        @lod_html = group_announcement_url(:id => @announcement.id, :network_id => @announcement.network_id, :format => 'html')
+        @lod_rdf  = group_announcement_url(:id => @announcement.id, :network_id => @announcement.network_id, :format => 'rdf')
+        @lod_xml  = group_announcement_url(:id => @announcement.id, :network_id => @announcement.network_id, :format => 'xml')
 
         # show.rhtml
       }
@@ -100,7 +100,7 @@ class GroupAnnouncementsController < ApplicationController
   
   def find_group
     begin
-      @group = Network.find(params[:group_id])
+      @group = Network.find(params[:network_id])
     rescue ActiveRecord::RecordNotFound
       error("Group couldn't be found")
     end
@@ -171,7 +171,7 @@ class GroupAnnouncementsController < ApplicationController
 
   def error(message)
     flash[:error] = message
-    return_to_path = @group.nil? ? groups_path : group_announcements_path(@group)
+    return_to_path = @group.nil? ? networks_path : group_announcements_path(@group)
     
     respond_to do |format|
       format.html { redirect_to return_to_path }

@@ -25,11 +25,11 @@
 
     <% if @network.administrator?(current_user.id) %>
       <li><%= icon('announcement', new_group_announcement_path(@network), 'Make a new Group Announcement', nil, 'Make a Group Announcement') -%></li>
-			<li><%= icon('network-invite', invite_group_path(@network), 'Invite People', nil, 'Invite People') -%></li>
+			<li><%= icon('network-invite', invite_network_path(@network), 'Invite People', nil, 'Invite People') -%></li>
     <% end %>
     <% if mine? @network %>
-			<li><%= icon('edit', edit_group_path(@network), 'Edit', nil, 'Edit Group') %></li>
-      <li><%= icon('destroy', group_path(@network), 'Delete Group', { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
+			<li><%= icon('edit', edit_network_path(@network), 'Edit', nil, 'Edit Group') %></li>
+      <li><%= icon('destroy', network_path(@network), 'Delete Group', { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
     <% end %>
   </ul>
 <% end %>
@@ -142,8 +142,8 @@
 	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @network,
 																											 :owner_id => (@network.user_id),  
-																											 :add_path => tag_group_path(@network), 
-																											 :edit_path => edit_group_path(@network),
+																											 :add_path => tag_network_path(@network),
+																											 :edit_path => edit_network_path(@network),
 																											 :allow_edit => logged_in? ? @network.user_id == current_user.id : false } %>
 	
 	<%= render :partial => "announcements", :locals => { :group => @network, :count => 5 } -%>

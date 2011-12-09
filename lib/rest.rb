@@ -562,8 +562,8 @@ def rest_resource_uri(ob)
 
   case ob.class.name
     when 'Workflow';               return workflow_url(ob)
-    when 'Blob';                   return file_url(ob)
-    when 'Network';                return group_url(ob)
+    when 'Blob';                   return blob_url(ob)
+    when 'Network';                return network_url(ob)
     when 'User';                   return user_url(ob)
     when 'Review';                 return workflow_review_url(ob.reviewable, ob)
     when 'Comment';                return "#{rest_resource_uri(ob.commentable)}/comments/#{ob.id}"

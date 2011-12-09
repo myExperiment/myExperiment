@@ -69,10 +69,10 @@ class NetworksController < ApplicationController
           end
   
           flash[:notice] = 'An invitation has been sent to the User.'
-          format.html { redirect_to group_url(@network) }
+          format.html { redirect_to network_url(@network) }
         else
           flash[:error] = 'Failed to send invitation to User. Please try again or report this.'
-          format.html { redirect_to invite_group_url(@network) }
+          format.html { redirect_to invite_network_url(@network) }
         end
       end
     else
@@ -82,7 +82,7 @@ class NetworksController < ApplicationController
         flash[:error] = "User invited is already a member of the group"
       end
       respond_to do |format|
-        format.html { redirect_to invite_group_url(@network) }
+        format.html { redirect_to invite_network_url(@network) }
       end
     end
   end
@@ -208,7 +208,7 @@ class NetworksController < ApplicationController
           format.html { render :action => 'invite' }
         else      
           flash[:notice] = error_msg
-          format.html { redirect_to group_path(params[:id]) }
+          format.html { redirect_to network_path(params[:id]) }
         end
       end
     end
@@ -334,10 +334,10 @@ class NetworksController < ApplicationController
     respond_to do |format|
       format.html {
          
-        @lod_nir  = group_url(@network)
-        @lod_html = group_url(:id => @network.id, :format => 'html')
-        @lod_rdf  = group_url(:id => @network.id, :format => 'rdf')
-        @lod_xml  = group_url(:id => @network.id, :format => 'xml')
+        @lod_nir  = network_url(@network)
+        @lod_html = network_url(:id => @network.id, :format => 'html')
+        @lod_rdf  = network_url(:id => @network.id, :format => 'rdf')
+        @lod_xml  = network_url(:id => @network.id, :format => 'xml')
          
         # show.rhtml
       }
@@ -372,7 +372,7 @@ class NetworksController < ApplicationController
           @network.update_tags
         end
         flash[:notice] = 'Group was successfully created.'
-        format.html { redirect_to group_url(@network) }
+        format.html { redirect_to network_url(@network) }
       else
         format.html { render :action => "new" }
       end
@@ -385,7 +385,7 @@ class NetworksController < ApplicationController
       if @network.update_attributes(params[:network])
         @network.refresh_tags(convert_tags_to_gem_format(params[:network][:tag_list]), current_user) if params[:network][:tag_list]
         flash[:notice] = 'Group was successfully updated.'
-        format.html { redirect_to group_url(@network) }
+        format.html { redirect_to network_url(@network) }
       else
         format.html { render :action => "edit" }
       end
@@ -398,7 +398,7 @@ class NetworksController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Group was successfully deleted.'
-      format.html { redirect_to groups_url }
+      format.html { redirect_to networks_url }
     end
   end
  
@@ -466,7 +466,7 @@ private
     (err = Network.new.errors).add(:id, message)
     
     respond_to do |format|
-      format.html { redirect_to groups_url }
+      format.html { redirect_to networks_url }
     end
   end
 end

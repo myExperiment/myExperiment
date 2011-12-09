@@ -9,7 +9,7 @@ module UsersHelper
     url = ""
     
     case bookmarkableType
-      when 'Blob'; url = favourite_delete_file_url(bookmarkableID)
+      when 'Blob'; url = favourite_delete_blob_url(bookmarkableID)
       when 'Workflow'; url = favourite_delete_workflow_url(bookmarkableID)
       when 'Pack'; url = favourite_delete_pack_url(bookmarkableID)
       when 'Blog'; url = favourite_delete_blog_url(bookmarkableID)

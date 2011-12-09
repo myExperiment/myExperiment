@@ -29,7 +29,7 @@ class NetworksControllerTest < ActionController::TestCase
     post :create, :network => { :user_id => '990', :title => 'test network', :unique_name => 'test_network', :new_member_policy => 'open', :description => "..." }
 
     assert_equal old_count+1, Network.count    
-    assert_redirected_to group_path(assigns(:network))
+    assert_redirected_to network_path(assigns(:network))
   end
 
   def test_should_show_network
@@ -49,7 +49,7 @@ class NetworksControllerTest < ActionController::TestCase
     put :update, :id => 1, 
                  :network => { :user_id => '990', :title => 'test network', :unique_name => 'update_network', :new_member_policy => 'open', :description => ".?."}
 
-    assert_redirected_to group_path(assigns(:network))
+    assert_redirected_to network_path(assigns(:network))
   end
   
   def test_should_destroy_network
@@ -59,6 +59,6 @@ class NetworksControllerTest < ActionController::TestCase
     delete :destroy, :id => 1
 
     assert_equal old_count-1, Network.count   
-    assert_redirected_to groups_path
+    assert_redirected_to networks_path
   end
 end

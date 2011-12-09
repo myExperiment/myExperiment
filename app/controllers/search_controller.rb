@@ -35,7 +35,7 @@ class SearchController < ApplicationController
       when 'workflows'
         redirect_to(workflows_path(:query => params[:query]))
       when 'files'
-        redirect_to(files_path(:query => params[:query]))
+        redirect_to(blobs_url(:query => params[:query]))
       when 'packs'
         redirect_to(packs_path(:query => params[:query]))
       when 'services'
@@ -121,7 +121,7 @@ class SearchController < ApplicationController
 
       markup += "<item>";
       markup += "<title>" + f.title + "</title>";
-      markup += "<link>" + file_url(f) + "</link>";
+      markup += "<link>" + blob_url(f) + "</link>";
       markup += "<description>" + sanitize(f.body_html) + "</description>";
       markup += "<pubDate>" + time_string(f.created_at) + "</pubDate>";
       markup += "<media:content url=\"" + f.named_download_url + "\"";
