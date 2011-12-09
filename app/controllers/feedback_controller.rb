@@ -21,7 +21,14 @@ class FeedbackController < ApplicationController
         format.html { redirect_to "/feedback" }
       end
     else
-      if params[:feedback] && captcha_valid?(params[:feedback][:captcha_id], params[:feedback][:captcha_validation])
+      captcha_verified = false
+      if Conf.recaptcha_enable
+        captcha_verified = verify_recaptcha(:private_key => Conf.recaptcha_private)
+      else
+        captcha_verified = params[:feedback] && captcha_valid?(params[:feedback][:captcha_id], params[:feedback][:captcha_validation])
+      end
+
+      if captcha_verified
     
         from_user = ( params[:from].blank? ? 'no from': params[:from] ) + ' (' + (!params[:email].blank? ? params[:email] : 'no email') + ')';
         Mailer.deliver_feedback(from_user, params[:subject], params[:content])
