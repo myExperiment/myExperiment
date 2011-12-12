@@ -82,7 +82,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :session
   
   # openid authentication
-  map.resource :openid
+  map.resource :openid, :controller => 'openid'
   
   # packs
   map.resources :packs, 
