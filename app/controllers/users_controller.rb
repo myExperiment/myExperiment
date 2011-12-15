@@ -409,7 +409,13 @@ class UsersController < ApplicationController
   
   def process_invitations
     # first of all, check that captcha was entered correctly
-    if !captcha_valid?(params[:invitations][:captcha_id], params[:invitations][:captcha_validation])
+    captcha_verified = false
+    if Conf.recaptcha_enable
+      captcha_verified = verify_recaptcha(:private_key => Conf.recaptcha_private)
+    else
+      captcha_verified = captcha_valid?(params[:invitations][:captcha_id], params[:invitations][:captcha_validation])
+    end
+    if !captcha_verified
       respond_to do |format|
         flash.now[:error] = 'Verification text was not entered correctly - your invitations have not been sent.'
         format.html { render :action => 'invite' }

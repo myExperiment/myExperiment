@@ -26,6 +26,9 @@
 		<table style="margin-top: 2em;">
 			<tr>
 				<td>
+		<% if Conf.recaptcha_enable -%>
+			<%= recaptcha_tags(:public_key => Conf.recaptcha_public) -%>
+		 <% else -%>
 		      <% c = prepare_captcha :type => :image -%>
 					<%= captcha_image_tag c -%>
 				</td>
@@ -33,6 +36,7 @@
 				  <%= captcha_hidden_field c, 'invitations' -%>
 					<%= captcha_label 'invitations', 'Type in the text from the image on the left:' -%><br/>
 	        <%= captcha_text_field 'invitations', :size => 40 -%>
+		<% end %>
 				</td>
 			</tr>
 		</table>
