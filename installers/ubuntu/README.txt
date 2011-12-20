@@ -47,3 +47,11 @@ of myExperiment by default this /var/rails/myexperiment/config/.
 Some configuration may require restarting Apache using the following command:
 
 sudo apache2ctl restart
+
+
+== Further Information ==
+
+Please refer to the wiki page:
+
+        http://wiki.myexperiment.org/index.php/Developer:UbuntuInstallation
+

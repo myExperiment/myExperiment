@@ -16,7 +16,7 @@ sudo su -c "echo mysql-server-5.1 mysql-server/root_password_again password `ech
 
 echo "Installing required APT packages"
 sudo apt-get update || { echo "Could not update apt-get. Aborting ..."; exit 4; }
-sudo -n apt-get install -y build-essential exim4 ruby ruby1.8-dev libzlib-ruby rdoc irb rubygems rake apache2 apache2-dev libapache2-mod-fcgid libfcgi-ruby1.8 libmysql-ruby gcj-4.4-jre-headless subversion libopenssl-ruby1.8 libcurl3 libcurl3-gnutls libcurl4-openssl-dev mysql-server graphicsmagick imagemagick librmagick-ruby1.8 libmagick9-dev graphviz mlocate wget || { echo "Could not install required APT packages. Aborting ..."; exit 5; }
+sudo -n apt-get install -y build-essential exim4 ruby ruby1.8-dev libzlib-ruby rdoc irb rubygems rake apache2 apache2-dev libapache2-mod-fcgid libfcgi-ruby1.8 libmysql-ruby gcj-4.4-jre-headless subversion libopenssl-ruby1.8 libcurl3 libcurl3-gnutls libcurl4-openssl-dev mysql-server graphicsmagick imagemagick librmagick-ruby1.8 libmagick9-dev graphviz mlocate || { echo "Could not install required APT packages. Aborting ..."; exit 5; }
 
 echo "Installing Rake version ${rake_version} and Rails version ${rails_version} Ruby Gems"
 sudo gem install rake ${nordoc} ${nori} --version ${rake_version} || { echo "Could not install Rake Ruby Gem (version ${rake_version}). Aborting ..."; exit 6; }
@@ -32,10 +32,12 @@ if [ `echo ${PATH} | grep "/var/lib/gems/1.8/bin" | wc -l` -eq 0 ]; then
 fi
 sudo gem install ${nordoc} ${nori} mongrel_cluster rubyzip libxml-ruby rmagick dsl_accessor ruby-openid openurl curb marc || { echo "Could not install all remaining generic Ruby Gems required by myExperiment. Aborting ..."; exit 11; }
 
-echo "Making OAuth Ruby Gem compatible with Rails ${rails_version}"
+echo "Patching bug in Ubuntu 10.04 version of Ruby 1.8.7"
 tempdir=$(mktemp -d /tmp/myexp_installer.XXXXXXXXXX) || { echo "Could not create temporary file for writing patches to. Aborting ..."; exit 12; }
 cd ${tempdir} || { echo "Could not find temporary directory. Aborting ..."; exit 13; }
 echo "${net_http_patch}" > net_http.patch || { echo "Could not write net/http patch file. Aborting ..."; exit 14; }
+
+echo "Patching settings file to provide minimal configuration"
 echo "${settings_patch}" > settings.patch || { echo "Could not write settings patch file. Aborting ..."; exit 15; }
 sudo updatedb || { echo "Could not run updatedb so that http.rb that needs updating can be located. Aborting ..."; exit 16; }
 net_http_file=`locate net/http.rb`
