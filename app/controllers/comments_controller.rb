@@ -13,7 +13,7 @@ class CommentsController < ApplicationController
     if params[:start] && params[:end]
       begin
         @comments = Comment.find(:all, :conditions => [ "commentable_id = ? AND commentable_type = ? AND created_at > ? AND created_at < ?", @context.id, @context.class.name, params[:start].to_time, params[:end].to_time ] )
-      rescue TypeError
+      rescue TypeError, ArgumentError
       end
     end
     @comments ||= []
