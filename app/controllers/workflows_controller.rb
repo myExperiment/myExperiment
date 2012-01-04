@@ -989,7 +989,8 @@ private
 
         if ct.nil?
           ct = ContentType.create(:user_id => current_user.id,
-            :mime_type => file.content_type, :title => params[:workflow][:type_other])
+            :mime_type => file.content_type, :title => params[:workflow][:type_other],
+            :category => 'Workflow')
         end
 
         workflow_to_set.content_type = ct

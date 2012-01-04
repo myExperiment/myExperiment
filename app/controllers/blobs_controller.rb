@@ -136,7 +136,7 @@ class BlobsController < ApplicationController
       @blob.content_type = ContentType.find_by_mime_type(content_type)
 
       if @blob.content_type.nil?
-        @blob.content_type = ContentType.create(:user_id => current_user.id, :mime_type => content_type, :title => content_type)
+        @blob.content_type = ContentType.create(:user_id => current_user.id, :mime_type => content_type, :title => content_type, :category => 'Blob')
       end
 
       respond_to do |format|
