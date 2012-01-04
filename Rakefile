@@ -156,3 +156,23 @@ task "myexp:pack:fix_timestamps" do
   ActiveRecord::Base.record_timestamps = true
 end
 
+desc 'Assign categories to content types'
+task "myexp:types:assign_categories" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  workflow_content_types = Workflow.find(:all).group_by do |w| w.content_type_id end.keys
+
+  ContentType.find(:all).each do |content_type|
+
+    next if content_type.category
+
+    if workflow_content_types.include?(content_type.id)
+      category = "Workflow"
+    else
+      category = "Blob"
+    end
+
+    content_type.update_attribute("category", category)
+  end
+end
+
