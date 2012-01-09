@@ -5,6 +5,7 @@
 
 require 'uri'
 require 'openid'
+require 'openid/extensions/sreg'
 require 'openid/store/filesystem'
 
 class SessionsController < ApplicationController
@@ -59,16 +60,43 @@ class SessionsController < ApplicationController
     
     # create user object if one does not exist
     unless @user = User.find(:first, :conditions => ["openid_url = ?", response.identity_url])
-      @user = User.new(:openid_url => response.identity_url, :name => response.identity_url, :activated_at => Time.now, :last_seen_at => Time.now)
-      redirect_to_edit_user = @user.save
+
+      # Get sreg attributes to seed new user with some pre-filled values
+      registration_info = OpenID::SReg::Response.from_success_response(response).data
+
+      name = registration_info["fullname"]
+      unless name
+        flash[:notice] ||= ""
+        flash[:notice] << "Please enter your name to be displayed to other users of the site.<br/>"
+        name = "OpenID User"
+      end
+
+      #email = registration_info["email"]
+      #email_to_use = nil
+      ## Only pre-fill the email if it doesn't already exist in the system, or this will silently fail
+      #if email
+      #  if !User.find_by_email(email) && !User.find_by_unconfirmed_email(email)
+      #    email_to_use = email
+      #  else
+      #    flash[:notice] ||= ""
+      #    flash[:notice] << "The email address associated with your OpenID is already in use. " +
+      #                      "Please enter a unique email address in the form below."
+      #  end
+      #end
+
+      @user = User.new(:openid_url => response.identity_url, :name => name, #:email => email_to_use
+                       :activated_at => Time.now, :last_seen_at => Time.now)
+
+      @user.save
+
+      # Always redirect, user may not want to use the sreg-provided attributes
+      redirect_to_edit_user = true
     end
 
     # storing both the openid_url and user id in the session for for quick
     # access to both bits of information.  Change as needed.
     self.current_user = @user
 
-    flash[:notice] = "Logged in as #{@user.name}"
-     
     if redirect_to_edit_user == true
       redirect_to url_for(:controller => 'users', :action => 'edit', :id => self.current_user)
     else
@@ -104,6 +132,11 @@ class SessionsController < ApplicationController
         if request.post?
           request = consumer.begin(openid_url)
 
+          sregreq = OpenID::SReg::Request.new
+          #sregreq.request_fields([''], true) # required fields
+          sregreq.request_fields(['fullname','email'], false) # optional fields
+
+          request.add_extension(sregreq)
           return_to = url_for(:action=> 'complete')
           trust_root = url_for(:controller=>'')
           
