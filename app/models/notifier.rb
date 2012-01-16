@@ -27,7 +27,7 @@ class Notifier < ActionMailer::Base
   end
   
   def membership_request(requestor, network, membership, base_url)
-    recipients network.owner.email
+    recipients network.administrators(true).select{|admin| admin.send_notifications?}.map{|u| u.email}
     from Conf.notifications_email_address
     subject "#{Conf.sitename} - #{requestor.name} would like to join the #{network.title} Group"
     
@@ -40,7 +40,7 @@ class Notifier < ActionMailer::Base
   end
   
   def auto_join_group(member, network, base_url)
-    recipients network.owner.email
+    recipients network.administrators(true).select{|admin| admin.send_notifications?}.map{|u| u.email}
     from Conf.notifications_email_address
     subject "#{Conf.sitename} - #{member.name} has joined the #{network.title} Group"
     
