@@ -1,7 +1,7 @@
   <%= javascript_include_tag "fckeditor/fckeditor.js" %>
 	
 	<p>
-    <b>Administrator</b><br />
+    <b>Owner</b><br />
     <%= render :partial => "users/avatar", :locals => { :user => @network.owner } %>
     <%= form.hidden_field :user_id %>
   </p>
