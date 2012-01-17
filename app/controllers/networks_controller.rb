@@ -90,7 +90,7 @@ class NetworksController < ApplicationController
   # POST /networks/1;membership_invite_external
   def membership_invite_external
     # first of all, check that captcha was entered correctly
-    if !captcha_valid?(params[:invitations][:captcha_id], params[:invitations][:captcha_validation])
+    if Conf.recaptcha_enable && !verify_recaptcha(:private_key => Conf.recaptcha_private)
       respond_to do |format|
         flash.now[:error] = 'Verification text was not entered correctly - your invitations have not been sent.'
         format.html { render :action => 'invite' }

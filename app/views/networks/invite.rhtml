@@ -71,19 +71,12 @@
             <% msg_text_val = ((params[:invitations].nil? || params[:invitations][:msg_text].nil?) ? "" : params[:invitations][:msg_text]) %>
             <%= text_area_tag "invitations[msg_text]", msg_text_val, :rows => 4, :style => "width: 500px" -%><br/>
 
-            <table style="margin-top: 1.5em;">
-              <tr>
-                <td>
-                  <% c = prepare_captcha :type => :image -%>
-                  <%= captcha_image_tag c -%>
-                </td>
-                <td style="vertical-align: middle;">
-                  <%= captcha_hidden_field c, 'invitations' -%>
-                  <%= captcha_label 'invitations', 'Type in the text from the image on the left:' -%><br/>
-                  <%= captcha_text_field 'invitations', :size => 40 -%>
-                </td>
-              </tr>
-            </table>
+            <% if Conf.recaptcha_enable -%>
+              <center>
+                <%= recaptcha_tags(:public_key => Conf.recaptcha_public) -%>
+              </center>
+            <% end -%>
+
           </td>
         </tr>
         <tr>
