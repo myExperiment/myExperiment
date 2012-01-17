@@ -1603,9 +1603,18 @@ protected
       layout = Conf.layouts[params["layout_preview"]]
     elsif contributable && contributable.contribution
       layout = Conf.layouts[contributable.contribution.layout]
+      if layout.nil?
+        logger.error("Missing layout for #{contributable.class.name} #{contributable.id}: "+
+                    "#{contributable.contribution.layout}")
+      end
     elsif @network
       layout = @network.layout
+      if layout.nil?
+        logger.error("Missing layout for Group #{@network.id}: #{@network.layout}")
+      end
     end
+
+
 
     @layout = layout || {"layout" => Conf.page_template, "stylesheets" => [Conf.stylesheet]}
   end
