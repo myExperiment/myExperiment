@@ -179,8 +179,8 @@ class Conf
 
   def self.layouts
     #TODO: Perhaps implement code that can load different/extra settings files based on current environment
-    layouts = self.fetch_entry('layouts')
-    layouts ? layouts.delete_if {|k,v| v["environment"] && (v["environment"] != ENV["RAILS_ENV"])} : {}
+    layouts = self.fetch_entry('layouts') || {}
+    layouts.delete_if {|k,v| v["environment"] && (v["environment"] != ENV["RAILS_ENV"])}
   end
 
   # This method is required to create an administrator in the test fixtures
