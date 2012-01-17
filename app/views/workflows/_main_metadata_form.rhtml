@@ -50,7 +50,7 @@
 					</p>
 					<%= select_tag "workflow[type]", 
 												 options_for_select(['Select...'] + workflow_types, (params[:workflow].nil? ? nil : params[:workflow][:type])),
-												 :onchange => "if (this.value == 'Other') { $('workflow[type_other]').show(); $('workflow[type_other]').focus(); } else { $('workflow[type_other]').hide(); }",
+												 :onchange => "if (this.value == 'Other') { $('workflow_type_other').show(); $('workflow_type_other').focus(); } else { $('workflow_type_other').hide(); }",
 												 :style => "vertical-align: middle;" -%>
 					<%= text_field_tag "workflow[type_other]",
 														 (params[:workflow].nil? ? '' : params[:workflow][:type_other]),
