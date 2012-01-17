@@ -21,26 +21,18 @@ class FeedbackController < ApplicationController
         format.html { redirect_to "/feedback" }
       end
     else
-      captcha_verified = false
-      if Conf.recaptcha_enable
-        captcha_verified = verify_recaptcha(:private_key => Conf.recaptcha_private)
+      if Conf.recaptcha_enable && !verify_recaptcha(:private_key => Conf.recaptcha_private)
+        respond_to do |format|
+          flash[:error] = 'Your feedback has not been submitted. CAPTCHA was not entered correctly.'
+          format.html { redirect_to "/feedback?from="+String(params[:from])+"&email="+String(params[:email])+"&subject="+String(params[:subject])+"&content="+String(params[:content]) }
+        end
       else
-        captcha_verified = params[:feedback] && captcha_valid?(params[:feedback][:captcha_id], params[:feedback][:captcha_validation])
-      end
-
-      if captcha_verified
-    
         from_user = ( params[:from].blank? ? 'no from': params[:from] ) + ' (' + (!params[:email].blank? ? params[:email] : 'no email') + ')';
         Mailer.deliver_feedback(from_user, params[:subject], params[:content])
     
         respond_to do |format|
           flash[:notice] = 'Your feedback has been submitted. Thank you very much.'
           format.html { redirect_to "/feedback" }
-        end
-      else
-        respond_to do |format|
-          flash[:error] = 'Your feedback has not been submitted. CAPTCHA was not entered correctly.'
-          format.html { redirect_to "/feedback?from="+String(params[:from])+"&email="+String(params[:email])+"&subject="+String(params[:subject])+"&content="+String(params[:content]) }
         end
       end
     end

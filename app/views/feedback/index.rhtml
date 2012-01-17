@@ -50,15 +50,6 @@
 		<% if !logged_in? %>
 			<% if Conf.recaptcha_enable -%>
 				<%= recaptcha_tags(:public_key => Conf.recaptcha_public) -%>
-			<% else -%>
-				<% c = prepare_captcha :type => :image -%>	
-				<br/>
-				<p style="text-align: center;">
-				<%= captcha_hidden_field c, 'feedback' %>
-				<%= captcha_image_tag c %><br/>
-				</p>
-				<p style="text-align: center;"><%= captcha_label 'feedback', 'Type in the text from the image above' %></p>
-				<p style="text-align: center;"><%= captcha_text_field 'feedback' %></p>
 			<% end %>
 		<% end %>
 		  <br/><br>

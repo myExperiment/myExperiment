@@ -54,7 +54,6 @@ Rails::Initializer.run do |config|
     :recaptcha,
     :simile_timeline,
     :structured_data,
-    :validates_captcha,
     :validates_email_veracity_of
   ]
 
