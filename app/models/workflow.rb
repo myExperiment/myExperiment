@@ -22,15 +22,9 @@ class Workflow < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
 
-  belongs_to :content_blob
+  belongs_to :content_blob, :dependent => :destroy
   belongs_to :content_type
   belongs_to :license
-    
-  # need to destroy the workflow versions and their content blobs to avoid orphaned records
-  before_destroy { |w| w.versions.each do |wv|
-                        wv.content_blob.destroy if wv.content_blob
-                        wv.destroy
-                      end }
 
   before_validation :check_unique_name
   before_validation :apply_extracted_metadata
@@ -61,14 +55,11 @@ class Workflow < ActiveRecord::Base
     
     format_attribute :body
 
-    belongs_to :content_blob
+    belongs_to :content_blob, :dependent => :destroy
     belongs_to :content_type
 
     validates_presence_of :content_blob
     validates_presence_of :content_type
-    
-    # :dependent => :destroy is not supported in belongs_to in rails 1.2.6
-    after_destroy { |wv| wv.content_blob.destroy if wv.content_blob }
     
     # Update the parent contribution model buy only if this isn't the current version (because the workflow model will take care of that).
     # This is required to keep the contribution's updated_at field accurate.

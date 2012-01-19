@@ -11,7 +11,7 @@ class AutoMigrate
   SCHEMA              = "config/base_schema.xml"
   SCHEMA_D            = "config/schema.d"
   COLUMN_ATTRIBUTES     = ['name', 'type', 'default', 'limit', 'null']
-  BELONGS_TO_ATTRIBUTES = ['polymorphic', 'class_name', 'foreign_key']
+  BELONGS_TO_ATTRIBUTES = ['polymorphic', 'class_name', 'foreign_key', 'dependent']
   HAS_MANY_ATTRIBUTES   = ['target', 'through', 'foreign_key', 'source', 'dependent', 'conditions', 'class_name', 'as']
 
   def self.schema

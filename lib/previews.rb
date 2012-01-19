@@ -5,7 +5,7 @@ class ActiveRecord::Base
 
     self.class_eval do
 
-      belongs_to :preview
+      belongs_to :preview, :dependent => :destroy
 
       def image
         preview.image_blob.data if preview && preview.image_blob

@@ -39,6 +39,7 @@ module StructuredData
           bits.push(":polymorphic => #{association[:polymorphic]}") if association[:polymorphic]
           bits.push(":class_name => \"#{association[:class_name]}\"") if association[:class_name]
           bits.push(":foreign_key => :#{association[:foreign_key]}") if association[:foreign_key]
+          bits.push(":dependent => :#{association[:dependent]}") if association[:dependent]
 
           line = "belongs_to #{bits.join(', ')}"
           self.class_eval(line)
