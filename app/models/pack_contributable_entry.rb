@@ -75,7 +75,6 @@ class PackContributableEntry < ActiveRecord::Base
   end
 
   def touch_pack
-    # Rails 2 - use pack.destroyed? instead of pack.contribution.nil?
-    pack.touch unless pack.contribution.nil?
+    pack.touch unless pack.destroyed?
   end
 end

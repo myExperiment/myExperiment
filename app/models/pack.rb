@@ -942,9 +942,4 @@ class Pack < ActiveRecord::Base
     
     boost
   end
-
-  # touch method that mimics the simple use of the rails 2 touch method
-  def touch
-    update_attribute(:updated_at, Time.now)
-  end
 end
