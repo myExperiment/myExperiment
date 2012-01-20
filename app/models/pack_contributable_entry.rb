@@ -75,6 +75,6 @@ class PackContributableEntry < ActiveRecord::Base
   end
 
   def touch_pack
-    pack.touch unless pack.destroyed?
+    pack.touch unless (pack.destroyed? || pack.contribution.nil?)
   end
 end
