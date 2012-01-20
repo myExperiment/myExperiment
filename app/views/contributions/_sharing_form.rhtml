@@ -175,10 +175,11 @@
               </p>
             </div>
             <% selected_option = (Conf.layouts[contributable.contribution.layout]["network_id"] unless
-                contributable.contribution.nil? || contributable.contribution.layout.nil?) %>
+                (contributable.contribution.nil? || contributable.contribution.layout.nil? ||
+                 Conf.layouts[contributable.contribution.layout].nil?)) %>
             <%= select_tag "layout", "<option value="">Default</option>" +
-                options_from_collection_for_select(applicable_networks.select {|n| n.layout_name}, 'id','title', selected_option) %>
-            <%# TODO: In Rails 2, have a link that allows a user to preview the selected layout using polymorphic_path %>
+                options_from_collection_for_select(applicable_networks.select {|n| n.layout_name if Conf.layouts[n.layout_name]},
+                                                   'id','title', selected_option) %>
           </div>
         <% end %>
       </div>

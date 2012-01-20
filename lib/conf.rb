@@ -178,8 +178,7 @@ class Conf
   end
 
   def self.layouts
-    #TODO: Perhaps implement code that can load different/extra settings files based on current environment
-    layouts = self.fetch_entry('layouts') || {}
+    layouts = self.fetch_entry('layouts', {})
     layouts.delete_if {|k,v| v["environment"] && (v["environment"] != ENV["RAILS_ENV"])}
   end
 
@@ -249,13 +248,6 @@ private
   end
 
   def self.fetch_entry(key, default = nil)
-
-    if @config != nil
-      if @settings['virtual_hosts'][@config][key]
-        return @settings['virtual_hosts'][@config][key]
-      end
-    end
-
     return @settings[key] if @settings[key]
     return @defaults[key] if @defaults[key]
 
