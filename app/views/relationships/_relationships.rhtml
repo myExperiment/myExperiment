@@ -10,7 +10,7 @@
   <ol class="relationship_sentences">
     <% relationships.each do |relationship| %>
       <li>
-        <% if relationship.subject.available? %>
+        <% if relationship.subject && relationship.subject.available? %>
             <%= pack_entry_link(relationship.subject) -%>
         <% else %>
           <span class="deletedPackItem">deleted item</span>
@@ -22,7 +22,7 @@
           <%=h relationship.predicate.preferred_label.text.underscore.humanize.downcase -%>
         <% end %>
 
-        <% if relationship.objekt.available? %>
+        <% if relationship.objekt && relationship.objekt.available? %>
           <%= pack_entry_link(relationship.objekt) -%>.
         <% else %>
           <span class="deletedPackItem">deleted item</span>
