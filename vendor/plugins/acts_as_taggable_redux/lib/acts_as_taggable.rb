@@ -124,7 +124,9 @@ module ActiveRecord
               #taggings.reset
               #@new_tag_list = nil
               
-              old_tag_ids = self.tags.collect { |t| t.id }
+              existing_tags = self.tags || []
+
+              old_tag_ids = existing_tags.collect { |t| t.id }
               Tag.parse(@new_tag_list).each do |new_tag_name|
                 found = Tag.find_or_create_by_name(new_tag_name)
                 
