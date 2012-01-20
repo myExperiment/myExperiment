@@ -216,6 +216,7 @@ class PacksController < ApplicationController
     @pack.tags_user_id = current_user # acts_as_taggable_redux
     @pack.tag_list = "#{@pack.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @pack.update_tags # hack to get around acts_as_versioned
+    @pack.solr_save if Conf.solr_enable
     
     respond_to do |format|
       format.html { 
