@@ -22,6 +22,10 @@ class TavernaEnactor < ActiveRecord::Base
   
   encrypts :password, :mode => :symmetric, :key => Conf.sym_encryption_key
   
+  def label
+    title
+  end
+
   def self.find_by_contributor(contributor_type, contributor_id)
     TavernaEnactor.find(:all, :conditions => ["contributor_type = ? AND contributor_id = ?", contributor_type, contributor_id])
   end

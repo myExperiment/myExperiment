@@ -12,5 +12,9 @@ class Ontology < ActiveRecord::Base
   validates_presence_of(:uri, :title, :prefix)
 
   validates_uniqueness_of(:uri, :prefix)
+
+  def label
+    title
+  end
 end
 

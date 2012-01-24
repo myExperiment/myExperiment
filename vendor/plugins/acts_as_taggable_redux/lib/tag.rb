@@ -85,5 +85,9 @@ class Tag < ActiveRecord::Base
     Tag.find_by_sql([sql] + args)
   end
 
+  def label
+    name
+  end
+
   validates_presence_of :name
 end

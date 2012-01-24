@@ -12,5 +12,8 @@ class Predicate < ActiveRecord::Base
   validates_presence_of(:title)
   validates_presence_of(:ontology)
 
+  def label
+    title
+  end
 end
 

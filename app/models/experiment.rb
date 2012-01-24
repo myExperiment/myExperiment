@@ -14,6 +14,10 @@ class Experiment < ActiveRecord::Base
   
   validates_presence_of :title
   
+  def label
+    title
+  end
+
   def self.default_title(user)
     s = "Experiment_#{Time.now.strftime('%Y%m%d-%H%M')}"
     s = s + "_#{user.name}" if user

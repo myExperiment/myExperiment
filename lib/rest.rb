@@ -17,7 +17,6 @@ TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
   { 'Model' => { :indices => [ 'REST Entity' ],
                  :lists   => [ 'REST Attribute', 'Encoding', 'Accessor',
                                'Create', 'Read', 'Update', 'Read by default',
-                               'Foreign Accessor',
                                'List Element Name', 'List Element Accessor',
                                'Example', 'Versioned', 'Key type',
                                'Limited to user', 'Permission', 'Index filter' ] },
@@ -237,7 +236,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
           resource_uri = rest_resource_uri(item)
           el['resource'] = resource_uri if resource_uri
           el['uri'] = rest_access_uri(item)
-          el << item.label if item.label
+          el << item.label if item.respond_to?(:label) && item.label
         end
 
         el
@@ -250,24 +249,19 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         else
 
-          foreign_ob = nil
-          text       = ""
-
-          if model_data['Foreign Accessor'][i]
-            foreign_ob = eval("ob.#{model_data['Foreign Accessor'][i]}")
-          end
+          text = ""
 
           if accessor
-            if model_data['Foreign Accessor'][i].nil? || foreign_ob
-              if query['version'] and model_data['Versioned'][i] == 'yes'
-                text = eval("ob.find_version(#{query['version']}).#{accessor}").to_s
+            if query['version'] and model_data['Versioned'][i] == 'yes'
+              text = eval("ob.find_version(#{query['version']}).#{accessor}").to_s
+            else
+
+              val = eval("ob.#{accessor}")
+
+              if val.class == ActiveSupport::TimeWithZone
+                text = val.time().to_s
               else
-                val = eval("ob.#{accessor}")
-		if val.class == ActiveSupport::TimeWithZone
-                   text = val.time().to_s
-                else
-                   text = val.to_s
-                end
+                text = val.to_s
               end
             end
           end
@@ -275,15 +269,6 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
           if model_data['Encoding'][i] == 'base64'
             text = Base64.encode64(text)
             attrs = { 'type' => 'binary', 'encoding' => 'base64' }
-          end
-
-          if model_data['Foreign Accessor'][i]
-            foreign_ob = eval("ob.#{model_data['Foreign Accessor'][i]}")
-            if foreign_ob != nil
-              resource_uri = rest_resource_uri(foreign_ob)
-              attrs['resource'] = resource_uri if resource_uri
-              attrs['uri'] = rest_access_uri(foreign_ob)
-            end
           end
         end
 

@@ -22,4 +22,7 @@ class License < ActiveRecord::Base
      return LicenseAttribute.find_by_sql("SELECT * FROM license_attributes INNER JOIN license_options on license_attributes.license_option_id=license_options.id WHERE license_id = #{self.id}")
   end
   
+  def label
+    unique_name
+  end
 end
