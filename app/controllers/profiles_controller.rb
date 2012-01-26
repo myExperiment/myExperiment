@@ -4,11 +4,12 @@
 # See license.txt for details.
 
 class ProfilesController < ApplicationController
+
   before_filter :login_required, :except => [:index, :show]
-  
+
   before_filter :find_profiles, :only => [:index]
-  before_filter :find_profile, :only => [:show]
-  before_filter :find_profile_auth, :only => [:edit, :update, :destroy]
+  before_filter :find_profile, :except => [:index]
+  before_filter :auth, :except => [:index, :show]
   
   # declare sweepers and which actions should invoke them
   cache_sweeper :profile_sweeper, :only => [ :create, :update, :destroy ]
@@ -34,8 +35,10 @@ class ProfilesController < ApplicationController
     unless current_user.profile
       @profile = Profile.new(:user_id => current_user.id)
     else
-      error("Profile not created, maximum number of profiles per user exceeded", 
-            "not created, maximum number of profiles per user exceeded")
+      flash[:error] = "Profile not created, maximum number of profiles per user exceeded"
+      respond_to do |format|
+        format.html { redirect_to profile_url(@profile) }
+      end
     end
   end
 
@@ -60,8 +63,10 @@ class ProfilesController < ApplicationController
         end
       end
     else
-      error("Profile not created, maximum number of profiles per user exceeded", 
-            "not created, maximum number of profiles per user exceeded")
+      flash[:error] = "Profile not created, maximum number of profiles per user exceeded"
+      respond_to do |format|
+        format.html { redirect_to profile_url(@profile) }
+      end
     end
   end
 
@@ -104,48 +109,23 @@ protected
 
   def find_profile
     begin
-      if params[:user_id]
-        begin
-          @user = User.find(params[:user_id])
-          @profile = @user.profile
-        rescue ActiveRecord::RecordNotFound
-          error("User not found (id unknown)", "not found", attr=:user_id)
-        end
-      else
-        @profile = Profile.find(params[:id])
-        @user = @profile.owner
-      end
+      @user = User.find(params[:user_id])
+      @profile = @user.profile
     rescue ActiveRecord::RecordNotFound
-      error("Profile not found (id unknown)", "not found")
+      flash[:error] = "User not found"
+      respond_to do |format|
+        format.html { redirect_to users_url }
+      end
     end
   end
   
-  def find_profile_auth
-    begin
-      if params[:user_id]
-        begin
-          @user = User.find(params[:user_id], :conditions => ["id = ?", current_user.id])
-          @profile = @user.profile
-        rescue ActiveRecord::RecordNotFound
-          error("User not found (id unknown)", "not found", attr=:user_id)
-        end
-      else
-        @profile = Profile.find(params[:id], :conditions => ["user_id = ?", current_user.id])
-        @user = @profile.owner
+  def auth
+    if current_user != @user
+      flash[:error] = "You are not authorized to perform this action"
+      respond_to do |format|
+        format.html { redirect_to profile_url(@profile) }
       end
-    rescue ActiveRecord::RecordNotFound
-      error("Profile not found (id not authorized)", "is invalid (not owner)")
     end
   end
-  
-private
 
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = Profile.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to profile_url(profile.id) }
-    end
-  end
 end

@@ -36,19 +36,19 @@ class ProfilesControllerTest < ActionController::TestCase
   end
 
   def test_should_show_profile
-    get :show, :id => 1
+    get :show, :user_id => 1
     assert_response :success
   end
 
   def test_should_get_edit
     login_as(:john)
-    get :edit, :id => 1
+    get :edit, :user_id => 1
     assert_response :success
   end
   
   def test_should_update_profile
     login_as(:john)
-    put :update, :id => 1, :profile => { :email => 'my_new_email@example.com' }
+    put :update, :user_id => 1, :profile => { :email => 'my_new_email@example.com' }
 
     assert_redirected_to user_path(users(:john).id)
   end
