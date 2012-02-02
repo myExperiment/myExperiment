@@ -3,7 +3,6 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'rexml/document'
 require 'base64'
 require 'lib/rest'
 
@@ -13,6 +12,15 @@ class ApiController < ApplicationController
 
     # all responses from the API are in XML
     response.content_type = "application/xml"
+
+    rest_response = process_request_aux
+
+    render(:xml => rest_response[:xml].to_s, :status => rest_response[:status])
+  end
+
+private 
+
+  def process_request_aux
 
     user = current_user
 
@@ -70,10 +78,10 @@ class ApiController < ApplicationController
     end  
 
     case rules['Type']
-      when 'index'; doc = rest_index_request(params[:uri], params[:format], rules, user, request.query_parameters)
-      when 'crud';  doc = rest_crud_request(params[:uri], params[:format], rules, user, request.query_parameters)
-      when 'call';  doc = rest_call_request(params[:uri], params[:format], rules, user, request.query_parameters)
-      else;         return rest_response(500, :reason => "Unknown REST table type")
+      when 'index'; rest_index_request(params[:uri], params[:format], rules, user, request.query_parameters)
+      when 'crud';  rest_crud_request(params[:uri], params[:format], rules, user, request.query_parameters)
+      when 'call';  rest_call_request(params[:uri], params[:format], rules, user, request.query_parameters)
+      else;         rest_response(500, :reason => "Unknown REST table type")
     end
   end
 end

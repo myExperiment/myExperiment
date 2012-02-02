@@ -94,7 +94,7 @@ def rest_response(code, args = {})
     end
   end
 
-  render(:xml => doc.to_s, :status => "#{code} #{message}")
+  { :xml => doc.to_s, :status => "#{code} #{message}" }
 end
 
 def resource_preview_url(ob, type)
@@ -320,7 +320,7 @@ def rest_get_request(ob, req_uri, user, uri, entity_name, query)
     root << data unless data.nil?
   end
 
-  render(:xml => doc.to_s)
+  { :xml => doc }
 end
 
 def rest_crud_request(req_uri, format, rules, user, query)
@@ -528,7 +528,7 @@ def produce_rest_list(req_uri, rules, query, obs, tag, attributes, user)
   doc = LibXML::XML::Document.new
   doc.root = root
 
-  render(:xml => doc.to_s)
+  { :xml => doc }
 end
 
 def object_owner(ob)
@@ -779,8 +779,7 @@ def obtain_rest_resource(type, id, version, user, permission = nil)
   resource = eval(type).find_by_id(id)
 
   if resource.nil?
-    rest_response(404, :reason => "Couldn't find a #{type} with id #{id}")
-    return nil
+    return [nil, rest_response(404, :reason => "Couldn't find a #{type} with id #{id}")]
   end
 
   if version
@@ -790,18 +789,16 @@ def obtain_rest_resource(type, id, version, user, permission = nil)
   end
 
   if resource.nil?
-    rest_response(404, :reason => "#{type} #{id} does not have a version #{version}")
-    return nil
+    return [nil, rest_response(404, :reason => "#{type} #{id} does not have a version #{version}")]
   end
 
   if permission
     if !Authorization.is_authorized?(permission, nil, resource, user)
-      rest_response(401, :reason => "Not authorised for #{type} #{id}")
-      return nil
+      return [nil, rest_response(401, :reason => "Not authorised for #{type} #{id}")]
     end
   end
 
-  resource
+  [resource, nil]
 end
 
 def rest_access_redirect(opts = {})
@@ -874,17 +871,17 @@ def workflow_aux(action, opts = {})
     when 'create':
       return rest_response(401, :reason => "Not authorised to create a workflow") unless Authorization.is_authorized_for_type?('create', 'Workflow', opts[:user], nil)
       if opts[:query]['id']
-        ob = obtain_rest_resource('Workflow', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+        ob, error = obtain_rest_resource('Workflow', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
       else
         ob = Workflow.new(:contributor => opts[:user])
       end
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Workflow', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('Workflow', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
   end
 
-  return if ob.nil? # appropriate rest response already given
+  return error if ob.nil? # appropriate rest response already given
 
   if action == "destroy"
 
@@ -1032,12 +1029,12 @@ def file_aux(action, opts = {})
       return rest_response(401, :reason => "Not authorised to create a file") unless Authorization.is_authorized_for_type?('create', 'Blob', opts[:user], nil)
       ob = Blob.new(:contributor => opts[:user])
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Blob', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('Blob', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
   end
 
-  return if ob.nil? # appropriate rest response already given
+  return error if ob.nil? # appropriate rest response already given
 
   if action == "destroy"
 
@@ -1143,12 +1140,12 @@ def pack_aux(action, opts = {})
       return rest_response(401, :reason => "Not authorised to create a pack") unless Authorization.is_authorized_for_type?('create', 'Pack', opts[:user], nil)
       ob = Pack.new(:contributor => opts[:user])
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Pack', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('Pack', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
   end
 
-  return if ob.nil? # appropriate rest response already given
+  return error if ob.nil? # appropriate rest response already given
 
   if action == "destroy"
 
@@ -1227,7 +1224,7 @@ def external_pack_item_aux(action, opts = {})
 
     when 'read', 'update', 'destroy':
 
-      ob = obtain_rest_resource('PackRemoteEntry', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('PackRemoteEntry', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
 
       if ob
         return rest_response(401, :reason => "Not authorised to change the specified pack") unless Authorization.is_authorized?('edit', nil, ob.pack, opts[:user])
@@ -1237,7 +1234,7 @@ def external_pack_item_aux(action, opts = {})
       raise "Invalid action '#{action}'"
   end
 
-  return if ob.nil? # appropriate rest response already given
+  return error if ob.nil? # appropriate rest response already given
 
   if action == "destroy"
 
@@ -1298,7 +1295,7 @@ def internal_pack_item_aux(action, opts = {})
 
     when 'read', 'update', 'destroy':
 
-      ob = obtain_rest_resource('PackContributableEntry', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('PackContributableEntry', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
 
       if ob
         return rest_response(401, :reason => "Not authorised to change the specified pack") unless Authorization.is_authorized?('edit', nil, ob.pack, opts[:user])
@@ -1308,7 +1305,7 @@ def internal_pack_item_aux(action, opts = {})
       raise "Invalid action '#{action}'"
   end
 
-  return if ob.nil? # appropriate rest response already given
+  return error if ob.nil? # appropriate rest response already given
 
   if action == "destroy"
 
@@ -1481,7 +1478,7 @@ def user_count(opts)
   doc = LibXML::XML::Document.new
   doc.root = root
 
-  render(:xml => doc.to_s)
+  { :xml => doc }
 end
 
 def group_count(opts)
@@ -1492,7 +1489,7 @@ def group_count(opts)
   doc = LibXML::XML::Document.new
   doc.root = root
 
-  render(:xml => doc.to_s)
+  { :xml => doc }
 end
 
 def workflow_count(opts)
@@ -1507,7 +1504,7 @@ def workflow_count(opts)
   doc = LibXML::XML::Document.new
   doc.root = root
 
-  render(:xml => doc.to_s)
+  { :xml => doc }
 end
 
 def pack_count(opts)
@@ -1522,7 +1519,7 @@ def pack_count(opts)
   doc = LibXML::XML::Document.new
   doc.root = root
 
-  render(:xml => doc.to_s)
+  { :xml => doc }
 end
 
 def content_type_count(opts)
@@ -1533,7 +1530,7 @@ def content_type_count(opts)
   doc = LibXML::XML::Document.new
   doc.root = root
 
-  render(:xml => doc.to_s)
+  { :xml => doc }
 end
 
 def get_tagged(opts)
@@ -1585,7 +1582,7 @@ def tag_cloud(opts)
     root << tag_node
   end
 
-  render(:xml => doc.to_s)
+  { :xml => doc }
 end
 
 def whoami_redirect(opts)
@@ -1672,12 +1669,12 @@ def comment_aux(action, opts)
 
       ob = Comment.new(:user => opts[:user])
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Comment', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('Comment', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
   end
 
-  return if ob.nil? # appropriate rest response already given
+  return error if ob.nil? # appropriate rest response already given
 
   if action == "destroy"
 
@@ -1798,12 +1795,12 @@ def favourite_aux(action, opts)
 
       ob = Bookmark.new(:user => opts[:user])
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Bookmark', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('Bookmark', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
   end
 
-  return if ob.nil? # appropriate rest response already given
+  return error if ob.nil? # appropriate rest response already given
 
   if action == "destroy"
 
@@ -1851,12 +1848,12 @@ def rating_aux(action, opts)
 
       ob = Rating.new(:user => opts[:user])
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Rating', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('Rating', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
   end
 
-  return if ob.nil? # appropriate rest response already given
+  return error if ob.nil? # appropriate rest response already given
 
   if action == "destroy"
 
@@ -1907,12 +1904,12 @@ def tagging_aux(action, opts)
 
       ob = Tagging.new(:user => opts[:user])
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Tagging', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('Tagging', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
   end
 
-  return if ob.nil? # appropriate rest response already given
+  return error if ob.nil? # appropriate rest response already given
 
   if action == "destroy"
 
@@ -1959,12 +1956,12 @@ def ontology_aux(action, opts)
       return rest_response(401, :reason => "Not authorised to create an ontology") unless Authorization.is_authorized_for_type?('create', 'Ontology', opts[:user], nil)
       ob = Ontology.new(:user => opts[:user])
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Ontology', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('Ontology', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
   end
 
-  return if ob.nil? # appropriate rest response already given
+  return error if ob.nil? # appropriate rest response already given
 
   if action == "destroy"
 
@@ -2030,12 +2027,12 @@ def predicate_aux(action, opts)
       return rest_response(401, :reason => "Not authorised to create a predicate") unless Authorization.is_authorized_for_type?('create', 'Predicate', opts[:user], ontology)
       ob = Predicate.new
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Predicate', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('Predicate', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
   end
 
-  return if ob.nil? # appropriate rest response already given
+  return error if ob.nil? # appropriate rest response already given
 
   if action == "destroy"
 
@@ -2093,12 +2090,12 @@ def relationship_aux(action, opts)
       return rest_response(401, :reason => "Not authorised to create a relationship") unless Authorization.is_authorized_for_type?('create', 'Relationship', opts[:user], context)
       ob = Relationship.new(:user => opts[:user])
     when 'read', 'update', 'destroy':
-      ob = obtain_rest_resource('Relationship', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('Relationship', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
   end
 
-  return if ob.nil? # appropriate rest response already given
+  return error if ob.nil? # appropriate rest response already given
 
   if action == "destroy"
 

@@ -911,10 +911,10 @@ class ApiControllerTest < ActionController::TestCase
     # puts "Sending: #{data.inspect}"
 
     case method
-      when :get;    get(:process_request,     { :uri => uri } )
-      when :post;   post(:process_request,    { :uri => uri } )
-      when :put;    put(:process_request,     { :uri => uri } )
-      when :delete; delete(:process_request,  { :uri => uri } )
+      when :get;    get(:process_request,     { :uri => uri, :format => "xml" } )
+      when :post;   post(:process_request,    { :uri => uri, :format => "xml" } )
+      when :put;    put(:process_request,     { :uri => uri, :format => "xml" } )
+      when :delete; delete(:process_request,  { :uri => uri, :format => "xml" } )
     end
 
     # puts "Response: #{LibXML::XML::Parser.string(@response.body).parse.root.to_s}"
