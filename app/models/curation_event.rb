@@ -12,6 +12,10 @@ class CurationEvent < ActiveRecord::Base
 
   validates_presence_of :user, :category
 
+  def label
+    category
+  end
+
   def self.curation_score(events)
 
     score = 0
