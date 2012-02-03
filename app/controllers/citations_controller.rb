@@ -12,7 +12,8 @@ class CitationsController < ApplicationController
   before_filter :find_citation, :only => :show
   before_filter :find_citation_auth, :only => [ :edit, :update, :destroy ]
   
-  before_filter :invalidate_listing_cache, :only => [ :create, :update, :destroy ]
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :citation_sweeper, :only => [ :create, :update, :destroy ]
   
   # GET /citations
   def index
@@ -47,7 +48,7 @@ class CitationsController < ApplicationController
     respond_to do |format|
       if @citation.save
         flash[:notice] = 'Citation was successfully created.'
-        format.html { redirect_to citation_url(@workflow, @citation) }
+        format.html { redirect_to workflow_citation_url(@workflow, @citation) }
       else
         format.html { render :action => "new" }
       end
@@ -59,7 +60,7 @@ class CitationsController < ApplicationController
     respond_to do |format|
       if @citation.update_attributes(params[:citation])
         flash[:notice] = 'Citation was successfully updated.'
-        format.html { redirect_to citation_url(@workflow, @citation) }
+        format.html { redirect_to workflow_citation_url(@workflow, @citation) }
       else
         format.html { render :action => "edit" }
       end
@@ -72,7 +73,7 @@ class CitationsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Citation was successfully deleted.'
-      format.html { redirect_to citations_url(@workflow) }
+      format.html { redirect_to workflow_citations_url(@workflow) }
     end
   end
   
@@ -85,32 +86,36 @@ protected
     
       workflow = Workflow.find(params[:workflow_id])
       
-      if workflow.authorized?((["index", "show"].include?(action_name) ? "show" : "edit"), (logged_in? ? current_user : nil))
+      if Authorization.is_authorized?((["index", "show"].include?(action_name) ? "show" : "edit"), nil, workflow, current_user)
         @workflow = workflow
         
-        # remove scufl from workflow if the user is not authorized for download
-        @workflow.content_blob.data = nil unless @workflow.authorized?("download", (logged_in? ? current_user : nil))
+        # remove workflow data from workflow if the user is not authorized for download
+        @workflow.content_blob.data = nil unless Authorization.is_authorized?("download", nil, @workflow, current_user)
       else
         if logged_in?
-          error("Workflow not found (id not authorized)", "is invalid (not authorized)", :workflow_id)
+          error("Workflow not found (id not authorized)", "is invalid (not authorized)")
         else
           find_workflow_auth if login_required
         end
       end
     rescue ActiveRecord::RecordNotFound
-      error("Workflow not found", "is invalid", :workflow_id)
+      error("Workflow not found", "is invalid")
     end
   end
   
   def find_citations
-    @citations = @workflow.citations
+    if @workflow
+      @citations = @workflow.citations
+    else
+      @citations = []
+    end
   end
   
   def find_citation
     if citation = @workflow.citations.find(:first, :conditions => ["id = ?", params[:id]])
       @citation = citation
     else
-      error("Citation not found", "is invalid")
+      error("Citation not found", "is invalid", params[:id])
     end
   end
   
@@ -118,24 +123,28 @@ protected
     if citation = @workflow.citations.find(:first, :conditions => ["id = ? AND user_id = ?", params[:id], current_user.id])
       @citation = citation
     else
-      error("Citation not found (id not authorized)", "is invalid (not authorized)")
+      error("Citation not found (id not authorized)", "is invalid (not authorized)", params[:id])
     end
   end
   
-  def invalidate_listing_cache
-    if params[:workflow_id]
-      expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => params[:workflow_id])
-    end
-  end
-
 private
 
-  def error(notice, message, attr=:id)
+  def error(notice, message, attr=nil)
     flash[:error] = notice
-    (err = Citation.new.errors).add(attr, message)
-    
+
+    workflow_id_attr = attr
+    workflow_id_attr = :id if workflow_id_attr.nil?
+
+    (err = Citation.new.errors).add(workflow_id_attr, message)
+
     respond_to do |format|
-      format.html { redirect_to citations_url(params[:workflow_id]) }
+      format.html {
+        if attr
+          redirect_to workflow_citations_url(params[:workflow_id])
+        else
+          redirect_to workflows_url
+        end
+      }
     end
   end
   

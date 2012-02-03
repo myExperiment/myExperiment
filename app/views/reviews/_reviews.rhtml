@@ -1,8 +1,8 @@
-<%= javascript_include_tag :fckeditor %>
+<%= javascript_include_tag "fckeditor/fckeditor.js" %>
 
 <h2>
 	<%= icon "review", nil, "Reviews", { :style => "vertical-align: middle;" }, "" -%>
-	<span style="vertical-align: middle;"><%= link_to "Reviews", reviews_path(reviewable) %></span>
+	<span style="vertical-align: middle;"><%= link_to "Reviews", workflow_reviews_path(reviewable) %></span>
 	<span class="count_text" style="vertical-align: middle;">(<%= reviewable.reviews.length %>)</span>
 </h2>
 
@@ -10,7 +10,7 @@
 
 	<% unless reviewable.reviews.empty? %>
 		<ul class="sectionIcons">
-		  <li><%= icon('review', new_review_path(reviewable), nil, nil, 'Write your own Review') %></li>
+		  <li><%= icon('review', new_workflow_review_path(reviewable), nil, nil, 'Write your own Review') %></li>
 		</ul>
 		<a name="reviews"></a>
 		<%= render :partial => "reviews/table", :locals => { :reviewable => reviewable, :collection => reviewable.reviews } %>
@@ -18,7 +18,7 @@
 		<p><i>No reviews yet</i></p>
 		<a name="reviews"></a>
 		<p style="margin-top: 0.6em;">
-			<strong><%= link_to "Be the first to review!", new_review_url(reviewable) %></strong>
+			<strong><%= link_to "Be the first to review!", new_workflow_review_url(reviewable) %></strong>
 		</p>
 	<% end %>
 	

@@ -4,62 +4,110 @@
 # See license.txt for details.
 
 class PacksController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :all, :search, :items]
+  include ApplicationHelper
   
-  before_filter :find_packs, :only => [:all]
-  before_filter :find_pack_auth, :except => [:index, :new, :create, :all, :search]
+  before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
   
-  before_filter :invalidate_listing_cache, :only => [:show, :update, :comment, :comment_delete, :tag, :destroy, :create_item, :update_item, :delete_item]
-  before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
+  before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
+  
+  before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
+  
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :pack_sweeper, :only => [ :create, :update, :destroy ]
+  cache_sweeper :pack_entry_sweeper, :only => [ :create_item, :quick_add, :update_item, :destroy_item ]
+  cache_sweeper :permission_sweeper, :only => [ :create, :update, :destroy ]
+  cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
+  cache_sweeper :tag_sweeper, :only => [ :create, :update, :tag, :destroy ]
+  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download ]
+  cache_sweeper :comment_sweeper, :only => [ :comment, :comment_delete ]
 
   def search
-    @query = params[:query]
-    
-    @packs = SOLR_ENABLE ? Pack.find_by_solr(@query, :limit => 100).results : []
-    
-    respond_to do |format|
-      format.html # search.rhtml
-    end
+    redirect_to(search_path + "?type=packs&query=" + params[:query])
   end
 
   # GET /packs
   def index
     respond_to do |format|
-      format.html # index.rhtml
-    end
-  end
-  
-  # GET /packs/all
-  def all
-    respond_to do |format|
-      format.html # all.rhtml
+      format.html {
+        @pivot_options = pivot_options
+
+        begin
+          expr = parse_filter_expression(params["filter"]) if params["filter"]
+        rescue Exception => ex
+          puts "ex = #{ex.inspect}"
+          flash.now[:error] = "Problem with query expression: #{ex}"
+          expr = nil
+        end
+
+        @pivot = contributions_list(Contribution, params, current_user,
+            :lock_filter => { 'CATEGORY' => 'Pack' },
+            :filters     => expr)
+
+        @query = params[:query]
+        @query_type = 'packs'
+
+        # index.rhtml
+      }
     end
   end
   
   # GET /packs/1
   def show
-    @viewing = Viewing.create(:contribution => @pack.contribution, :user => (logged_in? ? current_user : nil))
-    
-    @sharing_mode  = determine_sharing_mode(@pack)
-    @updating_mode = determine_updating_mode(@pack)
+    if allow_statistics_logging(@pack)
+      @viewing = Viewing.create(:contribution => @pack.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
+    end
     
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+        
+        @lod_nir  = pack_url(@pack)
+        @lod_html = pack_url(:id => @pack.id, :format => 'html')
+        @lod_rdf  = pack_url(:id => @pack.id, :format => 'rdf')
+        @lod_xml  = pack_url(:id => @pack.id, :format => 'xml')
+        
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} packs #{@pack.id}`
+        }
+      end
     end
+  end
+  
+  # GET /packs/1;download
+  def download
+    # this is done every time the donwload is requested;
+    # however all versions of the archive are replacing each other,
+    # so ultimately there's just one copy of a zip archive per pack
+    # (this also makes sure that changes to the pack are reflected in the
+    # zip, because it is generated on the fly every time) 
+    
+    # this hash contains all the paths to the images to be used as bullet icons in the pack item listing
+    image_hash = {} 
+    image_hash["workflow"] = "./public/images/" + method_to_icon_filename("workflow")
+    image_hash["file"] = "./public/images/" + method_to_icon_filename("blob")
+    image_hash["pack"] = "./public/images/" + method_to_icon_filename("pack")
+    image_hash["link"] = "./public/images/" + method_to_icon_filename("remote")
+    image_hash["denied"] = "./public/images/" + method_to_icon_filename("denied")
+    
+    @pack.create_zip(current_user, image_hash)
+    
+    if allow_statistics_logging(@pack)
+      @download = Download.create(:contribution => @pack.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
+    end
+    
+    send_file @pack.archive_file_path, :disposition => 'attachment'
   end
   
   # GET /packs/new
   def new
     @pack = Pack.new
-    
-    @sharing_mode  = 0
-    @updating_mode = 6
   end
   
   # GET /packs/1;edit
   def edit
-    @sharing_mode  = determine_sharing_mode(@pack)
-    @updating_mode = determine_updating_mode(@pack)
   end
   
   # POST /packs
@@ -78,10 +126,16 @@ class PacksController < ApplicationController
         end
         
         # update policy
-        update_policy(@pack, params)
+        policy_err_msg = update_policy(@pack, params)
+        update_layout(@pack, params[:layout])
         
-        flash[:notice] = 'Pack was successfully created.'
-        format.html { redirect_to pack_url(@pack) }
+        if policy_err_msg.blank?
+          flash[:notice] = 'Pack was successfully created.'
+          format.html { redirect_to pack_url(@pack) }
+        else
+          flash[:notice] = "Pack was successfully created. However some problems occurred, please see these below.</br></br><span style='color: red;'>" + policy_err_msg + "</span>"
+          format.html { redirect_to :controller => 'packs', :id => @pack, :action => "edit" }
+        end
       else
         format.html { render :action => "new" }
       end
@@ -101,10 +155,16 @@ class PacksController < ApplicationController
     respond_to do |format|
       if @pack.update_attributes(params[:pack])
         @pack.refresh_tags(convert_tags_to_gem_format(params[:pack][:tag_list]), current_user) if params[:pack][:tag_list]
-        update_policy(@pack, params)
+        policy_err_msg = update_policy(@pack, params)
+        update_layout(@pack, params[:layout])
         
-        flash[:notice] = 'Pack was successfully updated.'
-        format.html { redirect_to pack_url(@pack) }
+        if policy_err_msg.blank?
+          flash[:notice] = 'Pack was successfully updated.'
+          format.html { redirect_to pack_url(@pack) }
+        else
+          flash[:error] = policy_err_msg
+          format.html { redirect_to :controller => 'packs', :id => @pack, :action => "edit" }
+        end
       else
         format.html { render :action => "edit" }
       end
@@ -128,7 +188,7 @@ class PacksController < ApplicationController
   
   # POST /packs/1;favourite
   def favourite
-    @pack.bookmarks << Bookmark.create(:user => current_user) unless @pack.bookmarked_by_user?(current_user)
+    @pack.bookmarks << Bookmark.create(:user => current_user, :bookmarkable => @pack) unless @pack.bookmarked_by_user?(current_user)
     
     respond_to do |format|
       flash[:notice] = "You have successfully added this item to your favourites."
@@ -151,43 +211,22 @@ class PacksController < ApplicationController
     end
   end
   
-  # POST /packs/1;comment
-  def comment 
-    text = params[:comment][:comment]
-    
-    if text and text.length > 0
-      comment = Comment.create(:user => current_user, :comment => text)
-      @pack.comments << comment
-    end
-    
-    respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @pack } }
-    end
-  end
-  
-  # DELETE /packs/1;comment_delete
-  def comment_delete
-    if params[:comment_id]
-      comment = Comment.find(params[:comment_id].to_i)
-      # security checks:
-      if comment.user_id == current_user.id and comment.commentable_type == 'Pack' and comment.commentable_id == @pack.id
-        comment.destroy
-      end
-    end
-    
-    respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @pack } }
-    end
-  end
-  
   # POST /packs/1;tag
   def tag
     @pack.tags_user_id = current_user # acts_as_taggable_redux
     @pack.tag_list = "#{@pack.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @pack.update_tags # hack to get around acts_as_versioned
+    @pack.solr_save if Conf.solr_enable
     
     respond_to do |format|
-      format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @pack, :owner_id => @pack.contributor_id } }
+      format.html { 
+        render :update do |page|
+          unique_tag_count = @pack.tags.uniq.length
+          page.replace_html "mini_nav_tag_link", "(#{unique_tag_count})"
+          page.replace_html "tags_box_header_tag_count_span", "(#{unique_tag_count})"
+          page.replace_html "tags_inner_box", :partial => "tags/tags_box_inner", :locals => { :taggable => @pack, :owner_id => @pack.contributor_id } 
+        end
+      }
     end
   end
   
@@ -372,21 +411,15 @@ class PacksController < ApplicationController
     end
   end
   
-  def find_packs
-    @packs = Pack.find(:all, 
-                       :order => "title ASC",
-                       :page => { :size => 20, 
-                       :current => params[:page] })
-  end
-  
   def find_pack_auth
     begin
       pack = Pack.find(params[:id])
       
-      if pack.authorized?(action_name, current_user)
+      if Authorization.is_authorized?(action_name, nil, pack, current_user)
         @pack = pack
         
-        @authorised_to_edit = logged_in? && @pack.authorized?("edit", current_user)
+        @authorised_to_edit = logged_in? && Authorization.is_authorized?("edit", nil, @pack, current_user)
+        @authorised_to_download = Authorization.is_authorized?("download", nil, @pack, current_user)
         
         @pack_entry_url = url_for :only_path => false,
                             :host => base_host,
@@ -401,15 +434,18 @@ class PacksController < ApplicationController
     end
   end
   
-  def invalidate_listing_cache
-    if @pack
-      expire_fragment(:controller => 'packs_cache', :action => 'listing', :id => @pack.id)
+  def set_sharing_mode_variables
+    case action_name
+      when "new"
+        @sharing_mode  = 0
+        @updating_mode = 6
+      when "create", "update"
+        @sharing_mode  = params[:sharing][:class_id].to_i if params[:sharing]
+        @updating_mode = params[:updating][:class_id].to_i if params[:updating]
+      when "show", "edit"
+        @sharing_mode  = @pack.contribution.policy.share_mode
+        @updating_mode = @pack.contribution.policy.update_mode
     end
-  end
-  
-  def invalidate_tags_cache
-    expire_fragment(:controller => 'packs', :action => 'all_tags')
-    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
   end
   
   private

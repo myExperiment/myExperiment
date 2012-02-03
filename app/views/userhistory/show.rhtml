@@ -34,7 +34,7 @@
 							<%= datetime c.created_at, false %> - for <%= visible_name c.commentable_type %>: 
 							<%= c.commentable_type == 'Network' ? title(c.commentable_id) : contributable(c.commentable_id, c.commentable_type) %>
 							<div class="box_standout" style="margin: 0.5em 0;">
-								<%= truncate(white_list(c.comment), 300) %>
+								<%= truncate(white_list(c.comment), :length => 300) %>
 							</div>
 							<br/><br/>
 						</li>

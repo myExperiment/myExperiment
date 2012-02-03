@@ -32,6 +32,7 @@
         z-index: 20;
         position: absolute;
         padding: 0px;
+        outline: none;
     }
     .star-rating li a:hover{
         background: url(/images/star_rating.gif) left center;

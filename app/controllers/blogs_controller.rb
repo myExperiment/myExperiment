@@ -21,7 +21,7 @@ class BlogsController < ApplicationController
   def show
     @viewing = Viewing.create(:contribution => @blog.contribution, :user => (logged_in? ? current_user : nil))
     
-    @sharing_mode  = determine_sharing_mode(@blog)
+    @sharing_mode  = @blog.contribution.policy.share_mode
     
     respond_to do |format|
       format.html # show.rhtml
@@ -37,7 +37,7 @@ class BlogsController < ApplicationController
 
   # GET /blogs/1;edit
   def edit
-    @sharing_mode  = determine_sharing_mode(@blog)
+    @sharing_mode  = @blog.contribution.policy.share_mode
   end
 
   # POST /blogs
@@ -113,7 +113,7 @@ protected
     begin
       blog = Blog.find(params[:id])
       
-      if blog.authorized?(action_name, (logged_in? ? current_user : nil))
+      if Authorization.is_authorized?(action_name, nil, blog, current_user)
         @blog = blog
       else
         if logged_in? 

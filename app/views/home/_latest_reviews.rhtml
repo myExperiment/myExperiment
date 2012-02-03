@@ -1,6 +1,5 @@
 <!-- Latest Reviews -->
-<% cache_timeout({:controller => 'home_cache', :action => 'latest_reviews', :id => (logged_in? ? current_user.id : 0)}, 
-								 CACHE_TIMEOUT_SECS.seconds.from_now) do -%>
+<% cache(:controller => 'home_cache', :action => 'latest_reviews', :id => (logged_in? ? current_user.id : 0)) do -%> 
 	<div class="box">
 		<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 		<div class="title">
@@ -10,7 +9,7 @@
 			<% unless (reviews = Review.latest).empty? %>
 				<ul class="list">
 					<% reviews.each do |r| %>
-						<% if thing_authorized?('show', r.reviewable) %>
+						<% if Authorization.is_authorized?("show", nil, r.reviewable, current_user) %>
 							<li>
 								<b><%= r_type = visible_name(r.reviewable_type); icon(r.reviewable_type.to_s, nil, nil, r_type, r_type) %>:</b>
 								<span><%= contributable(r.reviewable_id, r.reviewable_type) %></span>
@@ -22,7 +21,7 @@
 								</span>
 								<div class="box_standout" style="font-size: 85%; margin: 0.4em 2em; padding: 0.2em 0.5em;">
 									<p>
-										<b><%= link_to h(r.title), review_url(r.reviewable, r) -%></b>
+										<b><%= link_to h(r.title), workflow_review_url(r.reviewable, r) -%></b>
 										<br/>
 										<span style="color: #666666;">
 											<% if (rating = r.associated_rating) -%>
@@ -32,8 +31,8 @@
 											<% end -%>
 										</span>
 									</p>
-									<%= truncate(strip_html(white_list(r.review)), 150) %>
-									<p style="text-align: right;">[ <%= link_to "More", review_url(r.reviewable, r) -%> ]</p>
+									<%= truncate(strip_html(white_list(r.review)), :length => 150) %>
+									<p style="text-align: right;">[ <%= link_to "More", workflow_review_url(r.reviewable, r) -%> ]</p>
 								</div>
 								<br/>
 							</li>

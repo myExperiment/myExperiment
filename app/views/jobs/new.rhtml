@@ -1,4 +1,4 @@
-<%= javascript_include_tag :fckeditor -%>
+<%= javascript_include_tag "fckeditor/fckeditor.js" -%>
 
 <h1>New Job</h1>
 
@@ -6,7 +6,7 @@
 	<%= error_messages_for :job %>
 </center>
 
-<% form_for :job, :url => (@job.experiment ? jobs_path(@job.experiment) : { :controller => 'jobs', :action => 'create' }) do |form| -%>
+<% form_for :job, :url => (@job.experiment ? experiment_jobs_path(@job.experiment) : { :controller => 'jobs', :action => 'create' }) do |form| -%>
 
 	<p class="sub-heading">
 		<% if @job.experiment -%>
@@ -63,19 +63,20 @@
 				
 				<p>
 					<b>Workflow ID: </b>
-					<%= form.text_field :runnable_id, :size => 8, :style => "margin-bottom: 0" %>
+					<%= form.text_field :runnable_id, :size => 8, :style => "vertical-align: middle;" %>
 					<%= form.hidden_field :runnable_type %>
 				</p>
 				<p>
 					<b>Workflow Version: </b>
-					<%= form.text_field :runnable_version, :size => 8, :style => "margin-bottom: 0" %>
+					<%= form.text_field :runnable_version, :size => 8, :style => "vertical-align: middle;" %>
 				</p>
 				
 				<p>
 					<b>Runner to use: </b>
 					<%= form.select :runner_id, 
 													TavernaEnactor.for_user(current_user).collect {|r| [ r.title, r.id ]},
-													:prompt => '--- Select Runner ---', :style => "margin-bottom: 0" %>
+													{ :prompt => '--- Select Runner ---' }, 
+													{ :style => "vertical-align: middle;" } %>
 					<%= form.hidden_field :runner_type %>
 				</p>
 			</fieldset>

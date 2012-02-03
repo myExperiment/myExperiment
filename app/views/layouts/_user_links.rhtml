@@ -1,0 +1,8 @@
+<% if logged_in? -%>
+  <%= signout_link -%> |
+<% else -%>
+  <%= icon "login", new_session_url, nil, nil, "Log in" -%> |
+  <%= icon "user", new_user_url, nil, nil, "Register" -%> |
+<% end %>
+<%= icon "feedback", "/feedback", nil, nil, "Give us Feedback" -%> |
+<%= icon "user-invite", invite_users_path, nil, nil, "Invite" -%>

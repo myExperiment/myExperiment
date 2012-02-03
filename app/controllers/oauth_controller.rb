@@ -1,8 +1,9 @@
 class OauthController < ApplicationController
   before_filter :login_required,:except=>[:request_token,:access_token,:test_request]
+  before_filter :find_client_application_auth, :only=>[:show, :edit, :update, :destroy]
   before_filter :login_or_oauth_required,:only=>[:test_request]
   before_filter :verify_oauth_consumer_signature, :only=>[:request_token]
-  before_filter :verify_oauth_request_token, :only=>[:access_token]
+  # before_filter :verify_oauth_request_token, :only=>[:access_token]
   # Uncomment the following if you are using restful_open_id_authentication
   skip_before_filter :verify_authenticity_token
 
@@ -13,8 +14,8 @@ class OauthController < ApplicationController
     else
       render :nothing => true, :status => 401
     end
-  end 
-  
+  end
+
   def access_token
     @token=current_token.exchange!
     if @token
@@ -27,34 +28,54 @@ class OauthController < ApplicationController
   def test_request
     render :text=>params.collect{|k,v|"#{k}=#{v}"}.join("&")
   end
-  
+
   def authorize
     @client_applications=current_user.client_applications
     @token=RequestToken.find_by_token params[:oauth_token]
-    if @client_applications.include?(@token.client_application)
-      unless @token.invalidated?    
-        if request.post? 
+    if @token.client_application.nil?
+       if redirect_url
+         redirect_to redirect_url+"?oauth_failure=1"
+       else
+         render :action=>"authorize_failure"
+       end
+    end
+    @show_permissions=@token.client_application.permissions
+    redirect_url=params[:oauth_callback]||@token.client_application.callback_url
+    if (@token.client_application.key_type == 'System') || @client_applications.include?(@token.client_application)
+      unless @token.invalidated?
+        if request.post?
           if params[:authorize]=='1'
             @token.authorize!(current_user)
-            redirect_url=params[:oauth_callback]||@token.client_application.callback_url
             if redirect_url
               redirect_to redirect_url+"?oauth_token=#{@token.token}"
             else
               render :action=>"authorize_success"
             end
-          elsif params[:authorize]=="0"
+          elsif params[:commit]=="Save Changes"
             @token.invalidate!
-            render :action=>"authorize_failure"
+            if redirect_url
+              redirect_to redirect_url+"?oauth_failure=1"
+            else
+              render :action=>"authorize_failure"
+            end
           end
         end
       else
-        render :action=>"authorize_failure"
+       if redirect_url
+         redirect_to redirect_url+"?oauth_failure=1"
+       else
+         render :action=>"authorize_failure"
+       end
       end
     else
-      render :action=>"authorize_failure"
+       if redirect_url
+         redirect_to redirect_url+"?oauth_failure=1"
+       else
+         render :action=>"authorize_failure"
+       end
     end
   end
-  
+
   def revoke
     @token=current_user.tokens.find_by_token params[:token]
     if @token
@@ -63,7 +84,7 @@ class OauthController < ApplicationController
     end
     redirect_to oauth_url
   end
-  
+
   def index
     @client_applications=current_user.client_applications
     @admin_client_applications=ClientApplication.find(:all, :conditions => ["user_id != ? and creator_id = ?", current_user.id, current_user.id])
@@ -80,44 +101,47 @@ class OauthController < ApplicationController
   def create
     @client_application=current_user.client_applications.build(params[:client_application])
     if @client_application.save
-      for key_permission in params[:key_permissions] do
-        @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
-        @key_permission.save
+      if params[:key_permissions] 
+        for key_permission in params[:key_permissions] do
+          @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
+          @key_permission.save
+        end
       end
-      flash[:notice]="Client Application successfully registred!"
+      flash[:notice]="Client Application successfully registered!"
       redirect_to :action=>"show",:id=>@client_application.id
     else
       render :action=>"new"
     end
   end
-  
+
   def show
-    @client_application=ClientApplication.find(params[:id])
     if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
-    	@client_application = nil
+      @client_application = nil
     end
-    @key_permissions=@client_application.permissions
+    @show_permissions=@client_application.permissions
   end
 
   def edit
     @permissions = TABLES['REST'][:data]
     @permissions=@permissions.sort
-    @client_application=ClientApplication.find(params[:id])
     if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
         @client_application = nil
     end
     @permissions_for=@client_application.permissions_for
+    unless @client_application.nil?
+      @show_permissions=@client_application.permissions
+    end
   end
-  
+
   def update
-    @client_application=ClientApplication.find(params[:client_application][:id])
-    if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
-        @client_application = nil
-    end 
-    @client_application.permissions.delete_all
-    for key_permission in params[:key_permissions] do
-       @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
-       @key_permission.save
+    if (current_user.admin? or @client_application.key_type=="User")
+      @client_application.permissions.delete_all
+      if params[:key_permissions] 
+        for key_permission in params[:key_permissions] do
+          @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
+           @key_permission.save
+        end
+      end
     end
     if @client_application.update_attributes(params[:client_application])
       flash[:notice]="Client Application '#{@client_application.name}' successfully updated!"
@@ -128,11 +152,37 @@ class OauthController < ApplicationController
   end
 
   def destroy
-    @client_application=current_user.client_applications.find(params[:id])
     client_application_name=@client_application.name
     @client_application.destroy
     flash[:notice]="Registration for Client Application '#{client_application_name}' has been removed!"
     redirect_to :action=>"index"
   end
-  
+
+private
+
+  def find_client_application_auth
+    if action_name == 'update'
+      id = params[:client_application][:id]
+    else
+      id = params[:id]
+    end
+    begin
+      client_app=ClientApplication.find(id)
+      if Authorization.is_authorized?(action_name, nil, client_app, current_user)
+        @client_application = client_app
+      else
+        error("Client Application not found (id not authorized)", "is invalid (not authorized)")
+      end
+    rescue ActiveRecord::RecordNotFound
+      error("Client Application not found", "is invalid")
+    end
+  end
+
+  def error(notice, message, attr=:id)
+    flash[:error] = notice
+
+    respond_to do |format|
+      format.html { redirect_to oauth_url }
+    end
+  end
 end

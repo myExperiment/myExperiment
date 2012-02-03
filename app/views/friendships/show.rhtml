@@ -1,6 +1,6 @@
 <h1>Friendship</h1>
 
-<% display_user = !my_page? (@friendship.user_id) %>
+<% display_user = !my_page?(@friendship.user) %>
 <% display_user_instance = display_user ? @friendship.user : @friendship.friend %>
 
 
@@ -33,14 +33,14 @@
 				      <b>Accepted at:</b><br/>
 			        <%=datetime @friendship.accepted_at %>
 		        </p>
-		      <% elsif my_page? @friendship.friend_id %>
+		      <% elsif my_page? @friendship.friend %>
 		        <% if @friendship.message %>
 						  <p style="margin-top: 1.5em; font-size: 93%; text-align: center;">
 							  <b>Message from user:</b><br/>
 							</p>
 						  <div style="padding: 0.3em 1em; border: 1px dotted #999999; background-color: #FFFFFF;">
 								<p style="font-size: 93%; text-align: center;">
-								  <%= simple_format(sanitize(@friendship.message)) -%>
+								  <%= white_list(simple_format(@friendship.message)) -%>
 			          </p>
 							</div>
 						<% end %>
@@ -55,7 +55,7 @@
 <br/>
 <center>
   <div class="box_currentuser_specific" style="width: 500px; padding-bottom: 0;">
-    <% if my_page? @friendship.friend_id %>
+    <% if my_page? @friendship.friend %>
 			<p style="color: #990000; font-size: 108%; text-align: center; padding-top: 0.5em;">
 			  <b><i>Your confirmation needed</i></b><br/>
 			</p>
@@ -76,11 +76,11 @@
 			
 			<!-- These forms serve as 'data senders' for Accept/Reject buttons -->
 	    
-	    <% form_tag (accept_friendship_path(@friendship.friend_id, @friendship)) do %>				  
+	    <% form_tag (accept_user_friendship_path(@friendship.friend_id, @friendship)) do %>				  
 		  	<%= hidden_field_tag "accept_msg", "" %>
 	    <% end %>
 		  
-  		<% form_tag (friendship_path(@friendship.friend_id, @friendship) + "?return_to=" + currentusers_things_url('friends'), :method => :delete) do %>				  
+  		<% form_tag(user_friendship_path(@friendship.friend_id, @friendship) + "?return_to=" + currentusers_things_url('friends'), :method => :delete) do %>				  
   			<%= hidden_field_tag "reject_msg", "" %>
   	  <% end %>
 		  

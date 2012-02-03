@@ -1,0 +1,133 @@
+= Taverna[http://taverna.sourceforge.net] 1 Interaction Gem
+
+Authors::       Stian Soiland, David Withers, Emmanuel Tagarira
+Version::       0.7.1
+Contact::       taverna-hackers@lists.sourceforge.net
+URL::           http://taverna.sourceforge.net/
+Licence::       LGPL 3 (See LICENCE or http://www.gnu.org/licenses/lgpl.html)
+Copyright::     (c)2006-2008 University of Manchester, UK
+
+
+
+== Synopsis
+
+This is a Ruby library to support the interaction with Taverna[http://taverna.sourceforge.net] version 1 workflows (Scufls).  This relies on the functionality provided by a graph visualization package called GraphViz[http://www.graphviz.org/Download.php].
+
+
+
+== Installation
+To install the gems required by the Taverna 1 gem library, type into your command prompt:
+  [sudo] gem install libxml-ruby
+  [sudo] gem install rdoc
+  [sudo] gem install darkfish-rdoc
+
+When you have the required gems on your system, you may install this gem using the following commands:
+  gem sources -a http://gems.github.com
+  [sudo] gem install mannie-taverna-scufl
+
+
+
+== Usage
+
+To be able to generate at least a Scufl model using the gem, you can use the code following code:
+  require "scufl/model.rb"
+  require "scufl/parser.rb"
+  
+  foo = File.new("path/to/workflow/file", "r")
+  bar = Scufl::Parser.new.parse(foo)
+
+Alternatively:
+  foo = File.new("path/to/workflow/file", "r").read
+  bar = Scufl::Parser.new.parse(foo)
+
+You will then be able to use your Scufl model to retrieve information about the workflow by invoking the different methods and attributes.
+  bar.INVOKED
+... where INVOKED is the method or attribute required.
+
+You can also interact with remote workflows.
+  require "open-uri"
+  
+  foo = Uri.parse("xxxx://uri_to_workflow").read
+  bar = Scufl::Parser.new.parse(foo)
+
+To be enable you to draw images of the Scufl, you need to include:
+  require "scufl/dot.rb"
+
+To be able to use any functionality included in "scufl/dot.rb", you need to have GraphViz[http://www.graphviz.org/Download.php] installed on your system.  Once this package has been installed, you may use the gem to draw an image showing the structure of the Scufl as follows.
+  out_file = File.new("path/to/file/you/want/the/dot/script/to/be/written", "w+")
+  Scufl::Dot.new.write_dot(out_file, bar)
+  `dot -Tpng -o"path/to/the/output/image" #{out_file.path}`
+The last line draws a PNG image using +out_file+.  To learn more about dot, try typing into your command prompt:
+  % man dot
+or
+  % dot -h
+
+
+
+== Taverna Remote Execution Service Client
+
+The library also includes support for submitting Taverna[http://taverna.sourceforge.net] workflows to the Taverna
+Remote Execution service[2]. This requires the Remote Execution service that
+has already been installed and configured, and with a client username and
+password already registered by the administrator of the service. We 
+recommend first testing the service using the Remote Execution service
+from the Taverna workbench[3].
+
+
+
+== Usage
+
+Here's the simplest usecase. Given a Taverna workflow in "workflow.xml" (that produces
+a value at the port "myOutput") and a Taverna Remote Execution service [2] running 
+at http://localhost:8080/tavernaservice/v1/ you can try:
+
+	SERVICE = "http://localhost:8080/tavernaservice/v1/"
+	workflow = IO.read("workflow.xml")
+	require 'rubygems'
+	require 'enactor/client'
+	enactor = Enactor::Client(SERVICE, "johndoe", "s3cret")
+	results = enactor.execute_sync(workflow)
+	print results["myOutput"]
+
+
+Note that the call to execute_sync() will block until the workflow has been executed
+on the server. If you want to do this asynchronously, try:
+	
+	workflow_url = enactor.upload_workflow(workflow)
+	job_url = enactor.submit_job(workflow_url)
+	sleep 1 while not enactor.finished?(job_url)
+	if enactor.get_job_status(job_url) == Enactor::Status.COMPLETE
+	  results = enactor.get_job_outputs(job_url)
+	  print results["myOutput"]
+	end
+
+
+You can also supply inputs as a hash:
+
+	inputs = {}
+	inputs['gene'] = ["MY_GENE", "HIS_GENE"]
+	inputs['database'] = "kegg"
+	results = enactor.execute_sync(workflow, inputs)
+
+or
+
+	inputs_url = enactor.upload_data(inputs)
+	job_url = enactor.submitJob(workflow_url, inputsURL)
+
+
+See the rdoc documentation of Enactor::Client for more information, try:
+
+	help Enactor::Client
+
+Included are also lower level modules Baclava for parsing 
+and creating Baclava data documents, and Scufl for extracting basic 
+information about a workflow, such as which input and output ports it defines.
+
+
+
+== References
+
+[1] http://taverna.sourceforge.net
+[2] http://www.mygrid.org.uk/usermanual1.7/remote_execution_server.html
+[3] http://www.mygrid.org.uk/usermanual1.7/remote_execution.html
+

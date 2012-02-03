@@ -7,7 +7,7 @@
 
   <li><b>&#187;</b></li>
   
-  <li><%= link_to 'Friendships', friendships_path(@user) %></li>
+  <li><%= link_to 'Friendships', user_friendships_path(@user) %></li>
 <% else %>
   <li><%= link_to 'Friendships', url_for(:controller => :friendships) %>
 <% end %>
@@ -15,5 +15,5 @@
 <% if ["show"].include? controller.action_name.to_s %>
   <li><b>&#187;</b></li>
   
-  <li><%= link_to "View: #{h(@friendship.user.name)}", friendship_path(@friendship.friend, @friendship) %></li>
+  <li><%= link_to "View: #{h(@friendship.user.name)}", user_friendship_path(@friendship.friend, @friendship) %></li>
 <% end %>

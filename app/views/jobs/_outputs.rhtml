@@ -2,7 +2,7 @@
 	<% outputs = job.outputs_data -%>
 	
 	<% if false -%>
-		<p><%= icon "package", outputs_package_job_path(experiment, job), nil, nil, "Download as compressed package" -%></p>
+		<p><%= icon "package", outputs_package_experiment_job_path(experiment, job), nil, nil, "Download as compressed package" -%></p>
 	<% end -%>
 	
 	<p class="note_text" style="text-align: center;">
@@ -30,7 +30,7 @@
 		<h4>Download Data</h4>
 		
 		<p>
-			<%= icon "xml", outputs_xml_job_path(experiment, job), nil, nil, "Download as XML" -%>
+			<%= icon "xml", outputs_xml_experiment_job_path(experiment, job), nil, nil, "Download as XML" -%>
 		</p>
 		<p style="font-size: 93%; color: #666666; margin-left: 2em;">
 			You can open this XML file in the Taverna Data Viewer

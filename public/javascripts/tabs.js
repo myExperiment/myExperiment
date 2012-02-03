@@ -2,7 +2,7 @@
 
 var tabImagesRoot = '/images/tabs/';
 
-function parent(el) {
+function parent_el(el) {
 
   if (el.parentElement != undefined)
     return el.parentElement;
@@ -27,7 +27,7 @@ function selectTab(tabsDiv, t) {
   var html = '<table cellspacing=0 cellpadding=0><tr>';
 
   if (tabsDiv.titles.length > 0)
-    html += '<td><img src="' + tabImagesRoot + '/tab_separator.png"></td>';
+    html += '<td><img class="tabSeparator" src="' + tabImagesRoot + '/tab_separator.png"></td>';
 
   for (var i = 0; i < tabsDiv.titles.length; i++) {
 
@@ -51,7 +51,7 @@ function selectTab(tabsDiv, t) {
       html += '<td class="tabUnselIMG"><img src="' + tabImagesRoot;
       html += '/unselected_tab_start.png"></td>';
       html += '<td class="tabUnselected"><span onmousedown="';
-      html += 'javascript:selectTab(parent(parent(parent(parent(parent(this))))), ' + i +
+      html += 'javascript:selectTab(parent_el(parent_el(parent_el(parent_el(parent_el(this))))), ' + i +
           '); return false;">';
       html += tabsDiv.titles[i];
       html += '</span></td>';
@@ -59,7 +59,7 @@ function selectTab(tabsDiv, t) {
       html += '/unselected_tab_end.png"></td>';
     }
 
-    html += '<td><img src="' + tabImagesRoot + '/tab_separator.png"></td>';
+    html += '<td><img class="tabSeparator" src="' + tabImagesRoot + '/tab_separator.png"></td>';
   }
 
   html += '</td></tr></table>';
@@ -74,7 +74,7 @@ function showFragment(fragment, scroll) {
 
   if (el != undefined) {
 
-    for (; el.tagName != root; el = parent(el)) {
+    for (; el.tagName != root; el = parent_el(el)) {
       if (el.className == 'tabContainer') {
         selectTab(el.tabsDiv, el.tabsIndex);
       }
@@ -168,7 +168,9 @@ function hashClicked(evt) {
 
   var el = evt.target ? evt.target : event.srcElement;
 
-  showFragment(el.hash.substring(1), true);
+  if (el.hash != undefined)
+    showFragment(el.hash.substring(1), true);
+
   return false;
 }
 

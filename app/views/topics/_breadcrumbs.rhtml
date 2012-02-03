@@ -1,0 +1,11 @@
+<li><%= link_to 'Topics', topics_path %></li>
+
+<% if ["show", "new", "edit", "search", "all", "new_version", "edit_version", "comments_timeline"].include? controller.action_name.to_s %>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li>Topic</li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

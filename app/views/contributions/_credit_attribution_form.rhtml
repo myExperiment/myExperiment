@@ -42,15 +42,15 @@
         <br />
 
 				<p>
-            <input id="author_option_1" name="add_author_option" checked="checked"
+            <label for="author_option_1"><input id="author_option_1" name="add_author_option" checked="checked"
                 value="1" type="radio" onclick="javascript:update_author(this.id);" />
-            - Me (<%= name current_user %>)
+            - Me</label> (<%= name current_user %>)
         </p>
 
         <p>
-            <input id="author_option_2" name="add_author_option"
+            <label for="author_option_2"><input id="author_option_2" name="add_author_option"
                 value="2" type="radio" onclick="javascript:update_author(this.id);" />
-            - One of my Friends
+            - One of my Friends</label>
         </p>
         <div id="author_friends_box" style="display: none; padding-left: 2em;">
             <p>
@@ -63,14 +63,14 @@
         </div>
         
 				<p>
-            <input id="author_option_3" name="add_author_option"
+            <label for="author_option_3"><input id="author_option_3" name="add_author_option"
                 value="3" type="radio" onclick="javascript:update_author(this.id);" />
-            - A user on myExperiment who is not a Friend.
+            - A user on <%= Conf.sitename %> who is not a Friend.</label>
         </p>
         <div id="author_otheruser_box" style="display: none; padding-left: 2em;">
             <p>
                 <select id="author_otheruser_dropdown">
-                    <% (all_nonfriends(current_user)).each do |f| %>
+                    <% (nonfriends_for_credits_form(current_user)).each do |f| %>
                     	<option value="<%= f.id %>"><%= h(f.name) %></option>
                     <% end %>
                 </select>
@@ -78,14 +78,14 @@
         </div>
 
 				<p>
-            <input id="author_option_4" name="add_author_option"
+            <label for="author_option_4"><input id="author_option_4" name="add_author_option"
                 value="4" type="radio" onclick="javascript:update_author(this.id);" />
-            - A myExperiment Group
+            - A <%= Conf.sitename %> Group</label>
         </p>
         <div id="author_networks_box" style="display: none; padding-left: 2em;">
             <p>
                 <select id="author_networks_dropdown">
-                    <% all_networks.each do |n| %>
+                    <% networks_for_credits_form.each do |n| %>
                     	<option value="<%= n.id %>"><%= h(n.title) %></option>
                     <% end %>
                 </select>
@@ -95,9 +95,9 @@
 				<% if false %>
 
 					<p>
-              <input id="author_option_5" name="add_author_option"
+              <label for="author_option_5"><input id="author_option_5" name="add_author_option"
                   value="5" type="radio" onclick="javascript:update_author(this.id);" />
-              - Someone else
+              - Someone else</label>
           </p>
           <div id="author_someoneelse_box" style="display: none; padding-left: 2em;">
               <p>
@@ -109,9 +109,9 @@
           </div>
 	
           <p>
-              <input id="author_option_6" name="add_author_option"
+              <label for="author_option_6"><input id="author_option_6" name="add_author_option"
                   value="6" type="radio" onclick="javascript:update_author(this.id);" />
-              - An organisation
+              - An organisation</label>
           </p>
           <div id="author_organisation_box" style="display: none; padding-left: 2em;">
               <p>
@@ -135,12 +135,12 @@
       </p>
       <div style="font-size: 93%; margin-top: 1em;">
         <div class="box_simple" style="float: left; text-align: left; width: 300px;">
-          Existing Workflows on myExperiment:
+          Existing Workflows on <%= Conf.sitename %>:
           <br />
           <br />
           <select id="existingworkflows_dropdown" style="width: 280px;">
-            <% all_workflows.each do |w| %>
-            	<option value="<%= w.id %>"><%= h(w.title) -%> (<%= contributor_name(w.contributor_id, w.contributor_type) -%>)</option>
+            <% workflows_for_attribution_form.each do |w| %>
+            	<option value="<%= w.id %>"><%=h "#{w.id}: #{w.title} (#{w.name})" -%></option>
             <% end %>
           </select>
           <br />
@@ -149,12 +149,12 @@
         </div>
 	
         <div class="box_simple" style="float: left; margin-left: 1em; text-align: left; width: 300px;">
-          Existing Files on myExperiment:
+          Existing Files on <%= Conf.sitename %>:
           <br />
           <br />
           <select id="existingfiles_dropdown" style="width: 280px;">
-            <% all_blobs.each do |b| %>
-            	<option value="<%= b.id %>"><%= contributable_name(b.id, 'Blob') -%> (<%= contributor_name(b.contributor_id, b.contributor_type) -%>)</option>
+            <% blobs_for_attribution_form.each do |b| %>
+            	<option value="<%= b.id %>"><%=h "#{b.id}: #{b.title} (#{b.name})" -%></option>
             <% end %>
           </select>
           <br />
@@ -168,7 +168,36 @@
   </div>
 </div>
 
-<% if edit %>
+<% if params.has_key?('credits_me') %>
+	<script>
+		// Credits
+		credit_me = <%= params[:credits_me] -%>
+		<% unless params[:credits_users].blank? %>
+			<% params[:credits_users].split(',').each do |id| %>
+				credit_users[<%= id %>] = '<%= escape_javascript contributor_name(id, 'User') %>';
+			<% end %>
+		<% end %>
+		<% unless params[:credits_groups].blank? %>
+			<% params[:credits_groups].split(',').each do |id| %>
+				credit_groups[<%= id %>] = '<%= escape_javascript contributor_name(id, 'Network') %>';
+			<% end %>
+		<% end %>
+		updateAuthorList();
+		
+		// Attributions
+		<% unless params[:attributions_workflows].blank? %>
+			<% params[:attributions_workflows].split(',').each do |id| %>
+				attributions_workflows[<%= id %>] = '<%= escape_javascript contributable_name(id, 'Workflow') %>';
+			<% end %>
+		<% end %>
+		<% unless params[:attributions_files].blank? %>
+			<% params[:attributions_files].split(',').each do |id| %>
+				attributions_files[<%= id %>] = '<%= escape_javascript contributable_name(id, 'Blob') %>';
+			<% end %>
+		<% end %>
+		updateAttributionsList();
+	</script>
+<% elsif edit %>
   <script>
     // Credits
 		credit_me = false;
@@ -185,7 +214,7 @@
 	
 		// Attributions
 		<% contributable.attributors.each do |a| %>
-			<% if thing_authorized?('show', a.attributor) -%>
+			<% if Authorization.is_authorized?("show", nil, a.attributor, current_user) -%>
 			  <% if a.attributor_type == 'Workflow' %>
 			  	attributions_workflows[<%= a.attributor_id %>] = '<%= escape_javascript contributable_name(a.attributor_id, 'Workflow') %>';
 			  <% elsif a.attributor_type == 'Blob' %>

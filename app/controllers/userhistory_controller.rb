@@ -37,4 +37,16 @@ protected
       @user = User.find(params[:id])
     end
   end
+
+private
+
+  def error(notice, message, attr=:id)
+    flash[:error] = notice
+    (err = User.new.errors).add(attr, message)
+    
+    respond_to do |format|
+      format.html { redirect_to users_url }
+    end
+  end
+  
 end

@@ -13,7 +13,7 @@ class Comment < ActiveRecord::Base
   # NOTE: Comments belong to a user
   belongs_to :user
   
-  acts_as_solr :fields => [ :comment ] if SOLR_ENABLE
+  acts_as_solr :fields => [ :comment ] if Conf.solr_enable
   
   acts_as_simile_timeline_event(
     :fields => {
@@ -23,6 +23,10 @@ class Comment < ActiveRecord::Base
     }
   )
   
+  validates_presence_of :comment
+  validates_presence_of :commentable_type
+  validates_presence_of :commentable_id
+
   def simile_title
     "Comment by: #{self.user.name}"
   end

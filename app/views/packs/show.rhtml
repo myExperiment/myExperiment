@@ -5,7 +5,7 @@
 		<% if mine?(@pack) -%>
 			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
 		<% end -%>
-		<% if @pack.authorized?("destroy", current_user) %>
+		<% if Authorization.is_authorized?("destroy", nil, @pack, current_user) %>
 			<li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments, BUT does not delete the actual items pointed to in the Pack. Are you sure you would like to delete this Pack?', :method => :delete }, 'Delete Pack') %></li>
 		<% end %>
 	</ul>
@@ -26,9 +26,9 @@
 	  <a href="#sharing" onclick="selectTab($('tabsContainer'),0)">Sharing</a>
 		|
 	<% end %>
-	<%= link_to "Tags (#{@pack.tags.length})", "#tags" %>
+	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@pack.tags.length})</span>", "#tags" %>
 	|
-	<%= link_to "Featured in Packs (#{@pack.in_packs.length})", "#featured_in_packs" %>
+	<%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@pack).length})", "#featured_in_packs" %>
 	|
 	<%= link_to "Favourited By (#{@pack.bookmarks.length})", "#favourited_by" %>
 	| 
@@ -53,7 +53,7 @@
 			
 			<% unless @pack.description.blank? %>
 				<div class="contribution_description">
-					<%= white_list @pack.description_html %>
+					<%= @pack.description_html %>
 				</div>
 				<% if mine?(@pack) %>
 					<br/>
@@ -71,16 +71,56 @@
 	<div class="contribution_version_box" style="background-color: #EEEEEE;">
 		<div class="contribution_version_inner_box">
 			<h4>
-				<%= feed_icon_tag "RSS feed for items in this pack", formatted_items_pack_path(@pack, :rss), "float: right;" %>
+				<%= feed_icon_tag "RSS feed for items in this pack", items_pack_path(@pack, :format => :rss), "float: right;" %>
+				<% if @authorised_to_download %>
+				  <%= download_icon_tag "Download all items in the pack as a single .zip archive", download_pack_path(@pack), "float: right; margin-right: 0.5em;" -%>
+				<% end %>
+				
 				<%= info_icon_with_tooltip("This section shows all the items that are pointed to in this pack. This can be a combination of internal and external items.") -%>
 				Items <span class="count_text">(<%= @pack.items_count -%>)</span>
 			</h4>
 			
 			<%= render :partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } -%>
+
+			<br/><br/>
+			<h4>
+				<%= info_icon_with_tooltip("This section shows all the relationships between the items in this pack.") -%>
+				Relationships <span class="count_text">(<%= @pack.relationships.length -%>)</span>
+			</h4>
+
+			<%= render :partial => "relationships/relationships", :locals => { :context => @pack, :show_delete => true } -%>
+			
+      <% if @authorised_to_edit %>
+        <br />
+        <ul class="sectionIcons">
+          <li><%= icon('manage', edit_relationships_pack_relationships_path(@pack), nil, nil, 'Edit Relationships') -%></li>
+        </ul>
+      <% end %>
+
+			<br/><br/>
+
+			<h3>
+				<%= info_icon_with_tooltip("This section provides a link to download all items in this pack as a single .zip archive") %>
+				Download
+			</h3>
+			
+			<% if @authorised_to_download %>
+				<ul class="sectionIcons">
+					<li style="margin-left: 0;"><%= icon('pack', download_pack_path(@pack), "Download Pack Items as Single ZIP Archive", nil, "Download Pack Items (ZIP archive)") %></li>
+				</ul>
+			<% else %>
+				<p class="none_text">
+					You do not have permissions to download
+				</p>
+			<% end %>
+			
+  			<br/>
 			
 			<% if @authorised_to_edit -%>
-				<br/><br/>
-				<h3>Add an Item</h3>
+				<h3>
+					<%= info_icon_with_tooltip("This section provides various ways of adding items to this pack") %>
+					Add an Item
+				</h3>
 				<a name="add_item"></a>
 				<%= render :partial => "add_item", :locals => { :pack => @pack } -%>
 			<% end -%>
@@ -98,6 +138,8 @@
 		</p>
 	</div>
 	
+  <%= render :partial => "contributions/curation_box", :locals => { :contributable => @pack } %>
+
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @pack, 
 																											 :owner_id => ((@pack.contributor_type == 'User') ? @pack.contributor_id : nil), 
 																											 :add_path => tag_pack_path(@pack), 
@@ -153,3 +195,6 @@
 <div id="commentsBox">
 	<%= render :partial => "comments/comments", :locals => { :commentable => @pack } %>
 </div>
+
+<%= render :partial => "contributions/alternative_formats" %>
+

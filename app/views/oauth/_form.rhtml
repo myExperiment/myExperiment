@@ -5,7 +5,7 @@
 <div class="field">
         <% if current_user.admin? %>
           <label for="client_application_key_type">Type*</label><br/>
-	  <% if @client_application.nil? %>  
+	  <% unless @client_application.id %>  
 	    <%= select_tag "client_application[key_type]", options_for_select([ "User", "System"], "User") %>
 	  <% else %>
 	    <%= select_tag "client_application[key_type]", options_for_select([ "User", "System"], @client_application.key_type) %>
@@ -13,7 +13,7 @@
 </div>
 <div class="field">
 	  <label for="client_application_user_id">For User*</label><br/>
-          <% if @client_application.nil? %>
+          <% unless @client_application.id %>
             <select id="client_application[user_id]" name="client_application[user_id]" %>
               <% all_users().each do |u| %>
 	        <option <%= 'selected="selected"' if u.id==current_user.id %> value="<%= u.id %>"><%= h(u.name) %></option><% end %>
@@ -26,9 +26,13 @@
 	  <% end %>
 	<% else %>
           <%= f.hidden_field :user_id, :value => current_user.id %>
-	  <%= f.hidden_field :key_type, :value => "User" %>
+	  <% unless @client_application.id %>
+	    <%= f.hidden_field :key_type, :value => "User" %>
+	  <% else %>
+	     <%= f.hidden_field :key_type, :value => @client_application.key_type %>
+	  <% end %>
 	<% end %>
-	<% if @client_application.nil? %>
+	<% unless @client_application.id %>
 	  <%= f.hidden_field :creator_id, :value => current_user.id %>
 	<% else %>
 	  <%= f.hidden_field :creator_id, :value => @client_application.creator_id %>

@@ -1,7 +1,7 @@
 require 'oauth'
 class ClientApplication < ActiveRecord::Base
   belongs_to :user
-  has_many :tokens,:class_name=>"OauthToken"
+  has_many :tokens,:class_name=>"OauthToken", :dependent => :destroy
   has_many :permissions,
            :class_name => "KeyPermission",
            :order => "key_permissions.for",
@@ -32,7 +32,7 @@ class ClientApplication < ActiveRecord::Base
       logger.info "Signature verification returned: #{value.to_s}"
       value
     rescue OAuth::Signature::UnknownSignatureMethod=>e
-      logger.info "ERROR"+e.to_s
+      #logger.info "ERROR"+e.to_s
      false
     end
   end

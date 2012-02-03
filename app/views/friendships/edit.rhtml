@@ -2,7 +2,7 @@
 
 <%= error_messages_for :friendship %>
 
-<% form_for(:friendship, :url => friendship_path(@friendship.friend_id, @friendship), :html => { :method => :put }) do |f| %>
+<% form_for(:friendship, :url => user_friendship_path(@friendship.friend_id, @friendship), :html => { :method => :put }) do |f| %>
   <p>
     <%= submit_tag "Save Changes" %>
   </p>

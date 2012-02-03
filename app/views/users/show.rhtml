@@ -6,7 +6,7 @@
 		<% if friend_id == @user.id %>
 		  You have already sent a friendship request to this person. Awaiting their confirmation.
 		<% else %>
-		  This person has sent you a friendship request. Awaiting your <%= link_to "confirmation", friendship_path(current_user, friendship_obj) -%>.
+		  This person has sent you a friendship request. Awaiting your <%= link_to "confirmation", user_friendship_path(current_user, friendship_obj) -%>.
 		<% end %>
 	</b></div>
 <% end %>
@@ -40,24 +40,30 @@
 	    <!-- check if the profile that we are viewing now is a friend of current user -> stored for better performance -->
 			<% this_user_is_friend_of_current_user = @user.friend? current_user.id %>
 			<% unless this_user_is_friend_of_current_user || current_user.friendship_pending?(@user.id) %>
-	    	<li><%= icon('friendship', new_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
+	    	<li><%= icon('friendship', new_user_friendship_url(:user_id => @user.id), nil, nil, 'Request Friendship') %></li>
 	  	<% end %>
 	  	
 			<% unless mine? @user %>
 				<li><%= icon("message", new_message_path(:user_id => @user.id), nil, nil, "Send Message") %></li>
 				<% if this_user_is_friend_of_current_user %>
 			    <% master_id, friendship_obj = current_user.friendship_from_self_id_and_friends_id(@user.id) %>
-					<li><%= icon "friend_delete", friendship_path(master_id, friendship_obj) + "?return_to=" + user_path(@user), nil, {:confirm => "Are you sure you want to remove this user from your friend list?", :method => :delete}, "Cancel Friendship" %></li>
+					<li><%= icon "friend_delete", user_friendship_path(current_user, friendship_obj) + "?return_to=" + user_path(@user), nil, {:confirm => "Are you sure you want to remove this user from your friend list?", :method => :delete}, "Cancel Friendship" %></li>
 			  <% end %>
 			<% end %>
 			
 			<% if mine? @user %>
 	    	<li><%= icon('manage', edit_user_path(@user), nil, nil, 'Manage Account') %></li>
 		    <% unless @user.profile.nil? %>
-					<li><%= icon('edit', edit_profile_path(@user), nil, nil, 'Edit Profile') %></li>
+					<li><%= icon('edit', edit_user_profile_path(@user), nil, nil, 'Edit Profile') %></li>
 				<% end %>
-			  <li><%= icon('history', userhistory_path(@user), nil, nil, 'View My History')%></li>
+			  <li><%= icon('history', user_userhistory_path(@user), nil, nil, 'View My History')%></li>
 	    <% end %>
+
+      <% if Authorization.check(:action => 'destroy', :object => @user, :user => current_user) %>
+					<li><%= icon "destroy", user_path(@user), nil, {
+            :confirm => "Are you sure you want to remove this user?", :method => :delete},
+            "Delete User" %></li>
+      <% end %>
 	</ul>
 <% end %>
 
@@ -92,10 +98,10 @@
 		<% if @user.profile -%>
 	    <td style="vertical-align: top;">
 				<% if mine? @user -%>
-	      	<%= avatar @user, 160, pictures_path(@user) -%>
+	      	<%= avatar @user, 160, user_pictures_path(@user) -%>
 					<br/>
 					<span style="text-align: center; margin-top: 0.5em; font-size: 85%; color: #666666;">
-						[ <%= link_to "Edit Profile Picture", edit_profile_path(@user) %> ]
+						[ <%= link_to "Edit Profile Picture", edit_user_profile_path(@user) %> ]
 					</span>
 				<% else -%>
 					<%= avatar @user, 160 -%>
@@ -148,7 +154,7 @@
 				<p>
 			    <b>Website:</b>
 					<% unless @user.profile.website.nil? or @user.profile.website.empty? %>
-				    <%=link_to h(@user.profile.website), @user.profile.website %>
+				    <%=link_to(h(@user.profile.website), @user.profile.website, :rel => "nofollow") %>
 				  <% else %>
 						<%= none_text %>
 					<% end %>
@@ -213,13 +219,13 @@
 					
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.networks_owned_count, "Group") + " (admin)", url_for(:action => 'groups')) -%>
+			      	<%= link_to(pluralize(@user.networks_owned.count, "Group") + " (admin)", url_for(:action => 'groups')) -%>
 						</b> 
 			    </p>
 					
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.networks_count, "Group") + " (member)", url_for(:action => 'groups')) -%>
+			      	<%= link_to(pluralize(@user.networks.length, "Group") + " (member)", url_for(:action => 'groups')) -%>
 						</b> 
 			    </p>
 					
@@ -233,7 +239,7 @@
 					
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.bookmarks_count, "Favourite"), url_for(:action => 'favourites')) -%>
+			      	<%= link_to(pluralize(@user.bookmarks.count, "Favourite"), url_for(:action => 'favourites')) -%>
 						</b> 
 			    </p>
 				</div>	
@@ -248,21 +254,23 @@
 				</p>
 			</div>
 			
-			<% ratings = @user.ratings_for_contributions %>
-			<div class="contribution_section_box" style="width: 130px; padding: 0.4em 0.8em;">
-				<p style="font-size: 93%; font-weight: bold;">
-					<b><%= h @user.name -%> has an average rating of:</b>
-				</p>
-				<p style="font-size: 123.1%; font-weight: bold; padding-bottom: 0.2em; line-height: 1;">
-					<%= number_with_precision(mean(ratings.collect {|r| r.rating}).to_f, 1) -%> / 5
-				</p>
-				<p style="font-size: 77%; padding-top: 0.2em; line-height: 1;">
-					(<%= pluralize ratings.length, "rating" -%> in total)
-				</p>
-				<p style="font-size: 93%; font-weight: bold;">
-					<b>for their items</b>
-				</p>
-			</div>
+			<% benchmark "user rating box" do %>
+				<% avg_rating, rating_count = @user.average_rating_and_count %>
+				<div class="contribution_section_box" style="width: 130px; padding: 0.4em 0.8em;">
+					<p style="font-size: 93%; font-weight: bold;">
+						<b><%= h @user.name -%> has an average rating of:</b>
+					</p>
+					<p style="font-size: 123.1%; font-weight: bold; padding-bottom: 0.2em; line-height: 1;">
+						<%= number_with_precision(avg_rating, :precision => 1) -%> / 5
+					</p>
+					<p style="font-size: 77%; padding-top: 0.2em; line-height: 1;">
+						(<%= pluralize rating_count, "rating" -%> in total)
+					</p>
+					<p style="font-size: 93%; font-weight: bold;">
+						<b>for their items</b>
+					</p>
+				</div>
+			<% end %>
 			
 		</td>
 	</tr>
@@ -273,7 +281,7 @@
 	<% unless @user.profile.nil? %>
 	  <div class="box_standout">
 	    <% unless @user.profile.body.blank? %>
-				<%= white_list @user.profile.body_html %>
+				<%= @user.profile.body_html %>
 			<% else %>
 				<p class="none_text">Description/summary not set</p>
 			<% end %>	
@@ -289,7 +297,7 @@
 		  	<b>Other contact details:</b>
 			</p>
 			<% unless @user.profile.contact_details.nil? or @user.profile.contact_details.empty? %>  
-			  <%= simple_format(sanitize(@user.profile.contact_details)) %>
+			  <%= white_list(simple_format(@user.profile.contact_details)) %>
 			<% else %>
 				<%= none_text %>
 			<% end %>
@@ -298,7 +306,7 @@
 		  	<b>Interests:</b>
 			</p>
 			<% unless @user.profile.interests.nil? or @user.profile.interests.empty? %>
-			  <%= simple_format(sanitize(@user.profile.interests)) %>
+			  <%= white_list(simple_format(@user.profile.interests)) %>
 			<% else %>
 				<%= none_text %>
 			<% end %>
@@ -329,7 +337,7 @@
 		  	<b>Organisation(s):</b>
 			</p>
 			<% unless @user.profile.organisations.nil? or @user.profile.organisations.empty? %>
-			  <%= simple_format(sanitize(@user.profile.organisations)) %>
+			  <%= white_list(simple_format(@user.profile.organisations)) %>
 			<% else %>
 				<%= none_text %>
 			<% end %>
@@ -340,7 +348,7 @@
 		
 		<% if mine? @user %>
 			<p style="text-align: right; margin-top: 0.5em; color: #666666;">
-				[ <%= link_to "Edit Profile", edit_profile_path(@user) %> ]
+				[ <%= link_to "Edit Profile", edit_user_profile_path(@user) %> ]
 			</p>
 		<% end %>
 	
@@ -352,7 +360,7 @@
 
 <% tabnav :user do %>
 
-  <% case @tab; when "News" %>
+  <% case (@tab||"News"); when "News" %>
 
     <%= render :partial => "layouts/news", :locals => { :collection => news(@user, true) } %>
 
@@ -376,7 +384,7 @@
 	  <% end %>
   
       <% if mine? @user %>
-        <p style="color: #666666;">[ <%= link_to 'View all Memberships in detail', memberships_path(@user) %> ]</p>
+        <p style="color: #666666;">[ <%= link_to 'View all Memberships in detail', user_memberships_path(@user) %> ]</p>
       <% end %>
 
   <% when "Workflows" %>
@@ -400,13 +408,6 @@
 		<br/>
     <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Pack' end).map do |c| c.contributable end  %>
     <%= render :partial => "packs/table", :locals => { :collection => contributables } %>
-
-  <% when "Forums" %>
-    
-		<%= view_privileges_notice %>
-		<br/>
-    <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Forum' end).map do |c| c.contributable end  %>
-    <%= render :partial => "forums/table", :locals => { :collection => contributables } %>
 
   <% when "Blogs" %>
 		
@@ -468,6 +469,8 @@
 <% if logged_in? and !mine?(@user) and !current_user.networks_owned.empty? %>
   <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
 <% end %>
+
+<%= render :partial => "contributions/alternative_formats" %>
 
 <% unless @tab.blank? -%>
 	<script>

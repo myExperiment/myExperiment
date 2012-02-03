@@ -3,6 +3,8 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'acts_as_site_entity'
+
 class Profile < ActiveRecord::Base
   
   belongs_to :owner,
@@ -33,7 +35,9 @@ class Profile < ActiveRecord::Base
   
   belongs_to :picture
   
-  validates_email_veracity_of :email
+  validates_email_veracity_of :email if Conf.validate_email_veracity
+
+  acts_as_site_entity :owner_text => 'User'
   
   acts_as_solr :fields => [ :email,
                             :website,
@@ -44,7 +48,7 @@ class Profile < ActiveRecord::Base
                             :location_city,
                             :location_country,
                             :interests,
-                            :contact_details ] if SOLR_ENABLE
+                            :contact_details ] if Conf.solr_enable
   
   def avatar?
     not (picture_id.nil? or picture_id.zero?)

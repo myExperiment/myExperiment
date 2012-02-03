@@ -5,21 +5,23 @@
 
 require 'acts_as_contributor'
 require 'acts_as_creditor'
+require 'acts_as_site_entity'
 
 class Network < ActiveRecord::Base
   acts_as_contributor
   acts_as_creditor
   
+  acts_as_site_entity :owner_text => 'Admin'
+
   acts_as_commentable
   acts_as_taggable
   
   has_many :blobs, :as => :contributor
   has_many :blogs, :as => :contributor
-  has_many :forums, :as => :contributor, :dependent => :destroy
   has_many :workflows, :as => :contributor
   
   acts_as_solr(:fields => [ :title, :unique_name, :owner_name, :description, :tag_list ],
-               :include => [ :comments ]) if SOLR_ENABLE
+               :include => [ :comments ]) if Conf.solr_enable
 
   format_attribute :description
   
@@ -27,15 +29,16 @@ class Network < ActiveRecord::Base
     self.find(:all, :order => "created_at DESC", :limit => limit)
   end
   
-  # protected? asks the question "is other protected by me?"
-  def protected?(other)
-    if other.kind_of? User        # if other is a User...
-      return member?(other.id)    #       ...is other a member of me?
-    elsif other.kind_of? Network  # if other is a Network...
-      return relation?(other.id)  #       ...is other a child of mine?
-    else                          # otherwise...
-      return false                #       ...no
-    end
+  # returns groups with most members
+  # the maximum number of results is set by #limit#
+  def self.most_members(limit=10)
+    self.find_by_sql("SELECT n.* FROM networks n JOIN memberships m ON n.id = m.network_id WHERE m.user_established_at IS NOT NULL AND m.network_established_at IS NOT NULL GROUP BY m.network_id ORDER BY COUNT(m.network_id) DESC, n.title LIMIT #{limit}")
+  end
+  
+  # returns groups with most shared items
+  # the maximum number of results is set by #limit#
+  def self.most_shared_items(limit=10)
+    self.find_by_sql("SELECT n.* FROM networks n JOIN permissions perm ON n.id = perm.contributor_id AND perm.contributor_type = 'Network' JOIN policies p ON perm.policy_id = p.id JOIN contributions c ON p.id = c.policy_id GROUP BY perm.contributor_id ORDER BY COUNT(perm.contributor_id) DESC, n.title LIMIT #{limit}")
   end
   
   validates_associated :owner
@@ -49,6 +52,8 @@ class Network < ActiveRecord::Base
              :class_name => "User",
              :foreign_key => :user_id
              
+  alias_method :contributor, :owner
+
   def owner?(userid)
     user_id.to_i == userid.to_i
   end
@@ -56,83 +61,36 @@ class Network < ActiveRecord::Base
   def owner_name
     owner.name
   end
-  
-  def authorized?(action_name, contributor=nil)
-    return true
-  end
-  
-#  has_many :relationships_completed, #accepted (by others)
-#           :class_name => "Relationship",
-#           :foreign_key => :network_id,
-#           :conditions => ["accepted_at < ?", Time.now],
-#           :order => "created_at DESC",
-#           :dependent => :destroy
-#           
-#  has_many :relationships_requested, #unaccepted (by others)
-#           :class_name => "Relationship",
-#           :foreign_key => :network_id,
-#           :conditions => "accepted_at IS NULL",
-#           :order => "created_at DESC",
-#           :dependent => :destroy
-#           
-#  has_many :relationships_accepted, #accepted (by me)
-#           :class_name => "Relationship",
-#           :foreign_key => :relation_id,
-#           :conditions => ["accepted_at < ?", Time.now],
-#           :order => "accepted_at DESC",
-#           :dependent => :destroy
-#           
-#  has_many :relationships_pending, #unaccepted (by me)
-#           :class_name => "Relationship",
-#           :foreign_key => :relation_id,
-#           :conditions => "accepted_at IS NULL",
-#           :order => "created_at DESC",
-#           :dependent => :destroy
-#
-#  def relationships
-#    (relationships_completed + relationships_requested + relationships_accepted + relationships_pending).sort do |a, b|
-#      b.created_at <=> a.created_at
-#    end
-#  end
-  
-  has_and_belongs_to_many :relations,
-                          :class_name => "Network",
-                          :join_table => :relationships,
-                          :foreign_key => :network_id,
-                          :association_foreign_key => :relation_id,
-                          :conditions => "accepted_at IS NOT NULL",
-                          :order => "accepted_at DESC"
                           
-  alias_method :original_relations, :relations
-  def relations
-    rtn = []
-    
-    original_relations.each do |r|
-      rtn << Network.find(r.relation_id)
+  # announcements belonging to the group;
+  #
+  # "announcements_public" are just the public announcements;
+  # and there is no reason for filtering "private" ones, as
+  # those who can see private announcements can see all, including public ones
+  has_many :announcements, # all - public and private
+           :class_name => "GroupAnnouncement",
+           :order => "created_at DESC",
+           :dependent => :destroy
+  
+  has_many :announcements_public,
+           :class_name => "GroupAnnouncement",
+           :conditions => ["public = ?", true],
+           :order => "created_at DESC",
+           :dependent => :destroy
+  
+  def announcements_for_user(user)
+    if user.is_a?(User) && self.member?(user.id)
+      return self.announcements
+    else
+      return self.announcements_public
     end
-    
-    return rtn
   end
   
-#  has_and_belongs_to_many :parents,
-#                          :class_name => "Network",
-#                          :join_table => :relationships,
-#                          :foreign_key => :relation_id,
-#                          :association_foreign_key => :network_id,
-#                          :conditions => ["accepted_at < ?", Time.now],
-#                          :order => "accepted_at DESC"
-#                          
-#  alias_method :original_parents, :parents
-#  def parents
-#    rtn = []
-#    
-#    original_parents.each do |r|
-#      rtn << Network.find(r.network_id)
-#    end
-    
-#    return rtn
-#  end
-                          
+  def announcements_in_public_mode_for_user(user)
+    return (!user.is_a?(User) || !self.member?(user.id))
+  end
+  
+  # memberships
   has_many :memberships, #all
            :order => "created_at DESC",
            :dependent => :destroy
@@ -165,13 +123,13 @@ class Network < ActiveRecord::Base
                           
   alias_method :original_members, :members
   def members(incl_owner=true)
-    rtn = incl_owner ? [User.find(owner.id)] : []
-    
-    original_members(force_reload = true).each do |m|
-      rtn << User.find(m.user_id)
-    end
-    
-    return rtn
+    explicit_members = User.find(:all,
+                                 :select     => "users.*",
+                                 :joins      => "JOIN memberships m on (users.id = m.user_id)",
+                                 :conditions => [ "m.network_id=? AND m.user_established_at IS NOT NULL AND m.network_established_at IS NOT NULL", id ],
+                                 :order      => "GREATEST(m.user_established_at, m.network_established_at) DESC"
+                                )
+    return incl_owner ? ( [owner] + explicit_members ) : explicit_members
   end
                           
   def member?(userid)
@@ -185,56 +143,33 @@ class Network < ActiveRecord::Base
     return false
   end
   
-  def member_recursive?(userid)
-    member_r? userid
+  def administrators(incl_owner=true)
+    explicit_administrators = User.find(:all,
+                                 :select     => "users.*",
+                                 :joins      => "JOIN memberships m on (users.id = m.user_id)",
+                                 :conditions => [ "m.network_id=? AND m.administrator AND m.user_established_at IS NOT NULL AND m.network_established_at IS NOT NULL", id ],
+                                 :order      => "GREATEST(m.user_established_at, m.network_established_at) DESC"
+                                )
+    return incl_owner ? ( [owner] + explicit_administrators ) : explicit_administrators
   end
-  
-  # alias for member_recursive?
-  def member!(userid)
-    member_r? userid
-  end
-  
-  def relation?(network_id)
-    relations.each do |r|
-      return true if r.id.to_i == network_id.to_i
+
+  def administrator?(userid)
+    # the owner is automatically an adminsitrator of the network
+    return true if owner? userid
+    
+    administrators(false).each do |a|
+      return true if a.id.to_i == userid.to_i
     end
     
-    false
+    return false
   end
-  
-  def relation_recursive?(network_id)
-    relation_r? network_id
-  end
-  
-  # alias for relation_recursive?
-  def relation!(userid)
-    relation_r? userid
-  end
-  
-  def members_recursive
-    members_r
-  end
-  
-  # alias for members_recursive
-  def members!
-    members_r
-  end
-  
-  def relations_recursive
-    relations_r
-  end
-  
-  # alias for relations_recursive
-  def relations!
-    relations_r
-  end
-  
+                          
   # Finds all the contributions that have been explicitly shared via Permissions
   def shared_contributions
     list = []
     self.permissions.each do |p|
       p.policy.contributions.each do |c|
-        list << c
+        list << c unless c.nil? || c.contributable.nil?
       end
     end
     list
@@ -242,64 +177,54 @@ class Network < ActiveRecord::Base
   
   # Finds all the contributables that have been explicitly shared via Permissions
   def shared_contributables
-    shared_contributions.map do |c| c.contributable end
+    c = shared_contributions.map do |c| c.contributable end
+
+    # filter out blogs until they've gone completely
+    c.select do |x| x.class != Blog end
   end
 
-protected
+  # New member policy
+  # Adapter from #3 of: http://zargony.com/2008/04/28/five-tips-for-developing-rails-applications
+  NEW_MEMBER_POLICY_OPTIONS = [
+                                [:open,"Open to anyone"],
+                                [:by_request,"Membership by request"],
+                                [:invitation_only,"Invitation only"]
+                              ]
 
-  def member_r?(userid, depth=0)
-    unless depth > @@maxdepth
-      return true if member? userid
-    
-      relations.each do |r|
-        return true if r.member_r? userid, depth+1
+  validates_inclusion_of :new_member_policy, :in => NEW_MEMBER_POLICY_OPTIONS.map {|o| o[0]}
+
+  def new_member_policy
+    read_attribute(:new_member_policy).to_sym
+  end
+
+  def new_member_policy=(value)
+    write_attribute(:new_member_policy, value.to_s)
+  end
+
+  def open?
+    new_member_policy == :open
+  end
+
+  def membership_by_request?
+    new_member_policy == :by_request
+  end
+
+  def invitation_only?
+    new_member_policy == :invitation_only
+  end
+
+  #Returns the layout defined for this network in settings.yml > layouts:
+  def layout_name
+    Conf.layouts.each do |k,v|
+      if v["network_id"] == id
+        return k
       end
     end
-    
-    false
+
+    return nil
   end
-  
-  def relation_r?(network_id, depth=0)
-    unless depth > @@maxdepth
-      return true if relation? network_id
-    
-      relations.each do |r|
-        return true if r.relation_r? network_id, depth+1
-      end
-    end
-    
-    false
+
+  def layout
+    Conf.layouts[layout_name]
   end
-  
-  def members_r(depth=0)
-    unless depth > @@maxdepth
-      rtn = members
-    
-      relations.each do |r|
-         rtn = (rtn + r.members_r(depth+1))
-      end
-    
-      return rtn.uniq
-    end
-    
-    []
-  end
-  
-  def relations_r(depth=0)
-    unless depth > @@maxdepth
-      rtn = relations
-    
-      relations.each do |r|
-        rtn = (rtn + r.relations_r(depth+1))
-      end
-    
-      return rtn # no need for uniq (there shouldn't be any loops)
-    end
-    
-    []
-  end
-  
-private
-  
-  @@maxdepth = 7 # maximum level of recursion for depth first search
 end

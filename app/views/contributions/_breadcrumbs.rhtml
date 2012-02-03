@@ -1,15 +1,8 @@
-<li><%= link_to 'Contributions', contributions_path %></li>
-
-<% if ["show", "new", "edit"].include? controller.action_name.to_s %>
+<% if controller.action_name == 'curation' %>
+  <li><%= link_to(params[:contributable_type].humanize.capitalize, "/#{params[:contributable_type]}") %></li>
   <li><b>&#187;</b></li>
-  
-  <% case controller.action_name.to_s; when "show" %>
-    <li><%= link_to "View: #{contributable(@contribution.contributable_id, @contribution.contributable_type, false)}", contribution_path(@contribution) %></li>
-  <% when "new" %>
-    <li><%= link_to "New Contribution", new_contribution_path(@contribution) %></li>
-  <% when "edit" %>
-    <li><%= link_to "Edit: #{contributable(@contribution.contributable_id, @contribution.contributable_type, false)}", edit_contribution_path(@contribution) %>
-  <% else %>
-    <!-- no breadcrumb -->
-  <% end %>
+  <li><%= link_to(@contributable.label, "/#{params[:contributable_type]}/#{params[:contributable_id]}") %></li>
+  <li><b>&#187;</b></li>
+  <li>Curation</li>
 <% end %>
+

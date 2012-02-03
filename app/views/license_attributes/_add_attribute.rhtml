@@ -1,0 +1,8 @@
+<p><b>Add Attribute: </b>
+<select id="license_options_dropdown">
+  <% LicenseOption.find(:all).each do |f| %>
+    <option value="<%= f.id %>"><%= h(f.title) %></option>
+  <% end %>
+</select>
+<b>&nbsp;<a href="" onclick="javascript:addLicenseAttribute(document.getElementById('license_options_dropdown').value); document.getElementById('license_options_dropdown').value = ''; return false;">Add</a></b>
+</p>

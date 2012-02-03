@@ -2,7 +2,7 @@
 
 <%= error_messages_for :blog_post %>
 
-<% form_for(:blog_post, :url => blog_posts_path(@blog_post.blog)) do |f| %>
+<% form_for(:blog_post, :url => blog_blog_posts_path(@blog_post.blog)) do |f| %>
   <%= f.hidden_field :blog_id %>
 
   <p>

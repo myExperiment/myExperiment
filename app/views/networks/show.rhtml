@@ -7,28 +7,29 @@
 			</div>
 	  <% elsif current_user.membership_invite_pending?(@network.id) %>
 		  <div class="box_standout">  
-				<span style="text-align: left;"><b>You have been invited to join this group. Awaiting your <%= link_to "confirmation", membership_path(current_user, Membership.find(:first, :conditions => ['network_id = ? AND user_id = ?', @network, current_user])) -%>.</b></span>
+				<span style="text-align: left;"><b>You have been invited to join this group. Awaiting your <%= link_to "confirmation", user_membership_path(current_user, Membership.find(:first, :conditions => ['network_id = ? AND user_id = ?', @network, current_user])) -%>.</b></span>
 			</div>
 		<% end %>
-	<% end %>
 
-<% if logged_in? %>
   <ul class="sectionIcons">
     <% unless mine? @network %>
 		  <% if @network.member? current_user.id  %>
 			  <% cur_membership = Membership.find(:first, :conditions => ["network_id = ? AND user_id = ?", @network.id, current_user.id] ) %>
 			  <% if cur_membership %>
-			    <li><%= icon('network-leave', membership_path(cur_membership.user_id, cur_membership), nil, { :confirm => "Are you sure want to leave this group?", :method => :delete }, 'Leave Group') %></li>
+			    <li><%= icon('network-leave', user_membership_path(cur_membership.user_id, cur_membership), nil, { :confirm => "Are you sure want to leave this group?", :method => :delete }, 'Leave Group') %></li>
 			  <% end %>
-			<% elsif !current_user.membership_pending?(@network.id) %>
+			<% elsif !current_user.membership_pending?(@network.id) && !@network.invitation_only? %>
 			  <li class="with_sep_bottom"><%= request_membership_link(current_user.id, @network.id) %></li>  
 			<% end %>
 		<% end %>
 
+    <% if @network.administrator?(current_user.id) %>
+      <li><%= icon('announcement', new_group_announcement_path(@network), 'Make a new Group Announcement', nil, 'Make a Group Announcement') -%></li>
+			<li><%= icon('network-invite', invite_network_path(@network), 'Invite People', nil, 'Invite People') -%></li>
+    <% end %>
     <% if mine? @network %>
-      <li><%= icon('network-invite', invite_group_path(@network), 'Invite People', nil, 'Invite People') -%></li>
-			<li><%= icon('edit', edit_group_path(@network), 'Edit', nil, 'Edit Group') %></li>
-      <li><%= icon('destroy', group_path(@network), 'Delete Group', { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
+			<li><%= icon('edit', edit_network_path(@network), 'Edit', nil, 'Edit Group') %></li>
+      <li><%= icon('destroy', network_path(@network), 'Delete Group', { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
     <% end %>
   </ul>
 <% end %>
@@ -60,7 +61,9 @@
 		<br/>
 		|
 	<% end %>
-	<%= link_to "Tags (#{@network.tags.length})", "#tags" %>
+	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@network.tags.length})</span>", "#tags" %>
+	|
+	<%= link_to "Announcements", "#group_announcements" -%>
 	|
 	<%= link_to "Comments (#{@network.comments.length})", "#comments" %>
 	|
@@ -70,7 +73,7 @@
 	
 	<div class="box_simple" style="margin: 0 0 0.4em 0;">
 		<% unless @network.description.nil? or @network.description.empty? %>
-			<%= white_list @network.description_html %>
+			<%= @network.description_html %>
 		<% else %>
 			<p><i>No description</i></p>
 		<% end %>
@@ -91,10 +94,12 @@
 	<% if mine? @network %>
 		<br/>
 		<div class="box_currentuser_specific">
-			<% if @network.auto_accept %>
-				You have set this Group to automatically accept all Membership Requests
-			<% else %>
-				You have set this Group to send you all Membership Requests for confirmation first
+			<% if @network.open? %>
+				You have set this Group to automatically accept all membership requests.
+			<% elsif @network.membership_by_request? %>
+				You have set this Group to require membership requests to be approved by a group administrator.
+      <% else %>
+        You have set this Group to be closed to membership requests unless invited by a group administrator.
 			<% end %>
 		</div>
 	<% end %>
@@ -102,12 +107,20 @@
 	<br/>
 	
 	<div class="contribution_section_box">
+<% admins=@network.administrators(true) -%>
+<% others=@network.members() - admins -%>
 		<p class="heading">
-			Members
+			Administrators
 			<a name="group_members"></a>
 		</p>
 		<div>
-			<%= render :partial => "networks/members", :locals => { :collection => @network.members(true), :size => 60 } %>
+			<%= render :partial => "networks/members", :locals => { :collection => admins, :size => 60 } %>
+		</div>
+		<p class="heading">
+			Members
+		</p>
+		<div>
+			<%= render :partial => "networks/members", :locals => { :collection => others, :size => 60 } %>
 		</div>
 	</div>
 	
@@ -129,10 +142,11 @@
 	
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @network,
 																											 :owner_id => (@network.user_id),  
-																											 :add_path => tag_group_path(@network), 
-																											 :edit_path => edit_group_path(@network),
+																											 :add_path => tag_network_path(@network),
+																											 :edit_path => edit_network_path(@network),
 																											 :allow_edit => logged_in? ? @network.user_id == current_user.id : false } %>
 	
+	<%= render :partial => "announcements", :locals => { :group => @network, :count => 5 } -%>
 </div>
 
 <div class="clearer">&nbsp;</div>
@@ -152,10 +166,23 @@
 <a name="shared_items"></a>
 <div class="tabContainer">
   <div class="tabTitle">Shared Items (<%= @shared_items.length -%>)</div>
-  <div class="tabContent">
+  <div class="tabContent" id="shared_items">
 		<% unless @shared_items.empty? %>
   		<%= view_privileges_notice %>
+
+      <div style="float: right; margin: 0.5em;">
+        Sort:
+        <select onchange="javascript:location = this.options[this.selectedIndex].value;">
+          <% @item_sort_options.each do |option, label| %>
+            <option value="?item_sort=<%= option -%>#shared_items" <% if params[:item_sort] == option -%> selected="selected"<% end -%>><%= label -%></option>
+          <% end %>
+        </select>
+      </div>
+
 			<%= render :partial => "contributions/table", :locals => { :collection => @shared_items } %>
+
+      <div style="clear: both"></div>
+
 		<% else %>
 			<p class="none_text">No items have been shared with this Group yet.</p>
 		<% end %>
@@ -181,7 +208,7 @@
   </div>
 </div>
 
-<% if mine? @network %>
+<% if logged_in? && @network.administrator?(current_user.id) %>
   
   <% memberships = @network.memberships_accepted %>
   <a name="manage_memberships"></a>
@@ -235,3 +262,6 @@
 <div id="commentsBox">
 	<%= render :partial => "comments/comments", :locals => { :commentable => @network } %>
 </div>
+
+<%= render :partial => "contributions/alternative_formats" %>
+

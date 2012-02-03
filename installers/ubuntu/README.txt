@@ -1,0 +1,57 @@
+myExperiment Ubuntu Installer Instructions
+==========================================
+
+The files in this directory are an installer for myExperiment on Ubuntu 10.04 
+that has had all the latest updates installed (based on updates available on 
+18/10/2011).  The installer is designed to work on a freshly installed version
+of Ubuntu, you may have problems if you are installing on an existing system.
+
+install.bash is the main install script and can be downloaded and run from 
+the current working directory as follows:
+
+  /bin/bash install.bash
+
+This install script requires the settings file, settings.bash, which needs to be 
+kept in the same directory.  This can be created by copying the
+default_settings.bash to settings.bash and making the following changes
+before running install.bash:
+
+myexp_root_password - Choose a password for the root account of MySQL.  If for
+whatever reason MySQL is already installed set this to the current MySQL root
+password.  MySQL mosty have a root password for the installer to suceed
+
+myexp_user_password - Choose a password for the account that myExperiment uses
+to access databases it creates for storing myExperiment data.
+
+fq_server_name - The fully-qualified server name and domain for your server,
+i.e. the A record. E.g. myexperiment.example.org
+
+exim_smarthost_server - The mail server you want to user as a relay for emails.
+E.g. smtp
+
+exim_smarthost_domain - The mail server you want to user as a relay for emails.
+E.g. example.org
+
+myexp_cname - The location you intend to host the myExperiment site.  This may
+be the same as fq_server_name.
+E.g. myexperiment.example.org
+
+
+== Post-installation configuration ==
+
+The installer is designed to work on a freshly installed version of Ubuntu and
+will do minimal configuration of myExperiment.  To do further configuration
+you will need to edit settings.yml in the config directory of the SVN checkout
+of myExperiment by default this /var/rails/myexperiment/config/.  
+
+Some configuration may require restarting Apache using the following command:
+
+sudo apache2ctl restart
+
+
+== Further Information ==
+
+Please refer to the wiki page:
+
+        http://wiki.myexperiment.org/index.php/Developer:UbuntuInstallation
+

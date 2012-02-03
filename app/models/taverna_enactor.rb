@@ -20,8 +20,12 @@ class TavernaEnactor < ActiveRecord::Base
   validates_presence_of :url
   validates_presence_of :title
   
-  encrypts :password, :mode => :symmetric, :key => SYM_ENCRYPTION_KEY
+  encrypts :password, :mode => :symmetric, :key => Conf.sym_encryption_key
   
+  def label
+    title
+  end
+
   def self.find_by_contributor(contributor_type, contributor_id)
     TavernaEnactor.find(:all, :conditions => ["contributor_type = ? AND contributor_id = ?", contributor_type, contributor_id])
   end
@@ -45,29 +49,6 @@ class TavernaEnactor < ActiveRecord::Base
     return runners + TavernaEnactor.find_by_groups(user)
   end
   
-  # Note: at the moment (Feb 2008), updates and deletes are only allowed by the creator of the TavernaEnactor 
-  # OR the administrator of the Group that owns the TavernaEnactor.
-  # For all other actions, only creator OR members of the Group that owns the TavernaEnactor are authorized.
-  def authorized?(action_name, c_utor=nil)
-    return false if c_utor.nil?
-    
-    # Cannot ask authorization for a 'Network' contributor
-    return false if c_utor.class.to_s == 'Network'
-    
-    case self.contributor_type.to_s
-    when "User"
-      return self.contributor_id.to_i == c_utor.id.to_i
-    when "Network"
-      if ['edit','update','delete'].include?(action_name.downcase)
-        return self.contributor.owner?(c_utor.id)
-      else
-        return self.contributor.member?(c_utor.id)
-      end
-    else
-      return false
-    end
-  end
-  
   def service_valid?
     service_client.service_valid?
   end
@@ -80,17 +61,17 @@ class TavernaEnactor < ActiveRecord::Base
         workflow = Workflow.find_version(runnable_id, runnable_version)
         
         if workflow
-          r.workflow_uri = service_client.upload_workflow(workflow.scufl)
+          r.workflow_uri = service_client.upload_workflow(workflow.content_blob.data)
           r.save
         else
           return nil
         end
       end
     else
-      workflow = workflow = Workflow.find_version(runnable_id, runnable_version)
+      workflow = Workflow.find_version(runnable_id, runnable_version)
       
       if workflow
-        workflow_uri = service_client.upload_workflow(workflow.scufl)
+        workflow_uri = service_client.upload_workflow(workflow.content_blob.data)
         r = RemoteWorkflow.create(:workflow_id => runnable_id,
                                   :workflow_version => runnable_version,
                                   :taverna_enactor_id => self.id,

@@ -1,10 +1,4 @@
-<ul class="sectionIcons">
-	<li><%= icon "blob", new_file_path, nil, nil, "Upload New File" %></li>
-	<li><%= icon "view-all", all_files_path, nil, nil, "View All Files" %></li>
-</ul>
+<h1>Files</h1>
 
-<% cache(:controller => 'files', :action => 'all_tags') do -%>
-	<%= render :partial => "blobs/all_tags" %>
-<% end -%>
+<%= render :partial => "content/index" -%>
 
-<%= render :partial => "contributions/most_tabs", :locals => { :type => "Blob" } %>

@@ -7,36 +7,48 @@ class NetworksController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :search, :all]
   
   before_filter :find_networks, :only => [:all]
-  before_filter :find_network, :only => [:membership_request, :show, :comment, :comment_delete, :tag]
-  before_filter :find_network_auth, :only => [:invite, :membership_invite, :membership_invite_external, :edit, :update, :destroy]
+  before_filter :find_network, :only => [:membership_request, :show, :tag]
+  before_filter :find_network_auth_admin, :only => [:invite, :membership_invite, :membership_invite_external]
+  before_filter :find_network_auth_owner, :only => [:edit, :update, :destroy]
   
-  before_filter :invalidate_listing_cache, :only => [:update, :comment, :comment_delete, :tag, :destroy]
-  before_filter :invalidate_tags_cache, :only => [:create, :update, :delete, :tag]
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :network_sweeper, :only => [ :create, :update, :destroy, :membership_request, :membership_invite, :membership_invite_external ]
+  cache_sweeper :membership_sweeper, :only => [ :destroy, :membership_request, :membership_invite, :membership_invite_external ]
+  cache_sweeper :tag_sweeper, :only => [ :create, :update, :tag, :destroy ]
+  cache_sweeper :comment_sweeper, :only => [ :comment, :comment_delete ]
   
   # GET /networks;search
   def search
-
-    @query = params[:query]
-    
-    @networks = SOLR_ENABLE ? Network.find_by_solr(@query, :limit => 100).results : []
-    
-    respond_to do |format|
-      format.html # search.rhtml
-    end
+    redirect_to(search_path + "?type=groups&query=" + params[:query])
   end
   
   # GET /networks/1;invite
   def invite
+    error_msg = ""
+    sending_allowed_with_reset_timestamp = ActivityLimit.check_limit(current_user, "group_invite", false)
+    unless sending_allowed_with_reset_timestamp[0]
+      # limit of invitation for this user is already exceeded
+      error_msg = "Please note that you can't send email invitations - your limit is reached, "
+      if sending_allowed_with_reset_timestamp[1].nil?
+        error_msg += "it will not be reset. Please contact #{Conf.sitename} administration for details."
+      elsif sending_allowed_with_reset_timestamp[1] <= 60
+        error_msg += "please try again within a couple of minutes"
+      else
+        error_msg += "it will be reset in " + formatted_timespan(sending_allowed_with_reset_timestamp[1])
+      end
+    end
+    
     respond_to do |format|
+      flash.now[:error] = error_msg unless error_msg.blank?
       format.html # invite.rhtml
     end
   end
   
   # POST /networks/1;membership_invite
   def membership_invite
-            
-    if (@membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id, :message => params[:membership][:message]) unless Membership.find_by_user_id_and_network_id(params[:user_id], @network.id) or Network.find(@network.id).owner? params[:user_id])
-      
+    @membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id, :message => params[:membership][:message], :invited_by => current_user)
+
+    unless !@membership || Membership.find_by_user_id_and_network_id(params[:user_id], @network.id) || Network.find(@network.id).owner?(params[:user_id])
       @membership.user_established_at = nil
       @membership.network_established_at = nil
       if @membership.message.blank?
@@ -52,17 +64,15 @@ class NetworksController < ApplicationController
             user = @membership.user
             Notifier.deliver_membership_invite(user, @membership.network, @membership, base_host) if user.send_notifications?
           rescue Exception => e
-            puts "ERROR: failed to send Membership Invite email notification. Membership ID: #{@membership.id}"
-            puts "EXCEPTION:" + e
             logger.error("ERROR: failed to send Membership Invite email notification. Membership ID: #{@membership.id}")
             logger.error("EXCEPTION:" + e)
           end
   
           flash[:notice] = 'An invitation has been sent to the User.'
-          format.html { redirect_to group_url(@network) }
+          format.html { redirect_to network_url(@network) }
         else
           flash[:error] = 'Failed to send invitation to User. Please try again or report this.'
-          format.html { redirect_to invite_group_url(@network) }
+          format.html { redirect_to invite_network_url(@network) }
         end
       end
     else
@@ -72,7 +82,7 @@ class NetworksController < ApplicationController
         flash[:error] = "User invited is already a member of the group"
       end
       respond_to do |format|
-        format.html { redirect_to invite_group_url(@network) }
+        format.html { redirect_to invite_network_url(@network) }
       end
     end
   end
@@ -80,7 +90,7 @@ class NetworksController < ApplicationController
   # POST /networks/1;membership_invite_external
   def membership_invite_external
     # first of all, check that captcha was entered correctly
-    if !captcha_valid?(params[:invitations][:captcha_id], params[:invitations][:captcha_validation])
+    if Conf.recaptcha_enable && !verify_recaptcha(:private_key => Conf.recaptcha_private)
       respond_to do |format|
         flash.now[:error] = 'Verification text was not entered correctly - your invitations have not been sent.'
         format.html { render :action => 'invite' }
@@ -88,9 +98,10 @@ class NetworksController < ApplicationController
     else
       # captcha verified correctly, can proceed
     
-      addr_count, validated_addr_count, valid_addresses, db_user_addresses, err_addresses, overflow_addresses = Invitation.validate_address_list(params[:invitations][:address_list])
+      addr_count, validated_addr_count, valid_addresses, db_user_addresses, err_addresses = Invitation.validate_address_list(params[:invitations][:address_list], current_user)
       existing_invitation_emails = []
       valid_addresses_tokens = {} # a hash for pairs of 'email' => 'token'
+      overflow_addresses = []
       
       if validated_addr_count > 0
         emails_counter = 0; counter = 0
@@ -100,10 +111,14 @@ class NetworksController < ApplicationController
           if PendingInvitation.find_by_email_and_request_type_and_request_for(email_addr, "membership", params[:id])
             existing_invitation_emails << email_addr
           else 
-            token_code = Digest::SHA1.hexdigest( email_addr.reverse + SECRET_WORD )
-            valid_addresses_tokens[email_addr] = token_code
-            invitation = PendingInvitation.new(:email => email_addr, :request_type => "membership", :requested_by => current_user.id, :request_for => params[:id], :message => params[:invitations][:msg_text], :token => token_code)
-            invitation.save
+            if ActivityLimit.check_limit(current_user, "group_invite")[0]
+              token_code = Digest::SHA1.hexdigest( email_addr.reverse + Conf.secret_word )
+              valid_addresses_tokens[email_addr] = token_code
+              invitation = PendingInvitation.new(:email => email_addr, :request_type => "membership", :requested_by => current_user.id, :request_for => params[:id], :message => params[:invitations][:msg_text], :token => token_code)
+              invitation.save
+            else
+              overflow_addresses << email_addr
+            end
           end        
         end
           
@@ -140,9 +155,9 @@ class NetworksController < ApplicationController
       # now display message based on number of valid / invalid addresses..
       error_occurred = true # a flag to select where to redirect from this action
       respond_to do |format|
-        if validated_addr_count == 0 && existing_invitation_emails.empty? && db_user_addresses.empty?
+        if validated_addr_count == 0 && existing_invitation_emails.empty? && db_user_addresses.empty? && overflow_addresses.empty?
           error_msg = "None of the supplied address(es) could be validated, no emails were sent. Please try again!<br/>You have supplied the following address list:<br/>\"#{params[:invitations][:address_list]}\""
-        elsif (addr_count == validated_addr_count) && (!err_addresses || err_addresses.empty?)
+        elsif (addr_count == validated_addr_count) && (!err_addresses || err_addresses.empty?) && (!overflow_addresses || overflow_addresses.empty?)
           error_msg = validated_addr_count.to_s + " Invitation email(s) sent successfully"
           error_occurred = false
         else 
@@ -170,7 +185,17 @@ class NetworksController < ApplicationController
           end
           
           unless overflow_addresses.empty?
-            error_msg += "<br/><br/>You can only send invitations to #{INVITATION_EMAIL_LIMIT} unique, valid, non-blank email addresses.<br/>The following addresses were not processed because of maximum allowed amount was exceeded:<br/>" + overflow_addresses.join("<br/>")
+            error_msg += "<br/><br/>You have ran out of quota for sending invitations, "
+            reset_quota_after = ActivityLimit.check_limit(current_user, "group_invite", false)[1]
+            if reset_quota_after.nil?
+              error_msg += "it will not be reset. Please contact #{Conf.sitename} administration for details."
+            elsif reset_quota_after <= 60
+              error_msg += "please try again within a couple of minutes."
+            else
+              error_msg += "it will be reset in " + formatted_timespan(reset_quota_after) + "."
+            end
+            
+            error_msg += "<br/>The following addresses were not processed because maximum allowed amount of invitations was exceeded:<br/>" + overflow_addresses.join("<br/>")
           end
           
           error_msg += "</span>"
@@ -183,7 +208,7 @@ class NetworksController < ApplicationController
           format.html { render :action => 'invite' }
         else      
           flash[:notice] = error_msg
-          format.html { redirect_to group_path(params[:id]) }
+          format.html { redirect_to network_path(params[:id]) }
         end
       end
     end
@@ -213,9 +238,115 @@ class NetworksController < ApplicationController
 
   # GET /networks/1
   def show
+
+    @item_sort_options = [
+      ["rank",          "Rank"],
+      ["most_recent",   "Most recent"],
+      ["title",         "Title"],
+      ["uploader",      "Uploader"],
+      ["last_updated",  "Last updated"],
+      ["rating",        "User rating"],
+      ["licence",       "Licence"],
+      ["content_type",  "Content Type"]
+    ]
+
     @shared_items = @network.shared_contributions
+
+    case params[:item_sort]
+
+      when "rank"; @shared_items.sort! do |a, b|
+        b.rank <=> a.rank
+      end
+
+      when "title"; @shared_items.sort! do |a, b|
+        a.contributable.label <=> b.contributable.label
+      end
+
+      when "most_recent"; @shared_items.sort! do |a, b|
+        b.contributable.created_at <=> a.contributable.created_at
+      end
+
+      when "uploader"; @shared_items.sort! do |a, b|
+        if a.contributor.label == b.contributor.label
+          b.rank <=> a.rank
+        else
+          a.contributor.label <=> b.contributor.label
+        end
+      end
+
+      when "last_updated"; @shared_items.sort! do |a, b|
+        b.contributable.updated_at <=> a.contributable.updated_at
+      end
+
+      when "rating"; @shared_items.sort! do |a, b|
+
+        a_rating = a.rating
+        b_rating = b.rating
+
+        if a_rating == b_rating
+          b.rank <=> a.rank
+        else
+          b.rating <=> a.rating
+        end
+      end
+
+      when "licence"; @shared_items.sort! do |a, b|
+
+        a_has_licence = a.contributable.respond_to?('license')
+        b_has_licence = b.contributable.respond_to?('license')
+
+        if (a_has_licence && b_has_licence)
+          if a.contributable.license == b.contributable.license
+            b.rank <=> a.rank
+          else
+            a.contributable.license.title <=> b.contributable.license.title
+          end
+        elsif (a_has_licence && !b_has_licence)
+          -1
+        elsif (!a_has_licence && b_has_licence)
+          1
+        else
+          b.rank <=> a.rank
+        end
+      end
+
+      when "content_type"; @shared_items.sort! do |a, b|
+
+        a_has_content_type = a.contributable.respond_to?('content_type')
+        b_has_content_type = b.contributable.respond_to?('content_type')
+
+        if (a_has_content_type && b_has_content_type)
+          if a.contributable.content_type == b.contributable.content_type
+            b.rank <=> a.rank
+          else
+            a.contributable.content_type.title <=> b.contributable.content_type.title
+          end
+        elsif (a_has_content_type && !b_has_content_type)
+          -1
+        elsif (!a_has_content_type && b_has_content_type)
+          1
+        else
+          b.rank <=> a.rank
+        end
+      end
+    end
+
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+         
+        @lod_nir  = network_url(@network)
+        @lod_html = network_url(:id => @network.id, :format => 'html')
+        @lod_rdf  = network_url(:id => @network.id, :format => 'rdf')
+        @lod_xml  = network_url(:id => @network.id, :format => 'xml')
+         
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} groups #{@network.id}`
+        }
+      end
     end
   end
 
@@ -241,7 +372,7 @@ class NetworksController < ApplicationController
           @network.update_tags
         end
         flash[:notice] = 'Group was successfully created.'
-        format.html { redirect_to group_url(@network) }
+        format.html { redirect_to network_url(@network) }
       else
         format.html { render :action => "new" }
       end
@@ -254,7 +385,7 @@ class NetworksController < ApplicationController
       if @network.update_attributes(params[:network])
         @network.refresh_tags(convert_tags_to_gem_format(params[:network][:tag_list]), current_user) if params[:network][:tag_list]
         flash[:notice] = 'Group was successfully updated.'
-        format.html { redirect_to group_url(@network) }
+        format.html { redirect_to network_url(@network) }
       else
         format.html { render :action => "edit" }
       end
@@ -267,47 +398,26 @@ class NetworksController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Group was successfully deleted.'
-      format.html { redirect_to groups_url }
+      format.html { redirect_to networks_url }
     end
   end
-  
-  # POST /networks/1;comment
-  def comment
-    text = params[:comment][:comment]
-    
-    if text and text.length > 0
-      comment = Comment.create(:user => current_user, :comment => text)
-      @network.comments << comment
-    end
-    
-    respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @network } }
-    end
-  end
-  
-  # DELETE /networks/1;comment_delete
-  def comment_delete
-    if params[:comment_id]
-      comment = Comment.find(params[:comment_id].to_i)
-      # security checks:
-      if comment.user_id == current_user.id and comment.commentable_type.downcase == 'network' and comment.commentable_id == @network.id
-        comment.destroy
-      end
-    end
-    
-    respond_to do |format|
-      format.html { render :partial => "comments/comments", :locals => { :commentable => @network } }
-    end
-  end
-  
+ 
   # POST /networks/1;tag
   def tag
     @network.tags_user_id = current_user
     @network.tag_list = "#{@network.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @network.update_tags # hack to get around acts_as_versioned
+    @network.solr_save if Conf.solr_enable
     
     respond_to do |format|
-      format.html { render :partial => "tags/tags_box_inner", :locals => { :taggable => @network, :owner_id => @network.user_id } }
+      format.html { 
+        render :update do |page|
+          unique_tag_count = @network.tags.uniq.length
+          page.replace_html "mini_nav_tag_link", "(#{unique_tag_count})"
+          page.replace_html "tags_box_header_tag_count_span", "(#{unique_tag_count})"
+          page.replace_html "tags_inner_box", :partial => "tags/tags_box_inner", :locals => { :taggable => @network, :owner_id => @network.user_id } 
+        end
+      }
     end
   end
   
@@ -332,25 +442,24 @@ protected
     end 
   end
 
-  def find_network_auth
+  def find_network_auth_owner
     begin
       @network = Network.find(params[:id], :conditions => ["networks.user_id = ?", current_user.id], :include => [ :owner, :memberships ])
     rescue ActiveRecord::RecordNotFound
+      error("Group not found (id not authorized)", "is invalid (not group adminsitrator)")
+    end
+  end
+  
+  def find_network_auth_admin
+    if @network = Network.find_by_id(params[:id], :include => [ :owner, :memberships ])
+      unless @network.administrator?(current_user.id)
+        error("You must be a group administrator to invite people","")
+      end
+    else
       error("Group not found (id not authorized)", "is invalid (not owner)")
     end
   end
-  
-  def invalidate_listing_cache
-    if @network
-      expire_fragment(:controller => 'groups_cache', :action => 'listing', :id => @network.id)
-    end
-  end
-  
-  def invalidate_tags_cache
-    expire_fragment(:controller => 'groups', :action => 'all_tags')
-    expire_fragment(:controller => 'sidebar_cache', :action => 'tags', :part => 'most_popular_tags')
-  end
-  
+
 private
 
   def error(notice, message)
@@ -358,7 +467,7 @@ private
     (err = Network.new.errors).add(:id, message)
     
     respond_to do |format|
-      format.html { redirect_to groups_url }
+      format.html { redirect_to networks_url }
     end
   end
 end

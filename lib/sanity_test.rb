@@ -1,3 +1,8 @@
+# myExperiment: lib/sanity_test.rb
+# 
+# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
 # contains all methods needed to run sanity tests
 # used by StatusController and sanity.rb
 
@@ -51,11 +56,10 @@ def sanity_tests
   workflows     = Workflow.find(:all)
   blogs         = Blog.find(:all)
   blobs         = Blob.find(:all)
-  forums        = Forum.find(:all)
   packs         = Pack.find(:all)
   contributions = Contribution.find(:all)
 
-  known_contributables = workflows + blobs + blogs + forums + packs
+  known_contributables = workflows + blobs + blogs + packs
 
   should_be_empty("All users must have a name",
       users.select do |u| u.name == nil or u.name.length == 0 end)
@@ -74,9 +78,6 @@ def sanity_tests
   should_be_empty("All blogs must have a contribution record",
       blogs.select do |b| b.contribution.nil? end)
 
-  should_be_empty("All forums must have a contribution record",
-      forums.select do |f| f.contribution.nil? end)
-
   should_be_empty("All packs must have a contribution record",
       packs.select do |f| f.contribution.nil? end)
 
@@ -88,15 +89,16 @@ def sanity_tests
 
   # workflows
 
-  should_all_be_true("All workflow image files must exist",
-      workflows.map do |w| File.exists?(w.image) end)
-
-  should_all_be_true("All workflow svg files must exist",
-      workflows.map do |w| File.exists?(w.svg) end)
-
   should_be_empty("All workflows must have a content type",
-      workflows.select do |w| w.content_type.length.zero? end)
+      workflows.select do |w| w.content_type.nil? end)
 
+  # versioning
+
+  should_be_empty("All workflows versions should be contiguous",
+      workflows.select do |w|
+      w.versions.map do |v| v.version end != (1..w.versions.length).to_a
+      end)
+      
   @results_string += "\nTotal tests:      #{@results.length}\n"
   @results_string += "Successful tests: #{@results.select do |r| r == true end.length}\n"
   @results_string += "Failed tests:     #{@results.select do |r| r == false end.length}\n\n"

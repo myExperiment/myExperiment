@@ -18,7 +18,7 @@
 		</p>
 					
 		<p>
-			<% form_tag submit_job_job_path(experiment, job) do -%>
+			<% form_tag submit_job_experiment_job_path(experiment, job) do -%>
 				<center><%= submit_tag "Submit Job", :disable_with => "Submitting..." -%></center>
 			<% end -%>
 		</p>
@@ -109,7 +109,7 @@
 		<br/><br/>
 		
 		<ul class="sectionIcons">
-		  <li><%= icon('rerun', rerun_job_path(experiment, job), nil, { :confirm => 'Note: this will create a new Job with the settings and input data copied from this Job. Continue?', :method => :post }, 'Rerun Job') %></li>
+		  <li><%= icon('rerun', rerun_experiment_job_path(experiment, job), nil, { :confirm => 'Note: this will create a new Job with the settings and input data copied from this Job. Continue?', :method => :post }, 'Rerun Job') %></li>
 		</ul>
 		
 	<% end -%>

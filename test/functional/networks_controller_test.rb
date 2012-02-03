@@ -6,34 +6,29 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'networks_controller'
 
-# Re-raise errors caught by the controller.
-class NetworksController; def rescue_action(e) raise e end; end
-
-class NetworksControllerTest < Test::Unit::TestCase
-  fixtures :networks
-
-  def setup
-    @controller = NetworksController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+class NetworksControllerTest < ActionController::TestCase
+  fixtures :networks, :users, :content_types
 
   def test_should_get_index
     get :index
     assert_response :success
-    assert assigns(:networks)
+    assert_template 'index' 
   end
 
   def test_should_get_new
+    login_as(:john)
     get :new
+
     assert_response :success
   end
   
   def test_should_create_network
     old_count = Network.count
-    post :create, :network => { }
-    assert_equal old_count+1, Network.count
-    
+
+    login_as(:john)
+    post :create, :network => { :user_id => '990', :title => 'test network', :unique_name => 'test_network', :new_member_policy => 'open', :description => "..." }
+
+    assert_equal old_count+1, Network.count    
     assert_redirected_to network_path(assigns(:network))
   end
 
@@ -43,20 +38,27 @@ class NetworksControllerTest < Test::Unit::TestCase
   end
 
   def test_should_get_edit
+    login_as(:john)
     get :edit, :id => 1
+
     assert_response :success
   end
   
   def test_should_update_network
-    put :update, :id => 1, :network => { }
+    login_as(:john)
+    put :update, :id => 1, 
+                 :network => { :user_id => '990', :title => 'test network', :unique_name => 'update_network', :new_member_policy => 'open', :description => ".?."}
+
     assert_redirected_to network_path(assigns(:network))
   end
   
   def test_should_destroy_network
     old_count = Network.count
+
+    login_as(:john)
     delete :destroy, :id => 1
-    assert_equal old_count-1, Network.count
-    
+
+    assert_equal old_count-1, Network.count   
     assert_redirected_to networks_path
   end
 end

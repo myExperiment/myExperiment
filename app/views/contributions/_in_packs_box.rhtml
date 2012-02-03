@@ -1,7 +1,7 @@
-<% packs = contributable.in_packs -%>
+<% packs = Pack.packs_with_contributable(contributable) -%>
 <div class="contribution_section_box">
 	<p class="heading">
-		<%= info_icon_with_tooltip("All the Packs that this item (or versions of this item [if available]) is referred to in") -%>
+		<%= info_icon_with_tooltip("All the Packs that this item (or versions of this item [[if available]]) is referred to in") -%>
 		Featured In Packs  <span class="count_text">(<%= packs.length -%>)</span>
 		<a name="featured_in_packs"></a>
 	</p>
@@ -10,7 +10,7 @@
 			<ul class="items">
 				<% packs.each do |p| %>
 					<li>
-						<% if thing_authorized?('show', p) -%>
+						<% if Authorization.is_authorized?("show", nil, p, current_user) -%>
 							<%= icon('pack', nil, nil, nil, '') %>
 							<%= contributable(p.id, 'Pack') %>
 						<% else -%>

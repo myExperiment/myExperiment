@@ -1,3 +1,9 @@
+<% if logged_in? && Authorization.is_authorized?("edit", nil, @blog_post.blog, current_user) %>
+  <ul class="sectionIcons">
+    <li><%= link_to 'Edit Blog Post', edit_blog_post_path(@blog_post.blog, @blog_post) %></li>
+  </ul>
+<% end %>
+
 <p>
   <b>Blog:</b>
   <%=h @blog_post.blog_id %>
@@ -10,7 +16,7 @@
 
 <p>
   <b>Body:</b><br />
-  <%= white_list @blog_post.body_html %>
+  <%= @blog_post.body_html %>
 </p>
 
 <p>

@@ -1,12 +1,41 @@
 <h2>Permissions</h2>
+<% checkboxes=[] %>
+<% permissions_categorised=permissions_categorised(@permissions) %>
+<% for category,permissions in permissions_categorised %>
+  <h3><%= category.capitalize %></h3>
+  <p style="text-align: center;">
+  <% for permission in permissions -%>
+    <% for type,data in permission -%>
+      <% key=data['URI'] -%>
+      <% key_type = "#{type} #{key}" -%>
+      <% if (@permissions_for.include?(key_type)) %>
+        <%=check_box_tag "key_permissions[#{type} #{key}]", 1,  true %> <%= type %> <%= key %>
+      <% else %>
+        <%=check_box_tag "key_permissions[#{type} #{key}]" %> <%= type %> <%= key %>
+      <% end -%>
+      <% checkboxes.push("key_permissions[#{type} #{key}]"); %>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+    <% end %>
+  <% end -%>
+  </p>
+<% end %>
+<br/>
+<p style="text-align:center;" >
+  <input type="button" name="check_all" value="Check All" onclick="var checkboxes = new Array();
+  <% i = 0 -%> 
+  <% for c in checkboxes %>
+      <%= "checkboxes[#{i}]='#{c}';" -%>
+      <% i=i+1 -%>
+  <% end -%>
+  checkAll(checkboxes);" />
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <input type="button" name="uncheck_all" value="Uncheck All" onclick="var checkboxes = new Array();
+  <% i = 0 -%>
+  <% for c in checkboxes %>
+      <%= "checkboxes[#{i}]='#{c}';" -%>
+      <% i=i+1 -%>
+  <% end -%>
+  uncheckAll(checkboxes);" />
+</p>
 
- <% for key,permission in @permissions %>
-   <% for type,data in permission %>
-     <%  key_type = "#{type} #{key}" %>
-     <% if (@permissions_for.include?(key_type)) %>
-       <p><%=check_box_tag "key_permissions[#{type} #{key}]", 1,  true %> <%= type %> <%= key %></p>
-     <% else %>
-       <p><%=check_box_tag "key_permissions[#{type} #{key}]" %> <%= type %> <%= key %></p>
-     <% end %>
-   <% end %>
- <% end %>
+

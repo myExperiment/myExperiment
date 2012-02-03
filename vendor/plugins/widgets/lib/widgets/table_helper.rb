@@ -59,7 +59,7 @@ module Widgets
         _out << content_tag('td', '&nbsp;', :class => 'blank') 
       end unless remaining == 0
       _out << '</tr>' << '</tbody>' << '</table>' 
-      concat(_out, block.binding)
+      concat(_out)
       nil # avoid duplication if called with <%= %>
     end
     

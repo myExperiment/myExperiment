@@ -2,7 +2,7 @@
 <% if type and item_entry -%>
 	<% if type == 'contributable' -%>
 		<% if item_entry.contributable -%>
-			<% if item_entry.contributable.authorized?('show', current_user) -%>
+			<% if Authorization.is_authorized?("show", nil, item_entry.contributable, current_user) -%>
 				<p style="text-align: center;">
 					<b>
 						<%= visible_name(item_entry.contributable_type) -%>:

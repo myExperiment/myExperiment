@@ -80,8 +80,13 @@ module ActiveRecord
 
           return unless tag = Tag.find_by_name(name)
 
+          # having the following:
+          # taggable_type == self.contribution.contributable_type
+          # taggable_id   == self.contribution.contributable_id
+          # => the system was crashing, as networks don't have "contributions";
+          # => updated to get hold of this data in a more universal way:  
           return unless tagging = Tagging.find_by_tag_id_and_taggable_type_and_taggable_id(tag.id,
-              self.contribution.contributable_type, self.contribution.contributable_id)
+              self.class.to_s, self.id)
 
           tagging.destroy
           tag = Tag.find_by_name(name)
@@ -119,7 +124,9 @@ module ActiveRecord
               #taggings.reset
               #@new_tag_list = nil
               
-              old_tag_ids = self.tags.collect { |t| t.id }
+              existing_tags = self.tags || []
+
+              old_tag_ids = existing_tags.collect { |t| t.id }
               Tag.parse(@new_tag_list).each do |new_tag_name|
                 found = Tag.find_or_create_by_name(new_tag_name)
                 

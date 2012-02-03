@@ -1,6 +1,6 @@
 <% if @user %>
 
-  <% if my_page? @user.id %>
+  <% if my_page? @user %>
     
     <% unless @user.friendships_pending.empty? %>
       <h2>You need to respond to</h2>
@@ -10,7 +10,7 @@
         You have <%=pluralize @user.friendships_pending.length, "friendship request" %> to review!
       </p>
     
-      <p>Messages sent by myExperiment users to request friendship with you are listed here.</p>
+      <p>Messages sent by <%= Conf.sitename %> users to request friendship with you are listed here.</p>
     
       <%= render :partial => "friendships/table", :locals => { :collection => @user.friendships_pending, :friend => false } %>
     <% end %>

@@ -6,9 +6,9 @@
 	<% for pack in collection %>
 		<% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
 		<% if collection.size == 1 -%>
-			<% show ||= pack.authorized?("show", current_user) -%>
+			<% show ||= Authorization.is_authorized?("show", nil, pack, current_user) -%>
 		<% else -%>
-			<% show = pack.authorized?("show", current_user) -%>
+			<% show = Authorization.is_authorized?("show", nil, pack, current_user) -%>
 		<% end -%>
 	  <% if show -%>
 			<% cache(:controller => 'packs_cache', :action => 'listing', :id => pack.id) do -%>
@@ -26,14 +26,15 @@
 						</p>
 						
 						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
-							<b>Created:</b> <%=datetime pack.created_at, false %>
-							|
-							<b>Updated:</b> <%=datetime pack.updated_at, false %>
+							<b>Created:</b> <%=datetime pack.contribution.created_at, false %>
+							<% unless pack.contribution.created_at == pack.contribution.updated_at %>
+								|	<b>Last updated:</b> <%=datetime pack.contribution.updated_at, false %>
+							<% end %>
 						</p>
 						
 						<div class="desc" style="font-size: 85%;">
 							<% unless pack.description.blank? %>
-					  		<% desc = truncate(strip_html(pack.description), 500) %>
+					  		<% desc = truncate(strip_html(pack.description), :length => 500) %>
 					    	<%= query ? highlight_all(desc, query) : desc %>
 						  <% else -%>
 								<span class="none_text">No description</span>
@@ -45,8 +46,9 @@
 						</p>
 						
 						<p style="font-size: 85%;">
-							<a href="<%= pack_path(pack) + '#comments' -%>"><b>Comments: </b><%= pack.comments_count %></a> |
-							<b>Viewed:</b> <%=pluralize pack.contribution.viewings_count, "time" %> |
+							<a href="<%= pack_path(pack) + '#comments' -%>"><b>Comments: </b><%= pack.comments.count %></a> |
+							<b>Viewed:</b> <%=pluralize pack.contribution.site_viewings_count, "time" %> |
+				      <b>Downloaded:</b> <%=pluralize pack.contribution.site_downloads_count, "time" %>
 						</p>
 						
 						<% unless (tags = pack.tags).empty? %>
@@ -59,8 +61,9 @@
 					
 					<td class="actions" style="width: 80px;">
 				    <%= icon "show", pack_path(pack), nil, nil, "View" %>
+						<% if Authorization.is_authorized?("download", nil, pack, current_user) -%><%= icon('download', download_pack_path(pack), nil, nil, 'Download') -%><% end -%>
 				    <% if mine?(pack) %><%= icon "manage", edit_pack_path(pack), nil, nil, "Manage" %><% end %>
-						<% if pack.authorized?('edit', current_user) -%><%= icon('new', new_item_pack_path(pack), nil, nil, 'Add New Item') -%><% end -%>
+						<% if Authorization.is_authorized?("edit", nil, pack, current_user) -%><%= icon('new', new_item_pack_path(pack), nil, nil, 'Add New Item') -%><% end -%>
 				  </td>
 				</tr>
 			<% end %>

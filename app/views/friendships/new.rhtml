@@ -2,7 +2,7 @@
 
 <%= error_messages_for :friendship %>
 
-<% form_for(:friendship, :url => friendships_path) do |f| %>
+<% form_for(:friendship, :url => user_friendships_path) do |f| %>
   <%= f.hidden_field :user_id, :value => current_user.id %>
   <%= f.hidden_field :friend_id, :value => params[:user_id] %>
 	<% friend = User.find(params[:user_id]) %>

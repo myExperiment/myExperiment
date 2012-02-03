@@ -1,4 +1,0 @@
-<%= link_to image_tag('page_edit.png', :plugin => :simple_pages)+' Edit this Page', simple_edit_page_path(@simple_page) if can_manage_pages? %>
-<div id="simple_page_<%= @simple_page.to_param %>" class="simple_page">
-  <%= ERB.new(@simple_page.content).result %>
-</div>

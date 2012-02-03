@@ -18,7 +18,8 @@ class ReviewsController < ApplicationController
   before_filter :find_review, :only => [ :show ]
   before_filter :find_review_auth, :only => [ :edit, :update, :destroy ]
   
-  before_filter :invalidate_listing_cache, :only => [ :create, :update, :destroy ]
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :review_sweeper, :only => [ :create, :update, :delete ]
   
   def index
     respond_to do |format|
@@ -28,7 +29,21 @@ class ReviewsController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+        
+        @lod_nir  = workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id)
+        @lod_html = workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'html')
+        @lod_rdf  = workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'rdf')
+        @lod_xml  = workflow_review_url(:id => @review.id, :workflow_id => @reviewable.id, :format => 'xml')
+        
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} reviews #{@review.id}`
+        }
+      end
     end
   end
 
@@ -50,7 +65,7 @@ class ReviewsController < ApplicationController
       if @review.save
         update_rating(@review, params[:rating])
         flash[:notice] = 'Thank you for your review!'
-        format.html { redirect_to review_url(@reviewable, @review) }
+        format.html { redirect_to workflow_review_url(@reviewable, @review) }
       else
         format.html { render :action => "new" }
       end
@@ -68,7 +83,7 @@ class ReviewsController < ApplicationController
       if @review.update_attributes(params[:review])
         update_rating(@review, params[:rating])
         flash[:notice] = 'Review was successfully updated.'
-        format.html { redirect_to review_url(@reviewable, @review) }
+        format.html { redirect_to workflow_review_url(@reviewable, @review) }
       else
         format.html { render :action => "edit" }
       end
@@ -80,7 +95,7 @@ class ReviewsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Review was successfully deleted.'
-      format.html { redirect_to reviews_url(@reviewable) }
+      format.html { redirect_to workflow_reviews_url(@reviewable) }
     end
   end
   
@@ -113,24 +128,30 @@ protected
     
       workflow = Workflow.find(params[:workflow_id])
       
-      if workflow.authorized?("show", (logged_in? ? current_user : nil))
-        # remove scufl from workflow if the user is not authorized for download
-        workflow.scufl = nil unless workflow.authorized?("download", (logged_in? ? current_user : nil))
+      if Authorization.is_authorized?('show', nil, workflow, current_user)
+        # remove workflow data from workflow if the user is not authorized for download
+        workflow.content_blob.data = nil unless Authorization.is_authorized?('download', nil, workflow, current_user)
         @reviewable = workflow
       else
         if logged_in?
-          error("Workflow not found (id not authorized)", "is invalid (not authorized)", :workflow_id)
+          error("Workflow not found (id not authorized)", "is invalid (not authorized)")
+          return
         else
-          find_reviewable_auth if login_required
+          login_required
         end
       end
     rescue ActiveRecord::RecordNotFound
-      error("Workflow not found", "is invalid", :workflow_id)
+      error("Workflow not found", "is invalid")
+      return
     end
   end
   
   def find_reviews
-    @reviews = @reviewable.reviews
+    if @reviewable
+      @reviews = @reviewable.reviews
+    else
+      @reviews = []
+    end
   end
   
   def find_review
@@ -138,6 +159,7 @@ protected
       @review = review
     else
       error("Review not found", "is invalid")
+      return
     end
   end
   
@@ -146,23 +168,29 @@ protected
       @review = review
     else
       error("Review not found or action not authorized", "is invalid (not authorized)")
+      return
     end
   end
   
-  def invalidate_listing_cache
-    if @reviewable
-      expire_fragment(:controller => 'workflows_cache', :action => 'listing', :id => @reviewable.id)
-    end
-  end
-
 private
 
-  def error(notice, message, attr=:id)
+  def error(notice, message, attr = nil)
     flash[:error] = notice
-    (err = Review.new.errors).add(attr, message)
+
+    workflow_id_attr = attr
+    workflow_id_attr = :id if workflow_id_attr.nil?
+
+    (err = Review.new.errors).add(workflow_id_attr, message)
     
     respond_to do |format|
-      format.html { redirect_to reviews_url(params[:workflow_id]) }
+      format.html {
+        if attr
+          redirect_to workflow_reviews_url(params[:workflow_id])
+        else
+          redirect_to workflows_url
+        end
+      }
     end
   end
 end
+

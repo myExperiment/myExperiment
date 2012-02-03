@@ -1,0 +1,28 @@
+<% if current_user.class == User && Conf.curators.include?(current_user.username) %>
+
+  <% curation_events = CurationEvent.find_all_by_object_type_and_object_id(contributable.class.name, contributable.id) %>
+
+  <div class="contribution_section_box">
+    <p class="heading" style="margin-bottom: 0; padding-bottom: 0;">
+      <%= info_icon_with_tooltip("How have the curators of #{Conf.sitename}" +
+          " classified this #{visible_name(contributable)}?") %>
+      Scope and Quality
+    </p>
+
+    <% if curation_events.length > 0 %>
+      <div style="font-size: 85%;">
+      <p>The scope and quality of this Workflow has been classified by our curators as:</p>
+      </div>
+      <br />
+      <% curation_events.group_by do |e| e.category end.keys.sort.each do |category| %>
+        <div class="quality"><%= category.capitalize %></div>
+      <% end %>
+      <br />
+      <div style="font-size: 85%;">
+        <%= link_to('See breakdown', url_for(:controller => 'contributions', :action => 'curation', :contributable_type => contributable.class.name.underscore.pluralize, :contributable_id => contributable.id)) %>
+      </div>
+    <% else %>
+      <p class="none_text">No curators have classified this <%= visible_name(contributable) %> yet.</p>
+    <% end %>
+  </div>
+<% end %>

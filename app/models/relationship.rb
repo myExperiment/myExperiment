@@ -1,29 +1,24 @@
 # myExperiment: app/models/relationship.rb
 #
-# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# Copyright (c) 2010 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
 class Relationship < ActiveRecord::Base
-  validates_associated :network, :relation
-  
-  validates_presence_of :network_id, :relation_id
-  
-  belongs_to :network
-  
-  belongs_to :relation,
-             :class_name => "Network",
-             :foreign_key => :relation_id
-             
-  def accept!
-    unless accepted?
-      update_attribute :accepted_at, Time.now
-      return true
-    else
-      return false
-    end
-  end
 
-  def accepted?
-    self.accepted_at != nil
+  acts_as_structured_data
+
+  validates_presence_of(:subject)
+  validates_presence_of(:predicate)
+  validates_presence_of(:objekt)
+  validates_presence_of(:context)
+
+  validates_uniqueness_of :predicate_id, :scope => [:subject_id, :objekt_id]
+
+  after_save :touch_context
+  after_destroy :touch_context
+
+  def touch_context
+    context.touch unless context.destroyed?
   end
 end
+

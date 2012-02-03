@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<s:scufl xmlns:s="http://org.embl.ebi.escience/xscufl/0.1alpha" version="0.2" log="0">
+  <s:workflowdescription lsid="urn:lsid:net.sf.taverna:wfDefinition:a378c99c-b85e-46cd-91be-47ac93cde18c" author="" title="animal" />
+  <s:processor name="colour_the_animal">
+    <s:local>org.embl.ebi.escience.scuflworkers.java.StringConcat</s:local>
+  </s:processor>
+  <s:link source="animal" sink="colour_the_animal:string2" />
+  <s:link source="colour" sink="colour_the_animal:string1" />
+  <s:link source="colour_the_animal:output" sink="coulouredAnimal" />
+  <s:source name="animal" />
+  <s:source name="colour" />
+  <s:sink name="coulouredAnimal" />
+</s:scufl>
+

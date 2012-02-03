@@ -5,31 +5,21 @@
 
 class UsersController < ApplicationController
 
-  contributable_actions = [:workflows, :files, :packs, :blogs, :forums]
+  contributable_actions = [:workflows, :files, :packs, :blogs]
   show_actions = [:show, :news, :friends, :groups, :credits, :tags, :favourites] + contributable_actions
 
-  # add ', :invite' to allow displaying of invitation screen without logging in
   before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password] + show_actions
   
   before_filter :find_users, :only => [:all]
-  before_filter :find_user, :only => show_actions
-  before_filter :find_user_auth, :only => [:edit, :update, :destroy]
+  before_filter :find_user, :only => [:destroy] + show_actions
+  before_filter :find_user_auth, :only => [:edit, :update]
   
-  before_filter :invalidate_listing_cache, :only => [:update, :destroy]
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :user_sweeper, :only => [ :create, :update, :destroy ]
   
   # GET /users;search
   def search
-
-    @query = params[:query]
-    
-    results = SOLR_ENABLE ? User.find_by_solr(@query, :limit => 100).results : []
-    
-    # Only show activated users!
-    @users = results.select { |u| u.activated? }
-    
-    respond_to do |format|
-      format.html # search.rhtml
-    end
+    redirect_to(search_path + "?type=users&query=" + params[:query])
   end
   
   # GET /users
@@ -49,13 +39,22 @@ class UsersController < ApplicationController
   # GET /users/1
   def show
 
-    @tab = "News" if @tab.nil?
+    @lod_nir  = user_url(@user)
+    @lod_html = user_url(:id => @user.id, :format => 'html')
+    @lod_rdf  = user_url(:id => @user.id, :format => 'rdf')
+    @lod_xml  = user_url(:id => @user.id, :format => 'xml')
 
     @user.salt = nil
     @user.crypted_password = nil
     
     respond_to do |format|
       format.html # show.rhtml
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} users #{@user.id}`
+        }
+      end
     end
   end
 
@@ -86,11 +85,6 @@ class UsersController < ApplicationController
   
   def packs
     @tab = "Packs"
-    render :action => 'show'
-  end
-
-  def forums
-    @tab = "Forums"
     render :action => 'show'
   end
 
@@ -147,6 +141,19 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
+
+    # check that captcha was entered correctly
+
+    unless RAILS_ENV == 'test'
+      if Conf.recaptcha_enable
+        if !verify_recaptcha(:private_key => Conf.recaptcha_private)
+          flash.now[:error] = 'Recaptcha text was not entered correctly - please try again.'
+          render :action => 'new'
+          return
+        end
+      end
+    end
+
     if params[:user][:username] && params[:user][:password] && params[:user][:password_confirmation]
       params[:user].delete("openid_url") if params[:user][:openid_url] # strip params[:user] of it's openid_url if username and password is provided
     end
@@ -169,7 +176,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.save
         # DO NOT log in user yet, since account needs to be validated and activated first (through email).
-        Mailer.deliver_account_confirmation(@user, confirmation_hash(@user.unconfirmed_email), base_host)
+        @user.send_email_confirmation_email
         
         # If required, copy the email address to the Profile
         if params[:make_email_public]
@@ -215,7 +222,7 @@ class UsersController < ApplicationController
         else
           # If a new email address was set, then need to send out a confirmation email
           if params[:user][:unconfirmed_email]
-            Mailer.deliver_update_email_address(@user, confirmation_hash(@user.unconfirmed_email), base_host)
+            @user.send_update_email_confirmation
             flash.now[:notice] = "We have sent an email to #{@user.unconfirmed_email} with instructions on how to confirm this new email address"
           elsif params[:update_type]
             case params[:update_type]
@@ -229,33 +236,37 @@ class UsersController < ApplicationController
         end
         
         #format.html { redirect_to user_url(@user) }
-        format.html { render :action => "edit" }
+        format.html { redirect_to :action => "edit" }
       else
-        format.html { render :action => "edit" }
+        format.html { redirect_to :action => "edit" }
       end
     end
   end
 
   # DELETE /users/1
   def destroy
-    flash[:notice] = 'Please contact the administrator to have your account removed.'
-    redirect_to :action => :index
+
+    unless Authorization.check(:action => 'destroy', :object => @user, :user => current_user)
+      flash[:notice] = 'You do not have permission to delete this user.'
+      redirect_to :action => :index
+      return
+    end
     
-    #@user.destroy
+    @user.destroy
     
-    # the user MUST be logged in to destroy their account
+    # If the destroyed account belongs to the current user, then
     # it is important to log them out afterwards or they'll 
     # receive a nasty error message..
-    #session[:user_id] = nil
+
+    session[:user_id] = nil if @user == current_user
     
-    #respond_to do |format|
-    #  flash[:notice] = 'User was successfully destroyed'
-    #  format.html { redirect_to users_url }
-    #end
+    respond_to do |format|
+      flash[:notice] = 'User account was successfully deleted'
+      format.html { redirect_to(params[:return_to] ? "#{Conf.base_uri}#{params[:return_to]}" : users_url) }
+    end
   end
   
   # GET /users/confirm_email/:hash
-  # TODO: NOTE: this action is not "API safe" yet (ie: it doesnt cater for a request with an XML response)
   def confirm_email
     # NOTE: this action is used for both:
     # - new users who sign up with username/password and need to confirm their email address
@@ -268,11 +279,11 @@ class UsersController < ApplicationController
     for user in @users
       unless user.unconfirmed_email.blank?
         # Check if hash matches user, in which case confirm the user's email
-        if confirmation_hash(user.unconfirmed_email) == params[:hash]
+        if user.email_confirmation_hash == params[:hash]
           confirmed = user.confirm_email!
           # BEGIN DEBUG
-          puts "ERRORS!" unless user.errors.empty?
-          user.errors.full_messages.each { |e| puts e } 
+          logger.error("ERRORS!") unless user.errors.empty?
+          user.errors.full_messages.each { |e| logger.error(e) } 
           #END DEBUG
           if confirmed
             self.current_user = user
@@ -287,7 +298,7 @@ class UsersController < ApplicationController
     
     respond_to do |format|
       if confirmed
-        flash[:notice] = "Thank you for confirming your email. Your account is now active (if it wasn't before), and the new email address registered on your account. We hope you enjoy using myExperiment!"
+        flash[:notice] = "Thank you for confirming your email. Your account is now active (if it wasn't before), and the new email address registered on your account. We hope you enjoy using #{Conf.sitename}!"
         format.html { redirect_to user_url(@user) }
       else
         flash[:error] = "Invalid confirmation URL"
@@ -298,7 +309,6 @@ class UsersController < ApplicationController
   
   # GET /users/forgot_password
   # POST /users/forgot_password
-  # TODO: NOTE: this action is not "API safe" yet (ie: it doesnt cater for a request with an XML response)
   def forgot_password
     
     if request.get?
@@ -311,7 +321,7 @@ class UsersController < ApplicationController
           user.reset_password_code_until = 1.day.from_now
           user.reset_password_code =  Digest::SHA1.hexdigest( "#{user.email}#{Time.now.to_s.split(//).sort_by {rand}.join}" )
           user.save!
-          Mailer.deliver_forgot_password(user, base_host)
+          Mailer.deliver_forgot_password(user)
           flash[:notice] = "Instructions on how to reset your password have been sent to #{user.email}"
           format.html { render :action => "forgot_password" }
         else
@@ -324,7 +334,6 @@ class UsersController < ApplicationController
   end
   
   # GET /users/reset_password
-  # TODO: NOTE: this action is not "API safe" yet (ie: it doesnt cater for a request with an XML response)
   def reset_password
     user = User.find_by_reset_password_code(params[:reset_code])
     
@@ -370,14 +379,32 @@ class UsersController < ApplicationController
   
   # For sending invitation emails
   def invite
+    sending_allowed_with_reset_timestamp = ActivityLimit.check_limit(current_user, "user_invite", false)
+    
     respond_to do |format|
-      format.html # invite.rhtml
+      if sending_allowed_with_reset_timestamp[0]
+        format.html # invite.rhtml
+      else
+        # limit of invitation for this user is already exceeded
+        error_msg = "You can't send invitations - your limit is reached, "
+        if sending_allowed_with_reset_timestamp[1].nil?
+          error_msg += "it will not be reset. Please contact #{Conf.sitename} administration for details."
+        elsif sending_allowed_with_reset_timestamp[1] <= 60
+          error_msg += "please try again within a couple of minutes"
+        else
+          error_msg += "it will be reset in " + formatted_timespan(sending_allowed_with_reset_timestamp[1])
+        end
+        
+        flash[:error] = error_msg 
+        format.html { redirect_to user_path(current_user) }
+      end
     end
   end
   
   def process_invitations
     # first of all, check that captcha was entered correctly
-    if !captcha_valid?(params[:invitations][:captcha_id], params[:invitations][:captcha_validation])
+    captcha_verified = false
+    if Conf.recaptcha_enable && !verify_recaptcha(:private_key => Conf.recaptcha_private)
       respond_to do |format|
         flash.now[:error] = 'Verification text was not entered correctly - your invitations have not been sent.'
         format.html { render :action => 'invite' }
@@ -385,15 +412,21 @@ class UsersController < ApplicationController
     else
       # captcha verified correctly, can proceed
       
-      addr_count, validated_addr_count, valid_addresses, db_user_addresses, err_addresses, overflow_addresses = Invitation.validate_address_list(params[:invitations][:addr_to])
+      addr_count, validated_addr_count, valid_addresses, db_user_addresses, err_addresses = Invitation.validate_address_list(params[:invitations][:addr_to], current_user)
       existing_invitation_emails = []
       valid_addresses_tokens = {}     # a hash for pairs of 'email' => 'token'
+      overflow_addresses = []
         
       # if validation found valid addresses, do the sending
+      # (limit on the number of invitation email is only checked where the actual email will be sent)
       if validated_addr_count > 0
         if params[:invitations][:as_friendship].nil?
           valid_addresses.each { |email_addr|
-            valid_addresses_tokens[email_addr] = "" 
+            if ActivityLimit.check_limit(current_user, "user_invite")[0]
+              valid_addresses_tokens[email_addr] = ""
+            else
+              overflow_addresses << email_addr
+            end
           }
           Invitation.send_invitation_emails("invite", base_host, User.find(params[:invitations_user_id]), valid_addresses_tokens, params[:invitations][:msg_text])
         elsif params[:invitations][:as_friendship] == "true"
@@ -403,10 +436,14 @@ class UsersController < ApplicationController
             if PendingInvitation.find_by_email_and_request_type_and_request_for(email_addr, "friendship", params[:invitations_user_id])
               existing_invitation_emails << email_addr
             else 
-              token_code = Digest::SHA1.hexdigest( email_addr.reverse + SECRET_WORD )
-              valid_addresses_tokens[email_addr] = token_code
-              invitation = PendingInvitation.new(:email => email_addr, :request_type => "friendship", :requested_by => params[:invitations_user_id], :request_for => params[:invitations_user_id], :message => params[:invitations][:msg_text], :token => token_code)
-              invitation.save
+              if ActivityLimit.check_limit(current_user, "user_invite")[0]
+                token_code = Digest::SHA1.hexdigest( email_addr.reverse + Conf.secret_word )
+                valid_addresses_tokens[email_addr] = token_code
+                invitation = PendingInvitation.new(:email => email_addr, :request_type => "friendship", :requested_by => params[:invitations_user_id], :request_for => params[:invitations_user_id], :message => params[:invitations][:msg_text], :token => token_code)
+                invitation.save
+              else
+                overflow_addresses << email_addr
+              end
             end
           end
           
@@ -451,10 +488,10 @@ class UsersController < ApplicationController
       # in future, potentially there's going to be a way to get results of sending;
       # now display message based on number of valid / invalid addresses..
       respond_to do |format|
-        if validated_addr_count == 0 && existing_invitation_emails.empty? && db_user_addresses.empty?
+        if validated_addr_count == 0 && existing_invitation_emails.empty? && db_user_addresses.empty? && overflow_addresses.empty?
           flash.now[:notice] = "None of the supplied address(es) could be validated, no emails were sent.<br/>Please check your input!"
           format.html { render :action => 'invite' }
-        elsif (addr_count == validated_addr_count) && (!err_addresses || err_addresses.empty?)
+        elsif (addr_count == validated_addr_count) && (!err_addresses || err_addresses.empty?) && (!overflow_addresses || overflow_addresses.empty?)
           flash[:notice] = validated_addr_count.to_s + " Invitation email(s) sent successfully"
           format.html { redirect_to :action => 'show', :id => params[:invitations_user_id] }
         else
@@ -491,7 +528,17 @@ class UsersController < ApplicationController
           end
           
           unless overflow_addresses.empty?
-            error_msg += "<br/><br/>You can only send invitations to #{INVITATION_EMAIL_LIMIT} unique, valid, non-blank email addresses.<br/>The following addresses were not processed because of maximum allowed amount was exceeded:<br/>" + overflow_addresses.join("<br/>")
+            error_msg += "<br/><br/>You have ran out of quota for sending invitations, "
+            reset_quota_after = ActivityLimit.check_limit(current_user, "user_invite", false)[1]
+            if reset_quota_after.nil?
+              error_msg += "it will not be reset. Please contact #{Conf.sitename} administration for details."
+            elsif reset_quota_after <= 60
+              error_msg += "please try again within a couple of minutes."
+            else
+              error_msg += "it will be reset in " + formatted_timespan(reset_quota_after) + "."
+            end
+            
+            error_msg += "<br/>The following addresses were not processed because maximum allowed amount of invitations was exceeded:<br/>" + overflow_addresses.join("<br/>")
           end
           
           error_msg += "</span>"
@@ -524,17 +571,17 @@ protected
       @user = User.find(params[:id], :include => [ :profile, :tags ])
     rescue ActiveRecord::RecordNotFound
       error("User not found", "is invalid (not owner)")
-      return false
+      return
     end
     
     unless @user
       error("User not found", "is invalid (not owner)")
-      return false
+      return
     end
     
     unless @user.activated?
       error("User not activated", "is invalid (not owner)")
-      return false
+      return
     end
   end
 
@@ -543,23 +590,17 @@ protected
       @user = User.find(params[:id], :conditions => ["id = ?", current_user.id])
     rescue ActiveRecord::RecordNotFound
       error("User not found (id not authorized)", "is invalid (not owner)")
-      return false
+      return
     end
     
     unless @user
       error("User not found (or not authorized)", "is invalid (not owner)")
-      return false
+      return
     end
     
     unless @user.activated?
       error("User not activated (id not authorized)", "is invalid (not owner)")
-      return false
-    end
-  end
-  
-  def invalidate_listing_cache
-    if params[:id]
-      expire_fragment(:controller => 'users_cache', :action => 'listing', :id => params[:id])
+      return
     end
   end
   
@@ -573,9 +614,5 @@ private
       format.html { redirect_to users_url }
     end
   end
-  
-  def confirmation_hash(string)
-    Digest::SHA1.hexdigest(string + SECRET_WORD)
-  end
-  
 end
+

@@ -1,7 +1,7 @@
-  <%= javascript_include_tag :fckeditor %>
+  <%= javascript_include_tag "fckeditor/fckeditor.js" %>
 	
 	<p>
-    <b>Administrator</b><br />
+    <b>Owner</b><br />
     <%= render :partial => "users/avatar", :locals => { :user => @network.owner } %>
     <%= form.hidden_field :user_id %>
   </p>
@@ -17,7 +17,7 @@
     <legend>Persistent URL</legend>
     <p>What is a <%= link_to 'pURL', "http://en.wikipedia.org/wiki/Persistent_Uniform_Resource_Locator", :popup => true %>?</p>
     <p>
-      If you set a unique identifier, it will be used in future versions of myExperiment to provide a persistent and human-readable URL for your Group.
+      If you set a unique identifier, it will be used in future versions of <%= Conf.sitename %> to provide a persistent and human-readable URL for your Group.
     </p> 
     
     <p><b>Reserve yours now!</b></p>
@@ -29,13 +29,12 @@
   </fieldset>
 
   <fieldset>
-    <legend>Auto Accept Join Requests</legend>
+    <legend>New Membership Policy</legend>
     <p>
-    	You can configure this group to automatically accept requests from users to join.
+    	You can specify a policy on how new members can join this group.
 		</p>
     <p>
-      <%= form.check_box :auto_accept %>
-      <b>Auto Accept Join Requests</b><br />
+      <%= form.select :new_member_policy, Network::NEW_MEMBER_POLICY_OPTIONS.map {|o| [o[1],o[0]]} %>
     </p>
   </fieldset>
   

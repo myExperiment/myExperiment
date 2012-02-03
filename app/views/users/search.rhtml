@@ -2,7 +2,7 @@
 
 <h1>Search Results</h1>
 
-<h2><%= pluralize(@users.length, "user") %> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
+<h2>Showing <%= pluralize(@users.length, "user") %> of <%= @users_found_total_count -%> found for <%= @query ? "\"#{@query}\"" : "" %></h2>
 
 <%= render :partial => "users/table", :locals => { :collection => @users } %>
 

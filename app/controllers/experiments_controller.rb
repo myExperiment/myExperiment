@@ -18,7 +18,21 @@ class ExperimentsController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+        
+        @lod_nir  = experiment_url(@experiment)
+        @lod_html = experiment_url(:id => @experiment.id, :format => 'html')
+        @lod_rdf  = experiment_url(:id => @experiment.id, :format => 'rdf')
+        @lod_xml  = experiment_url(:id => @experiment.id, :format => 'xml')
+        
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} experiments #{@experiment.id}`
+        }
+      end
     end
   end
 
@@ -102,7 +116,7 @@ protected
   def find_experiment_auth
     experiment = Experiment.find(:first, :conditions => ["id = ?", params[:id]])
     
-    if experiment and experiment.authorized?(action_name, current_user)
+    if experiment and Authorization.is_authorized?(action_name, nil, experiment, current_user)
       @experiment = experiment
     else
       error("Experiment not found or action not authorized", "is invalid (not authorized)")

@@ -1,0 +1,9 @@
+<% topicName = (if @currtopic.name.blank? then "Topic #{@currtopic.id}" else " #{@currtopic.name}" end) -%>
+<!-- <%= "<h1>Workflows for #{topicName}</h1>" %> -->
+<%= "<h1>Workflows in this Topic</h1>" %> 
+
+<%= render :partial => "topics/topic_tag_cloud", :locals => {:tags => @currtopic.topic_tag_map, :topicname => topicName } %>
+
+<% workflow_collection = @currtopic.topic_workflow_map.map { |tmap| tmap.workflow } %>
+<%= render :partial => "workflows/table", :locals => {:collection => workflow_collection} %>
+

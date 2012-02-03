@@ -17,7 +17,21 @@ class TagsController < ApplicationController
   
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = tag_url(@tag)
+        @lod_html = tag_url(:id => @tag.id, :format => 'html')
+        @lod_rdf  = tag_url(:id => @tag.id, :format => 'rdf')
+        @lod_xml  = tag_url(:id => @tag.id, :format => 'xml')
+
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} tags #{@tag.id}`
+        }
+      end
     end
   end
   
@@ -65,11 +79,13 @@ protected
       # Authorise entries now
       taggings.each do |t|
         if t.taggable.respond_to?(:contribution)
-          @tagged_with << t.taggable if t.taggable.contribution.authorized?("show", current_user)
+          @tagged_with << t.taggable if Authorization.is_authorized?('show', nil, t.taggable.contribution, current_user)
         else
           @tagged_with << t.taggable
         end
       end
+      
+      @tagged_with = @tagged_with.uniq
     else
       error("Tag not found", "is invalid")
     end

@@ -20,7 +20,21 @@ class RunnersController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = runner_url(@runner)
+        @lod_html = runner_url(:id => @runner.id, :format => 'html')
+        @lod_rdf  = runner_url(:id => @runner.id, :format => 'rdf')
+        @lod_xml  = runner_url(:id => @runner.id, :format => 'xml')
+
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} runners #{@runner.id}`
+        }
+      end
     end
   end
 
@@ -112,7 +126,7 @@ protected
   def find_runner_auth
     runner = TavernaEnactor.find(:first, :conditions => ["id = ?", params[:id]])
     
-    if runner and runner.authorized?(action_name, current_user)
+    if runner and Authorization.is_authorized?(action_name, nil, runner, current_user)
       @runner = runner
     else
       error("Runner not found or action not authorized", "is invalid (not authorized)")
@@ -123,7 +137,7 @@ private
 
   def error(notice, message, attr=:id)
     flash[:error] = notice
-    (err = Runner.new.errors).add(attr, message)
+    (err = TavernaEnactor.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to runners_url }

@@ -1,12 +1,35 @@
+<% if local_assigns[:sort_by] %>
+  <div style="float: right; margin: 1em;">
+    Sort by:
+    <select onchange="javascript:location = this.options[this.selectedIndex].value;">
+      <% sort_by.each do |args| %>
+        <option value="<%= url_for(request.query_parameters.merge("order" => args[:option])) -%>" <% if params[:order] == args[:option] -%> selected="selected"<% end -%>><%= args[:label] -%></option>
+      <% end %>
+    </select>
+
+    <% if local_assigns[:num_options] %>
+      <br />
+      <br />
+      Results per page:
+      <select onchange="javascript:location = this.options[this.selectedIndex].value;">
+        <% num_options.each do |num_option| %>
+          <option value="<%= url_for(request.query_parameters.merge("num" => num_option)) -%>" <% if params[:num] == num_option -%> selected="selected"<% end -%>><%= num_option -%></option>
+        <% end %>
+      </select>
+    <% end %>
+  </div>
+<% end %>
+
 <% if collection.page_count != collection.first_page -%>
 <div class="pagination">
+
   <ul>
   <% if collection.previous_page? -%>
          <li class="nextpage">
-	    	    <%= link_to '&#171; previous', { :page => collection.previous_page } %>
+	    	    <%= link_to('&#171; previous', request.query_parameters.merge("page" => collection.previous_page)) %>
 	    	 </li>
 	  <% else -%>
-         <li class="disablepage">&#171; previous</li>
+         <li class="disabledpage">&#171; previous</li>
 	  <% end -%>
  
     <% last_page = 0 -%>
@@ -15,7 +38,7 @@
             <li class="currentpage"><%= n %></li>
        <% else -%>
 	          <li><%= "..." if last_page+1 < n %>
-	           <%= link_to n, :id => params[:id], :page => n %>
+	           <%= link_to(n, request.query_parameters.merge("page" => n)) %>
 	          </li>
 	       <% end -%>
 	      <% last_page = n -%>
@@ -23,10 +46,10 @@
  
     <% if collection.next_page? -%>
      <li class="nextpage">
-        <%=  link_to 'next &#187;', { :page => collection.next_page } %>
+        <%= link_to('next &#187;', request.query_parameters.merge("page" => collection.next_page)) %>
      </li>
     <% else -%>
-      <li class="disablepage">next &#187;</li>
+      <li class="disabledpage">next &#187;</li>
     <% end -%>
   </ul>
 </div>

@@ -10,6 +10,9 @@ class FriendshipsController < ApplicationController
   
   before_filter :find_friendships, :only => [:index]
   before_filter :find_friendship_auth, :only => [:show, :accept, :edit, :update, :destroy]
+
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :friendship_sweeper, :only => [ :create, :accept, :update, :destroy ]
   
   # POST /users/1/friendships/1/accept
   # POST /friendships/1/accept
@@ -30,13 +33,15 @@ class FriendshipsController < ApplicationController
     end
     body += "<hr/>"
 
-    message = Message.new( :from => from_id, :to => to_id, :subject => subject, :body => body, :reply_id => nil, :read_at => nil )
+    # the message will appear as 'deleted-by-sender', because the owner of the account effectively didn't send it,
+    # so there is no reason for showing this message in their 'sent messages' folder
+    message = Message.new( :from => from_id, :to => to_id, :subject => subject, :body => body, :reply_id => nil, :read_at => nil, :deleted_by_sender => true )
     message.save
     
     respond_to do |format|
       if @friendship.accept!
         flash[:notice] = 'Friendship was successfully accepted.'
-        format.html { redirect_to friendships_url(current_user.id) }
+        format.html { redirect_to user_friendships_url(current_user.id) }
       else
         error("Friendship already accepted", "already accepted")
       end
@@ -99,14 +104,12 @@ class FriendshipsController < ApplicationController
             friend = @friendship.friend
             Notifier.deliver_friendship_request(friend, @friendship.user.name, @friendship, base_host) if friend.send_notifications?
           rescue Exception => e
-            puts "ERROR: failed to send Friendship Request email notification. Friendship ID: #{@friendship.id}"
-            puts "EXCEPTION:" + e
             logger.error("ERROR: failed to send Friendship Request email notification. Friendship ID: #{@friendship.id}")
             logger.error("EXCEPTION:" + e)
           end
           
           flash[:notice] = 'Friendship was successfully requested.'
-          format.html { redirect_to friendship_url(current_user.id, @friendship) }
+          format.html { redirect_to user_friendship_url(current_user.id, @friendship) }
         else
           format.html { render :action => "new" }
         end
@@ -125,7 +128,7 @@ class FriendshipsController < ApplicationController
     respond_to do |format|
       if @friendship.update_attributes(params[:friendship])
         flash[:notice] = 'Friendship was successfully updated.'
-        format.html { redirect_to friendship_url(@friendship.user_id, @friendship) }
+        format.html { redirect_to user_friendship_url(@friendship.user_id, @friendship) }
       else
         format.html { render :action => "edit" }
       end
@@ -162,15 +165,16 @@ class FriendshipsController < ApplicationController
              "<br/><br/>If you want to contact this user directly, just reply to this message."
     end
     
-
-    message = Message.new( :from => from_id, :to => to_id, :subject => subject, :body => body, :reply_id => nil, :read_at => nil )
+    # the message will appear as 'deleted-by-sender', because the owner of the account effectively didn't send it,
+    # so there is no reason for showing this message in their 'sent messages' folder
+    message = Message.new( :from => from_id, :to => to_id, :subject => subject, :body => body, :reply_id => nil, :read_at => nil, :deleted_by_sender => true )
     message.save
     
     @friendship.destroy
 
     respond_to do |format|
       flash[:notice] = "Friendship was successfully deleted"
-      format.html { redirect_to (params[:return_to] ? params[:return_to] : friendships_url(friend_id)) }
+      format.html { redirect_to(params[:return_to] ? params[:return_to] : user_friendships_url(friend_id)) }
     end
   end
   
@@ -181,8 +185,7 @@ protected
   def check_user_present
     if params[:user_id].blank?
       flash.now[:error] = "Invalid URL"
-      redirect_to friendships_url(current_user.id)
-      return false
+      redirect_to user_friendships_url(current_user.id)
     end
   end
 
@@ -265,7 +268,7 @@ private
     (err = Friendship.new.errors).add(:id, message)
     
     respond_to do |format|
-      format.html { redirect_to friendships_url(current_user.id) }
+      format.html { redirect_to user_friendships_url(current_user.id) }
     end
   end
 end

@@ -1,5 +1,7 @@
 class Tag < ActiveRecord::Base
   has_many :taggings
+  has_many :topic_tag_map
+  belongs_to :vocabulary
 
   # Parse a text string into an array of tokens for use as tags
   def self.parse(list)
@@ -40,6 +42,16 @@ class Tag < ActiveRecord::Base
     @tagged ||= taggings.collect(&:taggable)
   end
   
+  def tagged_auth(user)
+    tagged.select do |taggable|
+      Authorization.is_authorized?('view', nil, taggable, user)
+    end
+  end
+
+  def public?
+    tagged_auth(nil).length > 0
+  end
+
   # Compare tags by name
   def ==(comparison_object)
     super || name == comparison_object.to_s
@@ -71,6 +83,10 @@ class Tag < ActiveRecord::Base
     sql += ') AS popular_tags ORDER BY name ASC'
 
     Tag.find_by_sql([sql] + args)
+  end
+
+  def label
+    name
   end
 
   validates_presence_of :name

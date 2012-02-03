@@ -1,4 +1,4 @@
-# myExperiment: app/models/pack_remote_entry.rb
+#/ myExperiment: app/models/pack_remote_entry.rb
 #
 # Copyright (c) 2008 University of Manchester and the University of Southampton.
 # See license.txt for details.
@@ -14,6 +14,9 @@ class PackRemoteEntry < ActiveRecord::Base
   validates_presence_of :user  
   
   before_create :check_unique
+  
+  after_save :touch_pack
+  after_destroy :touch_pack
 
   def check_unique
     if PackRemoteEntry.find(:first, :conditions => ["pack_id = ? AND uri = ?", self.pack_id, self.uri])
@@ -22,5 +25,13 @@ class PackRemoteEntry < ActiveRecord::Base
     else
       return true
     end
+  end
+
+  def touch_pack
+    pack.touch unless (pack.destroyed? || pack.contribution.nil?)
+  end
+
+  def available?
+    true
   end
 end

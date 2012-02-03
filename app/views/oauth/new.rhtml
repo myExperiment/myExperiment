@@ -2,5 +2,6 @@
 <% form_for :client_application, :url => { :action => :create } do |f| %>
        <%= render :partial => "form", :locals => { :f => f } %>
        <%= render :partial => "permissions", :locals => { :f => f } %>
-       <%= submit_tag "Register" %>
+       <br/><br/>
+       <p style="text-align: center; font-weight: bold;"><%= submit_tag "Register" %></p>
 <% end %>

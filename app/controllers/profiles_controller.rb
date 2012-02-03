@@ -4,13 +4,15 @@
 # See license.txt for details.
 
 class ProfilesController < ApplicationController
+
   before_filter :login_required, :except => [:index, :show]
-  
+
   before_filter :find_profiles, :only => [:index]
-  before_filter :find_profile, :only => [:show]
-  before_filter :find_profile_auth, :only => [:edit, :update, :destroy]
+  before_filter :find_profile, :except => [:index]
+  before_filter :auth, :except => [:index, :show]
   
-  before_filter :invalidate_listing_cache, :only => [:update, :destroy]
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :profile_sweeper, :only => [ :create, :update, :destroy ]
   
   # GET /profiles
   def index
@@ -33,8 +35,10 @@ class ProfilesController < ApplicationController
     unless current_user.profile
       @profile = Profile.new(:user_id => current_user.id)
     else
-      error("Profile not created, maximum number of profiles per user exceeded", 
-            "not created, maximum number of profiles per user exceeded")
+      flash[:error] = "Profile not created, maximum number of profiles per user exceeded"
+      respond_to do |format|
+        format.html { redirect_to profile_url(@profile) }
+      end
     end
   end
 
@@ -53,14 +57,16 @@ class ProfilesController < ApplicationController
       respond_to do |format|
         if @profile.save
           flash[:notice] = 'Profile was successfully created.'
-          format.html { redirect_to profile_url(@profile) }
+          format.html { redirect_to user_profile_url(@profile) }
         else
           format.html { render :action => "new" }
         end
       end
     else
-      error("Profile not created, maximum number of profiles per user exceeded", 
-            "not created, maximum number of profiles per user exceeded")
+      flash[:error] = "Profile not created, maximum number of profiles per user exceeded"
+      respond_to do |format|
+        format.html { redirect_to profile_url(@profile) }
+      end
     end
   end
 
@@ -103,54 +109,23 @@ protected
 
   def find_profile
     begin
-      if params[:user_id]
-        begin
-          @user = User.find(params[:user_id])
-          @profile = @user.profile
-        rescue ActiveRecord::RecordNotFound
-          error("User not found (id unknown)", "not found", attr=:user_id)
-        end
-      else
-        @profile = Profile.find(params[:id])
-        @user = @profile.owner
-      end
+      @user = User.find(params[:user_id])
+      @profile = @user.profile
     rescue ActiveRecord::RecordNotFound
-      error("Profile not found (id unknown)", "not found")
-    end
-  end
-  
-  def find_profile_auth
-    begin
-      if params[:user_id]
-        begin
-          @user = User.find(params[:user_id], :conditions => ["id = ?", current_user.id])
-          @profile = @user.profile
-        rescue ActiveRecord::RecordNotFound
-          error("User not found (id unknown)", "not found", attr=:user_id)
-        end
-      else
-        @profile = Profile.find(params[:id], :conditions => ["user_id = ?", current_user.id])
-        @user = @profile.owner
+      flash[:error] = "User not found"
+      respond_to do |format|
+        format.html { redirect_to users_url }
       end
-    rescue ActiveRecord::RecordNotFound
-      error("Profile not found (id not authorized)", "is invalid (not owner)")
     end
   end
   
-  def invalidate_listing_cache
-    if @profile
-      expire_fragment(:controller => 'users_cache', :action => 'listing', :id => @profile.user_id)
+  def auth
+    if current_user != @user
+      flash[:error] = "You are not authorized to perform this action"
+      respond_to do |format|
+        format.html { redirect_to profile_url(@profile) }
+      end
     end
   end
-  
-private
 
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = Profile.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to profile_url(profile.id) }
-    end
-  end
 end

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PictureSelectionTest < Test::Unit::TestCase
+class PictureSelectionTest < ActiveSupport::TestCase
   fixtures :picture_selections
 
   # Replace this with your real tests.

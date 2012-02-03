@@ -1,0 +1,10 @@
+<h1>Editing Announcement</h1>
+
+<center>
+  <div class="box_form" style="text-align: left; margin: 0; width: 540px;">
+		<% form_for(:announcement, :url => group_announcement_path(@group, @announcement), :html => { :method => :put }) do |form| %>
+		  <%= render :partial => 'form', :object => form, :locals => { :announcement => @announcement } %>
+		  <%= submit_tag 'Update', :disable_with => "Updating..." %>
+		<% end %>
+	</div>
+</center>	

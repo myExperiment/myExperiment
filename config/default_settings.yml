@@ -1,0 +1,492 @@
+# myExperiment: config/default_settings.yml
+#
+# Copyright (c) 2009 University of Manchester and the University of Southampton.
+# See license.txt for details.
+
+# ------------------------------------------------------------------------------
+# |  myExperiment server configuration                                         |
+# ------------------------------------------------------------------------------
+# |                                                                            |
+# | NOTE: Don't make changes to this file.  Instead, copy it to                |
+# |       config/settings.yml and change that copy instead.  Both the          |
+# |       default_settings.yml and settings.yml configuration files are        |
+# |       loaded and configuration entries in settings.yml take precedence.    |
+# |                                                                            |
+# ------------------------------------------------------------------------------
+
+# site_name - Set "site_name" to the name of this myExperiment installation.
+#             This is used by the myExperiment codebase to refer to service by
+#             name.
+#
+#             Example:
+#
+#               site_name: mySite
+
+site_name: mySite
+
+# site_logo - set "site_logo" to the name of the logo used at the top left of
+#             the web pages.
+#
+#             Example:
+#
+#               site_logo: logo.png
+
+site_logo: logo.png
+
+# contributor_models - These are the models for things that can contribute to
+#                      myExperiment.
+
+contributor_models: [User, Network]
+
+# contributable_models - These are the models for the things that myExperiment
+#                        contributors can contribute.
+
+contributable_models: [Workflow, Blob, Pack, Blog]
+
+# page_template - This is the page template for all the pages except for
+#                 the front page of the web site.
+#
+#                 Example:
+#
+#                   page_layout: layouts/myexperiment
+
+page_template: layouts/myexperiment
+
+# stylesheet - This is the main stylesheet used for all pages except for the
+#              front page of the web site.
+#
+#              Example:
+#
+#                stylesheet: styles
+
+stylesheet: styles
+
+# base_uri - Set "base_uri" to the main entry point to this installation of
+#            myExperiment.  If you use a load balancing solution to proxy
+#            incoming requests to a cluster, then this is the external address.
+#
+#            Examples:
+#
+#              base_uri: http://www.example.com
+#
+#            or
+#
+#              base_uri: http://www.example.com:3000
+#
+#            NOTE: No trailing slash.
+
+base_uri: http://www.example.com
+
+# admins - Set "admins" to the list of usernames of people that are
+#          administrators of this installation.  This is "Username" that is set
+#          when you manage your account, not the "Display Name".
+#
+#          Example:
+#
+#            admins: [dgc, jits, dtm]
+
+admins: []
+
+# curators - Set "curators" to the list of usernames of people that are able to
+#            curate contributions.  Like admins, these are usernames, not the
+#            display names of each user.
+
+curators: []
+
+# curation_types - The curation categories that are available for curators to
+#                  apply to content
+
+curation_types:
+
+  - example
+  - test
+  - component
+  - whole solution
+  - tutorial
+  - obsolete
+  - incomplete
+  - junk
+  - decommissioned services
+
+# main_tabs - These are the main tabs of the website.  Each entry requires at
+#             least a label and a link.  If you specify a controller in a tab,
+#             then the tab is shown as selected when the page has been served by
+#             a controller that matches.
+#
+#             The controller entry is a regular expression, so you can make a tab
+#             show as selected in multiple controllers.
+#
+#             Example:
+#
+#               main_tabs:
+#
+#                 - label:      Home
+#                   link:       /home
+#                   controller: home
+#
+#                 - label:      Users
+#                   link:       /users
+#                   controller: (users|profiles|userhistory|friendships|memberships|pictures)
+#
+#                 - label:      Groups
+#                   link:       /groups
+#                   controller: networks
+#
+#                 - label:      Wiki
+#                   link:       http://wiki.example.com/
+
+main_tabs:
+
+  - label:      Home
+    link:       /home
+    controller: home
+
+  - label:      Users
+    link:       /users
+    controller: (users|profiles|userhistory|friendships|memberships|pictures)
+
+  - label:      Groups
+    link:       /groups
+    controller: networks
+
+  - label:      Workflows
+    link:       /workflows
+    controller: workflows
+
+  - label:      Files
+    link:       /files
+    controller: blobs
+
+  - label:      Packs
+    link:       /packs
+    controller: packs
+
+  - label:      Services
+    link:       /services
+    controller: services
+
+  - label:      Topics
+    link:       /topics
+    controller: topics
+	
+# new_menu - Set "new_menu" with the details of each kind of thing to appear in
+#            the New/Upload gadget.
+#
+#            Each entry must have at least a label and link.  You may specify
+#            controller, in which case it is intepreted as a pattern against
+#            that is matched with the current controller in use.  If it
+#            matches, it becomes the pre selected option in the new/upload
+#            combo box.
+#
+#            You may also specify a condition which is eval'd to determine if
+#            the item should be included.
+#
+#            Example:
+#
+#              new_menu:
+#
+#                - label:      Workflow
+#                  link:       /workflows/new
+#                  controller: workflows
+#
+#                - label:      File
+#                  link:       /files/new
+#                  controller: blobs
+#
+#                - label:      Message
+#                  link:       /messages/new
+#                  controller: messages
+#                  condition:  logged_in?
+
+new_menu:
+
+  - label:      Workflow
+    link:       /workflows/new
+    controller: workflows
+
+  - label:      File
+    link:       /files/new
+    controller: blobs
+
+  - label:      Pack
+    link:       /packs/new
+    controller: packs
+  
+  - label:      Group
+    link:       /groups/new
+    controller: networks
+
+  - label:      Message
+    link:       /messages/new
+    controller: messages
+    condition:  logged_in?
+
+  - label:      Runner
+    link:       /runners/new
+    controller: runners
+    condition:  logged_in? && !TavernaEnactor.for_user(current_user).empty?
+
+  - label:      Experiment
+    link:       /experiments/new
+    controller: experiments
+    condition:  logged_in? && !TavernaEnactor.for_user(current_user).empty?
+
+  - label:      Job
+    link:       /jobs/new
+    controller: jobs
+    condition:  logged_in? && !TavernaEnactor.for_user(current_user).empty?
+
+# search_categories - These are the search categories shown in the search bar
+#                     just under the main tabs.
+
+search_categories: [all, users, groups, workflows, services, files, packs]
+
+# default_search_size - The default number of items shown in each search result
+#                       page.
+
+default_search_size: 10
+
+# max_search_size - The maximum number of items shown in each search result
+#                   page.
+
+max_search_size: 5000
+
+# email - These are the email addresses used for sending notifications and the
+#         email address to send feedback entered from the web site.
+#
+#         Example:
+#
+#           notifications_email_address: notification@www.example.com
+#
+#           feedback_email_address: feedback@www.example.com
+
+notifications_email_address: notifications@www.example.com
+
+feedback_email_address: feedback@www.example.com
+
+# validate_email_veracity - This enables some checks on the validity of email
+#                           addresses that are provided by users.  It is
+#                           configurable since it requires network activity to
+#                           operate.
+
+validate_email_veracity: false
+
+# model_aliases - These are visible names for models where the desired visible
+#                 name might conflict with existing classes (e.g. "File" or
+#                 "Application")
+
+model_aliases:
+
+  File:  Blob
+  Group: Network
+
+# bot_ignore_list - Patterns in this list will be used to be checked against
+#                   "user-agent" in HTTP request headers to filter out bots
+#                   from usage statistics.
+
+bot_ignore_list:
+
+  - Googlebot
+  - Slurp
+  - msnbot
+  - crawler
+  - bot
+  - heritrix
+  - spider
+  - Nutch
+
+# max_upload_size - The maximum file size allowed for workflows, etc.
+
+max_upload_size: 20971520
+
+# solr_enable - Set solr_enable to true to enable the search facility - this
+#               requires a running solr server.
+
+solr_enable: false
+
+# smtp - Email configuration.  These details are used to connect to a SMTP
+#        server instead of sendmail.
+
+smtp:
+
+  :address:        "smtp.example.com"
+  :port:           25,
+  :domain:         ""
+  :authentication: :login
+  :user_name:      "username"
+  :password:       "password"
+
+# show_debug - Shows query statistics in the footer: "Queries in Controller",
+#              "Queries in View" and "Query Time".
+
+show_debug: false
+
+# sym_encryption_key - This is the encyption key used to encrypt the passwords
+#                      for the workflow runners.
+
+sym_encryption_key: your_symmetric_encryption_key
+
+# secret_word - This word is used as salt for email confirmation hashes.
+
+secret_word: our_secret_word_that_no_one_knows
+
+# session store secret - This secret key is used for session store integrity.
+#
+#                        (see config/initializers/session_store.rb)
+
+session_store_secret: dc9f8b03a18fc2b7fa858bf660d9685f1637ed67c1ff0fd5c39978ec2f22ccca8201b32d89aeada76722b4ee5fa3df9df7400b37995636876a7140f0382231ef
+
+# cookie verifier secret - This secret key is used to verify cookie session
+#                          data integrity.
+#                          
+#                          (see config/initializers/cookie_verification_secret.rb)
+
+cookie_verifier_secret: 64a59b43e7aa93e55a5db119180a2973b584555f71e87388de5c27682407987446a0293dab64f5913cb19ead617893546b3646c98672905a38e6dfbfb5871034
+
+# google_web_analytics - Enable this to enable Google web analytics.
+
+google_web_analytics:
+
+  enable:       false
+  tracker_code: "enter_tracker_code_here"
+
+# bookmark_widget - Enable this to show the bookmark widget
+
+bookmark_widget:
+
+  enable:           false
+  addthis_username: "addthis.com username"
+
+# =========== Settings for Activity Limits ===========
+
+# Each limited feature will require a set of 5 settings; meanings of each
+# described below.  First part of every setting is the name of the feature
+# being limited.
+#
+# start_value - The initial maximum allowance for the feature (used when the
+#               new limit is created)  
+#
+# max_value - Absolute maximum allowance for the feature (this can't be
+#             exceeded after any promotions); 'null' for always increasing
+#             allowance
+#
+# frequency (in hours) - The time period over which the allowance is given; for
+#                        example 5 messages (allowance) for 24 hours
+#                        (frequency) 'null' for non-periodic limits (i.e. limits
+#                        which won't have their counters reset every
+#                        <frequency> hours)
+#
+# promote_every (in days) -  Every <X> days the user will be promoted to the
+#                            new level, where the allowance per frequency
+#                            period will be adjusted by promote_increment;
+#                            'null' to indicate that promotion should never
+#                            happen
+#
+# promote_increment - Should be positive; 0 to indicate that promotion
+#                     shouldn't expand the allowance (why would this be
+#                     useful?) 'null' to perform a one-time promotion by setting
+#                     the limit to whatever the value of max_value is; 'null'
+#                     when the max_value is also 'null' makes the feature
+#                     unlimited.
+
+activity_limits:
+
+  internal_message:
+  
+    start_value:       10
+    max_value:         200
+    frequency:         24 # hours
+    promote_every:     10 # days
+    promote_increment: 10
+
+  user_invite:
+
+    start_value:       20
+    max_value:         null
+    frequency:         24   # hours
+    promote_every:     null # days
+    promote_increment: null
+
+  group_invite:
+
+    start_value:       10
+    max_value:         100
+    frequency:         24 # hours
+    promote_every:     20 # days
+    promote_increment: 10
+
+# home_page_stats - These are the models which are shown in the home page
+#                   statistics message at the top of the home page.
+
+home_page_stats:
+
+  - model: User
+    label: member
+    link:  /users
+    conditions: "users.activated_at IS NOT NULL"
+
+  - model: Network
+    label: group
+    link:  /groups
+
+  - model: Workflow
+    label: workflow
+    link:  /workflows
+
+  - model: Blob
+    label: file
+    link:  /files
+
+  - model: Pack 
+    label: pack
+    link:  /packs
+
+# label_icons - This is a list of icon types to icons.
+#
+#               Example:
+#
+#                 label_icons:
+#
+#                   workflow: redmond_studio/applications_16.png
+#                   blob:     redmond_studio/documents_16.png
+#                   pack:     manhattan_studio/folder-closed_16.png
+
+label_icons:
+
+# rdfgen_enable
+
+rdfgen_enable: false
+
+rdfgen_tool:
+
+# recaptcha_enable - This enables the ReCaptcha system.  Be sure to set
+#                    recaptcha_public and recaptcha_private to the public key
+#                    and private keys from the ReCaptcha website if this is
+#                    enabled.
+
+recaptcha_enable: false
+
+recaptcha_public:
+
+recaptcha_private:
+
+# Layouts - Gives a custom theme to a group and, when specified by the uploader, other contributions that are
+#           shared with that group
+#
+#     network_id: the ID of the group to be skinned
+#     stylesheets: a list of stylesheets to be used
+#     layout: a path to the page layout. Defines the overall structure of the page,
+#     environment: the environment for which this layout should apply (test/development/production). If not specified,
+#                  will be loaded in all environments. (OPTIONAL)
+#
+#
+#     Example:
+#
+#layouts:
+#
+#     example_layout:
+#       network_id: 123
+#       stylesheets:
+#         - styles
+#         - custom_stylesheet
+#       layout: layouts/myexperiment

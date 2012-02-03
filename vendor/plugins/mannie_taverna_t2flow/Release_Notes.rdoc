@@ -1,0 +1,8 @@
+= Version 0.1.1
+Released:: Wednesday, September 16, 2009
+
+== Added Functionality
+- Retrieval of Taverna local workers.
+
+=== New instance method in T2Flow::Model
+      local_workers

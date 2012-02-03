@@ -6,9 +6,9 @@
 	<% for blob in collection %>
 		<% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
 		<% if collection.size == 1 -%>
-			<% show ||= blob.authorized?("show", current_user) -%>
+			<% show ||= Authorization.is_authorized?('show', nil, blob, current_user) -%>
 		<% else -%>
-			<% show = blob.authorized?("show", current_user) -%>
+			<% show = Authorization.is_authorized?('show', nil, blob, current_user) -%>
 		<% end -%>
 	  <% if show -%>
 			<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
@@ -22,13 +22,14 @@
 						<p class="title">
 							<%= icon "blob", nil, nil, nil, '' %>
 							<% title = contributable_name(blob.id, 'Blob') %>
-							<%=link_to(query ? highlight_all(title, query) : title, file_path(blob)) %>
+							<%=link_to(query ? highlight_all(title, query) : title, blob_path(blob)) %>
 						</p>
 						
 						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
-							<b>Created:</b> <%=datetime blob.created_at, false %>
-							|
-							<b>Updated:</b> <%=datetime blob.updated_at, false %>
+							<b>Created:</b> <%=datetime blob.contribution.created_at, false %>
+							<% unless blob.contribution.created_at == blob.contribution.updated_at %>
+								|	<b>Last updated:</b> <%=datetime blob.contribution.updated_at, false %>
+							<% end %>
 						</p>
 						
 						<% unless (creditors = blob.creditors).empty? %>
@@ -48,7 +49,7 @@
 							<p style="font-size:85%;">
 							<b>Attributions:</b>
 							<% attributors.each do |a| %>
-								<% if thing_authorized?('show', a.attributor) -%>
+								<% if Authorization.is_authorized?("show", nil, a.attributor, current_user) -%>
 									<% if a.attributor_type == 'Workflow' %>
 										<%= icon('workflow', nil, nil, nil, '') %> 
 									<% elsif a.attributor_type == 'Blob' %>
@@ -60,28 +61,32 @@
 							</p>
 						<% end %>
 						
-						<p style="font-size:85%;"><b>License: </b><%= license_link blob.license.to_s %></p>
+            <% if blob.license_id.nil? %>
+              <p style="font-size:85%;"><b>License: </b>No license</p>
+            <% else %>
+              <p style="font-size:85%;"><b>License: </b><% @license = License.find(blob.license_id) %><%= link_to h(@license.title), license_path(@license) %></p>
+            <% end %>
 						
 						<div class="desc" style="font-size: 85%;">
 							<% if blob.body and blob.body.length > 0 %>
-					  		<% desc = truncate(strip_html(blob.body), 500) %>
+					  		<% desc = truncate(strip_html(blob.body), :length => 500) %>
 					    	<%= query ? highlight_all(desc, query) : desc %>
 						  <% else -%>
 								<span class="none_text">No description</span>	
 							<% end %>
 						</div>
 						
-						<p style="font-size:85%;"><b>File type: </b><%= h blob.content_type %></p>
+						<p style="font-size:85%;"><b>File type: </b><%= h blob.content_type.title %></p>
 						
 						<p style="font-size: 85%;">
-							<a href="<%= file_path(blob) + '#ratings' -%>"><b>Rating: </b><%= number_with_precision(blob.rating, 1) %> / 5 (<%= pluralize blob.ratings_count, 'rating' %>)</a> |
-							<a href="<%= file_path(blob) + '#comments' -%>"><b>Comments: </b><%= blob.comments_count %></a> |
-							<b>Viewed:</b> <%=pluralize blob.contribution.viewings_count, "time" %> |
-							<b>Downloaded:</b> <%=pluralize blob.contribution.downloads_count, "time" %>
+							<a href="<%= blob_path(blob) + '#ratings' -%>"><b>Rating: </b><%= number_with_precision(blob.rating, :precision => 1) %> / 5 (<%= pluralize blob.ratings.count, 'rating' %>)</a> |
+							<a href="<%= blob_path(blob) + '#comments' -%>"><b>Comments: </b><%= blob.comments.count %></a> |
+							<b>Viewed:</b> <%=pluralize blob.contribution.site_viewings_count, "time" %> |
+				      <b>Downloaded:</b> <%=pluralize blob.contribution.site_downloads_count, "time" %>
 						</p>
 						
 						<% unless (tags = blob.tags).empty? %>
-							<a href="<%= file_path(blob) + '#tags' -%>"><p style="font-size: 85%;"><b>Tags:</b></p></a>
+							<a href="<%= blob_path(blob) + '#tags' -%>"><p style="font-size: 85%;"><b>Tags:</b></p></a>
 							<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
 						<% else %>
 							<p style="font-size: 85%;"><i>This File has no tags!</i></p>
@@ -90,9 +95,9 @@
 				<% end %>
 					
 					<td class="actions" style="width: 80px;">
-				    <%= icon "show", file_path(blob), nil, nil, "View" %>
-					  <% if blob.authorized?("download", current_user) %><%= icon "download", download_file_path(blob) %><% end %>
-				    <% if mine?(blob) %><%= icon "manage", edit_file_path(blob), nil, nil, "Manage" %><% end %>
+				    <%= icon "show", blob_path(blob), nil, nil, "View" %>
+					  <% if Authorization.is_authorized?("download", nil, blob, current_user) %><%= icon "download", download_blob_path(blob) %><% end %>
+				    <% if mine?(blob) %><%= icon "manage", edit_blob_path(blob), nil, nil, "Manage" %><% end %>
 				  </td>
 			</tr>
 		<% end %>

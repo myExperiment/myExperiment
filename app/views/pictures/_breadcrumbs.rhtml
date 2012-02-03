@@ -8,17 +8,17 @@
   <li><b>&#187;</b></li>
 <% end %>
 
-<li><%= link_to 'Pictures', pictures_path -%></li>
+<li><%= link_to 'Pictures', user_pictures_path -%></li>
 
 <% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" %>
-  	<li><%= link_to "#{@picture.id}", picture_path(@picture.owner, @picture) %></li>
+  	<li><%= link_to "#{@picture.id}", user_picture_path(@picture.owner, @picture) %></li>
   <% when "new" %>
     <li>Upload New Picture</li>
   <% when "edit" %>
-		<li><%= link_to "#{@picture.id}", picture_path(@picture.owner, @picture) %></li>
+		<li><%= link_to "#{@picture.id}", user_picture_path(@picture.owner, @picture) %></li>
 		<li><b>&#187;</b></li>
     <li>Edit</li>
   <% else %>

@@ -1,6 +1,6 @@
 <% t "#{h @experiment.title}" -%>
 
-<% if @experiment.authorized?('edit', current_user) -%>
+<% if Authorization.is_authorized?('edit', nil, @experiment, current_user) -%>
 	<ul class="sectionIcons">
 	  <li><%= icon('edit', edit_experiment_path(@experiment), nil, nil, 'Edit Experiment') %></li>
 	</ul>
@@ -24,7 +24,7 @@
 			<td style="vertical-align: top;">
 				<div class="box_standout" style="padding: 0em 0.5em; margin-bottom: 0.5em;">
 					<% unless @experiment.description.blank? -%>
-						<%= white_list @experiment.description_html -%>
+						<%= @experiment.description_html -%>
 					<% else -%>
 						<p class="none_text">No description</p>
 					<% end -%>
@@ -55,7 +55,7 @@
   <div class="tabTitle">Jobs</div>
   <div class="tabContent">
 		<ul class="sectionIcons">
-		  <li><%= icon('new', new_job_path(@experiment), nil, nil, 'New Job') %></li>
+		  <li><%= icon('new', new_experiment_job_path(@experiment), nil, nil, 'New Job') %></li>
 		</ul>
 		
 		<% unless @experiment.jobs.empty? -%>
@@ -67,3 +67,6 @@
 		<% end -%>
 	</div>
 </div>
+
+<%= render :partial => "contributions/alternative_formats" %>
+

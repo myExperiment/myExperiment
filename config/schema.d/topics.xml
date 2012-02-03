@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<schema>
+
+  <table name="topics">
+
+    <column type="string"   name="name"/>
+    <column type="integer"  name="run_id"/>
+    <column type="integer"  name="orig_run_id"/>
+
+  </table>
+
+  <table name="topic_runs">
+
+    <column type="string"   name="description"/>
+    <column type="datetime" name="runtime"/>
+
+  </table>
+
+  <table name="topic_tag_map">
+
+    <column type="integer"  name="topic_id"/>
+    <column type="integer"  name="tag_id"/>
+    <column type="float"    name="probability"/>
+    <column type="boolean"  name="display_flag"/>
+
+  </table>
+
+  <table name="topic_workflow_map">
+
+    <column type="integer"  name="topic_id"/>
+    <column type="integer"  name="workflow_id"/>
+    <column type="float"    name="probability"/>
+    <column type="boolean"  name="display_flag"/>
+
+  </table>
+
+  <table name="topic_feedbacks">
+
+    <column type="integer"  name="user_id"/>
+    <column type="integer"  name="topic_id"/>
+    <column type="integer"  name="score"/>
+    <column type="datetime" name="submit_dt"/>
+
+    <belongs-to target="users"/>
+
+  </table>
+
+</schema>
+

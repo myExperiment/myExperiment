@@ -11,13 +11,13 @@
 		
 		<link href="/announcements.rss" rel="alternate" type="application/rss+xml" title="myExperiment.org - Site Announcements" />
   </head>
-  <body>
+  <body onload="init()">
 		<div id="doc2">
       <div id="hd" class="frontpage_header">
         <img alt="Logo" src="images/logo.png" class="logo"/>
         <div class="text">
-          myExperiment makes it really easy to <b>find</b>, <b>use</b> and <b>share</b> <b>scientific workflows</b> and
-          other <b>files</b>, and to build <b>communities</b>.
+          myExperiment makes it easy to <b>find</b>, <b>use</b> and <b>share</b> <b>scientific workflows</b> and
+          other <b>Research Objects</b>, and to build <b>communities</b>.
         </div>
 				<div class="clearer">&nbsp;</div>
       </div>
@@ -29,7 +29,7 @@
 						<form action="/search" method="get">
 							<input id="query" name="query" style="width: 250px; padding: 0.1em;" />
 							<select id="type" name="type">
-								<option value="all" selected>All</option>
+								<option value="all" selected="selected">All</option>
 								<option value="users">Users</option>
 								<option value="groups">Groups</option>
 								<option value="workflows">Workflows</option>
@@ -43,19 +43,28 @@
 					<!-- Quick Start -->
 					<div class="box" style="margin-right: 20px; width: 320px;">
 						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 30em;">
+						<div class="content" style="height: 29em;">
 							<div class="links">
 								<p class="heading" style="margin-left: 1em; margin-bottom: 1em; text-align: left;">
+									First time visitor? Try these videos:
+								</p>
+								<ul class="use">
+									<li>
+										<img src="images/famfamfam_silk/film.png" alt="Film"/>
+										<a href="http://www.youtube.com/watch?v=x83pzMMw7lk">Project Introduction</a>
+									</li>
+										<li>
+										<img src="images/famfamfam_silk/film.png" alt="Film"/>
+										<a href="http://www.youtube.com/watch?v=Y6_Kz5L010g">Bioinformatics Case Study</a>
+									</li>
+								</ul>
+									<p class="heading" style="margin-left: 1em; margin-bottom: 1em; text-align: left;">
 									Use myExperiment to...
 								</p>
 								<ul class="use">
 									<li>
 										<img src="images/redmond_studio/applications_16.png" alt="Find Workflows"/>
 										<b>Find <a href="/workflows">Workflows</a></b>
-									</li>
-									<li>
-										<img src="images/redmond_studio/documents_16.png" alt="Find Files"/>
-										<b>Find <a href="/files">Files</a></b>
 									</li>
 									<li>
 										<img src="images/redmond_studio/add_16.png" alt="Share Your Workflows and Files"/>
@@ -66,20 +75,16 @@
 										<b><a href="/packs/new">Create</a> and Find <a href="/packs">Packs</a> of Items</b>
 									</li>
 									<li>
-										<img src="images/famfamfam_silk/group.png" alt="Create and Join Groups"/>
-										<b><a href="/groups/new">Create</a> and Join <a href="/groups">Groups</a></b>
-									</li>
-									<li>
 										<img src="images/famfamfam_silk/user.png" alt="Find People and Make Friends"/>
 										<b>Find <a href="/users">People</a> and Make Friends</b>
 									</li>
 									<li>
-										<img src="images/famfamfam_silk/email.png" alt="Send Messages"/>
-										<b>Send <a href="/messages/new">Messages</a></b>
+										<img src="images/famfamfam_silk/group.png" alt="Create and Join Groups"/>
+										<b><a href="/groups/new">Create</a> and Join <a href="/groups">Groups</a></b>
 									</li>
 									<li>
-										<img src="images/famfamfam_silk/user_comment.png" alt="Get Feedback"/>
-										<b>Get Feedback</b>
+										<img src="images/famfamfam_silk/award_star_gold_1.png" alt="Build your Profile and Reputation"/>
+										<b>Build your Profile and Reputation</b>
 									</li>
 									<li>
 										<img src="images/famfamfam_silk/tag_blue.png" alt="Tag and Rate things"/>
@@ -88,10 +93,6 @@
 									<li>
 										<img src="images/famfamfam_silk/comment.png" alt="Write Reviews and Comments"/>
 										<b>Write Reviews and Comments</b>
-									</li>
-									<li>
-										<img src="images/famfamfam_silk/award_star_gold_1.png" alt="Build your Profile and Reputation"/>
-										<b>Build your Profile and Reputation</b>
 									</li>
 								</ul>
 							</div>
@@ -102,10 +103,10 @@
 					<!-- Quick Links -->
 					<div class="box" style="margin-right: 20px; width: 280px;">
 						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 30em; text-align: center;">
+						<div class="content" style="height: 29em; text-align: center;">
 							
 							<center>
-								<a href="/home" alt="Explore button" title="Explore myExperiment" class="letmein_button">
+								<a href="/home" "Explore button" title="Explore myExperiment" class="letmein_button">
 								</a>
 							</center>
 							<center>
@@ -113,16 +114,13 @@
 								</a>
 							</center>
 							
-							<p class="heading2">
-								Project Links
-							</p>
-							<div class="links" style="font-size: 93%;">
-								<p style="margin-top: 1em;"><a href="http://wiki.myexperiment.org/" target="_blank">myExperiment Wiki</a></p>
-								<p><a href="http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss" target="_blank">Mailing List</a></p>
+							<div class="links" style="font-size: 93%; border-top: 1px dotted #999999; margin-top: 1em;">
+								<p style="margin-top: 1em; font-size:120%"><a href="http://wiki.myexperiment.org/" target="_blank" style="font-weight: bolder;">About myExperiment</a></p>
+								<p><a href="http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss" target="_blank">Join the Mailing List</a></p>
+								<p><a href="http://wiki.myexperiment.org/index.php/Papers" target="_blank">myExperiment Publications</a></p>
+								<p><a href="http://wiki.myexperiment.org/index.php/Developer:Contents" target="_blank">For Developers</a></p>
 								<p><a href="/feedback">Give us Feedback</a></p>
-								<p><a href="http://www.mygrid.org.uk" target="_blank">myGrid</a></p>
-								<p><a href="http://taverna.sourceforge.net/" target="_blank">Taverna Workflow Workbench</a></p>
-								<p><a href="http://www.semanticgrid.org/myexperiment/" target="_blank">myExperiment Publications</a></p>
+								<p><a href="http://www.biocatalogue.org" target="_blank">The BioCatalogue Project</a></p>
 							</div>
 						</div>
 						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
@@ -131,7 +129,7 @@
 					<!-- Register / Login -->
 					<div class="box" style="width: 230px;">
 						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 30em;">
+						<div class="content" style="height: 29em;">
 								<center>
 									<a href="/users/new" alt="Register button" title="Register for an account on myExperiment" class="register_button">
 									</a>
@@ -191,16 +189,16 @@
 						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 					</div>
 					
-					<br class="clearer">&nbsp;</br>
+					<br class="clearer"/>&nbsp;<br/>
 					
 					<div class="stats">
-						myExperiment has over 1000 users, 85 groups, 311 workflows, 104 files and 16 packs
+						myExperiment has over 5000 members, 250 groups, 2000 workflows, 450 files and 150 packs
 					</div>
 					
 					<!-- About -->
 					<div class="box" style="margin-right: 20px; width: 320px;">
 						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 27em; padding: 0.3em 1.5em;">
+						<div class="content" style="height: 22em; padding: 0.3em 1.5em;">
 							<p class="heading">
 								About
 							</p>
@@ -215,10 +213,6 @@
                 the ability to upload and share workflows, you will need to <a href="/users/new"><b>sign up</b></a>.
               </p>
               <p>
-                The software that powers myexperiment.org is downloadable so that you can run your
-                own myExperiment instance.
-              </p>
-              <p>
                 See the <a href="http://wiki.myexperiment.org/"><b>myExperiment Wiki</b></a>
                 for
                 further information about myExperiment and how to join the user and developer communities.
@@ -230,28 +224,25 @@
 					<!-- Who -->						
 					<div class="box" style="margin-right: 20px; width: 320px;">
 						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 27em; padding: 0.3em 1.5em;">
+						<div class="content" style="height: 22em; padding: 0.3em 1.5em;">
 							<p class="heading">
 								Who?
 							</p>
-							<p>
-                myExperiment is brought to you by a joint team from the universities of 
-								<a href="http://www.soton.ac.uk/" target="_blank">Southampton</a> and 
-								<a href="http://www.manchester.ac.uk/" target="_blank">Manchester</a> in the UK, 
-								led by <a href="http://users.ecs.soton.ac.uk/dder" target="_blank">David De Roure</a> 
-								and <a href="http://www.cs.man.ac.uk/~carole/" target="_blank">Carole Goble</a>, and is funded by 
-								<a href="http://www.jisc.ac.uk/" target="_blank">JISC</a> under the 
-								Virtual Research Environments <a href="http://www.jisc.org.uk/whatwedo/programmes/vre2.aspx" target="_blank">programme</a> 
-								and by Microsoft's <a href="http://www.microsoft.com/mscorp/tc/" target="_blank">Technical Computing Initiative</a>.
+
+              <p>
+                myExperiment is brought to you by a joint team from the
+                universities of
+                <a href="http://www.southampton.ac.uk/" target="_blank">Southampton</a>,
+                <a href="http://www.manchester.ac.uk/" target="_blank">Manchester</a> and
+                <a href="http://www.ox.ac.uk/" target="_blank">Oxford</a> in the UK, led by
+                <a href="http://users.ecs.soton.ac.uk/dder" target="_blank">David De Roure</a> and
+                <a href="http://www.cs.man.ac.uk/~carole/" target="_blank">Carole Goble</a>. Funded by
+                <a href="http://www.jisc.ac.uk/" target="_blank">JISC</a> and the Microsoft
+                <a href="http://www.microsoft.com/mscorp/tc/" target="_blank">Technical Computing Initiative</a>, the project is part of the
+                <a href="http://www.mygrid.org.uk" target="_blank">myGrid</a> consortium (which develops the
+                <a href="http://www.taverna.org.uk/" target="_blank">Taverna Workflow Workbench</a> for creating and executing scientific workflows) and
+                <a href="http://www.eresearchsouth.ac.uk/" target="_blank"><span style="white-space: nowrap">e-Research South</span></a>.
               </p>
-							<p>
-								myExperiment is part of the <a href="http://www.mygrid.org.uk" target="_blank">myGrid</a> consortium, 
-								which develops the <a href="http://taverna.sourceforge.net/" target="_blank">Taverna Workflow Workbench</a> 
-								for creating and executing scientific workflows, 
-								and also builds on <a href="http://www.combechem.org/" target="_blank">CombeChem</a> - two of the original UK e-Science Pilot Projects. 
-								The related WHIP (<a href="http://www.trianacode.org/" target="_blank">Triana</a> enactment) 
-								activity in Cardiff is supported by the <a href="http://www.omii.ac.uk/" target="_blank">OMII-UK</a> Commissioned Software Programme.
-							</p>
 						</div>
 						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 					</div>
@@ -259,7 +250,7 @@
 					<!-- Latest Announcements -->
 					<div class="box" style="width: 190px;">
 						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 27em; padding: 0.4em 0.8em;">
+						<div class="content" style="height: 22em; padding: 0.3em 1.5em; overflow: hidden">
 							<p class="heading">
 								<a href="/announcements.rss" style="margin-right: 0.3em;">
 									<img src="/images/feed-icon.png" alt="Subscribe to site announcements icon" title="Subscribe to site announcements RSS feed" />
@@ -273,7 +264,7 @@
 						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 					</div>
 					
-					<br class="clearer">&nbsp;</br>
+					<br class="clearer"/>&nbsp;<br/>
 					
 					<p style="color: #666666; font-size: 116%; text-align: center;">
 						<a href="/users/invite">Invite People</a>
@@ -285,25 +276,27 @@
       </div>
 			<div id="ft">
         <p class="copyright">
-					Copyright (c) 2007 - 2008
+					Copyright &#169; 2007 - 2011
 					<a href="http://www.manchester.ac.uk/" target="_blank">The University of Manchester</a>
 					and
 					<a href="http://www.soton.ac.uk/" target="_blank">University of Southampton</a>
 				</p>
       </div>
 			
-      <script language="javascript">document.getElementById('session[username]').focus();
-      </script>
+		</div>
 
-      <script language="javascript">
+      <script language="javascript" type="text/javascript">
+//<![CDATA[
 
+function loadAnnoucements()
+{
         div = document.getElementById('announcements')
         div.updated = false;
         div.innerHTML = '<li>Loading announcements...</li>';
 
         xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('MSXML2.XMLHTTP.3.0');
 
-        xhr.open('GET', '/announcements.xml?num=5&order=reverse', true);
+        xhr.open('GET', '/announcements.xml?num=4&order=reverse', true);
         xhr.setRequestHeader('Accept', 'application/xml');
 
         xhr.onreadystatechange = function() {
@@ -328,9 +321,14 @@
         }
 
         xhr.send(null);
+}
 
+function init()
+{
+	document.getElementById('session[username]').focus();
+	loadAnnoucements();
+}
+// ]]>
       </script>
-
-		</div>
 	</body>
 </html>

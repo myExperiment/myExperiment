@@ -1,14 +1,15 @@
-<h1 style="margin-top: 2em;">Invite other people to myExperiment</h1>
+<h1 style="margin-top: 2em;">Invite other people to <%= Conf.sitename %></h1>
 
 <div class="box_infotext" style="margin: 1.5em 1.5em; text-align: center;">
-   Send invitations to people who are not already on myExperiment. You can include a message to intoduce yourself if you like.
+   Send invitations to people who are not already on <%= Conf.sitename %>. You can include a message to intoduce yourself if you like.
 </div>
 
 <% form_tag (:controller => 'users', :action => 'process_invitations') do %>
   <p style="line-heght: 1.5; margin-left: 1.5em">
   	<%= hidden_field_tag :invitations_user_id, current.id -%>
   	
-		<%= info_icon_with_tooltip("To include several email addresses, use commas or semicolons to separate them.<br/>Please note that just #{INVITATION_EMAIL_LIMIT} first unique, valid, non-blank addresses will be processed.") %>
+		<% remaining_allowance, allowance_finishes = ActivityLimit.remaining_allowance(current_user, "user_invite") -%>
+    <%= info_icon_with_tooltip("To include several email addresses, use commas or semicolons to separate them.<br/>#{remaining_allowance ? "Please note that your current allowance is to send invitations to #{remaining_allowance} unique, valid, non-blank address(es) in the list; the allowance #{allowance_finishes ? "will be renewed after #{allowance_finishes.strftime("%H:%M on %d/%m/%Y")}" : "will not be reset"}." : "Please note that limitations on the number of invitations to be sent may apply."}") %>
 		Email addresses to send invitations to:<br/>
 		<% email_addresses_val = ((params[:invitations].nil? || params[:invitations][:addr_to].nil?) ? "" : params[:invitations][:addr_to]) %>
   	<%= text_field_tag "invitations[addr_to]", email_addresses_val, :style => "width: 500px; margin-bottom: 0.5em;" -%><br/>
@@ -19,19 +20,15 @@
 		<%= text_area_tag "invitations[msg_text]", msg_text_val, :rows => 4, :style => "width: 500px; margin-bottom: 0.5em;" -%><br/>
 	  
 		<% as_friendship_checked = (!params[:invitations].nil? && !params[:invitations][:as_friendship].nil? ? true : false) %>
-		<label for="invitations[as_friendship]" title="<%= tooltip_title_attrib('Tick the checkbox to request friendship of new users after they join myExperiment<br/>or leave the checkbox blank to send plain invitation emails.') -%>"><%= check_box_tag "invitations[as_friendship]", "true", as_friendship_checked -%>Request friendships as well</label><br/>
+		<label for="invitations[as_friendship]" title="<%= tooltip_title_attrib("Tick the checkbox to request friendship of new users after they join #{Conf.sitename}<br/>or leave the checkbox blank to send plain invitation emails.") -%>"><%= check_box_tag "invitations[as_friendship]", "true", as_friendship_checked -%>Request friendships as well</label><br/>
 		
 		
 		<table style="margin-top: 2em;">
 			<tr>
 				<td>
-		      <% c = prepare_captcha :type => :image -%>
-					<%= captcha_image_tag c -%>
-				</td>
-				<td style="vertical-align: top;">
-				  <%= captcha_hidden_field c, 'invitations' -%>
-					<%= captcha_label 'invitations', 'Type in the text from the image on the left:' -%><br/>
-	        <%= captcha_text_field 'invitations', :size => 40 -%>
+		<% if Conf.recaptcha_enable -%>
+			<%= recaptcha_tags(:public_key => Conf.recaptcha_public) -%>
+		<% end %>
 				</td>
 			</tr>
 		</table>

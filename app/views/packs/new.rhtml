@@ -1,11 +1,13 @@
 <% t "New" -%>
 
-<%= javascript_include_tag :fckeditor %>
+<%= javascript_include_tag "fckeditor/fckeditor.js" %>
 <%= javascript_include_tag "osp.js" %>
 
 <h1>New Pack</h1>
 
-<%= error_messages_for :pack %>
+<center>
+	<%= error_messages_for :pack %>
+</center>
 
 <% form_tag :action => :create do %>
   <center>
