@@ -34,9 +34,8 @@ def rest_routes(map)
     TABLES['REST'][:data][uri].keys.each do |method|
       formats = []
 
-      formats << "xml"  if TABLES['REST'][:data][uri][method]["XML"]
-      formats << "json" if TABLES['REST'][:data][uri][method]["JSON"]
-      formats << "rdf"  if TABLES['REST'][:data][uri][method]["RDF"]
+      formats << "xml" if TABLES['REST'][:data][uri][method]["XML"]
+      formats << "rdf" if TABLES['REST'][:data][uri][method]["RDF"]
 
       formats.each do |format|
         map.connect "#{uri}.#{format}", :controller => 'api', :action => 'process_request', :uri => uri, :format => format

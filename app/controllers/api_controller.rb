@@ -10,34 +10,15 @@ class ApiController < ApplicationController
 
   def process_request
 
+    # all responses from the API are in XML
+    response.content_type = "application/xml"
+
     rest_response = process_request_aux
 
-    case params[:format]
-
-    when "xml"
-      response.content_type = "application/xml"
-      render(:xml => rest_response[:xml].to_s, :status => rest_response[:status])
-    when "json"
-      response.content_type = "application/json"
-      render(:text => produce_json(rest_response[:xml]))
-    end
+    render(:xml => rest_response[:xml].to_s, :status => rest_response[:status])
   end
 
 private 
-
-  def produce_json(doc)
-
-    def aux(element)
-      result = {}
-      
-      debugger
-        element.
-
-      result
-    end
-
-    aux(doc.root).to_json
-  end
 
   def process_request_aux
 

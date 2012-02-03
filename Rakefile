@@ -176,16 +176,3 @@ task "myexp:types:assign_categories" do
   end
 end
 
-desc 'Dump REST spreadsheet to yaml'
-task "myexp:api:yaml" do
-  require File.dirname(__FILE__) + '/config/environment'
-
-  tables = TABLES.clone
-
-  tables.keys.each do |key|
-    tables[key] = tables[key][:data]
-  end
-
-  puts tables.to_yaml
-end
-
