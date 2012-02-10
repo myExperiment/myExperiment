@@ -357,20 +357,20 @@ class PacksController < ApplicationController
         format.html { render :action => "show" }
       else
         errors, type, entry = @pack.resolve_link(uri, request.host, request.port.to_s, current_user)
-        
+
+        entry.comment = params[:comment]
+        @contributable = entry.contributable
+
         # By this point, we either have errors, or have an entry that needs saving.
-        if errors.empty?
-          unless entry.save
-            copy_errors(entry.errors, errors)
-          end
-        end
-        
-        if errors.empty?
+        if errors.empty? && entry.save
           flash[:notice] = 'Item succesfully added to pack.'
           format.html { redirect_to pack_url(@pack) }
+          format.js   { render :layout => false }
         else
+          copy_errors(entry.errors, errors)
           flash.now[:error] = 'Failed to add item. See error(s) below.'
           @error_message = errors.full_messages.to_sentence(:connector => '')
+          format.js   { render :layout => false, :status => :unprocessable_entity }
           format.html { render :action => "show" }
         end
       end
