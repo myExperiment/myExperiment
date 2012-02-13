@@ -21,5 +21,11 @@ Lyons and Susan B. Davidson at the University of Pennsylvania. <a href="http://w
 	</div>
 </div>
 
-<%= render(:partial => 'topics/tiles', :locals => { :topics => @curr_run.topics }) -%>
+<% if @curr_run && @curr_run.topics %>
+  <%= render(:partial => 'topics/tiles', :locals => { :topics => @curr_run.topics }) -%>
+<% else %>
+<div style="text-align:center">
+  <span class="none_text">No topics found.</span>
+</div>
+<% end %>
 
