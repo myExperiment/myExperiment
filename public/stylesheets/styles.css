@@ -301,8 +301,6 @@ li {
 	text-align: center;
 	font-weight: bolder;
 	font-size: 108%;
-	padding: 3px 0;
-	*padding: 5px 0;
 	margin: 0;
 }
 
@@ -313,17 +311,17 @@ li {
 }
 
 .tabnav li a {
-	padding: 4px 12px;
+	padding: 2px 12px;
 	margin-left: 3px;
-	border-top: 1px solid #BBBBBB;
-	border-left: 1px solid #BBBBBB;
-	border-right: 1px solid #BBBBBB;
-	border-bottom: 1px solid transparent;
+	border-style: solid;
+  border-color: #BBB;
+  border-width: 1px 1px 0;
 	text-decoration: none;
 	background-image: url('/images/tab-bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
 	background-color: #EDEDED;
+	display: inline-block;
 }
 
 .tabnav li a:link {
