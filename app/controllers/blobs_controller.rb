@@ -115,7 +115,7 @@ class BlobsController < ApplicationController
   def create
 
     # don't create new blob if no file has been selected
-    if params[:blob][:data].size == 0
+    if params[:blob][:data].nil? || params[:blob][:data].size == 0
       respond_to do |format|
         flash.now[:error] = "Please select a file to upload."
         format.html { render :action => "new" }
