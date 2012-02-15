@@ -427,6 +427,13 @@ class ApplicationController < ActionController::Base
         },
 
         {
+          :option => 'member',
+          :label  => 'User',
+          :joins  => [ :users ],
+          :order  => 'users.name, contributions.rank DESC'
+        },
+
+        {
           :option => 'rating',
           :label  => 'Community rating',
           :order  => 'contributions.rating DESC, contributions.rank DESC'
