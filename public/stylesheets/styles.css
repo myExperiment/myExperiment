@@ -332,12 +332,7 @@ li {
 	color: #333333;
 }
 
-.tabnav li a:hover {
-	color: #FFFFFF;
-	background: #317eff;
-}
-
-.tabnav li#selected_tabnav a {
+.tabnav li a:hover, .tabnav li#selected_tabnav a {
 	background-color: #317eff;
 	background-image: none;
 	color: #FFFFFF;
