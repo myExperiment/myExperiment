@@ -102,8 +102,6 @@ desc 'Import data from BioCatalogue'
 task "myexp:import:biocat" do
   require File.dirname(__FILE__) + '/config/environment'
 
-  Contribution.delete_all("contributable_type = 'Service'")
-
   conn = ActiveRecord::Base.connection
 
   BioCatalogueImport.import_biocatalogue
