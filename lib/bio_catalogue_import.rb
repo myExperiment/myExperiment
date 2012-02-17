@@ -22,6 +22,7 @@ class BioCatalogueImport
       end
     end
 
+    puts "Cached URI: #{uri}" if @documents[uri]
     return @documents[uri] if @documents[uri]
 
     rest_uri = URI.parse(uri)
@@ -31,6 +32,8 @@ class BioCatalogueImport
 
     @documents[uri] = open(rest_uri.to_s).read.to_s
     @documents[:retrieved_at][uri] = Time.now
+
+    save_document_cache
 
     Kernel.sleep(@@biocat_wait_in_seconds)
 
