@@ -8,7 +8,7 @@ Net::SMTP.class_eval do
 
     # http://blog.inspired.no/smtp-error-while-using-gmail-in-rails-271/
     if RUBY_VERSION > "1.8.6"
-      check_auth_args user, secret # for rails 1.8.7
+      check_auth_args user, secret if user or secret # for rails 1.8.7
     else
       check_auth_args user, secret, authtype if user or secret
     end
