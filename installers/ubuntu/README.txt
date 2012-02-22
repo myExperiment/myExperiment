@@ -6,10 +6,9 @@ that has had all the latest updates installed (based on updates available on
 18/10/2011).  The installer is designed to work on a freshly installed version
 of Ubuntu, you may have problems if you are installing on an existing system.
 
-install.bash is the main install script and can be downloaded and run from 
-the current working directory as follows:
+install.bash is the main install script and can be downloaded and run as follows:
 
-  /bin/bash install.bash
+  RAILS_ROOT/installers/ubuntu/install.bash
 
 This install script requires the settings file, settings.bash, which needs to be 
 kept in the same directory.  This can be created by copying the
@@ -18,10 +17,8 @@ before running install.bash:
 
 myexp_root_password - Choose a password for the root account of MySQL.  If for
 whatever reason MySQL is already installed set this to the current MySQL root
-password.  MySQL mosty have a root password for the installer to suceed
-
-myexp_user_password - Choose a password for the account that myExperiment uses
-to access databases it creates for storing myExperiment data.
+password.  MySQL must have a root password for the installer to suceed.  See
+http://forums.mysql.com/read.php?10,355736 for how to unset a MySQL password.
 
 fq_server_name - The fully-qualified server name and domain for your server,
 i.e. the A record. E.g. myexperiment.example.org
@@ -44,9 +41,9 @@ will do minimal configuration of myExperiment.  To do further configuration
 you will need to edit settings.yml in the config directory of the SVN checkout
 of myExperiment by default this /var/rails/myexperiment/config/.  
 
-Some configuration may require restarting Apache using the following command:
+Some configuration may require restarting myExperiment using the following command:
 
-sudo apache2ctl restart
+sudo service myexperiment restart
 
 
 == Further Information ==

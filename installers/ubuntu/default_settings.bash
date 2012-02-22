@@ -1,43 +1,22 @@
 #!/bin/bash
 install_dir="/var/rails/myexperiment" # Where to checkout the myExperiment SVN
 branch="trunk"
+ruby_version="1.8.7"
 mysql_root_password="changeme"
-mysql_user_name="myexp"
-mysql_user_password="changeme"
-rdoc=1 # Set to 0 if you want no RDoc Ruby Gem documentaion
-ri=1 # Set yo 0 if you want no RI Ruby Gem documentatiom
-rake_version="0.8.7" 
-rails_version="2.3.14"
-passenger_version="2.2.15"
 fq_server_name="server.domain"
+myexp_cname="myexp.domain" # Where your myExperiment will be hosted can be the same as $fq_server_name
 exim_smarthost_server="smtp"
 exim_smarthost_domain="domain"
-myexp_cname="myexp.domain" # Where your myExperiment will be hosted can be the same as $fq_server_name
-
-
-# Patch Files
-net_http_patch='Index: lib/net/http.rb
-===================================================================
---- lib/net/http.rb     (revision 26550)
-+++ lib/net/http.rb     (working copy)
-@@ -1057,7 +1057,7 @@
-       res
-     rescue => exception
-       D "Conn close because of error #{exception}"
--      @socket.close unless @socket.closed?
-+      @socket.close if @socket and not @socket.closed?
-       raise exception
-     end'
-
 exim_smarthost="${exim_smarthost_server}.${exim_smarthost_domain}"
-settings_patch='--- default_settings.yml	2011-11-28 18:40:40.337937711 +0000
-+++ settings.yml	2011-11-28 19:00:56.231831591 +0000
+
+settings_patch='--- default_settings.yml     2011-11-28 18:40:40.337937711 +0000
++++ settings.yml     2011-11-28 19:00:56.231831591 +0000
 @@ -75,7 +75,7 @@
  #
  #            NOTE: No trailing slash.
  
 -base_uri: http://www.example.com
-+base_uri: http://'${myexp_cname}'
++base_uri: http://'${myexp_cname}:3000'
  
  # admins - Set "admins" to the list of usernames of people that are
  #          administrators of this installation.  This is "Username" that is set
@@ -65,6 +44,7 @@ settings_patch='--- default_settings.yml	2011-11-28 18:40:40.337937711 +0000
  # show_debug - Shows query statistics in the footer: "Queries in Controller",
  #              "Queries in View" and "Query Time".
 '
+
 exim_config="dc_eximconfig_configtype='satellite'
 dc_other_hostnames='${fq_server_name}'
 dc_local_interfaces='127.0.0.1 ; ::1'
@@ -79,31 +59,53 @@ dc_hide_mailname='true'
 dc_mailname_in_oh='true'
 dc_localdelivery='mail_spool'" 
 
-apache_config="LoadModule passenger_module /var/lib/gems/1.8/gems/passenger-${passenger_version}/ext/apache2/mod_passenger.so
-PassengerRoot /var/lib/gems/1.8/gems/passenger-${passenger_version}
-PassengerRuby /usr/bin/ruby1.8
-RailsEnv development
+initd_script='#!/bin/bash -e
 
-<VirtualHost *:80>
-        ServerAdmin ${USER}@localhost
-        ServerName ${myexp_cname}
-        DocumentRoot ${install_dir}/public
-        <Directory ${install_dir}/public/>
-                AllowOverride all
-                Options -MultiViews
-        </Directory>
-</VirtualHost>"
+# Starts, stops, and restarts myExperiment
 
+MYEXP_DIR="'${install_dir}'"
+SOLR_LOG_FILE="'${install_dir}'/log/solr.log"
+SOLR_ERR_FILE="'${install_dir}'/log/solr.err"
+MYEXP_LOG_FILE="'${install_dir}'/log/myexperiment.log"
+MYEXP_ERR_FILE="'${install_dir}'/log/myexperiment.err"
+MYEXP_PID_FILE="'${install_dir}'/log/myexperiment.pid"
 
-# Configure options for (Ruby) gem install
-if [ ${rdoc} == 0 ]; then
-        nordoc="--no-rdoc"
-else
-        nordoc=""
-fi
-if [ ${ri} == 0 ]; then
-        nori="--no-ri"
-else
-        nori=""
-fi
-
+case $1 in
+    start)
+        echo "Starting myExperiment..."
+        source /usr/local/rvm/scripts/rvm
+        rvm --default use '${ruby_version}'
+        cd $MYEXP_DIR
+        rake solr:start 2>> $SOLR_ERR_FILE 1>> $SOLR_LOG_FILE
+        ruby script/server 2>> $MYEXP_ERR_FILE 1>> $MYEXP_LOG_FILE &
+        echo $! > $MYEXP_PID_FILE 
+        echo "myExperiment started"
+        ;;
+    stop)
+        echo "Stopping myExperiment..."
+        source /usr/local/rvm/scripts/rvm
+        rvm --default use '${ruby_version}'
+        cd $MYEXP_DIR 
+        rake solr:stop 2>> $SOLR_ERR_FILE 1>> $SOLR_LOG_FILE 
+        if [ -s $MYEXP_PID_FILE ]; then
+            kill -9 `cat $MYEXP_PID_FILE` 
+            rm $MYEXP_PID_FILE
+        else 
+            echo "$MYEXP_PID_FILE does not exist or is empty"
+            if [ -f $MYEXP_PID_FILE ]; then
+                rm $MYEXP_PID_FILE
+            fi
+            exit 2
+        fi
+        echo "myExperiment stopped"
+        ;;
+    restart)
+        $0 stop
+        sleep 3
+        $0 start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}" >&2
+        exit 1        
+        ;;
+esac'
