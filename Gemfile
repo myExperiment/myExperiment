@@ -1,0 +1,18 @@
+source "http://rubygems.org"
+
+gem "rails", "2.3.14"
+gem "mysql", "~> 2.8.1"
+gem "mongrel", "~> 1.2.0.pre2"
+gem "mongrel_cluster", "~> 1.0.5"
+gem "rubyzip", "~> 0.9.4"
+gem "oauth", "~> 0.4.3"
+gem "libxml-ruby", "~> 1.1.4"
+gem "rmagick", "~> 2.13.1"
+gem "dsl_accessor", "~> 0.4.0"
+gem "ruby-openid", "~> 2.1.8"
+gem "openurl", "~> 0.1.0"
+gem "curb", "~> 0.7.8"
+gem "marc", "~> 0.4.1"
+gem "ruby-hmac", "~> 0.4.0"
+gem "passenger", "~> 2.2.15"
+
