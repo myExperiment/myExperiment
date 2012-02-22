@@ -54,32 +54,31 @@ patch settings.yml ${tempdir}/settings.patch  || { echo "Could not patch setting
 cp captcha.yml.pre captcha.yml || { echo "Could not create captcha.yml file.  Aborting ..."; exit 20; }
 
 echo "Installing Gems required by myExperiment using bundler"
-cp ${basedir}/Gemfile ${install_dir} || { echo "Could not copy Gemfile to myExperiment base directory: ${install_dir}. Aborting ..."; exit 21; }
 cd ${install_dir}
-bundle install || { echo "Could not install the Gems required by myExperiment using bundler. Aborting ..."; exit 22; }
+bundle install || { echo "Could not install the Gems required by myExperiment using bundler. Aborting ..."; exit 21; }
 
 echo "Setting up exim (Email) for myExperiment"
-echo "${exim_config}" > ${tempdir}/update-exim4.conf.conf || { echo "Could not write exim4 config to ${tempdir}/update-exim4.conf.conf. Aborting ..."; exit 23; }
-sudo mv ${tempdir}/update-exim4.conf.conf /etc/exim4/ || { echo "Could not move new exim4 config to /etc/exim4/update-exim4.conf.conf. Aborting ..."; exit 24; }
-echo "${fq_server_name}" > ${tempdir}/mailname || { echo "Could not write mailname (${fq_server_name}) to ${tempdir}/mailname. Aborting ..."; exit 25; }
-sudo mv ${tempdir}/mailname /etc/ || { echo "Could not update hostname for /etc/mailname.  Aborting..."; exit 26; }
-sudo dpkg-reconfigure -fnoninteractive exim4-config || { echo "Could not write new reconfingure exim4.  Aborting..."; exit 27; }
+echo "${exim_config}" > ${tempdir}/update-exim4.conf.conf || { echo "Could not write exim4 config to ${tempdir}/update-exim4.conf.conf. Aborting ..."; exit 22; }
+sudo mv ${tempdir}/update-exim4.conf.conf /etc/exim4/ || { echo "Could not move new exim4 config to /etc/exim4/update-exim4.conf.conf. Aborting ..."; exit 23; }
+echo "${fq_server_name}" > ${tempdir}/mailname || { echo "Could not write mailname (${fq_server_name}) to ${tempdir}/mailname. Aborting ..."; exit 24; }
+sudo mv ${tempdir}/mailname /etc/ || { echo "Could not update hostname for /etc/mailname.  Aborting..."; exit 25; }
+sudo dpkg-reconfigure -fnoninteractive exim4-config || { echo "Could not write new reconfingure exim4.  Aborting..."; exit 26; }
 
 echo "Creating and migrating myExperiment database"
-rake db:create:all || { echo "Could not create MySQL database for myExperiment data model. Aborting ..."; exit 28; }
-rake db:migrate || { echo "Could not migrate myExperiment data model to a MySQL database. Aborting ..."; exit 29; }
+rake db:create:all || { echo "Could not create MySQL database for myExperiment data model. Aborting ..."; exit 27; }
+rake db:migrate || { echo "Could not migrate myExperiment data model to a MySQL database. Aborting ..."; exit 28; }
 
 echo "Creating myExperiment init.d script and deploying so myExperiment automatically starts after machine start up"
-echo "${initd_script}" > ${tempdir}/myexperiment || { echo "Could not create myExperiment init.d script. Aborting ..."; exit 30; }
-sudo mv ${tempdir}/myexperiment /etc/init.d || { echo "Could not move myExperiment init.d script to /etc/init.d. Aborting ..."; exit 31; }
-sudo chown root:root /etc/init.d/myexperiment || { echo "Could not change ownwership of /etc/init.d/myexperiment. Aborting ..."; exit 32; }
-sudo chmod +x /etc/init.d/myexperiment || { echo "Could not modify permissions of /etc/init.d/myexperiment. Aborting ..."; exit 33; }
-sudo update-rc.d myexperiment defaults || { echo "Could not deploy /etc/init.d/myexperiment as a startup script. Aborting ..."; exit 34; }
+echo "${initd_script}" > ${tempdir}/myexperiment || { echo "Could not create myExperiment init.d script. Aborting ..."; exit 29; }
+sudo mv ${tempdir}/myexperiment /etc/init.d || { echo "Could not move myExperiment init.d script to /etc/init.d. Aborting ..."; exit 30; }
+sudo chown root:root /etc/init.d/myexperiment || { echo "Could not change ownwership of /etc/init.d/myexperiment. Aborting ..."; exit 31; }
+sudo chmod +x /etc/init.d/myexperiment || { echo "Could not modify permissions of /etc/init.d/myexperiment. Aborting ..."; exit 32; }
+sudo update-rc.d myexperiment defaults || { echo "Could not deploy /etc/init.d/myexperiment as a startup script. Aborting ..."; exit 33; }
 
-sudo service myexperiment start || { echo "Could not start myExperiment. Aborting ..."; exit 35; }
+sudo service myexperiment start || { echo "Could not start myExperiment. Aborting ..."; exit 34; }
 
 echo "Tidying up"
-rm -r ${tempdir} || { echo "Could not delete temporary directory ${tempdir}. Aborting ..."; exit 36; }
+rm -r ${tempdir} || { echo "Could not delete temporary directory ${tempdir}. Aborting ..."; exit 35; }
 
 echo ""
 echo "+----------------------------------------------------------------------------------------------+"
