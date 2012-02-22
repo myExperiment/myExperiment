@@ -29,15 +29,15 @@ echo '[[ -s "/usr/local/rvm/scripts/rvm" ]] && source "/usr/local/rvm/scripts/rv
 
 echo "Install and configuring Ruby version ${ruby_version}"
 source "/usr/local/rvm/scripts/rvm" || { echo "Could not source /usr/local/rvm/scripts/rvm to add RVM directory to path. Aborting ..."; exit 9; }
-rvmsudo rvm install ${ruby_version}  || { echo "Could not install Ruby ${ruby_version} using RVM.  Aborting ..."; exit 10; }
-rvm --default use ${ruby_version} || { echo "Could not set Ruby ${ruby_version} as the default environment for RVM.  Aborting ..."; exit 11; }
+rvmsudo rvm install ${ruby_version}  || { echo "Could not install Ruby ${ruby_version} using RVM. Aborting ..."; exit 10; }
+rvm --default use ${ruby_version} || { echo "Could not set Ruby ${ruby_version} as the default environment for RVM. Aborting ..."; exit 11; }
 
 echo "Checking out myExperiment codebase from SVN"
 cd /
 for idir in `echo ${install_dir} | awk 'BEGIN{RS="/"}{print $1}'`; do
 	if [ -n ${idir} ]; then
 		if  [ ! -d ${idir} ]; then
-			sudo mkdir ${idir} || { echo "Could not create directory ${idir} in `pwd`.  Aborting ..."; exit 12; }
+			sudo mkdir ${idir} || { echo "Could not create directory ${idir} in `pwd`. Aborting ..."; exit 12; }
 		fi
 		cd ${idir}
 	fi
@@ -48,10 +48,10 @@ cd ${install_dir}/config/ || { echo "Could not find config directory for myExper
 
 echo "Setting up config files for myExperiment"
 cat database.yml.pre | sed "s/password:/password: ${mysql_root_password}/" > database.yml || { echo "Could not create database.yml file with appropriate configuration settings. Aborting ..."; exit 16; }
-cp default_settings.yml settings.yml || { echo "Could not copy default_settings.yml to settings.yml ..."; exit 17; }
+cp default_settings.yml settings.yml || { echo "Could not copy default_settings.yml to settings.yml. Aborting ..."; exit 17; }
 echo "${settings_patch}" > ${tempdir}/settings.patch || { echo "Could not write settings patch file. Aborting ..."; exit 18; }
 patch settings.yml ${tempdir}/settings.patch  || { echo "Could not patch settings.yml. Aborting ..."; exit 19; }
-cp captcha.yml.pre captcha.yml || { echo "Could not create captcha.yml file.  Aborting ..."; exit 20; }
+cp captcha.yml.pre captcha.yml || { echo "Could not create captcha.yml file. Aborting ..."; exit 20; }
 
 echo "Installing Gems required by myExperiment using bundler"
 cd ${install_dir}
@@ -61,8 +61,8 @@ echo "Setting up exim (Email) for myExperiment"
 echo "${exim_config}" > ${tempdir}/update-exim4.conf.conf || { echo "Could not write exim4 config to ${tempdir}/update-exim4.conf.conf. Aborting ..."; exit 22; }
 sudo mv ${tempdir}/update-exim4.conf.conf /etc/exim4/ || { echo "Could not move new exim4 config to /etc/exim4/update-exim4.conf.conf. Aborting ..."; exit 23; }
 echo "${fq_server_name}" > ${tempdir}/mailname || { echo "Could not write mailname (${fq_server_name}) to ${tempdir}/mailname. Aborting ..."; exit 24; }
-sudo mv ${tempdir}/mailname /etc/ || { echo "Could not update hostname for /etc/mailname.  Aborting..."; exit 25; }
-sudo dpkg-reconfigure -fnoninteractive exim4-config || { echo "Could not write new reconfingure exim4.  Aborting..."; exit 26; }
+sudo mv ${tempdir}/mailname /etc/ || { echo "Could not update hostname for /etc/mailname. Aborting ..."; exit 25; }
+sudo dpkg-reconfigure -fnoninteractive exim4-config || { echo "Could not write new reconfingure exim4. Aborting ..."; exit 26; }
 
 echo "Creating and migrating myExperiment database"
 rake db:create:all || { echo "Could not create MySQL database for myExperiment data model. Aborting ..."; exit 27; }
