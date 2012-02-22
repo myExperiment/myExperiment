@@ -1,52 +1,53 @@
-<script type="text/javascript">
-  function inviteAndDisable() {
-	  var invites_in_progress = 0;
-	
-    <% current.networks_owned.each do |n| %>
-      <% unless n.member?(user.id) || user.membership_pending?(n.id) %>
-        if ($("my_network_<%= n.id %>").checked && !$("my_network_<%= n.id %>").disabled) {
-					invites_in_progress++;
-          var xmlhttp_<%= n.id %> = new XMLHttpRequest();
-					var xmlhttp_<%= n.id %>_params = "&user_id=<%= user.id %>&membership[message]=";
-					
-          xmlhttp_<%= n.id %>.open('POST', '<%= membership_invite_network_path(n) %>', true);
-          
-					// Send the proper header information along with the request
-					xmlhttp_<%= n.id %>.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-					xmlhttp_<%= n.id %>.setRequestHeader("Content-length", xmlhttp_<%= n.id %>_params.length);
-					xmlhttp_<%= n.id %>.setRequestHeader("Connection", "close");
+<% networks = current.networks_admined(true) %>
 
-          xmlhttp_<%= n.id %>.onreadystatechange = function() {
-            $("my_network_<%= n.id %>").disabled = true;
-          
-					  // DEBUG
-						// alert("ready state : " + xmlhttp_<%= n.id %>.readyState + "\nstatus: " + xmlhttp_<%= n.id %>.status + "\nresponse: " + xmlhttp_<%= n.id %>.responseText);
-						// END OF DEBUG
-            
-						if (xmlhttp_<%= n.id %>.readyState == 4 && xmlhttp_<%= n.id %>.status == 200)
-						{
-              invites_in_progress--;
-							$("my_networks_button").value = "Inviting (" + invites_in_progress + ((invites_in_progress % 10) == 1 ? " request" : " requests") + " in progress)";
-							
-							$("my_network_font_<%= n.id %>").color = "green";
-							$("my_network_<%= n.id %>_status").show();
-              
-              if (invites_in_progress == 0)
-							{
-						  	$("my_networks_button").value = "Invite";
-						  	$("my_networks_button").disabled = false;
-						  }
-            }
-						else
-						{
-							$("my_network_font_<%= n.id %>").color = "red";
-							$("my_networks_button").disabled = true;
-							// $("my_networks_button").value = "Inviting (<%= h(n.title) %>)";
-							$("my_networks_button").value = "Inviting (" + invites_in_progress + ((invites_in_progress % 10) == 1 ? " request" : " requests") + " in progress)";
-            }
-          }
-          
-          xmlhttp_<%= n.id %>.send(xmlhttp_<%= n.id %>_params);
+<script type="text/javascript">
+
+  var invites_in_progress = 0;
+
+  function networkInvitationPending(network_id) {
+    $('group_invite_spinner').show();
+    $('my_network_font_' + network_id).setStyle({color:'red'});
+    $('my_network_' + network_id).disabled = true;
+    //Disable button
+    $("my_networks_button").disabled = true;
+    $("my_networks_button").value = "Inviting (" +
+        invites_in_progress + ((invites_in_progress % 10) == 1 ? " request" : " requests") + " in progress)";
+  }
+
+  function networkInvitationDone(network_id, success) {
+    if(success) {
+      $('my_network_font_' + network_id).setStyle({color:'green'});
+    }
+    else {
+      $('my_network_' + network_id + '_status').update("(An error occurred when sending the invitation)");
+    }
+    $('my_network_' + network_id + '_status').show();
+
+    invites_in_progress--;
+    if (invites_in_progress == 0) {
+      $("my_networks_button").value = "Invite";
+      $("my_networks_button").disabled = false;
+      $('group_invite_spinner').hide();
+    }
+    else {
+      $("my_networks_button").value = "Inviting (" +
+          invites_in_progress + ((invites_in_progress % 10) == 1 ? " request" : " requests") + " in progress)";
+    }
+  }
+
+  function inviteAndDisable() {
+    <% networks.each do |n| %>
+      <% unless n.member?(user.id) || user.membership_pending?(n.id) %>
+        if ($("my_network_<%= n.id -%>").checked && !$("my_network_<%= n.id -%>").disabled) {
+          <%= remote_function(:url => membership_invite_network_path(n),
+                              :method => :post,
+                              :loading => "networkInvitationPending(#{n.id});",
+                              :success => "networkInvitationDone(#{n.id}, true);",
+                              :failure => "networkInvitationDone(#{n.id}, false);",
+                              :form => false,
+                              :with => "'user_id=#{user.id}&membership[message]='") -%>;
+
+					invites_in_progress++;
         }
       <% end %>
     <% end %>
@@ -62,18 +63,18 @@
 </p>
 
 <form>
-  <% networks_owned = current.networks_owned -%>
-  <% networks_owned.each_index do |index| %>
-    <% n = networks_owned[index] -%>
+  <% networks.each_with_index do |n, index| %>
     <% if n.member?(user.id) %>
-      <input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>" disabled=true CHECKED /> - <font color="green"><%= h(n.title) %></font> (already a member)
+      <input type="checkbox" id="my_network_<%= n.id -%>" value="<%= n.id -%>" disabled=true CHECKED /> - <span style="color: green"><%= h(n.title) -%></span> (already a member)
     <% elsif user.membership_pending?(n.id) %>
-		  <input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>" disabled=true CHECKED /> - <font color="green"><%= h(n.title) %></font> (waiting for the user to confirm)
+      <input type="checkbox" id="my_network_<%= n.id -%>" value="<%= n.id -%>" disabled=true CHECKED /> - <span style="color: green"><%= h(n.title) -%></span> (waiting for the user to confirm)
 		<% else %>
-      <label for="my_network_<%= n.id %>"><input type="checkbox" id="my_network_<%= n.id %>" value="<%= n.id %>"/> - <font id="my_network_font_<%= n.id %>"><%= h(n.title) %></font></label><span style="display: none;" id="my_network_<%= n.id %>_status"> (invitation was sent successfully)</span>
+      <input type="checkbox" id="my_network_<%= n.id -%>" value="<%= n.id -%>"/>
+      <label for="my_network_<%= n.id %>"> - <span id="my_network_font_<%= n.id %>"><%= h(n.title) %></span></label>
+      <span style="display: none;" id="my_network_<%= n.id -%>_status"> (invitation was sent successfully)</span>
     <% end %>
         
-    <%= "<br />" unless (index.to_i == (networks_owned.length.to_i - 1)) %>
+    <%= "<br />" unless (index.to_i == (networks.length - 1)) %>
   <% end %>
   
   <br/>
@@ -81,6 +82,7 @@
     
   <p>
     <input id="my_networks_button" onclick="inviteAndDisable();" type="button" value="Invite" />
+    <img style="display: none" id="group_invite_spinner" src="/images/spinner.gif" />
   </p>
 </form>
 

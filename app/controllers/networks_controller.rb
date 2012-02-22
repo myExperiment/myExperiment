@@ -68,11 +68,19 @@ class NetworksController < ApplicationController
             logger.error("EXCEPTION:" + e)
           end
   
-          flash[:notice] = 'An invitation has been sent to the User.'
-          format.html { redirect_to network_url(@network) }
+          if request.xhr?
+            format.html { render :nothing => :true, :status => 200 }
+          else
+            flash[:notice] = 'An invitation has been sent to the User.'
+            format.html { redirect_to network_url(@network) }
+          end
         else
-          flash[:error] = 'Failed to send invitation to User. Please try again or report this.'
-          format.html { redirect_to invite_network_url(@network) }
+          if request.xhr?
+            format.html { render :nothing => :true, :status => 400 }
+          else
+            flash[:error] = 'Failed to send invitation to User. Please try again or report this.'
+            format.html { redirect_to invite_network_url(@network) }
+          end
         end
       end
     else
@@ -82,7 +90,11 @@ class NetworksController < ApplicationController
         flash[:error] = "User invited is already a member of the group"
       end
       respond_to do |format|
-        format.html { redirect_to invite_network_url(@network) }
+        if request.xhr?
+          format.html { render :nothing => :true, :status => 403 }
+        else
+          format.html { redirect_to invite_network_url(@network) }
+        end
       end
     end
   end
