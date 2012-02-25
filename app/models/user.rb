@@ -376,11 +376,15 @@ class User < ActiveRecord::Base
   end
   
   def friends
-    User.find(:all,
-              :select => "users.*",
-              :joins => "JOIN friendships f ON (users.id = f.friend_id OR users.id = f.user_id)",
-              :conditions => ["(f.user_id = ? OR f.friend_id = ?) AND (f.accepted_at IS NOT NULL) AND (users.id <> ?)", id, id, id],
-              :order => "lower(users.name)" )
+    f  = User.find(:all,
+                   :joins => 'INNER JOIN friendships ON users.id = friendships.user_id',
+                   :conditions => ['friendships.friend_id = ? AND friendships.accepted_at IS NOT NULL', id])
+
+    f += User.find(:all,
+                   :joins => 'INNER JOIN friendships ON users.id = friendships.friend_id',
+                   :conditions => ['friendships.user_id = ? AND friendships.accepted_at IS NOT NULL', id])
+
+    f.sort do |a, b| a.name.downcase <=> b.name.downcase end
   end
   
   has_and_belongs_to_many :networks,
