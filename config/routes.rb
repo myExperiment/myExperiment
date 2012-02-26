@@ -79,7 +79,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :tags
 
   # sessions and RESTful authentication
-  map.resource :session
+  map.resource :session, :collection => { :create => :post }
   
   # openid authentication
   map.resource :openid, :controller => 'openid'
