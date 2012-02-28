@@ -599,7 +599,7 @@ def produce_rest_list(req_uri, rules, query, obs, tag, attributes, user)
 
   obs.each do |ob|
 
-    el = rest_reference(ob, query, !elements.nil?)
+    el = rest_reference(ob, query, !elements.empty?)
 
     if elements.length > 0
 
