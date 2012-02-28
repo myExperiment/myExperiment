@@ -29,6 +29,23 @@ TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
 TABLES["REST"][:data]["job"].delete("POST")
 TABLES["REST"][:data]["messages"].delete("GET")
 
+def object_class_to_entity_name
+  result = {}
+
+  TABLES["REST"][:data].each do |path, rules|
+    rules.map do |method, rules|
+      next unless rules["Method"]       == "GET"
+      next unless rules["Type"]         == "crud"
+      
+      result[rules["Model Entity"]] = rules["REST Entity"]
+    end
+  end
+
+  result
+end
+
+OBJECT_CLASS_TO_ENTITY_NAME = object_class_to_entity_name
+
 def rest_routes(map)
   TABLES['REST'][:data].keys.each do |uri|
     TABLES['REST'][:data][uri].keys.each do |method|
@@ -112,6 +129,11 @@ def model_entity_to_rest_entity(model_entity)
   nil
 end
 
+def filter_elements(elements, prefix)
+  return nil if elements.nil?
+  elements[prefix]
+end
+
 def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
   # puts "rest_get_element: #{rest_entity} / #{rest_attribute}"
@@ -140,10 +162,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
     return nil if !Authorization.is_authorized?(permission, nil, ob, user)
   end
 
-  unless query['all_elements'] == 'yes'
-    return nil if elements and not elements.index(model_data['REST Attribute'][i])
-    return nil if not elements and model_data['Read by default'][i] == 'no'
-  end
+  return nil if elements.nil? || elements[model_data['REST Attribute'][i]].nil?
 
   if (model_data['Read'][i] == 'yes')
 
@@ -157,6 +176,9 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
       when 'list', 'item as list'
 
         list_element = LibXML::XML::Node.new(model_data['REST Attribute'][i])
+
+        list_select_elements = filter_elements(elements, model_data['REST Attribute'][i])
+        list_select_elements = elements[model_data['REST Attribute'][i]] if elements
 
         attrs.each do |key,value|
           list_element[key] = value
@@ -177,10 +199,13 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
           next if item.nil?
 
-          item_uri = rest_resource_uri(item)
+          if model_data['List Element Name'][i]
+            list_item_select_elements = filter_elements(list_select_elements, model_data['List Element Name'][i])
+          else
+            list_item_select_elements = filter_elements(list_select_elements, model_entity_to_rest_entity(item.class.name))
+          end
 
-          item_attrs['resource'] = item_uri if item_uri
-          item_attrs['uri'] = rest_access_uri(item)
+          item_uri = rest_resource_uri(item)
 
           list_element_accessor = model_data['List Element Accessor'][i]
           list_element_text     = list_element_accessor ? eval("item.#{model_data['List Element Accessor'][i]}") : item
@@ -188,6 +213,9 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
           if list_element_text
             if list_element_text.instance_of?(String)
               el = LibXML::XML::Node.new(model_data['List Element Name'][i])
+
+              item_attrs['resource'] = item_uri if item_uri
+              item_attrs['uri'] = rest_access_uri(item)
 
               item_attrs.each do |key,value|
                 el[key] = value
@@ -197,7 +225,17 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
               list_element << el
             else
-              list_element << rest_reference(list_element_text, query)
+              el = rest_get_request_aux(item, user, { "id" => item.id.to_s }, list_item_select_elements)
+
+              if model_data['List Element Name'][i]
+                el.name = model_data['List Element Name'][i]
+              end
+
+              if list_item_select_elements.nil? || list_item_select_elements.empty? 
+                el << item.label if item.respond_to?(:label)
+              end
+
+              list_element << el
             end
           end
         end
@@ -286,49 +324,94 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
   end
 end
 
-def rest_get_request(ob, req_uri, user, uri, entity_name, query)
+def find_entity_name_from_object(ob)
+  OBJECT_CLASS_TO_ENTITY_NAME[ob.class.name.underscore]
+end
+
+def rest_get_request_aux(ob, user, query, elements)
+
+  rest_entity = find_entity_name_from_object(ob)
+
+  entity = LibXML::XML::Node.new(rest_entity)
+
+  uri      = rest_access_uri(ob)
+  resource = rest_resource_uri(ob)
+  version  = ob.current_version.to_s if ob.respond_to?('versions')
+
+  entity['uri'     ] = uri      if uri
+  entity['resource'] = resource if resource
+  entity['version' ] = version  if version
+
+  TABLES['Model'][:data][rest_entity]['REST Attribute'].each do |rest_attribute|
+    data = rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
+    entity << data unless data.nil?
+  end
+
+  entity
+end
+
+def add_to_element_hash(element, hash)
+  element.split('.').each do |fragment|
+    hash[fragment] = { } if hash[fragment].nil?
+    hash = hash[fragment]
+  end
+end
+
+def rest_get_request(ob, user, query)
 
   if query['version']
     return rest_response(400, :reason => "Object does not support versioning") unless ob.respond_to?('versions')
     return rest_response(404, :reason => "Specified version does not exist") if query['version'].to_i < 1
   end
 
-  elements = query['elements'] ? query['elements'].split(',') : nil
+  # Work out which elements to include in the response.
 
-  doc  = LibXML::XML::Document.new()
-  root = LibXML::XML::Node.new(entity_name)
-  doc.root = root
+  entity_name  = find_entity_name_from_object(ob)
+  entity_rules = TABLES['Model'][:data][find_entity_name_from_object(ob)]
 
-  root['uri'        ] = rest_access_uri(ob)
-  root['resource'   ] = uri if uri
-  root['api-version'] = API_VERSION if query['api_version'] == 'yes'
+  elements = {}
 
-  if ob.respond_to?('versions')
-    if query['version']
-      root['version'] = query['version']
-    else
-      root['version'] = ob.current_version.to_s
+  # "all_elements" means that all root elements are included in the response
+
+  if query['all_elements'] == 'yes'
+    entity_rules['REST Attribute'].each do |rest_attribute|
+      add_to_element_hash(rest_attribute, elements)
     end
   end
 
-  data = TABLES['REST'][:data][req_uri]['GET']
+  # include only root elements that are listed as "Read by default"
 
-  rest_entity = data['REST Entity']
-
-  TABLES['Model'][:data][rest_entity]['REST Attribute'].each do |rest_attribute|
-    data = rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
-    root << data unless data.nil?
+  if query['all_elements'].nil? && query['elements'].nil?
+    entity_rules['REST Attribute'].each_index do |i|
+      if entity_rules['Read by default'][i] == 'yes'
+        add_to_element_hash(entity_rules['REST Attribute'][i], elements)
+      end
+    end
   end
+
+  # "elements" means that only the listed elements are included in the response
+
+  if query['elements']
+    query['elements'].split(',').each do |attribute|
+      add_to_element_hash(attribute, elements)
+    end
+  end
+
+  doc  = LibXML::XML::Document.new()
+  root = rest_get_request_aux(ob, user, query, elements) 
+  doc.root = root
+
+  root['api-version'] = API_VERSION if query['api_version'] == 'yes'
 
   { :xml => doc }
 end
 
-def rest_crud_request(req_uri, format, rules, user, query)
+def rest_crud_request(req_uri, ob_id, format, rules, user, query)
 
   rest_name  = rules['REST Entity']
   model_name = rules['Model Entity']
 
-  ob = eval(model_name.camelize).find_by_id(params[:id].to_i)
+  ob = model_name.camelize.constantize.find_by_id(ob_id.to_i)
 
   return rest_response(404, :reason => "Object not found") if ob.nil?
 
@@ -342,7 +425,7 @@ def rest_crud_request(req_uri, format, rules, user, query)
     when 'owner'; return rest_response(401, :reason => "Not authorised") if logged_in?.nil? or object_owner(perm_ob) != user
   end
 
-  rest_get_request(ob, params[:uri], user, eval("rest_resource_uri(ob)"), rest_name, query)
+  rest_get_request(ob, user, query)
 end
 
 def find_paginated_auth(args, num, page, filters, user, &blk)
@@ -506,13 +589,19 @@ def produce_rest_list(req_uri, rules, query, obs, tag, attributes, user)
     root[k] = v
   end
 
-  elements = query['elements'] ? query['elements'].split(',') : nil
+  elements = {}
+
+  if query['elements']
+    query['elements'].split(',').each do |attribute|
+      add_to_element_hash(attribute, elements)
+    end
+  end
 
   obs.each do |ob|
 
     el = rest_reference(ob, query, !elements.nil?)
 
-    if elements
+    if elements.length > 0
 
       rest_entity = model_entity_to_rest_entity(ob.class.name)
 
@@ -1002,8 +1091,7 @@ def workflow_aux(action, opts = {})
 
   ob = ob.versioned_resource if ob.respond_to?("versioned_resource")
 
-  rest_get_request(ob, "workflow", opts[:user],
-      rest_resource_uri(ob), "workflow", { "id" => ob.id.to_s })
+  rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end
 
 def post_workflow(opts)
@@ -1113,8 +1201,7 @@ def file_aux(action, opts = {})
     update_permissions(ob, permissions)
   end
 
-  rest_get_request(ob, "file", opts[:user],
-      rest_resource_uri(ob), "file", { "id" => ob.id.to_s })
+  rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end
 
 def post_file(opts)
@@ -1177,8 +1264,7 @@ def pack_aux(action, opts = {})
     update_permissions(ob, permissions)
   end
 
-  rest_get_request(ob, "pack", opts[:user],
-      rest_resource_uri(ob), "pack", { "id" => ob.id.to_s })
+  rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end
 
 def post_pack(opts)
@@ -1252,8 +1338,7 @@ def external_pack_item_aux(action, opts = {})
     end
   end
 
-  rest_get_request(ob, "external-pack-item", opts[:user],
-      rest_resource_uri(ob), "external-pack-item", { "id" => ob.id.to_s })
+  rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end
 
 def post_external_pack_item(opts)
@@ -1320,8 +1405,7 @@ def internal_pack_item_aux(action, opts = {})
     end
   end
 
-  rest_get_request(ob, "internal-pack-item", opts[:user],
-      rest_resource_uri(ob), "internal-pack-item", { "id" => ob.id.to_s })
+  rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end
 
 def post_internal_pack_item(opts)
@@ -1759,8 +1843,7 @@ def comment_aux(action, opts)
 
       subject.solr_save
 
-      return rest_get_request(ob, "comment", opts[:user], rest_resource_uri(ob),
-        "comment", { "id" => ob.id.to_s })
+      return rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
     end
 
     # End of curation hack
@@ -1768,7 +1851,7 @@ def comment_aux(action, opts)
     return rest_response(400, :object => ob) unless ob.save
   end
 
-  rest_get_request(ob, "comment", opts[:user], rest_resource_uri(ob), "comment", { "id" => ob.id.to_s })
+  rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end
 
 def post_comment(opts)
@@ -1821,7 +1904,7 @@ def favourite_aux(action, opts)
     return rest_response(400, :object => ob) unless ob.save
   end
 
-  rest_get_request(ob, "favourite", opts[:user], rest_resource_uri(ob), "favourite", { "id" => ob.id.to_s })
+  rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end
 
 def post_favourite(opts)
@@ -1877,7 +1960,7 @@ def rating_aux(action, opts)
     return rest_response(400, :object => ob) unless ob.save
   end
 
-  rest_get_request(ob, "rating", opts[:user], rest_resource_uri(ob), "rating", { "id" => ob.id.to_s })
+  rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end
 
 def post_rating(opts)
@@ -1934,7 +2017,7 @@ def tagging_aux(action, opts)
     return rest_response(400, :object => ob) unless ob.save
   end
 
-  rest_get_request(ob, "tagging", opts[:user], rest_resource_uri(ob), "tagging", { "id" => ob.id.to_s })
+  rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end
 
 def post_tagging(opts)
@@ -1988,8 +2071,7 @@ def ontology_aux(action, opts)
     end
   end
 
-  rest_get_request(ob, "ontology", opts[:user],
-      rest_resource_uri(ob), "ontology", { "id" => ob.id.to_s })
+  rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end
 
 def post_ontology(opts)
@@ -2053,8 +2135,7 @@ def predicate_aux(action, opts)
     end
   end
 
-  rest_get_request(ob, "predicate", opts[:user],
-      rest_resource_uri(ob), "predicate", { "id" => ob.id.to_s })
+  rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end
 
 def post_predicate(opts)
@@ -2115,8 +2196,7 @@ def relationship_aux(action, opts)
     end
   end
 
-  rest_get_request(ob, "relationship", opts[:user],
-      rest_resource_uri(ob), "relationship", { "id" => ob.id.to_s })
+  rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end
 
 def post_relationship(opts)
@@ -2133,9 +2213,9 @@ end
 
 # Call dispatcher
 
-def rest_call_request(req_uri, format, rules, user, query)
+def rest_call_request(opts)
   begin
-    eval("#{rules['Function']}(:req_uri => req_uri, :format => format, :rules => rules, :user => user, :query => query)")
+    send(opts[:rules]['Function'], opts)
   rescue
     return rest_response(500)
   end

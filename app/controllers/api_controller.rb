@@ -79,8 +79,8 @@ private
 
     case rules['Type']
       when 'index'; rest_index_request(params[:uri], params[:format], rules, user, request.query_parameters)
-      when 'crud';  rest_crud_request(params[:uri], params[:format], rules, user, request.query_parameters)
-      when 'call';  rest_call_request(params[:uri], params[:format], rules, user, request.query_parameters)
+      when 'crud';  rest_crud_request(params[:uri], params[:id], params[:format], rules, user, request.query_parameters)
+      when 'call';  rest_call_request(:req_uri => params[:uri], :format => params[:format], :rules => rules, :user => user, :query => request.query_parameters)
       else;         rest_response(500, :reason => "Unknown REST table type")
     end
   end
