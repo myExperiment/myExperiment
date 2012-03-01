@@ -193,28 +193,32 @@
   function toggle_layout_option(id, enable) {
     var option = $$('select#layout option[value=' + id + ']').first();
 
-    //If a "share with group" box is unticked, and that group's layout is selected, go to default.
-    if(!enable){
-      if($('layout').selectedIndex == option.index){
-        $('layout').selectedIndex = 0;
+    if(option != null) {
+      //If a "share with group" box is unticked, and that group's layout is selected, go to default.
+      if(!enable){
+        if($('layout').selectedIndex == option.index){
+          $('layout').selectedIndex = 0;
+        }
       }
-    }
 
-    //Disable/enable option in dropdown menu
-    option.disabled = !enable;
+      //Disable/enable option in dropdown menu
+      option.disabled = !enable;
 
-    //If all options except "default" are disabled, hide the layout option box
-    if($$('select#layout option[disabled]').size() == ($$('select#layout option').size() - 1)) {
-      $('layout_options_box').hide();
-    }
-    else {
-      $('layout_options_box').show();
+      //If all options except "default" are disabled, hide the layout option box
+      if($$('select#layout option[disabled]').size() == ($$('select#layout option').size() - 1)) {
+        $('layout_options_box').hide();
+      }
+      else {
+        $('layout_options_box').show();
+      }
     }
   }
 
   //Initial state
-  $$('input.group_sharing').each (function (box) {
-    toggle_layout_option(box.value, box.checked);
+  document.observe("dom:loaded", function() {
+    $$('input.group_sharing').each (function (box) {
+      toggle_layout_option(box.value, box.checked);
+    });
   });
 </script>
 
