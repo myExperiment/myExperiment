@@ -214,8 +214,8 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
             if list_element_text.instance_of?(String)
               el = LibXML::XML::Node.new(model_data['List Element Name'][i])
 
-              item_attrs['resource'] = item_uri if item_uri && !query["show-resource"] == "no"
-              item_attrs['uri'] = rest_access_uri(item) if !query["show-uri"] == "no"
+              item_attrs['resource'] = item_uri if item_uri && query["show-resource"] != "no"
+              item_attrs['uri'] = rest_access_uri(item) if query["show-uri"] != "no"
 
               item_attrs.each do |key,value|
                 el[key] = value
@@ -225,7 +225,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
               list_element << el
             else
-              el = rest_get_request_aux(item, user, { "id" => item.id.to_s }, list_item_select_elements)
+              el = rest_get_request_aux(item, user, query.merge({ "id" => item.id.to_s }), list_item_select_elements)
 
               if model_data['List Element Name'][i]
                 el.name = model_data['List Element Name'][i]
@@ -272,8 +272,8 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         if item != nil
           resource_uri = rest_resource_uri(item)
-          el['resource'] = resource_uri if resource_uri && !query["show-resource"] == "no"
-          el['uri'] = rest_access_uri(item) if !query["show-uri"] == "no"
+          el['resource'] = resource_uri if resource_uri && query["show-resource"] != "no"
+          el['uri'] = rest_access_uri(item) if query["show-uri"] != "no"
           el << item.label if item.respond_to?(:label) && item.label
         end
 
@@ -338,9 +338,9 @@ def rest_get_request_aux(ob, user, query, elements)
   resource = rest_resource_uri(ob)
   version  = ob.current_version.to_s if ob.respond_to?('versions')
 
-  entity['uri'     ] = uri      if uri && !query["show-uri"] == "no"
-  entity['resource'] = resource if resource && !query["show-resource"] == "no"
-  entity['version' ] = version  if version && !query["show-version"] == "no"
+  entity['uri'     ] = uri      if uri && query["show-uri"] != "no"
+  entity['resource'] = resource if resource && query["show-resource"] != "no"
+  entity['version' ] = version  if version && query["show-version"] != "no"
 
   TABLES['Model'][:data][rest_entity]['REST Attribute'].each do |rest_attribute|
     data = rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
@@ -785,9 +785,9 @@ def rest_reference(ob, query, skip_text = false)
 
   resource_uri = rest_resource_uri(ob)
 
-  el['resource'] = resource_uri if resource_uri && !query["show-resource"] == "no"
-  el['uri'     ] = rest_access_uri(ob) && !query["show-uri"] == "no"
-  el['version' ] = ob.current_version.to_s if ob.respond_to?('current_version') && !query["show-version"] == "no"
+  el['resource'] = resource_uri if resource_uri && query["show-resource"] != "no"
+  el['uri'     ] = rest_access_uri(ob) if query["show-uri"] != "no"
+  el['version' ] = ob.current_version.to_s if ob.respond_to?('current_version') && query["show-version"] != "no"
 
   el << rest_object_label_text(ob) if !skip_text
 
