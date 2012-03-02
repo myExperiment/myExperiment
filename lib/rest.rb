@@ -208,10 +208,10 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
           item_uri = rest_resource_uri(item)
 
           list_element_accessor = model_data['List Element Accessor'][i]
-          list_element_text     = list_element_accessor ? eval("item.#{model_data['List Element Accessor'][i]}") : item
+          list_element_item     = list_element_accessor ? eval("item.#{model_data['List Element Accessor'][i]}") : item
 
-          if list_element_text
-            if list_element_text.instance_of?(String)
+          if list_element_item
+            if list_element_item.instance_of?(String)
               el = LibXML::XML::Node.new(model_data['List Element Name'][i])
 
               item_attrs['resource'] = item_uri if item_uri && query["show-resource"] != "no"
@@ -221,18 +221,18 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
                 el[key] = value
               end
 
-              el << list_element_text.to_s if list_element_text
+              el << list_element_item.to_s if list_element_item
 
               list_element << el
             else
-              el = rest_get_request_aux(item, user, query.merge({ "id" => item.id.to_s }), list_item_select_elements)
+              el = rest_get_request_aux(list_element_item, user, query.merge({ "id" => list_element_item.id.to_s }), list_item_select_elements)
 
               if model_data['List Element Name'][i]
                 el.name = model_data['List Element Name'][i]
               end
 
               if list_item_select_elements.nil? || list_item_select_elements.empty? 
-                el << item.label if item.respond_to?(:label)
+                el << list_element_item.label if list_element_item.respond_to?(:label)
               end
 
               list_element << el
