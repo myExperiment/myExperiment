@@ -3426,7 +3426,6 @@
     <Cell ss:Index="14"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="16" ss:StyleID="s75"/>
     <Cell ss:Index="18"><Data ss:Type="String">group</Data></Cell>
-    <Cell><Data ss:Type="String">title</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">user</Data></Cell>
@@ -5948,7 +5947,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>1</TopRowBottomPane>
+   <TopRowBottomPane>100</TopRowBottomPane>
    <SplitVertical>2</SplitVertical>
    <LeftColumnRightPane>2</LeftColumnRightPane>
    <ActivePane>0</ActivePane>
@@ -5961,11 +5960,12 @@
     </Pane>
     <Pane>
      <Number>2</Number>
+     <ActiveRow>1</ActiveRow>
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>22</ActiveRow>
-     <ActiveCol>17</ActiveCol>
+     <ActiveRow>125</ActiveRow>
+     <ActiveCol>18</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
