@@ -174,3 +174,21 @@ task "myexp:types:assign_categories" do
   end
 end
 
+desc 'Get workflow components'
+task "myexp:workflow:components" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  ids = ENV['ID'].split(",").map do |str| str.to_i end
+
+  doc = LibXML::XML::Document.new
+  doc.root = LibXML::XML::Node.new("results")
+
+  ids.each do |id|
+    components = Workflow::Version.find(id).components
+    components['workflow-version'] = id.to_s
+    doc.root << components
+  end
+
+  puts doc.to_s
+end
+
