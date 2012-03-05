@@ -34,13 +34,16 @@
       <div class="fold" id="add_to_pack_fold">
         <div class="foldTitle">Add to your Pack</div>
         <div class="foldContent" style="display: none;">
-          <% form_remote_tag :url => quick_add_pack_url(potential_packs.first),
-                             :method => :post,
-                             :loading => "$('pack_add_spinner').show();",
-                             :complete => "$('pack_add_spinner').hide();",
-                             :id => "add_to_pack_form" do %>
+          <% form_tag quick_add_pack_url(potential_packs.first),
+                      { :onsubmit => "new Ajax.Request(this.action, " +
+                                     "{asynchronous:true, evalScripts:true, method:'post', "+
+                                     "onComplete:function(request){$('pack_add_spinner').hide();},"+
+                                     "onLoading:function(request){$('pack_add_spinner').show();}," +
+                                     "parameters:Form.serialize(this)});return false;",
+                        :method => :post,
+                        :id => "add_to_pack_form" } do %>
             <p>
-              <select style="width: 99%" onchange="$('add_to_pack_form').action = $(this).options[this.selectedIndex].value; return false">
+              <select id="add_to_pack_selector" style="width: 99%" onchange="$('add_to_pack_form').action = $(this).options[this.selectedIndex].value; return false">
                 <% potential_packs.each do |p| -%>
                   <option value="<%= quick_add_pack_url(p) -%>">
                     <%= h(p.title) -%>
