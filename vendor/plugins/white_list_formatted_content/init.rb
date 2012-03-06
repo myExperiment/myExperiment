@@ -1,3 +1,5 @@
+require 'htmlentities'
+
 ActiveRecord::Base.class_eval do
   include ActionView::Helpers::TagHelper, ActionView::Helpers::TextHelper, WhiteListHelper, ActionView::Helpers::UrlHelper
   def self.format_attribute(attr_name)
@@ -5,6 +7,41 @@ ActiveRecord::Base.class_eval do
     define_method(:body)       { read_attribute attr_name }
     define_method(:body_html)  { read_attribute "#{attr_name}_html" }
     define_method(:body_html=) { |value| write_attribute "#{attr_name}_html", value }
+
+    define_method("#{attr_name}_plaintext".to_sym) do
+
+      html = read_attribute("#{attr_name}_html")
+
+      # collapse whitespace
+      html.gsub!(/[ \t\r\n]+/, ' ')
+
+      tokenizer = HTML::Tokenizer.new(html)
+      output = []
+
+      linebreak_tags = ['</h1>', '</h2>', '</h3>', '</h4>']
+
+      while token = tokenizer.next
+        node = HTML::Node.parse(nil, 0, 0, token, false)
+
+        case node
+        when HTML::Text
+          output << token
+        when HTML::Tag
+          output << "\n\n" if linebreak_tags.include?(token)
+        end
+      end
+
+      output = output.join
+
+      # collapse spaces
+      output.gsub!(/ +/, ' ')
+
+      # convert entities
+      output = HTMLEntities.new.decode(output)
+
+      output.strip
+    end
+
     before_save :format_content
   end
 

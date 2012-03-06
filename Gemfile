@@ -15,4 +15,5 @@ gem "curb", "~> 0.7.8"
 gem "marc", "~> 0.4.1"
 gem "ruby-hmac", "~> 0.4.0"
 gem "passenger", "~> 2.2.15"
+gem "htmlentities", "~> 4.3.1"
 
