@@ -15,7 +15,7 @@ API_VERSION = "0.1"
 TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
 
   { 'Model' => { :indices => [ 'REST Entity' ],
-                 :lists   => [ 'REST Attribute', 'Encoding', 'Accessor',
+                 :lists   => [ 'REST Attribute', 'Encoding', 'HTML', 'Accessor',
                                'Create', 'Read', 'Update', 'Read by default',
                                'List Element Name', 'List Element Accessor',
                                'Example', 'Versioned', 'Key type',
@@ -167,6 +167,8 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
   if (model_data['Read'][i] == 'yes')
 
     accessor = model_data['Accessor'][i]
+
+    accessor = "#{accessor}_plaintext" if query["show-plaintext"] == "yes" && model_data['HTML'][i] == "yes"
 
     text  = ''
     attrs = {}
