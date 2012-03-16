@@ -3,7 +3,7 @@ myExperiment Fedora/RedHat/CentOS Installer Instructions
 
 The files in this directory are an installer for myExperiment on Fedora 13 and
 consequently RedHat 6 and CentOS 6.0.  The installer is designed to work on a 
-freshly installed version of the operating systems, you may have problems if 
+freshly installed version of these operating systems, you may have problems if 
 you are installing on an existing system.
 
 install.bash is the main install script and can be downloaded and run from 
@@ -18,18 +18,15 @@ before running install.bash:
 
 myexp_root_password - Choose a password for the root account of MySQL.  If for
 whatever reason MySQL is already installed set this to the current MySQL root
-password.  MySQL mosty have a root password for the installer to suceed
-
-myexp_user_password - Choose a password for the account that myExperiment uses
-to access databases it creates for storing myExperiment data.
+password.  MySQL musr have a root password for the installer to succeed
 
 fq_server_name - The fully-qualified server name and domain for your server,
 i.e. the A record. E.g. myexperiment.example.org
 
-exim_smarthost_server - The mail server you want to user as a relay for emails.
+sendmail_smarthost_server - The mail server you want to user as a relay for emails.
 E.g. smtp
 
-exim_smarthost_domain - The mail server you want to user as a relay for emails.
+sendmail_smarthost_domain - The mail server you want to user as a relay for emails.
 E.g. example.org
 
 myexp_cname - The location you intend to host the myExperiment site.  This may
@@ -44,9 +41,9 @@ RedHat 6 / CentOS 6.0 and will do minimal configuration of myExperiment.  To do
 further configuration you will need to edit settings.yml in the config directory 
 of the SVN checkout of myExperiment by default this /var/rails/myexperiment/config/.  
 
-Some configuration may require restarting Apache using the following command:
+Some configuration may require restarting myExperiment using the following command:
 
-sudo service httpd restart
+sudo service myexperiment restart
 
 
 == Further Information ==
