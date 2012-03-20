@@ -953,10 +953,10 @@ def update_permissions(ob, permissions)
         end
       end
     end
-  end
 
-  ob.contribution.policy.update_attributes(:share_mode => share_mode,
-      :update_mode => update_mode)
+    ob.contribution.policy.update_attributes(:share_mode => share_mode,
+        :update_mode => update_mode)
+  end
 end
 
 def workflow_aux(action, opts = {})
