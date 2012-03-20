@@ -922,15 +922,16 @@ def update_permissions(ob, permissions)
   share_mode  = 7
   update_mode = 6
 
-  # clear out any permission records for this contributable
-
-  ob.contribution.policy.permissions.each do |p|
-    p.destroy
-  end
-
   # process permission elements
 
   if permissions
+
+    # clear out any permission records for this contributable
+
+    ob.contribution.policy.permissions.each do |p|
+      p.destroy
+    end
+
     permissions.find('permission').each do |permission|
 
       # handle public privileges
