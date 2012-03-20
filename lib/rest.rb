@@ -327,6 +327,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 end
 
 def find_entity_name_from_object(ob)
+  ob = ob.versioned_resource if ob.respond_to?(:version)
   OBJECT_CLASS_TO_ENTITY_NAME[ob.class.name.underscore]
 end
 
@@ -339,6 +340,8 @@ def rest_get_request_aux(ob, user, query, elements)
   uri      = rest_access_uri(ob)
   resource = rest_resource_uri(ob)
   version  = ob.current_version.to_s if ob.respond_to?('versions')
+
+  version = ob.version.to_s if ob.respond_to?(:versioned_resource)
 
   entity['uri'     ] = uri      if uri && query["show-uri"] != "no"
   entity['resource'] = resource if resource && query["show-resource"] != "no"
