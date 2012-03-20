@@ -17,7 +17,7 @@ echo "$sendmail_patch" > sendmail.patch || { echo "Could not write sendmail conf
 echo "$settings_patch" > settings.patch || { echo "Could not write settings patch file. Aborting ..."; exit 5; }
 
 echo "Installing required Yum packages"
-sudo yum update || { echo "Failed to update apt-get. Aborting ..."; exit 6; }
+sudo yum update -y || { echo "Failed to update apt-get. Aborting ..."; exit 6; }
 sudo -n yum install -y subversion make patch gcc glibc-devel gcc-c++ mysql mysql-devel mysql-server java libxml2-devel libxslt-devel autoconf glibc-devel ncurses-devel automake libtool bison openssl openssl-devel curl libcurl libcurl-devel readline readline-devel ImageMagick-devel graphviz sendmail sendmail-cf policycoreutils-python || { echo "Failed to install required Yum packages. Aborting ..."; exit 7; }
 
 echo "Configuring Apache, MySQL and Sendmail"
