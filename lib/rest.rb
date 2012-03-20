@@ -234,7 +234,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
               end
 
               if list_item_select_elements.nil? || list_item_select_elements.empty? 
-                el << list_element_item.label if list_element_item.respond_to?(:label)
+                el << rest_object_label_text(list_element_item)
               end
 
               list_element << el
@@ -776,6 +776,10 @@ def rest_object_label_text(ob)
     when 'Ontology';               return ob.title
     when 'Predicate';              return ob.title
     when 'Relationship';           return ''
+    when 'Comment';                return ob.comment
+    when 'Review';                 return ob.title
+    when 'Job';                    return ob.title
+    when 'TavernaEnactor';         return ob.title
   end
 
   return ''
