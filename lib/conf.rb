@@ -177,6 +177,10 @@ class Conf
     self.fetch_entry('cookie_verifier_secret')
   end
 
+  def self.duplicable_mime_types
+    self.fetch_entry('duplicable_mime_types')
+  end
+
   def self.layouts
     layouts = self.fetch_entry('layouts', {})
     layouts.delete_if {|k,v| v["environment"] && (v["environment"] != ENV["RAILS_ENV"])}

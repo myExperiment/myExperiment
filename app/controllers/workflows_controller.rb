@@ -318,11 +318,11 @@ class WorkflowsController < ApplicationController
       
     # Custom metadata provided.
     elsif params[:metadata_choice] == 'custom'
-      worked = set_custom_metadata(@workflow, file)
+      worked, error_message = set_custom_metadata(@workflow, file)
       
       unless worked
         respond_to do |format|
-          flash.now[:error] = "The file provided isn't a workflow of the type specified. Please select a different file or set an appropriate content type."
+          flash.now[:error] = error_message
           format.html { render :action => "new" }
         end
         return
@@ -429,7 +429,7 @@ class WorkflowsController < ApplicationController
       
     # Custom metadata provided.
     elsif params[:metadata_choice] == 'custom'
-      worked = set_custom_metadata(@workflow, file)
+      worked, error_message = set_custom_metadata(@workflow, file)
       
       unless worked
         respond_to do |format|
@@ -970,7 +970,6 @@ private
   
   # Method used in the create and create_version methods.
   def set_custom_metadata(workflow_to_set, file)
-    worked = true
     
     workflow_to_set.title = params[:workflow][:title]
     workflow_to_set.body = params[:new_workflow][:body]
@@ -993,6 +992,17 @@ private
             :category => 'Workflow')
         end
 
+        if !ct.valid?
+
+          other_ct = ContentType.find_by_mime_type(file.content_type)
+
+          if other_ct
+            return [false, "Unable to create new type because the MIME type \"#{file.content_type}\" is already used by the \"#{other_ct.title}\" type."]
+          end
+
+          return [false, "Unable to create new type."]
+        end
+
         workflow_to_set.content_type = ct
       else
         workflow_to_set.content_type = ContentType.find_by_title(wf_type)
@@ -1001,7 +1011,9 @@ private
     
     # Check that the file uploaded is valid for the content type chosen (if supported by a workflow processor).
     # This is to ensure that the correct content type is being assigned to the workflow file uploaded.
-    return false unless workflow_file_matches_content_type_if_supported?(file, workflow_to_set)
+    if !workflow_file_matches_content_type_if_supported?(file, workflow_to_set)
+      return [false, "The file provided isn't a workflow of the type specified. Please select a different file or set an appropriate content type."]
+    end
     
     # Preview image
     # TODO: kept getting permission denied errors from the file_column and rmagick code, so disable for windows, for now.
@@ -1024,7 +1036,7 @@ private
     # Set the internal unique name for this particular workflow (or workflow_version).
     workflow_to_set.set_unique_name
     
-    return worked
+    return [true, nil]
   end
   
   # This method checks to to see if the file specified is a valid one for the existing workflow specified,

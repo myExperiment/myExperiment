@@ -453,6 +453,22 @@ home_page_stats:
 
 label_icons:
 
+# duplicable_mime_types - This is the list of mime types that can appear
+#                         multiple times in the content types.  These are for
+#                         situations where the mime type is generic and is not
+#                         specific enough to identify a particular content
+#                         type.
+
+duplicable_mime_types:
+
+  - application/x-zip-compressed
+  - application/zip
+  - application/x-gzip
+  - application/xml
+  - text/xml
+  - text/plain
+  - application/octet-stream
+
 # rdfgen_enable
 
 rdfgen_enable: false

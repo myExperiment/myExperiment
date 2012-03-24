@@ -11,6 +11,10 @@ class ContentType < ActiveRecord::Base
   validates_presence_of :title
   validates_uniqueness_of :title
 
+  validates_uniqueness_of :mime_type, :unless => Proc.new { |ct|
+    Conf.duplicable_mime_types.include?(ct.mime_type)
+  }
+
   def label
     title
   end
