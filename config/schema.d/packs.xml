@@ -11,8 +11,6 @@
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
 
-    <has-many target="relationships" as="context" dependent="destroy"/>
-
   </table>
 
   <table name="pack_contributable_entries">
@@ -52,13 +50,6 @@
     <column type="string"   name="objekt_type"/>
     <column type="integer"  name="objekt_id"/>
     <column type="datetime" name="created_at"/>
-
-    <belongs-to target="users"/>
-    <belongs-to target="contexts" polymorphic="true"/>
-
-    <belongs-to target="subjects" polymorphic="true"/>
-    <belongs-to target="predicates"/>
-    <belongs-to target="objekts"  polymorphic="true"/>
 
   </table>
  

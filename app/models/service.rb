@@ -9,7 +9,11 @@ require 'lib/acts_as_contributable'
 class Service < ActiveRecord::Base
   acts_as_site_entity
   acts_as_contributable
-  acts_as_structured_data
+
+  has_many :service_categories
+  has_many :service_types
+  has_many :service_tags
+  has_many :service_deployments
 
   acts_as_solr(:fields => [ :submitter_label, :name, :provider_label, :endpoint,
       :wsdl, :city, :country, :description, :extra_search_terms ]) if Conf.solr_enable

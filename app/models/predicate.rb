@@ -5,7 +5,7 @@
 
 class Predicate < ActiveRecord::Base
 
-  acts_as_structured_data
+  belongs_to :ontology
 
   format_attribute(:description)
 

@@ -7,7 +7,13 @@ class Preview < ActiveRecord::Base
 
   PREFIX = "tmp/previews"
 
-  acts_as_structured_data
+  belongs_to :image_blob, :class_name  => "ContentBlob",
+                          :foreign_key => :image_blob_id,
+                          :dependent   => :destroy
+
+  belongs_to :svg_blob,   :class_name  => "ContentBlob",
+                          :foreign_key => :svg_blob_id,
+                          :dependent   => :destroy
 
   def file_name(type)
     "#{PREFIX}/#{id}/#{type}"

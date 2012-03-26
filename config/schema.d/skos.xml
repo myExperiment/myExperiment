@@ -12,8 +12,6 @@
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
 
-    <has-many target="concepts" dependent="destroy"/>
-
   </table>
   
   <table name="concepts">
@@ -25,66 +23,6 @@
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
 
-    <belongs-to target="vocabularies"/>
-
-    <!-- Broader relations -->
-
-    <has-many target      = "broader_relations"
-              foreign_key = "object_concept_id"
-              class_name  = "ConceptRelation"
-              conditions  = "relation_type = 'broader'"/>
-
-    <has-many target      = "broader_concepts"
-              class_name  = "Concept"
-              through     = "broader_relations"
-              source      = "object_concept"/>
-
-    <!-- Narrower relations -->
-
-    <has-many target      = "narrower_relations"
-              foreign_key = "subject_concept_id"
-              class_name  = "ConceptRelation"
-              conditions  = "relation_type = 'broader'"/>
-
-    <has-many target      = "narrower_concepts"
-              class_name  = "Concept"
-              through     = "narrower_relations"
-              source      = "subject_concept"/>
-
-    <!-- Related relations -->
-
-    <has-many target      = "related_relations"
-              foreign_key = "subject_concept_id"
-              class_name  = "ConceptRelation"
-              conditions  = "relation_type = 'related'"/>
-
-    <has-many target      = "related_concepts"
-              class_name  = "Concept"
-              through     = "related_relations"
-              source      = "object_concept"/>
-
-    <!-- Labels -->
-
-    <has-many target="labels" dependent="destroy"/>
-
-    <has-many target      = "preferred_labels"
-              dependent   = "destroy"
-              class_name  = "Label"
-              foreign_key = "concept_id"
-              conditions  = "label_type = 'preferred'"/> 
-
-    <has-many target      = "alternate_labels"
-              dependent   = "destroy"
-              class_name  = "Label"
-              foreign_key = "concept_id"
-              conditions  = "label_type = 'alternate'"/> 
-
-    <has-many target      = "hidden_labels"
-              dependent   = "destroy"
-              class_name  = "Label"
-              foreign_key = "concept_id"
-              conditions  = "label_type = 'hidden'"/> 
-
   </table>
 
   <table name="concept_relations">
@@ -92,14 +30,6 @@
     <column type="integer"  name="subject_concept_id"/>
     <column type="integer"  name="object_concept_id"/>
     <column type="string"   name="relation_type"/>
-
-    <belongs-to target      = "subject_concepts"
-                class_name  = "Concept"
-                foreign_key = "subject_concept_id"/>
-
-    <belongs-to target      = "object_concepts"
-                class_name  = "Concept"
-                foreign_key = "object_concept_id"/>
 
   </table>
 
@@ -110,9 +40,6 @@
     <column type="string"   name="language"/>
     <column type="integer"  name="concept_id"/>
     <column type="integer"  name="vocabulary_id"/>
-
-    <belongs-to target="vocabularies"/>
-    <belongs-to target="concepts"/>
 
   </table>
 

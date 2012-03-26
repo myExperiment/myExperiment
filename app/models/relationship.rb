@@ -5,7 +5,13 @@
 
 class Relationship < ActiveRecord::Base
 
-  acts_as_structured_data
+  belongs_to :user
+
+  belongs_to :context, :polymorphic => true
+
+  belongs_to :subject, :polymorphic => true
+  belongs_to :predicate
+  belongs_to :objekt,  :polymorphic => true
 
   validates_presence_of(:subject)
   validates_presence_of(:predicate)

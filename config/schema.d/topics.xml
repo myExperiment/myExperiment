@@ -41,8 +41,6 @@
     <column type="integer"  name="score"/>
     <column type="datetime" name="submit_dt"/>
 
-    <belongs-to target="users"/>
-
   </table>
 
 </schema>

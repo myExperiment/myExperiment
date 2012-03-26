@@ -41,11 +41,6 @@
     <column type="string"   name="monitor_small_symbol_url"/>
     <column type="datetime" name="monitor_last_checked"/>
 
-    <has-many target="service_categories"/>
-    <has-many target="service_types"/>
-    <has-many target="service_tags"/>
-    <has-many target="service_deployments"/>
-
   </table>
 
   <!-- BioCatalogue service categories -->
@@ -60,8 +55,6 @@
     <column type="string"   name="uri"/>
     <column type="string"   name="label"/>
 
-    <belongs-to target="service"/>
-
   </table>
     
   <!-- BioCatalogue service types -->
@@ -74,8 +67,6 @@
 
     <column type="integer"  name="service_id"/>
     <column type="string"   name="label"/>
-
-    <belongs-to target="service"/>
 
   </table>
 
@@ -90,8 +81,6 @@
     <column type="integer"  name="service_id"/>
     <column type="string"   name="uri"/>
     <column type="string"   name="label"/>
-
-    <belongs-to target="service"/>
 
   </table>
 
@@ -119,9 +108,6 @@
     <column type="integer"  name="service_id"/>
     <column type="integer"  name="service_provider_id"/>
 
-    <belongs-to target="service_provider"/>
-    <belongs-to target="service"/>
-
   </table>
 
   <!-- BioCatalogue service providers -->
@@ -137,8 +123,6 @@
     <column type="text"     name="description"/>
 
     <column type="datetime" name="created"/>
-
-    <has-many target="service_deployments" foreign_key="service_provider_id"/>
 
   </table>
 

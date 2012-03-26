@@ -22,7 +22,7 @@ class Pack < ActiveRecord::Base
   acts_as_rateable
   acts_as_taggable
 
-  acts_as_structured_data
+  has_many :relationships, :dependent => :destroy, :as => :context
 
   validates_presence_of :title
   

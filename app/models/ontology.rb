@@ -5,7 +5,9 @@
 
 class Ontology < ActiveRecord::Base
 
-  acts_as_structured_data
+  belongs_to :user
+
+  has_many :predicates, :foreign_key => :ontology_id
 
   format_attribute(:description)
 

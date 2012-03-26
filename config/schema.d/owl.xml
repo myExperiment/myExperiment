@@ -11,10 +11,6 @@
     <column type="text"     name="description_html"/>
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
-    
-    <belongs-to target="users"/>
-
-    <has-many target="predicates" foreign_key="ontology_id"/>
 
   </table>
 
@@ -28,8 +24,6 @@
     <column type="text"     name="equivalent_to"/>
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
-
-    <belongs-to target="ontology"/>
 
   </table>
 

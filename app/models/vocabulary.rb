@@ -5,9 +5,9 @@
 
 class Vocabulary < ActiveRecord::Base
 
-  acts_as_structured_data
-
   belongs_to :user
+
+  has_many :concepts, :dependent => :destroy
 
   validates_presence_of :title
   validates_presence_of :prefix
