@@ -46,7 +46,7 @@ settings_patch='--- default_settings.yml        2011-11-28 18:40:40.337937711 +0
  #            NOTE: No trailing slash.
  
 -base_uri: http://www.example.com
-+base_uri: http://'${myexp_cname}:${myexp_port_no}'
++base_uri: http://'${myexp_cname}':'${myexp_port_no}'
  
  # admins - Set "admins" to the list of usernames of people that are
  #          administrators of this installation.  This is "Username" that is set
@@ -96,7 +96,7 @@ case $1 in
         echo "Starting myExperiment..."
         source /usr/local/rvm/scripts/rvm
         rvm --default use '${ruby_version}'
-        cd $MYEXP_DIR
+        cd $MYEXP_DIR || { exit 1; }
         rake solr:start 2>> $SOLR_ERR_FILE 1>> $SOLR_LOG_FILE
         ruby script/server -p '${myexp_port_no}' 2>> $MYEXP_ERR_FILE 1>> $MYEXP_LOG_FILE &
         echo $! > $MYEXP_PID_FILE 
@@ -106,7 +106,7 @@ case $1 in
         echo "Stopping myExperiment..."
         source /usr/local/rvm/scripts/rvm
         rvm --default use '${ruby_version}'
-        cd $MYEXP_DIR 
+        cd $MYEXP_DIR || { exit 1; }
         rake solr:stop 2>> $SOLR_ERR_FILE 1>> $SOLR_LOG_FILE 
         if [ -s $MYEXP_PID_FILE ]; then
             kill -9 `cat $MYEXP_PID_FILE` 

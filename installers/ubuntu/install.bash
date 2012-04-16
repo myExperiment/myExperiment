@@ -33,16 +33,8 @@ rvmsudo rvm install ${ruby_version}  || { echo "Could not install Ruby ${ruby_ve
 rvm --default use ${ruby_version} || { echo "Could not set Ruby ${ruby_version} as the default environment for RVM. Aborting ..."; exit 11; }
 
 echo "Checking out myExperiment codebase from SVN"
-cd /
-for idir in `echo ${install_dir} | awk 'BEGIN{RS="/"}{print $1}'`; do
-	if [ -n ${idir} ]; then
-		if  [ ! -d ${idir} ]; then
-			sudo mkdir ${idir} || { echo "Could not create directory ${idir} in `pwd`. Aborting ..."; exit 12; }
-		fi
-		cd ${idir}
-	fi
-done
-sudo chown ${USER}:www-data ${install_dir} || { echo "Could not update permissions on ${install_dir}. Aborting ..."; exit 13; }
+sudo mkdir -p ${install_dir} || { echo "Could not create directory ${install_dir} or one of its parent directories. Aborting ..."; exit 12; }
+sudo chown ${USER}:${USER} ${install_dir} || { echo "Could not update permissions on ${install_dir}. Aborting ..."; exit 13; }
 svn checkout svn://rubyforge.org/var/svn/myexperiment/${branch} ${install_dir} || { echo "Could not checkout SVN to ${install_dir}. Aborting ..."; exit 14; }
 cd ${install_dir}/config/ || { echo "Could not find config directory for myExperiment. Aborting ..."; exit 15; }
 
@@ -81,8 +73,8 @@ echo "Tidying up"
 rm -r ${tempdir} || { echo "Could not delete temporary directory ${tempdir}. Aborting ..."; exit 35; }
 
 echo ""
-echo "+----------------------------------------------------------------------------------------------+"
-echo "|   myExperiment is now fully installed. Go to http://$myexp_cname:3000/ to use myExperiment   |"
-echo "|   To start, stop or restart myExperiment use: sudo service myexperiment start|stop|restart   |" 
-echo "+----------------------------------------------------------------------------------------------+"
+echo "========================================================================================================"
+echo " myExperiment is now fully installed. Go to http://${myexp_cname}:${myexp_port_no}/ to use myExperiment"
+echo " To start, stop or restart myExperiment use: sudo service myexperiment start|stop|restart" 
+echo "========================================================================================================"
 

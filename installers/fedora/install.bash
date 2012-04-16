@@ -38,17 +38,10 @@ echo "Install and configuring Ruby version ${ruby_version}"
 source "/usr/local/rvm/scripts/rvm" || { echo "Could not source /usr/local/rvm/scripts/rvm to add RVM directory to path. Aborting ..."; exit 18; }
 rvmsudo rvm install ${ruby_version}  || { echo "Could not install Ruby ${ruby_version} using RVM. Aborting ..."; exit 19; }
 rvm --default use ${ruby_version} || { echo "Could not set Ruby ${ruby_version} as the default environment for RVM. Aborting ..."; exit 20; }
+
 echo "Checking out myExperiment codebase from SVN"
-cd /
-for idir in `echo ${install_dir} | awk 'BEGIN{RS="/"}{print $1}'`; do
-        if [ -n ${idir} ]; then
-                if  [ ! -d ${idir} ]; then
-                        sudo mkdir ${idir} || { echo "Could not create directory ${idir} in `pwd`.  Aborting ..."; exit 21; }
-                fi
-                cd ${idir}
-        fi
-done
-sudo chown ${USER} ${install_dir} || { echo "Could not update permissions on ${install_dir}. Aborting ..."; exit 22; }
+sudo mkdir -p ${install_dir} || { echo "Could not create directory ${install_dir} or one of its parent directories. Aborting ..."; exit 21; }
+sudo chown ${USER}:${USER} ${install_dir} || { echo "Could not update permissions on ${install_dir}. Aborting ..."; exit 22; }
 svn checkout svn://rubyforge.org/var/svn/myexperiment/$branch $install_dir || { echo "Could not checkout SVN to $install_dir. Aborting ..."; exit 24; }
 cd ${install_dir}/config/ || { echo "Could not find config directory for myExperiment. Aborting ..."; exit 25; }
 
@@ -97,8 +90,8 @@ echo "Removing temporary directory created for writing patch files to"
 sudo rm -rf ${tempdir} || { echo "Could not remove temporary directory used by patch files."; exit 55; }
 
 echo ""
-echo "==================================================================================="
-echo " myExperiment is now fully installed."
-echo " Go to http://${myexp_cname}:${myexp_port_no}/ to use myExperiment"
-echo "==================================================================================="
+echo "========================================================================================================"
+echo " myExperiment is now fully installed. Go to http://${myexp_cname}:${myexp_port_no}/ to use myExperiment"
+echo " To start, stop or restart myExperiment use: sudo service myexperiment start|stop|restart" 
+echo "========================================================================================================"
 
