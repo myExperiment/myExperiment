@@ -272,7 +272,11 @@ class Workflow < ActiveRecord::Base
 
   def components
     if processor_class
-      processor_class.new(content_blob.data).get_components
+      begin
+        processor_class.new(content_blob.data).get_components
+      rescue
+        XML::Node.new('components')
+      end
     else
       XML::Node.new('components')
     end
