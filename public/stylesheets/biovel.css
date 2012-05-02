@@ -1,0 +1,49 @@
+/* Stylesheet for the e-LICO layout. Requires main myExperiment stylesheet. */
+
+body  {
+	background: #EEEB99;
+}
+
+#myexp_searchbar, #myexp_sidebar, .pagination a, .tabnav li a:hover, .tabnav li#selected_tabnav a  {
+  background-color: #99cc33;
+}
+
+#myexp_searchbar {
+  background-image: url('/images/searchfade_alpha.png');
+}
+#myexp_sidebar {
+  background-image: url('/images/sidebar_alpha.png');
+}
+
+
+.logo a {
+  color: #99cc33;
+}#
+
+.logo a:hover {
+  text-decoration: none;
+  color: #99cc33;
+ }
+
+.links {
+  color: #608509
+}
+
+/* To add a white margin around the content */
+
+#doc2 {
+  padding: 0 1em;
+  border-color: #DFD96D;
+  border-style: solid;
+  border-width: 0 4px;
+}
+
+#myexp_header {
+  margin: 0em 0.5em;
+}
+
+#hd
+{
+  padding-top: 1em;
+}
+
