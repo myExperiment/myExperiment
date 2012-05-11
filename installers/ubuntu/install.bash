@@ -2,7 +2,7 @@
 
 echo ""
 echo "+----------------------------------------------------------------------------------------------+"
-echo "|                  Welcome to the myExperiment Installer for Ubuntu 10.04!                     |"
+echo "|           Welcome to the myExperiment Installer for Ubuntu 10.04 LTS / 12.04 LTS             |"
 echo "|  Go to http://wiki.myexperiment.org/index.php/Developer:UbuntuInstallation for more details. |"
 echo "+----------------------------------------------------------------------------------------------+"
 echo ""
@@ -21,7 +21,7 @@ sudo su -c "echo mysql-server-5.1 mysql-server/root_password_again password `ech
 
 echo "Installing required packages using apt-get install"
 sudo apt-get update || { echo "Could not update apt-get. Aborting ..."; exit 5; }
-sudo -n apt-get install -y build-essential exim4 git-core curl libcurl3 libcurl3-gnutls libcurl4-openssl-dev openssl libreadline6 libreadline6-dev zlib1g zlib1g-dev libssl-dev libyaml-dev mysql-server libmysqlclient16-dev libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion libmagickwand-dev graphviz gcj-4.4-jre-headless || { echo "Could not install required using apt-get install. Aborting ..."; exit 6; }
+sudo -n apt-get install -y build-essential exim4 git-core curl libcurl3 libcurl3-gnutls libcurl4-openssl-dev openssl libreadline6 libreadline6-dev zlib1g zlib1g-dev libssl-dev libyaml-dev mysql-server libmysqlclient-dev libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion libmagickwand-dev graphviz gcj-jre-headless || { echo "Could not install required using apt-get install. Aborting ..."; exit 6; }
 
 echo "Installing and configuring RVM"
 sudo bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer ) || { echo "Could not install RVM. Aborting ..."; exit 7; }
