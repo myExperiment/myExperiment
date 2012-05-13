@@ -109,7 +109,7 @@
       <div class="results">
         <% @pivot[:results].each do |ob| %>
           <% thing = ob.class == SearchResult ? ob.result : ob.contributable -%>
-          <%= render :partial => "#{thing.class.name.pluralize.downcase}/table", :locals => { :collection => [thing] } -%>
+          <%= render :partial => "#{thing.class.name.pluralize.underscore}/table", :locals => { :collection => [thing] } -%>
         <% end %>
       </div>
     <% end %>
