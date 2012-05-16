@@ -41,7 +41,7 @@ contributor_models: [User, Network]
 # contributable_models - These are the models for the things that myExperiment
 #                        contributors can contribute.
 
-contributable_models: [Workflow, Blob, Pack, Blog]
+contributable_models: [Workflow, Blob, Pack, Blog, ResearchObject]
 
 # page_template - This is the page template for all the pages except for
 #                 the front page of the web site.
@@ -168,7 +168,11 @@ main_tabs:
   - label:      Topics
     link:       /topics
     controller: topics
-	
+
+  - label:      Research
+    link:       /research_objects
+    controller: research_objects
+
 # new_menu - Set "new_menu" with the details of each kind of thing to appear in
 #            the New/Upload gadget.
 #
@@ -207,6 +211,10 @@ new_menu:
   - label:      File
     link:       /files/new
     controller: blobs
+
+  - label:      Research Ob
+    link:       /research_objects/new
+    controller: research_objects
 
   - label:      Pack
     link:       /packs/new
@@ -506,3 +514,7 @@ recaptcha_private:
 #         - styles
 #         - custom_stylesheet
 #       layout: layouts/myexperiment
+
+research_object_endpoints:
+
+  - http://sandbox.wf4ever-project.org/rosrs5/sparql

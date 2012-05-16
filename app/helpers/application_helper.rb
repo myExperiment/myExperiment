@@ -876,7 +876,7 @@ module ApplicationHelper
     if (entity.instance_of?(String))
       name = entity
     elsif (entity.class == Class)
-      name = entity.to_s
+      name = entity.name.underscore.split("_").map do |bit| bit.capitalize end.join(" ")
     else
       name = entity.class.to_s
     end

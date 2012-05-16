@@ -186,6 +186,10 @@ class Conf
     layouts.delete_if {|k,v| v["environment"] && (v["environment"] != ENV["RAILS_ENV"])}
   end
 
+  def self.research_object_endpoints
+    self.fetch_entry('research_object_endpoints')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)

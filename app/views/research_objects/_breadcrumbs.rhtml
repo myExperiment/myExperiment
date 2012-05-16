@@ -1,0 +1,16 @@
+<% unless controller.action_name.to_s == "index" %>
+  <li><%= link_to 'Research Objects', research_objects_path %></li>
+<% end %>
+
+<% case controller.action_name.to_s; when "show" %>
+  <li>&gt;</li>
+  <li><%= h(@contributable.label) %></li>
+<% when "search" %>  
+  <li>&gt;</li>
+  <li>Search Results</li>
+<% when "index" %>
+  <li>Research objects</li>
+<% else %>
+  <!-- no breadcrumb -->
+<% end %>
+

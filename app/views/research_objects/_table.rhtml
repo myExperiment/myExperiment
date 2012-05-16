@@ -1,0 +1,46 @@
+<% query ||= false -%>
+<% odd_row = false -%>
+
+<% unless collection.empty? %>
+
+<table class="alt_table">
+	<% for research_object in collection %>
+    <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
+      <% cache(:controller => 'research_objects_cache', :action => 'listing', :id => research_object.id) do -%>
+        <td style="width: 100px;">
+          <p style="margin-top:0; padding-top:0; text-align: center; margin-top: 1em;"><b>Submitter:</b></p>
+          <center><%= contributor(research_object.contribution.contributor_id, research_object.contribution.contributor_type, true, 60) %></center>
+        </td>
+        <td style="text-align: left;">
+
+          <p class="title">
+            <%= icon "research_object", nil, nil, nil, '' %>
+            <% title = h(research_object.title) %>
+            <%= link_to(query ? highlight_all(title, query) : title, research_object_path(research_object)) %>
+          </p>
+					
+          <p style="font-size: 85%; margin-top: 0; padding-top: 0;">
+            <b>Created at:</b> <%= datetime(research_object.created_at, false) %>
+						<% unless research_object.created_at == research_object.updated_at %>
+						  <b>Last updated at:</b> <%= datetime(research_object.updated_at, false) -%>
+						<% end %>
+          </p>
+					
+					<div class="desc" style="font-size: 85%;">
+            <% unless research_object.description.blank? -%>
+              <% desc = truncate(strip_html(research_object.description), :length => 500) -%>
+              <%= query ? highlight_all(desc, query) : desc %>
+            <% else -%>
+              <span class="none_text">No description</span>                     
+            <% end -%>
+          </div>
+					
+        </td>
+      <% end %>
+        
+    </tr>
+	<% end %>
+</table>
+
+<% end %>
+

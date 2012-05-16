@@ -1,0 +1,38 @@
+<h1>Research Object: <%=h @contributable.title -%></h1>
+
+<table class="simple">
+
+  <tr>
+    <td>created_at</td>
+    <td><%=h @contributable.created_at -%></td>
+  </tr>
+
+  <tr>
+    <td>updated_at</td>
+    <td><%=h @contributable.updated_at -%></td>
+  </tr>
+
+  <tr>
+    <td>title</td>
+    <td><%=h @contributable.title -%></td>
+  </tr>
+
+  <tr>
+    <td>description</td>
+    <td><%= @contributable.description_html -%></td>
+  </tr>
+
+</table>
+
+<h2>Triples</h2>
+
+<table>
+  <% @contributable.load_graph.query([nil, nil, nil]).each do |s, p, o| %>
+    <tr>
+      <td><%=h s.to_s -%></td>
+      <td><%=h p.to_s -%></td>
+      <td><%=h o.to_s -%></td>
+    </tr>
+  <% end %>
+</table>
+

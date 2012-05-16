@@ -1,0 +1,61 @@
+<% t "Manage" -%>
+
+<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+
+<h1>Manage: <%=h @contributable.title -%></h1>
+
+<% form_for(:research_object, :url => research_object_path(@contributable), :html => { :method => :put }) do |f| %>
+
+  <%= f.error_messages %>
+
+<% if false %>
+  <p style="text-align: center;">
+    <strong>RO to upload: </strong>
+    <%= f.file_field :data %>
+  </p>
+  
+  <br/>
+  
+  <p style="text-align: center;">
+  	<strong>RODL URL: </strong>
+		<br/>
+		<%= f.text_field :url, :size => 60 -%>
+  </p>
+	
+	<br/>
+<% end %>
+
+  <p style="text-align: center;">
+  	<strong>Title: </strong>
+		<br/>
+		<%= f.text_field :title, :size => 60 -%>
+  </p>
+	
+	<br/>
+  
+  <p style="text-align: center;">
+  	<strong>Description: </strong>
+	</p>
+
+	<center>
+    <%= f.text_area :description -%>
+
+    <script type="text/javascript">
+    //<![CDATA[
+    var oFCKeditor = new FCKeditor('research_object_description', '600px', '300px', 'Simple');
+    oFCKeditor.BasePath = "/javascripts/fckeditor/"
+    oFCKeditor.Config['CustomConfigurationsPath'] = '/javascripts/fckcustom.js';
+    oFCKeditor.ReplaceTextarea();
+
+    //]]>
+    </script>
+
+	</center>
+
+  <br />
+
+  <p style="text-align: center;">
+    <%= f.submit "Submit", :disable_with => "Submitting..." %>
+  </p>
+<% end %>
+

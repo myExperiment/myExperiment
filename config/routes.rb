@@ -180,6 +180,9 @@ ActionController::Routing::Routes.draw do |map|
   # services
   map.resources :services, :collection => { :search => :get }
   
+  # research_objects
+  map.resources :research_objects
+
   # content_types
   map.resources :content_types
 
