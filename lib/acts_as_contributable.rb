@@ -29,7 +29,20 @@ module Mib
           include Mib::Acts::Contributable::InstanceMethods
           
           before_create do |c|
-            c.contribution = Contribution.new(:contributor_id => c.contributor_id, :contributor_type => c.contributor_type, :contributable => c)
+
+            # If not specified, create a contribution record and / or policy
+            # record.
+
+            if c.contribution.nil?
+              c.contribution = Contribution.new(
+                  :contributor   => c.contributor,
+                  :contributable => c)
+            end
+
+            if c.contribution.policy.nil?
+              c.contribution.policy = create_default_policy(c.contributor)
+            end
+
           end
         end
       end
