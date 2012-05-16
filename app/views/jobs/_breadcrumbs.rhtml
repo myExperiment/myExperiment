@@ -1,15 +1,15 @@
 <% if @experiment -%>
 
 	<li><%= link_to 'Experiments', experiments_path -%></li>
-	<li><b>&#187;</b></li>
+	<li>&gt;</li>
 	
 	<li><%= link_to "#{h(@experiment.title)}", experiment_path(@experiment) -%></li>
-	<li><b>&#187;</b></li>
+	<li>&gt;</li>
 	
 	<li><%= link_to 'Jobs', experiment_jobs_path(@experiment) -%></li>
 	
 	<% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
-	  <li><b>&#187;</b></li>
+	  <li>&gt;</li>
 	  
 	  <% case controller.action_name.to_s; when "show" -%>
 	    <li><%= h(@job.title) -%></li>
@@ -17,7 +17,7 @@
 	    <li>New Job</li>
 	  <% when "edit" %>
 			<li><%= link_to "#{h(@job.title)}", experiment_job_path(@experiment, @job) -%></li>
-			<li><b>&#187;</b></li>
+			<li>&gt;</li>
     	<li>Manage</li>
 	  <% else %>
 	    <!-- no breadcrumb -->

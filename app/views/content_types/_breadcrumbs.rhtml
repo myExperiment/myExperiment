@@ -2,7 +2,7 @@
 
 <% if ["show"].include? controller.action_name.to_s %>
 
-  <li><b>&#187;</b></li>
+  <li>&gt;</li>
   
   <% case controller.action_name.to_s; when "show" %>
     <li><%= h(@content_type.title) %></li>

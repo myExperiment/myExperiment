@@ -1,17 +1,17 @@
 <% if params[:user_id] %>
   <li><%= link_to 'Users', users_path -%></li>
   
-  <li><b>&#187;</b></li>
+  <li>&gt;</li>
   
   <li><%= link_to contributor_name(params[:user_id], "User"), user_path(params[:user_id]) -%></li>
   
-  <li><b>&#187;</b></li>
+  <li>&gt;</li>
 <% end %>
 
 <li><%= link_to 'Pictures', user_pictures_path -%></li>
 
 <% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
-  <li><b>&#187;</b></li>
+  <li>&gt;</li>
   
   <% case controller.action_name.to_s; when "show" %>
   	<li><%= link_to "#{@picture.id}", user_picture_path(@picture.owner, @picture) %></li>
@@ -19,7 +19,7 @@
     <li>Upload New Picture</li>
   <% when "edit" %>
 		<li><%= link_to "#{@picture.id}", user_picture_path(@picture.owner, @picture) %></li>
-		<li><b>&#187;</b></li>
+		<li>&gt;</li>
     <li>Edit</li>
   <% else %>
     <!-- no breadcrumb -->

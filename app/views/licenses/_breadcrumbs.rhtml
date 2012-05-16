@@ -1,7 +1,7 @@
 <li><%= link_to 'Licenses', licenses_path -%></li>
 
 <% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
-  <li><b>&#187;</b></li>
+  <li>&gt;</li>
   
   <% case controller.action_name.to_s; when "show" %>
     <li><%= h(@license.title) -%></li>
@@ -9,7 +9,7 @@
     <li>New License</li>
   <% when "edit" %>
 		<li><%= link_to "#{h(@license.title)}", license_path(@license) -%></li>
-		<li><b>&#187;</b></li>
+		<li>&gt;</li>
     <li>Edit</li>
   <% else %>
     <!-- no breadcrumb -->

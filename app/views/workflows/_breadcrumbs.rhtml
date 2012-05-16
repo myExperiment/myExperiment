@@ -1,7 +1,7 @@
 <li><%= link_to 'Workflows', workflows_path %></li>
 
 <% if ["show", "new", "edit", "search", "all", "new_version", "edit_version", "comments_timeline", "galaxy_tool"].include? controller.action_name.to_s %>
-  <li><b>&#187;</b></li>
+  <li>&gt;</li>
   
   <% case controller.action_name.to_s; when "show" %>
     <li><%= h(@workflow.title) %></li>
@@ -9,7 +9,7 @@
     <li>Upload Workflow</li>
   <% when "edit" %>
 		<li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
-    <li><b>&#187;</b></li>
+    <li>&gt;</li>
     <li>Manage</li>
   <% when "search" %>  
     <li>Search Results</li>
@@ -17,19 +17,19 @@
     <li>All Workflows</li>
 	<% when "new_version" %>
     <li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
-		<li><b>&#187;</b></li>
+		<li>&gt;</li>
 		<li>New Version</li>
 	<% when "edit_version" %>
     <li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
-		<li><b>&#187;</b></li>
+		<li>&gt;</li>
 		<li>Edit Version</li>
 	<% when "comments_timeline" %>
 		<li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
-		<li><b>&#187;</b></li>
+		<li>&gt;</li>
     <li>Comments Timeline</li>
 	<% when "galaxy_tool" %>
 		<li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
-		<li><b>&#187;</b></li>
+		<li>&gt;</li>
     <li>Galaxy tool download</li>
   <% else %>
     <!-- no breadcrumb -->

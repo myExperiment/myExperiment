@@ -1,15 +1,15 @@
 <li><%= link_to 'Users', users_path -%></li>
 
 <% if ["edit"].include? controller.action_name.to_s -%>
-	<li><b>&#187;</b></li>
+	<li>&gt;</li>
 	<li><%= link_to h(@user.name), user_path(@user) -%></li>
 <% elsif @user -%>
-	<li><b>&#187;</b></li>
+	<li>&gt;</li>
 	<li><%= h(@user.name) -%></li>
 <% end -%>
 
 <% if ["new", "edit", "search", "all", "forgot_password"].include? controller.action_name.to_s -%>
-  <li><b>&#187;</b></li>
+  <li>&gt;</li>
   
   <% case controller.action_name.to_s; when "new" -%>
     <li>Register</li>
