@@ -1,13 +1,13 @@
 <li><%= link_to 'Workflows', workflows_path -%></li>
-<li><b>&#187;</b></li>
+<li>&gt;</li>
 
 <li><%= link_to "#{h(@reviewable.title)}", workflow_path(@reviewable) -%></li>
-<li><b>&#187;</b></li>
+<li>&gt;</li>
 
 <li><%= link_to 'Reviews', workflow_reviews_path(@reviewable) -%></li>
 
 <% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
-  <li><b>&#187;</b></li>
+  <li>&gt;</li>
   
   <% case controller.action_name.to_s; when "show" -%>
     <li><%= h(@review.title) -%></li>
@@ -15,7 +15,7 @@
     <li>New Review</li>
   <% when "edit" -%>
 		<li><%= link_to "#{h(@review.title)}", workflow_review_path(@reviewable, @review) -%></li>
-		<li><b>&#187;</b></li>
+		<li>&gt;</li>
     <li>Edit</li>
   <% else -%>
     <!-- no breadcrumb -->

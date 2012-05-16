@@ -3,13 +3,13 @@
 <% end %>
 
 <% case controller.action_name.to_s; when "show" %>
-  <li><b>&#187;</b></li>
+  <li>&gt;</li>
   <li><%= h(@contributable.label) %></li>
 <% when "search" %>  
-  <li><b>&#187;</b></li>
+  <li>&gt;</li>
   <li>Search Results</li>
 <% when "all" %>
-  <li><b>&#187;</b></li>
+  <li>&gt;</li>
   <li>All services</li>
 <% when "index" %>
   <li>Services</li>

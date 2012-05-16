@@ -1,7 +1,7 @@
 <li><%= link_to 'Files', blobs_path -%></li>
 
 <% if ["show", "new", "edit", "all", "search"].include? controller.action_name.to_s -%>
-  <li><b>&#187;</b></li>
+  <li>&gt;</li>
   
   <% case controller.action_name.to_s; when "show" -%>
     <li><%= contributable_name(@blob.id, 'Blob') -%></li>
@@ -9,7 +9,7 @@
     <li>Upload File</li>
   <% when "edit" %>
 		<li><%= link_to "#{contributable_name(@blob.id, 'Blob')}", blob_path(@blob) -%></li>
-		<li><b>&#187;</b></li>
+		<li>&gt;</li>
     <li>Manage</li>
   <% when "all" %>
     <li>All Files</li>

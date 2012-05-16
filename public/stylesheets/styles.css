@@ -347,12 +347,8 @@ li {
 	font-size: 85%;
 	text-decoration: none;
 	padding: 0.4em 0.5em;
-	*padding: 0.2em 0.5em;
 	background-color: #EEEEEE;
-	border: 0px solid #DEDEDE;
-	border-width: 1px 1px 1px 1px;
-	*margin-left: 1px;
-	color: #666666;
+	border: 1px solid #DEDEDE;
 }
 
 #myexp_breadcrumbs_bar table {
@@ -365,35 +361,20 @@ li {
 	text-align: left;
 	margin: 0;
 	padding: 0;
-	vertical-align: middle;
-}
-
-#myexp_breadcrumbs_bar td * {
-	vertical-align: middle;
 }
 
 ul.breadcrumb_list {
-	list-style: none;
 	margin: 0;
 	padding: 0;
-	border: none;
-	vertical-align: middle;
 }
 
 ul.breadcrumb_list li {
 	display: inline;
-}
-
-ul.breadcrumb_list li * {
-	vertical-align: middle;
+	color: #666666;
 }
 
 ul.breadcrumb_list a {
 	color: #000033;
-}
-
-ul.breadcrumb_list a:hover {
-	color: red;
 }
 
 /* end css breadcrumbs */ 
