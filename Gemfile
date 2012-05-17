@@ -16,4 +16,6 @@ gem "marc", "~> 0.4.1"
 gem "ruby-hmac", "~> 0.4.0"
 gem "passenger", "~> 2.2.15"
 gem "htmlentities", "~> 4.3.1"
+gem "rdf", "~> 0.3.4.1"
+gem "rdf-raptor", "~> 0.4.1"
 
