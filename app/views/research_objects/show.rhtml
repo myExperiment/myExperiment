@@ -25,14 +25,16 @@
 </table>
 
 <h2>Triples</h2>
-
-<table>
+  
+<div id="annotation_list">
   <% @contributable.load_graph.query([nil, nil, nil]).each do |s, p, o| %>
-    <tr>
-      <td><%=h s.to_s -%></td>
-      <td><%=h p.to_s -%></td>
-      <td><%=h o.to_s -%></td>
-    </tr>
+    <div>
+      <table>
+        <tr><td><%=h s.to_s -%></td></tr>
+        <tr><td><%=h p.to_s -%></td></tr>
+        <tr><td><%=h o.to_s -%></td></tr>
+      </table>
+    </div>
   <% end %>
-</table>
+</div>
 

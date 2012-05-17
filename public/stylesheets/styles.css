@@ -2290,3 +2290,19 @@ table.topic td.tag_vote{
   margin-bottom: 1.5em;
   line-height: 1.4;
 }
+
+#annotation_list TABLE {
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+#annotation_list DIV {
+  box-shadow: 5px 5px 8px #AAA;
+}
+
+#annotation_list TD {
+  border: 1px solid gray;
+  text-align: left;
+}
+
