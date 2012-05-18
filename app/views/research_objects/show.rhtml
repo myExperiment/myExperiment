@@ -13,6 +13,11 @@
   </tr>
 
   <tr>
+    <td>URL</td>
+    <td><%=h @contributable.url -%></td>
+  </tr>
+
+  <tr>
     <td>title</td>
     <td><%=h @contributable.title -%></td>
   </tr>
@@ -22,19 +27,91 @@
     <td><%= @contributable.description_html -%></td>
   </tr>
 
+  <tr>
+    <td>annotations count</td>
+    <td><%= @contributable.annotations.length -%></td>
+  </tr>
+
 </table>
 
-<h2>Triples</h2>
+<% if @contributable.annotations.length > 0 %>
 
-<div id="annotation_list">
-  <% @contributable.annotations.each do |annotation| %>
-    <div>
-      <table>
-        <tr><td><%=h annotation.subject_text   -%></td></tr>
-        <tr><td><%=h annotation.predicate_text -%></td></tr>
-        <tr><td><%=h annotation.objekt_text    -%></td></tr>
-      </table>
-    </div>
-  <% end %>
-</div>
+  <h2>Summary of subjects</h2>
+
+  <table class="simple">
+    <tr>
+      <th>URI</th>
+      <th>Count</th>
+    </tr>
+    <% @contributable.annotations.group_by do |a|
+         a.subject_text
+       end.sort do |a, b|
+         b[1].length <=> a[1].length
+       end.map do |pair| %>
+       
+       <tr>
+         <td><%=h pair[0] -%></td>
+         <td><%= pair[1].length -%></td>
+       </tr>
+
+     <% end %>
+   </table>
+
+  <h2>Summary of predicates</h2>
+
+  <table class="simple">
+    <tr>
+      <th>URI</th>
+      <th>Count</th>
+    </tr>
+    <% @contributable.annotations.group_by do |a|
+         a.predicate_text
+       end.sort do |a, b|
+         b[1].length <=> a[1].length
+       end.map do |pair| %>
+       
+       <tr>
+         <td><%=h pair[0] -%></td>
+         <td><%= pair[1].length -%></td>
+       </tr>
+
+     <% end %>
+   </table>
+
+  <h2>Summary of objects</h2>
+
+  <table class="simple">
+    <tr>
+      <th>URI</th>
+      <th>Count</th>
+    </tr>
+    <% @contributable.annotations.group_by do |a|
+         a.objekt_text
+       end.sort do |a, b|
+         b[1].length <=> a[1].length
+       end.map do |pair| %>
+       
+       <tr>
+         <td><%=h pair[0] -%></td>
+         <td><%= pair[1].length -%></td>
+       </tr>
+
+     <% end %>
+   </table>
+
+  <h2>Complete annotation list</h2>
+
+  <div id="annotation_list">
+    <% @contributable.annotations.each do |annotation| %>
+      <div>
+        <table>
+          <tr><td><%=h annotation.subject_text   -%></td></tr>
+          <tr><td><%=h annotation.predicate_text -%></td></tr>
+          <tr><td><%=h annotation.objekt_text    -%></td></tr>
+        </table>
+      </div>
+    <% end %>
+  </div>
+
+<% end %>
 
