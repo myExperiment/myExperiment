@@ -17,6 +17,8 @@ class ResearchObject < ActiveRecord::Base
   acts_as_site_entity
   acts_as_contributable
 
+  has_many :annotations, :dependent => :destroy
+
   belongs_to :content_blob, :dependent => :destroy
 
   validates_presence_of :title
@@ -54,6 +56,16 @@ class ResearchObject < ActiveRecord::Base
       graph = RDF::Graph.load(manifest_name)
 
       FileUtils.rm_rf(manifest_name)
+
+      # create triples
+
+      graph.query([nil, nil, nil]).each do |s, p, o|
+
+        annotations.create(
+            :subject_text =>   s.to_s,
+            :predicate_text => p.to_s,
+            :objekt_text =>    o.to_s)
+      end
 
       graph
     end

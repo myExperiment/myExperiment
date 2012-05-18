@@ -101,6 +101,8 @@ class ResearchObjectsController < ApplicationController
         :description  => ro_params[:description],
         :content_blob => ContentBlob.new(:data => research_object))
 
+    @research_object.load_graph if @research_object.valid?
+
     respond_to do |format|
       format.html {
         if @research_object.new_record?
