@@ -97,6 +97,7 @@ class ResearchObjectsController < ApplicationController
 
     @research_object = ResearchObject.create(
         :contributor  => current_user,
+        :url          => url,
         :title        => ro_params[:title],
         :description  => ro_params[:description],
         :content_blob => ContentBlob.new(:data => research_object))
