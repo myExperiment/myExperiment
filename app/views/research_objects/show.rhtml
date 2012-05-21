@@ -36,68 +36,24 @@
 
 <% if @contributable.annotations.length > 0 %>
 
-  <h2>Summary of subjects</h2>
+  <h2>Summary</h2>
 
   <table class="simple">
     <tr>
       <th>URI</th>
-      <th>Count</th>
+      <th>S</th>
+      <th>P</th>
+      <th>O</th>
     </tr>
-    <% @contributable.annotations.group_by do |a|
-         a.subject_text
-       end.sort do |a, b|
-         b[1].length <=> a[1].length
-       end.map do |pair| %>
-       
-       <tr>
-         <td><%=h pair[0] -%></td>
-         <td><%= pair[1].length -%></td>
-       </tr>
-
-     <% end %>
-   </table>
-
-  <h2>Summary of predicates</h2>
-
-  <table class="simple">
-    <tr>
-      <th>URI</th>
-      <th>Count</th>
-    </tr>
-    <% @contributable.annotations.group_by do |a|
-         a.predicate_text
-       end.sort do |a, b|
-         b[1].length <=> a[1].length
-       end.map do |pair| %>
-       
-       <tr>
-         <td><%=h pair[0] -%></td>
-         <td><%= pair[1].length -%></td>
-       </tr>
-
-     <% end %>
-   </table>
-
-  <h2>Summary of objects</h2>
-
-  <table class="simple">
-    <tr>
-      <th>URI</th>
-      <th>Count</th>
-    </tr>
-    <% @contributable.annotations.group_by do |a|
-         a.objekt_text
-       end.sort do |a, b|
-         b[1].length <=> a[1].length
-       end.map do |pair| %>
-       
-       <tr>
-         <td><%=h pair[0] -%></td>
-         <td><%= pair[1].length -%></td>
-       </tr>
-
-     <% end %>
-   </table>
+    <% research_object_summary(@contributable).each do |row| %>
+      <tr>
+        <td><%=h row[0] -%></td>
+        <td><%= row[1] -%></td>
+        <td><%= row[2] -%></td>
+        <td><%= row[3] -%></td>
+      </tr>
+    <% end %>
+  </table>
 
   <h2>Complete annotation list</h2>
 
