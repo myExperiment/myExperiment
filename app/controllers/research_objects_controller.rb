@@ -95,8 +95,11 @@ class ResearchObjectsController < ApplicationController
       research_object = file
     end
 
+    policy = Policy.new(:contributor => current_user, :name => 'auto', :share_mode => 0, :update_mode => 6)
+
     @research_object = ResearchObject.create(
         :contributor  => current_user,
+        :contribution => Contribution.new(:policy => policy),
         :url          => url,
         :title        => ro_params[:title],
         :description  => ro_params[:description],
