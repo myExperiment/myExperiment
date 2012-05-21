@@ -39,6 +39,8 @@ module Mib
                   :contributable => c)
             end
 
+            c.contribution.contributor ||= c.contributor
+
             if c.contribution.policy.nil?
               c.contribution.policy = create_default_policy(c.contributor)
             end
