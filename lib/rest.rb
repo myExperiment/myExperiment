@@ -229,6 +229,12 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
             else
               el = rest_get_request_aux(list_element_item, user, query.merge({ "id" => list_element_item.id.to_s }), list_item_select_elements)
 
+              # hack to workaround an inconsistency in the established API
+
+              if el.name == "internal-pack-item"
+                el.name = rest_object_tag_text(list_element_item)
+              end
+
               if model_data['List Element Name'][i]
                 el.name = model_data['List Element Name'][i]
               end

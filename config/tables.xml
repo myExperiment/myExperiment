@@ -5421,7 +5421,7 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Pack</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell><Data ss:Type="String">contributables</Data><NamedCell
+    <Cell><Data ss:Type="String">contributable_entries</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">no</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">list</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
@@ -7636,8 +7636,8 @@
     </Pane>
     <Pane>
      <Number>0</Number>
-     <ActiveRow>199</ActiveRow>
-     <ActiveCol>18</ActiveCol>
+     <ActiveRow>198</ActiveRow>
+     <ActiveCol>4</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
