@@ -13,7 +13,7 @@
 	  <li><%= icon('messages_outbox_no_arrow', sent_messages_path, "Return to Sent Messages", nil, 'Return to Sent Messages') -%></li>
   <% end -%>
 	<li>
-	  <% complex_delete_url = "<a href=\"#{message_path(@message)}\" onclick=\"if (confirm('Are you sure you want to delete this message?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);var n = document.createElement('input'); n.setAttribute('type', 'hidden'); n.setAttribute('name', 'deleted_from'); n.setAttribute('value', '#{@message_folder}'); f.appendChild(n); f.submit(); };return false;\">" -%>
+	  <% complex_delete_url = "<a href=\"#{message_path(@message)}\" onclick=\"if (confirm('Are you sure you want to delete this message?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);var n = document.createElement('input'); n.setAttribute('type', 'hidden'); n.setAttribute('name', 'deleted_from'); n.setAttribute('value', '#{@message_folder}'); f.appendChild(n); var o = document.createElement('input'); o.setAttribute('type', 'hidden'); o.setAttribute('name', 'authenticity_token'); o.setAttribute('value', '#{form_authenticity_token}'); f.appendChild(o); f.submit(); };return false;\">" -%>
 		<%= icon_no_link_processing('message_delete', complex_delete_url, nil, 'Delete this Message') %>
 	</li>
 </ul>
