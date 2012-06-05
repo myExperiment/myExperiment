@@ -71,6 +71,38 @@ class ResearchObject < ActiveRecord::Base
     end
   end
 
+  def wf4ever_resources
+
+    resources = annotations.find(:all, :conditions =>
+      ['predicate_text = ? AND objekt_text = ?',
+        'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+        'http://purl.org/wf4ever/ro#Resource']).map do
+      |a| a.subject_text
+    end
+
+    resources.map do |resource|
+
+      metadata = {}
+
+      annotations.find(:all, :conditions =>
+        ['subject_text = ?', resource]).each do |annotation|
+
+        case annotation.predicate_text
+        when "http://purl.org/wf4ever/ro#name":      metadata[:name]    = annotation.objekt_text
+        when "http://purl.org/dc/terms/created":     metadata[:created] = Date.parse(annotation.objekt_text)
+        when "http://purl.org/dc/terms/creator":     metadata[:creator] = annotation.objekt_text
+        when "http://purl.org/wf4ever/ro#checksum" : metadata[:md5]     = annotation.objekt_text
+        when "http://purl.org/wf4ever/ro#filesize" : metadata[:size]    = annotation.objekt_text.to_i
+        end
+
+      end
+
+      metadata
+
+    end
+
+  end
+
   def self.related_research_objects_to_t2(uuid)
 
     self.related_research_objects("

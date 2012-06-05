@@ -34,6 +34,31 @@
 
 </table>
 
+<% resources = @contributable.wf4ever_resources %>
+
+<% if resources.length > 0 %>
+
+  <h2>wf4ever resource summary</h2>
+
+  <table class="simple">
+    <tr>
+      <th>Name</th>
+      <th>Size</th>
+      <th>Created</th>
+      <th>Creator</th>
+    </tr>
+    <% resources.each do |resource| %>
+      <tr>
+        <td><%=h resource[:name] -%></td>
+        <td><%=h resource[:size] -%></td>
+        <td><%=h resource[:created] -%></td>
+        <td><%=h resource[:creator] -%></td>
+      </tr>
+    <% end %>
+  </table>
+
+<% end %>
+
 <% if @contributable.annotations.length > 0 %>
 
   <h2>Summary</h2>
