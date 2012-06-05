@@ -192,3 +192,14 @@ task "myexp:workflow:components" do
   puts doc.to_s
 end
 
+desc 'Rebuild checksums in the content blob store'
+task "myexp:blobstore:checksum:rebuild" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  ContentBlob.all.each do |blob|
+    blob.update_checksums
+    puts "blob changed? = #{blob.changed?}"
+    blob.save if blob.changed?
+  end
+end
+
