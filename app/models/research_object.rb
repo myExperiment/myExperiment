@@ -26,7 +26,7 @@ class ResearchObject < ActiveRecord::Base
 
   format_attribute :description
 
-  def load_graph
+  def load_graph_from_zip
 
     begin
 
@@ -69,6 +69,33 @@ class ResearchObject < ActiveRecord::Base
 
       graph
     end
+  end
+
+  def load_graph
+
+    # create RDF graph
+
+    manifest_name = "tmp/graph.#{Process.pid}.ttl"
+
+    File.open(manifest_name, "w") do |f|
+      f.write(content_blob.data)
+    end
+
+    graph = RDF::Graph.load(manifest_name)
+
+    FileUtils.rm_rf(manifest_name)
+
+    # create triples
+
+    graph.query([nil, nil, nil]).each do |s, p, o|
+
+      annotations.create(
+          :subject_text =>   s.to_s,
+          :predicate_text => p.to_s,
+          :objekt_text =>    o.to_s)
+    end
+
+    graph
   end
 
   def wf4ever_resources
