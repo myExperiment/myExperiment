@@ -285,7 +285,7 @@
             <% annotations.each do |annotation| %>
               <div>
                 <table>
-                  <tr><td><%=h annotation.research_object.title -%></td></tr>
+                  <tr><td><%= link_to(annotation.research_object.title, annotation.research_object) -%></td></tr>
                   <tr><td><%=h annotation.subject_text          -%></td></tr>
                   <tr><td><%=h annotation.predicate_text        -%></td></tr>
                   <tr><td><%=h annotation.objekt_text           -%></td></tr>
