@@ -83,7 +83,11 @@ class ResearchObjectsController < ApplicationController
 
     if url
       begin
-        curl = Curl::Easy.http_get(url)
+        curl = Curl::Easy.new(url)
+        
+        curl.follow_location = true
+
+        curl.http_get
         throw Exception if curl.response_code != 200
         research_object = curl.body_str
       rescue
