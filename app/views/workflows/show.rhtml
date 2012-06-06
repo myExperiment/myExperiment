@@ -270,6 +270,34 @@
 		
 			<br/>
 			
+      <% annotations = research_object_annotations(@workflow) %>
+
+      <% if annotations.length > 0 %>
+
+      <h3>Annotations</h3>
+
+      <div class="fold">
+
+        <div class="foldTitle">Annotations (<%= annotations.length -%>)</div>
+        <div class="foldContent" style="display: none;">
+
+          <div id="annotation_list">
+            <% annotations.each do |annotation| %>
+              <div>
+                <table>
+                  <tr><td><%=h annotation.research_object.title -%></td></tr>
+                  <tr><td><%=h annotation.subject_text          -%></td></tr>
+                  <tr><td><%=h annotation.predicate_text        -%></td></tr>
+                  <tr><td><%=h annotation.objekt_text           -%></td></tr>
+                </table>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <% end %>
+
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the internal components of this workflow version") %>
 				Workflow Components

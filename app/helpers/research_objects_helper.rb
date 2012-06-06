@@ -38,4 +38,17 @@ module ResearchObjectsHelper
     uris
   end
 
+  def research_object_annotations(contributable)
+
+    return [] unless contributable.respond_to?(:content_blob)
+
+    hash = contributable.content_blob.md5
+    
+    annotations = Annotation.find(:all,
+        :joins      => "JOIN annotations AS a1 ON annotations.subject_text = a1.subject_text",
+        :conditions => ["a1.predicate_text = ? AND a1.objekt_text = ?",
+                        "http://purl.org/wf4ever/ro#checksum",
+                        "urn:MD5:#{hash.upcase}"])
+  end
+
 end
