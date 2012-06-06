@@ -57,41 +57,53 @@
     <% end %>
   </table>
 
+  <br />
+
 <% end %>
 
 <% if @contributable.annotations.length > 0 %>
 
-  <h2>Summary</h2>
+  <div class="fold">
 
-  <table class="simple">
-    <tr>
-      <th>URI</th>
-      <th>S</th>
-      <th>P</th>
-      <th>O</th>
-    </tr>
-    <% research_object_summary(@contributable).each do |row| %>
-      <tr>
-        <td><%=h row[0] -%></td>
-        <td><%= row[1] -%></td>
-        <td><%= row[2] -%></td>
-        <td><%= row[3] -%></td>
-      </tr>
-    <% end %>
-  </table>
+    <div class="foldTitle">Annotation summary</div>
+    <div class="foldContent" style="display: none;">
 
-  <h2>Complete annotation list</h2>
+      <table class="simple">
+        <tr>
+          <th>URI</th>
+          <th>S</th>
+          <th>P</th>
+          <th>O</th>
+        </tr>
+        <% research_object_summary(@contributable).each do |row| %>
+          <tr>
+            <td><%=h row[0] -%></td>
+            <td><%= row[1] -%></td>
+            <td><%= row[2] -%></td>
+            <td><%= row[3] -%></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
 
-  <div id="annotation_list">
-    <% @contributable.annotations.each do |annotation| %>
-      <div>
-        <table>
-          <tr><td><%=h annotation.subject_text   -%></td></tr>
-          <tr><td><%=h annotation.predicate_text -%></td></tr>
-          <tr><td><%=h annotation.objekt_text    -%></td></tr>
-        </table>
+  <div class="fold">
+
+    <div class="foldTitle">Complete annotation list (<%= @contributable.annotations.length -%>)</div>
+    <div class="foldContent" style="display: none;">
+
+      <div id="annotation_list">
+        <% @contributable.annotations.each do |annotation| %>
+          <div>
+            <table>
+              <tr><td><%=h annotation.subject_text   -%></td></tr>
+              <tr><td><%=h annotation.predicate_text -%></td></tr>
+              <tr><td><%=h annotation.objekt_text    -%></td></tr>
+            </table>
+          </div>
+        <% end %>
       </div>
-    <% end %>
+    </div>
   </div>
 
 <% end %>
