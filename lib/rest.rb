@@ -114,9 +114,13 @@ def rest_response(code, args = {})
   { :xml => doc.to_s, :status => "#{code} #{message}" }
 end
 
-def resource_preview_url(ob, type)
+def resource_preview_url(ob, type, query)
   url = URI.parse(rest_resource_uri(ob))
-  url.path << "/versions/#{ob.current_version}" if ob.respond_to?('current_version')
+  if query["version"]
+    url.path << "/versions/#{query["version"]}"
+  elsif ob.respond_to?('current_version')
+    url.path << "/versions/#{ob.current_version}"
+  end
   url.path << "/previews/#{type}"
   url.to_s
 end
@@ -227,7 +231,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
               list_element << el
             else
-              el = rest_get_request_aux(list_element_item, user, query.merge({ "id" => list_element_item.id.to_s }), list_item_select_elements)
+              el = rest_get_request_aux(list_element_item, user, query.merge({ "id" => list_element_item.id.to_s, "version" => nil }), list_item_select_elements)
 
               # hack to workaround an inconsistency in the established API
 
@@ -291,7 +295,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         if model_data['Encoding'][i] == 'preview'
 
-          text = resource_preview_url(ob, model_data['Accessor'][i])
+          text = resource_preview_url(ob, model_data['Accessor'][i], query)
 
         else
 
@@ -348,6 +352,8 @@ def rest_get_request_aux(ob, user, query, elements)
   version  = ob.current_version.to_s if ob.respond_to?('versions')
 
   version = ob.version.to_s if ob.respond_to?(:versioned_resource)
+
+  version = query["version"] if query["version"]
 
   entity['uri'     ] = uri      if uri && query["show-uri"] != "no"
   entity['resource'] = resource if resource && query["show-resource"] != "no"
