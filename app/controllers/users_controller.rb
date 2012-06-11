@@ -549,7 +549,143 @@ class UsersController < ApplicationController
       end
     end
   end
-  
+
+  def check
+
+    def add(strings, opts = {})
+      if opts[:string] && opts[:string] != ""
+
+        label  = opts[:label]
+        label = self.class.helpers.link_to(label, opts[:link]) if opts[:link]
+
+        strings << { :label => label, :string => opts[:string], :escape => opts[:escape] }
+      end
+    end
+
+    unless logged_in? && Conf.admins.include?(current_user.username)
+      render :text => "Not authorised"
+      return
+    end
+
+    @from = params[:from].to_i
+    @to   = params[:to].to_i
+
+    if @to > 0
+
+      users = User.find(:all, :conditions => ["activated_at IS NOT NULL AND id >= ? AND id <= ? AND (account_status IS NULL OR (account_status != 'sleep' AND account_status != 'whitelist'))", @from, @to])
+
+      @userlist = users.map do |user|
+
+        strings = []
+
+        add(strings, :label => "email",        :string => user.email)
+        add(strings, :label => "openid",       :string => user.openid_url)
+        add(strings, :label => "created at",   :string => user.created_at)
+        add(strings, :label => "last login",   :string => user.last_seen_at ? user.last_seen_at : "never logged back in")
+        add(strings, :label => "name",         :string => user.name)
+        add(strings, :label => "public email", :string => user.profile.email)
+        add(strings, :label => "website",      :string => user.profile.website)
+        add(strings, :label => "description",  :string => user.profile.body_html, :escape => :false)
+        add(strings, :label => "field / ind",  :string => user.profile.field_or_industry)
+        add(strings, :label => "occ / roles",  :string => user.profile.occupation_or_roles)
+        add(strings, :label => "city",         :string => user.profile.location_city)
+        add(strings, :label => "country",      :string => user.profile.location_country)
+        add(strings, :label => "interests",    :string => user.profile.interests)
+        add(strings, :label => "contact",      :string => user.profile.contact_details)
+        add(strings, :label => "tags",         :string => user.tags.map do |tag| tag.name end.join(", "))
+
+        user.networks_owned.each do |network|
+
+          add(strings, :label  => "group title",
+                       :link   => polymorphic_path(network),
+                       :string => network.title) 
+
+          add(strings, :label  => "group description",
+                       :link   => polymorphic_path(network),
+                       :string => network.description_html,
+                       :escape => :false) 
+        end
+
+        user.packs.each do |pack|
+
+          add(strings, :label  => "pack title",
+                       :link   => polymorphic_path(pack),
+                       :string => pack.title) 
+
+          add(strings, :label  => "pack description",
+                       :link   => polymorphic_path(pack),
+                       :string => pack.description_html,
+                       :escape => :false) 
+        end
+
+        user.workflows.each do |workflow|
+
+          add(strings, :label  => "workflow title",
+                       :link   => polymorphic_path(workflow),
+                       :string => workflow.title) 
+
+          add(strings, :label  => "workflow description",
+                       :link   => polymorphic_path(workflow),
+                       :string => workflow.body_html,
+                       :escape => :false) 
+        end
+
+        user.blobs.each do |blob|
+
+          add(strings, :label  => "file title",
+                       :link   => polymorphic_path(blob),
+                       :string => blob.title) 
+
+          add(strings, :label  => "file description",
+                       :link   => polymorphic_path(blob),
+                       :string => blob.body_html,
+                       :escape => :false) 
+        end
+
+        user.comments.each do |comment|
+
+          add(strings, :label  => "comment",
+                       :link   => polymorphic_path(comment.commentable),
+                       :string => comment.comment,
+                       :escape => :white_list) 
+        end
+
+        { :ob => user, :strings => strings }
+
+      end
+    end
+  end
+
+  def change_status
+
+    unless logged_in? && Conf.admins.include?(current_user.username)
+      render :text => "Not authorised"
+      return
+    end
+
+    from = params[:from].to_i
+    to   = params[:to].to_i
+
+    (from..to).each do |user_id|
+      if user = User.find_by_id(user_id)
+        case params["user-#{user_id}"]
+        when "whitelist"
+          user.update_attributes(:account_status => "whitelist")
+        when "sleep"
+          user.update_attributes(:account_status => "sleep")
+        when "delete"
+          user.destroy
+        end
+      end
+    end
+
+    respond_to do |format|
+      format.html {
+        redirect_to(url_for(:controller => "users", :action => "check", :from => params[:from], :to => params[:to]))
+      }
+    end
+  end
+
 protected
 
   def find_users

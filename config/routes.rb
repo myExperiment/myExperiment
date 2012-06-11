@@ -214,6 +214,8 @@ ActionController::Routing::Routes.draw do |map|
   # all users
   map.resources :users, 
     :collection => { :all => :get, 
+                     :check => :get,
+                     :change_status => :post,
                      :search => :get, 
                      :invite => :get } do |user|
 

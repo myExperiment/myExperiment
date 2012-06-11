@@ -1,0 +1,65 @@
+<% if (current_user && Conf.admins.include?(current_user.username)) %>
+<% end %>
+<h1>Manage Users</h1>
+
+  <div id="user-check-range">
+<form method="GET">
+    Show users from <input type="text" name="from" value="<%= @from -%>"></input>
+    to <input type="text" name="to" value="<%= @to -%>"></input>
+    <input type="submit" value="Refresh">
+</form>
+  </div>
+
+<% if @userlist %>
+  <div id="user-check-list">
+    <form method="post" action="/users/change_status">
+      <% @userlist.each do |user| %>
+        <div>
+          <h2><%= link_to("User: #{user[:ob].id}", user[:ob]) -%></h2>
+          <div class="user-check-buttons">
+            <% input_name = "user-#{user[:ob].id}" %>
+            <div>
+              <input name="<%= input_name -%>" id="<%= input_name -%>-1" value="nothing" type="radio" checked="checked"/>
+              <label for="<%= input_name -%>-1">Do nothing</label>
+            </div>
+            <div>
+              <input name="<%= input_name -%>" id="<%= input_name -%>-2" value="whitelist" type="radio"/>
+              <label for="<%= input_name -%>-2">White list</label>
+            </div>
+            <div>
+              <input name="<%= input_name -%>" id="<%= input_name -%>-3" value="sleep" type="radio"/>
+              <label for="<%= input_name -%>-3">Sleep</label>
+            </div>
+            <div>
+              <input name="<%= input_name -%>" id="<%= input_name -%>-4" value="delete" type="radio"/>
+              <label for="<%= input_name -%>-4">Delete</label>
+            </div>
+          </div>
+          <table class="simple">
+            <% user[:strings].each do |string| %>
+              <tr>
+                <td><%= string[:label] -%></td>
+                <td <%= 'class="ident"' if ["email", "openid"].include?(string[:label]) -%>>
+                  <% if string[:escape] == :false %>
+                    <%= string[:string] -%>
+                  <% elsif string[:escape] == :white_list %>
+                    <%= white_list(string[:string]) -%>
+                  <% else %>
+                    <%= h(string[:string]) -%>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </table>
+        </div>
+      <% end %>
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token -%>"/>
+      <input type="hidden" name="from" value="<%= @from -%>"/>
+      <input type="hidden" name="to" value="<%= @to -%>"/>
+      <div id="user-check-submit">
+        <input type="submit" value="Process"/>
+      </div>
+    </form>
+  </div>
+<% end %>
+

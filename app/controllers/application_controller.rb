@@ -20,9 +20,16 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   before_filter :login_from_cookie
   before_filter :oauth_required
+  before_filter :check_for_sleeper
   
   include ActionView::Helpers::NumberHelper
   
+  def check_for_sleeper
+    if current_user.account_status == "sleep"
+      current_user.update_attribute(:account_status, "recheck")
+    end
+  end
+
   def base_host
     request.host_with_port
   end

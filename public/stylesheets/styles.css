@@ -2290,3 +2290,25 @@ table.topic td.tag_vote{
   margin-bottom: 1.5em;
   line-height: 1.4;
 }
+
+.user-check-buttons {
+	border: 1px solid #CCCCCC;
+  padding: 4px;
+  margin-left: 8px;
+  float: right;
+}
+
+#user-check-list TD {
+  background: #f0f0f0;
+}
+
+#user-check-list TD.ident {
+	font-weight: bold;
+}
+
+#user-check-submit,
+#user-check-range {
+  margin: 24px;
+  text-align: center;
+}
+
