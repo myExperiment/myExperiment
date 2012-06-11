@@ -181,6 +181,14 @@ class Conf
     self.fetch_entry('duplicable_mime_types')
   end
 
+  def self.duplicable_mime_types
+    self.fetch_entry('duplicable_mime_types')
+  end
+
+  def self.deleted_data_directory
+    self.fetch_entry('deleted_data_directory')
+  end
+
   def self.layouts
     layouts = self.fetch_entry('layouts', {})
     layouts.delete_if {|k,v| v["environment"] && (v["environment"] != ENV["RAILS_ENV"])}

@@ -506,3 +506,13 @@ recaptcha_private:
 #         - styles
 #         - custom_stylesheet
 #       layout: layouts/myexperiment
+
+# deleted_data_directory - This is the directory where information about
+#                          deleted content is stored.
+#
+#                          Example:
+#
+#                            deleted_data_directory: spam/deleted/
+
+deleted_data_directory: ""
+

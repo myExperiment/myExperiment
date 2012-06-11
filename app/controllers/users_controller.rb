@@ -674,6 +674,21 @@ class UsersController < ApplicationController
         when "sleep"
           user.update_attributes(:account_status => "sleep")
         when "delete"
+
+          # build an "all elements" user.xml record
+
+          elements = {}
+
+          TABLES['Model'][:data]['user']['REST Attribute'].each do |attr|
+            add_to_element_hash(attr, elements)
+          end
+
+          doc  = LibXML::XML::Document.new()
+          root = rest_get_request_aux(user, nil, {}, elements) 
+          doc.root = root
+
+          File.open("#{Conf.deleted_data_directory}#{user.id}.xml", "wb+") { |f| f.write(doc.to_s) }
+
           user.destroy
         end
       end
