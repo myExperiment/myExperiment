@@ -25,8 +25,10 @@ class ApplicationController < ActionController::Base
   include ActionView::Helpers::NumberHelper
   
   def check_for_sleeper
-    if current_user.account_status == "sleep"
-      current_user.update_attribute(:account_status, "recheck")
+    if logged_in?
+      if current_user.account_status == "sleep"
+        current_user.update_attribute(:account_status, "recheck")
+      end
     end
   end
 
