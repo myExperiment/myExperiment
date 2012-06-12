@@ -227,11 +227,12 @@ class Workflow < ActiveRecord::Base
   # End acts_as_runnable overridden methods
 
   def filename(version=nil)
+
     if version.blank?
-      return "#{unique_name}.#{file_ext}"
+      return "#{unique_name}.#{file_ext || self.processor_class.default_file_extension}"
     else
       return nil unless (workflow_version = self.find_version(version))
-      return "#{workflow_version.unique_name}.#{workflow_version.file_ext}"
+      return "#{workflow_version.unique_name}.#{workflow_version.file_ext || workflow_version.processor_class.default_file_extension}"
     end
   end
   

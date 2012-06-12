@@ -9,7 +9,7 @@ module WorkflowProcessors
   
   class Galaxy < WorkflowProcessors::Interface
 
-    Mime::Type.register "application/vnd.galaxy.workflow+xml", :galaxy_workflow
+    Mime::Type.register "application/vnd.galaxy.workflow+json", :galaxy_workflow
 
     # Begin Class Methods
     
@@ -24,29 +24,36 @@ module WorkflowProcessors
     end
     
     def self.display_data_format
-      "XML"
+      "JSON"
     end
     
     def self.mime_type
-      "application/vnd.galaxy.workflow+xml"
+      "application/vnd.galaxy.workflow+json"
     end
 
     # All the file extensions supported by this workflow processor.
     # Must be all in lowercase.
     def self.file_extensions_supported
-      []
+      ["ga"]
+    end
+
+    def self.default_file_extension
+      "ga"
     end
     
     def self.can_determine_type_from_file?
-      false
+      true
     end
     
     def self.recognised?(file)
-      false
+      rec = file.readline.strip == '{' &&
+            file.readline.strip == '"a_galaxy_workflow": "true",'
+      file.rewind
+      rec
     end
     
     def self.can_infer_metadata?
-      false
+      true
     end
     
     def self.can_generate_preview_image?
@@ -58,7 +65,7 @@ module WorkflowProcessors
     end
     
     def self.show_download_section?
-      false
+      true
     end
 
     def initialize(workflow_definition)
@@ -95,6 +102,10 @@ module WorkflowProcessors
       words.rewind
       words.read
     end
+
+    def get_title
+      @model.title
+    end
   end
 
   module GalaxyLib
@@ -113,72 +124,66 @@ module WorkflowProcessors
       # The connections of the workflow.
       attr_accessor :connections
 
+      attr_accessor :title
+
       def self.parse(stream)
+        doc = ActiveSupport::JSON.decode(stream)
 
-        begin
+        workflow = GalaxyLib::Workflow.new
 
-          doc = LibXML::XML::Parser.string("<?xml version='1.0' encoding='UTF-8'?><content>#{stream}</content>").parse
+        workflow.inputs      = []
+        workflow.outputs     = []
+        workflow.steps       = []
+        workflow.connections = []
 
-          workflow = GalaxyLib::Workflow.new
+        workflow.title = doc["name"]
 
-          workflow.inputs      = []
-          workflow.outputs     = []
-          workflow.steps       = []
-          workflow.connections = []
+        # Parse the context of the workflow.
+        doc["steps"].each_key.sort.each do |step_id| # Need to sort because the steps are backwards in the JSON
+          step_element = doc["steps"][step_id]
 
-          # Parse the context of the workflow.
+          step = GalaxyLib::Step.new
 
-          doc.find("/content/steps/step/inputs/input").each do |input_element|
+          step.id          = step_id
+          step.name        = step_element["name"]
+          step.tool        = step_element["tool_id"] || "None"
+          #step.description = nil   # No description present in JSON
 
+          workflow.steps << step
+
+          step_element["inputs"].each do |input_element|
             input = GalaxyLib::Input.new
 
-            input.step_id     = input_element.find("../../id/text()")[0].to_s
-            input.name        = input_element.find("name/text()")[0].to_s
-            input.description = CGI.unescapeHTML(input_element.find("description/text()")[0].to_s)
+            input.step_id     = step_id
+            input.name        = input_element["name"]
+            input.description = input_element["description"]
 
             workflow.inputs << input
           end
 
-          doc.find("/content/steps/step/outputs/output").each do |output_element|
-
+          step_element["outputs"].each do |output_element|
             output = GalaxyLib::Output.new
 
-            output.step_id = output_element.find("../../id/text()")[0].to_s
-            output.name    = output_element.find("name/text()")[0].to_s
-            output.type    = output_element.find("type/text()")[0].to_s
+            output.step_id = step_id
+            output.name    = output_element["name"]
+            output.type    = output_element["type"]
 
             workflow.outputs << output
           end
 
-          doc.find("/content/steps/step").each do |step_element|
+          step_element["input_connections"].each do |conn_name, conn_element|
+            connection = GalaxyLib::Connection.new
 
-            step = GalaxyLib::Step.new
+            connection.source_id     = conn_element["id"].to_s
+            connection.source_output = conn_element["output_name"].to_s
+            connection.sink_id       = step_id
+            connection.sink_input    = conn_name
 
-            step.id          = step_element.find("id/text()")[0].to_s
-            step.name        = step_element.find("name/text()")[0].to_s
-            step.tool        = step_element.find("tool/text()")[0].to_s
-            step.description = CGI.unescapeHTML(step_element.find("description/text()")[0].to_s)
-
-            workflow.steps << step
+            workflow.connections << connection
           end
-
-          doc.find("/content/connections/connection").each do |conn_element|
-
-            conn = GalaxyLib::Connection.new
-
-            conn.source_id     = conn_element.find("source_id/text()")[0].to_s
-            conn.source_output = conn_element.find("source_output/text()")[0].to_s
-            conn.sink_id       = conn_element.find("sink_id/text()")[0].to_s
-            conn.sink_input    = conn_element.find("sink_input/text()")[0].to_s
-
-            workflow.connections << conn
-          end
-
-          workflow
-        rescue
-          Rails.logger.info $!
-          nil
         end
+
+        workflow
       end
 
       def get_components

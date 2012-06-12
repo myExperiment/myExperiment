@@ -21,9 +21,10 @@
 </head>
 <body>
 
+<%= render :partial => "layouts/integrations/#{session[:came_from]}" unless session[:came_from].blank? %>
+
 <div id="doc2" class="yui-t4">
 
-  <%# TODO: Rails 2: '@content_for_x' has changed to 'content_for?(:x)' in later versions of rails %>
   <% if @content_for_header %>
     <%= yield :header %>
   <% else %>

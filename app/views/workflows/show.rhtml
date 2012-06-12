@@ -251,7 +251,7 @@
 
 			<h3>
 				<%= info_icon_with_tooltip("This section provides options for running this version of the Workflow") %>
-				Run
+        <%= @viewing_version.content_type.title == "Galaxy" ? "Import" : "Run" %>
 			</h3>
 				
 			<% if @authorised_to_download %>

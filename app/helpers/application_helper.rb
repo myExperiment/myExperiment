@@ -1616,8 +1616,6 @@ protected
       end
     end
 
-
-
     @layout = layout || {"layout" => Conf.page_template, "stylesheets" => [Conf.stylesheet]}
   end
 

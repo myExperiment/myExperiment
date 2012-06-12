@@ -117,7 +117,7 @@ class WorkflowsController < ApplicationController
       @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
     
-    send_data(@viewing_version.content_blob.data, :filename => @workflow.filename(@viewing_version_number), :type => @viewing_version.content_type.mime_type)
+    send_data(@viewing_version.content_blob.data, :filename => @workflow.filename(@viewing_version_number), :type => @viewing_version.content_type.mime_type, :disposition => (params[:disposition] || 'attachment'))
   end
   
   # GET /workflows/:id/download/:name

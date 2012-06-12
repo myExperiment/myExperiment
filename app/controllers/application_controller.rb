@@ -21,7 +21,8 @@ class ApplicationController < ActionController::Base
   before_filter :login_from_cookie
   before_filter :oauth_required
   before_filter :check_for_sleeper
-  
+  before_filter :check_external_site_request
+
   include ActionView::Helpers::NumberHelper
   
   def check_for_sleeper
@@ -1206,5 +1207,40 @@ class ApplicationController < ActionController::Base
       end
     end
 
+  end
+
+  # Applies a header to the page
+  def check_external_site_request
+    unless params.empty?
+      external_url_keys = params.keys & Conf.external_site_integrations.keys.collect {|s| s + "_url"}
+
+      if external_url_keys.size == 1
+        external_url_key = external_url_keys.first
+        external_url = params[external_url_key]
+
+        if %w(http https).include?(URI.parse(external_url).scheme)
+          session[:came_from] = external_url_key[0..-5] # Strip the _url part
+          session[:return_url] = CGI.unescape(external_url)
+        else
+          raise("Invalid return URL given for #{external_url_key}: \n\t#{external_url}")
+        end
+      elsif external_url_keys.size > 1
+        raise("#{external_url_keys.size} external URLs specified. Can only cope with one!")
+      end
+    end
+  end
+
+  # Remove external site information from session
+  #  and then go back the page we were at, or /home
+  def clear_external_site_session_info
+    params.delete("#{session.delete(:came_from)}_url")
+    session.delete(:return_url)
+
+    referrer = request.headers["Referer"]
+    target = referrer.blank? ? '/home' : URI.parse(referrer).path
+
+    respond_to do |format|
+      format.html { redirect_to target, (referrer.blank? ? nil : params) }
+    end
   end
 end

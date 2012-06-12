@@ -32,6 +32,10 @@ module WorkflowProcessors
     def self.file_extensions_supported
       []
     end
+
+    def self.default_file_extension
+      nil
+    end
     
     def self.can_determine_type_from_file?
       false

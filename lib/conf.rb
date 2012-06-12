@@ -181,10 +181,6 @@ class Conf
     self.fetch_entry('duplicable_mime_types')
   end
 
-  def self.duplicable_mime_types
-    self.fetch_entry('duplicable_mime_types')
-  end
-
   def self.deleted_data_directory
     self.fetch_entry('deleted_data_directory')
   end
@@ -192,6 +188,10 @@ class Conf
   def self.layouts
     layouts = self.fetch_entry('layouts', {})
     layouts.delete_if {|k,v| v["environment"] && (v["environment"] != ENV["RAILS_ENV"])}
+  end
+
+  def self.external_site_integrations
+    self.fetch_entry('site_integrations',{})
   end
 
   # This method is required to create an administrator in the test fixtures

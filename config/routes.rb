@@ -288,6 +288,13 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :licenses
   map.resources :license_attributes
 
+  # Generate special alias routes for external sites point to
+  Conf.external_site_integrations.each_value do |data|
+    map.connect data["path"], data["redirect"].symbolize_keys #Convert string keys to symbols
+  end
+
+  map.connect 'clear_external_site_session_info', :controller => 'application', :action => 'clear_external_site_session_info'
+
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'
 end
