@@ -158,7 +158,10 @@ class User < ActiveRecord::Base
       self.unconfirmed_email = nil
       
       # Activate user if not previously activated
-      self.activated_at = Time.now unless self.activated?
+      unless self.activated?
+        self.activated_at = Time.now
+        self.account_status = "sleep"
+      end
       
       return self.save
     else
