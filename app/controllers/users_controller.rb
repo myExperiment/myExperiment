@@ -666,30 +666,36 @@ class UsersController < ApplicationController
     from = params[:from].to_i
     to   = params[:to].to_i
 
-    (from..to).each do |user_id|
-      if user = User.find_by_id(user_id)
-        case params["user-#{user_id}"]
-        when "whitelist"
-          user.update_attributes(:account_status => "whitelist")
-        when "sleep"
-          user.update_attributes(:account_status => "sleep")
-        when "delete"
+    params.keys.each do |key|
 
-          # build an "all elements" user.xml record
+      match_data = key.match(/user-([0-9]*)/)
 
-          elements = {}
+      if match_data
+        if user = User.find_by_id(match_data[1])
+          puts "Processing user #{user.id}"
+          case params[key]
+          when "whitelist"
+            user.update_attributes(:account_status => "whitelist")
+          when "sleep"
+            user.update_attributes(:account_status => "sleep")
+          when "delete"
 
-          TABLES['Model'][:data]['user']['REST Attribute'].each do |attr|
-            add_to_element_hash(attr, elements)
+            # build an "all elements" user.xml record
+
+            elements = {}
+
+            TABLES['Model'][:data]['user']['REST Attribute'].each do |attr|
+              add_to_element_hash(attr, elements)
+            end
+
+            doc  = LibXML::XML::Document.new()
+            root = rest_get_request_aux(user, nil, {}, elements) 
+            doc.root = root
+
+            File.open("#{Conf.deleted_data_directory}#{user.id}.xml", "wb+") { |f| f.write(doc.to_s) }
+
+            user.destroy
           end
-
-          doc  = LibXML::XML::Document.new()
-          root = rest_get_request_aux(user, nil, {}, elements) 
-          doc.root = root
-
-          File.open("#{Conf.deleted_data_directory}#{user.id}.xml", "wb+") { |f| f.write(doc.to_s) }
-
-          user.destroy
         end
       end
     end
