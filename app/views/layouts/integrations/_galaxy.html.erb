@@ -69,6 +69,14 @@
   #doc2 {
     margin-top: 43px;
   }
+
+  #galaxy_help {
+    position: fixed;
+    width: 100%;
+    color: #333;
+    font-size: 120%;
+    z-index: 5000;
+  }
 </style>
 
 <div id="galaxy_header">
@@ -88,6 +96,39 @@
     <ul>
       <li><a href="<%= session[:return_url] -%>">Return to Galaxy</a></li>
       <li <%='class="selected"' if request.fullpath.start_with?('/galaxy') -%>><%= link_to 'Galaxy Workflows', '/galaxy' -%></li>
+      <li id="galaxy_help_option"><a href="#" onclick="toggle_galaxy_help(); return false;">Help</a></li>
     </ul>
   </div>
 </div>
+<div id="galaxy_help" style="display: none">
+  <div class="box_infotext" style="width: 40%; margin: 0 auto;">
+    <p>
+      <strong>To find Galaxy workflows:</strong><br/>
+      Click the "Galaxy Workflows" tab to view a list of all Galaxy workflows on <%= Conf.sitename -%>.
+    </p>
+    <p>
+      <strong>To import a Galaxy workflow into Galaxy:</strong><br/>
+      Navigate to a Galaxy workflow's page by clicking its title in the workflow list (see above), scroll down to the
+      "Import" section and click the import button.
+    </p>
+    <p>
+      For further information, please visit <a href="http://wiki.myexperiment.org/index.php/Galaxy_Help" target="_blank">this page</a>.
+    </p>
+    <p style="text-align: center">
+      [<a href="#" onclick="toggle_galaxy_help(); return false;">close</a>]
+    </p>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  function toggle_galaxy_help() {
+      var div = $('galaxy_help');
+      var tab = $('galaxy_help_option');
+      div.toggle();
+      if(div.visible())
+        tab.addClassName("selected");
+      else
+        tab.removeClassName("selected");
+  }
+</script>
