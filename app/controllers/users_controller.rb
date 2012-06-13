@@ -298,7 +298,7 @@ class UsersController < ApplicationController
     
     respond_to do |format|
       if confirmed
-        flash[:notice] = "Thank you for confirming your email. Your account is now active (if it wasn't before), and the new email address registered on your account. We hope you enjoy using #{Conf.sitename}!"
+        flash[:notice] = "Thank you for confirming your email address.  Welcome to #{Conf.sitename}!"
         format.html { redirect_to user_url(@user) }
       else
         flash[:error] = "Invalid confirmation URL"
