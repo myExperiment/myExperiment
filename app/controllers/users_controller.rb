@@ -276,26 +276,24 @@ class UsersController < ApplicationController
 
     confirmed = false
     
-    for user in @users
-      unless user.unconfirmed_email.blank?
-        # Check if hash matches user, in which case confirm the user's email
-        if user.email_confirmation_hash == params[:hash]
-          confirmed = user.confirm_email!
-          # BEGIN DEBUG
-          logger.error("ERRORS!") unless user.errors.empty?
-          user.errors.full_messages.each { |e| logger.error(e) } 
-          #END DEBUG
-          if confirmed
-            self.current_user = user
-            self.current_user.process_pending_invitations! # look up any pending invites for this user + transfer them to relevant tables from 'pending_invitations' table
-            confirmed = false if !logged_in?
-          end
-          @user = user
-          break
-        end
+    user = User.find(:first,
+        :conditions => ['SHA1(CONCAT(users.unconfirmed_email, ?)) = ?', Conf.secret_word,
+        params[:hash]])
+
+    if user
+      confirmed = user.confirm_email!
+      # BEGIN DEBUG
+      logger.error("ERRORS!") unless user.errors.empty?
+      user.errors.full_messages.each { |e| logger.error(e) } 
+      #END DEBUG
+      if confirmed
+        self.current_user = user
+        self.current_user.process_pending_invitations! # look up any pending invites for this user + transfer them to relevant tables from 'pending_invitations' table
+        confirmed = false if !logged_in?
       end
+      @user = user
     end
-    
+
     respond_to do |format|
       if confirmed
         flash[:notice] = "Thank you for confirming your email address.  Welcome to #{Conf.sitename}!"
