@@ -1,65 +1,246 @@
-<% if (current_user && Conf.admins.include?(current_user.username)) %>
-<% end %>
+<% t "Manage users" -%>
+
+<script type="text/ecmascript">
+
+  var keyScrollElementsID = "user-check-list";
+  var selectedKSElementID = "selected-user-check-element";
+
+  // return the currently selected keyscroll element (null if no selection)
+
+  function findSelectedKSE() {
+    return document.getElementById(selectedKSElementID);
+  }
+
+  // scroll to current keyscroll element (if exists)
+
+  function scrollToSelectedKSE() {
+
+    var selectedKSE = findSelectedKSE();
+
+    if (selectedKSE) {
+      window.scrollTo(window.pageXOffset, selectedKSE.offsetTop - 80);
+    } 
+  }
+
+  // select the first possible keyscroll element (if exists)
+
+  function selectFirstKSE() {
+
+    var possibleKSEs = document.getElementById(keyScrollElementsID).children;
+
+    for (var i = 0; i < possibleKSEs.length; i++) {
+      if (possibleKSEs[i].nodeType == 1) {
+        possibleKSEs[i].id = selectedKSElementID;
+        return;
+      }
+    }
+  }
+
+  // select the next keyscroll element
+
+  function selectNextKSE() {
+
+    var oldKSE = findSelectedKSE();
+
+    if (!oldKSE) {
+
+      selectFirstKSE();
+
+    } else {
+
+      for (var newKSE = oldKSE.nextSibling; newKSE != null; newKSE = newKSE.nextSibling) {
+        if (newKSE.nodeType == 1) {
+          oldKSE.id = null;
+          newKSE.id = selectedKSElementID;
+          break;
+        }
+      }
+    }
+
+    scrollToSelectedKSE();
+  }
+
+  // select the previous keyscroll element
+
+  function selectPreviousKSE() {
+
+    var oldKSE = findSelectedKSE();
+
+    if (!oldKSE) {
+
+      selectFirstKSE();
+
+    } else {
+
+      for (var newKSE = oldKSE.previousSibling; newKSE != null; newKSE = newKSE.previousSibling) {
+        if (newKSE.nodeType == 1) {
+          oldKSE.id = null;
+          newKSE.id = selectedKSElementID;
+          break;
+        }
+      }
+    }
+
+    scrollToSelectedKSE();
+  }
+
+  function updateKSE(id, value) {
+
+    // change the radio button
+
+    if (value != null) {
+      document.getElementById("user-" + id + "-" + value).checked = true;
+    }
+
+    // change visual class
+
+    var items  = document.forms["user-check"]["user-" + id].items
+    var length = document.forms["user-check"]["user-" + id].length
+
+    for (var i = 0; i < length; i++) {
+
+      var el = document.forms["user-check"]["user-" + id].item(i)
+
+      if (el.checked) {
+        document.getElementById(id).className = el.value;
+      }
+    }
+  }
+
+  function changeSelectedKSE(value) {
+
+    var currentKSE = findSelectedKSE();
+
+    if (currentKSE == null) {
+      selectFirstKSE();
+
+      currentKSE = findSelectedKSE();
+    }
+    
+    if (currentKSE == null)
+      return;
+
+    updateKSE(currentKSE.children[0].id, value);
+
+    // select the next one
+
+    selectNextKSE();
+  }
+
+  function processEventsforKS(evt) {
+
+    switch (evt.charCode) {
+
+      case 110: /* 'n' key */
+      case 106: /* 'j' key */
+
+        selectNextKSE();
+        break;
+
+      case 112: /* 'p' key */
+      case 107: /* 'k' key */
+
+        selectPreviousKSE();
+        break;
+    
+      case 119: /* 'w' key */
+
+        changeSelectedKSE("whitelist");
+        break;
+
+      case 115: /* 's' key */
+
+        changeSelectedKSE("sleep");
+        break;
+
+      case 120: /* 'x' key */
+
+        changeSelectedKSE("delete");
+        break;
+    }
+  }
+
+  // initialise keyscroll elements
+
+  function initialiseKSEs() {
+    var elements = document.getElementById(keyScrollElementsID).children;
+
+    for (var i = 0; i < elements.length; i++) {
+      if (elements[i].nodeType == 1) {
+        updateKSE(elements[i].children[0].id, null);
+      }
+    }
+  }
+
+  window.addEventListener("keypress", processEventsforKS, false);
+  window.addEventListener("load", initialiseKSEs, false);
+
+</script>
+
 <h1>Manage Users</h1>
 
-  <div id="user-check-range">
-<form method="GET">
-    Show users from <input type="text" name="from" value="<%= @from -%>"></input>
-    to <input type="text" name="to" value="<%= @to -%>"></input>
-    <input type="submit" value="Refresh">
-</form>
-  </div>
+<div id="user-check-range">
+  <form method="GET">
+      Show users from <input type="text" name="from" value="<%= @from -%>"></input>
+      to <input type="text" name="to" value="<%= @to -%>"></input>
+      <input type="submit" value="Refresh">
+  </form>
+</div>
 
 <% if @userlist %>
-  <div id="user-check-list">
-    <form method="post" action="/users/change_status">
+  <form id="user-check" method="post" action="/users/change_status">
+    <div id="user-check-list">
       <% @userlist.each do |user| %>
         <div>
-          <h2><%= link_to("User: #{user[:ob].id}", user[:ob]) -%></h2>
-          <div class="user-check-buttons">
-            <% input_name = "user-#{user[:ob].id}" %>
-            <div>
-              <input name="<%= input_name -%>" id="<%= input_name -%>-1" value="nothing" type="radio" checked="checked"/>
-              <label for="<%= input_name -%>-1">Do nothing</label>
+          <div id="<%= user[:ob].id -%>">
+            <h2><%= link_to("User: #{user[:ob].id}", user[:ob]) -%></h2>
+            <div class="user-check-buttons">
+              <% input_name = "user-#{user[:ob].id}" %>
+              <div>
+                <input name="<%= input_name -%>" id="<%= input_name -%>-nothing" value="nothing" type="radio" checked="checked" onchange="document.getElementById('<%= user[:ob].id -%>').className = 'nothing';"/>
+                <label for="<%= input_name -%>-nothing">Do nothing</label>
+              </div>
+              <div>
+                <input name="<%= input_name -%>" id="<%= input_name -%>-whitelist" value="whitelist" type="radio" onchange="document.getElementById('<%= user[:ob].id -%>').className = 'whitelist';"/>
+                <label for="<%= input_name -%>-whitelist">White list</label>
+              </div>
+              <div>
+                <input name="<%= input_name -%>" id="<%= input_name -%>-sleep" value="sleep" type="radio" onchange="document.getElementById('<%= user[:ob].id -%>').className = 'sleep';"/>
+                <label for="<%= input_name -%>-sleep">Sleep</label>
+              </div>
+              <div>
+                <input name="<%= input_name -%>" id="<%= input_name -%>-delete" value="delete" type="radio" onchange="document.getElementById('<%= user[:ob].id -%>').className = 'delete';"/>
+                <label for="<%= input_name -%>-delete">Delete</label>
+              </div>
             </div>
-            <div>
-              <input name="<%= input_name -%>" id="<%= input_name -%>-2" value="whitelist" type="radio"/>
-              <label for="<%= input_name -%>-2">White list</label>
-            </div>
-            <div>
-              <input name="<%= input_name -%>" id="<%= input_name -%>-3" value="sleep" type="radio"/>
-              <label for="<%= input_name -%>-3">Sleep</label>
-            </div>
-            <div>
-              <input name="<%= input_name -%>" id="<%= input_name -%>-4" value="delete" type="radio"/>
-              <label for="<%= input_name -%>-4">Delete</label>
+            <div class="table-div">
+              <table class="simple">
+                <% user[:strings].each do |string| %>
+                  <tr>
+                    <td><%= string[:label] -%></td>
+                    <td <%= 'class="ident"' if ["email", "openid"].include?(string[:label]) -%>>
+                      <% if string[:escape] == :false %>
+                        <%= string[:string] -%>
+                      <% elsif string[:escape] == :white_list %>
+                        <%= white_list(string[:string]) -%>
+                      <% else %>
+                        <%= h(string[:string]) -%>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </table>
             </div>
           </div>
-          <table class="simple">
-            <% user[:strings].each do |string| %>
-              <tr>
-                <td><%= string[:label] -%></td>
-                <td <%= 'class="ident"' if ["email", "openid"].include?(string[:label]) -%>>
-                  <% if string[:escape] == :false %>
-                    <%= string[:string] -%>
-                  <% elsif string[:escape] == :white_list %>
-                    <%= white_list(string[:string]) -%>
-                  <% else %>
-                    <%= h(string[:string]) -%>
-                  <% end %>
-                </td>
-              </tr>
-            <% end %>
-          </table>
         </div>
       <% end %>
-      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token -%>"/>
-      <input type="hidden" name="from" value="<%= @from -%>"/>
-      <input type="hidden" name="to" value="<%= @to -%>"/>
-      <div id="user-check-submit">
-        <input type="submit" value="Process"/>
-      </div>
-    </form>
-  </div>
+    </div>
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token -%>"/>
+    <input type="hidden" name="from" value="<%= @from -%>"/>
+    <input type="hidden" name="to" value="<%= @to -%>"/>
+    <div id="user-check-submit">
+      <input type="submit" value="Process"/>
+    </div>
+  </form>
 <% end %>
 

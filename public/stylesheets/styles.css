@@ -2312,3 +2312,26 @@ table.topic td.tag_vote{
   text-align: center;
 }
 
+#selected-user-check-element .table-div TABLE {
+  border: 2px solid black;
+}
+
+#user-check-list > DIV {
+  padding: 4px;
+}
+
+#user-check-list .whitelist TD {
+	border: 1px solid #80c080;
+  background: #c0ffc0;
+}
+
+#user-check-list .sleep TD {
+	border: 1px solid #808080;
+  background: #c0c0c0;
+}
+
+#user-check-list .delete TD {
+	border: 1px solid #c08080;
+  background: #ffc0c0;
+}
+
