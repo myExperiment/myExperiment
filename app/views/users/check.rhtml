@@ -223,6 +223,8 @@
                         <%= string[:string] -%>
                       <% elsif string[:escape] == :white_list %>
                         <%= white_list(string[:string]) -%>
+                      <% elsif string[:escape] == :website %>
+                        <%= link_to(h(string[:string]), string[:string]) %>
                       <% else %>
                         <%= h(string[:string]) -%>
                       <% end %>

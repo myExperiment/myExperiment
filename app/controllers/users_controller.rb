@@ -582,7 +582,7 @@ class UsersController < ApplicationController
         add(strings, :label => "last login",   :string => user.last_seen_at ? user.last_seen_at : "never logged back in")
         add(strings, :label => "name",         :string => user.name)
         add(strings, :label => "public email", :string => user.profile.email)
-        add(strings, :label => "website",      :string => user.profile.website)
+        add(strings, :label => "website",      :string => user.profile.website, :escape => :website)
         add(strings, :label => "description",  :string => user.profile.body_html, :escape => :false)
         add(strings, :label => "field / ind",  :string => user.profile.field_or_industry)
         add(strings, :label => "occ / roles",  :string => user.profile.occupation_or_roles)
