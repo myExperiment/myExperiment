@@ -174,9 +174,20 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     
     respond_to do |format|
-      if @user.save
-        # DO NOT log in user yet, since account needs to be validated and activated first (through email).
-        @user.send_email_confirmation_email
+
+      sent_email = false
+
+      if @user.valid?
+        begin
+            # DO NOT log in user yet, since account needs to be validated and activated first (through email).
+            @user.send_email_confirmation_email
+            sent_email = true
+        rescue
+          @user.errors.add_to_base("Unable to send confirmation email")
+        end
+      end
+
+      if sent_email && @user.save
         
         # If required, copy the email address to the Profile
         if params[:make_email_public]
@@ -195,7 +206,7 @@ class UsersController < ApplicationController
           }
         end
         
-        flash[:notice] = "Thank you for registering! We have sent a confirmation email to #{@user.unconfirmed_email} with instructions on how to activate your account."
+        flash[:notice] = "Thank you for registering! An email has been sent to #{@user.unconfirmed_email} with instructions on how to activate your account."
         format.html { redirect_to(:action => "index") }
       else
         format.html { render :action => "new" }
