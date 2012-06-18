@@ -160,7 +160,12 @@ class User < ActiveRecord::Base
       # Activate user if not previously activated
       unless self.activated?
         self.activated_at = Time.now
-        self.account_status = "sleep"
+
+        if probable_spammer?
+          self.account_status = "hide"
+        else
+          self.account_status = "sleep"
+        end
       end
       
       return self.save
@@ -597,6 +602,23 @@ class User < ActiveRecord::Base
 
   def email_confirmation_hash
     Digest::SHA1.hexdigest(unconfirmed_email + Conf.secret_word)
+  end
+
+  def calculate_spam_score
+
+    score = 0
+
+    patterns = Conf.spam_patterns
+
+    patterns["email"].each do |pattern|
+      if unconfirmed_email
+        score = score + 80 if unconfirmed_email.match(pattern)
+      elsif email
+        score = score + 80 if email.match(pattern)
+      end
+    end
+
+    self.spam_score = score
   end
 
 protected

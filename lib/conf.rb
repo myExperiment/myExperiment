@@ -185,6 +185,10 @@ class Conf
     self.fetch_entry('deleted_data_directory')
   end
 
+  def self.spam_patterns
+    self.fetch_entry('spam_patterns')
+  end
+
   def self.layouts
     layouts = self.fetch_entry('layouts', {})
     layouts.delete_if {|k,v| v["environment"] && (v["environment"] != ENV["RAILS_ENV"])}

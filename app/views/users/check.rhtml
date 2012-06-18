@@ -153,6 +153,11 @@
         changeSelectedKSE("sleep");
         break;
 
+      case 104: /* 'h' key */
+
+        changeSelectedKSE("hide");
+        break;
+
       case 120: /* 'x' key */
 
         changeSelectedKSE("delete");
@@ -207,6 +212,10 @@
               <div>
                 <input name="<%= input_name -%>" id="<%= input_name -%>-sleep" value="sleep" type="radio" onchange="document.getElementById('<%= user[:ob].id -%>').className = 'sleep';"/>
                 <label for="<%= input_name -%>-sleep">Sleep</label>
+              </div>
+              <div>
+                <input name="<%= input_name -%>" id="<%= input_name -%>-hide" value="hide" type="radio" onchange="document.getElementById('<%= user[:ob].id -%>').className = 'hide';"/>
+                <label for="<%= input_name -%>-hide">Hide</label>
               </div>
               <div>
                 <input name="<%= input_name -%>" id="<%= input_name -%>-delete" value="delete" type="radio" onchange="document.getElementById('<%= user[:ob].id -%>').className = 'delete';"/>

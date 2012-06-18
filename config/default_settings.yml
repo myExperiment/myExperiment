@@ -516,3 +516,12 @@ recaptcha_private:
 
 deleted_data_directory: ""
 
+# spam_patterns - These patterns are used to automatically hide users from
+#                 particular views, e.g. the timeline as they are likely to be
+#                 used at a later point by spammers.
+
+spam_patterns:
+
+  email:
+    - "[0-9]{2,3}@hotmail.com"
+
