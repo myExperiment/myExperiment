@@ -160,12 +160,7 @@ class User < ActiveRecord::Base
       # Activate user if not previously activated
       unless self.activated?
         self.activated_at = Time.now
-
-        if probable_spammer?
-          self.account_status = "hide"
-        else
-          self.account_status = "sleep"
-        end
+        self.account_status = "sleep"
       end
       
       return self.save

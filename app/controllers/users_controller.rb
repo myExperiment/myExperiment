@@ -687,8 +687,6 @@ class UsersController < ApplicationController
             user.update_attributes(:account_status => "whitelist")
           when "sleep"
             user.update_attributes(:account_status => "sleep")
-          when "hide"
-            user.update_attributes(:account_status => "hide")
           when "delete"
 
             # build an "all elements" user.xml record
