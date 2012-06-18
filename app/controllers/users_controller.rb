@@ -380,7 +380,7 @@ class UsersController < ApplicationController
   
   # For simile timeline
   def users_for_timeline
-    @users = User.find(:all, :conditions => [ "users.activated_at IS NOT NULL AND users.spam_score < 50 AND users.created_at < ?", params[:start].to_time, params[:end].to_time ], :include => [ :profile ] )
+    @users = User.find(:all, :conditions => [ "users.activated_at IS NOT NULL AND users.spam_score < 50 AND users.created_at > ? AND users.created_at < ?", params[:start].to_time, params[:end].to_time ], :include => [ :profile ] )
     respond_to do |format|
       format.json { render :partial => 'users/timeline_json', :layout => false }
     end
