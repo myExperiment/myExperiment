@@ -3,6 +3,8 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'open-uri'
+
 class UsersController < ApplicationController
 
   contributable_actions = [:workflows, :files, :packs, :blogs]
@@ -176,18 +178,34 @@ class UsersController < ApplicationController
     respond_to do |format|
 
       sent_email = false
+      spammer = false
 
       if @user.valid?
+
+        # basic spam check
+
+        url = "http://www.stopforumspam.com/api?email=#{CGI::escape(@user.unconfirmed_email)}&username=#{CGI::escape(@user.username)}&ip=#{CGI::escape(request.ip)}&f=json"
+
+        sfs_response = ActiveSupport::JSON.decode(open(url).read)
+
+        if (sfs_response["success"] == 1)
+          if ((sfs_response["email"]["appears"] == 1) || (sfs_response["ip"]["appears"] == 1))
+            spammer = true
+          end
+        end
+
         begin
             # DO NOT log in user yet, since account needs to be validated and activated first (through email).
-            @user.send_email_confirmation_email
-            sent_email = true
+            if !spammer
+              @user.send_email_confirmation_email
+              sent_email = true
+            end
         rescue
           @user.errors.add_to_base("Unable to send confirmation email")
         end
       end
 
-      if sent_email && @user.save
+      if sent_email && !spammer && @user.save
         
         # If required, copy the email address to the Profile
         if params[:make_email_public]
