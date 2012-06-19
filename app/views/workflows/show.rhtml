@@ -158,7 +158,7 @@
 				Preview
 			</h3>
 			
-			<% unless @viewing_version.image.nil? %>
+			<% unless @viewing_version.image.nil? && @viewing_version.svg.nil? %>
 				<p style="font-size: 85%; font-weight: normal; margin-bottom: 0.5em; text-align: center;">
 					 (Click on the image to get the full size)
 				</p>
