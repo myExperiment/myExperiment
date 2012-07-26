@@ -44,7 +44,7 @@
                         :id => "add_to_pack_form" } do %>
             <p>
               <select id="add_to_pack_selector" style="width: 99%" onchange="$('add_to_pack_form').action = $(this).options[this.selectedIndex].value; return false">
-                <% potential_packs.each do |p| -%>
+                <% potential_packs.sort_by(&:updated_at).reverse!.each do |p| -%>
                   <option value="<%= quick_add_pack_url(p) -%>">
                     <%= h(p.title) -%>
                   </option>
