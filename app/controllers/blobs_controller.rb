@@ -7,21 +7,21 @@ class BlobsController < ApplicationController
 
   include ApplicationHelper
 
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :search]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :named_download_with_version, :statistics, :search]
   
   before_filter :find_blob_auth, :except => [:search, :index, :new, :create]
   
   before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create]
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
   
-  before_filter :check_is_owner, :only => [:edit, :update]
+  before_filter :check_is_owner, :only => [:edit, :update, :suggestions, :process_suggestions]
   
   # declare sweepers and which actions should invoke them
   cache_sweeper :blob_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :permission_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
   cache_sweeper :tag_sweeper, :only => [ :create, :update, :tag, :destroy ]
-  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download ]
+  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :named_download_with_version ]
   cache_sweeper :comment_sweeper, :only => [ :comment, :comment_delete ]
   cache_sweeper :rating_sweeper, :only => [ :rate ]
   
@@ -36,7 +36,7 @@ class BlobsController < ApplicationController
       @download = Download.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
     
-    send_data(@blob.content_blob.data, :filename => @blob.local_name, :type => @blob.content_type.mime_type)
+    send_data(@version.content_blob.data, :filename => @version.local_name, :type => @version.content_type.mime_type)
     
     #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type.mime_type)
   end
@@ -46,6 +46,17 @@ class BlobsController < ApplicationController
 
     # check that we got the right filename for this workflow
     if params[:name] == @blob.local_name
+      download
+    else
+      render :nothing => true, :status => "404 Not Found"
+    end
+  end
+
+  # GET /files/:id/versions/:version/download/:name
+  def named_download_with_version
+
+    # check that we got the right filename for this workflow
+    if params[:name] == @version.local_name
       download
     else
       render :nothing => true, :status => "404 Not Found"
@@ -133,11 +144,7 @@ class BlobsController < ApplicationController
       @blob = Blob.new(params[:blob])
       @blob.content_blob = ContentBlob.new(:data => data)
 
-      @blob.content_type = ContentType.find_by_mime_type(content_type)
-
-      if @blob.content_type.nil?
-        @blob.content_type = ContentType.create(:user_id => current_user.id, :mime_type => content_type, :title => content_type, :category => 'Blob')
-      end
+      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user, :mime_type => content_type, :category=> 'Blob')
 
       respond_to do |format|
         if @blob.save
@@ -156,8 +163,18 @@ class BlobsController < ApplicationController
           update_attributions(@blob, params)
         
           if policy_err_msg.blank?
-            flash[:notice] = 'File was successfully created.'
-            format.html { redirect_to blob_url(@blob) }
+
+            @version = @blob.find_version(1)
+
+            format.html {
+              if @version.suggestions?
+                redirect_to(blob_version_suggestions_path(@blob, @version.version))
+              else
+                flash[:notice] = 'File was successfully created.'
+                  redirect_to blob_url(@blob)
+              end
+            }
+
           else
             flash[:notice] = "File was successfully created. However some problems occurred, please see these below.</br></br><span style='color: red;'>" + policy_err_msg + "</span>"
             format.html { redirect_to :controller => 'blobs', :id => @blob, :action => "edit" }
@@ -186,8 +203,14 @@ class BlobsController < ApplicationController
     
     params[:blob][:license_id] = nil if params[:blob][:license_id] && params[:blob][:license_id] == "0"
 
-    # 'Data' (ie: the actual file) cannot be updated!
-    params[:blob].delete('data') if params[:blob][:data]
+    # Create a new content blob entry if new data is provided.
+    if params[:blob][:data] && params[:blob][:data].size > 0
+      @blob.build_content_blob(:data => params[:blob][:data].read)
+      @blob.local_name = params[:blob][:data].original_filename
+      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user, :title => params[:blob][:data].content_type, :mime_type => params[:blob][:data].content_type, :category => 'Blob')
+    end
+
+    params[:blob].delete(:data)
     
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
@@ -199,8 +222,21 @@ class BlobsController < ApplicationController
         update_layout(@blob, params[:layout])
         
         if policy_err_msg.blank?
-          flash[:notice] = 'File was successfully updated.'
-          format.html { redirect_to blob_url(@blob) }
+          format.html {
+
+            if @blob.new_version_number
+              @version = @blob.find_version(@blob.new_version_number)
+            else
+              @version.reload
+            end
+
+            if @version.suggestions?
+              redirect_to(blob_version_suggestions_path(@blob, @version.version))
+            else
+              flash[:notice] = 'File was successfully updated.'
+              redirect_to blob_url(@blob)
+            end
+          }
         else
           flash[:error] = policy_err_msg
           format.html { redirect_to :controller => 'blobs', :id => @blob, :action => "edit" }
@@ -289,6 +325,31 @@ class BlobsController < ApplicationController
     end
   end
   
+  # GET /files/1/versions/1/suggestions
+  def suggestions
+    @suggestions = @version.suggestions
+  end
+
+  # POST /files/1/versions/1/process_suggestions
+  def process_suggestions
+
+    @version.revision_comments = params[:revision_comments] if params[:revision_comments]
+    @version.body = params[:description] if params[:description]
+
+    success = @version.save
+
+    respond_to do |format|
+      format.html {
+        if success
+          flash[:notice] = 'File was successfully updated.'
+          redirect_to blob_version_path(@blob, @version.version)
+        else
+          render :action => "suggestions"  
+        end
+      }
+    end
+  end
+
   protected
   
   def find_blob_auth
@@ -298,14 +359,21 @@ class BlobsController < ApplicationController
       if Authorization.is_authorized?(action_name, nil, blob, current_user)
         @blob = blob
         
+        if params[:version]
+          @version = @blob.find_version(params[:version])
+        else
+          @version = @blob.versions.last
+        end
+
         @blob_entry_url = url_for :only_path => false,
                             :host => base_host,
                             :id => @blob.id
 
-        @named_download_url = url_for :controller => 'files',
-                                      :action => 'named_download',
+        @named_download_url = url_for :controller => 'blobs',
+                                      :action => 'named_download_with_version',
                                       :id => @blob.id, 
-                                      :name => @blob.local_name
+                                      :version => @version.version, 
+                                      :name => @version.local_name
 
       else
         if logged_in? 

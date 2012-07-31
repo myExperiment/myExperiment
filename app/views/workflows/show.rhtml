@@ -1,13 +1,5 @@
 <% t "#{h @workflow.title} (#{h @workflow.contributor_name}) [#{h(@workflow.type_display_name)} Workflow]" -%>
 
-<script type="text/javascript">
-  function showWorkflowVersion(form) {
-    var url = $("workflow_versions").value;
-		location.href = url;
-		form.submit
-  }
-</script>
-
 <ul class="sectionIcons">
 	<% if @authorised_to_edit -%>
 		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
@@ -28,8 +20,6 @@
 
 <%= render :partial => "contributions/datetime_info", :locals => { :contributable => @workflow } -%>
 
-<!-- the code for 'selectTab()' should be refactored at some point to get -->
-<!-- tab name as a string, not it's ID; for now IDs are used -->
 <div class="contribution_mini_nav">
 	|
 	<%= link_to "License", "#license" %>
@@ -50,12 +40,12 @@
 	|
 	<br/>
 	|
-	<a href="#citations" onclick="selectTab($('tabsContainer'),0)">Citations (<%= @workflow.citations.length -%>)</a>
+	<a href="#citations">Citations (<%= @workflow.citations.length -%>)</a>
 	|
-	<a href="#version_history" onclick="selectTab($('tabsContainer'),1)">Version History</a>
-	|
+  <a href="#version_history">Version History</a>
+  |
 	<% if logged_in? and @workflow.owner?(current_user) %>
-	  <a href="#sharing" onclick="selectTab($('tabsContainer'),2)">Sharing</a>
+	  <a href="#sharing">Sharing</a>
 	  |
 	<% end %>
 	<%= link_to "Reviews (#{@workflow.reviews.length})", "#reviews" %>
@@ -68,63 +58,9 @@
 <div class="contribution_left_box">
 	
 	<div class="contribution_version_box">
-		<div class="contribution_version_selector_box">
-			<table>
-				<tbody>
-					<tr>
-						<td class="heading" style="vertical-align: top;">
-							<%= info_icon_with_tooltip("This box shows version #{@viewing_version_number.to_s} of the Workflow file for this Workflow entry") -%>
-							<span><%= "Version #{@viewing_version_number.to_s} #{@workflow.describe_version(@viewing_version_number)}" -%></span>
-							<span class="count_text">(of <%= @workflow.versions.length -%>)</span>
-						  <a name="versions"></a>
-						</td>
-						<td>
-							<% if @latest_version_number > 1 %>
-	             	<form onsubmit="showWorkflowVersion(this); return false;" style="text-align: right;">
-						    	<b>View version: </b>
-						    	<select id="workflow_versions" onchange="showWorkflowVersion(this.form)">
-							  		<% @workflow.versions.reverse.each do |w| %>
-							    		<option value="<%= versioned_workflow_url(@workflow, w.version.to_s) %>" <%= "selected" if w.version == @viewing_version_number -%>>
-							      			<%= "#{w.version.to_s} #{@workflow.describe_version(w.version)}" %>
-							    		</option>
-							  		<% end %>
-									</select>
-								</form>
-							<% end %>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			
-			<div id="version_info_box" style="color: #666666;	font-size: 85%; margin: 0.6em 0.5em 0.2em 0.5em; border-top: 1px solid #DDDDDD; padding-top: 0.4em;">
-				<p style="text-align: center;">
-					<b>Version created on:</b>
-					<span><%= datetime @viewing_version.created_at, false %></span>
-					<b>by:</b>
-					<span><%= contributor @viewing_version.contributor_id, @viewing_version.contributor_type %></span>
-					<span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-					<span><%= link_to_function "Revision comments " + expand_image, visual_effect(:toggle_blind, "version_info_box_comments", :duration => 0.3) %></span>
-				</p>
-				
-				<% unless @viewing_version.created_at == @viewing_version.updated_at %>
-					<p style="text-align: center;">
-						<b>Last edited on:</b>
-						<span><%= datetime @viewing_version.updated_at, false %></span>
-						<b>by:</b>
-						<span><%= contributor @viewing_version.last_edited_by, "User" %></span>
-					</p>
-				<% end %>
-			</div>
-			
-			<div id="version_info_box_comments" style="display: none; border: 1px dotted #CCCCCC; padding: 0.3em 0.5em;">
-				<% unless @viewing_version.revision_comments.blank? -%>
-					<%= white_list @viewing_version.revision_comments %>
-				<% else %>
-					<p><i>None</i></p>
-				<% end %>
-			</div>
-		</div>
-		
+
+    <%= render(:partial => "contributions/version_selector", :locals => { :resource => @workflow, :version => @viewing_version, :path => :workflow_version_path }) %>
+
 		<% if @authorised_to_edit %>
 			<div style="margin-top: 1em;">
 				<ul class="sectionIcons" style="margin-top: 0.7em; margin-bottom: 0.6em;">
@@ -337,24 +273,23 @@
 
 <div id="tabsContainer" class="tabsContainer"></div>
 
-<a name="citations"></a>
 <%= render :partial => "contributions/citations_tab", :locals => { :item => @workflow } %>
 
-<a name="version_history"></a>
 <div class="tabContainer">
   <div class="tabTitle">Version History</div>
   <div class="tabContent">
-      <%= render :partial => "workflows/versions", :locals => { :workflow => @workflow } %>
+    <a name="version_history"></a>
+    <%= render :partial => "contributions/versions", :locals => { :resource => @workflow, :path => :workflow_version_path } %>
   </div>
 </div>
 
 <% if logged_in? and @workflow.owner?(current_user) %>
   
-	<a name="sharing"></a>
 	<div class="tabContainer">
     <div class="tabTitle">Sharing</div>
     <div class="tabContent">
 
+      <a name="sharing"></a>
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @workflow } %>
       <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @workflow } %>
 	  

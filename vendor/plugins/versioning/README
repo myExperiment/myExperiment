@@ -1,0 +1,57 @@
+Versioning
+==========
+
+This plugin provides a simple versioning mechanism for Active Record.  Two
+models are required: The model to be versioned and a model that contains the
+versioned data for each version.
+
+
+Example
+=======
+
+This example requires the following tables.  A Record model which contains a
+title, description and some content.
+
+
+  create_table "records" do |t|
+    t.string   "title"
+    t.text     "description"
+    t.binary   "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "current_version"
+  end
+
+  create_table "record_versions" do |t|
+    t.string   "title"
+    t.text     "description"
+    t.binary   "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "version"
+  end
+
+
+In the following model code, we're stating that the "title", "description" and
+"content" attributes are to be versioned.  In addition, the "title" and
+"description" attributes may be changed in a specific version.
+
+
+  class Record < ActiveRecord::Base
+    has_versions :record_versions,
+        :attributes => [ :title, :description, :content ],
+        :mutable    => [ :title, :description ]
+  end
+
+  class RecordVersion < ActiveRecord::Base
+    is_version_of :record
+  end
+
+
+Since "content" is the only attribute that cannot be changed in the
+RecordVersion class, saving a record with different content will cause a new
+version to be created.  If only the title or the description changes, then the
+current version is updated to reflect those new changes.
+
+
+Copyright (c) 2011 Don Cruickshank, released under the MIT license

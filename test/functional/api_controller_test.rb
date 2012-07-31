@@ -115,11 +115,13 @@ class ApiControllerTest < ActionController::TestCase
 
     title        = "Test file title"
     title2       = "Updated test file title"
+    title3       = "Updated test file title for versions"
     license_type = "by-sa"
     content_type = "text/plain"
     description  = "A description of the test file."
 
-    content = Base64.encode64("This is the content of this test file.")
+    content  = Base64.encode64("This is the content of this test file.")
+    content2 = Base64.encode64("This is the content of this test file, version 2.")
 
     # post a file
 
@@ -139,6 +141,9 @@ class ApiControllerTest < ActionController::TestCase
     assert_equal(extra_files.length, 1)
 
     file = extra_files.first
+
+    assert_equal(file.versions.length, 1)
+    assert_equal(file.versions.first.version, 1)
 
     # get the file
 
@@ -184,6 +189,53 @@ class ApiControllerTest < ActionController::TestCase
   
     assert_equal(title2,      response.find_first('/file/title').inner_xml)
     assert_equal(description, response.find_first('/file/description').inner_xml)
+
+    # add a new version of the file
+
+    rest_request(:post, 'file', "<?xml version='1.0'?>
+      <file>
+        <title>#{title2}</title>
+        <description>#{description}</description>
+        <license-type>#{license_type}</license-type>
+        <content-type>#{content_type}</content-type>
+        <content>#{content2}</content>
+      </file>", "id" => file.id)
+
+    assert_response(:success)
+
+    file.reload
+
+    assert_equal(2, file.versions.length)
+
+    # update the first version of the file
+
+    rest_request(:put, 'file', "<?xml version='1.0'?>
+      <file>
+        <title>#{title3}</title>
+      </file>", "id" => file.id, "version" => 1)
+
+    assert_response(:success)
+
+    file.reload
+    assert_equal(title3, file.find_version(1).title);
+    assert_equal(title2, file.find_version(2).title);
+    assert_equal(title2, file.title);
+
+    # get each version of the file
+
+    response = rest_request(:get, 'file', nil, "id" => file.id, "version" => "1",
+        "elements" => "title")
+
+    assert_response(:success)
+  
+    assert_equal(title3, response.find_first('/file/title').inner_xml)
+
+    response = rest_request(:get, 'file', nil, "id" => file.id, "version" => "2",
+        "elements" => "title")
+
+    assert_response(:success)
+  
+    assert_equal(title2, response.find_first('/file/title').inner_xml)
 
     # delete the file
 

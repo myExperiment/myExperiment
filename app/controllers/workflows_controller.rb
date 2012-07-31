@@ -445,8 +445,11 @@ class WorkflowsController < ApplicationController
     if @workflow.valid?
       # Save content blob first now and set it on the workflow.
       # TODO: wrap this in a transaction!
-      @workflow.content_blob_id = ContentBlob.create(:data => file.read).id
-      if @workflow.save_as_new_version(params[:new_workflow][:rev_comments])
+      @workflow.content_blob = ContentBlob.create(:data => file.read)
+      @workflow.preview = nil
+      @workflow[:revision_comments] = params[:new_workflow][:rev_comments]
+
+      if @workflow.save
 
         # Extract workflow metadata using a Workflow object that includes the
         # newly created version.
@@ -509,7 +512,7 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       # Here we assume that no actual workflow metadata is being updated that affects workflow versions,
       # so we need to prevent the timestamping update of workflow version objects.
-      Workflow.versioned_class.record_timestamps = false
+      Workflow.record_timestamps = false
       
       if @workflow.update_attributes(params[:workflow])
 
@@ -536,49 +539,40 @@ class WorkflowsController < ApplicationController
         format.html { render :action => "edit" }
       end
       
-      Workflow.versioned_class.record_timestamps = true
+      Workflow.record_timestamps = true
     end
   end
   
   # PUT /workflows/1;update_version
   def update_version
-    workflow_title = @workflow.title
-    
+
+    success = false
+
     if params[:version]
-      # Update differently based on whether a new preview image has been specified or not:
-      # (But only set image if platform is not windows).
-      if params[:workflow][:preview].blank? || params[:workflow][:preview].size == 0
-        success = @workflow.update_version(params[:version], 
-                                           :title => params[:workflow][:title], 
-                                           :body => params[:workflow][:body],
-                                           :last_edited_by => current_user.id) 
-      else
-        logger.debug("Preview image provided. Attempting to set the version's preview image.")
-        
-        # Disable updating image on windows due to issues to do with file locking, that prevent file_column from working sometimes.
-        #
-        # The dependency on file_column has been removed, but this code remains
-        # disabled on Windows until it is confirmed as working.
-        if RUBY_PLATFORM =~ /mswin32/
-          success = false
-        else
-          success = @workflow.update_version(params[:version], 
-                                             :title => params[:workflow][:title], 
-                                             :body => params[:workflow][:body], 
-                                             :image => params[:workflow][:preview].read,
-                                             :last_edited_by => current_user.id)
-        end
-      end
-    else
-      success = false
+
+      original_title = @workflow.title
+      version        = @workflow.find_version(params[:version])
+      do_preview     = !params[:workflow][:preview].blank? && params[:workflow][:preview].size > 0
+      
+      attributes_to_update = {
+        :title          => params[:workflow][:title], 
+        :body           => params[:workflow][:body],
+        :last_edited_by => current_user.id
+      }
+
+      # only set the preview to update if one was provided
+
+      attributes_to_update[:image] = params[:workflow][:preview] if do_preview
+
+      success = version.update_attributes(attributes_to_update)
     end
-    
+
     respond_to do |format|
       if success
-        flash[:notice] = "Workflow version #{params[:version]}: \"#{workflow_title}\" has been updated."
+        flash[:notice] = "Workflow version #{version.version}: \"#{original_title}\" has been updated."
         format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
       else
-        flash[:error] = "Failed to update Workflow version."
+        flash[:error] = "Failed to update Workflow."
         if params[:version]
           format.html { render :action => :edit_version }
         else

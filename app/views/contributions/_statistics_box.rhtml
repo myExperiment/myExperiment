@@ -42,9 +42,7 @@
 				
 				<% if allow_citations? type %>
 					<p>
-			      <!-- for this to work properly, view for every resource that supports citations will need to have -->
-						<!-- tab system with 'tabsContainer' element + anchor called 'citations' -->
-						<a href="#citations" onclick="selectTab($('tabsContainer'),0)"><%= pluralize contributable.citations.count, "citation" %></a>
+						<a href="#citations"><%= pluralize contributable.citations.count, "citation" %></a>
 			    </p>
 				<% end %>
 				

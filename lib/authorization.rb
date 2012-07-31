@@ -602,11 +602,11 @@ module Authorization
 
   def Authorization.categorize_action(action_name)
     case action_name
-      when 'show', 'index', 'view', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'comments', 'comments_timeline', 'rate', 'tag',  'items', 'statistics', 'curation', 'tag_suggestions', 'extra_metadata', 'read', 'verify'
+      when 'show', 'index', 'view', 'search', 'favourite', 'favourite_delete', 'comment', 'comment_delete', 'comments', 'comments_timeline', 'rate', 'tag',  'items', 'statistics', 'curation', 'suggestions', 'tag_suggestions', 'extra_metadata', 'read', 'verify'
         action = 'view'
-      when 'edit', 'new', 'create', 'update', 'new_version', 'create_version', 'destroy_version', 'edit_version', 'update_version', 'new_item', 'create_item', 'edit_item', 'update_item', 'quick_add', 'resolve_link', 'process_tag_suggestions', 'process_extra_metadata', 'edit_relationships'
+      when 'edit', 'new', 'create', 'update', 'new_version', 'create_version', 'destroy_version', 'edit_version', 'update_version', 'new_item', 'create_item', 'edit_item', 'update_item', 'quick_add', 'resolve_link', 'process_suggestions', 'process_tag_suggestions', 'process_extra_metadata', 'edit_relationships'
         action = 'edit'
-      when 'download', 'named_download', 'launch', 'submit_job', 'save_inputs', 'refresh_status', 'rerun', 'refresh_outputs', 'render_output', 'outputs_xml', 'outputs_package', 'galaxy_tool', 'galaxy_tool_download'
+      when 'download', 'named_download', 'named_download_with_version', 'launch', 'submit_job', 'save_inputs', 'refresh_status', 'rerun', 'refresh_outputs', 'render_output', 'outputs_xml', 'outputs_package', 'galaxy_tool', 'galaxy_tool_download'
         action = 'download'
       when 'destroy', 'delete', 'destroy_item'
         action = 'destroy'

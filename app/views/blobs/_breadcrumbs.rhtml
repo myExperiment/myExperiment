@@ -1,6 +1,6 @@
 <li><%= link_to 'Files', blobs_path -%></li>
 
-<% if ["show", "new", "edit", "all", "search"].include? controller.action_name.to_s -%>
+<% if ["show", "new", "edit", "all", "search", "suggestions"].include? controller.action_name.to_s -%>
   <li>&gt;</li>
   
   <% case controller.action_name.to_s; when "show" -%>
@@ -15,6 +15,10 @@
     <li>All Files</li>
 	<% when "search" %>  
     <li>Search Results</li>
+	<% when "suggestions" %>  
+		<li><%= link_to "#{contributable_name(@blob.id, 'Blob')}", blob_path(@blob) -%></li>
+		<li>&gt;</li>
+    <li>Suggestions</li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

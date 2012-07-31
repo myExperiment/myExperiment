@@ -42,21 +42,20 @@
 	|
 	<%= link_to "Members (#{@network.members.length})", "#group_members" %>
 	|
-	<!-- NB! IDs of tabs for selectTab() might easily change! -->
-	<a href="#news" onclick="selectTab($('tabsContainer'),0)">News</a>
+	<a href="#news">News</a>
 	|
-	<a href="#shared_items" onclick="selectTab($('tabsContainer'),1)">Shared Items (<%= @shared_items.length -%>)</a>
+	<a href="#shared_items">Shared Items (<%= @shared_items.length -%>)</a>
 	|
-	<a href="#creditations" onclick="selectTab($('tabsContainer'),2)">Creditations (<%= @network.creditations.length -%>)</a>
+	<a href="#creditations">Creditations (<%= @network.creditations.length -%>)</a>
 	|
 	<% if mine? @network %>
-	  <a href="#manage_memberships" onclick="selectTab($('tabsContainer'),3)">Manage Memberships</a>
+	  <a href="#manage_memberships">Manage Memberships</a>
 		|
 		<% cnt = @network.memberships_requested.length %>
-		<a href="#requests_pending" onclick="selectTab($('tabsContainer'),4)"><% unless cnt == 0 %><b><% end %>Requests Pending (<%= cnt -%>)<% unless cnt == 0 %></b><% end %></a>
+		<a href="#requests_pending"><% unless cnt == 0 %><b><% end %>Requests Pending (<%= cnt -%>)<% unless cnt == 0 %></b><% end %></a>
 		|
 		<% cnt = @network.memberships_invited.length %>
-		<a href="#invites_pending" onclick="selectTab($('tabsContainer'),5)"><% unless cnt == 0 %><b><% end %>Invites Pending (<%= cnt -%>)<% unless cnt == 0 %></b><% end %></a>
+		<a href="#invites_pending"><% unless cnt == 0 %><b><% end %>Invites Pending (<%= cnt -%>)<% unless cnt == 0 %></b><% end %></a>
 		|
 		<br/>
 		|
@@ -134,7 +133,7 @@
 		<p>
 			<b>
 				This group has been credited
-				<a href="#creditations" onclick="selectTab($('tabsContainer'),2)"><%= pluralize(@network.creditations.length, "time") -%></a>
+				<a href="#creditations"><%= pluralize(@network.creditations.length, "time") -%></a>
 				<a name="group_creditations"></a>
 	  	</b>
 		</p>
@@ -155,18 +154,18 @@
 
 <div id="tabsContainer" class="tabsContainer"></div>
 
-<a name="news"></a>
 <div class="tabContainer">
   <div class="tabTitle">News</div>
   <div class="tabContent">  
+    <a name="news"></a>
     <%= render :partial => "layouts/news", :locals => { :collection => news(@network, true) } %>
   </div>
 </div>
 
-<a name="shared_items"></a>
 <div class="tabContainer">
   <div class="tabTitle">Shared Items (<%= @shared_items.length -%>)</div>
   <div class="tabContent" id="shared_items">
+    <a name="shared_items"></a>
 		<% unless @shared_items.empty? %>
   		<%= view_privileges_notice %>
 
@@ -189,11 +188,11 @@
 	</div>
 </div>
 
-<a name="creditations"></a>
 <div class="tabContainer">
   <div class="tabTitle">Creditations (<%= @network.creditations.length -%>)</div>
   <div class="tabContent">  
     
+    <a name="creditations"></a>
     <% unless (creditations = @network.creditations).empty? %>
 			<%= view_privileges_notice %>
       <% creditations.each do |c| %>
@@ -211,10 +210,10 @@
 <% if logged_in? && @network.administrator?(current_user.id) %>
   
   <% memberships = @network.memberships_accepted %>
-  <a name="manage_memberships"></a>
 	<div class="tabContainer">
     <div class="tabTitle">Manage Memberships</div>
     <div class="tabContent">
+      <a name="manage_memberships"></a>
     	<% unless memberships.empty? %>
       	<%= render :partial => "memberships/table", :locals => { :collection => memberships, :network => false } %>
 			<% else %>
@@ -224,10 +223,10 @@
   </div>
   
 	<% requests = @network.memberships_requested %>
-  <a name="requests_pending"></a>
   <div class="tabContainer">
     <div class="tabTitle">Requests Pending (<%= @network.memberships_requested.length -%>)</div>
     <div class="tabContent">
+      <a name="requests_pending"></a>
     	<% unless requests.empty? %>
 				<p></p>
       	<%= render :partial => "memberships/table", :locals => { :collection => requests, :network => false } %>
@@ -238,10 +237,10 @@
   </div>
 	
 	<% invited = @network.memberships_invited %>
-  <a name="invites_pending"></a>
 	<div class="tabContainer">
     <div class="tabTitle">Invites Pending (<%= @network.memberships_invited.length -%>)</div>
     <div class="tabContent">
+      <a name="invites_pending"></a>
     	<% unless invited.empty? %>
 				<p></p>
       	<%= render :partial => "memberships/table", :locals => { :collection => invited, :network => false } %>

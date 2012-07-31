@@ -31,11 +31,12 @@
 	|
 	<%= link_to "Favourited By (#{@blob.bookmarks.length})", "#favourited_by" %>
 	| 
+  <br/>
+  |
+  <%= link_to("Version History", "#version_history") -%>
+  |
 	<% if logged_in? and @blob.owner?(current_user) %>
-	  <br/>
-	  |
-		<!-- NB! Index of the 'sharing' tab might change! -->
-	  <a href="#sharing" onclick="selectTab($('tabsContainer'),0)">Sharing</a>
+	  <a href="#sharing">Sharing</a>
 	  |
 	<% end %>
 	<%= link_to "Comments (#{@blob.comments.length})", "#comments" %> 
@@ -44,20 +45,23 @@
 
 <div class="contribution_left_box">
 	<div class="contribution_version_box">
-		<div class="contribution_version_inner_box">
+
+    <%= render(:partial => "contributions/version_selector", :locals => { :resource => @blob, :version => @version, :path => :blob_version_path }) %>
+
+    <div class="contribution_version_inner_box">
 			<p>
 			    <b>Title:</b>
-			    <span class="title"><%=h @blob.title %></span>
+			    <span class="title"><%=h @version.title %></span>
 			</p>
 			
 			<p>
 			    <b>File name:</b>
-			    <%=h @blob.local_name %>
+			    <%=h @version.local_name %>
 			</p>
 			
 			<p>
 			    <b>File type:</b>
-			    <%=h @blob.content_type.title %>
+			    <%=h @version.content_type.title %>
 			</p>
 			
 			<br/>
@@ -67,9 +71,9 @@
 				Description
 			</h3>
 			
-			<% unless @blob.body.blank? %>
+			<% unless @version.body.blank? %>
 				<div class="contribution_description">
-					<%= @blob.body_html %>
+					<%= @version.body_html %>
 				</div>
 			<% else %>
 				<p class="none_text">
@@ -136,14 +140,22 @@
 <br/>
 
 <div id="tabsContainer" class="tabsContainer"></div>
-	
+
+<div class="tabContainer">
+  <div class="tabTitle">Version History</div>
+  <div class="tabContent">
+    <a name="version_history"></a>
+    <%= render :partial => "contributions/versions", :locals => { :resource => @blob, :path => :blob_version_path } %>
+  </div>
+</div>
+
 <% if logged_in? and @blob.owner? current_user %>
   
-	<a name="sharing"></a>
 	<div class="tabContainer">
     <div class="tabTitle">Sharing</div>
     <div class="tabContent">
 
+      <a name="sharing"></a>
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @blob } %>
       <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @blob } %>
 	  

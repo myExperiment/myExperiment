@@ -25,6 +25,13 @@ class Blob < ActiveRecord::Base
   acts_as_attributor
   acts_as_attributable
   
+  has_versions :blob_versions,
+
+    :attributes => [ :title, :body, :body_html, :content_type, :content_blob,
+                     :local_name ],
+
+    :mutable => [ :title, :body, :body_html ]
+
   acts_as_solr(:fields => [:title, :local_name, :body, :kind, :uploader, :tag_list],
                :boost => "rank",
                :include => [ :comments ]) if Conf.solr_enable

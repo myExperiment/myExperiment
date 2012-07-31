@@ -7,13 +7,17 @@ class Preview < ActiveRecord::Base
 
   PREFIX = "tmp/previews"
 
+  after_save :clear_cache
+
   belongs_to :image_blob, :class_name  => "ContentBlob",
                           :foreign_key => :image_blob_id,
-                          :dependent   => :destroy
+                          :dependent   => :destroy,
+                          :autosave    => true
 
   belongs_to :svg_blob,   :class_name  => "ContentBlob",
                           :foreign_key => :svg_blob_id,
-                          :dependent   => :destroy
+                          :dependent   => :destroy,
+                          :autosave    => true
 
   def file_name(type)
     "#{PREFIX}/#{id}/#{type}"

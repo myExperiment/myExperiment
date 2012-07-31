@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 94) do
+ActiveRecord::Schema.define(:version => 96) do
 
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
@@ -45,6 +45,20 @@ ActiveRecord::Schema.define(:version => 94) do
     t.text   "schema"
   end
 
+  create_table "blob_versions", :force => true do |t|
+    t.integer  "blob_id"
+    t.integer  "version"
+    t.text     "revision_comments"
+    t.string   "title"
+    t.text     "body"
+    t.text     "body_html"
+    t.integer  "content_type_id"
+    t.integer  "content_blob_id"
+    t.string   "local_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "blobs", :force => true do |t|
     t.integer  "contributor_id"
     t.string   "contributor_type"
@@ -57,6 +71,7 @@ ActiveRecord::Schema.define(:version => 94) do
     t.integer  "content_blob_id"
     t.integer  "content_type_id"
     t.integer  "license_id"
+    t.integer  "current_version"
   end
 
   create_table "blog_posts", :force => true do |t|
@@ -740,6 +755,7 @@ ActiveRecord::Schema.define(:version => 94) do
     t.string   "reset_password_code"
     t.datetime "reset_password_code_until"
     t.string   "account_status"
+    t.integer  "spam_score"
   end
 
   create_table "viewings", :force => true do |t|
@@ -791,6 +807,8 @@ ActiveRecord::Schema.define(:version => 94) do
     t.string   "license"
     t.integer  "preview_id"
   end
+
+  add_index "workflow_versions", ["workflow_id"], :name => "index_workflow_versions_on_workflow_id"
 
   create_table "workflows", :force => true do |t|
     t.integer  "contributor_id"
