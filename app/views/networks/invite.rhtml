@@ -50,11 +50,6 @@
                 $('add_user_error_msg').show();
                 $('add_user_reset').show();
               }
-
-
-              svn commit -m "Replaced big dropdown lists in credits and attributions interface and group invite page" app/controllers/networks_controller.rb app/controllers/workflows_controller.rb app/controllers/blobs_controller.rb app/controllers/users_controller.rb app/views/users/_autocomplete_list.html.erb app/views/contributions/_autocomplete_list.html.erb app/views/contributions/_credit_attribution_form.rhtml app/views/networks/_autocomplete_list.html.erb public/javascripts/osp.js public/stylesheets/styles.css app/views/networks/invite.rhtml
-
-
               function userSelectReset() {
                 $('user_name').removeClassName('error');
                 $('user_name').removeClassName('accepted');
