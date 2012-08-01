@@ -9,12 +9,12 @@
 <% invite_existing_selected = invite_existing_selected?(params[:radio_choice]) -%>
 
 <label for="radio_invite_existing">
-  <%= radio_button_tag ("radio_invite", "existing", invite_existing_selected, :onclick => "$('radio_invite_new').checked=false;$('div_invite_existing').show();$('div_invite_new').hide();return true;" ) -%>
+  <%= radio_button_tag("radio_invite", "existing", invite_existing_selected, :onclick => "$('radio_invite_new').checked=false;$('div_invite_existing').show();$('div_invite_new').hide();return true;" ) -%>
   Invite an existing <%= Conf.sitename %> user to your group
 </label>
 <br/>
 <label for="radio_invite_new">
-  <%= radio_button_tag ("radio_invite", "new", !invite_existing_selected, :onclick => "$('radio_invite_existing').checked=false;$('div_invite_existing').hide();$('div_invite_new').show();return true;" ) -%>
+  <%= radio_button_tag("radio_invite", "new", !invite_existing_selected, :onclick => "$('radio_invite_existing').checked=false;$('div_invite_existing').hide();$('div_invite_new').show();return true;" ) -%>
   Invite someone to join <%= Conf.sitename -%> and your group
 </label>
 
@@ -25,15 +25,74 @@
   <fieldset>
     <legend>Invite an existing <%= Conf.sitename %> user to your group</legend>
     <p class="box_infotext" style="margin: 0.4em 0em 0.7em 0em" >
-      Select a name from the list, type in a message to the user and click "Invite".
+      Select a user by typing their name into the text box and choosing an option from the list which appears, then type in a message to the user and click "Invite".
     </p>
 
-    <% form_tag(membership_invite_network_path(@network), :method => :post) do %>
+    <% form_tag(membership_invite_network_path(@network), :method => :post, :onkeyup => "if(event.keyCode === 13) return false;") do %>
       <table cellpadding="0" cellspacing="0">
         <tr>
-          <td>&nbsp;</td>
+          <td><%= help_icon_with_tooltip("Begin typing a #{Conf.sitename} user's name into the text box and a list of suggestions will appear. Select the correct user from the list.") -%></td>
           <td style="text-align: left;">User:</td>
-          <td style="text-align: left;"><%= select_tag :user_id, options_from_collection_for_select(User.find(:all, :order => "name ASC"), :id.to_i, :name), :style => "width: 400px;" -%></td>
+          <td style="text-align: left;">
+            <%= text_field_tag :user_name, '', :class => "auto_complete_field" -%>
+            <%= hidden_field_tag :user_id, '' -%>
+            <script type="text/javascript">
+              function userSelectSuccess() {
+                $('user_name').addClassName('accepted');
+                $('user_name').removeClassName('error');
+                $('add_user_error_msg').hide();
+                $('user_name').disabled = true;
+                $('add_user_reset').show();
+              }
+              function userSelectError() {
+                $('user_name').addClassName('error');
+                $('user_name').removeClassName('accepted');
+                $('add_user_error_msg').show();
+                $('add_user_reset').show();
+              }
+
+
+              svn commit -m "Replaced big dropdown lists in credits and attributions interface and group invite page" app/controllers/networks_controller.rb app/controllers/workflows_controller.rb app/controllers/blobs_controller.rb app/controllers/users_controller.rb app/views/users/_autocomplete_list.html.erb app/views/contributions/_autocomplete_list.html.erb app/views/contributions/_credit_attribution_form.rhtml app/views/networks/_autocomplete_list.html.erb public/javascripts/osp.js public/stylesheets/styles.css app/views/networks/invite.rhtml
+
+
+              function userSelectReset() {
+                $('user_name').removeClassName('error');
+                $('user_name').removeClassName('accepted');
+                $('add_user_error_msg').hide();
+                $('user_id').value = '';
+                $('user_name').value = '';
+                $('user_name').disabled = false;
+                $('add_user_reset').hide();
+                $('user_name').focus();
+              }
+              // Make sure the user clicked a name from the list, or that user's ID won't be saved in the form!
+              Event.observe('user_name', 'blur', function(event) {
+                setTimeout(function(){ // Hack to avoid the error flashing briefly after the user clicks a name
+                  if(document.activeElement.id != 'user_name' && $('user_id').value == '')
+                    userSelectError();
+                }, 300);
+              });
+            </script>
+            <%= image_tag "/images/spinner.gif", :class => "auto_complete_spinner", :id => "add_user_indicator", :style => "vertical-align: middle; display: none;" %>
+            <%= image_tag "/images/famfamfam_silk/pencil.png", :id => "add_user_reset",
+                          :style => "vertical-align: middle; display: none; cursor: pointer;",
+                          :onclick => "userSelectReset(); return false;",
+                          :title => "Click to clear the selection" %>
+            <span id="add_user_error_msg" style="display: none; font-size: 75%; color: red">
+              Please make sure to <strong>click</strong> on the user you wish to invite from the dropdown menu.
+            </span>
+            <div class="auto_complete" id="users_auto_complete" ></div>
+            <%= auto_complete_field :user_name,
+                                    :update => "users_auto_complete",
+                                    :url => {:controller => 'users', :action => 'auto_complete', :authenticity_token => form_authenticity_token},
+                                    :frequency => 0.2,
+                                    :after_update_element => %(function(element,value){
+                                                                 $('user_id').value = value.getAttribute('data-user-id');
+                                                                 $('user_name').value = value.getAttribute('data-user-name');
+                                                                 userSelectSuccess();
+                                                               }),
+                                    :indicator => 'add_user_indicator' -%>
+          </td>
         </tr>
         <tr style="vertical-align: top;">
           <td><%= info_icon_with_tooltip("This message is optional: if you leave it blank, your invitation will be sent without it") -%></td>
@@ -55,7 +114,7 @@
       Type in email addresses you want to send invitations to, personal message to new users and click "Invite".
     </p>
 
-    <% form_tag (membership_invite_external_network_path(@network), :method => :post) do %>
+    <% form_tag(membership_invite_external_network_path(@network), :method => :post) do %>
       <%= hidden_field_tag "radio_choice", "" -%>
       <table>
         <tr>

@@ -2325,6 +2325,42 @@ table.topic td.tag_vote{
   background: #ffc0c0;
 }
 
+div.credit_selection_box, div.credit_selection_box {
+  margin-top: 0.5em;
+  padding: 0.5em;
+  background-color: #eee;
+  overflow: auto;
+}
+
+div.credit_selection_box button {
+  float: right;
+  margin-left: 0.5em;
+}
+
+div.credit_selection_box input,
+div.credit_selection_box select {
+  width: 20em;
+  min-height: 19px;
+}
+
+.auto_complete_spinner {
+  margin-left: -24px;
+}
+
+input.auto_complete_field {
+  min-height: 20px;
+}
+
+input.auto_complete_field.accepted {
+  background-color: transparent;
+  border: none;
+  color: #4dbf00;
+}
+
+input.auto_complete_field.error {
+  background-color: #FFCCCC;
+}
+
 .version_history .title {
   font-size: 16px;
 }
@@ -2343,4 +2379,3 @@ table.topic td.tag_vote{
 	line-height: 1.2;
 	font-size: 85%;
 }
-

@@ -158,45 +158,41 @@ function updateAuthorList() {
 	document.getElementById('credits_groups').value = groups_list;
 }
 
-function addAuthor() {
+function addAuthor(author_option, author_id, author_name) {
     
 	// Me
-    if (document.getElementById('author_option_1').checked)
+  if (author_option == 1)
 	{
 		credit_me = true;
 	}
 	// One of my Friends 
-	else if (document.getElementById('author_option_2').checked)
+	else if (author_option == 2)
 	{
 		var x = document.getElementById('author_friends_dropdown');
 		
-		if (x.options.length > 0)
+		if (x.options.length > 0 && x.selectedIndex != 0)
 		{
 			var y = x.options[x.selectedIndex];
-	     	credit_users[y.value] = y.text;
+	    credit_users[y.value] = y.text;
 		}
 	}
 	// A user on myExperiment who is not a Friend.
-	else if (document.getElementById('author_option_3').checked)
+	else if (author_option == 3)
 	{
-		var x = document.getElementById('author_otheruser_dropdown');
-		
-		if (x.options.length > 0)
-		{
-			var y = x.options[x.selectedIndex];
-	     	credit_users[y.value] = y.text;
-		}
+    credit_users[other_user_id] = other_user_name;
+    other_user_id = null;
+    other_user_name = null;
+    $('user_name').value = '';
+    $('add_otheruser_author').disabled = true;
 	}
 	// A myExperiment Group
-	else if (document.getElementById('author_option_4').checked)
+	else if (author_option == 4)
 	{
-		var x = document.getElementById('author_networks_dropdown');
-		
-		if (x.options.length > 0)
-		{
-			var y = x.options[x.selectedIndex];
-	     	credit_groups[y.value] = y.text;
-		}
+    credit_groups[group_id] = group_name;
+    group_id = null;
+    group_name = null;
+    $('group_name').value = '';
+    $('add_group_author').disabled = true;
 	}
 	
 	updateAuthorList();
@@ -298,20 +294,18 @@ function updateAttributionsList() {
 function addAttribution(type) {
 	
 	if (type == 'existing_workflow') {
-		var x = document.getElementById('existingworkflows_dropdown');
-		
-		if (x.options.length > 0) {
-			var y = x.options[x.selectedIndex];
-			attributions_workflows[y.value] = y.text;
-		}
+    attributions_workflows[workflow_id] = workflow_name;
+    workflow_id = null;
+    workflow_name = null;
+    $('workflow_name').value = '';
+    $('add_workflow_attrib').disabled = true;
 	}
 	else if (type == 'existing_file') {
-		var x = document.getElementById('existingfiles_dropdown');
-		
-		if (x.options.length > 0) {
-			var y = x.options[x.selectedIndex];
-			attributions_files[y.value] = y.text;
-		}
+    attributions_files[file_id] = file_name;
+    file_id = null;
+    file_name = null;
+    $('file_name').value = '';
+    $('add_file_attrib').disabled = true;
 	} 
 	
 	updateAttributionsList();

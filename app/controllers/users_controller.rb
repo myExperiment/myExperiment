@@ -734,6 +734,18 @@ class UsersController < ApplicationController
     end
   end
 
+  def auto_complete
+    text = params[:user_name] || ''
+
+    users = User.find(:all,
+                     :conditions => ["LOWER(name) LIKE ?", text.downcase + '%'],
+                     :order => 'name ASC',
+                     :limit => 20,
+                     :select => 'DISTINCT *')
+
+    render :partial => 'users/autocomplete_list', :locals => { :users => users }
+  end
+
 protected
 
   def find_users

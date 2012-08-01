@@ -29,141 +29,184 @@
       	You can also attribute the Workflows/Files that this <%= c_type %> is <strong>based on</strong> (if any).
 			</p>                           
     </div>
-    <br/>
+
+    <!--- CREDITS --->
+
     <p><b>Which users/groups get the credit for this <%= c_type %>?</b></p>
-		<div class="box_editing" style="padding-left: 1em;">
-			<p style="color: #666666;">Build up the list of credits below by adding from the options</p>
-      <p id="authors_list" class="box_editing_inner">
-          Me&nbsp;&nbsp;&nbsp;<small>[<a href="" t="me" onclick="javascript:deleteAuthor('me', null); return false;">delete</a>]</small><br/>
-      </p>
-      <div class="box_simple" style="font-size: 93%; margin-top: 1em;">
-        Select an option then click on 'Add' to add to the list:
-        <br />
-        <br />
+		<div id="credit_section" class="box_editing" style="padding-left: 1em; overflow: auto">
+			<p style="color: #666666;">Build up the list of credits on the right by adding from the options on the left.</p>
+      <div id="author_selection" class="box_simple" style="width: 50%; float: left; font-size: 93%;">
 
-				<p>
-            <label for="author_option_1"><input id="author_option_1" name="add_author_option" checked="checked"
-                value="1" type="radio" onclick="javascript:update_author(this.id);" />
-            - Me</label> (<%= name current_user %>)
-        </p>
+        <!--- Credit me --->
 
-        <p>
-            <label for="author_option_2"><input id="author_option_2" name="add_author_option"
-                value="2" type="radio" onclick="javascript:update_author(this.id);" />
-            - One of my Friends</label>
-        </p>
-        <div id="author_friends_box" style="display: none; padding-left: 2em;">
-            <p>
-                <select id="author_friends_dropdown">
-                	<% current_user.friends.each do |f| %>
-                    	<option value="<%= f.id %>"><%= h(f.name) %></option>
-                    <% end %>
-                </select>
-            </p>
-        </div>
-        
-				<p>
-            <label for="author_option_3"><input id="author_option_3" name="add_author_option"
-                value="3" type="radio" onclick="javascript:update_author(this.id);" />
-            - A user on <%= Conf.sitename %> who is not a Friend.</label>
-        </p>
-        <div id="author_otheruser_box" style="display: none; padding-left: 2em;">
-            <p>
-                <select id="author_otheruser_dropdown">
-                    <% (nonfriends_for_credits_form(current_user)).each do |f| %>
-                    	<option value="<%= f.id %>"><%= h(f.name) %></option>
-                    <% end %>
-                </select>
-            </p>
+        <div id="author_me" class="credit_selection_box">
+          <span style="font-size: 120%;line-height: 1.5;">Me (<%= name current_user %>)
+          <button onclick="addAuthor(1);return false">Add ></button>        </span>
         </div>
 
-				<p>
-            <label for="author_option_4"><input id="author_option_4" name="add_author_option"
-                value="4" type="radio" onclick="javascript:update_author(this.id);" />
-            - A <%= Conf.sitename %> Group</label>
-        </p>
-        <div id="author_networks_box" style="display: none; padding-left: 2em;">
-            <p>
-                <select id="author_networks_dropdown">
-                    <% networks_for_credits_form.each do |n| %>
-                    	<option value="<%= n.id %>"><%= h(n.title) %></option>
-                    <% end %>
-                </select>
-            </p>
-        </div>
-        
-				<% if false %>
+        <!--- Credit a friend --->
 
-					<p>
-              <label for="author_option_5"><input id="author_option_5" name="add_author_option"
-                  value="5" type="radio" onclick="javascript:update_author(this.id);" />
-              - Someone else</label>
+        <div id="author_friends_box" class="credit_selection_box">
+          <p>A Friend</p>
+          <select id="author_friends_dropdown" onchange="$('add_friend_author').disabled = (this.selectedIndex == 0)">
+            <option value="0" selected="selected">Select a friend...</option>
+            <% current_user.friends.each do |f| %>
+              <option value="<%= f.id %>"><%= h(f.name) %></option>
+            <% end %>
+          </select>
+          <button id="add_friend_author" disabled="disabled" onclick="addAuthor(2);return false">Add ></button>
+        </div>
+
+        <!--- Credit a user --->
+
+        <div id="author_otheruser_box" class="credit_selection_box">
+          <p>A <%= Conf.sitename %> user
+            <%= help_icon_with_tooltip("Begin typing a #{Conf.sitename} user's name into the text box and a list of suggestions will appear. Select the correct user from the list and click the Add button.") -%>
           </p>
-          <div id="author_someoneelse_box" style="display: none; padding-left: 2em;">
-              <p>
-                   <label for="author_someoneelse_forenames">Forename(s): </label>
-                   <input id="author_someoneelse_forenames" size="25" value="" type="text"/>
-                   <label for="author_someoneelse_surname">Surname: </label>
-                   <input id="author_someoneelse_surname" size="25" value="" type="text"/>
-              </p>
-          </div>
-	
+          <%= text_field_tag :user_name, '',
+                             :onkeydown => %(other_user_name = null; other_user_id = null; $('add_otheruser_author').disabled = true;),
+                             :onkeyup => %(if(event.keyCode == 13 && !$('add_otheruser_author').disabled)
+                                             addAuthor(3);)%>
+          <%= image_tag "/images/spinner.gif", :class => "auto_complete_spinner", :id => "add_user_indicator", :style => "vertical-align: middle; display: none;" %>
+          <script type="text/javascript">
+            var other_user_id;
+            var other_user_name;
+          </script>
+          <div class="auto_complete" id="users_auto_complete" ></div>
+          <%= auto_complete_field :user_name,
+                                  :update => "users_auto_complete",
+                                  :url => {:controller => 'users', :action => 'auto_complete', :authenticity_token => form_authenticity_token},
+                                  :frequency => 0.2,
+                                  :after_update_element => %(function(element,value){
+                                                               other_user_id = value.getAttribute('data-user-id');
+                                                               other_user_name = value.getAttribute('data-user-name');
+                                                               $('user_name').value = other_user_name;
+                                                               $('add_otheruser_author').disabled = false;
+                                                             }),
+                                  :indicator => 'add_user_indicator' -%>
+          <button id="add_otheruser_author" disabled="disabled" onclick="addAuthor(3);return false">Add ></button>
+        </div>
+
+        <!--- Credit a group --->
+
+        <div id="author_networks_box" class="credit_selection_box">
           <p>
-              <label for="author_option_6"><input id="author_option_6" name="add_author_option"
-                  value="6" type="radio" onclick="javascript:update_author(this.id);" />
-              - An organisation</label>
+            A <%= Conf.sitename %> Group
+            <%= help_icon_with_tooltip("Begin typing a #{Conf.sitename} Groups's name into the text box and a list of suggestions will appear. Select the correct Group from the list and click the Add button.") -%>
           </p>
-          <div id="author_organisation_box" style="display: none; padding-left: 2em;">
-              <p>
-                   <input id="author__organisation" size="50" value="" type="text"/>
-              </p>
-          </div>
-        
-				<% end %>
-
-        <br />
-        <b><a href="" onclick="javascript:addAuthor(); return false;" >Add</a></b>
+          <%= text_field_tag :group_name, '',
+                             :onkeydown => %(group_name = null; group_id = null; $('add_group_author').disabled = true;),
+                             :onkeyup => %(if(event.keyCode == 13 && !$('add_group_author').disabled)
+                                             addAuthor(4)) %>
+          <%= image_tag "/images/spinner.gif", :class => "auto_complete_spinner", :id => "add_group_indicator", :style => "vertical-align: middle; display: none;" %>
+          <script type="text/javascript">
+            var group_id;
+            var group_name;
+          </script>
+          <div class="auto_complete" id="groups_auto_complete" ></div>
+          <%= auto_complete_field :group_name,
+                                  :update => "groups_auto_complete",
+                                  :url => {:controller => 'networks', :action => 'auto_complete', :authenticity_token => form_authenticity_token},
+                                  :frequency => 0.2,
+                                  :after_update_element => %(function(element,value){
+                                                               group_id = value.getAttribute('data-network-id');
+                                                               group_name = value.getAttribute('data-network-name');
+                                                               $('group_name').value = group_name;
+                                                               $('add_group_author').disabled = false;
+                                                             }),
+                                  :indicator => 'add_group_indicator' -%>
+          <button id="add_group_author" disabled="disabled" onclick="addAuthor(4);return false">Add ></button>
+        </div>
 			</div>
+
+      <!--- List of credits --->
+
+      <div style="width: 42%; float: right" class="box_simple">
+        <p>Current credits:</p>
+        <div id="authors_list" class="box_editing_inner">
+          Me&nbsp;&nbsp;&nbsp;<small>[<a href="" t="me" onclick="javascript:deleteAuthor('me', null); return false;">delete</a>]</small><br/>
+        </div>
+      </div>
     </div>
-    <br/>
-		<br/>
+
+    <!--- ATTRIBUTIONS --->
+
     <p><b>If this <%= c_type %> is based on any existing Workflows or Files, please list them below:</b></p>
-    <div class="box_editing" style="padding-left: 1em;">
-			<p style="color: #666666;">Build up the list of attributions below by adding from the options</p>
-      <p id="attribution_list" class="box_editing_inner">
+    <div id="attribution_section" class="box_editing" style="padding-left: 1em; overflow: auto">
+      <p style="color: #666666;">Build up the list of attributions on the right by adding from the options on the left.</p>
+      <div id="attribution_selection" class="box_simple" style="width: 50%; float: left; font-size: 93%;">
+
+        <!--- Attribute a workflow --->
+
+        <div id="attribute_workflows" class="credit_selection_box">
+          <p>
+            A Workflow on <%= Conf.sitename %>
+            <%= help_icon_with_tooltip("Begin typing a #{Conf.sitename} Workflows's title into the text box and a list of suggestions will appear. Select the correct Workflow from the list and click the Add button.") -%>
+          </p>
+          <%= text_field_tag :workflow_name, '',
+                             :onkeydown => %(workflow_name = null; workflow_id = null; $('add_workflow_attrib').disabled = true;),
+                             :onkeyup => %(if(event.keyCode == 13 && !$('add_workflow_attrib').disabled)
+                                             addAttribution('existing_workflow')) %>
+          <%= image_tag "/images/spinner.gif", :class => "auto_complete_spinner", :id => "add_workflow_indicator", :style => "vertical-align: middle; display: none;" %>
+          <script type="text/javascript">
+            var workflow_id;
+            var workflow_name;
+          </script>
+          <div class="auto_complete" id="workflows_auto_complete" ></div>
+          <%= auto_complete_field :workflow_name,
+                                  :update => "workflows_auto_complete",
+                                  :url => {:controller => 'workflows', :action => 'auto_complete', :authenticity_token => form_authenticity_token},
+                                  :frequency => 0.2,
+                                  :after_update_element => %(function(element,value){
+                                                               workflow_id = value.getAttribute('data-cont-id');
+                                                               workflow_name = value.getAttribute('data-cont-name');
+                                                               $('workflow_name').value = workflow_name;
+                                                               $('add_workflow_attrib').disabled = false;
+                                                             }),
+                                  :indicator => 'add_workflow_indicator' -%>
+          <button id="add_workflow_attrib" disabled="disabled" onclick="addAttribution('existing_workflow') ;return false">Add ></button>
+        </div>
+
+        <!--- Attribute a file --->
+	
+        <div id="attribute_files" class="credit_selection_box">
+          <p>
+            A File on <%= Conf.sitename %>
+            <%= help_icon_with_tooltip("Begin typing a #{Conf.sitename} File's title into the text box and a list of suggestions will appear. Select the correct File from the list and click the Add button.") -%>
+          </p>
+          <%= text_field_tag :file_name, '',
+                             :onkeydown => %(file_name = null; file_id = null; $('add_file_attrib').disabled = true;),
+                             :onkeyup => %(if(event.keyCode == 13 && !$('add_file_attrib').disabled)
+                                             addAttribution('existing_file')) %>
+          <%= image_tag "/images/spinner.gif", :class => "auto_complete_spinner", :id => "add_file_indicator", :style => "vertical-align: middle; display: none;" %>
+          <script type="text/javascript">
+            var file_id;
+            var file_name;
+          </script>
+          <div class="auto_complete" id="files_auto_complete" ></div>
+          <%= auto_complete_field :file_name,
+                                  :update => "files_auto_complete",
+                                  :url => {:controller => 'blobs', :action => 'auto_complete', :authenticity_token => form_authenticity_token},
+                                  :frequency => 0.2,
+                                  :after_update_element => %(function(element,value){
+                                                               file_id = value.getAttribute('data-cont-id');
+                                                               file_name = value.getAttribute('data-cont-name');
+                                                               $('file_name').value = file_name;
+                                                               $('add_file_attrib').disabled = false;
+                                                             }),
+                                  :indicator => 'add_file_indicator' -%>
+          <button id="add_file_attrib" disabled="disabled" onclick="addAttribution('existing_file');return false">Add ></button>
+        </div>
+      </div>
+
+      <!--- Attribution list --->
+
+      <div style="width: 42%; float: right" class="box_simple">
+        <p>Current attributions:</p>
+        <div id="attribution_list" class="box_editing_inner">
           <i>None</i>
-      </p>
-      <div style="font-size: 93%; margin-top: 1em;">
-        <div class="box_simple" style="float: left; text-align: left; width: 300px;">
-          Existing Workflows on <%= Conf.sitename %>:
-          <br />
-          <br />
-          <select id="existingworkflows_dropdown" style="width: 280px;">
-            <% workflows_for_attribution_form.each do |w| %>
-            	<option value="<%= w.id %>"><%=h "#{w.id}: #{w.title} (#{w.name})" -%></option>
-            <% end %>
-          </select>
-          <br />
-          <br />
-          <b><a href="" onclick="javascript:addAttribution('existing_workflow'); return false;" >Add</a></b>
         </div>
-	
-        <div class="box_simple" style="float: left; margin-left: 1em; text-align: left; width: 300px;">
-          Existing Files on <%= Conf.sitename %>:
-          <br />
-          <br />
-          <select id="existingfiles_dropdown" style="width: 280px;">
-            <% blobs_for_attribution_form.each do |b| %>
-            	<option value="<%= b.id %>"><%=h "#{b.id}: #{b.title} (#{b.name})" -%></option>
-            <% end %>
-          </select>
-          <br />
-          <br />
-          <b><a href="" onclick="javascript:addAttribution('existing_file'); return false;" >Add</a></b>
-        </div>
-	
-        <div style="clear: both;">&nbsp;</div>  
-			</div>                     
+      </div>
     </div>
   </div>
 </div>
@@ -203,15 +246,15 @@
 		credit_me = false;
 		<% contributable.creditors.each do |c| %>
 	    <% if c.creditor_type == 'User' and c.creditor_id == current_user.id %>
-	  	credit_me = true;
-	  <% elsif c.creditor_type == 'User' %>
-	  	credit_users[<%= c.creditor_id %>] = '<%= escape_javascript contributor_name(c.creditor_id, 'User') %>';
-	  <% elsif c.creditor_type == 'Network' %>
-	  	credit_groups[<%= c.creditor_id %>] = '<%= escape_javascript contributor_name(c.creditor_id, 'Network') %>';
-	  <% end %>
+	  	  credit_me = true;
+      <% elsif c.creditor_type == 'User' %>
+        credit_users[<%= c.creditor_id %>] = '<%= escape_javascript contributor_name(c.creditor_id, 'User') %>';
+      <% elsif c.creditor_type == 'Network' %>
+        credit_groups[<%= c.creditor_id %>] = '<%= escape_javascript contributor_name(c.creditor_id, 'Network') %>';
+      <% end %>
 	  <% end %>
 	  updateAuthorList();
-	
+
 		// Attributions
 		<% contributable.attributors.each do |a| %>
 			<% if Authorization.is_authorized?("show", nil, a.attributor, current_user) -%>

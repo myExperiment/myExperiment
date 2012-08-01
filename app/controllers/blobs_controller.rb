@@ -7,9 +7,9 @@ class BlobsController < ApplicationController
 
   include ApplicationHelper
 
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :named_download_with_version, :statistics, :search]
-  
-  before_filter :find_blob_auth, :except => [:search, :index, :new, :create]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :named_download_with_version, :statistics, :search, :auto_complete]
+
+  before_filter :find_blob_auth, :except => [:search, :index, :new, :create, :auto_complete]
   
   before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create]
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
@@ -323,6 +323,20 @@ class BlobsController < ApplicationController
       redirect_url = params[:return_to] ? params[:return_to] : blob_url(@blob)
       format.html { redirect_to redirect_url }
     end
+  end
+
+  def auto_complete
+    text = params[:file_name] || ''
+
+    files = Blob.find(:all,
+                     :conditions => ["LOWER(title) LIKE ?", text.downcase + '%'],
+                     :order => 'title ASC',
+                     :limit => 20,
+                     :select => 'DISTINCT *')
+
+    files = files.select {|f| Authorization.is_authorized?('view', nil, f, current_user) }
+
+    render :partial => 'contributions/autocomplete_list', :locals => { :contributions => files }
   end
   
   # GET /files/1/versions/1/suggestions
