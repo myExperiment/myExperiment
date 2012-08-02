@@ -13,7 +13,7 @@
 
 
 <ul class="sectionIcons">
-	<li><%= icon(contributable.class.to_s.downcase, eval("#{contributable_display_type.downcase}_path(#{contributable.id})"), nil, nil, "Back to the #{contributable_display_type}") %></li>
+	<li><%= icon(contributable.class.to_s.downcase, polymorphic_path(contributable), nil, nil, "Back to the #{contributable_display_type}") %></li>
 </ul>
 
 <% # this will be changed to display the correct thing after event logging branch is merged into trunk %>
