@@ -258,8 +258,10 @@ class Workflow < ActiveRecord::Base
 
   def rank
 
+    boost = 0
+
     # initial boost depends on viewings count
-    boost = contribution.viewings_count / 100
+    boost = contribution.viewings_count / 100 if contribution
 
     # Take curation events into account
     boost += CurationEvent.curation_score(CurationEvent.find_all_by_object_type_and_object_id('Workflow', id))
