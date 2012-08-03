@@ -280,7 +280,7 @@ class User < ActiveRecord::Base
   
   acts_as_creditor
 
-  acts_as_solr(:fields => [ :name, :tag_list ], :include => [ :profile ]) if Conf.solr_enable
+  acts_as_solr(:fields => [ :name, :tag_list ], :include => [ :profile ], :if => "activated_at") if Conf.solr_enable
 
   validates_presence_of :name
   
