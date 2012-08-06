@@ -109,13 +109,7 @@ class BioCatalogueImport
 
     service.save if service.changed?
 
-    if service.contribution.policy.nil?
-      service.contribution = Contribution.create(:contributor => @federation_source)
-      service.contribution.policy = create_default_policy(@federation_source)
-      service.contribution.policy.share_mode = 0 # Make public
-      service.contribution.policy.save
-      service.contribution.save
-    end
+    service.contribution.policy.update_attribute(:share_mode, 0) if service.contribution.policy.share_mode != 0
 
     # Service categories
 
@@ -325,7 +319,7 @@ class BioCatalogueImport
 
     @federation_source = FederationSource.find_by_name("BioCatalogue")
 
-    import_biocatalogue_services("http://www.biocatalogue.org/services?include=summary,deployments&sort_order=asc")
+    import_biocatalogue_services("#{@@biocat_base_uri}services?include=summary,deployments&sort_order=asc")
   end
 end
 
