@@ -2257,10 +2257,10 @@ end
 # Call dispatcher
 
 def rest_call_request(opts)
-# begin
+  begin
     send(opts[:rules]['Function'], opts)
-# rescue
-#   return rest_response(500)
-# end
+  rescue
+    return rest_response(500)
+  end
 end
 
