@@ -198,6 +198,10 @@ class Conf
     self.fetch_entry('site_integrations',{})
   end
 
+  def self.pivot_options
+    self.fetch_entry('pivot_options', {})
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)

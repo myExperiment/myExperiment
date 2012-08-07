@@ -525,3 +525,147 @@ spam_patterns:
   email:
     - "[0-9]{2,3}@hotmail.com"
 
+# pivot_options - These control the joins, ordering and filtering of the pivot
+#                 views.
+
+pivot_options:
+
+  joins:
+
+    workflow_processors: INNER JOIN workflow_processors ON RESULT_TYPE = 'Workflow' AND workflow_processors.workflow_id = RESULT_ID
+    taggings: LEFT OUTER JOIN taggings ON RESULT_TYPE = taggings.taggable_type AND RESULT_ID = taggings.taggable_id
+    services: INNER JOIN services ON RESULT_TYPE = 'Service' AND RESULT_ID = services.id
+    curation_events: INNER JOIN curation_events ON curation_events.object_type = RESULT_TYPE AND curation_events.object_id = RESULT_ID
+    service_providers: INNER JOIN service_providers ON RESULT_TYPE = 'Service' AND service_providers.uri = services.provider_uri
+    tags: INNER JOIN tags ON taggings.tag_id = tags.id
+    content_types: LEFT OUTER JOIN content_types ON contributions.content_type_id = content_types.id
+    credits: INNER JOIN creditations ON creditations.creditable_type = RESULT_TYPE AND creditations.creditable_id = RESULT_ID
+    networks: INNER JOIN networks ON permissions.contributor_type = 'Network' AND permissions.contributor_id = networks.id
+    topic_workflow_map: INNER JOIN topic_workflow_map ON contributions.id = topic_workflow_map.workflow_id
+    users: INNER JOIN users ON contributions.contributor_type = 'User' AND contributions.contributor_id = users.id
+    licences: LEFT OUTER JOIN licenses ON contributions.license_id = licenses.id
+
+  order:
+
+  - option: rank
+    order: contributions.rank DESC
+    label: Rank
+
+  - option: title
+    order: contributions.label, contributions.rank DESC
+    label: Title
+
+  - option: latest
+    order: contributions.created_at DESC, contributions.rank DESC
+    label: Latest
+
+  - option: last_updated
+    order: contributions.updated_at DESC, contributions.rank DESC
+    label: Last updated
+
+  - option: member
+    joins: [users]
+    order: users.name, contributions.rank DESC
+    label: User
+
+  - option: rating
+    order: contributions.rating DESC, contributions.rank DESC
+    label: Community rating
+
+  - option: viewings
+    order: contributions.site_viewings_count DESC, contributions.rank DESC
+    label: Most viewed
+
+  - option: downloads
+    order: contributions.site_downloads_count DESC, contributions.rank DESC
+    label: Most downloaded
+
+  - option: type
+    joins: [content_types]
+    order: content_types.title, contributions.rank DESC
+    label: Type
+
+  - option: licence
+    joins: [licences]
+    order: licenses.title, contributions.rank DESC
+    label: Licence
+
+  - option: topic
+    joins: [topic_workflow_map]
+    order: topic_workflow_map.probability, rank DESC
+    label: Topic
+
+  filters:
+
+  - query_option: CATEGORY
+    title: category
+    id_column: :auth_type
+    label_column: :auth_type
+    visible_name: true
+
+  - query_option: TYPE_ID
+    title: type
+    id_column: content_types.id
+    label_column: content_types.title
+    joins: [content_types]
+    not_null: true
+
+  - query_option: TAG_ID
+    title: tag
+    id_column: tags.id
+    label_column: tags.name
+    joins: [taggings, tags]
+
+  - query_option: USER_ID
+    title: user
+    id_column: users.id
+    label_column: users.name
+    joins: [users]
+
+  - query_option: LICENSE_ID
+    title: licence
+    id_column: licenses.id
+    label_column: licenses.unique_name
+    joins: [licences]
+    not_null: true
+
+  - query_option: GROUP_ID
+    title: group
+    id_column: networks.id
+    label_column: networks.title
+    joins: [networks]
+
+  - query_option: WSDL_ENDPOINT
+    title: wsdl
+    id_column: workflow_processors.wsdl
+    label_column: workflow_processors.wsdl
+    joins: [workflow_processors]
+    not_null: true
+
+  - query_option: CURATION_EVENT
+    title: curation
+    id_column: curation_events.category
+    label_column: curation_events.category
+    joins: [curation_events]
+    capitalize: true
+
+  - query_option: SERVICE_PROVIDER
+    title: provider
+    id_column: service_providers.id
+    label_column: service_providers.name
+    joins: [services, service_providers]
+
+  - query_option: SERVICE_COUNTRY
+    title: country
+    id_column: services.country
+    label_column: services.country
+    joins: [services]
+
+  - query_option: SERVICE_STATUS
+    title: service status
+    id_column: services.monitor_label
+    label_column: services.monitor_label
+    joins: [services]
+
+  num_options: ["10", "20", "25", "50", "100"]
+

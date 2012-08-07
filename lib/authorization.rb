@@ -894,9 +894,9 @@ module Authorization
     end
   end
 
-  def self.authorised_index(model, *args)
+  def self.scoped(model, opts = {})
 
-    def self.view_conditions(user_id = nil, friends = nil, networks = nil)
+    def self.view_conditions(user_id, friends, networks)
 
       return "((contributions.id IS NULL) OR (share_mode = 0 OR share_mode = 1 OR share_mode = 2))" if user_id.nil?
 
@@ -909,7 +909,7 @@ module Authorization
       "((contributions.id IS NULL) OR (#{policy_part} OR #{permission_part(['view', 'download', 'edit'], user_id, networks)}))"
     end
 
-    def self.download_conditions(user_id = nil, friends = nil, networks = nil)
+    def self.download_conditions(user_id, friends, networks)
 
       return "((contributions.id IS NULL) OR (share_mode = 0))" if user_id.nil?
 
@@ -922,7 +922,7 @@ module Authorization
       "((contributions.id IS NULL) OR (#{policy_part} OR #{permission_part(['download', 'edit'], user_id, networks)}))"
     end
 
-    def self.edit_conditions(user_id = nil, friends = nil, networks = nil)
+    def self.edit_conditions(user_id, friends, networks)
 
       return "((contributions.id IS NULL) OR (share_mode = 0 AND update_mode = 0))" if user_id.nil?
 
@@ -944,14 +944,7 @@ module Authorization
          (permissions.contributor_type = 'Network' AND permissions.contributor_id IN #{networks})))"
     end
 
-    # extract the opts hash
-
-    opts = args.last.class == Hash ? args.pop.clone : {}
-
     user = opts.delete(:authorised_user)
-
-    joins      = []
-    conditions = []
 
     if (user != 0) && (user != nil)
 
@@ -966,71 +959,44 @@ module Authorization
       networks = network_ids.empty? ? "(-1)" : "(#{network_ids.join(",")})"
     end
 
-    # filtering
+    # By default, the objects to authorize are the actual objects that the
+    # association returns.  However you can specify an alternate type/id if
+    # this is different.
+    #
+    # For example, the association might return Taggings but Tagging objects do
+    # not support authorization in themselves but by association with the
+    # taggable association.
+    #
+    # In thie case, :auth_type would be "taggings.taggable_type" and :auth_id
+    # authorize would be "taggings.taggable_id".
 
     auth_id   = opts.delete(:auth_id)   || "#{model.table_name}.id"
     auth_type = opts.delete(:auth_type) || "'#{model.name}'"
 
-    conditions.push(view_conditions(user_id, friends, networks))
-    conditions.push("contributions.contributable_type = #{auth_type}") if !opts.delete(:arbitrary_models) && model != Contribution
+    # Joins
 
-    # result model
+    joins = []
 
-    if opts.delete(:contribution_records)
-      model = Contribution
-    end
-
-    if model != Contribution
-      joins.push("LEFT OUTER JOIN contributions ON contributions.contributable_id = #{auth_id} AND contributions.contributable_type = #{auth_type}")
-    end
-
-    # selection
-
-    opts[:select] = "#{model.table_name}.*" unless opts[:select]
-
-    # add in the extra joins needed for the authorisation checks
-
+    joins.push("LEFT OUTER JOIN contributions ON contributions.contributable_id = #{auth_id} AND contributions.contributable_type = #{auth_type}") if model != Contribution
     joins.push("LEFT OUTER JOIN policies ON contributions.policy_id = policies.id")
-    joins.push("LEFT OUTER JOIN permissions ON policies.id = permissions.policy_id") if user_id || opts[:include_permissions]
+    joins.push("LEFT OUTER JOIN permissions ON policies.id = permissions.policy_id")
 
-    # include the effective permissions in the result?
+    # Include the effective permissions in the result?
 
     if opts.delete(:include_permissions)
+
+      opts[:select] = "#{model.table_name}.*"
 
       opts[:select] << ", BIT_OR(#{view_conditions(user_id, friends, networks)})     AS view_permission"
       opts[:select] << ", BIT_OR(#{download_conditions(user_id, friends, networks)}) AS download_permission"
       opts[:select] << ", BIT_OR(#{edit_conditions(user_id, friends, networks)})     AS edit_permission"
     end
 
-    # merge the joins
-
-    if joins.length > 0
-      opts[:joins] = [] unless opts[:joins]
-      opts[:joins] = [opts[:joins]] unless opts[:joins].class == Array
-      opts[:joins] = joins + opts[:joins]
-      opts[:joins] = opts[:joins].join(" ") # Rails 1 does not support arrays here
-    end
-
-    # merge the conditions
-
-    if conditions.length > 0
-
-      conditions = conditions.map do |c| "(#{c})" end
-
-      case opts[:conditions].class.name
-        when "Array";  opts[:conditions][0] = "(#{([opts[:conditions][0]] + conditions).join(') AND (')})"
-        when "String"; opts[:conditions]    = "(#{([opts[:conditions]] + conditions).join(') AND (')})"
-        else;          opts[:conditions]    = "(#{conditions.join(') AND (')})"
-      end
-    end
-
-    # default to grouping by contributable type and id
-
+    opts[:conditions] = view_conditions(user_id, friends, networks)
     opts[:group] ||= 'contributions.contributable_type, contributions.contributable_id'
+    opts[:joins] = joins
 
-    # do it
-
-    model.find(*args + [opts])
+    model.scoped(opts)
   end
 end
 

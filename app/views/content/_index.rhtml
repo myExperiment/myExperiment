@@ -24,7 +24,7 @@
           <% if @pivot[:cancel_filter_query_url] %>
             <div class="category"><%= filter[:title].capitalize -%> results</div>
           <% else %>
-            <div class="category">Filter by <%= filter[:title] -%></div>
+            <div class="category">Filter by <%= filter["title"] -%></div>
           <% end %>
           <div id="<%= query_name -%>" style="display: <%= @pivot[:cancel_filter_query_url] ? "block" : "none" -%>">
           </div>
@@ -53,9 +53,9 @@
     <div class="sort">
       Sort by:
       <select onchange="javascript:location = this.options[this.selectedIndex].value;">
-        <% @pivot_options[:order].each do |args| %>
-          <option value="<%= url_for(request.query_parameters.merge("order" => args[:option])) -%>"
-          <% if params[:order] == args[:option] -%> selected="selected"<% end -%>><%= args[:label] -%></option>
+        <% @pivot[:pivot_options]["order"].each do |args| %>
+          <option value="<%= url_for(request.query_parameters.merge("order" => args["option"])) -%>"
+          <% if params[:order] == args["option"] -%> selected="selected"<% end -%>><%= args["label"] -%></option>
         <% end %>
       </select>
     </div>
@@ -114,7 +114,7 @@
       </div>
     <% end %>
     <div>
-      <%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results], :sort_by => @pivot_options[:order], :num_options => @pivot_options[:num_options] } %>
+      <%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results], :sort_by => @pivot[:pivot_options]["order"], :num_options => @pivot[:pivot_options]["num_options"] } %>
     </div>
   </div>
 </div>

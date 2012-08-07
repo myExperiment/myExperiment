@@ -199,19 +199,23 @@ class WorkflowsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @pivot_options = pivot_options
 
-        begin
-          expr = parse_filter_expression(params["filter"]) if params["filter"]
-        rescue Exception => ex
-          puts "ex = #{ex.inspect}"
-          flash.now[:error] = "Problem with query expression: #{ex}"
-          expr = nil
-        end
+        @pivot, problem = calculate_pivot(
 
-        @pivot = contributions_list(Contribution, params, current_user,
-            :lock_filter => { 'CATEGORY' => 'Workflow' },
-            :filters     => expr)
+            :pivot_options  => Conf.pivot_options,
+            :params         => params,
+            :user           => current_user,
+            :search_models  => [Workflow],
+            :search_limit   => Conf.max_search_size,
+
+            :locked_filters => { 'CATEGORY' => 'Workflow' },
+
+            :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
+                                "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
+                                "CURATION_EVENT", "SERVICE_PROVIDER",
+                                "SERVICE_COUNTRY", "SERVICE_STATUS"])
+
+        flash.now[:error] = problem if problem
 
         @query = params[:query]
         @query_type = 'workflows'
@@ -687,7 +691,7 @@ protected
   def find_workflows_rss
     # Only carry out if request is for RSS
     if params[:format] and params[:format].downcase == 'rss'
-      @rss_workflows = Authorization.authorised_index(Workflow, :all, :limit => 30, :order => 'updated_at DESC', :authorised_user => current_user)
+      @rss_workflows = Authorization.scoped(Workflow, :authorised_user => current_user).find(:all, :limit => 30, :order => 'updated_at DESC')
     end
   end
   

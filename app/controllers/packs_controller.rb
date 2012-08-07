@@ -29,19 +29,23 @@ class PacksController < ApplicationController
   def index
     respond_to do |format|
       format.html {
-        @pivot_options = pivot_options
 
-        begin
-          expr = parse_filter_expression(params["filter"]) if params["filter"]
-        rescue Exception => ex
-          puts "ex = #{ex.inspect}"
-          flash.now[:error] = "Problem with query expression: #{ex}"
-          expr = nil
-        end
+        @pivot, problem = calculate_pivot(
 
-        @pivot = contributions_list(Contribution, params, current_user,
-            :lock_filter => { 'CATEGORY' => 'Pack' },
-            :filters     => expr)
+            :pivot_options  => Conf.pivot_options,
+            :params         => params,
+            :user           => current_user,
+            :search_models  => [Pack],
+            :search_limit   => Conf.max_search_size,
+
+            :locked_filters => { 'CATEGORY' => 'Pack' },
+
+            :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
+                                "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
+                                "CURATION_EVENT", "SERVICE_PROVIDER",
+                                "SERVICE_COUNTRY", "SERVICE_STATUS"])
+
+        flash.now[:error] = problem if problem
 
         @query = params[:query]
         @query_type = 'packs'
