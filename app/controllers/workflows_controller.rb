@@ -744,7 +744,7 @@ protected
         logger.debug("@viewing_version_number = #{@viewing_version_number}")
         logger.debug("@workflow.image != nil = #{@workflow.image != nil}")
       else
-        error("Workflow not found (id not authorized)", "is invalid (not authorized)")
+        error("Workflow not found (id not authorized)", "is invalid (not authorized)", nil, 401)
         return false
       end
     rescue ActiveRecord::RecordNotFound
@@ -889,12 +889,16 @@ private
     end
   end
 
-  def error(notice, message, attr=:id)
+  def error(notice, message, attr=:id, status=nil)
     flash[:error] = notice
     (err = Workflow.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to workflows_url }
+      format.xml do
+        headers["WWW-Authenticate"] = %(Basic realm="Web Password") if status == 401
+        render :text => notice, :status => status
+      end
     end
   end
   

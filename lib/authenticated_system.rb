@@ -128,6 +128,15 @@ module AuthenticatedSystem
       end
     end
 
+    # Allows single requests to be authenticated using HTTP basic authentication
+    # (Used by Taverna, and possibly other REST clients when attempting to remotely open a private workflow)
+    def login_from_basic_auth
+      return if logged_in?
+      unless (credentials = get_auth_data).first.nil?
+        self.current_user = User.authenticate(credentials[0], credentials[1])
+      end
+    end
+
   private
     @@http_auth_headers = %w(X-HTTP_AUTHORIZATION HTTP_AUTHORIZATION Authorization)
     # gets BASIC auth info
