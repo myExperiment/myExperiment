@@ -20,9 +20,13 @@ class ActiveRecord::Base
         x = x.read if x.respond_to?(:read)
 
         self.preview = Preview.new if self.preview.nil?
-        self.preview.image_blob = ContentBlob.new if self.preview.image_blob.nil?
 
-        self.preview.image_blob.data = x
+        if x.nil?
+          self.preview.image_blob = nil
+        else
+          self.preview.image_blob = ContentBlob.new if self.preview.image_blob.nil?
+          self.preview.image_blob.data = x
+        end
       end
 
       def svg=(x)
@@ -30,9 +34,13 @@ class ActiveRecord::Base
         x = x.read if x.respond_to?(:read)
 
         self.preview = Preview.new if self.preview.nil?
-        self.preview.svg_blob = ContentBlob.new if self.preview.svg_blob.nil?
 
-        self.preview.svg_blob.data = x
+        if x.nil?
+          self.preview.svg_blob = nil
+        else
+          self.preview.svg_blob = ContentBlob.new if self.preview.svg_blob.nil?
+          self.preview.svg_blob.data = x
+        end
       end
     end
   end
