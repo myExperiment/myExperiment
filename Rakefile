@@ -184,7 +184,7 @@ task "myexp:workflow:components" do
   doc.root = LibXML::XML::Node.new("results")
 
   ids.each do |id|
-    components = Workflow::Version.find(id).components
+    components = WorkflowVersion.find(id).components
     components['workflow-version'] = id.to_s
     doc.root << components
   end
