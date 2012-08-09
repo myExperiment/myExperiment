@@ -392,6 +392,10 @@ class ApplicationController < ActionController::Base
       hash
     when "Symbol"
       ob
+    when "TrueClass"
+      ob
+    when "FalseClass"
+      ob
     else
       ob.clone
     end
@@ -419,6 +423,9 @@ class ApplicationController < ActionController::Base
 
     pivot = contributions_list(opts[:params], opts[:user], opts[:pivot_options],
         :model            => opts[:model],
+        :auth_type        => opts[:auth_type],
+        :auth_id          => opts[:auth_id],
+        :group_by         => opts[:group_by],
         :active_filters   => opts[:active_filters],
         :lock_filter      => opts[:locked_filters],
         :search_models    => opts[:search_models],
@@ -622,30 +629,9 @@ class ApplicationController < ActionController::Base
       ActiveRecord::Base.connection.execute("DROP TABLE IF EXISTS search_results")
     end
 
-    def calculate_having_clause(filter, pivot_options, opts)
-
-      having_bits = []
-
-      pivot_options["filters"].each do |f|
-        if f != filter
-#         if opts[:filters][f["query_option"]] && opts[:filters]["and_#{f["query_option"]}"] == "yes"
-#           having_bits << "(GROUP_CONCAT(DISTINCT #{f["id_column"]} ORDER BY #{f["id_column"]}) = '#{escape_sql(opts[:filters][f["query_option"]])}')"
-#         end
-        end
-      end
-
-      return nil if having_bits.empty?
-
-      "HAVING " + having_bits.join(" OR ")
-    end
-
     def column(column, opts)
       if column == :auth_type
-        if opts[:auth_type]
-          opts[:auth_type]
-        else
-          "contributions.contributable_type"
-        end
+        opts[:auth_type]
       else
         column
       end
@@ -690,21 +676,17 @@ class ApplicationController < ActionController::Base
 
       conditions = conditions.length.zero? ? nil : conditions.join(" AND ")
 
-      if opts[:auth_type] && opts[:auth_id]
-        count_expr = "COUNT(DISTINCT #{opts[:auth_type]}, #{opts[:auth_id]})"
-      else
-        count_expr = "COUNT(DISTINCT contributions.contributable_type, contributions.contributable_id)"
-      end
+      count_expr = "COUNT(DISTINCT #{opts[:auth_type]}, #{opts[:auth_id]})"
 
       objects = collection.find(
           :all,
           :select => "#{filter_id_column} AS filter_id, #{filter_label_column} AS filter_label, #{count_expr} AS filter_count",
           :joins => merge_joins(joins, pivot_options, :auth_type => opts[:auth_type], :auth_id => opts[:auth_id]),
           :conditions => conditions,
-          :group => "#{filter_id_column} #{calculate_having_clause(filter, pivot_options, opts)}",
+          :group => "#{filter_id_column}",
           :limit => limit,
           :order => "#{count_expr} DESC, #{filter_label_column}")
-      
+
       objects = objects.select do |x| !x[:filter_id].nil? end
 
       objects = objects.map do |object|
@@ -768,7 +750,7 @@ class ApplicationController < ActionController::Base
 
       # produce the filter list
 
-      filters = pivot_options["filters"].clone
+      filters = deep_clone(pivot_options["filters"])
       cancel_filter_query_url = nil
 
       filters.each do |filter|

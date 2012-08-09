@@ -22,7 +22,7 @@
         <% @pivot[:filters].each do |filter| %>
           <% query_name = "#{filter[:query_option]}_query" %>
           <% if @pivot[:cancel_filter_query_url] %>
-            <div class="category"><%= filter[:title].capitalize -%> results</div>
+            <div class="category"><%= filter["title"].capitalize -%> results</div>
           <% else %>
             <div class="category">Filter by <%= filter["title"] -%></div>
           <% end %>
