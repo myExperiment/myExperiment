@@ -7,11 +7,11 @@ class WorkflowsController < ApplicationController
 
   include ApplicationHelper
 
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :statistics, :launch, :search]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :statistics, :launch, :search, :auto_complete]
   
   before_filter :store_callback, :only => [:index, :search]
   before_filter :find_workflows_rss, :only => [:index]
-  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create]
+  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :auto_complete]
   
   before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create, :new_version, :create_version]
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
@@ -117,7 +117,7 @@ class WorkflowsController < ApplicationController
       @download = Download.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
     
-    send_data(@viewing_version.content_blob.data, :filename => @workflow.filename(@viewing_version_number), :type => @viewing_version.content_type.mime_type)
+    send_data(@viewing_version.content_blob.data, :filename => @workflow.filename(@viewing_version_number), :type => @viewing_version.content_type.mime_type, :disposition => (params[:disposition] || 'attachment'))
   end
   
   # GET /workflows/:id/download/:name
@@ -199,19 +199,23 @@ class WorkflowsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @pivot_options = pivot_options
 
-        begin
-          expr = parse_filter_expression(params["filter"]) if params["filter"]
-        rescue Exception => ex
-          puts "ex = #{ex.inspect}"
-          flash.now[:error] = "Problem with query expression: #{ex}"
-          expr = nil
-        end
+        @pivot, problem = calculate_pivot(
 
-        @pivot = contributions_list(Contribution, params, current_user,
-            :lock_filter => { 'CATEGORY' => 'Workflow' },
-            :filters     => expr)
+            :pivot_options  => Conf.pivot_options,
+            :params         => params,
+            :user           => current_user,
+            :search_models  => [Workflow],
+            :search_limit   => Conf.max_search_size,
+
+            :locked_filters => { 'CATEGORY' => 'Workflow' },
+
+            :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
+                                "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
+                                "CURATION_EVENT", "SERVICE_PROVIDER",
+                                "SERVICE_COUNTRY", "SERVICE_STATUS"])
+
+        flash.now[:error] = problem if problem
 
         @query = params[:query]
         @query_type = 'workflows'
@@ -445,8 +449,11 @@ class WorkflowsController < ApplicationController
     if @workflow.valid?
       # Save content blob first now and set it on the workflow.
       # TODO: wrap this in a transaction!
-      @workflow.content_blob_id = ContentBlob.create(:data => file.read).id
-      if @workflow.save_as_new_version(params[:new_workflow][:rev_comments])
+      @workflow.content_blob = ContentBlob.create(:data => file.read)
+      @workflow.preview = nil
+      @workflow[:revision_comments] = params[:new_workflow][:rev_comments]
+
+      if @workflow.save
 
         # Extract workflow metadata using a Workflow object that includes the
         # newly created version.
@@ -509,7 +516,7 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       # Here we assume that no actual workflow metadata is being updated that affects workflow versions,
       # so we need to prevent the timestamping update of workflow version objects.
-      Workflow.versioned_class.record_timestamps = false
+      Workflow.record_timestamps = false
       
       if @workflow.update_attributes(params[:workflow])
 
@@ -536,49 +543,40 @@ class WorkflowsController < ApplicationController
         format.html { render :action => "edit" }
       end
       
-      Workflow.versioned_class.record_timestamps = true
+      Workflow.record_timestamps = true
     end
   end
   
   # PUT /workflows/1;update_version
   def update_version
-    workflow_title = @workflow.title
-    
+
+    success = false
+
     if params[:version]
-      # Update differently based on whether a new preview image has been specified or not:
-      # (But only set image if platform is not windows).
-      if params[:workflow][:preview].blank? || params[:workflow][:preview].size == 0
-        success = @workflow.update_version(params[:version], 
-                                           :title => params[:workflow][:title], 
-                                           :body => params[:workflow][:body],
-                                           :last_edited_by => current_user.id) 
-      else
-        logger.debug("Preview image provided. Attempting to set the version's preview image.")
-        
-        # Disable updating image on windows due to issues to do with file locking, that prevent file_column from working sometimes.
-        #
-        # The dependency on file_column has been removed, but this code remains
-        # disabled on Windows until it is confirmed as working.
-        if RUBY_PLATFORM =~ /mswin32/
-          success = false
-        else
-          success = @workflow.update_version(params[:version], 
-                                             :title => params[:workflow][:title], 
-                                             :body => params[:workflow][:body], 
-                                             :image => params[:workflow][:preview].read,
-                                             :last_edited_by => current_user.id)
-        end
-      end
-    else
-      success = false
+
+      original_title = @workflow.title
+      version        = @workflow.find_version(params[:version])
+      do_preview     = !params[:workflow][:preview].blank? && params[:workflow][:preview].size > 0
+      
+      attributes_to_update = {
+        :title          => params[:workflow][:title], 
+        :body           => params[:workflow][:body],
+        :last_edited_by => current_user.id
+      }
+
+      # only set the preview to update if one was provided
+
+      attributes_to_update[:image] = params[:workflow][:preview] if do_preview
+
+      success = version.update_attributes(attributes_to_update)
     end
-    
+
     respond_to do |format|
       if success
-        flash[:notice] = "Workflow version #{params[:version]}: \"#{workflow_title}\" has been updated."
+        flash[:notice] = "Workflow version #{version.version}: \"#{original_title}\" has been updated."
         format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
       else
-        flash[:error] = "Failed to update Workflow version."
+        flash[:error] = "Failed to update Workflow."
         if params[:version]
           format.html { render :action => :edit_version }
         else
@@ -654,6 +652,20 @@ class WorkflowsController < ApplicationController
     redirect_to(workflow_url(@workflow))
   end
 
+  def auto_complete
+    text = params[:workflow_name] || ''
+
+    wfs = Workflow.find(:all,
+                     :conditions => ["LOWER(title) LIKE ?", text.downcase + '%'],
+                     :order => 'title ASC',
+                     :limit => 20,
+                     :select => 'DISTINCT *')
+
+    wfs = wfs.select {|w| Authorization.is_authorized?('view', nil, w, current_user) }
+
+    render :partial => 'contributions/autocomplete_list', :locals => { :contributions => wfs }
+  end
+
 protected
 
   def store_callback
@@ -679,7 +691,7 @@ protected
   def find_workflows_rss
     # Only carry out if request is for RSS
     if params[:format] and params[:format].downcase == 'rss'
-      @rss_workflows = Authorization.authorised_index(Workflow, :all, :limit => 30, :order => 'updated_at DESC', :authorised_user => current_user)
+      @rss_workflows = Authorization.scoped(Workflow, :authorised_user => current_user).find(:all, :limit => 30, :order => 'updated_at DESC')
     end
   end
   
@@ -736,7 +748,7 @@ protected
         logger.debug("@viewing_version_number = #{@viewing_version_number}")
         logger.debug("@workflow.image != nil = #{@workflow.image != nil}")
       else
-        error("Workflow not found (id not authorized)", "is invalid (not authorized)")
+        error("Workflow not found (id not authorized)", "is invalid (not authorized)", nil, 401)
         return false
       end
     rescue ActiveRecord::RecordNotFound
@@ -881,12 +893,16 @@ private
     end
   end
 
-  def error(notice, message, attr=:id)
+  def error(notice, message, attr=:id, status=nil)
     flash[:error] = notice
     (err = Workflow.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to workflows_url }
+      format.xml do
+        headers["WWW-Authenticate"] = %(Basic realm="Web Password") if status == 401
+        render :text => notice, :status => status
+      end
     end
   end
   

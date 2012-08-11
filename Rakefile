@@ -184,12 +184,43 @@ task "myexp:workflow:components" do
   doc.root = LibXML::XML::Node.new("results")
 
   ids.each do |id|
-    components = Workflow::Version.find(id).components
+    components = WorkflowVersion.find(id).components
     components['workflow-version'] = id.to_s
     doc.root << components
   end
 
   puts doc.to_s
+end
+
+desc 'Perform spam analysis on user profiles'
+task "myexp:spam:run" do
+  require File.dirname(__FILE__) + '/config/environment'
+  
+  conditions = [[]]
+
+  if ENV['FROM']
+    conditions[0] << 'users.id >= ?'
+    conditions << ENV['FROM']
+  end
+
+  if ENV['TO']
+    conditions[0] << 'users.id <= ?'
+    conditions << ENV['TO']
+  end
+
+  if conditions[0].empty?
+    conditions = nil
+  else
+    conditions[0] = conditions[0].join(" AND ")
+  end
+
+  User.find(:all, :conditions => conditions).each do |user|
+    user.calculate_spam_score
+
+    if user.save == false
+      puts "Unable to save user #{user.id} (spam score = #{user.spam_score})"
+    end
+  end
 end
 
 desc 'Rebuild checksums in the content blob store'

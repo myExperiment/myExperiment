@@ -5,7 +5,7 @@ class ActiveRecord::Base
 
     self.class_eval do
 
-      belongs_to :preview, :dependent => :destroy
+      belongs_to :preview, :dependent => :destroy, :autosave => true
 
       def image
         preview.image_blob.data if preview && preview.image_blob
@@ -17,42 +17,31 @@ class ActiveRecord::Base
 
       def image=(x)
 
-        self.preview = Preview.new if self.preview.nil?
-        self.preview.image_blob = ContentBlob.new if self.preview.image_blob.nil?
+        x = x.read if x.respond_to?(:read)
 
-        self.preview.image_blob.data = x
+        self.preview = Preview.new if self.preview.nil?
+
+        if x.nil?
+          self.preview.image_blob = nil
+        else
+          self.preview.image_blob = ContentBlob.new if self.preview.image_blob.nil?
+          self.preview.image_blob.data = x
+        end
       end
 
       def svg=(x)
 
+        x = x.read if x.respond_to?(:read)
+
         self.preview = Preview.new if self.preview.nil?
-        self.preview.svg_blob = ContentBlob.new if self.preview.svg_blob.nil?
 
-        self.preview.svg_blob.data = x
-      end
-
-      after_save { |ob|
-      
-        p = ob.preview
-
-        if p
-
-          ib = p.image_blob
-          sb = p.svg_blob
-
-          if ib && ib.data_changed?
-            ib.save
-            ob.preview.clear_cache
-          end
-
-          if sb && sb.data_changed?
-            sb.save
-            ob.preview.clear_cache
-          end
-          
-          p.save
+        if x.nil?
+          self.preview.svg_blob = nil
+        else
+          self.preview.svg_blob = ContentBlob.new if self.preview.svg_blob.nil?
+          self.preview.svg_blob.data = x
         end
-      }
+      end
     end
   end
 end

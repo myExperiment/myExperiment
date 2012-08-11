@@ -164,7 +164,7 @@ EOM
             begin
               user = @membership.user
               network = @membership.network
-              Notifier.deliver_auto_join_group(user, network, base_host) if network.owner.send_notifications?
+              Notifier.deliver_auto_join_group(user, network, base_host) if network.administrators(true).any? {|a| a.send_notifications?}
             rescue
               logger.error("ERROR: failed to send email notification for auto join group. Membership ID: #{@membership.id}")
             end
@@ -176,7 +176,7 @@ EOM
             begin
               user = @membership.user
               network = @membership.network
-              Notifier.deliver_membership_request(user, network, @membership, base_host) if network.owner.send_notifications?
+              Notifier.deliver_membership_request(user, network, @membership, base_host) if network.administrators(true).any? {|a| a.send_notifications?}
             rescue Exception => e
               logger.error("ERROR: failed to send Membership Request email notification. Membership ID: #{@membership.id}")
               logger.error("EXCEPTION:" + e)

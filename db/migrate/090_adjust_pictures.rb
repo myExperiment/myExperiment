@@ -20,7 +20,7 @@ class AdjustPictures < ActiveRecord::Migration
       workflow_svg[workflow.id]   = workflow.svg_fc
     end
 
-    Workflow::Version.find(:all, :select => 'id, image AS image_fc, svg AS svg_fc').each do |workflow_version|
+    WorkflowVersion.find(:all, :select => 'id, image AS image_fc, svg AS svg_fc').each do |workflow_version|
       workflow_version_image[workflow_version.id] = workflow_version.image_fc
       workflow_version_svg[workflow_version.id]   = workflow_version.svg_fc
     end
@@ -44,7 +44,7 @@ class AdjustPictures < ActiveRecord::Migration
       end
     end
       
-    Workflow::Version.find(:all).each do |workflow_version|
+    WorkflowVersion.find(:all).each do |workflow_version|
 
       if workflow_version_image[workflow_version.id] || workflow_version_svg[workflow_version.id]
 

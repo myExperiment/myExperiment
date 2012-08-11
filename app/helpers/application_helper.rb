@@ -775,6 +775,8 @@ module ApplicationHelper
       return "famfamfam_silk/award_star_delete.png"
     when "service"
       return "biocat_icon.png"
+    when "usercheck"
+      return "famfamfam_silk/flag_red.png"
     else
       return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end
@@ -1613,8 +1615,6 @@ protected
         logger.error("Missing layout for Group #{@network.id}: #{@network.layout}")
       end
     end
-
-
 
     @layout = layout || {"layout" => Conf.page_template, "stylesheets" => [Conf.stylesheet]}
   end

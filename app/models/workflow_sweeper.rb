@@ -15,7 +15,7 @@ class WorkflowSweeper < ActionController::Caching::Sweeper
   end
 
   def after_update(workflow)
-    expire_sidebar_assets(workflow.contribution.contributor_id) if workflow.contribution.contributor_type == 'User'
+    expire_sidebar_assets(workflow.contributor_id) if workflow.contributor_type == 'User'
     expire_multiple_sidebar_favourites(workflow.id, 'Workflow')
     expire_listing(workflow.id, 'Workflow')
     expire_home_cache

@@ -181,9 +181,25 @@ class Conf
     self.fetch_entry('duplicable_mime_types')
   end
 
+  def self.deleted_data_directory
+    self.fetch_entry('deleted_data_directory')
+  end
+
+  def self.spam_patterns
+    self.fetch_entry('spam_patterns')
+  end
+
   def self.layouts
     layouts = self.fetch_entry('layouts', {})
     layouts.delete_if {|k,v| v["environment"] && (v["environment"] != ENV["RAILS_ENV"])}
+  end
+
+  def self.external_site_integrations
+    self.fetch_entry('site_integrations',{})
+  end
+
+  def self.pivot_options
+    self.fetch_entry('pivot_options', {})
   end
 
   def self.research_object_endpoints

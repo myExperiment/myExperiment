@@ -25,7 +25,14 @@ class Blob < ActiveRecord::Base
   acts_as_attributor
   acts_as_attributable
   
-  acts_as_solr(:fields => [:title, :local_name, :body, :kind, :uploader, :tag_list],
+  has_versions :blob_versions,
+
+    :attributes => [ :title, :body, :body_html, :content_type, :content_blob,
+                     :local_name ],
+
+    :mutable => [ :title, :body, :body_html ]
+
+  acts_as_solr(:fields => [:title, :local_name, :body, :kind, :contributor_name, :tag_list],
                :boost => "rank",
                :include => [ :comments ]) if Conf.solr_enable
 
@@ -54,8 +61,10 @@ class Blob < ActiveRecord::Base
 
   def rank
 
+    boost = 0
+
     # initial boost depends on viewings count
-    boost = contribution.viewings_count / 100
+    boost = contribution.viewings_count / 100 if contribution
 
     # Take curation events into account
     boost += CurationEvent.curation_score(CurationEvent.find_all_by_object_type_and_object_id('Blob', id))

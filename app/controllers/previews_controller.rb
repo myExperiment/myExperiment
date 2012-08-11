@@ -44,25 +44,34 @@ class PreviewsController < ApplicationController
 
     type = params[:id]
 
+    mime_type = nil
+
     case type
 
-      when 'full';   name = 'full';   source = 'image'; size = nil; mime_type = 'image/jpeg'
-      when 'medium'; name = 'medium'; source = 'image'; size = 500; mime_type = 'image/jpeg'
-      when 'thumb';  name = 'thumb';  source = 'image'; size = 100; mime_type = 'image/jpeg'
-      when 'svg';    name = 'svg';    source = 'svg';   size = nil; mime_type = 'image/svg+xml'
+      when 'full';   source = 'image'; size = nil; mime_type = 'image/jpeg'
+      when 'medium'; source = 'image'; size = 500; mime_type = 'image/jpeg'
+      when 'thumb';  source = 'image'; size = 100; mime_type = 'image/jpeg'
+      when 'svg';    source = 'svg';   size = nil; mime_type = 'image/svg+xml'
       else
         render(:inline => 'Bad preview type', :status => "400 Bad Request")
         return
     end
 
+    content_blob = nil
+
+    case source
+      when 'image'
+        content_blob = @context.preview.image_blob
+        if content_blob.nil? && @context.preview.svg_blob # If no image, but an SVG, render a JPG from the SVG.
+          content_blob = @context.preview.svg_blob
+          mime_type = 'image/svg+xml' if size.nil? # Just show the SVG when "full" image is requested
+        end
+      when 'svg';   content_blob = @context.preview.svg_blob
+    end
+
     file_name = @context.preview.file_name(type)
 
     send_cached_data(file_name, :type => mime_type, :disposition => 'inline') {
-
-      case source
-        when 'image'; content_blob = @context.preview.image_blob
-        when 'svg';   content_blob = @context.preview.svg_blob
-      end
 
       data = content_blob.data
 

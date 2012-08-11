@@ -114,9 +114,13 @@ def rest_response(code, args = {})
   { :xml => doc.to_s, :status => "#{code} #{message}" }
 end
 
-def resource_preview_url(ob, type)
+def resource_preview_url(ob, type, query)
   url = URI.parse(rest_resource_uri(ob))
-  url.path << "/versions/#{ob.current_version}" if ob.respond_to?('current_version')
+  if query["version"]
+    url.path << "/versions/#{query["version"]}"
+  elsif ob.respond_to?('current_version')
+    url.path << "/versions/#{ob.current_version}"
+  end
   url.path << "/previews/#{type}"
   url.to_s
 end
@@ -227,7 +231,13 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
               list_element << el
             else
-              el = rest_get_request_aux(list_element_item, user, query.merge({ "id" => list_element_item.id.to_s }), list_item_select_elements)
+              el = rest_get_request_aux(list_element_item, user, query.merge({ "id" => list_element_item.id.to_s, "version" => nil }), list_item_select_elements)
+
+              # hack to workaround an inconsistency in the established API
+
+              if el.name == "internal-pack-item"
+                el.name = rest_object_tag_text(list_element_item)
+              end
 
               if model_data['List Element Name'][i]
                 el.name = model_data['List Element Name'][i]
@@ -285,7 +295,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         if model_data['Encoding'][i] == 'preview'
 
-          text = resource_preview_url(ob, model_data['Accessor'][i])
+          text = resource_preview_url(ob, model_data['Accessor'][i], query)
 
         else
 
@@ -342,6 +352,8 @@ def rest_get_request_aux(ob, user, query, elements)
   version  = ob.current_version.to_s if ob.respond_to?('versions')
 
   version = ob.version.to_s if ob.respond_to?(:versioned_resource)
+
+  version = query["version"] if query["version"]
 
   entity['uri'     ] = uri      if uri && query["show-uri"] != "no"
   entity['resource'] = resource if resource && query["show-resource"] != "no"
@@ -672,7 +684,7 @@ def rest_resource_uri(ob)
     when 'Attribution';     return nil
     when 'Tagging';         return nil
 
-    when 'Workflow::Version'; return "#{rest_resource_uri(ob.workflow)}?version=#{ob.version}"
+    when 'WorkflowVersion'; return "#{rest_resource_uri(ob.workflow)}?version=#{ob.version}"
   end
 
   raise "Class not processed in rest_resource_uri: #{ob.class.to_s}"
@@ -716,7 +728,7 @@ def rest_access_uri(ob)
     when 'Creditation';     return "#{base}/credit.xml?id=#{ob.id}"
     when 'Attribution';     return nil
 
-    when 'Workflow::Version'; return "#{base}/workflow.xml?id=#{ob.workflow.id}&version=#{ob.version}"
+    when 'WorkflowVersion'; return "#{base}/workflow.xml?id=#{ob.workflow.id}&version=#{ob.version}"
   end
 
   raise "Class not processed in rest_access_uri: #{ob.class.to_s}"
@@ -740,7 +752,7 @@ def rest_object_tag_text(ob)
     when 'Download';               return 'download'
     when 'PackContributableEntry'; return rest_object_tag_text(ob.contributable)
     when 'PackRemoteEntry';        return 'external'
-    when 'Workflow::Version';      return 'workflow'
+    when 'WorkflowVersion';        return 'workflow'
     when 'Comment';                return 'comment'
     when 'Bookmark';               return 'favourite'
     when 'ContentType';            return 'type'
@@ -772,7 +784,7 @@ def rest_object_label_text(ob)
     when 'Download';               return ''
     when 'PackContributableEntry'; return rest_object_label_text(ob.contributable)
     when 'PackRemoteEntry';        return ob.title     
-    when 'Workflow::Version';      return ob.title
+    when 'WorkflowVersion';        return ob.title
     when 'ContentType';            return ob.title
     when 'License';                return ob.title
     when 'CurationEvent';          return ob.category
@@ -1078,11 +1090,14 @@ def workflow_aux(action, opts = {})
       return rest_response(500, :reason => "Unable to extract metadata")
     end
 
-    success = if (action == 'create' and opts[:query]['id'])
-      ob.save_as_new_version(revision_comment)
-    else
-      ob.save
+    new_version = action == 'create' && opts[:query]['id']
+
+    if new_version
+      ob.preview = nil
+      ob[:revision_comments] = revision_comment
     end
+
+    success = ob.save
 
     return rest_response(400, :object => ob) unless success
 
@@ -1125,7 +1140,11 @@ def file_aux(action, opts = {})
   case action
     when 'create':
       return rest_response(401, :reason => "Not authorised to create a file") unless Authorization.is_authorized_for_type?('create', 'Blob', opts[:user], nil)
-      ob = Blob.new(:contributor => opts[:user])
+      if opts[:query]['id']
+        ob, error = obtain_rest_resource('Blob', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      else
+        ob = Blob.new(:contributor => opts[:user])
+      end
     when 'read', 'update', 'destroy':
       ob, error = obtain_rest_resource('Blob', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
@@ -1136,18 +1155,21 @@ def file_aux(action, opts = {})
 
   if action == "destroy"
 
+    return rest_response(400, :reason => "Cannot delete individual versions") if opts[:query]['version']
+      
     ob.destroy
 
   else
 
     data = LibXML::XML::Parser.string(request.raw_post).parse
 
-    title        = parse_element(data, :text,   '/file/title')
-    description  = parse_element(data, :text,   '/file/description')
-    license_type = parse_element(data, :text,   '/file/license-type')
-    type         = parse_element(data, :text,   '/file/type')
-    content_type = parse_element(data, :text,   '/file/content-type')
-    content      = parse_element(data, :binary, '/file/content')
+    title            = parse_element(data, :text,   '/file/title')
+    description      = parse_element(data, :text,   '/file/description')
+    license_type     = parse_element(data, :text,   '/file/license-type')
+    type             = parse_element(data, :text,   '/file/type')
+    content_type     = parse_element(data, :text,   '/file/content-type')
+    content          = parse_element(data, :binary, '/file/content')
+    revision_comment = parse_element(data, :text,   '/workflow/revision-comment')
 
     permissions  = data.find_first('/file/permissions')
 
@@ -1199,17 +1221,28 @@ def file_aux(action, opts = {})
 
     ob.content_blob = ContentBlob.new(:data => content) if content
 
-    if not ob.save
-      return rest_response(400, :object => ob)
+    new_version = action == 'create' && opts[:query][:id]
+
+    if new_version
+      ob[:revision_comments] = revision_comment
     end
 
-    if ob.contribution.policy.nil?
-      ob.contribution.policy = create_default_policy(opts[:user])
-      ob.contribution.save
-    end
+    success = ob.save
 
-    update_permissions(ob, permissions)
+    return rest_response(400, :object => ob) unless success
+
+    if opts[:query]['version'].nil?
+
+      if ob.contribution.policy.nil?
+        ob.contribution.policy = create_default_policy(opts[:user])
+        ob.contribution.save
+      end
+
+      update_permissions(ob, permissions)
+    end
   end
+
+  ob = ob.versioned_resource if ob.respond_to?("versioned_resource")
 
   rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
 end

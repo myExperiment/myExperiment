@@ -2,6 +2,7 @@
   <div class="tabTitle">Citations (<%= item.citations.length -%>)</div>
   <div class="tabContent">
 
+    <a name="citations"></a>
     <% unless (citations = item.citations).empty? %>
       <% citations.each_index do |i| %>
         <p>

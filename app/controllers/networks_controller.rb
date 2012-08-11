@@ -432,6 +432,19 @@ class NetworksController < ApplicationController
       }
     end
   end
+
+  def auto_complete
+    text = params[:group_name] || ''
+
+    groups = Network.find(:all,
+                     :conditions => ["LOWER(title) LIKE ?", text.downcase + '%'],
+                     :order => 'title ASC',
+                     :limit => 20,
+                     :select => 'DISTINCT *')
+
+    render :partial => 'networks/autocomplete_list', :locals => { :networks => groups }
+  end
+
   
 protected
 

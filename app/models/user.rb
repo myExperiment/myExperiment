@@ -158,7 +158,10 @@ class User < ActiveRecord::Base
       self.unconfirmed_email = nil
       
       # Activate user if not previously activated
-      self.activated_at = Time.now unless self.activated?
+      unless self.activated?
+        self.activated_at = Time.now
+        self.account_status = "sleep"
+      end
       
       return self.save
     else
@@ -277,7 +280,7 @@ class User < ActiveRecord::Base
   
   acts_as_creditor
 
-  acts_as_solr(:fields => [ :name, :tag_list ], :include => [ :profile ]) if Conf.solr_enable
+  acts_as_solr(:fields => [ :name, :tag_list ], :include => [ :profile ], :if => "activated_at") if Conf.solr_enable
 
   validates_presence_of :name
   
@@ -594,6 +597,23 @@ class User < ActiveRecord::Base
 
   def email_confirmation_hash
     Digest::SHA1.hexdigest(unconfirmed_email + Conf.secret_word)
+  end
+
+  def calculate_spam_score
+
+    score = 0
+
+    patterns = Conf.spam_patterns
+
+    patterns["email"].each do |pattern|
+      if unconfirmed_email
+        score = score + 80 if unconfirmed_email.match(pattern)
+      elsif email
+        score = score + 80 if email.match(pattern)
+      end
+    end
+
+    self.spam_score = score
   end
 
 protected

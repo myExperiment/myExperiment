@@ -15,9 +15,9 @@ class CreateContentTypes < ActiveRecord::Migration
 #     t.column :updated_at, :datetime
 #   end
 
-#   add_column :workflows,         :content_type_id, :integer
-#   add_column :workflow_versions, :content_type_id, :integer
-#   add_column :blobs,             :content_type_id, :integer
+    add_column :workflows,         :content_type_id, :integer
+    add_column :workflow_versions, :content_type_id, :integer
+    add_column :blobs,             :content_type_id, :integer
 
     # Create ContentType records for workflows with processors
 
@@ -94,20 +94,20 @@ class CreateContentTypes < ActiveRecord::Migration
 #     execute("UPDATE blobs SET content_type_id = #{blob_type_to_content_type_id[b.attributes["content_type"].strip]} WHERE id = #{b.id}")
 #   end
 
-#   remove_column :workflows,         :content_type
-#   remove_column :workflow_versions, :content_type
-#   remove_column :blobs,             :content_type
+    remove_column :workflows,         :content_type
+    remove_column :workflow_versions, :content_type
+  remove_column :blobs,             :content_type
   end
 
   def self.down
    
-#   add_column :workflows,         :content_type, :string
-#   add_column :workflow_versions, :content_type, :string
-#   add_column :blobs,             :content_type, :string
+    add_column :workflows,         :content_type, :string
+    add_column :workflow_versions, :content_type, :string
+  add_column :blobs,             :content_type, :string
 
-#   remove_column :workflows,         :content_type_id
-#   remove_column :workflow_versions, :content_type_id
-#   remove_column :blobs,             :content_type_id
+    remove_column :workflows,         :content_type_id
+    remove_column :workflow_versions, :content_type_id
+  remove_column :blobs,             :content_type_id
 
 #   drop_table :content_types
   end

@@ -22,8 +22,7 @@
 		|
 	<% end %>
 	<% if logged_in? and @pack.owner? current_user %>
-	  <!-- NB! Index of the 'sharing' tab might change! -->
-	  <a href="#sharing" onclick="selectTab($('tabsContainer'),0)">Sharing</a>
+	  <a href="#sharing">Sharing</a>
 		|
 	<% end %>
 	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@pack.tags.length})</span>", "#tags" %>
@@ -169,11 +168,11 @@
 	
 <% if logged_in? and @pack.owner? current_user %>
   
-	<a name="sharing"></a>
 	<div class="tabContainer">
     <div class="tabTitle">Sharing</div>
     <div class="tabContent">
 
+      <a name="sharing"></a>
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @pack } %>
       <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @pack } %>
 	  

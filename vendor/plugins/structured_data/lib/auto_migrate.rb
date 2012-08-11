@@ -85,7 +85,7 @@ class AutoMigrate
     # create and drop tables as appropriate
 
     (old_tables - new_tables.keys).each do |name|
-      puts "Note: Table '#{name}' has been removed from the XML schema."
+#     puts "Note: Table '#{name}' has been removed from the XML schema."
 #     conn.drop_table(name)
 #     AutoTable.find_by_name(name).destroy
     end 

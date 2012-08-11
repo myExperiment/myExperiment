@@ -3,6 +3,8 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'open-uri'
+
 class UsersController < ApplicationController
 
   contributable_actions = [:workflows, :files, :packs, :blogs]
@@ -174,9 +176,36 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     
     respond_to do |format|
-      if @user.save
-        # DO NOT log in user yet, since account needs to be validated and activated first (through email).
-        @user.send_email_confirmation_email
+
+      sent_email = false
+      spammer = false
+
+      if @user.valid?
+
+        # basic spam check
+
+        url = "http://www.stopforumspam.com/api?email=#{CGI::escape(@user.unconfirmed_email)}&username=#{CGI::escape(@user.username)}&ip=#{CGI::escape(request.ip)}&f=json"
+
+        sfs_response = ActiveSupport::JSON.decode(open(url).read)
+
+        if (sfs_response["success"] == 1)
+          if ((sfs_response["email"]["appears"] == 1) || (sfs_response["ip"]["appears"] == 1))
+            spammer = true
+          end
+        end
+
+        begin
+            # DO NOT log in user yet, since account needs to be validated and activated first (through email).
+            if !spammer
+              @user.send_email_confirmation_email
+              sent_email = true
+            end
+        rescue
+          @user.errors.add_to_base("Unable to send confirmation email")
+        end
+      end
+
+      if sent_email && !spammer && @user.save
         
         # If required, copy the email address to the Profile
         if params[:make_email_public]
@@ -195,7 +224,7 @@ class UsersController < ApplicationController
           }
         end
         
-        flash[:notice] = "Thank you for registering! We have sent a confirmation email to #{@user.unconfirmed_email} with instructions on how to activate your account."
+        flash[:notice] = "Thank you for registering! An email has been sent to #{@user.unconfirmed_email} with instructions on how to activate your account."
         format.html { redirect_to(:action => "index") }
       else
         format.html { render :action => "new" }
@@ -276,29 +305,27 @@ class UsersController < ApplicationController
 
     confirmed = false
     
-    for user in @users
-      unless user.unconfirmed_email.blank?
-        # Check if hash matches user, in which case confirm the user's email
-        if user.email_confirmation_hash == params[:hash]
-          confirmed = user.confirm_email!
-          # BEGIN DEBUG
-          logger.error("ERRORS!") unless user.errors.empty?
-          user.errors.full_messages.each { |e| logger.error(e) } 
-          #END DEBUG
-          if confirmed
-            self.current_user = user
-            self.current_user.process_pending_invitations! # look up any pending invites for this user + transfer them to relevant tables from 'pending_invitations' table
-            confirmed = false if !logged_in?
-          end
-          @user = user
-          break
-        end
+    user = User.find(:first,
+        :conditions => ['SHA1(CONCAT(users.unconfirmed_email, ?)) = ?', Conf.secret_word,
+        params[:hash]])
+
+    if user
+      confirmed = user.confirm_email!
+      # BEGIN DEBUG
+      logger.error("ERRORS!") unless user.errors.empty?
+      user.errors.full_messages.each { |e| logger.error(e) } 
+      #END DEBUG
+      if confirmed
+        self.current_user = user
+        self.current_user.process_pending_invitations! # look up any pending invites for this user + transfer them to relevant tables from 'pending_invitations' table
+        confirmed = false if !logged_in?
       end
+      @user = user
     end
-    
+
     respond_to do |format|
       if confirmed
-        flash[:notice] = "Thank you for confirming your email. Your account is now active (if it wasn't before), and the new email address registered on your account. We hope you enjoy using #{Conf.sitename}!"
+        flash[:notice] = "Thank you for confirming your email address.  Welcome to #{Conf.sitename}!"
         format.html { redirect_to user_url(@user) }
       else
         flash[:error] = "Invalid confirmation URL"
@@ -371,7 +398,7 @@ class UsersController < ApplicationController
   
   # For simile timeline
   def users_for_timeline
-    @users = User.find(:all, :conditions => [ "users.activated_at IS NOT NULL AND users.created_at > ? AND users.created_at < ?", params[:start].to_time, params[:end].to_time ], :include => [ :profile ] )
+    @users = User.find(:all, :conditions => [ "users.activated_at IS NOT NULL AND users.spam_score < 50 AND users.created_at > ? AND users.created_at < ?", params[:start].to_time, params[:end].to_time ], :include => [ :profile ] )
     respond_to do |format|
       format.json { render :partial => 'users/timeline_json', :layout => false }
     end
@@ -549,7 +576,176 @@ class UsersController < ApplicationController
       end
     end
   end
-  
+
+  def check
+
+    def add(strings, opts = {})
+      if opts[:string] && opts[:string] != ""
+
+        label  = opts[:label]
+        label = self.class.helpers.link_to(label, opts[:link]) if opts[:link]
+
+        strings << { :label => label, :string => opts[:string], :escape => opts[:escape] }
+      end
+    end
+
+    unless logged_in? && Conf.admins.include?(current_user.username)
+      render :text => "Not authorised"
+      return
+    end
+
+    @from = params[:from].to_i
+    @to   = params[:to].to_i
+
+    if @to > 0
+
+      users = User.find(:all, :conditions => ["activated_at IS NOT NULL AND id >= ? AND id <= ? AND (account_status IS NULL OR (account_status != 'sleep' AND account_status != 'whitelist'))", @from, @to])
+
+      @userlist = users.map do |user|
+
+        strings = []
+
+        add(strings, :label => "email",        :string => user.email)
+        add(strings, :label => "openid",       :string => user.openid_url)
+        add(strings, :label => "created at",   :string => user.created_at)
+        add(strings, :label => "last login",   :string => user.last_seen_at ? user.last_seen_at : "never logged back in")
+        add(strings, :label => "name",         :string => user.name)
+        add(strings, :label => "public email", :string => user.profile.email)
+        add(strings, :label => "website",      :string => user.profile.website, :escape => :website)
+        add(strings, :label => "description",  :string => user.profile.body_html, :escape => :false)
+        add(strings, :label => "field / ind",  :string => user.profile.field_or_industry)
+        add(strings, :label => "occ / roles",  :string => user.profile.occupation_or_roles)
+        add(strings, :label => "city",         :string => user.profile.location_city)
+        add(strings, :label => "country",      :string => user.profile.location_country)
+        add(strings, :label => "interests",    :string => user.profile.interests)
+        add(strings, :label => "contact",      :string => user.profile.contact_details)
+        add(strings, :label => "tags",         :string => user.tags.map do |tag| tag.name end.join(", "))
+
+        user.networks_owned.each do |network|
+
+          add(strings, :label  => "group title",
+                       :link   => polymorphic_path(network),
+                       :string => network.title) 
+
+          add(strings, :label  => "group description",
+                       :link   => polymorphic_path(network),
+                       :string => network.description_html,
+                       :escape => :false) 
+        end
+
+        user.packs.each do |pack|
+
+          add(strings, :label  => "pack title",
+                       :link   => polymorphic_path(pack),
+                       :string => pack.title) 
+
+          add(strings, :label  => "pack description",
+                       :link   => polymorphic_path(pack),
+                       :string => pack.description_html,
+                       :escape => :false) 
+        end
+
+        user.workflows.each do |workflow|
+
+          add(strings, :label  => "workflow title",
+                       :link   => polymorphic_path(workflow),
+                       :string => workflow.title) 
+
+          add(strings, :label  => "workflow description",
+                       :link   => polymorphic_path(workflow),
+                       :string => workflow.body_html,
+                       :escape => :false) 
+        end
+
+        user.blobs.each do |blob|
+
+          add(strings, :label  => "file title",
+                       :link   => polymorphic_path(blob),
+                       :string => blob.title) 
+
+          add(strings, :label  => "file description",
+                       :link   => polymorphic_path(blob),
+                       :string => blob.body_html,
+                       :escape => :false) 
+        end
+
+        user.comments.each do |comment|
+
+          add(strings, :label  => "comment",
+                       :link   => polymorphic_path(comment.commentable),
+                       :string => comment.comment,
+                       :escape => :white_list) 
+        end
+
+        { :ob => user, :strings => strings }
+
+      end
+    end
+  end
+
+  def change_status
+
+    unless logged_in? && Conf.admins.include?(current_user.username)
+      render :text => "Not authorised"
+      return
+    end
+
+    from = params[:from].to_i
+    to   = params[:to].to_i
+
+    params.keys.each do |key|
+
+      match_data = key.match(/user-([0-9]*)/)
+
+      if match_data
+        if user = User.find_by_id(match_data[1])
+          puts "Processing user #{user.id}"
+          case params[key]
+          when "whitelist"
+            user.update_attributes(:account_status => "whitelist")
+          when "sleep"
+            user.update_attributes(:account_status => "sleep")
+          when "delete"
+
+            # build an "all elements" user.xml record
+
+            elements = {}
+
+            TABLES['Model'][:data]['user']['REST Attribute'].each do |attr|
+              add_to_element_hash(attr, elements)
+            end
+
+            doc  = LibXML::XML::Document.new()
+            root = rest_get_request_aux(user, nil, {}, elements) 
+            doc.root = root
+
+            File.open("#{Conf.deleted_data_directory}#{user.id}.xml", "wb+") { |f| f.write(doc.to_s) }
+
+            user.destroy
+          end
+        end
+      end
+    end
+
+    respond_to do |format|
+      format.html {
+        redirect_to(url_for(:controller => "users", :action => "check", :from => params[:from], :to => params[:to]))
+      }
+    end
+  end
+
+  def auto_complete
+    text = params[:user_name] || ''
+
+    users = User.find(:all,
+                     :conditions => ["LOWER(name) LIKE ?", text.downcase + '%'],
+                     :order => 'name ASC',
+                     :limit => 20,
+                     :select => 'DISTINCT *')
+
+    render :partial => 'users/autocomplete_list', :locals => { :users => users }
+  end
+
 protected
 
   def find_users

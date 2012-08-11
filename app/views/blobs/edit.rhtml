@@ -7,8 +7,18 @@
 
 <%= error_messages_for :blob %>
 
-<% form_for(:blob, :url => blob_path(@blob), :html => { :method => :put }) do |f| %>
+<% form_for(:blob, :url => blob_path(@blob), :html => { :method => :put, :multipart => true }) do |f| %>
 
+  <div style="text-align: center;">
+    <div>
+      <strong>File to upload: </strong>
+      <%= file_field :blob, :data %>
+    </div>
+    <div><small><em>Leave this field blank unless you want to replace the file content</em></small></div>
+  </div>
+  
+  <br/>
+  
   <p style="text-align: center;">
   	<strong>Title: </strong>
 	<br/>

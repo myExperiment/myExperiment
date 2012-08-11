@@ -97,7 +97,7 @@ class WorkflowTypesHandler
         mime_type = processor_class.mime_type
 
         ct = ContentType.find_by_title(title)
-        ct = ContentType.create(:title => title, :mime_type => mime_type) if ct.nil?
+        ct = ContentType.create(:title => title, :mime_type => mime_type, :category => 'Workflow') if ct.nil?
 
         if ct.mime_type != mime_type
           ct.mime_type = mime_type

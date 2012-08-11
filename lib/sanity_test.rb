@@ -57,9 +57,10 @@ def sanity_tests
   blogs         = Blog.find(:all)
   blobs         = Blob.find(:all)
   packs         = Pack.find(:all)
+  services      = Service.find(:all)
   contributions = Contribution.find(:all)
 
-  known_contributables = workflows + blobs + blogs + packs
+  known_contributables = workflows + blobs + blogs + packs + services
 
   should_be_empty("All users must have a name",
       users.select do |u| u.name == nil or u.name.length == 0 end)

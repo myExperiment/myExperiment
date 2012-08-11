@@ -1,0 +1,10 @@
+<ul>
+  <% contributions.each do |c| %>
+    <li data-cont-id="<%= c.id -%>" data-cont-name="<%= h c.title -%>" style="border-bottom: 1px dashed #bbb">
+      <%= h c.title -%><br/>
+      <span style="font-weight: normal; color: #777">
+        (ID: <%= c.id -%>) Uploader: <%= h c.contributor.name -%>
+      </span>
+    </li>
+  <% end %>
+</ul>

@@ -186,19 +186,20 @@ private
 
     @query = params[:query]
 
-    @pivot_options = pivot_options
+    @pivot, problem = calculate_pivot(
 
-    begin
-      expr = parse_filter_expression(params["filter"]) if params["filter"]
-    rescue Exception => ex
-      puts "ex = #{ex.inspect}"
-      flash.now[:error] = "Problem with query expression: #{ex}"
-      expr = nil
-    end
+        :pivot_options    => Conf.pivot_options,
+        :params           => params,
+        :user             => current_user,
+        :search_models    => [Workflow, Blob, Pack, User, Network, Service],
+        :search_limit     => Conf.max_search_size,
 
-    @pivot = contributions_list(Contribution, params, current_user,
-        :filters => expr, :arbitrary_models => true)
+        :active_filters   => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
+                              "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
+                              "CURATION_EVENT", "SERVICE_PROVIDER",
+                              "SERVICE_COUNTRY", "SERVICE_STATUS"])
 
+    flash.now[:error] = problem if problem
   end
 
   def search_model

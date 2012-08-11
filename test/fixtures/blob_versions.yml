@@ -1,0 +1,74 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+picture:
+  id: 1
+  blob_id: 1
+  version: 1
+  revision_comments: some revision comment
+  local_name: file_picture.png
+  title: Picture
+  body: some text
+  created_at: 2008-04-22 15:32:01
+  content_type_id: 1
+  content_blob_id: 1
+
+text:
+  id: 2
+  blob_id: 2
+  version: 1
+  revision_comments: some revision comment
+  local_name: file_text.txt
+  title: developers.txt
+  body: myExperiment instructions
+  created_at: 2007-01-01 00:00:03
+  content_type_id: 2
+  content_blob_id: 2
+
+for_true_policy:
+  id: 3
+  blob_id: 3
+  version: 1
+  revision_comments: some revision comment
+  local_name: file_picture.png
+  title: for true policy
+  body: some text
+  created_at: 2008-04-22 15:32:01
+  content_type_id: 1
+  content_blob_id: 1
+
+for_false_policy:
+  id: 4
+  blob_id: 4
+  version: 1
+  revision_comments: some revision comment
+  local_name: file_picture.png
+  title: for false policy
+  body: some text
+  created_at: 2008-04-22 15:32:01
+  content_type_id: 1
+  content_blob_id: 1
+
+for_protected_policy:
+  id: 5
+  blob_id: 5
+  version: 1
+  revision_comments: some revision comment
+  local_name: file_picture.png
+  title: for protected policy
+  body: some text
+  created_at: 2008-04-22 15:32:01
+  content_type_id: 1
+  content_blob_id: 1
+
+for_public_policy:
+  id: 6
+  blob_id: 6
+  version: 1
+  revision_comments: some revision comment
+  local_name: file_picture.png
+  title: for public policy
+  body: some text
+  created_at: 2008-04-22 15:32:01
+  content_type_id: 1
+  content_blob_id: 1
+

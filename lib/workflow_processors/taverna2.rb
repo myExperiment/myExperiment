@@ -41,6 +41,10 @@ module WorkflowProcessors
     def self.file_extensions_supported
       [ "t2flow" ]
     end
+
+    def self.default_file_extension
+      "t2flow"
+    end
     
     def self.can_determine_type_from_file?
       true
@@ -81,7 +85,7 @@ module WorkflowProcessors
 
     # End Object Initializer
     
-    
+
     # Begin Instance Methods
     
     # These provide more specific functionality for a given workflow definition, such as parsing for metadata and image generation.

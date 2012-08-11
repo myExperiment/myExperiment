@@ -132,6 +132,13 @@ ActionController::Routing::Routes.draw do |map|
   map.workflow_version           '/workflows/:id/versions/:version',         :conditions => { :method => :get }, :controller => 'workflows', :action => 'show'
   map.formatted_workflow_version '/workflows/:id/versions/:version.:format', :conditions => { :method => :get }, :controller => 'workflows', :action => 'show'
 
+  # blob redirect for linked data model
+  map.blob_version           '/files/:id/versions/:version',         :conditions => { :method => :get }, :controller => 'blobs', :action => 'show'
+  map.formatted_blob_version '/files/:id/versions/:version.:format', :conditions => { :method => :get }, :controller => 'blobs', :action => 'show'
+
+  map.blob_version_suggestions '/files/:id/versions/:version/suggestions', :conditions => { :method => :get }, :controller => 'blobs', :action => 'suggestions'
+  map.blob_version_process_suggestions '/files/:id/versions/:version/process_suggestions', :conditions => { :method => :post }, :controller => 'blobs', :action => 'process_suggestions'
+
   # versioned preview images
   ['workflow'].each do |x|
 
@@ -163,6 +170,8 @@ ActionController::Routing::Routes.draw do |map|
                  :favourite => :post,
                  :favourite_delete => :delete,
                  :rate => :post, 
+                 :suggestions => :get,
+                 :process_suggestions => :post,
                  :tag => :post } do |blob|
     # Due to restrictions in the version of Rails used (v1.2.3), 
     # we cannot have reviews as nested resources in more than one top level resource.
@@ -217,6 +226,8 @@ ActionController::Routing::Routes.draw do |map|
   # all users
   map.resources :users, 
     :collection => { :all => :get, 
+                     :check => :get,
+                     :change_status => :post,
                      :search => :get, 
                      :invite => :get } do |user|
 
@@ -274,6 +285,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:id/download/:name', :action => 'named_download', :requirements => { :name => /.*/ }
   
   map.connect 'files/:id/download/:name', :controller => 'blobs', :action => 'named_download', :requirements => { :name => /.*/ }
+  map.connect 'files/:id/versions/:version/download/:name', :controller => 'blobs', :action => 'named_download_with_version', :requirements => { :name => /.*/ }
 
   # map.connect 'topics', :controller => 'topics', :action => 'index'
   map.connect 'topics/tag_feedback', :controller => 'topics', :action => 'tag_feedback'
@@ -288,6 +300,13 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :licenses
   map.resources :license_attributes
+
+  # Generate special alias routes for external sites point to
+  Conf.external_site_integrations.each_value do |data|
+    map.connect data["path"], data["redirect"].symbolize_keys #Convert string keys to symbols
+  end
+
+  map.connect 'clear_external_site_session_info', :controller => 'application', :action => 'clear_external_site_session_info'
 
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'

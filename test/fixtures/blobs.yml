@@ -2,6 +2,7 @@
 
 picture:
   id: 1
+  current_version: 1
   contributor_id: 1
   contributor_type: User
   local_name: file_picture.png
@@ -14,6 +15,7 @@ picture:
 
 text:
   id: 2
+  current_version: 1
   contributor_id: 2
   contributor_type: User
   local_name: file_text.txt
@@ -26,6 +28,7 @@ text:
 
 for_true_policy:
   id: 3
+  current_version: 1
   contributor_id: 1
   contributor_type: User
   local_name: file_picture.png
@@ -38,6 +41,7 @@ for_true_policy:
 
 for_false_policy:
   id: 4
+  current_version: 1
   contributor_id: 1
   contributor_type: User
   local_name: file_picture.png
@@ -50,6 +54,7 @@ for_false_policy:
 
 for_protected_policy:
   id: 5
+  current_version: 1
   contributor_id: 1
   contributor_type: User
   local_name: file_picture.png
@@ -62,6 +67,7 @@ for_protected_policy:
 
 for_public_policy:
   id: 6
+  current_version: 1
   contributor_id: 1
   contributor_type: User
   local_name: file_picture.png

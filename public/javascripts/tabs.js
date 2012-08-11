@@ -69,20 +69,27 @@ function selectTab(tabsDiv, t) {
 
 function showFragment(fragment, scroll) {
 
-  var root = document.all ? "BODY" : "HTML";
-  var el   = document.getElementById(fragment);
+  var root   = document.all ? "BODY" : "HTML";
+  var target = document.getElementById(fragment);
 
-  if (el != undefined) {
+  if (target == undefined) {
+    var namedElements = document.getElementsByName(fragment);
 
-    for (; el.tagName != root; el = parent_el(el)) {
-      if (el.className == 'tabContainer') {
-        selectTab(el.tabsDiv, el.tabsIndex);
-      }
+    if (namedElements.length > 0)
+      target = namedElements[0];
+  }
+
+  if (target == undefined)
+    return;
+
+  for (el = target; el.tagName != root; el = parent_el(el)) {
+    if (el.className == 'tabContainer') {
+      selectTab(el.tabsDiv, el.tabsIndex);
     }
   }
 
   if (scroll) {
-    document.getElementById(fragment).scrollIntoView(false);
+    target.scrollIntoView(false);
   }
 }
 

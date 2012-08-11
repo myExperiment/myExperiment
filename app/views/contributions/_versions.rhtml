@@ -1,0 +1,41 @@
+<p>In chronological order:</p>
+
+<ol class="version_history">
+  <% resource.versions.each do |version| %>
+    <li>
+      <div class="title">
+        <%= link_to(version.title, send(path, resource, version.version)) %>
+      </div>
+      <div class="metadata">
+
+        <p>
+          Created
+          <% if version.respond_to?(:contributor_id) %>
+            by <%= contributor version.contributor_id, version.contributor_type %>
+          <% end %>
+          on <%= datetime version.created_at %>
+        </p>
+
+        <% unless version.created_at == version.updated_at %>
+          <p>
+            Last edited
+            <% if version.respond_to?(:last_edited_by) %>
+              by <%= contributor version.last_edited_by, "User" %>
+            <% end %>
+            on <%= datetime version.updated_at %>
+          </p>
+        <% end %>
+
+        <% if !version.revision_comments.blank? %>
+          <p>
+            <div>Revision comment:</div>
+            <div class="comment">
+              <%= white_list version.revision_comments %>
+            </div>
+          </p>
+        <% end %>
+      </div>
+    </li>
+  <% end %>
+</ol>
+

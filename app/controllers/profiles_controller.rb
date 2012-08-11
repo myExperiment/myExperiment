@@ -76,6 +76,8 @@ class ProfilesController < ApplicationController
     # maintain legal value for "null avatar"
     (params[:profile][:picture_id] = nil) if (params[:profile][:picture_id].to_i == 0)
     
+    raise "Cannot update profile until user is activated" unless @profile.owner.activated_at
+
     respond_to do |format|
       if @profile.update_attributes(params[:profile])
         flash[:notice] = 'Profile was successfully updated.'

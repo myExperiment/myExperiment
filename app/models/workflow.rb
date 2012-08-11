@@ -8,7 +8,6 @@ require 'acts_as_contributable'
 require 'acts_as_creditable'
 require 'acts_as_attributor'
 require 'acts_as_attributable'
-require 'explicit_versioning'
 require 'acts_as_reviewable'
 require 'acts_as_runnable'
 require 'lib/previews'
@@ -49,47 +48,15 @@ class Workflow < ActiveRecord::Base
 
   has_previews
 
-  explicit_versioning(:version_column => "current_version",
-                      :extra_attributes => ["image", "svg"],
-                      :white_list_columns => ["body"]) do
-    
-    format_attribute :body
-
-    belongs_to :content_blob, :dependent => :destroy
-    belongs_to :content_type
-
-    validates_presence_of :content_blob
-    validates_presence_of :content_type
-    
-    # Update the parent contribution model buy only if this isn't the current version (because the workflow model will take care of that).
-    # This is required to keep the contribution's updated_at field accurate.
-    after_save { |wv| wv.workflow.contribution.save if wv.workflow.contribution && wv.version != wv.workflow.current_version }
-
-    has_previews
-
-    def components
-      if workflow.processor_class
-        workflow.processor_class.new(content_blob.data).get_components
-      else
-        XML::Node.new('components')
-      end
-    end
-
-    def processor_class
-      if self.content_type
-          @processor_class ||= WorkflowTypesHandler.processor_class_for_type_display_name(self.content_type.title)
-      end
-    end
-
-    def display_data_format
-      klass = self.processor_class
-      @display_data_format = (klass.nil? ? self.file_ext : klass.display_data_format)
-    end
-
-  end
+  has_versions :workflow_versions,
   
-  non_versioned_columns.push("license_id", "tag_list", "preview_id")
-  
+    :attributes => [ :contributor, :title, :unique_name, :body, :body_html,
+                     :content_blob_id, :file_ext, :last_edited_by,
+                     :content_type_id, :preview_id, :image, :svg ],
+
+    :mutable => [ :contributor, :title, :unique_name, :body, :body_html,
+                  :file_ext, :last_edited_by, :content_type_id, :image, :svg ]
+
   acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
                :boost => "rank",
                :include => [ :comments ]) if Conf.solr_enable
@@ -227,11 +194,12 @@ class Workflow < ActiveRecord::Base
   # End acts_as_runnable overridden methods
 
   def filename(version=nil)
+
     if version.blank?
-      return "#{unique_name}.#{file_ext}"
+      return "#{unique_name}.#{file_ext || self.processor_class.default_file_extension}"
     else
       return nil unless (workflow_version = self.find_version(version))
-      return "#{workflow_version.unique_name}.#{workflow_version.file_ext}"
+      return "#{workflow_version.unique_name}.#{workflow_version.file_ext || workflow_version.processor_class.default_file_extension}"
     end
   end
   
@@ -290,8 +258,10 @@ class Workflow < ActiveRecord::Base
 
   def rank
 
+    boost = 0
+
     # initial boost depends on viewings count
-    boost = contribution.viewings_count / 100
+    boost = contribution.viewings_count / 100 if contribution
 
     # Take curation events into account
     boost += CurationEvent.curation_score(CurationEvent.find_all_by_object_type_and_object_id('Workflow', id))
