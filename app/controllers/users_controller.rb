@@ -184,13 +184,15 @@ class UsersController < ApplicationController
 
         # basic spam check
 
-        url = "http://www.stopforumspam.com/api?email=#{CGI::escape(@user.unconfirmed_email)}&username=#{CGI::escape(@user.username)}&ip=#{CGI::escape(request.ip)}&f=json"
+        unless RAILS_ENV == 'test'
+          url = "http://www.stopforumspam.com/api?email=#{CGI::escape(@user.unconfirmed_email)}&username=#{CGI::escape(@user.username)}&ip=#{CGI::escape(request.ip)}&f=json"
 
-        sfs_response = ActiveSupport::JSON.decode(open(url).read)
+          sfs_response = ActiveSupport::JSON.decode(open(url).read)
 
-        if (sfs_response["success"] == 1)
-          if ((sfs_response["email"]["appears"] == 1) || (sfs_response["ip"]["appears"] == 1))
-            spammer = true
+          if (sfs_response["success"] == 1)
+            if ((sfs_response["email"]["appears"] == 1) || (sfs_response["ip"]["appears"] == 1))
+              spammer = true
+            end
           end
         end
 
