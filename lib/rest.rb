@@ -1169,7 +1169,7 @@ def file_aux(action, opts = {})
     type             = parse_element(data, :text,   '/file/type')
     content_type     = parse_element(data, :text,   '/file/content-type')
     content          = parse_element(data, :binary, '/file/content')
-    revision_comment = parse_element(data, :text,   '/workflow/revision-comment')
+    revision_comment = parse_element(data, :text,   '/file/revision-comment')
 
     permissions  = data.find_first('/file/permissions')
 
