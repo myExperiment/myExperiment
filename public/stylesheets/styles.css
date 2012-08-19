@@ -377,6 +377,10 @@ ul.breadcrumb_list a {
 	color: #000033;
 }
 
+UL.breadcrumb_list LI + LI:before {
+  content: " > ";
+}
+
 /* end css breadcrumbs */ 
 
 /* begin css tooltips/boxovers */

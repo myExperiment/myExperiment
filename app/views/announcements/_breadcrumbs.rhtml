@@ -1,7 +1,6 @@
 <li><%= link_to 'Announcements', announcements_path -%></li>
 
 <% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
-  <li>&gt;</li>
   
   <% case controller.action_name.to_s; when "show" %>
     <li><%= h(@announcement.title) -%></li>
@@ -9,7 +8,6 @@
     <li>New Announcement</li>
   <% when "edit" %>
 		<li><%= link_to "#{h(@announcement.title)}", announcement_path(@announcement) -%></li>
-		<li>&gt;</li>
     <li>Edit</li>
   <% else %>
     <!-- no breadcrumb -->

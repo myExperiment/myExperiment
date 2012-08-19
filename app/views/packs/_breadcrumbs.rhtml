@@ -1,23 +1,18 @@
 <li><%= link_to 'Packs', packs_path %></li>
 
 <% if ["show", "new", "edit", "all", "new_item", "edit_item", "search"].include? controller.action_name.to_s %>
-  <li>&gt;</li>
-  
   <% case controller.action_name.to_s; when "show" %>
     <li><%= h(@pack.title) %></li>
   <% when "new" %>
     <li>New Pack</li>
   <% when "edit" %>
 		<li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
-		<li>&gt;</li>
     <li>Manage</li>
 	<% when "new_item" %>
 		<li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
-		<li>&gt;</li>
     <li>Add New Item</li>
 	<% when "edit_item" %>
 		<li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
-		<li>&gt;</li>
     <li>Edit Item Entry</li>
   <% when "all" %>
     <li>All Packs</li>
