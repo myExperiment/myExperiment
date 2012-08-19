@@ -114,7 +114,7 @@ task "myexp:oai:static" do
   # Obtain all public workflows
 
   workflows = Workflow.find(:all).select do |workflow|
-    Authorization.check(:action => 'read', :object => workflow, :user => nil)
+    Authorization.check('view', workflow, nil)
   end
 
   # Generate OAI static repository file

@@ -19,8 +19,8 @@
     <td><%=h blog.posts.length %></td>
     <td><%=datetime(blog.posts[-1].created_at, false) unless blog.posts.empty? %></td>
     <td class="actions">
-      <% if Authorization.is_authorized?("show", nil, blog, current_user) %><%= icon "show", blog_path(blog), nil, nil, "View" %> <% end %>
-      <% if logged_in? && Authorization.is_authorized?("edit", nil, blog, current_user) %><%= icon "edit", edit_blog_path(blog) %> <% end %>
+      <% if Authorization.check("view", blog, current_user) %><%= icon "show", blog_path(blog), nil, nil, "View" %> <% end %>
+      <% if logged_in? && Authorization.check("edit", blog, current_user) %><%= icon "edit", edit_blog_path(blog) %> <% end %>
       <% if logged_in? && blog.owner?(current_user) %><%= icon "destroy", blog_path(blog), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
     </td>
   </tr>

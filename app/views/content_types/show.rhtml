@@ -3,7 +3,7 @@
 <ul class="sectionIcons">
   <li><%= icon('workflow', content_types_path, nil, nil, 'Show all types')%></li>
   <li><%= icon('workflow', "/content?filter=TYPE_ID%28%22#{@content_type.id}%22%29", nil, nil, 'Browse content')%></li>
-  <% if Authorization.check(:action => 'edit', :object => @content_type, :user => current_user) %>
+  <% if Authorization.check('edit', @content_type, current_user) %>
 		<li><%= icon('manage', edit_content_type_path(@content_type), nil, nil, 'Manage Content Type Entry')%></li>
 	<% end -%>
 </ul>

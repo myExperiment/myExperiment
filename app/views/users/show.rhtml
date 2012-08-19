@@ -59,7 +59,7 @@
 			  <li><%= icon('history', user_userhistory_path(@user), nil, nil, 'View My History')%></li>
 	    <% end %>
 
-      <% if Authorization.check(:action => 'destroy', :object => @user, :user => current_user) %>
+      <% if Authorization.check('destroy', @user, current_user) %>
 					<li><%= icon "destroy", user_path(@user), nil, {
             :confirm => "Are you sure you want to remove this user?", :method => :delete},
             "Delete User" %></li>
@@ -213,7 +213,7 @@
 				<div class="stats_box">
 					<p>
 			      <b>
-			      	<%= link_to(pluralize(@user.friends.length, "Friend"), url_for(:action => 'friends')) -%>
+			      	<%= link_to(pluralize(Friendship.count(:conditions => ["accepted_at IS NOT NULL AND (user_id = ? OR friend_id = ?)", @user.id, @user.id]), "Friend"), url_for(:action => 'friends')) -%>
 						</b> 
 			    </p>
 					
@@ -249,7 +249,7 @@
 				<p>
 					<b>
 						<%= h @user.name -%> has been credited
-						<%= link_to(pluralize(@user.creditations.length, "time"), url_for(:action => 'credits')) -%>
+						<%= link_to(pluralize(Authorization.scoped(Contribution).find(:all, :select => "0", :joins => "JOIN creditations ON creditations.creditable_type = contributions.contributable_type AND creditations.creditable_id = contributions.contributable_id", :conditions => ["creditations.creditor_type = ? AND creditations.creditor_id = ?", "User", @user.id]).length, "time"), url_for(:action => 'credits')) -%>
 					</b>
 				</p>
 			</div>

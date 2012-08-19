@@ -269,6 +269,20 @@ class User < ActiveRecord::Base
     return Conf.admins.include?(self.username.downcase)
   end
   
+  def curator?
+    return false if self.username.blank?
+    return Conf.curators.include?(self.username.downcase)
+  end
+
+  def network_admin?(network)
+    if network.class == Network
+      network.owner == self
+    else
+      result = self.networks_owned.find(:first, :conditions => { :id => network } )
+      !result.nil?
+    end
+  end
+
   acts_as_site_entity
 
   acts_as_contributor

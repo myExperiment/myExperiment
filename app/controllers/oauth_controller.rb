@@ -161,6 +161,15 @@ class OauthController < ApplicationController
 private
 
   def find_client_application_auth
+
+    action_permissions = {
+      "access_token"  => "view",
+      "authorize"     => "view",
+      "index"         => "view",
+      "request_token" => "view",
+      "test_request"  => "view" 
+    }
+
     if action_name == 'update'
       id = params[:client_application][:id]
     else
@@ -168,7 +177,7 @@ private
     end
     begin
       client_app=ClientApplication.find(id)
-      if Authorization.is_authorized?(action_name, nil, client_app, current_user)
+      if Authorization.check(action_permissions[action_name], client_app, current_user)
         @client_application = client_app
       else
         error("Client Application not found (id not authorized)", "is invalid (not authorized)")

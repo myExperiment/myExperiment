@@ -28,7 +28,7 @@ class UserReportsController < ApplicationController
     return error if object.nil?
 
     # ensure that the object is visible to the user
-    return error unless Authorization.check(:action => 'read', :object => object, :user => current_user)
+    return error unless Authorization.check('view', object, current_user)
 
     @object = object
 

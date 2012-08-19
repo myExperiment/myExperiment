@@ -124,9 +124,21 @@ protected
   end
   
   def find_runner_auth
+
+    action_permissions = {
+      "create"  => "create",
+      "destroy" => "destroy",
+      "edit"    => "edit",
+      "index"   => "view",
+      "new"     => "create",
+      "show"    => "view",
+      "update"  => "edit",
+      "verify"  => "view"
+    }
+
     runner = TavernaEnactor.find(:first, :conditions => ["id = ?", params[:id]])
     
-    if runner and Authorization.is_authorized?(action_name, nil, runner, current_user)
+    if runner and Authorization.check(action_permissions[action_name], runner, current_user)
       @runner = runner
     else
       error("Runner not found or action not authorized", "is invalid (not authorized)")

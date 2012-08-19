@@ -28,7 +28,7 @@ private
       return error if @contributable.nil?
 
       # Abort if we're not allowed to see this contributable
-      return error unless Authorization.check(:action => 'view', :object => @contributable, :user => current_user)
+      return error unless Authorization.check('view', @contributable, current_user)
 
     rescue
 

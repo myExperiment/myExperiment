@@ -36,7 +36,7 @@ class PreviewsController < ApplicationController
       auth_object = @context
     end
 
-    if Authorization.check(:action => 'view', :object => auth_object, :user => user) == false
+    if Authorization.check('view', auth_object, user) == false
       render :nothing => true, :status => "401 Unauthorized"
       response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename} REST API\""
       return

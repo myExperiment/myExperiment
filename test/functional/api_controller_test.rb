@@ -590,7 +590,7 @@ class ApiControllerTest < ActionController::TestCase
     assert_equal(rating.rateable, workflow);
     assert_equal(rating.rating, 4);
 
-    # update the rating (which should fail)
+    # update the rating
 
     rest_request(:put, 'rating', "<?xml version='1.0'?>
       <rating>
@@ -601,7 +601,7 @@ class ApiControllerTest < ActionController::TestCase
     
     rating.reload
 
-    assert_equal(rating.rating, 3);
+    assert_equal(3, rating.rating);
 
     # delete the rating
 

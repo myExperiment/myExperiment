@@ -109,7 +109,7 @@ module Maintenance::Backup
       content_blob_ids = 
 
         (Workflow.find(:all) + Workflow::Version.find(:all) + Blob.find(:all)).select do |x|
-          Authorization.is_authorized?('view', nil, x, nil)
+          Authorization.check('view', x, nil)
         end.map do |x|
           x.content_blob_id
         end
@@ -178,14 +178,14 @@ module Maintenance::Backup
       cmd = "tar czf #{@backup_filename}"
 
       Workflow.find(:all).select do |w|
-        if Authorization.is_authorized?('view', nil, w, nil)
+        if Authorization.check('view', w, nil)
           add_path("public/workflow/image/#{w.id}", cmd)
           add_path("public/workflow/svg/#{w.id}",   cmd)
         end
       end
 
       Workflow::Version.find(:all).select do |wv|
-        if Authorization.is_authorized?('view', nil, wv.workflow, nil)
+        if Authorization.check('view', wv.workflow, nil)
           add_path("public/workflow/version/image/#{wv.id}", cmd)
           add_path("public/workflow/version/svg/#{wv.id}",   cmd)
         end

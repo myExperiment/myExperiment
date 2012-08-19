@@ -161,7 +161,7 @@ class LinkedDataController < ApplicationController
     return not_found if tag.nil?
     return not_found if tagging.nil?
     return not_found if tagging.tag != tag
-    return not_auth  if Authorization.is_authorized?('view', nil, tagging.taggable, current_user) == false
+    return not_auth  if Authorization.check('view', tagging.taggable, current_user) == false
 
     respond_to do |format|
       if Conf.rdfgen_enable
@@ -183,7 +183,7 @@ class LinkedDataController < ApplicationController
     end
 
     return not_found if @contributable.nil?
-    return not_auth  if Authorization.is_authorized?('view', nil, @contributable, current_user) == false
+    return not_auth  if Authorization.check('view', @contributable, current_user) == false
   end
 
   def not_found

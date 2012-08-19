@@ -50,7 +50,7 @@ class ContentTypesController < ApplicationController
   # PUT /content_types/1
   def update
 
-    if !Authorization.check(:action => 'edit', :object => @content_type, :user => current_user)
+    if !Authorization.check('edit', @content_type, current_user)
       error("You do not have the authorisation to edit.", "is unauthorised")
       return
     end

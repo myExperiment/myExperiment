@@ -277,7 +277,7 @@ class UsersController < ApplicationController
   # DELETE /users/1
   def destroy
 
-    unless Authorization.check(:action => 'destroy', :object => @user, :user => current_user)
+    unless Authorization.check('destroy', @user, current_user)
       flash[:notice] = 'You do not have permission to delete this user.'
       redirect_to :action => :index
       return

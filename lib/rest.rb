@@ -163,7 +163,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
   permission = model_data['Permission'][i]
 
   if permission
-    return nil if !Authorization.is_authorized?(permission, nil, ob, user)
+    return nil if !Authorization.check(permission, ob, user)
   end
 
   return nil if elements.nil? || elements[model_data['REST Attribute'][i]].nil?
@@ -196,7 +196,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         # filter out things that the user cannot see
         collection = collection.select do |c|
-          not c.respond_to?('contribution') or Authorization.is_authorized?("view", nil, c, user)
+          not c.respond_to?('contribution') or Authorization.check("view", c, user)
         end
 
         collection.each do |item|
@@ -438,7 +438,7 @@ def rest_crud_request(req_uri, ob_id, format, rules, user, query)
 
   case rules['Permission']
     when 'public'; # do nothing
-    when 'view';  return rest_response(401, :reason => "Not authorised") if not Authorization.is_authorized?("show", nil, perm_ob, user)
+    when 'view';  return rest_response(401, :reason => "Not authorised") if not Authorization.check("view", perm_ob, user)
     when 'owner'; return rest_response(401, :reason => "Not authorised") if logged_in?.nil? or object_owner(perm_ob) != user
   end
 
@@ -457,7 +457,7 @@ def find_paginated_auth(args, num, page, filters, user, &blk)
 
     results.select do |result|
 
-      selected = Authorization.is_authorized?('view', nil, result, user)
+      selected = Authorization.check('view', result, user)
 
       if selected
         filters.each do |attribute, bits|
@@ -854,7 +854,7 @@ def get_resource_from_uri(uri, user)
 
   resource = cl.find_by_id(id)
 
-  return nil if !Authorization.is_authorized?('view', nil, resource, user)
+  return nil if !Authorization.check('view', resource, user)
 
   resource
 end
@@ -878,7 +878,7 @@ def resolve_resource_node(resource_node, user = nil, permission = nil)
   return nil if resource.nil?
 
   if permission
-    return nil if !Authorization.is_authorized?(permission, nil, resource, user)
+    return nil if !Authorization.check(permission, resource, user)
   end
 
   resource
@@ -903,7 +903,7 @@ def obtain_rest_resource(type, id, version, user, permission = nil)
   end
 
   if permission
-    if !Authorization.is_authorized?(permission, nil, resource, user)
+    if !Authorization.check(permission, resource, user)
       return [nil, rest_response(401, :reason => "Not authorised for #{type} #{id}")]
     end
   end
@@ -923,7 +923,7 @@ def rest_access_redirect(opts = {})
 
   return rest_response(404, :reason => "The specified resource does not exist") if ob.nil?
 
-  return rest_response(401, :reason => "Not authorised for the specified resource") if !Authorization.is_authorized?('view', nil, ob, opts[:user])
+  return rest_response(401, :reason => "Not authorised for the specified resource") if !Authorization.check('view', ob, opts[:user])
 
   rest_response(307, :location => rest_access_uri(ob))
 end
@@ -980,13 +980,13 @@ def workflow_aux(action, opts = {})
 
   case action
     when 'create':
-      return rest_response(401, :reason => "Not authorised to create a workflow") unless Authorization.is_authorized_for_type?('create', 'Workflow', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a workflow") unless Authorization.check('create', Workflow, opts[:user], nil)
       if opts[:query]['id']
         ob, error = obtain_rest_resource('Workflow', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
       else
         ob = Workflow.new(:contributor => opts[:user])
       end
-    when 'read', 'update', 'destroy':
+    when 'view', 'edit', 'destroy':
       ob, error = obtain_rest_resource('Workflow', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -1124,7 +1124,7 @@ def post_workflow(opts)
 end
 
 def put_workflow(opts)
-  workflow_aux('update', opts)
+  workflow_aux('edit', opts)
 end
 
 def delete_workflow(opts)
@@ -1139,13 +1139,13 @@ def file_aux(action, opts = {})
 
   case action
     when 'create':
-      return rest_response(401, :reason => "Not authorised to create a file") unless Authorization.is_authorized_for_type?('create', 'Blob', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a file") unless Authorization.check('create', Blob, opts[:user], nil)
       if opts[:query]['id']
         ob, error = obtain_rest_resource('Blob', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
       else
         ob = Blob.new(:contributor => opts[:user])
       end
-    when 'read', 'update', 'destroy':
+    when 'view', 'edit', 'destroy':
       ob, error = obtain_rest_resource('Blob', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -1252,7 +1252,7 @@ def post_file(opts)
 end
 
 def put_file(opts)
-  file_aux('update', opts)
+  file_aux('edit', opts)
 end
 
 def delete_file(opts)
@@ -1267,9 +1267,9 @@ def pack_aux(action, opts = {})
 
   case action
     when 'create':
-      return rest_response(401, :reason => "Not authorised to create a pack") unless Authorization.is_authorized_for_type?('create', 'Pack', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a pack") unless Authorization.check('create', Pack, opts[:user], nil)
       ob = Pack.new(:contributor => opts[:user])
-    when 'read', 'update', 'destroy':
+    when 'view', 'edit', 'destroy':
       ob, error = obtain_rest_resource('Pack', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -1315,7 +1315,7 @@ def post_pack(opts)
 end
 
 def put_pack(opts)
-  pack_aux('update', opts)
+  pack_aux('edit', opts)
 end
 
 def delete_pack(opts)
@@ -1340,9 +1340,9 @@ def external_pack_item_aux(action, opts = {})
   case action
     when 'create':
 
-      return rest_response(401, :reason => "Not authorised to create an external pack item") unless Authorization.is_authorized_for_type?('create', 'PackRemoteEntry', opts[:user], pack)
+      return rest_response(401, :reason => "Not authorised to create an external pack item") unless Authorization.check('create', PackRemoteEntry, opts[:user], pack)
       return rest_response(400, :reason => "Pack not found") if pack.nil?
-      return rest_response(401, :reason => "Not authorised to change the specified pack") unless Authorization.is_authorized?('edit', nil, pack, opts[:user])
+      return rest_response(401, :reason => "Not authorised to change the specified pack") unless Authorization.check('edit', pack, opts[:user])
 
       ob = PackRemoteEntry.new(:user => opts[:user],
           :pack          => pack,
@@ -1351,12 +1351,12 @@ def external_pack_item_aux(action, opts = {})
           :alternate_uri => alternate_uri,
           :comment       => comment)
 
-    when 'read', 'update', 'destroy':
+    when 'view', 'edit', 'destroy':
 
       ob, error = obtain_rest_resource('PackRemoteEntry', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
 
       if ob
-        return rest_response(401, :reason => "Not authorised to change the specified pack") unless Authorization.is_authorized?('edit', nil, ob.pack, opts[:user])
+        return rest_response(401, :reason => "Not authorised to change the specified pack") unless Authorization.check('edit', ob.pack, opts[:user])
       end
 
     else
@@ -1389,7 +1389,7 @@ def post_external_pack_item(opts)
 end
 
 def put_external_pack_item(opts)
-  external_pack_item_aux('update', opts)
+  external_pack_item_aux('edit', opts)
 end
 
 def delete_external_pack_item(opts)
@@ -1412,22 +1412,17 @@ def internal_pack_item_aux(action, opts = {})
   case action
     when 'create':
 
-      return rest_response(401, :reason => "Not authorised to create an internal pack item") unless Authorization.is_authorized_for_type?('create', 'PackContributableEntry', opts[:user], pack)
+      return rest_response(401, :reason => "Not authorised to create an internal pack item") unless Authorization.check('create', PackContributableEntry, opts[:user], pack)
       return rest_response(400, :reason => "Pack not found") if pack.nil?
-      return rest_response(401, :reason => "Not authorised to change the specified pack") unless Authorization.is_authorized?('edit', nil, pack, opts[:user])
 
       ob = PackContributableEntry.new(:user => opts[:user],
           :pack          => pack,
           :contributable => item,
           :comment       => comment)
 
-    when 'read', 'update', 'destroy':
+    when 'view', 'edit', 'destroy':
 
       ob, error = obtain_rest_resource('PackContributableEntry', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
-
-      if ob
-        return rest_response(401, :reason => "Not authorised to change the specified pack") unless Authorization.is_authorized?('edit', nil, ob.pack, opts[:user])
-      end
 
     else
       raise "Invalid action '#{action}'"
@@ -1456,7 +1451,7 @@ def post_internal_pack_item(opts)
 end
 
 def put_internal_pack_item(opts)
-  internal_pack_item_aux('update', opts)
+  internal_pack_item_aux('edit', opts)
 end
 
 def delete_internal_pack_item(opts)
@@ -1483,9 +1478,9 @@ end
 #   runner     = TavernaEnactor.find_by_id(runner_bits[1].to_i)
 #   runnable   = Workflow.find_by_id(runnable_bits[1].to_i)
 #
-#   return rest_response(400) if experiment.nil? or not Authorization.is_authorized?('edit', nil, experiment, opts[:user])
-#   return rest_response(400) if runner.nil?     or not Authorization.is_authorized?('download', nil, runner, opts[:user])
-#   return rest_response(400) if runnable.nil?   or not Authorization.is_authorized?('view', nil, runnable, opts[:user])
+#   return rest_response(400) if experiment.nil? or not Authorization.check('edit', experiment, opts[:user])
+#   return rest_response(400) if runner.nil?     or not Authorization.check('download', runner, opts[:user])
+#   return rest_response(400) if runnable.nil?   or not Authorization.check('view', runnable, opts[:user])
 #
 #   puts "#{params[:job]}"
 #
@@ -1541,7 +1536,7 @@ def search(opts)
 
       obs = model.find(:all, :conditions => ['id >= ? AND id <= ?', bits[2], bits[3]])
 
-      obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("view", nil, c, opts[:user]) end)
+      obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.check("view", c, opts[:user]) end)
 
       return produce_rest_list(opts[:req_uri], opts[:rules], opts[:query], obs, 'search', {}, opts[:user])
     end
@@ -1622,7 +1617,7 @@ end
 def workflow_count(opts)
   
   workflows = Workflow.find(:all).select do |w|
-    Authorization.is_authorized?('view', nil, w, opts[:user])
+    Authorization.check('view', w, opts[:user])
   end
 
   root = LibXML::XML::Node.new('workflow-count')
@@ -1637,7 +1632,7 @@ end
 def pack_count(opts)
   
   packs = Pack.find(:all).select do |p|
-    Authorization.is_authorized?('view', nil, p, opts[:user])
+    Authorization.check('view', p, opts[:user])
   end
 
   root = LibXML::XML::Node.new('pack-count')
@@ -1669,7 +1664,7 @@ def get_tagged(opts)
   obs = tag ? tag.tagged : []
 
   # filter out ones they are not allowed to get
-  obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.is_authorized?("index", nil, c, opts[:user]) end)
+  obs = (obs.select do |c| c.respond_to?('contribution') == false or Authorization.check("view", c, opts[:user]) end)
 
   produce_rest_list("tagged", opts[:rules], opts[:query], obs, 'tagged', [], opts[:user])
 end
@@ -1773,7 +1768,7 @@ def effective_privileges(ob, user, query)
   privileges = LibXML::XML::Node.new('privileges')
 
   ['view', 'download', 'edit'].each do |type|
-    if Authorization.is_authorized?(type, nil, ob, user) 
+    if Authorization.check(type, ob, user) 
       privilege = LibXML::XML::Node.new('privilege')
       privilege['type'] = type
 
@@ -1788,14 +1783,22 @@ end
 
 def comment_aux(action, opts)
 
+  unless action == "destroy"
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    comment = parse_element(data, :text,     '/comment/comment')
+    subject = parse_element(data, :resource, '/comment/subject')
+  end
+
   # Obtain object
 
   case action
     when 'create':
-      return rest_response(401, :reason => "Not authorised to create a comment") unless Authorization.is_authorized_for_type?('create', 'Comment', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a comment") unless Authorization.check('create', Comment, opts[:user], subject)
 
       ob = Comment.new(:user => opts[:user])
-    when 'read', 'update', 'destroy':
+    when 'view', 'edit', 'destroy':
       ob, error = obtain_rest_resource('Comment', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -1809,16 +1812,11 @@ def comment_aux(action, opts)
 
   else
 
-    data = LibXML::XML::Parser.string(request.raw_post).parse
-
-    comment = parse_element(data, :text,     '/comment/comment')
-    subject = parse_element(data, :resource, '/comment/subject')
-
     ob.comment = comment if comment
 
     if subject
       return rest_response(400, :reason => "Specified resource does not support comments") unless [Blob, Network, Pack, Workflow].include?(subject.class)
-      return rest_response(401, :reason => "Not authorised to add a comment to the specified resource") unless Authorization.is_authorized_for_type?(action, 'Comment', opts[:user], subject)
+      return rest_response(401, :reason => "Not authorised to add a comment to the specified resource") unless Authorization.check(action, Comment, opts[:user], subject)
       ob.commentable = subject
     end
 
@@ -1902,7 +1900,7 @@ def post_comment(opts)
 end
 
 def put_comment(opts)
-  comment_aux('update', opts)
+  comment_aux('edit', opts)
 end
 
 def delete_comment(opts)
@@ -1913,14 +1911,21 @@ end
 
 def favourite_aux(action, opts)
 
+  unless action == "destroy"
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    target = parse_element(data, :resource, '/favourite/object')
+  end
+
   # Obtain object
 
   case action
     when 'create':
-      return rest_response(401, :reason => "Not authorised to create a favourite") unless Authorization.is_authorized_for_type?('create', 'Bookmark', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a favourite") unless Authorization.check('create', Bookmark, opts[:user], target)
 
       ob = Bookmark.new(:user => opts[:user])
-    when 'read', 'update', 'destroy':
+    when 'view', 'edit', 'destroy':
       ob, error = obtain_rest_resource('Bookmark', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -1934,13 +1939,9 @@ def favourite_aux(action, opts)
 
   else
 
-    data = LibXML::XML::Parser.string(request.raw_post).parse
-
-    target = parse_element(data, :resource, '/favourite/object')
-
     if target
       return rest_response(400, :reason => "Specified resource is not a valid favourite target") unless [Blob, Pack, Workflow].include?(target.class)
-      return rest_response(401, :reason => "Not authorised to create the favourite") unless Authorization.is_authorized_for_type?(action, 'Bookmark', opts[:user], target)
+      return rest_response(401, :reason => "Not authorised to create the favourite") unless Authorization.check(action, Bookmark, opts[:user], target)
       ob.bookmarkable = target
     end
 
@@ -1955,7 +1956,7 @@ def post_favourite(opts)
 end
 
 def put_favourite(opts)
-  favourite_aux('update', opts)
+  favourite_aux('edit', opts)
 end
 
 def delete_favourite(opts)
@@ -1966,14 +1967,22 @@ end
 
 def rating_aux(action, opts)
 
+  unless action == "destroy"
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    rating  = parse_element(data, :text,     '/rating/rating')
+    subject = parse_element(data, :resource, '/rating/subject')
+  end
+
   # Obtain object
 
   case action
     when 'create':
-      return rest_response(401, :reason => "Not authorised to create a rating") unless Authorization.is_authorized_for_type?('create', 'Rating', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a rating") unless Authorization.check('create', Rating, opts[:user], subject)
 
       ob = Rating.new(:user => opts[:user])
-    when 'read', 'update', 'destroy':
+    when 'view', 'edit', 'destroy':
       ob, error = obtain_rest_resource('Rating', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -1987,16 +1996,11 @@ def rating_aux(action, opts)
 
   else
 
-    data = LibXML::XML::Parser.string(request.raw_post).parse
-
-    rating  = parse_element(data, :text,     '/rating/rating')
-    subject = parse_element(data, :resource, '/rating/subject')
-
     ob.rating = rating if rating
 
     if subject
       return rest_response(400, :reason => "Specified resource does not support ratings") unless [Blob, Network, Pack, Workflow].include?(subject.class)
-      return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.is_authorized_for_type?(action, 'Rating', opts[:user], subject)
+      return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.check(action, Rating, opts[:user], subject)
       ob.rateable = subject
     end
 
@@ -2011,7 +2015,7 @@ def post_rating(opts)
 end
 
 def put_rating(opts)
-  rating_aux('update', opts)
+  rating_aux('edit', opts)
 end
 
 def delete_rating(opts)
@@ -2022,14 +2026,23 @@ end
 
 def tagging_aux(action, opts)
 
+  unless action == "destroy"
+
+    data = LibXML::XML::Parser.string(request.raw_post).parse
+
+    subject = parse_element(data, :resource, '/tagging/subject')
+    label   = parse_element(data, :text,     '/tagging/label')
+    tag     = parse_element(data, :resource, '/tagging/tag')
+  end
+
   # Obtain object
 
   case action
     when 'create':
-      return rest_response(401, :reason => "Not authorised to create a tagging") unless Authorization.is_authorized_for_type?('create', 'Tagging', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create a tagging") unless Authorization.check('create', Tagging, opts[:user], subject)
 
       ob = Tagging.new(:user => opts[:user])
-    when 'read', 'update', 'destroy':
+    when 'view', 'edit', 'destroy':
       ob, error = obtain_rest_resource('Tagging', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -2043,17 +2056,11 @@ def tagging_aux(action, opts)
 
   else
 
-    data = LibXML::XML::Parser.string(request.raw_post).parse
-
-    subject = parse_element(data, :resource, '/tagging/subject')
-    label   = parse_element(data, :text,     '/tagging/label')
-    tag     = parse_element(data, :resource, '/tagging/tag')
-
     ob.label    = label   if label
     ob.tag      = tag     if tag
 
     if subject
-      return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.is_authorized_for_type?(action, 'Rating', opts[:user], subject)
+      return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.check(action, Rating, opts[:user], subject)
       ob.taggable = subject
     end
 
@@ -2079,9 +2086,9 @@ def ontology_aux(action, opts)
 
   case action
     when 'create':
-      return rest_response(401, :reason => "Not authorised to create an ontology") unless Authorization.is_authorized_for_type?('create', 'Ontology', opts[:user], nil)
+      return rest_response(401, :reason => "Not authorised to create an ontology") unless Authorization.check('create', Ontology, opts[:user], nil)
       ob = Ontology.new(:user => opts[:user])
-    when 'read', 'update', 'destroy':
+    when 'view', 'edit', 'destroy':
       ob, error = obtain_rest_resource('Ontology', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -2122,7 +2129,7 @@ def post_ontology(opts)
 end
 
 def put_ontology(opts)
-  ontology_aux('update', opts)
+  ontology_aux('edit', opts)
 end
 
 def delete_ontology(opts)
@@ -2149,9 +2156,9 @@ def predicate_aux(action, opts)
 
   case action
     when 'create':
-      return rest_response(401, :reason => "Not authorised to create a predicate") unless Authorization.is_authorized_for_type?('create', 'Predicate', opts[:user], ontology)
+      return rest_response(401, :reason => "Not authorised to create a predicate") unless Authorization.check('create', Predicate, opts[:user], ontology)
       ob = Predicate.new
-    when 'read', 'update', 'destroy':
+    when 'view', 'edit', 'destroy':
       ob, error = obtain_rest_resource('Predicate', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -2186,7 +2193,7 @@ def post_predicate(opts)
 end
 
 def put_predicate(opts)
-  predicate_aux('update', opts)
+  predicate_aux('edit', opts)
 end
 
 def delete_predicate(opts)
@@ -2211,9 +2218,9 @@ def relationship_aux(action, opts)
 
   case action
     when 'create':
-      return rest_response(401, :reason => "Not authorised to create a relationship") unless Authorization.is_authorized_for_type?('create', 'Relationship', opts[:user], context)
+      return rest_response(401, :reason => "Not authorised to create a relationship") unless Authorization.check('create', Relationship, opts[:user], context)
       ob = Relationship.new(:user => opts[:user])
-    when 'read', 'update', 'destroy':
+    when 'view', 'edit', 'destroy':
       ob, error = obtain_rest_resource('Relationship', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -2247,7 +2254,7 @@ def post_relationship(opts)
 end
 
 def put_relationship(opts)
-  relationship_aux('update', opts)
+  relationship_aux('edit', opts)
 end
 
 def delete_relationship(opts)

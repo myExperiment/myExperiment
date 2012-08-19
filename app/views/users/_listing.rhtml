@@ -87,7 +87,7 @@
     <% end %>
   <% end %>
 
-  <% if Authorization.check(:action => 'destroy', :object => user, :user => current_user) %>
+  <% if Authorization.check('destroy', user, current_user) %>
     <%= icon "destroy", user_path(user) + "?return_to=" + CGI::escape(request.request_uri), nil, {
       :confirm => "Are you sure you want to remove this user?", :method => :delete},
       "Delete User" %>

@@ -110,10 +110,21 @@ protected
   end
   
   def find_blog_auth
+
+    action_permissions = {
+      "create"  => "create",
+      "destroy" => "destroy",
+      "edit"    => "edit",
+      "index"   => "view",
+      "new"     => "create",
+      "show"    => "view",
+      "update"  => "edit",
+    }
+
     begin
       blog = Blog.find(params[:id])
       
-      if Authorization.is_authorized?(action_name, nil, blog, current_user)
+      if Authorization.check(action_permissions[action_name], blog, current_user)
         @blog = blog
       else
         if logged_in? 

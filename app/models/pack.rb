@@ -190,8 +190,8 @@ class Pack < ActiveRecord::Base
           next # skips all further processing and moves on to the next item
         end
         
-        download_allowed = Authorization.is_authorized?('download', nil, item_contribution, user)
-        viewing_allowed = download_allowed ? true : Authorization.is_authorized?('view', nil, item_contribution, user)
+        download_allowed = Authorization.check('download', item_contribution, user)
+        viewing_allowed = download_allowed ? true : Authorization.check('view', item_contribution, user)
         
         
         case item_entry.contributable_type.downcase
