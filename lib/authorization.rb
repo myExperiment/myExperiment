@@ -34,8 +34,8 @@ module Authorization
     # remove it.
 
     return false if action.nil? || object.nil?
-#   raise "Missing action in authorisation check" unless action
-#   raise "Missing object in authorisation check" unless object
+    # raise "Missing action in authorisation check" unless action
+    # raise "Missing object in authorisation check" unless object
 
     # If it is a contribution, then work on the contributable instead.  I'm not
     # sure this is still needed and I'll remove it if I can.
