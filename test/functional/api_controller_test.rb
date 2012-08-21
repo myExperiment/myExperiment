@@ -45,7 +45,7 @@ class ApiControllerTest < ActionController::TestCase
 
     extra_workflows = Workflow.find(:all) - existing_workflows
 
-    assert_equal(extra_workflows.length, 1)
+    assert_equal(1, extra_workflows.length)
 
     @workflow_id = extra_workflows.first.id
 
@@ -93,6 +93,67 @@ class ApiControllerTest < ActionController::TestCase
   
     assert_equal(title2,      response.find_first('/workflow/title').inner_xml)
     assert_equal(description, response.find_first('/workflow/description').inner_xml)
+
+    # upload a new version of the workflow
+
+    content2 = Base64.encode64(File.read('test/fixtures/files/workflow_xkcd.t2flow'))
+
+    # post a new version of the workflow
+
+    rest_request(:post, 'workflow', "<?xml version='1.0'?>
+      <workflow>
+        <type>Taverna 2</type>
+        <content>#{content2}</content>
+      </workflow>", "id" => @workflow_id)
+
+    assert_response(:success)
+
+    workflow = Workflow.find(@workflow_id)
+
+    assert_equal(2, workflow.versions.length)
+
+    # get different versions of the workflow
+
+    response = rest_request(:get, 'workflow', nil, "id" => @workflow_id, "version" => "1",
+        "elements" => "title,type,content-type,content,components")
+
+    assert_response(:success)
+  
+    assert_equal(title2, response.find_first('/workflow/title').inner_xml)
+    assert_equal("Taverna 1",  response.find_first('/workflow/type').inner_xml)
+    assert_equal("application/vnd.taverna.scufl+xml", response.find_first('/workflow/content-type').inner_xml)
+    assert_equal(1815, Base64.decode64(response.find_first('/workflow/content').inner_xml).length)
+
+    response = rest_request(:get, 'workflow', nil, "id" => @workflow_id, "version" => "2",
+        "elements" => "title,type,content-type,content,components")
+
+    assert_equal("Fetch today's xkcd comic", response.find_first('/workflow/title').inner_xml)
+    assert_equal("Taverna 2",  response.find_first('/workflow/type').inner_xml)
+    assert_equal("application/vnd.taverna.t2flow+xml", response.find_first('/workflow/content-type').inner_xml)
+    assert_equal(30218, Base64.decode64(response.find_first('/workflow/content').inner_xml).length)
+
+    # edit a particular version of a workflow
+
+    rest_request(:put, 'workflow', "<?xml version='1.0'?>
+      <workflow>
+        <title>Oranges</title>
+      </workflow>", "id" => @workflow_id, "version" => "1")
+
+    assert_response(:success)
+
+    # Verify that only version 1 was changed
+
+    response = rest_request(:get, 'workflow', nil, "id" => @workflow_id, "version" => "1",
+        "elements" => "title")
+
+    assert_response(:success)
+  
+    assert_equal("Oranges", response.find_first('/workflow/title').inner_xml)
+
+    response = rest_request(:get, 'workflow', nil, "id" => @workflow_id, "version" => "2",
+        "elements" => "title")
+
+    assert_equal("Fetch today's xkcd comic", response.find_first('/workflow/title').inner_xml)
 
     # delete the workflow
 
