@@ -213,7 +213,7 @@
 			
 			<% if @authorised_to_download %>
         <% begin %>
-          <%= render :partial => "workflows/#{get_type_dir(@workflow)}/internals", :locals => { :workflow => @workflow, :version => @viewing_version_number } -%>
+          <%= render :partial => "workflows/#{get_type_dir(@viewing_version)}/internals", :locals => { :workflow => @workflow, :version => @viewing_version_number } -%>
         <% rescue %>
           <p class="none_text">
             There was a problem in extracting the internals of this workflow.

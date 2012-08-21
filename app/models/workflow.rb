@@ -150,7 +150,7 @@ class Workflow < ActiveRecord::Base
 
   def processor_class
     if self.content_type
-        @processor_class ||= WorkflowTypesHandler.processor_class_for_type_display_name(self.content_type.title)
+      @processor_class ||= WorkflowTypesHandler.processor_class_for_type_display_name(self.content_type.title)
     end
   end
   
@@ -170,25 +170,34 @@ class Workflow < ActiveRecord::Base
   end
   
   def get_workflow_processor(version = current_version)
-    return nil unless (workflow_version = self.find_version(version))
-    return (self.processor_class.nil? ? nil : self.processor_class.new(workflow_version.content_blob.data))
+
+    return nil unless workflow_version = self.find_version(version)
+    return nil unless version_processor = workflow_version.processor_class
+
+    version_processor.new(workflow_version.content_blob.data)
   end
 
   def get_workflow_model_object(version)
-    return nil unless (workflow_version = self.find_version(version))
-    return (self.processor_class.nil? ? nil : self.processor_class.new(workflow_version.content_blob.data).get_workflow_model_object)
+
+    return nil unless version_processor = get_workflow_processor(version)
+
+    version_processor.get_workflow_model_object
   end
-  
+
   def get_search_terms(version)
-    return nil unless (workflow_version = self.find_version(version))
-    return (self.processor_class.nil? ? nil : self.processor_class.new(workflow_version.content_blob.data).get_search_terms)
+
+    return nil unless version_processor = get_workflow_processor(version)
+
+    version_processor.get_search_terms
   end
 
   # Begin acts_as_runnable overridden methods
  
   def get_input_ports(version)
-    return nil unless (workflow_version = self.find_version(version))
-    return (self.processor_class.nil? ? nil : self.processor_class.new(workflow_version.content_blob.data).get_workflow_model_input_ports)
+
+    return nil unless version_processor = get_workflow_processor(version)
+
+    return version_processor.get_workflow_model_input_ports
   end
   
   # End acts_as_runnable overridden methods
