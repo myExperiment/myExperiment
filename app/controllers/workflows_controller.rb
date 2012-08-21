@@ -711,6 +711,7 @@ protected
       "galaxy_tool_download"    => "download",
       "index"                   => "view",
       "launch"                  => "download",
+      "named_download"          => "download",
       "new"                     => "create",
       "new_version"             => "edit",
       "process_tag_suggestions" => "edit",
