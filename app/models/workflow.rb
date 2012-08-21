@@ -114,7 +114,7 @@ class Workflow < ActiveRecord::Base
 
     metadata = {}
 
-    if proc_class
+    if proc_class && opts[:data]
 
       processor = proc_class.new(opts[:data])
 

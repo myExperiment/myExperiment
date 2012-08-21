@@ -257,7 +257,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
       when 'xml'
 
         if query['version'] and model_data['Versioned'][i] == 'yes'
-          text = eval("ob.find_version(#{query['version']}).#{accessor}")
+          text = eval(sprintf("ob.find_version(%d).%s", query['version'], accessor))
         else
           text = eval("ob.#{accessor}")
         end
@@ -280,7 +280,11 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
         el = LibXML::XML::Node.new(model_data['REST Attribute'][i])
 
-        item = eval("ob.#{model_data['Accessor'][i]}")
+        if query['version'] and model_data['Versioned'][i] == 'yes'
+          item = eval(sprintf("ob.find_version(%d).%s", query['version'], model_data['Accessor'][i]))
+        else
+          item = eval("ob.#{model_data['Accessor'][i]}")
+        end
 
         if item != nil
           resource_uri = rest_resource_uri(item)
@@ -303,7 +307,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
           if accessor
             if query['version'] and model_data['Versioned'][i] == 'yes'
-              text = eval("ob.find_version(#{query['version']}).#{accessor}").to_s
+              text = eval(sprintf("ob.find_version(%d).%s", query['version'], accessor)).to_s
             else
 
               val = eval("ob.#{accessor}")
@@ -1018,9 +1022,6 @@ def workflow_aux(action, opts = {})
 
     # build the contributable
 
-    ob.title   = title        if title
-    ob.body    = description  if description
-
     if license_type 
       if license_type == ""
         ob.license = nil
@@ -1064,6 +1065,26 @@ def workflow_aux(action, opts = {})
 
     ob.content_blob_id = ContentBlob.create(:data => content).id if content
 
+    # Handle versioned metadata.  Priority:
+    #
+    #   1st = elements in REST request
+    #   2nd = extracted metadata from workflow processor
+    #   3rd = values from previous version
+
+    metadata = Workflow.extract_metadata(:type => ob.content_type.title, :data => content)
+
+    if title
+      ob.title = title
+    elsif metadata["title"]
+      ob.title = metadata["title"]
+    end
+
+    if description
+      ob.body = description
+    elsif metadata["description"]
+      ob.body = metadata["description"]
+    end
+
     # Handle the preview and svg images.  If there's a preview supplied, use
     # it.  Otherwise auto-generate one if we can.
 
@@ -1090,7 +1111,8 @@ def workflow_aux(action, opts = {})
       return rest_response(500, :reason => "Unable to extract metadata")
     end
 
-    new_version = action == 'create' && opts[:query]['id']
+    new_version  = action == 'create' && opts[:query]['id'] != nil
+    edit_version = action == 'edit'   && opts[:query]['version'] != nil
 
     if new_version
       ob.preview = nil
