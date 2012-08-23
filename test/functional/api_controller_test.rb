@@ -19,6 +19,7 @@ class ApiControllerTest < ActionController::TestCase
   def test_workflows
 
     existing_workflows = Workflow.find(:all)
+    existing_events = Event.all
 
     login_as(:john)
 
@@ -44,8 +45,16 @@ class ApiControllerTest < ActionController::TestCase
     assert_response(:success)
 
     extra_workflows = Workflow.find(:all) - existing_workflows
+    extra_events = Event.find(:all). - existing_events
 
     assert_equal(1, extra_workflows.length)
+    assert_equal(1, extra_events.length)
+
+    new_event = (extra_events - existing_events).first
+
+    assert_equal("John Smith", new_event.subject_label);
+    assert_equal("create", new_event.action);
+    assert_equal(title, new_event.objekt_label);
 
     @workflow_id = extra_workflows.first.id
 
@@ -77,12 +86,23 @@ class ApiControllerTest < ActionController::TestCase
     setup
     login_as(:john)
 
+    existing_events = Event.all
+
     rest_request(:put, 'workflow', "<?xml version='1.0'?>
       <workflow>
         <title>#{title2}</title>
       </workflow>", "id" => @workflow_id)
 
     assert_response(:success)
+
+    extra_events = Event.find(:all). - existing_events
+    assert_equal(1, extra_events.length)
+    
+    new_event = (extra_events - existing_events).first
+
+    assert_equal("John Smith", new_event.subject_label);
+    assert_equal("edit", new_event.action);
+    assert_equal(title2, new_event.objekt_label);
 
     # get the updated workflow
 
@@ -100,6 +120,8 @@ class ApiControllerTest < ActionController::TestCase
 
     # post a new version of the workflow
 
+    existing_events = Event.all
+
     rest_request(:post, 'workflow', "<?xml version='1.0'?>
       <workflow>
         <type>Taverna 2</type>
@@ -107,6 +129,15 @@ class ApiControllerTest < ActionController::TestCase
       </workflow>", "id" => @workflow_id)
 
     assert_response(:success)
+
+    extra_events = Event.find(:all). - existing_events
+    assert_equal(1, extra_events.length)
+
+    new_event = (extra_events - existing_events).first
+
+    assert_equal("John Smith", new_event.subject_label);
+    assert_equal("create version", new_event.action);
+    assert_equal("Fetch today's xkcd comic", new_event.objekt_label);
 
     workflow = Workflow.find(@workflow_id)
 
@@ -134,12 +165,24 @@ class ApiControllerTest < ActionController::TestCase
 
     # edit a particular version of a workflow
 
+    existing_events = Event.all
+
     rest_request(:put, 'workflow', "<?xml version='1.0'?>
       <workflow>
         <title>Oranges</title>
       </workflow>", "id" => @workflow_id, "version" => "1")
 
     assert_response(:success)
+
+    extra_events = Event.find(:all). - existing_events
+    assert_equal(1, extra_events.length)
+    
+    new_event = (extra_events - existing_events).first
+
+    assert_equal("John Smith", new_event.subject_label);
+    assert_equal("edit version", new_event.action);
+    assert_equal("1", new_event.extra);
+    assert_equal("Oranges", new_event.objekt_label);
 
     # Verify that only version 1 was changed
 

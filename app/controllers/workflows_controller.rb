@@ -335,6 +335,9 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       if @workflow.save
+
+        Event.create(:subject => current_user, :action => 'create', :objekt => @workflow)
+
         if params[:workflow][:tag_list]
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
           @workflow.reload
@@ -350,7 +353,7 @@ class WorkflowsController < ApplicationController
 
         # Credits and Attributions:
         update_credits(@workflow, params)
-        update_attributions(@workflow, params)
+        update_attributions(@workflow, params, current_user)
 
         update_layout(@workflow, params[:layout])
         
@@ -464,6 +467,8 @@ class WorkflowsController < ApplicationController
         rescue
         end
 
+        Event.create(:subject => current_user, :action => 'create version', :objekt => @workflow)
+
         respond_to do |format|
           flash[:notice] = 'New workflow version successfully created.'
           format.html {
@@ -520,6 +525,8 @@ class WorkflowsController < ApplicationController
       
       if @workflow.update_attributes(params[:workflow])
 
+        Event.create(:subject => current_user, :action => 'edit', :objekt => @workflow)
+
         if params[:workflow][:tag_list]
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
           @workflow.reload
@@ -528,7 +535,7 @@ class WorkflowsController < ApplicationController
 
         policy_err_msg = update_policy(@workflow, params)
         update_credits(@workflow, params)
-        update_attributions(@workflow, params)
+        update_attributions(@workflow, params, current_user)
 
         update_layout(@workflow, params[:layout])
 
@@ -573,6 +580,7 @@ class WorkflowsController < ApplicationController
 
     respond_to do |format|
       if success
+        Event.create(:subject => current_user, :action => 'edit version', :extra => version.version, :objekt => @workflow)
         flash[:notice] = "Workflow version #{version.version}: \"#{original_title}\" has been updated."
         format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
       else

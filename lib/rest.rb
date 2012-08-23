@@ -1121,6 +1121,15 @@ def workflow_aux(action, opts = {})
 
     success = ob.save
 
+    if success
+      case "#{action} #{new_version || edit_version}"
+      when "create false": Event.create(:subject => opts[:user], :action => 'create', :objekt => ob)
+      when "create true":  Event.create(:subject => opts[:user], :action => 'create version', :objekt => ob)
+      when "edit false":   Event.create(:subject => opts[:user], :action => 'edit', :objekt => ob)
+      when "edit true":    Event.create(:subject => opts[:user], :action => 'edit version', :objekt => ob, :extra => ob.version)
+      end
+    end
+
     return rest_response(400, :object => ob) unless success
 
     # Elements to update if we're not dealing with a workflow version
@@ -1244,6 +1253,7 @@ def file_aux(action, opts = {})
     ob.content_blob = ContentBlob.new(:data => content) if content
 
     new_version = action == 'create' && opts[:query][:id]
+    edit_version = action == 'edit'   && opts[:query]['version'] != nil
 
     if new_version
       ob[:revision_comments] = revision_comment
@@ -2286,10 +2296,10 @@ end
 # Call dispatcher
 
 def rest_call_request(opts)
-  begin
+# begin
     send(opts[:rules]['Function'], opts)
-  rescue
-    return rest_response(500)
-  end
+# rescue
+#   return rest_response(500)
+# end
 end
 
