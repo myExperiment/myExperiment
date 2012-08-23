@@ -544,6 +544,95 @@ module ApplicationHelper
     return "#{issn[0..3]}-#{issn[4..7]}"
   end
   
+
+  def activity_feed(opts = {})
+
+    sentences = {
+      "register"        => "$S joined #{Conf.sitename}.",
+      "create Workflow" => "$S uploaded $O.",
+      "create Blob"     => "$S uploaded $O.",
+      "create Pack"     => "$S created $O.",
+      "create Blog"     => "$S created $O."
+    }
+
+    conditions_expr     = []
+    conditions_operands = []
+
+    if opts[:subject]
+      conditions_expr     << "subject_type = ? AND subject_id = ?"
+      conditions_operands << opts[:subject].class.name
+      conditions_operands << opts[:subject].id
+    end
+
+    if opts[:object]
+      conditions_expr     << "objekt_type = ? AND objekt_id = ?"
+      conditions_operands << opts[:object].class.name
+      conditions_operands << opts[:object].id
+    end
+
+    unless conditions_expr.empty?
+      conditions_expr = conditions_expr.map do |cond| "(#{cond})" end.join(' AND ')
+      conditions = [conditions_expr] + conditions_operands
+    end
+
+    events = Event.find(:all, :order => 'created_at ASC', :conditions => conditions, :limit => 15)
+
+    markup = '<ol class="activity-feed">'
+
+    markup << events.map do |event|
+
+      if event.objekt
+        sentence = sentences["#{event.action} #{event.objekt_type}"]
+      else
+        sentence = sentences["#{event.action}"]
+      end
+
+      next unless sentence
+
+      if sentence.include?("$S")
+
+        lhs_url = send("#{Object.const_get(event.subject_type).table_name.singularize}_path".to_sym,
+              :id => event.subject_id)
+
+        if lhs_url == request.path
+          lhs = h(event.subject_label)
+        else
+          lhs = link_to(event.subject_label, lhs_url)
+        end
+
+        sentence = sentence.sub("$S", lhs)
+      end
+
+      if sentence.include?("$O")
+
+        if event.objekt_id
+
+          rhs_url = send("#{event.objekt_type.constantize.table_name.singularize}_path".to_sym,
+                :id => event.objekt_id)
+        end
+
+        if rhs_url == request.path
+          rhs = h(event.objekt_label)
+        else
+          rhs = link_to(event.objekt_label, rhs_url)
+        end
+
+        sentence = sentence.sub("$O", rhs)
+      end
+
+      if sentence.include?("$E")
+        sentence = sentence.sub("$E", event.extra)
+      end
+
+      "<li>#{sentence}</li>"
+
+    end.join
+
+    markup << '</ol>'
+
+    markup
+  end
+
   def news(contributor, restrict_contributor=true, before=Time.now, after=Time.now-1.week, limit=30)
     hash = {}
     

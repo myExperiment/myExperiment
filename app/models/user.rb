@@ -17,6 +17,8 @@ class User < ActiveRecord::Base
   
   has_many :jobs
 
+  has_many :events, :as => :subject, :dependent => :destroy
+
   has_many :taverna_enactors, :as => :contributor,
               :conditions => ["contributor_type = ?", "User"]
 
