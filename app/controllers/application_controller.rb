@@ -344,7 +344,7 @@ class ApplicationController < ActionController::Base
     
   end
   
-  def update_attributions(attributable, params)
+  def update_attributions(attributable, params, user)
     
     # First delete old attributions:
     attributable.attributors.each do |a|

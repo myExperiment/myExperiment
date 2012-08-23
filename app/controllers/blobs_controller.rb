@@ -164,7 +164,7 @@ class BlobsController < ApplicationController
           update_layout(@blob, params[:layout])
         
           update_credits(@blob, params)
-          update_attributions(@blob, params)
+          update_attributions(@blob, params, current_user)
         
           if policy_err_msg.blank?
 
@@ -222,7 +222,7 @@ class BlobsController < ApplicationController
         
         policy_err_msg = update_policy(@blob, params)
         update_credits(@blob, params)
-        update_attributions(@blob, params)
+        update_attributions(@blob, params, current_user)
         update_layout(@blob, params[:layout])
         
         if policy_err_msg.blank?
