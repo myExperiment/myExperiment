@@ -36,7 +36,16 @@
 	padding: 0 6px 0 6px;
 }
 
-.myexperiment_gadget .header p {
+.myexperiment_gadget .subheader {
+	font-weight: bold;
+	text-align: center;
+	font-size: 85%;
+	line-height: 1.4;
+	color: #333333;
+	margin: 0 4px;
+}
+
+.myexperiment_gadget .header P {
 	font-weight: bold;
 	text-align: center;
 }

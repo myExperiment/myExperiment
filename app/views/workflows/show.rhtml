@@ -3,6 +3,7 @@
 <ul class="sectionIcons">
 	<% if @authorised_to_edit -%>
 		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
+    <li><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit This Version") %></li>
 	<% end -%>	
 	<% if mine?(@workflow) -%>
 		<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow Entry')%></li>
@@ -21,37 +22,24 @@
 <%= render :partial => "contributions/datetime_info", :locals => { :contributable => @workflow } -%>
 
 <div class="contribution_mini_nav">
-	|
-	<%= link_to "License", "#license" %>
-	|
-	<%= link_to "Credits (#{@workflow.creditations.length})", "#credits" %>
-	|
-	<%= link_to "Attributions (#{@workflow.attributors.length})", "#attributions" %>
-	|
-	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@workflow.tags.uniq.length})</span>", "#tags" %>
-	|
-	<%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@workflow).length})", "#featured_in_packs" %>
-	|
-	<%= link_to "Ratings (#{@workflow.ratings.length})", "#ratings" %>
-	|
-	<%= link_to "Attributed By (#{@workflow.attributions.length})", "#attributed_by" %>
-	|
-	<%= link_to "Favourited By (#{@workflow.bookmarks.length})", "#favourited_by" %>
-	|
-	<br/>
-	|
-	<a href="#citations">Citations (<%= @workflow.citations.length -%>)</a>
-	|
-  <a href="#version_history">Version History</a>
-  |
-	<% if logged_in? and @workflow.owner?(current_user) %>
-	  <a href="#sharing">Sharing</a>
-	  |
-	<% end %>
-	<%= link_to "Reviews (#{@workflow.reviews.length})", "#reviews" %>
-	|
-	<%= link_to "Comments (#{@workflow.comments.length})", "#comments" %>
-	|
+  <ul class="link_list">
+    <li><%= link_to "License", "#license" %></li>
+    <li><%= link_to "Credits (#{@workflow.creditations.length})", "#credits" %></li>
+    <li><%= link_to "Attributions (#{@workflow.attributors.length})", "#attributions" %></li>
+    <li><%= link_to "Tags <span id='mini_nav_tag_link'>(#{@workflow.tags.uniq.length})</span>", "#tags" %></li>
+    <li><%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@workflow).length})", "#featured_in_packs" %></li>
+    <li><%= link_to "Ratings (#{@workflow.ratings.length})", "#ratings" %></li>
+    <li><%= link_to "Attributed By (#{@workflow.attributions.length})", "#attributed_by" %></li>
+    <li><%= link_to "Favourited By (#{@workflow.bookmarks.length})", "#favourited_by" %></li>
+    <br />
+    <li><a href="#citations">Citations (<%= @workflow.citations.length -%>)</a></li>
+    <li><a href="#version_history">Version History (<%= @workflow.versions.length -%>)</a></li>
+    <% if logged_in? and @workflow.owner?(current_user) %>
+      <li><a href="#sharing">Sharing</a></li>
+    <% end %>
+    <li><%= link_to "Reviews (#{@workflow.reviews.length})", "#reviews" %></li>
+    <li><%= link_to "Comments (#{@workflow.comments.length})", "#comments" %></li>
+  </ul>
 </div>
 
 
@@ -61,33 +49,7 @@
 
     <%= render(:partial => "contributions/version_selector", :locals => { :resource => @workflow, :version => @viewing_version, :path => :workflow_version_path }) %>
 
-		<% if @authorised_to_edit %>
-			<div style="margin-top: 1em;">
-				<ul class="sectionIcons" style="margin-top: 0.7em; margin-bottom: 0.6em;">
-					<li style="margin-left: 0;"><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit This Version") %></li>
-	        <% if false %>
-					<% if @latest_version_number > 1 %>
-						<% if Authorization.check("destroy", @workflow, current_user) %>
-							<li><%= icon('destroy', workflow_version_delete_url(@workflow.id, @viewing_version.version), nil, { :confirm => "Are you sure you want to delete this version (Version #{@viewing_version_number.to_s}) of the Workflow file (including title/description metadata)?", :method => :delete }, 'Delete This Version') %></li>
-						<% end %>
-	        <% end %>
-					<% end %>
-				</ul>
-			</div>
-		<% end %>
-		
 		<div class="contribution_version_inner_box">
-			<p>
-				<b>Title:</b>
-				<span class="title"><%= h @viewing_version.title %></span>
-			</p>
-			
-			<p>
-				<b>Type:</b>
-				<%= link_to(h(@viewing_version.content_type.title), content_type_path(@viewing_version.content_type)) %>
-			</p>
-			
-			<br/>
 			
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the preview of this version of the Workflow (click on the image to expand)") %>
@@ -204,30 +166,116 @@
 				</p>
 			<% end %>
 		
-			<br/>
-			
-			<h3>
-				<%= info_icon_with_tooltip("This section shows the internal components of this workflow version") %>
-				Workflow Components
-			</h3>
-			
-			<% if @authorised_to_download %>
-        <% begin %>
-          <%= render :partial => "workflows/#{get_type_dir(@viewing_version)}/internals", :locals => { :workflow => @workflow, :version => @viewing_version_number } -%>
-        <% rescue %>
-          <p class="none_text">
-            There was a problem in extracting the internals of this workflow.
-          </p>
-        <% end %>
-			<% else %>
-				<p class="none_text">
-					You do not have permission to see the internals of this workflow
-				</p>
-			<% end %>
 		</div>
 	
 	</div>
 	
+<!-- BEGIN tabs -->
+	
+<br/>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+
+<div class="tabContainer">
+  <div class="tabTitle">Comments</div>
+  <div class="tabContent">
+    <a name="comments"></a>
+    <div id="commentsBox">
+      <%= render :partial => "comments/comments", :locals => { :commentable => @workflow } %>
+    </div>
+  </div>
+</div>
+
+<div class="tabContainer">
+  <div class="tabTitle">Activity</div>
+  <div class="tabContent">
+    <a name="activity"></a>
+    <%= activity_feed(:object => @workflow) -%>
+  </div>
+</div>
+
+<div class="tabContainer">
+  <div class="tabTitle">Reviews</div>
+  <div class="tabContent">
+    <a name="reviews"></a>
+    <div id="ratingsBox">
+      <%= render :partial => "reviews/reviews", :locals => { :reviewable => @workflow } %>
+    </div>
+  </div>
+</div>
+
+<%= render :partial => "contributions/citations_tab", :locals => { :item => @workflow } %>
+
+<% if @authorised_to_download -%>
+  <div class="tabContainer">
+    <div class="tabTitle">Components</div>
+    <div class="tabContent">
+      <a name="components"></a>
+      <% begin %>
+        <%= render :partial => "workflows/#{get_type_dir(@viewing_version)}/internals", :locals => { :workflow => @workflow, :version => @viewing_version_number } -%>
+      <% rescue %>
+        <p class="none_text">
+          There was a problem in extracting the internals of this workflow.
+        </p>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<div class="tabContainer">
+  <div class="tabTitle">Version History</div>
+  <div class="tabContent">
+    <a name="version_history"></a>
+    <%= render :partial => "contributions/versions", :locals => { :resource => @workflow, :path => :workflow_version_path } %>
+  </div>
+</div>
+
+<% if @contributions_with_similar_services.length > 0 %>
+  <div class="tabContainer">
+    <div class="tabTitle">Similar</div>
+    <div class="tabContent">
+      <a name="similar"></a>
+
+      <h2>
+        <%= icon "workflow", nil, nil, { :style => "vertical-align: middle;" }, "" -%>
+        <span style="vertical-align: middle;">Other workflows that use similar services</span>
+        <span class="count_text" style="vertical-align: middle;">(<%= @contributions_with_similar_services.length %>)</span>
+      </h2>
+
+      <% if @contributions_with_similar_services.length > @similar_services_limit %>
+        <p><i>Only the first <%= @similar_services_limit %> workflows that use similar services are shown</i>.   <a href="<%= workflows_path(@wsdls_filter) -%>">View all workflows that use these services</a>.</p>
+        <br />
+      <% end %>
+
+      <%= render :partial => "contributions/list", :locals => { :collection => @contributions_with_similar_services[0..@similar_services_limit - 1], :table => true } %>
+
+    </div>
+  </div>
+<% end %>
+
+<% if logged_in? and @workflow.owner?(current_user) %>
+  
+	<div class="tabContainer">
+    <div class="tabTitle">Sharing</div>
+    <div class="tabContent">
+
+      <a name="sharing"></a>
+      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @workflow } %>
+      <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @workflow } %>
+	  
+	  <% if @authorised_to_edit %>
+		  <ul class="sectionIcons">
+		  	<li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit')%></li>
+		  </ul>
+	  <% end %>
+
+    </div>
+  </div>
+	
+<% end %>
+
+<!-- END tabs -->
+
 </div>
 
 <div class="contribution_right_box">
@@ -266,91 +314,6 @@
 </div>
 
 <div class="clearer">&nbsp;</div>
-
-<!-- BEGIN tabs -->
-	
-<br/>
-
-<div id="tabsContainer" class="tabsContainer"></div>
-
-<%= render :partial => "contributions/citations_tab", :locals => { :item => @workflow } %>
-
-<div class="tabContainer">
-  <div class="tabTitle">Version History</div>
-  <div class="tabContent">
-    <a name="version_history"></a>
-    <%= render :partial => "contributions/versions", :locals => { :resource => @workflow, :path => :workflow_version_path } %>
-  </div>
-</div>
-
-<% if logged_in? and @workflow.owner?(current_user) %>
-  
-	<div class="tabContainer">
-    <div class="tabTitle">Sharing</div>
-    <div class="tabContent">
-
-      <a name="sharing"></a>
-      <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @workflow } %>
-      <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @workflow } %>
-	  
-	  <% if @authorised_to_edit %>
-		  <ul class="sectionIcons">
-		  	<li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit')%></li>
-		  </ul>
-	  <% end %>
-
-    </div>
-  </div>
-	
-	<% if false %>
-	<div class="tabContainer">
-    <div class="tabTitle">Viewing History</div>
-    <div class="tabContent">
-      <%= render :partial => "contributions/history", :object => @workflow.contribution %>
-    </div>
-  </div>
-	<% end %>
-	
-<% end %>
-
-<!-- END tabs -->
-
-<br/>
-<br/>
-
-<div id="ratingsBox">
-	<%= render :partial => "reviews/reviews", :locals => { :reviewable => @workflow } %>
-</div>
-
-<br/>
-<br/>
-
-<div id="commentsBox">
-	<%= render :partial => "comments/comments", :locals => { :commentable => @workflow } %>
-</div>
-
-<!-- Other workflows that use a service this workflow users -->
-
-<br />
-<br />
-
-<h2>
-	<%= icon "workflow", nil, nil, { :style => "vertical-align: middle;" }, "" -%>
-	<span style="vertical-align: middle;">Other workflows that use similar services</span>
-	<span class="count_text" style="vertical-align: middle;">(<%= @contributions_with_similar_services.length %>)</span>
-</h2>
-
-<% if @contributions_with_similar_services.length > @similar_services_limit %>
-  <p><i>Only the first <%= @similar_services_limit %> workflows that use similar services are shown</i>.   <a href="<%= workflows_path(@wsdls_filter) -%>">View all workflows that use these services</a>.</p>
-  <br />
-<% end %>
-
-<% if @contributions_with_similar_services.length > 0 %>
-  <%= render :partial => "contributions/list", :locals => { :collection => @contributions_with_similar_services[0..@similar_services_limit - 1], :table => true } %>
-<% else %>
-  <p>There are no workflows in <%= Conf.sitename %> that use similar services to this Workflow.</p>
-<% end %>
-
 
 <%= render :partial => "contributions/alternative_formats" %>
 

@@ -41,7 +41,7 @@ function removeTag(name) {
 
 function updateTagViews() {
 
-  separator  = ' <span style="color: #999999;">|</span> ';
+  separator  = ' ';
   markup     = "";
   summary    = "";
 
@@ -54,11 +54,11 @@ function updateTagViews() {
     for (i = 0; i < suggestions.length; i++) {
 
       tag = suggestions[i];
-      cl  = 'unselected_tag_suggestion';
+      cl  = 'unselected_tag';
       fun = 'addTag';
 
       if (tagsToAdd.indexOf(tag) != -1) {
-        cl  = 'selected_tag_suggestion';
+        cl  = 'tag';
         fun = 'removeTag';
       }
       

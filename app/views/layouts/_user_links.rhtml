@@ -1,8 +1,10 @@
+<ul class="link_list">
 <% if logged_in? -%>
-  <%= signout_link -%> |
+  <li><%= signout_link -%></li>
 <% else -%>
-  <%= icon "login", new_session_url, nil, nil, "Log in" -%> |
-  <%= icon "user", new_user_url, nil, nil, "Register" -%> |
+  <li><%= icon "login", new_session_url, nil, nil, "Log in" -%></li>
+  <li><%= icon "user", new_user_url, nil, nil, "Register" -%></li>
 <% end %>
-<%= icon "feedback", "/feedback", nil, nil, "Give us Feedback" -%> |
-<%= icon "user-invite", invite_users_path, nil, nil, "Invite" -%>
+<li><%= icon "feedback", "/feedback", nil, nil, "Give us Feedback" -%></li>
+<li><%= icon "user-invite", invite_users_path, nil, nil, "Invite" -%></li>
+</ul>

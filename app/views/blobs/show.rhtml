@@ -14,33 +14,22 @@
 <%= render :partial => "contributions/datetime_info", :locals => { :contributable => @blob } -%>
 
 <div class="contribution_mini_nav">
-	|
-	<%= link_to "License", "#license" %>
-	|
-	<%= link_to "Credits (#{@blob.creditations.length})", "#credits" %>
-	|
-	<%= link_to "Attributions (#{@blob.attributors.length})", "#attributions" %>
-	|
-	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@blob.tags.length})</span>", "#tags" %>
-	|
-	<%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@blob).length})", "#featured_in_packs" %>
-	|
-	<%= link_to "Ratings (#{@blob.ratings.length})", "#ratings" %>
-	|
-	<%= link_to "Attributed By (#{@blob.attributions.length})", "#attributed_by" %>
-	|
-	<%= link_to "Favourited By (#{@blob.bookmarks.length})", "#favourited_by" %>
-	| 
-  <br/>
-  |
-  <%= link_to("Version History", "#version_history") -%>
-  |
-	<% if logged_in? and @blob.owner?(current_user) %>
-	  <a href="#sharing">Sharing</a>
-	  |
-	<% end %>
-	<%= link_to "Comments (#{@blob.comments.length})", "#comments" %> 
-	|
+  <ul class="link_list">
+    <li><%= link_to "License", "#license" %></li>
+    <li><%= link_to "Credits (#{@blob.creditations.length})", "#credits" %></li>
+    <li><%= link_to "Attributions (#{@blob.attributors.length})", "#attributions" %></li>
+    <li><%= link_to "Tags <span id='mini_nav_tag_link'>(#{@blob.tags.length})</span>", "#tags" %></li>
+    <li><%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@blob).length})", "#featured_in_packs" %></li>
+    <li><%= link_to "Ratings (#{@blob.ratings.length})", "#ratings" %></li>
+    <li><%= link_to "Attributed By (#{@blob.attributions.length})", "#attributed_by" %></li>
+    <li><%= link_to "Favourited By (#{@blob.bookmarks.length})", "#favourited_by" %></li>
+    <br/>
+    <li><%= link_to("Version History (#{@blob.versions.length})", "#version_history") -%></li>
+    <% if logged_in? and @blob.owner?(current_user) %>
+      <li><a href="#sharing">Sharing</a></li>
+    <% end %>
+    <li><%= link_to "Comments (#{@blob.comments.length})", "#comments" %> </li>
+  </ul>
 </div>
 
 <div class="contribution_left_box">

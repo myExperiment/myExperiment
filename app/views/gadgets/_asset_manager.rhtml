@@ -4,17 +4,13 @@
 
   <div class="header">
     <p>My Stuff</p>
-		<p>
-    	<small>
-      	<%= link_to(pluralize(current_user.friends.length, "Friend"), currentusers_things_url('friends')) %>
-				<span style="color:#999999;"> | </span>
-				<%= link_to(pluralize(current_user.networks_owned.length + current_user.networks.length, "Group"), currentusers_things_url('groups')) %>
-				<% filter_contributables(current_user.contributions).each do |klass,contributables| %>
-					<span style="color:#999999;">|</span> 
-					<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize)), currentusers_things_url(controller_visible_name(klass.humanize.pluralize).downcase)) %>
-				<% end %>
-      </small>
-     </p>
+    <ul class="link_list subheader">
+      <li><%= link_to(pluralize(current_user.friends.length, "Friend"), currentusers_things_url('friends')) %></li>
+      <li><%= link_to(pluralize(current_user.networks_owned.length + current_user.networks.length, "Group"), currentusers_things_url('groups')) %></li>
+      <% filter_contributables(current_user.contributions).each do |klass,contributables| %>
+        <li><%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize)), currentusers_things_url(controller_visible_name(klass.humanize.pluralize).downcase)) %></li>
+      <% end %>
+    </ul>
   </div>
     
   <div id="myexp_assetmanager_gadget_contents" class="contents">

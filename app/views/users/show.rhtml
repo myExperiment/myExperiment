@@ -362,7 +362,8 @@
 
   <% case (@tab||"News"); when "News" %>
 
-    <%= render :partial => "layouts/news", :locals => { :collection => news(@user, true) } %>
+    <h3>Activity from <%=h @user.name -%></h3>
+    <%= activity_feed(:subject => @user) -%>
 
   <% when "Friends" %>
 

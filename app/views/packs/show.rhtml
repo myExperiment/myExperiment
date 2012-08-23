@@ -16,34 +16,23 @@
 <%= render :partial => "contributions/datetime_info", :locals => { :contributable => @pack } -%>
 
 <div class="contribution_mini_nav">
-	|
-	<% if @authorised_to_edit %>
-	  <%= link_to "Add an Item", "#add_item" %>
-		|
-	<% end %>
-	<% if logged_in? and @pack.owner? current_user %>
-	  <a href="#sharing">Sharing</a>
-		|
-	<% end %>
-	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@pack.tags.length})</span>", "#tags" %>
-	|
-	<%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@pack).length})", "#featured_in_packs" %>
-	|
-	<%= link_to "Favourited By (#{@pack.bookmarks.length})", "#favourited_by" %>
-	| 
-	<%= link_to "Comments (#{@pack.comments.length})", "#comments" %>
-	|
+  <ul class="link_list">
+    <% if @authorised_to_edit %>
+      <li><%= link_to "Add an Item", "#add_item" %></li>
+    <% end %>
+    <% if logged_in? and @pack.owner? current_user %>
+      <li><a href="#sharing">Sharing</a></li>
+    <% end %>
+    <li><%= link_to "Tags <span id='mini_nav_tag_link'>(#{@pack.tags.length})</span>", "#tags" %></li>
+    <li><%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@pack).length})", "#featured_in_packs" %></li>
+    <li><%= link_to "Favourited By (#{@pack.bookmarks.length})", "#favourited_by" %></li>
+    <li><%= link_to "Comments (#{@pack.comments.length})", "#comments" %></li>
+  </ul>
 </div>
 
 <div class="contribution_left_box">
 	<div class="contribution_version_box">
 		<div class="contribution_version_inner_box">
-			<p>
-		    <b>Title:</b>
-		    <span class="title"><%=h @pack.title %></span>
-			</p>
-			
-			<br/>
 			
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the overall description of this Pack") %>
