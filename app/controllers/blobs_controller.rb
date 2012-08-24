@@ -314,11 +314,26 @@ class BlobsController < ApplicationController
   
   # POST /files/1;favourite
   def favourite
-    @blob.bookmarks << Bookmark.create(:user => current_user, :bookmarkable => @blob) unless @blob.bookmarked_by_user?(current_user)
+
+    bookmark = Bookmark.new(:user => current_user, :bookmarkable => @blob)
+
+    success = bookmark.save
+
+    if success
+      Event.create(:subject => current_user, :action => 'create', :objekt => bookmark)
+    end
     
     respond_to do |format|
-      flash[:notice] = "You have successfully added this item to your favourites."
-      format.html { redirect_to blob_url(@blob) }
+
+      format.html {
+        if success
+          flash[:notice] = "You have successfully added this item to your favourites."
+        else
+          flash[:error] = "Unable to create favourite."
+        end
+
+        redirect_to blob_url(@blob)
+      }
     end
   end
   

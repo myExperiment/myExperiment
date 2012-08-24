@@ -789,12 +789,21 @@ class ApiControllerTest < ActionController::TestCase
 
     existing_favourites = Bookmark.find(:all)
 
+    existing_events = Event.all
+
     rest_request(:post, 'favourite', "<?xml version='1.0'?>
       <favourite>
         <object resource='#{workflow_url}'/>
       </favourite>")
 
     assert_response(:success)
+
+    new_events = Event.all - existing_events
+
+    assert_equal(1, new_events.length)
+    assert_equal("John Smith", new_events.first.subject.name)
+    assert_equal("create", new_events.first.action)
+    assert_equal("Unique tags", new_events.first.objekt.bookmarkable.title)
 
     extra_favourites = Bookmark.find(:all) - existing_favourites 
     

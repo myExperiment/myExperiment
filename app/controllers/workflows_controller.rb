@@ -42,14 +42,29 @@ class WorkflowsController < ApplicationController
   
   # POST /workflows/1;favourite
   def favourite
-    Bookmark.create(:user => current_user, :bookmarkable => @workflow) unless @workflow.bookmarked_by_user?(current_user)
+
+    bookmark = Bookmark.new(:user => current_user, :bookmarkable => @workflow)
+
+    success = bookmark.save
+
+    if success
+      Event.create(:subject => current_user, :action => 'create', :objekt => bookmark)
+    end
     
     respond_to do |format|
-      flash[:notice] = "You have successfully added this item to your favourites."
-      format.html { redirect_to workflow_url(@workflow) }
+
+      format.html {
+        if success
+          flash[:notice] = "You have successfully added this item to your favourites."
+        else
+          flash[:error] = "Unable to create favourite."
+        end
+
+        redirect_to workflow_url(@workflow)
+      }
     end
   end
-  
+
   # DELETE /workflows/1;favourite_delete
   def favourite_delete
     @workflow.bookmarks.each do |b|

@@ -1986,7 +1986,13 @@ def favourite_aux(action, opts)
       ob.bookmarkable = target
     end
 
-    return rest_response(400, :object => ob) unless ob.save
+    success = ob.save
+
+    if success
+      Event.create(:subject => current_user, :action => 'create', :objekt => ob)
+    end
+
+    return rest_response(400, :object => ob) unless success
   end
 
   rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })

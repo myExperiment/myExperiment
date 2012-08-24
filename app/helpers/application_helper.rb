@@ -547,23 +547,6 @@ module ApplicationHelper
 
   def activity_feed(opts = {})
 
-    sentences = {
-      "register"                => "$S joined #{Conf.sitename}.",
-
-      "create Workflow"         => "$S uploaded $O.",
-      "create version Workflow" => "$S uploaded a new version of $O.",
-      "edit Workflow"           => "$S edited $O.",
-      "edit version Workflow"   => "$S edited version $E of $O.",
-
-      "create Blob"             => "$S uploaded $O.",
-      "create version Blob"     => "$S uploaded a new version of $O.",
-      "edit Blob"               => "$S edited $O.",
-      "edit version Blob"       => "$S edited version $E of $O.",
-
-      "create Pack"             => "$S created $O.",
-      "create Blog"             => "$S created $O.",
-    }
-
     conditions_expr     = []
     conditions_operands = []
 
@@ -590,50 +573,28 @@ module ApplicationHelper
 
     markup << events.map do |event|
 
-      if event.objekt
-        sentence = sentences["#{event.action} #{event.objekt_type}"]
+      action = if event.objekt
+        "#{event.action} #{event.objekt_type}"
       else
-        sentence = sentences["#{event.action}"]
+        "#{event.action}"
       end
 
-      next unless sentence
-
-      if sentence.include?("$S")
-
-        lhs_url = send("#{Object.const_get(event.subject_type).table_name.singularize}_path".to_sym,
-              :id => event.subject_id)
-
-        if lhs_url == request.path
-          lhs = h(event.subject_label)
-        else
-          lhs = link_to(event.subject_label, lhs_url)
-        end
-
-        sentence = sentence.sub("$S", lhs)
+      sentence = case action
+        when "register":                "#{event.subject.label} joined #{Conf.sitename}"
+        when "create Workflow":         "#{event.subject.label} uploaded #{event.objekt.label}"
+        when "create version Workflow": "#{event.subject.label} uploaded a new version of #{event.objekt.label}"
+        when "edit Workflow":           "#{event.subject.label} edited #{event.objekt.label}"
+        when "edit version Workflow":   "#{event.subject.label} edited version #{event.extra} of #{event.objekt.label}"
+        when "create Blob":             "#{event.subject.label} uploaded #{event.objekt.label}"
+        when "create version Blob":     "#{event.subject.label} uploaded a new version of #{event.objekt.label}"
+        when "edit Blob":               "#{event.subject.label} edited #{event.objekt.label}"
+        when "edit version Blob":       "#{event.subject.label} edited version #{event.extra} of #{event.objekt.label}"
+        when "create Bookmark":         "#{event.subject.label} favourited #{event.objekt.bookmarkable.label}"
+        when "create Pack":             "#{event.subject.label} created #{event.objekt.label}"
+        when "create Blog":             "#{event.subject.label} created #{event.objekt.label}"
       end
 
-      if sentence.include?("$O")
-
-        if event.objekt_id
-
-          rhs_url = send("#{event.objekt_type.constantize.table_name.singularize}_path".to_sym,
-                :id => event.objekt_id)
-        end
-
-        if rhs_url == request.path
-          rhs = h(event.objekt_label)
-        else
-          rhs = link_to(event.objekt_label, rhs_url)
-        end
-
-        sentence = sentence.sub("$O", rhs)
-      end
-
-      if sentence.include?("$E")
-        sentence = sentence.sub("$E", event.extra)
-      end
-
-      "<li>#{sentence}</li>"
+      "<li>#{sentence}.</li>"
 
     end.join
 

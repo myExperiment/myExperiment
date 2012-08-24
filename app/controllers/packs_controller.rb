@@ -192,11 +192,26 @@ class PacksController < ApplicationController
   
   # POST /packs/1;favourite
   def favourite
-    @pack.bookmarks << Bookmark.create(:user => current_user, :bookmarkable => @pack) unless @pack.bookmarked_by_user?(current_user)
+
+    bookmark = Bookmark.new(:user => current_user, :bookmarkable => @pack)
+
+    success = bookmark.save
+
+    if success
+      Event.create(:subject => current_user, :action => 'create', :objekt => bookmark)
+    end
     
     respond_to do |format|
-      flash[:notice] = "You have successfully added this item to your favourites."
-      format.html { redirect_to pack_url(@pack) }
+
+      format.html {
+        if success
+          flash[:notice] = "You have successfully added this item to your favourites."
+        else
+          flash[:error] = "Unable to create favourite."
+        end
+
+        redirect_to pack_url(@pack)
+      }
     end
   end
   
