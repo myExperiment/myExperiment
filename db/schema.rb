@@ -235,6 +235,8 @@ ActiveRecord::Schema.define(:version => 97) do
     t.string   "objekt_type"
     t.integer  "objekt_id"
     t.string   "objekt_label"
+    t.string   "auth_type"
+    t.integer  "auth_id"
     t.string   "extra"
     t.datetime "created_at"
   end

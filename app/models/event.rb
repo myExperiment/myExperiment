@@ -7,6 +7,7 @@ class Event < ActiveRecord::Base
 
   belongs_to :subject, :polymorphic => true
   belongs_to :objekt,  :polymorphic => true
+  belongs_to :auth,    :polymorphic => true
 
   validates_presence_of :subject
   validates_presence_of :action
@@ -24,6 +25,12 @@ class Event < ActiveRecord::Base
       e.objekt_label = e.objekt.label if e.objekt.respond_to?(:label)
       e.objekt_label = e.objekt.title if e.objekt.respond_to?(:title)
       e.objekt_label = e.objekt.name  if e.objekt.respond_to?(:name)
+    end
+
+    if e.objekt && (e.objekt_label.nil? || e.objekt_label == "") && e.auth
+      e.objekt_label = e.auth.label if e.auth.respond_to?(:label)
+      e.objekt_label = e.auth.title if e.auth.respond_to?(:title)
+      e.objekt_label = e.auth.name  if e.auth.respond_to?(:name)
     end
   end
 end

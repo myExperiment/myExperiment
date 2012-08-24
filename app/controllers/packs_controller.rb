@@ -198,7 +198,7 @@ class PacksController < ApplicationController
     success = bookmark.save
 
     if success
-      Event.create(:subject => current_user, :action => 'create', :objekt => bookmark)
+      Event.create(:subject => current_user, :action => 'create', :objekt => bookmark, :auth => @pack)
     end
     
     respond_to do |format|

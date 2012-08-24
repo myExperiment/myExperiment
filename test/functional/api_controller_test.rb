@@ -136,7 +136,7 @@ class ApiControllerTest < ActionController::TestCase
     new_event = (extra_events - existing_events).first
 
     assert_equal("John Smith", new_event.subject_label);
-    assert_equal("create version", new_event.action);
+    assert_equal("create", new_event.action);
     assert_equal("Fetch today's xkcd comic", new_event.objekt_label);
 
     workflow = Workflow.find(@workflow_id)
@@ -180,9 +180,9 @@ class ApiControllerTest < ActionController::TestCase
     new_event = (extra_events - existing_events).first
 
     assert_equal("John Smith", new_event.subject_label);
-    assert_equal("edit version", new_event.action);
-    assert_equal("1", new_event.extra);
-    assert_equal("Oranges", new_event.objekt_label);
+    assert_equal("edit",       new_event.action);
+    assert_equal("1",          new_event.extra);
+    assert_equal("Oranges",    new_event.objekt_label);
 
     # Verify that only version 1 was changed
 
@@ -332,7 +332,7 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_equal(1, new_events.length)
     assert_equal("John Smith",     new_events.first.subject.name)
-    assert_equal("create version", new_events.first.action)
+    assert_equal("create",         new_events.first.action)
     assert_equal(title2,           new_events.first.objekt.title)
 
     file.reload
@@ -354,7 +354,7 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_equal(1, new_events.length)
     assert_equal("John Smith",   new_events.first.subject.name)
-    assert_equal("edit version", new_events.first.action)
+    assert_equal("edit",         new_events.first.action)
     assert_equal(title3,         new_events.first.objekt.title)
 
     file.reload
@@ -658,8 +658,8 @@ class ApiControllerTest < ActionController::TestCase
     new_events = Event.all - existing_events
 
     assert_equal(1, new_events.length)
-    assert_equal("John Smith", new_events.first.subject.name)
-    assert_equal("create", new_events.first.action)
+    assert_equal("John Smith",  new_events.first.subject.name)
+    assert_equal("create",      new_events.first.action)
     assert_equal("Unique tags", new_events.first.objekt.commentable.title)
 
     extra_comments = Comment.find(:all) - existing_comments 
@@ -810,8 +810,8 @@ class ApiControllerTest < ActionController::TestCase
     new_events = Event.all - existing_events
 
     assert_equal(1, new_events.length)
-    assert_equal("John Smith", new_events.first.subject.name)
-    assert_equal("create", new_events.first.action)
+    assert_equal("John Smith",  new_events.first.subject.name)
+    assert_equal("create",      new_events.first.action)
     assert_equal("Unique tags", new_events.first.objekt.bookmarkable.title)
 
     extra_favourites = Bookmark.find(:all) - existing_favourites 

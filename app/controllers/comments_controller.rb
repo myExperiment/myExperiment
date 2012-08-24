@@ -38,7 +38,7 @@ class CommentsController < ApplicationController
       success = comment.save
 
       if success
-        Event.create(:subject => current_user, :action => 'create', :objekt => comment)
+        Event.create(:subject => current_user, :action => 'create', :objekt => comment, :auth => @context)
         @context.solr_save if @context.respond_to?(:solr_save)
       end
     end

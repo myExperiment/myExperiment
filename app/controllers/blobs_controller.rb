@@ -152,7 +152,7 @@ class BlobsController < ApplicationController
 
       respond_to do |format|
         if @blob.save
-          Event.create(:subject => current_user, :action => 'create', :objekt => @blob)
+          Event.create(:subject => current_user, :action => 'create', :objekt => @blob, :auth => @blob)
           if params[:blob][:tag_list]
             @blob.tags_user_id = current_user
             @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
@@ -221,9 +221,9 @@ class BlobsController < ApplicationController
       if @blob.update_attributes(params[:blob])
 
         if @blob.new_version_number
-          Event.create(:subject => current_user, :action => 'create version', :objekt => @blob)
+          Event.create(:subject => current_user, :action => 'create', :objekt => @blob.find_version(@blob.new_version_number), :extra => @blob.new_version_number, :auth => @blob)
         else
-          Event.create(:subject => current_user, :action => 'edit', :objekt => @blob)
+          Event.create(:subject => current_user, :action => 'edit', :objekt => @blob, :auth => @blob)
         end
 
         @blob.refresh_tags(convert_tags_to_gem_format(params[:blob][:tag_list]), current_user) if params[:blob][:tag_list]
@@ -320,7 +320,7 @@ class BlobsController < ApplicationController
     success = bookmark.save
 
     if success
-      Event.create(:subject => current_user, :action => 'create', :objekt => bookmark)
+      Event.create(:subject => current_user, :action => 'create', :objekt => bookmark, :auth => @blob)
     end
     
     respond_to do |format|

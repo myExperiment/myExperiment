@@ -17,6 +17,9 @@ class AddEvents < ActiveRecord::Migration
       t.integer :objekt_id
       t.string  :objekt_label
 
+      t.string  :auth_type
+      t.integer :auth_id
+
       t.string  :extra
 
       t.datetime :created_at

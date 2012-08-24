@@ -549,6 +549,8 @@ module ApplicationHelper
 
     def link_aux(thing, label)
 
+      thing = thing.versioned_resource if thing.respond_to?(:versioned_resource)
+
       case thing.class.name
         when "Bookmark"
           thing = thing.bookmarkable
@@ -557,7 +559,7 @@ module ApplicationHelper
       end
 
       if thing
-        link_to(thing.label, polymorphic_path(thing))
+        link_to(label, polymorphic_path(thing))
       else
         h(label)
       end
@@ -586,12 +588,27 @@ module ApplicationHelper
       conditions_operands << opts[:object].id
     end
 
+    if opts[:auth]
+      conditions_expr     << "auth_type = ? AND auth_id = ?"
+      conditions_operands << opts[:auth].class.name
+      conditions_operands << opts[:auth].id
+    end
+
     unless conditions_expr.empty?
       conditions_expr = conditions_expr.map do |cond| "(#{cond})" end.join(' AND ')
       conditions = [conditions_expr] + conditions_operands
     end
 
-    events = Event.find(:all, :order => 'created_at ASC', :conditions => conditions, :order => 'created_at DESC', :limit => 15)
+    visible_events = Authorization.scoped(Event,
+        :auth_type       => 'events.auth_type',
+        :auth_id         => 'events.auth_id',
+        :group           => 'events.id',
+        :authorised_user => current_user)
+
+    events = visible_events.find(:all,
+        :conditions => conditions,
+        :order      => 'created_at DESC',
+        :limit      => 15)
 
     markup = '<ol class="activity-feed">'
 
@@ -604,19 +621,20 @@ module ApplicationHelper
       end
 
       sentence = case action
-        when "Blob create version":     "#{subject_link(event)} uploaded a new version of #{objekt_link(event)}"
-        when "Blob create":             "#{subject_link(event)} uploaded #{objekt_link(event)}"
-        when "Blob edit version":       "#{subject_link(event)} edited version #{event.extra} of #{objekt_link(event)}"
-        when "Blob edit":               "#{subject_link(event)} edited #{objekt_link(event)}"
-        when "Blog create":             "#{subject_link(event)} created #{objekt_link(event)}"
-        when "Bookmark create":         "#{subject_link(event)} favourited #{objekt_link(event)}"
-        when "Comment create":          "#{subject_link(event)} commented on #{objekt_link(event)}"
-        when "Pack create":             "#{subject_link(event)} created #{objekt_link(event)}"
-        when "Workflow create version": "#{subject_link(event)} uploaded a new version of #{objekt_link(event)}"
-        when "Workflow create":         "#{subject_link(event)} uploaded #{objekt_link(event)}"
-        when "Workflow edit version":   "#{subject_link(event)} edited version #{event.extra} of #{objekt_link(event)}"
-        when "Workflow edit":           "#{subject_link(event)} edited #{objekt_link(event)}"
-        when "register":                "#{subject_link(event)} joined #{Conf.sitename}"
+        when "Announcement create":    "#{subject_link(event)} announced #{objekt_link(event)}"
+        when "Announcement edit":      "#{subject_link(event)} edited #{objekt_link(event)}"
+        when "Blob create":            "#{subject_link(event)} uploaded #{objekt_link(event)}"
+        when "Blob edit":              "#{subject_link(event)} edited #{objekt_link(event)}"
+        when "BlobVersion create":     "#{subject_link(event)} uploaded a new version of #{objekt_link(event)}"
+        when "BlobVersion edit":       "#{subject_link(event)} edited version #{event.extra} of #{objekt_link(event)}"
+        when "Bookmark create":        "#{subject_link(event)} favourited #{objekt_link(event)}"
+        when "Comment create":         "#{subject_link(event)} commented on #{objekt_link(event)}"
+        when "Pack create":            "#{subject_link(event)} created #{objekt_link(event)}"
+        when "Workflow create":        "#{subject_link(event)} uploaded #{objekt_link(event)}"
+        when "Workflow edit":          "#{subject_link(event)} edited #{objekt_link(event)}"
+        when "WorkflowVersion create": "#{subject_link(event)} uploaded a new version of #{objekt_link(event)}"
+        when "WorkflowVersion edit":   "#{subject_link(event)} edited version #{event.extra} of #{objekt_link(event)}"
+        when "register":               "#{subject_link(event)} joined #{Conf.sitename}"
         else "Unknown event"
       end
 
