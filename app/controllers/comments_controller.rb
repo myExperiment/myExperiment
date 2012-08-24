@@ -33,9 +33,14 @@ class CommentsController < ApplicationController
     end
 
     if text and text.length > 0
-      comment = Comment.create(:user => current_user, :comment => text)
-      @context.comments << comment
-      @context.solr_save if @context.respond_to?(:solr_save)
+      comment = Comment.new(:user => current_user, :comment => text, :commentable => @context)
+
+      success = comment.save
+
+      if success
+        Event.create(:subject => current_user, :action => 'create', :objekt => comment)
+        @context.solr_save if @context.respond_to?(:solr_save)
+      end
     end
     
     respond_to do |format|

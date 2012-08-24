@@ -1930,7 +1930,16 @@ def comment_aux(action, opts)
 
     # End of curation hack
 
-    return rest_response(400, :object => ob) unless ob.save
+    success = ob.save
+
+    if success
+      case action
+      when "create": Event.create(:subject => opts[:user], :action => 'create', :objekt => ob)
+      when "edit":   Event.create(:subject => opts[:user], :action => 'edit', :objekt => ob)
+      end
+    end
+
+    return rest_response(400, :object => ob) unless success
   end
 
   rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })

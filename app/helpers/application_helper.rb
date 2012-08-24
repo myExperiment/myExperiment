@@ -547,6 +547,30 @@ module ApplicationHelper
 
   def activity_feed(opts = {})
 
+    def link_aux(thing, label)
+
+      case thing.class.name
+        when "Bookmark"
+          thing = thing.bookmarkable
+        when "Comment"
+          thing = thing.commentable
+      end
+
+      if thing
+        link_to(thing.label, polymorphic_path(thing))
+      else
+        h(label)
+      end
+    end
+
+    def subject_link(event)
+      link_aux(event.subject, event.subject_label)
+    end
+
+    def objekt_link(event)
+      link_aux(event.objekt, event.objekt_label)
+    end
+
     conditions_expr     = []
     conditions_operands = []
 
@@ -574,24 +598,26 @@ module ApplicationHelper
     markup << events.map do |event|
 
       action = if event.objekt
-        "#{event.action} #{event.objekt_type}"
+        "#{event.objekt_type} #{event.action}"
       else
         "#{event.action}"
       end
 
       sentence = case action
-        when "register":                "#{event.subject.label} joined #{Conf.sitename}"
-        when "create Workflow":         "#{event.subject.label} uploaded #{event.objekt.label}"
-        when "create version Workflow": "#{event.subject.label} uploaded a new version of #{event.objekt.label}"
-        when "edit Workflow":           "#{event.subject.label} edited #{event.objekt.label}"
-        when "edit version Workflow":   "#{event.subject.label} edited version #{event.extra} of #{event.objekt.label}"
-        when "create Blob":             "#{event.subject.label} uploaded #{event.objekt.label}"
-        when "create version Blob":     "#{event.subject.label} uploaded a new version of #{event.objekt.label}"
-        when "edit Blob":               "#{event.subject.label} edited #{event.objekt.label}"
-        when "edit version Blob":       "#{event.subject.label} edited version #{event.extra} of #{event.objekt.label}"
-        when "create Bookmark":         "#{event.subject.label} favourited #{event.objekt.bookmarkable.label}"
-        when "create Pack":             "#{event.subject.label} created #{event.objekt.label}"
-        when "create Blog":             "#{event.subject.label} created #{event.objekt.label}"
+        when "Blob create version":     "#{subject_link(event)} uploaded a new version of #{objekt_link(event)}"
+        when "Blob create":             "#{subject_link(event)} uploaded #{objekt_link(event)}"
+        when "Blob edit version":       "#{subject_link(event)} edited version #{event.extra} of #{objekt_link(event)}"
+        when "Blob edit":               "#{subject_link(event)} edited #{objekt_link(event)}"
+        when "Blog create":             "#{subject_link(event)} created #{objekt_link(event)}"
+        when "Bookmark create":         "#{subject_link(event)} favourited #{objekt_link(event)}"
+        when "Comment create":          "#{subject_link(event)} commented on #{objekt_link(event)}"
+        when "Pack create":             "#{subject_link(event)} created #{objekt_link(event)}"
+        when "Workflow create version": "#{subject_link(event)} uploaded a new version of #{objekt_link(event)}"
+        when "Workflow create":         "#{subject_link(event)} uploaded #{objekt_link(event)}"
+        when "Workflow edit version":   "#{subject_link(event)} edited version #{event.extra} of #{objekt_link(event)}"
+        when "Workflow edit":           "#{subject_link(event)} edited #{objekt_link(event)}"
+        when "register":                "#{subject_link(event)} joined #{Conf.sitename}"
+        else "Unknown event"
       end
 
       "<li>#{sentence}.</li>"
