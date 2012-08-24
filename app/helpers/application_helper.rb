@@ -548,11 +548,20 @@ module ApplicationHelper
   def activity_feed(opts = {})
 
     sentences = {
-      "register"        => "$S joined #{Conf.sitename}.",
-      "create Workflow" => "$S uploaded $O.",
-      "create Blob"     => "$S uploaded $O.",
-      "create Pack"     => "$S created $O.",
-      "create Blog"     => "$S created $O."
+      "register"                => "$S joined #{Conf.sitename}.",
+
+      "create Workflow"         => "$S uploaded $O.",
+      "create version Workflow" => "$S uploaded a new version of $O.",
+      "edit Workflow"           => "$S edited $O.",
+      "edit version Workflow"   => "$S edited version $E of $O.",
+
+      "create Blob"             => "$S uploaded $O.",
+      "create version Blob"     => "$S uploaded a new version of $O.",
+      "edit Blob"               => "$S edited $O.",
+      "edit version Blob"       => "$S edited version $E of $O.",
+
+      "create Pack"             => "$S created $O.",
+      "create Blog"             => "$S created $O.",
     }
 
     conditions_expr     = []
@@ -575,7 +584,7 @@ module ApplicationHelper
       conditions = [conditions_expr] + conditions_operands
     end
 
-    events = Event.find(:all, :order => 'created_at ASC', :conditions => conditions, :limit => 15)
+    events = Event.find(:all, :order => 'created_at ASC', :conditions => conditions, :order => 'created_at DESC', :limit => 15)
 
     markup = '<ol class="activity-feed">'
 

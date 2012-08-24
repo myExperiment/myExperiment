@@ -229,6 +229,8 @@ class ApiControllerTest < ActionController::TestCase
 
     # post a file
 
+    existing_events = Event.all
+
     rest_request(:post, 'file', "<?xml version='1.0'?>
       <file>
         <title>#{title}</title>
@@ -239,6 +241,14 @@ class ApiControllerTest < ActionController::TestCase
       </file>")
 
     assert_response(:success)
+
+    new_events = Event.all - existing_events
+
+    assert_equal(1, new_events.length)
+
+    assert_equal("John Smith", new_events.first.subject.name)
+    assert_equal("create",     new_events.first.action)
+    assert_equal(title,        new_events.first.objekt.title)
 
     extra_files = Blob.find(:all) - existing_files
 
@@ -277,12 +287,21 @@ class ApiControllerTest < ActionController::TestCase
     setup
     login_as(:john)
 
+    existing_events = Event.all
+
     rest_request(:put, 'file', "<?xml version='1.0'?>
       <file>
         <title>#{title2}</title>
       </file>", "id" => file.id)
 
     assert_response(:success)
+
+    new_events = Event.all - existing_events
+
+    assert_equal(1, new_events.length)
+    assert_equal("John Smith", new_events.first.subject.name)
+    assert_equal("edit",       new_events.first.action)
+    assert_equal(title2,       new_events.first.objekt.title)
 
     # get the updated file
 
@@ -296,6 +315,8 @@ class ApiControllerTest < ActionController::TestCase
 
     # add a new version of the file
 
+    existing_events = Event.all
+
     rest_request(:post, 'file', "<?xml version='1.0'?>
       <file>
         <title>#{title2}</title>
@@ -307,11 +328,20 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_response(:success)
 
+    new_events = Event.all - existing_events
+
+    assert_equal(1, new_events.length)
+    assert_equal("John Smith",     new_events.first.subject.name)
+    assert_equal("create version", new_events.first.action)
+    assert_equal(title2,           new_events.first.objekt.title)
+
     file.reload
 
     assert_equal(2, file.versions.length)
 
     # update the first version of the file
+
+    existing_events = Event.all
 
     rest_request(:put, 'file', "<?xml version='1.0'?>
       <file>
@@ -319,6 +349,13 @@ class ApiControllerTest < ActionController::TestCase
       </file>", "id" => file.id, "version" => 1)
 
     assert_response(:success)
+
+    new_events = Event.all - existing_events
+
+    assert_equal(1, new_events.length)
+    assert_equal("John Smith",   new_events.first.subject.name)
+    assert_equal("edit version", new_events.first.action)
+    assert_equal(title3,         new_events.first.objekt.title)
 
     file.reload
     assert_equal(title3, file.find_version(1).title);

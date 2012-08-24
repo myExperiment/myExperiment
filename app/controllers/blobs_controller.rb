@@ -152,6 +152,7 @@ class BlobsController < ApplicationController
 
       respond_to do |format|
         if @blob.save
+          Event.create(:subject => current_user, :action => 'create', :objekt => @blob)
           if params[:blob][:tag_list]
             @blob.tags_user_id = current_user
             @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
@@ -218,6 +219,13 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
+
+        if @blob.new_version_number
+          Event.create(:subject => current_user, :action => 'create version', :objekt => @blob)
+        else
+          Event.create(:subject => current_user, :action => 'edit', :objekt => @blob)
+        end
+
         @blob.refresh_tags(convert_tags_to_gem_format(params[:blob][:tag_list]), current_user) if params[:blob][:tag_list]
         
         policy_err_msg = update_policy(@blob, params)

@@ -1252,7 +1252,7 @@ def file_aux(action, opts = {})
 
     ob.content_blob = ContentBlob.new(:data => content) if content
 
-    new_version = action == 'create' && opts[:query][:id]
+    new_version  = action == 'create' && opts[:query]['id'] != nil
     edit_version = action == 'edit'   && opts[:query]['version'] != nil
 
     if new_version
@@ -1260,6 +1260,15 @@ def file_aux(action, opts = {})
     end
 
     success = ob.save
+
+    if success
+      case "#{action} #{new_version || edit_version}"
+      when "create false": Event.create(:subject => opts[:user], :action => 'create', :objekt => ob)
+      when "create true":  Event.create(:subject => opts[:user], :action => 'create version', :objekt => ob)
+      when "edit false":   Event.create(:subject => opts[:user], :action => 'edit', :objekt => ob)
+      when "edit true":    Event.create(:subject => opts[:user], :action => 'edit version', :objekt => ob, :extra => ob.version)
+      end
+    end
 
     return rest_response(400, :object => ob) unless success
 
