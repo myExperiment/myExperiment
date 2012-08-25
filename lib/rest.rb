@@ -2060,7 +2060,13 @@ def rating_aux(action, opts)
       ob.rateable = subject
     end
 
-    return rest_response(400, :object => ob) unless ob.save
+    success = ob.save
+
+    if success
+      Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob, :auth => subject)
+    end
+
+    return rest_response(400, :object => ob) unless success
   end
 
   rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })

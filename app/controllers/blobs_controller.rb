@@ -281,7 +281,8 @@ class BlobsController < ApplicationController
     else
       Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @blob.class.to_s, @blob.id, current_user.id])
       
-      Rating.create(:rateable => @blob, :user => current_user, :rating => params[:rating])
+      rating = Rating.create(:rateable => @blob, :user => current_user, :rating => params[:rating])
+      Activity.create(:subject => current_user, :action => 'create', :objekt => rating, :auth => @blob, :extra => params[:rating].to_i)
       
       respond_to do |format|
         format.html { 

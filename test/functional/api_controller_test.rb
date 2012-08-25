@@ -722,6 +722,8 @@ class ApiControllerTest < ActionController::TestCase
 
     existing_ratings = Rating.find(:all)
 
+    existing_activities = Activity.all
+
     rest_request(:post, 'rating', "<?xml version='1.0'?>
       <rating>
         <rating>4</rating>
@@ -729,6 +731,14 @@ class ApiControllerTest < ActionController::TestCase
       </rating>")
 
     assert_response(:success)
+
+    new_activities = Activity.all - existing_activities
+
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith", new_activities.first.subject.name)
+    assert_equal("create", new_activities.first.action)
+    assert_equal("Unique tags", new_activities.first.objekt.rateable.title)
+    assert_equal("Unique tags", new_activities.first.auth.title)
 
     extra_ratings = Rating.find(:all) - existing_ratings 
     

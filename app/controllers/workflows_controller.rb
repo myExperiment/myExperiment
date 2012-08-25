@@ -87,7 +87,8 @@ class WorkflowsController < ApplicationController
     else
       Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @workflow.class.to_s, @workflow.id, current_user.id])
       
-      Rating.create(:rateable => @workflow, :user => current_user, :rating => params[:rating])
+      rating = Rating.create(:rateable => @workflow, :user => current_user, :rating => params[:rating])
+      Activity.create(:subject => current_user, :action => 'create', :objekt => rating, :auth => @workflow, :extra => params[:rating].to_i)
       
       respond_to do |format|
         format.html { 
