@@ -48,7 +48,7 @@ class WorkflowsController < ApplicationController
     success = bookmark.save
 
     if success
-      Event.create(:subject => current_user, :action => 'create', :objekt => bookmark, :auth => @workflow)
+      Activity.create(:subject => current_user, :action => 'create', :objekt => bookmark, :auth => @workflow)
     end
     
     respond_to do |format|
@@ -351,7 +351,7 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       if @workflow.save
 
-        Event.create(:subject => current_user, :action => 'create', :objekt => @workflow, :auth => @workflow)
+        Activity.create(:subject => current_user, :action => 'create', :objekt => @workflow, :auth => @workflow)
 
         if params[:workflow][:tag_list]
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
@@ -483,7 +483,7 @@ class WorkflowsController < ApplicationController
         rescue
         end
 
-        Event.create(:subject => current_user, :action => 'create', :objekt => @workflow.versions.last, :extra => @workflow.versions.last.version, :auth => @workflow)
+        Activity.create(:subject => current_user, :action => 'create', :objekt => @workflow.versions.last, :extra => @workflow.versions.last.version, :auth => @workflow)
 
         respond_to do |format|
           flash[:notice] = 'New workflow version successfully created.'
@@ -541,7 +541,7 @@ class WorkflowsController < ApplicationController
       
       if @workflow.update_attributes(params[:workflow])
 
-        Event.create(:subject => current_user, :action => 'edit', :objekt => @workflow, :auth => @workflow)
+        Activity.create(:subject => current_user, :action => 'edit', :objekt => @workflow, :auth => @workflow)
 
         if params[:workflow][:tag_list]
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
@@ -596,7 +596,7 @@ class WorkflowsController < ApplicationController
 
     respond_to do |format|
       if success
-        Event.create(:subject => current_user, :action => 'edit', :objekt => version, :extra => version.version, :auth => @workflow)
+        Activity.create(:subject => current_user, :action => 'edit', :objekt => version, :extra => version.version, :auth => @workflow)
         flash[:notice] = "Workflow version #{version.version}: \"#{original_title}\" has been updated."
         format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
       else

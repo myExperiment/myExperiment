@@ -1,9 +1,9 @@
-# myExperiment: app/models/event.rb
+# myExperiment: app/models/activity.rb
 #
 # Copyright (c) 2012 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-class Event < ActiveRecord::Base
+class Activity < ActiveRecord::Base
 
   belongs_to :subject, :polymorphic => true
   belongs_to :objekt,  :polymorphic => true

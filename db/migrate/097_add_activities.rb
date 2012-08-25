@@ -1,11 +1,11 @@
-# myExperiment: db/migrate/097_add_events.rb
+# myExperiment: db/migrate/097_add_activities.rb
 #
 # Copyright (c) 2012 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-class AddEvents < ActiveRecord::Migration
+class AddActivities < ActiveRecord::Migration
   def self.up
-    create_table :events do |t|
+    create_table :activities do |t|
 
       t.string  :subject_type
       t.integer :subject_id
@@ -27,6 +27,6 @@ class AddEvents < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :events
+    drop_table :activities
   end
 end

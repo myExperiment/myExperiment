@@ -11,6 +11,20 @@
 
 ActiveRecord::Schema.define(:version => 97) do
 
+  create_table "activities", :force => true do |t|
+    t.string   "subject_type"
+    t.integer  "subject_id"
+    t.string   "subject_label"
+    t.string   "action"
+    t.string   "objekt_type"
+    t.integer  "objekt_id"
+    t.string   "objekt_label"
+    t.string   "auth_type"
+    t.integer  "auth_id"
+    t.string   "extra"
+    t.datetime "created_at"
+  end
+
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
     t.integer  "contributor_id",   :null => false
@@ -226,20 +240,6 @@ ActiveRecord::Schema.define(:version => 97) do
   end
 
   add_index "downloads", ["contribution_id"], :name => "index_downloads_on_contribution_id"
-
-  create_table "events", :force => true do |t|
-    t.string   "subject_type"
-    t.integer  "subject_id"
-    t.string   "subject_label"
-    t.string   "action"
-    t.string   "objekt_type"
-    t.integer  "objekt_id"
-    t.string   "objekt_label"
-    t.string   "auth_type"
-    t.integer  "auth_id"
-    t.string   "extra"
-    t.datetime "created_at"
-  end
 
   create_table "experiments", :force => true do |t|
     t.string   "title"

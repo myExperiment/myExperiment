@@ -318,7 +318,7 @@ class UsersController < ApplicationController
       user.errors.full_messages.each { |e| logger.error(e) } 
       #END DEBUG
       if confirmed
-        Event.create(:subject => user, :action => 'register')
+        Activity.create(:subject => user, :action => 'register')
         self.current_user = user
         self.current_user.process_pending_invitations! # look up any pending invites for this user + transfer them to relevant tables from 'pending_invitations' table
         confirmed = false if !logged_in?

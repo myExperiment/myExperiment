@@ -1123,10 +1123,10 @@ def workflow_aux(action, opts = {})
 
     if success
       case "#{action} #{new_version || edit_version}"
-      when "create false": Event.create(:subject => opts[:user], :action => 'create', :objekt => ob)
-      when "create true":  Event.create(:subject => opts[:user], :action => 'create version', :objekt => ob)
-      when "edit false":   Event.create(:subject => opts[:user], :action => 'edit', :objekt => ob)
-      when "edit true":    Event.create(:subject => opts[:user], :action => 'edit version', :objekt => ob, :extra => ob.version)
+      when "create false": Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob)
+      when "create true":  Activity.create(:subject => opts[:user], :action => 'create version', :objekt => ob)
+      when "edit false":   Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob)
+      when "edit true":    Activity.create(:subject => opts[:user], :action => 'edit version', :objekt => ob, :extra => ob.version)
       end
     end
 
@@ -1263,10 +1263,10 @@ def file_aux(action, opts = {})
 
     if success
       case "#{action} #{new_version || edit_version}"
-      when "create false": Event.create(:subject => opts[:user], :action => 'create', :objekt => ob)
-      when "create true":  Event.create(:subject => opts[:user], :action => 'create version', :objekt => ob)
-      when "edit false":   Event.create(:subject => opts[:user], :action => 'edit', :objekt => ob)
-      when "edit true":    Event.create(:subject => opts[:user], :action => 'edit version', :objekt => ob, :extra => ob.version)
+      when "create false": Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob)
+      when "create true":  Activity.create(:subject => opts[:user], :action => 'create version', :objekt => ob)
+      when "edit false":   Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob)
+      when "edit true":    Activity.create(:subject => opts[:user], :action => 'edit version', :objekt => ob, :extra => ob.version)
       end
     end
 
@@ -1934,8 +1934,8 @@ def comment_aux(action, opts)
 
     if success
       case action
-      when "create": Event.create(:subject => opts[:user], :action => 'create', :objekt => ob)
-      when "edit":   Event.create(:subject => opts[:user], :action => 'edit', :objekt => ob)
+      when "create": Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob)
+      when "edit":   Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob)
       end
     end
 
@@ -1998,7 +1998,7 @@ def favourite_aux(action, opts)
     success = ob.save
 
     if success
-      Event.create(:subject => current_user, :action => 'create', :objekt => ob)
+      Activity.create(:subject => current_user, :action => 'create', :objekt => ob)
     end
 
     return rest_response(400, :object => ob) unless success

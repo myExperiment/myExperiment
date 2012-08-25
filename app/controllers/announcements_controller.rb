@@ -50,7 +50,7 @@ class AnnouncementsController < ApplicationController
     params[:announcement][:user_id] = current_user.id
     @announcement = Announcement.new(params[:announcement])
     if @announcement.save
-      Event.create(:subject => current_user, :action => 'create', :objekt => @announcement)
+      Activity.create(:subject => current_user, :action => 'create', :objekt => @announcement)
       flash[:notice] = 'Announcement was successfully created.'
       redirect_to :action => 'index'
     else
@@ -65,7 +65,7 @@ class AnnouncementsController < ApplicationController
   def update
     @announcement = Announcement.find(params[:id])
     if @announcement.update_attributes(params[:announcement])
-      Event.create(:subject => current_user, :action => 'edit', :objekt => @announcement)
+      Activity.create(:subject => current_user, :action => 'edit', :objekt => @announcement)
       flash[:notice] = 'Announcement was successfully updated.'
       redirect_to :action => 'show', :id => @announcement
     else

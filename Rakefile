@@ -192,21 +192,22 @@ task "myexp:workflow:components" do
   puts doc.to_s
 end
 
-desc 'Create initial events'
-task "myexp:events:create" do
+desc 'Create initial activities'
+task "myexp:activities:create" do
   require File.dirname(__FILE__) + '/config/environment'
 
-  events = []
+  activities = []
 
-  events += User.all.map do |u|
-    Event.new(
-        :subject => u,
+  activities += User.find(:all, :conditions => "activated_at IS NOT NULL").map do |object|
+    Activity.new(
+        :subject => object,
+        :subject_label => object.name,
         :action => 'register',
-        :created_at => u.created_at)
+        :created_at => object.created_at)
   end
 
-  events += (Workflow.all + Blob.all + Pack.all + Blog.all).map do |object|
-    Event.new(
+  activities += (Workflow.all + Blob.all + Pack.all + Blog.all).map do |object|
+    Activity.new(
         :subject => object.contributor,
         :action => 'create',
         :objekt => object,
@@ -214,32 +215,28 @@ task "myexp:events:create" do
         :created_at => object.created_at)
   end
   
-  events += (WorkflowVersion.all).map do |object|
-    if object.version > 1
-      Event.new(
-          :subject => object.contributor,
-          :action => 'create',
-          :objekt => object,
-          :extra => object.version,
-          :auth => object.versioned_resource,
-          :created_at => object.created_at)
-    end
+  activities += (WorkflowVersion.find(:all, :conditions => "version > 1")).map do |object|
+    Activity.new(
+        :subject => object.contributor,
+        :action => 'create',
+        :objekt => object,
+        :extra => object.version,
+        :auth => object.versioned_resource,
+        :created_at => object.created_at)
   end
   
-  events += (BlobVersion.all).map do |object|
-    if object.version > 1
-      Event.new(
-          :subject => object.blob.contributor,
-          :action => 'create',
-          :objekt => object,
-          :extra => object.version,
-          :auth => object.versioned_resource,
-          :created_at => object.created_at)
-    end
+  activities += (BlobVersion.find(:all, :conditions => "version > 1")).map do |object|
+    Activity.new(
+        :subject => object.blob.contributor,
+        :action => 'create',
+        :objekt => object,
+        :extra => object.version,
+        :auth => object.versioned_resource,
+        :created_at => object.created_at)
   end
 
-  events += Comment.all.map do |comment|
-    Event.new(
+  activities += Comment.all.map do |comment|
+    Activity.new(
         :subject => comment.user,
         :action => 'create',
         :objekt => comment,
@@ -247,8 +244,8 @@ task "myexp:events:create" do
         :created_at => comment.created_at)
   end
 
-  events += Bookmark.all.map do |bookmark|
-    Event.new(
+  activities += Bookmark.all.map do |bookmark|
+    Activity.new(
         :subject => bookmark.user,
         :action => 'create',
         :objekt => bookmark,
@@ -256,13 +253,12 @@ task "myexp:events:create" do
         :created_at => bookmark.created_at)
   end
 
-
-  events.sort do |a, b|
+  activities.sort do |a, b|
     a.created_at <=> b.created_at
   end
 
-  events.each do |event|
-    event.save
+  activities.each do |activity|
+    activity.save
   end
 
 end

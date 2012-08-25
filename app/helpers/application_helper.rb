@@ -565,12 +565,12 @@ module ApplicationHelper
       end
     end
 
-    def subject_link(event)
-      link_aux(event.subject, event.subject_label)
+    def subject_link(activity)
+      link_aux(activity.subject, activity.subject_label)
     end
 
-    def objekt_link(event)
-      link_aux(event.objekt, event.objekt_label)
+    def objekt_link(activity)
+      link_aux(activity.objekt, activity.objekt_label)
     end
 
     conditions_expr     = []
@@ -599,43 +599,43 @@ module ApplicationHelper
       conditions = [conditions_expr] + conditions_operands
     end
 
-    visible_events = Authorization.scoped(Event,
-        :auth_type       => 'events.auth_type',
-        :auth_id         => 'events.auth_id',
-        :group           => 'events.id',
+    visible_activities = Authorization.scoped(Activity,
+        :auth_type       => 'activities.auth_type',
+        :auth_id         => 'activities.auth_id',
+        :group           => 'activities.id',
         :authorised_user => current_user)
 
-    events = visible_events.find(:all,
+    activities = visible_activities.find(:all,
         :conditions => conditions,
         :order      => 'created_at DESC',
         :limit      => 15)
 
     markup = '<ol class="activity-feed">'
 
-    markup << events.map do |event|
+    markup << activities.map do |activity|
 
-      action = if event.objekt
-        "#{event.objekt_type} #{event.action}"
+      action = if activity.objekt
+        "#{activity.objekt_type} #{activity.action}"
       else
-        "#{event.action}"
+        "#{activity.action}"
       end
 
       sentence = case action
-        when "Announcement create":    "#{subject_link(event)} announced #{objekt_link(event)}"
-        when "Announcement edit":      "#{subject_link(event)} edited #{objekt_link(event)}"
-        when "Blob create":            "#{subject_link(event)} uploaded #{objekt_link(event)}"
-        when "Blob edit":              "#{subject_link(event)} edited #{objekt_link(event)}"
-        when "BlobVersion create":     "#{subject_link(event)} uploaded a new version of #{objekt_link(event)}"
-        when "BlobVersion edit":       "#{subject_link(event)} edited version #{event.extra} of #{objekt_link(event)}"
-        when "Bookmark create":        "#{subject_link(event)} favourited #{objekt_link(event)}"
-        when "Comment create":         "#{subject_link(event)} commented on #{objekt_link(event)}"
-        when "Pack create":            "#{subject_link(event)} created #{objekt_link(event)}"
-        when "Workflow create":        "#{subject_link(event)} uploaded #{objekt_link(event)}"
-        when "Workflow edit":          "#{subject_link(event)} edited #{objekt_link(event)}"
-        when "WorkflowVersion create": "#{subject_link(event)} uploaded a new version of #{objekt_link(event)}"
-        when "WorkflowVersion edit":   "#{subject_link(event)} edited version #{event.extra} of #{objekt_link(event)}"
-        when "register":               "#{subject_link(event)} joined #{Conf.sitename}"
-        else "Unknown event"
+        when "Announcement create":    "#{subject_link(activity)} announced #{objekt_link(activity)}"
+        when "Announcement edit":      "#{subject_link(activity)} edited #{objekt_link(activity)}"
+        when "Blob create":            "#{subject_link(activity)} uploaded #{objekt_link(activity)}"
+        when "Blob edit":              "#{subject_link(activity)} edited #{objekt_link(activity)}"
+        when "BlobVersion create":     "#{subject_link(activity)} uploaded a new version of #{objekt_link(activity)}"
+        when "BlobVersion edit":       "#{subject_link(activity)} edited version #{activity.extra} of #{objekt_link(activity)}"
+        when "Bookmark create":        "#{subject_link(activity)} favourited #{objekt_link(activity)}"
+        when "Comment create":         "#{subject_link(activity)} commented on #{objekt_link(activity)}"
+        when "Pack create":            "#{subject_link(activity)} created #{objekt_link(activity)}"
+        when "Workflow create":        "#{subject_link(activity)} uploaded #{objekt_link(activity)}"
+        when "Workflow edit":          "#{subject_link(activity)} edited #{objekt_link(activity)}"
+        when "WorkflowVersion create": "#{subject_link(activity)} uploaded a new version of #{objekt_link(activity)}"
+        when "WorkflowVersion edit":   "#{subject_link(activity)} edited version #{activity.extra} of #{objekt_link(activity)}"
+        when "register":               "#{subject_link(activity)} joined #{Conf.sitename}"
+        else "Unknown activity"
       end
 
       "<li>#{sentence}.</li>"

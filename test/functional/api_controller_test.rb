@@ -19,7 +19,7 @@ class ApiControllerTest < ActionController::TestCase
   def test_workflows
 
     existing_workflows = Workflow.find(:all)
-    existing_events = Event.all
+    existing_activities = Activity.all
 
     login_as(:john)
 
@@ -45,16 +45,16 @@ class ApiControllerTest < ActionController::TestCase
     assert_response(:success)
 
     extra_workflows = Workflow.find(:all) - existing_workflows
-    extra_events = Event.find(:all). - existing_events
+    extra_activities = Activity.find(:all). - existing_activities
 
     assert_equal(1, extra_workflows.length)
-    assert_equal(1, extra_events.length)
+    assert_equal(1, extra_activities.length)
 
-    new_event = (extra_events - existing_events).first
+    new_activity = (extra_activities - existing_activities).first
 
-    assert_equal("John Smith", new_event.subject_label);
-    assert_equal("create", new_event.action);
-    assert_equal(title, new_event.objekt_label);
+    assert_equal("John Smith", new_activity.subject_label);
+    assert_equal("create", new_activity.action);
+    assert_equal(title, new_activity.objekt_label);
 
     @workflow_id = extra_workflows.first.id
 
@@ -86,7 +86,7 @@ class ApiControllerTest < ActionController::TestCase
     setup
     login_as(:john)
 
-    existing_events = Event.all
+    existing_activities = Activity.all
 
     rest_request(:put, 'workflow', "<?xml version='1.0'?>
       <workflow>
@@ -95,14 +95,14 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_response(:success)
 
-    extra_events = Event.find(:all). - existing_events
-    assert_equal(1, extra_events.length)
+    extra_activities = Activity.find(:all). - existing_activities
+    assert_equal(1, extra_activities.length)
     
-    new_event = (extra_events - existing_events).first
+    new_activity = (extra_activities - existing_activities).first
 
-    assert_equal("John Smith", new_event.subject_label);
-    assert_equal("edit", new_event.action);
-    assert_equal(title2, new_event.objekt_label);
+    assert_equal("John Smith", new_activity.subject_label);
+    assert_equal("edit", new_activity.action);
+    assert_equal(title2, new_activity.objekt_label);
 
     # get the updated workflow
 
@@ -120,7 +120,7 @@ class ApiControllerTest < ActionController::TestCase
 
     # post a new version of the workflow
 
-    existing_events = Event.all
+    existing_activities = Activity.all
 
     rest_request(:post, 'workflow', "<?xml version='1.0'?>
       <workflow>
@@ -130,14 +130,14 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_response(:success)
 
-    extra_events = Event.find(:all). - existing_events
-    assert_equal(1, extra_events.length)
+    extra_activities = Activity.find(:all). - existing_activities
+    assert_equal(1, extra_activities.length)
 
-    new_event = (extra_events - existing_events).first
+    new_activity = (extra_activities - existing_activities).first
 
-    assert_equal("John Smith", new_event.subject_label);
-    assert_equal("create", new_event.action);
-    assert_equal("Fetch today's xkcd comic", new_event.objekt_label);
+    assert_equal("John Smith", new_activity.subject_label);
+    assert_equal("create", new_activity.action);
+    assert_equal("Fetch today's xkcd comic", new_activity.objekt_label);
 
     workflow = Workflow.find(@workflow_id)
 
@@ -165,7 +165,7 @@ class ApiControllerTest < ActionController::TestCase
 
     # edit a particular version of a workflow
 
-    existing_events = Event.all
+    existing_activities = Activity.all
 
     rest_request(:put, 'workflow', "<?xml version='1.0'?>
       <workflow>
@@ -174,15 +174,15 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_response(:success)
 
-    extra_events = Event.find(:all). - existing_events
-    assert_equal(1, extra_events.length)
+    extra_activities = Activity.find(:all). - existing_activities
+    assert_equal(1, extra_activities.length)
     
-    new_event = (extra_events - existing_events).first
+    new_activity = (extra_activities - existing_activities).first
 
-    assert_equal("John Smith", new_event.subject_label);
-    assert_equal("edit",       new_event.action);
-    assert_equal("1",          new_event.extra);
-    assert_equal("Oranges",    new_event.objekt_label);
+    assert_equal("John Smith", new_activity.subject_label);
+    assert_equal("edit",       new_activity.action);
+    assert_equal("1",          new_activity.extra);
+    assert_equal("Oranges",    new_activity.objekt_label);
 
     # Verify that only version 1 was changed
 
@@ -229,7 +229,7 @@ class ApiControllerTest < ActionController::TestCase
 
     # post a file
 
-    existing_events = Event.all
+    existing_activities = Activity.all
 
     rest_request(:post, 'file', "<?xml version='1.0'?>
       <file>
@@ -242,13 +242,13 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_response(:success)
 
-    new_events = Event.all - existing_events
+    new_activities = Activity.all - existing_activities
 
-    assert_equal(1, new_events.length)
+    assert_equal(1, new_activities.length)
 
-    assert_equal("John Smith", new_events.first.subject.name)
-    assert_equal("create",     new_events.first.action)
-    assert_equal(title,        new_events.first.objekt.title)
+    assert_equal("John Smith", new_activities.first.subject.name)
+    assert_equal("create",     new_activities.first.action)
+    assert_equal(title,        new_activities.first.objekt.title)
 
     extra_files = Blob.find(:all) - existing_files
 
@@ -287,7 +287,7 @@ class ApiControllerTest < ActionController::TestCase
     setup
     login_as(:john)
 
-    existing_events = Event.all
+    existing_activities = Activity.all
 
     rest_request(:put, 'file', "<?xml version='1.0'?>
       <file>
@@ -296,12 +296,12 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_response(:success)
 
-    new_events = Event.all - existing_events
+    new_activities = Activity.all - existing_activities
 
-    assert_equal(1, new_events.length)
-    assert_equal("John Smith", new_events.first.subject.name)
-    assert_equal("edit",       new_events.first.action)
-    assert_equal(title2,       new_events.first.objekt.title)
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith", new_activities.first.subject.name)
+    assert_equal("edit",       new_activities.first.action)
+    assert_equal(title2,       new_activities.first.objekt.title)
 
     # get the updated file
 
@@ -315,7 +315,7 @@ class ApiControllerTest < ActionController::TestCase
 
     # add a new version of the file
 
-    existing_events = Event.all
+    existing_activities = Activity.all
 
     rest_request(:post, 'file', "<?xml version='1.0'?>
       <file>
@@ -328,12 +328,12 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_response(:success)
 
-    new_events = Event.all - existing_events
+    new_activities = Activity.all - existing_activities
 
-    assert_equal(1, new_events.length)
-    assert_equal("John Smith",     new_events.first.subject.name)
-    assert_equal("create",         new_events.first.action)
-    assert_equal(title2,           new_events.first.objekt.title)
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith",     new_activities.first.subject.name)
+    assert_equal("create",         new_activities.first.action)
+    assert_equal(title2,           new_activities.first.objekt.title)
 
     file.reload
 
@@ -341,7 +341,7 @@ class ApiControllerTest < ActionController::TestCase
 
     # update the first version of the file
 
-    existing_events = Event.all
+    existing_activities = Activity.all
 
     rest_request(:put, 'file', "<?xml version='1.0'?>
       <file>
@@ -350,12 +350,12 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_response(:success)
 
-    new_events = Event.all - existing_events
+    new_activities = Activity.all - existing_activities
 
-    assert_equal(1, new_events.length)
-    assert_equal("John Smith",   new_events.first.subject.name)
-    assert_equal("edit",         new_events.first.action)
-    assert_equal(title3,         new_events.first.objekt.title)
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith",   new_activities.first.subject.name)
+    assert_equal("edit",         new_activities.first.action)
+    assert_equal(title3,         new_activities.first.objekt.title)
 
     file.reload
     assert_equal(title3, file.find_version(1).title);
@@ -645,7 +645,7 @@ class ApiControllerTest < ActionController::TestCase
 
     existing_comments = Comment.find(:all)
 
-    existing_events = Event.all
+    existing_activities = Activity.all
 
     rest_request(:post, 'comment', "<?xml version='1.0'?>
       <comment>
@@ -655,12 +655,12 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_response(:success)
 
-    new_events = Event.all - existing_events
+    new_activities = Activity.all - existing_activities
 
-    assert_equal(1, new_events.length)
-    assert_equal("John Smith",  new_events.first.subject.name)
-    assert_equal("create",      new_events.first.action)
-    assert_equal("Unique tags", new_events.first.objekt.commentable.title)
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith",  new_activities.first.subject.name)
+    assert_equal("create",      new_activities.first.action)
+    assert_equal("Unique tags", new_activities.first.objekt.commentable.title)
 
     extra_comments = Comment.find(:all) - existing_comments 
     
@@ -798,7 +798,7 @@ class ApiControllerTest < ActionController::TestCase
 
     existing_favourites = Bookmark.find(:all)
 
-    existing_events = Event.all
+    existing_activities = Activity.all
 
     rest_request(:post, 'favourite', "<?xml version='1.0'?>
       <favourite>
@@ -807,12 +807,12 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_response(:success)
 
-    new_events = Event.all - existing_events
+    new_activities = Activity.all - existing_activities
 
-    assert_equal(1, new_events.length)
-    assert_equal("John Smith",  new_events.first.subject.name)
-    assert_equal("create",      new_events.first.action)
-    assert_equal("Unique tags", new_events.first.objekt.bookmarkable.title)
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith",  new_activities.first.subject.name)
+    assert_equal("create",      new_activities.first.action)
+    assert_equal("Unique tags", new_activities.first.objekt.bookmarkable.title)
 
     extra_favourites = Bookmark.find(:all) - existing_favourites 
     
