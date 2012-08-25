@@ -1123,10 +1123,10 @@ def workflow_aux(action, opts = {})
 
     if success
       case "#{action} #{new_version || edit_version}"
-      when "create false": Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob)
-      when "create true":  Activity.create(:subject => opts[:user], :action => 'create version', :objekt => ob)
-      when "edit false":   Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob)
-      when "edit true":    Activity.create(:subject => opts[:user], :action => 'edit version', :objekt => ob, :extra => ob.version)
+      when "create false": Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob, :auth => ob)
+      when "create true":  Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob.versions.last, :auth => ob)
+      when "edit false":   Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob, :auth => ob)
+      when "edit true":    Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob, :extra => ob.version, :auth => ob.workflow)
       end
     end
 
@@ -1263,10 +1263,10 @@ def file_aux(action, opts = {})
 
     if success
       case "#{action} #{new_version || edit_version}"
-      when "create false": Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob)
-      when "create true":  Activity.create(:subject => opts[:user], :action => 'create version', :objekt => ob)
-      when "edit false":   Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob)
-      when "edit true":    Activity.create(:subject => opts[:user], :action => 'edit version', :objekt => ob, :extra => ob.version)
+      when "create false": Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob, :auth => ob)
+      when "create true":  Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob.versions.last, :auth => ob)
+      when "edit false":   Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob, :auth => ob)
+      when "edit true":    Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob, :extra => ob.version, :auth => ob.blob)
       end
     end
 
