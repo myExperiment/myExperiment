@@ -57,23 +57,29 @@ render_tabnav :user,
     end
   end
          
-  add_tab do |t|
-    t.named 'Credits'
-    t.titled 'Credits'
-    t.links_to :action => 'credits', :id => @user.id
-  end 
+  unless @user.creditations.empty?
+    add_tab do |t|
+      t.named 'Credits'
+      t.titled 'Credits'
+      t.links_to :action => 'credits', :id => @user.id
+    end 
+  end
          
-  add_tab do |t|
-    t.named 'Tags by User'
-    t.titled 'Tags by User'
-    t.links_to :action => 'tags', :id => @user.id
+  unless @user.bookmarks.empty?
+    add_tab do |t|
+      t.named 'Tags by User'
+      t.titled 'Tags by User'
+      t.links_to :action => 'tags', :id => @user.id
+    end
   end
 
-	add_tab do |t|
-    t.named 'Favourites'
-    t.titled 'Favourites'
-    t.links_to :action => 'favourites', :id => @user.id
-  end 
+  unless @user.tags.empty?
+    add_tab do |t|
+      t.named 'Favourites'
+      t.titled 'Favourites'
+      t.links_to :action => 'favourites', :id => @user.id
+    end 
+  end
 
   #add_tab do |t|
   #  t.named 'Home'
