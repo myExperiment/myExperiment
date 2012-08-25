@@ -638,6 +638,7 @@ module ApplicationHelper
         when "Citation edit":          "#{subject_link(activity)} edited the citation #{objekt_link(activity)} on #{auth_link(activity)}"
         when "Comment create":         "#{subject_link(activity)} commented on #{objekt_link(activity)}"
         when "Pack create":            "#{subject_link(activity)} created #{objekt_link(activity)}"
+        when "Pack edit":              "#{subject_link(activity)} edited #{objekt_link(activity)}"
         when "Rating create":          "#{subject_link(activity)} rated #{auth_link(activity)} with #{activity.extra}"
         when "Review create":          "#{subject_link(activity)} added a review on #{auth_link(activity)}"
         when "Review edit":            "#{subject_link(activity)} edited a review on #{auth_link(activity)}"
@@ -647,6 +648,7 @@ module ApplicationHelper
         when "WorkflowVersion create": "#{subject_link(activity)} uploaded a new version of #{objekt_link(activity)}"
         when "WorkflowVersion edit":   "#{subject_link(activity)} edited version #{activity.extra} of #{objekt_link(activity)}"
         when "register":               "#{subject_link(activity)} joined #{Conf.sitename}"
+        when "edit":                   "#{subject_link(activity)} edited their profile"
         else "Unknown activity"
       end
 
