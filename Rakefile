@@ -192,6 +192,81 @@ task "myexp:workflow:components" do
   puts doc.to_s
 end
 
+desc 'Create initial events'
+task "myexp:events:create" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  events = []
+
+  events += User.all.map do |u|
+    Event.new(
+        :subject => u,
+        :action => 'register',
+        :created_at => u.created_at)
+  end
+
+  events += (Workflow.all + Blob.all + Pack.all + Blog.all).map do |object|
+    Event.new(
+        :subject => object.contributor,
+        :action => 'create',
+        :objekt => object,
+        :auth => object,
+        :created_at => object.created_at)
+  end
+  
+  events += (WorkflowVersion.all).map do |object|
+    if object.version > 1
+      Event.new(
+          :subject => object.contributor,
+          :action => 'create',
+          :objekt => object,
+          :extra => object.version,
+          :auth => object.versioned_resource,
+          :created_at => object.created_at)
+    end
+  end
+  
+  events += (BlobVersion.all).map do |object|
+    if object.version > 1
+      Event.new(
+          :subject => object.blob.contributor,
+          :action => 'create',
+          :objekt => object,
+          :extra => object.version,
+          :auth => object.versioned_resource,
+          :created_at => object.created_at)
+    end
+  end
+
+  events += Comment.all.map do |comment|
+    Event.new(
+        :subject => comment.user,
+        :action => 'create',
+        :objekt => comment,
+        :auth => comment.commentable,
+        :created_at => comment.created_at)
+  end
+
+  events += Bookmark.all.map do |bookmark|
+    Event.new(
+        :subject => bookmark.user,
+        :action => 'create',
+        :objekt => bookmark,
+        :auth => bookmark.bookmarkable,
+        :created_at => bookmark.created_at)
+  end
+
+
+  events.sort do |a, b|
+    a.created_at <=> b.created_at
+  end
+
+  events.each do |event|
+    event.save
+  end
+
+end
+
 desc 'Perform spam analysis on user profiles'
 task "myexp:spam:run" do
   require File.dirname(__FILE__) + '/config/environment'
