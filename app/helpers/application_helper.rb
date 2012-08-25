@@ -556,6 +556,8 @@ module ApplicationHelper
           thing = thing.bookmarkable
         when "Comment"
           thing = thing.commentable
+        when "Citation"
+          thing = thing.workflow
       end
 
       if thing
@@ -571,6 +573,10 @@ module ApplicationHelper
 
     def objekt_link(activity)
       link_aux(activity.objekt, activity.objekt_label)
+    end
+
+    def auth_link(activity)
+      link_aux(activity.auth, activity.auth.label)
     end
 
     conditions_expr     = []
@@ -628,7 +634,10 @@ module ApplicationHelper
         when "BlobVersion create":     "#{subject_link(activity)} uploaded a new version of #{objekt_link(activity)}"
         when "BlobVersion edit":       "#{subject_link(activity)} edited version #{activity.extra} of #{objekt_link(activity)}"
         when "Bookmark create":        "#{subject_link(activity)} favourited #{objekt_link(activity)}"
+        when "Citation create":        "#{subject_link(activity)} added the citation #{objekt_link(activity)} to #{auth_link(activity)}"
+        when "Citation edit":          "#{subject_link(activity)} edited the citation #{objekt_link(activity)} on #{auth_link(activity)}"
         when "Comment create":         "#{subject_link(activity)} commented on #{objekt_link(activity)}"
+        when "Tagging create":         "#{subject_link(activity)} tagged #{auth_link(activity)} with &quot;#{activity.objekt.tag.name}&quot;"
         when "Pack create":            "#{subject_link(activity)} created #{objekt_link(activity)}"
         when "Workflow create":        "#{subject_link(activity)} uploaded #{objekt_link(activity)}"
         when "Workflow edit":          "#{subject_link(activity)} edited #{objekt_link(activity)}"

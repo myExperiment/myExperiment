@@ -2116,11 +2116,17 @@ def tagging_aux(action, opts)
     ob.tag      = tag     if tag
 
     if subject
-      return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.check(action, Rating, opts[:user], subject)
+      return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.check(action, Tagging, opts[:user], subject)
       ob.taggable = subject
     end
 
-    return rest_response(400, :object => ob) unless ob.save
+    success = ob.save
+
+    if success && action == "create"
+      Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob, :auth => subject)
+    end
+
+    return rest_response(400, :object => ob) unless success
   end
 
   rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })

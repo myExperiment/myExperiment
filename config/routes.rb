@@ -12,7 +12,8 @@ ActionController::Routing::Routes.draw do |map|
       :controller => 'linked_data', :action => 'attributions', :conditions => { :method => :get }
 
     map.connect '/:contributable_type/:contributable_id/citations/:citation_id.:format',
-      :controller => 'linked_data', :action => 'citations', :conditions => { :method => :get }
+      :controller => 'linked_data', :action => 'citations', :conditions => { :method => :get },
+      :requirements => { :citation_id => /[0-9]*/ }
 
     map.connect '/:contributable_type/:contributable_id/comments/:comment_id.:format',
       :controller => 'linked_data', :action => 'comments', :conditions => { :method => :get }

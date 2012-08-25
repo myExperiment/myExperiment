@@ -865,6 +865,8 @@ class ApiControllerTest < ActionController::TestCase
 
     existing_taggings = Tagging.find(:all)
 
+    existing_activities = Activity.all
+
     rest_request(:post, 'tagging', "<?xml version='1.0'?>
       <tagging>
         <subject resource='#{workflow_url}'/>
@@ -872,6 +874,13 @@ class ApiControllerTest < ActionController::TestCase
       </tagging>")
 
     assert_response(:success)
+
+    new_activities = Activity.all - existing_activities
+
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith", new_activities.first.subject.name)
+    assert_equal("create", new_activities.first.action)
+    assert_equal("my test tag", new_activities.first.objekt.tag.name)
 
     extra_taggings = Tagging.find(:all) - existing_taggings 
     

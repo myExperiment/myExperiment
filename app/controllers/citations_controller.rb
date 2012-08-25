@@ -47,6 +47,8 @@ class CitationsController < ApplicationController
 
     respond_to do |format|
       if @citation.save
+
+        Activity.create(:subject => current_user, :action => 'create', :objekt => @citation, :auth => @workflow)
         flash[:notice] = 'Citation was successfully created.'
         format.html { redirect_to workflow_citation_url(@workflow, @citation) }
       else
@@ -59,6 +61,7 @@ class CitationsController < ApplicationController
   def update
     respond_to do |format|
       if @citation.update_attributes(params[:citation])
+        Activity.create(:subject => current_user, :action => 'edit', :objekt => @citation, :auth => @workflow)
         flash[:notice] = 'Citation was successfully updated.'
         format.html { redirect_to workflow_citation_url(@workflow, @citation) }
       else
