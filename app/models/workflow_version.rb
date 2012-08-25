@@ -12,6 +12,8 @@ class WorkflowVersion < ActiveRecord::Base
   belongs_to :content_blob, :dependent => :destroy
   belongs_to :content_type
 
+  belongs_to :contributor, :polymorphic => true
+
   validates_presence_of :content_blob
   validates_presence_of :content_type
   
