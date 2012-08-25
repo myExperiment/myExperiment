@@ -639,6 +639,8 @@ module ApplicationHelper
         when "Comment create":         "#{subject_link(activity)} commented on #{objekt_link(activity)}"
         when "Pack create":            "#{subject_link(activity)} created #{objekt_link(activity)}"
         when "Rating create":          "#{subject_link(activity)} rated #{auth_link(activity)} with #{activity.extra}"
+        when "Review create":          "#{subject_link(activity)} added a review on #{auth_link(activity)}"
+        when "Review edit":            "#{subject_link(activity)} edited a review on #{auth_link(activity)}"
         when "Tagging create":         "#{subject_link(activity)} tagged #{auth_link(activity)} with &quot;#{activity.objekt.tag.name}&quot;"
         when "Workflow create":        "#{subject_link(activity)} uploaded #{objekt_link(activity)}"
         when "Workflow edit":          "#{subject_link(activity)} edited #{objekt_link(activity)}"
