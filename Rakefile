@@ -215,7 +215,11 @@ task "myexp:activities:create" do
         :created_at => object.created_at)
   end
   
-  activities += (WorkflowVersion.find(:all, :conditions => "version > 1")).map do |object|
+  workflow_versions = (WorkflowVersion.find(:all, :conditions => "version > 1")).select do |object|
+    !(object.version == 2 && object.content_blob.data == object.workflow.versions.first.content_blob.data)
+  end
+  
+  activities += workflow_versions.map do |object|
     Activity.new(
         :subject => object.contributor,
         :action => 'create',
