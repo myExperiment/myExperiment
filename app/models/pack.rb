@@ -514,7 +514,7 @@ class Pack < ActiveRecord::Base
         if is_internal_uri?(uri, host_name, host_port)
           # Attempt to initialise a pack_contributable_entry
           
-          expr = /^\/(workflows|files|packs)\/(\d+)$/   # e.g: "\workflows\45"
+          expr = /^\/(workflows|files|packs)\/(\d+)(\.html)?$/   # e.g: "\workflows\45"
           if uri.path =~ expr
             arr = uri.path.scan(expr)
             c_type, id = arr[0][0], arr[0][1]
