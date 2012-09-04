@@ -503,86 +503,68 @@ class Pack < ActiveRecord::Base
     errors_here = Pack.new.errors
     type = nil
     entry = nil
-    
     is_remote = false
-    
+
     begin
-      
       uri = URI.parse(link)
-      
-      if uri.absolute?
-        if is_internal_uri?(uri, host_name, host_port)
-          # Attempt to initialise a pack_contributable_entry
-          
-          expr = /^\/(workflows|files|packs)\/(\d+)(\.html)?$/   # e.g: "\workflows\45"
-          if uri.path =~ expr
-            arr = uri.path.scan(expr)
-            c_type, id = arr[0][0], arr[0][1]
-            
-            # Try to find the contributable item being pointed at
-            case c_type.downcase
-            when 'workflows'
-              contributable = Workflow.find(:first, :conditions => ["id = ?", id])
-            when 'files'
-              contributable = Blob.find(:first, :conditions => ["id = ?", id])
-            when 'packs'
-              contributable = Pack.find(:first, :conditions => ["id = ?", id])
-            else
-              contributable = nil
-            end
-            
-            if contributable
-              entry = PackContributableEntry.new
-              entry.contributable = contributable
-              
-              type = 'contributable'
-              
-              # check if the 'contributable' is a pack, then that it's not the same pack,
-              # to which we are trying to add something at the moment
-              if c_type.downcase == 'packs' && contributable.id == self.id
-                errors_here.add_to_base('Cannot add the pack to itself')
-              end
-              
-              # Check if version was specified in the uri
-              unless uri.query.blank?
-                expr2 = /version=(\d+)/
-                if uri.query =~ expr2
-                  entry.contributable_version = uri.query.scan(expr2)[0][0] 
-                end
-              end
-            else
-              errors_here.add_to_base('The item the link points to does not exist.')
-            end
-          else
-            # Treat as a remote entry
-            is_remote = true
-          end
-          
+
+      if uri.relative? || (uri.absolute? && is_internal_uri?(uri, host_name, host_port))
+        # Attempt to initialise a pack_contributable_entry
+        contributable = nil
+
+        # Use Rails' routing to figure out the URL
+        request = ActionController::Routing::Routes.recognize_path(uri.path, :method => :get)
+        model_name = request[:controller].classify
+        model_name = Conf.model_aliases.index(model_name) || model_name # Get proper name for model i.e. File -> Blob
+
+        if Conf.contributable_models.include?(model_name) && request[:action] == "show"
+          contributable = eval(model_name).find_by_id(request[:id])
         else
-          # Treat as a remote entry
-          is_remote = true
+          is_remote = true # Treat as a remote entry
+        end
+
+        if contributable && errors_here.empty?
+          entry = PackContributableEntry.new
+          entry.contributable = contributable
+
+          type = 'contributable'
+
+          # check if the 'contributable' is a pack, then that it's not the same pack,
+          # to which we are trying to add something at the moment
+          if contributable == self.id
+            errors_here.add_to_base('Cannot add the pack to itself')
+          end
+
+          # Check if version was specified in the uri
+          entry.contributable_version = request[:version]
+
+          # maybe it was as a query instead?
+          if uri.query
+            entry.contributable_version = CGI.parse(uri.query)["version"].first.try(:to_i)
+          end
+        else
+          errors_here.add_to_base('The item the link points to does not exist.')
         end
       else
-        errors_here.add_to_base('Please provide a valid link.')  
+        is_remote = true # Treat as a remote entry
       end
-      
+
       if is_remote
         entry = PackRemoteEntry.new(:title => "Link", :uri => link)
         type = 'remote'
       end
-      
+
       if entry
         entry.pack = self
         entry.user = current_user
       end
-      
+
     rescue URI::InvalidURIError
       errors_here.add_to_base('Really struggled to parse this link. Please could you check if it is valid.')
     end
-    
+
     return [errors_here, type, entry]
   end
-  
   
   
   # Checks if the uri provided points to something internally to the host site. 
