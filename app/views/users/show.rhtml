@@ -363,7 +363,7 @@
   <% case (@tab||"News"); when "News" %>
 
     <h3>Activity from <%=h @user.name -%></h3>
-    <%= activity_feed(:subject => @user) -%>
+    <%= render(:partial => "activities/list", :locals => { :activities => activity_feed(:subject => @user, :include => ["Workflow", "WorkflowVersion", "Comment", "Review"]), :context => @user }) -%>
 
   <% when "Friends" %>
 

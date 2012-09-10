@@ -8,4 +8,9 @@
 			<%= contributor(contributable.contribution.contributor_id, contributable.contribution.contributor_type, true, 60) %>
 		</center>
 	</p>
+
+	<p class="metadata-datetime">Created on <%= datetime(contributable.contribution.created_at, false) -%></p>
+	<% if contributable.contribution.created_at != contributable.contribution.updated_at %>
+    <p class="metadata-datetime">Updated on <%= datetime(contributable.contribution.updated_at, false) -%></p>
+  <% end %>
 </div>

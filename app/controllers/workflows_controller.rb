@@ -7,7 +7,7 @@ class WorkflowsController < ApplicationController
 
   include ApplicationHelper
 
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :statistics, :launch, :search, :auto_complete]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :statistics, :launch, :search, :auto_complete, :activities]
   
   before_filter :store_callback, :only => [:index, :search]
   before_filter :find_workflows_rss, :only => [:index]
@@ -691,6 +691,12 @@ class WorkflowsController < ApplicationController
     render :partial => 'contributions/autocomplete_list', :locals => { :contributions => wfs }
   end
 
+  def activities
+    if params[:embed] == "yes"
+      render(:partial => "workflows/activities")
+    end
+  end
+
 protected
 
   def store_callback
@@ -723,6 +729,7 @@ protected
   def find_workflow_auth
 
     action_permissions = {
+      "activities"              => "view",
       "create"                  => "create",
       "create_version"          => "edit",
       "destroy"                 => "destroy",

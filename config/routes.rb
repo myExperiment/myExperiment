@@ -121,6 +121,7 @@ ActionController::Routing::Routes.draw do |map|
                  :edit_version => :get, 
                  :update_version => :put, 
                  :process_tag_suggestions => :post,
+                 :activities => :get,
                  :tag_suggestions => :get } do |workflow|
     # workflows have nested citations
     workflow.resources :citations

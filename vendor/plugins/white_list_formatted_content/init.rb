@@ -161,6 +161,12 @@ ActiveRecord::Base.class_eval do
     
     def body_html_with_formatting
       body_html = auto_link(body.starts_with?('<') ? body : render_plain_text_to_html(body))
+
+      # remove empty paragraphs
+
+      body_html.gsub!("<p></p>", "")
+      body_html.gsub!("<p>&nbsp;</p>", "")
+
       white_list(body_html)
     end
 end

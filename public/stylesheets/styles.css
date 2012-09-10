@@ -72,7 +72,7 @@ table {
 }
 
 th,td {
-	text-align: center;
+	/*text-align: center;*/
 	border: none;
 	/*border: 1px solid #CCCCCC;*/
 }
@@ -1087,16 +1087,20 @@ a.button_slim * {
 	line-height: 1.5;
 }
 
+.contribution_mini_nav HR {
+  border: none;
+	height: 1px;
+  color: #E0E0E0;
+  background-color: #E0E0E0;
+}
+
 .contribution_left_box {
 	float: left;
 	width: 73.5%;
 }
 
-.contribution_description {
-	text-align: left;
-	background-color: #FFFFFF;
-	border: 1px solid #CCCCCC;
-	padding: 0.3em 1em;
+.contribution_description PRE {
+  background: inherit;
 }
 
 .contribution_preview img {
@@ -1113,6 +1117,7 @@ a.button_slim * {
 .contribution_section_box {
 	background-color: #F8F8C8;
 	border-bottom: 1px solid #CCCC99;
+	border-right: 1px solid #CCCC99;
 	padding: 0.3em 0.3em;
 	text-align: center;
 	margin-bottom: 0.6em;
@@ -1329,11 +1334,18 @@ table.comment td.content p {
 }
 
 .addCommentBox {
-	margin-top: 3em;
-	padding: 1em;
-	width: 500px;
-	background-color: #EEEEEE;
-	border: 1px dotted #999999;
+	margin-top: 10px;
+  padding: 8px;
+	background-color: #E0E0E0;
+}
+
+.addCommentBox TEXTAREA {
+  padding: 4px;
+  width: 500px;
+}
+
+.addCommentBox INPUT {
+  margin-top: 4px;
 }
 
 /* End Comments styles */
@@ -2377,5 +2389,66 @@ input.auto_complete_field.error {
 
 .link_list LI + LI:before {
   content: "\0000a0";
+}
+
+OL.activity-feed {
+  margin: 0;
+}
+
+.activity-feed LI {
+  list-style: none;
+}
+
+.activity-feed LI + LI {
+  border-top: 1px SOLID #E0E0E0;
+}
+
+DIV.activity IMG.framed  {
+  border: 0;
+  padding: 0;
+}
+
+.activity {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.activity .avatar-column {
+  width: 64px;
+  float: left;
+}
+
+.activity .activity-column {
+  margin-left: 72px;
+}
+
+.activity .actions {
+  font-size: 8pt;
+}
+
+.activity .date {
+  color: gray;
+}
+
+.activity SPAN + SPAN:before {
+  content: " · ";
+  color: gray;
+}
+
+.inset-preview {
+  float: left;
+  margin-right: 16px;
+  margin-bottom: 16px;
+}
+
+.inset-preview IMG {
+  max-width: 200px;
+}
+
+.workflow-type {
+}
+
+.metadata-datetime {
+  font-size: 8pt;
 }
 

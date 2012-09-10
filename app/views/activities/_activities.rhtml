@@ -1,0 +1,7 @@
+<ol class="activity-feed">
+  <% activities.each do |activity| %>
+    <li>
+      <%= render(:partial => "activities/activity", :locals => { :activity => activity } ) -%>
+    </li>
+  <% end %>
+</ol>

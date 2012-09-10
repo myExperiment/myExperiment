@@ -44,13 +44,6 @@ module Versioning
         def new_version?
           new_record? || (changed_versioned_attributes - mutable_attributes).length > 0
         end
-
-        def describe_version(version_number)
-          return "" if versions.count < 2
-          return "(earliest)" if version_number == versions.first.version
-          return "(latest)" if version_number == versions.last.version
-          return ""
-        end
       end
 
       before_save do |resource|

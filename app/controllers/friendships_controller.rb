@@ -40,6 +40,7 @@ class FriendshipsController < ApplicationController
     
     respond_to do |format|
       if @friendship.accept!
+        Activity.create(:subject => User.find(from_id), :action => 'create', :objekt => @friendship)
         flash[:notice] = 'Friendship was successfully accepted.'
         format.html { redirect_to user_friendships_url(current_user.id) }
       else

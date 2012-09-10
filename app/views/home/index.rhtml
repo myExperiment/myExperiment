@@ -3,16 +3,10 @@
 	
 	<div class="left">
 		<%= render :partial => "announcements" %>
-		<%= render :partial => "latest_groups" %>
-		<%= render :partial => "latest_tags" %>
 	</div>
 	
 	<div class="right">
-		<%= render :partial => "news" %>
-		<%= render :partial => "updated_items" %>
-		<%= render :partial => "new_users" %>
-		<%= render :partial => "latest_reviews" %>
-		<%= render :partial => "latest_comments" %>
+    <%= render(:partial => "activities/list", :locals => { :activities => activity_feed(:include => ["Workflow", "WorkflowVersion", "Comment", "Review"]) }) -%>
 	</div>
 	
 	<div class="clearer">&nbsp;</div>

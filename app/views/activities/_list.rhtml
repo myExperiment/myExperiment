@@ -1,0 +1,16 @@
+<% if Authorization.check('create', Comment, current_user, context) %>
+  <div class="addCommentBox">
+    <% form_remote_tag(
+        :url =>      polymorphic_path(context) + "/comments",
+        :update =>   'activities', 
+        :loading =>  "Element.show('addcomment_indicator')",
+        :complete => "Element.hide('addcomment_indicator'); new Effect.Highlight('activities', { duration: 1.5 }); $('comment').value = '';") do %>
+      <%= text_area_tag("comment[comment]") -%>
+      <br/>
+      <%= submit_tag "Post comment" %>
+      <%= image_tag "/images/spinner.gif", :id => "addcomment_indicator", :style => "margin-left: 1em; display: none;" %>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render(:partial => "activities/activities", :locals => { :activities => activities } ) -%>

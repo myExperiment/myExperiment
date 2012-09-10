@@ -19,8 +19,6 @@
 	Workflow Entry: <%=h @workflow.title %>
 </h1>
 
-<%= render :partial => "contributions/datetime_info", :locals => { :contributable => @workflow } -%>
-
 <div class="contribution_mini_nav">
   <ul class="link_list">
     <li><%= link_to "License", "#license" %></li>
@@ -40,63 +38,32 @@
     <li><%= link_to "Reviews (#{@workflow.reviews.length})", "#reviews" %></li>
     <li><%= link_to "Comments (#{@workflow.comments.length})", "#comments" %></li>
   </ul>
+  <hr />
 </div>
-
 
 <div class="contribution_left_box">
 	
 	<div class="contribution_version_box">
 
-    <%= render(:partial => "contributions/version_selector", :locals => { :resource => @workflow, :version => @viewing_version, :path => :workflow_version_path }) %>
-
 		<div class="contribution_version_inner_box">
-			
-			<h3>
-				<%= info_icon_with_tooltip("This section shows the preview of this version of the Workflow (click on the image to expand)") %>
-				Preview
-			</h3>
-			
-			<% unless @viewing_version.image.nil? && @viewing_version.svg.nil? %>
-				<p style="font-size: 85%; font-weight: normal; margin-bottom: 0.5em; text-align: center;">
-					 (Click on the image to get the full size)
-				</p>
-				<div class="contribution_preview" style="width: 100%;">
-					<center>
-						<%= link_to image_tag(workflow_version_preview_path(@workflow, @viewing_version.version, 'medium')), workflow_version_preview_path(@workflow, @viewing_version.version, 'full'), :popup => true %>
-					</center>
-				</div>
-				<% if @authorised_to_edit %>
-					<br/>
-					<p style="text-align: right; color: #666666;">[ <%= link_to "change preview image", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
-				<% end %>
-			<% else %>
-				<p class="none_text">
-					Not available
-				</p>
-				<% if @authorised_to_edit %>
-					<p style="text-align: right; color: #666666;">[ <%= link_to "add a preview image", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
-				<% end %>
-			<% end %>
-			
-			<br/>
-			
-			<% unless @viewing_version.svg.nil? %>
-				<ul class="sectionIcons">
-					<li style="margin-left: 0;"><%= icon('picture', workflow_version_preview_path(@workflow, @viewing_version.version, 'svg'), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
-				</ul>
-			<% end %>
-			
-			<br/>
-			
+
+<% if false %>
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the overall description for this version of the Workflow") %>
 				Description
 			</h3>
+<% end %>
 			
 			<% unless @viewing_version.body.blank? %>
-				<div class="contribution_description">
-					<%= @viewing_version.body_html %>
-				</div>
+        <div style="overflow: hidden">
+          <div class="inset-preview">
+						<%= link_to image_tag(workflow_version_preview_path(@workflow, @viewing_version.version, 'medium')), workflow_version_preview_path(@workflow, @viewing_version.version, 'full'), :popup => true %>
+          </div>
+          <div class="contribution_description">
+            <%= @viewing_version.body_html %>
+          </div>
+          <div style="clear: both"></div>
+        </div>
 				<% if @authorised_to_edit %>
 					<p style="text-align: right; color: #666666;">[ <%= link_to "edit", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
 				<% end %>
@@ -105,6 +72,13 @@
 					Not set
 				</p>
 			<% end %>
+
+      <h3><%= info_icon_with_tooltip("This shows the activity for this Workflow") %> Activity</h3>
+
+      <a name="activity"></a>
+      <div id="activities">
+        <%= render(:partial => "workflows/activities", :locals => { :object => @workflow } ) -%>
+      </div>
 			
 			<br/>
 			
@@ -116,8 +90,6 @@
         </h3>
         
         <% if @authorised_to_download %>
-
-          <br />
 
           <ul class="sectionIcons">
             <li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package (#{@viewing_version.display_data_format})") -%></li>
@@ -136,6 +108,18 @@
               <li style="margin-left: 0;"><%= icon('workflow', galaxy_tool_path(:id => @workflow.id, :version => @viewing_version_number.to_s), "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow as a Galaxy tool") -%></li>
             </ul>
           <% end %>
+
+          <% unless @viewing_version.svg.nil? %>
+
+            <br />
+
+            <ul class="sectionIcons">
+              <li style="margin-left: 0;"><%= icon('picture', workflow_version_preview_path(@workflow, @viewing_version.version, 'svg'), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
+            </ul>
+          <% end %>
+          
+          <br />
+
 
         <% else %>
           <p class="none_text">
@@ -172,37 +156,18 @@
 	
 <!-- BEGIN tabs -->
 	
+<ul class="sectionIcons">
+  <% if Authorization.check('create', Review, current_user, @workflow) %>
+    <li><%= icon('review', new_workflow_review_path(@workflow), nil, nil, 'Write a Review') %></li>
+  <% end %>
+  <% if Authorization.check('create', Citation, current_user, @workflow) %>
+    <li><%= icon('new', new_workflow_citation_path(@workflow), nil, nil, 'New Citation', nil) %></li>
+  <% end %>
+</ul>
+
 <br/>
 
 <div id="tabsContainer" class="tabsContainer"></div>
-
-<div class="tabContainer">
-  <div class="tabTitle">Comments</div>
-  <div class="tabContent">
-    <a name="comments"></a>
-    <div id="commentsBox">
-      <%= render :partial => "comments/comments", :locals => { :commentable => @workflow } %>
-    </div>
-  </div>
-</div>
-
-<div class="tabContainer">
-  <div class="tabTitle">Activity</div>
-  <div class="tabContent">
-    <a name="activity"></a>
-    <%= activity_feed(:auth => @workflow) -%>
-  </div>
-</div>
-
-<div class="tabContainer">
-  <div class="tabTitle">Reviews</div>
-  <div class="tabContent">
-    <a name="reviews"></a>
-    <div id="ratingsBox">
-      <%= render :partial => "reviews/reviews", :locals => { :reviewable => @workflow } %>
-    </div>
-  </div>
-</div>
 
 <%= render :partial => "contributions/citations_tab", :locals => { :item => @workflow } %>
 
@@ -279,11 +244,9 @@
 </div>
 
 <div class="contribution_right_box">
-	<div class="contribution_section_box" style= "font-size: 100%; padding: 0.7em 0.9em; font-weight: bold;">
-		<p><%= info_icon_with_tooltip("The type of workflow system that this Workflow is designed for.") %> Workflow Type</p>
-    <p><%= link_to(h(@viewing_version.content_type.title), content_type_path(@viewing_version.content_type)) %></p>
-	</div>
-	
+
+  <%= render(:partial => "contributions/version_selector", :locals => { :resource => @workflow, :version => @viewing_version, :path => :workflow_version_path }) %>
+
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @workflow } %>
 	
 	<%= render :partial => "contributions/license_box", :locals => { :contributable => @workflow } %>

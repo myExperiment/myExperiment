@@ -387,6 +387,24 @@ task "myexp:activities:create" do
         :created_at => object.created_at)
   end
 
+  Network.all.each do |object|
+
+    activities << Activity.new(
+        :subject => object.owner,
+        :action => 'create',
+        :objekt => object,
+        :created_at => object.created_at)
+
+    if object.updated_at && object.updated_at != object.created_at
+
+      activities << Activity.new(
+          :subject => object.owner,
+          :action => 'edit',
+          :objekt => object,
+          :created_at => object.updated_at)
+    end
+  end
+
   activities.sort! do |a, b|
     a.created_at <=> b.created_at
   end

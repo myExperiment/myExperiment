@@ -56,7 +56,11 @@ module ApplicationHelper
       rtn = Time.at(old_dt.time)
     end
     
-    return long ? rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)") : rtn.strftime("%d/%m/%y @ %H:%M:%S")
+    if long
+      "<span title='#{rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)")}'>#{rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)")}</span>"
+    else
+      "<span title='#{rtn.strftime("%d/%m/%y @ %H:%M:%S")}'>#{rtn.strftime("%d/%m/%y")}</span>"
+    end
   end
   
   def date(old_dt, long=true)
@@ -547,38 +551,6 @@ module ApplicationHelper
 
   def activity_feed(opts = {})
 
-    def link_aux(thing, label)
-
-      thing = thing.versioned_resource if thing.respond_to?(:versioned_resource)
-
-      case thing.class.name
-        when "Bookmark"
-          thing = thing.bookmarkable
-        when "Comment"
-          thing = thing.commentable
-        when "Citation"
-          thing = thing.workflow
-      end
-
-      if thing
-        link_to(label, polymorphic_path(thing))
-      else
-        h(label)
-      end
-    end
-
-    def subject_link(activity)
-      link_aux(activity.subject, activity.subject_label)
-    end
-
-    def objekt_link(activity)
-      link_aux(activity.objekt, activity.objekt_label)
-    end
-
-    def auth_link(activity)
-      link_aux(activity.auth, activity.auth.label)
-    end
-
     conditions_expr     = []
     conditions_operands = []
 
@@ -600,6 +572,18 @@ module ApplicationHelper
       conditions_operands << opts[:auth].id
     end
 
+    if opts[:include]
+      conditions_expr     << "activities.objekt_type IN (?)"
+      conditions_operands << opts[:include]
+    end
+
+    case opts[:filter]
+      when "comments"
+        conditions_expr << "activities.objekt_type = 'Comment'"
+      when "versions"
+        conditions_expr << "activities.objekt_type = 'WorkflowVersion'"
+    end
+
     unless conditions_expr.empty?
       conditions_expr = conditions_expr.map do |cond| "(#{cond})" end.join(' AND ')
       conditions = [conditions_expr] + conditions_operands
@@ -618,47 +602,39 @@ module ApplicationHelper
 
     markup = '<ol class="activity-feed">'
 
-    markup << activities.map do |activity|
+    activities
+  end
 
-      action = if activity.objekt
-        "#{activity.objekt_type} #{activity.action}"
-      else
-        "#{activity.action}"
-      end
+  def activity_link(activity, source)
 
-      sentence = case action
-        when "Announcement create":    "#{subject_link(activity)} announced #{objekt_link(activity)}"
-        when "Announcement edit":      "#{subject_link(activity)} edited #{objekt_link(activity)}"
-        when "Blob create":            "#{subject_link(activity)} uploaded #{objekt_link(activity)}"
-        when "Blob edit":              "#{subject_link(activity)} edited #{objekt_link(activity)}"
-        when "BlobVersion create":     "#{subject_link(activity)} uploaded a new version of #{objekt_link(activity)}"
-        when "BlobVersion edit":       "#{subject_link(activity)} edited version #{activity.extra} of #{objekt_link(activity)}"
-        when "Bookmark create":        "#{subject_link(activity)} favourited #{objekt_link(activity)}"
-        when "Citation create":        "#{subject_link(activity)} added the citation #{objekt_link(activity)} to #{auth_link(activity)}"
-        when "Citation edit":          "#{subject_link(activity)} edited the citation #{objekt_link(activity)} on #{auth_link(activity)}"
-        when "Comment create":         "#{subject_link(activity)} commented on #{objekt_link(activity)}"
-        when "Pack create":            "#{subject_link(activity)} created #{objekt_link(activity)}"
-        when "Pack edit":              "#{subject_link(activity)} edited #{objekt_link(activity)}"
-        when "Rating create":          "#{subject_link(activity)} rated #{auth_link(activity)} with #{activity.extra}"
-        when "Review create":          "#{subject_link(activity)} added a review on #{auth_link(activity)}"
-        when "Review edit":            "#{subject_link(activity)} edited a review on #{auth_link(activity)}"
-        when "Tagging create":         "#{subject_link(activity)} tagged #{auth_link(activity)} with &quot;#{activity.objekt.tag.name}&quot;"
-        when "Workflow create":        "#{subject_link(activity)} uploaded #{objekt_link(activity)}"
-        when "Workflow edit":          "#{subject_link(activity)} edited #{objekt_link(activity)}"
-        when "WorkflowVersion create": "#{subject_link(activity)} uploaded a new version of #{objekt_link(activity)}"
-        when "WorkflowVersion edit":   "#{subject_link(activity)} edited version #{activity.extra} of #{objekt_link(activity)}"
-        when "register":               "#{subject_link(activity)} joined #{Conf.sitename}"
-        when "edit":                   "#{subject_link(activity)} edited their profile"
-        else "Unknown activity"
-      end
+    case source
+    when :subject
+      thing = activity.subject
+      label = activity.subject_label
+    when :object
+      thing = activity.objekt
+      label = activity.objekt_label
+    when :auth
+      thing = activity.auth
+      label = activity.auth.label
+    end
 
-      "<li>#{sentence}.</li>"
+    thing = thing.versioned_resource if thing.respond_to?(:versioned_resource)
 
-    end.join
+    case thing.class.name
+      when "Bookmark"
+        thing = thing.bookmarkable
+      when "Comment"
+        thing = thing.commentable
+      when "Citation"
+        thing = thing.workflow
+    end
 
-    markup << '</ol>'
-
-    markup
+    if thing
+      link_to(label, polymorphic_path(thing))
+    else
+      h(label)
+    end
   end
 
   def news(contributor, restrict_contributor=true, before=Time.now, after=Time.now-1.week, limit=30)

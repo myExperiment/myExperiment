@@ -45,7 +45,7 @@ class CommentsController < ApplicationController
     
     respond_to do |format|
       if ajaxy
-        format.html { render :partial => "comments/comments", :locals => { :commentable => @context } }
+        format.html { render :partial => "workflows/activities", :locals => { :object => @context } }
       else
         format.html { redirect_to rest_resource_uri(@context) }
       end
