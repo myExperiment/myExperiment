@@ -2370,3 +2370,13 @@ input.auto_complete_field.error {
 	line-height: 1.2;
 	font-size: 85%;
 }
+
+.new-session-sign-in {
+  width: 190px;
+  border: 1px solid #CCCCCC;
+  border-radius: 6px 6px 6px 6px;
+  -moz-border-radius: 6px 6px 6px 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+}
+
