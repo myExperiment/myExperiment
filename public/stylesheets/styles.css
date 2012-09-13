@@ -2302,8 +2302,13 @@ table.topic td.tag_vote{
 }
 
 #user-check-list .sleep TD {
-	border: 1px solid #808080;
-  background: #c0c0c0;
+	border: 1px solid #c0e0c0;
+  background: #e0ffe0;
+}
+
+#user-check-list .suspect TD {
+	border: 1px solid #e0c0c0;
+  background: #ffe0e0;
 }
 
 #user-check-list .delete TD {

@@ -3,6 +3,8 @@
 # Copyright (c) 2012 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'lib/previews'
+
 class WorkflowVersion < ActiveRecord::Base
 
   is_version_of :workflow

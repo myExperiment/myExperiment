@@ -43,7 +43,6 @@ Rails::Initializer.run do |config|
     :exception_notification,
     :fckeditor,
     :headliner,
-    :mannie_taverna_scufl,
     :oauth,
     :oauth_plugin,
     :open_id_authentication,
