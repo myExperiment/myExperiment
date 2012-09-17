@@ -5,6 +5,9 @@
   background-color: #317EFF;
 }
 
+.pagination a, .tabnav li a:hover, .tabnav li#selected_tabnav a  {
+  background-image: none;
+}
 #myexp_searchbar {
   background-image: url('/images/searchfade_alpha.png');
 }
