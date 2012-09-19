@@ -513,9 +513,12 @@ class Pack < ActiveRecord::Base
         contributable = nil
 
         # Use Rails' routing to figure out the URL
-        request = ActionController::Routing::Routes.recognize_path(uri.path, :method => :get)
-        model_name = request[:controller].classify
-        model_name = Conf.model_aliases.index(model_name) || model_name # Get proper name for model i.e. File -> Blob
+        begin
+          request = ActionController::Routing::Routes.recognize_path(uri.path, :method => :get)
+          model_name = request[:controller].classify
+        rescue Exception => exc
+          raise URI::InvalidURIError
+        end
 
         if Conf.contributable_models.include?(model_name) && request[:action] == "show"
           contributable = eval(model_name).find_by_id(request[:id])
@@ -523,27 +526,29 @@ class Pack < ActiveRecord::Base
           is_remote = true # Treat as a remote entry
         end
 
-        if contributable && errors_here.empty?
-          entry = PackContributableEntry.new
-          entry.contributable = contributable
-
-          type = 'contributable'
-
-          # check if the 'contributable' is a pack, then that it's not the same pack,
-          # to which we are trying to add something at the moment
-          if contributable == self.id
-            errors_here.add_to_base('Cannot add the pack to itself')
+        if !is_remote
+          if contributable && errors_here.empty?
+            entry = PackContributableEntry.new
+            entry.contributable = contributable
+  
+            type = 'contributable'
+  
+            # check if the 'contributable' is a pack, then that it's not the same pack,
+            # to which we are trying to add something at the moment
+            if contributable == self.id
+              errors_here.add_to_base('Cannot add the pack to itself')
+            end
+  
+            # Check if version was specified in the uri
+            entry.contributable_version = request[:version]
+  
+            # maybe it was as a query instead?
+            if uri.query
+              entry.contributable_version = CGI.parse(uri.query)["version"].first.try(:to_i)
+            end
+          else
+            errors_here.add_to_base('The item the link points to does not exist.')
           end
-
-          # Check if version was specified in the uri
-          entry.contributable_version = request[:version]
-
-          # maybe it was as a query instead?
-          if uri.query
-            entry.contributable_version = CGI.parse(uri.query)["version"].first.try(:to_i)
-          end
-        else
-          errors_here.add_to_base('The item the link points to does not exist.')
         end
       else
         is_remote = true # Treat as a remote entry
