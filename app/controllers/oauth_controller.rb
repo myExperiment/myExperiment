@@ -167,7 +167,8 @@ private
       "authorize"     => "view",
       "index"         => "view",
       "request_token" => "view",
-      "test_request"  => "view" 
+      "test_request"  => "view",
+      "show"          => "view"
     }
 
     if action_name == 'update'
