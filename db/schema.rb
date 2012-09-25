@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120921144930) do
+ActiveRecord::Schema.define(:version => 20120605091404) do
 
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
@@ -400,9 +400,6 @@ ActiveRecord::Schema.define(:version => 20120921144930) do
     t.datetime "invalidated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "callback_url"
-    t.string   "verifier",              :limit => 20
-    t.string   "scope"
   end
 
   add_index "oauth_tokens", ["token"], :name => "index_oauth_tokens_on_token", :unique => true

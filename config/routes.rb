@@ -202,14 +202,11 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :messages, :collection => { :sent => :get, :delete_all_selected => :delete }
 
   # all oauth
-  map.resources :oauth_clients
-
-  map.test_request '/oauth/test_request', :controller => 'oauth', :action => 'test_request'
-  map.token '/oauth/token', :controller => 'oauth', :action => 'token'
-  map.access_token '/oauth/access_token', :controller => 'oauth', :action => 'access_token'
-  map.request_token '/oauth/request_token', :controller => 'oauth', :action => 'request_token'
-  map.authorize '/oauth/authorize', :controller => 'oauth', :action => 'authorize'
-  map.oauth '/oauth', :controller => 'oauth', :action => 'index'
+  map.oauth '/oauth',:controller=>'oauth',:action=>'index'
+  map.authorize '/oauth/authorize',:controller=>'oauth',:action=>'authorize'
+  map.request_token '/oauth/request_token',:controller=>'oauth',:action=>'request_token'
+  map.access_token '/oauth/access_token',:controller=>'oauth',:action=>'access_token'
+  map.test_request '/oauth/test_request',:controller=>'oauth',:action=>'test_request'
 
   # User timeline
   map.connect 'users/timeline', :controller => 'users', :action => 'timeline'

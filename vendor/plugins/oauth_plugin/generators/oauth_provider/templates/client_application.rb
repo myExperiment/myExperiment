@@ -1,14 +1,7 @@
 require 'oauth'
 class ClientApplication < ActiveRecord::Base
   belongs_to :user
-  has_many :tokens,:class_name=>"OauthToken", :dependent => :destroy
-  has_many :permissions,
-           :class_name => "KeyPermission",
-           :order => "key_permissions.for",
-           :dependent => :destroy
-  belongs_to :creator,
-             :class_name => "User",
-	     :foreign_key => "creator_id"
+  has_many :tokens,:class_name=>"OauthToken"
   validates_presence_of :name,:url,:key,:secret
   validates_uniqueness_of :key
   before_validation_on_create :generate_keys
@@ -28,11 +21,10 @@ class ClientApplication < ActiveRecord::Base
       logger.info "Token: #{signature.send :token}"
       return false unless OauthNonce.remember(signature.request.nonce,signature.request.timestamp)
       value=signature.verify
-#      value=true
       logger.info "Signature verification returned: #{value.to_s}"
       value
     rescue OAuth::Signature::UnknownSignatureMethod=>e
-      #logger.info "ERROR"+e.to_s
+      logger.info "ERROR"+e.to_s
      false
     end
   end
@@ -47,14 +39,6 @@ class ClientApplication < ActiveRecord::Base
     
   def create_request_token
     RequestToken.create :client_application=>self
-  end
-  
-  def permissions_for
-    permissions_for= []
-    for key_permission in self.permissions do
-      permissions_for << key_permission.for
-    end
-    permissions_for
   end
   
   protected
