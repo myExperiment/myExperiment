@@ -72,6 +72,9 @@ class ResearchObjectsController < ApplicationController
     # get url (if provided)
     url = ro_params[:url] if ro_params[:url].is_a?(String) && !ro_params[:url].empty?
 
+    # get request body (if provided)
+    file = request.raw_post if request.raw_post != nil && request.env["CONTENT_TYPE"] == "text/turtle"
+
     # get uploaded file (if provided)
     file = ro_params[:data].read if ro_params[:data].respond_to?(:read)
 
