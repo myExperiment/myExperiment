@@ -2395,3 +2395,8 @@ input.auto_complete_field.error {
   text-align: left;
 }
 
+.recommender-link {
+  margin: 10px;
+  text-align: center;
+}
+

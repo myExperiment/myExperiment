@@ -1,6 +1,12 @@
 <div id="home_container">
 	<%= render :partial => 'stats' %>
 	
+  <% if logged_in? %>
+    <div class="recommender-link">
+      <%= link_to("See recommendations for workflows, friends and packs", "http://sandbox.wf4ever-project.org/epnoiServer/UserRecommenderServiceServlet?user=http://www.myexperiment.org/user.xml?id=#{current_user.id}") -%>
+    </div>
+  <% end %>
+
 	<div class="left">
 		<%= render :partial => "announcements" %>
 		<%= render :partial => "latest_groups" %>
