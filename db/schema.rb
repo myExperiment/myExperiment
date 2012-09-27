@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 96) do
+ActiveRecord::Schema.define(:version => 97) do
 
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
@@ -160,7 +160,12 @@ ActiveRecord::Schema.define(:version => 96) do
 
   create_table "content_blobs", :force => true do |t|
     t.binary "data", :limit => 2147483647
+    t.string "md5",  :limit => 32
+    t.string "sha1", :limit => 40
   end
+
+  add_index "content_blobs", ["md5"], :name => "index_content_blobs_on_md5"
+  add_index "content_blobs", ["sha1"], :name => "index_content_blobs_on_sha1"
 
   create_table "content_types", :force => true do |t|
     t.integer  "user_id"
