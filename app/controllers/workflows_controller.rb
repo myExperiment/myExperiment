@@ -988,8 +988,8 @@ private
           # Rewind the file, just in case
           file.rewind
           
-          workflow_to_set.title = processor_instance.get_title
-          workflow_to_set.body = processor_instance.get_description
+          workflow_to_set.title = processor_instance.get_title      if processor_instance.get_title
+          workflow_to_set.body = processor_instance.get_description if processor_instance.get_description
           
           workflow_to_set.content_type = ContentType.find_by_title(processor_class.display_name)
           
