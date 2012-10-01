@@ -34,11 +34,12 @@
 
 </table>
 
-<% resources = @contributable.wf4ever_resources %>
+<% resources   = @contributable.wf4ever_resources %>
+<% annotations = @contributable.ao_annotations    %>
 
 <% if resources.length > 0 %>
 
-  <h2>wf4ever resource summary</h2>
+  <h2>Aggregated resources</h2>
 
   <table class="simple">
     <tr>
@@ -61,12 +62,35 @@
 
 <% end %>
 
+<% if annotations.length > 0 %>
+
+  <h2>Annotations</h2>
+
+  <table class="simple">
+    <tr>
+      <th>Type</th>
+      <th>Value</th>
+    </tr>
+    <% annotations.each do |annotation| %>
+      <tr>
+        <td><%=h annotation[:type] -%></td>
+        <td><%=h annotation[:body] -%></td>
+      </tr>
+    <% end %>
+  </table>
+
+  <br />
+
+<% end %>
+
 <% if @contributable.annotations.length > 0 %>
 
   <div class="fold">
 
-    <div class="foldTitle">Annotation summary</div>
+    <div class="foldTitle">RDF statements (<%= @contributable.annotations.length -%>)</div>
     <div class="foldContent" style="display: none;">
+
+      <h2>Summary</h2>
 
       <table class="simple">
         <tr>
@@ -84,13 +108,8 @@
           </tr>
         <% end %>
       </table>
-    </div>
-  </div>
 
-  <div class="fold">
-
-    <div class="foldTitle">Complete annotation list (<%= @contributable.annotations.length -%>)</div>
-    <div class="foldContent" style="display: none;">
+      <h2>Statements</h2>
 
       <div id="annotation_list">
         <% @contributable.annotations.each do |annotation| %>

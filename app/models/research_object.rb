@@ -177,5 +177,27 @@ class ResearchObject < ActiveRecord::Base
     end
   end
 
+  def ao_annotations
+
+    results = []
+
+    annotation_bodies = annotations.find(:all,
+        :conditions => ['predicate_text = ?', 'http://purl.org/ao/body'])
+
+    annotation_bodies.each do |body|
+
+      type = annotations.find(:first,
+          :conditions => ['predicate_text = ? AND subject_text = ?',
+          'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+          body.subject_text])
+
+      next if type.nil?
+
+      results << { :type => type.objekt_text, :body => body.objekt_text }
+    end
+
+    results
+  end
+
 end
 
