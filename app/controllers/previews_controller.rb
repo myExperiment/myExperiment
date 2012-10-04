@@ -69,6 +69,11 @@ class PreviewsController < ApplicationController
       when 'svg';   content_blob = @context.preview.svg_blob
     end
 
+    if content_blob.nil?
+      render :nothing => true, :status => "404 Not Found"
+      return
+    end
+
     file_name = @context.preview.file_name(type)
 
     send_cached_data(file_name, :type => mime_type, :disposition => 'inline') {
