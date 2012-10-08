@@ -16,6 +16,8 @@ gem "marc", "~> 0.4.1"
 gem "ruby-hmac", "~> 0.4.0"
 gem "passenger", "~> 2.2.15"
 gem "htmlentities", "~> 4.3.1"
+gem "taverna-scufl", "~> 0.7.1"
+gem "taverna-t2flow", "~> 0.2.0"
 gem "rdf", "~> 0.3.4.1"
 gem "rdf-raptor", "~> 0.4.1"
 
