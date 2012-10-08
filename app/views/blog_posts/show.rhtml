@@ -1,4 +1,4 @@
-<% if logged_in? && Authorization.is_authorized?("edit", nil, @blog_post.blog, current_user) %>
+<% if logged_in? && Authorization.check("edit", @blog_post.blog, current_user) %>
   <ul class="sectionIcons">
     <li><%= link_to 'Edit Blog Post', edit_blog_post_path(@blog_post.blog, @blog_post) %></li>
   </ul>

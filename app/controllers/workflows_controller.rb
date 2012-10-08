@@ -235,7 +235,7 @@ class WorkflowsController < ApplicationController
     end
 
     @contributions_with_similar_services = @workflow.workflows_with_similar_services.select do |w|
-      Authorization.is_authorized?('view', nil, w, current_user)
+      Authorization.check('view', w, current_user)
     end.map do |w|
       w.contribution
     end
@@ -661,7 +661,7 @@ class WorkflowsController < ApplicationController
                      :limit => 20,
                      :select => 'DISTINCT *')
 
-    wfs = wfs.select {|w| Authorization.is_authorized?('view', nil, w, current_user) }
+    wfs = wfs.select {|w| Authorization.check('view', w, current_user) }
 
     render :partial => 'contributions/autocomplete_list', :locals => { :contributions => wfs }
   end
@@ -696,6 +696,35 @@ protected
   end
   
   def find_workflow_auth
+
+    action_permissions = {
+      "create"                  => "create",
+      "create_version"          => "edit",
+      "destroy"                 => "destroy",
+      "destroy_version"         => "edit",
+      "download"                => "download",
+      "edit"                    => "edit",
+      "edit_version"            => "edit",
+      "favourite"               => "view",
+      "favourite_delete"        => "view",
+      "galaxy_tool"             => "download",
+      "galaxy_tool_download"    => "download",
+      "index"                   => "view",
+      "launch"                  => "download",
+      "named_download"          => "download",
+      "new"                     => "create",
+      "new_version"             => "edit",
+      "process_tag_suggestions" => "edit",
+      "rate"                    => "view",
+      "search"                  => "view",
+      "show"                    => "view",
+      "statistics"              => "view",
+      "tag"                     => "view",
+      "tag_suggestions"         => "view",
+      "update"                  => "edit",
+      "update_version"          => "edit",
+    }
+
     begin
       # Use eager loading only for 'show' action
       if action_name == 'show'
@@ -704,7 +733,7 @@ protected
         workflow = Workflow.find(params[:id])
       end
       
-      if Authorization.is_authorized?(action_name, nil, workflow, current_user)
+      if Authorization.check(action_permissions[action_name], workflow, current_user)
         @latest_version_number = workflow.current_version
 
         @workflow = workflow
@@ -720,12 +749,12 @@ protected
           @viewing_version = @workflow.find_version(@latest_version_number)
         end
         
-        @authorised_to_edit = logged_in? && Authorization.is_authorized?('edit', nil, @workflow, current_user)
+        @authorised_to_edit = logged_in? && Authorization.check('edit', @workflow, current_user)
         if @authorised_to_edit
           # can save a call to .is_authorized? if "edit" was already found to be allowed - due to cascading permissions
           @authorised_to_download = true
         else
-          @authorised_to_download = Authorization.is_authorized?('download', nil, @workflow, current_user)
+          @authorised_to_download = Authorization.check('download', @workflow, current_user)
         end
         
         # remove scufl from workflow if the user is not authorized for download
@@ -959,8 +988,8 @@ private
           # Rewind the file, just in case
           file.rewind
           
-          workflow_to_set.title = processor_instance.get_title
-          workflow_to_set.body = processor_instance.get_description
+          workflow_to_set.title = processor_instance.get_title      if processor_instance.get_title
+          workflow_to_set.body = processor_instance.get_description if processor_instance.get_description
           
           workflow_to_set.content_type = ContentType.find_by_title(processor_class.display_name)
           

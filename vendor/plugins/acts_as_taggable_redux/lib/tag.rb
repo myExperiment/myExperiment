@@ -44,7 +44,7 @@ class Tag < ActiveRecord::Base
   
   def tagged_auth(user)
     tagged.select do |taggable|
-      Authorization.is_authorized?('view', nil, taggable, user)
+      Authorization.check('view', taggable, user)
     end
   end
 

@@ -1,4 +1,4 @@
-/* Stylesheet for the e-LICO layout. Requires main myExperiment stylesheet. */
+/* Stylesheet for the BioVeL group's skin, based on the e-LICO layout. Requires main myExperiment stylesheet. */
 
 body  {
 	background: #EEEB99;
@@ -8,6 +8,9 @@ body  {
   background-color: #99cc33;
 }
 
+.pagination a, .tabnav li a:hover, .tabnav li#selected_tabnav a  {
+  background-image: none;
+}
 #myexp_searchbar {
   background-image: url('/images/searchfade_alpha.png');
 }

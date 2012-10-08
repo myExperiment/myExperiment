@@ -29,7 +29,11 @@ class ApplicationController < ActionController::Base
   def check_for_sleeper
     if request.method != :get && logged_in?
       if current_user.account_status == "sleep"
-        current_user.update_attribute(:account_status, "recheck")
+        current_user.update_attribute(:account_status, "sleep recheck")
+      end
+
+      if current_user.account_status == "suspect"
+        current_user.update_attribute(:account_status, "suspect recheck")
       end
     end
   end

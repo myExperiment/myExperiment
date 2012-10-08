@@ -53,7 +53,7 @@ class RelationshipsController < ApplicationController
   # DELETE /:context_type/:context_id/relationships/:id
   def destroy
 
-   if Authorization.is_authorized?('destroy', nil, @relationship, current_user)
+   if Authorization.check('destroy', @relationship, current_user)
       @relationship.destroy
     end
     
@@ -69,7 +69,7 @@ class RelationshipsController < ApplicationController
     @relationship = Relationship.find_by_id(params[:id])
 
     return error if @relationship.nil? || @context.nil? || @relationship.context != @context
-    return error if Authorization.is_authorized?('view', nil, @context, current_user) == false
+    return error if Authorization.check('view', @context, current_user) == false
   end
 
   def find_resource_context
@@ -77,7 +77,7 @@ class RelationshipsController < ApplicationController
     @context = extract_resource_context(params)
 
     return false if @context.nil?
-    return false if Authorization.is_authorized?('view', nil, @context, current_user) == false
+    return false if Authorization.check('view', @context, current_user) == false
   end
 
   def error

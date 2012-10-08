@@ -36,7 +36,7 @@ class PreviewsController < ApplicationController
       auth_object = @context
     end
 
-    if Authorization.check(:action => 'view', :object => auth_object, :user => user) == false
+    if Authorization.check('view', auth_object, user) == false
       render :nothing => true, :status => "401 Unauthorized"
       response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename} REST API\""
       return
@@ -67,6 +67,11 @@ class PreviewsController < ApplicationController
           mime_type = 'image/svg+xml' if size.nil? # Just show the SVG when "full" image is requested
         end
       when 'svg';   content_blob = @context.preview.svg_blob
+    end
+
+    if content_blob.nil?
+      render :nothing => true, :status => "404 Not Found"
+      return
     end
 
     file_name = @context.preview.file_name(type)

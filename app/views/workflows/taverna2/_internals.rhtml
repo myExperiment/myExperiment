@@ -67,6 +67,28 @@
       </div>
     </div>
         
+    <!-- Dependencies -->
+    <% dependencies = model.dependencies -%>
+    <div class="fold">
+      <div class="foldTitle">
+        <%= info_icon_with_tooltip "These are the listed dependencies of the workflow" %>
+        Dependencies (<%= dependencies.length -%>)
+      </div>
+      <div class="foldContent" style="display: none;">
+        <% unless dependencies.empty? -%>
+          <table class="simple">
+            <% dependencies.each do |dep| -%>
+              <tr>
+                <td><%= h dep -%></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <p class="none_text">None</p>
+        <% end %>
+      </div>
+    </div>
+        
     <!-- Sources -->
     <% sources = model.sources -%>
     <div class="fold">

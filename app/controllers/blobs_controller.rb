@@ -338,7 +338,7 @@ class BlobsController < ApplicationController
                      :limit => 20,
                      :select => 'DISTINCT *')
 
-    files = files.select {|f| Authorization.is_authorized?('view', nil, f, current_user) }
+    files = files.select {|f| Authorization.check('view', f, current_user) }
 
     render :partial => 'contributions/autocomplete_list', :locals => { :contributions => files }
   end
@@ -371,10 +371,32 @@ class BlobsController < ApplicationController
   protected
   
   def find_blob_auth
+
+    action_permissions = {
+      "create"                      => "create",
+      "destroy"                     => "destroy",
+      "download"                    => "download",
+      "edit"                        => "edit",
+      "favourite"                   => "view",
+      "favourite_delete"            => "view",
+      "index"                       => "view",
+      "named_download"              => "download",
+      "named_download_with_version" => "download",
+      "new"                         => "create",
+      "process_suggestions"         => "edit",
+      "rate"                        => "view",
+      "search"                      => "view",
+      "show"                        => "view",
+      "statistics"                  => "view",
+      "suggestions"                 => "view",
+      "tag"                         => "view",
+      "update"                      => "edit"
+    }
+
     begin
       blob = Blob.find(params[:id])
       
-      if Authorization.is_authorized?(action_name, nil, blob, current_user)
+      if Authorization.check(action_permissions[action_name], blob, current_user)
         @blob = blob
         
         if params[:version]

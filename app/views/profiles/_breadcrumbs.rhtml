@@ -1,14 +1,10 @@
 <% if @user -%>
   <li><%= link_to 'Users', users_path -%></li>
   
-  <li>&gt;</li>
-
   <li><%= link_to h(@user.name), user_path(@user) -%></li>
 <% end %>
 
 <% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
-  <li>&gt;</li>
-  
   <% case controller.action_name.to_s; when "show" -%>
     <li>Profile</li>
   <% when "new" -%>

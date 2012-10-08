@@ -72,7 +72,7 @@ class CommentsController < ApplicationController
     @comment = Comment.find_by_id(params[:id])
 
     return error if @comment.nil? || @context.nil? || @comment.commentable != @context
-    return error if Authorization.is_authorized?('view', nil, @context, current_user) == false
+    return error if Authorization.check('view', @context, current_user) == false
   end
 
   def find_resource_context
@@ -80,7 +80,7 @@ class CommentsController < ApplicationController
     @context = extract_resource_context(params)
 
     return error if @context.nil?
-    return error if Authorization.is_authorized?('view', nil, @context, current_user) == false
+    return error if Authorization.check('view', @context, current_user) == false
   end
 
   def error

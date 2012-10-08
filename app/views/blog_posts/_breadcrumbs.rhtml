@@ -1,12 +1,8 @@
 <li><%= link_to 'Blogs', blogs_path %></li>
 
-<li>&gt;</li>
-
 <li><%= link_to "#{h(@blog_post.blog.title)}", blog_path(@blog_post.blog) %></li>
 
 <% if ["show", "new", "edit"].include? controller.action_name.to_s %>
-  <li>&gt;</li>
-  
   <% case controller.action_name.to_s; when "show" %>
     <li><%= link_to "View: #{h(@blog_post.title)}", blog_blog_post_path(@blog_post.blog, @blog_post) %></li>
   <% when "new" %>

@@ -1,4 +1,4 @@
-<% can_edit = Authorization.check(:action => 'edit', :object => context, :user => current_user) %>
+<% can_edit = Authorization.check('edit', context, current_user) %>
 <% relationships = context.relationships %>
 
 <% if relationships.empty? %>

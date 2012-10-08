@@ -2,11 +2,11 @@
 
 <ul class="sectionIcons">
   <% if logged_in? %>
-    <% if Authorization.is_authorized?("edit", nil, @workflow, current_user) %>
+    <% if Authorization.check("edit", @workflow, current_user) %>
       <li><%= icon('edit', edit_workflow_citation_path(@workflow, @citation), nil, nil, 'Edit Citation') %></li>
     <% end %>
 
-    <% if Authorization.is_authorized?("destroy", nil, @workflow, current_user) %>
+    <% if Authorization.check("destroy", @workflow, current_user) %>
       <li><%= icon('destroy', workflow_citation_path(@workflow, @citation), nil, { :confirm => 'Are you sure?', :method => :delete }, 'Delete Citation') %></li>
     <% end %>
   <% end %>

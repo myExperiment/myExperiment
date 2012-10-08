@@ -1,8 +1,6 @@
 <li><%= link_to 'Mashup', mashup_path %></li>
 
 <% if ["show", "api"].include? controller.action_name.to_s %>
-  <li>&gt;</li>
-  
   <% case controller.action_name.to_s; when "show" %>
     <li>Resources</li>
   <% when "api" %>

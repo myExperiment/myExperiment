@@ -3,10 +3,8 @@
 <% end %>
 
 <% case controller.action_name.to_s; when "show" %>
-  <li>&gt;</li>
   <li><%= h(@contributable.label) %></li>
 <% when "search" %>  
-  <li>&gt;</li>
   <li>Search Results</li>
 <% when "index" %>
   <li>Research objects</li>

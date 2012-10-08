@@ -400,7 +400,7 @@ module ApplicationHelper
         
         if thumb
           unless w.image.nil?
-            if Authorization.is_authorized?('show', nil, w, current_user)
+            if Authorization.check('view', w, current_user)
               dot = image_tag url_for_file_column(w, "image", "thumb")
             else
               dot = image_tag url_for_file_column(w, "image", "padlock")
@@ -833,7 +833,7 @@ module ApplicationHelper
         :joins => 'LEFT OUTER JOIN users ON workflows.contributor_type = "User" AND workflows.contributor_id = users.id',
         :order => 'workflows.id ASC')
 
-    workflows.select { |w| Authorization.is_authorized?('show', 'Workflow', w.id, current_user) }
+    workflows.select { |w| Authorization.check('view', w, current_user) }
   end
   
   def blobs_for_attribution_form
@@ -841,7 +841,7 @@ module ApplicationHelper
         :joins => 'LEFT OUTER JOIN users ON blobs.contributor_type = "User" AND blobs.contributor_id = users.id',
         :order => 'blobs.id ASC')
 
-    blobs.select { |b| Authorization.is_authorized?('show', 'Blob', b.id, current_user) }
+    blobs.select { |b| Authorization.check('view', b, current_user) }
   end
   
   def networks_for_credits_form
@@ -1055,12 +1055,6 @@ module ApplicationHelper
                    :id => workflow_id,
                    :action => "destroy_version",
                    :version => version_number)
-  end
-  
-  def thing_authorized?(action, thing)
-    # method preserved only in case some code absolutely requires it in the future;
-    # for now (Jan 2009) all occurrences of it's usage were replaced with Authorization.is_authorized?()
-    return Authorization.is_authorized?(action, nil, thing, current_user)
   end
   
   def strip_html(str, preserve_tags=[])

@@ -184,13 +184,15 @@ class UsersController < ApplicationController
 
         # basic spam check
 
-        url = "http://www.stopforumspam.com/api?email=#{CGI::escape(@user.unconfirmed_email)}&username=#{CGI::escape(@user.username)}&ip=#{CGI::escape(request.ip)}&f=json"
+        unless RAILS_ENV == 'test'
+          url = "http://www.stopforumspam.com/api?email=#{CGI::escape(@user.unconfirmed_email)}&username=#{CGI::escape(@user.username)}&ip=#{CGI::escape(request.ip)}&f=json"
 
-        sfs_response = ActiveSupport::JSON.decode(open(url).read)
+          sfs_response = ActiveSupport::JSON.decode(open(url).read)
 
-        if (sfs_response["success"] == 1)
-          if ((sfs_response["email"]["appears"] == 1) || (sfs_response["ip"]["appears"] == 1))
-            spammer = true
+          if (sfs_response["success"] == 1)
+            if ((sfs_response["email"]["appears"] == 1) || (sfs_response["ip"]["appears"] == 1))
+              spammer = true
+            end
           end
         end
 
@@ -275,7 +277,7 @@ class UsersController < ApplicationController
   # DELETE /users/1
   def destroy
 
-    unless Authorization.check(:action => 'destroy', :object => @user, :user => current_user)
+    unless Authorization.check('destroy', @user, current_user)
       flash[:notice] = 'You do not have permission to delete this user.'
       redirect_to :action => :index
       return
@@ -599,7 +601,7 @@ class UsersController < ApplicationController
 
     if @to > 0
 
-      users = User.find(:all, :conditions => ["activated_at IS NOT NULL AND id >= ? AND id <= ? AND (account_status IS NULL OR (account_status != 'sleep' AND account_status != 'whitelist'))", @from, @to])
+      users = User.find(:all, :conditions => ["activated_at IS NOT NULL AND id >= ? AND id <= ? AND (account_status IS NULL OR (account_status != 'sleep' AND account_status != 'suspect' AND account_status != 'whitelist'))", @from, @to])
 
       @userlist = users.map do |user|
 
@@ -705,6 +707,8 @@ class UsersController < ApplicationController
             user.update_attributes(:account_status => "whitelist")
           when "sleep"
             user.update_attributes(:account_status => "sleep")
+          when "suspect"
+            user.update_attributes(:account_status => "suspect")
           when "delete"
 
             # build an "all elements" user.xml record

@@ -114,7 +114,7 @@ task "myexp:oai:static" do
   # Obtain all public workflows
 
   workflows = Workflow.find(:all).select do |workflow|
-    Authorization.check(:action => 'read', :object => workflow, :user => nil)
+    Authorization.check('view', workflow, nil)
   end
 
   # Generate OAI static repository file
@@ -227,10 +227,8 @@ desc 'Rebuild checksums in the content blob store'
 task "myexp:blobstore:checksum:rebuild" do
   require File.dirname(__FILE__) + '/config/environment'
 
-  ContentBlob.all.each do |blob|
-    blob.update_checksums
-    puts "blob changed? = #{blob.changed?}"
-    blob.save if blob.changed?
-  end
+  conn = ActiveRecord::Base.connection
+
+  conn.execute('UPDATE content_blobs SET sha1 = SHA1(data), md5 = MD5(data)')
 end
 

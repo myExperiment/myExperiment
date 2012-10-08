@@ -363,7 +363,7 @@ class PacksController < ApplicationController
         errors, type, entry = @pack.resolve_link(uri, request.host, request.port.to_s, current_user)
 
         entry.comment = params[:comment]
-        @contributable = entry.contributable
+        @contributable = entry.contributable if type == 'contributable'
 
         # By this point, we either have errors, or have an entry that needs saving.
         if errors.empty? && entry.save
@@ -416,14 +416,39 @@ class PacksController < ApplicationController
   end
   
   def find_pack_auth
+
+    action_permissions = {
+      "create"           => "create",
+      "create_item"      => "edit",
+      "destroy"          => "destroy",
+      "destroy_item"     => "destroy",
+      "download"         => "download",
+      "edit"             => "edit",
+      "edit_item"        => "edit",
+      "favourite"        => "view",
+      "favourite_delete" => "view",
+      "index"            => "view",
+      "items"            => "view",
+      "new"              => "create",
+      "new_item"         => "edit",
+      "quick_add"        => "edit",
+      "resolve_link"     => "edit",
+      "search"           => "view",
+      "show"             => "view",
+      "statistics"       => "view",
+      "tag"              => "view",
+      "update"           => "edit",
+      "update_item"      => "edit"
+    }
+
     begin
       pack = Pack.find(params[:id])
       
-      if Authorization.is_authorized?(action_name, nil, pack, current_user)
+      if Authorization.check(action_permissions[action_name], pack, current_user)
         @pack = pack
         
-        @authorised_to_edit = logged_in? && Authorization.is_authorized?("edit", nil, @pack, current_user)
-        @authorised_to_download = Authorization.is_authorized?("download", nil, @pack, current_user)
+        @authorised_to_edit = logged_in? && Authorization.check("edit", @pack, current_user)
+        @authorised_to_download = Authorization.check("download", @pack, current_user)
         
         @pack_entry_url = url_for :only_path => false,
                             :host => base_host,

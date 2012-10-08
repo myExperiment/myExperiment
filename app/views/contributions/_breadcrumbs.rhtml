@@ -1,8 +1,6 @@
 <% if controller.action_name == 'curation' %>
   <li><%= link_to(params[:contributable_type].humanize.capitalize, "/#{params[:contributable_type]}") %></li>
-  <li>&gt;</li>
   <li><%= link_to(@contributable.label, "/#{params[:contributable_type]}/#{params[:contributable_id]}") %></li>
-  <li>&gt;</li>
   <li>Curation</li>
 <% end %>
 

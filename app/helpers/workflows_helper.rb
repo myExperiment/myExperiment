@@ -13,8 +13,8 @@ module WorkflowsHelper
     types << "Other"
   end
   
-  def get_type_dir(workflow)
-    klass = workflow.processor_class
+  def get_type_dir(workflow_version)
+    klass = workflow_version.processor_class
     return (klass.nil? ? "other" : h(klass.to_s.demodulize.underscore))
   end
   

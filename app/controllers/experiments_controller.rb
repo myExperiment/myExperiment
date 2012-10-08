@@ -114,9 +114,20 @@ protected
   end
   
   def find_experiment_auth
+
+    action_permissions = {
+      "create"  => "create",
+      "destroy" => "destroy",
+      "edit"    => "edit",
+      "index"   => "view",
+      "new"     => "create",
+      "show"    => "view",
+      "update"  => "edit"
+    }
+
     experiment = Experiment.find(:first, :conditions => ["id = ?", params[:id]])
     
-    if experiment and Authorization.is_authorized?(action_name, nil, experiment, current_user)
+    if experiment and Authorization.check(action_permissions[action_name], experiment, current_user)
       @experiment = experiment
     else
       error("Experiment not found or action not authorized", "is invalid (not authorized)")

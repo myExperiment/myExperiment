@@ -1,11 +1,7 @@
 <% if @user %>
   <li><%= link_to 'Users', users_path %></li>
 
-  <li>&gt;</li>
-  
   <li><%= name(@user) %></li>
-    
-  <li>&gt;</li>
     
   <li><%= link_to 'Memberships', user_memberships_path(@user) %></li>
 <% else %>
@@ -13,7 +9,5 @@
 <% end %>
 
 <% if ["show"].include? controller.action_name.to_s %>
-  <li>&gt;</li>
-  
   <li><%= link_to "View: #{h(@membership.network.title)}", user_membership_path(@membership.user, @membership) %></li>
 <% end %>

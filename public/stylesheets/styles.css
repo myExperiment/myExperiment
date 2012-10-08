@@ -7,18 +7,12 @@
    http://developer.yahoo.com/yui/fonts/#fontsize
 */
 body {
-	background: #8e8e8e url('/images/body-bg.gif') repeat-y center;
-	/* Only need to define one font here because the 
-	   YUI Fonts CSS provides a degradation path
-	   (see: http://developer.yahoo.com/yui/fonts/) */
+	background: #8e8e8e;
 	font-family: arial;
-	/*background-color: #FFFFFF;*/
-	
 	line-height: 1.0;
 }
 
 p {
-	font-family: arial;
 	padding: 0.3em 0;
 	line-height: 1.4;
 	text-align: left;
@@ -30,7 +24,6 @@ hr {
 }
 
 h1,h2,h3,h4,h5,h6 {
-	font-family: arial;
 	line-height: 1.0;
 	color: #333333;
 }
@@ -127,10 +120,15 @@ li {
 
 #doc2 {
 	background-color: #FFFFFF;
+  width: 950px;
+  padding-left: 12px;
+  padding-right: 12px;
+  box-shadow: 0 0 16px 4px #666666;
 }
 
 #myexp_header {
-	margin: 1em 0.5em 0 0.5em;
+  padding-top: 1em;
+	margin: 0 0.5em 0 0.5em;
 }
 
 .logo {
@@ -159,12 +157,19 @@ li {
 }
 
 #myexp_searchbar {
+
+  background-image: -moz-linear-gradient(top, #317EFF 0%, #456AAA 100%);
+  background-image: -o-linear-gradient(top, #317EFF 0%, #456AAA 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #317EFF), color-stop(1, #456AAA));
+  background-image: -webkit-linear-gradient(top, #317EFF 0%, #456AAA 100%);
+  background-image: linear-gradient(to bottom, #317EFF 0%, #456AAA 100%);
+
+  background-color: #456AAA;
+
 	height: 20px;
 	text-align: center;
-	background-image: url('/images/searchfade.png');
-	background-repeat: no-repeat;
-	background-position: top center;
 	padding: 10px 0;
+
   -moz-border-radius: 22px 22px 0px 0px;
   -webkit-border-top-left-radius: 6px;
   -webkit-border-top-right-radius: 6px;
@@ -183,10 +188,9 @@ li {
 }
 
 #myexp_sidebar {
-	padding: 0 0.5em 0 0.5em;
+	padding: 0 6px 0 6px;
 	background-color: #456AAA;
-	border-left: 0px solid #DEDEDE;
-	border-width: 0 0 1px 1px;
+  width: 180px;
 }
 
 /* Begin Footer styles */
@@ -288,7 +292,7 @@ li {
 
 .framed {
 	border: 1px solid #CCCCCC;
-	padding: 3px;
+	padding: 2px;
 	background-color: #FFFFFF;
 }
 
@@ -313,14 +317,8 @@ li {
 .tabnav li a {
 	padding: 2px 12px;
 	margin-left: 3px;
-	border-style: solid;
-  border-color: #BBB;
-  border-width: 1px 1px 0;
 	text-decoration: none;
-	background-image: url('/images/tab-bg.png');
-	background-position: top;
-	background-repeat: repeat-x;
-	background-color: #EDEDED;
+	background-color: #E0E0E0;
 	display: inline-block;
 }
 
@@ -333,8 +331,14 @@ li {
 }
 
 .tabnav li a:hover, .tabnav li#selected_tabnav a {
-	background-color: #317eff;
-	background-image: none;
+
+  background-image: -moz-linear-gradient(top, #317EFF 0%, #317EFF 100%);
+  background-image: -o-linear-gradient(top, #317EFF 0%, #317EFF 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #317EFF), color-stop(1, #317EFF));
+  background-image: -webkit-linear-gradient(top, #317EFF 0%, #317EFF 100%);
+  background-image: linear-gradient(to bottom, #317EFF 0%, #317EFF 100%);
+
+	background-color: #456AAA;
 	color: #FFFFFF;
 }
 
@@ -347,8 +351,7 @@ li {
 	font-size: 85%;
 	text-decoration: none;
 	padding: 0.4em 0.5em;
-	background-color: #EEEEEE;
-	border: 1px solid #DEDEDE;
+	background-color: #E0E0E0;
 }
 
 #myexp_breadcrumbs_bar table {
@@ -375,6 +378,10 @@ ul.breadcrumb_list li {
 
 ul.breadcrumb_list a {
 	color: #000033;
+}
+
+UL.breadcrumb_list LI + LI:before {
+  content: " > ";
 }
 
 /* end css breadcrumbs */ 
@@ -2107,9 +2114,6 @@ table.topic td.tag_vote{
 .pivot .filter {
   margin-bottom: 1em;
   padding: 2px;
-  background: #f0f0f0;
-  border-radius: 6px;
-  -moz-border-radius: 6px;
 }
 
 .pivot .category {
@@ -2138,24 +2142,6 @@ table.topic td.tag_vote{
 
 .pivot .options > DIV.selected {
   background: #ffe0c0;
-}
-
-.pivot .options > DIV.selected:hover {
-  background: #dfc0a0;
-}
-
-.pivot .options > DIV:first-child {
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-  -moz-border-radius-topleft: 6px;
-  -moz-border-radius-topright: 6px;
-}
-
-.pivot .options > DIV:last-child {
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-  -moz-border-radius-bottomleft: 6px;
-  -moz-border-radius-bottomright: 6px;
 }
 
 .pivot .checkbox {
@@ -2316,8 +2302,13 @@ table.topic td.tag_vote{
 }
 
 #user-check-list .sleep TD {
-	border: 1px solid #808080;
-  background: #c0c0c0;
+	border: 1px solid #c0e0c0;
+  background: #e0ffe0;
+}
+
+#user-check-list .suspect TD {
+	border: 1px solid #e0c0c0;
+  background: #ffe0e0;
 }
 
 #user-check-list .delete TD {
@@ -2378,6 +2369,15 @@ input.auto_complete_field.error {
 	color: #333333;
 	line-height: 1.2;
 	font-size: 85%;
+}
+
+.new-session-sign-in {
+  width: 190px;
+  border: 1px solid #CCCCCC;
+  border-radius: 6px 6px 6px 6px;
+  -moz-border-radius: 6px 6px 6px 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -webkit-border-bottom-right-radius: 6px;
 }
 
 #annotation_list TABLE {
