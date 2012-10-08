@@ -75,7 +75,7 @@ class ResearchObject < ActiveRecord::Base
 
     # create RDF graph
 
-    manifest_name = "tmp/graph.#{Process.pid}.ttl"
+    manifest_name = "tmp/graph.#{Process.pid}"
 
     File.open(manifest_name, "w") do |f|
       f.write(content_blob.data)
