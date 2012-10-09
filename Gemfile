@@ -20,4 +20,5 @@ gem "taverna-scufl", "~> 0.7.1"
 gem "taverna-t2flow", "~> 0.2.0"
 gem "rdf", "~> 0.3.4.1"
 gem "rdf-raptor", "~> 0.4.1"
+gem "wf4ever-transformation-client", "~> 0.3.0"
 
