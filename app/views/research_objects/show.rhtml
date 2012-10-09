@@ -39,26 +39,9 @@
 
 <% if resources.length > 0 %>
 
-  <h2>Aggregated resources</h2>
+  <h2>Pack Items</h2>
 
-  <table class="simple">
-    <tr>
-      <th>Name</th>
-      <th>Size</th>
-      <th>Created</th>
-      <th>Creator</th>
-    </tr>
-    <% resources.each do |resource| %>
-      <tr>
-        <td><%=h resource[:name] -%></td>
-        <td><%=h resource[:size] -%></td>
-        <td><%=h resource[:created] -%></td>
-        <td><%=h resource[:creator] -%></td>
-      </tr>
-    <% end %>
-  </table>
-
-  <br />
+  <%= research_object_resources(@contributable) -%>
 
 <% end %>
 

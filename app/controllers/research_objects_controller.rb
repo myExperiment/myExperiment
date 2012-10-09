@@ -9,7 +9,7 @@ class ResearchObjectsController < ApplicationController
 
   include ApplicationHelper
 
-  before_filter :find_research_object,  :only => [:show, :edit, :update]
+  before_filter :find_research_object,  :only => [:show, :edit, :update, :resource_show]
   before_filter :find_research_objects, :only => [:all]
   
   # GET /research_objects
@@ -135,6 +135,35 @@ class ResearchObjectsController < ApplicationController
 
   # DELETE /research_objects/1
   def destroy
+  end
+
+  # GET /research_objects/:id/resource/:path
+  def resource_show
+
+    resource_object = Annotation.find(:first, :conditions => {
+        :research_object_id => @contributable.id,
+        :predicate_text => 'http://purl.org/wf4ever/ro#name',
+        :objekt_text => params[:path]})
+
+    raise ActiveRecord::RecordNotFound if resource_object.nil?
+
+    statements = Annotation.find(:all, :conditions => {
+        :subject_text => resource_object.subject_text
+    })
+    
+    statements.each do |statement|
+
+      case statement.predicate_text
+      when "http://purl.org/wf4ever/ro#name":      @name    = statement.objekt_text
+      when "http://purl.org/dc/terms/created":     @created = Date.parse(statement.objekt_text)
+      when "http://purl.org/dc/terms/creator":     @creator = statement.objekt_text
+      when "http://purl.org/wf4ever/ro#checksum" : @md5     = statement.objekt_text
+      when "http://purl.org/wf4ever/ro#filesize" : @size    = statement.objekt_text.to_i
+      end
+
+    end
+
+    render :resource_show
   end
 
   protected

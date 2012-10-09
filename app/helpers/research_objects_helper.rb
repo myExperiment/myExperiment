@@ -51,4 +51,17 @@ module ResearchObjectsHelper
                         "urn:MD5:#{hash.upcase}"])
   end
 
+  def research_object_resources(contributable)
+
+    markup = "<ul class='research_object_browser'>"
+
+    contributable.wf4ever_resources.each do |resource|
+      markup += "<li>#{link_to(resource[:name], research_object_resource_path(contributable, resource[:name]))}</li>"
+    end
+
+    markup += "</ul>"
+
+    markup
+  end
+
 end

@@ -2400,3 +2400,7 @@ input.auto_complete_field.error {
   text-align: center;
 }
 
+.research_object_browser LI {
+  list-style-image: url('/images/famfamfam_silk/page.png');
+}
+

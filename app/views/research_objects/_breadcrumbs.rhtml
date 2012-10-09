@@ -8,6 +8,8 @@
   <li>Search Results</li>
 <% when "index" %>
   <li>Research objects</li>
+<% when "resource_show" %>
+  <li><%= link_to(@contributable.label, research_object_path(@contributable)) %></li>
 <% else %>
   <!-- no breadcrumb -->
 <% end %>

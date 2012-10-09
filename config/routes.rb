@@ -192,6 +192,9 @@ ActionController::Routing::Routes.draw do |map|
   # research_objects
   map.resources :research_objects
 
+  map.research_object_resources '/research_objects/:id/resources',       :controller => 'research_objects', :action => 'resource_index', :conditions => { :method => :get }
+  map.research_object_resource  '/research_objects/:id/resources/:path', :controller => 'research_objects', :action => 'resource_show',  :conditions => { :method => :get }, :requirements => { :path => /.*/ }
+
   # content_types
   map.resources :content_types
 
