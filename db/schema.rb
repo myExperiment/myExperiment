@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120920093655) do
+ActiveRecord::Schema.define(:version => 97) do
 
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
@@ -142,13 +142,6 @@ ActiveRecord::Schema.define(:version => 20120920093655) do
   end
 
   add_index "comments", ["user_id"], :name => "index_comments_on_user_id"
-
-  create_table "component_profiles", :force => true do |t|
-    t.string   "name"
-    t.string   "url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "concept_relations", :force => true do |t|
     t.integer "subject_concept_id"
@@ -577,13 +570,6 @@ ActiveRecord::Schema.define(:version => 20120920093655) do
 
   add_index "reviews", ["user_id"], :name => "index_reviews_on_user_id"
 
-  create_table "semantic_annotations", :force => true do |t|
-    t.integer "subject_id"
-    t.string  "subject_type"
-    t.string  "predicate"
-    t.string  "object"
-  end
-
   create_table "service_categories", :force => true do |t|
     t.string   "uri"
     t.datetime "updated_at"
@@ -798,12 +784,6 @@ ActiveRecord::Schema.define(:version => 20120920093655) do
     t.string   "uri"
   end
 
-  create_table "workflow_ports", :force => true do |t|
-    t.string  "name"
-    t.string  "port_type"
-    t.integer "workflow_id"
-  end
-
   create_table "workflow_processors", :force => true do |t|
     t.string  "name"
     t.string  "wsdl_operation"
@@ -833,6 +813,8 @@ ActiveRecord::Schema.define(:version => 20120920093655) do
     t.integer  "preview_id"
   end
 
+  add_index "workflow_versions", ["workflow_id"], :name => "index_workflow_versions_on_workflow_id"
+
   create_table "workflows", :force => true do |t|
     t.integer  "contributor_id"
     t.string   "contributor_type"
@@ -851,7 +833,6 @@ ActiveRecord::Schema.define(:version => 20120920093655) do
     t.integer  "content_type_id"
     t.integer  "license_id"
     t.integer  "preview_id"
-    t.integer  "component_profile_id"
   end
 
 end
