@@ -206,25 +206,25 @@
 		
 			<br/>
 			
-      <% annotations = research_object_annotations(@workflow) %>
+      <% statements = research_object_statements(@workflow) %>
 
-      <% if annotations.length > 0 %>
+      <% if statements.length > 0 %>
 
-      <h3>Annotations</h3>
+      <h3>RDF Statements</h3>
 
       <div class="fold">
 
-        <div class="foldTitle">Annotations (<%= annotations.length -%>)</div>
+        <div class="foldTitle">Statements (<%= statements.length -%>)</div>
         <div class="foldContent" style="display: none;">
 
-          <div id="annotation_list">
-            <% annotations.each do |annotation| %>
+          <div id="statement_list">
+            <% statements.each do |statement| %>
               <div>
                 <table>
-                  <tr><td><%= link_to(annotation.research_object.title, annotation.research_object) -%></td></tr>
-                  <tr><td><%=h annotation.subject_text          -%></td></tr>
-                  <tr><td><%=h annotation.predicate_text        -%></td></tr>
-                  <tr><td><%=h annotation.objekt_text           -%></td></tr>
+                  <tr><td><%= link_to(statement.research_object.title, statement.research_object) -%></td></tr>
+                  <tr><td><%=h statement.subject_text          -%></td></tr>
+                  <tr><td><%=h statement.predicate_text        -%></td></tr>
+                  <tr><td><%=h statement.objekt_text           -%></td></tr>
                 </table>
               </div>
             <% end %>

@@ -17,7 +17,7 @@ class ResearchObject < ActiveRecord::Base
   acts_as_site_entity
   acts_as_contributable
 
-  has_many :annotations, :dependent => :destroy
+  has_many :statements, :dependent => :destroy
 
   belongs_to :content_blob, :dependent => :destroy
 
@@ -61,7 +61,7 @@ class ResearchObject < ActiveRecord::Base
 
       graph.query([nil, nil, nil]).each do |s, p, o|
 
-        annotations.create(
+        statements.create(
             :subject_text =>   s.to_s,
             :predicate_text => p.to_s,
             :objekt_text =>    o.to_s)
@@ -89,7 +89,7 @@ class ResearchObject < ActiveRecord::Base
 
     graph.query([nil, nil, nil]).each do |s, p, o|
 
-      annotations.create(
+      statements.create(
           :subject_text =>   s.to_s,
           :predicate_text => p.to_s,
           :objekt_text =>    o.to_s)
@@ -100,7 +100,7 @@ class ResearchObject < ActiveRecord::Base
 
   def wf4ever_resources
 
-    resources = annotations.find(:all, :conditions =>
+    resources = statements.find(:all, :conditions =>
       ['predicate_text = ? AND objekt_text = ?',
         'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
         'http://purl.org/wf4ever/ro#Resource']).map do
@@ -111,15 +111,15 @@ class ResearchObject < ActiveRecord::Base
 
       metadata = {}
 
-      annotations.find(:all, :conditions =>
-        ['subject_text = ?', resource]).each do |annotation|
+      statements.find(:all, :conditions =>
+        ['subject_text = ?', resource]).each do |statement|
 
-        case annotation.predicate_text
-        when "http://purl.org/wf4ever/ro#name":      metadata[:name]    = annotation.objekt_text
-        when "http://purl.org/dc/terms/created":     metadata[:created] = Date.parse(annotation.objekt_text)
-        when "http://purl.org/dc/terms/creator":     metadata[:creator] = annotation.objekt_text
-        when "http://purl.org/wf4ever/ro#checksum" : metadata[:md5]     = annotation.objekt_text
-        when "http://purl.org/wf4ever/ro#filesize" : metadata[:size]    = annotation.objekt_text.to_i
+        case statement.predicate_text
+        when "http://purl.org/wf4ever/ro#name":      metadata[:name]    = statement.objekt_text
+        when "http://purl.org/dc/terms/created":     metadata[:created] = Date.parse(statement.objekt_text)
+        when "http://purl.org/dc/terms/creator":     metadata[:creator] = statement.objekt_text
+        when "http://purl.org/wf4ever/ro#checksum" : metadata[:md5]     = statement.objekt_text
+        when "http://purl.org/wf4ever/ro#filesize" : metadata[:size]    = statement.objekt_text.to_i
         end
 
       end
@@ -177,16 +177,16 @@ class ResearchObject < ActiveRecord::Base
     end
   end
 
-  def ao_annotations
+  def annotations
 
     results = []
 
-    annotation_bodies = annotations.find(:all,
+    annotation_bodies = statements.find(:all,
         :conditions => ['predicate_text = ?', 'http://purl.org/ao/body'])
 
     annotation_bodies.each do |body|
 
-      type = annotations.find(:first,
+      type = statements.find(:first,
           :conditions => ['predicate_text = ? AND subject_text = ?',
           'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
           body.subject_text])

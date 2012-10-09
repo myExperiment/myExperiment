@@ -22,15 +22,6 @@ ActiveRecord::Schema.define(:version => 20120921144930) do
     t.datetime "promote_after"
   end
 
-  create_table "annotations", :force => true do |t|
-    t.integer  "research_object_id"
-    t.string   "subject_text"
-    t.string   "predicate_text"
-    t.string   "objekt_text"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "announcements", :force => true do |t|
     t.string   "title"
     t.integer  "user_id"
@@ -675,6 +666,15 @@ ActiveRecord::Schema.define(:version => 20120921144930) do
 
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
+
+  create_table "statements", :force => true do |t|
+    t.integer  "research_object_id"
+    t.string   "subject_text"
+    t.string   "predicate_text"
+    t.string   "objekt_text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "taggings", :force => true do |t|
     t.integer  "tag_id"

@@ -140,14 +140,14 @@ class ResearchObjectsController < ApplicationController
   # GET /research_objects/:id/resource/:path
   def resource_show
 
-    resource_object = Annotation.find(:first, :conditions => {
+    resource_object = Statement.find(:first, :conditions => {
         :research_object_id => @contributable.id,
         :predicate_text => 'http://purl.org/wf4ever/ro#name',
         :objekt_text => params[:path]})
 
     raise ActiveRecord::RecordNotFound if resource_object.nil?
 
-    statements = Annotation.find(:all, :conditions => {
+    statements = Statement.find(:all, :conditions => {
         :subject_text => resource_object.subject_text
     })
     

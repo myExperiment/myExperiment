@@ -1,11 +1,11 @@
-# myExperiment: db/migrate/20120518002924_create_annotations.rb
+# myExperiment: db/migrate/20120518002924_create_statements.rb
 #
 # Copyright (c) 2012 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
 class CreateAnnotations < ActiveRecord::Migration
   def self.up
-    create_table "annotations", :force => true do |t|
+    create_table "statements", :force => true do |t|
       t.integer  "research_object_id"
       t.string   "subject_text"
       t.string   "predicate_text"
@@ -16,6 +16,6 @@ class CreateAnnotations < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :announcements
+    drop_table :statements
   end
 end

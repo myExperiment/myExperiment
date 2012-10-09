@@ -11,10 +11,10 @@ module ResearchObjectsHelper
     p_uris = []
     o_uris = []
 
-    ro.annotations.each do |annotation|
-      s_uris << annotation.subject_text
-      p_uris << annotation.predicate_text
-      o_uris << annotation.objekt_text
+    ro.statements.each do |statement|
+      s_uris << statement.subject_text
+      p_uris << statement.predicate_text
+      o_uris << statement.objekt_text
     end
 
     uris = (s_uris + p_uris + o_uris).uniq!
@@ -38,14 +38,14 @@ module ResearchObjectsHelper
     uris
   end
 
-  def research_object_annotations(contributable)
+  def research_object_statements(contributable)
 
     return [] unless contributable.respond_to?(:content_blob)
 
     hash = contributable.content_blob.md5
     
-    annotations = Annotation.find(:all,
-        :joins      => "JOIN annotations AS a1 ON annotations.subject_text = a1.subject_text",
+    statements = Statement.find(:all,
+        :joins      => "JOIN statements AS a1 ON statements.subject_text = a1.subject_text",
         :conditions => ["a1.predicate_text = ? AND a1.objekt_text = ?",
                         "http://purl.org/wf4ever/ro#checksum",
                         "urn:MD5:#{hash.upcase}"])

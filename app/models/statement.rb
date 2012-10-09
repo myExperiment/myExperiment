@@ -1,9 +1,9 @@
-# myExperiment: app/models/annotations.rb
+# myExperiment: app/models/statements.rb
 #
 # Copyright (c) 2012 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-class Annotation < ActiveRecord::Base
+class Statement < ActiveRecord::Base
 
   belongs_to :research_object
 

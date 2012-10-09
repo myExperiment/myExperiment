@@ -2380,17 +2380,17 @@ input.auto_complete_field.error {
   -webkit-border-bottom-right-radius: 6px;
 }
 
-#annotation_list TABLE {
+#statement_list TABLE {
   border-collapse: collapse;
   margin-bottom: 16px;
   width: 100%;
 }
 
-#annotation_list DIV {
+#statement_list DIV {
   box-shadow: 5px 5px 8px #AAA;
 }
 
-#annotation_list TD {
+#statement_list TD {
   border: 1px solid gray;
   text-align: left;
 }

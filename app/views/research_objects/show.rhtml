@@ -29,13 +29,13 @@
 
   <tr>
     <td>RDF statement count</td>
-    <td><%= @contributable.annotations.length -%></td>
+    <td><%= @contributable.statements.length -%></td>
   </tr>
 
 </table>
 
 <% resources   = @contributable.wf4ever_resources %>
-<% annotations = @contributable.ao_annotations    %>
+<% annotations = @contributable.annotations       %>
 
 <% if resources.length > 0 %>
 
@@ -66,11 +66,11 @@
 
 <% end %>
 
-<% if @contributable.annotations.length > 0 %>
+<% if @contributable.statements.length > 0 %>
 
   <div class="fold">
 
-    <div class="foldTitle">RDF statements (<%= @contributable.annotations.length -%>)</div>
+    <div class="foldTitle">RDF statements (<%= @contributable.statements.length -%>)</div>
     <div class="foldContent" style="display: none;">
 
       <h2>Summary</h2>
@@ -95,12 +95,12 @@
       <h2>Statements</h2>
 
       <div id="annotation_list">
-        <% @contributable.annotations.each do |annotation| %>
+        <% @contributable.statements.each do |statement| %>
           <div>
             <table>
-              <tr><td><%=h annotation.subject_text   -%></td></tr>
-              <tr><td><%=h annotation.predicate_text -%></td></tr>
-              <tr><td><%=h annotation.objekt_text    -%></td></tr>
+              <tr><td><%=h statement.subject_text   -%></td></tr>
+              <tr><td><%=h statement.predicate_text -%></td></tr>
+              <tr><td><%=h statement.objekt_text    -%></td></tr>
             </table>
           </div>
         <% end %>
