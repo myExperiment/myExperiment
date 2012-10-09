@@ -57,7 +57,7 @@ class Workflow < ActiveRecord::Base
     :mutable => [ :contributor, :title, :unique_name, :body, :body_html,
                   :file_ext, :last_edited_by, :content_type_id, :image, :svg ]
 
-  acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
+  acts_as_solr(:fields => [ :title, :body, :filename, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
                :boost => "rank",
                :include => [ :comments ]) if Conf.solr_enable
 
