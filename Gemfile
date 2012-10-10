@@ -2,7 +2,7 @@ source "http://rubygems.org"
 
 gem "rails", "2.3.14"
 gem "mysql", "~> 2.8.1"
-gem "mongrel", "~> 1.2.0.pre2"
+gem "mongrel", "~> 1.1.5"
 gem "mongrel_cluster", "~> 1.0.5"
 gem "rubyzip", "~> 0.9.4"
 gem "oauth", "~> 0.4.3"
