@@ -36,7 +36,6 @@ Rails::Initializer.run do |config|
     :acts_as_rateable,
     :acts_as_solr,
     :acts_as_taggable_redux,
-    :acts_as_versioned,
     :auto_complete,
     :browser_filters,
     :encrypted_attributes,
