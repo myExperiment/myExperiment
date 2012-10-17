@@ -37,7 +37,6 @@ Rails::Initializer.run do |config|
     :acts_as_solr,
     :acts_as_taggable_redux,
     :auto_complete,
-    :browser_filters,
     :encrypted_attributes,
     :exception_notification,
     :fckeditor,
