@@ -38,7 +38,6 @@ Rails::Initializer.run do |config|
     :acts_as_taggable_redux,
     :auto_complete,
     :encrypted_attributes,
-    :exception_notification,
     :fckeditor,
     :headliner,
     :oauth,
