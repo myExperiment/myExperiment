@@ -44,7 +44,6 @@ Rails::Initializer.run do |config|
     :oauth_plugin,
     :open_id_authentication,
     :paginating_find,
-    :qrcode,
     :query_stats,
     :recaptcha,
     :simile_timeline,
