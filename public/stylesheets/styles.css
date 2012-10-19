@@ -1521,6 +1521,7 @@ div.auto_complete ul strong.highlight {
 	line-height: 1.4;
 }
 
+.derived_annotation_notice,
 .none_text {
 	font-style: italic;
 	color: #666666;

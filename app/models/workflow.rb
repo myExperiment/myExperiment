@@ -160,6 +160,30 @@ class Workflow < ActiveRecord::Base
     return proc_class.can_infer_metadata?
   end
   
+  def can_infer_title?
+    if processor_class
+      processor_class.can_infer_title?
+    else
+      false
+    end
+  end
+
+  def can_infer_description?
+    if processor_class
+      processor_class.can_infer_description?
+    else
+      false
+    end
+  end
+
+  def can_generate_preview_image?
+    if processor_class
+      processor_class.can_generate_preview_image?
+    else
+      false
+    end
+  end
+
   def type_display_name
     content_type.title
   end

@@ -550,23 +550,34 @@ class WorkflowsController < ApplicationController
   # PUT /workflows/1;update_version
   def update_version
 
+    original_title = @workflow.title
+
     success = false
 
-    if params[:version]
+    if params[:version] && params[:workflow]
 
-      original_title = @workflow.title
-      version        = @workflow.find_version(params[:version])
-      do_preview     = !params[:workflow][:preview].blank? && params[:workflow][:preview].size > 0
+      version    = @workflow.find_version(params[:version])
       
-      attributes_to_update = {
-        :title          => params[:workflow][:title], 
-        :body           => params[:workflow][:body],
-        :last_edited_by => current_user.id
-      }
+      attributes_to_update = { :last_edited_by => current_user.id }
 
-      # only set the preview to update if one was provided
+      # only update title if the title isn't provided from the workflow processor
 
-      attributes_to_update[:image] = params[:workflow][:preview] if do_preview
+      unless version.can_infer_title?
+        attributes_to_update[:title] = params[:workflow][:title] if params[:workflow][:title]
+      end
+
+      # only update description if the description isn't provided by the workflow processor
+
+      unless version.can_infer_description?
+        attributes_to_update[:body]  = params[:workflow][:body]  if params[:workflow][:body]
+      end
+
+      # only set the preview to update if one was provided and it can't be
+      # generated from the workflow processer
+
+      if !version.can_generate_preview_image? && !params[:workflow][:preview].blank? && params[:workflow][:preview].size > 0
+        attributes_to_update[:image] = params[:workflow][:preview]
+      end
 
       success = version.update_attributes(attributes_to_update)
     end
