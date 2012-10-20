@@ -64,6 +64,14 @@ module WorkflowProcessors
     def self.can_infer_metadata?
       true
     end
+
+    def self.can_infer_title?
+      true
+    end
+
+    def self.can_infer_description?
+      true
+    end
     
     def self.can_generate_preview_image?
       true

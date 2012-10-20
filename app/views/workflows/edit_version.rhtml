@@ -1,5 +1,11 @@
 <% t "Edit Version" -%>
 
+<% title_edit       = !@viewing_version.can_infer_title? %>
+<% preview_edit     = !@viewing_version.can_generate_preview_image? %>
+<% description_edit = !@viewing_version.can_infer_description? %>
+
+<% can_edit_anything = title_edit || preview_edit || description_edit %>
+
 <%= javascript_include_tag "fckeditor/fckeditor.js" %>
 
 <h1>
@@ -25,29 +31,50 @@
 	    <!-- Title -->
 			<p>
 				<b>Title</b>
-				<span class="required">*</span>
+        <% if title_edit %>
+          <span class="required">*</span>
+        <% end %>
 			</p>
-		  <%= text_field_tag 'workflow[title]', @viewing_version.title, :size => '60' %>
+
+      <% if title_edit %>
+        <%= text_field_tag 'workflow[title]', @viewing_version.title, :size => '60' %>
+      <% else %>
+        <p class="derived_annotation_notice">The title is derived from the workflow file.  Please edit the workflow directly and upload a new version to change the title of this workflow.</p>
+      <% end %>
 			
 			<br/>
 			
 			<!-- Preview Image -->
 			<p><b>Preview Image</b></p>
-			<input id="workflow_preview" name="workflow[preview]" size="50" type="file" />
-			<p style="font-size: 77%; color: #666666; font-style: italic; padding-top: 0;">
-					Leave this blank to keep the existing preview image
-			</p>
+
+      <% if preview_edit %>
+        <input id="workflow_preview" name="workflow[preview]" size="50" type="file" />
+        <p style="font-size: 77%; color: #666666; font-style: italic; padding-top: 0;">
+            Leave this blank to keep the existing preview image
+        </p>
+      <% else %>
+        <p class="derived_annotation_notice">The preview image is derived from the workflow file.  Please edit the workflow directly and upload a new version to change the appearance of this workflow.</p>
+      <% end %>
 				
 			<br/>
 			
 			<!-- Description -->
 			<p><b>Description</b></p>
-			<%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '500px', :height => '500px') %>
-	
-	  	<br />
+      <% if description_edit %>
+        <%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '500px', :height => '500px') %>
+    
+        <br />
+      <% else %>
+        <p class="derived_annotation_notice">The description is derived from the workflow file.  Please edit the workflow directly and upload a new version to change the description of this workflow.</p>
+      <% end %>
+
 			<br />
 	
-	  	<center><%= submit_tag "Update", :disable_with => "Updating..." %></center>
+      <center>
+        <% if can_edit_anything %>
+          <%= submit_tag "Update", :disable_with => "Updating..." %>
+        <% end %>
+      </center>
 	
 		</div>
 	</center>

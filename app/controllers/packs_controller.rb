@@ -378,7 +378,7 @@ class PacksController < ApplicationController
         errors, type, entry = @pack.resolve_link(uri, request.host, request.port.to_s, current_user)
 
         entry.comment = params[:comment]
-        @contributable = entry.contributable
+        @contributable = entry.contributable if type == 'contributable'
 
         # By this point, we either have errors, or have an entry that needs saving.
         if errors.empty? && entry.save

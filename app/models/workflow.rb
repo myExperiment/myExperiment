@@ -57,7 +57,7 @@ class Workflow < ActiveRecord::Base
     :mutable => [ :contributor, :title, :unique_name, :body, :body_html,
                   :file_ext, :last_edited_by, :content_type_id, :image, :svg ]
 
-  acts_as_solr(:fields => [ :title, :body, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
+  acts_as_solr(:fields => [ :title, :body, :filename, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
                :boost => "rank",
                :include => [ :comments ]) if Conf.solr_enable
 
@@ -160,6 +160,30 @@ class Workflow < ActiveRecord::Base
     return proc_class.can_infer_metadata?
   end
   
+  def can_infer_title?
+    if processor_class
+      processor_class.can_infer_title?
+    else
+      false
+    end
+  end
+
+  def can_infer_description?
+    if processor_class
+      processor_class.can_infer_description?
+    else
+      false
+    end
+  end
+
+  def can_generate_preview_image?
+    if processor_class
+      processor_class.can_generate_preview_image?
+    else
+      false
+    end
+  end
+
   def type_display_name
     content_type.title
   end

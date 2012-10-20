@@ -1,4 +1,4 @@
-<% if Authorization.check('create', Comment, current_user, context) %>
+<% if defined?(context) && Authorization.check('create', Comment, current_user, context) %>
   <div class="addCommentBox">
     <% form_remote_tag(
         :url =>      polymorphic_path(context) + "/comments",

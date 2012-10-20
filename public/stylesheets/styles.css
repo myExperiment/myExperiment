@@ -1529,6 +1529,7 @@ div.auto_complete ul strong.highlight {
 	line-height: 1.4;
 }
 
+.derived_annotation_notice,
 .none_text {
 	font-style: italic;
 	color: #666666;
@@ -2306,8 +2307,13 @@ table.topic td.tag_vote{
 }
 
 #user-check-list .sleep TD {
-	border: 1px solid #808080;
-  background: #c0c0c0;
+	border: 1px solid #c0e0c0;
+  background: #e0ffe0;
+}
+
+#user-check-list .suspect TD {
+	border: 1px solid #e0c0c0;
+  background: #ffe0e0;
 }
 
 #user-check-list .delete TD {
@@ -2450,5 +2456,14 @@ DIV.activity IMG.framed  {
 
 .metadata-datetime {
   font-size: 8pt;
+}
+
+.new-session-sign-in {
+  width: 190px;
+  border: 1px solid #CCCCCC;
+  border-radius: 6px 6px 6px 6px;
+  -moz-border-radius: 6px 6px 6px 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -webkit-border-bottom-right-radius: 6px;
 }
 

@@ -446,3 +446,12 @@ task "myexp:spam:run" do
   end
 end
 
+desc 'Rebuild checksums in the content blob store'
+task "myexp:blobstore:checksum:rebuild" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  conn = ActiveRecord::Base.connection
+
+  conn.execute('UPDATE content_blobs SET sha1 = SHA1(data), md5 = MD5(data)')
+end
+

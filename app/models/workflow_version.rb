@@ -3,6 +3,8 @@
 # Copyright (c) 2012 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'lib/previews'
+
 class WorkflowVersion < ActiveRecord::Base
 
   is_version_of :workflow
@@ -33,7 +35,7 @@ class WorkflowVersion < ActiveRecord::Base
 
   def processor_class
     if self.content_type
-        @processor_class ||= WorkflowTypesHandler.processor_class_for_type_display_name(self.content_type.title)
+      @processor_class ||= WorkflowTypesHandler.processor_class_for_type_display_name(self.content_type.title)
     end
   end
 
@@ -42,5 +44,28 @@ class WorkflowVersion < ActiveRecord::Base
     @display_data_format = (klass.nil? ? self.file_ext : klass.display_data_format)
   end
 
+  def can_infer_title?
+    if processor_class
+      processor_class.can_infer_title?
+    else
+      false
+    end
+  end
+
+  def can_infer_description?
+    if processor_class
+      processor_class.can_infer_description?
+    else
+      false
+    end
+  end
+
+  def can_generate_preview_image?
+    if processor_class
+      processor_class.can_generate_preview_image?
+    else
+      false
+    end
+  end
 end
 

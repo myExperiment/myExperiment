@@ -602,7 +602,7 @@ class UsersController < ApplicationController
 
     if @to > 0
 
-      users = User.find(:all, :conditions => ["activated_at IS NOT NULL AND id >= ? AND id <= ? AND (account_status IS NULL OR (account_status != 'sleep' AND account_status != 'whitelist'))", @from, @to])
+      users = User.find(:all, :conditions => ["activated_at IS NOT NULL AND id >= ? AND id <= ? AND (account_status IS NULL OR (account_status != 'sleep' AND account_status != 'suspect' AND account_status != 'whitelist'))", @from, @to])
 
       @userlist = users.map do |user|
 
@@ -708,6 +708,8 @@ class UsersController < ApplicationController
             user.update_attributes(:account_status => "whitelist")
           when "sleep"
             user.update_attributes(:account_status => "sleep")
+          when "suspect"
+            user.update_attributes(:account_status => "suspect")
           when "delete"
 
             # build an "all elements" user.xml record
