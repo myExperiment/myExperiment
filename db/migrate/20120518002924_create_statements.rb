@@ -3,10 +3,13 @@
 # Copyright (c) 2012 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-class CreateAnnotations < ActiveRecord::Migration
+class CreateStatements < ActiveRecord::Migration
   def self.up
     create_table "statements", :force => true do |t|
       t.integer  "research_object_id"
+      t.string   "resource"
+      t.integer  "version"
+      t.text     "context_uri"
       t.string   "subject_text"
       t.string   "predicate_text"
       t.string   "objekt_text"
