@@ -46,7 +46,7 @@
 						<% unless network.members.empty? -%>
 							<div class="desc" style="margin-top: 0.4em;">
 								<p style="font-size: 85%;"><b>Members (<%= network.members.length %>):</b></p>
-								<div style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40 } %></div>
+								<div style="font-size: 77%;"><%= render :partial => "networks/members", :locals => { :collection => network.members(true), :size => 40, :limit => 6 } %></div>
 							</div>
 						<% end -%>
 						

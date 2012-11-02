@@ -267,9 +267,9 @@ li {
 }
 
 #hlist {
-	width: 100%;
 	margin: 0;
 	padding-left: 1em;
+  padding-left: 2em;
 }
 
 #hlist ul {
