@@ -777,6 +777,8 @@ module ApplicationHelper
       return "biocat_icon.png"
     when "usercheck"
       return "famfamfam_silk/flag_red.png"
+    when "transfer_ownership"
+      return "famfamfam_silk/key_go.png"
     else
       return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end
