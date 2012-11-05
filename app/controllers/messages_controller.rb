@@ -108,7 +108,7 @@ class MessagesController < ApplicationController
         @message = Message.new(:to => @reply.from,
                                :reply_id => @reply.id,
                                :subject => subject,
-                               :body => @reply.body.split(/\n/).collect {|line| ">> #{line}"}.join) # there has to be a 'ruby-er' way of doing this?
+                               :body => ActionController::Base.helpers.strip_tags(@reply.body.gsub(/^/, ">> ")))
       else
         @message = Message.new
       end
