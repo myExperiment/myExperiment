@@ -166,21 +166,15 @@ class Network < ActiveRecord::Base
                           
   # Finds all the contributions that have been explicitly shared via Permissions
   def shared_contributions
-    list = []
-    self.permissions.each do |p|
-      p.policy.contributions.each do |c|
-        list << c unless c.nil? || c.contributable.nil?
-      end
-    end
-    list
+    Contribution.find(:all,
+                      :select     => "contributions.*",
+                      :joins      => "JOIN policies p on (contributions.policy_id = p.id) JOIN permissions e on (p.id = e.policy_id)",
+                      :conditions => [ "e.contributor_id=? AND e.contributor_type = 'Network'", id ])
   end
   
   # Finds all the contributables that have been explicitly shared via Permissions
   def shared_contributables
-    c = shared_contributions.map do |c| c.contributable end
-
-    # filter out blogs until they've gone completely
-    c.select do |x| x.class != Blog end
+    shared_contributions.map {|c| c.contributable }
   end
 
   # New member policy

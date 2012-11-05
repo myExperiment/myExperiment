@@ -269,7 +269,7 @@ li {
 #hlist {
 	margin: 0;
 	padding-left: 1em;
-  padding-left: 2em;
+  padding-right: 1em;
 }
 
 #hlist ul {
