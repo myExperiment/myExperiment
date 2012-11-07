@@ -25,6 +25,8 @@ class Workflow < ActiveRecord::Base
   belongs_to :content_type
   belongs_to :license
 
+  has_many :workflow_processors, :dependent => :destroy
+
   before_validation :check_unique_name
   before_validation :apply_extracted_metadata
 
@@ -362,6 +364,10 @@ class Workflow < ActiveRecord::Base
 
   def statistics_for_rest_api
     APIStatistics.statistics(self)
+  end
+
+  def wsdl_deprecations
+    WsdlDeprecation.find_all_by_wsdl(workflow_processors.map {|wp| wp.wsdl})
   end
 
 end

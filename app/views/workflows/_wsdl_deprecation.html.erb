@@ -1,0 +1,21 @@
+<div class="wsdl_deprecation">
+  <p>
+    <img src="/images/famfamfam_silk/exclamation.png" style="vertical-align: middle;"/>
+    This workflow uses a service that
+    <% if wsdl_deprecation.deprecated_at.past? %>
+      is deprecated as of <strong><%= wsdl_deprecation.deprecated_at.strftime("%d %b %Y") -%></strong>
+      (<%= time_ago_in_words(wsdl_deprecation.deprecated_at) -%> ago), and may no longer function.
+    <% else %>
+      will be deprecated on <strong><%= wsdl_deprecation.deprecated_at.strftime("%d %b %Y") -%></strong>
+      (in <%= time_ago_in_words(wsdl_deprecation.deprecated_at) -%>), and may no longer function after this date.
+    <% end %>
+  </p>
+  <% unless wsdl_deprecation.details.nil? %>
+  <p>
+    <strong>Details:</strong> <%= wsdl_deprecation.details %>
+  </p>
+  <% end %>
+  <p>
+    <strong>Affected service WSDL:</strong> <%= wsdl_deprecation.wsdl %>
+  </p>
+</div>
