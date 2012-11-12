@@ -1,6 +1,6 @@
 <% t "#{h @workflow.title} (#{h @workflow.contributor_name}) [#{h(@workflow.type_display_name)} Workflow]" -%>
 
-<%= render :partial => "workflows/wsdl_deprecation", :collection => @workflow.wsdl_deprecations -%>
+<%= render :partial => "workflows/deprecation_event", :collection => @workflow.deprecations -%>
 
 <ul class="sectionIcons">
 	<% if @authorised_to_edit -%>

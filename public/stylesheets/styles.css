@@ -2381,7 +2381,7 @@ input.auto_complete_field.error {
   -webkit-border-bottom-right-radius: 6px;
 }
 
-div.wsdl_deprecation {
+div.deprecation_event {
   border: 1px solid #e24a3e;
   background-color: #ffcccc;
   padding: 0.5em;

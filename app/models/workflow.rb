@@ -366,8 +366,9 @@ class Workflow < ActiveRecord::Base
     APIStatistics.statistics(self)
   end
 
-  def wsdl_deprecations
-    WsdlDeprecation.find_all_by_wsdl(workflow_processors.map {|wp| wp.wsdl})
+  # Returns a hash map of lists of wsdls grouped by their related deprecation event
+  def deprecations
+    WsdlDeprecation.find_all_by_wsdl(workflow_processors.map {|wp| wp.wsdl}).group_by {|wd| wd.deprecation_event}
   end
 
 end

@@ -1,0 +1,32 @@
+<% wsdl_deprecations = deprecation_event[1] %>
+<% deprecation_event = deprecation_event[0] %>
+
+<% time_string = deprecation_event.date.strftime("#{deprecation_event.date.day.ordinalize} %B %Y") -%>
+<div class="deprecation_event">
+  <p>
+    <img src="/images/famfamfam_silk/exclamation.png" style="vertical-align: middle; float: left; margin: 0.5em"/>
+    This workflow uses one or more services that
+    <% if deprecation_event.date.past? %>
+      are deprecated as of <strong><%= time_string -%></strong>
+      (<%= time_ago_in_words(deprecation_event.date) -%> ago), and may no longer function.
+    <% else %>
+      will be deprecated on <strong><%= time_string -%></strong>
+      (in <%= time_ago_in_words(deprecation_event.date) -%>), and may no longer function after this date.
+    <% end %>
+    <a href="#" onclick="$(this).up(1).select('.hidden').each(function(el) {el.toggle();})">Show details...</a>
+  </p>
+  <div class="hidden" style="display: none">
+    <p><strong>Affected service WSDL<%= "s" if wsdl_deprecations.size > 1-%>:</strong></p>
+    <ul>
+      <% wsdl_deprecations.each do |wd| %>
+        <li><%= wd.wsdl -%></li>
+      <% end %>
+    </ul>
+
+    <% unless deprecation_event.details.nil? %>
+    <p class="hidden" style="display: none">
+      <strong>Details:</strong> <%= deprecation_event.details %>
+    </p>
+    <% end %>
+  </div>
+</div>
