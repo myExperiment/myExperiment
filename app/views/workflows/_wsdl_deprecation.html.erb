@@ -1,21 +1,23 @@
+<% time_string = wsdl_deprecation.deprecated_at.strftime("#{wsdl_deprecation.deprecated_at.day.ordinalize} %B %Y") -%>
 <div class="wsdl_deprecation">
   <p>
-    <img src="/images/famfamfam_silk/exclamation.png" style="vertical-align: middle;"/>
+    <img src="/images/famfamfam_silk/exclamation.png" style="vertical-align: middle; float: left; margin: 0.5em"/>
     This workflow uses a service that
     <% if wsdl_deprecation.deprecated_at.past? %>
-      is deprecated as of <strong><%= wsdl_deprecation.deprecated_at.strftime("%d %b %Y") -%></strong>
+      is deprecated as of <strong><%= time_string -%></strong>
       (<%= time_ago_in_words(wsdl_deprecation.deprecated_at) -%> ago), and may no longer function.
     <% else %>
-      will be deprecated on <strong><%= wsdl_deprecation.deprecated_at.strftime("%d %b %Y") -%></strong>
+      will be deprecated on <strong><%= time_string -%></strong>
       (in <%= time_ago_in_words(wsdl_deprecation.deprecated_at) -%>), and may no longer function after this date.
     <% end %>
+    <a href="#" onclick="$(this).up(1).select('.hidden').each(function(el) {el.toggle();})">Show details...</a>
+  </p>
+  <p class="hidden" style="display :none">
+    <strong>Affected service WSDL:</strong> <%= wsdl_deprecation.wsdl %>
   </p>
   <% unless wsdl_deprecation.details.nil? %>
-  <p>
+  <p class="hidden" style="display :none">
     <strong>Details:</strong> <%= wsdl_deprecation.details %>
   </p>
   <% end %>
-  <p>
-    <strong>Affected service WSDL:</strong> <%= wsdl_deprecation.wsdl %>
-  </p>
 </div>
