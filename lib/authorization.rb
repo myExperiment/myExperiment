@@ -429,9 +429,14 @@ module Authorization
     select_parts << "#{model.table_name}.*" if include_permissions
 
     if include_permissions || permissions_only
-      select_parts << "BIT_OR(#{view_conditions(user_id, friends, networks)})     AS view_permission"
-      select_parts << "BIT_OR(#{download_conditions(user_id, friends, networks)}) AS download_permission"
-      select_parts << "BIT_OR(#{edit_conditions(user_id, friends, networks)})     AS edit_permission"
+
+      view_conditions     = view_conditions(user_id, friends, networks)
+      download_conditions = download_conditions(user_id, friends, networks)
+      edit_conditions     = edit_conditions(user_id, friends, networks)
+
+      select_parts << "BIT_OR(#{view_conditions})     AS view_permission"
+      select_parts << "BIT_OR(#{download_conditions}) AS download_permission"
+      select_parts << "BIT_OR(#{edit_conditions})     AS edit_permission"
     end
 
     opts[:select] = select_parts.join(", ") unless select_parts.empty?
@@ -439,7 +444,23 @@ module Authorization
     opts[:group] ||= 'contributions.contributable_type, contributions.contributable_id'
     opts[:joins] = joins
 
-    model.scoped(opts)
+    scope = model.scoped(opts) do
+      def permission_conditions
+        @permission_conditions
+      end
+
+      def permission_conditions=(permission_conditions)
+        @permission_conditions = permission_conditions
+      end
+    end
+
+    scope.permission_conditions = {
+      :view_conditions     => view_conditions,
+      :download_conditions => download_conditions,
+      :edit_conditions     => edit_conditions
+    }
+
+    scope
   end
 end
 

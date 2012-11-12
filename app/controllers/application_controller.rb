@@ -685,7 +685,7 @@ class ApplicationController < ActionController::Base
       objects = collection.find(
           :all,
           :select => "#{filter_id_column} AS filter_id, #{filter_label_column} AS filter_label, #{count_expr} AS filter_count",
-          :joins => merge_joins(joins, pivot_options, :auth_type => opts[:auth_type], :auth_id => opts[:auth_id]),
+          :joins => merge_joins(joins, pivot_options, collection.permission_conditions, :auth_type => opts[:auth_type], :auth_id => opts[:auth_id]),
           :conditions => conditions,
           :group => "#{filter_id_column}",
           :limit => limit,
@@ -797,14 +797,17 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    def merge_joins(joins, pivot_options, opts = {})
+    def merge_joins(joins, pivot_options, permission_conditions, opts = {})
       if joins.length.zero?
         nil
       else
         joins.uniq.map do |j|
           text = pivot_options["joins"][j].clone
-          text.gsub!(/RESULT_TYPE/, opts[:auth_type])
-          text.gsub!(/RESULT_ID/,   opts[:auth_id])
+          text.gsub!(/RESULT_TYPE/,         opts[:auth_type])
+          text.gsub!(/RESULT_ID/,           opts[:auth_id])
+          text.gsub!(/VIEW_CONDITIONS/,     permission_conditions[:view_conditions])
+          text.gsub!(/DOWNLOAD_CONDITIONS/, permission_conditions[:download_conditions])
+          text.gsub!(/EDIT_CONDITIONS/,     permission_conditions[:edit_conditions])
           text
         end.join(" ")
       end
@@ -904,7 +907,7 @@ class ApplicationController < ActionController::Base
     results = collection.find(
         :all,
         :page => { :size => params["num"] ? params["num"].to_i : nil, :current => params["page"] },
-        :joins => merge_joins(joins, pivot_options, :auth_type => auth_type, :auth_id => auth_id),
+        :joins => merge_joins(joins, pivot_options, collection.permission_conditions, :auth_type => auth_type, :auth_id => auth_id),
         :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
         :group => "#{group_by} #{having_clause}",
         :order => order_options["order"])

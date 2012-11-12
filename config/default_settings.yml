@@ -532,7 +532,7 @@ pivot_options:
 
   joins:
 
-    workflow_processors: INNER JOIN workflow_processors ON RESULT_TYPE = 'Workflow' AND workflow_processors.workflow_id = RESULT_ID
+    workflow_processors: INNER JOIN workflow_processors ON RESULT_TYPE = 'Workflow' AND workflow_processors.workflow_id = RESULT_ID AND DOWNLOAD_CONDITIONS = 1
     taggings: LEFT OUTER JOIN taggings ON RESULT_TYPE = taggings.taggable_type AND RESULT_ID = taggings.taggable_id
     services: INNER JOIN services ON RESULT_TYPE = 'Service' AND RESULT_ID = services.id
     curation_events: INNER JOIN curation_events ON curation_events.object_type = RESULT_TYPE AND curation_events.object_id = RESULT_ID
