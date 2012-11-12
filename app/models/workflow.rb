@@ -332,7 +332,7 @@ class Workflow < ActiveRecord::Base
   end
   
   def unique_wsdls
-    WorkflowProcessor.find(:all, :conditions => ['workflow_id = ? AND wsdl IS NOT NULL', 16]).map do |wp| wp.wsdl end.uniq
+    WorkflowProcessor.find(:all, :conditions => ['workflow_id = ? AND wsdl IS NOT NULL', id]).map do |wp| wp.wsdl end.uniq
   end
 
   def workflows_with_similar_services
