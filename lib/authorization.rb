@@ -48,8 +48,6 @@ module Authorization
 
     user = nil unless user.kind_of?(User)
     
-    is_authorized = false
-
     object_type = object.class == Class ? object.name : object.class.name
 
     case object_type
@@ -82,9 +80,9 @@ module Authorization
         case action
           when "edit", "destroy"
             # check to allow only admin to edit / delete the group
-            is_authorized = user && user.network_admin?(object.id)
+            return user && user.network_admin?(object.id)
           else
-            is_authorized = true
+            return true
         end
       
       when "Comment"
@@ -92,21 +90,21 @@ module Authorization
           when "create"
 
             # Comments can be created by authenticated users that can view the context
-            is_authorized = !user.nil? && Authorization.check('view', context, user)
+            return !user.nil? && Authorization.check('view', context, user)
 
           when "destroy"
 
             # Users can delete their own comments.  Curators and
             # administrators can delete any comment.
   
-            is_authorized = object.user == user || (user && user.admin?) || (user && user.curator?)
+            return object.user == user || (user && user.admin?) || (user && user.curator?)
 
           when "view"
             # user can view comment if they can view the item that this comment references 
-            is_authorized = Authorization.check('view', object.commentable, user)
+            return Authorization.check('view', object.commentable, user)
           else
             # 'edit' or any other actions are not allowed on comments
-            is_authorized = false
+            return false
         end
       
       when "Rating"
@@ -114,12 +112,12 @@ module Authorization
           when "create"
 
             # Ratings can be created by authenticated users that can view the context
-            is_authorized = !user.nil? && Authorization.check('view', context, user)
+            return !user.nil? && Authorization.check('view', context, user)
 
           when "edit", "destroy"
 
             # Users can edit or remove their own ratings
-            is_authorized = !user.nil? && object.user == user
+            return !user.nil? && object.user == user
         end
 
       when "Tagging"
@@ -127,79 +125,73 @@ module Authorization
           when "create"
 
             # Taggings can be created by authenticated users that can view the context
-            is_authorized = !user.nil? && Authorization.check('view', context, user)
+            return !user.nil? && Authorization.check('view', context, user)
 
           when "destroy"
 
             # Users can delete their own taggings
-            is_authorized = !user.nil? && object.user == user
+            return !user.nil? && object.user == user
         end
 
       when "Bookmark"
         case action
           when "create"
             # Bookmarks can be created by authenticated users that can view the context
-            is_authorized = !user.nil? && Authorization.check('view', context, user)
+            return !user.nil? && Authorization.check('view', context, user)
           when "destroy"
             # only the user who created the bookmark can delete it
-            is_authorized = object.user == user
+            return object.user == user
           when "view"
             # everyone can view bookmarks
-            is_authorized = true
+            return true
 
           else
             # 'edit' or any other actions are not allowed on comments
-            is_authorized = false
+            return false
         end
       
       when "Experiment"
 
-        if user.nil?
-          is_authorized = false
+        return false if user.nil?
+
+        case object.contributor_type.to_s
+        when "User"
+          return object.contributor_id.to_i == user.id.to_i
+        when "Network"
+          return object.contributor.member?(user.id)
         else
-          case object.contributor_type.to_s
-          when "User"
-            is_authorized = object.contributor_id.to_i == user.id.to_i
-          when "Network"
-            is_authorized = object.contributor.member?(user.id)
-          else
-            is_authorized = false
-          end 
-        end
+          return false
+        end 
 
       when "TavernaEnactor", "Runner"
 
-        if user.nil?
-          is_authorized = false
-        else
-          case object.contributor_type.to_s
-          when "User"
-            is_authorized = object.contributor_id.to_i == user.id.to_i
-          when "Network"
-            if ['edit', 'destroy'].include?(action.downcase)
-              is_authorized = object.contributor.owner?(user.id)
-            else
-              is_authorized = object.contributor.member?(user.id)
-            end
+        return false if user.nil?
+
+        case object.contributor_type.to_s
+        when "User"
+          return object.contributor_id.to_i == user.id.to_i
+        when "Network"
+          if ['edit', 'destroy'].include?(action.downcase)
+            return object.contributor.owner?(user.id)
           else
-            is_authorized = false
+            return object.contributor.member?(user.id)
           end
+        else
+          return false
         end
 
       when "Job"
 
-        if user.nil?
-          is_authorized = false
+        return false if user.nil?
+
+        case object.experiment.contributor_type.to_s
+        when "User"
+          return object.experiment.contributor_id.to_i == user.id.to_i
+        when "Network"
+          return object.experiment.contributor.member?(user.id)
         else
-          case object.experiment.contributor_type.to_s
-          when "User"
-            is_authorized = object.experiment.contributor_id.to_i == user.id.to_i
-          when "Network"
-            is_authorized = object.experiment.contributor.member?(user.id)
-          else
-            is_authorized = false
-          end 
-        end
+          return false
+        end 
       
       when "ContentType"
 
@@ -207,15 +199,15 @@ module Authorization
 
           when "view"
             # anyone can view content types
-            is_authorized = true
+            return true
      
           when "edit"
             # the owner of the content type can edit
-            is_authorized = !user.nil? && object.user == user
+            return !user.nil? && object.user == user
 
           when "destroy"
             # noone can destroy them yet - they just fade away from view
-            is_authorized = false
+            return false
         end
 
       when "User"
@@ -224,15 +216,15 @@ module Authorization
 
           when "view"
             # everyone can view users
-            is_authorized = true
+            return true
 
           when "edit"
             # the owner of a user record can edit
-            is_authorized = !user.nil? && user == object
+            return !user.nil? && user == object
 
           when "destroy"
             # only adminstrators can delete accounts at present
-            is_authorized = user && user.admin?
+            return user && user.admin?
         end
 
       when "Picture"
@@ -244,16 +236,16 @@ module Authorization
             return true if object.owner == user
 
             # anyone can view a user's selected pictures
-            is_authorized = object.selected?
+            return object.selected?
 
           when "edit", "destroy"
             # only the owner of a picture can edit/destroy
-            is_authorized = object.owner == user
+            return object.owner == user
         end
 
       when "ClientApplication"
 
-          is_authorized = object.user == user
+          return object.user == user
 
       when "Ontology"
 
@@ -261,15 +253,15 @@ module Authorization
 
           when "create"
             #  Authenticated users can create ontologies
-            is_authorized = !user.nil?
+            return !user.nil?
 
           when "view"
             # All users can view
-            is_authorized = true
+            return true
 
           when "edit", "destroy"
             # Users can edit and destroy their own ontologies
-            is_authorized = object.user == user
+            return object.user == user
         end
 
       when "Predicate"
@@ -285,11 +277,11 @@ module Authorization
 
           when "view"
             # All users can view predicates
-            is_authorized = true
+            return true
 
           else
             # All other predicate permissions are inherited from the ontology
-            is_authorized = Authorization.check('edit', object.ontology, user)
+            return Authorization.check('edit', object.ontology, user)
         end
 
       when "Relationship"
@@ -305,11 +297,11 @@ module Authorization
 
           when "view"
             # Users that can view the context can view the relationship
-            is_authorized = Authorization.check('view', object.context, user)
+            return Authorization.check('view', object.context, user)
 
           else
             # All other relationship permissions depend on edit access to the context
-            is_authorized = Authorization.check('edit', object.context, user)
+            return Authorization.check('edit', object.context, user)
         end
 
       when "PackContributableEntry", "PackRemoteEntry"
@@ -325,7 +317,7 @@ module Authorization
 
           when "edit", "destroy"
             # Users that can edit the pack can also edit / delete items
-            is_authorized = Authorization.check('edit', object.pack, user)
+            return Authorization.check('edit', object.pack, user)
 
         end
 
@@ -333,7 +325,8 @@ module Authorization
         # don't recognise the kind of object that is being authorized, so
         # we don't specifically know that it needs to be blocked;
         # therefore, allow any actions on it
-        is_authorized = true
+
+        return true
     end
     
     is_authorized
