@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 97) do
+ActiveRecord::Schema.define(:version => 20121112134053) do
 
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
@@ -219,6 +219,12 @@ ActiveRecord::Schema.define(:version => 97) do
     t.text     "details_html"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "deprecation_events", :force => true do |t|
+    t.string   "title"
+    t.datetime "date"
+    t.text     "details"
   end
 
   create_table "downloads", :force => true do |t|
@@ -833,6 +839,11 @@ ActiveRecord::Schema.define(:version => 97) do
     t.integer  "content_type_id"
     t.integer  "license_id"
     t.integer  "preview_id"
+  end
+
+  create_table "wsdl_deprecations", :force => true do |t|
+    t.string  "wsdl"
+    t.integer "deprecation_event_id"
   end
 
 end
