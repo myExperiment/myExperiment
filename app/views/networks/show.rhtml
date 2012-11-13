@@ -1,6 +1,7 @@
 <% t "#{h @network.title}" -%>
 
-<% if logged_in? %>
+<ul class="sectionIcons">
+  <% if logged_in? %>
 		<% if current_user.membership_request_pending?(@network.id) %>
 		  <div class="box_standout">
 			  <span style="text-align: left;"><b>You have already sent a membership request to join this group. Awaiting admin confirmation.</b></span>
@@ -11,7 +12,6 @@
 			</div>
 		<% end %>
 
-  <ul class="sectionIcons">
     <% unless mine? @network %>
 		  <% if @network.member? current_user.id  %>
 			  <% cur_membership = Membership.find(:first, :conditions => ["network_id = ? AND user_id = ?", @network.id, current_user.id] ) %>
@@ -31,8 +31,9 @@
 			<li><%= icon('edit', edit_network_path(@network), 'Edit', nil, 'Edit Group') %></li>
       <li><%= icon('destroy', network_path(@network), 'Delete Group', { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
     <% end %>
-  </ul>
-<% end %>
+  <% end %>
+  <li><%= icon('content', content_network_path(@network), 'View Group Content', nil, 'View Group Content') %></li>
+</ul>
 
 <h1>
 	Group: <%=h @network.title %>
@@ -44,7 +45,7 @@
 	|
 	<a href="#news">News</a>
 	|
-	<a href="#shared_items">Shared Items (<%= @shared_items.length -%>)</a>
+	<%= link_to("Shared Items", content_network_path(@network)) -%>
 	|
 	<a href="#creditations">Creditations (<%= @network.creditations.length -%>)</a>
 	|
@@ -159,32 +160,6 @@
       <% end %>
     </div>
   </div>
-</div>
-
-<div class="tabContainer">
-  <div class="tabTitle">Shared Items (<%= @shared_items.length -%>)</div>
-  <div class="tabContent" id="shared_items">
-    <a name="shared_items"></a>
-		<% unless @shared_items.empty? %>
-  		<%= view_privileges_notice %>
-
-      <div style="float: right; margin: 0.5em;">
-        Sort:
-        <select onchange="javascript:location = this.options[this.selectedIndex].value;">
-          <% @item_sort_options.each do |option, label| %>
-            <option value="?item_sort=<%= option -%>#shared_items" <% if params[:item_sort] == option -%> selected="selected"<% end -%>><%= label -%></option>
-          <% end %>
-        </select>
-      </div>
-
-			<%= render :partial => "contributions/table", :locals => { :collection => @shared_items } %>
-
-      <div style="clear: both"></div>
-
-		<% else %>
-			<p class="none_text">No items have been shared with this Group yet.</p>
-		<% end %>
-	</div>
 </div>
 
 <div class="tabContainer">

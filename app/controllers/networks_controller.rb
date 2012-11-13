@@ -4,10 +4,13 @@
 # See license.txt for details.
 
 class NetworksController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :search, :all]
+
+  include ApplicationHelper
+
+  before_filter :login_required, :except => [:index, :show, :content, :search, :all]
   
   before_filter :find_networks, :only => [:all]
-  before_filter :find_network, :only => [:membership_request, :show, :tag]
+  before_filter :find_network, :only => [:membership_request, :show, :tag, :content]
   before_filter :find_network_auth_admin, :only => [:invite, :membership_invite, :membership_invite_external]
   before_filter :find_network_auth_owner, :only => [:edit, :update, :destroy]
   
@@ -358,6 +361,31 @@ class NetworksController < ApplicationController
         format.rdf {
           render :inline => `#{Conf.rdfgen_tool} groups #{@network.id}`
         }
+      end
+    end
+  end
+
+  # GET /networks/1/content
+  def content
+    respond_to do |format|
+      format.html do
+
+        @pivot, problem = calculate_pivot(
+
+            :pivot_options  => Conf.pivot_options,
+            :params         => params,
+            :user           => current_user,
+            :search_models  => [Workflow, Blob, Pack, Service],
+            :search_limit   => Conf.max_search_size,
+
+            :locked_filters => { 'GROUP_ID' => @network.id.to_s },
+
+            :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
+                                "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
+                                "CURATION_EVENT", "SERVICE_PROVIDER",
+                                "SERVICE_COUNTRY", "SERVICE_STATUS"])
+
+        flash.now[:error] = problem if problem
       end
     end
   end

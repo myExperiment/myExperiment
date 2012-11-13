@@ -1,8 +1,11 @@
 <li><%= link_to 'Groups', networks_path -%></li>
 
-<% if ["show", "new", "edit", "search", "all", "invite"].include? controller.action_name.to_s -%>
+<% if ["show", "content", "new", "edit", "search", "all", "invite"].include? controller.action_name.to_s -%>
   <% case controller.action_name.to_s; when "show" %>
     <li><%= h(@network.title) -%></li>
+  <% when "content" %>
+		<li><%= link_to "#{h(@network.title)}", network_path(@network) %></li>
+    <li>Content</li>
   <% when "new" %>
     <li>New Group</li>
   <% when "edit" %>
