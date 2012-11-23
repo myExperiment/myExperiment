@@ -16,6 +16,12 @@
 <%= error_messages_for :workflow %>
 
 <% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
+
+  <p>
+    <b>Research Object URI:</b>
+    <%= f.text_field :ro_uri, :size => 60 %>
+  </p>
+
   <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @workflow } %>
   <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => true, :contributable => @workflow } %>
 
