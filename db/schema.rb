@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120921144930) do
+ActiveRecord::Schema.define(:version => 20121113162639) do
 
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(:version => 20120921144930) do
     t.string   "contributor_type"
     t.integer  "license_id"
     t.integer  "current_version"
+    t.text     "ro_uri"
   end
 
   create_table "blog_posts", :force => true do |t|
@@ -439,6 +440,7 @@ ActiveRecord::Schema.define(:version => 20120921144930) do
     t.integer  "contributor_id"
     t.datetime "created_at"
     t.string   "contributor_type"
+    t.text     "ro_uri"
   end
 
   create_table "pending_invitations", :force => true do |t|
@@ -674,6 +676,7 @@ ActiveRecord::Schema.define(:version => 20120921144930) do
     t.string   "objekt_text"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "context_uri"
   end
 
   create_table "taggings", :force => true do |t|
@@ -849,6 +852,7 @@ ActiveRecord::Schema.define(:version => 20120921144930) do
     t.string   "contributor_type"
     t.string   "last_edited_by"
     t.integer  "license_id"
+    t.text     "ro_uri"
   end
 
 end
