@@ -1,21 +1,48 @@
-<h1>Resource: <%=h @name -%></h1>
+<h1>Resource: <%=h @manifest_name -%></h1>
 
-<h2>Pack Items</h2>
-
-<%= research_object_resources(@contributable) -%>
-
-<h2>Basic resource information</h2>
+<h2>Basic resource information via manifest</h2>
 
 <table class="simple">
 
   <tr>
     <td>Name</td>
-    <td><%=h @name -%></td>
+    <td><%=h @manifest_name -%></td>
   </tr>
 
   <tr>
     <td>Size</td>
-    <td><%=h @size -%></td>
+    <td><%=h @manifest_size -%></td>
+  </tr>
+
+  <tr>
+    <td>Creator</td>
+    <td><%=h @manifest_creator -%></td>
+  </tr>
+
+  <tr>
+    <td>Created at</td>
+    <td><%=h @manifest_created -%></td>
+  </tr>
+
+  <tr>
+    <td>MD5</td>
+    <td><%=h @manifest_md5 -%></td>
+  </tr>
+
+</table>
+
+<h2>Annotations specific to this resource</h2>
+
+<table class="simple">
+
+  <tr>
+    <td>Title</td>
+    <td><%=h @title -%></td>
+  </tr>
+
+  <tr>
+    <td>Description</td>
+    <td><%=h @description -%></td>
   </tr>
 
   <tr>
@@ -28,11 +55,27 @@
     <td><%=h @created -%></td>
   </tr>
 
-  <tr>
-    <td>MD5</td>
-    <td><%=h @md5 -%></td>
-  </tr>
-
 </table>
 
-<h2>Annotations specific to this resource</h2>
+<h2>Debug</h2>
+
+<div class="fold">
+
+  <div class="foldTitle">Merged annotation bodies (<%= @annotations.query([nil, nil, nil]).count -%>)</div>
+  <div class="foldContent" style="display: none;">
+
+    <div id="statement_list">
+      <% @annotations.query([nil, nil, nil]).each do |statement| %>
+        <div>
+          <table>
+            <tr><td><%=h statement.subject -%></td></tr>
+            <tr><td><%=h statement.predicate -%></td></tr>
+            <tr><td><%=h statement.object -%></td></tr>
+          </table>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
+</div>
+

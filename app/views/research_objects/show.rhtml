@@ -1,5 +1,7 @@
 <h1>Research Object: <%=h @contributable.title -%></h1>
 
+<h2>Resources from manifest</h2>
+
 <table class="simple">
 
   <tr>
@@ -37,12 +39,14 @@
 <% resources   = @contributable.wf4ever_resources %>
 <% annotations = @contributable.annotations       %>
 
+<% if false %>
 <% if resources.length > 0 %>
 
   <h2>Pack Items</h2>
 
   <%= research_object_resources(@contributable) -%>
 
+<% end %>
 <% end %>
 
 <% if annotations.length > 0 %>

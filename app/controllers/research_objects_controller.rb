@@ -4,6 +4,7 @@
 # See license.txt for details.
 
 require 'curl'
+require 'wf4ever/rosrs_client'
 
 class ResearchObjectsController < ApplicationController
 
@@ -44,6 +45,9 @@ class ResearchObjectsController < ApplicationController
   
   # GET /research_objects/1
   def show
+
+    @manifest = @contributable.manifest
+
     respond_to do |format|
       format.html # show.rhtml
     end
@@ -137,28 +141,48 @@ class ResearchObjectsController < ApplicationController
   def destroy
   end
 
-  # GET /research_objects/:id/resource/:path
+  # GET /research_objects/:id/resource/:resource_path
   def resource_show
 
-    resource_object = Statement.find(:first, :conditions => {
-        :research_object_id => @contributable.id,
-        :predicate_text => 'http://purl.org/wf4ever/ro#name',
-        :objekt_text => params[:path]})
+#   resource_object = Statement.find(:first, :conditions => {
+#       :research_object_id => @contributable.id,
+#       :predicate_text => 'http://purl.org/wf4ever/ro#name',
+#       :objekt_text => params[:path]})
 
-    raise ActiveRecord::RecordNotFound if resource_object.nil?
+#   raise ActiveRecord::RecordNotFound if resource_object.nil?
 
-    statements = Statement.find(:all, :conditions => {
-        :subject_text => resource_object.subject_text
-    })
-    
-    statements.each do |statement|
+#   statements = Statement.find(:all, :conditions => {
+#       :subject_text => resource_object.subject_text
+#   })
 
-      case statement.predicate_text
-      when "http://purl.org/wf4ever/ro#name":      @name    = statement.objekt_text
-      when "http://purl.org/dc/terms/created":     @created = Date.parse(statement.objekt_text)
-      when "http://purl.org/dc/terms/creator":     @creator = statement.objekt_text
-      when "http://purl.org/wf4ever/ro#checksum" : @md5     = statement.objekt_text
-      when "http://purl.org/wf4ever/ro#filesize" : @size    = statement.objekt_text.to_i
+    # Get annotations as merged graph.  This will be pulled from cache
+    # eventually.
+
+    session = ROSRS::Session.new(@contributable.url, Conf.rodl_bearer_token)
+
+    @resuri = @contributable.resolve_resource_uri(params[:resource_path])
+
+    @annotations = session.get_annotation_graph(@contributable.url, @resuri)
+
+    @contributable.manifest.query([@resuri, nil, nil]).each do |statement|
+
+      case statement.predicate.to_s
+      when "http://purl.org/wf4ever/ro#name":      @manifest_name    = statement.object.to_s
+      when "http://purl.org/dc/terms/created":     @manifest_created = Date.parse(statement.object.to_s)
+      when "http://purl.org/dc/terms/creator":     @manifest_creator = statement.object.to_s
+      when "http://purl.org/wf4ever/ro#checksum" : @manifest_md5     = statement.object.to_s
+      when "http://purl.org/wf4ever/ro#filesize" : @manifest_size    = statement.object.to_s.to_i
+      end
+
+    end
+
+    @annotations.query([@resuri, nil, nil]).each do |statement|
+
+      case statement.predicate.to_s
+      when "http://purl.org/dc/terms/title":       @title       = statement.object.to_s
+      when "http://purl.org/dc/terms/description": @description = statement.object.to_s
+      when "http://purl.org/dc/terms/creator":     @creator     = statement.object.to_s
+      when "http://purl.org/dc/terms/created":     @created     = Date.parse(statement.object.to_s)
       end
 
     end
