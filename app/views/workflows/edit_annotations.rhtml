@@ -1,0 +1,59 @@
+<h1>Edit annotations for <%= h(@workflow.title) -%></h1>
+
+<%
+templates = [
+  {
+    :label     => 'Title',
+    :predicate => RDF::DC.title,
+    :add_text  => 'New title'
+  },
+  {
+    :label     => 'Creator',
+    :predicate => RDF::DC.creator,
+    :add_text  => 'New creator'
+  },
+  {
+    :label     => 'Contributor',
+    :predicate => RDF::DC.contributor,
+    :add_text  => 'New contributor'
+  },
+  {
+    :label     => 'Description',
+    :predicate => RDF::DC.description,
+    :add_text  => 'New description'
+  }
+]
+%>
+
+<% templates.each do |template| %>
+
+  <h2><%= template[:label] -%></h2>
+
+  <ul>
+    
+    <% @workflow.get_simple_annotations(@annotations, template[:predicate]).each do |annotation| %>
+      <% value = ""; annotation[:body].query([RDF::URI.parse(workflow_url(@workflow)), template[:predicate], nil]).each do |statement| value = statement.object.to_s end %>
+      <li>
+        <% form_tag(update_annotations_workflow_path(@workflow)) do %>
+          <%= text_field_tag("value", value) -%>
+          <%= hidden_field_tag("template", template[:label]) -%>
+          <%= hidden_field_tag("stub_uri", annotation[:stub].to_s) -%>
+          <%= hidden_field_tag("body_uri", annotation[:body_uri].to_s) -%>
+          <%= submit_tag("Edit") -%>
+          <%= submit_tag("Delete") -%>
+        <% end %>
+      </li>
+    <% end %>
+
+    <% form_tag(update_annotations_workflow_path(@workflow)) do %>
+      <li>
+        <%= text_field_tag('value', '', :placeholder => template[:add_text]) -%>
+        <%= hidden_field_tag("template", template[:label]) -%>
+        <%= submit_tag("Add") -%>
+      </li>
+    <% end %>
+
+  </ul>
+
+<% end %>
+
