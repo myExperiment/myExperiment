@@ -525,7 +525,6 @@ puts "      parse_links(headers) = #{      parse_links(headers).inspect}"
     def get_annotation_graphs(ro_uri, resource_uri=nil)
       annotation_graphs = []
       get_annotation_statements(ro_uri, resource_uri).each do |annotation_statement|
-      puts "processing statement: #{annotation_statement.inspect}"
         auri   = annotation_statement.subject
         resuri = annotation_statement.object
         code, reason, headers, buri, bodytext = do_request_follow_redirect("GET", auri, {})
