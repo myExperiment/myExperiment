@@ -120,6 +120,8 @@ ActionController::Routing::Routes.draw do |map|
                  :edit_version => :get, 
                  :update_version => :put, 
                  :process_tag_suggestions => :post,
+                 :edit_annotations => :get,
+                 :update_annotations => :post,
                  :tag_suggestions => :get } do |workflow|
     # workflows have nested citations
     workflow.resources :citations
@@ -192,8 +194,8 @@ ActionController::Routing::Routes.draw do |map|
   # research_objects
   map.resources :research_objects
 
-  map.research_object_resources '/research_objects/:id/resources',       :controller => 'research_objects', :action => 'resource_index', :conditions => { :method => :get }
-  map.research_object_resource  '/research_objects/:id/resources/:path', :controller => 'research_objects', :action => 'resource_show',  :conditions => { :method => :get }, :requirements => { :path => /.*/ }
+  map.research_object_resources '/research_objects/:id/resources', :controller => 'research_objects', :action => 'resource_index', :conditions => { :method => :get }
+  map.research_object_resource  '/research_objects/:id/resources/:resource_path', :controller => 'research_objects', :action => 'resource_show',  :conditions => { :method => :get }, :requirements => { :resource_path => /.*/ }
 
   # content_types
   map.resources :content_types

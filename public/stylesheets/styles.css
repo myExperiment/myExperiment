@@ -2404,3 +2404,21 @@ input.auto_complete_field.error {
   list-style-image: url('/images/famfamfam_silk/page.png');
 }
 
+DIV.tag_list {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+DIV.tag_list UL {
+  margin: 0;
+}
+
+DIV.tag_list LI {
+	display: inline-block;
+	list-style: none;
+  border-bottom: 1px SOLID #a0a0c0;
+  background-color: #d0d0f0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+

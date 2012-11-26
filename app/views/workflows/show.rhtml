@@ -1,4 +1,7 @@
-<% t "#{h @workflow.title} (#{h @workflow.contributor_name}) [#{h(@workflow.type_display_name)} Workflow]" -%>
+<% title = @workflow.title %>
+<% @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.title, nil]).each do |s, p, o| title = o.to_s end %>
+
+<% t "#{h title} (#{h @workflow.contributor_name}) [#{h(@workflow.type_display_name)} Workflow]" -%>
 
 <ul class="sectionIcons">
 	<% if @authorised_to_edit -%>
@@ -15,7 +18,7 @@
 </ul>
 
 <h1 class="contribution_title">
-	Workflow Entry: <%=h @workflow.title %>
+	Workflow Entry: <%=h title %>
 </h1>
 
 <%= render :partial => "contributions/datetime_info", :locals => { :contributable => @workflow } -%>
@@ -79,7 +82,7 @@
 		<div class="contribution_version_inner_box">
 			<p>
 				<b>Title:</b>
-				<span class="title"><%= h @viewing_version.title %></span>
+				<span class="title"><%= h title %></span>
 			</p>
 			
 			<p>
@@ -89,16 +92,29 @@
 			
 			<br/>
 			
+      <% creators     = @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.creator, nil]) %>
+      <% contributors = @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.contributor, nil]) %>
+
+      <% if creators.count > 0 || contributors.count > 0 %>
+
+        <h3>
+          <%= info_icon_with_tooltip("This section shows the creators and contributors of the Workflow") %>
+          Credit
+        </h3>
+			
+        <ul>
+          <% creators.each do |s, p, o| %><li><%=h o.to_s -%> (creator)</li><% end %>
+          <% contributors.each do |s, p, o| %><li><%=h o.to_s -%> (contributor)</li><% end %>
+        </ul>
+      <% end %>
+
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the preview of this version of the Workflow (click on the image to expand)") %>
 				Preview
 			</h3>
 			
 			<% unless @viewing_version.image.nil? && @viewing_version.svg.nil? %>
-				<p style="font-size: 85%; font-weight: normal; margin-bottom: 0.5em; text-align: center;">
-					 (Click on the image to get the full size)
-				</p>
-				<div class="contribution_preview" style="width: 100%;">
+				<div class="contribution_preview" style="width: 100px;">
 					<center>
 						<%= link_to image_tag(workflow_version_preview_path(@workflow, @viewing_version.version, 'medium')), workflow_version_preview_path(@workflow, @viewing_version.version, 'full'), :popup => true %>
 					</center>
@@ -117,35 +133,108 @@
 			<% end %>
 			
 			<br/>
-			
-			<% unless @viewing_version.svg.nil? %>
-				<ul class="sectionIcons">
-					<li style="margin-left: 0;"><%= icon('picture', workflow_version_preview_path(@workflow, @viewing_version.version, 'svg'), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
-				</ul>
-			<% end %>
-			
-			<br/>
-			
+
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the overall description for this version of the Workflow") %>
 				Description
 			</h3>
 			
-			<% unless @viewing_version.body.blank? %>
+      <% @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.description, nil]).each do |s, p, o| %>
 				<div class="contribution_description">
-					<%= @viewing_version.body_html %>
+					<p><%=h o.to_s %></p>
 				</div>
-				<% if @authorised_to_edit %>
-					<p style="text-align: right; color: #666666;">[ <%= link_to "edit", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
-				<% end %>
-			<% else %>
-				<p class="none_text">
-					Not set
-				</p>
-			<% end %>
-			
+      <% end %>
+
+      <% subjects = @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.subject, nil]) %>
+
+      <% if subjects.count > 0 %>
+        <div class="tag_list">
+          <ul>
+            <% subjects.each do |s, p, o| %>
+              <li><%=h o.to_s -%></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
 			<br/>
-			
+
+      <h3>
+				<%= info_icon_with_tooltip("This section provides example data sets (workflow inputs and outputs) to this workflow") %>
+        Example data sets
+      </h3>
+
+<%
+workflow_uri = RDF::URI.parse(workflow_url(@workflow))
+
+inputs = RDF::Query.new do
+  pattern [workflow_uri, RDF::DON.hasExampleDataSet, :data_set]
+  pattern [:data_set, RDF::DON.hasInput, :input]
+  pattern [:input, RDF::DC.title, :title]
+  pattern [:input, RDF::DON.value, :value]
+end.execute(@annotations).map do |result|
+  {
+    :data_set => result.data_set,
+    :type     => :input,
+    :label    => result.title,
+    :value    => result.value
+  }
+end
+
+outputs = RDF::Query.new do
+  pattern [workflow_uri, RDF::DON.hasExampleDataSet, :data_set]
+  pattern [:data_set, RDF::DON.hasOutput, :output]
+  pattern [:output, RDF::DC.title, :title]
+  pattern [:output, RDF::DON.value, :value]
+end.execute(@annotations).map do |result|
+  {
+    :data_set => result.data_set,
+    :type     => :output,
+    :label    => result.title,
+    :value    => result.value
+  }
+end
+
+data_sets = (inputs + outputs).group_by do |item| item[:data_sets] end
+%>
+
+      <% if data_sets.length == 0 %>
+        <p class="none_text">
+          There are no data sets with this workflow.
+        </p>
+      <% else %>
+        <% data_sets.each do |data_set| %>
+
+          <% inputs  = data_set[1].select do |item| item[:type] == :input  end %>
+          <% outputs = data_set[1].select do |item| item[:type] == :output end %>
+
+          <% if inputs.length > 0 && outputs.length > 0 %>
+            <table class="simple">
+              <tr>
+                <th>Input / Output</th>
+                <th>Example</th>
+              </tr>
+              <% if inputs.length > 0 %>
+                <% inputs.each do |input| %>
+                  <tr>
+                    <td>Input: <%=h input[:label] -%></td>
+                    <td><%=h input[:value] -%></td>
+                  </tr>
+                <% end %>
+              <% end %>
+              <% if outputs.length > 0 %>
+                <% outputs.each do |output| %>
+                  <tr>
+                    <td>Output: <%=h output[:label] -%></td>
+                    <td><%=h output[:value] -%></td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </table>
+          <% end %>
+        <% end %>
+      <% end %>
+
       <% if @workflow.show_download_section? %>
 
         <h3>
@@ -205,7 +294,7 @@
 			<% end %>
 		
 			<br/>
-			
+<% if false %>			
       <% statements = research_object_statements(@workflow) %>
 
       <% if statements.length > 0 %>
@@ -233,6 +322,7 @@
       </div>
 
       <% end %>
+<% end %>
 
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the internal components of this workflow version") %>

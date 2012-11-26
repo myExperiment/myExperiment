@@ -206,6 +206,10 @@ class Conf
     self.fetch_entry('research_object_endpoints')
   end
 
+  # Temporary config option for RODL access
+  def self.rodl_bearer_token
+    self.fetch_entry('rodl_bearer_token')
+  end
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)

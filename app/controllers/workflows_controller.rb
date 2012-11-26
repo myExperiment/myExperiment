@@ -3,6 +3,9 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'rdf'
+require 'wf4ever/rosrs_client'
+
 class WorkflowsController < ApplicationController
 
   include ApplicationHelper
@@ -19,7 +22,7 @@ class WorkflowsController < ApplicationController
   before_filter :check_file_size, :only => [:create, :create_version]
   before_filter :check_custom_workflow_type, :only => [:create, :create_version]
   
-  before_filter :check_is_owner, :only => [:edit, :update]
+  before_filter :check_is_owner, :only => [:edit, :update, :edit_annotations, :update_annotations]
 
   # declare sweepers and which actions should invoke them
   cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy_version, :destroy ]
@@ -230,6 +233,11 @@ class WorkflowsController < ApplicationController
   
   # GET /workflows/1
   def show
+
+    session = ROSRS::Session.new(@workflow.ro_uri, Conf.rodl_bearer_token)
+
+    @annotations = session.get_annotation_graph(@workflow.ro_uri, workflow_url(@workflow))
+
     if allow_statistics_logging(@viewing_version)
       @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
@@ -666,6 +674,65 @@ class WorkflowsController < ApplicationController
     render :partial => 'contributions/autocomplete_list', :locals => { :contributions => wfs }
   end
 
+  def edit_annotations
+
+    session = ROSRS::Session.new(@workflow.ro_uri, Conf.rodl_bearer_token)
+
+    @annotations = session.get_annotation_graphs(@workflow.ro_uri, workflow_url(@workflow))
+  end
+
+  def update_annotations
+     
+    session = ROSRS::Session.new(@workflow.ro_uri, Conf.rodl_bearer_token)
+
+    resource_uri = workflow_url(@workflow)
+
+    if params[:commit] == 'Add' || params[:commit] == 'Edit'
+
+      case params[:template]
+      when "Title"
+        ao_body = @workflow.create_annotation_body(resource_uri,
+            LibXML::XML::Node.new('dct:title', params[:value]),
+            { "dct" => "http://purl.org/dc/terms/" })
+      when "Creator"
+        ao_body = @workflow.create_annotation_body(resource_uri,
+            LibXML::XML::Node.new('dct:creator', params[:value]),
+            { "dct" => "http://purl.org/dc/terms/" })
+      when "Contributor"
+        ao_body = @workflow.create_annotation_body(resource_uri,
+            LibXML::XML::Node.new('dct:contributor', params[:value]),
+            { "dct" => "http://purl.org/dc/terms/" })
+      when "Description"
+        ao_body = @workflow.create_annotation_body(resource_uri,
+            LibXML::XML::Node.new('dct:description', params[:value]),
+            { "dct" => "http://purl.org/dc/terms/" })
+      end
+    end
+
+    if params[:commit] == 'Add'
+      if ao_body
+        agraph = ROSRS::RDFGraph.new(:data => ao_body.to_s, :format => :xml)
+
+        code, reason, stub_uri, body_uri = session.create_internal_annotation(@workflow.ro_uri, resource_uri, agraph)
+      end
+    end
+
+    if params[:commit] == 'Edit'
+      if ao_body
+        agraph = ROSRS::RDFGraph.new(:data => ao_body.to_s, :format => :xml)
+
+        c, r, body_uri = session.update_internal_annotation(@workflow.ro_uri, params[:stub_uri], resource_uri, agraph)
+      end
+    end
+
+    if params[:commit] == 'Delete'
+      c, r, h, d = session.do_request("DELETE", params[:stub_uri], {} )
+      c, r, h, d = session.do_request("DELETE", params[:body_uri], {} )
+    end
+
+    redirect_to edit_annotations_workflow_path(@workflow)
+  end
+
 protected
 
   def store_callback
@@ -704,6 +771,7 @@ protected
       "destroy_version"         => "edit",
       "download"                => "download",
       "edit"                    => "edit",
+      "edit_annotations"        => "edit",
       "edit_version"            => "edit",
       "favourite"               => "view",
       "favourite_delete"        => "view",
@@ -722,6 +790,7 @@ protected
       "tag"                     => "view",
       "tag_suggestions"         => "view",
       "update"                  => "edit",
+      "update_annotations"      => "edit",
       "update_version"          => "edit",
     }
 
