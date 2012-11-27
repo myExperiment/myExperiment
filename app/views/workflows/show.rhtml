@@ -73,7 +73,9 @@
 			<div style="margin-top: 1em;">
 				<ul class="sectionIcons" style="margin-top: 0.7em; margin-bottom: 0.6em;">
 					<li style="margin-left: 0;"><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit This Version") %></li>
-					<li style="margin-left: 0;"><%= icon('edit', edit_annotations_workflow_path(@workflow), nil, nil, "Edit Annotations") %></li>
+          <% if @workflow.ro_uri %>
+            <li style="margin-left: 0;"><%= icon('edit', edit_annotations_workflow_path(@workflow), nil, nil, "Edit Annotations") %></li>
+          <% end %>
 	        <% if false %>
 					<% if @latest_version_number > 1 %>
 						<% if Authorization.check("destroy", @workflow, current_user) %>
