@@ -82,8 +82,7 @@ Here is a flavour of how the `rosrs_session` module may be used:
         "47d5423c-b507-4e1c-8")
 
     # Create a new RO
-    code, reason, rouri, manifest = @rosrs.create_research_object("Test-RO-name",
-        "Test RO for ROSRSSession", "TestROSRS_Session.py", "2012-09-28")
+    code, reason, rouri, manifest = @rosrs.create_research_object("Test-RO-name")
     if code != 201
         raise "Failed to create new RO: "+reason
     end

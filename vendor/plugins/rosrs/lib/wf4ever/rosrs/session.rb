@@ -2,6 +2,8 @@
 module ROSRS
   class Session
 
+    attr_reader :uri
+
     ANNOTATION_CONTENT_TYPES =
       { "application/rdf+xml" => :xml,
         "text/turtle"         => :turtle,
@@ -10,6 +12,10 @@ module ROSRS
         #"application/json"    => :jsonld,
         #"application/xhtml"   => :rdfa,
       }
+
+    PARSEABLE_CONTENT_TYPES = ['application/vnd.wf4ever.folderentry',
+                               'application/vnd.wf4ever.folder',
+                               'application/rdf+xml']
 
     # -------------
     # General setup
@@ -28,12 +34,24 @@ module ROSRS
       end
     end
 
-    def error(msg, value=nil)
+    def error(code, msg, value=nil)
       # Raise exception with supplied message and optional value
       if value
         msg += " (#{value})"
       end
-      raise ROSRS::Exception.new("Session::Exception on #@uri #{msg}")
+      msg = "Exception on #@uri #{msg}"
+      case code
+        when 401
+          raise ROSRS::UnauthorizedException.new(msg)
+        when 403
+          raise ROSRS::ForbiddenException.new(msg)
+        when 404
+          raise ROSRS::NotFoundException.new(msg)
+        when 409
+          raise ROSRS::ConflictException.new(msg)
+        else
+          raise ROSRS::Exception.new(msg)
+      end
     end
 
     # -------
@@ -52,7 +70,7 @@ module ROSRS
         matches = link.strip.match(/<([^>]*)>\s*;.*rel\s*=\s*"?([^;"]*)"?/)
         if matches
           links[matches[2]] ||= []
-          links[matches[2]] << URI(matches[1])
+          links[matches[2]] << matches[1]
         end
       end
       links
@@ -66,11 +84,11 @@ module ROSRS
     def get_request_path(uripath)
       uripath = URI(uripath.to_s)
       if uripath.scheme && (uripath.scheme != @uri.scheme)
-        error("Request URI scheme does not match session: #{uripath}")
+        error(nil, "Request URI scheme does not match session: #{uripath}")
       end
       if (uripath.host && uripath.host != @uri.host) ||
          (uripath.port && uripath.port != @uri.port)
-        error("Request URI host or port does not match session: #{uripath}")
+        error(nil, "Request URI host or port does not match session: #{uripath}")
       end
       requri = URI.join(@uri.to_s, uripath.path).path
       if uripath.query
@@ -132,7 +150,7 @@ module ROSRS
       when 'DELETE'
         req = Net::HTTP::Delete.new(get_request_path(uripath))
       else
-        error("Unrecognized HTTP method #{method}")
+        error(nil, "Unrecognized HTTP method #{method}")
       end
 
       if options[:body]
@@ -170,16 +188,11 @@ module ROSRS
       options[:accept] ||= "application/rdf+xml"
       code, reason, headers, uripath, data = do_request_follow_redirect(method, uripath, options)
       if code >= 200 and code < 300
-        if headers["content-type"].downcase == options[:accept]
-          begin
-            data = ROSRS::RDFGraph.new(:data => data, :format => :xml)
-          rescue Exception => e
-            code = 902
-            reason = "RDF parse failure (#{e.message})"
-          end
-        else
-          code = 901
-          reason = "Non-RDF content-type returned (#{headers["content-type"]})"
+        begin
+          data = ROSRS::RDFGraph.new(:data => data, :format => :xml)
+        rescue Exception => e
+          code = 902
+          reason = "RDF parse failure (#{e.message})"
         end
       end
       [code, reason, headers, uripath, data]
@@ -191,26 +204,13 @@ module ROSRS
 
     ##
     # Returns [copde, reason, uri, manifest]
-    def create_research_object(name, title, creator, date)
-      reqheaders   = {
-          "slug"    => name
-          }
-      roinfo = {
-          "id"      => name,
-          "title"   => title,
-          "creator" => creator,
-          "date"    => date
-          }
-      roinfotext = roinfo.to_json
+    def create_research_object(name)
       code, reason, headers, uripath, data = do_request_rdf("POST", "",
-          :body       => roinfotext,
-          :headers    => reqheaders)
+          :headers    => {'slug' => name})
       if code == 201
         [code, reason, headers["location"], data]
-      elsif code == 409
-        [code, reason, nil, data]
       else
-        error("Error creating RO: #{code} #{reason}")
+        error(code, "Error creating RO: #{code} #{reason}")
       end
     end
 
@@ -221,7 +221,7 @@ module ROSRS
       if [204, 404].include?(code)
         [code, reason]
       else
-        error("Error deleting RO #{ro_uri}: #{code} #{reason}")
+        error(code, "Error deleting RO #{ro_uri}: #{code} #{reason}")
       end
     end
 
@@ -241,41 +241,47 @@ module ROSRS
     # Returns: [code, reason, proxyuri, resource_uri], where code is 200 or 201
 
     def aggregate_internal_resource(ro_uri, respath=nil, options={})
-        # POST (empty) proxy value to RO ...
-      reqheaders = options[:headers] || {}
       if respath
-        reqheaders['slug'] = respath
+        options[:headers] ||= {}
+        options[:headers]['slug'] = respath
       end
-      proxydata = %q(
+      # POST resource content to indicated URI
+      code, reason, headers = do_request("POST", ro_uri, options)
+      unless [200,201].include?(code)
+        error(code, "Error creating aggregated resource content",
+                "#{code}, #{reason}, #{respath}")
+      end
+      proxyuri = headers["location"]
+      resource_uri = parse_links(headers)[RDF::ORE.proxyFor.to_s].first
+      [code, reason, proxyuri, resource_uri]
+    end
+
+
+    ##
+    # Aggregate external resource
+    #
+    # Returns: [code, reason, proxyuri, resource_uri], where code is 200 or 201
+    def aggregate_external_resource(ro_uri, resource_uri=nil)
+      proxydata = %(
         <rdf:RDF
           xmlns:ore="http://www.openarchives.org/ore/terms/"
           xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
           <ore:Proxy>
+            <ore:proxyFor rdf:resource="#{resource_uri}"/>
           </ore:Proxy>
         </rdf:RDF>
         )
       code, reason, headers = do_request("POST", ro_uri,
         :ctype    => "application/vnd.wf4ever.proxy",
-        :headers  => reqheaders,
         :body     => proxydata)
       if code != 201
-        error("Error creating aggregation proxy",
-              "#{code} #{reason} #{respath}")
+        error(code, "Error creating aggregation proxy",
+              "#{code} #{reason} #{resource_uri}")
+      else
+        proxyuri = headers["location"]
+        resuri = parse_links(headers)[RDF::ORE.proxyFor.to_s].first
+        [code, reason, proxyuri, resuri]
       end
-      proxyuri = URI(headers["location"])
-      links    = parse_links(headers)
-      resource_uri = links[RDF::ORE.proxyFor.to_s].first
-      unless resource_uri
-        error("No ore:proxyFor link in create proxy response",
-              "Proxy URI #{proxyuri}")
-      end
-      # PUT resource content to indicated URI
-      code, reason = do_request("PUT", resource_uri, options)
-      unless [200,201].include?(code)
-          error("Error creating aggregated resource content",
-                "#{code}, #{reason}, #{respath}")
-      end
-      [code, reason, proxyuri, resource_uri]
     end
 
     # -----------------------
@@ -297,8 +303,11 @@ module ROSRS
         resuriref = URI.join(ro_uri.to_s, resuriref.to_s)
       end
       code, reason, headers, uri, data = do_request_follow_redirect("GET", resuriref, options)
+      if parseable?(headers["content-type"])
+        data = ROSRS::RDFGraph.new(:data => data, :format => :xml)
+      end
       unless [200,404].include?(code)
-        error("Error retrieving RO resource: #{code}, #{reason}, #{resuriref}")
+        error(code, "Error retrieving RO resource: #{code}, #{reason}, #{resuriref}")
       end
       [code, reason, headers, uri, data]
     end
@@ -321,7 +330,7 @@ module ROSRS
       end
       code, reason, headers, uri, data = do_request_rdf("GET", resource_uri, options)
       unless [200,404].include?(code)
-        error("Error retrieving RO resource: #{code}, #{reason}, #{resource_uri}")
+        error(code, "Error retrieving RO resource: #{code}, #{reason}, #{resource_uri}")
       end
       [code, reason, headers, uri, data]
     end
@@ -333,7 +342,7 @@ module ROSRS
     def get_manifest(ro_uri)
       code, reason, headers, uri, data = do_request_rdf("GET", ro_uri)
       if code != 200
-        error("Error retrieving RO manifest: #{code} #{reason}")
+        error(code, "Error retrieving RO manifest: #{code} #{reason}")
       end
       [uri, data]
     end
@@ -351,7 +360,7 @@ module ROSRS
         :ctype => "application/rdf+xml",
         :body  => annotation_graph.serialize(format=:xml))
       if code != 201
-        error("Error creating annotation body resource",
+        error(code, "Error creating annotation body resource",
               "#{code}, #{reason}, #{ro_uri}")
       end
       [code, reason, body_uri]
@@ -391,9 +400,9 @@ module ROSRS
           :ctype => "application/vnd.wf4ever.annotation",
           :body  => annotation)
       if code != 201
-          error("Error creating annotation #{code}, #{reason}, #{resource_uri}")
+        error(code, "Error creating annotation #{code}, #{reason}, #{resource_uri}")
       end
-      [code, reason, URI(headers["location"])]
+      [code, reason, headers["location"]]
     end
 
     ##
@@ -406,11 +415,9 @@ module ROSRS
           :body  => annotation_graph.serialize(format=:xml),
           :link => "<#{resource_uri}>; rel=\"#{RDF::AO.annotatesResource}\"")
       if code != 201
-        error("Error creating annotation #{code}, #{reason}, #{resource_uri}")
+        error(code, "Error creating annotation #{code}, #{reason}, #{resource_uri}")
       end
-      puts parse_links(headers).inspect
-puts "      parse_links(headers) = #{      parse_links(headers).inspect}"
-      [code, reason, URI(headers["location"]), parse_links(headers)[RDF::AO.body.to_s].first]
+      [code, reason, headers["location"], parse_links(headers)[RDF::AO.body.to_s].first]
     end
 
     ##
@@ -431,7 +438,7 @@ puts "      parse_links(headers) = #{      parse_links(headers).inspect}"
           :ctype => "application/vnd.wf4ever.annotation",
           :body  => annotation)
       if code != 200
-          error("Error updating annotation #{code}, #{reason}, #{resource_uri}")
+        error(code, "Error updating annotation #{code}, #{reason}, #{resource_uri}")
       end
       [code, reason]
     end
@@ -443,7 +450,7 @@ puts "      parse_links(headers) = #{      parse_links(headers).inspect}"
     def update_internal_annotation(ro_uri, stuburi, resource_uri, annotation_graph)
       code, reason, body_uri = create_annotation_body(ro_uri, annotation_graph)
       if code != 201
-          error("Error creating annotation #{code}, #{reason}, #{resource_uri}")
+        error(code, "Error creating annotation #{code}, #{reason}, #{resource_uri}")
       end
       code, reason = update_annotation_stub(ro_uri, stuburi, resource_uri, body_uri)
       [code, reason, body_uri]
@@ -542,12 +549,12 @@ puts "      parse_links(headers) = #{      parse_links(headers).inspect}"
             warn("Warning: #{buri} has unrecognized content-type: #{content_type}")
           end
         else
-          error("Failed to GET #{buri}: #{code} #{reason}")
+          error(code, "Failed to GET #{buri}: #{code} #{reason}")
         end
       end
       annotation_graphs
     end
-  
+
     ##
     # Build RDF graph of all annnotations associated with a resource
     # (or all annotations for an RO)
@@ -566,7 +573,7 @@ puts "      parse_links(headers) = #{      parse_links(headers).inspect}"
             warn("Warning: #{buri} has unrecognized content-type: #{content_type}")
           end
         else
-          error("Failed to GET #{buri}: #{code} #{reason}")
+          error(code, "Failed to GET #{buri}: #{code} #{reason}")
         end
       end
       annotation_graph
@@ -575,10 +582,10 @@ puts "      parse_links(headers) = #{      parse_links(headers).inspect}"
     ##
     # Retrieve annotation for given annotation URI
     #
-    # Returns: annotation_graph
+    # Returns: [code, reason, uri, annotation_graph]
     def get_annotation(annotation_uri)
-      code, reason, headers, uri, annotation_graph = get_resource_rdf(annotation_uri)
-      annotation_graph
+      code, reason, headers, uri, annotation_graph = get_resource(annotation_uri)
+      [code, reason, uri, annotation_graph]
     end
 
     ##
@@ -590,54 +597,24 @@ puts "      parse_links(headers) = #{      parse_links(headers).inspect}"
       if code == 204
         [code, reason]
       else
-        error("Failed to DELETE annotation #{annotation_uri}: #{code} #{reason}")
+        error(code, "Failed to DELETE annotation #{annotation_uri}: #{code} #{reason}")
       end
     end
 
     # -----------------------
-    # Folder manipulation
+    # Folders
     # -----------------------
 
     ##
-    # Returns an array of the given research object's root folders, as Folder objects.
-    def get_root_folder(ro_uri, options = {})
-      uri, data = get_manifest(ro_uri)
-      query = RDF::Query.new do
-        pattern [:research_object, RDF::RO.rootFolder,  :folder]
-        pattern [:folder, RDF::ORE.isDescribedBy, :folder_resource_map]
+    # Returns [code, reason, headers, uri, folder_contents]
+    def get_folder(folder_uri)
+      code, reason, headers, uri, folder_contents = do_request_rdf("GET", folder_uri,
+                                                                   :accept => 'application/vnd.wf4ever.folder')
+      if code != 200
+        error(code, reason)
       end
 
-      result = data.query(query).first
-
-      get_folder(result.folder_resource_map.to_s, options.merge({:name => result.folder.to_s}))
-    end
-
-    ##
-    # Returns an RO::Folder object from the given resource map URI.
-    def get_folder(folder_uri, options = {})
-      folder_name = options[:name] || folder_uri.to_s.split('/').last
-      ROSRS::Folder.new(self, folder_name, folder_uri, :eager_load => options[:eager_load])
-    end
-
-    ##
-    # Returns an array of the given research object's root folders, as RO::Folder objects.
-    # These folders have their contents pre-loaded
-    # and the full hierarchy can be traversed without making further requests
-    def get_folder_hierarchy(ro_uri, options = {})
-      options[:eager_load] = true
-      get_root_folder(ro_uri, options)
-    end
-
-    ##
-    # Takes a folder URI and returns a it's description in RDF
-    def get_folder_description(folder_uri)
-      code, reason, headers, uripath, graph = do_request_rdf("GET", folder_uri,
-                                                             :accept => 'application/vnd.wf4ever.folder')
-      if code == 201
-        parse_folder_description(graph)
-      else
-        error("Error getting folder description: #{code} #{reason}")
-      end
+      [code, reason, headers, uri, folder_contents]
     end
 
     ##
@@ -647,8 +624,9 @@ puts "      parse_links(headers) = #{      parse_links(headers).inspect}"
     #                      {:uri => 'http://www.myexperiment.org/workflows/7'}]
     #   create_folder('ros/new_ro/', 'example_data', folder_contents)
     #
-    # Returns the created folder as an RO::Folder object
+    # Returns [code, reason, uri, proxy_uri, folder_description_graph]
     def create_folder(ro_uri, name, contents = [])
+      name << "/" unless name[-1] == "/" # Need trailing slash on folders...
       code, reason, headers, uripath, folder_description = do_request_rdf("POST", ro_uri,
           :body       => create_folder_description(contents),
           :headers    => {"Slug" => name,
@@ -657,52 +635,36 @@ puts "      parse_links(headers) = #{      parse_links(headers).inspect}"
 
       if code == 201
         uri = parse_links(headers)[RDF::ORE.proxyFor.to_s].first
-        folder = ROSRS::Folder.new(self, uri.to_s.split('/').last, uri)
-
-        # Parse folder contents from response
-        query = RDF::Query.new do
-          pattern [:folder_entry, RDF.type, RDF.Description]
-          pattern [:folder_entry, RDF::RO.entryName, :name]
-          pattern [:folder_entry, RDF::ORE.proxyFor, :target]
-          #pattern [:folder_entry, SOMETHING, :entry_uri]
-        end
-
-        folder_contents = folder_description.query(query).collect do |e|
-          ROSRS::FolderEntry.new(self, e.name.to_s, e.target.to_s, e.entry_uri.to_s, folder)
-        end
-
-        folder.set_contents!(folder_contents)
-        folder
+        [code, reason, uri, headers["location"], folder_description]
       else
-        error("Error creating folder: #{code} #{reason}")
+        error(code, "Error creating folder: #{code} #{reason}")
       end
     end
 
-    def delete_folder(folder_uri)
-      code, reason = do_request("DELETE", folder_uri)
-      error("Error deleting folder #{folder_uri}: #{code} #{reason}") unless [204, 404].include?(code)
-      [code, reason]
-    end
-
-    def add_folder_entry(folder_uri, resource_uri, resource_name = nil, options = {})
+    def add_folder_entry(folder_uri, resource_uri, resource_name = nil)
       code, reason, headers, body= do_request("POST", folder_uri,
           :body       => create_folder_entry_description(resource_uri, resource_name),
-          :headers    => {"Content-Type" => 'application/vnd.wf4ever.proxy',})
+          :headers    => {"Content-Type" => 'application/vnd.wf4ever.folderentry',})
       if code == 201
-        ROSRS::FolderEntry.new(self, resource_name, parse_links(headers)[RDF::ORE.proxyFor.to_s].first,
-                            headers["Location"], options[:folder])
+        [code, reason, headers["Location"], parse_links(headers)[RDF::ORE.proxyFor.to_s].first]
       else
-        error("Error adding resource to folder: #{code} #{reason}")
+        error(code, "Error adding resource to folder: #{code} #{reason}")
       end
     end
 
+    #--------
+
     def delete_resource(resource_uri)
-      code, reason = do_request("DELETE", resource_uri)
-      error("Error deleting resource #{resource_uri}: #{code} #{reason}") unless code == 204
+      code, reason = do_request_follow_redirect("DELETE", resource_uri)
+      error(code, "Error deleting resource #{resource_uri}: #{code} #{reason}") unless [204,404].include?(code)
       [code, reason]
     end
 
     private
+
+    def parseable?(content_type)
+      PARSEABLE_CONTENT_TYPES.include?(content_type.downcase)
+    end
 
     ##
     # Takes +contents+, an Array containing Hash elements, which must consist of a :uri and an optional :name,

@@ -10,7 +10,7 @@ class TestROSRSSession < Test::Unit::TestCase
   #
   class Config
     def self.rosrs_api_uri; "http://sandbox.wf4ever-project.org/rodl/ROs/"; end
-    def self.authorization; "b1b286f1-24cf-4a86-97b1-208513d403ee"; end
+    def self.authorization; "32801fc0-1df1-4e34-b"; end
     def self.test_ro_name;  "TestSessionRO_ruby"; end
     def self.test_ro_path; test_ro_name+"/"; end
     def self.test_ro_uri;   rosrs_api_uri+test_ro_path; end
@@ -24,13 +24,15 @@ class TestROSRSSession < Test::Unit::TestCase
     @rouri = nil
     @rosrs = ROSRS::Session.new(Config.rosrs_api_uri, Config.authorization)
 
-    StringIO.class_eval do
-      def readpartial(*args)
-        result = read(*args)
-        if result.nil?
-          raise EOFError
-        else
-          result
+    if VERSION < "1.9.1"
+      StringIO.class_eval do
+        def readpartial(*args)
+          result = read(*args)
+          if result.nil?
+            raise EOFError
+          else
+            result
+          end
         end
       end
     end
@@ -73,8 +75,7 @@ class TestROSRSSession < Test::Unit::TestCase
 
   def create_test_research_object
     c, r = @rosrs.delete_research_object(Config.test_ro_uri)
-    c,r,u,m = @rosrs.create_research_object(Config.test_ro_name,
-        "Test RO for Session", "TestROSRS_Session.py", "2012-09-28")
+    c,r,u,m = @rosrs.create_research_object(Config.test_ro_name)
     assert_equal(c, 201)
     @rouri = u
     [c,r,u,m]
@@ -308,7 +309,7 @@ class TestROSRSSession < Test::Unit::TestCase
     buris1 = @rosrs.get_annotation_body_uris(@rouri, @res_txt)
     assert_includes(uri(bodyuri1), buris1)
     # Retrieve annotation
-    c,r,auri1,agr1a = @rosrs.get_annotation_body(annuri)
+    c,r,auri1,agr1a = @rosrs.get_annotation(annuri)
     assert_equal(200, c)
     assert_equal("OK", r)
     # The following test fails, due to a temp[orary redirect from the annotation
@@ -347,7 +348,7 @@ class TestROSRSSession < Test::Unit::TestCase
     buris2 = @rosrs.get_annotation_body_uris(@rouri, @res_txt)
     assert_includes(uri(bodyuri2), buris2)
     # Retrieve annotation
-    c,r,auri2,agr2a = @rosrs.get_annotation_body(annuri)
+    c,r,auri2,agr2a = @rosrs.get_annotation(annuri)
     assert_equal(c, 200)
     assert_equal(r, "OK")
     s2a = [uri(@res_txt), RDF::DC.title, lit("Title 2")]
@@ -372,7 +373,7 @@ class TestROSRSSession < Test::Unit::TestCase
     populate_test_research_object
 
     # Create external annotation on @res_txt
-    c,r,annuri,bodyuri1 = @rosrs.create_external_annotation(@rouri, @res_txt, "http://www.example.com/something")
+    c,r,annuri = @rosrs.create_external_annotation(@rouri, @res_txt, "http://www.example.com/something")
     assert_equal(201, c)
     assert_equal("Created", r)
 
@@ -380,10 +381,10 @@ class TestROSRSSession < Test::Unit::TestCase
     auris1 = @rosrs.get_annotation_stub_uris(@rouri, @res_txt)
     assert_includes(uri(annuri), auris1)
     buris1 = @rosrs.get_annotation_body_uris(@rouri, @res_txt)
-    assert_includes(uri(bodyuri1), buris1)
+    assert_includes("http://www.example.com/something", buris1)
 
     # Update external annotation
-    c,r,bodyuri2 = @rosrs.update_external_annotation(@rouri, annuri, @res_txt, "http://www.example.com/other")
+    c,r = @rosrs.update_external_annotation(@rouri, annuri, @res_txt, "http://www.example.com/other")
     assert_equal(c, 200)
     assert_equal(r, "OK")
 
@@ -391,7 +392,7 @@ class TestROSRSSession < Test::Unit::TestCase
     auris2 = @rosrs.get_annotation_stub_uris(@rouri, @res_txt)
     assert_includes(uri(annuri), auris2)
     buris2 = @rosrs.get_annotation_body_uris(@rouri, @res_txt)
-    assert_includes(uri(bodyuri2), buris2)
+    assert_includes("http://www.example.com/other", buris2)
 
     # Remove annotation
     code, reason = @rosrs.remove_annotation(annuri)
