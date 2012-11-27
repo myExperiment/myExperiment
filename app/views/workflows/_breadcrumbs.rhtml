@@ -1,6 +1,6 @@
 <li><%= link_to 'Workflows', workflows_path %></li>
 
-<% if ["show", "new", "edit", "search", "all", "new_version", "edit_version", "comments_timeline", "galaxy_tool"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit", "search", "all", "new_version", "edit_version", "edit_annotations", "comments_timeline", "galaxy_tool"].include? controller.action_name.to_s %>
   <% case controller.action_name.to_s; when "show" %>
     <li><%= h(@workflow.title) %></li>
   <% when "new" %>
@@ -18,6 +18,9 @@
 	<% when "edit_version" %>
     <li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
 		<li>Edit Version</li>
+	<% when "edit_annotations" %>
+    <li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
+		<li>Edit Annotations</li>
 	<% when "comments_timeline" %>
 		<li><%= link_to "#{h(@workflow.title)}", workflow_path(@workflow) %></li>
     <li>Comments Timeline</li>

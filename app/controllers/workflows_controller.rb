@@ -236,7 +236,7 @@ class WorkflowsController < ApplicationController
 
     session = ROSRS::Session.new(@workflow.ro_uri, Conf.rodl_bearer_token)
 
-    @annotations = session.get_annotation_graph(@workflow.ro_uri, workflow_url(@workflow))
+    @annotations = session.get_annotation_graph(@workflow.ro_uri, workflow_url(@workflow)) if @workflow.ro_uri
 
     if allow_statistics_logging(@viewing_version)
       @viewing = Viewing.create(:contribution => @workflow.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
