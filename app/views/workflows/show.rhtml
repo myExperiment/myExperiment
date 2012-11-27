@@ -1,5 +1,8 @@
 <% title = @workflow.title %>
-<% @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.title, nil]).each do |s, p, o| title = o.to_s end %>
+
+<% if @workflow.ro_uri %>
+  <% @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.title, nil]).each do |s, p, o| title = o.to_s end %>
+<% end %>
 
 <% t "#{h title} (#{h @workflow.contributor_name}) [#{h(@workflow.type_display_name)} Workflow]" -%>
 
@@ -94,20 +97,22 @@
 			
 			<br/>
 			
-      <% creators     = @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.creator, nil]) %>
-      <% contributors = @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.contributor, nil]) %>
+      <% if @workflow.ro_uri %>
+        <% creators     = @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.creator, nil]) %>
+        <% contributors = @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.contributor, nil]) %>
 
-      <% if creators.count > 0 || contributors.count > 0 %>
+        <% if creators.count > 0 || contributors.count > 0 %>
 
-        <h3>
-          <%= info_icon_with_tooltip("This section shows the creators and contributors of the Workflow") %>
-          Credit
-        </h3>
-			
-        <ul>
-          <% creators.each do |s, p, o| %><li><%=h o.to_s -%> (creator)</li><% end %>
-          <% contributors.each do |s, p, o| %><li><%=h o.to_s -%> (contributor)</li><% end %>
-        </ul>
+          <h3>
+            <%= info_icon_with_tooltip("This section shows the creators and contributors of the Workflow") %>
+            Credit
+          </h3>
+        
+          <ul>
+            <% creators.each do |s, p, o| %><li><%=h o.to_s -%> (creator)</li><% end %>
+            <% contributors.each do |s, p, o| %><li><%=h o.to_s -%> (contributor)</li><% end %>
+          </ul>
+        <% end %>
       <% end %>
 
 			<h3>
@@ -141,30 +146,31 @@
 				Description
 			</h3>
 			
-      <% @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.description, nil]).each do |s, p, o| %>
-				<div class="contribution_description">
-					<p><%=h o.to_s %></p>
-				</div>
-      <% end %>
+      <% if @workflow.ro_uri %>
+        <% @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.description, nil]).each do |s, p, o| %>
+          <div class="contribution_description">
+            <p><%=h o.to_s %></p>
+          </div>
+        <% end %>
 
-      <% subjects = @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.subject, nil]) %>
+        <% subjects = @annotations.query([RDF::URI.parse(workflow_url(@workflow)), RDF::DC.subject, nil]) %>
 
-      <% if subjects.count > 0 %>
-        <div class="tag_list">
-          <ul>
-            <% subjects.each do |s, p, o| %>
-              <li><%=h o.to_s -%></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
+        <% if subjects.count > 0 %>
+          <div class="tag_list">
+            <ul>
+              <% subjects.each do |s, p, o| %>
+                <li><%=h o.to_s -%></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
 
-			<br/>
+        <br/>
 
-      <h3>
-				<%= info_icon_with_tooltip("This section provides example data sets (workflow inputs and outputs) to this workflow") %>
-        Example data sets
-      </h3>
+        <h3>
+          <%= info_icon_with_tooltip("This section provides example data sets (workflow inputs and outputs) to this workflow") %>
+          Example data sets
+        </h3>
 
 <%
 workflow_uri = RDF::URI.parse(workflow_url(@workflow))
@@ -200,39 +206,40 @@ end
 data_sets = (inputs + outputs).group_by do |item| item[:data_sets] end
 %>
 
-      <% if data_sets.length == 0 %>
-        <p class="none_text">
-          There are no data sets with this workflow.
-        </p>
-      <% else %>
-        <% data_sets.each do |data_set| %>
+        <% if data_sets.length == 0 %>
+          <p class="none_text">
+            There are no data sets with this workflow.
+          </p>
+        <% else %>
+          <% data_sets.each do |data_set| %>
 
-          <% inputs  = data_set[1].select do |item| item[:type] == :input  end %>
-          <% outputs = data_set[1].select do |item| item[:type] == :output end %>
+            <% inputs  = data_set[1].select do |item| item[:type] == :input  end %>
+            <% outputs = data_set[1].select do |item| item[:type] == :output end %>
 
-          <% if inputs.length > 0 && outputs.length > 0 %>
-            <table class="simple">
-              <tr>
-                <th>Input / Output</th>
-                <th>Example</th>
-              </tr>
-              <% if inputs.length > 0 %>
-                <% inputs.each do |input| %>
-                  <tr>
-                    <td>Input: <%=h input[:label] -%></td>
-                    <td><%=h input[:value] -%></td>
-                  </tr>
+            <% if inputs.length > 0 && outputs.length > 0 %>
+              <table class="simple">
+                <tr>
+                  <th>Input / Output</th>
+                  <th>Example</th>
+                </tr>
+                <% if inputs.length > 0 %>
+                  <% inputs.each do |input| %>
+                    <tr>
+                      <td>Input: <%=h input[:label] -%></td>
+                      <td><%=h input[:value] -%></td>
+                    </tr>
+                  <% end %>
                 <% end %>
-              <% end %>
-              <% if outputs.length > 0 %>
-                <% outputs.each do |output| %>
-                  <tr>
-                    <td>Output: <%=h output[:label] -%></td>
-                    <td><%=h output[:value] -%></td>
-                  </tr>
+                <% if outputs.length > 0 %>
+                  <% outputs.each do |output| %>
+                    <tr>
+                      <td>Output: <%=h output[:label] -%></td>
+                      <td><%=h output[:value] -%></td>
+                    </tr>
+                  <% end %>
                 <% end %>
-              <% end %>
-            </table>
+              </table>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>

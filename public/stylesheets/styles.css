@@ -2431,3 +2431,20 @@ DIV.tag_list LI {
   padding-right: 4px;
 }
 
+div.ro_uri_edit_box {
+  text-align: center;
+  background: #EEEEEE;
+  background-image: url('/images/header-bg.png');
+  background-position: top;
+  background-repeat: repeat-x;
+  border: 1px solid #999999;
+  border-bottom: 2px solid #999999;
+  width: 550px;
+  padding: 8px;
+  margin: 16px auto;
+}
+
+div.ro_uri_edit_box input {
+  width: 546px;
+}
+

@@ -17,10 +17,15 @@
 
 <% form_for(:workflow, :url => workflow_path(@workflow), :html => { :method => :put }) do |f| %>
 
-  <p>
-    <b>Research Object URI:</b>
-    <%= f.text_field :ro_uri, :size => 60 %>
-  </p>
+  <div class="ro_uri_edit_box">
+    <p><b>Research Object URI</b></p>
+
+    <p>You may associate this workflow with a <em>research object</em> by
+    specifying the URI to it.  Once set, metadata will be synchronised
+    with the research object.</p>
+
+    <p><%= f.text_field :ro_uri, :size => 60, :placeholder => 'http://example.org/rodl/ROs/research_object/' %></p>
+  </div>
 
   <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @workflow } %>
   <%= render :partial => "contributions/credit_attribution_form", :locals => { :edit => true, :contributable => @workflow } %>
