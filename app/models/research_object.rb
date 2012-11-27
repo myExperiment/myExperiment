@@ -11,6 +11,7 @@ require 'xml/libxml'
 require 'zip/zip'
 require 'rdf'
 require 'rdf/raptor'
+require 'wf4ever/rosrs_client'
 
 class ResearchObject < ActiveRecord::Base
 
@@ -25,6 +26,8 @@ class ResearchObject < ActiveRecord::Base
   validates_presence_of :content_blob
 
   format_attribute :description
+
+  attr_accessor :manifest
 
   def load_graph_from_zip
 
@@ -75,7 +78,7 @@ class ResearchObject < ActiveRecord::Base
 
     # create RDF graph
 
-    manifest_name = "tmp/graph.#{Process.pid}"
+    manifest_name = "tmp/graph.#{Process.pid}.rdf"
 
     File.open(manifest_name, "w") do |f|
       f.write(content_blob.data)
@@ -90,9 +93,10 @@ class ResearchObject < ActiveRecord::Base
     graph.query([nil, nil, nil]).each do |s, p, o|
 
       statements.create(
-          :subject_text =>   s.to_s,
+          :subject_text   => s.to_s,
           :predicate_text => p.to_s,
-          :objekt_text =>    o.to_s)
+          :objekt_text    => o.to_s,
+          :context_uri    => url)
     end
 
     graph
@@ -199,5 +203,89 @@ class ResearchObject < ActiveRecord::Base
     results
   end
 
+  def create_annotation_body(resource_uri, body, namespaces)
+
+    namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+
+    doc = LibXML::XML::Document.new
+    doc.root = LibXML::XML::Node.new("rdf:RDF")
+    doc.root["xml:base"] = url
+
+    namespaces.each do |name, uri|
+      doc.root["xmlns:#{name}"] = uri
+    end
+
+    description = LibXML::XML::Node.new("rdf:Description")
+    description["rdf:about"] = resource_uri
+    description << body
+    doc.root << description
+
+    doc
+  end
+
+  def set_simple_annotation(resource_uri, predicate, namespaces, term, new_value)
+
+    session = ROSRS::Session.new(url, Conf.rodl_bearer_token)
+
+    # Remove existing annotations of the same structure
+
+    annotations = session.get_annotation_graphs(url, resource_uri)
+
+    annotations.each do |annotation|
+
+      next unless annotation[:body].count == 1
+      next unless annotation[:body].query(:predicate => predicate).count == 1
+
+      c, r, h, d = session.do_request("DELETE", annotation[:stub], {} )
+      c, r, h, d = session.do_request("DELETE", annotation[:body_uri], {} )
+    end
+
+    # Create the new annotation
+
+    annotation_body = create_annotation_body(resource_uri,
+        LibXML::XML::Node.new(term, new_value),
+        namespaces)
+
+    agraph = RDFGraph.new(:data => annotation_body.to_s, :format => :xml)
+
+    code, reason, stub_uri, body_uri = session.create_internal_annotation(url, resource_uri, agraph)
+  end
+
+  def set_dc_title(resource_uri, value)
+    set_simple_annotation(resource_uri,
+        RDF::DC.title,
+        { "dct" => "http://purl.org/dc/terms/" },
+        "dct:title",
+        value)
+  end
+
+  def set_dc_description(resource_uri, value)
+    set_simple_annotation(resource_uri,
+        RDF::DC.description,
+        { "dct" => "http://purl.org/dc/terms/" },
+        "dct:description",
+        value)
+  end
+
+  def manifest
+
+    return @manifest if @manifest
+
+    session = ROSRS::Session.new(url, Conf.rodl_bearer_token)
+
+    manifest_uri, manifest = session.get_manifest(url)
+
+    @manifest = manifest
+  end
+
+  def resolve_resource_uri(resource_uri)
+    RDF::URI.parse(url).join(RDF::URI.parse(resource_uri))
+  end
+
+  def aggregated_resources
+    manifest.query([nil, RDF.type, RDF::RO.Resource]).map do |statement|
+      statement.subject
+    end
+  end
 end
 

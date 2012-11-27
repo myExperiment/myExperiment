@@ -39,11 +39,15 @@
       <% end %>
       <% if membership.accepted? %>
         <% if membership.network.administrator?(membership.user_id) %>
-		<%= icon "remove_group_admin", user_membership_path(membership.user_id, membership)+'?membership[administrator]=0', nil, {:method => :put}, "Remove group admin status" %>
-	<% else %>
-		<%= icon "make_group_admin", user_membership_path(membership.user_id, membership)+'?membership[administrator]=1', nil, {:method => :put}, "Add
-group admin status" %>
-	<% end %>
+		      <%= icon "remove_group_admin", user_membership_path(membership.user_id, membership)+'?membership[administrator]=0', nil, {:method => :put}, "Remove group admin status" %>
+          <% if membership.network.owner == current_user %>
+            <%= icon "transfer_ownership", network_path(membership.network, :network => {:user_id => membership.user_id}),
+                     nil, {:method => :put, :confirm => "Are you sure you wish to transfer ownership of this group? You will not be able to undo this action."},
+                     "Transfer ownership" %>
+          <% end %>
+	      <% else %>
+		      <%= icon "make_group_admin", user_membership_path(membership.user_id, membership)+'?membership[administrator]=1', nil, {:method => :put}, "Add group admin status" %>
+	      <% end %>
       <% end %>
     </td>
   </tr>

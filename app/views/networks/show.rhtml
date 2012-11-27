@@ -1,6 +1,7 @@
 <% t "#{h @network.title}" -%>
 
-<% if logged_in? %>
+<ul class="sectionIcons">
+  <% if logged_in? %>
 		<% if current_user.membership_request_pending?(@network.id) %>
 		  <div class="box_standout">
 			  <span style="text-align: left;"><b>You have already sent a membership request to join this group. Awaiting admin confirmation.</b></span>
@@ -11,7 +12,6 @@
 			</div>
 		<% end %>
 
-  <ul class="sectionIcons">
     <% unless mine? @network %>
 		  <% if @network.member? current_user.id  %>
 			  <% cur_membership = Membership.find(:first, :conditions => ["network_id = ? AND user_id = ?", @network.id, current_user.id] ) %>
@@ -31,8 +31,9 @@
 			<li><%= icon('edit', edit_network_path(@network), 'Edit', nil, 'Edit Group') %></li>
       <li><%= icon('destroy', network_path(@network), 'Delete Group', { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
     <% end %>
-  </ul>
-<% end %>
+  <% end %>
+  <li><%= icon('content', content_network_path(@network), 'View Group Content', nil, 'View Group Content') %></li>
+</ul>
 
 <h1>
 	Group: <%=h @network.title %>
@@ -44,7 +45,7 @@
 	|
 	<a href="#news">News</a>
 	|
-	<a href="#shared_items">Shared Items (<%= @shared_items.length -%>)</a>
+	<%= link_to("Shared Items", content_network_path(@network)) -%>
 	|
 	<a href="#creditations">Creditations (<%= @network.creditations.length -%>)</a>
 	|
@@ -68,130 +69,103 @@
 	|
 </div>
 
-<div class="contribution_left_box">
-	
-	<div class="box_simple" style="margin: 0 0 0.4em 0;">
-		<% unless @network.description.nil? or @network.description.empty? %>
-			<%= @network.description_html %>
-		<% else %>
-			<p><i>No description</i></p>
-		<% end %>
-	</div>
-	
-	<p>
-	  <b>Created at:</b>
-	  <%=datetime @network.created_at %>
-	</p>
-	
-	<% unless @network.unique_name.nil? or @network.unique_name.empty? %>
-		<p>
-		  <b>Unique name:</b>
-		  <%=h @network.unique_name %>
-		</p>
-	<% end %>
-	
-	<% if mine? @network %>
-		<br/>
-		<div class="box_currentuser_specific">
-			<% if @network.open? %>
-				You have set this Group to automatically accept all membership requests.
-			<% elsif @network.membership_by_request? %>
-				You have set this Group to require membership requests to be approved by a group administrator.
-      <% else %>
-        You have set this Group to be closed to membership requests unless invited by a group administrator.
-			<% end %>
-		</div>
-	<% end %>
-	
-	<br/>
-	
-	<div class="contribution_section_box">
-<% admins=@network.administrators(true) -%>
-<% others=@network.members() - admins -%>
-		<p class="heading">
-			Administrators
-			<a name="group_members"></a>
-		</p>
-		<div>
-			<%= render :partial => "networks/members", :locals => { :collection => admins, :size => 60 } %>
-		</div>
-		<p class="heading">
-			Members
-		</p>
-		<div>
-			<%= render :partial => "networks/members", :locals => { :collection => others, :size => 60 } %>
-		</div>
-	</div>
-	
-</div>
-
-<div class="contribution_right_box">
-	<%= render :partial => "owner_box", :locals => { :network => @network } %>
-	<%= render :partial => "statistics_box", :locals => { :network => @network, :items => @shared_items } %>
-	
-  <div class="contribution_section_box"> <!-- style="width: 130px; padding: 0.4em 0.8em; font-size: 93%;" -->
-		<p>
-			<b>
-				This group has been credited
-				<a href="#creditations"><%= pluralize(@network.creditations.length, "time") -%></a>
-				<a name="group_creditations"></a>
-	  	</b>
-		</p>
-  </div>	
-	
-	<%= render :partial => "tags/tags_box", :locals => { :taggable => @network,
-																											 :owner_id => (@network.user_id),  
-																											 :add_path => tag_network_path(@network),
-																											 :edit_path => edit_network_path(@network),
-																											 :allow_edit => logged_in? ? @network.user_id == current_user.id : false } %>
-	
-	<%= render :partial => "announcements", :locals => { :group => @network, :count => 5 } -%>
-</div>
-
-<div class="clearer">&nbsp;</div>
-
-<br/>
-
 <div id="tabsContainer" class="tabsContainer"></div>
 
 <div class="tabContainer">
-  <div class="tabTitle">News</div>
-  <div class="tabContent">  
-    <a name="news"></a>
-    <%= render :partial => "layouts/news", :locals => { :collection => news(@network, true) } %>
+  <div class="tabTitle">Overview</div>
+  <div class="tabContent">
+    <div class="contribution_left_box">
+      <div class="box_simple" style="margin: 0 0 0.4em 0;">
+        <% unless @network.description.nil? or @network.description.empty? %>
+          <%= @network.description_html %>
+        <% else %>
+          <p><i>No description</i></p>
+        <% end %>
+      </div>
+
+      <p>
+        <b>Created at:</b>
+        <%=datetime @network.created_at %>
+      </p>
+
+      <% unless @network.unique_name.nil? or @network.unique_name.empty? %>
+        <p>
+          <b>Unique name:</b>
+          <%=h @network.unique_name %>
+        </p>
+      <% end %>
+
+      <a name="news"></a>
+      <h3>News</h3>
+      <%= render :partial => "layouts/news", :locals => { :collection => news(@network, true) } %>
+
+    </div>
+
+    <div class="contribution_right_box">
+      <%= render :partial => "owner_box", :locals => { :network => @network } %>
+      <%= render :partial => "statistics_box", :locals => { :network => @network, :items => @shared_items } %>
+
+      <div class="contribution_section_box"> <!-- style="width: 130px; padding: 0.4em 0.8em; font-size: 93%;" -->
+        <p>
+          <b>
+            This group has been credited
+            <a href="#creditations"><%= pluralize(@network.creditations.length, "time") -%></a>
+            <a name="group_creditations"></a>
+          </b>
+        </p>
+      </div>
+
+      <%= render :partial => "tags/tags_box", :locals => { :taggable => @network,
+                                                           :owner_id => (@network.user_id),
+                                                           :add_path => tag_network_path(@network),
+                                                           :edit_path => edit_network_path(@network),
+                                                           :allow_edit => logged_in? ? @network.user_id == current_user.id : false } %>
+
+      <%= render :partial => "announcements", :locals => { :group => @network, :count => 5 } -%>
+    </div>
+    <div class="clearer">&nbsp;</div>
   </div>
 </div>
 
 <div class="tabContainer">
-  <div class="tabTitle">Shared Items (<%= @shared_items.length -%>)</div>
-  <div class="tabContent" id="shared_items">
-    <a name="shared_items"></a>
-		<% unless @shared_items.empty? %>
-  		<%= view_privileges_notice %>
-
-      <div style="float: right; margin: 0.5em;">
-        Sort:
-        <select onchange="javascript:location = this.options[this.selectedIndex].value;">
-          <% @item_sort_options.each do |option, label| %>
-            <option value="?item_sort=<%= option -%>#shared_items" <% if params[:item_sort] == option -%> selected="selected"<% end -%>><%= label -%></option>
-          <% end %>
-        </select>
-      </div>
-
-			<%= render :partial => "contributions/table", :locals => { :collection => @shared_items } %>
-
-      <div style="clear: both"></div>
-
-		<% else %>
-			<p class="none_text">No items have been shared with this Group yet.</p>
-		<% end %>
-	</div>
+  <div class="tabTitle">Members (<%= @network.members.size -%>)</div>
+  <div class="tabContent">
+    <a name="members"></a>
+    <div class="contribution_section_box">
+      <a name="group_members"></a>
+      <% owner = @network.owner -%>
+        <p class="heading">
+          Owner
+        </p>
+        <div>
+          <%= render :partial => "networks/members", :locals => { :collection => [owner], :size => 60 } %>
+        </div>
+      <% admins = @network.administrators(false)-%>
+      <% unless admins.empty? %>
+        <p class="heading">
+          Administrators
+        </p>
+        <div>
+          <%= render :partial => "networks/members", :locals => { :collection => admins, :size => 60 } %>
+        </div>
+      <% end %>
+      <% others = @network.members - admins - [@network.owner] -%>
+      <% unless others.empty? %>
+        <p class="heading">
+          Members
+        </p>
+        <div>
+          <%= render :partial => "networks/members", :locals => { :collection => others, :size => 60 } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>
 
 <div class="tabContainer">
   <div class="tabTitle">Creditations (<%= @network.creditations.length -%>)</div>
-  <div class="tabContent">  
-    
+  <div class="tabContent">
+
     <a name="creditations"></a>
     <% unless (creditations = @network.creditations).empty? %>
 			<%= view_privileges_notice %>
@@ -208,45 +182,54 @@
 </div>
 
 <% if logged_in? && @network.administrator?(current_user.id) %>
-  
+
   <% memberships = @network.memberships_accepted %>
 	<div class="tabContainer">
     <div class="tabTitle">Manage Memberships</div>
     <div class="tabContent">
       <a name="manage_memberships"></a>
+
+      <% if mine? @network %>
+     		<br/>
+     		<div class="box_currentuser_specific">
+          <strong>New member policy:</strong><br/>
+     			<% if @network.open? %>
+     				You have set this Group to automatically accept all membership requests.
+     			<% elsif @network.membership_by_request? %>
+     				You have set this Group to require membership requests to be approved by a group administrator.
+           <% else %>
+             You have set this Group to be closed to membership requests unless invited by a group administrator.
+     			<% end %>
+     		</div>
+     	<% end %>
+
+      <h3>Members</h3>
     	<% unless memberships.empty? %>
       	<%= render :partial => "memberships/table", :locals => { :collection => memberships, :network => false } %>
 			<% else %>
 				<p><i>No additional members belong to this Group</i></p>
 			<% end %>
-    </div>
-  </div>
-  
-	<% requests = @network.memberships_requested %>
-  <div class="tabContainer">
-    <div class="tabTitle">Requests Pending (<%= @network.memberships_requested.length -%>)</div>
-    <div class="tabContent">
+
       <a name="requests_pending"></a>
+      <h3>Requests to join</h3>
+      <% requests = @network.memberships_requested %>
     	<% unless requests.empty? %>
 				<p></p>
       	<%= render :partial => "memberships/table", :locals => { :collection => requests, :network => false } %>
 			<% else %>
 				<p><i>No requests are pending for this Group</i></p>
 			<% end %>
-    </div>
-  </div>
-	
-	<% invited = @network.memberships_invited %>
-	<div class="tabContainer">
-    <div class="tabTitle">Invites Pending (<%= @network.memberships_invited.length -%>)</div>
-    <div class="tabContent">
+
       <a name="invites_pending"></a>
+      <h3>Invitations</h3>
+      <% invited = @network.memberships_invited %>
     	<% unless invited.empty? %>
 				<p></p>
       	<%= render :partial => "memberships/table", :locals => { :collection => invited, :network => false } %>
 			<% else %>
 				<p><i>No invites are pending for this Group</i></p>
 			<% end %>
+
     </div>
   </div>
 

@@ -219,6 +219,12 @@ ActiveRecord::Schema.define(:version => 20121113162639) do
     t.datetime "updated_at"
   end
 
+  create_table "deprecation_events", :force => true do |t|
+    t.string   "title"
+    t.datetime "date"
+    t.text     "details"
+  end
+
   create_table "downloads", :force => true do |t|
     t.string   "kind"
     t.string   "user_agent"
@@ -440,7 +446,6 @@ ActiveRecord::Schema.define(:version => 20121113162639) do
     t.integer  "contributor_id"
     t.datetime "created_at"
     t.string   "contributor_type"
-    t.text     "ro_uri"
   end
 
   create_table "pending_invitations", :force => true do |t|
@@ -853,6 +858,11 @@ ActiveRecord::Schema.define(:version => 20121113162639) do
     t.string   "last_edited_by"
     t.integer  "license_id"
     t.text     "ro_uri"
+  end
+
+  create_table "wsdl_deprecations", :force => true do |t|
+    t.string  "wsdl"
+    t.integer "deprecation_event_id"
   end
 
 end

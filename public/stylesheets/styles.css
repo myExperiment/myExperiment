@@ -267,9 +267,9 @@ li {
 }
 
 #hlist {
-	width: 100%;
 	margin: 0;
 	padding-left: 1em;
+  padding-right: 1em;
 }
 
 #hlist ul {
@@ -1521,6 +1521,7 @@ div.auto_complete ul strong.highlight {
 	line-height: 1.4;
 }
 
+.derived_annotation_notice,
 .none_text {
 	font-style: italic;
 	color: #666666;
@@ -2151,7 +2152,7 @@ table.topic td.tag_vote{
 }
 
 .pivot .label {
-  width: 92px;
+  width: 90px;
   overflow: hidden;
   display: inline-block;
 }
@@ -2378,6 +2379,14 @@ input.auto_complete_field.error {
   -moz-border-radius: 6px 6px 6px 6px;
   -webkit-border-bottom-left-radius: 6px;
   -webkit-border-bottom-right-radius: 6px;
+}
+
+div.deprecation_event {
+  border: 1px solid #e24a3e;
+  background-color: #ffcccc;
+  padding: 0.5em;
+  border-radius: 3px;
+  margin-bottom: 1em;
 }
 
 #statement_list TABLE {
