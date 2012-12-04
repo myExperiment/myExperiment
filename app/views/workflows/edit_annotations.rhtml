@@ -57,3 +57,9 @@ templates = [
 
 <% end %>
 
+<p style="text-align: center; margin: 1em">
+  <% form_tag( { :action => "show" }, :method => :get) do %>
+    <%= submit_tag("Return to workflow") -%>
+  <% end %>
+</p>
+
