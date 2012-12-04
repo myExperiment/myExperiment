@@ -225,6 +225,20 @@ module ROSRS
       end
     end
 
+    def check_research_object(ro_uri)
+      code, reason = do_request_follow_redirect("GET", ro_uri,
+          :accept => "application/rdf+xml")
+
+      case code
+      when 200
+        true
+      when 404
+        false
+      else
+        error(code, "Error checking for RO #{ro_uri}: #{code} #{reason}")
+      end
+    end
+
     # ---------------------
     # Resource manipulation
     # ---------------------

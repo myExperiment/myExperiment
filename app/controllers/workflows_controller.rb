@@ -528,6 +528,30 @@ class WorkflowsController < ApplicationController
       
       if @workflow.update_attributes(params[:workflow])
 
+        # Check that the RO exists and if not, create it.
+        
+        unless params[:workflow][:ro_uri].empty?
+
+          rodl_uri = URI.parse(@workflow.ro_uri)
+          
+          path_bits = rodl_uri.path.sub(/\/$/, "").split("/")
+
+          slug = path_bits.pop
+
+          rodl_uri.path = "#{path_bits.join("/")}/"
+
+          session = ROSRS::Session.new(rodl_uri.to_s, Conf.rodl_bearer_token)
+
+          if session.check_research_object(slug) == false
+            c, r, u, m = session.create_research_object(slug)
+
+            if c != 201
+              flash.now[:error] = "Unable to create research object: #{r}"
+            end
+          end
+          
+        end
+
         if params[:workflow][:tag_list]
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
           @workflow.reload
