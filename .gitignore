@@ -1,2 +1,5 @@
 /index
 /.project
+/tmp
+/log
+/Gemfile.lock
