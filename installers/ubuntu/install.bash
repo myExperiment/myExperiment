@@ -21,7 +21,7 @@ sudo su -c "echo mysql-server-5.1 mysql-server/root_password_again password `ech
 
 echo "Installing required packages using apt-get install"
 sudo apt-get update || { echo "Could not update apt-get. Aborting ..."; exit 5; }
-sudo -n apt-get install -y build-essential exim4 git-core curl libcurl3 libcurl3-gnutls libcurl4-openssl-dev openssl libreadline6 libreadline6-dev zlib1g zlib1g-dev libssl-dev libyaml-dev mysql-server libmysqlclient-dev libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion libmagickwand-dev graphviz gcj-jre-headless || { echo "Could not install required using apt-get install. Aborting ..."; exit 6; }
+sudo -n apt-get install -y build-essential exim4 git-core curl libcurl3 libcurl3-gnutls libcurl4-openssl-dev openssl libreadline6 libreadline6-dev zlib1g zlib1g-dev libssl-dev libyaml-dev mysql-server libmysqlclient-dev libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion libmagickwand-dev graphviz gcj-jre-headless libraptor1-dev || { echo "Could not install required using apt-get install. Aborting ..."; exit 6; }
 
 echo "Installing and configuring RVM"
 sudo bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer ) || { echo "Could not install RVM. Aborting ..."; exit 7; }
