@@ -24,7 +24,7 @@
     specifying the URI to it.  Once set, metadata will be synchronised
     with the research object.</p>
 
-    <p><%= f.text_field :ro_uri, :size => 60, :placeholder => 'http://example.org/rodl/ROs/research_object/' %></p>
+    <p><%= f.text_field :ro_uri, :size => 60, :placeholder => 'http://www.example.org/rodl/ROs/research_object/' %></p>
   </div>
 
   <%= render :partial => "tags/tags_form", :locals => { :edit => true, :taggable => @workflow } %>

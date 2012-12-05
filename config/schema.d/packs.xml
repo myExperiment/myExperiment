@@ -10,6 +10,7 @@
     <column type="text"     name="description_html"/>
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
+    <column type="text"     name="ro_uri"/>
 
   </table>
 
