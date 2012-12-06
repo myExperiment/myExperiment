@@ -881,7 +881,8 @@ protected
         logger.debug("@viewing_version_number = #{@viewing_version_number}")
         logger.debug("@workflow.image != nil = #{@workflow.image != nil}")
       else
-        error("Workflow not found (id not authorized)", "is invalid (not authorized)", nil, 401)
+        error("Workflow #{params[:id]} not accessible, you are not authorized", 
+              "not accessible (not authorized)", :id, 401)
         return false
       end
     rescue ActiveRecord::RecordNotFound
