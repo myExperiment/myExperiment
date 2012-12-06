@@ -230,9 +230,13 @@ class Network < ActiveRecord::Base
   #  (as group owners do not have a membership)
   def update_administrators
     if user_id_changed?
-      Membership.find_by_user_id_and_network_id(user_id, id).try(:destroy) # delete membership of new owner
-      Membership.create(:user_id => user_id_was, :network_id => id,
-                        :administrator => true, :invited_by => User.find(user_id)).accept! # create membership for old owner
+      if (user_id)
+        Membership.find_by_user_id_and_network_id(user_id, id).try(:destroy) # delete membership of new owner
+      end  
+      if (user_id_was)
+        Membership.create(:user_id => user_id_was, :network_id => id,
+                          :administrator => true, :invited_by => User.find(user_id)).accept! # create membership for old owner
+      end
     end
   end
 
