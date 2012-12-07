@@ -19,4 +19,6 @@ gem "htmlentities", "~> 4.3.1"
 gem "taverna-scufl", "~> 0.7.2"
 gem "taverna-t2flow", "~> 0.3.0"
 gem "workflow-to-galaxy", "~> 0.3.4"
+gem "rdf", "~> 0.3.4.1"
+gem "rdf-raptor", "~> 0.4.1"
 
