@@ -19,9 +19,7 @@ echo "Preseeding debconf"
 sudo su -c "echo mysql-server-5.1 mysql-server/root_password password `echo "'"``echo ${mysql_root_password}``echo "'"` | debconf-set-selections" || { echo "Could not set debconf option mysql-server-5.1 mysql-server/root_password. Aborting ..."; exit 3; }
 sudo su -c "echo mysql-server-5.1 mysql-server/root_password_again password `echo "'"``echo ${mysql_root_password}``echo "'"` | debconf-set-selections" || { echo "Could not set debconf option mysql-server-5.1 mysql-server/root_password_again. Aborting ..."; exit 4; }
 
-echo "Installing required packages using apt-get install"
-sudo apt-get update || { echo "Could not update apt-get. Aborting ..."; exit 5; }
-sudo -n apt-get install -y build-essential exim4 git-core curl libcurl3 libcurl3-gnutls libcurl4-gnutls-dev openssl libreadline6 libreadline6-dev zlib1g zlib1g-dev libssl-dev libyaml-dev mysql-server libmysqlclient-dev libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion libmagickwand-dev graphviz gcj-jre-headless libraptor1-dev || { echo "Could not install required using apt-get install. Aborting ..."; exit 6; }
+source "${basedir}/dependencies.bash"
 
 echo "Installing and configuring RVM"
 sudo bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer ) || { echo "Could not install RVM. Aborting ..."; exit 7; }
