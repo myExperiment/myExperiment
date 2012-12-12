@@ -44,6 +44,7 @@ class Blob < ActiveRecord::Base
   validates_presence_of :content_type
 
   validates_presence_of :title
+  validates_presence_of :local_name
 
   validates_each :content_blob do |record, attr, value|
     if value.data.size > Conf.max_upload_size

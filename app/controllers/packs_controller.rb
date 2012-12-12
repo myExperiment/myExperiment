@@ -403,6 +403,24 @@ class PacksController < ApplicationController
     end
   end
   
+  def snapshot
+
+    success = @pack.snapshot!
+
+    respond_to do |format|
+      format.html {
+        if success
+          @pack.reload
+          flash[:notice] = 'Pack snapshot was successfully created.'
+          redirect_to pack_version_path(@pack, @pack.versions.last.version)
+        else
+          flash[:error] = 'There was a problem with creating the snapshot.'
+          redirect_to pack_path(@pack)
+        end
+      }
+    end
+  end
+
   protected
   
   # Check that a protocol is specified in the URI; prepend HTTP:// otherwise
@@ -438,7 +456,8 @@ class PacksController < ApplicationController
       "statistics"       => "view",
       "tag"              => "view",
       "update"           => "edit",
-      "update_item"      => "edit"
+      "update_item"      => "edit",
+      "snapshot"         => "edit"
     }
 
     begin
@@ -447,6 +466,8 @@ class PacksController < ApplicationController
       if Authorization.check(action_permissions[action_name], pack, current_user)
         @pack = pack
         
+        @version = @pack.find_version(params[:version]) if params[:version]
+
         @authorised_to_edit = logged_in? && Authorization.check("edit", @pack, current_user)
         @authorised_to_download = Authorization.check("download", @pack, current_user)
         

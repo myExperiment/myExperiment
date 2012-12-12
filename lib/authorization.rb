@@ -85,6 +85,24 @@ module Authorization
             return true
         end
       
+      when "PackVersion"
+        case action
+          when "create"
+
+            # If a user can edit a pack, they can create a version of it.
+            is_authorized = Authorization.check('edit', context, user)
+
+          when "view"
+
+            # If a user can view a pack, they can view versions of it.
+            is_authorized = Authorization.check('view', context, user)
+
+          else
+            
+            # Editing or deleting versions of a pack is not allowed.
+            is_authorized = false
+        end
+
       when "Comment"
         case action
           when "create"

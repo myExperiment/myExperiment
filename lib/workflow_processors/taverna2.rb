@@ -9,6 +9,8 @@ module WorkflowProcessors
   require 't2flow/parser'
   require 't2flow/dot'
   require 'libxml'
+  require 'rdf'
+  require 'rdf/n3'
   
   require 'file_upload'
 
@@ -373,13 +375,46 @@ module WorkflowProcessors
       aux(@t2flow_model, @t2flow_model, 'components')
     end
     
-    def extract_metadata(workflow_id)
+    def extract_metadata(workflow)
 
       @t2flow_model.all_processors.each do |processor|
-        WorkflowProcessor.create(:workflow_id => workflow_id,
+        workflow_processor = WorkflowProcessor.create(:workflow => workflow,
             :name           => processor.name,
             :wsdl           => processor.wsdl,
             :wsdl_operation => processor.wsdl)
+        create_semantic_annotations(workflow_processor, processor.semantic_annotation)
+      end
+
+      @t2flow_model.sources.each do |source|
+        port = WorkflowPort.create(:workflow => workflow,
+                            :port_type => "input",
+                            :name => source.name)
+        create_semantic_annotations(port, source.semantic_annotation)
+      end
+
+      @t2flow_model.sinks.each do |sink|
+        port = WorkflowPort.create(:workflow => workflow,
+                            :port_type => "output",
+                            :name => sink.name)
+        create_semantic_annotations(port, sink.semantic_annotation)
+      end
+
+      create_semantic_annotations(workflow, @t2flow_model.main.annotations.semantic_annotation)
+
+    end
+
+    def create_semantic_annotations(subject, semantic_annotations)
+      if semantic_annotations.type == "text/rdf+n3"
+        g = RDF::Graph.new
+        g << RDF::Reader.for(:n3).new(semantic_annotations.content)
+
+        g.each_statement do |statement|
+          predicate = statement.predicate.to_s
+          object = statement.object.to_s
+          SemanticAnnotation.create(:subject => subject, :predicate => predicate, :object => object)
+        end
+      else
+        raise "Unsupported annotation content type (#{semantic_annotations.type}) for #{subject}."
       end
     end
 

@@ -10,7 +10,7 @@
 		<ul id="packItemsList">
 			
 			<!-- Contributable Item Entries -->
-			<% pack.contributable_entries.each do |e| %>
+			<% contributable_entries.each do |e| %>
 				<% show = e.available? ? Authorization.check("view", e.contributable, current_user) : false -%>
 				<li>
 					<table>
@@ -37,8 +37,7 @@
 									
 										<b><%= visible_name(e.contributable_type) -%>:</b>
 										<% unless e.contributable_version.blank? -%>
-											<% # HACK: only workflows are versioned at the moment -%>
-											<%= versioned_workflow_link e.contributable_id, e.contributable_version, false -%>
+											<%= versioned_resource_link e.contributable, e.contributable_version, false -%>
 											<% if false %><span style="color: #666666;">(version <%= e.contributable_version -%>)</span><% end %>
 										<% else -%>
 											<%= contributable(e.contributable_id, e.contributable_type) %>
@@ -98,7 +97,7 @@
 			<% end -%>
 			
 			<!-- Remote Item Entries -->
-			<% pack.remote_entries.each do |e| %>
+			<% remote_entries.each do |e| %>
 				<li>
 					<table>
 						<tr>

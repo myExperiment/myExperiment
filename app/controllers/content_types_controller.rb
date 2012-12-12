@@ -12,8 +12,13 @@ class ContentTypesController < ApplicationController
 
     params[:num] = 25 unless params[:num]
 
-    @content_types = ContentType.find(:all, :order => 'title ASC',
-        :page => { :size => params[:num], :current => params[:page] })
+    if params[:mime_type]
+      @content_types = ContentType.find_all_by_mime_type(params[:mime_type], :order => 'title ASC',
+          :page => { :size => params[:num], :current => params[:page] })
+    else
+      @content_types = ContentType.find(:all, :order => 'title ASC',
+          :page => { :size => params[:num], :current => params[:page] })
+    end
   end
 
   # GET /content_types/1

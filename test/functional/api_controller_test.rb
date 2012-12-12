@@ -191,6 +191,7 @@ class ApiControllerTest < ActionController::TestCase
         <title>#{title}</title>
         <description>#{description}</description>
         <license-type>#{license_type}</license-type>
+        <filename>test.txt</filename>
         <content-type>#{content_type}</content-type>
         <content>#{content}</content>
       </file>")

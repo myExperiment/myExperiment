@@ -10,6 +10,7 @@
     <column type="text"     name="description_html"/>
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
+    <column type="integer"  name="current_version"/>
 
   </table>
 
@@ -23,6 +24,7 @@
     <column type="integer"  name="user_id"               null="false"/>
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
+    <column type="integer"  name="version"/>
 
   </table>
 
@@ -36,6 +38,7 @@
     <column type="integer"  name="user_id"       null="false"/>
     <column type="datetime" name="created_at"/>
     <column type="datetime" name="updated_at"/>
+    <column type="integer"  name="version"/>
 
   </table>
 

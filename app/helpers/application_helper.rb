@@ -230,21 +230,10 @@ module ApplicationHelper
     link_to("Request Friendship", new_user_friendship_url(:user_id => user_id))
   end
   
-  def versioned_workflow_link(workflow_id, version_number, long_description=true)
-    if workflow_id.kind_of? Fixnum
-      workflow = Workflow.find(:first, :conditions => ["id = ?", workflow_id])
-      return nil unless workflow
-    elsif workflow_id.kind_of? Workflow
-      workflow = workflow_id
-    else
-      return nil
-    end
-    
-    if (ver = workflow.find_version(version_number))
-      url = url_for(:controller => 'workflows',
-                    :action => 'show',
-                    :id => workflow.id,
-                    :version => version_number)
+  def versioned_resource_link(resource, version_number, long_description=true)
+    ver = resource.find_version(version_number)
+    if ver
+      url = polymorphic_url(resource, :version => version_number)
     else
       return nil
     end
@@ -1485,7 +1474,7 @@ protected
           next unless (workflow.contributor_type.to_s == restrict_contributor.class.to_s and workflow.contributor_id.to_i == restrict_contributor.id.to_i)
         end
         
-        rtn << [workflow.updated_at, "#{editor} edited the #{versioned_workflow_link(item.id, workflow.version, false)} Workflow."]
+        rtn << [workflow.updated_at, "#{editor} edited the #{versioned_resource_link(item, workflow.version, false)} Workflow."]
       end
     when "PictureSelection"
       return rtn if before and item.created_at > before

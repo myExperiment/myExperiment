@@ -26,6 +26,8 @@ class Workflow < ActiveRecord::Base
   belongs_to :license
 
   has_many :workflow_processors, :dependent => :destroy
+  has_many :workflow_ports, :dependent => :destroy
+  has_many :semantic_annotations, :as => :subject, :dependent => :destroy
 
   before_validation :check_unique_name
   before_validation :apply_extracted_metadata
@@ -325,7 +327,7 @@ class Workflow < ActiveRecord::Base
     if processor_class
       delete_metadata
       begin
-        processor_class.new(content_blob.data).extract_metadata(id)
+        processor_class.new(content_blob.data).extract_metadata(self)
       rescue
       end
     end

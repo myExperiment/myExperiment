@@ -544,6 +544,7 @@ pivot_options:
     topic_workflow_map: INNER JOIN topic_workflow_map ON contributions.id = topic_workflow_map.workflow_id
     users: INNER JOIN users ON contributions.contributor_type = 'User' AND contributions.contributor_id = users.id
     licences: LEFT OUTER JOIN licenses ON contributions.license_id = licenses.id
+    component_profiles: LEFT OUTER JOIN workflows ON RESULT_TYPE = 'Workflow' AND workflows.id = RESULT_ID LEFT OUTER JOIN component_profiles ON workflows.component_profile_id = component_profiles.id
 
   order:
 
@@ -666,6 +667,12 @@ pivot_options:
     id_column: services.monitor_label
     label_column: services.monitor_label
     joins: [services]
+
+  - query_option: COMPONENT_PROFILE_ID
+    title: component profile
+    id_column: component_profiles.id
+    label_column: component_profiles.name
+    joins: [component_profiles]
 
   num_options: ["10", "20", "25", "50", "100"]
 
