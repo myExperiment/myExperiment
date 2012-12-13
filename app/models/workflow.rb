@@ -320,6 +320,7 @@ class Workflow < ActiveRecord::Base
   def delete_metadata
     if processor_class
       WorkflowProcessor.destroy_all(["workflow_id = ?", id])
+      WorkflowPort.destroy_all(["workflow_id = ?", id])
     end
   end
 
