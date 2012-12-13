@@ -40,11 +40,6 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
     t.datetime "updated_at"
   end
 
-  create_table "auto_tables", :force => true do |t|
-    t.string "name"
-    t.text   "schema"
-  end
-
   create_table "blob_versions", :force => true do |t|
     t.integer  "blob_id"
     t.integer  "version"
@@ -144,17 +139,17 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   add_index "comments", ["user_id"], :name => "index_comments_on_user_id"
 
   create_table "concept_relations", :force => true do |t|
-    t.string  "relation_type"
     t.integer "subject_concept_id"
+    t.string  "relation_type"
     t.integer "object_concept_id"
   end
 
   create_table "concepts", :force => true do |t|
-    t.string   "phrase"
     t.datetime "updated_at"
     t.text     "description_html"
-    t.integer  "vocabulary_id"
+    t.string   "phrase"
     t.text     "description"
+    t.integer  "vocabulary_id"
     t.datetime "created_at"
   end
 
@@ -168,34 +163,34 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   add_index "content_blobs", ["sha1"], :name => "index_content_blobs_on_sha1"
 
   create_table "content_types", :force => true do |t|
-    t.string   "category"
-    t.string   "mime_type"
-    t.datetime "updated_at"
-    t.text     "description_html"
     t.integer  "user_id"
     t.string   "title"
     t.text     "description"
+    t.text     "description_html"
+    t.string   "mime_type"
     t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "category"
   end
 
   create_table "contributions", :force => true do |t|
-    t.integer  "site_downloads_count", :default => 0
-    t.float    "rating"
-    t.string   "contributable_type"
-    t.integer  "contributable_id"
-    t.integer  "content_type_id"
-    t.integer  "site_viewings_count",  :default => 0
-    t.integer  "viewings_count",       :default => 0
-    t.datetime "updated_at"
+    t.integer  "contributor_id"
     t.string   "contributor_type"
+    t.integer  "contributable_id"
+    t.string   "contributable_type"
+    t.integer  "policy_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "downloads_count",      :default => 0
+    t.integer  "viewings_count",       :default => 0
+    t.float    "rating"
+    t.float    "rank"
+    t.integer  "content_type_id"
+    t.integer  "license_id"
+    t.integer  "site_downloads_count", :default => 0
+    t.integer  "site_viewings_count",  :default => 0
     t.string   "label"
     t.string   "layout"
-    t.integer  "policy_id"
-    t.integer  "license_id"
-    t.float    "rank"
-    t.integer  "contributor_id"
-    t.datetime "created_at"
   end
 
   add_index "contributions", ["contributable_id", "contributable_type"], :name => "index_contributions_on_contributable_id_and_contributable_type"
@@ -228,12 +223,12 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   end
 
   create_table "downloads", :force => true do |t|
-    t.integer  "user_id"
-    t.string   "kind"
     t.integer  "contribution_id"
-    t.boolean  "accessed_from_site", :default => false
-    t.string   "user_agent"
+    t.integer  "user_id"
     t.datetime "created_at"
+    t.string   "user_agent"
+    t.boolean  "accessed_from_site", :default => false
+    t.string   "kind"
   end
 
   add_index "downloads", ["contribution_id"], :name => "index_downloads_on_contribution_id"
@@ -308,8 +303,8 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   create_table "labels", :force => true do |t|
     t.integer "concept_id"
     t.string  "language"
-    t.integer "vocabulary_id"
     t.string  "text"
+    t.integer "vocabulary_id"
     t.string  "label_type"
   end
 
@@ -405,38 +400,38 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   add_index "oauth_tokens", ["token"], :name => "index_oauth_tokens_on_token", :unique => true
 
   create_table "ontologies", :force => true do |t|
-    t.datetime "updated_at"
-    t.text     "description_html"
-    t.integer  "user_id"
-    t.string   "title"
-    t.string   "uri"
-    t.text     "description"
-    t.datetime "created_at"
     t.string   "prefix"
+    t.datetime "updated_at"
+    t.string   "uri"
+    t.string   "title"
+    t.text     "description_html"
+    t.text     "description"
+    t.integer  "user_id"
+    t.datetime "created_at"
   end
 
   create_table "pack_contributable_entries", :force => true do |t|
-    t.string   "contributable_type"
-    t.integer  "contributable_id",      :null => false
     t.integer  "pack_id",               :null => false
-    t.datetime "updated_at"
+    t.integer  "contributable_id",      :null => false
     t.integer  "contributable_version"
-    t.integer  "user_id",               :null => false
+    t.string   "contributable_type"
     t.text     "comment"
-    t.integer  "version"
+    t.integer  "user_id",               :null => false
     t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "version"
   end
 
   create_table "pack_remote_entries", :force => true do |t|
     t.integer  "pack_id",       :null => false
-    t.datetime "updated_at"
-    t.integer  "user_id",       :null => false
-    t.string   "alternate_uri"
-    t.string   "uri"
     t.string   "title"
+    t.string   "uri"
+    t.string   "alternate_uri"
     t.text     "comment"
-    t.integer  "version"
+    t.integer  "user_id",       :null => false
     t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "version"
   end
 
   create_table "pack_versions", :force => true do |t|
@@ -451,14 +446,14 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   end
 
   create_table "packs", :force => true do |t|
-    t.datetime "updated_at"
+    t.integer  "contributor_id"
     t.string   "contributor_type"
-    t.text     "description_html"
-    t.integer  "current_version"
     t.string   "title"
     t.text     "description"
-    t.integer  "contributor_id"
+    t.text     "description_html"
     t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "current_version"
   end
 
   create_table "pending_invitations", :force => true do |t|
@@ -496,32 +491,32 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   end
 
   create_table "policies", :force => true do |t|
-    t.string   "name"
-    t.integer  "share_mode"
-    t.datetime "updated_at"
+    t.integer  "contributor_id"
     t.string   "contributor_type"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "share_mode"
     t.integer  "update_mode"
     t.boolean  "public_download",  :default => false
     t.boolean  "public_view",      :default => false
-    t.integer  "contributor_id"
-    t.datetime "created_at"
   end
 
   create_table "predicates", :force => true do |t|
-    t.string   "phrase"
     t.datetime "updated_at"
-    t.text     "equivalent_to"
-    t.text     "description_html"
-    t.integer  "ontology_id"
     t.string   "title"
+    t.text     "description_html"
+    t.string   "phrase"
+    t.integer  "ontology_id"
     t.text     "description"
+    t.text     "equivalent_to"
     t.datetime "created_at"
   end
 
   create_table "previews", :force => true do |t|
+    t.integer  "svg_blob_id"
     t.integer  "image_blob_id"
     t.datetime "created_at"
-    t.integer  "svg_blob_id"
   end
 
   create_table "profiles", :force => true do |t|
@@ -555,15 +550,15 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   add_index "ratings", ["user_id"], :name => "index_ratings_on_user_id"
 
   create_table "relationships", :force => true do |t|
-    t.string   "context_type"
-    t.integer  "context_id"
+    t.string   "objekt_type"
+    t.integer  "objekt_id"
     t.string   "subject_type"
     t.integer  "subject_id"
-    t.integer  "predicate_id"
     t.integer  "user_id"
-    t.integer  "objekt_id"
-    t.string   "objekt_type"
     t.datetime "created_at"
+    t.integer  "context_id"
+    t.integer  "predicate_id"
+    t.string   "context_type"
   end
 
   create_table "remote_workflows", :force => true do |t|
@@ -593,83 +588,83 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   end
 
   create_table "service_categories", :force => true do |t|
-    t.datetime "updated_at"
-    t.datetime "retrieved_at"
-    t.string   "label"
     t.string   "uri"
+    t.datetime "updated_at"
     t.integer  "service_id"
+    t.string   "label"
+    t.datetime "retrieved_at"
     t.datetime "created_at"
   end
 
   create_table "service_deployments", :force => true do |t|
-    t.string   "endpoint"
-    t.datetime "created"
-    t.string   "submitter_uri"
     t.string   "iso3166_country_code"
-    t.string   "submitter_label"
-    t.string   "flag_url"
-    t.datetime "updated_at"
-    t.string   "country"
     t.string   "city"
-    t.datetime "retrieved_at"
-    t.integer  "service_provider_id"
+    t.string   "submitter_label"
     t.string   "uri"
+    t.datetime "updated_at"
+    t.string   "submitter_uri"
+    t.string   "country"
     t.integer  "service_id"
+    t.datetime "created"
+    t.integer  "service_provider_id"
+    t.string   "flag_url"
+    t.string   "endpoint"
+    t.datetime "retrieved_at"
     t.datetime "created_at"
   end
 
   create_table "service_providers", :force => true do |t|
-    t.datetime "created"
     t.string   "name"
-    t.datetime "updated_at"
-    t.datetime "retrieved_at"
     t.string   "uri"
+    t.datetime "updated_at"
     t.text     "description"
+    t.datetime "created"
+    t.datetime "retrieved_at"
     t.datetime "created_at"
   end
 
   create_table "service_tags", :force => true do |t|
-    t.datetime "updated_at"
-    t.datetime "retrieved_at"
-    t.string   "label"
     t.string   "uri"
+    t.datetime "updated_at"
     t.integer  "service_id"
+    t.string   "label"
+    t.datetime "retrieved_at"
     t.datetime "created_at"
   end
 
   create_table "service_types", :force => true do |t|
     t.datetime "updated_at"
-    t.datetime "retrieved_at"
-    t.string   "label"
     t.integer  "service_id"
+    t.string   "label"
+    t.datetime "retrieved_at"
     t.datetime "created_at"
   end
 
   create_table "services", :force => true do |t|
+    t.string   "documentation_uri"
+    t.string   "iso3166_country_code"
+    t.string   "city"
+    t.string   "name"
+    t.string   "provider_uri"
+    t.string   "submitter_label"
+    t.string   "uri"
+    t.datetime "updated_at"
+    t.string   "monitor_symbol_url"
+    t.datetime "monitor_last_checked"
+    t.string   "monitor_label"
+    t.string   "country"
+    t.string   "submitter_uri"
+    t.string   "monitor_small_symbol_url"
+    t.text     "monitor_message"
+    t.text     "description"
+    t.string   "wsdl"
+    t.datetime "created"
+    t.string   "contributor_type"
+    t.integer  "contributor_id"
+    t.string   "flag_url"
     t.string   "endpoint"
     t.string   "provider_label"
-    t.string   "monitor_label"
-    t.string   "iso3166_country_code"
-    t.string   "wsdl"
-    t.string   "submitter_uri"
-    t.datetime "created"
-    t.string   "name"
-    t.string   "monitor_small_symbol_url"
-    t.string   "documentation_uri"
-    t.string   "submitter_label"
-    t.datetime "monitor_last_checked"
-    t.string   "flag_url"
-    t.datetime "updated_at"
-    t.string   "contributor_type"
-    t.text     "monitor_message"
-    t.string   "country"
-    t.string   "city"
     t.datetime "retrieved_at"
-    t.string   "uri"
-    t.text     "description"
-    t.integer  "contributor_id"
-    t.string   "monitor_symbol_url"
-    t.string   "provider_uri"
     t.datetime "created_at"
   end
 
@@ -733,15 +728,15 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   end
 
   create_table "topic_tag_map", :force => true do |t|
-    t.boolean "display_flag"
     t.integer "topic_id"
+    t.boolean "display_flag"
     t.integer "tag_id"
     t.float   "probability"
   end
 
   create_table "topic_workflow_map", :force => true do |t|
-    t.boolean "display_flag"
     t.integer "topic_id"
+    t.boolean "display_flag"
     t.integer "workflow_id"
     t.float   "probability"
   end
@@ -753,8 +748,8 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   end
 
   create_table "user_reports", :force => true do |t|
-    t.text     "content"
     t.string   "subject_type"
+    t.text     "content"
     t.integer  "subject_id"
     t.integer  "user_id"
     t.text     "report"
@@ -796,14 +791,14 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   add_index "viewings", ["contribution_id"], :name => "index_viewings_on_contribution_id"
 
   create_table "vocabularies", :force => true do |t|
-    t.datetime "updated_at"
-    t.text     "description_html"
     t.integer  "user_id"
     t.string   "title"
-    t.string   "uri"
     t.text     "description"
+    t.text     "description_html"
     t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "prefix"
+    t.string   "uri"
   end
 
   create_table "workflow_ports", :force => true do |t|
@@ -813,9 +808,9 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
   end
 
   create_table "workflow_processors", :force => true do |t|
+    t.string  "name"
     t.string  "wsdl_operation"
     t.string  "wsdl"
-    t.string  "name"
     t.integer "workflow_id"
   end
 

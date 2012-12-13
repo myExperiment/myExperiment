@@ -47,7 +47,6 @@ Rails::Initializer.run do |config|
     :query_stats,
     :recaptcha,
     :simile_timeline,
-    :structured_data,
     :validates_email_veracity_of,
     :versioning
   ]

@@ -7,8 +7,8 @@ class RenameIndexesToAutomaticNames < ActiveRecord::Migration
   def self.up
     remove_index "bookmarks",         :name => "fk_bookmarks_user"
     remove_index "comments",          :name => "fk_comments_user"
-    remove_index "contributions",     :name => "contributions_contributable_index"
-    remove_index "contributions",     :name => "contributions_contributor_index"
+#   remove_index "contributions",     :name => "contributions_contributable_index"
+#   remove_index "contributions",     :name => "contributions_contributor_index"
     remove_index "friendships",       :name => "friendships_friend_id_index"
     remove_index "friendships",       :name => "friendships_user_id_index"
     remove_index "memberships",       :name => "memberships_network_id_index"

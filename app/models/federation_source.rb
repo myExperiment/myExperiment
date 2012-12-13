@@ -9,6 +9,5 @@ require 'lib/acts_as_contributor'
 class FederationSource < ActiveRecord::Base
   acts_as_site_entity
   acts_as_contributor
-  acts_as_structured_data
 end
 

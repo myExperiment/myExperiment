@@ -48,8 +48,6 @@ class Workflow < ActiveRecord::Base
   
   acts_as_reviewable
 
-  acts_as_structured_data
-
   has_previews
 
   has_versions :workflow_versions,
