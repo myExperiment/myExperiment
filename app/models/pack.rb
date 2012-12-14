@@ -55,35 +55,44 @@ class ContributableEntries
 
   def initialize(pack)
     self.pack = pack
-    session = ROSRS::Session.new(self.pack.ro_uri, Conf.rodl_bearer_token)
-    manifest_uri, @manifest = session.get_manifest(self.pack.ro_uri)
 
-    @entries = []
+    if pack.ro_uri
+      session = ROSRS::Session.new(self.pack.ro_uri, Conf.rodl_bearer_token)
+      manifest_uri, @manifest = session.get_manifest(self.pack.ro_uri)
 
-    @manifest.query([RDF::URI.parse(self.pack.ro_uri), RDF::ORE.aggregates, nil]).select do |aggregate|
-      @manifest.query([aggregate.object, RDF.type, RDF::RO.Resource]).count > 0 &&
-      @manifest.query([nil, RDF::AO.body, aggregate.object]).count == 0
-    end.each do |resource|
-      ce = ContributableEntry.new
+      @entries = []
 
-      ce.pack     = pack
-      ce.uri      = resource.object.to_s
-      ce.name     = @manifest.graph.first_value([resource.object,  RDF::URI.parse("http://purl.org/wf4ever/ro#name"), nil])
-      ce.created  = @manifest.graph.first_value([resource.object,  RDF::DC.created,  nil])
-      ce.creator  = @manifest.graph.first_object([resource.object, RDF::DC.creator,  nil])
-      ce.checksum = @manifest.graph.first_object([resource.object, RDF::RO.checksum, nil])
-      ce.size     = @manifest.graph.first_value([resource.object,  RDF::RO.filesize, nil])
-       
-      @entries << ce
+      @manifest.query([RDF::URI.parse(self.pack.ro_uri), RDF::ORE.aggregates, nil]).select do |aggregate|
+        @manifest.query([aggregate.object, RDF.type, RDF::RO.Resource]).count > 0 &&
+        @manifest.query([nil, RDF::AO.body, aggregate.object]).count == 0
+      end.each do |resource|
+        ce = ContributableEntry.new
+
+        ce.pack     = pack
+        ce.uri      = resource.object.to_s
+        ce.name     = @manifest.graph.first_value([resource.object,  RDF::URI.parse("http://purl.org/wf4ever/ro#name"), nil])
+        ce.created  = @manifest.graph.first_value([resource.object,  RDF::DC.created,  nil])
+        ce.creator  = @manifest.graph.first_object([resource.object, RDF::DC.creator,  nil])
+        ce.checksum = @manifest.graph.first_object([resource.object, RDF::RO.checksum, nil])
+        ce.size     = @manifest.graph.first_value([resource.object,  RDF::RO.filesize, nil])
+         
+        @entries << ce
+      end
     end
   end
     
   def count
-    @entries.count
+    if @pack.ro_uri
+      @entries.count
+    else
+      0
+    end
   end
   
   def each(&blk)
-    @entries.each(&blk)
+    if @pack.ro_uri
+      @entries.each(&blk)
+    end
   end
 
 end
