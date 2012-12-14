@@ -1,0 +1,13 @@
+
+span.resource {
+  padding-left: 20px;
+  background: transparent url("resource.png") 0 0px no-repeat;
+}
+
+span.root_folder, span.folder {
+  padding-left: 2px;
+}
+
+span.empty {
+  color: #999;
+}

@@ -1,0 +1,28 @@
+<div class="header">
+  <%= render "folders/header" %>
+</div>
+
+<div class="content">
+
+  <div class="navigation">
+    <%= render "folders/navigation" %>
+  </div>
+  <div class="main">
+    <div id="demo" class="yui-navset">
+      <div class="yui-content">
+        <h3><-- Click on a folder to expand it and see its contents.</h3>
+        <%= form_tag mockups_folder_url do %>
+          <p>
+            <strong>RO URI</strong>:<br/>
+            <%= text_field_tag(:ro_uri, params[:ro_uri], :size => 100) %> <%= submit_tag("Go") %>
+          </p>
+        <% end %>
+        <p>
+        <strong>Selected resource URI:</strong> <span id="open-url">-</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+

@@ -1,0 +1,14 @@
+//tree
+.ygtvcontent span {
+  display: block;
+  line-height: 22px;
+}
+
+.ygtvcontent span:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+table.ygtvtable {
+  width: 100%;
+}

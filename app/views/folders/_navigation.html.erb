@@ -1,0 +1,59 @@
+<div id="nav-tabs" class="yui-navset">
+    <ul class="yui-nav">
+        <li class="selected"><a href="#tab1"><em>Folder View</em></a></li>
+        <!---<li><a href="#tab2"><em>Relations</em></a></li>--->
+    </ul>
+    <div class="yui-content">
+        <div>
+          <!---<div id="tree-controls">
+            <a id="expand_all" href="#">Expand All</a> | <a id="collapse_all" href="#">Collapse All</a>
+          </div> --->
+          <div id="tree"></div>
+        </div>
+        <!---<div id="relations">
+          <img src="/assets/rorelations.png" style="width:200px; height:200px"/>
+        </div>--->
+    </div>
+</div>
+
+<script type="text/javascript">
+  var tree = new YAHOO.widget.TreeView("tree", <%= @structure.to_json.html_safe -%> );
+  var resourceData = <%= @resources.to_json.html_safe -%>; // Hash of RO resource data
+
+  // Handle users clicking on nodes
+  tree.subscribe("labelClick", function(node) {
+    if(node.data.uri != null) {
+      $('#open-url').text(node.data.uri);
+    }
+  });
+
+  tree.setDynamicLoad(loadNodeData); //Trigger request when expanding a node
+  tree.render();
+
+  function loadNodeData(node, fnLoadComplete)  {
+    var nodeLabel = encodeURI(node.label);
+    var sUrl = "<%= get_folder_url -%>?folder_uri=" + node.data.uri + "&ro_uri=" + "<%= @ro.uri -%>";
+    var callback = {
+      success: function(oResponse) {
+        var oResults = eval("(" + oResponse.responseText + ")");
+        for(var i = 0; i < oResults.length; i++) {
+          var newNode = new YAHOO.widget.TextNode(resourceData[oResults[i][0]], node, false);
+          newNode.label = oResults[i][1];
+        }
+        tree.render();
+        oResponse.argument.fnLoadComplete();
+      },
+      failure: function(oResponse) {
+        oResponse.argument.fnLoadComplete();
+      },
+      argument: {
+        "node": node,
+        "fnLoadComplete": fnLoadComplete
+      },
+      timeout: 7000
+    };
+    YAHOO.util.Connect.asyncRequest('GET', sUrl, callback);
+  }
+
+
+</script>
