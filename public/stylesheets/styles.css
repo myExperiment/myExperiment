@@ -2448,3 +2448,19 @@ div.ro_uri_edit_box input {
   width: 546px;
 }
 
+.annotation {
+  font-size: 97%;
+}
+
+.annotation .body {
+}
+
+.annotation .provenance {
+  text-align: right;
+  font-style: italic;
+  color: #abc;
+}
+
+.annotation .provenance .authoredBy {
+
+}
