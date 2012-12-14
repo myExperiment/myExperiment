@@ -35,6 +35,9 @@ class FoldersController < ApplicationController
     @ro = ROSRS::ResearchObject.new(@session, params[:ro_uri])
     folder = ROSRS::Folder.new(@ro, params[:folder_uri])
     @contents = folder.contents.map {|fe| [fe.resource.uri, fe.name]}
+    respond_to do |format|
+      format.js { render :json => @contents }
+    end
     # Renders folder_contents.js.erb
    end
 

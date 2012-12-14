@@ -12,3 +12,7 @@
 table.ygtvtable {
   width: 100%;
 }
+/* Undo styles.css */
+.ygtvtable td, .ygtvtable th {
+  text-align: left;
+}

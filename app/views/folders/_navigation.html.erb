@@ -1,18 +1,18 @@
 <div id="nav-tabs" class="yui-navset">
     <ul class="yui-nav">
         <li class="selected"><a href="#tab1"><em>Folder View</em></a></li>
-        <!---<li><a href="#tab2"><em>Relations</em></a></li>--->
+        <!--<li><a href="#tab2"><em>Relations</em></a></li>-->
     </ul>
     <div class="yui-content">
         <div>
-          <!---<div id="tree-controls">
+          <!--<div id="tree-controls">
             <a id="expand_all" href="#">Expand All</a> | <a id="collapse_all" href="#">Collapse All</a>
-          </div> --->
+          </div> -->
           <div id="tree"></div>
         </div>
-        <!---<div id="relations">
+        <!--<div id="relations">
           <img src="/assets/rorelations.png" style="width:200px; height:200px"/>
-        </div>--->
+        </div>-->
     </div>
 </div>
 
@@ -23,7 +23,7 @@
   // Handle users clicking on nodes
   tree.subscribe("labelClick", function(node) {
     if(node.data.uri != null) {
-      $('#open-url').text(node.data.uri);
+      alert("You clicked " + node.data.uri);     
     }
   });
 
@@ -32,7 +32,7 @@
 
   function loadNodeData(node, fnLoadComplete)  {
     var nodeLabel = encodeURI(node.label);
-    var sUrl = "<%= get_folder_url -%>?folder_uri=" + node.data.uri + "&ro_uri=" + "<%= @ro.uri -%>";
+    var sUrl = "<%= folder_contents_url -%>?folder_uri=" + node.data.uri + "&ro_uri=" + "<%= @ro.uri -%>";
     var callback = {
       success: function(oResponse) {
         var oResults = eval("(" + oResponse.responseText + ")");
