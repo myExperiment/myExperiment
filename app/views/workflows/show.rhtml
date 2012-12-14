@@ -366,6 +366,8 @@ data_sets = (inputs + outputs).group_by do |item| item[:data_sets] end
     <p><%= link_to(h(@viewing_version.content_type.title), content_type_path(@viewing_version.content_type)) %></p>
 	</div>
 	
+  <%= render :partial => "research_objects/tree", :locals => { :contributable => @workflow, :ro_uri => @workflow.ro_uri } -%>  
+  
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @workflow } %>
 	
 	<%= render :partial => "contributions/license_box", :locals => { :contributable => @workflow } %>
