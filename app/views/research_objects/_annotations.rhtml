@@ -1,0 +1,22 @@
+<% annotations = @contributable.annotations       %>
+
+<% if annotations.length > 0 %>
+
+  <h2>Annotations</h2>
+
+  <table class="simple">
+    <tr>
+      <th>Type</th>
+      <th>Value</th>
+    </tr>
+    <% annotations.each do |annotation| %>
+      <tr>
+        <td><%=h annotation[:type] -%></td>
+        <td><%=h annotation[:body] -%></td>
+      </tr>
+    <% end %>
+  </table>
+
+  <br />
+
+<% end %>

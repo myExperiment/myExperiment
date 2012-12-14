@@ -48,6 +48,11 @@ class ResearchObjectsController < ApplicationController
 
     @manifest = @contributable.manifest
 
+      
+    @ro_entry_url = url_for :only_path => false,
+                            :host => base_host,
+                            :id => @research_object.object_id
+    
     respond_to do |format|
       format.html # show.rhtml
     end

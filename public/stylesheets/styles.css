@@ -6,6 +6,7 @@
    Note that for font-size, only use %ages according to: 
    http://developer.yahoo.com/yui/fonts/#fontsize
 */
+
 body {
 	background: #8e8e8e;
 	font-family: arial;
@@ -2463,4 +2464,32 @@ div.ro_uri_edit_box input {
 
 .annotation .provenance .authoredBy {
 
+}
+
+.uploaders .createdOn, .contributors .contributedOn, .authors .authoredOn {
+  font-size: 97%;
+  color: #999;
+}
+
+.todo:before {
+  content: "TODO: ";
+  font-weight: bold;
+}
+.todo {
+  background-color: #fba;
+}
+.evolution .title {
+  font-size: 100%;
+}
+
+
+.status {
+  font-size: 300%;
+  text-transform: capitalize;
+  font-weight: bold;
+}
+
+.live {
+  font-family: "Margarine", Inconsolata, Consolas, cursive;
+  text-transform: capitalize;
 }

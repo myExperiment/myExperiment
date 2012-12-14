@@ -35,39 +35,58 @@
 <div class="contribution_left_box">
 	
 	<div class="contribution_version_box">
-<%= render :partial => "research_objects/versions", :locals => { :contributable => @contributable } -%>
- 
+
+    <%= render :partial => "research_objects/versions", :locals => { :contributable => @contributable } -%> 
   
-	  <div class="contribution_version_inner_box">
-      <div class="annotation">
-        <span class="type">Title:</span>
-  			<span class="title">Hello World</span>
-        <div class="provenance">
-          <span class="authoredBy">Stian Soiland-Reyes</span> on 
-          <span class="authoredOn">2012-05-14 17:05</span>
-        </div>
-      </div>
-      
-      <div class="annotation">
-        <h3 class="type">Description</h3>
-        <div class="body">
-          This research object shows a Hello World workflow. This is particularly interesting because
-          it is difficult to create a much simpler research object, but still expose most of the RO 
-          functionality.
-        </div>
-        <div class="provenance">
-          <span class="authoredBy">Stian Soiland-Reyes</span> on 
-          <span class="authoredOn">2012-12-24 15:04</span>
-        </div>        
-      </div>  
-    </div>   
-  
-  </div>  
+	  <div class="contribution_version_inner_box">      
+      <%= render :partial => "research_objects/title", :locals => { :contributable => @contributable } -%>      
+      <%= render :partial => "research_objects/uploader", :locals => { :contributable => @contributable } -%>
+      <%= render :partial => "research_objects/description", :locals => { :contributable => @contributable } -%>
+      <%= render :partial => "research_objects/credits", :locals => { :contributable => @contributable } -%>
+      <%= render :partial => "research_objects/tags", :locals => { :contributable => @contributable } -%>
+      <%= render :partial => "research_objects/diagram", :locals => { :contributable => @contributable } -%>  
+      <%= render :partial => "research_objects/attribution", :locals => { :contributable => @contributable } -%>
+
+      <%= render :partial => "research_objects/resources", :locals => { :contributable => @contributable } -%>
 
 <% if false %>
-  <%= render :partial => "research_objects/resources", :locals => { :contributable => @contributable } -%>
+  <%= render :partial => "research_objects/manifest", :locals => { :contributable => @contributable } -%>
+  <%= render :partial => "research_objects/annotations", :locals => { :contributable => @contributable } -%>
   <%= render :partial => "research_objects/statements", :locals => { :contributable => @contributable } -%>
+
 <% end %>
+
+
+    </div>
+  </div><!-- End of version -->
+  
+  
+  
+  <%= render :partial => "research_objects/evolution", :locals => { :contributable => @contributable } -%>    
+
+
+  <div id="ratingsBox">
+  	<%= render :partial => "research_objects/reviews", :locals => { :reviewable => @contributable } %>
+  </div>
+
+  <div id="commentsBox">
+  	<%= render :partial => "research_objects/comments", :locals => { :commentable => @contributable } %>
+  </div>
+  
 
 </div>
 
+<div class="contribution_right_box">
+
+  <%= render :partial => "research_objects/status", :locals => { :contributable => @contributable } -%>
+
+  <%= render :partial => "research_objects/tree", :locals => { :contributable => @contributable } -%>    
+
+  
+	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @contributable } %>
+																											 
+	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @contributable } %>
+	
+	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @contributable, :contributable_url => @ro_entry_url } %>
+  
+</div>
