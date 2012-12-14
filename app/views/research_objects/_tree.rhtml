@@ -1,3 +1,4 @@
+<% if ro_uri %>
 <div class="contribution_section_box tree">
     <h3 class="heading">
       Navigate RO
@@ -5,8 +6,9 @@
 
   <div class="rotree">
 
-  <%= render :partial => "folders/navigation", :locals => {:ro_uri => @contributable.url} %>
+  <%= render :partial => "folders/navigation", :locals => {:ro_uri => ro_uri} %>
   
   </div>
 
 </div>
+<% end %>

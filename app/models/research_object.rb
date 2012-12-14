@@ -267,6 +267,7 @@ class ResearchObject < ActiveRecord::Base
         value)
   end
 
+  
   def manifest
 
     return @manifest if @manifest

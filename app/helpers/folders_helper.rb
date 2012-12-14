@@ -13,9 +13,11 @@ module FoldersHelper
   end
   
   def make_tree_view_structure(ro)
-     {:label => ro.root_folder.name,
-      :labelStyle => "root_folder",
-      :uri => ro.root_folder.uri}
+    if (ro.root_folder)
+      { :label => ro.root_folder.name,
+        :labelStyle => "root_folder",
+        :uri => ro.root_folder.uri }
+    end
   end
   
   def make_resources(ro)

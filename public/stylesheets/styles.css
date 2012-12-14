@@ -2485,11 +2485,13 @@ div.ro_uri_edit_box input {
 
 .status {
   font-size: 300%;
-  text-transform: capitalize;
   font-weight: bold;
 }
-
 .live {
   font-family: "Margarine", Inconsolata, Consolas, cursive;
-  text-transform: capitalize;
+  text-transform: lowercase;
+}
+
+.error { 
+  color: #c44; 
 }

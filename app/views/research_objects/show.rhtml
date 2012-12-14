@@ -80,7 +80,7 @@
 
   <%= render :partial => "research_objects/status", :locals => { :contributable => @contributable } -%>
 
-  <%= render :partial => "research_objects/tree", :locals => { :contributable => @contributable } -%>    
+  <%= render :partial => "research_objects/tree", :locals => { :contributable => @contributable, :ro_uri => @contributable.url } -%>    
   <% if false %>
 <% end %>
 

@@ -1,8 +1,14 @@
 <% 
 ro = make_research_object(ro_uri)
 structure = make_tree_view_structure(ro)
-resources = make_resources(ro)
+%>
 
+<% if not structure %>
+  <div class="error">No root folder found</div>
+<% else %>
+
+<%
+  resources = make_resources(ro)
 %>
 <div id="nav-tabs" class="yui-navset">
     <div class="yui-content">
@@ -31,6 +37,7 @@ resources = make_resources(ro)
 
   tree.setDynamicLoad(loadNodeData); //Trigger request when expanding a node
   tree.render();
+  
 
   function loadNodeData(node, fnLoadComplete)  {
     var nodeLabel = encodeURI(node.label);
@@ -57,5 +64,6 @@ resources = make_resources(ro)
     YAHOO.util.Connect.asyncRequest('GET', sUrl, callback);
   }
 
-
 </script>
+
+<% end %>
