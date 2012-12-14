@@ -3,6 +3,8 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'wf4ever/transformation-client'
+
 class PacksController < ApplicationController
   include ApplicationHelper
   
@@ -77,6 +79,80 @@ class PacksController < ApplicationController
           render :inline => `#{Conf.rdfgen_tool} packs #{@pack.id}`
         }
       end
+    end
+  end
+
+  # GET /packs/:id/resources/:resource_path
+  def resource_show
+
+#   resource_object = Statement.find(:first, :conditions => {
+#       :research_object_id => @contributable.id,
+#       :predicate_text => 'http://purl.org/wf4ever/ro#name',
+#       :objekt_text => params[:path]})
+
+#   raise ActiveRecord::RecordNotFound if resource_object.nil?
+
+#   statements = Statement.find(:all, :conditions => {
+#       :subject_text => resource_object.subject_text
+#   })
+
+    # Get annotations as merged graph.  This will be pulled from cache
+    # eventually.
+
+    session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
+
+    @resuri = @pack.resolve_resource_uri(params[:resource_path])
+
+    @annotations = session.get_annotation_graph(@pack.ro_uri, @resuri)
+
+    @pack.contributable_entries.manifest.query([@resuri, nil, nil]).each do |statement|
+
+      case statement.predicate.to_s
+      when "http://purl.org/wf4ever/ro#name":      @manifest_name    = statement.object.to_s
+      when "http://purl.org/dc/terms/created":     @manifest_created = Date.parse(statement.object.to_s)
+      when "http://purl.org/dc/terms/creator":     @manifest_creator = statement.object.to_s
+      when "http://purl.org/wf4ever/ro#checksum" : @manifest_md5     = statement.object.to_s
+      when "http://purl.org/wf4ever/ro#filesize" : @manifest_size    = statement.object.to_s.to_i
+      end
+
+    end
+
+    @annotations.query([@resuri, nil, nil]).each do |statement|
+
+      case statement.predicate.to_s
+      when "http://purl.org/dc/terms/title":       @title       = statement.object.to_s
+      when "http://purl.org/dc/terms/description": @description = statement.object.to_s
+      when "http://purl.org/dc/terms/creator":     @creator     = statement.object.to_s
+      when "http://purl.org/dc/terms/created":     @created     = Date.parse(statement.object.to_s)
+      end
+
+    end
+
+    render :resource_show
+  end
+
+  def create_resource
+
+    session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
+
+    filename = File.basename(params[:data].original_filename)
+
+    if params[:commit] == "Aggregate workflow"
+
+      service_uri = "http://sandbox.wf4ever-project.org/wf-ro/jobs"
+      format = "application/vnd.taverna.t2flow+xml"
+      token = Conf.rodl_bearer_token
+      resource = "http://www.myexperiment.org/workflows/2470/download/_untitled__947103.t2flow?version=2"
+      ro = @pack.ro_uri
+
+      uri = Wf4Ever::TransformationClient.create_job(service_uri, resource, format, ro, token)
+    else
+      c, r, puri, ruri = session.aggregate_internal_resource(@pack.ro_uri, filename, { :body => params[:data].read, :ctype=> 'text/plain' })
+    end
+    respond_to do |format|
+      format.html {
+        redirect_to pack_url(@pack)
+      }
     end
   end
   
@@ -420,6 +496,7 @@ class PacksController < ApplicationController
     action_permissions = {
       "create"           => "create",
       "create_item"      => "edit",
+      "create_resource"  => "edit",
       "destroy"          => "destroy",
       "destroy_item"     => "destroy",
       "download"         => "download",
@@ -435,6 +512,7 @@ class PacksController < ApplicationController
       "resolve_link"     => "edit",
       "search"           => "view",
       "show"             => "view",
+      "resource_show"    => "view",
       "statistics"       => "view",
       "tag"              => "view",
       "update"           => "edit",

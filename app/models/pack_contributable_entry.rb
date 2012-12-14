@@ -70,6 +70,10 @@ class PackContributableEntry < ActiveRecord::Base
     return (self.contributable != nil)
   end
 
+  def local?
+    true
+  end
+
   def item_as_list
     return [contributable]
   end

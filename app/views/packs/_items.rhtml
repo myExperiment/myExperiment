@@ -11,90 +11,96 @@
 			
 			<!-- Contributable Item Entries -->
 			<% pack.contributable_entries.each do |e| %>
-				<% show = e.available? ? Authorization.check("view", e.contributable, current_user) : false -%>
-				<li>
-					<table>
-						<tr>
-							<td class="icon">
-								<% if show -%>
-									<%= icon(e.contributable_type.to_s, nil, 'Internal item', nil, nil) -%>
-								<% else -%>
-									<%= icon('denied', nil, 'Item unavailable to view', nil, nil) -%>
-								<% end -%>
-							</td>
-							<td>
-								<a name='<%= "item_contributable_#{e.id}" -%>'></a>
-								<p>
-									<% if mine?(pack) -%>
-										<%= remove_item_button(pack.id, "contributable", e.id) -%>
-									<% end -%>
-									
-									<% if show and authorised_to_edit -%>
-										<%= edit_item_button(pack.id, "contributable", e.id) -%>
-									<% end -%>
-									
-									<% if show -%>
-									
-										<b><%= visible_name(e.contributable_type) -%>:</b>
-										<% unless e.contributable_version.blank? -%>
-											<% # HACK: only workflows are versioned at the moment -%>
-											<%= versioned_workflow_link e.contributable_id, e.contributable_version, false -%>
-											<% if false %><span style="color: #666666;">(version <%= e.contributable_version -%>)</span><% end %>
-										<% else -%>
-											<%= contributable(e.contributable_id, e.contributable_type) %>
-										<% end -%>
-										<small>(<%= contributor e.contributable.contribution.contributor_id, e.contributable.contribution.contributor_type -%>)</small>
-										
-									<% else -%>
-										
-										<% if not e.available? -%>
-											<font class="none_text">
-												The item this entry points to is not available. It may have been deleted.
-											</font>
-										<% else -%>
-											<font class="denied_text">
-												You are not authorised to view the item this entry points to.
-											</font>
-										<% end -%>
-										
-									<% end -%>
-								</p>
-								<div class="inner">
-									<% unless e.comment.blank? -%> 
-										<% if show or not e.available? -%>
-											<div class="comment">
-												<table>
-													<tr>
-														<td style="width: 20px; vertical-align: top;"><%= icon('comment', nil, nil, nil, nil) -%></td>
-														<td><%= simple_format(h(e.comment)) -%></td>
-													</tr>
-												</table>
-											</div>
-										<% end -%>
-									<% else -%>
-										<% if authorised_to_edit -%>
-											<p><small>[ <%= link_to "Add a comment here", edit_item_link(pack.id, "contributable", e.id) -%> ]</small></p>
-										<% end -%>
-									<% end -%>
-									<p class="user">
-										<%= user_and_created_at_bit(e) -%>
-									</p>
-								</div>
-								<% if show -%>
-									<p style="margin-top: 0; text-align: right;">
-										<%= link_to_function "<span style='padding-right: 0.3em;'>more</span>" + expand_image("0"), 
-																				 visual_effect(:toggle_blind, "contributable_entry_#{e.id}", :duration => 0.2),
-																				 :title => tooltip_title_attrib("Click to show/hide additional metadata that has been found for this item") -%>
-									</p>
-									<div id="contributable_entry_<%= e.id -%>" class="box_standout" style="display: none; margin-top: 0.3em;">
-										<p><b>Description:</b></p>
-										<%= contributable_entry_description(e) -%>
-									</div>
-								<% end -%>								
-							</td>
-						</tr>
-					</table>
-				</li>
+        <% if e.local? %>
+          <% show = e.available? ? Authorization.check("view", e.contributable, current_user) : false -%>
+          <li>
+            <table>
+              <tr>
+                <td class="icon">
+                  <% if show -%>
+                    <%= icon(e.contributable_type.to_s, nil, 'Internal item', nil, nil) -%>
+                  <% else -%>
+                    <%= icon('denied', nil, 'Item unavailable to view', nil, nil) -%>
+                  <% end -%>
+                </td>
+                <td>
+                  <a name='<%= "item_contributable_#{e.id}" -%>'></a>
+                  <p>
+                    <% if mine?(pack) -%>
+                      <%= remove_item_button(pack.id, "contributable", e.id) -%>
+                    <% end -%>
+                    
+                    <% if show and authorised_to_edit -%>
+                      <%= edit_item_button(pack.id, "contributable", e.id) -%>
+                    <% end -%>
+                    
+                    <% if show -%>
+                    
+                      <b><%= visible_name(e.contributable_type) -%>:</b>
+                      <% unless e.contributable_version.blank? -%>
+                        <% # HACK: only workflows are versioned at the moment -%>
+                        <%= versioned_workflow_link e.contributable_id, e.contributable_version, false -%>
+                        <% if false %><span style="color: #666666;">(version <%= e.contributable_version -%>)</span><% end %>
+                      <% else -%>
+                        <%= contributable(e.contributable_id, e.contributable_type) %>
+                      <% end -%>
+                      <small>(<%= contributor e.contributable.contribution.contributor_id, e.contributable.contribution.contributor_type -%>)</small>
+                      
+                    <% else -%>
+                      
+                      <% if not e.available? -%>
+                        <font class="none_text">
+                          The item this entry points to is not available. It may have been deleted.
+                        </font>
+                      <% else -%>
+                        <font class="denied_text">
+                          You are not authorised to view the item this entry points to.
+                        </font>
+                      <% end -%>
+                      
+                    <% end -%>
+                  </p>
+                  <div class="inner">
+                    <% unless e.comment.blank? -%> 
+                      <% if show or not e.available? -%>
+                        <div class="comment">
+                          <table>
+                            <tr>
+                              <td style="width: 20px; vertical-align: top;"><%= icon('comment', nil, nil, nil, nil) -%></td>
+                              <td><%= simple_format(h(e.comment)) -%></td>
+                            </tr>
+                          </table>
+                        </div>
+                      <% end -%>
+                    <% else -%>
+                      <% if authorised_to_edit -%>
+                        <p><small>[ <%= link_to "Add a comment here", edit_item_link(pack.id, "contributable", e.id) -%> ]</small></p>
+                      <% end -%>
+                    <% end -%>
+                    <p class="user">
+                      <%= user_and_created_at_bit(e) -%>
+                    </p>
+                  </div>
+                  <% if show -%>
+                    <p style="margin-top: 0; text-align: right;">
+                      <%= link_to_function "<span style='padding-right: 0.3em;'>more</span>" + expand_image("0"), 
+                                           visual_effect(:toggle_blind, "contributable_entry_#{e.id}", :duration => 0.2),
+                                           :title => tooltip_title_attrib("Click to show/hide additional metadata that has been found for this item") -%>
+                    </p>
+                    <div id="contributable_entry_<%= e.id -%>" class="box_standout" style="display: none; margin-top: 0.3em;">
+                      <p><b>Description:</b></p>
+                      <%= contributable_entry_description(e) -%>
+                    </div>
+                  <% end -%>								
+                </td>
+              </tr>
+            </table>
+          </li>
+        <% else %>
+          <% if e && e.name %>
+            <li><%= link_to(e.ro_local_uri, pack_resources_path(pack) + '/' + e.ro_local_uri) -%></li>
+          <% end %>
+        <% end %>
 			<% end -%>
 			
 			<!-- Remote Item Entries -->

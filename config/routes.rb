@@ -99,11 +99,16 @@ ActionController::Routing::Routes.draw do |map|
                  :download => :get,
                  :quick_add => :post,
                  :resolve_link => :post,
+                 :create_resource => :post,
+                 :destroy_resource => :delete,
                  :items => :get } do |pack|
     pack.resources :comments, :collection => { :timeline => :get }
     pack.resources :relationships, :collection => { :edit_relationships => :get }
   end
     
+  map.pack_resources '/packs/:id/resources', :controller => 'packs', :action => 'resource_index', :conditions => { :method => :get }
+  map.pack_resource  '/packs/:id/resources/:resource_path', :controller => 'packs', :action => 'resource_show',  :conditions => { :method => :get }, :requirements => { :resource_path => /.*/ }
+
   # workflows (downloadable)
   map.resources :workflows, 
     :collection => { :search => :get }, 
