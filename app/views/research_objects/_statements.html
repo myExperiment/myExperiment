@@ -1,0 +1,44 @@
+
+<% if @contributable.statements.length > 0 %>
+
+  <div class="fold">
+
+    <div class="foldTitle">RDF statements (<%= @contributable.statements.length -%>)</div>
+    <div class="foldContent" style="display: none;">
+
+      <h2>Summary</h2>
+
+      <table class="simple">
+        <tr>
+          <th>URI</th>
+          <th>S</th>
+          <th>P</th>
+          <th>O</th>
+        </tr>
+        <% research_object_summary(@contributable).each do |row| %>
+          <tr>
+            <td><%=h row[0] -%></td>
+            <td><%= row[1] -%></td>
+            <td><%= row[2] -%></td>
+            <td><%= row[3] -%></td>
+          </tr>
+        <% end %>
+      </table>
+
+      <h2>Statements</h2>
+
+      <div id="statement_list">
+        <% @contributable.statements.each do |statement| %>
+          <div>
+            <table>
+              <tr><td><%=h statement.subject_text   -%></td></tr>
+              <tr><td><%=h statement.predicate_text -%></td></tr>
+              <tr><td><%=h statement.objekt_text    -%></td></tr>
+            </table>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  
+<% end %>

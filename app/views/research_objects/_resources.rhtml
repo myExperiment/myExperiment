@@ -1,0 +1,69 @@
+
+
+<h2>Resources from manifest</h2>
+
+<table class="simple">
+
+  <tr>
+    <td>created_at</td>
+    <td><%=h @contributable.created_at -%></td>
+  </tr>
+
+  <tr>
+    <td>updated_at</td>
+    <td><%=h @contributable.updated_at -%></td>
+  </tr>
+
+  <tr>
+    <td>URL</td>
+    <td><%=h @contributable.url -%></td>
+  </tr>
+
+  <tr>
+    <td>title</td>
+    <td><%=h @contributable.title -%></td>
+  </tr>
+
+  <tr>
+    <td>description</td>
+    <td><%= @contributable.description_html -%></td>
+  </tr>
+
+  <tr>
+    <td>RDF statement count</td>
+    <td><%= @contributable.statements.length -%></td>
+  </tr>
+
+</table>
+
+<% resources   = @contributable.wf4ever_resources %>
+<% annotations = @contributable.annotations       %>
+
+<% if resources.length > 0 %>
+
+  <h2>Pack Items</h2>
+
+  <%= research_object_resources(@contributable) -%>
+
+<% end %>
+
+<% if annotations.length > 0 %>
+
+  <h2>Annotations</h2>
+
+  <table class="simple">
+    <tr>
+      <th>Type</th>
+      <th>Value</th>
+    </tr>
+    <% annotations.each do |annotation| %>
+      <tr>
+        <td><%=h annotation[:type] -%></td>
+        <td><%=h annotation[:body] -%></td>
+      </tr>
+    <% end %>
+  </table>
+
+  <br />
+
+<% end %>
