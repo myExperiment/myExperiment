@@ -47,9 +47,9 @@
       <%= render :partial => "research_objects/diagram", :locals => { :contributable => @contributable } -%>  
       <%= render :partial => "research_objects/attribution", :locals => { :contributable => @contributable } -%>
 
-      <%= render :partial => "research_objects/resources", :locals => { :contributable => @contributable } -%>
 
 <% if false %>
+      <%= render :partial => "research_objects/resources", :locals => { :contributable => @contributable } -%>
   <%= render :partial => "research_objects/manifest", :locals => { :contributable => @contributable } -%>
   <%= render :partial => "research_objects/annotations", :locals => { :contributable => @contributable } -%>
   <%= render :partial => "research_objects/statements", :locals => { :contributable => @contributable } -%>
@@ -81,6 +81,8 @@
   <%= render :partial => "research_objects/status", :locals => { :contributable => @contributable } -%>
 
   <%= render :partial => "research_objects/tree", :locals => { :contributable => @contributable } -%>    
+  <% if false %>
+<% end %>
 
   
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @contributable } %>

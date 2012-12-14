@@ -5,7 +5,7 @@
 <div class="content">
 
   <div class="navigation">
-    <%= render "folders/navigation" %>
+    <%= render :partial => "folders/navigation", :locals => {:ro_uri => params[:ro_uri]} %>
   </div>
   <div class="main">
     <div id="demo" class="yui-navset">
