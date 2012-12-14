@@ -1444,6 +1444,10 @@ protected
         end
           
         link = link_to h(title), url_for(:controller => :workflows, :action => :show, :id => item.contributable_id, :version => 1)
+      when "ResearchObject"
+        title = item.contributable.title
+          
+        link = link_to h(title), url_for(:controller => :research_objects, :action => :show, :id => item.contributable_id, :version => 1)
       else
         link = contributable(item.contributable_id, item.contributable_type)
       end
