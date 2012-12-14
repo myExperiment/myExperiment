@@ -202,12 +202,17 @@ ActionController::Routing::Routes.draw do |map|
   map.research_object_resources '/research_objects/:id/resources', :controller => 'research_objects', :action => 'resource_index', :conditions => { :method => :get }
   map.research_object_resource  '/research_objects/:id/resources/:resource_path', :controller => 'research_objects', :action => 'resource_show',  :conditions => { :method => :get }, :requirements => { :resource_path => /.*/ }
 
+    # Finn's folder stuff'
+  map.resources :folders
+
+  
   # content_types
   map.resources :content_types
 
   # all downloads and viewings
   map.resources :downloads, :viewings
 
+  
   # messages
   map.resources :messages, :collection => { :sent => :get, :delete_all_selected => :delete }
 

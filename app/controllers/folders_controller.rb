@@ -5,7 +5,7 @@ class FoldersController < ApplicationController
   BASE_URI = "http://sandbox.wf4ever-project.org/rodl/ROs/"
   API_KEY = "32801fc0-1df1-4e34-b"
   
-  def folder
+  def index
     @structure = {}
     if params[:ro_uri].blank?
       render :text => "Please supply an RO URI."
@@ -38,3 +38,4 @@ class FoldersController < ApplicationController
     # Renders folder_contents.js.erb
    end
 
+end
