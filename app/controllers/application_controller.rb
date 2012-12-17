@@ -1004,7 +1004,7 @@ class ApplicationController < ActionController::Base
 
   #Applies the layout for the Network with the given network_id to the object (contributable)
   def update_layout(object,network_id)
-    if network_id.blank?
+    if network_id.blank? || network_id == "Default"
       object.contribution.layout = nil
       object.contribution.save
     else
