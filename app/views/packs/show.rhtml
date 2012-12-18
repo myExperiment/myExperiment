@@ -121,11 +121,22 @@
 					Add an Item
 				</h3>
         <p>
-        <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post) do %>
-          <%= file_field_tag :data -%>
-          <%= submit_tag("Aggregate resource") -%>
-          <%= submit_tag("Aggregate workflow") -%>
-        <% end %>
+          <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post) do %>
+            <%= file_field_tag :data -%>
+            <%= submit_tag("Aggregate internal resource") -%>
+          <% end %>
+        </p>
+        <p>
+          <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post) do %>
+            <%= file_field_tag :data -%>
+            <%= submit_tag("Aggregate workflow") -%>
+          <% end %>
+        </p>
+        <p>
+          <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post) do %>
+            <%= text_field_tag :uri -%>
+            <%= submit_tag("Aggregate external resource") -%>
+          <% end %>
         </p>
 				<a name="add_item"></a>
 				<%= render :partial => "add_item", :locals => { :pack => @pack } -%>

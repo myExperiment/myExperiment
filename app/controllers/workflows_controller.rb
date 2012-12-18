@@ -748,7 +748,11 @@ class WorkflowsController < ApplicationController
       if ao_body
         agraph = ROSRS::RDFGraph.new(:data => ao_body.to_s, :format => :xml)
 
-        code, reason, stub_uri, body_uri = session.create_internal_annotation(@workflow.ro_uri, resource_uri, agraph)
+        begin
+          code, reason, stub_uri, body_uri = session.create_internal_annotation(@workflow.ro_uri, resource_uri, agraph)
+        rescue ROSRS::Exception => e
+          @workflow.errors.add(params[:template], 'Error from remote server')
+        end
       end
     end
 

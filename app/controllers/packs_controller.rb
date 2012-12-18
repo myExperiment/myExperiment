@@ -135,20 +135,30 @@ class PacksController < ApplicationController
 
     session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
 
-    filename = File.basename(params[:data].original_filename)
+    filename = File.basename(params[:data].original_filename) if params[:data]
 
-    if params[:commit] == "Aggregate workflow"
+    case params[:commit]
+
+    when "Aggregate workflow"
+
+      c, r, puri, ruri = session.aggregate_internal_resource(@pack.ro_uri, filename, { :body => params[:data].read, :ctype=> 'text/plain' })
 
       service_uri = "http://sandbox.wf4ever-project.org/wf-ro/jobs"
       format = "application/vnd.taverna.t2flow+xml"
       token = Conf.rodl_bearer_token
-      resource = "http://www.myexperiment.org/workflows/2470/download/_untitled__947103.t2flow?version=2"
-      ro = @pack.ro_uri
 
-      uri = Wf4Ever::TransformationClient.create_job(service_uri, resource, format, ro, token)
-    else
+      uri = Wf4Ever::TransformationClient.create_job(service_uri, ruri, format, @pack.ro_uri, token)
+
+    when "Aggregate internal resource"
+
       c, r, puri, ruri = session.aggregate_internal_resource(@pack.ro_uri, filename, { :body => params[:data].read, :ctype=> 'text/plain' })
+
+    when "Aggregate external resource"
+
+      c, r, puri, ruri = session.aggregate_external_resource(@pack.ro_uri, params[:uri])
+
     end
+
     respond_to do |format|
       format.html {
         redirect_to pack_url(@pack)
