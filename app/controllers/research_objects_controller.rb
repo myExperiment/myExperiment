@@ -10,7 +10,7 @@ class ResearchObjectsController < ApplicationController
 
   include ApplicationHelper
 
-  before_filter :find_research_object,  :only => [:show, :edit, :update, :resource_show]
+  before_filter :find_research_object,  :only => [:show, :edit, :update, :resource_show, :wfrun]
   before_filter :find_research_objects, :only => [:all]
   
   # GET /research_objects
@@ -55,6 +55,22 @@ class ResearchObjectsController < ApplicationController
     
     respond_to do |format|
       format.html # show.rhtml
+    end
+  end
+  
+  
+  # GET /research_objects/1/wfrun/2
+  def wfrun
+
+    @manifest = @contributable.manifest
+
+      
+    @ro_entry_url = url_for :only_path => false,
+                            :host => base_host,
+                            :id => @research_object.object_id
+    
+    respond_to do |format|
+      format.html # wfrun.rhtml
     end
   end
 

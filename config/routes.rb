@@ -201,7 +201,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.research_object_resources '/research_objects/:id/resources', :controller => 'research_objects', :action => 'resource_index', :conditions => { :method => :get }
   map.research_object_resource  '/research_objects/:id/resources/:resource_path', :controller => 'research_objects', :action => 'resource_show',  :conditions => { :method => :get }, :requirements => { :resource_path => /.*/ }
-
+  map.research_object_resource  '/research_objects/:id/wfrun/:run_id', :controller => 'research_objects', :action => 'wfrun'
+  
     # Finn's folder stuff
   map.folder_contents '/folders/folder_contents', :controller => 'folders', :action => 'folder_contents'
   map.resources :folders  

@@ -1,0 +1,39 @@
+<div class="run_details">
+  <h2>Run details</h2>
+
+  <div class="process collapsed">
+    <div class="summary">
+      Process <code>Make_stuff</code> <span class="process_stats">(5 runs, <span class="error">2 failed</span>)</span>
+    </div>
+  </div>
+
+  <div class="process expanded">
+    <div class="summary">
+      Process <code>analyze</code> <span class="process_stats">(25 runs, <span class="error">3 failed</span>)</span>
+    </div>    
+    <div class="runs">
+      <div class="run collapsed">
+         <div class="summary">
+           Process run <code>15</code> 
+              <span class="createdOn">2012-11-15 17:05</span>
+              <span class="duration">(15 min 3 sec)</span>
+              <span class="error">failed</span>
+         </div>
+      </div>
+      
+      <div class="run expanded">
+         <div class="summary">
+           Process run <code>17</code> 
+              <span class="createdOn">2012-11-16 12:15</span>
+              <span class="duration">(9 min 43 sec)</span>
+              <span class="ok">ok</span>
+         </div>
+        <div class="details">
+          <%= render :partial => "research_objects/inputs", :locals => { :contributable => @contributable } -%>  
+          <%= render :partial => "research_objects/outputs", :locals => { :contributable => @contributable } -%>            
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>

@@ -2105,6 +2105,7 @@ table.topic td.tag_vote{
   padding: 6px;
 }
 
+
 .pivot .summary DIV+DIV {
   padding-top: 0.4em;
 }
@@ -2494,4 +2495,60 @@ div.ro_uri_edit_box input {
 
 .error { 
   color: #c44; 
+}
+.contribution_section_box .stats {
+  text-align: left;
+}
+table.values td,  table.values th {
+  text-align: left;
+  vertical-align: top;
+}
+.values .more {
+  font-size: smaller;
+}
+
+.collapsed .summary:before, .expanded .summary:before {
+  border: #555 1px solid;
+  color: black;
+  text-align: center;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+}
+
+.collapsed .summary:before {
+  content: "+";
+}
+
+.expanded  .summary:before {
+  content: "–";
+}
+
+pre, code {
+  font-family: Consolas, "Inconsolata", monospace;
+}
+
+
+.process {
+  background: #ddd;
+  margin: 0.5em;
+  padding: 0.1em;
+}
+.runs {
+ padding-left: 2em; 
+}
+
+.run {
+  background: #eee;
+  margin: 0.5em;
+  padding: 0.1em;
+  
+}
+
+.details h2 {
+  /* Undo generan h2 styling */
+  background: none;
+  padding: none;
+  font-size: 100%;
+  border: none;
+  margin: none;
 }
