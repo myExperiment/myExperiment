@@ -404,6 +404,9 @@ class NetworksController < ApplicationController
 
   # POST /networks
   def create
+
+    params[:network][:user_id] = current_user
+
     @network = Network.new(params[:network])
 
     respond_to do |format|
@@ -423,6 +426,9 @@ class NetworksController < ApplicationController
 
   # PUT /networks/1
   def update
+
+    params[:network].delete(:user_id)
+
     respond_to do |format|
       if @network.update_attributes(params[:network])
         @network.refresh_tags(convert_tags_to_gem_format(params[:network][:tag_list]), current_user) if params[:network][:tag_list]
