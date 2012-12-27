@@ -45,7 +45,6 @@ Rails::Initializer.run do |config|
     :open_id_authentication,
     :paginating_find,
     :query_stats,
-    :recaptcha,
     :simile_timeline,
     :validates_email_veracity_of,
     :versioning

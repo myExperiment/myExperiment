@@ -1,3 +1,5 @@
+require 'recaptcha'
+
 class FeedbackController < ApplicationController
   before_filter :only_index, :except => [:index, :create]
   

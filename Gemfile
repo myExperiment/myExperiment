@@ -20,4 +20,5 @@ gem "workflow-to-galaxy", "~> 0.3.5"
 gem "rdf", "~> 0.3.4.1"
 gem "rdf-raptor", "~> 0.4.1"
 gem "rdf-n3"
+gem "recaptcha", "~> 0.3.4"
 

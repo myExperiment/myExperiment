@@ -4,6 +4,7 @@
 # See license.txt for details.
 
 require 'open-uri'
+require 'recaptcha'
 
 class UsersController < ApplicationController
 
