@@ -16,7 +16,9 @@ class FoldersController < ApplicationController
   def folder_contents
     ro = make_research_object(params[:ro_uri])
     folder = ROSRS::Folder.new(ro, params[:folder_uri])
-    @contents = folder.contents.map {|fe| [fe.resource.uri, fe.name]}
+    # Keep it sorted by name
+    @contents = folder.contents.sort_by{|fe| fe.name}.map {|fe| [fe.resource.uri, fe.name]}
+    
     respond_to do |format|
       format.js { render :json => @contents }
     end
