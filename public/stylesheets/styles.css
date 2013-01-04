@@ -2552,3 +2552,8 @@ pre, code {
   border: none;
   margin: none;
 }
+.more {
+  font-style: italic;
+  font-size: 95%;
+  color: #555;
+}
