@@ -148,7 +148,10 @@ class BlobsController < ApplicationController
       @blob = Blob.new(params[:blob])
       @blob.content_blob = ContentBlob.new(:data => data)
 
-      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user, :mime_type => content_type, :category=> 'Blob')
+      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user,
+                                                                   :title => content_type,
+                                                                   :mime_type => content_type,
+                                                                   :category=> 'Blob')
 
       respond_to do |format|
         if @blob.save
@@ -211,7 +214,10 @@ class BlobsController < ApplicationController
     if params[:blob][:data] && params[:blob][:data].size > 0
       @blob.build_content_blob(:data => params[:blob][:data].read)
       @blob.local_name = params[:blob][:data].original_filename
-      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user, :title => params[:blob][:data].content_type, :mime_type => params[:blob][:data].content_type, :category => 'Blob')
+      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user,
+                                                                   :title => params[:blob][:data].content_type,
+                                                                   :mime_type => params[:blob][:data].content_type,
+                                                                   :category => 'Blob')
     end
 
     params[:blob].delete(:data)
