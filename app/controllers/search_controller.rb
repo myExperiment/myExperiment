@@ -29,7 +29,11 @@ class SearchController < ApplicationController
     end
 
     if @type == "all"
-      search_all
+      if shortcut = Conf.shortcut_keywords[params[:query].downcase]
+        redirect_to(shortcut)
+      else
+        search_all
+      end
     else
       case params[:type]
       when 'workflows'

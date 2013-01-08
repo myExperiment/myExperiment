@@ -161,10 +161,6 @@ main_tabs:
     link:       /packs
     controller: packs
 
-  - label:      Services
-    link:       /services
-    controller: services
-
   - label:      Topics
     link:       /topics
     controller: topics
@@ -676,3 +672,12 @@ pivot_options:
 
   num_options: ["10", "20", "25", "50", "100"]
 
+# Shortcut keywords
+#   These are special keywords that, when typed into the search box (when 'All' is selected) will instantly jump to a
+#   specified page instead of returning a list of search results.
+#
+# Example (when 'biovel' is searched for, it will jump to the group's page):
+#
+# shortcut_keywords:
+#   biovel: /groups/643
+#
