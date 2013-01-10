@@ -22,4 +22,5 @@ gem "workflow-to-galaxy", "~> 0.3.4"
 gem "rdf", "~> 0.3.4.1"
 gem "rdf-raptor", "~> 0.4.1"
 gem "wf4ever-transformation-client", "~> 0.3.0"
+gem "wf4ever-rosrs-client", "~> 0.1.1"
 
