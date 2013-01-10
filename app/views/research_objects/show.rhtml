@@ -15,17 +15,15 @@
 
 <h1>Research Object: <%=h @contributable.title -%></h1>
 
+
+
 <%= render :partial => "contributions/datetime_info", :locals => { :contributable => @contributable } -%>
 
 
 <div class="contribution_mini_nav">
 	|
-	<%= link_to "Made", "#license" %>
-	|
-  <%= link_to "Up", "#workflows" %>
-	|
-  <%= link_to "Links", "#workflows" %>
-	|
+<%= render :partial => "research_objects/browseportal", :locals => { :contributable => @contributable } -%>
+  |
 </div>
 
 
@@ -76,14 +74,14 @@
 
 </div>
 
-<div class="contribution_right_box">
-
-  <%= render :partial => "research_objects/status", :locals => { :contributable => @contributable } -%>
-
-  <%= render :partial => "research_objects/tree", :locals => { :contributable => @contributable, :ro_uri => @contributable.url } -%>    
-  <% if false %>
+<% if false %>
 <% end %>
 
+<div class="contribution_right_box">
+  <%= render :partial => "research_objects/tree", :locals => { :contributable => @contributable, :ro_uri => @contributable.url } -%>    
+  <%= render :partial => "research_objects/wf4evertools", :locals => { :contributable => @contributable, :ro_uri => @contributable.url } -%>    
+
+  <%= render :partial => "research_objects/status", :locals => { :contributable => @contributable } -%>
   
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @contributable } %>
 																											 

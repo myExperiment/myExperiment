@@ -1,0 +1,9 @@
+<div class="contribution_section_box"> 
+    <h3 class="heading">
+      Wf4Ever tools  
+  	</h3>
+    <ul class="wf4evertools links">
+      <li><%= render :partial => "research_objects/browseportal", :locals => { :contributable => @contributable } -%></li>
+      <li><a href="http://sandbox.wf4ever-project.org/roevaluate/evaluate/trafficlight_html?minim=checklist-runnable.rdf&purpose=Runnable&RO=<%= URI.escape @contributable.url -%>">Checklist</a></li>
+    </ul>
+  </div>

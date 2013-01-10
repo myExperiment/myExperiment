@@ -2450,6 +2450,10 @@ div.ro_uri_edit_box input {
   width: 546px;
 }
 
+.links {
+  text-align: left;
+}
+
 .annotation {
   font-size: 97%;
 }
