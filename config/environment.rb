@@ -50,7 +50,6 @@ Rails::Initializer.run do |config|
     :structured_data,
     :validates_email_veracity_of,
     :versioning,
-    :rosrs
   ]
 
   # Skip frameworks you're not going to use. To use Rails without a database,
