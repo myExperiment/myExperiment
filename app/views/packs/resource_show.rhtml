@@ -1,5 +1,15 @@
 <h1>Resource: <%=h @manifest_name -%></h1>
 
+<div style="margin-top: 1em;">
+  <ul class="sectionIcons" style="margin-top: 0.7em; margin-bottom: 0.6em;">
+    <% if Authorization.check("edit", @pack, current_user) %>
+      <% if @pack.ro_uri %>
+        <li style="margin-left: 0;"><%= icon('edit', pack_resource_edit_path(@pack, params[:resource_path]), nil, nil, "Edit Annotations") %></li>
+      <% end %>
+    <% end %>
+  </ul>
+</div>
+
 <h2>Basic resource information via manifest</h2>
 
 <table class="simple">
@@ -56,6 +66,28 @@
   </tr>
 
 </table>
+
+<% if false %>
+
+<h2>Workflow inputs (via WF-DESC)</h2>
+
+<ul>
+  <% @annotations.query([nil, RDF::URI.parse("http://purl.org/wf4ever/wfdesc#hasInput"), nil]).each do |statement| %>
+    <% input_labels = @annotations.query([statement.object, RDF::URI.parse("http://www.w3.org/2000/01/rdf-schema#label"), nil]) %>
+    <li>Input: <%= input_labels.first.object -%></li>
+  <% end %>
+</ul>
+
+<h2>Workflow outputs (via WF-DESC)</h2>
+
+<ul>
+  <% @annotations.query([nil, RDF::URI.parse("http://purl.org/wf4ever/wfdesc#hasOutput"), nil]).each do |statement| %>
+    <% input_labels = @annotations.query([statement.object, RDF::URI.parse("http://www.w3.org/2000/01/rdf-schema#label"), nil]) %>
+    <li>Output: <%= input_labels.first.object -%></li>
+  <% end %>
+</ul>
+
+<% end %>
 
 <h2>Debug</h2>
 

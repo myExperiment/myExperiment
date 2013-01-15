@@ -13,6 +13,8 @@ class PacksController < ApplicationController
   before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
   
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
+
+  before_filter :get_manifest_metadata, :only => [:resource_show, :edit_resource_annotations]
   
   # declare sweepers and which actions should invoke them
   cache_sweeper :pack_sweeper, :only => [ :create, :update, :destroy ]
@@ -82,40 +84,32 @@ class PacksController < ApplicationController
     end
   end
 
+  def edit_annotations
+
+    session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
+
+    @annotations = session.get_annotation_graphs(@pack.ro_uri, @pack.ro_uri)
+  end
+
+  def update_annotations
+
+    resource_uri = @pack.ro_uri
+
+    update_annotations_aux(@pack, @pack.ro_uri, resource_uri)
+
+    redirect_to edit_annotations_pack_path(@pack)
+
+  end
+
   # GET /packs/:id/resources/:resource_path
   def resource_show
-
-#   resource_object = Statement.find(:first, :conditions => {
-#       :research_object_id => @contributable.id,
-#       :predicate_text => 'http://purl.org/wf4ever/ro#name',
-#       :objekt_text => params[:path]})
-
-#   raise ActiveRecord::RecordNotFound if resource_object.nil?
-
-#   statements = Statement.find(:all, :conditions => {
-#       :subject_text => resource_object.subject_text
-#   })
 
     # Get annotations as merged graph.  This will be pulled from cache
     # eventually.
 
     session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
 
-    @resuri = @pack.resolve_resource_uri(params[:resource_path])
-
     @annotations = session.get_annotation_graph(@pack.ro_uri, @resuri)
-
-    @pack.contributable_entries.manifest.query([@resuri, nil, nil]).each do |statement|
-
-      case statement.predicate.to_s
-      when "http://purl.org/wf4ever/ro#name":      @manifest_name    = statement.object.to_s
-      when "http://purl.org/dc/terms/created":     @manifest_created = Date.parse(statement.object.to_s)
-      when "http://purl.org/dc/terms/creator":     @manifest_creator = statement.object.to_s
-      when "http://purl.org/wf4ever/ro#checksum" : @manifest_md5     = statement.object.to_s
-      when "http://purl.org/wf4ever/ro#filesize" : @manifest_size    = statement.object.to_s.to_i
-      end
-
-    end
 
     @annotations.query([@resuri, nil, nil]).each do |statement|
 
@@ -165,6 +159,26 @@ class PacksController < ApplicationController
       }
     end
   end
+
+  def edit_resource_annotations
+
+    @resource_uri = @pack.resolve_resource_uri(params[:resource_path])
+
+    session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
+
+    @annotations = session.get_annotation_graphs(@pack.ro_uri, @resource_uri)
+  end
+
+  def update_resource_annotations
+
+    resource_uri = @pack.resolve_resource_uri(params[:resource_path])
+puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path], resource_uri].inspect}"
+
+    update_annotations_aux(@pack, @pack.ro_uri, resource_uri)
+
+    redirect_to(pack_resource_edit_path(@pack, params[:resource_path]))
+  end
+
   
   # GET /packs/1;download
   def download
@@ -244,6 +258,31 @@ class PacksController < ApplicationController
     
     respond_to do |format|
       if @pack.update_attributes(params[:pack])
+
+        # Check that the RO exists and if not, create it.
+        
+        unless params[:pack][:ro_uri].empty?
+
+          rodl_uri = URI.parse(@pack.ro_uri)
+          
+          path_bits = rodl_uri.path.sub(/\/$/, "").split("/")
+
+          slug = path_bits.pop
+
+          rodl_uri.path = "#{path_bits.join("/")}/"
+
+          session = ROSRS::Session.new(rodl_uri.to_s, Conf.rodl_bearer_token)
+
+          if session.check_research_object(slug) == false
+            c, r, u, m = session.create_research_object(slug)
+
+            if c != 201
+              flash.now[:error] = "Unable to create research object: #{r}"
+            end
+          end
+          
+        end
+
         @pack.refresh_tags(convert_tags_to_gem_format(params[:pack][:tag_list]), current_user) if params[:pack][:tag_list]
         policy_err_msg = update_policy(@pack, params)
         update_layout(@pack, params[:layout])
@@ -504,29 +543,33 @@ class PacksController < ApplicationController
   def find_pack_auth
 
     action_permissions = {
-      "create"           => "create",
-      "create_item"      => "edit",
-      "create_resource"  => "edit",
-      "destroy"          => "destroy",
-      "destroy_item"     => "destroy",
-      "download"         => "download",
-      "edit"             => "edit",
-      "edit_item"        => "edit",
-      "favourite"        => "view",
-      "favourite_delete" => "view",
-      "index"            => "view",
-      "items"            => "view",
-      "new"              => "create",
-      "new_item"         => "edit",
-      "quick_add"        => "edit",
-      "resolve_link"     => "edit",
-      "search"           => "view",
-      "show"             => "view",
-      "resource_show"    => "view",
-      "statistics"       => "view",
-      "tag"              => "view",
-      "update"           => "edit",
-      "update_item"      => "edit"
+      "create"             => "create",
+      "create_item"        => "edit",
+      "create_resource"    => "edit",
+      "destroy"            => "destroy",
+      "destroy_item"       => "destroy",
+      "download"           => "download",
+      "edit"               => "edit",
+      "edit_item"          => "edit",
+      "edit_annotations"   => "edit",
+      "update_annotations" => "edit",
+      "edit_resource_annotations"   => "edit",
+      "update_resource_annotations" => "edit",
+      "favourite"          => "view",
+      "favourite_delete"   => "view",
+      "index"              => "view",
+      "items"              => "view",
+      "new"                => "create",
+      "new_item"           => "edit",
+      "quick_add"          => "edit",
+      "resolve_link"       => "edit",
+      "search"             => "view",
+      "show"               => "view",
+      "resource_show"      => "view",
+      "statistics"         => "view",
+      "tag"                => "view",
+      "update"             => "edit",
+      "update_item"        => "edit"
     }
 
     begin
@@ -593,5 +636,25 @@ class PacksController < ApplicationController
     source_errs.each_full do |msg|
       final_errs.add_to_base(msg)
     end
+  end
+
+  def get_manifest_metadata
+
+    session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
+
+    @resuri = @pack.resolve_resource_uri(params[:resource_path])
+
+    @pack.contributable_entries.manifest.query([@resuri, nil, nil]).each do |statement|
+
+      case statement.predicate.to_s
+      when "http://purl.org/wf4ever/ro#name":     @manifest_name    = statement.object.to_s
+      when "http://purl.org/dc/terms/created":    @manifest_created = Date.parse(statement.object.to_s)
+      when "http://purl.org/dc/terms/creator":    @manifest_creator = statement.object.to_s
+      when "http://purl.org/wf4ever/ro#checksum": @manifest_md5     = statement.object.to_s
+      when "http://purl.org/wf4ever/ro#filesize": @manifest_size    = statement.object.to_s.to_i
+      end
+
+    end
+
   end
 end

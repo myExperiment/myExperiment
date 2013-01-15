@@ -99,15 +99,20 @@ ActionController::Routing::Routes.draw do |map|
                  :download => :get,
                  :quick_add => :post,
                  :resolve_link => :post,
+                 :edit_annotations => :get,
+                 :update_annotations => :post,
                  :create_resource => :post,
                  :destroy_resource => :delete,
                  :items => :get } do |pack|
     pack.resources :comments, :collection => { :timeline => :get }
     pack.resources :relationships, :collection => { :edit_relationships => :get }
   end
-    
+
   map.pack_resources '/packs/:id/resources', :controller => 'packs', :action => 'resource_index', :conditions => { :method => :get }
-  map.pack_resource  '/packs/:id/resources/:resource_path', :controller => 'packs', :action => 'resource_show',  :conditions => { :method => :get }, :requirements => { :resource_path => /.*/ }
+  map.pack_resource  '/packs/:id/resources/:resource_path', :controller => 'packs', :action => 'resource_show',  :conditions => { :method => :get }, :requirements => { :resource_path => /[^;]+/ }
+  map.pack_resource_edit  '/packs/:id/resources/:resource_path;edit', :controller => 'packs', :action => 'edit_resource_annotations',  :conditions => { :method => :get }, :requirements => { :resource_path => /[^;]+/ }
+
+  map.pack_resource_update  '/packs/:id/resources/:resource_path;update', :controller => 'packs', :action => 'update_resource_annotations',  :conditions => { :method => :post }, :requirements => { :resource_path => /[^;]+/ }
 
   # workflows (downloadable)
   map.resources :workflows, 

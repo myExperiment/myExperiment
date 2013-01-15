@@ -6,6 +6,9 @@
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 
+require 'rdf'
+require 'wf4ever/rosrs_client'
+
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
@@ -1053,5 +1056,78 @@ class ApplicationController < ActionController::Base
     respond_to do |format|
       format.html { redirect_to target, (referrer.blank? ? nil : params) }
     end
+  end
+
+  def create_annotation_body(ro_uri, resource_uri, body, namespaces)
+
+    namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+
+    doc = LibXML::XML::Document.new
+    doc.root = LibXML::XML::Node.new("rdf:RDF")
+    doc.root["xml:base"] = ro_uri
+
+    namespaces.each do |name, uri|
+      doc.root["xmlns:#{name}"] = uri
+    end
+
+    description = LibXML::XML::Node.new("rdf:Description")
+    description["rdf:about"] = resource_uri.to_s
+    description << body
+    doc.root << description
+
+    doc
+  end
+
+  def update_annotations_aux(contributable, ro_uri, resource_uri)
+ 
+    session = ROSRS::Session.new(ro_uri, Conf.rodl_bearer_token)
+
+    if params[:commit] == 'Add' || params[:commit] == 'Edit'
+
+      case params[:template]
+      when "Title"
+        ao_body = create_annotation_body(ro_uri, resource_uri,
+            LibXML::XML::Node.new('dct:title', params[:value]),
+            { "dct" => "http://purl.org/dc/terms/" })
+      when "Creator"
+        ao_body = create_annotation_body(ro_uri, resource_uri,
+            LibXML::XML::Node.new('dct:creator', params[:value]),
+            { "dct" => "http://purl.org/dc/terms/" })
+      when "Contributor"
+        ao_body = create_annotation_body(ro_uri, resource_uri,
+            LibXML::XML::Node.new('dct:contributor', params[:value]),
+            { "dct" => "http://purl.org/dc/terms/" })
+      when "Description"
+        ao_body = create_annotation_body(ro_uri, resource_uri,
+            LibXML::XML::Node.new('dct:description', params[:value]),
+            { "dct" => "http://purl.org/dc/terms/" })
+      end
+    end
+
+    if params[:commit] == 'Add'
+      if ao_body
+        agraph = ROSRS::RDFGraph.new(:data => ao_body.to_s, :format => :xml)
+
+        begin
+          code, reason, stub_uri, body_uri = session.create_internal_annotation(ro_uri, resource_uri, agraph)
+        rescue ROSRS::Exception => e
+          contributable.errors.add(params[:template], 'Error from remote server')
+        end
+      end
+    end
+
+    if params[:commit] == 'Edit'
+      if ao_body
+        agraph = ROSRS::RDFGraph.new(:data => ao_body.to_s, :format => :xml)
+
+        c, r, body_uri = session.update_internal_annotation(ro_uri, params[:stub_uri], resource_uri, agraph)
+      end
+    end
+
+    if params[:commit] == 'Delete'
+      c, r, h, d = session.do_request("DELETE", params[:stub_uri], {} )
+      c, r, h, d = session.do_request("DELETE", params[:body_uri], {} )
+    end
+
   end
 end

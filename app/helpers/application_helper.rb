@@ -1621,4 +1621,10 @@ protected
     @layout = layout || {"layout" => Conf.page_template, "stylesheets" => [Conf.stylesheet]}
   end
 
+  def get_simple_annotations(annotations, predicate)
+    annotations.select do |annotation|
+      annotation[:body].count == 1 && annotation[:body].query(:predicate => predicate).count == 1
+    end
+  end
+
 end

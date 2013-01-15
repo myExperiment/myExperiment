@@ -2403,6 +2403,7 @@ div.deprecation_event {
 
 #statement_list TD {
   border: 1px solid gray;
+  background: white;
   text-align: left;
 }
 

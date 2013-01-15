@@ -1,0 +1,12 @@
+<h1>Edit annotations for <%= h(@pack.title) -%></h1>
+
+<%= error_messages_for :pack -%>
+
+<%= render(:partial => 'contributions/edit_annotations', :locals => { :update_path => update_annotations_pack_path(@pack), :resource_uri => @pack.ro_uri, :annotations => @annotations }) -%>
+
+<p style="text-align: center; margin: 1em">
+  <% form_tag( { :action => "show" }, :method => :get) do %>
+    <%= submit_tag("Return to pack") -%>
+  <% end %>
+</p>
+
