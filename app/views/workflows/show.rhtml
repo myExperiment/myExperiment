@@ -179,30 +179,30 @@
 workflow_uri = RDF::URI.parse(workflow_url(@workflow))
 
 inputs = RDF::Query.new do
-  pattern [workflow_uri, RDF::DON.hasExampleDataSet, :data_set]
-  pattern [:data_set, RDF::DON.hasInput, :input]
+#  pattern [workflow_uri, RDF::DON.hasExampleDataSet, :data_set]
+#  pattern [:data_set, RDF::DON.hasInput, :input]
   pattern [:input, RDF::DC.title, :title]
-  pattern [:input, RDF::DON.value, :value]
+#  pattern [:input, RDF::DON.value, :value]
 end.execute(@annotations).map do |result|
   {
-    :data_set => result.data_set,
+#    :data_set => result.data_set,
     :type     => :input,
     :label    => result.title,
-    :value    => result.value
+#    :value    => result.value
   }
 end
 
 outputs = RDF::Query.new do
-  pattern [workflow_uri, RDF::DON.hasExampleDataSet, :data_set]
-  pattern [:data_set, RDF::DON.hasOutput, :output]
+#  pattern [workflow_uri, RDF::DON.hasExampleDataSet, :data_set]
+#  pattern [:data_set, RDF::DON.hasOutput, :output]
   pattern [:output, RDF::DC.title, :title]
-  pattern [:output, RDF::DON.value, :value]
+#  pattern [:output, RDF::DON.value, :value]
 end.execute(@annotations).map do |result|
   {
-    :data_set => result.data_set,
-    :type     => :output,
+#    :data_set => result.data_set,
+#    :type     => :output,
     :label    => result.title,
-    :value    => result.value
+#    :value    => result.value
   }
 end
 
