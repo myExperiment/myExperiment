@@ -9,7 +9,7 @@
 
 body {
 	background: #8e8e8e;
-	font-family: arial;
+	font-family: arial, sans-serif;
 	line-height: 1.0;
 }
 
@@ -2566,6 +2566,15 @@ pre, code {
   font-size: 95%;
   color: #555;
 }
+
+/*font-family: "Margarine", "Comic Sans MS", "Comic Sans", fantasy; */
 .mockup {
-  font-family: "Margarine", "Comic Sans MS", "Comic Sans", fantasy;
+  border: #ccc 2px dashed;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+.mockup .mockup {
+  border: none;
 }
