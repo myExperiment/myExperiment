@@ -2549,6 +2549,10 @@ pre, code {
   
 }
 
+.download {
+  text-align: left;
+}
+
 .details h2 {
   /* Undo generan h2 styling */
   background: none;
