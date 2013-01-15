@@ -1010,7 +1010,7 @@ table.contributable:hover {
 	width: 100%;
 	padding: 0.5em 0.5em;
 	*padding: 0.2em 0.5em;
-	line-height: 1.0;
+	line-height: 2.5;
 	text-decoration: none;
 	border: 1px solid #BBBBBB;
 	background-color: #EEF6FF;
@@ -2387,4 +2387,8 @@ div.deprecation_event {
   padding: 0.5em;
   border-radius: 3px;
   margin-bottom: 1em;
+}
+
+input[type="radio"], input[type="checkbox"] {
+  vertical-align: top;
 }

@@ -111,11 +111,24 @@ contribution_test_public_policy:
   id: 10
   contributor_id: 1
   contributor_type: User
-  contributable_id: 6
+  contributable_id: 7
   contributable_type: Blob
-  policy_id: 6
+  policy_id: 7
   created_at: 2007-08-07 23:53:46
   updated_at: 2007-08-07 23:53:46
   downloads_count: 1
   viewings_count: 1
+
+contribution_for_group_file_one:
+  id: 11
+  contributor_id: 1
+  contributor_type: User
+  contributable_id: 8
+  contributable_type: Blob
+  policy_id: 7
+  created_at: 2007-08-07 23:53:46
+  updated_at: 2007-08-07 23:53:46
+  downloads_count: 1
+  viewings_count: 1
+
 

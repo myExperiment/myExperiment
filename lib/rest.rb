@@ -997,8 +997,7 @@ def update_permissions(ob, permissions)
                               :download => privileges["download"],
                               :edit => privileges["edit"])
             unless (use_layout = permission.find_first('use-layout/text()')).nil?
-              ob.contribution.layout = network.layout_name if use_layout.to_s == 'true'
-              ob.contribution.save
+              ob.contribution.policy.layout = network.layout_name if use_layout.to_s == 'true'
             end
           end
       end

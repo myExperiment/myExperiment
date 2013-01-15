@@ -352,12 +352,11 @@ class WorkflowsController < ApplicationController
         update_credits(@workflow, params)
         update_attributions(@workflow, params)
 
-        update_layout(@workflow, params[:layout])
-        
         # Refresh the types handler list of types if a new type was supplied this time.
         WorkflowTypesHandler.refresh_all_known_types! if params[:workflow][:type] == 'other'
 
         if policy_err_msg.blank?
+          update_layout(@workflow, params[:layout]) unless params[:policy_type] == "group"
         	flash[:notice] = 'Workflow was successfully created.'
           format.html {
             if (@workflow.get_tag_suggestions.length > 0 || (@workflow.body.nil? || @workflow.body == ''))
@@ -530,9 +529,8 @@ class WorkflowsController < ApplicationController
         update_credits(@workflow, params)
         update_attributions(@workflow, params)
 
-        update_layout(@workflow, params[:layout])
-
         if policy_err_msg.blank?
+          update_layout(@workflow, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Workflow was successfully updated.'
           format.html { redirect_to workflow_url(@workflow) }
         else

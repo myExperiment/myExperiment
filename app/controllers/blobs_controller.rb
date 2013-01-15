@@ -164,13 +164,12 @@ class BlobsController < ApplicationController
           @blob.contribution.update_attributes(params[:contribution])
         
           policy_err_msg = update_policy(@blob, params)
-          update_layout(@blob, params[:layout])
-        
+
           update_credits(@blob, params)
           update_attributions(@blob, params)
         
           if policy_err_msg.blank?
-
+            update_layout(@blob, params[:layout]) unless params[:policy_type] == "group"
             @version = @blob.find_version(1)
 
             format.html {
@@ -229,9 +228,10 @@ class BlobsController < ApplicationController
         policy_err_msg = update_policy(@blob, params)
         update_credits(@blob, params)
         update_attributions(@blob, params)
-        update_layout(@blob, params[:layout])
-        
+
         if policy_err_msg.blank?
+          update_layout(@blob, params[:layout]) unless params[:policy_type] == "group"
+
           format.html {
 
             if @blob.new_version_number

@@ -1,0 +1,95 @@
+<%= error_messages_for 'policy' %>
+
+<h3>Policy Name</h3>
+<%= text_field_tag :name, @policy.name-%>
+
+<h3>Group Permissions</h3>
+<% unless (applicable_networks = (current_user.networks + current_user.networks_owned)).empty? %>
+  <p>Resources using this policy will be shared with the selected groups, with the specified permissions:</p>
+
+  <div id="group_sharing_box" class="box_editing" style="padding-left: 1em; font-size: 93%;">
+    <% applicable_networks.each do |n| %>
+      <p>
+        <% perm = find_permission_for_contributor(@policy.permissions, "Network", n.id) if edit -%>
+        <label for="cb_group_sharing_<%= n.id %>">
+          <input class="group_sharing" <%= 'checked="checked"' if perm || n.id == @group.id %>
+                                       <%= 'readonly="readonly"' if n.id == @group.id %> style="margin-right: 0.3em;"
+                 value="<%= n.id %>" type="checkbox" name="group_sharing[<%= n.id %>][id]" id="cb_group_sharing_<%= n.id %>"
+                 onclick="toggle_layout_option(this.value, this.checked);"/>
+          <%= h(n.title) %> Members
+        </label>
+        <select name="group_sharing[<%= n.id %>][level]" style="font-size: 85%; margin: 0 0.5em;">
+          <option value="0" <%= 'selected="selected"' if perm and perm.level == 0 %>>View</option>
+          <option value="1" <%= 'selected="selected"' if !edit or !perm or (perm and perm.level == 1) %>>View and Download</option>
+          <option value="2" <%= 'selected="selected"' if perm and perm.level == 2 %>>View, Download and Update</option>
+        </select>
+      </p>
+    <% end %>
+  </div>
+<% end %>
+
+<h3>Public Permissions</h3>
+<p>Resources using this policy will have the following visibility for users not in the above groups:</p>
+
+<div class="box_editing" style="padding-left: 1em; font-size: 93%;">
+  <p><label for="sharing_option_1">
+    <input <%= 'checked="checked"' if @policy.share_mode == 0 %> id="sharing_option_1" name="share_mode"
+          value="0" type="radio"/>
+      - Anyone can view and download.
+  </label></p>
+
+  <p><label for="sharing_option_9">
+    <input <%= 'checked="checked"' if @policy.share_mode == 2 %> id="sharing_option_9" name="share_mode"
+          value="2" type="radio"/>
+      - Anyone can view, but not download.
+  </label></p>
+
+  <p><label for="sharing_option_7">
+    <input <%= 'checked="checked"' if @policy.share_mode == 7 %> id="sharing_option_7" name="share_mode"
+          value="7" type="radio"/>
+      - Private - only the uploader and specified groups can view and download.
+  </label></p>
+</div>
+
+<h3>Styling</h3>
+<p>Resources using this policy will inherit the styling from the following group:</p>
+<% selected_option = (Conf.layouts[policy.layout]["network_id"] unless (policy.layout.nil? || Conf.layouts[policy.layout].nil?)) %>
+<%= select_tag "layout", "<option value="">Default</option>" +
+    options_from_collection_for_select(applicable_networks.select {|n| n.layout_name if Conf.layouts[n.layout_name]},
+                                       'id','title', selected_option) %>
+
+
+
+<script type="text/javascript">
+
+  function toggle_layout_option(id, enable) {
+    var option = $$('select#layout option[value=' + id + ']').first();
+
+    if(option != null) {
+      //If a "share with group" box is unticked, and that group's layout is selected, go to default.
+      if(!enable){
+        if($('layout').selectedIndex == option.index){
+          $('layout').selectedIndex = 0;
+        }
+      }
+
+      //Disable/enable option in dropdown menu
+      option.disabled = !enable;
+
+      //If all options except "default" are disabled, hide the layout option box
+      if($$('select#layout option[disabled]').size() == ($$('select#layout option').size() - 1)) {
+        $('layout_options_box').hide();
+      }
+      else {
+        $('layout_options_box').show();
+      }
+    }
+  }
+
+  //Initial state
+  document.observe("dom:loaded", function() {
+    $$('input.group_sharing').each (function (box) {
+      toggle_layout_option(box.value, box.checked);
+    });
+  });
+</script>

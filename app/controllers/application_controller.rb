@@ -183,19 +183,28 @@ class ApplicationController < ActionController::Base
 
     # this method will return an error message is something goes wrong (empty string in case of success)
     error_msg = ""
-    
 
     # BEGIN validation and initialisation
-    
+
+    # If a group policy was selected, use that, and delete the old custom one (if there was one).
+    if params[:policy_type] == "group"
+      if contributable.contribution.policy && !contributable.contribution.policy.group_policy?
+        contributable.contribution.policy.delete
+      end
+      contributable.contribution.policy_id = params[:group_policy]
+      contributable.contribution.save
+      return
+    end
+
     # This variable will hold current settings of the policy in case something
     # goes wrong and a revert would be needed at some point
     last_saved_policy = nil
     
     return if params[:sharing].nil? or params[:sharing][:class_id].blank?
-    
+
     sharing_class  = params[:sharing][:class_id]
     updating_class = (params[:updating] and !params[:updating][:class_id].blank?) ? params[:updating][:class_id] : "6"
-    
+
     # Check allowed sharing_class values
     return unless [ "0", "1", "2", "3", "4", "7" ].include? sharing_class
     
@@ -211,9 +220,9 @@ class ApplicationController < ActionController::Base
     
     # BEGIN initialisation and validation
 
-    unless contributable.contribution.policy
+    if contributable.contribution.policy.nil? || contributable.contribution.policy.group_policy?
       last_saved_policy = Policy._default(current_user, nil) # second parameter ensures that this policy is not applied anywhere
-      
+
       policy = Policy.new(:name => 'auto',
           :contributor_type => 'User', :contributor_id => current_user.id,
           :share_mode         => sharing_class,
@@ -256,54 +265,9 @@ class ApplicationController < ActionController::Base
       policy.delete_all_user_permissions
     end
     
-    
+
     # Process explicit Group permissions now
-    if params[:group_sharing]
-      
-      # First delete any Permission objects that don't have a checked entry in the form
-      policy.permissions.each do |p|
-        params[:group_sharing].each do |n|
-          # If a hash value with key 'id' wasn't returned then that means the checkbox was unchecked.
-          unless n[1][:id]
-            if p.contributor_type == 'Network' and p.contributor_id == n[0].to_i
-              p.destroy
-            end
-          end
-        end
-      end
-    
-      # Now create or update Permissions
-      params[:group_sharing].each do |n|
-        
-        # Note: n[1] is used because n is an array and n[1] returns it's value (which in turn is a hash)
-        # In this hash, is a value with key 'id' is present then the checkbox for that group was checked.
-        if n[1][:id]
-          
-          n_id = n[1][:id].to_i
-          level = n[1][:level]
-          
-          unless (perm = Permission.find(:first, :conditions => ["policy_id = ? AND contributor_type = ? AND contributor_id = ?", policy.id, 'Network', n_id]))
-            # Only create new Permission if it doesn't already exist
-            p = Permission.new(:policy => policy, :contributor => (Network.find(n_id)))
-            p.set_level!(level) if level
-          else
-            # Update the 'level' on the existing permission
-            perm.set_level!(level) if level
-          end
-          
-        else
-          
-          n_id = n[0].to_i
-          
-          # Delete permission if it exists (because this one is unchecked)
-          if (perm = Permission.find(:first, :conditions => ["policy_id = ? AND contributor_type = ? AND contributor_id = ?", policy.id, 'Network', n_id]))
-            perm.destroy
-          end
-          
-        end
-      
-      end
-    end
+    process_permissions(policy, params)
 
     logger.debug("------ Workflow create summary ------------------------------------")
     logger.debug("current_user   = #{current_user.id}")
@@ -315,6 +279,55 @@ class ApplicationController < ActionController::Base
 
     # returns some message in case of errors (or empty string in case of success)
     return error_msg
+  end
+
+  def process_permissions(policy, params)
+    if params[:group_sharing]
+
+      # First delete any Permission objects that don't have a checked entry in the form
+      policy.permissions.each do |p|
+        params[:group_sharing].each do |n|
+          # If a hash value with key 'id' wasn't returned then that means the checkbox was unchecked.
+          unless n[1][:id]
+            if p.contributor_type == 'Network' and p.contributor_id == n[0].to_i
+              p.destroy
+            end
+          end
+        end
+      end
+
+      # Now create or update Permissions
+      params[:group_sharing].each do |n|
+
+        # Note: n[1] is used because n is an array and n[1] returns it's value (which in turn is a hash)
+        # In this hash, is a value with key 'id' is present then the checkbox for that group was checked.
+        if n[1][:id]
+
+          n_id = n[1][:id].to_i
+          level = n[1][:level]
+
+          unless (perm = Permission.find(:first, :conditions => ["policy_id = ? AND contributor_type = ? AND contributor_id = ?", policy.id, 'Network', n_id]))
+            # Only create new Permission if it doesn't already exist
+            p = Permission.new(:policy => policy, :contributor => (Network.find(n_id)))
+            p.set_level!(level) if level
+          else
+            # Update the 'level' on the existing permission
+            perm.set_level!(level) if level
+          end
+
+        else
+
+          n_id = n[0].to_i
+
+          # Delete permission if it exists (because this one is unchecked)
+          if (perm = Permission.find(:first, :conditions => ["policy_id = ? AND contributor_type = ? AND contributor_id = ?", policy.id, 'Network', n_id]))
+            perm.destroy
+          end
+
+        end
+
+      end
+    end
   end
 
   def update_credits(creditable, params)
@@ -1004,15 +1017,20 @@ class ApplicationController < ActionController::Base
 
   #Applies the layout for the Network with the given network_id to the object (contributable)
   def update_layout(object,network_id)
+    if object.is_a?(Policy)
+      policy = object
+    else
+      policy = object.contribution.policy
+    end
     if network_id.blank? || network_id == "Default"
-      object.contribution.layout = nil
-      object.contribution.save
+      policy.layout = nil
+      policy.save
     else
       network = Network.find(network_id.to_i)
       # Have to call .reload on permissions or the cached permissions from before "update_policy" was called are used
-      if network && find_permission_for_contributor(object.contribution.policy.permissions.reload, "Network", network_id.to_i)
-        object.contribution.layout = network.layout_name
-        object.contribution.save
+      if network && find_permission_for_contributor(policy.permissions.reload, "Network", network_id.to_i)
+        policy.layout = network.layout_name
+        policy.save
       else
         object.errors.add_to_base("You may only choose layouts for groups that this #{object.class.name.downcase} is shared with.")
       end

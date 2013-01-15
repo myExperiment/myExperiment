@@ -131,9 +131,8 @@ class PacksController < ApplicationController
         
         # update policy
         policy_err_msg = update_policy(@pack, params)
-        update_layout(@pack, params[:layout])
-        
         if policy_err_msg.blank?
+          update_layout(@pack, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Pack was successfully created.'
           format.html { redirect_to pack_url(@pack) }
         else
@@ -160,9 +159,8 @@ class PacksController < ApplicationController
       if @pack.update_attributes(params[:pack])
         @pack.refresh_tags(convert_tags_to_gem_format(params[:pack][:tag_list]), current_user) if params[:pack][:tag_list]
         policy_err_msg = update_policy(@pack, params)
-        update_layout(@pack, params[:layout])
-        
         if policy_err_msg.blank?
+          update_layout(@pack, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Pack was successfully updated.'
           format.html { redirect_to pack_url(@pack) }
         else

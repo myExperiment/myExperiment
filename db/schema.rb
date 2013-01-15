@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121126095828) do
+ActiveRecord::Schema.define(:version => 20130114091326) do
 
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
@@ -38,6 +38,11 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
     t.string   "attributable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "auto_tables", :force => true do |t|
+    t.string "name"
+    t.text   "schema"
   end
 
   create_table "blob_versions", :force => true do |t|
@@ -138,6 +143,13 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
 
   add_index "comments", ["user_id"], :name => "index_comments_on_user_id"
 
+  create_table "component_profiles", :force => true do |t|
+    t.string   "name"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "concept_relations", :force => true do |t|
     t.integer "subject_concept_id"
     t.string  "relation_type"
@@ -190,7 +202,6 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
     t.integer  "site_downloads_count", :default => 0
     t.integer  "site_viewings_count",  :default => 0
     t.string   "label"
-    t.string   "layout"
   end
 
   add_index "contributions", ["contributable_id", "contributable_type"], :name => "index_contributions_on_contributable_id_and_contributable_type"
@@ -490,6 +501,11 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
     t.integer "user_id"
   end
 
+  create_table "plugin_schema_info", :id => false, :force => true do |t|
+    t.string  "plugin_name"
+    t.integer "version"
+  end
+
   create_table "policies", :force => true do |t|
     t.integer  "contributor_id"
     t.string   "contributor_type"
@@ -500,6 +516,7 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
     t.integer  "update_mode"
     t.boolean  "public_download",  :default => false
     t.boolean  "public_view",      :default => false
+    t.string   "layout"
   end
 
   create_table "predicates", :force => true do |t|
@@ -825,8 +842,6 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
     t.text     "body_html"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "license"
-    t.integer  "preview_id"
     t.string   "image"
     t.string   "svg"
     t.text     "revision_comments"
@@ -834,9 +849,9 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
+    t.string   "license"
+    t.integer  "preview_id"
   end
-
-  add_index "workflow_versions", ["workflow_id"], :name => "index_workflow_versions_on_workflow_id"
 
   create_table "workflows", :force => true do |t|
     t.integer  "contributor_id"
@@ -847,15 +862,15 @@ ActiveRecord::Schema.define(:version => 20121126095828) do
     t.string   "unique_name"
     t.text     "body"
     t.text     "body_html"
-    t.integer  "current_version"
-    t.integer  "preview_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "current_version"
     t.integer  "content_blob_id"
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
     t.integer  "license_id"
+    t.integer  "preview_id"
   end
 
   create_table "wsdl_deprecations", :force => true do |t|

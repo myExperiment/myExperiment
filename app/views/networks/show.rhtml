@@ -26,6 +26,7 @@
     <% if @network.administrator?(current_user.id) %>
       <li><%= icon('announcement', new_group_announcement_path(@network), 'Make a new Group Announcement', nil, 'Make a Group Announcement') -%></li>
 			<li><%= icon('network-invite', invite_network_path(@network), 'Invite People', nil, 'Invite People') -%></li>
+      <li><%= icon('policy', network_policies_path(@network), 'Group Policies', nil, 'Group Policies') -%></li>
     <% end %>
     <% if mine? @network %>
 			<li><%= icon('edit', edit_network_path(@network), 'Edit', nil, 'Edit Group') %></li>

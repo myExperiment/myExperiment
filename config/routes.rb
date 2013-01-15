@@ -264,6 +264,7 @@ ActionController::Routing::Routes.draw do |map|
                  :tag => :post } do |network|
     network.resources :group_announcements, :as => :announcements, :name_prefix => nil
     network.resources :comments, :collection => { :timeline => :get }
+    network.resources :policies, :controller => 'group_policies'
   end
   
   # The priority is based upon order of creation: first created -> highest priority.

@@ -769,7 +769,7 @@ module ApplicationHelper
     when "transfer_ownership"
       return "famfamfam_silk/key_go.png"
     when "content"
-      return "famfamfam_silk/application_side_list.png"  
+      return "famfamfam_silk/application_side_list.png"
     else
       return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end
@@ -1590,11 +1590,11 @@ protected
 
     if params["layout_preview"]
       layout = Conf.layouts[params["layout_preview"]]
-    elsif contributable && contributable.contribution
-      layout = Conf.layouts[contributable.contribution.layout]
+    elsif contributable && contributable.contribution && contributable.contribution.policy
+      layout = Conf.layouts[contributable.contribution.policy.layout]
       if layout.nil?
         logger.error("Missing layout for #{contributable.class.name} #{contributable.id}: "+
-                    "#{contributable.contribution.layout}")
+                    "#{contributable.contribution.policy.layout}")
       end
     elsif @network
       layout = @network.layout
