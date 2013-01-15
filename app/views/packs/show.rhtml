@@ -64,9 +64,23 @@
 				</p>
 			<% end %>
 			
+
+      <%= render :partial => "research_objects/uploader", :locals => { :contributable => @pack } -%>
+      <%= render :partial => "research_objects/credits", :locals => { :contributable => @pack } -%>
+
 		</div>
-	</div>
+  </div>
 	
+<% if false %>
+      <%= render :partial => "research_objects/title", :locals => { :contributable => @pack } -%>      
+      <%= render :partial => "research_objects/description", :locals => { :contributable => @pack } -%>
+      <%= render :partial => "research_objects/tags", :locals => { :contributable => @pack } -%>
+<% end %>
+
+      <%= render :partial => "research_objects/diagram", :locals => { :contributable => @pack } -%>  
+      <%= render :partial => "research_objects/attribution", :locals => { :contributable => @pack } -%>
+
+  
 	<div class="contribution_version_box" style="background-color: #EEEEEE;">
 		<div class="contribution_version_inner_box">
 			<h4>
@@ -151,6 +165,11 @@
 	<%= render :partial => "itemscount", :locals => { :pack => @pack } %>
 
 
+  <%= render :partial => "research_objects/tree", :locals => { :contributable => @pack, :ro_uri => @pack.ro_uri } -%>    
+  <%= render :partial => "research_objects/wf4evertools", :locals => { :contributable => @pack, :ro_uri => @pack.ro_uri } -%>
+  <%= render :partial => "research_objects/status", :locals => { :contributable => @pack } -%>
+
+  
   <%= render :partial => "contributions/curation_box", :locals => { :contributable => @pack } %>
 
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @pack, 
@@ -204,6 +223,14 @@
 
 <br/>
 <br/>
+
+  <%= render :partial => "research_objects/evolution", :locals => { :contributable => @contributable } -%>    
+
+
+  <div id="ratingsBox">
+  	<%= render :partial => "research_objects/reviews", :locals => { :reviewable => @contributable } %>
+  </div>
+
 
 <div id="commentsBox">
 	<%= render :partial => "comments/comments", :locals => { :commentable => @pack } %>
