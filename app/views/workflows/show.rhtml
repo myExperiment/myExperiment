@@ -170,6 +170,8 @@
 
         <br/>
 
+        <%= render :partial => "workflows/runs", :locals => { :workflow => @workflow } %>
+        
         <h3>
           <%= info_icon_with_tooltip("This section provides example data sets (workflow inputs and outputs) to this workflow") %>
           Example data sets
