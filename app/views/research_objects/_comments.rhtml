@@ -1,21 +1,157 @@
 <div id="commentsBox">
-	<script src="/javascripts/fckeditor/fckeditor.js?1202402251" type="text/javascript"></script>
+
 
 <h2>
-	<span class="icon"><img alt="Comments" src="/images/famfamfam_silk/comments.png?1202402239"> </span>	<span style="vertical-align: middle;">Comments</span>
-	<span class="count_text" style="vertical-align: middle;">(0)</span>
+	<span class="icon"><img alt="Comments" src="/images/famfamfam_silk/comments.png?1353968760"> </span>	<span style="vertical-align: middle;">Comments</span>
+	<span class="count_text" style="vertical-align: middle;">(2)</span>
 </h2>
+
+<ul class="sectionIcons">
+  <li><span class="icon"><a href="/workflows/3201/comments/timeline"><img alt="Timeline" src="/images/famfamfam_silk/timeline_marker.png?1353968760"> View Timeline</a></span></li>
+</ul>
 
 <div class="commentsBox">
 	
 	
-		<p><i>No comments yet</i></p>
-		<a name="comments"></a>
 		
-			<p style="margin-top: 0.6em;"><strong><a href="http://www.myexperiment.org/session/new">Log in</a> to make a comment </strong></p>
+			<a href="#make_comment">Make a comment</a>
+		
+		<a name="comments"></a>
+		<ul id="comments" class="comments" style="background-image: none; background-color: rgba(0, 0, 0, 0); ">
+			<li>
+	<a name="comment_710"></a>
+  <table class="comment">
+    <tbody><tr>
+      <td class="avatar" rowspan="3">
+        <div style="text-align:center; width: 66px; line-height: 1.2em; padding: 0.2em 0;">
+	<a href="/users/5"><img alt="9?size=60x60" class="framed" src="/images/mockup/stian.jpg" title="Stian Soiland-Reyes"></a>
+	<span style="display:block;margin-top:2px;text-align:center;">
+		
+			<img alt="Gb" src="/images/famfamfam_flags/gb.png?1353968758" style="vertical-align:middle; margin-right: 0.3em;" title="header=[] body=[&lt;b&gt;Location: &lt;/b&gt;Manchester, United Kingdom] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]">
+		
+		
+		
+			<a href="/users/5" title="header=[] body=[Stian Soiland-Reyes] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]">Stian Soiland-Reyes</a>
+		
+		
+		
+		
+	</span>
+</div>
+
+      </td>
+      <td class="header" height="1.2em">
+	      Tuesday 15 January 2013 @ 11:49:08 (GMT)
+	  </td>
+    </tr>
+	<tr>
+	  <td class="content">        
+    	<p>&nbsp;This is interesting because of the number of results, but why do you think the data lacks well-known predictors like WAP_RAT?</p>
+	  </td>
+	</tr>
+	<tr>
+		<td style="text-align: right; padding-right: 1em;">
+      
+  
+  
+    <small id="reportComment710">
+      [
+      <a href="#" onclick="if (confirm('Are you sure you want to report this?')) { new Ajax.Updater('reportComment710', '/users/5/reports?subject_type=Comment&amp;subject_id=710', {asynchronous:true, evalScripts:true, method:'post', onComplete:function(request){new Effect.Highlight('reportComment710', { duration: 1.5 }); $('comment').value = '';}, parameters:'authenticity_token=' + encodeURIComponent('GVFRVai5pj0vmvY2VlePAyufIH3gOcUdyd3rn2Flczs=')}); }; return false;">report</a>
+      ]
+    </small>
+  
+
+      
+				<small>
+					[
+					<a href="#" onclick="if (confirm('Are you sure you want to delete this comment?')) { new Ajax.Updater('commentsBox', '/workflows/3201/comments/710', {asynchronous:true, evalScripts:true, method:'delete', onComplete:function(request){new Effect.Highlight('commentsBox', { duration: 1.5 }); $('comment').value = '';}, parameters:'authenticity_token=' + encodeURIComponent('GVFRVai5pj0vmvY2VlePAyufIH3gOcUdyd3rn2Flczs=')}); }; return false;">delete</a>
+					]
+				</small>
+			
+		</td>
+	</tr>
+  </tbody></table>
+</li>
+<li>
+	<a name="comment_711"></a>
+  <table class="comment">
+    <tbody><tr>
+      <td class="avatar" rowspan="3">
+        <div style="text-align:center; width: 66px; line-height: 1.2em; padding: 0.2em 0;">
+	<a href="/users/1"><img alt="1?size=60x60" class="framed" src="/pictures/show/1?size=60x60" title="Kristina Hettne"></a>
+	<span style="display:block;margin-top:2px;text-align:center;">
+		
+			<img alt="Gb" src="/images/famfamfam_flags/gb.png?1353968758" style="vertical-align:middle; margin-right: 0.3em;" title="header=[] body=[&lt;b&gt;Location: &lt;/b&gt;Manchester, United Kingdom] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]">
+		
+		
+		
+			<a href="/users/1" title="header=[] body=[Kristina Hettne] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]">Kristina Hettne</a>
+		
+		
+		
+		
+	</span>
+</div>
+
+      </td>
+      <td class="header" height="1.2em">
+	      Tuesday 15 January 2013 @ 12:15:46 (GMT)
+	  </td>
+    </tr>
+	<tr>
+	  <td class="content">        
+    	<p>As far as I can tell, this is due to UniProt not being integrated in the InterProScan database. A different workflow would be needed to check against UniProt, see my first attempt in <a rel="nofollow" href="/workflow/1">workflow 1337.</a></p>
+	  </td>
+	</tr>
+	<tr>
+		<td style="text-align: right; padding-right: 1em;">
+      
+  
+  
+    <small id="reportComment711">
+      [
+      <a href="#" onclick="if (confirm('Are you sure you want to report this?')) { new Ajax.Updater('reportComment711', '/users/5/reports?subject_type=Comment&amp;subject_id=711', {asynchronous:true, evalScripts:true, method:'post', onComplete:function(request){new Effect.Highlight('reportComment711', { duration: 1.5 }); $('comment').value = '';}, parameters:'authenticity_token=' + encodeURIComponent('GVFRVai5pj0vmvY2VlePAyufIH3gOcUdyd3rn2Flczs=')}); }; return false;">report</a>
+      ]
+    </small>
+  
+
+      
+				<small>
+					[
+					<a href="#" onclick="if (confirm('Are you sure you want to delete this comment?')) { new Ajax.Updater('commentsBox', '/workflows/3201/comments/711', {asynchronous:true, evalScripts:true, method:'delete', onComplete:function(request){new Effect.Highlight('commentsBox', { duration: 1.5 }); $('comment').value = '';}, parameters:'authenticity_token=' + encodeURIComponent('GVFRVai5pj0vmvY2VlePAyufIH3gOcUdyd3rn2Flczs=')}); }; return false;">delete</a>
+					]
+				</small>
+			
+		</td>
+	</tr>
+  </tbody></table>
+</li>
+
+		</ul>
+	
+	
+	<br>
+	
+	
+		<a name="make_comment"></a>
+		<div class="addCommentBox">
+			<h4>Make a Comment:</h4>
+			
+			
+									
+			<form action="javascript:" method="post" onsubmit="var oEditor = FCKeditorAPI.GetInstance('comment_0_comment_editor'); $('comment_0_comment_editor_hidden').value = oEditor.GetXHTML();; new Ajax.Updater('commentsBox', '/workflows/3201/comments', {asynchronous:true, evalScripts:true, onComplete:function(request){Element.hide('addcomment_indicator'); new Effect.Highlight('comments', { duration: 1.5 }); $('comment').value = '';}, onLoading:function(request){Element.show('addcomment_indicator')}, parameters:Form.serialize(this)}); return false;"><div style="margin:0;padding:0;display:inline"><input name="authenticity_token" type="hidden" value="GVFRVai5pj0vmvY2VlePAyufIH3gOcUdyd3rn2Flczs="></div>
+				
+				<input type="hidden" id="comment_0_comment_editor_hidden" name="comment[comment]">
+<input type="hidden" id="comment_0_comment_editor___Config" value="CustomConfigurationsPath=%2Fjavascripts%2Ffckcustom.js" style="display:none"><iframe src="javascript:void(0)" frameborder="0" scrolling="no" height="0" width="0" style="position: absolute; z-index: 10000; "></iframe><iframe id="comment_0_comment_editor___Frame" src="/javascripts/fckeditor/editor/fckeditor.html?InstanceName=comment_0_comment_editor&amp;Toolbar=Basic" width="99%" height="200px" frameborder="0" scrolling="no"></iframe><textarea id="comment_0_comment_editor" name="comment_0_comment_editor" style="display: none; "></textarea>
+
+				
+				<br>
+				<input name="commit" type="submit" value="Submit Comment">
+				<img alt="Spinner" id="addcomment_indicator" src="/images/spinner.gif?1353968760" style="margin-left: 1em; display: none; ">
+			</form>
+		</div>
 	
 
 </div>
-
 
 </div>

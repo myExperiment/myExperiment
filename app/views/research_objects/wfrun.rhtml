@@ -26,6 +26,8 @@
       <%= render :partial => "research_objects/outputs", :locals => { :contributable => @contributable } -%>  
       <%= render :partial => "research_objects/rundetails", :locals => { :contributable => @contributable } -%>  
 
+    	<%= render :partial => "research_objects/comments", :locals => { :commentable => @contributable } %>
+      
 </div> <!-- end of left box -->
 
 <div class="contribution_right_box">
