@@ -60,7 +60,6 @@ class Workflow < ActiveRecord::Base
                   :file_ext, :last_edited_by, :content_type_id, :image, :svg ]
 
   acts_as_solr(:fields => [ :title, :body, :filename, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
-               :boost => "rank",
                :include => [ :comments ]) if Conf.solr_enable
 
   acts_as_runnable

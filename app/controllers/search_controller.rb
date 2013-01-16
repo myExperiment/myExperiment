@@ -189,10 +189,12 @@ private
   def search_all
 
     @query = params[:query]
+    pivot_options = Conf.pivot_options.dup
+    pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
 
     @pivot, problem = calculate_pivot(
 
-        :pivot_options    => Conf.pivot_options,
+        :pivot_options    => pivot_options,
         :params           => params,
         :user             => current_user,
         :search_models    => [Workflow, Blob, Pack, User, Network, Service],
