@@ -1,0 +1,16 @@
+<div class="ro_uri_edit_box">
+  <p><b>Research Object URI</b></p>
+
+  <p>You may associate a <em>research object</em> by specifying the RO URI.
+  Once set, metadata will be synchronised with the research object.</p>
+
+  <p>
+    <% if f %>
+      <%= f.text_field :ro_uri, :size => 60, :placeholder => 'http://www.example.org/rodl/ROs/research_object/' %>
+    <% else %>
+      <%= text_field_tag input_name, '', :size => 60, :placeholder => 'http://www.example.org/rodl/ROs/research_object/' %>
+    <% end %>
+  </p>
+</div>
+
+

@@ -61,6 +61,11 @@ class PacksController < ApplicationController
   
   # GET /packs/1
   def show
+
+    session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
+
+    @annotations = session.get_annotation_graph(@pack.ro_uri, @pack.ro_uri)
+
     if allow_statistics_logging(@pack)
       @viewing = Viewing.create(:contribution => @pack.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
@@ -228,6 +233,11 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
           @pack.tag_list = convert_tags_to_gem_format params[:pack][:tag_list]
           @pack.update_tags
         end
+
+        # Check that the RO exists and if not, create it.
+        if err = check_and_create_research_object(@pack, params[:pack][:ro_uri])
+          flash.now[:error] = err
+        end
         
         # update policy
         policy_err_msg = update_policy(@pack, params)
@@ -260,29 +270,10 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
       if @pack.update_attributes(params[:pack])
 
         # Check that the RO exists and if not, create it.
-        
-        unless params[:pack][:ro_uri].empty?
-
-          rodl_uri = URI.parse(@pack.ro_uri)
-          
-          path_bits = rodl_uri.path.sub(/\/$/, "").split("/")
-
-          slug = path_bits.pop
-
-          rodl_uri.path = "#{path_bits.join("/")}/"
-
-          session = ROSRS::Session.new(rodl_uri.to_s, Conf.rodl_bearer_token)
-
-          if session.check_research_object(slug) == false
-            c, r, u, m = session.create_research_object(slug)
-
-            if c != 201
-              flash.now[:error] = "Unable to create research object: #{r}"
-            end
-          end
-          
+        if err = check_and_create_research_object(@pack, params[:pack][:ro_uri])
+          flash.now[:error] = err
         end
-
+        
         @pack.refresh_tags(convert_tags_to_gem_format(params[:pack][:tag_list]), current_user) if params[:pack][:tag_list]
         policy_err_msg = update_policy(@pack, params)
         update_layout(@pack, params[:layout])
@@ -655,6 +646,5 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
       end
 
     end
-
   end
 end

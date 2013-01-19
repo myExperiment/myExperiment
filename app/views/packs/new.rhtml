@@ -10,6 +10,9 @@
 </center>
 
 <% form_tag :action => :create do %>
+
+  <%= render :partial => "contributions/ro_uri_box", :locals => { :f => nil, :input_name => 'pack[ro_uri]' } -%>
+
   <center>
 		<div class="box_form" style="width: 550px; margin: 1em 0; text-align: left;">
 			<p><b>Title: </b></p>

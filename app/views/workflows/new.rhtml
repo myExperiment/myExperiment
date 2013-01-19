@@ -11,6 +11,8 @@
 
 <% form_tag({:action => :create}, :multipart => true) do %>
 
+  <%= render :partial => "contributions/ro_uri_box", :locals => { :f => nil, :input_name => 'workflow[ro_uri]' } -%>
+
   <!-- Workflow File -->
 	
 	<p class="step_text">1. Workflow file/script</p>

@@ -1130,4 +1130,27 @@ class ApplicationController < ActionController::Base
     end
 
   end
+
+  def check_and_create_research_object(contributable, new_uri)
+
+    rodl_uri = URI.parse(contributable.ro_uri)
+    
+    path_bits = rodl_uri.path.sub(/\/$/, "").split("/")
+
+    slug = path_bits.pop
+
+    rodl_uri.path = "#{path_bits.join("/")}/"
+
+    session = ROSRS::Session.new(rodl_uri.to_s, Conf.rodl_bearer_token)
+
+    if session.check_research_object(slug) == false
+      c, r, u, m = session.create_research_object(slug)
+
+      if c != 201
+        return "Unable to create research object: #{r}"
+      end
+    end
+  end
+          
+
 end
