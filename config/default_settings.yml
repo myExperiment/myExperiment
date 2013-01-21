@@ -212,10 +212,6 @@ new_menu:
     link:       /files/new
     controller: blobs
 
-  - label:      Research Ob
-    link:       /research_objects/new
-    controller: research_objects
-
   - label:      Pack
     link:       /packs/new
     controller: packs
