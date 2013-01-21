@@ -5,7 +5,7 @@
 
 class Statement < ActiveRecord::Base
 
-  belongs_to :research_object
+  belongs_to :pack
 
   validates_presence_of :subject_text
   validates_presence_of :predicate_text
