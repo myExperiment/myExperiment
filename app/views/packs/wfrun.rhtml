@@ -13,27 +13,27 @@
 	<% end -%>
 </ul>
 
-<h1>Workflow run in: <%=h @contributable.title -%></h1>
+<h1>Workflow run in: <%=h @pack.title -%></h1>
 
 
 
 <div class="contribution_left_box">
 	
-      <%= render :partial => "research_objects/startedby", :locals => { :contributable => @contributable } -%>  
-      <%= render :partial => "research_objects/rundescription", :locals => { :contributable => @contributable } -%>
-      <%= render :partial => "research_objects/workflow", :locals => { :contributable => @contributable } -%>  
-      <%= render :partial => "research_objects/inputs", :locals => { :contributable => @contributable } -%>  
-      <%= render :partial => "research_objects/outputs", :locals => { :contributable => @contributable } -%>  
-      <%= render :partial => "research_objects/rundetails", :locals => { :contributable => @contributable } -%>  
+      <%= render :partial => "research_objects/startedby", :locals => { :contributable => @pack } -%>  
+      <%= render :partial => "research_objects/rundescription", :locals => { :contributable => @pack } -%>
+      <%= render :partial => "research_objects/workflow", :locals => { :contributable => @pack } -%>  
+      <%= render :partial => "research_objects/inputs", :locals => { :contributable => @pack } -%>  
+      <%= render :partial => "research_objects/outputs", :locals => { :contributable => @pack } -%>  
+      <%= render :partial => "research_objects/rundetails", :locals => { :contributable => @pack } -%>  
 
-    	<%= render :partial => "research_objects/comments", :locals => { :commentable => @contributable } %>
+    	<%= render :partial => "research_objects/comments", :locals => { :commentable => @pack } %>
       
 </div> <!-- end of left box -->
 
 <div class="contribution_right_box">
 
-  <%= render :partial => "research_objects/tree", :locals => { :contributable => @contributable, :ro_uri => @contributable.url } -%>    
-  <%= render :partial => "research_objects/runstats", :locals => { :contributable => @contributable, :ro_uri => @contributable.url } -%>    
-  <%= render :partial => "research_objects/rundownload", :locals => { :contributable => @contributable, :ro_uri => @contributable.url } -%>    
+  <%= render :partial => "research_objects/tree", :locals => { :contributable => @pack, :ro_uri => @pack.ro_uri } -%>    
+  <%= render :partial => "research_objects/runstats", :locals => { :contributable => @pack, :ro_uri => @pack.ro_uri } -%>    
+  <%= render :partial => "research_objects/rundownload", :locals => { :contributable => @pack, :ro_uri => @pack.ro_uri } -%>    
   
 </div>
