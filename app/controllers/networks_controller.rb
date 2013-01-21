@@ -405,7 +405,7 @@ class NetworksController < ApplicationController
   # POST /networks
   def create
 
-    params[:network][:user_id] = current_user
+    params[:network][:user_id] = current_user.id
 
     @network = Network.new(params[:network])
 
