@@ -556,6 +556,7 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
       "resolve_link"       => "edit",
       "search"             => "view",
       "show"               => "view",
+      "wfrun"              => "view",
       "resource_show"      => "view",
       "statistics"         => "view",
       "tag"                => "view",
@@ -647,4 +648,20 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
 
     end
   end
+  
+
+  # GET /pack/1/wfrun/a/b/c
+  def wfrun
+    #@manifest = @contributable.manifest
+
+      
+#    @ro_entry_url = url_for :only_path => false,
+#                            :host => base_host,
+#                            :id => @pack.id
+    
+    respond_to do |format|
+      format.html # wfrun.rhtml
+    end
+  end  
+  
 end
