@@ -10,7 +10,7 @@
   </ul>
 </div>
 
-<h2>Basic resource information via manifest</h2>
+<h2>Resource information</h2>
 
 <table class="simple">
 
@@ -40,31 +40,43 @@
 
 </table>
 
-<h2>Annotations specific to this resource</h2>
+<% if @title or @description or @creator or @created %>
 
-<table class="simple">
+  <h2>Annotations specific to this resource</h2>
 
-  <tr>
-    <td>Title</td>
-    <td><%=h @title -%></td>
-  </tr>
+  <table class="simple">
 
-  <tr>
-    <td>Description</td>
-    <td><%=h @description -%></td>
-  </tr>
+  <% if @title %>
+    <tr>
+      <td>Title</td>
+      <td><%=h @title -%></td>
+    </tr>
+  <% end %>
 
-  <tr>
-    <td>Creator</td>
-    <td><%=h @creator -%></td>
-  </tr>
+  <% if @description %>
+    <tr>
+      <td>Description</td>
+      <td><%=h @description -%></td>
+    </tr>
+  <% end %>    
 
-  <tr>
-    <td>Created at</td>
-    <td><%=h @created -%></td>
-  </tr>
+  <% if @creator %>
+    <tr>
+      <td>Creator</td>
+      <td><%=h @creator -%></td>
+    </tr>
+  <% end %>    
 
-</table>
+  <% if @created %>    
+    <tr>
+      <td>Created at</td>
+      <td><%=h @created -%></td>
+    </tr>
+  <% end %>
+
+    
+  </table>
+<% end %>
 
 <div class="download">
 	<h3>
