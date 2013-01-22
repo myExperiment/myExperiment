@@ -2553,6 +2553,10 @@ pre, code, .md5 {
   text-align: left;
 }
 
+.download .sectionIcons {
+  margin-top: 2em;
+}
+
 .details h2 {
   /* Undo generan h2 styling */
   background: none;
