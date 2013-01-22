@@ -2494,7 +2494,7 @@ div.ro_uri_edit_box input {
   font-weight: bold;
 }
 .live {
-  font-family: "Margarine", Inconsolata, Consolas, cursive;
+  font-family: "Margarine", Consolas, Inconsolata, cursive;
   text-transform: lowercase;
 }
 
@@ -2528,7 +2528,7 @@ table.values td,  table.values th {
   content: "–";
 }
 
-pre, code {
+pre, code, .md5 {
   font-family: Consolas, "Inconsolata", monospace;
 }
 
@@ -2577,4 +2577,9 @@ pre, code {
 }
 .mockup .mockup {
   border: none;
+}
+
+.checksum {
+  font-size: smaller; 
+  text-align: center;
 }

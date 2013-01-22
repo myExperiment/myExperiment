@@ -4,9 +4,11 @@
 # See license.txt for details.
 
 require 'wf4ever/transformation-client'
+require "rdf/vocab/foaf"
 
 class PacksController < ApplicationController
   include ApplicationHelper
+  include ActionView::Helpers::NumberHelper
   
   before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
   
@@ -634,19 +636,33 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
 
     session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
 
+    @resource_path = params[:resource_path]
     @resuri = @pack.resolve_resource_uri(params[:resource_path])
-
+    manifest_creator = nil
     @pack.contributable_entries.manifest.query([@resuri, nil, nil]).each do |statement|
 
       case statement.predicate.to_s
       when "http://purl.org/wf4ever/ro#name":     @manifest_name    = statement.object.to_s
       when "http://purl.org/dc/terms/created":    @manifest_created = Date.parse(statement.object.to_s)
-      when "http://purl.org/dc/terms/creator":    @manifest_creator = statement.object.to_s
-      when "http://purl.org/wf4ever/ro#checksum": @manifest_md5     = statement.object.to_s
-      when "http://purl.org/wf4ever/ro#filesize": @manifest_size    = statement.object.to_s.to_i
+      when "http://purl.org/dc/terms/creator":    manifest_creator = statement.object.to_s
+      when "http://purl.org/wf4ever/ro#checksum": @manifest_md5     = statement.object.to_s.sub("urn:MD5:", "")
+      when "http://purl.org/wf4ever/ro#filesize": begin
+        @manifest_size    = statement.object.to_s.to_i
+        @manifest_size_human = number_to_human_size(@manifest_size)
+        end
       end
-
     end
+
+    # TODO: Find a nicer way to extract creator's foaf:name
+    @manifest_creator = nil
+    if manifest_creator
+      ## Silly fallback
+      @manifest_creator = "(unknown name)"
+      @pack.contributable_entries.manifest.query([manifest_creator, RDF::FOAF.name, nil]).each do |statement|
+        @manifest_creator = statement.object.to_s
+      end
+    end  
+    
   end
   
 

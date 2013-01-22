@@ -15,28 +15,27 @@
 <table class="simple">
 
   <tr>
-    <td>Name</td>
-    <td><%=h @manifest_name -%></td>
+    <td>Path</td>
+    <td><%=h @resource_path -%></td>    
   </tr>
 
   <tr>
-    <td>Size</td>
-    <td><%=h @manifest_size -%></td>
+    <td>URI</td>
+    <td><%= link_to @resuri.to_s, @resuri.to_s, :rel => 'nofollow' -%>
   </tr>
 
+  
+
+  <% if @manifest_creator %>
   <tr>
     <td>Creator</td>
     <td><%=h @manifest_creator -%></td>
   </tr>
+  <% end %>
 
   <tr>
     <td>Created at</td>
     <td><%=h @manifest_created -%></td>
-  </tr>
-
-  <tr>
-    <td>MD5</td>
-    <td><%=h @manifest_md5 -%></td>
   </tr>
 
 </table>
@@ -67,6 +66,28 @@
 
 </table>
 
+<div class="download">
+	<h3>
+				<%= info_icon_with_tooltip("This section provides links to the download(s) for this File") %>
+				Download
+			</h3>
+				<ul class="sectionIcons">
+        <% if @manifest_size_human 
+          txt = "Download/View (" + @manifest_size_human + ")"
+        else
+          txt = "Download/View"
+        end
+        %>
+					<li><%= icon('blob', @resuri.to_s, "Download File" ,  {:rel => 'nofollow'}, txt) %></li>
+				</ul>      
+
+<% if @manifest_md5 %>
+      <div class="checksum">MD5 checksum: <span class="md5"><%= @manifest_md5 -%></span></div>
+<% end %>
+       
+</div>
+
+
 <% if false %>
 
 <h2>Workflow inputs (via WF-DESC)</h2>
@@ -86,6 +107,8 @@
     <li>Output: <%= input_labels.first.object -%></li>
   <% end %>
 </ul>
+
+
 
 <% end %>
 
