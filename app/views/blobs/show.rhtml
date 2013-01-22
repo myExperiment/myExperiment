@@ -58,12 +58,14 @@
 			    <b>File name:</b>
 			    <%=h @version.local_name %>
 			</p>
-			
+
+  <% if  @version.content_type %>			
 			<p>
 			    <b>File type:</b>
 			    <%=h @version.content_type.title %>
 			</p>
-			
+	<% end %>
+  
 			<br/>
 			
 			<h3>
