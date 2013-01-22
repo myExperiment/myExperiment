@@ -114,7 +114,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.pack_resource_update  '/packs/:id/resources/:resource_path;update', :controller => 'packs', :action => 'update_resource_annotations',  :conditions => { :method => :post }, :requirements => { :resource_path => /[^;]+/ }
 
-  map.pack_resource  '/packs/:id/wfrun/:resource_path', :controller => 'packs', :action => 'wfrun', :conditions => { :method => :get }, :requirements => { :resource_path => /[^;]+/ }
+  map.pack_wfrun  '/packs/:id/wfrun/:resource_path', :controller => 'packs', :action => 'wfrun', :conditions => { :method => :get }, :requirements => { :resource_path => /[^;]+/ }
 
   
   # workflows (downloadable)
