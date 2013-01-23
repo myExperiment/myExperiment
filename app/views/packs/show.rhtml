@@ -130,31 +130,19 @@
   			<br/>
 			
 			<% if @authorised_to_edit -%>
-				<h3>
+      <section id="add_item">
+        <h3>
 					<%= info_icon_with_tooltip("This section provides various ways of adding items to this pack") %>
 					Add an Item
 				</h3>
-        <p>
-          <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post) do %>
-            <%= file_field_tag :data -%>
-            <%= submit_tag("Aggregate internal resource") -%>
-          <% end %>
-        </p>
-        <p>
-          <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post) do %>
-            <%= file_field_tag :data -%>
-            <%= submit_tag("Aggregate workflow") -%>
-          <% end %>
-        </p>
-        <p>
-          <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post) do %>
-            <%= text_field_tag :uri -%>
-            <%= submit_tag("Aggregate external resource") -%>
-          <% end %>
-        </p>
-				<a name="add_item"></a>
-				<%= render :partial => "add_item", :locals => { :pack => @pack } -%>
+        <% if @pack.ro_uri %>      
+          <%= render :partial => "add_item_ro", :locals => { :pack => @pack } -%>
+        <% else %>
+  				<%= render :partial => "add_item", :locals => { :pack => @pack } -%>
+        <% end %>
+      </section>
 			<% end -%>
+      
 		</div>
 	</div>
 
