@@ -19,31 +19,51 @@
         </p>      
 <% end %>
 
+	<% if @error_message -%>
+		<p class="error_text" style="padding: 0 0.8em;"><%= @error_message -%></p>
+		<br/>
+	<% end -%>
 
-	<div class="box_currentuser_specific" style="margin-bottom: 0.5em; padding: 0.1em 0;">
-    <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post) do %>
-			<table class="quick_add">
-				<tr>
-					<td class="label" style="vertical-align: top; padding-bottom: 0;" rowspan=2>
-						<%= info_icon_with_tooltip("Type or paste in a link to something (either in #{Conf.sitename} or elsewhere). The link will then be resolved appropriately.") -%>
-						<b>Quick add:</b>
-						<p class="inner">(a link)</p>
-					</td>
-					<td style="padding-bottom: 0;">
-						<%= text_field_tag "uri", params[:uri], :size => 47 -%>
-					</td>
-					<td class="submit" style="padding-bottom: 0;">
-						<%= submit_tag "Add", :disable_with => "..." -%>
-					</td>
-				</tr>
-				<tr>
-					<td style="padding-top: 0;">
-						<p style="text-align: center; color: #333333; font-size: 77%; padding: 0;">
-							eg: "http://www.myexperiment.org/workflows/1" or "http://www.example.com/something-nice"
-						</p>
-					</td>
-					<td style="padding-top: 0;">&nbsp;</td>
-				</tr>
-			</table>
+
+	<div class="box_currentuser_specific">
+    <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post, :class => :add_item_ro) do %>
+
+      <div>
+        <label for="ro_resource_type">
+          <%= info_icon_with_tooltip("The type indicates the item's meaning in the pack.")  -%>
+          Type:
+        </label>
+        <%= select_tag (:ro_resource_type, options_for_select(Conf.ro_resource_types, 
+                          "http://purl.org/wf4ever/ro#Resource") )  -%>
+      </div>
+    
+      <div>
+        <label for="uri">
+          <%= info_icon_with_tooltip( "Type or paste in a URL to a resource, file or website, which will be added as an external pack item.") -%>
+          Add Link:
+        </label>
+	    	<%= text_field_tag "uri", params[:uri], :size => 47 -%>
+        <div class="example"><span>
+          eg: <code>http://docs.example.com/file.pdf</code> or <code>http://www.example.com/website/</code></span>
+        </div>
+      </div>
+
+      
+      <div class="or">
+        -or-
+      </div>
+
+      <div>
+        <label for="file">
+          <%= info_icon_with_tooltip("Select a local file which will be uploaded as part of the pack") -%>
+          Add File:
+        </label>
+        <%= file_field_tag :file, {:multiple => :multiple} -%>
+      </div>
+      <div>
+  			<%= submit_tag "Add" -%>
+      </div>
+
+  
 		<% end -%>    
 	</div>

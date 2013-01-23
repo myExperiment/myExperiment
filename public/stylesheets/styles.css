@@ -2594,3 +2594,35 @@ pre, code, .md5 {
   margin: 0.4em;
   font-style: italic;
 }
+
+.add_item_ro {
+  margin-bottom: 0.5em; 
+  padding: 0.1em;
+  padding-right: 0;
+}
+
+.add_item_ro label {
+  display: inline-block;
+  width: 8em;
+  font-weight: bold;
+  text-align: right;  
+}
+
+.add_item_ro .example {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 8em;
+}
+/* Trickery inner span to avoid smaller font-size changing padding */
+.add_item_ro .example span {
+  font-size: smaller;
+}
+
+.add_item_ro > div {
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+}
+.add_item_ro .or {
+  padding-left: 4em;
+  color: #335;
+}
