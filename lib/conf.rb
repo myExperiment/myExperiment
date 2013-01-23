@@ -206,6 +206,10 @@ class Conf
     self.fetch_entry('research_object_endpoints')
   end
 
+  def self.ro_resource_types
+    self.fetch_entry('ro_resource_types')
+  end
+
   # Temporary config option for RODL access
   def self.rodl_bearer_token
     self.fetch_entry('rodl_bearer_token')

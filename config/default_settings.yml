@@ -677,3 +677,36 @@ research_object_endpoints:
 
   - http://sandbox.wf4ever-project.org/rodl/sparql
 
+## ro_resource_types - types for adding resources (_add_item_ro.rhtml)
+# 
+# List of tuples:
+#
+# -
+#    - "The Label"  
+#    - "http://example.com/vocab#predicate"
+# -
+#    - "The Label"  
+#    - "http://example.com/vocab#predicate"
+
+
+ro_resource_types:
+  - 
+    - "Workflow"
+    - "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
+  - 
+    - "Resource"
+    - "http://purl.org/wf4ever/ro#Resource"
+  - 
+    - "Sketch"
+    - "http://purl.org/wf4ever/roterms#Sketch"
+  - 
+    - "Hypothesis"
+    - "http://purl.org/wf4ever/roterms#Hypothesis"    
+  - 
+    - "Conclusion"
+    - "http://purl.org/wf4ever/roterms#Conclusion"
+  - 
+    - "Results"
+    - "http://purl.org/wf4ever/roterms#Results"
+    
+    
