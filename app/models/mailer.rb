@@ -2,10 +2,10 @@ class Mailer < ActionMailer::Base
 
   helper :application
 
-  def feedback(name, subject, content)
+  def feedback(name, subj, content)
     recipients Conf.feedback_email_address
     from Conf.notifications_email_address
-    subject "#{Conf.sitename} feedback from #{name}"
+    subject "#{Conf.sitename} feedback from #{name}: #{subj}"
     
     body :name => name, 
          :subject => subject, 
