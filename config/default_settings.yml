@@ -675,5 +675,5 @@ pivot_options:
 
 research_object_endpoints:
 
-  - http://sandbox.wf4ever-project.org/rosrs5/sparql
+  - http://sandbox.wf4ever-project.org/rodl/sparql
 
