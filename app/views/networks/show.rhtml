@@ -30,6 +30,8 @@
     <% end %>
     <% if mine? @network %>
 			<li><%= icon('edit', edit_network_path(@network), 'Edit', nil, 'Edit Group') %></li>
+    <% end %>
+    <% if mine?(@network) || current_user.admin? %>
       <li><%= icon('destroy', network_path(@network), 'Delete Group', { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
     <% end %>
   <% end %>

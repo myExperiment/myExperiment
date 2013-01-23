@@ -505,9 +505,12 @@ protected
 
   def find_network_auth_owner
     begin
-      @network = Network.find(params[:id], :conditions => ["networks.user_id = ?", current_user.id], :include => [ :owner, :memberships ])
+      @network = Network.find(params[:id], :include => [ :owner, :memberships ])
+      unless @network.owner == current_user || current_user.admin?
+        error("Group not found (id not authorized)", "is invalid (not group administrator)")
+      end
     rescue ActiveRecord::RecordNotFound
-      error("Group not found (id not authorized)", "is invalid (not group adminsitrator)")
+      error("Group not found (id not authorized)", "is invalid (not group administrator)")
     end
   end
   
