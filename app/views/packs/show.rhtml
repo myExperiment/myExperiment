@@ -42,6 +42,15 @@
 		    <b>Title:</b>
 		    <span class="title"><%=h @pack.title %></span>
 			</p>
+      
+      <% if @pack.ro_uri %>
+        <p class="ro_uri">
+          <span>Research object:</span>
+          <%= link_to @pack.ro_uri.to_s, @pack.ro_uri.to_s, :rel => 'nofollow' -%>
+        </p>
+	    <% end %>
+
+      
 			
 			<br/>
 			
