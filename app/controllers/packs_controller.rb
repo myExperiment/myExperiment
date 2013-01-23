@@ -132,39 +132,51 @@ class PacksController < ApplicationController
     render :resource_show
   end
 
-  def create_resource
-
-    session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
-
-    filename = File.basename(params[:data].original_filename) if params[:data]
-
-    case params[:commit]
-
-    when "Aggregate workflow"
-
-      c, r, puri, ruri = session.aggregate_internal_resource(@pack.ro_uri, filename, { :body => params[:data].read, :ctype=> 'text/plain' })
-
+  def transform_wf(ruri)
       service_uri = "http://sandbox.wf4ever-project.org/wf-ro/jobs"
       format = "application/vnd.taverna.t2flow+xml"
       token = Conf.rodl_bearer_token
-
       uri = Wf4Ever::TransformationClient.create_job(service_uri, ruri, format, @pack.ro_uri, token)
-
-    when "Aggregate internal resource"
-
-      c, r, puri, ruri = session.aggregate_internal_resource(@pack.ro_uri, filename, { :body => params[:data].read, :ctype=> 'text/plain' })
-
-    when "Aggregate external resource"
-
+      puts "################## Transforming at " + uri
+  end
+  
+  def create_resource
+    session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
+    
+    no_item = true
+    if params[:file]
+      for file in params[:file]
+         no_item = false
+         filename = File.basename(file.original_filename)
+        ## FIXME: Content type should not always be text/plain!
+         c, r, puri, ruri = session.aggregate_internal_resource(@pack.ro_uri, filename, { :body => file.read, :ctype=> 'text/plain' })
+        ## NOTE: URI must match config/default_settings.yml ro_resource_types
+        if params[:type] == "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
+          transform_wf(ruri)
+        end
+      end
+    end
+      
+    if params[:uri] and not params[:uri].empty?
+         no_item = false
       c, r, puri, ruri = session.aggregate_external_resource(@pack.ro_uri, params[:uri])
-
+      if params[:type] == "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
+        transform_wf(ruri)
+      end
     end
 
+    if no_item 
+      ## TODO: prettify error message, but don't use the broken error() function
+      # as it is not following HTTP standard error codes
+      return render :text => "Adding an item failed, either a URL or a file must be provided", :status => :bad_request
+    end
+    
     respond_to do |format|
       format.html {
         redirect_to pack_url(@pack)
-      }
+      }    
     end
+    
   end
 
   def edit_resource_annotations

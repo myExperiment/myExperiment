@@ -29,11 +29,11 @@
     <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post, :class => :add_item_ro) do %>
 
       <div>
-        <label for="ro_resource_type">
+        <label for="type">
           <%= info_icon_with_tooltip("The type indicates the item's meaning in the pack.")  -%>
           Type:
         </label>
-        <%= select_tag (:ro_resource_type, options_for_select(Conf.ro_resource_types, 
+        <%= select_tag (:type, options_for_select(Conf.ro_resource_types, 
                           "http://purl.org/wf4ever/ro#Resource") )  -%>
       </div>
     
@@ -48,17 +48,16 @@
         </div>
       </div>
 
-      
       <div class="or">
-        -or-
+        -and/or-
       </div>
 
       <div>
-        <label for="file">
+        <label for="file[]">
           <%= info_icon_with_tooltip("Select a local file which will be uploaded as part of the pack") -%>
           Add File:
         </label>
-        <%= file_field_tag :file, {:multiple => :multiple} -%>
+        <%= file_field_tag "file[]", {:multiple => :multiple} -%>
       </div>
       <div>
   			<%= submit_tag "Add" -%>
