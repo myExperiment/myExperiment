@@ -17,7 +17,7 @@
 						<p style="margin-top:0; padding-top:0; text-align: center;"><b><%= owner_text pack -%>:</b></p>
 						<center><%= contributor(pack.contribution.contributor_id, pack.contribution.contributor_type, true, 60) %></center>
 					</td>
-					<td style="text-align: left;">
+					<td style="text-align: left; max-width: 370px">
 						<a name="<%= pack.title.gsub(/ /, "_") %>"></a>
 						<p class="title">
 							<%= icon "pack", nil, nil, nil, '' %>

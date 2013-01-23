@@ -21,15 +21,14 @@
 			    	<p style="margin-top:0; padding-top:0; text-align: center;"><b><%= owner_text workflow -%></b></p>
 						<center><%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %></center>
 					</td>
-			    <td style="text-align: left; width: 587px">
+			    <td style="text-align: left; max-width: 350px">
 			      <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
 			      <p class="title">
 					  	<%= icon "workflow", nil, nil, nil, '' %>
-							<% title = contributable_name(workflow.id, 'Workflow') %>
-							<%=link_to(query ? highlight_all(title, query) : title, workflow_path(workflow)) %>
-							<span style="font-weight:normal;">
-								(v<%= workflow.current_version %>)
-							</span>
+              <% truncated_title = truncate(workflow.title, :length => 35) %>
+							<%=link_to(query ? highlight_all(truncated_title, query) : truncated_title, workflow_path(workflow),
+                         :title => workflow.title) %>
+							<span style="font-weight:normal;">(<%= workflow.current_version %>)							</span>
 					  </p>
 					
 						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
