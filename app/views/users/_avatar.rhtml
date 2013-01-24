@@ -1,7 +1,7 @@
 <% size ||= 100 -%>
 <% you_string ||= "" -%>
 <% if user.kind_of? Fixnum then user = User.find(user) end -%>
-<div class="avatar">
+<div class="avatar" style="width: <%= size+6 %>px">
 	<%= avatar(user, size) %>
 	<span style="display:block;margin-top:2px;text-align:center;">
 		<% if size > 59 %>

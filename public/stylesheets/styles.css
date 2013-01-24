@@ -2451,4 +2451,5 @@ span.owner {
 div.avatar {
   text-align:center;
   padding: 0.2em 0;
+  margin: 0 auto;
 }
