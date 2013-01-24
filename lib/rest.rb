@@ -668,8 +668,6 @@ def rest_resource_uri(ob)
     when 'Review';                 return workflow_review_url(ob.reviewable, ob)
     when 'Comment';                return "#{rest_resource_uri(ob.commentable)}/comments/#{ob.id}"
     when 'Bookmark';               return nil
-    when 'Blog';                   return blog_url(ob)
-    when 'BlogPost';               return blog_blog_post_url(ob.blog, ob)
     when 'Rating';                 return "#{rest_resource_uri(ob.rateable)}/ratings/#{ob.id}"
     when 'Tag';                    return tag_url(ob)
     when 'Picture';                return user_picture_url(ob.owner, ob)
@@ -713,8 +711,6 @@ def rest_access_uri(ob)
     when 'Review';                 return "#{base}/review.xml?id=#{ob.id}"
     when 'Comment';                return "#{base}/comment.xml?id=#{ob.id}"
     when 'Bookmark';               return "#{base}/favourite.xml?id=#{ob.id}"
-    when 'Blog';                   return "#{base}/blog.xml?id=#{ob.id}"
-    when 'BlogPost';               return "#{base}/blog-post.xml?id=#{ob.id}"
     when 'Rating';                 return "#{base}/rating.xml?id=#{ob.id}"
     when 'Tag';                    return "#{base}/tag.xml?id=#{ob.id}"
     when 'Picture';                return "#{base}/picture.xml?id=#{ob.id}"
@@ -839,8 +835,6 @@ def parse_resource_uri(str)
   return [User, $1, is_local]           if uri.path =~ /^\/users\/([\d]+)$/
   return [Review, $1, is_local]         if uri.path =~ /^\/[^\/]+\/[\d]+\/reviews\/([\d]+)$/
   return [Comment, $1, is_local]        if uri.path =~ /^\/[^\/]+\/[\d]+\/comments\/([\d]+)$/
-  return [Blog, $1, is_local]           if uri.path =~ /^\/blogs\/([\d]+)$/
-  return [BlogPost, $1, is_local]       if uri.path =~ /^\/blogs\/[\d]+\/blog_posts\/([\d]+)$/
   return [Tag, $1, is_local]            if uri.path =~ /^\/tags\/([\d]+)$/
   return [Picture, $1, is_local]        if uri.path =~ /^\/users\/[\d]+\/pictures\/([\d]+)$/
   return [Message, $1, is_local]        if uri.path =~ /^\/messages\/([\d]+)$/

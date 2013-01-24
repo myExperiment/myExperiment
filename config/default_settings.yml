@@ -41,7 +41,7 @@ contributor_models: [User, Network]
 # contributable_models - These are the models for the things that myExperiment
 #                        contributors can contribute.
 
-contributable_models: [Workflow, Blob, Pack, Blog]
+contributable_models: [Workflow, Blob, Pack]
 
 # page_template - This is the page template for all the pages except for
 #                 the front page of the web site.

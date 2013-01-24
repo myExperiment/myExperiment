@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130114091326) do
+ActiveRecord::Schema.define(:version => 20130124144917) do
 
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
@@ -72,23 +72,6 @@ ActiveRecord::Schema.define(:version => 20130114091326) do
     t.integer  "content_type_id"
     t.integer  "license_id"
     t.integer  "current_version"
-  end
-
-  create_table "blog_posts", :force => true do |t|
-    t.integer  "blog_id"
-    t.string   "title"
-    t.text     "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "body_html"
-  end
-
-  create_table "blogs", :force => true do |t|
-    t.integer  "contributor_id"
-    t.string   "contributor_type"
-    t.string   "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "bookmarks", :force => true do |t|

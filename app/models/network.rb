@@ -17,7 +17,6 @@ class Network < ActiveRecord::Base
   acts_as_taggable
   
   has_many :blobs, :as => :contributor
-  has_many :blogs, :as => :contributor
   has_many :workflows, :as => :contributor
   has_many :policies, :as => :contributor
   
