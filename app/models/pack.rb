@@ -76,6 +76,8 @@ class ContributableEntries
         ce.checksum = @manifest.graph.first_object([resource.object, RDF::RO.checksum, nil])
         ce.size     = @manifest.graph.first_value([resource.object,  RDF::RO.filesize, nil])
          
+        next unless ce.name
+
         @entries << ce
       end
     end
@@ -95,6 +97,19 @@ class ContributableEntries
     end
   end
 
+  def map(&blk)
+    if @pack.ro_uri
+      @entries.map(&blk)
+    end
+  end
+
+  def find_by_name(name)
+    @entries.each do |entry|
+      return entry if entry.name == name
+    end
+
+    nil 
+  end
 end
 
 class Pack < ActiveRecord::Base

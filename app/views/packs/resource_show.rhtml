@@ -74,8 +74,18 @@
     </tr>
   <% end %>
 
-    
   </table>
+<% end %>
+
+<% input_selected = @annotations.query([@resuri, RDF::URI.parse("http://purl.org/wf4ever/roterms#inputSelected"), nil]) %>
+
+<% if input_selected.count > 0 %>
+  <h2>Workflow Inputs</h2>
+  <ul>
+    <% input_selected.statements.each do |statement| %>
+      <li><%=h statement.object -%></li>
+    <% end %>
+  </ul>
 <% end %>
 
 <div class="download">

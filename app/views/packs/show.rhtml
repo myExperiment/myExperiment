@@ -113,10 +113,24 @@
 			<%= render :partial => "relationships/relationships", :locals => { :context => @pack, :show_delete => true } -%>
 			
       <% if @authorised_to_edit %>
-        <br />
-        <ul class="sectionIcons">
-          <li><%= icon('manage', edit_relationships_pack_relationships_path(@pack), nil, nil, 'Edit Relationships') -%></li>
-        </ul>
+        <% if @pack.items_count < 2 %>
+
+          <p><i>There must be at least two entries before you can add relationships.</i></p>
+
+        <% else %>
+
+          <% form_tag("#{rest_resource_uri(@pack)}/relationships") do -%>
+
+              <% @resource_options = @pack.contributable_entries.map do |e| [URI::decode(e.ro_local_uri), e.ro_local_uri] end %> 
+              <% @relationship_options = [["Input selected", "http://purl.org/wf4ever/roterms#inputSelected"]] %>
+              <div><%= select_tag("subject",   options_for_select(@resource_options)) -%></div>
+              <div><%= select_tag("predicate", options_for_select(@relationship_options)) -%></div>
+              <div><%= select_tag("object",    options_for_select(@resource_options)) -%></div>
+
+            <input type="submit" value="Add relationship"/>
+
+          <% end %>
+        <% end %>
       <% end %>
 
 			<br/><br/>
@@ -234,4 +248,24 @@
 </div>
 
 <%= render :partial => "contributions/alternative_formats" %>
+
+<div class="fold">
+
+  <div class="foldTitle">Merged annotation bodies (<%= @annotations.query([nil, nil, nil]).count -%>)</div>
+  <div class="foldContent" style="display: none;">
+
+    <div id="statement_list">
+      <% @annotations.query([nil, nil, nil]).each do |statement| %>
+        <div>
+          <table>
+            <tr><td><%=h statement.subject -%></td></tr>
+            <tr><td><%=h statement.predicate -%></td></tr>
+            <tr><td><%=h statement.object -%></td></tr>
+          </table>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
+</div>
 

@@ -29,25 +29,42 @@ class RelationshipsController < ApplicationController
   # POST /:context_type/:context_id/relationships
   def create 
 
-    subject = @context.find_pack_item(params[:subject])
-    objekt  = @context.find_pack_item(params[:objekt])
+    subject_name = URI::decode(params[:subject])
+    object_name  = URI::decode(params[:object])
 
-    prefix, title = params[:predicate].split(":")
+    subject = @context.contributable_entries.find_by_name(subject_name)
+    object  = @context.contributable_entries.find_by_name(object_name)
 
-    predicate = Predicate.find(:first, :conditions =>
-        ['ontology_id = ? AND title = ?',
-           Ontology.find_by_prefix(prefix).id, title])
+    match = params[:predicate].match("(.*[#/])([^#/]+)")
 
-    raise("Invalid form data") if subject.nil? || objekt.nil? || predicate.nil?
+    ns1  = match[1]
+    prop = match[2]
 
-    @relationship = Relationship.new(:context => @context, :predicate => predicate, :user => current_user)
+    session = ROSRS::Session.new(@context.ro_uri, Conf.rodl_bearer_token)
 
-    @relationship.subject = subject
-    @relationship.objekt  = objekt
+    subject_uri = "#{@context.ro_uri}#{URI::encode(subject.name)}"
+    object_uri  = "#{@context.ro_uri}#{URI::encode(object.name)}"
 
-    @relationship.save
+    ao_body = <<RDF
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:ns1="#{ns1}" >
+  <rdf:Description rdf:about="#{subject_uri}">
+    <ns1:#{prop} rdf:resource="#{object_uri}"/>
+  </rdf:Description>
+</rdf:RDF>
+RDF
 
-    redirect_to(:action => :edit_relationships)
+    agraph = ROSRS::RDFGraph.new(:data => ao_body, :format => :xml)
+
+    begin
+      code, reason, stub_uri, body_uri = session.create_internal_annotation(@context.ro_uri, subject_uri, agraph)
+      code, reason, stub_uri, body_uri = session.create_internal_annotation(@context.ro_uri, object_uri,  agraph)
+    rescue ROSRS::Exception => e
+      errors.add(params[:template], 'Error from remote server')
+    end
+
+    redirect_to pack_path(@context.id)
   end
   
   # DELETE /:context_type/:context_id/relationships/:id
@@ -66,6 +83,9 @@ class RelationshipsController < ApplicationController
   def find_resource
 
     @context      = extract_resource_context(params)
+
+    return nil if @context.ro_uri
+
     @relationship = Relationship.find_by_id(params[:id])
 
     return error if @relationship.nil? || @context.nil? || @relationship.context != @context

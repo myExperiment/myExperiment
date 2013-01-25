@@ -709,4 +709,7 @@ ro_resource_types:
     - "Results"
     - "http://purl.org/wf4ever/roterms#Results"
     
-    
+ro_terms:
+
+  - ["Input selected", "http://purl.org/wf4ever/roterms#inputSelected"]
+
