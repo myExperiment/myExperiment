@@ -107,10 +107,13 @@
 			<br/><br/>
 			<h4>
 				<%= info_icon_with_tooltip("This section shows all the relationships between the items in this pack.") -%>
-				Relationships <span class="count_text">(<%= @pack.relationships.length -%>)</span>
+				Relationships <% if false %><span class="count_text">(<%= @pack.relationships.length -%>)<% end %></span>
 			</h4>
 
+      <% if false %>
 			<%= render :partial => "relationships/relationships", :locals => { :context => @pack, :show_delete => true } -%>
+      <% end %>
+
 			
       <% if @authorised_to_edit %>
         <% if @pack.items_count < 2 %>
