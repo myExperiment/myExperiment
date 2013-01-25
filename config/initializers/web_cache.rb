@@ -10,7 +10,7 @@ class ROSRS::Session
   def do_request(method, uripath, options = {})
 
     def cache_file_name(uri)
-      "tmp/webcache/#{Rack::Utils.escape(uri)}"
+      "tmp/webcache/#{Digest::SHA1.hexdigest(uri)}"
     end
 
     def exist_in_cache?(uri)
@@ -26,12 +26,23 @@ class ROSRS::Session
     end
 
     def load_from_cache(uri)
-      YAML::load(File.read(cache_file_name(uri)))
+      envelope = YAML::load(File.read(cache_file_name(uri)))
+      [envelope[:status], envelope[:reason], envelope[:headers], envelope[:body]]
     end
 
     def save_to_cache(uri, data)
+
+      envelope = {
+        :uri       => uri,
+        :timestamp => Time.now.to_s,
+        :status    => data[0],
+        :reason    => data[1],
+        :headers   => data[2],
+        :body      => data[3]
+      }
+
       File.open(cache_file_name(uri), "w+") do |f|
-        f.puts(data.to_yaml)
+        f.puts(envelope.to_yaml)
       end
     end
 
