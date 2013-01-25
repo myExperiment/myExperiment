@@ -1,0 +1,51 @@
+	<div class="box_currentuser_specific">
+     
+<% form_tag(post_url, :multipart => true, :method => :post, :class => :add_item_ro) do %>
+
+      <div>
+        <label for="type">
+          <%= info_icon_with_tooltip("The type indicates the item's meaning in the pack.")  -%>
+          Type:
+        </label>
+        <%= select_tag (:type, options_for_select(Conf.ro_resource_types, 
+                          "http://purl.org/wf4ever/ro#Resource") )  -%>
+      </div>
+    
+      <div>
+        <label for="uri">
+          <%= info_icon_with_tooltip( "Type or paste in a URL to a resource, file or website, which will be added as an external pack item.") -%>
+          Link:
+        </label>
+	    	<%= text_field_tag "uri", params[:uri], :size => 47 -%>
+        <div class="example"><span>
+          eg: <code>http://docs.example.com/file.pdf</code> or <code>http://www.example.com/website/</code></span>
+        </div>
+      </div>
+
+      <div class="or">
+        -or-
+      </div>
+<% 
+if multiple 
+  file_formname = "file[]"
+  fileform_options = {:multiple => :multiple}
+else
+  file_formname = "file"
+  fileform_options = {}
+end
+%>
+      <div>
+        <label for="<%= file_formname -%>">
+          <%= info_icon_with_tooltip("Select a local file which will be uploaded as part of the pack") -%>
+          File:
+        </label>
+        <%= file_field_tag file_formname, fileform_options -%>
+      </div>
+      <div>
+  			<%= submit_tag submit_text -%>
+      </div>
+
+  
+		<% end -%>
+	</div>
+    
