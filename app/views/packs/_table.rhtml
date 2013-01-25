@@ -1,74 +1,80 @@
 <% query ||= false -%>
-<% odd_row = false -%>
-<% unless collection.empty? %>
 
-<table class="alt_table">
-	<% for pack in collection %>
-		<% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
-		<% if collection.size == 1 -%>
-			<% show ||= Authorization.check("view", pack, current_user) -%>
-		<% else -%>
-			<% show = Authorization.check("view", pack, current_user) -%>
-		<% end -%>
-	  <% if show -%>
-			<% cache(:controller => 'packs_cache', :action => 'listing', :id => pack.id) do -%>
-				<tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-					<td style="width: 100px;">
-						<p style="margin-top:0; padding-top:0; text-align: center;"><b><%= owner_text pack -%>:</b></p>
-						<center><%= contributor(pack.contribution.contributor_id, pack.contribution.contributor_type, true, 60) %></center>
-					</td>
-					<td style="text-align: left; max-width: 370px">
-						<a name="<%= pack.title.gsub(/ /, "_") %>"></a>
-						<p class="title">
-							<%= icon "pack", nil, nil, nil, '' %>
-							<% title = contributable_name(pack.id, 'Pack') %>
-							<%=link_to(query ? highlight_all(title, query) : title, pack_path(pack)) %>
-						</p>
-						
-						<p style="font-size: 85%; margin-top: 0; padding-top: 0;">
-							<b>Created:</b> <%=datetime pack.contribution.created_at, false %>
-							<% unless pack.contribution.created_at == pack.contribution.updated_at %>
-								|	<b>Last updated:</b> <%=datetime pack.contribution.updated_at, false %>
-							<% end %>
-						</p>
-						
-						<div class="desc" style="font-size: 85%;">
-							<% unless pack.description.blank? %>
-					  		<% desc = truncate(strip_html(pack.description), :length => 500) %>
-					    	<%= query ? highlight_all(desc, query) : desc %>
-						  <% else -%>
-								<span class="none_text">No description</span>
-							<% end %>
-						</div>
-						
-						<p class="standout" style="margin-top: 0.4em;">
-							<%= pluralize pack.items_count, "item" -%> in this pack
-						</p>
-						
-						<p style="font-size: 85%;">
-							<a href="<%= pack_path(pack) + '#comments' -%>"><b>Comments: </b><%= pack.comments.count %></a> |
-							<b>Viewed:</b> <%=pluralize pack.contribution.site_viewings_count, "time" %> |
-				      <b>Downloaded:</b> <%=pluralize pack.contribution.site_downloads_count, "time" %>
-						</p>
-						
-						<% unless (tags = pack.tags).empty? %>
-							<a href="<%= pack_path(pack) + '#tags' -%>"><p style="font-size: 85%;"><b>Tags:</b></p></a>
-							<div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
-						<% else %>
-							<p style="font-size: 85%;"><i>This Pack has no tags!</i></p>
-						<% end %>	
-					</td>
-					
-					<td class="actions" style="width: 80px;">
-				    <%= icon "show", pack_path(pack), nil, nil, "View" %>
-						<% if Authorization.check("download", pack, current_user) -%><%= icon('download', download_pack_path(pack), nil, nil, 'Download') -%><% end -%>
-				    <% if mine?(pack) %><%= icon "manage", edit_pack_path(pack), nil, nil, "Manage" %><% end %>
-						<% if Authorization.check("edit", pack, current_user) -%><%= icon('new', new_item_pack_path(pack), nil, nil, 'Add New Item') -%><% end -%>
-				  </td>
-				</tr>
-			<% end %>
-		<% end %>
-	<% end %>
-</table>
+<% collection.each do |pack| %>
+  <% # If only one item in collection, check if 'show' permission is available (eg: if this partial was called from contributions/table) -%>
+  <% if collection.size == 1 -%>
+    <% show ||= Authorization.check("view", pack, current_user) -%>
+  <% else -%>
+    <% show = Authorization.check("view", pack, current_user) -%>
+  <% end -%>
+  <% if show -%>
 
+    <div class="resource_list_item <%= pack.contribution.policy.layout -%>">
+
+      <div class="avatar_panel">
+        <span class="owner"><%= owner_text pack -%></span>
+        <%= contributor(pack.contribution.contributor_id, pack.contribution.contributor_type, true, 60) %>
+        <% if layout = pack.contribution.policy.layout %>
+          <% begin %>
+            <%= render :partial => "skins/branding/#{layout}" %>
+          <% rescue ActionView::MissingTemplate %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <div class="main_panel">
+
+        <div class="actions">
+          <%= icon "show", pack_path(pack), nil, nil, "View" %>
+          <% if Authorization.check("download", pack, current_user) -%><%= icon('download', download_pack_path(pack), nil, nil, 'Download') -%><% end -%>
+          <% if mine?(pack) %><%= icon "manage", edit_pack_path(pack), nil, nil, "Manage" %><% end %>
+          <% if Authorization.check("edit", pack, current_user) -%><%= icon('new', new_item_pack_path(pack), nil, nil, 'Add New Item') -%><% end -%>
+        </div>
+
+        <% cache(:controller => 'packs_cache', :action => 'listing', :id => pack.id) do -%>
+          <a name="<%= pack.title.gsub(/ /, "_") %>"></a>
+          <p class="title">
+            <%= icon "pack", nil, nil, nil, '' %>
+            <% truncated_title = truncate(pack.title, :length => 55) %>
+            <%=link_to(query ? highlight_all(truncated_title, query) : truncated_title, pack_path(pack),
+                       :title => pack.title) %>
+          </p>
+
+          <br/>
+          <p>
+            <b>Created:</b> <%=datetime pack.contribution.created_at, false %>
+            <% unless pack.contribution.created_at == pack.contribution.updated_at %>
+              |	<b>Last updated:</b> <%=datetime pack.contribution.updated_at, false %>
+            <% end %>
+          </p>
+
+          <div class="desc">
+            <% unless pack.description.blank? %>
+              <% desc = truncate(strip_html(pack.description), :length => 500) %>
+              <%= query ? highlight_all(desc, query) : desc %>
+            <% else -%>
+              <span class="none_text">No description</span>
+            <% end %>
+          </div>
+
+          <p class="standout">
+            <%= pluralize pack.items_count, "item" -%> in this pack
+          </p>
+
+          <p>
+            <a href="<%= pack_path(pack) + '#comments' -%>"><b>Comments: </b><%= pack.comments.count %></a> |
+            <b>Viewed:</b> <%=pluralize pack.contribution.site_viewings_count, "time" %> |
+            <b>Downloaded:</b> <%=pluralize pack.contribution.site_downloads_count, "time" %>
+          </p>
+
+          <% unless (tags = pack.tags).empty? %>
+            <a href="<%= pack_path(pack) + '#tags' -%>"><p><b>Tags:</b></p></a>
+            <div style="display:inline;" class="tags_onesize"><%= tag_cloud_from_collection tags, true %></div>
+          <% else %>
+            <p><i>This Pack has no tags!</i></p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 <% end %>
