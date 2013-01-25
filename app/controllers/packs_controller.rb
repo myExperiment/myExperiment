@@ -10,6 +10,10 @@ class PacksController < ApplicationController
   include ApplicationHelper
   include ActionView::Helpers::NumberHelper
   
+  ## NOTE: URI must match config/default_settings.yml ro_resource_types
+  WORKFLOW_DEFINITION = "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
+  RO_RESOURCE = "http://purl.org/wf4ever/ro#Resource"
+  
   before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
   
   before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
@@ -140,9 +144,34 @@ class PacksController < ApplicationController
       puts "################## Transforming at " + uri
   end
   
+  def annotate_resource_type(session, resource_uri, type_uri)
+      ## FIXME: THIS IS NOT HOW TO MAKE RDF!!
+#      node = LibXML::XML::Node.new('rdf:type', nil, ["rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ])
+#      node["rdf:resource"] = type_uri
+#      ao_body = create_annotation_body(ro_uri, resource_uri, node)
+#      agraph = ROSRS::RDFGraph.new(:data => ao_body.to_s, :format => :xml)
+#
+#      begin
+#        code, reason, stub_uri, body_uri = session.create_internal_annotation(ro_uri, resource_uri, agraph)
+#      rescue ROSRS::Exception => e
+#        contributable.errors.add(params[:template], 'Error from remote server')
+#      end      
+  end
+  
+  def post_process_created_resource(session, ruri, type)
+
+    
+    if type == WORKFLOW_DEFINITION
+       transform_wf(ruri)
+    end
+    if type != RO_RESOURCE
+       annotate_resource_type(session, ruri, params[:type])
+    end
+  end
+  
   def create_resource
     session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
-    
+
     no_item = true
     if params[:file]
       for file in params[:file]
@@ -150,19 +179,14 @@ class PacksController < ApplicationController
          filename = File.basename(file.original_filename)
         ## FIXME: Content type should not always be text/plain!
          c, r, puri, ruri = session.aggregate_internal_resource(@pack.ro_uri, filename, { :body => file.read, :ctype=> 'text/plain' })
-        ## NOTE: URI must match config/default_settings.yml ro_resource_types
-        if params[:type] == "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
-          transform_wf(ruri)
-        end
+         post_process_created_resource(session, ruri, params[:type])        
       end
     end
       
     if params[:uri] and not params[:uri].empty?
          no_item = false
       c, r, puri, ruri = session.aggregate_external_resource(@pack.ro_uri, params[:uri])
-      if params[:type] == "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
-        transform_wf(ruri)
-      end
+      post_process_created_resource(session, ruri, params[:type])
     end
 
     if no_item 

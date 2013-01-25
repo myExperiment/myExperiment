@@ -1059,7 +1059,7 @@ class ApplicationController < ActionController::Base
   end
 
   def create_annotation_body(ro_uri, resource_uri, body, namespaces)
-
+    ## FIXME: THIS IS NOT HOW TO MAKE RDF!!
     namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
     doc = LibXML::XML::Document.new
@@ -1086,6 +1086,7 @@ class ApplicationController < ActionController::Base
 
       case params[:template]
       when "Title"
+              ## FIXME: THIS IS NOT HOW TO MAKE RDF!!
         ao_body = create_annotation_body(ro_uri, resource_uri,
             LibXML::XML::Node.new('dct:title', params[:value]),
             { "dct" => "http://purl.org/dc/terms/" })
