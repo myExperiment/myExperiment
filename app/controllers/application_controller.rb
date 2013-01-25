@@ -1060,6 +1060,8 @@ class ApplicationController < ActionController::Base
 
   def create_annotation_body(ro_uri, resource_uri, body, namespaces)
     ## FIXME: THIS IS NOT HOW TO MAKE RDF!!
+    
+    
     namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
     doc = LibXML::XML::Document.new
@@ -1084,33 +1086,27 @@ class ApplicationController < ActionController::Base
 
     if params[:commit] == 'Add' || params[:commit] == 'Edit'
 
+      ao_graph = ROSRS::RDFGraph.new
       case params[:template]
       when "Title"
-              ## FIXME: THIS IS NOT HOW TO MAKE RDF!!
-        ao_body = create_annotation_body(ro_uri, resource_uri,
-            LibXML::XML::Node.new('dct:title', params[:value]),
-            { "dct" => "http://purl.org/dc/terms/" })
+        ao_graph.graph << [RDF::URI(resource_uri), RDF::DC.title, params[:value]]
       when "Creator"
-        ao_body = create_annotation_body(ro_uri, resource_uri,
-            LibXML::XML::Node.new('dct:creator', params[:value]),
-            { "dct" => "http://purl.org/dc/terms/" })
+        ## FIXME: dcterms:creator and contributor should be given as resources, not literal
+        ao_graph.graph << [RDF::URI(resource_uri), RDF::DC.creator, params[:value]]
       when "Contributor"
-        ao_body = create_annotation_body(ro_uri, resource_uri,
-            LibXML::XML::Node.new('dct:contributor', params[:value]),
-            { "dct" => "http://purl.org/dc/terms/" })
+        ao_graph.graph << [RDF::URI(resource_uri), RDF::DC.contributor, params[:value]]
       when "Description"
-        ao_body = create_annotation_body(ro_uri, resource_uri,
-            LibXML::XML::Node.new('dct:description', params[:value]),
-            { "dct" => "http://purl.org/dc/terms/" })
+        ao_graph.graph << [RDF::URI(resource_uri), RDF::DC.description, params[:value]]
+      else
+        ao_graph = nil
       end
     end
 
     if params[:commit] == 'Add'
-      if ao_body
-        agraph = ROSRS::RDFGraph.new(:data => ao_body.to_s, :format => :xml)
-
+      if ao_graph        
         begin
-          code, reason, stub_uri, body_uri = session.create_internal_annotation(ro_uri, resource_uri, agraph)
+          code, reason, stub_uri, body_uri = session.create_internal_annotation(ro_uri, resource_uri, ao_graph)
+          puts body_uri
         rescue ROSRS::Exception => e
           contributable.errors.add(params[:template], 'Error from remote server')
         end

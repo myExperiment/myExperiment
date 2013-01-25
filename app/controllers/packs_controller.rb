@@ -146,17 +146,14 @@ class PacksController < ApplicationController
   end
   
   def annotate_resource_type(session, resource_uri, type_uri)
-      ## FIXME: THIS IS NOT HOW TO MAKE RDF!!
-#      node = LibXML::XML::Node.new('rdf:type', nil, ["rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ])
-#      node["rdf:resource"] = type_uri
-#      ao_body = create_annotation_body(ro_uri, resource_uri, node)
-#      agraph = ROSRS::RDFGraph.new(:data => ao_body.to_s, :format => :xml)
-#
-#      begin
-#        code, reason, stub_uri, body_uri = session.create_internal_annotation(ro_uri, resource_uri, agraph)
-#      rescue ROSRS::Exception => e
-#        contributable.errors.add(params[:template], 'Error from remote server')
-#      end      
+    ao_graph = ROSRS::RDFGraph.new
+    ao_graph.graph << [RDF::URI(resource_uri), RDF.type, RDF::URI(type_uri)]
+    
+    begin
+        code, reason, stub_uri, body_uri = session.create_internal_annotation(@pack.ro_uri, resource_uri, ao_graph)
+    rescue ROSRS::Exception => e
+        contributable.errors.add(params[:template], 'Error from remote server')
+    end      
   end
   
   def post_process_created_resource(session, ruri, type)
