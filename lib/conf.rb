@@ -211,6 +211,10 @@ class Conf
   end
 
   # Temporary config option for RODL access
+  def self.ro_terms
+    self.fetch_entry('ro_terms')
+  end
+
   def self.rodl_bearer_token
     self.fetch_entry('rodl_bearer_token')
   end
