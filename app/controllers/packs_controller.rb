@@ -8,6 +8,7 @@ require "rdf/vocab/foaf"
 
 class PacksController < ApplicationController
   include ApplicationHelper
+  include ResearchObjectsHelper
   include ActionView::Helpers::NumberHelper
   
   ## NOTE: URI must match config/default_settings.yml ro_resource_types
@@ -266,6 +267,9 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
     
     respond_to do |format|
       if @pack.save
+
+        @pack.update_attribute(:ro_uri, "#{Conf.rodl_base_uri}Pack#{@pack.id}") if @pack.ro_uri.blank?
+
         if params[:pack][:tag_list]
           @pack.tags_user_id = current_user
           @pack.tag_list = convert_tags_to_gem_format params[:pack][:tag_list]

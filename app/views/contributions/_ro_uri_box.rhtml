@@ -1,8 +1,10 @@
 <div class="ro_uri_edit_box">
   <p><b>Research Object URI</b></p>
 
-  <p>You may associate a <em>research object</em> by specifying the RO URI.
-  Once set, metadata will be synchronised with the research object.</p>
+  <p>By default, a <em>research object</em> will be created to maintain the
+  annotations within the pack.  You may specify an alternate URI below to link
+  this pack with a pre-existing research object or to create a research object
+  with a specific URI.</p>
 
   <p>
     <% if f %>
@@ -11,6 +13,6 @@
       <%= text_field_tag input_name, '', :size => 60, :placeholder => 'http://www.example.org/rodl/ROs/research_object/' %>
     <% end %>
   </p>
+  
 </div>
-
 

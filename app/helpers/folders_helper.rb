@@ -3,12 +3,9 @@
 # Copyright (c) 2012 University of Manchester and the University of Southampton.
 # See license.txt for details.
 module FoldersHelper
-  # TODO: Move to config
-  BASE_URI = "http://sandbox.wf4ever-project.org/rodl/ROs/"
-  API_KEY = "32801fc0-1df1-4e34-b"
   
   def make_research_object(ro_uri) 
-    session = ROSRS::Session.new(BASE_URI, API_KEY)
+    session = ROSRS::Session.new(Conf.rodl_base_uri, Conf.rodl_bearer_token)
     ROSRS::ResearchObject.new(session, ro_uri)    
   end
   

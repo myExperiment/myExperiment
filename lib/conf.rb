@@ -215,6 +215,10 @@ class Conf
     self.fetch_entry('ro_terms')
   end
 
+  def self.rodl_base_uri
+    self.fetch_entry('rodl_base_uri')
+  end
+
   def self.rodl_bearer_token
     self.fetch_entry('rodl_bearer_token')
   end

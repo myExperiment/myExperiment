@@ -15,6 +15,8 @@ class ROSRS::Session
 
     def exist_in_cache?(uri)
 
+      return false if uri.blank?
+
       # FIXME: The manifest check here is hacky.  This really ought to be done
       # with appropriate HTTP headers.
 

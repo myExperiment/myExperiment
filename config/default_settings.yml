@@ -709,6 +709,8 @@ ro_resource_types:
     - "Results"
     - "http://purl.org/wf4ever/roterms#Results"
     
+rodl_base_uri: "http://sandbox.wf4ever-project.org/rodl/ROs/"
+
 ro_terms:
 
   - ["Input selected", "http://purl.org/wf4ever/roterms#inputSelected"]
