@@ -1,10 +1,16 @@
 <% t "#{contributable_name(@pack.id, 'Pack')} (#{h @pack.contributor_name})" -%>
 
+<% @title = @annotations.query([RDF::URI.parse(@pack.ro_uri), RDF::DC.title, nil]).objects.first if @pack.ro_uri; @title = @title.to_s if @title; @title ||= @pack.title %>
+<% @description_html = @annotations.query([RDF::URI.parse(@pack.ro_uri), RDF::DC.description, nil]).objects.first if @pack.ro_uri; @description_html = h(@description_html) if @description_html; @description_html ||= @pack.description_html %>
+
 <% if @authorised_to_edit %>
 	<ul class="sectionIcons">
 		<% if mine?(@pack) -%>
 			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
 		<% end -%>
+    <% if Authorization.check("edit", @pack, current_user) && @pack.ro_uri %>
+      <li><%= icon('edit', edit_annotations_pack_path(@pack), nil, nil, "Edit Annotations") %></li>
+    <% end %>
 		<% if Authorization.check("destroy", @pack, current_user) %>
 			<li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments, BUT does not delete the actual items pointed to in the Pack. Are you sure you would like to delete this Pack?', :method => :delete }, 'Delete Pack') %></li>
 		<% end %>
@@ -40,7 +46,7 @@
 		<div class="contribution_version_inner_box">
 			<p>
 		    <b>Title:</b>
-		    <span class="title"><%=h @pack.title %></span>
+		    <span class="title"><%=h @title %></span>
 			</p>
       
       <% if @pack.ro_uri %>
@@ -59,14 +65,10 @@
 				Description
 			</h3>
 			
-			<% unless @pack.description.blank? %>
+			<% unless @description_html.blank? %>
 				<div class="contribution_description">
-					<%= @pack.description_html %>
+					<%= @description_html %>
 				</div>
-				<% if mine?(@pack) %>
-					<br/>
-					<p style="text-align: right; color: #666666;">[ <%= link_to "edit", edit_pack_path(@pack) %> ]</p>
-				<% end %>
 			<% else %>
 				<p class="none_text">
 					Not set

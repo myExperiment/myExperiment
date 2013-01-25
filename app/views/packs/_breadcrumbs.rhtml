@@ -1,30 +1,32 @@
 <li><%= link_to 'Packs', packs_path %></li>
 
+<% title = @title; title ||= 'Untitled' %>
+
 <% case controller.action_name.to_s; when "show" %>
-  <li><%= h(@pack.title) %></li>
+  <li><%= h(title) %></li>
 <% when "new" %>
   <li>New Pack</li>
 <% when "edit" %>
-  <li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
+  <li><%= link_to "#{h(title)}", pack_path(@pack) %></li>
   <li>Manage</li>
 <% when "new_item" %>
-  <li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
+  <li><%= link_to "#{h(title)}", pack_path(@pack) %></li>
   <li>Add New Item</li>
 <% when "edit_item" %>
-  <li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
+  <li><%= link_to "#{h(title)}", pack_path(@pack) %></li>
   <li>Edit Item Entry</li>
 <% when "all" %>
   <li>All Packs</li>
 <% when "search" %>  
   <li>Search Results</li>
 <% when "edit_annotations" %>
-  <li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
+  <li><%= link_to "#{h(title)}", pack_path(@pack) %></li>
   <li>Edit</li>
 <% when "resource_show" %>
-  <li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
+  <li><%= link_to "#{h(title)}", pack_path(@pack) %></li>
   <li><%=h @manifest_name -%></li>
 <% when "edit_resource_annotations" %>
-  <li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
+  <li><%= link_to "#{h(title)}", pack_path(@pack) %></li>
   <li><%= link_to h(@manifest_name), pack_resource_path(@pack, params[:resource_path]) -%></li>
   <li>Edit</li>
 <% end %>
