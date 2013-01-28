@@ -127,7 +127,7 @@
           <% form_tag("#{rest_resource_uri(@pack)}/relationships") do -%>
 
               <% @resource_options = @pack.contributable_entries.map do |e| [URI::decode(e.ro_local_uri), e.ro_local_uri] end %> 
-              <% @relationship_options = [["Input selected", "http://purl.org/wf4ever/roterms#inputSelected"]] %>
+              <% @relationship_options = Conf.ro_terms %>
               <div><%= select_tag("subject",   options_for_select(@resource_options)) -%></div>
               <div><%= select_tag("predicate", options_for_select(@relationship_options)) -%></div>
               <div><%= select_tag("object",    options_for_select(@resource_options)) -%></div>
