@@ -11,8 +11,6 @@
 
 <% form_tag :action => :create do %>
 
-  <%= render :partial => "contributions/ro_uri_box", :locals => { :f => nil, :input_name => 'pack[ro_uri]' } -%>
-
   <center>
 		<div class="box_form" style="width: 550px; margin: 1em 0; text-align: left;">
 			<p><b>Title: </b></p>
@@ -28,7 +26,19 @@
   <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @pack } %>
   
   <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @pack, :update_perms => true } %>
-  
+
+  <div class="fold">
+    <div class="foldTitle">
+      <%= info_icon_with_tooltip("Here you can set a specific research object URI") %>
+      <span>Research Object URI</span>
+    </div>
+    <div class="foldContent" style="display: none;">
+
+      <%= render :partial => "contributions/ro_uri_box", :locals => { :f => nil, :input_name => 'pack[ro_uri]' } -%>
+      
+    </div>
+  </div>
+
   <p style="text-align: center;">
     <%= submit_tag "Create", :disable_with => "Creating..." %>
   </p>
