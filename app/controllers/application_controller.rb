@@ -189,7 +189,7 @@ class ApplicationController < ActionController::Base
     # If a group policy was selected, use that, and delete the old custom one (if there was one).
     if params[:policy_type] == "group"
       if contributable.contribution.policy && !contributable.contribution.policy.group_policy?
-        contributable.contribution.policy.delete
+        contributable.contribution.policy.destroy
       end
       contributable.contribution.policy_id = params[:group_policy]
       contributable.contribution.save
