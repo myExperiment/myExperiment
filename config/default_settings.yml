@@ -713,3 +713,6 @@ ro_terms:
 
   - ["Input selected", "http://purl.org/wf4ever/roterms#inputSelected"]
 
+checklist:
+    minim: "http://sandbox.wf4ever-project.org/rodl/ROs/Y2Demo-test/workflow-experiment-checklist.rdf"
+    minim_purpose: "ready-to-release"

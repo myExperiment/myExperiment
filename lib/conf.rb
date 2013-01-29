@@ -210,6 +210,15 @@ class Conf
     self.fetch_entry('ro_resource_types')
   end
 
+  def self.checklist
+    self.fetch_entry('checklist')
+  end
+
+  def self.ro_resource_types
+    self.fetch_entry('ro_resource_types')
+  end
+
+
   # Temporary config option for RODL access
   def self.ro_terms
     self.fetch_entry('ro_terms')
