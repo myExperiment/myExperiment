@@ -109,6 +109,9 @@
        
 </div>
 
+<% if true %>
+  <%= render :partial => "workflows/runs", :locals => { :pack => @pack } %>
+<% end %>
 
 <% if false %>
 
