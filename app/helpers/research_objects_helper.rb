@@ -38,6 +38,34 @@ module ResearchObjectsHelper
     uris
   end
 
+
+  def get_annotations(ro_uri, resource_uri)
+    session = ROSRS::Session.new(ro_uri, Conf.rodl_bearer_token)
+    session.get_annotation_graph(ro_uri, resource_uri)
+  end
+  
+  def get_annotation_graphs(ro_uri, resource_uri)
+    session = ROSRS::Session.new(ro_uri, Conf.rodl_bearer_token)
+    session.get_annotation_graphs(ro_uri, resource_uri)
+  end
+  
+  def resource_types(annotations, resource_uri)
+    annotations.graph.query([RDF::URI(resource_uri), RDF::type, nil]).map do |s,p,type|
+      type.to_s
+    end
+  end
+  
+  def resource_types_as_labels(annotations, resource_uri)
+    resource_types(annotations, resource_uri).map do |type_uri|
+      textual_type(type_uri) or type_uri
+    end    
+  end
+  
+  def textual_type(typeuri)
+    type = Conf.ro_resource_types.rassoc(typeuri)
+    type.first if type
+  end
+  
   def research_object_statements(contributable)
 
     return [] unless contributable.respond_to?(:content_blob)

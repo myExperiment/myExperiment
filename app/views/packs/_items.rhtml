@@ -98,7 +98,16 @@
           </li>
         <% else %>
           <% if e && e.name %>
-            <li><%= link_to(e.ro_local_uri, pack_resources_path(pack) + '/' + e.ro_local_uri) -%></li>
+             <% 
+            label = e.ro_local_uri
+            annotations = get_annotations(pack.ro_uri, e.uri)
+            types = resource_types_as_labels(annotations, e.uri)           
+            %>
+            <li><%= link_to(label, pack_resources_path(pack) + '/' + e.ro_local_uri) -%>
+            <% if not types.empty? %>
+             (<%= types -%>)
+            <% end %>  
+            </li>
           <% end %>
         <% end %>
 			<% end -%>

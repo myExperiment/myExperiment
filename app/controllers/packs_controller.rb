@@ -96,43 +96,24 @@ class PacksController < ApplicationController
     end
   end
 
+  
   def edit_annotations
-
-    session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
-
-    @annotations = session.get_annotation_graphs(@pack.ro_uri, @pack.ro_uri)
+    @annotations = get_annotations @pack.ro_uri, @pack.ro_uri   
   end
 
   def update_annotations
-
     resource_uri = @pack.ro_uri
-
     update_annotations_aux(@pack, @pack.ro_uri, resource_uri)
-
     redirect_to edit_annotations_pack_path(@pack)
-
   end
 
-  def resource_types(resuri)
-    @annotations.query([resuri, RDF::type, nil]).map do |s,p,type|
-      type.to_s
-    end
-  end
-  
-  def textual_type(typeuri)
-    type = Conf.ro_resource_types.rassoc(typeuri)
-    type.first if type
-  end
   
   # GET /packs/:id/resources/:resource_path
   def resource_show
     # Get annotations as merged graph.  This will be pulled from cache
     # eventually.
-
-    session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
-    @annotations = session.get_annotation_graph(@pack.ro_uri, @resuri)
+    @annotations = get_annotations @pack.ro_uri, @resuri
     @annotations.query([@resuri, nil, nil]).each do |statement|
-      puts statement
       case statement.predicate.to_s
       when "http://purl.org/dc/terms/title":       @title       = statement.object.to_s
       when "http://purl.org/dc/terms/description": @description = statement.object.to_s
@@ -141,9 +122,9 @@ class PacksController < ApplicationController
       end
     end
 
-    @types = resource_types(@resuri).map do |typeuri|
-      textual_type(typeuri) or typeuri
-    end
+    puts "XXXXXXXXXXXXXXXZZZ"
+    puts @resuri
+    @types = resource_types_as_labels @annotations, @resuri
 
     render :resource_show
   end
@@ -213,12 +194,9 @@ class PacksController < ApplicationController
   end
 
   def edit_resource_annotations
-
     @resource_uri = @pack.resolve_resource_uri(params[:resource_path])
-
-    session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
-
-    @annotations = session.get_annotation_graphs(@pack.ro_uri, @resource_uri)
+    # FIXME: @annotations is really @annotations_graphs ()
+    @annotations = get_annotation_graphs(@pack.ro_uri, @pack.ro_uri)
   end
 
   def update_resource_annotations
