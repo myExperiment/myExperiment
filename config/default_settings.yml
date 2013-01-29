@@ -695,8 +695,8 @@ ro_resource_types:
     - "Hypothesis"
     - "http://purl.org/wf4ever/roterms#Hypothesis"    
   - 
-    - "Conclusion"
-    - "http://purl.org/wf4ever/roterms#Conclusion"
+    - "Conclusions"
+    - "http://purl.org/wf4ever/roterms#Conclusions"
   - 
     - "Results"
     - "http://purl.org/wf4ever/roterms#Results"
