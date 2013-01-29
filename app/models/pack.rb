@@ -80,6 +80,7 @@ class ContributableEntries
 
         @entries << ce
       end
+      @entries = @entries.sort_by {|ce| ce.name or ce.uri}
     end
   end
     
