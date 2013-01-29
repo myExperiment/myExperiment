@@ -700,6 +700,12 @@ ro_resource_types:
   - 
     - "Results"
     - "http://purl.org/wf4ever/roterms#Results"
+  - 
+    - "Example inputs"
+    - "http://purl.org/wf4ever/roterms#ExampleInputs"
+  - 
+    - "Example outputs"
+    - "http://purl.org/wf4ever/roterms#ExampleOutputs"
     
 rodl_base_uri: "http://sandbox.wf4ever-project.org/rodl/ROs/"
 
