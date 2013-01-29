@@ -113,25 +113,36 @@ class PacksController < ApplicationController
 
   end
 
+  def resource_types(resuri)
+    @annotations.query([resuri, RDF::type, nil]).map do |s,p,type|
+      type.to_s
+    end
+  end
+  
+  def textual_type(typeuri)
+    type = Conf.ro_resource_types.rassoc(typeuri)
+    type.first if type
+  end
+  
   # GET /packs/:id/resources/:resource_path
   def resource_show
-
     # Get annotations as merged graph.  This will be pulled from cache
     # eventually.
 
     session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
-
     @annotations = session.get_annotation_graph(@pack.ro_uri, @resuri)
-
     @annotations.query([@resuri, nil, nil]).each do |statement|
-
+      puts statement
       case statement.predicate.to_s
       when "http://purl.org/dc/terms/title":       @title       = statement.object.to_s
       when "http://purl.org/dc/terms/description": @description = statement.object.to_s
       when "http://purl.org/dc/terms/creator":     @creator     = statement.object.to_s
       when "http://purl.org/dc/terms/created":     @created     = Date.parse(statement.object.to_s)
       end
+    end
 
+    @types = resource_types(@resuri).map do |typeuri|
+      textual_type(typeuri) or typeuri
     end
 
     render :resource_show

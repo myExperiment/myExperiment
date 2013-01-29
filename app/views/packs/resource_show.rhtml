@@ -1,5 +1,13 @@
-<h1>Resource: <%=h @manifest_name -%></h1>
+<h1>
+  <%= @types and @types.first or "Resource"%>:
 
+  <%=h @manifest_name -%>
+  
+<% if @types.length > 1 %>
+  (<%= @types[1..-1].join ", "-%>)
+<% end %>
+</h1>
+  
 <div style="margin-top: 1em;">
   <ul class="sectionIcons" style="margin-top: 0.7em; margin-bottom: 0.6em;">
     <% if Authorization.check("edit", @pack, current_user) %>
