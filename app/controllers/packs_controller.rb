@@ -265,7 +265,7 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
     respond_to do |format|
       if @pack.save
 
-        @pack.update_attribute(:ro_uri, "#{Conf.rodl_base_uri}Pack#{@pack.id}") if @pack.ro_uri.blank?
+        @pack.update_attribute(:ro_uri, "#{Conf.rodl_base_uri}Pack#{@pack.id}/") if @pack.ro_uri.blank?
 
         if params[:pack][:tag_list]
           @pack.tags_user_id = current_user
