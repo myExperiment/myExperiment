@@ -104,7 +104,9 @@
 				Items <span class="count_text">(<%= @pack.items_count -%>)</span>
 			</h4>
 			
-			<%= render :partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } -%>
+      <div id="pack_items">
+        <%= render :partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } -%>
+      </div>
 
 			<br/><br/>
 			<h4>
