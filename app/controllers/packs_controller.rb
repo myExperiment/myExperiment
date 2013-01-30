@@ -202,6 +202,50 @@ class PacksController < ApplicationController
     
   end
 
+  def reupload_resource
+  end
+
+  def recreate_resource
+
+    session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
+
+    # FIXME: There needs to be a check here to ensure that the resource path
+    # cannot be used to change another RO owned by the same user.  This is
+    # significant because you can share edit rights to specific workflows to
+    # other myexperiment users.
+
+    session.delete_resource(@pack.ro_uri + params[:resource_path])
+
+    if params[:file]
+
+      filename = File.basename(params[:file].original_filename)
+      ## FIXME: Content type should not always be text/plain!
+      c, r, puri, ruri = session.aggregate_internal_resource(@pack.ro_uri, filename, { :body => params[:file].read, :ctype=> 'text/plain' })
+      post_process_created_resource(session, ruri, params[:type])        
+
+    elsif params[:uri] and not params[:uri].empty?
+
+      c, r, puri, ruri = session.aggregate_external_resource(@pack.ro_uri, params[:uri])
+      post_process_created_resource(session, ruri, params[:type])
+
+    else
+
+      ## TODO: prettify error message, but don't use the broken error() function
+      # as it is not following HTTP standard error codes
+      return render :text => "Adding an item failed, either a URL or a file must be provided", :status => :bad_request
+    end
+    
+    respond_to do |format|
+      format.html {
+        redirect_to pack_url(@pack)
+      }    
+    end
+
+    # TODO: Since we are replacing a resource, we should update existing
+    # relationships to point towards the new resource.
+    
+  end
+
   def edit_resource_annotations
     @resource_uri = @pack.resolve_resource_uri(params[:resource_path])
     # FIXME: @annotations is really @annotations_graphs ()
@@ -591,7 +635,9 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
       "new"                => "create",
       "new_item"           => "edit",
       "quick_add"          => "edit",
+      "recreate_resource"  => "edit",
       "resolve_link"       => "edit",
+      "reupload_resource"  => "edit",
       "search"             => "view",
       "show"               => "view",
       "wfrun"              => "view",

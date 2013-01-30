@@ -25,6 +25,10 @@
 <% when "resource_show" %>
   <li><%= link_to "#{h(title)}", pack_path(@pack) %></li>
   <li><%=h @manifest_name -%></li>
+<% when "reupload_resource" %>
+  <li><%= link_to "#{h(title)}", pack_path(@pack) %></li>
+  <li><%= link_to h(@manifest_name), pack_resource_path(@pack, params[:resource_path]) -%></li>
+  <li>Upload new version</li>
 <% when "edit_resource_annotations" %>
   <li><%= link_to "#{h(title)}", pack_path(@pack) %></li>
   <li><%= link_to h(@manifest_name), pack_resource_path(@pack, params[:resource_path]) -%></li>

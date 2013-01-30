@@ -113,6 +113,10 @@ ActionController::Routing::Routes.draw do |map|
   map.pack_resource_edit  '/packs/:id/resources/:resource_path;edit', :controller => 'packs', :action => 'edit_resource_annotations',  :conditions => { :method => :get }, :requirements => { :resource_path => /[^;]+/ }
 
   map.pack_resource_update  '/packs/:id/resources/:resource_path;update', :controller => 'packs', :action => 'update_resource_annotations',  :conditions => { :method => :post }, :requirements => { :resource_path => /[^;]+/ }
+  map.pack_resource_delete  '/packs/:id/resources/:resource_path', :controller => 'packs', :action => 'destroy_resource',  :conditions => { :method => :delete }, :requirements => { :resource_path => /[^;]+/ }
+
+  map.pack_resource_reupload  '/packs/:id/resources/:resource_path;new_version', :controller => 'packs', :action => 'reupload_resource',  :conditions => { :method => :get }, :requirements => { :resource_path => /[^;]+/ }
+  map.pack_resource_recreate  '/packs/:id/resources/:resource_path;recreate', :controller => 'packs', :action => 'recreate_resource',  :conditions => { :method => :post }, :requirements => { :resource_path => /[^;]+/ }
 
   map.pack_wfrun  '/packs/:id/wfrun/:resource_path', :controller => 'packs', :action => 'wfrun', :conditions => { :method => :get }, :requirements => { :resource_path => /[^;]+/ }
 
