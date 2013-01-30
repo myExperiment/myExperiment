@@ -592,25 +592,21 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
       "update_item"        => "edit"
     }
 
-    begin
-      pack = Pack.find(params[:id])
+    pack = Pack.find(params[:id])
+    
+    if Authorization.check(action_permissions[action_name], pack, current_user)
+      @pack = pack
       
-      if Authorization.check(action_permissions[action_name], pack, current_user)
-        @pack = pack
-        
-        @authorised_to_edit = logged_in? && Authorization.check("edit", @pack, current_user)
-        @authorised_to_download = Authorization.check("download", @pack, current_user)
-        
-        @pack_entry_url = url_for :only_path => false,
-                            :host => base_host,
-                            :id => @pack.id
-                            
-        @base_host = base_host
-      else
-        error("You are not authorised to perform this action", "is not authorized")
-      end
-    rescue ActiveRecord::RecordNotFound
-      error("Pack not found", "is invalid")
+      @authorised_to_edit = logged_in? && Authorization.check("edit", @pack, current_user)
+      @authorised_to_download = Authorization.check("download", @pack, current_user)
+      
+      @pack_entry_url = url_for :only_path => false,
+                          :host => base_host,
+                          :id => @pack.id
+                          
+      @base_host = base_host
+    else
+      error("You are not authorised to perform this action", "is not authorized")
     end
   end
   
