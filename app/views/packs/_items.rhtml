@@ -97,25 +97,23 @@
             </table>
           </li>
         <% else %>
-          <% if e && e.name %>
-             <% 
-            label = e.ro_local_uri
-            annotations = get_annotations(pack.ro_uri, e.uri)
-            types = resource_types_as_labels(annotations, e.uri)           
-            %>
-            <li><%= link_to(label, pack_resources_path(pack) + '/' + e.ro_local_uri) -%>
-            <% if not types.empty? %>
-             (<%= types -%>)
-            <% end %>  
-            <%= link_to_remote("<img src='/images/famfamfam_silk/cross.png' />",
-                :update => "pack_items", 
-                :url => pack_resources_path(pack) + '/' + e.ro_local_uri,
-                :method => :delete,
-                :complete => "new Effect.Highlight('pack_items', { duration: 1.5 });",
-                :confirm => "Are you sure you want to delete this resource?" )
-            %>
-            </li>
-          <% end %>
+          <% 
+          label = e.ro_local_uri
+          annotations = get_annotations(pack.ro_uri, e.uri)
+          types = resource_types_as_labels(annotations, e.uri)           
+          %>
+          <li><%= link_to(label, pack_resources_path(pack) + '/' + e.ro_local_uri) -%>
+          <% if not types.empty? %>
+           (<%= types -%>)
+          <% end %>  
+          <%= link_to_remote("<img src='/images/famfamfam_silk/cross.png' />",
+              :update => "pack_items", 
+              :url => pack_resources_path(pack) + '/' + e.ro_local_uri,
+              :method => :delete,
+              :complete => "new Effect.Highlight('pack_items', { duration: 1.5 });",
+              :confirm => "Are you sure you want to delete this resource?" )
+          %>
+          </li>
         <% end %>
 			<% end -%>
 			

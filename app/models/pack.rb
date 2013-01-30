@@ -75,8 +75,8 @@ class ContributableEntries
         ce.creator  = @manifest.graph.first_object([resource.object, RDF::DC.creator,  nil])
         ce.checksum = @manifest.graph.first_object([resource.object, RDF::RO.checksum, nil])
         ce.size     = @manifest.graph.first_value([resource.object,  RDF::RO.filesize, nil])
-         
-        next unless ce.name
+
+        next if @manifest.graph.query([resource.object, RDF.type, RDF::RO.Folder]).count > 0
 
         @entries << ce
       end
