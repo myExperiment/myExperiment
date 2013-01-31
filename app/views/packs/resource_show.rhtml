@@ -129,13 +129,14 @@
        
 </div>
 
-<% if true %>
+<% # FIXME: Use URIs instead of labels! %>
+<% if @types.include? "Workflow" %>
   <%= render :partial => "workflows/runs", :locals => { :pack => @pack } %>
 <% end %>
 
-<% if false %>
 
-<h2>Workflow inputs (via WF-DESC)</h2>
+<% if false %>
+<h2>Workflow inputs</h2>
 
 <ul>
   <% @annotations.query([nil, RDF::URI.parse("http://purl.org/wf4ever/wfdesc#hasInput"), nil]).each do |statement| %>
@@ -144,7 +145,7 @@
   <% end %>
 </ul>
 
-<h2>Workflow outputs (via WF-DESC)</h2>
+<h2>Workflow outputs</h2>
 
 <ul>
   <% @annotations.query([nil, RDF::URI.parse("http://purl.org/wf4ever/wfdesc#hasOutput"), nil]).each do |statement| %>
@@ -152,6 +153,7 @@
     <li>Output: <%= input_labels.first.object -%></li>
   <% end %>
 </ul>
+
 
 
 
