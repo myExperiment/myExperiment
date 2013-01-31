@@ -64,6 +64,7 @@ RDF
       errors.add(params[:template], 'Error from remote server')
     end
 
+    flash[:notice] = "Relationship added."
     redirect_to pack_path(@context.id)
   end
   
