@@ -2,10 +2,16 @@
     <h3 class="heading">
       Wf4Ever tools 
   	</h3>
+
     <ul class="wf4evertools links">
       <li><%= render :partial => "research_objects/browseportal", :locals => { :ro_uri => ro_uri } -%></li>
-      <li><a href="http://sandbox.wf4ever-project.org/roevaluate/evaluate/trafficlight_html?minim=<%= Conf.checklist["minim"] -%>&amp;purpose=<%= Conf.checklist["minim_purpose"] -%>&amp;RO=<%= ro_uri -%>">Checklist</a></li>
-      <li><a href="http://sandbox.wf4ever-project.org/decayMonitoring/monitor.html">Analytics and Quality Report</a></li>
+      <li><a href="http://sandbox.wf4ever-project.org/decayMonitoring/monitor.html">Analytics and Quality</a></li>
       <li><a href="http://sandbox.wf4ever-project.org/epnoiServer/PackRecommenderServiceServlet?pack=http://www.myexperiment.org/pack.xml?id=365">Recommendations</a></li>
+    </ul>
+    <h4>Prepare for publication:</h4>
+    <ul class="wf4evertools links">
+      <li><a href="http://sandbox.wf4ever-project.org/roevaluate/evaluate/trafficlight_html?minim=<%= Conf.checklist["minim"] -%>&amp;purpose=<%= Conf.checklist["minim_purpose"] -%>&amp;RO=<%= ro_uri -%>">Checklist</a></li>
+      <li><a href="">Snapshot</a></li>
+      <li><a href="">Archive</a></li>
     </ul>
   </div>
