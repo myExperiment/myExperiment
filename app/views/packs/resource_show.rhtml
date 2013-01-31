@@ -97,6 +97,17 @@
   </ul>
 <% end %>
 
+<% input_selected_reverse = @annotations.query([nil, RDF::URI.parse("http://purl.org/wf4ever/roterms#inputSelected"), @resuri]) %>
+
+<% if input_selected_reverse.count > 0 %>
+  <h2>As input to the following Workflows</h2>
+  <ul>
+    <% input_selected_reverse.statements.each do |statement| %>
+      <li><%=h statement.subject -%></li>
+    <% end %>
+  </ul>
+<% end %>
+
 <div class="download">
 	<h3>
 				<%= info_icon_with_tooltip("This section provides links to the download(s) for this File") %>
