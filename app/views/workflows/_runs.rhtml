@@ -5,8 +5,11 @@
   </h3>
   <ul>
     <li><%= link_to "Run #1 (2012-11-17)", { :controller => :packs, :action => :wfrun, :resource_path => "1"} -%> 
-      by Kristina Hettne in RO <%= link_to "Functional annotation of SNPs", @pack -%> 
-      <div class="runcomment"><strong>Comment:</strong> Example run with simple inputs</div>
+      by Kristina Hettne in RO <%= link_to @pack.title, @pack -%> 
+      <div class="runcomment"><strong>Comment:</strong> This run is a succesful run with the example input 
+        from the pack, and producing the example output that is also in the pack. This example run finds
+        the pathways for the genes within 10000 nucleotides of a small selection of SNPs identified in a 
+        GWAS performed on a Dutch subpopulation</div>
     </li>
     <li><%= link_to "Run #7 (2012-12-24)", { :controller => :packs, :action => :wfrun, :resource_path => "7"} -%> 
       by Kristina Hettne in RO <%= link_to "Functional annotation of SNPs", @pack -%>  
