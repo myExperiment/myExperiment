@@ -100,7 +100,14 @@
           <% 
           label = e.ro_local_uri
           annotations = get_annotations(pack.ro_uri, e.uri)
-          types = resource_types_as_labels(annotations, e.uri)           
+          types = resource_types_as_labels(annotations, e.uri)
+          if types.include? "Sketch" 
+            # FIXME: Don't find the sketch like this!
+            # a) Should not be done from _items.rhtml as it means
+            #    display depends on ordering of templates!
+            # b) Should test on URI and not label!
+            @sketch << e.uri
+          end          
           %>
           <li><%= link_to(label, pack_resources_path(pack) + '/' + e.ro_local_uri) -%>
           <% if not types.empty? %>

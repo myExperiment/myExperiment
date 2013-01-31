@@ -88,7 +88,6 @@
       <%= render :partial => "research_objects/tags", :locals => { :contributable => @pack } -%>
 <% end %>
 
-      <%= render :partial => "research_objects/diagram", :locals => { :contributable => @pack } -%>  
       <%= render :partial => "research_objects/attribution", :locals => { :contributable => @pack } -%>
 
   
@@ -104,9 +103,14 @@
 				Items <span class="count_text">(<%= @pack.items_count -%>)</span>
 			</h4>
 			
+      <% # FIXME: @sketch should not depend on rendering of items! %>
+      <% @sketch = [] %>
       <div id="pack_items">
         <%= render :partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } -%>
       </div>
+      <% # FIXME diagram should not have to be rendered after items %>
+      <%= render :partial => "research_objects/diagram", :locals => { :contributable => @pack } -%>  
+      
 
 			<br/><br/>
 			<h4>
