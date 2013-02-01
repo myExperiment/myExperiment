@@ -133,7 +133,7 @@ class PacksController < ApplicationController
 
     session = ROSRS::Session.new(@pack.ro_uri, Conf.rodl_bearer_token)
 
-    session.delete_resource(@pack.ro_uri + params[:resource_path])
+    session.delete_resource(@pack.ro_uri + URI.encode(params[:resource_path]))
 
     render(:partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit })
   end

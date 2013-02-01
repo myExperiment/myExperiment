@@ -12,8 +12,8 @@
   <ul class="sectionIcons" style="margin-top: 0.7em; margin-bottom: 0.6em;">
     <% if Authorization.check("edit", @pack, current_user) %>
       <% if @pack.ro_uri %>
-        <li><%= icon('edit', pack_resource_edit_path(@pack, params[:resource_path]), nil, nil, "Edit Annotations") %></li>
-        <li><%= icon('new', pack_resource_reupload_path(@pack, params[:resource_path]), nil, nil, "Upload New Version") %></li>
+        <li><%= icon('edit', "#{pack_resources_path(@pack)}/#{params[:resource_path]};edit", nil, nil, "Edit Annotations") %></li>
+        <li><%= icon('new',  "#{pack_resources_path(@pack)}/#{params[:resource_path]};new_version", nil, nil, "Upload New Version") %></li>
       <% end %>
     <% end %>
   </ul>
