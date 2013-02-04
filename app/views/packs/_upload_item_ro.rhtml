@@ -7,7 +7,7 @@
           <%= info_icon_with_tooltip("The type indicates the item's meaning in the pack.")  -%>
           Type:
         </label>
-        <%= select_tag (:type, options_for_select(Conf.ro_resource_types, 
+        <%= select_tag(:type, options_for_select(Conf.ro_resource_types, 
                           "http://purl.org/wf4ever/ro#Resource") )  -%>
       </div>
     
