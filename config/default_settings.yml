@@ -706,6 +706,9 @@ ro_resource_types:
   - 
     - "Example outputs"
     - "http://purl.org/wf4ever/roterms#ExampleOutputs"
+  - 
+    - "Workflow run"
+    - "http://purl.org/wf4ever/roterms#WorkflowRunBundle"
     
 rodl_base_uri: "http://sandbox.wf4ever-project.org/rodl/ROs/"
 
