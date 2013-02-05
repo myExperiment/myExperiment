@@ -109,17 +109,24 @@
             @sketch << e.uri
           end          
           %>
-          <li><%= link_to(label, pack_resources_path(pack) + '/' + e.ro_local_uri) -%>
-          <% if not types.empty? %>
-           (<%= types -%>)
-          <% end %>  
-          <%= link_to_remote("<img src='/images/famfamfam_silk/cross.png' />",
-              :update => "pack_items", 
-              :url => pack_resources_path(pack) + '/' + e.ro_local_uri,
-              :method => :delete,
-              :complete => "new Effect.Highlight('pack_items', { duration: 1.5 });",
-              :confirm => "Are you sure you want to delete this resource?" )
-          %>
+          <li>
+            <%= link_to(label, pack_resources_path(pack) + '/' + e.ro_local_uri) -%>
+            <% if not types.empty? %>
+             (<%= types -%>)
+            <% end %>  
+            <% if false %>
+            <% if authorised_to_edit -%>
+              <span class="deleteLink">
+                <%= link_to_remote("delete",
+                    :update => "pack_items", 
+                    :url => pack_resources_path(pack) + '/' + e.ro_local_uri,
+                    :method => :delete,
+                    :complete => "new Effect.Highlight('pack_items', { duration: 1.5 });",
+                    :confirm => "Are you sure you want to delete this resource?" )
+                %>
+              </span>
+            <% end %>
+            <% end %>
           </li>
         <% end %>
 			<% end -%>
