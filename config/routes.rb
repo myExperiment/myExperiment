@@ -103,6 +103,7 @@ ActionController::Routing::Routes.draw do |map|
                  :update_annotations => :post,
                  :create_resource => :post,
                  :destroy_resource => :delete,
+                 :check_wfro_job => :get,
                  :items => :get } do |pack|
     pack.resources :comments, :collection => { :timeline => :get }
     pack.resources :relationships, :collection => { :edit_relationships => :get }

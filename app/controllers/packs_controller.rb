@@ -144,6 +144,8 @@ class PacksController < ApplicationController
       token = Conf.rodl_bearer_token
       uri = Wf4Ever::TransformationClient.create_job(service_uri, ruri, format, @pack.ro_uri, token)
       puts "################## Transforming at " + uri
+
+      uri
   end
   
   def annotate_resource_type(session, resource_uri, type_uri)
@@ -161,11 +163,13 @@ class PacksController < ApplicationController
 
     
     if type == WORKFLOW_DEFINITION
-       transform_wf(ruri)
+       result = transform_wf(ruri)
     end
     if type != RO_RESOURCE
        annotate_resource_type(session, ruri, params[:type])
     end
+
+    result
   end
   
   def create_resource
@@ -178,14 +182,14 @@ class PacksController < ApplicationController
          filename = File.basename(file.original_filename)
         ## FIXME: Content type should not always be text/plain!
          c, r, puri, ruri = session.aggregate_internal_resource(@pack.ro_uri, filename, { :body => file.read, :ctype=> 'text/plain' })
-         post_process_created_resource(session, ruri, params[:type])        
+         job_uri = post_process_created_resource(session, ruri, params[:type])        
       end
     end
       
     if params[:uri] and not params[:uri].empty?
          no_item = false
       c, r, puri, ruri = session.aggregate_external_resource(@pack.ro_uri, params[:uri])
-      post_process_created_resource(session, ruri, params[:type])
+      job_uri = post_process_created_resource(session, ruri, params[:type])
     end
 
     if no_item 
@@ -196,10 +200,18 @@ class PacksController < ApplicationController
     
     respond_to do |format|
       format.html {
-        redirect_to pack_url(@pack)
+        if job_uri
+          redirect_to check_wfro_job_pack_path(@pack, :job_uri => job_uri)
+        else
+          redirect_to pack_url(@pack)
+        end
       }    
     end
     
+  end
+
+  def check_wfro_job
+    @status = Wf4Ever::TransformationClient.check_job(params[:job_uri])
   end
 
   def reupload_resource
@@ -615,6 +627,7 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
   def find_pack_auth
 
     action_permissions = {
+      "check_wfro_job"     => "edit",
       "create"             => "create",
       "create_item"        => "edit",
       "create_resource"    => "edit",

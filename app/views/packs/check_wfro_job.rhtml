@@ -1,0 +1,23 @@
+<h1>Workflow - Research Object Transformation Service</h1>
+
+<h2>Resource</h2>
+
+<p>The following resource has been submitted to the transformation service:</p>
+
+<p><tt><%=h @status["resource"] -%></tt></p>
+
+<h2>Status</h2>
+
+<p>The status is: <%=h @status["status"] -%></p>
+
+<p style="margin: auto">
+  <form style="display: inline-block" action="<%= check_wfro_job_pack_path(@pack) %>" method="get">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
+    <%= hidden_field_tag :job_uri, params[:job_uri] -%>
+    <input id="submit-button" type="submit" value="Check again" />
+  </form>
+  <form style="display: inline-block" action="<%= pack_path(@pack) %>" method="get">
+    <input id="submit-button" type="submit" value="Return to Pack" />
+  </form>
+</p>
+
