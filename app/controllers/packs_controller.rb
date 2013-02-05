@@ -103,7 +103,7 @@ class PacksController < ApplicationController
 
   def update_annotations
     resource_uri = @pack.ro_uri
-    update_annotations_aux(@pack, @pack.ro_uri, resource_uri)
+    update_annotations_aux(@pack, @pack.ro_uri, resource_uri, params)
     redirect_to edit_annotations_pack_path(@pack)
   end
 
@@ -269,7 +269,7 @@ class PacksController < ApplicationController
     resource_uri = @pack.resolve_resource_uri(params[:resource_path])
 puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path], resource_uri].inspect}"
 
-    update_annotations_aux(@pack, @pack.ro_uri, resource_uri)
+    update_annotations_aux(@pack, @pack.ro_uri, resource_uri, params)
 
     redirect_to(pack_resource_edit_path(@pack, params[:resource_path]))
   end
@@ -332,6 +332,18 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
           flash.now[:error] = err
         end
         
+        # Store given title and description (if given)
+
+        if params[:pack][:title]
+          update_annotations_aux(@pack, @pack.ro_uri, @pack.ro_uri,
+              { :commit => 'Add', :template => 'Title', :value => params[:pack][:title] } )
+        end
+
+        if params[:pack][:description]
+          update_annotations_aux(@pack, @pack.ro_uri, @pack.ro_uri,
+              { :commit => 'Add', :template => 'Description', :value => params[:pack][:description] } )
+        end
+
         # update policy
         policy_err_msg = update_policy(@pack, params)
         update_layout(@pack, params[:layout])

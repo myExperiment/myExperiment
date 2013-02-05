@@ -1080,7 +1080,7 @@ class ApplicationController < ActionController::Base
     doc
   end
 
-  def update_annotations_aux(contributable, ro_uri, resource_uri)
+  def update_annotations_aux(contributable, ro_uri, resource_uri, params)
  
     session = ROSRS::Session.new(ro_uri, Conf.rodl_bearer_token)
 

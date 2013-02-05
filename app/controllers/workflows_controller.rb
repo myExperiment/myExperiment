@@ -702,7 +702,7 @@ class WorkflowsController < ApplicationController
 
     resource_uri = workflow_url(@workflow)
 
-    update_annotations_aux(@workflow, @workflow.ro_uri, resource_uri)
+    update_annotations_aux(@workflow, @workflow.ro_uri, resource_uri, params)
 
     redirect_to edit_annotations_workflow_path(@workflow)
 
