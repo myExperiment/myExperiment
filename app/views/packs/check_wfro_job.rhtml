@@ -4,11 +4,24 @@
 
 <p>The following resource has been submitted to the transformation service:</p>
 
-<p><tt><%=h @status["resource"] -%></tt></p>
+<ul><li><%= link_to(@status["resource"], @status["resource"]) -%></li></ul>
+
+<% if @status["added"].length > 0 %>
+  <h2>Results of transformation</h2>
+  <p>The following resources have been created as a result of the transformation:</p>
+
+  <ul>
+    <% @status["added"].each do |output| %>
+      <% unless output.ends_with?("/") %>
+        <li><%= link_to(output, output) -%></li>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>
 
 <h2>Status</h2>
 
-<p>The status is: <%=h @status["status"] -%></p>
+<p>The job status is: <%= wfro_status_message(@status) -%></p>
 
 <p style="margin: auto">
   <form style="display: inline-block" action="<%= check_wfro_job_pack_path(@pack) %>" method="get">

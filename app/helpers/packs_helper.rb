@@ -92,4 +92,15 @@ module PacksHelper
 
     link_to(text, href)
   end
+
+  def wfro_status_message(response)
+    case response["status"]
+    when "RUNNING"
+      "PROCESSING\n"
+    when "DONE"
+      "SUCCESS\n"
+    else
+      h(response["status"])
+    end
+  end
 end
