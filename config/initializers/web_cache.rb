@@ -3,6 +3,18 @@
 # Copyright (c) 2013 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+class Thread
+  attr_accessor :read_manifest
+end
+
+ApplicationController # ensure that the application controller is loaded
+
+class ApplicationController
+  before_filter do |controller|
+    Thread.current.read_manifest = false
+  end
+end
+
 class ROSRS::Session
 
   alias_method :original_do_request, :do_request
@@ -18,9 +30,11 @@ class ROSRS::Session
       return false if uri.blank?
 
       # FIXME: The manifest check here is hacky.  This really ought to be done
-      # with appropriate HTTP headers.
+      # with appropriate HTTP headers.  I've added an attribute to the Thread
+      # class so that we can tell if we've read the manifest already whilst
+      # serving this request.
 
-      return false if uri.ends_with?("manifest.rdf")
+      return false if uri.ends_with?("manifest.rdf") && Thread.current.read_manifest == false
 
       File.exist?(cache_file_name(uri))
     end
@@ -44,6 +58,10 @@ class ROSRS::Session
       File.open(cache_file_name(uri), "w+") do |f|
         f.puts(envelope.to_yaml)
       end
+
+      # FIXME: The manifest handling here is hacky.
+
+      Thread.current.read_manifest = true if uri.ends_with?("manifest.rdf")
     end
 
     def delete_from_cache(uri)
