@@ -104,9 +104,12 @@ class ContributableEntries
     end
   end
 
-  def find_by_relative_uri(relative_uri)
+  def find_by_uri(relative_uri)
+
+    ro_uri = URI.parse(@pack.ro_uri)
+
     @entries.each do |entry|
-      return entry if entry.uri == @pack.ro_uri + relative_uri
+      return entry if ro_uri.merge(entry.uri) == ro_uri.merge(relative_uri)
     end
 
     nil 

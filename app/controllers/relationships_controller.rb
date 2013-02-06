@@ -29,11 +29,19 @@ class RelationshipsController < ApplicationController
   # POST /:context_type/:context_id/relationships
   def create 
 
-    subject_relative_uri = URI::decode(params[:subject])
-    object_relative_uri  = URI::decode(params[:object])
+    base_uri = URI.parse(@context.ro_uri)
 
-    subject = @context.contributable_entries.find_by_relative_uri(subject_relative_uri)
-    object  = @context.contributable_entries.find_by_relative_uri(object_relative_uri)
+    subject_uri = base_uri.merge(params[:subject])
+    object_uri  = base_uri.merge(params[:object])
+
+    subject = @context.contributable_entries.find_by_uri(subject_uri)
+    object  = @context.contributable_entries.find_by_uri(object_uri)
+
+    if subject.nil? || object.nil?
+      @context.errors.add(params[:template], 'Relationships must refer to resources within the pack')
+      redirect_to pack_path(@context.id)
+      return
+    end
 
     match = params[:predicate].match("(.*[#/])([^#/]+)")
 
@@ -41,9 +49,6 @@ class RelationshipsController < ApplicationController
     prop = match[2]
 
     session = ROSRS::Session.new(@context.ro_uri, Conf.rodl_bearer_token)
-
-    subject_uri = "#{@context.ro_uri}#{URI::encode(subject.ro_local_uri)}"
-    object_uri  = "#{@context.ro_uri}#{URI::encode(object.ro_local_uri)}"
 
     ao_body = <<RDF
 <rdf:RDF
@@ -61,7 +66,7 @@ RDF
       code, reason, stub_uri, body_uri = session.create_internal_annotation(@context.ro_uri, subject_uri, agraph)
       code, reason, stub_uri, body_uri = session.create_internal_annotation(@context.ro_uri, object_uri,  agraph)
     rescue ROSRS::Exception => e
-      errors.add(params[:template], 'Error from remote server')
+      @context.errors.add(params[:template], 'Error from remote server')
     end
 
     flash[:notice] = "Relationship added."
