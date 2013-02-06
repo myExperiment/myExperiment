@@ -68,7 +68,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :predicates
 
   # mashup
-  map.resource :mashup
+  map.resource :mashup, :controller => 'mashup'
   
   # search
   map.resource :search,
