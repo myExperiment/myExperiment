@@ -98,7 +98,7 @@ class PacksController < ApplicationController
 
   
   def edit_annotations
-    @annotations = get_annotations @pack.ro_uri, @pack.ro_uri   
+    @annotations = get_annotation_graphs(@pack.ro_uri, @pack.ro_uri)
   end
 
   def update_annotations
@@ -261,7 +261,7 @@ class PacksController < ApplicationController
   def edit_resource_annotations
     @resource_uri = @pack.resolve_resource_uri(params[:resource_path])
     # FIXME: @annotations is really @annotations_graphs ()
-    @annotations = get_annotation_graphs(@pack.ro_uri, @pack.ro_uri)
+    @annotations = get_annotation_graphs(@pack.ro_uri, @resource_uri)
   end
 
   def update_resource_annotations

@@ -1114,10 +1114,12 @@ class ApplicationController < ActionController::Base
     end
 
     if params[:commit] == 'Edit'
-      if ao_body
-        agraph = ROSRS::RDFGraph.new(:data => ao_body.to_s, :format => :xml)
-
-        c, r, body_uri = session.update_internal_annotation(ro_uri, params[:stub_uri], resource_uri, agraph)
+      if ao_graph
+        begin
+          c, r, body_uri = session.update_internal_annotation(ro_uri, params[:stub_uri], resource_uri, ao_graph)
+        rescue ROSRS::Exception => e
+          contributable.errors.add(params[:template], 'Error from remote server')
+        end
       end
     end
 
