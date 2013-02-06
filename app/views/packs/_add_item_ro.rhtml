@@ -1,24 +1,3 @@
-<% if false %>
-        <p>
-          <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post) do %>
-            <%= file_field_tag :data -%>
-            <%= submit_tag("Aggregate internal resource") -%>
-          <% end %>
-        </p>
-        <p>
-          <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post) do %>
-            <%= file_field_tag :data -%>
-            <%= submit_tag("Aggregate workflow") -%>
-          <% end %>
-        </p>
-        <p>
-          <% form_tag(create_resource_pack_path(@pack), :multipart => true, :method => :post) do %>
-            <%= text_field_tag :uri -%>
-            <%= submit_tag("Aggregate external resource") -%>
-          <% end %>
-        </p>      
-<% end %>
-
 	<% if @error_message -%>
 		<p class="error_text" style="padding: 0 0.8em;"><%= @error_message -%></p>
 		<br/>
