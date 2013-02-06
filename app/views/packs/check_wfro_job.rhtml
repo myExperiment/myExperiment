@@ -6,15 +6,23 @@
 
 <ul><li><%= link_to(@status["resource"], @status["resource"]) -%></li></ul>
 
-<% if @status["added"].length > 0 %>
+<%
+  added = []
+
+  if @status["added"] && @status["added"].length > 0
+    added = @status["added"].select do |path|
+      !path.ends_with?("/")
+    end
+  end
+%>
+
+<% if added.length > 0 %>
   <h2>Results of transformation</h2>
   <p>The following resources have been created as a result of the transformation:</p>
 
   <ul>
-    <% @status["added"].each do |output| %>
-      <% unless output.ends_with?("/") %>
-        <li><%= link_to(output, output) -%></li>
-      <% end %>
+    <% added.each do |output| %>
+      <li><%= link_to(output, output) -%></li>
     <% end %>
   </ul>
 <% end %>
