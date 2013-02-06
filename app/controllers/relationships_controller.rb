@@ -29,11 +29,11 @@ class RelationshipsController < ApplicationController
   # POST /:context_type/:context_id/relationships
   def create 
 
-    subject_name = URI::decode(params[:subject])
-    object_name  = URI::decode(params[:object])
+    subject_relative_uri = URI::decode(params[:subject])
+    object_relative_uri  = URI::decode(params[:object])
 
-    subject = @context.contributable_entries.find_by_name(subject_name)
-    object  = @context.contributable_entries.find_by_name(object_name)
+    subject = @context.contributable_entries.find_by_relative_uri(subject_relative_uri)
+    object  = @context.contributable_entries.find_by_relative_uri(object_relative_uri)
 
     match = params[:predicate].match("(.*[#/])([^#/]+)")
 
@@ -42,8 +42,8 @@ class RelationshipsController < ApplicationController
 
     session = ROSRS::Session.new(@context.ro_uri, Conf.rodl_bearer_token)
 
-    subject_uri = "#{@context.ro_uri}#{URI::encode(subject.name)}"
-    object_uri  = "#{@context.ro_uri}#{URI::encode(object.name)}"
+    subject_uri = "#{@context.ro_uri}#{URI::encode(subject.ro_local_uri)}"
+    object_uri  = "#{@context.ro_uri}#{URI::encode(object.ro_local_uri)}"
 
     ao_body = <<RDF
 <rdf:RDF

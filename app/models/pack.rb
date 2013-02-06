@@ -104,13 +104,14 @@ class ContributableEntries
     end
   end
 
-  def find_by_name(name)
+  def find_by_relative_uri(relative_uri)
     @entries.each do |entry|
-      return entry if entry.name == name
+      return entry if entry.uri == @pack.ro_uri + relative_uri
     end
 
     nil 
   end
+
 end
 
 class Pack < ActiveRecord::Base
