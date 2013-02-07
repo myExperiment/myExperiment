@@ -98,7 +98,8 @@
           </li>
         <% else %>
           <% 
-          label = e.ro_local_uri.split("/").last
+          label = e.ro_local_uri
+          label = label.split("/").last unless label.starts_with?("http:")
           annotations = get_annotations(pack.ro_uri, e.uri)
           types = resource_types_as_labels(annotations, e.uri)
           if types.include? "Sketch" 
