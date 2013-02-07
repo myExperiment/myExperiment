@@ -122,6 +122,30 @@
 			<%= render :partial => "relationships/relationships", :locals => { :context => @pack, :show_delete => true } -%>
       <% end %>
 
+      <% input_selected = @all_annotations.query([nil, RDF::ROTERMS2.inputSelected, nil]) %>
+
+      <% if input_selected.count == 0 %>
+        <p><i>There are no relationships in this pack.</i></p>
+      <% else %>
+        <!-- FIXME: This is *not* the right way to create labels for resources. -->
+        <ul>
+          <% input_selected.each do |s| %>
+            <li>
+              <%=
+              entry = @pack.contributable_entries.find_by_uri(s.object.to_s)
+              label = entry.ro_local_uri.split("/").last
+              link_to(label, pack_resources_path(@pack) + '/' + entry.ro_local_uri)
+              -%>
+            was selected as input for
+              <%=
+              entry = @pack.contributable_entries.find_by_uri(s.subject.to_s)
+              label = entry.ro_local_uri.split("/").last
+              link_to(label, pack_resources_path(@pack) + '/' + entry.ro_local_uri)
+              -%>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
 			
       <% if @authorised_to_edit %>
         <% if @pack.items_count < 2 %>
@@ -130,17 +154,19 @@
 
         <% else %>
 
+<div >
           <% form_tag("#{rest_resource_uri(@pack)}/relationships") do -%>
 
-              <% @resource_options = @pack.contributable_entries.map do |e| [URI::decode(e.ro_local_uri), e.ro_local_uri] end %> 
+              <% @resource_options = @pack.contributable_entries.map do |e| [URI::decode(e.ro_local_uri).split("/").last, e.ro_local_uri] end %> 
               <% @relationship_options = Conf.ro_terms %>
-              <div><%= select_tag("subject",   options_for_select(@resource_options)) -%></div>
-              <div><%= select_tag("predicate", options_for_select(@relationship_options)) -%></div>
-              <div><%= select_tag("object",    options_for_select(@resource_options)) -%></div>
+              <div style="margin: 2px;"><%= select_tag("subject",   options_for_select(@resource_options)) -%></div>
+              <div style="margin: 2px;"><%= select_tag("predicate", options_for_select(@relationship_options)) -%></div>
+              <div style="margin: 2px;"><%= select_tag("object",    options_for_select(@resource_options)) -%></div>
 
-            <input type="submit" value="Add relationship"/>
+            <input style="margin-top: 8px" type="submit" value="Add relationship"/>
 
           <% end %>
+</div>
         <% end %>
       <% end %>
 

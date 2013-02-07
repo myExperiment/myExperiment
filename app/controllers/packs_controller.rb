@@ -73,6 +73,14 @@ class PacksController < ApplicationController
 
     @annotations = session.get_annotation_graph(@pack.ro_uri, @pack.ro_uri)
 
+    # Get all the annotations as a merged graph
+
+    @all_annotations = RDF::Graph.new
+
+    session.get_annotation_graphs(@pack.ro_uri).each do |ag|
+      @all_annotations << ag[:body]
+    end
+
     if allow_statistics_logging(@pack)
       @viewing = Viewing.create(:contribution => @pack.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
