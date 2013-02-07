@@ -32,7 +32,7 @@ class Blob < ActiveRecord::Base
 
     :mutable => [ :title, :body, :body_html ]
 
-  acts_as_solr(:fields => [:title, :local_name, :body, :kind, :contributor_name, :tag_list],
+  acts_as_solr(:fields => [{:title => {:boost => 2.0}}, :local_name, :body, :kind, :contributor_name, :tag_list],
                :include => [ :comments ]) if Conf.solr_enable
 
   belongs_to :content_blob, :dependent => :destroy

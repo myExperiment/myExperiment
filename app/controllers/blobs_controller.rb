@@ -68,6 +68,13 @@ class BlobsController < ApplicationController
     respond_to do |format|
       format.html {
 
+        @query = params[:query]
+        @query_type = 'files'
+        pivot_options = Conf.pivot_options.dup
+        unless @query.blank?
+          pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
+        end
+
         @pivot, problem = calculate_pivot(
 
             :pivot_options  => Conf.pivot_options,
@@ -84,9 +91,6 @@ class BlobsController < ApplicationController
                                 "SERVICE_COUNTRY", "SERVICE_STATUS"])
 
         flash.now[:error] = problem if problem
-
-        @query = params[:query]
-        @query_type = 'files'
 
         # index.rhtml
       }
