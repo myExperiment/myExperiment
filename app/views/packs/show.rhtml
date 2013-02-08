@@ -127,7 +127,7 @@
       <% if input_selected.count == 0 %>
         <p><i>There are no relationships in this pack.</i></p>
       <% else %>
-        <!-- FIXME: This is *not* the right way to create labels for resources. -->
+        <% # FIXME: This is *not* the right way to create labels for resources. %>
         <ul>
           <% input_selected.each do |s| %>
             <li>
@@ -136,7 +136,7 @@
               label = entry.ro_local_uri.split("/").last
               link_to(label, pack_resources_path(@pack) + '/' + entry.ro_local_uri)
               -%>
-            was selected as input for
+            is selected as input to
               <%=
               entry = @pack.contributable_entries.find_by_uri(s.subject.to_s)
               label = entry.ro_local_uri.split("/").last
