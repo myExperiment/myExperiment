@@ -2626,3 +2626,21 @@ pre, code, .md5 {
   padding-left: 4em;
   color: #335;
 }
+
+#packItemsList .deleteLink A {
+  float: right;
+  display: inline-block;
+}
+
+#packItemsList LI .deleteLink IMG {
+  visibility: hidden;
+}
+
+#packItemsList LI:hover .deleteLink IMG {
+  visibility: inherit;
+}
+
+#packItemsList LI .deleteLink IMG:hover {
+  background: #CCCCCC;
+}
+
