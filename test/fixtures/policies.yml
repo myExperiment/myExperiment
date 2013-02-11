@@ -78,3 +78,23 @@ unused_group_policy:
   update_mode: 0
   created_at: 2007-10-22 18:54:22
   updated_at: 2008-01-09 12:12:12
+
+component_workflow_policy:
+  id: 9
+  contributor_id: 1
+  contributor_type: User
+  name: auto
+  share_mode: 0
+  update_mode: 0
+  created_at: 2007-10-22 18:54:22
+  updated_at: 2008-01-09 12:12:12
+
+component_workflow_policy2:
+  id: 10
+  contributor_id: 2
+  contributor_type: User
+  name: auto
+  share_mode: 0
+  update_mode: 0
+  created_at: 2007-10-22 18:54:22
+  updated_at: 2008-01-09 12:12:12

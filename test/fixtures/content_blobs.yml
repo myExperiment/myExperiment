@@ -24,3 +24,6 @@ workflow_branch_choice:
   id: 4
   data: <%= load_blob_data('workflow_branch_choice.xml') %>
 
+component_workflow_blob:
+  id: 5
+  data: <%= load_blob_data('image_to_tiff_migration.t2flow') %>

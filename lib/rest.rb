@@ -7,6 +7,7 @@ require 'lib/conf'
 require 'lib/excel_xml'
 require 'xml/libxml'
 require 'uri'
+require 'pivoting'
 
 include LibXML
 
@@ -36,7 +37,7 @@ def object_class_to_entity_name
     rules.map do |method, rules|
       next unless rules["Method"]       == "GET"
       next unless rules["Type"]         == "crud"
-      
+
       result[rules["Model Entity"]] = rules["REST Entity"]
     end
   end
@@ -2357,25 +2358,56 @@ end
 def get_components(opts)
   query = opts[:query]
 
-  annotations = (query['annotations'] || "").split('","').collect {|a| a.gsub('"','')} # annotations on workflow itself
+  annotations = query['annotations']  # annotations on workflow itself
   # annotations on workflow features
-  inputs = query["input"] || {}#(query["inputs"] || "").split('),')
-  outputs = query["output"] || {} #(query["outputs"] || "").split('),')
-  processors = query["processor"] || {} #(query["processors"] || "").split('),')
+  inputs = query["input"]
+  outputs = query["output"]
+  processors = query["processor"]
+
+  # Filter workflow set
+  pivot, problem = calculate_pivot(
+      :pivot_options  => Conf.pivot_options,
+      :params         => query,
+      :user           => opts[:user],
+      :search_models  => [Workflow],
+      :no_pagination  => true,
+      :locked_filters => { 'CATEGORY' => 'Workflow' },
+      :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
+                          "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
+                          "CURATION_EVENT", "SERVICE_PROVIDER",
+                          "SERVICE_COUNTRY", "SERVICE_STATUS"])
+
+  workflow_ids = pivot[:results].map {|r| r.is_a?(SearchResult) ? r.result_id : r.contributable_id }
+
+  begin
+    matches = filter_by_semantic_annotations(workflow_ids, inputs, outputs, processors, annotations)
+  rescue RuntimeError => e
+    if e.message == "Bad Syntax"
+      return rest_response(400)
+    else
+      raise e
+    end
+  end
+
+  # Render
+  produce_rest_list(opts[:uri], opts[:rules], query, matches, "workflows", [], opts[:user])
+end
 
 
-  workflows = Workflow.all # This should be filtered first
+private
 
-  def get_workflow_feature_matches(workflows, features, model, query_conditions, query_conditions_excluding)
-    # "features" is an array of sets of annotations to be queried, in the form ['"<ann1>,"<ann2>"','"<ann3>"']
+# Here be dragons!
+def filter_by_semantic_annotations(workflow_ids, inputs, outputs, processors, annotations)
+
+  # This method returns an array of workflow ids for workflows that possess all of the specified features.
+  def get_workflow_feature_matches(workflow_ids, features, model, query_conditions, query_conditions_excluding)
+    # "features" is an array of sets of annotations to be queried, in the form [ '"<ann1>","<ann2>"' , '"<ann3>"' ]
+    # Where "<ann1>" etc. is in the form "pred1 obj1", where pred1 and obj1 are the predicate and object parts of an RDF triple, respectively..
     # The above example states that the workflow must have a <feature> that has annotations "pred1 obj1" and "pred2 obj2", AND
-    # another, different <feature> with "<ann3>".
-    #
-    # The annotations are in the form "<predicate> <object>".
+    # another, different <feature> with "pred3 obj3".
 
-    # This method returns an array of arrays of workflows
     selected = []
-    features.collect do |key,set|
+    feature_matches = features.collect do |key,set|
       raise "Bad Syntax" unless set =~ /^("[^ ]+ [^"]+")(,"[^ ]+ [^"]+")*$/
 
       feature_annotations = set.split('","').collect {|a| a.gsub('"','')}
@@ -2385,58 +2417,57 @@ def get_components(opts)
         predicate, object = a.split(" ", 2)
         unless selected.empty?
           model.find(:all, :include => :semantic_annotations,
-                            :conditions => [query_conditions, workflows, predicate, object, selected])
+                           :conditions => [query_conditions, workflow_ids, predicate, object, selected])
         else
           model.find(:all, :include => :semantic_annotations,
-                            :conditions => [query_conditions_excluding, workflows, predicate, object])
+                           :conditions => [query_conditions_excluding, workflow_ids, predicate, object])
         end
 
       }.inject {|f, matches| matches & f} # Get the intersection of <features> that have each annotation.
                                           #   ie. the set of <features> that have ALL the required annotations
       selected += matching_features
-      matching_features.collect {|wp| wp.workflow} # Get the workflows that those features belong to
+      matching_features.collect {|wp| wp.workflow_id} # Get the workflows that those features belong to
     end
+
+    feature_matches.inject {|matches, matches_all| matches_all & matches}
   end
 
-  begin
-    # Workflows that have the required inputs
-    matches_input_requirements = get_workflow_feature_matches(workflows, inputs, WorkflowPort,
-                                  "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND port_type = 'input' AND workflow_ports.id NOT IN (?)",
-                                  "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND port_type = 'input'")
 
-    # Workflows that have the required outputs
-    matches_output_requirements = get_workflow_feature_matches(workflows, outputs, WorkflowPort,
-                                  "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND port_type = 'output' AND workflow_ports.id NOT IN (?)",
-                                  "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND port_type = 'output'")
-
-    # Workflows that have the required processors
-    matches_processor_requirements = get_workflow_feature_matches(workflows, processors, WorkflowProcessor,
-                                  "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND workflow_processors.id NOT IN (?)",
-                                  "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ?")
-
-    # Workflows that have the required semantic annotations
-    matches_semantic_annotation_requirements = annotations.collect do |p|
-      [Workflow.find(:all, :include => :semantic_annotations,
-                     :conditions => {:id => workflows,
-                                     :semantic_annotations => {:value => p}})]
-    end
-  rescue RuntimeError => e
-    if e.message == "Bad Syntax"
-      return rest_response(400)
-    else
-      raise e
-    end
+  # Filter for workflows that have the required inputs
+  if inputs
+    workflow_ids = workflow_ids & get_workflow_feature_matches(workflow_ids, inputs, WorkflowPort,
+                                    "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND port_type = 'input' AND workflow_ports.id NOT IN (?)",
+                                    "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND port_type = 'input'")
   end
 
-  # Create an array containing arrays of each set of matches
-  matches = matches_input_requirements +
-            matches_output_requirements +
-            matches_processor_requirements +
-            matches_semantic_annotation_requirements
+  # Filter for workflows that have the required outputs
+  if outputs
+    workflow_ids = workflow_ids & get_workflow_feature_matches(workflow_ids, outputs, WorkflowPort,
+                                    "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND port_type = 'output' AND workflow_ports.id NOT IN (?)",
+                                    "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND port_type = 'output'")
+  end
+
+  # Filter for workflows that have the required processors
+  if processors
+    workflow_ids = workflow_ids & get_workflow_feature_matches(workflow_ids, processors, WorkflowProcessor,
+                                    "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND workflow_processors.id NOT IN (?)",
+                                    "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ?")
+  end
+
+  # Filter for workflows that have the required semantic annotations
+  unless annotations.blank?
+    raise "Bad Syntax" unless annotations =~ /^("[^ ]+ [^"]+")(,"[^ ]+ [^"]+")*$/
+
+    annotations = annotations.split('","').collect {|a| a.gsub('"','')}
+
+    matches_semantic_annotation_requirements = annotations.collect { |a|
+      predicate, object = a.split(" ", 2)
+      SemanticAnnotation.find_all_by_predicate_and_object_and_subject_type(predicate, object, "Workflow").map {|a| a.subject_id}
+    }
+
+    workflow_ids = workflow_ids & matches_semantic_annotation_requirements.inject {|matches, matches_all| matches_all & matches}
+  end
 
   # Workflows that match ALL the requirements - the intersection of all the sub arrays.
-  matches = matches.inject {|matches, matches_all| matches_all & matches}
-
-  # Render
-  produce_rest_list(opts[:uri], opts[:rules], query, matches, "workflows", [], opts[:user])
+  Workflow.find_all_by_id(workflow_ids)
 end

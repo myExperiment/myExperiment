@@ -131,4 +131,27 @@ contribution_for_group_file_one:
   downloads_count: 1
   viewings_count: 1
 
+contribution_for_component_workflow:
+  id: 12
+  contributor_id: 1
+  contributor_type: User
+  contributable_id: 3
+  contributable_type: Workflow
+  policy_id: 9
+  created_at: 2008-08-07 23:53:46
+  updated_at: 2008-08-07 23:53:46
+  downloads_count: 1
+  viewings_count: 1
+
+contribution_for_component_workflow2:
+  id: 13
+  contributor_id: 2
+  contributor_type: User
+  contributable_id: 4
+  contributable_type: Workflow
+  policy_id: 10
+  created_at: 2008-08-07 23:53:46
+  updated_at: 2008-08-07 23:53:46
+  downloads_count: 1
+  viewings_count: 1
 
