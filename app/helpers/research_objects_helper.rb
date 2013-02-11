@@ -50,7 +50,12 @@ module ResearchObjectsHelper
   end
   
   def resource_types(annotations, resource_uri)
-    annotations.graph.query([RDF::URI(resource_uri), RDF::type, nil]).map do |s,p,type|
+    if annotations.is_a?(ROSRS::RDFGraph)
+      graph = annotations.graph
+    else
+      graph = annotations
+    end
+    graph.query([RDF::URI(resource_uri), RDF::type, nil]).map do |s,p,type|
       type.to_s
     end
   end
