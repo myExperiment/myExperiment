@@ -255,7 +255,7 @@ class Conf
   end
 
   def self.shortcut_keywords
-    self.fetch_entry('shortcut_keywords')
+    self.fetch_entry('shortcut_keywords') || {}
   end
 
 private
