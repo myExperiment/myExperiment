@@ -5,42 +5,6 @@ ActionController::Routing::Routes.draw do |map|
   # rest routes
   rest_routes(map)
 
-  # LoD routes
-  if Conf.rdfgen_enable
-
-    map.connect '/:contributable_type/:contributable_id/attributions/:attribution_id.:format',
-      :controller => 'linked_data', :action => 'attributions', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/citations/:citation_id.:format',
-      :controller => 'linked_data', :action => 'citations', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/comments/:comment_id.:format',
-      :controller => 'linked_data', :action => 'comments', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/credits/:credit_id.:format',
-      :controller => 'linked_data', :action => 'credits', :conditions => { :method => :get }
-
-    map.connect '/users/:user_id/favourites/:favourite_id.:format',
-      :controller => 'linked_data', :action => 'favourites', :conditions => { :method => :get }
-
-    map.connect '/packs/:contributable_id/local_pack_entries/:local_pack_entry_id.:format',
-      :controller => 'linked_data', :action => 'local_pack_entries',
-      :contributable_type => 'packs', :conditions => { :method => :get }
-
-    map.connect '/packs/:contributable_id/remote_pack_entries/:remote_pack_entry_id.:format',
-      :controller => 'linked_data', :action => 'remote_pack_entries',
-      :contributable_type => 'packs', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/policies/:policy_id.:format',
-      :controller => 'linked_data', :action => 'policies', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/ratings/:rating_id.:format',
-      :controller => 'linked_data', :action => 'ratings', :conditions => { :method => :get }
-
-    map.connect '/tags/:tag_id/taggings/:tagging_id.:format',
-      :controller => 'linked_data', :action => 'taggings', :conditions => { :method => :get }
-  end
-
   map.content '/content', :controller => 'content', :action => 'index', :conditions => { :method => :get }
   map.formatted_content '/content.:format', :controller => 'content', :action => 'index', :conditions => { :method => :get }
 
@@ -305,6 +269,42 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.connect 'clear_external_site_session_info', :controller => 'application', :action => 'clear_external_site_session_info'
+
+  # LoD routes
+  if Conf.rdfgen_enable
+
+    map.connect '/:contributable_type/:contributable_id/attributions/:attribution_id.:format',
+      :controller => 'linked_data', :action => 'attributions', :conditions => { :method => :get }
+
+    map.connect '/:contributable_type/:contributable_id/citations/:citation_id.:format',
+      :controller => 'linked_data', :action => 'citations', :conditions => { :method => :get }
+
+    map.connect '/:contributable_type/:contributable_id/comments/:comment_id.:format',
+      :controller => 'linked_data', :action => 'comments', :conditions => { :method => :get }
+
+    map.connect '/:contributable_type/:contributable_id/credits/:credit_id.:format',
+      :controller => 'linked_data', :action => 'credits', :conditions => { :method => :get }
+
+    map.connect '/users/:user_id/favourites/:favourite_id.:format',
+      :controller => 'linked_data', :action => 'favourites', :conditions => { :method => :get }
+
+    map.connect '/packs/:contributable_id/local_pack_entries/:local_pack_entry_id.:format',
+      :controller => 'linked_data', :action => 'local_pack_entries',
+      :contributable_type => 'packs', :conditions => { :method => :get }
+
+    map.connect '/packs/:contributable_id/remote_pack_entries/:remote_pack_entry_id.:format',
+      :controller => 'linked_data', :action => 'remote_pack_entries',
+      :contributable_type => 'packs', :conditions => { :method => :get }
+
+    map.connect '/:contributable_type/:contributable_id/policies/:policy_id.:format',
+      :controller => 'linked_data', :action => 'policies', :conditions => { :method => :get }
+
+    map.connect '/:contributable_type/:contributable_id/ratings/:rating_id.:format',
+      :controller => 'linked_data', :action => 'ratings', :conditions => { :method => :get }
+
+    map.connect '/tags/:tag_id/taggings/:tagging_id.:format',
+      :controller => 'linked_data', :action => 'taggings', :conditions => { :method => :get }
+  end
 
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'
