@@ -975,7 +975,7 @@ table.contributable:hover {
 }
 
 .sectionIcons li {
-	display: inline;
+	display: inline-block;
 	vertical-align: middle;
 	margin: 0;
 	margin-left: 8px;
