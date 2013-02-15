@@ -38,7 +38,7 @@ class BlobsController < ApplicationController
     
     send_data(@version.content_blob.data, :filename => @version.local_name, :type => @version.content_type.mime_type)
     
-    #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type.mime_type)
+    #send_file("#{Rails.root}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type.mime_type)
   end
 
   # GET /files/:id/download/:name

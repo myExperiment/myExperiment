@@ -2,7 +2,7 @@
 # or http://www.realityforge.org/articles/2006/04/06/loading-binary-data-into-rails-fixtures
 <%
   def load_blob_data(name)
-    filename = "#{RAILS_ROOT}/test/fixtures/files/#{name}"
+    filename = "#{Rails.root}/test/fixtures/files/#{name}"
     data = File.open(filename,'rb').read
     "!binary | #{[data].pack('m').gsub(/\n/,"\n    ")}\n"
   end
