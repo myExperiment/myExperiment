@@ -1,4 +1,4 @@
-<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 
 <%= error_messages_for 'announcement' %>
 
@@ -10,7 +10,7 @@
 
 <p>
 	<label for="announcement_<%= @announcement.nil? ? "" : @announcement.id -%>_body_editor"><b>Body</b></label><br/>
-  <center><%= fckeditor_textarea(:announcement, :body, :toolbarSet => 'Simple', :width => '535px', :height => '300px') %></center>
+  <center><%= form.text_area(:body, :width => '535px', :height => '300px', :class => 'ckeditor') -%></center>
 	<br/>
 	<label for="announcement_public">
 		<%= check_box "announcement", "public", :style => "margin-right: 0.3em;" -%>Make this announcement public

@@ -1,6 +1,6 @@
 <% t "#{contributable_name(@version.id, 'Blob')} (#{h @blob.contributor_name})" -%>
 
-<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 
 <h1>Suggestions</h1>
 
@@ -15,15 +15,7 @@
     its purpose.</em></p>
 
     <p>
-      <textarea id='description_editor' name='description'></textarea>
-      <script type="text/javascript">
-      //<![CDATA[
-      var oFCKeditor = new FCKeditor('description_editor', '600px', '300px', 'Simple');
-      oFCKeditor.BasePath = "/javascripts/fckeditor/"
-      oFCKeditor.Config['CustomConfigurationsPath'] = '/javascripts/fckcustom.js';
-      oFCKeditor.ReplaceTextarea();
-      //]]>
-      </script>
+      <%= text_area_tag(:description, nil, :width => '600px', :height => '300px', :class => 'ckeditor') -%>
     </p>
 
   <% end %>
@@ -37,15 +29,7 @@
     version.</p>
 
     <p>
-      <textarea id='revision_comments_editor' name='revision_comments'></textarea>
-      <script type="text/javascript">
-      //<![CDATA[
-      var oFCKeditor = new FCKeditor('revision_comments_editor', '600px', '300px', 'Simple');
-      oFCKeditor.BasePath = "/javascripts/fckeditor/"
-      oFCKeditor.Config['CustomConfigurationsPath'] = '/javascripts/fckcustom.js';
-      oFCKeditor.ReplaceTextarea();
-      //]]>
-      </script>
+      <%= text_area_tag(:revision_comments, nil, :width => '600px', :height => '200px', :class => 'ckeditor') -%>
     </p>
 
   <% end %>

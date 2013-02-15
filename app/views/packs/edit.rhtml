@@ -1,6 +1,6 @@
 <% t "Manage" -%>
 
-<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 <%= javascript_include_tag "osp.js" %>
 
 <h1>Manage Pack: <%= contributable_name(@pack.id, 'Pack') %></h1>
@@ -20,7 +20,7 @@
 			<%= f.text_field :title, :size => 86 %>
 			
 		  <p><b>Description: </b></p>
-			<%= fckeditor_textarea(:pack, :description, :toolbarSet => 'Simple', :width => '550px', :height => '300px') %>
+			<%= f.text_area(:description, :width => '550px', :height => '300px', :class => 'ckeditor') %>
 		</div>
 	</center>
   
