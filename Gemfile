@@ -21,4 +21,6 @@ gem "rdf", "~> 0.3.4.1"
 gem "rdf-raptor", "~> 0.4.1"
 gem "rdf-n3"
 gem "recaptcha", "~> 0.3.4"
+gem "encrypted_strings", "~> 0.3.3"
+gem "encrypted_attributes", "~> 0.4.1"
 

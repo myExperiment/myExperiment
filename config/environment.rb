@@ -26,7 +26,6 @@ Rails::Initializer.run do |config|
   # :all can be used as a placeholder for all plugins not explicitly named
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
   config.plugins = [
-    :encrypted_strings,
     :widgets,
     :country_select,
     :white_list,
@@ -37,7 +36,6 @@ Rails::Initializer.run do |config|
     :acts_as_solr,
     :acts_as_taggable_redux,
     :auto_complete,
-    :encrypted_attributes,
     :headliner,
     :oauth,
     :oauth_plugin,
