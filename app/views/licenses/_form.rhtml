@@ -1,4 +1,4 @@
-<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 <%= javascript_include_tag 'license_attributes' %>
 
 <!--[form:license]-->
@@ -15,7 +15,7 @@
 <%= render :partial => "license_attributes/attributes_form", :locals => { :edit => true, :license => @license } %>
 
 <h2><label for="license_description">Description</label></h2>
-<%= fckeditor_textarea(:license, :description, :toolbarSet => 'Simple', :width => '700px', :height => '300px') %></p>
+<%= form.text_area :description, :width => '700px', :height => '300px', :class => 'ckeditor'  -%></p>
 <br/><br/>
 
 <!--[eoform:license]-->

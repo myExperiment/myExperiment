@@ -1,0 +1,7 @@
+table.alt_table tr.odd_row.biovel td, table.alt_table tr.even_row.biovel td, .resource_list_item.biovel {
+  background-color: #EEFFCC;
+}
+
+table.alt_table.biovel, .resource_list_item.biovel {
+  border-color: #99cc33;
+}

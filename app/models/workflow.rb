@@ -29,6 +29,8 @@ class Workflow < ActiveRecord::Base
   belongs_to :license
 
   has_many :workflow_processors, :dependent => :destroy
+  has_many :workflow_ports, :dependent => :destroy
+  has_many :semantic_annotations, :as => :subject, :dependent => :destroy
 
   before_validation :check_unique_name
   before_validation :apply_extracted_metadata
@@ -49,8 +51,6 @@ class Workflow < ActiveRecord::Base
   
   acts_as_reviewable
 
-  acts_as_structured_data
-
   has_previews
 
   has_versions :workflow_versions,
@@ -62,8 +62,7 @@ class Workflow < ActiveRecord::Base
     :mutable => [ :contributor, :title, :unique_name, :body, :body_html,
                   :file_ext, :last_edited_by, :content_type_id, :image, :svg ]
 
-  acts_as_solr(:fields => [ :title, :body, :filename, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
-               :boost => "rank",
+  acts_as_solr(:fields => [{:title => {:boost => 2.0}}, :body, :filename, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
                :include => [ :comments ]) if Conf.solr_enable
 
   acts_as_runnable
@@ -321,6 +320,7 @@ class Workflow < ActiveRecord::Base
   def delete_metadata
     if processor_class
       WorkflowProcessor.destroy_all(["workflow_id = ?", id])
+      WorkflowPort.destroy_all(["workflow_id = ?", id])
     end
   end
 
@@ -328,7 +328,7 @@ class Workflow < ActiveRecord::Base
     if processor_class
       delete_metadata
       begin
-        processor_class.new(content_blob.data).extract_metadata(id)
+        processor_class.new(content_blob.data).extract_metadata(self)
       rescue
       end
     end

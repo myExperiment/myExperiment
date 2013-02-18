@@ -230,21 +230,10 @@ module ApplicationHelper
     link_to("Request Friendship", new_user_friendship_url(:user_id => user_id))
   end
   
-  def versioned_workflow_link(workflow_id, version_number, long_description=true)
-    if workflow_id.kind_of? Fixnum
-      workflow = Workflow.find(:first, :conditions => ["id = ?", workflow_id])
-      return nil unless workflow
-    elsif workflow_id.kind_of? Workflow
-      workflow = workflow_id
-    else
-      return nil
-    end
-    
-    if (ver = workflow.find_version(version_number))
-      url = url_for(:controller => 'workflows',
-                    :action => 'show',
-                    :id => workflow.id,
-                    :version => version_number)
+  def versioned_resource_link(resource, version_number, long_description=true)
+    ver = resource.find_version(version_number)
+    if ver
+      url = polymorphic_url(resource, :version => version_number)
     else
       return nil
     end
@@ -383,14 +372,6 @@ module ApplicationHelper
     when "Pack"
       if p = Pack.find(:first, :conditions => ["id = ?", contributableid])
         return link ? link_to(h(p.title), pack_url(p)) : h(p.title)
-      else
-        return nil
-      end
-    when "Blog"
-      if b = Blog.find(:first, :conditions => ["id = ?", contributableid])
-        name = h(b.title)
-        
-        return link ? link_to(name, blog_url(b)) : name
       else
         return nil
       end
@@ -703,8 +684,6 @@ module ApplicationHelper
       return "manhattan_studio/folder-closed_16.png"
     when "remote-resource"
       return "famfamfam_silk/page_world.png"
-    when "blog"
-      return "famfamfam_silk/note.png"
     when "workflow"
       return "redmond_studio/applications_16.png"
     when "policy"
@@ -780,7 +759,7 @@ module ApplicationHelper
     when "transfer_ownership"
       return "famfamfam_silk/key_go.png"
     when "content"
-      return "famfamfam_silk/application_side_list.png"  
+      return "famfamfam_silk/application_side_list.png"
     else
       return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end
@@ -1341,7 +1320,7 @@ protected
     
     return rtn unless depth.to_i < 2
     
-    collections = [[contributor], contributor.contributions, contributor.workflows, contributor.blogs]
+    collections = [[contributor], contributor.contributions, contributor.workflows]
     recursions = []
     
     case contributor.class.to_s
@@ -1460,19 +1439,6 @@ protected
         
         rtn << [item.created_at, "#{editor} created the #{link} #{item.contributable_type.downcase == "blob" ? "File" : item.contributable_type.downcase} for #{owner_string}."]
       end
-    when "Blog"
-      if restrict_contributor
-        return rtn unless (restrict_contributor.class.to_s == item.contributor_type.to_s and restrict_contributor.id.to_i == item.contributor_id.to_i)
-      end
-      
-      owner = contributor(item.contributor_id, item.contributor_type)
-    
-      item.posts.each do |blog_post|
-        next if before and blog_post.created_at > before
-        next if after and blog_post.created_at < after
-        
-        rtn << [blog_post.created_at, "#{owner} has created a new post on #{contributable(item.id, "Blog")}."]
-      end
     when "Workflow"
       item.versions.each do |workflow|
         next if workflow.version.to_i == 1
@@ -1485,7 +1451,7 @@ protected
           next unless (workflow.contributor_type.to_s == restrict_contributor.class.to_s and workflow.contributor_id.to_i == restrict_contributor.id.to_i)
         end
         
-        rtn << [workflow.updated_at, "#{editor} edited the #{versioned_workflow_link(item.id, workflow.version, false)} Workflow."]
+        rtn << [workflow.updated_at, "#{editor} edited the #{versioned_resource_link(item, workflow.version, false)} Workflow."]
       end
     when "PictureSelection"
       return rtn if before and item.created_at > before
@@ -1596,16 +1562,16 @@ protected
 
   #Selects layout for contributables/groups or uses site's default
   def configure_layout
-    contributable = (@workflow || @pack || @blog_post || @blob)
+    contributable = (@workflow || @pack || @blob)
     layout = nil
 
     if params["layout_preview"]
       layout = Conf.layouts[params["layout_preview"]]
-    elsif contributable && contributable.contribution
-      layout = Conf.layouts[contributable.contribution.layout]
+    elsif contributable && contributable.contribution && contributable.contribution.policy
+      layout = Conf.layouts[contributable.contribution.policy.layout]
       if layout.nil?
         logger.error("Missing layout for #{contributable.class.name} #{contributable.id}: "+
-                    "#{contributable.contribution.layout}")
+                    "#{contributable.contribution.policy.layout}")
       end
     elsif @network
       layout = @network.layout

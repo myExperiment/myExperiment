@@ -23,7 +23,7 @@ module Versioning
 
       class_eval do
 
-        has_many :versions, :class_name => self.version_class.name
+        has_many :versions, :class_name => self.version_class.name, :dependent => :destroy
 
         def find_version(v)
           match = self.version_class.find(:first, :conditions => ["#{self.versioned_resource_column} = ? AND version = ?", id, v])

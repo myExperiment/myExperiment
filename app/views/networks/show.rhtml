@@ -15,7 +15,7 @@
     <% unless mine? @network %>
 		  <% if @network.member? current_user.id  %>
 			  <% cur_membership = Membership.find(:first, :conditions => ["network_id = ? AND user_id = ?", @network.id, current_user.id] ) %>
-			  <% if cur_membership %>
+			  <% if false %>
 			    <li><%= icon('network-leave', user_membership_path(cur_membership.user_id, cur_membership), nil, { :confirm => "Are you sure want to leave this group?", :method => :delete }, 'Leave Group') %></li>
 			  <% end %>
 			<% elsif !current_user.membership_pending?(@network.id) && !@network.invitation_only? %>
@@ -26,9 +26,12 @@
     <% if @network.administrator?(current_user.id) %>
       <li><%= icon('announcement', new_group_announcement_path(@network), 'Make a new Group Announcement', nil, 'Make a Group Announcement') -%></li>
 			<li><%= icon('network-invite', invite_network_path(@network), 'Invite People', nil, 'Invite People') -%></li>
+      <li><%= icon('policy', network_policies_path(@network), 'Group Policies', nil, 'Group Policies') -%></li>
     <% end %>
     <% if mine? @network %>
 			<li><%= icon('edit', edit_network_path(@network), 'Edit', nil, 'Edit Group') %></li>
+    <% end %>
+    <% if mine?(@network) || current_user.admin? %>
       <li><%= icon('destroy', network_path(@network), 'Delete Group', { :confirm => 'Are you sure?', :method => :delete }, 'Delete Group') %></li>
     <% end %>
   <% end %>

@@ -1,4 +1,4 @@
-<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 
 <p style="color: #666666; font-weight: bold;">
 	Note: information you enter on this page will be visible to everyone (ie: will be public), but all fields are optional.
@@ -107,7 +107,7 @@
 	</span>
 </p>
 
-<%= fckeditor_textarea(:profile, :body, :toolbarSet => 'Simple', :width => '700px', :height => '300px') %>
+<%= form.text_area(:body, :width => '700px', :height => '300px', :class => 'ckeditor') -%>
 
 <br/>
 <br/>

@@ -288,13 +288,12 @@ class User < ActiveRecord::Base
   acts_as_contributor
   
   has_many :blobs, :as => :contributor, :dependent => :destroy
-  has_many :blogs, :as => :contributor, :dependent => :destroy
   has_many :workflows, :as => :contributor, :dependent => :destroy
   has_many :packs, :as => :contributor, :dependent => :destroy
   
   acts_as_creditor
 
-  acts_as_solr(:fields => [ :name, :tag_list ], :include => [ :profile ], :if => "activated_at") if Conf.solr_enable
+  acts_as_solr(:fields => [ {:name => {:boost => 2.0}}, :tag_list ], :include => [ :profile ], :if => "activated_at") if Conf.solr_enable
 
   validates_presence_of :name
   

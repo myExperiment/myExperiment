@@ -1,4 +1,4 @@
-<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 
 <%= error_messages_for 'announcement' %>
 
@@ -7,6 +7,6 @@
 <%= form.text_field :title, :size => 70 %></p>
 
 <p><label for="announcement_body">Body</label><br/>
-<%= fckeditor_textarea(:announcement, :body, :toolbarSet => 'Simple', :width => '700px', :height => '500px') %></p>
+<%= form.text_area(:body, :width => '700px', :height => '500px', :class => 'ckeditor') -%>
 <!--[eoform:announcement]-->
 

@@ -1,0 +1,36 @@
+has_migration_path:
+  subject_id: 3
+  subject_type: Workflow
+  predicate: http://scape-project.eu/pc/vocab/profiles#hasMigrationPath
+  object: http://scape-project.eu/pc/vocab/profiles#jpegToTiff
+
+has_dependency:
+  subject_id: 1
+  subject_type: WorkflowProcessor
+  predicate: http://scape-project.eu/pc/vocab/profiles#hasDependency
+  object: http://scape-project.eu/pc/vocab/profiles#imagemagick-image2tiff
+
+has_port_type_from:
+  subject_id: 1
+  subject_type: WorkflowPort
+  predicate: http://scape-project.eu/pc/vocab/profiles#hasPortType
+  object: http://scape-project.eu/pc/vocab/profiles#FromURIPort
+
+has_port_type_to:
+  subject_id: 2
+  subject_type: WorkflowPort
+  predicate: http://scape-project.eu/pc/vocab/profiles#hasPortType
+  object: http://scape-project.eu/pc/vocab/profiles#ToURIPort
+
+has_port_type_from2:
+  subject_id: 3
+  subject_type: WorkflowPort
+  predicate: http://scape-project.eu/pc/vocab/profiles#hasPortType
+  object: http://scape-project.eu/pc/vocab/profiles#FromURIPort
+
+second_port_annotation:
+  subject_id: 3
+  subject_type: WorkflowPort
+  predicate: http://scape-project.eu/pc/vocab/profiles#hasFish
+  object: http://scape-project.eu/pc/vocab/profiles#CornishSardine
+

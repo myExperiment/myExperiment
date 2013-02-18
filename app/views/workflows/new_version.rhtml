@@ -1,6 +1,6 @@
 <% t "Upload New Version" -%>
 
-<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 
 <h1>
 	Upload New Version
@@ -60,7 +60,7 @@
 	
 	<center>
 	  <div class="box_form" style="width: 600px; text-align: center;">
-			<%= fckeditor_textarea(:new_workflow, "rev_comments", :toolbarSet => 'Basic', :width => '580px', :height => '300px') %>
+      <%= text_area_tag("new_workflow[rev_comments]", nil, :width => '580px', :height => '300px', :class => 'ckeditor') -%>
 		</div>
 	</center>
 	

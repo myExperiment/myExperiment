@@ -1,4 +1,4 @@
-<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 <%= javascript_include_tag "tag_suggestions.js" %>
 
 <h1>Extra workflow metadata</h1>
@@ -18,7 +18,7 @@
       <!-- Description -->
       <p><b>Description</b></p>
 
-    <%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '500px', :height => '300px') %>
+    <%= text_area_tag("workflow[body]", nil, :width => '500px', :height => '300px', :class => 'ckeditor') -%>
 
   <% end %>
 

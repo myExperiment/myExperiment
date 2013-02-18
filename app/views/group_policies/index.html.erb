@@ -1,0 +1,20 @@
+<h1>Group Policies</h1>
+<ul class="sectionIcons">
+  <li><%= icon('new', new_network_policy_path, nil, nil, 'Create New Policy') %></li>
+</ul>
+<div class="box_infotext">
+  <p></p><strong>Group Policies</strong> are pre-made sets of rules governing who can view, download and modify resources that they are associated with.
+  When uploading a new workflow, file or creating a new pack, <strong>group members</strong> can choose to apply a Group Policy
+  rather than managing permissions manually.</p>
+
+  <p>Group Policies may be created and modified by <strong>group administrators</strong>. If a Group Policy is being used by one or more resources,
+  it may not be deleted. If a Group Policy is modified, the changes will affect all resources using it.</p>
+</div>
+<ul>
+  <% @policies.each do |policy| %>
+    <li>
+      <%= link_to policy.name, edit_network_policy_path(@group, policy) %>
+      - Used by <%= policy.contributions.size -%> resources
+    </li>
+  <% end %>
+</ul>

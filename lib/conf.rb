@@ -283,6 +283,10 @@ class Conf
     self.model_alias_convert(self.model_aliases.invert, str)
   end
 
+  def self.shortcut_keywords
+    self.fetch_entry('shortcut_keywords') || {}
+  end
+
 private
 
   def self.model_alias_convert(map, str)

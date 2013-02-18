@@ -1,5 +1,9 @@
 <% t "#{contributable_name(@pack.id, 'Pack')} (#{h @pack.contributor_name})" -%>
 
+<% items_count = @version ? @version.items_count : @pack.items_count %>
+<% contributable_entries = @version ? @version.contributable_entries : @pack.contributable_entries %>
+<% remote_entries        = @version ? @version.remote_entries        : @pack.remote_entries        %>
+
 <% @title = @annotations.query([RDF::URI.parse(@pack.ro_uri), RDF::DC.title, nil]).objects.first if @pack.ro_uri; @title = @title.to_s if @title; @title ||= @pack.title %>
 <% @description_html = @annotations.query([RDF::URI.parse(@pack.ro_uri), RDF::DC.description, nil]).objects.first if @pack.ro_uri; @description_html = h(@description_html) if @description_html; @description_html ||= @pack.description_html %>
 
@@ -11,6 +15,9 @@
     <% if Authorization.check("edit", @pack, current_user) && @pack.ro_uri %>
       <li><%= icon('edit', edit_annotations_pack_path(@pack), nil, nil, "Edit Annotations") %></li>
     <% end %>
+    <% if @authorised_to_edit -%>
+			<li><%= icon('new', snapshot_pack_path(@pack), nil, { :confirm => 'Are you sure that you would like to create a new snapshot of this Pack?', :method => :post }, 'Create snapshot') %></li>
+    <% end -%>	
 		<% if Authorization.check("destroy", @pack, current_user) %>
 			<li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments, BUT does not delete the actual items pointed to in the Pack. Are you sure you would like to delete this Pack?', :method => :delete }, 'Delete Pack') %></li>
 		<% end %>
@@ -43,6 +50,9 @@
 
 <div class="contribution_left_box">
 	<div class="contribution_version_box">
+
+    <%= render(:partial => "packs/version_selector", :locals => { :resource => @pack, :version => @version, :path => :pack_version_path }) %>
+
 		<div class="contribution_version_inner_box">
 			<p>
 		    <b>Title:</b>
@@ -80,7 +90,7 @@
       <%= render :partial => "research_objects/credits", :locals => { :contributable => @pack } -%>
 
 		</div>
-  </div>
+	</div>
 	
 <% if false %>
       <%= render :partial => "research_objects/title", :locals => { :contributable => @pack } -%>      
@@ -100,11 +110,11 @@
 				<% end %>
 				
 				<%= info_icon_with_tooltip("This section shows all the items that are pointed to in this pack. This can be a combination of internal and external items.") -%>
-				Items <span class="count_text">(<%= @pack.items_count -%>)</span>
+				Items <span class="count_text">(<%= items_count -%>)</span>
 			</h4>
 			
       <div id="pack_items">
-        <%= render :partial => "items", :locals => { :pack => @pack, :authorised_to_edit => @authorised_to_edit } -%>
+        <%= render :partial => "items", :locals => { :pack => @pack, :contributable_entries => contributable_entries, :remote_entries => remote_entries, :authorised_to_edit => @authorised_to_edit } -%>
       </div>
       <% # FIXME diagram should not have to be rendered after items %>
       <%= render :partial => "research_objects/diagram", :locals => { :contributable => @pack } -%>  

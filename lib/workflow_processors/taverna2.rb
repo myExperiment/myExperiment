@@ -9,6 +9,8 @@ module WorkflowProcessors
   require 't2flow/parser'
   require 't2flow/dot'
   require 'libxml'
+  require 'rdf'
+  require 'rdf/n3'
   
   require 'file_upload'
 
@@ -243,6 +245,15 @@ module WorkflowProcessors
           node
         end
 
+        def build_semantic_annotation_element(object)
+          build('semantic_annotation') do |semantic_annotation_element|
+            if object.semantic_annotation
+              semantic_annotation_element << build('type', object.semantic_annotation.type)
+              semantic_annotation_element << build('content', object.semantic_annotation.content)
+            end
+          end
+        end
+
         build(tag) do |components|
 
           components << build('dataflows') do |dataflows_element|
@@ -281,6 +292,8 @@ module WorkflowProcessors
                           end
                         end
                       end
+
+                      source_element << build_semantic_annotation_element(source) if source.semantic_annotation
                     end
                   end
                 end
@@ -297,7 +310,6 @@ module WorkflowProcessors
 
                         if sink.descriptions
                           sink.descriptions.each do |sink_description|
-
                             sink_descriptions_element << build('description', sink_description)
                           end
                         end
@@ -312,6 +324,7 @@ module WorkflowProcessors
                           end
                         end
                       end
+                      sink_element << build_semantic_annotation_element(sink) if sink.semantic_annotation
                     end
                   end
                 end
@@ -335,6 +348,7 @@ module WorkflowProcessors
                       processor_element << build('biomoby-service-name',   processor.biomoby_service_name)   if processor.biomoby_service_name
                       processor_element << build('biomoby-category',       processor.biomoby_category)       if processor.biomoby_category
                       processor_element << build('value',                  processor.value)                  if processor.value
+                      processor_element << build_semantic_annotation_element(processor)                      if processor.semantic_annotation
 
                       if processor.dataflow_id
                         nested_dataflow = base_model.dataflow(processor.dataflow_id)
@@ -364,6 +378,8 @@ module WorkflowProcessors
                     end
                   end
                 end
+
+                dataflow_element << build_semantic_annotation_element(dataflow.annotations) if dataflow.annotations.semantic_annotation
               end
             end
           end
@@ -373,13 +389,46 @@ module WorkflowProcessors
       aux(@t2flow_model, @t2flow_model, 'components')
     end
     
-    def extract_metadata(workflow_id)
+    def extract_metadata(workflow)
 
       @t2flow_model.all_processors.each do |processor|
-        WorkflowProcessor.create(:workflow_id => workflow_id,
+        workflow_processor = WorkflowProcessor.create(:workflow => workflow,
             :name           => processor.name,
             :wsdl           => processor.wsdl,
             :wsdl_operation => processor.wsdl)
+        create_semantic_annotations(workflow_processor, processor.semantic_annotation)
+      end
+
+      @t2flow_model.sources.each do |source|
+        port = WorkflowPort.create(:workflow => workflow,
+                            :port_type => "input",
+                            :name => source.name)
+        create_semantic_annotations(port, source.semantic_annotation)
+      end
+
+      @t2flow_model.sinks.each do |sink|
+        port = WorkflowPort.create(:workflow => workflow,
+                            :port_type => "output",
+                            :name => sink.name)
+        create_semantic_annotations(port, sink.semantic_annotation)
+      end
+
+      create_semantic_annotations(workflow, @t2flow_model.main.annotations.semantic_annotation)
+
+    end
+
+    def create_semantic_annotations(subject, semantic_annotations)
+      if semantic_annotations.type == "text/rdf+n3"
+        g = RDF::Graph.new
+        g << RDF::Reader.for(:n3).new(semantic_annotations.content)
+
+        g.each_statement do |statement|
+          predicate = statement.predicate.to_s
+          object = statement.object.to_s
+          SemanticAnnotation.create(:subject => subject, :predicate => predicate, :object => object)
+        end
+      else
+        raise "Unsupported annotation content type (#{semantic_annotations.type}) for #{subject}."
       end
     end
 

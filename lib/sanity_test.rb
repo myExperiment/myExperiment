@@ -54,13 +54,12 @@ def sanity_tests
 
   users         = User.find(:all)
   workflows     = Workflow.find(:all)
-  blogs         = Blog.find(:all)
   blobs         = Blob.find(:all)
   packs         = Pack.find(:all)
   services      = Service.find(:all)
   contributions = Contribution.find(:all)
 
-  known_contributables = workflows + blobs + blogs + packs + services
+  known_contributables = workflows + blobs + packs + services
 
   should_be_empty("All users must have a name",
       users.select do |u| u.name == nil or u.name.length == 0 end)
@@ -75,9 +74,6 @@ def sanity_tests
 
   should_be_empty("All files must have a contribution record",
       blobs.select do |b| b.contribution.nil? end)
-
-  should_be_empty("All blogs must have a contribution record",
-      blogs.select do |b| b.contribution.nil? end)
 
   should_be_empty("All packs must have a contribution record",
       packs.select do |f| f.contribution.nil? end)

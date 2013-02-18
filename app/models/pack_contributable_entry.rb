@@ -21,12 +21,26 @@ class PackContributableEntry < ActiveRecord::Base
   after_destroy :touch_pack
 
   def check_unique
-    if self.contributable_version.blank?
-      i = PackContributableEntry.find(:first, :conditions => ["pack_id = ? AND contributable_type = ? AND contributable_id = ? AND contributable_version IS NULL", self.pack_id, self.contributable_type, self.contributable_id]) 
-    else
-      i = PackContributableEntry.find(:first, :conditions => ["pack_id = ? AND contributable_type = ? AND contributable_id = ? AND contributable_version = ?", self.pack_id, self.contributable_type, self.contributable_id, self.contributable_version])
-    end
+
+    conditions = ["pack_id = ?", "version = ?", "contributable_type = ?", "contributable_id = ?"]
+    arguments = [self.pack_id, self.version, self.contributable_type, self.contributable_id]
     
+    if self.contributable_version.nil?
+      conditions << "contributable_version IS NULL"
+    else
+      conditions << "contributable_version = ?"
+      arguments << self.contributable_version
+    end
+
+    if self.version.nil?
+      conditions << "version IS NULL"
+    else
+      conditions << "version = ?"
+      arguments << self.version
+    end
+
+    i = PackContributableEntry.find(:first, :conditions => [conditions.join(" AND ")] + arguments) 
+ 
     if i
       errors.add_to_base("This item already exists in the pack")
       return false

@@ -7,6 +7,7 @@ require 'lib/conf'
 require 'lib/excel_xml'
 require 'xml/libxml'
 require 'uri'
+require 'pivoting'
 
 include LibXML
 
@@ -36,7 +37,7 @@ def object_class_to_entity_name
     rules.map do |method, rules|
       next unless rules["Method"]       == "GET"
       next unless rules["Type"]         == "crud"
-      
+
       result[rules["Model Entity"]] = rules["REST Entity"]
     end
   end
@@ -190,7 +191,11 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
           list_element[key] = value
         end
 
-        collection = eval("ob.#{model_data['Accessor'][i]}")
+        if query['version'] and model_data['Versioned'][i] == 'yes'
+          collection = eval(sprintf("ob.find_version(%d).%s", query['version'], model_data['Accessor'][i]))
+        else
+          collection = eval("ob.#{model_data['Accessor'][i]}")
+        end
 
         collection = [collection] if model_data['Encoding'][i] == 'item as list'
 
@@ -341,7 +346,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 end
 
 def find_entity_name_from_object(ob)
-  ob = ob.versioned_resource if ob.respond_to?(:version)
+  ob = ob.versioned_resource if ob.respond_to?(:versioned_resource)
   OBJECT_CLASS_TO_ENTITY_NAME[ob.class.name.underscore]
 end
 
@@ -383,6 +388,7 @@ def rest_get_request(ob, user, query)
   if query['version']
     return rest_response(400, :reason => "Object does not support versioning") unless ob.respond_to?('versions')
     return rest_response(404, :reason => "Specified version does not exist") if query['version'].to_i < 1
+    return rest_response(404, :reason => "Specified version does not exist") if query['version'].to_i > ob.versions.last.version
   end
 
   # Work out which elements to include in the response.
@@ -663,8 +669,6 @@ def rest_resource_uri(ob)
     when 'Review';                 return workflow_review_url(ob.reviewable, ob)
     when 'Comment';                return "#{rest_resource_uri(ob.commentable)}/comments/#{ob.id}"
     when 'Bookmark';               return nil
-    when 'Blog';                   return blog_url(ob)
-    when 'BlogPost';               return blog_blog_post_url(ob.blog, ob)
     when 'Rating';                 return "#{rest_resource_uri(ob.rateable)}/ratings/#{ob.id}"
     when 'Tag';                    return tag_url(ob)
     when 'Picture';                return user_picture_url(ob.owner, ob)
@@ -675,7 +679,7 @@ def rest_resource_uri(ob)
     when 'Experiment';             return experiment_url(ob)
     when 'TavernaEnactor';         return runner_url(ob)
     when 'Job';                    return experiment_job_url(ob.experiment, ob)
-    when 'PackContributableEntry'; return ob.contributable ? rest_resource_uri(ob.contributable) : nil
+    when 'PackContributableEntry'; return ob.contributable ? rest_resource_uri(ob.get_contributable_version) : nil
     when 'PackRemoteEntry';        return ob.uri
     when 'ContentType';            return content_type_url(ob)
     when 'License';                return license_url(ob)
@@ -683,12 +687,14 @@ def rest_resource_uri(ob)
     when 'Ontology';               return ontology_url(ob)
     when 'Predicate';              return predicate_url(ob)
     when 'Relationship';           return nil
+    when 'PackVersion';            return pack_version_url(ob, ob.version)
 
     when 'Creditation';     return nil
     when 'Attribution';     return nil
     when 'Tagging';         return nil
 
     when 'WorkflowVersion'; return "#{rest_resource_uri(ob.workflow)}?version=#{ob.version}"
+    when 'BlobVersion'; return "#{rest_resource_uri(ob.blob)}?version=#{ob.version}"
   end
 
   raise "Class not processed in rest_resource_uri: #{ob.class.to_s}"
@@ -706,8 +712,6 @@ def rest_access_uri(ob)
     when 'Review';                 return "#{base}/review.xml?id=#{ob.id}"
     when 'Comment';                return "#{base}/comment.xml?id=#{ob.id}"
     when 'Bookmark';               return "#{base}/favourite.xml?id=#{ob.id}"
-    when 'Blog';                   return "#{base}/blog.xml?id=#{ob.id}"
-    when 'BlogPost';               return "#{base}/blog-post.xml?id=#{ob.id}"
     when 'Rating';                 return "#{base}/rating.xml?id=#{ob.id}"
     when 'Tag';                    return "#{base}/tag.xml?id=#{ob.id}"
     when 'Picture';                return "#{base}/picture.xml?id=#{ob.id}"
@@ -733,6 +737,7 @@ def rest_access_uri(ob)
     when 'Attribution';     return nil
 
     when 'WorkflowVersion'; return "#{base}/workflow.xml?id=#{ob.workflow.id}&version=#{ob.version}"
+    when 'PackVersion';     return "#{base}/pack.xml?id=#{ob.pack.id}&version=#{ob.version}"
   end
 
   raise "Class not processed in rest_access_uri: #{ob.class.to_s}"
@@ -831,8 +836,6 @@ def parse_resource_uri(str)
   return [User, $1, is_local]           if uri.path =~ /^\/users\/([\d]+)$/
   return [Review, $1, is_local]         if uri.path =~ /^\/[^\/]+\/[\d]+\/reviews\/([\d]+)$/
   return [Comment, $1, is_local]        if uri.path =~ /^\/[^\/]+\/[\d]+\/comments\/([\d]+)$/
-  return [Blog, $1, is_local]           if uri.path =~ /^\/blogs\/([\d]+)$/
-  return [BlogPost, $1, is_local]       if uri.path =~ /^\/blogs\/[\d]+\/blog_posts\/([\d]+)$/
   return [Tag, $1, is_local]            if uri.path =~ /^\/tags\/([\d]+)$/
   return [Picture, $1, is_local]        if uri.path =~ /^\/users\/[\d]+\/pictures\/([\d]+)$/
   return [Message, $1, is_local]        if uri.path =~ /^\/messages\/([\d]+)$/
@@ -955,21 +958,43 @@ def update_permissions(ob, permissions)
 
       # handle public privileges
 
-      if permission.find_first('category/text()').to_s == 'public'
+      case permission.find_first('category/text()').to_s
+        when 'public'
+          privileges = {}
 
-        privileges = {}
+          permission.find('privilege').each do |el|
+            privileges[el['type']] = true
+          end
 
-        permission.find('privilege').each do |el|
-          privileges[el['type']] = true
-        end
+          if privileges["view"] && privileges["download"]
+            share_mode = 0
+          elsif privileges["view"]
+            share_mode = 2
+          else
+            share_mode = 7
+          end
+        when 'group'
+          id = permission.find_first('id/text()').to_s.to_i
+          privileges = {}
 
-        if privileges["view"] && privileges["download"]
-          share_mode = 0
-        elsif privileges["view"]
-          share_mode = 2
-        else
-          share_mode = 7
-        end
+          permission.find('privilege').each do |el|
+            privileges[el['type']] = true
+          end
+
+          network = Network.find_by_id(id)
+          if network.nil?
+            ob.errors.add_to_base("Couldn't share with group #{id} - Not found")
+            raise
+          else
+            Permission.create(:contributor => network,
+                              :policy => ob.contribution.policy,
+                              :view => privileges["view"],
+                              :download => privileges["download"],
+                              :edit => privileges["edit"])
+            unless (use_layout = permission.find_first('use-layout/text()')).nil?
+              ob.contribution.policy.layout = network.layout_name if use_layout.to_s == 'true'
+            end
+          end
       end
     end
 
@@ -1189,6 +1214,7 @@ def file_aux(action, opts = {})
     description      = parse_element(data, :text,   '/file/description')
     license_type     = parse_element(data, :text,   '/file/license-type')
     type             = parse_element(data, :text,   '/file/type')
+    filename         = parse_element(data, :text,   '/file/filename')
     content_type     = parse_element(data, :text,   '/file/content-type')
     content          = parse_element(data, :binary, '/file/content')
     revision_comment = parse_element(data, :text,   '/file/revision-comment')
@@ -1210,6 +1236,17 @@ def file_aux(action, opts = {})
           ob.errors.add("License type")
           return rest_response(400, :object => ob)
         end
+      end
+    end
+
+    # file name
+
+    if filename && !filename.blank?
+      ob.local_name = filename
+    else
+      if ob.local_name.blank?
+        ob.errors.add("Filename", "missing")
+        return rest_response(400, :object => ob)
       end
     end
    
@@ -1290,7 +1327,22 @@ def pack_aux(action, opts = {})
   case action
     when 'create':
       return rest_response(401, :reason => "Not authorised to create a pack") unless Authorization.check('create', Pack, opts[:user], nil)
-      ob = Pack.new(:contributor => opts[:user])
+      if id = opts[:query]['id']
+        ob = Pack.find_by_id(id)
+        if ob.nil?
+          return rest_response(404, :reason => "Couldn't find a Pack with id #{id}")
+        else
+          if Authorization.check('edit', ob, opts[:user])
+            ob.snapshot!
+            return rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
+          else
+            return rest_response(401, :reason => "Not authorised to snapshot pack #{id}")
+          end
+        end
+      else
+        ob = Pack.new(:contributor => opts[:user])
+      end
+
     when 'view', 'edit', 'destroy':
       ob, error = obtain_rest_resource('Pack', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
@@ -1427,6 +1479,9 @@ def internal_pack_item_aux(action, opts = {})
     pack          = parse_element(data, :resource, '/internal-pack-item/pack')
     item          = parse_element(data, :resource, '/internal-pack-item/item')
     comment       = parse_element(data, :text,     '/internal-pack-item/comment')
+
+    version_node  = data.find_first('/internal-pack-item/item/@version')
+    version       = version_node ? version_node.value.to_i : nil
   end
 
   # Obtain object
@@ -1440,7 +1495,8 @@ def internal_pack_item_aux(action, opts = {})
       ob = PackContributableEntry.new(:user => opts[:user],
           :pack          => pack,
           :contributable => item,
-          :comment       => comment)
+          :comment       => comment,
+          :contributable_version => version)
 
     when 'view', 'edit', 'destroy':
 
@@ -2289,7 +2345,129 @@ def rest_call_request(opts)
   begin
     send(opts[:rules]['Function'], opts)
   rescue
-    return rest_response(500)
+    if Rails.env == "production"
+      return rest_response(500)
+    else
+      raise
+    end
   end
 end
 
+
+# Component Querying
+def get_components(opts)
+  query = opts[:query]
+
+  annotations = query['annotations']  # annotations on workflow itself
+  # annotations on workflow features
+  inputs = query["input"]
+  outputs = query["output"]
+  processors = query["processor"]
+
+  # Filter workflow set
+  pivot, problem = calculate_pivot(
+      :pivot_options  => Conf.pivot_options,
+      :params         => query,
+      :user           => opts[:user],
+      :search_models  => [Workflow],
+      :no_pagination  => true,
+      :locked_filters => { 'CATEGORY' => 'Workflow' },
+      :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
+                          "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
+                          "CURATION_EVENT", "SERVICE_PROVIDER",
+                          "SERVICE_COUNTRY", "SERVICE_STATUS"])
+
+  workflow_ids = pivot[:results].map {|r| r.is_a?(SearchResult) ? r.result_id : r.contributable_id }
+
+  begin
+    matches = filter_by_semantic_annotations(workflow_ids, inputs, outputs, processors, annotations)
+  rescue RuntimeError => e
+    if e.message == "Bad Syntax"
+      return rest_response(400)
+    else
+      raise e
+    end
+  end
+
+  # Render
+  produce_rest_list(opts[:uri], opts[:rules], query, matches, "workflows", [], opts[:user])
+end
+
+
+private
+
+# Here be dragons!
+def filter_by_semantic_annotations(workflow_ids, inputs, outputs, processors, annotations)
+
+  # This method returns an array of workflow ids for workflows that possess all of the specified features.
+  def get_workflow_feature_matches(workflow_ids, features, model, query_conditions, query_conditions_excluding)
+    # "features" is an array of sets of annotations to be queried, in the form [ '"<ann1>","<ann2>"' , '"<ann3>"' ]
+    # Where "<ann1>" etc. is in the form "pred1 obj1", where pred1 and obj1 are the predicate and object parts of an RDF triple, respectively..
+    # The above example states that the workflow must have a <feature> that has annotations "pred1 obj1" and "pred2 obj2", AND
+    # another, different <feature> with "pred3 obj3".
+
+    selected = []
+    feature_matches = features.collect do |key,set|
+      raise "Bad Syntax" unless set =~ /^("[^ ]+ [^"]+")(,"[^ ]+ [^"]+")*$/
+
+      feature_annotations = set.split('","').collect {|a| a.gsub('"','')}
+      # "<ann1>", "<ann2>" (example)
+      matching_features = feature_annotations.collect { |a|
+        # Find all <features> with semantic annotation "<predicate> <object>" (example)
+        predicate, object = a.split(" ", 2)
+        unless selected.empty?
+          model.find(:all, :include => :semantic_annotations,
+                           :conditions => [query_conditions, workflow_ids, predicate, object, selected])
+        else
+          model.find(:all, :include => :semantic_annotations,
+                           :conditions => [query_conditions_excluding, workflow_ids, predicate, object])
+        end
+
+      }.inject {|f, matches| matches & f} # Get the intersection of <features> that have each annotation.
+                                          #   ie. the set of <features> that have ALL the required annotations
+      selected += matching_features
+      matching_features.collect {|wp| wp.workflow_id} # Get the workflows that those features belong to
+    end
+
+    feature_matches.inject {|matches, matches_all| matches_all & matches}
+  end
+
+
+  # Filter for workflows that have the required inputs
+  if inputs
+    workflow_ids = workflow_ids & get_workflow_feature_matches(workflow_ids, inputs, WorkflowPort,
+                                    "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND port_type = 'input' AND workflow_ports.id NOT IN (?)",
+                                    "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND port_type = 'input'")
+  end
+
+  # Filter for workflows that have the required outputs
+  if outputs
+    workflow_ids = workflow_ids & get_workflow_feature_matches(workflow_ids, outputs, WorkflowPort,
+                                    "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND port_type = 'output' AND workflow_ports.id NOT IN (?)",
+                                    "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND port_type = 'output'")
+  end
+
+  # Filter for workflows that have the required processors
+  if processors
+    workflow_ids = workflow_ids & get_workflow_feature_matches(workflow_ids, processors, WorkflowProcessor,
+                                    "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ? AND workflow_processors.id NOT IN (?)",
+                                    "workflow_id IN (?) AND semantic_annotations.predicate = ? AND semantic_annotations.object = ?")
+  end
+
+  # Filter for workflows that have the required semantic annotations
+  unless annotations.blank?
+    raise "Bad Syntax" unless annotations =~ /^("[^ ]+ [^"]+")(,"[^ ]+ [^"]+")*$/
+
+    annotations = annotations.split('","').collect {|a| a.gsub('"','')}
+
+    matches_semantic_annotation_requirements = annotations.collect { |a|
+      predicate, object = a.split(" ", 2)
+      SemanticAnnotation.find_all_by_predicate_and_object_and_subject_type(predicate, object, "Workflow").map {|a| a.subject_id}
+    }
+
+    workflow_ids = workflow_ids & matches_semantic_annotation_requirements.inject {|matches, matches_all| matches_all & matches}
+  end
+
+  # Workflows that match ALL the requirements - the intersection of all the sub arrays.
+  Workflow.find_all_by_id(workflow_ids)
+end

@@ -3,6 +3,8 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'recaptcha'
+
 class NetworksController < ApplicationController
 
   include ApplicationHelper
@@ -402,6 +404,9 @@ class NetworksController < ApplicationController
 
   # POST /networks
   def create
+
+    params[:network][:user_id] = current_user.id
+
     @network = Network.new(params[:network])
 
     respond_to do |format|
@@ -421,6 +426,9 @@ class NetworksController < ApplicationController
 
   # PUT /networks/1
   def update
+
+    params[:network].delete(:user_id)
+
     respond_to do |format|
       if @network.update_attributes(params[:network])
         @network.refresh_tags(convert_tags_to_gem_format(params[:network][:tag_list]), current_user) if params[:network][:tag_list]
@@ -497,9 +505,12 @@ protected
 
   def find_network_auth_owner
     begin
-      @network = Network.find(params[:id], :conditions => ["networks.user_id = ?", current_user.id], :include => [ :owner, :memberships ])
+      @network = Network.find(params[:id], :include => [ :owner, :memberships ])
+      unless @network.owner == current_user || current_user.admin?
+        error("Group not found (id not authorized)", "is invalid (not group administrator)")
+      end
     rescue ActiveRecord::RecordNotFound
-      error("Group not found (id not authorized)", "is invalid (not group adminsitrator)")
+      error("Group not found (id not authorized)", "is invalid (not group administrator)")
     end
   end
   

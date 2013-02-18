@@ -110,6 +110,9 @@ class OauthController < ApplicationController
       flash[:notice]="Client Application successfully registered!"
       redirect_to :action=>"show",:id=>@client_application.id
     else
+      @permissions = TABLES['REST'][:data]
+      @permissions=@permissions.sort
+      @permissions_for=params[:key_permissions]
       render :action=>"new"
     end
   end

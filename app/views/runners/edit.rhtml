@@ -25,7 +25,7 @@
 				<%= text_field_tag "runner[username]", @runner.username, :size => 30 %>
 				
 				<p><b>Password</b> (will be encrypted)</p>
-				<%= text_field_tag "runner[password]", @runner.crypted_password.decrypt, :size => 30 %>
+				<%= text_field_tag "runner[password]", @runner.password.decrypt, :size => 30 %>
 			</fieldset>
 			
 			<br/>

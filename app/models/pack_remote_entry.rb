@@ -19,7 +19,7 @@ class PackRemoteEntry < ActiveRecord::Base
   after_destroy :touch_pack
 
   def check_unique
-    if PackRemoteEntry.find(:first, :conditions => ["pack_id = ? AND uri = ?", self.pack_id, self.uri])
+    if PackRemoteEntry.find(:first, :conditions => ["pack_id = ? AND version = ? AND uri = ?", self.pack_id, self.version, self.uri])
       errors.add_to_base("This external link already exists in the pack")
       return false
     else

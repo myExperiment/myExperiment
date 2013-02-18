@@ -1,6 +1,6 @@
 <% t "New" -%>
 
-<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 <%= javascript_include_tag "osp.js" %>
 
 <h1>Upload File</h1>
@@ -28,7 +28,7 @@
   	<strong>Description: </strong>
 	</p>
 	<center>
-		<%= fckeditor_textarea(:blob, :body, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
+		<%= text_area_tag('blob[body]', nil, :width => '600px', :height => '300px', :class => 'ckeditor') %>
 	</center>
 
   <br />

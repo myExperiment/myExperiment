@@ -1,7 +1,7 @@
 # Be sure to restart your server when you modify this file
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.14' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.17' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -26,7 +26,6 @@ Rails::Initializer.run do |config|
   # :all can be used as a placeholder for all plugins not explicitly named
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
   config.plugins = [
-    :encrypted_strings,
     :widgets,
     :country_select,
     :white_list,
@@ -37,17 +36,12 @@ Rails::Initializer.run do |config|
     :acts_as_solr,
     :acts_as_taggable_redux,
     :auto_complete,
-    :encrypted_attributes,
-    :fckeditor,
     :headliner,
     :oauth,
     :oauth_plugin,
     :open_id_authentication,
     :paginating_find,
-    :query_stats,
-    :recaptcha,
     :simile_timeline,
-    :structured_data,
     :validates_email_veracity_of,
     :versioning,
   ]

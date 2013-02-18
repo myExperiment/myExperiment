@@ -29,7 +29,11 @@ class SearchController < ApplicationController
     end
 
     if @type == "all"
-      search_all
+      if shortcut = Conf.shortcut_keywords[params[:query].downcase]
+        redirect_to(shortcut)
+      else
+        search_all
+      end
     else
       case params[:type]
       when 'workflows'
@@ -185,10 +189,12 @@ private
   def search_all
 
     @query = params[:query]
+    pivot_options = Conf.pivot_options.dup
+    pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
 
     @pivot, problem = calculate_pivot(
 
-        :pivot_options    => Conf.pivot_options,
+        :pivot_options    => pivot_options,
         :params           => params,
         :user             => current_user,
         :search_models    => [Workflow, Blob, Pack, User, Network, Service],

@@ -41,7 +41,7 @@ contributor_models: [User, Network]
 # contributable_models - These are the models for the things that myExperiment
 #                        contributors can contribute.
 
-contributable_models: [Workflow, Blob, Pack, Blog, ResearchObject]
+contributable_models: [Workflow, Blob, Pack, ResearchObject]
 
 # page_template - This is the page template for all the pages except for
 #                 the front page of the web site.
@@ -160,10 +160,6 @@ main_tabs:
   - label:      Packs
     link:       /packs
     controller: packs
-
-  - label:      Services
-    link:       /services
-    controller: services
 
 # new_menu - Set "new_menu" with the details of each kind of thing to appear in
 #            the New/Upload gadget.
@@ -540,6 +536,7 @@ pivot_options:
     topic_workflow_map: INNER JOIN topic_workflow_map ON contributions.id = topic_workflow_map.workflow_id
     users: INNER JOIN users ON contributions.contributor_type = 'User' AND contributions.contributor_id = users.id
     licences: LEFT OUTER JOIN licenses ON contributions.license_id = licenses.id
+    component_profiles: LEFT OUTER JOIN workflows ON RESULT_TYPE = 'Workflow' AND workflows.id = RESULT_ID LEFT OUTER JOIN component_profiles ON workflows.component_profile_id = component_profiles.id
 
   order:
 
@@ -663,7 +660,22 @@ pivot_options:
     label_column: services.monitor_label
     joins: [services]
 
+  - query_option: COMPONENT_PROFILE_ID
+    title: component profile
+    id_column: component_profiles.id
+    label_column: component_profiles.name
+    joins: [component_profiles]
+
   num_options: ["10", "20", "25", "50", "100"]
+
+# Shortcut keywords
+#   These are special keywords that, when typed into the search box (when 'All' is selected) will instantly jump to a
+#   specified page instead of returning a list of search results.
+#
+# Example (when 'biovel' is searched for, it will jump to the group's page):
+#
+# shortcut_keywords:
+#   biovel: /groups/643
 
 research_object_endpoints:
 
@@ -719,3 +731,4 @@ ro_terms:
 checklist:
     minim: "http://sandbox.wf4ever-project.org/rodl/ROs/Y2Demo-test/workflow-experiment-checklist.rdf"
     minim_purpose: "ready-to-release"
+

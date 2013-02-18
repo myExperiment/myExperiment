@@ -203,9 +203,16 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       format.html do
 
+        @query = params[:query]
+        @query_type = 'workflows'
+        pivot_options = Conf.pivot_options.dup
+        unless @query.blank?
+          pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
+        end
+
         @pivot, problem = calculate_pivot(
 
-            :pivot_options  => Conf.pivot_options,
+            :pivot_options  => pivot_options,
             :params         => params,
             :user           => current_user,
             :search_models  => [Workflow],
@@ -219,9 +226,6 @@ class WorkflowsController < ApplicationController
                                 "SERVICE_COUNTRY", "SERVICE_STATUS"])
 
         flash.now[:error] = problem if problem
-
-        @query = params[:query]
-        @query_type = 'workflows'
 
       end
       format.rss do
@@ -361,12 +365,11 @@ class WorkflowsController < ApplicationController
         update_credits(@workflow, params)
         update_attributions(@workflow, params)
 
-        update_layout(@workflow, params[:layout])
-        
         # Refresh the types handler list of types if a new type was supplied this time.
         WorkflowTypesHandler.refresh_all_known_types! if params[:workflow][:type] == 'other'
 
         if policy_err_msg.blank?
+          update_layout(@workflow, params[:layout]) unless params[:policy_type] == "group"
         	flash[:notice] = 'Workflow was successfully created.'
           format.html {
             if (@workflow.get_tag_suggestions.length > 0 || (@workflow.body.nil? || @workflow.body == ''))
@@ -544,9 +547,8 @@ class WorkflowsController < ApplicationController
         update_credits(@workflow, params)
         update_attributions(@workflow, params)
 
-        update_layout(@workflow, params[:layout])
-
         if policy_err_msg.blank?
+          update_layout(@workflow, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Workflow was successfully updated.'
           format.html { redirect_to workflow_url(@workflow) }
         else

@@ -5,8 +5,8 @@ class AddIndexesToFrequentlyUsedTables < ActiveRecord::Migration
 
     add_index :workflow_versions, ["workflow_id"], :name => "workflow_versions_workflow_id_index"
 
-    add_index :contributions, ["contributable_id", "contributable_type"], :name => "contributions_contributable_index"
-    add_index :contributions, ["contributor_id",   "contributor_type"],   :name => "contributions_contributor_index"
+#   add_index :contributions, ["contributable_id", "contributable_type"], :name => "contributions_contributable_index"
+#   add_index :contributions, ["contributor_id",   "contributor_type"],   :name => "contributions_contributor_index"
 
     add_index :memberships, ["user_id"],    :name => "memberships_user_id_index"
     add_index :memberships, ["network_id"], :name => "memberships_network_id_index"
@@ -25,8 +25,8 @@ class AddIndexesToFrequentlyUsedTables < ActiveRecord::Migration
 
     remove_index :workflow_versions, :name => "workflow_versions_workflow_id_index"
 
-    remove_index :contributions, :name => "contributions_contributable_index"
-    remove_index :contributions, :name => "contributions_contributor_index"
+#   remove_index :contributions, :name => "contributions_contributable_index"
+#   remove_index :contributions, :name => "contributions_contributor_index"
 
     remove_index :memberships, :name => "memberships_user_id_index"
     remove_index :memberships, :name => "memberships_network_id_index"

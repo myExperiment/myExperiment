@@ -38,7 +38,7 @@ class BlobsController < ApplicationController
     
     send_data(@version.content_blob.data, :filename => @version.local_name, :type => @version.content_type.mime_type)
     
-    #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type.mime_type)
+    #send_file("#{Rails.root}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type.mime_type)
   end
 
   # GET /files/:id/download/:name
@@ -68,6 +68,13 @@ class BlobsController < ApplicationController
     respond_to do |format|
       format.html {
 
+        @query = params[:query]
+        @query_type = 'files'
+        pivot_options = Conf.pivot_options.dup
+        unless @query.blank?
+          pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
+        end
+
         @pivot, problem = calculate_pivot(
 
             :pivot_options  => Conf.pivot_options,
@@ -84,9 +91,6 @@ class BlobsController < ApplicationController
                                 "SERVICE_COUNTRY", "SERVICE_STATUS"])
 
         flash.now[:error] = problem if problem
-
-        @query = params[:query]
-        @query_type = 'files'
 
         # index.rhtml
       }
@@ -148,7 +152,10 @@ class BlobsController < ApplicationController
       @blob = Blob.new(params[:blob])
       @blob.content_blob = ContentBlob.new(:data => data)
 
-      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user, :mime_type => content_type, :category=> 'Blob')
+      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user,
+                                                                   :title => content_type,
+                                                                   :mime_type => content_type,
+                                                                   :category=> 'Blob')
 
       respond_to do |format|
         if @blob.save
@@ -161,13 +168,12 @@ class BlobsController < ApplicationController
           @blob.contribution.update_attributes(params[:contribution])
         
           policy_err_msg = update_policy(@blob, params)
-          update_layout(@blob, params[:layout])
-        
+
           update_credits(@blob, params)
           update_attributions(@blob, params)
         
           if policy_err_msg.blank?
-
+            update_layout(@blob, params[:layout]) unless params[:policy_type] == "group"
             @version = @blob.find_version(1)
 
             format.html {
@@ -211,7 +217,10 @@ class BlobsController < ApplicationController
     if params[:blob][:data] && params[:blob][:data].size > 0
       @blob.build_content_blob(:data => params[:blob][:data].read)
       @blob.local_name = params[:blob][:data].original_filename
-      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user, :title => params[:blob][:data].content_type, :mime_type => params[:blob][:data].content_type, :category => 'Blob')
+      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user,
+                                                                   :title => params[:blob][:data].content_type,
+                                                                   :mime_type => params[:blob][:data].content_type,
+                                                                   :category => 'Blob')
     end
 
     params[:blob].delete(:data)
@@ -223,9 +232,10 @@ class BlobsController < ApplicationController
         policy_err_msg = update_policy(@blob, params)
         update_credits(@blob, params)
         update_attributions(@blob, params)
-        update_layout(@blob, params[:layout])
-        
+
         if policy_err_msg.blank?
+          update_layout(@blob, params[:layout]) unless params[:policy_type] == "group"
+
           format.html {
 
             if @blob.new_version_number

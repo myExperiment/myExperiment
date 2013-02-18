@@ -191,6 +191,7 @@ class ApiControllerTest < ActionController::TestCase
         <title>#{title}</title>
         <description>#{description}</description>
         <license-type>#{license_type}</license-type>
+        <filename>test.txt</filename>
         <content-type>#{content_type}</content-type>
         <content>#{content}</content>
       </file>")
@@ -1011,6 +1012,74 @@ class ApiControllerTest < ActionController::TestCase
     rest_request(:get, 'relationship', nil, "id" => relationship.id)
 
     assert_response(:not_found)
+  end
+
+  # component querying
+
+  def test_basic_component_query
+    login_as(:john)
+
+    resp = rest_request(:get, 'components', nil, {"input" => {"0" => '"http://scape-project.eu/pc/vocab/profiles#hasPortType http://scape-project.eu/pc/vocab/profiles#FromURIPort"'}})
+
+    assert_response(:success)
+    assert_equal 2, resp.find('//workflow').size
+    assert_equal [3,4], resp.find('//workflow').map {|w| w['uri'].split('?id=').last.to_i}
+  end
+
+  def test_two_annotation_component_query
+    login_as(:john)
+
+    anns = '"http://scape-project.eu/pc/vocab/profiles#hasPortType http://scape-project.eu/pc/vocab/profiles#FromURIPort"' +
+          ',"http://scape-project.eu/pc/vocab/profiles#hasFish http://scape-project.eu/pc/vocab/profiles#CornishSardine"'
+    resp = rest_request(:get, 'components', nil, {"input" => {"0" => anns}})
+
+    assert_response(:success)
+    assert_equal 1, resp.find('//workflow').size
+    assert_equal 4, resp.find('//workflow').first['uri'].split('?id=').last.to_i
+  end
+
+  def test_two_feature_component_query
+    login_as(:john)
+
+    resp = rest_request(:get, 'components', nil, {'input' => {'0' => '"http://scape-project.eu/pc/vocab/profiles#hasPortType http://scape-project.eu/pc/vocab/profiles#FromURIPort"',
+                                                              '1' => '"http://scape-project.eu/pc/vocab/profiles#hasPortType http://scape-project.eu/pc/vocab/profiles#ToURIPort"'}
+                                                 })
+
+    assert_response(:success)
+    assert_equal 1, resp.find('//workflow').size
+    assert_equal 3, resp.find('//workflow').first['uri'].split('?id=').last.to_i
+  end
+
+  def test_verbose_component_query
+    login_as(:john)
+
+    resp = rest_request(:get, 'components', nil, {'input' => {'0' => '"http://scape-project.eu/pc/vocab/profiles#hasPortType http://scape-project.eu/pc/vocab/profiles#FromURIPort"',
+                                                              '1' => '"http://scape-project.eu/pc/vocab/profiles#hasPortType http://scape-project.eu/pc/vocab/profiles#ToURIPort"'},
+                                                  'processor' => {'0' => '"http://scape-project.eu/pc/vocab/profiles#hasDependency http://scape-project.eu/pc/vocab/profiles#imagemagick-image2tiff"'},
+                                                  'annotations' => '"http://scape-project.eu/pc/vocab/profiles#hasMigrationPath http://scape-project.eu/pc/vocab/profiles#jpegToTiff"'
+                                                 })
+
+    assert_response(:success)
+    assert_equal 1, resp.find('//workflow').size
+    assert_equal 3, resp.find('//workflow').first['uri'].split('?id=').last.to_i
+  end
+
+  def test_component_query_with_filters
+    login_as(:john)
+
+    resp = rest_request(:get, 'components', nil, {"input" => {"0" => '"http://scape-project.eu/pc/vocab/profiles#hasPortType http://scape-project.eu/pc/vocab/profiles#FromURIPort"'},
+                                                  "filter" => 'USER_ID("2")'})
+
+    assert_response(:success)
+    assert_equal 1, resp.find('//workflow').size
+    assert_equal 4, resp.find('//workflow').last['uri'].split('?id=').last.to_i
+
+    resp = rest_request(:get, 'components', nil, {"input" => {"0" => '"http://scape-project.eu/pc/vocab/profiles#hasPortType http://scape-project.eu/pc/vocab/profiles#FromURIPort"'},
+                                                  "filter" => 'USER_ID("1")'})
+
+    assert_response(:success)
+    assert_equal 1, resp.find('//workflow').size
+    assert_equal 3, resp.find('//workflow').last['uri'].split('?id=').last.to_i
   end
 
   private

@@ -34,7 +34,7 @@ class ROSRS::Session
       # class so that we can tell if we've read the manifest already whilst
       # serving this request.
 
-      return false if uri.ends_with?("manifest.rdf") && Thread.current.read_manifest == false
+#     return false if uri.ends_with?("manifest.rdf") && Thread.current.read_manifest == false
 
       File.exist?(cache_file_name(uri))
     end

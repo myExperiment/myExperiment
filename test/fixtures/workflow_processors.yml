@@ -1,0 +1,5 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+migration_tool:
+  id: 1
+  name: Tool
+  workflow_id: 3

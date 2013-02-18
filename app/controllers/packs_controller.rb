@@ -41,6 +41,13 @@ class PacksController < ApplicationController
     respond_to do |format|
       format.html {
 
+        @query = params[:query]
+        @query_type = 'packs'
+        pivot_options = Conf.pivot_options.dup
+        unless @query.blank?
+          pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
+        end
+
         @pivot, problem = calculate_pivot(
 
             :pivot_options  => Conf.pivot_options,
@@ -57,9 +64,6 @@ class PacksController < ApplicationController
                                 "SERVICE_COUNTRY", "SERVICE_STATUS"])
 
         flash.now[:error] = problem if problem
-
-        @query = params[:query]
-        @query_type = 'packs'
 
         # index.rhtml
       }
@@ -357,9 +361,8 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
 
         # update policy
         policy_err_msg = update_policy(@pack, params)
-        update_layout(@pack, params[:layout])
-        
         if policy_err_msg.blank?
+          update_layout(@pack, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Pack was successfully created.'
           format.html { redirect_to pack_url(@pack) }
         else
@@ -392,9 +395,8 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
         
         @pack.refresh_tags(convert_tags_to_gem_format(params[:pack][:tag_list]), current_user) if params[:pack][:tag_list]
         policy_err_msg = update_policy(@pack, params)
-        update_layout(@pack, params[:layout])
-        
         if policy_err_msg.blank?
+          update_layout(@pack, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Pack was successfully updated.'
           format.html { redirect_to pack_url(@pack) }
         else
@@ -635,6 +637,24 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
     end
   end
   
+  def snapshot
+
+    success = @pack.snapshot!
+
+    respond_to do |format|
+      format.html {
+        if success
+          @pack.reload
+          flash[:notice] = 'Pack snapshot was successfully created.'
+          redirect_to pack_version_path(@pack, @pack.versions.last.version)
+        else
+          flash[:error] = 'There was a problem with creating the snapshot.'
+          redirect_to pack_path(@pack)
+        end
+      }
+    end
+  end
+
   protected
   
   # Check that a protocol is specified in the URI; prepend HTTP:// otherwise
@@ -681,7 +701,8 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
       "statistics"         => "view",
       "tag"                => "view",
       "update"             => "edit",
-      "update_item"        => "edit"
+      "update_item"        => "edit",
+      "snapshot"           => "edit"
     }
 
     pack = Pack.find(params[:id])
@@ -689,6 +710,8 @@ puts "    [params[:resource_path], resource_uri] = #{    [params[:resource_path]
     if Authorization.check(action_permissions[action_name], pack, current_user)
       @pack = pack
       
+      @version = @pack.find_version(params[:version]) if params[:version]
+
       @authorised_to_edit = logged_in? && Authorization.check("edit", @pack, current_user)
       @authorised_to_download = Authorization.check("download", @pack, current_user)
       

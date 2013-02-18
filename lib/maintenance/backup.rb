@@ -119,8 +119,6 @@ module Maintenance::Backup
       table(:model => Attribution,            :filter  => true, :auth_object => "attributable")
       table(:name  => "auto_tables")
       table(:model => Blob,                   :filter  => true)
-      table(:model => Blog,                   :no_data => true)
-      table(:model => BlogPost,               :no_data => true)
       table(:model => Bookmark)
       table(:model => Citation,               :filter  => true, :auth_object => "workflow")
       table(:model => ClientApplication,      :no_data => true)

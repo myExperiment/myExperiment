@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-gem "rails", "2.3.14"
+gem "rails", "2.3.17"
 gem "mysql", "~> 2.8.1"
 gem "rubyzip", "~> 0.9.4"
 gem "oauth", "~> 0.4.3"
@@ -21,6 +21,8 @@ gem "rdf", "~> 0.3.4.1"
 gem "rdf-raptor", "~> 0.4.1"
 gem "rdf-n3"
 gem "recaptcha", "~> 0.3.4"
+gem "encrypted_strings", "~> 0.3.3"
+gem "encrypted_attributes", "~> 0.4.1"
 gem "wf4ever-transformation-client", "~> 0.3.0"
 gem "wf4ever-rosrs-client", "~> 0.2.0"
 

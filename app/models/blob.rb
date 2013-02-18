@@ -32,8 +32,7 @@ class Blob < ActiveRecord::Base
 
     :mutable => [ :title, :body, :body_html ]
 
-  acts_as_solr(:fields => [:title, :local_name, :body, :kind, :contributor_name, :tag_list],
-               :boost => "rank",
+  acts_as_solr(:fields => [{:title => {:boost => 2.0}}, :local_name, :body, :kind, :contributor_name, :tag_list],
                :include => [ :comments ]) if Conf.solr_enable
 
   belongs_to :content_blob, :dependent => :destroy
@@ -44,6 +43,7 @@ class Blob < ActiveRecord::Base
   validates_presence_of :content_type
 
   validates_presence_of :title
+  validates_presence_of :local_name
 
   validates_each :content_blob do |record, attr, value|
     if value.data.size > Conf.max_upload_size

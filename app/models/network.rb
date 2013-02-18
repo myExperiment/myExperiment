@@ -17,10 +17,10 @@ class Network < ActiveRecord::Base
   acts_as_taggable
   
   has_many :blobs, :as => :contributor
-  has_many :blogs, :as => :contributor
   has_many :workflows, :as => :contributor
+  has_many :policies, :as => :contributor
   
-  acts_as_solr(:fields => [ :title, :unique_name, :owner_name, :description, :tag_list ],
+  acts_as_solr(:fields => [ {:title => {:boost => 2.0}}, :unique_name, :owner_name, :description, :tag_list ],
                :include => [ :comments ]) if Conf.solr_enable
 
   format_attribute :description

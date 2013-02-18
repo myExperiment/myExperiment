@@ -1,4 +1,6 @@
 
+require 'wf4ever/rosrs_client'
+
 class ROSRS::RDFGraph
   attr_accessor :graph
 end
