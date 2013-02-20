@@ -1857,6 +1857,52 @@ def effective_privileges(ob, user, query)
   privileges
 end
 
+# Permissions - only visible to users with edit permissions
+
+def permissions(ob, user, query)
+
+  def permission_node(view, download, edit, category, id = nil)
+    node = LibXML::XML::Node.new('permission')
+    category_node = LibXML::XML::Node.new('category')
+    category_node << category
+    node << category_node
+    if id
+      id_node = LibXML::XML::Node.new('category')
+      id_node << id
+      node << id_node
+    end
+    if view
+      privilege = LibXML::XML::Node.new('privilege')
+      privilege['type'] = "view"
+      node << privilege
+    end
+    if download
+      privilege = LibXML::XML::Node.new('privilege')
+      privilege['type'] = "download"
+      node << privilege
+    end
+    if edit
+      privilege = LibXML::XML::Node.new('privilege')
+      privilege['type'] = "edit"
+      node << privilege
+    end
+
+    node
+  end
+
+  permissions = LibXML::XML::Node.new('permissions')
+  permissions << permission_node([0,1,2].include?(ob.contribution.policy.share_mode),
+                                 ob.contribution.policy.share_mode == 0,
+                                 false,
+                                 'public')
+
+  ob.contribution.policy.permissions.select {|p| p.contributor_type == "Network"}.each do |perm|
+    permissions << permission_node(perm.view, perm.download, perm.edit, 'group', perm.contributor_id)
+  end
+
+  permissions
+end
+
 # Comments
 
 def comment_aux(action, opts)
