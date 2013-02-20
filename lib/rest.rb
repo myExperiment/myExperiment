@@ -1861,7 +1861,7 @@ end
 
 def permissions(ob, user, query)
 
-  def permission_node(view, download, edit, category, id = nil)
+  def permission_node(view, download, edit, category, id = nil, layout = false)
     node = LibXML::XML::Node.new('permission')
     category_node = LibXML::XML::Node.new('category')
     category_node << category
@@ -1886,8 +1886,17 @@ def permissions(ob, user, query)
       privilege['type'] = "edit"
       node << privilege
     end
+    if layout
+      use_layout_node = LibXML::XML::Node.new('use-layout')
+      use_layout_node << 'true'
+      node << use_layout_node
+    end
 
-    node
+    if view || edit || download
+      node
+    else
+      nil
+    end
   end
 
   permissions = LibXML::XML::Node.new('permissions')
@@ -1897,7 +1906,8 @@ def permissions(ob, user, query)
                                  'public')
 
   ob.contribution.policy.permissions.select {|p| p.contributor_type == "Network"}.each do |perm|
-    permissions << permission_node(perm.view, perm.download, perm.edit, 'group', perm.contributor_id)
+    permissions << permission_node(perm.view, perm.download, perm.edit, 'group', perm.contributor_id,
+                                   ob.contribution.policy.layout == perm.contributor.layout_name)
   end
 
   permissions
