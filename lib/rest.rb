@@ -1867,7 +1867,7 @@ def permissions(ob, user, query)
     category_node << category
     node << category_node
     if id
-      id_node = LibXML::XML::Node.new('category')
+      id_node = LibXML::XML::Node.new('id')
       id_node << id
       node << id_node
     end
