@@ -78,15 +78,15 @@ def parse_filter_expression(expr, pivot_options, opts = {})
     end
 
     case state | token
-      when STATE_INITIAL         | TOKEN_WORD   : state = STATE_EXPECT_OPEN     ; data << { :name => tokens[0], :expr => [] }
-      when STATE_EXPECT_OPEN     | TOKEN_OPEN   : state = STATE_EXPECT_STR
-      when STATE_EXPECT_STR      | TOKEN_STRING : state = STATE_EXPECT_EXPR_END ; data.last[:expr] << tokens[0]
-      when STATE_EXPECT_EXPR_END | TOKEN_AND    : state = STATE_EXPECT_STR      ; data.last[:expr] << :and
-      when STATE_EXPECT_EXPR_END | TOKEN_OR     : state = STATE_EXPECT_STR      ; data.last[:expr] << :or
-      when STATE_EXPECT_EXPR_END | TOKEN_CLOSE  : state = STATE_EXPECT_END
-      when STATE_EXPECT_END      | TOKEN_AND    : state = STATE_INITIAL         ; data << :and
-      when STATE_EXPECT_END      | TOKEN_OR     : state = STATE_INITIAL         ; data << :or
-      when STATE_EXPECT_END      | TOKEN_EOS    : state = STATE_COMPLETE
+      when STATE_INITIAL         | TOKEN_WORD   ; state = STATE_EXPECT_OPEN     ; data << { :name => tokens[0], :expr => [] }
+      when STATE_EXPECT_OPEN     | TOKEN_OPEN   ; state = STATE_EXPECT_STR
+      when STATE_EXPECT_STR      | TOKEN_STRING ; state = STATE_EXPECT_EXPR_END ; data.last[:expr] << tokens[0]
+      when STATE_EXPECT_EXPR_END | TOKEN_AND    ; state = STATE_EXPECT_STR      ; data.last[:expr] << :and
+      when STATE_EXPECT_EXPR_END | TOKEN_OR     ; state = STATE_EXPECT_STR      ; data.last[:expr] << :or
+      when STATE_EXPECT_EXPR_END | TOKEN_CLOSE  ; state = STATE_EXPECT_END
+      when STATE_EXPECT_END      | TOKEN_AND    ; state = STATE_INITIAL         ; data << :and
+      when STATE_EXPECT_END      | TOKEN_OR     ; state = STATE_INITIAL         ; data << :or
+      when STATE_EXPECT_END      | TOKEN_EOS    ; state = STATE_COMPLETE
 
       else raise "Error parsing query expression"
     end

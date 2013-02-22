@@ -75,13 +75,13 @@ def rest_response(code, args = {})
   message = "Unknown Error"
 
   case code
-    when 200: message = "OK"
-    when 307: message = "Temporary Redirect"
-    when 400: message = "Bad Request"
-    when 401: message = "Unauthorized"
-    when 403: message = "Forbidden"
-    when 404: message = "Not Found"
-    when 500: message = "Internal Server Error"
+    when 200; message = "OK"
+    when 307; message = "Temporary Redirect"
+    when 400; message = "Bad Request"
+    when 401; message = "Unauthorized"
+    when 403; message = "Forbidden"
+    when 404; message = "Not Found"
+    when 500; message = "Internal Server Error"
   end
 
   if (code >= 300) && (code < 400)
@@ -1008,14 +1008,14 @@ def workflow_aux(action, opts = {})
   # Obtain object
 
   case action
-    when 'create':
+    when 'create';
       return rest_response(401, :reason => "Not authorised to create a workflow") unless Authorization.check('create', Workflow, opts[:user], nil)
       if opts[:query]['id']
         ob, error = obtain_rest_resource('Workflow', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
       else
         ob = Workflow.new(:contributor => opts[:user])
       end
-    when 'view', 'edit', 'destroy':
+    when 'view', 'edit', 'destroy';
       ob, error = obtain_rest_resource('Workflow', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -1185,14 +1185,14 @@ def file_aux(action, opts = {})
   # Obtain object
 
   case action
-    when 'create':
+    when 'create';
       return rest_response(401, :reason => "Not authorised to create a file") unless Authorization.check('create', Blob, opts[:user], nil)
       if opts[:query]['id']
         ob, error = obtain_rest_resource('Blob', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
       else
         ob = Blob.new(:contributor => opts[:user])
       end
-    when 'view', 'edit', 'destroy':
+    when 'view', 'edit', 'destroy';
       ob, error = obtain_rest_resource('Blob', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -1325,7 +1325,7 @@ def pack_aux(action, opts = {})
   # Obtain object
 
   case action
-    when 'create':
+    when 'create';
       return rest_response(401, :reason => "Not authorised to create a pack") unless Authorization.check('create', Pack, opts[:user], nil)
       if id = opts[:query]['id']
         ob = Pack.find_by_id(id)
@@ -1343,7 +1343,7 @@ def pack_aux(action, opts = {})
         ob = Pack.new(:contributor => opts[:user])
       end
 
-    when 'view', 'edit', 'destroy':
+    when 'view', 'edit', 'destroy';
       ob, error = obtain_rest_resource('Pack', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -1412,7 +1412,7 @@ def external_pack_item_aux(action, opts = {})
   # Obtain object
 
   case action
-    when 'create':
+    when 'create';
 
       return rest_response(401, :reason => "Not authorised to create an external pack item") unless Authorization.check('create', PackRemoteEntry, opts[:user], pack)
       return rest_response(400, :reason => "Pack not found") if pack.nil?
@@ -1425,7 +1425,7 @@ def external_pack_item_aux(action, opts = {})
           :alternate_uri => alternate_uri,
           :comment       => comment)
 
-    when 'view', 'edit', 'destroy':
+    when 'view', 'edit', 'destroy';
 
       ob, error = obtain_rest_resource('PackRemoteEntry', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
 
@@ -1487,7 +1487,7 @@ def internal_pack_item_aux(action, opts = {})
   # Obtain object
 
   case action
-    when 'create':
+    when 'create';
 
       return rest_response(401, :reason => "Not authorised to create an internal pack item") unless Authorization.check('create', PackContributableEntry, opts[:user], pack)
       return rest_response(400, :reason => "Pack not found") if pack.nil?
@@ -1498,7 +1498,7 @@ def internal_pack_item_aux(action, opts = {})
           :comment       => comment,
           :contributable_version => version)
 
-    when 'view', 'edit', 'destroy':
+    when 'view', 'edit', 'destroy';
 
       ob, error = obtain_rest_resource('PackContributableEntry', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
 
@@ -1606,9 +1606,9 @@ def search(opts)
     if bits.length == 4
 
       case bits[1]
-        when 'workflows': model = Workflow
-        when 'files': model = Blob
-        when 'packs': model = Pack
+        when 'workflows'; model = Workflow
+        when 'files'; model = Blob
+        when 'packs'; model = Pack
         else return rest_response(400, :reason => "Unknown category '#{bits[1]}'")
       end
 
@@ -1788,8 +1788,8 @@ end
 def whoami_redirect(opts)
   if opts[:user].class == User
     case opts[:format]
-      when "xml": rest_response(307, :location => rest_access_uri(opts[:user]))
-      when "rdf": rest_response(307, :location => formatted_user_url(:id => opts[:user].id, :format => 'rdf'))
+      when "xml"; rest_response(307, :location => rest_access_uri(opts[:user]))
+      when "rdf"; rest_response(307, :location => formatted_user_url(:id => opts[:user].id, :format => 'rdf'))
     end
   else
     rest_response(401, :reason => "Not logged in")
@@ -1928,11 +1928,11 @@ def comment_aux(action, opts)
   # Obtain object
 
   case action
-    when 'create':
+    when 'create';
       return rest_response(401, :reason => "Not authorised to create a comment") unless Authorization.check('create', Comment, opts[:user], subject)
 
       ob = Comment.new(:user => opts[:user])
-    when 'view', 'edit', 'destroy':
+    when 'view', 'edit', 'destroy';
       ob, error = obtain_rest_resource('Comment', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -2055,11 +2055,11 @@ def favourite_aux(action, opts)
   # Obtain object
 
   case action
-    when 'create':
+    when 'create';
       return rest_response(401, :reason => "Not authorised to create a favourite") unless Authorization.check('create', Bookmark, opts[:user], target)
 
       ob = Bookmark.new(:user => opts[:user])
-    when 'view', 'edit', 'destroy':
+    when 'view', 'edit', 'destroy';
       ob, error = obtain_rest_resource('Bookmark', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -2112,11 +2112,11 @@ def rating_aux(action, opts)
   # Obtain object
 
   case action
-    when 'create':
+    when 'create';
       return rest_response(401, :reason => "Not authorised to create a rating") unless Authorization.check('create', Rating, opts[:user], subject)
 
       ob = Rating.new(:user => opts[:user])
-    when 'view', 'edit', 'destroy':
+    when 'view', 'edit', 'destroy';
       ob, error = obtain_rest_resource('Rating', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -2172,11 +2172,11 @@ def tagging_aux(action, opts)
   # Obtain object
 
   case action
-    when 'create':
+    when 'create';
       return rest_response(401, :reason => "Not authorised to create a tagging") unless Authorization.check('create', Tagging, opts[:user], subject)
 
       ob = Tagging.new(:user => opts[:user])
-    when 'view', 'edit', 'destroy':
+    when 'view', 'edit', 'destroy';
       ob, error = obtain_rest_resource('Tagging', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -2219,10 +2219,10 @@ def ontology_aux(action, opts)
   # Obtain object
 
   case action
-    when 'create':
+    when 'create';
       return rest_response(401, :reason => "Not authorised to create an ontology") unless Authorization.check('create', Ontology, opts[:user], nil)
       ob = Ontology.new(:user => opts[:user])
-    when 'view', 'edit', 'destroy':
+    when 'view', 'edit', 'destroy';
       ob, error = obtain_rest_resource('Ontology', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -2289,10 +2289,10 @@ def predicate_aux(action, opts)
   # Obtain object
 
   case action
-    when 'create':
+    when 'create';
       return rest_response(401, :reason => "Not authorised to create a predicate") unless Authorization.check('create', Predicate, opts[:user], ontology)
       ob = Predicate.new
-    when 'view', 'edit', 'destroy':
+    when 'view', 'edit', 'destroy';
       ob, error = obtain_rest_resource('Predicate', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
@@ -2351,10 +2351,10 @@ def relationship_aux(action, opts)
   # Obtain object
 
   case action
-    when 'create':
+    when 'create';
       return rest_response(401, :reason => "Not authorised to create a relationship") unless Authorization.check('create', Relationship, opts[:user], context)
       ob = Relationship.new(:user => opts[:user])
-    when 'view', 'edit', 'destroy':
+    when 'view', 'edit', 'destroy';
       ob, error = obtain_rest_resource('Relationship', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"

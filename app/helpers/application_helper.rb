@@ -1526,7 +1526,7 @@ protected
 
   def callback_url(item)
     item_url = nil
-    if session && session[:callback]:
+    if session && session[:callback]
       case session[:callback][:format]
       when 'uri'
         item_url = rest_resource_uri(item)
