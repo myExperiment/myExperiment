@@ -132,8 +132,7 @@ module WorkflowProcessors
     module Parser
 
       require "zip/zip"
-      ##require 'rdf'
-      ##require 'rdf/raptor'
+      require 'rdf/raptor'
 
       def self.parse(stream)
         begin
@@ -143,31 +142,31 @@ module WorkflowProcessors
 
             Zip::ZipFile.open(zip_file.path) do |zip|
               ebookdef = zip.read("ebookdef.ttl")
-              ##graph = RDF::Graph.new()
-              ##reader = RDF::Reader.for(:turtle).new(ebookdef)
-              ##graph << reader
-              ##ns_ebook = RDF::Vocabulary.new("http://purl.org/net/deep/ns#")
-              ##ns_dcterms = RDF::Vocabulary.new("http://purl.org/dc/terms/")
-              ##query = RDF::Query.new do
-              ##  pattern [:ebook, RDF.type, ns_ebook.EbookFile]
-              ##  pattern [:ebook, ns_dcterms.title, :title]
-              ##end
+              graph = RDF::Graph.new()
+              reader = RDF::Reader.for(:turtle).new(ebookdef)
+              graph << reader
+              ns_ebook = RDF::Vocabulary.new("http://purl.org/net/deep/ns#")
+              ns_dcterms = RDF::Vocabulary.new("http://purl.org/dc/terms/")
+              query = RDF::Query.new do
+                pattern [:ebook, RDF.type, ns_ebook.EbookFile]
+                pattern [:ebook, ns_dcterms.title, :title]
+              end
               ebook = nil
               title = nil
               desc = nil
-              ##query.execute(graph).each do |solution|
-              ##  ebook = solution.ebook
-              ##  title = solution.title.to_s
-              ##end
+              query.execute(graph).each do |solution|
+                ebook = solution.ebook
+                title = solution.title.to_s
+              end
 
-              ##return nil unless ebook
+              return nil unless ebook
 
-              ##query = RDF::Query.new do
-              ##  pattern [ebook, ns_dcterms.description, :desc]
-              ##end
-              ##query.execute(graph).each do |solution|
-              ##  desc = solution.desc.to_s
-              ##end
+              query = RDF::Query.new do
+                pattern [ebook, ns_dcterms.description, :desc]
+              end
+              query.execute(graph).each do |solution|
+                desc = solution.desc.to_s
+              end
               return create_model(ebook, title, desc)
             end
           end
