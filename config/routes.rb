@@ -1,4 +1,4 @@
-require 'lib/rest'
+require 'rest'
 
 ActionController::Routing::Routes.draw do |map|
 

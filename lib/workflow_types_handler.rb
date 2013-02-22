@@ -6,7 +6,7 @@
 # Helper class to deal with Workflow types and processors.
 # Note that workflow types can exist that don't have corresponding processors.
 
-require 'lib/workflow_processors/interface'
+require 'workflow_processors/interface'
 
 class WorkflowTypesHandler
   

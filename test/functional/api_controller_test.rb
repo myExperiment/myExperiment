@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'api_controller'
 require 'xml/libxml'
-require 'lib/rest'
+require 'rest'
 
 include ActionView::Helpers::UrlHelper
 include ActionController::UrlWriter

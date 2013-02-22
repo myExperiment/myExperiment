@@ -10,7 +10,7 @@ require 'acts_as_attributor'
 require 'acts_as_attributable'
 require 'acts_as_reviewable'
 require 'acts_as_runnable'
-require 'lib/previews'
+require 'previews'
 
 require 'scufl/model'
 require 'scufl/parser'

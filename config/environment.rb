@@ -71,8 +71,6 @@ Mime::Type.register "application/rdf+xml", :rdf
 
 # Include your application configuration below
 
-require 'lib/conf'
-
 # SMTP configuration
 
 require 'smtp_tls'

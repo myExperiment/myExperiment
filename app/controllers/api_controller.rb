@@ -4,7 +4,7 @@
 # See license.txt for details.
 
 require 'base64'
-require 'lib/rest'
+require 'rest'
 
 class ApiController < ApplicationController
 
