@@ -1,7 +1,7 @@
 module CountryCodes
     @@codes = Hash.new
     File.open('config/countries.tab').each do |record|
-      parts = record.split("\t")
+      parts = record.force_encoding('iso-8859-1').split("\t")
       @@codes[parts[0]] = parts[1].strip
     end
     
