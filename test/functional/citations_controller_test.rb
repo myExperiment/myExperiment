@@ -55,7 +55,6 @@ class CitationsControllerTest < ActionController::TestCase
                                                                :authors => 'John and Jane and jim', 
                                                                :published_at => '2008-08-08' }
 
-    assert "Citation was successfully updated.", flash[:notice]
     assert_response :success
   end
   
