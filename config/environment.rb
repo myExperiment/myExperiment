@@ -5,7 +5,7 @@ RAILS_GEM_VERSION = '2.3.17' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
-require 'lib/conf'
+require 'conf'
 require 'uri'
 
 Rails::Initializer.run do |config|
