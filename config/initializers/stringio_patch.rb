@@ -3,7 +3,7 @@
 # Copyright (c) 2012 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-if VERSION < "1.9.1"
+if RUBY_VERSION < "1.9.1"
   class StringIO
     def readpartial(*args)
       result = read(*args)
