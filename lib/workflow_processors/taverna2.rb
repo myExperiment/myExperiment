@@ -396,25 +396,24 @@ module WorkflowProcessors
             :name           => processor.name,
             :wsdl           => processor.wsdl,
             :wsdl_operation => processor.wsdl)
-        create_semantic_annotations(workflow_processor, processor.semantic_annotation)
+        create_semantic_annotations(workflow_processor, processor.semantic_annotation) if processor.semantic_annotation
       end
 
       @t2flow_model.sources.each do |source|
         port = WorkflowPort.create(:workflow => workflow,
                             :port_type => "input",
                             :name => source.name)
-        create_semantic_annotations(port, source.semantic_annotation)
+        create_semantic_annotations(port, source.semantic_annotation) if source.semantic_annotation
       end
 
       @t2flow_model.sinks.each do |sink|
         port = WorkflowPort.create(:workflow => workflow,
                             :port_type => "output",
                             :name => sink.name)
-        create_semantic_annotations(port, sink.semantic_annotation)
+        create_semantic_annotations(port, sink.semantic_annotation) if sink.semantic_annotation
       end
 
-      create_semantic_annotations(workflow, @t2flow_model.main.annotations.semantic_annotation)
-
+      create_semantic_annotations(workflow, @t2flow_model.main.annotations.semantic_annotation) if @t2flow_model.main.annotations.semantic_annotation
     end
 
     def create_semantic_annotations(subject, semantic_annotations)
