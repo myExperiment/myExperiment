@@ -8,7 +8,6 @@ class ServicesController < ApplicationController
   include ApplicationHelper
 
   before_filter :find_service,  :only => [:show]
-  before_filter :find_services, :only => [:all]
   
   # GET /algorithms;search
   def search
@@ -66,13 +65,6 @@ class ServicesController < ApplicationController
   end
   
   protected
-  
-  def find_services
-    @contributables = Service.find(:all, 
-                       :order => "created_at DESC",
-                       :page => { :size => 20, 
-                       :current => params[:page] })
-  end
   
   def find_service
     begin
