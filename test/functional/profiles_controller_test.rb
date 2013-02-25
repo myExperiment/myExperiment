@@ -9,12 +9,6 @@ require 'profiles_controller'
 class ProfilesControllerTest < ActionController::TestCase
   fixtures :profiles, :users, :pictures, :picture_selections
 
-  def test_should_get_index
-    get :index
-    assert_response :success
-    assert assigns(:profiles)
-  end
-
   # would require a new user as each user is only allowed 1 profile
   def test_should_get_new
     #login_as(:john)
