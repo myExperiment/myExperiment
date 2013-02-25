@@ -6,7 +6,6 @@
 class SearchController < ApplicationController
 
   include ApplicationHelper
-  include SearchHelper
 
   def show
 
