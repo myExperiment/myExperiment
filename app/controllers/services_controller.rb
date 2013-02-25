@@ -11,15 +11,6 @@ class ServicesController < ApplicationController
   
   # GET /algorithms;search
   def search
-#   @query = params[:query] || ''
-#   @query.strip!
-#   
-#   @contributables = (Conf.solr_enable && !@query.blank?) ? Algorithm.find_by_solr(@query, :limit => 100).results : []
-#   @total_count = (Conf.solr_enable && !@query.blank?) ? Algorithm.count_by_solr(@query) : 0
-#   
-#   respond_to do |format|
-#     format.html # search.rhtml
-#   end
   end
   
   # GET /services

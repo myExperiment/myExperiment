@@ -8,6 +8,7 @@ require 'digest/sha1'
 require 'acts_as_site_entity'
 require 'acts_as_contributor'
 require 'acts_as_creditor'
+require 'sunspot_rails'
 
 class User < ActiveRecord::Base
   
@@ -293,7 +294,26 @@ class User < ActiveRecord::Base
   
   acts_as_creditor
 
-  acts_as_solr(:fields => [ {:name => {:boost => 2.0}}, :tag_list ], :include => [ :profile ], :if => "activated_at") if Conf.solr_enable
+  if Conf.solr_enable
+    searchable :if => :activated_at do
+      text :name, :boost => 2.0
+
+      text :tags do
+        tags.map { |tag| tag.name }
+      end
+
+      text :email do profile.email end
+      text :website do profile.website end
+      text :body do profile.body end
+      text :field_or_industry do profile.field_or_industry end
+      text :occupation_or_roles do profile.occupation_or_roles end
+      text :organisations do profile.organisations end
+      text :location_city do profile.location_city end
+      text :location_country do profile.location_country end
+      text :interests do profile.interests end
+      text :contact_details do profile.contact_details end
+    end
+  end
 
   validates_presence_of :name
   

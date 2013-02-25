@@ -12,12 +12,12 @@ require 'tasks/rails'
 desc 'Rebuild Solr index'
 task "myexp:refresh:solr" do
   require File.dirname(__FILE__) + '/config/environment'
-  Workflow.rebuild_solr_index
-  Blob.rebuild_solr_index
-  User.rebuild_solr_index
-  Network.rebuild_solr_index
-  Pack.rebuild_solr_index
-  Service.rebuild_solr_index
+  Workflow.solr_reindex
+  Blob.solr_reindex
+  User.solr_reindex
+  Network.solr_reindex
+  Pack.solr_reindex
+  Service.solr_reindex
 end
 
 desc 'Refresh contribution caches'

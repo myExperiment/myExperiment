@@ -35,7 +35,7 @@ class CommentsController < ApplicationController
     if text and text.length > 0
       comment = Comment.create(:user => current_user, :comment => text)
       @context.comments << comment
-      @context.solr_save if @context.respond_to?(:solr_save)
+      @context.solr_index if @context.respond_to?(:solr_index)
     end
     
     respond_to do |format|
@@ -50,7 +50,7 @@ class CommentsController < ApplicationController
   # DELETE /:context_type/:context_id/comments/:id
   def destroy
     @comment.destroy
-    @context.solr_save if @context.respond_to?(:solr_save)
+    @context.solr_index if @context.respond_to?(:solr_index)
     
     respond_to do |format|
       format.html { render :partial => "comments/comments", :locals => { :commentable => @context } }

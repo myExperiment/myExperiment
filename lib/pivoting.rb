@@ -183,10 +183,12 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
   def create_search_results_table(search_query, opts)
 
     begin
-      solr_results = opts[:search_models].first.multi_solr_search(search_query,
-                                                                  :models         => opts[:search_models],
-                                                                  :limit          => opts[:search_limit],
-                                                                  :results_format => :ids)
+
+      search_results = Sunspot.search opts[:search_models] do
+        fulltext search_query
+        paginate :page => 1, :per_page => opts[:search_limit]
+      end
+
     rescue
       return false
     end
@@ -195,19 +197,16 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
 
     conn.execute("CREATE TEMPORARY TABLE search_results (id INT AUTO_INCREMENT UNIQUE KEY, result_type VARCHAR(255), result_id INT)")
 
-    # This next part converts the search results to SQL values
+    # This next part converts the search results to an SQL "VALUES" clause
     #
-    # from:  { "id" => "Workflow:4" }, { "id" => "Pack:6" }, ...
-    # to:    "(NULL, 'Workflow', '4'), (NULL, 'Pack', '6'), ..."
+    # e.g. "(NULL, 'Workflow', '4'), (NULL, 'Pack', '6'), ..."
 
-    if solr_results.results.length > 0
-      insert_part = solr_results.results.map do |result|
-        "(NULL, " + result["id"].split(":").map do |bit|
-          "'#{bit}'"
-        end.join(", ") + ")"
+    if search_results.results.length > 0
+      values = search_results.results.map do |result|
+        "(NULL, '#{result.class.name}', '#{result.id}')"
       end.join(", ")
 
-      conn.execute("INSERT INTO search_results VALUES #{insert_part}")
+      conn.execute("INSERT INTO search_results VALUES #{values}")
     end
 
     true
@@ -493,11 +492,11 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
                     :group => "#{group_by} #{having_clause}",
                     :order => order_options["order"]}
 
-  unless opts[:no_pagination]
-    result_options[:page] = { :size => params["num"] ? params["num"].to_i : nil, :current => params["page"] }
-  end
-
   results = collection.find(:all, result_options)
+
+  unless opts[:no_pagination]
+    results = results.paginate(:page => params["page"], :per_page => params["num"] ? params["num"].to_i : nil)
+  end
 
   # produce a query hash to match the current filters
 

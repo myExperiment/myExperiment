@@ -8,6 +8,7 @@ require 'excel_xml'
 require 'xml/libxml'
 require 'uri'
 require 'pivoting'
+require 'will_paginate'
 
 include LibXML
 
@@ -595,11 +596,10 @@ def rest_index_request(req_uri, format, rules, user, query)
     obs = find_paginated_auth( { :model => model_name.camelize, :find_args => find_args }, limit, page, filters, user) { |args, size, page|
 
       find_args = args[:find_args].clone
-      find_args[:page] = { :size => size, :current => page }
 
-      results = eval(args[:model]).find(:all, find_args)
+      results = args[:model].constantize.find(:all, find_args).paginate(:page => page, :per_page => size)
 
-      results unless results.page > results.page_count
+      results unless results.empty?
     }
   end
 
@@ -1587,7 +1587,11 @@ def paginated_search_index(query, models, num, page, user)
     q      = args[:query]
     models = args[:models]
 
-    search_result = models[0].multi_solr_search(q, :limit => size, :offset => size * (page - 1), :models => models)
+    search_result = Sunspot.search models do
+      fulltext q
+      paginate :page => page, :per_page => size
+    end
+
     search_result.results unless search_result.total < (size * (page - 1))
   }
 end
@@ -2016,7 +2020,7 @@ def comment_aux(action, opts)
         event.save
       end
 
-      subject.solr_save
+      subject.solr_index
 
       return rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
     end

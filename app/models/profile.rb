@@ -39,17 +39,6 @@ class Profile < ActiveRecord::Base
 
   acts_as_site_entity :owner_text => 'User'
   
-  acts_as_solr :fields => [ :email,
-                            :website,
-                            :body,
-                            :field_or_industry,
-                            :occupation_or_roles,
-                            :organisations,
-                            :location_city,
-                            :location_country,
-                            :interests,
-                            :contact_details ] if Conf.solr_enable
-  
   def avatar?
     not (picture_id.nil? or picture_id.zero?)
   end

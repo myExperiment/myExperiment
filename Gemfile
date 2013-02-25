@@ -23,4 +23,8 @@ gem "rdf-n3"
 gem "recaptcha", "~> 0.3.4"
 gem "encrypted_strings", "~> 0.3.3"
 gem "encrypted_attributes", "~> 0.4.1"
+gem "sunspot_rails", "~> 1.3.3"
+gem "sunspot_solr", "~> 1.3.3"
+gem "will_paginate", "~> 2.3.16"
+gem "ruby-debug"
 

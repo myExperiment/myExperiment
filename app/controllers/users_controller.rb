@@ -751,11 +751,11 @@ protected
   def find_users
     @users = User.find(:all, 
                        :order => "users.name ASC",
-                       :page => { :size => 20, 
-                                  :current => params[:page] },
                        :conditions => "users.activated_at IS NOT NULL",
                        :include => :profile)
-                       
+
+    @users = @users.paginate(:page => params[:page], :per_page => 20)
+
     @users.each do |user|
       user.salt = nil
       user.crypted_password = nil

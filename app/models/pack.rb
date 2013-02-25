@@ -9,7 +9,7 @@ require 'uri'
 require 'zip/zip'
 require 'tempfile'
 require 'cgi'
-
+require 'sunspot_rails'
 
 class Pack < ActiveRecord::Base
 
@@ -37,9 +37,22 @@ class Pack < ActiveRecord::Base
   
   format_attribute :description
   
-  acts_as_solr(:fields => [ {:title => {:boost => 2.0}}, :description, :contributor_name, :tag_list ],
-               :include => [ :comments ]) if Conf.solr_enable
-  
+  if Conf.solr_enable
+    searchable do
+      text :title, :boost => 2.0
+      text :description
+      text :contributor_name
+
+      text :tags do
+        tags.map { |tag| tag.name }
+      end
+
+      text :comments do
+        comments.map { |comment| comment.comment }
+      end
+    end
+  end
+
   has_many :contributable_entries,
            :class_name => "PackContributableEntry",
            :foreign_key => :pack_id,

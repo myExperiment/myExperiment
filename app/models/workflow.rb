@@ -11,6 +11,7 @@ require 'acts_as_attributable'
 require 'acts_as_reviewable'
 require 'acts_as_runnable'
 require 'previews'
+require 'sunspot_rails'
 
 require 'scufl/model'
 require 'scufl/parser'
@@ -59,8 +60,29 @@ class Workflow < ActiveRecord::Base
     :mutable => [ :contributor, :title, :unique_name, :body, :body_html,
                   :file_ext, :last_edited_by, :content_type_id, :image, :svg ]
 
-  acts_as_solr(:fields => [{:title => {:boost => 2.0}}, :body, :filename, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
-               :include => [ :comments ]) if Conf.solr_enable
+  if Conf.solr_enable
+    searchable do
+
+      text :title, :boost => 2.0
+      text :body
+      text :filename
+      text :contributor_name
+      text :kind
+      text :get_all_search_terms
+
+      text :tags do
+        tags.map { |tag| tag.name }
+      end
+
+      text :comments do
+        comments.map { |comment| comment.comment }
+      end
+
+      text :reviews do
+        reviews.map { |review| review.title + " " + review.review }
+      end
+    end
+  end
 
   acts_as_runnable
   
@@ -229,11 +251,26 @@ class Workflow < ActiveRecord::Base
 
   def filename(version=nil)
 
+    def aux(record)
+
+      extension = ""
+
+      if record.processor_class && record.processor_class.default_file_extension
+        extension = ".#{record.processor_class.default_file_extension}"
+      end
+
+      if record.file_ext
+        extension = ".#{record.file_ext}"
+      end
+
+      extension
+    end
+
     if version.blank?
-      return "#{unique_name}.#{file_ext || self.processor_class.default_file_extension}"
+      "#{unique_name}#{aux(self)}"
     else
-      return nil unless (workflow_version = self.find_version(version))
-      return "#{workflow_version.unique_name}.#{workflow_version.file_ext || workflow_version.processor_class.default_file_extension}"
+      workflow_version = self.find_version(version)
+      "#{workflow_version.unique_name}#{aux(workflow_version)}"
     end
   end
   
@@ -243,14 +280,18 @@ class Workflow < ActiveRecord::Base
 
   def get_all_search_terms
 
-    words = StringIO.new
+    begin
+      words = StringIO.new
 
-    versions.each do |version|
-      words << get_search_terms(version.version)
+      versions.each do |version|
+        words << get_search_terms(version.version)
+      end
+
+      words.rewind
+      words.read
+    rescue
+      nil
     end
-
-    words.rewind
-    words.read
   end
 
   def get_tag_suggestions()

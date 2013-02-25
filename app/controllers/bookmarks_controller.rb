@@ -6,7 +6,6 @@
 class BookmarksController < ApplicationController
   before_filter :login_required
   
-  before_filter :find_bookmarks_auth, :only => [:index]
   before_filter :find_bookmark_auth, :only => [:show, :edit, :update, :destroy]
 
   # declare sweepers and which actions should invoke them
@@ -37,14 +36,6 @@ class BookmarksController < ApplicationController
   
 protected
 
-  def find_bookmarks_auth
-    @bookmarks = Bookmark.find(:all, 
-                               :conditions => ["user_id = ?", current_user.id], 
-                               :order => "created_at DESC",
-                               :page => { :size => 20, 
-                                          :current => params[:page] })
-  end
-  
   def find_bookmark_auth
     begin
       @bookmark = Bookmark.find(params[:id], :conditions => ["user_id = ?", current_user.id])

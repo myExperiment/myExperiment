@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130124144917) do
+ActiveRecord::Schema.define(:version => 20130215162325) do
 
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
@@ -125,13 +125,6 @@ ActiveRecord::Schema.define(:version => 20130124144917) do
   end
 
   add_index "comments", ["user_id"], :name => "index_comments_on_user_id"
-
-  create_table "component_profiles", :force => true do |t|
-    t.string   "name"
-    t.string   "url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "concept_relations", :force => true do |t|
     t.integer "subject_concept_id"
@@ -710,9 +703,9 @@ ActiveRecord::Schema.define(:version => 20130124144917) do
     t.string   "contributor_type"
     t.string   "url"
     t.string   "username"
-    t.string   "crypted_password"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "password"
   end
 
   create_table "topic_feedbacks", :force => true do |t|
@@ -835,6 +828,8 @@ ActiveRecord::Schema.define(:version => 20130124144917) do
     t.string   "license"
     t.integer  "preview_id"
   end
+
+  add_index "workflow_versions", ["workflow_id"], :name => "index_workflow_versions_on_workflow_id"
 
   create_table "workflows", :force => true do |t|
     t.integer  "contributor_id"

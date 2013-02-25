@@ -6,6 +6,7 @@
 require 'acts_as_contributor'
 require 'acts_as_creditor'
 require 'acts_as_site_entity'
+require 'sunspot_rails'
 
 class Network < ActiveRecord::Base
   acts_as_contributor
@@ -19,9 +20,23 @@ class Network < ActiveRecord::Base
   has_many :blobs, :as => :contributor
   has_many :workflows, :as => :contributor
   has_many :policies, :as => :contributor
-  
-  acts_as_solr(:fields => [ {:title => {:boost => 2.0}}, :unique_name, :owner_name, :description, :tag_list ],
-               :include => [ :comments ]) if Conf.solr_enable
+
+  if Conf.solr_enable
+    searchable do
+      text :title, :boost => 2.0
+      text :unique_name
+      text :owner_name
+      text :description
+
+      text :tags do
+        tags.map { |tag| tag.name }
+      end
+
+      text :comments do
+        comments.map { |comment| comment.comment }
+      end
+    end
+  end
 
   format_attribute :description
 

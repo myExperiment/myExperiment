@@ -455,7 +455,7 @@ class NetworksController < ApplicationController
     @network.tags_user_id = current_user
     @network.tag_list = "#{@network.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @network.update_tags # hack to get around acts_as_versioned
-    @network.solr_save if Conf.solr_enable
+    @network.solr_index if Conf.solr_enable
     
     respond_to do |format|
       format.html { 
@@ -487,9 +487,7 @@ protected
   def find_networks
     @networks = Network.find(:all, 
                              :order => "title ASC",
-                             :page => { :size => 20, 
-                                        :current => params[:page] },
-                             :include => [ :owner ])
+                             :include => [ :owner ]).paginate(:page => params[:page], :per_page => 20)
   end
 
   def find_network
