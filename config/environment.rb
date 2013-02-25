@@ -38,7 +38,6 @@ Rails::Initializer.run do |config|
     :headliner,
     :oauth,
     :oauth_plugin,
-    :open_id_authentication,
     :simile_timeline,
     :validates_email_veracity_of,
     :versioning

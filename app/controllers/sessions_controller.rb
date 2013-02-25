@@ -4,6 +4,7 @@
 # See license.txt for details.
 
 require 'uri'
+require 'open_id_authentication'
 require 'openid'
 require 'openid/extensions/sreg'
 require 'openid/store/filesystem'
