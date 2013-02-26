@@ -1,0 +1,44 @@
+<h1>Policy: <%= @policy.name -%></h1>
+
+<h2>Public Permissions</h2>
+<ul>
+  <% if [3,4,5,6,7,8].include?(@policy.share_mode) %>
+    <li>Resources with this policy are hidden from public view.</li>
+  <% end %>
+
+  <% if [0,1,2].include?(@policy.share_mode) %>
+    <li>Users may <strong>view</strong> resources with this policy.</li>
+  <% end %>
+
+  <% if @policy.share_mode == 0 %>
+    <li>Users may <strong>download</strong> resources with this policy.</li>
+  <% end %>
+</ul>
+
+<% unless (group_perms = @policy.permissions.select{|p| p.contributor_type == 'Network'}).empty? %>
+<h2>Group Permissions</h2>
+  <% group_perms.each do |permission| %>
+  <h3><%= link_to permission.contributor.title, permission.contributor %></h3>
+  <ul>
+    <% if permission.view %>
+      <li>Members of <strong><%= permission.contributor.title -%></strong> may <strong>view</strong> resources with this policy.</li>
+    <% end %>
+
+    <% if permission.download %>
+      <li>Members of <strong><%= permission.contributor.title -%></strong> may <strong>download</strong> resources with this policy.</li>
+    <% end %>
+
+    <% if permission.edit %>
+      <li>Members of <strong><%= permission.contributor.title -%></strong> may <strong>edit</strong> resources with this policy.</li>
+    <% end %>
+  </ul>
+  <% end %>
+<% end %>
+
+<% if @policy.layout %>
+  <% network = Network.find(Conf.layouts[@policy.layout]['network_id']) %>
+  <h2>Styling</h2>
+  <ul>
+    <li>Resources with this policy will inherit <%= link_to network.title, network %> styling.</li>
+  </ul>
+<% end %>

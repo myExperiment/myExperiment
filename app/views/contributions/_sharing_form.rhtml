@@ -6,8 +6,8 @@
 
 <% perms = [] %>
 <% perms = contributable.contribution.policy.permissions if edit %>
-<% applicable_networks = (current_user.networks + current_user.networks_owned) %>
-<% group_policies = applicable_networks.map {|n| n.policies}.flatten %>
+<% applicable_networks = current_user.all_networks %>
+<% group_policies = current_user.group_policies %>
 <% using_group_policy = edit && contributable.contribution.policy.group_policy? %>
 <% group_policies = group_policies | [contributable.contribution.policy] if using_group_policy %>
 

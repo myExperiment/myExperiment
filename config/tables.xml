@@ -10,7 +10,7 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <LastAuthor>Finn</LastAuthor>
-  <LastSaved>2013-02-20T15:13:18Z</LastSaved>
+  <LastSaved>2013-02-26T10:08:10Z</LastSaved>
   <Version>12.00</Version>
  </DocumentProperties>
  <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
@@ -1623,7 +1623,6 @@
     <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">public</Data></Cell>
     <Cell ss:Index="8" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
-    <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="12" ss:StyleID="s63"><Data ss:Type="String">call</Data></Cell>
     <Cell><Data ss:Type="String">workflow</Data></Cell>
     <Cell><Data ss:Type="String">workflow</Data></Cell>
@@ -1636,12 +1635,34 @@
     <Cell ss:Index="20" ss:StyleID="s63"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
+    <Cell ss:StyleID="s69"><Data ss:Type="String">GET</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">policy</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12" ss:StyleID="s63"><Data ss:Type="String">crud</Data></Cell>
+    <Cell><Data ss:Type="String">policy</Data></Cell>
+    <Cell><Data ss:Type="String">policy</Data></Cell>
+    <Cell><Data ss:Type="String">required</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"/>
     <Cell ss:Index="20" ss:StyleID="s63"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
     <Cell ss:Index="20" ss:StyleID="s63"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
+    <Cell ss:StyleID="s69"><Data ss:Type="String">GET</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">policies</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">public</Data></Cell>
+    <Cell ss:Index="8" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="12" ss:StyleID="s63"><Data ss:Type="String">call</Data></Cell>
+    <Cell><Data ss:Type="String">policy</Data></Cell>
+    <Cell><Data ss:Type="String">policy</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">get_policies</Data></Cell>
     <Cell ss:Index="20" ss:StyleID="s63"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
@@ -2226,12 +2247,12 @@
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
-   <TopRowVisible>105</TopRowVisible>
+   <TopRowVisible>158</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>96</ActiveRow>
-     <ActiveCol>5</ActiveCol>
+     <ActiveRow>190</ActiveRow>
+     <ActiveCol>12</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
@@ -2240,7 +2261,7 @@
   <x:WorksheetOptions/>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="26" ss:ExpandedRowCount="65539" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="26" ss:ExpandedRowCount="65522" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s62" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:Width="111.75"/>
    <Column ss:StyleID="s62" ss:Width="116.25"/>
@@ -3363,79 +3384,6 @@
     <Cell ss:Index="13" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="15" ss:StyleID="s63"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="26" ss:StyleID="s72"><Data ss:Type="Number">38</Data></Cell>
-   </Row>
-   <Row ss:AutoFitHeight="0" ss:Height="13.3125">
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">contributor_id</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">contributor_type</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">created_at</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">download_protected</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">download_public</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">edit_protected</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">edit_public</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">id</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">name</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">share_mode</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">update_mode</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">updated_at</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">view_protected</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">view_public</Data></Cell>
-    <Cell ss:Index="26" ss:StyleID="s72"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.3125">
     <Cell ss:Index="26" ss:StyleID="s72"/>
@@ -6576,21 +6524,89 @@
     <Cell ss:Index="26" ss:StyleID="s72"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
+    <Cell ss:StyleID="s69"><Data ss:Type="String">policy</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">id</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">id</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">text</Data></Cell>
+    <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="13" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="15" ss:StyleID="s63"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="26" ss:StyleID="s72"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
+    <Cell ss:StyleID="s69"><Data ss:Type="String">policy</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">name</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">name</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">text</Data></Cell>
+    <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="13" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="15" ss:StyleID="s63"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="17" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="26" ss:StyleID="s72"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
+    <Cell ss:StyleID="s69"><Data ss:Type="String">policy</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">owner</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">contributor</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">item</Data></Cell>
+    <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="13" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="15" ss:StyleID="s63"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="17" ss:StyleID="s75"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="26" ss:StyleID="s72"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
+    <Cell ss:StyleID="s69"><Data ss:Type="String">policy</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">permissions</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">permissions</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">call</Data></Cell>
+    <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="13" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="15" ss:StyleID="s63"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="26" ss:StyleID="s72"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
+    <Cell ss:StyleID="s69"><Data ss:Type="String">policy</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">created-at</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">created_at</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">text</Data></Cell>
+    <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="13" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="15" ss:StyleID="s63"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="26" ss:StyleID="s72"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
+    <Cell ss:StyleID="s69"><Data ss:Type="String">policy</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">updated-at</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Policy</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">updated_at</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">text</Data></Cell>
+    <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="13" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="15" ss:StyleID="s63"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="26" ss:StyleID="s72"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
@@ -7118,25 +7134,19 @@
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
     <Cell ss:Index="26" ss:StyleID="s72"/>
    </Row>
-   <Row ss:AutoFitHeight="0" ss:Height="14.0625">
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:AutoFitHeight="0" ss:Height="14.0625">
-    <Cell ss:Index="26" ss:StyleID="s72"/>
-   </Row>
-   <Row ss:Index="65539" ss:AutoFitHeight="0" ss:Height="14.0625">
+   <Row ss:Index="65522" ss:AutoFitHeight="0" ss:Height="14.0625">
     <Cell ss:Index="26" ss:StyleID="s72"/>
    </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
    <Selected/>
-   <LeftColumnVisible>9</LeftColumnVisible>
+   <TopRowVisible>141</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>17</ActiveRow>
-     <ActiveCol>25</ActiveCol>
+     <ActiveRow>166</ActiveRow>
+     <ActiveCol>6</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

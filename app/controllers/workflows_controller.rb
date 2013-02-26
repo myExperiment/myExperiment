@@ -465,6 +465,7 @@ class WorkflowsController < ApplicationController
           @workflow.reload
           @workflow.extract_metadata
         rescue
+          raise unless Rails.env == 'production'
         end
 
         respond_to do |format|

@@ -695,6 +695,8 @@ def rest_resource_uri(ob)
 
     when 'WorkflowVersion'; return "#{rest_resource_uri(ob.workflow)}?version=#{ob.version}"
     when 'BlobVersion'; return "#{rest_resource_uri(ob.blob)}?version=#{ob.version}"
+
+    when 'Policy';                 return policy_url(ob)
   end
 
   raise "Class not processed in rest_resource_uri: #{ob.class.to_s}"
@@ -738,6 +740,8 @@ def rest_access_uri(ob)
 
     when 'WorkflowVersion'; return "#{base}/workflow.xml?id=#{ob.workflow.id}&version=#{ob.version}"
     when 'PackVersion';     return "#{base}/pack.xml?id=#{ob.pack.id}&version=#{ob.version}"
+
+    when 'Policy';                 return "#{base}/policy.xml?id=#{ob.id}"
   end
 
   raise "Class not processed in rest_access_uri: #{ob.class.to_s}"
@@ -770,6 +774,7 @@ def rest_object_tag_text(ob)
     when 'Ontology';               return 'ontology'
     when 'Predicate';              return 'predicate'
     when 'Relationship';           return 'relationship'
+    when 'Policy';                 return 'policy'
   end
 
   return 'object'
@@ -804,6 +809,7 @@ def rest_object_label_text(ob)
     when 'Review';                 return ob.title
     when 'Job';                    return ob.title
     when 'TavernaEnactor';         return ob.title
+    when 'Policy';                 return ob.name
   end
 
   return ''
@@ -939,7 +945,7 @@ def create_default_policy(user)
   Policy.new(:contributor => user, :name => 'auto', :share_mode => 7, :update_mode => 6)
 end
 
-def update_permissions(ob, permissions)
+def update_permissions(ob, permissions, user)
 
   share_mode  = 7
   update_mode = 6
@@ -948,17 +954,44 @@ def update_permissions(ob, permissions)
 
   if permissions
 
-    # clear out any permission records for this contributable
+    if (group_policy = permissions.find_first('group-policy-id/text()'))
 
-    ob.contribution.policy.permissions.each do |p|
-      p.destroy
-    end
+      # Check if valid id
+      if (policy = Policy.find_by_id(group_policy.to_s.to_i)) && policy.group_policy?
+        if user.group_policies.include?(policy)
 
-    permissions.find('permission').each do |permission|
+          existing_policy = ob.contribution.policy
+          existing_policy.destroy unless existing_policy.group_policy?
+          ob.contribution.policy = policy
+          ob.contribution.save
+          return
 
-      # handle public privileges
+        else
+          ob.errors.add_to_base("You must be a member of #{group_policy.contributor.title} to use group policy: #{group_policy}")
+          raise
+        end
+      else
+        ob.errors.add_to_base("#{group_policy} does not appear to be a valid group policy ID")
+        raise
+      end
+    else
 
-      case permission.find_first('category/text()').to_s
+      # Create a policy for the resource if one doesn't exist, or if the previous policy was a shared one.
+      if ob.contribution.policy.nil? || ob.contribution.policy.group_policy?
+        ob.contribution.policy = create_default_policy(user)
+        ob.contribution.save
+      end
+
+      # clear out any permission records for this contributable
+      ob.contribution.policy.permissions.each do |p|
+        p.destroy
+      end
+
+      permissions.find('permission').each do |permission|
+
+        # handle public privileges
+
+        case permission.find_first('category/text()').to_s
         when 'public'
           privileges = {}
 
@@ -995,6 +1028,7 @@ def update_permissions(ob, permissions)
               ob.contribution.policy.layout = network.layout_name if use_layout.to_s == 'true'
             end
           end
+        end
       end
     end
 
@@ -1151,13 +1185,7 @@ def workflow_aux(action, opts = {})
     # Elements to update if we're not dealing with a workflow version
 
     if opts[:query]['version'].nil?
-
-      if ob.contribution.policy.nil?
-        ob.contribution.policy = create_default_policy(opts[:user])
-        ob.contribution.save
-      end
-
-      update_permissions(ob, permissions)
+      update_permissions(ob, permissions, opts[:user])
     end
   end
 
@@ -1291,13 +1319,7 @@ def file_aux(action, opts = {})
     return rest_response(400, :object => ob) unless success
 
     if opts[:query]['version'].nil?
-
-      if ob.contribution.policy.nil?
-        ob.contribution.policy = create_default_policy(opts[:user])
-        ob.contribution.save
-      end
-
-      update_permissions(ob, permissions)
+      update_permissions(ob, permissions, opts[:user])
     end
   end
 
@@ -1373,12 +1395,7 @@ def pack_aux(action, opts = {})
       return rest_response(400, :object => ob)
     end
 
-    if ob.contribution.policy.nil?
-      ob.contribution.policy = create_default_policy(opts[:user])
-      ob.contribution.save
-    end
-
-    update_permissions(ob, permissions)
+    update_permissions(ob, permissions, opts[:user])
   end
 
   rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
@@ -1865,6 +1882,8 @@ end
 
 def permissions(ob, user, query)
 
+  policy = ob.is_a?(Policy) ? ob : ob.contribution.policy
+
   def permission_node(view, download, edit, category, id = nil, layout = false)
     node = LibXML::XML::Node.new('permission')
     category_node = LibXML::XML::Node.new('category')
@@ -1904,14 +1923,20 @@ def permissions(ob, user, query)
   end
 
   permissions = LibXML::XML::Node.new('permissions')
-  permissions << permission_node([0,1,2].include?(ob.contribution.policy.share_mode),
-                                 ob.contribution.policy.share_mode == 0,
+  permissions << permission_node([0,1,2].include?(policy.share_mode),
+                                 policy.share_mode == 0,
                                  false,
                                  'public')
 
-  ob.contribution.policy.permissions.select {|p| p.contributor_type == "Network"}.each do |perm|
+  unless ob.is_a?(Policy)
+    permissions['uri'] = rest_access_uri(policy)
+    permissions['resource'] = rest_resource_uri(policy)
+    permissions['policy-type'] = policy.group_policy? ? 'group' : 'user-specified'
+  end
+
+  policy.permissions.select {|p| p.contributor_type == "Network"}.each do |perm|
     permissions << permission_node(perm.view, perm.download, perm.edit, 'group', perm.contributor_id,
-                                   ob.contribution.policy.layout == perm.contributor.layout_name)
+                                   policy.layout == perm.contributor.layout_name)
   end
 
   permissions
@@ -2451,6 +2476,20 @@ def get_components(opts)
 
   # Render
   produce_rest_list(opts[:uri], opts[:rules], query, matches, "workflows", [], opts[:user])
+end
+
+def get_policies(opts)
+  policies = []
+
+  if opts[:user].is_a?(User)
+    if opts[:query]["type"] == 'group'
+      policies = opts[:user].group_policies
+    else
+      policies = opts[:user].policies + opts[:user].group_policies
+    end
+  end
+
+  produce_rest_list(opts[:uri], opts[:rules], opts[:query], policies, "policies", [], opts[:user])
 end
 
 

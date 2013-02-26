@@ -649,6 +649,11 @@ class User < ActiveRecord::Base
     self.spam_score = score
   end
 
+  # Shared group policies that the user can apply to their uploaded resources
+  def group_policies
+    all_networks.map {|n| n.policies}.flatten
+  end
+
 protected
 
   # clean up emails and username before validation
@@ -749,7 +754,7 @@ protected
       # END DEBUG
     end
   end
-    
+
 private
 
   # clean string to remove spaces and force lowercase
