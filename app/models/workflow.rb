@@ -55,7 +55,8 @@ class Workflow < ActiveRecord::Base
   
     :attributes => [ :contributor, :title, :unique_name, :body, :body_html,
                      :content_blob_id, :file_ext, :last_edited_by,
-                     :content_type_id, :preview_id, :image, :svg ],
+                     :content_type_id, :preview_id, :image, :svg,
+                     :revision_comments],
 
     :mutable => [ :contributor, :title, :unique_name, :body, :body_html,
                   :file_ext, :last_edited_by, :content_type_id, :image, :svg ]
