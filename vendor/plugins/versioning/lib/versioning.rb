@@ -34,7 +34,9 @@ module Versioning
 
         def changed_versioned_attributes
           versioned_attributes.select do |attr|
-            changes[attr.to_s] || (send(attr).respond_to?(:changed) && send(attr).changed?)
+            if respond_to?(attr)
+              changes[attr.to_s] || (send(attr).respond_to?(:changed) && send(attr).changed?)
+            end
           end
         end
 
