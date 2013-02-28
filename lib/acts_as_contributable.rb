@@ -83,6 +83,7 @@ module Mib
         end
 
         def contributor_name
+          return nil if contribution.nil?
           return contribution.contributor.name  if contribution.contributor.respond_to?('name')
           return contribution.contributor.title if contribution.contributor.respond_to?('title')
         end
