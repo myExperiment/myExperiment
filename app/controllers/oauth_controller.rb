@@ -181,7 +181,7 @@ private
     end
     begin
       client_app=ClientApplication.find(id)
-      if Authorization.check(action_permissions[action_name], client_app, current_user)
+      if Authorization.check(action_permissions[action_name] || action_name, client_app, current_user)
         @client_application = client_app
       else
         error("Client Application not found (id not authorized)", "is invalid (not authorized)")
