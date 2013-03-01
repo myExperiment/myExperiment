@@ -2403,3 +2403,17 @@ div.avatar {
 	color: #333333;
   font-size: 100%;
 }
+
+div.error {
+  width: 500px;
+  border: 2px solid #f44;
+  padding-bottom: 1em;
+  margin: 1em auto;
+  text-align: center;
+}
+
+div.error h1 {
+  color: white;
+  background-color: #f44;
+  margin-top: 0;
+}

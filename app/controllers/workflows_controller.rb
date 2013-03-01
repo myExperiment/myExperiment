@@ -623,7 +623,7 @@ class WorkflowsController < ApplicationController
     
     if params[:version]
       if @workflow.find_version(params[:version]) == false
-        error("Version not found (is invalid)", "not found (is invalid)", :version)
+        render_404("Workflow version not found.")
       end
       if @workflow.versions.length < 2
         error("Can't delete all versions", " is not allowed", :version)
@@ -756,7 +756,7 @@ protected
             @viewing_version_number = params[:version].to_i
             @viewing_version = viewing
           else
-            error("Workflow version not found (possibly has been deleted)", "not found (is invalid)", :version)
+            render_404("Workflow version not found.")
           end
         else
           @viewing_version_number = @latest_version_number
@@ -791,13 +791,10 @@ protected
         logger.debug("@viewing_version_number = #{@viewing_version_number}")
         logger.debug("@workflow.image != nil = #{@workflow.image != nil}")
       else
-        error("Workflow #{params[:id]} not accessible, you are not authorized", 
-              "not accessible (not authorized)", :id, 401)
-        return false
+        render_401("You are not authorized to access this workflow.")
       end
     rescue ActiveRecord::RecordNotFound
-      error("Workflow not found", "is invalid")
-      return false
+      render_404("Workflow not found.")
     end
   end
   
@@ -909,7 +906,7 @@ protected
   
   def check_is_owner
     if @workflow
-      error("You are not authorised to manage this Workflow", "") unless @workflow.owner?(current_user)
+      render_401("You are not authorized to manage this workflow.") unless @workflow.owner?(current_user)
     end
   end
   
@@ -937,16 +934,12 @@ private
     end
   end
 
-  def error(notice, message, attr=:id, status=nil)
+  def error(notice, message, attr=:id)
     flash[:error] = notice
     (err = Workflow.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to workflows_url }
-      format.xml do
-        headers["WWW-Authenticate"] = %(Basic realm="Web Password") if status == 401
-        render :text => notice, :status => status
-      end
     end
   end
   

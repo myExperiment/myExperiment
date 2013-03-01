@@ -427,13 +427,13 @@ class BlobsController < ApplicationController
 
       else
         if logged_in? 
-          error("File not found (id not authorized)", "is invalid (not authorized)")
+          render_401("You are not authorized to access this file.")
         else
           find_blob_auth if login_required
         end
       end
     rescue ActiveRecord::RecordNotFound
-      error("File not found", "is invalid")
+      render_404("File not found.")
     end
   end
   
@@ -461,7 +461,7 @@ class BlobsController < ApplicationController
   
   def check_is_owner
     if @blob
-      error("You are not authorised to manage this File", "") unless @blob.owner?(current_user)
+      render_401("You are not authorised to manage this file.") unless @blob.owner?(current_user)
     end
   end
   

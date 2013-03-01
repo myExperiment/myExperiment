@@ -1,0 +1,16 @@
+<div class="error">
+  <h1>404 - Not Found</h1>
+  <% if @message %>
+    <%= @message %>
+  <% else %>
+    The page you were looking for could not be found.
+  <% end %>
+
+  <% unless request.referer.blank? %>
+    <br/>
+    <br/>
+    <%= link_to 'Report broken link',
+                '/feedback?' + {:subject=>'Broken link',
+                                :content=>"Broken link #{request.request_uri} on #{request.referer}"}.to_param %>
+  <% end %>
+</div>

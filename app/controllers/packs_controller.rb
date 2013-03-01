@@ -479,10 +479,10 @@ class PacksController < ApplicationController
                             
         @base_host = base_host
       else
-        error("You are not authorised to perform this action", "is not authorized")
+        render_401("You are not authorized to access this pack.")
       end
     rescue ActiveRecord::RecordNotFound
-      error("Pack not found", "is invalid")
+      render_404("Pack not found.")
     end
   end
   

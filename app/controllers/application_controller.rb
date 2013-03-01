@@ -488,4 +488,46 @@ class ApplicationController < ActionController::Base
       format.html { redirect_to target, (referrer.blank? ? nil : params) }
     end
   end
+
+  # Intercept 404/500 etc. errors and display a custom page
+  def render_optional_error_file(status_code)
+    if status_code == :unauthorized
+      render_401
+    elsif status_code == :not_found
+      render_404
+    elsif status_code == :internal_server_error
+      render_500
+    else
+      super
+    end
+  end
+
+  def render_401(message = nil)
+    @message = message
+    respond_to do |format|
+      format.html { render :template => "errors/401", :status => 401 }
+      format.xml do
+        headers["WWW-Authenticate"] = %(Basic realm="Web Password")
+        render :nothing => true, :status => 401
+      end
+      format.all { render :nothing => true, :status => 401 }
+    end
+  end
+
+  def render_404(message = nil)
+    @message = message
+    respond_to do |format|
+      format.html { render :template => "errors/404", :status => 404 }
+      format.all { render :nothing => true, :status => 404 }
+    end
+  end
+
+  def render_500(message = nil)
+    @message = message
+    respond_to do |format|
+      format.html { render :template => "errors/500", :status => 500 }
+      format.all { render :nothing => true, :status => 500 }
+    end
+  end
+
 end
