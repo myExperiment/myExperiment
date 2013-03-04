@@ -70,9 +70,9 @@ module Authorization
 
         # return the response
         case action
-          when "view";     return ob.view_permission == "1"
-          when "download"; return ob.download_permission == "1"
-          when "edit";     return ob.edit_permission == "1"
+          when "view";     return ob.view_permission.to_s == "1"
+          when "download"; return ob.download_permission.to_s == "1"
+          when "edit";     return ob.edit_permission.to_s == "1"
           else;            return false
         end
         

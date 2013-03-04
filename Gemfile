@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
 gem "rails", "2.3.17"
-gem "mysql", "~> 2.8.1"
+gem "mysql2", "~> 0.2.18"
 gem "rubyzip", "~> 0.9.4"
 gem "oauth", "~> 0.4.3"
 gem "libxml-ruby", "2.2.2"
@@ -26,6 +26,5 @@ gem "encrypted_attributes", "~> 0.4.1"
 gem "sunspot_rails", "~> 1.3.3"
 gem "sunspot_solr", "~> 1.3.3"
 gem "will_paginate", "~> 2.3.16"
-gem "ruby-debug"
 gem "open_id_authentication", "~> 1.1.0"
 

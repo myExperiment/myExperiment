@@ -315,7 +315,7 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
       plain_label = object.filter_label
 
       if params[:filter_query]
-        label.sub!(Regexp.new("(#{params[:filter_query]})", Regexp::IGNORECASE), '<b>\1</b>')
+        label = label.sub(Regexp.new("(#{params[:filter_query]})", Regexp::IGNORECASE), '<b>\1</b>')
       end
 
       {
