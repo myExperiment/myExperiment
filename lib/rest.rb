@@ -687,14 +687,14 @@ def rest_resource_uri(ob)
     when 'Ontology';               return ontology_url(ob)
     when 'Predicate';              return predicate_url(ob)
     when 'Relationship';           return nil
+
+    when 'Creditation';            return nil
+    when 'Attribution';            return nil
+    when 'Tagging';                return nil
+
+    when 'WorkflowVersion';        return "#{rest_resource_uri(ob.workflow)}?version=#{ob.version}"
+    when 'BlobVersion';            return "#{rest_resource_uri(ob.blob)}?version=#{ob.version}"
     when 'PackVersion';            return pack_version_url(ob, ob.version)
-
-    when 'Creditation';     return nil
-    when 'Attribution';     return nil
-    when 'Tagging';         return nil
-
-    when 'WorkflowVersion'; return "#{rest_resource_uri(ob.workflow)}?version=#{ob.version}"
-    when 'BlobVersion'; return "#{rest_resource_uri(ob.blob)}?version=#{ob.version}"
 
     when 'Policy';                 return policy_url(ob)
   end
@@ -735,11 +735,12 @@ def rest_access_uri(ob)
     when 'Predicate';              return "#{base}/predicate.xml?id=#{ob.id}"
     when 'Relationship';           return "#{base}/relationship.xml?id=#{ob.id}"
 
-    when 'Creditation';     return "#{base}/credit.xml?id=#{ob.id}"
-    when 'Attribution';     return nil
+    when 'Creditation';           return "#{base}/credit.xml?id=#{ob.id}"
+    when 'Attribution';           return nil
 
-    when 'WorkflowVersion'; return "#{base}/workflow.xml?id=#{ob.workflow.id}&version=#{ob.version}"
-    when 'PackVersion';     return "#{base}/pack.xml?id=#{ob.pack.id}&version=#{ob.version}"
+    when 'WorkflowVersion';       return "#{base}/workflow.xml?id=#{ob.workflow.id}&version=#{ob.version}"
+    when 'BlobVersion';           return "#{base}/file.xml?id=#{ob.blob.id}&version=#{ob.version}"
+    when 'PackVersion';           return "#{base}/pack.xml?id=#{ob.pack.id}&version=#{ob.version}"
 
     when 'Policy';                 return "#{base}/policy.xml?id=#{ob.id}"
   end
@@ -766,6 +767,8 @@ def rest_object_tag_text(ob)
     when 'PackContributableEntry'; return rest_object_tag_text(ob.contributable)
     when 'PackRemoteEntry';        return 'external'
     when 'WorkflowVersion';        return 'workflow'
+    when 'BlobVersion';            return 'file'
+    when 'PackVersion';            return 'pack'
     when 'Comment';                return 'comment'
     when 'Bookmark';               return 'favourite'
     when 'ContentType';            return 'type'
@@ -799,6 +802,8 @@ def rest_object_label_text(ob)
     when 'PackContributableEntry'; return rest_object_label_text(ob.contributable)
     when 'PackRemoteEntry';        return ob.title     
     when 'WorkflowVersion';        return ob.title
+    when 'BlobVersion';            return ob.title
+    when 'PackVersion';            return ob.title
     when 'ContentType';            return ob.title
     when 'License';                return ob.title
     when 'CurationEvent';          return ob.category
