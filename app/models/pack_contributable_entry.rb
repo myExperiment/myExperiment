@@ -85,7 +85,7 @@ class PackContributableEntry < ActiveRecord::Base
   end
 
   def item_as_list
-    return [contributable]
+    return [get_contributable_version]
   end
 
   def touch_pack
