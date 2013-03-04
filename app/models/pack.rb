@@ -26,6 +26,8 @@ class Pack < ActiveRecord::Base
 
   has_many :versions, :class_name => "PackVersion"
 
+  belongs_to :license
+
   def find_version(version)
     match = versions.find(:first, :conditions => ["version = ?", version])
     return match if match

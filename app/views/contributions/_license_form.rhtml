@@ -35,8 +35,8 @@
             <strong>What license do you want people to adhere to if they download and use this File?</strong>
         </p>
         <div style="padding-left: 1em;">
-          <%= select(object, :license_id, [["No license", 0]] + License.find(:all).collect {|l| [l.title, l.id] },
-            { :selected => @license ? @license.id : 0 },
+          <%= select(object, :license_id, [["No license", '']] + License.find(:all).collect {|l| [l.title, l.id] },
+            { :selected => @license ? @license.id : '' },
             {  :onChange => remote_function(:update => 'license_info',
                  :url => {:controller => 'licenses', :action=> 'update_license_info' },
                  :with => "'license_id=' + escape(value)")}) %>

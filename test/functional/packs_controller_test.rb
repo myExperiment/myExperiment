@@ -39,7 +39,7 @@ class PacksControllerTest < ActionController::TestCase
     num_packs = Pack.count
 
     login_as(:john)
-    post :create, :pack => { :title => 'my new pack', :description => 'a new pack lalalala' }
+    post :create, :pack => { :title => 'my new pack', :description => 'a new pack lalalala', :license_id => '2' }
 
     assert_response :redirect
     assert_redirected_to(pack_url(assigns(:pack)))
@@ -60,7 +60,8 @@ class PacksControllerTest < ActionController::TestCase
 
   def test_update
     login_as(:john)
-    post :update, :id => @first_id, :pack => { :title => 'edited pack', :description => 'a new pack' }
+    post :update, :id => @first_id, :pack => { :title => 'edited pack', :description => 'a new pack',
+                                               :license_id => '3' }
 
     assert_response :redirect
     assert_redirected_to :action => 'show', :id => @first_id

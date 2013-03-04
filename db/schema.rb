@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130215162325) do
+ActiveRecord::Schema.define(:version => 20130304123620) do
 
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
@@ -441,6 +441,7 @@ ActiveRecord::Schema.define(:version => 20130215162325) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "current_version"
+    t.integer  "license_id"
   end
 
   create_table "pending_invitations", :force => true do |t|
@@ -828,8 +829,6 @@ ActiveRecord::Schema.define(:version => 20130215162325) do
     t.string   "license"
     t.integer  "preview_id"
   end
-
-  add_index "workflow_versions", ["workflow_id"], :name => "index_workflow_versions_on_workflow_id"
 
   create_table "workflows", :force => true do |t|
     t.integer  "contributor_id"

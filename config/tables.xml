@@ -2261,7 +2261,7 @@
   <x:WorksheetOptions/>
  </Worksheet>
  <Worksheet ss:Name="Model">
-  <Table ss:ExpandedColumnCount="26" ss:ExpandedRowCount="65522" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="26" ss:ExpandedRowCount="65523" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s62" ss:DefaultRowHeight="15">
    <Column ss:StyleID="s62" ss:Width="111.75"/>
    <Column ss:StyleID="s62" ss:Width="116.25"/>
@@ -4859,6 +4859,21 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s69"><Data ss:Type="String">pack</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String">license-type</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Pack</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">license</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">item</Data></Cell>
+    <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="13" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="15" ss:StyleID="s63"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:Index="17" ss:StyleID="s75"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="26" ss:StyleID="s73"><Data ss:Type="String">by-nd</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s69"><Data ss:Type="String">pack</Data></Cell>
     <Cell ss:StyleID="s69"><Data ss:Type="String">download-url</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">Pack</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">download_pack_url</Data></Cell>
@@ -7134,19 +7149,19 @@
    <Row ss:AutoFitHeight="0" ss:Height="14.0625">
     <Cell ss:Index="26" ss:StyleID="s72"/>
    </Row>
-   <Row ss:Index="65522" ss:AutoFitHeight="0" ss:Height="14.0625">
+   <Row ss:Index="65523" ss:AutoFitHeight="0" ss:Height="14.0625">
     <Cell ss:Index="26" ss:StyleID="s72"/>
    </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
    <Selected/>
-   <TopRowVisible>141</TopRowVisible>
+   <TopRowVisible>138</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>166</ActiveRow>
-     <ActiveCol>6</ActiveCol>
+     <ActiveRow>142</ActiveRow>
+     <ActiveCol>1</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

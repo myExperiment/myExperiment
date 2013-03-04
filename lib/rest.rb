@@ -1386,6 +1386,19 @@ def pack_aux(action, opts = {})
 
     permissions  = data.find_first('/pack/permissions')
 
+    if license_type = parse_element(data, :text,   '/pack/license-type')
+      if license_type == ""
+        ob.license = nil
+      else
+        ob.license = License.find_by_unique_name(license_type)
+
+        if ob.license.nil?
+          ob.errors.add("License type")
+          return rest_response(400, :object => ob)
+        end
+      end
+    end
+
     # build the contributable
 
     ob.title       = title        if title

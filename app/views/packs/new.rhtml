@@ -25,6 +25,8 @@
   <%= render :partial => "tags/tags_form", :locals => { :edit => false, :taggable => @pack } %>
   
   <%= render :partial => "contributions/sharing_form",  :locals => { :edit => false, :contributable => @pack, :update_perms => true } %>
+
+  <%= render :partial => "contributions/license_form", :locals => { :object => :pack, :contributable => @pack, :edit => false } -%>
   
   <p style="text-align: center;">
     <%= submit_tag "Create", :disable_with => "Creating..." %>

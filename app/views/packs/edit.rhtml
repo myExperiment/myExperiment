@@ -30,6 +30,8 @@
   
   <% if @pack.owner?(current_user) %>
   	<%= render :partial => "contributions/sharing_form",  :locals => { :edit => true, :contributable => @pack, :update_perms => true } %>
+
+    <%= render :partial => "contributions/license_form", :locals => { :object => :pack, :contributable => @pack, :edit => true } -%>
   <% end %>
 
   <p>
