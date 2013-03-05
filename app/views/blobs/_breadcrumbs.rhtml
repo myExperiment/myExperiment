@@ -1,4 +1,13 @@
-<li><%= link_to 'Files', blobs_path -%></li>
+<% if @context %>
+  <li><%= link_to visible_name(@context).pluralize, polymorphic_url(@context.class.name.underscore.pluralize) %></li>
+  <li><%= link_to @context.name, @context %></li>
+<% end %>
+
+<% if controller.action_name == 'index' %>
+  <li>Files</li>
+<% else %>
+  <li><%= link_to 'Files', blobs_path %></li>
+<% end %>
 
 <% if ["show", "new", "edit", "all", "search", "suggestions"].include? controller.action_name.to_s -%>
   

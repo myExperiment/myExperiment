@@ -11,7 +11,7 @@
 				<%= link_to(pluralize(current_user.networks_owned.length + current_user.networks.length, "Group"), currentusers_things_url('groups')) %>
 				<% filter_contributables(current_user.contributions).each do |klass,contributables| %>
 					<span style="color:#999999;">|</span> 
-					<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize).singularize), currentusers_things_url(controller_visible_name(klass.humanize.pluralize).downcase)) %>
+					<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize).singularize), currentusers_things_url(klass)) %>
 				<% end %>
       </small>
      </p>
@@ -55,7 +55,7 @@
       <% filter_contributables(current_user.contributions, true).each do |klass, array| %>
         <div>
           <div class="title">
-          	<%= link_to(visible_name(klass.humanize).pluralize, currentusers_things_url(controller_visible_name(klass.humanize.pluralize).downcase)) %>
+          	<%= link_to(visible_name(klass.humanize).pluralize, currentusers_things_url(klass)) %>
 		  		</div>
           <div class="content">
             <ul class="gadget_list">

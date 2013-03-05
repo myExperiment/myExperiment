@@ -21,6 +21,8 @@ class WorkflowsController < ApplicationController
   
   before_filter :check_is_owner, :only => [:edit, :update]
 
+  before_filter :check_context, :only => :index
+
   # declare sweepers and which actions should invoke them
   cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy_version, :destroy ]
   cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :launch ]
@@ -207,6 +209,13 @@ class WorkflowsController < ApplicationController
           pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
         end
 
+        locked_filters = { 'CATEGORY' => 'Workflow' }
+
+        if @context
+          context_filter = visible_name(@context).upcase + "_ID"
+          locked_filters[context_filter] = @context.id.to_s
+        end
+
         @pivot, problem = calculate_pivot(
 
             :pivot_options  => pivot_options,
@@ -215,7 +224,7 @@ class WorkflowsController < ApplicationController
             :search_models  => [Workflow],
             :search_limit   => Conf.max_search_size,
 
-            :locked_filters => { 'CATEGORY' => 'Workflow' },
+            :locked_filters => locked_filters,
 
             :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
                                 "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",

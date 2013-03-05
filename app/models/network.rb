@@ -59,7 +59,6 @@ class Network < ActiveRecord::Base
   validates_associated :owner
   
   validates_presence_of :user_id, :title
-  
   # bugfix. after unique_name has been set, if you un-set it, Rails throws an error!
   validates_uniqueness_of :unique_name, :if => Proc.new { |network| !(network.unique_name.nil? or network.unique_name.empty?) }
   
@@ -75,6 +74,10 @@ class Network < ActiveRecord::Base
   
   def owner_name
     owner.name
+  end
+
+  def name
+    title
   end
                           
   # announcements belonging to the group;

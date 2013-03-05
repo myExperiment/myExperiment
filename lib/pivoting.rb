@@ -23,7 +23,11 @@ def calculate_pivot(opts = {})
   begin
     expr = parse_filter_expression(opts[:params]["filter"], opts[:pivot_options], :active_filters => opts[:active_filters])
   rescue Exception => ex
-    problem = "Problem with query expression: #{ex}"
+    if Rails.env == "production"
+      problem = "Problem with query expression: #{ex}"
+    else
+      raise ex
+    end
   end
 
   pivot = contributions_list(opts[:params], opts[:user], opts[:pivot_options],

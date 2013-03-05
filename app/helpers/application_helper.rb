@@ -1168,11 +1168,15 @@ module ApplicationHelper
     perm
   end
   
-  def currentusers_things_url(thing)
+  def currentusers_things_url(klass)
     return nil unless current_user
-    return url_for(:controller => 'users',
-                   :id => current_user.id,
-                   :action => thing)
+    if Conf.contributable_models.include?(klass)
+      return polymorphic_url([current_user, klass.pluralize.underscore.to_sym])
+    else
+      return url_for(:controller => 'users',
+                     :id => current_user.id,
+                     :action => controller_visible_name(klass))
+    end
   end
   
   def view_privileges_notice
@@ -1573,14 +1577,34 @@ protected
         logger.error("Missing layout for #{contributable.class.name} #{contributable.id}: "+
                     "#{contributable.contribution.policy.layout}")
       end
-    elsif @network
-      layout = @network.layout
+    elsif (network = @network) || (@context.is_a?(Network) && (network = @context))
+      layout = network.layout
       if layout.nil?
-        logger.error("Missing layout for Group #{@network.id}: #{@network.layout}")
+        logger.error("Missing layout for Group #{network.id}")
       end
     end
 
     @layout = layout || {"layout" => Conf.page_template, "stylesheets" => [Conf.stylesheet]}
+  end
+
+
+  def context_prefix(context)
+    case context
+    when User
+      prefix = "#{context.name}'"
+      prefix << 's' if context.name[-1] != 's'
+    when Network
+      prefix = context.name
+    else
+      prefix = ''
+    end
+
+    prefix
+  end
+
+  # Creates a URL from a path and a hash of parameters
+  def url_with_params(url, params)
+    url + '?' + params.delete_if {|k,v| v.nil? || v.empty?}.to_query
   end
 
 end

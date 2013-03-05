@@ -1,4 +1,13 @@
-<li><%= link_to 'Packs', packs_path %></li>
+<% if @context %>
+  <li><%= link_to visible_name(@context).pluralize, polymorphic_url(@context.class.name.underscore.pluralize) %></li>
+  <li><%= link_to @context.name, @context %></li>
+<% end %>
+
+<% if controller.action_name == 'index' %>
+  <li>Packs</li>
+<% else %>
+  <li><%= link_to 'Packs', packs_path %></li>
+<% end %>
 
 <% if ["show", "new", "edit", "all", "new_item", "edit_item", "search"].include? controller.action_name.to_s %>
   <% case controller.action_name.to_s; when "show" %>

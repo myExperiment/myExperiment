@@ -1,4 +1,8 @@
-<li><%= link_to 'Groups', networks_path -%></li>
+<% if controller.action_name == 'index' %>
+  <li>Groups</li>
+<% else %>
+  <li><%= link_to 'Groups', networks_path %></li>
+<% end %>
 
 <% if ["show", "content", "new", "edit", "search", "all", "invite"].include? controller.action_name.to_s -%>
   <% case controller.action_name.to_s; when "show" %>

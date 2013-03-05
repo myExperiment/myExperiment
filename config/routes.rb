@@ -179,7 +179,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'users/forgot_password', :controller => "users", :action => "forgot_password"
   map.connect 'users/reset_password/:reset_code', :controller => "users", :action => "reset_password"
   
-  [ 'news', 'friends', 'groups', 'workflows', 'files', 'packs', 'forums', 'credits', 'tags', 'favourites' ].each do |tab|
+  [ 'news', 'friends', 'groups', 'forums', 'credits', 'tags', 'favourites' ].each do |tab|
     map.connect "users/:id/#{tab}", :controller => 'users', :action => tab
   end
   
@@ -208,6 +208,11 @@ ActionController::Routing::Routes.draw do |map|
 
     # user's reports of inappropriate content
     user.resources :reports, :controller => :user_reports
+
+    # user's uploaded resources
+    user.resources :workflows, :only => :index
+    user.resources :blobs, :only => :index, :as => :files
+    user.resources :packs, :only => :index
   end
 
   map.resources :networks,
@@ -223,6 +228,11 @@ ActionController::Routing::Routes.draw do |map|
     network.resources :group_announcements, :as => :announcements, :name_prefix => nil
     network.resources :comments, :collection => { :timeline => :get }
     network.resources :policies, :controller => 'group_policies'
+
+    # resources shared with network
+    network.resources :workflows, :only => :index
+    network.resources :blobs, :only => :index, :as => :files
+    network.resources :packs, :only => :index
   end
   
   # The priority is based upon order of creation: first created -> highest priority.

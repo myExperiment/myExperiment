@@ -15,6 +15,8 @@ class BlobsController < ApplicationController
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
   
   before_filter :check_is_owner, :only => [:edit, :update, :suggestions, :process_suggestions]
+
+  before_filter :check_context, :only => :index
   
   # declare sweepers and which actions should invoke them
   cache_sweeper :blob_sweeper, :only => [ :create, :update, :destroy ]
@@ -75,6 +77,13 @@ class BlobsController < ApplicationController
           pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
         end
 
+        locked_filters = { 'CATEGORY' => 'Blob' }
+
+        if @context
+          context_filter = visible_name(@context).upcase + "_ID"
+          locked_filters[context_filter] = @context.id.to_s
+        end
+
         @pivot, problem = calculate_pivot(
 
             :pivot_options  => Conf.pivot_options,
@@ -83,7 +92,7 @@ class BlobsController < ApplicationController
             :search_models  => [Blob],
             :search_limit   => Conf.max_search_size,
 
-            :locked_filters => { 'CATEGORY' => 'Blob' },
+            :locked_filters => locked_filters,
 
             :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
                                 "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",

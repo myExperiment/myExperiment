@@ -1,4 +1,8 @@
-<li><%= link_to 'Users', users_path -%></li>
+<% if controller.action_name == 'index' %>
+  <li>Users</li>
+<% else %>
+  <li><%= link_to 'Users', users_path %></li>
+<% end %>
 
 <% if ["edit"].include? controller.action_name.to_s -%>
 	<li><%= link_to h(@user.name), user_path(@user) -%></li>

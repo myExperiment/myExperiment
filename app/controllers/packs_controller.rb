@@ -11,7 +11,9 @@ class PacksController < ApplicationController
   before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
   
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
-  
+
+  before_filter :check_context, :only => :index
+
   # declare sweepers and which actions should invoke them
   cache_sweeper :pack_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :pack_entry_sweeper, :only => [ :create_item, :quick_add, :update_item, :destroy_item ]
@@ -37,6 +39,13 @@ class PacksController < ApplicationController
           pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
         end
 
+        locked_filters = { 'CATEGORY' => 'Pack' }
+
+        if @context
+          context_filter = visible_name(@context).upcase + "_ID"
+          locked_filters[context_filter] = @context.id.to_s
+        end
+
         @pivot, problem = calculate_pivot(
 
             :pivot_options  => Conf.pivot_options,
@@ -45,7 +54,7 @@ class PacksController < ApplicationController
             :search_models  => [Pack],
             :search_limit   => Conf.max_search_size,
 
-            :locked_filters => { 'CATEGORY' => 'Pack' },
+            :locked_filters => locked_filters,
 
             :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
                                 "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",

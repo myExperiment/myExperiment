@@ -1,5 +1,16 @@
 <% @logo_link_url  = "http://biovel.eu/" # The URL that the logo links to when clicked
-   @logo_image_url = "/images/biovel.png" # The logo image %>
+   @logo_image_url = "/images/biovel.png" # The logo image
+
+   biovel_id = @layout['network_id']
+
+   biovel_tabs = [
+       {'controller' => 'networks', 'label' => 'BioVeL', 'link' => network_path(biovel_id)},
+       {'controller' => 'workflows', 'label' => 'Workflows', 'link' => network_workflows_path(biovel_id)},
+       {'controller' => 'blobs', 'label' => 'Files', 'link' => network_blobs_path(biovel_id)},
+       {'controller' => 'packs', 'label' => 'Packs', 'link' => network_packs_path(biovel_id)}
+   ]
+
+%>
 
 <% content_for :site_info_links do %>
 
@@ -8,19 +19,29 @@
 <% content_for :logo do %>
   <div style="float: left; margin-bottom: 0.5em">
     <%= link_to image_tag(@logo_image_url), @logo_link_url, :style => "float: left" -%>
-    <div style="float: left; margin-top: 1em; margin-left: 1em">
+    <div style="float: left; margin-top: 2em">
       <div style="font-weight: bold; vertical-align: middle">
         <a href="<%= @logo_link_url -%>" class="biovel_logo_link">
-          <span style="font-size: 280%"><span style="color:black;">B</span>io<span style="color:black">V</span>e<span style="color:black">L</span></span><br/>
-          <span style="font-size: 100%">Biodiversity Virtual e-Laboratory</span>
+          <span style="font-size: 200%">Biodiversity Virtual e-Laboratory</span>
         </a>
       </div>
       <div style="margin: 0.5em 0 0 1em; color: black;">
-        on <%= link_to image_tag("/images/logo_tiny.png", :style=>"-moz-border-radius: 2px; border-radius: 2px; vertical-align: middle;border: 1px solid #ccc"), "/" -%>
+        on <%= link_to image_tag("/images/logo_tiny.png", :style=>"vertical-align: middle"), "/" -%>
       </div>
     </div>
   </div>
   <br class="clearer"/>
+<% end %>
+
+<% content_for :tabs do %>
+  <ul class="tabnav">
+    <li class="return_tab"><%= link_to 'Home', '/home'-%></li>
+    <% biovel_tabs.each do |tab| %>
+      <li <%= (tab['controller'] && controller.controller_name.match(tab['controller'])) ? 'id="selected_tabnav"' : '' %>>
+        <%= link_to(tab['label'], tab['link']) -%>
+      </li>
+    <% end %>
+  </ul>
 <% end %>
 
 <%= render :partial => "layouts/myexperiment" %>

@@ -128,12 +128,12 @@ li {
 
 #myexp_header {
   padding-top: 1em;
-	margin: 0 0.5em 0 0.5em;
+	margin: 0 0.5em 1em 0.5em;
+  overflow: auto;
 }
 
 .logo {
 	float: left;
-	width: 300px;
 }
 
 .links {
@@ -144,15 +144,19 @@ li {
 #myexp_links
 {
 	float: right;
-	width: 600px;
 	font-size: 93%;
 }
 
 #site_info_links {
+  text-align: left;
+  float: left;
+  padding-top: 6px;
+  margin-right: 100px;
 }
-/*  margin: 0.5em 0; */
+
 
 #user_links {
+  text-align: right;
   float: right;
 }
 
@@ -2336,6 +2340,7 @@ input[type="radio"], input[type="checkbox"] {
   background-color: #F5F5F5;
   padding: 0.5em;
   margin-bottom: 0.5em;
+  overflow: auto;
 }
 
 .resource_list_item p {
@@ -2402,18 +2407,4 @@ div.avatar {
 	font-weight: bold;
 	color: #333333;
   font-size: 100%;
-}
-
-div.error {
-  width: 500px;
-  border: 2px solid #f44;
-  padding-bottom: 1em;
-  margin: 1em auto;
-  text-align: center;
-}
-
-div.error h1 {
-  color: white;
-  background-color: #f44;
-  margin-top: 0;
 }
