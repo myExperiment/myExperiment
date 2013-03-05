@@ -233,7 +233,7 @@
 						<p>
 				      <b>
 				      	<%= link_to(pluralize(Authorization.scoped(klass.constantize, :authorised_user => current_user).find(:all, :select => "0", :conditions => { :contributor_type => 'User', :contributor_id => @user.id } ).length, controller_visible_name(klass.humanize.pluralize)),
-                            currentusers_things_url(klass)) %>
+                            polymorphic_url([@user, klass.pluralize.underscore.to_sym])) %>
 							</b>
 				    </p>
 					<% end %>
