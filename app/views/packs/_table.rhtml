@@ -16,7 +16,7 @@
         <%= contributor(pack.contribution.contributor_id, pack.contribution.contributor_type, true, 60) %>
         <% if layout = pack.contribution.policy.layout %>
           <% begin %>
-            <%= render :partial => "skins/branding/#{layout}" %>
+            <%= render :partial => "layouts/skins/branding/#{layout}" %>
           <% rescue ActionView::MissingTemplate %>
           <% end %>
         <% end %>

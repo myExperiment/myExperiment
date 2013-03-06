@@ -1564,30 +1564,6 @@ protected
     result
   end
 
-  #Selects layout for contributables/groups or uses site's default
-  def configure_layout
-    contributable = (@workflow || @pack || @blob)
-    layout = nil
-
-    if params["layout_preview"]
-      layout = Conf.layouts[params["layout_preview"]]
-    elsif contributable && contributable.contribution && contributable.contribution.policy
-      layout = Conf.layouts[contributable.contribution.policy.layout]
-      if layout.nil?
-        logger.error("Missing layout for #{contributable.class.name} #{contributable.id}: "+
-                    "#{contributable.contribution.policy.layout}")
-      end
-    elsif (network = @network) || (@context.is_a?(Network) && (network = @context))
-      layout = network.layout
-      if layout.nil?
-        logger.error("Missing layout for Group #{network.id}")
-      end
-    end
-
-    @layout = layout || {"layout" => Conf.page_template, "stylesheets" => [Conf.stylesheet]}
-  end
-
-
   def context_prefix(context)
     case context
     when User

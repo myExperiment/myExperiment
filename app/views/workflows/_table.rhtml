@@ -19,7 +19,7 @@
         <%= contributor(workflow.contribution.contributor_id, workflow.contribution.contributor_type, true, 60) %>
         <% if layout = workflow.contribution.policy.layout %>
           <% begin %>
-            <%= render :partial => "skins/branding/#{layout}" %>
+            <%= render :partial => "layouts/skins/branding/#{layout}" %>
           <% rescue ActionView::MissingTemplate %>
           <% end %>
         <% end %>

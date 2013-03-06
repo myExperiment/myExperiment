@@ -28,6 +28,8 @@ class ApplicationController < ActionController::Base
   before_filter :check_external_site_request
 
   include ActionView::Helpers::NumberHelper
+
+  layout :configure_layout
   
   def check_for_sleeper
     if request.method != :get && logged_in?
@@ -530,8 +532,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-
-
   def check_context
     if params[:user_id]
       @context = User.find_by_id(params[:user_id])
@@ -541,4 +541,29 @@ class ApplicationController < ActionController::Base
       error("Group not found") if @context.nil?
     end
   end
+
+  #Selects layout for contributables/groups or uses site's default
+  def configure_layout
+    contributable = (@workflow || @pack || @blob)
+    layout = nil
+
+    if params["layout_preview"]
+      layout = Conf.layouts[params["layout_preview"]]
+    elsif contributable && contributable.contribution && contributable.contribution.policy
+      layout = Conf.layouts[contributable.contribution.policy.layout]
+      if layout.nil?
+        logger.error("Missing layout for #{contributable.class.name} #{contributable.id}: "+
+                    "#{contributable.contribution.policy.layout}")
+      end
+    elsif (network = @network) || (@context.is_a?(Network) && (network = @context))
+      layout = network.layout
+      if layout.nil?
+        logger.error("Missing layout for Group #{network.id}")
+      end
+    end
+
+    @layout = layout || {"layout" => 'application', "stylesheets" => [Conf.stylesheet]}
+    @layout["layout"]
+  end
+
 end
