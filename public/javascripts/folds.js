@@ -94,5 +94,7 @@ function initialiseFolds() {
   }
 }
 
-initialiseFolds();
+document.observe("dom:loaded", function() {
+  initialiseFolds();
+});
 
