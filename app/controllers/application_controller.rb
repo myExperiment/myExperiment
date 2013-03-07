@@ -551,15 +551,12 @@ class ApplicationController < ActionController::Base
       layout = Conf.layouts[params["layout_preview"]]
     elsif contributable && contributable.contribution && contributable.contribution.policy
       layout = Conf.layouts[contributable.contribution.policy.layout]
-      if layout.nil?
+      if contributable.contribution.policy.layout && layout.nil?
         logger.error("Missing layout for #{contributable.class.name} #{contributable.id}: "+
                     "#{contributable.contribution.policy.layout}")
       end
     elsif (network = @network) || (@context.is_a?(Network) && (network = @context))
       layout = network.layout
-      if layout.nil?
-        logger.error("Missing layout for Group #{network.id}")
-      end
     end
 
     @layout = layout || {"layout" => 'application', "stylesheets" => [Conf.stylesheet]}
