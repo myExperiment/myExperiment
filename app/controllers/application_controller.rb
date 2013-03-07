@@ -542,24 +542,43 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  #Selects layout for contributables/groups or uses site's default
+  # Selects layout (aka skin) for contributables/groups or uses site's default.
+  # Sets a variable that is used for choosing the right stylesheets etc., then returns the layout name for rails
+  #  to render the view with.
   def configure_layout
     contributable = (@workflow || @pack || @blob)
     layout = nil
 
+    # For testing skins
     if params["layout_preview"]
       layout = Conf.layouts[params["layout_preview"]]
+    # Skins on resources
     elsif contributable && contributable.contribution && contributable.contribution.policy
-      layout = Conf.layouts[contributable.contribution.policy.layout]
-      if contributable.contribution.policy.layout && layout.nil?
-        logger.error("Missing layout for #{contributable.class.name} #{contributable.id}: "+
-                    "#{contributable.contribution.policy.layout}")
+      if contributable.contribution.policy.layout
+        layout = Conf.layouts[contributable.contribution.policy.layout]
+        if layout.nil?
+          logger.error("Missing layout for #{contributable.class.name} #{contributable.id}: "+
+                      "#{contributable.contribution.policy.layout}")
+        end
       end
+    # Skins on groups, or when in a group context
     elsif (network = @network) || (@context.is_a?(Network) && (network = @context))
       layout = network.layout
     end
 
-    @layout = layout || {"layout" => 'application', "stylesheets" => [Conf.stylesheet]}
+    # Check skin exists
+    if layout && layout["layout"] && !File.exists?("#{RAILS_ROOT}/app/views/layouts/#{layout["layout"]}.html.erb")
+      logger.error("Missing layout #{RAILS_ROOT}/app/views/layouts/#{layout["layout"]}.html.erb")
+      layout = nil
+    end
+
+    # Use default skin if all else fails
+    if layout.nil?
+      @layout = {"layout" => 'application', "stylesheets" => [Conf.stylesheet]}
+    else
+      @layout = layout
+    end
+
     @layout["layout"]
   end
 
