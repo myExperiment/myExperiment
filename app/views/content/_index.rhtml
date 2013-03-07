@@ -67,7 +67,7 @@
     </div>
     <div class="summary">
       <div class="result-count">
-        Showing <%= pluralize(@pivot[:results].size, 'result') -%>.
+        Showing <%= pluralize(@pivot[:results].total_entries, 'result') -%>.
         <% if @pivot[:results].size > 1 %>Use the <%if @pivot[:filters].length > 0 %>filters on the left and the <% end %>
         search box below to refine the results.<% end %>
       </div>
@@ -87,7 +87,7 @@
           <% end %>
           <% if params[:query] && controller.class != SearchController %>
             <div class="remove_search_query">
-              <%= link_to("Remove search query", url_with_params(request.path, request.query_parameters.merge({ "query", nil }))) -%>
+              <%= link_to("Remove search query", url_with_params(request.path, request.query_parameters.merge({ "query" => nil }))) -%>
             </div>
           <% end %>
         </form>
