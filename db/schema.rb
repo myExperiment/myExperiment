@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130304123620) do
+ActiveRecord::Schema.define(:version => 20130308085716) do
 
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
@@ -108,10 +108,8 @@ ActiveRecord::Schema.define(:version => 20130304123620) do
     t.string   "key",          :limit => 50
     t.string   "secret",       :limit => 50
     t.integer  "user_id"
-    t.string   "key_type"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "creator_id"
   end
 
   add_index "client_applications", ["key"], :name => "index_client_applications_on_key", :unique => true

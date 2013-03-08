@@ -162,11 +162,11 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :messages, :collection => { :sent => :get, :delete_all_selected => :delete }
 
   # all oauth
-  map.resources :oauth
   map.authorize '/oauth/authorize',:controller=>'oauth',:action=>'authorize'
   map.request_token '/oauth/request_token',:controller=>'oauth',:action=>'request_token'
   map.access_token '/oauth/access_token',:controller=>'oauth',:action=>'access_token'
   map.test_request '/oauth/test_request',:controller=>'oauth',:action=>'test_request'
+  map.resources :oauth
 
   # User timeline
   map.connect 'users/timeline', :controller => 'users', :action => 'timeline'

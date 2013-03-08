@@ -1,5 +1,4 @@
 <h2>Permissions</h2>
-<% checkboxes=[] %>
 <% permissions_categorised=permissions_categorised(@permissions) %>
 <% for category,permissions in permissions_categorised %>
   <h3><%= category.capitalize %></h3>
@@ -8,34 +7,16 @@
     <% for type,data in permission -%>
       <% key=data['URI'] -%>
       <% key_type = "#{type} #{key}" -%>
-      <% if (@permissions_for.include?(key_type)) %>
-        <%=check_box_tag "key_permissions[#{type} #{key}]", 1,  true %> <%= type %> <%= key %>
-      <% else %>
-        <%=check_box_tag "key_permissions[#{type} #{key}]" %> <%= type %> <%= key %>
-      <% end -%>
-      <% checkboxes.push("key_permissions[#{type} #{key}]"); %>
-      &nbsp;&nbsp;&nbsp;&nbsp;
+      <% checked = @permissions_for.include?(key_type) %>
+      <%= check_box_tag "key_permissions[#{type} #{key}]", 1,  checked, :class => "permission" %> <%= type %> <%= key %>
     <% end %>
   <% end -%>
   </p>
 <% end %>
 <br/>
 <p style="text-align:center;" >
-  <input type="button" name="check_all" value="Check All" onclick="var checkboxes = new Array();
-  <% i = 0 -%> 
-  <% for c in checkboxes %>
-      <%= "checkboxes[#{i}]='#{c}';" -%>
-      <% i=i+1 -%>
-  <% end -%>
-  checkAll(checkboxes);" />
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="button" name="uncheck_all" value="Uncheck All" onclick="var checkboxes = new Array();
-  <% i = 0 -%>
-  <% for c in checkboxes %>
-      <%= "checkboxes[#{i}]='#{c}';" -%>
-      <% i=i+1 -%>
-  <% end -%>
-  uncheckAll(checkboxes);" />
+  <input type="button" name="check_all" value="Check All" onclick="$$('input.permission').each(function (e) { e.checked = true });"/>
+  <input type="button" name="uncheck_all" value="Uncheck All" onclick="$$('input.permission').each(function (e) { e.checked = false });"/>
 </p>
 
 
