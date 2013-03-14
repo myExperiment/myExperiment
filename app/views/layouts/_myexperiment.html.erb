@@ -106,5 +106,9 @@
 
 <%= render :partial => "layouts/web_analytics" if Conf.google_web_analytics["enable"] %>
 
+<% if @content_for_analytics %>
+  <%= yield :analytics %>
+<% end %>
+
 </body>
 </html>
