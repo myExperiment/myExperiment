@@ -190,6 +190,7 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
 
       search_results = Sunspot.search opts[:search_models] do
         fulltext search_query
+        adjust_solr_params { |p| p[:defType] = 'edismax' }
         paginate :page => 1, :per_page => opts[:search_limit]
       end
 

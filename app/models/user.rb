@@ -296,22 +296,21 @@ class User < ActiveRecord::Base
 
   if Conf.solr_enable
     searchable :if => :activated_at do
-      text :name, :boost => 2.0
+      text :name, :as => 'name', :boost => 2.0
+      text :email, :as => 'email' do profile.email end
+      text :website, :as => 'website' do profile.website end
+      text :body, :as => 'description' do profile.body end
+      text :field_or_industry, :as => 'field_or_industry' do profile.field_or_industry end
+      text :occupation_or_roles, :as => 'occupation_or_role' do profile.occupation_or_roles end
+      text :organisations, :as => 'organisation' do profile.organisations end
+      text :location_city, :as => 'city' do profile.location_city end
+      text :location_country, :as => 'country' do profile.location_country end
+      text :interests, :as => 'interest' do profile.interests end
+      text :contact_details, :as => 'contact' do profile.contact_details end
 
-      text :tags do
+      text :tags, :as => 'tag' do
         tags.map { |tag| tag.name }
       end
-
-      text :email do profile.email end
-      text :website do profile.website end
-      text :body do profile.body end
-      text :field_or_industry do profile.field_or_industry end
-      text :occupation_or_roles do profile.occupation_or_roles end
-      text :organisations do profile.organisations end
-      text :location_city do profile.location_city end
-      text :location_country do profile.location_country end
-      text :interests do profile.interests end
-      text :contact_details do profile.contact_details end
     end
   end
 

@@ -41,15 +41,15 @@ class Pack < ActiveRecord::Base
   
   if Conf.solr_enable
     searchable do
-      text :title, :boost => 2.0
-      text :description
-      text :contributor_name
+      text :title, :as => 'title', :boost => 2.0
+      text :description, :as => 'description'
+      text :contributor_name, :as => 'contributor_name'
 
-      text :tags do
+      text :tags, :as => 'tag' do
         tags.map { |tag| tag.name }
       end
 
-      text :comments do
+      text :comments, :as => 'comment' do
         comments.map { |comment| comment.comment }
       end
     end

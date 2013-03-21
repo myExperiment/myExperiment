@@ -156,6 +156,7 @@ class SearchController < ApplicationController
 
         results = Sunspot.search [Workflow, Blob, User] do
           fulltext query
+          adjust_solr_params { |p| p[:defType] = 'edismax' }
         end.results
 
         results.each do |result|
@@ -239,6 +240,7 @@ private
 
         search_results = model.search do
           fulltext query.downcase
+          adjust_solr_params { |p| p[:defType] = 'edismax' }
           paginate :page => params[:page], :per_page => limit
         end
 

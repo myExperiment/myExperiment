@@ -23,16 +23,16 @@ class Network < ActiveRecord::Base
 
   if Conf.solr_enable
     searchable do
-      text :title, :boost => 2.0
+      text :title, :as => 'title', :boost => 2.0
       text :unique_name
-      text :owner_name
-      text :description
+      text :owner_name, :as => 'owner_name'
+      text :description, :as => 'description'
 
-      text :tags do
+      text :tags, :as => 'tag' do
         tags.map { |tag| tag.name }
       end
 
-      text :comments do
+      text :comments, :as => 'comment' do
         comments.map { |comment| comment.comment }
       end
     end

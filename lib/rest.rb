@@ -1624,6 +1624,7 @@ def paginated_search_index(query, models, num, page, user)
 
     search_result = Sunspot.search models do
       fulltext q
+      adjust_solr_params { |p| p[:defType] = 'edismax' }
       paginate :page => page, :per_page => size
     end
 
