@@ -311,6 +311,8 @@ class User < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
            
+  named_scope :activated_users, :conditions => "activated_at IS NOT NULL"
+
   def avatar?
     self.profile and !(self.profile.picture_id.nil? or self.profile.picture_id.zero?)
   end

@@ -524,10 +524,9 @@ class ApplicationController < ActionController::Base
       when "Title"
         ao_graph.graph << [RDF::URI(resource_uri), RDF::DC.title, params[:value]]
       when "Creator"
-        ## FIXME: dcterms:creator and contributor should be given as resources, not literal
-        ao_graph.graph << [RDF::URI(resource_uri), RDF::DC.creator, params[:value]]
+        ao_graph.graph << [RDF::URI(resource_uri), RDF::DC.creator, RDF::URI(params[:value])]
       when "Contributor"
-        ao_graph.graph << [RDF::URI(resource_uri), RDF::DC.contributor, params[:value]]
+        ao_graph.graph << [RDF::URI(resource_uri), RDF::DC.contributor, RDF::URI(params[:value])]
       when "Description"
         ao_graph.graph << [RDF::URI(resource_uri), RDF::DC.description, params[:value]]
       else

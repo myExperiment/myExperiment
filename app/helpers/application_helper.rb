@@ -1312,6 +1312,23 @@ module ApplicationHelper
     end
   end
 
+  # user_link creates a link to a user on the site if the URI matches an
+  # existing user.  Otherwise the URI is just shown with an optional label.
+
+  def user_link(uri, opts = {})
+
+    user_model, user_id = parse_resource_uri(uri)
+
+    user = User.activated_users.find_by_id(user_id) if user_model == User
+
+    if user
+      link_to(h(user.name), user)
+    elsif opts[:label]
+      link_to(h(opts[:label]), @creator)
+    else
+      link_to(h(@creator), @creator)
+    end
+  end
   
 protected
 

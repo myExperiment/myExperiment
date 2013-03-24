@@ -72,7 +72,7 @@
   <% if @creator %>
     <tr>
       <td>Creator</td>
-      <td><%=h @creator -%></td>
+      <td><%= user_link(@creator) -%></td>
     </tr>
   <% end %>    
 
@@ -154,10 +154,11 @@
   <% end %>
 </ul>
 
+<% end %>
 
+<% if params[:show_annotation_graph] -%>
 
-
-<h2>Debug</h2>
+<br /><br /><br />
 
 <div class="fold">
 
