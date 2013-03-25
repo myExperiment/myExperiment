@@ -802,13 +802,7 @@ module ApplicationHelper
   end
 
   def highlight_all(text, string)
-    rtn = text
-    
-    string.each(separator=" ") { |substr|
-      rtn = highlight(text, substr)
-    }
-    
-    return rtn
+    highlight(text, string.split(' '))
   end
   
   def workflows_for_attribution_form
