@@ -1192,6 +1192,13 @@ def workflow_aux(action, opts = {})
     if opts[:query]['version'].nil?
       update_permissions(ob, permissions, opts[:user])
     end
+
+    # Extract internals and stuff
+    if ob.is_a?(WorkflowVersion)
+      ob.workflow.extract_metadata
+    else
+      ob.extract_metadata
+    end
   end
 
   ob = ob.versioned_resource if ob.respond_to?("versioned_resource")
