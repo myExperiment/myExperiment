@@ -7,6 +7,7 @@ RAILS_GEM_VERSION = '2.3.17' unless defined? RAILS_GEM_VERSION
 require File.join(File.dirname(__FILE__), 'boot')
 require 'conf'
 require 'uri'
+require 'forwardable' # Needed for Sunspot
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
