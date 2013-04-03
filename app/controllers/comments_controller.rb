@@ -39,7 +39,7 @@ class CommentsController < ApplicationController
 
       if success
         Activity.create(:subject => current_user, :action => 'create', :objekt => comment, :auth => @context)
-        @context.solr_save if @context.respond_to?(:solr_save)
+        @context.solr_index if @context.respond_to?(:solr_index)
       end
     end
     
@@ -55,7 +55,7 @@ class CommentsController < ApplicationController
   # DELETE /:context_type/:context_id/comments/:id
   def destroy
     @comment.destroy
-    @context.solr_save if @context.respond_to?(:solr_save)
+    @context.solr_index if @context.respond_to?(:solr_index)
     
     respond_to do |format|
       format.html { render :partial => "comments/comments", :locals => { :commentable => @context } }

@@ -11,7 +11,9 @@ class PacksController < ApplicationController
   before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
   
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
-  
+
+  before_filter :check_context, :only => :index
+
   # declare sweepers and which actions should invoke them
   cache_sweeper :pack_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :pack_entry_sweeper, :only => [ :create_item, :quick_add, :update_item, :destroy_item ]
@@ -30,6 +32,20 @@ class PacksController < ApplicationController
     respond_to do |format|
       format.html {
 
+        @query = params[:query]
+        @query_type = 'packs'
+        pivot_options = Conf.pivot_options.dup
+        unless @query.blank?
+          pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
+        end
+
+        locked_filters = { 'CATEGORY' => 'Pack' }
+
+        if @context
+          context_filter = visible_name(@context).upcase + "_ID"
+          locked_filters[context_filter] = @context.id.to_s
+        end
+
         @pivot, problem = calculate_pivot(
 
             :pivot_options  => Conf.pivot_options,
@@ -38,7 +54,7 @@ class PacksController < ApplicationController
             :search_models  => [Pack],
             :search_limit   => Conf.max_search_size,
 
-            :locked_filters => { 'CATEGORY' => 'Pack' },
+            :locked_filters => locked_filters,
 
             :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
                                 "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
@@ -46,9 +62,6 @@ class PacksController < ApplicationController
                                 "SERVICE_COUNTRY", "SERVICE_STATUS"])
 
         flash.now[:error] = problem if problem
-
-        @query = params[:query]
-        @query_type = 'packs'
 
         # index.rhtml
       }
@@ -131,9 +144,8 @@ class PacksController < ApplicationController
         
         # update policy
         policy_err_msg = update_policy(@pack, params)
-        update_layout(@pack, params[:layout])
-        
         if policy_err_msg.blank?
+          update_layout(@pack, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Pack was successfully created.'
           format.html { redirect_to pack_url(@pack) }
         else
@@ -160,9 +172,8 @@ class PacksController < ApplicationController
       if @pack.update_attributes(params[:pack])
         @pack.refresh_tags(convert_tags_to_gem_format(params[:pack][:tag_list]), current_user) if params[:pack][:tag_list]
         policy_err_msg = update_policy(@pack, params)
-        update_layout(@pack, params[:layout])
-        
         if policy_err_msg.blank?
+          update_layout(@pack, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Pack was successfully updated.'
           format.html { redirect_to pack_url(@pack) }
         else
@@ -235,7 +246,7 @@ class PacksController < ApplicationController
     @pack.tags_user_id = current_user # acts_as_taggable_redux
     @pack.tag_list = "#{@pack.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @pack.update_tags # hack to get around acts_as_versioned
-    @pack.solr_save if Conf.solr_enable
+    @pack.solr_index if Conf.solr_enable
     
     respond_to do |format|
       format.html { 
@@ -418,6 +429,24 @@ class PacksController < ApplicationController
     end
   end
   
+  def snapshot
+
+    success = @pack.snapshot!
+
+    respond_to do |format|
+      format.html {
+        if success
+          @pack.reload
+          flash[:notice] = 'Pack snapshot was successfully created.'
+          redirect_to pack_version_path(@pack, @pack.versions.last.version)
+        else
+          flash[:error] = 'There was a problem with creating the snapshot.'
+          redirect_to pack_path(@pack)
+        end
+      }
+    end
+  end
+
   protected
   
   # Check that a protocol is specified in the URI; prepend HTTP:// otherwise
@@ -453,7 +482,8 @@ class PacksController < ApplicationController
       "statistics"       => "view",
       "tag"              => "view",
       "update"           => "edit",
-      "update_item"      => "edit"
+      "update_item"      => "edit",
+      "snapshot"         => "edit"
     }
 
     begin
@@ -462,6 +492,8 @@ class PacksController < ApplicationController
       if Authorization.check(action_permissions[action_name], pack, current_user)
         @pack = pack
         
+        @version = @pack.find_version(params[:version]) if params[:version]
+
         @authorised_to_edit = logged_in? && Authorization.check("edit", @pack, current_user)
         @authorised_to_download = Authorization.check("download", @pack, current_user)
         
@@ -471,10 +503,10 @@ class PacksController < ApplicationController
                             
         @base_host = base_host
       else
-        error("You are not authorised to perform this action", "is not authorized")
+        render_401("You are not authorized to access this pack.")
       end
     rescue ActiveRecord::RecordNotFound
-      error("Pack not found", "is invalid")
+      render_404("Pack not found.")
     end
   end
   

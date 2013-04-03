@@ -3,7 +3,7 @@
     <% if @pivot[:filters].length > 0 %>
       <div class="category">Search filter terms</div>
       <div class="search_filters">
-        <form action="<%= url_for(request.query_parameters) -%>" method="GET">
+        <form action="<%= url_with_params(request.path, request.query_parameters) -%>" method="GET">
           <div class="filter_search_box">
             <input class="query" name="filter_query" value="<%= params[:filter_query] -%>" />
             <% @pivot[:filter_query_url].each do |key, value| %>
@@ -11,7 +11,7 @@
             <% end %>
             <% if @pivot[:cancel_filter_query_url] %>
               <%= link_to('<img src="/images/famfamfam_silk/cross.png" />',
-                  @pivot[:cancel_filter_query_url]) -%>
+                          url_with_params(request.path, @pivot[:cancel_filter_query_url])) -%>
             <% else %>
               <input class="submit" type="image" src="/images/famfamfam_silk/magnifier.png" name="submit" />
             <% end %>
@@ -32,8 +32,11 @@
             <div class="options">
               <% filter[:objects].each do |object| %>
                 <div title='<%= h(object[:plain_label]) -%>'<%= object[:selected] ? ' class="selected"' : '' -%>>
-                  <input class='checkbox' type='checkbox' onclick='javascript:location = <%= url_for(object[:checkbox_uri]).to_json -%>; return false;' <% if object[:selected] %> checked='checked' <% end %> />
-                  <%= link_to("<div class='count'>#{object[:count]}</div> <div class='label'><span class='truncate'>#{object[:label]}</span></div>", object[:label_uri]) -%>
+                  <input class='checkbox' type='checkbox' onclick='javascript:location = <%= url_with_params(request.path, object[:checkbox_uri]).to_json -%>; return false;' <% if object[:selected] %> checked='checked' <% end %> />
+                  <a href="<%= url_with_params(request.path, object[:label_uri]) -%>">
+                    <div class='count'><%= object[:count] -%></div>
+                    <div class='label'><span class='truncate'><%= object[:label] -%></span></div>
+                  </a>
                 </div>
               <% end %>
             </div>
@@ -54,7 +57,7 @@
       Sort by:
       <select onchange="javascript:location = this.options[this.selectedIndex].value;">
         <% @pivot[:pivot_options]["order"].each do |args| %>
-          <option value="<%= url_for(request.query_parameters.merge("order" => args["option"])) -%>"
+          <option value="<%= url_with_params(request.path, request.query_parameters.merge({:order => args["option"]})) -%>"
           <% if params[:order] == args["option"] -%> selected="selected"<% end -%>><%= args["label"] -%></option>
         <% end %>
       </select>
@@ -64,18 +67,18 @@
     </div>
     <div class="summary">
       <div class="result-count">
-        Showing <%= pluralize(@pivot[:results].size, 'result') -%>.
+        Showing <%= pluralize(@pivot[:results].total_entries, 'result') -%>.
         <% if @pivot[:results].size > 1 %>Use the <%if @pivot[:filters].length > 0 %>filters on the left and the <% end %>
         search box below to refine the results.<% end %>
       </div>
       <div>
-        <form action="<%= url_for(request.query_parameters) -%>" method="GET">
+        <form action="<%= url_with_params(request.path, request.query_parameters) -%>" method="GET">
           <div class="search_box">
             <input class="query" name="query" value="<%= params[:query] -%>" />
             <% if request.query_parameters["filter"] %>
               <input name="filter" type="hidden" value="<%= request.query_parameters["filter"].gsub('"', '&quot;') -%>" />
             <% end %>
-            <input class="submit" type="submit" value="Search"></input>
+            <input class="submit" type="submit" value="Search"/>
           </div>
           <% if @pivot[:query_problem] %>
             <div class="search_query_problem">
@@ -84,7 +87,7 @@
           <% end %>
           <% if params[:query] && controller.class != SearchController %>
             <div class="remove_search_query">
-              <%= link_to("Remove search query", url_for(request.query_parameters.merge({ "query", nil }))) -%>
+              <%= link_to("Remove search query", url_with_params(request.path, request.query_parameters.merge({ "query" => nil }))) -%>
             </div>
           <% end %>
         </form>

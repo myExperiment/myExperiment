@@ -41,38 +41,30 @@ class OauthController < ApplicationController
     end
     @show_permissions=@token.client_application.permissions
     redirect_url=params[:oauth_callback]||@token.client_application.callback_url
-    if (@token.client_application.key_type == 'System') || @client_applications.include?(@token.client_application)
-      unless @token.invalidated?
-        if request.post?
-          if params[:authorize]=='1'
-            @token.authorize!(current_user)
-            if redirect_url
-              redirect_to redirect_url+"?oauth_token=#{@token.token}"
-            else
-              render :action=>"authorize_success"
-            end
-          elsif params[:commit]=="Save Changes"
-            @token.invalidate!
-            if redirect_url
-              redirect_to redirect_url+"?oauth_failure=1"
-            else
-              render :action=>"authorize_failure"
-            end
+    unless @token.invalidated?
+      if request.post?
+        if params[:authorize]=='1'
+          @token.authorize!(current_user)
+          if redirect_url
+            redirect_to redirect_url+"?oauth_token=#{@token.token}"
+          else
+            render :action=>"authorize_success"
+          end
+        elsif params[:commit]=="Save Changes"
+          @token.invalidate!
+          if redirect_url
+            redirect_to redirect_url+"?oauth_failure=1"
+          else
+            render :action=>"authorize_failure"
           end
         end
-      else
-       if redirect_url
-         redirect_to redirect_url+"?oauth_failure=1"
-       else
-         render :action=>"authorize_failure"
-       end
       end
     else
-       if redirect_url
-         redirect_to redirect_url+"?oauth_failure=1"
-       else
-         render :action=>"authorize_failure"
-       end
+     if redirect_url
+       redirect_to redirect_url+"?oauth_failure=1"
+     else
+       render :action=>"authorize_failure"
+     end
     end
   end
 
@@ -87,7 +79,6 @@ class OauthController < ApplicationController
 
   def index
     @client_applications=current_user.client_applications
-    @admin_client_applications=ClientApplication.find(:all, :conditions => ["user_id != ? and creator_id = ?", current_user.id, current_user.id])
     @tokens=current_user.tokens.find :all, :conditions=>'oauth_tokens.invalidated_at is null and oauth_tokens.authorized_at is not null'
   end
 
@@ -110,23 +101,20 @@ class OauthController < ApplicationController
       flash[:notice]="Client Application successfully registered!"
       redirect_to :action=>"show",:id=>@client_application.id
     else
+      @permissions = TABLES['REST'][:data]
+      @permissions=@permissions.sort
+      @permissions_for=params[:key_permissions]
       render :action=>"new"
     end
   end
 
   def show
-    if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
-      @client_application = nil
-    end
     @show_permissions=@client_application.permissions
   end
 
   def edit
     @permissions = TABLES['REST'][:data]
     @permissions=@permissions.sort
-    if (!(@client_application.user_id == current_user.id or @client_application.creator_id == current_user.id))
-        @client_application = nil
-    end
     @permissions_for=@client_application.permissions_for
     unless @client_application.nil?
       @show_permissions=@client_application.permissions
@@ -134,13 +122,11 @@ class OauthController < ApplicationController
   end
 
   def update
-    if (current_user.admin? or @client_application.key_type=="User")
-      @client_application.permissions.delete_all
-      if params[:key_permissions] 
-        for key_permission in params[:key_permissions] do
-          @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
-           @key_permission.save
-        end
+    @client_application.permissions.delete_all
+    if params[:key_permissions]
+      for key_permission in params[:key_permissions] do
+        @key_permission = KeyPermission.new(:client_application_id => @client_application.id, :for => key_permission[0])
+         @key_permission.save
       end
     end
     if @client_application.update_attributes(params[:client_application])
@@ -168,7 +154,8 @@ private
       "index"         => "view",
       "request_token" => "view",
       "test_request"  => "view",
-      "show"          => "view"
+      "show"          => "view",
+      "update"        => "edit"
     }
 
     if action_name == 'update'
@@ -178,13 +165,13 @@ private
     end
     begin
       client_app=ClientApplication.find(id)
-      if Authorization.check(action_permissions[action_name], client_app, current_user)
+      if Authorization.check(action_permissions[action_name] || action_name, client_app, current_user)
         @client_application = client_app
       else
-        error("Client Application not found (id not authorized)", "is invalid (not authorized)")
+        render_401
       end
     rescue ActiveRecord::RecordNotFound
-      error("Client Application not found", "is invalid")
+      render_404("Client Application not found")
     end
   end
 

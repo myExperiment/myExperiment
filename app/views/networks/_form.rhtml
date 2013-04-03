@@ -1,4 +1,4 @@
-  <%= javascript_include_tag "fckeditor/fckeditor.js" %>
+  <%= javascript_include_tag "ckeditor/ckeditor.js" %>
 	
 	<p>
     <b>Owner</b><br />
@@ -43,6 +43,6 @@
 	<p>
   	<strong>Description: </strong>
 	</p>
-	<%= fckeditor_textarea(:network, :description, :toolbarSet => 'Simple', :width => '700px', :height => '300px') %>
+	<%= form.text_area(:description, :width => '700px', :height => '300px', :class => 'ckeditor') %>
 
  

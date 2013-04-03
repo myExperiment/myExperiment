@@ -8,6 +8,7 @@ require 'digest/sha1'
 require 'acts_as_site_entity'
 require 'acts_as_contributor'
 require 'acts_as_creditor'
+require 'sunspot_rails'
 
 class User < ActiveRecord::Base
   
@@ -290,13 +291,30 @@ class User < ActiveRecord::Base
   acts_as_contributor
   
   has_many :blobs, :as => :contributor, :dependent => :destroy
-  has_many :blogs, :as => :contributor, :dependent => :destroy
   has_many :workflows, :as => :contributor, :dependent => :destroy
   has_many :packs, :as => :contributor, :dependent => :destroy
   
   acts_as_creditor
 
-  acts_as_solr(:fields => [ :name, :tag_list ], :include => [ :profile ], :if => "activated_at") if Conf.solr_enable
+  if Conf.solr_enable
+    searchable :if => :activated_at do
+      text :name, :as => 'name', :boost => 2.0
+      text :email, :as => 'email' do profile.email end
+      text :website, :as => 'website' do profile.website end
+      text :body, :as => 'description' do profile.body end
+      text :field_or_industry, :as => 'field_or_industry' do profile.field_or_industry end
+      text :occupation_or_roles, :as => 'occupation_or_role' do profile.occupation_or_roles end
+      text :organisations, :as => 'organisation' do profile.organisations end
+      text :location_city, :as => 'city' do profile.location_city end
+      text :location_country, :as => 'country' do profile.location_country end
+      text :interests, :as => 'interest' do profile.interests end
+      text :contact_details, :as => 'contact' do profile.contact_details end
+
+      text :tags, :as => 'tag' do
+        tags.map { |tag| tag.name }
+      end
+    end
+  end
 
   validates_presence_of :name
   
@@ -632,6 +650,11 @@ class User < ActiveRecord::Base
     self.spam_score = score
   end
 
+  # Shared group policies that the user can apply to their uploaded resources
+  def group_policies
+    all_networks.map {|n| n.policies}.flatten
+  end
+
 protected
 
   # clean up emails and username before validation
@@ -732,7 +755,7 @@ protected
       # END DEBUG
     end
   end
-    
+
 private
 
   # clean string to remove spaces and force lowercase

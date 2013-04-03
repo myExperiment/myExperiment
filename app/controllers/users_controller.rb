@@ -4,10 +4,11 @@
 # See license.txt for details.
 
 require 'open-uri'
+require 'recaptcha'
 
 class UsersController < ApplicationController
 
-  contributable_actions = [:workflows, :files, :packs, :blogs]
+  contributable_actions = [:workflows, :files, :packs]
   show_actions = [:show, :news, :friends, :groups, :credits, :tags, :favourites] + contributable_actions
 
   before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password] + show_actions
@@ -87,11 +88,6 @@ class UsersController < ApplicationController
   
   def packs
     @tab = "Packs"
-    render :action => 'show'
-  end
-
-  def blogs
-    @tab = "Blogs"
     render :action => 'show'
   end
 
@@ -756,11 +752,11 @@ protected
   def find_users
     @users = User.find(:all, 
                        :order => "users.name ASC",
-                       :page => { :size => 20, 
-                                  :current => params[:page] },
                        :conditions => "users.activated_at IS NOT NULL",
                        :include => :profile)
-                       
+
+    @users = @users.paginate(:page => params[:page], :per_page => 20)
+
     @users.each do |user|
       user.salt = nil
       user.crypted_password = nil

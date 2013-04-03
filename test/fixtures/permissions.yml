@@ -43,3 +43,13 @@ permission_for_another_network_on_false_policy:
   created_at: 2008-04-06 14:13:12
   updated_at: 2008-04-06 14:13:12
 
+permission_for_group_policy:
+  id: 5
+  contributor_id: 4
+  contributor_type: Network
+  policy_id: 7
+  download: true
+  edit: true
+  view: true
+  created_at: 2008-04-06 14:13:12
+  updated_at: 2008-04-06 14:13:12

@@ -1,6 +1,7 @@
 module CountryCodes
     @@codes = Hash.new
     File.open('config/countries.tab').each do |record|
+      record = record.force_encoding('iso-8859-1') if RUBY_VERSION > "1.8.7"
       parts = record.split("\t")
       @@codes[parts[0]] = parts[1].strip
     end

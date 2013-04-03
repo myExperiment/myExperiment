@@ -7,7 +7,12 @@ require 'digest/md5'
 require 'digest/sha1'
 
 class ContentBlob < ActiveRecord::Base
-  validates_presence_of :data
+
+  validate do |record|
+    if record.data.nil? || record.data.length == 0
+      record.errors.add(:data, 'cannot be empty.')
+    end
+  end
 
   before_save do |blob|
     blob.update_checksums

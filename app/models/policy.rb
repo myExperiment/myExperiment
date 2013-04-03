@@ -61,4 +61,8 @@ class Policy < ActiveRecord::Base
       end
     end
   end
+
+  def group_policy?
+    contributor_type == "Network"
+  end
 end

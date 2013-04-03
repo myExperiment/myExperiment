@@ -1,0 +1,16 @@
+<% if session[:came_from] == 'statjr' %>
+<div class="statjr_import_form">
+	<form id="statjr_import_form" action="<%= session[:return_url] -%>" method="POST" name="import_workflow enctype="multipart/form-data"">
+		<ul class="sectionIcons">
+			<li>
+			<%= icon('workflow', session[:return_url], 'Read this eBook in StatJR Reader', {:onclick => 'document.forms["statjr_import_form"].submit(); return false;'}, 'Read this eBook in StatJR Reader') -%>
+			</li>
+		</ul>
+		<textarea name="ebook" style="display: none">
+			<%= ActiveSupport::Base64::encode64(@viewing_version.content_blob.data) -%>
+		</textarea>
+	</form>
+</div>
+<% else %>
+<p class="none_text">Not currently available.</p>
+<% end %>

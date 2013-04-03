@@ -1,1 +1,0 @@
-require 'encrypted_attributes'

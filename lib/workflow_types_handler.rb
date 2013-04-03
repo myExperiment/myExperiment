@@ -6,7 +6,7 @@
 # Helper class to deal with Workflow types and processors.
 # Note that workflow types can exist that don't have corresponding processors.
 
-require 'lib/workflow_processors/interface'
+require 'workflow_processors/interface'
 
 class WorkflowTypesHandler
   
@@ -131,7 +131,7 @@ end
 # so that they are then accessible via the ObjectSpace.
 # We assume (and this is a rails convention for anything in the /lib/ directory), 
 # that filenames for example "my_class.rb" correspond to class names for example MyClass.
-Dir.chdir(File.join(RAILS_ROOT, "lib/workflow_processors")) do
+Dir.chdir(File.join(Rails.root, "lib/workflow_processors")) do
   Dir.glob("*.rb").each do |f|
     ("workflow_processors/" + f.gsub(/.rb/, '')).camelize.constantize
   end

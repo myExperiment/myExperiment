@@ -15,6 +15,8 @@ class BlobsController < ApplicationController
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
   
   before_filter :check_is_owner, :only => [:edit, :update, :suggestions, :process_suggestions]
+
+  before_filter :check_context, :only => :index
   
   # declare sweepers and which actions should invoke them
   cache_sweeper :blob_sweeper, :only => [ :create, :update, :destroy ]
@@ -38,7 +40,7 @@ class BlobsController < ApplicationController
     
     send_data(@version.content_blob.data, :filename => @version.local_name, :type => @version.content_type.mime_type)
     
-    #send_file("#{RAILS_ROOT}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type.mime_type)
+    #send_file("#{Rails.root}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type.mime_type)
   end
 
   # GET /files/:id/download/:name
@@ -68,6 +70,20 @@ class BlobsController < ApplicationController
     respond_to do |format|
       format.html {
 
+        @query = params[:query]
+        @query_type = 'files'
+        pivot_options = Conf.pivot_options.dup
+        unless @query.blank?
+          pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
+        end
+
+        locked_filters = { 'CATEGORY' => 'Blob' }
+
+        if @context
+          context_filter = visible_name(@context).upcase + "_ID"
+          locked_filters[context_filter] = @context.id.to_s
+        end
+
         @pivot, problem = calculate_pivot(
 
             :pivot_options  => Conf.pivot_options,
@@ -76,7 +92,7 @@ class BlobsController < ApplicationController
             :search_models  => [Blob],
             :search_limit   => Conf.max_search_size,
 
-            :locked_filters => { 'CATEGORY' => 'Blob' },
+            :locked_filters => locked_filters,
 
             :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
                                 "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
@@ -84,9 +100,6 @@ class BlobsController < ApplicationController
                                 "SERVICE_COUNTRY", "SERVICE_STATUS"])
 
         flash.now[:error] = problem if problem
-
-        @query = params[:query]
-        @query_type = 'files'
 
         # index.rhtml
       }
@@ -148,7 +161,10 @@ class BlobsController < ApplicationController
       @blob = Blob.new(params[:blob])
       @blob.content_blob = ContentBlob.new(:data => data)
 
-      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user, :mime_type => content_type, :category=> 'Blob')
+      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user,
+                                                                   :title => content_type,
+                                                                   :mime_type => content_type,
+                                                                   :category=> 'Blob')
 
       respond_to do |format|
         if @blob.save
@@ -162,13 +178,12 @@ class BlobsController < ApplicationController
           @blob.contribution.update_attributes(params[:contribution])
         
           policy_err_msg = update_policy(@blob, params)
-          update_layout(@blob, params[:layout])
-        
+
           update_credits(@blob, params)
           update_attributions(@blob, params, current_user)
         
           if policy_err_msg.blank?
-
+            update_layout(@blob, params[:layout]) unless params[:policy_type] == "group"
             @version = @blob.find_version(1)
 
             format.html {
@@ -212,7 +227,10 @@ class BlobsController < ApplicationController
     if params[:blob][:data] && params[:blob][:data].size > 0
       @blob.build_content_blob(:data => params[:blob][:data].read)
       @blob.local_name = params[:blob][:data].original_filename
-      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user, :title => params[:blob][:data].content_type, :mime_type => params[:blob][:data].content_type, :category => 'Blob')
+      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user,
+                                                                   :title => params[:blob][:data].content_type,
+                                                                   :mime_type => params[:blob][:data].content_type,
+                                                                   :category => 'Blob')
     end
 
     params[:blob].delete(:data)
@@ -231,9 +249,10 @@ class BlobsController < ApplicationController
         policy_err_msg = update_policy(@blob, params)
         update_credits(@blob, params)
         update_attributions(@blob, params, current_user)
-        update_layout(@blob, params[:layout])
-        
+
         if policy_err_msg.blank?
+          update_layout(@blob, params[:layout]) unless params[:policy_type] == "group"
+
           format.html {
 
             if @blob.new_version_number
@@ -299,7 +318,7 @@ class BlobsController < ApplicationController
     @blob.tags_user_id = current_user # acts_as_taggable_redux
     @blob.tag_list = "#{@blob.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @blob.update_tags # hack to get around acts_as_versioned
-    @blob.solr_save if Conf.solr_enable
+    @blob.solr_index if Conf.solr_enable
     
     respond_to do |format|
       format.html { 
@@ -441,13 +460,13 @@ class BlobsController < ApplicationController
 
       else
         if logged_in? 
-          error("File not found (id not authorized)", "is invalid (not authorized)")
+          render_401("You are not authorized to access this file.")
         else
           find_blob_auth if login_required
         end
       end
     rescue ActiveRecord::RecordNotFound
-      error("File not found", "is invalid")
+      render_404("File not found.")
     end
   end
   
@@ -475,7 +494,7 @@ class BlobsController < ApplicationController
   
   def check_is_owner
     if @blob
-      error("You are not authorised to manage this File", "") unless @blob.owner?(current_user)
+      render_401("You are not authorised to manage this file.") unless @blob.owner?(current_user)
     end
   end
   

@@ -8,19 +8,9 @@ class ServicesController < ApplicationController
   include ApplicationHelper
 
   before_filter :find_service,  :only => [:show]
-  before_filter :find_services, :only => [:all]
   
   # GET /algorithms;search
   def search
-#   @query = params[:query] || ''
-#   @query.strip!
-#   
-#   @contributables = (Conf.solr_enable && !@query.blank?) ? Algorithm.find_by_solr(@query, :limit => 100).results : []
-#   @total_count = (Conf.solr_enable && !@query.blank?) ? Algorithm.count_by_solr(@query) : 0
-#   
-#   respond_to do |format|
-#     format.html # search.rhtml
-#   end
   end
   
   # GET /services
@@ -66,13 +56,6 @@ class ServicesController < ApplicationController
   end
   
   protected
-  
-  def find_services
-    @contributables = Service.find(:all, 
-                       :order => "created_at DESC",
-                       :page => { :size => 20, 
-                       :current => params[:page] })
-  end
   
   def find_service
     begin

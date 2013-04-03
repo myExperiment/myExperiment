@@ -10,8 +10,6 @@ class Comment < ActiveRecord::Base
 
   has_many :activities, :as => :objekt, :dependent => :destroy
   
-  acts_as_solr :fields => [ :comment ] if Conf.solr_enable
-  
   acts_as_simile_timeline_event(
     :fields => {
       :start       => :created_at,

@@ -6,6 +6,10 @@
 
 <% perms = [] %>
 <% perms = contributable.contribution.policy.permissions if edit %>
+<% applicable_networks = current_user.all_networks %>
+<% group_policies = current_user.group_policies %>
+<% using_group_policy = edit && contributable.contribution.policy.group_policy? %>
+<% group_policies = group_policies | [contributable.contribution.policy] if using_group_policy %>
 
 <div class="fold">
 
@@ -22,29 +26,76 @@
   </div>
 
   <div class="foldContent" style="display: none;">
-
     <div class="box_infotext">
-    	<p>
-    		Here you can specify who can <b>view</b> and <b>download</b> this <%= c_type %> on <%= Conf.sitename %>.
-			</p>
-			
-			<% if update_perms -%>
-				<p>
-					You can also set <b>update</b> permissions for this <%= c_type %>.
-					<%= link_to_function "Click here" + expand_image, visual_effect(:toggle_blind, "update_perms_info", :duration => 0.3) %> for more information.
-				</p>
-				<div id="update_perms_info" class="box_simple" style="display: none; margin: 0.5em 0;">
-					<%= update_perms_info_text(contributable) -%>
-				</div>
-			<% end -%>
-			
-			<p>
-				You can also explicitly share this <%= c_type %> with your Groups.
-			</p>  
-		</div>
+      <p>
+        Here you can specify who can <b>view</b> and <b>download</b> this <%= c_type %> on <%= Conf.sitename %>.
+      </p>
+
+      <% if update_perms -%>
+        <p>
+          You can also set <b>update</b> permissions for this <%= c_type %>.
+          <%= link_to_function "Click here" + expand_image, visual_effect(:toggle_blind, "update_perms_info", :duration => 0.3) %> for more information.
+        </p>
+        <div id="update_perms_info" class="box_simple" style="display: none; margin: 0.5em 0;">
+          <%= update_perms_info_text(contributable) -%>
+        </div>
+      <% end -%>
+
+      <p>
+        You can also explicitly share this <%= c_type %> with your Groups.
+      </p>
+   </div>
+
+    <% if group_policies.size > 0 %>
+      <br/>
+      <div class="box_infotext">
+      	<p>
+      		One or more of your groups has a <strong>Group Policy</strong> defined.
+          A Group Policy is a pre-defined set of sharing rules that can be applied to this <%= c_type -%> instead of manually managing permissions.
+  			</p>
+        <p>
+          Select whether you wish you use a Group Policy or manually manage permissions below.
+        </p>
+  		</div>
+      <p><strong>How do you wish to manage the sharing rules for this <%= c_type -%>?</strong></p>
+      <div class="box_editing" style="padding-left: 1em; font-size: 93%;">
+        <p>
+          <input type="radio" name="policy_type" value="custom" id="policy_option_custom"
+                 <%= 'checked="checked"' if !using_group_policy -%> onclick="$('custom_policy').show();$('group_policy').hide();"/>
+          <label for="policy_option_custom">Manage permissions manually</label>
+        </p>
+
+        <p>
+          <input type="radio" name="policy_type" value="group" id="policy_option_group"
+                 <%= 'checked="checked"' if using_group_policy -%> onclick="$('custom_policy').hide();$('group_policy').show();"/>
+          <label for="policy_option_group">Use a Group Policy</label>
+        </p>
+      </div>
+    <% else %>
+      <input type="hidden" name="policy_type" value="custom"/>
+    <% end %>
 
 		<br/>
-		
+
+    <div id="group_policy" <%= 'style="display: none"' if !using_group_policy-%>>
+      <p><strong>Which Group Policy do you wish to apply to this <%= c_type -%>?</strong></p>
+      <div class="box_editing" style="padding-left: 1em; font-size: 93%;">
+        <select name="group_policy">
+          <% group_policies.group_by {|p| p.contributor.title}.each do |network, policies| %>
+            <% unless policies.empty? %>
+              <optgroup label="<%= h network -%>">
+                <% policies.each do |policy| %>
+                  <option value="<%= policy.id -%>"><%= policy.name -%></option>
+                <% end %>
+              </optgroup>
+            <% end %>
+          <% end %>
+        </select>
+      </div>
+    </div>
+
+    <div id="custom_policy" <%= 'style="display: none"' if using_group_policy-%>>
+
 		<!-- View/Download Permissions -->
     <p><strong>Who can view and download this <%= c_type %> on <%= Conf.sitename %>?</strong></p>
 
@@ -141,7 +192,7 @@
 		
 		<br/>
 
-    <% unless (applicable_networks = (current_user.networks + current_user.networks_owned)).empty? %>
+    <% unless applicable_networks.empty? %>
       <!-- Explicit Group Permissions -->
       <p><strong>Share with my Groups:</strong></p>
 
@@ -174,9 +225,9 @@
                 visiting the 'edit' page.
               </p>
             </div>
-            <% selected_option = (Conf.layouts[contributable.contribution.layout]["network_id"] unless
-                (contributable.contribution.nil? || contributable.contribution.layout.nil? ||
-                 Conf.layouts[contributable.contribution.layout].nil?)) %>
+            <% selected_option = (Conf.layouts[contributable.contribution.policy.layout]["network_id"] unless
+                (contributable.contribution.nil? || contributable.contribution.policy.nil? ||
+                 contributable.contribution.policy.layout.nil? || Conf.layouts[contributable.contribution.policy.layout].nil?)) %>
             <%= select_tag "layout", "<option value="">Default</option>" +
                 options_from_collection_for_select(applicable_networks.select {|n| n.layout_name if Conf.layouts[n.layout_name]},
                                                    'id','title', selected_option) %>
@@ -184,6 +235,8 @@
         <% end %>
       </div>
     <% end %>
+
+    </div>
   </div>
 </div>
 

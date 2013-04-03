@@ -12,8 +12,6 @@ module AccountManagement
     :announcements              => { :owner => :user_id },
     :attributions               => { :owner => :derived },
     :blobs                      => { :owner => :contributor },
-    :blogs                      => { :owner => :contributor },
-    :blog_posts                 => { :owner => :derived },
     :bookmarks                  => { :owner => :user_id },
     :citations                  => { :owner => :user_id },
     :client_applications        => { :owner => :user_id },

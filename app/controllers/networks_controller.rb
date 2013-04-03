@@ -3,11 +3,16 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'recaptcha'
+
 class NetworksController < ApplicationController
-  before_filter :login_required, :except => [:index, :show, :search, :all]
+
+  include ApplicationHelper
+
+  before_filter :login_required, :except => [:index, :show, :content, :search, :all]
   
   before_filter :find_networks, :only => [:all]
-  before_filter :find_network, :only => [:membership_request, :show, :tag]
+  before_filter :find_network, :only => [:membership_request, :show, :tag, :content]
   before_filter :find_network_auth_admin, :only => [:invite, :membership_invite, :membership_invite_external]
   before_filter :find_network_auth_owner, :only => [:edit, :update, :destroy]
   
@@ -250,98 +255,7 @@ class NetworksController < ApplicationController
 
   # GET /networks/1
   def show
-
-    @item_sort_options = [
-      ["rank",          "Rank"],
-      ["most_recent",   "Most recent"],
-      ["title",         "Title"],
-      ["uploader",      "Uploader"],
-      ["last_updated",  "Last updated"],
-      ["rating",        "User rating"],
-      ["licence",       "Licence"],
-      ["content_type",  "Content Type"]
-    ]
-
     @shared_items = @network.shared_contributions
-
-    case params[:item_sort]
-
-      when "rank"; @shared_items.sort! do |a, b|
-        b.rank <=> a.rank
-      end
-
-      when "title"; @shared_items.sort! do |a, b|
-        a.contributable.label <=> b.contributable.label
-      end
-
-      when "most_recent"; @shared_items.sort! do |a, b|
-        b.contributable.created_at <=> a.contributable.created_at
-      end
-
-      when "uploader"; @shared_items.sort! do |a, b|
-        if a.contributor.label == b.contributor.label
-          b.rank <=> a.rank
-        else
-          a.contributor.label <=> b.contributor.label
-        end
-      end
-
-      when "last_updated"; @shared_items.sort! do |a, b|
-        b.contributable.updated_at <=> a.contributable.updated_at
-      end
-
-      when "rating"; @shared_items.sort! do |a, b|
-
-        a_rating = a.rating
-        b_rating = b.rating
-
-        if a_rating == b_rating
-          b.rank <=> a.rank
-        else
-          b.rating <=> a.rating
-        end
-      end
-
-      when "licence"; @shared_items.sort! do |a, b|
-
-        a_has_licence = a.contributable.respond_to?('license')
-        b_has_licence = b.contributable.respond_to?('license')
-
-        if (a_has_licence && b_has_licence)
-          if a.contributable.license == b.contributable.license
-            b.rank <=> a.rank
-          else
-            a.contributable.license.title <=> b.contributable.license.title
-          end
-        elsif (a_has_licence && !b_has_licence)
-          -1
-        elsif (!a_has_licence && b_has_licence)
-          1
-        else
-          b.rank <=> a.rank
-        end
-      end
-
-      when "content_type"; @shared_items.sort! do |a, b|
-
-        a_has_content_type = a.contributable.respond_to?('content_type')
-        b_has_content_type = b.contributable.respond_to?('content_type')
-
-        if (a_has_content_type && b_has_content_type)
-          if a.contributable.content_type == b.contributable.content_type
-            b.rank <=> a.rank
-          else
-            a.contributable.content_type.title <=> b.contributable.content_type.title
-          end
-        elsif (a_has_content_type && !b_has_content_type)
-          -1
-        elsif (!a_has_content_type && b_has_content_type)
-          1
-        else
-          b.rank <=> a.rank
-        end
-      end
-    end
 
     respond_to do |format|
       format.html {
@@ -362,6 +276,31 @@ class NetworksController < ApplicationController
     end
   end
 
+  # GET /networks/1/content
+  def content
+    respond_to do |format|
+      format.html do
+
+        @pivot, problem = calculate_pivot(
+
+            :pivot_options  => Conf.pivot_options,
+            :params         => params,
+            :user           => current_user,
+            :search_models  => [Workflow, Blob, Pack, Service],
+            :search_limit   => Conf.max_search_size,
+
+            :locked_filters => { 'GROUP_ID' => @network.id.to_s },
+
+            :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
+                                "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
+                                "CURATION_EVENT", "SERVICE_PROVIDER",
+                                "SERVICE_COUNTRY", "SERVICE_STATUS"])
+
+        flash.now[:error] = problem if problem
+      end
+    end
+  end
+
   # GET /networks/new
   def new
     @network = Network.new(:user_id => current_user.id)
@@ -374,6 +313,9 @@ class NetworksController < ApplicationController
 
   # POST /networks
   def create
+
+    params[:network][:user_id] = current_user.id
+
     @network = Network.new(params[:network])
 
     respond_to do |format|
@@ -394,6 +336,9 @@ class NetworksController < ApplicationController
 
   # PUT /networks/1
   def update
+
+    params[:network].delete(:user_id)
+
     respond_to do |format|
       if @network.update_attributes(params[:network])
         Activity.create(:subject => current_user, :action => 'edit', :objekt => @network)
@@ -421,7 +366,7 @@ class NetworksController < ApplicationController
     @network.tags_user_id = current_user
     @network.tag_list = "#{@network.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
     @network.update_tags # hack to get around acts_as_versioned
-    @network.solr_save if Conf.solr_enable
+    @network.solr_index if Conf.solr_enable
     
     respond_to do |format|
       format.html { 
@@ -453,9 +398,7 @@ protected
   def find_networks
     @networks = Network.find(:all, 
                              :order => "title ASC",
-                             :page => { :size => 20, 
-                                        :current => params[:page] },
-                             :include => [ :owner ])
+                             :include => [ :owner ]).paginate(:page => params[:page], :per_page => 20)
   end
 
   def find_network
@@ -471,9 +414,12 @@ protected
 
   def find_network_auth_owner
     begin
-      @network = Network.find(params[:id], :conditions => ["networks.user_id = ?", current_user.id], :include => [ :owner, :memberships ])
+      @network = Network.find(params[:id], :include => [ :owner, :memberships ])
+      unless @network.owner == current_user || current_user.admin?
+        error("Group not found (id not authorized)", "is invalid (not group administrator)")
+      end
     rescue ActiveRecord::RecordNotFound
-      error("Group not found (id not authorized)", "is invalid (not group adminsitrator)")
+      error("Group not found (id not authorized)", "is invalid (not group administrator)")
     end
   end
   

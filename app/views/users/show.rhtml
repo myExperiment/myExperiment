@@ -232,7 +232,8 @@
 					<% filter_contributables(@user.contributions).each do |klass, contributables| %>
 						<p>
 				      <b>
-				      	<%= link_to(pluralize(Authorization.scoped(klass.constantize, :authorised_user => current_user).find(:all, :select => "0", :conditions => { :contributor_type => 'User', :contributor_id => @user.id } ).length, controller_visible_name(klass.humanize.pluralize)), url_for(:action => controller_visible_name(klass.humanize.pluralize).downcase)) %>
+				      	<%= link_to(pluralize(Authorization.scoped(klass.constantize, :authorised_user => current_user).find(:all, :select => "0", :conditions => { :contributor_type => 'User', :contributor_id => @user.id } ).length, controller_visible_name(klass.humanize.pluralize)),
+                            polymorphic_url([@user, klass.pluralize.underscore.to_sym])) %>
 							</b>
 				    </p>
 					<% end %>
@@ -409,13 +410,6 @@
 		<br/>
     <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Pack' end).map do |c| c.contributable end  %>
     <%= render :partial => "packs/table", :locals => { :collection => contributables } %>
-
-  <% when "Blogs" %>
-		
-		<%= view_privileges_notice %>
-		<br/>
-    <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Blog' end).map do |c| c.contributable end  %>
-    <%= render :partial => "blogs/table", :locals => { :collection => contributables } %>
 
   <% when "Credits" %>
 

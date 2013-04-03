@@ -7,7 +7,6 @@ class ProfilesController < ApplicationController
 
   before_filter :login_required, :except => [:index, :show]
 
-  before_filter :find_profiles, :only => [:index]
   before_filter :find_profile, :except => [:index]
   before_filter :auth, :except => [:index, :show]
   
@@ -100,14 +99,6 @@ class ProfilesController < ApplicationController
   end
   
 protected
-
-  def find_profiles
-    @profiles = Profile.find(:all, 
-                             :include => :owner, 
-                             :order => "users.name ASC",
-                             :page => { :size => 20, 
-                                        :current => params[:page] })
-  end
 
   def find_profile
     begin

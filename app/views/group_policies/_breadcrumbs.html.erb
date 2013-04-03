@@ -1,0 +1,13 @@
+<li><%= link_to 'Groups', networks_path -%></li>
+<li><b><%= link_to h(@group.title), network_path(@group) -%></b></li>
+<li><b><%= link_to "Group Policies", network_policies_path(@group) -%></b>
+
+<% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
+  <% case controller.action_name.to_s; when "show", "edit" -%>
+    <li><%= truncate(h(@policy.name), :length => 50) -%></li>
+  <% when "new" -%>
+    <li>New Policy</li>
+  <% else -%>
+    <!-- no specific breadcrumb for other actions -->
+  <% end -%>
+<% end -%>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 97) do
+ActiveRecord::Schema.define(:version => 20130308085716) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -88,23 +88,6 @@ ActiveRecord::Schema.define(:version => 97) do
     t.integer  "current_version"
   end
 
-  create_table "blog_posts", :force => true do |t|
-    t.integer  "blog_id"
-    t.string   "title"
-    t.text     "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "body_html"
-  end
-
-  create_table "blogs", :force => true do |t|
-    t.integer  "contributor_id"
-    t.string   "contributor_type"
-    t.string   "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "bookmarks", :force => true do |t|
     t.string   "title",             :limit => 50, :default => ""
     t.datetime "created_at",                                      :null => false
@@ -114,6 +97,27 @@ ActiveRecord::Schema.define(:version => 97) do
   end
 
   add_index "bookmarks", ["user_id"], :name => "index_bookmarks_on_user_id"
+
+  create_table "checksums", :id => false, :force => true do |t|
+    t.integer "id"
+    t.string  "sha1"
+  end
+
+  add_index "checksums", ["id"], :name => "i1", :unique => true
+
+  create_table "checksums_new", :id => false, :force => true do |t|
+    t.integer "id"
+    t.string  "sha1"
+  end
+
+  add_index "checksums_new", ["id"], :name => "i1", :unique => true
+
+  create_table "checksums_new_new", :id => false, :force => true do |t|
+    t.integer "id"
+    t.string  "sha1"
+  end
+
+  add_index "checksums_new_new", ["id"], :name => "ii", :unique => true
 
   create_table "citations", :force => true do |t|
     t.integer  "user_id"
@@ -139,10 +143,8 @@ ActiveRecord::Schema.define(:version => 97) do
     t.string   "key",          :limit => 50
     t.string   "secret",       :limit => 50
     t.integer  "user_id"
-    t.string   "key_type"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "creator_id"
   end
 
   add_index "client_applications", ["key"], :name => "index_client_applications_on_key", :unique => true
@@ -209,7 +211,6 @@ ActiveRecord::Schema.define(:version => 97) do
     t.integer  "site_downloads_count", :default => 0
     t.integer  "site_viewings_count",  :default => 0
     t.string   "label"
-    t.string   "layout"
   end
 
   add_index "contributions", ["contributable_id", "contributable_type"], :name => "index_contributions_on_contributable_id_and_contributable_type"
@@ -233,6 +234,12 @@ ActiveRecord::Schema.define(:version => 97) do
     t.text     "details_html"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "deprecation_events", :force => true do |t|
+    t.string   "title"
+    t.datetime "date"
+    t.text     "details"
   end
 
   create_table "downloads", :force => true do |t|
@@ -432,6 +439,7 @@ ActiveRecord::Schema.define(:version => 97) do
     t.integer  "user_id",               :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "version"
   end
 
   create_table "pack_remote_entries", :force => true do |t|
@@ -441,6 +449,18 @@ ActiveRecord::Schema.define(:version => 97) do
     t.string   "alternate_uri"
     t.text     "comment"
     t.integer  "user_id",       :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "version"
+  end
+
+  create_table "pack_versions", :force => true do |t|
+    t.integer  "pack_id"
+    t.integer  "version"
+    t.text     "revision_comments"
+    t.string   "title"
+    t.text     "description"
+    t.text     "description_html"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -453,6 +473,8 @@ ActiveRecord::Schema.define(:version => 97) do
     t.text     "description_html"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "current_version"
+    t.integer  "license_id"
   end
 
   create_table "pending_invitations", :force => true do |t|
@@ -504,6 +526,7 @@ ActiveRecord::Schema.define(:version => 97) do
     t.integer  "update_mode"
     t.boolean  "public_download",  :default => false
     t.boolean  "public_view",      :default => false
+    t.string   "layout"
   end
 
   create_table "predicates", :force => true do |t|
@@ -583,6 +606,13 @@ ActiveRecord::Schema.define(:version => 97) do
   end
 
   add_index "reviews", ["user_id"], :name => "index_reviews_on_user_id"
+
+  create_table "semantic_annotations", :force => true do |t|
+    t.integer "subject_id"
+    t.string  "subject_type"
+    t.string  "predicate"
+    t.string  "object"
+  end
 
   create_table "service_categories", :force => true do |t|
     t.string   "uri"
@@ -707,9 +737,9 @@ ActiveRecord::Schema.define(:version => 97) do
     t.string   "contributor_type"
     t.string   "url"
     t.string   "username"
-    t.string   "crypted_password"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "password"
   end
 
   create_table "topic_feedbacks", :force => true do |t|
@@ -798,6 +828,12 @@ ActiveRecord::Schema.define(:version => 97) do
     t.string   "uri"
   end
 
+  create_table "workflow_ports", :force => true do |t|
+    t.string  "name"
+    t.string  "port_type"
+    t.integer "workflow_id"
+  end
+
   create_table "workflow_processors", :force => true do |t|
     t.string  "name"
     t.string  "wsdl_operation"
@@ -847,6 +883,11 @@ ActiveRecord::Schema.define(:version => 97) do
     t.integer  "content_type_id"
     t.integer  "license_id"
     t.integer  "preview_id"
+  end
+
+  create_table "wsdl_deprecations", :force => true do |t|
+    t.string  "wsdl"
+    t.integer "deprecation_event_id"
   end
 
 end

@@ -29,7 +29,11 @@ class SearchController < ApplicationController
     end
 
     if @type == "all"
-      search_all
+      if shortcut = Conf.shortcut_keywords[params[:query].downcase]
+        redirect_to(shortcut)
+      else
+        search_all
+      end
     else
       case params[:type]
       when 'workflows'
@@ -150,7 +154,10 @@ class SearchController < ApplicationController
       begin
         query = params["q"].downcase
 
-        results = User.multi_solr_search(query, :models => [Workflow, Blob, User], :limit => 25).results
+        results = Sunspot.search [Workflow, Blob, User] do
+          fulltext query
+          adjust_solr_params { |p| p[:defType] = 'edismax' }
+        end.results
 
         results.each do |result|
           case result.class.name
@@ -185,10 +192,12 @@ private
   def search_all
 
     @query = params[:query]
+    pivot_options = Conf.pivot_options.dup
+    pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
 
     @pivot, problem = calculate_pivot(
 
-        :pivot_options    => Conf.pivot_options,
+        :pivot_options    => pivot_options,
         :params           => params,
         :user             => current_user,
         :search_models    => [Workflow, Blob, Pack, User, Network, Service],
@@ -207,7 +216,7 @@ private
     model_name = params[:type].singularize.camelize
     model_name = Conf.model_aliases[model_name] if Conf.model_aliases[model_name]
 
-    model = eval(model_name)
+    model = model_name.constantize
 
     @collection_label = params[:type].singularize
     @controller_name  = model_name.underscore.pluralize
@@ -216,6 +225,8 @@ private
 
     @query = params[:query] || ''
     @query.strip!
+
+    query = @query
 
     limit = params[:num] ? params[:num] : Conf.default_search_size
 
@@ -226,9 +237,15 @@ private
 
     if Conf.solr_enable && !@query.blank?
       begin
-        solr_results = model.find_by_solr(@query.downcase, :offset => offset, :limit => limit)
-        @total_count = solr_results.total
-        @collection  = PaginatedArray.new(solr_results.results,
+
+        search_results = model.search do
+          fulltext query.downcase
+          adjust_solr_params { |p| p[:defType] = 'edismax' }
+          paginate :page => params[:page], :per_page => limit
+        end
+
+        @total_count = search_results.total
+        @collection  = PaginatedArray.new(search_results.results,
             :offset => offset, :limit => limit, :total => @total_count)
       rescue
         flash.now[:error] = "There was a problem with your search query."

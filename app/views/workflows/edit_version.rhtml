@@ -6,7 +6,7 @@
 
 <% can_edit_anything = title_edit || preview_edit || description_edit %>
 
-<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 
 <h1>
 	Edit Version <%= @viewing_version_number.to_s %>
@@ -61,7 +61,7 @@
 			<!-- Description -->
 			<p><b>Description</b></p>
       <% if description_edit %>
-        <%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '500px', :height => '500px') %>
+        <%= text_area_tag('workflow[body]', @viewing_version.body, :width => '500px', :height => '500px', :class => 'ckeditor') -%>
     
         <br />
       <% else %>

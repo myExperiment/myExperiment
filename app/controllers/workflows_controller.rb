@@ -21,6 +21,8 @@ class WorkflowsController < ApplicationController
   
   before_filter :check_is_owner, :only => [:edit, :update]
 
+  before_filter :check_context, :only => :index
+
   # declare sweepers and which actions should invoke them
   cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy_version, :destroy ]
   cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :launch ]
@@ -124,7 +126,7 @@ class WorkflowsController < ApplicationController
     end
 
     @workflow.reload
-    @workflow.solr_save if Conf.solr_enable
+    @workflow.solr_index if Conf.solr_enable
   end
   
   # GET /workflows/1;download
@@ -216,15 +218,29 @@ class WorkflowsController < ApplicationController
     respond_to do |format|
       format.html do
 
+        @query = params[:query]
+        @query_type = 'workflows'
+        pivot_options = Conf.pivot_options.dup
+        unless @query.blank?
+          pivot_options["order"] = [{"order" => "id ASC", "option" => "relevance", "label" => "Relevance"}] + pivot_options["order"]
+        end
+
+        locked_filters = { 'CATEGORY' => 'Workflow' }
+
+        if @context
+          context_filter = visible_name(@context).upcase + "_ID"
+          locked_filters[context_filter] = @context.id.to_s
+        end
+
         @pivot, problem = calculate_pivot(
 
-            :pivot_options  => Conf.pivot_options,
+            :pivot_options  => pivot_options,
             :params         => params,
             :user           => current_user,
             :search_models  => [Workflow],
             :search_limit   => Conf.max_search_size,
 
-            :locked_filters => { 'CATEGORY' => 'Workflow' },
+            :locked_filters => locked_filters,
 
             :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
                                 "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
@@ -232,9 +248,6 @@ class WorkflowsController < ApplicationController
                                 "SERVICE_COUNTRY", "SERVICE_STATUS"])
 
         flash.now[:error] = problem if problem
-
-        @query = params[:query]
-        @query_type = 'workflows'
 
       end
       format.rss do
@@ -357,7 +370,7 @@ class WorkflowsController < ApplicationController
         if params[:workflow][:tag_list]
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
           @workflow.reload
-          @workflow.solr_save if Conf.solr_enable
+          @workflow.solr_index if Conf.solr_enable
         end
         
         begin
@@ -371,12 +384,11 @@ class WorkflowsController < ApplicationController
         update_credits(@workflow, params)
         update_attributions(@workflow, params, current_user)
 
-        update_layout(@workflow, params[:layout])
-        
         # Refresh the types handler list of types if a new type was supplied this time.
         WorkflowTypesHandler.refresh_all_known_types! if params[:workflow][:type] == 'other'
 
         if policy_err_msg.blank?
+          update_layout(@workflow, params[:layout]) unless params[:policy_type] == "group"
         	flash[:notice] = 'Workflow was successfully created.'
           format.html {
             if (@workflow.get_tag_suggestions.length > 0 || (@workflow.body.nil? || @workflow.body == ''))
@@ -482,6 +494,7 @@ class WorkflowsController < ApplicationController
         begin
           @workflow.extract_metadata
         rescue
+          raise unless Rails.env == 'production'
         end
 
         Activity.create(:subject => current_user, :action => 'create', :objekt => @workflow.versions.last, :extra => @workflow.versions.last.version, :auth => @workflow)
@@ -547,16 +560,15 @@ class WorkflowsController < ApplicationController
         if params[:workflow][:tag_list]
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
           @workflow.reload
-          @workflow.solr_save if Conf.solr_enable
+          @workflow.solr_index if Conf.solr_enable
         end
 
         policy_err_msg = update_policy(@workflow, params)
         update_credits(@workflow, params)
         update_attributions(@workflow, params, current_user)
 
-        update_layout(@workflow, params[:layout])
-
         if policy_err_msg.blank?
+          update_layout(@workflow, params[:layout]) unless params[:policy_type] == "group"
           flash[:notice] = 'Workflow was successfully updated.'
           format.html { redirect_to workflow_url(@workflow) }
         else
@@ -645,7 +657,7 @@ class WorkflowsController < ApplicationController
     
     if params[:version]
       if @workflow.find_version(params[:version]) == false
-        error("Version not found (is invalid)", "not found (is invalid)", :version)
+        render_404("Workflow version not found.")
       end
       if @workflow.versions.length < 2
         error("Can't delete all versions", " is not allowed", :version)
@@ -785,7 +797,7 @@ protected
             @viewing_version_number = params[:version].to_i
             @viewing_version = viewing
           else
-            error("Workflow version not found (possibly has been deleted)", "not found (is invalid)", :version)
+            render_404("Workflow version not found.")
           end
         else
           @viewing_version_number = @latest_version_number
@@ -820,12 +832,10 @@ protected
         logger.debug("@viewing_version_number = #{@viewing_version_number}")
         logger.debug("@workflow.image != nil = #{@workflow.image != nil}")
       else
-        error("Workflow not found (id not authorized)", "is invalid (not authorized)", nil, 401)
-        return false
+        render_401("You are not authorized to access this workflow.")
       end
     rescue ActiveRecord::RecordNotFound
-      error("Workflow not found", "is invalid")
-      return false
+      render_404("Workflow not found.")
     end
   end
   
@@ -937,7 +947,7 @@ protected
   
   def check_is_owner
     if @workflow
-      error("You are not authorised to manage this Workflow", "") unless @workflow.owner?(current_user)
+      render_401("You are not authorized to manage this workflow.") unless @workflow.owner?(current_user)
     end
   end
   
@@ -965,16 +975,12 @@ private
     end
   end
 
-  def error(notice, message, attr=:id, status=nil)
+  def error(notice, message, attr=:id)
     flash[:error] = notice
     (err = Workflow.new.errors).add(attr, message)
     
     respond_to do |format|
       format.html { redirect_to workflows_url }
-      format.xml do
-        headers["WWW-Authenticate"] = %(Basic realm="Web Password") if status == 401
-        render :text => notice, :status => status
-      end
     end
   end
   

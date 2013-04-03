@@ -181,5 +181,7 @@ function hashClicked(evt) {
   return false;
 }
 
-addEvent('load', window, initialiseTabs);
+document.observe("dom:loaded", function() {
+  initialiseTabs();
+});
 

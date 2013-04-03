@@ -10,7 +10,8 @@ require 'acts_as_attributor'
 require 'acts_as_attributable'
 require 'acts_as_reviewable'
 require 'acts_as_runnable'
-require 'lib/previews'
+require 'previews'
+require 'sunspot_rails'
 
 require 'scufl/model'
 require 'scufl/parser'
@@ -24,6 +25,10 @@ class Workflow < ActiveRecord::Base
   belongs_to :content_blob, :dependent => :destroy
   belongs_to :content_type
   belongs_to :license
+
+  has_many :workflow_processors, :dependent => :destroy
+  has_many :workflow_ports, :dependent => :destroy
+  has_many :semantic_annotations, :as => :subject, :dependent => :destroy
 
   before_validation :check_unique_name
   before_validation :apply_extracted_metadata
@@ -44,22 +49,45 @@ class Workflow < ActiveRecord::Base
   
   acts_as_reviewable
 
-  acts_as_structured_data
-
   has_previews
 
   has_versions :workflow_versions,
   
     :attributes => [ :contributor, :title, :unique_name, :body, :body_html,
                      :content_blob_id, :file_ext, :last_edited_by,
-                     :content_type_id, :preview_id, :image, :svg ],
+                     :content_type_id, :preview_id, :image, :svg,
+                     :revision_comments],
 
     :mutable => [ :contributor, :title, :unique_name, :body, :body_html,
                   :file_ext, :last_edited_by, :content_type_id, :image, :svg ]
 
-  acts_as_solr(:fields => [ :title, :body, :filename, :tag_list, :contributor_name, :kind, :get_all_search_terms ],
-               :boost => "rank",
-               :include => [ :comments ]) if Conf.solr_enable
+  if Conf.solr_enable
+    searchable do
+
+      text :title, :as => 'title', :boost => 2.0
+      text :body, :as => 'description'
+      text :filename, :as => 'file_name'
+      text :contributor_name, :as => 'contributor_name'
+      text :kind, :as => 'kind'
+      text :get_all_search_terms
+
+      text :tags, :as => 'tag' do
+        tags.map { |tag| tag.name }
+      end
+
+      text :comments, :as => 'comment' do
+        comments.map { |comment| comment.comment }
+      end
+
+      text :review_titles, :as => 'review_title' do
+        reviews.map { |review| review.title }
+      end
+
+      text :review_bodies, :as => 'review_body' do
+        reviews.map { |review| review.review }
+      end
+    end
+  end
 
   acts_as_runnable
   
@@ -228,11 +256,26 @@ class Workflow < ActiveRecord::Base
 
   def filename(version=nil)
 
+    def aux(record)
+
+      extension = ""
+
+      if record.processor_class && record.processor_class.default_file_extension
+        extension = ".#{record.processor_class.default_file_extension}"
+      end
+
+      if record.file_ext
+        extension = ".#{record.file_ext}"
+      end
+
+      extension
+    end
+
     if version.blank?
-      return "#{unique_name}.#{file_ext || self.processor_class.default_file_extension}"
+      "#{unique_name}#{aux(self)}"
     else
-      return nil unless (workflow_version = self.find_version(version))
-      return "#{workflow_version.unique_name}.#{workflow_version.file_ext || workflow_version.processor_class.default_file_extension}"
+      workflow_version = self.find_version(version)
+      "#{workflow_version.unique_name}#{aux(workflow_version)}"
     end
   end
   
@@ -242,14 +285,18 @@ class Workflow < ActiveRecord::Base
 
   def get_all_search_terms
 
-    words = StringIO.new
+    begin
+      words = StringIO.new
 
-    versions.each do |version|
-      words << get_search_terms(version.version)
+      versions.each do |version|
+        words << get_search_terms(version.version)
+      end
+
+      words.rewind
+      words.read
+    rescue
+      nil
     end
-
-    words.rewind
-    words.read
   end
 
   def get_tag_suggestions()
@@ -316,6 +363,7 @@ class Workflow < ActiveRecord::Base
   def delete_metadata
     if processor_class
       WorkflowProcessor.destroy_all(["workflow_id = ?", id])
+      WorkflowPort.destroy_all(["workflow_id = ?", id])
     end
   end
 
@@ -323,14 +371,14 @@ class Workflow < ActiveRecord::Base
     if processor_class
       delete_metadata
       begin
-        processor_class.new(content_blob.data).extract_metadata(id)
+        processor_class.new(content_blob.data).extract_metadata(self)
       rescue
       end
     end
   end
   
   def unique_wsdls
-    WorkflowProcessor.find(:all, :conditions => ['workflow_id = ? AND wsdl IS NOT NULL', 16]).map do |wp| wp.wsdl end.uniq
+    WorkflowProcessor.find(:all, :conditions => ['workflow_id = ? AND wsdl IS NOT NULL', id]).map do |wp| wp.wsdl end.uniq
   end
 
   def workflows_with_similar_services
@@ -362,6 +410,11 @@ class Workflow < ActiveRecord::Base
 
   def statistics_for_rest_api
     APIStatistics.statistics(self)
+  end
+
+  # Returns a hash map of lists of wsdls grouped by their related deprecation event
+  def deprecations
+    WsdlDeprecation.find_all_by_wsdl(workflow_processors.map {|wp| wp.wsdl}).group_by {|wd| wd.deprecation_event}
   end
 
 end

@@ -1,5 +1,7 @@
 <% t "#{h @workflow.title} (#{h @workflow.contributor_name}) [#{h(@workflow.type_display_name)} Workflow]" -%>
 
+<%= render :partial => "workflows/deprecation_event", :collection => @workflow.deprecations -%>
+
 <ul class="sectionIcons">
 	<% if @authorised_to_edit -%>
 		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>

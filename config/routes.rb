@@ -1,46 +1,9 @@
-require 'lib/rest'
+require 'rest'
 
 ActionController::Routing::Routes.draw do |map|
 
   # rest routes
   rest_routes(map)
-
-  # LoD routes
-  if Conf.rdfgen_enable
-
-    map.connect '/:contributable_type/:contributable_id/attributions/:attribution_id.:format',
-      :controller => 'linked_data', :action => 'attributions', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/citations/:citation_id.:format',
-      :controller => 'linked_data', :action => 'citations', :conditions => { :method => :get },
-      :requirements => { :citation_id => /[0-9]*/ }
-
-    map.connect '/:contributable_type/:contributable_id/comments/:comment_id.:format',
-      :controller => 'linked_data', :action => 'comments', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/credits/:credit_id.:format',
-      :controller => 'linked_data', :action => 'credits', :conditions => { :method => :get }
-
-    map.connect '/users/:user_id/favourites/:favourite_id.:format',
-      :controller => 'linked_data', :action => 'favourites', :conditions => { :method => :get }
-
-    map.connect '/packs/:contributable_id/local_pack_entries/:local_pack_entry_id.:format',
-      :controller => 'linked_data', :action => 'local_pack_entries',
-      :contributable_type => 'packs', :conditions => { :method => :get }
-
-    map.connect '/packs/:contributable_id/remote_pack_entries/:remote_pack_entry_id.:format',
-      :controller => 'linked_data', :action => 'remote_pack_entries',
-      :contributable_type => 'packs', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/policies/:policy_id.:format',
-      :controller => 'linked_data', :action => 'policies', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/ratings/:rating_id.:format',
-      :controller => 'linked_data', :action => 'ratings', :conditions => { :method => :get }
-
-    map.connect '/tags/:tag_id/taggings/:tagging_id.:format',
-      :controller => 'linked_data', :action => 'taggings', :conditions => { :method => :get }
-  end
 
   map.content '/content', :controller => 'content', :action => 'index', :conditions => { :method => :get }
   map.formatted_content '/content.:format', :controller => 'content', :action => 'index', :conditions => { :method => :get }
@@ -69,7 +32,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :predicates
 
   # mashup
-  map.resource :mashup
+  map.resource :mashup, :controller => 'mashup'
   
   # search
   map.resource :search,
@@ -100,6 +63,7 @@ ActionController::Routing::Routes.draw do |map|
                  :download => :get,
                  :quick_add => :post,
                  :resolve_link => :post,
+                 :snapshot => :post,
                  :items => :get } do |pack|
     pack.resources :comments, :collection => { :timeline => :get }
     pack.resources :relationships, :collection => { :edit_relationships => :get }
@@ -137,6 +101,10 @@ ActionController::Routing::Routes.draw do |map|
   # blob redirect for linked data model
   map.blob_version           '/files/:id/versions/:version',         :conditions => { :method => :get }, :controller => 'blobs', :action => 'show'
   map.formatted_blob_version '/files/:id/versions/:version.:format', :conditions => { :method => :get }, :controller => 'blobs', :action => 'show'
+
+  # pack redirect for linked data model
+  map.pack_version           '/packs/:id/versions/:version',         :conditions => { :method => :get }, :controller => 'packs', :action => 'show'
+  map.formatted_pack_version '/packs/:id/versions/:version.:format', :conditions => { :method => :get }, :controller => 'packs', :action => 'show'
 
   map.blob_version_suggestions '/files/:id/versions/:version/suggestions', :conditions => { :method => :get }, :controller => 'blobs', :action => 'suggestions'
   map.blob_version_process_suggestions '/files/:id/versions/:version/process_suggestions', :conditions => { :method => :post }, :controller => 'blobs', :action => 'process_suggestions'
@@ -182,12 +150,6 @@ ActionController::Routing::Routes.draw do |map|
     blob.resources :comments, :collection => { :timeline => :get }
   end
 
-  # blogs
-  map.resources :blogs do |blog|
-    # blogs have nested posts
-    blog.resources :blog_posts
-  end
-
   # services
   map.resources :services, :collection => { :search => :get }
   
@@ -201,11 +163,11 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :messages, :collection => { :sent => :get, :delete_all_selected => :delete }
 
   # all oauth
-  map.oauth '/oauth',:controller=>'oauth',:action=>'index'
   map.authorize '/oauth/authorize',:controller=>'oauth',:action=>'authorize'
   map.request_token '/oauth/request_token',:controller=>'oauth',:action=>'request_token'
   map.access_token '/oauth/access_token',:controller=>'oauth',:action=>'access_token'
   map.test_request '/oauth/test_request',:controller=>'oauth',:action=>'test_request'
+  map.resources :oauth
 
   # User timeline
   map.connect 'users/timeline', :controller => 'users', :action => 'timeline'
@@ -218,7 +180,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'users/forgot_password', :controller => "users", :action => "forgot_password"
   map.connect 'users/reset_password/:reset_code', :controller => "users", :action => "reset_password"
   
-  [ 'news', 'friends', 'groups', 'workflows', 'files', 'packs', 'forums', 'blogs', 'credits', 'tags', 'favourites' ].each do |tab|
+  [ 'news', 'friends', 'groups', 'forums', 'credits', 'tags', 'favourites' ].each do |tab|
     map.connect "users/:id/#{tab}", :controller => 'users', :action => tab
   end
   
@@ -247,12 +209,18 @@ ActionController::Routing::Routes.draw do |map|
 
     # user's reports of inappropriate content
     user.resources :reports, :controller => :user_reports
+
+    # user's uploaded resources
+    user.resources :workflows, :only => :index
+    user.resources :blobs, :only => :index, :as => :files
+    user.resources :packs, :only => :index
   end
 
   map.resources :networks,
     :as => :groups,
     :collection => { :all => :get, :search => :get }, 
-    :member => { :invite => :get,
+    :member => { :content => :get,
+                 :invite => :get,
                  :membership_invite => :post,
                  :membership_invite_external => :post,
                  :membership_request => :get, 
@@ -260,6 +228,12 @@ ActionController::Routing::Routes.draw do |map|
                  :tag => :post } do |network|
     network.resources :group_announcements, :as => :announcements, :name_prefix => nil
     network.resources :comments, :collection => { :timeline => :get }
+    network.resources :policies, :controller => 'group_policies'
+
+    # resources shared with network
+    network.resources :workflows, :only => :index
+    network.resources :blobs, :only => :index, :as => :files
+    network.resources :packs, :only => :index
   end
   
   # The priority is based upon order of creation: first created -> highest priority.
@@ -300,12 +274,50 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :licenses
   map.resources :license_attributes
 
+  map.resources :policies, :only => :show
+
   # Generate special alias routes for external sites point to
   Conf.external_site_integrations.each_value do |data|
     map.connect data["path"], data["redirect"].symbolize_keys #Convert string keys to symbols
   end
 
   map.connect 'clear_external_site_session_info', :controller => 'application', :action => 'clear_external_site_session_info'
+
+  # LoD routes
+  if Conf.rdfgen_enable
+
+    map.connect '/:contributable_type/:contributable_id/attributions/:attribution_id.:format',
+      :controller => 'linked_data', :action => 'attributions', :conditions => { :method => :get }
+
+    map.connect '/:contributable_type/:contributable_id/citations/:citation_id.:format',
+      :controller => 'linked_data', :action => 'citations', :conditions => { :method => :get }
+
+    map.connect '/:contributable_type/:contributable_id/comments/:comment_id.:format',
+      :controller => 'linked_data', :action => 'comments', :conditions => { :method => :get }
+
+    map.connect '/:contributable_type/:contributable_id/credits/:credit_id.:format',
+      :controller => 'linked_data', :action => 'credits', :conditions => { :method => :get }
+
+    map.connect '/users/:user_id/favourites/:favourite_id.:format',
+      :controller => 'linked_data', :action => 'favourites', :conditions => { :method => :get }
+
+    map.connect '/packs/:contributable_id/local_pack_entries/:local_pack_entry_id.:format',
+      :controller => 'linked_data', :action => 'local_pack_entries',
+      :contributable_type => 'packs', :conditions => { :method => :get }
+
+    map.connect '/packs/:contributable_id/remote_pack_entries/:remote_pack_entry_id.:format',
+      :controller => 'linked_data', :action => 'remote_pack_entries',
+      :contributable_type => 'packs', :conditions => { :method => :get }
+
+    map.connect '/:contributable_type/:contributable_id/policies/:policy_id.:format',
+      :controller => 'linked_data', :action => 'policies', :conditions => { :method => :get }
+
+    map.connect '/:contributable_type/:contributable_id/ratings/:rating_id.:format',
+      :controller => 'linked_data', :action => 'ratings', :conditions => { :method => :get }
+
+    map.connect '/tags/:tag_id/taggings/:tagging_id.:format',
+      :controller => 'linked_data', :action => 'taggings', :conditions => { :method => :get }
+  end
 
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'

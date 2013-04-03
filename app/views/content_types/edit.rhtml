@@ -1,6 +1,6 @@
 <% t "Manage" -%>
 
-<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 
 
 <h1>Manage Content Type: <%= h @content_type.title %></h1>
@@ -21,7 +21,7 @@
   	<strong>Description: </strong>
 	</p>
 	<center>
-		<%= fckeditor_textarea(:content_type, :description, :toolbarSet => 'Simple', :width => '600px', :height => '300px') %>
+    <%= f.text_area(:description, :width => '600px', :height => '300px', :class => 'ckeditor') -%>
 	</center>
   
   <br/>

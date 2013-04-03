@@ -9,7 +9,7 @@ require 'uri'
 require 'zip/zip'
 require 'tempfile'
 require 'cgi'
-
+require 'sunspot_rails'
 
 class Pack < ActiveRecord::Base
 
@@ -24,28 +24,53 @@ class Pack < ActiveRecord::Base
 
   has_many :relationships, :dependent => :destroy, :as => :context
 
+  has_many :versions, :class_name => "PackVersion"
+
+  belongs_to :license
+
+  def find_version(version)
+    match = versions.find(:first, :conditions => ["version = ?", version])
+    return match if match
+
+    raise ActiveRecord::RecordNotFound.new("Couldn't find Pack with pack_id=#{id} and version=#{version}")
+  end
+
   validates_presence_of :title
   
   format_attribute :description
   
-  acts_as_solr(:fields => [ :title, :description, :contributor_name, :tag_list ],
-               :boost => "rank",
-               :include => [ :comments ]) if Conf.solr_enable
-  
+  if Conf.solr_enable
+    searchable do
+      text :title, :as => 'title', :boost => 2.0
+      text :description, :as => 'description'
+      text :contributor_name, :as => 'contributor_name'
+
+      text :tags, :as => 'tag' do
+        tags.map { |tag| tag.name }
+      end
+
+      text :comments, :as => 'comment' do
+        comments.map { |comment| comment.comment }
+      end
+    end
+  end
+
   has_many :contributable_entries,
            :class_name => "PackContributableEntry",
            :foreign_key => :pack_id,
+           :conditions => "version IS NULL",
            :order => "created_at DESC",
            :dependent => :destroy
   
   has_many :remote_entries,
            :class_name => "PackRemoteEntry",
            :foreign_key => :pack_id,
+           :conditions => "version IS NULL",
            :order => "created_at DESC",
            :dependent => :destroy
   
   def items_count
-    return contributable_entries.count + remote_entries.count
+    contributable_entries.count + remote_entries.count
   end
   
   # returns packs that have largest total number of items
@@ -631,6 +656,58 @@ class Pack < ActiveRecord::Base
     APIStatistics.statistics(self)
   end
  
+  def snapshot!
+  
+    self.current_version = self.current_version ? self.current_version + 1 : 1
+
+    inhibit_timestamps do
+ 
+      version = versions.build(
+          :version          => current_version,
+          :contributor      => contributor,
+          :title            => title,
+          :description      => description,
+          :description_html => description_html)
+
+      contributable_entries.each do |entry|
+
+        version.contributable_entries.build(
+            :pack => self,
+            :contributable_id => entry.contributable_id,
+            :contributable_type => entry.contributable_type,
+            :contributable_version => entry.contributable_version,
+            :comment => entry.comment,
+            :user_id => entry.user_id,
+            :version => current_version,
+            :created_at => entry.created_at,
+            :updated_at => entry.updated_at)
+      end
+
+      remote_entries.each do |entry|
+
+        tt = version.remote_entries.build(
+            :pack => self,
+            :title => entry.title,
+            :uri => entry.uri,
+            :alternate_uri => entry.alternate_uri,
+            :comment => entry.comment,
+            :user_id => entry.user_id,
+            :version => current_version,
+            :created_at => entry.created_at,
+            :updated_at => entry.updated_at)
+      end
+    end
+    
+    save
+  end
+
+  def describe_version(version_number)
+    return "" if versions.count < 2
+    return "(earliest)" if version_number == versions.first.version
+    return "(latest)" if version_number == versions.last.version
+    return ""
+  end
+
   protected
   
   # produces html string containing the required messaged, enclosed within left-padded P tag, belonging to 'none_text' class

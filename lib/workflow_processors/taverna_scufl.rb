@@ -289,10 +289,10 @@ module WorkflowProcessors
       aux(@scufl_model, 'components')
     end
 
-    def extract_metadata(workflow_id)
+    def extract_metadata(workflow)
 
       @scufl_model.all_processors.each do |processor|
-        WorkflowProcessor.create(:workflow_id => workflow_id,
+        WorkflowProcessor.create(:workflow => workflow,
             :name           => processor.name,
             :wsdl           => processor.wsdl,
             :wsdl_operation => processor.wsdl_operation)

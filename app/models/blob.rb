@@ -8,6 +8,7 @@ require 'acts_as_site_entity'
 require 'acts_as_creditable'
 require 'acts_as_attributor'
 require 'acts_as_attributable'
+require 'sunspot_rails'
 
 class Blob < ActiveRecord::Base
 
@@ -32,9 +33,23 @@ class Blob < ActiveRecord::Base
 
     :mutable => [ :title, :body, :body_html ]
 
-  acts_as_solr(:fields => [:title, :local_name, :body, :kind, :contributor_name, :tag_list],
-               :boost => "rank",
-               :include => [ :comments ]) if Conf.solr_enable
+  if Conf.solr_enable
+    searchable do
+      text :title, :as => 'title', :boost => 2.0
+      text :local_name, :as => 'file_name'
+      text :body, :as => 'description'
+      text :kind, :as => 'kind'
+      text :contributor_name, :as => 'contributor_name'
+
+      text :tags, :as => 'tag' do
+        tags.map { |tag| tag.name }
+      end
+
+      text :comments, :as => 'comment' do
+        comments.map { |comment| comment.comment }
+      end
+    end
+  end
 
   belongs_to :content_blob, :dependent => :destroy
   belongs_to :content_type
@@ -44,6 +59,7 @@ class Blob < ActiveRecord::Base
   validates_presence_of :content_type
 
   validates_presence_of :title
+  validates_presence_of :local_name
 
   validates_each :content_blob do |record, attr, value|
     if value.data.size > Conf.max_upload_size

@@ -3,8 +3,9 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'lib/acts_as_site_entity'
-require 'lib/acts_as_contributable'
+require 'acts_as_site_entity'
+require 'acts_as_contributable'
+require 'sunspot_rails'
 
 class Service < ActiveRecord::Base
   acts_as_site_entity
@@ -15,12 +16,28 @@ class Service < ActiveRecord::Base
   has_many :service_tags
   has_many :service_deployments
 
-  acts_as_solr(:fields => [ :submitter_label, :name, :provider_label, :endpoint,
-      :wsdl, :city, :country, :description, :extra_search_terms ]) if Conf.solr_enable
+  if Conf.solr_enable
+    searchable do
+      text :submitter_label
+      text :name
+      text :provider_label
+      text :endpoint
+      text :wsdl
+      text :city
+      text :country
+      text :description
 
-  def extra_search_terms
-    service_categories.map do |category| category.label end +
-    service_tags.map do |tag| tag.label end +
-    service_types.map do |types| types.label end
+      text :categories do
+        service_categories.map do |category| category.label end
+      end
+
+      text :tags do
+        service_tags.map do |tag| tag.label end
+      end
+
+      text :types do
+        service_types.map do |types| types.label end
+      end
+    end
   end
 end

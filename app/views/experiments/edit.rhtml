@@ -1,4 +1,4 @@
-<%= javascript_include_tag "fckeditor/fckeditor.js" %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 
 <h1>Edit Experiment</h1>
 
@@ -11,7 +11,7 @@
 			<%= form.text_field :title, :size => 86 %>
 			
 			<p><b>Description</b></p>
-			<%= fckeditor_textarea(:experiment, :description, :toolbarSet => 'Simple', :width => '550px', :height => '300px') %>
+      <%= form.text_area(:description, :width => '550px', :height => '300px', :class => 'ckeditor') -%>
 			
 			<br/>
 			

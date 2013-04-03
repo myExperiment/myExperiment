@@ -18,9 +18,8 @@ body  {
   background-image: url('/images/sidebar_alpha.png');
 }
 
-
 .logo a {
-  color: #99cc33;
+  color: #333;
 }#
 
 .logo a:hover {
@@ -35,18 +34,21 @@ body  {
 /* To add a white margin around the content */
 
 #doc2 {
-  padding: 0 1em;
-  border-color: #DFD96D;
-  border-style: solid;
-  border-width: 0 4px;
+  box-shadow: 0 0 16px 4px #7f793f;
 }
 
 #myexp_header {
-  margin: 0em 0.5em;
+  margin: 0 0.5em;
 }
 
-#hd
-{
-  padding-top: 1em;
+#site_info_links {
+  display: none;
 }
 
+.tabnav li.return_tab {
+  margin-right: 1em;
+}
+
+.tabnav li.return_tab a:hover {
+  background-color: #cd0b37;
+}

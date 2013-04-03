@@ -7,6 +7,7 @@ require 'acts_as_runner'
 require 'enactor/client'
 require 'document/data'
 require 'document/report'
+require 'encrypted_attributes'
 
 class TavernaEnactor < ActiveRecord::Base
   
@@ -16,11 +17,11 @@ class TavernaEnactor < ActiveRecord::Base
   validates_presence_of :contributor
   
   validates_presence_of :username
-  validates_presence_of :crypted_password
+  validates_presence_of :password
   validates_presence_of :url
   validates_presence_of :title
   
-  encrypts :password, :mode => :symmetric, :key => Conf.sym_encryption_key
+  encrypts :password, :mode => :symmetric, :password => Conf.sym_encryption_key
   
   def label
     title
@@ -172,6 +173,6 @@ protected
   
   # Lazy loading of enactor service client.
   def service_client
-    @client ||= Enactor::Client.new(self.url, self.username, self.crypted_password.decrypt)
+    @client ||= Enactor::Client.new(self.url, self.username, self.password.decrypt)
   end
 end
