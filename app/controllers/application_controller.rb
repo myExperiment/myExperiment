@@ -535,10 +535,10 @@ class ApplicationController < ActionController::Base
   def check_context
     if params[:user_id]
       @context = User.find_by_id(params[:user_id])
-      error("User not found") if @context.nil?
+      render_404("User not found.") if @context.nil?
     elsif params[:network_id]
       @context = Network.find_by_id(params[:network_id])
-      error("Group not found") if @context.nil?
+      render_404("Group not found.") if @context.nil?
     end
   end
 
