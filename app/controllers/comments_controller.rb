@@ -5,8 +5,8 @@
 
 class CommentsController < ApplicationController
   
-  before_filter :find_resource_context, :only => [ :create, :index, :timeline ]
-  before_filter :find_resource, :only => [ :destroy ]
+  before_filter :find_context, :only => [ :create, :index, :timeline ]
+  before_filter :find_comment, :only => [ :destroy ]
 
   # GET /:context_type/:context_id/comments
   def index
@@ -66,25 +66,24 @@ class CommentsController < ApplicationController
 
   private
 
-  def find_resource
-
-    @context = extract_resource_context(params)
+  def find_comment
     @comment = Comment.find_by_id(params[:id])
+    @context = @comment.commentable
 
-    return error if @comment.nil? || @context.nil? || @comment.commentable != @context
-    return error if Authorization.check('view', @context, current_user) == false
+    if @comment.nil?
+      render_404("Comment not found.")
+    elsif !Authorization.check('view', @context, current_user)
+      render_401("You are not authorized to delete this comment.")
+    end
   end
 
-  def find_resource_context
-
+  def find_context
     @context = extract_resource_context(params)
 
-    return error if @context.nil?
-    return error if Authorization.check('view', @context, current_user) == false
-  end
-
-  def error
-    render :text => 'Error.'
+    if @context.nil?
+      render_404("Comment context not found.")
+    elsif !Authorization.check('view', @context, current_user)
+      render_401("You are not authorized to view this resource's comments.")
+    end
   end
 end
-
