@@ -19,6 +19,8 @@ class PaginatedArray < Array
     ((@total - 1) / @limit) + 1
   end
 
+  alias_method :total_pages, :page_count
+
   def first_page
     1
   end
@@ -47,6 +49,8 @@ class PaginatedArray < Array
     (@offset / @limit) + 1
   end
 
+  alias_method :current_page, :page
+
   def page_exists?(x)
     return false if x < first_page
     return false if x > last_page
@@ -54,4 +58,5 @@ class PaginatedArray < Array
     true
   end
 end
+
 

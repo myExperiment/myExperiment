@@ -9,10 +9,13 @@
 <%= view_privileges_notice %>
 <br />
 
-<%= render :partial => "layouts/paginate", :locals => { :collection => @collection } %>
+<div style="overflow: auto"><%= render :partial => "layouts/paginate", :locals => { :collection => @collection } %></div><br/>
 
-<%= render :partial => "#{@controller_name}/table", :locals => { :collection => @collection, :query => @query } %>
+<div class="summary">
+  <div class="results">
+    <%= render :partial => "#{@controller_name}/table", :locals => { :collection => @collection, :query => @query } %>
+  </div>
+</div>
 
-<%= render :partial => "layouts/paginate", :locals => { :collection => @collection } %>
+<div style="overflow: auto"><%= render :partial => "layouts/paginate", :locals => { :collection => @collection } %></div>
 
-<br />
