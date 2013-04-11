@@ -75,7 +75,10 @@ class GroupPoliciesController < ApplicationController
         format.html { redirect_to network_policies_path(@group) }
       end
     else
-      error("This policy is being used by #{@policy.contributions.size} resources and may not be deleted.")
+      respond_to do |format|
+        flash[:error] = "This policy is being used by #{@policy.contributions.size} resources and may not be deleted."
+        format.html { redirect_to network_policies_path(@group) }
+      end
     end
   end
   
@@ -83,38 +86,25 @@ class GroupPoliciesController < ApplicationController
   protected
   
   def find_group
-    begin
-      @group = Network.find(params[:network_id])
-    rescue ActiveRecord::RecordNotFound
-      error("Group couldn't be found")
+    @group = Network.find_by_id(params[:network_id])
+
+    if @group.nil?
+      render_404("Group not found.")
     end
   end
 
   def find_policy
-    begin
-      @policy = Policy.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      error("Policy couldn't be found")
+    @policy = Policy.find_by_id(params[:id])
+
+    if @policy.nil?
+      render_404("Policy not found.")
     end
   end
 
   
   def check_admin
     unless @group.administrator?(current_user.id)
-      error("Only group administrators are allowed to manage policies")
+      render_401("Only group administrators are allowed to manage policies.")
     end
   end
-
-  private
-
-  def error(message)
-    flash[:error] = message
-    return_to_path = @group.nil? ? networks_path : network_policies_path(@group)
-    
-    respond_to do |format|
-      format.html { redirect_to return_to_path }
-    end
-  end
-
-  
 end

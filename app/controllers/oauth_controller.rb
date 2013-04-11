@@ -174,12 +174,4 @@ private
       render_404("Client Application not found")
     end
   end
-
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-
-    respond_to do |format|
-      format.html { redirect_to oauth_url }
-    end
-  end
 end

@@ -99,17 +99,17 @@ class GroupAnnouncementsController < ApplicationController
   protected
   
   def find_group
-    begin
-      @group = Network.find(params[:network_id])
-    rescue ActiveRecord::RecordNotFound
-      error("Group couldn't be found")
+    @group = Network.find_by_id(params[:network_id])
+
+    if @group.nil?
+      render_404("Group not found.")
     end
   end
 
   
   def check_admin
     unless @group.administrator?(current_user.id)
-      error("Only group administrators are allowed to create new announcements")
+      render_401("Only group administrators are allowed to create new announcements.")
     end
   end
 
@@ -122,61 +122,36 @@ class GroupAnnouncementsController < ApplicationController
   
   
   def find_announcement_auth
-    begin
-      begin
-        # find the announcement first
-        @announcement = GroupAnnouncement.find(params[:id])
-      
-        # announcement found, but check if belongs to the group in URL
-        unless @group.announcements.include?(@announcement)
-          raise ActiveRecord::RecordNotFound
-        end
-      rescue ActiveRecord::RecordNotFound
-        raise ActiveRecord::RecordNotFound, "Group announcement was not found"
-      end
-      
+    # find the announcement first
+    @announcement = GroupAnnouncement.find_by_id_and_network_id(params[:id], params[:network_id])
+
+    if @announcement.nil?
+      render_404("Group announcement not found.")
+    else
+
       # at this point, group announcement is found and it definitely belongs to the group in URL;
       # now go through different actions and check which links are allowed for current user
       not_auth = false
       case action_name.to_s.downcase
         when "show"
           # if the announcement is private, show it only to group members
-          unless @announcement.public 
-            not_auth = true unless @group.member?(current_user.id)
+          unless @announcement.public || @group.member?(current_user.id)
+            not_auth = true
           end
         when "edit","update","destroy"
           # only owner of the group can destroy the announcement
-          unless ((@announcement.user == current_user) || (@group.owner?(current_user.id)))
-            not_auth = true;
-            raise ActiveRecord::RecordNotFound, "You don't have permissions to perform this action"
+          unless (@announcement.user == current_user) || (@group.owner?(current_user.id))
+            not_auth = true
           end
         else
           # don't allow anything else, for now
           not_auth = true
       end
-      
-      
+
       # check if we had any errors
       if not_auth
         raise ActiveRecord::RecordNotFound, "Group announcement was not found"
       end
-      
-    rescue ActiveRecord::RecordNotFound => exc
-      error(exc.message)
     end
   end
-  
-  
-  private
-
-  def error(message)
-    flash[:error] = message
-    return_to_path = @group.nil? ? networks_path : group_announcements_path(@group)
-    
-    respond_to do |format|
-      format.html { redirect_to return_to_path }
-    end
-  end
-
-  
 end

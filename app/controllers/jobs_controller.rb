@@ -9,7 +9,8 @@ class JobsController < ApplicationController
   
   before_filter :check_runner_available, :only => [:new, :update]
   
-  before_filter :find_experiment_auth
+  before_filter :find_experiment
+  before_filter :auth_experiment, :except => [:create, :new]
   
   before_filter :find_jobs, :only => [:index]
   before_filter :find_job_auth, :except => [:index, :new, :create]
@@ -348,7 +349,18 @@ protected
     end
   end
 
-  def find_experiment_auth
+  def find_experiment
+    return if ["create","new"].include?(action_name) && params[:experiment_id].nil?
+
+    @experiment = Experiment.find_by_id(params[:experiment_id])
+    
+    if @experiment.nil?
+      render_404("Experiment not found.")
+    end
+  end
+
+  def auth_experiment
+    return if ["create","new"].include?(action_name) && params[:experiment_id].nil?
 
     action_permissions = {
       "create"  => "create",
@@ -360,15 +372,8 @@ protected
       "update"  => "edit"
     }
 
-    experiment = Experiment.find(:first, :conditions => ["id = ?", params[:experiment_id]])
-    
-    if experiment and Authorization.check(action_permissions[action_name], experiment, current_user)
-      @experiment = experiment
-    else
-      # New and Create actions are allowed to run outside of the context of an Experiment
-      unless ['new', 'create'].include?(action_name.downcase)
-        error("The Experiment that this Job belongs to could not be found or the action is not authorized", "is invalid (not authorized)")
-      end
+    unless Authorization.check(action_permissions[action_name], @experiment, current_user)
+      render_401("You are not authorized to access this experiment.")
     end
   end
   
@@ -396,27 +401,16 @@ protected
       "update"          => "edit",
     }
 
-    job = Job.find(:first, :conditions => ["id = ?", params[:id]])
+    @job = Job.find_by_id(params[:id])
       
-    if job and job.experiment.id == @experiment.id and Authorization.check(action_permissions[action_name], job, current_user)
-      @job = job
-    else
-      error("Job not found or action not authorized", "is invalid (not authorized)")
+    if @job.nil? || @job.experiment.id != @experiment.id
+      render_404("Job not found.")
+    elsif !Authorization.check(action_permissions[action_name], @job, current_user)
+      render_401("Action not authorized.")
     end
   end
   
   def check_runnable_supported
     # TODO: move all checks for the runnable object here!
-  end
-  
-private
-
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = Job.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to experiment_jobs_url(params[:experiment_id]) }
-    end
   end
 end

@@ -13,7 +13,7 @@ class GroupPoliciesControllerTest < ActionController::TestCase
   def test_non_admins_cannot_view
     login_as(:jane)
     get :index, :network_id => networks(:exclusive_network).id
-    assert_response :redirect
+    assert_response :unauthorized
   end
 
   def test_can_create

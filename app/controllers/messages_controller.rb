@@ -55,10 +55,9 @@ class MessagesController < ApplicationController
     # if current_user is not recipient, they must be the sender
     message_folder = ( @message.recipient?(current_user.id) ? "inbox" : "outbox" )
     
-    if (message_folder == "inbox" && @message.deleted_by_recipient == true)
-      error("Message not found (id not authorized)", "is invalid (not sender or recipient)")
-    elsif (message_folder == "outbox" && @message.deleted_by_sender == true)
-      error("Message not found (id not authorized)", "is invalid (not sender or recipient)")
+    if (message_folder == "inbox" && @message.deleted_by_recipient == true) ||
+       (message_folder == "outbox" && @message.deleted_by_sender == true)
+      render_404("Message not found.")
     else
       # message is found, and is not deleted by current_user -> show the message;
       # mark message as read if it is viewed by the receiver
@@ -83,7 +82,6 @@ class MessagesController < ApplicationController
         end
       end  
     end
-    
   end
 
   
@@ -242,19 +240,11 @@ class MessagesController < ApplicationController
   
 protected
 
-  def find_message_by_to
-    begin
-      @message = Message.find(params[:id], :conditions => ["`to` = ?", current_user.id])
-    rescue ActiveRecord::RecordNotFound
-      error("Message not found (id not authorized)", "is invalid (not recipient)")
-    end
-  end
-  
   def find_message_by_to_or_from
     begin
       @message = Message.find(params[:id], :conditions => ["`to` = ? OR `from` = ?", current_user.id, current_user.id])
     rescue ActiveRecord::RecordNotFound
-      error("Message not found (id not authorized)", "is invalid (not sender or recipient)")
+      render_404("Message not found.")
     end
   end
   
@@ -263,7 +253,7 @@ protected
       begin
         @reply = Message.find(params[:reply_id], :conditions => ["`to` = ?", current_user.id])
       rescue ActiveRecord::RecordNotFound
-        error("Reply not found (id not authorized)", "is invalid (not recipient)")
+        render_404("Reply not found.")
       end
     end
   end
@@ -302,16 +292,5 @@ protected
     end
   
     return ordering
-  end
-  
-private
-
-  def error(notice, message)
-    flash[:error] = notice
-    (err = Message.new.errors).add(:id, message)
-    
-    respond_to do |format|
-      format.html { redirect_to messages_url }
-    end
   end
 end

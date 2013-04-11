@@ -12,7 +12,9 @@ class NetworksController < ApplicationController
   before_filter :login_required, :except => [:index, :show, :content, :search, :all]
   
   before_filter :find_networks, :only => [:all]
-  before_filter :find_network, :only => [:membership_request, :show, :tag, :content]
+  before_filter :find_network, :only => [:membership_request, :show, :tag, :content,
+                                         :edit, :update, :destroy, :invite, :membership_invite,
+                                         :membership_invite_external]
   before_filter :find_network_auth_admin, :only => [:invite, :membership_invite, :membership_invite_external]
   before_filter :find_network_auth_owner, :only => [:edit, :update, :destroy]
   
@@ -406,39 +408,19 @@ protected
                              :host => base_host,
                              :id => @network.id
     rescue ActiveRecord::RecordNotFound
-      error("Group not found", "is invalid (not owner)")
+      render_404("Group not found.")
     end 
   end
 
   def find_network_auth_owner
-    begin
-      @network = Network.find(params[:id], :include => [ :owner, :memberships ])
-      unless @network.owner == current_user || current_user.admin?
-        error("Group not found (id not authorized)", "is invalid (not group administrator)")
-      end
-    rescue ActiveRecord::RecordNotFound
-      error("Group not found (id not authorized)", "is invalid (not group administrator)")
+    unless @network.owner == current_user || current_user.admin?
+      render_401("You must be the group owner to perform this action.")
     end
   end
   
   def find_network_auth_admin
-    if @network = Network.find_by_id(params[:id], :include => [ :owner, :memberships ])
-      unless @network.administrator?(current_user.id)
-        error("You must be a group administrator to invite people","")
-      end
-    else
-      error("Group not found (id not authorized)", "is invalid (not owner)")
-    end
-  end
-
-private
-
-  def error(notice, message)
-    flash[:error] = notice
-    (err = Network.new.errors).add(:id, message)
-    
-    respond_to do |format|
-      format.html { redirect_to networks_url }
+    unless @network.administrator?(current_user.id)
+      render_401("You must be a group administrator to perform this action.")
     end
   end
 end

@@ -7,8 +7,9 @@ class MembershipsController < ApplicationController
   before_filter :login_required
   
   before_filter :check_user_present # only allow actions on memberships as on nested resources
-  
-  before_filter :find_memberships, :only => [:index]
+
+  before_filter :find_network, :only => :new
+  before_filter :find_user_auth, :only => :index
   before_filter :find_membership_auth, :only => [:show, :accept, :edit, :update, :destroy]
   
   # declare sweepers and which actions should invoke them
@@ -84,14 +85,17 @@ EOM
         flash[:notice] = 'Membership was successfully accepted.'
         format.html { redirect_to network_url(@membership.network_id) }
       else
-        error("Membership already accepted", "already accepted")
+        flash[:error] = "Membership already accepted."
       end
+      format.html { redirect_to network_url(@membership.network_id) }
     end
   end
   
   # GET /users/1/memberships
   # GET /memberships
   def index
+    @memberships = @user.memberships
+
     respond_to do |format|
       format.html # index.rhtml
     end
@@ -122,14 +126,8 @@ EOM
   # GET /users/1/memberships/new
   # GET /memberships/new
   def new
-    if params[:network_id]
-      begin
-        @network = Network.find(params[:network_id])
-        
-        @membership = Membership.new(:user_id => current_user.id, :network_id => @network.id)
-      rescue ActiveRecord::RecordNotFound
-        error("Group not found", "is invalid", :network_id)
-      end
+    if @network
+      @membership = Membership.new(:user_id => current_user.id, :network_id => @network.id)
     else
       @membership = Membership.new(:user_id => current_user.id)
     end
@@ -191,7 +189,10 @@ EOM
         end
       end
     else
-      error("Membership not created (already exists)", "not created, already exists")
+      respond_to do |format|
+        flash[:error] = "Membership not created (already exists)"
+        format.html { render :action => "new" }
+      end
     end
   end
 
@@ -339,51 +340,30 @@ protected
     end
   end
 
-  def find_memberships
-    if params[:user_id].to_i == current_user.id.to_i
-      begin
-        @user = User.find(params[:user_id])
-    
-        @memberships = @user.memberships
-      rescue ActiveRecord::RecordNotFound
-        error("User not found", "is invalid", :user_id)
-      end
-    else
-      error("You are not authorised to view other users' memberships", "")
+  def find_network
+    @network = Network.find_by_id(params[:network_id])
+
+    if @network.nil? && params[:network_id]
+      render_404("Group not found.")
     end
   end
 
-  def find_membership
-    if params[:user_id]
-      begin
-        @user = User.find(params[:user_id])
-    
-        begin
-          @membership = Membership.find(params[:id], :conditions => ["user_id = ?", @user.id])
-        rescue ActiveRecord::RecordNotFound
-          error("Membership not found", "is invalid")
-        end
-      rescue ActiveRecord::RecordNotFound
-        error("User not found", "is invalid", :user_id)
-      end
-    else
-      begin
-        @membership = Membership.find(params[:id])
-      rescue ActiveRecord::RecordNotFound
-        error("Membership not found", "is invalid")
-      end
+  def find_user_auth
+    @user = User.find_by_id(params[:user_id])
+
+    if @user.nil?
+      render_404("User not found.")
+    elsif @user != current_user
+      render_401("You are not authorised to view other users' memberships.")
     end
   end
-  
+
   def find_membership_auth
-    begin
-      begin
-        # find the membership first
-        @membership = Membership.find(params[:id])
-      rescue ActiveRecord::RecordNotFound
-        raise ActiveRecord::RecordNotFound, "Membership not found"
-      end
-      
+    @membership = Membership.find_by_id(params[:id])
+
+    if @membership.nil?
+      render_404("Membership not found.")
+    else
       # now go through different actions and check which links (including user_id in the link) are allowed
       not_auth = false
       case action_name.to_s.downcase
@@ -392,34 +372,30 @@ protected
           # depending on who initiated it (link is for current user's id only)
           if @membership.user_established_at == nil
             unless @membership.user_id == current_user.id && params[:user_id].to_i == @membership.user_id
-              not_auth = true;
+              not_auth = true
             end
           elsif @membership.network_established_at == nil
             unless @membership.network.administrator?(current_user.id) # TODO: CHECK WHY?! && params[:user_id].to_i == @membership.network.owner.id
-              not_auth = true;
+              not_auth = true
             end
           end
         when "show", "destroy", "update"
           # Only the owner of the network OR the person who the membership is for can view/delete memberships;
           # link - just user to whom the membership belongs
-          unless (@membership.network.administrator?(current_user.id) || @membership.user_id == current_user.id) && @membership.user_id == params[:user_id].to_i 
+          unless (@membership.network.administrator?(current_user.id) ||
+              @membership.user_id == current_user.id) && @membership.user_id == params[:user_id].to_i
             not_auth = true
           end
         else
           # don't allow anything else, for now
           not_auth = true
       end
-      
-      
+
       # check if we had any errors
       if not_auth
-        raise ActiveRecord::RecordNotFound, "You are not authorised to view other users' memberships"
+        render_401("You are not authorised to view other users' memberships.")
       end
-      
-    rescue ActiveRecord::RecordNotFound => exc
-      error(exc.message, "")
     end
-    
   end
   
 private
@@ -428,14 +404,4 @@ private
     message = Message.new(:from => from_id, :to => to_id, :subject => subject, :body => body, :reply_id => nil, :read_at => nil, :deleted_by_sender => true )
     message.save
   end
-  
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = Membership.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to user_memberships_url(current_user.id) }
-    end
-  end
-  
 end

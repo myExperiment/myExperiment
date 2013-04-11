@@ -292,13 +292,11 @@ class PacksController < ApplicationController
   end
   
   def edit_item
-    if params[:entry_type].blank? or params[:entry_id].blank?
-      error("Invalid item entry specified for editing", "")
-    else
-      @type = params[:entry_type].downcase
-      @item_entry = find_entry(@pack.id, params[:entry_type], params[:entry_id])
+    @type = params[:entry_type].downcase
+    @item_entry = find_entry(@pack.id, params[:entry_type], params[:entry_id])
+    if @item_entry.nil?
+      render_404("Invalid item entry specified for editing.")
     end
-    
     # Will render packs/new_item.rhtml
   end
   
@@ -510,16 +508,7 @@ class PacksController < ApplicationController
   end
   
   private
-  
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = Pack.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to packs_url }
-    end
-  end
-  
+
   # This finds the specified entry within the specified pack (otherwise returns nil).
   def find_entry(pack_id, entry_type, entry_id)
     case entry_type.downcase
