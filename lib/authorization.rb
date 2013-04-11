@@ -480,5 +480,17 @@ module Authorization
 
     scope
   end
+
+  # This function calculates which agents are authorized to perform a given
+  # action on a given object.  E.g. "Who can edit this workflow"?
+
+  def self.authorized_for_object(action, object)
+    case action
+    when :view, :download, :edit
+      [object.contributor] + Permission.all(:conditions => { action => true, :policy_id => object.contribution.policy_id } ).map { |p| p.contributor }
+    else
+      raise "Unknown action: #{action}"
+    end
+  end
 end
 
