@@ -5,7 +5,7 @@
 <% remote_entries        = @version ? @version.remote_entries        : @pack.remote_entries        %>
 
 <% @title = @annotations.query([RDF::URI.parse(@pack.ro_uri), RDF::DC.title, nil]).objects.first if @pack.ro_uri; @title = @title.to_s if @title; @title ||= @pack.title %>
-<% @description_html = @annotations.query([RDF::URI.parse(@pack.ro_uri), RDF::DC.description, nil]).objects.first if @pack.ro_uri; @description_html = h(@description_html) if @description_html; @description_html ||= @pack.description_html %>
+<% @description_html = @annotations.query([RDF::URI.parse(@pack.ro_uri), RDF::DC.description, nil]).objects.first if @pack.ro_uri; @description_html = white_list(@description_html.to_s) if @description_html; @description_html ||= @pack.description_html %>
 
 <% if @authorised_to_edit %>
 	<ul class="sectionIcons">
