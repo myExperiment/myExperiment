@@ -98,11 +98,26 @@
       <%= render :partial => "research_objects/tags", :locals => { :contributable => @pack } -%>
 <% end %>
 
-      <% # FIXME diagram should not have to be rendered after items %>
       <%= render :partial => "research_objects/diagram", :locals => { :contributable => @pack } -%>  
-      
       <%= render :partial => "research_objects/attribution", :locals => { :contributable => @pack } -%>
 
+<% if @hypothesis.count > 0 %>
+  <h3>Hypothesis</h3>
+  <ul>
+    <% @hypothesis.each do |resource| %>
+      <li><%= link_to(h(resource), resource) -%></li>
+    <% end %>
+  </ul>
+<% end %>
+  
+<% if @conclusions.count > 0 %>
+  <h3>Conclusions</h3>
+  <ul>
+    <% @conclusions.each do |resource| %>
+      <li><%= link_to(h(resource), resource) -%></li>
+    <% end %>
+  </ul>
+<% end %>
   
 	<div class="contribution_version_box" style="background-color: #EEEEEE;">
 		<div class="contribution_version_inner_box">

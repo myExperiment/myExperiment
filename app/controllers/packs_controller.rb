@@ -88,6 +88,10 @@ class PacksController < ApplicationController
 
     @sketch = @all_annotations.query([nil, RDF::type, RDF::URI.parse("http://purl.org/wf4ever/roterms#Sketch")]).map do |s, p, o| s.to_s end
 
+    @hypothesis = @all_annotations.query([nil, RDF::type, RDF::URI.parse("http://purl.org/wf4ever/roterms#Hypothesis")]).map do |s, p, o| s.to_s end
+
+    @conclusions = @all_annotations.query([nil, RDF::type, RDF::URI.parse("http://purl.org/wf4ever/roterms#Conclusions")]).map do |s, p, o| s.to_s end
+
     if allow_statistics_logging(@pack)
       @viewing = Viewing.create(:contribution => @pack.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
