@@ -1,11 +1,13 @@
-    <div class="annotation uploaders mockup">
-        <h3 class="type">Maintained by</h3>
-        <div class="body">
-          <ul>
-            <li><span class="createdBy">Stian Soiland-Reyes</span> 
-              <span class="createdOn">(last uploaded on 2012-12-24 18:40)</span</li>
-            <li><span class="createdBy">Khalid Belhajjame</span> 
-              <span class="createdOn">(last uploaded on 2012-11-02 18:40)</span</li>
-          </ul>
-        </div>
-      </div>  
+<% if @maintainers.count > 0 %>
+  <h3 class="type">Maintained by</h3>
+  <div class="body">
+    <ul>
+      <% @maintainers.each do |maintainer| %>
+        <li>
+          <span class="createdBy"><%= link_to(h(maintainer.label), polymorphic_path(maintainer)) -%></span> 
+          <% if false %><span class="createdOn">(last uploaded on 2012-12-24 18:40)</span><% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

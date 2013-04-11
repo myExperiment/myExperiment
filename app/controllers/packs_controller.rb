@@ -86,6 +86,8 @@ class PacksController < ApplicationController
       @all_annotations << ag[:body]
     end
 
+    @maintainers = Authorization.authorized_for_object(:edit, @pack)
+
     @sketch = @all_annotations.query([nil, RDF::type, RDF::URI.parse("http://purl.org/wf4ever/roterms#Sketch")]).map do |s, p, o| s.to_s end
 
     @hypothesis = @all_annotations.query([nil, RDF::type, RDF::URI.parse("http://purl.org/wf4ever/roterms#Hypothesis")]).map do |s, p, o| s.to_s end
