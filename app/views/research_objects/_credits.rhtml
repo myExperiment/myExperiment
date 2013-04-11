@@ -1,23 +1,31 @@
-    <div class="annotation authors mockup">
-        <h3 class="type">Authors</h3>
-        <div class="body">
-          <ul>
-            <li><span class="authoredBy">Kristina Hettne</span>
-               <span class="authoredOn">(last authored on 2012-12-24 18:40)</span</li>              
-            </li>  
-            <li><span class="authoredBy">Marco Roos</span>
-               <span class="authoredOn">(last authored on 2012-10-15 11:24)</span</li>              
-            </li>            
-          </ul>
-        </div>
-    </div>
-    
-    <div class="annotation contributors mockup">
-        <h3 class="type">Contributors</h3>
-        <div class="body">
-          <ul>
-            <li><span class="contributedBy">Stian Soiland-Reyes</span>
-               <span class="contributedOn">(last contributed on 2012-11-10 11:21)</span</li>              
-          </ul>
-        </div>
-    </div>      
+<% creators = graph.query([nil, RDF::DC.creator, nil]) %>
+<% contributors = graph.query([nil, RDF::DC.contributor, nil]) %>
+
+<% if creators.count > 0 %>
+  <h3 class="type">Authors</h3>
+  <div class="body">
+    <ul>
+      <% graph.query([nil, RDF::DC.creator, nil]).each do |statement| %>
+        <li>
+           <span class="authoredBy"><%= user_link(statement.object.to_s) -%></span>
+           <% if false %><span class="authoredOn">(last authored on 2012-12-24 18:40)</span><% end %>
+        </li>  
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<% if contributors.count > 0 %>
+  <h3 class="type">Contributors</h3>
+  <div class="body">
+    <ul>
+      <% graph.query([nil, RDF::DC.contributor, nil]).each do |statement| %>
+        <li>
+           <span class="contributedBy"><%= user_link(statement.object.to_s) -%></span>
+           <% if false %><span class="contributedOn">(last authored on 2012-12-24 18:40)</span><% end %>
+        </li>  
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+

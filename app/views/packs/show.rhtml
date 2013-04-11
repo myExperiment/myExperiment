@@ -86,8 +86,8 @@
 			<% end %>
 			
 
-      <%= render :partial => "research_objects/uploader", :locals => { :contributable => @pack } -%>
-      <%= render :partial => "research_objects/credits", :locals => { :contributable => @pack } -%>
+      <%= render :partial => "research_objects/uploader", :locals => { :contributable => @pack, :graph => @annotations.graph, :subject => @pack.ro_uri } -%>
+      <%= render :partial => "research_objects/credits", :locals => { :contributable => @pack, :graph => @annotations.graph, :subject => @pack.ro_uri } -%>
 
 		</div>
 	</div>
@@ -98,6 +98,9 @@
       <%= render :partial => "research_objects/tags", :locals => { :contributable => @pack } -%>
 <% end %>
 
+      <% # FIXME diagram should not have to be rendered after items %>
+      <%= render :partial => "research_objects/diagram", :locals => { :contributable => @pack } -%>  
+      
       <%= render :partial => "research_objects/attribution", :locals => { :contributable => @pack } -%>
 
   
@@ -116,9 +119,6 @@
       <div id="pack_items">
         <%= render :partial => "items", :locals => { :pack => @pack, :contributable_entries => contributable_entries, :remote_entries => remote_entries, :authorised_to_edit => @authorised_to_edit } -%>
       </div>
-      <% # FIXME diagram should not have to be rendered after items %>
-      <%= render :partial => "research_objects/diagram", :locals => { :contributable => @pack } -%>  
-      
 
 			<br/><br/>
 			<h4>
