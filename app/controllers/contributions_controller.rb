@@ -14,31 +14,23 @@ class ContributionsController < ApplicationController
 private
 
   def get_context
+    # Determine the class name of the model
+    klass_name = params[:contributable_type].singularize.camelize
+
+    # Process model aliases (e.g. File => Blob)
+    klass_name = Conf.model_aliases[klass_name] if Conf.model_aliases[klass_name]
     begin
-
-      # Determine the class name of the model
-      klass_name = params[:contributable_type].singularize.camelize
-
-      # Process model aliases (e.g. File => Blob)
-      klass_name = Conf.model_aliases[klass_name] if Conf.model_aliases[klass_name]
-
       @contributable = Object.const_get(klass_name).find_by_id(params[:contributable_id])
-
-      # Abort if the contributable does not exist
-      return error if @contributable.nil?
-
-      # Abort if we're not allowed to see this contributable
-      return error unless Authorization.check('view', @contributable, current_user)
-
     rescue
+      @contributable = nil
+    end
 
-      # In case the const_get doesn't find anything
-      return error
+    # Abort if the contributable does not exist
+    if @contributable.nil?
+      render_401("You are not authorized to view this resource.")
+    elsif !Authorization.check('view', @contributable, current_user)
+      # Abort if we're not allowed to see this contributable
+      render_401("You are not authorized to view this resource.")
     end
   end
-
-  def error
-    render :text => 'Error.'
-  end
 end
-

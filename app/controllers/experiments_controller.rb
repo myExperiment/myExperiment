@@ -125,23 +125,12 @@ protected
       "update"  => "edit"
     }
 
-    experiment = Experiment.find(:first, :conditions => ["id = ?", params[:id]])
-    
-    if experiment and Authorization.check(action_permissions[action_name], experiment, current_user)
-      @experiment = experiment
-    else
-      error("Experiment not found or action not authorized", "is invalid (not authorized)")
-    end
-  end
-  
-private
+    @experiment = Experiment.find(:first, :conditions => ["id = ?", params[:id]])
 
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = Experiment.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to experiments_url }
+    if @experiment.nil?
+      render_404("Experiment not found.")
+    elsif !Authorization.check(action_permissions[action_name], @experiment, current_user)
+      render_401("You are not authorized to #{action_name} this experiment.")
     end
   end
 end

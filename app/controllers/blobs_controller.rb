@@ -287,19 +287,17 @@ class BlobsController < ApplicationController
   
   # POST /files/1;rate
   def rate
-    if @blob.contributor_type == 'User' and @blob.contributor_id == current_user.id
-      error("You cannot rate your own file!", "")
-    else
+    unless @blob.contributor_type == 'User' and @blob.contributor_id == current_user.id
       Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @blob.class.to_s, @blob.id, current_user.id])
-      
       Rating.create(:rateable => @blob, :user => current_user, :rating => params[:rating])
       
       respond_to do |format|
-        format.html { 
+        format.html do
           render :update do |page|
             page.replace_html "ratings_inner", :partial => "contributions/ratings_box_inner", :locals => { :contributable => @blob, :controller_name => controller.controller_name }
             page.replace_html "ratings_breakdown", :partial => "contributions/ratings_box_breakdown", :locals => { :contributable => @blob }
-          end }
+          end
+        end
       end
     end
   end
@@ -471,17 +469,6 @@ class BlobsController < ApplicationController
   def check_is_owner
     if @blob
       render_401("You are not authorised to manage this file.") unless @blob.owner?(current_user)
-    end
-  end
-  
-  private
-  
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-     (err = Blob.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to blobs_url }
     end
   end
 end

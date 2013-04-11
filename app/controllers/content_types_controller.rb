@@ -6,6 +6,7 @@
 class ContentTypesController < ApplicationController
 
   before_filter :find_content_type, :only => [ :show, :edit, :update ]
+  before_filter :auth_content_type, :only => [ :edit, :update ]
 
   # GET /content_types
   def index
@@ -54,12 +55,6 @@ class ContentTypesController < ApplicationController
 
   # PUT /content_types/1
   def update
-
-    if !Authorization.check('edit', @content_type, current_user)
-      error("You do not have the authorisation to edit.", "is unauthorised")
-      return
-    end
-
     @content_type.title       = params[:content_type][:title]
     @content_type.description = params[:content_type][:description]
 
@@ -78,17 +73,13 @@ class ContentTypesController < ApplicationController
     @content_type = ContentType.find_by_id(params[:id])
 
     if @content_type.nil?
-      error("Content type not found", "is invalid")
+      render_404("Content type not found.")
     end
   end
 
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-     (err = ContentType.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to content_types_url }
+  def auth_content_type
+    if !Authorization.check('edit', @content_type, current_user)
+      render_401("You are not authorised to edit this content type.")
     end
   end
 end
-

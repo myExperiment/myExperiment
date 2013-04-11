@@ -8,7 +8,7 @@ class FriendshipsController < ApplicationController
   
   before_filter :check_user_present # only allow actions on friendships as on nested resources
   
-  before_filter :find_friendships, :only => [:index]
+  before_filter :find_user_auth, :only => [:index]
   before_filter :find_friendship_auth, :only => [:show, :accept, :edit, :update, :destroy]
 
   # declare sweepers and which actions should invoke them
@@ -41,16 +41,19 @@ class FriendshipsController < ApplicationController
     respond_to do |format|
       if @friendship.accept!
         flash[:notice] = 'Friendship was successfully accepted.'
-        format.html { redirect_to user_friendships_url(current_user.id) }
       else
-        error("Friendship already accepted", "already accepted")
+        flash[:error] = "Friendship already accepted."
       end
+
+      format.html { redirect_to user_friendships_url(current_user.id) }
     end
   end
   
   # GET /users/1/friendships
   # GET /friendships
   def index
+    @friendships = @user.friendships
+
     respond_to do |format|
       format.html # index.rhtml
     end
@@ -89,8 +92,23 @@ class FriendshipsController < ApplicationController
   # POST /users/1/friendships
   # POST /friendships
   def create
-    friendship_already_exists = Friendship.find_by_user_id_and_friend_id(params[:friendship][:user_id], params[:friendship][:friend_id]) || Friendship.find_by_user_id_and_friend_id(params[:friendship][:friend_id], params[:friendship][:user_id])
-    if (@friendship = Friendship.new(params[:friendship]) unless friendship_already_exists )
+    params[:friendship][:user_id] = current_user.id
+
+    friendship_already_exists =
+        Friendship.find_by_user_id_and_friend_id(params[:friendship][:user_id], params[:friendship][:friend_id]) ||
+        Friendship.find_by_user_id_and_friend_id(params[:friendship][:friend_id], params[:friendship][:user_id])
+    if friendship_already_exists
+      respond_to do |format|
+        flash[:error] = "Friendship not created (already exists)."
+        format.html { redirect_to new_user_friendship_url(current_user.id) }
+      end
+    elsif params[:friendship][:friend_id] == params[:friendship][:user_id]
+      respond_to do |format|
+        flash[:error] = "You cannot add yourself as a friend."
+        format.html { redirect_to new_user_friendship_url(current_user.id) }
+      end
+    else
+      @friendship = Friendship.new(params[:friendship])
       # set initial datetime
       @friendship.accepted_at = nil
       if @friendship.message.blank?
@@ -114,8 +132,6 @@ class FriendshipsController < ApplicationController
           format.html { render :action => "new" }
         end
       end
-    else
-      error("Friendship not created (already exists)", "not created, already exists")
     end
   end
 
@@ -189,51 +205,22 @@ protected
     end
   end
 
-  def find_friendships
-    if params[:user_id].to_i == current_user.id.to_i
-      begin
-        @user = User.find(params[:user_id])
-    
-        @friendships = @user.friendships
-      rescue ActiveRecord::RecordNotFound
-        error("User not found", "is invalid", :user_id)
-      end
-    else
-      error("You are not authorised to view other users' friendships", "")
+  def find_user_auth
+    @user = User.find_by_id(params[:user_id])
+
+    if @user.nil?
+      render_404("User not found.")
+    elsif @user != current_user
+      render_401("You are not authorised to view other users' friendships.")
     end
   end
 
-  def find_friendship
-    if params[:user_id]
-      begin
-        @user = User.find(params[:user_id])
-    
-        begin
-          @friendship = Friendship.find(params[:id], :conditions => ["friend_id = ?", @user.id])
-        rescue ActiveRecord::RecordNotFound
-          error("Friendship not found", "is invalid")
-        end
-      rescue ActiveRecord::RecordNotFound
-        error("User not found", "is invalid", :user_id)
-      end
-    else
-      begin
-        @friendship = Friendship.find(params[:id])
-      rescue ActiveRecord::RecordNotFound
-        error("Friendship not found", "is invalid")
-      end
-    end
-  end
-  
   def find_friendship_auth
-    begin
-      begin
-        # find the friendship first
-        @friendship = Friendship.find(params[:id])
-      rescue ActiveRecord::RecordNotFound
-        raise ActiveRecord::RecordNotFound, "Friendship not found"
-      end
-      
+    # find the friendship first
+    @friendship = Friendship.find_by_id(params[:id])
+    if @friendship.nil?
+      render_404("Friendship not found.")
+    else
       # now go through different actions and check which links (including user_id in the link) are allowed
       not_auth = false
       case action_name.to_s.downcase
@@ -250,25 +237,10 @@ protected
             not_auth = true
           end
       end
-      
       # check if we had any errors
       if not_auth
-        raise ActiveRecord::RecordNotFound, "You are not authorised to view other users' friendships"
+        render_401("You are not authorised to manage other users' friendships.")
       end
-      
-    rescue ActiveRecord::RecordNotFound => exc
-      error(exc.message, "")
-    end
-  end
-  
-private
-  
-  def error(notice, message)
-    flash[:error] = notice
-    (err = Friendship.new.errors).add(:id, message)
-    
-    respond_to do |format|
-      format.html { redirect_to user_friendships_url(current_user.id) }
     end
   end
 end

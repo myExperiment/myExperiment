@@ -6,17 +6,19 @@
 class CitationsController < ApplicationController
   before_filter :login_required, :except => [ :index, :show ]
   
-  before_filter :find_workflow_auth
-  
-  before_filter :find_citations, :only => :index
-  before_filter :find_citation, :only => :show
-  before_filter :find_citation_auth, :only => [ :edit, :update, :destroy ]
+  before_filter :find_workflow
+  before_filter :auth_view_workflow, :only => [:index, :show]
+  before_filter :auth_edit_workflow, :only => :create
+  before_filter :find_citation, :only => [:show, :edit, :update, :destroy ]
+  before_filter :auth_citation, :only => [:edit, :update, :destroy ]
   
   # declare sweepers and which actions should invoke them
   cache_sweeper :citation_sweeper, :only => [ :create, :update, :destroy ]
   
   # GET /citations
   def index
+    @citations = @workflow.citations
+
     respond_to do |format|
       format.html # index.rhtml
     end
@@ -79,73 +81,33 @@ class CitationsController < ApplicationController
   
 protected
 
-  def find_workflow_auth
-    begin
-      # attempt to authenticate the user before you return the workflow
-      login_required if login_available?
-    
-      workflow = Workflow.find(params[:workflow_id])
-      
-      if Authorization.check((["index", "show"].include?(action_name) ? "view" : "edit"), workflow, current_user)
-        @workflow = workflow
-        
-        # remove workflow data from workflow if the user is not authorized for download
-        @workflow.content_blob.data = nil unless Authorization.check("download", @workflow, current_user)
-      else
-        if logged_in?
-          error("Workflow not found (id not authorized)", "is invalid (not authorized)")
-        else
-          find_workflow_auth if login_required
-        end
-      end
-    rescue ActiveRecord::RecordNotFound
-      error("Workflow not found", "is invalid")
+  def find_workflow
+    if (@workflow = Workflow.find_by_id(params[:workflow_id])).nil?
+      render_404("Workflow not found.")
     end
   end
-  
-  def find_citations
-    if @workflow
-      @citations = @workflow.citations
-    else
-      @citations = []
+
+  def auth_view_workflow
+    unless Authorization.check("view", @workflow, current_user)
+      render_401("You are not authorized to view this workflow's citations.")
     end
   end
-  
+
+  def auth_edit_workflow
+    unless Authorization.check("edit", @workflow, current_user)
+      render_401("You are not authorized to manage this workflow's citations.")
+    end
+  end
+
   def find_citation
-    if citation = @workflow.citations.find(:first, :conditions => ["id = ?", params[:id]])
-      @citation = citation
-    else
-      error("Citation not found", "is invalid", params[:id])
+    if (@citation = @workflow.citations.find(:first, :conditions => ["id = ?", params[:id]])).nil?
+      render_404("Citation not found.")
     end
   end
   
-  def find_citation_auth
-    if citation = @workflow.citations.find(:first, :conditions => ["id = ? AND user_id = ?", params[:id], current_user.id])
-      @citation = citation
-    else
-      error("Citation not found (id not authorized)", "is invalid (not authorized)", params[:id])
+  def auth_citation
+    unless @citation.user == current_user
+      render_401("You are not authorized to #{action_name} this citation.")
     end
   end
-  
-private
-
-  def error(notice, message, attr=nil)
-    flash[:error] = notice
-
-    workflow_id_attr = attr
-    workflow_id_attr = :id if workflow_id_attr.nil?
-
-    (err = Citation.new.errors).add(workflow_id_attr, message)
-
-    respond_to do |format|
-      format.html {
-        if attr
-          redirect_to workflow_citations_url(params[:workflow_id])
-        else
-          redirect_to workflows_url
-        end
-      }
-    end
-  end
-  
 end

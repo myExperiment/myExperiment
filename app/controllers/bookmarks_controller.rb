@@ -37,21 +37,8 @@ class BookmarksController < ApplicationController
 protected
 
   def find_bookmark_auth
-    begin
-      @bookmark = Bookmark.find(params[:id], :conditions => ["user_id = ?", current_user.id])
-    rescue ActiveRecord::RecordNotFound
-      error("Bookmark not found", "is invalid")
-    end
-  end
-  
-private
-
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = Bookmark.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to bookmarks_url }
+    if (@bookmark = Bookmark.find_by_id(params[:id], :conditions => ["user_id = ?", current_user.id])).nil?
+      render_404("Bookmark not found.")
     end
   end
 end
