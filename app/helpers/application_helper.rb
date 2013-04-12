@@ -1026,14 +1026,7 @@ module ApplicationHelper
                    :action => "edit_version",
                    :version => version_number)
   end
-  
-  def workflow_version_delete_url(workflow_id, version_number)
-    return url_for(:controller => "workflows",
-                   :id => workflow_id,
-                   :action => "destroy_version",
-                   :version => version_number)
-  end
-  
+
   def strip_html(str, preserve_tags=[])
     str = str.strip || ''
     preserve_arr = preserve_tags.join('|') << '|\/'
