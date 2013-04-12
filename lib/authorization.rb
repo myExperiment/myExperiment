@@ -339,6 +339,13 @@ module Authorization
 
         end
 
+      when "Message"
+        case action
+          when "view"
+            return object.to == user.id || object.from == user.id
+          when "destroy"
+            return object.to == user.id
+        end
       else
         # don't recognise the kind of object that is being authorized, so
         # we don't specifically know that it needs to be blocked;

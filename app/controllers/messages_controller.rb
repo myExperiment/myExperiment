@@ -6,8 +6,8 @@
 class MessagesController < ApplicationController
   before_filter :login_required
   
-  before_filter :find_message_by_to_or_from, :only => [:show, :destroy]
-  before_filter :find_reply_by_to, :only => [:new]
+  before_filter :find_and_auth_message, :only => [:show, :destroy]
+  before_filter :find_and_auth_reply, :only => :new
 
   # declare sweepers and which actions should invoke them
   cache_sweeper :message_sweeper, :only => [ :create, :show, :destroy, :delete_all_selected ]
@@ -240,20 +240,24 @@ class MessagesController < ApplicationController
   
 protected
 
-  def find_message_by_to_or_from
-    begin
-      @message = Message.find(params[:id], :conditions => ["`to` = ? OR `from` = ?", current_user.id, current_user.id])
-    rescue ActiveRecord::RecordNotFound
+  def find_and_auth_message
+    action = action_name == "show" ? "view" : action_name
+
+    @message = Message.find_by_id(params[:id])
+    if @message.nil?
       render_404("Message not found.")
+    elsif !Authorization.check(action, @message, current_user)
+      render_401("You are not authorized to #{action} this message.")
     end
   end
-  
-  def find_reply_by_to
+
+  def find_and_auth_reply
     if params[:reply_id]
-      begin
-        @reply = Message.find(params[:reply_id], :conditions => ["`to` = ?", current_user.id])
-      rescue ActiveRecord::RecordNotFound
-        render_404("Reply not found.")
+      @reply = Message.find_by_id(params[:reply_id])
+      if @reply.nil?
+        render_404("Original message not found.")
+      elsif !Authorization.check('view', @reply, current_user)
+        render_401("You are not authorized to reply to this message.")
       end
     end
   end
