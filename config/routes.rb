@@ -81,8 +81,7 @@ ActionController::Routing::Routes.draw do |map|
                  :rate => :post, 
                  :tag => :post, 
                  :create_version => :post, 
-                 :destroy_version => :delete, 
-                 :edit_version => :get, 
+                 :edit_version => :get,
                  :update_version => :put, 
                  :process_tag_suggestions => :post,
                  :tag_suggestions => :get } do |workflow|

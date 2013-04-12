@@ -8,7 +8,7 @@ class TopicsController < ApplicationController
   
 
   # declare sweepers and which actions should invoke them
-  cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy_version, :destroy ]
+  cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy ]
   cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :launch ]
   cache_sweeper :permission_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]

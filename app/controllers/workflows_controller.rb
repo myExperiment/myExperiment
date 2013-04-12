@@ -24,7 +24,7 @@ class WorkflowsController < ApplicationController
   before_filter :check_context, :only => :index
 
   # declare sweepers and which actions should invoke them
-  cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy_version, :destroy ]
+  cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy ]
   cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :launch ]
   cache_sweeper :permission_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
@@ -625,38 +625,7 @@ class WorkflowsController < ApplicationController
       end
     end
   end
-  
-  # DELETE /workflows/1;destroy_version?version=1
-  def destroy_version
-    workflow_title = @viewing_version.title
-    
-    if params[:version]
-      if @workflow.find_version(params[:version]) == false
-        render_404("Workflow version not found.")
-      end
-      if @workflow.versions.length < 2
-        error("Can't delete all versions", " is not allowed", :version)
-      end
-      success = @workflow.destroy_version(params[:version].to_i)
-    else
-      success = false
-    end
-  
-    respond_to do |format|
-      if success
-        flash[:notice] = "Workflow version #{params[:version]}: \"#{workflow_title}\" has been deleted"
-        format.html { redirect_to workflow_url(@workflow) }
-      else
-        flash[:error] = "Failed to delete Workflow version. Please report this."
-        if params[:version]
-          format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
-        else
-          format.html { redirect_to workflow_url(@workflow) }
-        end
-      end
-    end
-  end
-  
+
   def tag_suggestions
     @suggestions = @workflow.get_tag_suggestions
   end
@@ -724,7 +693,6 @@ protected
       "create"                  => "create",
       "create_version"          => "edit",
       "destroy"                 => "destroy",
-      "destroy_version"         => "edit",
       "download"                => "download",
       "edit"                    => "edit",
       "edit_version"            => "edit",
