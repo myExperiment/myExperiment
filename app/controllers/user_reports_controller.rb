@@ -9,34 +9,23 @@ class UserReportsController < ApplicationController
   
   def create
     UserReport.create(:user => current_user, :subject => @object)
-    render(:text => '[ reported ]')
+    render(:text => '[ reported ]', :status => 200)
   end
 
   private
 
   def find_object
-
-    # ensure that user is logged in and that params[:user_id] matches
-    return error if (current_user == 0 || (current_user.id.to_s != params[:user_id]))
-
     # ensure that the object type is valid
-    return error unless ["Comment", "Message"].include?(params[:subject_type])
+    unless ["Comment", "Message"].include?(params[:subject_type])
+      render(:nothing => true, :status => 400)
+    else
+      @object = Object.const_get(params[:subject_type]).find_by_id(params[:subject_id])
 
-    object = Object.const_get(params[:subject_type]).find(params[:subject_id])
-
-    # ensure that the object exists
-    return error if object.nil?
-
-    # ensure that the object is visible to the user
-    return error unless Authorization.check('view', object, current_user)
-
-    @object = object
-
-    true
-  end
-
-  def error
-    render(:text => '400 Bad Request', :status => "400 Bad Request")
+      if @object.nil?
+        render(:text => "Report failed. #{params[:subject_type]} not found.", :status => 404)
+      elsif !Authorization.check('view', @object, current_user)
+        render(:text => "Report failed. You are not authorized to view this #{params[:subject_type]}.", :status => 401)
+      end
+    end
   end
 end
-
