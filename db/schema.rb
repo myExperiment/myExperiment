@@ -11,6 +11,20 @@
 
 ActiveRecord::Schema.define(:version => 20130308085716) do
 
+  create_table "activities", :force => true do |t|
+    t.string   "subject_type"
+    t.integer  "subject_id"
+    t.string   "subject_label"
+    t.string   "action"
+    t.string   "objekt_type"
+    t.integer  "objekt_id"
+    t.string   "objekt_label"
+    t.string   "auth_type"
+    t.integer  "auth_id"
+    t.string   "extra"
+    t.datetime "created_at"
+  end
+
   create_table "activity_limits", :force => true do |t|
     t.string   "contributor_type", :null => false
     t.integer  "contributor_id",   :null => false
@@ -83,6 +97,27 @@ ActiveRecord::Schema.define(:version => 20130308085716) do
   end
 
   add_index "bookmarks", ["user_id"], :name => "index_bookmarks_on_user_id"
+
+  create_table "checksums", :id => false, :force => true do |t|
+    t.integer "id"
+    t.string  "sha1"
+  end
+
+  add_index "checksums", ["id"], :name => "i1", :unique => true
+
+  create_table "checksums_new", :id => false, :force => true do |t|
+    t.integer "id"
+    t.string  "sha1"
+  end
+
+  add_index "checksums_new", ["id"], :name => "i1", :unique => true
+
+  create_table "checksums_new_new", :id => false, :force => true do |t|
+    t.integer "id"
+    t.string  "sha1"
+  end
+
+  add_index "checksums_new_new", ["id"], :name => "ii", :unique => true
 
   create_table "citations", :force => true do |t|
     t.integer  "user_id"
@@ -827,6 +862,8 @@ ActiveRecord::Schema.define(:version => 20130308085716) do
     t.string   "license"
     t.integer  "preview_id"
   end
+
+  add_index "workflow_versions", ["workflow_id"], :name => "index_workflow_versions_on_workflow_id"
 
   create_table "workflows", :force => true do |t|
     t.integer  "contributor_id"

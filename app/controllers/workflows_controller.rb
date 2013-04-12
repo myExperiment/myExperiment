@@ -44,7 +44,14 @@ class WorkflowsController < ApplicationController
   
   # POST /workflows/1;favourite
   def favourite
-    Bookmark.create(:user => current_user, :bookmarkable => @workflow) unless @workflow.bookmarked_by_user?(current_user)
+
+    bookmark = Bookmark.new(:user => current_user, :bookmarkable => @workflow)
+
+    success = bookmark.save unless @workflow.bookmarked_by_user?(current_user)
+
+    if success
+      Activity.create(:subject => current_user, :action => 'create', :objekt => bookmark, :auth => @workflow)
+    end
     
     respond_to do |format|
       flash[:notice] = "You have successfully added this item to your favourites."
@@ -74,7 +81,8 @@ class WorkflowsController < ApplicationController
     else
       Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @workflow.class.to_s, @workflow.id, current_user.id])
       
-      Rating.create(:rateable => @workflow, :user => current_user, :rating => params[:rating])
+      rating = Rating.create(:rateable => @workflow, :user => current_user, :rating => params[:rating])
+      Activity.create(:subject => current_user, :action => 'create', :objekt => rating, :auth => @workflow, :extra => params[:rating].to_i)
       
       respond_to do |format|
         format.html { 
@@ -348,6 +356,9 @@ class WorkflowsController < ApplicationController
     
     respond_to do |format|
       if @workflow.save
+
+        Activity.create(:subject => current_user, :action => 'create', :objekt => @workflow, :auth => @workflow)
+
         if params[:workflow][:tag_list]
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
           @workflow.reload
@@ -477,6 +488,8 @@ class WorkflowsController < ApplicationController
           raise unless Rails.env == 'production'
         end
 
+        Activity.create(:subject => current_user, :action => 'create', :objekt => @workflow.versions.last, :extra => @workflow.versions.last.version, :auth => @workflow)
+
         respond_to do |format|
           flash[:notice] = 'New workflow version successfully created.'
           format.html {
@@ -532,6 +545,8 @@ class WorkflowsController < ApplicationController
       Workflow.record_timestamps = false
       
       if @workflow.update_attributes(params[:workflow])
+
+        Activity.create(:subject => current_user, :action => 'edit', :objekt => @workflow, :auth => @workflow)
 
         if params[:workflow][:tag_list]
           @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
@@ -596,6 +611,7 @@ class WorkflowsController < ApplicationController
 
     respond_to do |format|
       if success
+        Activity.create(:subject => current_user, :action => 'edit', :objekt => version, :extra => version.version, :auth => @workflow)
         flash[:notice] = "Workflow version #{version.version}: \"#{original_title}\" has been updated."
         format.html { redirect_to(workflow_url(@workflow) + "?version=#{params[:version]}") }
       else

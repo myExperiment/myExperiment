@@ -40,6 +40,7 @@ class FriendshipsController < ApplicationController
     
     respond_to do |format|
       if @friendship.accept!
+        Activity.create(:subject => User.find(from_id), :action => 'create', :objekt => @friendship)
         flash[:notice] = 'Friendship was successfully accepted.'
       else
         flash[:error] = "Friendship already accepted."

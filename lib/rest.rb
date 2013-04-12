@@ -1185,6 +1185,15 @@ def workflow_aux(action, opts = {})
 
     success = ob.save
 
+    if success
+      case "#{action} #{new_version || edit_version}"
+      when "create false"; Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob, :auth => ob)
+      when "create true";  Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob.versions.last, :auth => ob)
+      when "edit false";   Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob, :auth => ob)
+      when "edit true";    Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob, :extra => ob.version, :auth => ob.workflow)
+      end
+    end
+
     return rest_response(400, :object => ob) unless success
 
     # Elements to update if we're not dealing with a workflow version
@@ -1320,13 +1329,23 @@ def file_aux(action, opts = {})
 
     ob.content_blob = ContentBlob.new(:data => content) if content
 
-    new_version = action == 'create' && opts[:query][:id]
+    new_version  = action == 'create' && opts[:query]['id'] != nil
+    edit_version = action == 'edit'   && opts[:query]['version'] != nil
 
     if new_version
       ob[:revision_comments] = revision_comment
     end
 
     success = ob.save
+
+    if success
+      case "#{action} #{new_version || edit_version}"
+      when "create false"; Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob, :auth => ob)
+      when "create true";  Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob.versions.last, :auth => ob)
+      when "edit false";   Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob, :auth => ob)
+      when "edit true";    Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob, :extra => ob.version, :auth => ob.blob)
+      end
+    end
 
     return rest_response(400, :object => ob) unless success
 
@@ -2078,7 +2097,16 @@ def comment_aux(action, opts)
 
     # End of curation hack
 
-    return rest_response(400, :object => ob) unless ob.save
+    success = ob.save
+
+    if success
+      case action
+      when "create"; Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob)
+      when "edit";   Activity.create(:subject => opts[:user], :action => 'edit', :objekt => ob)
+      end
+    end
+
+    return rest_response(400, :object => ob) unless success
   end
 
   rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
@@ -2134,7 +2162,13 @@ def favourite_aux(action, opts)
       ob.bookmarkable = target
     end
 
-    return rest_response(400, :object => ob) unless ob.save
+    success = ob.save
+
+    if success
+      Activity.create(:subject => current_user, :action => 'create', :objekt => ob)
+    end
+
+    return rest_response(400, :object => ob) unless success
   end
 
   rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
@@ -2193,7 +2227,13 @@ def rating_aux(action, opts)
       ob.rateable = subject
     end
 
-    return rest_response(400, :object => ob) unless ob.save
+    success = ob.save
+
+    if success
+      Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob, :auth => subject)
+    end
+
+    return rest_response(400, :object => ob) unless success
   end
 
   rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })
@@ -2249,11 +2289,17 @@ def tagging_aux(action, opts)
     ob.tag      = tag     if tag
 
     if subject
-      return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.check(action, Rating, opts[:user], subject)
+      return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.check(action, Tagging, opts[:user], subject)
       ob.taggable = subject
     end
 
-    return rest_response(400, :object => ob) unless ob.save
+    success = ob.save
+
+    if success && action == "create"
+      Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob, :auth => subject)
+    end
+
+    return rest_response(400, :object => ob) unless success
   end
 
   rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })

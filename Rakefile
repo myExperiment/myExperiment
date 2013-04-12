@@ -192,6 +192,244 @@ task "myexp:workflow:components" do
   puts doc.to_s
 end
 
+desc 'Create initial activities'
+task "myexp:activities:create" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  activities = []
+
+  User.find(:all, :conditions => "activated_at IS NOT NULL", :include => :profile).map do |object|
+
+    activities << Activity.new(
+        :subject => object,
+        :subject_label => object.name,
+        :action => 'register',
+        :created_at => object.created_at)
+
+    if object.profile.updated_at && object.profile.updated_at != object.profile.created_at
+
+
+      activities << Activity.new(
+          :subject => object,
+          :subject_label => object.name,
+          :action => 'edit',
+          :created_at => object.profile.updated_at)
+
+    end
+  end
+
+  (Workflow.all + Blob.all + Pack.all).map do |object|
+
+    activities << Activity.new(
+        :subject => object.contributor,
+        :action => 'create',
+        :objekt => object,
+        :auth => object,
+        :created_at => object.created_at)
+
+    if object.updated_at && object.updated_at != object.created_at
+
+      activities << Activity.new(
+          :subject => object.contributor,
+          :action => 'edit',
+          :objekt => object,
+          :auth => object,
+          :created_at => object.updated_at)
+    end
+  end
+  
+  workflow_versions = (WorkflowVersion.find(:all, :conditions => "version > 1")).select do |object|
+    !(object.version == 2 && object.content_blob.data == object.workflow.versions.first.content_blob.data)
+  end
+  
+  workflow_versions.map do |object|
+
+    activities << Activity.new(
+        :subject => object.contributor,
+        :action => 'create',
+        :objekt => object,
+        :extra => object.version,
+        :auth => object.versioned_resource,
+        :created_at => object.created_at)
+
+    if object.updated_at && object.updated_at != object.created_at
+
+      activities << Activity.new(
+          :subject => object.contributor,
+          :action => 'edit',
+          :objekt => object,
+          :extra => object.version,
+          :auth => object.versioned_resource,
+          :created_at => object.updated_at)
+    end
+  end
+  
+  (BlobVersion.find(:all, :conditions => "version > 1")).map do |object|
+
+    activities << Activity.new(
+        :subject => object.blob.contributor,
+        :action => 'create',
+        :objekt => object,
+        :extra => object.version,
+        :auth => object.versioned_resource,
+        :created_at => object.created_at)
+
+    if object.updated_at && object.updated_at != object.created_at
+
+      activities << Activity.new(
+          :subject => object.blob.contributor,
+          :action => 'edit',
+          :objekt => object,
+          :extra => object.version,
+          :auth => object.versioned_resource,
+          :created_at => object.updated_at)
+    end
+  end
+
+  activities += Comment.all.map do |comment|
+
+    Activity.new(
+        :subject => comment.user,
+        :action => 'create',
+        :objekt => comment,
+        :auth => comment.commentable,
+        :created_at => comment.created_at)
+  end
+
+  activities += Bookmark.all.map do |bookmark|
+
+    Activity.new(
+        :subject => bookmark.user,
+        :action => 'create',
+        :objekt => bookmark,
+        :auth => bookmark.bookmarkable,
+        :created_at => bookmark.created_at)
+  end
+
+  Announcement.all.each do |object|
+
+    activities << Activity.new(
+        :subject => object.user,
+        :action => 'create',
+        :objekt => object,
+        :created_at => object.created_at)
+
+    if object.updated_at && object.updated_at != object.created_at
+
+
+      activities << Activity.new(
+          :subject => object.user,
+          :action => 'edit',
+          :objekt => object,
+          :created_at => object.updated_at)
+    end
+  end
+
+  Citation.all.each do |object|
+
+    activities << Activity.new(
+        :subject => object.user,
+        :action => 'create',
+        :objekt => object,
+        :auth => object.workflow,
+        :created_at => object.created_at)
+
+    if object.updated_at && object.updated_at != object.created_at
+
+      activities << Activity.new(
+          :subject => object.user,
+          :action => 'edit',
+          :objekt => object,
+          :auth => object.workflow,
+          :created_at => object.updated_at)
+    end
+  end
+
+  Rating.all.each do |object|
+
+    activities << Activity.new(
+        :subject => object.user,
+        :action => 'create',
+        :objekt => object,
+        :auth => object.rateable,
+        :extra => object.rating,
+        :created_at => object.created_at)
+  end
+
+  Review.all.each do |object|
+
+    activities << Activity.new(
+        :subject => object.user,
+        :action => 'create',
+        :objekt => object,
+        :auth => object.reviewable,
+        :created_at => object.created_at)
+
+    if object.updated_at && object.updated_at != object.created_at
+
+      activities << Activity.new(
+          :subject => object.user,
+          :action => 'edit',
+          :objekt => object,
+          :auth => object.reviewable,
+          :created_at => object.updated_at)
+    end
+  end
+
+  Tagging.all.each do |object|
+
+    activities << Activity.new(
+        :subject => object.user,
+        :action => 'create',
+        :objekt => object,
+        :auth => object.taggable,
+        :extra => object.tag.name,
+        :created_at => object.created_at)
+  end
+
+  Network.all.each do |object|
+
+    activities << Activity.new(
+        :subject => object.owner,
+        :action => 'create',
+        :objekt => object,
+        :created_at => object.created_at)
+
+    if object.updated_at && object.updated_at != object.created_at
+
+      activities << Activity.new(
+          :subject => object.owner,
+          :action => 'edit',
+          :objekt => object,
+          :created_at => object.updated_at)
+    end
+  end
+
+  Membership.all.each do |membership|
+
+    next unless membership.accepted?
+
+    activities << Activity.new(
+        :subject => membership.user,
+        :action => 'join',
+        :objekt => membership.network,
+        :created_at => membership.accepted_at)
+  end
+ 
+  activities.sort! do |a, b|
+    if a.created_at && b.created_at
+      a.created_at <=> b.created_at
+    else
+      a.object_id <=> b.object_id
+    end
+  end
+
+  activities.each do |activity|
+    activity.save
+  end
+
+end
+
 desc 'Perform spam analysis on user profiles'
 task "myexp:spam:run" do
   require File.dirname(__FILE__) + '/config/environment'

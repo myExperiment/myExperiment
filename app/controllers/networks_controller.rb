@@ -322,6 +322,7 @@ class NetworksController < ApplicationController
 
     respond_to do |format|
       if @network.save
+        Activity.create(:subject => current_user, :action => 'create', :objekt => @network)
         if params[:network][:tag_list]
           @network.tags_user_id = current_user
           @network.tag_list = convert_tags_to_gem_format params[:network][:tag_list]
@@ -342,6 +343,7 @@ class NetworksController < ApplicationController
 
     respond_to do |format|
       if @network.update_attributes(params[:network])
+        Activity.create(:subject => current_user, :action => 'edit', :objekt => @network)
         @network.refresh_tags(convert_tags_to_gem_format(params[:network][:tag_list]), current_user) if params[:network][:tag_list]
         flash[:notice] = 'Group was successfully updated.'
         format.html { redirect_to network_url(@network) }

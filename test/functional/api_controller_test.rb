@@ -19,6 +19,7 @@ class ApiControllerTest < ActionController::TestCase
   def test_workflows
 
     existing_workflows = Workflow.find(:all)
+    existing_activities = Activity.all
 
     login_as(:john)
 
@@ -44,8 +45,16 @@ class ApiControllerTest < ActionController::TestCase
     assert_response(:success)
 
     extra_workflows = Workflow.find(:all) - existing_workflows
+    extra_activities = Activity.find(:all). - existing_activities
 
     assert_equal(1, extra_workflows.length)
+    assert_equal(1, extra_activities.length)
+
+    new_activity = (extra_activities - existing_activities).first
+
+    assert_equal("John Smith", new_activity.subject_label);
+    assert_equal("create", new_activity.action);
+    assert_equal(title, new_activity.objekt_label);
 
     @workflow_id = extra_workflows.first.id
 
@@ -77,12 +86,23 @@ class ApiControllerTest < ActionController::TestCase
     setup
     login_as(:john)
 
+    existing_activities = Activity.all
+
     rest_request(:put, 'workflow', "<?xml version='1.0'?>
       <workflow>
         <title>#{title2}</title>
       </workflow>", "id" => @workflow_id)
 
     assert_response(:success)
+
+    extra_activities = Activity.find(:all). - existing_activities
+    assert_equal(1, extra_activities.length)
+    
+    new_activity = (extra_activities - existing_activities).first
+
+    assert_equal("John Smith", new_activity.subject_label);
+    assert_equal("edit", new_activity.action);
+    assert_equal(title2, new_activity.objekt_label);
 
     # get the updated workflow
 
@@ -100,6 +120,8 @@ class ApiControllerTest < ActionController::TestCase
 
     # post a new version of the workflow
 
+    existing_activities = Activity.all
+
     rest_request(:post, 'workflow', "<?xml version='1.0'?>
       <workflow>
         <type>Taverna 2</type>
@@ -107,6 +129,15 @@ class ApiControllerTest < ActionController::TestCase
       </workflow>", "id" => @workflow_id)
 
     assert_response(:success)
+
+    extra_activities = Activity.find(:all). - existing_activities
+    assert_equal(1, extra_activities.length)
+
+    new_activity = (extra_activities - existing_activities).first
+
+    assert_equal("John Smith", new_activity.subject_label);
+    assert_equal("create", new_activity.action);
+    assert_equal("Fetch today's xkcd comic", new_activity.objekt_label);
 
     workflow = Workflow.find(@workflow_id)
 
@@ -134,12 +165,24 @@ class ApiControllerTest < ActionController::TestCase
 
     # edit a particular version of a workflow
 
+    existing_activities = Activity.all
+
     rest_request(:put, 'workflow', "<?xml version='1.0'?>
       <workflow>
         <title>Oranges</title>
       </workflow>", "id" => @workflow_id, "version" => "1")
 
     assert_response(:success)
+
+    extra_activities = Activity.find(:all). - existing_activities
+    assert_equal(1, extra_activities.length)
+    
+    new_activity = (extra_activities - existing_activities).first
+
+    assert_equal("John Smith", new_activity.subject_label);
+    assert_equal("edit",       new_activity.action);
+    assert_equal("1",          new_activity.extra);
+    assert_equal("Oranges",    new_activity.objekt_label);
 
     # Verify that only version 1 was changed
 
@@ -186,6 +229,8 @@ class ApiControllerTest < ActionController::TestCase
 
     # post a file
 
+    existing_activities = Activity.all
+
     rest_request(:post, 'file', "<?xml version='1.0'?>
       <file>
         <title>#{title}</title>
@@ -197,6 +242,14 @@ class ApiControllerTest < ActionController::TestCase
       </file>")
 
     assert_response(:success)
+
+    new_activities = Activity.all - existing_activities
+
+    assert_equal(1, new_activities.length)
+
+    assert_equal("John Smith", new_activities.first.subject.name)
+    assert_equal("create",     new_activities.first.action)
+    assert_equal(title,        new_activities.first.objekt.title)
 
     extra_files = Blob.find(:all) - existing_files
 
@@ -235,12 +288,21 @@ class ApiControllerTest < ActionController::TestCase
     setup
     login_as(:john)
 
+    existing_activities = Activity.all
+
     rest_request(:put, 'file', "<?xml version='1.0'?>
       <file>
         <title>#{title2}</title>
       </file>", "id" => file.id)
 
     assert_response(:success)
+
+    new_activities = Activity.all - existing_activities
+
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith", new_activities.first.subject.name)
+    assert_equal("edit",       new_activities.first.action)
+    assert_equal(title2,       new_activities.first.objekt.title)
 
     # get the updated file
 
@@ -254,6 +316,8 @@ class ApiControllerTest < ActionController::TestCase
 
     # add a new version of the file
 
+    existing_activities = Activity.all
+
     rest_request(:post, 'file', "<?xml version='1.0'?>
       <file>
         <title>#{title2}</title>
@@ -265,11 +329,20 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_response(:success)
 
+    new_activities = Activity.all - existing_activities
+
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith",     new_activities.first.subject.name)
+    assert_equal("create",         new_activities.first.action)
+    assert_equal(title2,           new_activities.first.objekt.title)
+
     file.reload
 
     assert_equal(2, file.versions.length)
 
     # update the first version of the file
+
+    existing_activities = Activity.all
 
     rest_request(:put, 'file', "<?xml version='1.0'?>
       <file>
@@ -277,6 +350,13 @@ class ApiControllerTest < ActionController::TestCase
       </file>", "id" => file.id, "version" => 1)
 
     assert_response(:success)
+
+    new_activities = Activity.all - existing_activities
+
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith",   new_activities.first.subject.name)
+    assert_equal("edit",         new_activities.first.action)
+    assert_equal(title3,         new_activities.first.objekt.title)
 
     file.reload
     assert_equal(title3, file.find_version(1).title);
@@ -566,6 +646,8 @@ class ApiControllerTest < ActionController::TestCase
 
     existing_comments = Comment.find(:all)
 
+    existing_activities = Activity.all
+
     rest_request(:post, 'comment', "<?xml version='1.0'?>
       <comment>
         <comment>#{comment_text}</comment>
@@ -573,6 +655,13 @@ class ApiControllerTest < ActionController::TestCase
       </comment>")
 
     assert_response(:success)
+
+    new_activities = Activity.all - existing_activities
+
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith",  new_activities.first.subject.name)
+    assert_equal("create",      new_activities.first.action)
+    assert_equal("Unique tags", new_activities.first.objekt.commentable.title)
 
     extra_comments = Comment.find(:all) - existing_comments 
     
@@ -634,6 +723,8 @@ class ApiControllerTest < ActionController::TestCase
 
     existing_ratings = Rating.find(:all)
 
+    existing_activities = Activity.all
+
     rest_request(:post, 'rating', "<?xml version='1.0'?>
       <rating>
         <rating>4</rating>
@@ -641,6 +732,14 @@ class ApiControllerTest < ActionController::TestCase
       </rating>")
 
     assert_response(:success)
+
+    new_activities = Activity.all - existing_activities
+
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith", new_activities.first.subject.name)
+    assert_equal("create", new_activities.first.action)
+    assert_equal("Unique tags", new_activities.first.objekt.rateable.title)
+    assert_equal("Unique tags", new_activities.first.auth.title)
 
     extra_ratings = Rating.find(:all) - existing_ratings 
     
@@ -710,12 +809,21 @@ class ApiControllerTest < ActionController::TestCase
 
     existing_favourites = Bookmark.find(:all)
 
+    existing_activities = Activity.all
+
     rest_request(:post, 'favourite', "<?xml version='1.0'?>
       <favourite>
         <object resource='#{workflow_url}'/>
       </favourite>")
 
     assert_response(:success)
+
+    new_activities = Activity.all - existing_activities
+
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith",  new_activities.first.subject.name)
+    assert_equal("create",      new_activities.first.action)
+    assert_equal("Unique tags", new_activities.first.objekt.bookmarkable.title)
 
     extra_favourites = Bookmark.find(:all) - existing_favourites 
     
@@ -768,6 +876,8 @@ class ApiControllerTest < ActionController::TestCase
 
     existing_taggings = Tagging.find(:all)
 
+    existing_activities = Activity.all
+
     rest_request(:post, 'tagging', "<?xml version='1.0'?>
       <tagging>
         <subject resource='#{workflow_url}'/>
@@ -775,6 +885,13 @@ class ApiControllerTest < ActionController::TestCase
       </tagging>")
 
     assert_response(:success)
+
+    new_activities = Activity.all - existing_activities
+
+    assert_equal(1, new_activities.length)
+    assert_equal("John Smith", new_activities.first.subject.name)
+    assert_equal("create", new_activities.first.action)
+    assert_equal("my test tag", new_activities.first.objekt.tag.name)
 
     extra_taggings = Tagging.find(:all) - existing_taggings 
     

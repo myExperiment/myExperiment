@@ -63,6 +63,7 @@ class ReviewsController < ApplicationController
     
     respond_to do |format|
       if @review.save
+        Activity.create(:subject => current_user, :action => 'create', :objekt => @review, :auth => @reviewable, :extra => params[:rating].to_i)
         update_rating(@review, params[:rating])
         flash[:notice] = 'Thank you for your review!'
         format.html { redirect_to workflow_review_url(@reviewable, @review) }
@@ -81,6 +82,7 @@ class ReviewsController < ApplicationController
   def update
     respond_to do |format|
       if @review.update_attributes(params[:review])
+        Activity.create(:subject => current_user, :action => 'edit', :objekt => @review, :auth => @reviewable, :extra => params[:rating].to_i)
         update_rating(@review, params[:rating])
         flash[:notice] = 'Review was successfully updated.'
         format.html { redirect_to workflow_review_url(@reviewable, @review) }

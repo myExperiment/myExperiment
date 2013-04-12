@@ -168,6 +168,7 @@ class BlobsController < ApplicationController
 
       respond_to do |format|
         if @blob.save
+          Activity.create(:subject => current_user, :action => 'create', :objekt => @blob, :auth => @blob)
           if params[:blob][:tag_list]
             @blob.tags_user_id = current_user
             @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
@@ -236,6 +237,13 @@ class BlobsController < ApplicationController
     
     respond_to do |format|
       if @blob.update_attributes(params[:blob])
+
+        if @blob.new_version_number
+          Activity.create(:subject => current_user, :action => 'create', :objekt => @blob.find_version(@blob.new_version_number), :extra => @blob.new_version_number, :auth => @blob)
+        else
+          Activity.create(:subject => current_user, :action => 'edit', :objekt => @blob, :auth => @blob)
+        end
+
         @blob.refresh_tags(convert_tags_to_gem_format(params[:blob][:tag_list]), current_user) if params[:blob][:tag_list]
         
         policy_err_msg = update_policy(@blob, params)
@@ -289,7 +297,9 @@ class BlobsController < ApplicationController
   def rate
     unless @blob.contributor_type == 'User' and @blob.contributor_id == current_user.id
       Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @blob.class.to_s, @blob.id, current_user.id])
-      Rating.create(:rateable => @blob, :user => current_user, :rating => params[:rating])
+
+      rating = Rating.create(:rateable => @blob, :user => current_user, :rating => params[:rating])
+      Activity.create(:subject => current_user, :action => 'create', :objekt => rating, :auth => @blob, :extra => params[:rating].to_i)
       
       respond_to do |format|
         format.html do
@@ -323,7 +333,14 @@ class BlobsController < ApplicationController
   
   # POST /files/1;favourite
   def favourite
-    @blob.bookmarks << Bookmark.create(:user => current_user, :bookmarkable => @blob) unless @blob.bookmarked_by_user?(current_user)
+
+    bookmark = Bookmark.new(:user => current_user, :bookmarkable => @blob)
+
+    success = bookmark.save unless @blob.bookmarked_by_user?(current_user)
+
+    if success
+      Activity.create(:subject => current_user, :action => 'create', :objekt => bookmark, :auth => @blob)
+    end
     
     respond_to do |format|
       flash[:notice] = "You have successfully added this item to your favourites."
