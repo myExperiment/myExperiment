@@ -1,4 +1,4 @@
-<% if current_user %>
+<% if logged_in? %>
   <% div_name = "report#{subject.class.name}#{subject.id}" %>
   <% if UserReport.find_by_user_id_and_subject_type_and_subject_id(current_user.id, subject.class.name, subject.id) %>
     <small>
