@@ -115,6 +115,13 @@ class ContributableEntries
     nil 
   end
 
+  def resource_label(uri)
+    label = @manifest.query([RDF::URI.parse(uri), RDF::URI.parse("http://purl.org/wf4ever/ro#name"), nil]).first_value
+
+    return label if label
+
+    uri.split("/").last
+  end
 end
 
 class Pack < ActiveRecord::Base
