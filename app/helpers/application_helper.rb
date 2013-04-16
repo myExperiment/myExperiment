@@ -1324,9 +1324,9 @@ module ApplicationHelper
     if user
       link_to(h(user.name), user)
     elsif opts[:label]
-      link_to(h(opts[:label]), @creator)
+      link_to(h(opts[:label]), uri)
     else
-      link_to(h(@creator), @creator)
+      link_to(h(uri), uri)
     end
   end
   

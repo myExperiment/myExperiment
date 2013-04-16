@@ -24,7 +24,7 @@
 	</ul>
 <% end %>
 
-<h1 class="contribution_title">Pack: <%= contributable_name(@pack.id, 'Pack') %></h1>
+<h1 class="contribution_title">Pack: <%= h(@title) %></h1>
 
 <%= render :partial => "contributions/datetime_info", :locals => { :contributable => @pack } -%>
 
