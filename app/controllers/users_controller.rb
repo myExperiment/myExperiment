@@ -14,9 +14,9 @@ class UsersController < ApplicationController
   before_filter :login_required, :except => [:index, :new, :create, :search, :all, :confirm_email, :forgot_password, :reset_password] + show_actions
   
   before_filter :find_users, :only => [:all]
-  before_filter :find_user, :only => [:destroy] + show_actions
-  before_filter :find_user_auth, :only => [:edit, :update]
-  
+  before_filter :find_user, :only => [:destroy, :edit, :update] + show_actions
+  before_filter :auth_user, :only => [:edit, :update]
+
   # declare sweepers and which actions should invoke them
   cache_sweeper :user_sweeper, :only => [ :create, :update, :destroy ]
   
@@ -764,52 +764,16 @@ protected
   end
 
   def find_user
-    begin
-      @user = User.find(params[:id], :include => [ :profile, :tags ])
-    rescue ActiveRecord::RecordNotFound
-      error("User not found", "is invalid (not owner)")
-      return
-    end
-    
-    unless @user
-      error("User not found", "is invalid (not owner)")
-      return
-    end
-    
-    unless @user.activated?
-      error("User not activated", "is invalid (not owner)")
-      return
+    @user = User.find_by_id(params[:id], :include => [ :profile, :tags ])
+
+    if @user.nil? || !@user.activated?
+      render_404("User not found, or not activated.")
     end
   end
 
-  def find_user_auth
-    begin
-      @user = User.find(params[:id], :conditions => ["id = ?", current_user.id])
-    rescue ActiveRecord::RecordNotFound
-      error("User not found (id not authorized)", "is invalid (not owner)")
-      return
-    end
-    
-    unless @user
-      error("User not found (or not authorized)", "is invalid (not owner)")
-      return
-    end
-    
-    unless @user.activated?
-      error("User not activated (id not authorized)", "is invalid (not owner)")
-      return
-    end
-  end
-  
-private
-
-  def error(notice, message)
-    flash[:error] = notice
-    (err = User.new.errors).add(:id, message)
-    
-    respond_to do |format|
-      format.html { redirect_to users_url }
+  def auth_user
+    unless @user == current_user
+      render_401("You may only manage your own account.")
     end
   end
 end
-

@@ -130,16 +130,4 @@ protected
   def find_user
     @user = User.find_by_id(params[:user_id])
   end
-
-private
-  
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = Picture.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to logged_in? ? user_pictures_url(current_user) : '' }
-    end
-  end
 end
-

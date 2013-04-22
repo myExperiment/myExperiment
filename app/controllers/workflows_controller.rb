@@ -76,9 +76,7 @@ class WorkflowsController < ApplicationController
   
   # POST /workflows/1;rate
   def rate
-    if @workflow.contribution.contributor_type == 'User' and @workflow.contribution.contributor_id == current_user.id
-      error("You cannot rate your own workflow!", "")
-    else
+    unless @workflow.contribution.contributor_type == 'User' and @workflow.contribution.contributor_id == current_user.id
       Rating.delete_all(["rateable_type = ? AND rateable_id = ? AND user_id = ?", @workflow.class.to_s, @workflow.id, current_user.id])
       
       rating = Rating.create(:rateable => @workflow, :user => current_user, :rating => params[:rating])
@@ -927,15 +925,6 @@ private
     end
   end
 
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = Workflow.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to workflows_url }
-    end
-  end
-  
   def construct_options
     valid_keys = ["contributor_id", "contributor_type"]
     

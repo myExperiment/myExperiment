@@ -136,23 +136,12 @@ protected
       "verify"  => "view"
     }
 
-    runner = TavernaEnactor.find(:first, :conditions => ["id = ?", params[:id]])
-    
-    if runner and Authorization.check(action_permissions[action_name], runner, current_user)
-      @runner = runner
-    else
-      error("Runner not found or action not authorized", "is invalid (not authorized)")
-    end
-  end
-  
-private
+    @runner = TavernaEnactor.find_by_id(params[:id])
 
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = TavernaEnactor.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to runners_url }
+    if @runner.nil?
+      render_404("Runner not found.")
+    elsif !Authorization.check(action_permissions[action_name], @runner, current_user)
+      render_401("You are not authorized to #{action_permissions[action_name]} this runner.")
     end
   end
 end

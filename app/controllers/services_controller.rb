@@ -71,19 +71,7 @@ class ServicesController < ApplicationController
       @contributable_path                 = service_path(@contributable)
 
     rescue ActiveRecord::RecordNotFound
-      error("Service not found", "is invalid")
-    end
-  end
-  
-  private
-  
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-     (err = Service.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to services_url }
+      render_404("Service not found.")
     end
   end
 end
-

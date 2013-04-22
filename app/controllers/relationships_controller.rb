@@ -7,7 +7,7 @@ class RelationshipsController < ApplicationController
   
   helper PacksHelper
 
-  before_filter :find_resource_context
+  before_filter :find_and_auth_resource_context
   before_filter :find_resource, :except => [ :edit_relationships, :create ]
 
   # GET /:context_type/:context_id/edit_relationships
@@ -63,25 +63,21 @@ class RelationshipsController < ApplicationController
 
   private
 
-  def find_resource
-
-    @context      = extract_resource_context(params)
-    @relationship = Relationship.find_by_id(params[:id])
-
-    return error if @relationship.nil? || @context.nil? || @relationship.context != @context
-    return error if Authorization.check('view', @context, current_user) == false
-  end
-
-  def find_resource_context
-
+  def find_and_auth_resource_context
     @context = extract_resource_context(params)
 
-    return false if @context.nil?
-    return false if Authorization.check('view', @context, current_user) == false
+    if @context.nil?
+      render_404("Relationship context not found.")
+    elsif !Authorization.check('view', @context, current_user)
+      render_401("You are not authorized to view this resource's relationships.")
+    end
   end
 
-  def error
-    render :text => 'Error.'
+  def find_resource
+    @relationship = Relationship.find_by_id(params[:id])
+
+    if @relationship.nil? || @relationship.context != @context
+      render_404("Relationship not found.")
+    end
   end
 end
-

@@ -20,8 +20,11 @@ class SearchController < ApplicationController
     @type = "all" if @type.nil? or @type == ""
 
     if !Conf.search_categories.include?(@type)
-      error(@type)
-      return
+      flash[:error] = "'#{type}' is an invalid search type"
+
+      respond_to do |format|
+        format.html { redirect_to url_for(:controller => "home") }
+      end
     end
 
     if Conf.model_aliases.key?(@type.camelize.singularize)
@@ -180,14 +183,6 @@ class SearchController < ApplicationController
   end
 
 private
-
-  def error(type)
-    flash[:error] = "'#{type}' is an invalid search type"
-    
-    respond_to do |format|
-      format.html { redirect_to url_for(:controller => "home") }
-    end
-  end
 
   def search_all
 

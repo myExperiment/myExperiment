@@ -59,7 +59,7 @@ protected
   end
   
   def find_tag_and_tagged_with
-    @tag = Tag.find(:first, :conditions => ["id = ?", params[:id]])
+    @tag = Tag.find_by_id(params[:id])
     
     if @tag
       @tagged_with = []
@@ -87,21 +87,12 @@ protected
       
       @tagged_with = @tagged_with.uniq
     else
-      error("Tag not found", "is invalid")
+      render_404("Tag not found.")
     end
   end
   
 private
 
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = Tag.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to tags_url }
-    end
-  end
-  
   # This needs to be refactored into a library somewhere!
   # (eg: a myExperiment system library)
   def parse_to_internal_type(type)

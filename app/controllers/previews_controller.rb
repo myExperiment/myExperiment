@@ -19,14 +19,14 @@ class PreviewsController < ApplicationController
       user = User.authenticate(credentials[0], credentials[1])
 
       if user.nil?
-        render :nothing => true, :status => "401 Unauthorized"
+        render :nothing => true, :status => 401
         response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename} REST API\""
         return
       end
     end
 
     if @context.preview.nil?
-      render :nothing => true, :status => "404 Not Found"
+      render :nothing => true, :status => 404
       return
     end
 
@@ -37,7 +37,7 @@ class PreviewsController < ApplicationController
     end
 
     if Authorization.check('view', auth_object, user) == false
-      render :nothing => true, :status => "401 Unauthorized"
+      render :nothing => true, :status => 401
       response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename} REST API\""
       return
     end
@@ -53,7 +53,7 @@ class PreviewsController < ApplicationController
       when 'thumb';  source = 'image'; size = 100; mime_type = 'image/jpeg'
       when 'svg';    source = 'svg';   size = nil; mime_type = 'image/svg+xml'
       else
-        render(:inline => 'Bad preview type', :status => "400 Bad Request")
+        render(:inline => 'Bad preview type', :status => 400)
         return
     end
 
@@ -70,7 +70,7 @@ class PreviewsController < ApplicationController
     end
 
     if content_blob.nil?
-      render :nothing => true, :status => "404 Not Found"
+      render :nothing => true, :status => 404
       return
     end
 
@@ -100,14 +100,13 @@ class PreviewsController < ApplicationController
 
   def find_context
     @context = extract_resource_context(params)
-    return error unless @context
-
-    @context = @context.find_version(params[:version]) if params[:version]
-    return error unless @context
-  end
-
-  def error
-    render :text => 'Error.'
+    if @context.nil?
+      render_404("Resource not found.")
+    elsif params[:version]
+      @context = @context.find_version(params[:version])
+      if @context.nil?
+        render_404("Resource version not found.")
+      end
+    end
   end
 end
-
