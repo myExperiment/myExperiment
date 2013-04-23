@@ -1,342 +1,293 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-  <head>
-    <meta http-equiv="content-type" content="text/html"/>
-    <title>myExperiment</title>
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
-    <link href="stylesheets/reset-fonts-grids.css" media="screen" rel="Stylesheet" type="text/css"/>
-    <link href="stylesheets/base-min.css" media="screen" rel="Stylesheet" type="text/css"/>
-    <link href="stylesheets/styles.css" media="screen" rel="Stylesheet" type="text/css"/>
-    <link href="stylesheets/front.css" media="screen" rel="Stylesheet" type="text/css"/>
-		
-		<link href="/announcements.rss" rel="alternate" type="application/rss+xml" title="myExperiment.org - Site Announcements" />
-  </head>
-  <body onload="init()">
-		<div id="doc2">
-      <div id="hd" class="frontpage_header">
-        <img alt="Logo" src="images/logo.png" class="logo"/>
-        <div class="text">
-          myExperiment makes it easy to <b>find</b>, <b>use</b> and <b>share</b> <b>scientific workflows</b> and
-          other <b>Research Objects</b>, and to build <b>communities</b>.
+<head>
+  <meta http-equiv="content-type" content="text/html"/>
+  <title>myExperiment</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+  <link href="stylesheets/reset-fonts-grids.css" media="screen" rel="Stylesheet" type="text/css"/>
+  <link href="stylesheets/base-min.css" media="screen" rel="Stylesheet" type="text/css"/>
+  <link href="stylesheets/styles.css" media="screen" rel="Stylesheet" type="text/css"/>
+  <link href="stylesheets/front.css" media="screen" rel="Stylesheet" type="text/css"/>
+
+  <link href="/announcements.rss" rel="alternate" type="application/rss+xml" title="myExperiment.org - Site Announcements" />
+</head>
+<body onload="init()">
+<div id="doc2">
+<div id="hd" class="frontpage_header">
+  <img alt="Logo" src="images/logo.png" class="logo"/>
+  <div class="text">
+    myExperiment makes it easy to <b>find</b>, <b>use</b> and <b>share</b> <b>scientific workflows</b> and
+    other <b>Research Objects</b>, and to build <b>communities</b>.
+  </div>
+  <div class="clearer">&nbsp;</div>
+</div>
+<div id="bd">
+<div id="frontpage_body">
+
+<!-- Search Bar -->
+<div class="search">
+  <form action="/search" method="get">
+    <input id="query" name="query" style="width: 250px; padding: 0.1em;" />
+    <select id="type" name="type">
+      <option value="all" selected="selected">All</option>
+      <option value="users">Users</option>
+      <option value="groups">Groups</option>
+      <option value="workflows">Workflows</option>
+      <option value="files">Files</option>
+      <option value="packs">Packs</option>
+    </select>
+    <input type="submit" value="Search" name="commit" onclick="this.disabled=true; this.value='Searching...'; this.form.submit();" />
+  </form>
+</div>
+
+<!-- Quick Start -->
+<div class="box" style="margin-right: 20px; width: 320px; height: 28em;">
+  <div class="links">
+    <h2>First time visitor? Try these videos:</h2>
+    <ul class="use">
+      <li>
+        <img src="images/famfamfam_silk/film.png" alt="Film"/>
+        <a href="http://www.youtube.com/watch?v=x83pzMMw7lk">Project Introduction</a>
+      </li>
+      <li>
+        <img src="images/famfamfam_silk/film.png" alt="Film"/>
+        <a href="http://www.youtube.com/watch?v=Y6_Kz5L010g">Bioinformatics Case Study</a>
+      </li>
+    </ul>
+    <h2>Use myExperiment to...</h2>
+    <ul class="use">
+      <li>
+        <img src="images/redmond_studio/applications_16.png" alt="Find Workflows"/>
+        <b>Find <a href="/workflows">Workflows</a></b>
+      </li>
+      <li>
+        <img src="images/redmond_studio/add_16.png" alt="Share Your Workflows and Files"/>
+        <b>Share Your <a href="/workflows/new">Workflows</a> and <a href="/files/new">Files</a></b>
+      </li>
+      <li>
+        <img src="images/manhattan_studio/folder-closed_16.png" alt="Create and Find Packs of Items"/>
+        <b><a href="/packs/new">Create</a> and Find <a href="/packs">Packs</a> of Items</b>
+      </li>
+      <li>
+        <img src="images/famfamfam_silk/user.png" alt="Find People and Make Friends"/>
+        <b>Find <a href="/users">People</a> and Make Friends</b>
+      </li>
+      <li>
+        <img src="images/famfamfam_silk/group.png" alt="Create and Join Groups"/>
+        <b><a href="/groups/new">Create</a> and Join <a href="/groups">Groups</a></b>
+      </li>
+      <li>
+        <img src="images/famfamfam_silk/award_star_gold_1.png" alt="Build your Profile and Reputation"/>
+        <b>Build your Profile and Reputation</b>
+      </li>
+      <li>
+        <img src="images/famfamfam_silk/tag_blue.png" alt="Tag and Rate things"/>
+        <b>Tag and Rate things</b>
+      </li>
+      <li>
+        <img src="images/famfamfam_silk/comment.png" alt="Write Reviews and Comments"/>
+        <b>Write Reviews and Comments</b>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- Quick Links -->
+<div class="box" style="margin-right: 20px; width: 280px; height: 28em;">
+
+  <a href="/home" title="Explore myExperiment" class="letmein_button"></a>
+
+  <a href="/workflows" alt="Find Workflows button" title="Find Workflows on myExperiment" class="findworkflows_button">  </a>
+
+  <div class="links" style="font-size: 93%; border-top: 1px dotted #999999; margin-top: 1em;">
+    <p style="margin-top: 1em; font-size:120%"><a href="http://wiki.myexperiment.org/" target="_blank" style="font-weight: bolder;">About myExperiment</a></p>
+    <p><a href="http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss" target="_blank">Join the Mailing List</a></p>
+    <p><a href="http://wiki.myexperiment.org/index.php/Papers" target="_blank">myExperiment Publications</a></p>
+    <p><a href="http://wiki.myexperiment.org/index.php/Developer:Contents" target="_blank">For Developers</a></p>
+    <p><a href="/feedback">Give us Feedback</a></p>
+    <p><a href="http://www.biocatalogue.org" target="_blank">The BioCatalogue Project</a></p>
+  </div>
+</div>
+
+<!-- Register / Login -->
+<div class="box" style="width: 230px; height: 28em;">
+
+  <a href="/users/new" alt="Register button" title="Register for an account on myExperiment" class="register_button">
+  </a>
+
+  <p style="font-size: 108%; margin: 0.8em 0 0.2em 0; text-align: center;">
+    <b>or Login:</b>
+  </p>
+  <div id="login">
+    <div class="login">
+      <form action="/session" method="post">
+        <p>
+          <label for="session[username]">
+            Username or Email:
+          </label>
+        </p>
+        <p>
+          <input id="session[username]" name="session[username]" type="text"/>
+        </p>
+        <p>
+          <label for="session[password]">
+            Password:
+          </label>
+        </p>
+        <p>
+          <input id="session[password]" name="session[password]" type="password"/>
+        </p>
+        <p>
+          <label for="session[remember_me]">
+            Remember me:
+          </label>
+          <input id="session[remember_me]" name="session[remember_me]" value="1" type="checkbox"/>
+        </p>
+        <div style="margin-top: 0.8em; border: 0px dotted #999999; border-width: 1px 0; padding: 0.2em 0;">
+          <p>
+            <label for="openid_url">
+              Or use OpenID:
+            </label>
+          </p>
+          <p>
+            <input id="openid_url" name="openid_url" type="text" style="width: 150px;"/>
+            <br/>
+            <span style="font-size: 77%; color: #333333;">(eg: name.myopenid.com)</span>
+          </p>
         </div>
-				<div class="clearer">&nbsp;</div>
-      </div>
-      <div id="bd">
-        <div id="frontpage_body">
-        	
-					<!-- Search Bar -->
-					<div class="search">
-						<form action="/search" method="get">
-							<input id="query" name="query" style="width: 250px; padding: 0.1em;" />
-							<select id="type" name="type">
-								<option value="all" selected="selected">All</option>
-								<option value="users">Users</option>
-								<option value="groups">Groups</option>
-								<option value="workflows">Workflows</option>
-								<option value="files">Files</option>
-								<option value="packs">Packs</option>
-							</select> 
-							<input type="submit" value="Search" name="commit" onclick="this.disabled=true; this.value='Searching...'; this.form.submit();" />
-						</form>
-					</div>
-					
-					<!-- Quick Start -->
-					<div class="box" style="margin-right: 20px; width: 320px;">
-						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 29em;">
-							<div class="links">
-								<p class="heading" style="margin-left: 1em; margin-bottom: 1em; text-align: left;">
-									First time visitor? Try these videos:
-								</p>
-								<ul class="use">
-									<li>
-										<img src="images/famfamfam_silk/film.png" alt="Film"/>
-										<a href="http://www.youtube.com/watch?v=x83pzMMw7lk">Project Introduction</a>
-									</li>
-										<li>
-										<img src="images/famfamfam_silk/film.png" alt="Film"/>
-										<a href="http://www.youtube.com/watch?v=Y6_Kz5L010g">Bioinformatics Case Study</a>
-									</li>
-								</ul>
-									<p class="heading" style="margin-left: 1em; margin-bottom: 1em; text-align: left;">
-									Use myExperiment to...
-								</p>
-								<ul class="use">
-									<li>
-										<img src="images/redmond_studio/applications_16.png" alt="Find Workflows"/>
-										<b>Find <a href="/workflows">Workflows</a></b>
-									</li>
-									<li>
-										<img src="images/redmond_studio/add_16.png" alt="Share Your Workflows and Files"/>
-										<b>Share Your <a href="/workflows/new">Workflows</a> and <a href="/files/new">Files</a></b>
-									</li>
-									<li>
-										<img src="images/manhattan_studio/folder-closed_16.png" alt="Create and Find Packs of Items"/>
-										<b><a href="/packs/new">Create</a> and Find <a href="/packs">Packs</a> of Items</b>
-									</li>
-									<li>
-										<img src="images/famfamfam_silk/user.png" alt="Find People and Make Friends"/>
-										<b>Find <a href="/users">People</a> and Make Friends</b>
-									</li>
-									<li>
-										<img src="images/famfamfam_silk/group.png" alt="Create and Join Groups"/>
-										<b><a href="/groups/new">Create</a> and Join <a href="/groups">Groups</a></b>
-									</li>
-									<li>
-										<img src="images/famfamfam_silk/award_star_gold_1.png" alt="Build your Profile and Reputation"/>
-										<b>Build your Profile and Reputation</b>
-									</li>
-									<li>
-										<img src="images/famfamfam_silk/tag_blue.png" alt="Tag and Rate things"/>
-										<b>Tag and Rate things</b>
-									</li>
-									<li>
-										<img src="images/famfamfam_silk/comment.png" alt="Write Reviews and Comments"/>
-										<b>Write Reviews and Comments</b>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
-					</div>
-					
-					<!-- Quick Links -->
-					<div class="box" style="margin-right: 20px; width: 280px;">
-						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 29em; text-align: center;">
-							
-							<center>
-								<a href="/home" "Explore button" title="Explore myExperiment" class="letmein_button">
-								</a>
-							</center>
-							<center>
-								<a href="/workflows" alt="Find Workflows button" title="Find Workflows on myExperiment" class="findworkflows_button">
-								</a>
-							</center>
-							
-							<div class="links" style="font-size: 93%; border-top: 1px dotted #999999; margin-top: 1em;">
-								<p style="margin-top: 1em; font-size:120%"><a href="http://wiki.myexperiment.org/" target="_blank" style="font-weight: bolder;">About myExperiment</a></p>
-								<p><a href="http://lists.nongnu.org/mailman/listinfo/myexperiment-discuss" target="_blank">Join the Mailing List</a></p>
-								<p><a href="http://wiki.myexperiment.org/index.php/Papers" target="_blank">myExperiment Publications</a></p>
-								<p><a href="http://wiki.myexperiment.org/index.php/Developer:Contents" target="_blank">For Developers</a></p>
-								<p><a href="/feedback">Give us Feedback</a></p>
-								<p><a href="http://www.biocatalogue.org" target="_blank">The BioCatalogue Project</a></p>
-							</div>
-						</div>
-						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
-					</div>
-					
-					<!-- Register / Login -->
-					<div class="box" style="width: 230px;">
-						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 29em;">
-								<center>
-									<a href="/users/new" alt="Register button" title="Register for an account on myExperiment" class="register_button">
-									</a>
-								</center>
-								<p style="font-size: 108%; margin: 0.8em 0 0.2em 0; text-align: center;">
-									<b>or Login:</b>
-								</p>
-							<div id="login">
-                <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-                <div class="login">
-                  <form action="/session" method="post">
-										<p>
-                      <label for="session[username]">
-                          Username or Email:
-                      </label>
-										</p>
-										<p>
-                      <input id="session[username]" name="session[username]" type="text"/>
-										</p>
-										<p>
-											<label for="session[password]">
-                          Password:
-                      </label>
-										</p>
-										<p>
-                      <input id="session[password]" name="session[password]" type="password"/>
-										</p>
-										<p>
-                      <label for="session[remember_me]">
-                          Remember me:
-                      </label>
-                      <input id="session[remember_me]" name="session[remember_me]" value="1" type="checkbox"/>
-                    </p>
-                    <div style="margin-top: 0.8em; border: 0px dotted #999999; border-width: 1px 0; padding: 0.2em 0;">
-	                    <p>  
-												<label for="openid_url">
-	                          Or use OpenID:
-	                      </label>
-											</p>
-											<p>
-	                      <input id="openid_url" name="openid_url" type="text" style="width: 150px;"/>
-												<br/>
-												<span style="font-size: 77%; color: #333333;">(eg: name.myopenid.com)</span>
-	                    </p>
-										</div>
-                    <p style="margin-top: 0.8em;">
-                      <input name="commit" value="" type="submit" class="submit" title="Log in to myExperiment"/>
-                    </p>
-										<p style="font-size: 85%; margin-top: 1em;">
-											<b><a href="/users/forgot_password">Forgot Password?</a></b>
-										</p>
-                  </form>
-                </div>
-								<b class="xbottom"><b class="xb4"></b><b class="xb3"></b><b class="xb2"></b><b class="xb1"></b></b>
-							</div>
-						</div>
-						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
-					</div>
-					
-					<br class="clearer"/>&nbsp;<br/>
-					
-					<div class="stats">
-						myExperiment has over 5000 members, 250 groups, 2000 workflows, 450 files and 150 packs
-					</div>
-					
-					<!-- About -->
-					<div class="box" style="margin-right: 20px; width: 320px;">
-						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 22em; padding: 0.3em 1.5em;">
-							<p class="heading">
-								About
-							</p>
-							<p>
-                The myExperiment Virtual Research Environment enables you and your colleagues to
-                share digital items associated with your research &mdash; in particular it enables
-                you to share and execute scientific workflows.
-              </p>
-              <p>
-                You can use myexperiment.org to <a href="/workflows"><b>find</b></a>
-                publicly shared workflows. If you want further access, and 
-                the ability to upload and share workflows, you will need to <a href="/users/new"><b>sign up</b></a>.
-              </p>
-              <p>
-                See the <a href="http://wiki.myexperiment.org/"><b>myExperiment Wiki</b></a>
-                for
-                further information about myExperiment and how to join the user and developer communities.
-              </p>
-						</div>
-						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
-					</div>
-					
-					<!-- Who -->						
-					<div class="box" style="margin-right: 20px; width: 320px;">
-						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 22em; padding: 0.3em 1.5em;">
-							<p class="heading">
-								Who?
-							</p>
+        <p style="margin-top: 0.8em;">
+          <input name="commit" value="" type="submit" class="submit" title="Log in to myExperiment"/>
+        </p>
+        <p style="font-size: 85%; margin-top: 1em;">
+          <b><a href="/users/forgot_password">Forgot Password?</a></b>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>
 
-              <p>
-                myExperiment is brought to you by a joint team from the
-                universities of
-                <a href="http://www.southampton.ac.uk/" target="_blank">Southampton</a>,
-                <a href="http://www.manchester.ac.uk/" target="_blank">Manchester</a> and
-                <a href="http://www.ox.ac.uk/" target="_blank">Oxford</a> in the UK, led by
-                <a href="http://users.ecs.soton.ac.uk/dder" target="_blank">David De Roure</a> and
-                <a href="http://www.cs.man.ac.uk/~carole/" target="_blank">Carole Goble</a>. Funded by
-                <a href="http://www.jisc.ac.uk/" target="_blank">JISC</a> and the Microsoft
-                <a href="http://www.microsoft.com/mscorp/tc/" target="_blank">Technical Computing Initiative</a>, the project is part of the
-                <a href="http://www.mygrid.org.uk" target="_blank">myGrid</a> consortium and
-                <a href="http://www.eresearchsouth.ac.uk/" target="_blank"><span style="white-space: nowrap">e-Research South</span></a>.
-              </p>
-              <p>
-                <a href="http://biovel.eu" target="_blank">
-                  <img src="images/biovel_cropped.png" style="float: left; width: 70px; margin: 0.5em 0.5em 0.5em 0"/>
-                </a>
-                myExperiment is supported by
-                <a href="http://biovel.eu" target="_blank">BioVeL</a>,
-                a project (Grant no. 283359) funded by the European Commission 7th Framework Programme (FP7)
-                as part of its e-Infrastructures activity.
-              </p>
-						</div>
-						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
-					</div>
-					
-					<!-- Latest Announcements -->
-					<div class="box" style="width: 190px;">
-						<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
-						<div class="content" style="height: 22em; padding: 0.3em 1.5em; overflow: hidden">
-							<p class="heading">
-								<a href="/announcements.rss" style="margin-right: 0.3em;">
-									<img src="/images/feed-icon.png" alt="Subscribe to site announcements icon" title="Subscribe to site announcements RSS feed" />
-								</a>
-								Announcements
-							</p>
-							<ul id="announcements">
-								<li>JavaScript required for announcements.</li>
-							</ul>
-						</div>
-						<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
-					</div>
-					
-					<br class="clearer"/>&nbsp;<br/>
-					
-					<p style="color: #666666; font-size: 116%; text-align: center;">
-						<a href="/users/invite">Invite People</a>
-						|
-						<a href="mailto:bugs@myexperiment.org?subject=myExperiment">Report a Problem</a>
-					</p>
-					
-        </div>
-      </div>
-			<div id="ft">
-        <p class="copyright">
-					Copyright &#169; 2007 - 2011
-					<a href="http://www.manchester.ac.uk/" target="_blank">The University of Manchester</a>
-					and
-					<a href="http://www.soton.ac.uk/" target="_blank">University of Southampton</a>
-				</p>
-      </div>
-			
-		</div>
+<br class="clearer"/>&nbsp;<br/>
 
-      <script language="javascript" type="text/javascript">
-//<![CDATA[
+<div class="stats">
+  myExperiment has over 7500 members, 300 groups, 2500 workflows, 600 files and 300 packs
+</div>
 
-function loadAnnoucements()
-{
-        div = document.getElementById('announcements')
-        div.updated = false;
-        div.innerHTML = '<li>Loading announcements...</li>';
+<!-- Who -->
+<div class="box" style="margin-right: 20px; width: 636px; height: 20em; padding-top: 1em;">
+  <p style="margin-left: 0.5em">
+    myExperiment is brought to you by a joint team from the
+    universities of
+    <a href="http://www.southampton.ac.uk/" target="_blank">Southampton</a>,
+    <a href="http://www.manchester.ac.uk/" target="_blank">Manchester</a> and
+    <a href="http://www.ox.ac.uk/" target="_blank">Oxford</a> in the UK, led by
+    <a href="http://users.ecs.soton.ac.uk/dder" target="_blank">David De Roure</a> and
+    <a href="http://www.cs.man.ac.uk/~carole/" target="_blank">Carole Goble</a>.
+  </p>
 
-        xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('MSXML2.XMLHTTP.3.0');
+  <p style="margin-left: 0.5em">
+    myExperiment is currently supported by three European Commission 7th Framework Programme (FP7) projects:
+    <a href="http://biovel.eu" target="_blank">BioVeL</a> (Grant no. 283359),
+    <a href="http://www.scape-project.eu" target="_blank">SCAPE</a> (Grant no. 270137), and the
+    <a href="http://www.wf4ever-project.org" target="_blank">Wf4Ever Project</a> (Grant no. 270192) as well as the
+    <a href="http://www.eresearchsouth.ac.uk/" target="_blank">e-Research South</a> and
+    <a href="http://www.mygrid.org.uk" target="_blank">myGrid</a> EPSRC Platform grants.
+  </p>
+  <p style="margin-left: 0.5em">
+    Previously, myExperiment was funded by <a href="http://www.jisc.ac.uk/" target="_blank">JISC</a>
+    and the <a href="http://www.microsoft.com/mscorp/tc/" target="_blank">Microsoft Technical Computing Initiative</a>.
+  </p>
+  <div style="display: inline-block; margin: 1em auto">
+    <a href="http://biovel.eu" target="_blank">
+      <img src="images/biovel_cropped.png" style="float: left; width: 70px"/>
+    </a>
+    <a href="http://www.scape-project.eu" target="_blank">
+      <img src="images/scape_cropped.png" style="float: left; margin: 0.5em;"/>
+    </a>
+    <a href="http://www.wf4ever-project.org" target="_blank">
+      <img src="images/wf4ever_cropped.png" style="float: left; margin: 0.5em; width: 170px"/>
+    </a>
 
-        xhr.open('GET', '/announcements.xml?num=4&order=reverse', true);
-        xhr.setRequestHeader('Accept', 'application/xml');
+  </div>
+</div>
 
-        xhr.onreadystatechange = function() {
+<!-- Latest Announcements -->
+<div class="box" style="width: 230px; height: 20em">
+  <p class="heading">
+    <a href="/announcements.rss" style="margin-right: 0.3em;">
+      <img src="/images/feed-icon.png" alt="Subscribe to site announcements icon" title="Subscribe to site announcements RSS feed" />
+    </a>
+    Announcements
+  </p>
+  <ul id="announcements">
+    <li>JavaScript required for announcements.</li>
+  </ul>
+</div>
 
-          if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
+<br class="clearer"/>&nbsp;<br/>
 
-              ans = xhr.responseXML.getElementsByTagName('announcement');
-              txt = '';
+<p style="color: #666666; font-size: 116%; text-align: center;">
+  <a href="/users/invite">Invite People</a>
+  |
+  <a href="mailto:bugs@myexperiment.org?subject=myExperiment">Report a Problem</a>
+</p>
 
-              for (i = 0; i < ans.length; i++) {
-                txt += '<li><a href="' + ans[i].attributes.getNamedItem('resource').nodeValue +
-                  '">' + ans[i].firstChild.nodeValue + '</a></li>';
-              }
+</div>
+</div>
+<div id="ft">
+  <p class="copyright">
+    Copyright &#169; 2007 - 2013
+    <a href="http://www.manchester.ac.uk/" target="_blank">The University of Manchester</a>
+    and
+    <a href="http://www.soton.ac.uk/" target="_blank">University of Southampton</a>
+  </p>
+</div>
 
-              div.innerHTML = txt;
+</div>
 
-            } else {
-              div.innerHTML = '<li>Announcements unavailable.</li>';
-            }
+<script language="javascript" type="text/javascript">
+  //<![CDATA[
+
+  function loadAnnoucements()
+  {
+    div = document.getElementById('announcements');
+    div.updated = false;
+    div.innerHTML = '<li>Loading announcements...</li>';
+
+    xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('MSXML2.XMLHTTP.3.0');
+
+    xhr.open('GET', '/announcements.xml?num=5&order=reverse', true);
+    xhr.setRequestHeader('Accept', 'application/xml');
+
+    xhr.onreadystatechange = function() {
+
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {
+
+          ans = xhr.responseXML.getElementsByTagName('announcement');
+          txt = '';
+
+          for (i = 0; i < ans.length; i++) {
+            txt += '<li><a href="' + ans[i].attributes.getNamedItem('resource').nodeValue +
+                '">' + ans[i].firstChild.nodeValue + '</a></li>';
           }
+
+          div.innerHTML = txt;
+
+        } else {
+          div.innerHTML = '<li>Announcements unavailable.</li>';
         }
+      }
+    };
 
-        xhr.send(null);
-}
+    xhr.send(null);
+  }
 
-function init()
-{
-	document.getElementById('session[username]').focus();
-	loadAnnoucements();
-}
-// ]]>
-      </script>
-	</body>
+  function init()
+  {
+    document.getElementById('session[username]').focus();
+    loadAnnoucements();
+  }
+  // ]]>
+</script>
+</body>
 </html>
