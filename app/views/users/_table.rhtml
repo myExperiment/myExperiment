@@ -1,15 +1,3 @@
 <% query ||= false -%>
 
-<% unless collection.empty? %>
-  <table class="alt_table">
-    <% odd_row = false -%> 
-    <% for user in collection %>
-      <% if user.activated? %>
-        <tr class="<%= (odd_row = !odd_row) ? "odd_row" : "even_row" %>">
-          <%= render :partial => "users/listing", :locals => { :user => user, :query => query } %>
-        </tr>
-      <% end %>
-    <% end %>
-  </table>
-<% end %>
-
+<%= render :partial => "users/listing", :locals => { :query => query }, :collection => collection %>

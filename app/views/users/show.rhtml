@@ -57,11 +57,13 @@
 					<li><%= icon('edit', edit_user_profile_path(@user), nil, nil, 'Edit Profile') %></li>
 				<% end %>
 			  <li><%= icon('history', user_userhistory_path(@user), nil, nil, 'View My History')%></li>
+        <li><%= memberships_link(current_user, "My Memberships") %></li>
+        <li><%= icon('network', user_friendships_path(@user), nil, nil, 'My Friendships')%></li>
 	    <% end %>
 
       <% if Authorization.check('destroy', @user, current_user) %>
 					<li><%= icon "destroy", user_path(@user), nil, {
-            :confirm => "Are you sure you want to remove this user?", :method => :delete},
+            :confirm => "Are you sure you want to delete this user from #{Conf.sitename}?", :method => :delete},
             "Delete User" %></li>
       <% end %>
 	</ul>

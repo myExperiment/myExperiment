@@ -128,12 +128,13 @@ li {
 
 #myexp_header {
   padding-top: 1em;
-	margin: 0 0.5em 1em 0.5em;
-  overflow: auto;
+  margin-bottom: 1em;
 }
 
 .logo {
 	float: left;
+  width: 290px;
+  padding-left: 10px;
 }
 
 .links {
@@ -141,19 +142,12 @@ li {
   font-weight: bold;
 }
 
-#myexp_links
-{
-	float: right;
-	font-size: 93%;
-}
-
 #site_info_links {
-  text-align: left;
   float: left;
   padding-top: 6px;
-  margin-right: 100px;
+  text-align: center;
+  width: 350px;
 }
-
 
 #user_links {
   text-align: right;
@@ -180,15 +174,21 @@ li {
   border-radius: 22px 22px 0px 0px;
 }
 
+#myexp_searchbar:after {
+  visibility: hidden;
+ 	display: block;
+ 	content: "";
+ 	clear: both;
+ 	height: 0;
+}
+
+
 #myexp_searchbar * {
 	vertical-align: middle;
 }
 
 #myexp_content {
-	padding-right: 1em;
-	padding-left: 0.5em;
-	margin-top: 1em;
-	margin-bottom: 3em;
+  padding: 1em 1em 3em 0.5em;
 }
 
 #myexp_sidebar {
@@ -200,7 +200,6 @@ li {
 /* Begin Footer styles */
 
 #ft {
-	margin-top: 2em;
 	border: 0px dotted #999999;
 	border-width: 1px 0 1px 0;
 	color: #333333;
@@ -298,6 +297,7 @@ li {
 	border: 1px solid #CCCCCC;
 	padding: 2px;
 	background-color: #FFFFFF;
+  vertical-align: middle;
 }
 
 .framed_nospace {
@@ -2017,7 +2017,6 @@ table.topic td.tag_vote{
 /* pivot */
 
 .pivot {
-  width: 737px;
   margin: 0;
 }
 
@@ -2421,4 +2420,43 @@ div.error h1 {
   color: white;
   background-color: #f44;
   margin-top: 0;
+}
+
+#user_menu {
+  position: absolute;
+  border: 1px solid #ccc;
+  background-color: white;
+  text-align: left;
+}
+
+#user_menu a{
+  display: inline-block;
+  color: #000099;
+}
+
+#user_menu_button:hover {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+span.unread_message_count {
+  font-weight: bold;
+}
+
+#search {
+  float: left;
+  margin-right: 3em;
+}
+
+#new_object {
+  float: left;
+  margin-left: 30px;
+  width: 270px;
+  text-align: left;
+}
+
+#user_menu div.header {
+  background-color: #CCDDFF;
+  color: #444444;
+  font-weight: bold;
 }

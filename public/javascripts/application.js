@@ -20,3 +20,22 @@ function uncheckAll(checkboxes){
   }
 }
 
+document.observe("dom:loaded", function() {
+  $(document).observe('click', function(e) {
+    $('user_menu').hide();
+    $('expand_user_menu').show();
+    $('collapse_user_menu').hide();
+  });
+
+
+  $('user_menu_button').observe('click',function(e) {
+    e.stopPropagation();
+    $('user_menu').toggle();
+    $('expand_user_menu').toggle();
+    $('collapse_user_menu').toggle();
+  });
+
+  $('user_menu').observe('click',function(e) {
+    e.stopPropagation();
+  });
+});

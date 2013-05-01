@@ -109,7 +109,7 @@ module ApplicationHelper
     return link_to(h(title), network_url(network))
   end
   
-  def avatar(user_id, size=200, url=nil)
+  def avatar(user_id, size=200, url=nil, annotation = nil, image_options = {})
     if user_id.kind_of? Fixnum
       user = User.find(:first, :select => "id, name", :conditions => ["id = ?", user_id]) 
       return nil unless user
@@ -119,17 +119,18 @@ module ApplicationHelper
       return nil
     end
     
-    if user.avatar?
-      img = image_tag avatar_url(user.profile.picture_id, size), :title => h(user.name), :class => 'framed'
-    else
-      img = null_avatar(size, h(user.name))
-    end
-    
+    img = image_tag user.avatar? ? avatar_url(user.profile.picture_id, size) : "avatar.png",
+                    {:title => h(user.name), :class => 'framed', :size => "#{size}x#{size}"}.merge(image_options)
+
     unless url
       url = user_url(user)
     end
+
+    if annotation
+      img = img + " #{annotation}"
+    end
     
-    return link_to(img, url)
+    return link_to(img , url)
   end
   
   def avatar_url(picture_id, size=200)
@@ -163,59 +164,36 @@ module ApplicationHelper
     if !text
       text = "Inbox"  
     end
-    
+
+    opts = nil
     unless (length = user.messages_unread.length) == 0
-      text = "<b>" + text + " (#{length})</b>"
+      text = "#{text} (#{length})"
+      opts = {:style => "font-weight: bold"}
     end
     
-    inbox = icon('message', messages_path, nil, nil, text)
+    inbox = icon('message', messages_path, nil, opts, text)
     
     return inbox      
   end
   
-  def memberships_link(user_id, text=nil)
-    if user_id.kind_of? Fixnum
-      user = User.find(:first, :select => "id", :conditions => ["id = ?", user_id]) 
-      return nil unless user
-    elsif user_id.kind_of? User
-      user = user_id
-    else
-      return nil
-    end
-    
-    if !text
-      text = "Memberships"  
-    end
-    
+  def memberships_link(user, text="My Memberships")
+    opts = nil
     unless (length = user.networks_membership_requests_pending.length + user.memberships_invited.length) == 0
-      text = "<b>" + text + " (#{length})</b>"
+      text = "#{text} (#{length})"
+      opts = {:style => "font-weight: bold"}
     end
-    
-    mships = icon('membership', user_memberships_path(user), nil, nil, text)
-    
-    return mships
-      
+
+    icon('membership', user_memberships_path(user), nil, opts, text)
   end
   
-  def friendships_pending_link(user_id)
-    if user_id.kind_of? Fixnum
-      user = User.find(:first, :select => "id", :conditions => ["id = ?", user_id]) 
-      return nil unless user
-    elsif user_id.kind_of? User
-      user = user_id
-    else
-      return nil
-    end
-    
-    fships = icon('friendship', nil, nil, nil, nil) + " Friendships"
-    
+  def friendships_pending_link(user, text = "My Friendships")
+    opts = nil
     unless (length = user.friendships_pending.length) == 0
-       rtn = "<b>" + fships + " (#{length})</b>"
-    else
-      rtn = fships
+      text = "#{text} (#{length})"
+      opts = {:style => "font-weight: bold"}
     end
-      
-    return link_to(rtn, user_friendships_path(user))
+
+    icon('friendship', user_friendships_path(user), nil, opts, text)
   end
   
   def request_membership_link(user_id, network_id)
@@ -686,7 +664,7 @@ module ApplicationHelper
       return "famfamfam_silk/page_world.png"
     when "workflow"
       return "redmond_studio/applications_16.png"
-    when "policy"
+    when "policy", "admin"
       return "famfamfam_silk/key.png"
     when "logout"
       return "famfamfam_silk/door_out.png"
@@ -760,6 +738,8 @@ module ApplicationHelper
       return "famfamfam_silk/key_go.png"
     when "content"
       return "famfamfam_silk/application_side_list.png"
+    when "contributions"
+      return "famfamfam_silk/page_white_stack.png"
     else
       return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end

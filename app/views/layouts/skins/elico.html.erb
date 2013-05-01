@@ -14,8 +14,8 @@
         </div>
       </div>
     </div>
-    <div style="float: right; font-size: 120%; margin-top: 1.5em">
-      e-Laboratory for Interdisciplinary Collaborative Data Mining
+    <div style="float: right; background-color: #fff; border-radius: 3px; padding: 5px;">
+      <%= render :partial => 'layouts/user_links' %>
     </div>
     <br class="clearer"/>
   </div>
@@ -25,9 +25,6 @@
         <%= link_to "About", "http://www.e-lico.eu/?q=node/4", :target => '_blank' %> |
         <%= link_to "Mailing List", "http://lists.e-lico.eu/mailman/listinfo/dm-myexperiment", :target => '_blank' %> |
         <%= link_to "Publications", "http://www.e-lico.eu/?q=publications", :target => '_blank' %>
-      </div>
-      <div style="float: right;" class="links">
-        <%= render :partial => 'layouts/user_links' %>
       </div>
       <br class="clearer"/>
     </div>
@@ -40,6 +37,7 @@
       <%= render :partial => 'layouts/tab_bar' %>
     </div>
     <div id="myexp_searchbar">
+      <%= render :partial => "gadgets/new_object" %>
       <%= render :partial => "layouts/search" %>
     </div>
   </div>

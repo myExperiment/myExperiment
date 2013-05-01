@@ -18,6 +18,10 @@ body  {
   background-image: url('/images/sidebar_alpha.png');
 }
 
+.logo {
+  width: 640px;
+}
+
 .logo a {
   color: #333;
 }#
@@ -38,7 +42,7 @@ body  {
 }
 
 #myexp_header {
-  margin: 0 0.5em;
+  margin-bottom: 0;
 }
 
 #site_info_links {

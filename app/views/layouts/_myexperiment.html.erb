@@ -38,18 +38,17 @@
             <%= link_to image_tag(Conf.site_logo), "/" %>
           <% end %>
         </div>
-        <div id="myexp_links">
-          <div id="site_info_links" class="links">
-            <% if @content_for_site_info_links %>
-              <%= yield :site_info_links %>
-            <% else %>
-              <%= render :partial => 'layouts/site_info_links' %>
-            <% end %>
-          </div>
-          <div id="user_links" class="links">
-            <%= render :partial => 'layouts/user_links' %>
-          </div>
+        <div id="site_info_links" class="links">
+          <% if @content_for_site_info_links %>
+            <%= yield :site_info_links %>
+          <% else %>
+            <%= render :partial => 'layouts/site_info_links' %>
+          <% end %>
         </div>
+        <div id="user_links">
+          <%= render :partial => 'layouts/user_links' %>
+        </div>
+        <div style="clear:both"></div>
       </div>
       <div id="myexp_tabs">
         <% if @content_for_tabs %>
@@ -59,6 +58,7 @@
         <% end %>
       </div>
       <div id="myexp_searchbar">
+        <%= render :partial => "gadgets/new_object" %>
         <%= render :partial => "layouts/search" %>
       </div>
     </div>
@@ -69,21 +69,13 @@
     <%= yield :body %>
   <% else %>
     <div id="bd">
-      <div id="yui-main">
-        <div class="yui-b">
-          <div id="myexp_breadcrumbs_bar">
-            <%= render :partial => "layouts/breadcrumbs_bar" %>
-          </div>
-          <div id="myexp_content">
-            <%= render :partial => 'layouts/alerts' %>
-
-            <%= yield :layout %>
-
-          </div>
-        </div>
+      <div id="myexp_breadcrumbs_bar">
+        <%= render :partial => "layouts/breadcrumbs_bar" %>
       </div>
-      <div id="myexp_sidebar" class="yui-b">
-        <%= render :partial => "layouts/sidebar" %>
+      <div id="myexp_content">
+        <%= render :partial => 'layouts/alerts' %>
+
+        <%= yield :layout %>
       </div>
     </div>
   <% end %>
