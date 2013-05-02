@@ -2424,9 +2424,10 @@ div.error h1 {
 
 #user_menu {
   position: absolute;
-  border: 1px solid #ccc;
   background-color: white;
   text-align: left;
+  margin-top: 12px;
+  box-shadow: 0 6px 8px 4px #666666
 }
 
 #user_menu a{
@@ -2456,7 +2457,20 @@ span.unread_message_count {
 }
 
 #user_menu div.header {
-  background-color: #CCDDFF;
+  background-color: #e6e6e6;
   color: #444444;
   font-weight: bold;
+}
+
+#user_menu:before {
+  border-color: transparent transparent #e6e6e6;
+  border-style: solid;
+  border-width: 0 10px 10px;
+  content: "";
+  display: block;
+  height: 0;
+  left: 10px;
+  position: absolute;
+  top: -10px;
+  width: 0;
 }
