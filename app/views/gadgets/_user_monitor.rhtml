@@ -18,18 +18,20 @@
     <li><%= friendships_pending_link(current_user) %></li>
     <li><%= memberships_link(current_user) %></li>
   </ul>
-  <div class="header"><%= icon 'contributions', nil, nil, nil, 'Contributions'-%></div>
-  <ul class="gadget_list">
-    <li><%= icon "workflow", user_workflows_url(current_user), nil, nil, " My Workflows" %>
-      (<%= current_user.workflows.size-%>)
-    </li>
-    <li><%= icon "blob", user_blobs_url(current_user), nil, nil, " My Files" %>
-      (<%= current_user.blobs.size-%>)
-    </li>
-    <li><%= icon "pack", user_packs_url(current_user), nil, nil, " My Packs" %>
-      (<%= current_user.packs.size-%>)
-    </li>
-  </ul>
+  <% cache(:controller => 'sidebar_cache', :action => 'asset_manager', :id => current_user.id) do -%>
+    <div class="header"><%= icon 'contributions', nil, nil, nil, 'Contributions'-%></div>
+    <ul class="gadget_list">
+      <li><%= icon "workflow", user_workflows_url(current_user), nil, nil, " My Workflows" %>
+        (<%= current_user.workflows.size-%>)
+      </li>
+      <li><%= icon "blob", user_blobs_url(current_user), nil, nil, " My Files" %>
+        (<%= current_user.blobs.size-%>)
+      </li>
+      <li><%= icon "pack", user_packs_url(current_user), nil, nil, " My Packs" %>
+        (<%= current_user.packs.size-%>)
+      </li>
+    </ul>
+  <% end %>
   <%= render :partial => 'gadgets/user_favourites' %>
   <% if admin? %>
     <div class="header"><%= icon 'admin', nil, nil, nil, 'Administration'-%></div>

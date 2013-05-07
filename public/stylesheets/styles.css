@@ -2427,7 +2427,7 @@ div.error h1 {
   background-color: white;
   text-align: left;
   margin-top: 12px;
-  box-shadow: 0 6px 8px 4px #666666
+  box-shadow: 0 4px 9px 0px #000000;
 }
 
 #user_menu a{
