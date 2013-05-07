@@ -177,7 +177,7 @@ class BlobsController < ApplicationController
           # update policy
           @blob.contribution.update_attributes(params[:contribution])
         
-          policy_err_msg = update_policy(@blob, params)
+          policy_err_msg = update_policy(@blob, params, current_user)
 
           update_credits(@blob, params)
           update_attributions(@blob, params)
@@ -246,7 +246,7 @@ class BlobsController < ApplicationController
 
         @blob.refresh_tags(convert_tags_to_gem_format(params[:blob][:tag_list]), current_user) if params[:blob][:tag_list]
         
-        policy_err_msg = update_policy(@blob, params)
+        policy_err_msg = update_policy(@blob, params, current_user)
         update_credits(@blob, params)
         update_attributions(@blob, params)
 

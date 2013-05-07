@@ -27,4 +27,5 @@ gem "sunspot_rails", "~> 2.0.0"
 gem "sunspot_solr", "~> 2.0.0"
 gem "will_paginate", "~> 2.3.16"
 gem "open_id_authentication", "~> 1.1.0"
+gem "simple-rss", "~> 1.2.3"
 

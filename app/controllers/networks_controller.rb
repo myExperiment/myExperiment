@@ -8,14 +8,15 @@ require 'recaptcha'
 class NetworksController < ApplicationController
 
   include ApplicationHelper
+  include ActivitiesHelper
 
   before_filter :login_required, :except => [:index, :show, :content, :search, :all]
   
   before_filter :find_networks, :only => [:all]
   before_filter :find_network, :only => [:membership_request, :show, :tag, :content,
                                          :edit, :update, :destroy, :invite, :membership_invite,
-                                         :membership_invite_external]
-  before_filter :find_network_auth_admin, :only => [:invite, :membership_invite, :membership_invite_external]
+                                         :membership_invite_external, :sync_feed, :subscription]
+  before_filter :find_network_auth_admin, :only => [:invite, :membership_invite, :membership_invite_external, :sync_feed]
   before_filter :find_network_auth_owner, :only => [:edit, :update, :destroy]
   
   # declare sweepers and which actions should invoke them
@@ -275,6 +276,15 @@ class NetworksController < ApplicationController
           render :inline => `#{Conf.rdfgen_tool} groups #{@network.id}`
         }
       end
+
+      format.atom {
+        @title = @network.title
+        @id = @resource = network_url(@network)
+        @updated = @network.updated_at.to_datetime.rfc3339
+        @entries = activities_for_feed(:context => @network, :user => current_user, :no_combine => true)
+
+        render "activities/feed.atom"
+      }
     end
   end
 
@@ -322,7 +332,10 @@ class NetworksController < ApplicationController
 
     respond_to do |format|
       if @network.save
-        Activity.create(:subject => current_user, :action => 'create', :objekt => @network)
+        Activity.create_activities(:subject => current_user, :action => 'create', :object => @network)
+
+        update_feed_definition(@network, params)
+
         if params[:network][:tag_list]
           @network.tags_user_id = current_user
           @network.tag_list = convert_tags_to_gem_format params[:network][:tag_list]
@@ -343,7 +356,8 @@ class NetworksController < ApplicationController
 
     respond_to do |format|
       if @network.update_attributes(params[:network])
-        Activity.create(:subject => current_user, :action => 'edit', :objekt => @network)
+        Activity.create_activities(:subject => current_user, :action => 'edit', :object => @network)
+        update_feed_definition(@network, params)
         @network.refresh_tags(convert_tags_to_gem_format(params[:network][:tag_list]), current_user) if params[:network][:tag_list]
         flash[:notice] = 'Group was successfully updated.'
         format.html { redirect_to network_url(@network) }
@@ -377,6 +391,7 @@ class NetworksController < ApplicationController
           page.replace_html "mini_nav_tag_link", "(#{unique_tag_count})"
           page.replace_html "tags_box_header_tag_count_span", "(#{unique_tag_count})"
           page.replace_html "tags_inner_box", :partial => "tags/tags_box_inner", :locals => { :taggable => @network, :owner_id => @network.user_id } 
+          page.replace_html "activities", :partial => "activities/list", :locals => { :context => @network, :activities => activities_for_feed(:context => @network, :user => current_user), :user => current_user }
         end
       }
     end
@@ -394,7 +409,30 @@ class NetworksController < ApplicationController
     render :partial => 'networks/autocomplete_list', :locals => { :networks => groups }
   end
 
+  def sync_feed
+    @network.feed.synchronize! if @network.feed
+    redirect_to network_path(@network)
+  end
   
+  # PUT/DELETE /groups/1/subscription
+  def subscription
+
+    object = @network
+
+    existing_subscription = current_user.subscriptions.find(:first,
+        :conditions => { :objekt_type => object.class.name, :objekt_id => object.id } )
+
+    case request.method
+    when :put
+      current_user.subscriptions.create(:objekt => object) unless existing_subscription
+
+    when :delete
+      current_user.subscriptions.delete(existing_subscription) if existing_subscription
+    end
+
+    redirect_to object
+  end
+
 protected
 
   def find_networks

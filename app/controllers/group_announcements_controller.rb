@@ -65,6 +65,9 @@ class GroupAnnouncementsController < ApplicationController
 
     respond_to do |format|
       if @announcement.save
+
+        Activity.create_activities(:subject => @announcement.user, :action => 'create', :object => @announcement)
+
         flash[:notice] = 'Group announcement was successfully created.'
         format.html { redirect_to group_announcements_url(@group) }
       else
@@ -77,6 +80,9 @@ class GroupAnnouncementsController < ApplicationController
   def update
     respond_to do |format|
       if @announcement.update_attributes(params[:announcement])
+
+        Activity.create_activities(:subject => @announcement.user, :action => 'edit', :object => @announcement)
+
         flash[:notice] = 'GroupAnnouncement was successfully updated'
         format.html { redirect_to group_announcement_url(@group, @announcement) }
       else

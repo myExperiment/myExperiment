@@ -368,7 +368,7 @@ class WorkflowsController < ApplicationController
         rescue
         end
 
-        policy_err_msg = update_policy(@workflow, params)
+        policy_err_msg = update_policy(@workflow, params, current_user)
 
         # Credits and Attributions:
         update_credits(@workflow, params)
@@ -552,7 +552,7 @@ class WorkflowsController < ApplicationController
           @workflow.solr_index if Conf.solr_enable
         end
 
-        policy_err_msg = update_policy(@workflow, params)
+        policy_err_msg = update_policy(@workflow, params, current_user)
         update_credits(@workflow, params)
         update_attributions(@workflow, params)
 

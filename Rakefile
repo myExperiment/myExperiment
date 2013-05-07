@@ -199,42 +199,20 @@ task "myexp:activities:create" do
   activities = []
 
   User.find(:all, :conditions => "activated_at IS NOT NULL", :include => :profile).map do |object|
-
-    activities << Activity.new(
-        :subject => object,
-        :subject_label => object.name,
-        :action => 'register',
-        :created_at => object.created_at)
-
+    activities += Activity.new_activities(:subject => object, :action => 'create', :object => object, :timestamp => object.created_at)
     if object.profile.updated_at && object.profile.updated_at != object.profile.created_at
-
-
-      activities << Activity.new(
-          :subject => object,
-          :subject_label => object.name,
-          :action => 'edit',
-          :created_at => object.profile.updated_at)
-
+      activities += Activity.new_activities(:subject => object, :action => 'edit', :object => object, :timestamp => object.profile.updated_at)
     end
   end
 
   (Workflow.all + Blob.all + Pack.all).map do |object|
-
-    activities << Activity.new(
-        :subject => object.contributor,
-        :action => 'create',
-        :objekt => object,
-        :auth => object,
-        :created_at => object.created_at)
-
+    activities += Activity.new_activities(:subject => object.contributor, :action => 'create', :object => object, :timestamp => object.created_at)
     if object.updated_at && object.updated_at != object.created_at
+      activities += Activity.new_activities(:subject => object.contributor, :action => 'edit', :object => object, :timestamp => object.updated_at)
+    end
 
-      activities << Activity.new(
-          :subject => object.contributor,
-          :action => 'edit',
-          :objekt => object,
-          :auth => object,
-          :created_at => object.updated_at)
+    object.contribution.policy.permissions.each do |permission|
+      activities += Activity.new_activities(:subject => object.contributor, :action => 'create', :object => permission, :timestamp => permission.created_at, :contributable => object)
     end
   end
   
@@ -243,182 +221,80 @@ task "myexp:activities:create" do
   end
   
   workflow_versions.map do |object|
-
-    activities << Activity.new(
-        :subject => object.contributor,
-        :action => 'create',
-        :objekt => object,
-        :extra => object.version,
-        :auth => object.versioned_resource,
-        :created_at => object.created_at)
-
+    activities += Activity.new_activities(:subject => object.contributor, :action => 'create', :object => object, :timestamp => object.created_at)
     if object.updated_at && object.updated_at != object.created_at
-
-      activities << Activity.new(
-          :subject => object.contributor,
-          :action => 'edit',
-          :objekt => object,
-          :extra => object.version,
-          :auth => object.versioned_resource,
-          :created_at => object.updated_at)
+      activities += Activity.new_activities(:subject => object.contributor, :action => 'edit', :object => object, :timestamp => object.updated_at)
     end
   end
   
   (BlobVersion.find(:all, :conditions => "version > 1")).map do |object|
-
-    activities << Activity.new(
-        :subject => object.blob.contributor,
-        :action => 'create',
-        :objekt => object,
-        :extra => object.version,
-        :auth => object.versioned_resource,
-        :created_at => object.created_at)
-
+    activities += Activity.new_activities(:subject => object.blob.contributor, :action => 'create', :object => object, :timestamp => object.created_at)
     if object.updated_at && object.updated_at != object.created_at
-
-      activities << Activity.new(
-          :subject => object.blob.contributor,
-          :action => 'edit',
-          :objekt => object,
-          :extra => object.version,
-          :auth => object.versioned_resource,
-          :created_at => object.updated_at)
+      activities += Activity.new_activities(:subject => object.blob.contributor, :action => 'edit', :object => object, :timestamp => object.updated_at)
     end
   end
 
-  activities += Comment.all.map do |comment|
-
-    Activity.new(
-        :subject => comment.user,
-        :action => 'create',
-        :objekt => comment,
-        :auth => comment.commentable,
-        :created_at => comment.created_at)
+  Comment.all.each do |comment|
+    activities += Activity.new_activities(:subject => comment.user, :action => 'create', :object => comment, :timestamp => comment.created_at)
   end
 
-  activities += Bookmark.all.map do |bookmark|
-
-    Activity.new(
-        :subject => bookmark.user,
-        :action => 'create',
-        :objekt => bookmark,
-        :auth => bookmark.bookmarkable,
-        :created_at => bookmark.created_at)
+  Bookmark.all.each do |bookmark|
+    activities += Activity.new_activities(:subject => bookmark.user, :action => 'create', :object => bookmark, :timestamp => bookmark.created_at)
   end
 
-  Announcement.all.each do |object|
-
-    activities << Activity.new(
-        :subject => object.user,
-        :action => 'create',
-        :objekt => object,
-        :created_at => object.created_at)
-
-    if object.updated_at && object.updated_at != object.created_at
-
-
-      activities << Activity.new(
-          :subject => object.user,
-          :action => 'edit',
-          :objekt => object,
-          :created_at => object.updated_at)
+  Announcement.all.each do |announcement|
+    activities += Activity.new_activities(:subject => announcement.user, :action => 'create', :object => announcement, :timestamp => announcement.created_at)
+    if announcement.updated_at && announcement.updated_at != announcement.created_at
+      activities += Activity.new_activities(:subject => announcement.user, :action => 'edit', :object => announcement, :timestamp => announcement.updated_at)
     end
   end
 
-  Citation.all.each do |object|
-
-    activities << Activity.new(
-        :subject => object.user,
-        :action => 'create',
-        :objekt => object,
-        :auth => object.workflow,
-        :created_at => object.created_at)
-
-    if object.updated_at && object.updated_at != object.created_at
-
-      activities << Activity.new(
-          :subject => object.user,
-          :action => 'edit',
-          :objekt => object,
-          :auth => object.workflow,
-          :created_at => object.updated_at)
+  Citation.all.each do |citation|
+    activities += Activity.new_activities(:subject => citation.user, :action => 'create', :object => citation, :timestamp => citation.created_at)
+    if citation.updated_at && citation.updated_at != citation.created_at
+      activities += Activity.new_activities(:subject => citation.user, :action => 'edit', :object => citation, :timestamp => citation.updated_at)
     end
   end
 
-  Rating.all.each do |object|
-
-    activities << Activity.new(
-        :subject => object.user,
-        :action => 'create',
-        :objekt => object,
-        :auth => object.rateable,
-        :extra => object.rating,
-        :created_at => object.created_at)
+  Rating.all.each do |rating|
+    activities += Activity.new_activities(:subject => rating.user, :action => 'create', :object => rating, :timestamp => rating.created_at)
   end
 
-  Review.all.each do |object|
-
-    activities << Activity.new(
-        :subject => object.user,
-        :action => 'create',
-        :objekt => object,
-        :auth => object.reviewable,
-        :created_at => object.created_at)
-
-    if object.updated_at && object.updated_at != object.created_at
-
-      activities << Activity.new(
-          :subject => object.user,
-          :action => 'edit',
-          :objekt => object,
-          :auth => object.reviewable,
-          :created_at => object.updated_at)
+  Review.all.each do |review|
+    activities += Activity.new_activities(:subject => review.user, :action => 'create', :object => review, :timestamp => review.created_at)
+    if review.updated_at && review.updated_at != review.created_at
+      activities += Activity.new_activities(:subject => review.user, :action => 'edit', :object => review, :timestamp => review.updated_at)
     end
   end
 
-  Tagging.all.each do |object|
-
-    activities << Activity.new(
-        :subject => object.user,
-        :action => 'create',
-        :objekt => object,
-        :auth => object.taggable,
-        :extra => object.tag.name,
-        :created_at => object.created_at)
+  Tagging.all.each do |tagging|
+    activities += Activity.new_activities(:subject => tagging.user, :action => 'create', :object => tagging, :timestamp => tagging.created_at)
   end
 
-  Network.all.each do |object|
-
-    activities << Activity.new(
-        :subject => object.owner,
-        :action => 'create',
-        :objekt => object,
-        :created_at => object.created_at)
-
-    if object.updated_at && object.updated_at != object.created_at
-
-      activities << Activity.new(
-          :subject => object.owner,
-          :action => 'edit',
-          :objekt => object,
-          :created_at => object.updated_at)
+  Network.all.each do |network|
+    activities += Activity.new_activities(:subject => network.owner, :action => 'create', :object => network, :timestamp => network.created_at)
+    if network.updated_at && network.updated_at != network.created_at
+      activities += Activity.new_activities(:subject => network.owner, :action => 'edit', :object => network, :timestamp => network.updated_at)
     end
   end
 
   Membership.all.each do |membership|
-
-    next unless membership.accepted?
-
-    activities << Activity.new(
-        :subject => membership.user,
-        :action => 'join',
-        :objekt => membership.network,
-        :created_at => membership.accepted_at)
+    if membership.accepted_at
+      activities += Activity.new_activities(:subject => membership.user, :action => 'create', :object => membership, :timestamp => membership.accepted_at)
+    end
   end
  
+  GroupAnnouncement.all.each do |group_announcement|
+    activities += Activity.new_activities(:subject => group_announcement.user, :action => 'create', :object => group_announcement, :timestamp => group_announcement.created_at)
+  end
+
+  Creditation.all.each do |credit|
+    activities += Activity.new_activities(:subject => credit.creditable.contributor, :action => 'create', :object => credit, :timestamp => credit.created_at)
+  end
+
   activities.sort! do |a, b|
-    if a.created_at && b.created_at
-      a.created_at <=> b.created_at
+    if a.timestamp && b.timestamp
+      a.timestamp <=> b.timestamp
     else
       a.object_id <=> b.object_id
     end
@@ -428,6 +304,18 @@ task "myexp:activities:create" do
     activity.save
   end
 
+end
+
+desc 'Synchronize all Atom feeds'
+task "myexp:feed:sync:all" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  Feed.all.each do |feed|
+    begin
+      feed.synchronize!
+    rescue
+    end
+  end
 end
 
 desc 'Perform spam analysis on user profiles'

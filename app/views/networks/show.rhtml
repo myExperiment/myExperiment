@@ -38,6 +38,12 @@
   <li><%= icon('content', content_network_path(@network), 'View Group Content', nil, 'View Group Content') %></li>
 </ul>
 
+<% if @network.feed && Authorization.check("edit", @network, current_user) %>
+  <% form_tag sync_feed_network_path(@network), :method => :post do %>
+    <%= submit_tag "Synchronize feed" -%>
+  <% end %>
+<% end %>
+
 <h1>
 	Group: <%=h @network.title %>
 </h1>
@@ -99,13 +105,26 @@
       <% end %>
 
       <a name="news"></a>
-      <h3>News</h3>
-      <%= render :partial => "layouts/news", :locals => { :collection => news(@network, true) } %>
+      
+      <div>
+        <div style="float: right"><%= link_to(image_tag("feed-icon.png", :alt_text => "Atom feed for the news items of this group"), network_url(@network, :format => :atom)) -%></div>
+        <h3>News</h3>
+        <div style="clear: both"></div>
+      </div>
+
+      <% activities = activities_for_feed(:context => @network, :user => current_user) %>
+
+      <div id="activities">
+        <%= render(:partial => "activities/list", :locals => { :context => @network, :activities => activities, :user => current_user, :enable_feature => true } ) -%>
+      </div>
 
     </div>
 
     <div class="contribution_right_box">
       <%= render :partial => "owner_box", :locals => { :network => @network } %>
+      <% if false %>
+      <%= render :partial => "contributions/subscription_box", :locals => { :object => @network } -%>
+      <% end %>
       <%= render :partial => "statistics_box", :locals => { :network => @network, :items => @shared_items } %>
 
       <div class="contribution_section_box"> <!-- style="width: 130px; padding: 0.4em 0.8em; font-size: 93%;" -->
@@ -243,10 +262,6 @@
 <% end %>
 
 <br/>
-
-<div id="commentsBox">
-	<%= render :partial => "comments/comments", :locals => { :commentable => @network } %>
-</div>
 
 <%= render :partial => "contributions/alternative_formats" %>
 

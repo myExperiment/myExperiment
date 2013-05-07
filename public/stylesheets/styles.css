@@ -1274,12 +1274,59 @@ table.comment td.content p {
 	margin-bottom: 1em;
 }
 
+.commentSection {
+	margin-top: 10px;
+}
+
 .addCommentBox {
-	margin-top: 3em;
-	padding: 1em;
-	width: 500px;
-	background-color: #EEEEEE;
-	border: 1px dotted #999999;
+	background-color: #E8E8E8;
+}
+
+.addCommentBox TEXTAREA {
+  padding: 4px;
+  width: 500px;
+}
+
+.addCommentBox INPUT {
+  margin-top: 4px;
+}
+
+.activityCommentBox {
+  padding: 4px;
+	background-color: #E8E8E8;
+  width: 400px;
+}
+
+.activityCommentBox + .activityCommentBox {
+  border-top: 1px solid #F4F4F4;
+}
+
+.activityCommentBox .avatar {
+}
+
+.activityCommentBox .username {
+/*  font-weight: bold; */
+}
+
+.activityCommentBox .username:after {
+/*  content: ": "; */
+}
+
+.activityCommentBox .comment-body {
+  font-size: 11px;
+}
+
+.activityCommentBox .rhs {
+  padding-left: 32px;
+}
+
+.activityCommentBox TEXTAREA {
+  padding: 4px;
+  width: 334px;
+}
+
+.activityCommentBox INPUT {
+  margin-top: 4px;
 }
 
 /* End Comments styles */
@@ -2420,6 +2467,126 @@ div.error h1 {
   color: white;
   background-color: #f44;
   margin-top: 0;
+}
+
+OL.activity-feed {
+  margin: 0;
+}
+
+.activity-feed LI {
+  list-style: none;
+}
+
+.activity-feed LI + LI {
+  border-top: 1px SOLID #E0E0E0;
+}
+
+.activity-feed LI + LI.featured,
+.activity-feed LI.featured + LI {
+  border-top: none;
+}
+
+DIV.activity IMG.framed  {
+  border: 0;
+  padding: 0;
+}
+
+.activity {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.activity-feed LI.featured {
+  padding: 8px;
+  background: #ffffcc;
+  border: 1px dotted #999999;
+}
+
+.activity .avatar-column {
+  width: 64px;
+  float: left;
+}
+
+.activity .activity-column {
+  margin-left: 72px;
+}
+
+.activity .actions {
+  font-size: 8pt;
+  color: gray;
+}
+
+.activity .actions DIV,
+.activity .actions FORM {
+  display: inline;
+}
+
+.activity .date {
+}
+
+.activity SPAN + SPAN:before {
+  content: " \0000a0\0000a0 ";
+  color: gray;
+}
+
+.activity .summary {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 8pt;
+}
+
+.activity .actions INPUT {
+  display: inline;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  color: #009;
+}
+
+.activity .actions INPUT:hover {
+	color: red;
+	text-decoration: underline;
+}
+
+.activity .comment-timestamp {
+  font-size: 8pt;
+  color: gray;
+}
+
+.activity .actions FORM.button-to,
+.activity .actions FORM.button-to DIV {
+  display: inline;
+}
+
+.inset-preview {
+  float: left;
+  margin-right: 16px;
+  margin-bottom: 16px;
+}
+
+.inset-preview IMG {
+  max-width: 200px;
+}
+
+.workflow-type {
+}
+
+.metadata-datetime {
+  font-size: 8pt;
+}
+
+FIELDSET.atom-feed INPUT {
+  width: 700px;
+}
+
+.new-session-sign-in {
+  width: 190px;
+  border: 1px solid #CCCCCC;
+  border-radius: 6px 6px 6px 6px;
+  -moz-border-radius: 6px 6px 6px 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -webkit-border-bottom-right-radius: 6px;
 }
 
 #user_menu {

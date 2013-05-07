@@ -1,0 +1,7 @@
+<ol class="activity-feed">
+  <% activities.each do |activity_set| %>
+    <li<%= " class='featured'" if activity_set.length == 1 && activity_set.first.featured -%><%= " id='activity-#{activity_set.first.id}'" if activity_set.length == 1 -%>>
+      <%= render(:partial => "activities/activity", :locals => { :activity_set => activity_set, :user => user, :enable_feature => enable_feature } ) -%>
+    </li>
+  <% end %>
+</ol>

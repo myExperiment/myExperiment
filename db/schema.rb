@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130308085716) do
+ActiveRecord::Schema.define(:version => 20130423091433) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -19,10 +19,16 @@ ActiveRecord::Schema.define(:version => 20130308085716) do
     t.string   "objekt_type"
     t.integer  "objekt_id"
     t.string   "objekt_label"
+    t.string   "context_type"
+    t.integer  "context_id"
     t.string   "auth_type"
     t.integer  "auth_id"
     t.string   "extra"
-    t.datetime "created_at"
+    t.string   "uuid"
+    t.integer  "priority",      :default => 0
+    t.boolean  "featured",      :default => false
+    t.boolean  "hidden",        :default => false
+    t.datetime "timestamp"
   end
 
   create_table "activity_limits", :force => true do |t|
@@ -52,11 +58,6 @@ ActiveRecord::Schema.define(:version => 20130308085716) do
     t.string   "attributable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "auto_tables", :force => true do |t|
-    t.string "name"
-    t.text   "schema"
   end
 
   create_table "blob_versions", :force => true do |t|
@@ -97,27 +98,6 @@ ActiveRecord::Schema.define(:version => 20130308085716) do
   end
 
   add_index "bookmarks", ["user_id"], :name => "index_bookmarks_on_user_id"
-
-  create_table "checksums", :id => false, :force => true do |t|
-    t.integer "id"
-    t.string  "sha1"
-  end
-
-  add_index "checksums", ["id"], :name => "i1", :unique => true
-
-  create_table "checksums_new", :id => false, :force => true do |t|
-    t.integer "id"
-    t.string  "sha1"
-  end
-
-  add_index "checksums_new", ["id"], :name => "i1", :unique => true
-
-  create_table "checksums_new_new", :id => false, :force => true do |t|
-    t.integer "id"
-    t.string  "sha1"
-  end
-
-  add_index "checksums_new_new", ["id"], :name => "ii", :unique => true
 
   create_table "citations", :force => true do |t|
     t.integer  "user_id"
@@ -265,6 +245,31 @@ ActiveRecord::Schema.define(:version => 20130308085716) do
 
   create_table "federation_sources", :force => true do |t|
     t.string "name"
+  end
+
+  create_table "feed_items", :force => true do |t|
+    t.integer  "feed_id"
+    t.string   "identifier"
+    t.string   "title"
+    t.text     "content"
+    t.string   "author"
+    t.string   "link"
+    t.datetime "item_published_at"
+    t.datetime "item_updated_at"
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "feeds", :force => true do |t|
+    t.string   "title"
+    t.text     "uri"
+    t.string   "context_type"
+    t.integer  "context_id"
+    t.string   "username"
+    t.string   "password"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "friendships", :force => true do |t|
@@ -511,11 +516,6 @@ ActiveRecord::Schema.define(:version => 20130308085716) do
     t.integer "user_id"
   end
 
-  create_table "plugin_schema_info", :id => false, :force => true do |t|
-    t.string  "plugin_name"
-    t.integer "version"
-  end
-
   create_table "policies", :force => true do |t|
     t.integer  "contributor_id"
     t.string   "contributor_type"
@@ -704,6 +704,12 @@ ActiveRecord::Schema.define(:version => 20130308085716) do
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
+  create_table "subscriptions", :force => true do |t|
+    t.integer "user_id"
+    t.string  "objekt_type"
+    t.integer "objekt_id"
+  end
+
   create_table "taggings", :force => true do |t|
     t.integer  "tag_id"
     t.integer  "taggable_id"
@@ -852,6 +858,8 @@ ActiveRecord::Schema.define(:version => 20130308085716) do
     t.text     "body_html"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "license"
+    t.integer  "preview_id"
     t.string   "image"
     t.string   "svg"
     t.text     "revision_comments"
@@ -859,8 +867,6 @@ ActiveRecord::Schema.define(:version => 20130308085716) do
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
-    t.string   "license"
-    t.integer  "preview_id"
   end
 
   add_index "workflow_versions", ["workflow_id"], :name => "index_workflow_versions_on_workflow_id"
@@ -874,15 +880,15 @@ ActiveRecord::Schema.define(:version => 20130308085716) do
     t.string   "unique_name"
     t.text     "body"
     t.text     "body_html"
+    t.integer  "current_version"
+    t.integer  "preview_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "current_version"
     t.integer  "content_blob_id"
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
     t.integer  "license_id"
-    t.integer  "preview_id"
   end
 
   create_table "wsdl_deprecations", :force => true do |t|

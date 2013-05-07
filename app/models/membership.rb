@@ -42,6 +42,9 @@ class Membership < ActiveRecord::Base
       if self.network_established_at.nil?
         self.network_establish!
       end
+
+      Activity.create_activities(:subject => user, :action => 'create', :object => self)
+
       return true
     else
       return false

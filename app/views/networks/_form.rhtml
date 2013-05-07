@@ -37,9 +37,26 @@
       <%= form.select :new_member_policy, Network::NEW_MEMBER_POLICY_OPTIONS.map {|o| [o[1],o[0]]} %>
     </p>
   </fieldset>
-  
-  <br/>
 	
+  <fieldset class="atom-feed">
+    <legend>Atom feed</legend>
+    <p>
+      You can specify an Atom feed which will be used to insert items into this group's activity stream.
+    </p>
+    <p>
+      <b>Atom feed URL</b><br />
+      <%= text_field_tag :feed_uri, (@network.feed ? @network.feed.uri : nil) -%>
+    </p>
+    <p>
+      <b>Atom feed username (optional)</b><br />
+      <%= text_field_tag :feed_user, (@network.feed ? @network.feed.username : nil) -%>
+    </p>
+    <p>
+      <b>Atom feed password (optional)</b><br />
+      <%= password_field_tag :feed_pass -%>
+    </p>
+  </fieldset>
+
 	<p>
   	<strong>Description: </strong>
 	</p>

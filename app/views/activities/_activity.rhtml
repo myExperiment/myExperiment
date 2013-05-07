@@ -1,0 +1,80 @@
+<% activity = (activity_set.class == Activity ? activity_set : activity_set.first) %>
+<div class="activity">
+  <div>
+    <div class="avatar-column">
+      <%= news_item_avatar(activity_set) -%>
+    </div>
+    <div class="activity-column">
+      <%= activity_title(activity_set) -%>
+      <%= activity_description(activity_set) -%>
+      <% if activity_set.length == 1 %>
+        <div class="actions">
+          <% if enable_feature %>
+            <% if Authorization.check('edit', activity.context, user) %>
+              <% if activity.featured %>
+                <span><%= button_to("Unfeature", polymorphic_path([activity.context, activity], :action => :feature), :method => :delete) -%></span>
+              <% else %>
+                <span><%= button_to("Feature", polymorphic_path([activity.context, activity], :action => :feature), :method => :put) -%></span>
+              <% end %>
+            <% else %>
+              <% if activity.featured %>
+                <span>Featured</span>
+              <% end %>
+            <% end %>
+          <% end %>
+          <% if (activity.comments.length == 0) && (activity_set.length == 1) %>
+            <span><a href="#" onclick="document.getElementById('comment-section-<%= activity.id -%>').style.display = 'block'; return false;">Comment</a></span>
+          <% else %>
+            <span>Comment</span>
+          <% end %>
+          <span class="date"><%= datetime(activity.timestamp) -%></span>
+        </div>
+        <div class="commentSection"<%= " id='comment-section-#{activity_set.first.id}'" if activity_set.length == 1 -%>>
+        <% activity.comments.each do |comment| %>
+          <div class="activityCommentBox">
+            <div style="float: left">
+              <%= avatar(comment.user_id, 24) -%>
+            </div>
+
+            <div class="rhs">
+              <div class="username"><%= link_to(h(comment.user.name), user_path(comment.user)) -%></div>
+              <div class="comment-body"><%= simple_format(comment.comment) -%></div>
+              <div class="comment-timestamp"><%= datetime(comment.created_at) -%></div>
+            </div>
+            <div style="clear: left"></div>
+          </div>
+        <% end %>
+        <% if Authorization.check('create', Comment, user, activity.context) %>
+
+          <div class="activityCommentBox">
+            <div style="float: left">
+              <%= avatar(current_user.id, 24) -%>
+            </div>
+
+            <div class="rhs">
+              <% form_remote_tag(
+                  :url =>      polymorphic_path([activity.context, activity, :comments]),
+                  :update =>   'activities', 
+                  :loading =>  "Element.show('addcomment_indicator')",
+                  :complete => "Element.hide('addcomment_indicator'); $('comment').value = '';") do %>
+                <%= text_area_tag("comment[comment]") -%>
+                <br/>
+                <%= hidden_field_tag :activity_feed -%>
+                <%= submit_tag "Comment" %>
+                <%= image_tag "/images/spinner.gif", :id => "addcomment_indicator", :style => "margin-left: 1em; display: none;" %>
+              <% end %>
+            </div>
+            <div style="clear: left"></div>
+          </div>
+        <% end %>
+        </div>
+        <% if (activity.comments.length == 0) && (activity_set.length == 1) %>
+          <script>
+            document.getElementById("comment-section-<%= activity.id -%>").style.display = "none";
+          </script>
+        <% end %>
+      <% end %>
+    </div>
+    <div style="clear: both"/>
+  </div>
+</div>

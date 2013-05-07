@@ -5,6 +5,8 @@
 
 class CommentsController < ApplicationController
   
+  include ActivitiesHelper
+
   before_filter :find_context, :only => [ :create, :index, :timeline ]
   before_filter :find_comment, :only => [ :destroy ]
 
@@ -38,13 +40,17 @@ class CommentsController < ApplicationController
       success = comment.save
 
       if success
-        Activity.create(:subject => current_user, :action => 'create', :objekt => comment, :auth => @context)
+        Activity.create_activities(:subject => current_user, :action => 'create', :object => comment, :auth => @context)
         @context.solr_index if @context.respond_to?(:solr_index)
       end
     end
     
     respond_to do |format|
-      if ajaxy
+      if params[:activity_feed] || @context.kind_of?(Activity)
+        @context = @context.context if @context.kind_of?(Activity)
+        activities = activities_for_feed(:context => @context, :user => current_user)
+        format.html { render :partial => "activities/list", :locals => { :context => @context, :activities => activities, :user => current_user } }
+      elsif ajaxy
         format.html { render :partial => "comments/comments", :locals => { :commentable => @context } }
       else
         format.html { redirect_to rest_resource_uri(@context) }
@@ -83,7 +89,11 @@ class CommentsController < ApplicationController
   end
 
   def find_context
-    @context = extract_resource_context(params)
+    if request.path_parameters.include?("activity_id")
+      @context = Activity.find(request.path_parameters["activity_id"])
+    else
+      @context = extract_resource_context(params)
+    end
 
     if @context.nil?
       render_404("Comment context not found.")

@@ -1,0 +1,19 @@
+<% enable_feature = true unless defined?(enable_feature) %>
+<%= render(:partial => "activities/activities", :locals => { :activities => activities, :user => user, :enable_feature => enable_feature } ) -%>
+
+<% if defined?(context) && Authorization.check('create', Comment, user, context) %>
+  <div class="addCommentBox">
+    <% form_remote_tag(
+        :url =>      polymorphic_path([context, :comments]),
+        :update =>   'activities', 
+        :loading =>  "Element.show('addcomment_indicator')",
+        :complete => "Element.hide('addcomment_indicator'); $('comment').value = '';") do %>
+      <%= text_area_tag("comment[comment]") -%>
+      <br/>
+      <%= hidden_field_tag :activity_feed -%>
+      <%= submit_tag "Post news" %>
+      <%= image_tag "/images/spinner.gif", :id => "addcomment_indicator", :style => "margin-left: 1em; display: none;" %>
+    <% end %>
+  </div>
+<% end %>
+

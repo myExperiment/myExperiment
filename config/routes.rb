@@ -223,10 +223,15 @@ ActionController::Routing::Routes.draw do |map|
                  :membership_invite_external => :post,
                  :membership_request => :get, 
                  :rate => :post, 
+                 :sync_feed => :post,
+                 :subscription => [:put, :delete],
                  :tag => :post } do |network|
     network.resources :group_announcements, :as => :announcements, :name_prefix => nil
     network.resources :comments, :collection => { :timeline => :get }
     network.resources :policies, :controller => 'group_policies'
+    network.resources :activities, :member => { :feature => [:put, :delete] } do |activity|
+      activity.resources :comments
+    end
 
     # resources shared with network
     network.resources :workflows, :only => :index
