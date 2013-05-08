@@ -294,7 +294,7 @@ module ActivitiesHelper
 
     case activity.objekt ? "#{activity.objekt_type} #{activity.action}" : activity.action
     when "FeedItem create"
-      "<div class='extra'>Content via #{link_to(h(activity.objekt.feed.uri), activity.objekt.feed.uri)}</div>"
+      "<div class='extra'>#{image_tag("feed_gray.png", :size => "10x10", :alt_text => "Original atom feed for this news item")} Content via #{link_to(h(activity.objekt.feed.uri), activity.objekt.feed.uri)}</div>"
     end
   end
 end
