@@ -7,6 +7,7 @@
     <div class="activity-column">
       <%= activity_title(activity_set) -%>
       <%= activity_description(activity_set) -%>
+      <%= activity_extra(activity_set) -%>
       <% if activity_set.length == 1 %>
         <div class="actions">
           <% if enable_feature %>
@@ -22,10 +23,12 @@
               <% end %>
             <% end %>
           <% end %>
-          <% if (activity.comments.length == 0) && (activity_set.length == 1) %>
-            <span><a href="#" onclick="document.getElementById('comment-section-<%= activity.id -%>').style.display = 'block'; return false;">Comment</a></span>
-          <% else %>
-            <span>Comment</span>
+          <% if Authorization.check('create', Comment, user, activity.context) %>
+            <% if (activity.comments.length == 0) && (activity_set.length == 1) %>
+              <span><a href="#" onclick="document.getElementById('comment-section-<%= activity.id -%>').style.display = 'block'; return false;">Comment</a></span>
+            <% else %>
+              <span>Comment</span>
+            <% end %>
           <% end %>
           <span class="date"><%= datetime(activity.timestamp) -%></span>
         </div>

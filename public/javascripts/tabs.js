@@ -1,7 +1,5 @@
 // tabs.js
 
-var tabImagesRoot = '/images/tabs/';
-
 function parent_el(el) {
 
   if (el.parentElement != undefined)
@@ -24,10 +22,7 @@ function deSlash(str) {
 
 function selectTab(tabsDiv, t) {
 
-  var html = '<table cellspacing=0 cellpadding=0><tr>';
-
-  if (tabsDiv.titles.length > 0)
-    html += '<td><img class="tabSeparator" src="' + tabImagesRoot + '/tab_separator.png"></td>';
+  var html = '';
 
   for (var i = 0; i < tabsDiv.titles.length; i++) {
 
@@ -35,34 +30,22 @@ function selectTab(tabsDiv, t) {
 
       tabsDiv.panes[i].style.display = 'block';
 
-      html += '<td class="tabSelIMG"><img src="' + tabImagesRoot;
-      html += '/selected_tab_start.png"></td>';
-      html += '<td class="tabSelected"><span onmousedown="';
+      html += '<span class="tab selected" onmousedown="';
       html += 'javascript:return false;">';
-      html += tabsDiv.titles[i];
-      html += '</span></td>';
-      html += '<td class="tabSelIMG"><img src="' + tabImagesRoot;
-      html += '/selected_tab_end.png"></td>';
+      html += '<span class="inner">' + tabsDiv.titles[i] + '</span>';
+      html += '</span>';
 
     } else {
 
       tabsDiv.panes[i].style.display = 'none';
 
-      html += '<td class="tabUnselIMG"><img src="' + tabImagesRoot;
-      html += '/unselected_tab_start.png"></td>';
-      html += '<td class="tabUnselected"><span onmousedown="';
-      html += 'javascript:selectTab(parent_el(parent_el(parent_el(parent_el(parent_el(this))))), ' + i +
+      html += '<span class="tab unselected" onmousedown="';
+      html += 'javascript:selectTab(parent_el(this), ' + i +
           '); return false;">';
-      html += tabsDiv.titles[i];
-      html += '</span></td>';
-      html += '<td class="tabUnselIMG"><img src="' + tabImagesRoot;
-      html += '/unselected_tab_end.png"></td>';
+      html += '<span class="inner">' + tabsDiv.titles[i] + '</span>';
+      html += '</span>';
     }
-
-    html += '<td><img class="tabSeparator" src="' + tabImagesRoot + '/tab_separator.png"></td>';
   }
-
-  html += '</td></tr></table>';
 
   tabsDiv.innerHTML = html;
 }

@@ -80,23 +80,23 @@ module ActivitiesHelper
     type_bits = []
     type_vars = []
 
+    type_bits << "(activities.objekt_type = 'Network' AND activities.action = 'create')"
+    type_bits << "(activities.objekt_type = 'FeedItem' AND activities.action = 'create')"
+    type_bits << "(activities.objekt_type = 'Permission' AND activities.action = 'create')"
+    type_bits << "(activities.objekt_type = 'Comment' AND activities.action = 'create')"
+    type_bits << "(activities.objekt_type = 'GroupAnnouncement' AND activities.action = 'create')"
+    type_bits << "(activities.objekt_type = 'Membership' AND activities.action = 'create')"
+
     # Create the conditions
 
-    conditions_bits = []
-    conditions_vars = []
-
-    unless context_bits.empty?
-      conditions_bits << "(" + context_bits.join(" OR ") + ")"
-      conditions_vars += context_vars
-    end
-
-    unless type_bits.empty?
-      conditions_bits << "(" + type_bits.join(" OR ") + ")"
-      conditions_vars += type_vars
-    end
-
-    if context_bits.length > 0
-      conditions = [context_bits.join(" AND "), *context_vars]
+    if (context_bits.empty? && type_bits.empty?)
+      conditions = nil
+    elsif (!context_bits.empty? && type_bits.empty?)
+      conditions = ["(" + context_bits.join(" OR ") + ")", *context_vars]
+    elsif (context_bits.empty? && !type_bits.empty?)
+      conditions = ["(" + type_bits.join(" OR ") + ")", *type_vars]
+    else
+      conditions = ["((" + context_bits.join(" OR ") + ") AND (" + type_bits.join(" OR ") + "))", *(context_vars + type_vars)]
     end
 
     order = 'featured DESC, timestamp DESC, priority ASC'
@@ -116,6 +116,14 @@ module ActivitiesHelper
       break if incoming.length == 0
 
       incoming.each do |activity|
+
+        # Special case for group announcements as they can be made private.
+
+        if activity.objekt.kind_of?(GroupAnnouncement) && !activity.objekt.public
+          next unless logged_in?
+          next unless activity.objekt.network.member?(current_user.id)
+        end
+
         if results.length > 0 && !opts[:no_combine] && combine_activities?(activity, results.last.first)
           results.last << activity
         else
@@ -267,13 +275,26 @@ module ActivitiesHelper
     when "WorkflowVersion create"
       "<div style='float: left; width: 64px'>#{link_to(image_tag(workflow_version_preview_path(activity.objekt.workflow, activity.objekt.version, 'thumb'), :width => 64, :height => 64), workflow_version_path(activity.objekt.workflow, activity.objekt.version))}</div><div class='activity-text'>#{white_list(activity.objekt.revision_comments)}</div>"
     when "Permission create"
-      if activity.auth.class == Workflow
+      case activity.auth
+      when Workflow
         "<div><div style='float: left; margin: 6px'>#{link_to(image_tag(workflow_preview_path(activity.auth, 'thumb'), :width => 64, :height => 64), workflow_path(activity.auth))}</div>#{activity_text_summary(activity.auth.body_html, :min_chars => min_chars)}<div style='clear: both'></div></div>"
+      when Blob, Pack
+        "<div>#{activity_text_summary(activity.auth.body_html, :min_chars => min_chars)}</div>"
       end
     when "FeedItem create"
       "<div class='summary'>#{activity_text_summary(activity.objekt.content, :min_chars => min_chars)}</div>"
     when "GroupAnnouncement create"
       activity_text_summary(activity.objekt.body_html, :min_chars => min_chars)
+    end
+  end
+
+  def activity_extra(activity_set, opts = {})
+
+    activity = activity_set.first
+
+    case activity.objekt ? "#{activity.objekt_type} #{activity.action}" : activity.action
+    when "FeedItem create"
+      "<div class='extra'>Content via #{link_to(h(activity.objekt.feed.uri), activity.objekt.feed.uri)}</div>"
     end
   end
 end

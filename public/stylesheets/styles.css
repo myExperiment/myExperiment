@@ -668,63 +668,50 @@ UL.breadcrumb_list LI + LI:before {
 	border: 0;
 	position: relative;
 	top: 1px;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 
-.tabsContainer IMG {
-	border: 0;
-	margin: 0;
-	padding: 0;
-	vertical-align: middle;
-}
-
-.tabsContainer TABLE {
-	height: 24px;
-	border-spacing: 0;
-}
-
-.tabsContainer TABLE TR TD {
-	padding: 0;
-	vertical-align: middle;
-}
-
-.tabSeparator {
-  width: 1px;
-}
-
-.tabSelected {
-	border-top: 1px solid #909090;
-	border-bottom: 1px solid white;
-	padding: 0;
-	padding-left: 0.5em;
-	padding-right: 0.5em;
-	vertical-align: middle;
-	white-space: nowrap;
-	pointer: pointer;
-	cursor: pointer;
-}
-
-.tabUnselected {
-	border-top: 1px solid #909090;
+.tabsContainer .unselected {
 	border-bottom: 1px solid #909090;
 	color: #333333;
 	background: #d8d8d8;
-	padding: 0;
-	padding-left: 0.5em;
-	padding-right: 0.5em;
-	vertical-align: middle;
+}
+
+.tabsContainer .selected {
+  background: white;
+}
+
+.tabsContainer .tab {
+  border-radius: 6px 6px 0px 0px;
+  -moz-border-radius: 6px 6px 6px 6px;
+  -webkit-border-top-left-radius: 6px;
+  -webkit-border-top-right-radius: 6px;
+	border-top: 1px solid #909090;
+	border-left: 1px solid #909090;
+	border-right: 1px solid #909090;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: 0px;
+	padding-right: 0px;
 	white-space: nowrap;
 	pointer: pointer;
 	cursor: pointer;
+  margin-right: -1px;
 }
 
-.tabSelIMG {
-	border-bottom: 1px solid white;
-  width: 6px;
+.tabsContainer .tab .inner {
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-bottom: 4px;
 }
 
-.tabUnselIMG {
-	border-bottom: 1px solid #909090;
-  width: 6px;
+.tabsContainer .unselected .inner {
+  border-bottom: 1px solid #909090;
+}
+
+.tabsContainer .selected .inner {
+  border-bottom: 1px solid white;
 }
 
 .tabTitle {
@@ -1280,6 +1267,9 @@ table.comment td.content p {
 
 .addCommentBox {
 	background-color: #E8E8E8;
+  width: 510px;
+  padding: 8px;
+  margin: 8px;
 }
 
 .addCommentBox TEXTAREA {
@@ -1294,7 +1284,7 @@ table.comment td.content p {
 .activityCommentBox {
   padding: 4px;
 	background-color: #E8E8E8;
-  width: 400px;
+  width: 380px;
 }
 
 .activityCommentBox + .activityCommentBox {
@@ -2502,6 +2492,10 @@ DIV.activity IMG.framed  {
   border: 1px dotted #999999;
 }
 
+.activity-feed LI.featured .activityCommentBox {
+	background-color: #E8E8C0;
+}
+
 .activity .avatar-column {
   width: 64px;
   float: left;
@@ -2532,6 +2526,12 @@ DIV.activity IMG.framed  {
 .activity .summary {
   padding-top: 4px;
   padding-bottom: 4px;
+  font-size: 8pt;
+}
+
+.activity .extra {
+  color: gray;
+  margin-bottom: 4px;
   font-size: 8pt;
 }
 
