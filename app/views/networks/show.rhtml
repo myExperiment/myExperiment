@@ -37,12 +37,6 @@
   <li><%= icon('content', content_network_path(@network), 'View Group Content', nil, 'View Group Content') %></li>
 </ul>
 
-<% if @network.feed && Authorization.check("edit", @network, current_user) %>
-  <% form_tag sync_feed_network_path(@network), :method => :post do %>
-    <%= submit_tag "Synchronize feed" -%>
-  <% end %>
-<% end %>
-
 <h1>
 	Group: <%=h @network.title %>
 </h1>
@@ -106,6 +100,14 @@
         <h3>News</h3>
         <div style="clear: both"></div>
       </div>
+
+      <% if @network.feed && Authorization.check("edit", @network, current_user) %>
+        <% form_tag sync_feed_network_path(@network), :method => :post do %>
+          <%= submit_tag "Synchronize feed" -%>
+        <% end %>
+      <% end %>
+
+      <br />
 
       <% activities = activities_for_feed(:context => @network, :user => current_user) %>
 
