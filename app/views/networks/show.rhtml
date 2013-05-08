@@ -24,7 +24,6 @@
 		<% end %>
 
     <% if @network.administrator?(current_user.id) %>
-      <li><%= icon('announcement', new_group_announcement_path(@network), 'Make a new Group Announcement', nil, 'Make a Group Announcement') -%></li>
 			<li><%= icon('network-invite', invite_network_path(@network), 'Invite People', nil, 'Invite People') -%></li>
       <li><%= icon('policy', network_policies_path(@network), 'Group Policies', nil, 'Group Policies') -%></li>
     <% end %>
@@ -71,10 +70,6 @@
 		|
 	<% end %>
 	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@network.tags.length})</span>", "#tags" %>
-	|
-	<%= link_to "Announcements", "#group_announcements" -%>
-	|
-	<%= link_to "Comments (#{@network.comments.length})", "#comments" %>
 	|
 </div>
 
@@ -142,8 +137,6 @@
                                                            :add_path => tag_network_path(@network),
                                                            :edit_path => edit_network_path(@network),
                                                            :allow_edit => logged_in? ? @network.user_id == current_user.id : false } %>
-
-      <%= render :partial => "announcements", :locals => { :group => @network, :count => 5 } -%>
     </div>
     <div class="clearer">&nbsp;</div>
   </div>
