@@ -107,6 +107,12 @@ module Authorization
         case action
           when "create"
 
+            # You can only comment on a Group if you are a member
+            if context.kind_of?(Network)
+              return false if user.nil?
+              return false unless context.member?(user.id)
+            end
+
             # Comments can be created by authenticated users that can view the context
             return !user.nil? && Authorization.check('view', context, user)
 
