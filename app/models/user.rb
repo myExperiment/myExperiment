@@ -28,6 +28,8 @@ class User < ActiveRecord::Base
 
   has_many :subscriptions, :dependent => :destroy
 
+  named_scope :users_to_check, :conditions => "activated_at IS NOT NULL AND (account_status IS NULL OR (account_status != 'sleep' AND account_status != 'suspect' AND account_status != 'whitelist'))"
+
   def self.most_recent(limit=5)
     self.find(:all,
               :order => "users.created_at DESC",
