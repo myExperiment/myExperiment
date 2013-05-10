@@ -34,6 +34,11 @@ class CommentsController < ApplicationController
       ajaxy = false
     end
 
+    if Authorization.check('create', Comment, current_user, @context) == false
+      render_401("You are not authorized to create this comment.")
+      return
+    end
+
     if text and text.length > 0
       comment = Comment.new(:user => current_user, :comment => text, :commentable => @context)
 

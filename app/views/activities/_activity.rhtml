@@ -23,7 +23,7 @@
               <% end %>
             <% end %>
           <% end %>
-          <% if Authorization.check('create', Comment, user, activity.context) %>
+          <% if Authorization.check('create', Comment, user, activity) %>
             <% if (activity.comments.length == 0) && (activity_set.length == 1) %>
               <span><a href="#" onclick="document.getElementById('comment-section-<%= activity.id -%>').style.display = 'block'; return false;">Comment</a></span>
             <% else %>
@@ -47,7 +47,7 @@
             <div style="clear: left"></div>
           </div>
         <% end %>
-        <% if Authorization.check('create', Comment, user, activity.context) %>
+        <% if Authorization.check('create', Comment, user, activity) %>
 
           <div class="activityCommentBox">
             <div style="float: left">
