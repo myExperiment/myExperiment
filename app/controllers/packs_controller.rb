@@ -15,7 +15,7 @@ class PacksController < ApplicationController
   WORKFLOW_DEFINITION = "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
   RO_RESOURCE = "http://purl.org/wf4ever/ro#Resource"
   
-  before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
+  before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics, :resource_show]
   
   before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
   
