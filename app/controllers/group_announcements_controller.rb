@@ -137,26 +137,17 @@ class GroupAnnouncementsController < ApplicationController
 
       # at this point, group announcement is found and it definitely belongs to the group in URL;
       # now go through different actions and check which links are allowed for current user
-      not_auth = false
       case action_name.to_s.downcase
         when "show"
           # if the announcement is private, show it only to group members
-          unless @announcement.public || @group.member?(current_user.id)
-            not_auth = true
+          unless @announcement.public || (logged_in? && @group.member?(current_user.id))
+            render_401("You are not authorized to view this group announcement.")
           end
         when "edit","update","destroy"
           # only owner of the group can destroy the announcement
-          unless (@announcement.user == current_user) || (@group.owner?(current_user.id))
-            not_auth = true
+          unless logged_in? && ((@announcement.user == current_user) || (@group.owner?(current_user.id)))
+            render_401("You are not authorized to #{action_name.to_s.downcase} this group announcement.")
           end
-        else
-          # don't allow anything else, for now
-          not_auth = true
-      end
-
-      # check if we had any errors
-      if not_auth
-        raise ActiveRecord::RecordNotFound, "Group announcement was not found"
       end
     end
   end
