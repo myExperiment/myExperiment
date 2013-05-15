@@ -42,7 +42,7 @@ class Invitation
           # check if it is also present in the DB as registered address of some user -
           # if so, it needs to be treated differentrly
           if( u = User.find(:first, :conditions => ["email = ? OR unconfirmed_email = ?", email_addr, email_addr]) )
-            db_user_addresses[email_addr] = u.id    
+            db_user_addresses[email_addr] = u
           else
             validated_addr_cnt += 1
             valid_addresses << email_addr  

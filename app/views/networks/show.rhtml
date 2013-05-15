@@ -13,7 +13,7 @@
 		<% end %>
 
     <% unless mine? @network %>
-		  <% if @network.member? current_user.id  %>
+		  <% if @network.member?(current_user)  %>
 			  <% cur_membership = Membership.find(:first, :conditions => ["network_id = ? AND user_id = ?", @network.id, current_user.id] ) %>
 			  <% if false %>
 			    <li><%= icon('network-leave', user_membership_path(cur_membership.user_id, cur_membership), nil, { :confirm => "Are you sure want to leave this group?", :method => :delete }, 'Leave Group') %></li>
@@ -23,7 +23,7 @@
 			<% end %>
 		<% end %>
 
-    <% if @network.administrator?(current_user.id) %>
+    <% if @network.administrator?(current_user) %>
 			<li><%= icon('network-invite', invite_network_path(@network), 'Invite People', nil, 'Invite People') -%></li>
       <li><%= icon('policy', network_policies_path(@network), 'Group Policies', nil, 'Group Policies') -%></li>
     <% end %>
@@ -198,7 +198,7 @@
   </div>
 </div>
 
-<% if logged_in? && @network.administrator?(current_user.id) %>
+<% if logged_in? && @network.administrator?(current_user) %>
 
   <% memberships = @network.memberships_accepted %>
 	<div class="tabContainer">
@@ -252,7 +252,7 @@
 
 <% end %>
 
-<% if logged_in? and @network.member? current_user.id and !@network.contributions.empty? %>
+<% if logged_in? and @network.member?(current_user) and !@network.contributions.empty? %>
   <%= render :partial => "contributions/tabs", :locals => { :collection => @network.contributions } %>
 <% end %>
 

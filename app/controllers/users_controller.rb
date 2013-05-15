@@ -491,7 +491,7 @@ class UsersController < ApplicationController
       existing_db_addr_successful_friendship_requests_list = []
       
       is_friendship_request = (!params[:invitations][:as_friendship].nil? && params[:invitations][:as_friendship] == "true" ? true : false)
-      db_user_addresses.each { |db_addr, usr_id|
+      db_user_addresses.each { |db_addr, user|
         if db_addr == current_user.email
           own_address_err += db_addr
         elsif !is_friendship_request 
@@ -499,12 +499,12 @@ class UsersController < ApplicationController
           existing_db_addr_plain_invite_err_list << db_addr
         else
           # email doesn't belong to current user & it's a friendship request
-          if current_user.friend?(usr_id) || current_user.friendship_pending?(usr_id)
+          if current_user.friend?(user.id) || current_user.friendship_pending?(user.id)
             existing_db_addr_existing_friendship_err_list << db_addr
           else
             # need to create internal friendship request, as one not yet exists
             existing_db_addr_successful_friendship_requests_list << db_addr
-            req = Friendship.new(:user_id => current_user.id, :friend_id => usr_id, :accepted_at => nil, :message => params[:invitations][:msg_text])
+            req = Friendship.new(:user_id => current_user.id, :friend_id => user.id, :accepted_at => nil, :message => params[:invitations][:msg_text])
             req.save
           end
         end

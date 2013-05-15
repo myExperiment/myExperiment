@@ -9,7 +9,7 @@ class PoliciesController < ApplicationController
     @policy = Policy.find(params[:id])
 
     unless current_user == @policy.contributor ||
-           @policy.contributor_type == 'Network' && @policy.contributor.administrator?(current_user.id)
+           @policy.contributor_type == 'Network' && @policy.contributor.administrator?(current_user)
       render :code => 401
     end
   end

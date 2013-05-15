@@ -2,7 +2,7 @@
 <div class="network_banner">
   <p>
     <strong><%= link_to h(network.title), network_path(network.id) %></strong>
-    <% if logged_in? and network.owner? current_user.id %>
+    <% if logged_in? and network.owner?(current_user) %>
       <%= icon "edit", edit_network_path(network) %>
       <%= icon "destroy", network_path(network), nil, :confirm => "Are you sure?", :method => "destroy" %>
     <% end %>

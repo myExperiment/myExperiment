@@ -964,7 +964,7 @@ module ApplicationHelper
       if membership.user_established_at == nil
         return membership.user_id == current_user.id
       elsif membership.network_established_at == nil
-        return membership.network.administrator?(current_user.id)
+        return membership.network.administrator?(current_user)
       end 
     else
       return false

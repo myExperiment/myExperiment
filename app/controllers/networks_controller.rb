@@ -56,7 +56,10 @@ class NetworksController < ApplicationController
   def membership_invite
     @membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id, :message => params[:membership][:message], :invited_by => current_user)
 
-    unless !@membership || Membership.find_by_user_id_and_network_id(params[:user_id], @network.id) || Network.find(@network.id).owner?(params[:user_id])
+    if (user = User.find_by_id(params[:user_id]))
+      render_404("User not found.")
+    elsif !(!@membership || Membership.find_by_user_id_and_network_id(params[:user_id], @network.id) ||
+           Network.find(@network.id).owner?(user))
       @membership.user_established_at = nil
       @membership.network_established_at = nil
       if @membership.message.blank?
@@ -156,16 +159,16 @@ class NetworksController < ApplicationController
       existing_db_addr_existing_membership_err_list = []
       existing_db_addr_successful_membership_invites_list = []
       
-      db_user_addresses.each { |db_addr, usr_id|
+      db_user_addresses.each { |db_addr, user|
         if db_addr == current_user.email
           own_address_err += db_addr
-        elsif Network.find(params[:id]).member?(usr_id) || User.find(usr_id).membership_pending?(params[:id]) # email doesn't belong to current user
+        elsif Network.find(params[:id]).member?(user) || User.find(usr_id).membership_pending?(params[:id]) # email doesn't belong to current user
           # the invited user is already a member of that group
           existing_db_addr_existing_membership_err_list << db_addr
         else
           # need to create internal membership invite, as one not yet exists
           existing_db_addr_successful_membership_invites_list << db_addr
-          req = Membership.new(:user_id => usr_id, :network_id => params[:id], :user_established_at => nil, :network_established_at => Time.now, :message => params[:invitations][:msg_text])
+          req = Membership.new(:user_id => user.id, :network_id => params[:id], :user_established_at => nil, :network_established_at => Time.now, :message => params[:invitations][:msg_text])
           req.save
         end
       }
@@ -459,7 +462,7 @@ protected
   end
   
   def find_network_auth_admin
-    unless @network.administrator?(current_user.id)
+    unless @network.administrator?(current_user)
       render_401("You must be a group administrator to perform this action.")
     end
   end

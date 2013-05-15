@@ -37,7 +37,7 @@
 
   function inviteAndDisable() {
     <% networks.each do |n| %>
-      <% unless n.member?(user.id) || user.membership_pending?(n.id) %>
+      <% unless n.member?(user) || user.membership_pending?(n.id) %>
         if ($("my_network_<%= n.id -%>").checked && !$("my_network_<%= n.id -%>").disabled) {
           <%= remote_function(:url => membership_invite_network_path(n),
                               :method => :post,
@@ -64,7 +64,7 @@
 
 <form>
   <% networks.each_with_index do |n, index| %>
-    <% if n.member?(user.id) %>
+    <% if n.member?(user) %>
       <input type="checkbox" id="my_network_<%= n.id -%>" value="<%= n.id -%>" disabled=true CHECKED /> - <span style="color: green"><%= h(n.title) -%></span> (already a member)
     <% elsif user.membership_pending?(n.id) %>
       <input type="checkbox" id="my_network_<%= n.id -%>" value="<%= n.id -%>" disabled=true CHECKED /> - <span style="color: green"><%= h(n.title) -%></span> (waiting for the user to confirm)

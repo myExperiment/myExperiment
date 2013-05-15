@@ -110,7 +110,7 @@ module Authorization
             # You can only comment on a Group if you are a member
             if context.kind_of?(Network)
               return false if user.nil?
-              return false unless context.member?(user.id)
+              return false unless context.member?(user)
             end
 
             # Comments can be created by authenticated users that can view the context
@@ -182,7 +182,7 @@ module Authorization
         when "User"
           return object.contributor_id.to_i == user.id.to_i
         when "Network"
-          return object.contributor.member?(user.id)
+          return object.contributor.member?(user)
         else
           return false
         end 
@@ -198,7 +198,7 @@ module Authorization
           if ['edit', 'destroy'].include?(action.downcase)
             return object.contributor.owner?(user.id)
           else
-            return object.contributor.member?(user.id)
+            return object.contributor.member?(user)
           end
         else
           return false
@@ -212,7 +212,7 @@ module Authorization
         when "User"
           return object.experiment.contributor_id.to_i == user.id.to_i
         when "Network"
-          return object.experiment.contributor.member?(user.id)
+          return object.experiment.contributor.member?(user)
         else
           return false
         end 

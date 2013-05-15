@@ -103,7 +103,7 @@ class GroupPoliciesController < ApplicationController
 
   
   def check_admin
-    unless @group.administrator?(current_user.id)
+    unless @group.administrator?(current_user)
       render_401("Only group administrators are allowed to manage policies.")
     end
   end

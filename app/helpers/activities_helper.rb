@@ -121,7 +121,7 @@ module ActivitiesHelper
 
         if activity.objekt.kind_of?(GroupAnnouncement) && !activity.objekt.public
           next unless logged_in?
-          next unless activity.objekt.network.member?(current_user.id)
+          next unless activity.objekt.network.member?(current_user)
         end
 
         if results.length > 0 && !opts[:no_combine] && combine_activities?(activity, results.last.first)

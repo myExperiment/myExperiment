@@ -1,4 +1,4 @@
-<% if (current_user != 0) && @group.owner?(current_user.id) %>
+<% if (current_user != 0) && @group.owner?(current_user) %>
 	<ul class="sectionIcons">
 	  <li><%= icon('announcement', new_group_announcement_path, nil, nil, 'New Announcement') %></li>
 	</ul>

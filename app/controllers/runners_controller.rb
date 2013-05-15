@@ -105,7 +105,7 @@ protected
     
     if params[:assign_to_group]
       network = Network.find(params[:assign_to_group_id])
-      if network and network.member?(current_user.id)
+      if network and network.member?(current_user)
         @runner.contributor = network
       else
         flash[:error] = "Experiment could not be created because could not assign ownership to Group."

@@ -70,8 +70,8 @@ class Network < ActiveRecord::Base
              
   alias_method :contributor, :owner
 
-  def owner?(userid)
-    user_id.to_i == userid.to_i
+  def owner?(user)
+    user_id == user.id
   end
   
   def owner_name
@@ -99,7 +99,7 @@ class Network < ActiveRecord::Base
            :dependent => :destroy
   
   def announcements_for_user(user)
-    if user.is_a?(User) && self.member?(user.id)
+    if user.is_a?(User) && self.member?(user)
       return self.announcements
     else
       return self.announcements_public
@@ -107,7 +107,7 @@ class Network < ActiveRecord::Base
   end
   
   def announcements_in_public_mode_for_user(user)
-    return (!user.is_a?(User) || !self.member?(user.id))
+    return (!user.is_a?(User) || !self.member?(user))
   end
   
   # memberships
@@ -152,15 +152,9 @@ class Network < ActiveRecord::Base
     return incl_owner ? ( [owner] + explicit_members ) : explicit_members
   end
                           
-  def member?(userid)
+  def member?(user)
     # the owner is automatically a member of the network
-    return true if owner? userid
-    
-    members.each do |m|
-      return true if m.id.to_i == userid.to_i
-    end
-    
-    return false
+    owner?(user) || members.include?(user)
   end
   
   def administrators(incl_owner=true)
@@ -173,15 +167,9 @@ class Network < ActiveRecord::Base
     return incl_owner ? ( [owner] + explicit_administrators ) : explicit_administrators
   end
 
-  def administrator?(userid)
+  def administrator?(user)
     # the owner is automatically an adminsitrator of the network
-    return true if owner? userid
-    
-    administrators(false).each do |a|
-      return true if a.id.to_i == userid.to_i
-    end
-    
-    return false
+    owner?(user) || administrators(false).include?(user)
   end
                           
   # Finds all the contributions that have been explicitly shared via Permissions

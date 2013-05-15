@@ -147,8 +147,14 @@ EOM
   def create
     # TODO: test if "user_established_at" and "network_established_at" can be hacked (ie: set) through API calls,
     # thereby creating memberships that are already 'accepted' at creation.
-    if (@membership = Membership.new(params[:membership]) unless Membership.find_by_user_id_and_network_id(params[:membership][:user_id], params[:membership][:network_id]) or Network.find(params[:membership][:network_id]).owner? params[:membership][:user_id])
-      
+    user = User.find_by_id(params[:membership][:user_id])
+    if user.nil?
+      render_404("User not found.")
+    elsif !Membership.find_by_user_id_and_network_id(params[:membership][:user_id], params[:membership][:network_id]) ||
+        Network.find(params[:membership][:network_id]).owner?(user)
+
+      @membership = Membership.new(params[:membership])
+
       @membership.user_established_at = nil
       @membership.network_established_at = nil
       if @membership.message.blank?
@@ -378,14 +384,14 @@ protected
               not_auth = true
             end
           elsif @membership.network_established_at == nil
-            unless @membership.network.administrator?(current_user.id) # TODO: CHECK WHY?! && params[:user_id].to_i == @membership.network.owner.id
+            unless @membership.network.administrator?(current_user) # TODO: CHECK WHY?! && params[:user_id].to_i == @membership.network.owner.id
               not_auth = true
             end
           end
         when "show", "destroy", "update"
           # Only the owner of the network OR the person who the membership is for can view/delete memberships;
           # link - just user to whom the membership belongs
-          unless (@membership.network.administrator?(current_user.id) ||
+          unless (@membership.network.administrator?(current_user) ||
               @membership.user_id == current_user.id) && @membership.user_id == params[:user_id].to_i
             not_auth = true
           end

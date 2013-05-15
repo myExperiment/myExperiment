@@ -114,7 +114,7 @@ class GroupAnnouncementsController < ApplicationController
 
   
   def check_admin
-    unless @group.administrator?(current_user.id)
+    unless @group.administrator?(current_user)
       render_401("Only group administrators are allowed to create new announcements.")
     end
   end
@@ -140,12 +140,12 @@ class GroupAnnouncementsController < ApplicationController
       case action_name.to_s.downcase
         when "show"
           # if the announcement is private, show it only to group members
-          unless @announcement.public || (logged_in? && @group.member?(current_user.id))
+          unless @announcement.public || (logged_in? && @group.member?(current_user))
             render_401("You are not authorized to view this group announcement.")
           end
         when "edit","update","destroy"
           # only owner of the group can destroy the announcement
-          unless logged_in? && ((@announcement.user == current_user) || (@group.owner?(current_user.id)))
+          unless logged_in? && ((@announcement.user == current_user) || (@group.owner?(current_user)))
             render_401("You are not authorized to #{action_name.to_s.downcase} this group announcement.")
           end
       end
