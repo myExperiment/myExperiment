@@ -2,11 +2,17 @@
 
 <% collection.each do |network| -%>
 
-  <div class="resource_list_item">
+  <div class="resource_list_item <%= network.layout_name -%>">
 
     <div class="avatar_panel" style="width: 7em">
       <span class="owner">Owner</span>
       <%= contributor(network.user_id, "User", true, 80) %>
+      <% if network.layout_name %>
+        <% begin %>
+          <%= render :partial => "layouts/skins/branding/#{network.layout_name}" %>
+        <% rescue ActionView::MissingTemplate %>
+        <% end %>
+      <% end %>
     </div>
 
     <div class="main_panel" style="margin-left: 7.5em">
