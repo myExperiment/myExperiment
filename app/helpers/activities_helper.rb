@@ -151,6 +151,8 @@ module ActivitiesHelper
 
   def activity_text_summary(text, opts = {})
 
+    return "" if text.nil?
+
     tokens = HTML::Tokenizer.new(CGI::unescapeHTML(text))
 
     result = ""
@@ -253,7 +255,7 @@ module ActivitiesHelper
     when "Permission create"
       "#{activity_link(activity, :subject)} shared #{activity_link(activity, :auth)}"
     when "FeedItem create"
-      link_to(h(activity.objekt.title), activity.objekt.link, :rel => "nofollow")
+      link_to(strip_tags(activity.objekt.title), activity.objekt.link, :rel => "nofollow")
     when "GroupAnnouncement create"
       activity_link(activity, :object)
     end
@@ -294,7 +296,8 @@ module ActivitiesHelper
 
     case activity.objekt ? "#{activity.objekt_type} #{activity.action}" : activity.action
     when "FeedItem create"
-      "<div class='extra'>#{image_tag("feed_gray.png", :size => "10x10", :alt_text => "Original atom feed for this news item")} Content via #{link_to(h(activity.objekt.feed.uri), activity.objekt.feed.uri)}</div>"
+      feed = activity.objekt.feed
+      "<div class='extra'>#{image_tag("feed_gray.png", :size => "10x10", :alt_text => "Original atom feed for this news item")} Content via #{link_to(h(feed.title ? feed.title : feed.uri), activity.objekt.feed.uri)}</div>"
     end
   end
 end

@@ -34,6 +34,10 @@ class Feed < ActiveRecord::Base
 
         result = SimpleRSS.parse(c.body_str)
 
+        title = result.send(:title)
+
+        update_attribute(:title, title) if title
+
         result.feed.items.each do |item|
 
           # Obtain a unique identifier for use within the context of this feed.
