@@ -71,4 +71,31 @@ class WorkflowsControllerTest < ActionController::TestCase
     assert_equal old_count-1, Workflow.count
     assert_redirected_to workflows_path
   end
+
+  def test_should_store_workflow_rdf
+    login_as(:john)
+
+    # Clear test repo
+    TripleStore.instance.repo = {}
+
+    assert_difference('Workflow.count', 1) do
+     post :create, :workflow => { :file => fixture_file_upload('files/image_to_tiff_migration.t2flow'), :license_id => '1' },
+                   :metadata_choice => 'infer',
+                   :credits_me => 'false',
+                   :credits_users => '',
+                   :credits_groups => '',
+                   :attributions_workflows => '',
+                   :attributions_files => ''
+    end
+
+    # Was it inserted into the triple store on save?
+    assert_equal 1, TripleStore.instance.repo.keys.size
+
+    delete :destroy, :id => assigns(:workflow).id
+
+    # Was it deleted from the triple store on delete?
+    assert_equal 0, TripleStore.instance.repo.keys.size
+
+    TripleStore.instance.repo = {}
+  end
 end

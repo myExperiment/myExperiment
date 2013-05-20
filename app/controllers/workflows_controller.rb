@@ -366,6 +366,7 @@ class WorkflowsController < ApplicationController
         begin
           @workflow.extract_metadata
         rescue
+          raise unless Rails.env == "production"
         end
 
         policy_err_msg = update_policy(@workflow, params, current_user)
@@ -470,7 +471,7 @@ class WorkflowsController < ApplicationController
     if @workflow.valid?
       # Save content blob first now and set it on the workflow.
       # TODO: wrap this in a transaction!
-      @workflow.content_blob = ContentBlob.create(:data => file.read)
+      @workflow.content_blob = ContentBlob.new(:data => file.read)
       @workflow.preview = nil
       @workflow[:revision_comments] = params[:new_workflow][:rev_comments]
 
@@ -991,6 +992,7 @@ private
         rescue Exception => ex
           worked = false
           err_msg = "ERROR: some processing failed in workflow processor '#{processor_class.to_s}'.\nEXCEPTION: #{ex}"
+          raise unless Rails.env == "production"
           logger.error err_msg
         end
       else

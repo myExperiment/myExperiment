@@ -120,6 +120,10 @@ module WorkflowProcessors
     def extract_metadata(workflow)
     end
 
+    def extract_rdf_structure(workflow)
+      nil
+    end
+
     # End Instance Methods
 
   end

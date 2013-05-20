@@ -202,6 +202,14 @@ class Conf
     self.fetch_entry('pivot_options', {})
   end
 
+  def self.enable_triple_store
+    self.fetch_entry('enable_triple_store')
+  end
+
+  def self.sesame_repository
+    self.fetch_entry('sesame_repository')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)

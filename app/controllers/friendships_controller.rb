@@ -230,7 +230,7 @@ protected
             not_auth = true
           end
         when "destroy" # link - just the friend id, but current user can be "friend" or "user" in the friendship
-          unless params[:user_id].to_i == @friendship.friend_id.to_i && ([@friendship.user_id, @friendship.friend_id].include? current_user.id)
+          unless [@friendship.user_id, @friendship.friend_id].include? current_user.id
             not_auth = true
           end
         else # link - just the current user id, and it should be "friend" in the friendship ("accept" for example)

@@ -10,6 +10,7 @@ require 'acts_as_attributor'
 require 'acts_as_attributable'
 require 'acts_as_reviewable'
 require 'acts_as_runnable'
+require 'acts_as_rdf_serializable'
 require 'previews'
 require 'sunspot_rails'
 
@@ -48,6 +49,11 @@ class Workflow < ActiveRecord::Base
   acts_as_attributable
   
   acts_as_reviewable
+
+  acts_as_rdf_serializable('application/x-turtle',
+      :generation_error_message => "Failed to generate RDF, please check the given workflow file is valid.") do |workflow|
+    workflow.processor_class.new(workflow.content_blob.data).extract_rdf_structure(workflow)
+  end
 
   has_previews
 
@@ -373,12 +379,14 @@ class Workflow < ActiveRecord::Base
       begin
         processor_class.new(content_blob.data).extract_metadata(self)
       rescue
+        raise unless Rails.env == 'production'
       end
     end
   end
   
   def unique_wsdls
-    WorkflowProcessor.find(:all, :conditions => ['workflow_id = ? AND wsdl IS NOT NULL', id]).map do |wp| wp.wsdl end.uniq
+    WorkflowProcessor.find(:all,
+                           :conditions => ['workflow_id = ? AND wsdl IS NOT NULL', id]).map do |wp| wp.wsdl end.uniq
   end
 
   def workflows_with_similar_services
