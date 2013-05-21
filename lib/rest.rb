@@ -456,36 +456,36 @@ def rest_crud_request(req_uri, ob_id, format, rules, user, query)
   rest_get_request(ob, user, query)
 end
 
-def find_paginated_auth(args, num, page, filters, user, &blk)
+def find_paginated_auth_aux(args, num, page, filters, user)
 
-  def aux(args, num, page, filters, user)
+  results = yield(args, num, page)
 
-    results = yield(args, num, page)
+  return nil if results.nil?
 
-    return nil if results.nil?
+  failures = 0
 
-    failures = 0
+  results.select do |result|
 
-    results.select do |result|
+    selected = Authorization.check('view', result, user)
 
-      selected = Authorization.check('view', result, user)
+    if selected
+      filters.each do |attribute, bits|
 
-      if selected
-        filters.each do |attribute, bits|
+        lhs = eval("result.#{bits[:accessor]}")
+        rhs = bits[:value]
 
-          lhs = eval("result.#{bits[:accessor]}")
-          rhs = bits[:value]
+        lhs = lhs.downcase if lhs.class == String
+        rhs = rhs.downcase if rhs.class == String
 
-          lhs = lhs.downcase if lhs.class == String
-          rhs = rhs.downcase if rhs.class == String
-
-          selected = false unless lhs == rhs
-        end
+        selected = false unless lhs == rhs
       end
-
-      selected
     end
+
+    selected
   end
+end
+
+def find_paginated_auth(args, num, page, filters, user, &blk)
 
   # 'upto' is the number of results needed to fulfil the request
 
@@ -498,13 +498,13 @@ def find_paginated_auth(args, num, page, filters, user, &blk)
   # up to possibly fulfil the request
 
   if (page > 1)
-    results = aux(args, upto, 1, filters, user, &blk)
+    results = find_paginated_auth_aux(args, upto, 1, filters, user, &blk)
     current_page = page + 1
   end
 
   while (results.length < upto)
 
-    results_page = aux(args, num, current_page, filters, user, &blk)
+    results_page = find_paginated_auth_aux(args, num, current_page, filters, user, &blk)
 
     if results_page.nil?
       break

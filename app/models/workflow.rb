@@ -260,28 +260,28 @@ class Workflow < ActiveRecord::Base
   
   # End acts_as_runnable overridden methods
 
-  def filename(version=nil)
+  def filename_aux(record)
 
-    def aux(record)
+    extension = ""
 
-      extension = ""
-
-      if record.processor_class && record.processor_class.default_file_extension
-        extension = ".#{record.processor_class.default_file_extension}"
-      end
-
-      if record.file_ext
-        extension = ".#{record.file_ext}"
-      end
-
-      extension
+    if record.processor_class && record.processor_class.default_file_extension
+      extension = ".#{record.processor_class.default_file_extension}"
     end
 
+    if record.file_ext
+      extension = ".#{record.file_ext}"
+    end
+
+    extension
+  end
+
+  def filename(version=nil)
+
     if version.blank?
-      "#{unique_name}#{aux(self)}"
+      "#{unique_name}#{filename_aux(self)}"
     else
       workflow_version = self.find_version(version)
-      "#{workflow_version.unique_name}#{aux(workflow_version)}"
+      "#{workflow_version.unique_name}#{filename_aux(workflow_version)}"
     end
   end
   

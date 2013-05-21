@@ -234,159 +234,158 @@ module WorkflowProcessors
       return get_scufl_metadata(@t2flow_model)
     end
     
-    def get_components
+    def build(name, text = nil, &blk)
+      node = XML::Node.new(name)
+      node << text if text
+      yield(node) if blk
+      node
+    end
 
-      def aux(base_model, model, tag)
-
-        def build(name, text = nil, &blk)
-          node = XML::Node.new(name)
-          node << text if text
-          yield(node) if blk
-          node
+    def build_semantic_annotation_element(object)
+      build('semantic_annotation') do |semantic_annotation_element|
+        if object.semantic_annotation
+          semantic_annotation_element << build('type', object.semantic_annotation.type)
+          semantic_annotation_element << build('content', object.semantic_annotation.content)
         end
+      end
+    end
 
-        def build_semantic_annotation_element(object)
-          build('semantic_annotation') do |semantic_annotation_element|
-            if object.semantic_annotation
-              semantic_annotation_element << build('type', object.semantic_annotation.type)
-              semantic_annotation_element << build('content', object.semantic_annotation.content)
-            end
-          end
-        end
+    def get_components_aux(base_model, model, tag)
 
-        build(tag) do |components|
+      build(tag) do |components|
 
-          components << build('dataflows') do |dataflows_element|
+        components << build('dataflows') do |dataflows_element|
 
-            model.dataflows.each do |dataflow|
+          model.dataflows.each do |dataflow|
 
-              dataflows_element << build('dataflow') do |dataflow_element|
+            dataflows_element << build('dataflow') do |dataflow_element|
 
-                dataflow_element['id']   = dataflow.dataflow_id
-                dataflow_element['role'] = dataflow.role
+              dataflow_element['id']   = dataflow.dataflow_id
+              dataflow_element['role'] = dataflow.role
 
-                dataflow_element << build('sources') do |sources_element|
+              dataflow_element << build('sources') do |sources_element|
 
-                  dataflow.sources.each do |source|
+                dataflow.sources.each do |source|
 
-                    sources_element << build('source') do |source_element|
+                  sources_element << build('source') do |source_element|
 
-                      source_element << build('name', source.name) if source.name
+                    source_element << build('name', source.name) if source.name
 
-                      source_element << build('descriptions') do |source_descriptions_element|
+                    source_element << build('descriptions') do |source_descriptions_element|
 
-                        if source.descriptions
-                          source.descriptions.each do |source_description|
+                      if source.descriptions
+                        source.descriptions.each do |source_description|
 
-                            source_descriptions_element << build('description', source_description)
-                          end
+                          source_descriptions_element << build('description', source_description)
                         end
                       end
+                    end
 
-                      source_element << build('examples') do |source_examples_element|
+                    source_element << build('examples') do |source_examples_element|
 
-                        if source.example_values
-                          source.example_values.each do |source_example_value|
-                           
-                            source_examples_element << build('example', source_example_value)
-                          end
+                      if source.example_values
+                        source.example_values.each do |source_example_value|
+                         
+                          source_examples_element << build('example', source_example_value)
                         end
                       end
-
-                      source_element << build_semantic_annotation_element(source) if source.semantic_annotation
                     end
+
+                    source_element << build_semantic_annotation_element(source) if source.semantic_annotation
                   end
                 end
-
-                dataflow_element << build('sinks') do |sinks_element|
-
-                  dataflow.sinks.each do |sink|
-
-                    sinks_element << build('sink') do |sink_element|
-
-                      sink_element << build('name', sink.name) if sink.name
-
-                      sink_element << build('descriptions') do |sink_descriptions_element|
-
-                        if sink.descriptions
-                          sink.descriptions.each do |sink_description|
-                            sink_descriptions_element << build('description', sink_description)
-                          end
-                        end
-                      end
-
-                      sink_element << build('examples') do |sink_examples_element|
-
-                        if sink.example_values
-                          sink.example_values.each do |sink_example_value|
-                           
-                            sink_examples_element << build('example', sink_example_value)
-                          end
-                        end
-                      end
-                      sink_element << build_semantic_annotation_element(sink) if sink.semantic_annotation
-                    end
-                  end
-                end
-
-                dataflow_element << build('processors') do |processors_element|
-
-                  dataflow.processors.each do |processor|
-
-                    processors_element << build('processor') do |processor_element|
-
-                      processor_element << build('name',                   processor.name)                   if processor.name
-                      processor_element << build('description',            processor.description)            if processor.description
-                      processor_element << build('type',                   processor.type)                   if processor.type
-                      processor_element << build('dataflow-id',            processor.dataflow_id)            if processor.dataflow_id
-
-                      processor_element << build('script',                 processor.script)                 if processor.script
-                      processor_element << build('wsdl',                   processor.wsdl)                   if processor.wsdl
-                      processor_element << build('wsdl-operation',         processor.wsdl_operation)         if processor.wsdl_operation
-                      processor_element << build('endpoint',               processor.endpoint)               if processor.endpoint
-                      processor_element << build('biomoby-authority-name', processor.biomoby_authority_name) if processor.biomoby_authority_name
-                      processor_element << build('biomoby-service-name',   processor.biomoby_service_name)   if processor.biomoby_service_name
-                      processor_element << build('biomoby-category',       processor.biomoby_category)       if processor.biomoby_category
-                      processor_element << build('value',                  processor.value)                  if processor.value
-                      processor_element << build_semantic_annotation_element(processor)                      if processor.semantic_annotation
-
-                      if processor.dataflow_id
-                        nested_dataflow = base_model.dataflow(processor.dataflow_id)
-                      end
-                    end
-                  end
-                end
-
-                dataflow_element << build('datalinks') do |links_element|
-
-                  dataflow.datalinks.each do |datalink|
-
-                    sink_bits   = datalink.sink.split(':')
-                    source_bits = datalink.source.split(':')
-
-                    links_element << build('datalink') do |datalink_element|
-
-                      datalink_element << build('sink') do |sink_element|
-                        sink_element << build('node', sink_bits[0]) if sink_bits[0]
-                        sink_element << build('port', sink_bits[1]) if sink_bits[1]
-                      end
-
-                      datalink_element << build('source') do |source_element|
-                        source_element << build('node', source_bits[0]) if source_bits[0]
-                        source_element << build('port', source_bits[1]) if source_bits[1]
-                      end
-                    end
-                  end
-                end
-
-                dataflow_element << build_semantic_annotation_element(dataflow.annotations) if dataflow.annotations.semantic_annotation
               end
+
+              dataflow_element << build('sinks') do |sinks_element|
+
+                dataflow.sinks.each do |sink|
+
+                  sinks_element << build('sink') do |sink_element|
+
+                    sink_element << build('name', sink.name) if sink.name
+
+                    sink_element << build('descriptions') do |sink_descriptions_element|
+
+                      if sink.descriptions
+                        sink.descriptions.each do |sink_description|
+                          sink_descriptions_element << build('description', sink_description)
+                        end
+                      end
+                    end
+
+                    sink_element << build('examples') do |sink_examples_element|
+
+                      if sink.example_values
+                        sink.example_values.each do |sink_example_value|
+                         
+                          sink_examples_element << build('example', sink_example_value)
+                        end
+                      end
+                    end
+                    sink_element << build_semantic_annotation_element(sink) if sink.semantic_annotation
+                  end
+                end
+              end
+
+              dataflow_element << build('processors') do |processors_element|
+
+                dataflow.processors.each do |processor|
+
+                  processors_element << build('processor') do |processor_element|
+
+                    processor_element << build('name',                   processor.name)                   if processor.name
+                    processor_element << build('description',            processor.description)            if processor.description
+                    processor_element << build('type',                   processor.type)                   if processor.type
+                    processor_element << build('dataflow-id',            processor.dataflow_id)            if processor.dataflow_id
+
+                    processor_element << build('script',                 processor.script)                 if processor.script
+                    processor_element << build('wsdl',                   processor.wsdl)                   if processor.wsdl
+                    processor_element << build('wsdl-operation',         processor.wsdl_operation)         if processor.wsdl_operation
+                    processor_element << build('endpoint',               processor.endpoint)               if processor.endpoint
+                    processor_element << build('biomoby-authority-name', processor.biomoby_authority_name) if processor.biomoby_authority_name
+                    processor_element << build('biomoby-service-name',   processor.biomoby_service_name)   if processor.biomoby_service_name
+                    processor_element << build('biomoby-category',       processor.biomoby_category)       if processor.biomoby_category
+                    processor_element << build('value',                  processor.value)                  if processor.value
+                    processor_element << build_semantic_annotation_element(processor)                      if processor.semantic_annotation
+
+                    if processor.dataflow_id
+                      nested_dataflow = base_model.dataflow(processor.dataflow_id)
+                    end
+                  end
+                end
+              end
+
+              dataflow_element << build('datalinks') do |links_element|
+
+                dataflow.datalinks.each do |datalink|
+
+                  sink_bits   = datalink.sink.split(':')
+                  source_bits = datalink.source.split(':')
+
+                  links_element << build('datalink') do |datalink_element|
+
+                    datalink_element << build('sink') do |sink_element|
+                      sink_element << build('node', sink_bits[0]) if sink_bits[0]
+                      sink_element << build('port', sink_bits[1]) if sink_bits[1]
+                    end
+
+                    datalink_element << build('source') do |source_element|
+                      source_element << build('node', source_bits[0]) if source_bits[0]
+                      source_element << build('port', source_bits[1]) if source_bits[1]
+                    end
+                  end
+                end
+              end
+
+              dataflow_element << build_semantic_annotation_element(dataflow.annotations) if dataflow.annotations.semantic_annotation
             end
           end
         end
       end
+    end
 
-      aux(@t2flow_model, @t2flow_model, 'components')
+    def get_components
+      get_components_aux(@t2flow_model, @t2flow_model, 'components')
     end
     
     def extract_metadata(workflow)

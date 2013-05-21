@@ -184,109 +184,109 @@ class ApplicationController < ActionController::Base
     list = s.split(',')
   end
 
-  def update_policy(contributable, params, user)
+  def update_policy_aux(contributable, params)
 
-    def aux(contributable, params)
+    # this method will return an error message is something goes wrong (empty string in case of success)
+    error_msg = ""
 
-      # this method will return an error message is something goes wrong (empty string in case of success)
-      error_msg = ""
+    # BEGIN validation and initialisation
 
-      # BEGIN validation and initialisation
-
-      # If a group policy was selected, use that, and delete the old custom one (if there was one).
-      if params[:policy_type] == "group"
-        if contributable.contribution.policy && !contributable.contribution.policy.group_policy?
-          contributable.contribution.policy.destroy
-        end
-        contributable.contribution.policy_id = params[:group_policy]
-        contributable.contribution.save
-        return
+    # If a group policy was selected, use that, and delete the old custom one (if there was one).
+    if params[:policy_type] == "group"
+      if contributable.contribution.policy && !contributable.contribution.policy.group_policy?
+        contributable.contribution.policy.destroy
       end
-
-      # This variable will hold current settings of the policy in case something
-      # goes wrong and a revert would be needed at some point
-      last_saved_policy = nil
-      
-      return if params[:sharing].nil? or params[:sharing][:class_id].blank?
-
-      sharing_class  = params[:sharing][:class_id]
-      updating_class = (params[:updating] and !params[:updating][:class_id].blank?) ? params[:updating][:class_id] : "6"
-
-      # Check allowed sharing_class values
-      return unless [ "0", "1", "2", "3", "4", "7" ].include? sharing_class
-      
-      # Check allowed updating_class values
-      return unless [ "0", "1", "5", "6" ].include? updating_class
-      
-      view_protected     = 0
-      view_public        = 0
-      download_protected = 0
-      download_public    = 0
-      edit_protected     = 0
-      edit_public        = 0
-      
-      # BEGIN initialisation and validation
-
-      if contributable.contribution.policy.nil? || contributable.contribution.policy.group_policy?
-        last_saved_policy = Policy._default(current_user, nil) # second parameter ensures that this policy is not applied anywhere
-
-        policy = Policy.new(:name => 'auto',
-            :contributor_type => 'User', :contributor_id => current_user.id,
-            :share_mode         => sharing_class,
-            :update_mode        => updating_class)
-        contributable.contribution.policy = policy  # by doing this the new policy object is saved implicitly too
-        contributable.contribution.save
-      else
-         policy = contributable.contribution.policy
-         last_saved_policy = policy.clone # clone required, not 'dup' (which still works through reference, so the values in both get changed anyway - which is not what's needed here)
-         
-         policy.share_mode = sharing_class
-         policy.update_mode = updating_class
-         policy.save
-      end
-
-
-      # Process 'update' permissions for "Some of my Friends"
-
-      if updating_class == "5"
-        if params[:updating_somefriends]
-          # Delete old User permissions
-          policy.delete_all_user_permissions
-          
-          # Now create new User permissions, if required
-          params[:updating_somefriends].each do |f|
-            Permission.new(:policy => policy,
-                :contributor => (User.find f[1].to_i),
-                :view => 1, :download => 1, :edit => 1).save
-          end
-        else # none of the 'some of my friends' were selected, error
-          # revert changes made to policy (however any permissions updated will preserve the state)
-          policy.copy_values_from( last_saved_policy )
-          policy.save
-          error_msg += "You have selected to set 'update' permissions for 'Some of your Friends', but didn't select any from the list.</br>Previous (if any) or default sharing permissions have been set."
-          return error_msg
-        end
-      else
-        # Delete all User permissions - as this isn't mode 5 (i.e. the mode has changed),
-        # where some explicit permissions to friends are set
-        policy.delete_all_user_permissions
-      end
-      
-
-      # Process explicit Group permissions now
-      process_permissions(policy, params)
-
-      logger.debug("------ Workflow create summary ------------------------------------")
-      logger.debug("current_user   = #{current_user.id}")
-      logger.debug("updating_class = #{updating_class}")
-      logger.debug("sharing_class  = #{sharing_class}")
-      logger.debug("policy         = #{policy}")
-      logger.debug("group_sharing  = #{params[:group_sharing]}")
-      logger.debug("-------------------------------------------------------------------")
-
-      # returns some message in case of errors (or empty string in case of success)
-      return error_msg
+      contributable.contribution.policy_id = params[:group_policy]
+      contributable.contribution.save
+      return
     end
+
+    # This variable will hold current settings of the policy in case something
+    # goes wrong and a revert would be needed at some point
+    last_saved_policy = nil
+    
+    return if params[:sharing].nil? or params[:sharing][:class_id].blank?
+
+    sharing_class  = params[:sharing][:class_id]
+    updating_class = (params[:updating] and !params[:updating][:class_id].blank?) ? params[:updating][:class_id] : "6"
+
+    # Check allowed sharing_class values
+    return unless [ "0", "1", "2", "3", "4", "7" ].include? sharing_class
+    
+    # Check allowed updating_class values
+    return unless [ "0", "1", "5", "6" ].include? updating_class
+    
+    view_protected     = 0
+    view_public        = 0
+    download_protected = 0
+    download_public    = 0
+    edit_protected     = 0
+    edit_public        = 0
+    
+    # BEGIN initialisation and validation
+
+    if contributable.contribution.policy.nil? || contributable.contribution.policy.group_policy?
+      last_saved_policy = Policy._default(current_user, nil) # second parameter ensures that this policy is not applied anywhere
+
+      policy = Policy.new(:name => 'auto',
+          :contributor_type => 'User', :contributor_id => current_user.id,
+          :share_mode         => sharing_class,
+          :update_mode        => updating_class)
+      contributable.contribution.policy = policy  # by doing this the new policy object is saved implicitly too
+      contributable.contribution.save
+    else
+       policy = contributable.contribution.policy
+       last_saved_policy = policy.clone # clone required, not 'dup' (which still works through reference, so the values in both get changed anyway - which is not what's needed here)
+       
+       policy.share_mode = sharing_class
+       policy.update_mode = updating_class
+       policy.save
+    end
+
+
+    # Process 'update' permissions for "Some of my Friends"
+
+    if updating_class == "5"
+      if params[:updating_somefriends]
+        # Delete old User permissions
+        policy.delete_all_user_permissions
+        
+        # Now create new User permissions, if required
+        params[:updating_somefriends].each do |f|
+          Permission.new(:policy => policy,
+              :contributor => (User.find f[1].to_i),
+              :view => 1, :download => 1, :edit => 1).save
+        end
+      else # none of the 'some of my friends' were selected, error
+        # revert changes made to policy (however any permissions updated will preserve the state)
+        policy.copy_values_from( last_saved_policy )
+        policy.save
+        error_msg += "You have selected to set 'update' permissions for 'Some of your Friends', but didn't select any from the list.</br>Previous (if any) or default sharing permissions have been set."
+        return error_msg
+      end
+    else
+      # Delete all User permissions - as this isn't mode 5 (i.e. the mode has changed),
+      # where some explicit permissions to friends are set
+      policy.delete_all_user_permissions
+    end
+    
+
+    # Process explicit Group permissions now
+    process_permissions(policy, params)
+
+    logger.debug("------ Workflow create summary ------------------------------------")
+    logger.debug("current_user   = #{current_user.id}")
+    logger.debug("updating_class = #{updating_class}")
+    logger.debug("sharing_class  = #{sharing_class}")
+    logger.debug("policy         = #{policy}")
+    logger.debug("group_sharing  = #{params[:group_sharing]}")
+    logger.debug("-------------------------------------------------------------------")
+
+    # returns some message in case of errors (or empty string in case of success)
+    return error_msg
+  end
+
+  def update_policy(contributable, params, user)
 
     # Remember which groups have view access to the contributable before
     # changes are made.
@@ -295,7 +295,7 @@ class ApplicationController < ActionController::Base
 
     old_groups = contributable.contribution.policy.permissions.find(:all, :conditions => conditions).map { |p| p.contributor }
 
-    result = aux(contributable, params)
+    result = update_policy_aux(contributable, params)
 
     # Work out which groups have view access after the changes were made and
     # generate activities for them.

@@ -181,112 +181,111 @@ module WorkflowProcessors
       return get_scufl_metadata(@scufl_model)
     end
 
-    def get_components
+    def build(name, text = nil, &blk)
+      node = XML::Node.new(name)
+      node << text if text
+      yield(node) if blk
+      node
+    end
 
-      def build(name, text = nil, &blk)
-        node = XML::Node.new(name)
-        node << text if text
-        yield(node) if blk
-        node
-      end
+    def get_components_aux(model, tag)
 
-      def aux(model, tag)
+      build(tag) do |element|
 
-        build(tag) do |element|
-
-          element << build('sources') do |sources_element|
-            model.sources.each do |source|
-              sources_element << build('source') do |source_element|
-                source_element << build('name',        source.name)        if source.name
-                source_element << build('description', source.description) if source.description
-              end
+        element << build('sources') do |sources_element|
+          model.sources.each do |source|
+            sources_element << build('source') do |source_element|
+              source_element << build('name',        source.name)        if source.name
+              source_element << build('description', source.description) if source.description
             end
           end
+        end
 
-          element << build('sinks') do |sinks_element|
-            model.sinks.each do |sink|
-              sinks_element << build('sink') do |sink_element|
-                sink_element << build('name',        sink.name)        if sink.name
-                sink_element << build('description', sink.description) if sink.description
-              end
+        element << build('sinks') do |sinks_element|
+          model.sinks.each do |sink|
+            sinks_element << build('sink') do |sink_element|
+              sink_element << build('name',        sink.name)        if sink.name
+              sink_element << build('description', sink.description) if sink.description
             end
           end
+        end
 
-          element << build('processors') do |processors_element|
+        element << build('processors') do |processors_element|
 
-            model.processors.each do |processor|
+          model.processors.each do |processor|
 
-              processors_element << build('processor') do |processor_element|
+            processors_element << build('processor') do |processor_element|
 
-                processor_element << build('name',                   processor.name)                   if processor.name
-                processor_element << build('description',            processor.description)            if processor.description
-                processor_element << build('type',                   processor.type)                   if processor.type
-                processor_element << build('script',                 processor.script)                 if processor.script
-                processor_element << build('wsdl',                   processor.wsdl)                   if processor.wsdl
-                processor_element << build('wsdl-operation',         processor.wsdl_operation)         if processor.wsdl_operation
-                processor_element << build('endpoint',               processor.endpoint)               if processor.endpoint
-                processor_element << build('biomoby-authority-name', processor.biomoby_authority_name) if processor.biomoby_authority_name
-                processor_element << build('biomoby-service-name',   processor.biomoby_service_name)   if processor.biomoby_service_name
-                processor_element << build('biomoby-category',       processor.biomoby_category)       if processor.biomoby_category
-                processor_element << build('value',                  processor.value)                  if processor.value
+              processor_element << build('name',                   processor.name)                   if processor.name
+              processor_element << build('description',            processor.description)            if processor.description
+              processor_element << build('type',                   processor.type)                   if processor.type
+              processor_element << build('script',                 processor.script)                 if processor.script
+              processor_element << build('wsdl',                   processor.wsdl)                   if processor.wsdl
+              processor_element << build('wsdl-operation',         processor.wsdl_operation)         if processor.wsdl_operation
+              processor_element << build('endpoint',               processor.endpoint)               if processor.endpoint
+              processor_element << build('biomoby-authority-name', processor.biomoby_authority_name) if processor.biomoby_authority_name
+              processor_element << build('biomoby-service-name',   processor.biomoby_service_name)   if processor.biomoby_service_name
+              processor_element << build('biomoby-category',       processor.biomoby_category)       if processor.biomoby_category
+              processor_element << build('value',                  processor.value)                  if processor.value
 
-                if processor.inputs
-                  processor_element << build('inputs') do |inputs_element|
-                    processor.inputs.each do |input|
-                      inputs_element << build('input', input)
-                    end
+              if processor.inputs
+                processor_element << build('inputs') do |inputs_element|
+                  processor.inputs.each do |input|
+                    inputs_element << build('input', input)
                   end
                 end
+              end
 
-                if processor.outputs
-                  processor_element << build('outputs') do |outputs_element|
-                    processor.outputs.each do |output|
-                      outputs_element << build('output', output)
-                    end
+              if processor.outputs
+                processor_element << build('outputs') do |outputs_element|
+                  processor.outputs.each do |output|
+                    outputs_element << build('output', output)
                   end
                 end
-
-                if processor.model
-                  processor_element << aux(processor.model, 'model')
-                end
               end
-            end
-          end
 
-          element << build('links') do |links_element|
-
-            model.links.each do |link|
-
-              links_element << build('link') do |link_element|
-
-                sink_bits   = link.sink.split(':')
-                source_bits = link.source.split(':')
-
-                link_element << build('sink') do |sink_element|
-                  sink_element << build('node', sink_bits[0]) if sink_bits[0]
-                  sink_element << build('port', sink_bits[1]) if sink_bits[1]
-                end
-
-                link_element << build('source') do |source_element|
-                  source_element << build('node', source_bits[0]) if source_bits[0]
-                  source_element << build('port', source_bits[1]) if source_bits[1]
-                end
-              end
-            end
-          end
-
-          element << build('coordinations') do |coordinations_element|
-            model.coordinations.each do |coordination|
-              coordinations_element << build('coordination') do |coordination_element|
-                coordination_element << build('controller', coordination.controller) if coordination.controller
-                coordination_element << build('target',     coordination.target)     if coordination.target
+              if processor.model
+                processor_element << get_components_aux(processor.model, 'model')
               end
             end
           end
         end
-      end
 
-      aux(@scufl_model, 'components')
+        element << build('links') do |links_element|
+
+          model.links.each do |link|
+
+            links_element << build('link') do |link_element|
+
+              sink_bits   = link.sink.split(':')
+              source_bits = link.source.split(':')
+
+              link_element << build('sink') do |sink_element|
+                sink_element << build('node', sink_bits[0]) if sink_bits[0]
+                sink_element << build('port', sink_bits[1]) if sink_bits[1]
+              end
+
+              link_element << build('source') do |source_element|
+                source_element << build('node', source_bits[0]) if source_bits[0]
+                source_element << build('port', source_bits[1]) if source_bits[1]
+              end
+            end
+          end
+        end
+
+        element << build('coordinations') do |coordinations_element|
+          model.coordinations.each do |coordination|
+            coordinations_element << build('coordination') do |coordination_element|
+              coordination_element << build('controller', coordination.controller) if coordination.controller
+              coordination_element << build('target',     coordination.target)     if coordination.target
+            end
+          end
+        end
+      end
+    end
+
+    def get_components
+      get_components_aux(@scufl_model, 'components')
     end
 
     def extract_metadata(workflow)
