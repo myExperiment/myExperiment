@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130423091433) do
+ActiveRecord::Schema.define(:version => 20130520145900) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -40,6 +40,11 @@ ActiveRecord::Schema.define(:version => 20130423091433) do
     t.integer  "current_count",    :null => false
     t.datetime "reset_after"
     t.datetime "promote_after"
+  end
+
+  create_table "annotation_resources", :force => true do |t|
+    t.integer "annotation_id"
+    t.string  "resource_uri"
   end
 
   create_table "announcements", :force => true do |t|
@@ -155,9 +160,10 @@ ActiveRecord::Schema.define(:version => 20130423091433) do
   end
 
   create_table "content_blobs", :force => true do |t|
-    t.binary "data", :limit => 2147483647
-    t.string "md5",  :limit => 32
-    t.string "sha1", :limit => 40
+    t.binary  "data", :limit => 2147483647
+    t.string  "md5",  :limit => 32
+    t.string  "sha1", :limit => 40
+    t.integer "size"
   end
 
   add_index "content_blobs", ["md5"], :name => "index_content_blobs_on_md5"
@@ -593,6 +599,42 @@ ActiveRecord::Schema.define(:version => 20130423091433) do
     t.integer "workflow_version"
     t.integer "taverna_enactor_id"
     t.string  "workflow_uri"
+  end
+
+  create_table "research_objects", :force => true do |t|
+    t.string   "slug"
+    t.integer  "version"
+    t.string   "version_type"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "resources", :force => true do |t|
+    t.string   "name"
+    t.integer  "research_object_id"
+    t.integer  "content_blob_id"
+    t.string   "sha1",               :limit => 40
+    t.binary   "data",               :limit => 2147483647
+    t.integer  "size"
+    t.string   "content_type"
+    t.text     "path"
+    t.string   "creator_uri"
+    t.string   "proxy_in_path"
+    t.string   "proxy_for_path"
+    t.string   "ao_body_path"
+    t.string   "resource_map_path"
+    t.string   "aggregated_by_path"
+    t.boolean  "is_resource",                              :default => false
+    t.boolean  "is_aggregated",                            :default => false
+    t.boolean  "is_proxy",                                 :default => false
+    t.boolean  "is_annotation",                            :default => false
+    t.boolean  "is_resource_map",                          :default => false
+    t.boolean  "is_folder",                                :default => false
+    t.boolean  "is_folder_entry",                          :default => false
+    t.boolean  "is_root_folder",                           :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "reviews", :force => true do |t|
