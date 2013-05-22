@@ -1,7 +1,8 @@
 <div class="contribution_section_box">
 	<p class="heading">
-		<%= info_icon_with_tooltip("The tags for this #{visible_name taggable} entry.<br/>Note(1): if this #{visible_name taggable} has many versions, the tags apply to ALL versions in this entry.<br/>Note(2): the size of the tags show how popular they are on myExperiment.") %>
-		Tags <span class="count_text">(<%= taggable.taggings_count -%>)</span>
+		<%= info_icon_with_tooltip("The tags for this #{visible_name taggable} entry.<br/>Note(1): if this #{visible_name taggable} has many versions, the tags apply to ALL versions in this entry.<br/>Note(2): the size of the tags show how popular they are on #{Conf.sitename}.") %>
+		Tags <span id="tags_box_header_tag_count_span" class="count_text">(<%= taggable.tags.uniq.length -%>)</span>
+		<a name="tags"></a>
 	</p>
 
 	<%= render :partial => "tags/tags_box_inner", :locals => { :taggable => taggable, :owner_id => owner_id } %>
@@ -15,17 +16,16 @@
 			<div class="foldTitle">Add Tags</div>
 			<div class="foldContent" style="display: none;">
 				<% form_remote_tag(:url => add_path, 
-								   :update => 'tags', 
-							 		   :success => "$('tag_list').value=''; new Effect.Highlight('tags', { duration: 1.5 });",
+							 		   :success => "$('tag_list').value=''; new Effect.Highlight('tags_inner_box', { duration: 1.5 });",
 							       :loading => "Element.show('addtag_indicator')",
                     	   	       :complete => "Element.hide('addtag_indicator')") do %>
-					<p><small>(use commas to seperate different tags)</small></p>
+					<p><small>(use commas to separate different tags)</small></p>
 					<p>
 						<%= text_field_tag :tag_list %>
 						<div class="auto_complete" id="tags_auto_complete" ></div>
 						<%= auto_complete_field :tag_list,
 								:update => "tags_auto_complete",
-								:url => {:controller => 'tags', :action => 'auto_complete'},
+								:url => {:controller => 'tags', :action => 'auto_complete', :authenticity_token => form_authenticity_token},
 								:tokens => ',',
 								:indicator => "addtag_indicator" -%>
 					</p>

@@ -1,15 +1,15 @@
-Hi <%= @name %>,
+Hi <%= @user.name %>,
  
-You have been sent a Membership Invite for the following Group on myExperiment:
+You have been invited to join the following Group on <%= Conf.sitename %>:
 
 Name: <%= @network.title %>
 Administrator: <%= @network.owner.name %>
 
-Please go to <%= url_for :only_path => false, :host => @base_url, :controller => '' %> and log in to confirm/reject this invite.
+Please go to <%= "http://" + @base_url + user_membership_path(@user, @membership) %> to confirm/reject this invite.
 
-Your username is: <%= @username %>
+  <%= login_identity_reminder(@target) %>
 
 Thanks,
  
-- The myExperiment Team
-http://www.myexperiment.org
+- The <%= Conf.sitename %> Team
+<%= Conf.base_uri -%>

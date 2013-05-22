@@ -1,15 +1,16 @@
-<% packs = contributable.in_packs -%>
-<div class="contribution_section_box">
+<div class="contribution_section_box" id="in_packs_box">
+  <% packs = Pack.packs_with_contributable(contributable) -%>
 	<p class="heading">
-		<%= info_icon_with_tooltip("All the Packs that this item (or versions of this item [if available]) is referred to in") -%>
+		<%= info_icon_with_tooltip("All the Packs that this item (or versions of this item [[if available]]) is referred to in") -%>
 		Featured In Packs  <span class="count_text">(<%= packs.length -%>)</span>
+		<a name="featured_in_packs"></a>
 	</p>
 	<% unless packs.empty? %>
 		<div style="font-size: 85%;">
 			<ul class="items">
 				<% packs.each do |p| %>
 					<li>
-						<% if thing_authorized?('show', p) -%>
+						<% if Authorization.check("view", p, current_user) -%>
 							<%= icon('pack', nil, nil, nil, '') %>
 							<%= contributable(p.id, 'Pack') %>
 						<% else -%>
@@ -24,29 +25,43 @@
 	<% end %>
 	
 	<% if logged_in? -%>
-		<% user_packs = current_user.packs -%>
-		<% unless user_packs.empty? -%>
-			<div class="fold">
-				<div class="foldTitle">Add to your Pack</div>
-				<div class="foldContent" style="display: none;">
-					<form onsubmit="redirectToAddToPack(); return false;" style="text-align: center;">
-						<p>
-				    	<select id="add_to_pack_selection" style="width: 99%;">
-					  		<% user_packs.each do |p| -%>
-									<% show = (contributable.class.to_s == 'Pack' ? (p.id != contributable.id) : true) -%>
-									<% if show -%>
-						    		<option value="<%= url_for(:controller => 'packs', :action => 'new_item', :id => p.id, :uri => contributable_url) -%>">
-						      		<%= h(p.title) -%>
-						    		</option>
-									<% end -%>
-					  		<% end -%>
-							</select>
-						</p>
-						<%= submit_tag "Next" -%>
-					</form>
-				</div>
-			</div>
-		<% end -%>
+    <% user_packs = current_user.packs
+       potential_packs = (user_packs - packs)
+       potential_packs.delete(contributable) if contributable.kind_of?(Pack) %>
+
+    <% unless potential_packs.empty? -%>
+      <div class="error_text" id="add_to_pack_errors" style="display:none"></div>
+      <div class="fold" id="add_to_pack_fold">
+        <div class="foldTitle">Add to your Pack</div>
+        <div class="foldContent" style="display: none;">
+          <% form_tag quick_add_pack_url(potential_packs.first),
+                      { :onsubmit => "new Ajax.Request(this.action, " +
+                                     "{asynchronous:true, evalScripts:true, method:'post', "+
+                                     "onComplete:function(request){$('pack_add_spinner').hide();},"+
+                                     "onLoading:function(request){$('pack_add_spinner').show();}," +
+                                     "parameters:Form.serialize(this)});return false;",
+                        :method => :post,
+                        :id => "add_to_pack_form" } do %>
+            <p>
+              <select id="add_to_pack_selector" style="width: 99%" onchange="$('add_to_pack_form').action = $(this).options[this.selectedIndex].value; return false">
+                <% potential_packs.sort_by(&:updated_at).reverse!.each do |p| -%>
+                  <option value="<%= quick_add_pack_url(p) -%>">
+                    <%= h(p.title) -%>
+                  </option>
+                <% end -%>
+              </select>
+            </p>
+            <p>
+              Comment:
+              <%= text_area_tag :comment, nil, :style => "width: 98%" %>
+            </p>
+            <%= hidden_field_tag :uri, polymorphic_url(contributable) %>
+            <%= submit_tag "Next" -%>
+            <img id="pack_add_spinner" src="/images/spinner.gif" style="display:none; vertical-align: middle;"/>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
 	<% else -%>
 		<p><small><b><%= link_to "Log in", new_session_url -%></b> to add to one of your Packs</small></p>
 	<% end -%>

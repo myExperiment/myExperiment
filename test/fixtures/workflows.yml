@@ -1,19 +1,57 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+workflow_dilbert:
   id: 1
   contributor_id: 1
-  contributor_type: MyString
-  scufl: 
-  image: 
-  title: MyString
-  unique: MyString
-  description: MyText
-two:
+  contributor_type: User
+  title: Get Dilbert
+  unique_name: get_dilbert
+  body: Gets todays dilbert cartoon
+  created_at: 2008-02-14 20:19:18
+  updated_at: 2008-02-14 20:19:18
+  license_id: 1
+  current_version: 1
+  content_type_id: 3
+  content_blob_id: 3
+
+workflow_branch_choice:
   id: 2
+  contributor_id: 2
+  contributor_type: User
+  title: Conditional branch choice
+  unique_name: branch_choice
+  body: Does something, probably chooses a branch based on a condition...
+  created_at: 2008-04-11 22:19:33
+  updated_at: 2008-05-14 06:45:08
+  license_id: 2
+  current_version: 1
+  content_type_id: 3
+  content_blob_id: 4
+
+component_workflow:
+  id: 3
   contributor_id: 1
-  contributor_type: MyString
-  scufl: 
-  image: 
-  title: MyString
-  unique: MyString
-  description: MyText
+  contributor_type: User
+  title: Image to TIFF Migration Component
+  unique_name: image_to_tiff
+  body: Component thing with annotations
+  created_at: 2008-04-11 22:19:33
+  updated_at: 2008-05-14 06:45:08
+  license_id: 2
+  current_version: 1
+  content_type_id: 4
+  content_blob_id: 5
+
+component_workflow2:
+  id: 4
+  contributor_id: 2
+  contributor_type: User
+  title: Another Component
+  unique_name: component_workflow
+  body: Second component thing with annotations
+  created_at: 2008-04-11 22:19:33
+  updated_at: 2008-05-14 06:45:08
+  license_id: 2
+  current_version: 1
+  content_type_id: 4
+  content_blob_id: 5
+

@@ -1,0 +1,44 @@
+<% t "#{h @contributable.label} curation breakdown" -%>
+
+<h1>Curation breakdown</h1>
+
+<% if current_user != 0 && Conf.curators.include?(current_user.username) %>
+
+  <div class="curation_events">
+    <ul>
+    <% @events.each do |event| %>
+      <li>
+        <table class="comment">
+          <tr>
+            <td class="avatar" rowspan="3">
+              <%= contributor(event.user_id, 'User', true, 60) %>
+            </td>
+            <td class="header" height="1.2em">
+              <%= datetime event.created_at -%>
+              <% if event.updated_at != nil && event.updated_at != event.created_at %>
+                <b><br />Updated: <%= datetime event.updated_at -%></b>
+              <% end %>
+          </td>
+          </tr>
+        <tr>
+          <td class="content">        
+            <div class="quality"><%= event.category.capitalize %></div>
+            <%= event.details_html %>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right; padding-right: 1em;">
+          </td>
+        </tr>
+        </table>
+      </li>
+    <% end %>
+
+    </ul>
+  </div>
+
+<% else %>
+
+  <p>You do not have permission to view this page.</p>
+
+<% end %>

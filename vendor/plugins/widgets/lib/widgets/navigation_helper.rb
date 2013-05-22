@@ -51,7 +51,7 @@ module Widgets
       out '</ul>'
     end
    
-    def out(string); concat string, @_binding; end
+    def out(string); concat string; end
     
   end
 end

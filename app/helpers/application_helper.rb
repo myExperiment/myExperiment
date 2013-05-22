@@ -7,20 +7,8 @@
 module ApplicationHelper
   require 'country_codes'
   
-  def my_page?(contributor_id, contributor_type="User")
-    #logged_in? and current_user.id.to_i == contributor_id.to_i and current_user.class.to_s == contributor_type.to_s
-
-    return false unless logged_in?
-    
-    case contributor_type.to_s
-    when "User"
-      return current_user.id.to_i == contributor_id.to_i
-    when "Network"
-      return false unless Network.find(:first, :conditions => ["id = ? AND user_id = ?", contributor_id, current_user.id])
-      return true
-    else
-      return false
-    end
+  def my_page?(contributor)
+    logged_in? && contributor == current_user
   end
   
   def mine?(thing)
@@ -31,7 +19,7 @@ module ApplicationHelper
     
     case thing.class.to_s
     when "Workflow"
-      return (c_id == thing.contributor_id.to_i and thing.contributor_type == "User")
+      return (c_id == thing.contribution.contributor_id.to_i and thing.contribution.contributor_type == "User")
     when "Blob"
       return (c_id == thing.contributor_id.to_i and thing.contributor_type == "User")
     when "Pack"
@@ -51,21 +39,12 @@ module ApplicationHelper
   
   def owner_text(thing)
     return '' if thing.nil?
-    
-    case thing.class.to_s
-    when "Workflow"
-      return "Uploader"
-    when "Blob"
-      return "Uploader"
-    when "Pack"
-      return "Creator"
-    when "Network"
-      return "Admin"
-    when "Profile"
-      return "User"
-    else
-      return ''
-    end
+
+    text = thing.class.owner_text if thing.class.respond_to?('owner_text')
+
+    return '' if text.nil?
+
+    text
   end
   
   def datetime(old_dt, long=true)
@@ -74,7 +53,7 @@ module ApplicationHelper
     if old_dt.is_a?(DateTime)
       rtn = old_dt
     else
-      rtn = Time.at(old_dt)
+      rtn = Time.at(old_dt.time)
     end
     
     return long ? rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)") : rtn.strftime("%d/%m/%y @ %H:%M:%S")
@@ -83,7 +62,7 @@ module ApplicationHelper
   def date(old_dt, long=true)
     return nil unless old_dt
     
-    rtn = Time.at(old_dt)
+    rtn = Time.at(old_dt.time)
     
     return long ? rtn.strftime("%d %B %Y") : rtn.strftime("%d/%m/%y")
   end
@@ -111,7 +90,7 @@ module ApplicationHelper
       return nil
     end
     
-    name = truncate_to ? truncate(user.name, truncate_to) : name = user.name
+    name = truncate_to ? truncate(user.name, :length => truncate_to) : name = user.name
     
     return link_to(h(name), user_url(user), :title => tooltip_title_attrib(h(user.name)))
   end
@@ -126,11 +105,11 @@ module ApplicationHelper
       return nil
     end
     
-    title = truncate_to ? truncate(network.title, truncate_to) : network.title
-    return link_to(h(title), group_url(network))
+    title = truncate_to ? truncate(network.title, :length => truncate_to) : network.title
+    return link_to(h(title), network_url(network))
   end
   
-  def avatar(user_id, size=200, url=nil)
+  def avatar(user_id, size=200, url=nil, annotation = nil, image_options = {})
     if user_id.kind_of? Fixnum
       user = User.find(:first, :select => "id, name", :conditions => ["id = ?", user_id]) 
       return nil unless user
@@ -140,17 +119,19 @@ module ApplicationHelper
       return nil
     end
     
-    if user.avatar?
-      img = image_tag avatar_url(user.profile.picture_id, size), :title => h(user.name), :class => 'framed'
-    else
-      img = null_avatar(size, h(user.name))
-    end
-    
+    img = image_tag user.avatar? ? avatar_url(user.profile.picture_id, size) : "avatar.png",
+                    {:title => h(user.name), :class => 'framed',
+                     :size => user.avatar? ? nil : "#{size}x#{size}"}.merge(image_options)
+
     unless url
       url = user_url(user)
     end
+
+    if annotation
+      img = img + " #{annotation}"
+    end
     
-    return link_to(img, url)
+    return link_to(img , url)
   end
   
   def avatar_url(picture_id, size=200)
@@ -184,59 +165,36 @@ module ApplicationHelper
     if !text
       text = "Inbox"  
     end
-    
+
+    opts = nil
     unless (length = user.messages_unread.length) == 0
-      text = "<b>" + text + " (#{length})</b>"
+      text = "#{text} (#{length})"
+      opts = {:style => "font-weight: bold"}
     end
     
-    inbox = icon('message', messages_path, nil, nil, text)
+    inbox = icon('message', messages_path, nil, opts, text)
     
     return inbox      
   end
   
-  def memberships_link(user_id, text=nil)
-    if user_id.kind_of? Fixnum
-      user = User.find(:first, :select => "id", :conditions => ["id = ?", user_id]) 
-      return nil unless user
-    elsif user_id.kind_of? User
-      user = user_id
-    else
-      return nil
-    end
-    
-    if !text
-      text = "Memberships"  
-    end
-    
+  def memberships_link(user, text="My Memberships")
+    opts = nil
     unless (length = user.networks_membership_requests_pending.length + user.memberships_invited.length) == 0
-      text = "<b>" + text + " (#{length})</b>"
+      text = "#{text} (#{length})"
+      opts = {:style => "font-weight: bold"}
     end
-    
-    mships = icon('membership', memberships_path(user), nil, nil, text)
-    
-    return mships
-      
+
+    icon('membership', user_memberships_path(user), nil, opts, text)
   end
   
-  def friendships_pending_link(user_id)
-    if user_id.kind_of? Fixnum
-      user = User.find(:first, :select => "id", :conditions => ["id = ?", user_id]) 
-      return nil unless user
-    elsif user_id.kind_of? User
-      user = user_id
-    else
-      return nil
-    end
-    
-    fships = icon('friendship', nil, nil, nil, nil) + " Friendships"
-    
+  def friendships_pending_link(user, text = "My Friendships")
+    opts = nil
     unless (length = user.friendships_pending.length) == 0
-       rtn = "<b>" + fships + " (#{length})</b>"
-    else
-      rtn = fships
+      text = "#{text} (#{length})"
+      opts = {:style => "font-weight: bold"}
     end
-      
-    return link_to(rtn, friendships_path(user))
+
+    icon('friendship', user_friendships_path(user), nil, opts, text)
   end
   
   def request_membership_link(user_id, network_id)
@@ -248,24 +206,13 @@ module ApplicationHelper
   end
 
   def request_friendship_link(user_id)
-    link_to("Request Friendship", new_friendship_url(:user_id => user_id))
+    link_to("Request Friendship", new_user_friendship_url(:user_id => user_id))
   end
   
-  def versioned_workflow_link(workflow_id, version_number, long_description=true)
-    if workflow_id.kind_of? Fixnum
-      workflow = Workflow.find(:first, :conditions => ["id = ?", workflow_id])
-      return nil unless workflow
-    elsif workflow_id.kind_of? Workflow
-      workflow = workflow_id
-    else
-      return nil
-    end
-    
-    if (ver = workflow.find_version(version_number))
-      url = url_for(:controller => 'workflows',
-                    :action => 'show',
-                    :id => workflow.id,
-                    :version => version_number)
+  def versioned_resource_link(resource, version_number, long_description=true)
+    ver = resource.find_version(version_number)
+    if ver
+      url = polymorphic_url(resource, :version => version_number)
     else
       return nil
     end
@@ -301,7 +248,7 @@ module ApplicationHelper
     return url
   end
   
-  def filter_contributables(contributions)
+  def filter_contributables(contributions, sort=false)
     rtn = {}
     
     contributions.each do |c|
@@ -314,22 +261,52 @@ module ApplicationHelper
       end
     end
     
+    # Sort alphabetically if required
+    if sort
+      rtn.each do |k, v|
+        v.sort! { |a, b|
+          at=a.title||""; bt=b.title||""; at.downcase <=> bt.downcase
+        }
+      end
+    end
+    
     return rtn
   end
   
-  def contributor(contributorid, contributortype, avatar=false, size=100)
+  def aggregate_contributables(contributables)
+    rtn = {}
+    
+    contributables.each do |t|
+      if (arr = rtn[(klass = t.class.to_s)])
+        arr << t
+      else
+        rtn[klass] = [t]
+      end
+    end
+    
+    return rtn
+  end
+  
+  def contributor(contributorid, contributortype, avatar=false, size=100, you_text=false)
     if contributortype.to_s == "User"
       user = User.find(:first, :select => "id, name", :conditions => ["id = ?", contributorid])
       return nil unless user
       
-      return name(user) unless avatar
-      #return avatar(user, size) + "<br/>" + name(user)
-      return render(:partial => "users/avatar", :locals => { :user => user, :size => size })
+      # this string will output " (you) " for current user next to the display name, when invoked with 'you_text == true'
+      you_string = (you_text && logged_in? && user.id == current_user.id) ? "<small style='vertical-align: middle; color: #666666; margin-left: 0.5em;'>(you)</small>" : ""
+      
+      if avatar
+        return render(:partial => "users/avatar", :locals => { :user => user, :size => size, :you_string => you_string })
+      else
+        return (name(user) + you_string)
+      end
     elsif contributortype.to_s == "Network"
       network = Network.find(:first, :select => "id, title", :conditions => ["id = ?", contributorid])
       return nil unless network
       
       return title(network)
+    elsif contributortype.to_s == "FederationSource"
+      link_to "The BioCatalogue", "http://www.biocatalogue.org"
     else
       return nil
     end
@@ -346,6 +323,8 @@ module ApplicationHelper
       return nil unless network
       
       return h(network.title)
+    elsif contributortype.to_s == "FederationSource"
+      "The BioCatalogue"
     else
       return nil
     end
@@ -365,29 +344,13 @@ module ApplicationHelper
           name = h(b.local_name)
         end
         
-        return link ? link_to(name, file_url(b)) : name
+        return link ? link_to(name, blob_url(b)) : name
       else
         return nil
       end
     when "Pack"
       if p = Pack.find(:first, :conditions => ["id = ?", contributableid])
-        return link ? link_to(p.title, pack_url(p)) : h(p.title)
-      else
-        return nil
-      end
-    when "Blog"
-      if b = Blog.find(:first, :conditions => ["id = ?", contributableid])
-        name = h(b.title)
-        
-        return link ? link_to(name, blog_url(b)) : name
-      else
-        return nil
-      end
-    when "Forum"
-      if f = Forum.find(:first, :conditions => ["id = ?", contributableid])
-        name = h(f.name)
-        
-        return link ? link_to(name, forum_url(f)) : name
+        return link ? link_to(h(p.title), pack_url(p)) : h(p.title)
       else
         return nil
       end
@@ -397,7 +360,7 @@ module ApplicationHelper
         
         if thumb
           unless w.image.nil?
-            if w.authorized?("show", (logged_in? ? current_user : nil))
+            if Authorization.check('view', w, current_user)
               dot = image_tag url_for_file_column(w, "image", "thumb")
             else
               dot = image_tag url_for_file_column(w, "image", "padlock")
@@ -413,13 +376,20 @@ module ApplicationHelper
       else
         return nil
       end
+    when "Service"
+      if s = Service.find(:first, :conditions => ["id = ?", contributableid])
+        name = h(s.name)
+        return link ? link_to(name, service_url(s)) : name
+      else
+        return nil
+      end
     end
   end
   
   def contributable_name(contributableid, contributabletype, truncate=nil)
     str = contributable(contributableid, contributabletype, false)
     
-    return truncate ? truncate(str, truncate) : str
+    return truncate ? truncate(str, :length => truncate) : str
   end
   
   def contributable_url(contributableid, contributabletype, base_host=nil)
@@ -480,7 +450,7 @@ module ApplicationHelper
   end
   
   def trim_body_html(body, limit=nil)
-    truncate(body, limit)
+    truncate(body, :length => limit)
     white_list(body)
   end
   
@@ -586,9 +556,44 @@ module ApplicationHelper
 
     return '<span class="icon">' + inner + '</span>';
   end
+  
+  
+  # is exactly the same as icon, apart from that the front part of the url was already completely
+  # generated before and is passed in as a parameter (this helps to get links with complex javascript in
+  # 'onclick' field) - so need to add closing </a> tag in the relevant place
+  def icon_no_link_processing(method, url=nil, alt=nil, label=method.humanize)
+
+    if (label == 'Destroy')
+      label = 'Delete';
+    end
+
+    return nil unless (filename = method_to_icon_filename(method.downcase))
+    
+    # if method.to_s == "info"
+    # make into cool javascript div thing!
+    
+    image_options = alt ? { :alt => alt } : { :alt => method.humanize }
+    img_tag = image_tag(filename, image_options)
+    
+    inner = img_tag;
+    inner = "#{img_tag} #{label}" unless label == nil
+
+    if (url)
+      inner = url + inner + "</a>"
+    end
+
+    return '<span class="icon">' + inner + '</span>';
+  end
+
 
   def method_to_icon_filename(method)
     case (method.to_s)
+    when "refresh"
+      return "famfamfam_silk/arrow_refresh.png"
+    when "arrow_up"
+      return "famfamfam_silk/arrow_up.png"
+    when "arrow_down"
+      return "famfamfam_silk/arrow_down.png"
     when "new"
       return "redmond_studio/add_16.png"
     when "download"
@@ -626,29 +631,41 @@ module ApplicationHelper
       return "famfamfam_silk/group.png"
     when "network-owned"
       return "famfamfam_silk/group_key.png"
+    when "network-leave"
+      return "famfamfam_silk/group_delete.png"
+    when "network-invite"
+      return "famfamfam_silk/group_add.png"
     when "user"
       return "famfamfam_silk/user.png"
+    when "user-invite"
+      return "famfamfam_silk/user_add.png"
+    when "friend_delete"
+      return "famfamfam_silk/user_delete.png"  
     when "avatar"
       return "famfamfam_silk/picture.png"
     when "save"
       return "famfamfam_silk/save.png"
     when "message"
       return "famfamfam_silk/email.png"
+    when "message_read"
+      return "famfamfam_silk/email_open.png"
     when "reply"
       return "famfamfam_silk/email_go.png"
+    when "message_delete"
+      return "famfamfam_silk/email_delete.png"  
+    when "messages_outbox"
+      return "famfamfam_silk/email_go.png"
+    when "messages_outbox_no_arrow" # used only in 'show' page for a message, opened from outbox: this is for the icon for 'return to outbox' to differ from 'reply' icon
+      return "famfamfam_silk/email.png"
     when "blob"
       return "redmond_studio/documents_16.png"
     when "pack"
       return "manhattan_studio/folder-closed_16.png"
     when "remote-resource"
       return "famfamfam_silk/page_world.png"
-    when "blog"
-      return "famfamfam_silk/note.png"
-    when "forum"
-      return "famfamfam_silk/group.png"
     when "workflow"
       return "redmond_studio/applications_16.png"
-    when "policy"
+    when "policy", "admin"
       return "famfamfam_silk/key.png"
     when "logout"
       return "famfamfam_silk/door_out.png"
@@ -702,8 +719,30 @@ module ApplicationHelper
       return "famfamfam_silk/world_link.png"
     when "denied"
       return "famfamfam_silk/exclamation.png"
+    when "launch"
+      return "famfamfam_silk/computer_go.png"
+    when "register_application"
+      return "famfamfam_silk/application_edit.png"
+    when "license"
+      return "famfamfam_silk/text_signature.png"
+    when "home"
+      return "famfamfam_silk/application_home.png"
+    when "make_group_admin"
+      return "famfamfam_silk/award_star_add.png"
+    when "remove_group_admin"
+      return "famfamfam_silk/award_star_delete.png"
+    when "service"
+      return "biocat_icon.png"
+    when "usercheck"
+      return "famfamfam_silk/flag_red.png"
+    when "transfer_ownership"
+      return "famfamfam_silk/key_go.png"
+    when "content"
+      return "famfamfam_silk/application_side_list.png"
+    when "contributions"
+      return "famfamfam_silk/page_white_stack.png"
     else
-      return nil
+      return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end
   end
   
@@ -744,86 +783,93 @@ module ApplicationHelper
   end
 
   def highlight_all(text, string)
-    rtn = text
-    
-    string.each(separator=" ") { |substr|
-      rtn = highlight(text, substr)
-    }
-    
-    return rtn
+    highlight(text, string.split(' '))
   end
   
-  
-  def effective_policy(contribution)
-    if contribution.policy == nil
-      return Policy._default(contribution.contributor)
-    else 
-      return contribution.policy
-    end
+  def workflows_for_attribution_form
+    workflows = Workflow.find(:all, :select => 'workflows.id, workflows.title, users.name',
+        :joins => 'LEFT OUTER JOIN users ON workflows.contributor_type = "User" AND workflows.contributor_id = users.id',
+        :order => 'workflows.id ASC')
+
+    workflows.select { |w| Authorization.check('view', w, current_user) }
   end
   
-  def all_workflows
-    workflows = Workflow.find(:all, :order => "title ASC")
-    workflows = workflows.select {|w| w.authorized?('show', w) }
+  def blobs_for_attribution_form
+    blobs = Blob.find(:all, :select => 'blobs.id, blobs.title, users.name',
+        :joins => 'LEFT OUTER JOIN users ON blobs.contributor_type = "User" AND blobs.contributor_id = users.id',
+        :order => 'blobs.id ASC')
+
+    blobs.select { |b| Authorization.check('view', b, current_user) }
   end
   
-  def all_blobs
-    blobs = Blob.find(:all)
-    blobs.sort! { |x,y|
-      x_title = (x.title and x.title.length > 0) ? x.title : x.local_name
-      y_title = (y.title and y.title.length > 0) ? y.title : y.local_name
-      x_title.downcase <=> y_title.downcase
-    }
-    blobs = blobs.select {|b| b.authorized?('show', b) }
+  def networks_for_credits_form
+    Network.find(:all, :select => 'id, title',
+                       :order => "title ASC")
   end
   
-  def all_networks
-    Network.find(:all, :order => "title ASC")
+  def nonfriends_for_credits_form(user)
+    User.find(:all, :select => 'id, name',
+                    :order => 'LOWER(name)',
+                    :conditions => ["id != ?", user.id]) - user.friends
   end
-  
-  def all_nonfriends(user)
-    users = User.find(:all) - user.friends - [ user ]
+
+  def all_users
+    users = User.find(:all)
     users.sort! { |x,y|
       x.name.downcase <=> y.name.downcase
-    } 
+    }
   end
   
-  def license_link(license_type)
-    case license_type.downcase
-    when "by-nd"
-      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by-nd/3.0/" target="_blank">Creative Commons Attribution-NoDerivs 3.0 License</a>'
-    when "by"
-      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by/3.0/" target="_blank">Creative Commons Attribution 3.0 License</a>'
-    when "by-sa"
-      return '<a rel="Copyright" href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons Attribution-Share Alike 3.0 License</a>'
+  def license_icon_link(license)
+    case license.unique_name
+    when "by-nd", "by-sa", "by", "by-nc-nd", "by-nc", "by-nc-sa", "GPL", "LGPL"
+      return "<a rel=\"Copyright\" href=\"#{license_url(license)}\" title=\"#{license.title}\"><img src=\"/images/#{license.unique_name}.png\" /></a>"
+    else
+      return "<a rel=\"Copyright\" href=\"#{license_url(license)}\">#{license.title}</a>"
     end
   end
   
   def visible_name(entity)
-    type = ( entity.instance_of?(String) ) ? entity : entity.class.to_s
-    case type
-      when "Blob"
-        return "File"
-      when "Network"
-        return "Group"
-      else
-        return type
+
+    # Accept a string, the class object of a model or an instance of a model
+
+    if (entity.instance_of?(String))
+      name = entity
+    elsif (entity.class == Class)
+      name = entity.name.underscore.split("_").map do |bit| bit.capitalize end.join(" ")
+    else
+      name = entity.class.to_s
     end
+
+    # special case for a Session object, though I'm not convinced that it's
+    # still used anywhere (Don)
+
+    exit if name == "Session"
+
+    # substitute model alias in singular form
+
+    if Conf.model_aliases.value?(name)
+      Conf.model_aliases.each do |al, model|
+        name = al if name == model
+      end
+    end
+        
+    name
   end
   
   def controller_visible_name(humanized_controller_for)
-    case humanized_controller_for
-    when "Blobs"
-      return "Files"
-    when "Networks"
-      return "Groups"
-    when "Simple pages"
-      return "Info"
-    when "Session"
-      return "Log in"
-    else
-      return humanized_controller_for
+
+    # special case for Session, though I don't think it's needed any more (Don)
+
+    return "Log in" if humanized_controller_for == "Session"
+
+    # substitute model alias in plural form
+
+    Conf.model_aliases.each do |al, model|
+      humanized_controller_for = al.pluralize if humanized_controller_for == model.pluralize
     end
+
+    humanized_controller_for
   end
 
   def sharing_mode_text(contributable, mode)
@@ -882,7 +928,7 @@ module ApplicationHelper
   
   def friend_badge(user)
     if user and logged_in? and user.id != current_user.id
-      return image_tag("friend_badge.png", :class => 'badge') if (user.friend? current_user.id)
+      return image_tag("friend_badge.png", :class => 'badge') if (current_user.friend? user.id)
     else 
       return ''
     end
@@ -909,7 +955,7 @@ module ApplicationHelper
   end
   
   def tooltip_title_attrib(text, delay=200)
-    return "header=[] body=[#{text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[#{delay}]"
+    return "header=[] body=[#{h(text)}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[#{delay}]"
   end
   
   # This method checks to see if the current user is allowed to approve a membership that is still pending approval
@@ -918,7 +964,7 @@ module ApplicationHelper
       if membership.user_established_at == nil
         return membership.user_id == current_user.id
       elsif membership.network_established_at == nil
-        return current_user.id == membership.network.owner.id
+        return membership.network.administrator?(current_user)
       end 
     else
       return false
@@ -961,29 +1007,22 @@ module ApplicationHelper
                    :action => "edit_version",
                    :version => version_number)
   end
-  
-  def workflow_version_delete_url(workflow_id, version_number)
-    return url_for(:controller => "workflows",
-                   :id => workflow_id,
-                   :action => "destroy_version",
-                   :version => version_number)
-  end
-  
-  def thing_authorized?(action, thing)
-    return true unless thing.respond_to?(:authorized?)
-    return thing.authorized?(action, (logged_in? ? current_user : nil))
-  end
-  
+
   def strip_html(str, preserve_tags=[])
     str = str.strip || ''
     preserve_arr = preserve_tags.join('|') << '|\/'
     str.gsub(/<(\/|\s)*[^(#{preserve_arr})][^>]*>/,'')
   end
   
-  def feed_icon_tag(title, url)
+  def feed_icon_tag(title, url, style='')
     (@feed_icons ||= []) << { :url => url, :title => title }
-    alt_text = "Subscribe to #{title}"
-    link_to image_tag('feed-icon.png', :alt => alt_text, :title => tooltip_title_attrib(alt_text), :style => "vertical-align: middle; padding: 0;"), url
+    alt_text = "Subscribe to #{title} feed"
+    link_to image_tag('feed-icon.png', :alt => alt_text, :title => tooltip_title_attrib(alt_text), :style => "vertical-align: middle; padding: 0;" + style), url
+  end
+  
+  def download_icon_tag(title, url, style='')
+    filename = method_to_icon_filename("download")
+    link_to image_tag(filename, :alt => "Download", :title => tooltip_title_attrib(title), :style => "vertical-align: middle; padding: 0;" + style), url
   end
   
   # NOTE: the timeago methods below are used instead of the built in Rails DateHelper methods
@@ -1097,11 +1136,15 @@ module ApplicationHelper
     perm
   end
   
-  def currentusers_things_url(thing)
+  def currentusers_things_url(klass)
     return nil unless current_user
-    return url_for(:controller => 'users',
-                   :id => current_user.id,
-                   :action => thing)
+    if Conf.contributable_models.include?(klass)
+      return polymorphic_url([current_user, klass.pluralize.underscore.to_sym])
+    else
+      return url_for(:controller => 'users',
+                     :id => current_user.id,
+                     :action => controller_visible_name(klass))
+    end
   end
   
   def view_privileges_notice
@@ -1116,7 +1159,7 @@ module ApplicationHelper
   end
   
   def downloadable?(type)
-    if ['workflow', 'blob'].include? type.downcase
+    if ['workflow', 'blob', 'pack'].include? type.downcase
       return true
     else
       return false
@@ -1179,20 +1222,6 @@ module ApplicationHelper
     end
   end
   
-  def aggregate_taggables(taggables)
-    rtn = {}
-    
-    taggables.each do |t|
-      if (arr = rtn[(klass = t.class.to_s)])
-        arr << t
-      else
-        rtn[klass] = [t]
-      end
-    end
-    
-    return rtn
-  end
-  
   def delete_image(style=nil, tooltip="Delete")
     return image_tag("famfamfam_silk/cross.png",
               :title => "header=[] body=[#{tooltip}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
@@ -1211,7 +1240,7 @@ module ApplicationHelper
   end
   
   def update_perms_info_text(contributable)
-    return nil if type.blank?
+    return nil if contributable.nil?
     
     resource = c_resource_string(contributable)
     visible_type = visible_name(contributable)
@@ -1239,12 +1268,22 @@ module ApplicationHelper
     
     text += "<p>
               Note that updating privileges only affect how other users can update this
-              #{visible_type} entry on myExperiment. If the user downloads the #{resource},
-              they can still edit it away from myExperiment and possible upload it back as a new entry.
+              #{visible_type} entry on #{Conf.sitename}. If the user downloads the #{resource},
+              they can still edit it away from #{Conf.sitename} and possible upload it back as a new entry.
             </p>"
             
     return text
   end
+  
+  # From: http://ajax.howtosetup.info/ruby/finding-mean-median-and-mode-2/
+  def mean(array)
+    if array.length == 0 
+      return 0
+    else
+      return array.inject(0) { |sum, x| sum += x } / array.size.to_f  
+    end
+  end
+
   
 protected
 
@@ -1253,7 +1292,7 @@ protected
     
     return rtn unless depth.to_i < 2
     
-    collections = [[contributor], contributor.contributions, contributor.workflows, contributor.blogs]
+    collections = [[contributor], contributor.contributions, contributor.workflows]
     recursions = []
     
     case contributor.class.to_s
@@ -1335,7 +1374,7 @@ protected
         return rtn unless (restrict_contributor.class.to_s == "User" and item.id.to_i == restrict_contributor.id.to_i)
       end
       
-      rtn << [item.created_at, "#{name(item)} joined #{link_to "myExperiment", "/"}."]
+      rtn << [item.created_at, "#{name(item)} joined #{link_to Conf.sitename, "/"}."]
     when "Contribution"
       return rtn if before and item.created_at > before
       return rtn if after and item.created_at < after
@@ -1372,19 +1411,6 @@ protected
         
         rtn << [item.created_at, "#{editor} created the #{link} #{item.contributable_type.downcase == "blob" ? "File" : item.contributable_type.downcase} for #{owner_string}."]
       end
-    when "Blog"
-      if restrict_contributor
-        return rtn unless (restrict_contributor.class.to_s == item.contributor_type.to_s and restrict_contributor.id.to_i == item.contributor_id.to_i)
-      end
-      
-      owner = contributor(item.contributor_id, item.contributor_type)
-    
-      item.posts.each do |blog_post|
-        next if before and blog_post.created_at > before
-        next if after and blog_post.created_at < after
-        
-        rtn << [blog_post.created_at, "#{owner} has created a new post on #{contributable(item.id, "Blog")}."]
-      end
     when "Workflow"
       item.versions.each do |workflow|
         next if workflow.version.to_i == 1
@@ -1397,7 +1423,7 @@ protected
           next unless (workflow.contributor_type.to_s == restrict_contributor.class.to_s and workflow.contributor_id.to_i == restrict_contributor.id.to_i)
         end
         
-        rtn << [workflow.updated_at, "#{editor} edited the #{versioned_workflow_link(item.id, workflow.version, false)} Workflow."]
+        rtn << [workflow.updated_at, "#{editor} edited the #{versioned_resource_link(item, workflow.version, false)} Workflow."]
       end
     when "PictureSelection"
       return rtn if before and item.created_at > before
@@ -1413,6 +1439,116 @@ protected
     end
     
     return rtn
+  end
+
+  def permissions_categorised(permissions)
+    permissions_categorised={'announcement'=>[],'citation'=>[],'comment'=>[],'download'=>[],'experiment'=>[],'file'=>[],'group'=>[],'job'=>[],'message'=>[],'pack'=>[],'picture'=>[],'review'=>[],'runner'=>[],'tag'=>[],'user'=>[],'workflow'=>[],'miscellaneous'=>[]};
+    categories=permissions_categorised.keys
+    for key,permission in permissions
+      category_found=false
+      for category in categories
+        if key.include?(category)
+          permissions_categorised[category].push(permission)
+          category_found=true
+        end
+      end
+      unless category_found
+        permissions_categorised['miscellaneous'].push(permission)
+      end
+    end
+    permissions_categorised=permissions_categorised.sort
+    return permissions_categorised
+  end
+
+  def permissions_show_categorised(permissions)
+    permissions_categorised={'announcement'=>[],'citation'=>[],'comment'=>[],'download'=>[],'experiment'=>[],'file'=>[],'group'=>[],'job'=>[],'message'=>[],'pack'=>[],'picture'=>[],'review'=>[],'runner'=>[],'tag'=>[],'user'=>[],'workflow'=>[],'miscellaneous'=>[]};
+    categories=permissions_categorised.keys
+    for permission in permissions
+      category_found=false
+      for category in categories
+        if permission.for.include?(category)
+          permissions_categorised[category].push(permission.for)
+          category_found=true
+        end
+      end
+      unless category_found
+        permissions_categorised['miscellaneous'].push(permission.for)
+      end
+    end
+    permissions_categorised=permissions_categorised.sort
+    return permissions_categorised
+  end
+
+  def indefinite_article(text)
+    text.match(/^[aeiou]/i) ? "an" : "a"
+  end
+ 
+  def comma_list(strings)
+
+    return ""         if strings.empty?
+    return strings[0] if strings.length == 1
+
+    strings[0..-2].join(", ") + " and " + strings[-1]
+  end
+
+  def login_identity_reminder(user)
+    return "Your username is: #{user.username}"     if user.username
+    return "Your OpenID URL is: #{user.openid_url}" if user.openid_url
+  end
+
+  def callback_url(item)
+    item_url = nil
+    if session && session[:callback]
+      case session[:callback][:format]
+      when 'uri'
+        item_url = rest_resource_uri(item)
+      when 'xml'
+        item_url = rest_access_uri(item)
+      else
+        return nil
+      end
+    end
+    if item_url
+      return session[:callback][:url]+URI.escape(item_url,'?!#&/')
+    else
+      return nil
+    end
+  end
+
+  def group_items(items, num)
+
+    result = []
+
+    while !items.empty? do
+      group = []
+
+      num.times do
+        group << items.shift unless items.empty?
+      end
+
+      result << group
+    end
+
+    result
+  end
+
+  def context_prefix(context)
+    case context
+    when User
+      prefix = "#{context.name}'"
+      prefix << 's' if context.name[-1] != 's'
+    when Network
+      prefix = context.name
+    else
+      prefix = ''
+    end
+
+    prefix
+  end
+
+  # Creates a URL from a path and a hash of parameters
+  def url_with_params(url, params)
+    url + '?' + params.delete_if {|k,v| v.nil? || v.empty?}.to_query
   end
 
 end

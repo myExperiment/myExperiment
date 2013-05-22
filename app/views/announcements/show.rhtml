@@ -30,6 +30,9 @@
 	<br/>
 	
 	<div class="message">
-		<%=white_list @announcement.body_html %>
+		<%= @announcement.body_html %>
 	</div>
 </div>
+
+<%= render :partial => "contributions/alternative_formats" %>
+

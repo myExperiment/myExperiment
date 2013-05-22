@@ -1,63 +1,68 @@
 class Notifier < ActionMailer::Base
-  
-  NOTIFICATIONS_EMAIL = "notification@mail.myexperiment.com"
 
-  def friendship_request(user, friend_name, base_url)
+  helper :application
+
+  def friendship_request(user, friend_name, friendship, base_url)
     recipients user.email
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment - #{friend_name} has requested to be your friend"
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} - #{friend_name} has requested to be your friend"
     
-    body :name => user.name,
-         :username => user.username,
+    body :user => user,
          :friend_name => friend_name,
-         :base_url => base_url
+         :friendship => friendship,
+         :base_url => base_url,
+         :target => user
   end
   
-  def membership_invite(user, network, base_url)
+  def membership_invite(user, network, membership, base_url)
     recipients user.email
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment - you have been invited to join the #{network.title} Group"
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} - you have been invited to join the #{network.title} Group"
     
-    body :name => user.name,
-         :username => user.username,
+    body :user => user,
          :network => network,
-         :base_url => base_url
+         :membership => membership,
+         :base_url => base_url,
+         :target => user
   end
   
-  def membership_request(requestor, network, base_url)
-    recipients network.owner.email
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment - #{requestor.name} would like to join the #{network.title} Group"
+  def membership_request(requestor, network, membership, base_url)
+    recipients network.administrators(true).select{|admin| admin.send_notifications?}.map{|u| u.email}
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} - #{requestor.name} would like to join the #{network.title} Group"
     
-    body :name => network.owner.name,
-         :username => network.owner.username,
+    body :user => network.owner,
          :network => network,
          :base_url => base_url,
-         :requestor_name => requestor.name
+         :membership => membership,
+         :requestor => requestor,
+         :target => network.owner
   end
   
   def auto_join_group(member, network, base_url)
-    recipients network.owner.email
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment - #{member.name} has joined the #{network.title} Group"
+    recipients network.administrators(true).select{|admin| admin.send_notifications?}.map{|u| u.email}
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} - #{member.name} has joined the #{network.title} Group"
     
     body :name => network.owner.name,
-         :username => network.owner.username,
          :network => network,
          :base_url => base_url,
-         :member_name => member.name
+         :member_name => member.name,
+         :target => network.owner
   end
   
   def new_message(message, base_url)
     recipients message.u_to.email
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment - #{message.u_from.name} has sent you a message"
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} - #{message.u_from.name} has sent you a message"
     
     body :name => message.u_to.name,
          :username => message.u_to.username,
          :from_name => message.u_from.name,
          :base_url => base_url,
-         :subject => message.subject
+         :subject => message.subject,
+         :message_id => message.id,
+         :target => message.u_to
   end
 
 end

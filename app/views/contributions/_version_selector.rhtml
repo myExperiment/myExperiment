@@ -1,0 +1,71 @@
+<script type="text/javascript">
+  function showVersion(form) {
+    var url = $("resource_versions").value;
+		location.href = url;
+		form.submit
+  }
+</script>
+
+<div class="contribution_version_selector_box">
+
+  <table>
+    <tbody>
+      <tr>
+        <td class="heading" style="vertical-align: top;">
+          <%= info_icon_with_tooltip("This box shows version #{version.version.to_s} for this entry") -%>
+          <span><%= "Version #{version.version.to_s} #{resource.describe_version(version.version)}" -%></span>
+          <span class="count_text">(of <%= resource.versions.length -%>)</span>
+          <a name="versions"></a>
+        </td>
+        <td>
+          <% if resource.versions.length > 1 %>
+             <form onsubmit="showVersion(this); return false;" style="text-align: right;">
+              <b>View version: </b>
+              <select id="resource_versions" onchange="showVersion(this.form)">
+                <% resource.versions.reverse.each do |v| %>
+                  <option value="<%= send(path, resource, v.version.to_s) %>" <%= "selected" if v.version == version.version -%>>
+                      <%= "#{v.version.to_s} #{resource.describe_version(v.version)}" %>
+                  </option>
+                <% end %>
+              </select>
+            </form>
+          <% end %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+      
+  <div id="version_info_box" style="color: #666666;  font-size: 85%; margin: 0.6em 0.5em 0.2em 0.5em; border-top: 1px solid #DDDDDD; padding-top: 0.4em;">
+    <p style="text-align: center;">
+      <b>Version created on:</b>
+      <span><%= datetime version.created_at, false %></span>
+      <% if version.respond_to?(:contributor_id) && version.respond_to?(:contributor_type) %>
+        <b>by:</b>
+        <span><%= contributor(version.contributor_id, version.contributor_type) %></span>
+      <% end %>
+      <% if !version.revision_comments.blank? %>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        <span><%= link_to_function "Revision comment " + expand_image, visual_effect(:toggle_blind, "version_info_box_comments", :duration => 0.3) %></span>
+      <% end %>
+    </p>
+    
+    <% unless version.created_at == version.updated_at %>
+      <p style="text-align: center;">
+        <b>Last edited on:</b>
+        <span><%= datetime version.updated_at, false %></span>
+        <% if version.respond_to?(:last_edited_by) %>
+          <b>by:</b>
+          <span><%= contributor(version.last_edited_by, "User") %></span>
+        <% end %>
+      </p>
+    <% end %>
+  </div>
+  
+  <% if !version.revision_comments.blank? -%>
+    <div id="version_info_box_comments" style="display: none; border: 1px dotted #CCCCCC; padding: 0.3em 0.5em;">
+      <%= white_list version.revision_comments %>
+    </div>
+  <% end %>
+
+</div>
+

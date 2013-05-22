@@ -11,7 +11,7 @@
 			    <td class="mid" style="text-align: left;">
 			    	<p style="margin-top:0; padding-top:0; font-weight:bold; font-size: 108%;">
 							<%= icon "review", nil, nil, nil, '' %>
-							Title: <%= link_to h(review.title), review_url(reviewable, review) %>
+							Title: <%= link_to h(review.title), workflow_review_url(reviewable, review) %>
 						</p>
 						
 						<p>
@@ -31,19 +31,19 @@
 						
 						<div class="desc" style="font-size: 85%;">
 							<% unless (text = strip_html(review.review)).blank? %>
-								<%= truncate(text, 500) %>
+								<%= truncate(text, :length => 500) %>
 							<% else %>
 								<p class="none_text">No text</p>
 							<% end %>
 							<p style="text-align: right;">
-								[ <%= link_to "more", review_url(reviewable, review) %> ]
+								[ <%= link_to "more", workflow_review_url(reviewable, review) %> ]
 							</p>
 						</div>
 					</td>
 			    <td class="actions"  style="width: 80px;">
-		      	<%= icon "show", review_path(reviewable, review), nil, nil, "View" %>
+		      	<%= icon "show", workflow_review_path(reviewable, review), nil, nil, "View" %>
 						<% if review.allow_edit?(logged_in? ? current_user : nil) %>
-							<%= icon('edit', edit_review_path(reviewable, review), nil, nil, 'Edit') %>
+							<%= icon('edit', edit_workflow_review_path(reviewable, review), nil, nil, 'Edit') %>
 						<% end %>
 		    	</td>
 		  	</tr>

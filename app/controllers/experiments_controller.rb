@@ -18,7 +18,21 @@ class ExperimentsController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+        
+        @lod_nir  = experiment_url(@experiment)
+        @lod_html = experiment_url(:id => @experiment.id, :format => 'html')
+        @lod_rdf  = experiment_url(:id => @experiment.id, :format => 'rdf')
+        @lod_xml  = experiment_url(:id => @experiment.id, :format => 'xml')
+        
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} experiments #{@experiment.id}`
+        }
+      end
     end
   end
 
@@ -79,7 +93,7 @@ protected
     
     if params[:assign_to_group]
       network = Network.find(params[:assign_to_group_id])
-      if network and network.member?(current_user.id)
+      if network and network.member?(current_user)
         @experiment.contributor = network
       else
         flash[:error] = "Experiment could not be created because could not assign ownership to Group."
@@ -100,23 +114,23 @@ protected
   end
   
   def find_experiment_auth
-    experiment = Experiment.find(:first, :conditions => ["id = ?", params[:id]])
-    
-    if experiment and experiment.authorized?(action_name, current_user)
-      @experiment = experiment
-    else
-      error("Experiment not found or action not authorized", "is invalid (not authorized)")
-    end
-  end
-  
-private
 
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = Experiment.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to experiments_url }
+    action_permissions = {
+      "create"  => "create",
+      "destroy" => "destroy",
+      "edit"    => "edit",
+      "index"   => "view",
+      "new"     => "create",
+      "show"    => "view",
+      "update"  => "edit"
+    }
+
+    @experiment = Experiment.find(:first, :conditions => ["id = ?", params[:id]])
+
+    if @experiment.nil?
+      render_404("Experiment not found.")
+    elsif !Authorization.check(action_permissions[action_name], @experiment, current_user)
+      render_401("You are not authorized to #{action_name} this experiment.")
     end
   end
 end

@@ -105,7 +105,7 @@ module AuthenticatedSystem
     # Redirect to the URI stored by the most recent store_location call or
     # to the passed default.
     def redirect_back_or_default(default)
-      session[:return_to] ? redirect_to_url(session[:return_to]) : redirect_to(default)
+      session[:return_to] ? redirect_to(session[:return_to]) : redirect_to(default)
       session[:return_to] = nil
     end
     
@@ -125,6 +125,15 @@ module AuthenticatedSystem
         self.current_user = user
         cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         flash[:notice] = "Logged in successfully"
+      end
+    end
+
+    # Allows single requests to be authenticated using HTTP basic authentication
+    # (Used by Taverna, and possibly other REST clients when attempting to remotely open a private workflow)
+    def login_from_basic_auth
+      return if logged_in?
+      unless (credentials = get_auth_data).first.nil?
+        self.current_user = User.authenticate(credentials[0], credentials[1])
       end
     end
 

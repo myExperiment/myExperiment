@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PackContributableEntriesTest < Test::Unit::TestCase
+class PackContributableEntriesTest < ActiveSupport::TestCase
   fixtures :pack_contributable_entries
 
   # Replace this with your real tests.

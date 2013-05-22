@@ -1,0 +1,47 @@
+<%# Defines a new header, then calls main myExperiment layout %>
+
+<% content_for :header do %>
+</div>
+
+<div id="elico_header">
+  <div class="logo">
+    <div style="float: left; margin-bottom: 0.5em">
+      <img src="/images/elico_logo_white.png" style="float: left; vertical-align: middle; width: 60px; height: 60px"/>
+      <div style="float: left; margin-top: 1em; margin-left: 1em">
+        <div style="font-size: 220%; font-weight: bold; vertical-align: middle">Data Mining Portal</div>
+        <div style="margin: 0.5em 0 0 1em">
+          on <%= link_to image_tag("/images/logo_tiny.png", :style=>"-moz-border-radius: 2px; border-radius: 2px; vertical-align: middle;border: 1px solid white"), "/" -%>
+        </div>
+      </div>
+    </div>
+    <div style="float: right; background-color: #fff; border-radius: 3px; padding: 5px;">
+      <%= render :partial => 'layouts/user_links' %>
+    </div>
+    <br class="clearer"/>
+  </div>
+  <div id="elico_links_bar">
+    <div id="inner">
+      <div style="float: left;" class="links">
+        <%= link_to "About", "http://www.e-lico.eu/?q=node/4", :target => '_blank' %> |
+        <%= link_to "Mailing List", "http://lists.e-lico.eu/mailman/listinfo/dm-myexperiment", :target => '_blank' %> |
+        <%= link_to "Publications", "http://www.e-lico.eu/?q=publications", :target => '_blank' %>
+      </div>
+      <br class="clearer"/>
+    </div>
+  </div>
+</div>
+
+<div id="doc2" class="yui-t4" style="*overflow: visible; *height: auto">
+  <div id="hd">
+    <div id="myexp_tabs">
+      <%= render :partial => 'layouts/tab_bar' %>
+    </div>
+    <div id="myexp_searchbar">
+      <%= render :partial => "gadgets/new_object" %>
+      <%= render :partial => "layouts/search" %>
+    </div>
+  </div>
+<% end %>
+
+<%# TODO: In rails 2, this can possibly be removed, and the layout specified when rendering the partial in application.rhtml %>
+<%= render :partial => "layouts/myexperiment" %>

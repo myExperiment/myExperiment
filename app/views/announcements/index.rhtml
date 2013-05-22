@@ -1,5 +1,5 @@
 <h1>
-	<%= feed_icon_tag "Site Announcements", formatted_announcements_path(:rss) %>
+	<%= feed_icon_tag "Site Announcements", announcements_path(:format => :rss) %>
 	Site Announcements (<%= @announcements.length %>)
 </h1>
 

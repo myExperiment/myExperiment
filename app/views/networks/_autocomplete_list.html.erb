@@ -1,0 +1,8 @@
+<ul>
+  <% networks.each do |network| %>
+    <li data-network-id="<%= network.id -%>" data-network-name="<%= h network.title -%>" style="border-bottom: 1px dashed #bbb">
+      <%= h network.title -%><br/>
+      <span style="font-weight: normal; color: #777"><%= network.members.count -%> members</span>
+    </li>
+  <% end %>
+</ul>

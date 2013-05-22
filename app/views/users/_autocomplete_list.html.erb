@@ -1,0 +1,11 @@
+<ul>
+  <% users.each do |user| %>
+    <li data-user-id="<%= user.id -%>" data-user-name="<%= h user.name -%>" style="border-bottom: 1px dashed #bbb">
+      <%= flag_icon(user.profile.location_country, user.profile.location) if user.profile -%>
+      <%= h user.name -%><br/>
+      <% unless user.profile.nil? || user.profile.email.nil? || user.profile.email.empty? %>
+        <span style="font-weight: normal; color: #777"><%= user.profile.email.gsub("@", " [at] ") %></span>
+      <% end %>
+    </li>
+  <% end %>
+</ul>

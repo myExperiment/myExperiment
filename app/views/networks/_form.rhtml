@@ -1,7 +1,7 @@
-  <%= javascript_include_tag :fckeditor %>
+  <%= javascript_include_tag "ckeditor/ckeditor.js" %>
 	
 	<p>
-    <b>Administrator</b><br />
+    <b>Owner</b><br />
     <%= render :partial => "users/avatar", :locals => { :user => @network.owner } %>
     <%= form.hidden_field :user_id %>
   </p>
@@ -17,7 +17,7 @@
     <legend>Persistent URL</legend>
     <p>What is a <%= link_to 'pURL', "http://en.wikipedia.org/wiki/Persistent_Uniform_Resource_Locator", :popup => true %>?</p>
     <p>
-      If you set a unique identifier, it will be used in future versions of myExperiment to provide a persistent and human-readable URL for your Group.
+      If you set a unique identifier, it will be used in future versions of <%= Conf.sitename %> to provide a persistent and human-readable URL for your Group.
     </p> 
     
     <p><b>Reserve yours now!</b></p>
@@ -29,21 +29,37 @@
   </fieldset>
 
   <fieldset>
-    <legend>Auto Accept Join Requests</legend>
+    <legend>New Membership Policy</legend>
     <p>
-    	You can configure this group to automatically accept requests from users to join.
+    	You can specify a policy on how new members can join this group.
 		</p>
     <p>
-      <%= form.check_box :auto_accept %>
-      <b>Auto Accept Join Requests</b><br />
+      <%= form.select :new_member_policy, Network::NEW_MEMBER_POLICY_OPTIONS.map {|o| [o[1],o[0]]} %>
     </p>
   </fieldset>
-  
-  <br/>
 	
+  <fieldset class="atom-feed">
+    <legend>Atom feed</legend>
+    <p>
+      You can specify an Atom feed which will be used to insert items into this group's activity stream.
+    </p>
+    <p>
+      <b>Atom feed URL</b><br />
+      <%= text_field_tag :feed_uri, (@network.feed ? @network.feed.uri : nil) -%>
+    </p>
+    <p>
+      <b>Atom feed username (optional)</b><br />
+      <%= text_field_tag :feed_user, (@network.feed ? @network.feed.username : nil) -%>
+    </p>
+    <p>
+      <b>Atom feed password (optional)</b><br />
+      <%= password_field_tag :feed_pass -%>
+    </p>
+  </fieldset>
+
 	<p>
   	<strong>Description: </strong>
 	</p>
-	<%= fckeditor_textarea(:network, :description, :toolbarSet => 'Simple', :width => '700px', :height => '300px') %>
+	<%= form.text_area(:description, :width => '700px', :height => '300px', :class => 'ckeditor') %>
 
  

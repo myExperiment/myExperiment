@@ -3,12 +3,12 @@
 		<td>
 			<ul class="breadcrumb_list">
 				<li><%= link_to "Home", home_url %></li>
-				<li><b>&#187;</b></li>
-				<%= render :partial => "breadcrumbs" %>
+        <% # no better way to check for breadcrumbs partial...  %>
+				<%= render :partial => "breadcrumbs" rescue nil %>
 			</ul>
 		</td>
 		<td style="text-align: right; padding-left: 1em;">
-			<%= render :partial => "layouts/bookmark_widget" if USE_BOOKMARK_WIDGET %>
+			<%= render :partial => "layouts/bookmark_widget" if Conf.bookmark_widget["enable"] %>
 		</td>
 	</tr>
 </table>

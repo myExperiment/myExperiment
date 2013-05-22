@@ -1,0 +1,18 @@
+<h1>Policy: <%= @policy.name -%></h1>
+<ul class="sectionIcons">
+  <% if @policy.contributions.size == 0 -%>
+    <li>
+      <%= icon('destroy', network_policy_path(@group, @policy), nil, { :confirm => 'Are you sure you wish to delete this policy?', :method => :delete }, 'Delete Policy') %>
+    </li>
+  <% end -%>
+</ul>
+<h3>Usage</h3>
+<%= @policy.contributions.size -%> resources using this policy
+<br/>
+<% form_tag network_policy_path(@group, @policy), :method => :put do -%>
+  <%= render :partial => 'form', :locals => { :policy => @policy, :edit => true } %>
+  <br/>
+  <p>
+    <%= submit_tag "Save" -%>
+  </p>
+<% end -%>

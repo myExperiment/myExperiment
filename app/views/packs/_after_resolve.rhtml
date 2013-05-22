@@ -1,11 +1,15 @@
 <div style="border: 1px solid #DDDDDD; padding: 0.5em 0.8em; background-color: #FFFFFF;">
 	<% if error_message -%>
 		<p class="error_text" style="text-align: center; padding: 0.3em 0.8em;"><%= error_message -%></p>
+	<% elsif params[:uri].blank? %>
+	  <p class="error_text" style="text-align: center; padding: 0.3em 0.8em;">
+			Please provide a link.
+		</p>
 	<% else %>
 		<p style="text-align: center;">
 			This link points to the following <b><%= type_to_UI_text type -%></b> resource:
 		</p>
+		<%= render :partial => "entry_item", :locals => { :type => type, :item_entry => item_entry, :show_full => true } -%>
 	<% end -%>
 	
-	<%= render :partial => "entry_item", :locals => { :type => type, :item_entry => item_entry, :show_full => true } -%>
 </div>

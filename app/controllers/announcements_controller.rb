@@ -8,19 +8,38 @@ class AnnouncementsController < ApplicationController
   
   before_filter :find_announcements, :only => [:index]
   
-  before_filter :invalidate_home_cache, :only => [:create, :update, :destroy]
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :announcement_sweeper, :only => [ :create, :update, :destroy ]
   
   def index
     respond_to do |format|
       format.html # index.rhtml
       format.rss do
-        render :action => 'index.rxml', :layout => false
+        render :action => 'feed.rxml', :layout => false
       end
     end
   end
 
   def show
     @announcement = Announcement.find(params[:id])
+
+    respond_to do |format|
+      format.html {
+
+        @lod_nir  = announcement_url(@announcement)
+        @lod_html = announcement_url(:id => @announcement.id, :format => 'html')
+        @lod_rdf  = announcement_url(:id => @announcement.id, :format => 'rdf')
+        @lod_xml  = announcement_url(:id => @announcement.id, :format => 'xml')
+        #
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} announcements #{@announcement.id}`
+        }
+      end
+    end
   end
 
   def new
@@ -31,6 +50,7 @@ class AnnouncementsController < ApplicationController
     params[:announcement][:user_id] = current_user.id
     @announcement = Announcement.new(params[:announcement])
     if @announcement.save
+      Activity.create(:subject => current_user, :action => 'create', :objekt => @announcement)
       flash[:notice] = 'Announcement was successfully created.'
       redirect_to :action => 'index'
     else
@@ -45,6 +65,7 @@ class AnnouncementsController < ApplicationController
   def update
     @announcement = Announcement.find(params[:id])
     if @announcement.update_attributes(params[:announcement])
+      Activity.create(:subject => current_user, :action => 'edit', :objekt => @announcement)
       flash[:notice] = 'Announcement was successfully updated.'
       redirect_to :action => 'show', :id => @announcement
     else
@@ -70,7 +91,4 @@ protected
     @announcements = Announcement.find(:all, :order => "created_at DESC")
   end
   
-  def invalidate_home_cache
-    expire_fragment(:controller => 'home_cache', :action => 'announcements')
-  end
 end

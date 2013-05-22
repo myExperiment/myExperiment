@@ -18,24 +18,33 @@ module Mib
                   :as => :contributable,
                   :dependent => :destroy
                   
-          acts_as_bookmarkable
-          acts_as_commentable
-          acts_as_rateable
-          acts_as_taggable
-          
           after_save :save_contributable_record
+          after_save :update_contribution_rank
+          after_save :update_contribution_rating
+          after_save :update_contribution_cache
 
-          # NOTE: because we cannot do polymorphic nested resources with Rails 1.2.3,
-          # the line below has been moved to the Workflow model class. 
-          #acts_as_reviewable
-                  
           class_eval do
             extend Mib::Acts::Contributable::SingletonMethods
           end
           include Mib::Acts::Contributable::InstanceMethods
           
           before_create do |c|
-            c.contribution = Contribution.new(:contributor_id => c.contributor_id, :contributor_type => c.contributor_type, :contributable => c)
+
+            # If not specified, create a contribution record and / or policy
+            # record.
+
+            if c.contribution.nil?
+              c.contribution = Contribution.new(
+                  :contributor   => c.contributor,
+                  :contributable => c)
+            end
+
+            c.contribution.contributor ||= c.contributor
+
+            if c.contribution.policy.nil?
+              c.contribution.policy = create_default_policy(c.contributor)
+            end
+
           end
         end
       end
@@ -62,10 +71,7 @@ module Mib
       end
       
       module InstanceMethods
-        def authorized?(action_name, contributor=nil)
-          contribution.authorized?(action_name, contributor)
-        end
-        
+
         # the owner of the contribution record for this contributable
         def owner?(c_utor)
           contribution.owner?(c_utor)
@@ -77,6 +83,7 @@ module Mib
         end
 
         def contributor_name
+          return nil if contribution.nil?
           return contribution.contributor.name  if contribution.contributor.respond_to?('name')
           return contribution.contributor.title if contribution.contributor.respond_to?('title')
         end
@@ -85,21 +92,50 @@ module Mib
         # contributable
         def save_contributable_record
           if contribution
-            contribution.save
+            inhibit_timestamps do
+              contribution.update_attribute(:updated_at, contribution.contributable.updated_at)
+            end
           end
         end
-        
-        # Returns all the Packs that this contributable is referred to in
-        def in_packs
-          # Use a custom handcrafted sql query (for perf reasons):
-          sql = "SELECT packs.*
-                 FROM packs
-                 WHERE packs.id IN (
-                   SELECT pack_id
-                   FROM pack_contributable_entries
-                   WHERE contributable_id = ? AND contributable_type = ? )"
-      
-          return Pack.find_by_sql [ sql, self.id, self.class.to_s ]
+
+        def update_contribution_rank
+          if contribution
+
+            if respond_to?(:rank)
+              value = rank
+            else
+              value = 0.0
+            end
+
+            inhibit_timestamps do
+              contribution.update_attribute(:rank, value)
+            end
+          end
+        end
+
+        def update_contribution_rating
+          if contribution
+
+            if respond_to?(:rating)
+              value = rating
+            else
+              value = 0.0
+            end
+
+            inhibit_timestamps do
+              contribution.update_attribute(:rating, value)
+            end
+          end
+        end
+
+        def update_contribution_cache
+          if contribution
+            inhibit_timestamps do
+              contribution.update_attribute(:label,           respond_to?(:label)           ? label           : nil)
+              contribution.update_attribute(:content_type_id, respond_to?(:content_type_id) ? content_type_id : nil)
+              contribution.update_attribute(:license_id,      respond_to?(:license_id)      ? license_id      : nil)
+            end
+          end
         end
       end
     end

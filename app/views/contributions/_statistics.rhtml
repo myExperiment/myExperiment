@@ -1,9 +1,13 @@
-<p>
-  <%= pluralize statistics.viewings_count, "viewing" %> 
+<p style="font-size: 85%;">
+  <%= pluralize statistics.viewings_count, "viewing" %>
 </p>
 
 <% if downloadable? type -%>
-	<p>
-	  <%= pluralize statistics.downloads_count, "download" %>  
+	<p style="font-size: 85%;">
+	  <%= pluralize statistics.downloads_count, "download" %>
 	</p>
 <% end -%>
+
+<p style="margin-top: 0.2em;">
+	<small>[ <%= link_to "see breakdown", polymorphic_url(contributable, :action => :statistics) -%> ]</small>
+</p>

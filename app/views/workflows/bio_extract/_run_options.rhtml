@@ -1,0 +1,16 @@
+<% if (model = @workflow.get_workflow_model_object(@viewing_version_number)) -%>
+
+<div style="margin: 0 0.5em;">
+	<h4>
+		Run this Workflow in the BioExtract Server...
+	</h4>
+
+  <br/>
+		
+	<ul class="sectionIcons">
+		<li style="margin-left: 0;"><%= icon('launch', model.external_exe_link, "Launch this workflow (version #{@viewing_version_number.to_s}) directly in the BioExtract Server online", { :target => "_blank" }, "Launch in BioExtract Server") %></li>
+	</ul>
+
+</div>
+
+<% end %>

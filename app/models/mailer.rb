@@ -1,51 +1,82 @@
 class Mailer < ActionMailer::Base
-  
-  NOTIFICATIONS_EMAIL = "notification@mail.myexperiment.com"
-  FEEDBACK_EMAIL = "bugs@myexperiment.org"
 
-  def feedback(name, subject, content)
-    recipients FEEDBACK_EMAIL
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment feedback from #{name}"
+  helper :application
+
+  def feedback(name, subj, content)
+    recipients Conf.feedback_email_address
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} feedback from #{name}: #{subj}"
     
     body :name => name, 
          :subject => subject, 
          :content => content
   end
   
-  def account_confirmation(user, hash, base_url)
+  def account_confirmation(user, hash)
     recipients user.unconfirmed_email
-    from NOTIFICATIONS_EMAIL
-    subject "Welcome to myExperiment. Please activate your account."
+    from Conf.notifications_email_address
+    subject "Welcome to #{Conf.sitename}. Please activate your account."
 
     body :name => user.name, 
-         :username => user.username, 
-         :hash => hash, 
-         :base_url => base_url
+         :user => user,
+         :hash => hash
   end
   
-  def forgot_password(user, base_url)
+  def forgot_password(user)
     recipients user.email
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment - Reset Password Request"
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} - Reset Password Request"
 
     body :name => user.name, 
-         :username => user.username, 
-         :reset_code => user.reset_password_code, 
-         :base_url => base_url
-         
+         :user => user,
+         :reset_code => user.reset_password_code
   end
   
-  def update_email_address(user, hash, base_url)
+  def update_email_address(user, hash)
     recipients user.unconfirmed_email
-    from NOTIFICATIONS_EMAIL
-    subject "myExperiment - Update Email Address on Account"
+    from Conf.notifications_email_address
+    subject "#{Conf.sitename} - Update Email Address on Account"
 
     body :name => user.name, 
-         :username => user.username, 
+         :user => user,
          :hash => hash, 
-         :base_url => base_url,
          :email => user.unconfirmed_email
+  end
+  
+  def invite_new_user(user, email, msg_text)
+    recipients email
+    from user.name + "<" + Conf.notifications_email_address + ">"
+    subject "Invitation to join #{Conf.sitename}"
+
+    body :name => user.name, 
+         :user_id => user.id, 
+         :message => msg_text
+  end
+
+  def group_invite_new_user(user, group, email, msg_text, token)
+    recipients email
+    from user.name + "<" + Conf.notifications_email_address + ">"
+    subject "Invitation to join group \"#{group.title}\" at #{Conf.sitename}"
+
+    body :name => user.name, 
+         :user_id => user.id,
+         :group_id => group.id,
+         :group_title => group.title,
+         :email => email,
+         :message => msg_text,
+         :token => token
+  end
+  
+  def friendship_invite_new_user(user, email, msg_text, token)
+    recipients email
+    from user.name + "<" + Conf.notifications_email_address + ">"
+    subject "Invitation to become my friend on #{Conf.sitename}"
+
+    body :name => user.name, 
+         :user_id => user.id,
+         :email => email,
+         :message => msg_text,
+         :token => token
   end
 
 end

@@ -1,52 +1,82 @@
 <% t "Edit Version" -%>
 
-<%= javascript_include_tag :fckeditor %>
+<% title_edit       = !@viewing_version.can_infer_title? %>
+<% preview_edit     = !@viewing_version.can_generate_preview_image? %>
+<% description_edit = !@viewing_version.can_infer_description? %>
 
-<h1>Edit Version <%= @viewing_version_number.to_s %> of Workflow: <%= contributable @workflow.id, "Workflow" %></h1>
+<% can_edit_anything = title_edit || preview_edit || description_edit %>
 
-<%= error_messages_for :workflow %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
+
+<h1>
+	Edit Version <%= @viewing_version_number.to_s %>
+	<br/>
+	<span style="font-size: 77%;">of workflow: <%= link_to_function (h(@workflow.title) + expand_image), visual_effect(:toggle_blind, "workflow_box", :duration => 0.3) -%></span>
+</h1>
+
+<div id="workflow_box" style="display: none; margin: 1em 0 2.5em 0;">
+ <%= render :partial => "workflows/table", :locals => { :collection => [ @workflow ] } %>
+</div>
+
+<center>
+	<%= error_messages_for :workflow %>
+</center>
 
 <br/>
 
-<% form_tag("/workflows/#{@workflow.id};update_version?version=#{@viewing_version_number}", :method => :put) do %>
+<% form_tag({ :action => "update_version", :version => @viewing_version_number }, :multipart => true, :method => :put) do %>
 
-  <div>
-    <p>
+	<center>
+		<div class="box_form" style="width: 500px; margin: 0; text-align: left;">
+	    <!-- Title -->
+			<p>
+				<b>Title</b>
+        <% if title_edit %>
+          <span class="required">*</span>
+        <% end %>
+			</p>
+
+      <% if title_edit %>
+        <%= text_field_tag 'workflow[title]', @viewing_version.title, :size => '60' %>
+      <% else %>
+        <p class="derived_annotation_notice">The title is derived from the workflow file.  Please edit the workflow directly and upload a new version to change the title of this workflow.</p>
+      <% end %>
+			
+			<br/>
+			
+			<!-- Preview Image -->
+			<p><b>Preview Image</b></p>
+
+      <% if preview_edit %>
+        <input id="workflow_preview" name="workflow[preview]" size="50" type="file" />
+        <p style="font-size: 77%; color: #666666; font-style: italic; padding-top: 0;">
+            Leave this blank to keep the existing preview image
+        </p>
+      <% else %>
+        <p class="derived_annotation_notice">The preview image is derived from the workflow file.  Please edit the workflow directly and upload a new version to change the appearance of this workflow.</p>
+      <% end %>
+				
+			<br/>
+			
+			<!-- Description -->
+			<p><b>Description</b></p>
+      <% if description_edit %>
+        <%= text_area_tag('workflow[body]', @viewing_version.body, :width => '500px', :height => '500px', :class => 'ckeditor') -%>
+    
+        <br />
+      <% else %>
+        <p class="derived_annotation_notice">The description is derived from the workflow file.  Please edit the workflow directly and upload a new version to change the description of this workflow.</p>
+      <% end %>
+
+			<br />
+	
       <center>
-				<strong>Title:</strong>
-	      <%= text_field_tag 'workflow[title]', @viewing_version.title, :size => '45' %>
-			</center>
-    </p>
-		
-		<br/>
-		
-		<p>
-			<center>
-				<b>Description: </b><br/>
-			</center>
-		</p>
-		<center>
-			<%= fckeditor_textarea(:workflow, :body, :toolbarSet => 'Simple', :width => '600px', :height => '500px') %>
-		</center>
-		
-		<% if false %>
-		<p>
-			<center>
-				<b>Description: </b><br/>
-			</center>
-		</p>
-		<%= allowed_html_text('center') %>
-		<p>
-			<center>
-				<%= text_area_tag "body", @viewing_version.body, :size => "60x10" %>
-			</center>
-		</p>
-		<% end %>
-		
-  </div>
-
-  <br />
-
-  <center><%= submit_tag "Update", :disable_with => "Updating..." %></center>
+        <% if can_edit_anything %>
+          <%= submit_tag "Update", :disable_with => "Updating..." %>
+        <% end %>
+      </center>
+	
+		</div>
+	</center>
 
 <% end %>

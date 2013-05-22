@@ -1,0 +1,16 @@
+/* Supplementary stylesheet for the template layout. Requires main myExperiment stylesheet. */
+
+/* Changes the colour of the sidebar/searchbar (normally blue): */
+#myexp_searchbar, #myexp_sidebar, .pagination a, .tabnav li a:hover, .tabnav li#selected_tabnav a  {
+  background-color: #317EFF;
+}
+
+.pagination a, .tabnav li a:hover, .tabnav li#selected_tabnav a  {
+  background-image: none;
+}
+#myexp_searchbar {
+  background-image: url('/images/searchfade_alpha.png');
+}
+#myexp_sidebar {
+  background-image: url('/images/sidebar_alpha.png');
+}

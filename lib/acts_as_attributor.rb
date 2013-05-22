@@ -14,8 +14,7 @@ module Dgc
         def acts_as_attributor
           has_many :attributions,
                    :as => :attributor,
-                   :order => "attributable_type ASC, created_at DESC",
-                   :dependent => :destroy
+                   :order => "attributable_type ASC, created_at DESC"
 
           class_eval do
             extend Dgc::Acts::Attributor::SingletonMethods

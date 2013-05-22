@@ -24,7 +24,7 @@
 						
 						<div class="desc" style="font-size: 85%;">
 							<% unless experiment.description.blank? %>
-									<%= truncate(strip_html(experiment.description), 180) %>
+									<%= truncate(strip_html(experiment.description), :length => 180) %>
 							<% else -%>
 								<span class="none_text">No description</span>								      
 					  	<% end -%>
@@ -33,10 +33,10 @@
 					</td>
 			    <td class="actions"  style="width: 80px;">
 		      	<%= icon "show", experiment_path(experiment), nil, nil, "View" %>
-						<% if experiment.authorized?("edit", logged_in? ? current_user : nil) %>
+						<% if Authorization.check('edit', experiment, current_user) %>
 							<%= icon('edit', edit_experiment_path(experiment), nil, nil, 'Edit') %>
 						<% end %>
-						<%= icon "job", new_job_path(experiment), nil, nil, "New Job" %>
+						<%= icon "job", new_experiment_job_path(experiment), nil, nil, "New Job" %>
 		    	</td>
 		  	</tr>
 		<% end %>

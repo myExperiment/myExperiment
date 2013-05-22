@@ -17,7 +17,21 @@ class TagsController < ApplicationController
   
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = tag_url(@tag)
+        @lod_html = tag_url(:id => @tag.id, :format => 'html')
+        @lod_rdf  = tag_url(:id => @tag.id, :format => 'rdf')
+        @lod_xml  = tag_url(:id => @tag.id, :format => 'xml')
+
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} tags #{@tag.id}`
+        }
+      end
     end
   end
   
@@ -45,47 +59,40 @@ protected
   end
   
   def find_tag_and_tagged_with
-    begin
-      @tag = Tag.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      error("Tag not found", "is invalid")
-    end
+    @tag = Tag.find_by_id(params[:id])
     
-    @tagged_with = []
-    taggings = []
-    @internal_type = parse_to_internal_type(params[:type])
-    
-    if @internal_type
-      # Filter by the type
-      taggings = Tagging.find(:all, 
-                               :conditions => [ "tag_id = ? AND taggable_type = ?", @tag.id, @internal_type],
-                               :order => "taggable_type DESC") 
-    else
-      # Get all taggings
-      taggings = @tag.taggings
-    end
-    
-    # Authorise entries now
-    taggings.each do |t|
-      if t.taggable.respond_to?(:contribution)
-        @tagged_with << t.taggable if t.taggable.contribution.authorized?("show", current_user)
+    if @tag
+      @tagged_with = []
+      taggings = []
+      @internal_type = parse_to_internal_type(params[:type])
+      
+      if @internal_type
+        # Filter by the type
+        taggings = Tagging.find(:all, 
+                                 :conditions => [ "tag_id = ? AND taggable_type = ?", @tag.id, @internal_type],
+                                 :order => "taggable_type DESC") 
       else
-        @tagged_with << t.taggable
+        # Get all taggings
+        taggings = @tag.taggings
       end
+      
+      # Authorise entries now
+      taggings.each do |t|
+        if t.taggable.respond_to?(:contribution)
+          @tagged_with << t.taggable if Authorization.check('view', t.taggable.contribution, current_user)
+        else
+          @tagged_with << t.taggable
+        end
+      end
+      
+      @tagged_with = @tagged_with.uniq
+    else
+      render_404("Tag not found.")
     end
   end
   
 private
 
-  def error(notice, message, attr=:id)
-    flash[:notice] = notice
-    (err = Tag.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to tags_url }
-    end
-  end
-  
   # This needs to be refactored into a library somewhere!
   # (eg: a myExperiment system library)
   def parse_to_internal_type(type)

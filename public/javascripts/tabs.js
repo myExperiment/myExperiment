@@ -1,8 +1,6 @@
 // tabs.js
 
-var tabImagesRoot = '/images/tabs/';
-
-function parent(el) {
+function parent_el(el) {
 
   if (el.parentElement != undefined)
     return el.parentElement;
@@ -24,10 +22,7 @@ function deSlash(str) {
 
 function selectTab(tabsDiv, t) {
 
-  var html = '<table cellspacing=0 cellpadding=0><tr>';
-
-  if (tabsDiv.titles.length > 0)
-    html += '<td><img src="' + tabImagesRoot + '/tab_separator.png"></td>';
+  var html = '';
 
   for (var i = 0; i < tabsDiv.titles.length; i++) {
 
@@ -35,54 +30,49 @@ function selectTab(tabsDiv, t) {
 
       tabsDiv.panes[i].style.display = 'block';
 
-      html += '<td class="tabSelIMG"><img src="' + tabImagesRoot;
-      html += '/selected_tab_start.png"></td>';
-      html += '<td class="tabSelected"><span onmousedown="';
+      html += '<span class="tab selected" onmousedown="';
       html += 'javascript:return false;">';
-      html += tabsDiv.titles[i];
-      html += '</span></td>';
-      html += '<td class="tabSelIMG"><img src="' + tabImagesRoot;
-      html += '/selected_tab_end.png"></td>';
+      html += '<span class="inner">' + tabsDiv.titles[i] + '</span>';
+      html += '</span>';
 
     } else {
 
       tabsDiv.panes[i].style.display = 'none';
 
-      html += '<td class="tabUnselIMG"><img src="' + tabImagesRoot;
-      html += '/unselected_tab_start.png"></td>';
-      html += '<td class="tabUnselected"><span onmousedown="';
-      html += 'javascript:selectTab(parent(parent(parent(parent(parent(this))))), ' + i +
+      html += '<span class="tab unselected" onmousedown="';
+      html += 'javascript:selectTab(parent_el(this), ' + i +
           '); return false;">';
-      html += tabsDiv.titles[i];
-      html += '</span></td>';
-      html += '<td class="tabUnselIMG"><img src="' + tabImagesRoot;
-      html += '/unselected_tab_end.png"></td>';
+      html += '<span class="inner">' + tabsDiv.titles[i] + '</span>';
+      html += '</span>';
     }
-
-    html += '<td><img src="' + tabImagesRoot + '/tab_separator.png"></td>';
   }
-
-  html += '</td></tr></table>';
 
   tabsDiv.innerHTML = html;
 }
 
 function showFragment(fragment, scroll) {
 
-  var root = document.all ? "BODY" : "HTML";
-  var el   = document.getElementById(fragment);
+  var root   = document.all ? "BODY" : "HTML";
+  var target = document.getElementById(fragment);
 
-  if (el != undefined) {
+  if (target == undefined) {
+    var namedElements = document.getElementsByName(fragment);
 
-    for (; el.tagName != root; el = parent(el)) {
-      if (el.className == 'tabContainer') {
-        selectTab(el.tabsDiv, el.tabsIndex);
-      }
+    if (namedElements.length > 0)
+      target = namedElements[0];
+  }
+
+  if (target == undefined)
+    return;
+
+  for (el = target; el.tagName != root; el = parent_el(el)) {
+    if (el.className == 'tabContainer') {
+      selectTab(el.tabsDiv, el.tabsIndex);
     }
   }
 
   if (scroll) {
-    document.getElementById(fragment).scrollIntoView(false);
+    target.scrollIntoView(false);
   }
 }
 
@@ -168,9 +158,13 @@ function hashClicked(evt) {
 
   var el = evt.target ? evt.target : event.srcElement;
 
-  showFragment(el.hash.substring(1), true);
+  if (el.hash != undefined)
+    showFragment(el.hash.substring(1), true);
+
   return false;
 }
 
-addEvent('load', window, initialiseTabs);
+document.observe("dom:loaded", function() {
+  initialiseTabs();
+});
 

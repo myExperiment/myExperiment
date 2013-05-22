@@ -1,29 +1,32 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+dilbert_citation:
   id: 1
   user_id: 1
   workflow_id: 1
   workflow_version: 1
-  author: MyString
-  title: MyString
-  publication: MyString
+  authors: John and Jane Smith
+  title: Paper about Dilbert workflow
+  publication: Dilbert weekly
   published_at: 2007-09-29 22:23:01
   accessed_at: 2007-09-29 22:23:01
-  url: MyString
-  isbn: MyString
+  url: http://www.example.com/paper
+  isbn: 12
+  issn: 8
   created_at: 2007-09-29 22:23:01
   updated_at: 2007-09-29 22:23:01
-two:
+
+branch_choice_citation:
   id: 2
   user_id: 1
-  workflow_id: 1
+  workflow_id: 2
   workflow_version: 1
-  author: MyString
-  title: MyString
-  publication: MyString
-  published_at: 2007-09-29 22:23:01
-  accessed_at: 2007-09-29 22:23:01
-  url: MyString
-  isbn: MyString
-  created_at: 2007-09-29 22:23:01
-  updated_at: 2007-09-29 22:23:01
+  authors: Fred Flintstone and Barney Rubble
+  title: Stone age workflows
+  publication: Prehistoric Times
+  published_at: 2007-02-01 02:27:45
+  accessed_at: 2007-02-01 22:23:01
+  url: http://www.example.com/paper
+  isbn: 1234
+  issn: 9
+  created_at: 2007-09-05 13:14:15
+  updated_at: 2007-09-05 14:15:16

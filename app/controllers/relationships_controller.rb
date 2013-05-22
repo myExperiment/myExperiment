@@ -1,178 +1,83 @@
 # myExperiment: app/controllers/relationships_controller.rb
 #
-# Copyright (c) 2007 University of Manchester and the University of Southampton.
+# Copyright (c) 2010 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
 class RelationshipsController < ApplicationController
-  before_filter :login_required, :except => [:index, :show]
   
-  before_filter :find_relationships, :only => [:index]
-  before_filter :find_relationship, :only => [:show]
-  before_filter :find_relationship_auth, :only => [:accept, :edit, :update, :destroy]
-  
-  # GET /networks/1/relationships/1;accept
-  # GET /relationships/1;accept
-  def accept
-    respond_to do |format|
-      if @relationship.accept!
-        flash[:notice] = 'Relationship was successfully accepted.'
-        format.html { redirect_to relationships_url(@relationship.network_id) }
+  helper PacksHelper
+
+  before_filter :find_and_auth_resource_context
+  before_filter :find_resource, :except => [ :edit_relationships, :create ]
+
+  # GET /:context_type/:context_id/edit_relationships
+  def edit_relationships
+
+    @predicates = Ontology.find(:all).map do |o| o.predicates end.flatten
+
+    @pack_entries = @context.contributable_entries + @context.remote_entries
+
+    @select_options = @pack_entries.map do |pe|
+      if pe.class == PackContributableEntry
+        [pe.contributable.label, "contributable:#{pe.id}"]
       else
-        error("Relationship already accepted", "already accepted")
+        [pe.title, "remote:#{pe.id}"]
       end
     end
+  end
+
+  # POST /:context_type/:context_id/relationships
+  def create 
+
+    subject = @context.find_pack_item(params[:subject])
+    objekt  = @context.find_pack_item(params[:objekt])
+
+    prefix, title = params[:predicate].split(":")
+
+    predicate = Predicate.find(:first, :conditions =>
+        ['ontology_id = ? AND title = ?',
+           Ontology.find_by_prefix(prefix).id, title])
+
+    raise("Invalid form data") if subject.nil? || objekt.nil? || predicate.nil?
+
+    @relationship = Relationship.new(:context => @context, :predicate => predicate, :user => current_user)
+
+    @relationship.subject = subject
+    @relationship.objekt  = objekt
+
+    @relationship.save
+
+    redirect_to(:action => :edit_relationships)
   end
   
-  # GET /networks/1/relationships
-  # GET /relationships
-  def index
-    respond_to do |format|
-      format.html # index.rhtml
-    end
-  end
-
-  # GET /networks/1/relationships/1
-  # GET /relationships/1
-  def show
-    respond_to do |format|
-      format.html # show.rhtml
-    end
-  end
-
-  # GET /networks/1/relationships/new
-  # GET /relationships/new
-  def new
-    if params[:network_id]
-      @relationship = Relationship.new(:network_id => params[:network_id])
-    else
-      @relationship = Relationship.new
-    end
-    
-    # only allow relation_id to be in @owned_networks
-    @networks_owned = current_user.networks_owned
-  end
-
-  # GET /networks/1/relationships/1;edit
-  # GET /relationships/1;edit
-  def edit
-    
-  end
-
-  # POST /networks/1/relationships
-  # POST /relationships
-  def create
-    if (@relationship = Relationship.new(params[:relationship]) unless Relationship.find_by_network_id_and_relation_id(params[:relationship][:network_id], params[:relationship][:relation_id]))
-      # set initial datetime
-      @relationship.accepted_at = nil
-      
-      # current_user must be the owner of Network.find(relation_id)
-      @relationship.errors.add :relation_id, "not authorized (not owned)" unless current_user.networks_owned.include? Network.find(params[:relationship][:network_id])
-
-      respond_to do |format|
-        if @relationship.save
-          flash[:notice] = 'Relationship was successfully created.'
-          format.html { redirect_to relationship_url(@relationship.network_id, @relationship) }
-        else
-          format.html { render :action => "new" }
-        end
-      end
-    else
-      error("Relationship not created (already exists)", "not created, already exists")
-    end
-  end
-
-  # PUT /networks/1/relationships/1
-  # PUT /relationships/1
-  def update
-    # no spoofing of acceptance
-    params[:relationship].delete('accepted_at') if params[:relationship][:accepted_at]
-    
-    respond_to do |format|
-      if @relationship.update_attributes(params[:relationship])
-        flash[:notice] = 'Relationship was successfully updated.'
-        format.html { redirect_to relationship_url(@relationship.network_id, @relationship) }
-      else
-        format.html { render :action => "edit" }
-      end
-    end
-  end
-
-  # DELETE /networks/1/relationships/1
-  # DELETE /relationships/1
+  # DELETE /:context_type/:context_id/relationships/:id
   def destroy
-    network_id = @relationship.network_id
+
+   if Authorization.check('destroy', @relationship, current_user)
+      @relationship.destroy
+    end
     
-    @relationship.destroy
-
-    respond_to do |format|
-      format.html { redirect_to relationships_url(network_id) }
-    end
+    render :partial => "relationships/relationships",
+           :locals  => { :context => @context, :show_delete => true }
   end
-  
-protected
 
-  def find_relationships
-    if params[:network_id]
-      begin
-        n = Network.find(params[:network_id])
-      
-        @relationships = n.relationships
-      rescue ActiveRecord::RecordNotFound
-        error("Network not found", "is invalid", :network_id)
-      end
-    else
-      @relationships = Relationship.find(:all, :order => "created_at DESC")
+  private
+
+  def find_and_auth_resource_context
+    @context = extract_resource_context(params)
+
+    if @context.nil?
+      render_404("Relationship context not found.")
+    elsif !Authorization.check('view', @context, current_user)
+      render_401("You are not authorized to view this resource's relationships.")
     end
   end
 
-  def find_relationship
-    if params[:network_id]
-      begin
-        n = Network.find(params[:network_id])
-    
-        begin
-          @relationship = Relationship.find(params[:id], :conditions => ["network_id = ?", n.id])
-        rescue ActiveRecord::RecordNotFound
-          error("Relationship not found", "is invalid")
-        end
-      rescue ActiveRecord::RecordNotFound
-        error("Network not found", "is invalid", :network_id)
-      end
-    else
-      begin
-        @relationship = Relationship.find(params[:id])
-      rescue ActiveRecord::RecordNotFound
-        error("Relationship not found", "is invalid")
-      end
-    end
-  end
-  
-  def find_relationship_auth
-    if params[:network_id]
-      begin
-        relationship = Relationship.find(params[:id])
-      
-        if Network.find(relationship.network_id).owner? current_user.id
-          @relationship = relationship
-        else
-          error("Relationship not found (id not authorized)", "is invalid (not owner)", :network_id)
-        end
-      rescue ActiveRecord::RecordNotFound
-        error("Relationship not found", "is invalid")
-      end
-    else
-      error("Relationship not found (id not authorized)", "is invalid (not owner)")
-    end
-  end
+  def find_resource
+    @relationship = Relationship.find_by_id(params[:id])
 
-private
-
-  def error(notice, message, attr=:id)
-    flash[:notice] = notice
-    (err = Relationship.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to relationships_url(params[:network_id]) }
+    if @relationship.nil? || @relationship.context != @context
+      render_404("Relationship not found.")
     end
   end
 end

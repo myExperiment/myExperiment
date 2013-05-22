@@ -1,0 +1,19 @@
+<% if logged_in? %>
+  <div class="contribution_section_box">
+    <p class="heading">
+      <%= info_icon_with_tooltip("By subscribing you can view the news items of this resource on your home page, personal atom feed or email notifications.") %>
+      Subscription
+      <% if current_user.subscriptions.find(:first, :conditions => { :objekt_type => object.class.name, :objekt_id => object.id } ) %>
+        <p>You have subscribed to this resource.</p>
+        <% form_tag polymorphic_path([:subscription, @network]), :method => :delete do %>
+          <%= submit_tag "Unsubscribe" -%>
+        <% end %>
+      <% else %>
+        <p>Subscribe to this resource to get notifications on your home page.</p>
+        <% form_tag polymorphic_path([:subscription, @network]), :method => :put do %>
+          <%= submit_tag "Subscribe" -%>
+        <% end %>
+      <% end %>
+    </p>
+  </div>
+<% end %>

@@ -1,0 +1,10 @@
+<% if @error_message %>
+  alert('Error: <%= @error_message -%>');
+<% end %>
+
+$('in_packs_box').replace("<%= escape_javascript(render(:partial => "contributions/in_packs_box",
+                                                        :locals => {:contributable => @contributable})) %>");
+
+//To re-apply fold style
+$('add_to_pack_fold').titleHTML = 'Add to your Pack';
+foldUpdate($('add_to_pack_fold'));

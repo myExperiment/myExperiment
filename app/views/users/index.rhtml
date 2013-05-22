@@ -1,17 +1,20 @@
 <ul class="sectionIcons">
+	<li><%= icon('user-invite', invite_users_path, nil, nil, 'Invite People') %></li>
 	<li><%= icon "view-all", all_users_path, nil, nil, "View All Users" %></li>
 	<li><%= icon "timeline", url_for(:action => 'timeline'), nil, nil, "View Timeline of Users" %></li>
 </ul>
 
-<div id="tabsContainer" class="tabsContainer"></div>
+<div id="tabsContainer" class="tabsContainer" style="margin-top: 2.5em;"></div>
 
-<% unless (recent = User.most_recent(6)).empty? %>
+<% if admin? %>
+<% unless (recent = User.most_recent(10)).empty? %>
   <div class="tabContainer">
   	<div class="tabTitle">Most Recent</div>
   	<div class="tabContent">
-	    <%= render :partial => "users/hlist", :locals => { :collection => recent } %>
+	    <%= render :partial => "users/table", :locals => { :collection => recent } %>
   	</div>
   </div>
+<% end %>
 <% end %>
 
 <% if false -%>
@@ -30,6 +33,33 @@
   	<div class="tabTitle">Last Active</div>
   	<div class="tabContent">
 	    <%= render :partial => "users/table", :locals => { :collection => active } %>
+  	</div>
+  </div>
+<% end %>
+
+<% unless (friendliest = User.most_friends).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Friends</div>
+  	<div class="tabContent">
+	    <%= render :partial => "users/table", :locals => { :collection => friendliest } %>
+  	</div>
+  </div>
+<% end %>
+
+<% unless (credited = User.most_credited).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Credited</div>
+  	<div class="tabContent">
+	    <%= render :partial => "users/table", :locals => { :collection => credited } %>
+  	</div>
+  </div>
+<% end %>
+
+<% unless (top_rated = User.highest_rated).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Highest Rated</div>
+  	<div class="tabContent">
+	    <%= render :partial => "users/table", :locals => { :collection => top_rated } %>
   	</div>
   </div>
 <% end %>

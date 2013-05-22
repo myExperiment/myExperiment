@@ -20,7 +20,21 @@ class RunnersController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html # show.rhtml
+      format.html {
+
+        @lod_nir  = runner_url(@runner)
+        @lod_html = runner_url(:id => @runner.id, :format => 'html')
+        @lod_rdf  = runner_url(:id => @runner.id, :format => 'rdf')
+        @lod_xml  = runner_url(:id => @runner.id, :format => 'xml')
+
+        # show.rhtml
+      }
+
+      if Conf.rdfgen_enable
+        format.rdf {
+          render :inline => `#{Conf.rdfgen_tool} runners #{@runner.id}`
+        }
+      end
     end
   end
 
@@ -91,7 +105,7 @@ protected
     
     if params[:assign_to_group]
       network = Network.find(params[:assign_to_group_id])
-      if network and network.member?(current_user.id)
+      if network and network.member?(current_user)
         @runner.contributor = network
       else
         flash[:error] = "Experiment could not be created because could not assign ownership to Group."
@@ -110,23 +124,24 @@ protected
   end
   
   def find_runner_auth
-    runner = TavernaEnactor.find(:first, :conditions => ["id = ?", params[:id]])
-    
-    if runner and runner.authorized?(action_name, current_user)
-      @runner = runner
-    else
-      error("Runner not found or action not authorized", "is invalid (not authorized)")
-    end
-  end
-  
-private
 
-  def error(notice, message, attr=:id)
-    flash[:error] = notice
-    (err = Runner.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to runners_url }
+    action_permissions = {
+      "create"  => "create",
+      "destroy" => "destroy",
+      "edit"    => "edit",
+      "index"   => "view",
+      "new"     => "create",
+      "show"    => "view",
+      "update"  => "edit",
+      "verify"  => "view"
+    }
+
+    @runner = TavernaEnactor.find_by_id(params[:id])
+
+    if @runner.nil?
+      render_404("Runner not found.")
+    elsif !Authorization.check(action_permissions[action_name], @runner, current_user)
+      render_401("You are not authorized to #{action_permissions[action_name]} this runner.")
     end
   end
 end

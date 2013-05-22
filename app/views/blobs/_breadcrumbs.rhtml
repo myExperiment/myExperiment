@@ -1,20 +1,30 @@
-<li><%= link_to 'Files', files_path -%></li>
+<% if @context %>
+  <li><%= link_to visible_name(@context).pluralize, polymorphic_url(@context.class.name.underscore.pluralize) %></li>
+  <li><%= link_to @context.name, @context %></li>
+<% end %>
 
-<% if ["show", "new", "edit", "all", "search"].include? controller.action_name.to_s -%>
-  <li><b>&#187;</b></li>
+<% if controller.action_name == 'index' %>
+  <li>Files</li>
+<% else %>
+  <li><%= link_to 'Files', blobs_path %></li>
+<% end %>
+
+<% if ["show", "new", "edit", "all", "search", "suggestions"].include? controller.action_name.to_s -%>
   
   <% case controller.action_name.to_s; when "show" -%>
     <li><%= contributable_name(@blob.id, 'Blob') -%></li>
   <% when "new" %>
     <li>Upload File</li>
   <% when "edit" %>
-		<li><%= link_to "#{contributable_name(@blob.id, 'Blob')}", file_path(@blob) -%></li>
-		<li><b>&#187;</b></li>
+		<li><%= link_to "#{contributable_name(@blob.id, 'Blob')}", blob_path(@blob) -%></li>
     <li>Manage</li>
   <% when "all" %>
     <li>All Files</li>
 	<% when "search" %>  
     <li>Search Results</li>
+	<% when "suggestions" %>  
+		<li><%= link_to "#{contributable_name(@blob.id, 'Blob')}", blob_path(@blob) -%></li>
+    <li>Suggestions</li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

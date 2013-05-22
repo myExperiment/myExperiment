@@ -2,7 +2,7 @@
 
 <p style="text-align: center;">
 	Fill in the form below and submit, or alternatively you can email:
-	<b><%= mail_to "bugs@myexperiment.org", nil, { :subject => "myExperiment Feedback", :encode => "hex" } %></b>
+	<b><%= mail_to "#{Conf.feedback_email_address}", nil, { :subject => "#{Conf.sitename} Feedback", :encode => "hex" } %></b>
 </p>
 
 <p style="text-align: center;">
@@ -10,7 +10,7 @@
 </p>
 
 <div id="feedback_help" class="box_standout" style="display: none; font-size: 93%;">
-	<p>We would really appreciate feedback on your experiences with myExperiment, especially in the following areas:</p>
+	<p>We would really appreciate feedback on your experiences with <%= Conf.sitename %>, especially in the following areas:</p>
 	<ul>
 	  <li><b>User Interface:</b>  
 	    <ul>
@@ -26,7 +26,7 @@
 	  </li>
 	  <li><b>Feature Requests:</b>
 	    <ul>
-	      <li>Are there any new features that you would like to see on myExperiment? Tell us about them and we will see if we can implement them for you.</li>
+	      <li>Are there any new features that you would like to see on <%= Conf.sitename %>? Tell us about them and we will see if we can implement them for you.</li>
 	    </ul>
 	  </li>
 	</ul>
@@ -37,24 +37,24 @@
 	<div class="box_form" style="width: 410px; margin: 2em 0; text-align: left;">
 		<% form_tag ({:action => :create}) do %>
 			<p><b>From</b></p>
-		  <%= text_field_tag :from, logged_in? ? current_user.name : '', :size => 30 %>
+		  <%= text_field_tag :from, logged_in? ? current_user.name : params[:from], :size => 30 %>
 			
 			<p><b>Email (optional)</b></p>
-    	<%= text_field_tag :email, (logged_in? && current_user.email) ? current_user.email : '', :size => 30 %>
+    	<%= text_field_tag :email, (logged_in? && current_user.email) ? current_user.email : params[:email], :size => 30 %>
 			
 			<p><b>Subject</b></p>
-    	<%= text_field_tag :subject, nil, :size => 60 %>
+    	<%= text_field_tag :subject, params[:subject], :style => "width: 400px" %>
 			
 			<p><b>Message</b></p>
-			<textarea id="feedback_content" name="content" rows="8" style="width: 400px;"></textarea><br/>
-			
+			<textarea id="feedback_content" name="content" rows="8" style="width: 400px;"><%= params[:content] %></textarea><br/>
+		<% if !logged_in? %>
+			<% if Conf.recaptcha_enable -%>
+				<%= recaptcha_tags(:public_key => Conf.recaptcha_public) -%>
+			<% end %>
+		<% end %>
 		  <br/><br>
 		
     	<center><%= submit_tag "Submit Feedback", :disable_with => "Submitting&hellip;" %></center>
 		<% end %>
 	</div>
 </center>
-
-<div class="box_standout">
-		If you have a moment, please could you fill in a <b><%= link_to "questionnaire", "http://www.keysurvey.com/survey/173025/21cd/", :popup => true %></b>?
-</div>

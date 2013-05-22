@@ -43,10 +43,11 @@
 				</p>
 				
 				<p>
-					<%= check_box_tag('assign_to_group') -%> Assign to Group:
+					<%= check_box_tag('assign_to_group', "1", false, :style => "vertical-align: middle;") -%> 
+					<span style="vertical-align: middle;">Assign to Group:</span>
 					<%= select_tag "assign_to_group_id", 
 												 options_from_collection_for_select(current_user.all_networks, "id", "title"), 
-												 :include_blank => "--- Select Group ---" -%>
+												 :style => "vertical-align: middle;" -%>
 			 	</p> 
 			</fieldset>
 			

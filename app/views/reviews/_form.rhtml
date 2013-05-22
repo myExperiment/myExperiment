@@ -1,4 +1,4 @@
-<%= javascript_include_tag :fckeditor %>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 
 <%= error_messages_for 'review' %>
 
@@ -25,4 +25,4 @@
 </div>
 
 <p><b>Your review</b></p>
-<%= fckeditor_textarea(:review, :review, :toolbarSet => 'Basic', :width => '455px', :height => '400px') %>
+<%= form.text_area(:review, :width => '455px', :height => '400px', :class => 'ckeditor') -%>

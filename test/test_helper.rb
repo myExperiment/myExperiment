@@ -2,7 +2,7 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 
-class Test::Unit::TestCase
+class ActiveSupport::TestCase
   # Transactional fixtures accelerate your tests by wrapping each test method
   # in a transaction that's rolled back on completion.  This ensures that the
   # test database remains unchanged so your fixtures don't have to be reloaded
@@ -15,6 +15,10 @@ class Test::Unit::TestCase
   # in MySQL.  Turn off transactional fixtures in this case; however, if you
   # don't care one way or the other, switching from MyISAM to InnoDB tables
   # is recommended.
+  #
+  # The only drawback to using transactional fixtures is when you actually 
+  # need to test transactions.  Since your test is bracketed by a transaction,
+  # any transactions started in your code will be automatically rolled back.
   self.use_transactional_fixtures = true
 
   # Instantiated fixtures are slow, but give you @david where otherwise you
@@ -24,5 +28,31 @@ class Test::Unit::TestCase
   # then set this back to true.
   self.use_instantiated_fixtures  = false
 
+  # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
+  #
+  # Note: You'll currently still have to declare fixtures explicitly in integration tests
+  # -- they do not yet inherit this setting
+  fixtures :all
+
   # Add more helper methods to be used by all tests here...
+
+  def login_as(user)
+    @request.session[:user_id] = user ? users(user).id : nil
+  end
 end
+
+if Rails::VERSION::MAJOR > 1
+  module ActionController
+    module UrlWriter
+
+      alias_method :original_url_for, :url_for
+
+      def url_for(options)
+        options[:host] = "test.host"
+        original_url_for(options)
+      end
+
+    end
+  end
+end
+

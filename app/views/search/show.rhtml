@@ -1,71 +1,16 @@
 <% t "Results" -%>
 
-<div id="extra_search" class="box_standout" style="color: #333333; font-weight: bold; margin-bottom: 1.5em; line-height: 1.4;">
-	<%= link_to_function image_tag("close.gif", :style => "float: right;"), visual_effect(:toggle_slide, "extra_search", :duration => 0.3) %>
-	Didn't find what you need?
-	<%= link_to "Click here", "http://www.google.com/coop/cse?cx=006491099109873764573:iockywifnao", :popup => true -%>
-	to search external workflow repositories.
-</div>
+<h1>Search results for "<%= h @query -%>"</h1>
 
-<h1>Search Results</h1>
-
-<% if @results.empty? %>
+<% if @total_count == 0 %>
 
   <p class="none_text">No search results.</p>
   
+  <%= render :partial => 'extra_search_help' %>
+
 <% else %>
 
-	<%= view_privileges_notice %>
-	<br/>
-	
-	<div id="tabsContainer" class="tabsContainer"></div>
-	
-	<% unless @users.empty? %>
-	  <div class="tabContainer">
-	  	<div class="tabTitle">Users (<%= @users.length -%>)</div>
-	  	<div class="tabContent">
-		    <%= render :partial => "users/table", :locals => { :collection => @users, :query => @query } %>
-	  	</div>
-	  </div>
-	<% end %>
-	
-	<% unless @networks.empty? %>
-	  <div class="tabContainer">
-	  	<div class="tabTitle">Groups (<%= @networks.length -%>)</div>
-	  	<div class="tabContent">
-		    <%= render :partial => "networks/table", :locals => { :collection => @networks, :query => @query } %>
-	  	</div>
-	  </div>
-	<% end %>
-
-	<% unless @workflows.empty? %>
-	  <div class="tabContainer">
-	  	<div class="tabTitle">Workflows (<%= @workflows.length -%>)</div>
-	  	<div class="tabContent">
-    		<%= render :partial => "workflows/table", :locals => { :collection => @workflows, :query => @query } %>
-	  	</div>
-	  </div>
-	<% end %>
-	
-	<% unless @blobs.empty? %>
-	  <div class="tabContainer">
-	  	<div class="tabTitle">Files (<%= @blobs.length -%>)</div>
-	  	<div class="tabContent">
-		    <%= render :partial => "blobs/table", :locals => { :collection => @blobs, :query => @query } %>
-	  	</div>
-	  </div>
-	<% end %>
-	
-	<% unless @packs.empty? %>
-	  <div class="tabContainer">
-	  	<div class="tabTitle">Packs (<%= @packs.length -%>)</div>
-	  	<div class="tabContent">
-		    <%= render :partial => "packs/table", :locals => { :collection => @packs, :query => @query } %>
-	  	</div>
-	  </div>
-	<% end %>
+  <%= render :partial => "content/index" -%>
 
 <% end %>
-
-<br />
 

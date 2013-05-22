@@ -1,6 +1,5 @@
 <!-- Latest Tags -->
-<% cache_timeout({:controller => 'home_cache', :action => 'latest_tags', :id => (logged_in? ? current_user.id : 0)}, 
-								 CACHE_TIMEOUT_SECS.seconds.from_now) do -%>
+<% cache(:controller => 'home_cache', :action => 'latest_tags', :id => (logged_in? ? current_user.id : 0)) do -%> 
 	<div class="box">
 		<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 		<div class="title">
@@ -10,7 +9,7 @@
 			<% unless (taggings = Tagging.latest(20)).empty? %>
 				<ul class="list" style="font-size: 85%;">
 					<% taggings.each do |t| %>
-						<% if thing_authorized?('show', t.taggable) %>
+						<% if Authorization.check("view", t.taggable, current_user) %>
 							<li>
 								<span class="box_standout" style="padding: 0.1em 0.4em;">
 									<b><%= link_to_tag(t.tag) %></b>

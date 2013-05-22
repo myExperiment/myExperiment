@@ -1,6 +1,6 @@
 <ul class='star-rating'>
     <li class='current-rating' style="width:<%= (rateable.rating * 30).to_i -%>px; border: none; padding: 0; margin: 0;">
-          Currently <%= number_with_precision(rateable.rating, 0) %>/5 Stars.
+          Currently <%= number_with_precision(rateable.rating, :precision => 0) %>/5 Stars.
     </li>
     <li style="border: none; padding: 0; margin: 0;">
         <%= link_to_remote( "1", {:url => { :controller => controller.to_s, 
@@ -28,6 +28,5 @@
             :class => 'five-stars', :name => '5 stars out of 5') %>
     </li>
 </ul>
-<p style="margin-top: 0.2em; font-size: 85%; font-weight: bold;">
-  Current: <%= number_with_precision(rateable.rating, 2) %>/5 (<%= pluralize rateable.ratings.count, 'rating' %>)
-</p>
+	
+<%= render :partial => 'ratings/current', :locals => { :rateable => rateable } %>

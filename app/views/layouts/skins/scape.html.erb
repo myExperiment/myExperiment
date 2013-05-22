@@ -1,0 +1,9 @@
+<% @logo_link_url  = "http://www.scape-project.eu/" # The URL that the logo links to when clicked
+   @logo_image_url = "/images/scape_logo.png" # The logo image %>
+
+<% content_for :site_info_links do %>
+  <a target="_blank" href="http://www.scape-project.eu/about">About SCAPE</a> |
+  <a target="_blank" href="http://wiki.opf-labs.org/display/SP/Home">SCAPE Wiki</a>
+<% end %>
+
+<%= render :partial => "layouts/skin_template" %>

@@ -1,9 +1,21 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+
+# for info on 'load_blob_data' see: http://techpolesen.blogspot.com/2007/04/rails-fixture-tips.html
+# or http://www.realityforge.org/articles/2006/04/06/loading-binary-data-into-rails-fixtures
+<%
+  def load_blob_data(name)
+    filename = "#{Rails.root}/test/fixtures/files/#{name}"
+    data = File.open(filename,'rb').read
+    "!binary | #{[data].pack('m').gsub(/\n/,"\n    ")}\n"
+  end
+%>
+
+picture_1:
   id: 1
   user_id: 1
-  data: 
-two:
+  data: <%= load_blob_data('picture_1.png') %>
+
+picture_2:
   id: 2
-  user_id: 1
-  data: 
+  user_id: 2
+  data: <%= load_blob_data('picture_2.png') %> 

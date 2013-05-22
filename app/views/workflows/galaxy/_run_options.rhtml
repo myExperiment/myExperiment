@@ -1,0 +1,34 @@
+<% if session[:came_from] == 'galaxy' %>
+  <style type="text/css">
+    div.galaxy_import_form {
+      margin: 0.5em;
+      text-align: center;
+      border: 1px solid #D8B365;
+      font-family: Verdana, sans-serif;
+      padding-bottom: 0.5em;
+    }
+
+    div.galaxy_import_form div.header {
+      background-color: #EBD9B2;
+      border-bottom: 1px solid #D8B365;
+      font-weight: bold;
+      padding: 5px 10px;
+      color: #303030;
+      margin-bottom: 0.5em;
+    }
+  </style>
+
+  <div class="galaxy_import_form">
+    <div class="header">Import this workflow into Galaxy</div>
+    <form action="<%= session[:return_url].chomp("/") -%>/workflow/import_workflow" method="POST" name="import_workflow">
+      <input type="hidden" name="workflow_source" value="<%= Conf.sitename -%>"/>
+      <textarea name="workflow_text" style="display: none">
+        <%# Decode JSON and convert again to cut out formatting whitespace %>
+        <%= ActiveSupport::JSON.decode(@viewing_version.content_blob.data).to_json -%>
+      </textarea>
+      <input type="submit" value="Import" name="import_button"/>
+    </form>
+  </div>
+<% else %>
+  <p class="none_text">Not currently available.</p>
+<% end %>

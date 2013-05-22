@@ -1,0 +1,42 @@
+<% t "#{contributable_name(@version.id, 'Blob')} (#{h @blob.contributor_name})" -%>
+
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
+
+<h1>Suggestions</h1>
+
+<% form_for(:blob_version, :url => blob_version_process_suggestions_path(@blob, @version.version), :html => { :method => :post } ) do |f| %>
+
+  <% if @suggestions[:description] %>
+
+    <h2>Enter description</h2>
+
+    <p><em>The file has no description!  By entering a description here, you
+    will increase the chances of others finding your file and help understand
+    its purpose.</em></p>
+
+    <p>
+      <%= text_area_tag(:description, nil, :width => '600px', :height => '300px', :class => 'ckeditor') -%>
+    </p>
+
+  <% end %>
+
+  <% if @suggestions[:revision_comments] %>
+
+    <h2>Enter revision comment</h2>
+
+    <p>Please enter a brief comment about the changes that have been made to
+    the file.  This will help others know if they need to update to this
+    version.</p>
+
+    <p>
+      <%= text_area_tag(:revision_comments, nil, :width => '600px', :height => '200px', :class => 'ckeditor') -%>
+    </p>
+
+  <% end %>
+
+  <p>
+    <%= submit_tag "Continue" %>
+  </p>
+
+<% end %>
+

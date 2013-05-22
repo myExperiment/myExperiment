@@ -1,12 +1,12 @@
-Hi <%= @name %>,
+Hi <%= @user.name %>,
  
 <%= @friend_name %> wants to be your friend.
 
-Please go to <%= url_for :only_path => false, :host => @base_url, :controller => '' %> and log in to confirm this request.
+Please go to <%= "http://" + @base_url + user_friendship_path(@user, @friendship) %> to confirm/reject this request.
 
-Your username is: <%= @username %>
+  <%= login_identity_reminder(@target) %>
 
 Thanks,
  
-- The myExperiment Team
-http://www.myexperiment.org
+- The <%= Conf.sitename %> Team
+<%= Conf.base_uri -%>

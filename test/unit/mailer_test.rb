@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class MailerTest < Test::Unit::TestCase
+class MailerTest < ActiveSupport::TestCase
   FIXTURES_PATH = File.dirname(__FILE__) + '/../fixtures'
   CHARSET = "utf-8"
 
@@ -14,6 +14,11 @@ class MailerTest < Test::Unit::TestCase
     @expected = TMail::Mail.new
     @expected.set_content_type "text", "plain", { "charset" => CHARSET }
     @expected.mime_version = '1.0'
+  end
+
+  # Replace this with your real tests.
+  def test_truth
+    assert true
   end
 
   private

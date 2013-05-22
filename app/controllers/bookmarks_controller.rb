@@ -6,8 +6,10 @@
 class BookmarksController < ApplicationController
   before_filter :login_required
   
-  before_filter :find_bookmarks_auth, :only => [:index]
   before_filter :find_bookmark_auth, :only => [:show, :edit, :update, :destroy]
+
+  # declare sweepers and which actions should invoke them
+  cache_sweeper :bookmark_sweeper, :only => [ :destroy ]
   
   # GET /bookmarks
   def index
@@ -34,30 +36,9 @@ class BookmarksController < ApplicationController
   
 protected
 
-  def find_bookmarks_auth
-    @bookmarks = Bookmark.find(:all, 
-                               :conditions => ["user_id = ?", current_user.id], 
-                               :order => "created_at DESC",
-                               :page => { :size => 20, 
-                                          :current => params[:page] })
-  end
-  
   def find_bookmark_auth
-    begin
-      @bookmark = Bookmark.find(params[:id], :conditions => ["user_id = ?", current_user.id])
-    rescue ActiveRecord::RecordNotFound
-      error("Bookmark not found", "is invalid")
-    end
-  end
-  
-private
-
-  def error(notice, message, attr=:id)
-    flash[:notice] = notice
-    (err = Bookmark.new.errors).add(attr, message)
-    
-    respond_to do |format|
-      format.html { redirect_to bookmarks_url }
+    if (@bookmark = Bookmark.find_by_id(params[:id], :conditions => ["user_id = ?", current_user.id])).nil?
+      render_404("Bookmark not found.")
     end
   end
 end

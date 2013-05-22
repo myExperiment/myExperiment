@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class NetworkTest < Test::Unit::TestCase
+class NetworkTest < ActiveSupport::TestCase
   fixtures :networks
 
   # Replace this with your real tests.

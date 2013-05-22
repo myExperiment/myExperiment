@@ -6,73 +6,136 @@
 
 <% perms = [] %>
 <% perms = contributable.contribution.policy.permissions if edit %>
+<% applicable_networks = current_user.all_networks %>
+<% group_policies = current_user.group_policies %>
+<% using_group_policy = edit && contributable.contribution.policy.group_policy? %>
+<% group_policies = group_policies | [contributable.contribution.policy] if using_group_policy %>
 
 <div class="fold">
 
   <div class="foldTitle">
-    <%= info_icon_with_tooltip("Here you can specify who can <b>view</b> and <b>download</b> this #{c_type} on myExperiment. <br/><br/>You can also set <b>update</b> permissions for this #{c_type}. <br/><br/>You can also explicitly share this #{c_type} with your Groups.<br/><br/>By default, anyone can view, but only Friends can download; #{if update_perms then 'no one is allowed to update; ' end}and not shared with any Groups.") %>
+    <%= info_icon_with_tooltip("Here you can specify who can <b>view</b> and <b>download</b> this #{c_type} on #{Conf.sitename}. <br/><br/>You can also set <b>update</b> permissions for this #{c_type}. <br/><br/>You can also explicitly share this #{c_type} with your Groups.<br/><br/>By default, anyone can view, but only Friends can download; #{if update_perms then 'no one is allowed to update; ' end}and not shared with any Groups.") %>
     Sharing
 	<% if edit %>
 		<hr/>
 		<small>Current: <%= sharing_mode_text contributable, @sharing_mode %>; <% if update_perms -%><%= updating_mode_text contributable, @updating_mode %>; <% end %>and shared with <%= pluralize contributable.contribution.shared_with_networks.length, "Group" %>.</small>
 	<% else %>
 	    <hr />
-	    <small>Defaults: anyone can view, but only Friends can download; <% if update_perms -%>no one is allowed to update; <% end -%> and not shared with any Groups.</small>
+	    <small>Defaults: anyone can view and download; <% if update_perms -%>no one is allowed to update; <% end -%> and not shared with any Groups.</small>
 	<% end %>
   </div>
 
   <div class="foldContent" style="display: none;">
-
     <div class="box_infotext">
-    	<p>
-    		Here you can specify who can <b>view</b> and <b>download</b> this <%= c_type %> on myExperiment.
-			</p>
-			
-			<% if update_perms -%>
-				<p>
-					You can also set <b>update</b> permissions for this <%= c_type %>.
-					<%= link_to_function "Click here" + expand_image, visual_effect(:toggle_blind, "update_perms_info", :duration => 0.3) %> for more information.
-				</p>
-				<div id="update_perms_info" class="box_simple" style="display: none; margin: 0.5em 0;">
-					<%= update_perms_info_text(contributable) -%>
-				</div>
-			<% end -%>
-			
-			<p>
-				You can also explicitly share this <%= c_type %> with your Groups.
-			</p>  
-		</div>
+      <p>
+        Here you can specify who can <b>view</b> and <b>download</b> this <%= c_type %> on <%= Conf.sitename %>.
+      </p>
+
+      <% if update_perms -%>
+        <p>
+          You can also set <b>update</b> permissions for this <%= c_type %>.
+          <%= link_to_function "Click here" + expand_image, visual_effect(:toggle_blind, "update_perms_info", :duration => 0.3) %> for more information.
+        </p>
+        <div id="update_perms_info" class="box_simple" style="display: none; margin: 0.5em 0;">
+          <%= update_perms_info_text(contributable) -%>
+        </div>
+      <% end -%>
+
+      <p>
+        You can also explicitly share this <%= c_type %> with your Groups.
+      </p>
+   </div>
+
+    <% if group_policies.size > 0 %>
+      <br/>
+      <div class="box_infotext">
+      	<p>
+      		One or more of your groups has a <strong>Group Policy</strong> defined.
+          A Group Policy is a pre-defined set of sharing rules that can be applied to this <%= c_type -%> instead of manually managing permissions.
+  			</p>
+        <p>
+          Select whether you wish you use a Group Policy or manually manage permissions below.
+        </p>
+  		</div>
+      <p><strong>How do you wish to manage the sharing rules for this <%= c_type -%>?</strong></p>
+      <div class="box_editing" style="padding-left: 1em; font-size: 93%;">
+        <p>
+          <input type="radio" name="policy_type" value="custom" id="policy_option_custom"
+                 <%= 'checked="checked"' if !using_group_policy -%> onclick="$('custom_policy').show();$('group_policy').hide();"/>
+          <label for="policy_option_custom">Manage permissions manually</label>
+        </p>
+
+        <p>
+          <input type="radio" name="policy_type" value="group" id="policy_option_group"
+                 <%= 'checked="checked"' if using_group_policy -%> onclick="$('custom_policy').hide();$('group_policy').show();"/>
+          <label for="policy_option_group">Use a Group Policy</label>
+        </p>
+      </div>
+    <% else %>
+      <input type="hidden" name="policy_type" value="custom"/>
+    <% end %>
 
 		<br/>
-		
+
+    <div id="group_policy" <%= 'style="display: none"' if !using_group_policy-%>>
+      <p><strong>Which Group Policy do you wish to apply to this <%= c_type -%>?</strong></p>
+      <div class="box_editing" style="padding-left: 1em; font-size: 93%;">
+        <select name="group_policy">
+          <% group_policies.group_by {|p| p.contributor.title}.each do |network, policies| %>
+            <% unless policies.empty? %>
+              <optgroup label="<%= h network -%>">
+                <% policies.each do |policy| %>
+                  <option value="<%= policy.id -%>"><%= policy.name -%></option>
+                <% end %>
+              </optgroup>
+            <% end %>
+          <% end %>
+        </select>
+      </div>
+    </div>
+
+    <div id="custom_policy" <%= 'style="display: none"' if using_group_policy-%>>
+
 		<!-- View/Download Permissions -->
-    <p><strong>Who can view and download this <%= c_type %> on myExperiment?</strong></p>
+    <p><strong>Who can view and download this <%= c_type %> on <%= Conf.sitename %>?</strong></p>
 
 		<div class="box_editing" style="padding-left: 1em; font-size: 93%;">
 
-      <p><input <%= 'checked="checked"' if @sharing_mode == 0 %> id="sharing_option_1" name="sharing[class_id]"
+      <p><label for="sharing_option_1">
+      	<input <%= 'checked="checked"' if @sharing_mode == 0 %> id="sharing_option_1" name="sharing[class_id]"
               value="0" type="radio" onclick="javascript:update_sharing(0);" />
-          - Anyone can view and download.</p>
+          - Anyone can view and download.
+			</label></p>
 
-      <p><input <%= 'checked="checked"' if @sharing_mode == 1 %> id="sharing_option_2" name="sharing[class_id]"
+      <p><label for="sharing_option_2">
+      	<input <%= 'checked="checked"' if @sharing_mode == 1 %> id="sharing_option_2" name="sharing[class_id]"
               value="1" type="radio" onclick="javascript:update_sharing(1);" />
-          - Anyone can view, but only my Friends are allowed to download.</p>
+          - Anyone can view, but only my Friends are allowed to download.
+			</label></p>
 
-      <p><input <%= 'checked="checked"' if @sharing_mode == 2 %> id="sharing_option_9" name="sharing[class_id]"
+      <p><label for="sharing_option_9">
+      	<input <%= 'checked="checked"' if @sharing_mode == 2 %> id="sharing_option_9" name="sharing[class_id]"
               value="2" type="radio" onclick="javascript:update_sharing(2);" />
-          - Anyone can view, but no one can download.</p>
+          - Anyone can view, but no one can download.
+			</label></p>
 
-      <p><input <%= 'checked="checked"' if @sharing_mode == 3 %> id="sharing_option_3" name="sharing[class_id]"
+      <p><label for="sharing_option_3">
+      	<input <%= 'checked="checked"' if @sharing_mode == 3 %> id="sharing_option_3" name="sharing[class_id]"
               value="3" type="radio" onclick="javascript:update_sharing(3);" />
-          - Only my Friends can view and download.</p>
+          - Only my Friends can view and download.
+			</label></p>
 
-      <p><input <%= 'checked="checked"' if @sharing_mode == 4 %> id="sharing_option_4" name="sharing[class_id]"
+      <p><label for="sharing_option_4">
+      	<input <%= 'checked="checked"' if @sharing_mode == 4 %> id="sharing_option_4" name="sharing[class_id]"
               value="4" type="radio" onclick="javascript:update_sharing(4);" />
-          - Only my Friends can view, but no one can download.</p>
+          - Only my Friends can view, but no one can download.
+			</label></p>
 
-      <p><input <%= 'checked="checked"' if @sharing_mode == 7 %> id="sharing_option_7" name="sharing[class_id]"
+      <p><label for="sharing_option_7">
+      	<input <%= 'checked="checked"' if @sharing_mode == 7 %> id="sharing_option_7" name="sharing[class_id]"
               value="7" type="radio" onclick="javascript:update_sharing(7);" />
-          - This is a private <%= c_type %> - only I can view and download (and any Groups I explicitly share with).</p>
+          - This is a private <%= c_type %> - only I can view and download (and any Groups I explicitly share with).
+			</label></p>
 
     </div>
 		
@@ -81,7 +144,7 @@
 			<br/>
 			
 			<!-- Update Permissions -->
-			<p><strong>Who can update this <%= c_type %> on myExperiment?</strong></p>
+			<p><strong>Who can update this <%= c_type %> on <%= Conf.sitename %>?</strong></p>
 	
 			<div class="box_editing" style="padding-left: 1em; font-size: 93%;">
 				<p style="color: #666666;">
@@ -90,57 +153,126 @@
 			    get to view and download as well.
 				</p>
 	
-	      <p><input <%= 'checked="checked"' if @updating_mode == 0 %> id="updating_option_7" name="updating[class_id]"
+	      <p><label for="updating_option_7">
+	      	<input <%= 'checked="checked"' if @updating_mode == 0 %> id="updating_option_7" name="updating[class_id]"
 	      value="0" type="radio" onclick="javascript:update_updating(0);" />
 	      - All those who can view AND download (from your View/Download permissions
-	          above).</p>
+	          above).
+				</label></p>
 	      
-	      <p><input <%= 'checked="checked"' if @updating_mode == 1 %> id="updating_option_1" name="updating[class_id]"
+	      <p><label for="updating_option_1">
+	      	<input <%= 'checked="checked"' if @updating_mode == 1 %> id="updating_option_1" name="updating[class_id]"
 	      value="1" type="radio" onclick="javascript:update_updating(1);" />
-	      - All my Friends.</p>
+	      - All my Friends.
+			 </label></p>
 	
-	      <p><input <%= 'checked="checked"' if @updating_mode == 5 %> id="updating_option_5" name="updating[class_id]"
+	      <p><label for="updating_option_5">
+	      	<input <%= 'checked="checked"' if @updating_mode == 5 %> id="updating_option_5" name="updating[class_id]"
 	      value="5" type="radio" onclick="javascript:update_updating(5);" />
-	      - Some of my Friends</p>
+	      - Some of my Friends
+				</label></p>
 	
 	      <div id="updating_somefriends_box" style="display: none; margin-left: 2em; border: 1px dotted #999999; padding: 0 0.5em;">
 	        <p>
 	        <% for f in current_user.friends %>
-	          <input <%= 'checked' if (perms.select do |p| (p.contributor_type == 'User' and p.contributor_id == f.id) && @updating_mode == 5 end).length > 0 %>
-	          value="<%= f.id %>" type="checkbox" name="updating_somefriends[<%= f.id %>]"/><%= h(f.name) %><br />
+	          <label for="cb_updating_somefriends_<%= f.id %>"><input <%= 'checked' if (perms.select do |p| (p.contributor_type == 'User' and p.contributor_id == f.id) && @updating_mode == 5 end).length > 0 %>
+	          value="<%= f.id %>" type="checkbox" name="updating_somefriends[<%= f.id %>]" id="cb_updating_somefriends_<%= f.id %>"/><%= h(f.name) %></label><br />
 	        <% end %>
 	        </p>
 	      </div>
 	
-	      <p><input <%= 'checked="checked"' if @updating_mode == 6 %> id="updating_option_6" name="updating[class_id]"
+	      <p><label for="updating_option_6">
+	      	<input <%= 'checked="checked"' if @updating_mode == 6 %> id="updating_option_6" name="updating[class_id]"
 	      value="6" type="radio" onclick="javascript:update_updating(6);" />
-	      - No one else (except for me and any Groups explicitly given update permissions).</p>
+	      - No one else (except for me and any Groups explicitly given update permissions).
+				</label></p>
 			</div>
 		
 		<% end %>
 		
 		<br/>
-	
-		<!-- Explicit Group Permissions -->
-		<p><strong>Share with my Groups:</strong></p>
 
-		<div id="group_sharing_box" class="box_editing" style="padding-left: 1em; font-size: 93%;">
-      <% for n in (current_user.networks + current_user.networks_owned) %>
+    <% unless applicable_networks.empty? %>
+      <!-- Explicit Group Permissions -->
+      <p><strong>Share with my Groups:</strong></p>
+
+      <div id="group_sharing_box" class="box_editing" style="padding-left: 1em; font-size: 93%;">
+        <% applicable_networks.each do |n| %>
           <p>
-          	<% perm = find_permission_for_contributor(perms, "Network", n.id) if edit -%>
-						<input <%= 'checked' if perm %> style="margin-right: 0.3em;"
-          		value="<%= n.id %>" type="checkbox" name="group_sharing[<%= n.id %>][id]"/>
-						<%= h(n.title) %>
-						<select name="group_sharing[<%= n.id %>][level]" style="font-size: 85%; margin: 0 0.5em;">
-							<option value="0" <%= 'selected="selected"' if perm and perm.level == 0 %>>View only</option>
-							<option value="1" <%= 'selected="selected"' if !edit or !perm or (perm and perm.level == 1) %>>View and Download only</option>
-							<option value="2" <%= 'selected="selected"' if perm and perm.level == 2 %>>View, Download and Update</option>
-						</select>
-					</p>
+            <% perm = find_permission_for_contributor(perms, "Network", n.id) if edit -%>
+            <label for="cb_group_sharing_<%= n.id %>">
+              <input class="group_sharing" <%= 'checked' if perm %> style="margin-right: 0.3em;"
+                     value="<%= n.id %>" type="checkbox" name="group_sharing[<%= n.id %>][id]" id="cb_group_sharing_<%= n.id %>"
+                     onclick="toggle_layout_option(this.value, this.checked);"/>
+              <%= h(n.title) %>
+            </label>
+            <select name="group_sharing[<%= n.id %>][level]" style="font-size: 85%; margin: 0 0.5em;">
+              <option value="0" <%= 'selected="selected"' if perm and perm.level == 0 %>>View only</option>
+              <option value="1" <%= 'selected="selected"' if !edit or !perm or (perm and perm.level == 1) %>>View and Download only</option>
+              <option value="2" <%= 'selected="selected"' if perm and perm.level == 2 %>>View, Download and Update</option>
+            </select>
+          </p>
         <% end %>
-		</div>
+        <br/>
+        <% if %w(Workflow Pack File).include?(c_type) %>
+          <div id="layout_options_box">
+            <strong>Layout:</strong>
+            <div class="box_infotext" style="margin: 1em 0">
+              <p>
+                One or more of the groups you have elected to share this <%= c_type -%> with have custom layouts specified.
+                To apply a group's custom layout to this <%= c_type -%>'s page, choose one from the list below or select
+                "Default" to keep the <%= Conf.sitename -%> default layout. This setting can be changed at any time by
+                visiting the 'edit' page.
+              </p>
+            </div>
+            <% selected_option = (Conf.layouts[contributable.contribution.policy.layout]["network_id"] unless
+                (contributable.contribution.nil? || contributable.contribution.policy.nil? ||
+                 contributable.contribution.policy.layout.nil? || Conf.layouts[contributable.contribution.policy.layout].nil?)) %>
+            <%= select_tag "layout", "<option value="">Default</option>" +
+                options_from_collection_for_select(applicable_networks.select {|n| n.layout_name if Conf.layouts[n.layout_name]},
+                                                   'id','title', selected_option) %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    </div>
   </div>
 </div>
 
 <script>update_sharing(<%= @sharing_mode %>)</script>
+<script type="text/javascript">
+
+  function toggle_layout_option(id, enable) {
+    var option = $$('select#layout option[value=' + id + ']').first();
+
+    if(option != null) {
+      //If a "share with group" box is unticked, and that group's layout is selected, go to default.
+      if(!enable){
+        if($('layout').selectedIndex == option.index){
+          $('layout').selectedIndex = 0;
+        }
+      }
+
+      //Disable/enable option in dropdown menu
+      option.disabled = !enable;
+
+      //If all options except "default" are disabled, hide the layout option box
+      if($$('select#layout option[disabled]').size() == ($$('select#layout option').size() - 1)) {
+        $('layout_options_box').hide();
+      }
+      else {
+        $('layout_options_box').show();
+      }
+    }
+  }
+
+  //Initial state
+  document.observe("dom:loaded", function() {
+    $$('input.group_sharing').each (function (box) {
+      toggle_layout_option(box.value, box.checked);
+    });
+  });
+</script>
+
 <% if update_perms -%><script>update_updating(<%= @updating_mode %>)</script><% end -%>

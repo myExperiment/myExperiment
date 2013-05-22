@@ -1,6 +1,4 @@
-<%= javascript_include_tag :fckeditor %>
-
-<% url_to_timeline ||= false -%>
+<%= javascript_include_tag "ckeditor/ckeditor.js" %>
 
 <h2>
 	<%= icon "comments", nil, nil, { :style => "vertical-align: middle;" }, "" -%>
@@ -8,11 +6,9 @@
 	<span class="count_text" style="vertical-align: middle;">(<%= commentable.comments.length %>)</span>
 </h2>
 
-<% if url_to_timeline -%>
-	<ul class="sectionIcons">
-		<li><%= icon('timeline', url_to_timeline, nil, nil, 'View Timeline')%></li>
-	</ul>
-<% end -%>
+<ul class="sectionIcons">
+  <li><%= icon('timeline', rest_resource_uri(commentable) + "/comments/timeline", nil, nil, 'View Timeline')%></li>
+</ul>
 
 <div class="commentsBox">
 	
@@ -45,13 +41,13 @@
 			<% # Hack for FCKEditor: -%>
 			<% @comment = Comment.new; @comment.id = 0 -%>
 			
-			<% form_remote_tag(:url => { :controller => controller.controller_name.to_s, :action => "comment" },
-								 :before => fckeditor_before_js("comment", "comment"),
+			<% form_remote_tag(:url => polymorphic_path(commentable) + "/comments",
+								 :before => 'for (instance in CKEDITOR.instances) { CKEDITOR.instances[instance].updateElement() }',
 							   :update => 'commentsBox', 
 							   :loading => "Element.show('addcomment_indicator')",
-	               :complete => "Element.hide('addcomment_indicator'); new Effect.Highlight('comments', { duration: 1.5 }); $('comment').value = '';") do %>
+	               :complete => "Element.hide('addcomment_indicator'); new Effect.Highlight('comments', { duration: 1.5 }); $('comment').value = ''; CKEDITOR.replace('comment_comment')") do %>
 				
-				<%= fckeditor_textarea("comment", "comment", :ajax => true, :toolbarSet => 'Basic', :width => '99%', :height => '200px') %>
+				<%= text_area_tag("comment[comment]", nil, :width => '99%', :height => '200px', :class => 'ckeditor') %>
 				<% if false %><textarea id="comment" name="comment" rows="10" style="width: 99%;"></textarea><% end %>
 				<br/>
 				<%= submit_tag "Submit Comment" %>

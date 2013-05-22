@@ -6,35 +6,36 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'workflows_controller'
 
-# Re-raise errors caught by the controller.
-class WorkflowsController; def rescue_action(e) raise e end; end
-
-class WorkflowsControllerTest < Test::Unit::TestCase
-  fixtures :workflows
-
-  def setup
-    @controller = WorkflowsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+class WorkflowsControllerTest < ActionController::TestCase
+  fixtures :workflows, :users, :contributions, :workflow_versions, :content_blobs, :blobs, :packs, :policies, :permissions, :networks, :content_types
 
   def test_should_get_index
     get :index
     assert_response :success
-    assert assigns(:workflows)
+    assert_template 'index'
   end
 
   def test_should_get_new
+    login_as(:john)
     get :new
+
     assert_response :success
   end
 
   def test_should_create_workflow
     old_count = Workflow.count
-    post :create, :workflow => { }
-    assert_equal old_count+1, Workflow.count
+
+    login_as(:john)
+    post :create, :workflow => { :file => fixture_file_upload('files/workflow_dilbert.xml'), :license_id => '1' },
+                  :metadata_choice => 'infer',
+                  :credits_me => 'false',
+                  :credits_users => '',
+                  :credits_groups => '',
+                  :attributions_workflows => '',
+                  :attributions_files => ''
 
     assert_redirected_to workflow_path(assigns(:workflow))
+    assert_equal old_count+1, Workflow.count
   end
 
   def test_should_show_workflow
@@ -43,20 +44,58 @@ class WorkflowsControllerTest < Test::Unit::TestCase
   end
 
   def test_should_get_edit
+    login_as(:john)
     get :edit, :id => 1
+
     assert_response :success
   end
 
   def test_should_update_workflow
-    put :update, :id => 1, :workflow => { }
+    login_as(:john)
+    put :update, :id => 1, :workflow => { },
+                           :credits_me => 'false',
+                           :credits_users => '',
+                           :credits_groups => '',
+                           :attributions_workflows => '',
+                           :attributions_files => ''
+
     assert_redirected_to workflow_path(assigns(:workflow))
   end
 
   def test_should_destroy_workflow
     old_count = Workflow.count
-    delete :destroy, :id => 1
-    assert_equal old_count-1, Workflow.count
 
+    login_as(:john)
+    delete :destroy, :id => 1
+
+    assert_equal old_count-1, Workflow.count
     assert_redirected_to workflows_path
+  end
+
+  def test_should_store_workflow_rdf
+    login_as(:john)
+
+    # Clear test repo
+    TripleStore.instance.repo = {}
+
+    assert_difference('Workflow.count', 1) do
+     post :create, :workflow => { :file => fixture_file_upload('files/image_to_tiff_migration.t2flow'), :license_id => '1' },
+                   :metadata_choice => 'infer',
+                   :credits_me => 'false',
+                   :credits_users => '',
+                   :credits_groups => '',
+                   :attributions_workflows => '',
+                   :attributions_files => ''
+    end
+
+    # Was it inserted into the triple store on save?
+    assert_equal 1, TripleStore.instance.repo.keys.size
+
+    delete :destroy, :id => assigns(:workflow).id
+
+    # Was it deleted from the triple store on delete?
+    assert_equal 0, TripleStore.instance.repo.keys.size
+
+    TripleStore.instance.repo = {}
   end
 end

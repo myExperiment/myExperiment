@@ -1,6 +1,6 @@
 <div id="packItems">
 	
-	<% if pack.items_count > 0 -%>
+	<% if (contributable_entries.size + remote_entries.size) > 0 -%>
 		
 		<% if false -%>
 		<%= view_privileges_notice -%>
@@ -10,9 +10,8 @@
 		<ul id="packItemsList">
 			
 			<!-- Contributable Item Entries -->
-			<% pack.contributable_entries.each do |e| %>
-				<% available = (e.contributable != nil) -%>
-				<% show = available ? thing_authorized?('show', e.contributable) : false -%>
+			<% contributable_entries.each do |e| %>
+				<% show = e.available? ? Authorization.check("view", e.contributable, current_user) : false -%>
 				<li>
 					<table>
 						<tr>
@@ -24,6 +23,7 @@
 								<% end -%>
 							</td>
 							<td>
+								<a name='<%= "item_contributable_#{e.id}" -%>'></a>
 								<p>
 									<% if mine?(pack) -%>
 										<%= remove_item_button(pack.id, "contributable", e.id) -%>
@@ -37,17 +37,16 @@
 									
 										<b><%= visible_name(e.contributable_type) -%>:</b>
 										<% unless e.contributable_version.blank? -%>
-											<% # HACK: only workflows are versioned at the moment -%>
-											<%= versioned_workflow_link e.contributable_id, e.contributable_version, false -%>
+											<%= versioned_resource_link e.contributable, e.contributable_version, false -%>
 											<% if false %><span style="color: #666666;">(version <%= e.contributable_version -%>)</span><% end %>
 										<% else -%>
 											<%= contributable(e.contributable_id, e.contributable_type) %>
 										<% end -%>
-										<small>(<%= contributor e.contributable.contributor_id, e.contributable.contributor_type -%>)</small>
+										<small>(<%= contributor e.contributable.contribution.contributor_id, e.contributable.contribution.contributor_type -%>)</small>
 										
 									<% else -%>
 										
-										<% if not available -%>
+										<% if not e.available? -%>
 											<font class="none_text">
 												The item this entry points to is not available. It may have been deleted.
 											</font>
@@ -61,11 +60,15 @@
 								</p>
 								<div class="inner">
 									<% unless e.comment.blank? -%> 
-										<% if show or not available -%>
-											<p class="comment">
-												<%= icon('comment', nil, nil, nil, nil) -%>
-												<%= h e.comment -%>
-											</p>
+										<% if show or not e.available? -%>
+											<div class="comment">
+												<table>
+													<tr>
+														<td style="width: 20px; vertical-align: top;"><%= icon('comment', nil, nil, nil, nil) -%></td>
+														<td><%= simple_format(h(e.comment)) -%></td>
+													</tr>
+												</table>
+											</div>
 										<% end -%>
 									<% else -%>
 										<% if authorised_to_edit -%>
@@ -94,15 +97,16 @@
 			<% end -%>
 			
 			<!-- Remote Item Entries -->
-			<% pack.remote_entries.each do |e| %>
+			<% remote_entries.each do |e| %>
 				<li>
 					<table>
 						<tr>
 							<td class="icon">
 								<%= icon('remote', nil, 'External item', nil, nil) -%>
 							</td>
-							<td>
-								<p>
+							<td class="remote">
+								<a name='<%= "item_remote_#{e.id}" -%>'></a>
+								<p class="longurl">
 									<% if mine?(pack) -%>
 										<%= remove_item_button(pack.id, "remote", e.id) -%>
 									<% end -%>
@@ -110,17 +114,21 @@
 											<%= edit_item_button(pack.id, "remote", e.id) -%>
 										<% end -%>
 									<b>External:</b>
-									<%= link_to h(e.title), h(e.uri), :popup => true %>
+									<%= "#{h(e.title)} - (" %><%= link_to h(e.uri), h(e.uri), :popup => true %><%= ")" %>
 								</p>
 								<div class="inner">
 									<% unless e.alternate_uri.blank? -%>
 										<p style="margin-bottom: 0.3em;"><small><%= link_to("Alternate link", h(e.alternate_uri), :popup => true) -%></small></p>
 									<% end -%>
 									<% unless e.comment.blank? -%>
-										<p class="comment">
-											<%= icon('comment', nil, nil, nil, nil) -%>
-											<%= h e.comment -%>
-										</p>
+										<div class="comment">
+											<table>
+												<tr>
+													<td style="width: 20px; vertical-align: top;"><%= icon('comment', nil, nil, nil, nil) -%></td>
+										      <td><%= simple_format(h(e.comment)) -%></td>
+												</tr>
+											</table>
+										</div>
 									<% else -%>
 										<% if authorised_to_edit -%>
 											<p><small>[ <%= link_to "Add a comment here", edit_item_link(pack.id, "remote", e.id) -%> ]</small></p>

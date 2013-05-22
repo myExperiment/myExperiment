@@ -64,8 +64,8 @@ render_tabnav :user,
   end 
          
   add_tab do |t|
-    t.named 'User\'s Tags'
-    t.titled 'User\'s Tags'
+    t.named 'Tags by User'
+    t.titled 'Tags by User'
     t.links_to :action => 'tags', :id => @user.id
   end
 

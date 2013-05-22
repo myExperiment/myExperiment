@@ -2,7 +2,12 @@
 
 <% unless (most_r = Contribution.most_recent(10, type)).empty? %>
   <div class="tabContainer">
-  	<div class="tabTitle">Latest</div>
+  	<div class="tabTitle">
+  		<% if controller.controller_name.downcase == 'workflows' -%>
+				<%= feed_icon_tag "Latest Workflows", workflows_path(:format => :rss), "margin-right: 0.2em;" %>
+			<% end -%>
+  		Latest
+		</div>
   	<div class="tabContent">
 	    <%= render :partial => "contributions/list", :locals => { :collection => most_r, :table => true } %>
   	</div>
@@ -37,3 +42,12 @@
 	  </div> 
 	<% end %>
 <% end -%>
+
+<% unless (most_f = Contribution.most_favourited(10, type)).empty? %>
+  <div class="tabContainer">
+  	<div class="tabTitle">Most Favourited</div>
+  	<div class="tabContent">
+	    <%= render :partial => "contributions/list", :locals => { :collection => most_f, :table => true } %>
+  	</div>
+  </div> 
+<% end %>

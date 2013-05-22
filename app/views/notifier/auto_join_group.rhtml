@@ -1,15 +1,15 @@
 Hi <%= @name %>,
  
-<%= @member_name %> has joined the following Group on myExperiment, which you administrate:
+<%= @member_name %> has joined the following Group on <%= Conf.sitename %>, which you administrate:
 
 Name: <%= @network.title %>
 Administrator: <%= @network.owner.name %>
 
 Note that <%= @member_name %> was able to join this Group because you have set it to automatically accept all Membership Requests.
 
-Your username is: <%= @username %>
+  <%= login_identity_reminder(@target) %>
 
 Thanks,
  
-- The myExperiment Team
-http://www.myexperiment.org
+- The <%= Conf.sitename %> Team
+<%= Conf.base_uri -%>

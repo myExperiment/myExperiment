@@ -1,0 +1,65 @@
+<% @logo_link_url  = "http://biovel.eu/" # The URL that the logo links to when clicked
+   @logo_image_url = "/images/biovel.png" # The logo image
+
+   biovel_id = @layout['network_id']
+
+   biovel_tabs = [
+       {'controller' => 'networks', 'label' => 'BioVeL', 'link' => network_path(biovel_id)},
+       {'controller' => 'workflows', 'label' => 'Workflows', 'link' => network_workflows_path(biovel_id)},
+       {'controller' => 'blobs', 'label' => 'Files', 'link' => network_blobs_path(biovel_id)},
+       {'controller' => 'packs', 'label' => 'Packs', 'link' => network_packs_path(biovel_id)}
+   ]
+
+%>
+
+<% content_for :site_info_links do %>
+
+<% end %>
+
+<% content_for :logo do %>
+  <div style="float: left; margin-bottom: 0.5em">
+    <%= link_to image_tag(@logo_image_url), @logo_link_url, :style => "float: left" -%>
+    <div style="float: left; margin-top: 2em">
+      <div style="font-weight: bold; vertical-align: middle">
+        <a href="<%= @logo_link_url -%>" class="biovel_logo_link">
+          <span style="font-size: 200%">Biodiversity Virtual e-Laboratory</span>
+        </a>
+      </div>
+      <div style="margin: 0.5em 0 0 1em; color: black;">
+        on <%= link_to image_tag("/images/logo_tiny.png", :style=>"vertical-align: middle"), "/" -%>
+      </div>
+    </div>
+  </div>
+  <br class="clearer"/>
+<% end %>
+
+<% content_for :tabs do %>
+  <ul class="tabnav">
+    <li class="return_tab"><%= link_to 'Home', '/home'-%></li>
+    <% biovel_tabs.each do |tab| %>
+      <li <%= (tab['controller'] && controller.controller_name.match(tab['controller'])) ? 'id="selected_tabnav"' : '' %>>
+        <%= link_to(tab['label'], tab['link']) -%>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if Rails.env == "production" %>
+  <% content_for :analytics do %>
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-36850736-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+  <% end %>
+<% end %>
+
+<%= render :partial => "layouts/myexperiment" %>

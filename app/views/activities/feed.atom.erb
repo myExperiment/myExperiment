@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<feed xml:lang="en" xmlns="http://www.w3.org/2005/Atom">
+  <title><%= CGI.escapeHTML(@title) -%></title>
+  <updated><%= @updated -%></updated>
+  <id><%= @id -%></id>
+  <link type="text/html" rel="alternate" href="<%= @resource -%>"/>
+<% @entries.each do |entry| %>
+  <entry>
+    <published><%= entry[0].timestamp.to_datetime.rfc3339 -%></published>
+    <title><%= strip_tags(activity_title(entry)) -%></title>
+    <content type="html"><%= CGI::escapeHTML(strip_tags(activity_description(entry, :min_chars => 800))) -%></content>
+    <link type="text/html" rel="alternate" href="<%= @resource -%>"/>
+    <id>urn:uuid:<%= entry[0].uuid -%></id>
+    <author>
+      <name><%= h(entry[0].subject.label) -%></name>
+    </author>
+  </entry>
+<% end %>
+</feed>

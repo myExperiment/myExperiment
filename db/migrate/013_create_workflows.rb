@@ -19,6 +19,9 @@ class CreateWorkflows < ActiveRecord::Migration
       t.column :body, :text
       t.column :body_html, :text
       
+      t.column :version, :integer
+      t.column :preview_id, :integer
+
       t.column :created_at, :datetime
       t.column :updated_at, :datetime
       
@@ -27,12 +30,27 @@ class CreateWorkflows < ActiveRecord::Migration
                :default => "by-sa"
     end
     
-    Workflow.create_versioned_table
+    create_table :workflow_versions do |t|
+      t.column "workflow_id",       :integer
+      t.column "version",           :integer
+      t.column "contributor_id",    :integer
+      t.column "contributor_type",  :string
+      t.column "title",             :string
+      t.column "unique_name",       :string
+      t.column "scufl",             :text
+      t.column "body",              :text
+      t.column "body_html",         :text
+      t.column "created_at",        :datetime
+      t.column "updated_at",        :datetime
+      t.column "license",           :string
+      t.column "preview_id",        :integer
+    end
+
+    add_index :workflow_versions, [ :workflow_id ]
   end
 
   def self.down
     drop_table :workflows
-    
-    Workflow.drop_versioned_table
+    drop_table :workflow_versions
   end
 end

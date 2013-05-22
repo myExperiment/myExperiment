@@ -1,6 +1,6 @@
 <% t "#{@runner.class.to_s} - #{h @runner.title}" -%>
 
-<% if @runner.authorized?('edit', current_user) -%>
+<% if Authorization.check('edit', @runner, current_user) -%>
 	<ul class="sectionIcons">
 	  <li><%= icon('edit', edit_runner_path(@runner), nil, nil, 'Edit Runner') %></li>
 	</ul>
@@ -45,3 +45,6 @@
 <div id="status_box" style="margin-top: 1.5em; font-weight: bold; color: #990000;">
 	<% render :partial => "status", :locals => { :service_valid => @runner.service_valid? } -%>
 </div>
+
+<%= render :partial => "contributions/alternative_formats" %>
+

@@ -24,7 +24,7 @@
 						
 						<% unless runner.description.blank? %>
 							<div class="desc" style="font-size: 85%;">
-								<%= truncate(strip_html(runner.description), 180) %>
+								<%= truncate(strip_html(runner.description), :length => 180) %>
 							</div>
 						<% end %>
 						
@@ -35,7 +35,7 @@
 					</td>
 			    <td class="actions"  style="width: 80px;">
 		      	<%= icon "show", runner_path(runner), nil, nil, "View" %>
-						<% if runner.authorized?("edit", logged_in? ? current_user : nil) %>
+						<% if Authorization.check('edit', runner, current_user) %>
 							<%= icon('edit', edit_runner_path(runner), nil, nil, 'Edit') %>
 						<% end %>
 		    	</td>

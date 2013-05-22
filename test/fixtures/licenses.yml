@@ -1,0 +1,18 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+license_1:
+  id: 1
+  title: License 1
+  description: This is the first license.
+
+license_2:
+  id: 2
+  title: License 2
+  description: This is the second license.
+
+license_3:
+  id: 3
+  title: by-sa
+  description: This is the by-sa license.
+  unique_name: by-sa
+

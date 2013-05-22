@@ -9,7 +9,7 @@
 	      
 	      <p>
 	        <strong>File type:</strong><br />
-	        <%=h blob.content_type %>
+	        <%=h blob.content_type.title %>
 	      </p>
 	      
 	      <p>
@@ -23,10 +23,10 @@
 	  </tr>
 	  <tr>
 	    <td colspan="2">
-	      <% if blob.authorized?("download", (logged_in? ? current_user : nil)) %><%= icon "download", download_file_path(blob) %> <% end %>
-	      <% if blob.authorized?("show", (logged_in? ? current_user : nil)) %><%= icon "show", file_path(blob), nil, nil, "View" %> <% end %>
-	      <% if logged_in? and blob.authorized?("edit", current_user) %><%= icon "edit", edit_file_path(blob) %> <% end %>
-	      <% if logged_in? and blob.owner?(current_user) %><%= icon "destroy", file_path(blob), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
+	      <% if Authorization.check('download', blob, current_user) %><%= icon "download", download_blob_path(blob) %> <% end %>
+	      <% if Authorization.check('view', blob, current_user) %><%= icon "show", blob_url(blob), nil, nil, "View" %> <% end %>
+	      <% if logged_in? and Authorization.check('edit', blob, current_user) %><%= icon "edit", edit_blob_path(blob) %> <% end %>
+	      <% if logged_in? and blob.owner?(current_user) %><%= icon "destroy", blob_path(blob), nil, :confirm => 'Are you sure?', :method => :delete %><% end %>
 	    </td>
 	  </tr>
 	</table>

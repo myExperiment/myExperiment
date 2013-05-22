@@ -1,0 +1,13 @@
+
+test_predicate_1:
+  id: 1
+  title: Test predicate
+  description: This is a test predicate.
+  description_html: <p>This is a test predicate.</p>
+  phrase: is a test phrase with 
+  ontology_id: 1
+  equivalent_to: 
+  created_at: 2008-02-14 20:19:18
+  updated_at: 2008-02-14 20:19:18
+
+

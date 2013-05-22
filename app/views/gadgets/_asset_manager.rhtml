@@ -1,18 +1,17 @@
 <% gadget_characters_limit ||= 20 -%>
 
 <div class="myexperiment_gadget">
-  <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 
   <div class="header">
     <p>My Stuff</p>
 		<p>
     	<small>
-      	<%= link_to(pluralize(current_user.friends.length, "friend"), currentusers_things_url('friends')) %>
+      	<%= link_to(pluralize(current_user.friends.length, "Friend"), currentusers_things_url('friends')) %>
 				<span style="color:#999999;"> | </span>
-				<%= link_to(pluralize(current_user.networks_owned.length + current_user.networks.length, "group"), currentusers_things_url('groups')) %>
+				<%= link_to(pluralize(current_user.networks_owned.length + current_user.networks.length, "Group"), currentusers_things_url('groups')) %>
 				<% filter_contributables(current_user.contributions).each do |klass,contributables| %>
 					<span style="color:#999999;">|</span> 
-					<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize)), currentusers_things_url(controller_visible_name(klass.humanize.pluralize).downcase)) %>
+					<%= link_to(pluralize(contributables.length, controller_visible_name(klass.humanize.pluralize).singularize), currentusers_things_url(klass)) %>
 				<% end %>
       </small>
      </p>
@@ -27,7 +26,7 @@
         <div class="content">
           <ul class="gadget_list">
             <% current_user.friends.each do |friend| %>
-              <li><%= icon "user", nil, nil, nil, "" %> <%= link_to truncate(h(friend.name), gadget_characters_limit), user_path(friend), :title => tooltip_title_attrib(h(friend.name)) %></li>
+              <li><%= icon "user", nil, nil, nil, "" %> <%= link_to truncate(h(friend.name), :length => gadget_characters_limit), user_path(friend), :title => tooltip_title_attrib(h(friend.name)) %></li>
             <% end %>
           </ul>
         </div>
@@ -42,10 +41,10 @@
         <div class="content">
           <ul class="gadget_list">
             <% current_user.networks_owned.each do |network_owned| %>
-              <li><%= icon "network-owned", nil, nil, nil, "" %> <%= link_to truncate(h(network_owned.title), gadget_characters_limit), group_path(network_owned), :title => tooltip_title_attrib(h(network_owned.title)) %></li>
+              <li><%= icon "network-owned", nil, nil, nil, "" %> <%= link_to truncate(h(network_owned.title), :length => gadget_characters_limit), network_path(network_owned), :title => tooltip_title_attrib(h(network_owned.title)) %></li>
             <% end %>
             <% current_user.networks.each do |network_member| %>
-              <li><%= icon "network-member", nil, nil, nil, "" %> <%= link_to truncate(h(network_member.title), gadget_characters_limit), group_path(network_member), :title => tooltip_title_attrib(h(network_member.title)) %></li>
+              <li><%= icon "network-member", nil, nil, nil, "" %> <%= link_to truncate(h(network_member.title), :length => gadget_characters_limit), network_path(network_member), :title => tooltip_title_attrib(h(network_member.title)) %></li>
             <% end %>
           </ul>
         </div>
@@ -53,10 +52,10 @@
     <% end %>
   
     <% unless current_user.contributions.empty? %>
-      <% filter_contributables(current_user.contributions).each do |klass, array| %>
+      <% filter_contributables(current_user.contributions, true).each do |klass, array| %>
         <div>
           <div class="title">
-          	<%= link_to((klass.to_s == "Blob" ? "File" : klass.pluralize), currentusers_things_url(controller_visible_name(klass.humanize.pluralize).downcase)) %>
+          	<%= link_to(visible_name(klass.humanize).pluralize, currentusers_things_url(klass)) %>
 		  		</div>
           <div class="content">
             <ul class="gadget_list">
@@ -72,6 +71,5 @@
     <% end %>
   
   </div>
-  
-  <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+
 </div>

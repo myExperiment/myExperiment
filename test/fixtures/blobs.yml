@@ -1,15 +1,106 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+
+picture:
   id: 1
+  current_version: 1
   contributor_id: 1
-  contributor_type: MyString
-  local_name: MyString
-  content_type: MyString
-  data: 
-two:
+  contributor_type: User
+  local_name: file_picture.png
+  title: Picture
+  body: some text
+  created_at: 2008-04-22 15:32:01
+  license_id: 1
+  content_type_id: 1
+  content_blob_id: 1
+
+text:
   id: 2
+  current_version: 1
+  contributor_id: 2
+  contributor_type: User
+  local_name: file_text.txt
+  title: developers.txt
+  body: myExperiment instructions
+  created_at: 2007-01-01 00:00:03
+  license_id: 1
+  content_type_id: 2
+  content_blob_id: 2
+
+for_true_policy:
+  id: 3
+  current_version: 1
   contributor_id: 1
-  contributor_type: MyString
-  local_name: MyString
-  content_type: MyString
-  data: 
+  contributor_type: User
+  local_name: file_picture.png
+  title: for true policy
+  body: some text
+  created_at: 2008-04-22 15:32:01
+  license_id: 1
+  content_type_id: 1
+  content_blob_id: 1
+
+for_false_policy:
+  id: 4
+  current_version: 1
+  contributor_id: 1
+  contributor_type: User
+  local_name: file_picture.png
+  title: for false policy
+  body: some text
+  created_at: 2008-04-22 15:32:01
+  license_id: 1
+  content_type_id: 1
+  content_blob_id: 1
+
+for_protected_policy:
+  id: 5
+  current_version: 1
+  contributor_id: 1
+  contributor_type: User
+  local_name: file_picture.png
+  title: for protected policy
+  body: some text
+  created_at: 2008-04-22 15:32:01
+  license_id: 2
+  content_type_id: 1
+  content_blob_id: 1
+
+for_public_policy:
+  id: 6
+  current_version: 1
+  contributor_id: 1
+  contributor_type: User
+  local_name: file_picture.png
+  title: for public policy
+  body: some text
+  created_at: 2008-04-22 15:32:01
+  license_id: 2
+  content_type_id: 1
+  content_blob_id: 1
+
+group_file_one:
+  id: 7
+  current_version: 1
+  contributor_id: 1
+  contributor_type: User
+  local_name: file_picture.png
+  title: A file with a Group Policy
+  body: some text
+  created_at: 2008-04-22 15:32:01
+  license_id: 2
+  content_type_id: 1
+  content_blob_id: 1
+
+group_file_two:
+  id: 8
+  current_version: 1
+  contributor_id: 1
+  contributor_type: User
+  local_name: file_picture.png
+  title: Another file with a Group Policy
+  body: some text
+  created_at: 2008-04-22 15:32:01
+  license_id: 2
+  content_type_id: 1
+  content_blob_id: 1
+

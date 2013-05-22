@@ -1,0 +1,18 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+from_uri_port:
+  id: 1
+  name: from_uri
+  port_type: input
+  workflow_id: 3
+
+to_uri_port:
+  id: 2
+  name: to_uri
+  port_type: input
+  workflow_id: 3
+
+single_port:
+  id: 3
+  name: from_uri
+  port_type: input
+  workflow_id: 4

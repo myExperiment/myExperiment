@@ -1,0 +1,134 @@
+<style type="text/css">
+  #galaxy_header {
+    background-color: #EEEEEE;
+    color: #FFFFFF;
+    position: fixed;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    font-family: Verdana, sans-serif;
+    text-align: center;
+    z-index: 5000;
+    border-bottom: 1px solid #777777;
+  }
+
+  #galaxy_inner_header {
+    background-color: #303239;
+    background-image: -moz-linear-gradient(center top , #333333, #2C3143);
+    color: #EEEEEE;
+    height: 32px;
+    width: 100%;
+    border-bottom: 1px solid #444444;
+    margin-bottom: 4px;
+  }
+
+  #galaxy_logo {
+    font-size: 20px;
+    font-weight: bold;
+    float: left;
+    padding: 5px 20px;
+    line-height: 1;
+    margin-left: -15px;
+  }
+
+  #remove_galaxy_frame {
+    float: right;
+    padding: 3px 10px;
+    line-height: 27px;
+  }
+
+  #galaxy_header a { text-decoration: none; color: #FFFFFF;}
+  #galaxy_header a:hover { text-decoration: underline; color: #FFFFFF; }
+
+  #galaxy_header ul {
+    margin: 0;
+  }
+
+  #galaxy_header li {
+    display: inline;
+    line-height: 32px;
+    font-size: 12px
+  }
+  
+  #galaxy_header li a {
+    display: inline-block;
+    padding: 0 1em;
+    color: #999999;
+  }
+  
+  #galaxy_header li.selected a {
+    background-color: #000000;
+    color: #FFFFFF;
+  }
+
+  #galaxy_header li a:hover {
+    text-decoration: underline;
+    color: gold;
+  }
+
+  #doc2 {
+    margin-top: 43px;
+  }
+
+  #galaxy_help {
+    position: fixed;
+    width: 100%;
+    color: #333;
+    font-size: 120%;
+    z-index: 5000;
+  }
+</style>
+
+<div id="galaxy_header">
+  <div id="galaxy_inner_header">
+    <div id="galaxy_logo">
+      <a href="<%= session[:return_url] -%>">
+        <img style="width: 26px; vertical-align: top;" src="/images/galaxyIcon_noText.png">
+        Galaxy
+      </a>
+    </div>
+    <div id="remove_galaxy_frame">
+      <a href="/clear_external_site_session_info">
+        <img style="vertical-align: text-bottom; margin-bottom: -1px" src="/images/famfamfam_silk/cross.png">
+        Remove Frame
+      </a>
+    </div>
+    <ul>
+      <li><a href="<%= session[:return_url] -%>">Return to Galaxy</a></li>
+      <li <%='class="selected"' if request.fullpath.start_with?('/galaxy') -%>><%= link_to 'Galaxy Workflows', '/galaxy' -%></li>
+      <li id="galaxy_help_option"><a href="#" onclick="toggle_galaxy_help(); return false;">Help</a></li>
+    </ul>
+  </div>
+</div>
+<div id="galaxy_help" style="display: none">
+  <div class="box_infotext" style="width: 40%; margin: 0 auto;">
+    <p>
+      <strong>To find Galaxy workflows:</strong><br/>
+      Click the "Galaxy Workflows" tab to view a list of all Galaxy workflows on <%= Conf.sitename -%>.
+    </p>
+    <p>
+      <strong>To import a Galaxy workflow into Galaxy:</strong><br/>
+      Navigate to a Galaxy workflow's page by clicking its title in the workflow list (see above), scroll down to the
+      "Import" section and click the import button.
+    </p>
+    <p>
+      For further information, please visit <a href="http://wiki.myexperiment.org/index.php/Galaxy_Help" target="_blank">this page</a>.
+    </p>
+    <p style="text-align: center">
+      [<a href="#" onclick="toggle_galaxy_help(); return false;">close</a>]
+    </p>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  function toggle_galaxy_help() {
+      var div = $('galaxy_help');
+      var tab = $('galaxy_help_option');
+      div.toggle();
+      if(div.visible())
+        tab.addClassName("selected");
+      else
+        tab.removeClassName("selected");
+  }
+</script>

@@ -1,0 +1,27 @@
+<table style="border-spacing: 16px;" id="topic_container">
+  <% group_items(topics, 3).each do |group| %>
+    <tr>
+      <% group.each do |topic| %>
+        <td style="width: 210px; display: inline-block; margin: 4px; vertical-align: top; border: 2px solid gray; background: #e0e0e0; padding: 4px">
+          <% if logged_in? %>
+            <div style="float: right" id="<%= "topic_feedback_#{topic.id}" -%>" class="topic_feedback">
+              <% if topic.topic_feedback.exists?( :user_id => current_user ) %>
+                <% if topic.topic_feedback.find(:first, :conditions => ['user_id = ?', current_user.id]).score == 1 %>
+                  <img src="images/thumbsup_grey.png">
+                <% else %>
+                  <img src="images/thumbsdown_grey.png">
+                <% end %>
+              <% else %>
+                <%= link_to_remote( "<img src=\"images/thumbsup.png\">", { :url => { :controller => "topics", :action => "topic_feedback", :topic_id => topic.id, :user_id => current_user.id, :score => 1 } } ) %>
+                <%= link_to_remote( "<img src=\"images/thumbsdown.png\">", { :url => { :controller => "topics", :action => "topic_feedback", :topic_id => topic.id, :user_id => current_user.id, :score => -1 } } ) %>
+              <% end %>
+            </div>
+          <% end %>
+          <div style="margin: 8px;"><%= link_to("Explore (#{pluralize(topic.topic_workflow_map.count, 'workflow')})", topic_path(topic)) -%></div>
+          <%= render :partial => "topics/topic_tag_cloud", :locals => {:tags => topic.topic_tag_map, :topicname => "Explore" } -%>
+        </td> 
+      <% end %>
+    </tr>
+  <% end %>
+</table>
+

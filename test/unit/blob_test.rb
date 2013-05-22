@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class BlobTest < Test::Unit::TestCase
+class BlobTest < ActiveSupport::TestCase
   fixtures :blobs
 
   # Replace this with your real tests.

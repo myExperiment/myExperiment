@@ -1,3 +1,5 @@
+require 'recaptcha'
+
 class FeedbackController < ApplicationController
   before_filter :only_index, :except => [:index, :create]
   
@@ -11,12 +13,30 @@ class FeedbackController < ApplicationController
 
   # POST /feedback
   def create
-    from_user = params[:from] + ' (' + (params[:email] ? params[:email] : 'no email') + ')';
-    Mailer.deliver_feedback(from_user, params[:subject], params[:content])
+    if logged_in?
+      from_user = params[:from].blank? ? current_user.name : params[:from]
+      from_user += ' (' + (!params[:email].blank? ? params[:email] : 'no email') + ')'
+      Mailer.deliver_feedback(from_user, params[:subject], params[:content]) #, current_user)
+      
+      respond_to do |format|
+        flash[:notice] = 'Your feedback has been submitted. Thank you very much.'
+        format.html { redirect_to "/feedback" }
+      end
+    else
+      if Conf.recaptcha_enable && !verify_recaptcha(:private_key => Conf.recaptcha_private)
+        respond_to do |format|
+          flash[:error] = 'Your feedback has not been submitted. CAPTCHA was not entered correctly.'
+          format.html { redirect_to "/feedback?from="+String(params[:from])+"&email="+String(params[:email])+"&subject="+String(params[:subject])+"&content="+String(params[:content]) }
+        end
+      else
+        from_user = ( params[:from].blank? ? 'no from': params[:from] ) + ' (' + (!params[:email].blank? ? params[:email] : 'no email') + ')';
+        Mailer.deliver_feedback(from_user, params[:subject], params[:content])
     
-    respond_to do |format|
-      flash[:notice] = 'Your feedback has been submitted. Thank you very much.'
-      format.html { redirect_to "/feedback" }
+        respond_to do |format|
+          flash[:notice] = 'Your feedback has been submitted. Thank you very much.'
+          format.html { redirect_to "/feedback" }
+        end
+      end
     end
   end
   

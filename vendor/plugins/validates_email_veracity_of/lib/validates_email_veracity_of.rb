@@ -75,8 +75,8 @@ class ValidatesEmailVeracityOf
       #     default is two.
       def servers_in(record, options = {})
         type = case record.to_s.downcase
-          when 'exchange' : Resolv::DNS::Resource::IN::MX
-          when 'address' : Resolv::DNS::Resource::IN::A
+          when 'exchange' ; Resolv::DNS::Resource::IN::MX
+          when 'address' ; Resolv::DNS::Resource::IN::A
         end
         st = Timeout::timeout(options.fetch(:timeout, 2)) do
           Resolv::DNS.new.getresources(name, type).inject([]) do |servers, s|

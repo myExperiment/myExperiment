@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>myExperiment Component Query Form</title>
+  </head>
+  <body>
+    <h1>myExperiment Component Querying Demo</h1>
+    <div style="float: left; margin-right: 3em">
+      <form action="components.xml" method="GET">
+        <h2>SPARQL Prefixes</h2>
+        <textarea rows="5" cols="80" name="prefixes"></textarea><br/>
+        <h2>SPARQL Query Fragment</h2>
+        <textarea rows="20" cols="80" name="query"></textarea><br/>
+        <input type="submit"/>
+      </form>
+    </div>
+    <div style="float:left">
+      <h2>SPARQL Template</h2>
+      PREFIX rdfs:&lt;http://www.w3.org/2000/01/rdf-schema#&gt;<br/>
+      PREFIX wfdesc:&lt;http://purl.org/wf4ever/wfdesc#&gt;<br/>
+      <i>{sparql_prefixes}</i><br/><br/>
+      <div>
+      SELECT ?workflow_uri WHERE {
+        <div style="margin-left: 2em;">
+        GRAPH ?workflow_uri {
+          <div style="margin-left: 2em;">
+          ?w a wfdesc:Workflow . <br/>
+            <i>{sparql_query_fragment}</i>
+          </div>
+        }
+        </div>
+      }
+      </div>
+    </div>
+	</body>
+</html>

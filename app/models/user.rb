@@ -5,10 +5,10 @@
 
 require 'digest/sha1'
 
+require 'acts_as_site_entity'
 require 'acts_as_contributor'
 require 'acts_as_creditor'
-
-require 'write_once_of'
+require 'sunspot_rails'
 
 class User < ActiveRecord::Base
   
@@ -16,12 +16,25 @@ class User < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
   
+  has_many :jobs
+
+  has_many :taverna_enactors, :as => :contributor,
+              :conditions => ["contributor_type = ?", "User"]
+
+  has_many :experiments, :as => :contributor,
+              :conditions => ["contributor_type = ?", "User"]
+
+  has_many :curation_events, :dependent => :destroy
+
+  has_many :subscriptions, :dependent => :destroy
+
+  named_scope :users_to_check, :conditions => "activated_at IS NOT NULL AND (account_status IS NULL OR (account_status != 'sleep' AND account_status != 'suspect' AND account_status != 'whitelist'))"
+
   def self.most_recent(limit=5)
     self.find(:all,
               :order => "users.created_at DESC",
               :limit => limit,
-              :conditions => "users.activated_at IS NOT NULL",
-              :include => :profile)
+              :conditions => "users.activated_at IS NOT NULL")
             
   end
   
@@ -33,12 +46,24 @@ class User < ActiveRecord::Base
     self.find(:all,
               :order => "users.last_seen_at DESC",
               :limit => limit,
-              :conditions => "users.activated_at IS NOT NULL",
-              :include => :profile)
+              :conditions => "users.activated_at IS NOT NULL")
             
   end
   
+  # returns packs that have largest number of friends
+  # the maximum number of results is set by #limit#
+  def self.most_friends(limit=10)
+    self.find_by_sql("SELECT u.* FROM users u JOIN friendships f ON (u.id = f.user_id OR u.id = f.friend_id) AND f.accepted_at IS NOT NULL GROUP BY u.id ORDER BY COUNT(u.id) DESC, u.name LIMIT #{limit}")
+  end
+  
+  # returns packs that have largest number of friends
+  # the maximum number of results is set by #limit#
+  def self.highest_rated(limit=10)
+    self.find_by_sql("SELECT u.* FROM ratings r JOIN contributions c ON r.rateable_type = c.contributable_type AND r.rateable_id = c.contributable_id JOIN users u ON c.contributor_type = 'User' AND c.contributor_id = u.id GROUP BY u.id ORDER BY AVG(r.rating) DESC, u.name LIMIT #{limit}")
+  end
+  
   acts_as_tagger
+  acts_as_bookmarker
   
   has_many :ratings,
            :order => "created_at DESC",
@@ -56,13 +81,13 @@ class User < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
   
-  has_many :bookmarks, 
-           :order => "created_at DESC",
-           :dependent => :destroy
-  
   has_many :reviews,
            :order => "updated_at DESC",
            :dependent => :destroy
+ 
+  has_many :client_applications
+  
+  has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
            
   acts_as_simile_timeline_event(
     :fields => {
@@ -103,13 +128,13 @@ class User < ActiveRecord::Base
                             :message => "can only contain characters, numbers and _",
                             :if => Proc.new { |user| !user.username.nil? }
                             
-  validates_write_once_of   :username, :on => :update, :if => Proc.new { |user| !user.username.nil? }, :message => "cannot be changed"  
-                          
   validates_presence_of     :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
   validates_uniqueness_of   :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
   
-  validates_email_veracity_of :email
-  validates_email_veracity_of :unconfirmed_email
+  if Conf.validate_email_veracity
+    validates_email_veracity_of :email
+    validates_email_veracity_of :unconfirmed_email
+  end
   
   before_validation :cleanup_input
   before_save :check_email_uniqueness
@@ -127,9 +152,9 @@ class User < ActiveRecord::Base
     unless self.unconfirmed_email.blank?
       
       # BEGIN DEBUG
-      puts "Username: #{self.username}"
-      puts "Unconfirmed email: #{self.unconfirmed_email}"
-      puts "Confirmed email: #{self.email}"
+      logger.debug("Username: #{self.username}")
+      logger.debug("Unconfirmed email: #{self.unconfirmed_email}")
+      logger.debug("Confirmed email: #{self.email}")
       # END DEBUG
       
       # Note: need to bypass the explicitly defined setter for 'email'
@@ -138,7 +163,10 @@ class User < ActiveRecord::Base
       self.unconfirmed_email = nil
       
       # Activate user if not previously activated
-      self.activated_at = Time.now unless self.activated?
+      unless self.activated?
+        self.activated_at = Time.now
+        self.account_status = "sleep"
+      end
       
       return self.save
     else
@@ -146,18 +174,51 @@ class User < ActiveRecord::Base
     end
   end
   
+  
+  # method is called only once for each user - right after email address is confirmed;
+  # 
+  # it queries 'pending_invitations' table and moves all requests to relevant tables
+  # (i.e. to 'memberships' and 'friendships' - as appropriate);
+  # invitations are matched by registered user's email address.
+  #
+  # NB! This is done by email not token, because the email was updated on registration -
+  # to contain the address that was registered, rather than one that was used for invitation!
+  def process_pending_invitations!
+    invitations = PendingInvitation.find(:all, :conditions => ["email = ?", self.email])
+    
+    invitations.each do |invite|
+      case invite.request_type
+        when "membership"
+          unless Membership.find_by_user_id_and_network_id(self.id, invite.request_for)
+            membership = Membership.new(:user_id => self.id, :network_id => invite.request_for, :created_at => invite.created_at, :network_established_at => invite.created_at, :user_established_at => nil, :message => invite.message)
+            membership.save
+          end
+          invite.destroy
+        when "friendship"
+          # 'request_for' is used as id of the user, who sent the invitation - this is because
+          # for friendships 'request_for' and 'requested_by' are meant to be the same;
+          # still 'request_for' captures the idea of the request being directed to a particular user,
+          # and we don't really care who sent the actual invitation
+          unless Friendship.find_by_user_id_and_friend_id(invite.request_for, self.id)
+            friendship = Friendship.new(:user_id => invite.request_for, :friend_id => self.id, :created_at => invite.created_at, :accepted_at => nil, :message => invite.message)
+            friendship.save
+          end
+          invite.destroy
+      end
+    end
+  end
+  
+  
   # Authenticates a user by their login name OR email and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
     return nil if login.blank? or password.blank?
     
-    eager_include = [ :contributions, :tags ]
-    
     # Either, check for a User with username matching 'login'
-    u = find(:first, :conditions => ["username = ?", login], :include => eager_include)
+    u = find(:first, :conditions => ["username = ?", login])
     
     # Or, check for a User with email address matching 'login'
     unless u
-      u = find(:first, :conditions => ["email = ?", login], :include => eager_include) 
+      u = find(:first, :conditions => ["email = ?", login]) 
     end
     
     u && u.activated? && u.authenticated?(password) ? u : nil
@@ -210,32 +271,53 @@ class User < ActiveRecord::Base
   
   def admin?
     return false if self.username.blank?
-    return ADMINS.include?(self.username.downcase)
+    return Conf.admins.include?(self.username.downcase)
   end
   
+  def curator?
+    return false if self.username.blank?
+    return Conf.curators.include?(self.username.downcase)
+  end
+
+  def network_admin?(network)
+    if network.class == Network
+      network.owner == self
+    else
+      result = self.networks_owned.find(:first, :conditions => { :id => network } )
+      !result.nil?
+    end
+  end
+
+  acts_as_site_entity
+
   acts_as_contributor
   
-  has_many :blobs, :as => :contributor
-  has_many :blogs, :as => :contributor
-  has_many :forums, :as => :contributor
-  has_many :workflows, :as => :contributor
-  has_many :packs, :as => :contributor
+  has_many :blobs, :as => :contributor, :dependent => :destroy
+  has_many :workflows, :as => :contributor, :dependent => :destroy
+  has_many :packs, :as => :contributor, :dependent => :destroy
   
   acts_as_creditor
 
-  acts_as_solr(:fields => [ :name, :tag_list ], :include => [ :profile ]) if SOLR_ENABLE
+  if Conf.solr_enable
+    searchable :if => :activated_at do
+      text :name, :as => 'name', :boost => 2.0
+      text :email, :as => 'email' do profile.email end
+      text :website, :as => 'website' do profile.website end
+      text :body, :as => 'description' do profile.body end
+      text :field_or_industry, :as => 'field_or_industry' do profile.field_or_industry end
+      text :occupation_or_roles, :as => 'occupation_or_role' do profile.occupation_or_roles end
+      text :organisations, :as => 'organisation' do profile.organisations end
+      text :location_city, :as => 'city' do profile.location_city end
+      text :location_country, :as => 'country' do profile.location_country end
+      text :interests, :as => 'interest' do profile.interests end
+      text :contact_details, :as => 'contact' do profile.contact_details end
 
-  # protected? asks the question "is other protected by me?"
-  def protected?(other)
-    if other.kind_of? User               # if other is a User...
-      return friend?(other.id)   #       ...is other a friend of mine?
-    elsif other.kind_of? Network         # if other is a Network...
-      return other.member?(id)           #       ...am I a member of other?
-    else                                 # otherwise...
-      return false                       #       ...no
+      text :tags, :as => 'tag' do
+        tags.map { |tag| tag.name }
+      end
     end
   end
-  
+
   validates_presence_of :name
   
   has_one :profile,
@@ -256,15 +338,6 @@ class User < ActiveRecord::Base
     self.profile and !(self.profile.picture_id.nil? or self.profile.picture_id.zero?)
   end
            
-  # BEGIN SavageBeast #
-  include SavageBeast::UserInit
-  
-  def display_name
-    "#{name}"
-  end
-  
-  # END SavageBeast #
-  
   # SELF --> friendship --> Friend
   has_many :friendships_completed, # accepted (by others)
            :class_name => "Friendship",
@@ -342,9 +415,15 @@ class User < ActiveRecord::Base
   end
   
   def friends
-    (friends_of_mine + friends_with_me).uniq.sort { |a, b|
-      a.name <=> b.name
-    }
+    f  = User.find(:all,
+                   :joins => 'INNER JOIN friendships ON users.id = friendships.user_id',
+                   :conditions => ['friendships.friend_id = ? AND friendships.accepted_at IS NOT NULL', id])
+
+    f += User.find(:all,
+                   :joins => 'INNER JOIN friendships ON users.id = friendships.friend_id',
+                   :conditions => ['friendships.user_id = ? AND friendships.accepted_at IS NOT NULL', id])
+
+    f.sort do |a, b| a.name.downcase <=> b.name.downcase end
   end
   
   has_and_belongs_to_many :networks,
@@ -354,13 +433,11 @@ class User < ActiveRecord::Base
                           
   alias_method :original_networks, :networks
   def networks
-    rtn = []
-    
-    original_networks(force_reload = true).each do |n|
-      rtn << Network.find(n.network_id)
-    end
-    
-    return rtn
+    Network.find(:all,
+                 :select => "networks.*",
+                 :joins => "JOIN memberships m ON (networks.id = m.network_id)",
+                 :conditions => ["m.user_id=? AND m.user_established_at is NOT NULL AND m.network_established_at IS NOT NULL", id],
+                 :order => "GREATEST(m.user_established_at, m.network_established_at) DESC" )
   end
                           
   has_many :networks_owned,
@@ -392,16 +469,31 @@ class User < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
            
-  def networks_membership_requests_pending
+  def networks_membership_requests_pending(include_group_admin=false)
     rtn = []
     
-    networks_owned.each do |n|
+    networks_admined(include_group_admin).each do |n|
       rtn.concat n.memberships_requested
     end
     
     return rtn
   end
   
+  def networks_admined(include_group_admin=false)
+    rtn = []
+
+    rtn.concat(networks_owned)
+
+    if include_group_admin
+      rtn.concat Network.find(:all,
+                   :select => "networks.*",
+                   :joins => "JOIN memberships m ON (networks.id = m.network_id)",
+                   :conditions => ["m.user_id=? AND m.user_established_at is NOT NULL AND m.network_established_at IS NOT NULL AND m.administrator", id])
+    end
+
+    return rtn
+  end
+                          
   def networks_membership_invites_pending
     rtn = []
     
@@ -412,20 +504,31 @@ class User < ActiveRecord::Base
     return rtn
   end
   
+  def membership_pending?(network_id)
+    return( membership_request_pending?(network_id) || membership_invite_pending?(network_id) )
+  end
+  
+  def membership_request_pending?(network_id)
+    memberships_requested.each do |f|
+      return true if f.network_id.to_i == network_id.to_i  
+    end
+    
+    return false
+  end
+  
+  def membership_invite_pending?(network_id)
+    memberships_invited.each do |f|
+      return true if f.network_id.to_i == network_id.to_i
+    end
+    
+    return false
+  end
+  
+  
   def all_networks
     self.networks + self.networks_owned
   end
   
-  def relationships_pending
-    rtn = []
-    
-    networks_owned.each do |n|
-      rtn.concat n.relations_pending
-    end
-    
-    return rtn
-  end
-           
   has_many :messages_sent,
            :class_name => "Message",
            :foreign_key => :from,
@@ -441,7 +544,7 @@ class User < ActiveRecord::Base
   has_many :messages_unread,
            :class_name => "Message",
            :foreign_key => :to,
-           :conditions => "read_at IS NULL",
+           :conditions => ["read_at IS NULL AND deleted_by_recipient = ?", false],
            :order => "created_at DESC",
            :dependent => :destroy
            
@@ -453,29 +556,36 @@ class User < ActiveRecord::Base
     end
     
     return false
-  end 
-  
-  def friend_recursive?(user_id)
-    friend_r? user_id
   end
   
-  # alias for friend_recursive?
-  def friend!(user_id)
-    friend_r? user_id
+  def friendship_pending?(user_id)
+    friendships_requested.each do |f|
+      return true if f.friend_id.to_i == user_id.to_i  
+    end
+    
+    friendships_pending.each do |f|
+      return true if f.user_id.to_i == user_id.to_i
+    end
+    
+    return false
   end
   
-  # alias for friend_recursive?
-  def foaf?(user_id)
-    friend_r? user_id
-  end
-  
-  def friends_recursive
-    friends_r_wrapper
-  end
-  
-# alias for friends_recursive
-  def friends!
-    friends_r_wrapper
+  # as it does matter to which of the two users the actual 'friendship'
+  # belongs (i.e. /user/X/friendships/<id> will work, but /user/Y/friendships/<id> will not),
+  # need a method which would return params for obtaining a link for the friendship, which works without
+  # having any relevance in which the IDs of the friends are supplied as params
+  #
+  # Returns: an array of 2 elements:
+  # 1) the ID of a user (of 2 involved in the 'friendship') who is a 'friend', not an owner of the friendship;
+  # 2) the 'friendship' object itself
+  def friendship_from_self_id_and_friends_id(friend_id)
+    friendship = Friendship.find(:first, :conditions => [ "( (user_id = ? AND friend_id = ?) OR ( user_id = ? AND friend_id = ? ) )", id, friend_id, friend_id, id ] )
+    
+    if friendship
+      return [friend_id, friendship]
+    else
+      return [nil, nil] # an error state
+    end
   end
   
   def email_confirmed?
@@ -494,25 +604,78 @@ class User < ActiveRecord::Base
     activated? and email_confirmed? and self.receive_notifications
   end
   
+  def ratings_for_contributions
+    ratings = [ ]
+    
+    self.contributions.each do |c|
+      c.contributable.ratings.each do |r|
+        ratings << r
+      end
+    end
+    
+    return ratings
+  end
+  
+  # user's average rating for all contributions
+  def average_rating_and_count
+    result_set = User.find_by_sql("SELECT AVG(r.rating) AS avg_rating, COUNT(r.rating) as rating_count FROM ratings r JOIN contributions c ON r.rateable_type = c.contributable_type AND r.rateable_id = c.contributable_id JOIN users u ON c.contributor_type = 'User' AND c.contributor_id = u.id WHERE u.id = #{self.id.to_s} GROUP BY u.id")
+    return [0,0] if result_set.empty?
+    return [result_set[0]["avg_rating"], result_set[0]["rating_count"]]
+  end
+
+  def send_email_confirmation_email
+    Mailer.deliver_account_confirmation(self, email_confirmation_hash)
+  end
+  
+  def send_update_email_confirmation
+    Mailer.deliver_update_email_address(self, email_confirmation_hash)
+  end
+
+  def email_confirmation_hash
+    Digest::SHA1.hexdigest(unconfirmed_email + Conf.secret_word)
+  end
+
+  def calculate_spam_score
+
+    score = 0
+
+    patterns = Conf.spam_patterns
+
+    patterns["email"].each do |pattern|
+      if unconfirmed_email
+        score = score + 80 if unconfirmed_email.match(pattern)
+      elsif email
+        score = score + 80 if email.match(pattern)
+      end
+    end
+
+    self.spam_score = score
+  end
+
+  # Shared group policies that the user can apply to their uploaded resources
+  def group_policies
+    all_networks.map {|n| n.policies}.flatten
+  end
+
 protected
 
   # clean up emails and username before validation
   def cleanup_input
     # BEGIN DEBUG
-    puts 'BEGIN cleanup_input'
+    logger.debug('BEGIN cleanup_input')
     # END DEBUG
     
     self.unconfirmed_email = User.clean_string(self.unconfirmed_email) unless self.unconfirmed_email.blank?
     self.username = User.clean_string(self.username) unless self.username.blank?
     
     # BEGIN DEBUG
-    puts 'END cleanup_input'
+    logger.debug('END cleanup_input')
     # END DEBUG
   end
   
   def check_email_uniqueness
     # BEGIN DEBUG
-    puts 'BEGIN check_email_uniqueness'
+    logger.debug('BEGIN check_email_uniqueness')
     # END DEBUG
     
     unique = true
@@ -543,7 +706,7 @@ protected
     end
     
     # BEGIN DEBUG
-    puts 'END check_email_uniqueness'
+    logger.debug('END check_email_uniqueness')
     # END DEBUG
     
     return unique
@@ -551,7 +714,7 @@ protected
   
   def check_email_non_openid_conditions
     # BEGIN DEBUG
-    puts 'BEGIN check_email_non_openid_conditions'
+    logger.debug('BEGIN check_email_non_openid_conditions')
     # END DEBUG
     
     ok = true
@@ -565,7 +728,7 @@ protected
     end
     
     # BEGIN DEBUG
-    puts 'END check_email_non_openid_conditions'
+    logger.debug('END check_email_non_openid_conditions')
     # END DEBUG
     
     return ok
@@ -589,49 +752,18 @@ protected
       self.profile = Profile.new(:user_id => self.id) 
       
       # BEGIN DEBUG
-      #puts "ERRORS!" unless self.profile.errors.empty?
-      #self.profile.errors.full_messages.each { |e| puts e }
+      #logger.error("ERRORS!") unless self.profile.errors.empty?
+      #self.profile.errors.full_messages.each { |e| logger.error(e) }
       # END DEBUG
     end
   end
-    
-  def friend_r?(user_id, depth=0)
-    unless depth > @@maxdepth
-      return true if friend? user_id
-      
-      friends.each do |f|
-        return true if f.friend_r? user_id, depth+1
-      end
-    end
-    
-    false
-  end
-  
-  def friends_r_wrapper
-    # removes circular references (friend(self, A) & friend(A, B) & friend(B, self) ==> friend(self, self))
-    friends_r.collect { |u| u = (u.id.to_i == id.to_i) ? nil : u }.compact
-  end
-  
-  def friends_r(depth=0)
-    unless depth > @@maxdepth
-      rtn = friends
-    
-      friends.each do |r|
-         rtn = (rtn + r.friends_r(depth+1))
-      end
-    
-      return rtn.uniq
-    end
-    
-    []
-  end
-  
+
 private
 
   # clean string to remove spaces and force lowercase
   def self.clean_string(string)
     (string.downcase).gsub(" ","")
   end
-  
-  @@maxdepth = 7 # maximum level of recursion for depth first search
+
 end
+

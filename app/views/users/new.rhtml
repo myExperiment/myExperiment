@@ -1,18 +1,42 @@
 <% t "Register / Sign up" -%>
 
-<h1 style="margin-bottom: 1.3em;">Register for myExperiment</h1>
+<h1 style="margin-bottom: 1.3em;">Register for <%= Conf.sitename %></h1>
 
 <%= error_messages_for :user %>
 
 <div class="box_infotext">
-	<strong>Please note: all user profiles are public</strong> on myExperiment.org and 
+	<strong>By registering, you are indicating that you have read and agree that:</strong> 
+	You are responsible for any content that you upload. You may remove your content at any time. 
+	We may make copies for operational purposes. This service is governed by the 
+	<%= link_to "JANET Acceptable Use Policy", "http://www.ja.net/services/publications/policy/aup.html", :popup => true -%>. 
+	Takedown requests will be reviewed by the <%= Conf.sitename %> Management Committee. 
+	We will take every care to preserve data but we will not be liable for loss or damage to data while it is stored within <%= Conf.sitename %>. 
+	We receive and store certain types of information whenever you interact with us which we will 
+	use only for operational purposes and to support academic research into the use of <%= Conf.sitename %>. 
+	We will not make personally identifiable data available to third parties without consent. 
+	Please contact us if you have any queries about our terms or our privacy policy.
+	<br/><br/>
+	<strong>Please note: all user profiles are public on <%= Conf.sitename %></strong> and 
 	therefore can be viewed by anyone and be indexed by search engines such as Google.
 	However, usernames and registered email addresses (different to profile email addresses) are not exposed.
 </div> 
 
-<br/>
+<br />
+<br />
 
 <% form_for(:user, :url => users_path) do |f| %>
+
+  <% if Conf.recaptcha_enable -%>
+    <center>
+      <h2>Anti-spam verification</h2>
+      <%= recaptcha_tags(:public_key => Conf.recaptcha_public) -%> 
+    </center>
+
+    <br />
+    <br />
+
+  <% end -%>
+      
   	<div class="fold">
   		<div class="foldTitle">
       	Register with a Username and Password
@@ -39,7 +63,8 @@
 								</div>
 								
 								<p>
-									<%= f.text_field :unconfirmed_email, :size => '50' %>
+									<%= hidden_field_tag "invitation_token", @token -%>
+									<%= f.text_field :unconfirmed_email, :value => @email_value, :size => '50' %>
 								</p>
 								<p style="font-size: 85%; color: #333333;">
 									Before submitting, please check that you have spelt it correctly. 
@@ -61,7 +86,14 @@
 								<table>
 									<tr>
 										<td style="text-align: left; vertical-align: top; padding-left: 0;"><%= f.check_box :receive_notifications %></td>
-										<td style="text-align: left;">I would like to receive email notifications for events that relate to me</td>
+										<td style="text-align: left;">
+										  I would like to receive email notifications for events that relate to me
+									    <%= link_to_function help_icon_with_tooltip("By ticking this box you will receive email notifications every time<br/>when you get messages, receive membership requests for the<br/>groups that you own and for friendships requests from other users."),
+																			 visual_effect(:toggle_blind, "notifications_help", :duration => 0.3) %>
+											<div id="notifications_help" class="box_dynamic_help" style="display: none;">
+										    By ticking this box you will receive email notifications every time when you get messages, receive membership requests for the groups that you own and for friendships requests from other users.
+									    </div>
+										</td>
 									</tr>
 								</table>
 								
@@ -112,6 +144,8 @@
 					We reserve the right to remove <b>unactivated</b> accounts after 30 days.
 				</p>
 				
+				<br/>
+				
 				<p style="text-align: center;">
 				  <%= submit_tag "Register", :disable_with => "Registering&hellip;" %>
 				</p>
@@ -135,7 +169,7 @@
     </div>
     <div class="foldContent" style="display: block;">
 			<p class="box_infotext">
-				OpenID is a distributed identity system which gives you single sign-on anywhere that OpenID is supported. If you already have an OpenID you can enter it here and your myExperiment account will automatically be created (note that if you have an AOL or AIM account, or a LiveJournal or Wordpress blog, then you already have an OpenID).
+				OpenID is a distributed identity system which gives you single sign-on anywhere that OpenID is supported. If you already have an OpenID you can enter it here and your <%= Conf.sitename %> account will automatically be created (note that if you have an AOL or AIM account, or a LiveJournal or Wordpress blog, then you already have an OpenID).
 			</p>
 			
 			<p><b>Don't have an OpenID? Get one FREE from <%= link_to 'myOpenID', "https://www.myopenid.com/" %> or <%= link_to 'other providers', "http://openiddirectory.com/openid-providers-c-1.html" %>.</b></p>

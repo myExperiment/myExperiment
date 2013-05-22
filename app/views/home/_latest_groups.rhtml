@@ -1,6 +1,5 @@
 <!-- Latest Groups -->
-<% cache_timeout({:controller => 'home_cache', :action => 'latest_groups', :id => (logged_in? ? current_user.id : 0)}, 
-								 CACHE_TIMEOUT_SECS.seconds.from_now) do -%>
+<% cache(:controller => 'home_cache', :action => 'latest_groups', :id => (logged_in? ? current_user.id : 0)) do -%> 
 	<div class="box">
 		<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 		<div class="title">
@@ -10,10 +9,10 @@
 			<% unless (groups = Network.recently_created).empty? %>
 				<ul class="list" style="font-size: 85%;">
 					<% groups.each do |g| %>
-						<% if thing_authorized?('show', g) %>
+						<% if Authorization.check("view", g, current_user) %>
 							<li>
 								<%= icon('network', nil, nil, 'group icon', '') %>
-								<b><%= link_to g.title, group_path(g) %></b> 
+								<b><%= link_to h(g.title), network_path(g) %></b>
 								by <b><%= contributor(g.user_id, 'User') %></b>
 								(<%= timeago_fuzzy g.created_at %>)
 							</li>

@@ -1,0 +1,58 @@
+/* Stylesheet for the BioVeL group's skin, based on the e-LICO layout. Requires main myExperiment stylesheet. */
+
+body  {
+	background: #EEEB99;
+}
+
+#myexp_searchbar, #myexp_sidebar, .pagination a, .tabnav li a:hover, .tabnav li#selected_tabnav a  {
+  background-color: #99cc33;
+}
+
+.pagination a, .tabnav li a:hover, .tabnav li#selected_tabnav a  {
+  background-image: none;
+}
+#myexp_searchbar {
+  background-image: url('/images/searchfade_alpha.png');
+}
+#myexp_sidebar {
+  background-image: url('/images/sidebar_alpha.png');
+}
+
+.logo {
+  width: 640px;
+}
+
+.logo a {
+  color: #333;
+}#
+
+.logo a:hover {
+  text-decoration: none;
+  color: #99cc33;
+ }
+
+.links {
+  color: #608509
+}
+
+/* To add a white margin around the content */
+
+#doc2 {
+  box-shadow: 0 0 16px 4px #7f793f;
+}
+
+#myexp_header {
+  margin-bottom: 0;
+}
+
+#site_info_links {
+  display: none;
+}
+
+.tabnav li.return_tab {
+  margin-right: 1em;
+}
+
+.tabnav li.return_tab a:hover {
+  background-color: #cd0b37;
+}

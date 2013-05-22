@@ -1,0 +1,22 @@
+<h2>Permissions</h2>
+<% permissions_categorised=permissions_categorised(@permissions) %>
+<% for category,permissions in permissions_categorised %>
+  <h3><%= category.capitalize %></h3>
+  <p style="text-align: center;">
+  <% for permission in permissions -%>
+    <% for type,data in permission -%>
+      <% key=data['URI'] -%>
+      <% key_type = "#{type} #{key}" -%>
+      <% checked = @permissions_for.include?(key_type) %>
+      <%= check_box_tag "key_permissions[#{type} #{key}]", 1,  checked, :class => "permission" %> <%= type %> <%= key %>
+    <% end %>
+  <% end -%>
+  </p>
+<% end %>
+<br/>
+<p style="text-align:center;" >
+  <input type="button" name="check_all" value="Check All" onclick="$$('input.permission').each(function (e) { e.checked = true });"/>
+  <input type="button" name="uncheck_all" value="Uncheck All" onclick="$$('input.permission').each(function (e) { e.checked = false });"/>
+</p>
+
+
