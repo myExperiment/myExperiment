@@ -840,7 +840,7 @@ protected
     end
     
     # Check that a file has been selected 
-    if params[:workflow][:file].size == 0
+    if params[:workflow][:file].nil? || params[:workflow][:file].size == 0
       respond_to do |format|
         flash.now[:error] = "Please select a valid workflow file to upload. If you have selected a file, it might be empty."
         format.html { render :action => view_to_render_on_fail }
