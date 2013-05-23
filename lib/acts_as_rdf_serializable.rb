@@ -53,6 +53,7 @@ module Finn
           begin
             @rdf = self.to_rdf
           rescue
+            raise unless Rails.env == "production"
             errors.add_to_base(self.rdf_serializable_options[:generation_error_message] || "RDF failed to generate")
             false
           else

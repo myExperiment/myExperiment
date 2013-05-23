@@ -3,6 +3,9 @@
 # Copyright (c) 2008 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require "zip/zip"
+require 'rdf/raptor'
+
 module WorkflowProcessors
 
   class StatjrEbook < WorkflowProcessors::Interface
@@ -130,9 +133,6 @@ module WorkflowProcessors
     end
 
     module Parser
-
-      require "zip/zip"
-      require 'rdf/raptor'
 
       def self.parse(stream)
         begin
