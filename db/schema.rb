@@ -615,7 +615,6 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.integer  "research_object_id"
     t.integer  "content_blob_id"
     t.string   "sha1",               :limit => 40
-    t.binary   "data",               :limit => 2147483647
     t.integer  "size"
     t.string   "content_type"
     t.text     "path"
@@ -625,14 +624,14 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.string   "ao_body_path"
     t.string   "resource_map_path"
     t.string   "aggregated_by_path"
-    t.boolean  "is_resource",                              :default => false
-    t.boolean  "is_aggregated",                            :default => false
-    t.boolean  "is_proxy",                                 :default => false
-    t.boolean  "is_annotation",                            :default => false
-    t.boolean  "is_resource_map",                          :default => false
-    t.boolean  "is_folder",                                :default => false
-    t.boolean  "is_folder_entry",                          :default => false
-    t.boolean  "is_root_folder",                           :default => false
+    t.boolean  "is_resource",                      :default => false
+    t.boolean  "is_aggregated",                    :default => false
+    t.boolean  "is_proxy",                         :default => false
+    t.boolean  "is_annotation",                    :default => false
+    t.boolean  "is_resource_map",                  :default => false
+    t.boolean  "is_folder",                        :default => false
+    t.boolean  "is_folder_entry",                  :default => false
+    t.boolean  "is_root_folder",                   :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

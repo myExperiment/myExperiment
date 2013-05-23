@@ -55,7 +55,7 @@ class ResourcesController < ActionController::Base
       return
     end
 
-    send_data(resource.data, :type => resource.content_type)
+    send_data(resource.content_blob.data, :type => resource.content_type)
   end
 
   def post

@@ -90,7 +90,6 @@ class ResearchObject < ActiveRecord::Base
 
       resource.content_blob.destroy if resource.content_blob
 
-      resource.data = data # FIXME - to be removed
       resource.content_blob = ContentBlob.new(:data => data)
       resource.creator_uri = user_uri
       resource.content_type = content_type
@@ -140,7 +139,6 @@ class ResearchObject < ActiveRecord::Base
       proxy.is_proxy       = true
       proxy.proxy_for_path = proxy_for_path
       proxy.proxy_in_path  = proxy_in_path
-      proxy.data           = proxy_body # FIXME - to be removed
       proxy.content_blob   = ContentBlob.new(:data => proxy_body)
       proxy.creator_uri    = user_uri
       proxy.content_type   = content_type
@@ -162,7 +160,6 @@ class ResearchObject < ActiveRecord::Base
 
       resource.content_blob.destroy if resource.content_blob
 
-      resource.data = data # FIXME - to be removed
       resource.content_blob = ContentBlob.new(:data => data)
       resource.creator_uri = user_uri
       resource.content_type = content_type
@@ -176,7 +173,7 @@ class ResearchObject < ActiveRecord::Base
       resource.is_annotation = true
       resource.is_folder     = false
 
-      graph = load_graph(resource.data)
+      graph = load_graph(resource.content_blob.data)
 
       aggregated_annotations = graph.query([nil, RDF.type, RDF::URI("http://purl.org/wf4ever/ro#AggregatedAnnotation")])
 
@@ -223,7 +220,6 @@ class ResearchObject < ActiveRecord::Base
 
       resource.content_blob.destroy if resource.content_blob
 
-      resource.data = data # FIXME - to be removed
       resource.content_blob = ContentBlob.new(:data => data)
       resource.creator_uri = user_uri
       resource.content_type = content_type
@@ -252,7 +248,6 @@ class ResearchObject < ActiveRecord::Base
       # FIXME - this should be a recursive call
 
       resource_map_attributes = {
-        :data            => resource_map_body,
         :content_blob    => ContentBlob.new(:data => resource_map_body),
         :creator_uri     => user_uri,
         :content_type    => 'application/vnd.wf4ever.folder',
@@ -303,7 +298,6 @@ class ResearchObject < ActiveRecord::Base
       end
 
       folder_entry.is_folder_entry = true
-      folder_entry.data = folder_entry_body # FIXME - to be removed
       folder_entry.content_blob    = ContentBlob.new(:data => folder_entry_body)
       folder_entry.proxy_in_path   = proxy_in_path
       folder_entry.proxy_for_path  = proxy_for_path
@@ -338,7 +332,6 @@ class ResearchObject < ActiveRecord::Base
 
       ao_body.content_blob.destroy if ao_body.content_blob
 
-      ao_body.data          = data # FIXME - to be removed
       ao_body.content_blob  = ContentBlob.new(:data => data)
       ao_body.creator_uri   = user_uri
       ao_body.content_type  = content_type
@@ -364,7 +357,6 @@ class ResearchObject < ActiveRecord::Base
       annotation_stub = resources.new({
         :creator_uri   => user_uri,
         :path          => calculate_path(nil, 'application/vnd.wf4ever.annotation'),
-        :data          => annotation_rdf, # FIXME
         :content_blob  => ContentBlob.new(:data => annotation_rdf),
         :content_type  => 'application/vnd.wf4ever.annotation',
         :is_annotation => true,
@@ -393,7 +385,6 @@ class ResearchObject < ActiveRecord::Base
 
       resource.content_blob.destroy if resource.content_blob
 
-      resource.data          = data # FIXME - to be removed
       resource.content_blob  = ContentBlob.new(:data => data)
       resource.creator_uri   = user_uri
       resource.content_type  = content_type
@@ -428,7 +419,6 @@ class ResearchObject < ActiveRecord::Base
       # FIXME - this should be a recursive call
 
       proxy_attributes = {
-        :data           => proxy_body,
         :content_blob   => ContentBlob.new(:data => proxy_body),
         :proxy_in_path  => '.',
         :proxy_for_path => relative_resource_uri,
@@ -461,7 +451,7 @@ private
   def create_manifest
 
     resources.create(:path => ResearchObject::MANIFEST_PATH,
-                     :data => "Dummy content",
+                     :content_blob => ContentBlob.new(:data => "Dummy content"),
                      :content_type => 'application/rdf+xml')
 
     update_manifest!

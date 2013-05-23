@@ -144,7 +144,5 @@ class Resource < ActiveRecord::Base
     content_blob.destroy if content_blob
     content_blob = ContentBlob.new(:data => new_description)
     content_blob.save
-
-    update_attribute(:data, new_description) # FIXME - to be removed
   end
 end
