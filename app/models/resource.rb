@@ -67,7 +67,7 @@ class Resource < ActiveRecord::Base
       graph << [uri, RDF::URI("http://purl.org/ao/body"), ro_uri.join(ao_body_path)]
 
       annotation_resources.each do |resource|
-        graph << [uri, RDF::URI("http://purl.org/wf4ever/ro#annotatesAggregatedResource"), RDF::URI(resource.resource_uri)]
+        graph << [uri, RDF::URI("http://purl.org/wf4ever/ro#annotatesAggregatedResource"), ro_uri.join(resource.resource_path)]
       end
     end
 

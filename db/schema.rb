@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
 
   create_table "annotation_resources", :force => true do |t|
     t.integer "annotation_id"
-    t.string  "resource_uri"
+    t.string  "resource_path"
   end
 
   create_table "announcements", :force => true do |t|

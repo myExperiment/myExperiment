@@ -45,7 +45,7 @@ class CreateResearchObjects < ActiveRecord::Migration
 
     create_table "annotation_resources" do |t|
       t.integer "annotation_id"
-      t.string  "resource_uri"
+      t.string  "resource_path"
     end
 
   end

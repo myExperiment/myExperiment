@@ -203,7 +203,7 @@ class ResearchObject < ActiveRecord::Base
       end
 
       annotated_resources_statements.each do |annotated_resource|
-        resource.annotation_resources.build(:resource_uri => annotated_resource.object.to_s)
+        resource.annotation_resources.build(:resource_path => relative_uri(annotated_resource.object, uri))
         links << { :link => annotated_resource.object.to_s, :rel => "http://purl.org/ao/annotatesResource" }
       end
 
@@ -372,7 +372,7 @@ class ResearchObject < ActiveRecord::Base
       })
 
       request_links["http://purl.org/ao/annotatesResource"].each do |annotated_resource_uri|
-        annotation_stub.annotation_resources.build(:resource_uri => relative_uri(annotated_resource_uri, uri))
+        annotation_stub.annotation_resources.build(:resource_path => relative_uri(annotated_resource_uri, uri))
         links << { :link => annotated_resource_uri, :rel => "http://purl.org/ao/annotatesResource" }
       end
 
