@@ -1,6 +1,8 @@
 .digg_pagination {
   background: white;
   cursor: default;
+  margin-bottom: 0.5em;
+  overflow: auto;
   /* self-clearing method: */ }
 .digg_pagination a, .digg_pagination span, .digg_pagination em {
   padding: 0.2em 0.5em;
@@ -34,11 +36,6 @@
   color: #000033;
   background: #456aaa;
   padding: 0.1em 0.25em; }
-.digg_pagination:after {
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden; }
 * html .digg_pagination {
   height: 1%; }
 *:first-child + html .digg_pagination {

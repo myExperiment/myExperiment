@@ -53,18 +53,7 @@
     <% end %>
   </div>
   <div class="main">
-    <div class="sort">
-      Sort by:
-      <select onchange="javascript:location = this.options[this.selectedIndex].value;">
-        <% @pivot[:pivot_options]["order"].each do |args| %>
-          <option value="<%= url_with_params(request.path, request.query_parameters.merge({:order => args["option"]})) -%>"
-          <% if params[:order] == args["option"] -%> selected="selected"<% end -%>><%= args["label"] -%></option>
-        <% end %>
-      </select>
-    </div>
-    <div>
-      <%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results] } %>
-    </div>
+    <%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results], :sort_by => @pivot[:pivot_options]["order"], :num_options => @pivot[:pivot_options]["num_options"] } %>
     <div class="summary">
       <div class="result-count">
         Showing <%= pluralize(@pivot[:results].total_entries, 'result') -%>.
@@ -116,9 +105,7 @@
         <% end %>
       </div>
     <% end %>
-    <div>
-      <%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results], :sort_by => @pivot[:pivot_options]["order"], :num_options => @pivot[:pivot_options]["num_options"] } %>
-    </div>
+    <%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results], :sort_by => @pivot[:pivot_options]["order"], :num_options => @pivot[:pivot_options]["num_options"] } %>
   </div>
 </div>
 
