@@ -10,21 +10,27 @@ class ContentBlob < ActiveRecord::Base
 
   before_save :update_metadata
 
-  # validates_presence_of uses a function that assumes UTF-8 encoding and thus
-  # has issues with other encodings.  The following validation provides similar
-  # functionality to validates_presence_of on the content blob data.
-
   validate do |record|
-    if record.data.nil? || record.data.length == 0
-      record.errors.add(:data, 'cannot be empty.')
+    if record.data.nil?
+      record.errors.add(:data, 'cannot be undefined.')
     end
   end
 
   def update_metadata
+    calc_sha1
+    calc_md5
+    calc_size
+  end
 
-    self.md5  = Digest::MD5.hexdigest(data)
+  def calc_sha1
     self.sha1 = Digest::SHA1.hexdigest(data)
+  end
 
+  def calc_md5
+    self.md5  = Digest::MD5.hexdigest(data)
+  end
+
+  def calc_size
     case self.data
     when StringIO
       self.size = self.data.size

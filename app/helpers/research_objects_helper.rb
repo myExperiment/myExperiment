@@ -151,6 +151,8 @@ module ResearchObjectsHelper
       ".ro/folders/#{SecureRandom.uuid}"
     when "application/vnd.wf4ever.folderentry"
       ".ro/entries/#{SecureRandom.uuid}"
+    when "application/vnd.wf4ever.folder"
+      ".ro/resource_maps/#{SecureRandom.uuid}"
     else
       SecureRandom.uuid
     end

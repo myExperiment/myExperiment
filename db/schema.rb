@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
   end
 
   create_table "annotation_resources", :force => true do |t|
+    t.integer "research_object_id"
     t.integer "annotation_id"
     t.string  "resource_path"
   end
@@ -63,6 +64,11 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.string   "attributable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "auto_tables", :force => true do |t|
+    t.string "name"
+    t.text   "schema"
   end
 
   create_table "blob_versions", :force => true do |t|
@@ -522,6 +528,11 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.integer "user_id"
   end
 
+  create_table "plugin_schema_info", :id => false, :force => true do |t|
+    t.string  "plugin_name"
+    t.integer "version"
+  end
+
   create_table "policies", :force => true do |t|
     t.integer  "contributor_id"
     t.string   "contributor_type"
@@ -611,7 +622,6 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
   end
 
   create_table "resources", :force => true do |t|
-    t.string   "name"
     t.integer  "research_object_id"
     t.integer  "content_blob_id"
     t.string   "sha1",               :limit => 40
@@ -899,8 +909,6 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.text     "body_html"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "license"
-    t.integer  "preview_id"
     t.string   "image"
     t.string   "svg"
     t.text     "revision_comments"
@@ -908,6 +916,8 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
+    t.string   "license"
+    t.integer  "preview_id"
   end
 
   add_index "workflow_versions", ["workflow_id"], :name => "index_workflow_versions_on_workflow_id"
@@ -921,15 +931,15 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.string   "unique_name"
     t.text     "body"
     t.text     "body_html"
-    t.integer  "current_version"
-    t.integer  "preview_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "current_version"
     t.integer  "content_blob_id"
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
     t.integer  "license_id"
+    t.integer  "preview_id"
   end
 
   create_table "wsdl_deprecations", :force => true do |t|

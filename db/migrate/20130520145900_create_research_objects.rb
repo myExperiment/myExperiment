@@ -16,11 +16,9 @@ class CreateResearchObjects < ActiveRecord::Migration
     end
 
     create_table "resources" do |t|
-      t.string  "name"
       t.integer "research_object_id"
       t.integer "content_blob_id"
       t.string  "sha1", :limit => 40
-      t.binary  "data", :limit => 2147483647
       t.integer "size"
       t.string  "content_type"
       t.text    "path"
@@ -44,6 +42,7 @@ class CreateResearchObjects < ActiveRecord::Migration
     end
 
     create_table "annotation_resources" do |t|
+      t.integer "research_object_id"
       t.integer "annotation_id"
       t.string  "resource_path"
     end

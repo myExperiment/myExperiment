@@ -1,3 +1,8 @@
+# myExperiment: app/controllers/resources_controller.rb
+#
+# Copyright (c) 2007-2013 The University of Manchester, the University of
+# Oxford, and the University of Southampton.  See license.txt for details.
+
 require 'securerandom'
 
 class ResourcesController < ActionController::Base
@@ -96,7 +101,7 @@ class ResourcesController < ActionController::Base
       graph = RDF::Graph.new
 
       changes.each do |change|
-        graph << research_object.resources.find_by_path(change).description
+        graph << change.description
       end
 
       body = pretty_rdf_xml(RDF::Writer.for(:rdfxml).buffer { |writer| writer << graph } )

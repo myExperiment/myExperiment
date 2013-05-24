@@ -1,3 +1,8 @@
+# myExperiment: test/functional/research_objects_test.rb
+#
+# Copyright (c) 2007-2013 The University of Manchester, the University of
+# Oxford, and the University of Southampton.  See license.txt for details.
+
 require_relative '../test_helper'
 
 class ResearchObjectsTest < ActionController::IntegrationTest
@@ -185,7 +190,7 @@ class ResearchObjectsTest < ActionController::IntegrationTest
         ])
   end
 
-  test "Disallow overwriting of the manifest" do
+  test "disallow overwriting of the manifest" do
 
     # Create the test RO.
 
@@ -198,7 +203,7 @@ class ResearchObjectsTest < ActionController::IntegrationTest
     assert_response :forbidden
   end
 
-  test "Creation of a proxy for an external resource" do
+  test "creation of a proxy for an external resource" do
 
     # Create the test RO.
 
@@ -258,7 +263,7 @@ class ResearchObjectsTest < ActionController::IntegrationTest
     assert_equal 1, manifest_graph.query([RDF::URI(proxy_uri), ORE.proxyIn, RDF::URI(ro_uri)]).count
   end
 
-  test "Creation of a folder" do
+  test "creation of a folder" do
 
     # Create the test RO.
 
@@ -320,7 +325,7 @@ class ResearchObjectsTest < ActionController::IntegrationTest
     assert_equal 1, manifest_graph.query([resource_map_uri, ORE.describes, test_folder_uri]).count
   end
 
-  test "Creation of a folder entry" do
+  test "creation of a folder entry" do
 
     # Create the test RO.
 

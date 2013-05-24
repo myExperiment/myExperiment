@@ -1,3 +1,8 @@
+# myExperiment: app/models/research_object.rb
+#
+# Copyright (c) 2007-2013 The University of Manchester, the University of
+# Oxford, and the University of Southampton.  See license.txt for details.
+
 require 'rdf'
 require 'rdf/raptor'
 
@@ -12,6 +17,8 @@ class ResearchObject < ActiveRecord::Base
   belongs_to :user
 
   has_many :resources, :dependent => :destroy
+
+  has_many :annotation_resources
 
   validates_presence_of :slug
 
@@ -29,18 +36,22 @@ class ResearchObject < ActiveRecord::Base
 
     graph = RDF::Graph.new
 
-    graph << [ro_uri, RDF.type, RDF::URI("http://purl.org/wf4ever/ro#ResearchObject")]
-    graph << [ro_uri, RDF.type, RDF::URI("http://www.openarchives.org/ore/terms/Aggregation")]
-    graph << [ro_uri, RDF::URI("http://www.openarchives.org/ore/terms/isDescribedBy"), ro_uri + MANIFEST_PATH]
+    graph << [ro_uri, RDF.type, RO.ResearchObject]
+    graph << [ro_uri, RDF.type, ORE.Aggregation]
+    graph << [ro_uri, ORE.isDescribedBy, ro_uri + MANIFEST_PATH]
     graph << [ro_uri, RDF::DC.created, created_at.to_datetime]
     graph << [ro_uri, RDF::DC.creator, RDF::URI(creator_uri)]
 
     graph << [RDF::URI(creator_uri), RDF.type, RDF::FOAF.Agent]
 
+    if root_folder
+      graph << [ro_uri, RO.rootFolder, RDF::URI(root_folder.uri)]
+    end
+
     resources.each do |resource|
 
       if resource.is_aggregated
-        graph << [ro_uri, RDF::URI("http://www.openarchives.org/ore/terms/aggregates"), RDF::URI(resource.resource_uri)]
+        graph << [ro_uri, ORE.aggregates, RDF::URI(resource.resource_uri)]
       end
 
       graph << resource.description
@@ -66,116 +77,66 @@ class ResearchObject < ActiveRecord::Base
     resources.find(:first, :conditions => { :path => MANIFEST_PATH })
   end
 
+  def root_folder
+    resources.find(:first, :conditions => { :is_root_folder => true } )
+  end
+
   def new_or_update_resource(opts = {})
 
-    changed_descriptions = []
+    changed = []
     links = []
     location = nil
 
     content_type  = opts[:content_type]
     slug          = opts[:slug]
-    path          = opts[:slug]
+    path          = opts[:path]
     user_uri      = opts[:user_uri]
     data          = opts[:data]
     request_links = opts[:links] || {}
 
     if slug == ResearchObject::MANIFEST_PATH
 
-      path = calculate_path(slug, content_type, request_links)
-
       return [:forbidden, "Cannot overwrite the manifest", nil, []] unless opts[:force_write]
 
-      resource = resources.find_by_path(path)
-      resource = resources.new(:path => path) unless resource
+      manifest = create_resource(
+        :path          => calculate_path(slug, content_type, request_links),
+        :content_blob  => ContentBlob.new(:data => data),
+        :creator_uri   => user_uri,
+        :content_type  => content_type,
+        :is_resource   => false,
+        :is_aggregated => false,
+        :is_proxy      => false,
+        :is_annotation => false,
+        :is_folder     => false)
 
-      resource.content_blob.destroy if resource.content_blob
-
-      resource.content_blob = ContentBlob.new(:data => data)
-      resource.creator_uri = user_uri
-      resource.content_type = content_type
-      resource.name = path.split("/").last if path
-
-      resource.is_resource   = false
-      resource.is_aggregated = false
-      resource.is_proxy      = false
-      resource.is_annotation = false
-      resource.is_folder     = false
-
-
-      resource.save
-
-      changed_descriptions << resource.path
+      changed << manifest
 
     elsif content_type == "application/vnd.wf4ever.proxy"
-
-      path = calculate_path(slug, content_type, request_links)
-
-      # Obtain information to create the proxy.
 
       graph = load_graph(data)
 
       node           = graph.query([nil,  RDF.type,     ORE.proxy]).first_subject
-      proxy_for_uri  = graph.query([node, ORE.proxyFor, nil           ]).first_object
+      proxy_for_uri  = graph.query([node, ORE.proxyFor, nil      ]).first_object
 
-      # Contruct the proxy.
+      proxy = create_proxy(
+        :path           => calculate_path(slug, content_type, request_links),
+        :proxy_for_path => relative_uri(proxy_for_uri, uri),
+        :proxy_in_path  => ".",
+        :user_uri       => user_uri)
 
-      ro_uri         = RDF::URI(uri)
-      proxy_uri      = ro_uri + path
-      proxy_in_uri   = ro_uri
-      proxy_for_path = relative_uri(proxy_for_uri, uri)
-      proxy_in_path  = relative_uri(proxy_in_uri, uri)
+      proxy.update_graph!
 
-      proxy_body = create_rdf_xml do |graph|
-        graph << [proxy_uri, RDF.type,     ORE.Proxy]
-        graph << [proxy_uri, ORE.proxyIn,  proxy_in_uri]
-        graph << [proxy_uri, ORE.proxyFor, proxy_for_uri]
-      end
-
-      proxy = resources.find_by_path(path)
-      proxy = resources.new(:path => path) unless proxy
-
-      proxy.content_blob.destroy if proxy.content_blob
-
-      proxy.is_proxy       = true
-      proxy.proxy_for_path = proxy_for_path
-      proxy.proxy_in_path  = proxy_in_path
-      proxy.content_blob   = ContentBlob.new(:data => proxy_body)
-      proxy.creator_uri    = user_uri
-      proxy.content_type   = content_type
-      proxy.name           = path.split("/").last
-
-      proxy.save
-
-      location = proxy.uri
-      links << { :link => proxy_for_uri, :rel => ORE.proxyFor }
-
-      changed_descriptions << proxy.path
+      location =  proxy.uri
+      links    << { :link => proxy_for_uri, :rel => ORE.proxyFor }
+      changed  << proxy
 
     elsif content_type == "application/vnd.wf4ever.annotation"
 
-      path = calculate_path(slug, content_type, request_links)
+      # Get information.
 
-      resource = resources.find_by_path(path)
-      resource = resources.new(:path => path) unless resource
+      graph = load_graph(data)
 
-      resource.content_blob.destroy if resource.content_blob
-
-      resource.content_blob = ContentBlob.new(:data => data)
-      resource.creator_uri = user_uri
-      resource.content_type = content_type
-      resource.name = path.split("/").last if path
-
-      # Creation of an annotation stub directly
-
-      resource.is_resource   = false
-      resource.is_aggregated = true
-      resource.is_proxy      = false
-      resource.is_annotation = true
-      resource.is_folder     = false
-
-      graph = load_graph(resource.content_blob.data)
-
-      aggregated_annotations = graph.query([nil, RDF.type, RDF::URI("http://purl.org/wf4ever/ro#AggregatedAnnotation")])
+      aggregated_annotations = graph.query([nil, RDF.type, RO.AggregatedAnnotation])
 
       if aggregated_annotations.count != 1 # FIXME - add test case
         return [:unprocessable_entity, "The annotation must contain exactly one aggregated annotation", nil, []]
@@ -183,95 +144,55 @@ class ResearchObject < ActiveRecord::Base
 
       aggregated_annotation = aggregated_annotations.first_subject
 
-      ao_body_statements = graph.query([aggregated_annotation, RDF::URI("http://purl.org/ao/body"), nil])
+      ao_body_statements = graph.query([aggregated_annotation, AO.body, nil])
 
       if ao_body_statements.count != 1 # FIXME - add test case
         return [:unprocessable_entity, "Annotations must contain exactly one annotation body", nil, []]
       end
 
-      ao_body_uri = ao_body_statements.first_object.to_s
-
-      resource.ao_body_path = relative_uri(ao_body_uri, uri)
-
-      annotated_resources_statements = graph.query([aggregated_annotation, RDF::URI("http://purl.org/ao/annotatesResource"), nil])
+      annotated_resources_statements = graph.query([aggregated_annotation, AO.annotatesResource, nil])
 
       if annotated_resources_statements.count == 0 # FIXME - add test case
         return [:unprocessable_entity, "Annotations must annotate one or more resources", nil, []]
       end
 
+      ao_body_uri = ao_body_statements.first_object.to_s
+
+      stub = create_annotation_stub(
+        :user_uri       => user_uri,
+        :ao_body_path   => relative_uri(ao_body_uri, uri),
+        :resource_paths => annotated_resources_statements.map { |a| relative_uri(a.object, uri) } )
+
       annotated_resources_statements.each do |annotated_resource|
-        resource.annotation_resources.build(:resource_path => relative_uri(annotated_resource.object, uri))
-        links << { :link => annotated_resource.object.to_s, :rel => "http://purl.org/ao/annotatesResource" }
+        links << { :link => annotated_resource.object, :rel => AO.annotatesResource }
       end
 
-      links << { :link => ao_body_uri, :rel => "http://purl.org/ao/body" }
+      stub.update_graph!
 
-
-      resource.save
-
-      changed_descriptions << resource.path
+      links   << { :link => ao_body_uri, :rel => AO.body }
+      changed << stub
 
     elsif content_type == "application/vnd.wf4ever.folder"
 
-      path = calculate_path(slug, content_type, request_links)
+      folder = create_folder(
+        :path     => slug,
+        :user_uri => user_uri)
 
-      resource = resources.find_by_path(path)
-      resource = resources.new(:path => path) unless resource
+      proxy = create_proxy(
+        :proxy_for_path => folder.path,
+        :proxy_in_path  => ".",
+        :user_uri       => user_uri)
 
-      resource.content_blob.destroy if resource.content_blob
+      location = proxy.uri
 
-      resource.content_blob = ContentBlob.new(:data => data)
-      resource.creator_uri = user_uri
-      resource.content_type = content_type
-      resource.name = path.split("/").last if path
+      links << { :link => folder.resource_map.uri, :rel => ORE.isDescribedBy }
+      links << { :link => folder.uri,              :rel => ORE.proxyFor      }
 
-
-      resource.is_resource   = false
-      resource.is_aggregated = true
-      resource.is_proxy      = false
-      resource.is_annotation = false
-      resource.is_folder     = true
-      
-      # Create a resource map for this folder
-
-      resource_uri = resource.resource_uri.to_s
-
-      resource_map_path = ".ro/resource_maps/#{SecureRandom.uuid}"
-      resource_map_uri  = uri + resource_map_path
-
-      resource_map_graph = RDF::Graph.new
-      resource_map_graph << [RDF::URI(resource_map_uri), RDF.type, RDF::URI("http://www.openarchives.org/ore/terms/ResourceMap")]
-      resource_map_graph << [RDF::URI(resource_map_uri), RDF::URI("http://www.openarchives.org/ore/terms/describes"), RDF::URI(resource_uri)]
-
-      resource_map_body = pretty_rdf_xml(RDF::Writer.for(:rdfxml).buffer { |writer| writer << resource_map_graph } )
-
-      # FIXME - this should be a recursive call
-
-      resource_map_attributes = {
-        :content_blob    => ContentBlob.new(:data => resource_map_body),
-        :creator_uri     => user_uri,
-        :content_type    => 'application/vnd.wf4ever.folder',
-        :is_resource_map => true,
-        :path            => resource_map_path
-      }
-
-      resources.create(resource_map_attributes)
-
-      resource.resource_map_path = resource_map_path
-
-      links << { :link => resource_map_uri, :rel => "http://www.openarchives.org/ore/terms/isDescribedBy" }
-      links << { :link => resource_uri,     :rel => "http://www.openarchives.org/ore/terms/proxyFor"      }
-
-      changed_descriptions << resource_map_path
-
-
-      resource.save
-
-      changed_descriptions << resource.path
+      changed << proxy
+      changed << folder.resource_map
+      changed << folder
 
     elsif content_type == "application/vnd.wf4ever.folderentry"
-
-      path = calculate_path(nil, 'application/vnd.wf4ever.folderentry')
 
       # Obtain information to create the folder entry.
 
@@ -280,170 +201,212 @@ class ResearchObject < ActiveRecord::Base
       node           = graph.query([nil,  RDF.type,     RO.FolderEntry]).first_subject
       proxy_for_uri  = graph.query([node, ORE.proxyFor, nil           ]).first_object
 
+      # FIXME - need to check if proxy_in and proxy_for actually exists and error if not
+
       proxy_for_path = relative_uri(proxy_for_uri, uri)
       proxy_in_path  = opts[:path]
-      proxy_in_uri   = uri + proxy_in_path
 
       # Create the folder entry
 
-      folder_entry = resources.new(:path => path)
-
-      folder_entry_uri = RDF::URI(folder_entry.uri)
-
-      folder_entry_body = create_rdf_xml do |graph|
-        graph << [folder_entry_uri, RDF.type, ORE.Proxy]
-        graph << [folder_entry_uri, RDF.type, RO.FolderEntry]
-        graph << [folder_entry_uri, ORE.proxyIn, RDF::URI(proxy_in_uri)]
-        graph << [folder_entry_uri, ORE.proxyFor, RDF::URI(proxy_for_uri)]
-      end
-
-      folder_entry.is_folder_entry = true
-      folder_entry.content_blob    = ContentBlob.new(:data => folder_entry_body)
-      folder_entry.proxy_in_path   = proxy_in_path
-      folder_entry.proxy_for_path  = proxy_for_path
-      folder_entry.content_type    = content_type
-      folder_entry.creator_uri     = user_uri
-      folder_entry.name            = path.split("/").last if path
-
-      folder_entry.save
+      folder_entry = create_resource(
+        :path            => calculate_path(nil, 'application/vnd.wf4ever.folderentry'),
+        :is_folder_entry => true,
+        :proxy_in_path   => proxy_in_path,
+        :proxy_for_path  => proxy_for_path,
+        :content_type    => content_type,
+        :creator_uri     => user_uri)
 
       folder_entry.proxy_for.update_attribute(:aggregated_by_path, proxy_in_path)
 
+      folder_entry.update_graph!
+      folder_entry.proxy_for.update_graph!
+
       location = folder_entry.uri
 
-      links << { :link => proxy_for_uri, :rel => "http://www.openarchives.org/ore/terms/proxyFor" }
+      links << { :link => proxy_for_uri, :rel => ORE.proxyFor }
 
-    elsif request_links["http://purl.org/ao/annotatesResource"]
+      changed << folder_entry
+
+    elsif request_links[AO.annotatesResource.to_s]
 
       path           = calculate_path(nil, content_type)
       ro_uri         = RDF::URI(uri)
       annotation_uri = ro_uri + path
 
-
       # Create an annotation body using the provided graph
 
-      # Process ao:annotatesResource links by creating annotation stubs using the
-      # given resource as an ao:body.
+      ao_body = create_aggregated_resource(
+        :path         => calculate_path(slug, content_type, request_links),
+        :data         => data,
+        :content_type => content_type,
+        :user_uri     => user_uri)
 
-      ao_body_path = calculate_path(slug, content_type, request_links)
+      stub = create_annotation_stub(
+        :user_uri       => user_uri,
+        :ao_body_path   => ao_body.path,
+        :resource_paths => request_links[AO.annotatesResource.to_s].each { |resource| relative_uri(resource, uri) } )
 
-      ao_body = resources.find_by_path(path)
-      ao_body = resources.new(:path => path) unless ao_body
+      ao_body.update_graph!
+      stub.update_graph!
 
-      ao_body.content_blob.destroy if ao_body.content_blob
-
-      ao_body.content_blob  = ContentBlob.new(:data => data)
-      ao_body.creator_uri   = user_uri
-      ao_body.content_type  = content_type
-      ao_body.name          = ao_body_path.split("/").last
-      ao_body.is_resource   = true
-      ao_body.is_aggregated = true
-
-      ao_body.save
-      # FIXME - no proxy is created for this ao:body resource
-
-      changed_descriptions << ao_body.path
-
-      annotation_rdf = create_rdf_xml do |graph|
-        graph << [annotation_uri, RDF.type, RO.AggregatedAnnotation]
-        graph << [annotation_uri, RDF.type, AO.Annotation]
-        graph << [annotation_uri, AO.body,  RDF::URI(ao_body.uri)]
-
-        request_links["http://purl.org/ao/annotatesResource"].each do |annotated_resource_uri|
-          graph << [annotation_uri, AO.annotatesResource, RDF::URI(annotated_resource_uri)]
-        end
+      request_links[AO.annotatesResource.to_s].each do |annotated_resource_uri|
+        links << { :link => annotated_resource_uri, :rel => AO.annotatesResource }
       end
 
-      annotation_stub = resources.new({
-        :creator_uri   => user_uri,
-        :path          => calculate_path(nil, 'application/vnd.wf4ever.annotation'),
-        :content_blob  => ContentBlob.new(:data => annotation_rdf),
-        :content_type  => 'application/vnd.wf4ever.annotation',
-        :is_annotation => true,
-        :ao_body_path  => ao_body.path
-      })
+      changed << stub
+      changed << ao_body
+      changed << ao_body.proxy
 
-      request_links["http://purl.org/ao/annotatesResource"].each do |annotated_resource_uri|
-        annotation_stub.annotation_resources.build(:resource_path => relative_uri(annotated_resource_uri, uri))
-        links << { :link => annotated_resource_uri, :rel => "http://purl.org/ao/annotatesResource" }
-      end
+      links << { :link => stub.uri, :rel => AO.body }
 
-      annotation_stub.save
-
-      changed_descriptions << annotation_stub.path
-
-      links << { :link => annotation_stub.uri, :rel => "http://purl.org/ao/body" }
-
-      location = uri + annotation_stub.path
+      location = stub.uri
 
     else
 
-      path = calculate_path(slug, content_type, request_links)
+      resource = create_aggregated_resource(
+        :path         => calculate_path(slug, content_type, request_links),
+        :data         => data,
+        :content_type => content_type,
+        :user_uri     => user_uri)
 
-      resource = resources.find_by_path(path)
-      resource = resources.new(:path => path) unless resource
-
-      resource.content_blob.destroy if resource.content_blob
-
-      resource.content_blob  = ContentBlob.new(:data => data)
-      resource.creator_uri   = user_uri
-      resource.content_type  = content_type
-      resource.name          = path.split("/").last
-      resource.is_resource   = true
-      resource.is_aggregated = true
-
-      resource.save
-
-      changed_descriptions << resource.path
+      changed << resource
     end
 
-    if resource && content_type != "application/vnd.wf4ever.proxy" && !resource.is_manifest? && !request_links["http://purl.org/ao/annotatesResource"]
-
-      resource_uri = resource.resource_uri.to_s
-
-      relative_resource_uri = relative_uri(resource_uri, uri)
+    if resource && content_type != "application/vnd.wf4ever.proxy" && !resource.is_manifest? && !request_links[AO.annotatesResource.to_s]
 
       proxy = resources.find(:first,
           :conditions => { :content_type   => 'application/vnd.wf4ever.proxy',
                            :proxy_in_path  => '.',
-                           :proxy_for_path => relative_resource_uri })
+                           :proxy_for_path => resource.path })
 
-      if proxy.nil?
-        proxy_slug = ".ro/proxies/#{SecureRandom.uuid}"
-      else
-        proxy_slug = proxy.path
+      # Create a proxy for this resource if it doesn't exist.
+
+      unless proxy
+        proxy = create_proxy(
+          :proxy_for_path => resource.path,
+          :proxy_in_path  => ".",
+          :user_uri       => user_uri)
+
+        proxy.update_graph!
       end
 
-      proxy_body = pretty_rdf_xml(RDF::Writer.for(:rdfxml).buffer { |writer| writer << resource.generate_proxy(proxy_slug) } )
-
-      # FIXME - this should be a recursive call
-
-      proxy_attributes = {
-        :content_blob   => ContentBlob.new(:data => proxy_body),
-        :proxy_in_path  => '.',
-        :proxy_for_path => relative_resource_uri,
-        :creator_uri    => user_uri,
-        :content_type   => 'application/vnd.wf4ever.proxy',
-        :is_proxy       => true,
-        :path           => proxy_slug
-      }
-
-      if proxy.nil?
-        proxy = resources.create(proxy_attributes)
-      else
-        proxy.content_blob.destroy
-        proxy.update_attributes(proxy_attributes)
-      end
-
-      links << { :link => resource_uri, :rel => "http://www.openarchives.org/ore/terms/proxyFor" }
+      links << { :link => resource.uri, :rel => ORE.proxyFor }
       location = proxy.uri
 
-      changed_descriptions << proxy_slug
+      changed << proxy
     end
 
-    location ||= resource_uri
+    location ||= resource.uri if resource
 
-    [:created, nil, location, links, path, changed_descriptions]
+    [:created, nil, location, links, path, changed]
+  end
+
+  # opts[:path] - optional path to use for the proxy
+  # opts[:proxy_for_path] - required
+  # opts[:proxy_in_path] - required
+  # opts[:user_uri] - optional
+
+  def create_proxy(opts)
+
+    # FIXME - these should be validations on the resource model
+    throw "proxy_for_path required" unless opts[:proxy_for_path]
+    throw "proxy_in_path required"  unless opts[:proxy_in_path]
+
+    create_resource(
+      :path           => opts[:path] || calculate_path(nil, 'application/vnd.wf4ever.proxy'),
+      :is_proxy       => true,
+      :proxy_for_path => opts[:proxy_for_path],
+      :proxy_in_path  => opts[:proxy_in_path],
+      :creator_uri    => opts[:user_uri],
+      :content_type   => "application/vnd.wf4ever.proxy")
+  end
+
+  def create_annotation_stub(opts)
+
+    # FIXME - these should be validations on the resource model
+    throw "ao_body_path required"   unless opts[:ao_body_path]
+    throw "resource_paths required" unless opts[:resource_paths]
+    
+    stub = create_resource(
+      :path          => opts[:path] || calculate_path(nil, 'application/vnd.wf4ever.annotation'),
+      :creator_uri   => opts[:user_uri],
+      :content_type  => 'application/rdf+xml',
+      :is_aggregated => true,
+      :is_annotation => true,
+      :ao_body_path  => opts[:ao_body_path])
+
+    opts[:resource_paths].map do |resource_path|
+      stub.annotation_resources.create(:resource_path => resource_path, :research_object => self)
+    end
+
+    stub
+  end
+
+  def create_aggregated_resource(opts)
+
+    # Create a proxy for this resource.
+
+    proxy = create_proxy(
+      :proxy_for_path => opts[:path],
+      :proxy_in_path  => ".",
+      :user_uri       => opts[:user_uri])
+
+    proxy.update_graph!
+
+    # Create the resource.
+
+    create_resource(
+      :path          => opts[:path],
+      :content_blob  => ContentBlob.new(:data => opts[:data]),
+      :creator_uri   => opts[:user_uri],
+      :content_type  => opts[:content_type],
+      :is_resource   => true,
+      :is_aggregated => true)
+  end
+
+  def create_resource_map(opts)
+
+    create_resource(
+      :path            => opts[:path] || calculate_path(nil, "application/vnd.wf4ever.folder"),
+      :creator_uri     => opts[:user_uri],
+      :content_type    => 'application/rdf+xml',
+      :is_resource_map => true)
+
+  end
+
+  def create_folder(opts)
+
+    # Create a resource map for this folder
+
+    resource_map = create_resource_map(:user_uri => opts[:user_uri])
+
+    # Create the folder entry
+
+    folder = create_resource(
+      :path              => opts[:path],
+      :creator_uri       => opts[:user_uri],
+      :content_type      => "application/vnd.wf4ever.folder",
+      :resource_map_path => resource_map.path,
+      :is_aggregated     => true,
+      :is_root_folder    => root_folder.nil?,
+      :is_folder         => true)
+
+    folder.update_graph!
+    resource_map.update_graph!
+
+    folder
+  end
+
+  def create_resource(attributes)
+
+    resource = resources.find_by_path(attributes[:path]) || resources.new
+
+    # FIXME - We need to know when we should be allowed to overwrite a
+    # resource.  The RO structure needs to remain consistent.
+
+    resource.attributes = attributes
+    resource.save
+    resource
   end
 
 private
@@ -451,7 +414,6 @@ private
   def create_manifest
 
     resources.create(:path => ResearchObject::MANIFEST_PATH,
-                     :content_blob => ContentBlob.new(:data => "Dummy content"),
                      :content_type => 'application/rdf+xml')
 
     update_manifest!
