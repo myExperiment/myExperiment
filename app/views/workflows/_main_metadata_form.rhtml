@@ -63,7 +63,7 @@
 					<b>Title</b>
 					<span class="required">*</span>
 				</p>
-				<%= text_field_tag "workflow[title]", (params[:workflow].nil? ? '' : params[:workflow][:title]), :size => 50 %>
+				<%= text_field_tag "workflow[title]", (params[:workflow].nil? ? '' : params[:workflow][:title]), :size => 80, :style => 'width: 100%' %>
 				
 				<!-- Preview Image -->
 				<p><b>Preview Image</b></p>
