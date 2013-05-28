@@ -2528,7 +2528,7 @@ def get_components(opts)
   PREFIX wf4ever:<http://purl.org/wf4ever/wf4ever#>
   #{sparql_prefixes}
 
-  SELECT ?workflow_uri WHERE {
+  SELECT DISTINCT ?workflow_uri WHERE {
     GRAPH ?workflow_uri {
       ?w a wfdesc:Workflow .
       #{sparql_query}
