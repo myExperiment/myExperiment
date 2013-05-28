@@ -2631,11 +2631,14 @@ pre, code, .md5 {
 
 /*font-family: "Margarine", "Comic Sans MS", "Comic Sans", fantasy; */
 .mockup {
+  display: none;
+    /*
   border: #ccc 2px dashed;
   margin-top: 1em;
   margin-bottom: 1em;
   padding-left: 0.5em;
   padding-right: 0.5em;
+  */
 }
 .mockup .mockup {
   border: none;
