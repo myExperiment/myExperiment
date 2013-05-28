@@ -56,7 +56,7 @@ class NetworksController < ApplicationController
   def membership_invite
     @membership = Membership.new(:user_id => params[:user_id], :network_id => @network.id, :message => params[:membership][:message], :invited_by => current_user)
 
-    if (user = User.find_by_id(params[:user_id]))
+    if (user = User.find_by_id(params[:user_id])).nil?
       render_404("User not found.")
     elsif !(!@membership || Membership.find_by_user_id_and_network_id(params[:user_id], @network.id) ||
            Network.find(@network.id).owner?(user))
