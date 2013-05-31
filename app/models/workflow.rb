@@ -52,7 +52,7 @@ class Workflow < ActiveRecord::Base
 
   acts_as_rdf_serializable('application/x-turtle',
       :generation_error_message => "Failed to generate RDF, please check the given workflow file is valid.") do |workflow|
-    workflow.processor_class.new(workflow.content_blob.data).extract_rdf_structure(workflow)
+    workflow.processor_class.new(workflow.content_blob.data).extract_rdf_structure(workflow) unless workflow.processor_class.nil?
   end
 
   has_previews
