@@ -90,7 +90,7 @@ module ApplicationHelper
       return nil
     end
     
-    name = truncate_to ? truncate(user.name, :length => truncate_to) : name = user.name
+    name = truncate_to ? truncate(user.name, :length => truncate_to) : user.name
     
     return link_to(h(name), user_url(user), :title => tooltip_title_attrib(h(user.name)))
   end

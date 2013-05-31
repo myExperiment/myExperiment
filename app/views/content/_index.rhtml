@@ -35,7 +35,7 @@
                   <input class='checkbox' type='checkbox' onclick='javascript:location = <%= url_with_params(request.path, object[:checkbox_uri]).to_json -%>; return false;' <% if object[:selected] %> checked='checked' <% end %> />
                   <a href="<%= url_with_params(request.path, object[:label_uri]) -%>">
                     <div class='count'><%= object[:count] -%></div>
-                    <div class='label'><span class='truncate'><%= object[:label] -%></span></div>
+                    <div class='label'><span class='truncate'><%= h(object[:label]) -%></span></div>
                   </a>
                 </div>
               <% end %>
