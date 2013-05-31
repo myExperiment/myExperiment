@@ -35,7 +35,7 @@
           <a name="<%= pack.title.gsub(/ /, "_") %>"></a>
           <p class="title">
             <%= icon "pack", nil, nil, nil, '' %>
-            <% truncated_title = truncate(pack.title, :length => 55) %>
+            <% truncated_title = h(truncate(pack.title, :length => 55)) %>
             <%=link_to(query ? highlight_all(truncated_title, query) : truncated_title, pack_path(pack),
                        :title => pack.title) %>
           </p>

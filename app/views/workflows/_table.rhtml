@@ -44,7 +44,7 @@
 
           <p class="title">
             <%= icon "workflow", nil, nil, nil, '' %>
-            <% truncated_title = truncate(workflow.title, :length => 45) %>
+            <% truncated_title = h(truncate(workflow.title, :length => 45)) %>
             <%=link_to(query ? highlight_all(truncated_title, query) : truncated_title, workflow_path(workflow),
                        :title => workflow.title) %>
             <span style="font-weight:normal;">
