@@ -62,7 +62,7 @@ document.onkeypress = handleEnter;
 	      <div style="padding: 0 1em;">
 		    <% unless (tags = current_user.tags.sort {|a,b| a.name.downcase <=> b.name.downcase }).empty? %>
 					<% tags.each do |t| %>
-			  			<a href="" onclick="javascript:addTag('<%= t.name %>'); return false;"><%= t.name %></a><span style="color: #999999;"> | </span> 
+			  			<a href="" onclick="javascript:addTag('<%= h(t.name) %>'); return false;"><%= h(t.name) %></a><span style="color: #999999;"> | </span>
 					<% end %>
 				<% else %>
 					<p><i>You have not tagged anything yet</i></p>
