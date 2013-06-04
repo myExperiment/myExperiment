@@ -1,3 +1,7 @@
+# myExperiment: app/helpers/research_objects_helper.rb
+#
+# Copyright (c) 2007-2013 The University of Manchester, the University of
+# Oxford, and the University of Southampton.  See license.txt for details.
 
 require 'xml/libxml'
 
@@ -158,9 +162,17 @@ module ResearchObjectsHelper
     end
   end
 
-  def load_graph(content)
-    graph = RDF::Graph.new # FIXME - this should support more than just rdf+xml
-    graph << RDF::Reader.for(:rdfxml).new(content) if content
+  def load_graph(content, content_type = "application/rdf+xml")
+
+    case content_type
+    when "application/rdf+xml"
+      format = :rdfxml
+    when "text/turtle", "application/x-turtle"
+      format = :turtle
+    end
+
+    graph = RDF::Graph.new
+    graph << RDF::Reader.for(format).new(content) if content
     graph
   end
 

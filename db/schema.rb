@@ -457,6 +457,7 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "version"
+    t.text     "resource_path"
   end
 
   create_table "pack_remote_entries", :force => true do |t|
@@ -469,6 +470,7 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "version"
+    t.text     "resource_path"
   end
 
   create_table "pack_versions", :force => true do |t|
@@ -492,6 +494,8 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.datetime "updated_at"
     t.integer  "current_version"
     t.integer  "license_id"
+    t.text     "ro_uri"
+    t.text     "research_object_id"
   end
 
   create_table "pending_invitations", :force => true do |t|
@@ -628,6 +632,7 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.integer  "size"
     t.string   "content_type"
     t.text     "path"
+    t.string   "entry_name"
     t.string   "creator_uri"
     t.string   "proxy_in_path"
     t.string   "proxy_for_path"

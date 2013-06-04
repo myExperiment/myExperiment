@@ -22,6 +22,7 @@ class CreateResearchObjects < ActiveRecord::Migration
       t.integer "size"
       t.string  "content_type"
       t.text    "path"
+      t.string  "entry_name"
       t.string  "creator_uri"
       t.string  "proxy_in_path"
       t.string  "proxy_for_path"
@@ -47,12 +48,21 @@ class CreateResearchObjects < ActiveRecord::Migration
       t.string  "resource_path"
     end
 
+    add_column :packs, :ro_uri, :text
+    add_column :packs, :research_object_id, :text
+    add_column :pack_contributable_entries, :resource_path, :text
+    add_column :pack_remote_entries, :resource_path, :text
   end
 
   def self.down
     drop_table :research_objects
     drop_table :resources
     drop_table :annotation_resources
+
+    remove_column :packs, :ro_uri
+    remove_column :packs, :research_object_id
+    remove_column :pack_contributable_entries, :resource_path
+    remove_column :pack_remote_entries, :resource_path
   end
 
 end

@@ -20,6 +20,8 @@ class PackContributableEntry < ActiveRecord::Base
   after_save :touch_pack
   after_destroy :touch_pack
 
+  after_save :synchronize_research_object
+
   def check_unique
 
     conditions = ["pack_id = ?", "version = ?", "contributable_type = ?", "contributable_id = ?"]
@@ -90,5 +92,13 @@ class PackContributableEntry < ActiveRecord::Base
 
   def touch_pack
     pack.touch unless (pack.destroyed? || pack.contribution.nil?)
+  end
+
+  def synchronize_research_object
+
+    ro = pack.research_object
+
+    if ro
+    end
   end
 end

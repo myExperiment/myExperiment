@@ -680,4 +680,23 @@ pivot_options:
 #
 # shortcut_keywords:
 #   biovel: /groups/643
-#
+
+research_object_default_folders:
+
+- root
+- root/biblio
+- root/biblio/produced
+- root/biblio/used
+- root/config
+- root/config/scripts
+- root/config/setup
+- root/config/software
+- root/config/web%20services
+- root/datasets
+- root/datasets/inputs
+- root/datasets/results
+- root/workflows
+- root/workflows/components
+- root/workflows/main
+- root/workflows/nested
+

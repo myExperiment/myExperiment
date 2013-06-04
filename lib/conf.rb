@@ -210,6 +210,10 @@ class Conf
     self.fetch_entry('sesame_repository')
   end
 
+  def self.research_object_default_folders
+    self.fetch_entry('research_object_default_folders')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)

@@ -137,12 +137,31 @@ class Resource < ActiveRecord::Base
     RDF::URI(research_object.uri) + path
   end
 
+  def name
+    URI(path).path.split("/").last
+  end
+
   def update_graph!
 
     new_description = create_rdf_xml { |graph| graph << description }
 
     content_blob.destroy if content_blob
     update_attribute(:content_blob, ContentBlob.new(:data => new_description))
+  end
+
+  def merged_annotation_graphs
+
+    result = RDF::Graph.new
+
+    annotation_resources = research_object.annotation_resources.find(:all,
+        :conditions => { :resource_path => path })
+    
+    annotation_resources.each do |ar|
+      ao_body = ar.annotation.ao_body
+      result << load_graph(ao_body.content_blob.data, ao_body.content_type)
+    end
+
+    result
   end
 
   def copy_metadata

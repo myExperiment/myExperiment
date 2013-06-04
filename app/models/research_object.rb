@@ -174,21 +174,14 @@ class ResearchObject < ActiveRecord::Base
 
     elsif content_type == "application/vnd.wf4ever.folder"
 
-      folder = create_folder(
-        :path     => slug,
-        :user_uri => user_uri)
+      folder = create_folder(slug, opts[:user_uri])
 
-      proxy = create_proxy(
-        :proxy_for_path => folder.path,
-        :proxy_in_path  => ".",
-        :user_uri       => user_uri)
-
-      location = proxy.uri
+      location = folder.proxy.uri
 
       links << { :link => folder.resource_map.uri, :rel => ORE.isDescribedBy }
       links << { :link => folder.uri,              :rel => ORE.proxyFor      }
 
-      changed << proxy
+      changed << folder.proxy
       changed << folder.resource_map
       changed << folder
 
@@ -208,18 +201,7 @@ class ResearchObject < ActiveRecord::Base
 
       # Create the folder entry
 
-      folder_entry = create_resource(
-        :path            => calculate_path(nil, 'application/vnd.wf4ever.folderentry'),
-        :is_folder_entry => true,
-        :proxy_in_path   => proxy_in_path,
-        :proxy_for_path  => proxy_for_path,
-        :content_type    => content_type,
-        :creator_uri     => user_uri)
-
-      folder_entry.proxy_for.update_attribute(:aggregated_by_path, proxy_in_path)
-
-      folder_entry.update_graph!
-      folder_entry.proxy_for.update_graph!
+      folder_entry = create_folder_entry(proxy_for_path, proxy_in_path, user_uri)
 
       location = folder_entry.uri
 
@@ -244,9 +226,8 @@ class ResearchObject < ActiveRecord::Base
       stub = create_annotation_stub(
         :user_uri       => user_uri,
         :ao_body_path   => ao_body.path,
-        :resource_paths => request_links[AO.annotatesResource.to_s].each { |resource| relative_uri(resource, uri) } )
+        :resource_paths => request_links[AO.annotatesResource.to_s].map { |resource| relative_uri(resource, uri) } )
 
-      ao_body.update_graph!
       stub.update_graph!
 
       request_links[AO.annotatesResource.to_s].each do |annotated_resource_uri|
@@ -342,12 +323,18 @@ class ResearchObject < ActiveRecord::Base
     stub
   end
 
-  def create_aggregated_resource(opts)
+  def create_aggregated_resource(opts = {})
+
+    throw "user_uri required"     unless opts[:user_uri]
+    throw "data required"         unless opts[:data]
+    throw "content_type required" unless opts[:content_type]
+
+    path = calculate_path(opts[:path], opts[:content_type])
 
     # Create a proxy for this resource.
 
     proxy = create_proxy(
-      :proxy_for_path => opts[:path],
+      :proxy_for_path => path,
       :proxy_in_path  => ".",
       :user_uri       => opts[:user_uri])
 
@@ -356,7 +343,7 @@ class ResearchObject < ActiveRecord::Base
     # Create the resource.
 
     create_resource(
-      :path          => opts[:path],
+      :path          => path,
       :content_blob  => ContentBlob.new(:data => opts[:data]),
       :creator_uri   => opts[:user_uri],
       :content_type  => opts[:content_type],
@@ -367,14 +354,14 @@ class ResearchObject < ActiveRecord::Base
   def create_resource_map(opts)
 
     create_resource(
-      :path            => opts[:path] || calculate_path(nil, "application/vnd.wf4ever.folder"),
+      :path            => calculate_path(opts[:path], "application/vnd.wf4ever.folder"),
       :creator_uri     => opts[:user_uri],
       :content_type    => 'application/rdf+xml',
       :is_resource_map => true)
 
   end
 
-  def create_folder(opts)
+  def create_folder_resource(opts)
 
     # Create a resource map for this folder
 
@@ -409,9 +396,56 @@ class ResearchObject < ActiveRecord::Base
     resource
   end
 
+  def create_folder(path, user_uri)
+
+    folder = create_folder_resource(
+      :path     => path,
+      :user_uri => user_uri)
+
+    proxy = create_proxy(
+      :proxy_for_path => folder.path,
+      :proxy_in_path  => ".",
+      :user_uri       => user_uri)
+
+    folder
+  end
+
+  def create_folder_entry(path, parent_path, user_uri)
+
+    folder_entry = create_resource(
+      :path            => calculate_path(nil, 'application/vnd.wf4ever.folderentry'),
+      :entry_name      => URI(path).path.split("/").last,
+      :is_folder_entry => true,
+      :proxy_in_path   => parent_path,
+      :proxy_for_path  => path,
+      :content_type    => 'application/vnd.wf4ever.folderentry',
+      :creator_uri     => user_uri)
+
+    folder_entry.proxy_for.update_attribute(:aggregated_by_path, parent_path)
+
+    folder_entry.update_graph!
+    folder_entry.proxy_for.update_graph!
+
+    folder_entry
+  end
+
+  def find_using_path(path)
+    bits = path.split("/")
+
+    object = root_folder
+
+    while (bit = bits.shift)
+      folder_entry = object.proxies.find(:first, :conditions => { :entry_name => bit })
+      return nil if folder_entry.nil?
+      object = folder_entry.proxy_for
+    end
+
+    object
+  end
+
 private
 
-  def create_manifest
+  def create_manifest #:nodoc:
 
     resources.create(:path => ResearchObject::MANIFEST_PATH,
                      :content_type => 'application/rdf+xml')

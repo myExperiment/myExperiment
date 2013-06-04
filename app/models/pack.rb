@@ -13,6 +13,10 @@ require 'sunspot_rails'
 
 class Pack < ActiveRecord::Base
 
+  include ResearchObjectsHelper
+
+  after_create :create_research_object
+
   acts_as_site_entity :owner_text => 'Creator'
 
   acts_as_contributable
@@ -27,6 +31,8 @@ class Pack < ActiveRecord::Base
   has_many :versions, :class_name => "PackVersion"
 
   belongs_to :license
+
+  belongs_to :research_object
 
   def find_version(version)
     match = versions.find(:first, :conditions => ["version = ?", version])
@@ -1007,5 +1013,36 @@ class Pack < ActiveRecord::Base
     boost -= 20 if description.nil? || description.empty?
     
     boost
+  end
+
+  def create_research_object
+
+    slug = "Pack#{self.id}"
+    slug = SecureRandom.uuid if ResearchObject.find_by_slug_and_version(slug, nil)
+
+    ro = ResearchObject.create(:slug => slug, :user => self.contributor)
+
+    update_attributes( {
+      :ro_uri          => relative_uri(ro.uri, Conf.base_uri),
+      :research_object => ro
+    })
+
+    # Create the folder structure
+
+    user_path = "/users/#{contributor.id}"
+
+    Conf.research_object_default_folders.each do |folder_path|
+    
+      bits = folder_path.split("/")
+
+      folder_path = bits.join("/") + "/"
+      parent_path = bits[0..-2].join("/") + "/"
+
+      ro.create_folder(folder_path, user_path)
+
+      if parent_path != "/"
+        ro.create_folder_entry(folder_path, parent_path, user_path)
+      end
+    end
   end
 end
