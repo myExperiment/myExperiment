@@ -1,3 +1,4 @@
+# encoding: utf-8
 # myExperiment: test/functional/workflows_controller_test.rb
 #
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
@@ -97,5 +98,19 @@ class WorkflowsControllerTest < ActionController::TestCase
     assert_equal 0, TripleStore.instance.repo.keys.size
 
     TripleStore.instance.repo = {}
+  end
+
+  def test_can_tag_workflow
+    login_as(:john)
+    wf = workflows(:workflow_dilbert)
+
+    assert_equal 0, wf.tags.size
+
+    post :tag, :id => wf.id, :tag_list => 'new tag, utf-8 ㈛ ㈘ ㈔'
+
+    assert_response :success
+    assert_equal 2, wf.tags.size
+    assert_includes wf.tags.map {|t| t.name}, 'utf-8 ㈛ ㈘ ㈔'
+    assert_includes wf.tags.map {|t| t.name}, 'new tag'
   end
 end
