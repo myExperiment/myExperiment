@@ -1,3 +1,4 @@
+# encoding: utf-8
 # myExperiment: app/controllers/tags_controller.rb
 #
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
