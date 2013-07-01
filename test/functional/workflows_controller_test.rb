@@ -4,7 +4,7 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require File.dirname(__FILE__) + '/../test_helper'
+require_relative '../test_helper'
 require 'workflows_controller'
 
 class WorkflowsControllerTest < ActionController::TestCase
@@ -37,9 +37,17 @@ class WorkflowsControllerTest < ActionController::TestCase
 
     assert_redirected_to workflow_path(assigns(:workflow))
     assert_equal old_count+1, Workflow.count
+
+    # Test searches
+
+    workflow = Workflow.last
+
+    # Basic test that the workflow was indexed in Solr and that it appears in a search result.
+    assert Workflow.search { fulltext "dilbert" }.results.include?(workflow)
   end
 
   def test_should_show_workflow
+
     get :show, :id => 1
     assert_response :success
   end
