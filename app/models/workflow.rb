@@ -428,8 +428,6 @@ class Workflow < ActiveRecord::Base
   # TODO: Don't use tags for this
   named_scope :components, :include => :tags, :conditions => "tags.name = 'component'"
 
-  named_scope :recent, lambda { |date| { :conditions => ["created_at > ?",date] } }
-
   def component?
     tags.any? { |t| t.name == 'component' }
   end
