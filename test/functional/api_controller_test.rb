@@ -14,7 +14,7 @@ class ApiControllerTest < ActionController::TestCase
     @response   = ActionController::TestResponse.new
   end
 
-  fixtures :workflows, :users, :content_types, :licenses, :ontologies, :predicates, :packs
+  fixtures :workflows, :users, :content_types, :licenses, :ontologies, :predicates, :packs, :tags, :taggings
 
   def test_workflows
 
@@ -1131,13 +1131,14 @@ class ApiControllerTest < ActionController::TestCase
     assert_response(:not_found)
   end
 
-  # Component querying
+  # Components
 
-  def test_basic_component_query # not a great test, but should pick up any major errors
+  test "can create components" do
     login_as(:john)
 
     # Check empty
-    resp = rest_request(:get, 'components', nil, {'prefixes' => '', 'query' => ''})
+    TripleStore.instance.repo = {}
+    resp = rest_request(:get, 'components')
     assert_response(:success)
     assert_equal 0, resp.find('//workflow').size
 
@@ -1145,11 +1146,12 @@ class ApiControllerTest < ActionController::TestCase
     license_type = "by-sa"
     content_type = "application/vnd.taverna.t2flow+xml"
     content = Base64.encode64(File.read('test/fixtures/files/image_to_tiff_migration.t2flow'))
-
-    rest_request(:post, 'workflow', "<?xml version='1.0'?>
+    family = packs(:component_family)
+    workflow_resp = rest_request(:post, 'component', "<?xml version='1.0'?>
       <workflow>
         <title>Test Component</title>
         <description>123</description>
+        <component-family>#{polymorphic_url(family)}</component-family>
         <license-type>#{license_type}</license-type>
         <content-type>#{content_type}</content-type>
         <content>#{content}</content>
@@ -1157,10 +1159,427 @@ class ApiControllerTest < ActionController::TestCase
 
     assert_response(:success)
 
-    # Check result returned
-    resp = rest_request(:get, 'components', nil, {'prefixes' => '', 'query' => ''})
+    # Get the newly created component
+    uri = workflow_resp.find_first('//workflow')['resource']
+    component = Workflow.find(uri.split('/').last.to_i)
+
+    # Check it was added to the family
+    assert_includes family.contributable_entries.map { |e| e.contributable }, component
+
+    # Check it was tagged
+    assert component.component?
+
+    # Check it's retrievable
+    query_resp = rest_request(:get, 'components')
+    assert_response(:success)
+    assert_equal 1, query_resp.find('//workflow').size
+    assert_equal uri, query_resp.find_first('//workflow')['resource']
+  end
+
+  test "can't create component if family doesn't exist" do
+    login_as(:john)
+
+    # Upload a component workflow
+    license_type = "by-sa"
+    content_type = "application/vnd.taverna.t2flow+xml"
+    content = Base64.encode64(File.read('test/fixtures/files/image_to_tiff_migration.t2flow'))
+    assert_no_difference('Workflow.count') do
+      rest_request(:post, 'component', "<?xml version='1.0'?>
+        <workflow>
+          <title>Test Component</title>
+          <description>123</description>
+          <component-family>http://www.example.com/families/123</component-family>
+          <license-type>#{license_type}</license-type>
+          <content-type>#{content_type}</content-type>
+          <content>#{content}</content>
+        </workflow>")
+    end
+
+    assert_response(404)
+  end
+
+  test "can't create component if family url points to non-family resource" do
+    login_as(:john)
+
+    # Upload a component workflow
+    license_type = "by-sa"
+    content_type = "application/vnd.taverna.t2flow+xml"
+    content = Base64.encode64(File.read('test/fixtures/files/image_to_tiff_migration.t2flow'))
+    assert_no_difference('Workflow.count') do
+      rest_request(:post, 'component', "<?xml version='1.0'?>
+        <workflow>
+          <title>Test Component</title>
+          <description>123</description>
+          <component-family>#{polymorphic_url(packs(:pack_1))}</component-family>
+          <license-type>#{license_type}</license-type>
+          <content-type>#{content_type}</content-type>
+          <content>#{content}</content>
+        </workflow>")
+    end
+
+    assert_response(400)
+  end
+
+  test "can't create components in protected family" do
+    login_as(:jane)
+
+    # Upload a component workflow
+    license_type = "by-sa"
+    content_type = "application/vnd.taverna.t2flow+xml"
+    content = Base64.encode64(File.read('test/fixtures/files/image_to_tiff_migration.t2flow'))
+    family = packs(:protected_component_family)
+    assert_no_difference('Workflow.count') do
+      rest_request(:post, 'component', "<?xml version='1.0'?>
+        <workflow>
+          <title>Test Component</title>
+          <description>123</description>
+          <component-family>#{polymorphic_url(family)}</component-family>
+          <license-type>#{license_type}</license-type>
+          <content-type>#{content_type}</content-type>
+          <content>#{content}</content>
+        </workflow>")
+    end
+
+    assert_response(401)
+  end
+
+  test "can create component versions" do
+    login_as(:john)
+
+    # Set up
+    component = workflows(:component_workflow)
+    version_count = WorkflowVersion.count
+    # Put in triplestore
+    TripleStore.instance.repo = {}
+    TripleStore.instance.insert("", "<#{polymorphic_url(component)}>")
+
+    # Check its there
+    resp = rest_request(:get, 'components')
     assert_response(:success)
     assert_equal 1, resp.find('//workflow').size
+    assert_equal "", TripleStore.instance.repo["<#{polymorphic_url(component)}>"]
+
+    # Post new version
+    content = Base64.encode64(File.read('test/fixtures/files/image_to_tiff_migration.t2flow'))
+
+    workflow_resp = rest_request(:post, 'component', "<?xml version='1.0'?>
+      <workflow>
+        <title>Test Component II</title>
+        <description>456</description>
+        <content>#{content}</content>
+      </workflow>", {'id' => component.id})
+
+    assert_response(:success)
+
+    # Get the newly created component
+    uri = workflow_resp.find_first('//workflow')['resource']
+    component = Workflow.find(uri.split('/').last.to_i)
+
+    # Check the version was created
+    assert_equal version_count+1, WorkflowVersion.count
+    assert_equal 'Test Component II', component.title
+
+    # Check there's still only one component in the triplestore
+    query_resp = rest_request(:get, 'components')
+    assert_response(:success)
+    assert_equal 1, query_resp.find('//workflow').size
+    assert_equal uri, query_resp.find_first('//workflow')['resource']
+    assert_not_equal "", TripleStore.instance.repo["<#{polymorphic_url(component)}>"]
+  end
+
+  test "can query components by family" do
+    component_uri2 = polymorphic_url(workflows(:component_workflow2))
+    component_uri = polymorphic_url(workflows(:component_workflow))
+    private_component_uri = polymorphic_url(workflows(:private_component_workflow))
+    family_uri = polymorphic_url(packs(:component_family))
+
+    TripleStore.instance.repo = {}
+    TripleStore.instance.insert("", "<#{component_uri2}>") # Not in the family
+    TripleStore.instance.insert("", "<#{private_component_uri}>") # In the family, but not viewable
+    TripleStore.instance.insert("", "<#{component_uri}>") # In the family
+
+    # Should only return one result
+    resp = rest_request(:get, 'components', nil, {'component-family' => family_uri})
+    assert_response(:success)
+    assert_equal 3, TripleStore.instance.repo.keys.size
+    assert_equal 1, resp.find('//workflow').size
+    assert_equal component_uri, resp.find_first('//workflow')['resource']
+
+    # Clean up
+    TripleStore.instance.repo = {}
+  end
+
+  test "component query only returns local results" do
+    # Set up
+    login_as(:john)
+
+    uri = polymorphic_url(workflows(:component_workflow))
+
+    TripleStore.instance.repo = {}
+    TripleStore.instance.insert("", "<http://www.google.com/>")
+    TripleStore.instance.insert("", "<http://www.example.com/workflows/456>")
+    TripleStore.instance.insert("", "<#{uri}>")
+
+    # Should only return one result
+    resp = rest_request(:get, 'components', nil, {'prefixes' => '', 'query' => ''})
+    assert_response(:success)
+    assert_equal 3, TripleStore.instance.repo.keys.size
+    assert_equal 1, resp.find('//workflow').size
+    assert_equal uri, resp.find_first('//workflow')['resource']
+
+    # Clean up
+    TripleStore.instance.repo = {}
+  end
+
+  test "component query doesn't return private components" do
+    # Set up
+    TripleStore.instance.repo = {}
+    TripleStore.instance.insert("", "<#{polymorphic_url(workflows(:private_component_workflow))}>")
+
+    # Should only return one result
+    resp = rest_request(:get, 'components', nil, {'prefixes' => '', 'query' => ''})
+    assert_response(:success)
+    assert_equal 1, TripleStore.instance.repo.keys.size
+    assert_equal 0, resp.find('//workflow').size
+
+    # Clean up
+    TripleStore.instance.repo = {}
+  end
+
+  test "component query does return private components for authorized user" do
+    # Set up
+    login_as(:john)
+
+    uri = polymorphic_url(workflows(:private_component_workflow))
+
+    TripleStore.instance.repo = {}
+    TripleStore.instance.insert("", "<#{uri}>")
+
+    # Should only return one result
+    resp = rest_request(:get, 'components', nil, {'prefixes' => '', 'query' => ''})
+    assert_response(:success)
+    assert_equal 1, TripleStore.instance.repo.keys.size
+    assert_equal 1, resp.find('//workflow').size
+    assert_equal uri, resp.find_first('//workflow')['resource']
+
+    # Clean up
+    TripleStore.instance.repo = {}
+  end
+
+  test "can get list of component profiles" do
+    login_as(:john)
+
+    profile_count = Blob.all.select { |b| b.component_profile? }.size
+
+    resp = rest_request(:get, 'component-profiles')
+    assert_response(:success)
+
+    assert_equal profile_count, resp.find('//file').size
+    profiles = resp.find('//file').map { |f| Blob.find(f['resource'].split('/').last.to_i) }
+    assert_includes profiles, blobs(:component_profile)
+  end
+
+  test "can create component profile" do
+    login_as(:john)
+
+    # Get list of profiles first
+    resp = rest_request(:get, 'component-profiles')
+    assert_response(:success)
+    profile_count = resp.find('//file').size
+
+    content = Base64.encode64(File.read('test/fixtures/files/workflow_dilbert.xml'))
+    body = %(
+      <file>
+        <title>Component Profile</title>
+        <filename>profile.xml</filename>
+        <description>It's for components</description>
+        <content-type>application/vnd.taverna.component-profile+xml</content-type>
+        <content encoding="base64" type="binary">#{content}</content>
+        <license-type>by-sa</license-type>
+      </file>
+    )
+
+    resp = rest_request(:post, 'component-profile', body)
+    assert_response(:success)
+
+    uri = resp.find_first('//file')['resource']
+    profile = Blob.find_by_id(uri.split('/').last.to_i)
+    assert_not_nil profile
+    assert_includes profile.tags.map {|t| t.name }, 'component profile'
+
+    # Check new family returned in list
+    resp = rest_request(:get, 'component-profiles')
+    assert_response(:success)
+    assert_equal profile_count+1, resp.find('//file').size
+    assert_includes resp.find('//file').map {|f| f['resource']}, uri
+  end
+
+  test "can delete component profile that isn't used in any families" do
+    login_as(:john)
+
+    profile = blobs(:unused_component_profile)
+
+    assert_difference('Blob.count', -1) do
+      rest_request(:delete, 'component-profile', nil, 'id' => profile.id)
+    end
+
+    assert_response(:success)
+  end
+
+  test "can't delete component profile that is used" do
+    login_as(:john)
+
+    profile = blobs(:component_profile)
+
+    assert_no_difference('Blob.count') do
+      rest_request(:delete, 'component-profile', nil, 'id' => profile.id)
+    end
+
+    assert_response(400)
+  end
+
+  test "can get list of component families" do
+    login_as(:john)
+
+    family_count = Pack.all.select { |p| p.component_family? }.size
+
+    resp = rest_request(:get, 'component-families')
+    assert_response(:success)
+
+    assert_equal family_count, resp.find('//pack').size
+    families = resp.find('//pack').map { |f| Pack.find(f['resource'].split('/').last.to_i) }
+    assert_includes families, packs(:component_family)
+  end
+
+  test "can create component family" do
+    login_as(:john)
+
+    family_count = Pack.all.select { |p| p.component_family? }.size
+
+    body = %(
+      <pack>
+        <title>A Component Family</title>
+        <description>It's for components</description>
+        <component-profile>#{polymorphic_url(blobs(:component_profile))}</component-profile>
+        <license-type>by-sa</license-type>
+      </pack>
+    )
+
+    resp = rest_request(:post, 'component-family', body)
+    assert_response(:success)
+
+    uri = resp.find_first('//pack')['resource']
+    family = Pack.find_by_id(uri.split('/').last.to_i)
+    assert_not_nil family
+    assert_includes family.tags.map {|t| t.name }, 'component family'
+
+    resp = rest_request(:get, 'component-families')
+    assert_response(:success)
+    assert_equal family_count+1, resp.find('//pack').size
+    assert_includes resp.find('//pack').map { |p| p['resource'] }, uri
+  end
+
+  test "can't create component family with missing profile uri" do
+    login_as(:john)
+
+    body = %(
+      <pack>
+        <title>A Component Family</title>
+        <description>It's for components</description>
+        <license-type>by-sa</license-type>
+      </pack>
+    )
+
+    assert_no_difference('Pack.count') do
+      rest_request(:post, 'component-family', body)
+    end
+
+    assert_response(400)
+  end
+
+  test "can't create component family with invalid profile uri" do
+    login_as(:john)
+
+    body = %(
+      <pack>
+        <title>A Component Family</title>
+        <description>It's for components</description>
+        <component-profile>http://www.example.com/profiles/241</component-profile>
+        <license-type>by-sa</license-type>
+      </pack>
+    )
+
+    assert_no_difference('Pack.count') do
+      rest_request(:post, 'component-family', body)
+    end
+
+    assert_response(404)
+  end
+
+
+  test "can't create component family with profile uri pointing to non-profile resources" do
+    login_as(:john)
+
+    body = %(
+      <pack>
+        <title>A Component Family</title>
+        <description>It's for components</description>
+        <component-profile>#{polymorphic_url(blobs(:picture))}</component-profile>
+        <license-type>by-sa</license-type>
+      </pack>
+    )
+
+    assert_no_difference('Pack.count') do
+      rest_request(:post, 'component-family', body)
+    end
+
+    assert_response(400)
+
+    body = %(
+      <pack>
+        <title>A Component Family</title>
+        <description>It's for components</description>
+        <component-profile>#{polymorphic_url(workflows(:workflow_dilbert))}</component-profile>
+        <license-type>by-sa</license-type>
+      </pack>
+    )
+
+    assert_no_difference('Pack.count') do
+      rest_request(:post, 'component-family', body)
+    end
+
+    assert_response(400)
+  end
+
+  test "can delete component family and components" do
+    login_as(:john)
+
+    family = packs(:protected_component_family)
+    component_count = family.contributable_entries.select { |e| e.contributable_type == 'Workflow' && e.contributable.component? }.size
+
+    assert_no_difference('Blob.count') do # Profile not deleted
+    assert_difference('Workflow.count', -component_count) do # Components deleted
+    assert_difference('Pack.count', -1) do # Family deleted
+      rest_request(:delete, 'component-family', nil, 'id' => family.id)
+    end
+    end
+    end
+
+    assert_response(:success)
+  end
+
+  test "can't delete component family containing other people's components" do
+    login_as(:john)
+
+    assert_no_difference('Blob.count') do
+    assert_no_difference('Workflow.count') do
+    assert_no_difference('Pack.count') do
+      rest_request(:delete, 'component-family', nil, 'id' => packs(:communal_component_family).id)
+    end
+    end
+    end
+
+    assert_response(401)
   end
 
   private

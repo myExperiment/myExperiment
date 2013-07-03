@@ -18,3 +18,27 @@ pack_2:
   description_html: another pack <br />
   created_at: 2008-04-06 15:54:35
   updated_at: 2008-04-06 15:54:35
+
+component_family:
+  id: 3
+  contributor_id: 1
+  contributor_type: User
+  title: A family of components
+  created_at: 2013-06-13 13:12:32
+  updated_at: 2013-06-13 13:12:32
+
+protected_component_family:
+  id: 4
+  contributor_id: 1
+  contributor_type: User
+  title: A family of components that only John can access
+  created_at: 2013-06-13 13:12:32
+  updated_at: 2013-06-13 13:12:32
+
+communal_component_family:
+  id: 5
+  contributor_id: 1
+  contributor_type: User
+  title: A family containing components from multiple users
+  created_at: 2013-06-13 13:12:32
+  updated_at: 2013-06-13 13:12:32
