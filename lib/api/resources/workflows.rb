@@ -1,3 +1,7 @@
+# myExperiment: lib/api/resources/workflows.rb
+#
+# Copyright (c) 2013 University of Manchester and the University of Southampton.
+# See license.txt for details.
 
 def workflow_aux(action, opts = {})
 

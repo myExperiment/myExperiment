@@ -1,4 +1,7 @@
-# Relationships
+# myExperiment: lib/api/resources/relationships.rb
+#
+# Copyright (c) 2013 University of Manchester and the University of Southampton.
+# See license.txt for details.
 
 def relationship_aux(action, opts)
 

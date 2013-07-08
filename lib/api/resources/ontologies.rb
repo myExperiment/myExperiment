@@ -1,4 +1,7 @@
-# Ontologies
+# myExperiment: lib/api/resources/ontologies.rb
+#
+# Copyright (c) 2013 University of Manchester and the University of Southampton.
+# See license.txt for details.
 
 def ontology_aux(action, opts)
 

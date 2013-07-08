@@ -1,4 +1,7 @@
-# Users
+# myExperiment: lib/api/resources/users.rb
+#
+# Copyright (c) 2013 University of Manchester and the University of Southampton.
+# See license.txt for details.
 
 def user_count(opts)
 

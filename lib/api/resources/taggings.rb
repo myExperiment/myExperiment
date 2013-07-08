@@ -1,4 +1,7 @@
-# Taggings
+# myExperiment: lib/api/resources/taggings.rb
+#
+# Copyright (c) 2013 University of Manchester and the University of Southampton.
+# See license.txt for details.
 
 def tagging_aux(action, opts)
 

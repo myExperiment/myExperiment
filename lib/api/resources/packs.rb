@@ -1,4 +1,7 @@
-# pack handling
+# myExperiment: lib/api/resources/packs.rb
+#
+# Copyright (c) 2013 University of Manchester and the University of Southampton.
+# See license.txt for details.
 
 def pack_aux(action, opts = {})
 

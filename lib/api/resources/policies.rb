@@ -1,4 +1,7 @@
-# Policies
+# myExperiment: lib/api/resources/policies.rb
+#
+# Copyright (c) 2013 University of Manchester and the University of Southampton.
+# See license.txt for details.
 
 def get_policies(opts)
   policies = []

@@ -1,4 +1,7 @@
-# Ratings
+# myExperiment: lib/api/resources/ratings.rb
+#
+# Copyright (c) 2013 University of Manchester and the University of Southampton.
+# See license.txt for details.
 
 def rating_aux(action, opts)
 
