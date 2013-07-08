@@ -8,9 +8,11 @@
 content_types = YAML::load_file("config/content_types.yml")
 
 Rails.logger.debug('Loading content types...')
-content_types.each do |k,v|
-  unless ContentType.find_by_title_and_mime_type_and_category(v['title'], v['mime_type'], v['category'])
-    Rails.logger.debug("\tCreating #{v['title']}: #{v['mime_type']}")
-    ContentType.create(v)
+ContentType.transaction do
+  content_types.each do |k,v|
+    unless ContentType.find_by_title_and_mime_type_and_category(v['title'], v['mime_type'], v['category'])
+      Rails.logger.debug("\tCreating content type #{v['title']}: #{v['mime_type']}")
+      ContentType.create(v)
+    end
   end
 end
