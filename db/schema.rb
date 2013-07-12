@@ -66,11 +66,6 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.datetime "updated_at"
   end
 
-  create_table "auto_tables", :force => true do |t|
-    t.string "name"
-    t.text   "schema"
-  end
-
   create_table "blob_versions", :force => true do |t|
     t.integer  "blob_id"
     t.integer  "version"
@@ -457,7 +452,7 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "version"
-    t.text     "resource_path"
+    t.integer  "resource_id"
   end
 
   create_table "pack_remote_entries", :force => true do |t|
@@ -470,7 +465,7 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "version"
-    t.text     "resource_path"
+    t.integer  "resource_id"
   end
 
   create_table "pack_versions", :force => true do |t|
@@ -530,11 +525,6 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
   create_table "pictures", :force => true do |t|
     t.binary  "data",    :limit => 16777215
     t.integer "user_id"
-  end
-
-  create_table "plugin_schema_info", :id => false, :force => true do |t|
-    t.string  "plugin_name"
-    t.integer "version"
   end
 
   create_table "policies", :force => true do |t|
@@ -914,6 +904,8 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.text     "body_html"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "license"
+    t.integer  "preview_id"
     t.string   "image"
     t.string   "svg"
     t.text     "revision_comments"
@@ -921,8 +913,6 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
-    t.string   "license"
-    t.integer  "preview_id"
   end
 
   add_index "workflow_versions", ["workflow_id"], :name => "index_workflow_versions_on_workflow_id"
@@ -936,15 +926,15 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.string   "unique_name"
     t.text     "body"
     t.text     "body_html"
+    t.integer  "current_version"
+    t.integer  "preview_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "current_version"
     t.integer  "content_blob_id"
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
     t.integer  "license_id"
-    t.integer  "preview_id"
   end
 
   create_table "wsdl_deprecations", :force => true do |t|

@@ -5,6 +5,7 @@
 
 require 'rdf'
 require 'rdf/raptor'
+require 'yaml'
 
 class ResearchObject < ActiveRecord::Base
 
@@ -323,6 +324,43 @@ class ResearchObject < ActiveRecord::Base
     stub
   end
 
+  # opts = :slug, :body_graph, :creator_uri, :resources
+  #
+  def create_annotation(opts = {})
+
+    # FIXME - these should be validations on the resource model
+    throw "body_graph required"   unless opts[:body_graph]
+    throw "resources required"    unless opts[:resources]
+    throw "creator_uri required"  unless opts[:creator_uri]
+    
+    resources = opts[:resources]
+    resources = [resources] unless resources.kind_of?(Array)
+
+    if opts[:body_graph].kind_of?(RDF::Graph)
+      data = create_rdf_xml { |graph| graph << opts[:body_graph] }
+    else
+      data = opts[:body_graph]
+    end
+
+    # Create an annotation body using the provided graph
+
+    ao_body = create_aggregated_resource(
+      :path         => calculate_path(opts[:slug], 'application/rdf+xml'),
+      :data         => data,
+      :content_type => "application/rdf+xml",
+      :user_uri     => opts[:creator_uri])
+
+    stub = create_annotation_stub(
+      :user_uri       => opts[:creator_uri],
+      :ao_body_path   => ao_body.path,
+      :resource_paths => resources.map { |resource| relative_uri(resource, uri) } )
+
+    stub.update_graph!
+
+    stub
+
+  end
+
   def create_aggregated_resource(opts = {})
 
     throw "user_uri required"     unless opts[:user_uri]
@@ -443,6 +481,103 @@ class ResearchObject < ActiveRecord::Base
     object
   end
 
+  def merged_annotation_graphs
+
+    result = RDF::Graph.new
+
+    resources.all(:conditions => { :is_annotation => true }).each do |annotation|
+      ao_body = annotation.ao_body
+      result << load_graph(ao_body.content_blob.data, ao_body.content_type)
+    end
+
+    result
+  end
+
+  def ore_structure_aux(entry, all_entries) #:nodoc:
+
+    if entry.proxy_for.nil?
+      {
+        :name => entry.entry_name,
+        :uri  => entry.proxy_for_path,
+        :type => :remote
+      }
+    elsif entry.proxy_for.is_folder
+
+      sub_entries = all_entries.select { |fe| fe.proxy_in_path == entry.proxy_for_path }
+
+      { 
+        :name => entry.entry_name,
+        :type => :folder,
+        :entries => sub_entries.map { |sub_entry| ore_structure_aux(sub_entry, all_entries) }
+      }
+    else
+      {
+        :name => entry.entry_name,
+        :type => :file
+      }
+    end
+  end
+
+  def ore_structure
+
+    return [] if root_folder.nil?
+
+    all_entries = resources.find(:all, :conditions => { :is_folder_entry => true } )
+
+    all_entries.select { |entry| entry.proxy_in_path == root_folder.path }.map do |entry|
+      ore_structure_aux(entry, all_entries)
+    end
+  end
+
+  def ore_directories_aux(prefix, structure)
+    results = []
+
+    structure.each do |entry|
+      if entry[:type] == :folder
+        results << "#{prefix}#{entry[:name]}"
+        results += ore_directories_aux("#{prefix}#{entry[:name]}/", entry[:entries])
+      end
+    end
+
+    results
+  end
+
+  def ore_directories
+    ore_directories_aux('', ore_structure).sort
+  end
+
+  def find_template_from_graph(graph, templates)
+
+    templates.each do |name, template|
+      parameters = match_ro_template(graph, template)
+      return [template, parameters] if parameters
+    end
+
+    nil
+  end
+
+  def create_graph_using_ro_template(parameters, template)
+
+    graph = RDF::Graph.new
+
+    # Create the B-nodes.
+
+    if template["bnodes"]
+      template["bnodes"].each do |bnode|
+        parameters[bnode] = RDF::Node.new(bnode)
+      end
+    end
+
+    template["required_statements"].each do |statement|
+
+      graph << [prepare_ro_template_value(statement[0], parameters),
+                prepare_ro_template_value(statement[1], parameters),
+                prepare_ro_template_value(statement[2], parameters)]
+    end
+
+    graph
+  end
+
 private
 
   def create_manifest #:nodoc:
@@ -452,4 +587,79 @@ private
 
     update_manifest!
   end
+
+  def match_ro_template(graph, template)
+
+    parameters = {}
+
+    # Work on a copy of the graph
+
+    graph_copy = RDF::Graph.new
+
+    graph.each do |statement|
+      graph_copy << statement
+    end
+
+    template["required_statements"].each do |statement|
+
+      # Find a statement that matches the current statement in the template.
+
+      target = [prepare_ro_template_value(statement[0], parameters),
+                prepare_ro_template_value(statement[1], parameters),
+                prepare_ro_template_value(statement[2], parameters)]
+
+      match = graph_copy.query(target).first
+
+
+      return nil if match.nil?
+
+      # Verify that there are no mismatches between existing parameters and found
+      # parameters;  Then fill in newly defined parameters.
+
+      return nil unless process_ro_template_parameter(statement[0], match[0], parameters)
+      return nil unless process_ro_template_parameter(statement[1], match[1], parameters)
+      return nil unless process_ro_template_parameter(statement[2], match[2], parameters)
+
+      # Remove the current statement from the graph copy
+
+      graph_copy.delete(match)
+    end
+
+    # Verify that all statements were consumed in processing the template.
+
+    return nil unless graph_copy.empty?
+
+    parameters
+  end
+
+  def process_ro_template_parameter(name, value, parameters)
+
+    # Terms in the template can be one of three things:
+    #
+    #   1. A parameter, denoted by a symbol
+    #   2. A URI, denoted by a string enclosed by angle brackets
+    #   3. A literal, denoted by a string enclosed with double quote marks
+
+    return true unless name.class == Symbol
+
+    if parameters[name].nil?
+      parameters[name] = value
+      true
+    else
+      value == parameters[name]
+    end
+  end
+
+  def prepare_ro_template_value(value, parameters)
+    if value.class == Symbol
+      parameters[value]
+    elsif (value[0..0] == '<') && (value[-1..-1] == '>')
+      RDF::URI.parse(value[1..-2])
+    elsif (value[0..0] == '"') && (value[-1..-1] == '"')
+      RDF::Literal.new(value[1..-2])
+    else
+      raise "Unknown template value: #{value}"
+    end
+  end
+
 end

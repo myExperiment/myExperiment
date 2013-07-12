@@ -16,7 +16,9 @@ class Resource < ActiveRecord::Base
   belongs_to :content_blob, :dependent => :destroy
 
   belongs_to :proxy_for,          :primary_key => :path, :foreign_key => :proxy_for_path,     :class_name => 'Resource'
-  has_one    :proxy,              :primary_key => :path, :foreign_key => :proxy_for_path,     :class_name => 'Resource'
+  has_one    :proxy,              :primary_key => :path, :foreign_key => :proxy_for_path,     :class_name => 'Resource', :conditions => 'is_proxy = 1', :dependent => :destroy
+
+  has_one    :folder_entry,       :primary_key => :path, :foreign_key => :proxy_for_path,     :class_name => 'Resource', :conditions => 'is_folder_entry = 1', :dependent => :destroy
 
   belongs_to :proxy_in,           :primary_key => :path, :foreign_key => :proxy_in_path,      :class_name => 'Resource'
   has_many   :proxies,            :primary_key => :path, :foreign_key => :proxy_in_path,      :class_name => 'Resource'
@@ -35,6 +37,8 @@ class Resource < ActiveRecord::Base
   validates_uniqueness_of :path, :scope => :research_object_id
   validates_presence_of :content_type
   validates_presence_of :path
+
+  after_destroy :update_manifest!
 
   def is_manifest?
     path == ResearchObject::MANIFEST_PATH
@@ -149,19 +153,32 @@ class Resource < ActiveRecord::Base
     update_attribute(:content_blob, ContentBlob.new(:data => new_description))
   end
 
+  def annotations
+    research_object.annotation_resources.find(:all,
+        :conditions => { :resource_path => path }).map { |ar| ar.annotation }
+  end
+
   def merged_annotation_graphs
 
     result = RDF::Graph.new
 
-    annotation_resources = research_object.annotation_resources.find(:all,
-        :conditions => { :resource_path => path })
-    
-    annotation_resources.each do |ar|
-      ao_body = ar.annotation.ao_body
+    annotations.each do |annotation|
+      ao_body = annotation.ao_body
       result << load_graph(ao_body.content_blob.data, ao_body.content_type)
     end
 
     result
+  end
+
+  def annotations_with_templates
+    annotations.map do |annotation|
+      template, parameters = research_object.find_template_from_graph(load_graph(annotation.ao_body.content_blob.data, annotation.ao_body.content_type), Conf.ro_templates)
+      {
+        :annotation => annotation,
+        :template => template,
+        :paramters => parameters
+      }
+    end
   end
 
   def copy_metadata
@@ -172,5 +189,9 @@ class Resource < ActiveRecord::Base
       self.sha1 = nil
       self.size = nil
     end
+  end
+
+  def update_manifest!
+    research_object.update_manifest!
   end
 end

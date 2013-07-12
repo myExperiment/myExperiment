@@ -657,6 +657,10 @@ class User < ActiveRecord::Base
     all_networks.map {|n| n.policies}.flatten
   end
 
+  def uri
+    "#{Conf.base_uri}/users/#{id}"
+  end
+
 protected
 
   # clean up emails and username before validation

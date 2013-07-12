@@ -700,3 +700,786 @@ research_object_default_folders:
 - root/workflows/main
 - root/workflows/nested
 
+relationships:
+
+- title:       inputDataTo
+  phrase:      is an input to
+  description: This concept is used to indicate that the subject is an input to the object.
+
+- title:       outputDataFrom
+  phrase:      is an output from
+  description: This concept is used to indicate that the subject is an output from the object.
+
+- title:       exampleInputDataTo
+  phrase:      is an example input to
+  description: This concept is used to indicate that the subject is an example input to the object.
+
+- title:       exampleOutputDataFrom
+  phrase:      is an example output from
+  description: This concept is used to indicate that the subject is an example output from the object.
+
+- title:       presentAt
+  phrase:      was presented at
+  description: This concept is used to indicate that the subject was presented at the object.
+
+roles:
+
+- category: authorship
+  iri: http://purl.org/spar/scoro/article-guarantor
+  label: article guarantor
+  description:
+
+    "The role of a person who takes responsibility for the integrity of the
+    work as a whole, from the inception of the research investigation to the
+    published research article."
+
+- category: authorship
+  iri: http://purl.org/spar/scoro/consortium-author
+  label: consortium author
+  description:
+
+    "The authorship role of an organisation or consortium that has contributed
+    collectively to the work described in the publication and is named in the
+    list of authors, e.g. 'Wellcome Trust Case Control Consortium' or 'Malaria
+    Genomic Epidemiology Network'. (The members of such a group should be
+    separately listed elsewhere in the document)."
+
+- category: authorship
+  iri: http://purl.org/spar/scoro/corresponding-author
+  label: corresponding author
+  description:
+
+    "The role an author has of being the corresponding author of the document,
+    with whom editors and readers should correspond concerning it."
+
+- category: authorship
+  iri: http://purl.org/spar/scoro/illustrator
+  label: illustrator
+  description:
+
+    "The role a person has of being an illustrator of, or for, some entity."
+
+- category: authorship
+  iri: http://purl.org/spar/scoro/photographer
+  label: photographer
+  description:
+
+    "The role a person has of being a photographer of, or for, some entity."
+
+- category: authorship
+  iri: http://purl.org/spar/scoro/principal-author
+  label: principal author
+  description:
+
+    "The role an author has of being the principal or primary author of the
+    document, who has contributed most to the work described."
+
+- category: authorship
+  iri: http://purl.org/spar/scoro/senior-author
+  label: senior author
+  description:
+
+    "The role an author has of being the senior author of the document."
+
+- category: data
+  iri: http://purl.org/spar/scoro/access-provider
+  label: access provider
+  description:
+
+    "The role of an agent who provides access to a resource, for example an
+    online data repository."
+
+- category: data
+  iri: http://purl.org/spar/scoro/curator
+  label: curator
+  description:
+
+    "The role of an agent that documents, cares for and manages collections of
+    objects (for example in a museum) or of data (as in a data repository or
+    database)."
+
+- category: data
+  iri: http://purl.org/spar/scoro/data-creator
+  label: data creator
+  description:
+
+    "The role a person has of being a creator or originator of new data."
+
+- category: data
+  iri: http://purl.org/spar/scoro/data-curator
+  label: data curator
+  description:
+
+    "The role a person has of being a data curator, responsible for long-term
+    preservation of data, for example those arising from the research project."
+
+- category: data
+  iri: http://purl.org/spar/scoro/data-manager
+  label: data manager
+  description:
+
+    "The role a person has of being a data manager, responsible for day-to-day
+    management and back-up of data, for example those arising from the research
+    project."
+
+- category: data
+  iri: http://purl.org/spar/scoro/data-publisher
+  label: data publisher
+  description:
+
+    "The role of an agent who publishes data."
+
+- category: data
+  iri: http://purl.org/spar/scoro/data-user
+  label: data user
+  description:
+
+    "The role a person has of being a user or re-user of existing data."
+
+- category: data
+  iri: http://purl.org/spar/scoro/embargo-controller
+  label: embargo controller
+  description:
+
+    "The role of the person who has responsibility for setting and lifting
+    embargos that restrict access to a dataset (or a document) for a specified
+    period of time."
+
+- category: data
+  iri: http://purl.org/spar/scoro/repository-manager
+  label: repository manager
+  description:
+
+    "The role a person has of being a manager of a repository where entities
+    are given secure long-term storage, typically digital repository for
+    information objects, for example a data repository."
+
+- category: data
+  iri: http://purl.org/spar/scoro/web-master
+  label: web-master
+  description:
+
+    "The role of a person responsible for maintaining a web site and its
+    content."
+
+- category: educational
+  iri: http://purl.org/spar/scoro/faculty-member
+  label: faculty member
+  description:
+
+    "The role of an academic employed to undertake research and teaching within
+    a university department, school or institute."
+
+- category: educational
+  iri: http://purl.org/spar/scoro/postgraduate-student
+  label: postgraduate student
+  description:
+
+    "The role of a person registerd for a graduate (masters or doctoral) degree
+    at a university."
+
+- category: educational
+  iri: http://purl.org/spar/scoro/supervisor
+  label: supervisor
+  description:
+
+    "The role of a person who supervises the research activities of a student
+    during that student's research project undertaken as part of a degree
+    course at a university."
+
+- category: educational
+  iri: http://purl.org/spar/scoro/undergraduate-student
+  label: undergraduate student
+  description:
+
+    "The role of a person registerd for an undergraduate degree at a
+    university."
+
+- category: financial
+  iri: http://purl.org/spar/scoro/accountant
+  label: accountant
+  description:
+
+    "The role held by a person whose job is to manage financial accounts, for
+    example the accounts of an organization, or of a particular funded project
+    or activity of that organization."
+
+- category: financial
+  iri: http://purl.org/spar/scoro/auditor
+  label: auditor
+  description:
+  
+    "The role held by a person who conducts a formal audit of financial
+    accounts."
+
+- category: financial
+  iri: http://purl.org/spar/scoro/claimant
+  label: claimant
+  description:
+
+    "The role held by a person making a financial claim, for example for refund
+    of travel expenses from a project grant."
+
+- category: financial
+  iri: http://purl.org/spar/scoro/contractor
+  label: contractor
+  description:
+
+    "The role held by an agent who enters into a contract to undertake
+    specified work or to supply specified services in return for payment."
+
+- category: financial
+  iri: http://purl.org/spar/scoro/financial-controller
+  label: financial controller
+  description:
+
+    "The role held by an agent of controlling the finances, for example the
+    finances of an organization, a building project or a research project. This
+    role extends to the control of or the authorisation of expenditure from a
+    budget, and may be undertaken by a computational agent."
+
+- category: financial
+  iri: http://purl.org/spar/scoro/funder 
+  label: funder
+  description:
+
+    "The role held by an agent of providing funds, for example for a research
+    project."
+
+- category: financial
+  iri: http://purl.org/spar/scoro/funding-recipient
+  label: funding recipient
+  description:
+
+    "The role held by an agent who is the official recipient of funding, for
+    example the university of which a funded research project leader is a
+    member."
+
+- category: financial
+  iri: http://purl.org/spar/scoro/owner
+  label: owner
+  description:
+
+    "The role held by an agent who is the owner of something with actual or
+    potential financial value, for example a building, a piece of equipment,
+    the copyright of a document, or the intellectual property rights relating
+    to an idea or discovery."
+
+- category: financial
+  iri: http://purl.org/spar/scoro/purchaser
+  label: purchaser
+  description:
+
+    "The role held by an agent of making purchases of goods or services, the
+    cost of which is typically charged to a particular academic budget, for
+    example a project manager placing an order to purchase equipment funded
+    from a research grant."
+
+- category: financial
+  iri: http://purl.org/spar/scoro/sponsor
+  label: sponsor
+  description:
+
+    "The role held by an agent that provides funds or support for something
+    such as a project or activity, often in return for access to the
+    exploitable commercial potential associated with that project or activity,
+    for example through advertising."
+
+- category: financial
+  iri: http://purl.org/spar/scoro/sub-contractor
+  label: sub-contractor
+  description:
+
+    "The role held by an agent who enters into a contract to take over part of
+    another contractor's obligation to undertake specified work or supply
+    specified services in return for payment."
+
+- category: financial
+  iri: http://purl.org/spar/scoro/supplier
+  label: supplier
+  description:
+
+    "The role held by an agent of providing goods or services in exchange for
+    payment."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/chief-scientist
+  label: chief scientist
+  description:
+
+    "A senior scientist who takes a leadership role in an organization or
+    group."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/co-investigator
+  label: co-investigator
+  description:
+
+    "The role a person has of being a co-investigator for a research
+    investigation."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/collaborator
+  label: collaborator
+  description:
+
+    "The role a person, typically from another research group or institution,
+    who collaborates with the team undertaking a research investigation."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/computer-programmer
+  label: computer programmer
+  description:
+
+    "The role a person has of being someone who develops computer software."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/consultant
+  label: consultant
+  description:
+
+    "The role a person has of being a consultant who is providing expertise or
+    services."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/inventor
+  label: inventor
+  description:
+
+    "The role a person has of being the inventor or some entity (for example a
+    computer algorithm, or an experimental procedure)."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/postdoctoral-researcher
+  label: postdoctoral researcher
+  description:
+
+    "The role a person has of being a post-doctoral researcher involved in a
+    research investigation."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/principal-investigator
+  label: principal investigator
+  description:
+
+    "The role a person has of being the principal investigator for a research
+    investigation."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/project-student
+  label: project student
+  description:
+
+    "The role a person has of being a project student, namely someone engaged
+    in an undergraduate research project as part of studying for an
+    undergraduate degree at a university, whose research will be presented in
+    an undergraduate research project report in part fulfilment of the
+    requirements of that degree."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/research-assistant
+  label: research assistant
+  description:
+
+    "The role a person has of being a research assistant involved in a research
+    investigation."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/research-student
+  label: research student
+  description:
+
+    "The role a person has of being a research student, namely someone engaged
+    in research as part of studying for a higher degree at a university or
+    research institute, whose research will be presented in a thesis in part
+    fulfilment of the requirements of that degree."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/researcher
+  label: researcher
+  description:
+
+    "The role a person has of being a researcher involved in a research
+    investigation."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/scholar
+  label: scholar
+  description:
+
+    "The role of an academic who undertakes scholarly activities, including
+    research investigations. This role is particularly used to describe
+    endeavours in the arts and humanites that are frequently undertaken without
+    financial support from a particular funded project dedicated to these
+    scholarly activities."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/service-engineer
+  label: service engineer
+  description:
+
+    "The role held by a person who services, maintains and repairs equipment,
+    facilities or technical infrastructure."
+
+- category: investigation
+  iri: http://purl.org/spar/scoro/technician
+  label: technician
+  description:
+
+    "The role a person has of being a technician, providing technical
+    assistance in some endeavour such as a research investigation."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/chief-executive-officer
+  label: CEO
+  description:
+
+    "The role held by a person who is the chief executive officer of an
+    organization, responsible for directing and managing the business of that
+    organization."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/chief-technology-officer
+  label: CTO
+  description:
+
+    "The role held by a person who is the chief technology officer of an
+    organization, responsible for directing and managing technical developments
+    for that organization."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/administrator
+  label: administrator
+  description:
+
+    "The role held by an agent responsible for the day-to-day management and
+    running of an organization or activity."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/affiliate
+  label: affiliate
+  description:
+
+    "The role an agent has of being affiliated to some organization or
+    institution in a context of some entity or activity, for example a
+    document, a project or an internship."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/agent
+  label: agent
+  description:
+
+    "An agent that acts on behalf of another agent."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/college-fellow
+  label: college fellow
+  description:
+
+    "The role held by an academic as a senior member of a college."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/college-head
+  label: college head
+  description:
+
+    "The role held by a senior academic who heads a college and acts as its
+    CEO. Among the many alternative titles give to this role, the most common
+    are President or Master of the college."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/contact-person
+  label: contact person
+  description:
+
+    "The role of a person who serves as the primary contact and information
+    provider for third parties wishing to find out more about an organization
+    or an activity."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/departmental-administrator
+  label: departmental administrator
+  description:
+
+    "The role held by a person who is the administrator of a department within
+    a larger organization, for example of a university academic department."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/director
+  label: director
+  description:
+
+    "The role held by a person who is in charge of an organization or activity,
+    for example a research institute or a dramatic performance."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/employee
+  label: employee
+  description:
+
+    "The role held by a person employed for wages or a salary by an
+    organization, to undertake work for that organization."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/employer
+  label: employer
+  description:
+
+    "The role held by an agent that employs one or more people to undertake
+    work on that agent's behalf."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/head-of-department
+  label: head of department
+  description:
+
+    "The role held by a person who is the chief executive officer of a
+    department within a larger organization, for example a senior academic who
+    is head of a university academic department."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/manager
+  label: manager
+  description:
+
+    "The role held by a person responsible for managing the day-to-day
+    activities of an activity, enterprise or organization."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/member
+  label: member
+  description:
+
+    "The role held by an agent of belonging to a group or organization."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/non-academic-staff-member
+  label: non-academic staff member
+  description:
+
+    "The role of a person employed within a university department, school or
+    institute who is not a member of the academic faculty."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/organizer
+  label: organizer
+  description:
+
+    "The role held by an agent who organizes something, such as a conference, a
+    private meeting or a public event."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/participant
+  label: participant
+  description:
+
+    "The role held by an agent who takes part in something, for example a
+    conference, a private meeting or a public event."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/partner
+  label: partner
+  description:
+
+    "The role held by a person who is a partner with one or more other people
+    in an organization, project, endeavour, activity or sphere of common
+    interest."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/patent-holder
+  label: patent holder
+  description:
+
+    "The role held by an agent who holds a patent."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/possessor
+  label: possessor
+  description:
+
+    "The role held by an agent as possessor or owner of some entity such as an
+    address or a telephone number."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/programme-manager
+  label: programme manager
+  description:
+
+    "The role held by a person who is in charge of a programme of related
+    activities or projects, for example on behalf of a funding agency."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/registrar
+  label: registrar
+  description:
+
+    "The role held by an agent responsible for maintaining official records,
+    for example the records of student enrollment and academic standing held by
+    a college or university, or the records of securities owned by a financial
+    institution."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/rights-holder
+  label: rights holder
+  description:
+
+    "The role held by an agent who holds the legal rights to a project or
+    activity and its products and outcomes, for example the exploitation,
+    licensing and intellectual property rights."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/spokesperson
+  label: spokesperson
+  description:
+
+    "The role held by a person who makes statements on behalf of another
+    individual, a group, a project or an institution."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/stakeholder
+  label: stakeholder
+  description:
+
+    "The role held by an agent with an interest or concern in something, for
+    example the creation of a new university."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/successor
+  label: successor
+  description:
+
+    "The relationship held by an entity that succeeds another, for example a
+    new electron microscope that replaces an out-dated one, a research project
+    that follows on from a preceding project, or a faculty member who succeeds
+    a colleague as head of department."
+
+- category: organizational
+  iri: http://purl.org/spar/scoro/vice-chancellor
+  label: vice-chancellor
+  description:
+
+    "The role held by the chief executive officer of a university, responsible
+    for directing and managing its business and academic activities."
+
+- category: project
+  iri: http://purl.org/spar/scoro/co-applicant
+  label: co-applicant
+  description:
+
+    "The role a person has of being a co-applicant on the grant application to
+    obtain funding to fund an endeavour such as a research project."
+
+- category: project
+  iri: http://purl.org/spar/scoro/lead-applicant
+  label: lead applicant
+  description:
+
+    "The role a person has of being the lead applicant on the grant application
+    to obtain funding to fund an endeavour such as a research project."
+
+- category: project
+  iri: http://purl.org/spar/scoro/project-leader
+  label: project leader
+  description:
+
+    "The role a person or an institution has of being project leader for a
+    project such as a research project."
+
+- category: project
+  iri: http://purl.org/spar/scoro/project-manager
+  label: project manager
+  description:
+
+    "The role a person has of being project manager for a project such as a
+    research project."
+
+- category: project
+  iri: http://purl.org/spar/scoro/project-member
+  label: project member
+  description:
+
+    "The role a person has of being a member of a project such as a research
+    project."
+
+- category: project
+  iri: http://purl.org/spar/scoro/workpackage-leader
+  label: workpackage leader
+  description:
+
+    "The role a person or institution has of being leader for a workpackage
+    within a project such as a research project."
+
+## ro_resource_types - types for adding resources (_add_item_ro.rhtml)
+# 
+# List of tuples:
+#
+# 
+#   - label:  "The Label"  
+#     uri:    "http://example.com/vocab#predicate"
+#
+#   - label:  "The Label"  
+#     uri:    "http://example.com/vocab#predicate"
+#     folder: "workflows"
+
+ro_resource_types:
+
+  - label:  "Workflow"
+    uri:    "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
+    folder: "workflows"
+
+  - label:  "Resource"
+    uri:    "http://purl.org/wf4ever/ro#Resource"
+
+  - label:  "Sketch"
+    uri:    "http://purl.org/wf4ever/roterms#Sketch"
+
+  - label:  "Hypothesis"
+    uri:    "http://purl.org/wf4ever/roterms#Hypothesis"    
+
+  - label:  "Conclusions"
+    uri:    "http://purl.org/wf4ever/roterms#Conclusions"
+
+  - label:  "Results"
+    uri:    "http://purl.org/wf4ever/roterms#Results"
+
+  - label:  "Example inputs"
+    uri:    "http://purl.org/wf4ever/roterms#ExampleInputs"
+    folder: "datasets/inputs"
+
+  - label:  "Example outputs"
+    uri:    "http://purl.org/wf4ever/roterms#ExampleOutputs"
+
+  - label:  "Workflow run"
+    uri:    "http://purl.org/wf4ever/roterms#WorkflowRunBundle"
+    folder: "datasets/results"
+
+ro_templates:
+
+  creator:
+
+    label: Creator
+
+    bnodes: [:b1]
+
+    required_statements:
+    - [:resource, "<http://purl.org/dc/terms/creator>", :b1]
+    - [:b1,       "<http://xmlns.com/foaf/0.1/Agent>",  :person]
+    - [:b1,       "<http://purl.org/dc/terms/date>",    :date]
+    - [:b1,       "<http://xmlns.com/foaf/0.1/name>",   :name]
+
+  creator_simple:
+
+    label: Creator (simple)
+
+    required_statements:
+    - [:resource, "<http://purl.org/dc/terms/creator>", :agent]
+
+  input_selection_relationship:
+
+    label: Input selection relationship
+
+    required_statements:
+    - [:resource1, "<http://purl.org/wf4ever/roterms#inputSelected>", :resource2]
+
+empty:
+

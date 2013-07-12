@@ -6,6 +6,10 @@
 class PacksController < ApplicationController
   include ApplicationHelper
   
+  ## NOTE: URI must match config/default_settings.yml ro_resource_types
+  WORKFLOW_DEFINITION = "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
+  RO_RESOURCE = "http://purl.org/wf4ever/ro#Resource"
+
   before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
   
   before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
@@ -77,6 +81,8 @@ class PacksController < ApplicationController
     respond_to do |format|
       format.html {
         
+        @graph = @pack.research_object.merged_annotation_graphs
+
         @lod_nir  = pack_url(@pack)
         @lod_html = pack_url(:id => @pack.id, :format => 'html')
         @lod_rdf  = pack_url(:id => @pack.id, :format => 'rdf')
@@ -383,6 +389,9 @@ class PacksController < ApplicationController
 
         # By this point, we either have errors, or have an entry that needs saving.
         if errors.empty? && entry.save
+
+          post_process_created_resource(@pack, entry.resource, params)
+
           flash[:notice] = 'Item succesfully added to pack.'
           format.html { redirect_to pack_url(@pack) }
           format.js   { render :layout => false }
@@ -534,4 +543,49 @@ class PacksController < ApplicationController
       final_errs.add_to_base(msg)
     end
   end
+
+  def annotate_resource_type(resource, type_uri)
+
+    body = RDF::Graph.new
+    body << [RDF::URI(resource.uri), RDF.type, RDF::URI(type_uri)]
+
+    @pack.research_object.create_annotation(:body_graph => body, :resources => [resource.uri], :creator_uri => "/users/#{current_user.id}")
+  end
+
+  def post_process_created_resource(pack, resource, params)
+
+    ro = pack.research_object
+
+    config = Conf.ro_resource_types.select { |x| x["uri"] == params[:type] }.first
+puts "config = #{config.inspect}"
+#   if params[:type] == WORKFLOW_DEFINITION
+#     result = transform_wf(ruri)
+#   end
+
+    if params[:type] != RO_RESOURCE
+      annotate_resource_type(resource, params[:type])
+    end
+
+    # Folder selection is performed on the following with decreasing order of
+    # priority.
+    #
+    # 1. If a folder was specified, and it exists in the RO, then the resource
+    #    will be placed in that folder.
+    #
+    # 2. If there is a folder specified in the RO template for the
+    #    resource type, and it exists in the RO, then use it.
+    #
+    # 3. Place the resource in the root folder.
+
+    folder = ro.find_using_path(params[:folder])
+puts "folder = #{folder.inspect}"
+    folder = ro.find_using_path(config["folder"]) if folder.nil? && config && config["folder"]
+puts "folder = #{folder.inspect}"
+
+    folder = ro.root_folder if folder.nil?
+puts "folder = #{folder.inspect}"
+
+    ro.create_folder_entry(resource.path, folder.path, user_path)
+  end
+
 end

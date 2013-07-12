@@ -22,6 +22,8 @@ class PackContributableEntry < ActiveRecord::Base
 
   after_save :synchronize_research_object
 
+  belongs_to :resource, :dependent => :destroy
+
   def check_unique
 
     conditions = ["pack_id = ?", "version = ?", "contributable_type = ?", "contributable_id = ?"]
@@ -97,8 +99,29 @@ class PackContributableEntry < ActiveRecord::Base
   def synchronize_research_object
 
     ro = pack.research_object
+    
+    user_path = "/users/#{user_id}"
 
-    if ro
+    if ro && resource_id.nil?
+
+      case contributable
+      when Workflow
+        data = contributable.content_blob.data
+        path = contributable.unique_name + (contributable.file_ext ? ".#{contributable.file_ext}" : "") 
+      when Blob
+        data = contributable.content_blob.data
+        path = contributable.local_name
+      end
+
+      resource = ro.create_aggregated_resource(
+          :user_uri     => user_path,
+          :path         => path,  # FIXME - where should these be URL encoded?
+          :data         => data,
+          :content_type => contributable.content_type.mime_type)
+
+      update_attribute(:resource_id, resource.id)
+
+      ro.update_manifest!
     end
   end
 end

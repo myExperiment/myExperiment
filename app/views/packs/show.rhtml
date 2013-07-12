@@ -47,18 +47,9 @@
 
     <%= render(:partial => "packs/version_selector", :locals => { :resource => @pack, :version => @version, :path => :pack_version_path }) %>
 
-		<div class="contribution_version_inner_box">
-			<p>
-		    <b>Title:</b>
-		    <span class="title"><%=h @pack.title %></span>
-			</p>
+	</div>
 			
-			<br/>
-			
-			<h3>
-				<%= info_icon_with_tooltip("This section shows the overall description of this Pack") %>
-				Description
-			</h3>
+			<h2>Description</h2>
 			
 			<% unless @pack.description.blank? %>
 				<div class="contribution_description">
@@ -73,10 +64,31 @@
 					Not set
 				</p>
 			<% end %>
-			
-		</div>
-	</div>
-	
+
+  <% @sketch = @graph.query(:predicate => RDF.type,
+                            :object    => RDF::URI("http://purl.org/wf4ever/roterms#Sketch")).first_subject %>
+
+  <% @hypothesis = @graph.query(:predicate => RDF.type,
+                                :object    => RDF::URI("http://purl.org/wf4ever/roterms#Hypothesis")).first_subject %>
+
+  <% @conclusions = @graph.query(:predicate => RDF.type,
+                                 :object    => RDF::URI("http://purl.org/wf4ever/roterms#Conclusions")).first_subject %>
+
+  <% if @sketch %>
+    <h2>Research overview</h2>
+    <%= image_tag(@sketch.to_s, :width => '100%') -%>
+  <% end %>
+
+  <% if @hypothesis %>
+    <h2>Hypothesis</h2>
+    <p><%= link_to(h(@hypothesis.to_s), @hypothesis.to_s) -%></p>
+  <% end %>
+
+  <% if @conclusions %>
+    <h2>Conclusions</h2>
+    <p><%= link_to(h(@conclusions.to_s), @conclusions.to_s) -%></p>
+  <% end %>
+
 	<div class="contribution_version_box" style="background-color: #EEEEEE;">
 		<div class="contribution_version_inner_box">
 			<h4>
@@ -135,6 +147,58 @@
 			<% end -%>
 		</div>
 	</div>
+
+  <h1>Debug</h1>
+
+  <div id="tabsContainer" class="tabsContainer"></div>
+    
+    <div class="tabContainer">
+      <div class="tabTitle">Structure</div>
+      <div class="tabContent">
+        <pre><%=h @pack.research_object.ore_structure.to_yaml -%></pre>
+      </div>
+    </div>
+    
+    <div class="tabContainer">
+      <div class="tabTitle">Resources</div>
+      <div class="tabContent">
+        <table class="simple">
+          <tr>
+            <th>Path</th>
+            <th>Size</th>
+            <th>Annotations</th>
+          </tr>
+          <% @pack.research_object.resources.each do |resource| %>
+            <tr>
+              <td><%=h resource.path -%></td>
+              <td><%=h resource.size -%></td>
+              <td><%=h resource.annotations.count -%></td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    </div>
+
+    <div class="tabContainer">
+      <div class="tabTitle">Statements</div>
+      <div class="tabContent">
+
+        <div>Number of statements in merged annotation graph: <%= @graph.count -%></div>
+
+        <% @graph.each do |statement| %>
+          <div style="margin: 8px; box-shadow: 4px 4px 8px #ddd;">
+            <table class="simple" style="width: 100%">
+              <tr><td><%=h statement.subject -%></td></tr>
+              <tr><td><%=h statement.predicate -%></td></tr>
+              <tr><td><%=h statement.object -%></td></tr>
+            </table>
+          </div>
+        <% end %>
+
+      </div>
+    </div>
+
+  </div>
 
 </div>
 

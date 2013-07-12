@@ -50,8 +50,8 @@ class CreateResearchObjects < ActiveRecord::Migration
 
     add_column :packs, :ro_uri, :text
     add_column :packs, :research_object_id, :text
-    add_column :pack_contributable_entries, :resource_path, :text
-    add_column :pack_remote_entries, :resource_path, :text
+    add_column :pack_contributable_entries, :resource_id, :integer
+    add_column :pack_remote_entries, :resource_id, :integer
   end
 
   def self.down
@@ -61,8 +61,8 @@ class CreateResearchObjects < ActiveRecord::Migration
 
     remove_column :packs, :ro_uri
     remove_column :packs, :research_object_id
-    remove_column :pack_contributable_entries, :resource_path
-    remove_column :pack_remote_entries, :resource_path
+    remove_column :pack_contributable_entries, :resource_id
+    remove_column :pack_remote_entries, :resource_id
   end
 
 end
