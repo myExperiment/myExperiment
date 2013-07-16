@@ -5,7 +5,7 @@
 
 module ActivitiesHelper
 
-  def activity_link(activity, source)
+  def activity_link(activity, source, label = nil)
 
     case source
     when :subject
@@ -19,7 +19,7 @@ module ActivitiesHelper
       label = activity.context.label
     when :auth
       thing = activity.auth
-      label = activity.auth.label
+      label ||= activity.auth.label
     end
 
     thing = thing.versioned_resource if thing.respond_to?(:versioned_resource)
@@ -253,7 +253,7 @@ module ActivitiesHelper
     when "Membership create"
       "#{sentence(activity_set.map { |a| activity_link(a, :subject) })} joined the #{activity_link(activity, :context)} group"
     when "Permission create"
-      "#{activity_link(activity, :subject)} shared #{activity_link(activity, :auth)}"
+      "#{activity_link(activity, :subject)} shared #{activity_link(activity, :auth, activity.objekt_label)}"
     when "FeedItem create"
       link_to(strip_tags(activity.objekt.title), activity.objekt.link, :rel => "nofollow")
     when "GroupAnnouncement create"

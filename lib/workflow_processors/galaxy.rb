@@ -3,10 +3,10 @@
 # Copyright (c) 2010 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'libxml'
+
 module WorkflowProcessors
 
-  require 'libxml'
-  
   class Galaxy < WorkflowProcessors::Interface
 
     Mime::Type.register "application/vnd.galaxy.workflow+json", :galaxy_workflow

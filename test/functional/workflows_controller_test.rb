@@ -1,9 +1,10 @@
+# encoding: utf-8
 # myExperiment: test/functional/workflows_controller_test.rb
 #
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require File.dirname(__FILE__) + '/../test_helper'
+require_relative '../test_helper'
 require 'workflows_controller'
 
 class WorkflowsControllerTest < ActionController::TestCase
@@ -36,9 +37,17 @@ class WorkflowsControllerTest < ActionController::TestCase
 
     assert_redirected_to workflow_path(assigns(:workflow))
     assert_equal old_count+1, Workflow.count
+
+    # Test searches
+
+    workflow = Workflow.last
+
+    # Basic test that the workflow was indexed in Solr and that it appears in a search result.
+    assert Workflow.search { fulltext "dilbert" }.results.include?(workflow)
   end
 
   def test_should_show_workflow
+
     get :show, :id => 1
     assert_response :success
   end
@@ -97,5 +106,19 @@ class WorkflowsControllerTest < ActionController::TestCase
     assert_equal 0, TripleStore.instance.repo.keys.size
 
     TripleStore.instance.repo = {}
+  end
+
+  def test_can_tag_workflow
+    login_as(:john)
+    wf = workflows(:workflow_dilbert)
+
+    assert_equal 0, wf.tags.size
+
+    post :tag, :id => wf.id, :tag_list => 'new tag, utf-8 ㈛ ㈘ ㈔'
+
+    assert_response :success
+    assert_equal 2, wf.tags.size
+    assert_includes wf.tags.map {|t| t.name}, 'utf-8 ㈛ ㈘ ㈔'
+    assert_includes wf.tags.map {|t| t.name}, 'new tag'
   end
 end

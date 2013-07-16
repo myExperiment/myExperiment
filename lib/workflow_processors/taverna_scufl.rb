@@ -3,13 +3,12 @@
 # Copyright (c) 2008 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'scufl/model'
+require 'scufl/parser'
+require 'scufl/dot'
+require 'file_upload'
+
 module WorkflowProcessors
-  
-  require 'scufl/model'
-  require 'scufl/parser'
-  require 'scufl/dot'
-  
-  require 'file_upload'
 
   class TavernaScufl < WorkflowProcessors::Interface
     # Register Taverna MIME Types

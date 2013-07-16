@@ -4,8 +4,10 @@
 # See license.txt for details.
 
 # Defines an interface that all workflow type processors need to adhere to.
+
+require 'file_upload'
+
 module WorkflowProcessors
-  require 'file_upload'
   class Blog2Template < Interface
     
     # Begin Class Methods

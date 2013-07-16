@@ -34,7 +34,7 @@
           <a name="<%= blob.local_name.gsub(/ /, "_") %>"></a>
           <p class="title">
             <%= icon "blob", nil, nil, nil, '' %>
-            <% truncated_title = truncate(blob.title, :length => 55) %>
+            <% truncated_title = h(truncate(blob.title, :length => 55)) %>
             <%=link_to(query ? highlight_all(truncated_title, query) : truncated_title, blob_path(blob),
                        :title => blob.title) %>
           </p>

@@ -1,3 +1,4 @@
+# encoding: utf-8
 # myExperiment: app/controllers/memberships_controller.rb
 #
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
@@ -82,9 +83,6 @@ EOM
 
     respond_to do |format|
       if @membership.accept!
-
-        Activity.create_activities(:subject => @membership.user, :action => 'create', :object => @membership)
-
         flash[:notice] = 'Membership was successfully accepted.'
         format.html { redirect_to network_url(@membership.network_id) }
       else

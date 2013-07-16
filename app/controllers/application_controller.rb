@@ -300,7 +300,7 @@ class ApplicationController < ActionController::Base
     # Work out which groups have view access after the changes were made and
     # generate activities for them.
 
-    contributable.contribution.policy.permissions.find(:all, :conditions => conditions).each do |permission|
+    contributable.contribution.policy.reload.permissions.find(:all, :conditions => conditions).each do |permission|
       next if old_groups.include?(permission.contributor)
       Activity.create_activities(:subject => user, :action => 'create', :object => permission, :contributable => contributable)
     end

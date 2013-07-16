@@ -4,7 +4,7 @@
   <% resource.versions.each do |version| %>
     <li>
       <div class="title">
-        <%= link_to(version.title, send(path, resource, version.version)) %>
+        <%= link_to(h(version.title), send(path, resource, version.version)) %>
       </div>
       <div class="metadata">
 

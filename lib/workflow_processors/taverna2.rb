@@ -3,16 +3,16 @@
 # Copyright (c) 2008 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-module WorkflowProcessors
+require 't2flow/model'
+require 't2flow/parser'
+require 't2flow/dot'
+require 'libxml'
+require 'rdf'
+require 'rdf/n3'
+require 'rdf/turtle'
+require 'file_upload'
 
-  require 't2flow/model'
-  require 't2flow/parser'
-  require 't2flow/dot'
-  require 'libxml'
-  require 'rdf'
-  require 'rdf/n3'
-  
-  require 'file_upload'
+module WorkflowProcessors
 
   class Taverna2 < Interface
     # Register Taverna 2 MIME Types
