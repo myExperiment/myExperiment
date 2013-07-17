@@ -557,7 +557,7 @@ class PacksController < ApplicationController
     ro = pack.research_object
 
     config = Conf.ro_resource_types.select { |x| x["uri"] == params[:type] }.first
-puts "config = #{config.inspect}"
+
 #   if params[:type] == WORKFLOW_DEFINITION
 #     result = transform_wf(ruri)
 #   end
@@ -578,12 +578,10 @@ puts "config = #{config.inspect}"
     # 3. Place the resource in the root folder.
 
     folder = ro.find_using_path(params[:folder])
-puts "folder = #{folder.inspect}"
+
     folder = ro.find_using_path(config["folder"]) if folder.nil? && config && config["folder"]
-puts "folder = #{folder.inspect}"
 
     folder = ro.root_folder if folder.nil?
-puts "folder = #{folder.inspect}"
 
     ro.create_folder_entry(resource.path, folder.path, user_path)
   end
