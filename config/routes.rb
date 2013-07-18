@@ -25,6 +25,12 @@ ActionController::Routing::Routes.draw do |map|
                    :render_output => :get }
   end
 
+  # Ontologies
+  map.resources :ontologies
+
+  # Predicates
+  map.resources :predicates
+
   # mashup
   map.resource :mashup, :controller => 'mashup'
   
