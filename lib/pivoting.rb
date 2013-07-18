@@ -195,6 +195,7 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
       end
 
     rescue
+      raise unless Rails.env == "production"
       return false
     end
 
