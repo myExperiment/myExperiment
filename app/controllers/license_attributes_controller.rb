@@ -13,7 +13,7 @@ class LicenseAttributesController < ApplicationController
     begin
       @license_attribute = LicenseAttribute.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      error("License Attribute not found", "is invalid")
+      render_404("License Attribute not found.")
     end
   end
   
