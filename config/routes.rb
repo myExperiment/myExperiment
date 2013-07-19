@@ -24,7 +24,7 @@ ActionController::Routing::Routes.draw do |map|
                    :rerun => :post, 
                    :render_output => :get }
   end
-  
+
   # Ontologies
   map.resources :ontologies
 
@@ -153,9 +153,6 @@ ActionController::Routing::Routes.draw do |map|
   
   # content_types
   map.resources :content_types
-
-  # all downloads and viewings
-  map.resources :downloads, :viewings
 
   # messages
   map.resources :messages, :collection => { :sent => :get, :delete_all_selected => :delete }

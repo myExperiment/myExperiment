@@ -188,7 +188,7 @@ class WorkflowsController < ApplicationController
 
     TavernaToGalaxy.generate(@workflow, @viewing_version_number, params[:server], zip_file_name)
 
-    zip_file = File.read(zip_file_name)
+    zip_file = File.binread(zip_file_name)
     File.unlink(zip_file_name)
 
     Download.create(:contribution => @workflow.contribution,

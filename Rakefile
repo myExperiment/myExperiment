@@ -6,8 +6,10 @@ require(File.join(File.dirname(__FILE__), 'config', 'boot'))
 require 'rake'
 require 'rake/testtask'
 require 'rdoc/task'
-
 require 'tasks/rails'
+
+require 'sunspot/rails/tasks'
+require 'sunspot/solr/tasks'
 
 desc 'Rebuild Solr index'
 task "myexp:refresh:solr" do
