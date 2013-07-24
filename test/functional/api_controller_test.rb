@@ -1394,7 +1394,7 @@ class ApiControllerTest < ActionController::TestCase
         <filename>profile.xml</filename>
         <description>It's for components</description>
         <content-type>application/vnd.taverna.component-profile+xml</content-type>
-        <content encoding="base64" type="binary">#{content}</content>
+        <content>#{content}</content>
         <license-type>by-sa</license-type>
       </file>
     )
