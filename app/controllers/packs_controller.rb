@@ -5,6 +5,7 @@
 
 class PacksController < ApplicationController
   include ApplicationHelper
+  include ResearchObjectsHelper
   
   ## NOTE: URI must match config/default_settings.yml ro_resource_types
   WORKFLOW_DEFINITION = "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
@@ -82,6 +83,15 @@ class PacksController < ApplicationController
       format.html {
         
         @graph = @pack.research_object.merged_annotation_graphs
+        @ore_directories = @pack.research_object.ore_directories
+        @ore_resources = @pack.research_object.ore_resources
+        @ro_relationships = Conf.ro_relationships
+        @sketch = @graph.query(:predicate => RDF.type,
+            :object => RDF::URI("http://purl.org/wf4ever/roterms#Sketch")).first_subject
+        @hypothesis = @graph.query(:predicate => RDF.type,
+            :object => RDF::URI("http://purl.org/wf4ever/roterms#Hypothesis")).first_subject
+        @conclusions = @graph.query(:predicate => RDF.type,
+            :object => RDF::URI("http://purl.org/wf4ever/roterms#Conclusions")).first_subject
 
         @lod_nir  = pack_url(@pack)
         @lod_html = pack_url(:id => @pack.id, :format => 'html')
@@ -390,7 +400,14 @@ class PacksController < ApplicationController
         # By this point, we either have errors, or have an entry that needs saving.
         if errors.empty? && entry.save
 
-          post_process_created_resource(@pack, entry.resource, params)
+          case entry
+          when PackContributableEntry
+            resource_uri = entry.resource.uri
+          when PackRemoteEntry
+            resource_uri = entry.uri
+          end
+          
+          post_process_created_resource(@pack, resource_uri, params)
 
           flash[:notice] = 'Item succesfully added to pack.'
           format.html { redirect_to pack_url(@pack) }
@@ -544,15 +561,15 @@ class PacksController < ApplicationController
     end
   end
 
-  def annotate_resource_type(resource, type_uri)
+  def annotate_resource_type(resource_uri, type_uri)
 
     body = RDF::Graph.new
-    body << [RDF::URI(resource.uri), RDF.type, RDF::URI(type_uri)]
+    body << [RDF::URI(resource_uri), RDF.type, RDF::URI(type_uri)]
 
-    @pack.research_object.create_annotation(:body_graph => body, :resources => [resource.uri], :creator_uri => "/users/#{current_user.id}")
+    @pack.research_object.create_annotation(:body_graph => body, :resources => [resource_uri], :creator_uri => "/users/#{current_user.id}")
   end
 
-  def post_process_created_resource(pack, resource, params)
+  def post_process_created_resource(pack, resource_uri, params)
 
     ro = pack.research_object
 
@@ -563,7 +580,7 @@ class PacksController < ApplicationController
 #   end
 
     if params[:type] != RO_RESOURCE
-      annotate_resource_type(resource, params[:type])
+      annotate_resource_type(resource_uri, params[:type])
     end
 
     # Folder selection is performed on the following with decreasing order of
@@ -583,7 +600,7 @@ class PacksController < ApplicationController
 
     folder = ro.root_folder if folder.nil?
 
-    ro.create_folder_entry(resource.path, folder.path, user_path)
+    ro.create_folder_entry(relative_uri(resource_uri, @pack.research_object.uri), folder.path, user_path)
   end
 
 end

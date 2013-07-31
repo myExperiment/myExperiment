@@ -1453,6 +1453,14 @@ ro_resource_types:
     uri:    "http://purl.org/wf4ever/roterms#WorkflowRunBundle"
     folder: "datasets/results"
 
+ro_relationships:
+
+  - label: "Input selected"
+    uri: "http://purl.org/wf4ever/roterms#inputSelected"
+
+  - label: "Output selected"
+    uri: "http://purl.org/wf4ever/roterms#outputSelected"
+
 ro_templates:
 
   creator:
@@ -1478,8 +1486,11 @@ ro_templates:
 
     label: Input selection relationship
 
+    types:
+
+       resource1: user
+       resource2: user
+
     required_statements:
     - [:resource1, "<http://purl.org/wf4ever/roterms#inputSelected>", :resource2]
-
-empty:
 

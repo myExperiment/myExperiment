@@ -20,7 +20,7 @@
             :placeholder => 'http://www.example.com/resource' -%>
               <%= select_tag(:type, options_for_select(Conf.ro_resource_types.map { |x| [x["label"], x["uri"]] },
                     "http://purl.org/wf4ever/ro#Resource") )  -%>
-              Folder: <%= select_tag(:folder, options_for_select(['(automatic)'] + @pack.research_object.ore_directories)) -%>
+              Folder: <%= select_tag(:folder, options_for_select(['(automatic)'] + @ore_directories)) -%>
 					</td>
 					<td class="submit" style="padding-bottom: 0;">
 						<%= submit_tag "Add", :disable_with => "..." -%>
@@ -64,7 +64,7 @@
 							</select>
               <%= select_tag(:type, options_for_select(Conf.ro_resource_types.map { |x| [x["label"], x["uri"]] },
                     "http://purl.org/wf4ever/ro#Resource") )  -%>
-              Folder: <%= select_tag(:folder, options_for_select(['(automatic)'] + @pack.research_object.ore_directories)) -%>
+              Folder: <%= select_tag(:folder, options_for_select(['(automatic)'] + @ore_directories)) -%>
 						</td>
 						<td class="submit">
 							<%= submit_tag "Add", :disable_with => "..." -%>
@@ -125,5 +125,14 @@
 			</tr>
 		</table>
 	</div>
+
+  <% if @ore_resources.count > 1 %>
+    <% form_tag("#{rest_resource_uri(@pack)}/relationships") do -%>
+        <%= select_tag(:subject,   options_for_select(@ore_resources.map    { |r| [r[:name],   r[:path]] }) )  -%>
+        <%= select_tag(:predicate, options_for_select(@ro_relationships.map { |r| [r["label"], r["uri"]] }) )  -%>
+        <%= select_tag(:object,    options_for_select(@ore_resources.map    { |r| [r[:name],   r[:path]] }) )  -%>
+        <%= submit_tag("Add") -%>
+    <% end %>
+  <% end %>
 
 <% end -%>

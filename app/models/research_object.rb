@@ -459,10 +459,15 @@ class ResearchObject < ActiveRecord::Base
       :content_type    => 'application/vnd.wf4ever.folderentry',
       :creator_uri     => user_uri)
 
-    folder_entry.proxy_for.update_attribute(:aggregated_by_path, parent_path)
+    if folder_entry.proxy_for
+      folder_entry.proxy_for.update_attribute(:aggregated_by_path, parent_path)
+    end
 
     folder_entry.update_graph!
-    folder_entry.proxy_for.update_graph!
+
+    if folder_entry.proxy_for
+      folder_entry.proxy_for.update_graph!
+    end
 
     folder_entry
   end
@@ -513,7 +518,8 @@ class ResearchObject < ActiveRecord::Base
     else
       {
         :name => entry.entry_name,
-        :type => :file
+        :type => :file,
+        :path => entry.proxy_for.path
       }
     end
   end
@@ -544,6 +550,26 @@ class ResearchObject < ActiveRecord::Base
 
   def ore_directories
     ore_directories_aux('', ore_structure).sort
+  end
+
+  def ore_resources_aux(structure)
+    results = []
+
+    structure.each do |entry|
+
+      case entry[:type]
+      when :file
+        results << entry
+      when :folder
+        results += ore_resources_aux(entry[:entries])
+      end
+    end
+
+    results
+  end
+
+  def ore_resources
+    ore_resources_aux(ore_structure)
   end
 
   def find_template_from_graph(graph, templates)

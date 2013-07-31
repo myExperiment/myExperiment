@@ -49,6 +49,10 @@
 
 	</div>
 			
+      <h2>Research Object URI</h2>
+
+      <p>This pack is available as a research object at <%= link_to(h(@pack.research_object.uri), @pack.research_object.uri) -%>.</p>
+
 			<h2>Description</h2>
 			
 			<% unless @pack.description.blank? %>
@@ -64,15 +68,6 @@
 					Not set
 				</p>
 			<% end %>
-
-  <% @sketch = @graph.query(:predicate => RDF.type,
-                            :object    => RDF::URI("http://purl.org/wf4ever/roterms#Sketch")).first_subject %>
-
-  <% @hypothesis = @graph.query(:predicate => RDF.type,
-                                :object    => RDF::URI("http://purl.org/wf4ever/roterms#Hypothesis")).first_subject %>
-
-  <% @conclusions = @graph.query(:predicate => RDF.type,
-                                 :object    => RDF::URI("http://purl.org/wf4ever/roterms#Conclusions")).first_subject %>
 
   <% if @sketch %>
     <h2>Research overview</h2>

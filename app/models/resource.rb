@@ -149,8 +149,10 @@ class Resource < ActiveRecord::Base
 
     new_description = create_rdf_xml { |graph| graph << description }
 
-    content_blob.destroy if content_blob
-    update_attribute(:content_blob, ContentBlob.new(:data => new_description))
+    unless is_resource
+      content_blob.destroy if content_blob
+      update_attribute(:content_blob, ContentBlob.new(:data => new_description))
+    end
   end
 
   def annotations
