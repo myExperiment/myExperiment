@@ -15,22 +15,56 @@ class Resource < ActiveRecord::Base
 
   belongs_to :content_blob, :dependent => :destroy
 
-  belongs_to :proxy_for,          :primary_key => :path, :foreign_key => :proxy_for_path,     :class_name => 'Resource'
-  has_one    :proxy,              :primary_key => :path, :foreign_key => :proxy_for_path,     :class_name => 'Resource', :conditions => 'is_proxy = 1', :dependent => :destroy
+  def proxy_for
+    research_object.resources.find(:first,
+        :conditions => { :path => proxy_for_path } )
+  end
 
-  has_one    :folder_entry,       :primary_key => :path, :foreign_key => :proxy_for_path,     :class_name => 'Resource', :conditions => 'is_folder_entry = 1', :dependent => :destroy
+  def proxy
+    research_object.resources.find(:first,
+        :conditions => { :proxy_for_path => path, :is_folder_entry => false } )
+  end
 
-  belongs_to :proxy_in,           :primary_key => :path, :foreign_key => :proxy_in_path,      :class_name => 'Resource'
-  has_many   :proxies,            :primary_key => :path, :foreign_key => :proxy_in_path,      :class_name => 'Resource'
+  def folder_entry
+    research_object.resources.find(:first,
+        :conditions => { :proxy_for_path => path, :is_folder_entry => true } )
+    # FIXME: dependent => destroy
+  end
 
-  belongs_to :aggregated_by,      :primary_key => :path, :foreign_key => :aggregated_by_path, :class_name => 'Resource'
-  has_many   :aggregates,         :primary_key => :path, :foreign_key => :aggregated_by_path, :class_name => 'Resource'
+  def proxy_in
+    research_object.resources.find(:first,
+        :conditions => { :path => proxy_in_path } )
+  end
 
-  belongs_to :ao_body,            :primary_key => :path, :foreign_key => :ao_body_path,       :class_name => 'Resource'
-  has_one    :ao_stub,            :primary_key => :path, :foreign_key => :ao_body_path,       :class_name => 'Resource'
+  def proxies
+    research_object.resources.find(:all,
+        :conditions => { :proxy_in_path => path } )
+  end
 
-  belongs_to :resource_map,       :primary_key => :path, :foreign_key => :resource_map_path,  :class_name => 'Resource'
-  has_one    :is_resource_map_to, :primary_key => :path, :foreign_key => :resource_map_path,  :class_name => 'Resource'
+  def aggregated_by
+    research_object.resources.find(:first,
+        :conditions => { :path => aggregated_by_path } )
+  end
+
+  def aggregates
+    research_object.resources.find(:all,
+        :conditions => { :aggregated_by_path => path } )
+  end
+
+  def ao_body
+    research_object.resources.find(:first,
+        :conditions => { :path => ao_body_path } )
+  end
+
+  def resource_map
+    research_object.resources.find(:first,
+        :conditions => { :path => resource_map_path } )
+  end
+
+  def is_resource_map_to
+    research_object.resources.find(:first,
+        :conditions => { :resource_map_path => path } )
+  end
 
   has_many :annotation_resources, :foreign_key => 'annotation_id', :dependent => :destroy
 
@@ -147,9 +181,10 @@ class Resource < ActiveRecord::Base
 
   def update_graph!
 
-    new_description = create_rdf_xml { |graph| graph << description }
-
     unless is_resource
+
+      new_description = create_rdf_xml { |graph| graph << description }
+
       content_blob.destroy if content_blob
       update_attribute(:content_blob, ContentBlob.new(:data => new_description))
     end

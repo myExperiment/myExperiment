@@ -478,9 +478,9 @@ class ResearchObject < ActiveRecord::Base
     object = root_folder
 
     while (bit = bits.shift)
-      folder_entry = object.proxies.find(:first, :conditions => { :entry_name => bit })
-      return nil if folder_entry.nil?
-      object = folder_entry.proxy_for
+      folder_entries = object.proxies.select { |p| p.entry_name == bit }
+      return nil if folder_entries.empty?
+      object = folder_entries.first.proxy_for
     end
 
     object
