@@ -12,7 +12,13 @@ module ResearchObjectsHelper
       "http://purl.org/dc/terms/"              => "dct",
       "http://www.openarchives.org/ore/terms/" => "ore",
       "http://purl.org/ao/"                    => "ao",
-      "http://purl.org/wf4ever/ro#"            => "ro"
+      "http://purl.org/wf4ever/ro#"            => "ro",
+      "http://www.w3.org/ns/prov#"             => "prov",
+      "http://xmlns.com/foaf/0.1/"             => "foaf",
+      "http://www.w3.org/ns/oa#"               => "oa",
+      "http://purl.org/pav/"                   => "pav",
+      "http://purl.org/wf4ever/bundle#"        => "bundle",
+      "http://purl.org/dc/elements/1.1/"       => "dce"
   }
 
   def pretty_rdf_xml(text)
@@ -25,27 +31,33 @@ module ResearchObjectsHelper
 
     doc.root.find("/rdf:RDF/rdf:Description").each do |description|
 
-      resource = description.attributes["about"]
+      # FIXME: The following attribute access is case sensitive.
 
-      if descriptions[resource]
+      if description.attributes["about"]
+        key = "about  #{description.attributes["about"]}"
+      else
+        key = "nodeID #{description.attributes["nodeID"]}"
+      end
 
-        if descriptions[resource].children.last.to_s == "\n  "
-          descriptions[resource].children.last.remove!
-          descriptions[resource].children << "\n"
+      if descriptions[key]
+
+        if descriptions[key].children.last.to_s == "\n  "
+          descriptions[key].children.last.remove!
+          descriptions[key].children << "\n"
         end
 
         description.each do |object|
           if object.element?
-            descriptions[resource] << "\n    "
-            descriptions[resource] << object
-            descriptions[resource] << "\n  "
+            descriptions[key] << "\n    "
+            descriptions[key] << object
+            descriptions[key] << "\n  "
           end
         end
 
         description.prev.remove!
         description.remove!
       else
-        descriptions[resource] = description
+        descriptions[key] = description
 
         description.prev = XML::Node.new_text("\n  ")
       end
@@ -177,10 +189,14 @@ module ResearchObjectsHelper
     graph
   end
 
+  def render_rdf(graph, format = :rdfxml)
+    RDF::Writer.for(format).buffer { |writer| writer << graph }
+  end
+
   def create_rdf_xml(&blk)
     graph = RDF::Graph.new
     yield(graph)
-    pretty_rdf_xml(RDF::Writer.for(:rdfxml).buffer { |writer| writer << graph })
+    pretty_rdf_xml(render_rdf(graph))
   end
 
 end
