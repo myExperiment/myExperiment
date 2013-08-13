@@ -330,6 +330,7 @@ class ResearchObject < ActiveRecord::Base
 
     # FIXME - these should be validations on the resource model
     throw "body_graph required"   unless opts[:body_graph]
+    throw "content_type required" unless opts[:content_type]
     throw "resources required"    unless opts[:resources]
     throw "creator_uri required"  unless opts[:creator_uri]
     
@@ -345,9 +346,9 @@ class ResearchObject < ActiveRecord::Base
     # Create an annotation body using the provided graph
 
     ao_body = create_aggregated_resource(
-      :path         => calculate_path(opts[:slug], 'application/rdf+xml'),
+      :path         => calculate_path(opts[:slug], opts[:content_type]),
       :data         => data,
-      :content_type => "application/rdf+xml",
+      :content_type => opts[:content_type],
       :user_uri     => opts[:creator_uri])
 
     stub = create_annotation_stub(
@@ -356,6 +357,8 @@ class ResearchObject < ActiveRecord::Base
       :resource_paths => resources.map { |resource| relative_uri(resource, uri) } )
 
     stub.update_graph!
+
+    update_manifest!
 
     stub
 

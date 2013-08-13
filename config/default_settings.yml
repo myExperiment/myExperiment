@@ -1494,3 +1494,6 @@ ro_templates:
     required_statements:
     - [:resource1, "<http://purl.org/wf4ever/roterms#inputSelected>", :resource2]
 
+wf_ro_service_uri: "http://www.example.com/wf-ro/jobs"
+wf_ro_service_bearer_token: "bearer-token"
+

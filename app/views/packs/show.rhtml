@@ -161,12 +161,14 @@
           <tr>
             <th>Path</th>
             <th>Size</th>
+            <th>Content type</th>
             <th>Annotations</th>
           </tr>
           <% @pack.research_object.resources.each do |resource| %>
             <tr>
               <td><%=h resource.path -%></td>
               <td><%=h resource.size -%></td>
+              <td><%=h resource.content_type -%></td>
               <td><%=h resource.annotations.count -%></td>
             </tr>
           <% end %>

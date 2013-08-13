@@ -3,6 +3,8 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'wf4ever/transformation-client'
+
 class PacksController < ApplicationController
   include ApplicationHelper
   include ResearchObjectsHelper
@@ -10,6 +12,7 @@ class PacksController < ApplicationController
   ## NOTE: URI must match config/default_settings.yml ro_resource_types
   WORKFLOW_DEFINITION = "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
   RO_RESOURCE = "http://purl.org/wf4ever/ro#Resource"
+  WORKFLOW_RUN = "http://purl.org/wf4ever/roterms#WorkflowRunBundle"
 
   before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
   
@@ -407,7 +410,7 @@ class PacksController < ApplicationController
             resource_uri = entry.uri
           end
           
-          post_process_created_resource(@pack, resource_uri, params)
+          post_process_created_resource(@pack, entry, resource_uri, params)
 
           flash[:notice] = 'Item succesfully added to pack.'
           format.html { redirect_to pack_url(@pack) }
@@ -561,26 +564,75 @@ class PacksController < ApplicationController
     end
   end
 
+  def annotate_resources(resource_uris, body_graph, content_type = 'application/rdf+xml')
+    @pack.research_object.create_annotation(
+        :body_graph   => body_graph,
+        :content_type => content_type,
+        :resources    => resource_uris,
+        :creator_uri  => "/users/#{current_user.id}")
+  end
+
   def annotate_resource_type(resource_uri, type_uri)
 
     body = RDF::Graph.new
     body << [RDF::URI(resource_uri), RDF.type, RDF::URI(type_uri)]
 
-    @pack.research_object.create_annotation(:body_graph => body, :resources => [resource_uri], :creator_uri => "/users/#{current_user.id}")
+    annotate_resources([resource_uri], body)
   end
 
-  def post_process_created_resource(pack, resource_uri, params)
+  def transform_wf(resource_uri)
+      format = "application/vnd.taverna.t2flow+xml"
+      token = Conf.wf_ro_service_bearer_token
+      uri = Wf4Ever::TransformationClient.create_job(Conf.wf_ro_service_uri, resource_uri.to_s, format, @pack.research_object.uri, token)
+puts "      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object.uri, token] = #{      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object.uri, token].inspect}"
+      puts "################## Transforming at " + uri
+
+      uri
+  end
+  
+  def post_process_workflow_run(entry, resource_uri)
+
+    # FIXME this should work with externals too
+    return unless entry.kind_of?(PackContributableEntry)
+
+    bundle_content = entry.contributable.content_blob.data
+
+    begin
+      zip_file = Tempfile.new('workflow_run.zip.')
+      zip_file.binmode
+      zip_file.write(bundle_content)
+      zip_file.close
+      
+      Zip::ZipFile.open(zip_file.path) { |zip|
+
+        wfdesc = zip.get_entry(".ro/annotations/workflow.wfdesc.ttl").get_input_stream.read
+        wfprov = zip.get_entry("workflowrun.prov.ttl").get_input_stream.read
+
+        annotate_resources([resource_uri], wfdesc, 'text/turtle')
+        annotate_resources([resource_uri], wfprov, 'text/turtle')
+      }
+
+    rescue
+      raise unless Rails.env == "production"
+    end
+  end
+
+  def post_process_created_resource(pack, entry, resource_uri, params)
 
     ro = pack.research_object
 
     config = Conf.ro_resource_types.select { |x| x["uri"] == params[:type] }.first
 
-#   if params[:type] == WORKFLOW_DEFINITION
-#     result = transform_wf(ruri)
-#   end
+    if params[:type] == WORKFLOW_DEFINITION
+      job_uri = transform_wf(resource_uri)
+    end
 
     if params[:type] != RO_RESOURCE
       annotate_resource_type(resource_uri, params[:type])
+    end
+
+    if params[:type] == WORKFLOW_RUN
+      post_process_workflow_run(entry, resource_uri)
     end
 
     # Folder selection is performed on the following with decreasing order of

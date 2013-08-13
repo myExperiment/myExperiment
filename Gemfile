@@ -30,4 +30,5 @@ gem "will_paginate", "~> 2.3.16"
 gem "open_id_authentication", "~> 1.1.0"
 gem "simple-rss", "~> 1.2.3"
 gem "net-http-persistent", "~> 2.8"
+gem "wf4ever-transformation-client", "~> 0.3.0"
 
