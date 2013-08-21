@@ -147,54 +147,76 @@
 
   <div id="tabsContainer" class="tabsContainer"></div>
     
-    <div class="tabContainer">
-      <div class="tabTitle">Structure</div>
-      <div class="tabContent">
-        <pre><%=h @pack.research_object.ore_structure.to_yaml -%></pre>
-      </div>
+  <div class="tabContainer">
+    <div class="tabTitle">Structure</div>
+    <div class="tabContent">
+      <pre><%=h @pack.research_object.ore_structure.to_yaml -%></pre>
     </div>
-    
-    <div class="tabContainer">
-      <div class="tabTitle">Resources</div>
-      <div class="tabContent">
-        <table class="simple">
+  </div>
+  
+  <div class="tabContainer">
+    <div class="tabTitle">ORE entries</div>
+    <div class="tabContent">
+      <table class="simple">
+        <tr>
+          <th>Path</th>
+          <th>Size</th>
+          <th>Content type</th>
+          <th>Annotations</th>
+        </tr>
+        <% @pack.research_object.resources.each do |resource| %>
+          <% ore_path = resource.ore_path %>
+          <% next unless ore_path %>
           <tr>
-            <th>Path</th>
-            <th>Size</th>
-            <th>Content type</th>
-            <th>Annotations</th>
+            <td><%= link_to(h(resource.path), pack_items_path(@pack) + "/" + ore_path) -%></td>
+            <td><%=h resource.size -%></td>
+            <td><%=h resource.content_type -%></td>
+            <td><%=h resource.annotations.count -%></td>
           </tr>
-          <% @pack.research_object.resources.each do |resource| %>
-            <tr>
-              <td><%=h resource.path -%></td>
-              <td><%=h resource.size -%></td>
-              <td><%=h resource.content_type -%></td>
-              <td><%=h resource.annotations.count -%></td>
-            </tr>
-          <% end %>
-        </table>
-      </div>
-    </div>
-
-    <div class="tabContainer">
-      <div class="tabTitle">Statements</div>
-      <div class="tabContent">
-
-        <div>Number of statements in merged annotation graph: <%= @graph.count -%></div>
-
-        <% @graph.each do |statement| %>
-          <div style="margin: 8px; box-shadow: 4px 4px 8px #ddd;">
-            <table class="simple" style="width: 100%">
-              <tr><td><%=h statement.subject -%></td></tr>
-              <tr><td><%=h statement.predicate -%></td></tr>
-              <tr><td><%=h statement.object -%></td></tr>
-            </table>
-          </div>
         <% end %>
-
-      </div>
+      </table>
     </div>
+  </div>
+  
+  <div class="tabContainer">
+    <div class="tabTitle">Resources</div>
+    <div class="tabContent">
+      <table class="simple">
+        <tr>
+          <th>Path</th>
+          <th>Size</th>
+          <th>Content type</th>
+          <th>Annotations</th>
+        </tr>
+        <% @pack.research_object.resources.each do |resource| %>
+          <tr>
+            <td><%=h resource.path -%></td>
+            <td><%=h resource.size -%></td>
+            <td><%=h resource.content_type -%></td>
+            <td><%=h resource.annotations.count -%></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
 
+  <div class="tabContainer">
+    <div class="tabTitle">Statements</div>
+    <div class="tabContent">
+
+      <div>Number of statements in merged annotation graph: <%= @graph.count -%></div>
+
+      <% @graph.each do |statement| %>
+        <div style="margin: 8px; box-shadow: 4px 4px 8px #ddd;">
+          <table class="simple" style="width: 100%">
+            <tr><td><%=h statement.subject -%></td></tr>
+            <tr><td><%=h statement.predicate -%></td></tr>
+            <tr><td><%=h statement.object -%></td></tr>
+          </table>
+        </div>
+      <% end %>
+
+    </div>
   </div>
 
 </div>
