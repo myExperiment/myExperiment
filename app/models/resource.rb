@@ -179,6 +179,23 @@ class Resource < ActiveRecord::Base
     URI(path).path.split("/").last
   end
 
+  def ore_path
+
+    # Not all resources are listed in the ORE structure.
+    return nil if folder_entry.nil?
+
+    entry = folder_entry
+
+    bits = []
+
+    while entry
+      bits.unshift(entry.entry_name)
+      entry = entry.proxy_in.folder_entry
+    end
+
+    return bits.join("/")
+  end
+
   def update_graph!
 
     unless is_resource
@@ -209,11 +226,15 @@ class Resource < ActiveRecord::Base
 
   def annotations_with_templates
     annotations.map do |annotation|
-      template, parameters = research_object.find_template_from_graph(load_graph(annotation.ao_body.content_blob.data, annotation.ao_body.content_type), Conf.ro_templates)
+
+      graph = load_graph(annotation.ao_body.content_blob.data, annotation.ao_body.content_type)
+
+      template, parameters = research_object.find_template_from_graph(graph, Conf.ro_templates)
       {
         :annotation => annotation,
-        :template => template,
-        :paramters => parameters
+        :graph      => graph,
+        :template   => template,
+        :parameters => parameters
       }
     end
   end

@@ -466,6 +466,19 @@ class PacksController < ApplicationController
     end
   end
 
+  def item_show
+    @item = @pack.research_object.find_using_path(params[:item_path])
+
+    @annotations = @item.annotations_with_templates
+
+    @visible_annotations = @annotations.select { |a| a[:template] != nil }
+
+    unless @item
+      render_404("Pack item not found.")
+      return
+    end
+  end
+
   protected
   
   # Check that a protocol is specified in the URI; prepend HTTP:// otherwise
@@ -492,6 +505,7 @@ class PacksController < ApplicationController
       "favourite_delete" => "view",
       "index"            => "view",
       "items"            => "view",
+      "item_show"        => "view",
       "new"              => "create",
       "new_item"         => "edit",
       "quick_add"        => "edit",
