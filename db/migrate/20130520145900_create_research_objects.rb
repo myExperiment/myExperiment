@@ -24,6 +24,7 @@ class CreateResearchObjects < ActiveRecord::Migration
       t.text    "path"
       t.string  "entry_name"
       t.string  "creator_uri"
+      t.string  "uuid", :limit => 36
       t.string  "proxy_in_path"
       t.string  "proxy_for_path"
       t.string  "ao_body_path"

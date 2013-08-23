@@ -9,11 +9,15 @@ class Resource < ActiveRecord::Base
 
   include ResearchObjectsHelper
 
+  before_save :set_uuid
+  
   before_save :copy_metadata
 
   belongs_to :research_object
 
   belongs_to :content_blob, :dependent => :destroy
+
+  has_one :pack_contributable_entry
 
   def proxy_for
     research_object.resources.find(:first,
@@ -247,6 +251,10 @@ class Resource < ActiveRecord::Base
       self.sha1 = nil
       self.size = nil
     end
+  end
+
+  def set_uuid
+    self.uuid = SecureRandom.uuid
   end
 
   def update_manifest!
