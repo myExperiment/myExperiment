@@ -18,7 +18,8 @@ module ResearchObjectsHelper
       "http://www.w3.org/ns/oa#"               => "oa",
       "http://purl.org/pav/"                   => "pav",
       "http://purl.org/wf4ever/bundle#"        => "bundle",
-      "http://purl.org/dc/elements/1.1/"       => "dce"
+      "http://purl.org/dc/elements/1.1/"       => "dce",
+      "http://purl.org/wf4ever/roterms#"       => "roterms"
   }
 
   def pretty_rdf_xml(text)
