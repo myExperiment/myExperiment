@@ -21,6 +21,8 @@ class ResearchObject < ActiveRecord::Base
 
   has_many :annotation_resources
 
+  has_one :pack
+
   validates_presence_of :slug
 
   def uri
@@ -555,16 +557,16 @@ class ResearchObject < ActiveRecord::Base
     ore_directories_aux('', ore_structure).sort
   end
 
-  def ore_resources_aux(structure)
+  def ore_resources_aux(structure, prefix)
     results = []
 
     structure.each do |entry|
 
       case entry[:type]
       when :file
-        results << entry
+        results << { :name => entry[:name], :type => entry[:type], :ore_path => "#{prefix}#{entry[:path]}" }
       when :folder
-        results += ore_resources_aux(entry[:entries])
+        results += ore_resources_aux(entry[:entries], "#{prefix}#{entry[:name]}/")
       end
     end
 
@@ -572,7 +574,7 @@ class ResearchObject < ActiveRecord::Base
   end
 
   def ore_resources
-    ore_resources_aux(ore_structure)
+    ore_resources_aux(ore_structure, '')
   end
 
   def find_template_from_graph(graph, templates)

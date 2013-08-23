@@ -67,6 +67,7 @@ ActionController::Routing::Routes.draw do |map|
                  :items => :get } do |pack|
     pack.resources :comments, :collection => { :timeline => :get }
     pack.resources :relationships, :collection => { :edit_relationships => :get }
+    pack.resources :annotations
   end
 
   # Pack entries.  These are not creating using the normal RESTful routes as

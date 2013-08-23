@@ -345,6 +345,29 @@ module Authorization
 
         end
 
+      when "Resource"
+
+        case action
+
+          when "view"
+
+            # You can only view a pack resource if you can view the pack
+            return false unless Authorization.check('view', object.research_object.pack, user)
+
+            # In addition to the above, you must be able to view the
+            # contributable if it is local to myExperiment
+
+            if object.pack_contributable_entry
+              return false unless Authorization.check('view', object.pack_contributable_entry, user)
+            end
+
+          when "create"
+
+            # Only users that can edit the pack can create RO resources
+            return Authorization.check('edit', context, user)
+
+        end
+
       when "Message"
         case action
           when "view"

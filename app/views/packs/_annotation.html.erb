@@ -1,0 +1,9 @@
+<div class="annotation">
+  <p>Annotation type: <%=h annotation[:template]["label"] -%></p>
+  <% case annotation[:template]["label"]; when "Title" %>
+    <p>
+      <span class="label">Title</span>
+      <span class="value"><%=h annotation[:parameters][:title].to_s -%></span>
+    </p>
+  <% end %>
+</div>

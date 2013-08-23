@@ -14,7 +14,7 @@ class PacksController < ApplicationController
   RO_RESOURCE = "http://purl.org/wf4ever/ro#Resource"
   WORKFLOW_RUN = "http://purl.org/wf4ever/roterms#WorkflowRunBundle"
 
-  before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
+  before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics, :item_show]
   
   before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
   
@@ -472,6 +472,14 @@ class PacksController < ApplicationController
     @annotations = @item.annotations_with_templates
 
     @visible_annotations = @annotations.select { |a| a[:template] != nil }
+
+    @statements = RDF::Graph.new
+
+    @annotations.each do |annotation|
+      @statements << annotation[:graph]
+    end
+
+    @title = @statements.query([@item.uri, RDF::DC.title, nil]).first_value || @item.folder_entry.entry_name
 
     unless @item
       render_404("Pack item not found.")

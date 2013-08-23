@@ -1484,15 +1484,23 @@ ro_templates:
 
   input_selection_relationship:
 
-    label: Input selection relationship
+    label: Input selected
 
     types:
 
-       resource1: user
-       resource2: user
+      :subject: workflow
+      :object:  contributable
 
     required_statements:
-    - [:resource1, "<http://purl.org/wf4ever/roterms#inputSelected>", :resource2]
+    - [:subject, "<http://purl.org/wf4ever/roterms#inputSelected>", :object]
+
+  title:
+
+    label: Title
+
+    required_statements:
+    - [:resource, "<http://purl.org/dc/terms/title>", :title]
+
 
 wf_ro_service_uri: "http://www.example.com/wf-ro/jobs"
 wf_ro_service_bearer_token: "bearer-token"
