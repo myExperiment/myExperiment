@@ -1,0 +1,70 @@
+<h1>Item: <%= @title -%></h1>
+
+<h2>Metadata</h2>
+
+<table class="metadata">
+  <tr>
+    <td>Title</td>
+    <td>
+      <%=h @title -%>
+      <%= link_to('Add title', new_pack_annotation_path(@pack, { :template => 'title', :resource => @item.path })) -%>
+    </td>
+  </tr>
+  <tr>
+    <td>File name</td>
+    <td><%=h @item.folder_entry.entry_name -%></td>
+  </tr>
+  <tr>
+    <td>File size</td>
+    <td><%=h @item.size.to_s -%></td>
+  </tr>
+  <tr>
+    <td>SHA1</td>
+    <td class="sha1"><%=h @item.sha1 -%></td>
+  </tr>
+  <tr>
+    <td>Content type</td>
+    <td class="content_type"><%=h @item.content_type -%></td>
+  </tr>
+</table>
+
+<h1>Debug</h1>
+
+<div id="tabsContainer" class="tabsContainer"></div>
+  
+<div class="tabContainer">
+  <div class="tabTitle">User level annotations</div>
+  <div class="tabContent">
+    <% @visible_annotations.each do |annotation| %>
+      <%= render(:partial => "annotation", :locals => { :pack => @pack, :annotation => annotation } ) -%>
+    <% end %>
+  </div>
+</div>
+
+<div class="tabContainer">
+  <div class="tabTitle">Annotation graphs</div>
+  <div class="tabContent">
+    <% @annotations.each do |annotation| %>
+
+      <h2><%=h annotation[:template].inspect -%></h2>
+      <p><%=h annotation[:annotation].uri.to_s -%></p>
+
+      <% annotation[:graph].each do |statement| %>
+        <div style="margin: 8px; box-shadow: 4px 4px 8px #ddd;">
+          <table class="simple" style="width: 100%">
+            <tr><td><%=h statement.subject -%></td></tr>
+            <tr><td><%=h statement.predicate -%></td></tr>
+            <tr><td><%=h statement.object -%></td></tr>
+          </table>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<div class="tabContainer">
+  <div class="tabTitle">Resource metadata</div>
+  <div class="tabContent">
+    <pre><%=h @item.to_yaml -%></pre>
+  </div>
+</div>
