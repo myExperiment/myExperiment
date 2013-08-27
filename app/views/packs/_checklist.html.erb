@@ -1,0 +1,10 @@
+<div class="contribution_section_box">
+	<p class="heading">
+		<%= info_icon_with_tooltip("The unique list of tags that items within this pack have been tagged with") %>
+		Checklist evaluator
+  </p>
+	
+  <p>
+    <%= link_to("Checklist evaluation", "http://sandbox.wf4ever-project.org/roevaluate/evaluate/trafficlight_html?RO=#{CGI::escape(@pack.research_object.uri.to_s)}&minim=http%3A%2F%2Fwf4ever.github.io%2Fro-catalogue%2Fv0.1%2FTimbus-demo-test%2FTimbus-demo-minim.rdf&purpose=complete") -%>
+  </p>
+</div>
