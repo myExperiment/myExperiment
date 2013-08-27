@@ -1,0 +1,7 @@
+<h1>All annotations for <%=h @pack.title -%></h1>
+
+<% @annotations.each do |annotation| %>
+  <% next unless annotation[:template] %>
+  <%= render(:partial => 'packs/annotation', :locals => { :pack => @pack, :annotation => annotation  } ) -%>
+<% end %>
+

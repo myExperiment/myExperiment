@@ -1457,6 +1457,7 @@ ro_relationships:
 
   - label: "Input selected"
     uri: "http://purl.org/wf4ever/roterms#inputSelected"
+    template: input_selection_relationship
 
   - label: "Output selected"
     uri: "http://purl.org/wf4ever/roterms#outputSelected"
@@ -1484,23 +1485,44 @@ ro_templates:
 
   input_selection_relationship:
 
-    label: Input selected
+    label: input selection
 
-    types:
+    parameters:
 
-      :subject: workflow
-      :object:  contributable
+    - label:  Workflow
+      type:   resource
+      symbol: :subject
+
+    - label:  Input file
+      type:   resource
+      symbol: :object
 
     required_statements:
     - [:subject, "<http://purl.org/wf4ever/roterms#inputSelected>", :object]
 
+    targets:
+    - :subject
+    - :object
+
   title:
 
-    label: Title
+    label: title
+
+    parameters:
+
+    - label:  Resource
+      type:   resource 
+      symbol: :resource
+
+    - label:  Title
+      type:   string 
+      symbol: :title
 
     required_statements:
     - [:resource, "<http://purl.org/dc/terms/title>", :title]
 
+    targets:
+    - :resource
 
 wf_ro_service_uri: "http://www.example.com/wf-ro/jobs"
 wf_ro_service_bearer_token: "bearer-token"

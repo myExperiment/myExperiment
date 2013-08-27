@@ -741,6 +741,10 @@ module ApplicationHelper
       return "famfamfam_silk/application_side_list.png"
     when "contributions"
       return "famfamfam_silk/page_white_stack.png"
+    when "annotations"
+      return "famfamfam_silk/note.png"
+    when "annotation"
+      return "famfamfam_silk/note.png"
     else
       return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end

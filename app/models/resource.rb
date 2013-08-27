@@ -234,6 +234,7 @@ class Resource < ActiveRecord::Base
       graph = load_graph(annotation.ao_body.content_blob.data, annotation.ao_body.content_type)
 
       template, parameters = research_object.find_template_from_graph(graph, Conf.ro_templates)
+
       {
         :annotation => annotation,
         :graph      => graph,

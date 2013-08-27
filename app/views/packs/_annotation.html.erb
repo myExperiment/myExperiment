@@ -1,9 +1,21 @@
 <div class="annotation">
-  <p>Annotation type: <%=h annotation[:template]["label"] -%></p>
-  <% case annotation[:template]["label"]; when "Title" %>
+  <div class="header">
     <p>
-      <span class="label">Title</span>
-      <span class="value"><%=h annotation[:parameters][:title].to_s -%></span>
+      <span class="type"><%= link_to(h(annotation[:template]["label"]), pack_annotation_path(pack, annotation[:annotation].uuid)) -%></span>
+      <%= link_to_remote("<img src='/images/famfamfam_silk/cross.png' />",
+          :update => "annotation-#{annotation[:annotation].uuid}", 
+          :url => pack_annotation_path(pack, annotation[:annotation].uuid),
+          :method => :delete,
+          :confirm => "Are you sure you want to delete this annotation?" ) %>
     </p>
+  </div>
+  <% if annotation[:template] %>
+    <% annotation[:template]["parameters"].each do |parameter| %>
+      <p>
+        <span class="label"><%=h parameter["label"] -%></span>
+        <span class="value"><%=h annotation[:parameters][parameter["symbol"]].to_s -%></span>
+      </p>
+    <% end %>
   <% end %>
 </div>
+

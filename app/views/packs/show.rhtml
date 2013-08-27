@@ -9,6 +9,7 @@
 		<% if mine?(@pack) -%>
 			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
 		<% end -%>
+    <li><%= icon('annotations', pack_annotations_path(@pack), nil, nil, 'Annotations') -%></li>
     <% if @authorised_to_edit -%>
 			<li><%= icon('new', snapshot_pack_path(@pack), nil, { :confirm => 'Are you sure that you would like to create a new snapshot of this Pack?', :method => :post }, 'Create snapshot') %></li>
     <% end -%>	
@@ -167,6 +168,7 @@
         <% @pack.research_object.resources.each do |resource| %>
           <% ore_path = resource.ore_path %>
           <% next unless ore_path %>
+          <% next if resource.is_folder %>
           <tr>
             <td><%= link_to(h(resource.path), pack_items_path(@pack) + "/" + ore_path) -%></td>
             <td><%=h resource.size -%></td>

@@ -2655,3 +2655,25 @@ TABLE.metadata TD.content_type {
   font-family: monospace;
 }
 
+.annotation {
+  border: 1px solid #aaa;
+  box-shadow: 4px 4px 8px #ddd;
+  margin: 8px;
+  padding: 4px;
+}
+
+.annotation TD {
+  text-align: left;
+}
+
+.annotation .type {
+  font-size: 180%;
+}
+
+.annotation .label:after {
+  content: ":";
+}
+
+.annotation INPUT {
+  width: 500px;
+}

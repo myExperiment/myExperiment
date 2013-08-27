@@ -9,7 +9,7 @@
   <li><%= link_to 'Packs', packs_path %></li>
 <% end %>
 
-<% if ["show", "new", "edit", "all", "new_item", "edit_item", "search"].include? controller.action_name.to_s %>
+<% if ["show", "new", "edit", "all", "new_item", "edit_item", "search", "item_show"].include? controller.action_name.to_s %>
   <% case controller.action_name.to_s; when "show" %>
     <li><%= h(@pack.title) %></li>
   <% when "new" %>
@@ -27,6 +27,9 @@
     <li>All Packs</li>
 	<% when "search" %>  
     <li>Search Results</li>
+  <% when "item_show" %>
+		<li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
+    <li><%=h @item.folder_entry.entry_name -%></li>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

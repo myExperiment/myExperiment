@@ -609,6 +609,25 @@ class ResearchObject < ActiveRecord::Base
     graph
   end
 
+  def annotations_with_templates
+
+    annotation_resources.map do |annotation_resource|
+     
+      annotation = annotation_resource.annotation
+
+      graph = load_graph(annotation.ao_body.content_blob.data, annotation.ao_body.content_type)
+
+      template, parameters = find_template_from_graph(graph, Conf.ro_templates)
+
+      {
+        :annotation => annotation,
+        :graph      => graph,
+        :template   => template,
+        :parameters => parameters
+      }
+    end
+  end
+
 private
 
   def create_manifest #:nodoc:

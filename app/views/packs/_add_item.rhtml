@@ -129,7 +129,7 @@
   <% if @ore_resources.count > 1 %>
     <% form_tag(pack_annotations_path(@pack)) do -%>
         <%= select_tag(:subject, options_for_select(@ore_resources.map    { |r| [r[:name],  r[:ore_path]]  }) ) -%>
-        <%= select_tag(:annotation_type, options_for_select(@ro_relationships.map { |r| [r["label"], r["label"]] }) ) -%>
+        <%= select_tag(:annotation_type, options_for_select(@ro_relationships.map { |r| [r["label"], r["template"]] }) ) -%>
         <%= select_tag(:object,  options_for_select(@ore_resources.map    { |r| [r[:name],  r[:ore_path]]  }) ) -%>
         <%= submit_tag("Add") -%>
     <% end %>
