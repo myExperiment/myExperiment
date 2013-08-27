@@ -7,7 +7,7 @@
     <td>Title</td>
     <td>
       <%=h @title -%>
-      <%= link_to('Add title', new_pack_annotation_path(@pack, { :template => 'title', :resource => @item.path })) -%>
+      <%= link_to('[Add title]', new_pack_annotation_path(@pack, { :template => 'title', :resource => @item.ore_path })) -%>
     </td>
   </tr>
   <tr>
