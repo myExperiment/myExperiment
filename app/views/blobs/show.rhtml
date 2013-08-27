@@ -64,6 +64,10 @@
 
         <% if Authorization.check('download', @blob, current_user) %>
           <tr>
+            <td>File size</td>
+            <td class="size"><%=h @version.content_blob.size.to_s %></td>
+          </tr>
+          <tr>
             <td>SHA1</td>
             <td class="sha1"><%=h @version.content_blob.sha1 %></td>
           </tr>
