@@ -47,7 +47,7 @@ class AnnotationsController < ApplicationController
 
       parameters[parameter["symbol"]] = case parameter["type"]
 
-      when "string"
+      when "string", "textarea"
         RDF::Literal(params[parameter["symbol"]])
       when "resource"
         pack.research_object.find_using_path(params[parameter["symbol"]]).uri

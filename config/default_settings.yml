@@ -1524,6 +1524,26 @@ ro_templates:
     targets:
     - :resource
 
+  description:
+
+    label: description
+
+    parameters:
+
+    - label:  Resource
+      type:   resource 
+      symbol: :resource
+
+    - label:  Description
+      type:   textarea
+      symbol: :description
+
+    required_statements:
+    - [:resource, "<http://purl.org/dc/terms/description>", :description]
+
+    targets:
+    - :resource
+
 wf_ro_service_uri: "http://www.example.com/wf-ro/jobs"
 wf_ro_service_bearer_token: "bearer-token"
 

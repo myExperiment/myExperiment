@@ -28,6 +28,14 @@
   </tr>
 </table>
 
+<h2>Description</h2>
+
+<% if @description %>
+  <p><%=h simple_format(@description) -%></p>
+<% end %>
+
+<p><%= link_to('[Add description]', new_pack_annotation_path(@pack, { :template => 'description', :resource => @item.ore_path })) -%></p>
+
 <h1>Debug</h1>
 
 <div id="tabsContainer" class="tabsContainer"></div>

@@ -2664,6 +2664,7 @@ TABLE.metadata TD.content_type {
 
 .annotation TD {
   text-align: left;
+  vertical-align: top;
 }
 
 .annotation .type {
@@ -2674,6 +2675,11 @@ TABLE.metadata TD.content_type {
   content: ":";
 }
 
-.annotation INPUT {
+.annotation INPUT,
+.annotation TEXTAREA {
   width: 500px;
+}
+
+.annotation TEXTAREA {
+  height: 100px;
 }

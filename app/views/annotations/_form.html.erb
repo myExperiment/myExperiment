@@ -10,6 +10,8 @@
       <td><%= parameter["label"] -%></td>
       <% case parameter["type"] ; when "string" %>
         <td><%= text_field_tag(parameter["symbol"], values[parameter["symbol"]]) -%></td>
+      <% when "textarea" %>
+        <td><%= text_area_tag(parameter["symbol"], values[parameter["symbol"]]) -%></td>
       <% when "resource" %>
         <td><%= text_field_tag(parameter["symbol"], values[parameter["symbol"]]) -%></td>
       <% end %>

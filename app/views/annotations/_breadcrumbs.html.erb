@@ -1,6 +1,11 @@
 <li><%= link_to("Packs", packs_path) -%></li>
 <li><%= link_to(h(@pack.title), polymorphic_path(@pack)) -%></li>
-<li><%= link_to("Annotations", polymorphic_path([@pack, :annotations])) -%></li>
+
+<% if controller.action_name == "index" %>
+  <li>Annotations</li>
+<% else %>
+  <li><%= link_to("Annotations", polymorphic_path([@pack, :annotations])) -%></li>
+<% end %>
 
 <% case controller.action_name; when "new" %>
   <li>New</li>

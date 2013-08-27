@@ -481,6 +481,8 @@ class PacksController < ApplicationController
 
     @title = @statements.query([@item.uri, RDF::DC.title, nil]).first_value || @item.folder_entry.entry_name
 
+    @description = @statements.query([@item.uri, RDF::DC.description, nil]).first_value
+
     unless @item
       render_404("Pack item not found.")
       return
