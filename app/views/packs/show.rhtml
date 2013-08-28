@@ -70,6 +70,20 @@
 				</p>
 			<% end %>
 
+  <% if @maintainers.count > 0 %>
+    <h2 class="type">Maintained by</h2>
+    <div class="body">
+      <ul>
+        <% @maintainers.each do |maintainer| %>
+          <li>
+            <span class="createdBy"><%= link_to(h(maintainer.label), polymorphic_path(maintainer)) -%></span> 
+            <% if false %><span class="createdOn">(last uploaded on 2012-12-24 18:40)</span><% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <% if @sketch %>
     <h2>Research overview</h2>
     <%= image_tag(@sketch.to_s, :width => '100%') -%>
@@ -149,7 +163,7 @@
   <div id="tabsContainer" class="tabsContainer"></div>
     
   <div class="tabContainer">
-    <div class="tabTitle">ORE entries</div>
+    <div class="tabTitle">ORE Entries</div>
     <div class="tabContent">
       <table class="simple">
         <tr>
@@ -185,14 +199,14 @@
   </div>
   
   <div class="tabContainer">
-    <div class="tabTitle">Structure</div>
+    <div class="tabTitle">ORE Structure</div>
     <div class="tabContent">
       <pre><%=h @pack.research_object.ore_structure.to_yaml -%></pre>
     </div>
   </div>
   
   <div class="tabContainer">
-    <div class="tabTitle">Resources</div>
+    <div class="tabTitle">RO Resources</div>
     <div class="tabContent">
       <table class="simple">
         <tr>
@@ -203,7 +217,7 @@
         </tr>
         <% @pack.research_object.resources.each do |resource| %>
           <tr>
-            <td><%=h resource.path -%></td>
+            <td><%= link_to(h(resource.path), resource.uri.to_s) -%></td>
             <td><%=h resource.size -%></td>
             <td><%=h resource.content_type -%></td>
             <td><%=h resource.annotations.count -%></td>
@@ -214,7 +228,7 @@
   </div>
 
   <div class="tabContainer">
-    <div class="tabTitle">Statements</div>
+    <div class="tabTitle">RDF Statements</div>
     <div class="tabContent">
 
       <div>Number of statements in merged annotation graph: <%= @graph.count -%></div>
