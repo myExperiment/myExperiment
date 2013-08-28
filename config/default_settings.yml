@@ -1436,11 +1436,14 @@ ro_resource_types:
   - label:  "Hypothesis"
     uri:    "http://purl.org/wf4ever/roterms#Hypothesis"    
 
-  - label:  "Conclusions"
-    uri:    "http://purl.org/wf4ever/roterms#Conclusions"
+  - label:  "Research Question"
+    uri:    "http://purl.org/wf4ever/roterms#ResearchQuestion"
 
-  - label:  "Results"
-    uri:    "http://purl.org/wf4ever/roterms#Results"
+  - label:  "Conclusion"
+    uri:    "http://purl.org/wf4ever/roterms#Conclusion"
+
+  - label:  "Result"
+    uri:    "http://purl.org/wf4ever/roterms#Result"
 
   - label:  "Example inputs"
     uri:    "http://purl.org/wf4ever/roterms#ExampleInputs"
@@ -1453,14 +1456,24 @@ ro_resource_types:
     uri:    "http://purl.org/wf4ever/roterms#WorkflowRunBundle"
     folder: "datasets/results"
 
+  - label:  "Example Workflow Run"
+    uri:    "http://purl.org/wf4ever/roterms#ExampleRun"
+
+  - label:  "Prospective Workflow Run"
+    uri:    "http://purl.org/wf4ever/roterms#ProspectiveRun"
+
+  - label:  "Results Generating Workflow Run"
+    uri:    "http://purl.org/wf4ever/roterms#ResultGenerationRun"
+
+  - label:  "Paper"
+    uri:    "http://purl.org/wf4ever/roterms#Paper"
+    folder: "biblio"
+
 ro_relationships:
 
   - label: "Input selected"
     uri: "http://purl.org/wf4ever/roterms#inputSelected"
     template: input_selection_relationship
-
-  - label: "Output selected"
-    uri: "http://purl.org/wf4ever/roterms#outputSelected"
 
 ro_templates:
 

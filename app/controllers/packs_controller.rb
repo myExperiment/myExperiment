@@ -12,7 +12,10 @@ class PacksController < ApplicationController
   ## NOTE: URI must match config/default_settings.yml ro_resource_types
   WORKFLOW_DEFINITION = "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
   RO_RESOURCE = "http://purl.org/wf4ever/ro#Resource"
-  WORKFLOW_RUN = "http://purl.org/wf4ever/roterms#WorkflowRunBundle"
+
+  WORKFLOW_RUN = ["http://purl.org/wf4ever/roterms#ResultGenerationRun",
+                  "http://purl.org/wf4ever/roterms#ExampleRun",
+                  "http://purl.org/wf4ever/roterms#ProspectiveRun"]
 
   before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics, :item_show, :item_destroy]
   
@@ -95,6 +98,8 @@ class PacksController < ApplicationController
             :object => RDF::URI("http://purl.org/wf4ever/roterms#Hypothesis")).first_subject
         @conclusions = @graph.query(:predicate => RDF.type,
             :object => RDF::URI("http://purl.org/wf4ever/roterms#Conclusions")).first_subject
+
+        @maintainers = Authorization.authorized_for_object(:edit, @pack)
 
         @lod_nir  = pack_url(@pack)
         @lod_html = pack_url(:id => @pack.id, :format => 'html')
@@ -673,7 +678,7 @@ puts "      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object
       annotate_resource_type(resource_uri, params[:type])
     end
 
-    if params[:type] == WORKFLOW_RUN
+    if WORKFLOW_RUN.include?(params[:type])
       post_process_workflow_run(entry, resource_uri)
     end
 
