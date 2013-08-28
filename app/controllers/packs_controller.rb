@@ -412,7 +412,7 @@ class PacksController < ApplicationController
           when PackContributableEntry
             resource_uri = entry.resource.uri
           when PackRemoteEntry
-            resource_uri = entry.uri
+            resource_uri = entry.resource.uri
           end
           
           post_process_created_resource(@pack, entry, resource_uri, params)

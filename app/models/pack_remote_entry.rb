@@ -18,6 +18,10 @@ class PackRemoteEntry < ActiveRecord::Base
   after_save :touch_pack
   after_destroy :touch_pack
 
+  after_save :synchronize_research_object
+
+  belongs_to :resource, :dependent => :destroy
+
   def check_unique
     if PackRemoteEntry.find(:first, :conditions => ["pack_id = ? AND version = ? AND uri = ?", self.pack_id, self.version, self.uri])
       errors.add_to_base("This external link already exists in the pack")
@@ -33,5 +37,24 @@ class PackRemoteEntry < ActiveRecord::Base
 
   def available?
     true
+  end
+
+  def synchronize_research_object
+
+    ro = pack.research_object
+    
+    user_path = "/users/#{user_id}"
+
+    if ro && resource_id.nil?
+
+      resource = ro.create_proxy(
+          :proxy_for_path => uri,
+          :proxy_in_path  => ".",
+          :user_uri       => user_path)
+
+      update_attribute(:resource_id, resource.id)
+
+      ro.update_manifest!
+    end
   end
 end

@@ -1452,10 +1452,6 @@ ro_resource_types:
   - label:  "Example outputs"
     uri:    "http://purl.org/wf4ever/roterms#ExampleOutputs"
 
-  - label:  "Workflow run"
-    uri:    "http://purl.org/wf4ever/roterms#WorkflowRunBundle"
-    folder: "datasets/results"
-
   - label:  "Example Workflow Run"
     uri:    "http://purl.org/wf4ever/roterms#ExampleRun"
 

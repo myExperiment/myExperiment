@@ -63,7 +63,11 @@ class ResourcesController < ActionController::Base
     # FIXME: This needs to support 406 
 
     if resource.is_proxy
-      redirect_to resource.proxy_for.uri.to_s, :status => 303
+      if resource.proxy_for
+        redirect_to resource.proxy_for.uri.to_s, :status => 303
+      else
+        redirect_to resource.proxy_for_path, :status => 303
+      end
     else
       send_data(resource.content_blob.data, :type => resource.content_type)
     end
