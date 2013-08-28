@@ -76,6 +76,7 @@ class Resource < ActiveRecord::Base
   validates_presence_of :content_type
   validates_presence_of :path
 
+  after_destroy :destroy_related_resources
   after_destroy :update_manifest!
 
   def is_manifest?
@@ -260,5 +261,30 @@ class Resource < ActiveRecord::Base
 
   def update_manifest!
     research_object.update_manifest!
+  end
+
+  def destroy_related_resources
+    
+    # Delete the proxy for this resource if it exists.
+    proxy.destroy if proxy
+
+    # Delete the folder entry for this resource if it exists.
+    folder_entry.destroy if folder_entry
+
+    # Remove this resource as target from annotations
+  
+    annotation_resources = AnnotationResource.find(:all, :conditions => {
+        :research_object_id => research_object.id,
+        :resource_path      => path })
+
+    annotation_resources.each do |annotation_resource|
+      annotation = annotation_resource.annotation
+      annotation_resource.destroy
+
+      if annotation.annotation_resources(true).empty?
+        # annotation.ao_body.destroy
+        annotation.destroy
+      end
+    end
   end
 end
