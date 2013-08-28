@@ -178,9 +178,7 @@
           <th>Size</th>
           <th>Content type</th>
           <th>Annotations</th>
-          <% if false %>
           <th></th>
-          <% end %>
         </tr>
         <% @pack.research_object.resources.each do |resource| %>
           <% ore_path = resource.ore_path %>
@@ -191,14 +189,12 @@
             <td><%=h resource.size -%></td>
             <td><%=h resource.content_type -%></td>
             <td><%=h resource.annotations.count -%></td>
-            <% if false %>
             <td>
-              <%= link_to_remote("<img src='/images/famfamfam_silk/cross.png' />",
-                  :url => pack_item_path(@pack, resource.ore_path),
+              <%= link_to("<img src='/images/grey_cross.png' />",
+                  pack_item_path(@pack, resource.ore_path),
                   :method => :delete,
-                  :confirm => "Are you sure you want to delete this item?" ) %>
+                  :confirm => "Are you sure you want to delete this item?") %>
             </td>
-            <% end %>
           </tr>
         <% end %>
       </table>

@@ -508,7 +508,7 @@ class PacksController < ApplicationController
     # Delete the resource
     @item.destroy
 
-    render pack_path(@pack)
+    redirect_to @pack
   end
 
   protected
