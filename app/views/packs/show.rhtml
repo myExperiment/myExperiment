@@ -9,10 +9,13 @@
 		<% if mine?(@pack) -%>
 			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
 		<% end -%>
+    <li><%= icon('pack', download_pack_path(@pack), nil, nil, "Download") %></li>
     <li><%= icon('annotations', pack_annotations_path(@pack), nil, nil, 'Annotations') -%></li>
+    <% if false %>
     <% if @authorised_to_edit -%>
 			<li><%= icon('new', snapshot_pack_path(@pack), nil, { :confirm => 'Are you sure that you would like to create a new snapshot of this Pack?', :method => :post }, 'Create snapshot') %></li>
-    <% end -%>	
+    <% end %>	
+    <% end %>
 		<% if Authorization.check("destroy", @pack, current_user) %>
 			<li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments, BUT does not delete the actual items pointed to in the Pack. Are you sure you would like to delete this Pack?', :method => :delete }, 'Delete Pack') %></li>
 		<% end %>
@@ -113,6 +116,7 @@
 			
 			<%= render :partial => "items", :locals => { :pack => @pack, :contributable_entries => contributable_entries, :remote_entries => remote_entries, :authorised_to_edit => @authorised_to_edit } -%>
 
+      <% if false %>
 			<br/><br/>
 			<h4>
 				<%= info_icon_with_tooltip("This section shows all the relationships between the items in this pack.") -%>
@@ -127,26 +131,10 @@
           <li><%= icon('manage', edit_relationships_pack_relationships_path(@pack), nil, nil, 'Edit Relationships') -%></li>
         </ul>
       <% end %>
+      <% end %>
 
 			<br/><br/>
 
-			<h3>
-				<%= info_icon_with_tooltip("This section provides a link to download all items in this pack as a single .zip archive") %>
-				Download
-			</h3>
-			
-			<% if @authorised_to_download %>
-				<ul class="sectionIcons">
-					<li style="margin-left: 0;"><%= icon('pack', download_pack_path(@pack), "Download Pack Items as Single ZIP Archive", nil, "Download Pack Items (ZIP archive)") %></li>
-				</ul>
-			<% else %>
-				<p class="none_text">
-					You do not have permissions to download
-				</p>
-			<% end %>
-			
-  			<br/>
-			
 			<% if @authorised_to_edit -%>
 				<h3>
 					<%= info_icon_with_tooltip("This section provides various ways of adding items to this pack") %>
@@ -154,7 +142,26 @@
 				</h3>
 				<a name="add_item"></a>
 				<%= render :partial => "add_item", :locals => { :pack => @pack } -%>
-			<% end -%>
+      <% end %>
+
+      <h3>
+        <%= info_icon_with_tooltip("This section provides the ability to add relationships between items in this pack") %>
+        Relationships
+      </h3>
+
+      <div>
+        <% if @authorised_to_edit %>
+          <% if @ore_resources.count > 1 %>
+            <% form_tag(pack_annotations_path(@pack)) do -%>
+                <%= select_tag(:subject, options_for_select(@ore_resources.map    { |r| [r[:name],  r[:ore_path]]  }) ) -%>
+                <%= select_tag(:annotation_type, options_for_select(@ro_relationships.map { |r| [r["label"], r["template"]] }) ) -%>
+                <%= select_tag(:object,  options_for_select(@ore_resources.map    { |r| [r[:name],  r[:ore_path]]  }) ) -%>
+                <%= submit_tag("Add") -%>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+
 		</div>
 	</div>
 
