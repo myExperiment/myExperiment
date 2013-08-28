@@ -611,9 +611,9 @@ class ResearchObject < ActiveRecord::Base
 
   def annotations_with_templates
 
-    annotation_resources.map do |annotation_resource|
+    annotations = annotation_resources.map { |annotation_resource| annotation_resource.annotation }
      
-      annotation = annotation_resource.annotation
+    annotations.uniq.map do |annotation|
 
       graph = load_graph(annotation.ao_body.content_blob.data, annotation.ao_body.content_type)
 

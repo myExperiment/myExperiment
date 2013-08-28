@@ -75,6 +75,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.pack_items '/packs/:id/items', :controller => 'packs', :action => 'item_index', :conditions => { :method => :get }
   map.pack_item  '/packs/:id/items/:item_path', :controller => 'packs', :action => 'item_show',  :conditions => { :method => :get }, :requirements => { :item_path => /[^;]+/ }
+  map.pack_item  '/packs/:id/items/:item_path', :controller => 'packs', :action => 'item_destroy',  :conditions => { :method => :delete }, :requirements => { :item_path => /[^;]+/ }
   
   # workflows (downloadable)
   map.resources :workflows, 

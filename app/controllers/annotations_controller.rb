@@ -83,7 +83,7 @@ puts "targets = #{targets.inspect}"
 
     pack.research_object.update_manifest!
 
-    redirect_to pack_path(pack)
+    redirect_to pack_annotations_path(pack)
   end
 
   def new

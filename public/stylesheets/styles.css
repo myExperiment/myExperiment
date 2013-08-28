@@ -2662,6 +2662,14 @@ TABLE.metadata TD.content_type {
   padding: 4px;
 }
 
+.annotation .header {
+  padding-left: 5px;
+}
+
+.annotation .header IMG {
+  padding-right: 8px;
+}
+
 .annotation TD {
   text-align: left;
   vertical-align: top;

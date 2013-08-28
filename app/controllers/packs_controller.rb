@@ -14,7 +14,7 @@ class PacksController < ApplicationController
   RO_RESOURCE = "http://purl.org/wf4ever/ro#Resource"
   WORKFLOW_RUN = "http://purl.org/wf4ever/roterms#WorkflowRunBundle"
 
-  before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics, :item_show]
+  before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics, :item_show, :item_destroy]
   
   before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
   
@@ -489,6 +489,23 @@ class PacksController < ApplicationController
     end
   end
 
+  def item_destroy
+    @item = @pack.research_object.find_using_path(params[:item_path])
+    
+    if @item.nil?
+      render_404("Pack item not found.")
+      return
+    end
+
+    # Delete the pack contributable entry if it exists.
+    pce = @item.pack_contributable_entry.destroy if @item.pack_contributable_entry
+
+    # Delete the resource
+    @item.destroy
+
+    render pack_path(@pack)
+  end
+
   protected
   
   # Check that a protocol is specified in the URI; prepend HTTP:// otherwise
@@ -515,6 +532,7 @@ class PacksController < ApplicationController
       "favourite_delete" => "view",
       "index"            => "view",
       "items"            => "view",
+      "item_destroy"     => "edit",
       "item_show"        => "view",
       "new"              => "create",
       "new_item"         => "edit",
