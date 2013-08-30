@@ -216,6 +216,16 @@ class Resource < ActiveRecord::Base
 
       research_object.resources.reload
 
+      # The manifest should contain the metadata for every resource, so we need
+      # to know the metrics of each.  This means that we must ensure that all
+      # RDF is generated before we create the manifest.
+
+      research_object.resources.each do |resource|
+        unless resource.path == ResearchObject::MANIFEST_PATH
+          resource.generate_graph! if resource.content_blob.nil?
+        end
+      end
+
       manifest_body = pretty_rdf_xml(RDF::Writer.for(:rdfxml).buffer { |writer| writer << research_object.description })
 
       research_object.new_or_update_resource(
