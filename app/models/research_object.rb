@@ -628,7 +628,7 @@ class ResearchObject < ActiveRecord::Base
       }
     end
   end
-w:
+
 private
 
   def create_manifest #:nodoc:
