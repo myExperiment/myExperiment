@@ -202,13 +202,37 @@ class Resource < ActiveRecord::Base
   end
 
   def update_graph!
-
     unless is_resource
+      if content_blob
+        content_blob.destroy
+        update_attribute(:content_blob, nil)
+      end
+    end
+  end
 
-      new_description = create_rdf_xml { |graph| graph << description }
+  def generate_graph!
 
-      content_blob.destroy if content_blob
-      update_attribute(:content_blob, ContentBlob.new(:data => new_description))
+    if path == ResearchObject::MANIFEST_PATH
+
+      research_object.resources.reload
+
+      manifest_body = pretty_rdf_xml(RDF::Writer.for(:rdfxml).buffer { |writer| writer << research_object.description })
+
+      research_object.new_or_update_resource(
+          :slug         => ResearchObject::MANIFEST_PATH,
+          :content_type => "application/rdf+xml",
+          :data         => manifest_body,
+          :force_write  => true) 
+
+    else
+
+      unless is_resource
+
+        new_description = create_rdf_xml { |graph| graph << description }
+
+        content_blob.destroy if content_blob
+        update_attribute(:content_blob, ContentBlob.new(:data => new_description))
+      end
     end
   end
 

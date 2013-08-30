@@ -69,6 +69,14 @@ class ResourcesController < ActionController::Base
         redirect_to resource.proxy_for_path, :status => 303
       end
     else
+
+      # Generate RDF on demand if required.
+
+      if resource.content_blob.nil?
+        resource.generate_graph!
+        resource.reload
+      end
+
       send_data(resource.content_blob.data, :type => resource.content_type)
     end
   end

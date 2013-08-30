@@ -65,16 +65,7 @@ class ResearchObject < ActiveRecord::Base
   end
 
   def update_manifest!
-
-    resources.reload
-
-    manifest_body = pretty_rdf_xml(RDF::Writer.for(:rdfxml).buffer { |writer| writer << description })
-
-    new_or_update_resource(
-        :slug         => MANIFEST_PATH,
-        :content_type => "application/rdf+xml",
-        :data         => manifest_body,
-        :force_write  => true) 
+    manifest_resource.update_graph!
   end
 
   def manifest_resource
