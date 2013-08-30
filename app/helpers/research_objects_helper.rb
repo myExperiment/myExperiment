@@ -176,7 +176,10 @@ module ResearchObjectsHelper
     end
   end
 
-  def load_graph(content, content_type = "application/rdf+xml")
+  def load_graph(content, opts = {})
+  
+    content_type = opts[:content_type] || "application/rdf+xml"
+    base_uri     = opts[:base_uri]
 
     case content_type
     when "application/rdf+xml"
@@ -186,7 +189,7 @@ module ResearchObjectsHelper
     end
 
     graph = RDF::Graph.new
-    graph << RDF::Reader.for(format).new(content) if content
+    graph << RDF::Reader.for(format).new(content, :base_uri => base_uri) if content
     graph
   end
 

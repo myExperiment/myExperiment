@@ -20,7 +20,7 @@ class AnnotationsController < ApplicationController
 
     @annotation = @pack.research_object.resources.find(:first, :conditions => { :uuid => params[:id] })
 
-    @graph = load_graph(@annotation.ao_body.content_blob.data, @annotation.ao_body.content_type)
+    @graph = load_graph(@annotation.ao_body.content_blob.data, :content_type => @annotation.ao_body.content_type)
 
     @annotation_template, @parameters = @pack.research_object.find_template_from_graph(@graph, Conf.ro_templates)
   end

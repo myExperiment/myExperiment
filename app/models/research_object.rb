@@ -6,6 +6,7 @@
 require 'rdf'
 require 'rdf/raptor'
 require 'yaml'
+require 'zip/zip'
 
 class ResearchObject < ActiveRecord::Base
 
@@ -497,7 +498,7 @@ class ResearchObject < ActiveRecord::Base
 
     resources.all(:conditions => { :is_annotation => true }).each do |annotation|
       ao_body = annotation.ao_body
-      result << load_graph(ao_body.content_blob.data, ao_body.content_type)
+      result << load_graph(ao_body.content_blob.data, :content_type => ao_body.content_type)
     end
 
     result
@@ -615,7 +616,7 @@ class ResearchObject < ActiveRecord::Base
      
     annotations.uniq.map do |annotation|
 
-      graph = load_graph(annotation.ao_body.content_blob.data, annotation.ao_body.content_type)
+      graph = load_graph(annotation.ao_body.content_blob.data, :content_type => annotation.ao_body.content_type)
 
       template, parameters = find_template_from_graph(graph, Conf.ro_templates)
 
@@ -627,7 +628,7 @@ class ResearchObject < ActiveRecord::Base
       }
     end
   end
-
+w:
 private
 
   def create_manifest #:nodoc:

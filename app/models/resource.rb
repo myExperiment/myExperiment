@@ -223,7 +223,7 @@ class Resource < ActiveRecord::Base
 
     annotations.each do |annotation|
       ao_body = annotation.ao_body
-      result << load_graph(ao_body.content_blob.data, ao_body.content_type)
+      result << load_graph(ao_body.content_blob.data, :content_type => ao_body.content_type)
     end
 
     result
@@ -232,7 +232,7 @@ class Resource < ActiveRecord::Base
   def annotations_with_templates
     annotations.map do |annotation|
 
-      graph = load_graph(annotation.ao_body.content_blob.data, annotation.ao_body.content_type)
+      graph = load_graph(annotation.ao_body.content_blob.data, :content_type => annotation.ao_body.content_type)
 
       template, parameters = research_object.find_template_from_graph(graph, Conf.ro_templates)
 
