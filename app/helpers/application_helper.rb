@@ -747,6 +747,8 @@ module ApplicationHelper
       return "famfamfam_silk/note.png"
     when "folder"
       return "famfamfam_silk/folder.png"
+    when "disk"
+      return "famfamfam_silk/disk.png"
     else
       return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end
