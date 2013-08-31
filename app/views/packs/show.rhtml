@@ -10,6 +10,7 @@
 			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
 		<% end -%>
     <li><%= icon('pack', download_pack_path(@pack), nil, nil, "Download") %></li>
+    <li><%= icon('folder', pack_items_path(@pack), nil, nil, 'Resources') -%></li>
     <li><%= icon('annotations', pack_annotations_path(@pack), nil, nil, 'Annotations') -%></li>
     <% if false %>
     <% if @authorised_to_edit -%>

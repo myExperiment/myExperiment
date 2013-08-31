@@ -203,5 +203,31 @@ module ResearchObjectsHelper
     pretty_rdf_xml(render_rdf(graph))
   end
 
+  def pack_resource_path_fixed(pack, resource)
+
+    ore_path = resource.ore_path
+
+    if resource.is_root_folder?
+      "/packs/#{pack.id}/resources"
+    elsif ore_path
+      "/packs/#{pack.id}/resources/#{ore_path}"
+    else
+      throw "No ORE path to this resource"
+    end
+  end
+
+  def parent_folders(resource)
+
+    folders = []
+
+    return [] if resource.is_root_folder
+
+    while resource.folder_entry.proxy_in.is_root_folder == false
+      resource = resource.folder_entry.proxy_in
+      folders << resource
+    end
+
+    folders.reverse
+  end
 end
 

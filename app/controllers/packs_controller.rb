@@ -472,7 +472,17 @@ class PacksController < ApplicationController
   end
 
   def item_show
-    @item = @pack.research_object.find_using_path(params[:item_path])
+
+    if params[:item_path]
+      @item = @pack.research_object.find_using_path(params[:item_path])
+    else
+      @item = @pack.research_object.root_folder
+    end
+
+    unless @item
+      render_404("Pack resource not found")
+      return
+    end
 
     @annotations = @item.annotations_with_templates
 
@@ -484,13 +494,18 @@ class PacksController < ApplicationController
       @statements << annotation[:graph]
     end
 
-    @title = @statements.query([@item.uri, RDF::DC.title, nil]).first_value || @item.folder_entry.entry_name
-
-    @description = @statements.query([@item.uri, RDF::DC.description, nil]).first_value
+    unless @item.is_folder
+      @title = @statements.query([@item.uri, RDF::DC.title, nil]).first_value || @item.folder_entry.entry_name
+      @description = @statements.query([@item.uri, RDF::DC.description, nil]).first_value
+    end
 
     unless @item
       render_404("Pack item not found.")
       return
+    end
+
+    if @item.is_folder
+      render :action => 'folder_show'
     end
   end
 

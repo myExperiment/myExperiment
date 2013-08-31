@@ -1,0 +1,22 @@
+<% if @item.is_root_folder %>
+  <h1>Pack resources</h1>
+<% else %>
+  <% parent = @item.folder_entry.proxy_in %>
+  <h1>Pack folder: <%=h @item.folder_entry.entry_name -%></h1>
+  <p>Parent folder is:
+    <% label = parent.is_root_folder ? "Top level" : @item.folder_entry.proxy_in.folder_entry.entry_name %>
+    <%= link_to(h(label), pack_resource_path_fixed(@pack, @item.folder_entry.proxy_in)) -%>
+  </p>
+<% end %>
+
+<h2>Folder content:</h2>
+
+<ul>
+  <% @item.proxies.each do |r| %>
+    <% if r.proxy_for %>
+      <li><%= link_to(h(r.proxy_for.folder_entry.entry_name), pack_resource_path_fixed(@pack, r.proxy_for)) -%></li>
+    <% else %>
+      <li><%= link_to(h(r.proxy_for_path), r.proxy_for_path) -%> (External)</li>
+    <% end %>
+  <% end %>
+</ul>
