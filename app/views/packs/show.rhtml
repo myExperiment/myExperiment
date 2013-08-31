@@ -4,24 +4,24 @@
 <% contributable_entries = @version ? @version.contributable_entries : @pack.contributable_entries %>
 <% remote_entries        = @version ? @version.remote_entries        : @pack.remote_entries        %>
 
-<% if @authorised_to_edit %>
-	<ul class="sectionIcons">
-		<% if mine?(@pack) -%>
-			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
-		<% end -%>
-    <li><%= icon('pack', download_pack_path(@pack), nil, nil, "Download") %></li>
-    <li><%= icon('folder', pack_items_path(@pack), nil, nil, 'Resources') -%></li>
-    <li><%= icon('annotations', pack_annotations_path(@pack), nil, nil, 'Annotations') -%></li>
-    <% if false %>
-    <% if @authorised_to_edit -%>
-			<li><%= icon('new', snapshot_pack_path(@pack), nil, { :confirm => 'Are you sure that you would like to create a new snapshot of this Pack?', :method => :post }, 'Create snapshot') %></li>
-    <% end %>	
-    <% end %>
-		<% if Authorization.check("destroy", @pack, current_user) %>
-			<li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments, BUT does not delete the actual items pointed to in the Pack. Are you sure you would like to delete this Pack?', :method => :delete }, 'Delete Pack') %></li>
-		<% end %>
-	</ul>
-<% end %>
+<ul class="sectionIcons">
+  <% if @authorised_to_edit %>
+    <% if mine?(@pack) -%>
+      <li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
+    <% end -%>
+  <% end %>
+  <li><%= icon('folder', pack_items_path(@pack), nil, nil, 'Resources') -%></li>
+  <li><%= icon('annotations', pack_annotations_path(@pack), nil, nil, 'Annotations') -%></li>
+  <li><%= icon('pack', download_pack_path(@pack), nil, nil, "Download") %></li>
+  <% if false %>
+  <% if @authorised_to_edit -%>
+    <li><%= icon('new', snapshot_pack_path(@pack), nil, { :confirm => 'Are you sure that you would like to create a new snapshot of this Pack?', :method => :post }, 'Create snapshot') %></li>
+  <% end %>	
+  <% end %>
+  <% if Authorization.check("destroy", @pack, current_user) %>
+    <li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments, BUT does not delete the actual items pointed to in the Pack. Are you sure you would like to delete this Pack?', :method => :delete }, 'Delete Pack') %></li>
+  <% end %>
+</ul>
 
 <h1 class="contribution_title">Pack: <%= contributable_name(@pack.id, 'Pack') %></h1>
 
