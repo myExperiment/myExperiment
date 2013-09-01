@@ -9,6 +9,8 @@
   <% resources.each do |resource| %>
     <% ore_path = resource.ore_path %>
     <% next unless ore_path %>
-    <%= render :partial => "resource_tile", :locals => { :pack => pack, :resource => resource } -%>
+    <% if Authorization.check('view', resource, current_user) %>
+      <%= render :partial => "resource_tile", :locals => { :pack => pack, :resource => resource } -%>
+    <% end %>
   <% end %>
 </table>

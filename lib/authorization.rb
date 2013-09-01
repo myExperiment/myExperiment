@@ -397,7 +397,7 @@ module Authorization
               return Authorization.check('view', object.pack_contributable_entry, user)
             end
 
-            return false
+            return true
 
           when "create"
 
