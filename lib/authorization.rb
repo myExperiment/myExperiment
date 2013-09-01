@@ -328,7 +328,7 @@ module Authorization
             return Authorization.check('edit', object.context, user)
         end
 
-      when "PackContributableEntry", "PackRemoteEntry"
+      when "PackContributableEntry"
 
         case action
 
@@ -338,6 +338,42 @@ module Authorization
 
             # Only users that can edit a pack can add items to it
             return !user.nil? && Authorization.check('edit', context, user)
+
+          when "view"
+
+            # Only users can can view the pack and also view the contributable
+            # can view it.
+
+            return false unless Authorization.check('view', object.pack, user)
+
+            return Authorization.check('view', object.contributable, user)
+
+          when "edit", "destroy"
+
+            # Users that can edit the pack can also edit / delete items, but
+            # only if they can view the items.
+
+            return false unless Authorization.check('edit', object.pack, user)
+
+            return Authorization.check('view', object.contributable, user)
+        end
+
+      when "PackRemoteEntry"
+
+        case action
+
+          when "create"
+
+            raise "Context required for authorisation check" unless context
+
+            # Only users that can edit a pack can add items to it
+            return !user.nil? && Authorization.check('edit', context, user)
+
+          when "view"
+
+            # Only users can can view the pack can see remote items.
+
+            return Authorization.check('view', object.pack, user)
 
           when "edit", "destroy"
             # Users that can edit the pack can also edit / delete items
@@ -358,14 +394,20 @@ module Authorization
             # contributable if it is local to myExperiment
 
             if object.pack_contributable_entry
-              return false unless Authorization.check('view', object.pack_contributable_entry, user)
+              return Authorization.check('view', object.pack_contributable_entry, user)
             end
+
+            return false
 
           when "create"
 
             # Only users that can edit the pack can create RO resources
-            return Authorization.check('edit', context, user)
+            return Authorization.check('edit', object.research_object.pack, user)
 
+          when "destroy"
+
+            # Only users that can edit the pack can delete RO resources
+            return Authorization.check('edit', object.research_object.pack, user)
         end
 
       when "Message"

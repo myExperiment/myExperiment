@@ -5,9 +5,11 @@
   <td><%=h resource.content_type -%></td>
   <td><%=h resource.annotations.count -%></td>
   <td>
-    <%= link_to("<img src='/images/grey_cross.png' />",
-        pack_item_path(pack, ore_path),
-        :method => :delete,
-        :confirm => "Are you sure you want to delete this item?") %>
+    <% if Authorization.check('destroy', resource, current_user) %>
+      <%= link_to("<img src='/images/grey_cross.png' />",
+          pack_item_path(pack, ore_path),
+          :method => :delete,
+          :confirm => "Are you sure you want to delete this item?") %>
+    <% end %>
   </td>
 </tr>
