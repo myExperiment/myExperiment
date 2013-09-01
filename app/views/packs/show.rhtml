@@ -93,6 +93,11 @@
     <%= image_tag(@sketch.to_s, :width => '100%') -%>
   <% end %>
 
+  <% if @research_question %>
+    <h2>Research Question</h2>
+    <p><%= link_to(h(@research_question.to_s), @research_question.to_s) -%></p>
+  <% end %>
+
   <% if @hypothesis %>
     <h2>Hypothesis</h2>
     <p><%= link_to(h(@hypothesis.to_s), @hypothesis.to_s) -%></p>

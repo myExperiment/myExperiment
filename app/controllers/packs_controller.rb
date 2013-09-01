@@ -94,6 +94,8 @@ class PacksController < ApplicationController
         @ro_relationships = Conf.ro_relationships
         @sketch = @graph.query(:predicate => RDF.type,
             :object => RDF::URI("http://purl.org/wf4ever/roterms#Sketch")).first_subject
+        @research_question = @graph.query(:predicate => RDF.type,
+            :object => RDF::URI("http://purl.org/wf4ever/roterms#ResearchQuestion")).first_subject
         @hypothesis = @graph.query(:predicate => RDF.type,
             :object => RDF::URI("http://purl.org/wf4ever/roterms#Hypothesis")).first_subject
         @conclusions = @graph.query(:predicate => RDF.type,
