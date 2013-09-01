@@ -9,14 +9,5 @@
   </p>
 <% end %>
 
-<h2>Folder content:</h2>
-
-<ul>
-  <% @item.proxies.each do |r| %>
-    <% if r.proxy_for %>
-      <li><%= link_to(h(r.proxy_for.folder_entry.entry_name), pack_resource_path_fixed(@pack, r.proxy_for)) -%></li>
-    <% else %>
-      <li><%= link_to(h(r.proxy_for_path), r.proxy_for_path) -%> (External)</li>
-    <% end %>
-  <% end %>
-</ul>
+<%= render :partial => 'resource_tiles', :locals => { :pack => @pack,
+       :resources => @item.proxies.map { |p| p.proxy_for } } -%>

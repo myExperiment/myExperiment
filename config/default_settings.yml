@@ -1556,3 +1556,85 @@ ro_templates:
 wf_ro_service_uri: "http://www.example.com/wf-ro/jobs"
 wf_ro_service_bearer_token: "bearer-token"
 
+file_format_associations:
+
+  - image: /images/famfamfam_silk/page_white.png
+    label: File
+    special: generic
+
+  - image: /images/famfamfam_silk/folder.png
+    label: Folder
+    special: folder
+
+  - image: /images/famfamfam_silk/page_white_link.png
+    label: Link
+    special: link
+
+  - extensions: [mpg, mpeg, mov, mp4, flv]
+    image: /images/famfamfam_silk/film.png
+    label: Video file
+
+  - extensions: [pdf]
+    image: /images/famfamfam_silk/page_white_acrobat.png
+    label: PDF document
+
+  - extensions: [html, htm]
+    image: /images/famfamfam_silk/page_white_code.png
+    label: HTML document
+
+  - extensions: [xml]
+    image: /images/famfamfam_silk/page_white_code.png
+    label: XML document
+
+  - extensions: [c]
+    image: /images/famfamfam_silk/page_white_c.png
+    label: C source file
+
+  - extensions: [cpp, cxx]
+    image: /images/famfamfam_silk/page_white_cplusplus.png
+    label: "C++ source file"
+
+  - extensions: [cs]
+    image: /images/famfamfam_silk/page_white_csharp.png
+    label: C# source file
+
+  - extensions: [xls, xslx, xslm, csv]
+    image: /images/famfamfam_silk/page_white_excel.png
+    label: Excel file
+
+  - extensions: [swf]
+    image: /images/famfamfam_silk/page_white_flash.png
+    label: Flash file
+
+  - extensions: [h]
+    image: /images/famfamfam_silk/page_white_h.png
+    label: Header file
+
+  - extensions: [png, gif, tiff, bmp, jpg, jpeg]
+    image: /images/famfamfam_silk/page_white_picture.png
+    label: Image file
+
+  - extensions: [php]
+    image: /images/famfamfam_silk/page_white_php.png
+    label: PHP source file
+
+  - extensions: [ppt, pptx, pptm]
+    image: /images/famfamfam_silk/page_white_powerpoint.png
+    label: PowerPoint file
+
+  - extensions: [rb]
+    image: /images/famfamfam_silk/page_white_ruby.png
+    label: Ruby source file
+
+  - extensions: [txt, text]
+    image: /images/famfamfam_silk/page_white_text.png
+    label: Text file
+
+  - extensions: [doc, docx, docm]
+    image: /images/famfamfam_silk/page_white_word.png
+    label: Word file
+
+  - extensions: [zip]
+    image: /images/famfamfam_silk/page_white_zip.png
+    label: Zip archive
+

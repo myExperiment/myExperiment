@@ -1,0 +1,14 @@
+<table class="simple">
+  <tr>
+    <th>Path</th>
+    <th>Size</th>
+    <th>Content type</th>
+    <th>Annotations</th>
+    <th></th>
+  </tr>
+  <% resources.each do |resource| %>
+    <% ore_path = resource.ore_path %>
+    <% next unless ore_path %>
+    <%= render :partial => "resource_tile", :locals => { :pack => pack, :resource => resource } -%>
+  <% end %>
+</table>

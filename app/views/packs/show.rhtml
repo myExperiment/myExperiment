@@ -173,32 +173,8 @@
   <div class="tabContainer">
     <div class="tabTitle">ORE Entries</div>
     <div class="tabContent">
-      <table class="simple">
-        <tr>
-          <th>Path</th>
-          <th>Size</th>
-          <th>Content type</th>
-          <th>Annotations</th>
-          <th></th>
-        </tr>
-        <% @pack.research_object.resources.each do |resource| %>
-          <% ore_path = resource.ore_path %>
-          <% next unless ore_path %>
-          <% next if resource.is_folder %>
-          <tr>
-            <td><%= link_to(h(resource.path), pack_items_path(@pack) + "/" + ore_path) -%></td>
-            <td><%=h resource.size -%></td>
-            <td><%=h resource.content_type -%></td>
-            <td><%=h resource.annotations.count -%></td>
-            <td>
-              <%= link_to("<img src='/images/grey_cross.png' />",
-                  pack_item_path(@pack, resource.ore_path),
-                  :method => :delete,
-                  :confirm => "Are you sure you want to delete this item?") %>
-            </td>
-          </tr>
-        <% end %>
-      </table>
+      <%= render :partial => 'resource_tiles', :locals => { :pack => @pack,
+             :resources => @pack.research_object.resources.select { |r| !r.is_folder } } -%>
     </div>
   </div>
   

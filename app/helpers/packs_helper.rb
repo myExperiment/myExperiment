@@ -92,4 +92,33 @@ module PacksHelper
 
     link_to(text, href)
   end
+
+  def find_association(resource)
+
+    is_folder = resource.is_folder
+    is_proxy  = resource.is_proxy
+    extension = resource.folder_entry.entry_name.split(".").last
+    generic   = nil
+
+    Conf.file_format_associations.each do |assoc|
+      
+      if is_folder
+        return assoc if assoc["special"] == "folder"
+        next
+      end
+
+      if is_proxy
+        return assoc if assoc["special"] == "link"
+        next
+      end
+
+      generic = assoc if assoc["special"] == "generic"
+
+      if assoc["extensions"]
+        return assoc if assoc["extensions"].include?(extension)
+      end
+    end
+
+    generic
+  end
 end

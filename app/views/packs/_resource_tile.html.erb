@@ -1,0 +1,13 @@
+<% ore_path = resource.ore_path %>
+<tr>
+  <td><img src="<%= find_association(resource)["image"] -%>"> <%= link_to(h(resource.folder_entry.entry_name), pack_items_path(pack) + "/" + ore_path) -%></td>
+  <td><%=h resource.size -%></td>
+  <td><%=h resource.content_type -%></td>
+  <td><%=h resource.annotations.count -%></td>
+  <td>
+    <%= link_to("<img src='/images/grey_cross.png' />",
+        pack_item_path(pack, ore_path),
+        :method => :delete,
+        :confirm => "Are you sure you want to delete this item?") %>
+  </td>
+</tr>
