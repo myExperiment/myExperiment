@@ -1,8 +1,9 @@
 <% ore_path = resource.ore_path %>
+<% association = find_association(resource) %>
 <tr>
-  <td><img src="<%= find_association(resource)["image"] -%>"> <%= link_to(h(resource.folder_entry.entry_name), pack_items_path(pack) + "/" + ore_path) -%></td>
+  <td><img src="<%= association["image"] -%>"> <%= link_to(h(resource.folder_entry.entry_name), pack_items_path(pack) + "/" + ore_path) -%></td>
   <td><%=h resource.size -%></td>
-  <td><%=h resource.content_type -%></td>
+  <td><%=h association["label"] -%></td>
   <td><%=h resource.annotations.count -%></td>
   <td>
     <% if Authorization.check('destroy', resource, current_user) %>
