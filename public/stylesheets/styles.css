@@ -2691,3 +2691,8 @@ TABLE.metadata TD.content_type {
 .annotation TEXTAREA {
   height: 100px;
 }
+
+.annotation .provenance {
+  text-align: right;
+  font-size: 10px;
+}

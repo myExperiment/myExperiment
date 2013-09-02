@@ -20,5 +20,12 @@
       <% end %>
     </table>
   <% end %>
+
+  <div class="provenance">
+    Created by
+    <span class="contributor"><%= user_link(annotation[:annotation].creator_uri) -%></span>
+    on
+    <span class="date"><%= datetime(annotation[:annotation].created_at, false) -%></span>
+  </div>
 </div>
 

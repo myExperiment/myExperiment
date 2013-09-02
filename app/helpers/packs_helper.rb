@@ -121,4 +121,19 @@ module PacksHelper
 
     generic
   end
+
+  def user_link(uri)
+
+    # Get absolute URI.
+    uri = URI.parse(Conf.base_uri).merge(uri).to_s
+
+    # Match it up with the users
+    resource = parse_resource_uri(uri)
+
+    if resource && resource[0] == User
+      link_to(User.find(resource[1]).name, uri)
+    else
+      link_to(uri, uri)
+    end
+  end
 end
