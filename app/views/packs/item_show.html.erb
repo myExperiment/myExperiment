@@ -7,7 +7,7 @@
     <td>Title</td>
     <td>
       <%=h @title -%>
-      <%= link_to('[Add title]', new_pack_annotation_path(@pack, { :template => 'title', :resource => @item.ore_path })) -%>
+      [<%= link_to('Add title', new_pack_annotation_path(@pack, { :template => 'title', :resource => @item.ore_path })) -%>]
     </td>
   </tr>
   <tr>
@@ -28,15 +28,48 @@
   </tr>
 </table>
 
-<h2>Description</h2>
-
 <% if @description %>
+  <h2>Description</h2>
   <p><%=h simple_format(@description) -%></p>
 <% end %>
 
-<p><%= link_to('[Add description]', new_pack_annotation_path(@pack, { :template => 'description', :resource => @item.ore_path })) -%></p>
+<% unless @input_files_for_this_workflow.empty? %>
+  <h2>Input files</h2>
+  <ul>
+    <% @input_files_for_this_workflow.each do |input| %>
+      <li><%= link_to(h(input.to_s), input.to_s) -%></li>
+    <% end %>
+  </ul>
+<% end %>
 
-<h1>Debug</h1>
+<% unless @requires_hardware.empty? %>
+  <h2>Hardware requirements</h2>
+  <ul>
+    <% @requires_hardware.each do |hardware| %>
+      <li><%=h hardware -%></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% unless @requires_software.empty? %>
+  <h2>Software requirements</h2>
+  <ul>
+    <% @requires_software.each do |software| %>
+      <li><%=h software -%></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<h2>Actions</h2>
+
+<ul>
+<li>[<%= link_to('Add description', new_pack_annotation_path(@pack, { :template => 'description', :resource => @item.ore_path })) -%>]</li>
+<li>[<%= link_to("Select an input file", new_pack_annotation_path(@pack, { :template => 'input_selection_relationship', :workflow => @item.ore_path })) -%>]</li>
+<li>[<%= link_to("Add new hardware requirement", new_pack_annotation_path(@pack, { :template => 'requires_hardware', :resource => @item.ore_path })) -%>]</li>
+<li>[<%= link_to("Add new software requirement", new_pack_annotation_path(@pack, { :template => 'requires_software', :resource => @item.ore_path })) -%>]</li>
+</ul>
+
+<h2>Debug</h2>
 
 <div id="tabsContainer" class="tabsContainer"></div>
   

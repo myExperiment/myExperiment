@@ -1500,18 +1500,18 @@ ro_templates:
 
     - label:  Workflow
       type:   resource
-      symbol: :subject
+      symbol: :workflow
 
     - label:  Input file
       type:   resource
-      symbol: :object
+      symbol: :input
 
     required_statements:
-    - [:subject, "<http://purl.org/wf4ever/roterms#inputSelected>", :object]
+    - [:workflow, "<http://purl.org/wf4ever/roterms#inputSelected>", :input]
 
     targets:
-    - :subject
-    - :object
+    - :workflow
+    - :input
 
   title:
 
@@ -1549,6 +1549,46 @@ ro_templates:
 
     required_statements:
     - [:resource, "<http://purl.org/dc/terms/description>", :description]
+
+    targets:
+    - :resource
+
+  requires_hardware:
+
+    label: requires hardware
+
+    parameters:
+
+    - label:  Resource
+      type:   resource 
+      symbol: :resource
+
+    - label:  Hardware
+      type:   string 
+      symbol: :hardware
+
+    required_statements:
+    - [:resource, "<http://purl.org/wf4ever/roterms#requiresHardware>", :hardware]
+
+    targets:
+    - :resource
+
+  requires_software:
+
+    label: requires software
+
+    parameters:
+
+    - label:  Resource
+      type:   resource 
+      symbol: :resource
+
+    - label:  Software
+      type:   string 
+      symbol: :software
+
+    required_statements:
+    - [:resource, "<http://purl.org/wf4ever/roterms#requiresSoftware>", :software]
 
     targets:
     - :resource

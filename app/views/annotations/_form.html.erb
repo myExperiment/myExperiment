@@ -8,12 +8,19 @@
   <% annotation_template["parameters"].each do |parameter| %>
     <tr>
       <td><%= parameter["label"] -%></td>
-      <% case parameter["type"] ; when "string" %>
-        <td><%= text_field_tag(parameter["symbol"], values[parameter["symbol"]]) -%></td>
-      <% when "textarea" %>
-        <td><%= text_area_tag(parameter["symbol"], values[parameter["symbol"]]) -%></td>
-      <% when "resource" %>
-        <td><%= text_field_tag(parameter["symbol"], values[parameter["symbol"]]) -%></td>
+      <% if values[parameter["symbol"]] %>
+        <td>
+          <%=h values[parameter["symbol"]] -%>
+          <%= hidden_field_tag(parameter["symbol"], values[parameter["symbol"]]) -%>
+        </td>
+      <% else %>
+        <% case parameter["type"] ; when "string" %>
+          <td><%= text_field_tag(parameter["symbol"], values[parameter["symbol"]]) -%></td>
+        <% when "textarea" %>
+          <td><%= text_area_tag(parameter["symbol"], values[parameter["symbol"]]) -%></td>
+        <% when "resource" %>
+          <td><%= select_tag(parameter["symbol"], options_for_select(research_object.ore_resources.map { |r| [r[:name], r[:ore_path]] })) -%></td>
+        <% end %>
       <% end %>
     </tr>
   <% end %>

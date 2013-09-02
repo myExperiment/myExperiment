@@ -2,6 +2,7 @@
 
 <% form_tag(pack_annotations_path(@pack)) do |f| -%>
   <%= render(:partial => "form", :locals => {
+      :research_object => @pack.research_object,
       :template => params[:template],
       :annotation_template => @annotation_template,
       :values => params } ) -%>

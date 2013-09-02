@@ -385,6 +385,11 @@ module Authorization
 
         case action
 
+          when "create"
+
+            # Only users that can edit the pack can create RO resources
+            return Authorization.check('edit', context, user)
+
           when "view"
 
             # You can only view a pack resource if you can view the pack
@@ -398,11 +403,6 @@ module Authorization
             end
 
             return true
-
-          when "create"
-
-            # Only users that can edit the pack can create RO resources
-            return Authorization.check('edit', object.research_object.pack, user)
 
           when "destroy"
 

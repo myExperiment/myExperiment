@@ -499,6 +499,9 @@ class PacksController < ApplicationController
     unless @item.is_folder
       @title = @statements.query([@item.uri, RDF::DC.title, nil]).first_value || @item.folder_entry.entry_name
       @description = @statements.query([@item.uri, RDF::DC.description, nil]).first_value
+      @input_files_for_this_workflow = @statements.query([@item.uri, RDF::URI("http://purl.org/wf4ever/roterms#inputSelected"), nil]).objects
+      @requires_hardware = @statements.query([@item.uri, RDF::URI("http://purl.org/wf4ever/roterms#requiresHardware"), nil]).objects
+      @requires_software = @statements.query([@item.uri, RDF::URI("http://purl.org/wf4ever/roterms#requiresSoftware"), nil]).objects
     end
 
     unless @item
