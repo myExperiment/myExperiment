@@ -55,7 +55,14 @@
   <h2>Software requirements</h2>
   <ul>
     <% @requires_software.each do |software| %>
-      <li><%=h software -%></li>
+      <% desc = @statements.query([software, RDF::DC.description, nil]).first_literal %>
+      <% link = @statements.query([software, RDF::RDFS.seeAlso, nil]).first_literal %>
+
+      <% if link %>
+        <li><%= link_to(h(desc), link.to_s, :rel => "nofollow") -%></li>
+      <% else %>
+        <li><%=h desc -%></li>
+      <% end %>
     <% end %>
   </ul>
 <% end %>
