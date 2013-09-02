@@ -1678,3 +1678,6 @@ file_format_associations:
     image: /images/famfamfam_silk/page_white_zip.png
     label: Zip archive
 
+  - extensions: [t2flow]
+    image: /images/famfamfam_silk/page_white_gear.png
+    label: Taverna 2 workflow
