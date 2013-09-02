@@ -495,11 +495,7 @@ class PacksController < ApplicationController
 
     @visible_annotations = @annotations.select { |a| a[:template] != nil }
 
-    @statements = RDF::Graph.new
-
-    @annotations.each do |annotation|
-      @statements << annotation[:graph]
-    end
+    @statements = merge_graphs(@annotations.map { |annotation| annotation[:graph] })
 
     unless @item.is_folder
       @title = @statements.query([@item.uri, RDF::DC.title, nil]).first_value || @item.folder_entry.entry_name

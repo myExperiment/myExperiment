@@ -137,6 +137,36 @@ module ResearchObjectsHelper
     candidate
   end
 
+  def merge_graphs_aux(node, bnodes)
+    if node.class == RDF::Node
+      if bnodes[node]
+        bnodes[node]
+      else
+        bnodes[node] = RDF::Node.new
+      end
+    else
+      node
+    end
+  end
+
+  def merge_graphs(graphs)
+
+    result = RDF::Graph.new
+
+    graphs.each do |graph|
+
+      bnodes = {}
+
+      graph.statements.each do |subject, predicate, object|
+        result << [merge_graphs_aux(subject,   bnodes),
+                   merge_graphs_aux(predicate, bnodes),
+                   merge_graphs_aux(object,    bnodes)]
+      end
+    end
+
+    result
+  end
+
   def parse_links(headers)
 
     links = {}

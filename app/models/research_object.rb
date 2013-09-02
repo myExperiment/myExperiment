@@ -485,14 +485,12 @@ class ResearchObject < ActiveRecord::Base
 
   def merged_annotation_graphs
 
-    result = RDF::Graph.new
-
-    resources.all(:conditions => { :is_annotation => true }).each do |annotation|
+    graphs = resources.all(:conditions => { :is_annotation => true }).map do |annotation|
       ao_body = annotation.ao_body
-      result << load_graph(ao_body.content_blob.data, :content_type => ao_body.content_type)
+      load_graph(ao_body.content_blob.data, :content_type => ao_body.content_type)
     end
 
-    result
+    merge_graphs(graphs)
   end
 
   def ore_structure_aux(entry, all_entries) #:nodoc:

@@ -13,10 +13,16 @@
   <% if annotation[:template] %>
     <table>
       <% annotation[:template]["parameters"].each do |parameter| %>
-        <tr>
-          <td class="label"><%=h parameter["label"] -%></td>
-          <td class="value"><%=h annotation[:parameters][parameter["symbol"]].to_s -%></td>
-        </tr>
+
+        <% label = parameter["label"] %>
+        <% value = annotation[:parameters][parameter["symbol"]].to_s %>
+
+        <% unless value.empty? %>
+          <tr>
+            <td class="label"><%=h label -%></td>
+            <td class="value"><%=h value -%></td>
+          </tr>
+        <% end %>
       <% end %>
     </table>
   <% end %>

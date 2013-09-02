@@ -46,7 +46,14 @@
   <h2>Hardware requirements</h2>
   <ul>
     <% @requires_hardware.each do |hardware| %>
-      <li><%=h hardware -%></li>
+      <% desc = @statements.query([hardware, RDF::DC.description, nil]).first_literal %>
+      <% link = @statements.query([hardware, RDF::RDFS.seeAlso, nil]).first_literal %>
+
+      <% if link %>
+        <li><%= link_to(h(desc), link.to_s, :rel => "nofollow") -%></li>
+      <% else %>
+        <li><%=h desc -%></li>
+      <% end %>
     <% end %>
   </ul>
 <% end %>

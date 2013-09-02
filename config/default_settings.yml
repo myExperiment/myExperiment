@@ -1557,18 +1557,31 @@ ro_templates:
 
     label: requires hardware
 
+    bnodes: [:b1]
+
     parameters:
 
     - label:  Resource
       type:   resource 
       symbol: :resource
 
-    - label:  Hardware
+    - label:  Description
       type:   string 
-      symbol: :hardware
+      symbol: :description
+
+    - label:  Link
+      type:   string
+      symbol: :link
+      optional: true
 
     required_statements:
-    - template: [:resource, "<http://purl.org/wf4ever/roterms#requiresHardware>", :hardware]
+
+    - template: [:resource, "<http://purl.org/wf4ever/roterms#requiresHardware>", :b1]
+
+    - template: [:b1, "<http://purl.org/dc/terms/description>", :description]
+
+    - template: [:b1, "<http://www.w3.org/2000/01/rdf-schema#seeAlso>", :link]
+      depends:  [:link]
 
     targets:
     - :resource
