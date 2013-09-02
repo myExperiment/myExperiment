@@ -1480,17 +1480,17 @@ ro_templates:
     bnodes: [:b1]
 
     required_statements:
-    - [:resource, "<http://purl.org/dc/terms/creator>", :b1]
-    - [:b1,       "<http://xmlns.com/foaf/0.1/Agent>",  :person]
-    - [:b1,       "<http://purl.org/dc/terms/date>",    :date]
-    - [:b1,       "<http://xmlns.com/foaf/0.1/name>",   :name]
+    - template: [:resource, "<http://purl.org/dc/terms/creator>", :b1]
+    - template: [:b1,       "<http://xmlns.com/foaf/0.1/Agent>",  :person]
+    - template: [:b1,       "<http://purl.org/dc/terms/date>",    :date]
+    - template: [:b1,       "<http://xmlns.com/foaf/0.1/name>",   :name]
 
   creator_simple:
 
     label: Creator (simple)
 
     required_statements:
-    - [:resource, "<http://purl.org/dc/terms/creator>", :agent]
+    - template: [:resource, "<http://purl.org/dc/terms/creator>", :agent]
 
   input_selection_relationship:
 
@@ -1507,7 +1507,7 @@ ro_templates:
       symbol: :input
 
     required_statements:
-    - [:workflow, "<http://purl.org/wf4ever/roterms#inputSelected>", :input]
+    - template: [:workflow, "<http://purl.org/wf4ever/roterms#inputSelected>", :input]
 
     targets:
     - :workflow
@@ -1528,7 +1528,7 @@ ro_templates:
       symbol: :title
 
     required_statements:
-    - [:resource, "<http://purl.org/dc/terms/title>", :title]
+    - template: [:resource, "<http://purl.org/dc/terms/title>", :title]
 
     targets:
     - :resource
@@ -1548,7 +1548,7 @@ ro_templates:
       symbol: :description
 
     required_statements:
-    - [:resource, "<http://purl.org/dc/terms/description>", :description]
+    - template: [:resource, "<http://purl.org/dc/terms/description>", :description]
 
     targets:
     - :resource
@@ -1568,7 +1568,7 @@ ro_templates:
       symbol: :hardware
 
     required_statements:
-    - [:resource, "<http://purl.org/wf4ever/roterms#requiresHardware>", :hardware]
+    - template: [:resource, "<http://purl.org/wf4ever/roterms#requiresHardware>", :hardware]
 
     targets:
     - :resource
@@ -1577,18 +1577,31 @@ ro_templates:
 
     label: requires software
 
+    bnodes: [:b1]
+
     parameters:
 
     - label:  Resource
       type:   resource 
       symbol: :resource
 
-    - label:  Software
+    - label:  Description
       type:   string 
-      symbol: :software
+      symbol: :description
+
+    - label:  Link
+      type:   string
+      symbol: :link
+      optional: true
 
     required_statements:
-    - [:resource, "<http://purl.org/wf4ever/roterms#requiresSoftware>", :software]
+
+    - template: [:resource, "<http://purl.org/wf4ever/roterms#requiresSoftware>", :b1]
+
+    - template: [:b1, "<http://purl.org/dc/terms/description>", :description]
+
+    - template: [:b1, "<http://www.w3.org/2000/01/rdf-schema#seeAlso>", :link]
+      depends:  [:link]
 
     targets:
     - :resource

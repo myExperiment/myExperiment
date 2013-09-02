@@ -4,7 +4,14 @@
   <%= hidden_field_tag(:annotation_id, id) %>
 <% end %>
 
+<% required_parameters = false %>
+
 <table class="annotation">
+  <tr>
+    <td colspan="2">
+      <span class="type"><%=h annotation_template["label"].capitalize -%></span>
+    </td>
+  </tr>
   <% annotation_template["parameters"].each do |parameter| %>
     <tr>
       <td><%= parameter["label"] -%></td>
@@ -14,14 +21,26 @@
           <%= hidden_field_tag(parameter["symbol"], values[parameter["symbol"]]) -%>
         </td>
       <% else %>
-        <% case parameter["type"] ; when "string" %>
-          <td><%= text_field_tag(parameter["symbol"], values[parameter["symbol"]]) -%></td>
-        <% when "textarea" %>
-          <td><%= text_area_tag(parameter["symbol"], values[parameter["symbol"]]) -%></td>
-        <% when "resource" %>
-          <td><%= select_tag(parameter["symbol"], options_for_select(research_object.ore_resources.map { |r| [r[:name], r[:ore_path]] })) -%></td>
-        <% end %>
+        <td>
+          <% case parameter["type"] ; when "string" %>
+            <%= text_field_tag(parameter["symbol"], values[parameter["symbol"]]) -%>
+          <% when "textarea" %>
+            <%= text_area_tag(parameter["symbol"], values[parameter["symbol"]]) -%>
+          <% when "resource" %>
+            <%= select_tag(parameter["symbol"], options_for_select(research_object.ore_resources.map { |r| [r[:name], r[:ore_path]] })) -%>
+          <% end %>
+          <% unless parameter["optional"] == true %>
+            <span class="required-parameter">*</span>
+            <% required_parameters = true %>
+          <% end %>
+        </td>
       <% end %>
     </tr>
+    <% end %>
+  <% if required_parameters %>
+  <tr>
+    <td></td>
+    <td class="required-parameter">* Required</td>
+  </tr>
   <% end %>
 </table>

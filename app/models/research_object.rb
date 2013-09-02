@@ -593,9 +593,23 @@ class ResearchObject < ActiveRecord::Base
 
     template["required_statements"].each do |statement|
 
-      graph << [prepare_ro_template_value(statement[0], parameters),
-                prepare_ro_template_value(statement[1], parameters),
-                prepare_ro_template_value(statement[2], parameters)]
+      node_template = statement["template"]
+      depends       = statement["depends"]
+
+      if depends
+
+        all_present = true
+
+        depends.each do |dependent|
+          all_present = false if parameters[dependent].to_s.empty?
+        end
+          
+        next unless all_present
+      end
+
+      graph << [prepare_ro_template_value(node_template[0], parameters),
+                prepare_ro_template_value(node_template[1], parameters),
+                prepare_ro_template_value(node_template[2], parameters)]
     end
 
     graph
@@ -642,25 +656,44 @@ private
       graph_copy << statement
     end
 
+    found   = []
+    missing = []
+
     template["required_statements"].each do |statement|
+
+      node_template = statement["template"]
+      depends       = statement["depends"]
 
       # Find a statement that matches the current statement in the template.
 
-      target = [prepare_ro_template_value(statement[0], parameters),
-                prepare_ro_template_value(statement[1], parameters),
-                prepare_ro_template_value(statement[2], parameters)]
+      target = [prepare_ro_template_value(node_template[0], parameters),
+                prepare_ro_template_value(node_template[1], parameters),
+                prepare_ro_template_value(node_template[2], parameters)]
 
       match = graph_copy.query(target).first
 
+      if depends
+        if match
+          found += depends
+        else
+          missing += depends
+        end
+      end
 
-      return nil if match.nil?
+      if match.nil?
+        if depends
+          next
+        else
+          return nil
+        end
+      end
 
       # Verify that there are no mismatches between existing parameters and found
       # parameters;  Then fill in newly defined parameters.
 
-      return nil unless process_ro_template_parameter(statement[0], match[0], parameters)
-      return nil unless process_ro_template_parameter(statement[1], match[1], parameters)
-      return nil unless process_ro_template_parameter(statement[2], match[2], parameters)
+      return nil unless process_ro_template_parameter(node_template[0], match[0], parameters)
+      return nil unless process_ro_template_parameter(node_template[1], match[1], parameters)
+      return nil unless process_ro_template_parameter(node_template[2], match[2], parameters)
 
       # Remove the current statement from the graph copy
 
@@ -670,6 +703,11 @@ private
     # Verify that all statements were consumed in processing the template.
 
     return nil unless graph_copy.empty?
+
+    # Verify that no dependencies were missing in some optional statements and
+    # present in other optional statements.
+
+    return nil unless (found & missing).empty?
 
     parameters
   end

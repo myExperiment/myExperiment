@@ -2681,3 +2681,7 @@ TABLE.metadata TD.content_type {
   text-align: right;
   font-size: 10px;
 }
+
+.required-parameter {
+  color: red;
+}
