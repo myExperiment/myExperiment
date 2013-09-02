@@ -2,11 +2,15 @@
 <% association = find_association(resource) %>
 <tr>
   <td><img src="<%= association["image"] -%>"> <%= link_to(h(resource.folder_entry.entry_name), pack_items_path(pack) + "/" + ore_path) -%></td>
-  <td><%=h resource.size -%></td>
+  <% if resource.is_folder || resource.is_proxy %>
+    <td></td>
+  <% else %>
+    <td><%=h resource.size -%></td>
+  <% end %>
   <td><%=h association["label"] -%></td>
   <td><%=h resource.annotations.count -%></td>
   <td>
-    <% if Authorization.check('destroy', resource, current_user) %>
+    <% if !resource.is_folder && Authorization.check('destroy', resource, current_user) %>
       <%= link_to("<img src='/images/grey_cross.png' />",
           pack_item_path(pack, ore_path),
           :method => :delete,
