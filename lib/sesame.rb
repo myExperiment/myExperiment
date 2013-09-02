@@ -24,7 +24,11 @@ module Sesame
       request.body = rdf
       request.content_type = content_type
 
-      response = @connection.request url, request   #Net::HTTP::Persistent::Error if can't connect
+      begin
+        response = @connection.request url, request   #Net::HTTP::Persistent::Error if can't connect
+      rescue Net::HTTP::Persistent::Error
+        raise ConnectionException.new, "Couldn't connect to #@url"
+      end
 
       case response.code
         when '204'
@@ -40,7 +44,11 @@ module Sesame
       url = URI("#{@url}?query=#{CGI.escape(query)}")
       request =  Net::HTTP::Get.new url.request_uri
       request['accept'] = 'application/sparql-results+xml'
-      response = @connection.request url, request
+      begin
+        response = @connection.request url, request
+      rescue Net::HTTP::Persistent::Error
+        raise ConnectionException.new, "Couldn't connect to #@url"
+      end
 
       case response.code
         when '200'
@@ -64,7 +72,11 @@ module Sesame
 
       url = URI("#{@url}/statements?#{parameters.to_query}")
       request = Net::HTTP::Delete.new url.request_uri
-      response = @connection.request url, request
+      begin
+        response = @connection.request url, request
+      rescue Net::HTTP::Persistent::Error
+        raise ConnectionException.new, "Couldn't connect to #@url"
+      end
 
       case response.code
         when '204'
@@ -75,6 +87,8 @@ module Sesame
     end
 
   end
+
+  class ConnectionException < Exception;  end
 
   class RequestException < Exception
     attr_reader :code

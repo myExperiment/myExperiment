@@ -1276,8 +1276,10 @@ end
 def rest_call_request(opts)
   begin
     send(opts[:rules]['Function'], opts)
-  rescue
+  rescue Exception => e
     if Rails.env == "production"
+      logger.info e.message
+      logger.info e.backtrace.join("\n")
       return rest_response(500)
     else
       raise
