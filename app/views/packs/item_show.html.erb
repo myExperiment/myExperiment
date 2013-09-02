@@ -60,14 +60,16 @@
   </ul>
 <% end %>
 
-<h2>Actions</h2>
+<% if Authorization.check('edit', @pack, current_user) %>
+  <h2>Actions</h2>
 
-<ul>
-<li>[<%= link_to('Add description', new_pack_annotation_path(@pack, { :template => 'description', :resource => @item.ore_path })) -%>]</li>
-<li>[<%= link_to("Select an input file", new_pack_annotation_path(@pack, { :template => 'input_selection_relationship', :workflow => @item.ore_path })) -%>]</li>
-<li>[<%= link_to("Add new hardware requirement", new_pack_annotation_path(@pack, { :template => 'requires_hardware', :resource => @item.ore_path })) -%>]</li>
-<li>[<%= link_to("Add new software requirement", new_pack_annotation_path(@pack, { :template => 'requires_software', :resource => @item.ore_path })) -%>]</li>
-</ul>
+  <ul>
+    <li>[<%= link_to('Add description', new_pack_annotation_path(@pack, { :template => 'description', :resource => @item.ore_path })) -%>]</li>
+    <li>[<%= link_to("Select an input file", new_pack_annotation_path(@pack, { :template => 'input_selection_relationship', :workflow => @item.ore_path })) -%>]</li>
+    <li>[<%= link_to("Add new hardware requirement", new_pack_annotation_path(@pack, { :template => 'requires_hardware', :resource => @item.ore_path })) -%>]</li>
+    <li>[<%= link_to("Add new software requirement", new_pack_annotation_path(@pack, { :template => 'requires_software', :resource => @item.ore_path })) -%>]</li>
+  </ul>
+<% end %>
 
 <h2>Debug</h2>
 
