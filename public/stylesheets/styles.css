@@ -1841,37 +1841,22 @@ table.simple td {
   color: gray;
 }
 
-table.quick_add {
-	border-collapse: collapse; 
-	width: 99%;
-	color: #333333;
+TABLE.quick_add TD {
+  text-align: left;
 }
 
-table.quick_add td {
-	vertical-align: middle;
+TABLE.quick_add TD.label {
+  text-align: right;
+  font-weight: bold;
 }
 
-table.quick_add td * {
-	vertical-align: middle;
+TABLE.quick_add INPUT[type="text"],
+TABLE.quick_add SELECT {
+  width: 400px;
 }
 
-table.quick_add td.label {
-	text-align: left;
-	line-height: 1.0;
-	width: 11em;
-}
-
-table.quick_add td.label .inner {
-	font-size: 77%;
-	text-align: center;
-	color: #990000;
-	font-weight: bold;
-}
-	
-
-table.quick_add td.submit {
-	text-align: left; 
-	width: 4em;
+TABLE.quick_add TR.uri TD {
+  padding-top: 0;
 }
 
 .group_announcements {

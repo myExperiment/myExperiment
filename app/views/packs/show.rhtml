@@ -141,15 +141,6 @@
 
 			<br/><br/>
 
-			<% if @authorised_to_edit -%>
-				<h3>
-					<%= info_icon_with_tooltip("This section provides various ways of adding items to this pack") %>
-					Add an Item
-				</h3>
-				<a name="add_item"></a>
-				<%= render :partial => "add_item", :locals => { :pack => @pack } -%>
-      <% end %>
-
       <h3>
         <%= info_icon_with_tooltip("This section provides the ability to add relationships between items in this pack") %>
         Relationships
@@ -171,7 +162,16 @@
 		</div>
 	</div>
 
-  <h1>Debug</h1>
+  <% if @authorised_to_edit -%>
+    <h2>
+      <%= info_icon_with_tooltip("This section provides various ways of adding items to this pack") %>
+      Add an Item
+    </h2>
+    <a name="add_item"></a>
+    <%= render :partial => "add_item", :locals => { :pack => @pack } -%>
+  <% end %>
+
+  <h2>Debug</h2>
 
   <div id="tabsContainer" class="tabsContainer"></div>
     
