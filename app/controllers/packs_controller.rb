@@ -396,7 +396,12 @@ class PacksController < ApplicationController
   
   def quick_add
     respond_to do |format|
-      uri = preprocess_uri(params[:uri])
+
+      uri = params[:uri]
+      uri = params[:uri2] if uri.blank?
+      uri = params[:uri3] if uri.blank?
+
+      uri = preprocess_uri(uri)
       if uri.blank?
         flash.now[:error] = 'Failed to add item. See error(s) below.'
         @error_message = "Please enter a link"
