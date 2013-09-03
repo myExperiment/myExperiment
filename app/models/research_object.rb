@@ -648,6 +648,10 @@ private
 
     return true unless symbol.kind_of?(Symbol)
 
+    # Ignore blank nodes.
+
+    return true if template["bnodes"] && template["bnodes"].include?(symbol)
+
     # Find parameter.
 
     parameter = template["parameters"].find { |p| p["symbol"] == symbol }
