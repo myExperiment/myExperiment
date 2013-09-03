@@ -5,14 +5,19 @@
 <table class="metadata">
   <tr>
     <td>Title</td>
-    <td>
-      <%=h @title -%>
-      [<%= link_to('Add title', new_pack_annotation_path(@pack, { :template => 'title', :resource => @item.ore_path })) -%>]
-    </td>
+    <td><%=h @title -%></td>
+  </tr>
+  <tr>
+    <td>Aggregator</td>
+    <td><%= user_link(@item.creator_uri) -%></td>
   </tr>
   <tr>
     <td>File name</td>
     <td><%=h @item.folder_entry.entry_name -%></td>
+  </tr>
+  <tr>
+    <td>Aggregated at<td>
+    <td><%= datetime(@item.created_at) -%></td>
   </tr>
   <tr>
     <td>File size</td>
@@ -78,10 +83,12 @@
   <h2>Actions</h2>
 
   <ul>
-    <li>[<%= link_to('Add description', new_pack_annotation_path(@pack, { :template => 'description', :resource => @item.ore_path })) -%>]</li>
-    <li>[<%= link_to("Select an input file", new_pack_annotation_path(@pack, { :template => 'input_selection_relationship', :workflow => @item.ore_path })) -%>]</li>
-    <li>[<%= link_to("Add new hardware requirement", new_pack_annotation_path(@pack, { :template => 'requires_hardware', :resource => @item.ore_path })) -%>]</li>
-    <li>[<%= link_to("Add new software requirement", new_pack_annotation_path(@pack, { :template => 'requires_software', :resource => @item.ore_path })) -%>]</li>
+    <li><%= link_to('Add title', new_pack_annotation_path(@pack, { :template => 'title', :resource => @item.ore_path })) -%></li>
+    <li><%= link_to('Add resource type', new_pack_annotation_path(@pack, { :template => 'resource_type', :resource => @item.ore_path })) -%></li>
+    <li><%= link_to('Add description', new_pack_annotation_path(@pack, { :template => 'description', :resource => @item.ore_path })) -%></li>
+    <li><%= link_to("Select an input file", new_pack_annotation_path(@pack, { :template => 'input_selection_relationship', :workflow => @item.ore_path })) -%></li>
+    <li><%= link_to("Add new hardware requirement", new_pack_annotation_path(@pack, { :template => 'requires_hardware', :resource => @item.ore_path })) -%></li>
+    <li><%= link_to("Add new software requirement", new_pack_annotation_path(@pack, { :template => 'requires_software', :resource => @item.ore_path })) -%></li>
   </ul>
 <% end %>
 

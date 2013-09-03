@@ -49,16 +49,20 @@ class AnnotationsController < ApplicationController
 
       when "string", "textarea"
         RDF::Literal(params[parameter["symbol"]])
+      when "select"
+        case parameter["node_type"]
+        when "literal"
+          RDF::Literal(params[parameter["symbol"]])
+        when "resource"
+          RDF::URI(params[parameter["symbol"]])
+        end
       when "resource"
         pack.research_object.find_using_path(params[parameter["symbol"]]).uri
       end
     end
 
-puts "template = #{template.inspect}"
-puts "parameters = #{parameters.inspect}"
     targets = template["targets"].map { |t| parameters[t] }
 
-puts "targets = #{targets.inspect}"
     graph = Pack.first.research_object.create_graph_using_ro_template(parameters, template)
 
     pack.research_object.create_annotation(

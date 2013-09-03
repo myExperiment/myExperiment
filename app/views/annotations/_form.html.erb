@@ -24,23 +24,26 @@
         <td>
           <% case parameter["type"] ; when "string" %>
             <%= text_field_tag(parameter["symbol"], values[parameter["symbol"]]) -%>
+          <% when "select" %>
+            <%= select_tag(parameter["symbol"], options_for_select(parameter["options"])) -%>
           <% when "textarea" %>
             <%= text_area_tag(parameter["symbol"], values[parameter["symbol"]]) -%>
           <% when "resource" %>
             <%= select_tag(parameter["symbol"], options_for_select(research_object.ore_resources.map { |r| [r[:name], r[:ore_path]] })) -%>
           <% end %>
-          <% unless parameter["optional"] == true %>
+        </td>
+        <% unless parameter["optional"] == true %>
+          <td>
             <span class="required-parameter">*</span>
             <% required_parameters = true %>
-          <% end %>
-        </td>
+          </td>
+        <% end %>
       <% end %>
     </tr>
     <% end %>
   <% if required_parameters %>
   <tr>
-    <td></td>
-    <td class="required-parameter">* Required</td>
+    <td colspan="3"><div class="required-parameter">* Required</div></td>
   </tr>
   <% end %>
 </table>

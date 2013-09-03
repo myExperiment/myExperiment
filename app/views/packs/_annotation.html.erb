@@ -17,6 +17,11 @@
         <% label = parameter["label"] %>
         <% value = annotation[:parameters][parameter["symbol"]].to_s %>
 
+        <% if parameter["type"] == "select" %>
+          <% value_match = parameter["options"].find { |option| value == option[1] } %>
+          <% value = value_match[0] if value_match %>
+        <% end %>
+
         <% unless value.empty? %>
           <tr>
             <td class="label"><%=h label -%></td>

@@ -1619,6 +1619,69 @@ ro_templates:
     targets:
     - :resource
 
+  resource_type:
+
+    label: resource type
+
+    parameters:
+
+    - label:  Resource
+      type:   resource
+      symbol: :resource
+
+    - label:     Type
+      type:      select
+      symbol:    :type
+      node_type: resource
+      options:
+      
+      - - "Workflow"
+        - "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
+
+      - - "Resource"
+        - "http://purl.org/wf4ever/ro#Resource"
+
+      - - "Sketch"
+        - "http://purl.org/wf4ever/roterms#Sketch"
+
+      - - "Hypothesis"
+        - "http://purl.org/wf4ever/roterms#Hypothesis"
+
+      - - "Research Question"
+        - "http://purl.org/wf4ever/roterms#ResearchQuestion"
+
+      - - "Conclusion"
+        - "http://purl.org/wf4ever/roterms#Conclusion"
+
+      - - "Result"
+        - "http://purl.org/wf4ever/roterms#Result"
+
+      - - "Example inputs"
+        - "http://purl.org/wf4ever/roterms#ExampleInputs"
+
+      - - "Example outputs"
+        - "http://purl.org/wf4ever/roterms#ExampleOutputs"
+
+      - - "Example Workflow Run"
+        - "http://purl.org/wf4ever/roterms#ExampleRun"
+
+      - - "Prospective Workflow Run"
+        - "http://purl.org/wf4ever/roterms#ProspectiveRun"
+
+      - - "Results Generating Workflow Run"
+        - "http://purl.org/wf4ever/roterms#ResultGenerationRun"
+
+      - - "Paper"
+        - "http://purl.org/wf4ever/roterms#Paper"
+
+    required_statements:
+
+    - template: [:resource, "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", :type]
+
+    targets:
+
+    - :resource
+
 wf_ro_service_uri: "http://www.example.com/wf-ro/jobs"
 wf_ro_service_bearer_token: "bearer-token"
 

@@ -642,6 +642,39 @@ private
     update_manifest!
   end
 
+  def verify_select_value(symbol, node, template)
+
+    # We are only interested in parameterized nodes.
+
+    return true unless symbol.kind_of?(Symbol)
+
+    # Find parameter.
+
+    parameter = template["parameters"].find { |p| p["symbol"] == symbol }
+
+    # No problem if the parameter type isn't a select.
+    return true unless parameter["type"] == "select"
+
+    # Verify that the node type is correct.
+
+    case parameter["node_type"]
+    when "literal"
+      return false unless node.kind_of?(RDF::Literal)
+    when "resource"
+      return false unless node.kind_of?(RDF::URI)
+    else
+      throw "Unknown node_type (#{parameter["node_type"]})"
+    end
+
+    # Verify that the node value is valid.
+
+    return false unless parameter["options"].find { |o| o[1] == node.to_s }
+
+    # A valid select match as it passed the tests.
+
+    return true
+  end
+
   def match_ro_template(graph, template)
 
     parameters = {}
@@ -669,6 +702,12 @@ private
                 prepare_ro_template_value(node_template[2], parameters)]
 
       match = graph_copy.query(target).first
+
+      if match
+        return nil unless verify_select_value(node_template[0], match.subject,   template)
+        return nil unless verify_select_value(node_template[1], match.predicate, template)
+        return nil unless verify_select_value(node_template[2], match.object,    template)
+      end
 
       if depends
         if match
