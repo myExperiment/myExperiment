@@ -42,7 +42,7 @@
   <h2>Input files</h2>
   <ul>
     <% @input_files_for_this_workflow.each do |input| %>
-      <li><%= link_to(h(input.to_s), input.to_s) -%></li>
+      <li><%= resource_link(@pack.find_resource_by_path(input)) -%></li>
     <% end %>
   </ul>
 <% end %>

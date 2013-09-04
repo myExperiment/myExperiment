@@ -136,4 +136,10 @@ module PacksHelper
       link_to(uri, uri)
     end
   end
+
+  def resource_link(resource)
+    association = find_association(resource)
+      "<img src='#{association["image"]}'> #{link_to(h(resource.folder_entry.entry_name),
+        pack_items_path(resource.research_object.pack) + "/" + resource.ore_path)}"
+  end
 end

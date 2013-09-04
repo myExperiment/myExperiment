@@ -1,7 +1,7 @@
 <% ore_path = resource.ore_path %>
 <% association = find_association(resource) %>
 <tr>
-  <td><img src="<%= association["image"] -%>"> <%= link_to(h(resource.folder_entry.entry_name), pack_items_path(pack) + "/" + ore_path) -%></td>
+  <td><%= resource_link(resource) -%></td>
   <% if resource.is_folder || resource.is_proxy %>
     <td></td>
   <% else %>

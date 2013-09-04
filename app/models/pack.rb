@@ -714,6 +714,10 @@ class Pack < ActiveRecord::Base
     return ""
   end
 
+  def find_resource_by_path(path)
+    research_object.resources.find_by_path(relative_uri(path, research_object.uri))
+  end
+
   protected
   
   # produces html string containing the required messaged, enclosed within left-padded P tag, belonging to 'none_text' class

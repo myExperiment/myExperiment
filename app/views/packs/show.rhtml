@@ -105,7 +105,7 @@
 
   <% if @conclusion %>
     <h2>Conclusion</h2>
-    <p><%= link_to(h(@conclusion.to_s), @conclusion.to_s) -%></p>
+    <p><%= resource_link(@pack.find_resource_by_path(@conclusion)) -%></p>
   <% end %>
 
   <% if @authorised_to_edit -%>
