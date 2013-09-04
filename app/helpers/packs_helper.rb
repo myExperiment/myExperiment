@@ -138,8 +138,19 @@ module PacksHelper
   end
 
   def resource_link(resource)
+
     association = find_association(resource)
-      "<img src='#{association["image"]}'> #{link_to(h(resource.folder_entry.entry_name),
-        pack_items_path(resource.research_object.pack) + "/" + resource.ore_path)}"
+
+    image = "<img src='#{association["image"]}'>"
+
+    if resource.is_proxy
+      label = resource.proxy_for_path
+    else
+      label = resource.folder_entry.entry_name
+    end
+
+    uri = pack_items_path(resource.research_object.pack) + "/" + resource.ore_path
+
+    "<span class='resource-link'>#{image} #{link_to(h(label), uri)}</span>"
   end
 end
