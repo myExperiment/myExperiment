@@ -195,6 +195,7 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
       end
 
     rescue
+      raise unless Rails.env == "production"
       return false
     end
 
@@ -260,7 +261,7 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
     current = find_filter(opts[:filters], filter["query_option"]) ? find_filter(opts[:filters], filter["query_option"])[:expr][:terms] : []
 
     if opts[:ids].nil?
-      limit = 10
+      limit = Conf.expanded_filter_size
     else
       conditions << "(#{filter_id_column} IN ('#{opts[:ids].map do |id| escape_sql(id) end.join("','")}'))"
       limit = nil

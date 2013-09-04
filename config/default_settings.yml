@@ -672,6 +672,16 @@ pivot_options:
 
   num_options: ["10", "20", "25", "50", "100"]
 
+# initial_filter_size - The number of entries shown for each pivot filter by
+#                       default.
+
+initial_filter_size: 10
+
+# expanded_filter_size - The number of entries shown for each pivot filter when
+#                        it is expanded.
+
+expanded_filter_size: 25
+
 # Shortcut keywords
 #   These are special keywords that, when typed into the search box (when 'All' is selected) will instantly jump to a
 #   specified page instead of returning a list of search results.
@@ -1770,3 +1780,4 @@ file_format_associations:
   - extensions: [t2flow]
     image: /images/famfamfam_silk/page_white_gear.png
     label: Taverna 2 workflow
+

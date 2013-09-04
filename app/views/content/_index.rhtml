@@ -21,6 +21,9 @@
       <div class="filters">
         <% @pivot[:filters].each do |filter| %>
           <% query_name = "#{filter[:query_option]}_query" %>
+          <% fold_name_1 = "FOLD_#{filter["query_option"]}_1" %>
+          <% fold_name_2 = "FOLD_#{filter["query_option"]}_2" %>
+
           <% if @pivot[:cancel_filter_query_url] %>
             <div class="category"><%= filter["title"].capitalize -%> results</div>
           <% else %>
@@ -29,17 +32,25 @@
           <div id="<%= query_name -%>" style="display: <%= @pivot[:cancel_filter_query_url] ? "block" : "none" -%>">
           </div>
           <div class="filter">
-            <div class="options">
-              <% filter[:objects].each do |object| %>
-                <div title='<%= h(object[:plain_label]) -%>'<%= object[:selected] ? ' class="selected"' : '' -%>>
-                  <input class='checkbox' type='checkbox' onclick='javascript:location = <%= url_with_params(request.path, object[:checkbox_uri]).to_json -%>; return false;' <% if object[:selected] %> checked='checked' <% end %> />
-                  <a href="<%= url_with_params(request.path, object[:label_uri]) -%>">
-                    <div class='count'><%= object[:count] -%></div>
-                    <div class='label'><span class='truncate'><%= h(object[:label]) -%></span></div>
-                  </a>
-                </div>
-              <% end %>
-            </div>
+            <% filter_sets(filter[:objects]).each do |set, visible| %>
+              <div class="options <%= visible ? "" : "extra_options #{fold_name_2}" -%>">
+                <% set.each do |object| %>
+                  <div title='<%= h(object[:plain_label]) -%>'<%= object[:selected] ? ' class="selected"' : '' -%>>
+                    <input class='checkbox' type='checkbox' onclick='javascript:location = <%= url_with_params(request.path, object[:checkbox_uri]).to_json -%>; return false;' <% if object[:selected] %> checked='checked' <% end %> />
+                    <a href="<%= url_with_params(request.path, object[:label_uri]) -%>">
+                      <div class='count'><%= object[:count] -%></div>
+                      <div class='label'><span class='truncate'><%= h(object[:label]) -%></span></div>
+                    </a>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+
+            <% if (filter[:objects].length > Conf.initial_filter_size) %>
+              <a class="more" href="#" id="<%= fold_name_1 -%>" style="display: none" onclick="$('<%= fold_name_1 %>').style.display = 'none'; var els = document.getElementsByClassName('<%= fold_name_2 %>'); for (var i = 0; i < els.length; i++) { els[i].style.display = 'block'; els[i].style.maxHeight = '1000px'; }; return false;">More...</a>
+            <% end %>
+            <script>document.getElementById("<%= fold_name_1 -%>").style.display = "block";</script>
+            <script>var els = document.getElementsByClassName("<%= fold_name_2 %>"); for (var i = 0; i < els.length; i++) { els[i].style.maxHeight = "0px"; }</script>
           </div>
         <% end %>
       </div>
