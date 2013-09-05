@@ -233,14 +233,16 @@ module ResearchObjectsHelper
     pretty_rdf_xml(render_rdf(graph))
   end
 
-  def pack_resource_path_fixed(pack, resource)
+  def resource_path_fixed(context, resource)
+
+    resources_path = polymorphic_path([context, :items])
 
     ore_path = resource.ore_path
 
     if resource.is_root_folder?
-      "/packs/#{pack.id}/resources"
+      resources_path
     elsif ore_path
-      "/packs/#{pack.id}/resources/#{ore_path}"
+      "#{resources_path}/#{ore_path}"
     else
       throw "No ORE path to this resource"
     end

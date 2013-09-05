@@ -122,7 +122,7 @@
   <div class="tabTitle">User level annotations</div>
   <div class="tabContent">
     <% @visible_annotations.each do |annotation| %>
-      <%= render(:partial => "annotation", :locals => { :pack => @pack, :annotation => annotation } ) -%>
+      <%= render(:partial => "annotations/annotation", :locals => { :pack => @pack, :annotation => annotation } ) -%>
     <% end %>
   </div>
 </div>

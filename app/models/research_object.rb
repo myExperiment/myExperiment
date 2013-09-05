@@ -514,7 +514,7 @@ class ResearchObject < ActiveRecord::Base
       {
         :name => entry.entry_name,
         :type => :file,
-        :path => entry.proxy_for.path
+        :path => entry.proxy_for_path
       }
     end
   end

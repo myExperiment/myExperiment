@@ -2,6 +2,6 @@
 
 <% @annotations.each do |annotation| %>
   <% next unless annotation[:template] %>
-  <%= render(:partial => 'packs/annotation', :locals => { :pack => @pack, :annotation => annotation  } ) -%>
+  <%= render(:partial => 'annotation', :locals => { :pack => @pack, :annotation => annotation  } ) -%>
 <% end %>
 

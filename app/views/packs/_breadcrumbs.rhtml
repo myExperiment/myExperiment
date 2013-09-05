@@ -32,7 +32,7 @@
     <li><%= link_to("Resources", pack_items_path(@pack)) -%></li>
     <% unless @item.is_root_folder %>
       <% parent_folders(@item).each do |folder| %>
-        <li><%= link_to(h(folder.folder_entry.entry_name), pack_resource_path_fixed(@pack, folder)) -%></li>
+        <li><%= link_to(h(folder.folder_entry.entry_name), resource_path_fixed(@pack, folder)) -%></li>
       <% end %>
       <li><%=h @item.folder_entry.entry_name -%></li>
     <% end %>

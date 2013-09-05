@@ -33,7 +33,7 @@
           <% when "textarea" %>
             <%= text_area_tag(parameter["symbol"], values[parameter["symbol"]]) -%>
           <% when "resource" %>
-            <%= select_tag(parameter["symbol"], options_for_select(research_object.ore_resources.map { |r| [r[:name], r[:ore_path]] })) -%>
+            <%= select_tag(parameter["symbol"], options_for_select(research_object.ore_resources.map { |r| [r[:proxy_target] ? r[:proxy_target] : r[:name], r[:ore_path]] })) -%>
           <% end %>
         </td>
         <% unless parameter["optional"] == true %>

@@ -124,7 +124,7 @@
   <div class="tabContainer">
     <div class="tabTitle">ORE Entries</div>
     <div class="tabContent">
-      <%= render :partial => 'resource_tiles', :locals => { :pack => @pack,
+      <%= render :partial => 'resources/resource_tiles', :locals => { :context => @pack,
              :resources => @pack.research_object.resources.select { |r| !r.is_folder } } -%>
     </div>
   </div>
