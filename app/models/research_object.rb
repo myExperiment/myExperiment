@@ -360,7 +360,7 @@ class ResearchObject < ActiveRecord::Base
   end
 
   def create_aggregated_resource(opts = {})
-puts "opts = #{opts.inspect}"
+
     throw "user_uri required"     unless opts[:user_uri]
     throw "data required"         unless opts[:data]
     throw "content_type required" unless opts[:content_type]
