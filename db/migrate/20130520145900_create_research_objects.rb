@@ -7,16 +7,20 @@ class CreateResearchObjects < ActiveRecord::Migration
   def self.up
 
     create_table "research_objects", :force => true do |t|
-      t.string   "slug"
-      t.integer  "version"
-      t.string   "version_type"
-      t.integer  "user_id"
+      t.string  "context_type"
+      t.integer "context_id"
+      t.string  "slug"
+      t.integer "version"
+      t.string  "version_type"
+      t.integer "user_id"
 
       t.timestamps
     end
 
     create_table "resources" do |t|
       t.integer "research_object_id"
+      t.string  "context_type"
+      t.integer "context_id"
       t.integer "content_blob_id"
       t.string  "sha1", :limit => 40
       t.integer "size"

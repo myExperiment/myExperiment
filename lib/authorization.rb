@@ -387,27 +387,27 @@ module Authorization
 
           when "create"
 
-            # Only users that can edit the pack can create RO resources
+            # Only users that can edit the context can create RO resources
             return Authorization.check('edit', context, user)
 
           when "view"
 
-            # You can only view a pack resource if you can view the pack
-            return false unless Authorization.check('view', object.research_object.pack, user)
+            # You can only view a resource if you can view the context
+            return false unless Authorization.check('view', object.research_object.context, user)
 
             # In addition to the above, you must be able to view the
             # contributable if it is local to myExperiment
 
-            if object.pack_contributable_entry
-              return Authorization.check('view', object.pack_contributable_entry, user)
+            if object.context
+              return Authorization.check('view', object.context, user)
             end
 
             return true
 
           when "destroy"
 
-            # Only users that can edit the pack can delete RO resources
-            return Authorization.check('edit', object.research_object.pack, user)
+            # Only users that can edit the context can delete RO resources
+            return Authorization.check('edit', object.research_object.context, user)
         end
 
       when "Message"

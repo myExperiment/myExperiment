@@ -32,7 +32,7 @@ class Pack < ActiveRecord::Base
 
   belongs_to :license
 
-  belongs_to :research_object, :dependent => :destroy
+  has_one :research_object, :as => 'context', :dependent => :destroy
 
   def find_version(version)
     match = versions.find(:first, :conditions => ["version = ?", version])

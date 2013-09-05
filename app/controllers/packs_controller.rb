@@ -417,9 +417,9 @@ class PacksController < ApplicationController
 
           case entry
           when PackContributableEntry
-            resource_uri = entry.resource.uri
+            resource_uri = entry.resource(true).uri
           when PackRemoteEntry
-            resource_uri = entry.resource.uri
+            resource_uri = entry.resource(true).uri
           end
           
           post_process_created_resource(@pack, entry, resource_uri, params)
@@ -524,8 +524,8 @@ class PacksController < ApplicationController
       return
     end
 
-    # Delete the pack contributable entry if it exists.
-    pce = @item.pack_contributable_entry.destroy if @item.pack_contributable_entry
+    # Delete the resource context if it exists.
+    pce = @item.context.destroy if @item.context
 
     # Delete the resource
     @item.destroy

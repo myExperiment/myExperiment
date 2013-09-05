@@ -20,7 +20,7 @@ class PackRemoteEntry < ActiveRecord::Base
 
   after_save :synchronize_research_object
 
-  belongs_to :resource, :dependent => :destroy
+  has_one :resource, :as => :context, :dependent => :destroy
 
   def check_unique
     if PackRemoteEntry.find(:first, :conditions => ["pack_id = ? AND version = ? AND uri = ?", self.pack_id, self.version, self.uri])
@@ -45,14 +45,13 @@ class PackRemoteEntry < ActiveRecord::Base
     
     user_path = "/users/#{user_id}"
 
-    if ro && resource_id.nil?
+    if ro && resource.nil?
 
       resource = ro.create_proxy(
           :proxy_for_path => uri,
           :proxy_in_path  => ".",
+          :context        => self,
           :user_uri       => user_path)
-
-      update_attribute(:resource_id, resource.id)
 
       ro.update_manifest!
     end

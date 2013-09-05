@@ -149,7 +149,7 @@ module PacksHelper
       label = resource.folder_entry.entry_name
     end
 
-    uri = pack_items_path(resource.research_object.pack) + "/" + resource.ore_path
+    uri = pack_items_path(resource.research_object.context) + "/" + resource.ore_path
 
     "<span class='resource-link'>#{image} #{link_to(h(label), uri)}</span>"
   end

@@ -17,7 +17,7 @@ class Resource < ActiveRecord::Base
 
   belongs_to :content_blob, :dependent => :destroy
 
-  has_one :pack_contributable_entry
+  belongs_to :context, :polymorphic => true
 
   def proxy_for
     research_object.resources.find(:first,

@@ -22,7 +22,7 @@ class PackContributableEntry < ActiveRecord::Base
 
   after_save :synchronize_research_object
 
-  belongs_to :resource, :dependent => :destroy
+  has_one :resource, :as => :context, :dependent => :destroy
 
   def check_unique
 
@@ -102,7 +102,7 @@ class PackContributableEntry < ActiveRecord::Base
     
     user_path = "/users/#{user_id}"
 
-    if ro && resource_id.nil?
+    if ro && resource.nil?
 
       case contributable
       when Workflow
@@ -117,9 +117,8 @@ class PackContributableEntry < ActiveRecord::Base
           :user_uri     => user_path,
           :path         => path,  # FIXME - where should these be URL encoded?
           :data         => data,
+          :context      => self,
           :content_type => contributable.content_type.mime_type)
-
-      update_attribute(:resource_id, resource.id)
 
       ro.update_manifest!
     end

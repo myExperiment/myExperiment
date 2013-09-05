@@ -22,7 +22,7 @@ class ResearchObject < ActiveRecord::Base
 
   has_many :annotation_resources
 
-  has_one :pack
+  belongs_to :context, :polymorphic => true
 
   validates_presence_of :slug
 
@@ -289,6 +289,7 @@ class ResearchObject < ActiveRecord::Base
     throw "proxy_in_path required"  unless opts[:proxy_in_path]
 
     create_resource(
+      :context        => opts[:context],
       :path           => opts[:path] || calculate_path(nil, 'application/vnd.wf4ever.proxy'),
       :is_proxy       => true,
       :proxy_for_path => opts[:proxy_for_path],
@@ -359,7 +360,7 @@ class ResearchObject < ActiveRecord::Base
   end
 
   def create_aggregated_resource(opts = {})
-
+puts "opts = #{opts.inspect}"
     throw "user_uri required"     unless opts[:user_uri]
     throw "data required"         unless opts[:data]
     throw "content_type required" unless opts[:content_type]
@@ -378,6 +379,7 @@ class ResearchObject < ActiveRecord::Base
     # Create the resource.
 
     create_resource(
+      :context       => opts[:context],
       :path          => path,
       :content_blob  => ContentBlob.new(:data => opts[:data]),
       :creator_uri   => opts[:user_uri],
