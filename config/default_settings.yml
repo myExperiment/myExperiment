@@ -1575,7 +1575,7 @@ ro_templates:
       type:   resource 
       symbol: :resource
 
-    - label:  Description
+    - label:  Hardware
       type:   string 
       symbol: :description
 
@@ -1608,7 +1608,7 @@ ro_templates:
       type:   resource 
       symbol: :resource
 
-    - label:  Description
+    - label:  Software
       type:   string 
       symbol: :description
 
