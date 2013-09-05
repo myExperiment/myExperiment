@@ -1,4 +1,4 @@
-<li><%= link_to("Packs", packs_path) -%></li>
+<li><%= link_to(Conf.to_visible(@pack.class.name).pluralize, polymorphic_path(@pack.class.name.underscore.pluralize.to_sym)) -%>
 <li><%= link_to(h(@pack.title), polymorphic_path(@pack)) -%></li>
 
 <% if controller.action_name == "index" %>
