@@ -503,6 +503,7 @@ class PacksController < ApplicationController
       @input_files_for_this_workflow = @statements.query([@item.uri, RDF::URI("http://purl.org/wf4ever/roterms#inputSelected"), nil]).objects
       @requires_hardware = @statements.query([@item.uri, RDF::URI("http://purl.org/wf4ever/roterms#requiresHardware"), nil]).objects
       @requires_software = @statements.query([@item.uri, RDF::URI("http://purl.org/wf4ever/roterms#requiresSoftware"), nil]).objects
+      @roles_in_time = @statements.query([nil, RDF::URI("http://purl.org/spar/pro/relatesToEntity"), @item.uri]).subjects
     end
 
     unless @item
@@ -720,7 +721,7 @@ puts "      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object
 
     folder = ro.root_folder if folder.nil?
 
-    ro.create_folder_entry(relative_uri(resource_uri, @pack.research_object.uri), folder.path, user_path)
+    ro.create_folder_entry(relative_uri(resource_uri, @pack.research_object.uri), folder.path, user_path(current_user))
   end
 
 end

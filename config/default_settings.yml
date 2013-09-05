@@ -1692,6 +1692,294 @@ ro_templates:
 
     - :resource
 
+  role:
+
+    label: role
+
+    bnodes: [:b1, :b2]
+
+    parameters:
+
+    - label:  Resource
+      type:   resource
+      symbol: :resource
+
+    - label:  Name
+      type:   string
+      symbol: :name
+
+    - label:    OrcID
+      type:     string 
+      symbol:   :orcid
+      placeholder: "0000-0000-0000-0000"
+      optional: true
+
+    - label:     Role
+      type:      select
+      symbol:    :role
+      node_type: resource
+      options:
+
+      - - "article guarantor"
+        - "http://purl.org/spar/scoro/article-guarantor"
+    
+      - - "consortium author"
+        - "http://purl.org/spar/scoro/consortium-author"
+    
+      - - "corresponding author"
+        - "http://purl.org/spar/scoro/corresponding-author"
+    
+      - - "illustrator"
+        - "http://purl.org/spar/scoro/illustrator"
+    
+      - - "photographer"
+        - "http://purl.org/spar/scoro/photographer"
+    
+      - - "principal author"
+        - "http://purl.org/spar/scoro/principal-author"
+    
+      - - "senior author"
+        - "http://purl.org/spar/scoro/senior-author"
+    
+      - - "access provider"
+        - "http://purl.org/spar/scoro/access-provider"
+    
+      - - "curator"
+        - "http://purl.org/spar/scoro/curator"
+    
+      - - "data creator"
+        - "http://purl.org/spar/scoro/data-creator"
+    
+      - - "data curator"
+        - "http://purl.org/spar/scoro/data-curator"
+    
+      - - "data manager"
+        - "http://purl.org/spar/scoro/data-manager"
+    
+      - - "data publisher"
+        - "http://purl.org/spar/scoro/data-publisher"
+    
+      - - "data user"
+        - "http://purl.org/spar/scoro/data-user"
+    
+      - - "embargo controller"
+        - "http://purl.org/spar/scoro/embargo-controller"
+    
+      - - "repository manager"
+        - "http://purl.org/spar/scoro/repository-manager"
+    
+      - - "web-master"
+        - "http://purl.org/spar/scoro/web-master"
+    
+      - - "faculty member"
+        - "http://purl.org/spar/scoro/faculty-member"
+    
+      - - "postgraduate student"
+        - "http://purl.org/spar/scoro/postgraduate-student"
+    
+      - - "supervisor"
+        - "http://purl.org/spar/scoro/supervisor"
+    
+      - - "undergraduate student"
+        - "http://purl.org/spar/scoro/undergraduate-student"
+    
+      - - "accountant"
+        - "http://purl.org/spar/scoro/accountant"
+    
+      - - "auditor"
+        - "http://purl.org/spar/scoro/auditor"
+    
+      - - "claimant"
+        - "http://purl.org/spar/scoro/claimant"
+    
+      - - "contractor"
+        - "http://purl.org/spar/scoro/contractor"
+    
+      - - "financial controller"
+        - "http://purl.org/spar/scoro/financial-controller"
+    
+      - - "funder"
+        - "http://purl.org/spar/scoro/funder "
+    
+      - - "funding recipient"
+        - "http://purl.org/spar/scoro/funding-recipient"
+    
+      - - "owner"
+        - "http://purl.org/spar/scoro/owner"
+    
+      - - "purchaser"
+        - "http://purl.org/spar/scoro/purchaser"
+    
+      - - "sponsor"
+        - "http://purl.org/spar/scoro/sponsor"
+    
+      - - "sub-contractor"
+        - "http://purl.org/spar/scoro/sub-contractor"
+    
+      - - "supplier"
+        - "http://purl.org/spar/scoro/supplier"
+    
+      - - "chief scientist"
+        - "http://purl.org/spar/scoro/chief-scientist"
+    
+      - - "co-investigator"
+        - "http://purl.org/spar/scoro/co-investigator"
+    
+      - - "collaborator"
+        - "http://purl.org/spar/scoro/collaborator"
+    
+      - - "computer programmer"
+        - "http://purl.org/spar/scoro/computer-programmer"
+    
+      - - "consultant"
+        - "http://purl.org/spar/scoro/consultant"
+    
+      - - "inventor"
+        - "http://purl.org/spar/scoro/inventor"
+    
+      - - "postdoctoral researcher"
+        - "http://purl.org/spar/scoro/postdoctoral-researcher"
+    
+      - - "principal investigator"
+        - "http://purl.org/spar/scoro/principal-investigator"
+    
+      - - "project student"
+        - "http://purl.org/spar/scoro/project-student"
+    
+      - - "research assistant"
+        - "http://purl.org/spar/scoro/research-assistant"
+    
+      - - "research student"
+        - "http://purl.org/spar/scoro/research-student"
+    
+      - - "researcher"
+        - "http://purl.org/spar/scoro/researcher"
+    
+      - - "scholar"
+        - "http://purl.org/spar/scoro/scholar"
+    
+      - - "service engineer"
+        - "http://purl.org/spar/scoro/service-engineer"
+    
+      - - "technician"
+        - "http://purl.org/spar/scoro/technician"
+    
+      - - "CEO"
+        - "http://purl.org/spar/scoro/chief-executive-officer"
+    
+      - - "CTO"
+        - "http://purl.org/spar/scoro/chief-technology-officer"
+    
+      - - "administrator"
+        - "http://purl.org/spar/scoro/administrator"
+    
+      - - "affiliate"
+        - "http://purl.org/spar/scoro/affiliate"
+    
+      - - "agent"
+        - "http://purl.org/spar/scoro/agent"
+    
+      - - "college fellow"
+        - "http://purl.org/spar/scoro/college-fellow"
+    
+      - - "college head"
+        - "http://purl.org/spar/scoro/college-head"
+    
+      - - "contact person"
+        - "http://purl.org/spar/scoro/contact-person"
+    
+      - - "departmental administrator"
+        - "http://purl.org/spar/scoro/departmental-administrator"
+    
+      - - "director"
+        - "http://purl.org/spar/scoro/director"
+    
+      - - "employee"
+        - "http://purl.org/spar/scoro/employee"
+    
+      - - "employer"
+        - "http://purl.org/spar/scoro/employer"
+    
+      - - "head of department"
+        - "http://purl.org/spar/scoro/head-of-department"
+    
+      - - "manager"
+        - "http://purl.org/spar/scoro/manager"
+    
+      - - "member"
+        - "http://purl.org/spar/scoro/member"
+    
+      - - "non-academic staff member"
+        - "http://purl.org/spar/scoro/non-academic-staff-member"
+    
+      - - "organizer"
+        - "http://purl.org/spar/scoro/organizer"
+    
+      - - "participant"
+        - "http://purl.org/spar/scoro/participant"
+    
+      - - "partner"
+        - "http://purl.org/spar/scoro/partner"
+    
+      - - "patent holder"
+        - "http://purl.org/spar/scoro/patent-holder"
+    
+      - - "possessor"
+        - "http://purl.org/spar/scoro/possessor"
+    
+      - - "programme manager"
+        - "http://purl.org/spar/scoro/programme-manager"
+    
+      - - "registrar"
+        - "http://purl.org/spar/scoro/registrar"
+    
+      - - "rights holder"
+        - "http://purl.org/spar/scoro/rights-holder"
+    
+      - - "spokesperson"
+        - "http://purl.org/spar/scoro/spokesperson"
+    
+      - - "stakeholder"
+        - "http://purl.org/spar/scoro/stakeholder"
+    
+      - - "successor"
+        - "http://purl.org/spar/scoro/successor"
+    
+      - - "vice-chancellor"
+        - "http://purl.org/spar/scoro/vice-chancellor"
+    
+      - - "co-applicant"
+        - "http://purl.org/spar/scoro/co-applicant"
+    
+      - - "lead applicant"
+        - "http://purl.org/spar/scoro/lead-applicant"
+    
+      - - "project leader"
+        - "http://purl.org/spar/scoro/project-leader"
+    
+      - - "project manager"
+        - "http://purl.org/spar/scoro/project-manager"
+    
+      - - "project member"
+        - "http://purl.org/spar/scoro/project-member"
+    
+      - - "workpackage leader"
+        - "http://purl.org/spar/scoro/workpackage-leader"
+
+    required_statements:
+
+    - template: [:b1, "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "<http://xmlns.com/foaf/0.1/Agent>"]
+    - template: [:b1, "<http://xmlns.com/foaf/0.1/name>", :name]
+    - template: [:b1, "<http://purl.org/spar/pro/holdsRoleInTime>", :b2]
+    - template: [:b1, "<http://purl.org/spar/scoro/hasORCID>", :orcid]
+      depends:  [:orcid]
+
+    - template: [:b2, "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "<http://purl.org/spar/pro/RoleInTime>"]
+    - template: [:b2, "<http://purl.org/spar/pro/withRole>", :role]
+    - template: [:b2, "<http://purl.org/spar/pro/relatesToEntity>", :resource]
+
+    targets: [:resource]
+
 wf_ro_service_uri: "http://www.example.com/wf-ro/jobs"
 wf_ro_service_bearer_token: "bearer-token"
 
@@ -1737,7 +2025,7 @@ file_format_associations:
     image: /images/famfamfam_silk/page_white_csharp.png
     label: C# source file
 
-  - extensions: [xls, xslx, xslm, csv]
+  - extensions: [xls, xlsx, xlsm, csv]
     image: /images/famfamfam_silk/page_white_excel.png
     label: Excel file
 

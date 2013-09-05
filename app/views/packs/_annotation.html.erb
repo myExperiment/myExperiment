@@ -25,7 +25,13 @@
         <% unless value.empty? %>
           <tr>
             <td class="label"><%=h label -%></td>
-            <td class="value"><%=h value -%></td>
+            <td class="value">
+            <% if parameter["type"] == "resource" %>
+              <%= resource_link(pack.find_resource_by_path(value)) -%>
+            <% else %>
+              <%=h value -%>
+            <% end %>
+            </td>
           </tr>
         <% end %>
       <% end %>

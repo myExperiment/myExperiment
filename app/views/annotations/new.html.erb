@@ -5,8 +5,8 @@
       :research_object => @pack.research_object,
       :template => params[:template],
       :annotation_template => @annotation_template,
-      :values => params } ) -%>
-  <%= submit_tag("Add") -%>
+      :values => params,
+      :add_button => true } ) -%>
 <% end %>
 
 <h2>Debug</h2>

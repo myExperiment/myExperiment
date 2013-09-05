@@ -161,7 +161,7 @@ class Resource < ActiveRecord::Base
     name = path.split("/").last if path
 
     graph << [uri, RDF::DC.created, created_at.to_datetime] if created_at
-    graph << [uri, RDF::DC.creator, RDF::URI(creator_uri)]  if creator_uri
+    graph << [uri, RDF::DC.creator, RDF::URI(Conf.base_uri).join(creator_uri)] if creator_uri
     graph << [uri, RO["name"],      name]                   if name
 
     if content_blob && !is_manifest?

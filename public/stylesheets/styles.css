@@ -2682,7 +2682,7 @@ TABLE.metadata TD.content_type {
   content: ":";
 }
 
-.annotation INPUT,
+.annotation INPUT[type="text"],
 .annotation TEXTAREA {
   width: 500px;
 }
@@ -2700,3 +2700,10 @@ TABLE.metadata TD.content_type {
   text-align: right;
   color: red;
 }
+
+.resource-link IMG {
+  position: relative;
+  top: -1px;
+  vertical-align: middle;
+}
+

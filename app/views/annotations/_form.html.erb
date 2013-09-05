@@ -17,13 +17,17 @@
       <td><%= parameter["label"] -%></td>
       <% if values[parameter["symbol"]] %>
         <td>
-          <%=h values[parameter["symbol"]] -%>
+          <% if parameter["type"] == "resource" %>
+            <%= resource_link(@pack.find_resource_by_ore_path(values[parameter["symbol"]])) -%>
+          <% else %>
+            <%=h values[parameter["symbol"]] -%>
+          <% end %>
           <%= hidden_field_tag(parameter["symbol"], values[parameter["symbol"]]) -%>
         </td>
       <% else %>
         <td>
           <% case parameter["type"] ; when "string" %>
-            <%= text_field_tag(parameter["symbol"], values[parameter["symbol"]]) -%>
+            <%= text_field_tag(parameter["symbol"], values[parameter["symbol"]], :placeholder => parameter["placeholder"]) -%>
           <% when "select" %>
             <%= select_tag(parameter["symbol"], options_for_select(parameter["options"])) -%>
           <% when "textarea" %>
@@ -43,7 +47,12 @@
     <% end %>
   <% if required_parameters %>
   <tr>
-    <td colspan="3"><div class="required-parameter">* Required</div></td>
+    <td>
+      <% if defined?(add_button) && add_button == true %>
+        <%= submit_tag("Add") -%>
+      <% end %>
+    </td>
+    <td colspan="2"><div class="required-parameter">* Required</div></td>
   </tr>
   <% end %>
 </table>

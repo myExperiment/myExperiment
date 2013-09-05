@@ -95,12 +95,12 @@
 
   <% if @research_question %>
     <h2>Research Question</h2>
-    <p><%= link_to(h(@research_question.to_s), @research_question.to_s) -%></p>
+    <p><%= resource_link(@pack.find_resource_by_path(@research_question)) -%></p>
   <% end %>
 
   <% if @hypothesis %>
     <h2>Hypothesis</h2>
-    <p><%= link_to(h(@hypothesis.to_s), @hypothesis.to_s) -%></p>
+    <p><%= resource_link(@pack.find_resource_by_path(@hypothesis)) -%></p>
   <% end %>
 
   <% if @conclusion %>
