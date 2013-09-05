@@ -27,7 +27,12 @@
             <td class="label"><%=h label -%></td>
             <td class="value">
             <% if parameter["type"] == "resource" %>
-              <%= resource_link(pack.find_resource_by_path(value)) -%>
+              <% resource = pack.find_resource_by_path(value) -%>
+              <% if resource %>
+                <%= resource_link(pack.find_resource_by_path(value)) -%>
+              <% else %>
+                <%= link_to(h(value), value, :rel => 'nofollow') -%>
+              <% end %>
             <% else %>
               <%=h value -%>
             <% end %>
