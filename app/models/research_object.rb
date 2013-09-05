@@ -65,7 +65,7 @@ class ResearchObject < ActiveRecord::Base
   end
 
   def update_manifest!
-    manifest_resource.update_graph!
+    manifest_resource.update_graph! if manifest_resource
   end
 
   def manifest_resource
