@@ -98,8 +98,8 @@ class PacksController < ApplicationController
             :object => RDF::URI("http://purl.org/wf4ever/roterms#ResearchQuestion")).first_subject
         @hypothesis = @graph.query(:predicate => RDF.type,
             :object => RDF::URI("http://purl.org/wf4ever/roterms#Hypothesis")).first_subject
-        @conclusion = @graph.query(:predicate => RDF.type,
-            :object => RDF::URI("http://purl.org/wf4ever/roterms#Conclusion")).first_subject
+        @conclusions = @graph.query(:predicate => RDF.type,
+            :object => RDF::URI("http://purl.org/wf4ever/roterms#Conclusions")).first_subject
 
         @maintainers = Authorization.authorized_for_object(:edit, @pack)
 
