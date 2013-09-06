@@ -1660,8 +1660,8 @@ ro_templates:
       - - "Research Question"
         - "http://purl.org/wf4ever/roterms#ResearchQuestion"
 
-      - - "Conclusion"
-        - "http://purl.org/wf4ever/roterms#Conclusion"
+      - - "Conclusions"
+        - "http://purl.org/wf4ever/roterms#Conclusions"
 
       - - "Result"
         - "http://purl.org/wf4ever/roterms#Result"
