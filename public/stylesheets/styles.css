@@ -2123,6 +2123,20 @@ table.topic td.tag_vote{
   background: #ffe0c0;
 }
 
+.pivot .extra_options {
+  transition-property: max-height;
+  transition-duration: 2s;
+  -webkit-transition-property: max-height;
+  -webkit-transition-duration: 2s;
+  overflow: hidden;
+}
+
+.pivot .more {
+  padding-top: 4px;
+  padding-left: 4px;
+  font-size: 90%;
+}
+
 .pivot .checkbox {
   display: inline;
   padding-top: 0;

@@ -210,6 +210,14 @@ class Conf
     self.fetch_entry('sesame_repository')
   end
 
+  def self.initial_filter_size
+    self.fetch_entry('initial_filter_size')
+  end
+
+  def self.expanded_filter_size
+    self.fetch_entry('expanded_filter_size')
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)
