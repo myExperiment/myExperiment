@@ -3,11 +3,11 @@
     <p>
       <div style="float: right">
       <%= link_to("<img src='/images/grey_cross.png' />",
-          pack_annotation_path(pack, annotation[:annotation].uuid),
+          polymorphic_path([context, :annotation], :id => annotation[:annotation].uuid),
           :method => :delete,
           :confirm => "Are you sure you want to delete this annotation?") %>
       </div>
-      <span class="type"><%= link_to(h(annotation[:template]["label"].capitalize), pack_annotation_path(pack, annotation[:annotation].uuid)) -%></span>
+      <span class="type"><%= link_to(h(annotation[:template]["label"].capitalize), polymorphic_path([context, :annotation], :id => annotation[:annotation].uuid)) -%></span>
     </p>
   </div>
   <% if annotation[:template] %>
@@ -27,9 +27,9 @@
             <td class="label"><%=h label -%></td>
             <td class="value">
             <% if parameter["type"] == "resource" %>
-              <% resource = pack.find_resource_by_path(value) -%>
+              <% resource = context.find_resource_by_path(value) -%>
               <% if resource %>
-                <%= resource_link(pack.find_resource_by_path(value)) -%>
+                <%= resource_link(context.find_resource_by_path(value)) -%>
               <% else %>
                 <%= link_to(h(value), value, :rel => 'nofollow') -%>
               <% end %>

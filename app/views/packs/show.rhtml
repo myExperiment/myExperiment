@@ -10,7 +10,7 @@
       <li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
     <% end -%>
   <% end %>
-  <li><%= icon('folder', pack_items_path(@pack), nil, nil, 'Resources') -%></li>
+  <li><%= icon('folder', pack_items_path(@pack), nil, nil, 'Items') -%></li>
   <li><%= icon('annotations', pack_annotations_path(@pack), nil, nil, 'Annotations') -%></li>
   <li><%= icon('disk', download_pack_path(@pack), nil, nil, "Download") %></li>
   <% if false %>
@@ -124,7 +124,7 @@
   <div class="tabContainer">
     <div class="tabTitle">ORE Entries</div>
     <div class="tabContent">
-      <%= render :partial => 'resources/resource_tiles', :locals => { :context => @pack,
+      <%= render :partial => 'items/resource_tiles', :locals => { :context => @pack,
              :resources => @pack.research_object.resources.select { |r| !r.is_folder } } -%>
     </div>
   </div>

@@ -1,0 +1,10 @@
+<% if @item.is_root_folder %>
+  <h1>Items in <%=h @context.label -%></h1>
+<% else %>
+  <% parent = @item.folder_entry.proxy_in %>
+  <h1>Folder: <%=h @item.folder_entry.entry_name -%></h1>
+<% end %>
+
+<div class="folder-list">
+  <%= render(:partial => 'folder_list', :locals => { :item => @item, :context => @context }) -%>
+</div>

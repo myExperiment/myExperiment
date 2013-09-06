@@ -1,8 +1,0 @@
-<% if @item.is_root_folder %>
-  <h1>Pack resources</h1>
-<% else %>
-  <% parent = @item.folder_entry.proxy_in %>
-  <h1>Pack folder: <%=h @item.folder_entry.entry_name -%></h1>
-<% end %>
-
-<%= render(:partial => 'resources/folder_list', :locals => { :item => @item, :context => @pack }) -%>

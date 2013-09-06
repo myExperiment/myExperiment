@@ -1,8 +1,8 @@
 <h1>New annotation</h1>
 
-<% form_tag(pack_annotations_path(@pack)) do |f| -%>
+<% form_tag(polymorphic_path([@context, :annotations])) do |f| -%>
   <%= render(:partial => "form", :locals => {
-      :research_object => @pack.research_object,
+      :research_object => @context.research_object,
       :template => params[:template],
       :annotation_template => @annotation_template,
       :values => params,

@@ -1,0 +1,14 @@
+<% if @context %>
+  <li><%= link_to visible_name(@context).pluralize, polymorphic_url(@context.class.name.underscore.pluralize) %></li>
+  <li><%= link_to h(@context.label), @context %></li>
+  <li><%= link_to("Items", polymorphic_path([@context, :items])) -%></li>
+<% end %>
+
+<% case controller.action_name.to_s; when "show" %>
+  <% unless @item.is_root_folder %>
+    <% parent_folders(@item).each do |folder| %>
+      <li><%= link_to(h(folder.folder_entry.entry_name), resource_path_fixed(@context, folder)) -%></li>
+    <% end %>
+    <li><%=h @item.folder_entry.entry_name -%></li>
+  <% end %>
+<% end %>

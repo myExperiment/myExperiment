@@ -10,7 +10,7 @@
     <% ore_path = resource.ore_path %>
     <% next unless ore_path %>
     <% if Authorization.check('view', resource, current_user) %>
-      <%= render :partial => "resources/resource_tile", :locals => { :context => context, :resource => resource } -%>
+      <%= render :partial => 'items/resource_tile', :locals => { :context => context, :resource => resource } -%>
     <% end %>
   <% end %>
 </table>

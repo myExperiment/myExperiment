@@ -6,5 +6,5 @@
   </p>
 <% end %>
 
-<%= render :partial => 'resources/resource_tiles', :locals => { :context => context,
+<%= render :partial => 'resource_tiles', :locals => { :context => context,
        :resources => item.proxies.map { |p| p.proxy_for } } -%>

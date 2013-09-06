@@ -18,7 +18,7 @@
       <% if values[parameter["symbol"]] %>
         <td>
           <% if parameter["type"] == "resource" %>
-            <%= resource_link(@pack.find_resource_by_ore_path(values[parameter["symbol"]])) -%>
+            <%= resource_link(@context.find_resource_by_ore_path(values[parameter["symbol"]])) -%>
           <% else %>
             <%=h values[parameter["symbol"]] -%>
           <% end %>

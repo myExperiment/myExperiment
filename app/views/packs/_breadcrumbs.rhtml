@@ -27,15 +27,6 @@
     <li>All Packs</li>
 	<% when "search" %>  
     <li>Search Results</li>
-  <% when "item_show" %>
-		<li><%= link_to "#{h(@pack.title)}", pack_path(@pack) %></li>
-    <li><%= link_to("Resources", pack_items_path(@pack)) -%></li>
-    <% unless @item.is_root_folder %>
-      <% parent_folders(@item).each do |folder| %>
-        <li><%= link_to(h(folder.folder_entry.entry_name), resource_path_fixed(@pack, folder)) -%></li>
-      <% end %>
-      <li><%=h @item.folder_entry.entry_name -%></li>
-    <% end %>
   <% else %>
     <!-- no breadcrumb -->
   <% end %>

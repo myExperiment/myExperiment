@@ -68,15 +68,9 @@ ActionController::Routing::Routes.draw do |map|
     pack.resources :comments, :collection => { :timeline => :get }
     pack.resources :relationships, :collection => { :edit_relationships => :get }
     pack.resources :annotations
+    pack.resources :items, :requirements => { :id => /[^;]+/ }
   end
 
-  # Pack entries.  These are not creating using the normal RESTful routes as
-  # they take a path instead of an id number.
-
-  map.pack_items '/packs/:id/resources', :controller => 'packs', :action => 'item_show', :conditions => { :method => :get }
-  map.pack_item  '/packs/:id/resources/:item_path', :controller => 'packs', :action => 'item_show',  :conditions => { :method => :get }, :requirements => { :item_path => /[^;]+/ }
-  map.pack_item  '/packs/:id/resources/:item_path', :controller => 'packs', :action => 'item_destroy',  :conditions => { :method => :delete }, :requirements => { :item_path => /[^;]+/ }
-  
   # workflows (downloadable)
   map.resources :workflows, 
     :collection => { :search => :get }, 
