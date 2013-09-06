@@ -103,9 +103,9 @@
     <p><%= resource_link(@pack.find_resource_by_path(@hypothesis)) -%></p>
   <% end %>
 
-  <% if @conclusion %>
-    <h2>Conclusion</h2>
-    <p><%= resource_link(@pack.find_resource_by_path(@conclusion)) -%></p>
+  <% if @conclusions %>
+    <h2>Conclusions</h2>
+    <p><%= resource_link(@pack.find_resource_by_path(@conclusions)) -%></p>
   <% end %>
 
   <% if @authorised_to_edit -%>
