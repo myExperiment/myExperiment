@@ -11,7 +11,21 @@ class ItemsController < ApplicationController
   before_filter :find_item
 
   def index
-    show
+    respond_to do |format|
+
+      format.html {
+        show
+      }
+
+      format.rss {
+        if params[:pack_id]
+          @pack = Pack.find(params[:pack_id])
+          if Authorization.check('view', @pack, current_user)
+            render :action => 'items.rxml', :layout => false
+          end
+        end
+      }
+    end
   end
 
   def show

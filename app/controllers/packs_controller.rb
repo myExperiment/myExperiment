@@ -454,13 +454,6 @@ class PacksController < ApplicationController
     end
   end
   
-  def items
-    respond_to do |format|
-      format.html { item_show }
-      format.rss { render :action => 'items.rxml', :layout => false }
-    end
-  end
-  
   def snapshot
 
     success = @pack.snapshot!
