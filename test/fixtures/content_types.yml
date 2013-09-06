@@ -41,3 +41,11 @@ taverna2:
   created_at: 2008-04-22 15:32:01
   updated_at: 2008-04-22 15:32:01
 
+component_profile_type:
+  id: 5
+  title: Taverna Component Profile
+  mime_type: application/vnd.taverna.component-profile+xml
+  created_at: 2008-04-22 15:32:01
+  updated_at: 2008-04-22 15:32:01
+
+

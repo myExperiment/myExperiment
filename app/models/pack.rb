@@ -708,6 +708,18 @@ class Pack < ActiveRecord::Base
     return ""
   end
 
+  named_scope :component_families, :include => :tags, :conditions => "tags.name = 'component family'"
+
+  def component_family?
+    tags.any? { |t| t.name == 'component family' }
+  end
+
+  def component_profile
+    entry = contributable_entries.select { |e| e.contributable_type == 'Blob' && e.contributable.component_profile? }.first
+    profile = entry.contributable
+    profile.find_version(entry.contributable_version) if entry.contributable_version
+  end
+
   protected
   
   # produces html string containing the required messaged, enclosed within left-padded P tag, belonging to 'none_text' class
@@ -1008,4 +1020,5 @@ class Pack < ActiveRecord::Base
     
     boost
   end
+
 end

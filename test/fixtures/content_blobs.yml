@@ -27,3 +27,11 @@ workflow_branch_choice:
 component_workflow_blob:
   id: 5
   data: <%= load_blob_data('image_to_tiff_migration.t2flow') %>
+
+private_workflow_blob:
+  id: 6
+  data: <%= load_blob_data('image_to_tiff_migration.t2flow') %>
+
+component_profile_blob:
+  id: 7
+  data: <%= load_blob_data('image_to_tiff_migration.t2flow') %>

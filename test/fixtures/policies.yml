@@ -95,6 +95,57 @@ component_workflow_policy2:
   contributor_type: User
   name: auto
   share_mode: 0
-  update_mode: 0
+  update_mode: 6
   created_at: 2007-10-22 18:54:22
   updated_at: 2008-01-09 12:12:12
+
+private_policy:
+  id: 11
+  contributor_id: 1
+  contributor_type: User
+  name: auto
+  share_mode: 7
+  update_mode: 6
+  created_at: 2007-10-22 18:54:22
+  updated_at: 2008-01-09 12:12:12
+
+component_profile_policy:
+  id: 12
+  contributor_id: 1
+  contributor_type: User
+  name: auto
+  share_mode: 0
+  update_mode: 0
+  created_at: 2013-06-12 10:51:01
+  updated_at: 2013-06-12 10:51:01
+
+
+component_family_policy:
+  id: 13
+  contributor_id: 1
+  contributor_type: User
+  name: auto
+  share_mode: 0
+  update_mode: 0
+  created_at: 2013-06-12 10:51:01
+  updated_at: 2013-06-12 10:51:01
+
+protected_component_family_policy:
+  id: 14
+  contributor_id: 1
+  contributor_type: User
+  name: auto
+  share_mode: 7
+  update_mode: 6
+  created_at: 2013-06-12 10:51:01
+  updated_at: 2013-06-12 10:51:01
+
+unused_component_profile_policy:
+  id: 15
+  contributor_id: 1
+  contributor_type: User
+  name: auto
+  share_mode: 0
+  update_mode: 0
+  created_at: 2013-06-12 10:51:01
+  updated_at: 2013-06-12 10:51:01

@@ -104,3 +104,28 @@ group_file_two:
   content_type_id: 1
   content_blob_id: 1
 
+component_profile:
+  id: 9
+  current_version: 1
+  contributor_id: 1
+  contributor_type: User
+  local_name: component_profile.xml
+  title: A component profile
+  body: some text
+  created_at: 2013-06-12 10:51:01
+  license_id: 2
+  content_type_id: 5
+  content_blob_id: 1
+
+unused_component_profile:
+  id: 10
+  current_version: 1
+  contributor_id: 1
+  contributor_type: User
+  local_name: component_profile.xml
+  title: A component profile
+  body: some text
+  created_at: 2013-06-12 10:51:01
+  license_id: 2
+  content_type_id: 5
+  content_blob_id: 1

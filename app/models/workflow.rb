@@ -425,4 +425,11 @@ class Workflow < ActiveRecord::Base
     WsdlDeprecation.find_all_by_wsdl(workflow_processors.map {|wp| wp.wsdl}).group_by {|wd| wd.deprecation_event}
   end
 
+  # TODO: Don't use tags for this
+  named_scope :components, :include => :tags, :conditions => "tags.name = 'component'"
+
+  def component?
+    tags.any? { |t| t.name == 'component' }
+  end
+
 end
