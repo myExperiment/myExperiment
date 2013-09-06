@@ -351,10 +351,8 @@ li {
 
 /* begin css breadcrumbs */
 #myexp_breadcrumbs_bar {
-	font-weight: bold !important;
-	font-size: 85%;
 	text-decoration: none;
-	padding: 0.4em 0.5em;
+	padding: 4px;
 	background-color: #E0E0E0;
 }
 
@@ -2693,7 +2691,7 @@ TABLE.metadata TD.content_type {
 
 .annotation .provenance {
   text-align: right;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .required-parameter {
