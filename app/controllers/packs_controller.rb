@@ -17,7 +17,7 @@ class PacksController < ApplicationController
                   "http://purl.org/wf4ever/roterms#ExampleRun",
                   "http://purl.org/wf4ever/roterms#ProspectiveRun"]
 
-  before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics, :item_show, :item_destroy]
+  before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
   
   before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
   
@@ -498,8 +498,6 @@ class PacksController < ApplicationController
       "favourite_delete" => "view",
       "index"            => "view",
       "items"            => "view",
-      "item_destroy"     => "edit",
-      "item_show"        => "view",
       "new"              => "create",
       "new_item"         => "edit",
       "quick_add"        => "edit",

@@ -10,6 +10,7 @@ require 'zip/zip'
 require 'tempfile'
 require 'cgi'
 require 'sunspot_rails'
+require 'has_research_object'
 
 class Pack < ActiveRecord::Base
 
@@ -32,7 +33,7 @@ class Pack < ActiveRecord::Base
 
   belongs_to :license
 
-  has_one :research_object, :as => 'context', :dependent => :destroy
+  has_research_object
 
   def find_version(version)
     match = versions.find(:first, :conditions => ["version = ?", version])
@@ -712,14 +713,6 @@ class Pack < ActiveRecord::Base
     return "(earliest)" if version_number == versions.first.version
     return "(latest)" if version_number == versions.last.version
     return ""
-  end
-
-  def find_resource_by_path(path)
-    research_object.resources.find_by_path(relative_uri(path, research_object.uri))
-  end
-
-  def find_resource_by_ore_path(path)
-    research_object.find_using_path(relative_uri(path, research_object.uri))
   end
 
   protected

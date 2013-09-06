@@ -3,6 +3,8 @@
 # Copyright (c) 2008 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'has_research_object'
+
 class PackContributableEntry < ActiveRecord::Base
   belongs_to :pack
   validates_presence_of :pack
@@ -22,7 +24,7 @@ class PackContributableEntry < ActiveRecord::Base
 
   after_save :synchronize_research_object
 
-  has_one :resource, :as => :context, :dependent => :destroy
+  has_resource
 
   def check_unique
 
