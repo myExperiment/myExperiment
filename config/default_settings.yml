@@ -1449,8 +1449,8 @@ ro_resource_types:
   - label:  "Research Question"
     uri:    "http://purl.org/wf4ever/roterms#ResearchQuestion"
 
-  - label:  "Conclusion"
-    uri:    "http://purl.org/wf4ever/roterms#Conclusion"
+  - label:  "Conclusions"
+    uri:    "http://purl.org/wf4ever/roterms#Conclusions"
 
   - label:  "Result"
     uri:    "http://purl.org/wf4ever/roterms#Result"
