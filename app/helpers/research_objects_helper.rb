@@ -22,6 +22,8 @@ module ResearchObjectsHelper
       "http://purl.org/wf4ever/roterms#"       => "roterms"
   }
 
+  private
+
   def pretty_rdf_xml(text)
 
     descriptions = { }

@@ -12,7 +12,7 @@ class AnnotationsController < ApplicationController
   before_filter :find_and_auth_resource_context
 
   def index
-    @annotations = @context.research_object.annotations_with_templates
+    @annotations = @context.research_object.all_annotations_with_templates
   end 
 
   def show

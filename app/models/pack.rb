@@ -715,6 +715,61 @@ class Pack < ActiveRecord::Base
     return ""
   end
 
+  def update_annotations_from_model(user)
+
+    title_annotation = research_object.annotations_of_type("title").first
+    annotation_title = title_annotation[:parameters][:title].to_s if title_annotation
+
+    description_annotation = research_object.annotations_of_type("description").first
+    annotation_description = description_annotation[:parameters][:description].to_s if description_annotation
+
+    if title != annotation_title
+
+      if annotation_title
+        title_annotation[:annotation].ao_body.destroy
+        title_annotation[:annotation].destroy
+      end
+
+      parameters = {}
+
+      parameters[:title]    = RDF::Literal(title)
+      parameters[:resource] = RDF::URI(research_object.uri)
+
+      template = Conf.ro_templates["title"]
+
+      body_graph = research_object.create_graph_using_ro_template(parameters, template)
+
+      research_object.create_annotation(
+          :body_graph => body_graph,
+          :content_type => 'application/rdf+xml',
+          :resources => ['.'],
+          :creator_uri => "/users/#{user.id}")
+    end
+
+    if description != annotation_description
+
+      if annotation_description
+        description_annotation[:annotation].ao_body.destroy
+        description_annotation[:annotation].destroy
+      end
+
+      parameters = {}
+
+      parameters[:description] = RDF::Literal(description)
+      parameters[:resource]    = RDF::URI(research_object.uri)
+
+      template = Conf.ro_templates["description"]
+
+      body_graph = research_object.create_graph_using_ro_template(parameters, template)
+
+      research_object.create_annotation(
+          :body_graph => body_graph,
+          :content_type => 'application/rdf+xml',
+          :resources => ['.'],
+          :creator_uri => "/users/#{user.id}")
+    end
+  end
+
   protected
   
   # produces html string containing the required messaged, enclosed within left-padded P tag, belonging to 'none_text' class

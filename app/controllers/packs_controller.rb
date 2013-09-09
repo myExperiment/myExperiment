@@ -166,6 +166,7 @@ class PacksController < ApplicationController
           @pack.tags_user_id = current_user
           @pack.tag_list = convert_tags_to_gem_format params[:pack][:tag_list]
           @pack.update_tags
+          @pack.update_annotations_from_model(current_user)
         end
         
         # update policy
@@ -197,6 +198,7 @@ class PacksController < ApplicationController
     respond_to do |format|
       if @pack.update_attributes(params[:pack])
         @pack.refresh_tags(convert_tags_to_gem_format(params[:pack][:tag_list]), current_user) if params[:pack][:tag_list]
+        @pack.update_annotations_from_model(current_user)
         policy_err_msg = update_policy(@pack, params, current_user)
         if policy_err_msg.blank?
           update_layout(@pack, params[:layout]) unless params[:policy_type] == "group"

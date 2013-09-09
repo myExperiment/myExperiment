@@ -76,6 +76,11 @@ class ResearchObject < ActiveRecord::Base
     resources.find(:first, :conditions => { :is_root_folder => true } )
   end
 
+  def annotations
+    annotation_resources.find(:all,
+        :conditions => { :resource_path => '.' }).map { |ar| ar.annotation }
+  end
+
   def new_or_update_resource(opts = {})
 
     changed = []
@@ -615,10 +620,8 @@ class ResearchObject < ActiveRecord::Base
     graph
   end
 
-  def annotations_with_templates
+  def annotations_with_templates_aux(annotations)
 
-    annotations = annotation_resources.map { |annotation_resource| annotation_resource.annotation }
-     
     annotations.uniq.map do |annotation|
 
       graph = load_graph(annotation.ao_body.content_blob.data, :content_type => annotation.ao_body.content_type)
@@ -631,6 +634,26 @@ class ResearchObject < ActiveRecord::Base
         :template   => template,
         :parameters => parameters
       }
+    end
+  end
+
+  def all_annotations_with_templates
+    return @all_annotations_with_templates if @all_annotations_with_templates
+
+    all_annotations = annotation_resources.map { |ar| ar.annotation }
+
+    @all_annotations_with_templates = annotations_with_templates_aux(all_annotations)
+  end
+
+  def annotations_with_templates
+    return @annotations_with_templates if @annotations_with_templates
+
+    @annotations_with_templates = annotations_with_templates_aux(annotations)
+  end
+
+  def annotations_of_type(type)
+    annotations_with_templates.select do |annotation|
+      annotation[:template] && annotation[:template]["label"] == type
     end
   end
 
