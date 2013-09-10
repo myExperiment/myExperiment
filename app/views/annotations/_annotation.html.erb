@@ -3,7 +3,7 @@
     <p>
       <div style="float: right">
       <%= link_to("<img src='/images/grey_cross.png' />",
-          polymorphic_path([context, :annotation], :id => annotation[:annotation].uuid),
+          polymorphic_path([context, :annotation], :id => annotation[:annotation].uuid, :source => source),
           :method => :delete,
           :confirm => "Are you sure you want to delete this annotation?") %>
       </div>

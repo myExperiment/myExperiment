@@ -61,8 +61,12 @@ class AnnotationsController < ApplicationController
         :content_type => 'application/rdf+xml',
         :resources    => targets,
         :creator_uri  => user_path(current_user))
-    
-    redirect_to polymorphic_path(@context)
+
+    if template["redirect"]
+      redirect_to resource_path_fixed(@context, @context.find_resource_by_ore_path(params[template["redirect"]]))
+    else
+      redirect_to polymorphic_path(@context)
+    end
   end
 
   def destroy
@@ -76,7 +80,11 @@ class AnnotationsController < ApplicationController
 
     @context.research_object.update_manifest!
 
-    redirect_to polymorphic_path([@context, :annotations])
+    if params[:source]
+      redirect_to resource_path_fixed(@context, @context.find_resource_by_ore_path(params[:source]))
+    else
+      redirect_to polymorphic_path([@context, :annotations])
+    end
   end
 
   def new

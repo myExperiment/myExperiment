@@ -5,6 +5,7 @@
 <div class="tabContainer">
   <div class="tabTitle">Overview</div>
   <div class="tabContent">
+    <a name="overview"></a>
 
     <h2>Metadata</h2>
 
@@ -126,8 +127,9 @@
 <div class="tabContainer">
   <div class="tabTitle">Annotations</div>
   <div class="tabContent">
+    <a name="annotations"></a>
     <% @visible_annotations.each do |annotation| %>
-      <%= render(:partial => "annotations/annotation", :locals => { :context => @context, :annotation => annotation } ) -%>
+      <%= render(:partial => "annotations/annotation", :locals => { :context => @context, :annotation => annotation, :source => @item.ore_path } ) -%>
     <% end %>
   </div>
 </div>
