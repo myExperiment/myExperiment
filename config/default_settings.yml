@@ -1483,25 +1483,6 @@ ro_relationships:
 
 ro_templates:
 
-  creator:
-
-    label: Creator
-
-    bnodes: [:b1]
-
-    required_statements:
-    - template: [:resource, "<http://purl.org/dc/terms/creator>", :b1]
-    - template: [:b1,       "<http://xmlns.com/foaf/0.1/Agent>",  :person]
-    - template: [:b1,       "<http://purl.org/dc/terms/date>",    :date]
-    - template: [:b1,       "<http://xmlns.com/foaf/0.1/name>",   :name]
-
-  creator_simple:
-
-    label: Creator (simple)
-
-    required_statements:
-    - template: [:resource, "<http://purl.org/dc/terms/creator>", :agent]
-
   input_selection_relationship:
 
     label: input selection
@@ -1522,6 +1503,8 @@ ro_templates:
     targets:
     - :workflow
     - :input
+
+    redirect: :workflow
 
   workflow_run_type:
 
@@ -1577,6 +1560,8 @@ ro_templates:
     targets:
     - :resource
 
+    redirect: :resource
+
   description:
 
     label: description
@@ -1596,6 +1581,8 @@ ro_templates:
 
     targets:
     - :resource
+
+    redirect: :resource
 
   requires_hardware:
 
@@ -1630,6 +1617,8 @@ ro_templates:
     targets:
     - :resource
 
+    redirect: :resource
+
   requires_software:
 
     label: requires software
@@ -1662,6 +1651,8 @@ ro_templates:
 
     targets:
     - :resource
+
+    redirect: :resource
 
   resource_type:
 
@@ -1725,6 +1716,8 @@ ro_templates:
     targets:
 
     - :resource
+
+    redirect: :resource
 
   role:
 
@@ -2013,6 +2006,8 @@ ro_templates:
     - template: [:b2, "<http://purl.org/spar/pro/relatesToEntity>", :resource]
 
     targets: [:resource]
+
+    redirect: :resource
 
 wf_ro_service_uri: "http://www.example.com/wf-ro/jobs"
 wf_ro_service_bearer_token: "bearer-token"
