@@ -18,7 +18,13 @@
         <% value = annotation[:parameters][parameter["symbol"]].to_s %>
 
         <% if parameter["type"] == "select" %>
-          <% value_match = parameter["options"].find { |option| value == option[1] } %>
+          <% if parameter["options"]
+               options = parameter["options"]
+             elsif parameter["special"] == "wfprov_workflow_run"
+               options = wfprov_workflow_run(context.research_object)
+             end
+          %>
+          <% value_match = options.find { |option| value == option[1] } %>
           <% value = value_match[0] if value_match %>
         <% end %>
 

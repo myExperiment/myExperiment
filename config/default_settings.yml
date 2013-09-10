@@ -1523,6 +1523,40 @@ ro_templates:
     - :workflow
     - :input
 
+  workflow_run_type:
+
+    label: Workflow Run Type
+
+    parameters:
+
+    - label:     Workflow Run
+      type:      select
+      symbol:    :workflow_run
+      node_type: resource
+      special:   wfprov_workflow_run
+
+    - label:     Type
+      type:      select
+      symbol:    :type
+      node_type: resource
+      options:
+      
+      - - "Example Workflow Run"
+        - "http://purl.org/wf4ever/roterms#ExampleRun"
+      
+      - - "Prospective Workflow Run"
+        - "http://purl.org/wf4ever/roterms#ProspectiveRun"
+      
+      - - "Results Generating Workflow Run"
+        - "http://purl.org/wf4ever/roterms#ResultGenerationRun"
+
+    required_statements:
+    - template: [:workflow_run, "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", :type]
+
+    targets:
+    - :workflow
+    - :input
+
   title:
 
     label: title

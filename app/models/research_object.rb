@@ -13,6 +13,7 @@ class ResearchObject < ActiveRecord::Base
   MANIFEST_PATH = ".ro/manifest.rdf"
 
   include ResearchObjectsHelper
+  include AnnotationsHelper # FIXME temporary due to wfprov_workflow_run
 
   after_create :create_manifest
 
@@ -697,7 +698,13 @@ private
 
     # Verify that the node value is valid.
 
-    return false unless parameter["options"].find { |o| o[1] == node.to_s }
+    if parameter["options"]
+      options = parameter["options"]
+    elsif parameter["special"] == "wfprov_workflow_run"
+      options = wfprov_workflow_run(self)
+    end
+
+    return false unless options.find { |o| o[1] == node.to_s }
 
     # A valid select match as it passed the tests.
 

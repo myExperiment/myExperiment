@@ -29,7 +29,11 @@
           <% case parameter["type"] ; when "string" %>
             <%= text_field_tag(parameter["symbol"], values[parameter["symbol"]], :placeholder => parameter["placeholder"]) -%>
           <% when "select" %>
-            <%= select_tag(parameter["symbol"], options_for_select(parameter["options"])) -%>
+            <% if parameter["special"] == "wfprov_workflow_run" %>
+              <%= select_tag(parameter["symbol"], options_for_select(wfprov_workflow_run(@context.research_object))) -%>
+            <% else %>
+              <%= select_tag(parameter["symbol"], options_for_select(parameter["options"])) -%>
+            <% end %>
           <% when "textarea" %>
             <%= text_area_tag(parameter["symbol"], values[parameter["symbol"]]) -%>
           <% when "resource" %>
