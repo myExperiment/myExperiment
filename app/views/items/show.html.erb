@@ -117,6 +117,7 @@
         <li><%= link_to("Select an input file", polymorphic_path([:new, @context, :annotation], { :template => 'input_selection_relationship', :workflow => @item.ore_path })) -%></li>
         <li><%= link_to("Add new hardware requirement", polymorphic_path([:new, @context, :annotation], { :template => 'requires_hardware', :resource => @item.ore_path })) -%></li>
         <li><%= link_to("Add new software requirement", polymorphic_path([:new, @context, :annotation], { :template => 'requires_software', :resource => @item.ore_path })) -%></li>
+        <li><%= link_to("Add new workflow run type", polymorphic_path([:new, @context, :annotation], { :template => 'workflow_run_type' })) -%></li>
       </ul>
     <% end %>
   </div>
