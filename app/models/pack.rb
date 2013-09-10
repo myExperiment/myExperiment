@@ -723,6 +723,8 @@ class Pack < ActiveRecord::Base
     description_annotation = research_object.annotations_of_type("description").first
     annotation_description = description_annotation[:parameters][:description].to_s if description_annotation
 
+    sanitized_description = Sanitize.clean(description)
+
     if title != annotation_title
 
       if annotation_title
@@ -746,7 +748,7 @@ class Pack < ActiveRecord::Base
           :creator_uri => "/users/#{user.id}")
     end
 
-    if description != annotation_description
+    if sanitized_description != annotation_description
 
       if annotation_description
         description_annotation[:annotation].ao_body.destroy
@@ -755,7 +757,7 @@ class Pack < ActiveRecord::Base
 
       parameters = {}
 
-      parameters[:description] = RDF::Literal(description)
+      parameters[:description] = RDF::Literal(sanitized_description)
       parameters[:resource]    = RDF::URI(research_object.uri)
 
       template = Conf.ro_templates["description"]
