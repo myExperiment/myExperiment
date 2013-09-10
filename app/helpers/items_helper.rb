@@ -51,6 +51,11 @@ module ItemsHelper
 
   def resource_link(resource)
 
+    if resource.kind_of?(Pack)
+      return "<span class='resource-link'>#{image_tag("manhattan_studio/folder-closed_16.png")}" +
+             " #{link_to(h(resource.label), polymorphic_path(resource))}</span>"
+    end
+
     association = find_association(resource)
 
     image = "<img src='#{association["image"]}'>"
