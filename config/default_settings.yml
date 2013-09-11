@@ -1462,14 +1462,9 @@ ro_resource_types:
   - label:  "Example outputs"
     uri:    "http://purl.org/wf4ever/roterms#ExampleOutputs"
 
-  - label:  "Example Workflow Run"
-    uri:    "http://purl.org/wf4ever/roterms#ExampleRun"
-
-  - label:  "Prospective Workflow Run"
-    uri:    "http://purl.org/wf4ever/roterms#ProspectiveRun"
-
-  - label:  "Results Generating Workflow Run"
-    uri:    "http://purl.org/wf4ever/roterms#ResultGenerationRun"
+  - label:  "Workflow run"
+    uri:    "http://purl.org/wf4ever/roterms#WorkflowRunBundle"
+    folder: "datasets/results"
 
   - label:  "Paper"
     uri:    "http://purl.org/wf4ever/roterms#Paper"
@@ -1697,14 +1692,8 @@ ro_templates:
       - - "Example outputs"
         - "http://purl.org/wf4ever/roterms#ExampleOutputs"
 
-      - - "Example Workflow Run"
-        - "http://purl.org/wf4ever/roterms#ExampleRun"
-
-      - - "Prospective Workflow Run"
-        - "http://purl.org/wf4ever/roterms#ProspectiveRun"
-
-      - - "Results Generating Workflow Run"
-        - "http://purl.org/wf4ever/roterms#ResultGenerationRun"
+      - - "Workflow run"
+        - "http://purl.org/wf4ever/roterms#WorkflowRunBundle"
 
       - - "Paper"
         - "http://purl.org/wf4ever/roterms#Paper"

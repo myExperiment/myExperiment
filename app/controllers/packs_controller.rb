@@ -12,10 +12,7 @@ class PacksController < ApplicationController
   ## NOTE: URI must match config/default_settings.yml ro_resource_types
   WORKFLOW_DEFINITION = "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
   RO_RESOURCE = "http://purl.org/wf4ever/ro#Resource"
-
-  WORKFLOW_RUN = ["http://purl.org/wf4ever/roterms#ResultGenerationRun",
-                  "http://purl.org/wf4ever/roterms#ExampleRun",
-                  "http://purl.org/wf4ever/roterms#ProspectiveRun"]
+  WORKFLOW_RUN = ["http://purl.org/wf4ever/roterms#WorkflowRunBundle"]
 
   before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
   
