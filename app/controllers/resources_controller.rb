@@ -122,7 +122,7 @@ class ResourcesController < ActionController::Base
         graph << change.description
       end
 
-      body = pretty_rdf_xml(RDF::Writer.for(:rdfxml).buffer { |writer| writer << graph } )
+      body = pretty_rdf_xml(render_rdf(graph))
 
       send_data body, :type => 'application/rdf+xml', :filename => filename, :status => :created
     else

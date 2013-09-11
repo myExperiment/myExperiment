@@ -226,7 +226,7 @@ class Resource < ActiveRecord::Base
         end
       end
 
-      manifest_body = pretty_rdf_xml(RDF::Writer.for(:rdfxml).buffer { |writer| writer << research_object.description })
+      manifest_body = pretty_rdf_xml(render_rdf(research_object.description))
 
       research_object.new_or_update_resource(
           :slug         => ResearchObject::MANIFEST_PATH,

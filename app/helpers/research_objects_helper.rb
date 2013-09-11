@@ -225,8 +225,69 @@ module ResearchObjectsHelper
     graph
   end
 
+  RDF_NS = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+
+  def render_rdf_xml(graph)
+
+    document = LibXML::XML::Document.new
+
+    document.root = LibXML::XML::Node.new('rdf:RDF')
+    LibXML::XML::Namespace.new(document.root, 'rdf', RDF_NS)
+
+    graph.each do |subject, predicate, object|
+
+      description = LibXML::XML::Node.new('rdf:Description')
+
+      if subject.anonymous?
+        description["rdf:nodeID"] = subject.id
+      else
+        description["rdf:about"] = subject.to_s
+      end
+
+      # Split the predicate URI into a namespace and a term.
+
+      match = predicate.to_s.match(/^(.*[\/#])([^\/#]+)$/)
+
+      namespace = match[1]
+      term = match[2]
+
+      if namespace == RDF_NS
+        statement = LibXML::XML::Node.new("rdf:#{term}")
+      else
+        statement = LibXML::XML::Node.new("ns0:#{term}")
+        LibXML::XML::Namespace.new(statement, 'ns0', namespace)
+      end
+
+      if object.literal?
+
+        statement['rdf:datatype'] = object.datatype.to_s if object.has_datatype?
+        statement['rdf:language'] = object.language.to_s if object.has_language?
+
+        statement << object.to_s
+
+      elsif object.resource?
+
+        if object.anonymous?
+          statement['rdf:nodeID'] = object.id
+        else
+          statement['rdf:resource'] = object.to_s
+        end
+
+      end
+
+      description << statement
+      document.root << description
+    end
+
+    document.to_s
+  end
+
   def render_rdf(graph, format = :rdfxml)
-    RDF::Writer.for(format).buffer { |writer| writer << graph }
+    if format == :rdfxml
+      render_rdf_xml(graph)
+    else
+      RDF::Writer.for(format).buffer { |writer| writer << graph }
+    end
   end
 
   def create_rdf_xml(&blk)
