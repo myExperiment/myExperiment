@@ -10,7 +10,7 @@ class CurationEvent < ActiveRecord::Base
 
   format_attribute :details
 
-  validates_presence_of :user, :category
+  validates_presence_of :category
 
   def label
     category

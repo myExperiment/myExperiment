@@ -11,7 +11,11 @@
         <table class="comment">
           <tr>
             <td class="avatar" rowspan="3">
-              <%= contributor(event.user_id, 'User', true, 60) %>
+              <% if event.user %>
+                <%= contributor(event.user_id, 'User', true, 60) %>
+              <% else %>
+                System
+              <% end %>
             </td>
             <td class="header" height="1.2em">
               <%= datetime event.created_at -%>

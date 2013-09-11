@@ -30,6 +30,7 @@ class Workflow < ActiveRecord::Base
   has_many :workflow_processors, :dependent => :destroy
   has_many :workflow_ports, :dependent => :destroy
   has_many :semantic_annotations, :as => :subject, :dependent => :destroy
+  has_many :curation_events, :as => :object
 
   before_validation :check_unique_name
   before_validation :apply_extracted_metadata
