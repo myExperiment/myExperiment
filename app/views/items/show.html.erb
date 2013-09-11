@@ -14,6 +14,15 @@
         <td>Title</td>
         <td><%=h @title -%></td>
       </tr>
+      <% if @item.is_proxy %>
+        <tr>
+          <td>External link</td>
+          <td>
+            <%= link_to(h(@item.proxy_for_path), @item.proxy_for_path) -%>
+            <%= image_tag('link-md.png', :width => '10px') -%>
+            </td>
+        </tr>
+      <% end %>
       <tr>
         <td>Aggregator</td>
         <td><%= user_link(@item.creator_uri) -%></td>
