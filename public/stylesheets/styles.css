@@ -2705,3 +2705,8 @@ TABLE.metadata TD.content_type {
   vertical-align: middle;
 }
 
+.new-annotation > TABLE {
+  margin: 32px auto;
+  padding: 8px;
+}
+

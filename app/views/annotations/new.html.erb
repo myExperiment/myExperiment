@@ -1,13 +1,13 @@
-<h1>New annotation</h1>
+<h1>New annotation in <%=h @context.label -%></h1>
 
 <% form_tag(polymorphic_path([@context, :annotations])) do |f| -%>
-  <%= render(:partial => "form", :locals => {
-      :research_object => @context.research_object,
-      :template => params[:template],
-      :annotation_template => @annotation_template,
-      :values => params,
-      :add_button => true } ) -%>
+  <div class="new-annotation">
+    <%= render(:partial => "form", :locals => {
+        :research_object => @context.research_object,
+        :template => params[:template],
+        :annotation_template => @annotation_template,
+        :values => params,
+        :add_button => true } ) -%>
+  </div>
 <% end %>
 
-<h2>Debug</h2>
-<pre><%=h @annotation_template.to_yaml -%></pre>

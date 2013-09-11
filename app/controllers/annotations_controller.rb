@@ -20,7 +20,7 @@ class AnnotationsController < ApplicationController
 
     @graph = load_graph(@annotation.ao_body.content_blob.data, :content_type => @annotation.ao_body.content_type)
 
-    @annotation_template, @parameters = @context.research_object.find_template_from_graph(@graph, Conf.ro_templates)
+    @annotation = @context.research_object.annotation_with_template(@annotation)
   end
 
   def create

@@ -525,10 +525,8 @@ class PacksController < ApplicationController
         @authorised_to_download = Authorization.check("download", @pack, current_user)
         
         @pack_entry_url = url_for :only_path => false,
-                            :host => base_host,
+                            :host => Conf.hostname,
                             :id => @pack.id
-                            
-        @base_host = base_host
       else
         render_401("You are not authorized to access this pack.")
       end

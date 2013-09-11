@@ -621,20 +621,24 @@ class ResearchObject < ActiveRecord::Base
     graph
   end
 
+  def annotation_with_template(annotation)
+
+    graph = load_graph(annotation.ao_body.content_blob.data, :content_type => annotation.ao_body.content_type)
+
+    template, parameters = find_template_from_graph(graph, Conf.ro_templates)
+
+    {
+      :annotation => annotation,
+      :graph      => graph,
+      :template   => template,
+      :parameters => parameters
+    }
+  end
+
   def annotations_with_templates_aux(annotations)
 
     annotations.uniq.map do |annotation|
-
-      graph = load_graph(annotation.ao_body.content_blob.data, :content_type => annotation.ao_body.content_type)
-
-      template, parameters = find_template_from_graph(graph, Conf.ro_templates)
-
-      {
-        :annotation => annotation,
-        :graph      => graph,
-        :template   => template,
-        :parameters => parameters
-      }
+      annotation_with_template(annotation)
     end
   end
 

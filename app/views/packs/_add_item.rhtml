@@ -1,11 +1,11 @@
 <% if logged_in? -%>
 
-	<% if @error_message -%>
-		<p class="error_text" style="padding: 0 0.8em;"><%= @error_message -%></p>
+	<% if error_message -%>
+		<p class="error_text" style="padding: 0 0.8em;"><%= error_message -%></p>
 		<br/>
 	<% end -%>
 	
-  <% form_tag quick_add_pack_url(@pack) do -%>
+  <% form_tag quick_add_pack_url(context) do -%>
     <table class="quick_add">
 
       <tr class="uri">
@@ -24,9 +24,9 @@
               <option value="">select from your contributions...</option>
               <% contributions.each do |c| -%>
                 <% if ["workflow", "blob", "pack"].include? c.contributable_type.downcase -%>
-                  <% show = (c.contributable.class.to_s == 'Pack' ? (@pack.id != c.contributable.id) : true) -%> <!-- prevents from displaying current pack in the list of things that are enabled to be added to the current pack -->
+                  <% show = (c.contributable.class.to_s == 'Pack' ? (context.id != c.contributable.id) : true) -%> <!-- prevents from displaying current pack in the list of things that are enabled to be added to the current pack -->
                   <% if show -%>
-                    <option value="<%= contributable_url(c.contributable_id, c.contributable_type, @base_host) -%>">
+                    <option value="<%= contributable_url(c.contributable_id, c.contributable_type, Conf.hostname) -%>">
                       <%= "#{visible_name c.contributable_type}: #{contributable_name(c.contributable_id, c.contributable_type)}" -%>
                     </option>
                   <% end %>
@@ -45,9 +45,9 @@
               <option value="">select from your favourites...</option>
               <% bookmarks.each do |b| -%>
                 <% if ["workflow", "blob", "pack"].include? b.bookmarkable_type.downcase -%>
-                  <% show = (b.bookmarkable_type == 'Pack' ? (@pack.id != b.bookmarkable_id) : true) -%> <!-- prevents from displaying current pack in the list of things that are enabled to be added to the current pack -->
+                  <% show = (b.bookmarkable_type == 'Pack' ? (context.id != b.bookmarkable_id) : true) -%> <!-- prevents from displaying current pack in the list of things that are enabled to be added to the current pack -->
                   <% if show -%>
-                    <option value="<%= contributable_url(b.bookmarkable_id, b.bookmarkable_type, @base_host) -%>">
+                    <option value="<%= contributable_url(b.bookmarkable_id, b.bookmarkable_type, Conf.hostname) -%>">
                       <%= "#{visible_name b.bookmarkable_type}: #{contributable_name(b.bookmarkable_id, b.bookmarkable_type)}" -%>
                     </option>
                   <% end %>
@@ -69,14 +69,14 @@
       <tr>
         <td class="label">Folder</td>
         <td>
-          <%= select_tag(:folder, options_for_select(['(automatic)'] + @ore_directories)) -%>
+          <%= select_tag(:folder, options_for_select(['(automatic)'] + ore_directories)) -%>
         </td>
       </tr>
 
       <tr>
         <td></td>
         <td class="submit">
-          <%= submit_tag "Add item", :disable_with => "..." -%>
+          <%= submit_tag "Add item" -%>
         </td>
       </tr>
 

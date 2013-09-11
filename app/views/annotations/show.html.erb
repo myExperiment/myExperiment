@@ -1,6 +1,6 @@
 <h1>Annotation</h1>
 
-<h2>Debug</h2>
+<div>
+  <%= render(:partial => 'annotations/annotation', :locals => { :context => @context, :annotation => @annotation, :source => nil } ) -%>
+</div>
 
-<pre><%=h @annotation_template.to_yaml -%></pre>
-<pre><%=h @parameters.to_yaml -%></pre>
