@@ -452,7 +452,6 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "version"
-    t.integer  "resource_id"
   end
 
   create_table "pack_remote_entries", :force => true do |t|
@@ -465,7 +464,6 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "version"
-    t.integer  "resource_id"
   end
 
   create_table "pack_versions", :force => true do |t|
@@ -490,7 +488,6 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.integer  "current_version"
     t.integer  "license_id"
     t.text     "ro_uri"
-    t.text     "research_object_id"
   end
 
   create_table "pending_invitations", :force => true do |t|
@@ -613,6 +610,8 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "context_type"
+    t.integer  "context_id"
   end
 
   create_table "resources", :force => true do |t|
@@ -639,6 +638,10 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.boolean  "is_root_folder",                   :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "uuid",               :limit => 36
+    t.text     "title"
+    t.string   "context_type"
+    t.integer  "context_id"
   end
 
   create_table "reviews", :force => true do |t|
