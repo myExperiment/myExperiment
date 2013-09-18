@@ -129,7 +129,7 @@ class Resource < ActiveRecord::Base
       graph << [uri, RDF.type, ORE.ResourceMap]
       graph << [uri, ORE.describes, folder_uri]
 
-      graph << [folder_uri, RDF.type, RO.folder]
+      graph << [folder_uri, RDF.type, RO.Folder]
       graph << [folder_uri, RDF.type, ORE.Aggregation]
       graph << [folder_uri, ORE.isDescribedBy, uri]
       graph << [folder_uri, ORE.isAggregatedBy, RDF::URI(folder.aggregated_by.uri)] if folder.aggregated_by_path
