@@ -662,6 +662,116 @@ class ResearchObject < ActiveRecord::Base
     end
   end
 
+  def import_bundle(user)
+
+    ro_uri = RDF::URI('file://zip/')
+
+    user_uri = "/users/#{user.id}"
+
+    resources.each do |resource|
+      resource.destroy
+    end
+
+    ore_aggregates      = RDF::URI("http://www.openarchives.org/ore/terms/aggregates")
+    ore_is_described_by = RDF::URI("http://www.openarchives.org/ore/terms/isDescribedBy")
+    ore_proxy           = RDF::URI("http://www.openarchives.org/ore/terms/Proxy")
+    ore_proxy_for       = RDF::URI("http://www.openarchives.org/ore/terms/proxyFor")
+    ore_proxy_in        = RDF::URI("http://www.openarchives.org/ore/terms/proxyIn")
+    rdf_type            = RDF.type
+    ro_folder           = RDF::URI("http://purl.org/wf4ever/ro#Folder")  
+    ro_folder_entry     = RDF::URI("http://purl.org/wf4ever/ro#FolderEntry")  
+    ro_resource         = RDF::URI("http://purl.org/wf4ever/ro#Resource")
+
+    content = File.read("test_ro.zip") # FIXME - this obviously needs to fetch
+
+    begin
+      zip_file = Tempfile.new('ro.zip.')
+      zip_file.binmode
+      zip_file.write(content)
+      zip_file.close
+      
+      Zip::ZipFile.open(zip_file.path) { |zip|
+
+        # Extract and load the remote manifest and folders.
+
+        graph = load_graph(zip.get_entry(ResearchObject::MANIFEST_PATH).get_input_stream.read,
+            :base_uri => ro_uri + ResearchObject::MANIFEST_PATH)
+
+        aggregates  = graph.query([ro_uri, ore_aggregates, nil]).objects
+        proxies     = graph.query([nil, rdf_type, ore_proxy]).subjects
+        folders     = graph.query([nil, rdf_type, ro_folder]).subjects
+        annotations = graph.query([nil, RDF.type, RO.AggregatedAnnotation]).subjects
+
+        folders.each do |folder|
+          folder_rdf = graph.query([folder, ore_is_described_by, nil]).first_object
+
+          folder_path = relative_uri(folder_rdf, ro_uri)
+
+          folder_graph = load_graph(zip.get_entry(folder_path).get_input_stream.read,
+              :base_uri => ro_uri + folder_path)
+
+          graph << folder_graph
+        end
+
+        proxies.each do |proxy|
+
+          proxy_for    = relative_uri(graph.query([proxy, ore_proxy_for, nil]).first_object, ro_uri)
+          proxy_in     = relative_uri(graph.query([proxy, ore_proxy_in,  nil]).first_object, ro_uri)
+
+          target = ro_uri + proxy_for
+
+          next if folders.include?(target)
+          next if annotations.include?(target)
+
+          create_proxy(
+            :path           => calculate_path(nil, 'application/vnd.wf4ever.proxy'),
+            :proxy_for_path => proxy_for,
+            :proxy_in_path  => proxy_in,
+            :user_uri       => user_uri)
+
+        end
+
+        aggregates.each do |aggregate|
+
+          next if folders.include?(aggregate)
+          next if annotations.include?(aggregate)
+
+          path = relative_uri(aggregate, ro_uri)
+
+          data = zip.get_entry(path).get_input_stream.read
+
+          create_aggregated_resource(
+            :path         => path,
+            :data         => data,
+            :content_type => 'application/rdf+xml', # FIXME - I can't get this information without fetching the resources :(
+            :user_uri     => user_uri)
+
+        end
+
+        # Annotations
+
+        annotations.each do |annotation|
+
+          body_uri = graph.query([annotation, AO.body, nil]).first_object
+          annotated_resources = graph.query([annotation, RO.annotatesAggregatedResource, nil]).objects
+
+          annotated_resources.each do |ar|
+
+            stub = create_annotation_stub(
+              :user_uri       => user_uri,
+              :ao_body_path   => relative_uri(body_uri, ro_uri),
+              :resource_paths => annotated_resources.map { |a| relative_uri(a, ro_uri) } )
+          end
+        end
+      }
+
+    rescue
+      raise #unless Rails.env == "production"
+    end
+
+    nil
+  end
+
 private
 
   def create_manifest #:nodoc:
