@@ -21,6 +21,8 @@ class ResearchObject < ActiveRecord::Base
 
   has_many :resources, :dependent => :destroy
 
+  has_many :proxies, :class_name => 'Resource', :conditions => { :is_proxy => true }
+
   has_many :annotation_resources
 
   belongs_to :context, :polymorphic => true
@@ -373,14 +375,16 @@ class ResearchObject < ActiveRecord::Base
 
     path = calculate_path(opts[:path], opts[:content_type])
 
-    # Create a proxy for this resource.
+    # Create a proxy for this resource if it doesn't exist.
 
-    proxy = create_proxy(
-      :proxy_for_path => path,
-      :proxy_in_path  => ".",
-      :user_uri       => opts[:user_uri])
+    unless proxies.exists?(:proxy_for_path => path)
+      proxy = create_proxy(
+        :proxy_for_path => path,
+        :proxy_in_path  => ".",
+        :user_uri       => opts[:user_uri])
 
-    proxy.update_graph!
+      proxy.update_graph!
+    end
 
     # Create the resource.
 
