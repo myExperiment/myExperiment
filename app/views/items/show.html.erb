@@ -28,6 +28,10 @@
         <td><%= user_link(@item.creator_uri) -%></td>
       </tr>
       <tr>
+        <td>URI</td>
+        <td><%= link_to(h(@item.uri.to_s), @item.uri.to_s, :rel => "nofollow") -%></td>
+      </tr>
+      <tr>
         <td>File name</td>
         <td><%=h @item.folder_entry.entry_name -%></td>
       </tr>
