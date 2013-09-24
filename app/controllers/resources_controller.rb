@@ -62,6 +62,8 @@ class ResourcesController < ActionController::Base
 
     # FIXME: This needs to support 406 
 
+    # FIXME: This needs to support 401/403 
+
     if resource.is_proxy
       if resource.proxy_for
         redirect_to resource.proxy_for.uri.to_s, :status => 303

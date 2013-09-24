@@ -120,6 +120,72 @@
       </ul>
     <% end %>
 
+    <% unless @workflow_runs.empty? %>
+      <h2>Workflow runs</h2>
+      <ul>
+        <% @workflow_runs.each do |workflow_run| %>
+          <% label = @statements.query([workflow_run, RDF::RDFS.label, nil]).first_literal %>
+          <% start_time = @statements.query([workflow_run, RDF::URI("http://www.w3.org/ns/prov#startedAtTime"), nil]).first_object %>
+          <% end_time   = @statements.query([workflow_run, RDF::URI("http://www.w3.org/ns/prov#endedAtTime"), nil]).first_object %>
+
+          <h3><%=h label -%></h3>
+
+          <ul>
+            <% if start_time %>
+              <li>Started at <%= datetime(DateTime.parse(start_time.to_s)) -%>.</li>
+            <% end %>
+            <% if end_time %>
+              <li>Ended at <%= datetime(DateTime.parse(end_time.to_s)) -%>.</li>
+            <% end %>
+            <% if start_time && end_time %>
+              <li>Time elapsed: <%= sprintf("%.2f", (DateTime.parse(end_time.to_s).to_time - DateTime.parse(start_time.to_s).to_time).to_f * 100000) -%> seconds.</li>
+            <% end %>
+          </ul>
+
+          <% inputs = @statements.query([workflow_run, RDF::URI("http://purl.org/wf4ever/wfprov#usedInput"), nil]).objects %>
+
+          <% if inputs.count > 0 %>
+            <h3>Inputs</h3>
+            <table class="simple">
+              <tr>
+                <th>Label</th>
+                <th>SHA1</th>
+                <th>Zip entry</th>
+              </tr>
+            <% inputs.each do |input| %>
+              <% local_path = @statements.query([input, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/content"), nil]).first_object %>
+              <% sha1 = @statements.query([local_path, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/sha1"), nil]).first_literal %>
+              <% b1 = @statements.query([nil, RDF::URI("http://www.w3.org/ns/prov#entity"), input]).first_subject %>
+              <% role = @statements.query([b1, RDF::URI("http://www.w3.org/ns/prov#hadRole"), nil]).first_object %>
+              <% label = @statements.query([role, RDF::RDFS.label, nil]).first_literal %>
+                <tr>
+                  <td><%=h label -%></td>
+                  <td><%=h sha1 -%></td>
+                  <td><%=h local_path -%></td>
+                </tr>
+            <% end %>
+            </table>
+          <% end %>
+          
+          <% outputs = @statements.query([nil, RDF::URI("http://purl.org/wf4ever/wfprov#wasOutputFrom"), workflow_run]) %>
+
+          <% if outputs.count > 0 %>
+            <h3>Outputs</h3>
+            <table class="simple">
+              <tr>
+                <th>Label</th>
+                <th>SHA1</th>
+                <th>Zip entry</th>
+              </tr>
+              <% outputs.each do |input| %>
+              <% end %>
+            </table>
+          <% end %>
+
+        <% end %>
+      </ul>
+    <% end %>
+
     <% if Authorization.check('edit', @context, current_user) %>
       <h2>Actions</h2>
 

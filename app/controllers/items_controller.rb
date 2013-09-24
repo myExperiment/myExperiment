@@ -43,6 +43,7 @@ class ItemsController < ApplicationController
       @requires_hardware = @statements.query([@item.uri, RDF::URI("http://purl.org/wf4ever/roterms#requiresHardware"), nil]).objects
       @requires_software = @statements.query([@item.uri, RDF::URI("http://purl.org/wf4ever/roterms#requiresSoftware"), nil]).objects
       @roles_in_time = @statements.query([nil, RDF::URI("http://purl.org/spar/pro/relatesToEntity"), @item.uri]).subjects
+      @workflow_runs = @statements.query([nil, RDF.type, RDF::URI("http://purl.org/wf4ever/wfprov#WorkflowRun")]).subjects
     end
 
     if @item.is_folder
