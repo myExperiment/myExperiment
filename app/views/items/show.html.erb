@@ -184,10 +184,12 @@
                 <% label = @statements.query([param, RDF::RDFS.label, nil]).first_literal %>
                 <% sha1 = @statements.query([zip_entry, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/sha1"), nil]).first_literal %>
                 <% size = @statements.query([zip_entry, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/byteCount"), nil]).first_literal %>
-                <td><%=h label -%></td>
-                <td><%=h sha1 -%></td>
-                <td><%=h zip_entry -%></td>
-                <td><%=h size -%></td>
+                <tr>
+                  <td><%=h label -%></td>
+                  <td><%=h sha1 -%></td>
+                  <td><%=h zip_entry -%></td>
+                  <td><%=h size -%></td>
+                </tr>
               <% end %>
             </table>
           <% end %>
