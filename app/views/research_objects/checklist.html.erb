@@ -1,0 +1,24 @@
+
+<h1>Checklist result for: <%=h @context.label -%></h1>
+
+<table class="checklist simple">
+  <% @results[:sub_results].each do |sub_result| %>
+    <tr>
+      <td class="<%= sub_result[:colour] -%>">
+        <% case sub_result[:colour]; when :red %>
+          <%= image_tag('famfamfam_silk/cross.png') -%>
+        <% when :amber %>
+          <%= image_tag('amber_cross.png') -%>
+        <% when :green %>
+          <%= image_tag('famfamfam_silk/tick.png') -%>
+        <% end %>
+      </td>
+      <td><%=h sub_result[:text] -%></td>
+    </tr>
+  <% end %>
+</table>
+
+<% if false %>
+  <h2>Debug</h2>
+<pre><%=h @results.to_yaml -%></pre>
+<% end %>

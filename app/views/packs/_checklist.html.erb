@@ -1,10 +1,16 @@
 <div class="contribution_section_box">
 	<p class="heading">
-		<%= info_icon_with_tooltip("The unique list of tags that items within this pack have been tagged with") %>
-		Checklist evaluator
+		<%= info_icon_with_tooltip("These are the results from checklists that measure the health of this pack") %>
+		Checklist evaluation
   </p>
-	
-  <p>
-    <%= link_to("Checklist evaluation", "http://sandbox.wf4ever-project.org/roevaluate/evaluate/trafficlight_html?RO=#{CGI::escape(@pack.research_object.uri.to_s)}&minim=http%3A%2F%2Fwf4ever.github.io%2Fro-catalogue%2Fv0.1%2FTimbus-demo-test%2FTimbus-demo-minim.rdf&purpose=complete") -%>
-  </p>
+
+  <% if Authorization.check('edit', @pack, current_user) %>
+    <p>
+      <% form_tag(update_checklist_pack_path(@pack), :method => :post) do -%>
+        <%= select_tag("minim", options_for_select(Conf.research_object_checklists.keys )) -%>
+        <%= submit_tag("Run") -%>
+      <% end %>
+    </p>
+  <% end %>
+
 </div>

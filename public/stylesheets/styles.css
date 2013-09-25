@@ -2710,3 +2710,6 @@ TABLE.metadata TD.content_type {
   padding: 8px;
 }
 
+TABLE.checklist {
+  margin: 32px auto;
+}

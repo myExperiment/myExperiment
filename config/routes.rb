@@ -64,6 +64,7 @@ ActionController::Routing::Routes.draw do |map|
                  :quick_add => :post,
                  :resolve_link => :post,
                  :snapshot => :post,
+                 :update_checklist => :post,
                  :items => :get } do |pack|
     pack.resources :comments, :collection => { :timeline => :get }
     pack.resources :relationships, :collection => { :edit_relationships => :get }

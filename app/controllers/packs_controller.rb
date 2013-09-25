@@ -4,6 +4,8 @@
 # See license.txt for details.
 
 require 'wf4ever/transformation-client'
+require 'open-uri'
+require 'nokogiri'
 
 class PacksController < ApplicationController
   include ApplicationHelper
@@ -471,6 +473,23 @@ class PacksController < ApplicationController
     end
   end
 
+  def update_checklist
+
+    entry = Conf.research_object_checklists[params[:minim]]
+
+    checklist_uri = url_with_params(entry["service"],
+      "RO" => @pack.research_object.uri.to_s,
+#     "RO" => "http://alpha2.myexperiment.org/rodl/ROs/Pack15/",
+      "minim" => entry["minim"],
+      "purpose" => entry["purpose"])
+
+#   @results = scrape_checklist_results(File.read("checklist2.html"))
+    @results = scrape_checklist_results(open(checklist_uri))
+    @context = @pack
+
+    render "research_objects/checklist"
+  end
+
   protected
   
   # Check that a protocol is specified in the URI; prepend HTTP:// otherwise
@@ -507,6 +526,7 @@ class PacksController < ApplicationController
       "tag"              => "view",
       "update"           => "edit",
       "update_item"      => "edit",
+      "update_checklist" => "edit",
       "snapshot"         => "edit"
     }
 
@@ -656,6 +676,36 @@ puts "      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object
     folder = ro.root_folder if folder.nil?
 
     ro.create_folder_entry(relative_uri(resource_uri, @pack.research_object.uri), folder.path, user_path(current_user))
+  end
+
+  # This is a stop-gap solution.  Yes, really.
+
+  def scrape_checklist_results(html)
+
+    doc = Nokogiri::HTML(html)
+
+    classes = {
+      "trafficlight small fail should" => { :colour => :red,   :score => 0 },
+      "trafficlight small fail must"   => { :colour => :amber, :score => 1 },
+      "trafficlight small pass"        => { :colour => :green, :score => 2 }
+    }
+
+    score     = 0
+    max_score = 0
+
+    sub_results = doc.xpath("//tr[@class='sub_result']").map do |tr|
+      tds = tr.xpath("td")
+
+      score += classes[tds[1].attributes["class"].to_s][:score]
+      max_score += 2
+
+      {
+        :text   => tds[2].text,
+        :colour => classes[tds[1].attributes["class"].to_s][:colour]
+      }
+    end
+
+    { :score => score, :max_score => max_score, :sub_results => sub_results }
   end
 
 end
