@@ -776,6 +776,37 @@ class ResearchObject < ActiveRecord::Base
     nil
   end
 
+  def generate_zip!
+
+    zip_file_name = "tmp/zipped_ro.#{$$}.zip"
+
+    FileUtils.rm_rf(zip_file_name)
+
+    zip_file = Zip::ZipFile.open(zip_file_name, Zip::ZipFile::CREATE)
+
+      resources.each do |resource|
+
+        if resource.content_blob.nil?
+          resource.generate_graph!
+          resource.reload
+        end
+
+        next unless resource.content_blob
+
+        next if resource.is_folder
+
+        zip_file.get_output_stream(resource.path) do |stream|
+          data = resource.content_blob.data
+          data.force_encoding(Encoding::ASCII_8BIT)
+          stream.write(data)
+        end
+      end
+
+    zip_file.close
+
+    zip_file_name
+  end
+
 private
 
   def create_manifest #:nodoc:

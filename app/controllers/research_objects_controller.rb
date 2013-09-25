@@ -27,10 +27,22 @@ class ResearchObjectsController < ActionController::Base
 
     ro = ResearchObject.find_by_slug_and_version(slug, nil)
 
-    if (ro)
-      redirect_to research_object_url(slug) + "/" + ResearchObject::MANIFEST_PATH, :status => 303
-    else
+    unless ro
       render :text => "Research Object not found", :status => 404
+      return
+    end
+
+    respond_to do |format|
+      format.html {
+        redirect_to polymorphic_path(ro.context)
+      }
+      format.rdf { 
+        redirect_to research_object_url(slug) + "/" + ResearchObject::MANIFEST_PATH, :status => 303
+      }
+      format.zip {
+        zip_file_name = ro.generate_zip!
+        send_file zip_file_name, :type => "application/zip", :disposition => 'attachment', :filename => "#{ro.slug}.zip"
+      }
     end
   end
 
