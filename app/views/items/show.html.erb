@@ -167,7 +167,7 @@
             </table>
           <% end %>
           
-          <% outputs = @statements.query([nil, RDF::URI("http://purl.org/wf4ever/wfprov#wasOutputFrom"), workflow_run]) %>
+          <% outputs = @statements.query([nil, RDF::URI("http://purl.org/wf4ever/wfprov#wasOutputFrom"), workflow_run]).subjects %>
 
           <% if outputs.count > 0 %>
             <h3>Outputs</h3>
@@ -176,8 +176,20 @@
                 <th>Label</th>
                 <th>SHA1</th>
                 <th>Zip entry</th>
+                <th>Size</th>
               </tr>
-              <% outputs.each do |input| %>
+              <% outputs.each do |output| %>
+                <% zip_entry = @statements.query([output, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/content"), nil]).first_object %>
+                <% param = @statements.query([output, RDF::URI("http://purl.org/wf4ever/wfprov#describedByParameter"), nil]).first_object %>
+                <% label = @statements.query([param, RDF::RDFS.label, nil]).first_literal %>
+                <% sha1 = @statements.query([zip_entry, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/sha1"), nil]).first_literal %>
+                <% size = @statements.query([zip_entry, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/byteCount"), nil]).first_literal %>
+                Debug
+                <pre><%=h param.inspect -%></pre>
+                <td><%=h label -%></td>
+                <td><%=h sha1 -%></td>
+                <td><%=h zip_entry -%></td>
+                <td><%=h size -%></td>
               <% end %>
             </table>
           <% end %>
