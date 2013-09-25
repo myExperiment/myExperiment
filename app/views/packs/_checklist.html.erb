@@ -4,7 +4,7 @@
 		Checklist evaluation
   </p>
 
-  <% if Authorization.check('edit', @pack, current_user) %>
+  <% if Authorization.check('view', @pack, current_user) %>
     <p>
       <% form_tag(update_checklist_pack_path(@pack), :method => :post) do -%>
         <%= select_tag("minim", options_for_select(Conf.research_object_checklists.keys )) -%>

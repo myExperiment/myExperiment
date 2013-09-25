@@ -526,7 +526,7 @@ class PacksController < ApplicationController
       "tag"              => "view",
       "update"           => "edit",
       "update_item"      => "edit",
-      "update_checklist" => "edit",
+      "update_checklist" => "view",
       "snapshot"         => "edit"
     }
 
