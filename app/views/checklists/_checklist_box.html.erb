@@ -4,13 +4,13 @@
 		Progress
   </p>
 
-  <% Conf.research_object_checklists.each do |label, checklist| %>
-    <% clr = @pack.research_object.checklist_results.find(:first, :conditions => { :minim_url => checklist["minim"], :purpose => checklist["purpose"] } ) %>
+  <% Conf.research_object_checklists.each do |slug, checklist| %>
+    <% clr = context.research_object.checklists.find_by_slug(slug) %>
     <% if clr %>
       <% score_percent = 100 * clr.score / clr.max_score %>
       <div class="checklist">
         <div class="label">
-          <%=h label -%>
+          <%= link_to(h(checklist["label"]), polymorphic_path([context, clr])) -%>
         </div>
         <div class="bar">
           <div class="score" style="width: <%= score_percent -%>%">
@@ -22,10 +22,10 @@
 
   <% end %>
 
-  <% if Authorization.check('view', @pack, current_user) %>
+  <% if Authorization.check('view', context, current_user) %>
     <p>
-      <% form_tag(update_checklist_pack_path(@pack), :method => :post) do -%>
-        <%= select_tag("minim", options_for_select(Conf.research_object_checklists.keys )) -%>
+      <% form_tag(update_checklist_pack_path(context), :method => :post) do -%>
+        <%= select_tag("checklist", options_for_select(Conf.research_object_checklists.keys.map { |x| [Conf.research_object_checklists[x]["label"], x] } )) -%>
         <%= submit_tag("Run") -%>
       <% end %>
     </p>

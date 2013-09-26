@@ -187,7 +187,7 @@
 		</p>
 	</div>
 
-  <%= render :partial => "checklist", :locals => { :contributable => @pack } %>
+  <%= render :partial => "checklists/checklist_box", :locals => { :context => @pack } %>
 
   <%= render :partial => "contributions/license_box", :locals => { :contributable => @pack } %>
 

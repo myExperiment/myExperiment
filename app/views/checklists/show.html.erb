@@ -1,0 +1,18 @@
+<h1>Checklist result: <%=h @checklist.label -%></h1>
+
+<table class="checklist simple">
+  <% @checklist.checklist_items.each do |item| %>
+    <tr>
+      <td class="<%= item.colour -%>">
+        <% case item.colour; when "red" %>
+          <%= image_tag('famfamfam_silk/cross.png') -%>
+        <% when "amber" %>
+          <%= image_tag('amber_cross.png') -%>
+        <% when "green" %>
+          <%= image_tag('famfamfam_silk/tick.png') -%>
+        <% end %>
+      </td>
+      <td><%=h item.text -%></td>
+    </tr>
+  <% end %>
+</table>

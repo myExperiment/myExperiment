@@ -27,7 +27,7 @@ class ResearchObject < ActiveRecord::Base
 
   belongs_to :context, :polymorphic => true
 
-  has_many :checklist_results, :dependent => :destroy
+  has_many :checklists, :dependent => :destroy
 
   validates_presence_of :slug
 
@@ -807,6 +807,25 @@ class ResearchObject < ActiveRecord::Base
     zip_file.close
 
     zip_file_name
+  end
+
+  def run_checklist!(slug)
+
+    checklist = checklists.find_by_slug(slug)
+
+    entry = Conf.research_object_checklists[slug]
+
+    if checklist.nil?
+      checklist = checklists.create(
+          :slug => slug,
+          :label => entry["label"],
+          :minim_url => entry["minim"],
+          :purpose => entry["purpose"])
+    end
+
+    checklist.run_checklist!
+
+    checklist
   end
 
 private

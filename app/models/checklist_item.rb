@@ -3,9 +3,9 @@
 # Copyright (c) 2007-2013 The University of Manchester, the University of
 # Oxford, and the University of Southampton.  See license.txt for details.
 
-class ChecklistItemResult < ActiveRecord::Base
+class ChecklistItem < ActiveRecord::Base
 
-  belongs_to :checklist_result
+  belongs_to :checklist
 
 end
 

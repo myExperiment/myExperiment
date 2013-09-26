@@ -475,38 +475,16 @@ class PacksController < ApplicationController
 
   def update_checklist
 
-    entry = Conf.research_object_checklists[params[:minim]]
+    slug  = params[:checklist]
 
-    checklist_uri = url_with_params(entry["service"],
-      "RO" => @pack.research_object.uri.to_s,
-#     "RO" => "http://alpha2.myexperiment.org/rodl/ROs/Pack15/",
-      "minim" => entry["minim"],
-      "purpose" => entry["purpose"])
-
-#   @results = scrape_checklist_results(File.read("checklist2.html"))
-    @results = scrape_checklist_results(open(checklist_uri))
-    @context = @pack
-
-    clr = @pack.research_object.checklist_results.find_by_minim_url_and_purpose(
-        entry["minim"], entry["purpose"])
-
-    if clr.nil?
-      clr = @context.research_object.checklist_results.create(
-          :minim_url => entry["minim"],
-          :purpose => entry["purpose"])
+    unless Conf.research_object_checklists[slug]
+      render_422("The requested checklist is not defined")
+      return
     end
 
-    clr.update_attributes(
-        :score     => @results[:score],
-        :max_score => @results[:max_score])
+    checklist = @pack.research_object.run_checklist!(slug)
 
-    clr.checklist_item_results.delete_all
-
-    @results[:sub_results].each do |sr|
-      clr.checklist_item_results.build(:colour => sr[:colour].to_s, :text => sr[:text]).save
-    end
-
-    render "research_objects/checklist"
+    redirect_to polymorphic_path([@pack, checklist])
   end
 
   protected
@@ -695,36 +673,6 @@ puts "      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object
     folder = ro.root_folder if folder.nil?
 
     ro.create_folder_entry(relative_uri(resource_uri, @pack.research_object.uri), folder.path, user_path(current_user))
-  end
-
-  # This is a stop-gap solution.  Yes, really.
-
-  def scrape_checklist_results(html)
-
-    doc = Nokogiri::HTML(html)
-
-    classes = {
-      "trafficlight small fail should" => { :colour => :red,   :score => 0 },
-      "trafficlight small fail must"   => { :colour => :amber, :score => 1 },
-      "trafficlight small pass"        => { :colour => :green, :score => 2 }
-    }
-
-    score     = 0
-    max_score = 0
-
-    sub_results = doc.xpath("//tr[@class='sub_result']").map do |tr|
-      tds = tr.xpath("td")
-
-      score += classes[tds[1].attributes["class"].to_s][:score]
-      max_score += 2
-
-      {
-        :text   => tds[2].text,
-        :colour => classes[tds[1].attributes["class"].to_s][:colour]
-      }
-    end
-
-    { :score => score, :max_score => max_score, :sub_results => sub_results }
   end
 
 end

@@ -70,6 +70,7 @@ ActionController::Routing::Routes.draw do |map|
     pack.resources :relationships, :collection => { :edit_relationships => :get }
     pack.resources :annotations
     pack.resources :items, :requirements => { :id => /[^;]+/ }
+    pack.resources :checklists
   end
 
   # workflows (downloadable)

@@ -5,8 +5,10 @@
 
 class AddChecklistTables < ActiveRecord::Migration
   def self.up
-    create_table "checklist_results", :force => true do |t|
+    create_table "checklists", :force => true do |t|
       t.integer "research_object_id"
+      t.string  "slug"
+      t.string  "label"
       t.integer "score"
       t.integer "max_score"
       t.string  "minim_url"
@@ -15,15 +17,15 @@ class AddChecklistTables < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table "checklist_item_results", :force => true do |t|
-      t.integer "checklist_result_id"
+    create_table "checklist_items", :force => true do |t|
+      t.integer "checklist_id"
       t.string  "colour"
       t.string  "text"
     end
   end
 
   def self.down
-    drop_table :checklist_item_results
-    drop_table :checklist_results
+    drop_table :checklist_items
+    drop_table :checklists
   end
 end

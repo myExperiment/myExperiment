@@ -105,14 +105,16 @@ ActiveRecord::Schema.define(:version => 20130924164435) do
 
   add_index "bookmarks", ["user_id"], :name => "index_bookmarks_on_user_id"
 
-  create_table "checklist_item_results", :force => true do |t|
-    t.integer "checklist_result_id"
+  create_table "checklist_items", :force => true do |t|
+    t.integer "checklist_id"
     t.string  "colour"
     t.string  "text"
   end
 
-  create_table "checklist_results", :force => true do |t|
+  create_table "checklists", :force => true do |t|
     t.integer  "research_object_id"
+    t.string   "slug"
+    t.string   "label"
     t.integer  "score"
     t.integer  "max_score"
     t.string   "minim_url"
@@ -655,9 +657,9 @@ ActiveRecord::Schema.define(:version => 20130924164435) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "uuid",               :limit => 36
-    t.integer  "context_id"
-    t.string   "context_type"
     t.text     "title"
+    t.string   "context_type"
+    t.integer  "context_id"
   end
 
   create_table "reviews", :force => true do |t|
