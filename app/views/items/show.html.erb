@@ -145,7 +145,7 @@
           <% inputs = @statements.query([workflow_run, RDF::URI("http://purl.org/wf4ever/wfprov#usedInput"), nil]).objects %>
 
           <% if inputs.count > 0 %>
-            <h3>Inputs</h3>
+            <h4>Inputs</h4>
             <table class="simple">
               <tr>
                 <th>Label</th>
@@ -170,7 +170,7 @@
           <% outputs = @statements.query([nil, RDF::URI("http://purl.org/wf4ever/wfprov#wasOutputFrom"), workflow_run]).subjects %>
 
           <% if outputs.count > 0 %>
-            <h3>Outputs</h3>
+            <h4>Outputs</h4>
             <table class="simple">
               <tr>
                 <th>Label</th>
