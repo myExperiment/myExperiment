@@ -484,6 +484,9 @@ class PacksController < ApplicationController
 
     checklist = @pack.research_object.run_checklist!(slug)
 
+    @pack.solr_index if Conf.solr_enable
+    @pack.update_contribution_rank
+
     redirect_to polymorphic_path([@pack, checklist])
   end
 

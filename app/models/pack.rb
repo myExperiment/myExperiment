@@ -1061,8 +1061,11 @@ class Pack < ActiveRecord::Base
 
     boost = 0
 
-    # initial boost depends on viewings count
-    boost = contribution.viewings_count / 100 if contribution
+    # Take checklists into account
+    research_object.checklists.each { |checklist| boost += (checklist.score * 10) }
+
+    # Take viewings into account
+    boost += contribution.viewings_count / 100 if contribution
 
     # Take curation events into account
     boost += CurationEvent.curation_score(CurationEvent.find_all_by_object_type_and_object_id('Pack', id))
