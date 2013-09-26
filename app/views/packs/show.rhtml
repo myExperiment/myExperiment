@@ -72,15 +72,11 @@
 
   <% if @maintainers.count > 0 %>
     <h2 class="type">Maintained by</h2>
-    <div class="body">
-      <ul>
-        <% @maintainers.each do |maintainer| %>
-          <li>
-            <span class="createdBy"><%= link_to(h(maintainer.label), polymorphic_path(maintainer)) -%></span> 
-            <% if false %><span class="createdOn">(last uploaded on 2012-12-24 18:40)</span><% end %>
-          </li>
-        <% end %>
-      </ul>
+
+    <div>
+      <% @maintainers.each do |maintainer| %>
+        <li><%= icon("profile", user_url(maintainer), nil, nil, maintainer.name) %></li>
+      <% end %>
     </div>
   <% end %>
 
