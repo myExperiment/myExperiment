@@ -43,7 +43,12 @@ class ItemsController < ApplicationController
       @requires_hardware = @statements.query([@item.uri, RDF::URI("http://purl.org/wf4ever/roterms#requiresHardware"), nil]).objects
       @requires_software = @statements.query([@item.uri, RDF::URI("http://purl.org/wf4ever/roterms#requiresSoftware"), nil]).objects
       @roles_in_time = @statements.query([nil, RDF::URI("http://purl.org/spar/pro/relatesToEntity"), @item.uri]).subjects
-      @workflow_runs = @statements.query([nil, RDF.type, RDF::URI("http://purl.org/wf4ever/wfprov#WorkflowRun")]).subjects
+
+      # Get the top-level workflow runs by selecting only those that were not
+      # part of other workflow runs.
+
+      @workflow_runs = @statements.query([nil, RDF.type, RDF::URI("http://purl.org/wf4ever/wfprov#WorkflowRun")]).subjects.to_a
+      @workflow_runs -= @statements.query([nil, RDF::URI("http://purl.org/wf4ever/wfprov#wasPartOfWorkflowRun"), nil]).subjects.to_a
     end
 
     if @item.is_folder
