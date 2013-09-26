@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130520145900) do
+ActiveRecord::Schema.define(:version => 20130924164435) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -104,6 +104,22 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
   end
 
   add_index "bookmarks", ["user_id"], :name => "index_bookmarks_on_user_id"
+
+  create_table "checklist_item_results", :force => true do |t|
+    t.integer "checklist_result_id"
+    t.string  "colour"
+    t.string  "text"
+  end
+
+  create_table "checklist_results", :force => true do |t|
+    t.integer  "research_object_id"
+    t.integer  "score"
+    t.integer  "max_score"
+    t.string   "minim_url"
+    t.string   "purpose"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "citations", :force => true do |t|
     t.integer  "user_id"
@@ -639,9 +655,9 @@ ActiveRecord::Schema.define(:version => 20130520145900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "uuid",               :limit => 36
-    t.text     "title"
-    t.string   "context_type"
     t.integer  "context_id"
+    t.string   "context_type"
+    t.text     "title"
   end
 
   create_table "reviews", :force => true do |t|
