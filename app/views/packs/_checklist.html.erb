@@ -1,8 +1,26 @@
 <div class="contribution_section_box">
 	<p class="heading">
-		<%= info_icon_with_tooltip("These are the results from checklists that measure the health of this pack") %>
-		Checklist evaluation
+		<%= info_icon_with_tooltip("These are the results from checklists that measure the progress of this pack") %>
+		Progress
   </p>
+
+  <% Conf.research_object_checklists.each do |label, checklist| %>
+    <% clr = @pack.research_object.checklist_results.find(:first, :conditions => { :minim_url => checklist["minim"], :purpose => checklist["purpose"] } ) %>
+    <% if clr %>
+      <% score_percent = 100 * clr.score / clr.max_score %>
+      <div class="checklist">
+        <div class="label">
+          <%=h label -%>
+        </div>
+        <div class="bar">
+          <div class="score" style="width: <%= score_percent -%>%">
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+
+  <% end %>
 
   <% if Authorization.check('view', @pack, current_user) %>
     <p>

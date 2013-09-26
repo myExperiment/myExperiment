@@ -487,6 +487,25 @@ class PacksController < ApplicationController
     @results = scrape_checklist_results(open(checklist_uri))
     @context = @pack
 
+    clr = @pack.research_object.checklist_results.find_by_minim_url_and_purpose(
+        entry["minim"], entry["purpose"])
+
+    if clr.nil?
+      clr = @context.research_object.checklist_results.create(
+          :minim_url => entry["minim"],
+          :purpose => entry["purpose"])
+    end
+
+    clr.update_attributes(
+        :score     => @results[:score],
+        :max_score => @results[:max_score])
+
+    clr.checklist_item_results.delete_all
+
+    @results[:sub_results].each do |sr|
+      clr.checklist_item_results.build(:colour => sr[:colour].to_s, :text => sr[:text]).save
+    end
+
     render "research_objects/checklist"
   end
 

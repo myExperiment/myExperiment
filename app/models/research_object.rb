@@ -27,6 +27,8 @@ class ResearchObject < ActiveRecord::Base
 
   belongs_to :context, :polymorphic => true
 
+  has_many :checklist_results, :dependent => :destroy
+
   validates_presence_of :slug
 
   def uri

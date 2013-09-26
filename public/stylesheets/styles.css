@@ -2713,3 +2713,26 @@ TABLE.metadata TD.content_type {
 TABLE.checklist {
   margin: 32px auto;
 }
+
+DIV.checklist {
+  padding: 8px;
+  margin: auto;
+}
+
+DIV.checklist DIV.label {
+  text-align: left;
+  padding-bottom: 2px;
+}
+
+DIV.checklist DIV.bar {
+  width: 204px;
+  height: 12px;
+  background: #aaa;
+  border: 1px solid #666;
+}
+
+DIV.checklist DIV.bar DIV.score {
+  height: 12px;
+  background: #ada;
+}
+
