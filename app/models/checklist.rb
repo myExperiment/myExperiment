@@ -20,7 +20,7 @@ class Checklist < ActiveRecord::Base
 
     query = {
 #     "RO"      => "http://alpha2.myexperiment.org/rodl/ROs/Pack15/",
-      "RO"      => @pack.research_object.uri.to_s,
+      "RO"      => research_object.uri.to_s,
       "minim"   => entry["minim"],
       "purpose" => entry["purpose"]
     }
