@@ -13,6 +13,9 @@ class Resource < ActiveRecord::Base
   
   before_save :copy_metadata
 
+  after_save    :touch_research_object
+  after_destroy :touch_research_object
+
   belongs_to :research_object
 
   belongs_to :content_blob, :dependent => :destroy
@@ -295,6 +298,10 @@ class Resource < ActiveRecord::Base
 
   def update_manifest!
     research_object.update_manifest!
+  end
+
+  def touch_research_object
+    research_object.touch
   end
 
   def destroy_related_resources

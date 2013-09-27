@@ -353,6 +353,7 @@ li {
 #myexp_breadcrumbs_bar {
 	text-decoration: none;
 	padding: 4px;
+  padding-left: 6px;
 	background-color: #E0E0E0;
 }
 
@@ -2736,3 +2737,11 @@ DIV.checklist DIV.bar DIV.score {
   background: #ada;
 }
 
+DIV.checklist-out-of-date-warning {
+  border: 1px solid #f88;
+  background: #fdb;
+  width: 330px;
+  margin: auto;
+  padding: 12px;
+  text-align: center;
+}

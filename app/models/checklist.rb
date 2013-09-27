@@ -39,6 +39,8 @@ class Checklist < ActiveRecord::Base
     results[:sub_results].each do |sr|
       checklist_items.build(:colour => sr[:colour].to_s, :text => sr[:text]).save
     end
+
+    touch
   end
 
 private

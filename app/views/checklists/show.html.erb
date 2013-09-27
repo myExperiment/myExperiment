@@ -1,5 +1,11 @@
 <h1>Checklist result: <%=h @checklist.label -%></h1>
 
+<% if @checklist.updated_at < @checklist.research_object.updated_at %>
+  <div class="checklist-out-of-date-warning">
+    This checklist is out of date and needs to be re-run.
+  </div>
+<% end %>
+
 <table class="checklist simple">
   <% @checklist.checklist_items.each do |item| %>
     <tr>
