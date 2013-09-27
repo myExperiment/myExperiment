@@ -40,6 +40,25 @@ class ResearchObjectsController < ActionController::Base
         redirect_to research_object_url(slug) + "/" + ResearchObject::MANIFEST_PATH, :status => 303
       }
       format.zip {
+        redirect_to zipped_research_object_url(slug) + "/"
+      }
+    end
+  end
+
+  def download_zip
+
+    slug = params[:id]
+    slug = slug[0..-2] if slug.ends_with?("/")
+
+    ro = ResearchObject.find_by_slug_and_version(slug, nil)
+
+    unless ro
+      render :text => "Research Object not found", :status => 404
+      return
+    end
+
+    respond_to do |format|
+      format.zip {
         zip_file_name = ro.generate_zip!
         send_file zip_file_name, :type => "application/zip", :disposition => 'attachment', :filename => "#{ro.slug}.zip"
       }

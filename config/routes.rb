@@ -329,6 +329,8 @@ ActionController::Routing::Routes.draw do |map|
   map.research_objects "/rodl/ROs", :controller => "research_objects", :action => "index",  :conditions => { :method => :get }
   map.connect          "/rodl/ROs", :controller => "research_objects", :action => "create", :conditions => { :method => :post }
 
+  map.zipped_research_object "/rodl/zippedROs/:id", :controller => "research_objects", :action => "download_zip", :conditions => { :method => :get }
+
   map.research_object "/rodl/ROs/:id", :controller => "research_objects", :action => "show",           :conditions => { :method => :get }
   map.connect         "/rodl/ROs/:research_object_id", :controller => "resources",        :action => "post", :conditions => { :method => :post }
   map.connect         "/rodl/ROs/:id", :controller => "research_objects", :action => "update",         :conditions => { :method => :put }
