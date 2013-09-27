@@ -360,3 +360,13 @@ task "myexp:blobstore:checksum:rebuild" do
   conn.execute('UPDATE content_blobs SET sha1 = SHA1(data), md5 = MD5(data)')
 end
 
+desc 'Run out-of-date checklists'
+task "myexp:checklists:update" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  ResearchObject.all.each do |ro|
+    ro.checklists.each do |checklist|
+      checklist.run_checklist! if ro.updated_at > checklist.updated_at
+    end
+  end
+end
