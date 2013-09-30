@@ -157,11 +157,7 @@ class UsersController < ApplicationController
     end
     
     unless params[:user][:name]
-      if params[:user][:username]
-        params[:user][:name] = params[:user][:username].humanize # initializes username (if one isn't entered)
-      else
-        params[:user][:name] = params[:user][:openid_url]
-      end
+      params[:user][:name] = "#{params[:user][:given_name]} #{params[:user][:family_name]}"
     end
     
     # Reset certain fields (to prevent injecting the values)
@@ -254,7 +250,7 @@ class UsersController < ApplicationController
           elsif params[:update_type]
             case params[:update_type]
               when "upd_t_up"; flash.now[:notice] = 'You have successfully updated your password'
-              when "upd_t_displname"; flash.now[:notice] = 'You have successfully updated your display name'
+              when "upd_t_name"; flash.now[:notice] = 'You have successfully updated your name'
               when "upd_t_notify"; flash.now[:notice] = 'You have successfully updated notification options'
             end
           else

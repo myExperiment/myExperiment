@@ -111,6 +111,10 @@ class User < ActiveRecord::Base
   
   # BEGIN RESTful Authentication #
   attr_accessor :password
+
+  validates_presence_of     :name
+  validates_presence_of     :given_name
+  validates_presence_of     :family_name
   
   validates_presence_of     :username,                   :if => :not_openid?
   validates_presence_of     :password,                   :if => :password_required?
