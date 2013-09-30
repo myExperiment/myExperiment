@@ -328,4 +328,12 @@ class Resource < ActiveRecord::Base
       end
     end
   end
+
+  def file_count
+    if is_folder
+      aggregates.map { |aggregate| aggregate.file_count }.sum
+    else
+      1
+    end
+  end
 end
