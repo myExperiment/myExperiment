@@ -184,6 +184,16 @@
 			
 			<p><b>Don't have an OpenID? Get one FREE from <%= link_to 'myOpenID', "https://www.myopenid.com/" %> or <%= link_to 'other providers', "http://openiddirectory.com/openid-providers-c-1.html" %>.</b></p>
 			
+      <p>
+        <strong>Given name</strong>
+        <br />
+        <%= text_field_tag :given_name, nil, :size => 32 %>
+      </p>
+      <p>
+        <strong>Family name</strong>
+        <br />
+        <%= text_field_tag :family_name, nil, :size => 32 %>
+      </p>
 			<p>
 				<strong>OpenID</strong><br/>
 				<%= text_field_tag 'openid_url', nil, :size => 35 %>

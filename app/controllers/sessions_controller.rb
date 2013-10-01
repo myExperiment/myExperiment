@@ -66,7 +66,15 @@ class SessionsController < ApplicationController
       registration_info = OpenID::SReg::Response.from_success_response(response).data
 
       name = registration_info["fullname"]
+
+      given_name  = session["given_name"].strip
+      family_name = session["family_name"].strip
+
       unless name
+        name = "#{given_name} #{family_name}".strip
+      end
+
+      unless name && !name.empty?
         flash[:notice] ||= ""
         flash[:notice] << "Please enter your name to be displayed to other users of the site.<br/>"
         name = "OpenID User"
@@ -86,6 +94,7 @@ class SessionsController < ApplicationController
       #end
 
       @user = User.new(:openid_url => response.identity_url, :name => name, #:email => email_to_use
+                       :given_name => given_name, :family_name => family_name,
                        :activated_at => Time.now, :last_seen_at => Time.now)
 
       @user.save
@@ -128,6 +137,9 @@ class SessionsController < ApplicationController
 
     def open_id_authentication
       openid_url = params[:openid_url]
+
+      session["given_name"] = params[:given_name]
+      session["family_name"] = params[:family_name]
       
       begin
         if request.post?
