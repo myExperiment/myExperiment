@@ -1,0 +1,135 @@
+<h1>Workflow Run</h1>
+
+<% workflow_run = @view_uri %>
+
+<p>View URI: <%=h @view_uri.to_s -%></p>
+<p>View type: <%=h @view_type.to_s -%></p>
+
+<% label = @statements.query([workflow_run, RDF::RDFS.label, nil]).first_literal %>
+<% start_time = @statements.query([workflow_run, RDF::URI("http://www.w3.org/ns/prov#startedAtTime"), nil]).first_object %>
+<% end_time   = @statements.query([workflow_run, RDF::URI("http://www.w3.org/ns/prov#endedAtTime"), nil]).first_object %>
+
+<h3><%=h label -%></h3>
+
+<ul>
+  <% if start_time %>
+    <li>Started at <%= datetime(DateTime.parse(start_time.to_s)) -%>.</li>
+  <% end %>
+  <% if end_time %>
+    <li>Ended at <%= datetime(DateTime.parse(end_time.to_s)) -%>.</li>
+  <% end %>
+  <% if start_time && end_time %>
+    <li>Time elapsed: <%= sprintf("%.2f", (DateTime.parse(end_time.to_s).to_time - DateTime.parse(start_time.to_s).to_time).to_f * 100000) -%> seconds.</li>
+  <% end %>
+</ul>
+
+<% inputs = @statements.query([workflow_run, RDF::URI("http://purl.org/wf4ever/wfprov#usedInput"), nil]).objects %>
+
+<% if inputs.count > 0 %>
+  <h3>Inputs</h3>
+  <table class="simple">
+    <tr>
+      <th>Label</th>
+      <th>Zip entry</th>
+    </tr>
+  <% inputs.each do |input| %>
+    <% local_path = @statements.query([input, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/content"), nil]).first_object %>
+    <% sha1 = @statements.query([local_path, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/sha1"), nil]).first_literal %>
+    <% b1 = @statements.query([nil, RDF::URI("http://www.w3.org/ns/prov#entity"), input]).first_subject %>
+    <% role = @statements.query([b1, RDF::URI("http://www.w3.org/ns/prov#hadRole"), nil]).first_object %>
+    <% label = @statements.query([role, RDF::RDFS.label, nil]).first_literal %>
+      <tr>
+        <td><%=h label -%></td>
+        <td><%=h local_path -%></td>
+      </tr>
+  <% end %>
+  </table>
+<% end %>
+
+<% outputs = @statements.query([nil, RDF::URI("http://purl.org/wf4ever/wfprov#wasOutputFrom"), workflow_run]).subjects %>
+
+<% if outputs.count > 0 %>
+  <h3>Outputs</h3>
+  <table class="simple">
+    <tr>
+      <th>Label</th>
+      <th>Size</th>
+    </tr>
+    <% outputs.each do |output| %>
+      <% zip_entry = @statements.query([output, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/content"), nil]).first_object %>
+      <% param = @statements.query([output, RDF::URI("http://purl.org/wf4ever/wfprov#describedByParameter"), nil]).first_object %>
+      <% label = @statements.query([param, RDF::RDFS.label, nil]).first_literal %>
+      <% sha1 = @statements.query([zip_entry, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/sha1"), nil]).first_literal %>
+      <% size = @statements.query([zip_entry, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/byteCount"), nil]).first_literal %>
+      <tr>
+        <td><%=h label -%></td>
+        <td><%=h size -%></td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>
+    
+<% if Rails.env == "development" %>
+
+<h2>Debug</h2>
+
+  <div id="tabsContainer" class="tabsContainer"></div>
+
+  <div class="tabContainer">
+    <div class="tabTitle">Resource as subject</div>
+    <div class="tabContent">
+      <table class="simple" style="font-size: 80%">
+        <% @statements.query([@view_uri, nil, nil]).each do |s, p, o| %>
+          <tr>
+            <td><%=h shorten_uri(p.to_s) -%></td>
+            <td>
+              <% if o.resource? %>
+                <%= link_to(o.to_s, url_with_params(@resource_uri, :view => o.to_s)) -%></td>
+              <% else %>
+                <%=h o.to_s -%></td>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+
+  <div class="tabContainer">
+    <div class="tabTitle">Resource as object</div>
+    <div class="tabContent">
+      <table class="simple" style="font-size: 80%">
+        <% @statements.query([nil, nil, @view_uri]).each do |s, p, o| %>
+          <tr>
+            <td>
+              <% if s.resource? %>
+                <%= link_to(s.to_s, url_with_params(@resource_uri, :view => s.to_s)) -%></td>
+              <% else %>
+                <%=h s.to_s -%></td>
+              <% end %>
+            <td><%=h shorten_uri(p.to_s) -%></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+
+  <div class="tabContainer">
+    <div class="tabTitle">Possible views</div>
+    <div class="tabContent">
+      <table class="simple" style="font-size: 80%">
+        <tr>
+          <th>URI</th>
+          <th>RDF type</th>
+        </tr>
+        <% @statements.query([nil, RDF.type, nil]).each do |s, p, o| %>
+          <tr>
+            <td><%= link_to(s.to_s, url_with_params(@resource_uri, :view => s.to_s)) -%></td>
+            <td><%=h shorten_uri(o.to_s) -%></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+
+<% end %>

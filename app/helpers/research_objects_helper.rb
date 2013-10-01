@@ -9,20 +9,41 @@ require 'xml/libxml'
 module ResearchObjectsHelper
 
   NAMESPACES = {
-      "http://purl.org/dc/terms/"              => "dct",
-      "http://www.openarchives.org/ore/terms/" => "ore",
-      "http://purl.org/ao/"                    => "ao",
-      "http://purl.org/wf4ever/ro#"            => "ro",
-      "http://www.w3.org/ns/prov#"             => "prov",
-      "http://xmlns.com/foaf/0.1/"             => "foaf",
-      "http://www.w3.org/ns/oa#"               => "oa",
-      "http://purl.org/pav/"                   => "pav",
-      "http://purl.org/wf4ever/bundle#"        => "bundle",
-      "http://purl.org/dc/elements/1.1/"       => "dce",
-      "http://purl.org/wf4ever/roterms#"       => "roterms"
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#" => "rdf",
+      "http://www.w3.org/2000/01/rdf-schema#"       => "rdfs",
+      "http://purl.org/dc/terms/"                   => "dct",
+      "http://www.openarchives.org/ore/terms/"      => "ore",
+      "http://purl.org/ao/"                         => "ao",
+      "http://purl.org/wf4ever/ro#"                 => "ro",
+      "http://www.w3.org/ns/prov#"                  => "prov",
+      "http://xmlns.com/foaf/0.1/"                  => "foaf",
+      "http://www.w3.org/ns/oa#"                    => "oa",
+      "http://purl.org/pav/"                        => "pav",
+      "http://purl.org/wf4ever/bundle#"             => "bundle",
+      "http://purl.org/dc/elements/1.1/"            => "dce",
+      "http://purl.org/wf4ever/roterms#"            => "roterms",
+      "http://purl.org/wf4ever/wfprov#"             => "wfprov",
+      "http://purl.org/wf4ever/wfdesc#"             => "wfdesc",
+      "http://purl.org/wf4ever/wf4ever#"            => "wf4ever",
+      "http://ns.taverna.org.uk/2012/tavernaprov/"  => "tavernaprov",
+      "http://www.w3.org/2011/content#"             => "content",
+      "http://www.w3.org/2002/07/owl#"              => "owl"
+
   }
 
   private
+
+  def shorten_uri(uri)
+    uri = uri.to_s
+
+    NAMESPACES.each do |namespace, prefix|
+      if uri.starts_with?(namespace)
+        return "#{prefix}:#{uri[namespace.length..-1]}"
+      end
+    end
+
+    uri
+  end
 
   def pretty_rdf_xml(text)
 
@@ -227,7 +248,7 @@ module ResearchObjectsHelper
 
   RDF_NS = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
 
-  def render_rdf_xml(graph)
+  def render_rdf_xml(graph, opts = {})
 
     document = LibXML::XML::Document.new
 
@@ -241,7 +262,7 @@ module ResearchObjectsHelper
       if subject.anonymous?
         description["rdf:nodeID"] = subject.id
       else
-        description["rdf:about"] = subject.to_s
+        description["rdf:about"] = relative_uri(subject.to_s, opts[:base_uri])
       end
 
       # Split the predicate URI into a namespace and a term.
@@ -270,7 +291,7 @@ module ResearchObjectsHelper
         if object.anonymous?
           statement['rdf:nodeID'] = object.id
         else
-          statement['rdf:resource'] = object.to_s
+          statement['rdf:resource'] = relative_uri(object.to_s, opts[:base_uri])
         end
 
       end
@@ -282,11 +303,11 @@ module ResearchObjectsHelper
     document.to_s
   end
 
-  def render_rdf(graph, format = :rdfxml)
-    if format == :rdfxml
-      render_rdf_xml(graph)
+  def render_rdf(graph, opts = {})
+    if opts[:format] == :rdfxml || opts[:format].nil?
+      render_rdf_xml(graph, opts)
     else
-      RDF::Writer.for(format).buffer { |writer| writer << graph }
+      RDF::Writer.for(opts[:format]).buffer { |writer| writer << graph }
     end
   end
 

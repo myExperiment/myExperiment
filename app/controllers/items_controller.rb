@@ -36,6 +36,18 @@ class ItemsController < ApplicationController
 
     @statements = merge_graphs(@annotations.map { |annotation| annotation[:graph] })
 
+    # Show a custom view if a view parameter is given
+
+    if params[:view]
+      @view_type = @statements.query([RDF::URI(params[:view]), RDF.type, nil]).first_object
+
+      @resource_uri = polymorphic_path([@context, :items]) + "/" + @item.ore_path
+      @view_uri = RDF::URI(params[:view])
+
+      render :workflow_run
+      return
+    end
+
     unless @item.is_folder
       @title = @statements.query([@item.uri, RDF::DC.title, nil]).first_value || @item.folder_entry.entry_name
       @description = @statements.query([@item.uri, RDF::DC.description, nil]).first_value
