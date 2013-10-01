@@ -124,19 +124,12 @@
       <h2>Workflow runs</h2>
       <ul>
         <% @workflow_runs.each do |workflow_run| %>
-          <% label = @statements.query([workflow_run, RDF::RDFS.label, nil]).first_literal %>
           <% start_time = @statements.query([workflow_run, RDF::URI("http://www.w3.org/ns/prov#startedAtTime"), nil]).first_object %>
           <% end_time   = @statements.query([workflow_run, RDF::URI("http://www.w3.org/ns/prov#endedAtTime"), nil]).first_object %>
 
-          <h3><%=h label -%></h3>
+          <h3><%= item_link(@item, workflow_run, @statements) -%></h3>
 
           <ul>
-            <% if start_time %>
-              <li>Started at <%= datetime(DateTime.parse(start_time.to_s)) -%>.</li>
-            <% end %>
-            <% if end_time %>
-              <li>Ended at <%= datetime(DateTime.parse(end_time.to_s)) -%>.</li>
-            <% end %>
             <% if start_time && end_time %>
               <li>Time elapsed: <%= sprintf("%.2f", (DateTime.parse(end_time.to_s).to_time - DateTime.parse(start_time.to_s).to_time).to_f * 100000) -%> seconds.</li>
             <% end %>

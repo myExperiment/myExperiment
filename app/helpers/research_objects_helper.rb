@@ -345,5 +345,26 @@ module ResearchObjectsHelper
 
     folders.reverse
   end
+
+  def item_uri(resource)
+    polymorphic_url([resource.research_object.context, :items]) + "/" + resource.ore_path
+  end
+
+  def item_uri_with_view(resource, view)
+    item_uri(resource) + "?" + { :view => view }.to_query
+  end
+
+  def item_label(resource, statements)
+
+    label = statements.query([resource, RDF::RDFS.label, nil]).first_literal
+
+    return label if label
+
+    resource
+  end
+
+  def item_link(resource, view, statements)
+    link_to(h(item_label(view, statements)), item_uri_with_view(resource, view))
+  end
 end
 

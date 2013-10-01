@@ -1,0 +1,65 @@
+<% if Rails.env == "development" %>
+
+<h2>Debug</h2>
+
+  <div id="tabsContainer" class="tabsContainer"></div>
+
+  <div class="tabContainer">
+    <div class="tabTitle">Resource as subject</div>
+    <div class="tabContent">
+      <table class="simple" style="font-size: 80%">
+        <% statements.query([view_uri, nil, nil]).each do |s, p, o| %>
+          <tr>
+            <td><%=h shorten_uri(p.to_s) -%></td>
+            <td>
+              <% if o.resource? %>
+                <%= link_to(o.to_s, item_uri_with_view(item, o.to_s)) -%></td>
+              <% else %>
+                <%=h o.to_s -%></td>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+
+  <div class="tabContainer">
+    <div class="tabTitle">Resource as object</div>
+    <div class="tabContent">
+      <table class="simple" style="font-size: 80%">
+        <% statements.query([nil, nil, view_uri]).each do |s, p, o| %>
+          <tr>
+            <td>
+              <% if s.resource? %>
+                <%= link_to(s.to_s, item_uri_with_view(item, s.to_s)) -%></td>
+              <% else %>
+                <%=h s.to_s -%></td>
+              <% end %>
+            <td><%=h shorten_uri(p.to_s) -%></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+
+  <div class="tabContainer">
+    <div class="tabTitle">Possible views</div>
+    <div class="tabContent">
+      <table class="simple" style="font-size: 80%">
+        <tr>
+          <th>URI</th>
+          <th>RDF type</th>
+        </tr>
+        <% statements.query([nil, RDF.type, nil]).each do |s, p, o| %>
+          <tr>
+            <td><%= link_to(s.to_s, item_uri_with_view(item, s.to_s)) -%></td>
+            <td><%=h shorten_uri(o.to_s) -%></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+
+<% end %>
+

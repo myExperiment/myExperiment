@@ -1,0 +1,17 @@
+<%
+process_runs = @statements.query([view_uri, RDF::URI("http://purl.org/dc/terms/hasPart"), nil]).objects.select do |part|
+  @statements.has_triple?([part, RDF.type, RDF::URI("http://purl.org/wf4ever/wfprov#ProcessRun")])
+end
+%>
+
+<% if process_runs.count > 0 %>
+
+  <h3>Process Runs</h3>
+
+  <ul>
+    <% process_runs.each do |process_run| %>
+      <li><%= item_link(@item, process_run, statements) -%></li>
+    <% end %>
+  </ul>
+
+<% end %>
