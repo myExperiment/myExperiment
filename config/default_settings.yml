@@ -2089,13 +2089,6 @@ file_format_associations:
 
 research_object_checklists:
 
-  "workflow":
-
-    label:   "Workflow"
-    service: "http://sandbox.wf4ever-project.org/roevaluate/evaluate/trafficlight_html"
-    minim:   "http://wf4ever.github.io/ro-catalogue/v0.1/Timbus-demo-test/Timbus-demo-minim.rdf"
-    purpose: "complete"
-
   "workflow-and-services":
 
     label:   "Workflow and Services"
