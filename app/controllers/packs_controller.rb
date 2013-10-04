@@ -482,7 +482,12 @@ class PacksController < ApplicationController
       return
     end
 
-    checklist = @pack.research_object.run_checklist!(slug)
+    begin
+      checklist = @pack.research_object.run_checklist!(slug)
+    rescue
+      render_500("A problem occured with the checklist service.")
+      return
+    end
 
     @pack.solr_index if Conf.solr_enable
     @pack.update_contribution_rank

@@ -816,7 +816,7 @@ class ResearchObject < ActiveRecord::Base
     entry = Conf.research_object_checklists[slug]
 
     if checklist.nil?
-      checklist = checklists.create(
+      checklist = checklists.new(
           :slug => slug,
           :label => entry["label"],
           :minim_url => entry["minim"],
@@ -824,6 +824,8 @@ class ResearchObject < ActiveRecord::Base
     end
 
     checklist.run_checklist!
+
+    checklist.save
 
     checklist
   end
@@ -871,6 +873,8 @@ private
     if parameter["options"]
       options = parameter["options"]
     elsif parameter["special"] == "wfprov_workflow_run"
+      options = wfprov_workflow_run(self)
+    elsif parameter["special"] == "wfdesc_workflow"
       options = wfprov_workflow_run(self)
     end
 
