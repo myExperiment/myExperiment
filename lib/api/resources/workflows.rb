@@ -202,3 +202,19 @@ def workflow_count(opts)
 
   { :xml => doc }
 end
+
+def component_families(ob, user, query)
+
+  families_node = LibXML::XML::Node.new('component-families')
+
+  ob.component_families.each do |family|
+    if Authorization.check('view', family, user)
+      family_node = LibXML::XML::Node.new('component-family')
+      family_node << rest_resource_uri(family)
+
+      families_node << family_node
+    end
+  end
+
+  families_node
+end
