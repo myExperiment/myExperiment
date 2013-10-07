@@ -11,36 +11,42 @@ class PreviewsController < ApplicationController
 
   def show
 
-    auth = request.env["HTTP_AUTHORIZATION"]
-    user = current_user
+# FIXME: This is the temporary workaround for the issue described in 
+#        http://dev.mygrid.org.uk/issues/browse/MYEXP-67 
+#
+#   auth = request.env["HTTP_AUTHORIZATION"]
+#   user = current_user
 
-    if auth and auth.starts_with?("Basic ")
-      credentials = Base64.decode64(auth.sub(/^Basic /, '')).split(':')
-      user = User.authenticate(credentials[0], credentials[1])
+#   if auth and auth.starts_with?("Basic ")
+#     credentials = Base64.decode64(auth.sub(/^Basic /, '')).split(':')
+#     user = User.authenticate(credentials[0], credentials[1])
 
-      if user.nil?
-        render :nothing => true, :status => 401
-        response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename} REST API\""
-        return
-      end
-    end
+#     if user.nil?
+#       render :nothing => true, :status => 401
+#       response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename} REST API\""
+#       return
+#     end
+#   end
 
     if @context.preview.nil?
       render :nothing => true, :status => 404
       return
     end
 
-    if @context.respond_to?("versioned_resource")
-      auth_object = @context.versioned_resource
-    else
-      auth_object = @context
-    end
+# FIXME: The other part of the temporary workaround decribed in
+#        http://dev.mygrid.org.uk/issues/browse/MYEXP-67 
+#
+#   if @context.respond_to?("versioned_resource")
+#     auth_object = @context.versioned_resource
+#   else
+#     auth_object = @context
+#   end
 
-    if Authorization.check('view', auth_object, user) == false
-      render :nothing => true, :status => 401
-      response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename} REST API\""
-      return
-    end
+#   if Authorization.check('view', auth_object, user) == false
+#     render :nothing => true, :status => 401
+#     response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename} REST API\""
+#     return
+#   end
 
     type = params[:id]
 
