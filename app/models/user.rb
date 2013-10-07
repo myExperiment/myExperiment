@@ -305,6 +305,8 @@ class User < ActiveRecord::Base
   if Conf.solr_enable
     searchable :if => :activated_at do
       text :name, :as => 'name', :boost => 2.0
+      text :given_name, :as => 'given_name'
+      text :family_name, :as => 'family_name'
       text :email, :as => 'email' do profile.email end
       text :website, :as => 'website' do profile.website end
       text :body, :as => 'description' do profile.body end
