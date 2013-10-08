@@ -218,6 +218,14 @@ class Conf
     self.fetch_entry('expanded_filter_size')
   end
 
+  def self.method_missing(method)
+    if @defaults.has_key?(method.to_s)
+      fetch_entry(method.to_s)
+    else
+      super
+    end
+  end
+
   # This method is required to create an administrator in the test fixtures
 
   def self.admins=(value)
