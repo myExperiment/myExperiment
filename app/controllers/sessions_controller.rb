@@ -172,7 +172,10 @@ class SessionsController < ApplicationController
   
     def successful_login(user)
       # update "last seen" attribute
-      user.update_attribute(:last_seen_at, Time.now)
+      begin
+        user.update_attribute(:last_seen_at, Time.now)
+      rescue
+      end
       respond_to do |format|
         flash[:notice] = "Logged in successfully. Welcome to #{Conf.sitename}!"
         home_url = url_for(:controller => 'home')
