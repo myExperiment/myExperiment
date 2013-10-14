@@ -229,6 +229,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
 
               item_attrs['resource'] = item_uri if item_uri && query["show-resource"] != "no"
               item_attrs['uri'] = rest_access_uri(item) if query["show-uri"] != "no"
+              item_attrs['id'] = item.id.to_s if query["show-id"] != "no"
 
               item_attrs.each do |key,value|
                 el[key] = value
@@ -297,6 +298,7 @@ def rest_get_element(ob, user, rest_entity, rest_attribute, query, elements)
           resource_uri = rest_resource_uri(item)
           el['resource'] = resource_uri if resource_uri && query["show-resource"] != "no"
           el['uri'] = rest_access_uri(item) if query["show-uri"] != "no"
+          el['id'] = item.id.to_s if query["show-id"] != "no"
           el << item.label if item.respond_to?(:label) && item.label
         end
 
@@ -368,6 +370,7 @@ def rest_get_request_aux(ob, user, query, elements)
 
   entity['uri'     ] = uri      if uri && query["show-uri"] != "no"
   entity['resource'] = resource if resource && query["show-resource"] != "no"
+  entity['id'] = ob.id.to_s if query["show-id"] != "no"
   entity['version' ] = version  if version && query["show-version"] != "no"
 
   TABLES['Model'][:data][rest_entity]['REST Attribute'].each do |rest_attribute|
@@ -826,6 +829,7 @@ def rest_reference(ob, query, skip_text = false)
 
   el['resource'] = resource_uri if resource_uri && query["show-resource"] != "no"
   el['uri'     ] = rest_access_uri(ob) if query["show-uri"] != "no"
+  el['id'] = ob.id.to_s if query["show-id"] != "no"
   el['version' ] = ob.current_version.to_s if ob.respond_to?('current_version') && query["show-version"] != "no"
 
   el << rest_object_label_text(ob) if !skip_text
@@ -1260,6 +1264,7 @@ def permissions(ob, user, query)
   unless ob.is_a?(Policy)
     permissions['uri'] = rest_access_uri(policy)
     permissions['resource'] = rest_resource_uri(policy)
+    permissions['id'] = policy.id.to_s
     permissions['policy-type'] = policy.group_policy? ? 'group' : 'user-specified'
   end
 
