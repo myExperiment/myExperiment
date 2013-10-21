@@ -3,6 +3,8 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'zip/zip'
+
 class BlobsController < ApplicationController
 
   include ApplicationHelper
@@ -181,6 +183,8 @@ class BlobsController < ApplicationController
 
           update_credits(@blob, params)
           update_attributions(@blob, params)
+
+          post_process_file(@blob, @blob.research_object.uri + @blob.local_name)
         
           if policy_err_msg.blank?
             update_layout(@blob, params[:layout]) unless params[:policy_type] == "group"
@@ -488,4 +492,42 @@ class BlobsController < ApplicationController
       render_401("You are not authorised to manage this file.") unless @blob.owner?(current_user)
     end
   end
+
+  def annotate_resources(research_object, resource_uris, body_graph, content_type = 'application/rdf+xml')
+    research_object.create_annotation(
+        :body_graph   => body_graph,
+        :content_type => content_type,
+        :resources    => resource_uris,
+        :creator_uri  => "/users/#{current_user.id}")
+  end
+
+  def post_process_file(file, resource_uri)
+
+    # Process robundle
+
+    if file.content_blob.data[0..3] == "PK\x03\x04"
+
+      bundle_content = file.content_blob.data
+
+      begin
+        zip_file = Tempfile.new('workflow_run.zip.')
+        zip_file.binmode
+        zip_file.write(bundle_content)
+        zip_file.close
+        
+        Zip::ZipFile.open(zip_file.path) { |zip|
+
+          wfdesc = zip.get_entry(".ro/annotations/workflow.wfdesc.ttl").get_input_stream.read
+          wfprov = zip.get_entry("workflowrun.prov.ttl").get_input_stream.read
+
+          annotate_resources(file.research_object, [resource_uri], wfdesc, 'text/turtle')
+          annotate_resources(file.research_object, [resource_uri], wfprov, 'text/turtle')
+        }
+
+      rescue
+        raise unless Rails.env == "production"
+      end
+    end
+  end
+
 end

@@ -608,59 +608,14 @@ class PacksController < ApplicationController
     annotate_resources([resource_uri], body)
   end
 
-  def transform_wf(resource_uri)
-      format = "application/vnd.taverna.t2flow+xml"
-      token = Conf.wf_ro_service_bearer_token
-      uri = Wf4Ever::TransformationClient.create_job(Conf.wf_ro_service_uri, resource_uri.to_s, format, @pack.research_object.uri, token)
-puts "      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object.uri, token] = #{      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object.uri, token].inspect}"
-      puts "################## Transforming at " + uri
-
-      uri
-  end
-  
-  def post_process_workflow_run(entry, resource_uri)
-
-    # FIXME this should work with externals too
-    return unless entry.kind_of?(PackContributableEntry)
-
-    bundle_content = entry.contributable.content_blob.data
-
-    begin
-      zip_file = Tempfile.new('workflow_run.zip.')
-      zip_file.binmode
-      zip_file.write(bundle_content)
-      zip_file.close
-      
-      Zip::ZipFile.open(zip_file.path) { |zip|
-
-        wfdesc = zip.get_entry(".ro/annotations/workflow.wfdesc.ttl").get_input_stream.read
-        wfprov = zip.get_entry("workflowrun.prov.ttl").get_input_stream.read
-
-        annotate_resources([resource_uri], wfdesc, 'text/turtle')
-        annotate_resources([resource_uri], wfprov, 'text/turtle')
-      }
-
-    rescue
-      raise unless Rails.env == "production"
-    end
-  end
-
   def post_process_created_resource(pack, entry, resource_uri, params)
 
     ro = pack.research_object
 
     config = Conf.ro_resource_types.select { |x| x["uri"] == params[:type] }.first
 
-    if params[:type] == WORKFLOW_DEFINITION
-      job_uri = transform_wf(resource_uri)
-    end
-
     if params[:type] != RO_RESOURCE
       annotate_resource_type(resource_uri, params[:type])
-    end
-
-    if WORKFLOW_RUN.include?(params[:type])
-      post_process_workflow_run(entry, resource_uri)
     end
 
     # Folder selection is performed on the following with decreasing order of
