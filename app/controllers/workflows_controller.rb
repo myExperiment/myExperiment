@@ -3,6 +3,8 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
+require 'wf4ever/transformation-client'
+
 class WorkflowsController < ApplicationController
 
   include ApplicationHelper
@@ -368,6 +370,8 @@ class WorkflowsController < ApplicationController
         rescue
           raise unless Rails.env == "production"
         end
+
+        transform_wf(@workflow.research_object, @workflow.find_resource_by_path(@workflow.filename).uri)
 
         policy_err_msg = update_policy(@workflow, params, current_user)
 
@@ -1104,5 +1108,13 @@ private
     return ok
   end
 
-end
+  def transform_wf(research_object, resource_uri)
+    format = "application/vnd.taverna.t2flow+xml"
+    token = Conf.wf_ro_service_bearer_token
+    uri = Wf4Ever::TransformationClient.create_job(Conf.wf_ro_service_uri, resource_uri.to_s, format, research_object.uri, token)
+puts "      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object.uri, token] = #{      [Conf.wf_ro_service_uri, resource_uri, format, research_object.uri, token].inspect}"
+    puts "################## Transforming at " + uri
 
+    uri
+  end
+end

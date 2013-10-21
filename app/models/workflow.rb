@@ -17,8 +17,12 @@ require 'sunspot_rails'
 require 'scufl/model'
 require 'scufl/parser'
 
+require 'has_research_object'
+
 class Workflow < ActiveRecord::Base
   
+  include ResearchObjectsHelper
+
   has_many :citations, 
            :order => "created_at DESC",
            :dependent => :destroy
@@ -106,6 +110,10 @@ class Workflow < ActiveRecord::Base
   
   validates_presence_of :content_blob
   validates_presence_of :content_type
+
+  has_research_object
+  
+  after_create :create_research_object
 
   def tag_list_comma
     list = ''
@@ -425,4 +433,22 @@ class Workflow < ActiveRecord::Base
     WsdlDeprecation.find_all_by_wsdl(workflow_processors.map {|wp| wp.wsdl}).group_by {|wd| wd.deprecation_event}
   end
 
+  def create_research_object
+
+    user_path = "/users/#{contributor_id}"
+
+    slug = "Workflow#{self.id}"
+    slug = SecureRandom.uuid if ResearchObject.find_by_slug_and_version(slug, nil)
+
+    ro = ResearchObject.create(:slug => slug, :user => self.contributor)
+    
+    update_attribute(:research_object, ro)
+
+    workflow_resource = ro.create_aggregated_resource(
+        :user_uri     => user_path,
+        :path         => filename,  # FIXME - where should these be URL encoded?
+        :data         => content_blob.data,
+        :context      => self,
+        :content_type => content_type.mime_type)
+  end
 end
