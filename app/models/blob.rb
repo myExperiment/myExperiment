@@ -10,7 +10,11 @@ require 'acts_as_attributor'
 require 'acts_as_attributable'
 require 'sunspot_rails'
 
+require 'has_research_object'
+
 class Blob < ActiveRecord::Base
+
+  include ResearchObjectsHelper
 
   acts_as_site_entity :owner_text => 'Uploader'
 
@@ -67,6 +71,10 @@ class Blob < ActiveRecord::Base
     end
   end
 
+  has_research_object
+
+  after_create :create_research_object
+
   format_attribute :body
 
   def type
@@ -97,5 +105,24 @@ class Blob < ActiveRecord::Base
 
   def statistics_for_rest_api
     APIStatistics.statistics(self)
+  end
+
+  def create_research_object
+
+    user_path = "/users/#{contributor_id}"
+
+    slug = "File#{self.id}"
+    slug = SecureRandom.uuid if ResearchObject.find_by_slug_and_version(slug, nil)
+
+    ro = ResearchObject.create(:slug => slug, :user => self.contributor)
+
+    update_attribute(:research_object, ro)
+
+    file_resource = ro.create_aggregated_resource(
+        :user_uri     => user_path,
+        :path         => local_name,  # FIXME - where should these be URL encoded?
+        :data         => content_blob.data,
+        :context      => self,
+        :content_type => content_type.mime_type)
   end
 end
