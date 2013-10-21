@@ -370,3 +370,19 @@ task "myexp:checklists:update" do
     end
   end
 end
+
+desc 'Clear RDF cache for research objects'
+task "myexp:ro:clean" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  Resource.all.each do |resource|
+    unless resource.is_resource
+      if resource.content_blob
+        resource.content_blob.destroy
+        resource.update_attribute(:content_blob, nil)
+      end
+    end
+  end
+
+end
+
