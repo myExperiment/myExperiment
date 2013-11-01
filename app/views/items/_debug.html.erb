@@ -13,7 +13,7 @@
             <td><%=h shorten_uri(p.to_s) -%></td>
             <td>
               <% if o.resource? %>
-                <%= link_to(o.to_s, item_uri_with_view(item, o.to_s)) -%></td>
+                <%= link_to(o.to_s, item_uri_with_resource(item, o.to_s)) -%></td>
               <% else %>
                 <%=h o.to_s -%></td>
               <% end %>
@@ -32,7 +32,7 @@
           <tr>
             <td>
               <% if s.resource? %>
-                <%= link_to(s.to_s, item_uri_with_view(item, s.to_s)) -%></td>
+                <%= link_to(s.to_s, item_uri_with_resource(item, s.to_s)) -%></td>
               <% else %>
                 <%=h s.to_s -%></td>
               <% end %>
@@ -53,7 +53,7 @@
         </tr>
         <% statements.query([nil, RDF.type, nil]).each do |s, p, o| %>
           <tr>
-            <td><%= link_to(s.to_s, item_uri_with_view(item, s.to_s)) -%></td>
+            <td><%= link_to(s.to_s, item_uri_with_resource(item, s.to_s)) -%></td>
             <td><%=h shorten_uri(o.to_s) -%></td>
           </tr>
         <% end %>

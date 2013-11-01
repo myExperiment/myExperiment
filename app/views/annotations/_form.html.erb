@@ -31,6 +31,8 @@
           <% when "select" %>
             <% if parameter["special"] == "wfprov_workflow_run" %>
               <%= select_tag(parameter["symbol"], options_for_select(wfprov_workflow_run(@context.research_object))) -%>
+            <% elsif parameter["special"] == "wfdesc_workflow" %>
+              <%= select_tag(parameter["symbol"], options_for_select(wfdesc_workflow(@context.research_object))) -%>
             <% else %>
               <%= select_tag(parameter["symbol"], options_for_select(parameter["options"])) -%>
             <% end %>

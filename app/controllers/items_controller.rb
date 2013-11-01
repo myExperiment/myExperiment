@@ -37,7 +37,9 @@ class ItemsController < ApplicationController
     @statements = merge_graphs(@annotations.map { |annotation| annotation[:graph] })
 
     @item_uri = @item.uri
-    @view_uri = RDF::URI(params[:view]) if params[:view]
+    @view_uri = RDF::URI(params[:resource]) if params[:resource]
+
+    @wsdl_uris = @statements.query([nil, RDF::URI("http://purl.org/wf4ever/wf4ever#wsdlURI"), nil]).map { |s, p, o| o }
 
     # Show a custom view if a view parameter is given
 
@@ -45,7 +47,7 @@ class ItemsController < ApplicationController
       @view_types = @statements.query([@view_uri, RDF.type, nil]).objects
 
       @resource_uri = polymorphic_path([@context, :items]) + "/" + @item.ore_path
-      @view_uri = RDF::URI(params[:view])
+      @view_uri = RDF::URI(params[:resource])
 
       if @view_types.include?(RDF::URI("http://purl.org/wf4ever/wfprov#WorkflowRun"))
         render :workflow_run
@@ -55,7 +57,7 @@ class ItemsController < ApplicationController
         return
       else
         if Rails.env == "development"
-          render :text => "<pre>Types\n\n" + @view_types.map { |t| t.to_s }.join("\n") + "</pre>"
+          render(:partial => "debug", :locals => { :item => @item, :view_uri => @view_uri, :statements => @statements }, :layout => true)
           return
         end
       end

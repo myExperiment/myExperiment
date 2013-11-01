@@ -307,7 +307,7 @@ module ResearchObjectsHelper
     if opts[:format] == :rdfxml || opts[:format].nil?
       render_rdf_xml(graph, opts)
     else
-      RDF::Writer.for(opts[:format]).buffer { |writer| writer << graph }
+      RDF::Writer.for(opts[:format]).buffer(:base_uri => opts[:base_uri]) { |writer| writer << graph }
     end
   end
 
@@ -346,15 +346,15 @@ module ResearchObjectsHelper
     folders.reverse
   end
 
-  def item_uri(resource)
-    polymorphic_url([resource.research_object.context, :items]) + "/" + resource.ore_path
+  def item_uri(item)
+    polymorphic_url([item.research_object.context, :items]) + "/" + item.ore_path
   end
 
-  def item_uri_with_view(resource, view)
-    item_uri(resource) + "?" + { :view => view }.to_query
+  def item_uri_with_resource(item, resource)
+    item_uri(item) + "?" + { :resource => resource }.to_query
   end
 
-  def item_label(resource, statements)
+  def resource_label(resource, statements)
 
     label = statements.query([resource, RDF::RDFS.label, nil]).first_literal
 
@@ -363,8 +363,8 @@ module ResearchObjectsHelper
     resource
   end
 
-  def item_link(resource, view, statements)
-    link_to(h(item_label(view, statements)), item_uri_with_view(resource, view))
+  def item_link(item, resource, statements)
+    link_to(h(resource_label(resource, statements)), item_uri_with_resource(item, resource))
   end
 end
 

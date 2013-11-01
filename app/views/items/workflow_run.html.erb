@@ -1,4 +1,4 @@
-<h1>Workflow Run: <%=h item_label(@view_uri, @statements) -%></h1>
+<h1>Workflow Run: <%=h resource_label(@view_uri, @statements) -%></h1>
 
 <%= render(:partial => "duration", :locals => { :resource_uri => @view_uri, :statements => @statements }) -%>
 

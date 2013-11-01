@@ -8,10 +8,20 @@ module AnnotationsHelper
   def wfprov_workflow_run(research_object)
     graph = research_object.merged_annotation_graphs
 
-    workflows = graph.query([nil, RDF.type, RDF::URI("http://purl.org/wf4ever/wfprov#WorkflowRun")]).subjects
+    things = graph.query([nil, RDF.type, RDF::URI("http://purl.org/wf4ever/wfprov#WorkflowRun")]).subjects
 
-    select_options = workflows.map do |workflow|
-      [graph.query([workflow, RDF::RDFS.label, nil]).first_literal.to_s, workflow.to_s]
+    select_options = things.map do |thing|
+      [graph.query([thing, RDF::RDFS.label, nil]).first_literal.to_s, thing.to_s]
+    end
+  end
+
+  def wfdesc_workflow(research_object)
+    graph = research_object.merged_annotation_graphs
+
+    things = graph.query([nil, RDF.type, RDF::URI("http://purl.org/wf4ever/wfdesc#Workflow")]).subjects
+
+    select_options = things.map do |thing|
+      [graph.query([thing, RDF::RDFS.label, nil]).first_literal.to_s, thing.to_s]
     end
   end
 

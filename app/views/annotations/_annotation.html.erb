@@ -22,6 +22,8 @@
                options = parameter["options"]
              elsif parameter["special"] == "wfprov_workflow_run"
                options = wfprov_workflow_run(context.research_object)
+             elsif parameter["special"] == "wfdesc_workflow"
+               options = wfdesc_workflow(context.research_object)
              end
           %>
           <% value_match = options.find { |option| value == option[1] } %>
