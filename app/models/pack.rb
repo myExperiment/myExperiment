@@ -715,7 +715,7 @@ class Pack < ActiveRecord::Base
   end
 
   def component_profile
-    entry = contributable_entries.detect { |e| e.contributable_type == 'Blob' && e.contributable.component_profile? }
+    entry = contributable_entries.detect { |e| e.contributable_type == 'Blob' && e.contributable && e.contributable.component_profile? }
     if entry
       profile = entry.contributable
       profile.find_version(entry.contributable_version) if entry.contributable_version
