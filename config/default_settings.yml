@@ -1587,11 +1587,9 @@ ro_templates:
 
     parameters:
 
-    - label:     Workflow
-      type:      select
-      symbol:    :workflow
-      node_type: resource
-      special:   wfdesc_workflow
+    - label:  Resource
+      type:   resource 
+      symbol: :resource
 
     - label:  Hardware
       type:   string 
@@ -1604,7 +1602,7 @@ ro_templates:
 
     required_statements:
 
-    - template: [:workflow, "<http://purl.org/wf4ever/roterms#requiresHardware>", :b1]
+    - template: [:resource, "<http://purl.org/wf4ever/roterms#requiresHardware>", :b1]
 
     - template: [:b1, "<http://purl.org/dc/terms/description>", :description]
 
@@ -1612,7 +1610,9 @@ ro_templates:
       depends:  [:link]
 
     targets:
-    - :workflow
+    - :resource
+
+    redirect: :resource
 
   requires_software:
 
@@ -1622,11 +1622,9 @@ ro_templates:
 
     parameters:
 
-    - label:     Workflow
-      type:      select
-      symbol:    :workflow
-      node_type: resource
-      special:   wfdesc_workflow
+    - label:  Resource
+      type:   resource 
+      symbol: :resource
 
     - label:  Software
       type:   string 
@@ -1639,7 +1637,7 @@ ro_templates:
 
     required_statements:
 
-    - template: [:workflow, "<http://purl.org/wf4ever/roterms#requiresSoftware>", :b1]
+    - template: [:resource, "<http://purl.org/wf4ever/roterms#requiresSoftware>", :b1]
 
     - template: [:b1, "<http://purl.org/dc/terms/description>", :description]
 
@@ -1647,7 +1645,9 @@ ro_templates:
       depends:  [:link]
 
     targets:
-    - :workflow
+    - :resource
+
+    redirect: :resource
 
   resource_type:
 
@@ -1997,28 +1997,6 @@ ro_templates:
     targets: [:resource]
 
     redirect: :resource
-
-# service:
-
-#   label: service
-
-#   parameters:
-
-#   - label:     Workflow
-#     type:      select
-#     symbol:    :workflow
-#     node_type: resource
-#     special:   wfdesc_workflow
-
-#   required_statements:
-
-#   - template: [:resource, "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", :type]
-
-#   targets:
-
-#   - :workflow
-
-#   redirect: :resource
 
 wf_ro_service_uri: "http://www.example.com/wf-ro/jobs"
 wf_ro_service_bearer_token: "bearer-token"
