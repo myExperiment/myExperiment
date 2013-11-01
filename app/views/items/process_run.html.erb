@@ -1,8 +1,20 @@
-<h1>Process Run: <%=h item_label(@view_uri, @statements) -%></h1>
+<% process = @statements.query([@view_uri, RDF::URI("http://purl.org/wf4ever/wfprov#describedByProcess"), nil]).first_object %>
+
+<h1>Process Run: <%=h resource_label(@view_uri, @statements) -%></h1>
 
 <%= render(:partial => "parent_workflow_run", :locals => { :item => @item, :view_uri => @view_uri, :statements => @statements }) -%>
 
 <%= render(:partial => "inputs", :locals => { :item => @item, :view_uri => @view_uri, :statements => @statements }) -%>
+
+<% if process && @statements.has_triple?([process, RDF.type, RDF::URI("http://purl.org/wf4ever/wf4ever#BeanshellScript")]) %>
+
+  <% script = @statements.query([process, RDF::URI("http://purl.org/wf4ever/wf4ever#script"), nil]).first_literal %>
+
+  <h3>BeanShell Script</h3>
+
+  <pre><%=h script -%></pre>
+
+<% end %>
 
 <%= render(:partial => "outputs", :locals => { :item => @item, :view_uri => @view_uri, :statements => @statements }) -%>
 
