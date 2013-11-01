@@ -238,12 +238,15 @@
 
 <!-- END tabs -->
 
-<br/>
-<br/>
+<% activities = activities_for_feed(:context => @pack, :user => current_user) %>
 
-<div id="commentsBox">
-	<%= render :partial => "comments/comments", :locals => { :commentable => @pack } %>
+<h1>Activities</h1>
+<div id="activities">
+  <%= render(:partial => "activities/list", :locals => { :context => @pack, :activities => activities, :user => current_user, :enable_feature => true } ) -%>
 </div>
+
+<br/>
+<br/>
 
 <%= render :partial => "contributions/alternative_formats" %>
 

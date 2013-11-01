@@ -71,6 +71,9 @@ ActionController::Routing::Routes.draw do |map|
     pack.resources :annotations
     pack.resources :items, :requirements => { :id => /[^;]+/ }
     pack.resources :checklists
+    pack.resources :activities, :member => { :feature => [:put, :delete] } do |activity|
+      activity.resources :comments
+    end
   end
 
   # workflows (downloadable)
