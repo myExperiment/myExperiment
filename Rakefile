@@ -386,3 +386,19 @@ task "myexp:ro:clean" do
 
 end
 
+desc 'Ensure all RO enabled models have research objects'
+task "myexp:ro:addmissing" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  [Workflow, Blob, Pack].each do |model|
+    model.all.each do |record|
+      if record.research_object.nil?
+        ResearchObject.create(
+            :context => record,
+            :slug    => "#{Conf.to_visible(model.name)}#{record.id}",
+            :user    => record.contributor)
+      end
+    end
+  end
+end
+
