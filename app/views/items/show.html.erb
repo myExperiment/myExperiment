@@ -120,6 +120,15 @@
       </ul>
     <% end %>
 
+    <% unless @wsdl_uris.empty? %>
+      <h2>Web services</h2>
+      <ul>
+        <% @wsdl_uris.each do |wsdl_uri| %>
+          <li><%=h wsdl_uri -%></li>
+        <% end %>
+      </ul>
+    <% end %>
+
     <% unless @workflow_runs.empty? %>
       <h2>Workflow runs</h2>
       <ul>

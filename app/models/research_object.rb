@@ -854,6 +854,8 @@ private
 
     parameter = template["parameters"].find { |p| p["symbol"] == symbol }
 
+    throw "No template match for #{symbol.inspect}" if parameter.nil?
+
     # No problem if the parameter type isn't a select.
     return true unless parameter["type"] == "select"
 
