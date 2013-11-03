@@ -1,0 +1,4 @@
+component_profile:
+  title: Taverna Component Profile
+  mime_type: application/vnd.taverna.component-profile+xml
+  category: Blob

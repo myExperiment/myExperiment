@@ -34,6 +34,9 @@ class Workflow < ActiveRecord::Base
   has_many :workflow_processors, :dependent => :destroy
   has_many :workflow_ports, :dependent => :destroy
   has_many :semantic_annotations, :as => :subject, :dependent => :destroy
+  has_many :curation_events, :as => :object
+  has_many :pack_entries, :as => :contributable, :class_name => 'PackContributableEntry'
+  has_many :packs, :through => :pack_entries
 
   before_validation :check_unique_name
   before_validation :apply_extracted_metadata
@@ -431,6 +434,17 @@ class Workflow < ActiveRecord::Base
   # Returns a hash map of lists of wsdls grouped by their related deprecation event
   def deprecations
     WsdlDeprecation.find_all_by_wsdl(workflow_processors.map {|wp| wp.wsdl}).group_by {|wd| wd.deprecation_event}
+  end
+
+  # TODO: Don't use tags for this
+  named_scope :components, :include => :tags, :conditions => "tags.name = 'component'"
+
+  def component?
+    tags.any? { |t| t.name == 'component' }
+  end
+
+  def component_families
+    self.packs.select { |p| p.component_family? }
   end
 
   def create_research_object

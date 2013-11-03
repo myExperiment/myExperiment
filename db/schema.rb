@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130924164435) do
+ActiveRecord::Schema.define(:version => 20130930140455) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -240,6 +240,21 @@ ActiveRecord::Schema.define(:version => 20130924164435) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "deprecation_events", :force => true do |t|
     t.string   "title"
@@ -878,6 +893,8 @@ ActiveRecord::Schema.define(:version => 20130924164435) do
     t.datetime "reset_password_code_until"
     t.string   "account_status"
     t.integer  "spam_score"
+    t.string   "given_name"
+    t.string   "family_name"
   end
 
   create_table "viewings", :force => true do |t|

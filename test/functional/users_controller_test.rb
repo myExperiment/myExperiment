@@ -23,7 +23,7 @@ class UsersControllerTest < ActionController::TestCase
   def test_should_create_user
     old_count = User.count
 
-    post :create, :user => { :unconfirmed_email => 'test@example.com', :username => 'new_user', :password => 'secret', :password_confirmation => 'secret' }
+    post :create, :user => { :name => "John Doe", :unconfirmed_email => 'test@example.com', :username => 'new_user', :password => 'secret', :password_confirmation => 'secret' }
 
     assert_equal old_count+1, User.count    
     assert_redirected_to :action => :index

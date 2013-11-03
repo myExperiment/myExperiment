@@ -155,3 +155,62 @@ contribution_for_component_workflow2:
   downloads_count: 1
   viewings_count: 1
 
+contribution_for_private_workflow:
+  id: 14
+  contributor_id: 1
+  contributor_type: User
+  contributable_id: 5
+  contributable_type: Workflow
+  policy_id: 11
+  created_at: 2008-08-07 23:53:46
+  updated_at: 2008-08-07 23:53:46
+  downloads_count: 1
+  viewings_count: 1
+
+contribution_component_profile:
+  id: 15
+  contributor_id: 1
+  contributor_type: User
+  contributable_id: 9
+  contributable_type: Blob
+  policy_id: 12
+  created_at: 2013-06-12 10:51:01
+  updated_at: 2013-06-12 10:51:01
+  downloads_count: 123
+  viewings_count: 156
+
+contribution_component_family:
+  id: 16
+  contributor_id: 1
+  contributor_type: User
+  contributable_id: 3
+  contributable_type: Pack
+  policy_id: 13
+  created_at: 2013-06-13 13:12:32
+  updated_at: 2013-06-13 13:12:32
+  downloads_count: 123
+  viewings_count: 156
+
+contribution_protected_component_family:
+  id: 17
+  contributor_id: 1
+  contributor_type: User
+  contributable_id: 4
+  contributable_type: Pack
+  policy_id: 14
+  created_at: 2013-06-13 13:12:32
+  updated_at: 2013-06-13 13:12:32
+  downloads_count: 123
+  viewings_count: 156
+
+contribution_unused_component_profile:
+  id: 18
+  contributor_id: 1
+  contributor_type: User
+  contributable_id: 10
+  contributable_type: Blob
+  policy_id: 15
+  created_at: 2013-06-12 10:51:01
+  updated_at: 2013-06-12 10:51:01
+  downloads_count: 123
+  viewings_count: 156

@@ -4,7 +4,8 @@
 # See license.txt for details.
 
 require "zip/zip"
-require 'rdf/raptor'
+require 'rdf'
+require 'rdf/turtle'
 
 module WorkflowProcessors
 

@@ -4,13 +4,26 @@
 <% unless @user.errors.empty? -%>
 	<%= link_to "Reset the form to the last saved correct state", edit_user_path(@user) -%>
 <% end -%>
-<h2>Display Name</h2>
+<h2>Name</h2>
 <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
-<%= hidden_field_tag(:update_type, "upd_t_displname") -%>
+<%= hidden_field_tag(:update_type, "upd_t_name") -%>
 <p style="margin-left: 0.1cm">
+    <b>Given Name:</b>
+    <br/>
+    <%= f.text_field :given_name %>
+    <br/>
+    <br/>
+    <b>Family Name:</b>
+    <br/>
+    <%= f.text_field :family_name %>
+    <br/>
+    <br/>
     <b>Display Name:</b>
     <br/>
     <%= f.text_field :name %>
+    <%= info_icon_with_tooltip("The display name is used to show your name in #{Conf.sitename}.  You can change it directly if your name does not follow the form: given name, space, family name.") -%>
+    <br />
+    <br />
 </p>
 <p style="margin-left: 0.1cm">
     <%= submit_tag "Save", :disable_with => 'Saving...' %>

@@ -4,7 +4,7 @@
 <% time_string = deprecation_event.date.strftime("#{deprecation_event.date.day.ordinalize} %B %Y") -%>
 <div class="deprecation_event">
   <p>
-    <img src="/images/famfamfam_silk/exclamation.png" style="vertical-align: middle; float: left; margin: 0.5em"/>
+    <img src="/images/famfamfam_silk/exclamation.png" style="vertical-align: middle;"/>
     This workflow uses one or more services that
     <% if deprecation_event.date.past? %>
       are deprecated as of <strong><%= time_string -%></strong>

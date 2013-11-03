@@ -4,6 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <% unless Conf.google_site_verification.nil? %>
+  <meta name="google-site-verification" content="<%= Conf.google_site_verification -%>" />
+  <% end %>
   <%= t :site => "#{Conf.sitename} &#45; #{controller_visible_name(controller.controller_name.humanize)}", :separator => "&#45;" %>
   <% if @lod_rdf %><link rel="alternate" href="<%= @lod_rdf -%>" type="application/rdf+xml" title="RDF+XML" /><% end %>
   <% if @lod_xml %><link rel="alternate" href="<%= @lod_xml -%>" type="application/xml" title="REST XML" /><% end %>

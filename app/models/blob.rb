@@ -29,7 +29,7 @@ class Blob < ActiveRecord::Base
 
   acts_as_attributor
   acts_as_attributable
-  
+
   has_versions :blob_versions,
 
     :attributes => [ :title, :body, :body_html, :content_type, :content_blob,
@@ -105,6 +105,13 @@ class Blob < ActiveRecord::Base
 
   def statistics_for_rest_api
     APIStatistics.statistics(self)
+  end
+
+  named_scope :component_profiles, :include => :content_type,
+              :conditions => "content_types.mime_type = 'application/vnd.taverna.component-profile+xml'"
+
+  def component_profile?
+    content_type.mime_type == 'application/vnd.taverna.component-profile+xml'
   end
 
   def create_research_object

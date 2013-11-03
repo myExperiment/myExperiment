@@ -228,6 +228,8 @@
 
     <field name="title"              stored="false" type="text" multiValued="true" indexed="true"/>
     <field name="name"               stored="false" type="text" multiValued="true" indexed="true"/>
+    <field name="given_name"         stored="false" type="text" multiValued="true" indexed="true"/>
+    <field name="family_name"        stored="false" type="text" multiValued="true" indexed="true"/>
     <field name="email"              stored="false" type="text" multiValued="true" indexed="true"/>
     <field name="website"            stored="false" type="text" multiValued="true" indexed="true"/>
     <field name="field_or_industry"  stored="false" type="text" multiValued="true" indexed="true"/>

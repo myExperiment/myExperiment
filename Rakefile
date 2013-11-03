@@ -11,6 +11,13 @@ require 'tasks/rails'
 require 'sunspot/rails/tasks'
 require 'sunspot/solr/tasks'
 
+begin
+  gem 'delayed_job', '~>2.0.4'
+  require 'delayed/tasks'
+rescue LoadError
+  STDERR.puts "Run `rake gems:install` to install delayed_job"
+end
+
 desc 'Rebuild Solr index'
 task "myexp:refresh:solr" do
   require File.dirname(__FILE__) + '/config/environment'
@@ -20,6 +27,28 @@ task "myexp:refresh:solr" do
   Network.solr_reindex
   Pack.solr_reindex
   Service.solr_reindex
+end
+
+desc 'Start the search engine'
+task "myexp:search:start" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  search_start
+end
+
+desc 'Stop the search engine'
+task "myexp:search:stop" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  search_stop
+end
+
+desc 'Restart the search engine'
+task "myexp:search:restart" do
+  require File.dirname(__FILE__) + '/config/environment'
+
+  search_stop
+  search_start
 end
 
 desc 'Refresh contribution caches'
@@ -358,6 +387,16 @@ task "myexp:blobstore:checksum:rebuild" do
   conn = ActiveRecord::Base.connection
 
   conn.execute('UPDATE content_blobs SET sha1 = SHA1(data), md5 = MD5(data)')
+end
+
+def search_start
+  port = YAML.load(File.read("config/sunspot.yml"))[Rails.env]["solr"]["port"]
+  `sunspot-solr start -p #{port} -s solr -d solr/data --log-file log/sunspot.log >> log/sunspot-solr.out`
+end
+
+def search_stop
+  port = YAML.load(File.read("config/sunspot.yml"))[Rails.env]["solr"]["port"]
+  `sunspot-solr stop -p #{port}`
 end
 
 desc 'Run out-of-date checklists'

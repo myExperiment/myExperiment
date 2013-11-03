@@ -715,6 +715,22 @@ class Pack < ActiveRecord::Base
     return ""
   end
 
+  named_scope :component_families, :include => :tags, :conditions => "tags.name = 'component family'"
+
+  def component_family?
+    tags.any? { |t| t.name == 'component family' }
+  end
+
+  def component_profile
+    entry = contributable_entries.detect { |e| e.contributable_type == 'Blob' && e.contributable && e.contributable.component_profile? }
+    if entry
+      profile = entry.contributable
+      profile.find_version(entry.contributable_version) if entry.contributable_version
+    else
+      nil
+    end
+  end
+
   def update_annotations_from_model(user)
 
     title_annotation = research_object.annotations_of_type("title").first
