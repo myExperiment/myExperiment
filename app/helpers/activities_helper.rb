@@ -34,6 +34,10 @@ module ActivitiesHelper
           polymorphic_path(thing.workflow)
         when "GroupAnnouncement"
           group_announcement_path(thing.network, thing)
+        when "Resource"
+          if ore_path = thing.ore_path
+            polymorphic_path([thing.research_object.context, :items]) + "/" + ore_path
+          end
         else
           polymorphic_path(thing)
       end
@@ -86,6 +90,7 @@ module ActivitiesHelper
     type_bits << "(activities.objekt_type = 'Comment' AND activities.action = 'create')"
     type_bits << "(activities.objekt_type = 'GroupAnnouncement' AND activities.action = 'create')"
     type_bits << "(activities.objekt_type = 'Membership' AND activities.action = 'create')"
+    type_bits << "(activities.objekt_type = 'Resource' AND activities.action = 'create')"
 
     # Create the conditions
 
@@ -258,6 +263,10 @@ module ActivitiesHelper
       link_to(strip_tags(activity.objekt.title), activity.objekt.link, :rel => "nofollow")
     when "GroupAnnouncement create"
       activity_link(activity, :object)
+    when "Resource create"
+      if ore_path = activity.objekt.ore_path
+        "#{activity_link(activity, :subject)} added #{activity_link(activity, :object)}"
+      end
     end
   end
 

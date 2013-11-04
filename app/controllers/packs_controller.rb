@@ -10,6 +10,7 @@ require 'nokogiri'
 class PacksController < ApplicationController
   include ApplicationHelper
   include ResearchObjectsHelper
+  include ActivitiesHelper
   
   ## NOTE: URI must match config/default_settings.yml ro_resource_types
   WORKFLOW_DEFINITION = "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
@@ -115,6 +116,15 @@ class PacksController < ApplicationController
           render :inline => `#{Conf.rdfgen_tool} packs #{@pack.id}`
         }
       end
+
+      format.atom {
+        @title = @pack.title
+        @id = @resource = pack_url(@pack)
+        @updated = @pack.updated_at.to_datetime.rfc3339
+        @entries = activities_for_feed(:context => @pack, :user => current_user, :no_combine => true)
+
+        render "activities/feed.atom"
+      }
     end
   end
   

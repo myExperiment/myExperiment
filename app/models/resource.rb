@@ -16,6 +16,8 @@ class Resource < ActiveRecord::Base
   after_save    :touch_research_object
   after_destroy :touch_research_object
 
+  after_create  :generate_create_activity
+
   belongs_to :research_object
 
   belongs_to :content_blob, :dependent => :destroy
@@ -334,6 +336,17 @@ class Resource < ActiveRecord::Base
       aggregates.map { |aggregate| aggregate.file_count }.sum
     else
       1
+    end
+  end
+
+  def generate_create_activity
+
+    if context
+      if match = creator_uri.match("^\/users\/([0-9]+)$")
+        user = User.find(match[1])
+      end
+
+      Activity.create_activities(:subject => user, :action => 'create', :object => self)
     end
   end
 end

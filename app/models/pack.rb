@@ -31,6 +31,8 @@ class Pack < ActiveRecord::Base
 
   has_many :versions, :class_name => "PackVersion"
 
+  has_many :activities, :as => :context
+
   belongs_to :license
 
   has_research_object
