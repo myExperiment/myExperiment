@@ -1275,6 +1275,10 @@ class ApiControllerTest < ActionController::TestCase
     uri = workflow_resp.find_first('//workflow')['resource']
     component = Workflow.find(uri.split('/').last.to_i)
 
+    # Check the response body contains the updated metadata
+    assert_equal "2", workflow_resp.find_first('//workflow')['version']
+    assert_equal 'Test Component II', workflow_resp.find_first('//title/text()').to_s
+
     # Check the version was created
     assert_equal version_count+1, WorkflowVersion.count
     assert_equal 'Test Component II', component.title

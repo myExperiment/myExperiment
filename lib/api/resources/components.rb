@@ -104,8 +104,9 @@ def post_component(opts)
   # Create the component or version
   response = workflow_aux('create', opts)
 
-  # If we created a new component, we need to tag it and add it to the family
-  unless id
+  if id # Reload the component to get the latest version
+    component = component.reload
+  else # If we created a new component, we need to tag it and add it to the family
     # Awful hack to get the newly created component
     component = resource_from_uri(response[:xml].find_first('//workflow')['resource'])
 
