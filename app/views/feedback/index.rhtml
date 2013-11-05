@@ -35,7 +35,7 @@
 
 <center>
 	<div class="box_form" style="width: 410px; margin: 2em 0; text-align: left;">
-		<% form_tag ({:action => :create}) do %>
+		<% form_tag({:action => :create}) do %>
 			<p><b>From</b></p>
 		  <%= text_field_tag :from, logged_in? ? current_user.name : params[:from], :size => 30 %>
 			
