@@ -4,7 +4,7 @@
    Send invitations to people who are not already on <%= Conf.sitename %>. You can include a message to intoduce yourself if you like.
 </div>
 
-<% form_tag (:controller => 'users', :action => 'process_invitations') do %>
+<% form_tag(:controller => 'users', :action => 'process_invitations') do %>
   <p style="line-heght: 1.5; margin-left: 1.5em">
   	<%= hidden_field_tag :invitations_user_id, current.id -%>
   	

@@ -104,8 +104,9 @@ def post_component(opts)
   # Create the component or version
   response = workflow_aux('create', opts)
 
-  # If we created a new component, we need to tag it and add it to the family
-  unless id
+  if id # Reload the component to get the latest version
+    component = component.reload
+  else # If we created a new component, we need to tag it and add it to the family
     # Awful hack to get the newly created component
     component = resource_from_uri(response[:xml].find_first('//workflow')['resource'])
 
@@ -222,7 +223,9 @@ def delete_component_family(opts)
   end
 
   # Check if can delete ALL components in family
-  component_entries = family.contributable_entries.select { |e| e.contributable_type == 'Workflow' && e.contributable.component? }
+  component_entries = family.contributable_entries.select { |e| e.contributable_type == 'Workflow' &&
+                                                                !e.contributable.nil? &&
+                                                                e.contributable.component? }
   components = component_entries.map { |e| e.contributable }
   undeletable_components = components.select { |c| !Authorization.check('destroy', c, opts[:user]) }
   if undeletable_components.size == 0
@@ -234,7 +237,9 @@ def delete_component_family(opts)
 
     rest_get_request(family, opts[:user], opts[:query])
   else
-    family.errors.add_to_base("You don't have permission to delete #{undeletable_components.size} components in this component family.")
+    family.errors.add_to_base(
+      "You don't have permission to delete #{undeletable_components.size} components in this component family: " +
+      "#{undeletable_components.map { |c| rest_access_uri(c) }.join(', ')}")
     rest_response(401, :object => family)
   end
 end

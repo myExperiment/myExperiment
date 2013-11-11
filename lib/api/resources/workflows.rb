@@ -160,7 +160,10 @@ def workflow_aux(action, opts = {})
     # Elements to update if we're not dealing with a workflow version
 
     if opts[:query]['version'].nil?
-      update_permissions(ob, permissions, opts[:user])
+      begin
+        update_permissions(ob, permissions, opts[:user])
+      rescue NotAuthorizedException, NotFoundException
+      end
     end
 
     # Extract internals and stuff

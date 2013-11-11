@@ -974,12 +974,12 @@ def update_permissions(ob, permissions, user)
           return
 
         else
-          ob.errors.add_to_base("You must be a member of #{group_policy.contributor.title} to use group policy: #{group_policy}")
-          raise
+          ob.errors.add_to_base("You must be a member of #{policy.contributor.title} to use group policy: #{group_policy}")
+          raise NotAuthorizedException.new
         end
       else
         ob.errors.add_to_base("#{group_policy} does not appear to be a valid group policy ID")
-        raise
+        raise NotFoundException.new
       end
     else
 
@@ -1291,3 +1291,6 @@ def rest_call_request(opts)
     end
   end
 end
+
+class NotFoundException < Exception; end
+class NotAuthorizedException < Exception; end
