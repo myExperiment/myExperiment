@@ -13,11 +13,9 @@
   <li><%= icon('folder', pack_items_path(@pack), nil, nil, 'View Items') -%></li>
   <li><%= icon('annotations', pack_annotations_path(@pack), nil, nil, 'Annotations') -%></li>
   <li><%= icon('disk', zipped_research_object_url(@pack.research_object.slug) + "/", nil, nil, "Download") %></li>
-  <% if false %>
   <% if @authorised_to_edit -%>
     <li><%= icon('new', snapshot_pack_path(@pack), nil, { :confirm => 'Are you sure that you would like to create a new snapshot of this Pack?', :method => :post }, 'Create snapshot') %></li>
   <% end %>	
-  <% end %>
   <% if Authorization.check("destroy", @pack, current_user) %>
     <li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments, BUT does not delete the actual items pointed to in the Pack. Are you sure you would like to delete this Pack?', :method => :delete }, 'Delete Pack') %></li>
   <% end %>

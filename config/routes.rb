@@ -111,6 +111,8 @@ ActionController::Routing::Routes.draw do |map|
   map.pack_version           '/packs/:id/versions/:version',         :conditions => { :method => :get }, :controller => 'packs', :action => 'show'
   map.formatted_pack_version '/packs/:id/versions/:version.:format', :conditions => { :method => :get }, :controller => 'packs', :action => 'show'
 
+  map.pack_version_items     '/packs/:id/versions/:version/items',   :conditions => { :method => :get }, :controller => 'items', :action => 'index'
+
   map.blob_version_suggestions '/files/:id/versions/:version/suggestions', :conditions => { :method => :get }, :controller => 'blobs', :action => 'suggestions'
   map.blob_version_process_suggestions '/files/:id/versions/:version/process_suggestions', :conditions => { :method => :post }, :controller => 'blobs', :action => 'process_suggestions'
 

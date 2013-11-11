@@ -200,73 +200,78 @@ module ActivitiesHelper
 
   def activity_title(activity_set)
 
-    activity = activity_set.first
+    begin
 
-    case activity.objekt ? "#{activity.objekt_type} #{activity.action}" : activity.action
-    when "Announcement create"
-      "#{activity_link(activity, :subject)} announced #{activity_link(activity, :object)}"
-    when "Announcement edit"
-      "#{activity_link(activity, :subject)} edited #{activity_link(activity, :object)}"
-    when "Blob create"
-      "#{activity_link(activity, :subject)} uploaded #{activity_link(activity, :object)}"
-    when "Blob edit"
-      "#{activity_link(activity, :subject)} edited #{activity_link(activity, :object)}"
-    when "BlobVersion create"
-      "#{activity_link(activity, :subject)} uploaded version #{activity.extra} of #{activity_link(activity, :object)}"
-    when "BlobVersion edit"
-      "#{activity_link(activity, :subject)} edited version #{activity.extra} of #{activity_link(activity, :object)}"
-    when "Bookmark create"
-      "#{activity_link(activity, :subject)} favourited #{activity_link(activity, :object)}"
-    when "Citation create"
-      "#{activity_link(activity, :subject)} added the citation #{activity_link(activity, :object)} to #{activity_link(activity, :auth)}"
-    when "Citation edit"
-      "#{activity_link(activity, :subject)} edited the citation #{activity_link(activity, :object)} on #{activity_link(activity, :auth)}"
-    when "Comment create"
-      "#{activity_link(activity, :subject)} commented:"
-    when "Friendship create"
-      user1 = activity.subject = activity.context ? activity.objekt.user : activity.objekt.friend
-      user2 = activity.subject = activity.context ? activity.objekt.friend : activity.objekt.user
-      "#{link_to(h(user1.name), polymorphic_path(user1))} is friends with #{link_to(h(user2.name), polymorphic_path(user2))}"
-    when "Network create"
-      "#{activity_link(activity, :subject)} created the #{activity_link(activity, :object)} group"
-    when "Network edit"
-      "#{activity_link(activity, :subject)} edited the #{activity_link(activity, :object)} group"
-    when "Pack create"
-      "#{activity_link(activity, :subject)} created #{activity_link(activity, :object)}"
-    when "Pack edit"
-      "#{activity_link(activity, :subject)} edited #{activity_link(activity, :object)}"
-    when "Rating create"
-      "#{activity_link(activity, :subject)} rated #{activity_link(activity, :auth)} with #{activity.extra}"
-    when "Review create"
-      "#{activity_link(activity, :subject)} reviewed #{activity_link(activity, :auth)}"
-    when "Review edit"
-      "#{activity_link(activity, :subject)} edited a review on #{activity_link(activity, :auth)}"
-    when "Tagging create"
-      "#{activity_link(activity, :subject)} tagged #{activity_link(activity, :auth)} with #{sentence(activity_set.map { |a| link_to(h(a.objekt.tag.name), tag_path(a.objekt.tag)) })}"
-    when "Workflow create"
-      "#{activity_link(activity, :subject)} uploaded #{activity_link(activity, :object)}"
-    when "Workflow edit"
-      "#{activity_link(activity, :subject)} edited #{activity_link(activity, :object)}"
-    when "WorkflowVersion create"
-      "#{activity_link(activity, :subject)} uploaded version #{activity.extra} of #{activity_link(activity, :object)}"
-    when "WorkflowVersion edit"
-      "#{activity_link(activity, :subject)} edited version #{activity.extra} of #{activity_link(activity, :object)}"
-    when "edit"
-      "#{activity_link(activity, :subject)} edited their profile"
-    when "register"
-      "#{activity_link(activity, :subject)} joined #{Conf.sitename}"
-    when "Membership create"
-      "#{sentence(activity_set.map { |a| activity_link(a, :subject) })} joined the #{activity_link(activity, :context)} group"
-    when "Permission create"
-      "#{activity_link(activity, :subject)} shared #{activity_link(activity, :auth, activity.objekt_label)}"
-    when "FeedItem create"
-      link_to(strip_tags(activity.objekt.title), activity.objekt.link, :rel => "nofollow")
-    when "GroupAnnouncement create"
-      activity_link(activity, :object)
-    when "Resource create"
-      if ore_path = activity.objekt.ore_path
-        "#{activity_link(activity, :subject)} added #{activity_link(activity, :object)}"
+      activity = activity_set.first
+
+      case activity.objekt ? "#{activity.objekt_type} #{activity.action}" : activity.action
+      when "Announcement create"
+        "#{activity_link(activity, :subject)} announced #{activity_link(activity, :object)}"
+      when "Announcement edit"
+        "#{activity_link(activity, :subject)} edited #{activity_link(activity, :object)}"
+      when "Blob create"
+        "#{activity_link(activity, :subject)} uploaded #{activity_link(activity, :object)}"
+      when "Blob edit"
+        "#{activity_link(activity, :subject)} edited #{activity_link(activity, :object)}"
+      when "BlobVersion create"
+        "#{activity_link(activity, :subject)} uploaded version #{activity.extra} of #{activity_link(activity, :object)}"
+      when "BlobVersion edit"
+        "#{activity_link(activity, :subject)} edited version #{activity.extra} of #{activity_link(activity, :object)}"
+      when "Bookmark create"
+        "#{activity_link(activity, :subject)} favourited #{activity_link(activity, :object)}"
+      when "Citation create"
+        "#{activity_link(activity, :subject)} added the citation #{activity_link(activity, :object)} to #{activity_link(activity, :auth)}"
+      when "Citation edit"
+        "#{activity_link(activity, :subject)} edited the citation #{activity_link(activity, :object)} on #{activity_link(activity, :auth)}"
+      when "Comment create"
+        "#{activity_link(activity, :subject)} commented:"
+      when "Friendship create"
+        user1 = activity.subject = activity.context ? activity.objekt.user : activity.objekt.friend
+        user2 = activity.subject = activity.context ? activity.objekt.friend : activity.objekt.user
+        "#{link_to(h(user1.name), polymorphic_path(user1))} is friends with #{link_to(h(user2.name), polymorphic_path(user2))}"
+      when "Network create"
+        "#{activity_link(activity, :subject)} created the #{activity_link(activity, :object)} group"
+      when "Network edit"
+        "#{activity_link(activity, :subject)} edited the #{activity_link(activity, :object)} group"
+      when "Pack create"
+        "#{activity_link(activity, :subject)} created #{activity_link(activity, :object)}"
+      when "Pack edit"
+        "#{activity_link(activity, :subject)} edited #{activity_link(activity, :object)}"
+      when "Rating create"
+        "#{activity_link(activity, :subject)} rated #{activity_link(activity, :auth)} with #{activity.extra}"
+      when "Review create"
+        "#{activity_link(activity, :subject)} reviewed #{activity_link(activity, :auth)}"
+      when "Review edit"
+        "#{activity_link(activity, :subject)} edited a review on #{activity_link(activity, :auth)}"
+      when "Tagging create"
+        "#{activity_link(activity, :subject)} tagged #{activity_link(activity, :auth)} with #{sentence(activity_set.map { |a| link_to(h(a.objekt.tag.name), tag_path(a.objekt.tag)) })}"
+      when "Workflow create"
+        "#{activity_link(activity, :subject)} uploaded #{activity_link(activity, :object)}"
+      when "Workflow edit"
+        "#{activity_link(activity, :subject)} edited #{activity_link(activity, :object)}"
+      when "WorkflowVersion create"
+        "#{activity_link(activity, :subject)} uploaded version #{activity.extra} of #{activity_link(activity, :object)}"
+      when "WorkflowVersion edit"
+        "#{activity_link(activity, :subject)} edited version #{activity.extra} of #{activity_link(activity, :object)}"
+      when "edit"
+        "#{activity_link(activity, :subject)} edited their profile"
+      when "register"
+        "#{activity_link(activity, :subject)} joined #{Conf.sitename}"
+      when "Membership create"
+        "#{sentence(activity_set.map { |a| activity_link(a, :subject) })} joined the #{activity_link(activity, :context)} group"
+      when "Permission create"
+        "#{activity_link(activity, :subject)} shared #{activity_link(activity, :auth, activity.objekt_label)}"
+      when "FeedItem create"
+        link_to(strip_tags(activity.objekt.title), activity.objekt.link, :rel => "nofollow")
+      when "GroupAnnouncement create"
+        activity_link(activity, :object)
+      when "Resource create"
+        if ore_path = activity.objekt.ore_path
+          "#{activity_link(activity, :subject)} added #{activity_link(activity, :object)}"
+        end
       end
+
+    rescue
     end
   end
 

@@ -1592,6 +1592,7 @@ ro_templates:
     - label:  Hardware
       type:   string 
       symbol: :description
+      searchable: true
 
     - label:  Link
       type:   string

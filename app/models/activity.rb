@@ -138,7 +138,11 @@ class Activity < ActiveRecord::Base
 
       when "Resource"
 
-        contexts << object.context.pack
+        case object.context
+        when PackContributableEntry, PackRemoteEntry
+          contexts << object.context.pack
+        end
+
         auth = object
     end
 

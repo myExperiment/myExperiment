@@ -671,7 +671,10 @@ class Pack < ActiveRecord::Base
 
     inhibit_timestamps do
  
-      version = versions.build(
+      pack_entry_map = {}
+      resource_map = {}
+
+      new_pack_version = versions.build(
           :version          => current_version,
           :contributor      => contributor,
           :title            => title,
@@ -680,7 +683,7 @@ class Pack < ActiveRecord::Base
 
       contributable_entries.each do |entry|
 
-        version.contributable_entries.build(
+        pack_entry_map[entry] = new_pack_version.contributable_entries.build(
             :pack => self,
             :contributable_id => entry.contributable_id,
             :contributable_type => entry.contributable_type,
@@ -694,7 +697,7 @@ class Pack < ActiveRecord::Base
 
       remote_entries.each do |entry|
 
-        tt = version.remote_entries.build(
+        pack_entry_map[entry] = new_pack_version.remote_entries.build(
             :pack => self,
             :title => entry.title,
             :uri => entry.uri,
@@ -705,9 +708,62 @@ class Pack < ActiveRecord::Base
             :created_at => entry.created_at,
             :updated_at => entry.updated_at)
       end
+
+      # Calculate new research object version index
+
+      new_research_object = new_pack_version.build_research_object(
+          :slug => "#{research_object.slug}v#{current_version}",
+          :version => current_version,
+          :user => contributor)
+
+      research_object.resources.each do |resource|
+
+        new_resource = new_research_object.resources.build(
+          :context => resource.context,
+          :sha1 => resource.sha1,
+          :size => resource.size,
+          :content_type => resource.content_type,
+          :path => resource.path,
+          :entry_name => resource.entry_name,
+          :creator_uri => resource.creator_uri,
+          :proxy_in_path => resource.proxy_in_path,
+          :proxy_for_path => resource.proxy_for_path,
+          :ao_body_path => resource.ao_body_path,
+          :resource_map_path => resource.resource_map_path,
+          :aggregated_by_path => resource.aggregated_by_path,
+          :is_resource => resource.is_resource,
+          :is_aggregated => resource.is_aggregated,
+          :is_proxy => resource.is_proxy,
+          :is_annotation => resource.is_annotation,
+          :is_resource_map => resource.is_resource_map,
+          :is_folder => resource.is_folder,
+          :is_folder_entry => resource.is_folder_entry,
+          :is_root_folder => resource.is_root_folder,
+          :created_at => resource.created_at,
+          :updated_at => resource.updated_at,
+          :uuid => resource.uuid,
+          :title => resource.title)
+
+        resource_map[resource] = new_resource
+
+        if resource.content_blob
+          new_resource.build_content_blob(:data => resource.content_blob.data)
+        end
+
+      end
+
+      research_object.annotation_resources.each do |annotation_resource|
+        
+        new_research_object.annotation_resources.build(
+          :annotation => resource_map[annotation_resource.annotation],
+          :resource_path => annotation_resource.resource_path)
+
+      end
+ 
     end
     
     save
+
   end
 
   def describe_version(version_number)

@@ -366,5 +366,50 @@ module ResearchObjectsHelper
   def item_link(item, resource, statements)
     link_to(h(resource_label(resource, statements)), item_uri_with_resource(item, resource))
   end
+
+  def annotate_resources(research_object, resource_uris, body_graph, content_type = 'application/rdf+xml')
+    research_object.create_annotation(
+        :body_graph   => body_graph,
+        :content_type => content_type,
+        :resources    => resource_uris,
+        :creator_uri  => "/users/#{current_user.id}")
+  end
+
+  def post_process_file(research_object, data, resource_uri)
+
+    # Process robundle
+
+    if data[0..3] == "PK\x03\x04"
+
+      begin
+        zip_file = Tempfile.new('workflow_run.zip.')
+        zip_file.binmode
+        zip_file.write(data)
+        zip_file.close
+        
+        Zip::ZipFile.open(zip_file.path) { |zip|
+
+          wfdesc = zip.get_entry(".ro/annotations/workflow.wfdesc.ttl").get_input_stream.read
+          wfprov = zip.get_entry("workflowrun.prov.ttl").get_input_stream.read
+
+          annotate_resources(research_object, [resource_uri], wfdesc, 'text/turtle')
+          annotate_resources(research_object, [resource_uri], wfprov, 'text/turtle')
+        }
+
+      rescue
+        raise unless Rails.env == "production"
+      end
+    end
+  end
+
+  def transform_wf(research_object, resource_uri)
+    format = "application/vnd.taverna.t2flow+xml"
+    token = Conf.wf_ro_service_bearer_token
+    uri = Wf4Ever::TransformationClient.create_job(Conf.wf_ro_service_uri, resource_uri.to_s, format, research_object.uri, token)
+puts "      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object.uri, token] = #{      [Conf.wf_ro_service_uri, resource_uri, format, research_object.uri, token].inspect}"
+    puts "################## Transforming at " + uri
+
+    uri
+  end
 end
 

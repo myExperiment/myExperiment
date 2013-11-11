@@ -602,20 +602,12 @@ class PacksController < ApplicationController
     end
   end
 
-  def annotate_resources(resource_uris, body_graph, content_type = 'application/rdf+xml')
-    @pack.research_object.create_annotation(
-        :body_graph   => body_graph,
-        :content_type => content_type,
-        :resources    => resource_uris,
-        :creator_uri  => "/users/#{current_user.id}")
-  end
-
   def annotate_resource_type(resource_uri, type_uri)
 
     body = RDF::Graph.new
     body << [RDF::URI(resource_uri), RDF.type, RDF::URI(type_uri)]
 
-    annotate_resources([resource_uri], body)
+    annotate_resources(@pack.research_object, [resource_uri], body)
   end
 
   def post_process_created_resource(pack, entry, resource_uri, params)
@@ -626,6 +618,12 @@ class PacksController < ApplicationController
 
     if params[:type] != RO_RESOURCE
       annotate_resource_type(resource_uri, params[:type])
+    end
+
+    if WORKFLOW_RUN.include?(params[:type])
+      if entry.kind_of?(PackContributableEntry)
+        post_process_file(@pack.research_object, entry.contributable.content_blob.data, resource_uri)
+      end
     end
 
     # Folder selection is performed on the following with decreasing order of

@@ -4,18 +4,22 @@
   <h3>Outputs</h3>
   <table class="simple">
     <tr>
-      <th>Label</th>
-      <th>Size</th>
+      <th>Output</th>
+      <th>Value</th>
     </tr>
     <% outputs.each do |output| %>
       <% zip_entry = statements.query([output, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/content"), nil]).first_object %>
       <% param = statements.query([output, RDF::URI("http://purl.org/wf4ever/wfprov#describedByParameter"), nil]).first_object %>
       <% label = statements.query([param, RDF::RDFS.label, nil]).first_literal %>
-      <% sha1 = statements.query([zip_entry, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/sha1"), nil]).first_literal %>
+      <% chars = statements.query([zip_entry, RDF::URI("http://www.w3.org/2011/content#chars"), nil]).first_literal %>
       <% size = statements.query([zip_entry, RDF::URI("http://ns.taverna.org.uk/2012/tavernaprov/byteCount"), nil]).first_literal %>
       <tr>
         <td><%=h label -%></td>
-        <td><%=h size -%></td>
+        <td>
+          <% if chars %>
+            <%=h chars -%>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </table>

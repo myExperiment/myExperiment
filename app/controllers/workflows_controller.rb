@@ -8,6 +8,7 @@ require 'wf4ever/transformation-client'
 class WorkflowsController < ApplicationController
 
   include ApplicationHelper
+  include ResearchObjectsHelper
 
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :statistics, :launch, :search, :auto_complete]
   
@@ -1106,15 +1107,5 @@ private
       end
     end
     return ok
-  end
-
-  def transform_wf(research_object, resource_uri)
-    format = "application/vnd.taverna.t2flow+xml"
-    token = Conf.wf_ro_service_bearer_token
-    uri = Wf4Ever::TransformationClient.create_job(Conf.wf_ro_service_uri, resource_uri.to_s, format, research_object.uri, token)
-puts "      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object.uri, token] = #{      [Conf.wf_ro_service_uri, resource_uri, format, research_object.uri, token].inspect}"
-    puts "################## Transforming at " + uri
-
-    uri
   end
 end
