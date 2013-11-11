@@ -179,7 +179,7 @@ class SessionsController < ApplicationController
       respond_to do |format|
         flash[:notice] = "Logged in successfully. Welcome to #{Conf.sitename}!"
         home_url = url_for(:controller => 'home')
-        format.html { session[:return_to] and URI.parse(session[:return_to]).path == '/' ? redirect_to(home_url) : redirect_back_or_default(home_url) }
+        format.html { redirect_to(home_url) }
       end
     end
 
