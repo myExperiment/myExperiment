@@ -1131,6 +1131,72 @@ class ApiControllerTest < ActionController::TestCase
     assert_response(:not_found)
   end
 
+  # Group Policies
+
+  test "can create file with group policy" do
+    login_as(:john)
+
+    group_policy = policies(:group_policy)
+
+    # post a file
+    assert_difference('Blob.count', 1) do
+      rest_request(:post, 'file', "<?xml version='1.0'?>
+      <file>
+        <title>A File With a Group Policy</title>
+        <description>Description</description>
+        <license-type>by-sa</license-type>
+        <filename>test.txt</filename>
+        <content-type>text/plain</content-type>
+        <content>#{Base64.encode64("This is the content of this test file.")}</content>
+        <permissions>
+          <group-policy-id>#{group_policy.id}</group-policy-id>
+        </permissions>
+      </file>")
+    end
+
+    assert_response(:success)
+  end
+
+  test "non-existant group policy doesn't error out" do
+    login_as(:john)
+
+    fake_id = Policy.last.id + 100000
+
+    # post a file
+    rest_request(:post, 'file', "<?xml version='1.0'?>
+    <file>
+      <title>A File With a Group Policy</title>
+      <description>Description</description>
+      <license-type>by-sa</license-type>
+      <filename>test.txt</filename>
+      <content-type>text/plain</content-type>
+      <content>#{Base64.encode64("This is the content of this test file.")}</content>
+      <permissions>
+        <group-policy-id>#{fake_id}</group-policy-id>
+      </permissions>
+    </file>")
+  end
+
+  test "non-member using a group policy doesn't error out" do
+    login_as(:jane)
+
+    group_policy = policies(:group_policy)
+
+    # post a file
+    rest_request(:post, 'file', "<?xml version='1.0'?>
+    <file>
+      <title>A File With a Group Policy</title>
+      <description>Description</description>
+      <license-type>by-sa</license-type>
+      <filename>test.txt</filename>
+      <content-type>text/plain</content-type>
+      <content>#{Base64.encode64("This is the content of this test file.")}</content>
+      <permissions>
+        <group-policy-id>#{group_policy.id}</group-policy-id>
+      </permissions>
+    </file>")
+  end
+
   # Components
 
   test "can create components" do
@@ -1566,6 +1632,26 @@ class ApiControllerTest < ActionController::TestCase
     assert_difference('Pack.count', -1) do # Family deleted
       rest_request(:delete, 'component-family', nil, 'id' => family.id)
     end
+    end
+    end
+
+    assert_response(:success)
+  end
+
+  test "can delete component family after deleting a component inside it" do
+    login_as(:john)
+    component = workflows(:private_component_workflow)
+    family = packs(:protected_component_family)
+
+    assert_difference('Workflow.count', -1) do # Component deleted
+      rest_request(:delete, 'workflow', nil, 'id' => component.id)
+    end
+
+    assert_response(:success)
+
+    assert_no_difference('Blob.count') do # Profile not deleted
+    assert_difference('Pack.count', -1) do # Family deleted
+      rest_request(:delete, 'component-family', nil, 'id' => family.id)
     end
     end
 

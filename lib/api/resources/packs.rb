@@ -69,7 +69,10 @@ def pack_aux(action, opts = {})
       return rest_response(400, :object => ob)
     end
 
-    update_permissions(ob, permissions, opts[:user])
+    begin
+      update_permissions(ob, permissions, opts[:user])
+    rescue NotAuthorizedException, NotFoundException
+    end
   end
 
   rest_get_request(ob, opts[:user], { "id" => ob.id.to_s })

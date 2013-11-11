@@ -124,7 +124,10 @@ def file_aux(action, opts = {})
     return rest_response(400, :object => ob) unless success
 
     if opts[:query]['version'].nil?
-      update_permissions(ob, permissions, opts[:user])
+      begin
+        update_permissions(ob, permissions, opts[:user])
+      rescue NotAuthorizedException, NotFoundException
+      end
     end
   end
 
