@@ -93,6 +93,8 @@ class ResearchObjectsController < ActionController::Base
 
     response.headers["Location"] = ro_uri
 
+    ro.manifest_resource.generate_graph!
+
     send_data(ro.manifest_resource.content_blob.data, :type => "application/rdf+xml", :filename => ResearchObject::MANIFEST_PATH, :status => 201)
   end
 
