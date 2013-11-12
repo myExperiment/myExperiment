@@ -381,6 +381,52 @@ module Authorization
 
         end
 
+      when "ResearchObject"
+
+        case action
+
+          when "create"
+
+            # Only authenticated users can create research objects
+
+            return !user.nil?
+
+          when "view"
+
+            # If the research object is connected to a contribution then defer
+            # authorization to it.
+
+            return Authorization.check('view', object.context, user) if object.context
+
+            # Since there is no context it is visible to all.
+
+            return true
+
+          when "edit"
+
+            # If the research object is connected to a contribution then defer
+            # authorization to it.
+
+            return Authorization.check('edit', object.context. user) if object.context
+
+            # Since there is no context, only the owner can edit it.
+
+            return object.user == user
+
+         when "delete"
+
+            # If the research object is connected to a contribution then
+            # disallow deletion as this is only performed when the contribution
+            # is deleted.
+
+            return false if object.context
+
+            # Since there is no context, only the owner can delete it.
+
+            return object.user == user
+
+        end
+
       when "Resource"
 
         case action
