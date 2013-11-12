@@ -21,12 +21,19 @@ class ResearchObjectsTest < ActionController::IntegrationTest
     ro_uri       = research_object_url('test_ro') + "/"
     manifest_uri = ro_uri + ResearchObject::MANIFEST_PATH
 
-    # Test that the index of research objects is empty.
+    # Test that the index of research objects equals the test packs
 
     get research_objects_path
 
+    fixture_ros =
+      "http://test.host/rodl/ROs/Pack1/\n" +
+      "http://test.host/rodl/ROs/Pack2/\n" +
+      "http://test.host/rodl/ROs/Pack3/\n" + 
+      "http://test.host/rodl/ROs/Pack4/\n" +
+      "http://test.host/rodl/ROs/Pack5/\n"
+
     assert_response :ok
-    assert_equal "", @response.body
+    assert_equal fixture_ros, @response.body
     assert_equal "text/uri-list", @response.content_type
 
     # Create a research object.
@@ -47,7 +54,7 @@ class ResearchObjectsTest < ActionController::IntegrationTest
     get research_objects_path
 
     assert_response :ok
-    assert_equal "#{ro_uri}\n", @response.body
+    assert_equal "#{fixture_ros}#{ro_uri}\n", @response.body
     assert_equal "text/uri-list", @response.content_type
 
     # Test the manifest redirection.
@@ -165,8 +172,7 @@ class ResearchObjectsTest < ActionController::IntegrationTest
 
     get proxy_uri
 
-    assert_response :ok
-    assert_equal "application/vnd.wf4ever.proxy", @response.content_type.to_s
+    assert_response :see_other
 
     graph2 = RDF::Graph.new
     graph2 << RDF::Reader.for(:rdfxml).new(@response.body)

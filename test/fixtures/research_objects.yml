@@ -1,0 +1,40 @@
+research_object_1:
+  id: 1
+  slug: Pack1
+  user_id: 1
+  context_type: Pack
+  context_id: 1
+  created_at: 2008-05-05 05:05:05
+  
+research_object_2:
+  id: 2
+  slug: Pack2
+  user_id: 1
+  context_type: Pack
+  context_id: 2
+  created_at: 2008-05-05 05:05:08
+  
+research_object_3:
+  id: 3
+  slug: Pack3
+  user_id: 1
+  context_type: Pack
+  context_id: 3
+  created_at: 2008-05-05 05:05:11
+  
+research_object_4:
+  id: 4
+  slug: Pack4
+  user_id: 1
+  context_type: Pack
+  context_id: 4
+  created_at: 2008-05-05 05:05:14
+  
+research_object_5:
+  id: 5
+  slug: Pack5
+  user_id: 1
+  context_type: Pack
+  context_id: 5
+  created_at: 2008-05-05 05:05:17
+  
