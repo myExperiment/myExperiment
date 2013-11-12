@@ -454,9 +454,8 @@ class Workflow < ActiveRecord::Base
     slug = "Workflow#{self.id}"
     slug = SecureRandom.uuid if ResearchObject.find_by_slug_and_version(slug, nil)
 
-    ro = ResearchObject.create(:slug => slug, :user => self.contributor)
-    
-    update_attribute(:research_object, ro)
+    ro = build_research_object(:slug => slug, :user => self.contributor)
+    ro.save
 
     workflow_resource = ro.create_aggregated_resource(
         :user_uri     => user_path,

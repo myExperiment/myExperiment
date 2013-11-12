@@ -53,21 +53,12 @@ class CreateResearchObjects < ActiveRecord::Migration
       t.string  "resource_path"
     end
 
-    add_column :packs, :ro_uri, :text
-    add_column :packs, :research_object_id, :text
-    add_column :pack_contributable_entries, :resource_id, :integer
-    add_column :pack_remote_entries, :resource_id, :integer
   end
 
   def self.down
     drop_table :research_objects
     drop_table :resources
     drop_table :annotation_resources
-
-    remove_column :packs, :ro_uri
-    remove_column :packs, :research_object_id
-    remove_column :pack_contributable_entries, :resource_id
-    remove_column :pack_remote_entries, :resource_id
   end
 
 end

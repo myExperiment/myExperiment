@@ -219,13 +219,11 @@ class Resource < ActiveRecord::Base
 
     if path == ResearchObject::MANIFEST_PATH
 
-      research_object.resources.reload
-
       # The manifest should contain the metadata for every resource, so we need
       # to know the metrics of each.  This means that we must ensure that all
       # RDF is generated before we create the manifest.
 
-      research_object.resources.each do |resource|
+      research_object.resources(true).each do |resource|
         unless resource.path == ResearchObject::MANIFEST_PATH
           resource.generate_graph! if resource.content_blob.nil?
         end

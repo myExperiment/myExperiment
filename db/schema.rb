@@ -520,7 +520,6 @@ ActiveRecord::Schema.define(:version => 20130930140455) do
     t.datetime "updated_at"
     t.integer  "current_version"
     t.integer  "license_id"
-    t.text     "ro_uri"
   end
 
   create_table "pending_invitations", :force => true do |t|

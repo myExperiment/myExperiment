@@ -1159,12 +1159,8 @@ class Pack < ActiveRecord::Base
     slug = "Pack#{self.id}"
     slug = SecureRandom.uuid if ResearchObject.find_by_slug_and_version(slug, nil)
 
-    ro = ResearchObject.create(:slug => slug, :user => self.contributor)
-
-    update_attributes( {
-      :ro_uri          => relative_uri(ro.uri, Conf.base_uri),
-      :research_object => ro
-    })
+    ro = build_research_object(:slug => slug, :user => self.contributor)
+    ro.save
 
     # Create the folder structure
 
