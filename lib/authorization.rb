@@ -345,6 +345,81 @@ module Authorization
 
         end
 
+      when "ResearchObject"
+
+        case action
+
+          when "create"
+
+            # Only authenticated users can create research objects
+
+            return !user.nil?
+
+          when "view"
+
+            # If the research object is connected to a contribution then defer
+            # authorization to it.
+
+            return Authorization.check('view', object.context, user) if object.context
+
+            # Since there is no context it is visible to all.
+
+            return true
+
+          when "edit"
+
+            # If the research object is connected to a contribution then defer
+            # authorization to it.
+
+            return Authorization.check('edit', object.context. user) if object.context
+
+            # Since there is no context, only the owner can edit it.
+
+            return object.user == user
+
+         when "destroy"
+
+            # If the research object is connected to a contribution then
+            # disallow deletion as this is only performed when the contribution
+            # is deleted.
+
+            return false if object.context
+
+            # Since there is no context, only the owner can delete it.
+
+            return object.user == user
+
+        end
+
+      when "Resource"
+
+        case action
+
+          when "create"
+
+            # Only users that can edit the context can create RO resources
+            return Authorization.check('edit', context, user)
+
+          when "view"
+
+            # You can only view a resource if you can view the context
+            return false unless Authorization.check('view', object.research_object.context, user)
+
+            # In addition to the above, you must be able to view the
+            # contributable if it is local to myExperiment
+
+            if object.context
+              return Authorization.check('view', object.context, user)
+            end
+
+            return true
+
+          when "destroy"
+
+            # Only users that can edit the context can delete RO resources
+            return Authorization.check('edit', object.research_object.context, user)
+        end
+
       when "Message"
         case action
           when "view"
@@ -492,6 +567,18 @@ module Authorization
     }
 
     scope
+  end
+
+  # This function calculates which agents are authorized to perform a given
+  # action on a given object.  E.g. "Who can edit this workflow"?
+
+  def self.authorized_for_object(action, object)
+    case action
+    when :view, :download, :edit
+      [object.contributor] + Permission.all(:conditions => { action => true, :policy_id => object.contribution.policy_id } ).map { |p| p.contributor }
+    else
+      raise "Unknown action: #{action}"
+    end
   end
 end
 

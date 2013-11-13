@@ -49,22 +49,38 @@
     <%= render(:partial => "contributions/version_selector", :locals => { :resource => @blob, :version => @version, :path => :blob_version_path }) %>
 
     <div class="contribution_version_inner_box">
-			<p>
-			    <b>Title:</b>
-			    <span class="title"><%=h @version.title %></span>
-			</p>
-			
-			<p>
-			    <b>File name:</b>
-			    <%=h @version.local_name %>
-			</p>
 
-  <% if  @version.content_type %>			
-			<p>
-			    <b>File type:</b>
-			    <%=h @version.content_type.title %>
-			</p>
-	<% end %>
+      <table class="metadata">
+
+        <tr>
+          <td>Title</td>
+          <td><%=h @version.title %></td>
+        </tr>
+			
+        <tr>
+			    <td>File name</td>
+			    <td><%=h @version.local_name %></td>
+        </tr>
+
+        <% if Authorization.check('download', @blob, current_user) %>
+          <tr>
+            <td>File size</td>
+            <td class="size"><%=h @version.content_blob.size.to_s %></td>
+          </tr>
+          <tr>
+            <td>SHA1</td>
+            <td class="sha1"><%=h @version.content_blob.sha1 %></td>
+          </tr>
+        <% end %>
+
+        <% if @version.content_type %>			
+          <tr>
+            <td>Content type</td>
+            <td class="content_type"><%=h @version.content_type.title %></td>
+          </tr>
+        <% end %>
+
+			</table>
   
 			<br/>
 			
