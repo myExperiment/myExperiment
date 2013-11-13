@@ -48,9 +48,9 @@ class ApiControllerTest < ActionController::TestCase
     extra_activities = Activity.find(:all). - existing_activities
 
     assert_equal(1, extra_workflows.length)
-    assert_equal(1, extra_activities.length)
+    assert_equal(2, extra_activities.length)
 
-    new_activity = (extra_activities - existing_activities).first
+    new_activity = (extra_activities - existing_activities)[1]
 
     assert_equal("John Smith", new_activity.subject_label);
     assert_equal("create", new_activity.action);
@@ -245,11 +245,11 @@ class ApiControllerTest < ActionController::TestCase
 
     new_activities = Activity.all - existing_activities
 
-    assert_equal(1, new_activities.length)
+    assert_equal(2, new_activities.length)
 
-    assert_equal("John Smith", new_activities.first.subject.name)
-    assert_equal("create",     new_activities.first.action)
-    assert_equal(title,        new_activities.first.objekt.title)
+    assert_equal("John Smith", new_activities[1].subject.name)
+    assert_equal("create",     new_activities[1].action)
+    assert_equal(title,        new_activities[1].objekt.title)
 
     extra_files = Blob.find(:all) - existing_files
 

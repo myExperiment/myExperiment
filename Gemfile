@@ -31,5 +31,6 @@ gem "open_id_authentication", "~> 1.1.0"
 gem "simple-rss", "~> 1.2.3"
 gem "net-http-persistent", "~> 2.8"
 gem "delayed_job", "~>2.0.4"
+gem "wf4ever-transformation-client", "~> 0.3.0"
 gem "sanitize", "~> 2.0.6"
 
