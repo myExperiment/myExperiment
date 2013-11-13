@@ -3,12 +3,9 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'zip/zip'
-
 class BlobsController < ApplicationController
 
   include ApplicationHelper
-  include ResearchObjectsHelper
 
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :named_download_with_version, :statistics, :search, :auto_complete]
 
@@ -181,12 +178,9 @@ class BlobsController < ApplicationController
           @blob.contribution.update_attributes(params[:contribution])
         
           policy_err_msg = update_policy(@blob, params, current_user)
-          post_process_file(@blob.research_object, @blob.content_blob.data, @blob.research_object.uri + @blob.local_name)
 
           update_credits(@blob, params)
           update_attributions(@blob, params)
-
-          post_process_file(@blob.research_object, @blob.content_blob.data, @blob.research_object.uri + @blob.local_name)
         
           if policy_err_msg.blank?
             update_layout(@blob, params[:layout]) unless params[:policy_type] == "group"
@@ -494,5 +488,4 @@ class BlobsController < ApplicationController
       render_401("You are not authorised to manage this file.") unless @blob.owner?(current_user)
     end
   end
-
 end

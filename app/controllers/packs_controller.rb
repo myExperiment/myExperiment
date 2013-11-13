@@ -3,20 +3,9 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'wf4ever/transformation-client'
-require 'open-uri'
-require 'nokogiri'
-
 class PacksController < ApplicationController
   include ApplicationHelper
-  include ResearchObjectsHelper
-  include ActivitiesHelper
   
-  ## NOTE: URI must match config/default_settings.yml ro_resource_types
-  WORKFLOW_DEFINITION = "http://purl.org/wf4ever/wfdesc#WorkflowDefinition"
-  RO_RESOURCE = "http://purl.org/wf4ever/ro#Resource"
-  WORKFLOW_RUN = ["http://purl.org/wf4ever/roterms#WorkflowRunBundle"]
-
   before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
   
   before_filter :find_pack_auth, :except => [:index, :new, :create, :search]
@@ -88,21 +77,6 @@ class PacksController < ApplicationController
     respond_to do |format|
       format.html {
         
-        @graph = @pack.research_object.merged_annotation_graphs
-        @ore_directories = @pack.research_object.ore_directories
-        @ore_resources = @pack.research_object.ore_resources
-        @ro_relationships = Conf.ro_relationships
-        @sketch = @graph.query(:predicate => RDF.type,
-            :object => RDF::URI("http://purl.org/wf4ever/roterms#Sketch")).first_subject
-        @research_question = @graph.query(:predicate => RDF.type,
-            :object => RDF::URI("http://purl.org/wf4ever/roterms#ResearchQuestion")).first_subject
-        @hypothesis = @graph.query(:predicate => RDF.type,
-            :object => RDF::URI("http://purl.org/wf4ever/roterms#Hypothesis")).first_subject
-        @conclusions = @graph.query(:predicate => RDF.type,
-            :object => RDF::URI("http://purl.org/wf4ever/roterms#Conclusions")).first_subject
-
-        @maintainers = Authorization.authorized_for_object(:edit, @pack)
-
         @lod_nir  = pack_url(@pack)
         @lod_html = pack_url(:id => @pack.id, :format => 'html')
         @lod_rdf  = pack_url(:id => @pack.id, :format => 'rdf')
@@ -116,15 +90,6 @@ class PacksController < ApplicationController
           render :inline => `#{Conf.rdfgen_tool} packs #{@pack.id}`
         }
       end
-
-      format.atom {
-        @title = @pack.title
-        @id = @resource = pack_url(@pack)
-        @updated = @pack.updated_at.to_datetime.rfc3339
-        @entries = activities_for_feed(:context => @pack, :user => current_user, :no_combine => true)
-
-        render "activities/feed.atom"
-      }
     end
   end
   
@@ -175,7 +140,6 @@ class PacksController < ApplicationController
           @pack.tags_user_id = current_user
           @pack.tag_list = convert_tags_to_gem_format params[:pack][:tag_list]
           @pack.update_tags
-          @pack.update_annotations_from_model(current_user)
         end
         
         # update policy
@@ -207,7 +171,6 @@ class PacksController < ApplicationController
     respond_to do |format|
       if @pack.update_attributes(params[:pack])
         @pack.refresh_tags(convert_tags_to_gem_format(params[:pack][:tag_list]), current_user) if params[:pack][:tag_list]
-        @pack.update_annotations_from_model(current_user)
         policy_err_msg = update_policy(@pack, params, current_user)
         if policy_err_msg.blank?
           update_layout(@pack, params[:layout]) unless params[:policy_type] == "group"
@@ -407,12 +370,7 @@ class PacksController < ApplicationController
   
   def quick_add
     respond_to do |format|
-
-      uri = params[:uri]
-      uri = params[:uri2] if uri.blank?
-      uri = params[:uri3] if uri.blank?
-
-      uri = preprocess_uri(uri)
+      uri = preprocess_uri(params[:uri])
       if uri.blank?
         flash.now[:error] = 'Failed to add item. See error(s) below.'
         @error_message = "Please enter a link"
@@ -425,16 +383,6 @@ class PacksController < ApplicationController
 
         # By this point, we either have errors, or have an entry that needs saving.
         if errors.empty? && entry.save
-
-          case entry
-          when PackContributableEntry
-            resource_uri = entry.resource(true).uri
-          when PackRemoteEntry
-            resource_uri = entry.resource(true).uri
-          end
-          
-          post_process_created_resource(@pack, entry, resource_uri, params)
-
           flash[:notice] = 'Item succesfully added to pack.'
           format.html { redirect_to pack_url(@pack) }
           format.js   { render :layout => false }
@@ -465,6 +413,12 @@ class PacksController < ApplicationController
     end
   end
   
+  def items
+    respond_to do |format|
+      format.rss { render :action => 'items.rxml', :layout => false }
+    end
+  end
+  
   def snapshot
 
     success = @pack.snapshot!
@@ -481,28 +435,6 @@ class PacksController < ApplicationController
         end
       }
     end
-  end
-
-  def update_checklist
-
-    slug  = params[:checklist]
-
-    unless Conf.research_object_checklists[slug]
-      render_422("The requested checklist is not defined")
-      return
-    end
-
-    begin
-      checklist = @pack.research_object.run_checklist!(slug)
-    rescue
-      render_500("A problem occured with the checklist service.")
-      return
-    end
-
-    @pack.solr_index if Conf.solr_enable
-    @pack.update_contribution_rank
-
-    redirect_to polymorphic_path([@pack, checklist])
   end
 
   protected
@@ -541,7 +473,6 @@ class PacksController < ApplicationController
       "tag"              => "view",
       "update"           => "edit",
       "update_item"      => "edit",
-      "update_checklist" => "view",
       "snapshot"         => "edit"
     }
 
@@ -557,8 +488,10 @@ class PacksController < ApplicationController
         @authorised_to_download = Authorization.check("download", @pack, current_user)
         
         @pack_entry_url = url_for :only_path => false,
-                            :host => Conf.hostname,
+                            :host => base_host,
                             :id => @pack.id
+                            
+        @base_host = base_host
       else
         render_401("You are not authorized to access this pack.")
       end
@@ -601,49 +534,4 @@ class PacksController < ApplicationController
       final_errs.add_to_base(msg)
     end
   end
-
-  def annotate_resource_type(resource_uri, type_uri)
-
-    body = RDF::Graph.new
-    body << [RDF::URI(resource_uri), RDF.type, RDF::URI(type_uri)]
-
-    annotate_resources(@pack.research_object, [resource_uri], body)
-  end
-
-  def post_process_created_resource(pack, entry, resource_uri, params)
-
-    ro = pack.research_object
-
-    config = Conf.ro_resource_types.select { |x| x["uri"] == params[:type] }.first
-
-    if params[:type] != RO_RESOURCE
-      annotate_resource_type(resource_uri, params[:type])
-    end
-
-    if WORKFLOW_RUN.include?(params[:type])
-      if entry.kind_of?(PackContributableEntry)
-        post_process_file(@pack.research_object, entry.contributable.content_blob.data, resource_uri)
-      end
-    end
-
-    # Folder selection is performed on the following with decreasing order of
-    # priority.
-    #
-    # 1. If a folder was specified, and it exists in the RO, then the resource
-    #    will be placed in that folder.
-    #
-    # 2. If there is a folder specified in the RO template for the
-    #    resource type, and it exists in the RO, then use it.
-    #
-    # 3. Place the resource in the root folder.
-
-    folder = ro.find_using_path(params[:folder])
-
-    folder = ro.find_using_path(config["folder"]) if folder.nil? && config && config["folder"]
-
-    folder = ro.root_folder if folder.nil?
-
-    ro.create_folder_entry(relative_uri(resource_uri, @pack.research_object.uri), folder.path, user_path(current_user))
-  end
-
 end

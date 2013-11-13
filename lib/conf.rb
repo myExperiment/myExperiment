@@ -218,10 +218,6 @@ class Conf
     self.fetch_entry('expanded_filter_size')
   end
 
-  def self.research_object_default_folders
-    self.fetch_entry('research_object_default_folders')
-  end
-
   def self.method_missing(method)
     if @defaults.has_key?(method.to_s)
       fetch_entry(method.to_s)

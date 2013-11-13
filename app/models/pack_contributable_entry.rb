@@ -3,8 +3,6 @@
 # Copyright (c) 2008 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'has_research_object'
-
 class PackContributableEntry < ActiveRecord::Base
   belongs_to :pack
   validates_presence_of :pack
@@ -21,10 +19,6 @@ class PackContributableEntry < ActiveRecord::Base
   
   after_save :touch_pack
   after_destroy :touch_pack
-
-  after_save :synchronize_research_object
-
-  has_resource
 
   def check_unique
 
@@ -96,33 +90,5 @@ class PackContributableEntry < ActiveRecord::Base
 
   def touch_pack
     pack.touch unless (pack.destroyed? || pack.contribution.nil?)
-  end
-
-  def synchronize_research_object
-
-    ro = pack.research_object
-    
-    user_path = "/users/#{user_id}"
-
-    if ro && resource.nil?
-
-      case contributable
-      when Workflow
-        data = contributable.content_blob.data
-        path = contributable.unique_name + (contributable.file_ext ? ".#{contributable.file_ext}" : "") 
-      when Blob
-        data = contributable.content_blob.data
-        path = contributable.local_name
-      end
-
-      resource = ro.create_aggregated_resource(
-          :user_uri     => user_path,
-          :path         => path,  # FIXME - where should these be URL encoded?
-          :data         => data,
-          :context      => self,
-          :content_type => contributable.content_type.mime_type)
-
-      ro.update_manifest!
-    end
   end
 end

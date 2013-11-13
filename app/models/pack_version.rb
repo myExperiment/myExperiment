@@ -3,8 +3,6 @@
 # Copyright (c) 2012 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'has_research_object'
-
 class PackVersion < ActiveRecord::Base
 
   validates_presence_of :title
@@ -31,8 +29,6 @@ class PackVersion < ActiveRecord::Base
                FROM pack_remote_entries
                WHERE pack_id = #{pack_id} AND version = #{version}
                ORDER BY created_at DESC'
-
-  has_research_object
 
   def items_count
     contributable_entries.count + remote_entries.count

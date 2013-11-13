@@ -1,7 +1,0 @@
-<h1>All annotations for <%=h @context.label -%></h1>
-
-<% @annotations.each do |annotation| %>
-  <% next unless annotation[:template] %>
-  <%= render(:partial => 'annotation', :locals => { :context => @context, :annotation => annotation, :source => nil } ) -%>
-<% end %>
-

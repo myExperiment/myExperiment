@@ -4,22 +4,19 @@
 <% contributable_entries = @version ? @version.contributable_entries : @pack.contributable_entries %>
 <% remote_entries        = @version ? @version.remote_entries        : @pack.remote_entries        %>
 
-<ul class="sectionIcons">
-  <% if @authorised_to_edit %>
-    <% if mine?(@pack) -%>
-      <li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
-    <% end -%>
-  <% end %>
-  <li><%= icon('folder', pack_items_path(@pack), nil, nil, 'View Items') -%></li>
-  <li><%= icon('annotations', pack_annotations_path(@pack), nil, nil, 'Annotations') -%></li>
-  <li><%= icon('disk', zipped_research_object_url(@pack.research_object.slug) + "/", nil, nil, "Download") %></li>
-  <% if @authorised_to_edit -%>
-    <li><%= icon('new', snapshot_pack_path(@pack), nil, { :confirm => 'Are you sure that you would like to create a new snapshot of this Pack?', :method => :post }, 'Create snapshot') %></li>
-  <% end %>	
-  <% if Authorization.check("destroy", @pack, current_user) %>
-    <li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments, BUT does not delete the actual items pointed to in the Pack. Are you sure you would like to delete this Pack?', :method => :delete }, 'Delete Pack') %></li>
-  <% end %>
-</ul>
+<% if @authorised_to_edit %>
+	<ul class="sectionIcons">
+		<% if mine?(@pack) -%>
+			<li><%= icon('manage', edit_pack_path(@pack), nil, nil, 'Manage Pack') -%></li>
+		<% end -%>
+    <% if @authorised_to_edit -%>
+			<li><%= icon('new', snapshot_pack_path(@pack), nil, { :confirm => 'Are you sure that you would like to create a new snapshot of this Pack?', :method => :post }, 'Create snapshot') %></li>
+    <% end -%>	
+		<% if Authorization.check("destroy", @pack, current_user) %>
+			<li><%= icon('destroy', pack_path(@pack), nil, { :confirm => 'This deletes the Pack and all metadata such as tags and comments, BUT does not delete the actual items pointed to in the Pack. Are you sure you would like to delete this Pack?', :method => :delete }, 'Delete Pack') %></li>
+		<% end %>
+	</ul>
+<% end %>
 
 <h1 class="contribution_title">Pack: <%= contributable_name(@pack.id, 'Pack') %></h1>
 
@@ -50,124 +47,94 @@
 
     <%= render(:partial => "packs/version_selector", :locals => { :resource => @pack, :version => @version, :path => :pack_version_path }) %>
 
-	</div>
+		<div class="contribution_version_inner_box">
+			<p>
+		    <b>Title:</b>
+		    <span class="title"><%=h @pack.title %></span>
+			</p>
 			
-      <h2>Research Object URI</h2>
-
-      <p>This pack is available as a research object at <%= link_to(h(@pack.research_object.uri), @pack.research_object.uri) -%>.</p>
-
-			<h2>Description</h2>
+			<br/>
+			
+			<h3>
+				<%= info_icon_with_tooltip("This section shows the overall description of this Pack") %>
+				Description
+			</h3>
 			
 			<% unless @pack.description.blank? %>
-				<div>
+				<div class="contribution_description">
 					<%= @pack.description_html %>
 				</div>
+				<% if mine?(@pack) %>
+					<br/>
+					<p style="text-align: right; color: #666666;">[ <%= link_to "edit", edit_pack_path(@pack) %> ]</p>
+				<% end %>
 			<% else %>
 				<p class="none_text">
 					Not set
 				</p>
 			<% end %>
+			
+		</div>
+	</div>
+	
+	<div class="contribution_version_box" style="background-color: #EEEEEE;">
+		<div class="contribution_version_inner_box">
+			<h4>
+				<%= feed_icon_tag "RSS feed for items in this pack", items_pack_path(@pack, :format => :rss), "float: right;" %>
+				<% if @authorised_to_download %>
+				  <%= download_icon_tag "Download all items in the pack as a single .zip archive", download_pack_path(@pack), "float: right; margin-right: 0.5em;" -%>
+				<% end %>
+				
+				<%= info_icon_with_tooltip("This section shows all the items that are pointed to in this pack. This can be a combination of internal and external items.") -%>
+				Items <span class="count_text">(<%= items_count -%>)</span>
+			</h4>
+			
+			<%= render :partial => "items", :locals => { :pack => @pack, :contributable_entries => contributable_entries, :remote_entries => remote_entries, :authorised_to_edit => @authorised_to_edit } -%>
 
-  <% if @maintainers.count > 0 %>
-    <h2 class="type">Maintained by</h2>
+			<br/><br/>
+			<h4>
+				<%= info_icon_with_tooltip("This section shows all the relationships between the items in this pack.") -%>
+				Relationships <span class="count_text">(<%= @pack.relationships.length -%>)</span>
+			</h4>
 
-    <div>
-      <% @maintainers.each do |maintainer| %>
-        <li><%= icon("profile", user_url(maintainer), nil, nil, maintainer.name) %></li>
-      <% end %>
-    </div>
-  <% end %>
-
-  <% if @sketch %>
-    <h2>Research overview</h2>
-    <%= image_tag(@sketch.to_s, :width => '100%') -%>
-  <% end %>
-
-  <% if @research_question %>
-    <h2>Research Question</h2>
-    <p><%= resource_link(@pack.find_resource_by_path(@research_question)) -%></p>
-  <% end %>
-
-  <% if @hypothesis %>
-    <h2>Hypothesis</h2>
-    <p><%= resource_link(@pack.find_resource_by_path(@hypothesis)) -%></p>
-  <% end %>
-
-  <% if @conclusions %>
-    <h2>Conclusions</h2>
-    <p><%= resource_link(@pack.find_resource_by_path(@conclusions)) -%></p>
-  <% end %>
-
-  <% if @authorised_to_edit -%>
-    <h2>
-      <%= info_icon_with_tooltip("This section provides various ways of adding items to this pack") %>
-      Add an Item
-    </h2>
-    <a name="add_item"></a>
-    <%= render :partial => "add_item", :locals => { :context => @pack, :ore_directories => @ore_directories, :error_message => @error_message, :source => nil } -%>
-  <% end %>
-
-  <% if false %>
-  <h2>Debug</h2>
-
-  <div id="tabsContainer" class="tabsContainer"></div>
-    
-  <div class="tabContainer">
-    <div class="tabTitle">ORE Entries</div>
-    <div class="tabContent">
-      <%= render :partial => 'items/resource_tiles', :locals => { :context => @pack,
-             :resources => @pack.research_object.resources.select { |r| !r.is_folder } } -%>
-    </div>
-  </div>
-  
-  <div class="tabContainer">
-    <div class="tabTitle">ORE Structure</div>
-    <div class="tabContent">
-      <pre><%=h @pack.research_object.ore_structure.to_yaml -%></pre>
-    </div>
-  </div>
-  
-  <div class="tabContainer">
-    <div class="tabTitle">RO Resources</div>
-    <div class="tabContent">
-      <table class="simple">
-        <tr>
-          <th>Path</th>
-          <th>Size</th>
-          <th>Content type</th>
-          <th>Annotations</th>
-        </tr>
-        <% @pack.research_object.resources.each do |resource| %>
-          <tr>
-            <td><%= link_to(h(resource.path), resource.uri.to_s) -%></td>
-            <td><%=h resource.size -%></td>
-            <td><%=h resource.content_type -%></td>
-            <td><%=h resource.annotations.count -%></td>
-          </tr>
-        <% end %>
-      </table>
-    </div>
-  </div>
-
-  <div class="tabContainer">
-    <div class="tabTitle">RDF Statements</div>
-    <div class="tabContent">
-
-      <div>Number of statements in merged annotation graph: <%= @graph.count -%></div>
-
-      <% @graph.each do |statement| %>
-        <div style="margin: 8px; box-shadow: 4px 4px 8px #ddd;">
-          <table class="simple" style="width: 100%">
-            <tr><td><%=h statement.subject -%></td></tr>
-            <tr><td><%=h statement.predicate -%></td></tr>
-            <tr><td><%=h statement.object -%></td></tr>
-          </table>
-        </div>
+			<%= render :partial => "relationships/relationships", :locals => { :context => @pack, :show_delete => true } -%>
+			
+      <% if @authorised_to_edit %>
+        <br />
+        <ul class="sectionIcons">
+          <li><%= icon('manage', edit_relationships_pack_relationships_path(@pack), nil, nil, 'Edit Relationships') -%></li>
+        </ul>
       <% end %>
 
-    </div>
-  </div>
-  <% end %>
+			<br/><br/>
+
+			<h3>
+				<%= info_icon_with_tooltip("This section provides a link to download all items in this pack as a single .zip archive") %>
+				Download
+			</h3>
+			
+			<% if @authorised_to_download %>
+				<ul class="sectionIcons">
+					<li style="margin-left: 0;"><%= icon('pack', download_pack_path(@pack), "Download Pack Items as Single ZIP Archive", nil, "Download Pack Items (ZIP archive)") %></li>
+				</ul>
+			<% else %>
+				<p class="none_text">
+					You do not have permissions to download
+				</p>
+			<% end %>
+			
+  			<br/>
+			
+			<% if @authorised_to_edit -%>
+				<h3>
+					<%= info_icon_with_tooltip("This section provides various ways of adding items to this pack") %>
+					Add an Item
+				</h3>
+				<a name="add_item"></a>
+				<%= render :partial => "add_item", :locals => { :pack => @pack } -%>
+			<% end -%>
+		</div>
+	</div>
 
 </div>
 
@@ -177,11 +144,8 @@
 	<div class="contribution_section_box">
 		<p style="font-size: 108%;">
 		 	<b><%= pluralize items_count, "item" %> in this pack</b>
-				<%= feed_icon_tag "RSS feed for items in this pack", items_pack_path(@pack, :format => :rss) %>
 		</p>
 	</div>
-
-  <%= render :partial => "checklists/checklist_box", :locals => { :context => @pack } %>
 
   <%= render :partial => "contributions/license_box", :locals => { :contributable => @pack } %>
 
@@ -236,15 +200,12 @@
 
 <!-- END tabs -->
 
-<% activities = activities_for_feed(:context => @pack, :user => current_user) %>
+<br/>
+<br/>
 
-<h1>Activities</h1>
-<div id="activities">
-  <%= render(:partial => "activities/list", :locals => { :context => @pack, :activities => activities, :user => current_user, :enable_feature => true } ) -%>
+<div id="commentsBox">
+	<%= render :partial => "comments/comments", :locals => { :commentable => @pack } %>
 </div>
-
-<br/>
-<br/>
 
 <%= render :partial => "contributions/alternative_formats" %>
 

@@ -10,13 +10,8 @@ require 'zip/zip'
 require 'tempfile'
 require 'cgi'
 require 'sunspot_rails'
-require 'has_research_object'
 
 class Pack < ActiveRecord::Base
-
-  include ResearchObjectsHelper
-
-  after_create :create_research_object
 
   acts_as_site_entity :owner_text => 'Creator'
 
@@ -31,11 +26,7 @@ class Pack < ActiveRecord::Base
 
   has_many :versions, :class_name => "PackVersion"
 
-  has_many :activities, :as => :context
-
   belongs_to :license
-
-  has_research_object
 
   def find_version(version)
     match = versions.find(:first, :conditions => ["version = ?", version])
@@ -671,10 +662,7 @@ class Pack < ActiveRecord::Base
 
     inhibit_timestamps do
  
-      pack_entry_map = {}
-      resource_map = {}
-
-      new_pack_version = versions.build(
+      version = versions.build(
           :version          => current_version,
           :contributor      => contributor,
           :title            => title,
@@ -683,7 +671,7 @@ class Pack < ActiveRecord::Base
 
       contributable_entries.each do |entry|
 
-        pack_entry_map[entry] = new_pack_version.contributable_entries.build(
+        version.contributable_entries.build(
             :pack => self,
             :contributable_id => entry.contributable_id,
             :contributable_type => entry.contributable_type,
@@ -697,7 +685,7 @@ class Pack < ActiveRecord::Base
 
       remote_entries.each do |entry|
 
-        pack_entry_map[entry] = new_pack_version.remote_entries.build(
+        tt = version.remote_entries.build(
             :pack => self,
             :title => entry.title,
             :uri => entry.uri,
@@ -708,62 +696,9 @@ class Pack < ActiveRecord::Base
             :created_at => entry.created_at,
             :updated_at => entry.updated_at)
       end
-
-      # Calculate new research object version index
-
-      new_research_object = new_pack_version.build_research_object(
-          :slug => "#{research_object.slug}v#{current_version}",
-          :version => current_version,
-          :user => contributor)
-
-      research_object.resources.each do |resource|
-
-        new_resource = new_research_object.resources.build(
-          :context => resource.context,
-          :sha1 => resource.sha1,
-          :size => resource.size,
-          :content_type => resource.content_type,
-          :path => resource.path,
-          :entry_name => resource.entry_name,
-          :creator_uri => resource.creator_uri,
-          :proxy_in_path => resource.proxy_in_path,
-          :proxy_for_path => resource.proxy_for_path,
-          :ao_body_path => resource.ao_body_path,
-          :resource_map_path => resource.resource_map_path,
-          :aggregated_by_path => resource.aggregated_by_path,
-          :is_resource => resource.is_resource,
-          :is_aggregated => resource.is_aggregated,
-          :is_proxy => resource.is_proxy,
-          :is_annotation => resource.is_annotation,
-          :is_resource_map => resource.is_resource_map,
-          :is_folder => resource.is_folder,
-          :is_folder_entry => resource.is_folder_entry,
-          :is_root_folder => resource.is_root_folder,
-          :created_at => resource.created_at,
-          :updated_at => resource.updated_at,
-          :uuid => resource.uuid,
-          :title => resource.title)
-
-        resource_map[resource] = new_resource
-
-        if resource.content_blob
-          new_resource.build_content_blob(:data => resource.content_blob.data)
-        end
-
-      end
-
-      research_object.annotation_resources.each do |annotation_resource|
-        
-        new_research_object.annotation_resources.build(
-          :annotation => resource_map[annotation_resource.annotation],
-          :resource_path => annotation_resource.resource_path)
-
-      end
- 
     end
     
     save
-
   end
 
   def describe_version(version_number)
@@ -790,63 +725,6 @@ class Pack < ActiveRecord::Base
       end
     else
       nil
-    end
-  end
-
-  def update_annotations_from_model(user)
-
-    title_annotation = research_object.annotations_of_type("title").first
-    annotation_title = title_annotation[:parameters][:title].to_s if title_annotation
-
-    description_annotation = research_object.annotations_of_type("description").first
-    annotation_description = description_annotation[:parameters][:description].to_s if description_annotation
-
-    sanitized_description = Sanitize.clean(description)
-
-    if title != annotation_title
-
-      if annotation_title
-        title_annotation[:annotation].ao_body.destroy
-        title_annotation[:annotation].destroy
-      end
-
-      parameters = {}
-
-      parameters[:title]    = RDF::Literal(title)
-      parameters[:resource] = RDF::URI(research_object.uri)
-
-      template = Conf.ro_templates["title"]
-
-      body_graph = research_object.create_graph_using_ro_template(parameters, template)
-
-      research_object.create_annotation(
-          :body_graph => body_graph,
-          :content_type => 'application/rdf+xml',
-          :resources => ['.'],
-          :creator_uri => "/users/#{user.id}")
-    end
-
-    if sanitized_description != annotation_description
-
-      if annotation_description
-        description_annotation[:annotation].ao_body.destroy
-        description_annotation[:annotation].destroy
-      end
-
-      parameters = {}
-
-      parameters[:description] = RDF::Literal(sanitized_description)
-      parameters[:resource]    = RDF::URI(research_object.uri)
-
-      template = Conf.ro_templates["description"]
-
-      body_graph = research_object.create_graph_using_ro_template(parameters, template)
-
-      research_object.create_annotation(
-          :body_graph => body_graph,
-          :content_type => 'application/rdf+xml',
-          :resources => ['.'],
-          :creator_uri => "/users/#{user.id}")
     end
   end
 
@@ -1139,11 +1017,8 @@ class Pack < ActiveRecord::Base
 
     boost = 0
 
-    # Take checklists into account
-    research_object.checklists.each { |checklist| boost += (checklist.score * 10) }
-
-    # Take viewings into account
-    boost += contribution.viewings_count / 100 if contribution
+    # initial boost depends on viewings count
+    boost = contribution.viewings_count / 100 if contribution
 
     # Take curation events into account
     boost += CurationEvent.curation_score(CurationEvent.find_all_by_object_type_and_object_id('Pack', id))
@@ -1154,30 +1029,4 @@ class Pack < ActiveRecord::Base
     boost
   end
 
-  def create_research_object
-
-    slug = "Pack#{self.id}"
-    slug = SecureRandom.uuid if ResearchObject.find_by_slug_and_version(slug, nil)
-
-    ro = build_research_object(:slug => slug, :user => self.contributor)
-    ro.save
-
-    # Create the folder structure
-
-    user_path = "/users/#{contributor.id}"
-
-    Conf.research_object_default_folders.each do |folder_path|
-    
-      bits = folder_path.split("/")
-
-      folder_path = bits.join("/") + "/"
-      parent_path = bits[0..-2].join("/") + "/"
-
-      ro.create_folder(folder_path, user_path)
-
-      if parent_path != "/"
-        ro.create_folder_entry(folder_path, parent_path, user_path)
-      end
-    end
-  end
 end

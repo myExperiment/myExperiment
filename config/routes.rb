@@ -64,18 +64,11 @@ ActionController::Routing::Routes.draw do |map|
                  :quick_add => :post,
                  :resolve_link => :post,
                  :snapshot => :post,
-                 :update_checklist => :post,
                  :items => :get } do |pack|
     pack.resources :comments, :collection => { :timeline => :get }
     pack.resources :relationships, :collection => { :edit_relationships => :get }
-    pack.resources :annotations
-    pack.resources :items, :requirements => { :id => /[^;]+/ }
-    pack.resources :checklists
-    pack.resources :activities, :member => { :feature => [:put, :delete] } do |activity|
-      activity.resources :comments
-    end
   end
-
+    
   # workflows (downloadable)
   map.resources :workflows, 
     :collection => { :search => :get }, 
@@ -110,8 +103,6 @@ ActionController::Routing::Routes.draw do |map|
   # pack redirect for linked data model
   map.pack_version           '/packs/:id/versions/:version',         :conditions => { :method => :get }, :controller => 'packs', :action => 'show'
   map.formatted_pack_version '/packs/:id/versions/:version.:format', :conditions => { :method => :get }, :controller => 'packs', :action => 'show'
-
-  map.pack_version_items     '/packs/:id/versions/:version/items',   :conditions => { :method => :get }, :controller => 'items', :action => 'index'
 
   map.blob_version_suggestions '/files/:id/versions/:version/suggestions', :conditions => { :method => :get }, :controller => 'blobs', :action => 'suggestions'
   map.blob_version_process_suggestions '/files/:id/versions/:version/process_suggestions', :conditions => { :method => :post }, :controller => 'blobs', :action => 'process_suggestions'
@@ -327,43 +318,6 @@ ActionController::Routing::Routes.draw do |map|
     map.connect '/tags/:tag_id/taggings/:tagging_id.:format',
       :controller => 'linked_data', :action => 'taggings', :conditions => { :method => :get }
   end
-
-  # RODL routes.  There are no HTML pages for 'new' and 'edit' so the routes
-  # are generated without the resource helpers.
-
-  map.research_objects "/rodl/ROs", :controller => "research_objects", :action => "index",  :conditions => { :method => :get }
-  map.connect          "/rodl/ROs", :controller => "research_objects", :action => "create", :conditions => { :method => :post }
-
-  map.zipped_research_object "/rodl/zippedROs/:id", :controller => "research_objects", :action => "download_zip", :conditions => { :method => :get }
-
-  map.research_object "/rodl/ROs/:id", :controller => "research_objects", :action => "show",           :conditions => { :method => :get }
-  map.connect         "/rodl/ROs/:research_object_id", :controller => "resources",        :action => "post", :conditions => { :method => :post }
-  map.connect         "/rodl/ROs/:id", :controller => "research_objects", :action => "update",         :conditions => { :method => :put }
-  map.connect         "/rodl/ROs/:id", :controller => "research_objects", :action => "destroy",        :conditions => { :method => :delete }
-
-  map.named_route "research_object_resource", "/rodl/ROs/:research_object_id/:id",
-    :controller   => "resources",
-    :action       => "show",
-    :conditions   => { :method => :get },
-    :requirements => { :id => /.*/ }
-
-  map.connect "/rodl/ROs/:research_object_id/:id",
-    :controller   => "resources",
-    :action       => "update",
-    :conditions   => { :method => :put },
-    :requirements => { :id => /.*/ }
-
-  map.connect "/rodl/ROs/:research_object_id/:id",
-    :controller   => "resources",
-    :action       => "delete",
-    :conditions   => { :method => :delete },
-    :requirements => { :id => /.*/ }
-
-  map.connect "/rodl/ROs/:research_object_id/:path",
-    :controller   => "resources",
-    :action       => "post",
-    :conditions   => { :method => :post },
-    :requirements => { :path => /.*/ }
 
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'

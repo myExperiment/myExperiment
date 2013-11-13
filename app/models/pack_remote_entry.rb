@@ -3,8 +3,6 @@
 # Copyright (c) 2008 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'has_research_object'
-
 class PackRemoteEntry < ActiveRecord::Base
   belongs_to :pack
   validates_presence_of :pack
@@ -19,10 +17,6 @@ class PackRemoteEntry < ActiveRecord::Base
   
   after_save :touch_pack
   after_destroy :touch_pack
-
-  after_save :synchronize_research_object
-
-  has_resource
 
   def check_unique
     if PackRemoteEntry.find(:first, :conditions => ["pack_id = ? AND version = ? AND uri = ?", self.pack_id, self.version, self.uri])
@@ -39,23 +33,5 @@ class PackRemoteEntry < ActiveRecord::Base
 
   def available?
     true
-  end
-
-  def synchronize_research_object
-
-    ro = pack.research_object
-    
-    user_path = "/users/#{user_id}"
-
-    if ro && resource.nil?
-
-      resource = ro.create_proxy(
-          :proxy_for_path => uri,
-          :proxy_in_path  => ".",
-          :context        => self,
-          :user_uri       => user_path)
-
-      ro.update_manifest!
-    end
   end
 end

@@ -3,12 +3,9 @@
 # Copyright (c) 2007 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
-require 'wf4ever/transformation-client'
-
 class WorkflowsController < ApplicationController
 
   include ApplicationHelper
-  include ResearchObjectsHelper
 
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :statistics, :launch, :search, :auto_complete]
   
@@ -371,8 +368,6 @@ class WorkflowsController < ApplicationController
         rescue
           raise unless Rails.env == "production"
         end
-
-        transform_wf(@workflow.research_object, @workflow.find_resource_by_path(@workflow.filename).uri)
 
         policy_err_msg = update_policy(@workflow, params, current_user)
 
@@ -1108,4 +1103,6 @@ private
     end
     return ok
   end
+
 end
+

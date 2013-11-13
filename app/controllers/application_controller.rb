@@ -546,8 +546,6 @@ class ApplicationController < ActionController::Base
       render_401
     elsif status_code == :not_found
       render_404
-    elsif status_code == :unprocessable_entity
-      render_422
     elsif status_code == :internal_server_error
       render_500
     else
@@ -572,14 +570,6 @@ class ApplicationController < ActionController::Base
     respond_to do |format|
       format.html { render :template => "errors/404", :status => 404 }
       format.all { render :nothing => true, :status => 404 }
-    end
-  end
-
-  def render_422(message = nil)
-    @message = message
-    respond_to do |format|
-      format.html { render :template => "errors/422", :status => 422 }
-      format.all { render :nothing => true, :status => 422 }
     end
   end
 

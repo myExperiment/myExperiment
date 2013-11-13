@@ -135,15 +135,6 @@ class Activity < ActiveRecord::Base
       when "FeedItem"
 
         auth = subject.feed.context
-
-      when "Resource"
-
-        case object.context
-        when PackContributableEntry, PackRemoteEntry
-          contexts << object.context.pack
-        end
-
-        auth = object
     end
 
     uuid = SecureRandom.uuid

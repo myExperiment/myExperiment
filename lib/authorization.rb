@@ -328,7 +328,7 @@ module Authorization
             return Authorization.check('edit', object.context, user)
         end
 
-      when "PackContributableEntry"
+      when "PackContributableEntry", "PackRemoteEntry"
 
         case action
 
@@ -338,122 +338,11 @@ module Authorization
 
             # Only users that can edit a pack can add items to it
             return !user.nil? && Authorization.check('edit', context, user)
-
-          when "view"
-
-            # Only users can can view the pack and also view the contributable
-            # can view it.
-
-            return false unless Authorization.check('view', object.pack, user)
-
-            return Authorization.check('view', object.contributable, user)
-
-          when "edit", "destroy"
-
-            # Users that can edit the pack can also edit / delete items, but
-            # only if they can view the items.
-
-            return false unless Authorization.check('edit', object.pack, user)
-
-            return Authorization.check('view', object.contributable, user)
-        end
-
-      when "PackRemoteEntry"
-
-        case action
-
-          when "create"
-
-            raise "Context required for authorisation check" unless context
-
-            # Only users that can edit a pack can add items to it
-            return !user.nil? && Authorization.check('edit', context, user)
-
-          when "view"
-
-            # Only users can can view the pack can see remote items.
-
-            return Authorization.check('view', object.pack, user)
 
           when "edit", "destroy"
             # Users that can edit the pack can also edit / delete items
             return Authorization.check('edit', object.pack, user)
 
-        end
-
-      when "ResearchObject"
-
-        case action
-
-          when "create"
-
-            # Only authenticated users can create research objects
-
-            return !user.nil?
-
-          when "view"
-
-            # If the research object is connected to a contribution then defer
-            # authorization to it.
-
-            return Authorization.check('view', object.context, user) if object.context
-
-            # Since there is no context it is visible to all.
-
-            return true
-
-          when "edit"
-
-            # If the research object is connected to a contribution then defer
-            # authorization to it.
-
-            return Authorization.check('edit', object.context. user) if object.context
-
-            # Since there is no context, only the owner can edit it.
-
-            return object.user == user
-
-         when "delete"
-
-            # If the research object is connected to a contribution then
-            # disallow deletion as this is only performed when the contribution
-            # is deleted.
-
-            return false if object.context
-
-            # Since there is no context, only the owner can delete it.
-
-            return object.user == user
-
-        end
-
-      when "Resource"
-
-        case action
-
-          when "create"
-
-            # Only users that can edit the context can create RO resources
-            return Authorization.check('edit', context, user)
-
-          when "view"
-
-            # You can only view a resource if you can view the context
-            return false unless Authorization.check('view', object.research_object.context, user)
-
-            # In addition to the above, you must be able to view the
-            # contributable if it is local to myExperiment
-
-            if object.context
-              return Authorization.check('view', object.context, user)
-            end
-
-            return true
-
-          when "destroy"
-
-            # Only users that can edit the context can delete RO resources
-            return Authorization.check('edit', object.research_object.context, user)
         end
 
       when "Message"
@@ -603,18 +492,6 @@ module Authorization
     }
 
     scope
-  end
-
-  # This function calculates which agents are authorized to perform a given
-  # action on a given object.  E.g. "Who can edit this workflow"?
-
-  def self.authorized_for_object(action, object)
-    case action
-    when :view, :download, :edit
-      [object.contributor] + Permission.all(:conditions => { action => true, :policy_id => object.contribution.policy_id } ).map { |p| p.contributor }
-    else
-      raise "Unknown action: #{action}"
-    end
   end
 end
 

@@ -1,41 +1,26 @@
 # myExperiment: app/models/content_blob.rb
 #
-# Copyright (c) 2007-2013 The University of Manchester, the University of
-# Oxford, and the University of Southampton.  See license.txt for details.
+# Copyright (c) 2009 University of Manchester and the University of Southampton.
+# See license.txt for details.
 
 require 'digest/md5'
 require 'digest/sha1'
 
 class ContentBlob < ActiveRecord::Base
 
-  before_save :update_metadata
-
   validate do |record|
-    if record.data.nil?
-      record.errors.add(:data, 'cannot be undefined.')
+    if record.data.nil? || record.data.length == 0
+      record.errors.add(:data, 'cannot be empty.')
     end
   end
 
-  def update_metadata
-    calc_sha1
-    calc_md5
-    calc_size
+  before_save do |blob|
+    blob.update_checksums
   end
 
-  def calc_sha1
+  def update_checksums
+    self.md5  = Digest::MD5.hexdigest(data)
     self.sha1 = Digest::SHA1.hexdigest(data)
   end
 
-  def calc_md5
-    self.md5  = Digest::MD5.hexdigest(data)
-  end
-
-  def calc_size
-    case self.data
-    when StringIO
-      self.size = self.data.size
-    when String
-      self.size = self.data.bytesize
-    end
-  end
 end

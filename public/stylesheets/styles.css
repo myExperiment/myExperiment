@@ -351,9 +351,10 @@ li {
 
 /* begin css breadcrumbs */
 #myexp_breadcrumbs_bar {
+	font-weight: bold !important;
+	font-size: 85%;
 	text-decoration: none;
-	padding: 4px;
-  padding-left: 6px;
+	padding: 0.4em 0.5em;
 	background-color: #E0E0E0;
 }
 
@@ -1840,22 +1841,37 @@ table.simple td {
   color: gray;
 }
 
-TABLE.quick_add TD {
-  text-align: left;
+table.quick_add {
+	border-collapse: collapse; 
+	width: 99%;
+	color: #333333;
 }
 
-TABLE.quick_add TD.label {
-  text-align: right;
-  font-weight: bold;
+table.quick_add td {
+	vertical-align: middle;
 }
 
-TABLE.quick_add INPUT[type="text"],
-TABLE.quick_add SELECT {
-  width: 400px;
+table.quick_add td * {
+	vertical-align: middle;
 }
 
-TABLE.quick_add TR.uri TD {
-  padding-top: 0;
+table.quick_add td.label {
+	text-align: left;
+	line-height: 1.0;
+	width: 11em;
+}
+
+table.quick_add td.label .inner {
+	font-size: 77%;
+	text-align: center;
+	color: #990000;
+	font-weight: bold;
+}
+	
+
+table.quick_add td.submit {
+	text-align: left; 
+	width: 4em;
 }
 
 .group_announcements {
@@ -2638,110 +2654,4 @@ span.unread_message_count {
   position: absolute;
   top: -10px;
   width: 0;
-}
-
-TABLE.metadata TD:first-child {
-  font-weight: bold;
-}
-
-TABLE.metadata TD {
-  text-align: left;
-}
-
-TABLE.metadata TD.sha1,
-TABLE.metadata TD.content_type {
-  font-family: monospace;
-}
-
-.annotation {
-  border: 1px solid #aaa;
-  box-shadow: 4px 4px 8px #ddd;
-  margin: 8px;
-  padding: 4px;
-}
-
-.annotation .header {
-  padding-left: 5px;
-}
-
-.annotation .header IMG {
-  padding-right: 8px;
-}
-
-.annotation TD {
-  text-align: left;
-  vertical-align: top;
-}
-
-.annotation .type {
-  font-size: 180%;
-}
-
-.annotation .label:after {
-  content: ":";
-}
-
-.annotation INPUT[type="text"],
-.annotation TEXTAREA {
-  width: 500px;
-}
-
-.annotation TEXTAREA {
-  height: 100px;
-}
-
-.annotation .provenance {
-  text-align: right;
-  font-size: 12px;
-}
-
-.required-parameter {
-  text-align: right;
-  color: red;
-}
-
-.resource-link IMG {
-  position: relative;
-  top: -1px;
-  vertical-align: middle;
-}
-
-.new-annotation > TABLE {
-  margin: 32px auto;
-  padding: 8px;
-}
-
-TABLE.checklist {
-  margin: 32px auto;
-}
-
-DIV.checklist {
-  padding: 8px;
-  margin: auto;
-}
-
-DIV.checklist DIV.label {
-  text-align: left;
-  padding-bottom: 2px;
-}
-
-DIV.checklist DIV.bar {
-  width: 204px;
-  height: 12px;
-  background: #aaa;
-  border: 1px solid #666;
-}
-
-DIV.checklist DIV.bar DIV.score {
-  height: 12px;
-  background: #ada;
-}
-
-DIV.checklist-out-of-date-warning {
-  border: 1px solid #f88;
-  background: #fdb;
-  width: 330px;
-  margin: auto;
-  padding: 12px;
-  text-align: center;
 }
