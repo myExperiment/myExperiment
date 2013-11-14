@@ -5,7 +5,7 @@
 
 require 'securerandom'
 
-class ResearchObjectsController < ActionController::Base
+class ResearchObjectsController < ApplicationController
 
   # GET /rodl
   def index
@@ -13,7 +13,9 @@ class ResearchObjectsController < ActionController::Base
     uri_list = ""
 
     ResearchObject.all.each do |ro|
-      uri_list << "#{research_object_url(ro.slug)}/\n"
+      if Authorization.check('view', ro, current_user)
+        uri_list << "#{research_object_url(ro.slug)}/\n"
+      end
     end
 
     send_data(uri_list, :type => 'text/uri-list')
@@ -29,6 +31,11 @@ class ResearchObjectsController < ActionController::Base
 
     unless ro
       render :text => "Research Object not found", :status => 404
+      return
+    end
+
+    unless Authorization.check('view', ro, current_user)
+      render_401("You are not authorized to view this research object.")
       return
     end
 
@@ -68,8 +75,11 @@ class ResearchObjectsController < ActionController::Base
   # POST /rodl
   def create
     
-    current_user = User.find(1) # FIXME - hardcoded
-    
+    unless Authorization.check('create', ResearchObject, current_user)
+      render_401("You are not authorized to create a research object.")
+      return
+    end
+
     slug = request.headers["Slug"]
     
     # Remove trailing slash if given.
@@ -102,6 +112,16 @@ class ResearchObjectsController < ActionController::Base
   def destroy
 
     ro = ResearchObject.find_by_slug_and_version(params[:id], nil)
+
+    unless ro
+      render :text => "Research Object not found", :status => 404
+      return
+    end
+
+    unless Authorization.check('destroy', ro, current_user)
+      render_401("You are not authorized to delete this research object.")
+      return
+    end
     
     if ro
       ro.destroy

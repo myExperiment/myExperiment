@@ -5,7 +5,7 @@
 
 require 'securerandom'
 
-class ResourcesController < ActionController::Base
+class ResourcesController < ApplicationController
 
   include ResearchObjectsHelper
 
@@ -53,6 +53,11 @@ class ResourcesController < ActionController::Base
       return
     end
 
+    unless Authorization.check('view', ro, current_user)
+      render_401("You are unauthorized to view this research object.")
+      return
+    end
+
     resource = ro.resources.find_by_path(params[:id])
 
     unless resource
@@ -61,6 +66,11 @@ class ResourcesController < ActionController::Base
     end
 
     # FIXME: This needs to support 406 
+
+    unless Authorization.check('view', resource, current_user)
+      render_401("You are unauthorized to view this resource.")
+      return
+    end
 
     # FIXME: This needs to support 401/403 
 
@@ -84,8 +94,6 @@ class ResourcesController < ActionController::Base
   end
 
   def post
-
-    current_user = User.find(1) # FIXME - hardcoded
 
     research_object = ResearchObject.find_by_slug_and_version(params[:research_object_id], nil)
 
@@ -133,8 +141,6 @@ class ResourcesController < ActionController::Base
   end
 
   def delete
-
-    current_user = User.find(1) # FIXME - hardcoded
 
     ro = ResearchObject.find_by_slug_and_version(params[:research_object_id], nil)
 

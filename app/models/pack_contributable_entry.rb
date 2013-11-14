@@ -117,7 +117,7 @@ class PackContributableEntry < ActiveRecord::Base
 
       resource = ro.create_aggregated_resource(
           :user_uri     => user_path,
-          :path         => path,  # FIXME - where should these be URL encoded?
+          :path         => CGI::escape(path),
           :data         => data,
           :context      => self,
           :content_type => contributable.content_type.mime_type)

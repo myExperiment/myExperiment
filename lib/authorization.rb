@@ -413,7 +413,7 @@ module Authorization
 
             return object.user == user
 
-         when "delete"
+         when "destroy"
 
             # If the research object is connected to a contribution then
             # disallow deletion as this is only performed when the contribution
