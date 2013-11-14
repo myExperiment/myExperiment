@@ -2648,8 +2648,7 @@ TABLE.metadata TD {
   text-align: left;
 }
 
-TABLE.metadata TD.sha1,
-TABLE.metadata TD.content_type {
+TABLE.metadata TD.sha1 {
   font-family: monospace;
 }
 
