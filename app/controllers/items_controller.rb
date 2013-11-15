@@ -94,6 +94,8 @@ class ItemsController < ApplicationController
     @item.context.destroy if @item.context
 
     # Delete the resource
+    Activity.create_activities(:subject => current_user, :action => 'destroy', :object => @item)
+
     @item.destroy
 
     redirect_to @context
