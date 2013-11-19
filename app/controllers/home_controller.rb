@@ -19,7 +19,12 @@ class HomeController < ApplicationController
       format.atom {
         @title = "Personal feed"
         @id = @resource = home_url
-        @entries = activities_for_feed(:user => current_user, :no_combine => true)
+
+        resources = current_user.personal_resources_and_subscriptions if logged_in?
+
+        @entries = activities_for_feed(:contexts => resources,
+            :user => current_user,
+            :no_combine => true)
 
         unless @entries.empty? || @entries.last.empty?
           @updated = @entries.last.last.timestamp.to_datetime.rfc3339

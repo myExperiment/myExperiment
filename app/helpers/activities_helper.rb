@@ -73,10 +73,12 @@ module ActivitiesHelper
     context_bits = []
     context_vars = []
 
-    if opts[:context]
-      context_bits << "(activities.context_type = ? AND activities.context_id = ?)"
-      context_vars << opts[:context].class.name
-      context_vars << opts[:context].id
+    if opts[:contexts]
+      opts[:contexts].each do |context|
+        context_bits << "(activities.context_type = ? AND activities.context_id = ?)"
+        context_vars << context.class.name
+        context_vars << context.id
+      end
     else
       
     end

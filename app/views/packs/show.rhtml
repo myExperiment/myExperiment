@@ -238,7 +238,7 @@
 
 <!-- END tabs -->
 
-<% activities = activities_for_feed(:context => @pack, :user => current_user) %>
+<% activities = activities_for_feed(:contexts => [@pack], :user => current_user) %>
 
 <h1>Activities</h1>
 <div id="activities">

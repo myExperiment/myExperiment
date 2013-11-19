@@ -665,6 +665,15 @@ class User < ActiveRecord::Base
     "#{Conf.base_uri}/users/#{id}"
   end
 
+  def personal_resources_and_subscriptions
+    
+    resources = networks + networks_owned + workflows + blobs + packs
+
+    resources += subscriptions.map { |subscription| subscription.objekt }
+
+    resources.uniq - [nil]
+  end
+
 protected
 
   # clean up emails and username before validation

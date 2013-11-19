@@ -109,7 +109,7 @@
 
       <br />
 
-      <% activities = activities_for_feed(:context => @network, :user => current_user) %>
+      <% activities = activities_for_feed(:contexts => [@network], :user => current_user) %>
 
       <div id="activities">
         <%= render(:partial => "activities/list", :locals => { :context => @network, :activities => activities, :user => current_user, :enable_feature => true } ) -%>

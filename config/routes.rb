@@ -99,6 +99,9 @@ ActionController::Routing::Routes.draw do |map|
     workflow.resources :previews
     workflow.resources :comments, :collection => { :timeline => :get }
     workflow.resource  :subscription
+    workflow.resources :activities, :member => { :feature => [:put, :delete] } do |activity|
+      activity.resources :comments
+    end
   end
 
   # workflow redirect for linked data model
@@ -158,6 +161,9 @@ ActionController::Routing::Routes.draw do |map|
     #blob.resources :reviews
     blob.resources :comments, :collection => { :timeline => :get }
     blob.resource  :subscription
+    blob.resources :activities, :member => { :feature => [:put, :delete] } do |activity|
+      activity.resources :comments
+    end
   end
 
   # services

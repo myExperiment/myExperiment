@@ -53,7 +53,7 @@ class CommentsController < ApplicationController
     respond_to do |format|
       if params[:activity_feed] || @context.kind_of?(Activity)
         @context = @context.context if @context.kind_of?(Activity)
-        activities = activities_for_feed(:context => @context, :user => current_user)
+        activities = activities_for_feed(:contexts => [@context], :user => current_user)
         format.html { render :partial => "activities/list", :locals => { :context => @context, :activities => activities, :user => current_user } }
       elsif ajaxy
         format.html { render :partial => "comments/comments", :locals => { :commentable => @context } }

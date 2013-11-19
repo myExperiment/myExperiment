@@ -121,7 +121,7 @@ class PacksController < ApplicationController
         @title = @pack.title
         @id = @resource = pack_url(@pack)
         @updated = @pack.updated_at.to_datetime.rfc3339
-        @entries = activities_for_feed(:context => @pack, :user => current_user, :no_combine => true)
+        @entries = activities_for_feed(:contexts => [@pack], :user => current_user, :no_combine => true)
 
         render "activities/feed.atom"
       }

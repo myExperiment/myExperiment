@@ -284,7 +284,7 @@ class NetworksController < ApplicationController
         @title = @network.title
         @id = @resource = network_url(@network)
         @updated = @network.updated_at.to_datetime.rfc3339
-        @entries = activities_for_feed(:context => @network, :user => current_user, :no_combine => true)
+        @entries = activities_for_feed(:contexts => [@network], :user => current_user, :no_combine => true)
 
         render "activities/feed.atom"
       }
@@ -394,7 +394,7 @@ class NetworksController < ApplicationController
           page.replace_html "mini_nav_tag_link", "(#{unique_tag_count})"
           page.replace_html "tags_box_header_tag_count_span", "(#{unique_tag_count})"
           page.replace_html "tags_inner_box", :partial => "tags/tags_box_inner", :locals => { :taggable => @network, :owner_id => @network.user_id } 
-          page.replace_html "activities", :partial => "activities/list", :locals => { :context => @network, :activities => activities_for_feed(:context => @network, :user => current_user), :user => current_user }
+          page.replace_html "activities", :partial => "activities/list", :locals => { :context => @network, :activities => activities_for_feed(:contexts => [@network], :user => current_user), :user => current_user }
         end
       }
     end
