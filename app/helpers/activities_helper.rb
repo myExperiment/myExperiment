@@ -108,7 +108,13 @@ module ActivitiesHelper
       conditions = ["((" + context_bits.join(" OR ") + ") AND (" + type_bits.join(" OR ") + "))", *(context_vars + type_vars)]
     end
 
-    order = 'featured DESC, timestamp DESC, priority ASC'
+    order_bits = []
+
+    order_bits << "featured DESC" unless opts[:enable_feature] == false
+    order_bits << "timestamp DESC"
+    order_bits << "priority ASC"
+
+    order = order_bits.join(", ")
 
     activities = Authorization.scoped(Activity,
         :auth_type       => 'activities.auth_type',
