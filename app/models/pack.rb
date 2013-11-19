@@ -741,8 +741,7 @@ class Pack < ActiveRecord::Base
           :is_root_folder => resource.is_root_folder,
           :created_at => resource.created_at,
           :updated_at => resource.updated_at,
-          :uuid => resource.uuid,
-          :title => resource.title)
+          :uuid => resource.uuid)
 
         resource_map[resource] = new_resource
 

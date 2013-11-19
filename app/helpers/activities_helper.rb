@@ -91,6 +91,7 @@ module ActivitiesHelper
     type_bits << "(activities.objekt_type = 'GroupAnnouncement' AND activities.action = 'create')"
     type_bits << "(activities.objekt_type = 'Membership' AND activities.action = 'create')"
     type_bits << "(activities.objekt_type = 'Resource' AND activities.action = 'create')"
+    type_bits << "(activities.objekt_type = 'Resource' AND activities.action = 'destroy')"
 
     # Create the conditions
 
@@ -204,7 +205,9 @@ module ActivitiesHelper
 
       activity = activity_set.first
 
-      case activity.objekt ? "#{activity.objekt_type} #{activity.action}" : activity.action
+      # return "#{activity.objekt_type} #{activity.action}"
+
+      case "#{activity.objekt_type} #{activity.action}"
       when "Announcement create"
         "#{activity_link(activity, :subject)} announced #{activity_link(activity, :object)}"
       when "Announcement edit"
@@ -266,9 +269,17 @@ module ActivitiesHelper
       when "GroupAnnouncement create"
         activity_link(activity, :object)
       when "Resource create"
-        if ore_path = activity.objekt.ore_path
-          "#{activity_link(activity, :subject)} added #{activity_link(activity, :object)}"
+        if activity.objekt
+          if ore_path = activity.objekt.ore_path
+            "#{activity_link(activity, :subject)} added #{activity_link(activity, :object)}"
+          elsif activity.objekt.is_annotation?
+            "#{activity_link(activity, :subject)} added #{indefinite_article(activity.extra)} #{link_to(activity.extra, polymorphic_path([activity.objekt.research_object.context, :annotation], :id => activity.objekt.uuid))} annotation"
+          end
+        else
+          "#{activity_link(activity, :subject)} added #{h(activity.objekt_label)}"
         end
+      when "Resource destroy"
+        "#{activity_link(activity, :subject)} deleted #{h(activity.objekt_label)}"
       end
 
     rescue

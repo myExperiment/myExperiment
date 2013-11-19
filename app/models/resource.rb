@@ -254,6 +254,10 @@ class Resource < ActiveRecord::Base
         :conditions => { :resource_path => path }).map { |ar| ar.annotation }
   end
 
+  def annotation_targets
+    annotation_resources.map { |ar| research_object.resources.find_by_path(ar.resource_path) }
+  end
+
   def merged_annotation_graphs
 
     result = RDF::Graph.new

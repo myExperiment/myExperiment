@@ -46,7 +46,7 @@ class Activity < ActiveRecord::Base
     object    = opts[:object]
     timestamp = opts[:timestamp]
     auth      = nil
-    extra     = nil
+    extra     = opts[:extra]
     contexts  = [subject]
     priority  = 0
 
@@ -138,9 +138,14 @@ class Activity < ActiveRecord::Base
 
       when "Resource"
 
-        case object.context
-        when PackContributableEntry, PackRemoteEntry
-          contexts << object.context.pack
+        contexts << object.research_object.context
+
+        if object.is_annotation?
+          object.annotation_targets.each do |target|
+            if target.context
+              contexts << target.context
+            end
+          end
         end
 
         auth = object

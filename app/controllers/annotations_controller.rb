@@ -56,11 +56,15 @@ class AnnotationsController < ApplicationController
 
     graph = Pack.first.research_object.create_graph_using_ro_template(parameters, template)
 
-    @context.research_object.create_annotation(
+    annotation = @context.research_object.create_annotation(
         :body_graph   => graph,
         :content_type => 'application/rdf+xml',
         :resources    => targets,
         :creator_uri  => user_path(current_user))
+
+    unless annotation.new_record?
+      Activity.create_activities(:subject => current_user, :action => 'create', :object => annotation, :extra => template["label"])
+    end
 
     if template["redirect"]
       redirect_to resource_path_fixed(@context, @context.find_resource_by_ore_path(params[template["redirect"]]))
