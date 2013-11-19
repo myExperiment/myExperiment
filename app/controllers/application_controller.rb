@@ -397,20 +397,31 @@ class ApplicationController < ActionController::Base
     
     # Then create new attributions:
     
-    # Workflows
-    attributor_workflow_ids = parse_comma_seperated_string(params[:attributions_workflows])
-    attributor_type = 'Workflow'
-    attributor_workflow_ids.each do |id|
-      a = Attribution.new(:attributor_type => attributor_type, :attributor_id => id, :attributable_type => attributable.class.to_s, :attributable_id  => attributable.id)
-      a.save
+    attributor_targets = []
+
+    # Collect workflow attributions
+
+    parse_comma_seperated_string(params[:attributions_workflows]).each do |id|
+      attributor_targets << Workflow.find(id)
     end
-    
-    # Files
-    attributor_file_ids = parse_comma_seperated_string(params[:attributions_files])
-    attributor_type = 'Blob'
-    attributor_file_ids.each do |id|
-      a = Attribution.new(:attributor_type => attributor_type, :attributor_id => id, :attributable_type => attributable.class.to_s, :attributable_id  => attributable.id)
-      a.save
+
+    # Collect file attributions
+
+    parse_comma_seperated_string(params[:attributions_files]).each do |id|
+      attributor_targets << Blob.find(id)
+    end
+
+    # Add attribution records
+
+    attributor_targets.each do |attributor|
+
+      attribution_record = Attribution.new(
+          :attributor => attributor,
+          :attributable => attributable)
+
+      if attribution_record.save
+        Activity.create_activities(:subject => current_user, :action => 'create', :object => attribution_record)
+      end
     end
     
   end
