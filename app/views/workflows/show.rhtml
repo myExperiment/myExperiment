@@ -233,6 +233,8 @@
 	
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @workflow } %>
 	
+  <%= render :partial => "contributions/subscription_box", :locals => { :object => @workflow } -%>
+
 	<%= render :partial => "contributions/license_box", :locals => { :contributable => @workflow } %>
 	
 	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @workflow, :edit_path => edit_workflow_path(@workflow) } %>

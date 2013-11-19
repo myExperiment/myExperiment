@@ -119,9 +119,7 @@
 
     <div class="contribution_right_box">
       <%= render :partial => "owner_box", :locals => { :network => @network } %>
-      <% if false %>
       <%= render :partial => "contributions/subscription_box", :locals => { :object => @network } -%>
-      <% end %>
       <%= render :partial => "statistics_box", :locals => { :network => @network, :items => @shared_items } %>
 
       <div class="contribution_section_box"> <!-- style="width: 130px; padding: 0.4em 0.8em; font-size: 93%;" -->

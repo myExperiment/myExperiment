@@ -5,12 +5,12 @@
       Subscription
       <% if current_user.subscriptions.find(:first, :conditions => { :objekt_type => object.class.name, :objekt_id => object.id } ) %>
         <p>You have subscribed to this resource.</p>
-        <% form_tag polymorphic_path([:subscription, @network]), :method => :delete do %>
+        <% form_tag polymorphic_path([object, :subscription]), :method => :delete do %>
           <%= submit_tag "Unsubscribe" -%>
         <% end %>
       <% else %>
         <p>Subscribe to this resource to get notifications on your home page.</p>
-        <% form_tag polymorphic_path([:subscription, @network]), :method => :put do %>
+        <% form_tag polymorphic_path([object, :subscription]), :method => :put do %>
           <%= submit_tag "Subscribe" -%>
         <% end %>
       <% end %>

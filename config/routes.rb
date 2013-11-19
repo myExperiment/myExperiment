@@ -70,6 +70,7 @@ ActionController::Routing::Routes.draw do |map|
     pack.resources :relationships, :collection => { :edit_relationships => :get }
     pack.resources :annotations
     pack.resources :items, :requirements => { :id => /[^;]+/ }
+    pack.resource  :subscription
     pack.resources :checklists
     pack.resources :activities, :member => { :feature => [:put, :delete] } do |activity|
       activity.resources :comments
@@ -97,6 +98,7 @@ ActionController::Routing::Routes.draw do |map|
     workflow.resources :reviews
     workflow.resources :previews
     workflow.resources :comments, :collection => { :timeline => :get }
+    workflow.resource  :subscription
   end
 
   # workflow redirect for linked data model
@@ -155,6 +157,7 @@ ActionController::Routing::Routes.draw do |map|
     # ie: we cannot have polymorphic nested resources.
     #blob.resources :reviews
     blob.resources :comments, :collection => { :timeline => :get }
+    blob.resource  :subscription
   end
 
   # services
@@ -230,7 +233,6 @@ ActionController::Routing::Routes.draw do |map|
                  :membership_request => :get, 
                  :rate => :post, 
                  :sync_feed => :post,
-                 :subscription => [:put, :delete],
                  :tag => :post } do |network|
     network.resources :group_announcements, :as => :announcements, :name_prefix => nil
     network.resources :comments, :collection => { :timeline => :get }
@@ -243,6 +245,7 @@ ActionController::Routing::Routes.draw do |map|
     network.resources :workflows, :only => :index
     network.resources :blobs, :only => :index, :as => :files
     network.resources :packs, :only => :index
+    network.resource  :subscription
   end
   
   # The priority is based upon order of creation: first created -> highest priority.

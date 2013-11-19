@@ -173,6 +173,8 @@
 
 <div class="contribution_right_box">
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @pack } %>
+
+  <%= render :partial => "contributions/subscription_box", :locals => { :object => @pack } -%>
 	
 	<div class="contribution_section_box">
 		<p style="font-size: 108%;">

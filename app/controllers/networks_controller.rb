@@ -15,7 +15,7 @@ class NetworksController < ApplicationController
   before_filter :find_networks, :only => [:all]
   before_filter :find_network, :only => [:membership_request, :show, :tag, :content,
                                          :edit, :update, :destroy, :invite, :membership_invite,
-                                         :membership_invite_external, :sync_feed, :subscription]
+                                         :membership_invite_external, :sync_feed]
   before_filter :find_network_auth_admin, :only => [:invite, :membership_invite, :membership_invite_external, :sync_feed]
   before_filter :find_network_auth_owner, :only => [:edit, :update, :destroy]
   
@@ -417,25 +417,6 @@ class NetworksController < ApplicationController
     redirect_to network_path(@network)
   end
   
-  # PUT/DELETE /groups/1/subscription
-  def subscription
-
-    object = @network
-
-    existing_subscription = current_user.subscriptions.find(:first,
-        :conditions => { :objekt_type => object.class.name, :objekt_id => object.id } )
-
-    case request.method
-    when :put
-      current_user.subscriptions.create(:objekt => object) unless existing_subscription
-
-    when :delete
-      current_user.subscriptions.delete(existing_subscription) if existing_subscription
-    end
-
-    redirect_to object
-  end
-
 protected
 
   def find_networks
