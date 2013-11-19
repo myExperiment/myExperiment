@@ -3,6 +3,9 @@
 <%= render :partial => "workflows/deprecation_event", :collection => @workflow.deprecations -%>
 
 <ul class="sectionIcons">
+  <% if @authorised_to_download %>
+    <li><%= icon('download', @named_download_url, "Download Workflow (for version #{@viewing_version_number.to_s})", nil, "Download Workflow") -%></li>
+  <% end %>
 	<% if @authorised_to_edit -%>
 		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
 	<% end -%>	
@@ -153,7 +156,7 @@
           <br />
 
           <ul class="sectionIcons">
-            <li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow File/Package (#{@viewing_version.display_data_format})") -%></li>
+            <li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow (for version #{@viewing_version_number.to_s})", nil, "Download Workflow") -%></li>
           </ul>
           <% if session[:callback] &&
                 session[:callback][:types].include?(@workflow.content_type_id) -%>
