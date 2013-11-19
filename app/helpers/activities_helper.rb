@@ -92,6 +92,7 @@ module ActivitiesHelper
     type_bits << "(activities.objekt_type = 'Membership' AND activities.action = 'create')"
     type_bits << "(activities.objekt_type = 'Resource' AND activities.action = 'create')"
     type_bits << "(activities.objekt_type = 'Resource' AND activities.action = 'destroy')"
+    type_bits << "(activities.objekt_type = 'Attribution' AND activities.action = 'create')"
 
     # Create the conditions
 
@@ -110,7 +111,7 @@ module ActivitiesHelper
     activities = Authorization.scoped(Activity,
         :auth_type       => 'activities.auth_type',
         :auth_id         => 'activities.auth_id',
-        :group           => 'activities.id',
+        :group           => 'activities.uuid',
         :authorised_user => opts[:user])
     
     results = []
@@ -280,6 +281,8 @@ module ActivitiesHelper
         end
       when "Resource destroy"
         "#{activity_link(activity, :subject)} deleted #{h(activity.objekt_label)}"
+      when "Attribution create"
+        "#{activity_link(activity, :subject)} attributed #{h(activity.objekt.attributor.label)} from #{h(activity.objekt.attributable.label)}"
       end
 
     rescue
