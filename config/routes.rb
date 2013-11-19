@@ -365,6 +365,10 @@ ActionController::Routing::Routes.draw do |map|
     :conditions   => { :method => :post },
     :requirements => { :path => /.*/ }
 
+  # Home page
+  map.home           '/home',         :conditions => { :method => :get }, :controller => 'home', :action => 'show'
+  map.formatted_home '/home.:format', :conditions => { :method => :get }, :controller => 'home', :action => 'show'
+
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'
 end

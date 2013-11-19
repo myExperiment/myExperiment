@@ -149,6 +149,12 @@ class Activity < ActiveRecord::Base
         end
 
         auth = object
+
+      when "Attribution"
+
+        contexts << object.attributor
+        contexts << object.attributable
+
     end
 
     uuid = SecureRandom.uuid
