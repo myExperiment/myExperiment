@@ -512,11 +512,11 @@ class ApplicationController < ActionController::Base
 
       if external_url_keys.size == 1
         external_url_key = external_url_keys.first
-        external_url = params[external_url_key]
+        external_url = CGI.unescape(params[external_url_key])
 
         if %w(http https).include?(URI.parse(external_url).scheme)
           session[:came_from] = external_url_key[0..-5] # Strip the _url part
-          session[:return_url] = CGI.unescape(external_url)
+          session[:return_url] = external_url
         else
           raise("Invalid return URL given for #{external_url_key}: \n\t#{external_url}")
         end

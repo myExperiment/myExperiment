@@ -1,7 +1,8 @@
-table.alt_table tr.odd_row.biovel td, table.alt_table tr.even_row.biovel td, .resource_list_item.biovel {
+table.alt_table tr.odd_row.biovel td, table.alt_table tr.even_row.biovel td, .resource_list_item.biovel,
+table.alt_table tr.odd_row.biovel_internal td, table.alt_table tr.even_row.biovel_internal td, .resource_list_item.biovel_internal {
   background-color: #EEFFCC;
 }
 
-table.alt_table.biovel, .resource_list_item.biovel {
+table.alt_table.biovel, .resource_list_item.biovel, table.alt_table.biovel_internal, .resource_list_item.biovel_internal {
   border-color: #99cc33;
 }
