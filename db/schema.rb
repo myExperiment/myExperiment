@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130930140455) do
+ActiveRecord::Schema.define(:version => 20131010111017) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -42,6 +42,12 @@ ActiveRecord::Schema.define(:version => 20130930140455) do
     t.datetime "promote_after"
   end
 
+  create_table "annotation_resources", :force => true do |t|
+    t.integer "research_object_id"
+    t.integer "annotation_id"
+    t.string  "resource_path"
+  end
+
   create_table "announcements", :force => true do |t|
     t.string   "title"
     t.integer  "user_id"
@@ -58,6 +64,11 @@ ActiveRecord::Schema.define(:version => 20130930140455) do
     t.string   "attributable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "auto_tables", :force => true do |t|
+    t.string "name"
+    t.text   "schema"
   end
 
   create_table "blob_versions", :force => true do |t|
@@ -155,9 +166,10 @@ ActiveRecord::Schema.define(:version => 20130930140455) do
   end
 
   create_table "content_blobs", :force => true do |t|
-    t.binary "data", :limit => 2147483647
-    t.string "md5",  :limit => 32
-    t.string "sha1", :limit => 40
+    t.binary  "data", :limit => 2147483647
+    t.string  "md5",  :limit => 32
+    t.string  "sha1", :limit => 40
+    t.integer "size"
   end
 
   add_index "content_blobs", ["md5"], :name => "index_content_blobs_on_md5"
@@ -214,6 +226,7 @@ ActiveRecord::Schema.define(:version => 20130930140455) do
     t.text     "details_html"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "object_version"
   end
 
   create_table "delayed_jobs", :force => true do |t|
@@ -531,6 +544,11 @@ ActiveRecord::Schema.define(:version => 20130930140455) do
     t.integer "user_id"
   end
 
+  create_table "plugin_schema_info", :id => false, :force => true do |t|
+    t.string  "plugin_name"
+    t.integer "version"
+  end
+
   create_table "policies", :force => true do |t|
     t.integer  "contributor_id"
     t.string   "contributor_type"
@@ -608,6 +626,46 @@ ActiveRecord::Schema.define(:version => 20130930140455) do
     t.integer "workflow_version"
     t.integer "taverna_enactor_id"
     t.string  "workflow_uri"
+  end
+
+  create_table "research_objects", :force => true do |t|
+    t.string   "context_type"
+    t.integer  "context_id"
+    t.string   "slug"
+    t.integer  "version"
+    t.string   "version_type"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "resources", :force => true do |t|
+    t.integer  "research_object_id"
+    t.string   "context_type"
+    t.integer  "context_id"
+    t.integer  "content_blob_id"
+    t.string   "sha1",               :limit => 40
+    t.integer  "size"
+    t.string   "content_type"
+    t.text     "path"
+    t.string   "entry_name"
+    t.string   "creator_uri"
+    t.string   "uuid",               :limit => 36
+    t.string   "proxy_in_path"
+    t.string   "proxy_for_path"
+    t.string   "ao_body_path"
+    t.string   "resource_map_path"
+    t.string   "aggregated_by_path"
+    t.boolean  "is_resource",                      :default => false
+    t.boolean  "is_aggregated",                    :default => false
+    t.boolean  "is_proxy",                         :default => false
+    t.boolean  "is_annotation",                    :default => false
+    t.boolean  "is_resource_map",                  :default => false
+    t.boolean  "is_folder",                        :default => false
+    t.boolean  "is_folder_entry",                  :default => false
+    t.boolean  "is_root_folder",                   :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "reviews", :force => true do |t|
@@ -875,8 +933,6 @@ ActiveRecord::Schema.define(:version => 20130930140455) do
     t.text     "body_html"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "license"
-    t.integer  "preview_id"
     t.string   "image"
     t.string   "svg"
     t.text     "revision_comments"
@@ -884,6 +940,8 @@ ActiveRecord::Schema.define(:version => 20130930140455) do
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
+    t.string   "license"
+    t.integer  "preview_id"
   end
 
   add_index "workflow_versions", ["workflow_id"], :name => "index_workflow_versions_on_workflow_id"
@@ -897,15 +955,15 @@ ActiveRecord::Schema.define(:version => 20130930140455) do
     t.string   "unique_name"
     t.text     "body"
     t.text     "body_html"
-    t.integer  "current_version"
-    t.integer  "preview_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "current_version"
     t.integer  "content_blob_id"
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
     t.integer  "license_id"
+    t.integer  "preview_id"
   end
 
   create_table "wsdl_deprecations", :force => true do |t|

@@ -2655,3 +2655,15 @@ span.unread_message_count {
   top: -10px;
   width: 0;
 }
+
+TABLE.metadata TD:first-child {
+  font-weight: bold;
+}
+
+TABLE.metadata TD {
+  text-align: left;
+}
+
+TABLE.metadata TD.sha1 {
+  font-family: monospace;
+}

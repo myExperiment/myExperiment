@@ -66,6 +66,7 @@ end
 
 Mime::Type.register "application/whip-archive", :whip
 Mime::Type.register "application/rdf+xml", :rdf
+Mime::Type.register "application/zip", :zip
 
 # Include your application configuration below
 
