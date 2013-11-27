@@ -174,6 +174,8 @@ class ResearchObject < ActiveRecord::Base
 
       stub.update_graph!
 
+      location = stub.uri
+
       links   << { :link => ao_body_uri, :rel => AO.body }
       changed << stub
 
