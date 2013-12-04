@@ -139,7 +139,7 @@ DEPENDENCIES
   openurl (~> 0.2.0)
   passenger (~> 3.0.19)
   rails (= 2.3.18)
-  rdf (= 1.0.8)
+  rdf (~> 1.0.6)
   rdf-n3 (~> 1.0.0)
   rdf-raptor (~> 1.0.1)
   rdf-turtle (~> 1.0.6)
