@@ -413,7 +413,7 @@ module WorkflowProcessors
 
     def extract_rdf_structure(workflow)
       rdf = ''
-      IO.popen("java -jar #{RAILS_ROOT}/vendor/java/scufl2-wfdesc/scufl2-wfdesc-0.3.0-standalone.jar", 'r+') do |converter|
+      IO.popen("java -jar #{RAILS_ROOT}/vendor/java/scufl2-wfdesc/scufl2-wfdesc-0.3.4-standalone.jar", 'r+') do |converter|
         converter.puts(workflow.content_blob.data)
         converter.close_write
         rdf = converter.read
@@ -421,87 +421,7 @@ module WorkflowProcessors
 
       raise "Error generating wfdesc" if rdf.blank?
 
-      # TODO: Remove this hack, put in place because the wfdesc tool does not yet merge in semantic annotations
-      # *** Start of hack ***
-      structure = RDF::Graph.new
-      structure.insert(RDF::Reader.for(:turtle).new(StringIO.new(rdf)))
-
-      wfdesc = RDF::Vocabulary.new('http://purl.org/wf4ever/wfdesc#')
-
-      main_workflow = @t2flow_model.dataflows.first
-
-      query = RDF::Query.new do
-        pattern [:uri, RDF.type, wfdesc.Workflow]
-        pattern [:uri, RDF::RDFS.label, main_workflow.name]
-      end
-
-      # Annotations on the workflow
-      base_uri = query.execute(structure).first.uri
-
-      if main_workflow.annotations.semantic_annotation
-        RDF::Reader.for(:n3).new(StringIO.new(main_workflow.annotations.semantic_annotation.content), :base_uri => base_uri.to_s).each_statement do |s|
-          structure << s
-        end
-      end
-
-      # Annotations on processors
-      @t2flow_model.processors.each do |processor|
-        query = RDF::Query.new do
-          pattern [base_uri, wfdesc.hasSubProcess, :uri]
-          pattern [:uri, RDF.type, wfdesc.Process]
-          pattern [:uri, RDF::RDFS.label, processor.name]
-        end
-
-        processor_uri = query.execute(structure).first.uri
-
-        if processor.semantic_annotation
-          RDF::Reader.for(:n3).new(StringIO.new(processor.semantic_annotation.content), :base_uri => processor_uri.to_s).each_statement do |s|
-            structure << s
-          end
-        end
-      end
-
-      # Annotations on inputs
-      @t2flow_model.sources.each do |input|
-        query = RDF::Query.new do
-          pattern [base_uri, wfdesc.hasInput, :uri]
-          pattern [:uri, RDF.type, wfdesc.Input]
-          pattern [:uri, RDF::RDFS.label, input.name]
-        end
-
-        input_uri = query.execute(structure).first.uri
-
-        if input.semantic_annotation
-          RDF::Reader.for(:n3).new(StringIO.new(input.semantic_annotation.content), :base_uri => input_uri.to_s).each_statement do |s|
-            structure << s
-          end
-        end
-      end
-
-      # Annotations on outputs
-      @t2flow_model.sinks.each do |output|
-        query = RDF::Query.new do
-          pattern [base_uri, wfdesc.hasOutput, :uri]
-          pattern [:uri, RDF.type, wfdesc.Output]
-          pattern [:uri, RDF::RDFS.label, output.name]
-        end
-
-        output_uri = query.execute(structure).first.uri
-
-        if output.semantic_annotation
-          RDF::Reader.for(:n3).new(StringIO.new(output.semantic_annotation.content), :base_uri => output_uri.to_s).each_statement do |s|
-            structure << s
-          end
-        end
-      end
-
-      RDF::Writer.for(:turtle).buffer do |writer|
-        structure.each_statement do |statement|
-          writer << statement
-        end
-      end
-
-      # *** End of hack ***
+      rdf
     end
 
     # End Instance Methods
