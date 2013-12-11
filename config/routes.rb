@@ -361,11 +361,11 @@ ActionController::Routing::Routes.draw do |map|
     :conditions   => { :method => :get },
     :requirements => { :id => /.*/ }
 
-  map.connect "/rodl/ROs/:research_object_id/:id",
+  map.connect "/rodl/ROs/:research_object_id/:path",
     :controller   => "resources",
-    :action       => "update",
+    :action       => "put",
     :conditions   => { :method => :put },
-    :requirements => { :id => /.*/ }
+    :requirements => { :path => /.*/ }
 
   map.connect "/rodl/ROs/:research_object_id/:id",
     :controller   => "resources",

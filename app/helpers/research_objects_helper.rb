@@ -211,7 +211,9 @@ module ResearchObjectsHelper
 
   def calculate_path(path, content_type, links = {})
 
-    return path if path
+    unless content_type == "application/vnd.wf4ever.proxy"
+      return path if path
+    end
 
     case content_type
     when "application/vnd.wf4ever.proxy"

@@ -101,6 +101,8 @@ class ResearchObjectsController < ApplicationController
 
     ro = ResearchObject.create(:slug => slug, :user => current_user)
 
+# TODO: JPNP this is where you Pack.create
+
     response.headers["Location"] = ro_uri
 
     ro.manifest_resource.generate_graph!

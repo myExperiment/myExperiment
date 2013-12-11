@@ -140,6 +140,53 @@ class ResourcesController < ApplicationController
     end
   end
 
+  def put
+
+    research_object = ResearchObject.find_by_slug_and_version(params[:research_object_id], nil)
+
+    unless research_object
+      render :text => "Research Object not found", :status => :not_found
+      return
+    end
+
+    slug = request.headers["Slug"].gsub(" ", "%20") if request.headers["Slug"]
+
+    status, reason, location, links, filename, changes = research_object.new_or_update_resource(
+        :slug         => params[:path],
+        :path         => nil,
+        :content_type => request.content_type.to_s,
+        :user_uri     => user_url(current_user),
+        :data         => request.body.read,
+        :links        => parse_links(request.headers))
+
+    research_object.update_manifest! if status == :created
+
+    response.headers["Location"] = location      if location.kind_of?(String)
+    response.headers["Location"] = location.to_s if location.kind_of?(RDF::URI)
+
+    if links.length > 0
+      response.headers['Link'] = links.map do |link|
+        "<#{link[:link].kind_of?(RDF::URI) ? link[:link].to_s : link[:link]}>; " +
+        "rel=\"#{link[:rel].kind_of?(RDF::URI) ? link[:rel].to_s : link[:rel]}\""
+      end
+    end
+
+    if status == :created
+
+      graph = RDF::Graph.new
+
+      changes.each do |change|
+        graph << change.description
+      end
+
+      body = pretty_rdf_xml(render_rdf(graph))
+
+      send_data body, :type => 'application/rdf+xml', :filename => filename, :status => :created
+    else
+      render :status => status, :text => reason
+    end
+  end
+
   def delete
 
     ro = ResearchObject.find_by_slug_and_version(params[:research_object_id], nil)

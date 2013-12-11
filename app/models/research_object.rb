@@ -123,8 +123,12 @@ class ResearchObject < ActiveRecord::Base
       node           = graph.query([nil,  RDF.type,     ORE.proxy]).first_subject
       proxy_for_uri  = graph.query([node, ORE.proxyFor, nil      ]).first_object
 
+      if proxy_for_uri.nil?
+        proxy_for_uri = RDF::URI(uri) + slug
+      end
+
       proxy = create_proxy(
-        :path           => calculate_path(slug, content_type, request_links),
+        :path           => calculate_path(nil, content_type, request_links),
         :proxy_for_path => relative_uri(proxy_for_uri, uri),
         :proxy_in_path  => ".",
         :user_uri       => user_uri)
@@ -173,6 +177,8 @@ class ResearchObject < ActiveRecord::Base
       end
 
       stub.update_graph!
+
+      location = stub.uri
 
       location = stub.uri
 
