@@ -236,7 +236,7 @@ module ActivitiesHelper
       when "Citation edit"
         "#{activity_link(activity, :subject)} edited the citation #{activity_link(activity, :object)} on #{activity_link(activity, :auth)}"
       when "Comment create"
-        "#{activity_link(activity, :subject)} commented:"
+        "#{activity_link(activity, :subject)} commented on #{activity_link(activity, :context)}:"
       when "Friendship create"
         user1 = activity.subject = activity.context ? activity.objekt.user : activity.objekt.friend
         user2 = activity.subject = activity.context ? activity.objekt.friend : activity.objekt.user
@@ -283,6 +283,8 @@ module ActivitiesHelper
             "#{activity_link(activity, :subject)} added #{activity_link(activity, :object)}"
           elsif activity.objekt.is_annotation?
             "#{activity_link(activity, :subject)} added #{indefinite_article(activity.extra)} #{link_to(activity.extra, polymorphic_path([activity.objekt.research_object.context, :annotation], :id => activity.objekt.uuid))} annotation"
+          else
+            "#{activity_link(activity, :subject)} added #{h(activity.objekt_label)}"
           end
         else
           "#{activity_link(activity, :subject)} added #{h(activity.objekt_label)}"
