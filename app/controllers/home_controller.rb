@@ -17,6 +17,13 @@ class HomeController < ApplicationController
       }
 
       format.atom {
+
+        unless logged_in?
+          render_401("")
+          response.headers['WWW-Authenticate'] = "Basic realm=\"#{Conf.sitename}\""
+          return
+        end
+
         @title = "Personal feed"
         @id = @resource = home_url
 

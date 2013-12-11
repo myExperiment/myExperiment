@@ -69,7 +69,12 @@ ActionController::Routing::Routes.draw do |map|
     pack.resources :comments, :collection => { :timeline => :get }
     pack.resources :relationships, :collection => { :edit_relationships => :get }
     pack.resources :annotations
-    pack.resources :items, :requirements => { :id => /[^;]+/ }
+    pack.resources :items, :requirements => { :id => /[^;]+/ } do |item|
+      item.resources :activities, :member => { :feature => [:put, :delete] } do |activity|
+        activity.resources :comments
+      end
+    end
+
     pack.resource  :subscription
     pack.resources :checklists
     pack.resources :activities, :member => { :feature => [:put, :delete] } do |activity|

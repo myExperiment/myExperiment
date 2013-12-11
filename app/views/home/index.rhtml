@@ -1,4 +1,8 @@
-<h1>Activity</h1>
+<h1>Activity
+<% if logged_in? && current_user.username %>
+  <%= feed_icon_tag "Atom feed for your notifications", formatted_home_url(:format => :atom) %>
+<% end %>
+</h1>
 
 <% activities = activities_for_feed(:contexts => logged_in? ? current_user.personal_resources_and_subscriptions : [], :user => current_user, :enable_feature => false) %>
 
