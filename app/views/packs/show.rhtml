@@ -179,7 +179,7 @@
 	<div class="contribution_section_box">
 		<p style="font-size: 108%;">
 		 	<b><%= pluralize items_count, "item" %> in this pack</b>
-				<%= feed_icon_tag "RSS feed for items in this pack", items_pack_path(@pack, :format => :rss) %>
+				<%= feed_icon_tag "RSS feed for items in this pack", pack_path(@pack, :format => :atom) %>
 		</p>
 	</div>
 
