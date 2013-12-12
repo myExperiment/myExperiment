@@ -1,6 +1,6 @@
 <% if logged_in? -%>
   <%= render :partial => 'gadgets/user_monitor' %>
 <% else -%>
-  <%= icon "login", new_session_url, nil, nil, "Log in" -%> |
+  <%= icon "login", new_session_url(:return_to => request.request_uri), nil, nil, "Log in" -%> |
   <%= icon "user", new_user_url, nil, nil, "Register" -%>
 <% end %>

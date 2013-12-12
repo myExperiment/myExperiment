@@ -83,8 +83,7 @@ module AuthenticatedSystem
     def access_denied
       respond_to do |accepts|
         accepts.html do
-          store_location
-          redirect_to :controller => 'session', :action => 'new'
+          redirect_to :controller => 'session', :action => 'new', :return_to => request.request_uri
         end
         accepts.xml do
           headers["Status"]           = "Unauthorized"

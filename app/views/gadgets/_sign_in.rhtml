@@ -8,6 +8,7 @@
   
   <div class="contents">
     <% form_tag session_path do %>
+      <%= hidden_field_tag(:return_to, params[:return_to]) %>
       <div class="box1">
 		  	<p class="label">
 	        Username or Email:

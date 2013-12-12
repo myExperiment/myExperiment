@@ -19,9 +19,6 @@ class SessionsController < ApplicationController
   
   # POST /session
   def create
-    # record return_to address if required
-    session[:return_to] = request.env['HTTP_REFERER'] unless session[:return_to] and !session[:return_to].empty?
-    
     if using_open_id?
       open_id_authentication
     else
@@ -35,7 +32,7 @@ class SessionsController < ApplicationController
     cookies.delete :auth_token
     reset_session # clears session[:return_to]
     #flash[:notice] = "You have been logged out. Thank you for using #{Conf.sitename}!"
-    redirect_to ''
+    redirect_to home_url
   end
   
   # handle the openid server response
@@ -178,8 +175,7 @@ class SessionsController < ApplicationController
       end
       respond_to do |format|
         flash[:notice] = "Logged in successfully. Welcome to #{Conf.sitename}!"
-        home_url = url_for(:controller => 'home')
-        format.html { redirect_to(home_url) }
+        format.html { redirect_to(params[:return_to].blank? ? home_url : params[:return_to]) }
       end
     end
 
