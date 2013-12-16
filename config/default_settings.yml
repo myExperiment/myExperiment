@@ -1997,6 +1997,31 @@ ro_templates:
 
     redirect: :resource
 
+  workflow_run_duration:
+
+    label: Workflow Run Duration
+
+    parameters:
+
+    - label:     Workflow Run File
+      type:      resource
+      symbol:    :workflow_run_file
+
+    - label:     Workflow Run
+      type:      select
+      symbol:    :workflow_run
+      node_type: resource
+      special:   wfprov_workflow_run
+
+    - label:     Duration
+      type:      string
+      symbol:    :duration
+
+    required_statements:
+    - template: [:workflow_run, "<http://purl.org/wf4ever/wfdesc#durationInSeconds>", :duration]
+
+    targets: [:workflow_run_file]
+
 wf_ro_service_uri: "http://www.example.com/wf-ro/jobs"
 wf_ro_service_bearer_token: "bearer-token"
 

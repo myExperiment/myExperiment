@@ -135,12 +135,16 @@
         <% @workflow_runs.each do |workflow_run| %>
           <% start_time = @statements.query([workflow_run, RDF::URI("http://www.w3.org/ns/prov#startedAtTime"), nil]).first_object %>
           <% end_time   = @statements.query([workflow_run, RDF::URI("http://www.w3.org/ns/prov#endedAtTime"), nil]).first_object %>
+          <% duration = @statements.query([workflow_run, RDF::URI("http://purl.org/wf4ever/wfdesc#durationInSeconds"), nil]).first_object %>
 
           <h3><%= item_link(@item, workflow_run, @statements) -%></h3>
 
           <ul>
             <% if start_time && end_time %>
               <li>Time elapsed: <%= sprintf("%.2f", (DateTime.parse(end_time.to_s).to_time - DateTime.parse(start_time.to_s).to_time).to_f * 100000) -%> seconds.</li>
+            <% end %>
+            <% if duration %>
+              <li>Duration: <%= sprintf("%.2f", duration.value.to_f) -%></li>
             <% end %>
           </ul>
 
@@ -216,6 +220,7 @@
         <li><%= link_to("Add new hardware requirement", polymorphic_path([:new, @context, :annotation], { :template => 'requires_hardware', :resource => @item.ore_path })) -%></li>
         <li><%= link_to("Add new software requirement", polymorphic_path([:new, @context, :annotation], { :template => 'requires_software', :resource => @item.ore_path })) -%></li>
         <li><%= link_to("Add new workflow run type", polymorphic_path([:new, @context, :annotation], { :template => 'workflow_run_type' })) -%></li>
+        <li><%= link_to("Add new workflow run duration", polymorphic_path([:new, @context, :annotation], { :template => 'workflow_run_duration' })) -%></li>
       </ul>
     <% end %>
   </div>
