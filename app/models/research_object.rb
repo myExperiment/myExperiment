@@ -659,7 +659,7 @@ class ResearchObject < ActiveRecord::Base
   def all_annotations_with_templates
     return @all_annotations_with_templates if @all_annotations_with_templates
 
-    all_annotations = annotation_resources.map { |ar| ar.annotation }
+    all_annotations = resources.find(:all, :conditions => { :is_annotation => true })
 
     @all_annotations_with_templates = annotations_with_templates_aux(all_annotations)
   end
