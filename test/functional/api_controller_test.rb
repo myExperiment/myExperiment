@@ -1672,6 +1672,25 @@ class ApiControllerTest < ActionController::TestCase
     assert_response(401)
   end
 
+  test "can get a component" do
+    component = workflows(:component_workflow)
+    component_uri = polymorphic_url(component)
+    resp = rest_request(:get, 'component', nil, 'id' => component.id)
+    assert_response(:success)
+    assert_equal component_uri, resp.find_first('//workflow')['resource']
+  end
+
+  test "can see component families in component description" do
+    component = workflows(:component_workflow)
+    component_uri = polymorphic_url(component)
+    family_uri = polymorphic_url(packs(:component_family))
+    resp = rest_request(:get, 'component', nil, 'id' => component.id, 'elements' => 'component-families')
+    assert_response(:success)
+    assert_equal component_uri, resp.find_first('//workflow')['resource']
+    assert_equal 1, resp.find('//component-families/component-family').size
+    assert_equal family_uri, resp.find_first('//component-families/component-family/text()').to_s
+  end
+
   private
 
   def rest_request(method, uri, data = nil, query = {})
