@@ -148,9 +148,13 @@ module ResearchObjectsHelper
 
     uri     = URI.parse(uri.to_s)
     context = URI.parse(context.to_s)
+
+    if uri.relative?
+        return uri.to_s
+    elsif context.relative?
+        return uri.to_s
+    end
 #
-#    if (uri == context)
-#      candidate = "."
 #    elsif uri.starts_with?(context)
 #      candidate = uri[context.length..-1]
 #    end
@@ -159,7 +163,7 @@ module ResearchObjectsHelper
 #    return uri if URI(context).merge(candidate).to_s != uri
 #
 #    candidate
-     context.route_to uri
+     return (uri.route_from context).to_s
   end
 
   def merge_graphs_aux(node, bnodes)
