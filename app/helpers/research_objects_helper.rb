@@ -167,9 +167,6 @@ module ResearchObjectsHelper
     text
   end
 
-  # Needed by relative_uri:
-  ro_uri = nil
-
   def relative_uri(uri, context)
 
     uri     = URI.parse(uri.to_s)
