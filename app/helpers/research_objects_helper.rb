@@ -5,6 +5,7 @@
 
 require 'securerandom'
 require 'xml/libxml'
+require 'uri'
 
 module ResearchObjectsHelper
 
@@ -145,19 +146,20 @@ module ResearchObjectsHelper
 
   def relative_uri(uri, context)
 
-    uri     = uri.to_s
-    context = context.to_s
-
-    if (uri == context)
-      candidate = "."
-    elsif uri.starts_with?(context)
-      candidate = uri[context.length..-1]
-    end
-
-    return uri if candidate.nil?
-    return uri if URI(context).merge(candidate).to_s != uri
-
-    candidate
+    uri     = URI.parse(uri.to_s)
+    context = URI.parse(context.to_s)
+#
+#    if (uri == context)
+#      candidate = "."
+#    elsif uri.starts_with?(context)
+#      candidate = uri[context.length..-1]
+#    end
+#
+#    return uri if candidate.nil?
+#    return uri if URI(context).merge(candidate).to_s != uri
+#
+#    candidate
+     context.route_to uri
   end
 
   def merge_graphs_aux(node, bnodes)
