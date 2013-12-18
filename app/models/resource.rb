@@ -229,7 +229,7 @@ class Resource < ActiveRecord::Base
         end
       end
 
-      manifest_body = pretty_rdf_xml(render_rdf(research_object.description))
+      manifest_body = pretty_rdf_xml(render_rdf(research_object.description), {:base_uri => resource_uri})
 
       research_object.new_or_update_resource(
           :slug         => ResearchObject::MANIFEST_PATH,
@@ -241,7 +241,7 @@ class Resource < ActiveRecord::Base
 
       unless is_resource
 
-        new_description = create_rdf_xml { |graph| graph << description }
+        new_description = create_rdf_xml({ |graph| graph << description }, {:base_uri => resource_uri})
 
         content_blob.destroy if content_blob
         update_attribute(:content_blob, ContentBlob.new(:data => new_description))
