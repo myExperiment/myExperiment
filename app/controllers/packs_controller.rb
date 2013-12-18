@@ -78,6 +78,12 @@ class PacksController < ApplicationController
       }
     end
   end
+
+  def ro_uri
+      if @pack && @pack.research_object
+          @pack.research_object.uri
+      end
+  end
   
   # GET /packs/1
   def show

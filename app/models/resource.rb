@@ -24,6 +24,10 @@ class Resource < ActiveRecord::Base
 
   belongs_to :context, :polymorphic => true
 
+  def ro_uri
+      research_object.uri
+  end
+
   def proxy_for
     research_object.resources.find(:first,
         :conditions => { :path => proxy_for_path } )
@@ -178,11 +182,16 @@ class Resource < ActiveRecord::Base
   end
 
   def resource_uri
-    RDF::URI(research_object.uri) + path
+    # FIXME: How does this differ from the uri method?
+    ro_uri + path
   end
 
   def uri
-    RDF::URI(research_object.uri) + path
+    ro_uri + path
+  end
+
+  def ro_uri
+    RDF::URI(research_object.uri)
   end
 
   def name

@@ -167,6 +167,9 @@ module ResearchObjectsHelper
     text
   end
 
+  # Needed by relative_uri:
+  ro_uri = nil
+
   def relative_uri(uri, context)
 
     uri     = URI.parse(uri.to_s)
@@ -177,10 +180,22 @@ module ResearchObjectsHelper
         ## If they are both relative, e.g. "/fred/soup" and "/fred",
         # then make them both temporarily absolute. 
         # If the uri is not relative here, then we're still OK, as the
-        # fairly unique context won't be leaked out.
+        # fairly unique absolute won't be leaked out.
         context = absolute.merge context
         uri = absolute.merge uri
     elsif uri.relative?
+        return uri.to_s
+    end
+
+
+    if uri.scheme != context.scheme || uri.host != context.host || uri.registry != context.registry
+        ## Avoid the //purl.org/ protocol-relative URIs
+        return uri.to_s
+    end
+
+    if ro_uri && ! uri.to_s.starts_with?(ro_uri.to_s)
+        # Avoid ../../../../users/5 - only URIs below the RO will
+        # be relativized
         return uri.to_s
     end
 #
@@ -243,6 +258,7 @@ module ResearchObjectsHelper
 
     links
   end
+
 
   def calculate_path(path, content_type, links = {})
 

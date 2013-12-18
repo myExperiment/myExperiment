@@ -11,7 +11,7 @@ class ResourcesController < ApplicationController
 
 # before_filter :dump_request_to_log
 # after_filter :dump_response_to_log
-
+ 
   def dump_to_log(thing, type)
     # Dump headers
 
