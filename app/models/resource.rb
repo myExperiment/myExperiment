@@ -241,7 +241,7 @@ class Resource < ActiveRecord::Base
 
       unless is_resource
 
-        new_description = create_rdf_xml({ |graph| graph << description }, {:base_uri => resource_uri})
+        new_description = create_rdf_xml { |graph| graph << description }, {:base_uri => resource_uri}
 
         content_blob.destroy if content_blob
         update_attribute(:content_blob, ContentBlob.new(:data => new_description))
