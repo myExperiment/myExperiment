@@ -7,7 +7,30 @@ require 'securerandom'
 require 'xml/libxml'
 require 'uri'
 
+
 module ResearchObjectsHelper
+
+  # Add support for app:// scheme
+  # http://www.w3.org/TR/app-uri/
+  class APP < URI::Generic
+      USE_REGISTRY=true
+      ## FIXME: Why do I also need to redeclare this method?
+      def self.use_registry
+        true
+      end
+          
+      COMPONENT = [
+          :scheme,
+          :registry,
+          :path, :opaque,
+          :query,
+          :fragment
+      ].freeze
+      def self.component
+        self::COMPONENT
+      end
+  end
+  URI.scheme_list['APP'] = APP
 
   NAMESPACES = {
       "http://www.w3.org/1999/02/22-rdf-syntax-ns#" => "rdf",
@@ -148,10 +171,16 @@ module ResearchObjectsHelper
 
     uri     = URI.parse(uri.to_s)
     context = URI.parse(context.to_s)
+    absolute = URI.parse("app://99f40c6f-15ad-4880-955a-f87e4dfb544d/")
 
-    if uri.relative?
-        return uri.to_s
-    elsif context.relative?
+    if context.relative?
+        ## If they are both relative, e.g. "/fred/soup" and "/fred",
+        # then make them both temporarily absolute. 
+        # If the uri is not relative here, then we're still OK, as the
+        # fairly unique context won't be leaked out.
+        context = absolute.merge context
+        uri = absolute.merge uri
+    elsif uri.relative?
         return uri.to_s
     end
 #
@@ -163,7 +192,7 @@ module ResearchObjectsHelper
 #    return uri if URI(context).merge(candidate).to_s != uri
 #
 #    candidate
-     return (uri.route_from context).to_s
+     return uri.route_from(context).to_s
   end
 
   def merge_graphs_aux(node, bnodes)
