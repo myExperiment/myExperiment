@@ -1,4 +1,5 @@
 /index
+*.swp
 /.project
 /tmp
 /log
