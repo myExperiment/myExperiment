@@ -113,6 +113,12 @@ private
     end
   end
 
+  def ro_uri
+      if @context.research_object
+          return @context.research_object.uri
+      end
+  end
+
   def find_item
 
     if params[:action] == 'index'

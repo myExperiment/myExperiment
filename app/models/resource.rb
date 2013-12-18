@@ -24,6 +24,10 @@ class Resource < ActiveRecord::Base
 
   belongs_to :context, :polymorphic => true
 
+  def ro_uri
+      research_object.uri
+  end
+
   def proxy_for
     research_object.resources.find(:first,
         :conditions => { :path => proxy_for_path } )
@@ -178,11 +182,16 @@ class Resource < ActiveRecord::Base
   end
 
   def resource_uri
-    RDF::URI(research_object.uri) + path
+    # FIXME: How does this differ from the uri method?
+    ro_uri + path
   end
 
   def uri
-    RDF::URI(research_object.uri) + path
+    ro_uri + path
+  end
+
+  def ro_uri
+    RDF::URI(research_object.uri)
   end
 
   def name
@@ -229,7 +238,7 @@ class Resource < ActiveRecord::Base
         end
       end
 
-      manifest_body = pretty_rdf_xml(render_rdf(research_object.description))
+      manifest_body = pretty_rdf_xml(render_rdf(research_object.description, {:base_uri => resource_uri}))
 
       research_object.new_or_update_resource(
           :slug         => ResearchObject::MANIFEST_PATH,
@@ -241,7 +250,7 @@ class Resource < ActiveRecord::Base
 
       unless is_resource
 
-        new_description = create_rdf_xml { |graph| graph << description }
+        new_description = create_rdf_xml({:base_uri => resource_uri}) { |graph| graph << description }
 
         content_blob.destroy if content_blob
         update_attribute(:content_blob, ContentBlob.new(:data => new_description))

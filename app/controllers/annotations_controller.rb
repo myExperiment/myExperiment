@@ -15,6 +15,12 @@ class AnnotationsController < ApplicationController
     @annotations = @context.research_object.all_annotations_with_templates
   end 
 
+  def ro_uri
+      if @context.research_object
+          @context.research_object.uri
+      end
+  end
+
   def show
     @annotation = @context.research_object.resources.find(:first, :conditions => { :uuid => params[:id] })
 

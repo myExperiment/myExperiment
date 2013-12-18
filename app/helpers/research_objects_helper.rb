@@ -5,8 +5,32 @@
 
 require 'securerandom'
 require 'xml/libxml'
+require 'uri'
+
 
 module ResearchObjectsHelper
+
+  # Add support for app:// scheme
+  # http://www.w3.org/TR/app-uri/
+  class APP < URI::Generic
+      USE_REGISTRY=true
+      ## FIXME: Why do I also need to redeclare this method?
+      def self.use_registry
+        true
+      end
+          
+      COMPONENT = [
+          :scheme,
+          :registry,
+          :path, :opaque,
+          :query,
+          :fragment
+      ].freeze
+      def self.component
+        self::COMPONENT
+      end
+  end
+  URI.scheme_list['APP'] = APP
 
   NAMESPACES = {
       "http://www.w3.org/1999/02/22-rdf-syntax-ns#" => "rdf",
@@ -143,21 +167,47 @@ module ResearchObjectsHelper
     text
   end
 
+  # Needed by relative_uri:
+  ro_uri = nil
+
   def relative_uri(uri, context)
 
-    uri     = uri.to_s
-    context = context.to_s
+    uri     = URI.parse(uri.to_s)
+    context = URI.parse(context.to_s)
+    absolute = URI.parse("app://99f40c6f-15ad-4880-955a-f87e4dfb544d/")
 
-    if (uri == context)
-      candidate = "."
-    elsif uri.starts_with?(context)
-      candidate = uri[context.length..-1]
+    if context.relative?
+        ## If they are both relative, e.g. "/fred/soup" and "/fred",
+        # then make them both temporarily absolute. 
+        # If the uri is not relative here, then we're still OK, as the
+        # fairly unique absolute won't be leaked out.
+        context = absolute.merge context
+        uri = absolute.merge uri
+    elsif uri.relative?
+        return uri.to_s
     end
 
-    return uri if candidate.nil?
-    return uri if URI(context).merge(candidate).to_s != uri
 
-    candidate
+    if uri.scheme != context.scheme || uri.host != context.host || uri.registry != context.registry
+        ## Avoid the //purl.org/ protocol-relative URIs
+        return uri.to_s
+    end
+
+    if ro_uri && ! uri.to_s.starts_with?(ro_uri.to_s)
+        # Avoid ../../../../users/5 - only URIs below the RO will
+        # be relativized
+        return uri.to_s
+    end
+#
+#    elsif uri.starts_with?(context)
+#      candidate = uri[context.length..-1]
+#    end
+#
+#    return uri if candidate.nil?
+#    return uri if URI(context).merge(candidate).to_s != uri
+#
+#    candidate
+     return uri.route_from(context).to_s
   end
 
   def merge_graphs_aux(node, bnodes)
@@ -208,6 +258,7 @@ module ResearchObjectsHelper
 
     links
   end
+
 
   def calculate_path(path, content_type, links = {})
 
@@ -313,10 +364,10 @@ module ResearchObjectsHelper
     end
   end
 
-  def create_rdf_xml(&blk)
+  def create_rdf_xml(opts={}, &blk)
     graph = RDF::Graph.new
     yield(graph)
-    pretty_rdf_xml(render_rdf(graph))
+    pretty_rdf_xml(render_rdf(graph, opts))
   end
 
   def resource_path_fixed(context, resource)

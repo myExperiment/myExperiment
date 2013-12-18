@@ -21,4 +21,10 @@ class ActiveRecord::Base
     research_object.find_using_path(relative_uri(path, research_object.uri))
   end
 
+  def ro_uri
+      if research_object
+          research_object.uri
+      end
+  end
+
 end

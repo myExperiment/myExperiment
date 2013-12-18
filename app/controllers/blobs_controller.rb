@@ -495,4 +495,10 @@ class BlobsController < ApplicationController
     end
   end
 
+  def ro_uri
+      if @blob.research_object
+          @blob.research_object.uri
+      end
+  end
+
 end

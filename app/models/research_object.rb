@@ -35,6 +35,10 @@ class ResearchObject < ActiveRecord::Base
     Conf.base_uri + "/rodl/ROs/#{slug}/"
   end
 
+  def ro_uri
+      uri
+  end
+
   def creator_uri
     Conf.base_uri + "/users/#{user_id}"
   end
@@ -350,8 +354,12 @@ class ResearchObject < ActiveRecord::Base
     resources = opts[:resources]
     resources = [resources] unless resources.kind_of?(Array)
 
+    resource_path = calculate_path(opts[:slug], opts[:content_type])
+    resource_uri = ro_uri + resource_path
+
+
     if opts[:body_graph].kind_of?(RDF::Graph)
-      data = create_rdf_xml { |graph| graph << opts[:body_graph] }
+      data = create_rdf_xml(:base_uri => resource_uri) { |graph| graph << opts[:body_graph] }
     else
       data = opts[:body_graph]
     end
@@ -359,7 +367,7 @@ class ResearchObject < ActiveRecord::Base
     # Create an annotation body using the provided graph
 
     ao_body = create_aggregated_resource(
-      :path         => calculate_path(opts[:slug], opts[:content_type]),
+      :path         => resource_path,
       :data         => data,
       :content_type => opts[:content_type],
       :user_uri     => opts[:creator_uri])
