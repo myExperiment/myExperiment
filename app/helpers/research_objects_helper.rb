@@ -346,10 +346,10 @@ module ResearchObjectsHelper
     end
   end
 
-  def create_rdf_xml(&blk)
+  def create_rdf_xml(opts={}, &blk)
     graph = RDF::Graph.new
     yield(graph)
-    pretty_rdf_xml(render_rdf(graph))
+    pretty_rdf_xml(render_rdf(graph, opts))
   end
 
   def resource_path_fixed(context, resource)
