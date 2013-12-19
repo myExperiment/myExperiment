@@ -24,10 +24,6 @@ class Resource < ActiveRecord::Base
 
   belongs_to :context, :polymorphic => true
 
-  def ro_uri
-      research_object.uri
-  end
-
   def proxy_for
     research_object.resources.find(:first,
         :conditions => { :path => proxy_for_path } )

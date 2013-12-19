@@ -207,6 +207,12 @@ module ResearchObjectsHelper
      return uri.route_from(context).to_s
   end
 
+  def ro_uri
+      if research_object
+          research_object.uri
+      end
+  end
+
   def merge_graphs_aux(node, bnodes)
     if node.class == RDF::Node
       if bnodes[node]
