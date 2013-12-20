@@ -458,11 +458,32 @@ module ResearchObjectsHelper
     end
   end
 
+  def wf_ro_folder(research_object, resource_type)
+      path = Conf.wf_ro_extract_folders[resource_type.to_s]
+      if ! path
+          return nil
+      end
+      if path == :ro || path == ":ro"
+          return :ro
+      end
+      if ! path.ends_with? "/"
+          path = path + "/"
+      end
+      return research_object.uri + path
+  end
+
   def transform_wf(research_object, resource_uri)
     format = "application/vnd.taverna.t2flow+xml"
     token = Conf.wf_ro_service_bearer_token
-    uri = Wf4Ever::TransformationClient.create_job(Conf.wf_ro_service_uri, resource_uri.to_s, format, research_object.uri, token)
-puts "      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object.uri, token] = #{      [Conf.wf_ro_service_uri, resource_uri, format, research_object.uri, token].inspect}"
+    extract = {
+        :main => wf_ro_folder(research_object, :main),
+        :nested => wf_ro_folder(research_object, :nested),
+        :scripts => wf_ro_folder(research_object, :scripts),
+        :services => wf_ro_folder(research_object, :services)
+    }
+
+    uri = Wf4Ever::TransformationClient.create_job(Conf.wf_ro_service_uri, resource_uri.to_s, format, research_object.uri, token, extract)
+puts "      [Conf.wf_ro_service_uri, resource_uri, format, @pack.research_object.uri, token, extract] = #{      [Conf.wf_ro_service_uri, resource_uri, format, research_object.uri, token, extract].inspect}"
     puts "################## Transforming at " + uri
 
     uri

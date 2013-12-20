@@ -708,6 +708,14 @@ research_object_default_folders:
 - root/workflows/main
 - root/workflows/nested
 
+# Folders to extract to when using wf-ro service
+# (within the current RO uri)
+wf_ro_extract_folders:
+    main:       root/workflows/main
+    nested:     root/workflows/nested
+    scripts:    root/config/scripts
+    services:   root/config/services
+
 relationships:
 
 - title:       inputDataTo
