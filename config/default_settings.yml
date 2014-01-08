@@ -707,6 +707,7 @@ research_object_default_folders:
 - root/workflows/components
 - root/workflows/main
 - root/workflows/nested
+- root/workflow%20runs
 
 # Folders to extract to when using wf-ro service
 # (within the current RO uri)
@@ -1470,7 +1471,7 @@ ro_resource_types:
 
   - label:  "Workflow run"
     uri:    "http://purl.org/wf4ever/roterms#WorkflowRunBundle"
-    folder: "datasets/results"
+    folder: "workflow%20runs"
 
   - label:  "Paper"
     uri:    "http://purl.org/wf4ever/roterms#Paper"
