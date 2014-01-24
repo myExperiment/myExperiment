@@ -517,7 +517,7 @@ class ResearchObject < ActiveRecord::Base
 
     graphs = resources.all(:conditions => { :is_annotation => true }).map do |annotation|
       ao_body = annotation.ao_body
-      load_graph(ao_body.content_blob.data, :content_type => ao_body.content_type)
+      load_graph(ao_body.content_blob.data, :content_type => ao_body.content_type, :base_uri => ao_body.uri)
     end
 
     merge_graphs(graphs)
