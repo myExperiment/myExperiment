@@ -33,27 +33,32 @@ class OauthController < ApplicationController
     @client_applications=current_user.client_applications
     @token=RequestToken.find_by_token params[:oauth_token]
     if @token.client_application.nil?
-       if redirect_url
-         redirect_to redirect_url+"?oauth_failure=1"
+       if params[:oauth_callback]
+         redirect_url = URI.parse(params[:oauth_callback])
+         redirect_url.query = [redirect_url.query, "oauth_failure=1"].compact.join('&')
+         redirect_to redirect_url.to_s
        else
          render :action=>"authorize_failure"
        end
     end
     @show_permissions=@token.client_application.permissions
     redirect_url=params[:oauth_callback]||@token.client_application.callback_url
+    redirect_url = URI.parse(redirect_url)
     unless @token.invalidated?
       if request.post?
         if params[:authorize]=='1'
           @token.authorize!(current_user)
           if redirect_url
-            redirect_to redirect_url+"?oauth_token=#{@token.token}"
+            redirect_url.query = [redirect_url.query, "oauth_token=#{@token.token}"].compact.join('&')
+            redirect_to redirect_url.to_s
           else
             render :action=>"authorize_success"
           end
         elsif params[:commit]=="Save Changes"
           @token.invalidate!
           if redirect_url
-            redirect_to redirect_url+"?oauth_failure=1"
+            redirect_url.query = [redirect_url.query, "oauth_failure=1"].compact.join('&')
+            redirect_to redirect_url.to_s
           else
             render :action=>"authorize_failure"
           end
@@ -61,7 +66,8 @@ class OauthController < ApplicationController
       end
     else
      if redirect_url
-       redirect_to redirect_url+"?oauth_failure=1"
+       redirect_url.query = [redirect_url.query, "oauth_failure=1"].compact.join('&')
+       redirect_to redirect_url.to_s
      else
        render :action=>"authorize_failure"
      end
