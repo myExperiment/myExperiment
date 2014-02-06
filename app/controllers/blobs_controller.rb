@@ -38,7 +38,7 @@ class BlobsController < ApplicationController
       @download = Download.create(:contribution => @blob.contribution, :user => (logged_in? ? current_user : nil), :user_agent => request.env['HTTP_USER_AGENT'], :accessed_from_site => accessed_from_website?())
     end
     
-    send_data(@version.content_blob.data, :filename => @version.local_name, :type => @version.content_type.mime_type)
+    send_data(@version.content_blob.data, :filename => @version.local_name, :type => @version.content_type.mime_type, :disposition => (params[:disposition] || 'attachment'))
     
     #send_file("#{Rails.root}/#{controller_name}/#{@blob.contributor_type.downcase.pluralize}/#{@blob.contributor_id}/#{@blob.local_name}", :filename => @blob.local_name, :type => @blob.content_type.mime_type)
   end
