@@ -186,7 +186,7 @@ class Resource < ActiveRecord::Base
   end
 
   def name
-    URI(path).path.split("/").last
+    URI(CGI::escape(path)).path.split("/").last
   end
 
   def ore_path

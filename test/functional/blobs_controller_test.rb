@@ -36,6 +36,22 @@ class BlobsControllerTest < ActionController::TestCase
     assert_redirected_to blob_path(assigns(:blob))
   end
 
+  def test_should_create_blob_with_space
+    old_count = Blob.count
+
+    login_as(:john)
+    post :create, :blob => { :title => 'Test blob', :body => 'test test test', :license_id => 1, :data => fixture_file_upload('files/picture space.png', 'image/png') },
+                  :credits_me => 'false',
+                  :credits_users => '',
+                  :credits_groups => '',
+                  :attributions_workflows => '',
+                  :attributions_files => ''
+
+    assert_equal old_count+1, Blob.count
+    assert_redirected_to blob_path(assigns(:blob))
+  end
+
+
   def test_should_show_blob
     get :show, :id => 1
     assert_response :success
