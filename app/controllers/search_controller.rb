@@ -195,7 +195,7 @@ private
         :pivot_options    => pivot_options,
         :params           => params,
         :user             => current_user,
-        :search_models    => [Workflow, Blob, Pack, User, Network, Service],
+        :search_models    => [Workflow, Blob, Pack, User, Network],
         :search_limit     => Conf.max_search_size,
 
         :active_filters   => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
