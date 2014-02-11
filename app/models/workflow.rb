@@ -33,7 +33,6 @@ class Workflow < ActiveRecord::Base
 
   has_many :workflow_processors, :dependent => :destroy
   has_many :workflow_ports, :dependent => :destroy
-  has_many :semantic_annotations, :as => :subject, :dependent => :destroy
   has_many :curation_events, :as => :object
   has_many :pack_entries, :as => :contributable, :class_name => 'PackContributableEntry'
   has_many :packs, :through => :pack_entries

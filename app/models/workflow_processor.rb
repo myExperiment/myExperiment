@@ -5,6 +5,5 @@
 
 class WorkflowProcessor < ActiveRecord::Base
   belongs_to :workflow
-  has_many :semantic_annotations, :as => :subject, :dependent => :destroy
 end
 
