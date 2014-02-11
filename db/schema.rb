@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131010111017) do
+ActiveRecord::Schema.define(:version => 20140211111249) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -64,11 +64,6 @@ ActiveRecord::Schema.define(:version => 20131010111017) do
     t.string   "attributable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "auto_tables", :force => true do |t|
-    t.string "name"
-    t.text   "schema"
   end
 
   create_table "blob_versions", :force => true do |t|
@@ -226,7 +221,6 @@ ActiveRecord::Schema.define(:version => 20131010111017) do
     t.text     "details_html"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "object_version"
   end
 
   create_table "delayed_jobs", :force => true do |t|
@@ -544,11 +538,6 @@ ActiveRecord::Schema.define(:version => 20131010111017) do
     t.integer "user_id"
   end
 
-  create_table "plugin_schema_info", :id => false, :force => true do |t|
-    t.string  "plugin_name"
-    t.integer "version"
-  end
-
   create_table "policies", :force => true do |t|
     t.integer  "contributor_id"
     t.string   "contributor_type"
@@ -685,87 +674,6 @@ ActiveRecord::Schema.define(:version => 20131010111017) do
     t.string  "subject_type"
     t.string  "predicate"
     t.string  "object"
-  end
-
-  create_table "service_categories", :force => true do |t|
-    t.string   "uri"
-    t.datetime "updated_at"
-    t.integer  "service_id"
-    t.string   "label"
-    t.datetime "retrieved_at"
-    t.datetime "created_at"
-  end
-
-  create_table "service_deployments", :force => true do |t|
-    t.string   "iso3166_country_code"
-    t.string   "city"
-    t.string   "submitter_label"
-    t.string   "uri"
-    t.datetime "updated_at"
-    t.string   "submitter_uri"
-    t.string   "country"
-    t.integer  "service_id"
-    t.datetime "created"
-    t.integer  "service_provider_id"
-    t.string   "flag_url"
-    t.string   "endpoint"
-    t.datetime "retrieved_at"
-    t.datetime "created_at"
-  end
-
-  create_table "service_providers", :force => true do |t|
-    t.string   "name"
-    t.string   "uri"
-    t.datetime "updated_at"
-    t.text     "description"
-    t.datetime "created"
-    t.datetime "retrieved_at"
-    t.datetime "created_at"
-  end
-
-  create_table "service_tags", :force => true do |t|
-    t.string   "uri"
-    t.datetime "updated_at"
-    t.integer  "service_id"
-    t.string   "label"
-    t.datetime "retrieved_at"
-    t.datetime "created_at"
-  end
-
-  create_table "service_types", :force => true do |t|
-    t.datetime "updated_at"
-    t.integer  "service_id"
-    t.string   "label"
-    t.datetime "retrieved_at"
-    t.datetime "created_at"
-  end
-
-  create_table "services", :force => true do |t|
-    t.string   "documentation_uri"
-    t.string   "iso3166_country_code"
-    t.string   "city"
-    t.string   "name"
-    t.string   "provider_uri"
-    t.string   "submitter_label"
-    t.string   "uri"
-    t.datetime "updated_at"
-    t.string   "monitor_symbol_url"
-    t.datetime "monitor_last_checked"
-    t.string   "monitor_label"
-    t.string   "country"
-    t.string   "submitter_uri"
-    t.string   "monitor_small_symbol_url"
-    t.text     "monitor_message"
-    t.text     "description"
-    t.string   "wsdl"
-    t.datetime "created"
-    t.string   "contributor_type"
-    t.integer  "contributor_id"
-    t.string   "flag_url"
-    t.string   "endpoint"
-    t.string   "provider_label"
-    t.datetime "retrieved_at"
-    t.datetime "created_at"
   end
 
   create_table "sessions", :force => true do |t|
@@ -933,6 +841,8 @@ ActiveRecord::Schema.define(:version => 20131010111017) do
     t.text     "body_html"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "license"
+    t.integer  "preview_id"
     t.string   "image"
     t.string   "svg"
     t.text     "revision_comments"
@@ -940,8 +850,6 @@ ActiveRecord::Schema.define(:version => 20131010111017) do
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
-    t.string   "license"
-    t.integer  "preview_id"
   end
 
   add_index "workflow_versions", ["workflow_id"], :name => "index_workflow_versions_on_workflow_id"
@@ -955,15 +863,15 @@ ActiveRecord::Schema.define(:version => 20131010111017) do
     t.string   "unique_name"
     t.text     "body"
     t.text     "body_html"
+    t.integer  "current_version"
+    t.integer  "preview_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "current_version"
     t.integer  "content_blob_id"
     t.string   "file_ext"
     t.string   "last_edited_by"
     t.integer  "content_type_id"
     t.integer  "license_id"
-    t.integer  "preview_id"
   end
 
   create_table "wsdl_deprecations", :force => true do |t|

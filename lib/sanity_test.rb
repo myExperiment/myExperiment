@@ -56,7 +56,6 @@ def sanity_tests
   workflows     = Workflow.find(:all)
   blobs         = Blob.find(:all)
   packs         = Pack.find(:all)
-  services      = Service.find(:all)
   contributions = Contribution.find(:all)
 
   known_contributables = workflows + blobs + packs + services

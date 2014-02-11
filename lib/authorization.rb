@@ -52,7 +52,7 @@ module Authorization
 
     case object_type
 
-      when "Workflow", "Blob", "Pack", "Service", "Contribution"
+      when "Workflow", "Blob", "Pack", "Contribution"
 
         # workflows can only be created by authenticated users
         if (action == "create") && [Workflow, Blob, Pack].include?(object)

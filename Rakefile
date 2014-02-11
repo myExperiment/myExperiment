@@ -26,7 +26,6 @@ task "myexp:refresh:solr" do
   User.solr_reindex
   Network.solr_reindex
   Pack.solr_reindex
-  Service.solr_reindex
 end
 
 desc 'Start the search engine'

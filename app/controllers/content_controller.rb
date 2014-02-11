@@ -16,13 +16,12 @@ class ContentController < ApplicationController
             :pivot_options    => Conf.pivot_options,
             :params           => params,
             :user             => current_user,
-            :search_models    => [Workflow, Blob, Pack, Service],
+            :search_models    => [Workflow, Blob, Pack],
             :search_limit     => Conf.max_search_size,
 
             :active_filters   => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
                                   "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
-                                  "CURATION_EVENT", "SERVICE_PROVIDER",
-                                  "SERVICE_COUNTRY", "SERVICE_STATUS"])
+                                  "CURATION_EVENT"])
 
         flash.now[:error] = problem if problem
 

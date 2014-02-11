@@ -235,7 +235,7 @@ new_menu:
 # search_categories - These are the search categories shown in the search bar
 #                     just under the main tabs.
 
-search_categories: [all, users, groups, workflows, services, files, packs]
+search_categories: [all, users, groups, workflows, files, packs]
 
 # default_search_size - The default number of items shown in each search result
 #                       page.
@@ -535,9 +535,7 @@ pivot_options:
 
     workflow_processors: INNER JOIN workflow_processors ON RESULT_TYPE = 'Workflow' AND workflow_processors.workflow_id = RESULT_ID AND DOWNLOAD_CONDITIONS = 1
     taggings: LEFT OUTER JOIN taggings ON RESULT_TYPE = taggings.taggable_type AND RESULT_ID = taggings.taggable_id
-    services: INNER JOIN services ON RESULT_TYPE = 'Service' AND RESULT_ID = services.id
     curation_events: INNER JOIN curation_events ON curation_events.object_type = RESULT_TYPE AND curation_events.object_id = RESULT_ID
-    service_providers: INNER JOIN service_providers ON RESULT_TYPE = 'Service' AND service_providers.uri = services.provider_uri
     tags: INNER JOIN tags ON taggings.tag_id = tags.id
     content_types: LEFT OUTER JOIN content_types ON contributions.content_type_id = content_types.id
     credits: INNER JOIN creditations ON creditations.creditable_type = RESULT_TYPE AND creditations.creditable_id = RESULT_ID
@@ -649,24 +647,6 @@ pivot_options:
     label_column: curation_events.category
     joins: [curation_events]
     capitalize: true
-
-  - query_option: SERVICE_PROVIDER
-    title: provider
-    id_column: service_providers.id
-    label_column: service_providers.name
-    joins: [services, service_providers]
-
-  - query_option: SERVICE_COUNTRY
-    title: country
-    id_column: services.country
-    label_column: services.country
-    joins: [services]
-
-  - query_option: SERVICE_STATUS
-    title: service status
-    id_column: services.monitor_label
-    label_column: services.monitor_label
-    joins: [services]
 
   num_options: ["10", "20", "25", "50", "100"]
 

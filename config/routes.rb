@@ -150,9 +150,6 @@ ActionController::Routing::Routes.draw do |map|
     blob.resources :comments, :collection => { :timeline => :get }
   end
 
-  # services
-  map.resources :services, :collection => { :search => :get }
-  
   # content_types
   map.resources :content_types
 

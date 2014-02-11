@@ -234,8 +234,7 @@ class WorkflowsController < ApplicationController
 
             :active_filters => ["CATEGORY", "TYPE_ID", "TAG_ID", "USER_ID",
                                 "LICENSE_ID", "GROUP_ID", "WSDL_ENDPOINT",
-                                "CURATION_EVENT", "SERVICE_PROVIDER",
-                                "SERVICE_COUNTRY", "SERVICE_STATUS"])
+                                "CURATION_EVENT"])
 
         flash.now[:error] = problem if problem
 

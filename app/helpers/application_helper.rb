@@ -376,13 +376,6 @@ module ApplicationHelper
       else
         return nil
       end
-    when "Service"
-      if s = Service.find(:first, :conditions => ["id = ?", contributableid])
-        name = h(s.name)
-        return link ? link_to(name, service_url(s)) : name
-      else
-        return nil
-      end
     end
   end
   
