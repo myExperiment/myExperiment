@@ -6,5 +6,7 @@
 /config/database.yml
 /config/settings.yml
 /config/sunspot.yml
-
+/.idea
+/solr/data
+sunspot-solr.pid
 
