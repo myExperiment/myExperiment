@@ -669,3 +669,8 @@ expanded_filter_size: 25
 # shortcut_keywords:
 #   biovel: /groups/643
 #
+
+
+# OnlineHPC integration
+enable_online_hpc: false
+online_hpc_url: http://onlinehpc.com/workflows/editor?provider=myexperiment

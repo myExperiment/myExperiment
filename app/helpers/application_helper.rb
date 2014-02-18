@@ -734,6 +734,8 @@ module ApplicationHelper
       return "famfamfam_silk/application_side_list.png"
     when "contributions"
       return "famfamfam_silk/page_white_stack.png"
+    when "onlinehpc"
+      return "famfamfam_silk/server_go.png"
     else
       return Conf.label_icons[method.to_s] if Conf.label_icons[method.to_s]
     end

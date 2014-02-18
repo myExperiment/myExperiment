@@ -17,8 +17,12 @@
 
 	<center>
 	  <%= render :partial => 'workflow_file_selection_form' %>
+    <% if Conf.enable_online_hpc %>
+      <p class="step_text">Or...</p>
+      <%= render :partial => 'online_hpc_new_workflow' %>
+    <% end %>
 	</center>
-  
+
   <br />
 	
 	<!-- Main metadata -->

@@ -218,6 +218,14 @@ class Conf
     self.fetch_entry('expanded_filter_size')
   end
 
+  def self.enable_online_hpc
+    self.fetch_entry('enable_online_hpc')
+  end
+
+  def self.online_hpc_url
+    self.fetch_entry('online_hpc_url')
+  end
+
   def self.method_missing(method)
     if @defaults.has_key?(method.to_s)
       fetch_entry(method.to_s)

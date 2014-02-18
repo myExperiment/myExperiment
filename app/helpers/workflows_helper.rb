@@ -32,4 +32,22 @@ module WorkflowsHelper
     html_escape(co.kev)
   end
 
+  def online_hpc_url(workflow = nil)
+    if workflow.nil?
+      Conf.online_hpc_url
+    else
+      if workflow.is_a?(Workflow)
+        id = workflow.id
+      elsif workflow.is_a?(Fixnum)
+        id = workflow
+      end
+
+      url = URI.parse(Conf.online_hpc_url)
+      url.query = [url.query, "workflowId={id}"].compact.join('&')
+      url.to_s
+
+      Conf.online_hpc_url.gsub('{id}', id.to_s)
+    end
+  end
+
 end

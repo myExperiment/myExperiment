@@ -5,6 +5,10 @@
 <ul class="sectionIcons">
   <% if @authorised_to_download %>
     <li><%= icon('download', @named_download_url, "Download Workflow (for version #{@viewing_version_number.to_s})", nil, "Download Workflow") -%></li>
+    <% if Conf.enable_online_hpc &&
+          @workflow.current_version == @viewing_version_number %>
+      <li><%= icon('onlinehpc', online_hpc_url(@workflow), "Run or edit this workflow in OnlineHPC", nil, "Open in OnlineHPC") -%></li>
+    <% end %>
   <% end %>
 	<% if @authorised_to_edit -%>
 		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
