@@ -43,10 +43,8 @@ module WorkflowsHelper
       end
 
       url = URI.parse(Conf.online_hpc_url)
-      url.query = [url.query, "workflowId={id}"].compact.join('&')
+      url.query = [url.query, "workflowId=#{id}"].compact.join('&')
       url.to_s
-
-      Conf.online_hpc_url.gsub('{id}', id.to_s)
     end
   end
 
