@@ -43,7 +43,7 @@ class WorkflowsControllerTest < ActionController::TestCase
     workflow = Workflow.last
 
     # Basic test that the workflow was indexed in Solr and that it appears in a search result.
-    assert Workflow.search { fulltext "dilbert" }.results.include?(workflow)
+    assert Workflow.search { fulltext "dilbert" }.results.include?(workflow) if Conf.solr_enable
   end
 
   def test_should_show_workflow
