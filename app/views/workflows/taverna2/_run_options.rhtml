@@ -32,3 +32,32 @@
 	
 	</div>
 </div>
+
+<% if Conf.enable_online_hpc %>
+<div style="margin: 0.5em 0.5em 0;">
+  <h4>
+    Run this Workflow on the cloud with OnlineHPC...
+  </h4>
+
+  <div class="option_box">
+
+    <p style="font-size: 93%; text-align: center;">
+      Click the link below to visit OnlineHPC<br/>
+      <%= link_to online_hpc_url(@workflow), online_hpc_url(@workflow) %><br/>
+      <small>[ <%= link_to_function "More Info" + expand_image, visual_effect(:toggle_blind, "run_onlinehpc_more_box", :duration => 0.3) -%> ]</small>
+    </p>
+
+    <div id="run_onlinehpc_more_box" style="display: none;">
+      <p>
+        OnlineHPC offers a free-of-charge online scientific workflow editor, and a
+        High Performance Computer cluster where you can execute your workflows.
+      </p>
+
+      <p>
+        OAuth sign-in is available, so you can sign-in using your myExperiment credentials.
+      </p>
+    </div>
+
+  </div>
+</div>
+<% end %>
