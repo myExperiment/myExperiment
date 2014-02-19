@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140211111249) do
+ActiveRecord::Schema.define(:version => 20140211140053) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -668,13 +668,6 @@ ActiveRecord::Schema.define(:version => 20140211111249) do
   end
 
   add_index "reviews", ["user_id"], :name => "index_reviews_on_user_id"
-
-  create_table "semantic_annotations", :force => true do |t|
-    t.integer "subject_id"
-    t.string  "subject_type"
-    t.string  "predicate"
-    t.string  "object"
-  end
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id"
