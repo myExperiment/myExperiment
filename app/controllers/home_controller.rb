@@ -5,12 +5,20 @@
 
 class HomeController < ApplicationController
   
-  before_filter :login_required, :except => [:index]
-  
   # GET /home
   def index
     respond_to do |format|
       format.html # index.rhtml
+    end
+  end
+
+  def front_page
+    respond_to do |format|
+      if logged_in?
+        format.html { redirect_to home_url }
+      else
+        format.html { render :file => 'public/front_page.html', :layout => false }
+      end
     end
   end
   
