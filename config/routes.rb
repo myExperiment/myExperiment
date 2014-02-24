@@ -5,6 +5,8 @@ ActionController::Routing::Routes.draw do |map|
   # rest routes
   rest_routes(map)
 
+  map.root :controller => "home", :action => "front_page"
+
   map.home '/home', :controller => 'home', :action => 'index'
 
   map.content '/content', :controller => 'content', :action => 'index', :conditions => { :method => :get }
