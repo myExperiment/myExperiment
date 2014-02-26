@@ -139,38 +139,6 @@ class WorkflowsController < ApplicationController
     end
   end
 
-  # GET /workflows/:id/launch.whip
-  def launch
-    # Only allow for Taverna 1 workflows.
-    if @workflow.processor_class == WorkflowProcessors::TavernaScufl
-      wwf = Whip::WhipWorkflow.new()
-  
-      wwf.title       = @viewing_version.title
-      wwf.datatype    = Whip::Taverna1DataType
-      wwf.author      = @workflow.contributor_name
-      wwf.name        = @workflow.filename(@viewing_version_number)
-      wwf.summary     = @viewing_version.body
-      wwf.version     = @viewing_version.version.to_s
-      wwf.workflow_id = @workflow.id.to_s
-      wwf.updated     = @viewing_version.updated_at
-      wwf.data        = @viewing_version.content_blob.data
-  
-      dir = 'tmp/bundles'
-  
-      FileUtils.mkdir(dir) if not File.exists?(dir)
-      file_path = Whip::filePath(wwf, dir)
-  
-      Whip::bundle(wwf, dir)
-  
-      respond_to do |format|
-        format.whip { 
-          send_data(File.read(file_path), :filename => "#{@viewing_version.unique_name}_#{@viewing_version.version}.whip",
-              :type => "application/whip-archive", :disposition => 'inline')
-        }
-      end
-    end
-  end
-
   # GET /workflows/:id/versions/:version/galaxy_tool
   def galaxy_tool
   end

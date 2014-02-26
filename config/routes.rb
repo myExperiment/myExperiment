@@ -78,7 +78,6 @@ ActionController::Routing::Routes.draw do |map|
     :collection => { :search => :get }, 
     :member => { :new_version => :get, 
                  :download => :get, 
-                 :launch => :get,
                  :statistics => :get,
                  :favourite => :post, 
                  :favourite_delete => :delete, 
