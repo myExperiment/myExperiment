@@ -19,7 +19,9 @@ body  {
 
 #elico_links_bar
 {
-  width: 73.074em;
+  width: auto;
+  min-width: 950px;
+  max-width: 1400px;
   height: 32px;
   margin: 0 auto;
   padding: 0 1em;
@@ -34,7 +36,9 @@ body  {
 }
 
 .logo {
-  width: 73.074em;
+  width: auto;
+  min-width: 950px;
+  max-width: 1400px;
   float: none;
   text-align: left;
   color: white;
