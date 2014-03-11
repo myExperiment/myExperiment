@@ -170,13 +170,6 @@
               <li style="margin-left: 0;"><%= icon('workflow', callback_url(@workflow).to_s, "#{session[:callback][:label]} Workflow file/package (for version #{@viewing_version_number.to_s})", {:rel => 'nofollow'}, "#{session[:callback][:label]} Workflow #{session[:callback][:additional]}") -%></li>
             </ul>
           <% end %>
-          <% if @viewing_version.content_type.title == "Taverna 2" %>
-            <br />
-
-            <ul class="sectionIcons">
-              <li style="margin-left: 0;"><%= icon('workflow', galaxy_tool_path(:id => @workflow.id, :version => @viewing_version_number.to_s), "Download Workflow file/package (for version #{@viewing_version_number.to_s})", nil, "Download Workflow as a Galaxy tool") -%></li>
-            </ul>
-          <% end %>
 
         <% else %>
           <p class="none_text">

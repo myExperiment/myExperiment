@@ -120,9 +120,6 @@ ActionController::Routing::Routes.draw do |map|
         " :conditions => { :method => :get}, :controller => 'previews', :action => 'show'")
   end
 
-  map.galaxy_tool 'workflows/:id/versions/:version/galaxy_tool', :controller => 'workflows', :action => 'galaxy_tool'
-  map.galaxy_tool_download 'workflows/:id/versions/:version/galaxy_tool_download', :controller => 'workflows', :action => 'galaxy_tool_download'
-
   # curation
   ['workflows', 'files', 'packs'].each do |contributable_type|
     map.curation "#{contributable_type}/:contributable_id/curation",
