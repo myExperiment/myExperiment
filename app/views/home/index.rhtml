@@ -1,19 +1,15 @@
 <div id="home_container">
-	<%= render :partial => 'stats' %>
-	
-	<div class="left">
-		<%= render :partial => "announcements" %>
-		<%= render :partial => "latest_groups" %>
-		<%= render :partial => "latest_tags" %>
-	</div>
-	
-	<div class="right">
-		<%= render :partial => "news" %>
-		<%= render :partial => "updated_items" %>
-		<%= render :partial => "new_users" %>
-		<%= render :partial => "latest_reviews" %>
-		<%= render :partial => "latest_comments" %>
-	</div>
-	
-	<div class="clearer">&nbsp;</div>
+
+  <div class="left">
+    <%= render :partial => "announcements" %>
+    <%= render :partial => 'stats' %>
+  </div>
+
+  <div class="right">
+    <%= render :partial => "news" %>
+    <%= render :partial => "updated_items" %>
+    <%= render :partial => "new_users" %>
+  </div>
+
+  <div class="clearer">&nbsp;</div>
 </div>
