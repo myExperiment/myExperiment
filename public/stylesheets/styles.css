@@ -432,11 +432,9 @@ UL.breadcrumb_list LI + LI:before {
 }
 
 #home_container .stats {
-  background-color: #FFFFCC;
   margin: 0;
   margin-bottom: 1em;
   padding: 0.6em 1.2em;
-  border: 1px solid #EED799;
   font-weight: bold;
   font-size: 100%;
   color: #333333;
@@ -444,12 +442,12 @@ UL.breadcrumb_list LI + LI:before {
 
 #home_container .left {
   float: left;
-  width: 28%;
+  width: 20%;
 }
 
 #home_container .right {
   float: right;
-  width: 70%;
+  width: 75%;
 }
 
 #home_container .box {
@@ -462,27 +460,17 @@ UL.breadcrumb_list LI + LI:before {
 }
 
 #home_container .box .title {
-  font-size: 100%;
-  line-height: 1.0;
-  font-weight: bold;
-  color: #222222;
-  padding: 0.1em 1em 0.4em 1em;
-  text-align: center;
-  background-image: url('/images/header-bg2.png');
-  background-position: top;
-  background-repeat: repeat-x;
-  background-color: #CFDFEF;
-  border: #CCCCCC 0px solid;
-  border-width: 0 1px 1px 1px;
+    border-bottom: 1px dotted #CCCCCC;
+    color: #222222;
+    font-weight: bold;
+    height: 30px;
+    line-height: 30px;
+    text-align: left;
 }
 
 #home_container .box .content {
   padding: 0.3em 0.8em;
-  border-top: none;
-  border-right: #CCCCCC 1px solid;
-  border-bottom: none;
-  border-left: #CCCCCC 1px solid;
-  background-color: #F7F7F7;
+  background-color: #FFFFFF;
 }
 
 #home_container li.seperator {
