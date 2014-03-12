@@ -1,9 +1,13 @@
 <% if !Conf.home_page_stats.empty? %>
-  <div class="stats">
-    <%= Conf.sitename %> currently has
-    <%= comma_list(Conf.home_page_stats.map do |stat| 
-          link_to(pluralize(eval(stat["model"]).count(stat["conditions"] ?
-                { :conditions => stat["conditions"] } : { }), stat["label"]), stat["link"])
-        end) %>
-  </div>
+    <div class="stats">
+      <%= Conf.sitename %> currently has:
+      <ul>
+        <% Conf.home_page_stats.each do |stat| %>
+            <li>
+              <%= link_to(pluralize(eval(stat["model"]).count(stat["conditions"] ?
+                                                                      { :conditions => stat["conditions"] } : { }), stat["label"]), stat["link"])-%>
+            </li>
+        <% end %>
+      </ul>
+    </div>
 <% end %>

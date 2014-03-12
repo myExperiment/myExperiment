@@ -1477,14 +1477,6 @@ protected
   def indefinite_article(text)
     text.match(/^[aeiou]/i) ? "an" : "a"
   end
- 
-  def comma_list(strings)
-
-    return ""         if strings.empty?
-    return strings[0] if strings.length == 1
-
-    strings[0..-2].join(", ") + " and " + strings[-1]
-  end
 
   def login_identity_reminder(user)
     return "Your username is: #{user.username}"     if user.username

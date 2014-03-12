@@ -440,7 +440,6 @@ UL.breadcrumb_list LI + LI:before {
   font-weight: bold;
   font-size: 100%;
   color: #333333;
-  text-align: center;
 }
 
 #home_container .left {
