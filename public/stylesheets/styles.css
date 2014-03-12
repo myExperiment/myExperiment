@@ -32,7 +32,7 @@ h1 {
   text-align: center;
   font-size: 123.1%;
   color: #000033;
-  margin: 1em 0;
+  margin: 0.5em 0;
   line-height: 1.4;
 }
 
@@ -197,50 +197,19 @@ li {
 /* Begin Footer styles */
 
 #ft {
-  border: 0px dotted #999999;
-  border-width: 1px 0 1px 0;
   color: #333333;
-  background-image: url('/images/footer-bg.png');
-  background-position: top;
-  background-repeat: repeat-x;
-  background-color: #EEEEEE;
+  background-color: #EAEAEA;
+  padding: 20px;
+  overflow: auto;
 }
 
-#ft .copyright {
-  text-align: center;
-  font-weight: bold;
-  font-size: 93%;
-  padding: 0.5em;
+#ft .funders {
+    width:49%;
+    float: left;
 }
 
-#ft table {
-  width: 100%;
-  border-top: 1px dotted #999999;
-  border-spacing: 0;
-  margin: 0;
-}
-
-#ft td {
-  padding: 0.8em 2em;
-  vertical-align: top;
-}
-
-#ft table p {
-  padding: 0.3em 0;
-  line-height: 1;
-}
-
-#ft .left {
-  width: 251px;
-  text-align: left;
-  font-size: 93%;
-}
-
-#ft .middle {
-  width: 251px;
-  text-align: left;
-  font-size: 93%;
-  border-left: 1px dotted #999999;
+#ft .funders img {
+    vertical-align: middle;
 }
 
 #ft .right {
