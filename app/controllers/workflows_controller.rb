@@ -7,7 +7,7 @@ class WorkflowsController < ApplicationController
 
   include ApplicationHelper
 
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :statistics, :launch, :search, :auto_complete]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search, :auto_complete]
   
   before_filter :store_callback, :only => [:index, :search]
   before_filter :find_workflows_rss, :only => [:index]
@@ -25,7 +25,7 @@ class WorkflowsController < ApplicationController
 
   # declare sweepers and which actions should invoke them
   cache_sweeper :workflow_sweeper, :only => [ :create, :create_version, :launch, :update, :update_version, :destroy ]
-  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :galaxy_tool, :galaxy_tool_download, :launch ]
+  cache_sweeper :download_viewing_sweeper, :only => [ :show, :download, :named_download, :launch ]
   cache_sweeper :permission_sweeper, :only => [ :create, :update, :destroy ]
   cache_sweeper :bookmark_sweeper, :only => [ :destroy, :favourite, :favourite_delete ]
   cache_sweeper :tag_sweeper, :only => [ :create, :update, :tag, :destroy ]
@@ -137,38 +137,6 @@ class WorkflowsController < ApplicationController
     else
       render :nothing => true, :status => "404 Not Found"
     end
-  end
-
-  # GET /workflows/:id/versions/:version/galaxy_tool
-  def galaxy_tool
-  end
-
-  # GET /workflows/:id/versions/:version/galaxy_tool_download
-  def galaxy_tool_download
-
-    if params[:server].nil? || params[:server].empty?
-      flash.now[:error] = "You must provide the URL to a Taverna server."
-      render(:action => :galaxy_tool, :id => @workflow.id, :version => @viewing_version_number.to_s)
-      return
-    end
-
-    zip_file_name = "tmp/galaxy_tool.#{Process.pid}"
-
-    TavernaToGalaxy.generate(@workflow, @viewing_version_number, params[:server], zip_file_name)
-
-    zip_file = File.binread(zip_file_name)
-    File.unlink(zip_file_name)
-
-    Download.create(:contribution => @workflow.contribution,
-        :user               => (logged_in? ? current_user : nil),
-        :user_agent         => request.env['HTTP_USER_AGENT'],
-        :accessed_from_site => accessed_from_website?(),
-        :kind               => 'Galaxy tool')
-
-    send_data(zip_file,
-        :filename => "#{@workflow.unique_name}_galaxy_tool.zip",
-        :type => 'application/zip',
-        :disposition => 'attachment')
   end
 
   # GET /workflows
@@ -680,8 +648,6 @@ protected
       "edit_version"            => "edit",
       "favourite"               => "view",
       "favourite_delete"        => "view",
-      "galaxy_tool"             => "download",
-      "galaxy_tool_download"    => "download",
       "index"                   => "view",
       "launch"                  => "download",
       "named_download"          => "download",

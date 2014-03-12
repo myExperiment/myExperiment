@@ -48,4 +48,38 @@ module WorkflowsHelper
     end
   end
 
+  def workflow_processor_details(configuration)
+    comp = configuration.delete(:component)
+
+    html = ''
+
+    configuration.each do |key, value|
+      html << "<div><h3>#{key.to_s.titleize}</h3>"
+      if [:script, :xpath_expression].include?(key)
+        html << "<pre>#{value}</pre>"
+      elsif key == :interaction_page
+        html << "<a href=\"#{value}\">#{value}</a>"
+      else
+        html << "#{value}"
+      end
+      html << '</div>'
+    end
+
+    html << component_details(comp) if comp
+
+    html
+  end
+
+  private
+
+  def component_details(hash)
+    if internal_resource_uri?(hash[:registry])
+      component = WorkflowVersion.find_by_title_and_version(hash[:name], hash[:version])
+      link = component ? link_to(hash[:name], component) : hash[:name]
+      "<div><h3>Component</h3>#{link}</div>"
+    else
+      "<div><h3>External Component</h3>#{hash[:name]} v#{hash[:version]}</div>"
+    end
+  end
+
 end
