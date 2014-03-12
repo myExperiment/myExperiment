@@ -84,12 +84,12 @@ pre {
 }
 
 a {
-  color: #000099;
+  color: #004477;
   text-decoration: none;
 }
 
 a:hover {
-  color: red;
+  color: #006699;
   text-decoration: underline;
 }
 
@@ -2068,11 +2068,11 @@ table.topic td.tag_vote {
 }
 
 .pivot .options > DIV:hover {
-  background: #d0d0f0;
+  background: #d7e3ff;
 }
 
 .pivot .options > DIV.selected {
-  background: #ffe0c0;
+  background: #c6cfff;
 }
 
 .pivot .extra_options {
