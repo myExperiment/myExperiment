@@ -121,6 +121,12 @@ def post_component(opts)
   rest_get_request(component, opts[:user], { "id" => component.id.to_s })
 end
 
+##
+# Delete the specified component
+def delete_component(opts)
+  delete_workflow(opts)
+end
+
 
 ##
 # Retrieve an XML representation of a component family

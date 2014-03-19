@@ -1242,6 +1242,40 @@ class ApiControllerTest < ActionController::TestCase
     assert_equal uri, query_resp.find_first('//workflow')['resource']
   end
 
+
+  test "can delete components" do
+    login_as(:john)
+    component = workflows(:component_workflow)
+    component_uri = polymorphic_url(component)
+    family_uri = polymorphic_url(packs(:component_family))
+
+    # Store in triplestore
+    TripleStore.instance.repo = {}
+    TripleStore.instance.insert("", "<#{component_uri}>")
+
+    # Check the component is there
+    assert_equal 1, TripleStore.instance.repo.keys.size
+    resp = rest_request(:get, 'components', nil, {'component-family' => family_uri})
+    assert_response(:success)
+    assert_equal 1, resp.find('//workflow').size
+
+    # Delete the component
+    rest_request(:delete, 'component', nil, {'id' => component.id})
+    assert_response(:success)
+
+    # Check it was removed from the triplestore
+    assert_equal 0, TripleStore.instance.repo.keys.size
+
+    # Shouldn't return any results
+    resp = rest_request(:get, 'components', nil, {'component-family' => family_uri})
+    assert_response(:success)
+    assert_equal 0, resp.find('//workflow').size
+
+    # Clean up
+    TripleStore.instance.repo = {}
+  end
+
+
   test "can't create component if family doesn't exist" do
     login_as(:john)
 
