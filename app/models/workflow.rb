@@ -463,4 +463,12 @@ class Workflow < ActiveRecord::Base
         :context      => self,
         :content_type => content_type.mime_type)
   end
+
+  def component_profile
+    self.component_families.map {|f| f.component_profile}.first
+  end
+
+  def component_checklist
+    @checklist ||= ComponentValidator.new(self, self.component_profile).validate
+  end
 end

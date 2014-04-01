@@ -1,0 +1,22 @@
+<% cache(:controller => 'workflows_cache', :action => 'component_validity', :id => @workflow.id, :expires_in => 3.days) do -%>
+    <% report = @workflow.component_checklist %>
+    <%= ((report['numTotal'] - report['numFailed']).to_f / report['numTotal'] * 100.0).to_i %>% Valid
+    <div class="component-validity">
+      <div class="satisfied" style="width: <%= report["numSatisfied"].to_f / report["numTotal"] * 100 -%>%"></div>
+      <div class="warning" style="width: <%= report["numWarning"].to_f / report["numTotal"] * 100 -%>%"></div>
+      <div class="failed" style="width: <%= report["numFailed"].to_f / report["numTotal"] * 100 -%>%"></div>
+    </div>
+
+    <a href="#" onclick="$('component-validity-breakdown').toggle(); return false">Show breakdown</a>
+
+    <div id="component-validity-breakdown" style="display: none; text-align: left">
+      <ul>
+        <% report["assertions"].each do |assertion| %>
+            <li>
+              <span class="<%= assertion["type"]-%>"><%= assertion["type"].capitalize %>:</span>
+              <%= assertion["message"].capitalize-%>
+            </li>
+        <% end %>
+      </ul>
+    </div>
+<% end %>

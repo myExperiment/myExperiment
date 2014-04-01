@@ -7,11 +7,11 @@ class WorkflowsController < ApplicationController
 
   include ApplicationHelper
 
-  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search, :auto_complete]
+  before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search, :auto_complete, :component_validity]
   
   before_filter :store_callback, :only => [:index, :search]
   before_filter :find_workflows_rss, :only => [:index]
-  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :auto_complete]
+  before_filter :find_workflow_auth, :except => [:search, :index, :new, :create, :auto_complete, :component_validity]
   
   before_filter :initiliase_empty_objects_for_new_pages, :only => [:new, :create, :new_version, :create_version]
   before_filter :set_sharing_mode_variables, :only => [:show, :new, :create, :edit, :update]
@@ -606,6 +606,13 @@ class WorkflowsController < ApplicationController
     wfs = wfs.select {|w| Authorization.check('view', w, current_user) }
 
     render :partial => 'contributions/autocomplete_list', :locals => { :contributions => wfs }
+  end
+
+  def component_validity
+    @workflow = Workflow.find(params[:id])
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
   end
 
 protected

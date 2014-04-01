@@ -1,0 +1,30 @@
+<div class="contribution_section_box">
+  <p class="heading">
+    <%= info_icon_with_tooltip("This section indicates how well the component complies to its profile.") %>
+    Component Validity
+    <a name="checklist"></a>
+  </p>
+
+  <% if workflow.component_families.empty? %>
+    Unable to validate: this component does not belong to any component families.
+  <% else %>
+      <div id="component-validity-report">
+        <%= image_tag('spinner.gif') -%><br/>
+        Loading
+      </div>
+
+      <script>
+          document.observe("dom:loaded", function() {
+              new Ajax.Request('<%= component_validity_workflow_path(workflow) -%>', {
+                  method:'get',
+                  onSuccess: function(response) {
+                      $('component-validity-report').innerHTML = response.responseText;
+                  },
+                  onFailure: function(response) {
+                      $('component-validity-report').innerHTML = "An error occurred whilst validating the component";
+                  }
+              });
+          });
+      </script>
+  <% end %>
+</div>

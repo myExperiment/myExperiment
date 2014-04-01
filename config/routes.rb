@@ -87,7 +87,9 @@ ActionController::Routing::Routes.draw do |map|
                  :edit_version => :get,
                  :update_version => :put, 
                  :process_tag_suggestions => :post,
-                 :tag_suggestions => :get } do |workflow|
+                 :tag_suggestions => :get,
+                 :component_validity => :get
+    } do |workflow|
     # workflows have nested citations
     workflow.resources :citations
     workflow.resources :reviews

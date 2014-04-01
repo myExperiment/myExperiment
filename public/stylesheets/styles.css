@@ -2666,3 +2666,31 @@ TABLE.metadata TD {
 TABLE.metadata TD.sha1 {
   font-family: monospace;
 }
+
+div.component-validity {
+    width: 200px;
+    border: 1px solid black;
+    margin: 1em auto;
+    overflow: auto;
+    border-radius: 4px;
+}
+
+div.component-validity div {
+    height: 16px;
+    float: left;
+}
+
+div.component-validity .satisfied,
+#component-validity-breakdown span.satisfied {
+    background-color: #59c82f;
+}
+
+div.component-validity .warning,
+#component-validity-breakdown span.warning {
+    background-color: #eee27a;
+}
+
+div.component-validity .failed,
+#component-validity-breakdown span.failed {
+    background-color: #e7604b;
+}
