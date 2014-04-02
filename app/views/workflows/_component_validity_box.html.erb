@@ -15,7 +15,7 @@
 
       <script>
           document.observe("dom:loaded", function() {
-              new Ajax.Request('<%= component_validity_workflow_path(workflow) -%>', {
+              new Ajax.Request('<%= component_validity_workflow_path(workflow, :version => version) -%>', {
                   method:'get',
                   onSuccess: function(response) {
                       $('component-validity-report').innerHTML = response.responseText;

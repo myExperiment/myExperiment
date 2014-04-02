@@ -609,9 +609,10 @@ class WorkflowsController < ApplicationController
   end
 
   def component_validity
-    @workflow = Workflow.find(params[:id])
+    workflow = Workflow.find(params[:id])
+    version = workflow.find_version(params[:version])
     respond_to do |format|
-      format.html { render :layout => false }
+      format.html { render :partial => 'workflows/component_validity', :locals => { :workflow => workflow, :version => version } }
     end
   end
 

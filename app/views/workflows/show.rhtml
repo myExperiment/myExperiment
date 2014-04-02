@@ -235,7 +235,7 @@
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @workflow } %>
 
     <% if @workflow.component? %>
-      <%= render :partial => "workflows/component_validity_box", :locals => { :workflow => @workflow } %>
+      <%= render :partial => "workflows/component_validity_box", :locals => { :workflow => @workflow, :version => @viewing_version_number } %>
     <% end %>
 	
 	<%= render :partial => "contributions/license_box", :locals => { :contributable => @workflow } %>

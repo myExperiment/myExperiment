@@ -1,5 +1,5 @@
-<% cache({:controller => 'workflows_cache', :action => 'component_validity', :id => @workflow.id}, :expires_in => 3.days) do -%>
-    <% report = @workflow.component_checklist %>
+<% cache({:controller => 'workflows_cache', :action => 'component_validity', :id => workflow.id, :version => version.version}, :expires_in => 3.days) do -%>
+    <% report = workflow.component_checklist(version.version) %>
     <%= ((report['numTotal'] - report['numFailed']).to_f / report['numTotal'] * 100.0).to_i %>% Valid
     <div class="component-validity">
       <div class="satisfied" style="width: <%= report["numSatisfied"].to_f / report["numTotal"] * 100 -%>%"></div>

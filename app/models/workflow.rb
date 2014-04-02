@@ -468,7 +468,8 @@ class Workflow < ActiveRecord::Base
     self.component_families.map {|f| f.component_profile}.first
   end
 
-  def component_checklist
-    @checklist ||= ComponentValidator.new(self, self.component_profile).validate
+  def component_checklist(version = nil)
+    version ||= self.current_version
+    @checklist ||= ComponentValidator.new(self.find_version(version), self.component_profile).validate
   end
 end
