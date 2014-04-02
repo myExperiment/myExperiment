@@ -12,8 +12,7 @@
     <div id="component-validity-breakdown" style="display: none; text-align: left">
       <ul>
         <% report["assertions"].each do |assertion| %>
-            <li>
-              <span class="<%= assertion["type"]-%>"><%= assertion["type"].capitalize %>:</span>
+            <li class="<%= assertion["type"] -%>">
               <%= assertion["message"].capitalize-%>
             </li>
         <% end %>
