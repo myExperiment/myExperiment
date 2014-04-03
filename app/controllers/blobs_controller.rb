@@ -150,8 +150,7 @@ class BlobsController < ApplicationController
     else
       data = params[:blob][:data].read
       params[:blob][:local_name] = params[:blob][:data].original_filename
-      content_type = params[:blob][:data].content_type
-      params[:blob].delete('data')
+      d = params[:blob].delete('data')
 
       params[:blob][:contributor_type], params[:blob][:contributor_id] = "User", current_user.id
 
@@ -159,11 +158,7 @@ class BlobsController < ApplicationController
    
       @blob = Blob.new(params[:blob])
       @blob.content_blob = ContentBlob.new(:data => data)
-
-      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user,
-                                                                   :title => content_type,
-                                                                   :mime_type => content_type,
-                                                                   :category=> 'Blob')
+      @blob.content_type = get_content_type(d)
 
       respond_to do |format|
         if @blob.save
@@ -226,10 +221,7 @@ class BlobsController < ApplicationController
     if params[:blob][:data] && params[:blob][:data].size > 0
       @blob.build_content_blob(:data => params[:blob][:data].read)
       @blob.local_name = params[:blob][:data].original_filename
-      @blob.content_type = ContentType.find_or_create_by_mime_type(:user => current_user,
-                                                                   :title => params[:blob][:data].content_type,
-                                                                   :mime_type => params[:blob][:data].content_type,
-                                                                   :category => 'Blob')
+      @blob.content_type = get_content_type(params[:blob][:data])
     end
 
     params[:blob].delete(:data)
@@ -486,5 +478,22 @@ class BlobsController < ApplicationController
     if @blob
       render_401("You are not authorised to manage this file.") unless @blob.owner?(current_user)
     end
+  end
+
+  private
+
+  def get_content_type(data)
+    content_type = data.content_type
+
+    # Hack to recognize component profiles
+    if @blob.content_blob.data[0..512].include?('http://ns.taverna.org.uk/2012/component/profile')
+      content_type = 'application/vnd.taverna.component-profile+xml'
+    end
+
+    ContentType.find_or_create_by_mime_type(:user => current_user,
+                                            :title => content_type,
+                                            :mime_type => content_type,
+                                            :category=> 'Blob')
+
   end
 end
