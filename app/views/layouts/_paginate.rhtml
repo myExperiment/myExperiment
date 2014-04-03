@@ -15,7 +15,7 @@
         Results per page:
         <select onchange="javascript:location = this.options[this.selectedIndex].value;">
           <% num_options.each do |num_option| %>
-            <option value="<%= url_with_params(request.path, request.query_parameters.merge("num" => num_option)) -%>" <% if params[:num] == num_option -%> selected="selected"<% end -%>><%= num_option -%></option>
+            <option value="<%= url_with_params(request.path, request.query_parameters.merge("num" => num_option, "page" => nil)) -%>" <% if params[:num] == num_option -%> selected="selected"<% end -%>><%= num_option -%></option>
           <% end %>
         </select>
       <% end %>
