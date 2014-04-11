@@ -75,7 +75,7 @@ module WorkflowsHelper
   def component_details(hash)
     if internal_resource_uri?(hash[:registry])
       component = WorkflowVersion.find_by_title_and_version(hash[:name], hash[:version])
-      link = component ? link_to(hash[:name], component) : hash[:name]
+      link = component ? link_to(hash[:name], workflow_path(component.workflow, :version => component.version)) : hash[:name]
       "<div><h3>Component</h3>#{link}</div>"
     else
       "<div><h3>External Component</h3>#{hash[:name]} v#{hash[:version]}</div>"
