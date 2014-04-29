@@ -57,7 +57,8 @@ class Workflow < ActiveRecord::Base
   acts_as_reviewable
 
   acts_as_rdf_serializable('application/x-turtle',
-      :generation_error_message => "Failed to generate RDF, please check the given workflow file is valid.") do |workflow|
+      :generation_error_message => "Failed to generate RDF, please check the given workflow file is valid.",
+      :do_not_validate => true) do |workflow|
     workflow.processor_class.new(workflow.content_blob.data).extract_rdf_structure(workflow) unless workflow.processor_class.nil?
   end
 
