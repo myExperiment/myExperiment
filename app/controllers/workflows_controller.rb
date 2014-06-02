@@ -130,13 +130,7 @@ class WorkflowsController < ApplicationController
   
   # GET /workflows/:id/download/:name
   def named_download
-
-    # check that we got the right filename for this workflow
-    if params[:name] == @workflow.filename(@viewing_version_number)
-      download
-    else
-      render :nothing => true, :status => "404 Not Found"
-    end
+    download
   end
 
   # GET /workflows
