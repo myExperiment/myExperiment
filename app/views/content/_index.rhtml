@@ -36,11 +36,11 @@
               <div class="options <%= visible ? "" : "extra_options #{fold_name_2}" -%>">
                 <% set.each do |object| %>
                   <div title='<%= h(object[:plain_label]) -%>'<%= object[:selected] ? ' class="selected"' : '' -%>>
-                    <input class='checkbox' type='checkbox' onclick='javascript:location = <%= url_with_params(request.path, object[:checkbox_uri]).to_json -%>; return false;' <% if object[:selected] %> checked='checked' <% end %> />
-                    <a href="<%= url_with_params(request.path, object[:label_uri]) -%>">
-                      <div class='count'><%= object[:count] -%></div>
-                      <div class='label'><span class='truncate'><%= h(object[:label]) -%></span></div>
+                    <input class='pivot-checkbox' type='checkbox' onclick='javascript:location = <%= url_with_params(request.path, object[:checkbox_uri]).to_json -%>; return false;' <% if object[:selected] %> checked='checked' <% end %> />
+                    <a class='pivot-label' href="<%= url_with_params(request.path, object[:label_uri]) -%>">
+                      <span class='truncate'><%= h(object[:label]) -%></span>
                     </a>
+                    <div class='pivot-count'><%= object[:count] -%></div>
                   </div>
                 <% end %>
               </div>

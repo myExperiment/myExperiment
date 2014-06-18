@@ -2056,18 +2056,15 @@ table.topic td.tag_vote {
   top: 2px;
 }
 
-.pivot .options > DIV {
+.pivot .options > div {
   border: 1px solid transparent;
-  padding: 0.2em;
+  padding: 1px;
   font-size: 90%;
-  padding-left: 0.2em;
+  height: 24px;
+  line-height: 20px;
 }
 
-.pivot .options > DIV:hover {
-  background: #d7e3ff;
-}
-
-.pivot .options > DIV.selected {
+.pivot .options > div.selected {
   background: #c6cfff;
 }
 
@@ -2085,19 +2082,18 @@ table.topic td.tag_vote {
   font-size: 90%;
 }
 
-.pivot .checkbox {
-  display: inline;
+.pivot .pivot-checkbox {
   padding-top: 0;
   padding-bottom: 0;
 }
 
-.pivot .label {
+.pivot .pivot-label {
   width: 90px;
   overflow: hidden;
   display: inline-block;
 }
 
-.pivot .count {
+.pivot .pivot-count {
   float: right;
 }
 
@@ -2137,20 +2133,20 @@ table.topic td.tag_vote {
   border: 1px solid gray;
 }
 
-.pivot .filter_search_box INPUT.query {
-  width: 123px;
+.pivot .filter_search_box input.query {
+  width: 117px;
   padding: 2px;
   border: none;
   outline: none;
 }
 
-.pivot .filter_search_box INPUT.submit {
+.pivot .filter_search_box input.submit {
   vertical-align: middle;
   position: relative;
   top: -1px;
 }
 
-.pivot .filter_search_box IMG {
+.pivot .filter_search_box img {
   vertical-align: middle;
   position: relative;
   top: -1px;
