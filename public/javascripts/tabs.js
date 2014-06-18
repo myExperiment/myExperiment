@@ -164,7 +164,7 @@ function hashClicked(evt) {
   return false;
 }
 
-document.observe("dom:loaded", function() {
+$(document).ready(function() {
   initialiseTabs();
 });
 
