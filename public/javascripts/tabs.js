@@ -164,7 +164,7 @@ function hashClicked(evt) {
   return false;
 }
 
-$(document).ready(function() {
+jQuery(document).ready(function() {
   initialiseTabs();
 });
 
