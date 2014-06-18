@@ -6,11 +6,20 @@
    Note that for font-size, only use %ages according to: 
    http://developer.yahoo.com/yui/fonts/#fontsize
 */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 body {
   background: #ffffff;
   font-family: arial, sans-serif;
   line-height: 1.0;
-  padding-top: 50px;
+  margin-bottom: 120px;
+}
+
+body > .container {
+    padding-top: 60px;
 }
 
 p {
@@ -196,10 +205,13 @@ li {
 /* Begin Footer styles */
 
 #ft {
-  color: #333333;
-  background-color: #EAEAEA;
-  padding: 20px;
-  overflow: auto;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 110px;
+    padding-top: 10px;
+    background-color: #eaeaea;
 }
 
 #ft .funders {

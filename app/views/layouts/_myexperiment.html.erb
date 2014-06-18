@@ -68,7 +68,7 @@
 <% if @content_for_body %>
     <%= yield :body %>
 <% else %>
-    <div class="container">
+    <div class="container" id="main">
       <div id="myexp_breadcrumbs_bar">
         <%= render :partial => "layouts/breadcrumbs_bar" %>
       </div>
