@@ -24,8 +24,11 @@ class Announcement < ActiveRecord::Base
   # returns the 'last created' Announcements
   # the maximum number of results is set by #limit#
   def self.latest(limit=5)
-    self.find(:all,
+    announcements = Announcement.find(:all,
+              :conditions => ["created_at > :week", :week => 1.week.ago],
               :order => "created_at DESC",
               :limit => limit)
+    announcements = [Announcement.last] if announcements.empty?
+    announcements
   end
 end 
