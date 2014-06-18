@@ -100,7 +100,7 @@ GEM
     taverna-scufl (0.7.2)
       darkfish-rdoc (>= 1.1.5)
       rdoc (>= 2.4.3)
-    taverna-t2flow (0.5.0)
+    taverna-t2flow (0.5.1)
       libxml-ruby (>= 1.1.4)
     wf4ever-transformation-client (0.3.1)
     will_paginate (2.3.16)

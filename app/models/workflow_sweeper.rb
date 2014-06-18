@@ -9,8 +9,8 @@ class WorkflowSweeper < ActionController::Caching::Sweeper
   observe Workflow
 
   def after_create(workflow)
-    expire_sidebar_assets(workflow.contribution.contributor_id) if workflow.contribution.contributor_type == 'User'
-    expire_listing(workflow.contribution.contributor_id, workflow.contribution.contributor_type) if workflow.contribution.contributor_type == 'Network'
+    expire_sidebar_assets(workflow.contributor_id) if workflow.contributor_type == 'User'
+    expire_listing(workflow.contributor_id, workflow.contributor_type) if workflow.contributor_type == 'Network'
     expire_home_cache
   end
 
@@ -18,6 +18,7 @@ class WorkflowSweeper < ActionController::Caching::Sweeper
     expire_sidebar_assets(workflow.contributor_id) if workflow.contributor_type == 'User'
     expire_multiple_sidebar_favourites(workflow.id, 'Workflow')
     expire_listing(workflow.id, 'Workflow')
+    expire_fragment(:controller => 'workflows_cache', :action => 'component_validity', :id => workflow.id, :version => workflow.current_version)
     expire_home_cache
   end
 

@@ -57,7 +57,8 @@ class Workflow < ActiveRecord::Base
   acts_as_reviewable
 
   acts_as_rdf_serializable('application/x-turtle',
-      :generation_error_message => "Failed to generate RDF, please check the given workflow file is valid.") do |workflow|
+      :generation_error_message => "Failed to generate RDF, please check the given workflow file is valid.",
+      :do_not_validate => true) do |workflow|
     workflow.processor_class.new(workflow.content_blob.data).extract_rdf_structure(workflow) unless workflow.processor_class.nil?
   end
 
@@ -462,5 +463,14 @@ class Workflow < ActiveRecord::Base
         :data         => content_blob.data,
         :context      => self,
         :content_type => content_type.mime_type)
+  end
+
+  def component_profile
+    self.component_families.map {|f| f.component_profile}.first
+  end
+
+  def component_checklist(version = nil)
+    version ||= self.current_version
+    @checklist ||= ComponentValidator.new(self.find_version(version), self.component_profile).validate
   end
 end

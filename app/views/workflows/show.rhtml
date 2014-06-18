@@ -210,7 +210,8 @@
 			<% if @authorised_to_download %>
         <% begin %>
           <%= render :partial => "workflows/#{get_type_dir(@viewing_version)}/internals", :locals => { :workflow => @workflow, :version => @viewing_version_number } -%>
-        <% rescue %>
+        <% rescue => e %>
+          <% logger.error "Exception when rendering internals:\n" + e.message + "\n " + e.backtrace.join("\n ") %>
           <p class="none_text">
             There was a problem in extracting the internals of this workflow.
           </p>
@@ -233,6 +234,10 @@
 	</div>
 	
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @workflow } %>
+
+    <% if @workflow.component? %>
+      <%= render :partial => "workflows/component_validity_box", :locals => { :workflow => @workflow, :version => @viewing_version_number } %>
+    <% end %>
 	
 	<%= render :partial => "contributions/license_box", :locals => { :contributable => @workflow } %>
 	

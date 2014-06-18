@@ -51,14 +51,16 @@ module Finn
 
         def generate_rdf
           begin
-            @rdf = self.to_rdf
-          rescue
-            raise unless Rails.env == "production"
-            errors.add_to_base(self.rdf_serializable_options[:generation_error_message] || "RDF failed to generate")
-            false
-          else
-            true
+            @rdf = to_rdf
+          rescue => e
+            Rails.logger.error("RDF Generation Error: \n #{e}")
+            unless self.rdf_serializable_options[:do_not_validate]
+              errors.add_to_base(self.rdf_serializable_options[:generation_error_message] || "RDF failed to generate")
+              return false
+            end
           end
+
+          true
         end
 
         def store_rdf

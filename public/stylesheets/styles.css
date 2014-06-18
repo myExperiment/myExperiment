@@ -1344,6 +1344,7 @@ div.auto_complete {
 }
 
 div.auto_complete ul {
+<<<<<<< HEAD
   border: 1px solid #888;
   margin: 0;
   padding: 0;
@@ -1351,6 +1352,14 @@ div.auto_complete ul {
   list-style-type: none;
   font-weight: bold;
   font-size: 94%;
+=======
+	border: 1px solid #888;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	font-weight: bold;
+	font-size: 94%;
+>>>>>>> master
 }
 
 div.auto_complete ul li {
@@ -2612,3 +2621,56 @@ TABLE.metadata TD {
 TABLE.metadata TD.sha1 {
   font-family: monospace;
 }
+
+div.component-validity {
+    width: 200px;
+    border: 1px solid black;
+    margin: 1em auto;
+    overflow: auto;
+    border-radius: 3px;
+    background-color: white;
+    box-shadow: 0 -2px 2px 1px #000000 inset;
+}
+
+div.component-validity div {
+    height: 10px;
+    float: left;
+    opacity: 0.8;
+}
+
+div.component-validity .satisfied{
+    background-color: #59c82f;
+}
+
+div.component-validity .warning {
+    background-color: #eee27a;
+}
+
+div.component-validity .failed {
+    background-color: #e7604b;
+}
+
+
+#component-validity-breakdown ul {
+    margin: 5px;
+}
+
+#component-validity-breakdown li {
+    background-position: left 2px;
+    background-repeat: no-repeat;
+    list-style: none outside none;
+    padding: 0 0 5px 20px;
+}
+
+#component-validity-breakdown li.satisfied {
+    background-image: url("/images/famfamfam_silk/tick.png");
+}
+
+#component-validity-breakdown li.warning {
+    background-image: url("/images/famfamfam_silk/error.png");
+}
+
+#component-validity-breakdown li.failed {
+    background-image: url("/images/famfamfam_silk/cross.png");
+}
+

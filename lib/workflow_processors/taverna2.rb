@@ -413,7 +413,7 @@ module WorkflowProcessors
 
     def extract_rdf_structure(workflow)
       rdf = ''
-      IO.popen("java -jar #{RAILS_ROOT}/vendor/java/scufl2-wfdesc/scufl2-wfdesc-0.3.5-standalone.jar", 'r+') do |converter|
+      IO.popen("java -jar #{RAILS_ROOT}/vendor/java/scufl2-wfdesc/scufl2-wfdesc-0.3.7-standalone.jar", 'r+') do |converter|
         converter.puts(workflow.content_blob.data)
         converter.close_write
         rdf = converter.read
