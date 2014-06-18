@@ -1344,7 +1344,6 @@ div.auto_complete {
 }
 
 div.auto_complete ul {
-<<<<<<< HEAD
   border: 1px solid #888;
   margin: 0;
   padding: 0;
@@ -1352,14 +1351,6 @@ div.auto_complete ul {
   list-style-type: none;
   font-weight: bold;
   font-size: 94%;
-=======
-	border: 1px solid #888;
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
-	font-weight: bold;
-	font-size: 94%;
->>>>>>> master
 }
 
 div.auto_complete ul li {
