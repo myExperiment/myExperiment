@@ -17,4 +17,12 @@
     background-color: #ffffff;
 }
 
+.navbar-myexp .navbar-header > .navbar-toggle {
+    border: 1px solid #cccccc;
+}
+
+.navbar-myexp .navbar-header > .navbar-toggle > span.icon-bar {
+    background-color: #cccccc;
+}
+
 /* myExp logo, red: #cc0031, green: #098224 */
