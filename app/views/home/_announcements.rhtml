@@ -2,7 +2,7 @@
 <div class="box">
   <div class="title">
     <%= feed_icon_tag "Site Announcements", announcements_path(:format => :rss) %>
-    Site Announcements
+    Announcements
   </div>
   <div class="content">
     <% cache(:controller => 'home_cache', :action => 'announcements') do -%>
