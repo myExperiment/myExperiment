@@ -1,5 +1,5 @@
 .navbar-myexp {
-    background-color: #ffffff;
+    background-color: #fafafa;
     border-color: #cccccc;
 }
 
@@ -14,7 +14,7 @@
 }
 
 .nav > li > a:hover, .nav > li > a:focus {
-    background-color: #ffffff;
+    background-color: #fafafa;
 }
 
 .navbar-myexp .navbar-header > .navbar-toggle {
@@ -23,6 +23,14 @@
 
 .navbar-myexp .navbar-header > .navbar-toggle > span.icon-bar {
     background-color: #cccccc;
+}
+
+.navbar-myexp a {
+    color: #333;
+}
+
+.navbar-myexp a:hover, .navbar-myexp a:focus {
+    color: #888;
 }
 
 /* myExp logo, red: #cc0031, green: #098224 */
