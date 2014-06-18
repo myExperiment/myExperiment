@@ -94,7 +94,7 @@ function initialiseFolds() {
   }
 }
 
-document.observe("dom:loaded", function() {
+$(document).ready(function() {
   initialiseFolds();
 });
 
