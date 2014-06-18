@@ -7,9 +7,10 @@
    http://developer.yahoo.com/yui/fonts/#fontsize
 */
 body {
-  background: #EEEEEE;
+  background: #ffffff;
   font-family: arial, sans-serif;
   line-height: 1.0;
+  padding-top: 50px;
 }
 
 p {
@@ -89,7 +90,7 @@ a {
 }
 
 a:hover {
-  color: #006699;
+  color: #317eff;
   text-decoration: underline;
 }
 
@@ -127,15 +128,13 @@ li {
 }
 
 #myexp_header {
-  padding-top: 10px;
   position: relative;
 }
 
-.logo {
-  float: left;
-  width: 290px;
-  padding-left: 10px;
+#logo img {
+  margin: 8px;
 }
+
 
 .links {
   color: #999999;
@@ -272,24 +271,27 @@ li {
 
 /* begin css tabs nav */
 .tabnav {
-  text-align: center;
-  font-weight: bolder;
   font-size: 108%;
+  overflow: auto;
   margin: 0;
+  padding-top: 30px
 }
 
 .tabnav li {
   list-style: none;
   margin: 0;
-  display: inline;
+  display: block;
+  float: left;
+  margin-left: 4px;
 }
 
 .tabnav li a {
-  padding: 2px 12px;
-  margin-left: 3px;
+  padding: 4px 20px;
   text-decoration: none;
   background-color: #E0E0E0;
-  display: inline-block;
+  display: block;
+  height: 30px;
+  line-height: 30px;
 }
 
 .tabnav li a:link {
@@ -410,12 +412,12 @@ UL.breadcrumb_list LI + LI:before {
 
 #home_container .left {
   float: left;
-  width: 20%;
+  width: 18%;
 }
 
 #home_container .right {
   float: right;
-  width: 75%;
+  width: 78%;
 }
 
 #home_container .box {
@@ -429,11 +431,12 @@ UL.breadcrumb_list LI + LI:before {
 
 #home_container .box .title {
     border-bottom: 1px dotted #CCCCCC;
-    color: #222222;
+    color: #444;
     font-weight: bold;
     height: 30px;
     line-height: 30px;
     text-align: left;
+    font-size: 150%;
 }
 
 #home_container .box .content {
@@ -1329,13 +1332,6 @@ a.tagsSelectorOn {
   padding: 0.6em 1em;
   border: 1px dotted #999999;
   background-color: #FFFFFF;
-}
-
-.badge {
-  padding: 0;
-  margin: 0;
-  margin-left: 0.2em;
-  vertical-align: middle;
 }
 
 /* begin autocomplete styles */
@@ -2578,11 +2574,6 @@ FIELDSET.atom-feed INPUT {
 
 span.unread_message_count {
   font-weight: bold;
-}
-
-#search {
-  float: right;
-  margin-right: 10px;
 }
 
 #new_object {

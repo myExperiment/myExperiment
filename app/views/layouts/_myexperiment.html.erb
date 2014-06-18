@@ -11,9 +11,9 @@
   <% if @lod_rdf %><link rel="alternate" href="<%= @lod_rdf -%>" type="application/rdf+xml" title="RDF+XML" /><% end %>
   <% if @lod_xml %><link rel="alternate" href="<%= @lod_xml -%>" type="application/xml" title="REST XML" /><% end %>
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
-  <%= stylesheet_link_tag 'reset-fonts-grids', 'base-min', 'acts_as_taggable_stylesheet',
-                          'star_rating', 'gadgets', 'misc_skinning', 'pagination', *@layout["stylesheets"] %>
-  <%= javascript_include_tag :defaults, "boxover.js", "tabs.js", "folds.js" %>
+  <%= stylesheet_link_tag 'acts_as_taggable_stylesheet',
+                          'star_rating', 'gadgets', 'misc_skinning', 'pagination', 'bootstrap', 'bootstrap_overrides', *@layout["stylesheets"] %>
+  <%= javascript_include_tag :defaults, "jquery-1.11.1.js", "boxover.js", "tabs.js", "folds.js", "bootstrap.js" %>
 
   <% if controller.action_name.downcase == "timeline" %>
     <script src="http://simile.mit.edu/timeline/api/timeline-api.js" type="text/javascript"></script>
@@ -27,51 +27,48 @@
 
 <%= render :partial => "layouts/integrations/#{session[:came_from]}" unless session[:came_from].blank? %>
 
-<div id="doc2" class="yui-t4">
-
-  <% if @content_for_header %>
-    <%= yield :header %>
-  <% else %>
-    <div id="hd">
-      <div id="myexp_header">
-        <div class="logo">
-          <% if @content_for_logo %>
-            <%= yield :logo %>
-          <% else %>
-            <%= link_to image_tag(Conf.site_logo), "/" %>
-          <% end %>
-        </div>
-        <div id="site_info_links" class="links">
-          <% if @content_for_site_info_links %>
-            <%= yield :site_info_links %>
-          <% else %>
-            <%= render :partial => 'layouts/site_info_links' %>
-          <% end %>
-        </div>
-        <div id="user_links">
-          <%= render :partial => 'layouts/user_links' %>
-        </div>
-        <div style="clear:both"></div>
-      </div>
-      <div id="myexp_tabs">
+<div class="navbar navbar-myexp navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a id="logo" href="#">
+        <% if @content_for_logo %>
+          <%= yield :logo %>
+        <% else %>
+          <%= image_tag(Conf.site_logo) %>
+        <% end %>
+      </a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
         <% if @content_for_tabs %>
           <%= yield :tabs %>
         <% else %>
           <%= render :partial => 'layouts/tab_bar' %>
         <% end %>
-      </div>
-      <div id="myexp_searchbar">
-        <%= render :partial => "gadgets/new_object" %>
         <%= render :partial => "layouts/search" %>
-      </div>
-    </div>
-  <% end %>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <% if logged_in? -%>
+            <%= render :partial => "gadgets/new_object" %>
+        <% end %>
+        <%= render :partial => 'layouts/user_links' %>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</div>
 
 
-  <% if @content_for_body %>
+
+<% if @content_for_body %>
     <%= yield :body %>
-  <% else %>
-    <div id="bd">
+<% else %>
+    <div class="container">
       <div id="myexp_breadcrumbs_bar">
         <%= render :partial => "layouts/breadcrumbs_bar" %>
       </div>
@@ -81,23 +78,21 @@
         <%= yield :layout %>
       </div>
     </div>
-  <% end %>
+<% end %>
 
 
-  <% if @content_for_footer %>
+<% if @content_for_footer %>
     <%= yield :footer %>
-  <% else %>
-      <% cache(:controller => 'global_cache', :action => 'footer') do -%>
+<% else %>
+    <% cache(:controller => 'global_cache', :action => 'footer') do -%>
         <div id="ft">
           <%= render :partial => "layouts/footer" %>
         </div>
     <% end -%>
-  <% end %>
+<% end %>
 
 
-  <%= render :partial => "layouts/debug" if Conf.show_debug %>
-</div>
-
+<%= render :partial => "layouts/debug" if Conf.show_debug %>
 <%= render :partial => "layouts/web_analytics" if Conf.google_web_analytics["enable"] %>
 
 <% if @content_for_analytics %>

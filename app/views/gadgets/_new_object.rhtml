@@ -1,22 +1,9 @@
-<script type="text/javascript">
-  function redirectToNew() {
-    var klass = $("new_object_type").value;
-  <% Conf.new_menu.each do |item| %>
-    if (klass == "<%= item['label'] %>")
-      location.href = "<%= item['link'] %>";
-  <% end %>
-  }
-</script>
-
-
-<div id="new_object">
-  <form onsubmit="redirectToNew(); return false;">
-    <select id="new_object_type">
-      <% Conf.new_menu.each do |item| %>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
+  <ul class="dropdown-menu">
+    <% Conf.new_menu.each do |item| %>
         <% next if item['condition'] and !eval(item['condition']) %>
-        <option value="<%= item['label'] %>" <%= "selected" if item['controller'] && controller.controller_name.match(item['controller']) %>>New <%= item['label'] %></option>
-      <% end %>
-    </select>
-    <%= submit_tag "GO" %>
-  </form>
-</div>
+        <li><%= link_to "New #{item['label']}", item['link'] %></li>
+    <% end %>
+  </ul>
+</li>

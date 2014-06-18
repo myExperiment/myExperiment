@@ -1,47 +1,78 @@
-<a id="user_menu_button" onselectstart="return false;">
-  <%= image_tag(current_user.avatar? ? avatar_url(current_user.profile.picture_id, 24) : "avatar.png",
-                :size => '24x24', :style => 'vertical-align: middle') %>
-  <%= current_user.name -%>
-  <% if (alerts = current_user.messages_unread.size +
-                  current_user.friendships_pending.length +
-                  current_user.networks_membership_requests_pending.length +
-                  current_user.memberships_invited.length) > 0 %>
-    <span class="unread_message_count">(<%= alerts -%>)</span>
-  <% end %>
-  <%= image_tag("expand_arrow.png", :id => 'expand_user_menu', :style=> 'vertical-align: middle') -%>
-  <%= image_tag("collapse_arrow.png", :id => 'collapse_user_menu', :style=> 'vertical-align: middle; display: none') -%></a>
-<div id="user_menu" style="display: none;">
-  <div class="header"><%= icon 'network', nil, nil, nil, 'Social'-%></div>
-  <ul class="gadget_list">
-    <li><%= icon "profile", user_url(current_user), nil, nil, " My Profile" %></li>
-    <li><%= messages_link(current_user, "My Messages") %></li>
-    <li><%= friendships_pending_link(current_user) %></li>
-    <li><%= memberships_link(current_user) %></li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    <% image_tag(current_user.avatar? ? avatar_url(current_user.profile.picture_id, 24) : "avatar.png",
+                  :size => '24x24', :style => 'vertical-align: middle') %>
+    <%= current_user.name -%>
+    <% if (alerts = current_user.messages_unread.size +
+            current_user.friendships_pending.length +
+            current_user.networks_membership_requests_pending.length +
+            current_user.memberships_invited.length) > 0 %>
+        <span class="badge"><%= alerts -%></span>
+    <% end %>
+    <b class="caret"></b>
+  </a>
+  <ul class="dropdown-menu">
+    <li class="dropdown-header">Social</li>
+    <li>
+      <% link_to user_url(current_user) do %>
+          My Profile
+      <% end %>
+    </li>
+    <li>
+      <% link_to messages_path do %>
+          My Messages
+          <% unless current_user.messages_unread.empty? %>
+              <span class="badge"><%= current_user.messages_unread.size %></span>
+          <% end %>
+      <% end %>
+    </li>
+    <li>
+      <% link_to user_friendships_path(current_user) do %>
+          My Friendships
+          <% unless current_user.friendships_pending.empty? %>
+              <span class="badge"><%= current_user.friendships_pending.size %></span>
+          <% end %>
+      <% end %>
+    </li>
+    <li>
+      <% link_to user_memberships_path(current_user) do %>
+          My Memberships
+          <% unless (length = current_user.networks_membership_requests_pending.length + current_user.memberships_invited.length) == 0 %>
+              <span class="badge"><%= length %></span>
+          <% end %>
+      <% end %>
+    </li>
+
+    <li class="dropdown-header">Contributions</li>
+    <% cache(:controller => 'sidebar_cache', :action => 'asset_manager', :id => current_user.id) do -%>
+        <li>
+          <% link_to user_workflows_url(current_user) do %>
+              My Workflows
+              <!--<span class="badge"><%= current_user.workflows.size %></span>-->
+          <% end %>
+        </li>
+        <li>
+          <% link_to user_blobs_url(current_user) do %>
+              My Files
+              <!--<span class="badge"><%= current_user.blobs.size %></span>-->
+          <% end %>
+        </li>
+        <li>
+          <% link_to user_packs_url(current_user) do %>
+              My Packs
+              <!--<span class="badge"><%= current_user.packs.size %></span>-->
+          <% end %>
+        </li>
+    <% end %>
+
+    <%= render :partial => 'gadgets/user_favourites' %>
+
+    <% if admin? %>
+        <li class="dropdown-header">Admin</li>
+        <li><%= link_to 'Manage Announcements', announcements_url %></li>
+        <li><%= link_to 'Manage Users', "/users/check" %></li>
+    <% end %>
+    <li class="divider"></li>
+    <li><%= link_to "Log out", session_path, :method => :delete -%></li>
   </ul>
-  <% cache(:controller => 'sidebar_cache', :action => 'asset_manager', :id => current_user.id) do -%>
-    <div class="header"><%= icon 'contributions', nil, nil, nil, 'Contributions'-%></div>
-    <ul class="gadget_list">
-      <li><%= icon "workflow", user_workflows_url(current_user), nil, nil, " My Workflows" %>
-        (<%= current_user.workflows.size-%>)
-      </li>
-      <li><%= icon "blob", user_blobs_url(current_user), nil, nil, " My Files" %>
-        (<%= current_user.blobs.size-%>)
-      </li>
-      <li><%= icon "pack", user_packs_url(current_user), nil, nil, " My Packs" %>
-        (<%= current_user.packs.size-%>)
-      </li>
-    </ul>
-  <% end %>
-  <%= render :partial => 'gadgets/user_favourites' %>
-  <% if admin? %>
-    <div class="header"><%= icon 'admin', nil, nil, nil, 'Administration'-%></div>
-    <ul class="gadget_list">
-      <li><%= icon "announcement", announcements_url, nil, nil, "Manage Announcements" %></li>
-      <li><%= icon "usercheck", "/users/check", nil, nil, "Manage Users" %></li>
-    </ul>
-  <% end %>
-  <div style="border-top: 1px solid #ccc"></div>
-  <ul class="gadget_list">
-    <li><%= signout_link -%></li>
-  </ul>
-</div>
+</li>

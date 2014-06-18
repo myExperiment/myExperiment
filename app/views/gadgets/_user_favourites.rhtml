@@ -1,19 +1,11 @@
 <% gadget_characters_limit ||= 20 -%>
 <% bookmarkables = current_user.bookmarks.collect {|b| b.bookmarkable} %>
 
-<div class="header"><%= icon 'favourite', nil, nil, nil, 'Favourites'-%></div>
-
-<ul class="gadget_list">
-  <% bookmarkables.each do |instance| %>
+<li class="dropdown-header">Favourites</li>
+<% bookmarkables.each do |instance| %>
     <li>
       <%= icon instance.class.name.downcase,
                contributable_url(instance.id, instance.class.name),
                nil, nil, contributable_name(instance.id, instance.class.name, gadget_characters_limit) %>
     </li>
-  <% end %>
-  <% if bookmarkables.empty? %>
-    <li>
-      <span class="none_text">You have no favourites</span>
-    </li>
-  <% end %>
-</ul>
+<% end %>
