@@ -2661,3 +2661,9 @@ div.component-validity .failed {
     background-image: url("/images/famfamfam_silk/cross.png");
 }
 
+#commit-hash-colour {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border: 1px solid black;
+}

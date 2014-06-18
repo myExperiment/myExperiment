@@ -21,7 +21,9 @@
 </div>
 
 <div style="text-align: right; width: 49%; float: right">
-  Icons: <%= link_to "Silk icon set 1.3", "http://www.famfamfam.com/lab/icons/silk/" %>
+  Icons: <%= link_to "Silk icon set 1.3", "http://www.famfamfam.com/lab/icons/silk/" %><br/>
+  Commit: <%= $commit[0..9] %> <div id="commit-hash-colour" style="background-color: #<%= $commit[0..5] -%>"></div>
+
 </div>
 
 <div style="text-align: center; padding-top: 20px; clear: both">
