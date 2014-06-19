@@ -33,4 +33,10 @@
     color: #888;
 }
 
+/*  */
+.navbar-form .input-group-btn,
+.navbar-form .input-group-addon {
+    width: auto;
+}
+
 /* myExp logo, red: #cc0031, green: #098224 */
