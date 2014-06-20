@@ -29,6 +29,6 @@ class Announcement < ActiveRecord::Base
               :order => "created_at DESC",
               :limit => limit)
     announcements = [Announcement.last] if announcements.empty?
-    announcements
+    announcements.compact
   end
 end 
