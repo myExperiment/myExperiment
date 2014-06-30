@@ -7,6 +7,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 require 'pivoting'
+require 'authenticated_system'
 
 class ApplicationController < ActionController::Base
 
