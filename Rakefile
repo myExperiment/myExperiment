@@ -6,21 +6,12 @@ require File.expand_path('../config/application', __FILE__)
 
 MyExperiment::Application.load_tasks
 
-
 require 'rake'
 require 'rake/testtask'
 require 'rdoc/task'
-require 'tasks/rails'
 
 require 'sunspot/rails/tasks'
 require 'sunspot/solr/tasks'
-
-begin
-  gem 'delayed_job', '~>2.0.4'
-  require 'delayed/tasks'
-rescue LoadError
-  STDERR.puts "Run `rake gems:install` to install delayed_job"
-end
 
 desc 'Rebuild Solr index'
 task "myexp:refresh:solr" do

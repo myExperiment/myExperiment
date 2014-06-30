@@ -29,7 +29,7 @@ gem 'will_paginate', '~> 3.0'
 gem 'open_id_authentication'
 gem 'simple-rss', '~> 1.2.3'
 gem 'net-http-persistent', '~> 2.8'
-gem 'delayed_job'
+gem 'delayed_job_active_record'
 gem 'wf4ever-transformation-client', '~> 0.3.0'
 gem 'sanitize', '~> 2.0.6'
 gem "oauth-plugin", "~> 0.4.0"
