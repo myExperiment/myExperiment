@@ -1,0 +1,26 @@
+<!-- Latest Groups -->
+<% cache(:controller => 'home_cache', :action => 'latest_groups', :id => (logged_in? ? current_user.id : 0)) do -%>
+    <div class="box">
+      <div class="title">
+        Latest Groups
+      </div>
+      <div class="content">
+        <% unless (groups = Network.recently_created).empty? %>
+            <ul class="list" style="font-size: 85%;">
+              <% groups.each do |g| %>
+                  <% if Authorization.check("view", g, current_user) %>
+                      <li>
+                        <%= icon('network', nil, nil, 'group icon', '') %>
+                        <b><%= link_to h(g.title), network_path(g) %></b>
+                        by <b><%= contributor(g.user_id, 'User') %></b>
+                        (<%= timeago_fuzzy g.created_at %>)
+                      </li>
+                  <% end %>
+              <% end %>
+            </ul>
+        <% else %>
+            <p class="none_text">None</p>
+        <% end %>
+      </div>
+    </div>
+<% end -%>

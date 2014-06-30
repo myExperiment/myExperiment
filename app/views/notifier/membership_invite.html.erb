@@ -1,0 +1,15 @@
+Hi <%= @user.name %>,
+ 
+You have been invited to join the following Group on <%= Conf.sitename %>:
+
+Name: <%= @network.title %>
+Administrator: <%= @network.owner.name %>
+
+Please go to <%= "http://" + @base_url + user_membership_path(@user, @membership) %> to confirm/reject this invite.
+
+  <%= login_identity_reminder(@target) %>
+
+Thanks,
+ 
+- The <%= Conf.sitename %> Team
+<%= Conf.base_uri -%>

@@ -1,0 +1,10 @@
+<div class="box_simple" style="margin: 1em 0;">
+	<p><b>DEBUG:</b></p>
+	
+	<p>
+		<b>Queries in Controller:</b> <%= queries.count_with_label :controller %> |
+  	<b>Queries in View:</b> <%= queries.count_with_label :view %> |
+  	<b>Query Time:</b> <%= queries.runtime %>
+	</p>
+</div>
+

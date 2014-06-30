@@ -1,0 +1,37 @@
+<%
+  comments_timeline = ::Simile::Timeline::Timeline.new(
+    :name        => "Comments",
+    :event_source => rest_resource_uri(@context) + "/comments.json",
+    :event_band   => :days,
+    :bands       => {
+      :months => {
+        :trackGap       => '0.1',
+        :showEventText  => 'false',
+        :width          => '"25%"',
+        :intervalUnit   => 'Timeline.DateTime.MONTH',
+        :intervalPixels => '200'
+      },
+      :days => {
+        :trackGap       => '0.1',
+        :showEventText  => 'false',
+        :width          => '"25%"',
+        :intervalUnit   => 'Timeline.DateTime.DAY',
+        :intervalPixels => '100'
+      },
+      :hours => {
+        :width          => '"50%"',
+        :intervalUnit   => 'Timeline.DateTime.HOUR',
+        :intervalPixels => '20'
+      }
+    },
+    :bands_order => [ :months, :days, :hours ],
+    :synchronize => {
+      :months => :hours,
+      :days   => :hours
+    },
+    :highlight => [ :months, :days ]
+  )
+
+%>
+
+<%= simile_timeline(comments_timeline, { :class => 'default_timeline' } ) %>

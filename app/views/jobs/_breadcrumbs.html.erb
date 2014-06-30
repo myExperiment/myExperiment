@@ -1,0 +1,24 @@
+<% if @experiment -%>
+
+	<li><%= link_to 'Experiments', experiments_path -%></li>
+	<li><%= link_to "#{h(@experiment.title)}", experiment_path(@experiment) -%></li>
+	<li><%= link_to 'Jobs', experiment_jobs_path(@experiment) -%></li>
+	
+	<% if ["show", "new", "edit"].include? controller.action_name.to_s -%>
+	  <% case controller.action_name.to_s; when "show" -%>
+	    <li><%= h(@job.title) -%></li>
+	  <% when "new" %>
+	    <li>New Job</li>
+	  <% when "edit" %>
+			<li><%= link_to "#{h(@job.title)}", experiment_job_path(@experiment, @job) -%></li>
+    	<li>Manage</li>
+	  <% else %>
+	    <!-- no breadcrumb -->
+	  <% end %>
+	<% end %>
+	
+<% else -%>
+
+	<li><%= link_to 'New Job', url_for(:controller => 'jobs', :action => 'new') -%></li>
+
+<% end -%>

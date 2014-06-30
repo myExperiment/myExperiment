@@ -1,0 +1,13 @@
+<% tags_collection = unique_tags_from_items(items) %>
+<div class="contribution_section_box">
+	<p class="heading">
+		<%= info_icon_with_tooltip("The unique list of tags that items within this pack have been tagged with") %>
+		Tags from Items <span class="count_text">(<%= tags_collection.length -%>)</span>
+	</p>
+	
+	<% unless tags_collection.empty? -%>
+		<%= tag_cloud_from_collection(tags_collection) %>
+	<% else -%>
+		<p class="none_text">None</p>
+	<% end -%>
+</div>

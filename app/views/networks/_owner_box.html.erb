@@ -1,0 +1,11 @@
+<div class="contribution_section_box">
+	<p class="heading">
+		<%= info_icon_with_tooltip("The owner is the person who manages this group on #{Conf.sitename}. The owner and the group's administrators are able to allow/reject/invite other users).") %>
+		Owner
+	</p>
+	<p>
+		<center>
+	  	<%= render :partial => "users/avatar", :locals => { :user => network.owner, :size => 60 } %>
+		</center>
+	</p>
+</div>

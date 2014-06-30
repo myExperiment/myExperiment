@@ -1,0 +1,45 @@
+<script type="text/javascript">
+  function showAllTags() {
+    Element.show('all_tags');
+	  Element.hide('user_tags');
+	  return false;
+  }
+  
+  function showUsersTags() {
+  	Element.hide('all_tags');
+	  Element.show('user_tags');
+	  return false;
+  }
+	
+	function flip_tags_mode()
+	{
+		if( $('toggle_tags_mode').checked )
+		  showUsersTags();
+	  else
+		  showAllTags();
+	}
+</script>
+
+<div id="tags_inner_box">
+	<% unless (tags = taggable.tags).empty? %>
+		<div class="box_currentuser_specific" style="padding: 0.3em 0.2em; margin: 0.6em 0.4em;">
+		  <label for="toggle_tags_mode" style="font-size: 85%; font-weight: bold;"><%= check_box_tag "toggle_tags_mode", "1", false, :onclick => "flip_tags_mode();", :style => "margin-right: 0.3em;" -%><%= owner_text(taggable) -%> tags</label>
+		</div>
+		<div id="all_tags">
+			<% unless (tags = taggable.tags).empty? %>
+				<%= tag_cloud_from_collection(tags) %>
+			<% else %>
+      	<p class="none_text">None</p>
+			<% end %>
+		</div>
+		<div id="user_tags"  style="display: none;">
+			<% unless (tags = user_tags_for_thing(taggable, owner_id)).empty? %>
+				<%= tag_cloud_from_collection(tags) %>
+			<% else %>
+    		<p class="none_text">None</p>
+			<% end %>
+		</div>
+	<% else %>
+		<p class="none_text">None</p>
+	<% end %>
+</div>
