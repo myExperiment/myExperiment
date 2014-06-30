@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   before_filter :login_from_cookie
   before_filter :login_from_basic_auth
-  before_filter :oauth_required
+  #before_filter :oauth_required
   before_filter :check_for_sleeper
   before_filter :check_external_site_request
 
