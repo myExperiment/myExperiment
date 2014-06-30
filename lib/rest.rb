@@ -9,7 +9,7 @@ require 'xml/libxml'
 require 'uri'
 require 'pivoting'
 require 'will_paginate'
-Dir.glob(RAILS_ROOT + '/lib/api/resources/*') {|file| require file}
+Dir.glob(Rails.root + '/lib/api/resources/*') {|file| require file}
 
 include LibXML
 
@@ -49,7 +49,7 @@ end
 
 OBJECT_CLASS_TO_ENTITY_NAME = object_class_to_entity_name
 
-def rest_routes(map)
+def rest_routes
   TABLES['REST'][:data].keys.each do |uri|
     TABLES['REST'][:data][uri].keys.each do |method|
       formats = []

@@ -1,6 +1,8 @@
+require 'rest'
+
 MyExperiment::Application.routes.draw do
   # REST API routes
-  rest_routes(map)
+  rest_routes
 
   match '/' => 'home#front_page'
   match '/home' => 'home#index', :as => :home
