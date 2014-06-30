@@ -13,9 +13,6 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
-  # Scrub sensitive parameters from your log
-  filter_parameter_logging :password
-
   WhiteListHelper.tags.merge %w(table tr td th div span)
   
   #before_filter :set_configuration
