@@ -771,7 +771,7 @@ class Pack < ActiveRecord::Base
     return ""
   end
 
-  named_scope :component_families, :include => :tags, :conditions => "tags.name = 'component family'"
+  scope :component_families, :include => :tags, :conditions => "tags.name = 'component family'"
 
   def component_family?
     tags.any? { |t| t.name == 'component family' }

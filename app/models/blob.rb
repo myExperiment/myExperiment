@@ -107,7 +107,7 @@ class Blob < ActiveRecord::Base
     APIStatistics.statistics(self)
   end
 
-  named_scope :component_profiles, :include => :content_type,
+  scope :component_profiles, :include => :content_type,
               :conditions => "content_types.mime_type = 'application/vnd.taverna.component-profile+xml'"
 
   def component_profile?

@@ -437,7 +437,7 @@ class Workflow < ActiveRecord::Base
   end
 
   # TODO: Don't use tags for this
-  named_scope :components, :include => :tags, :conditions => "tags.name = 'component'"
+  scope :components, :include => :tags, :conditions => "tags.name = 'component'"
 
   def component?
     tags.any? { |t| t.name == 'component' }
