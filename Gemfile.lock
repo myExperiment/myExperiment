@@ -33,11 +33,10 @@ GEM
     builder (3.0.4)
     curb (0.7.18)
     daemon_controller (1.2.0)
-    daemons (1.1.9)
     darkfish-rdoc (1.1.5)
       rdoc (>= 2.1.0)
-    delayed_job (2.0.6)
-      daemons
+    delayed_job (4.0.2)
+      activesupport (>= 3.0, < 4.2)
     dsl_accessor (0.4.4)
       blankslate (>= 2.1.2)
       optionize (>= 0.1.0)
@@ -162,7 +161,7 @@ PLATFORMS
 
 DEPENDENCIES
   curb (~> 0.7.8)
-  delayed_job (~> 2.0.4)
+  delayed_job
   dsl_accessor (~> 0.4.0)
   encrypted_attributes (~> 0.4.1)
   encrypted_strings (~> 0.3.3)
