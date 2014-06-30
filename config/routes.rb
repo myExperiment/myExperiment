@@ -1,361 +1,333 @@
-require 'rest'
-
-ActionController::Routing::Routes.draw do |map|
-
-  # rest routes
+MyExperiment::Application.routes.draw do
+  # REST API routes
   rest_routes(map)
 
-  map.root :controller => "home", :action => "front_page"
+  match '/' => 'home#front_page'
+  match '/home' => 'home#index', :as => :home
+  match '/content' => 'content#index', :as => :content, :via => :get
+  match '/content.:format' => 'content#index', :as => :formatted_content, :via => :get
 
-  map.home '/home', :controller => 'home', :action => 'index'
-
-  map.content '/content', :controller => 'content', :action => 'index', :conditions => { :method => :get }
-  map.formatted_content '/content.:format', :controller => 'content', :action => 'index', :conditions => { :method => :get }
-
-  # Runners
-  map.resources :runners, :member => { :verify => :get }
-  
-  # Experiments
-  map.resources :experiments do |e|
-    # Experiments have nested Jobs
-    e.resources :jobs, 
-      :member => { :save_inputs => :post, 
-                   :submit_job => :post, 
-                   :refresh_status => :get, 
-                   :refresh_outputs => :get, 
-                   :outputs_xml => :get, 
-                   :outputs_package => :get, 
-                   :rerun => :post, 
-                   :render_output => :get }
+  # TODO: Remove me
+  resources :runners do
+    member do
+      get :verify
+    end
   end
 
-  # Ontologies
-  map.resources :ontologies
-
-  # Predicates
-  map.resources :predicates
-
-  # mashup
-  map.resource :mashup, :controller => 'mashup'
-  
-  # search
-  map.resource :search,
-    :controller => 'search',
-    :member => { :live_search => :get, :open_search_beta => :get }
-
-  # tags
-  map.resources :tags
-
-  # sessions and RESTful authentication
-  map.resource :session, :collection => { :create => :post }
-  
-  # openid authentication
-  map.resource :openid, :controller => 'openid'
-  
-  # packs
-  map.resources :packs, 
-    :collection => { :search => :get }, 
-    :member => { :statistics => :get,
-                 :favourite => :post,
-                 :favourite_delete => :delete,
-                 :tag => :post,
-                 :new_item => :get,
-                 :create_item => :post, 
-                 :edit_item => :get,
-                 :update_item => :put,
-                 :destroy_item => :delete,
-                 :download => :get,
-                 :quick_add => :post,
-                 :resolve_link => :post,
-                 :snapshot => :post,
-                 :items => :get } do |pack|
-    pack.resources :comments, :collection => { :timeline => :get }
-    pack.resources :relationships, :collection => { :edit_relationships => :get }
+  # TODO: Remove me
+  resources :experiments do
+    resources :jobs do
+      member do
+        post :save_inputs
+        post :submit_job
+        get :refresh_status
+        get :refresh_outputs
+        get :outputs_xml
+        get :outputs_package
+        post :rerun
+        get :render_output
+      end
+    end
   end
-    
-  # workflows (downloadable)
-  map.resources :workflows, 
-    :collection => { :search => :get }, 
-    :member => { :new_version => :get, 
-                 :download => :get, 
-                 :statistics => :get,
-                 :favourite => :post, 
-                 :favourite_delete => :delete, 
-                 :rate => :post, 
-                 :tag => :post, 
-                 :create_version => :post, 
-                 :edit_version => :get,
-                 :update_version => :put, 
-                 :process_tag_suggestions => :post,
-                 :tag_suggestions => :get,
-                 :component_validity => :get
-    } do |workflow|
-    # workflows have nested citations
-    workflow.resources :citations
-    workflow.resources :reviews
-    workflow.resources :previews
-    workflow.resources :comments, :collection => { :timeline => :get }
+
+  resources :ontologies
+  resources :predicates
+  resource :mashup
+
+  resource :search do
+    member do
+      get :live_search
+      get :open_search_beta
+    end
+  end
+
+  resources :tags
+
+  resource :session do
+    collection do
+      post :create
+    end
+  end
+
+  resource :openid
+
+  resources :packs do
+    collection do
+      get :search
+    end
+    member do
+      get :statistics
+      post :favourite
+      delete :favourite_delete
+      post :tag
+      get :new_item
+      post :create_item
+      get :edit_item
+      put :update_item
+      delete :destroy_item
+      get :download
+      post :quick_add
+      post :resolve_link
+      post :snapshot
+      get :items
+    end
+    resources :comments do
+      collection do
+        get :timeline
+      end
+    end
+
+    resources :relationships do
+      collection do
+        get :edit_relationships
+      end
+    end
+  end
+
+  resources :workflows do
+    collection do
+      get :search
+    end
+    member do
+      get :new_version
+      get :download
+      get :statistics
+      post :favourite
+      delete :favourite_delete
+      post :rate
+      post :tag
+      post :create_version
+      get :edit_version
+      put :update_version
+      post :process_tag_suggestions
+      get :tag_suggestions
+      get :component_validity
+    end
+    resources :citations
+    resources :reviews
+    resources :previews
+    resources :comments do
+      collection do
+        get :timeline
+      end
+    end
   end
 
   # workflow redirect for linked data model
-  map.workflow_version           '/workflows/:id/versions/:version',         :conditions => { :method => :get }, :controller => 'workflows', :action => 'show'
-  map.formatted_workflow_version '/workflows/:id/versions/:version.:format', :conditions => { :method => :get }, :controller => 'workflows', :action => 'show'
-
+  match '/workflows/:id/versions/:version' => 'workflows#show', :as => :workflow_version, :via => :get
+  match '/workflows/:id/versions/:version.:format' => 'workflows#show', :as => :formatted_workflow_version, :via => :get
   # blob redirect for linked data model
-  map.blob_version           '/files/:id/versions/:version',         :conditions => { :method => :get }, :controller => 'blobs', :action => 'show'
-  map.formatted_blob_version '/files/:id/versions/:version.:format', :conditions => { :method => :get }, :controller => 'blobs', :action => 'show'
-
+  match '/files/:id/versions/:version' => 'blobs#show', :as => :blob_version, :via => :get
+  match '/files/:id/versions/:version.:format' => 'blobs#show', :as => :formatted_blob_version, :via => :get
   # pack redirect for linked data model
-  map.pack_version           '/packs/:id/versions/:version',         :conditions => { :method => :get }, :controller => 'packs', :action => 'show'
-  map.formatted_pack_version '/packs/:id/versions/:version.:format', :conditions => { :method => :get }, :controller => 'packs', :action => 'show'
+  match '/packs/:id/versions/:version' => 'packs#show', :as => :pack_version, :via => :get
+  match '/packs/:id/versions/:version.:format' => 'packs#show', :as => :formatted_pack_version, :via => :get
 
-  map.blob_version_suggestions '/files/:id/versions/:version/suggestions', :conditions => { :method => :get }, :controller => 'blobs', :action => 'suggestions'
-  map.blob_version_process_suggestions '/files/:id/versions/:version/process_suggestions', :conditions => { :method => :post }, :controller => 'blobs', :action => 'process_suggestions'
+  # ???
+  match '/files/:id/versions/:version/suggestions' => 'blobs#suggestions', :as => :blob_version_suggestions, :via => :get
+  match '/files/:id/versions/:version/process_suggestions' => 'blobs#process_suggestions', :as => :blob_version_process_suggestions, :via => :post
 
   # versioned preview images
-  ['workflow'].each do |x|
+  match '/workflows/:workflow_id/versions/:version/previews/:id' => 'previews#show', :as => :workflow_version_preview, :via => :get
+  match '/workflows/:workflow_id/versions/:version/previews/:id.:format' => 'previews#show', :as => :formatted_workflow_version_preview, :via => :get
 
-    eval("map.#{x}_version_preview '/#{x.pluralize}/:#{x}_id/versions/:version/previews/:id'," +
-        " :conditions => { :method => :get}, :controller => 'previews', :action => 'show'")
-
-    eval("map.formatted_#{x}_version_preview '/#{x.pluralize}/:#{x}_id/versions/:version/previews/:id.:format'," +
-        " :conditions => { :method => :get}, :controller => 'previews', :action => 'show'")
-  end
-
-  # curation
-  ['workflows', 'files', 'packs'].each do |contributable_type|
-    map.curation "#{contributable_type}/:contributable_id/curation",
-      :contributable_type => contributable_type,
-      :controller         => 'contributions',
-      :action             => 'curation',
-      :conditions         => { :method => :get }
-  end
+  # Curation
+  match 'workflows/:contributable_id/curation' => 'contributions#curation', :as => :curation, :contributable_type => 'workflows', :via => :get
+  match 'files/:contributable_id/curation' => 'contributions#curation', :as => :curation, :contributable_type => 'files', :via => :get
+  match 'packs/:contributable_id/curation' => 'contributions#curation', :as => :curation, :contributable_type => 'packs', :via => :get
 
   # files (downloadable)
-  map.resources :blobs,
-    :as => :files,
-    :collection => { :search => :get }, 
-    :member => { :download => :get,
-                 :statistics => :get,
-                 :favourite => :post,
-                 :favourite_delete => :delete,
-                 :rate => :post, 
-                 :suggestions => :get,
-                 :process_suggestions => :post,
-                 :tag => :post } do |blob|
-    # Due to restrictions in the version of Rails used (v1.2.3), 
-    # we cannot have reviews as nested resources in more than one top level resource.
-    # ie: we cannot have polymorphic nested resources.
-    #blob.resources :reviews
-    blob.resources :comments, :collection => { :timeline => :get }
+  resources :blobs do
+    collection do
+      get :search
+    end
+    member do
+      get :download
+      get :statistics
+      post :favourite
+      delete :favourite_delete
+      post :rate
+      get :suggestions
+      post :process_suggestions
+      post :tag
+    end
+    resources :comments do
+      collection do
+        get :timeline
+      end
+    end
   end
 
-  # content_types
-  map.resources :content_types
+  resources :content_types
 
-  # messages
-  map.resources :messages, :collection => { :sent => :get, :delete_all_selected => :delete }
+  resources :messages do
+    collection do
+      get :sent
+      delete :delete_all_selected
+    end
+  end
 
-  # all oauth
-  map.authorize '/oauth/authorize',:controller=>'oauth',:action=>'authorize'
-  map.request_token '/oauth/request_token',:controller=>'oauth',:action=>'request_token'
-  map.access_token '/oauth/access_token',:controller=>'oauth',:action=>'access_token'
-  map.test_request '/oauth/test_request',:controller=>'oauth',:action=>'test_request'
-  map.resources :oauth
+  # Oauth
+  match '/oauth/authorize' => 'oauth#authorize', :as => :authorize
+  match '/oauth/request_token' => 'oauth#request_token', :as => :request_token
+  match '/oauth/access_token' => 'oauth#access_token', :as => :access_token
+  match '/oauth/test_request' => 'oauth#test_request', :as => :test_request
+  resources :oauth
 
   # User timeline
-  map.connect 'users/timeline', :controller => 'users', :action => 'timeline'
-  map.connect 'users/users_for_timeline', :controller => 'users', :action => 'users_for_timeline'
+  match 'users/timeline' => 'users#timeline'
+  match 'users/users_for_timeline' => 'users#users_for_timeline'
 
   # For email confirmations (user accounts)
-  map.connect 'users/confirm_email/:hash', :controller => "users", :action => "confirm_email"
-  
-  # For password resetting (user accounts)
-  map.connect 'users/forgot_password', :controller => "users", :action => "forgot_password"
-  map.connect 'users/reset_password/:reset_code', :controller => "users", :action => "reset_password"
-  
-  [ 'news', 'friends', 'groups', 'forums', 'credits', 'tags', 'favourites' ].each do |tab|
-    map.connect "users/:id/#{tab}", :controller => 'users', :action => tab
-  end
-  
-  # all users
-  map.resources :users, 
-    :collection => { :all => :get, 
-                     :check => :get,
-                     :change_status => :post,
-                     :search => :get, 
-                     :invite => :get } do |user|
+  match 'users/confirm_email/:hash' => 'users#confirm_email'
+  match 'users/forgot_password' => 'users#forgot_password'
 
-    # friendships 'owned by' user (user --> friendship --> friend)
-    user.resources :friendships, :member => { :accept => :post }
+  #  # For password resetting (user accounts)
+  match 'users/reset_password/:reset_code' => 'users#reset_password'
 
-    # memberships 'owned by' user (user --> membership --> network)
-    user.resources :memberships, :member => { :accept => :post }
-
-    # user profile
-    user.resource :profile, :controller => :profiles
-
-    # pictures 'owned by' user
-    user.resources :pictures, :member => { :select => :get }
-    
-    # user's history
-    user.resource :userhistory, :controller => :userhistory
-
-    # user's reports of inappropriate content
-    user.resources :reports, :controller => :user_reports
-
-    # user's uploaded resources
-    user.resources :workflows, :only => :index
-    user.resources :blobs, :only => :index, :as => :files
-    user.resources :packs, :only => :index
-  end
-
-  map.resources :networks,
-    :as => :groups,
-    :collection => { :all => :get, :search => :get }, 
-    :member => { :content => :get,
-                 :invite => :get,
-                 :membership_invite => :post,
-                 :membership_invite_external => :post,
-                 :membership_request => :get, 
-                 :rate => :post, 
-                 :sync_feed => :post,
-                 :subscription => [:put, :delete],
-                 :tag => :post } do |network|
-    network.resources :group_announcements, :as => :announcements, :name_prefix => nil
-    network.resources :comments, :collection => { :timeline => :get }
-    network.resources :policies, :controller => 'group_policies'
-    network.resources :activities, :member => { :feature => [:put, :delete] } do |activity|
-      activity.resources :comments
+  # User tabs
+  match 'users/:id/news' => 'users#news'
+  match 'users/:id/friends' => 'users#friends'
+  match 'users/:id/groups' => 'users#groups'
+  match 'users/:id/forums' => 'users#forums'
+  match 'users/:id/credits' => 'users#credits'
+  match 'users/:id/tags' => 'users#tags'
+  match 'users/:id/favourites' => 'users#favourites'
+  # Users
+  resources :users do
+    collection do
+      get :all
+      get :check
+      post :change_status
+      get :search
+      get :invite
     end
 
-    # resources shared with network
-    network.resources :workflows, :only => :index
-    network.resources :blobs, :only => :index, :as => :files
-    network.resources :packs, :only => :index
+    resources :friendships do
+      member do
+        post :accept
+      end
+    end
+
+    resources :memberships do
+      member do
+        post :accept
+      end
+    end
+
+    resource :profile
+    resources :pictures do
+      member do
+        get :select
+      end
+    end
+
+    resource :userhistory
+    resources :reports
+    resources :workflows, :only => :index
+    resources :blobs, :only => :index
+    resources :packs, :only => :index
   end
-  
-  # The priority is based upon order of creation: first created -> highest priority.
 
-  # Sample of regular route:
-  # map.connect 'products/:id', :controller => 'catalog', :action => 'view'
-  # Keep in mind you can assign values other than :controller and :action
+  # Groups
+  resources :networks do
+    collection do
+      get :all
+      get :search
+    end
 
-  # Sample of named route:
-  # map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
-  # This route can be invoked with purchase_url(:id => product.id)
+    member do
+      get :content
+      get :invite
+      post :membership_invite
+      post :membership_invite_external
+      get :membership_request
+      post :rate
+      post :sync_feed
+      put :subscription
+      delete :subscription
+      post :tag
+    end
 
-  # You can have the root of your site routed by hooking up ''
-  # -- just remember to delete public/index.html.
-#  map.connect '', :controller => 'users'
+    resources :group_announcements
+
+    resources :comments do
+      collection do
+        get :timeline
+      end
+    end
+
+    resources :policies
+
+    resources :activities do
+      member do
+        put :feature
+        delete :feature
+      end
+      resources :comments
+    end
+
+    resources :workflows, :only => :index
+    resources :blobs, :only => :index
+    resources :packs, :only => :index
+  end
 
   # Explicit redirections
-  map.connect 'google', :controller => 'redirects', :action => 'google'
-  map.connect 'benchmarks', :controller => 'redirects', :action => 'benchmarks'
+  match 'google' => 'redirects#google'
+  match 'benchmarks' => 'redirects#benchmarks'
 
   # alternate download link to work around lack of browser redirects when downloading
-  map.connect ':controller/:id/download/:name', :action => 'named_download', :requirements => { :name => /.*/ }
-  
-  map.connect 'files/:id/download/:name', :controller => 'blobs', :action => 'named_download', :requirements => { :name => /.*/ }
-  map.connect 'files/:id/versions/:version/download/:name', :controller => 'blobs', :action => 'named_download_with_version', :requirements => { :name => /.*/ }
+  match ':controller/:id/download/:name' => '#named_download', :constraints => { :name => /.*/ }
+  match 'files/:id/download/:name' => 'blobs#named_download', :constraints => { :name => /.*/ }
+  match 'files/:id/versions/:version/download/:name' => 'blobs#named_download_with_version', :constraints => { :name => /.*/ }
 
-  # map.connect 'topics', :controller => 'topics', :action => 'index'
-  map.connect 'topics/tag_feedback', :controller => 'topics', :action => 'tag_feedback'
-  map.connect 'topics/topic_feedback', :controller => 'topics', :action => 'topic_feedback'
-  map.resources :topics
+  # Topics
+  match 'topics/tag_feedback' => 'topics#tag_feedback'
+  match 'topics/topic_feedback' => 'topics#topic_feedback'
+  resources :topics
 
-  # map.connect 'topics/:id', :controller => 'topics', :action => 'show'
-  # (general) announcements
-  # NB! this is moved to the bottom of the file for it to be discovered
-  # before 'announcements' resource within 'groups'
-  map.resources :announcements
+  resources :announcements
 
-  map.resources :licenses
-  map.resources :license_attributes
+  resources :licenses
 
-  map.resources :policies, :only => :show
+  resources :license_attributes
+
+  resources :policies, :only => :show
 
   # Generate special alias routes for external sites point to
   Conf.external_site_integrations.each_value do |data|
-    map.connect data["path"], data["redirect"].symbolize_keys #Convert string keys to symbols
+    match data["path"] => "#{data["redirect"]["controller"]}\##{data["redirect"]["action"]}", :filter => data["redirect"]["filter"]
   end
-
-  map.connect 'clear_external_site_session_info', :controller => 'application', :action => 'clear_external_site_session_info'
+  match 'clear_external_site_session_info' => 'application#clear_external_site_session_info'
 
   # LoD routes
   if Conf.rdfgen_enable
-
-    map.connect '/:contributable_type/:contributable_id/attributions/:attribution_id.:format',
-      :controller => 'linked_data', :action => 'attributions', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/citations/:citation_id.:format',
-      :controller => 'linked_data', :action => 'citations', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/comments/:comment_id.:format',
-      :controller => 'linked_data', :action => 'comments', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/credits/:credit_id.:format',
-      :controller => 'linked_data', :action => 'credits', :conditions => { :method => :get }
-
-    map.connect '/users/:user_id/favourites/:favourite_id.:format',
-      :controller => 'linked_data', :action => 'favourites', :conditions => { :method => :get }
-
-    map.connect '/packs/:contributable_id/local_pack_entries/:local_pack_entry_id.:format',
-      :controller => 'linked_data', :action => 'local_pack_entries',
-      :contributable_type => 'packs', :conditions => { :method => :get }
-
-    map.connect '/packs/:contributable_id/remote_pack_entries/:remote_pack_entry_id.:format',
-      :controller => 'linked_data', :action => 'remote_pack_entries',
-      :contributable_type => 'packs', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/policies/:policy_id.:format',
-      :controller => 'linked_data', :action => 'policies', :conditions => { :method => :get }
-
-    map.connect '/:contributable_type/:contributable_id/ratings/:rating_id.:format',
-      :controller => 'linked_data', :action => 'ratings', :conditions => { :method => :get }
-
-    map.connect '/tags/:tag_id/taggings/:tagging_id.:format',
-      :controller => 'linked_data', :action => 'taggings', :conditions => { :method => :get }
+    match '/:contributable_type/:contributable_id/attributions/:attribution_id.:format' => 'linked_data#attributions', :via => :get
+    match '/:contributable_type/:contributable_id/citations/:citation_id.:format' => 'linked_data#citations', :via => :get
+    match '/:contributable_type/:contributable_id/comments/:comment_id.:format' => 'linked_data#comments', :via => :get
+    match '/:contributable_type/:contributable_id/credits/:credit_id.:format' => 'linked_data#credits', :via => :get
+    match '/users/:user_id/favourites/:favourite_id.:format' => 'linked_data#favourites', :via => :get
+    match '/packs/:contributable_id/local_pack_entries/:local_pack_entry_id.:format' => 'linked_data#local_pack_entries', :contributable_type => 'packs', :via => :get
+    match '/packs/:contributable_id/remote_pack_entries/:remote_pack_entry_id.:format' => 'linked_data#remote_pack_entries', :contributable_type => 'packs', :via => :get
+    match '/:contributable_type/:contributable_id/policies/:policy_id.:format' => 'linked_data#policies', :via => :get
+    match '/:contributable_type/:contributable_id/ratings/:rating_id.:format' => 'linked_data#ratings', :via => :get
+    match '/tags/:tag_id/taggings/:tagging_id.:format' => 'linked_data#taggings', :via => :get
   end
 
   # RODL routes.  There are no HTML pages for 'new' and 'edit' so the routes
   # are generated without the resource helpers.
+  match '/rodl/ROs' => 'research_objects#index', :as => :research_objects, :via => :get
+  match '/rodl/ROs' => 'research_objects#create', :via => :post
+  match '/rodl/zippedROs/:id' => 'research_objects#download_zip', :as => :zipped_research_object, :via => :get
+  match '/rodl/ROs/:id' => 'research_objects#show', :as => :research_object, :via => :get
+  match '/rodl/ROs/:research_object_id' => 'resources#post', :via => :post
+  match '/rodl/ROs/:id' => 'research_objects#update', :via => :put
+  match '/rodl/ROs/:id' => 'research_objects#destroy', :via => :delete
+  match 'research_object_resource' => 'resources#show', :as => :named_route, :constraints => { :id => /.*/ }, :via => :get
+  match '/rodl/ROs/:research_object_id/:id' => 'resources#update', :constraints => { :id => /.*/ }, :via => :put
+  match '/rodl/ROs/:research_object_id/:id' => 'resources#delete', :constraints => { :id => /.*/ }, :via => :delete
+  match '/rodl/ROs/:research_object_id/:path' => 'resources#post', :constraints => { :path => /.*/ }, :via => :post
 
-  map.research_objects "/rodl/ROs", :controller => "research_objects", :action => "index",  :conditions => { :method => :get }
-  map.connect          "/rodl/ROs", :controller => "research_objects", :action => "create", :conditions => { :method => :post }
-
-  map.zipped_research_object "/rodl/zippedROs/:id", :controller => "research_objects", :action => "download_zip", :conditions => { :method => :get }
-
-  map.research_object "/rodl/ROs/:id", :controller => "research_objects", :action => "show",           :conditions => { :method => :get }
-  map.connect         "/rodl/ROs/:research_object_id", :controller => "resources",        :action => "post", :conditions => { :method => :post }
-  map.connect         "/rodl/ROs/:id", :controller => "research_objects", :action => "update",         :conditions => { :method => :put }
-  map.connect         "/rodl/ROs/:id", :controller => "research_objects", :action => "destroy",        :conditions => { :method => :delete }
-
-  map.named_route "research_object_resource", "/rodl/ROs/:research_object_id/:id",
-    :controller   => "resources",
-    :action       => "show",
-    :conditions   => { :method => :get },
-    :requirements => { :id => /.*/ }
-
-  map.connect "/rodl/ROs/:research_object_id/:id",
-    :controller   => "resources",
-    :action       => "update",
-    :conditions   => { :method => :put },
-    :requirements => { :id => /.*/ }
-
-  map.connect "/rodl/ROs/:research_object_id/:id",
-    :controller   => "resources",
-    :action       => "delete",
-    :conditions   => { :method => :delete },
-    :requirements => { :id => /.*/ }
-
-  map.connect "/rodl/ROs/:research_object_id/:path",
-    :controller   => "resources",
-    :action       => "post",
-    :conditions   => { :method => :post },
-    :requirements => { :path => /.*/ }
-
-  # Install the default route as the lowest priority.
-  map.connect ':controller/:action/:id'
+  # TODO: Remove me
+  match '/:controller(/:action(/:id))'
 end
-
