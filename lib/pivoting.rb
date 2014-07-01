@@ -230,7 +230,7 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
     end
   end
 
-  def calculate_filter(collection, params, filter, pivot_options, user, opts = {})
+  def calculate_filter(collection, permission_conditions, params, filter, pivot_options, user, opts = {})
 
     # apply all the joins and conditions except for the current filter
 
@@ -339,7 +339,7 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
     [current, objects]
   end
 
-  def calculate_filters(collection, params, opts, pivot_options, user)
+  def calculate_filters(collection, permission_conditions, params, opts, pivot_options, user)
 
     # produce the filter list
 
@@ -350,7 +350,7 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
 
       # calculate the top n items of the list
 
-      filter[:current], filter[:objects] = calculate_filter(collection, params, filter, pivot_options, user, opts)
+      filter[:current], filter[:objects] = calculate_filter(collection, permission_conditions, params, filter, pivot_options, user, opts)
 
       # calculate which active filters are missing (because they weren't in the
       # top part of the list or have a count of zero)
@@ -358,7 +358,7 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
       missing_filter_ids = filter[:current] - filter[:objects].map do |ob| ob[:value] end
 
       if missing_filter_ids.length > 0
-        filter[:objects] += calculate_filter(collection, params, filter, pivot_options, user, opts.merge(:ids => missing_filter_ids))[1]
+        filter[:objects] += calculate_filter(collection, permission_conditions, params, filter, pivot_options, user, opts.merge(:ids => missing_filter_ids))[1]
       end
 
       # calculate which active filters are still missing (because they have a
@@ -367,7 +367,7 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
       missing_filter_ids = filter[:current] - filter[:objects].map do |ob| ob[:value] end
 
       if missing_filter_ids.length > 0
-        zero_list = calculate_filter(collection, params, filter, pivot_options, user, opts.merge(:ids => missing_filter_ids, :inhibit_other_conditions => true))[1]
+        zero_list = calculate_filter(collection, permission_conditions, params, filter, pivot_options, user, opts.merge(:ids => missing_filter_ids, :inhibit_other_conditions => true))[1]
 
         zero_list.each do |x| x[:count] = 0 end
 
@@ -498,7 +498,11 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
                     :group => "#{group_by} #{having_clause}",
                     :order => order_options["order"]}
 
-  results = collection.find(:all, result_options)
+
+  results = collection.joins(result_options[:joins]).
+          where(result_options[:conditions]).
+          group(result_options[:group]).
+          order(result_options[:order])
 
   unless opts[:no_pagination]
     results = results.paginate(:page => params["page"], :per_page => params["num"] ? params["num"].to_i : nil)
@@ -520,13 +524,13 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
   opts_for_filter_query = opts.merge( { :auth_type => auth_type,
                                         :auth_id => auth_id, :group_by => group_by } )
 
-  filters, cancel_filter_query_url = calculate_filters(collection, params, opts_for_filter_query, pivot_options, user)
+  filters, cancel_filter_query_url = calculate_filters(collection, permission_conditions, params, opts_for_filter_query, pivot_options, user)
 
   # produce the summary.  If a filter query is specified, then we need to
   # recalculate the filters without the query to get all of them.
 
   if params[:filter_query]
-    filters2 = calculate_filters(collection, params, opts_for_filter_query.merge( { :inhibit_filter_query => true } ), pivot_options, user)[0]
+    filters2 = calculate_filters(collection, permission_conditions, params, opts_for_filter_query.merge( { :inhibit_filter_query => true } ), pivot_options, user)[0]
   else
     filters2 = filters
   end
