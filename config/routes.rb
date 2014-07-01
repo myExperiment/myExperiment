@@ -139,7 +139,7 @@ MyExperiment::Application.routes.draw do
   match 'packs/:contributable_id/curation' => 'contributions#curation', :as => :curation, :contributable_type => 'packs', :via => :get
 
   # files (downloadable)
-  resources :blobs do
+  resources :blobs, :path => 'files' do
     collection do
       get :search
     end
@@ -227,12 +227,12 @@ MyExperiment::Application.routes.draw do
     resource :userhistory
     resources :reports
     resources :workflows, :only => :index
-    resources :blobs, :only => :index
+    resources :blobs, :path => 'files', :only => :index
     resources :packs, :only => :index
   end
 
   # Groups
-  resources :networks do
+  resources :networks, :path => 'groups' do
     collection do
       get :all
       get :search
@@ -251,7 +251,7 @@ MyExperiment::Application.routes.draw do
       post :tag
     end
 
-    resources :group_announcements
+    resources :group_announcements, :path => 'announcements'
 
     resources :comments do
       collection do
@@ -270,7 +270,7 @@ MyExperiment::Application.routes.draw do
     end
 
     resources :workflows, :only => :index
-    resources :blobs, :only => :index
+    resources :blobs, :path => 'files', :only => :index
     resources :packs, :only => :index
   end
 
