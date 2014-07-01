@@ -31,8 +31,7 @@ module Finn
 
           include Finn::Acts::RDFSerializable::InstanceMethods
           # To generate resource's URI to be used as "context" in the triple store:
-          include ActionController::UrlWriter
-          include ActionController::PolymorphicRoutes
+          include Rails.application.routes.url_helpers
         end
       end
 
