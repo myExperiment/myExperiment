@@ -487,7 +487,7 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
 
   # perform the results query
 
-  collection, permssion_conditions = Authorization.scoped(klass,
+  collection, permssion_conditions = *Authorization.scoped(klass,
                                     :authorised_user => user,
                                     :include_permissions => true,
                                     :auth_type => auth_type,
