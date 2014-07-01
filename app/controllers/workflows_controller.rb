@@ -635,7 +635,7 @@ protected
   def find_workflows_rss
     # Only carry out if request is for RSS
     if params[:format] and params[:format].downcase == 'rss'
-      @rss_workflows = Authorization.scoped(Workflow, :authorised_user => current_user).find(:all, :limit => 30, :order => 'updated_at DESC')
+      @rss_workflows = Authorization.scoped[0](Workflow, :authorised_user => current_user).find(:all, :limit => 30, :order => 'updated_at DESC')
     end
   end
   

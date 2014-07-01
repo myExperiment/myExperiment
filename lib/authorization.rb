@@ -63,7 +63,7 @@ module Authorization
         return true if object.contributor == user
 
         # get the object with edit, view and download permissions attached
-        ob = Authorization.scoped(object.class, :permissions_only => true, :authorised_user => user).find_by_id(object.id)
+        ob = Authorization.scoped(object.class, :permissions_only => true, :authorised_user => user)[0].find_by_id(object.id)
 
         # not getting an object means that there is no view permission
         return false if ob.nil?
@@ -501,7 +501,7 @@ module Authorization
     opts[:group] ||= 'contributions.contributable_type, contributions.contributable_id'
     opts[:joins] = joins
 
-    scope = model.scoped(opts)
+    scope = model.joins(opts[:joins]).select(opts[:select]).where(opts[:conditions]).group(opts[:group])
 
     permission_conditions = {
       :view_conditions     => view_conditions,

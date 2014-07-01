@@ -48,14 +48,14 @@ class Contribution < ActiveRecord::Base
   # the maximum number of results is set by #limit#
   def self.most_recent(limit = 10, klass = 'Contribution')
     conditions = ['contributions.contributable_type = ?', klass] if klass != 'Contribution'
-    Authorization.scoped(Contribution).find(:all, :conditions => conditions, :limit => limit, :order => 'created_at DESC')
+    Authorization.scoped(Contribution)[0].all(:conditions => conditions, :limit => limit, :order => 'created_at DESC')
   end
   
   # returns the 'last updated' Contributions
   # the maximum number of results is set by #limit#
   def self.last_updated(limit = 10, klass = 'Contribution')
     conditions = ['contributions.contributable_type = ?', klass] if klass != 'Contribution'
-    Authorization.scoped(Contribution).find(:all, :conditions => conditions, :limit => limit, :order => 'updated_at DESC')
+    Authorization.scoped(Contribution)[0].all(:conditions => conditions, :limit => limit, :order => 'updated_at DESC')
   end
   
   # returns the 'most favourited' Contributions

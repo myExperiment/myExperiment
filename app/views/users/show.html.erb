@@ -234,7 +234,7 @@
 					<% filter_contributables(@user.contributions).each do |klass, contributables| %>
 						<p>
 				      <b>
-				      	<%= link_to(pluralize(Authorization.scoped(klass.constantize, :authorised_user => current_user).find(:all, :select => "0", :conditions => { :contributor_type => 'User', :contributor_id => @user.id } ).length, controller_visible_name(klass.humanize.pluralize)),
+				      	<%= link_to(pluralize(Authorization.scoped(klass.constantize, :authorised_user => current_user)[0].find(:all, :select => "0", :conditions => { :contributor_type => 'User', :contributor_id => @user.id } ).length, controller_visible_name(klass.humanize.pluralize)),
                             polymorphic_url([@user, klass.pluralize.underscore.to_sym])) %>
 							</b>
 				    </p>
@@ -252,7 +252,7 @@
 				<p>
 					<b>
 						<%= h @user.name -%> has been credited
-						<%= link_to(pluralize(Authorization.scoped(Contribution).find(:all, :select => "0", :joins => "JOIN creditations ON creditations.creditable_type = contributions.contributable_type AND creditations.creditable_id = contributions.contributable_id", :conditions => ["creditations.creditor_type = ? AND creditations.creditor_id = ?", "User", @user.id]).length, "time"), url_for(:action => 'credits')) -%>
+						<%= link_to(pluralize(Authorization.scoped(Contribution)[0].find(:all, :select => "0", :joins => "JOIN creditations ON creditations.creditable_type = contributions.contributable_type AND creditations.creditable_id = contributions.contributable_id", :conditions => ["creditations.creditor_type = ? AND creditations.creditor_id = ?", "User", @user.id]).length, "time"), url_for(:action => 'credits')) -%>
 					</b>
 				</p>
 			</div>
