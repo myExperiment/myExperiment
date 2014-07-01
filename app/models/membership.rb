@@ -12,7 +12,7 @@ class Membership < ActiveRecord::Base
 
   validates_presence_of :user_id, :network_id
 
-  validate_on_create :membership_allowed
+  validate :membership_allowed, :on => :create
 
 #  validates_each :user_id do |model, attr, value|
 #    model.errors.add attr, "already member" if model.network.member? value
