@@ -274,7 +274,7 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
     objects = collection.find(
         :all,
         :select => "#{filter_id_column} AS filter_id, #{filter_label_column} AS filter_label, #{count_expr} AS filter_count",
-        :joins => merge_joins(joins, pivot_options, collection.permission_conditions, :auth_type => opts[:auth_type], :auth_id => opts[:auth_id]),
+        :joins => merge_joins(joins, pivot_options, permission_conditions, :auth_type => opts[:auth_type], :auth_id => opts[:auth_id]),
         :conditions => conditions,
         :group => "#{filter_id_column}",
         :limit => limit,
@@ -487,13 +487,13 @@ def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
 
   # perform the results query
 
-  collection = Authorization.scoped(klass,
+  collection, permssion_conditions = Authorization.scoped(klass,
                                     :authorised_user => user,
                                     :include_permissions => true,
                                     :auth_type => auth_type,
                                     :auth_id => auth_id)
 
-  result_options = {:joins => merge_joins(joins, pivot_options, collection.permission_conditions, :auth_type => auth_type, :auth_id => auth_id),
+  result_options = {:joins => merge_joins(joins, pivot_options, permission_conditions, :auth_type => auth_type, :auth_id => auth_id),
                     :conditions => conditions.length.zero? ? nil : conditions.join(" AND "),
                     :group => "#{group_by} #{having_clause}",
                     :order => order_options["order"]}

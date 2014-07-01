@@ -439,55 +439,6 @@ module Authorization
   end
 
   def self.scoped(model, opts = {})
-
-    def self.view_conditions(user_id, friends, networks)
-
-      return "((contributions.id IS NULL) OR (share_mode = 0 OR share_mode = 1 OR share_mode = 2))" if user_id.nil?
-
-      policy_part =
-        "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
-          (share_mode = 0 OR share_mode = 1 OR share_mode = 2) OR
-          ((share_mode = 1 OR share_mode = 3 OR share_mode = 4 OR update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
-           (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
-
-      "((contributions.id IS NULL) OR (#{policy_part} OR #{permission_part(['view', 'download', 'edit'], user_id, networks)}))"
-    end
-
-    def self.download_conditions(user_id, friends, networks)
-
-      return "((contributions.id IS NULL) OR (share_mode = 0))" if user_id.nil?
-
-      policy_part = 
-        "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
-          (share_mode = 0) OR
-          ((share_mode = 1 OR share_mode = 3 OR update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
-           (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
-
-      "((contributions.id IS NULL) OR (#{policy_part} OR #{permission_part(['download', 'edit'], user_id, networks)}))"
-    end
-
-    def self.edit_conditions(user_id, friends, networks)
-
-      return "((contributions.id IS NULL) OR (share_mode = 0 AND update_mode = 0))" if user_id.nil?
-
-      policy_part =
-        "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
-          (share_mode = 0 AND update_mode = 0) OR
-          ((update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
-           (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
-
-      "((contributions.id IS NULL) OR (#{policy_part} OR #{permission_part(['edit'], user_id, networks)}))"
-    end
-
-    def self.permission_part(permissions, user_id, networks)
-
-      permission_test = permissions.map do |p| "permissions.#{p} = true" end.join(" OR ")
-
-      "(permissions.id IS NOT NULL AND (#{permission_test}) AND
-        ((permissions.contributor_type = 'User'    AND permissions.contributor_id = #{user_id}) OR
-         (permissions.contributor_type = 'Network' AND permissions.contributor_id IN #{networks})))"
-    end
-
     user = opts.delete(:authorised_user)
 
     if (user != 0) && (user != nil)
@@ -550,23 +501,15 @@ module Authorization
     opts[:group] ||= 'contributions.contributable_type, contributions.contributable_id'
     opts[:joins] = joins
 
-    scope = model.scoped(opts) do
-      def permission_conditions
-        @permission_conditions
-      end
+    scope = model.scoped(opts)
 
-      def permission_conditions=(permission_conditions)
-        @permission_conditions = permission_conditions
-      end
-    end
-
-    scope.permission_conditions = {
+    permission_conditions = {
       :view_conditions     => view_conditions,
       :download_conditions => download_conditions,
       :edit_conditions     => edit_conditions
     }
 
-    scope
+    return scope, permission_conditions
   end
 
   # This function calculates which agents are authorized to perform a given
@@ -579,6 +522,56 @@ module Authorization
     else
       raise "Unknown action: #{action}"
     end
+  end
+
+  private
+
+  def self.view_conditions(user_id, friends, networks)
+
+    return "((contributions.id IS NULL) OR (share_mode = 0 OR share_mode = 1 OR share_mode = 2))" if user_id.nil?
+
+    policy_part =
+      "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
+        (share_mode = 0 OR share_mode = 1 OR share_mode = 2) OR
+        ((share_mode = 1 OR share_mode = 3 OR share_mode = 4 OR update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
+         (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
+
+    "((contributions.id IS NULL) OR (#{policy_part} OR #{permission_part(['view', 'download', 'edit'], user_id, networks)}))"
+  end
+
+  def self.download_conditions(user_id, friends, networks)
+
+    return "((contributions.id IS NULL) OR (share_mode = 0))" if user_id.nil?
+
+    policy_part =
+      "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
+        (share_mode = 0) OR
+        ((share_mode = 1 OR share_mode = 3 OR update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
+         (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
+
+    "((contributions.id IS NULL) OR (#{policy_part} OR #{permission_part(['download', 'edit'], user_id, networks)}))"
+  end
+
+  def self.edit_conditions(user_id, friends, networks)
+
+    return "((contributions.id IS NULL) OR (share_mode = 0 AND update_mode = 0))" if user_id.nil?
+
+    policy_part =
+      "((contributions.contributor_type = 'User' AND contributions.contributor_id = #{user_id}) OR
+        (share_mode = 0 AND update_mode = 0) OR
+        ((update_mode = 1 OR (update_mode = 0 AND (share_mode = 1 OR share_mode = 3))) AND
+         (contributions.contributor_type = 'User' AND contributions.contributor_id IN #{friends})))"
+
+    "((contributions.id IS NULL) OR (#{policy_part} OR #{permission_part(['edit'], user_id, networks)}))"
+  end
+
+  def self.permission_part(permissions, user_id, networks)
+
+    permission_test = permissions.map do |p| "permissions.#{p} = true" end.join(" OR ")
+
+    "(permissions.id IS NOT NULL AND (#{permission_test}) AND
+      ((permissions.contributor_type = 'User'    AND permissions.contributor_id = #{user_id}) OR
+       (permissions.contributor_type = 'Network' AND permissions.contributor_id IN #{networks})))"
   end
 end
 
