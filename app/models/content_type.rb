@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class ContentType < ActiveRecord::Base
+
+  attr_accessible :title, :mime_type
+
   format_attribute :description
 
   belongs_to :user
