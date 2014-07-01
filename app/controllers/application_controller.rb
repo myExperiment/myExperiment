@@ -27,7 +27,8 @@ class ApplicationController < ActionController::Base
 
   include ActionView::Helpers::NumberHelper
 
-  layout :configure_layout
+  before_filter :configure_layout
+  layout lambda { |_| @layout["layout"] }
   
   def check_for_sleeper
     if request.method != :get && logged_in?
@@ -635,8 +636,6 @@ class ApplicationController < ActionController::Base
     else
       @layout = layout
     end
-
-    @layout["layout"]
   end
 
 end
