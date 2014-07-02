@@ -4,6 +4,7 @@
 # See license.txt for details.
 
 require 'sesame'
+require 'dummy_triple_store'
 
 class TripleStore
 
