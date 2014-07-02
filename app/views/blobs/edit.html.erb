@@ -7,7 +7,7 @@
 
 <%= error_messages_for :blob %>
 
-<% form_for(:blob, :url => blob_path(@blob), :html => { :method => :put, :multipart => true }) do |f| %>
+<%= form_for(:blob, :url => blob_path(@blob), :html => { :method => :put, :multipart => true }) do |f| %>
 
   <div style="text-align: center;">
     <div>

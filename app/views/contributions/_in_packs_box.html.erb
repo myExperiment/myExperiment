@@ -34,7 +34,7 @@
       <div class="fold" id="add_to_pack_fold">
         <div class="foldTitle">Add to your Pack</div>
         <div class="foldContent" style="display: none;">
-          <% form_tag quick_add_pack_url(potential_packs.first),
+          <%= form_tag quick_add_pack_url(potential_packs.first),
                       { :onsubmit => "new Ajax.Request(this.action, " +
                                      "{asynchronous:true, evalScripts:true, method:'post', "+
                                      "onComplete:function(request){$('pack_add_spinner').hide();},"+

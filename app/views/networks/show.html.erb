@@ -102,7 +102,7 @@
       </div>
 
       <% if @network.feed && Authorization.check("edit", @network, current_user) %>
-        <% form_tag sync_feed_network_path(@network), :method => :post do %>
+        <%= form_tag sync_feed_network_path(@network), :method => :post do %>
           <%= submit_tag "Synchronize feed" -%>
         <% end %>
       <% end %>

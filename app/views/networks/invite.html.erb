@@ -28,7 +28,7 @@
       Select a user by typing their name into the text box and choosing an option from the list which appears, then type in a message to the user and click "Invite".
     </p>
 
-    <% form_tag(membership_invite_network_path(@network), :method => :post, :onkeyup => "if(event.keyCode === 13) return false;") do %>
+    <%= form_tag(membership_invite_network_path(@network), :method => :post, :onkeyup => "if(event.keyCode === 13) return false;") do %>
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td><%= help_icon_with_tooltip("Begin typing a #{Conf.sitename} user's name into the text box and a list of suggestions will appear. Select the correct user from the list.") -%></td>
@@ -109,7 +109,7 @@
       Type in email addresses you want to send invitations to, personal message to new users and click "Invite".
     </p>
 
-    <% form_tag(membership_invite_external_network_path(@network), :method => :post) do %>
+    <%= form_tag(membership_invite_external_network_path(@network), :method => :post) do %>
       <%= hidden_field_tag "radio_choice", "" -%>
       <table>
         <tr>

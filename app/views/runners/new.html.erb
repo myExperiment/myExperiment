@@ -6,7 +6,7 @@
 	<div class="box_form" style="width:  550px; margin: 1em 0; text-align: left;">
 		<p style="text-align: center; font-size: 85%;">Note: the runner will NOT be verified / validated on creation.</p>
 		
-		<% form_tag runners_path do -%>
+		<%= form_tag runners_path do -%>
 			<p><b>Title</b></p>
 			<%= text_field_tag "runner[title]", nil, :size =>  86 %>
 			

@@ -76,11 +76,11 @@
 			
 			<!-- These forms serve as 'data senders' for Accept/Reject buttons -->
 	    
-	    <% form_tag(accept_user_friendship_path(@friendship.friend_id, @friendship)) do %>
+	    <%= form_tag(accept_user_friendship_path(@friendship.friend_id, @friendship)) do %>
 		  	<%= hidden_field_tag "accept_msg", "" %>
 	    <% end %>
 		  
-  		<% form_tag(user_friendship_path(@friendship.friend_id, @friendship) + "?return_to=" + currentusers_things_url('friends'), :method => :delete) do %>				  
+  		<%= form_tag(user_friendship_path(@friendship.friend_id, @friendship) + "?return_to=" + currentusers_things_url('friends'), :method => :delete) do %>
   			<%= hidden_field_tag "reject_msg", "" %>
   	  <% end %>
 		  

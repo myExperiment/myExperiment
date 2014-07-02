@@ -2,7 +2,7 @@
 
 <%= error_messages_for :announcement %>
 
-<% form_for :announcement, :url => announcements_path do |form| -%>
+<%= form_for :announcement, :url => announcements_path do |form| -%>
   <%= render :partial => 'form', :object => form %>
   <%= submit_tag "Create", :disable_with => "Creating..." %>
 <% end -%>

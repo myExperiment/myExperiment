@@ -147,7 +147,7 @@
 				
 				<br/>
 				
-				<% form_tag save_inputs_experiment_job_path(@experiment, @job), :multipart => true do -%>
+				<%= form_tag save_inputs_experiment_job_path(@experiment, @job), :multipart => true do -%>
 					<% s_field_counter = 0 -%>
 					
 					<% inputs.each do |i| -%>

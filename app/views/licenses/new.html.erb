@@ -2,7 +2,7 @@
 
 <%= error_messages_for :license %>
 
-<% form_for :license, :url => licenses_path do |form| -%>
+<%= form_for :license, :url => licenses_path do |form| -%>
   <%= render :partial => 'form', :object => form %>
   <%= submit_tag "Create", :disable_with => "Creating..." %>
 <% end -%>

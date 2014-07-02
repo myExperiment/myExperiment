@@ -1,5 +1,5 @@
 <h1>New Group Policy</h1>
-<% form_tag network_policies_path(@group), :method => :post do %>
+<%= form_tag network_policies_path(@group), :method => :post do %>
   <%= render :partial => 'form', :locals => { :policy => @policy, :edit => false } %>
   <br/>
   <p>

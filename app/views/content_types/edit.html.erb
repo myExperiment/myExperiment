@@ -7,7 +7,7 @@
 
 <%= error_messages_for :content_type %>
 
-<% form_for(:content_type, :url => content_type_path(@content_type), :html => { :method => :put }) do |f| %>
+<%= form_for(:content_type, :url => content_type_path(@content_type), :html => { :method => :put }) do |f| %>
 
   <p style="text-align: center;">
   	<strong>Title: </strong>

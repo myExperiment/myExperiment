@@ -4,7 +4,7 @@
 
 <h1>Suggestions</h1>
 
-<% form_for(:blob_version, :url => blob_version_process_suggestions_path(@blob, @version.version), :html => { :method => :post } ) do |f| %>
+<%= form_for(:blob_version, :url => blob_version_process_suggestions_path(@blob, @version.version), :html => { :method => :post } ) do |f| %>
 
   <% if @suggestions[:description] %>
 

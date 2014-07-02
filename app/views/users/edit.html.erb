@@ -5,7 +5,7 @@
 	<%= link_to "Reset the form to the last saved correct state", edit_user_path(@user) -%>
 <% end -%>
 <h2>Name</h2>
-<% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+<%= form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
 <%= hidden_field_tag(:update_type, "upd_t_name") -%>
 <p style="margin-left: 0.1cm">
     <b>Given Name:</b>
@@ -42,7 +42,7 @@
     <tr style="vertical-align: top;">
         <td style="width: 50%;">
             <h2 style="width: 275px"><%= Conf.sitename %> username / password</h2>
-            <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+            <%= form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
 						<%= hidden_field_tag(:update_type, "upd_t_up") -%>
             <center>
 						<div style="width: 72%">
@@ -129,7 +129,7 @@
 <% end %>
 <% end %>
 <% end %>
-<% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+<%= form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
 <p>
     <b>New Email:</b>
     <br/>
@@ -151,7 +151,7 @@
 <br/>
 <br/>
 <h2>Notifications</h2>
-<% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+<%= form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
 <%= hidden_field_tag(:update_type, "upd_t_notify") -%>
 <p>
     Note that in order to receive email notifications, you need to have an email address registered on your account.

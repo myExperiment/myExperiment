@@ -6,7 +6,7 @@
 
 <center>
 	<div class="box_form" style="width: 550px; margin: 1em 0; text-align: left;">
-		<% form_for :experiment, :url => experiment_path(@experiment), :html => { :method => :put } do |form| -%>
+		<%= form_for :experiment, :url => experiment_path(@experiment), :html => { :method => :put } do |form| -%>
 			<p><b>Title</b></p>
 			<%= form.text_field :title, :size => 86 %>
 			

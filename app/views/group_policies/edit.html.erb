@@ -9,7 +9,7 @@
 <h3>Usage</h3>
 <%= @policy.contributions.size -%> resources using this policy
 <br/>
-<% form_tag network_policy_path(@group, @policy), :method => :put do -%>
+<%= form_tag network_policy_path(@group, @policy), :method => :put do -%>
   <%= render :partial => 'form', :locals => { :policy => @policy, :edit => true } %>
   <br/>
   <p>

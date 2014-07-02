@@ -2,7 +2,7 @@
 
 <%= error_messages_for :profile %>
 
-<% form_for(:profile, :url => profiles_path) do |f| %>
+<%= form_for(:profile, :url => profiles_path) do |f| %>
   
 	<% if mine? @user %>
 		<%= render :partial => "form", :object => f, :locals => { :pictures => @user.pictures } %>

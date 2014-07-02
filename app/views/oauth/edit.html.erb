@@ -1,6 +1,6 @@
 <h1>Edit OAuth details for <%=@client_application.name%></h1>
 
-<% form_for @client_application, :url => { :action => "update", :controller => "oauth" }, :method => :put do |f| %>
+<%= form_for @client_application, :url => { :action => "update", :controller => "oauth" }, :method => :put do |f| %>
 
   <%= f.hidden_field :id %>
 

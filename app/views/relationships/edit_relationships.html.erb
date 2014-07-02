@@ -14,7 +14,7 @@
 
 <% else %>
 
-  <% form_tag("#{rest_resource_uri(@context)}/relationships") do -%>
+  <%= form_tag("#{rest_resource_uri(@context)}/relationships") do -%>
 
     <div class="edit_relationships">
       <%= select_tag("subject", options_for_select(@select_options)) -%>

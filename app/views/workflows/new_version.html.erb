@@ -31,7 +31,7 @@
 	<%= error_messages_for :workflow %>
 </center>
 
-<% form_tag(create_version_workflow_url(@workflow), :multipart => true, :method => :post) do %>
+<%= form_tag(create_version_workflow_url(@workflow), :multipart => true, :method => :post) do %>
 
 	<!-- Workflow File -->
 	

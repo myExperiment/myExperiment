@@ -24,7 +24,7 @@
 <br />
 <br />
 
-<% form_for(:user, :url => users_path) do |f| %>
+<%= form_for(:user, :url => users_path) do |f| %>
 
   <% if Conf.recaptcha_enable -%>
     <center>
@@ -172,7 +172,7 @@
 
 <center><span style="font-size: 138.5%; font-weight: bold;">OR</span></center>
 
-<% form_tag session_path do %>
+<%= form_tag session_path do %>
 	<div class="fold" style="margin-top: 2em;">
 		<div class="foldTitle">
     	Register with an OpenID
