@@ -5,7 +5,7 @@
 
 class ContentType < ActiveRecord::Base
 
-  attr_accessible :title, :mime_type
+  attr_accessible :title, :mime_type, :category
 
   format_attribute :description
 
