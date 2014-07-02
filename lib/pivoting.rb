@@ -47,10 +47,6 @@ end
 
 def parse_filter_expression(expr, pivot_options, opts = {})
 
-  def unescape_string(str)
-    str.match(/^"(.*)"$/)[1].gsub(/\\"/, '"')
-  end
-
   return nil if expr.nil?
 
   state  = STATE_INITIAL
@@ -143,264 +139,6 @@ def parse_filter_expression(expr, pivot_options, opts = {})
 end
 
 def contributions_list(params = nil, user = nil, pivot_options = nil, opts = {})
-
-  def escape_sql(str)
-    str.gsub(/\\/, '\&\&').gsub(/'/, "''")
-  end
-
-  def build_url(params, opts, expr, parts, pivot_options, extra = {})
-
-    query = {}
-
-    if parts.include?(:filter)
-      bits = []
-      pivot_options["filters"].each do |filter|
-        if !opts[:lock_filter] || opts[:lock_filter][filter["query_option"]].nil?
-          if find_filter(expr, filter["query_option"])
-            bits << filter["query_option"] + "(\"" + find_filter(expr, filter["query_option"])[:expr][:terms].map do |t| t.gsub(/"/, '\"') end.join("\" OR \"") + "\")"
-          end
-        end
-      end
-
-      if bits.length > 0
-        query["filter"] = bits.join(" AND ")
-      end
-    end
-
-    query["query"]        = params[:query]        if params[:query]
-    query["order"]        = params[:order]        if parts.include?(:order)
-    query["filter_query"] = params[:filter_query] if parts.include?(:filter_query)
-
-    query.merge!(extra)
-
-    query
-  end
-
-  def comparison(lhs, rhs)
-    if rhs.length == 1
-      "#{lhs} = '#{escape_sql(rhs.first)}'"
-    else
-      "#{lhs} IN ('#{rhs.map do |bit| escape_sql(bit) end.join("', '")}')"
-    end
-  end
-
-  def create_search_results_table(search_query, opts)
-
-    begin
-
-      search_results = Sunspot.search opts[:search_models] do
-        fulltext search_query
-        adjust_solr_params { |p| p[:defType] = 'edismax' }
-        paginate :page => 1, :per_page => opts[:search_limit]
-      end
-
-    rescue
-      raise unless Rails.env == "production"
-      return false
-    end
-
-    conn = ActiveRecord::Base.connection
-
-    conn.execute("CREATE TEMPORARY TABLE search_results (id INT AUTO_INCREMENT UNIQUE KEY, result_type VARCHAR(255), result_id INT)")
-
-    # This next part converts the search results to an SQL "VALUES" clause
-    #
-    # e.g. "(NULL, 'Workflow', '4'), (NULL, 'Pack', '6'), ..."
-
-    if search_results.results.length > 0
-      values = search_results.results.map do |result|
-        "(NULL, '#{result.class.name}', '#{result.id}')"
-      end.join(", ")
-
-      conn.execute("INSERT INTO search_results VALUES #{values}")
-    end
-
-    true
-  end
-
-  def drop_search_results_table
-    ActiveRecord::Base.connection.execute("DROP TABLE IF EXISTS search_results")
-  end
-
-  def column(column, opts)
-    if column == :auth_type
-      opts[:auth_type]
-    else
-      column
-    end
-  end
-
-  def calculate_filter(collection, permission_conditions, params, filter, pivot_options, user, opts = {})
-
-    # apply all the joins and conditions except for the current filter
-
-    joins      = []
-    conditions = []
-
-    pivot_options["filters"].each do |other_filter|
-      if filter_list = find_filter(opts[:filters], other_filter["query_option"])
-        unless opts[:inhibit_other_conditions]
-          conditions << comparison(column(other_filter["id_column"], opts), filter_list[:expr][:terms]) unless other_filter == filter
-        end
-        joins += other_filter["joins"] if other_filter["joins"]
-      end
-    end
-
-    filter_id_column    = column(filter["id_column"],    opts)
-    filter_label_column = column(filter["label_column"], opts)
-
-    joins += filter["joins"] if filter["joins"]
-    conditions << "#{filter_id_column} IS NOT NULL" if filter["not_null"]
-
-    unless opts[:inhibit_filter_query]
-      if params[:filter_query]
-        conditions << "(#{filter_label_column} LIKE '%#{escape_sql(params[:filter_query])}%')"
-      end
-    end
-
-    current = find_filter(opts[:filters], filter["query_option"]) ? find_filter(opts[:filters], filter["query_option"])[:expr][:terms] : []
-
-    if opts[:ids].nil?
-      limit = Conf.expanded_filter_size
-    else
-      conditions << "(#{filter_id_column} IN ('#{opts[:ids].map do |id| escape_sql(id) end.join("','")}'))"
-      limit = nil
-    end
-
-    conditions = conditions.length.zero? ? nil : conditions.join(" AND ")
-
-    count_expr = "COUNT(DISTINCT #{opts[:auth_type]}, #{opts[:auth_id]})"
-
-    objects = collection.find(
-        :all,
-        :select => "#{filter_id_column} AS filter_id, #{filter_label_column} AS filter_label, #{count_expr} AS filter_count",
-        :joins => merge_joins(joins, pivot_options, permission_conditions, :auth_type => opts[:auth_type], :auth_id => opts[:auth_id]),
-        :conditions => conditions,
-        :group => "#{filter_id_column}",
-        :limit => limit,
-        :order => "#{count_expr} DESC, #{filter_label_column}")
-
-    objects = objects.select do |x| !x[:filter_id].nil? end
-
-    objects = objects.map do |object|
-
-      value = object.filter_id.to_s
-      selected = current.include?(value)
-
-      label_expr = deep_clone(opts[:filters])
-      label_expr -= [find_filter(label_expr, filter["query_option"])] if find_filter(label_expr, filter["query_option"])
-
-      unless selected && current.length == 1
-        label_expr << { :name => filter["query_option"], :expr => { :terms => [value] } }
-      end
-
-      checkbox_expr = deep_clone(opts[:filters])
-
-      if expr_filter = find_filter(checkbox_expr, filter["query_option"])
-
-        if selected
-          expr_filter[:expr][:terms] -= [value]
-        else
-          expr_filter[:expr][:terms] += [value]
-        end
-
-        checkbox_expr -= [expr_filter] if expr_filter[:expr][:terms].empty?
-
-      else
-        checkbox_expr << { :name => filter["query_option"], :expr => { :terms => [value] } }
-      end
-
-      label_uri = build_url(params, opts, label_expr, [:filter, :order], pivot_options, "page" => nil)
-
-      checkbox_uri = build_url(params, opts, checkbox_expr, [:filter, :order], pivot_options, "page" => nil)
-
-      label = object.filter_label.clone
-      label = visible_name(label) if filter["visible_name"]
-      label = label.capitalize    if filter["capitalize"]
-
-      plain_label = object.filter_label
-
-      if params[:filter_query]
-        label = label.sub(Regexp.new("(#{params[:filter_query]})", Regexp::IGNORECASE), '<b>\1</b>')
-      end
-
-      {
-          :object       => object,
-          :value        => value,
-          :label        => label,
-          :plain_label  => plain_label,
-          :count        => object.filter_count,
-          :checkbox_uri => checkbox_uri,
-          :label_uri    => label_uri,
-          :selected     => selected
-      }
-    end
-
-    [current, objects]
-  end
-
-  def calculate_filters(collection, permission_conditions, params, opts, pivot_options, user)
-
-    # produce the filter list
-
-    filters = deep_clone(pivot_options["filters"])
-    cancel_filter_query_url = nil
-
-    filters.each do |filter|
-
-      # calculate the top n items of the list
-
-      filter[:current], filter[:objects] = calculate_filter(collection, permission_conditions, params, filter, pivot_options, user, opts)
-
-      # calculate which active filters are missing (because they weren't in the
-      # top part of the list or have a count of zero)
-
-      missing_filter_ids = filter[:current] - filter[:objects].map do |ob| ob[:value] end
-
-      if missing_filter_ids.length > 0
-        filter[:objects] += calculate_filter(collection, permission_conditions, params, filter, pivot_options, user, opts.merge(:ids => missing_filter_ids))[1]
-      end
-
-      # calculate which active filters are still missing (because they have a
-      # count of zero)
-
-      missing_filter_ids = filter[:current] - filter[:objects].map do |ob| ob[:value] end
-
-      if missing_filter_ids.length > 0
-        zero_list = calculate_filter(collection, permission_conditions, params, filter, pivot_options, user, opts.merge(:ids => missing_filter_ids, :inhibit_other_conditions => true))[1]
-
-        zero_list.each do |x| x[:count] = 0 end
-
-        zero_list.sort! do |a, b| a[:label] <=> b[:label] end
-
-        filter[:objects] += zero_list
-      end
-    end
-
-    [filters, cancel_filter_query_url]
-  end
-
-  def find_filter(filters, name)
-    filters.find do |f|
-      f[:name] == name
-    end
-  end
-
-  def merge_joins(joins, pivot_options, permission_conditions, opts = {})
-    if joins.length.zero?
-      nil
-    else
-      joins.uniq.map do |j|
-        text = pivot_options["joins"][j].clone
-        text.gsub!(/RESULT_TYPE/,         opts[:auth_type])
-        text.gsub!(/RESULT_ID/,           opts[:auth_id])
-        text.gsub!(/VIEW_CONDITIONS/,     permission_conditions[:view_conditions])
-        text.gsub!(/DOWNLOAD_CONDITIONS/, permission_conditions[:download_conditions])
-        text.gsub!(/EDIT_CONDITIONS/,     permission_conditions[:edit_conditions])
-        text
-      end.join(" ")
-    end
-  end
 
   pivot_options["filters"] = pivot_options["filters"].select do |f|
     opts[:active_filters].include?(f["query_option"])
@@ -610,3 +348,264 @@ def visible_name(entity)
   name
 end
 
+def escape_sql(str)
+  str.gsub(/\\/, '\&\&').gsub(/'/, "''")
+end
+
+def build_url(params, opts, expr, parts, pivot_options, extra = {})
+
+  query = {}
+
+  if parts.include?(:filter)
+    bits = []
+    pivot_options["filters"].each do |filter|
+      if !opts[:lock_filter] || opts[:lock_filter][filter["query_option"]].nil?
+        if find_filter(expr, filter["query_option"])
+          bits << filter["query_option"] + "(\"" + find_filter(expr, filter["query_option"])[:expr][:terms].map do |t| t.gsub(/"/, '\"') end.join("\" OR \"") + "\")"
+        end
+      end
+    end
+
+    if bits.length > 0
+      query["filter"] = bits.join(" AND ")
+    end
+  end
+
+  query["query"]        = params[:query]        if params[:query]
+  query["order"]        = params[:order]        if parts.include?(:order)
+  query["filter_query"] = params[:filter_query] if parts.include?(:filter_query)
+
+  query.merge!(extra)
+
+  query
+end
+
+def comparison(lhs, rhs)
+  if rhs.length == 1
+    "#{lhs} = '#{escape_sql(rhs.first)}'"
+  else
+    "#{lhs} IN ('#{rhs.map do |bit| escape_sql(bit) end.join("', '")}')"
+  end
+end
+
+def create_search_results_table(search_query, opts)
+
+  begin
+
+    search_results = Sunspot.search opts[:search_models] do
+      fulltext search_query
+      adjust_solr_params { |p| p[:defType] = 'edismax' }
+      paginate :page => 1, :per_page => opts[:search_limit]
+    end
+
+  rescue
+    raise unless Rails.env == "production"
+    return false
+  end
+
+  conn = ActiveRecord::Base.connection
+
+  conn.execute("CREATE TEMPORARY TABLE search_results (id INT AUTO_INCREMENT UNIQUE KEY, result_type VARCHAR(255), result_id INT)")
+
+  # This next part converts the search results to an SQL "VALUES" clause
+  #
+  # e.g. "(NULL, 'Workflow', '4'), (NULL, 'Pack', '6'), ..."
+
+  if search_results.results.length > 0
+    values = search_results.results.map do |result|
+      "(NULL, '#{result.class.name}', '#{result.id}')"
+    end.join(", ")
+
+    conn.execute("INSERT INTO search_results VALUES #{values}")
+  end
+
+  true
+end
+
+def drop_search_results_table
+  ActiveRecord::Base.connection.execute("DROP TABLE IF EXISTS search_results")
+end
+
+def column(column, opts)
+  if column == :auth_type
+    opts[:auth_type]
+  else
+    column
+  end
+end
+
+def calculate_filter(collection, permission_conditions, params, filter, pivot_options, user, opts = {})
+
+  # apply all the joins and conditions except for the current filter
+
+  joins      = []
+  conditions = []
+
+  pivot_options["filters"].each do |other_filter|
+    if filter_list = find_filter(opts[:filters], other_filter["query_option"])
+      unless opts[:inhibit_other_conditions]
+        conditions << comparison(column(other_filter["id_column"], opts), filter_list[:expr][:terms]) unless other_filter == filter
+      end
+      joins += other_filter["joins"] if other_filter["joins"]
+    end
+  end
+
+  filter_id_column    = column(filter["id_column"],    opts)
+  filter_label_column = column(filter["label_column"], opts)
+
+  joins += filter["joins"] if filter["joins"]
+  conditions << "#{filter_id_column} IS NOT NULL" if filter["not_null"]
+
+  unless opts[:inhibit_filter_query]
+    if params[:filter_query]
+      conditions << "(#{filter_label_column} LIKE '%#{escape_sql(params[:filter_query])}%')"
+    end
+  end
+
+  current = find_filter(opts[:filters], filter["query_option"]) ? find_filter(opts[:filters], filter["query_option"])[:expr][:terms] : []
+
+  if opts[:ids].nil?
+    limit = Conf.expanded_filter_size
+  else
+    conditions << "(#{filter_id_column} IN ('#{opts[:ids].map do |id| escape_sql(id) end.join("','")}'))"
+    limit = nil
+  end
+
+  conditions = conditions.length.zero? ? nil : conditions.join(" AND ")
+
+  count_expr = "COUNT(DISTINCT #{opts[:auth_type]}, #{opts[:auth_id]})"
+
+  objects = collection.find(
+      :all,
+      :select => "#{filter_id_column} AS filter_id, #{filter_label_column} AS filter_label, #{count_expr} AS filter_count",
+      :joins => merge_joins(joins, pivot_options, permission_conditions, :auth_type => opts[:auth_type], :auth_id => opts[:auth_id]),
+      :conditions => conditions,
+      :group => "#{filter_id_column}",
+      :limit => limit,
+      :order => "#{count_expr} DESC, #{filter_label_column}")
+
+  objects = objects.select do |x| !x[:filter_id].nil? end
+
+  objects = objects.map do |object|
+
+    value = object.filter_id.to_s
+    selected = current.include?(value)
+
+    label_expr = deep_clone(opts[:filters])
+    label_expr -= [find_filter(label_expr, filter["query_option"])] if find_filter(label_expr, filter["query_option"])
+
+    unless selected && current.length == 1
+      label_expr << { :name => filter["query_option"], :expr => { :terms => [value] } }
+    end
+
+    checkbox_expr = deep_clone(opts[:filters])
+
+    if expr_filter = find_filter(checkbox_expr, filter["query_option"])
+
+      if selected
+        expr_filter[:expr][:terms] -= [value]
+      else
+        expr_filter[:expr][:terms] += [value]
+      end
+
+      checkbox_expr -= [expr_filter] if expr_filter[:expr][:terms].empty?
+
+    else
+      checkbox_expr << { :name => filter["query_option"], :expr => { :terms => [value] } }
+    end
+
+    label_uri = build_url(params, opts, label_expr, [:filter, :order], pivot_options, "page" => nil)
+
+    checkbox_uri = build_url(params, opts, checkbox_expr, [:filter, :order], pivot_options, "page" => nil)
+
+    label = object.filter_label.clone
+    label = visible_name(label) if filter["visible_name"]
+    label = label.capitalize    if filter["capitalize"]
+
+    plain_label = object.filter_label
+
+    if params[:filter_query]
+      label = label.sub(Regexp.new("(#{params[:filter_query]})", Regexp::IGNORECASE), '<b>\1</b>')
+    end
+
+    {
+        :object       => object,
+        :value        => value,
+        :label        => label,
+        :plain_label  => plain_label,
+        :count        => object.filter_count,
+        :checkbox_uri => checkbox_uri,
+        :label_uri    => label_uri,
+        :selected     => selected
+    }
+  end
+
+  [current, objects]
+end
+
+def calculate_filters(collection, permission_conditions, params, opts, pivot_options, user)
+
+  # produce the filter list
+
+  filters = deep_clone(pivot_options["filters"])
+  cancel_filter_query_url = nil
+
+  filters.each do |filter|
+
+    # calculate the top n items of the list
+
+    filter[:current], filter[:objects] = calculate_filter(collection, permission_conditions, params, filter, pivot_options, user, opts)
+
+    # calculate which active filters are missing (because they weren't in the
+    # top part of the list or have a count of zero)
+
+    missing_filter_ids = filter[:current] - filter[:objects].map do |ob| ob[:value] end
+
+    if missing_filter_ids.length > 0
+      filter[:objects] += calculate_filter(collection, permission_conditions, params, filter, pivot_options, user, opts.merge(:ids => missing_filter_ids))[1]
+    end
+
+    # calculate which active filters are still missing (because they have a
+    # count of zero)
+
+    missing_filter_ids = filter[:current] - filter[:objects].map do |ob| ob[:value] end
+
+    if missing_filter_ids.length > 0
+      zero_list = calculate_filter(collection, permission_conditions, params, filter, pivot_options, user, opts.merge(:ids => missing_filter_ids, :inhibit_other_conditions => true))[1]
+
+      zero_list.each do |x| x[:count] = 0 end
+
+      zero_list.sort! do |a, b| a[:label] <=> b[:label] end
+
+      filter[:objects] += zero_list
+    end
+  end
+
+  [filters, cancel_filter_query_url]
+end
+
+def find_filter(filters, name)
+  filters.find do |f|
+    f[:name] == name
+  end
+end
+
+def merge_joins(joins, pivot_options, permission_conditions, opts = {})
+  if joins.length.zero?
+    nil
+  else
+    joins.uniq.map do |j|
+      text = pivot_options["joins"][j].clone
+      text.gsub!(/RESULT_TYPE/,         opts[:auth_type])
+      text.gsub!(/RESULT_ID/,           opts[:auth_id])
+      text.gsub!(/VIEW_CONDITIONS/,     permission_conditions[:view_conditions])
+      text.gsub!(/DOWNLOAD_CONDITIONS/, permission_conditions[:download_conditions])
+      text.gsub!(/EDIT_CONDITIONS/,     permission_conditions[:edit_conditions])
+      text
+    end.join(" ")
+  end
+end
+
+def unescape_string(str)
+  str.match(/^"(.*)"$/)[1].gsub(/\\"/, '"')
+end
