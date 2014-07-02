@@ -498,10 +498,10 @@ module Authorization
 
     opts[:select] = select_parts.join(", ") unless select_parts.empty?
     opts[:conditions] = view_conditions(user_id, friends, networks)
-    opts[:group] ||= 'contributions.contributable_type, contributions.contributable_id'
+    #opts[:group] ||= 'contributions.contributable_type, contributions.contributable_id'
     opts[:joins] = joins
 
-    scope = model.joins(opts[:joins]).select(opts[:select]).where(opts[:conditions]).group(opts[:group])
+    scope = model.joins(opts[:joins]).select(opts[:select]).where(opts[:conditions])#.group(opts[:group])
 
     permission_conditions = {
       :view_conditions     => view_conditions,
