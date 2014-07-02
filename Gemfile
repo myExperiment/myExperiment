@@ -33,3 +33,5 @@ gem 'delayed_job_active_record'
 gem 'wf4ever-transformation-client', '~> 0.3.0'
 gem 'sanitize', '~> 2.0.6'
 gem "oauth-plugin", "~> 0.4.0"
+
+gem 'prototype-rails'
