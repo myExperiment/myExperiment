@@ -536,18 +536,17 @@ module ApplicationHelper
     image_options = alt ? { :alt => alt } : { :alt => method.humanize }
     img_tag = image_tag(filename, image_options)
     
-    inner = img_tag;
-    inner = "#{img_tag} #{label}" unless label == nil
+    inner = "#{img_tag} #{label}".html_safe
 
     if (url)
       if (remote)
-        inner = link_to_remote(inner, url, url_options);
+        inner = link_to_remote(inner, url, url_options)
       else
         inner = link_to(inner, url, url_options)
       end
     end
 
-    return '<span class="icon">' + inner + '</span>';
+    "<span class='icon'>#{inner}</span>".html_safe
   end
   
   
@@ -575,7 +574,7 @@ module ApplicationHelper
       inner = url + inner + "</a>"
     end
 
-    return '<span class="icon">' + inner + '</span>';
+    "<span class='icon'>#{inner}</span>".html_safe
   end
 
 
