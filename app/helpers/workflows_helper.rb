@@ -12,6 +12,10 @@ module WorkflowsHelper
     types.sort! {|x,y| x.downcase <=> y.downcase}
     types << "Other"
   end
+
+  def inferable_metadata_workflow_types
+    WorkflowTypesHandler.ones_that_can_infer_metadata.to_sentence
+  end
   
   def get_type_dir(workflow_version)
     klass = workflow_version.processor_class

@@ -25,7 +25,7 @@
 																main_metadata_infer_selected, 
 																:onclick => "$('metadata_choice_custom').checked=false;$('div_main_metadata_custom').hide();return true;") -%>
 					Attempt to infer metadata (and possibly generate preview images) from the workflow file/script
-					<%= info_icon_with_tooltip("<b>Note:</b> we are only able to do this for #{WorkflowTypesHandler.ones_that_can_infer_metadata.to_sentence} workflows at the moment. If this fails you will have the opportunity to set some custom metadata instead.") -%> 
+					<%= info_icon_with_tooltip("<b>Note:</b> we are only able to do this for #{inferable_metadata_workflow_types} workflows at the moment. If this fails you will have the opportunity to set some custom metadata instead.") -%>
 				</label>
 			</p>
 		<% end %>
