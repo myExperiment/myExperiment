@@ -14,12 +14,12 @@
   <ul class="dropdown-menu">
     <li class="dropdown-header">Social</li>
     <li>
-      <% link_to user_url(current_user) do %>
+      <%= link_to user_url(current_user) do %>
           My Profile
       <% end %>
     </li>
     <li>
-      <% link_to messages_path do %>
+      <%= link_to messages_path do %>
           My Messages
           <% unless current_user.messages_unread.empty? %>
               <span class="badge"><%= current_user.messages_unread.size %></span>
@@ -27,7 +27,7 @@
       <% end %>
     </li>
     <li>
-      <% link_to user_friendships_path(current_user) do %>
+      <%= link_to user_friendships_path(current_user) do %>
           My Friendships
           <% unless current_user.friendships_pending.empty? %>
               <span class="badge"><%= current_user.friendships_pending.size %></span>
@@ -35,7 +35,7 @@
       <% end %>
     </li>
     <li>
-      <% link_to user_memberships_path(current_user) do %>
+      <%= link_to user_memberships_path(current_user) do %>
           My Memberships
           <% unless (length = current_user.networks_membership_requests_pending.length + current_user.memberships_invited.length) == 0 %>
               <span class="badge"><%= length %></span>
@@ -46,19 +46,19 @@
     <li class="dropdown-header">Contributions</li>
     <% cache(:controller => 'sidebar_cache', :action => 'asset_manager', :id => current_user.id) do -%>
         <li>
-          <% link_to user_workflows_url(current_user) do %>
+          <%= link_to user_workflows_url(current_user) do %>
               My Workflows
               <!--<span class="badge"><%= current_user.workflows.size %></span>-->
           <% end %>
         </li>
         <li>
-          <% link_to user_blobs_url(current_user) do %>
+          <%= link_to user_blobs_url(current_user) do %>
               My Files
               <!--<span class="badge"><%= current_user.blobs.size %></span>-->
           <% end %>
         </li>
         <li>
-          <% link_to user_packs_url(current_user) do %>
+          <%= link_to user_packs_url(current_user) do %>
               My Packs
               <!--<span class="badge"><%= current_user.packs.size %></span>-->
           <% end %>
