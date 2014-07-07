@@ -10,7 +10,6 @@ class ApiControllerTest < ActionController::TestCase
 
   def setup
     @controller = ApiController.new
-    @request    = TestRequestWithQuery.new
     @response   = ActionController::TestResponse.new
   end
 
@@ -1728,43 +1727,11 @@ class ApiControllerTest < ActionController::TestCase
   private
 
   def rest_request(method, uri, data = nil, query = {})
-
-    @request.query_parameters!(query) if query
-
     @request.env['RAW_POST_DATA'] = data if data
+    parameters = { :uri => uri, :format => "xml" }.merge(query)
 
-    # puts "Sending: #{data.inspect}"
-
-    case method
-      when :get;    get(:process_request,     { :uri => uri, :format => "xml" } )
-      when :post;   post(:process_request,    { :uri => uri, :format => "xml" } )
-      when :put;    put(:process_request,     { :uri => uri, :format => "xml" } )
-      when :delete; delete(:process_request,  { :uri => uri, :format => "xml" } )
-    end
-
-    # puts "Response: #{LibXML::XML::Parser.string(@response.body).parse.root.to_s}"
+    send(method, :process_request, parameters)
 
     LibXML::XML::Parser.string(@response.body).parse
   end
 end
-
-# Custom version of the TestRequest, so that I can set the query parameters of
-# a request.
-
-class TestRequestWithQuery < ActionController::TestRequest
-
-  def query_parameters!(hash)
-    @custom_query_parameters = hash
-  end
-
-
-  def recycle!
-    super
-
-    if @custom_query_parameters
-      self.path_parameters = @custom_query_parameters
-      @custom_query_parameters = nil
-    end
-  end
-end
-

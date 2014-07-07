@@ -51,16 +51,16 @@ private
 
     case rules['Allow id']
       when 'required'
-        return rest_response(400, :reason => "Must specify an id") if request.query_parameters['id'].nil?
+        return rest_response(400, :reason => "Must specify an id") if params[:id].nil?
       when 'no'
-        return rest_response(400, :reason => "Cannot specify an id") if request.query_parameters['id']
+        return rest_response(400, :reason => "Cannot specify an id") if params[:id]
     end
 
     case rules['Allow version']
       when 'required'
-        return rest_response(400, :reason => "Must specify a version") if request.query_parameters['version'].nil?
+        return rest_response(400, :reason => "Must specify a version") if params[:version].nil?
       when 'no'
-        return rest_response(400, :reason => "Cannot specify a version") if request.query_parameters['version']
+        return rest_response(400, :reason => "Cannot specify a version") if params[:version]
     end
 
     # key check - if an oauth access token is in use, this means that we must
@@ -78,9 +78,9 @@ private
     end  
 
     case rules['Type']
-      when 'index'; rest_index_request(params[:uri], params[:format], rules, user, request.query_parameters)
-      when 'crud';  rest_crud_request(params[:uri], params[:id], params[:format], rules, user, request.query_parameters)
-      when 'call';  rest_call_request(:req_uri => params[:uri], :format => params[:format], :rules => rules, :user => user, :query => request.query_parameters)
+      when 'index'; rest_index_request(params[:uri], params[:format], rules, user, params)
+      when 'crud';  rest_crud_request(params[:uri], params[:id], params[:format], rules, user, params)
+      when 'call';  rest_call_request(:req_uri => params[:uri], :format => params[:format], :rules => rules, :user => user, :query => params)
       else;         rest_response(500, :reason => "Unknown REST table type")
     end
   end
