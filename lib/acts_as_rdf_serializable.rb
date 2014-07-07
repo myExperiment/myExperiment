@@ -30,8 +30,6 @@ module Finn
           after_destroy :destroy_rdf
 
           include Finn::Acts::RDFSerializable::InstanceMethods
-          # To generate resource's URI to be used as "context" in the triple store:
-          include Rails.application.routes.url_helpers
         end
       end
 
@@ -45,7 +43,8 @@ module Finn
 
         def resource_uri
           base_uri = URI(Conf.base_uri)
-          "<#{polymorphic_url(self, :host => "#{base_uri.host}:#{base_uri.port}")}>"
+          u = Rails.application.routes.url_helpers.send("#{self.class.name.underscore}_url".to_sym, self, :host => "#{base_uri.host}:#{base_uri.port}")
+          "<#{u}>"
         end
 
         def generate_rdf
