@@ -1,6 +1,6 @@
 ENV["RAILS_ENV"] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
-require 'test_help'
+require File.expand_path('../../config/environment', __FILE__)
+require 'rails/test_help'
 
 class ActiveSupport::TestCase
   # Transactional fixtures accelerate your tests by wrapping each test method
@@ -40,19 +40,3 @@ class ActiveSupport::TestCase
     @request.session[:user_id] = user ? users(user).id : nil
   end
 end
-
-if Rails::VERSION::MAJOR > 1
-  module ActionController
-    module UrlWriter
-
-      alias_method :original_url_for, :url_for
-
-      def url_for(options)
-        options[:host] = "test.host"
-        original_url_for(options)
-      end
-
-    end
-  end
-end
-
