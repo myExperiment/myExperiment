@@ -9,7 +9,7 @@ require 'xml/libxml'
 require 'uri'
 require 'pivoting'
 require 'will_paginate'
-Dir.glob(Rails.root + '/lib/api/resources/*') {|file| require file}
+Dir.glob(Rails.root + 'lib/api/resources/*') {|file| require file}
 
 include LibXML
 

@@ -3,9 +3,6 @@ require 'api_controller'
 require 'xml/libxml'
 require 'rest'
 
-include ActionView::Helpers::UrlHelper
-include ActionController::UrlWriter
-
 class ApiControllerTest < ActionController::TestCase
 
   def setup
@@ -1762,7 +1759,7 @@ class TestRequestWithQuery < ActionController::TestRequest
     super
 
     if @custom_query_parameters
-      self.query_parameters = @custom_query_parameters
+      self.path_parameters = @custom_query_parameters
       @custom_query_parameters = nil
     end
   end
