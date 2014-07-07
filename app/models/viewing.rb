@@ -1,5 +1,7 @@
 class Viewing < ActiveRecord::Base
 
+  attr_accessible :contribution, :user, :user_agent, :accessed_from_site
+
   belongs_to :contribution
   belongs_to :user
              
