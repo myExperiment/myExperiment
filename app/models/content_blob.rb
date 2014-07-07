@@ -8,6 +8,8 @@ require 'digest/sha1'
 
 class ContentBlob < ActiveRecord::Base
 
+  attr_accessible :data
+
   before_save :update_metadata
 
   validate do |record|

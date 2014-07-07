@@ -7,6 +7,9 @@ require 'securerandom'
 
 class Resource < ActiveRecord::Base
 
+  attr_accessible :path, :content_type, :context, :is_proxy, :proxy_for_path, :proxy_in_path, :creator_uri,
+                  :content_blob, :is_resource, :is_aggregated
+
   include ResearchObjectsHelper
 
   before_save :set_uuid

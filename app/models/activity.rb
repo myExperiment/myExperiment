@@ -6,6 +6,8 @@
 require 'securerandom'
 
 class Activity < ActiveRecord::Base
+  
+  attr_accessible :subject, :action, :objekt, :extra, :auth, :uuid, :timestamp, :priority, :context
 
   belongs_to :subject, :polymorphic => true
   belongs_to :objekt,  :polymorphic => true

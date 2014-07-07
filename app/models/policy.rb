@@ -4,6 +4,8 @@
 # See license.txt for details.
 
 class Policy < ActiveRecord::Base
+
+  attr_accessible :contributor, :name, :update_mode, :share_mode
   
   belongs_to :contributor, :polymorphic => true
   

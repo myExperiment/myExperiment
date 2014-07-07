@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class WorkflowProcessor < ActiveRecord::Base
+
+  attr_accessible :workflow, :name, :wsdl, :wsdl_operation
+
   belongs_to :workflow
 end
 

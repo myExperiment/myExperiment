@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class Creditation < ActiveRecord::Base
+
+  attr_accessible :creditor_type, :creditor_id, :creditable_type, :creditable_id
+
   belongs_to :creditor, :polymorphic => true
   belongs_to :creditable, :polymorphic => true
 end

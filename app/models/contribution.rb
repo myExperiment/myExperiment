@@ -6,6 +6,8 @@
 
 class Contribution < ActiveRecord::Base
 
+  attr_accessible :contributor, :contributable
+
   belongs_to :contributor, :polymorphic => true
   belongs_to :contributable, :polymorphic => true
   belongs_to :policy

@@ -10,6 +10,8 @@ require 'zip/zip'
 
 class ResearchObject < ActiveRecord::Base
 
+  attr_accessible :slug, :user
+
   MANIFEST_PATH = ".ro/manifest.rdf"
 
   include ResearchObjectsHelper
