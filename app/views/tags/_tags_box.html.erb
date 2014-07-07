@@ -15,7 +15,7 @@
 		<div class="fold">
 			<div class="foldTitle">Add Tags</div>
 			<div class="foldContent" style="display: none;">
-				<% form_remote_tag(:url => add_path, 
+				<%= form_tag(:remote => true, :url => add_path,
 							 		   :success => "$('tag_list').value=''; new Effect.Highlight('tags_inner_box', { duration: 1.5 });",
 							       :loading => "Element.show('addtag_indicator')",
                     	   	       :complete => "Element.hide('addtag_indicator')") do %>

@@ -55,7 +55,7 @@
             </div>
 
             <div class="rhs">
-              <% form_remote_tag(
+              <%= form_tag(:remote => true,
                   :url =>      polymorphic_path([activity.context, activity, :comments]),
                   :update =>   'activities', 
                   :loading =>  "Element.show('addcomment_indicator')",

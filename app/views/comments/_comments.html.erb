@@ -41,7 +41,7 @@
 			<% # Hack for FCKEditor: -%>
 			<% @comment = Comment.new; @comment.id = 0 -%>
 			
-			<% form_remote_tag(:url => polymorphic_path(commentable) + "/comments",
+                <%= form_tag(:remote => true, :url => polymorphic_path(commentable) + "/comments",
 								 :before => 'for (instance in CKEDITOR.instances) { CKEDITOR.instances[instance].updateElement() }',
 							   :update => 'commentsBox', 
 							   :loading => "Element.show('addcomment_indicator')",

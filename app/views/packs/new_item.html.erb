@@ -4,7 +4,7 @@
 	<%= error_messages_for :item_entry %>
 </center>
 
-<% form_remote_tag(:url => resolve_link_pack_path(@pack), 
+<%= form_tag(:remote => true, :url => resolve_link_pack_path(@pack),
 								   :update => 'resolved_entry', 
 							 		 :success => "new Effect.Highlight('resolved_entry', { duration: 1.5 });",
 							     :loading => "Element.show('spinner')",

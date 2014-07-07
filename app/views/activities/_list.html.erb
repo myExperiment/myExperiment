@@ -3,7 +3,7 @@
 
 <% if defined?(context) && Authorization.check('create', Comment, user, context) %>
   <div class="addCommentBox">
-    <% form_remote_tag(
+    <%= form_tag(:remote => true,
         :url =>      polymorphic_path([context, :comments]),
         :update =>   'activities', 
         :loading =>  "Element.show('addcomment_indicator')",
