@@ -6,6 +6,9 @@
 require 'has_research_object'
 
 class PackContributableEntry < ActiveRecord::Base
+
+  attr_accessible :pack, :contributable, :user
+
   belongs_to :pack
   validates_presence_of :pack
   

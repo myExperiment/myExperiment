@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class Rating < ActiveRecord::Base
+
+  attr_accessible :user
+
   belongs_to :rateable, :polymorphic => true
   
   after_save    :update_contribution_rating

@@ -5,6 +5,8 @@
 
 class Ontology < ActiveRecord::Base
 
+  attr_accessible :user
+
   belongs_to :user
 
   has_many :predicates, :foreign_key => :ontology_id

@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class Bookmark < ActiveRecord::Base
+
+  attr_accessible :user
+
   belongs_to :bookmarkable, :polymorphic => true
   
   # NOTE: install the acts_as_taggable plugin if you 
