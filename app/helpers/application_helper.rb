@@ -293,7 +293,7 @@ module ApplicationHelper
       return nil unless user
       
       # this string will output " (you) " for current user next to the display name, when invoked with 'you_text == true'
-      you_string = (you_text && logged_in? && user.id == current_user.id) ? "<small style='vertical-align: middle; color: #666666; margin-left: 0.5em;'>(you)</small>" : ""
+      you_string = (you_text && logged_in? && user.id == current_user.id) ? "<small style='vertical-align: middle; color: #666666; margin-left: 0.5em;'>(you)</small>".html_safe : ""
       
       if avatar
         return render(:partial => "users/avatar", :locals => { :user => user, :size => size, :you_string => you_string })

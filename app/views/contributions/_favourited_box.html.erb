@@ -29,10 +29,12 @@
 	
 	<% if logged_in? and !contributable.bookmarked_by_user?(current_user) -%>
 		<div style="padding: 0.4em 0; font-size: 85%; font-weight: bold;">
-			<%= link_to image_tag('famfamfam_silk/star.png', :style => "vertical-align: middle; padding-right: 0.3em;") + " <span>Add to your Favourites</span>",
-									add_to_favourites_path, 
-									:method => :post, 
-							 		:class => "button_slim" -%>
+			<%= link_to add_to_favourites_path,
+						:method => :post,
+						:class => "button_slim" do -%>
+              <%= image_tag('famfamfam_silk/star.png', :style => "vertical-align: middle; padding-right: 0.3em;") %>
+              <span>Add to your Favourites</span>
+          <% end %>
 		</div>
 	<% end %>
 </div>
