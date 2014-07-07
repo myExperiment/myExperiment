@@ -10,7 +10,7 @@
 
 <center>
   <div class="box_form" style="text-align: left; margin: 0; width: 540px;">
-		<%= form_for :announcement, :url => group_announcements_path(@group) do |form| -%>
+		<%= form_for :announcement, :url => network_group_announcements_path(@group) do |form| -%>
 		  <%= render :partial => 'form', :object => form, :locals => { :announcement => @announcement } %>
 			<br/>
 		  <center><%= submit_tag "Create", :disable_with => "Creating...", :style => "margin-top: 0.7em;" %></center>

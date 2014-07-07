@@ -33,7 +33,7 @@ module ActivitiesHelper
         when "Citation"
           polymorphic_path(thing.workflow)
         when "GroupAnnouncement"
-          group_announcement_path(thing.network, thing)
+          network_group_announcement_path(thing.network, thing)
         else
           polymorphic_path(thing)
       end

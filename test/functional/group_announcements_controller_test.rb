@@ -24,7 +24,7 @@ class GroupAnnouncementsControllerTest < ActionController::TestCase
 
     assert_equal old_count+1, GroupAnnouncement.count
     assert assigns(:announcement)
-    assert_redirected_to group_announcements_path(networks(:dilbert_appreciation_network).id)
+    assert_redirected_to network_group_announcements_path(networks(:dilbert_appreciation_network).id)
   end
 
   def test_should_show_group_announcement
@@ -41,7 +41,7 @@ class GroupAnnouncementsControllerTest < ActionController::TestCase
   def test_should_update_group_announcement
     login_as(:john)
     put :update, :network_id => networks(:dilbert_appreciation_network).id, :id => 1, :announcement => { :title => 'MyNewTitle' }
-    assert_redirected_to group_announcement_path(networks(:dilbert_appreciation_network).id, assigns(:announcement))
+    assert_redirected_to network_group_announcement_path(networks(:dilbert_appreciation_network).id, assigns(:announcement))
   end
   
   def test_should_destroy_group_announcement
@@ -51,6 +51,6 @@ class GroupAnnouncementsControllerTest < ActionController::TestCase
     delete :destroy, :network_id => networks(:dilbert_appreciation_network).id, :id => 1
 
     assert_equal old_count-1, GroupAnnouncement.count
-    assert_redirected_to group_announcements_path(networks(:dilbert_appreciation_network).id)
+    assert_redirected_to network_group_announcements_path(networks(:dilbert_appreciation_network).id)
   end
 end

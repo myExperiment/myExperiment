@@ -89,7 +89,7 @@
       <% unless latest_announcement.nil? -%>
         <p style="margin-top: 0.7em;">
           <b>Latest announcement:</b>:
-          <%= link_to latest_announcement.title, group_announcement_path(network, latest_announcement) -%>
+          <%= link_to latest_announcement.title, network_group_announcement_path(network, latest_announcement) -%>
         </p>
       <% end -%>
     </div>
