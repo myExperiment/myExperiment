@@ -36,3 +36,9 @@ gem "oauth-plugin", "~> 0.4.0"
 
 gem 'prototype-rails'
 gem 'rails_autolink'
+
+gem 'acts_as_commentable'
+gem "RedCloth","4.2.9"
+gem 'white_list', :git => "git://github.com/SysMO-DB/white_list.git"
+gem 'white_list_formatted_content', :git => "git://github.com/SysMO-DB/white_list_formatted_content.git"
+gem 'country-select'
