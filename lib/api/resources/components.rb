@@ -339,7 +339,7 @@ def resource_from_uri(uri)
 
   if internal_resource_uri?(uri)
     begin
-      route = ActionController::Routing::Routes.recognize_path(uri.path, :method => :get)
+      route = Rails.application.routes.recognize_path(uri.path, :method => :get)
       if route[:action] == "show"
         resource = Object.const_get(route[:controller].camelize.singularize).find_by_id(route[:id].to_i)
       else
