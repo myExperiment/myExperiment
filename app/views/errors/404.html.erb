@@ -11,6 +11,6 @@
     <br/>
     <%= link_to 'Report broken link',
                 '/feedback?' + {:subject=>'Broken link',
-                                :content=>"Broken link #{request.request_uri} on #{request.referer}"}.to_param %>
+                                :content=>"Broken link #{request.fullpath} on #{request.referer}"}.to_param %>
   <% end %>
 </div>

@@ -13,7 +13,7 @@
     <% dc_description = h(contributable.respond_to?('description_html') ? contributable.description_html : contributable.body_html) %>
     <% dc_date = contributable.created_at %>
     <% dc_creator = contributor(contributable.contribution.contributor_id, contributable.contribution.contributor_type, link=false)  %>
-    <% dc_source = Conf.base_uri + request.request_uri %>
+    <% dc_source = Conf.base_uri + request.fullpath %>
 
 
     <% @license = License.find(contributable.license_id) %>

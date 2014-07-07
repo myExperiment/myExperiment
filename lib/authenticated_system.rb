@@ -83,7 +83,7 @@ module AuthenticatedSystem
     def access_denied
       respond_to do |accepts|
         accepts.html do
-          redirect_to :controller => 'session', :action => 'new', :return_to => request.request_uri
+          redirect_to :controller => 'session', :action => 'new', :return_to => request.fullpath
         end
         accepts.xml do
           headers["Status"]           = "Unauthorized"
@@ -98,7 +98,7 @@ module AuthenticatedSystem
     #
     # We can return to this location by calling #redirect_back_or_default.
     def store_location
-      session[:return_to] = request.request_uri
+      session[:return_to] = request.fullpath
     end
     
     # Redirect to the URI stored by the most recent store_location call or
