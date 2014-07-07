@@ -55,9 +55,10 @@
 				<td class="nav">
 					<div id="op_list">
 						<% outputs.each do |k,v| -%>
-							<%= link_to_remote "<b>#{h k}</b> - #{job.get_output_type(v)} #{mime_types_snippet(job.get_output_mime_types(v))}",
+							<%= link_to "<b>#{h k}</b> - #{job.get_output_type(v)} #{mime_types_snippet(job.get_output_mime_types(v))}",
 											 { :url => {:action => 'render_output', :output_port => k},
 											 :method => :get,
+                                             :remote => true,
 											 :update => 'output_content_box',
 											 :success => "new Effect.Highlight('output_content_box', { duration: 1.5 });",
 											 :loading => "Element.show('outputs_refresh_indicator');",

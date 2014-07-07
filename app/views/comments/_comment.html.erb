@@ -20,9 +20,10 @@
       <% if Authorization.check('destroy', comment, current_user) %>
 				<small>
 					[
-					<%= link_to_remote( "delete",
+					<%= link_to( "delete",
 							:update => "commentsBox", 
 							:url => rest_resource_uri(comment.commentable) + "/comments/#{comment.id}",
+                            :remote => true,
 							:method => :delete,
 							:complete => "new Effect.Highlight('commentsBox', { duration: 1.5 }); $('comment').value = '';",
 							:confirm => "Are you sure you want to delete this comment?" ) %>

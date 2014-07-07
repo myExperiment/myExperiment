@@ -537,13 +537,10 @@ module ApplicationHelper
     img_tag = image_tag(filename, image_options)
     
     inner = "#{img_tag} #{label}".html_safe
+    url_options.merge(:remote => true) if remote
 
     if (url)
-      if (remote)
-        inner = link_to_remote(inner, url, url_options)
-      else
-        inner = link_to(inner, url, url_options)
-      end
+      inner = link_to(inner, url, url_options)
     end
 
     "<span class='icon'>#{inner}</span>".html_safe

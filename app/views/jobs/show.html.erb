@@ -286,9 +286,10 @@
 	<% unless @job.allow_run? -%>
 		<ul class="sectionIcons" style="margin-top: 1.5em;">
 			<li style="margin-left: 0;">
-				<%= link_to_remote "#{refresh_image} Refresh",
+				<%= link_to "#{refresh_image} Refresh",
 											 :url => refresh_status_experiment_job_url(@experiment, @job),
 											 :method => :get,
+                                             :remote => true,
 											 :update => 'status_box',
 											 :success => "new Effect.Highlight('status_box', { duration: 1.5 });",
 											 :loading => "Element.show('refresh_indicator1')",
@@ -329,9 +330,10 @@
   <div class="foldContent" style="display: block; padding: 0 1.5em 1.5em 1.5em;">
 		<ul class="sectionIcons" style="margin-top: 1.5em;">
 			<li style="margin-left: 0;">
-				<%= link_to_remote "#{refresh_image} Refresh",
+				<%= link_to "#{refresh_image} Refresh",
 											 :url => refresh_outputs_experiment_job_url(@experiment, @job),
 											 :method => :get,
+                                             :remote => true,
 											 :update => 'outputs_box',
 											 :success => "new Effect.Highlight('outputs_box', { duration: 1.5 });",
 											 :loading => "Element.show('refresh_indicator2')",

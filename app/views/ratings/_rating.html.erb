@@ -3,28 +3,28 @@
           Currently <%= number_with_precision(rateable.rating, :precision => 0) %>/5 Stars.
     </li>
     <li style="border: none; padding: 0; margin: 0;">
-        <%= link_to_remote( "1", {:url => { :controller => controller.to_s, 
-            :action => "rate", :id => rateable.id, :rating => 1}},
+        <%= link_to( "1", {:url => { :controller => controller.to_s,
+            :action => "rate", :id => rateable.id, :rating => 1}}, :remote => true,
             :class => 'one-star', :name => '1 star out of 5') %>
     </li>
     <li style="border: none; padding: 0; margin: 0;">
-        <%= link_to_remote( "2", {:url => { :controller => controller.to_s, 
-            :action => "rate", :id => rateable.id, :rating => 2}},
+        <%= link_to( "2", {:url => { :controller => controller.to_s,
+            :action => "rate", :id => rateable.id, :rating => 2}}, :remote => true,
             :class => 'two-stars', :name => '2 stars out of 5') %>    
     </li>
     <li style="border: none; padding: 0; margin: 0;">
-        <%= link_to_remote( "3", {:url => { :controller => controller.to_s, 
-            :action => "rate", :id => rateable.id, :rating => 3}},
+        <%= link_to( "3", {:url => { :controller => controller.to_s,
+            :action => "rate", :id => rateable.id, :rating => 3}}, :remote => true,
             :class => 'three-stars', :name => '3 stars out of 5') %>
     </li>
     <li style="border: none; padding: 0; margin: 0;">
-        <%= link_to_remote( "4", {:url => { :controller => controller.to_s, 
-            :action => "rate", :id => rateable.id, :rating => 4}},
+        <%= link_to( "4", {:url => { :controller => controller.to_s,
+            :action => "rate", :id => rateable.id, :rating => 4}}, :remote => true,
             :class => 'four-stars', :name => '4 stars out of 5') %>    
     </li>
     <li style="border: none; padding: 0; margin: 0;">
-        <%= link_to_remote( "5", {:url => { :controller => controller.to_s, 
-            :action => "rate", :id => rateable.id, :rating => 5}},
+        <%= link_to( "5", {:url => { :controller => controller.to_s,
+            :action => "rate", :id => rateable.id, :rating => 5}}, :remote => true,
             :class => 'five-stars', :name => '5 stars out of 5') %>
     </li>
 </ul>
