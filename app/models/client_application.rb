@@ -8,7 +8,7 @@ class ClientApplication < ActiveRecord::Base
            :dependent => :destroy
   validates_presence_of :name,:url,:key,:secret
   validates_uniqueness_of :key
-  before_validation_on_create :generate_keys
+  before_validation :generate_keys, :on => :create
   
   def self.find_token(token_key)
     token=OauthToken.find_by_token(token_key, :include => :client_application)
