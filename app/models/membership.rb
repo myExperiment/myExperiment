@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class Membership < ActiveRecord::Base
+
+  attr_accessible :user_id, :network_id
+
   belongs_to :user
 
   belongs_to :network

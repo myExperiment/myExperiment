@@ -5,7 +5,8 @@
 
 class Policy < ActiveRecord::Base
 
-  attr_accessible :contributor, :name, :update_mode, :share_mode
+  attr_accessible :contributor, :name, :update_mode, :share_mode, :public_view, :public_download,
+                  :contributor_type, :contributor_id
   
   belongs_to :contributor, :polymorphic => true
   

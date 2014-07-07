@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class Announcement < ActiveRecord::Base
+
+  attr_accessible :title, :body, :user_id
+
   belongs_to :user
 
   validates_presence_of :user_id

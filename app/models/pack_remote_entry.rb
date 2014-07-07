@@ -6,6 +6,9 @@
 require 'has_research_object'
 
 class PackRemoteEntry < ActiveRecord::Base
+
+  attr_accessible :user, :pack, :title, :uri, :alternate_uri, :comment
+
   belongs_to :pack
   validates_presence_of :pack
   

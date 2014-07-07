@@ -1,4 +1,7 @@
 class GroupAnnouncement < ActiveRecord::Base
+
+  attr_accessible :title, :body, :public
+
   belongs_to :network
   belongs_to :user
   

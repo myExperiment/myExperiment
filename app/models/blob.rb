@@ -14,6 +14,8 @@ require 'has_research_object'
 
 class Blob < ActiveRecord::Base
 
+  attr_accessible :title, :body, :license_id, :local_name, :contributor_type, :contributor_id
+
   include ResearchObjectsHelper
 
   acts_as_site_entity :owner_text => 'Uploader'

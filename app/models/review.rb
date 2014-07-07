@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class Review < ActiveRecord::Base
+
+  attr_accessible :title, :review
+
   belongs_to :reviewable, :polymorphic => true
   
   #acts_as_voteable

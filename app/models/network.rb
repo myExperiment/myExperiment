@@ -9,6 +9,9 @@ require 'acts_as_site_entity'
 require 'sunspot_rails'
 
 class Network < ActiveRecord::Base
+  
+  attr_accessible :title, :unique_name, :new_member_policy, :description, :user_id
+  
   acts_as_contributor
   acts_as_creditor
   

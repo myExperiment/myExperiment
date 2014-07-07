@@ -13,6 +13,8 @@ require 'sunspot_rails'
 require 'has_research_object'
 
 class Pack < ActiveRecord::Base
+  
+  attr_accessible :title, :description, :license_id, :contributor_type, :contributor_id
 
   include ResearchObjectsHelper
 

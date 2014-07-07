@@ -4,6 +4,8 @@
 # See license.txt for details.
 
 class Experiment < ActiveRecord::Base
+
+  attr_accessible :title, :description
   
   belongs_to :contributor, :polymorphic => true
   validates_presence_of :contributor

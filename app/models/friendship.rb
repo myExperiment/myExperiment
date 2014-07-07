@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class Friendship < ActiveRecord::Base
+
+  attr_accessible :user_id, :friend_id
+
   validates_associated :user, :friend
   
   validates_presence_of :user_id, :friend_id

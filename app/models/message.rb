@@ -4,6 +4,9 @@
 # See license.txt for details.
 
 class Message < ActiveRecord::Base
+  
+  attr_accessible :from, :to, :subject, :body, :reply_id, :read_at, :deleted_by_sender
+  
   validates_associated :u_from, :u_to
   
   validates_presence_of :to, :from

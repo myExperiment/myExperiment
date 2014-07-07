@@ -1,5 +1,8 @@
 class ActivityLimit < ActiveRecord::Base
   
+  attr_accessible :contributor_type, :contributor_id, :limit_feature, :limit_max, :limit_frequency,
+                  :reset_after, :promote_after, :current_count
+  
   # the single point in the application governing validation of all features that have
   # limited allowance of usage (e.g. 5 messages a day, etc)
   def self.check_limit(contributor, limit_feature, update_counter=true)
