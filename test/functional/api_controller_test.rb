@@ -5,6 +5,9 @@ require 'rest'
 
 class ApiControllerTest < ActionController::TestCase
 
+  include Rails.application.routes.url_helpers
+  Rails.application.routes.default_url_options[:host] = 'test.host'
+
   def setup
     @controller = ApiController.new
     @request    = TestRequestWithQuery.new
