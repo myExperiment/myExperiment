@@ -124,7 +124,7 @@ class FriendshipsController < ApplicationController
             Notifier.deliver_friendship_request(friend, @friendship.user.name, @friendship, base_host) if friend.send_notifications?
           rescue Exception => e
             logger.error("ERROR: failed to send Friendship Request email notification. Friendship ID: #{@friendship.id}")
-            logger.error("EXCEPTION:" + e)
+            logger.error("EXCEPTION: #{e}")
           end
           
           flash[:notice] = 'Friendship was successfully requested.'
