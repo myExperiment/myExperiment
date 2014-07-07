@@ -35,3 +35,4 @@ gem 'sanitize', '~> 2.0.6'
 gem "oauth-plugin", "~> 0.4.0"
 
 gem 'prototype-rails'
+gem 'rails_autolink'
