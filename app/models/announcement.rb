@@ -16,7 +16,7 @@ class Announcement < ActiveRecord::Base
     if !self.user_id.blank? and self.user.admin?
       return true
     else
-      errors.add_to_base("Only admin users can create announcements")
+      errors.add(:base, "Only admin users can create announcements")
       return false
     end
   end

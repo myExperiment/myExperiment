@@ -568,7 +568,7 @@ class Pack < ActiveRecord::Base
             # check if the 'contributable' is a pack, then that it's not the same pack,
             # to which we are trying to add something at the moment
             if contributable == self.id
-              errors_here.add_to_base('Cannot add the pack to itself')
+              errors_here.add(:base, 'Cannot add the pack to itself')
             end
   
             # Check if version was specified in the uri
@@ -579,7 +579,7 @@ class Pack < ActiveRecord::Base
               entry.contributable_version = CGI.parse(uri.query)["version"].first.try(:to_i)
             end
           else
-            errors_here.add_to_base('The item the link points to does not exist.')
+            errors_here.add(:base, 'The item the link points to does not exist.')
           end
         end
       else
@@ -597,7 +597,7 @@ class Pack < ActiveRecord::Base
       end
 
     rescue URI::InvalidURIError
-      errors_here.add_to_base('Really struggled to parse this link. Please could you check if it is valid.')
+      errors_here.add(:base, 'Really struggled to parse this link. Please could you check if it is valid.')
     end
 
     return [errors_here, type, entry]

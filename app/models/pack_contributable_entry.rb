@@ -51,7 +51,7 @@ class PackContributableEntry < ActiveRecord::Base
     i = PackContributableEntry.find(:first, :conditions => [conditions.join(" AND ")] + arguments) 
  
     if i
-      errors.add_to_base("This item already exists in the pack")
+      errors.add(:base, "This item already exists in the pack")
       return false
     else
       return true
@@ -63,12 +63,12 @@ class PackContributableEntry < ActiveRecord::Base
     
     if self.contributable.respond_to?(:find_version)
       unless self.contributable.find_version(self.contributable_version)
-        errors.add_to_base('The item version specified could not be found.')
+        errors.add(:base, 'The item version specified could not be found.')
       return false
       end
     else
       # A version has been set, but the contributable doesn't allow versioning, so error.    
-      errors.add_to_base('The item version specified could not be found.')
+      errors.add(:base, 'The item version specified could not be found.')
       return false
     end
   end

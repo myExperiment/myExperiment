@@ -26,7 +26,7 @@ class PackRemoteEntry < ActiveRecord::Base
 
   def check_unique
     if PackRemoteEntry.find(:first, :conditions => ["pack_id = ? AND version = ? AND uri = ?", self.pack_id, self.version, self.uri])
-      errors.add_to_base("This external link already exists in the pack")
+      errors.add(:base, "This external link already exists in the pack")
       return false
     else
       return true

@@ -974,11 +974,11 @@ def update_permissions(ob, permissions, user)
           return
 
         else
-          ob.errors.add_to_base("You must be a member of #{policy.contributor.title} to use group policy: #{group_policy}")
+          ob.errors.add(:base, "You must be a member of #{policy.contributor.title} to use group policy: #{group_policy}")
           raise NotAuthorizedException.new
         end
       else
-        ob.errors.add_to_base("#{group_policy} does not appear to be a valid group policy ID")
+        ob.errors.add(:base, "#{group_policy} does not appear to be a valid group policy ID")
         raise NotFoundException.new
       end
     else
@@ -1023,7 +1023,7 @@ def update_permissions(ob, permissions, user)
 
           network = Network.find_by_id(id)
           if network.nil?
-            ob.errors.add_to_base("Couldn't share with group #{id} - Not found")
+            ob.errors.add(:base, "Couldn't share with group #{id} - Not found")
             raise
           else
             Permission.create(:contributor => network,

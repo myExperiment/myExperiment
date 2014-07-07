@@ -224,7 +224,7 @@ def delete_component_family(opts)
 
   # Check if user has permission to delete the family
   unless Authorization.check('destroy', family, opts[:user])
-    family.errors.add_to_base("You don't have permission to delete this component family.")
+    family.errors.add(:base, "You don't have permission to delete this component family.")
     return rest_response(401, :object => family)
   end
 
@@ -243,7 +243,7 @@ def delete_component_family(opts)
 
     rest_get_request(family, opts[:user], opts[:query])
   else
-    family.errors.add_to_base(
+    family.errors.add(:base,
       "You don't have permission to delete #{undeletable_components.size} components in this component family: " +
       "#{undeletable_components.map { |c| rest_access_uri(c) }.join(', ')}")
     rest_response(401, :object => family)
@@ -314,7 +314,7 @@ def delete_component_profile(opts)
 
     rest_get_request(profile, opts[:user], opts[:query])
   else
-    profile.errors.add_to_base("This component profile is used by #{families.size} component families and may not be deleted.")
+    profile.errors.add(:base, "This component profile is used by #{families.size} component families and may not be deleted.")
     rest_response(400, :object => profile)
   end
 end

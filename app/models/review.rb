@@ -57,7 +57,7 @@ protected
   
   def check_multiple
     if Review.find(:first, :conditions => ["user_id = ? AND reviewable_type = ? AND reviewable_id = ?", self.user_id, self.reviewable_type, self.reviewable_id])
-      errors.add_to_base("You have already made a Review for this item")
+      errors.add(:base, "You have already made a Review for this item")
       return false
     else
       return true

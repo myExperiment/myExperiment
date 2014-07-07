@@ -81,7 +81,7 @@ class Membership < ActiveRecord::Base
   def membership_allowed
     #Can only invite people in a closed group if you're an administrator
     if self.network.invitation_only? && !self.network.administrators.include?(self.invited_by)
-      errors.add_to_base("This group is not open to membership requests.")
+      errors.add(:base, "This group is not open to membership requests.")
     end
   end
 

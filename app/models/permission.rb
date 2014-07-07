@@ -51,7 +51,7 @@ protected
   
   def check_duplicate
     if Permission.find(:first, :conditions => ["policy_id = ? AND contributor_type = ? AND contributor_id = ?", self.policy_id, self.contributor_type, self.contributor_id])
-      errors.add_to_base("Permission object already exists for this Contributor in the parent Policy.")
+      errors.add(:base, "Permission object already exists for this Contributor in the parent Policy.")
       return false
     else
       return true

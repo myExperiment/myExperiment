@@ -53,7 +53,7 @@ module Finn
           rescue => e
             Rails.logger.error("RDF Generation Error: \n #{e}")
             unless self.rdf_serializable_options[:do_not_validate]
-              errors.add_to_base(self.rdf_serializable_options[:generation_error_message] || "RDF failed to generate")
+              errors.add(:base, self.rdf_serializable_options[:generation_error_message] || "RDF failed to generate")
               return false
             end
           end

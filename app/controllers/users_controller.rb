@@ -195,7 +195,7 @@ class UsersController < ApplicationController
               sent_email = true
             end
         rescue
-          @user.errors.add_to_base("Unable to send confirmation email")
+          @user.errors.add(:base, "Unable to send confirmation email")
         end
       end
 

@@ -498,7 +498,7 @@ class ApplicationController < ActionController::Base
         policy.layout = network.layout_name
         policy.save
       else
-        object.errors.add_to_base("You may only choose layouts for groups that this #{object.class.name.downcase} is shared with.")
+        object.errors.add(:base, "You may only choose layouts for groups that this #{object.class.name.downcase} is shared with.")
       end
     end
 

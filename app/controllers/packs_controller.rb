@@ -530,7 +530,7 @@ class PacksController < ApplicationController
   # Utility method to copy error messages from one ActiveRecord::Errors object to another.
   def copy_errors(source_errs, final_errs)
     source_errs.each_full do |msg|
-      final_errs.add_to_base(msg)
+      final_errs.add(:base, msg)
     end
   end
 end

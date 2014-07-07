@@ -38,7 +38,7 @@ class Bookmark < ActiveRecord::Base
 
   def check_duplicate_favourites
     if Bookmark.find_by_user_id_and_bookmarkable_type_and_bookmarkable_id(user_id, bookmarkable_type, bookmarkable_id)
-      errors.add_to_base("Objects cannot be favourited more than once")
+      errors.add(:base, "Objects cannot be favourited more than once")
     end
   end
 end

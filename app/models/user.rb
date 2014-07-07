@@ -691,7 +691,7 @@ protected
     unless self.unconfirmed_email.blank? or self.email.blank?
       if self.unconfirmed_email == self.email
         unique = false
-        errors.add_to_base("Your current email is already the same as the one provided")
+        errors.add(:base, "Your current email is already the same as the one provided")
         errors.add(:unconfirmed_email, "")
       end
     end
@@ -708,7 +708,7 @@ protected
       end
       
       unless unique
-        errors.add_to_base("The email provided has already been registered (or is awaiting confirmation)")
+        errors.add(:base, "The email provided has already been registered (or is awaiting confirmation)")
         errors.add(:unconfirmed_email, "")
       end
     end
@@ -730,7 +730,7 @@ protected
     if self.not_openid?
       # Then either 'email' or 'unconfirmed_email' (or both) should be set
       if self.unconfirmed_email.blank? and self.email.blank?
-        errors.add_to_base("An email address is required")
+        errors.add(:base, "An email address is required")
         ok = false
       end
     end
