@@ -42,7 +42,7 @@ class Conf
   end
 
   def self.base_uri
-    if RAILS_ENV == 'test'
+    if Rails.env == 'test'
       "http://test.host"
     else
       self.fetch_entry('base_uri')

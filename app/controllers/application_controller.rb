@@ -625,8 +625,8 @@ class ApplicationController < ActionController::Base
     end
 
     # Check skin exists
-    if layout && layout["layout"] && !File.exists?("#{RAILS_ROOT}/app/views/layouts/#{layout["layout"]}.html.erb")
-      logger.error("Missing layout #{RAILS_ROOT}/app/views/layouts/#{layout["layout"]}.html.erb")
+    if layout && layout["layout"] && !File.exists?("#{Rails.root}/app/views/layouts/#{layout["layout"]}.html.erb")
+      logger.error("Missing layout #{Rails.root}/app/views/layouts/#{layout["layout"]}.html.erb")
       layout = nil
     end
 

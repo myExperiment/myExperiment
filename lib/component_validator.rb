@@ -1,7 +1,7 @@
 class ComponentValidator
 
   VALIDATOR_PATH =
-      "#{RAILS_ROOT}/vendor/java/component-validator/component-validator-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+      "#{Rails.root}/vendor/java/component-validator/component-validator-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 
   def initialize(component, profile)
     @component_file = Tempfile.new('component')
