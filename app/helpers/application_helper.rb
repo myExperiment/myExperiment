@@ -814,10 +814,10 @@ module ApplicationHelper
   def license_icon_link(license)
     case license.unique_name
     when "by-nd", "by-sa", "by", "by-nc-nd", "by-nc", "by-nc-sa", "GPL", "LGPL"
-      return "<a rel=\"Copyright\" href=\"#{license_url(license)}\" title=\"#{license.title}\"><img src=\"/images/#{license.unique_name}.png\" /></a>"
+      "<a rel=\"Copyright\" href=\"#{license_url(license)}\" title=\"#{license.title}\"><img src=\"/images/#{license.unique_name}.png\" /></a>"
     else
-      return "<a rel=\"Copyright\" href=\"#{license_url(license)}\">#{license.title}</a>"
-    end
+      "<a rel=\"Copyright\" href=\"#{license_url(license)}\">#{license.title}</a>"
+    end.html_safe
   end
   
   def visible_name(entity)
