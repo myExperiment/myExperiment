@@ -12,6 +12,9 @@ module Mib
       
       module ClassMethods
         def acts_as_contributable
+
+          attr_accessible :contributor
+
           belongs_to :contributor, :polymorphic => true
           
           has_one :contribution, 
