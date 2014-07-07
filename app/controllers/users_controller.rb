@@ -142,7 +142,7 @@ class UsersController < ApplicationController
 
     # check that captcha was entered correctly
 
-    unless RAILS_ENV == 'test'
+    unless Rails.env == 'test'
       if Conf.recaptcha_enable
         if !verify_recaptcha(:private_key => Conf.recaptcha_private)
           flash.now[:error] = 'Recaptcha text was not entered correctly - please try again.'
@@ -176,7 +176,7 @@ class UsersController < ApplicationController
 
         # basic spam check
 
-        unless RAILS_ENV == 'test'
+        unless Rails.env == 'test'
           url = "http://www.stopforumspam.com/api?email=#{CGI::escape(@user.unconfirmed_email)}&username=#{CGI::escape(@user.username)}&ip=#{CGI::escape(request.ip)}&f=json"
 
           sfs_response = ActiveSupport::JSON.decode(open(url).read)
