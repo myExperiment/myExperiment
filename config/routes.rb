@@ -260,11 +260,6 @@ MyExperiment::Application.routes.draw do
   match 'files/:id/download/:name' => 'blobs#named_download', :constraints => { :name => /.*/ }
   match 'files/:id/versions/:version/download/:name' => 'blobs#named_download_with_version', :constraints => { :name => /.*/ }
 
-  # Topics
-  match 'topics/tag_feedback' => 'topics#tag_feedback'
-  match 'topics/topic_feedback' => 'topics#topic_feedback'
-  resources :topics
-
   resources :announcements
 
   resources :licenses

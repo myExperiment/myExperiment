@@ -521,7 +521,6 @@ pivot_options:
     content_types: LEFT OUTER JOIN content_types ON contributions.content_type_id = content_types.id
     credits: INNER JOIN creditations ON creditations.creditable_type = RESULT_TYPE AND creditations.creditable_id = RESULT_ID
     networks: INNER JOIN networks ON permissions.contributor_type = 'Network' AND permissions.contributor_id = networks.id
-    topic_workflow_map: INNER JOIN topic_workflow_map ON contributions.id = topic_workflow_map.workflow_id
     users: INNER JOIN users ON contributions.contributor_type = 'User' AND contributions.contributor_id = users.id
     licences: LEFT OUTER JOIN licenses ON contributions.license_id = licenses.id
 
@@ -569,11 +568,6 @@ pivot_options:
     joins: [licences]
     order: licenses.title, contributions.rank DESC
     label: Licence
-
-  - option: topic
-    joins: [topic_workflow_map]
-    order: topic_workflow_map.probability, rank DESC
-    label: Topic
 
   filters:
 

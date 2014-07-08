@@ -149,15 +149,6 @@ task "myexp:oai:static" do
   end
 end
 
-desc 'Update topic titles'
-task "myexp:topic:update_titles" do
-  require File.dirname(__FILE__) + '/config/environment'
-
-  Topic.find(:all).each do |topic|
-    topic.update_title
-  end
-end
-
 desc 'Fix pack timestamps'
 task "myexp:pack:fix_timestamps" do
   require File.dirname(__FILE__) + '/config/environment'

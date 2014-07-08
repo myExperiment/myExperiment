@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140708100951) do
+ActiveRecord::Schema.define(:version => 20140708102551) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -669,38 +669,6 @@ ActiveRecord::Schema.define(:version => 20140708100951) do
 
   add_index "tags", ["name"], :name => "index_tags_on_name"
   add_index "tags", ["taggings_count"], :name => "index_tags_on_taggings_count"
-
-  create_table "topic_feedbacks", :force => true do |t|
-    t.integer  "score"
-    t.integer  "topic_id"
-    t.datetime "submit_dt"
-    t.integer  "user_id"
-  end
-
-  create_table "topic_runs", :force => true do |t|
-    t.datetime "runtime"
-    t.string   "description"
-  end
-
-  create_table "topic_tag_map", :force => true do |t|
-    t.integer "topic_id"
-    t.boolean "display_flag"
-    t.integer "tag_id"
-    t.float   "probability"
-  end
-
-  create_table "topic_workflow_map", :force => true do |t|
-    t.integer "topic_id"
-    t.boolean "display_flag"
-    t.integer "workflow_id"
-    t.float   "probability"
-  end
-
-  create_table "topics", :force => true do |t|
-    t.string  "name"
-    t.integer "orig_run_id"
-    t.integer "run_id"
-  end
 
   create_table "user_reports", :force => true do |t|
     t.string   "subject_type"
