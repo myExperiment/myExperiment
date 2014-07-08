@@ -151,32 +151,7 @@ module ApplicationHelper
   def signout_link
     icon('logout', session_path, nil, {:method => :delete}, "Logout")
   end
-  
-  def messages_link(user_id, text=nil)
-    if user_id.kind_of? Fixnum
-      user = User.find(:first, :select => "id, openid_url", :conditions => ["id = ?", user_id]) 
-      return nil unless user
-    elsif user_id.kind_of? User
-      user = user_id
-    else
-      return nil
-    end
-    
-    if !text
-      text = "Inbox"  
-    end
 
-    opts = nil
-    unless (length = user.messages_unread.length) == 0
-      text = "#{text} (#{length})"
-      opts = {:style => "font-weight: bold"}
-    end
-    
-    inbox = icon('message', messages_path, nil, opts, text)
-    
-    return inbox      
-  end
-  
   def memberships_link(user, text="My Memberships")
     opts = nil
     unless (length = user.networks_membership_requests_pending.length + user.memberships_invited.length) == 0
@@ -186,17 +161,7 @@ module ApplicationHelper
 
     icon('membership', user_memberships_path(user), nil, opts, text)
   end
-  
-  def friendships_pending_link(user, text = "My Friendships")
-    opts = nil
-    unless (length = user.friendships_pending.length) == 0
-      text = "#{text} (#{length})"
-      opts = {:style => "font-weight: bold"}
-    end
 
-    icon('friendship', user_friendships_path(user), nil, opts, text)
-  end
-  
   def request_membership_link(user_id, network_id)
     icon('membership-new',
          url_for(:controller => 'memberships', :action => 'new', :user_id => user_id, :network_id => network_id),
@@ -205,10 +170,6 @@ module ApplicationHelper
          "Request Membership")
   end
 
-  def request_friendship_link(user_id)
-    link_to("Request Friendship", new_user_friendship_url(:user_id => user_id))
-  end
-  
   def versioned_resource_link(resource, version_number, long_description=true)
     ver = resource.find_version(version_number)
     if ver
@@ -225,29 +186,7 @@ module ApplicationHelper
       return link_to("#{h(ver.title)} [#{ver.version}]", url)
     end
   end
-  
-  def versioned_workflow_url(workflow_id, version_number)
-    if workflow_id.kind_of? Fixnum
-      workflow = Workflow.find(:first, :conditions => ["id = ?", workflow_id])
-      return nil unless workflow
-    elsif workflow_id.kind_of? Workflow
-      workflow = workflow_id
-    else
-      return nil
-    end
-    
-    if workflow.find_version(version_number)
-      url = url_for(:controller => 'workflows',
-                    :action => 'show',
-                    :id => workflow.id,
-                    :version => version_number)
-    else
-      return nil
-    end
-    
-    return url
-  end
-  
+
   def filter_contributables(contributions, sort=false)
     rtn = {}
     
@@ -398,83 +337,7 @@ module ApplicationHelper
                      :id => contributableid)
     end
   end
-  
-  def policy_link(policyid, managedby=true)
-    if policyid.nil?
-      return "Friends can view and download"
-    elsif  p = Policy.find(:first, :conditions => ["id = ?", policyid])
-      link = link_to(h(p.name), policy_path(p))
-      
-      if managedby
-        return "#{link} (managed by: #{contributor(p.contributor_id, p.contributor_type)})"
-      else
-        return link
-      end
-    else
-      return nil
-    end
-  end
-  
-  # http://www.igvita.com/blog/2006/09/10/faster-pagination-in-rails/
-   def windowed_pagination_links(pagingEnum, options)
-    link_to_current_page = options[:link_to_current_page]
-    always_show_anchors = options[:always_show_anchors]
-    padding = options[:window_size]
 
-    current_page = pagingEnum.page
-    html = ''
-
-    #Calculate the window start and end pages 
-    padding = padding < 0 ? 0 : padding
-    first = pagingEnum.page_exists?(current_page  - padding) ? current_page - padding : 1
-    last = pagingEnum.page_exists?(current_page + padding) ? current_page + padding : pagingEnum.last_page
-
-    # Print start page if anchors are enabled
-    html << yield(1) if always_show_anchors and not first == 1
-
-    # Print window pages
-    first.upto(last) do |page|
-      (current_page == page && !link_to_current_page) ? html << page : html << yield(page)
-    end
-
-    # Print end page if anchors are enabled
-    html << yield(pagingEnum.last_page) if always_show_anchors and not last == pagingEnum.last_page
-    html
-  end
-  
-  def trim_body_html(body, limit=nil)
-    truncate(body, :length => limit)
-    white_list(body)
-  end
-  
-  def options_from_contributions_for_select(collection=[])
-    hash = {}
-    
-    collection.each do |contribution|
-      if hash.key? contribution.contributable_type
-        hash[contribution.contributable_type] << contribution
-      else 
-        hash[contribution.contributable_type] = [contribution]
-      end
-    end
-    
-    html = ""
-    
-    hash.sort.each do |key_value_array|
-      klass, arr = key_value_array[0], key_value_array[1]
-      
-      html = html + "<optgroup label=\"#{klass}\">"
-      
-      arr.each do |contribution|
-        html = html + "<option value=\"#{contribution.id}\">#{contributable(contribution.contributable_id, contribution.contributable_type, false, false)}</option>"
-      end
-      
-      html = html + "</optgroup>"
-    end
-    
-    return html
-  end
-  
   def collection_contribution_tags(contributor, collection)
     contributor.collection_contribution_tags(collection)
   end
@@ -776,41 +639,7 @@ module ApplicationHelper
   def highlight_all(text, string)
     highlight(text, string.split(' '))
   end
-  
-  def workflows_for_attribution_form
-    workflows = Workflow.find(:all, :select => 'workflows.id, workflows.title, users.name',
-        :joins => 'LEFT OUTER JOIN users ON workflows.contributor_type = "User" AND workflows.contributor_id = users.id',
-        :order => 'workflows.id ASC')
 
-    workflows.select { |w| Authorization.check('view', w, current_user) }
-  end
-  
-  def blobs_for_attribution_form
-    blobs = Blob.find(:all, :select => 'blobs.id, blobs.title, users.name',
-        :joins => 'LEFT OUTER JOIN users ON blobs.contributor_type = "User" AND blobs.contributor_id = users.id',
-        :order => 'blobs.id ASC')
-
-    blobs.select { |b| Authorization.check('view', b, current_user) }
-  end
-  
-  def networks_for_credits_form
-    Network.find(:all, :select => 'id, title',
-                       :order => "title ASC")
-  end
-  
-  def nonfriends_for_credits_form(user)
-    User.find(:all, :select => 'id, name',
-                    :order => 'LOWER(name)',
-                    :conditions => ["id != ?", user.id]) - user.friends
-  end
-
-  def all_users
-    users = User.find(:all)
-    users.sort! { |x,y|
-      x.name.downcase <=> y.name.downcase
-    }
-  end
-  
   def license_icon_link(license)
     case license.unique_name
     when "by-nd", "by-sa", "by", "by-nc-nd", "by-nc", "by-nc-sa", "GPL", "LGPL"
@@ -1016,65 +845,6 @@ module ApplicationHelper
     link_to image_tag(filename, :alt => "Download", :title => tooltip_title_attrib(title), :style => "vertical-align: middle; padding: 0;" + style), url
   end
   
-  # NOTE: the timeago methods below are used instead of the built in Rails DateHelper methods
-  # because they don't seem to be working.
-
-  # From: http://actsasflinn.com/articles/2007/04/10/time-ago-method-for-ruby-on-rails
-  # options
-  # :start_date, sets the time to measure against, defaults to now
-  # :later, changes the adjective and measures time forward
-  # :round, sets the unit of measure 1 = seconds, 2 = minutes, 3 hours, 4 days, 5 weeks, 6 months, 7 years (yuck!)
-  # :max_seconds, sets the maximimum practical number of seconds before just referring to the actual time
-  # :date_format, used with <tt>to_formatted_s<tt>
-  def timeago(original, options = {})
-    start_date = options.delete(:start_date) || Time.now
-    later = options.delete(:later) || false
-    round = options.delete(:round) || 7
-    max_seconds = options.delete(:max_seconds) || 32556926
-    date_format = options.delete(:date_format) || :default
-  
-    # array of time period chunks
-    chunks = [
-      [60 * 60 * 24 * 365 , "year"],
-      [60 * 60 * 24 * 30 , "month"],
-      [60 * 60 * 24 * 7, "week"],
-      [60 * 60 * 24 , "day"],
-      [60 * 60 , "hour"],
-      [60 , "minute"],
-      [1 , "second"]
-    ]
-  
-    if later
-      since = original.to_i - start_date.to_i
-    else
-      since = start_date.to_i - original.to_i
-    end
-    time = []
-  
-    if since < max_seconds
-      # Loop trough all the chunks
-      totaltime = 0
-  
-      for chunk in chunks[0..round]
-        seconds    = chunk[0]
-        name       = chunk[1]
-  
-        count = ((since - totaltime) / seconds).floor
-        time << pluralize(count, name) unless count == 0
-  
-        totaltime += count * seconds
-      end
-  
-      if time.empty?
-        "less than a #{chunks[round-1][1]} ago"
-      else
-        "#{time.join(', ')} #{later ? 'later' : 'ago'}"
-      end
-    else
-      original.to_formatted_s(date_format)
-    end
-  end
-  
   # Based on: http://actsasflinn.com/articles/2007/04/10/time-ago-method-for-ruby-on-rails
   # options
   # :start_date, sets the time to measure against, defaults to now
@@ -1224,12 +994,7 @@ module ApplicationHelper
               :title => "header=[] body=[#{tooltip}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
               :style => style)
   end
-  
-  def new_flash_image(style=nil)
-   return image_tag("famfamfam_silk/new.png", 
-                    :style => style)
-  end
-  
+
   def update_perms_info_text(contributable)
     return nil if contributable.nil?
     
@@ -1265,18 +1030,6 @@ module ApplicationHelper
             
     return text
   end
-  
-  # From: http://ajax.howtosetup.info/ruby/finding-mean-median-and-mode-2/
-  def mean(array)
-    if array.length == 0 
-      return 0
-    else
-      return array.inject(0) { |sum, x| sum += x } / array.size.to_f  
-    end
-  end
-
-  
-protected
 
   def contributor_news(contributor, before, after, depth, restrict_contributor)
     rtn = []
