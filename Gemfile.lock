@@ -48,6 +48,7 @@ GEM
     country-select (1.1.1)
     curb (0.7.18)
     daemon_controller (1.2.0)
+    daemons (1.1.9)
     darkfish-rdoc (1.1.5)
       rdoc (>= 2.1.0)
     delayed_job (4.0.2)
@@ -66,6 +67,7 @@ GEM
       encrypted_strings (>= 0.3.3)
     encrypted_strings (0.3.3)
     erubis (2.7.0)
+    eventmachine (1.0.3)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     fastthread (1.0.7)
@@ -189,6 +191,10 @@ GEM
       rdoc (>= 2.4.3)
     taverna-t2flow (0.5.1)
       libxml-ruby (>= 1.1.4)
+    thin (1.6.2)
+      daemons (>= 1.0.9)
+      eventmachine (>= 1.0.0)
+      rack (>= 1.0.0)
     thor (0.19.1)
     tilt (1.4.1)
     treetop (1.4.15)
@@ -240,6 +246,7 @@ DEPENDENCIES
   sunspot_solr (~> 2.0.0)
   taverna-scufl (~> 0.7.2)
   taverna-t2flow (~> 0.5.0)
+  thin
   wf4ever-transformation-client (~> 0.3.0)
   white_list!
   white_list_formatted_content!
