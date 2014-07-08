@@ -20,7 +20,7 @@ module Sesame
       raise "Content type not supported: #{content_type}" unless VALID_CONTENT_TYPES.include?(content_type)
 
       url = URI("#{@url}/statements?context=#{CGI.escape(context)}")
-      request = Net::HTTP::Put.new url.fullpath
+      request = Net::HTTP::Put.new url.request_uri
       request.body = rdf
       request.content_type = content_type
 
