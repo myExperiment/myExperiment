@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140630141348) do
+ActiveRecord::Schema.define(:version => 20140708100951) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -258,16 +258,6 @@ ActiveRecord::Schema.define(:version => 20140630141348) do
 
   add_index "downloads", ["contribution_id"], :name => "index_downloads_on_contribution_id"
 
-  create_table "experiments", :force => true do |t|
-    t.string   "title"
-    t.text     "description"
-    t.text     "description_html"
-    t.integer  "contributor_id"
-    t.string   "contributor_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "federation_sources", :force => true do |t|
     t.string "name"
   end
@@ -317,32 +307,6 @@ ActiveRecord::Schema.define(:version => 20140630141348) do
     t.datetime "updated_at"
     t.text     "body"
     t.text     "body_html"
-  end
-
-  create_table "jobs", :force => true do |t|
-    t.string   "title"
-    t.text     "description"
-    t.text     "description_html"
-    t.integer  "experiment_id"
-    t.integer  "user_id"
-    t.integer  "runnable_id"
-    t.integer  "runnable_version"
-    t.string   "runnable_type"
-    t.integer  "runner_id"
-    t.string   "runner_type"
-    t.datetime "submitted_at"
-    t.datetime "started_at"
-    t.datetime "completed_at"
-    t.string   "last_status"
-    t.datetime "last_status_at"
-    t.string   "job_uri"
-    t.binary   "job_manifest",     :limit => 2147483647
-    t.string   "inputs_uri"
-    t.binary   "inputs_data",      :limit => 2147483647
-    t.string   "outputs_uri"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "parent_job_id"
   end
 
   create_table "key_permissions", :force => true do |t|
@@ -613,13 +577,6 @@ ActiveRecord::Schema.define(:version => 20140630141348) do
     t.string   "context_type"
   end
 
-  create_table "remote_workflows", :force => true do |t|
-    t.integer "workflow_id"
-    t.integer "workflow_version"
-    t.integer "taverna_enactor_id"
-    t.string  "workflow_uri"
-  end
-
   create_table "research_objects", :force => true do |t|
     t.string   "context_type"
     t.integer  "context_id"
@@ -712,18 +669,6 @@ ActiveRecord::Schema.define(:version => 20140630141348) do
 
   add_index "tags", ["name"], :name => "index_tags_on_name"
   add_index "tags", ["taggings_count"], :name => "index_tags_on_taggings_count"
-
-  create_table "taverna_enactors", :force => true do |t|
-    t.string   "title"
-    t.text     "description"
-    t.integer  "contributor_id"
-    t.string   "contributor_type"
-    t.string   "url"
-    t.string   "username"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "password"
-  end
 
   create_table "topic_feedbacks", :force => true do |t|
     t.integer  "score"

@@ -7,7 +7,6 @@ require 'acts_as_creditable'
 require 'acts_as_attributor'
 require 'acts_as_attributable'
 require 'acts_as_reviewable'
-require 'acts_as_runnable'
 
 require 'scufl/model'
 require 'scufl/parser'

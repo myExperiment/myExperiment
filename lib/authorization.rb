@@ -174,49 +174,6 @@ module Authorization
             return false
         end
       
-      when "Experiment"
-
-        return false if user.nil?
-
-        case object.contributor_type.to_s
-        when "User"
-          return object.contributor_id.to_i == user.id.to_i
-        when "Network"
-          return object.contributor.member?(user)
-        else
-          return false
-        end 
-
-      when "TavernaEnactor", "Runner"
-
-        return false if user.nil?
-
-        case object.contributor_type.to_s
-        when "User"
-          return object.contributor_id.to_i == user.id.to_i
-        when "Network"
-          if ['edit', 'destroy'].include?(action.downcase)
-            return object.contributor.owner?(user.id)
-          else
-            return object.contributor.member?(user)
-          end
-        else
-          return false
-        end
-
-      when "Job"
-
-        return false if user.nil?
-
-        case object.experiment.contributor_type.to_s
-        when "User"
-          return object.experiment.contributor_id.to_i == user.id.to_i
-        when "Network"
-          return object.experiment.contributor.member?(user)
-        else
-          return false
-        end 
-      
       when "ContentType"
 
         case action

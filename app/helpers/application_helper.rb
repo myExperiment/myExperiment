@@ -549,12 +549,6 @@ module ApplicationHelper
       return "famfamfam_silk/transmit.png"
     when "review"
       return "famfamfam_silk/report.png"
-    when "experiment"
-      return "famfamfam_silk/folder_wrench.png"
-    when "job"
-      return "famfamfam_silk/script_gear.png"
-    when "runner"
-      return "famfamfam_silk/server_key.png"
     when "xml"
       return "famfamfam_silk/page_code.png"
     when "package"
@@ -1186,7 +1180,7 @@ module ApplicationHelper
   end
 
   def permissions_categorised(permissions)
-    permissions_categorised={'announcement'=>[],'citation'=>[],'comment'=>[],'download'=>[],'experiment'=>[],'file'=>[],'group'=>[],'job'=>[],'message'=>[],'pack'=>[],'picture'=>[],'review'=>[],'runner'=>[],'tag'=>[],'user'=>[],'workflow'=>[],'miscellaneous'=>[]};
+    permissions_categorised={'announcement'=>[],'citation'=>[],'comment'=>[],'download'=>[],'file'=>[],'group'=>[],'message'=>[],'pack'=>[],'picture'=>[],'review'=>[],'tag'=>[],'user'=>[],'workflow'=>[],'miscellaneous'=>[]};
     categories=permissions_categorised.keys
     for key,permission in permissions
       category_found=false
@@ -1205,7 +1199,7 @@ module ApplicationHelper
   end
 
   def permissions_show_categorised(permissions)
-    permissions_categorised={'announcement'=>[],'citation'=>[],'comment'=>[],'download'=>[],'experiment'=>[],'file'=>[],'group'=>[],'job'=>[],'message'=>[],'pack'=>[],'picture'=>[],'review'=>[],'runner'=>[],'tag'=>[],'user'=>[],'workflow'=>[],'miscellaneous'=>[]};
+    permissions_categorised={'announcement'=>[],'citation'=>[],'comment'=>[],'download'=>[],'file'=>[],'group'=>[],'message'=>[],'pack'=>[],'picture'=>[],'review'=>[],'tag'=>[],'user'=>[],'workflow'=>[],'miscellaneous'=>[]};
     categories=permissions_categorised.keys
     for permission in permissions
       category_found=false

@@ -29,7 +29,6 @@ TABLES = parse_excel_2003_xml(File.read('config/tables.xml'),
 
 # Temporary removals
 
-TABLES["REST"][:data]["job"].delete("POST")
 TABLES["REST"][:data]["messages"].delete("GET")
 
 def object_class_to_entity_name
@@ -680,9 +679,6 @@ def rest_resource_uri(ob)
     when 'Citation';               return workflow_citation_url(ob.workflow, ob)
     when 'Announcement';           return announcement_url(ob)
     when 'Pack';                   return pack_url(ob)
-    when 'Experiment';             return experiment_url(ob)
-    when 'TavernaEnactor';         return runner_url(ob)
-    when 'Job';                    return experiment_job_url(ob.experiment, ob)
     when 'PackContributableEntry'; return ob.contributable ? rest_resource_uri(ob.get_contributable_version) : nil
     when 'PackRemoteEntry';        return ob.uri
     when 'ContentType';            return content_type_url(ob)
@@ -722,9 +718,6 @@ def rest_access_uri(ob)
     when 'Citation';               return "#{base}/citation.xml?id=#{ob.id}"
     when 'Announcement';           return "#{base}/announcement.xml?id=#{ob.id}"
     when 'Pack';                   return "#{base}/pack.xml?id=#{ob.id}"
-    when 'Experiment';             return "#{base}/experiment.xml?id=#{ob.id}"
-    when 'TavernaEnactor';         return "#{base}/runner.xml?id=#{ob.id}"
-    when 'Job';                    return "#{base}/job.xml?id=#{ob.id}"
     when 'Download';               return "#{base}/download.xml?id=#{ob.id}"
     when 'PackContributableEntry'; return "#{base}/internal-pack-item.xml?id=#{ob.id}"
     when 'PackRemoteEntry';        return "#{base}/external-pack-item.xml?id=#{ob.id}"
@@ -763,7 +756,6 @@ def rest_object_tag_text(ob)
     when 'Tag';                    return 'tag'
     when 'Tagging';                return 'tagging'
     when 'Pack';                   return 'pack'
-    when 'Experiment';             return 'experiment'
     when 'Download';               return 'download'
     when 'PackContributableEntry'; return rest_object_tag_text(ob.contributable)
     when 'PackRemoteEntry';        return 'external'
@@ -798,7 +790,6 @@ def rest_object_label_text(ob)
     when 'Tag';                    return ob.name
     when 'Tagging';                return ob.tag.name
     when 'Pack';                   return ob.title
-    when 'Experiment';             return ob.title
     when 'Download';               return ''
     when 'PackContributableEntry'; return rest_object_label_text(ob.contributable)
     when 'PackRemoteEntry';        return ob.title     
@@ -813,8 +804,6 @@ def rest_object_label_text(ob)
     when 'Relationship';           return ''
     when 'Comment';                return ob.comment
     when 'Review';                 return ob.title
-    when 'Job';                    return ob.title
-    when 'TavernaEnactor';         return ob.title
     when 'Policy';                 return ob.name
   end
 
@@ -855,9 +844,6 @@ def  parse_resource_uri(str)
   return [Citation, $1, is_local]       if uri.path =~ /^\/[^\/]+\/[\d]+\/citations\/([\d]+)$/
   return [Announcement, $1, is_local]   if uri.path =~ /^\/announcements\/([\d]+)$/
   return [Pack, $1, is_local]           if uri.path =~ /^\/packs\/([\d]+)$/
-  return [Experiment, $1, is_local]     if uri.path =~ /^\/experiments\/([\d]+)$/
-  return [TavernaEnactor, $1, is_local] if uri.path =~ /^\/runners\/([\d]+)$/
-  return [Job, $1, is_local]            if uri.path =~ /^\/jobs\/([\d]+)$/
   return [Download, $1, is_local]       if uri.path =~ /^\/downloads\/([\d]+)$/
   return [Ontology, $1, is_local]       if uri.path =~ /^\/ontologies\/([\d]+)$/
   return [Predicate, $1, is_local]      if uri.path =~ /^\/predicates\/([\d]+)$/

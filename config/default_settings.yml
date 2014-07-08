@@ -213,21 +213,6 @@ new_menu:
     controller: messages
     condition:  logged_in?
 
-  - label:      Runner
-    link:       /runners/new
-    controller: runners
-    condition:  logged_in? && !TavernaEnactor.for_user(current_user).empty?
-
-  - label:      Experiment
-    link:       /experiments/new
-    controller: experiments
-    condition:  logged_in? && !TavernaEnactor.for_user(current_user).empty?
-
-  - label:      Job
-    link:       /jobs/new
-    controller: jobs
-    condition:  logged_in? && !TavernaEnactor.for_user(current_user).empty?
-
 # search_categories - These are the search categories shown in the search bar
 #                     just under the main tabs.
 

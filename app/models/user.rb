@@ -18,14 +18,6 @@ class User < ActiveRecord::Base
            :order => "created_at DESC",
            :dependent => :destroy
   
-  has_many :jobs
-
-  has_many :taverna_enactors, :as => :contributor,
-              :conditions => ["contributor_type = ?", "User"]
-
-  has_many :experiments, :as => :contributor,
-              :conditions => ["contributor_type = ?", "User"]
-
   has_many :curation_events, :dependent => :destroy
 
   has_many :subscriptions, :dependent => :destroy

@@ -9,7 +9,6 @@ require 'acts_as_creditable'
 require 'acts_as_attributor'
 require 'acts_as_attributable'
 require 'acts_as_reviewable'
-require 'acts_as_runnable'
 require 'acts_as_rdf_serializable'
 require 'previews'
 require 'sunspot_rails'
@@ -102,8 +101,6 @@ class Workflow < ActiveRecord::Base
     end
   end
 
-  acts_as_runnable
-  
   validates_presence_of :title
   
   format_attribute :body

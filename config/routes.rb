@@ -9,29 +9,6 @@ MyExperiment::Application.routes.draw do
   match '/content' => 'content#index', :as => :content, :via => :get
   match '/content.:format' => 'content#index', :as => :formatted_content, :via => :get
 
-  # TODO: Remove me
-  resources :runners do
-    member do
-      get :verify
-    end
-  end
-
-  # TODO: Remove me
-  resources :experiments do
-    resources :jobs do
-      member do
-        post :save_inputs
-        post :submit_job
-        get :refresh_status
-        get :refresh_outputs
-        get :outputs_xml
-        get :outputs_package
-        post :rerun
-        get :render_output
-      end
-    end
-  end
-
   resources :ontologies
   resources :predicates
   resource :mashup
