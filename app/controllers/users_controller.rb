@@ -140,6 +140,21 @@ class UsersController < ApplicationController
   # POST /users
   def create
 
+    if params[:user][:username] && params[:user][:password] && params[:user][:password_confirmation]
+      params[:user].delete("openid_url") if params[:user][:openid_url] # strip params[:user] of it's openid_url if username and password is provided
+    end
+
+    unless params[:user][:name] # why is this here
+      params[:user][:name] = "#{params[:user][:given_name]} #{params[:user][:family_name]}"
+    end
+
+    # Reset certain fields (to prevent injecting the values)
+    params[:user][:email] = nil
+    params[:user][:email_confirmed_at] = nil
+    params[:user][:activated_at] = nil
+
+    @user = User.new(params[:user])
+
     # check that captcha was entered correctly
 
     unless Rails.env == 'test'
@@ -152,21 +167,6 @@ class UsersController < ApplicationController
       end
     end
 
-    if params[:user][:username] && params[:user][:password] && params[:user][:password_confirmation]
-      params[:user].delete("openid_url") if params[:user][:openid_url] # strip params[:user] of it's openid_url if username and password is provided
-    end
-    
-    unless params[:user][:name]
-      params[:user][:name] = "#{params[:user][:given_name]} #{params[:user][:family_name]}"
-    end
-    
-    # Reset certain fields (to prevent injecting the values)
-    params[:user][:email] = nil;
-    params[:user][:email_confirmed_at] = nil
-    params[:user][:activated_at] = nil
-    
-    @user = User.new(params[:user])
-    
     respond_to do |format|
 
       sent_email = false
