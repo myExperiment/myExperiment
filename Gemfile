@@ -35,6 +35,7 @@ gem 'sanitize', '~> 2.0.6'
 gem "oauth-plugin", "~> 0.4.0"
 
 gem 'prototype-rails'
+gem 'jquery-rails', '~> 2.1'
 gem 'rails_autolink'
 
 gem 'acts_as_commentable'
