@@ -199,7 +199,7 @@ module Maintenance::Backup
       system(cmd)
     end
 
-    db_config = YAML::load_file("config/database.yml")[ENV['RAILS_ENV'] || "development"]
+    db_config = YAML::load_file("config/database.yml")[Rails.env || "development"]
 
     @mysql_host     = db_config["host"]
     @mysql_database = db_config["database"]
@@ -217,7 +217,7 @@ module Maintenance::Backup
 
   def self.restore(opts = {})
 
-    db_config = YAML::load_file("config/database.yml")[ENV['RAILS_ENV'] || "development"]
+    db_config = YAML::load_file("config/database.yml")[Rails.env || "development"]
 
     @mysql_host     = db_config["host"]
     @mysql_database = db_config["database"]

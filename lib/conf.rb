@@ -191,7 +191,7 @@ class Conf
 
   def self.layouts
     layouts = self.fetch_entry('layouts', {})
-    layouts.delete_if {|k,v| v["environment"] && (v["environment"] != ENV["RAILS_ENV"])}
+    layouts.delete_if {|k,v| v["environment"] && (v["environment"] != Rails.env)}
   end
 
   def self.external_site_integrations
