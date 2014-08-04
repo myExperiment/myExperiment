@@ -1,4 +1,6 @@
 class License < ActiveRecord::Base
+
+  attr_accessible :title, :unique_name, :description, :user_id, :url
   format_attribute :description
 
   belongs_to :user
