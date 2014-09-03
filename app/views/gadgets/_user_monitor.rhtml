@@ -7,7 +7,7 @@
             current_user.friendships_pending.length +
             current_user.networks_membership_requests_pending.length +
             current_user.memberships_invited.length) > 0 %>
-        <span class="badge"><%= alerts -%></span>
+        <span class="badge alert-info"><%= alerts -%></span>
     <% end %>
     <b class="caret"></b>
   </a>
@@ -22,7 +22,7 @@
       <% link_to messages_path do %>
           My Messages
           <% unless current_user.messages_unread.empty? %>
-              <span class="badge"><%= current_user.messages_unread.size %></span>
+              <span class="badge alert-info"><%= current_user.messages_unread.size %></span>
           <% end %>
       <% end %>
     </li>
@@ -30,7 +30,7 @@
       <% link_to user_friendships_path(current_user) do %>
           My Friendships
           <% unless current_user.friendships_pending.empty? %>
-              <span class="badge"><%= current_user.friendships_pending.size %></span>
+              <span class="badge alert-info"><%= current_user.friendships_pending.size %></span>
           <% end %>
       <% end %>
     </li>
@@ -38,7 +38,7 @@
       <% link_to user_memberships_path(current_user) do %>
           My Memberships
           <% unless (length = current_user.networks_membership_requests_pending.length + current_user.memberships_invited.length) == 0 %>
-              <span class="badge"><%= length %></span>
+              <span class="badge alert-info"><%= length %></span>
           <% end %>
       <% end %>
     </li>
