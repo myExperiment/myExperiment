@@ -1,4 +1,7 @@
 class LicenseOption < ActiveRecord::Base
+
+  attr_accessible :user_id, :title, :description, :uri, :predicate
+
   format_attribute :description
 
   belongs_to :user

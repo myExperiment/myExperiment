@@ -12,7 +12,8 @@ require 'sunspot_rails'
 
 class User < ActiveRecord::Base
   
-  attr_accessible :name, :unconfirmed_email, :username, :password, :password_confirmation, :email, :email_confirmed_at, :activated_at
+  attr_accessible :name, :unconfirmed_email, :username, :password, :password_confirmation,
+                  :email, :email_confirmed_at, :activated_at, :given_name, :family_name, :receive_notifications
   
   has_many :citations, 
            :order => "created_at DESC",

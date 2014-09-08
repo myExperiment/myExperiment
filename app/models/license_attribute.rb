@@ -1,4 +1,7 @@
 class LicenseAttribute < ActiveRecord::Base
+
+  attr_accessible :license, :license_option
+
   belongs_to :license
   belongs_to :license_option
 

@@ -60,9 +60,11 @@
 								  <%= f.text_field :family_name %>
 								</p>
 								<p>
-									<b>Email address</b>:
-									<span style="margin-left: 0.5em; font-size: 85%; vertical-align: middle;"><%= link_to_function "Why?" + expand_image("0.2em"), visual_effect(:toggle_blind, "email_why", :duration => 0.3) %></span>
-								</p>
+                                  <b>Email address</b>:
+									<span style="margin-left: 0.5em; font-size: 85%; vertical-align: middle;">
+                                      <%= link_to_function ("Why?" + expand_image("0.2em")).html_safe, visual_effect(:toggle_blind, "email_why", :duration => 0.3) %>
+                                    </span>
+                                </p>
 								<div id="email_why" class="box_dynamic_help" style="display: none;">
 									<p style="line-height: 1.2em;">We need your email address to confirm your user account and prevent abuse of this site.</p>
 									<p>You also benefit by being able to:</p>

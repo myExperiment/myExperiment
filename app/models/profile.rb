@@ -7,7 +7,7 @@ require 'acts_as_site_entity'
 
 class Profile < ActiveRecord::Base
 
-  attr_accessible :picture, :picture_id, :email
+  attr_accessible :picture, :picture_id, :email, :user_id
   
   belongs_to :owner,
              :class_name => "User",
