@@ -60,7 +60,7 @@ document.onkeypress = handleEnter;
 	    <div class="box_simple" style="font-size: 93%; text-align: left; margin-top: 1em; line-height: 1.4em;">
 	      <p>Add from your existing tags in <%= Conf.sitename %> (click on tag to add):</p>                            
 	      <div style="padding: 0 1em;">
-		    <% unless (tags = current_user.tags.sort {|a,b| a.name.downcase <=> b.name.downcase }).empty? %>
+		    <% unless (tags = current_user.owned_tags.sort {|a,b| a.name.downcase <=> b.name.downcase }).empty? %>
 					<% tags.each do |t| %>
 			  			<a href="" onclick="javascript:addTag('<%= h(t.name) %>'); return false;"><%= h(t.name) %></a><span style="color: #999999;"> | </span>
 					<% end %>

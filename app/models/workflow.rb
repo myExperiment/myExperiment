@@ -19,6 +19,9 @@ require 'scufl/parser'
 require 'has_research_object'
 
 class Workflow < ActiveRecord::Base
+
+  attr_accessible :license_id, :tag_list
+
   
   include ResearchObjectsHelper
 

@@ -2,42 +2,42 @@ component_tag_on_component_workflow:
   tag_id: 1
   taggable_id: 3
   taggable_type: Workflow
-  user: john
+  tagger: john (User)
   created_at: 2013-06-13 08:24:43
 
 component_tag_on_component_workflow2:
   tag_id: 1
   taggable_id: 4
   taggable_type: Workflow
-  user: john
+  tagger: john (User)
   created_at: 2013-06-13 08:24:43
 
 component_tag_on_private_component_workflow:
   tag_id: 1
   taggable_id: 5
   taggable_type: Workflow
-  user: john
+  tagger: john (User)
   created_at: 2013-06-13 07:24:43
 
 component_family_tag_on_component_family:
   tag_id: 2
   taggable_id: 3
   taggable_type: Pack
-  user: john
+  tagger: john (User)
   created_at: 2013-06-13 07:24:43
 
 component_family_tag_on_component_family2:
   tag_id: 2
   taggable_id: 4
   taggable_type: Pack
-  user: john
+  tagger: john (User)
   created_at: 2013-06-13 07:24:43
 
 component_family_tag_on_component_family3:
   tag_id: 2
   taggable_id: 5
   taggable_type: Pack
-  user: john
+  tagger: john (User)
   created_at: 2013-06-13 07:24:43
 
 

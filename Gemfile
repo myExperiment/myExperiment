@@ -46,3 +46,6 @@ gem 'country-select'
 gem "rails3-restful-authentication", "~> 3.0.1"
 
 gem "thin"
+
+gem 'acts-as-taggable-on'
+

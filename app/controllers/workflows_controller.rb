@@ -287,7 +287,7 @@ class WorkflowsController < ApplicationController
         Activity.create(:subject => current_user, :action => 'create', :objekt => @workflow, :auth => @workflow)
 
         if params[:workflow][:tag_list]
-          @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
+          @workflow.tag_list = params[:workflow][:tag_list]
           @workflow.reload
           @workflow.solr_index if Conf.solr_enable
         end
@@ -477,7 +477,7 @@ class WorkflowsController < ApplicationController
         Activity.create(:subject => current_user, :action => 'edit', :objekt => @workflow, :auth => @workflow)
 
         if params[:workflow][:tag_list]
-          @workflow.refresh_tags(convert_tags_to_gem_format(params[:workflow][:tag_list]), current_user)
+          @workflow.tag_list = params[:workflow][:tag_list]
           @workflow.reload
           @workflow.solr_index if Conf.solr_enable
         end

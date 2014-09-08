@@ -609,7 +609,7 @@ module ApplicationHelper
     final_tags = []
     
     all_tags.each do |tagging|
-      if tagging.user_id == user_id 
+      if tagging.tagger_type == 'User' && tagging.tagger_id == user_id
         final_tags += [tagging.tag]
       end
     end
