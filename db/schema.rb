@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140903091202) do
+ActiveRecord::Schema.define(:version => 20140708102551) do
 
   create_table "activities", :force => true do |t|
     t.string   "subject_type"
@@ -648,16 +648,14 @@ ActiveRecord::Schema.define(:version => 20140903091202) do
     t.integer  "tag_id"
     t.integer  "taggable_id"
     t.string   "taggable_type"
-    t.integer  "tagger_id"
+    t.integer  "user_id"
     t.datetime "created_at"
-    t.string   "tagger_type",                  :default => "User"
-    t.string   "context",       :limit => 128, :default => "tags"
   end
 
   add_index "taggings", ["tag_id", "taggable_type"], :name => "index_taggings_on_tag_id_and_taggable_type"
   add_index "taggings", ["taggable_id", "taggable_type"], :name => "index_taggings_on_taggable_id_and_taggable_type"
-  add_index "taggings", ["tagger_id", "tag_id", "taggable_type"], :name => "index_taggings_on_user_id_and_tag_id_and_taggable_type"
-  add_index "taggings", ["tagger_id", "taggable_id", "taggable_type"], :name => "index_taggings_on_user_id_and_taggable_id_and_taggable_type"
+  add_index "taggings", ["user_id", "tag_id", "taggable_type"], :name => "index_taggings_on_user_id_and_tag_id_and_taggable_type"
+  add_index "taggings", ["user_id", "taggable_id", "taggable_type"], :name => "index_taggings_on_user_id_and_taggable_id_and_taggable_type"
 
   create_table "tags", :force => true do |t|
     t.string   "name"
