@@ -17,6 +17,6 @@
         <option value="<%= item['label'] %>" <%= "selected" if item['controller'] && controller.controller_name.match(item['controller']) %>>New <%= item['label'] %></option>
       <% end %>
     </select>
-    <%= submit_tag "GO" %>
+    <%= submit_tag "Create" %>
   </form>
 </div>
