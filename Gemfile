@@ -4,8 +4,8 @@ gem "rails", "2.3.18"
 gem "mysql2", "~> 0.2.18"
 gem "rubyzip", "~> 0.9.4"
 gem "oauth", "~> 0.4.3"
-gem "libxml-ruby", '~> 2.7.0'
-gem "rmagick", "2.13.1"
+gem "libxml-ruby", '~> 2.7.0', :require=>"libxml"
+gem "rmagick", "2.13.1", :require => 'RMagick'
 gem "dsl_accessor", "~> 0.4.0"
 gem "ruby-openid", "~> 2.1.8"
 gem "openurl", "~> 0.2.0"

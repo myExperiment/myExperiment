@@ -1,0 +1,11 @@
+language: ruby
+rvm:
+- 1.9.2
+before_install:
+- gem update --system 1.8.25
+- gem --version
+script:
+- mv config/database.yml.pre config/database.yml
+- RAILS_ENV=test bundle exec rake db:create
+- RAILS_ENV=test bundle exec rake db:migrate
+- bundle exec rake test
