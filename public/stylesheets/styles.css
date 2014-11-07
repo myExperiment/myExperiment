@@ -2719,3 +2719,6 @@ div.component-validity .failed {
     background-image: url("/images/famfamfam_silk/cross.png");
 }
 
+.inline {
+    display: inline;
+}
