@@ -28,14 +28,10 @@
       <div class="main_panel">
 
         <div class="actions">
-          <%= icon "show", workflow_path(workflow), nil, nil, "View" %>
           <% if Authorization.check("download", workflow, current_user) -%>
             <% if ( session[:callback] && (session[:callback][:types].include?(workflow.content_type_id))) -%>
               <%= icon "download", callback_url(workflow).to_s, nil, {:rel => 'nofollow'}, session[:callback][:label] -%>
             <% end %>
-          <% end %>
-          <% if mine?(workflow) %>
-            <%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %>
           <% end %>
         </div>
         <% cache(:controller => 'workflows_cache', :action => 'listing', :id => workflow.id) do -%>
@@ -53,6 +49,9 @@
 	      <% if Authorization.check("download", workflow, current_user) -%>
 		      <li><%= icon "download", download_workflow_path(workflow), nil, nil %></li>
 	      <% end %>
+              <% if mine?(workflow) %>
+                  <li><%= icon "manage", edit_workflow_path(workflow), nil, nil, "Manage" %></li>
+              <% end %>
 	      </ul>
           </p>
 
