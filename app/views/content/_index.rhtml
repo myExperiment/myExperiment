@@ -64,14 +64,11 @@
     <% end %>
   </div>
   <div class="main">
-    <div class="createstuff">
-    <ul class="sectionIcons">
-      <% if logged_in? -%>
-        <li><%= icon('new', new_workflow_path(@workflow), nil, nil, 'Upload Workflow')%></li>
+      <% if logged_in? and defined? create_text and defined? create_url -%>
+      <ul class="sectionIcons createstuff">
+          <li><%= icon('new', create_url, nil, nil, create_text)%></li>
+      </ul>
       <% end -%>
-    </ul>
-
-    </div>
     <%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results], :sort_by => @pivot[:pivot_options]["order"], :num_options => @pivot[:pivot_options]["num_options"] } %>
     <div class="summary">
       <div class="result-count">

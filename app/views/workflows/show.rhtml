@@ -13,7 +13,7 @@
   <% end %>
 	<% if @authorised_to_edit -%>
 		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
-	<% end -%>	
+	<% end -%>
 	<% if mine?(@workflow) -%>
 		<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow')%></li>
 	<% end -%>
@@ -66,7 +66,7 @@
 
 
 <div class="contribution_left_box">
-	
+
 	<div class="contribution_version_box">
 
     <%= render(:partial => "contributions/version_selector", :locals => { :resource => @workflow, :version => @viewing_version, :path => :workflow_version_path }) %>
@@ -78,25 +78,25 @@
 				</ul>
 			</div>
 		<% end %>
-		
+
 		<div class="contribution_version_inner_box">
 			<p>
 				<b>Title:</b>
 				<span class="title"><%= h @viewing_version.title %></span>
 			</p>
-			
+
 			<p>
 				<b>Type:</b>
 				<%= link_to(h(@viewing_version.content_type.title), content_type_path(@viewing_version.content_type)) %>
 			</p>
-			
+
 			<br/>
-			
+
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the preview of this version of the Workflow (click on the image to expand)") %>
 				Preview
 			</h3>
-			
+
 			<% unless @viewing_version.image.nil? && @viewing_version.svg.nil? %>
 				<p style="font-size: 85%; font-weight: normal; margin-bottom: 0.5em; text-align: center;">
 					 (Click on the image to get the full size)
@@ -118,22 +118,22 @@
 					<p style="text-align: right; color: #666666;">[ <%= link_to "add a preview image", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
 				<% end %>
 			<% end %>
-			
+
 			<br/>
-			
+
 			<% unless @viewing_version.svg.nil? %>
 				<ul class="sectionIcons">
 					<li style="margin-left: 0;"><%= icon('picture', workflow_version_preview_path(@workflow, @viewing_version.version, 'svg'), nil, nil, 'Download Scalable Diagram (SVG)') %></li>
 				</ul>
 			<% end %>
-			
+
 			<br/>
-			
+
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the overall description for this version of the Workflow") %>
 				Description
 			</h3>
-			
+
 			<% unless @viewing_version.body.blank? %>
 				<div class="contribution_description">
 					<%= @viewing_version.body_html %>
@@ -146,16 +146,16 @@
 					Not set
 				</p>
 			<% end %>
-			
+
 			<br/>
-			
+
       <% if @workflow.show_download_section? %>
 
         <h3>
           <%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
           Download
         </h3>
-        
+
         <% if @authorised_to_download %>
 
           <br />
@@ -176,19 +176,19 @@
             You do not have permission to download this workflow
           </p>
         <% end %>
-        
+
         <br/>
-        
+
       <% end %>
 
 			<h3>
 				<%= info_icon_with_tooltip("This section provides options for running this version of the Workflow") %>
         <%= @viewing_version.content_type.title == "Galaxy" ? "Import" : "Run" %>
 			</h3>
-				
+
 			<% if @authorised_to_download %>
         <% begin %>
-          <%= render :partial => "workflows/#{get_type_dir(@workflow)}/run_options" -%>				
+          <%= render :partial => "workflows/#{get_type_dir(@workflow)}/run_options" -%>
         <% rescue %>
           <p class="none_text">
             There was a problem when determining the run options of this workflow.
@@ -199,14 +199,14 @@
 					You do not have permission to run this workflow
 				</p>
 			<% end %>
-		
+
 			<br/>
-			
+
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the internal components of this workflow version") %>
 				Workflow Components
 			</h3>
-			
+
 			<% if @authorised_to_download %>
         <% begin %>
           <%= render :partial => "workflows/#{get_type_dir(@viewing_version)}/internals", :locals => { :workflow => @workflow, :version => @viewing_version_number } -%>
@@ -222,9 +222,9 @@
 				</p>
 			<% end %>
 		</div>
-	
+
 	</div>
-	
+
 </div>
 
 <div class="contribution_right_box">
@@ -232,44 +232,44 @@
 		<p><%= info_icon_with_tooltip("The type of workflow system that this Workflow is designed for.") %> Workflow Type</p>
     <p><%= link_to(h(@viewing_version.content_type.title), content_type_path(@viewing_version.content_type)) %></p>
 	</div>
-	
+
 	<%= render :partial => "contributions/uploader_box", :locals => { :contributable => @workflow } %>
 
     <% if @workflow.component? %>
       <%= render :partial => "workflows/component_validity_box", :locals => { :workflow => @workflow, :version => @viewing_version_number } %>
     <% end %>
-	
+
 	<%= render :partial => "contributions/license_box", :locals => { :contributable => @workflow } %>
-	
+
 	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @workflow, :edit_path => edit_workflow_path(@workflow) } %>
-	
+
   <%= render :partial => "contributions/curation_box", :locals => { :contributable => @workflow } %>
 
 	<%= render :partial => "tags/tags_box", :locals => { :taggable => @workflow,
-																											 :owner_id => ((@workflow.contribution.contributor_type == 'User') ? @workflow.contribution.contributor_id : nil),  
-																											 :add_path => tag_workflow_path(@workflow), 
+																											 :owner_id => ((@workflow.contribution.contributor_type == 'User') ? @workflow.contribution.contributor_id : nil),
+																											 :add_path => tag_workflow_path(@workflow),
 																											 :edit_path => edit_workflow_path(@workflow),
 																											 :allow_edit => @authorised_to_edit } %>
-																											 
+
 	<%= render :partial => "contributions/shared_with_groups_box", :locals => { :contributable => @workflow } %>
-	
+
 	<%= render :partial => "contributions/in_packs_box", :locals => { :contributable => @workflow, :contributable_url => @workflow_entry_url } %>
-	
+
 	<%= render :partial => "contributions/ratings_box", :locals => { :contributable => @workflow } %>
-	
+
 	<%= render :partial => "contributions/attributed_by", :locals => { :contributable => @workflow } %>
-	
+
 	<%= render :partial => "contributions/favourited_box", :locals => { :contributable => @workflow,
 																																			:add_to_favourites_path => favourite_workflow_url(@workflow),
 																																			:remove_from_favourites_path => favourite_delete_workflow_url(@workflow) } %>
-	
+
 	<%= render :partial => "contributions/statistics_box", :locals => { :contributable => @workflow } %>
 </div>
 
 <div class="clearer">&nbsp;</div>
 
 <!-- BEGIN tabs -->
-	
+
 <br/>
 
 <div id="tabsContainer" class="tabsContainer"></div>
@@ -285,7 +285,7 @@
 </div>
 
 <% if logged_in? and @workflow.owner?(current_user) %>
-  
+
 	<div class="tabContainer">
     <div class="tabTitle">Sharing</div>
     <div class="tabContent">
@@ -293,7 +293,7 @@
       <a name="sharing"></a>
       <%= render :partial => "contributions/sharing_summary",  :locals => { :contributable => @workflow } %>
       <%= render :partial => "contributions/updating_summary", :locals => { :contributable => @workflow } %>
-	  
+
 	  <% if @authorised_to_edit %>
 		  <ul class="sectionIcons">
 		  	<li><%= icon('edit', edit_workflow_path(@workflow), nil, nil, 'Edit')%></li>
@@ -302,7 +302,7 @@
 
     </div>
   </div>
-	
+
 	<% if false %>
 	<div class="tabContainer">
     <div class="tabTitle">Viewing History</div>
@@ -311,7 +311,7 @@
     </div>
   </div>
 	<% end %>
-	
+
 <% end %>
 
 <!-- END tabs -->
@@ -358,4 +358,3 @@
 <!-- OpenURL context object -->
 
 <span class="Z3988" title="<%= workflow_context_object(@workflow) -%>"></span>
-
