@@ -50,6 +50,20 @@
               <% end %>
 	      </ul>
           </p>
+          <div class="desc">
+            <% unless workflow.image.nil? && workflow.svg.nil? -%>
+              <div class="preview">
+                <%= link_to image_tag(workflow_preview_path(workflow, 'thumb'), :class => 'framed_nospace'), workflow_path(workflow) %>
+              </div>
+            <% end -%>
+            <% if workflow.body and workflow.body.length > 0 -%>
+              <% desc = truncate(strip_html(workflow.body), :length => 500) -%>
+              <%= query ? highlight_all(desc, query) : desc %>
+            <% else -%>
+              <span class="none_text">No description</span>
+            <% end -%>
+          </div>
+
 
           <p>
             <b>Created:</b> <%=date workflow.contribution.created_at, false -%>
@@ -93,22 +107,8 @@
           <% else %>
             <p><b>License: </b><% @license = License.find(workflow.license_id) %><%= link_to h(@license.title), license_path(@license) %></p>
           <% end %>
-
-          <div class="desc">
-            <% unless workflow.image.nil? && workflow.svg.nil? -%>
-              <div class="preview">
-                <%= link_to image_tag(workflow_preview_path(workflow, 'thumb'), :class => 'framed_nospace'), workflow_path(workflow) %>
-              </div>
-            <% end -%>
-            <% if workflow.body and workflow.body.length > 0 -%>
-              <% desc = truncate(strip_html(workflow.body), :length => 500) -%>
-              <%= query ? highlight_all(desc, query) : desc %>
-            <% else -%>
-              <span class="none_text">No description</span>
-            <% end -%>
-          </div>
-
-          <p>
+	  
+	  <p>
             <a href="<%= workflow_path(workflow) + '#ratings' -%>"><b>Rating: </b><%= number_with_precision(workflow.rating, :precision => 1) %> / 5 (<%= pluralize workflow.ratings.count, 'rating' %>)</a> |
             <a href="<%= workflow_path(workflow) + '#versions' -%>"><b>Versions: </b><%= workflow.versions.count %></a> |
             <a href="<%= workflow_path(workflow) + '#reviews' -%>"><b>Reviews: </b><%= workflow.reviews.count %></a> |
