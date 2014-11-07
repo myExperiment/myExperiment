@@ -103,19 +103,19 @@ function updateAuthorList() {
 	if (credit_me)
 	{
 		markup += 'Me <a href="" onclick="javascript:deleteAuthor(\'me\', null); ' +
-            'return false;"><img src="/images/famfamfam_silk/cross.png" class="icon" alt="Remove tag"/></a><br />';
+            'return false;"><img src="/images/famfamfam_silk/cross.png" class="icon" alt="Remove"/></a><br />';
 	}
 	
 	for (var key in credit_users)
 	{
 		markup += 'User: ' + credit_users[key] + ' <a href="" onclick="javascript:deleteAuthor(\'user\', ' + key + '); ' +
-            'return false;"><img src="/images/famfamfam_silk/cross.png" class="icon" alt="Remove tag"/></a><br />';
+            'return false;"><img src="/images/famfamfam_silk/cross.png" class="icon" alt="Remove"/></a><br />';
 	}
 	
 	for (var key in credit_groups)
 	{
 		markup += 'Group: ' + credit_groups[key] + ' <a href="" onclick="javascript:deleteAuthor(\'group\', ' + key + '); ' +
-            'return false;"><img src="/images/famfamfam_silk/cross.png" class="icon" alt="Remove tag"/></a><br />';
+            'return false;"><img src="/images/famfamfam_silk/cross.png" class="icon" alt="Remove"/></a><br />';
 	}
 	
 	if (markup == '')
