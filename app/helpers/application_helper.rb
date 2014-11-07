@@ -56,7 +56,7 @@ module ApplicationHelper
       rtn = Time.at(old_dt.time)
     end
     
-    return long ? rtn.strftime("%A %d %B %Y @ %H:%M:%S (%Z)") : rtn.strftime("%d/%m/%y @ %H:%M:%S")
+    return long ? rtn.strftime("%A %d %B %Y %H:%M:%S (%Z)") : rtn.strftime("%Y-%m-%d %H:%M:%S")
   end
   
   def date(old_dt, long=true)
@@ -64,7 +64,7 @@ module ApplicationHelper
     
     rtn = Time.at(old_dt.time)
     
-    return long ? rtn.strftime("%d %B %Y") : rtn.strftime("%d/%m/%y")
+    return long ? rtn.strftime("%d %B %Y") : rtn.strftime("%y-%m-%d")
   end
 
   def openid(user_id)
@@ -177,7 +177,7 @@ module ApplicationHelper
     return inbox      
   end
   
-  def memberships_link(user, text="My Memberships")
+  def memberships_link(user, text="My Groups")
     opts = nil
     unless (length = user.networks_membership_requests_pending.length + user.memberships_invited.length) == 0
       text = "#{text} (#{length})"

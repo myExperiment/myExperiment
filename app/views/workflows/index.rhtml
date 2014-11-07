@@ -1,4 +1,6 @@
 <h1><%= context_prefix(@context) -%> Workflows</h1>
 
-<%= render :partial => "content/index" -%>
-
+<%= render :partial => "content/index", :locals => {
+      :create_url => new_workflow_path,
+      :create_text => "Upload workflow"
+    } -%>
