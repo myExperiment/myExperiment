@@ -30,7 +30,6 @@
         <div class="actions">
           <%= icon "show", workflow_path(workflow), nil, nil, "View" %>
           <% if Authorization.check("download", workflow, current_user) -%>
-            <%= icon "download", download_workflow_path(workflow), nil, nil, "Download (v#{workflow.versions.count})" %>
             <% if ( session[:callback] && (session[:callback][:types].include?(workflow.content_type_id))) -%>
               <%= icon "download", callback_url(workflow).to_s, nil, {:rel => 'nofollow'}, session[:callback][:label] -%>
             <% end %>
@@ -42,14 +41,19 @@
         <% cache(:controller => 'workflows_cache', :action => 'listing', :id => workflow.id) do -%>
           <a name="<%= workflow.title.gsub(/ /, "_") %>"></a>
 
-          <p class="title">
+          <p class="title inline">
             <%= icon "workflow", nil, nil, nil, '' %>
             <% truncated_title = h(truncate(workflow.title, :length => 45)) %>
             <%=link_to(query ? highlight_all(truncated_title, query) : truncated_title, workflow_path(workflow),
                        :title => workflow.title) %>
             <span style="font-weight:normal;">
               (<%= workflow.current_version %>)
-            </span>
+      </span>
+      <ul class="inline sectionIcons">
+	      <% if Authorization.check("download", workflow, current_user) -%>
+		      <li><%= icon "download", download_workflow_path(workflow), nil, nil %></li>
+	      <% end %>
+	      </ul>
           </p>
 
           <p>
