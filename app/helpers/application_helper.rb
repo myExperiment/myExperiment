@@ -56,7 +56,7 @@ module ApplicationHelper
       rtn = Time.at(old_dt.time)
     end
     
-    return long ? rtn.strftime("%A %d %B %Y at %H:%M:%S (%Z)") : rtn.strftime("%d/%m/%y at %H:%M:%S")
+    return long ? rtn.strftime("%A %d %B %Y %H:%M:%S (%Z)") : rtn.strftime("%Y-%m-%d %H:%M:%S")
   end
   
   def date(old_dt, long=true)
@@ -64,7 +64,7 @@ module ApplicationHelper
     
     rtn = Time.at(old_dt.time)
     
-    return long ? rtn.strftime("%d %B %Y") : rtn.strftime("%d/%m/%y")
+    return long ? rtn.strftime("%d %B %Y") : rtn.strftime("%y-%m-%d")
   end
 
   def openid(user_id)
@@ -591,8 +591,6 @@ module ApplicationHelper
       return "redmond_studio/add_16.png"
     when "download"
       return "redmond_studio/arrow-down_16.png"
-    when "big_download"
-        return "redmond_studio/arrow-down_32.png"
       #return "manhattan_studio/save_24.png"
     when "show"
       return "famfamfam_silk/zoom.png"
