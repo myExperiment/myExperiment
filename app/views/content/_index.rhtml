@@ -64,6 +64,14 @@
     <% end %>
   </div>
   <div class="main">
+    <div class="createstuff">
+    <ul class="sectionIcons">
+      <% if logged_in? -%>
+        <li><%= icon('new', new_workflow_path(@workflow), nil, nil, 'Upload Workflow')%></li>
+      <% end -%>
+    </ul>
+
+    </div>
     <%= render :partial => "layouts/paginate", :locals => { :collection => @pivot[:results], :sort_by => @pivot[:pivot_options]["order"], :num_options => @pivot[:pivot_options]["num_options"] } %>
     <div class="summary">
       <div class="result-count">
@@ -122,4 +130,3 @@
 
 <%= javascript_include_tag "ellipsis.js" %>
 <script>truncate_spans()</script>
-

@@ -1,9 +1,3 @@
 <h1><%= context_prefix(@context) -%> Workflows</h1>
 
-<ul class="sectionIcons">
-  <% if logged_in? -%>
-    <li><%= icon('new', new_workflow_path(@workflow), nil, nil, 'Upload Workflow')%></li>
-  <% end -%>
-</ul>
-
 <%= render :partial => "content/index" -%>
