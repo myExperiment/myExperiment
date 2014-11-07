@@ -1,9 +1,9 @@
-/* 
+/*
    This stylesheet relies on base stylesheets from the
    Yahoo UI library (http://developer.yahoo.com/yui/),
-   licensed under the BSD License 
-   
-   Note that for font-size, only use %ages according to: 
+   licensed under the BSD License
+
+   Note that for font-size, only use %ages according to:
    http://developer.yahoo.com/yui/fonts/#fontsize
 */
 body {
@@ -234,22 +234,22 @@ li {
 }
 
 #ft .left {
-	width: 251px; 
+	width: 251px;
 	text-align: left;
 	font-size: 93%;
 }
 
 #ft .middle {
-	width: 251px; 
+	width: 251px;
 	text-align: left;
 	font-size: 93%;
 	border-left: 1px dotted #999999;
 }
 
 #ft .right {
-	width: 194px; 
+	width: 194px;
 	text-align: center;
-	font-size: 77%; 
+	font-size: 77%;
 	border-left: 1px dotted #999999;
 }
 
@@ -347,7 +347,7 @@ li {
 }
 
 
-/* end css tabs nav */ 
+/* end css tabs nav */
 
 /* begin css breadcrumbs */
 #myexp_breadcrumbs_bar {
@@ -388,7 +388,7 @@ UL.breadcrumb_list LI + LI:before {
   content: " > ";
 }
 
-/* end css breadcrumbs */ 
+/* end css breadcrumbs */
 
 /* begin css tooltips/boxovers */
 
@@ -440,10 +440,10 @@ UL.breadcrumb_list LI + LI:before {
 	margin-bottom: 1em;
 	padding: 0.6em 1.2em;
 	border: 1px solid #EED799;
-	font-weight: bold; 
-	font-size: 100%; 
-	color: #333333; 
-	text-align: center; 
+	font-weight: bold;
+	font-size: 100%;
+	color: #333333;
+	text-align: center;
 }
 
 #home_container .left {
@@ -519,42 +519,42 @@ UL.breadcrumb_list LI + LI:before {
 
 /* begin css rounded corners - based on "Snazzy Corners" */
 
-#home_container .xtop, 
+#home_container .xtop,
 #home_container .xbottom {
 	display: block;
 	background: transparent;
 	font-size: 1px;
 }
 
-#home_container .xb1, 
-#home_container .xb2, 
-#home_container .xb3, 
+#home_container .xb1,
+#home_container .xb2,
+#home_container .xb3,
 #home_container .xb4,
-#home_container .xb5, 
-#home_container .xb6, 
+#home_container .xb5,
+#home_container .xb6,
 #home_container .xb7 {
 	display: block;
 	overflow: hidden;
 }
 
-#home_container .xb1, 
-#home_container .xb2, 
-#home_container .xb3, 
-#home_container .xb6, 
+#home_container .xb1,
+#home_container .xb2,
+#home_container .xb3,
+#home_container .xb6,
 #home_container .xb7 {
 	height: 1px;
 }
 
-#home_container .xb2, 
-#home_container .xb3, 
+#home_container .xb2,
+#home_container .xb3,
 #home_container .xb4 {
 	background: #ACCCED;
 	border-left: 1px solid #CCCCCC;
 	border-right: 1px solid #CCCCCC;
 }
 
-#home_container .xb5, 
-#home_container .xb6, 
+#home_container .xb5,
+#home_container .xb6,
 #home_container .xb7 {
 	background: #F7F7F7;
 	border-left: 1px solid #CCCCCC;
@@ -566,18 +566,18 @@ UL.breadcrumb_list LI + LI:before {
 	background: #CCCCCC;
 }
 
-#home_container .xb2, 
+#home_container .xb2,
 #home_container .xb7 {
 	margin: 0 3px;
 	border-width: 0 2px;
 }
 
-#home_container .xb3, 
+#home_container .xb3,
 #home_container .xb6 {
 	margin: 0 2px;
 }
 
-#home_container .xb4, 
+#home_container .xb4,
 #home_container .xb5 {
 	height: 2px;
 	margin: 0 1px;
@@ -634,7 +634,7 @@ UL.breadcrumb_list LI + LI:before {
 	padding: 0.5em;
 	*padding: 0.3em;
 	vertical-align: middle;
-	
+
 }
 
 .foldText * {
@@ -728,7 +728,7 @@ UL.breadcrumb_list LI + LI:before {
 	background: white;
 }
 
-/* end css tabs */ 
+/* end css tabs */
 
 /* begin css newsfeed */
 
@@ -907,7 +907,7 @@ table.contributable:hover {
 }
 
 .network_banner:hover { /*border: 1px solid black;*/
-	
+
 }
 
 .sectionIcons {
@@ -926,7 +926,7 @@ table.contributable:hover {
 	vertical-align: middle;
 	margin: 0;
 	margin-left: 8px;
-	/*border: 2px solid #F5F5F5;*/ 
+	/*border: 2px solid #F5F5F5;*/
 }
 
 .sectionIcons li:hover {
@@ -997,16 +997,16 @@ a.button_slim * {
 }
 
 .contribution_aftertitle {
-	color: #666666; 
-	font-size: 85%; 
-	text-align: center; 
+	color: #666666;
+	font-size: 85%;
+	text-align: center;
 	margin-bottom: 0.6em;
 }
 
 .contribution_mini_nav {
 	color: #999999;
-	font-size: 85%; 
-	text-align: center; 
+	font-size: 85%;
+	text-align: center;
 	margin-bottom: 1em;
 	line-height: 1.5;
 }
@@ -1139,8 +1139,8 @@ a.button_slim * {
 }
 
 .contribution_version_box .title {
-	font-size: 108%; 
-	font-weight: bold; 
+	font-size: 108%;
+	font-weight: bold;
 	color: #660000;
 }
 
@@ -1171,9 +1171,9 @@ a.button_slim * {
 }
 
 .contribution_version_selector_box .heading {
-	text-align: left; 
-	font-size: 108%; 
-	font-weight: bold; 
+	text-align: left;
+	font-size: 108%;
+	font-weight: bold;
 	color: #333333;
 }
 
@@ -1186,7 +1186,7 @@ a.button_slim * {
 }
 
 .contribution_version_inner_box .option_box {
-	padding: 0.2em 0.6em; 
+	padding: 0.2em 0.6em;
 	border: 1px solid #CCCCCC;
 }
 
@@ -1363,10 +1363,10 @@ a.tagsSelectorOn {
 }
 
 .message_box .subject {
-	font-size: 108%; 
-	background-color: #FFFFCC; 
-	border: 1px dotted #999999; 
-	padding: 0.2em 0.5em; 
+	font-size: 108%;
+	background-color: #FFFFCC;
+	border: 1px dotted #999999;
+	padding: 0.2em 0.5em;
 	margin-bottom: 1em;
 }
 
@@ -1436,13 +1436,13 @@ div.auto_complete ul strong.highlight {
 }
 
 .box_standout {
-	padding: 0.5em 0.8em; 
+	padding: 0.5em 0.8em;
 	border: 1px dotted #999999;
 	background-color: #FFFFCC;
 }
 
 .box_important {
-	padding: 0.5em 0.8em; 
+	padding: 0.5em 0.8em;
 	border: 2px solid #993333;
 	background-color: #FFCCCC;
 }
@@ -1458,7 +1458,7 @@ div.auto_complete ul strong.highlight {
 }
 
 .box_dynamic_help {
-	padding: 0.4em 0.8em; 
+	padding: 0.4em 0.8em;
 	border: 1px dotted #999999;
 	background-color: #FFFFCC;
 	font-size: 85%;
@@ -1466,13 +1466,13 @@ div.auto_complete ul strong.highlight {
 }
 
 .box_inplace {
-	padding: 0.8em; 
-	border-top: 1px dotted #999999; 
+	padding: 0.8em;
+	border-top: 1px dotted #999999;
 	border-bottom: 1px dotted #999999;
 }
 
 .box_editing {
-	padding: 0.5em; 
+	padding: 0.5em;
 	background-color: #FFFFFF;
 	border-left: 5px solid #0066CC;
 	padding-left: 0.8em;
@@ -1493,7 +1493,7 @@ div.auto_complete ul strong.highlight {
 .box_infotext {
 	font-size: 93%;
 	background-color: #FFFFCC;
-	margin: 0; 
+	margin: 0;
 	padding: 0.5em 0.8em;
 	border: 1px solid #EED799;
 	line-height: 1.4;
@@ -1533,8 +1533,8 @@ div.auto_complete ul strong.highlight {
 }
 
 .sub-heading {
-	text-align: center; 
-	font-size: 108%; 
+	text-align: center;
+	font-size: 108%;
 	margin-bottom: 0.5em;
 }
 
@@ -1718,7 +1718,7 @@ ol.outputs_list {
 	margin-left: 2em;
 }
 
-ol.outputs_list, 
+ol.outputs_list,
 ol.outputs_list ol {
 	padding-left: 0;
 	list-style-position: outside;
@@ -1744,9 +1744,9 @@ ol.outputs_list ol li {
 /* End outputs content list styles */
 
 
-.default_timeline { 
-	width: 100%; 
-	height: 600px; 
+.default_timeline {
+	width: 100%;
+	height: 600px;
 }
 
 table.simple {
@@ -1824,7 +1824,7 @@ table.simple td {
 	color: #333333;
 	margin: 0.3em 0 0 0.3em;
 	padding: 0.2em 0 0.3em 0.7em;
-	border-left: 3px solid #EEEEEE; 
+	border-left: 3px solid #EEEEEE;
 }
 
 #packItems .comment {
@@ -1841,7 +1841,7 @@ table.simple td {
 }
 
 table.quick_add {
-	border-collapse: collapse; 
+	border-collapse: collapse;
 	width: 99%;
 	color: #333333;
 }
@@ -1866,10 +1866,10 @@ table.quick_add td.label .inner {
 	color: #990000;
 	font-weight: bold;
 }
-	
+
 
 table.quick_add td.submit {
-	text-align: left; 
+	text-align: left;
 	width: 4em;
 }
 
@@ -1890,7 +1890,7 @@ table.quick_add td.submit {
 .group_announcements .announcement_box {
 	border: 1px dotted #999999;
 	margin: 0.1em 0;
-	padding: 0.2em 0.5em; 
+	padding: 0.2em 0.5em;
 	background-color: #F9F9F9;
 	font-size: 85%;
 	font-weight: bold;
@@ -1903,13 +1903,13 @@ table.quick_add td.submit {
 }
 
 .workflow_type_box {
-	border: 1px solid #DDDDDD; 
-	background-color: #FFFFCC; 
+	border: 1px solid #DDDDDD;
+	background-color: #FFFFCC;
 	margin: 0 0 0.5em 0;
-	padding: 0.4em 0.5em; 
-	font-size: 77%; 
-	color: #990000; 
-	font-weight: bold; 
+	padding: 0.4em 0.5em;
+	font-size: 77%;
+	color: #990000;
+	font-weight: bold;
 	text-align: center;
 }
 
@@ -2017,7 +2017,7 @@ table.topic th{
   border: 1px solid black;
   text-align:center;
   width: 100%;
-  background-color: #FFFFCC; 
+  background-color: #FFFFCC;
 }
 
 .topic_feedback{
@@ -2719,3 +2719,17 @@ div.component-validity .failed {
     background-image: url("/images/famfamfam_silk/cross.png");
 }
 
+.main {
+  position:relative;
+  /* So we can position .createstuff */
+}
+
+.createstuff {
+  /* This is not going to flow nicely.. */
+  position: absolute;
+  top: 0.0em;
+  left: 0;
+  right: 0;
+  padding-right: 8em;
+  font-size: large;
+}

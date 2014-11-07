@@ -1,3 +1,7 @@
 <h1><%= context_prefix(@context) -%> Packs</h1>
 
-<%= render :partial => "content/index" -%>
+<%= render :partial => "content/index",
+:locals => {
+      :create_url => new_pack_path,
+      :create_text => "Create pack"
+    } -%>
