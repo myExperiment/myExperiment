@@ -177,7 +177,7 @@ module ApplicationHelper
     return inbox      
   end
   
-  def memberships_link(user, text="My Memberships")
+  def memberships_link(user, text="My Groups")
     opts = nil
     unless (length = user.networks_membership_requests_pending.length + user.memberships_invited.length) == 0
       text = "#{text} (#{length})"
