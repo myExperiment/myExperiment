@@ -64,7 +64,7 @@ module ApplicationHelper
     
     rtn = Time.at(old_dt.time)
     
-    return long ? rtn.strftime("%d %B %Y") : rtn.strftime("%y-%m-%d")
+    return long ? rtn.strftime("%d %B %Y") : rtn.strftime("%Y-%m-%d")
   end
 
   def openid(user_id)
