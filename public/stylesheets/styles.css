@@ -993,7 +993,8 @@ a.button_slim * {
 }
 
 .contribution_title {
-	margin-bottom: 0.6em;
+	margin-bottom: 0.1em;
+    font-size: large;
 }
 
 .contribution_aftertitle {
