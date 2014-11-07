@@ -27,8 +27,8 @@ function updateTagList() {
 
     for (var i = 0; i < tags.length; i++)
       markup += tags[i] +
-        '&nbsp;&nbsp;&nbsp;<small>[<a href="" onclick="javascript:deleteTag(\'' + tags[i].replace("'", "\\'") +
-        '\'); return false;">delete</a>]</small><br />';
+        ' <a href="" onclick="javascript:deleteTag(\'' + tags[i].replace("'", "\\'") +
+        '\'); return false;"><img src="/images/famfamfam_silk/cross.png" class="icon" alt="Remove tag"/></a><br />';
   }
 
   document.getElementById('tags_current_list').innerHTML = markup;
