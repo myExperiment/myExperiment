@@ -28,7 +28,7 @@
   <% end -%>
   <% if Authorization.check("destroy", @workflow, current_user) -%>
       <li>
-        <%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow Entry') %>
+        <%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow') %>
       </li>
   <% end -%>
 
