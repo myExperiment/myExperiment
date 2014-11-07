@@ -1,0 +1,33 @@
+<div class="contribution_mini_nav">
+  |
+  <%= link_to "License", "#license" %>
+  |
+  <%= link_to "Credits (#{@workflow.creditations.length})", "#credits" %>
+  |
+  <%= link_to "Attributions (#{@workflow.attributors.length})", "#attributions" %>
+  |
+  <%= link_to "Tags <span id='mini_nav_tag_link'>(#{@workflow.tags.uniq.length})</span>", "#tags" %>
+  |
+  <%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@workflow).length})", "#featured_in_packs" %>
+  |
+  <%= link_to "Ratings (#{@workflow.ratings.length})", "#ratings" %>
+  |
+  <%= link_to "Attributed By (#{@workflow.attributions.length})", "#attributed_by" %>
+  |
+  <%= link_to "Favourited By (#{@workflow.bookmarks.length})", "#favourited_by" %>
+  |
+  <br/>
+  |
+  <a href="#citations">Citations (<%= @workflow.citations.length -%>)</a>
+  |
+  <a href="#version_history">Version History</a>
+  |
+  <% if logged_in? and @workflow.owner?(current_user) %>
+      <a href="#sharing">Sharing</a>
+      |
+  <% end %>
+  <%= link_to "Reviews (#{@workflow.reviews.length})", "#reviews" %>
+  |
+  <%= link_to "Comments (#{@workflow.comments.length})", "#comments" %>
+  |
+</div>

@@ -1,0 +1,35 @@
+<script type="text/javascript">
+    function showVersion(form) {
+        var url = $("resource_versions").value;
+        location.href = url;
+        form.submit
+    }
+</script>
+<style>
+  .version_selection {
+      font-size:smaller;
+      text-align: center;
+  }
+</style>
+
+<div class="contribution_section_box">
+  <p class="heading">
+    <%= info_icon_with_tooltip("This box shows version #{version.version.to_s} for this entry") -%>
+    <span><%= "Version #{version.version.to_s} #{resource.describe_version(version.version)}" -%></span>
+    <span class="count_text">(of <%= resource.versions.length -%>)</span>
+  </p>
+  <% if resource.versions.length > 1 %>
+      <form onsubmit="showVersion(this); return false;" style="text-align: right;">
+        <p class="version_selection">
+        View version:
+        <select id="resource_versions" onchange="showVersion(this.form)">
+          <% resource.versions.reverse.each do |v| %>
+              <option value="<%= send(path, resource, v.version.to_s) %>" <%= "selected" if v.version == version.version -%>>
+                <%= "#{v.version.to_s} #{resource.describe_version(v.version)}" %>
+              </option>
+          <% end %>
+        </select>
+        </p>
+      </form>
+  <% end %>
+</div>
