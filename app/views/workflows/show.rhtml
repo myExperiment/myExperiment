@@ -2,9 +2,13 @@
 
 <%= render :partial => "workflows/deprecation_event", :collection => @workflow.deprecations -%>
 
+
+
 <h1 class="contribution_title">
-  Workflow Entry: <%=h @workflow.title %>
+  <%=h @workflow.title %>
 </h1>
+
+<%= render :partial => "contributions/datetime_info", :locals => { :contributable => @workflow } -%>
 
 <ul class="sectionIcons">
   <% if @authorised_to_download %>
@@ -31,41 +35,9 @@
 </ul>
 
 
-<%= render :partial => "contributions/datetime_info", :locals => { :contributable => @workflow } -%>
+<%#= render :partial => "contributions/workflow_mini_nav" %>
 
-<div class="contribution_mini_nav">
-	|
-	<%= link_to "License", "#license" %>
-	|
-	<%= link_to "Credits (#{@workflow.creditations.length})", "#credits" %>
-	|
-	<%= link_to "Attributions (#{@workflow.attributors.length})", "#attributions" %>
-	|
-	<%= link_to "Tags <span id='mini_nav_tag_link'>(#{@workflow.tags.uniq.length})</span>", "#tags" %>
-	|
-	<%= link_to "Featured in Packs (#{Pack.packs_with_contributable(@workflow).length})", "#featured_in_packs" %>
-	|
-	<%= link_to "Ratings (#{@workflow.ratings.length})", "#ratings" %>
-	|
-	<%= link_to "Attributed By (#{@workflow.attributions.length})", "#attributed_by" %>
-	|
-	<%= link_to "Favourited By (#{@workflow.bookmarks.length})", "#favourited_by" %>
-	|
-	<br/>
-	|
-	<a href="#citations">Citations (<%= @workflow.citations.length -%>)</a>
-	|
-  <a href="#version_history">Version History</a>
-  |
-	<% if logged_in? and @workflow.owner?(current_user) %>
-	  <a href="#sharing">Sharing</a>
-	  |
-	<% end %>
-	<%= link_to "Reviews (#{@workflow.reviews.length})", "#reviews" %>
-	|
-	<%= link_to "Comments (#{@workflow.comments.length})", "#comments" %>
-	|
-</div>
+
 
 
 <div class="contribution_left_box">
@@ -75,8 +47,9 @@
 
 		
 		<div class="contribution_version_inner_box">
-            <%= render :partial=>"workflow_description" %>
-			
+
+                <%= render :partial=>"workflow_description" %>
+
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the preview of this version of the Workflow (click on the image to expand)") %>
 				Preview
