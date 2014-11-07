@@ -1,5 +1,5 @@
 <% @logo_link_url  = "http://biovel.eu/" # The URL that the logo links to when clicked
-   @logo_image_url = "/images/biovel.png" # The logo image
+   @logo_image_url = "/images/biovel_logo_white_background.png" # The logo image
 
    biovel_id = @layout['network_id']
 
@@ -17,24 +17,11 @@
 <% end %>
 
 <% content_for :logo do %>
-  <div style="float: left; margin-bottom: 0.5em">
-    <%= link_to image_tag(@logo_image_url), @logo_link_url, :style => "float: left" -%>
-    <div style="float: left; margin-top: 2em">
-      <div style="font-weight: bold; vertical-align: middle">
-        <a href="<%= @logo_link_url -%>" class="biovel_logo_link">
-          <span style="font-size: 200%">Biodiversity Virtual e-Laboratory</span>
-        </a>
-      </div>
-      <div style="margin: 0.5em 0 0 1em; color: black;">
-        on <%= link_to image_tag("/images/logo_tiny.png", :style=>"vertical-align: middle"), "/" -%>
-      </div>
-    </div>
-  </div>
-  <br class="clearer"/>
+  <%= link_to image_tag(@logo_image_url, :size => '38x50'), @logo_link_url, :style => "float: left" -%>
 <% end %>
 
 <% content_for :tabs do %>
-  <ul class="tabnav">
+  <ul class="nav navbar-nav">
     <li class="return_tab"><%= link_to 'Home', '/home'-%></li>
     <% biovel_tabs.each do |tab| %>
       <li <%= (tab['controller'] && controller.controller_name.match(tab['controller'])) ? 'id="selected_tabnav"' : '' %>>
