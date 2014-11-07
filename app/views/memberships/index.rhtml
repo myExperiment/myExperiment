@@ -2,7 +2,7 @@
 
 	<% if my_page? @user %>
 
-		<h1>My Memberships</h1>
+		<h1>My Groups</h1>
 
 		<% memberships = @user.networks_membership_requests_pending(true) %>
 		<div class="fold">
@@ -124,7 +124,7 @@
 
 	<% else %>
 
-		<h1>Memberships for <%=name @user.id %></h1>
+		<h1>Groups for <%=name @user.id %></h1>
 		<% unless @user.memberships.empty? %>
 			<%= render :partial => "memberships/table", :locals => { :collection => @user.memberships, :user => false } %>
 		<% else %>
@@ -135,7 +135,7 @@
 
 <% else %>
 	<% if false %>
-		<h2>All Memberships</h2>
+		<h2>All Groups</h2>
 
 		<%= render :partial => "layouts/paginate", :locals => { :collection => @memberships } %>
 
