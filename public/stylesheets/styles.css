@@ -994,6 +994,7 @@ a.button_slim * {
 
 .contribution_title {
 	margin-bottom: 0.6em;
+    font-size: large;
 }
 
 .contribution_aftertitle {

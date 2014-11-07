@@ -2,6 +2,10 @@
 
 <%= render :partial => "workflows/deprecation_event", :collection => @workflow.deprecations -%>
 
+<h1 class="contribution_title">
+  Workflow Entry: <%=h @workflow.title %>
+</h1>
+
 <ul class="sectionIcons">
   <% if @authorised_to_download %>
     <li><%= icon('download', @named_download_url, "Download Workflow (for version #{@viewing_version_number.to_s})", nil, "Download Workflow") -%></li>
@@ -13,6 +17,7 @@
   <% end %>
 	<% if @authorised_to_edit -%>
 		<li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
+        <li><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Manage Version") %></li>
 	<% end -%>	
 	<% if mine?(@workflow) -%>
 		<li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow')%></li>
@@ -22,11 +27,9 @@
 			<%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow Entry') %>
 		</li>
 	<% end -%>
+
 </ul>
 
-<h1 class="contribution_title">
-	Workflow Entry: <%=h @workflow.title %>
-</h1>
 
 <%= render :partial => "contributions/datetime_info", :locals => { :contributable => @workflow } -%>
 
@@ -69,28 +72,10 @@
 	
 	<div class="contribution_version_box">
 
-    <%= render(:partial => "contributions/version_selector", :locals => { :resource => @workflow, :version => @viewing_version, :path => :workflow_version_path }) %>
 
-		<% if @authorised_to_edit %>
-			<div style="margin-top: 1em;">
-				<ul class="sectionIcons" style="margin-top: 0.7em; margin-bottom: 0.6em;">
-					<li style="margin-left: 0;"><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Manage Version") %></li>
-				</ul>
-			</div>
-		<% end %>
 		
 		<div class="contribution_version_inner_box">
-			<p>
-				<b>Title:</b>
-				<span class="title"><%= h @viewing_version.title %></span>
-			</p>
-			
-			<p>
-				<b>Type:</b>
-				<%= link_to(h(@viewing_version.content_type.title), content_type_path(@viewing_version.content_type)) %>
-			</p>
-			
-			<br/>
+            <%= render :partial=>"workflow_description" %>
 			
 			<h3>
 				<%= info_icon_with_tooltip("This section shows the preview of this version of the Workflow (click on the image to expand)") %>
@@ -128,58 +113,6 @@
           <% end %>
 
 
-			
-			<h3>
-				<%= info_icon_with_tooltip("This section shows the overall description for this version of the Workflow") %>
-				Description
-			</h3>
-			
-			<% unless @viewing_version.body.blank? %>
-				<div class="contribution_description">
-					<%= @viewing_version.body_html %>
-				</div>
-				<% if @authorised_to_edit %>
-					<p style="text-align: right; color: #666666;">[ <%= link_to "edit", workflow_version_edit_url(@workflow.id, @viewing_version.version) %> ]</p>
-				<% end %>
-			<% else %>
-				<p class="none_text">
-					Not set
-				</p>
-			<% end %>
-			
-			<br/>
-			
-      <% if @workflow.show_download_section? %>
-
-        <h3>
-          <%= info_icon_with_tooltip("This section provides links to the different downloads for this version of the Workflow") %>
-          Download
-        </h3>
-        
-        <% if @authorised_to_download %>
-
-          <br />
-
-          <ul class="sectionIcons">
-            <li style="margin-left: 0;"><%= icon('workflow', @named_download_url, "Download Workflow (for version #{@viewing_version_number.to_s})", nil, "Download Workflow") -%></li>
-          </ul>
-          <% if session[:callback] &&
-                session[:callback][:types].include?(@workflow.content_type_id) -%>
-            <br />
-            <ul class="sectionIcons">
-              <li style="margin-left: 0;"><%= icon('workflow', callback_url(@workflow).to_s, "#{session[:callback][:label]} Workflow file/package (for version #{@viewing_version_number.to_s})", {:rel => 'nofollow'}, "#{session[:callback][:label]} Workflow #{session[:callback][:additional]}") -%></li>
-            </ul>
-          <% end %>
-
-        <% else %>
-          <p class="none_text">
-            You do not have permission to download this workflow
-          </p>
-        <% end %>
-        
-        <br/>
-        
-      <% end %>
 
 			<h3>
 				<%= info_icon_with_tooltip("This section provides options for running this version of the Workflow") %>
@@ -240,6 +173,8 @@
     <% end %>
 	
 	<%= render :partial => "contributions/license_box", :locals => { :contributable => @workflow } %>
+
+    <%= render :partial => "contributions/version_selection", :locals => { :resource => @workflow, :version => @viewing_version, :path => :workflow_version_path } %>
 	
 	<%= render :partial => "contributions/credits_attributions_box", :locals => { :contributable => @workflow, :edit_path => edit_workflow_path(@workflow) } %>
 	
