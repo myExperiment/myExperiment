@@ -40,7 +40,7 @@ class Workflow < ActiveRecord::Base
   before_validation :check_unique_name
   before_validation :apply_extracted_metadata
 
-  acts_as_site_entity :owner_text => 'Original Uploader'
+  acts_as_site_entity :owner_text => 'Uploader'
 
   acts_as_contributable
   
