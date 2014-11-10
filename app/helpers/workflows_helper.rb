@@ -6,6 +6,20 @@
 require 'openurl'
 
 module WorkflowsHelper
+
+  def workflow_version_editing_permissions version
+    title_edit = !version.can_infer_title?
+    preview_edit = !version.can_generate_preview_image?
+    description_edit = !version.can_infer_description?
+
+    can_edit_anything = title_edit || preview_edit || description_edit
+
+    return title_edit,preview_edit,description_edit,can_edit_anything
+  end
+
+  def show_edit_workflow_version_button? version
+    workflow_version_editing_permissions(version)[3]
+  end
   
   def workflow_types
     types = WorkflowTypesHandler.types_list

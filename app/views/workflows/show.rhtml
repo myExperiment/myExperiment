@@ -21,23 +21,20 @@
   <% end %>
   <% if @authorised_to_edit -%>
       <li><%= icon('new', new_version_workflow_path(@workflow), nil, nil, 'Upload New Version')%></li>
-      <li><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit This Version") %></li>
+      <% if show_edit_workflow_version_button?(@viewing_version) %>
+        <li><%= icon('edit', workflow_version_edit_url(@workflow.id, @viewing_version.version), nil, nil, "Edit This Version") %></li>
+      <% end %>
   <% end -%>
   <% if mine?(@workflow) -%>
       <li><%= icon('manage', edit_workflow_path(@workflow), nil, nil, 'Manage Workflow')%></li>
   <% end -%>
   <% if Authorization.check("destroy", @workflow, current_user) -%>
       <li>
-        <%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow Entry') %>
+        <%= icon('destroy', workflow_path(@workflow), nil, { :confirm => 'This deletes all versions of the Workflow and all metadata such as tags, comments and citations. Are you sure?', :method => :delete }, 'Delete Workflow') %>
       </li>
   <% end -%>
 
 </ul>
-
-
-<%#= render :partial => "contributions/workflow_mini_nav" %>
-
-
 
 
 <div class="contribution_left_box">
