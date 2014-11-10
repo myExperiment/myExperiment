@@ -2672,3 +2672,7 @@ div.component-validity .failed {
     display: inline-block;
     border: 1px solid black;
 }
+
+img.basic_icon {
+    vertical-align: bottom;
+}

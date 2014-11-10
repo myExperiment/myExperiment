@@ -1,5 +1,7 @@
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
+<li class="dropdown" id="create-dropdown" data-delay="2" data-trigger="manual" data-content="Click here to upload or create content, such as workflows, files, packs, groups and more." data-placement="bottom" title="Upload content">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    <span class="glyphicon glyphicon-plus"></span> Create <b class="caret"></b>
+  </a>
   <ul class="dropdown-menu">
     <% Conf.new_menu.each do |item| %>
         <% next if item['condition'] and !eval(item['condition']) %>
