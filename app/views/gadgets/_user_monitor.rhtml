@@ -1,7 +1,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-    <% image_tag(current_user.avatar? ? avatar_url(current_user.profile.picture_id, 24) : "avatar.png",
-                  :size => '24x24', :style => 'vertical-align: middle') %>
+    <%= image_tag(current_user.avatar? ? avatar_url(current_user.profile.picture_id, 18) : "avatar.png",
+                  :height => '18', :style => 'vertical-align: bottom;') %>
     <%= current_user.name -%>
     <% if (alerts = current_user.messages_unread.size +
             current_user.friendships_pending.length +
