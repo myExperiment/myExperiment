@@ -28,7 +28,5 @@ class Announcement < ActiveRecord::Base
               :order => "created_at DESC",
               :limit => limit,
               :conditions => ["created_at > ?", max_age])
-    announcements = [Announcement.last] if announcements.empty?
-    announcements.compact
   end
 end 
