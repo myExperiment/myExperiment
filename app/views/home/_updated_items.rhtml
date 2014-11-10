@@ -9,7 +9,7 @@
           <% contributions.each do |c| %>
               <% if Authorization.check("view", c, current_user) %>
                   <li>
-                    <b><%= c_type = visible_name(c.contributable_type); icon(c.contributable_type.to_s, nil, nil, c_type, c_type) %>:</b>
+                    <%= basic_icon(c.contributable_type.to_s, visible_name(c.contributable_type.to_s)) -%>
                     <%= c.contributable_type == 'Network' ? title(c.contributable_id) : contributable(c.contributable_id, c.contributable_type) %>
                     by <b><%= contributor(c.contributor_id, c.contributor_type) %></b>
                     (<%= timeago_fuzzy c.updated_at %>)

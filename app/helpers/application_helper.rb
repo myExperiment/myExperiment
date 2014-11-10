@@ -1539,7 +1539,7 @@ protected
   end
 
   # A basic icon intended to be aligned with text
-  def basic_icon(image_name)
-    image_tag(method_to_icon_filename(image_name), :class => 'basic-icon')
+  def basic_icon(image_name, title=nil)
+    image_tag(method_to_icon_filename(image_name.downcase), :class => 'basic-icon', :title => title)
   end
 end
