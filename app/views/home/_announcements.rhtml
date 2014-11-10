@@ -1,16 +1,15 @@
 <!-- Site Announcements -->
-<div class="box">
+<% cache(:controller => 'home_cache', :action => 'announcements') do -%>
+	<% unless (announcements = Announcement.latest(5, 6.months.ago)).empty? %>
+<div class="box" style="margin-bottom: 0">
 	<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 	<div class="title">
 		<%= feed_icon_tag "Site Announcements", announcements_path(:format => :rss) %>
-		[ <%= link_to "Site Announcements", announcements_url %> ]
+		<%= link_to "Site Announcements", announcements_url %>
 	</div>
 	<div class="content">
-		<% cache(:controller => 'home_cache', :action => 'announcements') do -%>
-			<% unless (announcements = Announcement.latest).empty? %>
 				<ul class="announcements">
 					<% announcements.each do |a| %>
-						<% break if Time.now.to_i-a.created_at.to_i > 16000000 # about 6 months %>
 						<li>
 							<p class="box_standout" style="font-size: 93%; padding: 0.2em 0.5em; margin: 0.1em 0; font-weight: bold;">
 								<%= link_to h(a.title), announcement_url(a) %>
@@ -19,15 +18,13 @@
 						</li>
 					<% end %>
 				</ul>
-			<% else %>
-				<p class="none_text">None</p>
-			<% end %>
-		<% end %>
-		<% if admin? %>
-			<p style="font-size: 77%; text-align: center;">
-				[ <%= link_to "New", new_announcement_url %> ]
-			</p>
-		<% end %>
 	</div>
 	<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 </div>
+<% end %>
+<% end %>
+<% if admin? %>
+    <ul class="sectionIcons">
+      <li><%= icon('announcement', new_announcement_url, nil, nil, 'Make Announcement')%></li>
+    </ul>
+<% end %>

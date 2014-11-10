@@ -23,9 +23,10 @@ class Announcement < ActiveRecord::Base
  
   # returns the 'last created' Announcements
   # the maximum number of results is set by #limit#
-  def self.latest(limit=5)
+  def self.latest(limit=5, max_age = 70.years.ago)
     self.find(:all,
               :order => "created_at DESC",
-              :limit => limit)
+              :limit => limit,
+              :conditions => ["created_at > ?", max_age])
   end
 end 
