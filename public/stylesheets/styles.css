@@ -136,6 +136,10 @@ li {
   position: relative;
 }
 
+#myexp_content {
+  position: relative;
+}
+
 #logo img {
   margin: 8px;
 }
@@ -2715,17 +2719,10 @@ span.divider {
     display: inline;
 }
 
-.main {
-  position:relative;
-  /* So we can position .createstuff */
-}
-
 .createstuff {
   /* This is not going to flow nicely.. */
-  position: absolute;
-  top: 0.0em;
-  left: 0;
-  right: 0;
-  padding-right: 8em;
   font-size: large;
+  position: absolute;
+  right: -8px;
+  top: -40px;
 }
