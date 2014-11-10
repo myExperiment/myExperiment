@@ -1,7 +1,7 @@
-/* Stylesheet for the BioVeL group's skin, based on the e-LICO layout. Requires main myExperiment stylesheet. */
+/* Stylesheet for the BioVeL group's skin */
 
 body  {
-	background: #EEEB99;
+    background: #EEEB99;
 }
 
 #main {
@@ -13,21 +13,31 @@ body  {
 
 .navbar {
     background-color: #99cc33;
-    border-color: #8b2;
+    border-color: #8b2 #8b2 #ccc #8b2;
     margin-bottom: 0;
     box-shadow: 0 -1px 8px #000;
     border-radius: 0;
 }
 
+#site_info_links, .form-control, .btn-default {
+    border-color: #8b2;
+}
+
+#site_info_links a {
+    color: #287621;
+}
+
 #selected_tabnav a,
 .nav > li > a:hover,
+.nav > li > a:focus,
+.nav > li > a:active,
 .navbar-myexp .navbar-nav > .active > a, .navbar-myexp .navbar-nav > .active > a:hover,
 .navbar-myexp .navbar-nav > .active > a:focus,
 .navbar-myexp .navbar-nav > .open > a,
 .navbar-myexp .navbar-nav > .open > a:hover,
 .navbar-myexp .navbar-nav > .open > a:focus {
-  background-color: #b1e10f;
-  color: inherit;
+    background-color: #b1e10f;
+    color: inherit;
 }
 
 /* Notification icon in navbar */
@@ -38,5 +48,5 @@ body  {
 }
 
 .links {
-  color: #608509
+    color: #608509
 }

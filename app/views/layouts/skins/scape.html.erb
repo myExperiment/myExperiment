@@ -1,9 +1,14 @@
 <% @logo_link_url  = "http://www.scape-project.eu/" # The URL that the logo links to when clicked
    @logo_image_url = "/images/scape_logo.png" # The logo image %>
 
+<% content_for :logo do %>
+  <%= link_to image_tag("/images/scape_logo.png", :height => 50), "http://www.scape-project.eu/" %>
+<% end %>
+
 <% content_for :site_info_links do %>
-  <a target="_blank" href="http://www.scape-project.eu/about">About SCAPE</a> |
+  <a target="_blank" href="http://www.scape-project.eu/about">About SCAPE</a>
+  <span class="divider">|</span>
   <a target="_blank" href="http://wiki.opf-labs.org/display/SP/Home">SCAPE Wiki</a>
 <% end %>
 
-<%= render :partial => "layouts/skin_template" %>
+<%= render :partial => "layouts/myexperiment" %>

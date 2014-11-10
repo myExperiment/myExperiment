@@ -63,6 +63,13 @@
       </ul>
     </div><!--/.nav-collapse -->
   </div>
+  <% if @content_for_site_info_links %>
+      <div id="site_info_links">
+        <div class="container">
+          <%= yield :site_info_links %>
+        </div>
+      </div>
+  <% end %>
 </div>
 
 

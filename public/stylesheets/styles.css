@@ -147,10 +147,10 @@ li {
 }
 
 #site_info_links {
-  position: absolute;
-  padding-top: 6px;
-  text-align: center;
-  width: 100%;
+  padding: 4px;
+  font-size: 80%;
+  background-color: white;
+  border-top: 1px solid #ddd;
 }
 
 #user_links {
@@ -2675,4 +2675,9 @@ div.component-validity .failed {
 
 img.basic_icon {
     vertical-align: bottom;
+}
+
+span.divider {
+  color: #aaa;
+  margin: 0 8px;
 }

@@ -13,7 +13,13 @@
 %>
 
 <% content_for :site_info_links do %>
-
+    <%= link_to "Back to #{image_tag("/images/logo_tiny.png", :style=>"vertical-align: bottom")}", "/home" -%>
+    <span class="divider">|</span>
+    <%= link_to 'About BioVeL', 'http://www.biovel.eu/about-biovel', :target => :blank %>
+    <span class="divider">|</span>
+    <%= link_to 'BioVeL Portal', 'http://portal.biovel.eu', :target => :blank %>
+    <span class="divider">|</span>
+    <%= link_to 'Biodiversity Catalogue', 'https://www.biodiversitycatalogue.org/', :target => :blank %>
 <% end %>
 
 <% content_for :logo do %>
@@ -22,7 +28,6 @@
 
 <% content_for :tabs do %>
   <ul class="nav navbar-nav">
-    <li class="return_tab"><%= link_to 'Home', '/home'-%></li>
     <% biovel_tabs.each do |tab| %>
       <li <%= (tab['controller'] && controller.controller_name.match(tab['controller'])) ? 'id="selected_tabnav"' : '' %>>
         <%= link_to(tab['label'], tab['link']) -%>
