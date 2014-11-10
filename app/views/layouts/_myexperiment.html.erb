@@ -36,13 +36,13 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a id="logo" href="/">
-        <% if @content_for_logo %>
+      <% if @content_for_logo %>
           <%= yield :logo %>
-        <% else %>
-          <%= image_tag(Conf.site_logo) %>
-        <% end %>
-      </a>
+      <% else %>
+          <a id="logo" href="/">
+            <%= image_tag(Conf.site_logo) %>
+          </a>
+      <% end %>
     </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
