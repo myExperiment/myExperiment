@@ -442,10 +442,19 @@ UL.breadcrumb_list LI + LI:before {
 #home_container .stats {
   margin: 0;
   margin-bottom: 1em;
-  padding: 0.6em 1.2em;
+  padding: 1.2em;
   font-weight: bold;
   font-size: 100%;
   color: #333333;
+}
+
+#home_container .stats ul {
+  margin: 10px 0;
+  padding-left: 0;
+  list-style: none;
+}
+#home_container .stats ul li {
+  margin: 5px 0;
 }
 
 #home_container .left {
