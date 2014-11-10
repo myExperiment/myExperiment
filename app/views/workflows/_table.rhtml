@@ -53,7 +53,7 @@
           <div class="desc">
             <% unless workflow.image.nil? && workflow.svg.nil? -%>
               <div class="preview">
-                <%= link_to image_tag(workflow_preview_path(workflow, 'thumb'), :class => 'framed_nospace'), workflow_path(workflow) %>
+                <%= link_to image_tag(workflow_preview_path(workflow, 'thumb')), workflow_path(workflow) %>
               </div>
             <% end -%>
             <% if workflow.body and workflow.body.length > 0 -%>

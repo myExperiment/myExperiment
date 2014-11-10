@@ -2409,10 +2409,10 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 .resource_list_item .main_panel .desc {
-  border: 1px dotted #999999;
+  border: 1px solid #ddd;
   margin: 0.5em 0;
   padding: 0.4em 0.6em;
-  background-color: #FFFFCC;
+  background-color: #fff;
   text-align: left;
   line-height: 1.3;
   overflow: hidden;
