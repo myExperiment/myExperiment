@@ -2126,10 +2126,12 @@ table.topic td.tag_vote {
 }
 
 .pivot .pivot-label {
-  overflow: hidden;
   display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 84px;
 }
-
 .pivot .pivot-count {
   float: right;
 }
