@@ -2126,7 +2126,6 @@ table.topic td.tag_vote {
 }
 
 .pivot .pivot-label {
-  width: 90px;
   overflow: hidden;
   display: inline-block;
 }
