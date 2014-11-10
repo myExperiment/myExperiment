@@ -174,7 +174,6 @@ class SessionsController < ApplicationController
       rescue
       end
       respond_to do |format|
-        flash[:notice] = "Logged in successfully. Welcome to #{Conf.sitename}!"
         format.html { redirect_to(params[:return_to].blank? ? home_url : params[:return_to]) }
       end
     end
