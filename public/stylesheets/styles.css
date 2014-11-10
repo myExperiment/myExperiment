@@ -485,6 +485,7 @@ UL.breadcrumb_list LI + LI:before {
 }
 
 #home_container .announcements {
+  padding: 0;
   margin: 0;
   list-style: none;
 }
