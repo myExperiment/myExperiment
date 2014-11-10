@@ -1,9 +1,9 @@
-/* 
+/*
    This stylesheet relies on base stylesheets from the
    Yahoo UI library (http://developer.yahoo.com/yui/),
-   licensed under the BSD License 
-   
-   Note that for font-size, only use %ages according to: 
+   licensed under the BSD License
+
+   Note that for font-size, only use %ages according to:
    http://developer.yahoo.com/yui/fonts/#fontsize
 */
 html {
@@ -206,6 +206,7 @@ li {
     background-color: #eaeaea;
 }
 
+<<<<<<< HEAD
 #ft .funders {
     width:49%;
     float: left;
@@ -220,6 +221,36 @@ li {
   text-align: center;
   font-size: 77%;
   border-left: 1px dotted #999999;
+=======
+#ft td {
+	padding: 0.8em 2em;
+	vertical-align: top;
+}
+
+#ft table p {
+	padding: 0.3em 0;
+	line-height: 1;
+}
+
+#ft .left {
+	width: 251px;
+	text-align: left;
+	font-size: 93%;
+}
+
+#ft .middle {
+	width: 251px;
+	text-align: left;
+	font-size: 93%;
+	border-left: 1px dotted #999999;
+}
+
+#ft .right {
+	width: 194px;
+	text-align: center;
+	font-size: 77%;
+	border-left: 1px dotted #999999;
+>>>>>>> master
 }
 
 #ft .right p {
@@ -318,6 +349,10 @@ li {
   color: #FFFFFF;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 /* end css tabs nav */
 
 /* begin css breadcrumbs */
@@ -406,12 +441,24 @@ UL.breadcrumb_list LI + LI:before {
 }
 
 #home_container .stats {
+<<<<<<< HEAD
   margin: 0;
   margin-bottom: 1em;
   padding: 0.6em 1.2em;
   font-weight: bold;
   font-size: 100%;
   color: #333333;
+=======
+	background-color: #FFFFCC;
+	margin: 0;
+	margin-bottom: 1em;
+	padding: 0.6em 1.2em;
+	border: 1px solid #EED799;
+	font-weight: bold;
+	font-size: 100%;
+	color: #333333;
+	text-align: center;
+>>>>>>> master
 }
 
 #home_container .left {
@@ -589,11 +636,19 @@ UL.breadcrumb_list LI + LI:before {
 }
 
 .foldText {
+<<<<<<< HEAD
   font-weight: bold;
   text-align: left;
   padding: 0.5em;
   *padding: 0.3em;
   vertical-align: middle;
+=======
+	font-weight: bold;
+	text-align: left;
+	padding: 0.5em;
+	*padding: 0.3em;
+	vertical-align: middle;
+>>>>>>> master
 
 }
 
@@ -868,8 +923,12 @@ table.contributable:hover {
   border: 1px solid transparent;
 }
 
+<<<<<<< HEAD
 .network_banner:hover {
   /*border: 1px solid black;*/
+=======
+.network_banner:hover { /*border: 1px solid black;*/
+>>>>>>> master
 
 }
 
@@ -885,11 +944,19 @@ table.contributable:hover {
 }
 
 .sectionIcons li {
+<<<<<<< HEAD
   display: inline-block;
   vertical-align: middle;
   margin: 0;
   margin-left: 8px;
   /*border: 2px solid #F5F5F5;*/
+=======
+	display: inline-block;
+	vertical-align: middle;
+	margin: 0;
+	margin-left: 8px;
+	/*border: 2px solid #F5F5F5;*/
+>>>>>>> master
 }
 
 .sectionIcons li:hover {
@@ -956,6 +1023,7 @@ a.button_slim * {
 }
 
 .contribution_title {
+<<<<<<< HEAD
   margin-bottom: 0.6em;
 }
 
@@ -972,6 +1040,25 @@ a.button_slim * {
   text-align: center;
   margin-bottom: 1em;
   line-height: 1.5;
+=======
+	margin-bottom: 0.1em;
+    font-size: large;
+}
+
+.contribution_aftertitle {
+	color: #666666;
+	font-size: 85%;
+	text-align: center;
+	margin-bottom: 0.6em;
+}
+
+.contribution_mini_nav {
+	color: #999999;
+	font-size: 85%;
+	text-align: center;
+	margin-bottom: 1em;
+	line-height: 1.5;
+>>>>>>> master
 }
 
 .contribution_left_box {
@@ -1102,9 +1189,15 @@ a.button_slim * {
 }
 
 .contribution_version_box .title {
+<<<<<<< HEAD
   font-size: 108%;
   font-weight: bold;
   color: #660000;
+=======
+	font-size: 108%;
+	font-weight: bold;
+	color: #660000;
+>>>>>>> master
 }
 
 .contribution_version_selector_box {
@@ -1134,10 +1227,17 @@ a.button_slim * {
 }
 
 .contribution_version_selector_box .heading {
+<<<<<<< HEAD
   text-align: left;
   font-size: 108%;
   font-weight: bold;
   color: #333333;
+=======
+	text-align: left;
+	font-size: 108%;
+	font-weight: bold;
+	color: #333333;
+>>>>>>> master
 }
 
 .contribution_version_inner_box {
@@ -1149,8 +1249,13 @@ a.button_slim * {
 }
 
 .contribution_version_inner_box .option_box {
+<<<<<<< HEAD
   padding: 0.2em 0.6em;
   border: 1px solid #CCCCCC;
+=======
+	padding: 0.2em 0.6em;
+	border: 1px solid #CCCCCC;
+>>>>>>> master
 }
 
 .contribution_currentlicense {
@@ -1326,11 +1431,19 @@ a.tagsSelectorOn {
 }
 
 .message_box .subject {
+<<<<<<< HEAD
   font-size: 108%;
   background-color: #FFFFCC;
   border: 1px dotted #999999;
   padding: 0.2em 0.5em;
   margin-bottom: 1em;
+=======
+	font-size: 108%;
+	background-color: #FFFFCC;
+	border: 1px dotted #999999;
+	padding: 0.2em 0.5em;
+	margin-bottom: 1em;
+>>>>>>> master
 }
 
 .message_box .message {
@@ -1393,6 +1506,7 @@ div.auto_complete ul strong.highlight {
 }
 
 .box_standout {
+<<<<<<< HEAD
   padding: 0.5em 0.8em;
   border: 1px dotted #999999;
   background-color: #FFFFCC;
@@ -1402,6 +1516,17 @@ div.auto_complete ul strong.highlight {
   padding: 0.5em 0.8em;
   border: 2px solid #993333;
   background-color: #FFCCCC;
+=======
+	padding: 0.5em 0.8em;
+	border: 1px dotted #999999;
+	background-color: #FFFFCC;
+}
+
+.box_important {
+	padding: 0.5em 0.8em;
+	border: 2px solid #993333;
+	background-color: #FFCCCC;
+>>>>>>> master
 }
 
 .box_currentuser_specific {
@@ -1415,6 +1540,7 @@ div.auto_complete ul strong.highlight {
 }
 
 .box_dynamic_help {
+<<<<<<< HEAD
   padding: 0.4em 0.8em;
   border: 1px dotted #999999;
   background-color: #FFFFCC;
@@ -1434,6 +1560,27 @@ div.auto_complete ul strong.highlight {
   border-left: 5px solid #0066CC;
   padding-left: 0.8em;
   margin-left: 0.8em;
+=======
+	padding: 0.4em 0.8em;
+	border: 1px dotted #999999;
+	background-color: #FFFFCC;
+	font-size: 85%;
+	margin-bottom: 0.4em;
+}
+
+.box_inplace {
+	padding: 0.8em;
+	border-top: 1px dotted #999999;
+	border-bottom: 1px dotted #999999;
+}
+
+.box_editing {
+	padding: 0.5em;
+	background-color: #FFFFFF;
+	border-left: 5px solid #0066CC;
+	padding-left: 0.8em;
+	margin-left: 0.8em;
+>>>>>>> master
 }
 
 .box_editing_inner {
@@ -1448,12 +1595,21 @@ div.auto_complete ul strong.highlight {
 }
 
 .box_infotext {
+<<<<<<< HEAD
   font-size: 93%;
   background-color: #FFFFCC;
   margin: 0;
   padding: 0.5em 0.8em;
   border: 1px solid #EED799;
   line-height: 1.4;
+=======
+	font-size: 93%;
+	background-color: #FFFFCC;
+	margin: 0;
+	padding: 0.5em 0.8em;
+	border: 1px solid #EED799;
+	line-height: 1.4;
+>>>>>>> master
 }
 
 .derived_annotation_notice,
@@ -1490,9 +1646,15 @@ div.auto_complete ul strong.highlight {
 }
 
 .sub-heading {
+<<<<<<< HEAD
   text-align: center;
   font-size: 108%;
   margin-bottom: 0.5em;
+=======
+	text-align: center;
+	font-size: 108%;
+	margin-bottom: 0.5em;
+>>>>>>> master
 }
 
 .rest_table TABLE {
@@ -1700,9 +1862,16 @@ ol.outputs_list ol li {
 
 /* End outputs content list styles */
 
+<<<<<<< HEAD
 .default_timeline {
   width: 100%;
   height: 600px;
+=======
+
+.default_timeline {
+	width: 100%;
+	height: 600px;
+>>>>>>> master
 }
 
 table.simple {
@@ -1777,10 +1946,17 @@ table.simple td {
 }
 
 #packItems .inner {
+<<<<<<< HEAD
   color: #333333;
   margin: 0.3em 0 0 0.3em;
   padding: 0.2em 0 0.3em 0.7em;
   border-left: 3px solid #EEEEEE;
+=======
+	color: #333333;
+	margin: 0.3em 0 0 0.3em;
+	padding: 0.2em 0 0.3em 0.7em;
+	border-left: 3px solid #EEEEEE;
+>>>>>>> master
 }
 
 #packItems .comment {
@@ -1797,9 +1973,15 @@ table.simple td {
 }
 
 table.quick_add {
+<<<<<<< HEAD
   border-collapse: collapse;
   width: 99%;
   color: #333333;
+=======
+	border-collapse: collapse;
+	width: 99%;
+	color: #333333;
+>>>>>>> master
 }
 
 table.quick_add td {
@@ -1822,10 +2004,18 @@ table.quick_add td.label .inner {
   color: #990000;
   font-weight: bold;
 }
+<<<<<<< HEAD
 
 table.quick_add td.submit {
   text-align: left;
   width: 4em;
+=======
+
+
+table.quick_add td.submit {
+	text-align: left;
+	width: 4em;
+>>>>>>> master
 }
 
 .group_announcements {
@@ -1843,6 +2033,7 @@ table.quick_add td.submit {
 }
 
 .group_announcements .announcement_box {
+<<<<<<< HEAD
   border: 1px dotted #999999;
   margin: 0.1em 0;
   padding: 0.2em 0.5em;
@@ -1850,6 +2041,15 @@ table.quick_add td.submit {
   font-size: 85%;
   font-weight: bold;
   text-align: left;
+=======
+	border: 1px dotted #999999;
+	margin: 0.1em 0;
+	padding: 0.2em 0.5em;
+	background-color: #F9F9F9;
+	font-size: 85%;
+	font-weight: bold;
+	text-align: left;
+>>>>>>> master
 }
 
 .required {
@@ -1858,6 +2058,7 @@ table.quick_add td.submit {
 }
 
 .workflow_type_box {
+<<<<<<< HEAD
   border: 1px solid #DDDDDD;
   background-color: #FFFFCC;
   margin: 0 0 0.5em 0;
@@ -1866,6 +2067,16 @@ table.quick_add td.submit {
   color: #990000;
   font-weight: bold;
   text-align: center;
+=======
+	border: 1px solid #DDDDDD;
+	background-color: #FFFFCC;
+	margin: 0 0 0.5em 0;
+	padding: 0.4em 0.5em;
+	font-size: 77%;
+	color: #990000;
+	font-weight: bold;
+	text-align: center;
+>>>>>>> master
 }
 
 #version_info_box p {
@@ -2666,6 +2877,7 @@ div.component-validity .failed {
     background-image: url("/images/famfamfam_silk/cross.png");
 }
 
+<<<<<<< HEAD
 #commit-hash-colour {
     width: 12px;
     height: 12px;
@@ -2680,4 +2892,22 @@ img.basic_icon {
 span.divider {
   color: #aaa;
   margin: 0 8px;
+=======
+.inline {
+    display: inline;
+
+.main {
+  position:relative;
+  /* So we can position .createstuff */
+}
+
+.createstuff {
+  /* This is not going to flow nicely.. */
+  position: absolute;
+  top: 0.0em;
+  left: 0;
+  right: 0;
+  padding-right: 8em;
+  font-size: large;
+>>>>>>> master
 }

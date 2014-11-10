@@ -41,7 +41,7 @@
 
         <div id="author_me" class="credit_selection_box">
           <span style="font-size: 120%;line-height: 1.5;">Me (<%= name current_user %>)
-          <button onclick="addAuthor(1);return false">Add ></button>        </span>
+          <button onclick="addAuthor(1);return false">Add</button>        </span>
         </div>
 
         <!--- Credit a friend --->
@@ -54,7 +54,7 @@
               <option value="<%= f.id %>"><%= h(f.name) %></option>
             <% end %>
           </select>
-          <button id="add_friend_author" disabled="disabled" onclick="addAuthor(2);return false">Add ></button>
+          <button id="add_friend_author" disabled="disabled" onclick="addAuthor(2);return false">Add</button>
         </div>
 
         <!--- Credit a user --->
@@ -84,7 +84,7 @@
                                                                $('add_otheruser_author').disabled = false;
                                                              }),
                                   :indicator => 'add_user_indicator' -%>
-          <button id="add_otheruser_author" disabled="disabled" onclick="addAuthor(3);return false">Add ></button>
+          <button id="add_otheruser_author" disabled="disabled" onclick="addAuthor(3);return false">Add</button>
         </div>
 
         <!--- Credit a group --->
@@ -115,7 +115,7 @@
                                                                $('add_group_author').disabled = false;
                                                              }),
                                   :indicator => 'add_group_indicator' -%>
-          <button id="add_group_author" disabled="disabled" onclick="addAuthor(4);return false">Add ></button>
+          <button id="add_group_author" disabled="disabled" onclick="addAuthor(4);return false">Add</button>
         </div>
 			</div>
 
@@ -164,7 +164,7 @@
                                                                $('add_workflow_attrib').disabled = false;
                                                              }),
                                   :indicator => 'add_workflow_indicator' -%>
-          <button id="add_workflow_attrib" disabled="disabled" onclick="addAttribution('existing_workflow') ;return false">Add ></button>
+          <button id="add_workflow_attrib" disabled="disabled" onclick="addAttribution('existing_workflow') ;return false">Add</button>
         </div>
 
         <!--- Attribute a file --->
@@ -195,7 +195,7 @@
                                                                $('add_file_attrib').disabled = false;
                                                              }),
                                   :indicator => 'add_file_indicator' -%>
-          <button id="add_file_attrib" disabled="disabled" onclick="addAttribution('existing_file');return false">Add ></button>
+          <button id="add_file_attrib" disabled="disabled" onclick="addAttribution('existing_file');return false">Add</button>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 <!-- Site Announcements -->
 <% cache(:controller => 'home_cache', :action => 'announcements') do -%>
+<<<<<<< HEAD
     <% unless (announcements = Announcement.latest).empty? %>
         <div class="box">
           <div class="title">
@@ -23,3 +24,33 @@
         </div>
     <% end %>
 <% end %>
+=======
+    <% unless (announcements = Announcement.latest(5, 6.months.ago)).empty? %>
+        <div class="box" style="margin-bottom: 0">
+          <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+          <div class="title">
+            <%= feed_icon_tag "Site Announcements", announcements_path(:format => :rss) %>
+            <%= link_to "Site Announcements", announcements_url %>
+          </div>
+          <div class="content">
+            <ul class="announcements">
+              <% announcements.each do |a| %>
+                  <li>
+                    <p class="box_standout" style="font-size: 93%; padding: 0.2em 0.5em; margin: 0.1em 0; font-weight: bold;">
+                      <%= link_to h(a.title), announcement_url(a) %>
+                    </p>
+                    <p style="font-size: 77%; padding-left: 1.5em;"><b><%= datetime a.created_at, false %></b> by <b><%= name a.user %></b></p>
+                  </li>
+              <% end %>
+            </ul>
+          </div>
+          <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+        </div>
+    <% end %>
+<% end %>
+<% if admin? %>
+    <ul class="sectionIcons">
+      <li><%= icon('announcement', new_announcement_url, nil, nil, 'Make Announcement')%></li>
+    </ul>
+<% end %>
+>>>>>>> master
