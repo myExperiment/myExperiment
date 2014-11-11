@@ -505,7 +505,7 @@ UL.breadcrumb_list LI + LI:before {
 
 #home_container .announcements li {
   list-style-type: none;
-  margin: 1em 0;
+  margin: 0.5em 0;
 }
 
 #home_container .list {
