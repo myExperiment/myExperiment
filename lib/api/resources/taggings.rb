@@ -20,7 +20,7 @@ def tagging_aux(action, opts)
     when 'create';
       return rest_response(401, :reason => "Not authorised to create a tagging") unless Authorization.check('create', ActsAsTaggableOn::Tagging, opts[:user], subject)
 
-      ob = ActsAsTaggableOn::Tagging.new(:user => opts[:user])
+      ob = ActsAsTaggableOn::Tagging.new(:tagger => opts[:user])
     when 'view', 'edit', 'destroy';
       ob, error = obtain_rest_resource('ActsAsTaggableOn::Tagging', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else

@@ -115,7 +115,7 @@ def post_component(opts)
 
     # Add the tag
     tag = ActsAsTaggableOn::Tag.find_or_create_by_name('component')
-    ActsAsTaggableOn::Tagging.create(:tag => tag, :taggable => component, :user => opts[:user])
+    ActsAsTaggableOn::Tagging.create(:tag => tag, :taggable => component, :tagger => opts[:user])
   end
 
   rest_get_request(component, opts[:user], { "id" => component.id.to_s })
@@ -205,7 +205,7 @@ def post_component_family(opts)
 
   # Add the tag
   tag = ActsAsTaggableOn::Tag.find_or_create_by_name('component family')
-  ActsAsTaggableOn::Tagging.create(:tag => tag, :taggable => family, :user => opts[:user])
+  ActsAsTaggableOn::Tagging.create(:tag => tag, :taggable => family, :tagger => opts[:user])
 
   # Return resource
   rest_get_request(family, opts[:user], { "id" => family.id.to_s })
@@ -287,7 +287,7 @@ def post_component_profile(opts)
 
   # Add the tag
   tag = ActsAsTaggableOn::Tag.find_or_create_by_name('component profile')
-  ActsAsTaggableOn::Tagging.create(:tag => tag, :taggable => profile, :user => opts[:user])
+  ActsAsTaggableOn::Tagging.create(:tag => tag, :taggable => profile, :tagger => opts[:user])
 
   # Return resource
   rest_get_request(profile, opts[:user], { "id" => profile.id.to_s })
