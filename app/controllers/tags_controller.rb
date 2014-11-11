@@ -45,7 +45,7 @@ class TagsController < ApplicationController
       text = params[:tags_input]
     end
     
-    @tags = Tag.find(:all, 
+    @tags = ActsAsTaggableOn::Tag.find(:all,
                      :conditions => ["LOWER(name) LIKE ?", text.downcase + '%'], 
                      :order => 'name ASC', 
                      :limit => 20, 
@@ -56,11 +56,11 @@ class TagsController < ApplicationController
 protected
 
   def find_tags
-    @tags = Tag.find(:all, :order => "name ASC", :conditions => "taggings_count > 0")
+    @tags = ActsAsTaggableOn::Tag.find(:all, :order => "name ASC", :conditions => "taggings_count > 0")
   end
   
   def find_tag_and_tagged_with
-    @tag = Tag.find_by_id(params[:id])
+    @tag = ActsAsTaggableOn::Tag.find_by_id(params[:id])
     
     if @tag
       @tagged_with = []
@@ -69,7 +69,7 @@ protected
       
       if @internal_type
         # Filter by the type
-        taggings = Tagging.find(:all, 
+        taggings = ActsAsTaggableOn::Tagging.find(:all,
                                  :conditions => [ "tag_id = ? AND taggable_type = ?", @tag.id, @internal_type],
                                  :order => "taggable_type DESC") 
       else

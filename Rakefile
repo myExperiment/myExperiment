@@ -283,7 +283,7 @@ task "myexp:activities:create" do
     end
   end
 
-  Tagging.all.each do |tagging|
+  ActsAsTaggableOn::Tagging.all.each do |tagging|
     activities += Activity.new_activities(:subject => tagging.user, :action => 'create', :object => tagging, :timestamp => tagging.created_at)
   end
 

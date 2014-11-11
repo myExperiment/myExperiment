@@ -873,7 +873,7 @@ class ApiControllerTest < ActionController::TestCase
 
     # post a tagging
 
-    existing_taggings = Tagging.find(:all)
+    existing_taggings = ActsAsTaggableOn::Tagging.find(:all)
 
     existing_activities = Activity.all
 
@@ -892,7 +892,7 @@ class ApiControllerTest < ActionController::TestCase
     assert_equal("create", new_activities.first.action)
     assert_equal("my test tag", new_activities.first.objekt.tag.name)
 
-    extra_taggings = Tagging.find(:all) - existing_taggings 
+    extra_taggings = ActsAsTaggableOn::Tagging.find(:all) - existing_taggings
     
     assert_equal(extra_taggings.length, 1)
 

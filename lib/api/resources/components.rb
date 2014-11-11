@@ -114,8 +114,8 @@ def post_component(opts)
     PackContributableEntry.create(:pack => family, :contributable => component, :user => opts[:user])
 
     # Add the tag
-    tag = Tag.find_or_create_by_name('component')
-    Tagging.create(:tag => tag, :taggable => component, :user => opts[:user])
+    tag = ActsAsTaggableOn::Tag.find_or_create_by_name('component')
+    ActsAsTaggableOn::Tagging.create(:tag => tag, :taggable => component, :user => opts[:user])
   end
 
   rest_get_request(component, opts[:user], { "id" => component.id.to_s })
@@ -204,8 +204,8 @@ def post_component_family(opts)
   end
 
   # Add the tag
-  tag = Tag.find_or_create_by_name('component family')
-  Tagging.create(:tag => tag, :taggable => family, :user => opts[:user])
+  tag = ActsAsTaggableOn::Tag.find_or_create_by_name('component family')
+  ActsAsTaggableOn::Tagging.create(:tag => tag, :taggable => family, :user => opts[:user])
 
   # Return resource
   rest_get_request(family, opts[:user], { "id" => family.id.to_s })
@@ -286,8 +286,8 @@ def post_component_profile(opts)
   profile = resource_from_uri(response[:xml].find_first('//file')['resource'])
 
   # Add the tag
-  tag = Tag.find_or_create_by_name('component profile')
-  Tagging.create(:tag => tag, :taggable => profile, :user => opts[:user])
+  tag = ActsAsTaggableOn::Tag.find_or_create_by_name('component profile')
+  ActsAsTaggableOn::Tagging.create(:tag => tag, :taggable => profile, :user => opts[:user])
 
   # Return resource
   rest_get_request(profile, opts[:user], { "id" => profile.id.to_s })

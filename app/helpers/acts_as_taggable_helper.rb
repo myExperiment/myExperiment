@@ -12,7 +12,7 @@ module ActsAsTaggableHelper
     l_option = limit ? { :limit => limit } : { }
     
     # TODO: add options to specify different limits and sorts
-    tags = Tag.find(:all, l_option.merge({ :order => 'taggings_count DESC'})).sort_by(&:name)
+    tags = ActsAsTaggableOn::Tag.find(:all, l_option.merge({ :order => 'taggings_count DESC'})).sort_by(&:name)
     
     return tag_cloud_from_collection(tags, true)
   end
@@ -58,9 +58,9 @@ module ActsAsTaggableHelper
         end
       else
         unless link_to_type.blank?
-          html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}?type=#{link_to_type}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{h(tag.name)}</a>"
+          html << "<a href='#{tag_url(ActsAsTaggableOn::Tag.find(:first, :conditions => ["name = ?", tag.name]))}?type=#{link_to_type}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{h(tag.name)}</a>"
         else
-          html << "<a href='#{tag_url(Tag.find(:first, :conditions => ["name = ?", tag.name]))}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{h(tag.name)}</a>"
+          html << "<a href='#{tag_url(ActsAsTaggableOn::Tag.find(:first, :conditions => ["name = ?", tag.name]))}' class='#{classes[(tag.taggings_count - min) / divisor]}'>#{h(tag.name)}</a>"
         end
       end
       

@@ -324,7 +324,7 @@ class Workflow < ActiveRecord::Base
 
     words = text.split(/[^a-zA-Z0-9]+/).uniq
 
-    all_tags = Tag.find(:all).select do |t| t.taggings_count > 0 end.map do |t| t.name end
+    all_tags = ActsAsTaggableOn::Tag.find(:all).select do |t| t.taggings_count > 0 end.map do |t| t.name end
 
     candidates = words - (words - all_tags)
 

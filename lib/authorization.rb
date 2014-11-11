@@ -144,7 +144,7 @@ module Authorization
             return !user.nil? && object.user == user
         end
 
-      when "Tagging"
+      when "ActsAsTaggableOn::Tagging"
         case action
           when "create"
 

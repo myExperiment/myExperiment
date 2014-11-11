@@ -625,7 +625,7 @@ module ApplicationHelper
       sql+=" LIMIT #{limit}"
     end 
 
-    tags=Tag.find_by_sql [ sql, type.capitalize ]
+    tags=ActsAsTaggableOn::Tag.find_by_sql [ sql, type.capitalize ]
 
     return tags
   end

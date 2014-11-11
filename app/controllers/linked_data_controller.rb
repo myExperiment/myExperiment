@@ -155,8 +155,8 @@ class LinkedDataController < ApplicationController
 
   def taggings
 
-    tag     = Tag.find_by_id(params[:tag_id])
-    tagging = Tagging.find_by_id(params[:tagging_id])
+    tag     = ActsAsTaggableOn::Tag.find_by_id(params[:tag_id])
+    tagging = ActsAsTaggableOn::Tagging.find_by_id(params[:tagging_id])
 
     return not_found if tag.nil?
     return not_found if tagging.nil?

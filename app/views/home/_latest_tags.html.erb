@@ -5,7 +5,7 @@
         Latest Tags
       </div>
       <div class="content">
-        <% unless (taggings = Tagging.latest(20)).empty? %>
+        <% unless (taggings = ActsAsTaggableOn::Tagging.latest(20)).empty? %>
             <ul class="list" style="font-size: 85%;">
               <% taggings.each do |t| %>
                   <% if Authorization.check("view", t.taggable, current_user) %>

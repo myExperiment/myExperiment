@@ -114,7 +114,7 @@ protected
               if tags.key? key
                 tags[key].taggings_count = tags[key].taggings_count.to_i + value.taggings_count.to_i
               else
-                tags[key] = Tag.new(:name => key, :taggings_count => value.taggings_count)
+                tags[key] = ActsAsTaggableOn::Tag.new(:name => key, :taggings_count => value.taggings_count)
               end
             }
           end
@@ -130,7 +130,7 @@ protected
               if tags.key? t.name
                 tags[t.name].taggings_count = tags[t.name].taggings_count.to_i + 1
               else
-                tags[t.name] = Tag.new(:name => t.name, :taggings_count => 1)
+                tags[t.name] = ActsAsTaggableOn::Tag.new(:name => t.name, :taggings_count => 1)
               end
             end
           end

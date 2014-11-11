@@ -18,11 +18,11 @@ def tagging_aux(action, opts)
 
   case action
     when 'create';
-      return rest_response(401, :reason => "Not authorised to create a tagging") unless Authorization.check('create', Tagging, opts[:user], subject)
+      return rest_response(401, :reason => "Not authorised to create a tagging") unless Authorization.check('create', ActsAsTaggableOn::Tagging, opts[:user], subject)
 
-      ob = Tagging.new(:user => opts[:user])
+      ob = ActsAsTaggableOn::Tagging.new(:user => opts[:user])
     when 'view', 'edit', 'destroy';
-      ob, error = obtain_rest_resource('Tagging', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
+      ob, error = obtain_rest_resource('ActsAsTaggableOn::Tagging', opts[:query]['id'], opts[:query]['version'], opts[:user], action)
     else
       raise "Invalid action '#{action}'"
   end
@@ -39,7 +39,7 @@ def tagging_aux(action, opts)
     ob.tag      = tag     if tag
 
     if subject
-      return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.check(action, Tagging, opts[:user], subject)
+      return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.check(action, ActsAsTaggableOn::Tagging, opts[:user], subject)
       ob.taggable = subject
     end
 
@@ -67,7 +67,7 @@ def get_tagged(opts)
 
   return rest_response(400, :reason => "Did not specify a tag") if opts[:query]['tag'].nil?
 
-  tag = Tag.find_by_name(opts[:query]['tag'])
+  tag = ActsAsTaggableOn::Tag.find_by_name(opts[:query]['tag'])
 
   obs = tag ? tag.tagged : []
 
@@ -97,7 +97,7 @@ def tag_cloud(opts)
     type = 'Blob'    if type == 'File'
   end
 
-  tags = Tag.find_by_tag_count(num, type)
+  tags = ActsAsTaggableOn::Tag.find_by_tag_count(num, type)
 
   doc = LibXML::XML::Document.new()
 

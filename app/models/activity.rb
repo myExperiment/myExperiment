@@ -101,7 +101,7 @@ class Activity < ActiveRecord::Base
         contexts << object.reviewable
         auth = object.reviewable
 
-      when "Tagging"
+      when "ActsAsTaggableOn::Tagging"
 
         contexts << object.taggable
         auth = object.taggable

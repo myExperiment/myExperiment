@@ -570,7 +570,7 @@ def rest_index_request(req_uri, format, rules, user, query)
   end
 
   if query['tag']
-    tag = Tag.find_by_name(query['tag'])
+    tag = ActsAsTaggableOn::Tag.find_by_name(query['tag'])
 
     if tag
       obs = (tag.taggings.select do |t| t.taggable_type == model_name.camelize end).map do |t| t.taggable end
@@ -673,7 +673,7 @@ def rest_resource_uri(ob)
     when 'Comment';                return "#{rest_resource_uri(ob.commentable)}/comments/#{ob.id}"
     when 'Bookmark';               return nil
     when 'Rating';                 return "#{rest_resource_uri(ob.rateable)}/ratings/#{ob.id}"
-    when 'Tag';                    return tag_url(ob)
+    when 'ActsAsTaggableOn::Tag';  return tag_url(ob)
     when 'Picture';                return user_picture_url(ob.owner, ob)
     when 'Message';                return message_url(ob)
     when 'Citation';               return workflow_citation_url(ob.workflow, ob)
@@ -689,7 +689,7 @@ def rest_resource_uri(ob)
     when 'Relationship';           return nil
     when 'Creditation';            return nil
     when 'Attribution';            return nil
-    when 'Tagging';                return nil
+    when 'ActsAsTaggableOn::Tagging';return nil
     when 'WorkflowVersion';        return "#{rest_resource_uri(ob.workflow)}?version=#{ob.version}"
     when 'BlobVersion';            return "#{rest_resource_uri(ob.blob)}?version=#{ob.version}"
     when 'PackVersion';            return pack_version_url(ob, ob.version)
@@ -712,7 +712,7 @@ def rest_access_uri(ob)
     when 'Comment';                return "#{base}/comment.xml?id=#{ob.id}"
     when 'Bookmark';               return "#{base}/favourite.xml?id=#{ob.id}"
     when 'Rating';                 return "#{base}/rating.xml?id=#{ob.id}"
-    when 'Tag';                    return "#{base}/tag.xml?id=#{ob.id}"
+    when 'ActsAsTaggableOn::Tag';  return "#{base}/tag.xml?id=#{ob.id}"
     when 'Picture';                return "#{base}/picture.xml?id=#{ob.id}"
     when 'Message';                return "#{base}/message.xml?id=#{ob.id}"
     when 'Citation';               return "#{base}/citation.xml?id=#{ob.id}"
@@ -721,7 +721,7 @@ def rest_access_uri(ob)
     when 'Download';               return "#{base}/download.xml?id=#{ob.id}"
     when 'PackContributableEntry'; return "#{base}/internal-pack-item.xml?id=#{ob.id}"
     when 'PackRemoteEntry';        return "#{base}/external-pack-item.xml?id=#{ob.id}"
-    when 'Tagging';                return "#{base}/tagging.xml?id=#{ob.id}"
+    when 'ActsAsTaggableOn::Tagging';return "#{base}/tagging.xml?id=#{ob.id}"
     when 'ContentType';            return "#{base}/type.xml?id=#{ob.id}"
     when 'License';                return "#{base}/license.xml?id=#{ob.id}"
     when 'CurationEvent';          return "#{base}/curation-event.xml?id=#{ob.id}"
@@ -753,8 +753,8 @@ def rest_object_tag_text(ob)
     when 'Creditation';            return 'credit'
     when 'Citation';               return 'citation'
     when 'Announcement';           return 'announcement'
-    when 'Tag';                    return 'tag'
-    when 'Tagging';                return 'tagging'
+    when 'ActsAsTaggableOn::Tag';  return 'tag'
+    when 'ActsAsTaggableOn::Tagging';return 'tagging'
     when 'Pack';                   return 'pack'
     when 'Download';               return 'download'
     when 'PackContributableEntry'; return rest_object_tag_text(ob.contributable)
@@ -787,8 +787,8 @@ def rest_object_label_text(ob)
     when 'Creditation';            return ''
     when 'Citation';               return ob.title
     when 'Announcement';           return ob.title
-    when 'Tag';                    return ob.name
-    when 'Tagging';                return ob.tag.name
+    when 'ActsAsTaggableOn::Tag';  return ob.name
+    when 'ActsAsTaggableOn::Tagging';return ob.tag.name
     when 'Pack';                   return ob.title
     when 'Download';               return ''
     when 'PackContributableEntry'; return rest_object_label_text(ob.contributable)
@@ -838,7 +838,7 @@ def  parse_resource_uri(str)
   return [User, $1, is_local]           if uri.path =~ /^\/users\/([\d]+)$/
   return [Review, $1, is_local]         if uri.path =~ /^\/[^\/]+\/[\d]+\/reviews\/([\d]+)$/
   return [Comment, $1, is_local]        if uri.path =~ /^\/[^\/]+\/[\d]+\/comments\/([\d]+)$/
-  return [Tag, $1, is_local]            if uri.path =~ /^\/tags\/([\d]+)$/
+  return [ActsAsTaggableOn::Tag, $1, is_local]            if uri.path =~ /^\/tags\/([\d]+)$/
   return [Picture, $1, is_local]        if uri.path =~ /^\/users\/[\d]+\/pictures\/([\d]+)$/
   return [Message, $1, is_local]        if uri.path =~ /^\/messages\/([\d]+)$/
   return [Citation, $1, is_local]       if uri.path =~ /^\/[^\/]+\/[\d]+\/citations\/([\d]+)$/
