@@ -764,7 +764,7 @@ protected
   end
 
   def find_user
-    @user = User.find_by_id(params[:id], :include => [ :profile, :tags ])
+    @user = User.find_by_id(params[:id], :include => [ :profile, :owned_tags ])
 
     if @user.nil? || !@user.activated?
       render_404("User not found, or not activated.")
