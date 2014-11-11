@@ -6,67 +6,67 @@
 
 <div class="pivot">
   <div class="left">
-    <% if @pivot[:filters].length > 0 %>
-      <div class="category">Search filter terms</div>
-      <div class="search_filters">
-        <form action="<%= url_with_params(request.path, request.query_parameters) -%>" method="GET">
-          <div class="filter_search_box">
-            <input class="query" name="filter_query" value="<%= params[:filter_query] -%>" />
-            <% @pivot[:filter_query_url].each do |key, value| %>
+    <div class="category">Search filter terms</div>
+    <div class="search_filters">
+      <form action="<%= url_with_params(request.path, request.query_parameters) -%>" method="GET">
+        <div class="filter_search_box">
+          <input class="query" name="filter_query" value="<%= params[:filter_query] -%>" />
+          <% @pivot[:filter_query_url].each do |key, value| %>
               <input name="<%= key -%>" type="hidden" value="<%= value.gsub('"', '&quot;') -%>" />
-            <% end %>
-            <% if @pivot[:cancel_filter_query_url] %>
+          <% end %>
+          <% if @pivot[:cancel_filter_query_url] %>
               <%= link_to('<img src="/images/famfamfam_silk/cross.png" />',
                           url_with_params(request.path, @pivot[:cancel_filter_query_url])) -%>
-            <% else %>
-              <input class="submit" type="image" src="/images/famfamfam_silk/magnifier.png" name="submit" />
-            <% end %>
-          </div>
-        </form>
-      </div>
-      <div class="filters">
-        <% @pivot[:filters].each do |filter| %>
-          <% query_name = "#{filter[:query_option]}_query" %>
-          <% fold_name_1 = "FOLD_#{filter["query_option"]}_1" %>
-          <% fold_name_2 = "FOLD_#{filter["query_option"]}_2" %>
-
-          <% if @pivot[:cancel_filter_query_url] %>
-            <div class="category"><%= filter["title"].capitalize -%> results</div>
           <% else %>
-            <div class="category">Filter by <%= filter["title"] -%></div>
+              <input class="submit" type="image" src="/images/famfamfam_silk/magnifier.png" name="submit" />
           <% end %>
-          <div id="<%= query_name -%>" style="display: <%= @pivot[:cancel_filter_query_url] ? "block" : "none" -%>">
-          </div>
-          <div class="filter">
-            <% filter_sets(filter[:objects]).each do |set, visible| %>
-              <div class="options <%= visible ? "" : "extra_options #{fold_name_2}" -%>">
-                <% set.each do |object| %>
-                  <div title='<%= h(object[:plain_label]) -%>'<%= object[:selected] ? ' class="selected"' : '' -%>>
-                    <input class='pivot-checkbox' type='checkbox' onclick='javascript:location = <%= url_with_params(request.path, object[:checkbox_uri]).to_json -%>; return false;' <% if object[:selected] %> checked='checked' <% end %> />
-                    <a class='pivot-label' href="<%= url_with_params(request.path, object[:label_uri]) -%>">
-                      <span class='truncate'><%= h object[:label] -%></span>
-                    </a>
-                    <div class='pivot-count'><%= object[:count] -%></div>
-                  </div>
-                <% end %>
-              </div>
-            <% end %>
-
-            <% if (filter[:objects].length > Conf.initial_filter_size) %>
-              <a class="more" href="#" id="<%= fold_name_1 -%>" style="display: none" onclick="$('<%= fold_name_1 %>').style.display = 'none'; var els = document.getElementsByClassName('<%= fold_name_2 %>'); for (var i = 0; i < els.length; i++) { els[i].style.display = 'block'; els[i].style.maxHeight = '1000px'; }; return false;">More...</a>
-            <% end %>
-            <script>document.getElementById("<%= fold_name_1 -%>").style.display = "block";</script>
-            <script>var els = document.getElementsByClassName("<%= fold_name_2 %>"); for (var i = 0; i < els.length; i++) { els[i].style.maxHeight = "0px"; }</script>
-          </div>
-        <% end %>
-      </div>
-      <% if @pivot[:cancel_filter_query_url] && @pivot[:filters].empty? %>
-        <div class="no-filter-query-results">
-          Your search did not match any filter terms.
         </div>
-      <% end %>
+      </form>
+    </div>
+    <% if @pivot[:filters].length > 0 %>
+        <div class="filters">
+          <% @pivot[:filters].each do |filter| %>
+              <% query_name = "#{filter[:query_option]}_query" %>
+              <% fold_name_1 = "FOLD_#{filter["query_option"]}_1" %>
+              <% fold_name_2 = "FOLD_#{filter["query_option"]}_2" %>
+
+              <% if @pivot[:cancel_filter_query_url] %>
+                  <div class="category"><%= filter["title"].capitalize -%> results</div>
+              <% else %>
+                  <div class="category">Filter by <%= filter["title"] -%></div>
+              <% end %>
+              <div id="<%= query_name -%>" style="display: <%= @pivot[:cancel_filter_query_url] ? "block" : "none" -%>">
+              </div>
+              <div class="filter">
+                <% filter_sets(filter[:objects]).each do |set, visible| %>
+                    <div class="options <%= visible ? "" : "extra_options #{fold_name_2}" -%>">
+                      <% set.each do |object| %>
+                          <div title='<%= h(object[:plain_label]) -%>'<%= object[:selected] ? ' class="selected"' : '' -%>>
+                            <input class='pivot-checkbox' type='checkbox' onclick='javascript:location = <%= url_with_params(request.path, object[:checkbox_uri]).to_json -%>; return false;' <% if object[:selected] %> checked='checked' <% end %> />
+                            <a class='pivot-label' href="<%= url_with_params(request.path, object[:label_uri]) -%>">
+                              <span class='truncate'><%= h object[:label] -%></span>
+                            </a>
+                            <div class='pivot-count'><%= object[:count] -%></div>
+                          </div>
+                      <% end %>
+                    </div>
+                <% end %>
+
+                <% if (filter[:objects].length > Conf.initial_filter_size) %>
+                    <a class="more" href="#" id="<%= fold_name_1 -%>" style="display: none" onclick="$('<%= fold_name_1 %>').style.display = 'none'; var els = document.getElementsByClassName('<%= fold_name_2 %>'); for (var i = 0; i < els.length; i++) { els[i].style.display = 'block'; els[i].style.maxHeight = '1000px'; }; return false;">More...</a>
+                <% end %>
+                <script>document.getElementById("<%= fold_name_1 -%>").style.display = "block";</script>
+                <script>var els = document.getElementsByClassName("<%= fold_name_2 %>"); for (var i = 0; i < els.length; i++) { els[i].style.maxHeight = "0px"; }</script>
+              </div>
+          <% end %>
+        </div>
+        <% if @pivot[:cancel_filter_query_url] && @pivot[:filters].empty? %>
+            <div class="no-filter-query-results">
+              Your search did not match any filter terms.
+            </div>
+        <% end %>
     <% else %>
-      <div class="category">No search filters available.</div>
+        <div class="category">No search filters available.</div>
     <% end %>
   </div>
   <div class="main">
