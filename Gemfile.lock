@@ -5,10 +5,10 @@ GIT
     white_list (1.0.0)
 
 GIT
-  remote: git://github.com/SysMO-DB/white_list_formatted_content.git
-  revision: c02bea47e477c1ac59e45a2a8a51aaa2c8e6b72f
+  remote: git://github.com/myExperiment/white_list_formatted_content.git
+  revision: 63e57e9116f6fb29effce690e14e319e5300244a
   specs:
-    white_list_formatted_content (1.0.0)
+    white_list_formatted_content (1.0.1)
 
 GEM
   remote: http://rubygems.org/
