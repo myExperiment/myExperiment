@@ -58,6 +58,10 @@ class User < ActiveRecord::Base
   end
   
   acts_as_tagger
+
+  alias_method(:tags, :owned_tags)
+  alias_method(:taggings, :owned_taggings)
+
   acts_as_bookmarker
   
   has_many :ratings,
