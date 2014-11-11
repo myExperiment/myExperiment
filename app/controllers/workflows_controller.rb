@@ -95,7 +95,7 @@ class WorkflowsController < ApplicationController
   # POST /workflows/1;tag
   def tag
 
-    Tag.parse(convert_tags_to_gem_format(params[:tag_list])).each do |name|
+    ActsAsTaggableOn::Tag.parse(convert_tags_to_gem_format(params[:tag_list])).each do |name|
       @workflow.add_tag(name, current_user)
     end
 
