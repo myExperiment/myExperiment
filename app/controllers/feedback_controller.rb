@@ -16,7 +16,7 @@ class FeedbackController < ApplicationController
     if logged_in?
       from_user = params[:from].blank? ? current_user.name : params[:from]
       from_user += ' (' + (!params[:email].blank? ? params[:email] : 'no email') + ')'
-      Mailer.deliver_feedback(from_user, params[:subject], params[:content]) #, current_user)
+      Mailer.feedback(from_user, params[:subject], params[:content]).deliver #, current_user)
       
       respond_to do |format|
         flash[:notice] = 'Your feedback has been submitted. Thank you very much.'
@@ -30,7 +30,7 @@ class FeedbackController < ApplicationController
         end
       else
         from_user = ( params[:from].blank? ? 'no from': params[:from] ) + ' (' + (!params[:email].blank? ? params[:email] : 'no email') + ')';
-        Mailer.deliver_feedback(from_user, params[:subject], params[:content])
+        Mailer.feedback(from_user, params[:subject], params[:content]).deliver
     
         respond_to do |format|
           flash[:notice] = 'Your feedback has been submitted. Thank you very much.'

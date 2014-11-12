@@ -188,14 +188,10 @@ class UsersController < ApplicationController
           end
         end
 
-        begin
-            # DO NOT log in user yet, since account needs to be validated and activated first (through email).
-            if !spammer
-              @user.send_email_confirmation_email
-              sent_email = true
-            end
-        rescue
-          @user.errors.add(:base, "Unable to send confirmation email")
+        # DO NOT log in user yet, since account needs to be validated and activated first (through email).
+        if !spammer
+          @user.send_email_confirmation_email
+          sent_email = true
         end
       end
 
@@ -343,7 +339,7 @@ class UsersController < ApplicationController
           user.reset_password_code_until = 1.day.from_now
           user.reset_password_code =  Digest::SHA1.hexdigest( "#{user.email}#{Time.now.to_s.split(//).sort_by {rand}.join}" )
           user.save!
-          Mailer.deliver_forgot_password(user)
+          Mailer.forgot_password(user).deliver
           flash[:notice] = "Instructions on how to reset your password have been sent to #{user.email}"
           format.html { render :action => "forgot_password" }
         else

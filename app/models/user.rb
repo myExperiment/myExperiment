@@ -627,11 +627,11 @@ class User < ActiveRecord::Base
   end
 
   def send_email_confirmation_email
-    Mailer.deliver_account_confirmation(self, email_confirmation_hash)
+    Mailer.account_confirmation(self, email_confirmation_hash).deliver
   end
   
   def send_update_email_confirmation
-    Mailer.deliver_update_email_address(self, email_confirmation_hash)
+    Mailer.update_email_address(self, email_confirmation_hash).deliver
   end
 
   def email_confirmation_hash
