@@ -11,9 +11,6 @@
 	</b></div>
 <% end %>
 
-
-<% none_text = '<font class="none_text">Not specified</font>' -%>
-
 <% if mine? @user and @user.unconfirmed_email.blank? and @user.email.blank? %>
 	<div id="email_notice" class="box_standout" style="color: #333333; font-weight: bold; margin-bottom: 1.5em;">
 		<%= link_to_function image_tag("close.gif", :style => "float: right;"), 
@@ -284,7 +281,7 @@
 	<% unless @user.profile.nil? %>
 	  <div class="box_standout">
 	    <% unless @user.profile.body.blank? %>
-				<%= @user.profile.body_html %>
+				<%= @user.profile.body_html.html_safe %>
 			<% else %>
 				<p class="none_text">Description/summary not set</p>
 			<% end %>	

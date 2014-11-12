@@ -54,7 +54,7 @@
 	<p><b>Message</b></p>
 	<div class="message">
 		<% unless @message.body.blank? %>
-			<%= @message.body_html %>
+			<%= @message.body_html.html_safe %>
 		<% else %>
 			<p class="none_text">No message body</p>
 		<% end %>

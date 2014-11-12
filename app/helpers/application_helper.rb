@@ -1279,4 +1279,8 @@ module ApplicationHelper
     url + '?' + params.delete_if {|k,v| v.nil? || v.empty?}.to_query
   end
 
+  def none_text
+    '<font class="none_text">Not specified</font>'.html_safe
+  end
+
 end
