@@ -236,7 +236,7 @@ MyExperiment::Application.routes.draw do
       end
     end
 
-    resources :policies
+    resources :policies, :controller => 'group_policies'
 
     resources :activities do
       member do
