@@ -42,8 +42,7 @@ module Finn
         private
 
         def resource_uri
-          base_uri = URI(Conf.base_uri)
-          u = Rails.application.routes.url_helpers.send("#{self.class.name.underscore}_url".to_sym, self, :host => "#{base_uri.host}:#{base_uri.port}")
+          u = Rails.application.routes.url_helpers.send("#{self.class.name.underscore}_url".to_sym, self, :host => Conf.hostname)
           "<#{u}>"
         end
 
