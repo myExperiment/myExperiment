@@ -5,6 +5,13 @@ GIT
     white_list (1.0.0)
 
 GIT
+  remote: git://github.com/marcandre/auto_complete.git
+  revision: 86ec4c21c2736ebe8f16f3684afb457fe25ae2d5
+  specs:
+    auto_complete (0.0.2)
+      rails (>= 3.1)
+
+GIT
   remote: git://github.com/myExperiment/white_list_formatted_content.git
   revision: 63e57e9116f6fb29effce690e14e319e5300244a
   specs:
@@ -213,6 +220,7 @@ DEPENDENCIES
   RedCloth (= 4.2.9)
   acts-as-taggable-on
   acts_as_commentable
+  auto_complete!
   country-select
   curb (~> 0.7.8)
   delayed_job_active_record
