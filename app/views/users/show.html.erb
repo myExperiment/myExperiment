@@ -361,106 +361,117 @@
 
 <br/>
 
-<% tabnav :user do %>
+<div id="tabsContainer" class="tabsContainer"></div>
 
-  <% case (@tab||"News"); when "News" %>
-
+<div class="tabContainer">
+  <div class="tabTitle">News</div>
+  <div class="tabContent">
     <%= render :partial => "layouts/news", :locals => { :collection => news(@user, true) } %>
+  </div>
+</div>
 
-  <% when "Friends" %>
+<div class="tabContainer">
+  <div class="tabTitle">Friends</div>
+  <div class="tabContent">
+    <%= render :partial => "users/table", :locals => { :collection => @user.friends } %>
+  </div>
+</div>
 
-    <div>
-      <%= render :partial => "users/table", :locals => { :collection => @user.friends } %>
-    </div>
+<div class="tabContainer">
+  <div class="tabTitle">Groups</div>
+  <div class="tabContent">
+    <% unless @user.networks_owned.empty? %>
+        <h2>Groups that <%= @user.name %> owns</h2>
+        <%= render :partial => "networks/table", :locals => { :collection => @user.networks_owned } %>
+        <% if false %><p style="color: #666666;">[ <%= link_to 'View my Groups', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if mine? @user %> ]</p><% end %>
+    <% end %>
 
-  <% when "Groups" %>
+    <% unless @user.networks.empty? %>
+        <h2>Other Groups that <%= @user.name %> belongs to</h2>
+        <%= render :partial => "networks/table", :locals => { :collection => @user.networks } %>
+    <% end %>
 
-      <% unless @user.networks_owned.empty? %>
-	      <h2>Groups that <%= @user.name %> owns</h2>
-		  <%= render :partial => "networks/table", :locals => { :collection => @user.networks_owned } %>
-	      <% if false %><p style="color: #666666;">[ <%= link_to 'View my Groups', url_for(:controller => :networks, :action => :index, :user_id => @user.id) if mine? @user %> ]</p><% end %>
-	  <% end %>
-	  
-	  <% unless @user.networks.empty? %>
-		  <h2>Other Groups that <%= @user.name %> belongs to</h2>
-		  <%= render :partial => "networks/table", :locals => { :collection => @user.networks } %>
-	  <% end %>
-  
-      <% if mine? @user %>
+    <% if mine? @user %>
         <p style="color: #666666;">[ <%= link_to 'View all Memberships in detail', user_memberships_path(@user) %> ]</p>
-      <% end %>
+    <% end %>
+  </div>
+</div>
 
-  <% when "Workflows" %>
-		
-		<%= view_privileges_notice %>
-		<br/>
-    <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Workflow' end).map do |c| c.contributable end  %>
-    <%= render :partial => "workflows/anchors", :locals => { :collection => contributables } %>
-    <%= render :partial => "workflows/table", :locals => { :collection => contributables } %>
+<div class="tabContainer">
+  <div class="tabTitle">Workflows</div>
+  <div class="tabContent">
+    <%= render :partial => "workflows/table", :locals => { :collection => @user.workflows } %>
+  </div>
+</div>
 
-  <% when "Files" %>
-		
-		<%= view_privileges_notice %>
-		<br/>
-    <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Blob' end).map do |c| c.contributable end  %>
-    <%= render :partial => "blobs/table", :locals => { :collection => contributables } %>
-		
-	<% when "Packs" %>
-		
-		<%= view_privileges_notice %>
-		<br/>
-    <% contributables = (@user.contributions.select do |c| c.contributable_type == 'Pack' end).map do |c| c.contributable end  %>
-    <%= render :partial => "packs/table", :locals => { :collection => contributables } %>
+<div class="tabContainer">
+  <div class="tabTitle">Files</div>
+  <div class="tabContent">
+    <%= render :partial => "blobs/table", :locals => { :collection => @user.blobs } %>
+  </div>
+</div>
 
-  <% when "Credits" %>
+<div class="tabContainer">
+  <div class="tabTitle">Packs</div>
+  <div class="tabContent">
+    <%= render :partial => "packs/table", :locals => { :collection => @user.packs } %>
+  </div>
+</div>
 
+<div class="tabContainer">
+  <div class="tabTitle">Credits</div>
+  <div class="tabContent">
     <% unless (creditations = @user.creditations).empty? %>
-			<%= view_privileges_notice %>
-      <% creditations.each do |c| %>
-				<% if c.creditable %>
-        	<%= render :partial => "contributions/table", :locals => { :collection => [c.creditable.contribution] } %>
-				<% end %>
-      <% end %>
+        <%= view_privileges_notice %>
+        <% creditations.each do |c| %>
+            <% if c.creditable %>
+                <%= render :partial => "contributions/table", :locals => { :collection => [c.creditable.contribution] } %>
+            <% end %>
+        <% end %>
     <% else %>
-      <p class="none_text">No credits yet</p>
+        <p class="none_text">No credits yet</p>
     <% end %>
+  </div>
+</div>
 
-  <% when "Tags" %>
-
-    <% unless (tags = @user.tags).empty? %>
-      <div style="border: 1px dotted #999999; background-color: #FFFFCC; padding: 1em; margin: 0.5em;">
-        <%= tag_cloud_from_collection(tags) %>
-      </div>
-    <% else %>
-      <p class="none_text">No tags made yet</p>
-    <% end %>
-		
-	<% when "Favourites" %>
-
+<div class="tabContainer">
+  <div class="tabTitle">Favourites</div>
+  <div class="tabContent">
     <% unless (bookmarks = @user.bookmarks).empty? %>
-      <%= view_privileges_notice %>
-			<% bookmarks.each do |b| %>
-				<% if b.bookmarkable %>
-        	<%= render :partial => "contributions/table", :locals => { :collection => [b.bookmarkable.contribution] } %>
-					<p style="text-align: right; margin: 0.7em 0 1.5em 0;">
-					  <% if !(remove_bookmarkable_url_value = remove_bookmarkable_url(b.bookmarkable_type, b.bookmarkable_id)).blank? %>
-						  <%= link_to(delete_image("vertical-align: middle", "") + "<span style='vertical-align: middle;'> Remove from favourites</span>",
-                	remove_bookmarkable_url_value + "?return_to=" + url_for(:action => 'favourites'),
-              	  :method => :delete,
-              		:confirm => "Are you sure you want to remove this item from your favourites?",
-                  :class => "button_slim") 
-              -%> 
-						<% end %>
-					</p>
-				<% end %>
-      <% end %>
+        <%= view_privileges_notice %>
+        <% bookmarks.each do |b| %>
+            <% if b.bookmarkable %>
+                <%= render :partial => "contributions/table", :locals => { :collection => [b.bookmarkable.contribution] } %>
+                <p style="text-align: right; margin: 0.7em 0 1.5em 0;">
+                  <% if !(remove_bookmarkable_url_value = remove_bookmarkable_url(b.bookmarkable_type, b.bookmarkable_id)).blank? %>
+                      <%= link_to(delete_image("vertical-align: middle", "") + "<span style='vertical-align: middle;'> Remove from favourites</span>",
+                                  remove_bookmarkable_url_value + "?return_to=" + url_for(:action => 'favourites'),
+                                  :method => :delete,
+                                  :confirm => "Are you sure you want to remove this item from your favourites?",
+                                  :class => "button_slim")
+                      -%>
+                  <% end %>
+                </p>
+            <% end %>
+        <% end %>
     <% else %>
-      <p class="none_text">No favourites</p>
+        <p class="none_text">No favourites</p>
     <% end %>
+  </div>
+</div>
 
-  <% end %>
-
-<% end %>
+<div class="tabContainer">
+  <div class="tabTitle">Tags</div>
+  <div class="tabContent">
+    <% unless (tags = @user.tags).empty? %>
+        <div style="border: 1px dotted #999999; background-color: #FFFFCC; padding: 1em; margin: 0.5em;">
+          <%= tag_cloud_from_collection(tags) %>
+        </div>
+    <% else %>
+        <p class="none_text">No tags made yet</p>
+    <% end %>
+  </div>
+</div>
 
 <% if logged_in? and !mine?(@user) and !current_user.networks_owned.empty? %>
   <%= render :partial => "networks/invite", :locals => { :current => current_user, :user => @user } %>
