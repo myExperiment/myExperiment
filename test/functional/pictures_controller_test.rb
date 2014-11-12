@@ -42,18 +42,6 @@ class PicturesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  # can't edit a picture
-  def test_should_get_edit
-    get :edit, :id => 1
-    assert_response :redirect
-  end
-  
-  # can't update a picture
-  def test_should_update_picture
-    put :update, :id => 1, :picture => { }
-    assert_response :redirect
-  end
-  
   def test_should_destroy_picture
     old_count = Picture.count
 
