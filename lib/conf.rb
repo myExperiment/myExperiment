@@ -50,7 +50,14 @@ class Conf
   end
 
   def self.hostname
-    self.base_uri.sub(/https?:\/\//, '')
+    uri = URI(Conf.base_uri)
+
+    host = uri.host
+    unless uri.port == uri.default_port
+      host += ":#{uri.port}"
+    end
+
+    host
   end
 
   def self.admins
