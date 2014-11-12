@@ -4,7 +4,7 @@ Hi <%= @name %>,
 
 Subject: <%= @subject %>
 
-Please go to <%= url_for :only_path => false, :host => @base_url, :controller => 'messages', :id => @message_id, :action => 'show' %> to view the message.
+Please go to <%= url_for :only_path => false, :host => Conf.hostname, :controller => 'messages', :id => @message_id, :action => 'show' %> to view the message.
 Note that you may be asked to log in to see and reply to this message.
 
   <%= login_identity_reminder(@target) %>

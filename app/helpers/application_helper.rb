@@ -331,7 +331,7 @@ module ApplicationHelper
                      :id => contributableid)
     else
       return url_for(:only_path => false,
-                     :host => @base_url,
+                     :host => Conf.hostname,
                      :controller => contributabletype.downcase.pluralize, 
                      :action => "show", 
                      :id => contributableid)
