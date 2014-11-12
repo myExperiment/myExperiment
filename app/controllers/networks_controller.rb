@@ -9,6 +9,7 @@ class NetworksController < ApplicationController
 
   include ApplicationHelper
   include ActivitiesHelper
+  include TaggingUtils
 
   before_filter :login_required, :except => [:index, :show, :content, :search, :all]
   
@@ -338,10 +339,8 @@ class NetworksController < ApplicationController
 
         update_feed_definition(@network, params)
 
-        if params[:network][:tag_list]
-          @network.tags_user_id = current_user
-          @network.tag_list = convert_tags_to_gem_format params[:network][:tag_list]
-          @network.update_tags
+        if params[:tag_list]
+          replace_tags(@network, current_user, convert_tags_to_gem_format(params[:tag_list]))
         end
         flash[:notice] = 'Group was successfully created.'
         format.html { redirect_to network_url(@network) }
@@ -360,7 +359,7 @@ class NetworksController < ApplicationController
       if @network.update_attributes(params[:network])
         Activity.create_activities(:subject => current_user, :action => 'edit', :object => @network)
         update_feed_definition(@network, params)
-        @network.refresh_tags(convert_tags_to_gem_format(params[:network][:tag_list]), current_user) if params[:network][:tag_list]
+        replace_tags(@network, current_user, convert_tags_to_gem_format(params[:tag_list])) if params[:tag_list]
         flash[:notice] = 'Group was successfully updated.'
         format.html { redirect_to network_url(@network) }
       else

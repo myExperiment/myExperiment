@@ -6,6 +6,7 @@
 class BlobsController < ApplicationController
 
   include ApplicationHelper
+  include TaggingUtils
 
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :named_download_with_version, :statistics, :search, :auto_complete]
 
@@ -163,10 +164,8 @@ class BlobsController < ApplicationController
       respond_to do |format|
         if @blob.save
           Activity.create(:subject => current_user, :action => 'create', :objekt => @blob, :auth => @blob)
-          if params[:blob][:tag_list]
-            @blob.tags_user_id = current_user
-            @blob.tag_list = convert_tags_to_gem_format params[:blob][:tag_list]
-            @blob.update_tags
+          if params[:tag_list]
+            replace_tags(@blob, current_user, convert_tags_to_gem_format(params[:tag_list]))
           end
           # update policy
           @blob.contribution.update_attributes(params[:contribution])
@@ -235,7 +234,7 @@ class BlobsController < ApplicationController
           Activity.create(:subject => current_user, :action => 'edit', :objekt => @blob, :auth => @blob)
         end
 
-        @blob.refresh_tags(convert_tags_to_gem_format(params[:blob][:tag_list]), current_user) if params[:blob][:tag_list]
+        replace_tags(@blob, current_user, convert_tags_to_gem_format(params[:tag_list])) if params[:tag_list]
         
         policy_err_msg = update_policy(@blob, params, current_user)
         update_credits(@blob, params)

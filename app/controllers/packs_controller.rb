@@ -5,6 +5,7 @@
 
 class PacksController < ApplicationController
   include ApplicationHelper
+  include TaggingUtils
   
   before_filter :login_required, :except => [:index, :show, :search, :items, :download, :statistics]
   
@@ -135,10 +136,8 @@ class PacksController < ApplicationController
     
     respond_to do |format|
       if @pack.save
-        if params[:pack][:tag_list]
-          @pack.tags_user_id = current_user
-          @pack.tag_list = convert_tags_to_gem_format params[:pack][:tag_list]
-          @pack.update_tags
+        if params[:tag_list]
+          replace_tags(@pack, current_user, convert_tags_to_gem_format(params[:tag_list]))
         end
         
         # update policy
@@ -169,7 +168,7 @@ class PacksController < ApplicationController
     
     respond_to do |format|
       if @pack.update_attributes(params[:pack])
-        @pack.refresh_tags(convert_tags_to_gem_format(params[:pack][:tag_list]), current_user) if params[:pack][:tag_list]
+        replace_tags(@pack, current_user, convert_tags_to_gem_format(params[:tag_list])) if params[:tag_list]
         policy_err_msg = update_policy(@pack, params, current_user)
         if policy_err_msg.blank?
           update_layout(@pack, params[:layout]) unless params[:policy_type] == "group"

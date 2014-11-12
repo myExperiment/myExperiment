@@ -21,7 +21,7 @@ document.onkeypress = handleEnter;
 </script> 
 
 
-<input id="tag_list" type="hidden" name="<%= taggable.class.to_s.downcase %>[tag_list]"/>
+<input id="tag_list" type="hidden" name="tag_list"/>
 
 <div class="fold">
   <div class="foldTitle">
@@ -75,8 +75,8 @@ document.onkeypress = handleEnter;
 </div>
 
 <% type_sym = taggable.class.to_s.downcase.to_sym %>
-<% if params[type_sym] && !params[type_sym][:tag_list].blank? %>
-	<% curr_tags = params[type_sym][:tag_list].split(',') %>
+<% if params[type_sym] && !params[:tag_list].blank? %>
+	<% curr_tags = params[:tag_list].split(',') %>
 	<script>
     <% curr_tags.sort{|a,b| a.downcase <=> b.downcase}.each do |t| %>
       tags.push(<%= "\"#{t}\"" %>);

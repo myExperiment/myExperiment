@@ -6,6 +6,7 @@
 class WorkflowsController < ApplicationController
 
   include ApplicationHelper
+  include TaggingUtils
 
   before_filter :login_required, :except => [:index, :show, :download, :named_download, :statistics, :launch, :search, :auto_complete, :component_validity]
   
@@ -278,8 +279,8 @@ class WorkflowsController < ApplicationController
 
         Activity.create(:subject => current_user, :action => 'create', :objekt => @workflow, :auth => @workflow)
 
-        if params[:workflow][:tag_list]
-          @workflow.tag_list = params[:workflow][:tag_list]
+        if params[:tag_list]
+          replace_tags(@workflow, current_user, convert_tags_to_gem_format(params[:tag_list]))
           @workflow.reload
           @workflow.solr_index if Conf.solr_enable
         end
@@ -468,8 +469,8 @@ class WorkflowsController < ApplicationController
 
         Activity.create(:subject => current_user, :action => 'edit', :objekt => @workflow, :auth => @workflow)
 
-        if params[:workflow][:tag_list]
-          @workflow.tag_list = params[:workflow][:tag_list]
+        if params[:tag_list]
+          replace_tags(@workflow, current_user, convert_tags_to_gem_format(params[:tag_list]))
           @workflow.reload
           @workflow.solr_index if Conf.solr_enable
         end
