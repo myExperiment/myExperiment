@@ -4,8 +4,6 @@ class MailerTest < ActiveSupport::TestCase
   FIXTURES_PATH = File.dirname(__FILE__) + '/../fixtures'
   CHARSET = "utf-8"
 
-  include ActionMailer::Quoting
-
   def setup
     ActionMailer::Base.delivery_method = :test
     ActionMailer::Base.perform_deliveries = true
@@ -16,7 +14,7 @@ class MailerTest < ActiveSupport::TestCase
     @expected.mime_version = '1.0'
   end
 
-  # Replace this with your real tests.
+  # TODO: Actually test mailers
   def test_truth
     assert true
   end
