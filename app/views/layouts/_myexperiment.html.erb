@@ -7,7 +7,9 @@
   <% unless Conf.google_site_verification.nil? %>
   <meta name="google-site-verification" content="<%= Conf.google_site_verification -%>" />
   <% end %>
-  <%= t :site => "#{Conf.sitename} - #{controller_visible_name(controller.controller_name.humanize)}", :separator => "-" %>
+  <title>
+    <%= Conf.sitename -%> - <%= controller_visible_name(controller.controller_name.humanize) -%>
+  </title>
   <% if @lod_rdf %><link rel="alternate" href="<%= @lod_rdf -%>" type="application/rdf+xml" title="RDF+XML" /><% end %>
   <% if @lod_xml %><link rel="alternate" href="<%= @lod_xml -%>" type="application/xml" title="REST XML" /><% end %>
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
