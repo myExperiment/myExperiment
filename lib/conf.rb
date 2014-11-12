@@ -152,10 +152,6 @@ class Conf
     self.fetch_entry('stylesheet')
   end
 
-  def self.validate_email_veracity
-    self.fetch_entry('validate_email_veracity')
-  end
-
   def self.rdfgen_enable
     self.fetch_entry('rdfgen_enable')
   end

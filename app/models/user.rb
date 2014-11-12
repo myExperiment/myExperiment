@@ -112,11 +112,6 @@ class User < ActiveRecord::Base
   validates_presence_of     :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
   validates_uniqueness_of   :openid_url, :if => Proc.new { |user| !user.openid_url.nil? }
   
-  if Conf.validate_email_veracity
-    validates_email_veracity_of :email
-    validates_email_veracity_of :unconfirmed_email
-  end
-  
   before_validation :cleanup_input
   before_save :check_email_uniqueness
   before_create :check_email_non_openid_conditions  # NOTE: use before_save if you want validation to occur on updates as well. before_create is being used here because of old user base.
