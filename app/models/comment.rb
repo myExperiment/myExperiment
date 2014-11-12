@@ -15,27 +15,11 @@ class Comment < ActiveRecord::Base
   
   # NOTE: Comments belong to a user
   belongs_to :user
-  
-  acts_as_simile_timeline_event(
-    :fields => {
-      :start       => :created_at,
-      :title       => :simile_title,
-      :description => :simile_description,
-    }
-  )
-  
+
   validates_presence_of :comment
   validates_presence_of :commentable_type
   validates_presence_of :commentable_id
 
-  def simile_title
-    "Comment by: #{self.user.name}"
-  end
-  
-  def simile_description
-    "#{self.comment}"
-  end
-  
   # returns the 'last created' Comments
   # the maximum number of results is set by #limit#
   def self.latest(limit=10)

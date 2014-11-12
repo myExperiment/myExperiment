@@ -7,7 +7,7 @@ class CommentsController < ApplicationController
   
   include ActivitiesHelper
 
-  before_filter :find_context, :only => [ :create, :index, :timeline ]
+  before_filter :find_context, :only => [ :create, :index ]
   before_filter :find_comment, :only => [ :destroy ]
 
   # GET /:context_type/:context_id/comments
@@ -20,7 +20,7 @@ class CommentsController < ApplicationController
     end
     @comments ||= []
     respond_to do |format|
-      format.json { render :partial => 'comments/timeline_json', :layout => false }
+      format.html { render :partial => "comments/comments", :locals => { :commentable => @context } }
     end
   end
 
@@ -70,13 +70,6 @@ class CommentsController < ApplicationController
     
     respond_to do |format|
       format.html { render :partial => "comments/comments", :locals => { :commentable => @context } }
-    end
-  end
-
-  # GET /:context_type/:context_id/comments/timeline
-  def timeline
-    respond_to do |format|
-      format.html # timeline.rhtml
     end
   end
 

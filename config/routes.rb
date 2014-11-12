@@ -50,11 +50,7 @@ MyExperiment::Application.routes.draw do
       post :snapshot
       get :items
     end
-    resources :comments do
-      collection do
-        get :timeline
-      end
-    end
+    resources :comments
 
     resources :relationships do
       collection do
@@ -85,11 +81,7 @@ MyExperiment::Application.routes.draw do
     resources :citations
     resources :reviews
     resources :previews
-    resources :comments do
-      collection do
-        get :timeline
-      end
-    end
+    resources :comments
   end
 
   # workflow redirect for linked data model
@@ -130,11 +122,7 @@ MyExperiment::Application.routes.draw do
       post :process_suggestions
       post :tag
     end
-    resources :comments do
-      collection do
-        get :timeline
-      end
-    end
+    resources :comments
   end
 
   resources :content_types
@@ -152,10 +140,6 @@ MyExperiment::Application.routes.draw do
   match '/oauth/access_token' => 'oauth#access_token', :as => :access_token
   match '/oauth/test_request' => 'oauth#test_request', :as => :test_request
   resources :oauth
-
-  # User timeline
-  match 'users/timeline' => 'users#timeline'
-  match 'users/users_for_timeline' => 'users#users_for_timeline'
 
   # For email confirmations (user accounts)
   match 'users/confirm_email/:hash' => 'users#confirm_email'
@@ -230,11 +214,7 @@ MyExperiment::Application.routes.draw do
 
     resources :group_announcements, :path => 'announcements'
 
-    resources :comments do
-      collection do
-        get :timeline
-      end
-    end
+    resources :comments
 
     resources :policies, :controller => 'group_policies'
 

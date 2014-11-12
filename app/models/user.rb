@@ -87,27 +87,7 @@ class User < ActiveRecord::Base
   has_many :client_applications
   
   has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
-           
-  acts_as_simile_timeline_event(
-    :fields => {
-      :start       => :created_at,
-      :title       => :simile_title,
-      :description => :simile_description,
-    }
-  )
-  
-  def simile_title
-    "#{self.name}"
-  end
-  
-  def simile_description
-    if profile and !profile.body.blank?
-      "#{profile.body}"
-    else
-      ''
-    end
-  end
-  
+
   # BEGIN RESTful Authentication #
   attr_accessor :password
 

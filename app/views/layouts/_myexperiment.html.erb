@@ -15,10 +15,6 @@
                           'star_rating', 'gadgets', 'misc_skinning', 'pagination', 'bootstrap', 'navbar', *@layout["stylesheets"] %>
   <%= javascript_include_tag "jquery.js", "jquery_ujs.js", "jquery-noconflict.js", 'prototype-1.7.2-patched.js', 'effects.js', 'dragdrop.js', 'controls.js',  "boxover.js", "bootstrap.js", "tabs.js", "folds.js", "application.js"%>
 
-  <% if controller.action_name.downcase == "timeline" %>
-    <script src="http://simile.mit.edu/timeline/api/timeline-api.js" type="text/javascript"></script>
-  <% end -%>
-
   <%= render :partial => "layouts/feed_link_tags" %>
 
   <%= yield :head_options -%>
