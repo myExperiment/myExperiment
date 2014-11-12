@@ -107,7 +107,7 @@ def file_aux(action, opts = {})
     edit_version = action == 'edit'   && opts[:query]['version'] != nil
 
     if new_version
-      ob[:revision_comments] = revision_comment
+      ob.revision_comments = revision_comment
     end
 
     success = ob.save

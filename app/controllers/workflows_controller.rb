@@ -394,7 +394,7 @@ class WorkflowsController < ApplicationController
       # TODO: wrap this in a transaction!
       @workflow.content_blob = ContentBlob.new(:data => file.read)
       @workflow.preview = nil
-      @workflow[:revision_comments] = params[:new_workflow][:rev_comments]
+      @workflow.revision_comments = params[:new_workflow][:rev_comments]
 
       if @workflow.save
 

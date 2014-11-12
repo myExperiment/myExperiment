@@ -1,6 +1,6 @@
-# myExperiment: vendor/plugins/versioning/lib/versioning.rb
+# myExperiment: lib/versioning/versioning.rb
 #
-# Copyright (c) 2011 University of Manchester and the University of Southampton.
+# Copyright (c) 2014 University of Manchester and the University of Southampton.
 # See license.txt for details.
 
 module Versioning
@@ -23,6 +23,7 @@ module Versioning
 
       class_eval do
 
+        attr_accessor :revision_comments
         has_many :versions, :class_name => self.version_class.name, :dependent => :destroy
 
         def find_version(v)

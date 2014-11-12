@@ -141,7 +141,7 @@ def workflow_aux(action, opts = {})
 
     if new_version
       ob.preview = nil
-      ob[:revision_comments] = revision_comment
+      ob.revision_comments = revision_comment
     end
 
     success = ob.save
