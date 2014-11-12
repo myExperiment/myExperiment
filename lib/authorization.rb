@@ -154,7 +154,7 @@ module Authorization
           when "destroy"
 
             # Users can delete their own taggings
-            return !user.nil? && object.user == user
+            return !user.nil? && object.tagger == user
         end
 
       when "Bookmark"

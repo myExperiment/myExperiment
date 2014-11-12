@@ -898,9 +898,9 @@ class ApiControllerTest < ActionController::TestCase
 
     tagging = extra_taggings.first
 
-    assert_equal(tagging.user, users(:john));
+    assert_equal(tagging.tagger, users(:john));
     assert_equal(tagging.taggable, workflow);
-    assert_equal(tagging.label, 'my test tag');
+    assert_equal(tagging.tag.name, 'my test tag');
 
     # update the tagging (which should fail)
 

@@ -34,16 +34,14 @@ def tagging_aux(action, opts)
     ob.destroy
 
   else
-
-    ob.label    = label   if label
-    ob.tag      = tag     if tag
+    label = label if label
+    label = tag.name if tag
 
     if subject
       return rest_response(401, :reason => "Not authorised for the specified resource") unless Authorization.check(action, ActsAsTaggableOn::Tagging, opts[:user], subject)
-      ob.taggable = subject
+      success = opts[:user].tag(subject, :with => label, :on => :tags)
+      ob = ActsAsTaggableOn::Tagging.last
     end
-
-    success = ob.save
 
     if success && action == "create"
       Activity.create(:subject => opts[:user], :action => 'create', :objekt => ob, :auth => subject)

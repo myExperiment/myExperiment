@@ -529,7 +529,7 @@
     <Cell ss:Index="8" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
     <Cell><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="12" ss:StyleID="s63"><Data ss:Type="String">crud</Data></Cell>
-    <Cell><Data ss:Type="String">tag</Data></Cell>
+    <Cell><Data ss:Type="String">tagging</Data></Cell>
     <Cell><Data ss:Type="String">acts_as_taggable_on/tagging</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">required</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
@@ -1910,7 +1910,7 @@
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Unsynced/>
    <SplitHorizontal>900</SplitHorizontal>
-   <TopRowBottomPane>24</TopRowBottomPane>
+   <TopRowBottomPane>36</TopRowBottomPane>
    <ActivePane>2</ActivePane>
    <Panes>
     <Pane>
@@ -1919,8 +1919,8 @@
     </Pane>
     <Pane>
      <Number>2</Number>
-     <ActiveRow>52</ActiveRow>
-     <ActiveCol>12</ActiveCol>
+     <ActiveRow>54</ActiveRow>
+     <ActiveCol>16</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
@@ -3180,7 +3180,7 @@
     <Cell ss:StyleID="s69"><Data ss:Type="String">tagging</Data></Cell>
     <Cell ss:StyleID="s69"><Data ss:Type="String">user</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">ActsAsTaggableOn::Tagging</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">user</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">tagger</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">item</Data></Cell>
     <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
@@ -3210,7 +3210,7 @@
     <Cell ss:StyleID="s69"><Data ss:Type="String">tagging</Data></Cell>
     <Cell ss:StyleID="s69"><Data ss:Type="String">label</Data></Cell>
     <Cell ss:Index="4" ss:StyleID="s63"><Data ss:Type="String">ActsAsTaggableOn::Tagging</Data></Cell>
-    <Cell ss:StyleID="s63"><Data ss:Type="String">label</Data></Cell>
+    <Cell ss:StyleID="s63"><Data ss:Type="String">tag.name</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">no</Data></Cell>
     <Cell ss:StyleID="s63"><Data ss:Type="String">text</Data></Cell>
     <Cell ss:Index="9" ss:StyleID="s63"><Data ss:Type="String">yes</Data></Cell>
@@ -6840,7 +6840,7 @@
    <Unsynced/>
    <Selected/>
    <SplitHorizontal>945</SplitHorizontal>
-   <TopRowBottomPane>69</TopRowBottomPane>
+   <TopRowBottomPane>66</TopRowBottomPane>
    <ActivePane>2</ActivePane>
    <Panes>
     <Pane>
@@ -6850,9 +6850,8 @@
     </Pane>
     <Pane>
      <Number>2</Number>
-     <ActiveRow>90</ActiveRow>
-     <ActiveCol>3</ActiveCol>
-     <RangeSelection>R91C4:R96C4</RangeSelection>
+     <ActiveRow>91</ActiveRow>
+     <ActiveCol>4</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
