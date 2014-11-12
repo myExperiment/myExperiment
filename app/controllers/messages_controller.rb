@@ -16,9 +16,8 @@ class MessagesController < ApplicationController
   def index
     # inbox
     @message_folder = "inbox"
-    @messages = Message.find(:all, 
-                             :conditions => ["`to` = ? AND `deleted_by_recipient` = ?", current_user.id, false],
-                             :order => produce_sql_ordering_string(params[:sort_by], params[:order]))
+    @messages = Message.where(["`to` = ? AND `deleted_by_recipient` = ?", current_user.id, false]).
+                        order(produce_sql_ordering_string(params[:sort_by], params[:order]))
     
     @messages = @messages.paginate(:page => params[:page], :per_page => 20)
 
@@ -31,9 +30,8 @@ class MessagesController < ApplicationController
   def sent
     # outbox
     @message_folder = "outbox"
-    @messages = Message.find(:all, 
-                             :conditions => ["`from` = ? AND `deleted_by_sender` = ?", current_user.id, false],
-                             :order => produce_sql_ordering_string(params[:sort_by], params[:order]))
+    @messages = Message.where(["`from` = ? AND `deleted_by_sender` = ?", current_user.id, false]).
+                        order(produce_sql_ordering_string(params[:sort_by], params[:order]))
     
     @messages = @messages.paginate(:page => params[:page], :per_page => 20)
 
