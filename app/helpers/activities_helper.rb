@@ -105,13 +105,13 @@ module ActivitiesHelper
         :auth_type       => 'activities.auth_type',
         :auth_id         => 'activities.auth_id',
         :group           => 'activities.id',
-        :authorised_user => opts[:user])
+        :authorised_user => opts[:user])[0]
     
     results = []
     pos = 0
 
     while results.length <= last
-      incoming = activities.all(:conditions => conditions, :order => order, :limit => "#{pos}, #{per_page}")
+      incoming = activities.where(conditions).order(order).limit("#{pos}, #{per_page}")
       
       break if incoming.length == 0
 
