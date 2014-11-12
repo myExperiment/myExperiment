@@ -94,15 +94,7 @@ class WorkflowsController < ApplicationController
   
   # POST /workflows/1;tag
   def tag
-
-    ActsAsTaggableOn::Tag.parse(convert_tags_to_gem_format(params[:tag_list])).each do |name|
-      @workflow.add_tag(name, current_user)
-    end
-
-    @workflow.tag_list = "#{@workflow.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
-    @workflow.tags_user_id = current_user # acts_as_taggable_redux
-    @workflow.tag_list = "#{@workflow.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
-    @workflow.update_tags # hack to get around acts_as_versioned
+    current_user.tag(@workflow, :with => convert_tags_to_gem_format(params[:tag_list]), :on => :tags)
 
     respond_to do |format|
       format.html { 

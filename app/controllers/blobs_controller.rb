@@ -305,11 +305,9 @@ class BlobsController < ApplicationController
   
   # POST /files/1;tag
   def tag
-    @blob.tags_user_id = current_user # acts_as_taggable_redux
-    @blob.tag_list = "#{@blob.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
-    @blob.update_tags # hack to get around acts_as_versioned
+    current_user.tag(@blob, :with => convert_tags_to_gem_format(params[:tag_list]), :on => :tags)
     @blob.solr_index if Conf.solr_enable
-    
+
     respond_to do |format|
       format.html { 
         render :update do |page|

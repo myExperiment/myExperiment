@@ -381,9 +381,7 @@ class NetworksController < ApplicationController
  
   # POST /networks/1;tag
   def tag
-    @network.tags_user_id = current_user
-    @network.tag_list = "#{@network.tag_list}, #{convert_tags_to_gem_format params[:tag_list]}" if params[:tag_list]
-    @network.update_tags # hack to get around acts_as_versioned
+    current_user.tag(@network, :with => convert_tags_to_gem_format(params[:tag_list]), :on => :tags)
     @network.solr_index if Conf.solr_enable
     
     respond_to do |format|
