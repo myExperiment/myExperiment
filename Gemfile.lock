@@ -132,6 +132,7 @@ GEM
     pr_geohash (1.0.0)
     prototype-rails (3.2.1)
       rails (~> 3.2)
+    psych (2.0.5)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -239,6 +240,7 @@ DEPENDENCIES
   openurl (~> 0.2.0)
   passenger (~> 3.0.19)
   prototype-rails
+  psych
   rails (= 3.2.17)
   rails3-restful-authentication (~> 3.0.1)
   rails_autolink

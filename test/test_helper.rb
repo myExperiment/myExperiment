@@ -40,3 +40,11 @@ class ActiveSupport::TestCase
     @request.session[:user_id] = user ? users(user).id : nil
   end
 end
+
+# Used in fixtures to load a binary data from given filename
+# http://stackoverflow.com/questions/12644057/how-to-use-binary-data-in-rails-fixtures
+def load_blob_data(filename)
+  File::open(Rails.root.join('test/fixtures/files/', filename), 'rb') do |f|
+    "!!binary \"#{Base64.strict_encode64(f.read)}\"\n"
+  end
+end
