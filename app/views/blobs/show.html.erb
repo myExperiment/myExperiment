@@ -91,7 +91,7 @@
 			
 			<% unless @version.body.blank? %>
 				<div class="contribution_description">
-					<%= @version.body_html.html_safe %>
+					<%= raw @version.body_html %>
 				</div>
 			<% else %>
 				<p class="none_text">

@@ -30,7 +30,7 @@
 	<br/>
 	
 	<div class="message">
-		<%= @announcement.body_html.html_safe %>
+		<%= raw @announcement.body_html %>
 	</div>
 </div>
 

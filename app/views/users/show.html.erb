@@ -281,7 +281,7 @@
 	<% unless @user.profile.nil? %>
 	  <div class="box_standout">
 	    <% unless @user.profile.body.blank? %>
-				<%= @user.profile.body_html.html_safe %>
+				<%= raw @user.profile.body_html %>
 			<% else %>
 				<p class="none_text">Description/summary not set</p>
 			<% end %>	
