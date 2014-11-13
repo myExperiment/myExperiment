@@ -6,4 +6,6 @@
 class Attribution < ActiveRecord::Base
   belongs_to :attributor, :polymorphic => true
   belongs_to :attributable, :polymorphic => true
+
+  attr_accessible :attributor_type, :attributor_id, :attributable_type, :attributable_id
 end
