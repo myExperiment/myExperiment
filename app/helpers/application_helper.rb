@@ -324,18 +324,11 @@ module ApplicationHelper
     return truncate ? truncate(str, :length => truncate) : str
   end
   
-  def contributable_url(contributableid, contributabletype, base_host=nil)
-    if base_host.blank?
-      return url_for(:controller => contributabletype.downcase.pluralize, 
-                     :action => "show", 
-                     :id => contributableid)
-    else
+  def contributable_url(contributableid, contributabletype)
       return url_for(:only_path => false,
-                     :host => Conf.hostname,
-                     :controller => contributabletype.downcase.pluralize, 
+                     :controller => contributabletype.downcase.pluralize,
                      :action => "show", 
                      :id => contributableid)
-    end
   end
 
   def collection_contribution_tags(contributor, collection)
