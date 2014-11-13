@@ -62,7 +62,7 @@
 			
 			<% unless @pack.description.blank? %>
 				<div class="contribution_description">
-					<%= @pack.description_html %>
+					<%= raw @pack.description_html %>
 				</div>
 				<% if mine?(@pack) %>
 					<br/>
