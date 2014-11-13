@@ -29,7 +29,7 @@ module PacksHelper
   end
 
   def user_and_created_at_bit(entry)
-    return "<small>Added by <b>#{contributor(entry.user_id, 'User')}</b> ... #{timeago_fuzzy entry.created_at} (#{datetime entry.created_at, false})</small>"
+    return "<small>Added by <b>#{contributor(entry.user_id, 'User')}</b> ... #{timeago_fuzzy entry.created_at} (#{datetime entry.created_at, false})</small>".html_safe
   end
   
   def type_to_UI_text(type)
@@ -58,7 +58,7 @@ module PacksHelper
       desc = "ERROR: failed to retrieve description data."
     end
     
-    return desc
+    return raw desc
   end
   
   def unique_tags_from_items(items)
