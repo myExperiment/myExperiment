@@ -5,7 +5,7 @@
 
 class Membership < ActiveRecord::Base
 
-  attr_accessible :user_id, :network_id
+  attr_accessible :user_id, :network_id, :message, :invited_by
 
   belongs_to :user
 
