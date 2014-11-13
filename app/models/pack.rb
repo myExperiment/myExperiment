@@ -548,9 +548,9 @@ class Pack < ActiveRecord::Base
 
         # Use Rails' routing to figure out the URL
         begin
-          request = ActionController::Routing::Routes.recognize_path(uri.path, :method => :get)
+          request = Rails.application.routes.recognize_path(uri.path, :method => :get)
           model_name = request[:controller].classify
-        rescue Exception => exc
+        rescue ActionController::RoutingError
           raise URI::InvalidURIError
         end
 
