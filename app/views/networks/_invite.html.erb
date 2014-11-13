@@ -73,8 +73,9 @@
       <label for="my_network_<%= n.id %>"> - <span id="my_network_font_<%= n.id %>"><%= h(n.title) %></span></label>
       <span style="display: none;" id="my_network_<%= n.id -%>_status"> (invitation was sent successfully)</span>
     <% end %>
-        
-    <%= "<br />" unless (index.to_i == (networks.length - 1)) %>
+      <% unless (index.to_i == (networks.length - 1)) %>
+          <br/>
+      <% end %>
   <% end %>
   
   <br/>
