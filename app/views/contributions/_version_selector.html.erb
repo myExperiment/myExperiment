@@ -45,7 +45,7 @@
       <% end %>
       <% if !version.revision_comments.blank? %>
         <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-        <span><%= link_to_function "Revision comment " + expand_image, visual_effect(:toggle_blind, "version_info_box_comments", :duration => 0.3) %></span>
+        <span><%= link_to_function "Revision comment ".html_safe + expand_image, visual_effect(:toggle_blind, "version_info_box_comments", :duration => 0.3) %></span>
       <% end %>
     </p>
     
@@ -63,7 +63,7 @@
   
   <% if !version.revision_comments.blank? -%>
     <div id="version_info_box_comments" style="display: none; border: 1px dotted #CCCCCC; padding: 0.3em 0.5em;">
-      <%= white_list version.revision_comments %>
+      <%= raw(white_list(version.revision_comments)) %>
     </div>
   <% end %>
 
