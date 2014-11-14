@@ -46,6 +46,23 @@ class WorkflowsControllerTest < ActionController::TestCase
     assert Workflow.search { fulltext "dilbert" }.results.include?(workflow) if Conf.solr_enable
   end
 
+  def test_should_create_version_with_workflow
+    old_version_count = WorkflowVersion.count
+
+    login_as(:john)
+    post :create, :workflow => { :file => fixture_file_upload('files/workflow_dilbert.xml'), :license_id => '1' },
+                  :metadata_choice => 'infer',
+                  :credits_me => 'false',
+                  :credits_users => '',
+                  :credits_groups => '',
+                  :attributions_workflows => '',
+                  :attributions_files => ''
+
+    assert_redirected_to workflow_path(assigns(:workflow))
+    assert_equal old_version_count+1, WorkflowVersion.count
+    assert !assigns(:workflow).find_version(1).nil?
+  end
+
   def test_should_show_workflow
 
     get :show, :id => 1
