@@ -17,7 +17,6 @@ module Sesame
     end
 
     def insert(rdf, context, content_type = 'application/x-turtle')
-      raise
       raise "Content type not supported: #{content_type}" unless VALID_CONTENT_TYPES.include?(content_type)
 
       url = URI("#{@url}/statements?context=#{CGI.escape(context)}")
