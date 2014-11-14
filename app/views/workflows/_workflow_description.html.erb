@@ -1,6 +1,6 @@
 <% unless @viewing_version.body.blank? %>
     <div class="contribution_description">
-      <%= @viewing_version.body_html %>
+      <%= raw @viewing_version.body_html %>
     </div>
 <% else %>
     <p class="none_text contribution_description">
